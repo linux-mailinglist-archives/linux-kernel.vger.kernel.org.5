@@ -1,174 +1,225 @@
-Return-Path: <linux-kernel+bounces-108890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1777881170
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:03:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05702881172
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D025B1C2343E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86A9D1F245D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350303F9DB;
-	Wed, 20 Mar 2024 12:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF7C3FB35;
+	Wed, 20 Mar 2024 12:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ie4uKGyi"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZpVb0LnH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eaJcA+HE";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZpVb0LnH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eaJcA+HE"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022DC3EA9C
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B99E3FB9E;
+	Wed, 20 Mar 2024 12:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710936196; cv=none; b=U5AoFtWC61n0FTfNdbxCTjolEijbOnuKmHE8qLplk4O0/T9m6CNx0sM8yzvUki9CldNzuC5n7DXJqMFD846P4Y4JSybHLUikpRuem9IkYyebz3ppJGkz85ReFqsVtaztHBasnIlhloOkevsliYu7VbI4DIyHfpTqx5C3CHUTJxU=
+	t=1710936207; cv=none; b=KWSL7UmShtvVX3fU3Xvsi7zGWYkYi9ZPUxGPqTxjqrDedZdF7g8qGLtON8vrLMY0ONJ5/SkS7uDD/1r1eGgnEG34gnD9b2+qaFPVpsKb4dSoIq2l0JgNjgKLn3NA0BD9vwsGY0kctXR+GtYUX0Pg9vG2DZmt3kJU6u+Ux3r1pUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710936196; c=relaxed/simple;
-	bh=Ph5Y3t4V9Ilh9TejaQuF5yjKbwO0v7oIAU5fLicb7V0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=I+JUvKg6MZAFDYI2Vh6PGWl6IU2/GQLcndf/W5V6odXdH/WYtNFwcaCtH/vD4/bPKovSuF/07kFP54KfpeDoKl3Hjy2hII6c20mOTpJASS98IbKYgjtRG2C5JHidSiEFCcDrvLwqJeLryCQRSm92VC9n3fLtFQxJVwkON2GF978=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ie4uKGyi; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e8f765146fso252638b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710936194; x=1711540994; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Rjyl0RsxCiR3BnHPMVorROqGtL6yCk3lVv5lYb3r+gY=;
-        b=Ie4uKGyi7wJumF8OLxNBnjeKAMpE+V7WrMSEL9aHOLWvMHMbaGMURXsA/97UNMqG0W
-         v91/OHZnpaoztL/Ml2H+gT2gI7n+AHqM4l0aV0rN8WTIuUWDOwxGzQLp6SXWb9zjUI+C
-         zmYSm+VH5ZIn2/UpgtRo4ooz+6dDVX9ce4yOzcCEcSXBkdmoqu4sqEnErQizRO/+PsNl
-         RBAQqxQ0tpT2AeVY4IDoYy/QPCHLgSvupaRHbbDvF3ed4qyrYYYVH6n3sgo9Q1m4WfUM
-         ot+GoX3CtazhZk3HERJmZiV6eY+Bsqd8C/YAPcEowZDhf+O2Lq7nT2RQVT2IV5a/5twU
-         dACA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710936194; x=1711540994;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rjyl0RsxCiR3BnHPMVorROqGtL6yCk3lVv5lYb3r+gY=;
-        b=sITTpi/Di0myuXRt6GNjfsPV4VU1ySrVriNpWxdZD/KmZcD4U6wCeR/t6JOzImNPzt
-         LQbkR+Bm/WwRC8/x0FVUgwDlHHOuoI8eW5fdmKaM3MF/es1sGPM/QdO/6qxGWVrTunmA
-         rGYq8DB1i7rJJENpfGWe0uO1s0Z/a5vUjgNngg3HKhkDHMdYXifCKvsRgWWXsSZQXRYR
-         iFO6oSrzYr9wop45ceJDtsWMOI+uQXgLfAUAdCOUoTEmPMxX9OdNgKwzv2EPcoRSuY+v
-         JQYOlo3WOLrskwEYcDDtEs3Vz3xayWBa/yWtREfY+dcNEkJcupKsPuM/KDw1VNHOTNEo
-         tI8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXdCPJgObqdukFdNCaERWZBhMu0ShTfs8rlkcbm/uR5i/LzA61BHGRTbDCVCgFiBHbZPpQtBVMGRW5PgLLdH+rgXyNI5MnEHMuqqi5r
-X-Gm-Message-State: AOJu0YzwXAcK+GftdVDs+FlABxHOaw3Jy6Tplqi1t3gcSN/onpIH33u/
-	/JdjYwS4U/Blb5tOh73+QoNBtgjOKG1/iq3qxvAkeO6YmLHK40az
-X-Google-Smtp-Source: AGHT+IEF/J0DHWSNcDOcZmL/hIiqI/9PDuGnKLhV3Qcp0yU1M5alvi1nAMXSzoSut1e/uHxnGCJxBg==
-X-Received: by 2002:a05:6a00:2284:b0:6e7:821b:e972 with SMTP id f4-20020a056a00228400b006e7821be972mr1811564pfe.29.1710936194212;
-        Wed, 20 Mar 2024 05:03:14 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id h25-20020a62b419000000b006e739e09504sm3925090pfn.137.2024.03.20.05.03.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 05:03:13 -0700 (PDT)
-Message-ID: <fd01f8ec-123e-4739-9a5b-2589eb711563@gmail.com>
-Date: Wed, 20 Mar 2024 20:03:10 +0800
+	s=arc-20240116; t=1710936207; c=relaxed/simple;
+	bh=sopO1fpSfjTzw3a42axKs81IPvXYntCtDX23loN5684=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lE9jMAXvOuZ8QcEmRHorOFN9p5WIc268g3rli3OJYrkU+phzNkE4domdHcasdXbwQkUDFpjxm6vwI4TXz5k15AtZGpPSSVPak7R9K3y4Do5KciXNfFCqMhP5R8YHaO5tGuzjRmQ6qQLPzmTCChyCfeqOqPva94Y9MOKPTx81jn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZpVb0LnH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eaJcA+HE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZpVb0LnH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eaJcA+HE; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 23BF020EC3;
+	Wed, 20 Mar 2024 12:03:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710936200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4XwlyAiD3Ez2lefEC8xe8BeNwhre0ktqIglnQH0J1Y=;
+	b=ZpVb0LnHlr+OHc4X/JEiIqAPuv2U3EpiCeIv20nhTu/nnJfDFy9td7IrJws3Tqe5tQ/CXU
+	AIKWRIgsflfnPBMqkaQztTzTF1Mht0lcsdzrffvWE4PLRM1BAXfgCcDR06QOM/5V2ezm9X
+	O/X6KqmmY7PrQj5ea46OYVlfBhlhoNA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710936200;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4XwlyAiD3Ez2lefEC8xe8BeNwhre0ktqIglnQH0J1Y=;
+	b=eaJcA+HEexDkm2lTwb1S1HSb8Z7+4nxwnoU6s/jhSarmzb3eeR1bk3CSRH5eR2pXiWa9V2
+	sX2YrD8gW4e0OICw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710936200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4XwlyAiD3Ez2lefEC8xe8BeNwhre0ktqIglnQH0J1Y=;
+	b=ZpVb0LnHlr+OHc4X/JEiIqAPuv2U3EpiCeIv20nhTu/nnJfDFy9td7IrJws3Tqe5tQ/CXU
+	AIKWRIgsflfnPBMqkaQztTzTF1Mht0lcsdzrffvWE4PLRM1BAXfgCcDR06QOM/5V2ezm9X
+	O/X6KqmmY7PrQj5ea46OYVlfBhlhoNA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710936200;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4XwlyAiD3Ez2lefEC8xe8BeNwhre0ktqIglnQH0J1Y=;
+	b=eaJcA+HEexDkm2lTwb1S1HSb8Z7+4nxwnoU6s/jhSarmzb3eeR1bk3CSRH5eR2pXiWa9V2
+	sX2YrD8gW4e0OICw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18A46136D6;
+	Wed, 20 Mar 2024 12:03:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uF7/BYjQ+mWpDAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 20 Mar 2024 12:03:20 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id BF088A07D6; Wed, 20 Mar 2024 13:03:19 +0100 (CET)
+Date: Wed, 20 Mar 2024 13:03:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: Jongseok Kim <ks77sj@gmail.com>
+Cc: tytso@mit.edu, jack@suse.com, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: remove checks for data=ordered and
+ journal_async_commit options
+Message-ID: <20240320120319.4zsbzgehz4swdisr@quack3>
+References: <20240320105808.1184826-1-ks77sj@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] mm/ksm: catch tail page abnormal in
- page_stable_node
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
- kasong@tencent.com, Andrew Morton <akpm@linux-foundation.org>,
- "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240318121443.3991104-1-alexs@kernel.org>
- <7a0d7d0e-d241-4942-b6c1-e60d597b3dd6@redhat.com>
- <54a8ec22-ce00-425c-bb58-54cf8606a362@gmail.com>
- <280409c6-3479-4c6b-a94e-1d90994917cd@redhat.com>
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <280409c6-3479-4c6b-a94e-1d90994917cd@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320105808.1184826-1-ks77sj@gmail.com>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
+
+On Wed 20-03-24 19:58:08, Jongseok Kim wrote:
+> On Tue, Nov 25, 2014 at 04:56:15PM +0100, Jan Kara wrote:
+> > Option journal_async_commit breaks gurantees of data=ordered mode as it
+> > sends only a single cache flush after writing a transaction commit
+> > block. Thus even though the transaction including the commit block is
+> > fully stored on persistent storage, file data may still linger in drives
+> > caches and will be lost on power failure. Since all checksums match on
+> > journal recovery, we replay the transaction thus possibly exposing stale
+> > user data.
+> >
+> > To fix this data exposure issue, remove the possibility to use
+> > journal_async_commit in data=ordered mode.
+> >
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> In employing the journal_async_commit feature, the approach involves
+> slightly early submission of a request for a transaction commit block
+> without the inclusion of PREFLUSH and FUA. Instead, once all the blocks of
+> the transaction have been written, the journal device is flushed once.
+> This methodology, even under data=ordered mode, due to the procedure of
+> flushing the j_fs_dev, guarantees that the file data is permanently stored
+> by the time the commit block request is initiated.
+> 
+> This discussion pertains to scenarios where the file data device and
+> the journal device are distinct. If the devices are the same,
+> then all file data is written before the flush of the journal device,
+> making a single flush sufficient in this context.
+> 
+> Consequently, it remains entirely permissible to activate
+> the journal_async_commit option, even when operating in ordered mode.
+
+So I agree that when journal is on a different device jbd2 will flush the
+data device before writing commit record so we are safe in data=ordered
+mode even with async commit. Good idea. But:
+
+1) For dealing with this complication we need to have a sensible usecase.
+Do you have performance numbers from this combination that show async
+commit brings noticeable performance benefit? Please include them in the
+changelog.
+
+2) The code should make sure we are really using external journal device
+before allowing async commit in data=ordered mode.
+
+Thanks!
+
+								Honza
 
 
-
-On 3/20/24 5:29 PM, David Hildenbrand wrote:
-> On 20.03.24 10:05, Alex Shi wrote:
->>
->>
->> On 3/18/24 8:25 PM, David Hildenbrand wrote:
->>> On 18.03.24 13:14, alexs@kernel.org wrote:
->>>> From: Alex Shi <alexs@kernel.org>
->>>>
->>>> commit 19138349ed59 ("mm/migrate: Add folio_migrate_flags()") change the
->>>> meaning of func page_stable_node() to check the compound head for tail
->>>> 'page' instead of tail page self.
->>>> But seems both semantics are same at results, the func always return NULL
->>>>    for tail page. So adding a bug monitor here in case of abnormal.
->>>>
->>>> Signed-off-by: Alex Shi <alexs@kernel.org>
->>>> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->>>> Cc: Matthew Wilcox <willy@infradead.org>
->>>> Cc: Andrea Arcangeli <aarcange@redhat.com>
->>>> Cc: Hugh Dickins <hughd@google.com>
->>>> Cc: Chris Wright <chrisw@sous-sol.org>
->>>> To: linux-kernel@vger.kernel.org
->>>> To: linux-mm@kvack.org
->>>> To: Andrew Morton <akpm@linux-foundation.org>
->>>> ---
->>>>    mm/ksm.c | 7 ++++++-
->>>>    1 file changed, 6 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/mm/ksm.c b/mm/ksm.c
->>>> index 8c001819cf10..3ff469961927 100644
->>>> --- a/mm/ksm.c
->>>> +++ b/mm/ksm.c
->>>> @@ -1091,7 +1091,12 @@ static inline struct ksm_stable_node *folio_stable_node(struct folio *folio)
->>>>      static inline struct ksm_stable_node *page_stable_node(struct page *page)
->>>>    {
->>>> -    return folio_stable_node(page_folio(page));
->>>> +    struct ksm_stable_node *node;
->>>> +
->>>> +    node = folio_stable_node(page_folio(page));
->>>> +    VM_BUG_ON_PAGE(PageTail(page) && node, page);
->>>
->>> I don't really understand why we would want this.
->>>
->>> Only KSM folios can have a node in the stable tree. KSM folios cannot be large folios. At that is precisely what folio_stable_node() checks.
->>>
->>> If we'd have a large folio identify as a KSM folio we'd be in much bigger trouble.
->>>
->>>
->>> Besides, I'm sure you read "22) Do not crash the kernel" in Documentation/process/coding-style.rst
->>>
->>
->> Hi David,
->>
->> Thanks for comments!
->> Forgive my stupidity, I understand KSM stable tree has no compound pages, but when searching a tail page in ksm_do_scan(), why we couldn't be in a race, that another VM doing THP collapse on the same contents pages, while the 3rd vm is doing hugepage spliting?
+> Should my interpretation deviate in any manner,
+> I earnestly request your guidance and correction.
 > 
-> We always call cmp_and_merge_page() while holding a reference on the page.
+> Signed-off-by: Jongseok Kim <ks77sj@gmail.com>
+> ---
+>  fs/ext4/super.c | 14 --------------
+>  1 file changed, 14 deletions(-)
 > 
-> There, we call page_stable_node() directly and via stable_tree_search()->page_stable_node() on that page.
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index cfb8449c731f..2141c2eb4bf0 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4954,13 +4954,6 @@ static int ext4_load_and_init_journal(struct super_block *sb,
+>  		break;
+>  	}
+>  
+> -	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA &&
+> -	    test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
+> -		ext4_msg(sb, KERN_ERR, "can't mount with "
+> -			"journal_async_commit in data=ordered mode");
+> -		goto out;
+> -	}
+> -
+>  	set_task_ioprio(sbi->s_journal->j_task, ctx->journal_ioprio);
+>  
+>  	sbi->s_journal->j_submit_inode_data_buffers =
+> @@ -6510,13 +6503,6 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+>  			err = -EINVAL;
+>  			goto restore_opts;
+>  		}
+> -	} else if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA) {
+> -		if (test_opt(sb, JOURNAL_ASYNC_COMMIT)) {
+> -			ext4_msg(sb, KERN_ERR, "can't mount with "
+> -				"journal_async_commit in data=ordered mode");
+> -			err = -EINVAL;
+> -			goto restore_opts;
+> -		}
+>  	}
+>  
+>  	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_NO_MBCACHE) {
+> -- 
+> 2.34.1
 > 
-> When stable_tree_search() returns a kpage, we also hold a reference to that kpage. So calling page_stable_node() on the kpage behaves the same.
-> 
-> As we are holding page references, pages cannot be split/merged and we should not see any races in page_stable_node().
-> 
-> Am I missing something?
-> 
-> Note that your change would also not help here: if it would be racy, you'd also not reliably catch any tail pages.
-> 
-> But it should not be racy unless I am missing something.
-> 
-
-Hi David,
-
-Thanks for the info, I see.
-
-BTW, I should cc you for my KSM folio patchset review: https://lore.kernel.org/linux-mm/20240320074049.4130552-2-alexs@kernel.org/
-
-Best regards!
-Alex
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
