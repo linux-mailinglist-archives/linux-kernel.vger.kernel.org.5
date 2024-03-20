@@ -1,86 +1,118 @@
-Return-Path: <linux-kernel+bounces-109362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA714881810
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:42:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88213881812
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:43:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FE041F233CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:42:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 290DD1F23118
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D23E8593A;
-	Wed, 20 Mar 2024 19:42:06 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3669E85922;
+	Wed, 20 Mar 2024 19:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="zwIOU/N2"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC7A8592E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF5953E2C;
+	Wed, 20 Mar 2024 19:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710963726; cv=none; b=tA+6hjxNrMD3ltvuZP6oPIJiOpZvWo9rlMWchlheXN8s74ijf3FUxMMFd6HBgQg9+yWUNYL+j/1LyZ5gZSHsDNfvEHClGGWchutToXJKm06lPFbWw01CAOyD5FhqrtHT3tMYLHmBNCT2tzcHkG/YcBVOAqnwpVp1Xuo4gSlGLpI=
+	t=1710963784; cv=none; b=GxmdADSO5fs00iitlY17FCkd2Q0a5edXMzc8KIpnn4CcNEJDdP6koJQdm+X0LuwyFjfqC3+J8Itd8blQg+eN1AN1dv1OTYMlyUPlOZZOFXy44jGY+TC2hTqQrancoJJM2qD8Ei3GqhuAafMY0rVYDVROCdDebIFGn/CAEJdI9Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710963726; c=relaxed/simple;
-	bh=wj6GvVE8NO0a0MF8tvqng9uECylE9Y6Bt0yHJ+OVw38=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=tOi7JubA2SqCfQNRqHQ3j7VM54HyFUF68B4RdiV8nlvSDVFLq8QkWXoBZG2NcHn7QPWvAfNieIKYe01f3GzE6ZPU5Gi+bk2uvkEXruHDjkb4frCG7tIs5yioeVl8ZUEnpBXndFdLvq+gT4jmvXDO+DL8eUc4qm+8/iIzXcG4WrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c8a98e52b5so16305939f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:42:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710963724; x=1711568524;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oLPLG9indD1Y1wzuW8DkBusPmLGDoOY7ruOXngc5dKw=;
-        b=Cn574pBkfSunqdAxlyX9V6LbYBriwLKo1HWNr2Hw7Db4U6CwmTR/rvqREPKN4JZRpQ
-         o3G+J75Fq7IFv55MglhdZ8by7yW1wZ+sJccnGZxsChVtI9UrIgx5ZGSLrQFTYRE2T047
-         gxtuMO+RynbCjMzDm8aUoQfoVdOQSDHvmsvamS+uf8rZiuVWr9wmQy9jsHByID7a8F65
-         KIhzk4z+2Wds2Jri4Dm+7RQKFreE5r5oLcXimjc6wCgK/xqbstyYjo+nWHJnHUlne+LI
-         C/wZ+f8pkXas6EXMmyyUKuC/Tfq3OSWKC3pYBvC5e04NdGmXBszigTKrNeiCKODV17rU
-         yy5w==
-X-Forwarded-Encrypted: i=1; AJvYcCX2NtNNyV3FLktwCjxHdVV+/KN9AXqoeRdaCtgYI9s1UleSeUs3o826dMdzw1psrj3BpQaF3nL1CwCgHxgrqKyKAtNdKpZcsrpUmI+9
-X-Gm-Message-State: AOJu0YwSIK9hXtQvajLlKsgsBXhSfZlvnShapXrELzLpovIBeHxh3nAj
-	yRCtiW7q+LB7lhTEXasM3Tg1QhDfxikO6mWdPHOWUcFKw+EiGYGJ5ZA/ZaaigzuxlA1f7ZZ+YP0
-	GeedxyNf5tYLqeNV8xHAFj7GfhTGqcU7luChFpsvurlXYY9tzKdW6j1s=
-X-Google-Smtp-Source: AGHT+IEWqxFg6a8hezopCgcsjZIIqbqntAazswVd1Z2/EQPXsWWDcE64OFyCfFiDhuFISDHKBrALikAhhH9iVyiAp8ESeI6I/Kqo
+	s=arc-20240116; t=1710963784; c=relaxed/simple;
+	bh=MDKqTwIIurD45hwLmu/lsiu5Ez8SLeE3iiSVsv+IrC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JLajqpSN8IJa4a74OixMr/LBTPjPBm176y9EuLGSsQYIpDSSFXKTpGWEpQi0tQh5AYTVoJp7q6fcYB1HbDXEyVCHhe0XfVbx/BXvPv/pxWFAxLweXrDXfT3SL5uXNVpHfKmsEEEWx8o8c5FO0l4KH60etIjppOupD1hmUDaZwlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=zwIOU/N2; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=JpvMIN5sLRmpewvvELoDaUedbJXpt4XMYlW/TmEfGUQ=; b=zwIOU/N2ME1TIeKU9BmL5bQgzW
+	pnW2dx0WfF9yZeI84CfZ/Qdfz/bLGlrK+DxOUcGoWkfbrkHOKnJt9X46vVCPhpu+LnwG7/K01nBrb
+	0kEQGUrq9MZgohrf9pmDfLcAslQCwZMR9ehetlAJIrIpvb+wIfYlL743kA4vzPASsblIlF57F64XL
+	rUCvoxS0GJbvSTW6ED3BpDsKIwaSGSJv57XNtTlB0Yce6SMKN58fZVlwnTafh3I0I/s1INk74AV1k
+	mwbNIyd6OB7oKHs2jQtl3mkbbuDytE+O5gowXIRpgk1YdwEGdUzq1/dP9jnUD6RMYPH6e/MabCDB5
+	sWd9CfJA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35138)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rn1pm-0006qG-0E;
+	Wed, 20 Mar 2024 19:42:46 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rn1pk-0002w4-Le; Wed, 20 Mar 2024 19:42:44 +0000
+Date: Wed, 20 Mar 2024 19:42:44 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Cc: linus.walleij@linaro.org, arnd@arndb.de, keescook@chromium.org,
+	haibo.li@mediatek.com, angelogioacchino.delregno@collabora.com,
+	amergnat@baylibre.com, akpm@linux-foundation.org,
+	dave.hansen@linux.intel.com, douzhaolei@huawei.com,
+	gustavoars@kernel.org, jpoimboe@kernel.org,
+	kepler.chenxin@huawei.com, kirill.shutemov@linux.intel.com,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+	nixiaoming@huawei.com, peterz@infradead.org, wangbing6@huawei.com,
+	wangfangpeng1@huawei.com, jannh@google.com, willy@infradead.org,
+	David.Laight@aculab.com
+Subject: Re: [PATCH v3] ARM: unwind: improve unwinders for noreturn case
+Message-ID: <Zfs8NNlAwF3+LYZ/@shell.armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710949294-29287-1-git-send-email-xiaojiangfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6412:b0:7cc:2522:f5fd with SMTP id
- gn18-20020a056602641200b007cc2522f5fdmr384717iob.1.1710963723919; Wed, 20 Mar
- 2024 12:42:03 -0700 (PDT)
-Date: Wed, 20 Mar 2024 12:42:03 -0700
-In-Reply-To: <20240320103224.2123-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fcfa6406141cc8ac@google.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in trie_delete_elem
-From: syzbot <syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1710949294-29287-1-git-send-email-xiaojiangfeng@huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hello,
+On Wed, Mar 20, 2024 at 11:41:34PM +0800, Jiangfeng Xiao wrote:
+> This is an off-by-one bug which is common in unwinders,
+> due to the fact that the address on the stack points
+> to the return address rather than the call address.
+> 
+> So, for example, when the last instruction of a function
+> is a function call (e.g., to a noreturn function), it can
+> cause the unwinder to incorrectly try to unwind from
+> the function after the callee.
+> 
+> foo:
+> ...
+>     bl      bar
+> ... end of function and thus next function ...
+> 
+> which results in LR pointing into the next function.
+> 
+> Fixed this by subtracting 1 from frmae->pc in the call frame
+> like ORC on x86 does.
+> 
+> Refer to the unwind_next_frame function in the unwind_orc.c
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+This came in while I was still replying to your previous reply, so
+I'm going to ignore this. Please allow at least 24 hours between
+postings, and please allow discussion to finish before posting a
+new version - give your reviewers adequate time to compose a reply
+bearing in mind that timezones might get in the way, but also making
+supper (as is the case in this instance) may cause several hour delay
+in reply.
 
-Reported-and-tested-by: syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com
+Thanks.
 
-Tested on:
-
-commit:         32fa4366 net: phy: fix phy_read_poll_timeout argument ..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=174f8dc9180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1600783a180000
-
-Note: testing is done by a robot and is best-effort only.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
