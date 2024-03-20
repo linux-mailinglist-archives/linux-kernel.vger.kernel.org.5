@@ -1,175 +1,176 @@
-Return-Path: <linux-kernel+bounces-109137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC0B0881520
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:02:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14C8881521
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:03:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311A11F2168A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:02:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AC5EB21EF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07ADA54744;
-	Wed, 20 Mar 2024 16:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D4154661;
+	Wed, 20 Mar 2024 16:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fGBL4m1W";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fGBL4m1W"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hdwhtcHV"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599CB36137;
-	Wed, 20 Mar 2024 16:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C83123B0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710950544; cv=none; b=Me2TtVi4bXHHwcqbMlMccmD0sShOcu9+Y6Bpx3tg9CFSV+gH+G62NGeuEedpj9wSH/9quFL9M4m8qrjiBbulKaekvLZhgP37pU3+mxgCg0kTBn43U0dN8gxVumVwJgyE33rNoyvxbCiYlm8rzCvRVm3ntR/BCCixLzQ73LDHfDI=
+	t=1710950586; cv=none; b=Yu9Dn5hW/bTOQcpZlt7dG1yZ8Y4F5EGYx7Muw5DNoTeUrzi/k8LauCG2wmp+K7EqelSYWyhFmMZ86cOucqDimJpzSheujW+H+2hdKP6GFgUVr5+T2sJ9ePnv7K9Py3AFtgwBQ5gmByB/vVuKAxcrViUyDHkRsYwY2fdSE+yOipU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710950544; c=relaxed/simple;
-	bh=H6glnNiNteyT0PFBv4r+swJ3nTIxXdqNrocRKyY4WqM=;
+	s=arc-20240116; t=1710950586; c=relaxed/simple;
+	bh=xNPkEPkfgiwAJOBWBG40pqctHi9CWeXTwkz2p5MGIZo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uN/Q61KkNvVv8SIO91tbx77DA/GNaBQ/FLDMkw/i6surE6rCd+zMZJe5NtZ6P5TjGVxDcPRZH9U5Efgqhfo+EA/ga1oam2ACsdV19+T4Ycf5qS8u/XyP1P/HbjzMOfBRFWX6TLEZWnM6aXFlZ3fp4rk1/myKtdTbUhWVXmlo9lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fGBL4m1W; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fGBL4m1W; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 428473476E;
-	Wed, 20 Mar 2024 16:02:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710950540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zkFAIj4insiWgehfaGHK9ZeiQ+/idmOfPpkDEXOgMxM=;
-	b=fGBL4m1WbxDBjH8NasgS4YdOf8fr3mnzpBS04ti2AwiT7tNwL9venFB8qP4kSiQJDS5RbN
-	8Zkj9kYlgwPy5LZCDxI8VjP/ekk75/sWjE7iMC400EG8WEHnyW1b8mwlDGngSgcEbS0jsd
-	IzY8unF2Bv/natcgNpHYikrWSBWsSro=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710950540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zkFAIj4insiWgehfaGHK9ZeiQ+/idmOfPpkDEXOgMxM=;
-	b=fGBL4m1WbxDBjH8NasgS4YdOf8fr3mnzpBS04ti2AwiT7tNwL9venFB8qP4kSiQJDS5RbN
-	8Zkj9kYlgwPy5LZCDxI8VjP/ekk75/sWjE7iMC400EG8WEHnyW1b8mwlDGngSgcEbS0jsd
-	IzY8unF2Bv/natcgNpHYikrWSBWsSro=
-Date: Wed, 20 Mar 2024 17:02:19 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: "Jan Kratochvil (Azul)" <jkratochvil@azul.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4] cgroup2: New memory.max.effective like cgroup1
- hierarchical_memory_limit
-Message-ID: <cah72hewsmrrzyo3tm2eipaw4mrxnncqv4zbbzz35x7ghjxred@lhdtiobg3bjm>
-References: <ZcvlhOZ4VBEX9raZ@host1.jankratochvil.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P3I3dzrvJO7wNpUKnLeW+JHznLXg2jv3qQBL4pBM/zZoM5BA1WDQIEl4isxDR/RTMTWeUSY+Wt4NGEQEzNnOBx98FBl2LhXg9cXaIAeiWLqWeRfljQzcMCztAuhaVeHd4lQzqgcRNkXcFX98osvpXmyv2vKE4+IepyKJKJfApEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hdwhtcHV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ml4jVPHJCd5/UtmiBCSa0uU8hAgWpRkM7OQMSO//QPw=; b=hdwhtcHVAOejkXQy/AyeOX7Zwa
+	PdFKdvvIW1Ufr9GkUMjCix7l0d1UFk4Y61Jdxz/vMrMHf6bcqt8eYN7lKGNEx8FrwgYsFGNkUveGu
+	7uudldc9YTIK+8k+m5HefHNVWy8fQJrPgZLTRA6a8a7GTwjl3aBmGIG4l6ugjJcrtdSZAxqFeM52a
+	gXI4xyPZCw9Lkj1Yok2qxdBTyPrywZog9QP8y43gkl55ewAocO+v5RedA8ti08XPzXDJBNBl2WNs0
+	QTCfH8krpMK7aB9prrBKFWQRoLe8avTG5dgyHXkup74ZYrINIQAcUeE5u/aN+iO4yG0rd7NIWwl4U
+	xXGK/uFA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rmyOt-00000004e56-2Rq5;
+	Wed, 20 Mar 2024 16:02:47 +0000
+Date: Wed, 20 Mar 2024 16:02:47 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zi Yan <ziy@nvidia.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	"Yin, Fengwei" <fengwei.yin@intel.com>,
+	SeongJae Park <sj@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mm/migrate: split source folio if it is on deferred
+ split list
+Message-ID: <ZfsIp8GlLx2LoW2G@casper.infradead.org>
+References: <20240320014511.306128-1-zi.yan@sent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="obcvqv52hinoclhy"
-Content-Disposition: inline
-In-Reply-To: <ZcvlhOZ4VBEX9raZ@host1.jankratochvil.net>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -5.89
-X-Spamd-Result: default: False [-5.89 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.19)[-0.935];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
-
-
---obcvqv52hinoclhy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240320014511.306128-1-zi.yan@sent.com>
 
-Hello.
-
-I have some advise about patch desription and only nitpick about
-implementation.
-
-On Wed, Feb 14, 2024 at 05:56:20AM +0800, "Jan Kratochvil (Azul)" <jkratoch=
-vil@azul.com> wrote:
-> which are useful for userland to easily and performance-wise find out the
-> effective cgroup limits being applied.
-
-I think this is a weak reasoning for in-kernel implementation.
-It may be faster but how often do you need to read that limit?
-
-> Otherwise userland has to
-
-Userland is at loss when running inside cgroupns with limited ancestors
-out of the cgroupns. Thus I think this is the reason why kernel can
-provide such an effective value. (And be subject line of the commit, I
-think bringing up cgroup1 is misleading.)
-
-> For cgroup1 it was implemented by:
-> 	memcg: show real limit under hierarchy mode
-> 	https://github.com/torvalds/linux/commit/fee7b548e6f2bd4bfd03a1a45d3afd5=
-93de7d5e9
-> 	Date:   Wed Jan 7 18:08:26 2009 -0800
-
-FTR, commits are usually referenced more concisely like
-	fee7b548e6f2 ("memcg: show real limit under hierarchy mode")=20
-(the document Waiman linked previously has some tips how to get this
-=66rom git).
-
-> +static int memory_max_effective_show(struct seq_file *m, void *v)
-> +{
-> +	unsigned long memory;
-> +	struct mem_cgroup *mi;
+On Tue, Mar 19, 2024 at 09:45:11PM -0400, Zi Yan wrote:
+> +++ b/mm/migrate.c
+> @@ -1654,25 +1654,65 @@ static int migrate_pages_batch(struct list_head *from,
+>  
+>  			/*
+>  			 * Large folio migration might be unsupported or
+> -			 * the allocation might be failed so we should retry
+> -			 * on the same folio with the large folio split
+> +			 * the folio is on deferred split list so we should
+> +			 * retry on the same folio with the large folio split
+>  			 * to normal folios.
+>  			 *
+>  			 * Split folios are put in split_folios, and
+>  			 * we will migrate them after the rest of the
+>  			 * list is processed.
+>  			 */
+> -			if (!thp_migration_supported() && is_thp) {
+> -				nr_failed++;
+> -				stats->nr_thp_failed++;
+> -				if (!try_split_folio(folio, split_folios)) {
+> -					stats->nr_thp_split++;
+> -					stats->nr_split++;
+> +			if (is_thp) {
+> +				bool is_on_deferred_list = false;
 > +
-> +	/* Hierarchical information */
-> +	memory =3D PAGE_COUNTER_MAX;
-> +	for (mi =3D mem_cgroup_from_seq(m); mi; mi =3D parent_mem_cgroup(mi))
-> +		memory =3D min(memory, READ_ONCE(mi->memory.max));
-
-root_mem_cgroup is never charged (thus limited), so you can terminate
-the iteration on !mem_cgroup_is_root(mi), one level earlier
-
-> +static int swap_max_effective_show(struct seq_file *m, void *v)
-> +{
-> +	unsigned long swap;
-> +	struct mem_cgroup *mi;
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +				/*
+> +				 * Check without taking split_queue_lock to
+> +				 * reduce locking overheads. The worst case is
+> +				 * that if the folio is put on the deferred
+> +				 * split list after the check, it will be
+> +				 * migrated and not put back on the list.
+> +				 * The migrated folio will not be split
+> +				 * via shrinker during memory pressure.
+> +				 */
+> +				if (!data_race(list_empty(&folio->_deferred_list))) {
+> +					struct deferred_split *ds_queue;
+> +					unsigned long flags;
 > +
-> +	/* Hierarchical information */
-> +	swap =3D PAGE_COUNTER_MAX;
-> +	for (mi =3D mem_cgroup_from_seq(m); mi; mi =3D parent_mem_cgroup(mi))
-> +		swap =3D min(swap, READ_ONCE(mi->swap.max));
+> +					ds_queue =
+> +						get_deferred_split_queue(folio);
+> +					spin_lock_irqsave(&ds_queue->split_queue_lock,
+> +							  flags);
+> +					/*
+> +					 * Only check if the folio is on
+> +					 * deferred split list without removing
+> +					 * it. Since the folio can be on
+> +					 * deferred_split_scan() local list and
+> +					 * removing it can cause the local list
+> +					 * corruption. Folio split process
+> +					 * below can handle it with the help of
+> +					 * folio_ref_freeze().
+> +					 */
+> +					is_on_deferred_list =
+> +						!list_empty(&folio->_deferred_list);
+> +					spin_unlock_irqrestore(&ds_queue->split_queue_lock,
+> +							       flags);
+> +				}
+> +#endif
+> +				if (!thp_migration_supported() ||
+> +						is_on_deferred_list) {
+> +					nr_failed++;
+> +					stats->nr_thp_failed++;
+> +					if (!try_split_folio(folio,
+> +							     split_folios)) {
+> +						stats->nr_thp_split++;
+> +						stats->nr_split++;
+> +						continue;
+> +					}
+> +					stats->nr_failed_pages += nr_pages;
+> +					list_move_tail(&folio->lru, ret_folios);
+>  					continue;
+>  				}
+> -				stats->nr_failed_pages += nr_pages;
+> -				list_move_tail(&folio->lru, ret_folios);
+> -				continue;
+>  			}
 
-ditto
+I don't think we need to try quite this hard.  I don't think we need
+to take the lock to be certain if it's on the deferred list -- is
+there anything preventing the folio being added to the deferred list
+after we drop the lock?
 
-HTH,
-Michal
+I also don't think we should account this as a thp split since those
+are treated by callers as failures.  So maybe this?
 
---obcvqv52hinoclhy
-Content-Type: application/pgp-signature; name="signature.asc"
++++ b/mm/migrate.c
+@@ -1652,6 +1652,17 @@ static int migrate_pages_batch(struct list_head *from,
 
------BEGIN PGP SIGNATURE-----
+                        cond_resched();
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZfsIiAAKCRAGvrMr/1gc
-jjPaAP0UpgJnAoQuiyGpfv2ygAkpZ8Tv5wAS6zlt3p6Kti91cAEAw4Wb0RH30luT
-hhBwGAntr1Pz6mUyND/ds2Ff8CoOGwY=
-=Zh6c
------END PGP SIGNATURE-----
++                       /*
++                        * The rare folio on the deferred split list should
++                        * be split now.  It should not count as a failure.
++                        */
++                       if (nr_pages > 2 &&
++                           !list_empty(&folio->_deferred_list)) {
++                               if (try_split_folio(folio, from) == 0) {
++                                       is_large = is_thp = false;
++                                       nr_pages = 1;
++                               }
++                       }
+                        /*
+                         * Large folio migration might be unsupported or
+                         * the allocation might be failed so we should retry
 
---obcvqv52hinoclhy--
 
