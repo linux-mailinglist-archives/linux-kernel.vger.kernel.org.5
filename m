@@ -1,213 +1,161 @@
-Return-Path: <linux-kernel+bounces-108590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD5FF880CB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:06:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F3F880CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F7D283902
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:06:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC431F22E59
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9621B2C85A;
-	Wed, 20 Mar 2024 08:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A51C2C69A;
+	Wed, 20 Mar 2024 08:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i+zkdaJk"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="hHH5DxSY"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD49C24B33
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9540936AE4;
+	Wed, 20 Mar 2024 08:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710921971; cv=none; b=SaUh3AGygjp4F3yppnJg5KBzmG3t/2iZORfBQkQjR01WakLTJoP2cry2MoerJwuuT6IH4t7/QfNOApJGnKwtAB6utvepEGnqvs++b/e95lfjgqdKoYACfh1ByRKna4KnM5xtJsfjQ9cWkYRH8FRrgn8RZ8Wg29mhF8QdMrsHL+g=
+	t=1710922055; cv=none; b=AwpomJLlI3y44aR68fmUeyAjXw9/NbfSeOMP5loJmvHg5SfN42PkoZjMdCfCXZ8ZklmAMfBxVFv8JvcDOtPloTF4yO2uV55FCFp2vb0WQWfVJBRCfPgeEp2cyNrYl9my2hMrYsrKkEtOW9Cm1PqGrUJbgJEInamP8hB4RlU7G5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710921971; c=relaxed/simple;
-	bh=3VaEiu7P6Vt47e432Hig0a+pLMJ67V4uuiIr1ehyxTE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WCvKW9oY/K90mE3nOWrGzOybcfAFV5LHoybbjr80miSmMOuhrkm++Rr5dh7Hy4RL6boDkdwr8gyt4Fp5DBp9gUQhp+j873sYAVmQFTwjKSb9XKaXalDln1USjYMW2GcX9b302EJmMX8kVDhsKQwKANOHw4AQP7CXAN8mAJkq5Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i+zkdaJk; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56b857bac38so1345725a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710921968; x=1711526768; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SlzyeVESNsQAYLZBivF0TU3lMaCAxvMVcqfOd6RxnXM=;
-        b=i+zkdaJk++vt1x7IQvwQOTqVbL+vgHV0ZqOi73m/F3qBDc2wJtWkvHm496DLCyoIXh
-         RwN3Z71wefhcaw4UWK+r+jzaUqRFmO5fW+UiBu+SPe/d+Lhp1xL7/Bo5eRSeuWaETdhM
-         oMhOfH8L/pJcc5eyov36yQ1Q092nscxEbv3Jf3lUeCssLXvqdsfRH9pJe/gDzOvo6CjD
-         Af2APwyQDN4qYw2+QqgktRsoglM0b/iqC/Bxovgl/RaBJ6+NeaCsFdSEcSyl/vh+4l0g
-         VMFj7R67JiaTwa4iPInPkpK0MwGH8vdKALYug/tBb2O9jMJhXcOgnn5viadBmY1DCIWn
-         Y0EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710921968; x=1711526768;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SlzyeVESNsQAYLZBivF0TU3lMaCAxvMVcqfOd6RxnXM=;
-        b=J94iamY3AsGPE2TiiJrskUZabfTFMnYjISx0lk3JJt1wqTNzatu6QMb7bl0KONAfT7
-         g3gCpU8f7FOu/pWXzDdtSfnc6JtssIzkfTJJIOY7FBF6XiAqXHnmZpGgTZiKbIBsfqa6
-         Dyu1H6alj6E3OIHrtA83W9yntszyc3X7DXxjS+CWUc+FMwbtsXNvTG0TF3Qza+qmSsyz
-         CfVfc+rRpalmNOYKbyb9IGKQ4quO5011DYBCnDVC/erXAuZUP8OHFzX7sm2oD+P5lmDn
-         JWyjthC8Q51/nI9tM+nkNLTgt7JmtI6LdKyx7E332jO9YsCvCYWjvIRpX2WdUB41JmWH
-         zKXA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1/0veVtfZG6mq5B9D2JYdPLRPhEMWviqMcbHxGcorLIWd9dsTqPIl01PKPgzYxpvj70zmBxkRNOeCoP0Qi01M8xFVQJKoNG1vgaN1
-X-Gm-Message-State: AOJu0YwNIn8QO445YQqrveTvCNXbtS9h/6zj23Fi7in1Av0AXFmo1Wj/
-	K3++blUA8LmWkujBpbWZf9NrTtMAufav1rsjUGumjzj+Vaj1rJwr/OoNoIlZ5Qc=
-X-Google-Smtp-Source: AGHT+IH6EmMnyI9/7MY7sWDDU2aR5lNG12sHgtfcpCwiENfmIWrRyINNt7AJUm8vWKW7hfkG52s/vg==
-X-Received: by 2002:a05:6402:3641:b0:568:32f7:6c55 with SMTP id em1-20020a056402364100b0056832f76c55mr13096907edb.9.1710921968157;
-        Wed, 20 Mar 2024 01:06:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id cw24-20020a170906c79800b00a469d3df3c1sm5232599ejb.96.2024.03.20.01.06.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 01:06:07 -0700 (PDT)
-Message-ID: <5b87eee4-2b28-48a5-a7c8-6c450be724e7@linaro.org>
-Date: Wed, 20 Mar 2024 09:06:05 +0100
+	s=arc-20240116; t=1710922055; c=relaxed/simple;
+	bh=8s8XKGkGT4rwQeAawGzZEkGeS8AnzqsL4K//1R+zt5Q=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ah4pTubxMI3wIf5XoYR0a4LBB1wosag+zNUMJdvn5H3/IjtetmPIuKxQ2xyNwViNYSGNR+mXb1pibdpJ3bgDYDUzWbmUl8pIwL9TR88quXUEYHNthIdPJjlNrTyHJ5RMF0l1eyGrdnPJR2M3UbbDeoIL6NX67bvXzHOpA7m9Td8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=hHH5DxSY; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1710922054; x=1742458054;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8s8XKGkGT4rwQeAawGzZEkGeS8AnzqsL4K//1R+zt5Q=;
+  b=hHH5DxSY/R/+5ju6Tu8yndEmtunuKsBNmB260zQ3AYGzWDXV/7XBbvHP
+   Sy1oIN3vxCAEhRW/Nj1GWRpi/beHVw0bW3SHbvOzFtyUHxv3X/OjFvdff
+   0ra9jz4Zq9TIjNFUjz/Wh1SKTv44ZjToDiLBFKAksqGu7par804adSnnZ
+   FwcFP32gvuiGVgb0H7xHaRZ9vNcBABNHUZj9v+KuV417vuSTT8x2SQZvj
+   mUKn7QBMF+zP+2haC5OaXnGifBPBYqDx8SKIy7twNO+mwGb1uByJWVIt/
+   yz8fqyYXwU+Wd8p1LE2PlP6O5BctCQjYvpDjCB27AHQHTz0/ia9x5qBbF
+   Q==;
+X-CSE-ConnectionGUID: +2PKfpLTQGq2m0SEBNMVqQ==
+X-CSE-MsgGUID: eSxs2JbuTmyaJCQMbacMkA==
+X-IronPort-AV: E=Sophos;i="6.07,139,1708412400"; 
+   d="asc'?scan'208";a="248659095"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Mar 2024 01:07:30 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Mar 2024 01:07:10 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Wed, 20 Mar 2024 01:07:07 -0700
+Date: Wed, 20 Mar 2024 08:06:20 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+CC: Deepak Gupta <debug@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>, Catalin
+ Marinas <catalin.marinas@arm.com>, <linux-kernel@vger.kernel.org>, Conor
+ Dooley <conor@kernel.org>, <kasan-dev@googlegroups.com>, Evgenii Stepanov
+	<eugenis@google.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, Andrew
+ Jones <ajones@ventanamicro.com>, Guo Ren <guoren@kernel.org>, Heiko Stuebner
+	<heiko@sntech.de>, Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
+ per-thread envcfg bits
+Message-ID: <20240320-fanfare-flick-3b38dde081d8@wendy>
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
+ <20240319215915.832127-6-samuel.holland@sifive.com>
+ <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
+ <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: serial: renesas,scif: Validate
- 'interrupts' and 'interrupt-names'
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240318172102.45549-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240318172102.45549-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <db13e305-adc4-4990-b9ec-b1cdcdad4406@linaro.org>
- <010e4742-438f-413f-811f-a033ec104832@linaro.org>
- <CA+V-a8txP39HJJrJcNqCUgw2NkdA3uSvBrbdSzw0bN6r5LpNaQ@mail.gmail.com>
- <51743788-3444-4817-864b-404205a06137@linaro.org>
- <CAMuHMdVWMt_JqpiWasZxS3D8dS5JYgxDU0SKbFxNVV-zWk8D+w@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAMuHMdVWMt_JqpiWasZxS3D8dS5JYgxDU0SKbFxNVV-zWk8D+w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ZQuW/bL/DNtzlQCx"
+Content-Disposition: inline
+In-Reply-To: <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
 
-On 19/03/2024 14:25, Geert Uytterhoeven wrote:
-> Hi Krzysztof,
-> 
-> On Tue, Mar 19, 2024 at 2:04 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->> On 19/03/2024 13:43, Lad, Prabhakar wrote:
->>>>>> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
->>>>>> index af72c3420453..53f18e9810fd 100644
->>>>>> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
->>>>>> @@ -82,38 +82,6 @@ properties:
->>>>>>    reg:
->>>>>>      maxItems: 1
->>>>>>
->>>>>> -  interrupts:
->>>>>
->>>>> I don't understand what is happening with this patchset. Interrupts must
->>>>> stay here. Where did you receive any different feedback?
->>>>
->>>> Look how it is done:
->>>> https://elixir.bootlin.com/linux/v6.8/source/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml#L44
->>>>
->>> Thanks for the pointer, as the above binding doesn't have any
->>
->> Yeah, that's just an example to point you the concept: top level
->> property comes with widest constraints (or widest matching items
->> description) and each variant narrows the choice.
->>
->>> description items as compared to our case, to clarify I have updated
->>> the binding is below. Is this the correct approach?
->>>
->>> option #1
->>> ---------------
->>
->>
->> Yes, it looks correct.
-> 
-> Why duplicate all the descriptions? The only differences are the number
-> of valid interrupts?
-> What was wrong with "[PATCH v2 2/2] dt-bindings: serial: renesas,scif:
-> Validate 'interrupts' and 'interrupt-names'"[1]?
-> 
-> https://lore.kernel.org/r/20240307114217.34784-3-prabhakar.mahadev-lad.rj@bp.renesas.com/
+--ZQuW/bL/DNtzlQCx
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have impression that only two variants out of three have same
-descriptions... but now I see mistake I made in above. I read that first
-interrupt is "Error interrupt" but it is "error or combined". Sorry for
-that, I think most of my comment there is not correct.
+On Tue, Mar 19, 2024 at 09:20:59PM -0500, Samuel Holland wrote:
+> On 2024-03-19 6:55 PM, Deepak Gupta wrote:
+> > On Tue, Mar 19, 2024 at 2:59=E2=80=AFPM Samuel Holland via lists.riscv.=
+org
+> > <samuel.holland=3Dsifive.com@lists.riscv.org> wrote:
+> >>
+> >> Some envcfg bits need to be controlled on a per-thread basis, such as
+> >> the pointer masking mode. However, the envcfg CSR value cannot simply =
+be
+> >> stored in struct thread_struct, because some hardware may implement a
+> >> different subset of envcfg CSR bits is across CPUs. As a result, we ne=
+ed
+> >> to combine the per-CPU and per-thread bits whenever we switch threads.
+> >>
+> >=20
+> > Why not do something like this
+> >=20
+> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> > index b3400517b0a9..01ba87954da2 100644
+> > --- a/arch/riscv/include/asm/csr.h
+> > +++ b/arch/riscv/include/asm/csr.h
+> > @@ -202,6 +202,8 @@
+> >  #define ENVCFG_CBIE_FLUSH              _AC(0x1, UL)
+> >  #define ENVCFG_CBIE_INV                        _AC(0x3, UL)
+> >  #define ENVCFG_FIOM                    _AC(0x1, UL)
+> > +/* by default all threads should be able to zero cache */
+> > +#define ENVCFG_BASE                    ENVCFG_CBZE
+>=20
+> Linux does not assume Sstrict, so without Zicboz being present in DT/ACPI=
+, we
+> have no idea what the CBZE bit does--there's no guarantee it has the stan=
+dard
+> meaning--so it's not safe to set the bit unconditionally. If that policy
+> changes, we could definitely simplify the code.
 
-It could be made oneOf?
+The wording for that "extension", if two lines in the profiles doc makes
+something an extension is:
+"No non-conforming extensions are present. Attempts to execute unimplemented
+opcodes or access unimplemented CSRs in the standard or reserved encoding
+spaces raises an illegal instruction exception that results in a contained
+trap to the supervisor-mode trap handler."
 
-    oneOf:
-     - items:
-          - description: A combined interrupt
-     - items:
-         - ....
-       minItems: 4
-?
+I know we have had new extensions come along and mark previously fair
+game interrupts for vendors as out of bounds. I wonder if there's a risk
+of that happening with CSRs or opcodes too (or maybe it has happened and
+I cannot recall).
 
+Going back to the interrupts - is the Andes PMU non-conforming because
+it uses an interrupt that was declared as vendor usable but is now part
+of the standard space because of AIA? If it is, then the meaning of
+Sstrict could vary wildly based on the set of extensions (and their
+versions for specs). That sounds like a lot of fun.
 
+--ZQuW/bL/DNtzlQCx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Krzysztof
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfqY/AAKCRB4tDGHoIJi
+0m4/AP0UYPz9RdNLmW6g7L1tf8w83wsWZfBkuwZqh3A3w0Jq9wEA7t8mWVQ1YVm2
+D9FdG5Y2+4p6MzgZJDv6xF67VncJZAU=
+=unOr
+-----END PGP SIGNATURE-----
+
+--ZQuW/bL/DNtzlQCx--
 
