@@ -1,144 +1,137 @@
-Return-Path: <linux-kernel+bounces-109325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB7D88179A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42CEC88179B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D35C51F22F47
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:59:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB7731F23016
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE8785620;
-	Wed, 20 Mar 2024 18:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E533D8562E;
+	Wed, 20 Mar 2024 18:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+SyyCFp"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="c732I0DS"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3C485284
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C2685291
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710961161; cv=none; b=VI7w1wvGL2UcTRXDOu5V7wl1ynWvhXjjF1PfYBOGej+KUwbWcmC9InTxPNM8teCAAhOZMtf23QxtKqlm6Dk7Z8QllNwfVg804oHu6amRcG4PBdR0chii9uxtfEgACgYFrtvGarltWTZT7vxeZKZHZJBsycQktKW8bmGysmYVU2U=
+	t=1710961181; cv=none; b=d5G+Vk3Bo6lhW6j9NNHe8+hXQk6fH5fGiejFUb8/jnMOqJ5wsfjZUh6kC8qcOo9RDW5U3f80YvKAa0zafa9tCKuGIBoBixdk6hXyv5vwDmH5DDaQqhe6SCV2oZIEuHSi8y6xNGvVp6Qs1Tn01Ma88QMKT7epAbbqLKw/EwKT1cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710961161; c=relaxed/simple;
-	bh=qHYvAsPrMnD2iQSDXxs8ogFl4UxWVh1x34JOLemgsD4=;
+	s=arc-20240116; t=1710961181; c=relaxed/simple;
+	bh=RbZrfg2enwvomoRc2bu6a3WxV/74o7lRtsEbX7U9R6s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUiWCRPYP50JbcAwQt0L3zed8VtW2KPWnKGck3MM1pky+R5HxyZk5yV2325w4XeszutEyLwbFSCSriglLiEVhwVZrh2IrjFplg1FiKQu5VZiK++IJ3PywQmVhg7U4sw2wqHsdr4WAW/EJBLMwTqwtWG4pLQQOenmjKzAo1yNjYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i+SyyCFp; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso389366e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710961158; x=1711565958; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uDx69RtQxFyew2zNRPx2nT1ZQv12YYyDo+1YlWLy1Kg=;
-        b=i+SyyCFpI4DGb4P9e0EbO7Vn/9giwbs1cyl6ajrICc9XiHNlzrj9B9oXphQusnEmc3
-         UKQof02Hd4tRFQdQnGu2d2giX9tUuzYfZiRmqvPOKUnM2MVAdX+BaaF5P6SZtSzpFOm3
-         4PvheUHj06JhC/j0NzROC5fyngmMRF1r3z8RclqUOWNplsV4mMh05RHSDpwwHC9lwTHt
-         KBgssf3chez1llXCbqSjRRMpuu2kA2d6nGTbVfCAgWXzG8MpMemMra9BCfaePIQ/6fFT
-         BBmz5G2j0P+sD+Xw2EPrAbPZkr9OwoCuaTzYkLjh1nvQ5S99vkzjYUdzHZCE604iNcQd
-         4BQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710961158; x=1711565958;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uDx69RtQxFyew2zNRPx2nT1ZQv12YYyDo+1YlWLy1Kg=;
-        b=O+seEPuAAMux7z6MSZVJn45eS6i5tfpopNPnPCPvaEdhT3o5U7RA8LZmNAI88hKBZp
-         A1x11NyW0SpVtpQ8omQKxymhCxYVrkhjHfaaz0SuG11NVtbdNJmn76wUJd9ekoJ/LyQy
-         sRprcWLtCulBppIvZNO6cujjkiQKTFFR2yPx9bwegZC3tDVlauzblFqRz8kHgKz9xMpO
-         k0QrlBJWtHZTTjVoLFXPx8aLTJHpK5np+KDTVOAumQdvn3sTKHUFD02qmlLn6Uz03DI+
-         TjCz9GMZS+zVXztsdPJcdBcGSFUoMElARoauDfplJ83He/bFRwZ/8Bfx+mfzavnnWqc9
-         Rz1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVIX3kiYxFZtUcPYxTW6/kTH8JUY/7VJpEMwhM3WuEjj+Myu2GD7lYEP+NAGxe1l93UpHffB0SSY2rFOaASF7MK+JEem3kgDcOifZkK
-X-Gm-Message-State: AOJu0YxnJGpSoY0Mau/W69BYXFxOnHjZsEJ3XlZEdKVpX07lGP0FT6FR
-	QDpTij2vXR7W4mAr0PX+bmWd2GRhnovT54znbWqyWn70HctZRvYd
-X-Google-Smtp-Source: AGHT+IH/ceP2Pxa/IuRZRDzz0Pwy3ckqKVMWSsWh5JN5WyzR1CEU2WVpYfRZlMZa1f7TIzgH0F5dCw==
-X-Received: by 2002:a05:6512:32a9:b0:513:d976:496a with SMTP id q9-20020a05651232a900b00513d976496amr11193764lfe.50.1710961155907;
-        Wed, 20 Mar 2024 11:59:15 -0700 (PDT)
-Received: from mehdi-archlinux ([2a02:8109:aa27:2d00::e094])
-        by smtp.gmail.com with ESMTPSA id jl27-20020a17090775db00b00a45c9ea48e3sm7586136ejc.193.2024.03.20.11.59.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:59:15 -0700 (PDT)
-Date: Wed, 20 Mar 2024 19:59:13 +0100
-From: Mehdi Djait <mehdi.djait.k@gmail.com>
-To: Javier Martinez Canillas <javierm@redhat.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, daniel@ffwll.ch,
-	maarten.lankhorst@linux.intel.com, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: drm/tiny: QUESTION: What to use instead of
- drm_simple_display_pipe ?
-Message-ID: <ZfsyAXPCRX5hXBc0@mehdi-archlinux>
-References: <ZfiTbYAa7qxXlrPd@mehdi-archlinux>
- <da7cfff1-e147-48ea-bcda-9ea913e5feee@suse.de>
- <87o7ba1u3x.fsf@minerva.mail-host-address-is-not-set>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uuCN9ltADDmSV/ut2pq1MKLa/yYBvZtaD0Alh8rNwBGBvJbKRdAnB0WNXS8uw85ztdar0G1tZt3qmRgrKrzryDQHUC2ML9LvOQoFbANoKBMkUSHeQr3nD81sK/9hOL7e4VD9XzC40UQr6qQsPIeszHEiVkwz9f6sL5VDVX2PShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=c732I0DS; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 4C3B71C007F; Wed, 20 Mar 2024 19:59:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1710961175;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OR/WXQvDApRGoduyJZRKiARfSeeGYfAfVOZRHxcAXMs=;
+	b=c732I0DSTVxrrt4fXjYUwxa2dWiGnoL6N44Yhcndm131wyMqFmG1qCZrNiUvR64YugOxbI
+	iq/zgXewzGdVgP6MlnxRIsewYut+zD39LPLwCup0zIpwZ7vvw7TrZnDt7g5kyQpcjuvDSF
+	Q0n2ms0mzTETHPt6qGrKxZwiIIQ56IE=
+Date: Wed, 20 Mar 2024 19:59:34 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Lee Jones <lee@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>,
+	Michal Hocko <mhocko@suse.com>, cve@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Joel Granados <j.granados@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: CVE-2023-52596: sysctl: Fix out of bounds access for empty
+ sysctl registers
+Message-ID: <ZfsyFm46YM2cbqDR@duo.ucw.cz>
+References: <2024030645-CVE-2023-52596-b98e@gregkh>
+ <Ze68r7_aTn6Vjbpj@tiehlicka>
+ <Ze9-Xmn8v4P_wppv@bombadil.infradead.org>
+ <20240312091730.GU86322@google.com>
+ <ZfAkOFAV15BDMU7F@tiehlicka>
+ <ZfBwuDyzLl5M0mhC@bombadil.infradead.org>
+ <20240312154910.GC1522089@google.com>
+ <ZfCZGevmDe149QeX@bombadil.infradead.org>
+ <202403121431.55E67E201@keescook>
+ <20240313080132.GD1522089@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="I/sz2lbjHdt9EdnG"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87o7ba1u3x.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <20240313080132.GD1522089@google.com>
 
-Hello Javier, Hello Thomas,
 
-On Tue, Mar 19, 2024 at 09:52:34AM +0100, Javier Martinez Canillas wrote:
-> Thomas Zimmermann <tzimmermann@suse.de> writes:
-> 
-> Hello Mehdi,
-> 
-> > Hi
-> >
-> > Am 18.03.24 um 20:18 schrieb Mehdi Djait:
-> >> Hello everyone :)
-> >>
-> >> I am implementing a tiny drm driver and I am currently working on the
-> >> V2: https://lore.kernel.org/dri-devel/cover.1701267411.git.mehdi.djait@bootlin.com/
-> >>
-> >> I got a review on the v1 telling me not to use the
-> >> drm_simple_display_pipe. Can someone please explain this further ? Or
-> >> give me an example drm driver that does it the right way ?
-> >
-> > You can copy the code from drm_simple_kms_helper.c into your driver file 
-> > and start inlining everything. For example
-> >
-> >   1) Your driver calls drm_simple_display_pipe_init(), so you copy that 
-> > code into your source file
-> >   2) drm_simple_display_pipe_init() uses drm_simple_kms_plane_funcs and 
-> > drm_simple_kms_crtc_funcs, so you copy these into your source file; 
-> > together with the drm_simple_kms_*() helpers that they use for their 
-> > callback pointers.
-> >   3) Mayb do this for other drm_simple_kms_*() code.
-> >   4) Then start inlining: inline your copy of 
-> > drm_simple_display_pipe_iit(). Instead of using 
-> > sharp_ls027b7dh01_pipe_funcs, inline its functions into your copy of the 
-> > callers. And so on.
-> >   5) Rename the resulting code, so that it fits you driver.
-> >
-> > With careful changes, you 'll end up with the same functionality as 
-> > before, but without the intermediate layer of the simple-KMS code.
-> >
-> 
-> On top of what Thomas said, you can check 622113b9f11f ("drm/ssd130x:
-> Replace simple display helpers with the atomic helpers") that did this
-> change for the drivers/gpu/drm/solomon/ssd130x.c driver.
-> 
-> The driver is also for a monochrome panel controller and it does support
-> SPI as transport, which means the controller is similar to yours in many
-> aspects. You could use that driver code as a reference for your driver.
+--I/sz2lbjHdt9EdnG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you both very much!
+Hi!
 
---
-Kind Regards
-Mehdi Djait
+> > I have tried to argue before that it's up to the core kernel code to Do
+> > The Right Thing, even in the face of crappy out-of-tree code, so to me,
+> > since this is a (very very very limited) weakness in the core kernel
+> > code, give it a CVE.
+> >=20
+> > My attempt at a CVSS for it yields a 3.4 overall:
+> > AV:L/AC:H/PR:H/UI:N/S:U/C:L/I:L/A:L/E:U/RL:O/RC:X
+> > https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector=3DAV:L/AC:H=
+/PR:H/UI:N/S:U/C:L/I:L/A:L/E:U/RL:O/RC:X&version=3D3.1
+>=20
+> Thank you Luis and Kees for your input.  Your efforts are very much
+> appreciated.  I have read and digested everyone's points.
+>=20
+> Since no one (including myself) is willing to conclude that this
+> represents _zero_ risk, the allocation will not be rescinded.  In our
+
+Well, if you insist this is real risk (it is not) would you be so kind
+at at least fix the "vulnerability" description?
+
+"Module can trigger BUG_ON in kernel" would be suitable, according to
+the discussion. Current description is copy/paste nonsense :-(.
+
+Best regards,
+								Pavel
+
+https://nvd.nist.gov/vuln/detail/CVE-2023-52596
+Description
+In the Linux kernel, the following vulnerability has been resolved:
+sysctl: Fix out of bounds access for empty sysctl registers When
+registering tables to the sysctl subsystem there is a check to see if
+header is a permanently empty directory (used for mounts). This check
+evaluates the first element of the ctl_table. This results in an out
+of bounds evaluation when registering empty directories. The function
+register_sysctl_mount_point now passes a ctl_table of size 1 instead
+of size 0. It now relies solely on the type to identify a permanently
+empty register. Make sure that the ctl_table has at least one element
+before testing for permanent emptiness.
+
+
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--I/sz2lbjHdt9EdnG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZfsyFgAKCRAw5/Bqldv6
+8rlMAJ9zwEI6Bq3CaVa2JWurCHbkDkaa/QCfZVlLm3F+LvACRfwV8gjBUUT3hjo=
+=988t
+-----END PGP SIGNATURE-----
+
+--I/sz2lbjHdt9EdnG--
 
