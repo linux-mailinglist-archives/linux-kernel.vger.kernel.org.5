@@ -1,310 +1,277 @@
-Return-Path: <linux-kernel+bounces-108306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 686A48808F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:16:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7668F8808F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7E14284A39
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:16:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA5E1F2127E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4134E748F;
-	Wed, 20 Mar 2024 01:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB9BDF41;
+	Wed, 20 Mar 2024 01:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bnB0RlUz"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="CYidJrBm";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zof0fiAh"
+Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FF16FC3
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710897404; cv=fail; b=TcnLhC+ixqeSYqoj6OohiP8GXdtgww/Jm19wU3tUNXQ+rD0SYsFGu+9SGlEjA8uKud9pfIAL/Z6wBBsO7txhwhzpujv7EEH1kuq5XWEeWdNolI18Kly40No0cBaGRdG/SS1oYl4C+mMBlCDARWhxtnPaNnrGk7nves12SC99HIo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710897404; c=relaxed/simple;
-	bh=TWFUW8diczs1Nhq3GFucThfXCuuq4gjIALsxQuSoCEc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Co+ztUDHqhAZE+Wj7A+uRIiVqyeN7QSPiL31Bfbxndx1mhk52mNs9es+7u9+/kuZB0D78UolE0hHJo3VBBjgaj7rHX1zDflSOhaaiV+zmGh503R3c6RW36vZWYgaOP/Xa1hfuqjOIpFO6LN8rbpeySK+sGNXbgCPfEt8/hqeYbQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bnB0RlUz; arc=fail smtp.client-ip=40.107.220.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PEmnIk1IIF6Dry3x64QGH+MwrVeF2FKLm9Wve4sNGS+VMzGDOuYQqbDfrBmgkupYuUvqYweYg8dqLawt/moJ26Oi692HVlNRvHdBnQfVHtx609eXfddQAnqTwIXgDADqK1mpLXIows6CBd1Tgi5XhUsmdqtQDNSouXAKgW424pJXoexGgw9jpGq+dskTgGZCjNSekrPwmG3KqyNFnk657MmJHKojvbj6Jlj4deSH8y3Lm8e9h8fo1x9gJQ8YuxSsR35IaBoPBIb/E8i3YNNFsfdbIf/nrh2snClI+rTKmnRECyXMuywL3An/x8XMUgV6ca2+u2SHN5FMG9yWCZOimQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3RqQXcr7gm9oMtFVK0mrZROqZg6PA/m1Y8Fyfi3ys9E=;
- b=fcL9VM8mu/YYyeKJx/GUbHWQU1Il9Fy0L0U8iD4wIQ/qcCsjf+ucX10BWEQd2kRGEodm1zAJjiWd6fweVP0wTq/b5s4ECFesbD63KygCmjwuSMqm0aFePoPjQlCKctpagbmrcWl079gT2m/ZVkncnIzLC/eIlrr4ZT/aZ6G6fstEMN/v3iSbrS8ZP7J1zKYMJ4u+xT/dyZtOQgMNRd+sbsjJJj1LKUPezDdlfwSRNii40iiXfHm7aN1CS7JVILcltAUgecUdN7pj2wNYvcH28Nn1eY9gbGDWIcLCD08CSrICDmkmhCcEkNTsj2KI2EmJX0T2isSeE5HwKzlktvbuoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3RqQXcr7gm9oMtFVK0mrZROqZg6PA/m1Y8Fyfi3ys9E=;
- b=bnB0RlUzXY1hg2VFDO0EQdWKaV5RAa5x9wQiZPOrSFzrOR6UjTi313frtft66BeYG/7ulBoReslpzsKXFr8fh+GMI1exDt69j0oLYkZ81aResKsJAaXdrlE80cPkkbgeGT8gdSH8cB5JmPxBAy8Wk1k8hxqTdZzWBzuJ8tbVuem15QT2g5rdLqVhtiPIwGKiEZcMhc8UpV5wGcrksv/qi4CUN3W/ZKXN+IvQ76ksWMvp3CWf0gJQwIzZ1UqZGqx8LKJ7XhjCyUh//Ielab08uOioMbEaRZUy3SJQAS7KfHqBv0aPoWFdtT3QWSwB+cTSEe41W5WwiRnHz6iU9IAsxw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- SJ2PR12MB8012.namprd12.prod.outlook.com (2603:10b6:a03:4c7::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.26; Wed, 20 Mar 2024 01:16:39 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
- 01:16:39 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: SeongJae Park <sj@kernel.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/migrate: split source folio if it is on deferred
- split list
-Date: Tue, 19 Mar 2024 21:16:37 -0400
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <28D1C313-8333-4F87-9B1D-47E77789A853@nvidia.com>
-In-Reply-To: <DEB67249-569C-4585-BB67-B4EBEE91152E@nvidia.com>
-References: <20240320010813.136765-1-sj@kernel.org>
- <DEB67249-569C-4585-BB67-B4EBEE91152E@nvidia.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_5F149087-FF09-450A-A387-C3F289CBE53D_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR02CA0010.namprd02.prod.outlook.com
- (2603:10b6:208:fc::23) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD30AD55;
+	Wed, 20 Mar 2024 01:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710897513; cv=none; b=eprMoHL0edij0LqMINaKRrRfq5LAh8WDSzh+JvwElcAvLk6C1QjO6bIpD4vD16nc+C/N5iG1vW2WqphVreT0k9/QHT+0NvrW2fsamKsEOTwmADm5aYwPYEsJKJiTolGHLdUxHPfGl6Z6VgHZp50nGxk+SmNbMoWWP6LZ9DDhRS4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710897513; c=relaxed/simple;
+	bh=nJDqdcg97WnILE42dfLUNrr2FqSNkUR5tDc10lHna2M=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=oKAE+IUsdiAnhcwWMte8Q9OuE7sqCgdHxULnCb4EZfksOF4G+vPAdP8Oy6i5fhLMefZhpC8jZLxyGwVZswB7sTisf3gzKqxYriDJ6G4LZQ83Kz/JOXD9RmMn/kTH+EnUrwaxj0TeLIXEgwyiXx4DZM1UPs5lDcr9n9guo5KmPHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=CYidJrBm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zof0fiAh; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id BBB9811400BE;
+	Tue, 19 Mar 2024 21:18:29 -0400 (EDT)
+Received: from imap41 ([10.202.2.91])
+  by compute2.internal (MEProxy); Tue, 19 Mar 2024 21:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1710897509;
+	 x=1710983909; bh=NKkilPXE7dD9zs5W8ZOOYgwSrS4G1qp6twnPIafRbRQ=; b=
+	CYidJrBm13MqJ8cn+WLCFWIlBbC2YHfXOhoXkMJ7RfRscaIXCOgfdNVge1wYbTG8
+	YnbvVkvmxz+L19s7XsMvbTzp1cGn9tYP1Si4k0fClVZTS69wgP6wzbho4+I5a03u
+	mi5+LYC1p72/E4U7ccVHVSQ8T4iTsepf7sP1M16+72qXhvCVzOrK8DRWRBh6Rkgc
+	CnnCPss+sJ9oBI8oXJPp3rAZd8D4hyYozB7cJ6PRX/YsKVTxF27nFYWQgXkx2yTG
+	PgHcJstFCp5OytsqqwWJ4iIlKZRH6kegC1hmCOEMSQ5Fw1H7cEOUocnpeLJ6id06
+	W1ls5EAw4xJM2CbTERizYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710897509; x=
+	1710983909; bh=NKkilPXE7dD9zs5W8ZOOYgwSrS4G1qp6twnPIafRbRQ=; b=Z
+	of0fiAhKzGRjsy8jICG1ociejVBLRfKecG/7wvygYNCI3BEXpdMmooPQ3FgmlJFZ
+	tItuspN8VV7cOq1DTdybPWjLuJIWsx/RYTWfhKVGLdR8Kx3nf7Qj8n3uXzj0GrN5
+	zPmOP24ZZZxPXddJzMbK8tn1XZuMvva2vjOXWBgSdh5P9E+5x4KKO411OzyP0kDK
+	cGm0WmsZY7l8Wuhm4nAUemf8nxQ2proQ3V7XmZP/cztLL1N7YcDEIhYHLiAF7YX1
+	mrxpJpbIK71X1WR1aoA6reaQR9XyHorfY2dUJQSSj3hXEcff5yaldboeqrpMN+ob
+	7smIYFE7RGkHMVn2Th8gw==
+X-ME-Sender: <xms:ZTn6ZWBRhXrv-KFQ_GVcHUzcIvZMe8Ndvaqf13v35s96PFbKbJhZXQ>
+    <xme:ZTn6ZQgCVn7Sh5swYJqqiZS2jA6fuJuRxA5_jI1nJQaDLruN3t-frERQ3MqT0JVjQ
+    2sMY6AjVEQNmGUDg-o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrledvgddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedfnfhu
+    khgvucflohhnvghsfdcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtth
+    gvrhhnpeefuefghfdvueefheeiledvgeefffevgeelhedtvdehgeekteeugedtgeeuhedv
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluh
+    hkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:ZTn6ZZllMtdIuKFKOWYfZuhlPB3r6Yl6byOLB9g0BergJfbb4Z3yPA>
+    <xmx:ZTn6ZUwkrIOqrqKZrjVOTgX0ETeMc94GBo8rDqaizk0soepp_ldEyw>
+    <xmx:ZTn6ZbSAO1OvPcaRTEBDQ9dJxgbNB2oD8nabf_nryYCkYE0qQfdyVA>
+    <xmx:ZTn6ZfYgziQo_lLABkCD-m5LB0IffMaqajF3iKOOQfKSQ53E_11jWg>
+    <xmx:ZTn6ZVdvQTg8SaD4ZvFG-BpeRxjN0Mgh7nYiOQ5VU1zfnQ2Ktt-q2w>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 7ADC12340080; Tue, 19 Mar 2024 21:18:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SJ2PR12MB8012:EE_
-X-MS-Office365-Filtering-Correlation-Id: d97ae18e-d324-450b-864a-08dc487b64fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	abnX+8B38aJSCGj3lIg/D1VUE7AcmpHxab8ctx64NI93FT5oWUJvxpwBKT0z5CrEgy4N/0N417PUdKuQuhxlIgUf8zxB0vCk8Dghcuse+yBTs9cGCAObnmK5A/pnSCl91LZiSRBT7N/cTHwirqLAO7nqmmEJADEB81Ym+VJzD0/DnqLFM+nWhb8FBMAd0tdx4JZImY7uTLFREqdvMg97MIHzXoOuaAUSmUPq6zZKe2dPJiVrVHuuTQM6ESEbF7fb9V/6X0vil3fjoRM5Nm235sICCw2FMBnvFqC9I37/v1TWapYXFFN7pw+snt9yethF+AudYOxkX0XWcHxWlek2nmdxEeE8vDVYWYo7tgP0rMgLxJAc7tZfVIx22j3wMgetaZEdfsjNb3kvcGskeQcN36Msfw6HUzcpTr/t/Pu2sIL5zl6TBsVt3lXR9W0HPuKjs+DbjPrXXu7NcOMv2MNb00T7hmb3wHZB7rlAHqlgQors9f/yKriH1DmCVaOpCI3n5r2owfztIQHegR5O235khNMDX7CG6bpaHiwuIxMl+FekCETZVotbQhpWi+N0H5TobOdqP2CcvRKGp31gI4CIjDnQHtswkOq8uck498JCo8Ui4fVz+AQ1JZbg2AvNLGGOTCmmzbrqxDk27trEQZMQ/sAQl3JO3TSA6HGnZ4kfNW8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?KwzRHYoxVFVTSCtudutyBf1dV64c6YCFIn5Byzqet01b8H56ysgRzLJPI7Hh?=
- =?us-ascii?Q?Ao/WL62gVs6MtlljG6XYl+/DmgXQwR4gI9+stJijGtfzG7kGhllSqgbPV6H5?=
- =?us-ascii?Q?jIEB4Vi0OX0ezgG1NaAK+sy5DFEhmTbh323LdbIsz+jaFm+NYy0ChoNze17j?=
- =?us-ascii?Q?WEIsd9DH+invEBJUN4DcCO1Gis/HhMFP6/lQEoerY+gmhkQVcZ5E0YRhGqdW?=
- =?us-ascii?Q?ns4sgY4AkTHhkwobf+0D6+9bC93g57HfTcMIkutf9AmLdgWBugUx/sW/JKMQ?=
- =?us-ascii?Q?yxRs2iwyWv/6cFIuHIgocjMWC3+WemOoqm1f9q1d1kheY32XeXZNOy7vg054?=
- =?us-ascii?Q?p1A+MNdipvtvEyo4pgjx9CoV2NbNkc8pyb5SmiXCLmcCEblbAQWl6dqEZJfK?=
- =?us-ascii?Q?sGTKRxWT/5rUzxSo++MIDXDtJAAIs3ND/WixIeNHizzCWN8c94TB+n6IN8sJ?=
- =?us-ascii?Q?oZzEZ5/3iMB3Nr11PWzMnei3gjSuIN3rTdMLRFExCBPAsQ8oQWcfYYxa9Azl?=
- =?us-ascii?Q?rGjQnm28TLOWWEuR5zH/25bWkLSri4c5MyUZpQ8nPm4Y7XSmamlGwToLCuEQ?=
- =?us-ascii?Q?7Az1oAWQ080YngCIMhvZ1hKErr0yIWibmJvNLhwhIH/45OVKl2mwQj6xB59m?=
- =?us-ascii?Q?5c9yTR5VbLehP2vfF5a/XFIruUxLe4QKahyQSdc1G8olQ+jH36nIxTDQV8x/?=
- =?us-ascii?Q?yLcrVQHaJuHvp9Ojr/B5h0t8s34k7GX3K4Czkqqc427kYCWyYXc/4Gs7nSzW?=
- =?us-ascii?Q?4PICr5BuJM6Hij/Mh+ugGfxheMffJy/vTrxa7G2aj52qYu2hqFjmiAhrzhq6?=
- =?us-ascii?Q?vYPDq1QshdiOvy9B6bd+YYgaGl++RSbImhwvMwk9nvANygax1GZflSkG9k5w?=
- =?us-ascii?Q?P288hKI4e4zDqQlQlum+HqB35/k0xo8ShvYFz4Hm7QiaMTxS3rC2IKJgXAt4?=
- =?us-ascii?Q?NG4v5WM6QHSQVNVO1ZwLBT4Wyu/izNKJnqu7exUdHJS4awsP1KHeGAl/9cVT?=
- =?us-ascii?Q?hQMA93sH5M0T7fsXCWaR6h0tm3b7cjIqbQ4QTFeWkJznTwtqqkUpiKpr82c3?=
- =?us-ascii?Q?Drv1OPxn1lbGeWmygbGPS3QnRa8OVNcqlrp31yW4kw2i13VFqeSI5z6C+OVV?=
- =?us-ascii?Q?r3FtysAbMNPAJEals27NZ4HXOScR9Ku8HWduOy+T7RydRmJPmyObyVVMsxt+?=
- =?us-ascii?Q?HKWCDGo8n1ezG+gWz2nap7X01e6rS+mc1MmfxWsH79TvAk0s+09PTPMaVnBZ?=
- =?us-ascii?Q?bA1QSazWo9+g0w8xMWtkezYHy5qjEpIQgJgt/Vi0W+sNga8Dv7mg8rb3+RvV?=
- =?us-ascii?Q?VN/ibJwD9eZQMx/Xo9aGTb1llfF7j1bd0vqN3qE+NRCBuP5YWYA68mRxFO+h?=
- =?us-ascii?Q?jj3gjzMNJpmEl5+UyP2nWLS9mMBmgYr1yLwwp0WTcM93cPts5vpciDC+aJre?=
- =?us-ascii?Q?BHLqOzPD9kuNNfLtbcDSKFHHWxmqvEHzimEHep8SE0kFV7i+R2sewwRxCF1X?=
- =?us-ascii?Q?o6zmU2AkEvo5SCY0xPameAAVEgt5HOPWqoO5nXbqZspUfyevWihj9ugPx+Kd?=
- =?us-ascii?Q?r/wOyf3I3/nQ7WQx3gc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d97ae18e-d324-450b-864a-08dc487b64fc
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 01:16:39.3226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GL1NahkqsGOPLo3xqCJ3d9oEI+342btx3Y/r1tlWIKYTDQvy9EfpX+CylwmUFq4S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8012
-
---=_MailMate_5F149087-FF09-450A-A387-C3F289CBE53D_=
-Content-Type: text/plain
+Message-Id: <7276ec7b-9b00-4241-a4eb-a8997daeba5c@app.fastmail.com>
+In-Reply-To: <5f853562-cbe0-32d7-2644-d42d2bb9e060@linux.intel.com>
+References: <20240310061715.16531-1-luke@ljones.dev>
+ <5f853562-cbe0-32d7-2644-d42d2bb9e060@linux.intel.com>
+Date: Wed, 20 Mar 2024 14:18:09 +1300
+From: "Luke Jones" <luke@ljones.dev>
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org,
+ "Hans de Goede" <hdegoede@redhat.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: asus-wmi: support toggling POST sound
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 19 Mar 2024, at 21:09, Zi Yan wrote:
 
-> On 19 Mar 2024, at 21:08, SeongJae Park wrote:
->
->> Hello,
->>
->> On Tue, 19 Mar 2024 11:47:53 -0400 Zi Yan <zi.yan@sent.com> wrote:
->>
->>> From: Zi Yan <ziy@nvidia.com>
->>>
->>> If the source folio is on deferred split list, it is likely some subp=
-ages
->>> are not used. Split it before migration to avoid migrating unused sub=
-pages.
->>>
->>> Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path"=
-)
->>> did not check if a THP is on deferred split list before migration, th=
-us,
->>> the destination THP is never put on deferred split list even if the s=
-ource
->>> THP might be. The opportunity of reclaiming free pages in a partially=
 
->>> mapped THP during deferred list scanning is lost, but no other harmfu=
-l
->>> consequence is present[1].
->>>
->>> From v2:
->>> 1. Split the source folio instead of migrating it (per Matthew Wilcox=
-)[2].
->>>
->>> From v1:
->>> 1. Used dst to get correct deferred split list after migration
->>>    (per Ryan Roberts).
->>>
->>> [1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713=
-C817C@nvidia.com/
->>> [2]: https://lore.kernel.org/linux-mm/Ze_P6xagdTbcu1Kz@casper.infrade=
-ad.org/
->>>
->>> Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")=
+On Wed, 20 Mar 2024, at 6:48 AM, Ilpo J=C3=A4rvinen wrote:
+> On Sun, 10 Mar 2024, Luke D. Jones wrote:
+>=20
+> > Add support for toggling the BIOS POST sound on some ASUS laptops.
+> >=20
+> > Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> > ---
+> >  .../ABI/testing/sysfs-platform-asus-wmi       |  7 +++
+> >  drivers/platform/x86/asus-wmi.c               | 54 ++++++++++++++++=
++++
+> >  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
+> >  3 files changed, 64 insertions(+)
+> >=20
+> > diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Doc=
+umentation/ABI/testing/sysfs-platform-asus-wmi
+> > index e32b4f0ae15f..f3c53b7453f0 100644
+> > --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> > +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> > @@ -194,3 +194,10 @@ Contact: "Luke Jones" <luke@ljones.dev>
+> >  Description:
+> >  Set the target temperature limit of the Nvidia dGPU:
+> >  * min=3D75, max=3D87
+> > +
+> > +What: /sys/devices/platform/<platform>/boot_sound
+> > +Date: Jun 2023
+> > +KernelVersion: 6.9
+> > +Contact: "Luke Jones" <luke@ljones.dev>
+> > +Description:
+> > + Set if the BIOS POST sound is played on boot.
+> > diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/=
+asus-wmi.c
+> > index ca8c73c15fcc..26084e9846a1 100644
+> > --- a/drivers/platform/x86/asus-wmi.c
+> > +++ b/drivers/platform/x86/asus-wmi.c
+> > @@ -297,6 +297,7 @@ struct asus_wmi {
+> >  // The RSOC controls the maximum charging percentage.
+> >  bool battery_rsoc_available;
+> > =20
+> > + bool boot_sound_available;
+> >  bool panel_overdrive_available;
+> >  bool mini_led_mode_available;
+> >  u32 mini_led_dev_id;
+> > @@ -2106,6 +2107,55 @@ static ssize_t panel_od_store(struct device *=
+dev,
+> >  }
+> >  static DEVICE_ATTR_RW(panel_od);
+> > =20
+> > +/* Bootup sound ***************************************************=
+************/
+> > +
+> > +static ssize_t boot_sound_show(struct device *dev,
+> > +      struct device_attribute *attr, char *buf)
+> > +{
+> > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> > + int result;
+> > +
+> > + result =3D asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_BOOT_=
+SOUND);
+> > + if (result < 0)
+> > + return result;
+> > +
+> > + return sysfs_emit(buf, "%d\n", result);
+> > +}
+> > +
+> > +static ssize_t boot_sound_store(struct device *dev,
+> > +       struct device_attribute *attr,
+> > +       const char *buf, size_t count)
+> > +{
+> > + int result, err;
+> > + u32 snd;
+> > +
+> > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> > +
+> > + result =3D kstrtou32(buf, 10, &snd);
+> > + if (result)
+> > + return result;
+> > +
+> > + if (snd > 1)
+> > + return -EINVAL;
+>=20
+> Why not just use kstrtobool()?
 
->>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>> ---
->>>  mm/huge_memory.c | 22 ------------------
->>>  mm/internal.h    | 23 +++++++++++++++++++
->>>  mm/migrate.c     | 60 +++++++++++++++++++++++++++++++++++++++-------=
---
->>>  3 files changed, 72 insertions(+), 33 deletions(-)
->>>
->>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>> index 9859aa4f7553..c6d4d0cdf4b3 100644
->>> --- a/mm/huge_memory.c
->>> +++ b/mm/huge_memory.c
->>> @@ -766,28 +766,6 @@ pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_are=
-a_struct *vma)
->>>  	return pmd;
->>>  }
->>>
->>> -#ifdef CONFIG_MEMCG
->>> -static inline
->>> -struct deferred_split *get_deferred_split_queue(struct folio *folio)=
+Consistency with other methods mostly. Plus the possibility that asus mi=
+ght do something like add different sounds. I'll change it if a revert b=
+ack to kstrtou32 later doesn't break things.
 
->>> -{
->>> -	struct mem_cgroup *memcg =3D folio_memcg(folio);
->>> -	struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
->>> -
->>> -	if (memcg)
->>> -		return &memcg->deferred_split_queue;
->>> -	else
->>> -		return &pgdat->deferred_split_queue;
->>> -}
->>> -#else
->>> -static inline
->>> -struct deferred_split *get_deferred_split_queue(struct folio *folio)=
+>=20
+> > +
+> > + err =3D asus_wmi_set_devstate(ASUS_WMI_DEVID_BOOT_SOUND, snd, &res=
+ult);
+> > +
+> > + if (err) {
+>=20
+> Don't leave empty lines between the call and its error handling.
 
->>> -{
->>> -	struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
->>> -
->>> -	return &pgdat->deferred_split_queue;
->>> -}
->>> -#endif
->>> -
->>>  void folio_prep_large_rmappable(struct folio *folio)
->>>  {
->>>  	if (!folio || !folio_test_large(folio))
->>> diff --git a/mm/internal.h b/mm/internal.h
->>> index d1c69119b24f..8fa36e84463a 100644
->>> --- a/mm/internal.h
->>> +++ b/mm/internal.h
->>> @@ -1107,6 +1107,29 @@ struct page *follow_trans_huge_pmd(struct vm_a=
-rea_struct *vma,
->>>  				   unsigned long addr, pmd_t *pmd,
->>>  				   unsigned int flags);
->>>
->>> +#ifdef CONFIG_MEMCG
->>> +static inline
->>> +struct deferred_split *get_deferred_split_queue(struct folio *folio)=
+Got it, thanks.
+If there is nothing else I'll submit new version.
 
->>> +{
->>> +	struct mem_cgroup *memcg =3D folio_memcg(folio);
->>> +	struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
->>> +
->>> +	if (memcg)
->>> +		return &memcg->deferred_split_queue;
->>> +	else
->>> +		return &pgdat->deferred_split_queue;
->>> +}
->>> +#else
->>> +static inline
->>> +struct deferred_split *get_deferred_split_queue(struct folio *folio)=
-
->>> +{
->>> +	struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
->>> +
->>> +	return &pgdat->deferred_split_queue;
->>> +}
->>> +#endif
->>
->> I found this breaks the build when CONFIG_TRANSPARENT_HUGEPAGE is not =
-set, with
->> below error:
->>
->>     .../lib/../mm/internal.h: In function 'get_deferred_split_queue':
->>     .../lib/../mm/internal.h:1127:22: error: 'struct pglist_data' has =
-no member named 'deferred_split_queue'
->>      1127 |         return &pgdat->deferred_split_queue;
->>           |                      ^~
->>
->> Since the code was in hugepage.c, maybe the above chunk need to be wra=
-pped by
->> #ifdef CONFIG_TRANSPARENT_HUGEPAGE?  I confirmed below change is fixin=
-g the
->> build on my setup.
->
-> Thanks. Will fix it in the next version.
-
-Actually, since get_deferred_split_queue() is used in mm/migrate.c, that
-part needs to be guarded by CONFIG_TRANSPARENT_HUGEPAGE as well.
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_5F149087-FF09-450A-A387-C3F289CBE53D_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmX6OPUPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUUz8P/A787ligPSqkoyfUMfslw4VA9IlLL6OfHcbP
-hvgOiw/9WBKascd1+2LavTn5Qhxxl4taXPdcWHwdDH9h4WoHi+sNhTulafT8kgE0
-iJW8PuPPUYNQMee0z3YRGmokVBKS2dlujwQmkspxPhF2dv1L/v0wcxErw9XAy3Ji
-EzDWNymgvKCrn2jlGbSklQp8zOdedXozbq/n3lL58f2q3eKKkPk84QBi5kiQcn2g
-Tah76VFpg2O7JtXqaA0lJt1qAPx9ivOit2Zigofuztm9uurg31LACQZCZxWB6NI5
-dnlshUhc49/8dw0H3xPipLaxBXUh0x6ck0Qtqh3DGdD6fwpKsXAB74oDk1ot0/X+
-0KNml1+XQCfnEJ3vKBPdFS9ffWMnIpj2RGG900/JqhaSsPdPlFa5djwtt6hS2ln/
-tXgE8IGnd8sN3tCXayDMyd/Df8BqdZskDMtvldZEfYvXr8yXzzT55W8rZkXBXaQq
-9UlHXqImfucwmiv/BHHERxdxb36w8V9iP+SRidnYhGPVLGDmhygUeCxgXcHg91pQ
-BQfapIH3kEyzOiXR4/Ls7AWXG868emzfYYsbAIeoICNIj/uNE/1hD0mF+rU+RpVl
-S97Ys98gNm7AE0cdtcu2eyd2oiC9z7MT+BlAdmHc9AzZmAJfw8yIoTbAkVKn0Bg6
-ht2fejL/
-=99xy
------END PGP SIGNATURE-----
-
---=_MailMate_5F149087-FF09-450A-A387-C3F289CBE53D_=--
+>=20
+> --=20
+> i.
+>=20
+> > + pr_warn("Failed to set boot sound: %d\n", err);
+> > + return err;
+> > + }
+> > +
+> > + if (result > 1) {
+> > + pr_warn("Failed to set panel boot sound (result): 0x%x\n", result);
+> > + return -EIO;
+> > + }
+> > +
+> > + sysfs_notify(&asus->platform_device->dev.kobj, NULL, "boot_sound");
+> > +
+> > + return count;
+> > +}
+> > +static DEVICE_ATTR_RW(boot_sound);
+> > +
+> >  /* Mini-LED mode **************************************************=
+************/
+> >  static ssize_t mini_led_mode_show(struct device *dev,
+> >     struct device_attribute *attr, char *buf)
+> > @@ -4196,6 +4246,7 @@ static struct attribute *platform_attributes[]=
+ =3D {
+> >  &dev_attr_ppt_platform_sppt.attr,
+> >  &dev_attr_nv_dynamic_boost.attr,
+> >  &dev_attr_nv_temp_target.attr,
+> > + &dev_attr_boot_sound.attr,
+> >  &dev_attr_panel_od.attr,
+> >  &dev_attr_mini_led_mode.attr,
+> >  &dev_attr_available_mini_led_mode.attr,
+> > @@ -4248,6 +4299,8 @@ static umode_t asus_sysfs_is_visible(struct ko=
+bject *kobj,
+> >  ok =3D asus->nv_dyn_boost_available;
+> >  else if (attr =3D=3D &dev_attr_nv_temp_target.attr)
+> >  ok =3D asus->nv_temp_tgt_available;
+> > + else if (attr =3D=3D &dev_attr_boot_sound.attr)
+> > + ok =3D asus->boot_sound_available;
+> >  else if (attr =3D=3D &dev_attr_panel_od.attr)
+> >  ok =3D asus->panel_overdrive_available;
+> >  else if (attr =3D=3D &dev_attr_mini_led_mode.attr)
+> > @@ -4519,6 +4572,7 @@ static int asus_wmi_add(struct platform_device=
+ *pdev)
+> >  asus->ppt_plat_sppt_available =3D asus_wmi_dev_is_present(asus, ASU=
+S_WMI_DEVID_PPT_PLAT_SPPT);
+> >  asus->nv_dyn_boost_available =3D asus_wmi_dev_is_present(asus, ASUS=
+_WMI_DEVID_NV_DYN_BOOST);
+> >  asus->nv_temp_tgt_available =3D asus_wmi_dev_is_present(asus, ASUS_=
+WMI_DEVID_NV_THERM_TARGET);
+> > + asus->boot_sound_available =3D asus_wmi_dev_is_present(asus, ASUS_=
+WMI_DEVID_BOOT_SOUND);
+> >  asus->panel_overdrive_available =3D asus_wmi_dev_is_present(asus, A=
+SUS_WMI_DEVID_PANEL_OD);
+> >  asus->ally_mcu_usb_switch =3D acpi_has_method(NULL, ASUS_USB0_PWR_E=
+C0_CSEE)
+> >  && dmi_match(DMI_BOARD_NAME, "RC71L");
+> > diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/li=
+nux/platform_data/x86/asus-wmi.h
+> > index 3e9a01467c67..3eb5cd6773ad 100644
+> > --- a/include/linux/platform_data/x86/asus-wmi.h
+> > +++ b/include/linux/platform_data/x86/asus-wmi.h
+> > @@ -137,6 +137,9 @@
+> >  /* TUF laptop RGB power/state */
+> >  #define ASUS_WMI_DEVID_TUF_RGB_STATE 0x00100057
+> > =20
+> > +/* Bootup sound control */
+> > +#define ASUS_WMI_DEVID_BOOT_SOUND 0x00130022
+> > +
+> >  /* DSTS masks */
+> >  #define ASUS_WMI_DSTS_STATUS_BIT 0x00000001
+> >  #define ASUS_WMI_DSTS_UNKNOWN_BIT 0x00000002
+> >=20
+>=20
 
