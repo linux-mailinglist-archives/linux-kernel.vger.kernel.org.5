@@ -1,329 +1,245 @@
-Return-Path: <linux-kernel+bounces-108247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB0D88085E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:03:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5CF88085F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1AF11C2220A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5835283F3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7E1812;
-	Wed, 20 Mar 2024 00:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A645D29A5;
+	Wed, 20 Mar 2024 00:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZE39qRGD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="dhybEj/D"
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8656618E;
-	Wed, 20 Mar 2024 00:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710893023; cv=fail; b=Nu2VEam5uHpGl4thVxkPD0JzyU07K9KiSxdMcRN9LlgvzEsYbSUfeVuvVi9MbG+hAHAVo/6poZeUT/uIIkyUBzXHBWuWBXZrR2/6LhLum2QEwH9mfF+oG6Xq9GiYsqxcQQDbnGerkmyctddIueUjuozOlFNrH8C4D90Bqmx5Hto=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710893023; c=relaxed/simple;
-	bh=cyvjDMxYAyCsKr398Sr2ZZZHWROrJ9lo1UqERhYG6/s=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jB4czydxrk2dlp33dherIWQyqSEAhNgWyQsiHLDgKRjcKfj3oyAtvdO8ipczy88ZewUQZik2AlEyKUNtMPM7Y40yAjeIrprG5KeJU9fqSUehPY8Ke/aNNRMKRYi/rzmv+7CtP7ZW/a6tEMLSDLEmnCghipHRU31U8OEUW2Z9q/g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZE39qRGD; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710893021; x=1742429021;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=cyvjDMxYAyCsKr398Sr2ZZZHWROrJ9lo1UqERhYG6/s=;
-  b=ZE39qRGDJkXQESJnmxFc3JkxS6ZE8e0vYxln++sl6yEASOHcU3xn2Z78
-   GGT+baIDV4ON/NqipaSM8M7CljqampHXR1aHSJZKexk2W/Gb1vu+ORPuE
-   Fg2eJiYGKQ53/NcTR1mUCald7jU1gDZQIVmpZyhRyBf5lXJVAuFPSgFFM
-   1CoP92XS8cJEGfJZHcWP1Ghg85XIvecOYw8L+nEa0z37Gpmfgg4xhE+zb
-   DpkhFn68dn7lVo6wUB0YXmuI3hS2lqHyO+3sLZRNsrdyFKnkE/ae9HMmX
-   BC+iSCEA9IMuTwQRPWmMojXlEPThN5ax9hkQsf0XbYHlv80aiYIE+NkBd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17200942"
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="17200942"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 17:03:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="18434090"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Mar 2024 17:03:39 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 17:03:38 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 17:03:37 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 17:03:37 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Mar 2024 17:03:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VKim69+xFgD0rGI5AdDpYH4UhK75nhOWtTiNbRAaNnDUHwh9gWAa2WNenjSdVE/lXenCwfaTKREDeeFMKR9GVqXVnxXAMNXokit6jfqSnyGTUztIwrhh7IPmMlzJwuTmUbth7qOKRdb2Uznv5DqL8Y1OlXsewg3eW8WkxOy3Flo0942kEOP8MM4DDR2Mwk3m40ExJ6XJmNq0L24e6YWOO6HpzkU9VRR3ysvV153T8BTADsb4ExouoBHAe3FNhGgPRkCyzQexj+C/tKuZQzCWEVc4JODNcbhhfkIBO2LnZqXf9ncBz+NHThygEyMTW8FBOu1KQel8zO60wRMzf3l6Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yfrpbKtLlMskwfzk8KEoEhvSrToZ1hkayv0z2gWF3iY=;
- b=Zoyo4JO/8WXQ5vlcKnfpYXg5qdOTGC24AHzR2QDQuI8uw5W65LHuJvFyEtAc4ipsfh3apFY5wDrriEUFMhUipEeUAtf9t8hCIN6w8QyakQNK/1uxTYDbbCK8Nima2iUnpODAHbAWwv8amHpg4OrxskpGADve/l34wX0smSXKfHHKS+1HBhIBJ4Jm5nR8qeHWFGaKZ5Fsf6NryMZHlqQ6Qvh4zSDvuQ4ijXdJVqErvaoPlvTDwFMrk6ug8wNduJulH3qh2blNcU2Z0SqTN6AOBq+LFESYXs+P9b9QGfHZClkZ5dTvXX+V9vOCc+VzNHeTlfaQqSm6pvK9IQ6g6Yb88Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by SJ0PR11MB4863.namprd11.prod.outlook.com (2603:10b6:a03:2ae::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Wed, 20 Mar
- 2024 00:03:33 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.010; Wed, 20 Mar 2024
- 00:03:33 +0000
-Message-ID: <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
-Date: Wed, 20 Mar 2024 13:03:21 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
- SEAMCALLs to the TDX module
-Content-Language: en-US
-To: <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
-	<sagis@google.com>, <chen.bo@intel.com>, <hang.yuan@intel.com>,
-	<tina.zhang@intel.com>, Sean Christopherson
-	<sean.j.christopherson@intel.com>, Binbin Wu <binbin.wu@linux.intel.com>,
-	Yuan Yao <yuan.yao@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0072.namprd04.prod.outlook.com
- (2603:10b6:303:6b::17) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0F2F1FA5
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710893042; cv=none; b=oz7ahmPNI5rdpaVLaU8vw95bO45B8V6clbqiT4aLiEs811TeqrCvEqwawxqyOI3YGcXsYViEJP08ROzuoM39oMegq8QKlqN9XUUWNk96KLmOgG+Fo6l4BBmWtmXc4kFc5CFZpKAzIlI06ubgKnPjwEozNYpZVcqlQ5KImEO5U7w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710893042; c=relaxed/simple;
+	bh=LuszNrHNE3olo3sZitMiZZw0/T2Z59F2VU/B8FMRwHo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aQxlxd3laE442MhH/0RBdqHQXJVqtQw0PWBE+PrUMh/Yv8upiSoLwRZqgeIJPia4YWdZIYd2Kh2MAJFyxVwu/vGoTRH4rlYVzNrbxwM8WCB05emsMaEXWBQeMO3yEsgKvot+rI6Ck0Gl08HPcEJt27PKqJn4kxlcO0oOaqv9li4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=dhybEj/D; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bbc649c275so3080886b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710893040; x=1711497840; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Qbceb+lLt0Ip+LsSuu3qrpAY4FihlRVRuRE1aZQsbA=;
+        b=dhybEj/D1xUYc0IjsRCb45bEJswVZ/rHbHj57joPd/Lq57hVmghidGHOVJ4YspzCIj
+         lI3/yQsv/y63rafMC/Ud3kHPb5irVlIryyguzyDgIU3n8+DXR4ETqUxk5bLVcUj4mWPK
+         YPTWP76WX238BQjZL8mLQGhiqdgWv326z5oA0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710893040; x=1711497840;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Qbceb+lLt0Ip+LsSuu3qrpAY4FihlRVRuRE1aZQsbA=;
+        b=dE0NddFfrnhQ5NRZjCierfbSeN+AzyWsuirTPNASkD5RBCzCorx8AGDXSndLn4LLdP
+         +RnVI82+MsBZz0Zkh7d3TRdcTYojPfJo4WJ3qYYUJ9r9AZjna3bF+fnpN65K4d43P7Z6
+         mXVbGNyiHb8hkBjdkDqfnXFNpSkNdbVYYLpMNteTuho2Pl47+wUq8lck69EzbnVkzhQO
+         BBSxq/R8x+jg0EWTAoIUWQLWs7zZ9heczyo2Y6TeLpEqRyvZueQuzctADChxe8G8GGCX
+         ERYKKVzN5VdoxnFU7YZH6qAARgj/RK2Dcs7xsf9uQPoBSCLfH4QlayishsX9EeZVH6o/
+         gUug==
+X-Forwarded-Encrypted: i=1; AJvYcCUnXSkPDqQgPkkZSQujudgrAByzd45yB7LOVqDQToeIdzWXT2H2wfK51dOojn/nb23f3RybmsDc4hk87bURdxgPwCfz2DR4Rb5zWAJ6
+X-Gm-Message-State: AOJu0Yy3+KO6PH5G1KowI9gjORsM0EwY7c/1IyQcdilLDr/fzGnCnVBg
+	0MiVXaAizmfIPL6LapWOC0aawFnBfPCUBfedO57ogvsYur4XSXUbLN0/J41jsKY=
+X-Google-Smtp-Source: AGHT+IGQNavc3elhq3ZEquvGluzRYpuOA0aTVN3ZvVgPCt5X8K9P56sw35hditqzCJJiDqlIhpIVgA==
+X-Received: by 2002:a05:6808:3a08:b0:3c3:9980:d5fa with SMTP id gr8-20020a0568083a0800b003c39980d5famr978030oib.28.1710893039552;
+        Tue, 19 Mar 2024 17:03:59 -0700 (PDT)
+Received: from [10.5.0.2] ([185.195.59.198])
+        by smtp.gmail.com with ESMTPSA id cg11-20020a05622a408b00b00430dbd6edf9sm2129289qtb.68.2024.03.19.17.03.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 17:03:58 -0700 (PDT)
+Message-ID: <1e26ce6d-5567-477f-847b-445160b2f18c@joelfernandes.org>
+Date: Tue, 19 Mar 2024 20:03:54 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SJ0PR11MB4863:EE_
-X-MS-Office365-Filtering-Correlation-Id: 31ae6409-6c36-4a6d-076f-08dc48712ed5
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QwHw5ks1wioxPdgnFK3m7PkhnjVHF6c2yLDhnS9NI4NXu4ao68w2/oHTMxWuzUtwlCOP2qFvDhDWgeAcI/uFGC7M7l9xKIW6XJHUuL5XDiWdAACoaSiCovtmd1TNguIaw6f0n2HPTT9WJQT7j3WUSzuPAMC++2WZUU153XMNcJ1gFMUiab81q8smd3gbhUob9FL2KeJBSUmYFkC+A75Ri6kwVbDsR5Btsa2TGTs7eVVGSRiofRePcoJ2Z0xXPhG8Z4ij4jwjJz0BUicqc58ofFMVCkHLnxvVNdizo28gdtDrvgqe2TCzWI6ANShayl/ftEAs8WIOW4KVwgmG+XNNIBVWrVFZ1evdMmI9dI0Ve6so+Be+xAsbUwhe28wdzKSpLTop6Ch1jcqQuvrkBdpB0LOG+cRiPekTWj2U+lDeT9395eyqO1Pr3HIgcI1TTH+MJ2eCzd+ziJWsHbuBn1DVPa2jI+14RZIgyFxmKRSfNef6knTkeZN5yFgRKXPh4CsQMScMXHb4i4Fod24IH8BphOxjay+BoMfdxDV3ol+aMyAs3QUuG8XSsfXgJj3Ik1F3X68VHFjVIlnW247MK1xVWDTd5kGMkNj2gglWuZw6SWU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2hkR3FsemFnNUlxdE9KRndGc2hkaWFBL2Y2ZUdmWlRNc05sUGhuZEkzaFpC?=
- =?utf-8?B?NDVCamlIbFMyT1BXSTliYVZNa25oZUdmczlUbUlyMlFCS2NiVWVDVlRCQ0h0?=
- =?utf-8?B?OW5YUnM0WXhsMSsrU080UzdvY1c1Q1JrYlphenRFTi9wZEtSdjdqQlJFR1VO?=
- =?utf-8?B?SkdKLzBHbllOLzRPbytvd2xTUFBHMUF3dEV5WHZ1TUhwdVQwUzhrWENtbWpW?=
- =?utf-8?B?R2ZDeFpBencybEttWDBFc1ZDcWd3Qk1BM3QyVU5tNzJ5bGFJa28vd0FxWUxz?=
- =?utf-8?B?YXNZVmM3SXVJV0hpd0thUEFLM3haSW15TTBzR2NLZkhwTnNHczVkcG1vVTMw?=
- =?utf-8?B?VExqZDRHajBMVGxRNTNWUk9NZy9oVFcydmZqZlFFdzdTWlp4dS9oSFZZeGRi?=
- =?utf-8?B?RXc2aFI5dlBjZEtzQ2tDeS9jbFdWTllpOHZMYVlzRE42U0lqM0toNk1aTUFa?=
- =?utf-8?B?RzExbXRuSTd0eHdRQ2JQQ25nQVJzQ0RWVnlYSCthNVVteW9rUmp0Yk9mRnZv?=
- =?utf-8?B?OENNTjZBdzRqMVdYaHpxdk5QUENlZkhKdzdBUGVKQUV1VzBvVjZwWW1BVXVi?=
- =?utf-8?B?ZW5oYnpPWlFjVXFubVNYWkZ4eDhYRXcwcWQyTFBqWEJTN1p4QTBzYkFVa3c2?=
- =?utf-8?B?cVlKeUlUSy9CN1lNOFpFSUMxa2luVnBKQ3hxWm5yM2FGeWlQanQ4QS9YT0xK?=
- =?utf-8?B?UWFXOWZtNjF2Z0VmbnlNMDBNcE44MlQza3JKOU5RN1ZHUXNqNEl1bWZ6NXVG?=
- =?utf-8?B?eFlqVHF0UmNWczUrWHRFWjRXRFNhNmwxazc2cGNTZmdnT0xDRE9haEVPVDg0?=
- =?utf-8?B?cXdxY21VUE5NbFJFbi91aTdpUDYxSVBvaGJORXlTWkE1OHBTR2oxckNqSUNq?=
- =?utf-8?B?Rit6dDNCUmxwb0RuZU5BZ1M3UGJFY0ZQNzNHTjBRUzE0UVdRdVJ2cGYvcjJz?=
- =?utf-8?B?RXBBcjh1anVMWk0yVEp0dFNGZExzTkh4eEFuNmhnZU9CZk9tY1Mwd29Pa3hZ?=
- =?utf-8?B?cDlOd0N2OVFSWmhhNVE1R0YxQllBTUp2dVhiK0VUUVpFMVo3cmVWdU9pa3B6?=
- =?utf-8?B?NEJZc2lFQkpiWHJaNmVDSVBxYUtRb29vZTYzU1ZheWtQb1p6VFFqNllGcWE5?=
- =?utf-8?B?SklRZUtGQmdadU9pTGdQTXpVaFlQN01OeWtnRklrK0lSSklkaUY2TkJCSEJh?=
- =?utf-8?B?TjlncHcyQzN4d2lqUGFWZUNUeXk2SGsrMzhYNXFLZnZNUEMzdmdJK1NSL0hR?=
- =?utf-8?B?Rjl6S05EWTBHQkN1Rkl4bE1KS0lSVWI2bjJRa1BTc0JsVVYweEgzN0R0UmxE?=
- =?utf-8?B?YVpvK2FhdXJQaUN1dTFZTE1SM0Y3bHliYTZLUUZicWs5UUVpYUJmSVBPekJ0?=
- =?utf-8?B?RWRDUm9MT2FhNkM1SGRxR0gvbUYyV25jSzZReC8xT3plV2dIRlhpcGc4a2ZY?=
- =?utf-8?B?dDRySWVuQnV2Uzl4aWUyd3BmM1VrYTYraUtNTDYzNVRTeHRYRU5Mb2c0RGhj?=
- =?utf-8?B?R1lNNXpML1IzQ1hDMHFRaHl2ckRwa0s1TzYyWnZHQUJkb1VCbFAyZUpPUktu?=
- =?utf-8?B?S2UrUmZ2U0Y5UUpBZGIxK3dRdjVBOVlBd01la3B1QVdwTjZUNmV3cXB1bmZo?=
- =?utf-8?B?ejFQeHRUVlM3M1BXbTg5d05rMW9BQ09LYmdhbGJ1U0F0SzcxRVRtWHJLb2pZ?=
- =?utf-8?B?c2FCWHU5M0FacnpqNjlYNEZXSVNuSW5NN1kzUUtlckJBblFqallyOHBlRXlk?=
- =?utf-8?B?aTFJRVh1MTBnNTFoWlZFN0VYUnJoMGVtSUpNYjVuYkVFZ0tzaDBEakI4L2Z3?=
- =?utf-8?B?d3llbkF0UDJXWjlxR2tObmhLSHI5VVg2RUVsdTJ0NDlzMjU0YS8xSDM1Mk8w?=
- =?utf-8?B?dUR2amc5eGFWazdWU0liWEdwaDFLbWR4QVBxbWcrVkpWWTVlNzQvVUJuMzlz?=
- =?utf-8?B?aTlJQmhuRGlxY05yL0pZSThiZ3ZnWnhVYjl6QjEvMnhkT05jWWpUY21iYzFY?=
- =?utf-8?B?TjFYQjg5OWVERXRPaEl2enRwWWxUd1oxeEhGdTN1T1VGd29nU2RIbUxFQXZz?=
- =?utf-8?B?M1B0TXBMRCtNbldNQWJuZk1pS2VuYU16a0MxeWtTOUpEZGtPOVRpZWNCVUgr?=
- =?utf-8?Q?+GAk4WMQxSRpusj3SMa3/TbzG?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31ae6409-6c36-4a6d-076f-08dc48712ed5
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 00:03:33.5839
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d/Rb59rkFNIQJ3qUMCk27uomuwgqVR1uw/lSxt4/t05W9fRjiWI0WvVv57Y9Qxaf8lae/TDx++tq7qbNpg5g9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4863
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Content-Language: en-US
+To: Daniel Bristot de Oliveira <bristot@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
 
-On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 11/4/2023 6:59 AM, Daniel Bristot de Oliveira wrote:
+> Among the motivations for the DL servers is the real-time throttling
+> mechanism. This mechanism works by throttling the rt_rq after
+> running for a long period without leaving space for fair tasks.
 > 
-> A VMM interacts with the TDX module using a new instruction (SEAMCALL).
-> For instance, a TDX VMM does not have full access to the VM control
-> structure corresponding to VMX VMCS.  Instead, a VMM induces the TDX module
-> to act on behalf via SEAMCALLs.
+> The base dl server avoids this problem by boosting fair tasks instead
+> of throttling the rt_rq. The point is that it boosts without waiting
+> for potential starvation, causing some non-intuitive cases.
 > 
-> Define C wrapper functions for SEAMCALLs for readability.
+> For example, an IRQ dispatches two tasks on an idle system, a fair
+> and an RT. The DL server will be activated, running the fair task
+> before the RT one. This problem can be avoided by deferring the
+> dl server activation.
 > 
-> Some SEAMCALL APIs donate host pages to TDX module or guest TD, and the
-> donated pages are encrypted.  Those require the VMM to flush the cache
-> lines to avoid cache line alias.
+> By setting the zerolax option, the dl_server will dispatch an
+> SCHED_DEADLINE reservation with replenished runtime, but throttled.
 > 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> The dl_timer will be set for (period - runtime) ns from start time.
+> Thus boosting the fair rq on its 0-laxity time with respect to
+> rt_rq.
+> 
+> If the fair scheduler has the opportunity to run while waiting
+> for zerolax time, the dl server runtime will be consumed. If
+> the runtime is completely consumed before the zerolax time, the
+> server will be replenished while still in a throttled state. Then,
+> the dl_timer will be reset to the new zerolax time
+> 
+> If the fair server reaches the zerolax time without consuming
+> its runtime, the server will be boosted, following CBS rules
+> (thus without breaking SCHED_DEADLINE).
+> 
+> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Not valid anymore.
+Hi, Daniel,
+We have one additional patch (other than the 15 I just sent). Since I have just
+3 more working days for the next 3 weeks, I thought I might as well reply inline
+here since it might be unnecessary to resend all 15 patches so soon just for the
+one new addition below. I am replying to this patch here, because the new patch
+is related (to 0-laxity).  But once I am back from holiday, I can resend it with
+the set I have unless you've applied it.
 
-[...]
+So, Vineeth and me came up with a patch below to "max cap" the DL server 0-lax
+time (max cap is default off keeping the regular behavior). This is needed to
+guarantee bandwidth for periodic CFS runners/sleepers.
 
-> +
-> +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
-> +			       struct tdx_module_args *out)
-> +{
-> +	u64 ret;
-> +
-> +	if (out) {
-> +		*out = *in;
-> +		ret = seamcall_ret(op, out);
-> +	} else
-> +		ret = seamcall(op, in);
+The example usecase is:
 
-I think it's silly to have the @out argument in this way.
+Consider DL server params 25ms / 50ms.
 
-What is the main reason to still have it?
+Consider CFS task with duty cycle of 25ms / 76ms (run 25ms sleep 51ms).
 
-Yeah we used to have the @out in __seamcall() assembly function.  The 
-assembly code checks the @out and skips copying registers to @out when 
-it is NULL.
+         run 25ms                    run 25ms
+         _______                     _______
+        |       | sleep 51          |       |  sleep 51
+-|------|-------|---------|---------|-------|----------|--------|------> t
+ 0     25      50       101        126      151       202      227
+                          \ 0-lax /                    \ 0-lax /
 
-But it got removed when we tried to unify the assembly for 
-TDCALL/TDVMCALL and SEAMCALL to have a *SINGLE* assembly macro.
+Here the 0-lax addition in the original v5's zero-lax patch causes lesser bandwidth.
 
-https://lore.kernel.org/lkml/cover.1692096753.git.kai.huang@intel.com/
+So the task runs 50ms every 227ms, instead of 50ms every 152ms.
 
-To me that means we should just accept the fact we will always have a 
-valid @out.
+A simple unit test confirms the issue, and it is fixed by Vineeth's patch below:
 
-But there might be some case that you _obviously_ need the @out and I 
-missed?
+Please take a look at the patch below (applies only to v5.15 but Vineeth is
+rebase on mainline as we speak), thanks.
+
+-----8<--------
+From: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+Subject: [PATCH] sched/deadline/dlserver: sysctl for dlserver maxdefer time
+
+Inorder to avoid dlserver preempting RT tasks when it wakes up, dlserver
+is throttled(deferred) until zero lax time. This is the farthest time
+before deadline where dlserver can meet its deadline.
+
+Zero lax time causes cfs tasks with sleep/run pattern where the cfs
+tasks doesn't get the bandwidth promised by dlserver. So introduce a
+sysctl for limiting the defer time of dlserver.
+
+Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+---
+ include/linux/sched/sysctl.h | 2 ++
+ kernel/sched/deadline.c      | 6 ++++++
+ kernel/sysctl.c              | 7 +++++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 4939e6128840..a27fba6fe0ab 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -41,6 +41,8 @@ extern unsigned int sysctl_iowait_apply_ticks;
+ extern unsigned int sysctl_sched_dl_period_max;
+ extern unsigned int sysctl_sched_dl_period_min;
+ +extern unsigned int sysctl_sched_dlserver_maxdefer_ms;
++
+ #ifdef CONFIG_UCLAMP_TASK
+ extern unsigned int sysctl_sched_uclamp_util_min;
+ extern unsigned int sysctl_sched_uclamp_util_max;
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index d638cc5b45c7..69c9fd80a67d 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1071,6 +1071,11 @@ static int start_dl_timer(struct sched_dl_entity *dl_se)
+ 	if (dl_se->dl_defer_armed) {
+ 		WARN_ON_ONCE(!dl_se->dl_throttled);
+ 		act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
++		if (sysctl_sched_dlserver_maxdefer_ms) {
++			ktime_t dlserver_maxdefer = rq_clock(rq) +
+ms_to_ktime(sysctl_sched_dlserver_maxdefer_ms);
++			if (ktime_after(act, dlserver_maxdefer))
++				act = dlserver_maxdefer;
++		}
+ 	} else {
+ 		act = ns_to_ktime(dl_next_period(dl_se));
+ 	}
+@@ -3099,6 +3104,7 @@ void __getparam_dl(struct task_struct *p, struct
+sched_attr *attr)
+  */
+ unsigned int sysctl_sched_dl_period_max = 1 << 22; /* ~4 seconds */
+ unsigned int sysctl_sched_dl_period_min = 100;     /* 100 us */
++unsigned int sysctl_sched_dlserver_maxdefer_ms = 2;
+  /*
+  * This function validates the new parameters of a -deadline task.
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 39f47a871fb4..027193302e7e 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1842,6 +1842,13 @@ static struct ctl_table kern_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+ 	},
++	{
++		.procname	= "sched_dlserver_maxdefer_ms",
++		.data		= &sysctl_sched_dlserver_maxdefer_ms,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++	},
+ 	{
+ 		.procname	= "sched_rr_timeslice_ms",
+ 		.data		= &sysctl_sched_rr_timeslice,
+-- 
+2.40.1
 
 
-> +
-> +	if (unlikely(ret == TDX_SEAMCALL_UD)) {
-> +		/*
-> +		 * SEAMCALLs fail with TDX_SEAMCALL_UD returned when VMX is off.
-> +		 * This can happen when the host gets rebooted or live
-> +		 * updated. In this case, the instruction execution is ignored
-> +		 * as KVM is shut down, so the error code is suppressed. Other
-> +		 * than this, the error is unexpected and the execution can't
-> +		 * continue as the TDX features reply on VMX to be on.
-> +		 */
-> +		kvm_spurious_fault();
-> +		return 0;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = addr,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	clflush_cache_range(__va(addr), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MNG_ADDCX, &in, NULL);
-> +}
-> +
-> +static inline u64 tdh_mem_page_add(hpa_t tdr, gpa_t gpa, hpa_t hpa, hpa_t source,
-> +				   struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa,
-> +		.rdx = tdr,
-> +		.r8 = hpa,
-> +		.r9 = source,
-> +	};
-> +
-> +	clflush_cache_range(__va(hpa), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_PAGE_ADD, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mem_sept_add(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
-> +				   struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +		.r8 = page,
-> +	};
-> +
-> +	clflush_cache_range(__va(page), PAGE_SIZE);
-> +	return tdx_seamcall(TDH_MEM_SEPT_ADD, &in, out);
-> +}
-> +
-> +static inline u64 tdh_mem_sept_rd(hpa_t tdr, gpa_t gpa, int level,
-> +				  struct tdx_module_args *out)
-> +{
-> +	struct tdx_module_args in = {
-> +		.rcx = gpa | level,
-> +		.rdx = tdr,
-> +	};
-> +
-> +	return tdx_seamcall(TDH_MEM_SEPT_RD, &in, out);
-> +}
-
-Not checked the whole series yet, but is this ever used in this series?
-
-[...]
-
-> +
-> +static inline u64 tdh_sys_lp_shutdown(void)
-> +{
-> +	struct tdx_module_args in = {
-> +	};
-> +
-> +	return tdx_seamcall(TDH_SYS_LP_SHUTDOWN, &in, NULL);
-> +}
-
-As Sean already pointed out, I am sure it's/should not used in this series.
-
-That being said, I found it's not easy to determine whether one wrapper 
-will be used by this series or not.  The other option is we introduce 
-the wrapper(s) when they get actally used, but I can see (especially at 
-this stage) it's also a apple vs orange question that people may have 
-different preference.
-
-Perhaps we can say something like below in changelog ...
-
-"
-Note, not all VM-managing related SEAMCALLs have a wrapper here, but 
-only provide wrappers that are essential to the run the TDX guest with 
-basic feature set.
-"
-
-.. so that people will at least to pay attention to this during the review?
 
