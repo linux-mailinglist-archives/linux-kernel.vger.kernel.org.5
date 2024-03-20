@@ -1,259 +1,171 @@
-Return-Path: <linux-kernel+bounces-109147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC19C881548
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42928881585
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6229E284123
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:12:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED07C283D24
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A2054BFD;
-	Wed, 20 Mar 2024 16:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD11E56754;
+	Wed, 20 Mar 2024 16:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZWeTSntZ"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bF5heiU9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="McsXNZ/m";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JDIcfAXn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQHvRJC6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 199BB23B0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081F754BFD;
+	Wed, 20 Mar 2024 16:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951160; cv=none; b=hyk0anaH0tWPiwT2OrkQAgs2GX7y+pbqWmYTWIRNK8zokL6te/Q/J80uQp5N+HvVj3ZyIhsG5/uwo3coZQK1gZDhAWBFOotgV3lHyd4KRUp5NntflfbDcerxNGH4lFYyK5d0xGMl3/uwalD28mHMTqjrfqNN8kcSudSBhvG4zFA=
+	t=1710951716; cv=none; b=gSpy9NnFdV2MCxoUKcsGLwnDmjQ00jUh0zWePc994zC/pI7/Aq/peIKigdWQ45ykDBVEwbsLaZCbWlCsiktJojXVUYIy27mMAfZ+6JyZMJ/3vzA5JSowT2RUG3TXr7MSf1rfy07c7Aol60MbKtDCMWjZJ2aVUY1S7VV++iIqxKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951160; c=relaxed/simple;
-	bh=91XMpLG2akQ92yHfsX86vnzQBDTtg0DrCMSJa/o9yO4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ZmmrUTP1/VuCLn62ql+Qu63HdZFoexb33jTsmXLE6DTxtQFVBXqCxakO4I4H7MRdHvvnvHcP84U6MpaA2/GQVHydbcUAVxs6g7H/zxuNtOUeJnxXrsxw4EvH3fGxpdeDvQQlLcnqQgbzZxfrDbl4DgNQSkLbmEvE1pt3n+IKvDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZWeTSntZ; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-414618e6820so19993615e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710951157; x=1711555957; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OHaerxnf+Io0STbXSxPOeYL0uihrNa0TldEwjw3BQgY=;
-        b=ZWeTSntZ3C9eDoRi9NgKZjAgmPAHzY6+rinN5GPISYIEw6hya3n6aW1P3tRR6a6qAb
-         FRdCwz87hnV52HKD2YHOwiOekplp/BjbBReBHjx7y8eYpcmnZKu/kwaGNelMbeRY52Ga
-         sfoeBvpFsutZ1PfyjoVEkr/xAbcTnhUzywvxzv2MW/siM+SFwOkx0WBiejUhLzLcgH2m
-         /2dCengCm6jP/WSwS5NTTCENZ0z/zt6QKT0qSQNTZ68lYXEczyxn9QgIbCbbKPk+LR12
-         5+Sb0khCuRE/8lE3IofBAxOQzjMBNq2rIzJ7SXTvyVAuna/9koHt7z9G4ex38xcKcUYl
-         pjzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710951157; x=1711555957;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OHaerxnf+Io0STbXSxPOeYL0uihrNa0TldEwjw3BQgY=;
-        b=HYhFBGAkeYNH4EO8vG/iOMXz+bR87WK20Y5vLgzHwAxoT2PMb0u/ife4Bn6zPWg0ah
-         xnI3K0RK92KfRwh/tbsCn1AafzVXSox2AC+FrPOG7s7yvwvW0uEbiBmwrIC3y1lsDsOu
-         erUlYy9COFqc1oOuFNxSp8HSGUNVB27aC+4/Bq01cK8ubSzX4h0Z59umdRMaxAigOAdp
-         TXpMTyoKBV7fhF4V2S02GiSqi1gt/dteq1KXjHI11SYhUJLYT+eXxni1D/F9xZgMHNam
-         C+UU9Eyu06CwgoZZZtCsHtEa0h/U6Kvr9vNiE2sX2617QY4Jyq2XJT20bDv81RNzhgA7
-         EjCQ==
-X-Gm-Message-State: AOJu0YwsQWeZzNZ3ATi3/JNSQAJNWJUF2x7nufPcJ3AhGU7SEgi3B+kC
-	rWK3zP9Clc/ZBQxyUNC4Wx31SW4QnVapQIpCFTbAsU1YebaTpxoSAXCrZekNeZnsJmB3arLAR2l
-	7
-X-Google-Smtp-Source: AGHT+IGUmqwc0fjYKojLrdrN0jIAX9AbIj172jwSl+A63IlFH6oYl/Bmn8K+Tv5YFkUwdiy9Xj10ig==
-X-Received: by 2002:a05:600c:4fc8:b0:414:6172:8366 with SMTP id o8-20020a05600c4fc800b0041461728366mr5260918wmq.15.1710951157618;
-        Wed, 20 Mar 2024 09:12:37 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id by19-20020a056000099300b0034174875850sm7821180wrb.70.2024.03.20.09.12.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 09:12:37 -0700 (PDT)
-Message-ID: <bbbb5983-f870-48ce-ab7d-c424266e78d9@linaro.org>
-Date: Wed, 20 Mar 2024 16:12:36 +0000
+	s=arc-20240116; t=1710951716; c=relaxed/simple;
+	bh=ZmXcOT2M7y1OmxH/SEp9ytHnYcwwQWvq2UwG3089PQU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tI7I/EE+OEjwglGlKl/FvrCeq6jUrJV3mDHfoalaXDYvHoNwmZrVGk8ph2+9DqqjB0FVmGLoSeeS5k0m2LMeuFkF9IqOlMNQVSW+dtq4PlCOL9A5ALaETxtRZiDFMFiLDvxmwqX+cqk/z/VkPAnR8xclgKv+NCxHKPqZdXGem6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bF5heiU9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=McsXNZ/m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JDIcfAXn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQHvRJC6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BD1BF5BF34;
+	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710951712;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
+	b=bF5heiU9lZlOxJ7sb27QO9chlKb3kbhK7em6NtYKoN7YBYVxitQCBUUh36OYpm3pmjGcnF
+	3waG4fSEVrUyNMY3+9Zxn4z260/sd1qo1jBfjyJ4OSOCyAjDy8GPH3rPEwUfwRm2MUwqhJ
+	gzCcHCr/x0HzFdGKMF0KVFBuf/sZJZQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710951712;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
+	b=McsXNZ/mbf8MeBIaJemGCPCpS4SUFpZLu87Gl5brQVnG8obcHAecuE99YzRQk7DM78ZxyK
+	rwfO4KfVQ8oeAHBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710951711;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
+	b=JDIcfAXnDteeFPv+o9oBlO1bHyYU0fRPgMQ5j7Htgnz0KLdk4TLUa0tnRv3I1POz+O4tXl
+	T6ciwjBmFIV32CwBSfcUm8w+TpDuPK2/1H1Ks9lHO3ZOg98+SsZCMWzOuq4pJGn6jxj4mv
+	Pq/uzGDP6fHruG5ikDHmVWzyRrsWBPY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710951711;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
+	b=ZQHvRJC6fn4T+b6WK/fikmf2EAXzHJWDlsbn0Ym/bnnWofpPtSjM8OIolzNG5rFMNTPWBr
+	38hXFWq+fPpU9zBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9922C136D6;
+	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id m4YzJR8N+2WdZgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 20 Mar 2024 16:21:51 +0000
+Date: Wed, 20 Mar 2024 17:14:33 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Maximilian Heyne <mheyne@amazon.de>
+Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>,
+	Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
+	stable@vger.kernel.org, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: allocate btrfs_ioctl_defrag_range_args on stack
+Message-ID: <20240320161433.GF14596@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240320113156.22283-1-mheyne@amazon.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/8] media: qcom: camss: Add CSID gen3 driver
-Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: Depeng Shao <quic_depengs@quicinc.com>, rfoss@kernel.org,
- todor.too@gmail.com, andersson@kernel.org, konrad.dybcio@linaro.org,
- mchehab@kernel.org, quic_yon@quicinc.com
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org,
- Gjorgji Rosikopulos <quic_grosikop@quicinc.com>
-References: <20240320141136.26827-1-quic_depengs@quicinc.com>
- <20240320141136.26827-6-quic_depengs@quicinc.com>
- <b542f9a1-2053-4431-832e-5510e8d8220e@linaro.org>
-In-Reply-To: <b542f9a1-2053-4431-832e-5510e8d8220e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320113156.22283-1-mheyne@amazon.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JDIcfAXn;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZQHvRJC6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.31 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.10)[65.31%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,oracle.com:email,amazon.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.31
+X-Rspamd-Queue-Id: BD1BF5BF34
+X-Spam-Flag: NO
 
-On 20/03/2024 15:40, Bryan O'Donoghue wrote:
-> +static const struct csid_format csid_formats[] = {
-> +    {
-> +        MEDIA_BUS_FMT_UYVY8_1X16,
-> +        DATA_TYPE_YUV422_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        2,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_VYUY8_1X16,
-> +        DATA_TYPE_YUV422_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        2,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_YUYV8_1X16,
-> +        DATA_TYPE_YUV422_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        2,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_YVYU8_1X16,
-> +        DATA_TYPE_YUV422_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        2,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SBGGR8_1X8,
-> +        DATA_TYPE_RAW_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGBRG8_1X8,
-> +        DATA_TYPE_RAW_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGRBG8_1X8,
-> +        DATA_TYPE_RAW_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SRGGB8_1X8,
-> +        DATA_TYPE_RAW_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SBGGR10_1X10,
-> +        DATA_TYPE_RAW_10BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> +        10,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGBRG10_1X10,
-> +        DATA_TYPE_RAW_10BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> +        10,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGRBG10_1X10,
-> +        DATA_TYPE_RAW_10BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> +        10,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SRGGB10_1X10,
-> +        DATA_TYPE_RAW_10BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> +        10,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_Y8_1X8,
-> +        DATA_TYPE_RAW_8BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-> +        8,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_Y10_1X10,
-> +        DATA_TYPE_RAW_10BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-> +        10,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SBGGR12_1X12,
-> +        DATA_TYPE_RAW_12BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> +        12,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGBRG12_1X12,
-> +        DATA_TYPE_RAW_12BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> +        12,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGRBG12_1X12,
-> +        DATA_TYPE_RAW_12BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> +        12,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SRGGB12_1X12,
-> +        DATA_TYPE_RAW_12BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-> +        12,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SBGGR14_1X14,
-> +        DATA_TYPE_RAW_14BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> +        14,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGBRG14_1X14,
-> +        DATA_TYPE_RAW_14BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> +        14,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SGRBG14_1X14,
-> +        DATA_TYPE_RAW_14BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> +        14,
-> +        1,
-> +    },
-> +    {
-> +        MEDIA_BUS_FMT_SRGGB14_1X14,
-> +        DATA_TYPE_RAW_14BIT,
-> +        DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-> +        14,
-> +        1,
-> +    },
-> +};
+On Wed, Mar 20, 2024 at 11:31:56AM +0000, Maximilian Heyne wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> commit c853a5783ebe123847886d432354931874367292 upstream.
+> 
+> Instead of using kmalloc() to allocate btrfs_ioctl_defrag_range_args,
+> allocate btrfs_ioctl_defrag_range_args on stack, the size is reasonably
+> small and ioctls are called in process context.
+> 
+> sizeof(btrfs_ioctl_defrag_range_args) = 48
+> 
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> CC: stable@vger.kernel.org # 4.14+
+> [ This patch is needed to fix a memory leak of "range" that was
+> introduced when commit 173431b274a9 ("btrfs: defrag: reject unknown
+> flags of btrfs_ioctl_defrag_range_args") was backported to kernels
+> lacking this patch. Now with these two patches applied in reverse order,
+> range->flags needed to change back to range.flags.
+> This bug was discovered and resolved using Coverity Static Analysis
+> Security Testing (SAST) by Synopsys, Inc.]
+> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
 
-Also please consider including/reviewing Gjorgji's patchset which 
-reworks the declaration of resources.
+Acked-by: David Sterba <dsterba@suse.com>
 
-https://lore.kernel.org/lkml/20240319173935.481-4-quic_grosikop@quicinc.com/T/
-
----
-bod
+for backport to stable as a prerequisite for 173431b274a9a5 ("btrfs:
+defrag: reject unknown flags of btrfs_ioctl_defrag_range_args").
 
