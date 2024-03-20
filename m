@@ -1,221 +1,138 @@
-Return-Path: <linux-kernel+bounces-109202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C6C881617
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CB1E88161E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 968AC1C213FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:05:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D9BA1C22349
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9FF6A34C;
-	Wed, 20 Mar 2024 17:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80C369E16;
+	Wed, 20 Mar 2024 17:07:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BaJtZkEq"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UB12JCYv"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDA86A010;
-	Wed, 20 Mar 2024 17:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB5969E0C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710954317; cv=none; b=ZWMDdbiRRIsxYw6I3wG30YRfYJAmgsgrCgfWbtOTUg6uYq3vb8VM3LQfDj6kSer2n8ygnAdqE5VjgSDkNli1xhj3NTPq98uP9cHLlEepMNn19TqFM5719xDzkvpTl31EMvyDmdNzDz/1AIb98aMbQHJIMtbovOTI0EKcLFP/hhY=
+	t=1710954429; cv=none; b=O0xMC/iQnivLLHUU1jibJtAdfABECPver6iuDlt7QzG/rr027Vt+M2TbKckSqnksS/7cu944+04vI5x3qfqevYLxPgptgCiOS39G9ulpbQg08zuHmUeOeLkoXGHShHaEiWC7h2zqRuY50EKclyX2CogSaMps7ikR/ejR0JvIBGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710954317; c=relaxed/simple;
-	bh=IVOoaXTdRIOWRHqJ/jIyAtqfWU/uE5l47TaaKfbqYKI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SfAZIbLeK82fWqoQZ+W5BwNTmTJuQ5PrpbwN0dzJoDdANc5JyaoFrDgDCqkF2BJS5QD92MSmMls+OZtMtNLOkAbuZua53lP4GRvv3nS1gNQE975KDOxHKMyU37g7B46P6xlCYQq64rOlBQfA4XU2707kWgw/qcIBQtI/qDLBqu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BaJtZkEq; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1710954429; c=relaxed/simple;
+	bh=S9HoGsZhuXTXpMv45bUaideIMkuI7ajIyTOpNXFqcgg=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=diWn5B0yrMqDKlM5KBFuGnl1gHHIEpEkh04wSNN0C9Cjt6uXxmyOpIynad5s+83MtMyM2RP0fPdZBujkjvI8tyD0fsnbwWHa4N962rEhi46H5avV2M3I2Q0t+g8gJ4q/EY5l6OvmOWC3V2M1J7kCXG+kAHkMRwwhNb8ROzLqg60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UB12JCYv; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so214027766b.0;
-        Wed, 20 Mar 2024 10:05:15 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d68cf90ec4so1845291fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:07:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710954313; x=1711559113; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=63t1vQpfuivnFuqcHL3Yoh9775vvNNfjouC2X81BrxQ=;
-        b=BaJtZkEq/igw9WzmiOsKqT3mAOs3j8PAdIJ5IN0wuEWG9MKG4dEiZNFxR5cs1L1aqi
-         3Lc24sM6dFqW2zKcrl9y9BSTI3i5JnDp5vgT4dtabftIbES/h0Q6dEB2F50l4eLWG0t5
-         ngLfR0Nv1A8jNzlTUD2dfwef8ByHRxv9EAB0kP8x5ps41nesLzaMx2r+iup6aZFPqG/V
-         +eNYXx6PzdjCP0VXez0uAshC7eKOQGF8urytxh8wB6W7EN3V29D1jaRKoPhbQPXPK9UF
-         3sr8M66A3mW2Z6/pp30xp+FWd/x4UwMVSPpT6W6bh0DjR+7yv+hcxcOq5g4x3i0Xcq88
-         8KLw==
+        d=gmail.com; s=20230601; t=1710954426; x=1711559226; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dauDd7p4nihuYem3p7oKL3fbGPFzYZoE9wtIVNIfXUM=;
+        b=UB12JCYvx5yHZeoOALsCl49r82le/7nhXLpf4gv7ZEOX7AoWijxiN2tQ8Aq2HvNVPy
+         B8rjQZXT9ITJC0x6CRY78dpiELNEGE5gccjtxw+HU4ASMHlOrL0H+z4heydGtmlNXGmP
+         VHM0fx+oDXA4MC0/2MY9AQtipXaqHggySe/X/9kJ0J+L3WSBIHv34EaeR7LDyJR5DzYs
+         dQoMNv9XZU2fv2XwuB5TlCcXlDl2xzTDAaK2GldxgnJEyjXSCSeKJdEedAHBpa3xqqKm
+         9iieKj2XrPdJnk2bI90ieS0b5dB5pDqdcOEXnZqNTUQybVyEb7nsxtG95D6Z/NQHt3Yj
+         CGFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710954313; x=1711559113;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=63t1vQpfuivnFuqcHL3Yoh9775vvNNfjouC2X81BrxQ=;
-        b=ZSU6KppWO0JUWkCyfGpKsJGMMyxdVl2+/1sn81yvy97pUI4GWNTZMBUilwuPI37UMg
-         C8O+dKAX0hovBmf6qdM99TzGUs2mF++Z0iUQfMod+FXo1Q3In5Kouf/cvCj//meB6xsT
-         nocBPhVHcsqrj7Umr1e8YVk7PvaGBr1CTxwbTMLQs2hAoY2wdvGmpXQCcIfv3TlXC4hu
-         fI1LtIYh1a2tb0CgnfpYLlC4Uy+4MyY1zjTjSLQwy0wsXcT4jAAZGmBOMxBr67dtnpW4
-         EhBSCvj0rIv79FlkrfX9kagPlclr67EQqm8N/YJSf6dFObWJrFp+7HOnaKuW8Sdpaj4X
-         UQgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVs/wXSrkzU+x56I2S3mLddofw86giyDLHxRQTQJ2qU7InObEFTe/u+0rnu+ZhYvBB55qYPMj+vySF7Sf/IuGmqdCEFN9f28U6rSBG51xHNtghhru9zqftWcqEf+UkPcL6DPO6xu9SueA==
-X-Gm-Message-State: AOJu0Yz1rfP5+Z0Bj4eK8qF0/crmAt9oI9y6BzZfteQr8rWpCzUtCcDR
-	09FnBdMXRf7GZtFjF+aG3sDYPiOKEqUhBwtV77LiwHWjSJPd3z2l8qDmfgW9+DRcqQ==
-X-Google-Smtp-Source: AGHT+IE4FWycV2u2wFkM4cGuD4UzYQE5/Y6WQqubh+YUUn5OYTqJkVFL1BtiMmruqGLMTIVmHwSlrw==
-X-Received: by 2002:a17:906:29c7:b0:a46:ebe6:742e with SMTP id y7-20020a17090629c700b00a46ebe6742emr221889eje.23.1710954313107;
-        Wed, 20 Mar 2024 10:05:13 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-3c5a-7cb4-e12c-8223.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:3c5a:7cb4:e12c:8223])
-        by smtp.gmail.com with ESMTPSA id af3-20020a170906998300b00a469604c464sm5999019ejc.160.2024.03.20.10.05.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 10:05:12 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 20 Mar 2024 18:04:58 +0100
-Subject: [PATCH 2/2] dt-bindings: hwmon: max6650: convert to dtschema
+        d=1e100.net; s=20230601; t=1710954426; x=1711559226;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dauDd7p4nihuYem3p7oKL3fbGPFzYZoE9wtIVNIfXUM=;
+        b=IBsbIQpWF8lG/wTdwYJrvEQ3EtPQrJ94JOvtpKyFubOD3qrkBqbKXH9jObZHxFsqVB
+         HzpMGU0KMm4I/2WP8T1hqDAxuE44X4pi6H3HzLVa7PwrhAMEh+55dBHc0/suFXtE1QZv
+         jfgZGXBnEBjlNJdgMgo0WavPLkB8UEgyEBvZoQOaZ3JZiptmPqqEVwuEsxwIcrYieeMX
+         XfxLNbZoDEwICpRtwSeSNH6I8eAIzCmVXJwX78jimkZ0vWkGa8iUxJnp0uIwZuH5knGH
+         HwfoRUA7oMFNrWA+QH5X1zMXEE35oxeN01xknYJr2TMQb4lk5/m5WD3pWDHO8tf8J8yS
+         ehxg==
+X-Gm-Message-State: AOJu0YyZoeWQXb1Ew58kQmrGe/GrUeRJeCZhD9Z38ITcfpDdfftHPkuB
+	YRLnQ0bC3qPeKoSWZCxT5u/ISp4IIZ9OMLgmlVFqoBa6NlaHpNop8bTLMsKUMaQk1+wr/FsBlY6
+	momyNcY4HaySWVXXhTGlux3IicbYFnk0dxkA41g==
+X-Google-Smtp-Source: AGHT+IG83UymRNC+OdCOB6w0QG6zsyWkOzymCrP8gihG/UnBd8vGhA7VCP+BMkGdTpv0nsWd7lP357Wx3ZwqAUz36yc=
+X-Received: by 2002:a05:6512:3e1e:b0:513:4fb4:5388 with SMTP id
+ i30-20020a0565123e1e00b005134fb45388mr16007797lfv.41.1710954425409; Wed, 20
+ Mar 2024 10:07:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240320-hwmon_yaml-v1-2-a349ca21ccab@gmail.com>
-References: <20240320-hwmon_yaml-v1-0-a349ca21ccab@gmail.com>
-In-Reply-To: <20240320-hwmon_yaml-v1-0-a349ca21ccab@gmail.com>
-To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, peiyu li <579lpy@gmail.com>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710954308; l=3820;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=IVOoaXTdRIOWRHqJ/jIyAtqfWU/uE5l47TaaKfbqYKI=;
- b=V7vq8d/EncKKvGUZA67pruDqB8f6EAafYYYMgu8uLkGoKdUYl/VkJy4DTsyCPmurzBcCN0/h2
- EDuS4Kil6/zCaScx8t2C6N63qmVCKsmwBf79qGEM11s4OKI3N2auuYD
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+From: Steve French <smfrench@gmail.com>
+Date: Wed, 20 Mar 2024 12:06:54 -0500
+Message-ID: <CAH2r5mtyoxmUyhmD-RA0TzAvsanU2VaCRi=OpTqCVjzdv0QykA@mail.gmail.com>
+Subject: [GIT PULL] ksmbd server fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
- Convert existing bindings to dtschema to support validation.
+Please pull the following changes since commit
+e8f897f4afef0031fe618a8e94127a0934896aba:
 
- This is a straightforward conversion with no new properties.
+  Linux 6.8 (2024-03-10 13:38:09 -0700)
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../devicetree/bindings/hwmon/max6650.txt          | 28 ---------
- .../devicetree/bindings/hwmon/maxim,max6650.yaml   | 68 ++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 28 deletions(-)
+are available in the Git repository at:
 
-diff --git a/Documentation/devicetree/bindings/hwmon/max6650.txt b/Documentation/devicetree/bindings/hwmon/max6650.txt
-deleted file mode 100644
-index f6bd87d8e284..000000000000
---- a/Documentation/devicetree/bindings/hwmon/max6650.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--Bindings for MAX6651 and MAX6650 I2C fan controllers
--
--Reference:
--[1]	https://datasheets.maximintegrated.com/en/ds/MAX6650-MAX6651.pdf
--
--Required properties:
--- compatible : One of "maxim,max6650" or "maxim,max6651"
--- reg        : I2C address, one of 0x1b, 0x1f, 0x4b, 0x48.
--
--Optional properties, default is to retain the chip's current setting:
--- maxim,fan-microvolt : The supply voltage of the fan, either 5000000 uV or
--			12000000 uV.
--- maxim,fan-prescale  : Pre-scaling value, as per datasheet [1]. Lower values
--			allow more fine-grained control of slower fans.
--			Valid: 1, 2, 4, 8, 16.
--- maxim,fan-target-rpm: Initial requested fan rotation speed. If specified, the
--			driver selects closed-loop mode and the requested speed.
--			This ensures the fan is already running before userspace
--			takes over.
--
--Example:
--	fan-max6650: max6650@1b {
--		reg = <0x1b>;
--		compatible = "maxim,max6650";
--		maxim,fan-microvolt = <12000000>;
--		maxim,fan-prescale = <4>;
--		maxim,fan-target-rpm = <1200>;
--	};
-diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml
-new file mode 100644
-index 000000000000..1b33b5fb606d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+
-+$id: http://devicetree.org/schemas/hwmon/maxim,max6650.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Maxim MAX6650 and MAX6651 I2C Fan Controllers
-+
-+maintainers:
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+description: |
-+  The MAX6650 and MAX6651 regulate and monitor the speed
-+  of 5VDC/12VDC burshless fans with built-in tachometers.
-+
-+  Datasheets:
-+    https://datasheets.maximintegrated.com/en/ds/MAX6650-MAX6651.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - maxim,max6650
-+      - maxim,max6651
-+
-+  reg:
-+    maxItems: 1
-+
-+  maxim,fan-microvolt:
-+    description:
-+      The supply voltage of the fan, either 5000000 uV or
-+      12000000 uV.
-+
-+  maxim,fan-prescale:
-+    description:
-+      Pre-scaling value, as per datasheet. Lower values
-+      allow more fine-grained control of slower fans.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [1, 2, 4, 8, 16]
-+
-+  maxim,fan-target-rpm:
-+    description:
-+      Initial requested fan rotation speed. If specified, the
-+      driver selects closed-loop mode and the requested speed.
-+      This ensures the fan is already running before userspace
-+      takes over.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        fan-controller@1b {
-+            compatible = "maxim,max6650";
-+            reg = <0x1b>;
-+            maxim,fan-microvolt = <12000000>;
-+            maxim,fan-prescale = <4>;
-+            maxim,fan-target-rpm = <1200>;
-+        };
-+    };
+  git://git.samba.org/ksmbd.git tags/v6.9-rc-smb3-server-fixes
+
+for you to fetch changes up to def30e72d8abaf68da10682767e584519c234c4c:
+
+  ksmbd: remove module version (2024-03-18 21:21:38 -0500)
+
+----------------------------------------------------------------
+Nine ksmbd server changesets:
+- Two patches that add support for durable file handles (an important
+data integrity feature)
+- Fixes for two potential out of bounds issues
+- FIx possible null dereference in close
+- Two getattr fixes
+- Trivial typo fix and a minor cleanup fix
+----------------------------------------------------------------
+Colin Ian King (1):
+      ksmbd: Fix spelling mistake "connction" -> "connection"
+
+Marios Makassikis (3):
+      ksmbd: replace generic_fillattr with vfs_getattr
+      ksmbd: retrieve number of blocks using vfs_getattr in
+set_file_allocation_info
+      ksmbd: fix possible null-deref in smb_lazy_parent_lease_break_close
+
+Namjae Jeon (5):
+      ksmbd: mark SMB2_SESSION_EXPIRED to session when destroying
+previous session
+      ksmbd: add support for durable handles v1/v2
+      ksmbd: fix slab-out-of-bounds in smb_strndup_from_utf16()
+      ksmbd: fix potencial out-of-bounds when buffer offset is invalid
+      ksmbd: remove module version
+
+ fs/smb/server/glob.h              |   2 -
+ fs/smb/server/ksmbd_netlink.h     |   1 +
+ fs/smb/server/mgmt/user_session.c |  28 ++-
+ fs/smb/server/mgmt/user_session.h |   3 +
+ fs/smb/server/oplock.c            |  96 +++++++--
+ fs/smb/server/oplock.h            |   7 +-
+ fs/smb/server/server.c            |   1 -
+ fs/smb/server/smb2misc.c          |  26 ++-
+ fs/smb/server/smb2ops.c           |   6 +
+ fs/smb/server/smb2pdu.c           | 509
+++++++++++++++++++++++++++++++++++++----------
+ fs/smb/server/smb2pdu.h           |  15 ++
+ fs/smb/server/smb_common.c        |  11 +-
+ fs/smb/server/vfs.c               |  12 +-
+ fs/smb/server/vfs_cache.c         | 137 ++++++++++++-
+ fs/smb/server/vfs_cache.h         |   9 +
+ 15 files changed, 716 insertions(+), 147 deletions(-)
 
 -- 
-2.40.1
+Thanks,
 
+Steve
 
