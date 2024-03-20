@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-109403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F118818AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:38:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1223E8818AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EDA9B224A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:38:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 438391C20F19
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7052C4204C;
-	Wed, 20 Mar 2024 20:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280A33A8DD;
+	Wed, 20 Mar 2024 20:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QgJGxvIL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PMkqrwzk"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4547B1B7F5;
-	Wed, 20 Mar 2024 20:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83BE12E48
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710967092; cv=none; b=i/tRzWiED9WMDVw3+gKiwjuudphTdDyhwWQ1Sg7mOsuozzkIrDoH1nqKn9ohxxXWNTD75bf9KjyfNE9xO/pEbZ36+1KewZGNQfGoSF13NxS3/41GmDkir6glSGzdusP2m0RSlhQE933XwzkytSZ72MGyWU0cNH3FQh9RoA+8W/0=
+	t=1710967136; cv=none; b=I69m+wDbeut/AtPLzcXotwcqKmbQmjUTObr2XI9s/3fhyRLQNc0w+qADylm7B/1hIE+L57tShukgWN9Btku5tRNceY/IwEyVsunjnLoi4bz7VvsOzEHjDpF7pTVj8Z4D+AUlfYt2Q5I21k2uFilkKZCY0KFvB0ElcOJZRQFZyxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710967092; c=relaxed/simple;
-	bh=hNgRL40LSQB7xQcowVuzTKGVxepJYYGDnej/MLNsDIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YXYAVA9vUmRxJkEHo9xahIxwtudP6zfkwmP53peM7TgeAVOzo6LB45+7eAUxlPJeJPjzIzbBHeq7nYT4rjdR1c41kyMriZD39d2MWOd+gkPxXTbp3Zt2TH95u8hr9iKXbSPw5hbzxbWNh+Mau4ErsWgaLcXZdz/eO5Hhi4zu710=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QgJGxvIL; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710967091; x=1742503091;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hNgRL40LSQB7xQcowVuzTKGVxepJYYGDnej/MLNsDIE=;
-  b=QgJGxvIL5Ame/tjQhnONkB8JFVUSufY1AqI9EyQDOKjnOeZsH0PySuyj
-   jrx7vWnOrYaLJ/LWK+U6JuVCcty3Z/27nu5obz1jyU1jNXF3P+1Y+3zo1
-   yxYHVs0X3FcN/k0QIAJgceJugMm/y15bXZVW0MsXj7x5JEjrfW9zAbs1I
-   y1KLgzgLGPq90nZRP4e7KdiMHSDhzdnFhILMFRwOSqaweeMfjDeiJxtaW
-   Woy27HPSnzmM63e1G96jtCNAVaLrQXREowoFzzSGq4saAzIeLbAQekzSU
-   yYHQw85P7olwKNd4qF0HBSI/lRUYmGTg3+TLa/DBp1Ghy6Oy8Q0kVA/iY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5792099"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="5792099"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:38:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="914678292"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="914678292"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:38:06 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rn2hH-0000000EgP1-2vqb;
-	Wed, 20 Mar 2024 22:38:03 +0200
-Date: Wed, 20 Mar 2024 22:38:03 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
-	linus.walleij@linaro.org, semen.protsenko@linaro.org,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] iio: pressure: Add timestamp and scan_masks for
- BMP280 driver
-Message-ID: <ZftJK3cqFNU9-dCG@smile.fi.intel.com>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
- <20240319002925.2121016-6-vassilisamir@gmail.com>
- <ZfrDW1ESxnFg__od@smile.fi.intel.com>
- <20240320184516.GB36450@vamoiridPC>
+	s=arc-20240116; t=1710967136; c=relaxed/simple;
+	bh=QqgcfH7Gs4aFDl7apE5SLWcpDntkG8VEFpyNR7pQaDY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uG1R1829kFG9+qgBbGhSkwlZAJJIUdL/Xg4ksPyEORVI4Iwt0HOhes7wgABsSf1R36olBgcCGjzXOExZyh44g7xhkxwnvIQPSQ7bH4vgQu1SzDSY7CJedVNZGLxhglueMdxOgV6qjaQZAwk8H3/JTa01U+dF2faBhFjWtwNTjqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PMkqrwzk; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KJoP2P027154;
+	Wed, 20 Mar 2024 20:38:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=OnNPBOJG99sLl6xnj4rFf8mUA0PEh3eDPw9A7LF1ZT8=; b=PM
+	kqrwzk062/TPCWIzs/zUpJ9fZCivQm+62RslNWMmsdMyOKgXZmZYpdRtzL6pgO+Z
+	w6moGu6da86qw6SDvkVWCmWdTLgC/4TOOs8u1AnplxFIiCQieLAkYhMa4Ziwg+/N
+	ARz7LULG/cYJIhQmFLOyu5EqrMA/eei2K1MnxGDFL+AaxbQ+vifay9JCxgR2+KTE
+	pmOmcQQrLTe9/Q0qah1cVMaxOVRWtP/b2S9k2FteWRk4UWfgnHNy/aFpeWk2CwD/
+	qqOEgRkMd0aRMs5pAY+Hx+7cWp6Ar/O5/LoA8MO7ettxDkj5FGu+5l2YGt+sGfiB
+	kLrS1UdZhI4n+zwoIPQQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyrp7a2ue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 20:38:30 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KKcK46021230
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 20:38:20 GMT
+Received: from [10.71.108.229] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Mar
+ 2024 13:38:19 -0700
+Message-ID: <43149aa6-e6b9-487b-9d98-e2281d65e2bb@quicinc.com>
+Date: Wed, 20 Mar 2024 13:38:09 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320184516.GB36450@vamoiridPC>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] drm/panel: ltk050h3146w: add MIPI_DSI_MODE_VIDEO to
+ LTK050H3148W flags
+To: Heiko Stuebner <heiko@sntech.de>, <neil.armstrong@linaro.org>,
+        <sam@ravnborg.org>
+CC: <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <quentin.schulz@theobroma-systems.com>,
+        <klaus.goger@theobroma-systems.com>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>,
+        Heiko Stuebner <heiko.stuebner@cherry.de>
+References: <20240320131232.327196-1-heiko@sntech.de>
+Content-Language: en-US
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240320131232.327196-1-heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1t2UMwHijK8EBCOLBgnA6x-Naz_MlNTe
+X-Proofpoint-GUID: 1t2UMwHijK8EBCOLBgnA6x-Naz_MlNTe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_11,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 spamscore=0
+ impostorscore=0 suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403140001 definitions=main-2403200164
 
-On Wed, Mar 20, 2024 at 07:45:16PM +0100, Vasileios Amoiridis wrote:
-> On Wed, Mar 20, 2024 at 01:07:07PM +0200, Andy Shevchenko wrote:
-> > On Tue, Mar 19, 2024 at 01:29:24AM +0100, Vasileios Amoiridis wrote:
 
-..
 
-> > > +enum bmp280_scan {
-> > > +	BMP280_TEMP,
-> > > +	BMP280_PRESS,
-> > > +	BME280_HUMID
-> > 
-> > The last is not a terminator, please leave trailing comma.
-> > 
-> > > +};
+On 3/20/2024 6:12 AM, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
-> What do you mean it is not a terminator? In general with the enum
-> variables I would write:
+> Similar to other variants, the LTK050H3148W wants to run in video mode
+> when displaying data. So far only the Synopsis DSI driver was using this
+> panel and it is always switching to video mode, independent of this flag
+> being set.
 > 
-> 	enum var { a, b, c };
+> Other DSI drivers might handle this differently, so add the flag.
+> 
+> Fixes: e5f9d543419c ("drm/panel: ltk050h3146w: add support for Leadtek LTK050H3148W-CTA6 variant")
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
 
-This example is different to what you used. I.o.w. _this_ example is okay.
+Hi Heiko,
 
-> Why in this case there is a comma needed after the BME280_HUMID element?
+Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
-It's pure style issue that helps to avoid the unneeded churn in the future in
-case the list is getting expanded. You can easily imagine what I mean.
+Thanks,
 
--- 
-With Best Regards,
-Andy Shevchenko
+Jessica Zhang
 
-
+> ---
+>   drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> index 30919c872ac8..a50f5330a661 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> @@ -326,7 +326,8 @@ static const struct drm_display_mode ltk050h3148w_mode = {
+>   static const struct ltk050h3146w_desc ltk050h3148w_data = {
+>   	.mode = &ltk050h3148w_mode,
+>   	.init = ltk050h3148w_init_sequence,
+> -	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_VIDEO_BURST,
+> +	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> +		      MIPI_DSI_MODE_VIDEO_BURST,
+>   };
+>   
+>   static int ltk050h3146w_init_sequence(struct ltk050h3146w *ctx)
+> -- 
+> 2.39.2
+> 
 
