@@ -1,203 +1,194 @@
-Return-Path: <linux-kernel+bounces-108519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B36880B9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:01:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A095880BA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:02:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966201C226C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:01:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF6E1F237EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595C01EB45;
-	Wed, 20 Mar 2024 07:00:59 +0000 (UTC)
-Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879B91EB44;
+	Wed, 20 Mar 2024 07:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KUbLvqrM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A121802E;
-	Wed, 20 Mar 2024 07:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.197
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710918058; cv=none; b=ckF5NEKlI2uXYfPK7Gk7rg1RZk0oLqlTQcEiZoL7xR1g/yB9bMUCuqIv7p/KyHmqrO5DlWNC2T3I8fF/evk3M80lj8WWq/llFb2rzgS4gjVECs3aHG1qYzfnCNvHmwrtsWqp/AOTIraRPp1+ulstkX/wTjLcq3T4tF9Afw3jWbk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710918058; c=relaxed/simple;
-	bh=4I2y4bhytZmToM7O2HhYsj3349W9SP7v7zoltzF0bKY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TwKHfvrRAgJmF1Y5/GbU7Qf3Hbv9PVdH5sSFqj+SCgs5r7BHy4DQ3FbXAjbkfNQEn5HrT9o8B2jneKO8wDa91NelWyI0Y3E+KytyldJlekJC1lccVuDSEli9FF2+9dzHT9VRYmTdlCHmLX1fmQq5y/m/ThZzBLEJFQqJh3UiPu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn; spf=pass smtp.mailfrom=jmu.edu.cn; arc=none smtp.client-ip=45.254.49.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmu.edu.cn
-Received: from amadeus-Vostro-3710.lan (unknown [IPV6:240e:3b3:2c02:e4e0:9b1e:f586:4aa6:c9a8])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id D346B7E0143;
-	Wed, 20 Mar 2024 15:00:36 +0800 (CST)
-From: Chukun Pan <amadeus@jmu.edu.cn>
-To: Johan Hovold <johan@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chukun Pan <amadeus@jmu.edu.cn>
-Subject: [PATCH 1/1] USB: serial: option: add GosunCn GM800 series
-Date: Wed, 20 Mar 2024 15:00:20 +0800
-Message-Id: <20240320070020.77280-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8E61DA3A;
+	Wed, 20 Mar 2024 07:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710918126; cv=fail; b=OMUDocUF0U53b4gM+S6hgFuZrG0PYlipGAqDnDFQF4eA5yYN/l9K+lsiIVIzzru8W45G5kk13jTos2flp1zl682vgAUrEHu6jCA6KYMpRixPdIAW+WU0LZqJmMgIjbFdv8IEbQPl739KMknH7mJEEKbQ5MQKnwiDkmyr1d6k/FY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710918126; c=relaxed/simple;
+	bh=OghuAn3dNcfWxkSWO6sYrF+3HIB+uysNPFNcN33ZTYY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=PN3u/0XjPz//4Pc9Z3TU59i23AZu2I7PI6iITH3ArvAWQnGCyks9RA2ZrhA3mIOtiV2yfYSjXT899sa/Nc1gBYiwF8DTw6KPDKSRufJpDT/mDE/Z0pjY9G8K0ghSYcu+Z5AhSZDWtMHhJF8Hnqn5eyff5KRwNgmMq8DZLXSVsl0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KUbLvqrM; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710918124; x=1742454124;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=OghuAn3dNcfWxkSWO6sYrF+3HIB+uysNPFNcN33ZTYY=;
+  b=KUbLvqrMkVuo6g9yAZgSNP0XaKJ/zFpq09syv9xAW8TE08nmeuuhQpa3
+   2jO1GQx/npJAUQwAuHHfVdp+x+Scib4ZQWn8z71PJF3zJZNbSKq9Q2YTK
+   W9dKphWUQOSexlGBgKUvDFW1JT4fohjOTA+IrYb6zKKOmFaJpkz5qaSWI
+   Fq7WMrn8FmOhNUEjG/nuyV4b3dbCkJzHa76q78TiKMtTsFduMbZ3S2y4P
+   MJ5x+awhJnImOijfBuVpiuAcproMxPdKahX1lN9MVlaXxTCddMwBnzSj8
+   qQAj4iQ4bVQ7HlVG6tDVKSvGyh5bpX+p/KvYJ+dWYBddSGMG3qR+4hWl0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="16563749"
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="16563749"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:02:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="18718576"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Mar 2024 00:02:02 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 20 Mar 2024 00:02:01 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HWJXNDmzHemlN8LF5MjoCtK9k/sw5J2NIFgP74G3RwS1ber2b1nl2cHLhR5MWce3P0VnXpqZCOJDMUbpFBp3ea7WeZjaM9oYwMFjb+rVewv3JXbYfXYr1KvpVSy41AjQCriz550ARnAS/c9/+KHp3I+a2kQZRPCD7N6uKv2qTn72hcc7FhSpWIPANuBbzKQ5zLf44SZwlk1Q0MCUyZkxLh3qCwbn50C4IHK8moUolVsVnL4FuvTSZouns7RRA7spp5b36zhKDJkgLcAffzPl1eFjBtZku222Y/+PR0u4qPZdSu9k3nb3rNmigXytec80sciJblZrDX/gkuZGjDDF9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KAbwlxzWwVUdBBmb0xiX+VD1m/cI1iBYKYo5q1oVm7o=;
+ b=HdxD6dtpmtQXgG4PRzTwshJhQpKoKVXX39lifoxHd+zdKYc0+H3t2BzN7bvqKSZ086kvuiPAl1T8uvZrH4OWijbQl7axtLetlreTRSFkCcPRqaqKufgMC9BEF6Oh3rnpHJNznFAfhQmRlWnYpPPqKNzyB3qEJ9TZO3LBSI8EW6BIR8AWnlH6on2M38PfNW691PZvTeFPfKe8A1QRL8uvecP/7I4/c7S+YqLzg5tFJr2Sk91hYuBwJjPTtM1dCOOttd4C62bb4t1mP/1VTiJuQtQp+4v2FgqeYq3fMmy6ggZDqmDbYhNu3Jd9qc73c4ed27j0xK5r/smoWMuzKE7zJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by CH3PR11MB7795.namprd11.prod.outlook.com (2603:10b6:610:120::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Wed, 20 Mar
+ 2024 07:01:59 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%6]) with mapi id 15.20.7409.010; Wed, 20 Mar 2024
+ 07:01:58 +0000
+Date: Wed, 20 Mar 2024 15:01:48 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: <isaku.yamahata@intel.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
+	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
+	<sagis@google.com>, Kai Huang <kai.huang@intel.com>, <chen.bo@intel.com>,
+	<hang.yuan@intel.com>, <tina.zhang@intel.com>
+Subject: Re: [PATCH v19 040/130] KVM: TDX: Make pmu_intel.c ignore guest TD
+ case
+Message-ID: <ZfqJ3LkYrwR/qpsX@chao-email>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <2eb2e7205d23ec858e6d800fee7da2306216e8f0.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2eb2e7205d23ec858e6d800fee7da2306216e8f0.1708933498.git.isaku.yamahata@intel.com>
+X-ClientProxiedBy: SI2PR02CA0009.apcprd02.prod.outlook.com
+ (2603:1096:4:194::11) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSExJVhodHU8aGRlOGktITFUTARMWGhIXJBQOD1
-	lXWRgSC1lBWUlPSx5BSBlIQUkYS0lBHk8eS0FCGUoeQR1OQ01BTxoaTUEYQhpDWVdZFhoPEhUdFF
-	lBWU9LSFVKSktISkNVSktLVUtZBg++
-X-HM-Tid: 0a8e5aa96dfd03a2kunmd346b7e0143
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MDo6Dyo6MzMTAhEDSzQzPhgv
-	TB4wFAFVSlVKTEpLQkpDS0hMTU5OVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUlP
-	Sx5BSBlIQUkYS0lBHk8eS0FCGUoeQR1OQ01BTxoaTUEYQhpDWVdZCAFZQUxMSkM3Bg++
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|CH3PR11MB7795:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0e8e89f5-94e7-495e-8c2c-08dc48aba2ac
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zzp71og6bIyrZONAjWytE0HSOGWkZRPr/BYcl5T5VTpIW9SRGmRurxr/ttTRBxBeKynGrL1Io/a32pTL+HAQjGiaaKu/qVIGbVQdw/j3RJU8f/5hhrAj7F/HpegRa/8S2RQqJ4gKOkyAF3P9rT7L6zAuaf5HEv9L/21dBKhpe2B5N++7AHuzzubsWOsPHV5Y7U3ZL51Wk3n8Wrsz8P1TEyeEoF0HiwsX92wqgD/vfUA7AWQvcARBS0sL8uSH8uPJ+BhvIfDEapa7bLCIQsnximJbHGfxYpQB3w48vVlLyLVVVMhP/HEbZ5T3aF1r0b4Ju/xLHRDorebb1jjhFMZatdWUWs3++CLR+fTFt8gSGGKtQ2HL9XAbisACdBSwDPU2I9V0pX1SDV/OMa03urUr2/O8HSccid8uqOPfOOfYr9CiDTYEkvtoZUh+pJmNhkL7upqLFAnoR9p3GCrJO79xdIq+TkkGyp+og+2+kHgtbwL05d7M0DH0hpONmxnYynoC7f9RBXS0KkLmDLVGuGAubYqEHKhewdC4XMinemgASu5PQUm9CDGPAkZEps3mrMZA+tf/jKJ6TjrX+Vp87Uhy5dAqNVkBtMDIDfDUoY9gcSIZIf8tH8+nIPCiLTuJ3PnjQ/yaXAsQOoSitDvswL7Qt2CFwpCXw0J4jvuqJgqI+aU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FyrfRcrngTd2UaVEbFtJY8DwqtoVNGyhi8QsQ5PR0VIDFuLreu3rVpRglRD3?=
+ =?us-ascii?Q?QOItqNnEGgsZTD9GWChus0PBkFhTG9nlZtCPQkUmnA+ryKuXJPnlsBWpAJic?=
+ =?us-ascii?Q?2RdPXmOGOm+dO/ELS85PcGUw1uV3/df31BfPKOV1eyKiSWE7bHB2Jr7ARAQf?=
+ =?us-ascii?Q?o//rVOKv7wdeYRr76Bs67YBxMbRNxTQArjzu1tpaGDs2u+ujv7hzyylKe39N?=
+ =?us-ascii?Q?1NhyJfSVWE6cIL6aFPzUAXyppQLZuug+CxJk12yxG69Fh2dlS/3dxucWorfB?=
+ =?us-ascii?Q?ILJ25jkfVstqFc+792a6BT4LAJY/GK1bAgHraRjE5vw/s2aWydIwJsmpWcp2?=
+ =?us-ascii?Q?0bzrV/MHV9XyOYgRu1/nr8tvU7WCitFp5838RQ3fBaO+M+ODCrKd08k7jgpg?=
+ =?us-ascii?Q?ITrmSsmqVze1/9kaw+LVaJxtxkMZnMZi4ZFCfwknDHDum5jkMcGzqKXzLn7w?=
+ =?us-ascii?Q?pZ0Z5ciNe+weujSdJPG7oIm2WAf3gH9GvoTPrL0gQgTJ4o3E8ipVfYgKI8qq?=
+ =?us-ascii?Q?tJylBP6G+4jFwoeu8OlfTnLyoT8e75waERgT5XKxhMOHWUgRFsIoc0cJkLhz?=
+ =?us-ascii?Q?vyIR59kUwTPJZRieVYrrZFmtjmFf+joUHUdRdln5sTLadeFk2GAb25N1Y316?=
+ =?us-ascii?Q?2sK78/u7N3CoZxaYgVrr8Dz6IyNsW92PQqtPb/cC0rzhihD93j+TsmEH8MVN?=
+ =?us-ascii?Q?TtQUZIvio3BGhNgZpzcA9TcnUJra9yVYTzGD4rv9qqYH3SZDlKCPoUWYPSm9?=
+ =?us-ascii?Q?2qmPmv/2pnjg/d4oz+1DPGCK24JVT9m+7/woTMi4rHcP1v3cFlT6tajZOgeD?=
+ =?us-ascii?Q?ZtuI4KC92bT/qU/n6JzkRrTt51K7jUvrkInrsbon80l0lxvjMqg0DB5AiDHT?=
+ =?us-ascii?Q?cbteBREdARG47Spi3PdDzVWW9qpip/RDMnn8fbOWNu4s+vxcWmrfnKobb3tq?=
+ =?us-ascii?Q?qSQZ3Jr7glt8BtGZBtSHK3LPDHxO9x6C2O5V4+wGNlvyYtYVst4rmp1jfSiZ?=
+ =?us-ascii?Q?7X1ICLSHZW0mUHtmwMl426Nawno36Cf2SJg14GgHa9rj930RSwq0810ejZny?=
+ =?us-ascii?Q?djjcoIxRcOOg5ZgZocgnwrTJVJizL3xdfHIbVhYlFaeg+uBkahUzdIIG7ZMe?=
+ =?us-ascii?Q?cxwcHoLOhIYJ9LnOA3r8qMRfc5LEVDjRoS1MCtxK1h/sN6ge59ndd2GY5XK9?=
+ =?us-ascii?Q?NSgFyL/EWqMdZObperDlDbL3LYtNZJX6HY3+skNHuIdTuBRWJqcyn3RbffCf?=
+ =?us-ascii?Q?jSqvAgWjIX/wF+3ikz3ODTrqbGAHq0d752y3MoKlWgbXk1dpeCcANvry94D5?=
+ =?us-ascii?Q?0AP5JZaRJ+VYAV8j3DGwIEaCnoOwvcKsZsq7ACILj/qHkzTEz96b77+yaq/K?=
+ =?us-ascii?Q?+MIzmQ3KLmVUMKvimZ9+/kgNxP/b7QDZqR9Tm37KHZNiFCh7qbi8GUrEIGIE?=
+ =?us-ascii?Q?tub6dU7Z07j+kKwdA6ox8ZtKW90GBHkIYxyHmMrdj59QxWXM8t1mXt0VTjEX?=
+ =?us-ascii?Q?uf5wGtr7ARFISEMD6UusJLq51ncvnVBr0tfAK+2+BDOB+7uCYCiAR2FgUVcq?=
+ =?us-ascii?Q?iQ5KvH+C20xMbIsY+hoh8t4mQWlTbiwRRRArIMAV?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e8e89f5-94e7-495e-8c2c-08dc48aba2ac
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 07:01:58.7043
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v6vQgUZ+pYy1cKmCrEmfnIC21RocAXR41si1uCc4Iw3lGq8uVkXN9QLCouaWqqmjOvSrzh/Dc7HxTt+YBGI/zQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7795
+X-OriginatorOrg: intel.com
 
-Add support for GosunCn GM800 series which are based on
-Qualcomm SDX55 chip:
+On Mon, Feb 26, 2024 at 12:25:42AM -0800, isaku.yamahata@intel.com wrote:
+>From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+>Because TDX KVM doesn't support PMU yet (it's future work of TDX KVM
+>support as another patch series) and pmu_intel.c touches vmx specific
+>structure in vcpu initialization, as workaround add dummy structure to
+>struct vcpu_tdx and pmu_intel.c can ignore TDX case.
 
-Download mode:
-0x1402: DIAG + AT + MODEM
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1402 Rev= 4.14
-S:  Manufacturer=GSW
-S:  Product=GSW_GM800_123456
-S:  SerialNumber=12345678
-C:* #Ifs= 3 Cfg#= 1 Atr=80 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+Can we instead factor pmu_intel.c to avoid corrupting memory? how hard would it
+be?
 
-RmNet mode (old):
-0x1403: DIAG + AT + MODEM + RMNET + ADB
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1403 Rev= 4.14
-S:  Manufacturer=QCOM
-S:  Product=SDXPRAIRIE-MTP _SN:12345678
-S:  SerialNumber=12345678
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=86(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+>+bool intel_pmu_lbr_is_enabled(struct kvm_vcpu *vcpu)
+>+{
+>+	struct x86_pmu_lbr *lbr = vcpu_to_lbr_records(vcpu);
+>+
+>+	if (is_td_vcpu(vcpu))
+>+		return false;
+>+
+>+	return lbr->nr && (vcpu_get_perf_capabilities(vcpu) & PMU_CAP_LBR_FMT);
 
-RmNet mode:
-0x1421: DIAG + AT + MODEM + RMNET + ADB
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1421 Rev= 4.14
-S:  Manufacturer=QCOM
-S:  Product=SDXPRAIRIE-MTP _SN:12345678
-S:  SerialNumber=12345678
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=86(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+The check about vcpu's perf capabilities is new. is it necessary?
 
-EAP mode:
-0x1422: RNDIS + RMNET + IPC + DIAG + MODEM + AT + ADB
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=305a ProdID=1422 Rev= 4.14
-S:  Manufacturer=QCOM
-S:  Product=SDXPRAIRIE-MTP _SN:12345678
-S:  SerialNumber=12345678
-C:* #Ifs= 8 Cfg#= 1 Atr=80 MxPwr=500mA
-A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=03
-I:* If#= 0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=option
-E:  Ad=82(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=83(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=89(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 7 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=8a(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
----
- drivers/usb/serial/option.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 55a65d941ccb..6bcf74f13ed5 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2278,9 +2278,13 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a4, 0xff),			/* Fibocom FM101-GL (laptop MBIM) */
- 	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1402, 0xff) },			/* GosunCn GM800 (Download mode) */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1403, 0xff) },			/* GosunCn GM800 (rmnet, old) */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1421, 0xff) },			/* GosunCn GM800 (rmnet) */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1422, 0xff) },			/* GosunCn GM800 (EAP) */
- 	{ USB_DEVICE_AND_INTERFACE_INFO(OPPO_VENDOR_ID, OPPO_PRODUCT_R11, 0xff, 0xff, 0x30) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x30) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x40) },
--- 
-2.25.1
-
+>-static inline bool intel_pmu_lbr_is_enabled(struct kvm_vcpu *vcpu)
+>-{
+>-	return !!vcpu_to_lbr_records(vcpu)->nr;
+>-}
+>-
 
