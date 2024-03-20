@@ -1,86 +1,73 @@
-Return-Path: <linux-kernel+bounces-108642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6B6880DAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:50:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031B4880D9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:49:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02BE5281DBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:50:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90F571F23AE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCE138DC0;
-	Wed, 20 Mar 2024 08:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7297B41C7A;
+	Wed, 20 Mar 2024 08:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buZaTYKI"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Kh/iR63U"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAF6481A0;
-	Wed, 20 Mar 2024 08:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432A54086C;
+	Wed, 20 Mar 2024 08:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924440; cv=none; b=BEyGJNSsjw703Uiso3/TtAXqDdp/3n/+QqB3Kfb/BJIWtmfmNfuqvnHyYV1mNSNn0T5cj19Eur0JKBC/Ceo5rc8+fZqniITPNLt/IBc1p6JGqfy6idPyIkIYFKDSom/jQFXAH5KVB01jTWt4FWyhh42OEq28AaX8AM8LOUsZlqI=
+	t=1710924413; cv=none; b=lTBI6J7qss1FrxvM/wgjwbXFkg53yrNmpLDN4QvdqWxxpSK8Vu4PF7MDp6q6AFNwq6apit2NzpROTQYHo7pH15Hd/GlzZ39kZUAf926BydyglhH5nQqfNXBjSG77Zx2pmIRbIfzM721EYPiN7KwmA4imIoxQriCfSR3aQQn6lBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924440; c=relaxed/simple;
-	bh=0YKEkgypwgch25SP6MvI0cxNHNU2GFwhWtjZ1AP0+fs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rK6TtFdZQk4+RtU9qOstOcwUb1/2YlhHMU/1F6rHK6k/u1FTlWTGgt4RCsqiLEp06EZQvkHZEMet4ORY/L0ZCHt0er0gYESyDdUnFvxRiZQYg1WXaD1xvD7bAYpJA2OSKcUkI24v1L4igW4qFJ23QA/EMlXVrXgLKm//vu+NEhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buZaTYKI; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dee5ef2a7bso45764415ad.1;
-        Wed, 20 Mar 2024 01:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710924439; x=1711529239; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KmEZR0TZIkomRjFeSaPJAkhIKg2H/Yce/rgiIixVy2k=;
-        b=buZaTYKIQOouIBhPKCvNVj62BjrLCjjsxRXrosamb/XML2+ka1GCdrFcflAXQG2VnH
-         AXBR92FYWIEVcEApET/rYb5jJAwYeX88nnbcAvqx9iop1zGrMewYBLr/Kr9rivckt2AS
-         T3QG63EcdTuTLrkFLt/r61pYP8JpyBChQqmDZ0E4bU9i/xiEz+OpVsrJlliGY4pOwqnx
-         MrgCUhlYN/+L/98YPj6K35Of1lQRMSRLPALHyTEoo2UsGX/q26vWk+YlQ7kO3XsXaaWQ
-         xRaPMyjPX+1fp4mtz6APQ6CD17RR1680WiwHTv/+jpb+Iq4cH2/ZrX2F0/otwEHXXs5O
-         KasQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710924439; x=1711529239;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KmEZR0TZIkomRjFeSaPJAkhIKg2H/Yce/rgiIixVy2k=;
-        b=KAtCbN8TfY+OOZiECXazBF2T3slfPX5OMzZ4U/WefA6xr8ngqbNHzZucT3Rxo9dR+9
-         u+oLqmyKBfiNzu05ajIRSB8cE1rc+rpiV8txUKkZhyrpo2OpW1ehVU3eMmYYl5SWz9pB
-         N5Zp7LQQciOyF+QGTdyCYrCHNgYNkAzAeT4npBBUhlVe5Wiz/uANg11TBDti6e+/auEF
-         8DFxnvUKCjk5kWb32UnBPhPS9c/UQlRLSuIXHp7hF2o7hKO3AHvkAGUQP3mj54c1NnEr
-         Q0FgrY6qtqh+QgEs/k6d47J79gD/IlSNntGDvcUpACz6ScYvCbUlMyf/SWO+14VifXEX
-         D/uA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOezXwoUayUuBMq5UMUedIkTsruoFgxcAQgT67YUgH8iL6jk4J4trEnoowsccU6bAhu1wSUzRr/rA90800PvLMyIen7z6FirWb96Dqm6B2QcBndvlFjD4x6tqkSA1ttBTHVUru7E40qFWefzz2OytFMDV/0qtvcg/k/fMIQ6ABpA0ToQ==
-X-Gm-Message-State: AOJu0YyqId/NiHCupAKx9P8UuAhvoWjDEsJnD32rODSRFYgK2ui6EJUD
-	xp59T5c8ESdSa5SOWS0GKhbO+TDHDgFgRYHpozyd8jSaLJfI1Y7a
-X-Google-Smtp-Source: AGHT+IGlcuR5ZnxZUBeNvUcBhE0/p/PPIX2gmZEeCtKUIaJ7LbM8JSisiCYiBT45KMUL11ck+H0/PQ==
-X-Received: by 2002:a17:902:ec89:b0:1e0:73d:9196 with SMTP id x9-20020a170902ec8900b001e0073d9196mr12960958plg.46.1710924438602;
-        Wed, 20 Mar 2024 01:47:18 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40f4:a4:a590:2a15:ea77:7177:18e3])
-        by smtp.gmail.com with ESMTPSA id x7-20020a170902a38700b001dee4bd73e0sm11768854pla.59.2024.03.20.01.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 01:47:18 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschema
-Date: Wed, 20 Mar 2024 14:16:20 +0530
-Message-ID: <20240320084623.82248-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710924413; c=relaxed/simple;
+	bh=2Udo3G7fQC2cxqRuvgN0N9z0lkRknXjSVOSfuivtoKo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=G62BrxNxsTVs2jdc3bU/3xZxvbW/DTThecN97CDtfdFqrtdXONacNB4O9Sw+xtkTsbJXZwRJRsVkDDBAgk1Qw6zHCVMz/2W5j37ejn0BUZV9+HoV4PS9A25e32rRH6sQ1JtVJZp1++tAdxLk1yC3/C4sDrK/8fZtOlIHvzjwNM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Kh/iR63U; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710924410;
+	bh=2Udo3G7fQC2cxqRuvgN0N9z0lkRknXjSVOSfuivtoKo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Kh/iR63UC8ZHS0o2V423ngKRDPAMlLMkAT8Paiad4gxqnzpqRU4zW5zSa/jecd1FU
+	 SYFFgw01m/Z2sR4ppPva+YH4+dVtXfnb+/Oo0aMh557KlmDlyZUcDozc1LH/OOid1E
+	 lUv+1cg4wvdGjIoVSmuWxPJxFsQuVC7OiRyTNe1tzg5ypCMwz7UTSXhEJjgbEJu/2g
+	 iIfjW6cF8GLQnU5gdPa3B9mUCnMOjZXvT3VhLHLS+YEwl2p8cYRcp3bimhJpSFeHbI
+	 plLtUvP+khbz6zrhCYMMqIig/MX8JRsDQu2qaH9xZzjwzbIYSUuDbPloV9SLHxI0iL
+	 J0kkvsXCv+AKg==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 82D4137820FC;
+	Wed, 20 Mar 2024 08:46:48 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	eugen.hristev@collabora.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	krisman@suse.de
+Subject: [PATCH v14 7/9] f2fs: Log error when lookup of encoded dentry fails
+Date: Wed, 20 Mar 2024 10:46:20 +0200
+Message-Id: <20240320084622.46643-8-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240320084622.46643-1-eugen.hristev@collabora.com>
+References: <20240320084622.46643-1-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,121 +76,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert the NXP PNX I2C Controller bindings to DT schema.
-Keep only one example in DT schema to remove redundancy.
+If the volume is in strict mode, generi c_ci_compare can report a broken
+encoding name.  This will not trigger on a bad lookup, which is caught
+earlier, only if the actual disk name is bad.
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
-
+Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
 ---
-Changes in v3:
-- Added a missing whitespace character in maintainers.
-- Added parent directory in subject prefix.
+ fs/f2fs/dir.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-Changes in v2:
-- Changed the file name from nxp,i2c-pnx.yaml to nxp,pnx-i2c.yaml.
-- Dropped properties which were already defined in the top level $ref.
-- Dropped unused labels in example.
----
- .../devicetree/bindings/i2c/i2c-pnx.txt       | 34 --------------
- .../devicetree/bindings/i2c/nxp,pnx-i2c.yaml  | 46 +++++++++++++++++++
- 2 files changed, 46 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-pnx.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
-
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt b/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
-deleted file mode 100644
-index 2a59006cf79e..000000000000
---- a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
-+++ /dev/null
-@@ -1,34 +0,0 @@
--* NXP PNX I2C Controller
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 88b0045d0c4f..3b0003e8767a 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -192,11 +192,22 @@ static inline int f2fs_match_name(const struct inode *dir,
+ 	struct fscrypt_name f;
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+-	if (fname->cf_name.name)
+-		return generic_ci_match(dir, fname->usr_fname,
+-					&fname->cf_name,
+-					de_name, de_name_len);
 -
--Required properties:
--
-- - reg: Offset and length of the register set for the device
-- - compatible: should be "nxp,pnx-i2c"
-- - interrupts: configure one interrupt line
-- - #address-cells: always 1 (for i2c addresses)
-- - #size-cells: always 0
--
--Optional properties:
--
-- - clock-frequency: desired I2C bus clock frequency in Hz, Default: 100000 Hz
--
--Examples:
--
--	i2c1: i2c@400a0000 {
--		compatible = "nxp,pnx-i2c";
--		reg = <0x400a0000 0x100>;
--		interrupt-parent = <&mic>;
--		interrupts = <51 0>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--	};
--
--	i2c2: i2c@400a8000 {
--		compatible = "nxp,pnx-i2c";
--		reg = <0x400a8000 0x100>;
--		interrupt-parent = <&mic>;
--		interrupts = <50 0>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--		clock-frequency = <100000>;
--	};
-diff --git a/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
-new file mode 100644
-index 000000000000..798a6939b894
---- /dev/null
-+++ b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/i2c/nxp,pnx-i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP PNX I2C Controller
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+allOf:
-+  - $ref: /schemas/i2c/i2c-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: nxp,pnx-i2c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clock-frequency:
-+    default: 100000
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c@400a0000 {
-+        compatible = "nxp,pnx-i2c";
-+        reg = <0x400a0000 0x100>;
-+        interrupt-parent = <&mic>;
-+        interrupts = <51 0>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+    };
++	if (fname->cf_name.name) {
++		int ret = generic_ci_match(dir, fname->usr_fname,
++					   &fname->cf_name,
++					   de_name, de_name_len);
++		if (ret < 0) {
++			/*
++			 * Treat comparison errors as not a match.  The
++			 * only case where it happens is on a disk
++			 * corruption or ENOMEM.
++			 */
++			if (ret == -EINVAL)
++				f2fs_warn(F2FS_SB(dir->i_sb),
++					"Directory contains filename that is invalid UTF-8");
++		}
++		return ret;
++	}
+ #endif
+ 	f.usr_fname = fname->usr_fname;
+ 	f.disk_name = fname->disk_name;
 -- 
-2.44.0
+2.34.1
 
 
