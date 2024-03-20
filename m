@@ -1,237 +1,280 @@
-Return-Path: <linux-kernel+bounces-108487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C81880B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:16:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB44880B26
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 806451F23274
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:16:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 157E12830CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E2817BDA;
-	Wed, 20 Mar 2024 06:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC8B182CC;
+	Wed, 20 Mar 2024 06:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="cJrqhReA"
-Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021011.outbound.protection.outlook.com [52.101.167.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JxsirPes"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B20417576;
-	Wed, 20 Mar 2024 06:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710915409; cv=fail; b=FxaQeQR+b+cfrIuZCkM3z2eSyIWMFnokFIeTSJ4XbtrPeg+W6a9sOWuQQpqeg51eaYktRyW4OwShexuk09ekNyi90XgiJ/3QSD6n4XGvY8zugnSELevf54K4Vx9x2hQmyK1fEwSnUCXtgV7fkcMpKxiUbxVezNIRavS8LlHhp/s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710915409; c=relaxed/simple;
-	bh=VlrSI7RQ2DWnMdL3//dCwiOLtz+4s1MXXIMIK2fGd7Q=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eIkQw8nTvtDJ/7qkZy+gL06yBCCX/zffKItksitngqPtzkDcxgx3dtSJe0AHwpYqMib35NjauxoNIl0esWYsXP20UUSAVQfRUfl65QMIZcmEa+4Yb0tysM6MtYpIRm1GtW3qhjv3uhyli8n2fNRQsXvl2SzFpdouCDf8uU1zTKI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=cJrqhReA; arc=fail smtp.client-ip=52.101.167.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=epD4nbGZJrKTHIwyF1DC6oC34hl2nCXAzujlVp9gKjuQjQCkp9Q9yxcNb5C0tGPGc6jc11SeTKCUS8KOqVE+qDi0Mnqvp2Q8Wsjr/qlGXq6iSEPkR61m3POIEK4qrn9m5TJ/A/7LFWZKyqHySGWeJnRTibv+XDBO0UhIKeiBGnulRxT9cQUJ7sXd1zGczAA4JTK0CqSdDZX5/dbiJLIJK7qqxYRx0wGwq24IhSpMBMEUMzbds0k33/JfCWU6L1TjwfsBArb2iYS6hugjSGHE/5L5RdjlDM7sk26FYjCg9BaYho2sGA5t6ui/gNNOdQqK7zh5Zarm39s27A2lleopEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VlrSI7RQ2DWnMdL3//dCwiOLtz+4s1MXXIMIK2fGd7Q=;
- b=Z/HiELBUd3ZUwabR+S7zFrylVZHwbEhBfNd4abM5vuBHR8pSGjPQU/9h9SRiNCLKAi86Qc7kBdM8Ib9vnWnxbLhXKWnH66xeheNU1uzwzRZh2O+K1l0QoHem58SpAw/KJqlia17D3lMZuG4gFz2yihUsCyNwdIxB1JoVUjhTqxPc0kODUbGtpguWOUqhcYP9TzrDu3IAPaafobTaQ/Db24NMHIzjll3CaW8MAJDO2Z/1+luYCcXbvuldsZalezavprmyRQuBnvhb/hb7OiJ+/XEEaJlatvZx+xRRTmfO4UuOvbjmCsqOsMyd6mTBjC+ZGxbzHNClaxTL65SJFf6PsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VlrSI7RQ2DWnMdL3//dCwiOLtz+4s1MXXIMIK2fGd7Q=;
- b=cJrqhReA2WJMzQF/Am53kteimqXlFzXB1AQ32ZMmFzH85CoZ93443KwfYm+Zs3XYLu1+++HvbowVjtqXBxmFj//4Kk4jeAl4/sbPZ3G5KN9hnlafZaI1ffHVCO4L7jHdGCvzadImMMfBL0xTshZZ8QeoccDtr0S743GUbWWhFda2zyzBzP7s5ZBGBGu2rqBOc2+RBcCKxWiYCSySo3zF7ZmiIxB9dwODl3TPz+6J+gsOGef5HTbf2dVVLS6d4t2KzyJ7i9vvGiIGJ++yuLN3+qYZyQ6ALCruZD6Gr3x4S3I9hJASIgJqTUj1ONe+Q6XdOd2zm0HpVTzYp9Dd2SyPZQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAZP264MB3527.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:113::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.31; Wed, 20 Mar
- 2024 06:16:43 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
- 06:16:43 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Peter Xu <peterx@redhat.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Andrew
- Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Mike
- Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
-	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Topic: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Index:
- AQHadZASkAUcDDurK02wtpi3kLRmM7E27NOAgABFZ4CAAAUJAIAGfI2AgAIFYYCAAAWMAIAAcnoA
-Date: Wed, 20 Mar 2024 06:16:43 +0000
-Message-ID: <7ca8f19e-7517-404a-b7bb-92ac516d87c8@csgroup.eu>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu> <ZfLzZekFBp3J6JUy@x1n>
- <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
- <20240318161519.GA5825@nvidia.com>
- <e0417c2a-2ef1-4435-b5a7-aadfe90ff8f1@csgroup.eu>
- <20240319232656.GC159172@nvidia.com>
-In-Reply-To: <20240319232656.GC159172@nvidia.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB3527:EE_
-x-ms-office365-filtering-correlation-id: 8b0187e5-5253-4e95-9ba1-08dc48a55084
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- SFhzero1PxCQjMw/dAnUj5EPRdSyYScGronXcLH/lx83Wtk/1b1NzmDU85vjcySDD/8E747rweM3FYuVJ0CM6sZk+Qgb6FyBVF40gqYcbFNvhx4TxwkXvLhxvlOdxbx67i0c0ZTNAbiAdEjTmbqzt0JYlNfxv/ujV4inTM568NFuD2fd0drOpGLKyhFVnXFp+VJGK0MYYpJttYtdAh2G5b0IwmV+VKNT1t2Qn7UED+CmujT0FQp8IZSIqepietipQ26ElOnprnZtMHqPyPxrZFWVADObDRLVPXjvpOtk6MCY6ABX3CidV7l6hOFfpZs8L+HxMV3HuQncRBR5s1abOXCfSol+wRFAnRvCRPRkAynpsTPY6OpMR8gJAsm6dBDH5ArbZLcGaoqtbVdA6UKxXuFJFNl5p2xKzhyr/n4Hh/KaZLMVBTJ7LqHW7xnVBldYmgKiMkwQoTVZPaxMvyWAvWU9h3ecWrnYD//EN85cyASTcifo2sDOOJwsayMr/ei15e63BaCYk5ScqTWtOkMN51CxxIPMt+Cx7TqJ7vVicYq0ayJpm6o8Lbqq4Kdgk0TlJf73FPkUT+IjzRB7vJYn7rKkE/gK+99jj9JafmVDpDIe2xqFMAdOKRuvILeVd1TFN0RFivxAjDmGLrXePMMUeezX200PJOePcAsL/C9DCqglF5IeG46IeQzy33ES8On4osjD5JUjIdJbSiccC15D0AyZdjDMl2qYOfw4umLy0oY=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ZVp3b0RhY3lkL0F1eFIwWmRZZ2dTREsrZ3ZNR0twK0JuN0pVSnhpeGY5SXpS?=
- =?utf-8?B?dmpBVkVkWTFWWjlHdWc4Ky9NbmlqWlhoUGxnc2p6dzhQK00wTmFmV2xwMnpB?=
- =?utf-8?B?VElkZEJ0WkN6TUFvNDZOSDZ4anltM05DeVN6dlJ4cWpaZTZkcE9tajdZTmor?=
- =?utf-8?B?NEtqOTd5UCtCeklzaDJrM3BLSzhwdzlEbGVDcS9kTlpNUEIxZFFkenJQNDIr?=
- =?utf-8?B?aHN5RmM2ZUdMVUxSL3ovQXJ0U1QxRkU5YnRkc1J1NVRCU1lSMkxna0EzTUtl?=
- =?utf-8?B?cS9mN3JTMW00MW9tMmVKRjN1NXhoVWlpNUt2ZVZISHprcXNqZ3hEWHFneWh2?=
- =?utf-8?B?T0h2bmZPZlRLSzFKekRISzZRSDFsQm51ZnllRlB6bFdnbnQ1T1ZScEg4VkVh?=
- =?utf-8?B?YTZKamZrbmRGQStSOWdOQVUyaEQ2eWVSUmdvdU5QMFpPMGV6M0x1NldaaDht?=
- =?utf-8?B?eFZEdmNDUlJuS3IzWGtwRTB1ZGd5SHp1Q2I5UmdtTVE4SnZkWSs3RHAzd1RY?=
- =?utf-8?B?b2ZHNmpHTnF4ZmlNTXFoaDJlRzFRb2t4dEVwd3ZJYWNVS0xFc21ucVZ0VXlx?=
- =?utf-8?B?bXo2YTB4UkUwai84RFJBL29zM3FrUk9Ta21vaWRIdy9laVgvTXFxT0VjdUdB?=
- =?utf-8?B?a0ltdE5qWlNiVkdLL2JWeFlDOE1XQVNnOWtGejdCUVpJc1grRmMxMUV5bFZR?=
- =?utf-8?B?Rk5FVzV5b3diUEJhdERVWEZHcVBna2NqaVYrK0hVKy80RjN5NDlnTlhFdFVC?=
- =?utf-8?B?VW1Ia2Q5WlE4V25DdHdWOXFOZE5HTEZiWmlaRXhqSjVnVDZyVHIrelRxbml5?=
- =?utf-8?B?Z0ttaWRoT0ZYMm1hdlRleEEwOGtRV29TSjdZNnozbyswU3NJTStYaWNDRGhX?=
- =?utf-8?B?YkxUUEdXWG1rMzdWdE1aVDlSZVR3dmhOeVU2dmw1aFpnR1ozTVlCQlpTamUr?=
- =?utf-8?B?bnFtMWJwRVRvZC9LRHBqcG5EMlhxZWd3RXNwYVl3RFJQeDNBVkJGd2pTZ3Er?=
- =?utf-8?B?RjltSFJHSit3a1JrWkppZFpFbnJhOGYrbG9BUTNISHVDT0dGdFR5MCtERWdG?=
- =?utf-8?B?dzhWd0xWWC9PS2pZVkdBU3cvb29idEFRdGdNOG5VT29kNHU2MU1TSEhLamk4?=
- =?utf-8?B?QVQvWWZGNXYyZWRPcEtwU3BJUmRUOEVxWUVKQzVFT0dWV3lUSlA0c3BqZklB?=
- =?utf-8?B?NXl5U0NJSnlnYzU4a3N3YytPdFhpdlIrUThXQlNiK3lTWFZacmN0RFh0amVC?=
- =?utf-8?B?YlczRzBTdW5ITkJienNSWTNPOGFPVmdVYklWNXloSWVzaWZXdGxRemJIalhU?=
- =?utf-8?B?ejZLM05PTVRSOHE1OGlORjkyU3liVllBcXZESzBWcjFuQVdzUFo0TndCdlhz?=
- =?utf-8?B?d3A3bzlISCtrY1dZUTBtclR2VllkYmVpVnY4WWlqRmJoazZjK3QwYnlvdzJQ?=
- =?utf-8?B?c2ZiL3lkemY3ZkhOWHlyYStlaFA2UlZKRDRuVm5CbUVKM3Y0Q1VqTlRMOWM0?=
- =?utf-8?B?T2V0bWc2Zlh6SGVwSlhGUnhEbldNNzBEdW1xMDFhZWxqNnYxQzBlZG5ZQlZo?=
- =?utf-8?B?WFEvbmwxODVNQmFTbTQxODNISXkrbWlBTEVRUWhkSys0WUt0UUc1QTJ2cFhS?=
- =?utf-8?B?V0d1bnA3UkFWZkZ4VDVHcngwbkxIYWRkVW8xbzRsR3NwcGJhTWN0NFR6NDVl?=
- =?utf-8?B?NnQ1ZUFOcE56UDhjMU9ad1ZyUFYzT1YrZ0pLVVM5RE45RnRvOGxFblJnUFlL?=
- =?utf-8?B?cllzcmRsV1JqTmt1MFRDRk1QcFFTZWg0ZG9YZkJ3RTBRbHNESGlibVZvZE4z?=
- =?utf-8?B?ci9JRDlaNldrSDY4SmxBdHZxT2tMRWtHWWxwZW5SWi8vN2xtQUR0WE9Tc3Bk?=
- =?utf-8?B?ZXFrKzk3N0s3L0Nad2JUcWlMZVNPUlpCc1ZUZTVzb256SFpwVk4xRTFVMzB4?=
- =?utf-8?B?dHNMdkJnUUZpQjdlc0ozcCsrTExCdXk5emwwUnlPWE56eVlPdGY3b1FqbWQ3?=
- =?utf-8?B?WEptQy9xQ1JnZzdPektwdEpSUEVDdDUvL3dxK0NJd3ArRUkrcmYyaEgyVXJO?=
- =?utf-8?B?eWNOWEZEdnRRdkxPU2taMFRRc1ZwUGVWckEvUnZtbDdkdE81blFXK3dFS2Yz?=
- =?utf-8?B?WXkyRVNIQ1hSU3NYQ1Z4TzJOc3ZDVHZydVhXUHViUkdjNlArM0EvdzN0SzlD?=
- =?utf-8?B?OVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <03187D31476D1A488AEC0FE71C1521DB@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA21125AC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710915760; cv=none; b=R4GcUxFaxy2SDcXNRQazO2IfdKAWwLhiv8Pl//8KPajC8aBaipOnnJzbosLybAJ5QL7cF16qaJ8eM7p4nM48X8c9hoCcEtmNItAPFe3W5TjW6fo+AZYYT22f1Np9SXvyND+dFG9V3AWDX+blW73FF0fel2A11ZLigkdgQNZ5MPE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710915760; c=relaxed/simple;
+	bh=Msp9rhYQvlhniWjJV1v6egjJ+xLAn/vC+dotpDHA6EE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=u4mIBNLBJz1gLwd14BI73h1/3uyEDc0YYAOzq4lJuez6UxEEIaZprQZM/TMDo3zkeb1Zl7WDqW2HrLftY4jkdKxxL2BY+A4CfompFRF0NiXFGvL1X30K1WqOet5jZ9k838XuyUEd2MwqUaXNon1g2OssNH6TDydkRP1zTe63J5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JxsirPes; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710915759; x=1742451759;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=Msp9rhYQvlhniWjJV1v6egjJ+xLAn/vC+dotpDHA6EE=;
+  b=JxsirPes5Om43Wddi6iucUjlhbST9RPAVALh+Xbd8XRAiOMWf8hJYWRk
+   6muUPagegXhg99nfBxcR26so3zSS9PBBL9LhomRfGWPvDn78Tg9Pxu1Im
+   vbaYkNal0UXXZIx4Z3dfffXe8zAG/HpUDK6RLtx4kO6sHXCjhXDYlkoIx
+   h4aSOcu3bxv9SmXagzWpC2PUZOVaUb8TI3QfhfUNC1O1UgkWBWMLrZDFo
+   pVhpm4cuGdaVQWlyzRPBSriE+zxGaOUSsokGRmjKrM/VS6llqOS5cH++N
+   QE+V0zOIztsu1/6YNzWn+/ijrI04wVbuTfMYluYwwsK9VpXcQBImpZ6eX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5943015"
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="5943015"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 23:22:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="18778671"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 23:22:32 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,  Matthew Wilcox
+ <willy@infradead.org>,  akpm@linux-foundation.org,  linux-mm@kvack.org,
+  chengming.zhou@linux.dev,  chrisl@kernel.org,  david@redhat.com,
+  hannes@cmpxchg.org,  kasong@tencent.com,
+  linux-arm-kernel@lists.infradead.org,  linux-kernel@vger.kernel.org,
+  mhocko@suse.com,  nphamcs@gmail.com,  shy828301@gmail.com,
+  steven.price@arm.com,  surenb@google.com,  wangkefeng.wang@huawei.com,
+  xiang@kernel.org,  yosryahmed@google.com,  yuzhao@google.com,  Chuanhua
+ Han <hanchuanhua@oppo.com>,  Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
+In-Reply-To: <CAGsJ_4zuEFnLwM_h7DF1BN2eN3P4S0Sw=omxo90ucKpPT4ampA@mail.gmail.com>
+	(Barry Song's message of "Wed, 20 Mar 2024 15:47:50 +1300")
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+	<20240304081348.197341-6-21cnbao@gmail.com>
+	<87wmq3yji6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAGsJ_4x+t_X4Tn15=QPbH58e1S1FwOoM3t37T+cUE8-iKoENLw@mail.gmail.com>
+	<87sf0rx3d6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
+	<87jzm0wblq.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAGsJ_4wTU3cmzXMCu+yQRMnEiCEUA8rO5=QQUopgG0RMnHYd5g@mail.gmail.com>
+	<9ec62266-26f1-46b6-8bb7-9917d04ed04e@arm.com>
+	<87jzlyvar3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<f918354d-12ee-4349-9356-fc02d2457a26@arm.com>
+	<87zfutsl25.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAGsJ_4zuEFnLwM_h7DF1BN2eN3P4S0Sw=omxo90ucKpPT4ampA@mail.gmail.com>
+Date: Wed, 20 Mar 2024 14:20:38 +0800
+Message-ID: <87msqts9u1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b0187e5-5253-4e95-9ba1-08dc48a55084
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 06:16:43.6917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ru6paeX31QtTtg4M1MEsuACvaC6Ed0UuDZWzPLOnZab5aXCqzg0p4WIxo2PM24/XkhnxHe6DacXa+/QRMeuRbNFcT8M1p6sZLzlmJ9J2+xc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB3527
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDIwLzAzLzIwMjQgw6AgMDA6MjYsIEphc29uIEd1bnRob3JwZSBhIMOpY3JpdMKgOg0K
-PiBPbiBUdWUsIE1hciAxOSwgMjAyNCBhdCAxMTowNzowOFBNICswMDAwLCBDaHJpc3RvcGhlIExl
-cm95IHdyb3RlOg0KPj4NCj4+DQo+PiBMZSAxOC8wMy8yMDI0IMOgIDE3OjE1LCBKYXNvbiBHdW50
-aG9ycGUgYSDDqWNyaXTCoDoNCj4+PiBPbiBUaHUsIE1hciAxNCwgMjAyNCBhdCAwMToxMTo1OVBN
-ICswMDAwLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4+Pg0KPj4+Pg0KPj4+PiBMZSAxNC8w
-My8yMDI0IMOgIDEzOjUzLCBQZXRlciBYdSBhIMOpY3JpdMKgOg0KPj4+Pj4gT24gVGh1LCBNYXIg
-MTQsIDIwMjQgYXQgMDg6NDU6MzRBTSArMDAwMCwgQ2hyaXN0b3BoZSBMZXJveSB3cm90ZToNCj4+
-Pj4+Pg0KPj4+Pj4+DQo+Pj4+Pj4gTGUgMTMvMDMvMjAyNCDDoCAyMjo0NywgcGV0ZXJ4QHJlZGhh
-dC5jb20gYSDDqWNyaXTCoDoNCj4+Pj4+Pj4gRnJvbTogUGV0ZXIgWHUgPHBldGVyeEByZWRoYXQu
-Y29tPg0KPj4+Pj4+Pg0KPj4+Pj4+PiBQb3dlclBDIGJvb2szcyA0SyBtb3N0bHkgaGFzIHRoZSBz
-YW1lIGRlZmluaXRpb24gb24gYm90aCwgZXhjZXB0IHBYZF9odWdlKCkNCj4+Pj4+Pj4gY29uc3Rh
-bnRseSByZXR1cm5zIDAgZm9yIGhhc2ggTU1Vcy4gIEFzIE1pY2hhZWwgRWxsZXJtYW4gcG9pbnRl
-ZCBvdXQgWzFdLA0KPj4+Pj4+PiBpdCBpcyBzYWZlIHRvIGNoZWNrIF9QQUdFX1BURSBvbiBoYXNo
-IE1NVXMsIGFzIHRoZSBiaXQgd2lsbCBuZXZlciBiZSBzZXQgc28NCj4+Pj4+Pj4gaXQgd2lsbCBr
-ZWVwIHJldHVybmluZyBmYWxzZS4NCj4+Pj4+Pj4NCj4+Pj4+Pj4gQXMgYSByZWZlcmVuY2UsIF9f
-cFttdV1kX21raHVnZSgpIHdpbGwgdHJpZ2dlciBhIEJVR19PTiB0cnlpbmcgdG8gY3JlYXRlDQo+
-Pj4+Pj4+IHN1Y2ggaHVnZSBtYXBwaW5ncyBmb3IgNEsgaGFzaCBNTVVzLiAgTWVhbndoaWxlLCB0
-aGUgbWFqb3IgcG93ZXJwYyBodWdldGxiDQo+Pj4+Pj4+IHBndGFibGUgd2Fsa2VyIF9fZmluZF9s
-aW51eF9wdGUoKSBhbHJlYWR5IHVzZWQgcFhkX2xlYWYoKSB0byBjaGVjayBodWdldGxiDQo+Pj4+
-Pj4+IG1hcHBpbmdzLg0KPj4+Pj4+Pg0KPj4+Pj4+PiBUaGUgZ29hbCBzaG91bGQgYmUgdGhhdCB3
-ZSB3aWxsIGhhdmUgb25lIEFQSSBwWGRfbGVhZigpIHRvIGRldGVjdCBhbGwga2luZHMNCj4+Pj4+
-Pj4gb2YgaHVnZSBtYXBwaW5ncy4gIEFGQUlDVCB3ZSBuZWVkIHRvIHVzZSB0aGUgcFhkX2xlYWYo
-KSBpbXBsIChyYXRoZXIgdGhhbg0KPj4+Pj4+PiBwWGRfaHVnZSgpIG9uZXMpIHRvIG1ha2Ugc3Vy
-ZSBpZS4gVEhQcyBvbiBoYXNoIE1NVSB3aWxsIGFsc28gcmV0dXJuIHRydWUuDQo+Pj4+Pj4NCj4+
-Pj4+PiBBbGwga2luZHMgb2YgaHVnZSBtYXBwaW5ncyA/DQo+Pj4+Pj4NCj4+Pj4+PiBwWGRfbGVh
-ZigpIHdpbGwgZGV0ZWN0IG9ubHkgbGVhZiBtYXBwaW5ncyAobGlrZSBwWGRfaHVnZSgpICkuIFRo
-ZXJlIGFyZQ0KPj4+Pj4+IGFsc28gaHVnZSBtYXBwaW5ncyB0aHJvdWdoIGh1Z2VwZC4gT24gcG93
-ZXJwYyA4eHggd2UgaGF2ZSA4TSBodWdlIHBhZ2VzDQo+Pj4+Pj4gYW5kIDUxMmsgaHVnZSBwYWdl
-cy4gQSBQR0QgZW50cnkgY292ZXJzIDRNIHNvIHBnZF9sZWFmKCkgd29uJ3QgcmVwb3J0DQo+Pj4+
-Pj4gdGhvc2UgaHVnZSBwYWdlcy4NCj4+Pj4+DQo+Pj4+PiBBaCB5ZXMsIEkgc2hvdWxkIGFsd2F5
-cyBtZW50aW9uIHRoaXMgaXMgaW4gdGhlIGNvbnRleHQgb2YgbGVhZiBodWdlIHBhZ2VzDQo+Pj4+
-PiBvbmx5LiAgQXJlIHRoZSBleGFtcGxlcyB5b3UgcHJvdmlkZWQgYWxsIGZhbGwgaW50byBodWdl
-cGQgY2F0ZWdvcnk/ICBJZiBzbw0KPj4+Pj4gSSBjYW4gcmV3b3JkIHRoZSBjb21taXQgbWVzc2Fn
-ZSwgYXM6DQo+Pj4+DQo+Pj4+IE9uIHBvd2VycGMgOHh4LCBvbmx5IHRoZSA4TSBodWdlIHBhZ2Vz
-IGZhbGwgaW50byB0aGUgaHVnZXBkIGNhc2UuDQo+Pj4+DQo+Pj4+IFRoZSA1MTJrIGh1Z2VwYWdl
-cyBhcmUgYXQgUFRFIGxldmVsLCB0aGV5IGFyZSBoYW5kbGVkIG1vcmUgb3IgbGVzcyBsaWtlDQo+
-Pj4+IENPTlRfUFRFIG9uIEFSTS4gc2VlIGZ1bmN0aW9uIHNldF9odWdlX3B0ZV9hdCgpIGZvciBt
-b3JlIGNvbnRleHQuDQo+Pj4+DQo+Pj4+IFlvdSBjYW4gYWxzbyBsb29rIGF0IHB0ZV9sZWFmX3Np
-emUoKSBhbmQgcGdkX2xlYWZfc2l6ZSgpLg0KPj4+DQo+Pj4gSU1ITyBsZWFmIHNob3VsZCByZXR1
-cm4gZmFsc2UgaWYgdGhlIHRoaW5nIGlzIHBvaW50aW5nIHRvIGEgbmV4dCBsZXZlbA0KPj4+IHBh
-Z2UgdGFibGUsIGV2ZW4gaWYgdGhhdCBuZXh0IGxldmVsIGlzIGZ1bGx5IHBvcHVsYXRlZCB3aXRo
-IGNvbnRpZ3VvdXMNCj4+PiBwYWdlcy4NCj4+Pg0KPj4+IFRoaXMgc2VlbXMgbW9yZSBhbGlnbmVk
-IHdpdGggdGhlIGNvbnRpZyBwYWdlIGRpcmVjdGlvbiB0aGF0IGh1Z2VwZA0KPj4+IHNob3VsZCBi
-ZSBtb3ZlZCBvdmVyIHRvLi4NCj4+DQo+PiBTaG91bGQgaHVnZXBkIGJlIG1vdmVkIHRvIHRoZSBj
-b250aWcgcGFnZSBkaXJlY3Rpb24sIHJlYWxseSA/DQo+IA0KPiBTdXJlPyBJcyB0aGVyZSBhbnkg
-ZG93bnNpZGUgZm9yIHRoZSByZWFkaW5nIHNpZGUgdG8gZG8gc28/DQoNClByb2JhYmx5IG5vdC4N
-Cg0KPiANCj4+IFdvdWxkIGl0IGJlIGFjY2VwdGFibGUgdGhhdCBhIDhNIGh1Z2VwYWdlIHJlcXVp
-cmVzIDIwNDggY29udGlnIGVudHJpZXMNCj4+IGluIDIgcGFnZSB0YWJsZXMsIHdoZW4gdGhlIGh1
-Z2VwZCBhbGxvd3MgYSBzaW5nbGUgZW50cnkgPw0KPiANCj4gPyBJIHRob3VnaHQgd2UgYWdyZWVk
-IHRoZSBvbmx5IGRpZmZlcmVuY2Ugd291bGQgYmUgdGhhdCBzb21ldGhpbmcgbmV3DQo+IGlzIG5l
-ZWRlZCB0byBtZXJnZSB0aGUgdHdvIGlkZW50aWNhbCBzaWJsaW5nIHBhZ2UgdGFibGVzIGludG8g
-b25lLCBpZQ0KPiB5b3UgcGF5IDJ4IHRoZSBwYWdlIHRhYmxlIG1lbW9yeSBpZiB0aGF0IGlzbid0
-IGZpeGVkLiBUaGF0IGlzIHdyaXRlDQo+IHNpZGUgb25seSBjaGFuZ2UgYW5kIEkgaW1hZ2luZSBp
-dCBjb3VsZCBiZSBkb25lIHdpdGggYSBzaW5nbGUgUFBDDQo+IHNwZWNpYWwgQVBJLg0KPiANCj4g
-SG9uZXN0bHkgbm90IHRvdGFsbHkgc3VyZSB0aGF0IGlzIGEgYmlnIGRlYWwsIGl0IGlzIGFscmVh
-ZHkgcmVhbGx5DQo+IG1lbW9yeSBpbmVmZmljaWVudCBjb21wYXJlZCB0byBldmVyeSBvdGhlciBh
-cmNoJ3MgaHVnZSBwYWdlIGJ5IG5lZWRpbmcNCj4gdGhlIGNoaWxkIHBhZ2UgdGFibGUgaW4gdGhl
-IGZpcnN0IHBsYWNlLg0KPiANCj4+IFdvdWxkIGl0IGJlIGFjY2VwdGFibGUgcGVyZm9ybWFuY2V3
-aXNlID8NCj4gDQo+IElzbid0IHRoaXMgcGFydGljdWxhciBQUEMgc3ViIHBsYXRmb3JtIGFuY2ll
-bnQ/IEFyZSB0aGVyZSBjdXJyZW50IHJlYWwNCj4gdXNlcnMgdGhhdCBhcmUgZ29pbmcgdG8gaGF2
-ZSBodWdldGxiZnMgc3BlY2lhbCBjb2RlIGFuZCBjYXJlIGFib3V0DQo+IHRoaXMgcGVyZm9ybWFu
-Y2UgZGV0YWlsIG9uIGEgNi4yMCBlcmEga2VybmVsPw0KDQpBbmNpZW50IHllcyBidXQgc3RpbGwg
-d2lkZWx5IGluIHVzZSBhbmQgd2l0aCB0aGUgZW1lcmdlbmNlIG9mIHZvaWNlIG92ZXIgDQpJUCBp
-biBBaXIgVHJhZmljIENvbnRyb2wsIHBlcmZvcm1hbmNlIGJlY29tZXMgbW9yZSBhbmQgbW9yZSBj
-aGFsbGVuZ2UgDQp3aXRoIHRob3NlIG9sZCBib2FyZHMgdGhhdCBoYXZlIGFub3RoZXIgMTAgeWVh
-cnMgaW4gZnJvbnQgb2YgdGhlbS4NCg0KPiANCj4gSW4gdG9kYXkncyB3b3JsZCB3b3VsZG4ndCBp
-dCBiZSBwZXJmb3JtYW5jZSBiZXR0ZXIgaWYgdGhlc2UgcGxhdGZvcm1zDQo+IGNvdWxkIHN1cHBv
-cnQgVEhQIGJ5IGFsaWduaW5nIHRvIHRoZSBjb250aWcgQVBJIGluc3RlYWQgb2YgYmVpbmcNCj4g
-c3BlY2lhbD8NCg0KSW5kZWVkLCBpZiB3ZSBjYW4gcHJvbW90ZSBUSFAgdGhhdCdkIGJlIGV2ZW4g
-YmV0dGVyLg0KDQo+IA0KPiBBbSBJIHdyb25nIHRvIHF1ZXN0aW9uIHdoeSB3ZSBhcmUgcG9sbHV0
-aW5nIHRoZSBjb3JlIGNvZGUgZm9yIHRoaXMNCj4gc3BlY2lhbCBvcHRpbWl6YXRpb24/DQoNCkF0
-IHRoZSBmaXJzdCBwbGFjZSB0aGF0IHdhcyB0byBnZXQgYSBjbG9zZSBmaXQgYmV0d2VlbiBoYXJk
-d2FyZSANCnBhZ2V0YWJsZSB0b3BvbG9neSBhbmQgbGludXggcGFnZXRhYmxlIHRvcG9sb2d5LiBC
-dXQgb2J2aW91c2x5IHdlIA0KYWxyZWFkeSBzdGVwcGVkIGJhY2sgZm9yIDUxMmsgcGFnZXMsIHNv
-IGxldCdzIGdvIG9uZSBtb3JlIHN0ZXAgYXNpZGUgYW5kIA0KZG8gc2ltaWxhciB3aXRoIDhNIHBh
-Z2VzLg0KDQpJJ2xsIGdpdmUgaXQgYSB0cnkgYW5kIHNlZSBob3cgaXQgZ29lcy4NCg0KQ2hyaXN0
-b3BoZQ0K
+Barry Song <21cnbao@gmail.com> writes:
+
+> On Wed, Mar 20, 2024 at 3:20=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>
+>> > On 19/03/2024 09:20, Huang, Ying wrote:
+>> >> Ryan Roberts <ryan.roberts@arm.com> writes:
+>> >>
+>> >>>>>> I agree phones are not the only platform. But Rome wasn't built i=
+n a
+>> >>>>>> day. I can only get
+>> >>>>>> started on a hardware which I can easily reach and have enough ha=
+rdware/test
+>> >>>>>> resources on it. So we may take the first step which can be appli=
+ed on
+>> >>>>>> a real product
+>> >>>>>> and improve its performance, and step by step, we broaden it and =
+make it
+>> >>>>>> widely useful to various areas  in which I can't reach :-)
+>> >>>>>
+>> >>>>> We must guarantee the normal swap path runs correctly and has no
+>> >>>>> performance regression when developing SWP_SYNCHRONOUS_IO optimiza=
+tion.
+>> >>>>> So we have to put some effort on the normal path test anyway.
+>> >>>>>
+>> >>>>>> so probably we can have a sysfs "enable" entry with default "n" or
+>> >>>>>> have a maximum
+>> >>>>>> swap-in order as Ryan's suggestion [1] at the beginning,
+>> >>>>>>
+>> >>>>>> "
+>> >>>>>> So in the common case, swap-in will pull in the same size of foli=
+o as was
+>> >>>>>> swapped-out. Is that definitely the right policy for all folio si=
+zes? Certainly
+>> >>>>>> it makes sense for "small" large folios (e.g. up to 64K IMHO). Bu=
+t I'm not sure
+>> >>>>>> it makes sense for 2M THP; As the size increases the chances of a=
+ctually needing
+>> >>>>>> all of the folio reduces so chances are we are wasting IO. There =
+are similar
+>> >>>>>> arguments for CoW, where we currently copy 1 page per fault - it =
+probably makes
+>> >>>>>> sense to copy the whole folio up to a certain size.
+>> >>>>>> "
+>> >>>
+>> >>> I thought about this a bit more. No clear conclusions, but hoped thi=
+s might help
+>> >>> the discussion around policy:
+>> >>>
+>> >>> The decision about the size of the THP is made at first fault, with =
+some help
+>> >>> from user space and in future we might make decisions to split based=
+ on
+>> >>> munmap/mremap/etc hints. In an ideal world, the fact that we have ha=
+d to swap
+>> >>> the THP out at some point in its lifetime should not impact on its s=
+ize. It's
+>> >>> just being moved around in the system and the reason for our origina=
+l decision
+>> >>> should still hold.
+>> >>>
+>> >>> So from that PoV, it would be good to swap-in to the same size that =
+was
+>> >>> swapped-out.
+>> >>
+>> >> Sorry, I don't agree with this.  It's better to swap-in and swap-out =
+in
+>> >> smallest size if the page is only accessed seldom to avoid to waste
+>> >> memory.
+>> >
+>> > If we want to optimize only for memory consumption, I'm sure there are=
+ many
+>> > things we would do differently. We need to find a balance between memo=
+ry and
+>> > performance. The benefits of folios are well documented and the kernel=
+ is
+>> > heading in the direction of managing memory in variable-sized blocks. =
+So I don't
+>> > think it's as simple as saying we should always swap-in the smallest p=
+ossible
+>> > amount of memory.
+>>
+>> It's conditional, that is,
+>>
+>> "if the page is only accessed seldom"
+>>
+>> Then, the page swapped-in will be swapped-out soon and adjacent pages in
+>> the same large folio will not be accessed during this period.
+>>
+>> So, I suggest to create an algorithm to decide swap-in order based on
+>> swap-readahead information automatically.  It can detect the situation
+>> above via reduced swap readahead window size.  And, if the page is
+>> accessed for quite long time, and the adjacent pages in the same large
+>> folio are accessed too, swap-readahead window will increase and large
+>> swap-in order will be used.
+>
+> The original size of do_anonymous_page() should be honored, considering it
+> embodies a decision influenced by not only sysfs settings and per-vma
+> HUGEPAGE hints but also architectural characteristics, for example
+> CONT-PTE.
+>
+> The model you're proposing may offer memory-saving benefits or reduce I/O,
+> but it entirely disassociates the size of the swap in from the size prior=
+ to the
+> swap out.
+
+Readahead isn't the only factor to determine folio order.  For example,
+we must respect "never" policy to allocate order-0 folio always.
+There's no requirements to use swap-out order in swap-in too.  Memory
+allocation has different performance character of storage reading.
+
+> Moreover, there's no guarantee that the large folio generated by
+> the readahead window is contiguous in the swap and can be added to the
+> swap cache, as we are currently dealing with folio->swap instead of
+> subpage->swap.
+
+Yes.  We can optimize only when all conditions are satisfied.  Just like
+other optimization.
+
+> Incidentally, do_anonymous_page() serves as the initial location for allo=
+cating
+> large folios. Given that memory conservation is a significant considerati=
+on in
+> do_swap_page(), wouldn't it be even more crucial in do_anonymous_page()?
+
+Yes.  We should consider that too.  IIUC, that is why mTHP support is
+off by default for now.  After we find a way to solve the memory usage
+issue.  We may make default "on".
+
+> A large folio, by its nature, represents a high-quality resource that has=
+ the
+> potential to leverage hardware characteristics for the benefit of the
+> entire system.
+
+But not at the cost of memory wastage.
+
+> Conversely, I don't believe that a randomly determined size dictated by t=
+he
+> readahead window possesses the same advantageous qualities.
+
+There's a readahead algorithm which is not pure random.
+
+> SWP_SYNCHRONOUS_IO devices are not reliant on readahead whatsoever,
+> their needs should also be respected.
+
+I understand that there are special requirements for SWP_SYNCHRONOUS_IO
+devices.  I just suggest to work on general code before specific
+optimization.
+
+>> > You also said we should swap *out* in smallest size possible. Have I
+>> > misunderstood you? I thought the case for swapping-out a whole folio w=
+ithout
+>> > splitting was well established and non-controversial?
+>>
+>> That is conditional too.
+>>
+>> >>
+>> >>> But we only kind-of keep that information around, via the swap
+>> >>> entry contiguity and alignment. With that scheme it is possible that=
+ multiple
+>> >>> virtually adjacent but not physically contiguous folios get swapped-=
+out to
+>> >>> adjacent swap slot ranges and then they would be swapped-in to a sin=
+gle, larger
+>> >>> folio. This is not ideal, and I think it would be valuable to try to=
+ maintain
+>> >>> the original folio size information with the swap slot. One way to d=
+o this would
+>> >>> be to store the original order for which the cluster was allocated i=
+n the
+>> >>> cluster. Then we at least know that a given swap slot is either for =
+a folio of
+>> >>> that order or an order-0 folio (due to cluster exhaustion/scanning).=
+ Can we
+>> >>> steal a bit from swap_map to determine which case it is? Or are ther=
+e better
+>> >>> approaches?
+>> >>
+>> >> [snip]
+
+--
+Best Regards,
+Huang, Ying
 
