@@ -1,174 +1,112 @@
-Return-Path: <linux-kernel+bounces-108495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C960A880B35
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:26:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF89880B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:28:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83C11F22E15
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:26:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773C11F22A46
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407071947B;
-	Wed, 20 Mar 2024 06:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994791A27D;
+	Wed, 20 Mar 2024 06:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fNUr1Rq2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Vh1NHMWJ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fNUr1Rq2";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Vh1NHMWJ"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="X4dOTilF"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7586182C5;
-	Wed, 20 Mar 2024 06:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950811864A;
+	Wed, 20 Mar 2024 06:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916004; cv=none; b=Bn0k5ncRYeskm666JmEw9/ls7ySmr4slgnxIyB69XCgQ4ihSLHba4qXT8M5k9Nb9+fmZDCN5+3USJc9/LabiJm1PJGLsNnalvCdzKChDaR9zDYatmW/mcr7q2k+7q3i70yecRY4v4Ngfltc3KDAkcEtSKK04G73+BNtrzfKKLPI=
+	t=1710916108; cv=none; b=rqG+VqjA5Z4BRMgWJ0K3Dgy8HdqZ/Jb2A4gJkZpeplihOW2lJdHQFHnC1RjwpBmCZjOvcAx/NXczEnbJVjeBgICc35SPR/ble4uk7hzT879MMO4WMQouUwJr9y/eCk71O8pwS7aaL4YBmzLhn+69tBddgc22alJ5gIF2qkCfa3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916004; c=relaxed/simple;
-	bh=zgiNS5kSRE57RflAj5hfF9Gbiby7TXllzWqa9MuopCw=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JcFDm8hALyJW46JpanZWqou7mstLAwQGK0lnx/rrrqsH5VLm0waU4xlQBt/WuzEV2yNUQXF1dObGRPk6tiHqz3rGmeyCp0DzM7PO631ZVGsQMB9vBJ2UAIMAhrkCHB4E9KQkTGXExARBI7OuYpS17rsvYt7TI5L0BLsdjcwjWVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=fNUr1Rq2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Vh1NHMWJ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=fNUr1Rq2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Vh1NHMWJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7DED12253D;
-	Wed, 20 Mar 2024 06:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710916000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p8J+vw6nLkJZ0lyhlz6Wx+SAlBStCeQSVt5Pw4Jr21A=;
-	b=fNUr1Rq2PrDxKs68waBsnAHNjoLyzuz3OuUBfarQSudlspprZUt+wcw4kYHSXSC2r75SwC
-	6V7Si9y02JpyZT16933FYJzxi0rIRvw//Uh/C+jdDMDwYGyVopHq6u323l7oM7DN4H3BPJ
-	mHa6oW1mt0s1R+hyRgdUgOKIP/jOCms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710916000;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p8J+vw6nLkJZ0lyhlz6Wx+SAlBStCeQSVt5Pw4Jr21A=;
-	b=Vh1NHMWJ2BoRwuCiWzfqaFBXdmHQ8s0yGN5rABkTYMRRSjzwl5JFmFdxhU96Ichy2iQt9c
-	O7MzlvLYjXl4QLAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710916000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p8J+vw6nLkJZ0lyhlz6Wx+SAlBStCeQSVt5Pw4Jr21A=;
-	b=fNUr1Rq2PrDxKs68waBsnAHNjoLyzuz3OuUBfarQSudlspprZUt+wcw4kYHSXSC2r75SwC
-	6V7Si9y02JpyZT16933FYJzxi0rIRvw//Uh/C+jdDMDwYGyVopHq6u323l7oM7DN4H3BPJ
-	mHa6oW1mt0s1R+hyRgdUgOKIP/jOCms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710916000;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p8J+vw6nLkJZ0lyhlz6Wx+SAlBStCeQSVt5Pw4Jr21A=;
-	b=Vh1NHMWJ2BoRwuCiWzfqaFBXdmHQ8s0yGN5rABkTYMRRSjzwl5JFmFdxhU96Ichy2iQt9c
-	O7MzlvLYjXl4QLAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4378C136D6;
-	Wed, 20 Mar 2024 06:26:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Yj7aDqCB+mVuGQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Wed, 20 Mar 2024 06:26:40 +0000
-Date: Wed, 20 Mar 2024 07:26:39 +0100
-Message-ID: <87wmpxto4g.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: linux-sound@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Curtis Malainey <cujomalainey@chromium.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [BUG] alsa: KMEMLEAK in pulseaudio and alsa-sink-ALC89
-In-Reply-To: <c1e2ef3c-164f-4840-9b1c-f7ca07ca422a@alu.unizg.hr>
-References: <c1e2ef3c-164f-4840-9b1c-f7ca07ca422a@alu.unizg.hr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1710916108; c=relaxed/simple;
+	bh=NHf4lcNnbKil3Xd3j0ggC1F+MXxx5165hkG+xD5RsMs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p5Ht/pG3qeXQB4U/cVPXRGO+yLi5M2Zf4a7QSYIU2h+vX4f7HARGuTSGkK/xrOc/IrYgeOZvHycHlKGbTiiCLK9VoeauwV54TsfOzagWj37RraaUp7WekuVbwcCpH+VDjCnm8sb4j3hQvI3uEgpWHz1lVnVhkwkE+GE6Rt20F/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=X4dOTilF; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=+uvbFMBaxnEo7FnlRK2VWajdBLpdj74HCBLMlUuMnzs=;
+	t=1710916106; x=1711348106; b=X4dOTilFLlgayLWWCqi/gx7N9s7/xqE38i/e7uH+77VYwTK
+	sgdY/JzK4jlAtJJpHxb+AAQiUjenqEhjEzl5AbkbX1Fd07fhCM9wQKWJ0mghctqnypInTb6ZAanDI
+	CtrW5tWGXlT7d9mjqwRzN9HLQBHoH3Q0bPB1LW2eI6atPosLTY/9XkA78EC4y+AFnyUuSZGZq4F5Z
+	Z2XIkkOEhRMFf9w/fyi9ar7hZMiAWOJittvQCjjOOYg8lVzeC50ZjsfsEppvWwB2SRCRbPOANc0ti
+	PCCoG41xuhBFbUyggeTfpKr0gvy/SVww8reMFcXhWLrUsYw6xfJlQu43nKQOp6Lg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rmpR0-0007mH-ND; Wed, 20 Mar 2024 07:28:22 +0100
+Message-ID: <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
+Date: Wed, 20 Mar 2024 07:28:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=fNUr1Rq2;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Vh1NHMWJ
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.54 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.976];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.03)[87.54%]
-X-Spam-Score: -1.54
-X-Rspamd-Queue-Id: 7DED12253D
-X-Spam-Flag: NO
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: dmaengine: CPU stalls while loading bluetooth module
+Content-Language: en-US, de-DE
+To: "bumyong.lee" <bumyong.lee@samsung.com>,
+ 'Linux regressions mailing list' <regressions@lists.linux.dev>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ parthiban@linumiz.com, saravanan@linumiz.com,
+ 'karthikeyan' <karthikeyan@linumiz.com>, vkoul@kernel.org
+References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
+ <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
+ <000001da6ecc$adb25420$0916fc60$@samsung.com>
+ <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
+ <000001da7140$6a0f1570$3e2d4050$@samsung.com>
+ <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
+ <001001da7a60$78603130$69209390$@samsung.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <001001da7a60$78603130$69209390$@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710916106;93568396;
+X-HE-SMSGID: 1rmpR0-0007mH-ND
 
-On Wed, 20 Mar 2024 02:13:08 +0100,
-Mirsad Todorovac wrote:
+On 20.03.24 01:49, bumyong.lee wrote:
+>>>> Hmmm. 6.8 final is due. Is that something we can live with? Or would
+>>>> it be a good idea to revert above commit for now and reapply it when
+>>>> something better emerged? I doubt that the answer is "yes, let's do
+>>>> that", but I have to ask.
+>>>
+>>> I couldn't find better way now.
+>>> I think it's better to follow you mentioned
+>>
+>> 6.8 is out, but that issue afaics was not resolved, so allow me to ask:
+>> did "submit a revert" fell through the cracks or is there some other
+>> solution in the works? Or am I missing something?
 > 
-> Hi,
-> 
-> On Ubuntu 22.04 LTS, with the torvalds tree kernel vanilla v6.8-11167-g4438a810f396,
-> there is like 660K memory leaks sized 2048 bytes (1.35 GB)
-> 
-> unreferenced object 0xffff919c43c7c800 (size 2048):
-> unreferenced object 0xffff919c43c78000 (size 2048):
-> unreferenced object 0xffff919c43c79800 (size 2048):
-> root@defiant:/home/marvin/linux/kernel/linux_torvalds# grep size ~marvin/linux/kernel_bugs/v6.8-11167/kmemleak.log | wc -l
-> 663265
-> root@defiant:/home/marvin/linux/kernel/linux_torvalds#
-> 
-> Please find the .config attached.
-> 
-> The kmemleak output is:
-> 
-> unreferenced object 0xffff9199526ba800 (size 2048):
->   comm "pulseaudio", pid 2533, jiffies 4294900352
->   hex dump (first 32 bytes):
->     04 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00  ................
->     49 45 43 39 35 38 20 50 6c 61 79 62 61 63 6b 20  IEC958 Playback
->   backtrace (crc 87c1dcdc):
->     [<ffffffffb2fa477b>] kmemleak_alloc+0x4b/0x90
->     [<ffffffffb210e517>] __kmalloc_node_track_caller+0x3c7/0x530
->     [<ffffffffb20a102b>] memdup_user+0x2b/0xb0
->     [<ffffffffc0746d56>] snd_ctl_ioctl+0x726/0x860 [snd]
->     [<ffffffffb21bed6d>] __x64_sys_ioctl+0x9d/0xe0
->     [<ffffffffb2f93d33>] do_syscall_64+0x83/0x150
->     [<ffffffffb3000121>] entry_SYSCALL_64_after_hwframe+0x6c/0x74
+> "submit a revert" would fix the issue. but it would make another issue
+> that the errata[1] 719340 described.
 
-Thanks for the report.  This was indeed an overlooked marking of
-__free(kfree).  I'll submit the fix patch.
+"Make" as it "that other issue was present before the culprit was
+applied"? Then that other issue does not matter due to the "no
+regression" rule and how Linus afaics wants to see it applied in
+practice. For details on the latter, see the quotes from him here:
+https://docs.kernel.org/process/handling-regressions.html
+ Hence please submit a revert (or tell me if I misunderstood something)
+-- or of course a workaround for the other issue that does not cause the
+regression people reported.
 
+> [...]
+> [1]: https://developer.arm.com/documentation/genc008428/latest
 
-Takashi
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
