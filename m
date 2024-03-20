@@ -1,198 +1,197 @@
-Return-Path: <linux-kernel+bounces-108893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70F6881177
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:07:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C41A88117A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23BC21C2347C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1FE228545D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3763FB21;
-	Wed, 20 Mar 2024 12:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DA103FB3F;
+	Wed, 20 Mar 2024 12:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e267a4zr"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mj/2E0/5";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mj/2E0/5"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60FD12628D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7AA2E64F;
+	Wed, 20 Mar 2024 12:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710936439; cv=none; b=D9d84JY6ZhUNOrxP1+y2HrRyZybW9E+X70bvWV2yZqMibTmE1nbfpnHH6yKDw2z1CrwRSrHnKdOjQas7Ykkvnm3r3qu3CHSisaz5E0g0Ai9HiepMjq+v72YGHyHcx1WlTChdK/T3+ojBSsjn+/XgQ4Z5jlNXtjzmpOE1PQNfIOI=
+	t=1710936584; cv=none; b=Trs89bfvpD5UMIX9aGJ4pdsGQHLHkBD3POtyBl0uhVaF9e9lrtCYi//Be6W+vhu5pAJtowEGisIHEjlRHNAl23upkzvSFDKXob4Q/Ij8cBtEqgrIiB334JJkwU3E0mEgHuaNRn5s2lA/OWFmpPtGw1D2YIlWavYKc4DVj7tiW9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710936439; c=relaxed/simple;
-	bh=qQIyN94RcUxQGeM01O+NcNfg5sUN7Y8zbd8QRPJDgIM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u3eaZUP2TZFz525m6DejXzV/V/loz8e6IHnfwJ8bkMC3hFXdvqL1Tu1BlmbekkebdtaXmv6MA3hBXqHwtyxKVFQMmm93AnSPktZjPSoABJxWlteqattOlvorWKw1U/ENPttnmuCOgw3QSLiOP7+T992wItFUEuLarDzFXjx8CrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e267a4zr; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6963cf14771so10787206d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:07:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710936436; x=1711541236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z7DDAmZLzRu6HgzyxGlka/nEAH/Bp9s7j8g062J1qR0=;
-        b=e267a4zrRwe7qaZX26PH25DXs81gD5QQAtAM80wvN7+JJpTQNnqT/WoD/qu/kC2Nzo
-         bxilbraeIqkqzCVJBNcRGDO3k0eXFCv4PJpjTJkD5BXL7Qo9HgAJW5jdEAQfARYhJtpj
-         eZwTpsIevDOzvELPqSD7aRIKnBePhw8J3NYaDvMK8XiQfbGBmFVjeb/3X0CcOHbcF8Z3
-         L1501U6s7y22nrNfpoSH0D8aTo8TwKuDYUlu1IDo8ToSg5sUj66AeTa0964d88VywWXC
-         P+HyffjcY412mUwn5SoWxjtzUKlccEeoIr4+JV85fmYudJjjEKjcrmCLEcoaSoJqKnnO
-         ExUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710936436; x=1711541236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z7DDAmZLzRu6HgzyxGlka/nEAH/Bp9s7j8g062J1qR0=;
-        b=Cih94Sk+viZWqlNgs38yIEMftMz42RfiepV9SOwROLT59yEcccbFfuYGZsGCP9fUDr
-         wPq4P083s6lAFpp541O+Usvuso1WiGE/A6/cvlTiJOl5YvGsnohUa/4uJuZoP/50XSZX
-         Iv1wJW3IqStMb5306P/mVIKyEzTAy65LgKsO8Q5pRfQyFq6duQ6bf5AuAgUH9Fm5pO3U
-         RcBaFlJ4480h8EVG8PPaegBKTe7dLELXvLg3rw4jKWvz+jm6w4gpsmtA1vE4/8aDs0C1
-         1OHh3Ov79c8PzS3jywMbNtFwV2pePtjx0LvuyHPpFU7yl0G1VnZMt9kNeEgYBITtsLZV
-         R4tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4KaEKnbsdWt2l4W0yNENO0vmz19g9EcwSvOIrdA1xL5e9rZ2o95L3wr8i6s7RkkD1Be5HAPYThSxqS2vtgG1uoVhfWHJfoMcEUhvS
-X-Gm-Message-State: AOJu0YwP2PlIh53RtgU+QFnNY2oQPUeaH9FNskvBGlDBg6pQJZ6m4eDc
-	84bXdk8ltpbQ8rA4IWauAGzMJL3VbBViFjkWLxZpmvQD5AMGFE917d9A5Qq9xzyvbXoREeqdY2V
-	BTSLhPElyL5Ag5DOGjYkZoHWeAxSt0USqm5PZ
-X-Google-Smtp-Source: AGHT+IFsZ1Kl+nOzqPW0+FjUKUPnqIsgeV3Xy3EhYghtu8MFkZrVbUNy3Po7/qq/bRXKj3pCCJ8hWquQq+UKPzKOHh8=
-X-Received: by 2002:a05:6214:2b97:b0:691:64e9:9a4a with SMTP id
- kr23-20020a0562142b9700b0069164e99a4amr25165795qvb.53.1710936436027; Wed, 20
- Mar 2024 05:07:16 -0700 (PDT)
+	s=arc-20240116; t=1710936584; c=relaxed/simple;
+	bh=uYjWKzepl0AYTp3ckeZa2oD+/frdzyFfCgDNDxBrDsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t3KD2+BunTBjtxHDC4qSJcnNM0FOej9E6s/plFe+hQeoCeifMoFbPc+8zaAeHG01QvMO2ZFBi0Ov9uUBr+9LjJKMHVfbPII/LC7XLWOzN39vLvvHwMkmfQsR1hnaHKf9JGTT9qgfzLvP0K7iW7h6ptOx5h8VJyu7xTq6v06Gpoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mj/2E0/5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mj/2E0/5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1DB51343A8;
+	Wed, 20 Mar 2024 12:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710936577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EHOMMEAuTVumsvUa0s4ONSCEm/gaHIgEjhSYOqP1F4Y=;
+	b=mj/2E0/5TZON9G1Mp/Nhmw8SXKJ5mIo0sqnTy2GCUF7obOGsl9qV+Apk1EVo9RUTQlb5E5
+	CsD/HRa9wquFGI9RkjNgQQUDviFFQ0fO1GfTZoWkCFGbmkMtLWGrMBRcdyPM6iXOA1k0u9
+	7AScJw+OPTp6T/hN+mbYYGFBb853moQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710936577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EHOMMEAuTVumsvUa0s4ONSCEm/gaHIgEjhSYOqP1F4Y=;
+	b=mj/2E0/5TZON9G1Mp/Nhmw8SXKJ5mIo0sqnTy2GCUF7obOGsl9qV+Apk1EVo9RUTQlb5E5
+	CsD/HRa9wquFGI9RkjNgQQUDviFFQ0fO1GfTZoWkCFGbmkMtLWGrMBRcdyPM6iXOA1k0u9
+	7AScJw+OPTp6T/hN+mbYYGFBb853moQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE820136D6;
+	Wed, 20 Mar 2024 12:09:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OMDZNwDS+mXcDgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 20 Mar 2024 12:09:36 +0000
+Date: Wed, 20 Mar 2024 13:09:32 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vladimir Davydov <vdavydov.dev@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH] mm/memcontrol: stop resize loop if limit was changed
+ again
+Message-ID: <ZfrR_Fj0Ye1n1gYw@tiehlicka>
+References: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
+ <Zfq6XaACmN2JssTW@tiehlicka>
+ <be8cfada-f4bd-4894-848d-1b7706b14035@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319163656.2100766-1-glider@google.com> <20240319163656.2100766-3-glider@google.com>
- <f9a8a442-0ff2-4da9-af4d-3d0e2805c4a7@I-love.SAKURA.ne.jp>
- <CAG_fn=UAsTnuZb+p17X+_LN+wY7Anh3OzjHxMEw9Z-A=sJV0UQ@mail.gmail.com> <dce41a35-aa2a-4e34-944b-7a6879f07448@I-love.SAKURA.ne.jp>
-In-Reply-To: <dce41a35-aa2a-4e34-944b-7a6879f07448@I-love.SAKURA.ne.jp>
-From: Alexander Potapenko <glider@google.com>
-Date: Wed, 20 Mar 2024 13:06:33 +0100
-Message-ID: <CAG_fn=UuC=d+jJOor1qMYjP48=mhSf7y=s=gwj6APaFroGqQdA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] x86: call instrumentation hooks from copy_mc.c
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, tglx@linutronix.de, 
-	x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Dmitry Vyukov <dvyukov@google.com>, Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be8cfada-f4bd-4894-848d-1b7706b14035@virtuozzo.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="mj/2E0/5"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,linux-foundation.org,gmail.com,vger.kernel.org,kvack.org,openvz.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -4.51
+X-Rspamd-Queue-Id: 1DB51343A8
+X-Spam-Flag: NO
 
-On Wed, Mar 20, 2024 at 11:40=E2=80=AFAM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2024/03/20 18:29, Alexander Potapenko wrote:
-> > But for KASAN/KCSAN we can afford more aggressive checks.
-> > First, if we postpone them after the actual memory accesses happen,
-> > the kernel may panic on the invalid access without a decent error
-> > report.
-> > Second, even if in a particular case only `len-ret` bytes were copied,
-> > the caller probably expected both `src` and `dst` to have `len`
-> > addressable bytes.
-> > Checking for the whole length in this case is more likely to detect a
-> > real error than produce a false positive.
->
-> KASAN/KCSAN care about whether the requested address range is accessible =
-but
-> do not care about whether the requested address range was actually access=
-ed?
+On Wed 20-03-24 18:55:05, Pavel Tikhomirov wrote:
+> 
+> 
+> On 20/03/2024 18:28, Michal Hocko wrote:
+> > On Wed 20-03-24 18:03:30, Pavel Tikhomirov wrote:
+> > > In memory_max_write() we first set memcg->memory.max and only then
+> > > try to enforce it in loop. What if while we are in loop someone else
+> > > have changed memcg->memory.max but we are still trying to enforce
+> > > the old value? I believe this can lead to nasty consequence like getting
+> > > an oom on perfectly fine cgroup within it's limits or excess reclaim.
+> > 
+> > I would argue that uncoordinated hard limit configuration can cause
+> > problems on their own.
+> 
+> Sorry, didn't know that.
 
-I am not exactly sure under which circumstances a copy_mc may fail,
-but let's consider how copy_to_user() is handled.
-In instrument_copy_to_user()
-(https://elixir.bootlin.com/linux/latest/source/include/linux/instrumented.=
-h#L110)
-we check the whole ranges before the copy is performed.
-Assume there is buggy code in the kernel that allocates N bytes for
-some buffer and then copies N+1 bytes from that buffer to the
-userspace.
-If we are (un)lucky enough, the userspace code may be always
-allocating the destination buffer in a way that prevents
-copy_to_user() from copying more than N bytes.
-Yet it is possible to provide a userspace buffer that is big enough to
-trigger an OOB read in the kernel, and reporting this issue is usually
-the right thing to do, even if it does not occur during testing.
-Moreover, if dst can receive N+1 bytes, but the OOB read happens to
-crash the kernel, we'll get a simple panic report instead of a KASAN
-report, if we decide to perform the check after copying the data.
+Well, just consider potential over-reclaim as a result of several
+competing actors to set the same limit. Or completely indeterministic
+final output of the limit setting depending on timing. This simply
+cannot work reliably.
+ 
+> > Beside how is this any different from changing
+> > the high limit while we are inside the reclaim loop?
+> 
+> I believe reclaim loop rereads limits on each iteration, e.g. in
+> reclaim_high(), so it should always be enforcing the right limit.
 
->
-> By the way, we have the same problem for copy_page() and I was thinking a=
-bout
-> https://lkml.kernel.org/r/1a817eb5-7cd8-44d6-b409-b3bc3f377cb9@I-love.SAK=
-URA.ne.jp .
-> But given that instrument_memcpy_{before,after} are added,
-> how do we want to use instrument_memcpy_{before,after} for copy_page() ?
-> Should we rename assembly version of copy_page() so that we don't need to=
- use
-> tricky wrapping like below?
+Reclaim loop might happen to take quite some time...
+ 
+> > > We also have exactly the same thing in memory_high_write().
+> > > 
+> > > So let's stop enforcing old limits if we already have a new ones.
+> > 
+> > I do see any reasons why this would be harmful I just do not see why
+> > this is a real thing or why the new behavior is any better for racing
+> > updaters as those are not deterministic anyway. If you have any actual
+> > usecase then more details would really help to justify this change.
+> > 
+> > The existing behavior makes some sense as it enforces the given limit
+> > deterministically.
+> 
+> I don't have any actual problem, usecase or reproduce at hand, I only see a
+> potential problem:
+> 
+> Let's imagine that:
+> 
+> a) We set cgroup max limit to some small value, memory_max_write updates
+> memcg->memory.max and starts spinning in loop as it wants to reclaim some
+> memory which does not fit in new limit.
+> 
+> b) We don't need small limit anymore and we raise the limit to a big value,
+> but memory_max_write() from (a) is still spinning. And if we are lucky
+> enough and processes of cgroup are constantly consuming memory, to
+> compensate effect from memory_max_write() from (a), so that it will continue
+> spinning there forever.
 
-I think renaming the assembly version and providing a `static inline
-void copy_page()` in arch/x86/include/asm/page_64.h should be cleaner,
-but it is up to x86 people to decide.
-The patch below seems to work:
+This is a killable operation, so if you decide to change mind about
+limit setting and the current update is still in progress then just
+terminate it rather then override by a different process.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.=
-h
-index cc6b8e087192e..70ee3da32397e 100644
---- a/arch/x86/include/asm/page_64.h
-+++ b/arch/x86/include/asm/page_64.h
-@@ -8,6 +8,7 @@
- #include <asm/cpufeatures.h>
- #include <asm/alternative.h>
+> Yes it is not that bad, because memory_max/high_write() also constantly
+> checks for pending signals in loop so they won't actually get irreversibly
+> stuck. But I just thought it was worth fixing.
 
-+#include <linux/instrumented.h>
- #include <linux/kmsan-checks.h>
-
- /* duplicated to the one in bootmem.h */
-@@ -58,7 +59,14 @@ static inline void clear_page(void *page)
-                           : "cc", "memory", "rax", "rcx");
- }
-
--void copy_page(void *to, void *from);
-+void copy_page_asm(void *to, void *from);
-+
-+static inline void copy_page(void *to, void *from)
-+{
-+       instrument_memcpy_before(to, from, PAGE_SIZE);
-+       copy_page_asm(to, from);
-+       instrument_memcpy_after(to, from, PAGE_SIZE, 0);
-+}
-
- #ifdef CONFIG_X86_5LEVEL
- /*
-diff --git a/arch/x86/lib/copy_page_64.S b/arch/x86/lib/copy_page_64.S
-index d6ae793d08faf..e65b70406d48a 100644
---- a/arch/x86/lib/copy_page_64.S
-+++ b/arch/x86/lib/copy_page_64.S
-@@ -13,13 +13,13 @@
-  * prefetch distance based on SMP/UP.
-  */
-        ALIGN
--SYM_FUNC_START(copy_page)
-+SYM_FUNC_START(copy_page_asm)
-        ALTERNATIVE "jmp copy_page_regs", "", X86_FEATURE_REP_GOOD
-        movl    $4096/8, %ecx
-        rep     movsq
-        RET
--SYM_FUNC_END(copy_page)
--EXPORT_SYMBOL(copy_page)
-+SYM_FUNC_END(copy_page_asm)
-+EXPORT_SYMBOL(copy_page_asm)
-
- SYM_FUNC_START_LOCAL(copy_page_regs)
-        subq    $2*8,   %rsp
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+If we want to fix this parallel limits setting then we should also think
+about a reasonable and predictable behavior and that would likely
+require some sort of locking IMO.
+-- 
+Michal Hocko
+SUSE Labs
 
