@@ -1,63 +1,95 @@
-Return-Path: <linux-kernel+bounces-108850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1DC8810E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C098810E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 918FF1F218D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:24:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0B621F243EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904093D0BE;
-	Wed, 20 Mar 2024 11:24:38 +0000 (UTC)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F193D964;
+	Wed, 20 Mar 2024 11:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jiJz9UdB"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418A73BB4B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9D52BB0A;
+	Wed, 20 Mar 2024 11:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710933878; cv=none; b=XF7mIh/H3C8v6DdgUO9Q8q764CGR9x2aTikE1+i0D1moHhmEIdjasPCUOwcBtW2m+7WoGplLx6b7kz5yl2KlNlrF4h3kPzaH/StAQEOFzHdaueLARQ8058duHW4WxjsD36VARczWfM9eGeCKV4n8ZfSxblSYH2Sx3GDQSR6n6NU=
+	t=1710933963; cv=none; b=Ex5ih/zuKdQ/QyLdGfowrKc5eVTjdBhhUE1btX+B/o46fbksL9h2sbxsUVVebVUWF0TQP2IySueOxMqe/OXxQyUu8DyRKxL8ysGihQCXX4eAYezWmDJh0/DfS7ThYejRvl5sjRm9kLUgbZ+RV1VCzuOVkJKLJz+4hIylLdBrewg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710933878; c=relaxed/simple;
-	bh=8otDcu0vyfzjzGSye076u1huMsZJNbG+Iod5fzoB0uA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nt8kXvKC23hsmPWu7DKDvNlH6qIi6ac/nngeVCHIa3zrvSnrCF4OSNksIozfHfRDe6diXP7OXleCaUndYyLoHXXKKXiKxBXl5I8yr5/j5op68BncjMfCLQzTdmyK2OkvvHlaY4N8GMUks2iDu5Ww7ooIBkTDE190x0jKTzLy/Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by xavier.telenet-ops.be with bizsmtp
-	id 0zQL2C00F0SSLxL01zQLkm; Wed, 20 Mar 2024 12:24:30 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rmu36-004BPL-BP;
-	Wed, 20 Mar 2024 12:24:20 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rmu3Q-000xvc-4T;
-	Wed, 20 Mar 2024 12:24:20 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Emil Renner Berthing <kernel@esmil.dk>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-clk@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
+	s=arc-20240116; t=1710933963; c=relaxed/simple;
+	bh=iXfTvVYD/74RU3fz9WyKXv9rogFeN8hhDiMvXWTzzL8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=NQXUTWPusP8MO3Ijn+LKFCCqvGExJ8n6wnLkfN5Zt8/3OwgYGQ4Z268anH421UuenPNLXTybVgLQkeyjvJGGaTXHchmFa0ZEQZkrfa5zJ+2zU2GoPBU2JNRtIcOHMnWt9bAlyrRFtGr885pinTz4ZXsLsnaZR24PnLLgBe4AiqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jiJz9UdB; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so88575041fa.3;
+        Wed, 20 Mar 2024 04:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710933960; x=1711538760; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jMloB9RfRbEnZWDpgulTh3z5yIYHXDXn4Rg20jknDtg=;
+        b=jiJz9UdBsThiM+JVRtUIx+fd6XnLf9gSylO50eQU3Um1vo8oNgpstbulg/SCr5rBCh
+         6HkymlcoEM0Qfl+H4/O/XM3xKVxH+gpH0ksZyvFsNa7AQoNe3urL+iKhFIvE0t0zpznr
+         tQ8FiLfPogm7eS7YeOaa5PTe3zfXDKLF0eApbH0pinZzSCCR6Y6yaodsyO6b/H6pmxzV
+         eg6KxK0Dp4IL/qzNcvEpxEcVQk8+qYrkZzyXqM4U54j5T+r85UGGbUVTCnciOWxQ0L8s
+         Lm0TCb3o/5ms4f9UBLoLSyBXhYRsZBr+FbHVVHrAlxcSocZ6D793jRrDCc59CsKRHw1D
+         dnGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710933960; x=1711538760;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jMloB9RfRbEnZWDpgulTh3z5yIYHXDXn4Rg20jknDtg=;
+        b=FPDLqt35ZmV/F5C0ipV/pnQfe+xUAns94HRGuzZcFaQwUwbTpH2CPrNfT58Jn5YG3O
+         RiFf9he4XQfue4DIc5ojTxQP764H0d1vgDNIFk5XFeRXD0QBZqIqqNCc5WSv5xIw0Jrf
+         +wc1FPf42hDY9kgF5dg1J1y0BYkipzW84wSnXuutxeDkMEZH3MSFy4Tpkq9G/o52hS+D
+         IqdjqDYjJv9SHLUzUrATjtdf7hTz6vSygdGWJwV3N9BgW3Z1C9m/8oaovSnkCjpjFdZI
+         +BPY3KMLnPLdwTuWmz5YQpNEaxvxv5ilBb7o+ElLsmv4xt2TaDCLOKCrgaXbxGM4fu0r
+         YNMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWUT4xFxrdTmAb1pNfL3qtTfZqXhEUi60J4z5QD4otkAnwRpEMzb90XXbI/CTo+C5NbdCKI4rxX7n2DA4mcubf/AaBRP5YyWQM4Kmve50xwheG4JVpIS1Q8WS6DKYw30NcJl1gRtfb4BI4y5N0vH+PauLywri2AwfAK
+X-Gm-Message-State: AOJu0YyMYX5Oz1KtpGB6e15h3GdLL+NrD52N3ug/UT0LoEDBpoOM2i9B
+	YCpI8fM9/hTbqnEI/CelImgf/tJ56qH42Bl6gkYNJwtuuEMvPZzX
+X-Google-Smtp-Source: AGHT+IGadU+b0/+WDY0GhAtI/Nq447ky8ONTSH4gONcBUvaBDixDV3c0Twf26waZnPAkvHChZOIn5A==
+X-Received: by 2002:a05:651c:22f:b0:2d4:78ba:fa45 with SMTP id z15-20020a05651c022f00b002d478bafa45mr1313118ljn.2.1710933959515;
+        Wed, 20 Mar 2024 04:25:59 -0700 (PDT)
+Received: from pc-de-david.. ([2a04:cec0:1033:b0aa:f477:524f:4101:14c3])
+        by smtp.gmail.com with ESMTPSA id z6-20020a05600c0a0600b0041409db0349sm1901170wmp.48.2024.03.20.04.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 04:25:58 -0700 (PDT)
+From: David Gouarin <dgouarin@gmail.com>
+To: 
+Cc: david.gouarin@thalesgroup.com,
+	David Gouarin <dgouarin@gmail.com>,
+	Madalin Bucur <madalin.bucur@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Camelia Groza <camelia.groza@nxp.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] clk: starfive: jh7100: Use clk_hw for external input clocks
-Date: Wed, 20 Mar 2024 12:24:15 +0100
-Message-Id: <beb746c7538a4ff720a25fd8f309da20d8d854ef.1710933713.git.geert@linux-m68k.org>
+	bpf@vger.kernel.org
+Subject: [PATCH net v3] dpaa_eth: fix XDP queue index
+Date: Wed, 20 Mar 2024 12:25:19 +0100
+Message-Id: <20240320112519.5311-1-dgouarin@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZenidKFF/gQefijz@boxer>
+References: <ZenidKFF/gQefijz@boxer>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,143 +98,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Starfive JH7100 clock driver does not use the DT "clocks" property
-to find the external main input clock, but instead relies on the name of
-the actual clock provider ("osc_sys").  This is fragile, and caused
-breakage when sanitizing clock node names in DTS.
+Make it possible to bind a XDP socket to a queue id.
+The DPAA FQ Id was passed to the XDP program in the
+xdp_rxq_info->queue_index instead of the Ethernet device queue number,
+which made it unusable with bpf_map_redirect.
+Instead of the DPAA FQ Id, initialise the XDP rx queue with the queue number.
 
-Fix this by obtaining the external main input clock using
-devm_clk_get(), and passing the returned clk_hw object to
-devm_clk_hw_register_fixed_factor_parent_hw().
+Fixes: d57e57d0cd04 ("dpaa_eth: add XDP_TX support")
 
-While name-based look-up of the other external input clocks works as-is,
-convert them to a similar clk_hw-based scheme to increase uniformity,
-and to decrease the number of name-based look-ups.
-
-Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in node names")
-Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator driver")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: David Gouarin <dgouarin@gmail.com>
 ---
-After this is applied, the workaround in commit 7921e231f85a349d
-("riscv: dts: starfive: jh7100: fix root clock names") can be reverted.
-
-This is v2 of "[PATCH] clk: starfive: jh7100: Use provided clocks
-instead of hardcoded names"
-https://lore.kernel.org/r/898aa0925a9598d44721d00145015b215434cb3b.1710414195.git.geert@linux-m68k.org/
-
-v2:
-  - Use devm_clk_hw_register_fixed_factor_parent_hw(),
-  - Drop no longer needed local osc_sys name.
+v3: reword commit message
+v2: add Fixes: in description
 ---
- drivers/clk/starfive/clk-starfive-jh7100.c | 48 ++++++++++++++--------
- drivers/clk/starfive/clk-starfive-jh71x0.h |  1 +
- 2 files changed, 32 insertions(+), 17 deletions(-)
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/starfive/clk-starfive-jh7100.c b/drivers/clk/starfive/clk-starfive-jh7100.c
-index 0342db24c27e10df..ead5a7b14bab9045 100644
---- a/drivers/clk/starfive/clk-starfive-jh7100.c
-+++ b/drivers/clk/starfive/clk-starfive-jh7100.c
-@@ -7,6 +7,7 @@
-  * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
-  */
- 
-+#include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/device.h>
- #include <linux/init.h>
-@@ -18,10 +19,18 @@
- #include "clk-starfive-jh71x0.h"
- 
- /* external clocks */
--#define JH7100_CLK_OSC_SYS		(JH7100_CLK_END + 0)
--#define JH7100_CLK_OSC_AUD		(JH7100_CLK_END + 1)
--#define JH7100_CLK_GMAC_RMII_REF	(JH7100_CLK_END + 2)
--#define JH7100_CLK_GMAC_GR_MII_RX	(JH7100_CLK_END + 3)
-+enum {
-+	EXT_CLK_OSC_SYS,
-+	EXT_CLK_OSC_AUD,
-+	EXT_CLK_GMAC_RMII_REF,
-+	EXT_CLK_GMAC_GR_MII_RX,
-+	EXT_NUM_CLKS
-+};
-+
-+#define JH7100_CLK_OSC_SYS		(JH7100_CLK_END + EXT_CLK_OSC_SYS)
-+#define JH7100_CLK_OSC_AUD		(JH7100_CLK_END + EXT_CLK_OSC_AUD)
-+#define JH7100_CLK_GMAC_RMII_REF	(JH7100_CLK_END + EXT_CLK_GMAC_RMII_REF)
-+#define JH7100_CLK_GMAC_GR_MII_RX	(JH7100_CLK_END + EXT_CLK_GMAC_GR_MII_RX)
- 
- static const struct jh71x0_clk_data jh7100_clk_data[] __initconst = {
- 	JH71X0__MUX(JH7100_CLK_CPUNDBUS_ROOT, "cpundbus_root", 0, 4,
-@@ -284,8 +293,11 @@ static struct clk_hw *jh7100_clk_get(struct of_phandle_args *clkspec, void *data
- 
- static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
- {
-+	static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
-+		{ "osc_sys", "osc_aud", "gmac_rmii_ref", "gmac_gr_mii_rxclk" };
- 	struct jh71x0_clk_priv *priv;
- 	unsigned int idx;
-+	struct clk *clk;
- 	int ret;
- 
- 	priv = devm_kzalloc(&pdev->dev, struct_size(priv, reg, JH7100_CLK_PLL0_OUT), GFP_KERNEL);
-@@ -298,13 +310,21 @@ static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
--	priv->pll[0] = devm_clk_hw_register_fixed_factor(priv->dev, "pll0_out",
--							 "osc_sys", 0, 40, 1);
-+	for (idx = 0; idx < EXT_NUM_CLKS; idx++) {
-+		clk = devm_clk_get(&pdev->dev, jh7100_ext_clk[idx]);
-+		if (IS_ERR(clk))
-+			return PTR_ERR(clk);
-+
-+		priv->ext[idx] = __clk_get_hw(clk);
-+	}
-+
-+	priv->pll[0] = devm_clk_hw_register_fixed_factor_parent_hw(priv->dev,
-+			"pll0_out", priv->ext[EXT_CLK_OSC_SYS], 0, 40, 1);
- 	if (IS_ERR(priv->pll[0]))
- 		return PTR_ERR(priv->pll[0]);
- 
--	priv->pll[1] = devm_clk_hw_register_fixed_factor(priv->dev, "pll1_out",
--							 "osc_sys", 0, 64, 1);
-+	priv->pll[1] = devm_clk_hw_register_fixed_factor_parent_hw(priv->dev,
-+			"pll1_out", priv->ext[EXT_CLK_OSC_SYS], 0, 64, 1);
- 	if (IS_ERR(priv->pll[1]))
- 		return PTR_ERR(priv->pll[1]);
- 
-@@ -331,16 +351,10 @@ static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
- 
- 			if (pidx < JH7100_CLK_PLL0_OUT)
- 				parents[i].hw = &priv->reg[pidx].hw;
--			else if (pidx < JH7100_CLK_END)
-+			else if (pidx < JH7100_CLK_OSC_SYS)
- 				parents[i].hw = priv->pll[pidx - JH7100_CLK_PLL0_OUT];
--			else if (pidx == JH7100_CLK_OSC_SYS)
--				parents[i].fw_name = "osc_sys";
--			else if (pidx == JH7100_CLK_OSC_AUD)
--				parents[i].fw_name = "osc_aud";
--			else if (pidx == JH7100_CLK_GMAC_RMII_REF)
--				parents[i].fw_name = "gmac_rmii_ref";
--			else if (pidx == JH7100_CLK_GMAC_GR_MII_RX)
--				parents[i].fw_name = "gmac_gr_mii_rxclk";
-+			else if (pidx <= JH7100_CLK_GMAC_GR_MII_RX)
-+				parents[i].hw = priv->ext[pidx - JH7100_CLK_OSC_SYS];
- 		}
- 
- 		clk->hw.init = &init;
-diff --git a/drivers/clk/starfive/clk-starfive-jh71x0.h b/drivers/clk/starfive/clk-starfive-jh71x0.h
-index 23e052fc15495c41..4f46939179cd7418 100644
---- a/drivers/clk/starfive/clk-starfive-jh71x0.h
-+++ b/drivers/clk/starfive/clk-starfive-jh71x0.h
-@@ -115,6 +115,7 @@ struct jh71x0_clk_priv {
- 	struct device *dev;
- 	void __iomem *base;
- 	struct clk_hw *pll[3];
-+	struct clk_hw *ext[4];
- 	struct jh71x0_clk reg[];
- };
- 
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index dcbc598b11c6..988dc9237368 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -1154,7 +1154,7 @@ static int dpaa_fq_init(struct dpaa_fq *dpaa_fq, bool td_enable)
+ 	if (dpaa_fq->fq_type == FQ_TYPE_RX_DEFAULT ||
+ 	    dpaa_fq->fq_type == FQ_TYPE_RX_PCD) {
+ 		err = xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
+-				       dpaa_fq->fqid, 0);
++				       dpaa_fq->channel, 0);
+ 		if (err) {
+ 			dev_err(dev, "xdp_rxq_info_reg() = %d\n", err);
+ 			return err;
 -- 
 2.34.1
 
