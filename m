@@ -1,154 +1,168 @@
-Return-Path: <linux-kernel+bounces-108527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3710D880BBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:12:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26258880BBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9C391F22669
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1270284152
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09CA22F14;
-	Wed, 20 Mar 2024 07:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A643A200C3;
+	Wed, 20 Mar 2024 07:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="djw/hfap"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GHM/hvog"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5744622338;
-	Wed, 20 Mar 2024 07:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC3020DCB;
+	Wed, 20 Mar 2024 07:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710918754; cv=none; b=LxsGh4bj0BPYCAr3qsj6oEsT/yTtm+065UuznGaV/YvGYPen7xab9GY4LMP96Y4XJDvVla7eTUXvr6lHrsfP7oPhG5ea8ZNfkN4RpzcoOpn3HZzBMsFpk4ryKryk/+XPC+NklFNT9xcxdrk4c7aglXm3YW83FCSAGeRfU6PQtAE=
+	t=1710918748; cv=none; b=Ul5Z2yAOY2iBSbpHM5t93bhBQw4AnsqJ6jCBNCCP4hokvy03+Ybs2XkEIy1GXOxp4QwgwvJxS4kOFE4BRTK7X5sNc14keVAsUJsL2JdJD16cLyBH0DeloMMb63FFs+0fBGdMQEcUKgXCWSt92dok3uVnxQAYyb5LflGCddx3YtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710918754; c=relaxed/simple;
-	bh=u+vwlIL+BjXnieQaL//3T118BuiOTfwN6PA5EB6CqpE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gaegap56J+lwtGFgLI9E1ufJN67c8I8fBgUTQxCi/vHKDKyXc828nmH08vGQ+Ij91chZwQWprefpcQSKu2qtijdldVnPOpP41LcaShmGdks+7YN5odhI/s14QWtXMoE/TxmkRDLo+IccqQ/xQw/7xSMUP59UoEX5kF/6okVAvlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=djw/hfap; arc=none smtp.client-ip=209.85.221.50
+	s=arc-20240116; t=1710918748; c=relaxed/simple;
+	bh=JTCshX56DhuRq+dbv3LL4ovkRcC7ucxnZ9MEKhul8/k=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=B9AR+vHH7cfaiYUmWQEW9DW1goRQUeTTvDPe3euD6vxrE9oxk0thTLDG71i2M3G0+Fkq/Qdzch0txwO/1NPSw8wGRCcVlw4Qs/WqResFbYM+hdD8O8J7mh3prTNbzJroYlvCbBWnBVa8Xb8FpHKT2sQ5JcAfTuhOyCDaZ6jUTfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GHM/hvog; arc=none smtp.client-ip=209.85.167.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-34169f28460so1853107f8f.2;
-        Wed, 20 Mar 2024 00:12:32 -0700 (PDT)
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c390f91b22so1478972b6e.0;
+        Wed, 20 Mar 2024 00:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710918751; x=1711523551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b72yw6/Y3U1dEMZ408V4yz17v8cgFxh5ATyHQeyOS3U=;
-        b=djw/hfapgkIEE65XN8ayxDI6IJiHHXOl+/Q1QEa2Ex9l9MCf93OKkPjysC+oS7niQM
-         0UIhPJuuWx770F98X7rNDel6Az4vaykws9B4nj9YKduwuZhZVk/SE53xJ3HW92BOuL3y
-         v1gw71/SR8kK6eH0g2K9hjcErhkIoBM3DJTxDQG/c4Al5v/I2BavJ/6aldxZThiDnv2F
-         DxWbji2kzTctowPKDuzJFpGtYrP25CG3H17lMXwrwZzOlgCjtP4FXJwCvMoCdtQe0cIx
-         NvcT6TcEnBgvbdd2iCwd4TlFZ2xDY6zvgT+ahqN7yuRXH8roBF0tQicreubvXifLqjfj
-         /1WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710918751; x=1711523551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1710918746; x=1711523546; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b72yw6/Y3U1dEMZ408V4yz17v8cgFxh5ATyHQeyOS3U=;
-        b=fua/VS2dhijJAaqLayF+ew8mllfp1/qRe6tCiFRMLp109N1aoUvNks/DMvQ6exlAWU
-         hGHc/4DySIY00LjvVglXXAlYeCaXOGx80P/rwILIGDRlJcp0t0hHFQMKCsgP6Ez45CdR
-         7LAXcf4xD+07agtFHvi866d07FH5J/96KOfIUSZwVCNP+4DmZ+E0S8A8FIFr8vXYJr2s
-         4SSah+aqoi2+z8FlXZo5ArbfUkoTy7PyUS2IXbBoNT+qq18ztSh3VTKG8xUjJqh6tjXg
-         b8pdK/EV2c+wxPC6pB0IP+/VxkCGI5k/B5JRYBR1ms3WdPKCddT3mvTYdlnZJvC5Gh8U
-         fv9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVwppbVjWLEUBLos1afFleLtCW1li7qKyoSkwRKvDfkD9mj1QlrIvmTl4DFe/jWoFVfpgAhet5MJkLjdVIICwla5ppYRzMagTMF73sOXV5LSskcd87rFQjhO6FaH/MBcTpK
-X-Gm-Message-State: AOJu0YylSaW3WFDeHJXQv6ra+IcPMpXYYF2bXP2TIqXOUeWW0SDJysfn
-	J571PPFffhx3wNXj+zRdfoQusOcwEBfp9u+3r7u9BjLx/Qd1nrgrX7SIsjKWGzg+d8dlKlnA5/G
-	xf5exTI+3ij33HZUoRSs7baRQp50=
-X-Google-Smtp-Source: AGHT+IFCLSaYWtIMWvB56vjO8jKQktH7CFnTJ7RxadECHs78As9eHz2d/wqGOT3MrQUf5Kqq8istXXclSG/82hNqJHU=
-X-Received: by 2002:a05:6000:711:b0:33d:2f2f:b135 with SMTP id
- bs17-20020a056000071100b0033d2f2fb135mr3951989wrb.46.1710918750544; Wed, 20
- Mar 2024 00:12:30 -0700 (PDT)
+        bh=bhuMvCo3TgtaW8PwFw7FBLn/PThKgsQ0zRt/0tBJ7iM=;
+        b=GHM/hvog9FhxEl/ajQL6VxjStjChy6xrGBbffe9R+Z24jj+neGCAsUllTQoIX7YXON
+         u7JOyHDXxW209/mAKHS7/d5Euy/ILNXzHlYrJDb0QlsdKmm+BHRUWETGXZ0ifKgJBc78
+         RI9wdbq5juqNiE/xvpQ+r4J5clCiwy+Xlul876IkgvnZDKvR9oRulro+sjoRVROOgn31
+         n4yJzyzjyViVeM8tHbjDX9lVP0anV07RdC2UrtMqsI6D4ygRK77nBVmWbLZEs+CqJGJA
+         6VNM7mYQQY//6EZF2X9+bOiANWU8+mNPpS8zVnFSWNXeZjk+5OaDu+5VIx5cQxO0rHBw
+         e26A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710918746; x=1711523546;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhuMvCo3TgtaW8PwFw7FBLn/PThKgsQ0zRt/0tBJ7iM=;
+        b=Q9OetgVsh1BFXWmDwWj9VYWDP17mjw/eQhPteuKTZeczUAYPtsSNmxoB1iv4Z9PqZH
+         oW09DoH3aH9UwQ5JGq1FzyvcKxuoyuYV61nnrA6Nu2s5pOp8a6Z8df2SwyTv29s967+O
+         quoxfI772D5wJsC9Xs81pRpXNlFlELpFSLuvn+6Mh7TfQK0zWqv3ub4Fr8pQp8yAhz2Z
+         urBWHaS30ztnXeZ2nc5orWC6YYPjGoabayK+erh/u0JrIIP2Vw4AI9vynw9S7BW9W//C
+         J5mYH/56XusrLymOPdOOeR9vEzZ4cj6RB78dREmyfwyJjQzgR2ci1cZSek3DZBJmcSL2
+         JQ3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVy9vyWsnmMVs2LyZNl1/fV7i/phykZyk2U3FVrcA9rwSinwYONztw/i2VWJRj8cv8CU+xZmWqC8JZmlzSZgh9+oGZIvKY/kWYPx5/LNRfYgbv4lIoFIAWSsQbdCwjYH7iKMVfa8xAyYmL+7Sdd9qwqKQC5YsrvD8ZnUo7K2ELNX2gbRw==
+X-Gm-Message-State: AOJu0YzVffOs41Bbl0V6314dnx4RmB4+d2LZC//cZOhKcclj/btX30ho
+	ksXXnsrGvo0Fr+XWKl5yqAWaRsl6X4L2cNO3UtMwJ7xn4jb4gRDZT6IJQtNgCWg=
+X-Google-Smtp-Source: AGHT+IFYjkAhJU6qgZKZ1Sxu70SlW955OlQtKscMfS6t4l/5ITm8Mj2uH+x1X+AJ/XOFEtz5dOqgiA==
+X-Received: by 2002:a05:6808:b04:b0:3c3:59ef:821e with SMTP id s4-20020a0568080b0400b003c359ef821emr4183108oij.48.1710918746273;
+        Wed, 20 Mar 2024 00:12:26 -0700 (PDT)
+Received: from [192.168.0.13] ([172.92.174.232])
+        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006e647059cccsm10918577pfb.33.2024.03.20.00.12.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 00:12:25 -0700 (PDT)
+Subject: Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
+ workaround to host drivers.
+To: Keith Busch <kbusch@kernel.org>, Kevin Xie <kevin.xie@starfivetech.com>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Minda Chen
+ <minda.chen@starfivetech.com>, Conor Dooley <conor@kernel.org>,
+ "kw@linux.com" <kw@linux.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ "daire.mcnamara@microchip.com" <daire.mcnamara@microchip.com>,
+ "emil.renner.berthing@canonical.com" <emil.renner.berthing@canonical.com>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+ Mason Huo <mason.huo@starfivetech.com>,
+ Leyfoon Tan <leyfoon.tan@starfivetech.com>
+References: <ZeCd+xqE6x2ZFtJN@lpieralisi>
+ <mhng-87e7ef5a-d60b-4057-960d-41bc901b6c7f@palmer-ri-x1c9>
+ <ZedAn8IC+Mpm4Sqz@lpieralisi>
+ <ZQ0PR01MB0981BC562E837B232B419AC28229A@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
+ <ZfJmMcs2UThVSC4v@kbusch-mbp>
+From: Bo Gan <ganboing@gmail.com>
+Message-ID: <16a1e6c6-2e2f-08e5-8da0-1462cec57e1f@gmail.com>
+Date: Wed, 20 Mar 2024 00:12:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000e40a2906072e9567@google.com> <ab273ae2-80ec-45da-910a-e74298c71d50@I-love.SAKURA.ne.jp>
- <CAADnVQLmLMt2bF9aAB26dtBCvy2oUFt+AAKDRgTTrc7Xk_zxJQ@mail.gmail.com> <596aad11-ee69-4ef1-b945-7b67a9fb22d7@I-love.SAKURA.ne.jp>
-In-Reply-To: <596aad11-ee69-4ef1-b945-7b67a9fb22d7@I-love.SAKURA.ne.jp>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 20 Mar 2024 00:12:19 -0700
-Message-ID: <CAADnVQL6Q3k0+-5X3Xjov7W_xESxkmVXcsCxQRWitQvhTBsf7A@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] possible deadlock in console_flush_all (2)
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZfJmMcs2UThVSC4v@kbusch-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20, 2024 at 12:05=E2=80=AFAM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2024/03/20 15:56, Alexei Starovoitov wrote:
-> > This has nothing to do with bpf.
-> > bpf never calls printk().
->
-> Please see the Sample crash report in the dashboard.
-> bpf program is hitting printk() via report_bug().
+On 3/13/24 7:51 PM, Keith Busch wrote:
+> On Thu, Mar 14, 2024 at 02:18:38AM +0000, Kevin Xie wrote:
+>>> Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
+>>> workaround to host drivers.
+>>>
+>>> On Mon, Mar 04, 2024 at 10:08:06AM -0800, Palmer Dabbelt wrote:
+>>>> On Thu, 29 Feb 2024 07:08:43 PST (-0800), lpieralisi@kernel.org wrote:
+>>>>> On Tue, Feb 27, 2024 at 06:35:21PM +0800, Minda Chen wrote:
+>>>>>> From: Kevin Xie <kevin.xie@starfivetech.com>
+>>>>>>
+>>>>>> As the Starfive JH7110 hardware can't keep two inbound post write
+>>>>>> in order all the time, such as MSI messages and NVMe completions.
+>>>>>> If the NVMe completion update later than the MSI, an NVMe IRQ handle
+>>> will miss.
+>>>>>
+>>>>> Please explain what the problem is and what "NVMe completions" means
+>>>>> given that you are talking about posted writes.
 
-Exactly. local_bh_neable is simply asking for a splat.
-_this_ bug is in printk.
-It's a generic issue.
+Echoing Keith here. Why are you treating NVMe completions + MSI as a special case?
+What's special about this combination other than two posted writes? I own JH7110
+visionfive 2 boards myself, and if I'm not mistaken, there are two identical PCIe
+controllers in JH7110. The first one connects the onboard USB controller of vf2,
+which also enables MSI interrupts. How come this exact problem not affecting the
+USB controller? The commit message from Minda strongly suggests it does, and also
+for R8169 NIC. Thus, why would you suggest the problem is confined to NVMe?
 
-sockmap bug is orthogonal.
-It's already being looked at.
+Bo
 
-> -> #0 (console_owner){....}-{0:0}:
->        check_prev_add kernel/locking/lockdep.c:3134 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
->        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
->        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
->        console_lock_spinning_enable kernel/printk/printk.c:1873 [inline]
->        console_emit_next_record kernel/printk/printk.c:2901 [inline]
->        console_flush_all+0x810/0xfd0 kernel/printk/printk.c:2973
->        console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3042
->        vprintk_emit+0x5a6/0x770 kernel/printk/printk.c:2342
->        _printk+0xd5/0x120 kernel/printk/printk.c:2367
->        __report_bug lib/bug.c:195 [inline]
->        report_bug+0x346/0x500 lib/bug.c:219
->        handle_bug+0x3e/0x70 arch/x86/kernel/traps.c:239
->        exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:260
->        asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
->        __local_bh_enable_ip+0x1be/0x200 kernel/softirq.c:362
->        spin_unlock_bh include/linux/spinlock.h:396 [inline]
->        __sock_map_delete net/core/sock_map.c:424 [inline]
->        sock_map_delete_elem+0xca/0x140 net/core/sock_map.c:446
->        bpf_prog_2c29ac5cdc6b1842+0x42/0x46
->        bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->        __bpf_prog_run include/linux/filter.h:657 [inline]
->        bpf_prog_run include/linux/filter.h:664 [inline]
->        __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
->        bpf_trace_run4+0x25a/0x490 kernel/trace/bpf_trace.c:2422
->        trace_sched_switch include/trace/events/sched.h:222 [inline]
->        __schedule+0x250b/0x49d0 kernel/sched/core.c:6733
->        __schedule_loop kernel/sched/core.c:6813 [inline]
->        schedule+0x14b/0x320 kernel/sched/core.c:6828
->        ptrace_stop+0x5b4/0x940 kernel/signal.c:2358
->        ptrace_do_notify kernel/signal.c:2395 [inline]
->        ptrace_notify+0x255/0x380 kernel/signal.c:2407
->        ptrace_report_syscall include/linux/ptrace.h:415 [inline]
->        ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
->        syscall_exit_work+0xbd/0x170 kernel/entry/common.c:167
->        syscall_exit_to_user_mode_prepare kernel/entry/common.c:194 [inlin=
-e]
->        __syscall_exit_to_user_mode_work kernel/entry/common.c:199 [inline=
-]
->        syscall_exit_to_user_mode+0x273/0x360 kernel/entry/common.c:212
->        do_syscall_64+0x10a/0x240 arch/x86/entry/common.c:89
->        entry_SYSCALL_64_after_hwframe+0x6d/0x75
->
->
+>>
+>> Sorry, we made a casual conclusion here.
+>> Not any two of inbound post requests can`t be kept in order in JH7110 SoC,
+>> the only one case we found is NVMe completions with MSI interrupts.
+>> To be more precise, they are the pending status in nvme_completion struct and
+>> nvme_irq handler in nvme/host/pci.c.
+>>
+>> We have shown the original workaround patch before:
+>> https://lore.kernel.org/lkml/CAJM55Z9HtBSyCq7rDEDFdw644pOWCKJfPqhmi3SD1x6p3g2SLQ@mail.gmail.com/
+>> We put it in our github branch and works fine for a long time.
+>> Looking forward to better advices from someone familiar with NVMe drivers.
+> 
+> So this platform treats strictly ordered writes the same as if relaxed
+> ordering was enabled? I am not sure if we could reasonably work around
+> such behavior. An arbitrary delay is likely too long for most cases, and
+> too short for the worst case.
+> 
+> I suppose we could quirk a non-posted transaction in the interrupt
+> handler to force flush pending memory updates, but that will noticeably
+> harm your nvme performance. Maybe if you constrain such behavior to the
+> spurious IRQ_NONE condition, then it might be okay? I don't know.
+> 
+
+Also copied Keith's latest reply below, and I also have the same doubt.
+
+> Hm, that may not be good enough: if nvme completions can be reordered
+> with their msi's, then I assume data may reorder with their completion.
+> Your application will inevitably see stale and corrupted data, so it
+> sounds like you need some kind of barrier per completion. Ouch!
 
