@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-108755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E77880F97
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:24:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 746D8880F98
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D40D1F2232A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E043A1F224DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF0A3D388;
-	Wed, 20 Mar 2024 10:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261363D993;
+	Wed, 20 Mar 2024 10:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FBfTNxbq"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d+rQpkij"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA843BB48;
-	Wed, 20 Mar 2024 10:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C74F3BB48
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930244; cv=none; b=YyLKQPUvEL4sZJ8yuFtJRt0YEKbvl0146GfxkKJ+b137Ylq8/GgVGcUHsSFcHmClPp3gDVdMuLL9GXR21Wurwzp+k4xxuN1IVjxtCDi/8nZ0B/ofGYv9xHDCbBIiAWb8EOdiQ2PwIn4JxAXHZB+69ya8XJ0lSmZ5TPtSAdLnR/k=
+	t=1710930253; cv=none; b=S8/eB5pDASsgrUsL3AZvpeMwXuN5jdLFQSlwkN0vQ90xfUC0e4o/nZUv33Py7hsQP7i9xMyYmpQgzTkq/2SzRk4iroW6h92J40Fz7G5hFvef06JinZw96Bwd1c9m8G0pMPw1CxHui1jhGPVUuAmqQOq1gW9DdwBvAg9YEu484qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710930244; c=relaxed/simple;
-	bh=Pu2Eg/h/hDx/kano+99b34NmYI/PhyT0wLaL/eqWdQY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bgxYLGVaI19g+9oGQ/dgKJZDRwDm4D01+icdC8S9GosMxxq+e3niaXOfolcQNx5k4clQKffh8CsnC4rtL7nSYhHSV5YL2eryL+uyCw5/c7ggMR4R1duw/Zpud7wI5zSCBboGF3qNtUImmfR3P1GCIiPNLn82VlH546mlku3Z+II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FBfTNxbq; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e8f76f18d3so161493b3a.0;
-        Wed, 20 Mar 2024 03:24:03 -0700 (PDT)
+	s=arc-20240116; t=1710930253; c=relaxed/simple;
+	bh=FntOVS9RTj65ER/1UeXzQzNeQZXqJvEG86AIMo02Vio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fApDAcrWZAjKET+5DzTNBOcfHaVbaCh+1JL/0zC2nSdAi51yJqYi/dekzzUZsqaZ/HB0B5DzvxBjx+rtwPjbfiBtlbmnBISsCBAu0WPgKy/3ClQWHIGHq01y6kN/XdaYObNt8I7+Q/n7T5svuw/wQDyBk4/pydSazgC9WC+ojOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d+rQpkij; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso221343766b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710930242; x=1711535042; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HNGMZWeqHHPRZokEtGbRCLAdS7h0Tg/vqYb0u5nw81w=;
-        b=FBfTNxbqv3loqqyJ16NIyR6sX/ZwmB7wKPMLw74bqCwY5RIbFRyl0qEas201HPBBPJ
-         BopZrQeJDOlhMK8bmvTQFl3IY3rc2TMXelDsPC2f6srOMs7oj1gHnmhRifNqYaHIBsx3
-         sB1bICjngcNFaevDerirDoYs4vino24S/PqBwqcENoeW9Qnp8GthdTdtWMNGkjAnF/ML
-         JR258NiUcq1wEbeIPbWHptaGzN3tDSD7FJ6NtV/MjWzDlSPsRQbcC4Kaard3x7bOFI6x
-         YMwpDSUSYYAVb/8nsYUUAohawP6I0aPUg0dcGN1gI96fpthxzmpX0gaspYkFuOGtt7cP
-         3EpQ==
+        d=linaro.org; s=google; t=1710930249; x=1711535049; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=zUxLDUcelK/0PKWxOgb0tRnuM6xgbFRxgTPdQohocPE=;
+        b=d+rQpkijrNtSc0iaUqsGc9O1T17EaOGs2Dmpdnk6r2E5/bWi1jLM3Qc2z21NesZkuT
+         rJgtg9eYlBGirSXOy+M8qCj1cEVphMkSsUsj6utS25BZ5ZWDD0x2R74D/GP11YOUvnPi
+         nV76hFVGBKQKWpJRXJDfnM926LSBU6bWJnK+/GCt/w+mQ32dbB1404vuMmtLxkwOIi0B
+         WKETI/5Z/QPQNTdnF4y7VEamcOl0DH5KpL4xtS8+Kwcx7pWM5V9SXo7tXcg+YPYuyQRx
+         RILlfWkONlptRmSs1Pw6N6SEySpXrTRRxc83g9VH67N1RpirTmaKOVPu8rx/vjLSC2Z3
+         u3jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710930242; x=1711535042;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNGMZWeqHHPRZokEtGbRCLAdS7h0Tg/vqYb0u5nw81w=;
-        b=KVQzH470mLEWiRQkDoNGfINIHyBzmE1ihjbbhJOr9+P/MAny5NMcK8AIM/09f28wKp
-         pyidU+aB/Gsm5z66UE0N4uq0BrQcwQY83PmH4tVMvl74P1gD9PTiKUxBfcZOqzF6oLF7
-         uR2X4XIFos8yJwRS3dLlpR5VavVfwxgOMVJtNTh8mFAqANJsdqJ9rtPnbLVXYaNNpfOc
-         82hO7Wm/A83K75jTsyORic6SrtqK3yhKzh5nwWFk3htNdbuuvq6IJjxC/kldLMt0Ux29
-         Vht3wsElda2b62gIjOLjqeI3UH7Pa9hw15mLRQR+VAP11JM/mAfLlj7fednv5+jXbN0F
-         QRxA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdzc3k3bvfDWrY1wJ4hPA6263/Tt3jru/pstGX+zOs7fVcZTNt3xO3B9D5yg3YruirEbUSf2KOgeRJYD8xNazhpczNuKPhCu1lqgOqgoXisaYI1e0YujdswIb3MszHtR67NC7Xamdr
-X-Gm-Message-State: AOJu0Yx2Iu4gyhOsCvcMFWCO7/q4J1L0E1H8sbWS2JytfQM6vPRgpRIZ
-	pkXZYyQ4YKBYLKUoNdsrGywMBsYq+I9uOY5tEAMgRutB2T76qFdD
-X-Google-Smtp-Source: AGHT+IEujSEs4FveM9ht/jiwh624mr5TyvzCP2dGfgdNz+yQW78JveIR86trmHk6n8XLp5FFG94/wQ==
-X-Received: by 2002:a05:6a00:8c18:b0:6e7:6bc4:ef8c with SMTP id ih24-20020a056a008c1800b006e76bc4ef8cmr3346244pfb.3.1710930242368;
-        Wed, 20 Mar 2024 03:24:02 -0700 (PDT)
-Received: from [192.168.1.7] ([159.192.167.165])
-        by smtp.googlemail.com with ESMTPSA id v4-20020aa799c4000000b006e6f1eab2f9sm10062119pfi.159.2024.03.20.03.24.00
+        d=1e100.net; s=20230601; t=1710930249; x=1711535049;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zUxLDUcelK/0PKWxOgb0tRnuM6xgbFRxgTPdQohocPE=;
+        b=FpTNGbwzSlIzq2Vtz+lXHvuLxYjIt48aQ3OEXAtQggUxchLF85fCwHhBEEsNXZQT1H
+         QtXiJ0KZJh5NB1fEhjorXDvyWzM2o3pZICxMupZmmn3P+gXGwiCNgdBIY9lPMhqA0pq9
+         SUXeBDdC11wTonnNBuvV9mMJV4JBqeMv+A+F8gg8CpsNnk3HZeddbYVmhvXLT25gXQhB
+         51fVJafKG4UgljpU0hIP5D6W4i5F1vDuQ0ngpBsl3r5Xr+/7uLsliZ0Bco8mlb/ATZOa
+         DKkNbYe9y/QeNw9Ry4eukdjg8kCTkCbohx1kOx49m8whvIIndOBdRe8u0/sA79mTgYUS
+         /ACA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwXfknDN3KUMOPE5cSq0q+KJBLkYi6uvln6dRLgE1ZfgJN7HGWXzu1yD2qGScMA4mqqs6ufXzl+pkeltuJ69gHA+/GxFk/XwSIqrUm
+X-Gm-Message-State: AOJu0YzBwYn8kxJcR5pUgoaoYSaHvAqv0z/fmIGXkZB3+M3pmnhjtB2s
+	56RIrFtVETD0KD1gB5vTmV0YHfUy4kcrMD/WzSimzoBARl+TpogPZVugJRgA/9ZeNLcNMBUZuM+
+	V
+X-Google-Smtp-Source: AGHT+IH0TVU2B967dqvpA5N4Ww+O+n5Nwuq97zEjfZLHCTBGVX94nWUvcyKLsqFepv/YVmvVT41LSQ==
+X-Received: by 2002:a17:906:1547:b0:a45:b1d8:200c with SMTP id c7-20020a170906154700b00a45b1d8200cmr12083115ejd.14.1710930249600;
+        Wed, 20 Mar 2024 03:24:09 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170906190b00b00a44e2f3024bsm7074104eje.68.2024.03.20.03.24.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 03:24:02 -0700 (PDT)
-Message-ID: <436b1082-4288-4d6d-8865-f857e386e62d@gmail.com>
-Date: Wed, 20 Mar 2024 17:23:56 +0700
+        Wed, 20 Mar 2024 03:24:09 -0700 (PDT)
+Message-ID: <cfdb77c8-e893-41bf-965f-1013f3fc910e@linaro.org>
+Date: Wed, 20 Mar 2024 11:24:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,163 +77,146 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] USB: serial: option: add GosunCn GM800 series
+Subject: Re: [PATCH v1 3/4] dt-bindings: Add bindings for vmgenid
+To: "Landge, Sudan" <sudanl@amazon.co.uk>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240319143253.22317-1-sudanl@amazon.com>
+ <20240319143253.22317-4-sudanl@amazon.com>
+ <ba8418ab-2829-416c-8e20-414f7818cab9@linaro.org>
+ <f221da06-2a7c-4db3-a0de-870156865631@amazon.co.uk>
 Content-Language: en-US
-To: Chukun Pan <amadeus@jmu.edu.cn>, Johan Hovold <johan@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240320070020.77280-1-amadeus@jmu.edu.cn>
-From: Lars Melin <larsm17@gmail.com>
-In-Reply-To: <20240320070020.77280-1-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <f221da06-2a7c-4db3-a0de-870156865631@amazon.co.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024-03-20 14:00, Chukun Pan wrote:
-> Add support for GosunCn GM800 series which are based on
-> Qualcomm SDX55 chip:
+On 20/03/2024 11:17, Landge, Sudan wrote:
 > 
-> Download mode:
-> 0x1402: DIAG + AT + MODEM
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=305a ProdID=1402 Rev= 4.14
-> S:  Manufacturer=GSW
-> S:  Product=GSW_GM800_123456
-> S:  SerialNumber=12345678
-> C:* #Ifs= 3 Cfg#= 1 Atr=80 MxPwr=500mA
-> I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> RmNet mode (old):
-> 0x1403: DIAG + AT + MODEM + RMNET + ADB
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=305a ProdID=1403 Rev= 4.14
-> S:  Manufacturer=QCOM
-> S:  Product=SDXPRAIRIE-MTP _SN:12345678
-> S:  SerialNumber=12345678
-> C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-> I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=86(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-> E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> RmNet mode:
-> 0x1421: DIAG + AT + MODEM + RMNET + ADB
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=305a ProdID=1421 Rev= 4.14
-> S:  Manufacturer=QCOM
-> S:  Product=SDXPRAIRIE-MTP _SN:12345678
-> S:  SerialNumber=12345678
-> C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-> I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=86(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-> E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> EAP mode:
-> 0x1422: RNDIS + RMNET + IPC + DIAG + MODEM + AT + ADB
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-> D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-> P:  Vendor=305a ProdID=1422 Rev= 4.14
-> S:  Manufacturer=QCOM
-> S:  Product=SDXPRAIRIE-MTP _SN:12345678
-> S:  SerialNumber=12345678
-> C:* #Ifs= 8 Cfg#= 1 Atr=80 MxPwr=500mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=03
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=option
-> E:  Ad=82(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=option
-> E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> E:  Ad=83(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-> E:  Ad=8e(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 6 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-> E:  Ad=89(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-> E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 7 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=option
-> E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=8a(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->   drivers/usb/serial/option.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 55a65d941ccb..6bcf74f13ed5 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -2278,9 +2278,13 @@ static const struct usb_device_id option_ids[] = {
->   	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a4, 0xff),			/* Fibocom FM101-GL (laptop MBIM) */
->   	  .driver_info = RSVD(4) },
->   	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
-> +	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1402, 0xff) },			/* GosunCn GM800 (Download mode) */
-> +	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1403, 0xff) },			/* GosunCn GM800 (rmnet, old) */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
-> +	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1421, 0xff) },			/* GosunCn GM800 (rmnet) */
-> +	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1422, 0xff) },			/* GosunCn GM800 (EAP) */
->   	{ USB_DEVICE_AND_INTERFACE_INFO(OPPO_VENDOR_ID, OPPO_PRODUCT_R11, 0xff, 0xff, 0x30) },
->   	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x30) },
->   	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x40) },
+> On 19/03/2024 15:28, Krzysztof Kozlowski wrote:
+>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>>
+>>
 
-Hi Chukun,
-do you really want the option driver to handle the ADB and NET interfaces?
+Why did you remove all the people from CC list?
 
-thanks
-Lars
+>>
+>> On 19/03/2024 15:32, Sudan Landge wrote:
+>>> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
+>>> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
+>>> ACPI only device.
+>> That's not a valid rationale. Second today... we do not add things to
+>> bindings just because someone added some crazy or not crazy idea to Linux.
+>>
+>> Bindings represent the hardware.
+>>
+>> Please come with real rationale. Even if this is accepted, above reason
+>> is just wrong and will be used as an excuse to promote more crap into
+>> bindings.
+> 
+> Thank you for the quick review.
+> 
+> I will add more details to the problem we are trying to fix with an 
+> updated cover letter
+> 
+> but to summarize the problem briefly:
+> 
+> Firecracker is a minimalist feature hypervisor and we do not have ACPI 
+> support
+> 
+> for ARM yet. The vmgenid devicetree support looked a better option because
+> 
+> supporting ACPI on ARM means supporting UEFI which adds a lot of complexity.
+
+That does not convince me. Amount of work for you is not making virtual
+stuff real hardware. Come with some other discoverable protocol - you
+have full control of both sides of this thing.
+
+> 
+>> A nit, subject: drop second/last, redundant "bindings". The
+>> "dt-bindings" prefix is already stating that these are bindings.
+>> See also:
+>> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+>>
+>> Please use subject prefixes matching the subsystem. You can get them for
+>> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+>> your patch is touching.
+> Got it, thanks.
+>>> Add a devicetree binding support for vmgenid so that hypervisors
+>>> can support vmgenid without the need to support ACPI.
+>> Devicetree is not for virtual platforms. Virtual platform can define
+>> whatever interface they want (virtio, ACPI, "VTree" (just invented now)).
+> Sorry for my lack of experience in this area. I took reference of virtio 
+> devices when I
+> 
+> uploaded the patch. We would still like to support vmgenid via a 
+> devicetree so I'll
+> 
+> revert with a new approach.
+
+There are other solutions, I think. This was discussed already multiple
+times.
+
+> 
+>>> Signed-off-by: Sudan Landge<sudanl@amazon.com>
+>>> ---
+>>>   .../devicetree/bindings/vmgenid/vmgenid.yaml  | 57 +++++++++++++++++++
+>> No, you do not get your own hardware subsystem. Use existing ones.
+> 
+> Got it. The changes are related to the "rng" subsystem so I'll rethink 
+> if that is the
+> 
+> right place for this and revert.
+
+Your wrapping is odd. Please use some decent email client.
+
+Anyway, I am not discussing topics semi-private. Keep all maintainers in
+loop.
+
+Best regards,
+Krzysztof
 
 
