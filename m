@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-108763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C3B880FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:27:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9765880FB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:27:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DD391F21326
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:27:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22B1D1C22E9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010003F8DA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E76443179;
 	Wed, 20 Mar 2024 10:26:26 +0000 (UTC)
 Received: from esa1.ltts.com (unknown [118.185.121.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D643FBA8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376DC3FBBA;
 	Wed, 20 Mar 2024 10:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.185.121.105
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930385; cv=none; b=lQivXuSTwoTeVoVhH7P5bIQ5Up1aW3uACXHkRqf/xpeaBRCFEMs4oZ0Z/hrO8fC5fgBfKE8m1AMuwf5pcixsHIUBm3PcxRtvXnjCKmEYxQ3a8TbUEI3IWIwj+/ix7602/3YzqPD5VL4f0XcLTOJ95ixtmi0Jx1DgcSJqTflEfxo=
+	t=1710930385; cv=none; b=bbDBLizWjDwcY9tI/W8Sj0pfa3wLayUyCP5DB8S4QhSVG8LsdHLKRZkOsdl7mFlwivYjlpPpgNgBeYxQCivOw2d+9RnuPcirRkxjjT4WGp89LquqUdunqN7LjTRKd8Li0/5+vm3KuT4E7PcBcccEtplm4IiYwuLAslLBfJZvM3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710930385; c=relaxed/simple;
-	bh=UEdOs4UfnECnvOUdq3tW2tCJOukxn82iBBTNqs61wr0=;
+	bh=SQtS1moFzY8TfD0WnLZVCwjP4N3w+K0NYbbTwsrDKjE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f54BTx5NqT5wRz2PqlQXVQ13crDMSRQ+lsiWsXB87lAFx+Sj0pNi9RysvO9VdHqYW7EoLl7JqMOjCVUWm60a4F/ZNLkaT9moysn2TOR94mqih3KoIFnk5b/lelcUny8y8HGcx+jNUBuNqR2i4/QlwqS/R8btQmfErC7UB70EO2c=
+	 MIME-Version; b=RdtNH60OuZF0WzNa3Ct/cv5lJrlAUYt7ql9/vs+SpGGmQK3GNZ49E+M8me8pqKIp9pyMgMPYzpbYDP74ZrParhR09VBJ6Rl9iXoe0KC6EkS8ieTwfuNXjKDI/wSHvfwvspl+PqmNSkHwT5+oEcNLHvwueaYEuMqAU0G920hwXSE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=118.185.121.105
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: v80gQx3T86vrObtKBsRJLs50cs7joyVm5GIKWUt4XeiWtGbRz5aMY+Mwerzg7SNG/yRiGUAFXy
- AriHF/tENM8g==
+IronPort-SDR: z/XJLJqEqSqoHu1ZNq9fJTzifboed8RqDYRPGKKYrBkawBhSgP0Dbx9xLKkxeJ27sXdnSWRFmN
+ oXB3h8vQrDwg==
 Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa1.ltts.com with ESMTP; 20 Mar 2024 15:56:16 +0530
+  by esa1.ltts.com with ESMTP; 20 Mar 2024 15:56:17 +0530
 From: Bhargav Raviprakash <bhargav.r@ltts.com>
 To: linux-kernel@vger.kernel.org
 Cc: m.nirmaladevi@ltts.com,
@@ -52,11 +52,10 @@ Cc: m.nirmaladevi@ltts.com,
 	vigneshr@ti.com,
 	kristo@kernel.org,
 	eblanc@baylibre.com,
-	Bhargav Raviprakash <bhargav.r@ltts.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v4 04/11] dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
-Date: Wed, 20 Mar 2024 15:55:52 +0530
-Message-Id: <20240320102559.464981-5-bhargav.r@ltts.com>
+	Bhargav Raviprakash <bhargav.r@ltts.com>
+Subject: [PATCH v4 05/11] mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
+Date: Wed, 20 Mar 2024 15:55:53 +0530
+Message-Id: <20240320102559.464981-6-bhargav.r@ltts.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240320102559.464981-1-bhargav.r@ltts.com>
 References: <20240320102559.464981-1-bhargav.r@ltts.com>
@@ -68,32 +67,62 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-TPS65224 is a Power Management IC with 4 Buck regulators and 3 LDO
-regulators, it includes additional features like GPIOs, watchdog, ESMs
-(Error Signal Monitor), and PFSM (Pre-configurable Finite State Machine)
-managing the state of the device.
-
-In addition TPS65224 has support for 12-bit ADC and does not have RTC
-unlike TPS6594.
+Add support for TPS65224 PMIC in TPS6594's I2C driver which has
+significant functional overlap.
 
 Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Julien Panis <jpanis@baylibre.com>
 ---
- Documentation/devicetree/bindings/mfd/ti,tps6594.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/tps6594-i2c.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/ti,tps6594.yaml b/Documentation/devicetree/bindings/mfd/ti,tps6594.yaml
-index 9d43376be..6341b6070 100644
---- a/Documentation/devicetree/bindings/mfd/ti,tps6594.yaml
-+++ b/Documentation/devicetree/bindings/mfd/ti,tps6594.yaml
-@@ -21,6 +21,7 @@ properties:
-       - ti,lp8764-q1
-       - ti,tps6593-q1
-       - ti,tps6594-q1
-+      - ti,tps65224-q1
+diff --git a/drivers/mfd/tps6594-i2c.c b/drivers/mfd/tps6594-i2c.c
+index 9e2ed48b7..0d741da74 100644
+--- a/drivers/mfd/tps6594-i2c.c
++++ b/drivers/mfd/tps6594-i2c.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * I2C access driver for TI TPS6594/TPS6593/LP8764 PMICs
++ * I2C access driver for TI TPS65224/TPS6594/TPS6593/LP8764 PMICs
+  *
+  * Copyright (C) 2023 BayLibre Incorporated - https://www.baylibre.com/
+  */
+@@ -192,16 +192,27 @@ static const struct regmap_config tps6594_i2c_regmap_config = {
+ 	.write = tps6594_i2c_write,
+ };
  
-   reg:
-     description: I2C slave address or SPI chip select number.
++static const struct regmap_config tps65224_i2c_regmap_config = {
++	.reg_bits = 16,
++	.val_bits = 8,
++	.max_register = TPS6594_REG_DWD_FAIL_CNT_REG,
++	.volatile_table = &tps65224_volatile_table,
++	.read = tps6594_i2c_read,
++	.write = tps6594_i2c_write,
++};
++
+ static const struct tps6594_match_data match_data[] = {
+ 	[TPS6594] = {TPS6594, &tps6594_i2c_regmap_config},
+ 	[TPS6593] = {TPS6593, &tps6594_i2c_regmap_config},
+ 	[LP8764] = {LP8764, &tps6594_i2c_regmap_config},
++	[TPS65224] = {TPS65224, &tps65224_i2c_regmap_config},
+ };
+ 
+ static const struct of_device_id tps6594_i2c_of_match_table[] = {
+ 	{ .compatible = "ti,tps6594-q1", .data = &match_data[TPS6594], },
+ 	{ .compatible = "ti,tps6593-q1", .data = &match_data[TPS6593], },
+ 	{ .compatible = "ti,lp8764-q1",  .data = &match_data[LP8764], },
++	{ .compatible = "ti,tps65224-q1", .data = &match_data[TPS65224], },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, tps6594_i2c_of_match_table);
+@@ -248,5 +259,5 @@ static struct i2c_driver tps6594_i2c_driver = {
+ module_i2c_driver(tps6594_i2c_driver);
+ 
+ MODULE_AUTHOR("Julien Panis <jpanis@baylibre.com>");
+-MODULE_DESCRIPTION("TPS6594 I2C Interface Driver");
++MODULE_DESCRIPTION("I2C Interface Driver for TPS65224, TPS6594/3, and LP8764");
+ MODULE_LICENSE("GPL");
 -- 
 2.25.1
 
