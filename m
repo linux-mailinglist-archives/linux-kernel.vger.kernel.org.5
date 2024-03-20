@@ -1,125 +1,124 @@
-Return-Path: <linux-kernel+bounces-108864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DAA4881111
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:34:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF3F881114
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422691F21D0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D7BB282A4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472873FE4E;
-	Wed, 20 Mar 2024 11:33:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE713FB9E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF3E3F8D6;
+	Wed, 20 Mar 2024 11:34:54 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29BAB3D984;
+	Wed, 20 Mar 2024 11:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710934435; cv=none; b=Pc2kzKXx+Pk3Jq6aW4oRpL3Gn9kapbC9MSFp41QFSKK/oeIKN7kxu00nBzkg9jHyU9fVDSYvBSjM/S/RLJrHnd3DGAS568JJl7xA67ie9ZqGoknvw5QSZquJSionf5vyLRA07fmRZmV6Gbx2SDWInsiE+uOKmQM6SP/K1LdnJco=
+	t=1710934494; cv=none; b=UcEsjR0Qd6uxDh8kldtMDh4asbTazAwXDkBKiUYzyBZJywHuTTXAHSpD3OiqDQlc3lJR1t3idQE0JHaSSyFH2lF4T7aTyvvNu6LOvr11++F/kSjsXBXVXU4Yk1zpaxWrhG9zC3s7pMKbzZbW4SkCAW0/7jAUZTJtBU1blK6V5cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710934435; c=relaxed/simple;
-	bh=YWpzXNbiPg0NRIhcV5APAOtSSYxuVM3h5oBkgFC7q7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AEWBh2pEpxXgBXoIA76VawZ4IZZmvmS7HdaccuDv+qUYhaPHetLwVbpNeVWjT4LHH5oS3w/cXnI9Vg/aoD0+0OG5hU0TV9pMHfwzV2uTqNJnyBr2ITQpSquJ15ukm08eQPJrYTz+W//1RbsnNmb+KCkYK7qGas7MnCGFU7YmtnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 84D951007;
-	Wed, 20 Mar 2024 04:34:26 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E002A3F762;
-	Wed, 20 Mar 2024 04:33:50 -0700 (PDT)
-Date: Wed, 20 Mar 2024 11:33:48 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: cristian.marussi@arm.com, linux-arm-kernel@lists.infradead.org,
-	Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] firmware: arm_scmi: perf: print domain name in error path
-Message-ID: <ZfrJnEpzfQ-AsU9q@bogus>
-References: <20240320074213.1615888-1-peng.fan@oss.nxp.com>
+	s=arc-20240116; t=1710934494; c=relaxed/simple;
+	bh=3WaKxkbQWcDCF2kXtI2Am05e+yUdzZw2ITQ8GoPRoSk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rp56XkgJ4EQVOks4Ul9jdvN+mvxQ0PterGaHzowWqWpzFTOpVZcyOny/XRV0vwI8inNTTZaczUbIpjkUjoEl6Km1peZV6DFQQXPWl3qbmOVAOcJNQQrvKlLS5EldPAHoKyzPu8fC56zooQXd8eBd99GBAclk3v+vOen5tdYuc7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V062D0XMZz4f3l89;
+	Wed, 20 Mar 2024 19:34:44 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E87C31A0AAE;
+	Wed, 20 Mar 2024 19:34:47 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgCX6GrWyfplm5SjHg--.34463S2;
+	Wed, 20 Mar 2024 19:34:47 +0800 (CST)
+Message-ID: <ab5e6307-8d80-4751-940f-4faa5bc41d82@huaweicloud.com>
+Date: Wed, 20 Mar 2024 19:34:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320074213.1615888-1-peng.fan@oss.nxp.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] arm64: bpf: zero upper bits after rev32
+Content-Language: en-US
+To: Artem Savkov <asavkov@redhat.com>, Xi Wang <xi.wang@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240313140205.3191564-1-asavkov@redhat.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20240313140205.3191564-1-asavkov@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCX6GrWyfplm5SjHg--.34463S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFyxZF1kur1UJFykAw4Dtwb_yoW8try8pr
+	4ayrZakr4UWr17Aa4FganrJr1vkay2y3yUtryDWrWSka9Yv34kXryfKrW2939IvrW0vw4Y
+	9FyjyF93X3s2v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+	AY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
+	IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
+	KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Wed, Mar 20, 2024 at 03:42:13PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 3/13/2024 10:02 PM, Artem Savkov wrote:
+> Commit d63903bbc30c7 ("arm64: bpf: fix endianness conversion bugs")
+> added upper bits zeroing to byteswap operations, but it assumes they
+> will be already zeroed after rev32, which is not the case on some
+> systems at least:
 > 
-> It would be easier to locate the problem if domain name is printed out.
-> And including a coding style update.
+> [ 9757.262607] test_bpf: #312 BSWAP 16: 0x0123456789abcdef -> 0xefcd jited:1 8 PASS
+> [ 9757.264435] test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 ret 1460850314 != -271733879 (0x5712ce8a != 0xefcdab89)FAIL (1 times)
+> [ 9757.266260] test_bpf: #314 BSWAP 64: 0x0123456789abcdef -> 0x67452301 jited:1 8 PASS
+> [ 9757.268000] test_bpf: #315 BSWAP 64: 0x0123456789abcdef >> 32 -> 0xefcdab89 jited:1 8 PASS
+> [ 9757.269686] test_bpf: #316 BSWAP 16: 0xfedcba9876543210 -> 0x1032 jited:1 8 PASS
+> [ 9757.271380] test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 ret -1460850316 != 271733878 (0xa8ed3174 != 0x10325476)FAIL (1 times)
+> [ 9757.273022] test_bpf: #318 BSWAP 64: 0xfedcba9876543210 -> 0x98badcfe jited:1 7 PASS
+> [ 9757.274721] test_bpf: #319 BSWAP 64: 0xfedcba9876543210 >> 32 -> 0x10325476 jited:1 9 PASS
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Fixes: d63903bbc30c7 ("arm64: bpf: fix endianness conversion bugs")
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
 > ---
->  drivers/firmware/arm_scmi/perf.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>   arch/arm64/net/bpf_jit_comp.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-> index 345fff167b52..e98ca6d15b0c 100644
-> --- a/drivers/firmware/arm_scmi/perf.c
-> +++ b/drivers/firmware/arm_scmi/perf.c
-> @@ -79,7 +79,7 @@ struct scmi_msg_resp_perf_domain_attributes {
->  	__le32 rate_limit_us;
->  	__le32 sustained_freq_khz;
->  	__le32 sustained_perf_level;
-> -	    u8 name[SCMI_SHORT_NAME_MAX_SIZE];
-> +	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index c5b461dda4385..e86e5ba74dca2 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -944,7 +944,8 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>   			break;
+>   		case 32:
+>   			emit(A64_REV32(is64, dst, dst), ctx);
+> -			/* upper 32 bits already cleared */
+> +			/* zero-extend 32 bits into 64 bits */
+> +			emit(A64_UXTW(is64, dst, dst), ctx);
 
-Spurious change ?
+I think the problem only occurs when is64 == 1. In this case, the generated rev32
+insn reverses byte order in both high and low 32-bit word. To fix it, we could just
+set the first arg to 0 for A64_REV32:
 
->  };
->  
->  struct scmi_msg_perf_describe_levels {
-> @@ -387,8 +387,8 @@ process_response_opp(struct device *dev, struct perf_dom_info *dom,
->  
->  	ret = xa_insert(&dom->opps_by_lvl, opp->perf, opp, GFP_KERNEL);
->  	if (ret)
-> -		dev_warn(dev, "Failed to add opps_by_lvl at %d - ret:%d\n",
-> -			 opp->perf, ret);
-> +		dev_warn(dev, "Failed to add opps_by_lvl at %d for %s- ret:%d\n",
-> +			 opp->perf, dom->info.name, ret);
->  }
->  
->  static inline void
-> @@ -405,8 +405,8 @@ process_response_opp_v4(struct device *dev, struct perf_dom_info *dom,
->  
->  	ret = xa_insert(&dom->opps_by_lvl, opp->perf, opp, GFP_KERNEL);
->  	if (ret)
-> -		dev_warn(dev, "Failed to add opps_by_lvl at %d - ret:%d\n",
-> -			 opp->perf, ret);
-> +		dev_warn(dev, "Failed to add opps_by_lvl at %d for %s - ret:%d\n",
-> +			 opp->perf, dom->info.name, ret);
-> 
+emit(A64_REV32(0, dst, dst), ctx);
 
-Are you really hitting these issues ? Or is it just code
-observation/improvements ?
+No need to add an extra uxtw isnn.
 
-It looks good otherwise. You can also add the below change when you respin.
+>   			break;
+>   		case 64:
+>   			emit(A64_REV64(dst, dst), ctx);
 
--- 
-Regards,
-Sudeep
-
-diff --git i/drivers/firmware/arm_scmi/perf.c w/drivers/firmware/arm_scmi/perf.c
-index 211e8e0aef2c..ef1c27a65552 100644
---- i/drivers/firmware/arm_scmi/perf.c
-+++ w/drivers/firmware/arm_scmi/perf.c
-@@ -830,7 +830,8 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
-
-                ret = dev_pm_opp_add_dynamic(dev, &data);
-                if (ret) {
--                       dev_warn(dev, "failed to add opp %luHz\n", freq);
-+                       dev_warn(dev, "[%d][%s]: Failed to add OPP[%d] %lu\n",
-+                                domain, dom->info.name, idx, freq);
-                        dev_pm_opp_remove_all_dynamic(dev);
-                        return ret;
-                }
 
