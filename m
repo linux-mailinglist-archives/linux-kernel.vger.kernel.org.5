@@ -1,133 +1,133 @@
-Return-Path: <linux-kernel+bounces-108260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54ECF88087B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:20:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD30D88087D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:20:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 029D81F22B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:20:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEAFD1C225A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B021637;
-	Wed, 20 Mar 2024 00:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68638637;
+	Wed, 20 Mar 2024 00:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UlXzimAp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="maYv+Qoq"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2F87EC
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404E4394
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710893999; cv=none; b=Ao29suBkGpRI34vkkTebU/CUa3FpS97f/QPd2kfMjfFpP+gMeyjLjgu6UZAnkiuP44t3tfmZv+p2npMRNB7Ub8wBN0kBwU1NVpdt6cJIt9KmDNoy8JHTMLhOHS4WkhWv0I4DogceoTmpr2sQovxzf9ibsQKFcr5zaUjarWnuOSI=
+	t=1710894040; cv=none; b=tNZB5aoF84g3xg4pbHx6OZN/VfpULl9LHL7n8VLCcm0ku7M2apj+i+yw2VsNK7TLcZ+QOVlb1hnY2pSqDXWHF1yD76l97rpb2GD1M6eJPWNSQ2PFNd/TjH0BhS/URVr9B0hK7mmqompRlG/eHkxTuR4/mt6AdrzhoEcHsUlHwo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710893999; c=relaxed/simple;
-	bh=i2+grAK2i2sZWgaizDfTkI9mNEWNsYmZcW1JadIFYpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q6J/vp4ZhiwPM7tdyS+52jlqvLICA0ch6DzL9jNnAE54Pw5MjCkqq9wcSNyqVkGp7uSoT+lFqPPMqAGzfaQ1upczdqppkPAqqxyVvGs6zLb9UrWL3bevEqoTpT7UABY+Rceefwmff5oGzfjE1zSWe+UbrxL/xP5fgKjJUqRLMj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UlXzimAp; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710893997; x=1742429997;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=i2+grAK2i2sZWgaizDfTkI9mNEWNsYmZcW1JadIFYpY=;
-  b=UlXzimAp61m13HRiWA4e/0nT9HVXFysRUTLaRWLNLXDELzZw6OotqvmS
-   +pTFp6OKwszNMRCo9LTz/FIicpiPqrMf21c1Arq76fEfcrqbT32UHEOnH
-   Aq+xRg5zvFct6lG1F3Jr5KfKN0RIEycLRk0PA6XGUfGBIfj9Djo8easyu
-   60cwVCtm4YHiFYfUqQ027v3yXG2xte7/fmu3PDzrxG9hE/hLA5wwl7i0Z
-   XhcfpOPr9mJYVGT3dNpfUaoOczT3sPzs50uD9WV/6kWXXjhwwRpxMSyyn
-   zk5LGjTnXaOqG+lnbixL5Mv4GRrNt/C4cJfOWlvLx9cmAaA3WaQYGYXrM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17202492"
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="17202492"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 17:19:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="937062663"
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="937062663"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Mar 2024 17:19:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id A31477F1; Wed, 20 Mar 2024 02:19:51 +0200 (EET)
-Date: Wed, 20 Mar 2024 02:19:51 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, dave.hansen@intel.com, bp@alien8.de, tglx@linutronix.de, 
-	mingo@redhat.com, hpa@zytor.com, luto@kernel.org, peterz@infradead.org, 
-	rick.p.edgecombe@intel.com, ashish.kalra@amd.com, chao.gao@intel.com, bhe@redhat.com, 
-	nik.borisov@suse.com, pbonzini@redhat.com, seanjc@google.com
-Subject: Re: [PATCH v2 2/5] x86/kexec: do unconditional WBINVD in
- relocate_kernel()
-Message-ID: <i3nxazyv2dlauias4jmoqwpjixviuduaw6bgtfv4claxtimlm3@54xmat6zqud4>
-References: <cover.1710811610.git.kai.huang@intel.com>
- <e1d37efb8951eb1d38493687b10a21b23353e35a.1710811610.git.kai.huang@intel.com>
- <tvembdwwh4immxytlfzlhpvd42dlfsz7sddb7msk23kdduhu3t@ogpc66hklorv>
- <38fca2fa-11b2-4eb7-9e59-dc5d524d172e@amd.com>
- <689bbd29-aaf0-452e-a97f-41b8e3aa6224@intel.com>
+	s=arc-20240116; t=1710894040; c=relaxed/simple;
+	bh=Duv7fZnfBkbKrhrDZCSysjhGGXx0sWgvmbyY/HKQND4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YvAX1XcqWc8dHMHBFHeuKfl2OHQA6kOaRthru5ux6DuI0U8AWfOX8PtRcNHBwqmBjKOOx9WuQNnRZ4csjCPHkHuxWOK2TA0ixhmK7Nb+VYAHWlwpdNP0rj2FMYBXvxG0sULzOHfau046uF/pih09efis9uopMTI2RYeSCnURVvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=maYv+Qoq; arc=none smtp.client-ip=209.85.166.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-366a4bcb2a8so17565005ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710894038; x=1711498838; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wSsx77JW3Y/Bq0qf/qFd4CC2XBBPtaZoUOPGSlrJOu0=;
+        b=maYv+Qoq+ubtD4bu55kTpTywygF6kRDXdF7F4RfTWu0rGOYqL+Ty5T0AYDnFcJwcvz
+         FlylPsFVtuc0V02xlTT9C3MN9PNB6zWdFTXJkGNA2k+J5BV/xbNiMI1kZLdmblP6Pt/2
+         SS1uTpAjJdmS0iMCnPHSret2GS6NikNudxAlzc3L2dW5nX+TYRa1OzbYM2lt0yIj3j8a
+         0E/5RzEuokqHW/O2A+6unU6VCvYXQ8Q7ldYnelgbck4OR9jczfOSOY1JIen0+10tue83
+         m4YNi4dBODvpZj3Rm9/Vr8Kj+eQ2HUyGQkl/QKEGccPpOBTbh9eDldTiqy41ELbGRD46
+         d7yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710894038; x=1711498838;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wSsx77JW3Y/Bq0qf/qFd4CC2XBBPtaZoUOPGSlrJOu0=;
+        b=U++HkvbAnytRAZFnHuye3j1Ds7yFY1JutUwxRoX4a0GmvWoIJNXTC0fuVFcGprlawR
+         3MT6L7cA2qZ1swoOm9fg7jQn4eQlk6BzaUYCDeYV6yKuex+n+d4ofu2KHv8+9wn/MJ9y
+         oQ2mPT7yKWPOUR76igtVIEtV9u1hdkmtBdNmmRPfGtDtbaQiIA8Une51bCiDwcEWqK2n
+         4IhAUH+lDc7OTnWyfXKRs0OOEZKSk8/TMnv7Vq0aqi8hb1dhLSxew6amc1VhFlcgrRo2
+         +XWv+3mLgS+4f1f/MduAIAT8lgXdDoyIDATolfCe+jDVj+NvR4F2rV1jSo2F/h48ssQR
+         dgMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfn4qo7Gt2nqKkIVfbO1CSL4TPAv7Qr4zodMev1xUGEzyZXfyKfscM1b8zi9qX9glE8lGvXUPJoil2+Qp7HtRkVQw4qKDEswWQVrsI
+X-Gm-Message-State: AOJu0YyHDSB28g5R1nEp+b6LSlV5ABshL2IJ2n33+05JYuJPK2BlhD4m
+	Y1jeGmuzsFeOfQ0/sCDqkU/WvE//o6Bh8Zny2cOOOHexbko5tMO1Nb87gStQM0fsKHWPh9wcDyV
+	wPoxuZNRHE5quNOvkhM8/T2pa2WtLI+NqaOp+
+X-Google-Smtp-Source: AGHT+IHlaHRL0umHFmanp7quVlbQlQ6CW7wBeJ94tmd7VgEjhUvq3w4XtUlgvBdTcvvAR9k/aJ3co8CRBThiIs8p5Sw=
+X-Received: by 2002:a92:2810:0:b0:366:bd79:a567 with SMTP id
+ l16-20020a922810000000b00366bd79a567mr558869ilf.7.1710894038141; Tue, 19 Mar
+ 2024 17:20:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <689bbd29-aaf0-452e-a97f-41b8e3aa6224@intel.com>
+References: <20240312-zswap-xarray-v6-1-1b82027d7082@kernel.org>
+ <CAJD7tkZH-mU_7NMMBAS4nyfyWKKK3tSdQisVQ5iRqckqHouoJQ@mail.gmail.com> <20240316133302.GB372017@cmpxchg.org>
+In-Reply-To: <20240316133302.GB372017@cmpxchg.org>
+From: Chris Li <chriscli@google.com>
+Date: Tue, 19 Mar 2024 17:20:25 -0700
+Message-ID: <CAF8kJuM71XEeYdDOdKkz_c+JNnMhxfPAGDoZ-BqpcYuyHxDFmg@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: replace RB tree with xarray
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Nhat Pham <nphamcs@gmail.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>, 
+	Barry Song <baohua@kernel.org>, Chengming Zhou <chengming.zhou@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2024 at 10:20:50AM +1300, Huang, Kai wrote:
-> 
-> 
-> On 20/03/2024 3:38 am, Tom Lendacky wrote:
-> > On 3/19/24 06:13, Kirill A. Shutemov wrote:
-> > > On Tue, Mar 19, 2024 at 01:48:45AM +0000, Kai Huang wrote:
-> > > > Both SME and TDX can leave caches in incoherent state due to memory
-> > > > encryption.  During kexec, the caches must be flushed before jumping to
-> > > > the second kernel to avoid silent memory corruption to the
-> > > > second kernel.
-> > > > 
-> > > > During kexec, the WBINVD in stop_this_cpu() flushes caches for all
-> > > > remote cpus when they are being stopped.  For SME, the WBINVD in
-> > > > relocate_kernel() flushes the cache for the last running cpu (which is
-> > > > executing the kexec).
-> > > > 
-> > > > Similarly, for TDX after stopping all remote cpus with cache flushed, to
-> > > > support kexec, the kernel needs to flush cache for the last running cpu.
-> > > > 
-> > > > Make the WBINVD in the relocate_kernel() unconditional to cover both SME
-> > > > and TDX.
-> > > 
-> > > Nope. It breaks TDX guest. WBINVD triggers #VE for TDX guests.
-> > 
-> > Ditto for SEV-ES/SEV-SNP, a #VC is generated and crashes the guest.
-> > 
-> 
-> Oh I forgot these.
-> 
-> Hi Kirill,
-> 
-> Then I think patch 1 will also break TDX guest after your series to enable
-> multiple cpus for the second kernel after kexec()?
+On Sat, Mar 16, 2024 at 6:33=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Fri, Mar 15, 2024 at 06:30:37PM -0700, Yosry Ahmed wrote:
+> > [..]
+> > >
+> > > @@ -1555,28 +1473,35 @@ bool zswap_store(struct folio *folio)
+> > >  insert_entry:
+> > >         entry->swpentry =3D swp;
+> > >         entry->objcg =3D objcg;
+> > > -       if (objcg) {
+> > > -               obj_cgroup_charge_zswap(objcg, entry->length);
+> > > -               /* Account before objcg ref is moved to tree */
+> >
+> >
+> > I do not understand this comment, but it seems to care about the
+> > charging happening before the entry is added to the tree. This patch
+> > will move it after the tree insertion.
+> >
+> > Johannes, do you mind elaborating what this comment is referring to?
+> > It should be clarified, updated, or removed as part of this movement.
+>
+> Wait, I wrote that? ^_^
+>
+> The thinking was this: the objcg reference acquired in this context is
+> passed on to the tree. Once the entry is in the tree and the
+> tree->lock released, the entry is public and the current context
+> doesn't have its own pin on objcg anymore. Ergo, objcg is no longer
+> safe to access from this context.
+>
+> This is a conservative take, though, considering the wider context:
+> the swapcache itself, through folio lock, prevents invalidation; and
+> reclaim/writeback cannot happen before the entry is on the LRU.
+>
+> After Chris's patch, the tree is no longer a serialization point for
+> stores. The swapcache and the LRU are. I had asked Chris upthread to
+> add an explicit comment about that. I think once he does that, the
+> objcg situation should be self-evident as well.
+>
+> So in the next version, please just remove this now stale one-liner.
 
-Well, not exactly.
+Ack.
 
-My patchset overrides stop_this_cpu() with own implementation for MADT
-wakeup method that doesn't have WBINVD. So the patch doesn't break
-anything, but if in the future TDX (or SEV) host would use MADT wake up
-method instead of IPI we will get back to the problem with missing
-WBINVD.
-
-I don't know if we care. There's no reason for host to use MADT wake up
-method.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Chris
 
