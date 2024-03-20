@@ -1,120 +1,86 @@
-Return-Path: <linux-kernel+bounces-109476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239958819A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:55:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93A148819BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D162728453A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:55:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34AF3B250CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E87985C7D;
-	Wed, 20 Mar 2024 22:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D0F86134;
+	Wed, 20 Mar 2024 22:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXwDs7Pf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="JIY3LCEt"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A783381D1
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50DF85C6C;
+	Wed, 20 Mar 2024 22:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710975320; cv=none; b=bnlOS3j4Ar/oUL6gey+WEFlMmu9Kpmjrjkan/kOzb9woS4UPOmV2NPAN8xa86D3GXHCjEwkkAF6RVq8EOsauBcfGrvy53mpzrvzfz0GPzqr3CX9S+WJHv9CHea6XMnA7q7Q6X60W2I6WZYGDZUmDtCKredKF4qwk8DcBIwm8hsE=
+	t=1710975507; cv=none; b=Ow3PE5FyslolZ49qU5MsNB0vXdiObjbxGXX37QebmKa1k2iHrdNQl5qnu8RFuOFmO0tFiifdG3aF03cs5BCNfw0dh8fYzyfm2K/zhRIKtyJ4p6tDViaEo8nn3TszrNZ58CaSQ9+eHZjGMmpW4m+IBzvFMtzHkDUjGrsyYOr0eqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710975320; c=relaxed/simple;
-	bh=DpItbTfCRtsp3QfBKRvAonSxvMxe8uSVUklGaCB6Nrw=;
+	s=arc-20240116; t=1710975507; c=relaxed/simple;
+	bh=yxbUKjR/eQ+A4TDHgpThQwIVWkZZpAq34ngZ7oYpkAc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kfMJK4mJxt0gjbHhGybuxpydpgDz8f6/UAoBHSzQK59mvlVuzezVifVG2kdxuk5JQhYF7q5/i6qVT1hr9xtGkbfMiaIb2htqCZgr/VQmsjm9SdH2Bh+uFltnm6t0eNL/WYTgf7APBH/qjnbSBCkltYBs+OVNy6kv2EanS3OrCjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXwDs7Pf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9968EC433C7;
-	Wed, 20 Mar 2024 22:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710975319;
-	bh=DpItbTfCRtsp3QfBKRvAonSxvMxe8uSVUklGaCB6Nrw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LXwDs7PfqhdJZgEWblaU0LIWQkK88pK8wgY6+JBVL/+5iPWGjWHcuAOfuJSnd7qHg
-	 5N+jn/Sjng+9ghuUBwO/TxUDZKXlLIjkIu9QcojI+gRjikHQAUWcb0ak8aoELt51Tq
-	 xXYgXK1cgsT0s3WkYuMcmgVqpxRdNPBC4UuvcDC8sL8cUzCv85hptwr1uc7wnQqg61
-	 Zw4fIvpfxOvZFcuVekuZceuY+FivkoCX39YQLs5s39JJuDTND6yiA57aM3XrwYhSAt
-	 gEb7m+gc0d15ab8dyR9anNiZLIpXZZSCidLexLRYEipIulPVP6/TPW+9z2yVVSLinN
-	 yJnO0A4bCcVvg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 88A54CE0716; Wed, 20 Mar 2024 15:55:17 -0700 (PDT)
-Date: Wed, 20 Mar 2024 15:55:17 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
- enqueue in nohz_full
-Message-ID: <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240318230729.15497-1-frederic@kernel.org>
- <20240318230729.15497-3-frederic@kernel.org>
- <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
- <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
- <ZfsLtMijRrNZfqh6@localhost.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EzkgQRAWhNJerfKyjbuvxHrjCBVJ8JbpiMOJrjrHSw+BftxyAl0Cx/jwMImyKVrYc7kvI2DA0WtZ52pMyaACZ43CmvcKvyuhHESzo5a6BSdOb63qxbOVjSc75oW8cZyEMsJuqYRTX7wni8p/3sgJ4x8O+CRU+EQ/yPDc4UB9P30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=JIY3LCEt; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=13ghe/Dcccxys0JDUXSMtaJE6mxH8x5jhjb9llYFpQ0=; b=JIY3LCEtex2FFYR6+ZBGIDiPy/
+	A6RA+5Cr8x6nVJ3eM+rLlJ0SiKV3IUDeOWsJp7VQVd050LKeI6Jjn6ZUJaPIFDk23BFoEXLsjiLa/
+	75rGtVicd8Z2/sE4uNqdlcUfv8VslqHlP4RxirFhJKMr6CIxVJG2YUbc78qxFJyZP1W4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rn4st-00AotP-Vv; Wed, 20 Mar 2024 23:58:11 +0100
+Date: Wed, 20 Mar 2024 23:58:11 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Elad Nachman <enachman@marvell.com>
+Cc: taras.chornyi@plvision.eu, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, kory.maincent@bootlin.com,
+	thomas.petazzoni@bootlin.com, miquel.raynal@bootlin.com,
+	przemyslaw.kitszel@intel.com, dkirjanov@suse.de,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] net: marvell: prestera: fix driver reload
+Message-ID: <d02e6c38-042f-416e-b5c8-96dc55e1fd5f@lunn.ch>
+References: <20240320172008.2989693-1-enachman@marvell.com>
+ <20240320172008.2989693-2-enachman@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfsLtMijRrNZfqh6@localhost.localdomain>
+In-Reply-To: <20240320172008.2989693-2-enachman@marvell.com>
 
-On Wed, Mar 20, 2024 at 05:15:48PM +0100, Frederic Weisbecker wrote:
-> Le Wed, Mar 20, 2024 at 04:14:24AM -0700, Paul E. McKenney a écrit :
-> > On Tue, Mar 19, 2024 at 02:18:00AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Mar 19, 2024 at 12:07:29AM +0100, Frederic Weisbecker wrote:
-> > > > While running in nohz_full mode, a task may enqueue a timer while the
-> > > > tick is stopped. However the only places where the timer wheel,
-> > > > alongside the timer migration machinery's decision, may reprogram the
-> > > > next event accordingly with that new timer's expiry are the idle loop or
-> > > > any IRQ tail.
-> > > > 
-> > > > However neither the idle task nor an interrupt may run on the CPU if it
-> > > > resumes busy work in userspace for a long while in full dynticks mode.
-> > > > 
-> > > > To solve this, the timer enqueue path raises a self-IPI that will
-> > > > re-evaluate the timer wheel on its IRQ tail. This asynchronous solution
-> > > > avoids potential locking inversion.
-> > > > 
-> > > > This is supposed to happen both for local and global timers but commit:
-> > > > 
-> > > > 	b2cf7507e186 ("timers: Always queue timers on the local CPU")
-> > > > 
-> > > > broke the global timers case with removing the ->is_idle field handling
-> > > > for the global base. As a result, global timers enqueue may go unnoticed
-> > > > in nohz_full.
-> > > > 
-> > > > Fix this with restoring the idle tracking of the global timer's base,
-> > > > allowing self-IPIs again on enqueue time.
-> > > 
-> > > Testing with the previous patch (1/2 in this series) reduced the number of
-> > > problems by about an order of magnitude, down to two sched_tick_remote()
-> > > instances and one enqueue_hrtimer() instance, very good!
-> > > 
-> > > I have kicked off a test including this patch.  Here is hoping!  ;-)
-> > 
-> > And 22*100 hours of TREE07 got me one run with a sched_tick_remote()
+On Wed, Mar 20, 2024 at 07:20:04PM +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+> 
+> Driver rmmod after insmod would fail because API call to reset the switch
+> HW and restart the firmware CPU code loading procedure was missing in
+> driver removal code handler.
+> 
+> Firmware reset and reload is needed as the firmware termination will make
+> the firmware loader change its state machine to the firmware loading state,
+> and thus will be able to load new firmware, which is done at the beginning
+> of the probing of the prestera_pci module.
+> 
+> Without this reset, the firmware loader will stay in the wrong state,
+> causing the next firmware loading phase in the probe to fail.
 
-Sigh.  s/22/12/
+What is missing from this is an explanation why you need to reload the
+firmware at the next re-probe. That just seems like a waste of time if
+you have already loaded it once.
 
-> > complaint and another run with a starved RCU grace-period kthread.
-> > So this is definitely getting more reliable, but still a little ways
-> > to go.
-
-An additional eight hours got anohtre sched_tick_remote().
-
-> Right, there is clearly something else. Investigation continues...
-
-Please let me know if there is a debug patch that I could apply.
-
-							Thanx, Paul
+    Andrew
 
