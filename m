@@ -1,97 +1,86 @@
-Return-Path: <linux-kernel+bounces-109002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8159088133A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:20:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD2888133B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:21:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF0B61C22C96
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:20:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BDFAB232B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:21:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A72E482E5;
-	Wed, 20 Mar 2024 14:20:08 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B55647794
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DFFF4207F;
+	Wed, 20 Mar 2024 14:21:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633772628D
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710944407; cv=none; b=YqVGYsQ+rw4J01uSGDWAzXmiG9eNw0dTjanRR/Rf3Ek5H3kHkeGIXbxrSH1Gne3GnxQSofX9LROs9b5S8bvtZZJ983CLfjfiE/JF6RtvbPumCMYSIPxDgI7QBgTcXRRE8YfQcuSQyEik5OVuu1R/ayKwr+QW2FQuRI0UISjF4kI=
+	t=1710944499; cv=none; b=EO8Cy6weQMMeVq5cnx0ukmTCAfKb9CUvso3bjbPaw8CbGesj3D3EPaW2OS6t3gOSCQdA2/X6Xw9B5jK/1tL6Eb2XHo0IkorNn57AGxL4hcEUf5adVmCQK9rkwwRWKbclte7GqXN4rRfw709qGakNlMX31LLflmYtVuu6o360e80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710944407; c=relaxed/simple;
-	bh=U4PenDBB1njw1+W+z24TpzT7efnUyBjddFGh7Ku/DCs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=dzy2juY3kuhA72FUgOkQVxvU9CoBdZBCRfRxOx/lNo/2r7iZLew1sB8ObK1pkPPHVlu3YYEjsq8cHc7hqECRKNIGQzGIsstcTj9dv5dHOGd8Kth+yDw+k8F5fFZV4BXe5wjjnwxR0xWyJMpBnS3MPlqzwZTgAJ6PHtInTnjY6wU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so100140439f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:20:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710944405; x=1711549205;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f1IUsR6kV07MDW8I1wx0WoXxXZKs91pAq00W+bBUR6M=;
-        b=lrbQhmjkTmjHf4dUl7VpyG3MJwlDwSSa3QCq//rRWsNg1uXYsaQzLxwRYmkqkeie53
-         +bdtu2WLYTjHYXTEaXLaQLcQLQZ/i096714WIb01iAl+9Ll9Y266+hmT+LjhrOl4t5oz
-         U3YZ2NI4PorRFLjuQZPfVG1EgD+oHijlmr5NSf0M6QRftV+BAX807k+8dQauDRaUOYO0
-         4zn4d44s8QUiQTQbW/6j0TP02EgfGOFxOmdkhYrElxJ69uM/WpoDkFFDGp7MWEJdloF1
-         cbCdPQhVVBGAZO5FWmZPh+TrJtqWl7EKbGvZzFL9KoAtIvxcM6sbawX0hTOr4cTec9kM
-         gTtA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoun6J+4F/OFsVDP5LzRrQU6I1Rr0H0+Q17n0tW7wJx5X1P4B3USMsKpQG1Nqe2O8UjgN9/pIXHNQh3SQIEYMN2CubG6Dymf5Q6ucY
-X-Gm-Message-State: AOJu0YxoQNL0ASEpQKfWFoeQMG99GG3nMgmsOvaiduY/w9MgkYq1u3BJ
-	wtxb+1bSTcLwctUD4Fvf3qGmdcXScEbOaVXzGhZV/kgHwgxYmFDt5KEmQ+N4s4Q5LKCmv08IWIQ
-	pXcZAJZSkN3MPpxNuGy4gPVml1tcAnFgsM2KwQIIqbp9iWcl6wvzOiVo=
-X-Google-Smtp-Source: AGHT+IEWPHrTc59k7P2wQWzcYopFmKG07JD0uCDKZoWRP8x0fTDj3ZrpQ0kLcy4ldIilE+R1PHKeJuAl3t17ypSJCNHgW+khmHGo
+	s=arc-20240116; t=1710944499; c=relaxed/simple;
+	bh=sgvltgyVNo1Z71NR9F+7UwUoanVixUUJz+AVAcpQcU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sEX9EmrXFphOvpDkqOZ5/WCyD7wyj2C6VkPOeSJU0zMb7UdEWx4sxEiKFz33rHdEKjzvvpmBfwl+JhWh4WdlIIEMypNUioKhUioL0EQi6Nfel/RADTLXVe6hoiTvKQfXcBhDmhDrLkrWJi2f9ITugmBGjbrm4SuiF2ETGeqhgUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D9401007;
+	Wed, 20 Mar 2024 07:22:12 -0700 (PDT)
+Received: from [10.57.72.78] (unknown [10.57.72.78])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8029F3F64C;
+	Wed, 20 Mar 2024 07:21:35 -0700 (PDT)
+Message-ID: <a9aaf1b0-f8c4-404c-9f24-f73054e35156@arm.com>
+Date: Wed, 20 Mar 2024 14:21:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1482:b0:7cc:66b1:fa95 with SMTP id
- a2-20020a056602148200b007cc66b1fa95mr325628iow.3.1710944404652; Wed, 20 Mar
- 2024 07:20:04 -0700 (PDT)
-Date: Wed, 20 Mar 2024 07:20:04 -0700
-In-Reply-To: <000000000000adb08b061413919e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007866bb0614184925@google.com>
-Subject: Re: [syzbot] [bpf?] possible deadlock in trie_delete_elem
-From: syzbot <syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, elic@nvidia.com, haoluo@google.com, 
-	hdanton@sina.com, jasowang@redhat.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kafai@fb.com, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, mst@redhat.com, 
-	netdev@vger.kernel.org, parav@nvidia.com, sdf@google.com, song@kernel.org, 
-	songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-3-ryan.roberts@arm.com>
+ <42ae8cdf-2352-4bb9-9b22-aed92a2c9930@arm.com>
+ <f4ddda40-0ee5-4c0e-9487-c58914d79180@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <f4ddda40-0ee5-4c0e-9487-c58914d79180@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-syzbot has bisected this issue to:
+On 20/03/2024 14:13, David Hildenbrand wrote:
+> On 20.03.24 12:10, Ryan Roberts wrote:
+>> Hi David,
+> 
+> I'm usually lazy with review during the merge window :P
 
-commit a3c06ae158dd6fa8336157c31d9234689d068d02
-Author: Parav Pandit <parav@nvidia.com>
-Date:   Tue Jan 5 10:32:03 2021 +0000
+Ahh no worries! I'll send out the latest version next week, and can go from there.
 
-    vdpa_sim_net: Add support for user supported devices
+> 
+>>
+>> I hate to chase, but since you provided feedback on a couple of the other
+>> patches in the series, I wondered if you missed this one? It's the one that does
+>> the batching of free_swap_and_cache(), which you suggested in order to prevent
+>> needlessly taking folio locks and refs.
+>>
+>> If you have any feedback, it would be appreciated, otherwise I'm planning to
+>> repost as-is next week (nobody else has posted comments against this patch
+>> either) as part of the updated series.
+> 
+> On my TODO list!
+> 
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1626def1180000
-start commit:   f6e922365faf xsk: Don't assume metadata is always requeste..
-git tree:       bpf
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1526def1180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1126def1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14115c6e180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124fd231180000
-
-Reported-by: syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com
-Fixes: a3c06ae158dd ("vdpa_sim_net: Add support for user supported devices")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
