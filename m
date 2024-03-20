@@ -1,81 +1,86 @@
-Return-Path: <linux-kernel+bounces-109305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6BE988176C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:44:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD1888176E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 696E51F228F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:44:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A339C1F22748
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FBF8529D;
-	Wed, 20 Mar 2024 18:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C0B8529B;
+	Wed, 20 Mar 2024 18:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="J+vujSF5"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B4mRI5wQ"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B4352F78;
-	Wed, 20 Mar 2024 18:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE2652F78;
+	Wed, 20 Mar 2024 18:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710960274; cv=none; b=R5/RWa1ckR63uXtALaGJWOhQ76QfWcsZ4tPlHSrF/wueNalh+v119hrMqKskwNPUEbG70aR5s9xZckEwinluxswdwlUs0eRWHO9NRM5OHvbBPotWQUQ7GZU0gSFM10rIhtuV2fc61Hm2pkI/91ed8AH5vB7E5KbfHk8KhqLjmwg=
+	t=1710960323; cv=none; b=bUGrmOM4CkT3GsT0oiA2IVlivlJfo8tOFEQrKXBoynIk6TqzZM3xI0etoYpXDugjp991bjTfn3UVdSXqzNzjqI5Aar89MFSf3tfOg4UnAPtGBzP1/HByarF9tqGKNM+NUdauao2Jtp3ZmWV+/tdzyRruaFRv2JtlLzthEgzLBcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710960274; c=relaxed/simple;
-	bh=ti10f1siFmjiL/455g1TgRS6RuhZRQCdTQdiF11FS44=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pqQeP/pyajlDpE7vRpWEkiA+RxZFGMFdDE6KYH3nqF8324ot99H+R35zS53yQVOdmaYyXcVR1f0EMna2qOO/NLRbbyEvjE38s4bJ3FCRk9YwHjmtrTnNLIqxFsBTB4yiylD+Sxn9HU21TM9IFWOO72G6cloaijMrtRknILwxPMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=J+vujSF5; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=fEgErpl+wLpV80SuRfPGE67eSPI0zTuNiDl4KjehtmY=; b=J+vujSF5pSb6RzVvu6NEt28gQM
-	wgIlw3qz/q/rm1P4Ngknf+9+CCm5jw7vboMtODYv7u9v0R/rD7vTnQNosUl/u8sQwTRQaEe8ZWV+D
-	XNYDL39sv97jA6+xLw2WaXD5qhG5gUKyXwCt9IBs+tEgazof4DBoeQzTzjh/hLdcSWwE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rn0v4-00AoEN-42; Wed, 20 Mar 2024 19:44:10 +0100
-Date: Wed, 20 Mar 2024 19:44:10 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Ayush Singh <ayushdevel1325@gmail.com>
-Cc: Vaishnav Achath <vaishnav.a@ti.com>, Michael Walle <mwalle@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	open list <linux-kernel@vger.kernel.org>, jkridner@beagleboard.org,
-	robertcnelson@beagleboard.org, lorforlinux@beagleboard.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Derek Kiernan <derek.kiernan@amd.com>,
-	Dragan Cvetic <dragan.cvetic@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	"open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-	"moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-	Vaishnav M A <vaishnav@beagleboard.org>
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Message-ID: <c368ee3b-1b80-46b1-9aa7-b7fc0094e3a1@lunn.ch>
-References: <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
- <CZXMK3W52AFO.1APK080GVJESK@kernel.org>
- <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
- <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
- <81ec4156-8758-406e-876b-5acf13951d09@gmail.com>
- <CZXSKOLK6S1S.N86E2AZG2V90@kernel.org>
- <2eec6437-dd11-408d-9bcb-92ba2bee4487@ti.com>
- <28c995cb-1660-435f-9ee4-1195439231f0@gmail.com>
- <f53cd006-5eb0-47f2-8f84-e7915154f12d@lunn.ch>
- <c3223f90-6e7c-4fdc-905a-770c474445e2@gmail.com>
+	s=arc-20240116; t=1710960323; c=relaxed/simple;
+	bh=IIoFYLWjjgoGol2FMUHfgDpjuS9/7LVzzfTTe9iYYnY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YJnf5VJkfFYQP/IdF8xxdIIefN+M+F6QOwuUnRsA43e7uDGAVo+giI75iPc1lh0OxxG3wZrS7ypw7TH50GpLpXLUXj54clM+GsjMybuE+hcQEuEoT1sxBkJPRJ4AxO43+Fj7Gbq44sBoO69B0MPh0X41+h9DpXuJIvtEom6teKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B4mRI5wQ; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513a08f2263so204889e87.3;
+        Wed, 20 Mar 2024 11:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710960320; x=1711565120; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Afz0eCjmB5LW6m89O9fLaUrWwF2XDDN/YPKtH4GdqXE=;
+        b=B4mRI5wQ9GIGwSk6R5yg+055XA2+UfbWMS8TIedYWQVmoZdQP6A97nDRHbWhh3yDDJ
+         6I7hMXTAG1w1PpEykga8yDJwg1fb08ih1yZszGe7x0qDUzzty7FYtcQFzMVsFKKAiEuj
+         geTsj0W/C4AulYTHnRP+fhAgJ8YneLqT0sBLqm6PNmyHBS3+zm4nnsZXZEglHas22XrK
+         m1BCsJclnUHya+EghQasHYzh6extHWbBUihjfquUNpMQhGf/6i5sMuNccw15aTvvqhhY
+         cUidUcKewBgMNZbrIHPEJydlEXErOOwKs9o3am6q9zt381mJE/MDMqFRh0ZJTEWyK4bN
+         EGOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710960320; x=1711565120;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Afz0eCjmB5LW6m89O9fLaUrWwF2XDDN/YPKtH4GdqXE=;
+        b=ofgu+ROMaUhYKHojj+E56fwWL8UO0XdwC5XqubtaCf7t/ud44MkPa0gR9TDMGTgaMG
+         T4MAxcaGK/2krsB0IdVhPcxwnwoF90VEUpiipXOYzE5DzByQsu0eXXV2QU6FNuz6R66S
+         MKaVf41hWlGRjOkd1S48RvQsJolN0MMFIBMwQFn2hpdG45XMakts8Lz5ZdqqyBkOVR8K
+         8Ql2lrs64IWe//vf48YhhmBEJMqs2PFpOINH6U/4rQl2S4GUHTc970el0gsDQxd4oFHx
+         vekUYvlVdpcO6qNvvR4j7P/6btLIA33/ppUUd/VMi1dIB3KbMJcVmyQ+cFxHfPVj0iAF
+         gGQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyZZayeFprHrWh8QpMVCnrvxgpSQZlVGgsBBeXeILp1MNlyWQfXcxC6IPDm5T5fRXVHdXZREqwFwrBcQW+wEZPqgDicBWUC8Jb+GDPIddzaev2pXKkxH4T9C2wYijdbnTMfDOyQ/gW
+X-Gm-Message-State: AOJu0YyXcBlkFisIawrqB+LhABYKuqjXDP5oBedxofKHXIb3uelju40h
+	STTugXeZx7dfkp9Jbk4J+qJIaXYJrH4EpKCwtMSZ0aYSU28lwH3/
+X-Google-Smtp-Source: AGHT+IGAzxTDRvMWWm8SlK54TTSL+cl6Rn4zD6aAd2YVvVB4w+OYGkDfhXBbRBVox1R2SW/YCddGxw==
+X-Received: by 2002:a05:6512:310c:b0:512:ee61:c32b with SMTP id n12-20020a056512310c00b00512ee61c32bmr4967422lfb.43.1710960319670;
+        Wed, 20 Mar 2024 11:45:19 -0700 (PDT)
+Received: from vamoiridPC ([2a04:ee41:82:7577:9be1:7bef:ff5c:57fc])
+        by smtp.gmail.com with ESMTPSA id jx25-20020a170907761900b00a4661f0f1e7sm7554317ejc.205.2024.03.20.11.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 11:45:19 -0700 (PDT)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
+Date: Wed, 20 Mar 2024 19:45:16 +0100
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
+	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
+	ak@it-klinger.de, petre.rodan@subdimension.ro, phil@raspberrypi.com,
+	579lpy@gmail.com, linus.walleij@linaro.org,
+	semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] iio: pressure: Add timestamp and scan_masks for
+ BMP280 driver
+Message-ID: <20240320184516.GB36450@vamoiridPC>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
+ <20240319002925.2121016-6-vassilisamir@gmail.com>
+ <ZfrDW1ESxnFg__od@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,91 +89,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3223f90-6e7c-4fdc-905a-770c474445e2@gmail.com>
+In-Reply-To: <ZfrDW1ESxnFg__od@smile.fi.intel.com>
 
-On Wed, Mar 20, 2024 at 10:09:05PM +0530, Ayush Singh wrote:
-> On 3/20/24 01:02, Andrew Lunn wrote:
+On Wed, Mar 20, 2024 at 01:07:07PM +0200, Andy Shevchenko wrote:
+> On Tue, Mar 19, 2024 at 01:29:24AM +0100, Vasileios Amoiridis wrote:
+> > The scan mask for the BME280 supports humidity measurement and
+> > needs to be distinguished from the rest in order for the timestamp
+> > to be able to work.
 > 
-> > > Yes, after discussion with Vaishnav and trying to brainstorm some way to do
-> > > the same thing with dt overlays, it seems that trying to use dt overlays
-> > > will mean need to have completely separate implementation of mikroBUS for
-> > > local ports and mikroBUS over greybus.
-> > Could you explain why please?
-> > 
-> > Are greybus I2C bus masters different from physical I2C bus masters?
-> > Are greybus SPI bus masters different from physical SPI bus masters?
+> ...
 > 
-> Well, they are virtual, so they are not declared in the device tree. I have
-> linked the greybus i2c implementation. It basically allocates an i2c_adpater
-> and then adds it using `i2c_add_adapter` method. This adapter can then be
-> passed to say mikroBUS driver where it can be used as a normal i2c_adapter,
-> and we can register the device to it.
+> > +enum bmp280_scan {
+> > +	BMP280_TEMP,
+> > +	BMP280_PRESS,
+> > +	BME280_HUMID
+> 
+> The last is not a terminator, please leave trailing comma.
+> 
+> > +};
+> 
 
-Being virtual does not really stop it being added to the DT.
+What do you mean it is not a terminator? In general with the enum
+variables I would write:
 
-I'm making this all up, but i assume it will look something like this:
+	enum var { a, b, c };
 
-greybus@42 {
-        compatible = "acme,greybus";
-        reg = <0x42 0x100>;
+Why in this case there is a comma needed after the BME280_HUMID element?
 
-This would represent the greybus host controller.
-
-	module@0 {
-		 reg = <0>;
-
-This would represent a module discovered on the bus. I assume there is
-some sort of addressing? The greybus core code dynamically creates the
-node in DT to describe the modules it has discovered. This is not too
-different to USB. You can already describe USB devices in DT, but the
-assumption is you know they exists, e.g. because they are hard wired,
-not hot-plugable. The USB core will associate the USB device with the
-node in DT. But actually creating a node in DT is not too big a jump.
-
-		interface@0 {
-     			compatible = "greybus,i2c";
-			reg = <0>;
-		}
-		interface@1 {
-     			compatible = "greybus,spi";
-			reg = <1>;
-		}
-		interface@10 {
-     			compatible = "greybus,gpio";
-			reg = <10>;
-		}
-
-It can then enumerate the interfaces on the module, and create the I2C
-node, SPI bus node, the gpio controller etc. Again, the greybus core
-can add nodes to DT to described the discovered hardware, and
-associate them to the linux devices which are created.
-
-That gives you what you need to load a DT overlay to make use of these
-devices. That overlay would contain one of your virtual mikroBUS
-controllers. This virtual controller is basically a phandle-proxy. The
-virtual mikroBUS controllers is a consumer of phandles to an I2C bus,
-an SPI bus, GPIO bus which makes up the pins routed to the mikroBUS
-connector. The virtual mikroBUS controllers is also a provider of an
-I2C bus, an SPI bus, GPIO controller. The mikroBUS device consumes
-these I2C bus, SPI bus etc. The virtual mikroBUS controllers makes it
-simpler for the device to find the resources it needs, since they are
-all in one place. For a physical mikroBUS you have a DT node with
-phandles to the physical devices. For greybus you create a virtual
-device with phandles to the virtual devices added to the DT bus.
-
-You then have everything you need to describe the mikroBUS
-devices. For very simple devices you convert the manifest to a DT
-overlay and load it. For complex devices you directly use a DT
-overlay.
-
-I also don't see any need to do the manifest to DT overlay conversion
-on the fly. You have a database of manifests. They could be converted
-to DT and then added to the linux-firmware repo, for example. If
-device with an unknown manifest is found, it should be possible to
-read the manifest in userspace via its eeprom in /sys/class/. An tool
-could create DT blob and add it to /lib/firmware to get it working
-locally, and provide suggestions how to contribute it to the linux
-firmware project?
-
-   Andrew
+Cheers,
+Vasilis
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
