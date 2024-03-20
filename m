@@ -1,138 +1,276 @@
-Return-Path: <linux-kernel+bounces-109417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799CB8818D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:54:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2FB8818D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DE6B1F22140
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:54:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE2B91C20E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2631E8593E;
-	Wed, 20 Mar 2024 20:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F2E8594B;
+	Wed, 20 Mar 2024 20:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jQptVRca"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3AhsXYS/"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F784481C0;
-	Wed, 20 Mar 2024 20:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCFE3EA9C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710968056; cv=none; b=P6n029BXkgQiO3QcoOz/wGV14iBk97/S7H+x2YG2zHR5bkmD0j5uByoREhKNStmomtPSIMffNTIpeD6w2yQH1pyc9DPQxGVK6DonvnwqBW1VrgrzlCjtoxiPUlg7pKe6PNw8TCYZR/2clUj2kECwTq+ZsVYbKew2oxzIi7nhDyU=
+	t=1710968090; cv=none; b=OTWXoX1qnD3jOgRkr50f0RhzR5VcHvraZ8L71dhq12zajuGzJpkIgE+6FklnLdum5DO7zoTjfXjpFuIxE9ewYcybtD6OpImgigSWWowGXcECtiyvDjGbzl+OWGUKycJRph9W07aY9ZBk9ark5l3m6EuNCqmbUpxSivHaqjoxIhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710968056; c=relaxed/simple;
-	bh=pF/xOd23yYrYMplKbbxbwQmPeh9HgaZeB0PVlGdg90U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kt+LPd0RvwTOhWXg1HiYAW54x6PHqikqsKfRckHRw8EPMtvUyKtIBAuTHxG0mQoDAWckvPEX+z6UcqGMyzIgDJcglu2ARcMPokJOtf6AarkhGJD7bO146/z3c+5rQ4HHYQOT9LyKJJhZC7fhl2TD9w89wBafmRGEPfutdXhBmjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jQptVRca; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=m3hah0VF3NuI3zxNyk+AIvcTPzt/CGCx8sXbYOztIEc=; b=jQptVRcaF1M/OvF8SdX5NTowuO
-	dpufXaBGQkvFQQB8JCvtzPsaXmwTLiKNVCH8bdDvzjeFmUcGL3iDaG3U2O0wAMtlxxECD1jWS260Z
-	0ECiVcRX/NaNtrxetJ5rQX59JtTUeJqpagHqsGp2MELPl7CwRfmlX354xeYzCMPbz72Qt9MsCjKh8
-	9VEFD+OlOIHAm5BSC1cPqgeqQwQw+GTWmV9CJo5RfyOCEzq339X4mIK5mREBXr5s64nf6aOhz6F0w
-	YlY0soxifFXkqVm3z7ghTXGHJfwiW/bkqeyXZCmWefkRD46GDcch/bI+dIvFof3lYDaTSJvNQYDQu
-	r7b6PKfQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55412)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rn2wa-0006uN-0N;
-	Wed, 20 Mar 2024 20:53:52 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rn2wU-0002yT-JV; Wed, 20 Mar 2024 20:53:46 +0000
-Date: Wed, 20 Mar 2024 20:53:46 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-	SkyLake Huang <SkyLake.Huang@mediatek.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] net: phy: mediatek-ge: do not disable EEE
- advertisement
-Message-ID: <ZftM2vDYQ2+5nSRV@shell.armlinux.org.uk>
-References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-0-3f17226344e8@arinc9.com>
- <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-3-3f17226344e8@arinc9.com>
- <3698b522-d6dc-46c1-bab2-d5ee3bed1fce@arinc9.com>
+	s=arc-20240116; t=1710968090; c=relaxed/simple;
+	bh=XhFojGRriaPCLI2McEy+lswO1UFG6gWja66SzVIzjrc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NqOsJBAZ3Xw/mI9cO6w1Q61ftx9yNtS+M9Nrm3EpFUXM6kSOvJ8kZ0gdftjCVOlcVEzqiJvcdp83xlIB0SM7PEMTYLh+SrRc4p9XQnCEIv6qtmNyIsRaglhWA2F9XUQqj47SFXDJhEIaF28Sb1TSzsYHoyuCyIdhfrY5v9YP9g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3AhsXYS/; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3417a3151c4so180713f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710968086; x=1711572886; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M9OJbJMLYpLTqaMrgQ5F4CTDV8TnBXcToRrQB4UYTw0=;
+        b=3AhsXYS/i0NY1pAmQrwKXOH99Y8G9fzcglG2kv+lEMJulNGI7uNY/j5xZ5d3SbN+Fo
+         6SHmTmgkGftF1kt22LfPiqtg4X6SEq83K5bPuItaeMmKnOzLfVSXCFgLr85Od2ep6CYB
+         0GKEMXSTe44nTJVNKA6EJ4LOYuUATvZZsOIzKRFCbQSwHU+XE0eYlqv0GBu5tno5/EFk
+         iIToq1yuk1I1tJF/gimflZS3B2wwA3FeNXnF94E/4CatBXt/4DUZhQpvWXlacE4x8CgN
+         dR/poragRQThCtr8gdSRtpmTZ9It9kVpUwh+yxVVp0cwtQVwb3PrBL9HRuwg0bJAD2dM
+         H3JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710968086; x=1711572886;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M9OJbJMLYpLTqaMrgQ5F4CTDV8TnBXcToRrQB4UYTw0=;
+        b=edcYErIrz2ndEYzPs/k3bkA5JayabTS9pDAGVGiP0osBzebT6N6P+ofRAHmirfsJDq
+         n3r1GkvXUdZfqgSUGRhZ8TZl+5A1Xb846ql9Bud10gpjGLYB5ltbu3igN3hIOX8Cxltm
+         aw/TVkcdry/E5z23/7hvbKRI/2DgPg3fCX4dr19p++7BmE/VQ7FQnT5jQ+hwaQwFlZPy
+         kw5FF98jCi8EAcKk695Sr81qAbNLhlBEFkZ594hodzhIqHi2/IWWdWGFKy2Mfg/Q6U/+
+         KbN/rLTRsK/yvR9EvHW0sDZKrdHcqWz6sMPuxU3ERDMd7WKlhMTBDjnJJS7mvj8PYA13
+         eRHg==
+X-Forwarded-Encrypted: i=1; AJvYcCV/uBQAOmW4524nx/A2QWKI8VT1PoO7auGLJIZIX2J9L+TI159LFFRb3f05iZUja3RzP0FNX7KSBRxTk7jIph61e3hsxt+WUWQFhmYf
+X-Gm-Message-State: AOJu0YxY1frFe9iwhDJq+PU7JWLLN44PBGlADshjOULGAFg03+jhoMVS
+	6QBALApQtEiyEP/lqdH8LWkQuslCWhZRStwPrsi05L9n4JUDuzRnO3+J/33bbMZPWwfe/OmtJYW
+	8nE7ypOCMpEEhDfxVkRth3J+J5qqOXiCzSBcy
+X-Google-Smtp-Source: AGHT+IH87XnoWDBP/JxyANKouNDuOvhC2d4maSHSsazIVN31uoJwJMNqdiRF8UnED+uAboiXZOXtAHHYnunpxv28wyE=
+X-Received: by 2002:a05:6000:4020:b0:341:906b:3351 with SMTP id
+ cp32-20020a056000402000b00341906b3351mr284860wrb.0.1710968086423; Wed, 20 Mar
+ 2024 13:54:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3698b522-d6dc-46c1-bab2-d5ee3bed1fce@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <ZfG801lYHRxlhZGT@google.com> <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
+ <ZfHKoxVMcBAMqcSC@google.com> <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com>
+ <ZfHhqzKVZeOxXMnx@google.com> <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com>
+ <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com> <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
+ <ZfMjCXZWuUD76r_5@google.com> <ZfMxj_e7M_toVR3a@google.com> <ZfSMaUFa5hsPP-eR@google.com>
+In-Reply-To: <ZfSMaUFa5hsPP-eR@google.com>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Wed, 20 Mar 2024 13:54:07 -0700
+Message-ID: <CAJHvVchGxd3ECA4mySYmUBNgq+N_4ws3aE6thSjBtjicJDJD=g@mail.gmail.com>
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+To: Sean Christopherson <seanjc@google.com>
+Cc: David Stevens <stevensd@chromium.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Yu Zhang <yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@gmail.com>, 
+	Zhi Wang <zhi.wang.linux@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2024 at 11:40:56PM +0300, Arınç ÜNAL wrote:
-> On 18.03.2024 10:46, Arınç ÜNAL via B4 Relay wrote:
-> > From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > 
-> > There's no need to disable Energy-Efficient Ethernet (EEE) advertisement on
-> > the MT7530 and MT7531 switch PHYs. EEE works fine on MT7530 and MT7531
-> > switch PHYs. Remove the code where EEE advertisement is disabled.
-> > 
-> > This is a bugfix because there's a possible race condition where the
-> > mediatek-ge driver would kick in after the MT7530 DSA subdriver which would
-> > have EEE disabled until manually enabled.
-> 
-> Can I get an opinion on this? Is it actually possible that the PHY driver
-> would start probing after the DSA subdriver? On the console logs for the
-> DSA subdriver, I can see that the name of the PHY driver will appear, which
-> makes me believe the PHY driver would actually never probe after the DSA
-> subdriver.
-> 
-> [    4.402641] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=POLL)
-> [    4.420392] mt7530-mdio mdio-bus:1f lan0 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=POLL)
-> [    4.437791] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=POLL)
-> [    4.455096] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=POLL)
-> [    4.472422] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=POLL)
-> 
-> I don't want to submit a bugfix to the net tree if the bug won't ever
-> happen in real life.
+On Fri, Mar 15, 2024 at 10:59=E2=80=AFAM Sean Christopherson <seanjc@google=
+com> wrote:
+>
+> On Thu, Mar 14, 2024, Sean Christopherson wrote:
+> > +Alex, who is looking at the huge-VM_PFNMAP angle in particular.
+>
+> Oof, *Axel*.  Sorry Axel.
 
-It would be really great if you could tell us which bug fixes you're
-submitting are for a real problem that you or a user have encountered,
-and which are down to essentially code inspection and things that
-"aren't correct". Basically, don't do this.
 
-It isn't true that the PHY specific driver will be probed before DSA
-initialises - consider the case where the DSA driver is built-in but
-the PHY specific driver is modular and on the not-yet-mounted rootfs.
-That would result in the generic PHY driver being used even when the
-PHY specific driver were to be loaded later - and thus only basic
-standard 802.3 PHY behaviour will be supported.
+No worries. Believe it or not this happens frequently. :) I'm well
+past being bothered about it.
 
-That's not specific to mt7530, it applies to everything that uses
-phylib. It isn't something that really warrants "bug fixing" in each
-and every driver.
+>
+>
+> > On Thu, Mar 14, 2024, Sean Christopherson wrote:
+> > > -Christ{oph,ian} to avoid creating more noise...
+> > >
+> > > On Thu, Mar 14, 2024, David Stevens wrote:
+> > > > Because of that, the specific type of pfns that don't work right no=
+w are
+> > > > pfn_valid() && !PG_Reserved && !page_ref_count() - what I called th=
+e
+> > > > non-refcounted pages in a bad choice of words. If that's correct, t=
+hen
+> > > > perhaps this series should go a little bit further in modifying
+> > > > hva_to_pfn_remapped, but it isn't fundamentally wrong.
+> > >
+> > > Loosely related to all of this, I have a mildly ambitious idea.  Well=
+, one mildly
+> > > ambitious idea, and one crazy ambitious idea.  Crazy ambitious idea f=
+irst...
+> > >
+> > > Something we (GCE side of Google) have been eyeballing is adding supp=
+ort for huge
+> > > VM_PFNMAP memory, e.g. for mapping large amounts of device (a.k.a. GP=
+U) memory
+> > > into guests using hugepages.  One of the hiccups is that follow_pte()=
+ doesn't play
+> > > nice with hugepages, at all, e.g. even has a "VM_BUG_ON(pmd_trans_hug=
+e(*pmd))".
+> > > Teaching follow_pte() to play nice with hugepage probably is doing, b=
+ut making
+> > > sure all existing users are aware, maybe not so much.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+
+Right. The really basic idea I had was, to modify remap_pfn_range so
+it can, if possible (if it sees a (sub)range which is aligned + big
+enough), it can just install a leaf pud or pmd instead of always going
+down to the pte level.
+
+follow_pte is problematic though, because it returns a pte
+specifically so it's unclear to me how to have it "just work" for
+existing callers with an area mapped this way. So I think the idea
+would be to change follow_pte to detect this case and bail out
+(-EINVAL I guess), and then add some new function which can properly
+support these mappings.
+
+>
+> > >
+> > > My first (half baked, crazy ambitious) idea is to move away from foll=
+ow_pte() and
+> > > get_user_page_fast_only() for mmu_notifier-aware lookups, i.e. that d=
+on't need
+> > > to grab references, and replace them with a new converged API that lo=
+cklessly walks
+> > > host userspace page tables, and grabs the hugepage size along the way=
+, e.g. so that
+> > > arch code wouldn't have to do a second walk of the page tables just t=
+o get the
+> > > hugepage size.
+> > >
+> > > In other words, for the common case (mmu_notifier integration, no ref=
+erence needed),
+> > > route hva_to_pfn_fast() into the new API and walk the userspace page =
+tables (probably
+> > > only for write faults, to avoid CoW compliciations) before doing anyt=
+hing else.
+> > >
+> > > Uses of hva_to_pfn() that need to get a reference to the struct page =
+couldn't be
+> > > converted, e.g. when stuffing physical addresses into the VMCS for ne=
+sted virtualization.
+> > > But for everything else, grabbing a reference is a non-goal, i.e. act=
+ually "getting"
+> > > a user page is wasted effort and actively gets in the way.
+> > >
+> > > I was initially hoping we could go super simple and use something lik=
+e x86's
+> > > host_pfn_mapping_level(), but there are too many edge cases in gup() =
+that need to
+> > > be respected, e.g. to avoid mapping memfd_secret pages into KVM guest=
+s.  I.e. the
+> > > API would need to be a formal mm-owned thing, not some homebrewed KVM=
+ implementation.
+> > >
+> > > I can't tell if the payoff would be big enough to justify the effort =
+involved, i.e.
+> > > having a single unified API for grabbing PFNs from the primary MMU mi=
+ght just be a
+> > > pie-in-the-sky type idea.
+
+Yeah, I have been thinking about this.
+
+One thing is, KVM is not the only caller of follow_pte today. At least
+naively it would be nice if any existing callers could benefit from
+this new support, not just KVM.
+
+Another thing I noticed is, most callers don't need much; they don't
+need a reference to the page, they don't even really need the pte
+itself. Most callers just want a ptl held, and they want to know the
+pgprot flags or whether the pte is writable or not, and they want to
+know the pfn for this address. IOW follow_pte is sort of overkill for
+most callers.
+
+KVM is a bit different, it does call GUP to get the page. One other
+thing is, KVM at least on x86 also cares about the "level" of the
+mapping, in host_pfn_mapping_level(). That code is all fairly x86
+specific so I'm not sure how to generalize it. Also I haven't looked
+closely at what's going on for other architectures.
+
+I'm not sure yet where is the right place to end up, but I at least
+think it's worth trying to build some general API under mm/ which
+supports these various things.
+
+In general I'm thinking of proceeding in two steps. First,
+enlightening remap_pfn_range, updating follow_pte to return -EINVAL,
+and then adding some new function which tries to be somewhat close to
+a drop-in replacement for existing follow_pte callers. Once I get that
+proof of concept working / tested, I think the next step is figuring
+out how we can extend it a bit to build some more general solution
+like Sean is describing here.
+
+> > >
+> > > My second, less ambitious idea: the previously linked LWN[*] article =
+about the
+> > > writeback issues reminded me of something that has bugged me for a lo=
+ng time.  IIUC,
+> > > getting a writable mapping from the primary MMU marks the page/folio =
+dirty, and that
+> > > page/folio stays dirty until the data is written back and the mapping=
+ is made read-only.
+> > > And because KVM is tapped into the mmu_notifiers, KVM will be notifie=
+d *before* the
+> > > RW=3D>RO conversion completes, i.e. before the page/folio is marked c=
+lean.
+> > >
+> > > I _think_ that means that calling kvm_set_page_dirty() when zapping a=
+ SPTE (or
+> > > dropping any mmu_notifier-aware mapping) is completely unnecessary.  =
+If that is the
+> > > case, _and_ we can weasel our way out of calling kvm_set_page_accesse=
+d() too, then
+> > > with FOLL_GET plumbed into hva_to_pfn(), we can:
+> > >
+> > >   - Drop kvm_{set,release}_pfn_{accessed,dirty}(), because all caller=
+s of hva_to_pfn()
+> > >     that aren't tied into mmu_notifiers, i.e. aren't guaranteed to dr=
+op mappings
+> > >     before the page/folio is cleaned, will *know* that they hold a re=
+fcounted struct
+> > >     page.
+> > >
+> > >   - Skip "KVM: x86/mmu: Track if sptes refer to refcounted pages" ent=
+irely, because
+> > >     KVM never needs to know if a SPTE points at a refcounted page.
+> > >
+> > > In other words, double down on immediately doing put_page() after gup=
+() if FOLL_GET
+> > > isn't specified, and naturally make all KVM MMUs compatible with pfn_=
+valid() PFNs
+> > > that are acquired by follow_pte().
+> > >
+> > > I suspect we can simply mark pages as access when a page is retrieved=
+ from the primary
+> > > MMU, as marking a page accessed when its *removed* from the guest is =
+rather nonsensical.
+> > > E.g. if a page is mapped into the guest for a long time and it gets s=
+wapped out, marking
+> > > the page accessed when KVM drops its SPTEs in response to the swap ad=
+ds no value.  And
+> > > through the mmu_notifiers, KVM already plays nice with setups that us=
+e idle page
+> > > tracking to make reclaim decisions.
+> > >
+> > > [*] https://lwn.net/Articles/930667
 
