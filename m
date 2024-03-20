@@ -1,108 +1,113 @@
-Return-Path: <linux-kernel+bounces-109171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ABAB8815B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:32:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B008A8815B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC6C11C22AD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:32:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4237528148A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB44110A;
-	Wed, 20 Mar 2024 16:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3FF138C;
+	Wed, 20 Mar 2024 16:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a7e6M0S/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GpTm3xKu"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF63E7EB;
-	Wed, 20 Mar 2024 16:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891A6EDB
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710952337; cv=none; b=U6e9YZl4DGxLIoKY29+hZUlyL2ySpToz7UJb49U6hjTpQ3m/Qc7M9/Ko6cIasBtWicFZHpgWMyyLtJNhPPVV26bdWJUVabyTczCrKK36d1S2wIYQbwZrApXHkHEg3pHkxVFMgbbh5f0HItDjdfYi/ZoqqyVYCEpsSz3zRQirRz8=
+	t=1710952377; cv=none; b=Uzxmaz96PH8UJLcR6SZbwK1/mgakhJNygnunLOqGo7CCf+uaLNdUb3gvjFdzKZme5Ln/xX1F1vO63fbTGXj4/VL5uJt3vXtz347WbDKP0oq+kFe7iRe1S37bfowzehmQaIOHBSllFM1Yh5yh4Emsrjx8eoUjYmTTWE1jx1zgibQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710952337; c=relaxed/simple;
-	bh=BUylS3kME2q0eaZg/TAVRkngmIlm+goa7PviZhmabOg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d06d/ZflQXMuhkgpDjgZslP60TMGnHZPYKWRSfCXZjEU1G2l+bt9SBWhjG1ViIgF9dWc6H2cR//LrEQM3pK7wwyWegL1Os129+stafpg1hB81/h+sHDUsm//Q72lMt2zxAhEiILeLO0jQSsWSS+EqPzCHmysyJXUcS1lC8NekKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a7e6M0S/; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710952336; x=1742488336;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=BUylS3kME2q0eaZg/TAVRkngmIlm+goa7PviZhmabOg=;
-  b=a7e6M0S/NnRO1q8VX63PZY/HgJ1InDRVCU9ftPLo1Uvd9K6mNegAGGZg
-   a1bvckuHYcM8vFtLcxCmBkExyfF/HTamiDbCL741VynYtWHA3BG6Yz4om
-   YPuxo+1gFqxhtlHovXmOCeugIsEQwdS8Ol+0OrxR45FHgky8s3O36tq+R
-   lFbEjG23s+wFYd5du1yHf0Ssk0+7fubBmXo0EGNPDCJy9WEw2SnNSVhqD
-   95r6PmKlYxM+8YtYzyvTIkdcRo0X19RSUuGd3pWJxrQBBm6E5KyAI5aE1
-   udJNcXTLoYv9VQPF5+YFuyWs6Bw8+bA0xmXCR9L7Hv3yZdvb7curCUrRX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="31324324"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="31324324"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 09:32:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="937063848"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="937063848"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Mar 2024 09:32:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 4CDA930D; Wed, 20 Mar 2024 18:32:12 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH v1 1/1] idma64: Don't try to serve interrupts when device is powered off
-Date: Wed, 20 Mar 2024 18:32:10 +0200
-Message-ID: <20240320163210.1153679-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1710952377; c=relaxed/simple;
+	bh=RPvZL/F/5+LZWPkRsGvRCYGU0F/BRfHT875AjHjPcQk=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=j9UPn61aPy7HY3WKapEjIvZohlRoarziw78l3AC1tDYnXi3FDnMp2AhA/VavBdto87n/q4hED+0USzu2gJzSOwHSqzGNLe1Matvm1tjXVcPrLvb6zf1p0pd1508gVbYdPSeHvGuaSRe5o/Ad6gTK9C6qpTrTE6SepuhVe8uSMR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GpTm3xKu; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso9015947276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:32:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710952374; x=1711557174; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PPh3+JK8STaNVcaoNnrH04Bjmq+JVNkjWGAVdUYYJeY=;
+        b=GpTm3xKuy410sMKsXDSQGUFIj+rNkFZsErRGI/47uYdGayXTv4rxHDu49yW38OC3pQ
+         wmuH5ojL/XEeFlSFhmP9k0unaNCsYYJ/hVXrgintVjT2TmS/halhKarxvlBZbsNGRNqR
+         1Tm29B+cGE2yJNXyX1+KAvpFHc30NeLnL/gedZmzQpHjsN/33jReS8WzGXQBxMDqXC6h
+         PMQvMHfWbvjyhUFOMuaNes3j4uHoT107GN1gncHvTvRHjNfA6+2x95UBuAfjOxCDz3IK
+         f5DMjQGA/qp4P8JM6V9RpMEGz0XHNNAAF9nr0o6Lu8+azN4dSCX5sivDMg2U+cpf18iy
+         LtAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710952374; x=1711557174;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PPh3+JK8STaNVcaoNnrH04Bjmq+JVNkjWGAVdUYYJeY=;
+        b=OKzq6MNkEvRtbCkiiJnjb1FtwAzitMJGC/qWOtSV31jnp6AfiVlKv+vH03Yg6oGsK8
+         aGRvKjQZrxV9PviGlhl/9NCYzPmfZkEuGzx5Oa7bIrJxclNYsVEk6IVw17wdXMJmXq6K
+         mJQnI45bCdaOsOCXa5TzZ0GmIlP/5qnuS3FxVfV7QBOCv1o7UUErQI8SQij+ElAi15yQ
+         ZbMLs74YuPy9sWVgxfnfm/z5kNYc4XW4jlwYQUZk1w2kCc8YalxkB6GP4YIZnZsfpf6x
+         S7RuywW/NkbpubZ9rgi71YRXdBwCeLg/TpNBX+UmK2QgdNZq+i/ehH+s/EZLqlHNSokG
+         2b+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXKmcZK8rSbd7AXcaiEsmoUfgPwg3GF9MKWbIdYsmbOeULTgL3Ek9xbSGf/1ve1IEfkkWnQ51PLY9xMH8uQ90db6aVRwSHyYlof2VB8
+X-Gm-Message-State: AOJu0Yxb/NYUlDr5wXPDfcpcty10jRyx+CMrB4MUTNx9je+91AMuwD2L
+	1R2PyVbXSkYSnVUcBlBSmG7BJJ4a6RvDjG4l4+LXUXEVDriFEpKU09rPfsLMlQtk/yr1phApUGn
+	PqFqEvA==
+X-Google-Smtp-Source: AGHT+IFy9qjZJ8qJt0m0fdcRwFHSNGZaErdUyns14VLHFaZriYh2eKSTtrlv5EWKfPlpoppugb2t3dHqFr41
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f4f0:8ad8:3c73:cef7])
+ (user=irogers job=sendgmr) by 2002:a05:6902:124b:b0:dd9:312c:83c8 with SMTP
+ id t11-20020a056902124b00b00dd9312c83c8mr460549ybu.10.1710952374659; Wed, 20
+ Mar 2024 09:32:54 -0700 (PDT)
+Date: Wed, 20 Mar 2024 09:32:44 -0700
+Message-Id: <20240320163244.1287780-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Subject: [PATCH v1] perf build: Pretend scandirat is missing with msan
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-When iDMA 64-bit device is powered off, the IRQ status register
-is all 1:s. This is never happen in real case and signalling that
-the device is simply powered off. Don't try to serve interrupts
-that are not ours.
+Memory sanitizer lacks an interceptor for scandirat, reporting all
+memory it allocates as uninitialized. Memory sanitizer has a scandir
+interceptor so use the fallback function in this case. This allows
+perf test to run under memory sanitizer.
 
-Fixes: 667dfed98615 ("dmaengine: add a driver for Intel integrated DMA 64-bit")
-Reported-by: Heiner Kallweit <hkallweit1@gmail.com>
-Closes: https://lore.kernel.org/r/700bbb84-90e1-4505-8ff0-3f17ea8bc631@gmail.com
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/dma/idma64.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/perf/Makefile.config | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/idma64.c b/drivers/dma/idma64.c
-index 78a938969d7d..1b60e73d9322 100644
---- a/drivers/dma/idma64.c
-+++ b/drivers/dma/idma64.c
-@@ -173,6 +173,10 @@ static irqreturn_t idma64_irq(int irq, void *dev)
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 1fe8df97fe88..74e0b17050b5 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -486,7 +486,10 @@ ifdef NO_DWARF
+ endif
  
- 	dev_vdbg(idma64->dma.dev, "%s: status=%#x\n", __func__, status);
+ ifeq ($(feature-scandirat), 1)
+-  CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
++  # Ignore having scandirat with memory sanitizer that lacks an interceptor.
++  ifeq ($(filter s% -fsanitize=memory%,$(EXTRA_CFLAGS),),)
++    CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
++  endif
+ endif
  
-+	/* Since IRQ may be shared, check if DMA controller is powered on */
-+	if (status == GENMASK(31, 0))
-+		return IRQ_NONE;
-+
- 	/* Check if we have any interrupt from the DMA controller */
- 	if (!status)
- 		return IRQ_NONE;
+ ifeq ($(feature-sched_getcpu), 1)
 -- 
-2.43.0.rc1.1.gbec44491f096
+2.44.0.291.gc1ea87d7ee-goog
 
 
