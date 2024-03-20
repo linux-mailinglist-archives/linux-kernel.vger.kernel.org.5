@@ -1,164 +1,130 @@
-Return-Path: <linux-kernel+bounces-108539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB8A6880BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:25:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4724880C1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9D56B2206F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:25:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC45FB22D11
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9249420DE5;
-	Wed, 20 Mar 2024 07:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B0722338;
+	Wed, 20 Mar 2024 07:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="fEUfB3p0"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2078.outbound.protection.outlook.com [40.107.6.78])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="W8PfZpQY"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C1D1DA52;
-	Wed, 20 Mar 2024 07:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919545; cv=fail; b=QkkPBmaILO9N7geUI6HtHaeLBCfhyAuTaW7+KVh6nyPNrmjceWg6ZPdM1/lL+CtCLE4Vg5pfM2RLILnaN9r5Fe/vNiYVk872qLfGd77v1ynmxk6Cw2oBML2HiGgtgaaQn9D3BPTuYIhvw/CW02xq9DF4Tri6BTw9Q+UvFkNPEtc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919545; c=relaxed/simple;
-	bh=Um/r8MknPez7aM61iNWInogMj4nRNUtHBG8Bz5D+FIM=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=kVWcKQLY2Jw6Q5OooRSeRtZvo6H5He9aTfHlbRuO02u2zDuMu/kD+LyY22yFm1rmWGkhdeN1ARN6oi6X1JqatH5wKs0fR9OzoQnd3Qkxu+BnEXdi5B99rRkdAbB+Zv7GflgHg43FAOMevLOnGKmIwJJiEg14Ti2wZdRpVhn2Q4w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=fEUfB3p0; arc=fail smtp.client-ip=40.107.6.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lpaDLVxmN1ZmZGOsZdO8FHijeBOYqwt0iovkBdMiFhbt8tTDESdG/DyxUTEWAk8MX5wXZf7Pcazkz+c+sqWQczJQZZ979sd4Se1LYPN/xWsstapcOrzTjI6XcLpP4NC85PLd0TTPviC6/Y9OYRVe014Pl3eu0lpmMsHIq+CFRsTNq6jQ63h92unPkrvrxw/eXpYEf8UjpBrqVoaVvznTkFgDDBC5LNwdIgbUh4HsD0ALeSoipeppj2/9Enzm0i3vwFymD+sYSak/bHkca8Aae9I3PIPxTuM7RCyFqoZKpGGhnyzDfeA5yiJu/rg2reCn5DBOL5hyifVSegph5ZBJ1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bmi7PaoJXslA/Tr/W4aXut8MnEAB5rC7JmKve1KfteQ=;
- b=nMH7R4tyDyRmIR+hafRUOG6H/nOZhbv5t3ZYhYEIbeUOs4dWgSw3lq2/EUDcmhBCjFoFPyVz3TyF3EU8ezv9Byxw597vctAaWX5TYjs/qOCNIpKbJWy/jZVC7rzQs6EfE/vb6aqj9YzTFLlEq0N2Zue8xeUgnGaMbIfMC5gb3Euzt4KPMvRXoGDtev3XK90k+zw1HC2WcnU+w0iBH/wU/ErYbXyYJtwf3f3IuQQcPi1uLYU2JjrQFNqUATOKKpcNcjqBz53m7L7eYS0qEKhXA5ot41W1hmZfsS63CsW3LdnlO8ztkLFd/g346omurVsG9uUT1iC70TQuXEVTia6i+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmi7PaoJXslA/Tr/W4aXut8MnEAB5rC7JmKve1KfteQ=;
- b=fEUfB3p0XbTg1yQN20stDgawUT/i+yhH/jGEsM/Lo5frg2dXpyeKYLiAveH2iR25DqLHRTTXdu8jL9c9FQEBFHzN54hp5ULL+8xgwNvJ95ZWuiYHcLHSm42Hb4sDbLRjIG0CGGgfvVnq/NRcoM/VU0w1AH3iMlHetwP/W+1h2Mg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PA2PR04MB10157.eurprd04.prod.outlook.com (2603:10a6:102:409::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Wed, 20 Mar
- 2024 07:25:40 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.017; Wed, 20 Mar 2024
- 07:25:40 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	andy@kernel.org
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2] gpiolib: use dev_err() when gpiod_configure_flags failed
-Date: Wed, 20 Mar 2024 15:33:44 +0800
-Message-Id: <20240320073344.1563102-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0010.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::12) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789B42208B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710920187; cv=none; b=aXc3996YOB0B5QQ8g2+tf4ql0OuI12z4my5+gQDrJFaOt5zvZR8sMfZXH1jGeaPPVuRg0Ud/6nL6iEaIJpmY5CW2Xko9UlHK2Ji+n4QOqWSNnu+HoYf5RzlnApUDv4lrx5k/D92xnl6mU8UP6x+kUDWXK2lakRHNJwxBm0Utvoo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710920187; c=relaxed/simple;
+	bh=8FrklcNQldLvI3BHw70NdCm4S6Qev5UhA6Rr0CTq/mo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EwhohCX0svp33d4HUQU+/U2MOyRhVP53TmVzSF1upaajK6dy168XAqbyLJsNz4UoIDAnAKLTfwn4qxWFxj2Bll6BjXgQM6wanMxqEBTAB4VomHKg87NEekT4Z2woEOn0GGfXl2qbRpDsRMuHy5jXKaQLLRA7PaHg8YcBYdxUMoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=W8PfZpQY; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B936EB1;
+	Wed, 20 Mar 2024 08:35:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710920156;
+	bh=8FrklcNQldLvI3BHw70NdCm4S6Qev5UhA6Rr0CTq/mo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=W8PfZpQY7aN7ioLHqtSKdkr2iJyynYUfckLxYN+9Jd4R8b9pe0ZmUI5CF5U3nur4q
+	 loefYTM7XB12q3cJjjccMHh+Yw179wIjcHjLq0cb2kRZ+kIHpNbWKIG5aux+PENOtZ
+	 rYW3XNxl/EyJAOD6/Ac16gX8vstfhvAVE0uRptKI=
+Message-ID: <dc46558d-9254-47e6-9499-4c2ace437f3a@ideasonboard.com>
+Date: Wed, 20 Mar 2024 09:36:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|PA2PR04MB10157:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a4c2a12-a10f-4549-cb4c-08dc48aef13f
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8/KWr3YHereSTi/g62fptLOxI8mHHWiZ8kUgvLEvMXX62Y7BAnQHJ7ifrRgnrZRxUHUVQQNvB75BJTFlJBNhOxHc89WPyyoD5tcHPcMKNJs5vXvelSx/5nOcMuufZvQxLX2GJ7AfCaWF1dlPrSbGAE9NjSJ3SMMBTyjXCW2hUNqaE4u2fKmtDkplY1Bkwq92WNFu22q65Nko7faziCtHUJBt36F4bHU+PyWN8K/r/CURqnB3JN/DLCWeuLHL50/p2D0ow0fe3Ta0+ZRiwUeAbZrdLC/6dX9qnXorq8DjYitbdKQUDjLEGlh0vzt6ma44d7N9hVG4E4Rk9lN4+G+msnRBY1rpfnWgfouWifYHoTcNyFWd10TbieLdvCOLMX2ok6LJsHw3yI6QoLs9Ik7+N64/EQy3Zreoy3zEy8ecZlr1KlSUrliAGx1DFpEX5rnhmizpPuFSItdNQGvCg64yHFR7xF8eZYm7jAW0tklCIa7JYC0iUvztTkSj+4GEg4eVA7KOA+3eAJ6Emtu5po22LzVR+B2dQELIYMBkRx/CaWgJyFT2VRfdrcJMIFZ9bFWZhXu4lKhFdbgBba7sjyTz+bt+5JPUEdomE3oJ1mrNyAlcIQtRbYtxMs0hLEIvA4YzSlI2QRd3BTE1+FvZWW+WQqs0MvnXEPQBnWOYS4YEcaEXzBMGK9g45kSCbE/+tmHuElxTpcjKK4YwqgrEJMyFpO2/O7SRIMMwi7HlrabTK2k=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(52116005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?bCG+ewoV4W7RwzHDwcGWgTkirK50ak0BcMJELJ+GXDnv5vcFZNV0QDtt3WiF?=
- =?us-ascii?Q?uKaKLy3avxd1lBvkEzCUYf8Y65PHrWYAHyzY99KFpDU2NG+LfZMmPbULeI6v?=
- =?us-ascii?Q?G0V34Tg7PPyp0p7gXjNsTgGjNWHXNBbSgbJt1Vto3Tf8KcPU0FOA5l5wOZ8h?=
- =?us-ascii?Q?7P2QYcfEV7P3+J7os7np1xXno89/tkc6rUu/HsUwWgTdaFbea9Yza4EFxE/8?=
- =?us-ascii?Q?ybXtVeotG/KIPNpTkY8E/bbQwZxsQE9E7GhsJP4h2OFoe+FwuDfGjHA0HYI3?=
- =?us-ascii?Q?tvdsY8HptxiVXoSs3wQnzgis/IX+U8yRJXCbEZbaus52NTJIxaIBmHlI+o/R?=
- =?us-ascii?Q?8t8BGBc4OVFJSLvOdwUwJ0FWWtmNLGo/ctsFxwrLIxRQIAUVx5zp20bfObbU?=
- =?us-ascii?Q?U6VMX/29kyYUdkfAW4rKrtkuOYc9ZdWMNEqKVzlJaEEFO9qYPStGRjBfugEp?=
- =?us-ascii?Q?dvUBGhx5FzhKUNNEqYIOwlDwT3g4ZLVk3v5HDPu8lSXOojtWPDBuLaBq2R6l?=
- =?us-ascii?Q?FVWfkz+yS//F6UZWDcsbh/RDO48bdNIGd/IVP6rv372vi71ryKEhDNFzYX/W?=
- =?us-ascii?Q?Nz+5T5I/O75r+nsS/tL7zoLKgpwUbCUyXfu62eHYF/ZEk5YwwQ51fbkhxkEL?=
- =?us-ascii?Q?DS9+dxrA71dTCykGJEgl1liHJLZa2ZRu9umgWOP3F6b1189JIShujcZRHANz?=
- =?us-ascii?Q?yVffH2TMS9OwEo5e6GgajQK50KsTAtG+mXBLGGz3PG06C8mdqlpBZ0KK9ALW?=
- =?us-ascii?Q?Qm94WeU/O8YskmKLLCOKOrE1CyJmar3PEoVWp9JdWfgSKkdWZVuJHRXZ9F3X?=
- =?us-ascii?Q?1BOVBmP1Pp4FylMSB9Zv19KdqPjdRiYJDbPXl2J7UA6c2RAxS9h/aalH0RL8?=
- =?us-ascii?Q?2NYwIAvjcqE4JbcIoJRYGVCdZIRm0bSijhZrM1PwqucrC+6IJo0kig2VPphX?=
- =?us-ascii?Q?JAmaw2MDLhaYsP1Npi/jnjxar/HbQRQZKj58cCOtqnQ7aZiPFnt8qVZg1ZjM?=
- =?us-ascii?Q?2P/sWYSnvJL44PqWUFxUDaZIWu+63op/5ziOazOJvTc/iwjyj7xnfPK/HTz7?=
- =?us-ascii?Q?pJPQjtHO/0RDuBySyqvnlybIs2cawiEVVLMEi4IRo7RF3tvigcokSEK2J1iY?=
- =?us-ascii?Q?4svvIz3zez627OX0jpN7sdcu5cfpBYlR9h9INzxSqEaG346PLaHNmxS1Pcnd?=
- =?us-ascii?Q?vning4vI4mwSK4GwriNT6guD90dHqR9v8+j9Ut1FNZOwWMk4OoiE1B/NEcrK?=
- =?us-ascii?Q?L3FnXioY8X7anemD709D2yTG2mrk0mN8LtfwT0ZwZRJ0XjtIJQFuFFLdSmQS?=
- =?us-ascii?Q?bNw57VXNPpp2Se2Pd9Gsno7sHGJ/7vifYWl50i0YMMl6KyeiWvh2lDulXG8Q?=
- =?us-ascii?Q?qbP1WqJfg0knypdQvJaRi1yCis8AXwZgHvSlp6NFcJqnnGZwbtDpAr8DF5ga?=
- =?us-ascii?Q?be2iwpGLwbZmiAYxC4zcRGKXad6Gce+sL5UkX02EkETK7TDymqsKg0tTe2J8?=
- =?us-ascii?Q?QIY8yoNAlO6pHefENUhICm9+zeFa4+gFS1nheo78H6Klz8xYxBHMXa4akLa+?=
- =?us-ascii?Q?jpF48avZQXihd6jOqgzI9SQUxqkg0parSuF4vJt0?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a4c2a12-a10f-4549-cb4c-08dc48aef13f
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 07:25:40.6357
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FOrC2gUb3BP+yk/6Rby/ejZ8zwb/jAXwlh61u1HFJ7sZLfdVho87LNP0N9eEbdxe3AzktAdAfGwGNxVJVGBvdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10157
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 7/8] drm: zynqmp_dp: Split off several helper functions
+Content-Language: en-US
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-8-sean.anderson@linux.dev>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240319225122.3048400-8-sean.anderson@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Peng Fan <peng.fan@nxp.com>
+On 20/03/2024 00:51, Sean Anderson wrote:
+> In preparation for supporting compliance testing, split off several
+> helper functions. No functional change intended.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 49 ++++++++++++++++++++++----------
+>   1 file changed, 34 insertions(+), 15 deletions(-)
+> 
 
-When gpio-ranges property was missed to be added in the gpio node,
-using dev_err() to show an error message will helping to locate issues
-easier.
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
-
-V2:
- Update commit log
-
- drivers/gpio/gpiolib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index ce94e37bcbee..37fe9db0bd74 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -4233,7 +4233,7 @@ struct gpio_desc *gpiod_find_and_request(struct device *consumer,
- 
- 	ret = gpiod_configure_flags(desc, con_id, lookupflags, flags);
- 	if (ret < 0) {
--		dev_dbg(consumer, "setup of GPIO %s failed\n", con_id);
-+		dev_err(consumer, "setup of GPIO %s failed: %d\n", con_id, ret);
- 		gpiod_put(desc);
- 		return ERR_PTR(ret);
- 	}
--- 
-2.37.1
+  Tomi
 
 
