@@ -1,226 +1,155 @@
-Return-Path: <linux-kernel+bounces-108357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7918880990
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:23:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3F2880996
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:28:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF221F233FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:23:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6BB1C21CE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB46846F;
-	Wed, 20 Mar 2024 02:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0161BF512;
+	Wed, 20 Mar 2024 02:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K7CsGyc3"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWsnwBvu"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AFE749F
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8872E8C0B;
+	Wed, 20 Mar 2024 02:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710901427; cv=none; b=qh/aXFuMZWt+T0r4b70ZV8LJx3UnsDLbd9LQTSTGalmMbrDQC7zQ3pQK4ummID32gn7K9Eo/EUlJEYL/dFAoyIcHDgJ59/f72H0JmEIVkU3SCMaVjBmctCB4Yr0XOvk4X7F6k2XDGS1+S1OklbFztIKzBy64ZVSaJPgx+vKBW74=
+	t=1710901681; cv=none; b=k4p6PSDktVMvCqLITyf1n5/Ap3NYXddxqKfI/GFlTRQ1Re9M3/lZ0CToYI3BeQFlY/Io6u7BvAFZlB32VD40bXfbVxPVLDiGQJ0a/Njb4BVlF4WpQhoRdo+v3uf4pggpLtdmuB0sIqOSY+qUO4JPkMh+YdxDSc6XNM7ooBTiqO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710901427; c=relaxed/simple;
-	bh=CrQnqMvDrnyVSQPS+ineAuhvgXfu0NjUynu4z2aN4AE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hPzo/oJaHgwJFwtFAeB/BlCbxBVk/cBCEeiAZ3+f0h+Yr6+No3LnQfHgXOqD/ar6nq90GiTHHyqYKXr7arLqL+JS4ZEABMy4iRA1aco+Jzj1MT5+XdvobqgAetUoUDJO/tf3x1gs4MbJC8ZrG58lRi4OSEE4nLg/v3ZVwDEdlBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=K7CsGyc3; arc=none smtp.client-ip=209.85.167.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c39177fea4so1332871b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:23:46 -0700 (PDT)
+	s=arc-20240116; t=1710901681; c=relaxed/simple;
+	bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I2pHXomeFIvk/LTinQ3G41/8VbyVgJskimDdBz7F6jWJSXSVRAyUKCOiy6WCy+Mg7k9WNSpnKwWvx8BLcfCwqV84Ji4Q8yXHWgisJeGs0/lMRwOZdsJW5WVHgHsFeK8kHIP+jmY1KOYEq4ctFC5h6rZ+OFCHCES6TDmAqq6no3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWsnwBvu; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56a2bb1d84eso797699a12.1;
+        Tue, 19 Mar 2024 19:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710901425; x=1711506225; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kSoI/pMAjXfzjKvOOwcZSweV3DuyNeX7z58Nwuw7Wpw=;
-        b=K7CsGyc3aYxi0sOmgM/BWzDnZeGgeV9gh5fpahqhAhzr1XOiy/j8CM89T/mbV2SZwt
-         LpM0PBMuzXaw6bA5Alw6J69PS5s7BBbTdKgfySoVSG8cupZCj6JXhz9kEqsC/ANwgURj
-         fgLUraLgdF0BmNRt7/Y/CKcwq8ABNUHzArcmE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710901425; x=1711506225;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1710901678; x=1711506478; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kSoI/pMAjXfzjKvOOwcZSweV3DuyNeX7z58Nwuw7Wpw=;
-        b=lJI33tSq2Uoi9vxTxNAB48Wu3FRghZMfjqaPZzMbf6xb3Gwy0HFXJXfHvvw7GIK/IF
-         BYvBFMKqcLmPKl8OfZ6rqKR+KOcZsdXIfoLiI6/DIXD08Yea0A6Z5hlrfrIJhobzuHvE
-         2Bjd4CMpWAc0Nyp6Y1Jm2lyvkbZlpwOY8W/D+mMZY6Dr31MXstUfX8UGnunTitCLIqql
-         FzSCX/Hmo2X22KoWJ2bYPvB9N+DSalwmZYhcJ7RraW7p0Sk9N6T93f1oMqeQji/aKsxT
-         h1wkTlmE0ZHza6JqpzPPzwgk3Zn7zaaxNKh3xgTyV9va3K2NOpee6Haq3yXZO4OqICfh
-         Sq/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXn5dU/eSUp8cVNIiWLiIF9gBDPx7tJAdWyiIs+kb5fRCRxLRML+RdD2bnMirfL8NrmdKQ72mB3/baHepkq+wkEzIkzVSZY43iI6kvr
-X-Gm-Message-State: AOJu0Yy3d1PH2u+ALLR00f5CnH2pueiP+jcFkEKEp+VuC/ZiMGjmi9wM
-	CJYuKsKfNUvqK0R5SOD2yLH6zssTVmsCG9ql06HeoAkhb2LIc+ew9zLVmqHLJyURrDfkmyZj9Us
-	=
-X-Google-Smtp-Source: AGHT+IGfIzj94Z+izVHNRIFrqtFeuAGI7P+/V72cDrVR393SoALZgULeL61JOX8n8bdJC1wE8P/cYQ==
-X-Received: by 2002:a05:6808:3998:b0:3c3:84a5:468c with SMTP id gq24-20020a056808399800b003c384a5468cmr1296827oib.33.1710901425362;
-        Tue, 19 Mar 2024 19:23:45 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x28-20020a056a000bdc00b006e78124ad83sm401940pfu.110.2024.03.19.19.23.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 19:23:44 -0700 (PDT)
-Date: Tue, 19 Mar 2024 19:23:43 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: target: core: replace deprecated strncpy with
- strscpy
-Message-ID: <202403191908.1B6BBA3@keescook>
-References: <20240318-strncpy-drivers-target-target_core_transport-c-v1-1-a086b9a0d639@google.com>
+        bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
+        b=jWsnwBvuUoWHGHVnDfaNmIDjd7pxM6Hv1OsVRUoo3Ghp7lLlvaQvF0r+rpTaSYgezO
+         vqfRRas+vt+z7YnK272XaFKLgk72RRA99gsokPAvMu6b55ihsoeUDE37vPDNx810puDq
+         IjsSPC0+cnkBxu9RzQd/NBc9jAqTpYcLxsv2/Py/LAi7l8mXpeJ5tCdiCI/dp9DhPHZU
+         2jnDhIX3AQX8uctCgufkk35YgUYo/a9Rbs7e3FdlfC8sH5xsi67KtDwW1B/rydi1vFR6
+         DsE07RIEcENBA/UBMaj0I3sftbIxUrrR2Jh0AQgh5+RQzS0PEiktKUQeL3CMFqRMDTDM
+         f7tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710901678; x=1711506478;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
+        b=XPoobr/fu/jhLsQqrT2hku2wqD2kaNsLeggnjy6y1vk6ZrK3P0D4x+dnfKSagq5cTk
+         9O4WCOEMhO1Z8zqwWNx7SVw2TCNqaf1KiXqBb8hxQjYq9h6q6aryNOyKSEWNXtC1wp07
+         uu0ihCa+naayZcAeJAnN6t1/6EBEiVMcLaJxg/uvw1jYn7iQA3n+AdZm+hXbOHrP1qwD
+         HHoRlFcXjc28lm+xeIohw1rl65X9rycTshd5k+X0qrdo+SH0sTOkxUIX01Vf+ILxgzuL
+         4DThtyc2oXoAZ5+2bJ/Ns8n77NeBZQIGz2wf+9EULMgruOHO+Q6GxsNPrZG+VB/FD4al
+         nkhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVnUAKtmtEiS+4RQ9TzFa/RELa+CfoM9HCH0jkM5uUoh5ikj5+vIiYwxknfGyZXzMTBgNExmaVPL43bBvfibc3+LsaPUR5HKVDGWf4TKuGTnCL7ze/kZq1KYpn9rQuEwSZ5nS6eQldFkPIOwca4aFsaVyJGFVi2hX/hmNyXABYlOz5t/CXLlOGuVBarns8+iPFbd0wYoc16Wx0/c8vq9Ao=
+X-Gm-Message-State: AOJu0YwYrjLTy9IWFY7tjftP7KARVI4UwfiqeECIc03Y3L2qSqQ/0sHt
+	LI1HSLBFt7xzEkz7Pn7WIqeVCC8xtTmPSRj9NtXwk120ywSupjzdcPTRjBoMuyPYp4YqCKsNDow
+	5/q6PJmfz94it1kFyM15oIYteATM=
+X-Google-Smtp-Source: AGHT+IFt/7I86CbjlI0gZQSF/qcTE6qkqcQl29FokubkU6RSRoHeUOxDw6UA1S3xokrCdi4OqK1Tz8KHuh8CHwiixEY=
+X-Received: by 2002:a50:9e61:0:b0:568:a8f5:d47d with SMTP id
+ z88-20020a509e61000000b00568a8f5d47dmr3899542ede.17.1710901677672; Tue, 19
+ Mar 2024 19:27:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318-strncpy-drivers-target-target_core_transport-c-v1-1-a086b9a0d639@google.com>
+References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
+ <CAAhV-H6aGS6VXGzkqWTyxL7bGw=KdjmnRZj7SpwrV5hT6XQcpg@mail.gmail.com>
+ <CAJhJPsVSM-8VA604p2Vr58QJEp+Tg72YTTntnip64Ejz=0aQng@mail.gmail.com>
+ <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
+ <20240318-average-likely-6a55c18db7bb@spud> <CAAhV-H4oMoPt7WwWc7wbxy-ShNQ8dPkuTAuvSEGAPBKvkkn24w@mail.gmail.com>
+ <20240318-saxophone-sudden-ce0df3a953a8@spud> <CAJhJPsXKZr7XDC-i1O_tpcgGE9c0yk7S9Qjnpk7hrU0evAJ+FQ@mail.gmail.com>
+ <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com> <20240319-trimester-manhole-3bd092f3343f@spud>
+In-Reply-To: <20240319-trimester-manhole-3bd092f3343f@spud>
+From: Keguang Zhang <keguang.zhang@gmail.com>
+Date: Wed, 20 Mar 2024 10:27:21 +0800
+Message-ID: <CAJhJPsWN24p8VcLeeB8v_JU6KXTVBzWWcE-Aj4Tc2urqx6sYrw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add support for Loongson1 DMA
+To: Conor Dooley <conor@kernel.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 10:07:50PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect p_buf to be NUL-terminated based on the callsites using these
-> transport_dump_* methods because they use the destination buf with C-string
-> APIs like strlen() and sprintf().
-> 
-> 		memset(buf, 0, VPD_TMP_BUF_SIZE);			\
-> 		transport_dump_vpd_ident_type(vpd, buf, VPD_TMP_BUF_SIZE); \
-> 		if (len + strlen(buf) >= PAGE_SIZE)			\
-> 			break;						\
-> 		len += sprintf(page+len, "%s", buf);			\
-> 
-> We also do not require the NUL-padding behavior that strncpy() provides
-> because we are manually setting the entire buffer to NUL, rendering any
-> future padding redundant.
-> 
-> Let's use strscpy() as it guarantees NUL-termination and doesn't
-> NUL-pad ( and isn't deprecated :>] ). Note that we can't use the more
-> idiomatic strscpy() usage of strscpy(dest, src, sizeof(dest)) because
-> the size of the destination buffer is not known to the compiler. We also
-> can't use the new 2-arg version of strscpy() from Commit e6584c3964f2f
-> ("string: Allow 2-argument strscpy()")
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Wed, Mar 20, 2024 at 1:41=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Tue, Mar 19, 2024 at 10:40:54AM +0800, Huacai Chen wrote:
+> > On Tue, Mar 19, 2024 at 10:32=E2=80=AFAM Keguang Zhang <keguang.zhang@g=
+mail.com> wrote:
+> > >
+> > > On Mon, Mar 18, 2024 at 11:42=E2=80=AFPM Conor Dooley <conor@kernel.o=
+rg> wrote:
+> > > >
+> > > > On Mon, Mar 18, 2024 at 10:26:51PM +0800, Huacai Chen wrote:
+> > > > > Hi, Conor,
+> > > > >
+> > > > > On Mon, Mar 18, 2024 at 7:28=E2=80=AFPM Conor Dooley <conor@kerne=
+l.org> wrote:
+> > > > > >
+> > > > > > On Mon, Mar 18, 2024 at 03:31:59PM +0800, Huacai Chen wrote:
+> > > > > > > On Mon, Mar 18, 2024 at 10:08=E2=80=AFAM Keguang Zhang <kegua=
+ng.zhang@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi Huacai,
+> > > > > > > >
+> > > > > > > > > Hi, Keguang,
+> > > > > > > > >
+> > > > > > > > > Sorry for the late reply, there is already a ls2x-apb-dma=
+ driver, I'm
+> > > > > > > > > not sure but can they share the same code base? If not, c=
+an rename
+> > > > > > > > > this driver to ls1x-apb-dma for consistency?
+> > > > > > > >
+> > > > > > > > There are some differences between ls1x DMA and ls2x DMA, s=
+uch as
+> > > > > > > > registers and DMA descriptors.
+> > > > > > > > I will rename it to ls1x-apb-dma.
+> > > > > > > OK, please also rename the yaml file to keep consistency.
+> > > > > >
+> > > > > > No, the yaml file needs to match the (one of the) compatible st=
+rings.
+> > > > > OK, then I think we can also rename the compatible strings, if po=
+ssible.
+> > > >
+> > > > If there are no other types of dma controller on this device, I do =
+not
+> > > > see why would we add "apb" into the compatible as there is nothing =
+to
+> > > > differentiate this controller from.
+> > >
+> > > That's true. 1A/1B/1C only have one APB DMA.
+> > > Should I keep the compatible "ls1b-dma" and "ls1c-dma"?
+> > The name "apbdma" comes from the user manual, "exchange data between
+> > memory and apb devices", at present there are two drivers using this
+> > naming: tegra20-apb-dma.c and ls2x-apb-dma.c.
+>
+> I think it's unnessesary but I won't stand in your way.
 
-Hm, this actually fixes potential over-reads and potential memory content
-exposures (in the face of malicious/weird hardware) since p_buf_len
-appears to always be sizeof(p_buf) in callers, which means the old use
-of strncpy() could have left the string unterminated.
+Then I will follow Huacai's suggestion.
+Thanks for your review, Conor and Huacai.
 
-In practice I would assume it's not a problem, but, for example, here's
-a place where the 254 p_buf_len could run out when doing the sprintf:
+--=20
+Best regards,
 
-#define VPD_TMP_BUF_SIZE                      254
-..
-#define INQUIRY_VPD_DEVICE_IDENTIFIER_LEN       254
-..
-struct t10_vpd {
-        unsigned char device_identifier[INQUIRY_VPD_DEVICE_IDENTIFIER_LEN];
-	...
-};
-..
-int transport_dump_vpd_ident(..., unsigned char *p_buf, int p_buf_len)
-{
-	...
-        unsigned char buf[VPD_TMP_BUF_SIZE];
-	...
-                snprintf(buf, sizeof(buf),
-                        "T10 VPD ASCII Device Identifier: %s\n",
-                        &vpd->device_identifier[0]);
-	...
-        if (p_buf)
-                strncpy(p_buf, buf, p_buf_len);	// may write 254 chars and no NUL
-	...
-}
-..
-        unsigned char buf[VPD_TMP_BUF_SIZE];
-	...
-	memset(buf, 0, VPD_TMP_BUF_SIZE);
-        transport_dump_vpd_ident_type(vpd, buf, VPD_TMP_BUF_SIZE);
-        if (len + strlen(buf) >= PAGE_SIZE)
-		break;
-	len += sprintf(page+len, "%s", buf);	// may expose stack memory following "buf"
-
-
-So, yes, please!
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/target/target_core_transport.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-> index 73d0d6133ac8..3311eb87df6d 100644
-> --- a/drivers/target/target_core_transport.c
-> +++ b/drivers/target/target_core_transport.c
-> @@ -1112,7 +1112,7 @@ void transport_dump_vpd_proto_id(
->  	}
->  
->  	if (p_buf)
-> -		strncpy(p_buf, buf, p_buf_len);
-> +		strscpy(p_buf, buf, p_buf_len);
->  	else
->  		pr_debug("%s", buf);
->  }
-> @@ -1162,7 +1162,7 @@ int transport_dump_vpd_assoc(
->  	}
->  
->  	if (p_buf)
-> -		strncpy(p_buf, buf, p_buf_len);
-> +		strscpy(p_buf, buf, p_buf_len);
->  	else
->  		pr_debug("%s", buf);
->  
-> @@ -1222,7 +1222,7 @@ int transport_dump_vpd_ident_type(
->  	if (p_buf) {
->  		if (p_buf_len < strlen(buf)+1)
->  			return -EINVAL;
-> -		strncpy(p_buf, buf, p_buf_len);
-> +		strscpy(p_buf, buf, p_buf_len);
-
->  	} else {
->  		pr_debug("%s", buf);
->  	}
-> @@ -1276,7 +1276,7 @@ int transport_dump_vpd_ident(
->  	}
->  
->  	if (p_buf)
-> -		strncpy(p_buf, buf, p_buf_len);
-> +		strscpy(p_buf, buf, p_buf_len);
->  	else
->  		pr_debug("%s", buf);
->  
-> 
-> ---
-> base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
-> change-id: 20240318-strncpy-drivers-target-target_core_transport-c-1950554ec04e
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
-
--- 
-Kees Cook
+Keguang Zhang
 
