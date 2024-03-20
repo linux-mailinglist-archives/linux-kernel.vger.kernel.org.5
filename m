@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-109414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302E78818C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:52:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F9528818C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:51:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDEB9284F0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:51:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D19221C21416
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F3B8665A;
-	Wed, 20 Mar 2024 20:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC6F8612C;
+	Wed, 20 Mar 2024 20:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTGTYnPJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cW+aLSi5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90B585951
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C87481C0;
+	Wed, 20 Mar 2024 20:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710967839; cv=none; b=texvncaiNjLIt7B6FhnEDvYUB47j9of1lROf49ydqlYUVPrxYs558PvedynCsPSXmYy3TDVN8yJycv4WQYTnY1iswqFIBsOhighwPdxGuSwcCePTAQn2AzG/yl4aSnyaGNJRhivPyWpYNzOvm/OIV75bWrqURxsvVSElNcv8QCc=
+	t=1710967839; cv=none; b=iydSG9XPYgsv/BBc5NqEWTlbM0PwQEMj4XwxkCqTpGlXsu2n/vYYdRxcQL1yKrjniJZL8Mxrzk8oXrVXvo99B8jnksSPWoX5mQiKbUSEGbKDs3rMr0gQeIIxSF1Qt/h26HLmSoF102TONUAQz1mr4QIO0gx00scAVOJVGiQbpV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710967839; c=relaxed/simple;
-	bh=x9hRnCs/W82hA20jbvKpA85eC7xzuNtacPnbZFWHB60=;
+	bh=feaZEDxIe578pwpNMawFSPwGBKbYYi/Q1YQaICgmoFw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kZCYb24MkHLIvAas1ExWT7dWsMoIx6Gi3056FC5beldYoVFMVBLway1ltLovVh5cO6GtmOUTX25Lw3kaJA34Yve/jUzoQSBkpak2wFYzMhBZR1PvSdSLOVsydXCg44H7aUsjeDysHeBt1tGqKnomqBIREcWGvhAYnWuEsExA5Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTGTYnPJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5DD8EC43143;
+	 In-Reply-To:To:Cc; b=uVZALs60pkJFV3W6BokmFzP5n03RMpTo7yCp03YINUqSG0EnFquTuzGFL6xYUKBciaeMhzmKDM0ldMZTRMTxuN1lrb9CtaVNdHuujeAAjg2GK4FplBhTc3LmmTs9mYvtoCPanGEi/kOWl9yAxh61P+n1bq3n+o4zHQ9eMYAFlPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cW+aLSi5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 38841C433B2;
 	Wed, 20 Mar 2024 20:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710967839;
-	bh=x9hRnCs/W82hA20jbvKpA85eC7xzuNtacPnbZFWHB60=;
+	bh=feaZEDxIe578pwpNMawFSPwGBKbYYi/Q1YQaICgmoFw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dTGTYnPJPH05yZ4VXqcyl1PlIy9mVMiD2INE2pLDgJaHDGwF96rAY/5jOgPRWJm5Q
-	 GHv/mSMJvvXOtp7qR/bU4JKGxZyr/nuXQjm7MrwCivr5XaXyZ00h7V0QKI4qeSLmHS
-	 kEq6xnFwj9elxNEuC2Mc5BQfb24/YdBQ77Fct6I1MIOOfLV/CbNo/KNzz6DDhkbLUp
-	 daws6tG2D4XQOXdYaYJr11UemCG1HhCEJIcbuIHtM5VnIFDFn3zZplirxyzpyYxeT7
-	 q7+xvTaiyzqC87vWO812w5PD6DbBrvmcVIZuEO4evH7UUyIf1drcUrXrS7PP5BFqIr
-	 8KqFwLCyInmVA==
+	b=cW+aLSi5jdXZfNarQIHyoYMGoUZea1B/zZBZrwJqpt3dZZ6YH9TRozAboosZRfmFt
+	 nxtTN+rQq47DGxsMkZ90tqCtCQ1fS8in2Fi8i97aYL+l3VzKd0rr9YmBx90+t9O6gB
+	 ldgCCliszdcKc+yPJUtSWjMSmQImrca0BcZ2QaaI+mNo5zVLAa5dnupRbHZ/tpN+QL
+	 vUEAftYjaKRmhX3jErql7VgbO8tankxJtDSJor4D+PCk7ACvHjwRpSQPehkWfwkK6X
+	 GsBmqkRJUigFl1y53JvBe6+RqtMUP0cl8Pz6KtxTrGNzf5yMF98WjngLGHNn2o/trb
+	 lCSjMY+kxP0zg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 56D4AD95060;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2DA33D84BB1;
 	Wed, 20 Mar 2024 20:50:39 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,38 +51,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2] riscv: vector: Fix a typo of preempt_v
+Subject: Re: [PATCH v3 0/3] riscv: mm: Extend mappable memory up to hint
+ address
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <171096783935.6804.17753775200299684808.git-patchwork-notify@kernel.org>
+ <171096783918.6804.10596170298204766032.git-patchwork-notify@kernel.org>
 Date: Wed, 20 Mar 2024 20:50:39 +0000
-References: <20240221100252.3990445-1-songshuaishuai@tinylab.org>
-In-Reply-To: <20240221100252.3990445-1-songshuaishuai@tinylab.org>
-To: Song Shuai <songshuaishuai@tinylab.org>
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com,
- ebiggers@google.com, vincent.chen@sifive.com, greentime.hu@sifive.com,
- linux-kernel@vger.kernel.org, andybnac@gmail.com
+References: <20240130-use_mmap_hint_address-v3-0-8a655cfa8bcb@rivosinc.com>
+In-Reply-To: <20240130-use_mmap_hint_address-v3-0-8a655cfa8bcb@rivosinc.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, alexghiti@rivosinc.com,
+ paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+ shuah@kernel.org, corbet@lwn.net, cyy@cyyself.name, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org
 
 Hello:
 
-This patch was applied to riscv/linux.git (for-next)
+This series was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Wed, 21 Feb 2024 18:02:52 +0800 you wrote:
-> The term "preempt_v" represents the RISCV_PREEMPT_V field of riscv_v_flags
-> and is used in lots of comments.
-> 
-> Here corrects the miss-spelling "prempt_v". And s/acheived/achieved/.
-> 
-> Reviewed-by: Andy Chiu <andybnac@gmail.com>
-> Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+On Tue, 30 Jan 2024 17:06:59 -0800 you wrote:
+> On riscv, mmap currently returns an address from the largest address
+> space that can fit entirely inside of the hint address. This makes it
+> such that the hint address is almost never returned. This patch raises
+> the mappable area up to and including the hint address. This allows mmap
+> to often return the hint address, which allows a performance improvement
+> over searching for a valid address as well as making the behavior more
+> similar to other architectures.
 > 
 > [...]
 
 Here is the summary with links:
-  - [V2] riscv: vector: Fix a typo of preempt_v
-    https://git.kernel.org/riscv/c/700c2d9b1b17
+  - [v3,1/3] riscv: mm: Use hint address in mmap if available
+    https://git.kernel.org/riscv/c/b5b4287accd7
+  - [v3,2/3] selftests: riscv: Generalize mm selftests
+    https://git.kernel.org/riscv/c/73d05262a2ca
+  - [v3,3/3] docs: riscv: Define behavior of mmap
+    https://git.kernel.org/riscv/c/371a3c2055db
 
 You are awesome, thank you!
 -- 
