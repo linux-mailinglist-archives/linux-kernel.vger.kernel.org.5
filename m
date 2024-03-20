@@ -1,113 +1,151 @@
-Return-Path: <linux-kernel+bounces-109219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D603881651
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D68881655
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFC91C2329D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:16:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DB2B1C23189
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5E16A328;
-	Wed, 20 Mar 2024 17:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFFA6A32B;
+	Wed, 20 Mar 2024 17:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XeSx6zml"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cvswr+8H"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CE86A01D;
-	Wed, 20 Mar 2024 17:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169276A327
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710954979; cv=none; b=IcwlbKcEzNudQRUzRRT1lhMdp+Mb2xbL2e00H74VSvngfKg5OfwM/qcYD6R9C4wFUmgWeA0jaGk4V6ERd+iKYQlNrejgH5QSF77ckZPZMlPTAQ7bgQmCiPb8nYyLUoJjOa63BPee7BN7oEOecXK0xvwtnhDGm50Q0XFsIu+cGAY=
+	t=1710955016; cv=none; b=NTNdTZYlgJvEubdAvFa7jBRraCybsIVJYuRjSsJ0j65z48njvjAnXBPiJK92ofAeREmX0zC38917j4f3ZfPfVr38DekIJ7cpFKZ3/ZBgL44FjNal3xZOXfdp/kRQPtpzw4skN8HXN2wRejH+6Pt1GdFQRbkMPIOiVKixQoZyOb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710954979; c=relaxed/simple;
-	bh=LMDT/S5VYriR03orj+KffWgjmaIzJKd3iCBDJeHdEHE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=NxoOyU4cs4F5lNRWVnT0dkJMRSamI9qk7x05BitCvfVZgaTVdQ2FgREt3m84JRN1hVijfZiVVLs8flrF2rj16SFhUMvxoZM5Rf3AQiOq/Y6x/z11JyiSrcBrdkHtd7Q1v5ITRW/xMdAapawkbyxuwpGpLVAptEuPELL3cQwwuH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XeSx6zml; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KGvcGU007681;
-	Wed, 20 Mar 2024 17:16:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ru400vBj+D3skoKY3EySOxlziOD0MUSbD8eBY1ccvPM=; b=Xe
-	Sx6zmlxLBbCYqN68kFIo86ixexE07sELsKmTeinG0kY2cdi6DrqEW2mW93YM3xdy
-	czXnAFPxS5GEWVnam1rTn2aKAmdvvcnSfhB6XWSo/X18R6zKmllB3Hx95Hm/kFQb
-	c6n7PrWqwhHKRYko7J+UAqiVMfO7RjEi0xz6i7/pk+zQI0Ca7mTLtSFUuinIT85X
-	fTh3GPgjs50SrCI5AS7SPBqCaBpJyplmRqQbTdTLVQ++9/igQ6IIuFXGWNpa+jyi
-	95Anq45kb6XDDvyIZGU9nJ+dH533teCSCJSuicBRrJtjB0IwkvEP2eeWPImD7thE
-	lApIgSBYbiVW7bK0w4qQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x01jqgdmd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 17:16:13 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KHGCjE000513
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 17:16:12 GMT
-Received: from [10.110.120.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Mar
- 2024 10:16:12 -0700
-Message-ID: <2a2d2001-f87e-49be-8f5f-fcd175c4911a@quicinc.com>
-Date: Wed, 20 Mar 2024 10:16:11 -0700
+	s=arc-20240116; t=1710955016; c=relaxed/simple;
+	bh=PTgza+W1/v68t8gIEmwRzft+VKxQNQUrzbgfRmoXdEU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hG2mlh/fE4QHkVepF3RtQXivBIZ+onGor9yBBkEKS9j/Udfm8hMvYgVBbUOKlK3rxK11vSDKU32tqJDp7JeOqOfL+9CGLRrXXlilTCg55EBzOpEVKr1rqZpMLjQ4JpYuVpQ/HectCFcFzyNCcYJU18YrMR0wnnN5mUrFTnzaERQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cvswr+8H; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dee917abd5so7775ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710955012; x=1711559812; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YrHJYPRQxE5Zvv5TnRibVQ4dHuC7YD8BtX+J00w7sAs=;
+        b=cvswr+8HYd+GRt8xMmegLEgL6HiAjOdRLzqN0LiHFRkgA8kmPELmLfTXbuK/Rcy5EX
+         mp4/xmo/1xw+2eN2af3oEYYMqXUaxSw1qvs4FUstxpoZ0QLQm1p2dcJeo68Lad3Im0qj
+         V+wzQxKe7mC5VRMo5x51EtX0/xNZHHWmG0MMWxtfek3dzioSRlOu2GDBLyUiPJ3ky/Lx
+         Zg6uvHtt0KQm8uFqMtrO4k5ujNdomz9JZZelqhZ97zh5pkpIqxyhZZFSuTng5RqTiXaS
+         vsos5lGzQpZC0uJ6+KC726lf81+w9FhXaKTjD1tMyPVI3XiyAbKdNMX6vau+SbjkagEs
+         iPGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710955012; x=1711559812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YrHJYPRQxE5Zvv5TnRibVQ4dHuC7YD8BtX+J00w7sAs=;
+        b=WhRoqj9rgT3nWprwwZk08OppJYvYOITbNMuNMTyB888jy479tSdtI/a83BU3oG7Hoz
+         c+kYeg04QBx3andvfWWqe2LofZF1Nm49kyAAJh4W8J2szufVtpzbXBB95gVIM68+q/zf
+         VS6kxbKJVy9MiEmP/UIkO3xqM0SxbOKO8p71FFa5zse6RFA+eKr4CNGxywhme1RKLOK8
+         u1O/HWICtAM0ywpj8za6ydLfAktaGdCN2AyHzGZhmqBdPOb15rPxmtWy8sLUHbYmikxo
+         FCXntYNqSP3ittn0V+mWWacNuS4giuq2nNMtu7aZbB5moyYerxWpxQ4C/+GMyhP7DQNV
+         +rNw==
+X-Forwarded-Encrypted: i=1; AJvYcCV+9gCEj56G+ZGUlSfATmHEbSPSV8CY64eB9u/3/trTta4TFS4n2ZDOxLZh4X2QLFp/81Skty22Ifi9dx6hJ16rldOlzud2h5GH18g5
+X-Gm-Message-State: AOJu0YweuKVpt8my39Ub/yQlWZstoo/OyiKcVbG+/5QRaSYLvkVW1YtY
+	FjYK/lj0yi5zfhBBx9ChxGXL4uUDWuWfMChNqNddAWYvAspmIvJWs80LxrEyqdf19UB2d5ZQWw9
+	b5K1jRmYEfMqBfZWlaV1HxXNE+qyLTLYFJRMx
+X-Google-Smtp-Source: AGHT+IGhYuvoUpEMguGI9pVuujlqsVK7YxGeJA4BXDEYnr+q81vjH/5j0TsYhHOQkkJGzGl3Gg9kg0vfb28GWP26+Yk=
+X-Received: by 2002:a17:903:41c4:b0:1dd:65bd:69ec with SMTP id
+ u4-20020a17090341c400b001dd65bd69ecmr305677ple.20.1710955012019; Wed, 20 Mar
+ 2024 10:16:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] wifi: nl80211: fix nl80211 UAPI kernel-doc
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>
-CC: <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240319-kdoc-nl80211-v1-0-549e09d52866@quicinc.com>
- <638df3bb659caef38480aa97277207b89c101344.camel@sipsolutions.net>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <638df3bb659caef38480aa97277207b89c101344.camel@sipsolutions.net>
+References: <20240320145417.336208-1-visitorckw@gmail.com> <20240320145417.336208-14-visitorckw@gmail.com>
+In-Reply-To: <20240320145417.336208-14-visitorckw@gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 20 Mar 2024 10:16:40 -0700
+Message-ID: <CAP-5=fX-R=UGvb7a9hcFaRvWk-NiMvy9h2g+bKkTx5pQvjC9-A@mail.gmail.com>
+Subject: Re: [PATCH v2 13/15] lib/test_min_heap: Use min_heap_init() for initializing
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, 
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qmKo9mfG43AzTc1OuSe-DSm_3ivX8aiN
-X-Proofpoint-ORIG-GUID: qmKo9mfG43AzTc1OuSe-DSm_3ivX8aiN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- adultscore=0 spamscore=0 mlxlogscore=675 mlxscore=0 impostorscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403200138
+Content-Transfer-Encoding: quoted-printable
 
-On 3/20/2024 12:07 AM, Johannes Berg wrote:
-> On Tue, 2024-03-19 at 11:26 -0700, Jeff Johnson wrote:
->> As part of my review of patches coming from the Qualcomm Innovation
->> Center I check to make sure that no checkpatch or kernel-doc issues
->> are introduced. An upcoming patch will propose a modification to
->> include/uapi/linux/nl80211.h. My review process flagged both
->> checkpatch and kernel-doc issues in the file, but these are
->> pre-existing issues. So this series fixes those pre-existing issues.
->>
-> 
-> Thanks Jeff.
-> 
-> Can you say what you're running for this? I've been running kernel-doc
-> and builds with W=1 for a long time, and not seen issues. Is this
-> perhaps checks from a newer kernel (we're currently on 6.8-rc1 for
-> $reasons)?
+On Wed, Mar 20, 2024 at 7:55=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com=
+> wrote:
+>
+> Replace direct assignment of values to heap data members with
+> min_heap_init() for better code readability and maintainability.
+>
+> Link: https://lkml.kernel.org/CAP-5=3DfW+FvUu8JL+KrtVv5uC++4AW=3DVhyEOgmd=
+WzpH1mswQNzw@mail.gmail.com
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-files=$(git diff --name-only $base HEAD)
-scripts/kernel-doc -Werror -none $files
-scripts/checkpatch.pl --file $files
+Ah, got it :-)
 
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+> ---
+>  lib/test_min_heap.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+> index 062e908e9fa3..8d25fc8256db 100644
+> --- a/lib/test_min_heap.c
+> +++ b/lib/test_min_heap.c
+> @@ -67,9 +67,8 @@ static __init int test_heapify_all(bool min_heap)
+>                          -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+>         struct min_heap_test heap;
+>
+> -       heap.heap.data =3D values;
+> +       min_heap_init(&heap, values, ARRAY_SIZE(values));
+>         heap.heap.nr =3D ARRAY_SIZE(values);
+> -       heap.heap.size =3D  ARRAY_SIZE(values);
+>         struct min_heap_callbacks funcs =3D {
+>                 .less =3D min_heap ? less_than : greater_than,
+>                 .swp =3D swap_ints,
+> @@ -99,9 +98,7 @@ static __init int test_heap_push(bool min_heap)
+>         int values[ARRAY_SIZE(data)];
+>         struct min_heap_test heap;
+>
+> -       heap.heap.data =3D values;
+> -       heap.heap.nr =3D 0;
+> -       heap.heap.size =3D  ARRAY_SIZE(values);
+> +       min_heap_init(&heap, values, ARRAY_SIZE(values));
+>         struct min_heap_callbacks funcs =3D {
+>                 .less =3D min_heap ? less_than : greater_than,
+>                 .swp =3D swap_ints,
+> @@ -131,9 +128,7 @@ static __init int test_heap_pop_push(bool min_heap)
+>         int values[ARRAY_SIZE(data)];
+>         struct min_heap_test heap;
+>
+> -       heap.heap.data =3D values;
+> -       heap.heap.nr =3D 0;
+> -       heap.heap.size =3D  ARRAY_SIZE(values);
+> +       min_heap_init(&heap, values, ARRAY_SIZE(values));
+>         struct min_heap_callbacks funcs =3D {
+>                 .less =3D min_heap ? less_than : greater_than,
+>                 .swp =3D swap_ints,
+> --
+> 2.34.1
+>
 
