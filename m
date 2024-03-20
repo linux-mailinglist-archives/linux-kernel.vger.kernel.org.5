@@ -1,135 +1,105 @@
-Return-Path: <linux-kernel+bounces-109266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8712B8816FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:01:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B3998816F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1E7C1F2352A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:01:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF951C20383
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5156A359;
-	Wed, 20 Mar 2024 18:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2826BFB4;
+	Wed, 20 Mar 2024 17:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gwPoVxfw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SL+4NNsQ"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED946A35B;
-	Wed, 20 Mar 2024 18:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B476A35D;
+	Wed, 20 Mar 2024 17:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957699; cv=none; b=kZpmBy2Hg5te9c3hx/1ox4ZitV/ygas0LZ042ibp9bNHj1HAV6oPLPXRB9uXDukCGsljRAPbVEKbPXMsmY2LAh5B1cdF7G6iUafpZJS5ajHK1HDubVtCIdjB5Jw5UChcpSy5/+i/IDMYzeNics5OnCnTw3iuvYJgm7FE5bqGXWw=
+	t=1710957578; cv=none; b=njIDGH/KXkQAWF6FeKdymSsboG+YQCFbkB1RURdA9/4Lte+ygkOLzvhx8hkcWiRpIQ/CdIMLrllyM7p/1/w8QL6NihLy6gkrIFw1NKvMWGlQ9i0Epdj1wTH28QxGy6HCzMPWVAjzPXjsHzQYBlUJVqT43piNU4QDzfZopFYwr/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957699; c=relaxed/simple;
-	bh=llIBXk76Yuad8T3alnGEbUTLVx756v+KmjcXU9Ak8MA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m8WBTCLHzLzwbsS5ufjDzjqmJW6hDrniRZAwElLx8m5/SeQVXzkMCn2vWeLjC/kPk8zJRlU0P1Un0UWILkJRXtOqGMmG/9zwja08Y/sIweWk2uTRDrMZPjuP0B8xsJ+5SKcePrQALbk3RBvUc+vpprqNrwA4Y1SQ0/oLWygxfzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gwPoVxfw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A32C433C7;
-	Wed, 20 Mar 2024 18:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710957699;
-	bh=llIBXk76Yuad8T3alnGEbUTLVx756v+KmjcXU9Ak8MA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gwPoVxfwRZjCBKMju8mA83r6FEoT8PmuO0bob0NvMR2jWn/xwGFZZV4uEV9mG9rh9
-	 dSphKTn11rgn/UyOJ0FZYKqS9Xzh4No/BlfvkbzqaNaXlsLDFn/WuR5ZghgWyWx8PI
-	 08UkSDQGGtwXwJTukevbXDLZyQo58se/7m4N6U3klbycY1A/ukx9ubUYWehVePimC3
-	 LkIUC8IxgydlIEL138wzx6G0IezxFVc+c50zzoyGgprPF47KQok/fArXghUFejLgF0
-	 6gB1EkNtKPlDxf8pgEIaLDEAswHWYrw62VFrl101YqgzGCvvUNSo77+VBdje65XrJV
-	 4MsqNcq4ItQqg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Tony Finch <dot@dotat.at>,
-	Sam Ravnborg <sam@ravnborg.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kbuild@vger.kernel.org,
-	Michal Marek <mmarek@suse.cz>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/unifdef: avoid constexpr keyword
-Date: Wed, 20 Mar 2024 18:59:25 +0100
-Message-Id: <20240320180134.100863-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710957578; c=relaxed/simple;
+	bh=CKsxIN3qnQZvRKwtdHbydmzJ6EscP69AwdsUvQtKlXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jm/Hp5c++Q2XZ2CLSTl6TfoYMYKqHgSl7nVWIn53oC5kH/I51J9/LiHMgNS847lzul/01o3cxt7ZE2uerOy1yppE37U/1WLNgBvrR/epUD+09mORR2YTVMgapi69aRfVcXpC6a+icYxqW9PG5M5ZQaVsjxceMKLH1JBTDm9ESJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SL+4NNsQ; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dee27acf7aso225835ad.2;
+        Wed, 20 Mar 2024 10:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710957576; x=1711562376; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5wO2woPFTP1dqOwxqifq7A1+P/J5nu7I1BzhjZG4OLA=;
+        b=SL+4NNsQZezagXpskHooqekAKzM2m0HKEeF738wL3CGaLSBVxpVJmV22nr/oNBG4be
+         Y2v55kkWYV7l9IkSLhQARrNhfDDT85cc1jEossOQTRmLdGCaFsVx2iLiEthIpFi9QW2T
+         JJ0SuyFzSE1aAwOVhnZzLB99ONnA9lW/IYGuwk2wo0NTTnjEGhYLbVjnve+FeIbMz21N
+         FRR9qu96ZDM488cWIUsqE9vEvcgH957nutDmiySLsY5u+KX0qeGAvMZpUbXXsTqlPe5A
+         NEKXa4qcV5Dj7lp1pkvdEnjMb60R9gWI0hR+HoVt36gbuY/zcaQXopvUoyfX95mSojnz
+         z2Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710957576; x=1711562376;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5wO2woPFTP1dqOwxqifq7A1+P/J5nu7I1BzhjZG4OLA=;
+        b=tA1SsZ8ySI79k3L8QW+axBfmGHzd+WzcZ9ySlux8hXzF4bcJchZuaeiNB/Xi55DL9m
+         U9D9f8vGa0PniT0k6iPg0KAF9jK0QlhW1367M6Aw5r+x8INl2FwMWyfLTsAP8w4Y/y0R
+         F1InNHAiHTJ4FmPAk1/gIvF0Wv5Xivk69/x5oE138nhrEye6KLkWpbe3eVqnNgn8PFj7
+         qabis9HhIJhdUWYQflAir+bQprVD1DlwokLP3I9dwFe+/eDeX2dfiGr8UmdY3nH4hIrX
+         flQZ877DKiNnqGg24ZdRT8xB8XCD6ZMU1+n69328vjM5u+lD7++m9XWciQJa57wYRuX7
+         Iu8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWmOGnI0yzmHoa+ajupYXYPsdnlGViSls+jhuh73j62h+XEwv10T286FCiaWKDFbT31wZU3DB6LzF08SeekrChkZDEnu0qVNoXXxShJZbrcCGxuwC+xKJuK31WLtFSMjA5K6BI+OcI2
+X-Gm-Message-State: AOJu0YwVA6d/Pcl0bggugWVzUZvJT5xalIqS6i2k1417WCGVOjhmY+ti
+	3TggbKNfblLer/PHaoLvrP8RaRfZLwNnMvlaeH4QBbhAGDQQRz2mBSi81Txt
+X-Google-Smtp-Source: AGHT+IGhYmOXoAM/t0PVekkv1InO9r3UvXpth7X3ywfYPJ4Zg110QlCcJBzYVhNKmD9WzksHZbtDDw==
+X-Received: by 2002:a17:903:192:b0:1e0:3347:5bf with SMTP id z18-20020a170903019200b001e0334705bfmr3566800plg.37.1710957576013;
+        Wed, 20 Mar 2024 10:59:36 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t15-20020a170902e84f00b001e00d9680cesm7921669plg.130.2024.03.20.10.59.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 10:59:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 20 Mar 2024 10:59:34 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: David Ober <dober6023@gmail.com>
+Cc: linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net,
+	dober@lenovo.com, mpearson@lenovo.com
+Subject: Re: [PATCH v4] hwmon:Add EC Chip driver for Lenovo ThinkStation
+ motherboards
+Message-ID: <f748574c-93cf-48ec-8e88-44d5b35fb107@roeck-us.net>
+References: <20240315115810.15816-1-dober6023@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315115810.15816-1-dober6023@gmail.com>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Mar 15, 2024 at 07:58:10AM -0400, David Ober wrote:
+> This addition adds in the ability for the system to scan
+> the EC chip in the Lenovo ThinkStation systems to get the
+> current fan RPM speeds the Maximum speed value for each
+> fan also provides the CPU, DIMM other thermal statuses
+> 
+> Signed-off-by: David Ober <dober@lenovo.com>
+> Signed-off-by: David Ober <dober6023@gmail.com>
 
-Starting with c23, 'constexpr' is a keyword in C like in C++ and cannot
-be used as an identifier:
+Applied to hwmon-next.
 
-scripts/unifdef.c:206:25: error: 'constexpr' can only be used in variable declarations
-  206 | static bool             constexpr;              /* constant #if expression */
-      |                         ^
-scripts/unifdef.c:880:13: error: expected identifier or '('
-  880 |                 constexpr = false;
-      |                           ^
+Please note that I'll push the branch after the commit window closed.
 
-Rename this instance to allow changing to C23 at some point in the future.
-
-Fixes: d8379ab1dde3 ("unifdef: update to upstream revision 1.190")
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- scripts/unifdef.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/scripts/unifdef.c b/scripts/unifdef.c
-index db00e3e30a59..1cc31448fd10 100644
---- a/scripts/unifdef.c
-+++ b/scripts/unifdef.c
-@@ -203,7 +203,7 @@ static int              depth;			/* current #if nesting */
- static int              delcount;		/* count of deleted lines */
- static unsigned         blankcount;		/* count of blank lines */
- static unsigned         blankmax;		/* maximum recent blankcount */
--static bool             constexpr;		/* constant #if expression */
-+static bool             constexpression;	/* constant #if expression */
- static bool             zerosyms = true;	/* to format symdepth output */
- static bool             firstsym;		/* ditto */
- 
-@@ -877,7 +877,7 @@ eval_unary(const struct ops *ops, int *valp, const char **cpp)
- 		cp = skipcomment(cp);
- 		if (defparen && *cp++ != ')')
- 			return (LT_ERROR);
--		constexpr = false;
-+		constexpression = false;
- 	} else if (!endsym(*cp)) {
- 		debug("eval%d symbol", ops - eval_ops);
- 		sym = findsym(cp);
-@@ -895,7 +895,7 @@ eval_unary(const struct ops *ops, int *valp, const char **cpp)
- 			lt = *valp ? LT_TRUE : LT_FALSE;
- 			cp = skipargs(cp);
- 		}
--		constexpr = false;
-+		constexpression = false;
- 	} else {
- 		debug("eval%d bad expr", ops - eval_ops);
- 		return (LT_ERROR);
-@@ -955,10 +955,10 @@ ifeval(const char **cpp)
- 	int val = 0;
- 
- 	debug("eval %s", *cpp);
--	constexpr = killconsts ? false : true;
-+	constexpression = killconsts ? false : true;
- 	ret = eval_table(eval_ops, &val, cpp);
- 	debug("eval = %d", val);
--	return (constexpr ? LT_IF : ret == LT_ERROR ? LT_IF : ret);
-+	return (constexpression ? LT_IF : ret == LT_ERROR ? LT_IF : ret);
- }
- 
- /*
--- 
-2.39.2
-
+Thanks,
+Guenter
 
