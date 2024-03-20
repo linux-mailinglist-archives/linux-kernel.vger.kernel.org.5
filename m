@@ -1,62 +1,85 @@
-Return-Path: <linux-kernel+bounces-109065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C93D881436
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:10:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6813888143B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:12:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC615B20F6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DF51C213FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3476E4F217;
-	Wed, 20 Mar 2024 15:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3209E4F214;
+	Wed, 20 Mar 2024 15:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jy0nD9Hy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kPVEY70f"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5A24AEE0;
-	Wed, 20 Mar 2024 15:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177AC4D5AB;
+	Wed, 20 Mar 2024 15:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710947417; cv=none; b=E0gJopr/CnSr9pEZAQjkR78CEUD3VyNYpNDBcSK8mls7gIELvtCHnddIh0la6hN7SkIQfpqowHsTWq+LW7bRxEY+F91EIumJCAJQ7/3K4+/I4Yf0atc/3CTvAhDZ8Fgy6zsN8RpZo8wBfeBYpMm6tJT7HjWqZ9d4B7xDKgVU1fE=
+	t=1710947540; cv=none; b=Jiu7w5qw/BHwZSxZPZKxcEQqhAqn86FUqtcijvdHkfChVtKMf9L12GQ4BUC7+VUh7MZqaU0/ABW7me2AMTl960P53eM+7k9rr1HTsMnJyfSnEV2wzqUB4ISpxRZQ8qWiVsADXzANFSKEPJp94u6Ycc4sN6Ogo3XOq8YTYmjYRjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710947417; c=relaxed/simple;
-	bh=4//2Ztgp/9bNI3pOdqFM6t+BddbS0siyo86ffWZ/Cis=;
+	s=arc-20240116; t=1710947540; c=relaxed/simple;
+	bh=JBm3tKEy8c3qv/abgEtj16lwVaxaRDzvpv3wWbXgvoI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CUZs85RvtRy0tUiEyY1+sN9fq6VMUMvvsrPNMX5YqCunhIMv/lrtuYDfcV1Nr9oc8ltvH/gdqWnsbdXjDpWkfmagti41gPQbLRyr9rhuVGBTzCVlDBxT2sH57627WJQOQo6NeJnS5tuorelm8JvKPkrlQA21BQXEM+o8eIWEU0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jy0nD9Hy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A84FBC433F1;
-	Wed, 20 Mar 2024 15:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710947416;
-	bh=4//2Ztgp/9bNI3pOdqFM6t+BddbS0siyo86ffWZ/Cis=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jy0nD9HyCZRmXwWFd3UlqqBhl2ZYER4gdgogPzhjSCx3G4XIkqsby7MNTLL8r77YB
-	 01HqIdFbL/wLst4bp5hJPLRhbCYcbH2gxlPbfwB3Hh48Ye6oKE5EJ5DHEMWVL1I6fp
-	 ggOv7O92qxJrZpwJUURgXxc0GAVMPpojWCr7Qbpk0yryJjZwZJTdsJbyAMy1icncEV
-	 mdnQ5oCo6utiYEBoI6sDRK+9pn5ioyYYdO/96Gvadb01Weyrji5E282FFX/A7uZ+ZN
-	 7gLUoYsOVbpDfYSTUQutk9FfhQL2PIxZMlxUd4mdGHqboa+gFbUqzhtgef5d0ASwLi
-	 zc3aYo37Z31nQ==
-Date: Wed, 20 Mar 2024 10:10:14 -0500
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, imx@lists.linux.dev,
-	Mark Brown <broonie@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v7 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <171094741235.1737484.4683319555697657710.robh@kernel.org>
-References: <20240318-asrc_8qxp-v7-0-01ce5264a761@nxp.com>
- <20240318-asrc_8qxp-v7-3-01ce5264a761@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KW5Cr8iwASU5PGsPx7/42xEWdw8DlmDv5umsHuexmyNhiKmMYaOWxSYOnboqk5yRJ+qD978sUCnVIbqAcNFCuGGptlInWj152HTzQ3ibGpybBVMk7sLVtPG5KYeDIDVbYgXm6jamntAcyGk9VcEwuiwNDLVK3v+Tvho2BrLXRCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kPVEY70f; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609f4155b76so71639477b3.1;
+        Wed, 20 Mar 2024 08:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710947538; x=1711552338; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i0Q7XVy7i9nvarztc7Je9Voa0UwdstlOrHeH8QzsOW8=;
+        b=kPVEY70feQ6INpM/cO6P8s3LILQsIXgUApfys4WCsPfM6y8+VSG+RifLdvY5RplAIJ
+         TTUznBtzvml0Lk9nS55swvn4GwARAbr6VKOHu7NYrgOSXmXCF0FjeKVBnr+ZLZjj3cYs
+         RijUKHNa0NLmfQHsvU3pFUyQLrlJT7GWXhKP0SwUBtYWBkiSgHGpZ6EIdO8c7iuWHPzf
+         ZC2kDPxu0y577Z04HfD3gKOg+AEmIf1UAHItXVI08bLgYF5zF6iWdCuMF8ngeGfgEMmL
+         +JmIGfLpmncmZK/c3KlsE1DKQBzqymPo0iwQcpCozeAnfgBp5WBOid6yBhHxqpwLZoTG
+         jDJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710947538; x=1711552338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i0Q7XVy7i9nvarztc7Je9Voa0UwdstlOrHeH8QzsOW8=;
+        b=kcjWcbNWJCAccO6/ZgzCpy3Rnjppbl8kwxzHgFnpFX8MKRuX+g9yXaCVAMqRUC1WPI
+         +hvWzrwBS5SjFhfQGwB7uZetYQJc8NqbMy3/31EKrHwfPvln9y5S8HZUOWG+zm71Gv0A
+         ONc20CnGyM2maiP0AABJ3705V8FjJiJ46cZfaVVvrz3MC8dTEv0BBM2HZ7Yq8ou2qTkI
+         P+qmokik89zPl7Pr9mCwOwKwwknuaG2JvaJJQZniMUQlmBeCk0NPVw33WnsYNGNOnm8a
+         UzxJHwPpPAN1Gvd1rDUxIgGfDbJrgPLfdyHJskw5V9E2uRoP1VSvWdyXiFeEMo+v+f43
+         NMGA==
+X-Forwarded-Encrypted: i=1; AJvYcCWeO8AVHxv/CGZg6Ub+on0B1i+x8n80prDxlfhYfTGlJQKC8YjdSRoPjdatv5jp3aXTj4YnWYnw4quKM+9x62Wb+RDwVLAzMCG4dA2GT51ImvTG258wKYEsQD5ncscVytph2ibeUN7XLIDtQg==
+X-Gm-Message-State: AOJu0YyOKous608PojxaJGkRphtBnFRo+fLmsCAbq6fKIfscH/YKsRSL
+	VleBWbps6VwhhJdJXPRdDeK0xqBkifaPFH2LvOefXmVYtinGxr5s
+X-Google-Smtp-Source: AGHT+IFTR4fm1uStL8cRl6ajaCTynzvyqW24aoW37kXmZJk/KJEYBtwHoXZooYT4+Fw2P9ONeFWmVg==
+X-Received: by 2002:a81:430d:0:b0:610:e289:aaba with SMTP id q13-20020a81430d000000b00610e289aabamr4805790ywa.51.1710947537705;
+        Wed, 20 Mar 2024 08:12:17 -0700 (PDT)
+Received: from localhost ([2600:1700:2ec0:58c0::44])
+        by smtp.gmail.com with ESMTPSA id z5-20020a81e245000000b0060a10495664sm834091ywl.94.2024.03.20.08.12.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 08:12:17 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 20 Mar 2024 08:12:16 -0700
+From: Tejun Heo <tj@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	peterz@infradead.org
+Subject: Re: [PATCH 4/6] writeback: add wb_monitor.py script to monitor
+ writeback info on bdi
+Message-ID: <Zfr80KXrxyf_nJAz@mtj.duckdns.org>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320110222.6564-5-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,24 +88,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240318-asrc_8qxp-v7-3-01ce5264a761@nxp.com>
+In-Reply-To: <20240320110222.6564-5-shikemeng@huaweicloud.com>
 
-
-On Mon, 18 Mar 2024 15:00:09 -0400, Frank Li wrote:
-> Some sai only connect one direction dma (rx/tx) in SOC. For example:
-> imx8qxp sai5 only connect tx dma channel. So allow only one "rx" or "tx"
-> for dma-names.
+On Wed, Mar 20, 2024 at 07:02:20PM +0800, Kemeng Shi wrote:
+> Add wb_monitor.py script to monitor writeback information on backing dev
+> which makes it easier and more convenient to observe writeback behaviors
+> of running system.
 > 
-> Remove description under dmas because no user use index to get dma channel.
-> All user use 'dma-names' to get correct dma channel. dma-names already in
-> 'required' list.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
+> This script is based on copy of wq_monitor.py.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I don't think I did that when wq_monitor.py was added but would you mind
+adding an example output so that people can have a better idea on what to
+expect?
 
+Thanks.
+
+-- 
+tejun
 
