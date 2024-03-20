@@ -1,123 +1,163 @@
-Return-Path: <linux-kernel+bounces-109103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F10B8814A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:32:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D563C8814A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2FFC284A83
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:32:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D99028554D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F215F524D4;
-	Wed, 20 Mar 2024 15:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D35C54662;
+	Wed, 20 Mar 2024 15:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJgTYUAM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aIv0ooDJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409672746B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEBC353E14;
+	Wed, 20 Mar 2024 15:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710948771; cv=none; b=g4yDX6dqSvchY1lmRfOWDiQY/b7QqiAS6HRwlSjs1o8n2eQMSnQJ8kWtX2AtNHVtpMe2POViQNJGjzrFrHz/37W3lFx0F34ZQySfkTnYcS4shvlFutD3lNnlDmeEw28RsMbmH4pd50A+VyYIai/1dMTwQp6uckMIZEf2g4Ddw2g=
+	t=1710948774; cv=none; b=chmHMJoYNWcy+pJVGF2pPYm+CMcxXkjpsVYHTR7WD1S+FppjmSiSqBl7036ShKNThvC+HkJX3Qp1UL4LgiX0MpLHCJFolbNCgZ3VVpjjz/tHqf5LTU48fdY4y2AJvLX70fnUfl2UZLNoVNloMz6qxx7EH75GKp3NE0a208oG7GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710948771; c=relaxed/simple;
-	bh=TaikWDcEy/eefAipbr1kYwtCPCWVVRe3j3L/5KQxH1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=U6+ERvCVvP3CTaNQ/K5yha+NuK3WeuSi4erWNnfR86tjJmBEH8HD9k3p+bGIpOYFSfOX2pR+c34mrxmrwgUgigm4jlZ3oG2RnpPUZ9idRgrnp0S9f9RAA2vniv/f1/Nw8UN1fKial/nOEId5zkxCx8XLJtsXWYDtdpfjXjgURmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJgTYUAM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D7AC433F1;
-	Wed, 20 Mar 2024 15:32:49 +0000 (UTC)
+	s=arc-20240116; t=1710948774; c=relaxed/simple;
+	bh=jXnepYnPUUQUuOFTV5avKiVLlnCRROuyiCpNkq1UfMI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I4Huoh78uo4V6x4gccQm9qRlmMqwuI26UkgEujy+bpyOeNFe3vrI2egFNGK6wJ+AEXEWdriFdDgd/9apjWpQeSjRVWifjvO9EbWig4nX+mtx6SuTpFW6ZVWSyNJYVm2760eHM9e6vStRXwpobJ9RV3jkbhyL0G2VRL96+w/FteE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aIv0ooDJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8811C43390;
+	Wed, 20 Mar 2024 15:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710948770;
-	bh=TaikWDcEy/eefAipbr1kYwtCPCWVVRe3j3L/5KQxH1U=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=rJgTYUAMR7xYxJsPKBou+wq/ZRPnjUILoEIQiUEj23b+KwRKKbWdbww5tNcZ6S0Il
-	 E2hNlh6t3miLoTtYJ7MXRb+dh6I3BlG3j3AYE2Ei48O80n8ZQz8LUwu1/GMGhAGnvO
-	 FnPQ4V/jsDDWNM6vO0Yy/0cPuX7v7nogavI5EWmRmydDMeGZfn4Zny736w1NF5HWSx
-	 FwueHuw80fNP7R6BSbX/29l+0kXRMirpDtQuIFEaaXv3JJkJKWAI++dIeOHOsZkb5o
-	 xmAdVHq5dgU6DxI4By7zdLy7pV06FbEDRtKn1a0UjxEH49mqYvoX/hMWQIhBuDf1SP
-	 gbNMEge9pB8SQ==
-Message-ID: <cc93e2d8-88c4-45ae-bbc9-9ec112bd312d@kernel.org>
-Date: Wed, 20 Mar 2024 23:32:46 +0800
+	s=k20201202; t=1710948774;
+	bh=jXnepYnPUUQUuOFTV5avKiVLlnCRROuyiCpNkq1UfMI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aIv0ooDJZ71ZSc/Dwbb5OF/iiZubkD0MGkdRmCnfsN1RwF+oGbFywJYb3ZhFjft9q
+	 dJrnBAjjQzWpdeNow+P8auLLHYdGnuLl86GeAyo/EFZY8EYLVIgvoRw5EsCYkRaREh
+	 F7qhvfwBNOJWE/iz/bHu1qLo4aRbaPRvYj9qD8+uD01y2xPu/8ZCBJsjugiMtpGrYB
+	 7d+xjmZHokc3zLfTtL8pKXivjJVCktF46JhQGc7xjtVlDXbHrEah4lgRP73YtnwAkq
+	 XzllpHz7hn7eqKfEOx+jtgTZiL1b5jacYlibFMzBWTG+W96ZopZS8kb12CLp/zuOFp
+	 M5yw55RLKsDbA==
+Date: Wed, 20 Mar 2024 12:32:50 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf: Suggest inbuilt commands for unknown command
+Message-ID: <ZfsBopALY3whsst5@x1>
+References: <20240301201306.2680986-1-irogers@google.com>
+ <Zfr4jX_b8FCOG_x_@x1>
+ <Zfr5__Ej3-0C8sJj@x1>
+ <CAP-5=fXXrJRH=Dto2ajD_TUDE1YmkkJZO5Ey2pq5YB0wbVAzeg@mail.gmail.com>
+ <Zfr-sQJPbZzbtk8K@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid the deadlock case when stopping
- discard thread
-To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240320001442.497813-1-jaegeuk@kernel.org>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- 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
-In-Reply-To: <20240320001442.497813-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zfr-sQJPbZzbtk8K@x1>
 
-On 2024/3/20 8:14, Jaegeuk Kim wrote:
-> f2fs_ioc_shutdown(F2FS_GOING_DOWN_NOSYNC)  issue_discard_thread
->   - mnt_want_write_file()
->     - sb_start_write(SB_FREEZE_WRITE)
->                                               - sb_start_intwrite(SB_FREEZE_FS);
->   - f2fs_stop_checkpoint(sbi, false,            : waiting
->      STOP_CP_REASON_SHUTDOWN);
->   - f2fs_stop_discard_thread(sbi);
->     - kthread_stop()
->       : waiting
+On Wed, Mar 20, 2024 at 12:20:20PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Wed, Mar 20, 2024 at 08:12:56AM -0700, Ian Rogers wrote:
+> > Ah, the change:
+> > 
+> > -               static int done_help;
+> > +               int done_help;
+> > 
+> > created an uninitialized use. Compiler warning/sanitizers? Anyway,
+> > done_help needs hoisting out of the loop and initializing to zero, or
+> > being made static again (ugh).
 > 
->   - mnt_drop_write_file(filp);
+> ⬢[acme@toolbox perf-tools-next]$ git diff
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index c719e6ccd9e27778..f9532b20e87cbf05 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -459,7 +459,7 @@ static int libperf_print(enum libperf_print_level level,
+>  
+>  int main(int argc, const char **argv)
+>  {
+> -       int err;
+> +       int err, done_help = 0;
+>         const char *cmd;
+>         char sbuf[STRERR_BUFSIZE];
+>  
+> @@ -558,8 +558,6 @@ int main(int argc, const char **argv)
+>         pthread__block_sigwinch();
+>  
+>         while (1) {
+> -               int done_help;
+> -
+>                 run_argv(&argc, &argv);
+>  
+>                 if (errno != ENOENT)
+> ⬢[acme@toolbox perf-tools-next]$ perf raccord
+>   Fatal: Out of memory, realloc failed
+> ⬢[acme@toolbox perf-tools-next]$
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Then:
+> 
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index c719e6ccd9e27778..54f62aa6612bc290 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -558,7 +558,7 @@ int main(int argc, const char **argv)
+>         pthread__block_sigwinch();
+>  
+>         while (1) {
+> -               int done_help;
+> +               static int done_help;
+>  
+>                 run_argv(&argc, &argv);
+>  
+> ⬢[acme@toolbox perf-tools-next]$ perf raccord
+>   Fatal: Out of memory, realloc failed
+> ⬢[acme@toolbox perf-tools-next]$
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+That main_cmds variable is uninitialized, which ends up making
+add_cmdname() to explode, are you sure this is working on your side?
 
-Thanks,
+Further clarifying, this is without considering the second patch, I
+haven't got to it yet, from what I recall from the description it
+shouldn't matter tho.
+
+- Arnaldo
+
+⬢[acme@toolbox perf-tools-next]$ git diff
+diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+index c719e6ccd9e27778..164b3c78baff4204 100644
+--- a/tools/perf/perf.c
++++ b/tools/perf/perf.c
+@@ -558,7 +558,7 @@ int main(int argc, const char **argv)
+        pthread__block_sigwinch();
+ 
+        while (1) {
+-               int done_help;
++               static int done_help;
+ 
+                run_argv(&argc, &argv);
+ 
+@@ -566,7 +566,7 @@ int main(int argc, const char **argv)
+                        break;
+ 
+                if (!done_help) {
+-                       struct cmdnames main_cmds;
++                       struct cmdnames main_cmds = { 0, };
+ 
+                        for (unsigned int i = 0; i < ARRAY_SIZE(commands); i++) {
+                                add_cmdname(&main_cmds,
+⬢[acme@toolbox perf-tools-next]$ perf raccord
+perf: 'raccord' is not a perf-command. See 'perf --help'.
+⬢[acme@toolbox perf-tools-next]$ 
 
