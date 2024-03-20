@@ -1,111 +1,126 @@
-Return-Path: <linux-kernel+bounces-108807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04DB881047
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:52:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16C848810AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34A6AB237AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:52:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9D481F24431
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA4A39FFB;
-	Wed, 20 Mar 2024 10:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B033D393;
+	Wed, 20 Mar 2024 11:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sFqWfsiA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fSa45An8"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=panix.com header.i=@panix.com header.b="JLKYxriM"
+Received: from l2mail1.panix.com (l2mail1.panix.com [166.84.1.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC73238DF9;
-	Wed, 20 Mar 2024 10:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC11D52F72;
+	Wed, 20 Mar 2024 11:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.84.1.75
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710931927; cv=none; b=Potd+Hy/ViuDvaYeRLfbspn8Nuob+PLBFoX/0mpSoqckj83Kuzr4rdxcJi5eXPnqhgHo3qIVADk9uNb0TwdzL2Vu5dk4vYd6bBrWvIzTk6o7afkx9GuZWS80TXuHPRQUwOO4xLkBJF6h8vWMVQU11cjTu31e3toTyfZ4Ot9R2uM=
+	t=1710933202; cv=none; b=E4RqzMOJ9C0wdO/pubwENom24nTsz56oW+FT+G7ZyuYS1z97g1zkASnnzlvz0GFoJ5T22xAB6AwHIRD9VBEkEcxFb4wniueGlGeVO383SEcr0r7dv14B2gMXDHSgOwa2jq/NpS8hEtLgU4XJbqFqy0L6mBeAPi3ys+4CjqIL+HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710931927; c=relaxed/simple;
-	bh=CakNBgJk9vDeqbzefxMLt7ID2KfM75MwAL8Qc9sUo0U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fY4dhpSirPoowAkHFOxdPiGKeBhgmnM3eqor0eyH0wzdGJzOXiIDC7luqh6BIBkirxoGLGG9zqPYYWlY0TQh53apT+NP6EwIiCoQrDKnI18CC7Uvfc/scz6L3HL9PFpywFphaKbeK0wvnQqHK1IWmTaVtsR3sJ0aLHk7OwWWeDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sFqWfsiA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fSa45An8; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710931923;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VO4zCDGYT7oVV7YkUdlk1cK7JA0FP1l7EU9DjR4c6L4=;
-	b=sFqWfsiAwAqMKQvGDFhMWWsieJ9mOGQwqjuFZ/LEWVEmpK7lukEmGtG7cnFQD64uikElRh
-	piiJrtFEq6FjLawtq7pJ5yRXCPLcMWcFsuoy70NwpA6NclalUa3EeX3k45mYLmYeMVyg0E
-	90JDRH/d8PLmY0LvumU8AvcP7OVb5ya0rWiHGE89vrH9DbGXA3Xl/Cxh948X+xqOQm92FN
-	PbSJnnNzzs/wSHEyiecj7LEu9XGhS187pxsmuI60JhOG+7DhYlBor8eqgtrdWy/nAO350y
-	9iT/Zo7zSozGFhVdiIjyQK9GeR51dx8dIlcGHPBplqi9+VwTcAekA+iOq28RWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710931923;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VO4zCDGYT7oVV7YkUdlk1cK7JA0FP1l7EU9DjR4c6L4=;
-	b=fSa45An87J9XDtQV6/KHdqqR2/tb7tvciBwo90VhwS1JvVHPQDqterIX5unF7czEtTKFyd
-	yHAOFZmI3xD1iyAw==
-To: Tianyang Zhang <zhangtianyang@loongson.cn>, chenhuacai@kernel.org,
- jiaxun.yang@flygoat.com
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Baoqi Zhang
- <zhangbaoqi@loongson.cn>, Biao Dong <dongbiao@loongson.cn>, Tianyang Zhang
- <zhangtianyang@loongson.cn>
-Subject: Re: [PATCH V3] irqchip/loongson-pch-pic: Update interrupt
- registration policy
-In-Reply-To: <20240319124629.23925-1-zhangtianyang@loongson.cn>
-References: <20240319124629.23925-1-zhangtianyang@loongson.cn>
-Date: Wed, 20 Mar 2024 11:52:03 +0100
-Message-ID: <878r2di3ak.ffs@tglx>
+	s=arc-20240116; t=1710933202; c=relaxed/simple;
+	bh=KkoXZqXTiQUiGpG1SwuWDZlorVWMeQ5IO4olyeGPWfw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lk8O7zMarLa5w/9ybDlcfyNaadbpZmw+Dk7VyyTvuckOAXtSvdixDvIgtAVydgv9JuRpH7ay5DmLPgS0Umnwonu+75uVpdYV4oNXc0bn9uyOmfEtFQ7bf32dtoIHwh/rdQ3cpo0TiQN/gyMb+8ceTKnB+D7yxG8HNHb29dHFelI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=panix.com; spf=pass smtp.mailfrom=panix.com; dkim=pass (1024-bit key) header.d=panix.com header.i=@panix.com header.b=JLKYxriM; arc=none smtp.client-ip=166.84.1.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=panix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=panix.com
+Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (1024 bits) server-digest SHA256)
+	(No client certificate requested)
+	by l2mail1.panix.com (Postfix) with ESMTPS id 4V056g2b3gzDQ2;
+	Wed, 20 Mar 2024 06:53:31 -0400 (EDT)
+Received: from [192.168.126.36] (ip70-164-218-85.oc.oc.cox.net [70.164.218.85])
+	by mailbackend.panix.com (Postfix) with ESMTPSA id 4V056R00Fnz1Cjt;
+	Wed, 20 Mar 2024 06:53:18 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+	t=1710932000; bh=KkoXZqXTiQUiGpG1SwuWDZlorVWMeQ5IO4olyeGPWfw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=JLKYxriMX7zMfvqajAhu61lGwcXTSuYM5aom+l91dfXJe3yVu9xu8UsWUMZ9f5/MV
+	 /QEFLVN2rd5UPVcICEuTm09jLSfe9A0GRsK5HpkZADZ0S56IdZa7Lj7W5hIafYkES8
+	 YtqIk/BREIuLPvxDgftxek5C/jIc02y7B+VPfdbc=
+Message-ID: <fba7503a-7947-4487-95e6-9d41d636b075@panix.com>
+Date: Wed, 20 Mar 2024 03:53:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] Fix various races in UCSI
+To: "Christian A. Ehrhardt" <lk@c--e.de>, linux-kernel@vger.kernel.org
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Prashant Malani <pmalani@chromium.org>, Jameson Thies <jthies@google.com>,
+ Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ =?UTF-8?Q?Samuel_=C4=8Cavoj?= <samuel@cavoj.net>, linux-usb@vger.kernel.org
+References: <20240320073927.1641788-1-lk@c--e.de>
+Content-Language: en-US
+From: Kenneth Crudup <kenny@panix.com>
+In-Reply-To: <20240320073927.1641788-1-lk@c--e.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19 2024 at 20:46, Tianyang Zhang wrote:
-> From: Baoqi Zhang <zhangbaoqi@loongson.cn>
->
-> This patch remove the fixed mapping between the LS7A interrupt source
 
-Please don't use 'This patch'. We already know that this is a patch.
+Applied (cleanly) onto 6.8.1; I'll be testing over the next few days, 
+but a few connects/disconnects mixed in with suspend/resume cycles shows 
+no obvious issues (and everything seems to work).
 
-See Documentation/process/
+Dell XPS 9320, BIOS 2.10.0
 
-> and the HT interrupt vector, and replaced it with a dynamically
-> allocated approach.
+-K
 
-You explain the WHAT, but you really need to explain the WHY. 
+On 3/20/24 00:39, Christian A. Ehrhardt wrote:
+> Fix various races in UCSI code:
+> - The EVENT_PENDING bit should be cleared under the PPM lock to
+>    avoid spurious re-checking of the connector status.
+> - The initial connector change notification during init may be
+>    lost which can cause a stuck UCSI controller. Observed by me
+>    and others during resume or after module reload.
+> - Unsupported commands must be ACKed. This was uncovered by the
+>    recent change from Jameson Thies that did sent unsupported commands.
+> - The DELL quirk still isn't quite complete and I've found a more
+>    elegant way to handle this. A connector change ack _is_ accepted
+>    on affected systems if it is bundled with a command ack.
+> - If we do two consecutive resets or the controller is already
+>    reset at boog the second reset might complete early because the
+>    reset complete bit is already set. ucsi_ccg.c has a work around
+>    for this but it looks like an more general issue to me.
+> 
+> NOTE:
+> As a result of these individual fixes we could think about the
+> question if there are additional cases where we send some type
+> of command to the PPM while the bit that indicates its completion
+> is already set in CCI. And in fact there is one more case where
+> this can happen: The ack command that clears the connector change
+> is sent directly after the ack command for the previous command.
+> It might be possible to simply ack the connector change along with
+> the first command ucsi_handle_connector_change() and not at the
+> end. AFAICS the connector lock should protect us from races that
+> might arise out of this.
+> 
+> Christian A. Ehrhardt (5):
+>    usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
+>    usb: typec: ucsi: Check for notifications after init
+>    usb: typec: ucsi: Ack unsupported commands
+>    usb: typec: ucsi_acpi: Refactor and fix DELL quirk
+>    usb: typec: ucsi: Clear UCSI_CCI_RESET_COMPLETE before reset
+> 
+>   drivers/usb/typec/ucsi/ucsi.c      | 56 ++++++++++++++++++++--
+>   drivers/usb/typec/ucsi/ucsi_acpi.c | 75 +++++++++++++-----------------
+>   2 files changed, 84 insertions(+), 47 deletions(-)
+> 
 
-> We introduce a mapping table in struct pch_pic, where each interrupt
-
-s/We introduce/Introduce/ See documentation.
-
-> source will allocate an index as a 'hwirq' from the table in the order
-> of application and set table value as interrupt source number. This hwirq
-> will be configured as its vector in the HT interrupt controller. For an
-> interrupt source, the validity period of the obtained hwirq will last until
-> the system reset.
->
-> This will be more conducive to fully utilizing existing vectors to
-> support more devices.
->
-> Signed-off-by: Baoqi Zhang <zhangbaoqi@loongson.cn>
-> Signed-off-by: Biao Dong <dongbiao@loongson.cn>
-> Signed-off-by: Tianyang Zhang <zhangtianyang@loongson.cn>
-
-This Signed-off-by chain is wrong.
-
-Please see Documentation/process/submitting-patches.rst
-
-Thanks,
-
-        tglx
+-- 
+Kenneth R. Crudup / Sr. SW Engineer, Scott County Consulting, Orange 
+County CA
 
