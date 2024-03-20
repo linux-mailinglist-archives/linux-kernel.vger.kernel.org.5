@@ -1,361 +1,220 @@
-Return-Path: <linux-kernel+bounces-109319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7182288178C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:50:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D31C88178E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF475B2344F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B9A91F22FA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0BF98565E;
-	Wed, 20 Mar 2024 18:49:34 +0000 (UTC)
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F2685624;
+	Wed, 20 Mar 2024 18:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="cNcTsD6B"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2053.outbound.protection.outlook.com [40.107.92.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A2E8565F
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710960573; cv=none; b=h1vNSSuZbM4VFP1XVYXSGPh8Gt61C3IpDHA7uJVBpcu46uODjE4cNMIGRv3hhbRzbxhig/3IWXeeS0aPq28Z+XRA5yJ6hMyqN8WUlW5bkDkt+9NH5pchFZGXRT/NwzEv1eFRcm10gKdfbwP04YOwBzzgQod3TLHXaxpooFu61lQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710960573; c=relaxed/simple;
-	bh=kmw01scbYLdXBI2JxgkAuLFMOeAqSg+hTh9USnJMU3o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CQHk97u+Q/Z7nyh8qDlM6Exq97G2aSryOSlqZYRaP0ZEghoTdX84aOb/UGKXHHV1fM6VG3H9Lod4jehblE7bWCgH13t8HXs7weHNY4RXH6+dJzP4aep9N8aXUpzM7d+VyMmQjTTof1tb60x8uNq85NFbEyP0eDfMoP5J9aJvmRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so119036b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:49:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710960570; x=1711565370;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o9PP/b7LVNfeGfffYjCgY25nENsU1ANo/gyFk0VU0ck=;
-        b=s9QDRIzu5w/91UKTSK7sQhrJMGUgy2BvFisUXy2MIwlVbR9Z9JFdts4K1JptXQ8ZqI
-         bPj3Jxm6O7yc0xMEJIm300H6pXMyzTQMD1ezUaHhbxH+pQPnE29TjqWwRWUg9pt6bCwO
-         qonKg8iRQ9QXB9HlVu4thmU0McPb3MSkxUthSzxnzC8YF8GNykbxmVhGZhskhChtRgTL
-         /pZiAn4Zk4SwzIDJrk2BfpINWxbZtu8wmIqtlhUFHVCfJymLjc94L6kJ2KRdi0yqViuG
-         OxR2Ce8aYtzRkHl5/LLyZJ+VU8LN6Z/fpzjgDLIe+PmenIAt9yUJqJXelbCM8lkJsUky
-         BTQw==
-X-Forwarded-Encrypted: i=1; AJvYcCUI5jbjSDzCqVxq9I+ZFox/GzzFhMcO+WhSBBbBhVWhJHNFa4fjkJYrB3HVllMDLQmaPLsicdw82aNBypHPk18SFKD0AQ3i9qAlGOPS
-X-Gm-Message-State: AOJu0Yw7PzinWC/8J7Tp2K7+YBv9Q5TAMIY5KkU/Up6NZCU9u3e00t9j
-	AxKMTJkHxxKIvpTtIPN3/QDgjAi4K7puwv4qdJDaTLFWYCe+dz3Ji/JWHmQ39w==
-X-Google-Smtp-Source: AGHT+IEI5XIxQAsJwMJBVy6HIG87bY5j8Fl4cBm3lf9Nu6m5xZh6kuyb1Sq2oWIje0IU3cTQ/ZITiw==
-X-Received: by 2002:a05:6808:490:b0:3c3:7caa:2417 with SMTP id z16-20020a056808049000b003c37caa2417mr12982713oid.58.1710960570360;
-        Wed, 20 Mar 2024 11:49:30 -0700 (PDT)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05621420a100b006961c9a2ed8sm4048594qvd.47.2024.03.20.11.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:49:29 -0700 (PDT)
-Date: Wed, 20 Mar 2024 14:49:28 -0400
-From: Mike Snitzer <snitzer@kernel.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com,
-	jmorris@namei.org, serge@hallyn.com, tytso@mit.edu,
-	ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
-	eparis@redhat.com, linux-doc@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
-	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v15 14/21] dm verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <ZfsvuPn6fAaG85er@redhat.com>
-References: <1710560151-28904-15-git-send-email-wufan@linux.microsoft.com>
- <657b73a0cf531fd4291a0f780d2fcf78@paul-moore.com>
- <ZfpHxkmRy0oqxZVF@redhat.com>
- <CAHC9VhTkpSa665tesTEs8gBjaD3ahUMATGMXuGy+-unt7WL-UQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4F87E761;
+	Wed, 20 Mar 2024 18:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710960688; cv=fail; b=PxZUIcKKG3eh5+MoDYQSMhBwJMgqvlg7q7f+ZzIZtow17Trl14MCX8rp4QaGE8UCW15wUXlQnIKl3Xn/++gJRebI6xsOr1iNbtLOC+cDKdEX3NSu+m0+RcWb9RniYrPE8qLgxhrULUM32sftQ7ag1+NN1tvtdlDfrHNq3zw7ZXU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710960688; c=relaxed/simple;
+	bh=QL6LUfGbBvqM2VmpMbNIGzG4RZldo7wnzry4JqknHHQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H6hzArDvarqOoIk5J1YmEOFbcAGKNnUWSg7wR3ED2NVUCr7xV3pRj7AlnLoZ/4PNDIHuPYcmbXeo6Bq2801YbdvBeBGNAcHBBP886A5ms+DOH3gZjNNo1hQoP/n2ScTzKWEDybK3zOzqNExe1QLjc00I0Kp4cNoHu328c6qiJzo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=cNcTsD6B; arc=fail smtp.client-ip=40.107.92.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lp5Z1YWAndcTNw8r8xuAgZNZW5hjQBkfgroG9FEX8meX3NUDNMcx0bgLPFRIoU0KKCYJGz0TKk2zXqFeOmZNaFXH3jAo8OKpSTM6gqlUgMig3vneB+iKswMwUu1o5UST5yq0hC1VuZtxqbECtmuPNs+7E4EanEmtcdGGksBUmXYB2JusmllR3zcjhzS2UOrTo99igIrxOPaBj3WlPuNiPrv6Snc+TXdV4MFwSBVMjI+1DZA86pOvWQFnbfdNTUPDMUigEGgjQ7uWRr8NFHKX6K1puDuG821s2FBS0xQhgzXAE+rL7jdh6ITm+zo5XyGdB3Sc4BrgkQYc5rPkHD+PTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ma8YFtmZnEaob7U2yh3b0TZ/t+JLsnMIydYBktWEgaU=;
+ b=fj0FjShV+fbl2zVZBh+10Ba8JDJ2bHDO3GpaxtPbpO2HvzeE8O0E1GqJihSoEZCTwLyjoWu1FIRXscp5sngdkg9MrXpSQO+WNrPDxGPAjVPNjsEvvuEjezlg8OEYiufCm3v4HovxyySjQkHbm0Jd4+LY3Dco9YiKcJdnD2U5Tm4GjG9VaEYU2KohM831HG+QRi8foJDQFo6JJlUDODjRQrBHLWk5A+Xjs3bISaiqbFGmBirUOApc7LEWHK+LfJWunTamRvH6f6eGorDPvUkHcYqKtzU5LtnK/0hQ/ufpu+U+2e5AApwe3oDq8E4WMqIaphfnUVqAKS6guHhAwv4nUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ma8YFtmZnEaob7U2yh3b0TZ/t+JLsnMIydYBktWEgaU=;
+ b=cNcTsD6BWMQ0+QrLtXY+Yy0Cdvl1iTwj0kzM/L0WCrUNwDoXBp0DuKChiqmXgohFBXiN+ygkN567K04242XQAWLYdSHYtwJvcHs+oRSIcRs86yC/aeCYIxJc4UoLW/WUVgtt1AnaktCyJW/LrcR5Jc4DW3v/V+mZIjMewGbQ8zg=
+Received: from PH8PR15CA0020.namprd15.prod.outlook.com (2603:10b6:510:2d2::20)
+ by MW4PR12MB5627.namprd12.prod.outlook.com (2603:10b6:303:16a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Wed, 20 Mar
+ 2024 18:51:23 +0000
+Received: from SA2PEPF000015CD.namprd03.prod.outlook.com
+ (2603:10b6:510:2d2:cafe::5d) by PH8PR15CA0020.outlook.office365.com
+ (2603:10b6:510:2d2::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28 via Frontend
+ Transport; Wed, 20 Mar 2024 18:51:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF000015CD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Wed, 20 Mar 2024 18:51:23 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 20 Mar
+ 2024 13:51:22 -0500
+Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Wed, 20 Mar 2024 13:51:20 -0500
+From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+To: <dlemoal@kernel.org>, <cassel@kernel.org>, <Markus.Elfring@web.de>
+CC: <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<git@amd.com>, Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Subject: [PATCH] ata: ahci_ceva: return of_property_read_u8_array() error code
+Date: Thu, 21 Mar 2024 00:21:05 +0530
+Message-ID: <1710960665-1391654-1-git-send-email-radhey.shyam.pandey@amd.com>
+X-Mailer: git-send-email 2.1.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhTkpSa665tesTEs8gBjaD3ahUMATGMXuGy+-unt7WL-UQ@mail.gmail.com>
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB04.amd.com: radhey.shyam.pandey@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CD:EE_|MW4PR12MB5627:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5724e175-f00e-42c4-c735-08dc490ebd34
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	xgX8OEtWyeNHpvmZFO/LOnxfKBv//F6tOH37xeHeN9xu/9Kxt1kJJSOAtx5ByYQfJidBAINMuB79v9qgqNoHipSSayrzUweyMNhHH5EZ6TnVNpT/qehHA7LgB7k+Ij+pb5M8r6PJoAj1uJxlx77/04PKse+qSDtAl1oqd3FNho4U1J/qLGqH6j+KlZ7S687YmcXfzAZOKFTOtwfEWOepJdLz2H3OU3xB5qgke2eoI/oRHpZph5W3GN953ve8teYqzzxkPnam4ujFhKrfgfIV7JjE6BuGtfrMQlOZrkDHsNX4vnsZE1pO6rRRjCD6ahYIpU1yKJzwtvOdicMxS4cdKyrY9+7ROLYt9fFAqdmql9+pjsXKDV0mEd5JD/YTPemMPuVQIB3NclaIkoOw/EjKYTdC76IUYoXeBX6i8+xckssMCzDW81mpoJDXbmUY1UyG/Kb6B2XLCHVtFEWGV6hvMi8QpuopNiboXCGVqKdxi5Q9fuWv4tTCcjm985FmXtRcxDzgy1R87OoKr5xrgdbQ+CPCE8xNz1aFBvHWr7NEdKHLchOTXur5496MzezDeR0mIymkp91bqnnR2P1eVkJ/gZjLnhv6vXxhLXac7Gx41lMpkQJqGb4p2dNWtlk7A7LSWoh8ocPeKAAH7ZwdIRxSMQsbYWlTVrWjpq/LytD0ahPEVvbpt8880S7Ied5utddxM6zGnIiFp/meA2rJFABJvg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 18:51:23.1865
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5724e175-f00e-42c4-c735-08dc490ebd34
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SA2PEPF000015CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5627
 
-On Wed, Mar 20 2024 at  1:23P -0400,
-Paul Moore <paul@paul-moore.com> wrote:
+In the ahci_ceva_probe() error path instead of returning -EINVAL for all
+of_property_read_u8_array() failure types return the actual error code.
+It removes the redundant -EINVAL assignment at multiple places and
+improves the error handling path.
 
-> On Tue, Mar 19, 2024 at 10:19 PM Mike Snitzer <snitzer@kernel.org> wrote:
-> > On Tue, Mar 19 2024 at  7:00P -0400,
-> > Paul Moore <paul@paul-moore.com> wrote:
-> > > On Mar 15, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > > >
-> > > > dm-verity provides a strong guarantee of a block device's integrity. As
-> > > > a generic way to check the integrity of a block device, it provides
-> > > > those integrity guarantees to its higher layers, including the filesystem
-> > > > level.
-> > > >
-> > > > An LSM that control access to a resource on the system based on the
-> > > > available integrity claims can use this transitive property of
-> > > > dm-verity, by querying the underlying block_device of a particular
-> > > > file.
-> > > >
-> > > > The digest and signature information need to be stored in the block
-> > > > device to fulfill the next requirement of authorization via LSM policy.
-> > > > This will enable the LSM to perform revocation of devices that are still
-> > > > mounted, prohibiting execution of files that are no longer authorized
-> > > > by the LSM in question.
-> > > >
-> > > > This patch adds two security hook calls in dm-verity to save the
-> > > > dm-verity roothash and the roothash signature to the block device's
-> > > > LSM blobs. The hook calls are depended on CONFIG_IPE_PROP_DM_VERITY,
-> > > > which will be introduced in the next commit.
-> > > >
-> > > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > > > ---
-> > > > v2:
-> > > >   + No Changes
-> > > >
-> > > > v3:
-> > > >   + No changes
-> > > >
-> > > > v4:
-> > > >   + No changes
-> > > >
-> > > > v5:
-> > > >   + No changes
-> > > >
-> > > > v6:
-> > > >   + Fix an improper cleanup that can result in
-> > > >     a leak
-> > > >
-> > > > v7:
-> > > >   + Squash patch 08/12, 10/12 to [11/16]
-> > > >   + Use part0 for block_device, to retrieve the block_device, when
-> > > >     calling security_bdev_setsecurity
-> > > >
-> > > > v8:
-> > > >   + Undo squash of 08/12, 10/12 - separating drivers/md/ from
-> > > >     security/ & block/
-> > > >   + Use common-audit function for dmverity_signature.
-> > > >   + Change implementation for storing the dm-verity digest to use the
-> > > >     newly introduced dm_verity_digest structure introduced in patch
-> > > >     14/20.
-> > > >   + Create new structure, dm_verity_digest, containing digest algorithm,
-> > > >     size, and digest itself to pass to the LSM layer. V7 was missing the
-> > > >     algorithm.
-> > > >   + Create an associated public header containing this new structure and
-> > > >     the key values for the LSM hook, specific to dm-verity.
-> > > >   + Additional information added to commit, discussing the layering of
-> > > >     the changes and how the information passed will be used.
-> > > >
-> > > > v9:
-> > > >   + No changes
-> > > >
-> > > > v10:
-> > > >   + No changes
-> > > >
-> > > > v11:
-> > > >   + Add an optional field to save signature
-> > > >   + Move the security hook call to the new finalize hook
-> > > >
-> > > > v12:
-> > > >   + No changes
-> > > >
-> > > > v13:
-> > > >   + No changes
-> > > >
-> > > > v14:
-> > > >   + Correct code format
-> > > >   + Remove unnecessary header and switch to dm_disk()
-> > > >
-> > > > v15:
-> > > >   + Refactor security_bdev_setsecurity() to security_bdev_setintegrity()
-> > > >   + Remove unnecessary headers
-> > > > ---
-> > > >  drivers/md/dm-verity-target.c | 73 +++++++++++++++++++++++++++++++++++
-> > > >  drivers/md/dm-verity.h        |  6 +++
-> > > >  include/linux/dm-verity.h     | 12 ++++++
-> > > >  include/linux/security.h      |  2 +
-> > > >  4 files changed, 93 insertions(+)
-> > > >  create mode 100644 include/linux/dm-verity.h
-> > > >
-> > > > diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-> > > > index bb5da66da4c1..e94cc6a755d5 100644
-> > > > --- a/drivers/md/dm-verity-target.c
-> > > > +++ b/drivers/md/dm-verity-target.c
-> > > > @@ -22,6 +22,8 @@
-> > > >  #include <linux/scatterlist.h>
-> > > >  #include <linux/string.h>
-> > > >  #include <linux/jump_label.h>
-> > > > +#include <linux/security.h>
-> > > > +#include <linux/dm-verity.h>
-> > > >
-> > > >  #define DM_MSG_PREFIX                      "verity"
-> > > >
-> > > > @@ -1017,6 +1019,38 @@ static void verity_io_hints(struct dm_target *ti, struct queue_limits *limits)
-> > > >     blk_limits_io_min(limits, limits->logical_block_size);
-> > > >  }
-> > > >
-> > > > +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> > > > +
-> > > > +static int verity_init_sig(struct dm_verity *v, const void *sig,
-> > > > +                      size_t sig_size)
-> > > > +{
-> > > > +   v->sig_size = sig_size;
-> > > > +   v->root_digest_sig = kmalloc(v->sig_size, GFP_KERNEL);
-> > > > +   if (!v->root_digest)
-> > > > +           return -ENOMEM;
-> > >
-> > > Either you meant to copy @sig into @v->root_digest_sig and forgot to
-> > > add the code for that, or we don't need to include @sig as a parameter
-> > > to this function.  I'm guessing it is the former as it wouldn't make
-> > > sense to even have dm_verity::root_digest_sig if we weren't stashing
-> > > it here.
-> > >
-> > > I'd also suggest looking at kmemdup() instead of a kmalloc()/memcpy()
-> > > combo.
-> > >
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static void verity_free_sig(struct dm_verity *v)
-> > > > +{
-> > > > +   kfree(v->root_digest_sig);
-> > > > +}
-> > > > +#else
-> > > > +
-> > > > +static inline int verity_init_sig(struct dm_verity *v, const void *sig,
-> > > > +                             size_t sig_size)
-> > > > +{
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static inline void verity_free_sig(struct dm_verity *v)
-> > > > +{
-> > > > +}
-> > > > +
-> > > > +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> > >
-> > > It's been a while since I looked at this patch in the patchset, so
-> > > maybe I'm missing something, but in general we don't want CONFIG_XXX
-> > > checks in the kernel, outside of security/, that are specific to a
-> > > particular LSM (what happens when multiple LSMs need this?).  Please
-> > > use CONFIG_SECURITY instead.
-> > >
-> > > >  static void verity_dtr(struct dm_target *ti)
-> > > >  {
-> > > >     struct dm_verity *v = ti->private;
-> > > > @@ -1035,6 +1069,7 @@ static void verity_dtr(struct dm_target *ti)
-> > > >     kfree(v->salt);
-> > > >     kfree(v->root_digest);
-> > > >     kfree(v->zero_digest);
-> > > > +   verity_free_sig(v);
-> > > >
-> > > >     if (v->tfm)
-> > > >             crypto_free_ahash(v->tfm);
-> > > > @@ -1434,6 +1469,13 @@ static int verity_ctr(struct dm_target *ti, unsigned int argc, char **argv)
-> > > >             ti->error = "Root hash verification failed";
-> > > >             goto bad;
-> > > >     }
-> > > > +
-> > > > +   r = verity_init_sig(v, verify_args.sig, verify_args.sig_size);
-> > > > +   if (r < 0) {
-> > > > +           ti->error = "Cannot allocate root digest signature";
-> > > > +           goto bad;
-> > > > +   }
-> > > > +
-> > > >     v->hash_per_block_bits =
-> > > >             __fls((1 << v->hash_dev_block_bits) / v->digest_size);
-> > > >
-> > > > @@ -1584,6 +1626,34 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
-> > > >     return 0;
-> > > >  }
-> > > >
-> > > > +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> > > > +
-> > > > +static int verity_finalize(struct dm_target *ti)
-> > > > +{
-> > > > +   struct block_device *bdev;
-> > > > +   struct dm_verity_digest root_digest;
-> > > > +   struct dm_verity *v;
-> > > > +   int r;
-> > > > +
-> > > > +   v = ti->private;
-> > > > +   bdev = dm_disk(dm_table_get_md(ti->table))->part0;
-> > > > +   root_digest.digest = v->root_digest;
-> > > > +   root_digest.digest_len = v->digest_size;
-> > > > +   root_digest.alg = v->alg_name;
-> > > > +
-> > > > +   r = security_bdev_setintegrity(bdev, LSM_INTGR_DMV_ROOTHASH, &root_digest,
-> > > > +                                  sizeof(root_digest));
-> > > > +   if (r)
-> > > > +           return r;
-> > > > +
-> > > > +   return security_bdev_setintegrity(bdev,
-> > > > +                                     LSM_INTGR_DMV_SIG,
-> > > > +                                     v->root_digest_sig,
-> > > > +                                     v->sig_size);
-> > >
-> > > What happens if the second call fails, should we clear the
-> > > LSM_INTGR_DMV_ROOTHASH state in the LSM?
-> > >
-> > > > +}
-> > > > +
-> > > > +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> > >
-> > > See my comments about CONFIG_SECURITY above.  In fact, I would suggest
-> > > moving this up into that part of the file so you only need one #ifdef
-> > > block relating to CONFIG_SECURITY.
-> > >
-> > > I would also recommend making a dummy function so we can get rid of
-> > > the conditional compilation in @verity_target below.  For example:
-> > >
-> > >   #ifdef CONFIG_SECURITY
-> > >   static int verity_finalize(struct dm_target *ti)
-> > >   {
-> > >     /* real implementation */
-> > >   }
-> > >   #else
-> > >   static int verity_finalize(struct dm_target *ti)
-> > >   {
-> > >     return 0;
-> > >   }
-> > >   #endif /* CONFIG_SECURITY */
-> > >
-> > > >  static struct target_type verity_target = {
-> > > >     .name           = "verity",
-> > > >     .features       = DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
-> > > > @@ -1596,6 +1666,9 @@ static struct target_type verity_target = {
-> > > >     .prepare_ioctl  = verity_prepare_ioctl,
-> > > >     .iterate_devices = verity_iterate_devices,
-> > > >     .io_hints       = verity_io_hints,
-> > > > +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> > > > +   .finalize       = verity_finalize,
-> > > > +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> > > >  };
-> > > >  module_dm(verity);
-> > >
-> > > If you create a dummy verity_finalize() function like above you can
-> > > get rid of the #ifdef checks.
-> >
-> > Think it is better to leave it as-is, to avoid calling the .finalize
-> > hook if it isn't actually needed.
-> 
-> Fair enough, my personal preference is to minimize Kconfig conditional
-> code flow changes such as this, but I understand your point of view
-> and device-mapper is your code after all.
-> 
-> I believe the other issues still need to be addressed, 
+Reported-by: Markus Elfring <Markus.Elfring@web.de>
+Closes: https://lore.kernel.org/all/9427c0fd-f48a-4104-ac7e-2929be3562af@web.de/
+Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+---
+ drivers/ata/ahci_ceva.c | 48 ++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 24 deletions(-)
 
-Yes.
+diff --git a/drivers/ata/ahci_ceva.c b/drivers/ata/ahci_ceva.c
+index 11a2c199a7c2..b54ee80c068f 100644
+--- a/drivers/ata/ahci_ceva.c
++++ b/drivers/ata/ahci_ceva.c
+@@ -274,62 +274,62 @@ static int ceva_ahci_probe(struct platform_device *pdev)
+ 		cevapriv->flags = CEVA_FLAG_BROKEN_GEN2;
+ 
+ 	/* Read OOB timing value for COMINIT from device-tree */
+-	if (of_property_read_u8_array(np, "ceva,p0-cominit-params",
+-					(u8 *)&cevapriv->pp2c[0], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p0-cominit-params",
++				       (u8 *)&cevapriv->pp2c[0], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p0-cominit-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+-	if (of_property_read_u8_array(np, "ceva,p1-cominit-params",
+-					(u8 *)&cevapriv->pp2c[1], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p1-cominit-params",
++				       (u8 *)&cevapriv->pp2c[1], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p1-cominit-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+ 	/* Read OOB timing value for COMWAKE from device-tree*/
+-	if (of_property_read_u8_array(np, "ceva,p0-comwake-params",
+-					(u8 *)&cevapriv->pp3c[0], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p0-comwake-params",
++				       (u8 *)&cevapriv->pp3c[0], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p0-comwake-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+-	if (of_property_read_u8_array(np, "ceva,p1-comwake-params",
+-					(u8 *)&cevapriv->pp3c[1], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p1-comwake-params",
++				       (u8 *)&cevapriv->pp3c[1], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p1-comwake-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+ 	/* Read phy BURST timing value from device-tree */
+-	if (of_property_read_u8_array(np, "ceva,p0-burst-params",
+-					(u8 *)&cevapriv->pp4c[0], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p0-burst-params",
++				       (u8 *)&cevapriv->pp4c[0], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p0-burst-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+-	if (of_property_read_u8_array(np, "ceva,p1-burst-params",
+-					(u8 *)&cevapriv->pp4c[1], 4) < 0) {
++	rc = of_property_read_u8_array(np, "ceva,p1-burst-params",
++				       (u8 *)&cevapriv->pp4c[1], 4);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p1-burst-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+ 	/* Read phy RETRY interval timing value from device-tree */
+-	if (of_property_read_u16_array(np, "ceva,p0-retry-params",
+-					(u16 *)&cevapriv->pp5c[0], 2) < 0) {
++	rc = of_property_read_u16_array(np, "ceva,p0-retry-params",
++					(u16 *)&cevapriv->pp5c[0], 2);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p0-retry-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+-	if (of_property_read_u16_array(np, "ceva,p1-retry-params",
+-					(u16 *)&cevapriv->pp5c[1], 2) < 0) {
++	rc = of_property_read_u16_array(np, "ceva,p1-retry-params",
++					(u16 *)&cevapriv->pp5c[1], 2);
++	if (rc < 0) {
+ 		dev_warn(dev, "ceva,p1-retry-params property not defined\n");
+-		rc = -EINVAL;
+ 		goto disable_resources;
+ 	}
+ 
+-- 
+2.34.1
 
-> but other than that are you generally okay with the new "finalize"
-> hook approach? 
-
-I am, not seeing how we could avoid it.
-
-Thanks,
-Mike
 
