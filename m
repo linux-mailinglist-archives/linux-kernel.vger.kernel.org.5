@@ -1,205 +1,91 @@
-Return-Path: <linux-kernel+bounces-108677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20688880E4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:08:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61CC880E51
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:08:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAB892834A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:08:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 685051F22F7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF7D39AC7;
-	Wed, 20 Mar 2024 09:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35D839FD0;
+	Wed, 20 Mar 2024 09:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIh55/Jn"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uiCYaqVU"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEE5381AC;
-	Wed, 20 Mar 2024 09:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760CF383A1;
+	Wed, 20 Mar 2024 09:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710925679; cv=none; b=TA4Nw5DHTl4/+YFvW4XUe54AlBog5NtyQcEVIuypljtkXeH3xxVcccxw6sNKduvVuNl1gD+JK/jN8m3mBp4oBtCRnred2/Fic/89fa2mTIWmxdbn7olQe+2qJaBW1MKmNz5oAjx8zniGHhnVv2rIC7UXMWGeKAHfgDW2vTm3nPw=
+	t=1710925720; cv=none; b=BKVYQo6RaGH0G6mxJeoPtOnbfbs01y08j3Xa8pkkJtvCNkrenklvAsvhRkbkMLUSce9/1dIR7FI7M/ISFk+rA6+VfcoAEQ7bATv7jBg/yXo9lu3TkPB9//M/W4nN5Z+xAWhWVbee76AgtSNH1NfVbciikyZ+EIfFjfCYWvstSX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710925679; c=relaxed/simple;
-	bh=BVbpZjD8QaD7y17IHDhfMTdTYGJnFARN6zjQHua00eU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CY9WxADf8j0XzNRabqJZ9mV7CxZF3cTOIax3DDI8LS1pDj7X/mrPbMVuzELQ5UMZEx+2NVnulRvfb1RsHCmzSqgjfLy9z2YoKeKUV8wY52qawu7rA7xMBtJPbCvt8taG5rJ/CLbLXZ7yDuCSovXkEu+IOwcpyTF2pjWW3C10aJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIh55/Jn; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-22963f0e12cso1227291fac.1;
-        Wed, 20 Mar 2024 02:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710925677; x=1711530477; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6LYzgeSraIQWph2DLzGUmFCxbm6oNIHNvAA92fmfgfw=;
-        b=VIh55/Jnjr3X9VSUrwXc52Nv/LC69rtjbE5yBp8tKRC9RnNfvh9yG2M0bR079/2JuL
-         ngcCLca9FY4Rfj3eZZlhHitz9l6QIRMaE4AC6zh3H/peQBkLBoy/VvRPrz84dih8qUEW
-         mCLrBMgyu6CveGXJX+UoYXAaUEWvfBanmSANNIEZq56Y8xKhr7U4Hwhgh8w5i1GrKvkL
-         EguZQAtI85vmLJnSVKzRXFKkC5sKZjcSv3Hc+/rCBv9RIMKI8Iq9UpdGtRPvKEutSskT
-         xpxf5QVGiILGjN3OBsB9+u2xcDO5QMkMzfm39Si1OvjwgYthKS9g1fLXba6dhzm3/9ik
-         WRNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710925677; x=1711530477;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6LYzgeSraIQWph2DLzGUmFCxbm6oNIHNvAA92fmfgfw=;
-        b=DQtPjp50SeD6jT5P9K5YyVl+oeFZL+OGHrRyMXrxUYbXUwKyd/BmFstEKvblio932Q
-         GqeDN9QC1m2ohQoO2EmWjcFvJ5MP3oMaqkNJOt9ym/V2t0PwWUEaA0xaTDLSiNNx/rit
-         zcLKZT8pYmmI8kjEMgz5RPs5HZjHDX2+JaAXlQfgwtV/FIRaGy6oq4aJqm+btjCM+T+p
-         1X/qsZ7botjV6NRygVFljao8NXi0z3W0yHDrfnFir+2OWSDkBvdyHY4pE1eYECNx+Y5z
-         o93jfSA0xnmRjBFfCHkwJYz736Yzasm9JyvXbrQavfb2ESIquAfQMKYkCqzCw7lpeJVS
-         zE5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVIeCna18B105Xw5XyzQW8U0B16l+t3xQ9489pXUma5lC8XgT4RGZS3bWxcF2Q8vqpO7L2W7YNtt3ehaGNQKKVBI5TKsy1O6IpAXzjJewwMF0qQEpngI7+CKyUyqTnINpISLMi2wG9pXIL40UrvDU3Z/DRIfn1qJRog1bgJNnTYqS9vrQ==
-X-Gm-Message-State: AOJu0YznFHxH+3u7aDvQaM8CfrtIh0QJbnSBPT2a8TAcLJxTVrJ1WIFV
-	rNhDWZ6kVhTh0SA6YrtLUSkunOO/virPOrXsIfrXLo6mrfQBqQNf
-X-Google-Smtp-Source: AGHT+IE2HShA9tzq7LK/MZr8vowvV1oJMzrwKIWizneyhfLiYWfkofVYT92Zz2xWszZIjg8lo9tqOw==
-X-Received: by 2002:a05:6871:a58d:b0:222:69b4:fccd with SMTP id wd13-20020a056871a58d00b0022269b4fccdmr5292748oab.24.1710925677036;
-        Wed, 20 Mar 2024 02:07:57 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40f4:a4:a590:2a15:ea77:7177:18e3])
-        by smtp.gmail.com with ESMTPSA id k1-20020aa79981000000b006e6f96ecc30sm9021369pfh.2.2024.03.20.02.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 02:07:56 -0700 (PDT)
-From: Animesh Agarwal <animeshagarwal28@gmail.com>
-To: 
-Cc: animeshagarwal28@gmail.com,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v8] dt-bindings: ata: imx-pata: Convert to dtschema
-Date: Wed, 20 Mar 2024 14:37:30 +0530
-Message-ID: <20240320090733.96828-1-animeshagarwal28@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710925720; c=relaxed/simple;
+	bh=0pLI0L5jQtxzcpdywVIifeQcG2pw2/Wr4GhCFKwu9uQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NgOFKqn7mN1RV5/sHN8hzt5TwdlZyb7rvZnm9QFDBpDz8MO3beL/qYEZZi/95zx5W3RlbbONLVYaXSFqHbhfa9cCBtL4xg6DUma0SF/OURq1h5JICSJ4wGqXEIqVrVvPLjAwuQieUUa+BDCVvnpSkmuBcIwjCjIL8i3aYFhPZvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=uiCYaqVU; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710925716;
+	bh=0pLI0L5jQtxzcpdywVIifeQcG2pw2/Wr4GhCFKwu9uQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=uiCYaqVUV8qdI13Y/tOKLHPQhu5i6nOwDEC321w6keVmWgCjyw0VmAjj5GRSxwjz0
+	 yvMEuRJKxXITdz19QVhKXxTaFb9rRm9Ha0wcbiXvAS/nOUAf0YsInuuLxlnyeDnCpK
+	 KXaIaqQkj9wkBlz/oNJ9Cp8NIeU6Q0AUVqOHrAmc5GGUOS4o/lQh1uuWx8RYUaGUHl
+	 70oCjHV8h6zrIYNN3ZUHkMSZhZjLGSS2HiVySP2drmm3AYSQeIZ7cVybNL4gxT8VLS
+	 qY5ZeH96WEONwZ/qm5TGHQSoOsi66GcCqfBdaW6Od9LeMo/5qj1sqiUaQAbrnrkW7D
+	 QmIS3L+BVuU4g==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9AE8F37813C4;
+	Wed, 20 Mar 2024 09:08:35 +0000 (UTC)
+Message-ID: <2812525d-9c17-4758-bc4f-e3093cc26ef7@collabora.com>
+Date: Wed, 20 Mar 2024 10:08:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 07/14] drm/mediatek: Rename files "mtk_drm_crtc.c" to
+ "mtk_crtc.c"
+Content-Language: en-US
+To: Shawn Sung <shawn.sung@mediatek.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+References: <20240320024222.14234-1-shawn.sung@mediatek.com>
+ <20240320024222.14234-8-shawn.sung@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240320024222.14234-8-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Convert the imx-pata bindings to DT schema.
-Add missing fsl,imx31-pata and fsl,imx51-pata compatibles during
-conversion, because they are already being used in existing DTS.
+Il 20/03/24 03:42, Shawn Sung ha scritto:
+> From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+> 
+> Rename files mtk_drm_crtc.c to mtk_crtc.c and
+> modify the Makefile accordingly.
+> 
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
----
-Changes in v8:
-- added missing space after comma in examples' compatible property
-
-Changes in v7:
-- removed blank space at the end of file.
-
-Changes in v6:
-- removed items before const due to single element.
-
-Changes in v5:
-- added oneOf in compatible property to allow the usage of imx27 alone.
-
-Changes in v4:
-- added fsl,imx31-pata in compatible property as enum.
-
-Changes in v3:
-- added fsl,imx51-pata in compatible property as enum
-- fsl,imx27-pata is added as a const to ensure it is present always
-
-Changes in v2:
-- fixed style issues
-- compatible property now matches the examples
-- fixed yamllint warnings/errors
----
- .../devicetree/bindings/ata/fsl,imx-pata.yaml | 42 +++++++++++++++++++
- .../devicetree/bindings/ata/imx-pata.txt      | 16 -------
- 2 files changed, 42 insertions(+), 16 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
- delete mode 100644 Documentation/devicetree/bindings/ata/imx-pata.txt
-
-diff --git a/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
-new file mode 100644
-index 000000000000..324e2413bba8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/ata/fsl,imx-pata.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale i.MX PATA Controller
-+
-+maintainers:
-+  - Animesh Agarwal <animeshagarwal28@gmail.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx31-pata
-+              - fsl,imx51-pata
-+          - const: fsl,imx27-pata
-+      - const: fsl,imx27-pata
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: PATA Controller interrupts
-+
-+  clocks:
-+    items:
-+      - description: PATA Controller clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pata: pata@83fe0000 {
-+        compatible = "fsl,imx51-pata", "fsl,imx27-pata";
-+        reg = <0x83fe0000 0x4000>;
-+        interrupts = <70>;
-+        clocks = <&clks 161>;
-+    };
-diff --git a/Documentation/devicetree/bindings/ata/imx-pata.txt b/Documentation/devicetree/bindings/ata/imx-pata.txt
-deleted file mode 100644
-index f1172f00188a..000000000000
---- a/Documentation/devicetree/bindings/ata/imx-pata.txt
-+++ /dev/null
-@@ -1,16 +0,0 @@
--* Freescale i.MX PATA Controller
--
--Required properties:
--- compatible: "fsl,imx27-pata"
--- reg: Address range of the PATA Controller
--- interrupts: The interrupt of the PATA Controller
--- clocks: the clocks for the PATA Controller
--
--Example:
--
--	pata: pata@83fe0000 {
--		compatible = "fsl,imx51-pata", "fsl,imx27-pata";
--		reg = <0x83fe0000 0x4000>;
--		interrupts = <70>;
--		clocks = <&clks 161>;
--	};
--- 
-2.44.0
 
 
