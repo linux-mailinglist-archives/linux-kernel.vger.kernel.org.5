@@ -1,319 +1,205 @@
-Return-Path: <linux-kernel+bounces-108676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE8D880E47
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20688880E4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161A5283CE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAB892834A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4D38FA0;
-	Wed, 20 Mar 2024 09:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF7D39AC7;
+	Wed, 20 Mar 2024 09:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XoxnuzYo"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIh55/Jn"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6599138DF1
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEE5381AC;
+	Wed, 20 Mar 2024 09:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710925636; cv=none; b=BOZ4DMzp4crY9sRy0N+Ab8bJCSC1Wc1qJ1dtPuvXlEp1qMAf/fCLbOVeymFUkFrIf1+JTbBS7+W+8m4FbZI4zcoHOFmIgVxcVKn3UFaQP8cqAuvPEz+kT0ejyL477IHP0c95HwkwxjyBfRGuBxlbSWhncy5NYQVj7xYabOt5f2U=
+	t=1710925679; cv=none; b=TA4Nw5DHTl4/+YFvW4XUe54AlBog5NtyQcEVIuypljtkXeH3xxVcccxw6sNKduvVuNl1gD+JK/jN8m3mBp4oBtCRnred2/Fic/89fa2mTIWmxdbn7olQe+2qJaBW1MKmNz5oAjx8zniGHhnVv2rIC7UXMWGeKAHfgDW2vTm3nPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710925636; c=relaxed/simple;
-	bh=nzO/zX8U25jXb1Wzac3nvYcDSqqV9PNzs02ywde09k0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L8G33tOyFeFzEHRuLBmPicrb9glQmSwvdzpcP+YI+TUH/th+/rd39i/9jCpJK2a/OQQJ0IMc20OEnEPJSLbyEh1m4iPYtZkDfpMiUMuCm9uuqC+XHJIEZkfecweSNLxTXpVO0lyFhTs87WSVwFtW576V7Lv8mBmSHMYwq84/E04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XoxnuzYo; arc=none smtp.client-ip=209.85.208.169
+	s=arc-20240116; t=1710925679; c=relaxed/simple;
+	bh=BVbpZjD8QaD7y17IHDhfMTdTYGJnFARN6zjQHua00eU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CY9WxADf8j0XzNRabqJZ9mV7CxZF3cTOIax3DDI8LS1pDj7X/mrPbMVuzELQ5UMZEx+2NVnulRvfb1RsHCmzSqgjfLy9z2YoKeKUV8wY52qawu7rA7xMBtJPbCvt8taG5rJ/CLbLXZ7yDuCSovXkEu+IOwcpyTF2pjWW3C10aJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIh55/Jn; arc=none smtp.client-ip=209.85.160.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so86742031fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:07:14 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-22963f0e12cso1227291fac.1;
+        Wed, 20 Mar 2024 02:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710925633; x=1711530433; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fFmoFRtiVhYlElRiuwA4am3p/eGR8EbCAnxSr4G2ILo=;
-        b=XoxnuzYoW3EtlLnGE6XRRPZjZmxzHHjNappotHjuTxUdv/nD7yRrWcNg3AGlCGaHJy
-         g7q/J0k4Y9BAT2IZQPY/4TBYVRCh1kfqGIzzV86pYvIISSxwj+wW8MhuULOo7eWocAaL
-         nZTgh4mq/X3fvQgDruaqXobTxGXnsE8UON/R88+tGTfCBHyEmGEDME4yZ5e8UuRI5gcq
-         Bvv/IrZT+QM+3f906cWuQss4CxSCSYNholO1bWFx0dyRoR12mXxcjj0OY8gdO6jYookd
-         yRd97rv/yC7mJ5DaVyWv956c6P22kVW5/O9payAnXpmKPLI9cljtmkoTEMGoTF14/+AR
-         l55g==
+        d=gmail.com; s=20230601; t=1710925677; x=1711530477; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6LYzgeSraIQWph2DLzGUmFCxbm6oNIHNvAA92fmfgfw=;
+        b=VIh55/Jnjr3X9VSUrwXc52Nv/LC69rtjbE5yBp8tKRC9RnNfvh9yG2M0bR079/2JuL
+         ngcCLca9FY4Rfj3eZZlhHitz9l6QIRMaE4AC6zh3H/peQBkLBoy/VvRPrz84dih8qUEW
+         mCLrBMgyu6CveGXJX+UoYXAaUEWvfBanmSANNIEZq56Y8xKhr7U4Hwhgh8w5i1GrKvkL
+         EguZQAtI85vmLJnSVKzRXFKkC5sKZjcSv3Hc+/rCBv9RIMKI8Iq9UpdGtRPvKEutSskT
+         xpxf5QVGiILGjN3OBsB9+u2xcDO5QMkMzfm39Si1OvjwgYthKS9g1fLXba6dhzm3/9ik
+         WRNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710925633; x=1711530433;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fFmoFRtiVhYlElRiuwA4am3p/eGR8EbCAnxSr4G2ILo=;
-        b=PsBBeEvd1pkFH+34gL+KyEFIrISBSkKEq7U1dlRFFq3DLJV17LgvFEFNUY++LmijzP
-         6LQSBEE1u3Q5ZknwLBmrR1iUiMbX/C2tfxl00UZJ+ml4jC4OjA82mfRi7dSwJpEZWVAf
-         VESb8YkAozTPW868qepYaMOa1S9Z+kfD4ItSBubO5tTVf50oWJfHE3mTh1hoiz9UUHfp
-         5k1lzboyAIAtFCrF4MJYjOatbU1Gn3dttnB5SY1MuYuA+Mn4r6AbbGJy+WB5uwmG5kzo
-         j7vALIqnn8/oQatSZcnI5GoEXBNVJmtPpWLYj4I2SVncJLT2zorzK3aBY18i3RvquBTv
-         aF0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVuSZL5oQ2fiVIcXvfb0DTlsTmiG8nE/ydiurNPv5Lf/n+m3RX6ajdnXPM+RRhDQ1y/P8/uHeOVJQOQq5jKSqZP4NZHuXS55E66R1/Q
-X-Gm-Message-State: AOJu0Yx3m0Q0E+LL2ClLlRYGYyvYRc/fqfnpY4uuq4DQmq82/GAfuMiw
-	tuTNtA2lx+51uwA1znrDJir+GerioHkobw2GzL/pZ6KB+FRX7n9fBtSu3/wybYhwsrot6LaQvjA
-	JPg8ya4ROd/sSMkCYfNY9Gv6pR/PiOmaa0zBiAC9ZwNs=
-X-Google-Smtp-Source: AGHT+IGaGyGcpZ4Pq4dMwDtqGwnGEpDwAFYCPeLs/Lld6/x5pNmN+CjRzLTdQxlIZ7nYjd+t07CHSYfFCNsq1cmZCM0=
-X-Received: by 2002:a2e:9956:0:b0:2d2:bbd9:ebc9 with SMTP id
- r22-20020a2e9956000000b002d2bbd9ebc9mr916489ljj.24.1710925632383; Wed, 20 Mar
- 2024 02:07:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710925677; x=1711530477;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6LYzgeSraIQWph2DLzGUmFCxbm6oNIHNvAA92fmfgfw=;
+        b=DQtPjp50SeD6jT5P9K5YyVl+oeFZL+OGHrRyMXrxUYbXUwKyd/BmFstEKvblio932Q
+         GqeDN9QC1m2ohQoO2EmWjcFvJ5MP3oMaqkNJOt9ym/V2t0PwWUEaA0xaTDLSiNNx/rit
+         zcLKZT8pYmmI8kjEMgz5RPs5HZjHDX2+JaAXlQfgwtV/FIRaGy6oq4aJqm+btjCM+T+p
+         1X/qsZ7botjV6NRygVFljao8NXi0z3W0yHDrfnFir+2OWSDkBvdyHY4pE1eYECNx+Y5z
+         o93jfSA0xnmRjBFfCHkwJYz736Yzasm9JyvXbrQavfb2ESIquAfQMKYkCqzCw7lpeJVS
+         zE5w==
+X-Forwarded-Encrypted: i=1; AJvYcCVIeCna18B105Xw5XyzQW8U0B16l+t3xQ9489pXUma5lC8XgT4RGZS3bWxcF2Q8vqpO7L2W7YNtt3ehaGNQKKVBI5TKsy1O6IpAXzjJewwMF0qQEpngI7+CKyUyqTnINpISLMi2wG9pXIL40UrvDU3Z/DRIfn1qJRog1bgJNnTYqS9vrQ==
+X-Gm-Message-State: AOJu0YznFHxH+3u7aDvQaM8CfrtIh0QJbnSBPT2a8TAcLJxTVrJ1WIFV
+	rNhDWZ6kVhTh0SA6YrtLUSkunOO/virPOrXsIfrXLo6mrfQBqQNf
+X-Google-Smtp-Source: AGHT+IE2HShA9tzq7LK/MZr8vowvV1oJMzrwKIWizneyhfLiYWfkofVYT92Zz2xWszZIjg8lo9tqOw==
+X-Received: by 2002:a05:6871:a58d:b0:222:69b4:fccd with SMTP id wd13-20020a056871a58d00b0022269b4fccdmr5292748oab.24.1710925677036;
+        Wed, 20 Mar 2024 02:07:57 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40f4:a4:a590:2a15:ea77:7177:18e3])
+        by smtp.gmail.com with ESMTPSA id k1-20020aa79981000000b006e6f96ecc30sm9021369pfh.2.2024.03.20.02.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 02:07:56 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-ide@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8] dt-bindings: ata: imx-pata: Convert to dtschema
+Date: Wed, 20 Mar 2024 14:37:30 +0530
+Message-ID: <20240320090733.96828-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319092733.4501-1-ryncsn@gmail.com> <20240319092733.4501-5-ryncsn@gmail.com>
- <ZfoPjUyPiXpFSxA4@casper.infradead.org>
-In-Reply-To: <ZfoPjUyPiXpFSxA4@casper.infradead.org>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 20 Mar 2024 17:06:55 +0800
-Message-ID: <CAMgjq7BGN9SknnXF+doO-3p18OOYRzB0D5PMdwwstpCXtxj47g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mm/filemap: optimize filemap folio adding
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 20, 2024 at 6:20=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Tue, Mar 19, 2024 at 05:27:33PM +0800, Kairui Song wrote:
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Instead of doing multiple tree walks, do one optimism range check
-> > with lock hold, and exit if raced with another insertion. If a shadow
-> > exists, check it with a new xas_get_order helper before releasing the
-> > lock to avoid redundant tree walks for getting its order.
-> >
-> > Drop the lock and do the allocation only if a split is needed.
-> >
-> > In the best case, it only need to walk the tree once. If it needs
-> > to alloc and split, 3 walks are issued (One for first ranced
-> > conflict check and order retrieving, one for the second check after
-> > allocation, one for the insert after split).
-> >
-> > Testing with 4k pages, in an 8G cgroup, with 20G brd as block device:
-> >
-> > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> >   --buffered=3D1 --ioengine=3Dmmap --rw=3Drandread --time_based \
-> >   --ramp_time=3D30s --runtime=3D5m --group_reporting
-> >
-> > Before:
-> > bw (  MiB/s): min=3D  790, max=3D 3665, per=3D100.00%, avg=3D2499.17, s=
-tdev=3D20.64, samples=3D8698
-> > iops        : min=3D202295, max=3D938417, avg=3D639785.81, stdev=3D5284=
-08, samples=3D8698
-> >
-> > After (+4%):
-> > bw (  MiB/s): min=3D  451, max=3D 3868, per=3D100.00%, avg=3D2599.83, s=
-tdev=3D23.39, samples=3D8653
-> > iops        : min=3D115596, max=3D990364, avg=3D665556.34, stdev=3D5988=
-20, samples=3D8653
-> >
-> > Test result with THP (do a THP randread then switch to 4K page in hope =
-it
-> > issues a lot of splitting):
-> >
-> > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> >   --buffered=3D1 --ioengine mmap -thp=3D1 --readonly \
-> >   --rw=3Drandread --random_distribution=3Drandom \
-> >   --time_based --runtime=3D5m --group_reporting
-> >
-> > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> >   --buffered=3D1 --ioengine mmap --readonly \
-> >   --rw=3Drandread --random_distribution=3Drandom \
-> >   --time_based --runtime=3D5s --group_reporting
-> >
-> > Before:
-> > bw (  KiB/s): min=3D28071, max=3D62359, per=3D100.00%, avg=3D53542.44, =
-stdev=3D179.77, samples=3D9520
-> > iops        : min=3D 7012, max=3D15586, avg=3D13379.39, stdev=3D44.94, =
-samples=3D9520
-> > bw (  MiB/s): min=3D 2457, max=3D 6193, per=3D100.00%, avg=3D3923.21, s=
-tdev=3D82.48, samples=3D144
-> > iops        : min=3D629220, max=3D1585642, avg=3D1004340.78, stdev=3D21=
-116.07, samples=3D144
-> >
-> > After (+-0.0%):
-> > bw (  KiB/s): min=3D30561, max=3D63064, per=3D100.00%, avg=3D53635.82, =
-stdev=3D177.21, samples=3D9520
-> > iops        : min=3D 7636, max=3D15762, avg=3D13402.82, stdev=3D44.29, =
-samples=3D9520
-> > bw (  MiB/s): min=3D 2449, max=3D 6145, per=3D100.00%, avg=3D3914.68, s=
-tdev=3D81.15, samples=3D144
-> > iops        : min=3D627106, max=3D1573156, avg=3D1002158.11, stdev=3D20=
-774.77, samples=3D144
-> >
-> > The performance is better (+4%) for 4K cached read and unchanged for TH=
-P.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/filemap.c | 127 ++++++++++++++++++++++++++++++---------------------
-> >  1 file changed, 76 insertions(+), 51 deletions(-)
-> >
-> > diff --git a/mm/filemap.c b/mm/filemap.c
-> > index 6bbec8783793..c1484bcdbddb 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -848,12 +848,77 @@ void replace_page_cache_folio(struct folio *old, =
-struct folio *new)
-> >  }
-> >  EXPORT_SYMBOL_GPL(replace_page_cache_folio);
-> >
-> > +static int __split_add_folio_locked(struct xa_state *xas, struct folio=
- *folio,
-> > +                                 pgoff_t index, gfp_t gfp, void **shad=
-owp)
->
+Convert the imx-pata bindings to DT schema.
+Add missing fsl,imx31-pata and fsl,imx51-pata compatibles during
+conversion, because they are already being used in existing DTS.
 
-Thanks for the very helpful review!
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
 
-> I don't love the name of this function.  Splitting is a rare thing that
-> it does.  I'd suggest it's more filemap_store().
+---
+Changes in v8:
+- added missing space after comma in examples' compatible property
 
-Yes, the function name is a bit misleading indeed, I can rename it as
-you suggested, eg. __filemap_store_locked ?
+Changes in v7:
+- removed blank space at the end of file.
 
->
-> > +{
-> > +     void *entry, *shadow, *alloced_shadow =3D NULL;
-> > +     int order, alloced_order =3D 0;
-> > +
-> > +     gfp &=3D GFP_RECLAIM_MASK;
-> > +     for (;;) {
-> > +             shadow =3D NULL;
-> > +             order =3D 0;
-> > +
-> > +             xas_for_each_conflict(xas, entry) {
-> > +                     if (!xa_is_value(entry))
-> > +                             return -EEXIST;
-> > +                     shadow =3D entry;
-> > +             }
-> > +
-> > +             if (shadow) {
-> > +                     if (shadow =3D=3D xas_reload(xas)) {
->
-> Why do you need the xas_reload here?
+Changes in v6:
+- removed items before const due to single element.
 
-This part of code works based on the guarantee that If there is a
-larger entry, it will be the first and only entry iterated by
-xas_for_each_conflict/xas_find_conflict. I added an xas_reload is here
-to ensure that. But on second thought, this seems not needed indeed.
+Changes in v5:
+- added oneOf in compatible property to allow the usage of imx27 alone.
 
-Will it be better if I write this part this way?
+Changes in v4:
+- added fsl,imx31-pata in compatible property as enum.
 
-+ shadow =3D NULL;
-+ order =3D -1;
-+ xas_for_each_conflict(xas, entry) {
-+           if (!xa_is_value(entry))
-+                    return -EEXIST;
-+          /*
-+          * If there is a larger entry, it will be the first
-+          * and only entry iterated.
-+          */
-+         if (order =3D=3D -1)
-+                  order =3D xas_get_order(xas);
-+         shadow =3D entry;
-+ }
+Changes in v3:
+- added fsl,imx51-pata in compatible property as enum
+- fsl,imx27-pata is added as a const to ensure it is present always
+
+Changes in v2:
+- fixed style issues
+- compatible property now matches the examples
+- fixed yamllint warnings/errors
+---
+ .../devicetree/bindings/ata/fsl,imx-pata.yaml | 42 +++++++++++++++++++
+ .../devicetree/bindings/ata/imx-pata.txt      | 16 -------
+ 2 files changed, 42 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+ delete mode 100644 Documentation/devicetree/bindings/ata/imx-pata.txt
+
+diff --git a/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+new file mode 100644
+index 000000000000..324e2413bba8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/ata/fsl,imx-pata.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/ata/fsl,imx-pata.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+ if (shadow) {
-+          /* check if alloc & split need, or if previous alloc is
-still valid */
-+         if (order > 0 && order > folio_order(folio)) {
-+                   if (shadow !=3D alloced_shadow || order !=3D alloced_or=
-der)
-+                            goto unlock;
-+                   xas_split(xas, shadow, order);
-+                   xas_reset(xas);
-+          }
-+          order =3D -1;
-+          if (shadowp)
-+                   *shadowp =3D shadow;
-+ }
++title: Freescale i.MX PATA Controller
++
++maintainers:
++  - Animesh Agarwal <animeshagarwal28@gmail.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - fsl,imx31-pata
++              - fsl,imx51-pata
++          - const: fsl,imx27-pata
++      - const: fsl,imx27-pata
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: PATA Controller interrupts
++
++  clocks:
++    items:
++      - description: PATA Controller clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    pata: pata@83fe0000 {
++        compatible = "fsl,imx51-pata", "fsl,imx27-pata";
++        reg = <0x83fe0000 0x4000>;
++        interrupts = <70>;
++        clocks = <&clks 161>;
++    };
+diff --git a/Documentation/devicetree/bindings/ata/imx-pata.txt b/Documentation/devicetree/bindings/ata/imx-pata.txt
+deleted file mode 100644
+index f1172f00188a..000000000000
+--- a/Documentation/devicetree/bindings/ata/imx-pata.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-* Freescale i.MX PATA Controller
+-
+-Required properties:
+-- compatible: "fsl,imx27-pata"
+-- reg: Address range of the PATA Controller
+-- interrupts: The interrupt of the PATA Controller
+-- clocks: the clocks for the PATA Controller
+-
+-Example:
+-
+-	pata: pata@83fe0000 {
+-		compatible = "fsl,imx51-pata", "fsl,imx27-pata";
+-		reg = <0x83fe0000 0x4000>;
+-		interrupts = <70>;
+-		clocks = <&clks 161>;
+-	};
+-- 
+2.44.0
 
->
-> > +                             order =3D xas_get_order(xas);
-> > +                             if (order && order > folio_order(folio)) =
-{
-> > +                                     /* entry may have been split befo=
-re we acquired lock */
-> > +                                     if (shadow !=3D alloced_shadow ||=
- order !=3D alloced_order)
-> > +                                             goto unlock;
-> > +                                     xas_split(xas, shadow, order);
-> > +                                     xas_reset(xas);
-> > +                             }
-> > +                             order =3D 0;
-> > +                     }
->
-> I don't think this is right.  I think we can end up skipping a split
-> and storing a folio into a slot which is of greater order than the folio
-> we're storing.
-
-If there is a larger slot, xas_for_each_conflict and check above
-should catch that?
-
->
-> > +                     if (shadowp)
-> > +                             *shadowp =3D shadow;
-> > +             }
-> > +
-> > +             xas_store(xas, folio);
-> > +             /* Success, return with mapping locked */
-> > +             if (!xas_error(xas))
-> > +                     return 0;
-> > +unlock:
-> > +             /*
-> > +              * Unlock path, if errored, return unlocked.
-> > +              * If allocation needed, alloc and retry.
-> > +              */
-> > +             xas_unlock_irq(xas);
-> > +             if (order) {
-> > +                     if (unlikely(alloced_order))
-> > +                             xas_destroy(xas);
-> > +                     xas_split_alloc(xas, shadow, order, gfp);
-> > +                     if (!xas_error(xas)) {
-> > +                             alloced_shadow =3D shadow;
-> > +                             alloced_order =3D order;
-> > +                     }
-> > +                     goto next;
-> > +             }
-> > +             /* xas_nomem result checked by xas_error below */
-> > +             xas_nomem(xas, gfp);
-> > +next:
-> > +             xas_lock_irq(xas);
-> > +             if (xas_error(xas))
-> > +                     return xas_error(xas);
-> > +
-> > +             xas_reset(xas);
-> > +     }
-> > +}
->
-> Splitting this out into a different function while changing the logic
-> really makes this hard to review ;-(
-
-Sorry about this :(
-
-This patch basically rewrites the logic of __filemap_add_folio and the
-function is getting long, so I thought it would be easier to
-understand if we split it out.
-I initially updated the code in place but that change diff seems more
-messy to me.
-
->
-> I don't object to splitting the function, but maybe two patches; one
-> to move the logic and a second to change it?
->
-
-I can keep it in place in V2.
 
