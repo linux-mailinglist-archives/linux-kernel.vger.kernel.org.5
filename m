@@ -1,73 +1,46 @@
-Return-Path: <linux-kernel+bounces-109397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7F6881897
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:29:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0624A8818A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CD75B22ECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:29:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D9F283CD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A238594A;
-	Wed, 20 Mar 2024 20:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592DE17578;
+	Wed, 20 Mar 2024 20:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ly5E8on/"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B9129CE8;
-	Wed, 20 Mar 2024 20:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="eJR6sbSR"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3673B1B7F5;
+	Wed, 20 Mar 2024 20:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710966559; cv=none; b=E56Stp+SCaYb1KfMG25ksE2+Yaafr7TATLNlhc2irVB2Oz5txkLwhyEtdR/TuMd7s5X1D4jP2EEbfpd5UivGwkjd/yrkSNwp/HPQ0a30DC4Je61wHeDVMhz8vqM7+X/MjQxu6nbbXq//zAwPjit3dQiFXOYDyVkck70/ucGK03I=
+	t=1710966668; cv=none; b=ntTHjbstj7TqGtgJZBpKW4Gpa4iJgDUw0NILCb6BWSxva7cuYba3T96zf2JJGYPAOGa2quL59a4+jU6XDvHK5FvJ62H8WsceP6L9sVY7zSot96sxKYyYTpCc66YjYxmh8hKjDMAPGALXLAAdHQZjWb8N+DLQyvTFyBK3ChqOafA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710966559; c=relaxed/simple;
-	bh=sibqcgVk69cAWwUp5fELHFPqFKZCzweuaYfOTBxCD6o=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=PtW7htaMg/FnLKT3HGfAJmsGkanWm6ZAVPXu65pK508cxUXuAbGh6ZF+tYMl7Y/I1RDdWcJsfl5C3nCAJeu4v3K5US9BleeJbANJpZAEztCgSduC9IJ6fLDNFU9H3JckYEhD+e/enb5JSPepmNH44BBk2KJ4J+iQue11qD4M3Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ly5E8on/; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513d599dbabso348498e87.1;
-        Wed, 20 Mar 2024 13:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710966556; x=1711571356; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Dvd7/K/iPH6D09kkHMbkBRJCLxovJRz+5X5JeM9cC40=;
-        b=ly5E8on/KPPjFjwvSaSEAmef/5FTEnJUr40nDBBV2TV0moKWqXDVO7ZZ5pX/7xg+rZ
-         dnq8HX0ikU6MGnuvuuB6htcGI3ybwGOqYyI9fZars43ZGoiOX4xNqVSkOHWTYs8VBZbx
-         hkQOGGHZJRVZUi1Hcq1gEzkxgCWbhKAQG5quZ9q7gbFvgc7vr97xIu+OJUFFdCIHX5rb
-         FmOGPoNvxCR0TAV3RKOd9qhpxdOCo5EfWgUiWHYSu1M+rmkatYfJSgHQr8GoqhjolScn
-         Eqz0o9ntYKrVkbCzlSrqvtuQd+wnyByFecxwzhZXfQ/paH9h+JqRN/nG9JSgFUbMa5Ij
-         YGfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710966556; x=1711571356;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dvd7/K/iPH6D09kkHMbkBRJCLxovJRz+5X5JeM9cC40=;
-        b=GW+ODPBSQtbDNIzgDN/3ZtMyj2UOi+W2wEN7Po4O94prqDVj2tjpG1vYit72YnrARu
-         x6BAynNJUqqY3kKhgQH6r41kE/SKzYLnes1k5IIbhQaQJn0bDm5QKak8Foonw5ewW9Rz
-         hX2RvA/6zrav77sBY5Af9Ck5x1W8vzd/zFOInN+v/Oz6VxVrpAa1dadI2VpvwXRv8XfH
-         XSj2aOGio1kr6ufAHvSpUf554u0LvsPo4oF0qX/jjBXGkmYD5lZ2G4F8podBuiulEBuX
-         Ob3xoJMuL6l8kV17Mxl9/zszSFbNu1bAwNvoPuEL6XCm+9kJD9XPqxsSQ6ZSM8F0/3tj
-         2cAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX69+DTh7en9/i9ZJdqiEbnSwo1ZZwxJov9+JSVP894DcEHpdgimwZ4LTia2dVBU0vb/xgaILKGMIm1oXx4CACH2GLX44Zi7p8PjE4yqpyx2nvTs9O/xYv6XusYqPlDa9wjx2acBHr0uQ==
-X-Gm-Message-State: AOJu0YwNbakOUg8M5TQTf8IE35tV3st0n6KC3Vf7mAL7swxb9zzrgpwF
-	IZqryDlIcKnD4+Vuo/5zPjoHQ9SdU9Cp5SMve0UAEBTcsRpL292f0rvlw+HzStrfOjzD
-X-Google-Smtp-Source: AGHT+IGeAB6MCS1rA/ycdxQ22gDA1FTucn7CNo0Yl14vI1V2G3iGJZh5xoX+yAWkcX+Cye2/GFrHmw==
-X-Received: by 2002:a19:f803:0:b0:512:ed8e:97ce with SMTP id a3-20020a19f803000000b00512ed8e97cemr5087582lff.16.1710966555838;
-        Wed, 20 Mar 2024 13:29:15 -0700 (PDT)
-Received: from [10.0.0.100] (host-85-29-76-118.kaisa-laajakaista.fi. [85.29.76.118])
-        by smtp.gmail.com with ESMTPSA id q5-20020ac25145000000b00512e594e235sm2348058lfd.242.2024.03.20.13.29.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 13:29:15 -0700 (PDT)
-Message-ID: <d20dc37c-13fa-43d1-af52-dce8d8dcdd75@gmail.com>
-Date: Wed, 20 Mar 2024 22:30:57 +0200
+	s=arc-20240116; t=1710966668; c=relaxed/simple;
+	bh=ftELp+AQpN+pT8FlMdTcA2etrhKsXPl9MtAA44puBeI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ijefk5s138sULWnYRdKFBJPfsky3ggqrF5mLjv+rdtxpIQqBEQ++OTUaBQUo0NNdZgYO9x45uMoPQqGzHN8+mwA+JUESfiUGBLWOOJCuirFPh7Igjpu12A6rpm6Twt7AEFA18sx0Jpx5BAwpVVck4A3MyT9/QYzwx/Lg5w5/ufg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eJR6sbSR; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [167.220.2.23])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 8A6A720B74C3;
+	Wed, 20 Mar 2024 13:31:06 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8A6A720B74C3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710966666;
+	bh=LjNajcTf5mT64oJtdPlWYXohXjlD7KHbVX6iVtTNaxM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eJR6sbSRnr7jKg1NOAoDHQjhMsLt2lbwNoUurE8453RHuwOP/lav2yod0rrGbe9p7
+	 245ClYUHJ3mecsRXR37rNvTVNg31oEz2ju7BzIZHeIZvg4e6hxTcCVU/+vwVA50149
+	 LDRtRn74I/Tmd9JYCYNcR6ERNpSTh8T0MVBo+5G8=
+Message-ID: <a69805c7-7b8a-44ee-9b32-f9314b5a9763@linux.microsoft.com>
+Date: Wed, 20 Mar 2024 13:31:06 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,60 +48,79 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] ASoC: ti: davinci-i2s: Opitonally drive DX pin
- during capture streams
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-14-bastien.curutchet@bootlin.com>
- <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
- <0bb26153-8bcb-475f-8892-5eb925fec538@bootlin.com>
- <7925bbe5-17e8-42cb-a5f0-4f3e06810a90@gmail.com>
-Content-Language: en-US
-In-Reply-To: <7925bbe5-17e8-42cb-a5f0-4f3e06810a90@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH RFC v15 12/21] security: add security_bdev_setintegrity()
+ hook
+Content-Language: en-CA
+To: Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore <paul@paul-moore.com>,
+ corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+ tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
+ snitzer@kernel.org, eparis@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+ linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+ audit@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1710560151-28904-13-git-send-email-wufan@linux.microsoft.com>
+ <f5cf9d285bd5f09bbc3f79b0800d37fc@paul-moore.com>
+ <CZYFP5S04YTK.23AJMKWQWVCR8@kernel.org>
+ <CZYFR8LEEQB1.8C0J9KCTF8CB@kernel.org>
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <CZYFR8LEEQB1.8C0J9KCTF8CB@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 20/03/2024 17:42, Péter Ujfalusi wrote:
->>> On 15/03/2024 13:27, Bastien Curutchet wrote:
->>>> The McBSP's DX pin that outputs serial data during playback streams can
->>>> be used during capture streams to repeatedly output a chosen pattern.
->>>> For instance, this can be useful to drive an active-low signal during
->>>> captures (by choosing <0> as output pattern).
+On 3/20/2024 1:31 AM, Jarkko Sakkinen wrote:
+> On Wed Mar 20, 2024 at 10:28 AM EET, Jarkko Sakkinen wrote:
+>> On Wed Mar 20, 2024 at 1:00 AM EET, Paul Moore wrote:
+>>> On Mar 15, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
+>>>>
+>>>> This patch introduces a new hook to save block device's integrity
+>>>> data. For example, for dm-verity, LSMs can use this hook to save
+>>>> the roothash signature of a dm-verity into the security blob,
+>>>> and LSMs can make access decisions based on the data inside
+>>>> the signature, like the signer certificate.
+>>>>
+>>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+>>>>
+>>>> --
+>>>> v1-v14:
+>>>>    + Not present
+>>>>
+>>>> v15:
+>>>>    + Introduced
+>>>>
+>>>> ---
+>>>>   include/linux/lsm_hook_defs.h |  2 ++
+>>>>   include/linux/security.h      | 14 ++++++++++++++
+>>>>   security/security.c           | 28 ++++++++++++++++++++++++++++
+>>>>   3 files changed, 44 insertions(+)
 >>>
->>> Are there really any other use of this than to pull down or up the DX
->>> pin (0 or 0xffff)
+>>> I'm not sure why you made this a separate patch, help?  If there is
+>>> no significant reason why this is separate, please squash it together
+>>> with patch 11/21.
 >>
->> I don't know, indeed today I can only think about these two patterns.
->> I tried to do something in a 'generic' way so it can evolve if needed.
+>> Off-topic: it is weird to have *RFC* patch set at v15.
+>>
+>> RFC by de-facto is something that can be safely ignored if you don't
+>> have bandwidth. 15 versions of anything that can be safely ignored
+>> is by definition spamming :-) I mean just conceptually.
+>>
+>> So does the RFC still hold or what the heck is going on with this one?
+>>
+>> Haven't followed for some time now...
 > 
-> I think the definition of the 'ti,drive-dx' is somehow odd. It allows
-> you to set it to 0x1234 and the DX pin will show 0x1234 when you capture
-> 32bit. If you capture 16bit then it will transmit 0x12 (or 0x34?), no?
-> If you have 4 channel capture then I won't speculate what will be on the
-> DX pin ;)
+> I mean if this RFC trend continues I'll just put auto-filter for this
+> thread to put straight to the bin.  There's enough non-RFC patch sets
+> to review.
 > 
-> Would not be better to say that the DX pin will be driven low or high
-> during capture _and_ disable the playback support?
+> BR, Jarkko
 
-After some thinking, it might be still better to use the DX pin as GPIO
-and either have a custom machine driver which would handle it (set low
-when a capture trigger happens) or connect it in DAPM as a supply, bias
-or something and ASoC would handle it automagically.
+Sorry about the confusion with the RFC tag – I wasn't fully aware of its 
+conventional meaning and how it's perceived in terms of importance and 
+urgency. Point taken, and I'll make sure to remove the RFC tag for 
+future submissions. Definitely not my intention to clog up the workflow 
+or seem like I'm spamming.
 
-I think that would be cleaner in many ways. What do you think?
-
--- 
-Péter
+-Fan
 
