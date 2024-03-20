@@ -1,54 +1,74 @@
-Return-Path: <linux-kernel+bounces-108683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D3B0880E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:13:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2F2880E68
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221881F22B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:13:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1345828361B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:16:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A93339FFF;
-	Wed, 20 Mar 2024 09:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55753A267;
+	Wed, 20 Mar 2024 09:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rPLC2rbm"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v4FY7UXQ"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49CA3BB20;
-	Wed, 20 Mar 2024 09:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2814639AEC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710926027; cv=none; b=fG5aE5Ccho66SLJukFcWcmVVLpfyTsDEKTWpMDce/dH40H62GSj07dYTysg5lF4bK96YdodrmZNuuObM8MjZeTr6wsRgY8FDea84SOUytavO7AZkZqEEt5Db6FCOSERVrHZKC7xZ+7fFAkCBeYykPyDZ0nxeuyN1EBaHRL3r1e0=
+	t=1710926184; cv=none; b=rH8ilDrjIEIgU1+aTxoZgs+W9CaTqQAf8nhC9Yn0IViZ1rO2udW+jh1gThAhPi1obj4AZTvkEszMcUD5V7PmbcVaRCNW0G+cu4CHdgW4l0nXezolaDNMBJ0GEF/6gOeWwbMCBpeHMGU+Zzhj2bLtzOd43Q4pKx62VeT86HaEs9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710926027; c=relaxed/simple;
-	bh=f5TBxsXEtnxxjUawzCCMKUWjeP88hHOAUk3qAGQHobE=;
+	s=arc-20240116; t=1710926184; c=relaxed/simple;
+	bh=7qiN7s71pLRDxczBVXccvkevewv+cyZPsC3vo51G3Wc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XoP51EGwGPrxUbyR+9gooAGUTiWBvxsQVKa655FdmN4GrUX6ZZ2K6ahv+/uiqbGxZwf7KRXbqJz7ih5OAmjJlfHOOEtZGvG8yE7SDIOFspZZS6TdD2WwYJ7mMUGpmF1q+fufpo0ZZ8A6xVIs8nzD8ktmicZepE5xxm0OQUWNkww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rPLC2rbm; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710926024;
-	bh=f5TBxsXEtnxxjUawzCCMKUWjeP88hHOAUk3qAGQHobE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rPLC2rbmMfSDL7SfVIjwIYPwavzcX5JR0Ow7R6VJm+E3lHQtX+X1awhmPtEvl/gjQ
-	 tI5V9EyYtORf10G8dNND9QJQMNlFh3xkLQoEmJzzBLbXNNIawEU4BV3aYDtc/mp8SN
-	 kcroNKFQ9/PdG2osZ8/MckyJKyPWnJsbfVqQdB34WN+wE3Kp1fPSpKOIB47wqraDJE
-	 cBwBKbwoL/frmwfWy/+2lBZG//ldG2EN4Wv1waiId/wUYvRYReS+Rn/fEmO1swaoVI
-	 z6o+uIxIfzI7w9dPDpNE1nmo/SzvxqLIx23Js0o/fBk1Z/l7U53kyKbL2yneYr17t+
-	 XbT7BCp6+zETw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2D02137813C4;
-	Wed, 20 Mar 2024 09:13:43 +0000 (UTC)
-Message-ID: <c09b063f-a11a-4bc0-8b12-3d66f692c48c@collabora.com>
-Date: Wed, 20 Mar 2024 10:13:42 +0100
+	 In-Reply-To:Content-Type; b=arsy+s3jacHAXjW+hl1ADOooetb4wN3GLlyArMHoVDUtX+di0IjvTwDvWflrxRIX3fsVHO3/Ff78wYVXYc+1CzTfrSCPp1klDoKbFlbfyoj+0Y2nCDe5alQtZVg3Ilpv8kI2MljCatmTCA0zZDLvBLS/zhtzXxJG/L2grlDDfxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v4FY7UXQ; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78a16114b69so67615985a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710926182; x=1711530982; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZdemdKKmkbE2PfEGOheslqykPqKEOarSKu2X847Hkx8=;
+        b=v4FY7UXQW3Mtc9KyH6RrZpUNB9nwSfCQPoOuxYGr8A5l+tD2bHiwypW9Xw5h4sBDTn
+         +ZLgDDD9RbELlc2s2RXVIrwB3AS/ZEDSAKFCWuArJBv7K9TB+6xGQgpUzdCOa9jDppuy
+         Y0A6cjG6hm/43/4wgKNFmPygckjfxjN9KJvhMLaKhbsJxQOWa/Hhy6YLm7CrU1VubI6U
+         5g3teykGAfbNRA186AbUK3xj6WG9V8qFHJ23NkfZcyc5tXiQy7urq24V3B9VNn2aHWKt
+         25AmqdXS7BuLJi+2TSYTgm6VnyUhwlZeQRkAi+O7bX8wnprKYi2jFyG1ibYqi4xO6hJO
+         Z1Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710926182; x=1711530982;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZdemdKKmkbE2PfEGOheslqykPqKEOarSKu2X847Hkx8=;
+        b=Eggy04vwqAzbUPx8tmX4J+PvxQUEwCFszW0kJYqZp+/O75JJ76gsE2kEa15sZwoxqP
+         cAK7+ToXF2WECnUOfac3zM5Q7YDbfo8HH/Dk+vpt+LPt5tPKub1QSB/3EfFl00J3j9ka
+         AXZmBX8/L4JiXNjtNKQSUVfadBK/aPhb2uulKC0X1u/g1wypiA9mlnVSTDOZxxoPkbIG
+         6S7eXLyGuWKnw0mwnaHuLIU9V5vAj8Po/mAkkL97+nTZH433bn5DJeS1/qBtmGbN1ycE
+         re6EoKQl2ttUzGcu17pjm0uSWrRcuOR2RVjR9/BP+0V0sUOV3D3kxwfqp+/I6mScEm8g
+         LkEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVazvjMZOjOyNhSA3EOgjK4vQHlmAM7pdicFdXuaTylZ6fsXPE1+paOGpnwq4VCF1aLdW2GIJjJLig6L3LTWAOPKSKTZ5NXEtqEGZpU
+X-Gm-Message-State: AOJu0Yzkg8vjeitMPde/q46giHA49rYA4ClrYbFqusF3gK2NGag0cSbn
+	jOuDMJJKBnKUs9cnyl5kKYTI67nrafL/ATU69d6gno36jrg99f5JTlqwO+NUwdg=
+X-Google-Smtp-Source: AGHT+IFH/DGAuG6UpXir+MFQEX93ggRvpCtCWJKypFfAYtegcd5mPZkmVf5EdY3Ii1gsDK1y5VGKng==
+X-Received: by 2002:a05:620a:2402:b0:789:f0c6:a938 with SMTP id d2-20020a05620a240200b00789f0c6a938mr3353352qkn.15.1710926181995;
+        Wed, 20 Mar 2024 02:16:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id wh12-20020a05620a56cc00b00789f2660e88sm3706262qkn.68.2024.03.20.02.16.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 02:16:21 -0700 (PDT)
+Message-ID: <cc5d4fc1-14e7-4a73-80bf-6375e44162a3@linaro.org>
+Date: Wed, 20 Mar 2024 10:16:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,56 +76,120 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: mediatek: vcodec: Handle invalid decoder vsi
+Subject: Re: (subset) [PATCH v4 0/5] arm64: dts: qcom: sc8280xp: PCIe fixes
+ and GICv3 ITS enable
+To: Johan Hovold <johan@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Johan Hovold <johan+linaro@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240306095651.4551-1-johan+linaro@kernel.org>
+ <171081652637.198276.6219023769904423414.b4-ty@kernel.org>
+ <Zfk98hYPn7kiFGkt@hovoldconsulting.com>
+ <9b475e13-96b9-4bce-8041-e0d8e5a332a1@linaro.org>
+ <Zfqb8jPK50vlqu5Q@hovoldconsulting.com>
+ <baf9c1bd-84ef-4ecb-b229-51a83fe82c3f@linaro.org>
+ <ZfqhCKoEL4XGRs7T@hovoldconsulting.com>
 Content-Language: en-US
-To: Irui Wang <irui.wang@mediatek.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>, nicolas.dufresne@collabora.com,
- sebastian.fricke@collabora.com
-Cc: Longfei Wang <longfei.wang@mediatek.com>,
- Maoguang Meng <maoguang.meng@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240320061336.2615-1-irui.wang@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240320061336.2615-1-irui.wang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZfqhCKoEL4XGRs7T@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Il 20/03/24 07:13, Irui Wang ha scritto:
-> Handle invalid decoder vsi in vpu_dec_init to ensure the decoder vsi is
-> valid for future use.
+On 20/03/2024 09:40, Johan Hovold wrote:
+> On Wed, Mar 20, 2024 at 09:24:54AM +0100, Krzysztof Kozlowski wrote:
+>> On 20/03/2024 09:18, Johan Hovold wrote:
 > 
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
-
-This commit needs a Fixes tag, can you please add the relevant one and resend?
-
-Thanks,
-Angelo
-
-> ---
->   .../media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c    | 6 ++++++
->   1 file changed, 6 insertions(+)
+>>> Perhaps you should not comment before reading up on the history of this
+>>> series.
+>>>
+>>> This was all intended for 6.9, but merging was stalled for a number of
+>>> reasons so here we are. The patches were also going in through different
+>>> trees, so patch 4/5 is the first Qualcomm SoC patch.
+>>
+>> Again, well, you sent it at few days before merge window, so how do you
+>> imagine this being applied for v6.9 and still fulfilling "few linux-next
+>> cycles before merge window" requirement? Especially that arm-soc cut off
+>> is much earlier :/. I talk about patch 5, of course, because that is not
+>> a fix (at least not marked as one). Don't expect in general a arms-co
+>> patch to be applied four days before merge window, thus the actual fix -
+>> patch #4 - should be split.
 > 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
-> index 82e57ae983d5..17770993fe5a 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
-> @@ -231,6 +231,12 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
->   	mtk_vdec_debug(vpu->ctx, "vdec_inst=%p", vpu);
->   
->   	err = vcodec_vpu_send_msg(vpu, (void *)&msg, sizeof(msg));
-> +
-> +	if (IS_ERR_OR_NULL(vpu->vsi)) {
-> +		mtk_vdec_err(vpu->ctx, "invalid vdec vsi, status=%d", err);
-> +		return -EINVAL;
-> +	}
-> +
->   	mtk_vdec_debug(vpu->ctx, "- ret=%d", err);
->   	return err;
->   }
+> At the time there was still hope that there may be an rc8, and the patch
+> in question had been used by a large number of X13s users for several
+> weeks, which is a lot more testing than the average Qualcomm patch
+> receives, whether it's in linux-next or not.
+
+OK, it does solve some parts of our discussion but does not solve my
+earlier comment: Fixes should be separate series. Certain folks have
+quite strict requirement on this. Try sending a fix with non-fix
+(depending on fix somehow like here) to Mark Brown. He has even template
+for such case...
+
+> 
+> And patch 5 depends on the earlier patches in the series so it belongs
+> in the series, which was also initially posted long before the merge
+> window.
+
+The dependency is might not be good enough reason to combine fixes and
+non-fixes into one series. Dependency should be explained (in 5th
+patch), but it's maintainer's judgement and job to handle this.
+
+And in all this, fact that Bjorn missed certain aspects and applied this
+differently than you wanted, is another argument that this should be split.
+
+Best regards,
+Krzysztof
 
 
