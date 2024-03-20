@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-108542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8AB880C09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B21A5880C0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15FA91F23E68
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ACB81F23DC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9B621100;
-	Wed, 20 Mar 2024 07:31:05 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983C72209F;
+	Wed, 20 Mar 2024 07:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Q1cBSxYK"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605AA2030A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7284722F0D;
+	Wed, 20 Mar 2024 07:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919865; cv=none; b=QAa/W7Xm3s5XvQirUBahAUJ3OaUTh7mAmQOgunfUKP/um7vqIBHYvQHNTr0kt+mvep4hrSy/rqcS1cO//qkVEeW+0uRkzABmQzC5wXsC6Ffgt+LH74RhSRHCb9Vm2aQlDjzXF701ltPlsEvd6IKJTBqDtUWvgzb+RJh322C0DBs=
+	t=1710919876; cv=none; b=c4oGtv477w3mbJqRT5/ux/Cw9so/onwquMpRY0jsvDdEvCPdfFHs0pducLjAdXmvUDQOA6z2jkUU2Vw96xfDxBIGwoq/W7p4icAJipyuIe7/VaOXHxS9lUN+CJMmyqvj0fMTO+p3kFlViOw6WKrWUPWwjQOaKynlMj5sA3tooUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919865; c=relaxed/simple;
-	bh=2ROv1GJ5AGVwHAmuJlmT49x+qPwpZZF2PlyQYtwg5dk=;
+	s=arc-20240116; t=1710919876; c=relaxed/simple;
+	bh=Ik5ahjZmxjfQ1FR/v6ZDPMYWeeijut/xAT0hg7CxjZE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d52nb0gnRNXvz8i1tUcXXDSf+B7sPc0FtcN0u4ser24RYv6mV9nZ67VYNraM9Am40+RFIVCVC0KIAARXLhizZ43em7enn8DUDFTY3HRvgNsaC2bpK2TFYyQ6vVMMJm+C5YlLbR9PenespP7Xpq15LyFkHJtfbPq6xCtmTxCf5Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 42K7UOJq005451;
-	Wed, 20 Mar 2024 16:30:24 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Wed, 20 Mar 2024 16:30:24 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 42K7UOVc005448
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 20 Mar 2024 16:30:24 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <dd264bf7-821b-4cf4-802b-60ae3c7b83bd@I-love.SAKURA.ne.jp>
-Date: Wed, 20 Mar 2024 16:30:24 +0900
+	 In-Reply-To:Content-Type; b=GRq1t4efoQhAssGahkeYiv/rwk9IARHR5V0SMlk/8ZX2cHvrd+FTS9yPS1ANv4+DH2JemN9/nXn1Tq8cKtQk3Wr9DqbdVgnNskBWk9EmXRWVwFZbf0he06HMEjc7+SzX0pa+9eEqEgXpJkphgjrhl+bi64DGuXTROuCDgSSf4g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Q1cBSxYK; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 68F241BF20A;
+	Wed, 20 Mar 2024 07:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710919871;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voBe4cnKC0PYia7ms5iUQbaUgT546itFPRtdPkNE1ao=;
+	b=Q1cBSxYKQaIltFJkiNRkwe6YV7E7uUhmWbptRl2p/i0RABaEw6LCltBs36y+/AFubbLIoI
+	Gm2n0LiHp+5jjpd7Ux+FiS6cQfihpFUlZuH5uqTXDDmejoDNW7Hpg8ku5vt7sfsVzszS2C
+	HMOZ2ydoyDCJT6i8PqzsNXNMe27Y6ArMipnHj7rDltqswrI48QRV4v716Ay18bxoAkzimR
+	uwKKDIkLQtJ/DDeNbbAsHpAJEFXACx1sRL6UePnwjfqnQWoT3NMwHx6ocx8grfkdymdzfE
+	VFWAH2+u8OLiNA8UfJIbY6iTIrolrARnTn8ZBx+owPUttl1KIXsf1lN13sIPeA==
+Message-ID: <f2d8715d-a1ad-45a4-952f-a702b29740be@bootlin.com>
+Date: Wed, 20 Mar 2024 08:31:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,81 +53,94 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [kernel?] possible deadlock in console_flush_all (2)
+Subject: Re: [PATCH 07/13] ASoC: ti: davinci-i2s: Add TDM support
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-8-bastien.curutchet@bootlin.com>
+ <9d123584-1feb-404b-890f-2da694cf56d5@gmail.com>
 Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness
- <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <000000000000e40a2906072e9567@google.com>
- <ab273ae2-80ec-45da-910a-e74298c71d50@I-love.SAKURA.ne.jp>
- <CAADnVQLmLMt2bF9aAB26dtBCvy2oUFt+AAKDRgTTrc7Xk_zxJQ@mail.gmail.com>
- <596aad11-ee69-4ef1-b945-7b67a9fb22d7@I-love.SAKURA.ne.jp>
- <CAADnVQL6Q3k0+-5X3Xjov7W_xESxkmVXcsCxQRWitQvhTBsf7A@mail.gmail.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CAADnVQL6Q3k0+-5X3Xjov7W_xESxkmVXcsCxQRWitQvhTBsf7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <9d123584-1feb-404b-890f-2da694cf56d5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On 2024/03/20 16:12, Alexei Starovoitov wrote:
-> On Wed, Mar 20, 2024 at 12:05 AM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
->>
->> On 2024/03/20 15:56, Alexei Starovoitov wrote:
->>> This has nothing to do with bpf.
->>> bpf never calls printk().
->>
->> Please see the Sample crash report in the dashboard.
->> bpf program is hitting printk() via report_bug().
+Hi Péter,
+
+>> +static int davinci_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
+>> +				    unsigned int tx_mask,
+>> +				    unsigned int rx_mask,
+>> +				    int slots, int slot_width)
+>> +{
+>> +	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+>> +
+>> +	dev_dbg(dev->dev, "%s - slots %d, slot_width %d\n", __func__, slots, slot_width);
 > 
-> Exactly. local_bh_neable is simply asking for a splat.
-> _this_ bug is in printk.
-> It's a generic issue.
-
-I can't catch. printk() is called due to report_bug().
-
-If the reason report_bug() is called is that spin_unlock_bh() is bad,
-this is a bug in sock_map_delete_elem() rather than a bug in printk(), isn't it.
-
+> The __func__ can be ommited, it is better to leave it for dynamic
+> debugging by adding "dyndbg=+pmf" module parameter if needed.
 > 
-> sockmap bug is orthogonal.
-> It's already being looked at.
 
-Then, can we expect that this bug is also fixed shortly?
+True, I'll remove the __func__.
 
+>> +
+>> +	if (slots > 128 || !slots) {
+>> +		dev_err(dev->dev, "Invalid number of slots\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (rx_mask != (1 << slots) - 1) {
+>> +		dev_err(dev->dev, "Invalid RX mask (0x%08x) : all slots must be used by McBSP\n",
+>> +			rx_mask);
+>> +		return -EINVAL;
 > 
->> -> #0 (console_owner){....}-{0:0}:
->>        check_prev_add kernel/locking/lockdep.c:3134 [inline]
->>        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->>        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
->>        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
->>        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
->>        console_lock_spinning_enable kernel/printk/printk.c:1873 [inline]
->>        console_emit_next_record kernel/printk/printk.c:2901 [inline]
->>        console_flush_all+0x810/0xfd0 kernel/printk/printk.c:2973
->>        console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3042
->>        vprintk_emit+0x5a6/0x770 kernel/printk/printk.c:2342
->>        _printk+0xd5/0x120 kernel/printk/printk.c:2367
->>        __report_bug lib/bug.c:195 [inline]
->>        report_bug+0x346/0x500 lib/bug.c:219
->>        handle_bug+0x3e/0x70 arch/x86/kernel/traps.c:239
->>        exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:260
->>        asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
->>        __local_bh_enable_ip+0x1be/0x200 kernel/softirq.c:362
->>        spin_unlock_bh include/linux/spinlock.h:396 [inline]
->>        __sock_map_delete net/core/sock_map.c:424 [inline]
->>        sock_map_delete_elem+0xca/0x140 net/core/sock_map.c:446
->>        bpf_prog_2c29ac5cdc6b1842+0x42/0x46
->>        bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
->>        __bpf_prog_run include/linux/filter.h:657 [inline]
->>        bpf_prog_run include/linux/filter.h:664 [inline]
+> This is only a restriction for RX?
+> 
 
+Nope you're right, I'll add the same for tx_mask.
+
+>> +	}
+>> +
+>> +	if (davinci_i2s_tdm_word_length(slot_width) < 0) {
+>> +		dev_err(dev->dev, "%s: Unsupported slot_width %d\n", __func__, slot_width);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	dev->tdm_slots = slots;
+>> +	dev->slot_width = slot_width;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   #define DEFAULT_BITPERSAMPLE	16
+>>   
+>>   static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>> @@ -228,6 +282,13 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>>   		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+>>   
+>>   	dev->fmt = fmt;
+>> +
+>> +	if ((dev->tdm_slots || dev->slot_width) &&
+>> +	    ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_BP_FC)) {
+>> +		dev_err(dev->dev, "TDM is only supported for BP_FC format\n");
+>> +		return -EINVAL;
+> 
+> I think this is not a valid statement, Fsync can be generated internally
+> or coming from external source in TDM mode also.
+> 
+
+My hardware allow me to only test BP_FC so I wished to put some
+'barriers' in front of untested things.
+
+
+Best regards,
+Bastien
 
