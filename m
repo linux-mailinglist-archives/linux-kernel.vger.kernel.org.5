@@ -1,104 +1,174 @@
-Return-Path: <linux-kernel+bounces-109444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BFDA88193F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:42:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5313888194B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 866931C2110F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:41:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0C09B21DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E928614C;
-	Wed, 20 Mar 2024 21:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B0785C5D;
+	Wed, 20 Mar 2024 21:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NZvQisZb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lZCnSeSl"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDC68613F;
-	Wed, 20 Mar 2024 21:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8D533062;
+	Wed, 20 Mar 2024 21:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710970898; cv=none; b=OKlvm8oAavMkOIqWNWg8ysRUg9iXaZ4gB6NG2MkToRtt23vlyoLtRCh7iw6UENAvuiQnD1d9YV3StEhSQAr/SuSr84LChI2Nru8lePTxZbZSZ4Ug8iaOrnRy8FPa4WmWZ3+cGibMDp1etUiHurgY5NuSCCYq6kAnfrSJqD27BWU=
+	t=1710971558; cv=none; b=FgSsv+PjDIFQUrALvOmXfni2ig7F6EXWe3Kkjb9UsjSUQcYsE/UjbUJzZK6Dltuoo3Val57Emm9jVzHdjNI1hrIJjfNd8yl2roj/oJ79c+0O+5ZOfVdUj0xIITF5IUk+3Wwq87vGn/czAoawZoZEfliN3K4eSNhhCup20OIX7ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710970898; c=relaxed/simple;
-	bh=XsmAB7EXFsutDSIAv8tlhZP7IVJx0037ZDdYmvdHizE=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=Ttbv+GVEw6s+7cptAZrAJVcfKtxJ4/sXWKfwc4EK8jj5zDO2mW5t82NgPCvkrCAuz8nRkcJJgXJnqu+US05nWnh9nBaDBG86kSxbctpBoU3uhNCUF3zrYq8ZJ9KCTxahyi9WUBSsnU+l2/DcprD0CUNmWX+hpcXBdeUDz2mS9H4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NZvQisZb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C27C2C433F1;
-	Wed, 20 Mar 2024 21:41:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710970898;
-	bh=XsmAB7EXFsutDSIAv8tlhZP7IVJx0037ZDdYmvdHizE=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=NZvQisZb1fCrQfqweiQ3QTxklIRPVt9kHrKc8gnBYBZSy/OSqLGdujGLHt6Lg+CD5
-	 /W3yn4f99IRgB/vkxdfQ8dCps6zTMtkk2mi75aqMYNODArAt92LRt1EA2OZ6h0S5oR
-	 BOVE4Cbv1gQv/ylTqkCdwSEPxEsY6S8o1iuLbahTpXZzV+25pc8ecK/zEfx8KxvmuU
-	 bu83rn/Hj3zKOe8Rbc7agSRuRvOctkK9WRNJWtz7cVUYa8uxjyI9fBH4j4pe2FPZja
-	 aEH9Ou0qeooJX+oLtjn6nf0yF3qRG258tCm3n2QzTW8H8Sy4qJDmNkk7JJOuRuvSxc
-	 YFND0xwN3XXKg==
-Date: Wed, 20 Mar 2024 16:41:36 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1710971558; c=relaxed/simple;
+	bh=8zhUcMHgW8RImpLOFFWUdVjfodb9oNMgadrLsX11UVo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XyKCOzz0HGoyTQ9h8OhuVGsb7VNtiVsFY9Js2/VOYXy8nZikY4dTunDflmAGRPhVvl0Pxg8ZPdrOEt6AHIolmNLLJTjTreQiei+Y8CtHOoV/13r9LDPbFzCCOZLn26hYPMq2yiM7HIj/33VbB4Lx3Vwfe3Z0mhRlWf6zo4uxFbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lZCnSeSl; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710971551; x=1742507551;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8zhUcMHgW8RImpLOFFWUdVjfodb9oNMgadrLsX11UVo=;
+  b=lZCnSeSlA4DcmdZl80bV6j7Po5zE27RDGkI+NkNdnsJs0t/8lQ0Pq9cd
+   wy+YzGLG3e8BFuYREcDyGYNoddQVZawy+PXHM0Xf9Ai8jlVuLB9EJ62NL
+   cDPCdLawavS/6PmMEnitDjUvqCMOHUndnmYgRoCALKBGIPvhOXUzmKyHT
+   3rPjPoW6jqeRk+/Cb9ZTorUCRUHqwAEl8Ei3Qt6mueomGg/QnGY3gND2+
+   J9dMXguZF8SQkkBpFnSTLXthzQMqKv0QDTb4LDTxOddrL5EiJflPCAg6b
+   xPhGqnYtjrj4t0X1XXUAexlRFI7a3shS09qsLXvfNgBTEh7v+V5E5oz14
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5816216"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="5816216"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:50:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="45386606"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:50:19 -0700
+Date: Wed, 20 Mar 2024 14:50:13 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	Binbin Wu <binbin.wu@linux.intel.com>,
+	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 030/130] KVM: TDX: Add helper functions to print TDX
+ SEAMCALL error
+Message-ID: <20240320215013.GJ1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1259755bde3a07ec4dc2c78626fa348cf7323b33.1708933498.git.isaku.yamahata@intel.com>
+ <315bfb1b-7735-4e26-b881-fcaa25e0d3f3@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Andrej Picej <andrej.picej@norik.com>
-Cc: kernel@pengutronix.de, jic23@kernel.org, devicetree@vger.kernel.org, 
- haibo.chen@nxp.com, s.hauer@pengutronix.de, linux-iio@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, festevam@gmail.com, 
- linux-kernel@vger.kernel.org, conor+dt@kernel.org, upstream@lists.phytec.de, 
- imx@lists.linux.dev, shawnguo@kernel.org, lars@metafoo.de, 
- krzysztof.kozlowski+dt@linaro.org
-In-Reply-To: <20240320100407.1639082-3-andrej.picej@norik.com>
-References: <20240320100407.1639082-1-andrej.picej@norik.com>
- <20240320100407.1639082-3-andrej.picej@norik.com>
-Message-Id: <171096725727.717649.376674198278388315.robh@kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: nxp,imx93-adc.yaml: Add
- calibration properties
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <315bfb1b-7735-4e26-b881-fcaa25e0d3f3@intel.com>
 
+On Wed, Mar 20, 2024 at 01:29:07PM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-On Wed, 20 Mar 2024 11:04:06 +0100, Andrej Picej wrote:
-> Document calibration properties and how to set them.
 > 
-> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
-> ---
->  .../bindings/iio/adc/nxp,imx93-adc.yaml           | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+> 
+> On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > Add helper functions to print out errors from the TDX module in a uniform
+> > manner.
+> 
+> Likely we need more information here.  See below.
+> 
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+> > Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+> > ---
+> > v19:
+> > - dropped unnecessary include <asm/tdx.h>
+> > 
+> > v18:
+> > - Added Reviewed-by Binbin.
+> 
+> The tag doesn't show in the SoB chain.
+> 
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> 
+> [...]
+> 
+> > +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out)
+> > +{
+> > +	if (!out) {
+> > +		pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
+> > +				   op, error_code);
+> > +		return;
+> > +	}
+> 
+> I think this is the reason you still want the @out in tdx_seamcall()?
+> 
+> But I am not sure either -- even if you want to have @out *here* -- why
+> cannot you pass a NULL explicitly when you *know* the concerned SEAMCALL
+> doesn't have a valid output?
+> 
+> > +
+> > +#define MSG	\
+> > +	"SEAMCALL (0x%016llx) failed: 0x%016llx RCX 0x%016llx RDX 0x%016llx R8 0x%016llx R9 0x%016llx R10 0x%016llx R11 0x%016llx\n"
+> > +	pr_err_ratelimited(MSG, op, error_code, out->rcx, out->rdx, out->r8,
+> > +			   out->r9, out->r10, out->r11);
+> > +}
+> 
+> Besides the regs that you are printing, there are more regs (R12-R15, RDI,
+> RSI) in the structure.
+> 
+> It's not clear why you only print some, but not all.
+> 
+> AFAICT the VP.ENTER SEAMCALL can have all regs as valid output?
+
+Only those are used for SEAMCALLs except TDH.VP.ENTER. TDH.VP.ENTER is an
+exception.
+
+As discussed at [1], out can be eliminated. We will have only limited output.
+If we go for that route, we'll have the two following functions.
+Does it make sense?
+
+void pr_tdx_error(u64 op, u64 error_code)
+{
+        pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
+                           op, error_code);
+}
+
+void pr_tdx_sept_error(u64 op, u64 error_code, const union tdx_sept_entry *entry,
+		       const union tdx_sept_level_state *level_state)
+{
+#define MSG \
+        "SEAMCALL (0x%016llx) failed: 0x%016llx entry 0x%016llx level_state 0x%016llx\n"
+        pr_err_ratelimited(MSG, op, error_code, entry->raw, level_state->raw);
+}
+
+
+[1] https://lore.kernel.org/kvm/20240320213600.GI1994522@ls.amr.corp.intel.com/
+
+> 
+> Anyway, that being said, you might need to put more text in
+> changelog/comment to make this patch (at least more) reviewable.
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml: nxp,calib-avg-en: missing type definition
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml: nxp,calib-nr-samples: missing type definition
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml: nxp,calib-t-samples: missing type definition
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240320100407.1639082-3-andrej.picej@norik.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
