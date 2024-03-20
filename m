@@ -1,322 +1,119 @@
-Return-Path: <linux-kernel+bounces-108690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD924880E8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:27:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80722880E57
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D5D3281BEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:27:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26B0B1F22628
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF63D3AC0C;
-	Wed, 20 Mar 2024 09:27:36 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C7639AEC;
+	Wed, 20 Mar 2024 09:11:22 +0000 (UTC)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A1A38F9A;
-	Wed, 20 Mar 2024 09:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D094038F94
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710926856; cv=none; b=ZiCu8kxe0yIpFMP5q8jaU3m+AUHcfn7NZ1kgSpFSCOoUXX3XIuuft64ShboKFT1zkiDiGowODFtFHhoY8LXIqJg3T5JIdeV3LnH3a4nvgxeUM2m450ypczAQpQrDd3UWfnTkzwHtQatJ5QVS/ZTYzD+iPPy8qTtNDYYvtozowbA=
+	t=1710925881; cv=none; b=QDSln9pj6eT4DKOSCKYhOvnYja50lB7w3Uai5+WPxFII6/OYD198JWmIEYLXN+JFI6JoB8VrSWHpBAAC8EhIVOqNgW7P+H8b3W+N7+NP3xxGnxC2bn6v9QCcWk2EbG6i3zNnisSljjYYrKMWsD/ce16IxN7aYmJ76kyJDYFlA7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710926856; c=relaxed/simple;
-	bh=gCY8+IzzEml3KRG7LF4Ty/7TwwwJmNOd33gPf4Oc57c=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=UW1Up5XdEUTP0NC4pkW7rR4Hi14A/a9EESHgA+E7/kMNqFzR6MGCHV34ZsAdALvsB0YWcc61JBPTo13kidOT1Hz8iK3ekK+RcvUeL5EIe9hSBd89p9M7SVAHHJ47LWAxNGuuMvsp7IH8cJUXNdtPqGqGjPLcpZ8rUQh1WADiKCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B833E1A00BB;
-	Wed, 20 Mar 2024 10:27:26 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 54E091A0091;
-	Wed, 20 Mar 2024 10:27:26 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 96184183AC99;
-	Wed, 20 Mar 2024 17:27:24 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: abelvesa@kernel.org,
-	peng.fan@nxp.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	shengjiu.wang@gmail.com
-Cc: linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] clk: imx: imx8mp: Add pm_runtime support for power saving
-Date: Wed, 20 Mar 2024 17:10:51 +0800
-Message-Id: <1710925851-5643-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1710925881; c=relaxed/simple;
+	bh=5vMlbOGBj9xsefyKotdnBYkTfFPfx6qag6aKEmZ1brg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=cW529cFDbVs4BIdU9ZNGWMhk0kysmZVMTc9ybkaXbVJxFR9spVIvz4xeop8fVPxWFlQxUQH6aiGVTJQIBBo/Z85HotBSLZoH4YFNMR/VeIcE6C9xze7kQEhhBGK4aR1KgCP9ShCUV2aFFzyJSeqR0/YuK2VuIAKW2crryD31jg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d49871732fso10600131fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:11:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710925878; x=1711530678;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ic1nLAZlOIEz8qJZURNZoS0hfHmBW2vxO0Mxv1zSKM4=;
+        b=DXcFFWYhAouH76IdwKVnPLYUgp1wbblZZGzkb/7Dum+8Xzj1KanfeKM/JERi+NoFOg
+         3CV9dPoDidgmlNGtkRpEDfXb9i2OUX0ZvALJz3mGUIsRxpxW1HaK7yKrSqHxTmhUY6+j
+         hn/twRyFmpPbvTAFfHQm4XUlV/edb1Hfrzyay3gZZDoEMeWfxlbkFU1VWFPeQVK2CcEe
+         5+I9Ph9GZ8pB/3+gUS1TZM100/CbIiAAS0mFL7ZO05fedcND/fIbEHzLf7lYCGCfenme
+         eWxrPf0owZbhGN/ZtQRuW2g66UF75c9/pb2d0pWojShKFr/j44nzXtf+dPitTxUgF/BV
+         tuXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZTElFPxSrmpeTa5F+jba3P/ipn8FrZf6LbXb7QL7ASptVRbqvQDhWvF9OCc61RwIsYe/cIk3o9pgwNYt++szVzWfE+48l4+fblMD8
+X-Gm-Message-State: AOJu0YyMS22Sh3jFGF2Nxv1J4K8QMu0EMmP8bjcAH+3HeBRRJbaYvzTr
+	f1+bkqcCSYnycgbPhIiXZQBvqtxGijxy79SqFFjX2TGB5MCzMDhx
+X-Google-Smtp-Source: AGHT+IHuIGZmvxQyYFiZryw0Ofph5rR4aa1Rc8TH0jQHfwdyjSFp9UHdVF7zdFnNwwSVwQHZ+8j4qw==
+X-Received: by 2002:a2e:b1c5:0:b0:2d4:7458:b65 with SMTP id e5-20020a2eb1c5000000b002d474580b65mr3346780lja.2.1710925877737;
+        Wed, 20 Mar 2024 02:11:17 -0700 (PDT)
+Received: from [10.50.4.153] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
+        by smtp.gmail.com with ESMTPSA id p31-20020a05600c1d9f00b00414109c66f7sm1572006wms.38.2024.03.20.02.11.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 02:11:17 -0700 (PDT)
+Message-ID: <c4057654-97bd-4721-9bed-9dd5ef8b3f8d@grimberg.me>
+Date: Wed, 20 Mar 2024 11:11:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: WQ_UNBOUND workqueue warnings from multiple drivers
+Content-Language: he-IL, en-US
+To: Kamaljit Singh <Kamaljit.Singh1@wdc.com>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "kbusch@kernel.org" <kbusch@kernel.org>
+References: <BYAPR04MB41513F04DB2ECDC3601CC36ABC2D2@BYAPR04MB4151.namprd04.prod.outlook.com>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <BYAPR04MB41513F04DB2ECDC3601CC36ABC2D2@BYAPR04MB4151.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Add pm_runtime support for power saving. In pm runtime suspend
-state the registers will be reseted, so add registers save
-in pm runtime suspend and restore them in pm runtime resume.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
----
-changes in v2:
-- move pm_runtime_enable before the clk register
 
- drivers/clk/imx/clk-imx8mp-audiomix.c | 150 +++++++++++++++++++++++---
- 1 file changed, 137 insertions(+), 13 deletions(-)
+On 19/03/2024 0:33, Kamaljit Singh wrote:
+> Hello,
+>
+> After switching from Kernel v6.6.2 to v6.6.21 we're now seeing these workqueue
+> warnings. I found a discussion thread about the the Intel drm driver here
+> https://lore.kernel.org/lkml/ZO-BkaGuVCgdr3wc@slm.duckdns.org/T/
+>
+> and this related bug report https://gitlab.freedesktop.org/drm/intel/-/issues/9245
+> but that that drm fix isn't merged into v6.6.21. It appears that we may need the same
+> WQ_UNBOUND change to the nvme host tcp driver among others.
+>   
+> [Fri Mar 15 22:30:06 2024] workqueue: nvme_tcp_io_work [nvme_tcp] hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+> [Fri Mar 15 23:44:58 2024] workqueue: drain_vmap_area_work hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+> [Sat Mar 16 09:55:27 2024] workqueue: drain_vmap_area_work hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+> [Sat Mar 16 17:51:18 2024] workqueue: nvme_tcp_io_work [nvme_tcp] hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+> [Sat Mar 16 23:04:14 2024] workqueue: nvme_tcp_io_work [nvme_tcp] hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+> [Sun Mar 17 21:35:46 2024] perf: interrupt took too long (2707 > 2500), lowering kernel.perf_event_max_sample_rate to 73750
+> [Sun Mar 17 21:49:34 2024] workqueue: drain_vmap_area_work hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+> ...
+> workqueue: drm_fb_helper_damage_work [drm_kms_helper] hogged CPU for >10000us 32 times, consider switching to WQ_UNBOUND
 
-diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
-index 55ed211a5e0b..6042280d6404 100644
---- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-+++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-@@ -7,10 +7,12 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/device.h>
-+#include <linux/io.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- 
- #include <dt-bindings/clock/imx8mp-clock.h>
- 
-@@ -18,6 +20,7 @@
- 
- #define CLKEN0			0x000
- #define CLKEN1			0x004
-+#define EARC			0x200
- #define SAI1_MCLK_SEL		0x300
- #define SAI2_MCLK_SEL		0x304
- #define SAI3_MCLK_SEL		0x308
-@@ -26,6 +29,12 @@
- #define SAI7_MCLK_SEL		0x314
- #define PDM_SEL			0x318
- #define SAI_PLL_GNRL_CTL	0x400
-+#define SAI_PLL_FDIVL_CTL0	0x404
-+#define SAI_PLL_FDIVL_CTL1	0x408
-+#define SAI_PLL_SSCG_CTL	0x40C
-+#define SAI_PLL_MNIT_CTL	0x410
-+#define IPG_LP_CTRL		0x504
-+#define REGS_NUM		16
- 
- #define SAIn_MCLK1_PARENT(n)						\
- static const struct clk_parent_data					\
-@@ -182,13 +191,65 @@ static struct clk_imx8mp_audiomix_sel sels[] = {
- 	CLK_SAIn(7)
- };
- 
-+struct clk_imx8mp_audiomix_regs {
-+	u32 regs_num;
-+	u32 regs_off[];
-+};
-+
-+static const struct clk_imx8mp_audiomix_regs audiomix_regs = {
-+	.regs_num = REGS_NUM,
-+	.regs_off = {
-+		CLKEN0,
-+		CLKEN1,
-+		EARC,
-+		SAI1_MCLK_SEL,
-+		SAI2_MCLK_SEL,
-+		SAI3_MCLK_SEL,
-+		SAI5_MCLK_SEL,
-+		SAI6_MCLK_SEL,
-+		SAI7_MCLK_SEL,
-+		PDM_SEL,
-+		SAI_PLL_GNRL_CTL,
-+		SAI_PLL_FDIVL_CTL0,
-+		SAI_PLL_FDIVL_CTL1,
-+		SAI_PLL_SSCG_CTL,
-+		SAI_PLL_MNIT_CTL,
-+		IPG_LP_CTRL
-+	},
-+};
-+
-+struct clk_imx8mp_audiomix_drvdata {
-+	void __iomem *base;
-+	u32 regs_save[REGS_NUM];
-+};
-+
-+static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool save)
-+{
-+	struct clk_imx8mp_audiomix_drvdata *drvdata = dev_get_drvdata(dev);
-+	void __iomem *base = drvdata->base;
-+	int i;
-+
-+	if (save) {
-+		for (i = 0; i < audiomix_regs.regs_num; i++)
-+			drvdata->regs_save[i] = readl(base + audiomix_regs.regs_off[i]);
-+	} else {
-+		for (i = 0; i < audiomix_regs.regs_num; i++)
-+			writel(drvdata->regs_save[i], base + audiomix_regs.regs_off[i]);
-+	}
-+}
-+
- static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- {
-+	struct clk_imx8mp_audiomix_drvdata *drvdata;
- 	struct clk_hw_onecell_data *priv;
- 	struct device *dev = &pdev->dev;
- 	void __iomem *base;
- 	struct clk_hw *hw;
--	int i;
-+	int i, ret;
-+
-+	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
- 
- 	priv = devm_kzalloc(dev,
- 			    struct_size(priv, hws, IMX8MP_CLK_AUDIOMIX_END),
-@@ -202,6 +263,18 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
-+	drvdata->base = base;
-+	dev_set_drvdata(dev, drvdata);
-+
-+	/*
-+	 * pm_runtime_enable needs to be called before clk register.
-+	 * That is to make core->rpm_enabled to be true for clock
-+	 * usage.
-+	 */
-+	pm_runtime_get_noresume(dev);
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	for (i = 0; i < ARRAY_SIZE(sels); i++) {
- 		if (sels[i].num_parents == 1) {
- 			hw = devm_clk_hw_register_gate_parent_data(dev,
-@@ -216,8 +289,10 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 				0, NULL, NULL);
- 		}
- 
--		if (IS_ERR(hw))
--			return PTR_ERR(hw);
-+		if (IS_ERR(hw)) {
-+			ret = PTR_ERR(hw);
-+			goto err_clk_register;
-+		}
- 
- 		priv->hws[sels[i].clkid] = hw;
- 	}
-@@ -232,8 +307,10 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 
- 	hw = imx_dev_clk_hw_pll14xx(dev, "sai_pll", "sai_pll_ref_sel",
- 				    base + 0x400, &imx_1443x_pll);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
- 	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
- 
- 	hw = devm_clk_hw_register_mux_parent_data_table(dev,
-@@ -241,26 +318,71 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_bypass_sels),
- 		CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
- 		base + SAI_PLL_GNRL_CTL, 16, 1, 0, NULL, NULL);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+
- 	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
- 
- 	hw = devm_clk_hw_register_gate(dev, "sai_pll_out", "sai_pll_bypass",
- 				       0, base + SAI_PLL_GNRL_CTL, 13,
- 				       0, NULL);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
- 	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
- 
- 	hw = devm_clk_hw_register_fixed_factor(dev, "sai_pll_out_div2",
- 					       "sai_pll_out", 0, 1, 2);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
-+					  priv);
-+	if (ret)
-+		goto err_clk_register;
-+
-+	pm_runtime_put_sync(dev);
-+	return 0;
-+
-+err_clk_register:
-+	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
-+	return ret;
-+}
-+
-+static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
- 
--	return devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
--					   priv);
-+	return 0;
- }
- 
-+static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
-+{
-+	clk_imx8mp_audiomix_save_restore(dev, true);
-+
-+	return 0;
-+}
-+
-+static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
-+{
-+	clk_imx8mp_audiomix_save_restore(dev, false);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
-+	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
-+			   clk_imx8mp_audiomix_runtime_resume, NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				      pm_runtime_force_resume)
-+};
-+
- static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
- 	{ .compatible = "fsl,imx8mp-audio-blk-ctrl" },
- 	{ /* sentinel */ }
-@@ -269,9 +391,11 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
- 
- static struct platform_driver clk_imx8mp_audiomix_driver = {
- 	.probe	= clk_imx8mp_audiomix_probe,
-+	.remove = clk_imx8mp_audiomix_remove,
- 	.driver = {
- 		.name = "imx8mp-audio-blk-ctrl",
- 		.of_match_table = clk_imx8mp_audiomix_of_match,
-+		.pm = &clk_imx8mp_audiomix_pm_ops,
- 	},
- };
- 
--- 
-2.34.1
+Hey Kamaljit,
+
+Its interesting that this happens because nvme_tcp_io_work is bound to 1 
+jiffie.
+Although in theory we do not stop receiving from a socket once we 
+started, so
+I guess this can happen in some extreme cases. Was the test you were running
+read-heavy?
+
+I was thinking that we may want to optionally move the recv path to 
+softirq instead to
+get some latency improvements, although I don't know if that would 
+improve the situation
+if we end up spending a lot of time in soft-irq...
+
+>   
+>   
+> Thanks,
+> Kamaljit Singh
 
 
