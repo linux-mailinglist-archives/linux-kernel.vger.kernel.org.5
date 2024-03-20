@@ -1,120 +1,93 @@
-Return-Path: <linux-kernel+bounces-108469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83C18880AE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 617DD880AE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:00:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E631C20D82
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:00:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87CB91C20CBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1B8179AD;
-	Wed, 20 Mar 2024 06:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601CC182CC;
+	Wed, 20 Mar 2024 06:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="38JYpUkT"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8UbNUox"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C009517573
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7671B7F5;
+	Wed, 20 Mar 2024 06:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710914408; cv=none; b=EOGSdRIqUGDE7bZxUWeyrTT04fsw+EKLU2AcLQsnOaDHvLWOc+C/09TINZwrNoklFiGLfVyV3LgJCHkVhmxSFfTIg9JEd4q+Xppc+L6eN7j5VrpAuzgOeEkHq3rlzKsRL6Tg0l8nq9IV9AEn25n45IBN1g+4Fc7nYsgEEblsZcI=
+	t=1710914429; cv=none; b=dVUEJdSGbofC+GQNm3OtpvjUP6C1JqtPjM5t57q9GfxGhKhNxxH9CGPs+vfoAdEy4KCagTi9cdq8kbx+bwlSZ+Yba8aB5e6QE/vmO26YU67MCrEgezK4nQKVxpvQvGO64ePfIyEjRAkj1cQZWOUHyUg2n1TuauW4c02pRjtKgeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710914408; c=relaxed/simple;
-	bh=6FBlmkovYz3g0MfGGxRWQ6YmePlnSlZJ4o3EpgtSrEM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=F8TAJDToF950RpfmWTtikz/ZNlkEdiyU0TKM+fgjUy5WGXmrKZUSk7NS2yy4H+Wz5y6X9/DrSUHek0oTAXglAZ+ue7/7gTiG2BwLj6J2MoBFC//JTqxOC3j+VV4rjMdZ8r6zxK3hydtw0UBdj4pJJ2BnkPagcM8Jk5lOJSicKfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=38JYpUkT; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a2386e932so125077287b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710914406; x=1711519206; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PZTYFP7cQrHabDLXpeeWZ0a2uWz3voAo8UgAORiNtBY=;
-        b=38JYpUkTGOCR0MzWftEnX+cRzZF5j9zf4UvBmz4xVPRoJzW5Mr+buzwP9liu1AQbc7
-         DW7L1EjQt4AhyyT/cw1ambYZrd9+ndE3pUy/lZfxxX/xCcBS8MdMGiZbXwGyWmMnbsp9
-         zKK8u0+H9KuqqyxDMAhSOItee/J/rQbVrMdVLlo5nZjJmFp3qDBzCcwZ2tRo/6zi/Yut
-         XRYMrT36QrOf+MosFLZzDiNTVdf3TwmBoookPKnoqiZi+HwPh4aiveZvgj97rKaHJ7lt
-         SxbjkiwlAc9pVNZQNro8N5S5UGSCQ2oADrFvjVjE7225Fg3R9usAmPKaM3AK1Sx+mJIp
-         rWGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710914406; x=1711519206;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PZTYFP7cQrHabDLXpeeWZ0a2uWz3voAo8UgAORiNtBY=;
-        b=LsigSsOMEae/zTSR3/J5SJTWcP+DY+ehs12EgDrqcE8Xw8pPFuKJaH5rEh39/Wzbix
-         BIYFqAkYslsvxSHQrLouA8D6z3dsFe5eNMxiCCTp4+GdJ+dwWN+WoALyikHXks/b2bVW
-         oe0tCzotLXdG05N5JOlAFnLOSgnktLVg0ecr/HsCvjPl0cZstxc3uIcHMvZeZq+Ycht/
-         CVVTqORYFephs6WH+E6sryQVx9/J6vorxP9qXbz5jQudDrhbxhnBz2EOVnwLcrJDdmQZ
-         T0xc4vxxLzeUM0ylPJiG4pZGmj/UKoHO4sBWNDxO27hxKHgR8nAqU/MZnt0STPjprMEb
-         t/Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCXN+iOcTbMKn6Pvlci0bGLuI41GV3hyWkIOS4Hh+GvUU+HYTb3OZdPuWC2YFlIIEApZFDq1ASsCimuaHTWFJu30C0Uudg9ZZ2B+Pnzy
-X-Gm-Message-State: AOJu0YzGLkiVSNNKqXyle3wW9H71cUI2GZYvVBNV1TnqET7RXqyJrjpf
-	sHhl2BEYoXZCc0WrJfFlVUS0kKkWNBeIaU9x4QgGuMCafdHOD4avD3xM6hH5HEKQ86wy9Ebog59
-	X11oIUWzCwxx7UA4s0Q==
-X-Google-Smtp-Source: AGHT+IGYCsCB0GOLdbVb6ZF9l6feOq/JuFNhQzsMn2U3sWml6myhqGSZU7HKyFffXQbmV74q/yfh269FFwjduW+i
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:240e:b0:dc6:f877:ea7b with
- SMTP id dr14-20020a056902240e00b00dc6f877ea7bmr1139569ybb.9.1710914405429;
- Tue, 19 Mar 2024 23:00:05 -0700 (PDT)
-Date: Wed, 20 Mar 2024 06:00:03 +0000
-In-Reply-To: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
+	s=arc-20240116; t=1710914429; c=relaxed/simple;
+	bh=F+JD5BzN3CMt5iCweClrZTt7h+6Pfrn3HmIL6h5t0Wk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=StCxjdL0yYnXOnMDtV/inxD0pamAjbKoFUYjQRti/qdbA5De1qRUz+1YHBq131d5dxUEcFQJhzj8dk/fPxpv4DeE8m7jmoBCBphYNv3RSL9+JFKzqV0wzXqfGlNaI/VF10ln75EACFaYPJPAbf0W/jDFsurybHW1OI0chzZhw2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E8UbNUox; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F868C43394;
+	Wed, 20 Mar 2024 06:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710914429;
+	bh=F+JD5BzN3CMt5iCweClrZTt7h+6Pfrn3HmIL6h5t0Wk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=E8UbNUoxjBS40Za7tg92n197VGdLQ+f4LOl9fMFPoNZ9aoZiuhaWZq88UEB640mla
+	 tKyOHjp41qNzFqHglDDCHl4eVDR7U5GBwpYxRZL9S2EkPR/E2XdP7l+V8QWMU0FPSy
+	 cC5GujjtT0yL9oyXl2dnb+Jc55nrAlYgntZ8GWZ8SJiyaCplYE2P/TjzEMlw+5JPIV
+	 ixA1Yc34Xn9NbJSoZRLGhmfbEf1kbvAxUaSXvOT1dXDPxnl4Ev/Rs2tuvzaHTtz+KW
+	 hhsZy9hz4KZNjH6LtuMR5tyVnCsgYpPnDfYmpVGyQBO0WjFu+AimcsMLOhLnFYPFbl
+	 skYbmd5Kn/p9Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EBB53D84BB1;
+	Wed, 20 Mar 2024 06:00:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
-Message-ID: <Zfp7Y9x2iOE_prpp@google.com>
-Subject: Re: [PATCH] config/mips: support zswap function
-From: Yosry Ahmed <yosryahmed@google.com>
-To: mengfanhui <mengfanhui@kylinos.cn>
-Cc: tsbogend@alpha.franken.de, geert+renesas@glider.be, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@vger.kernel.org, hannes@cmpxchg.org, nphamcs@gmail.com, 
-	chengming.zhou@linux.dev
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf, arm64: fix bug in BPF_LDX_MEMSX
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171091442896.8613.6941801093368305972.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Mar 2024 06:00:28 +0000
+References: <20240312235917.103626-1-puranjay12@gmail.com>
+In-Reply-To: <20240312235917.103626-1-puranjay12@gmail.com>
+To: Puranjay Mohan <puranjay12@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Fri, Jan 26, 2024 at 03:55:47PM +0800, mengfanhui wrote:
-> Solution /sys/module/zswap/parameters/enabled attribute node
-> does not exist issue=EF=BC=8Chandle zpool zbud initialization failed,
-> open CONFIG_ZSWAP CONFIG_ZPOOL CONFIG_ZBUD configuration,manual
-> zswap function by /sys/module/zswap/parameters/enabled file
->=20
-> Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
-> ---
->  arch/mips/configs/generic_defconfig | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/gene=
-ric_defconfig
-> index 071e2205c7ed..14884df392f4 100644
-> --- a/arch/mips/configs/generic_defconfig
-> +++ b/arch/mips/configs/generic_defconfig
-> @@ -13,6 +13,9 @@ CONFIG_CGROUP_DEVICE=3Dy
->  CONFIG_CGROUP_CPUACCT=3Dy
->  CONFIG_NAMESPACES=3Dy
->  CONFIG_USER_NS=3Dy
-> +CONFIG_ZSWAP=3Dy
-> +CONFIG_ZPOOL=3Dy
-> +CONFIG_ZBUD=3Dy
+Hello:
 
-Any reason for choosing zbud over zsmalloc, the default zswap allocator?
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
->  CONFIG_SCHED_AUTOGROUP=3Dy
->  CONFIG_BLK_DEV_INITRD=3Dy
->  CONFIG_BPF_SYSCALL=3Dy
-> --=20
-> 2.25.1
->=20
+On Tue, 12 Mar 2024 23:59:17 +0000 you wrote:
+> A64_LDRSW() takes three registers: Xt, Xn, Xm as arguments and it loads
+> and sign extends the value at address Xn + Xm into register Xt.
+> 
+> Currently, the offset is being directly used in place of the tmp
+> register which has the offset already loaded by the last emitted
+> instruction.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] bpf, arm64: fix bug in BPF_LDX_MEMSX
+    https://git.kernel.org/bpf/bpf/c/114b5b3b4bde
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
