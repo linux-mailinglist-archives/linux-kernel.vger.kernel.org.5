@@ -1,143 +1,204 @@
-Return-Path: <linux-kernel+bounces-109221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2407881659
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:17:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21CF588169C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DA4EB22266
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 539F21C23118
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B98D6A33A;
-	Wed, 20 Mar 2024 17:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OdFFgspP"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2206A343;
+	Wed, 20 Mar 2024 17:33:30 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798C86A02D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3496A02D;
+	Wed, 20 Mar 2024 17:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710955047; cv=none; b=chw6qtdFKPxCaRFSDRn/ReH1fXad/2VKyIWIoqYq9GKwX4EJHA0+hehCv1j6aFlUZ2MsMr5xfp2T9hUxCAfIXdSXK3gxCpFI45P0o26HpzQ0KwGV1gbzCaeX+TVjETjFjKMZ07Dh0+KWairDrn9onIizwGCK+7T3awSc2YBFFHc=
+	t=1710956009; cv=none; b=Re5ooIzDdapeiOPrkmoQF7As7er5ftGRKCRkgljZCwQSVjsBXwnPaWGejjqTlmWFSkqZ1iALambOpkFcCsX4e/U+bx1vK5D6BuzgBUj3jDiPqF8dDVCa8224IASR1jPLzBUI2WMq3ypHlU3KvpWiO6mrIw4s7NU+HR4mRK9qmhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710955047; c=relaxed/simple;
-	bh=E27O7oDV0qY/I1mKc9MBZuLsSH7nRcB25vJ+wBcgPpo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WiUIXMIVCperOXvdJsaqS4F0ms+TsklfHYysBNkrMw5pucsmzgp162Yzk1WOsFaCDew7sSaunOGk8A7q6z6DJrK1lY0/8ZdjlURHXF/kS9web9A4taNq9Rh83jSst4h+PDNw/OnTl/dPOWSagycVTAn6W2Qc7HxNj8TYjAoXlTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OdFFgspP; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-430d3fcc511so9211cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710955042; x=1711559842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dpUfckfHblkI2O0whTqTHBYzMNvVrRqXL/Jx1TZ/mus=;
-        b=OdFFgspPOBXCugwtTjFG+7n4fhEzDvbD+bhZx2GXJS5bT+N/08FPUCf+0Rot2U7FeA
-         I31C7ZVn8FTFY1VHcPcM+uvrfFcemdXfZuPKV5M/daqnP74rQaeAQRNO4s+wBz4hf6X6
-         LW3JKmDyYyqq5d794d6A4EKtf90jTAATSeVqYYYSEtKGHc8spDMoi1kBfru2xfCNiXN9
-         P9US9WWwUpI3PIhJRYdlFOohZIsXsu5hW8VfWAHUvyXEv53YIBp/OnZXMg7r3OV/zgs5
-         FWcQXV69s/5A+pAzdEd22ssnn1u5TFq4+GCVug82JyOVkIniHCOsGO79FhFiz7aIdcbU
-         G05w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710955042; x=1711559842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dpUfckfHblkI2O0whTqTHBYzMNvVrRqXL/Jx1TZ/mus=;
-        b=saJQFM8MoQnB6bUbEfJzkJwUqkU+OuPJGAWchMXdMmrnvmuse23CPuinjMwIIezt2b
-         1FULv5RZzOMZIvgBjm5V2vnA4f6i/uzY/SLd60FUcpQCI0u6PBmCzn7dhkOS/TFAA5bt
-         Wt8npcs3fat3P31UgOZ6uY/Dmx/k1Zi0YoVfE28Ja+IRyYscIJIkghU6vD+bnzSbywRK
-         BY0oienhEW9nbs6MAOrTDlFgt8dEfFMrVHdtovc9wW7N+h0JDXUaZ6VudqcQEYrTxtFu
-         Zegn2tYj1//TKuW3bhtBw4sbaBAmZThBd+MIC2yUBj39wHgrFJzpNKdI0INJZKX+WjYM
-         fvjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUa4Ac5p2CNE20B6+b6yg9WiU37GilNYcXN/KPsDwK9wjKhRcqLImBDFMvR5nRMsTuAjAJBmI18/wSLkXZ0DcK4qwbV0FXWj6O/ne4q
-X-Gm-Message-State: AOJu0YzJTHeEU88JgcHPoZ4A/iT+36Z9GHYWzZ/OBaeobeWNoC7AxqWm
-	CA4P8bOw8fZKng6Kim3LcYpbIqY4jIUg2sZ5wqE9QoZ2ZgSn3nLrBpQAs9L4UwxdKrNPa7UKU8r
-	EAw3/0iokWSz+kTTsBNxuwQJ5ve+64Cy0VAsz
-X-Google-Smtp-Source: AGHT+IFLYdQAuPvBBhJS/6SJFiSfMmYOd8EZJYjEr8SWoFWEUig1E5IadmU/lhuafRa8gSpXkf/xKrC3O60jQR7iw54=
-X-Received: by 2002:a05:622a:30b:b0:431:1d88:ce5b with SMTP id
- q11-20020a05622a030b00b004311d88ce5bmr34205qtw.23.1710955042395; Wed, 20 Mar
- 2024 10:17:22 -0700 (PDT)
+	s=arc-20240116; t=1710956009; c=relaxed/simple;
+	bh=EUOYGNXttkzKdXjPhe48wrwkyokl0sot/Y+oaH9w5nA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G3DaLaES2FWi/Xbj33t3DsNKD5PcE35158dpZkv1k/KRZzkA1dvOf9FI7ZpRTMlRQkN6RKNNteaRHyRPEviUn+iwKhq4m8GGGjropqct1AipcymISewg6sZIJDRJHAi2Uv/wUuELL430DSTXE9Ddtt0d5Pg2d85mwMbEvHaYMxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=green-communications.fr; spf=pass smtp.mailfrom=green-communications.fr; arc=none smtp.client-ip=212.227.126.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=green-communications.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=green-communications.fr
+Received: from evilbit.green-communications.fr ([85.168.41.102]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis)
+ id 1MdNwm-1rDvpV1dC4-00ZNo3; Wed, 20 Mar 2024 18:19:33 +0100
+From: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
+To: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ipv6: delay procfs initialization after the ipv6 structs are ready
+Date: Wed, 20 Mar 2024 18:17:36 +0100
+Message-ID: <20240320171858.2671-1-nicolas.cavallari@green-communications.fr>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320145417.336208-1-visitorckw@gmail.com> <20240320145417.336208-6-visitorckw@gmail.com>
- <CAP-5=fXcWRfsAnByOnX5z6aBJrW6+CLRpj=bQ6uiLM38OZjbRw@mail.gmail.com>
-In-Reply-To: <CAP-5=fXcWRfsAnByOnX5z6aBJrW6+CLRpj=bQ6uiLM38OZjbRw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 20 Mar 2024 10:17:11 -0700
-Message-ID: <CAP-5=fVPZ+Nt_wub1iTpN=pa-1zJkeS5Sa+XHmG6=DnuWLiyNQ@mail.gmail.com>
-Subject: Re: [PATCH v2 05/15] lib min_heap: Add min_heap_init()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, 
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:W7bGElgtY1racbZYK0A81P9SmHNbbxTmpzpVf+L792+wus9po92
+ ndmns0ZoGBaH3CSFs6v2SIhJebA21FIwfej1y/UxEnUmNKmA336stmKZZYIhjBK7/d39S1G
+ kZK2cNd0HeFWPgRttNQvAEkeh0HAKFa5H2FvtZ/23g/su1uiKmrD9cy2RpzJ5+Q7RDhuqAP
+ BYOYcao0uicIdBbTC8N2g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:l9SIw4i0dFo=;KcNnrIyPfojTsQpKr4XR27UL3GX
+ ocnCMD2gKzAw5r9jZ9ksrzToBPlX413sRZnORfThi7OQirW9Z86nvO2yBLXH/u9gsb486xddB
+ xRcP+3i40IM5DrpCkTAn59tQei4yJVYwCzuRZhG/OZi5OMQq82xpSHh7yhBM0uk0I/JcWbTLQ
+ dzEJCWKIQ93er4Lbpi/Q/VNT4dIYiasoL1FRNJNERDq7HqbxcAk0vTEmBlVWItzmVJytArAJi
+ Ph8NZsraUWvvWWBnzo9bFu00rKgeSErQ8pTdFKEo7x9NH6G6K/qb6ydxG7NfepjBi1BqX5Pp2
+ CWjAQN4uFY1kucr6JdYlGBjhlrgoSSYhryX73glqZho4+mwfhpY7uOo7yD+EjaAEjl6pJGT8u
+ r5+hoRFylJwSr9bMS79kCXXE9b3ldZBqFhmvkSMvpiJ2Qq+Zf7RD9TFH/ezcGdHsAP6+4qWSN
+ zhFvPlItddRGgCiclKq/smt67sX4fJJ1ThthGmE99uRol/CrhXvGh1Yf5kZt1I5zvNO3HCO38
+ LDKH3yeSeneLKzk6HArMYDrZuWBKf2WLNLaf7oAy+GfavBvcFIyFwOgX8rXcxsOhXdGBgFgok
+ hyUv2p2UuxJMSul/j3RVclCUSIZfKUmXMyFxZpxxSVHGLT1GLuWAFk+yPVpVdtKTsHPJYOEoN
+ c4+6DDZMHgR/2YJzGgTntDdLyxBD3prjfArKBdM2R+cOGW259Jd50r2/X1pPK/i5HkGki1HBE
+ YBc4er7bhIn2ooVy9XpneJSLEyjc+c5T5DXIJ2Ldvvvdv9Db7aM7qU=
 
-On Wed, Mar 20, 2024 at 10:13=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Wed, Mar 20, 2024 at 7:54=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.c=
-om> wrote:
-> >
-> > Add min_heap_init() for initializing heap with data, nr, and size.
-> >
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
->
-> Thanks, is it possible to update lib/test_min_heap.c to use min_heap_init=
-?
+procfs files are created before the structure they reference are
+initialized.  For example, if6_proc_init() creates procfs files that
+access structures initialized by addrconf_init().
 
-Found in patch 13, thanks!
+If ipv6 is compiled as a module and a program manages to open an ipv6
+procfs file during the loading of the module, it can oops the kernel.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+It appears that we were unlucky enough to reproduce this problem
+multiple times already, out of maybe 100 boots:
 
-Ian
+NET: Registered PF_INET6 protocol family
+8<--- cut here ---
+pwm-backlight backlight: supply power not found, using dummy regulator
+Segment Routing with IPv6
+In-situ OAM (IOAM) with IPv6
+Unable to handle kernel NULL pointer dereference at virtual address
+ 00000000
+mt7915e 0000:03:00.0 wlp3s0: renamed from wlan0
+[00000000] *pgd=00000000
+Internal error: Oops: 5 [#1] SMP ARM
+Modules linked in: ipv6 mt7915e mt76_connac_lib mt76 dw_hdmi_imx
+ mac80211 dw_hdmi drm_display_helper imxdrm drm_dma_helper
+ drm_kms_helper snd_soc_imx_sgtl5000 syscopyarea sysfillrect sysimgblt
+ fb_sys_fops imx_ipu_v3 snd_soc_fsl_asoc_card cfg80211 snd_soc_sgtl5000
+ drm libarc4 snd_soc_fsl_ssi snd_soc_simple_card_utils imx_pcm_dma
+ snd_soc_core rfkill snd_pcm_dmaengine snd_pcm
+ drm_panel_orientation_quirks cfbfillrect cfbimgblt cfbcopyarea
+ snd_timer snd egalax_ts snd_soc_imx_audmux soundcore flexcan mux_mmio
+ imx2_wdt mux_core can_dev pwm_bl
+CPU: 2 PID: 850 Comm: snmpd Not tainted 6.1.14 #1
+Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+PC is at if6_seq_start+0x2c/0x98 [ipv6]
+LR is at init_net+0x0/0xc00
+[...]
+ if6_seq_start [ipv6] from seq_read_iter+0xb4/0x510
+ seq_read_iter from seq_read+0x80/0xac
+ seq_read from proc_reg_read+0xac/0x100
+ proc_reg_read from vfs_read+0xb0/0x284
+ vfs_read from ksys_read+0x64/0xec
+ ksys_read from ret_fast_syscall+0x0/0x54
+Exception stack(0xf0e31fa8 to 0xf0e31ff0)
+1fa0:                   b67fd0b0 be8a666b 0000000a b67fd148 00000400
+ 00000000
+1fc0: b67fd0b0 be8a666b 00000001 00000003 be8a67ec 00000000 b6d7e000
+ b6c9954a
+1fe0: b6d7eb30 be8a6638 b6ef11b4 b6ef0ddc
+Code: e5931004 e35100ff ca000014 e59e25dc (e7920101)
+---[ end trace 0000000000000000 ]---
 
+Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
+---
+ net/ipv6/af_inet6.c | 45 +++++++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
-> Ian
->
-> > ---
-> >  include/linux/min_heap.h | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> > index c3635a7fdb88..ed462f194b88 100644
-> > --- a/include/linux/min_heap.h
-> > +++ b/include/linux/min_heap.h
-> > @@ -44,6 +44,18 @@ struct min_heap_callbacks {
-> >         void (*swp)(void *lhs, void *rhs);
-> >  };
-> >
-> > +/* Initialize a min-heap. */
-> > +static __always_inline
-> > +void __min_heap_init(struct __min_heap *heap, void *data, int size)
-> > +{
-> > +       heap->data =3D data;
-> > +       heap->nr =3D 0;
-> > +       heap->size =3D size;
-> > +}
-> > +
-> > +#define min_heap_init(_heap, _data, _size)     \
-> > +       __min_heap_init(&(_heap)->heap, _data, _size)
-> > +
-> >  /* Sift the element at pos down the heap. */
-> >  static __always_inline
-> >  void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
-> > --
-> > 2.34.1
-> >
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 8041dc181bd4..d12d690a4867 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -1148,18 +1148,6 @@ static int __init inet6_init(void)
+ 	err = ipv6_netfilter_init();
+ 	if (err)
+ 		goto netfilter_fail;
+-	/* Create /proc/foo6 entries. */
+-#ifdef CONFIG_PROC_FS
+-	err = -ENOMEM;
+-	if (raw6_proc_init())
+-		goto proc_raw6_fail;
+-	if (udplite6_proc_init())
+-		goto proc_udplite6_fail;
+-	if (ipv6_misc_proc_init())
+-		goto proc_misc6_fail;
+-	if (if6_proc_init())
+-		goto proc_if6_fail;
+-#endif
+ 	err = ip6_route_init();
+ 	if (err)
+ 		goto ip6_route_fail;
+@@ -1226,6 +1214,19 @@ static int __init inet6_init(void)
+ 	if (err)
+ 		goto ioam6_fail;
+ 
++	/* Create /proc/foo6 entries only after ipv6 structs are ready. */
++#ifdef CONFIG_PROC_FS
++	err = -ENOMEM;
++	if (raw6_proc_init())
++		goto proc_raw6_fail;
++	if (udplite6_proc_init())
++		goto proc_udplite6_fail;
++	if (ipv6_misc_proc_init())
++		goto proc_misc6_fail;
++	if (if6_proc_init())
++		goto proc_if6_fail;
++#endif
++
+ 	err = igmp6_late_init();
+ 	if (err)
+ 		goto igmp6_late_err;
+@@ -1248,6 +1249,16 @@ static int __init inet6_init(void)
+ 	igmp6_late_cleanup();
+ #endif
+ igmp6_late_err:
++#ifdef CONFIG_PROC_FS
++	if6_proc_exit();
++proc_if6_fail:
++	ipv6_misc_proc_exit();
++proc_misc6_fail:
++	udplite6_proc_exit();
++proc_udplite6_fail:
++	raw6_proc_exit();
++proc_raw6_fail:
++#endif
+ 	ioam6_exit();
+ ioam6_fail:
+ 	rpl_exit();
+@@ -1282,16 +1293,6 @@ static int __init inet6_init(void)
+ ndisc_late_fail:
+ 	ip6_route_cleanup();
+ ip6_route_fail:
+-#ifdef CONFIG_PROC_FS
+-	if6_proc_exit();
+-proc_if6_fail:
+-	ipv6_misc_proc_exit();
+-proc_misc6_fail:
+-	udplite6_proc_exit();
+-proc_udplite6_fail:
+-	raw6_proc_exit();
+-proc_raw6_fail:
+-#endif
+ 	ipv6_netfilter_fini();
+ netfilter_fail:
+ 	igmp6_cleanup();
+-- 
+2.43.0
+
 
