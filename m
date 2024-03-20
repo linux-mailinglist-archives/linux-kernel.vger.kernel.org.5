@@ -1,144 +1,177 @@
-Return-Path: <linux-kernel+bounces-109001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A8C0881337
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:20:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72ABE881335
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16B97287105
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDD441F25E3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5780645BEA;
-	Wed, 20 Mar 2024 14:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5900543ADE;
+	Wed, 20 Mar 2024 14:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=terma.com header.i=@terma.com header.b="RgM6z9Zw"
-Received: from smtp-out6.electric.net (smtp-out6.electric.net [192.162.217.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uSUFxJ2+"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012B13FE48;
-	Wed, 20 Mar 2024 14:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.162.217.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FAB43ADC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710944405; cv=none; b=gbFbZM8Bm4zsR0bhGJFTB3aJQIIn0PW9ts/CVYqjOQ2Nsalpeby/U+bZbTFuZ0Q8wKao7pxRKHqHN65iyFNniFIfGKFTn5mTiU56EKbEkwRM2szbPJ0NRTOjNPu1Yak6DXNJGmaR/q7JGDBMiPranG80cnIIbTJNKDC8CwuVZfo=
+	t=1710944381; cv=none; b=MtBKA9j1IRZl7EmAnkkh4MiUZimSjRhKKI0a8/1trAtiJXkK/eDbIyCnhM4KNH9nphSBjclmJJYTSku+Pz3dI3NPeA5q1+JN4vpoOGBQ7K6BPkUWUY25Q503a7WXbQxrSUgquouIUzpwpk88W6xbvjgouweA8SE25uHw1GSwaMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710944405; c=relaxed/simple;
-	bh=AYCj9L452RECc5zbYdcDVE8dBmojGYWNPpDLbiPVRpc=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=sUifSI2s7hHVwgJcC/rd6TISLwmxG1p3m75/K9ej/Qhma80QRqMjpwet6n9UMZew4aFcUz5GPid3voXXfsLSkhkqpv2zSqSySI695vYJAJwFWKdlmw75uOzGtw7xYKfGRq+3rTxv8btvD4Tt2hNaOcETIPTAJRPwgh5X1d0qjG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=terma.com; spf=pass smtp.mailfrom=terma.com; dkim=pass (2048-bit key) header.d=terma.com header.i=@terma.com header.b=RgM6z9Zw; arc=none smtp.client-ip=192.162.217.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=terma.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=terma.com
-Received: from 1rmwmk-0008Zs-VN by out6f.electric.net with emc1-ok (Exim 4.96.1)
-	(envelope-from <chr@terma.com>)
-	id 1rmwmn-0008pI-Vx;
-	Wed, 20 Mar 2024 07:19:21 -0700
-Received: by emcmailer; Wed, 20 Mar 2024 07:19:21 -0700
-Received: from [193.163.1.101] (helo=Exch06.terma.com)
-	by out6f.electric.net with esmtpsa  (TLS1.2) tls TLS_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.1)
-	(envelope-from <chr@terma.com>)
-	id 1rmwmk-0008Zs-VN;
-	Wed, 20 Mar 2024 07:19:18 -0700
-Received: from EXCH09.terma.com (10.12.2.69) by Exch06.terma.com (10.12.2.66)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 20 Mar
- 2024 15:19:15 +0100
-Received: from EXCH09.terma.com ([fe80::d8f4:f3a1:6899:e2da]) by
- EXCH09.terma.com ([fe80::d8f4:f3a1:6899:e2da%17]) with mapi id
- 15.01.2507.034; Wed, 20 Mar 2024 15:19:15 +0100
-From: Claus Hansen Ries <chr@terma.com>
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Simon Horman
-	<horms@kernel.org>
-CC: "davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "michal.simek@amd.com"
-	<michal.simek@amd.com>, "wei.fang@nxp.com" <wei.fang@nxp.com>,
-	"yangyingliang@huawei.com" <yangyingliang@huawei.com>, "robh@kernel.org"
-	<robh@kernel.org>, "harini.katakam@amd.com" <harini.katakam@amd.com>,
-	"dan.carpenter@linaro.org" <dan.carpenter@linaro.org>,
-	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-	"wanghai38@huawei.com" <wanghai38@huawei.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2] net: ll_temac: platform_get_resource replaced by wrong
- function
-Thread-Topic: [PATCH net v2] net: ll_temac: platform_get_resource replaced by
- wrong function
-Thread-Index: Adp6z2UIQyAdxhAwQjqZ9B4o1njNZw==
-Date: Wed, 20 Mar 2024 14:19:15 +0000
-Message-ID: <f512ff25a2cd484791757c18facb526c@terma.com>
-Accept-Language: en-150, en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1710944381; c=relaxed/simple;
+	bh=UaT7k2gmjmJuDNmAFWziVqd0sZYoQPO1VA3qLt/9T0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=bAZEmAxvwKT14JB4Qktk5C1ptVcA4WZlPy9XhCSlgo9ocQ+wOwI/+ANljm12e69a4CRWa3kiIr2Dr/OPkQbU59McBDKVyt9F4R+jgvLIeEjTzBSlBgvjYHXW1dV6zSdlG90kgnlqhLXKS41oKAM/Ut1HRdfbM+ec8wBT9XAGcGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uSUFxJ2+; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513e6777af4so6380882e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710944378; x=1711549178; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=tseffhcRc/A55FYIKavHDEB4t/Se1FCTP2ao/3daC3o=;
+        b=uSUFxJ2+zyfIay03554aAvcBT57UCM0iV6tLjQ6+eWx8HxBkeOQ1sMpQlse3gJqRI7
+         KnCsAyD/1glHjXXiZHzeW6SZFmML01J7UVxSpK5ZAdfQt+aJ5LUetm4xbR4oKSSm2edS
+         2OrYlysBJ+ksxdKUY8zmr3koHLC8qQ9z9erDVhZ/HoACFmvCijsRbYt1TxB2O22QkgRo
+         xuHWNFCOzDbLSPqx0opG7CDEiy6wUaxW5gkbnydTtvSfada7xqXAnNc23e+kBbhdZJ5G
+         6K3ll3ET7xM03M5I5vTEI4w7UaoXwFTWV0xNk0Y4GJycPYy2asjVFDWAUzqgaNWpcJOY
+         +34Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710944378; x=1711549178;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tseffhcRc/A55FYIKavHDEB4t/Se1FCTP2ao/3daC3o=;
+        b=i1HL4eZCKFMED01nNeun2FGWbEbTZghVbHyNmPAg2M3HIPfOuaVRfbRJKUgs50p+VQ
+         RRQR9n+WktmMlSwod61KtjedfV5pKGnp2rvz8Js0x2mXpxSkZ8lFaUfND81hcqfGDLGQ
+         DMfF5dx3vIS2I7nw7wa88kA5KnbhZmUqsR8iJNdqC0zjhcuzwtr8Ty3S8kG3OPqz8Gbm
+         eDI2FUdjlKdZVMTx7yqEkLxKWF4INFOmGiHXu+WAUyf6OCC7iMH1ruMfBtUgjAXLCXo4
+         0d0SaQ9ElNZ6pXcSehJd7VvSnkQQtzbgBC+DQOA4Nc4+OMyAm66JP1WXnQelJkMBU5YP
+         KrgA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvvcCqKZEnBytZ9f4cjXdPtOnbw0B1gXXV8BK8Qgj9Sd4N1RFGxzORzfh8AuLqR0qzIXvpG4ObBBXVjh3OOe0kzq1oHgJAZxaxipcH
+X-Gm-Message-State: AOJu0Yyx5ePIdW4ogUF9Lbgu3gK9sj281R1oeqWRr7fn8aZd2nT+Osx2
+	Wmy00k5FNR3cdU+MhDKOfQPoTQClNwWqccqb1JvXdPgslKodcU04RsnOOPELinE=
+X-Google-Smtp-Source: AGHT+IGtS32g4S/JY+nQ/oVfpwIz8FRauqjVpODUlS55OFGiMLqGNfr7SgqN3YLuHXNyce8tweEH/w==
+X-Received: by 2002:a19:381b:0:b0:513:26e7:440c with SMTP id f27-20020a19381b000000b0051326e7440cmr9710194lfa.61.1710944377695;
+        Wed, 20 Mar 2024 07:19:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id bp14-20020a17090726ce00b00a46bdc6278csm3709043ejc.71.2024.03.20.07.19.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 07:19:37 -0700 (PDT)
+Message-ID: <473a833c-b166-4002-823c-a71e5aaa784a@linaro.org>
+Date: Wed, 20 Mar 2024 15:19:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Authenticated: smtp.out@terma.com
-X-Outbound-IP: 193.163.1.101
-X-Env-From: chr@terma.com
-X-Proto: esmtpsa
-X-Revdns: r2d2.lystrup.terma.com
-X-HELO: Exch06.terma.com
-X-TLS: TLS1.2:AES256-GCM-SHA384:256
-X-Authenticated_ID: smtp.out@terma.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=terma.com; s=mailanyone20180424;h=MIME-Version:Message-ID:Date:To:From; bh=axJONggkune0GLy0Xa7qw6QXAfBuSv4UIuRZXQYeZTY=;b=RgM6z9ZwHL6EoyJmXYUhqzVIZoQrE/Ylrr13BNreeRvDMh5LQYjMJRKiujljEqZisTmeJu1ManDsp7uC6Ywc+lARERjo8ssgQKt3YEbspA+7EXXU6/q4UozyEsrH5Sw2DDjBC9icfx6t2tMuicPkBmobVkTV4wVkdiCZXWrMNXOiKWBUgcczXSr2LCS45rfGog//P8iDhG37t8f4vHKjbg9NIGmjp8ZYgtEjVTVihYysRZpvzdWQcMVBgBjVCuAtEKV2rg5PauLi50hHZTjUnO0NMFNI0wldoqhwCt/yArLSwlzYei+xdkQ2IFFuywEUTVzbOL7MiP1j2fJLkdP2mQ==;
-X-PolicySMART: 6001202, 19049467
-X-VIPRE-Scanners:virus_bd;virus_clamav;
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
+To: "Sabau, Radu bogdan" <Radu.Sabau@analog.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+ "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+References: <20240320125727.5615-1-radu.sabau@analog.com>
+ <SA1PR03MB6499527C7BEE83A3E4EE6AFBF7332@SA1PR03MB6499.namprd03.prod.outlook.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <SA1PR03MB6499527C7BEE83A3E4EE6AFBF7332@SA1PR03MB6499.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Claus Hansen Ries <chr@terma.com>
+On 20/03/2024 14:05, Sabau, Radu bogdan wrote:
 
-Hope I am resubmitting this correctly, I've fixed the issues in=20
-the original submission.
+>> +examples:
+>> +  - |
+>> +    i2c {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +        clock-frequency = <100000>;
+>> +
+>> +        hwmon@70 {
+>> +            compatible = "adi,adp1050";
+>> +            reg = <0x70>;
+>> +            vcc-supply = <&vcc>;
+>> +        };
+>> +    };
+>> +...
+> 
+> Results of bindings testing :
+> 
 
-platform_get_resource was replaced with devm_platform_ioremap_resource_byna=
-me=20
-and is called using 0 as name. This eventually ends up in platform_get_reso=
-urce_byname
-in the call stack, where it causes a null pointer in strcmp.
+Yeah... please do not send patches which contain knowingly wrong code.
+Code is wrong if you perform testing and result is some sort of FAILURE,
+build error, warning message, static checker/linter warning message or
+error.
 
-	if (type =3D=3D resource_type(r) && !strcmp(r->name, name))
+If something is not clear, ask via email or IRC, but sending code which
+does not work could cause wasted reviewer's effort.
 
-It should have been replaced with devm_platform_ioremap_resource.
+About your warning, please start your bindings from example-schema or
+latest reviewed bindings.
 
-Fixes: bd69058f50d5 ("net: ll_temac: Use devm_platform_ioremap_resource_byn=
-ame()")
-Signed-off-by: Claus Hansen Ries <chr@terma.com>
-Cc: stable@vger.kernel.org
----
-v2:
-  - fix accidently converting tabs to spaces and wording in commit message
-v1: https://marc.info/?l=3Dlinux-netdev&m=3D171087828129633&w=3D2
-
- drivers/net/ethernet/xilinx/ll_temac_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethe=
-rnet/xilinx/ll_temac_main.c
-index 9df39cf8b097..1072e2210aed 100644
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -1443,7 +1443,7 @@ static int temac_probe(struct platform_device *pdev)
- 	}
-=20
- 	/* map device registers */
--	lp->regs =3D devm_platform_ioremap_resource_byname(pdev, 0);
-+	lp->regs =3D devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(lp->regs)) {
- 		dev_err(&pdev->dev, "could not map TEMAC registers\n");
- 		return -ENOMEM;
-
-base-commit: d95fcdf4961d27a3d17e5c7728367197adc89b8d
---=20
-2.39.3 (Apple Git-146)
-
-
+Best regards,
+Krzysztof
 
 
