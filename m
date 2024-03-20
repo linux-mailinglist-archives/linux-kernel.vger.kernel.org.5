@@ -1,149 +1,179 @@
-Return-Path: <linux-kernel+bounces-109244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72D4F8816AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:39:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46D128816B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 283111F2453E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:39:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A5A71C21F1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EBE6A34D;
-	Wed, 20 Mar 2024 17:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064246A33E;
+	Wed, 20 Mar 2024 17:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GC+QjOLg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="O/T39WE3"
+Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022018.outbound.protection.outlook.com [52.101.167.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CBD1DFC6;
-	Wed, 20 Mar 2024 17:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956359; cv=none; b=KDuJjOXuy7SVeNiGssaB/ni8Go/AJeQNR/YYVkN4byLZwQ/OVQkkHnf9xF1aHiKUhhctk25TtfGdHVYF4Eeq22/4aJbGDgR/jwgxuDhn8qJDHvoxrQkU/hNtR/Icly0HPwbjBiQJiBvtFYil8nsg2JiVIcE9zJRgDf76B7DNN1s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956359; c=relaxed/simple;
-	bh=+I4HwwOXGb4OTVbce2LLwgvNTP55VKW3XPSef7uX2qU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLwBvoavBLUkH22j+ASMWlatlw8683ysi9w8Crzj8A2OOIRaIXJ8fkhnQ76dWKzLnMCkWSutzO1eS0aDECuJsebNHbhhdE5mMg3l1duiC3qmQkGS7iORhUA9G6h1sWTKWbUsWIaeSCrZPaNctAx5PHHaLBbuPcu6Rnsmkzs1H0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GC+QjOLg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C0D2C43390;
-	Wed, 20 Mar 2024 17:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710956359;
-	bh=+I4HwwOXGb4OTVbce2LLwgvNTP55VKW3XPSef7uX2qU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GC+QjOLgCWd2xCHOfgGMVLPcEchWO055AePCNCuub4yNELWCDEJ2LXQ3wPuRdpWbW
-	 6zS68GkufurAmzHXJlPukCgGffKZAKhn+BvCVZPh1uGOc1x/3fGAaUBVf43pX1j12a
-	 6PPBA0loQz+7M3ep5XFYftdWyRq5doQVVKGb7R71FC339a0qTOT9MOPScoxWDvAfk2
-	 mILf4BeGvDnmqNZXxVxGIiGFRJgVPwP6t2c+jtrls1bi9cFsjEw4+GmojQkAcACnx9
-	 fBXDs4BFv+7RtocNzFtYxn/akzVicQYhk6V0cEuODsLqzVhR+WkurDG9G1dCMjxzED
-	 FOi9lFYlChCtA==
-Date: Wed, 20 Mar 2024 17:39:14 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/7] riscv: Kconfig.socs: Split ARCH_CANAAN and
- SOC_CANAAN_K210
-Message-ID: <20240320-ideology-pasty-d3aea07cc519@spud>
-References: <tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com>
- <tencent_6F35FEF31908DE6AEB385AE30AC658863C0A@qq.com>
- <CAJF2gTS1-VQP=gQBx=SoUWsdap153EGOObKVn+2L7=kbP2CqFg@mail.gmail.com>
- <20240306-scowling-mortify-9b427c80e8ab@wendy>
- <tencent_91E604E3B4D51DA37045625242A81B07F909@qq.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF3B1DFC6;
+	Wed, 20 Mar 2024 17:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710956444; cv=fail; b=bCUPmPagCF0+N4ZJNltop1w72YiZrB7CGDx8+qS0O8T6ejMlTFSLFZOPZN5EJg+IOuFTO9Jq4c9wSVgH60iJfItMCOwbahCp1JHsPwtUs5KXfQqZUdM07O9sTQI05A+eL8mFcKOPNrZ5B1aUmK1Z9c2u8s3mq1TZerWjEHB5R9o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710956444; c=relaxed/simple;
+	bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=TfdbYxsMvPiu9Y9pcPxrBmSp5b82+Pcget1FlAaBP6bGRp1ZnZGxmY8Stv+I/+++Km4fcTzFTPGBwtwKLIEUJ3Q9p5AhwGMtCB3n27D4CQfcMq/du/Glt5Qj4K4oYjR/nrOD4HPRmwKdmcEvX9XUYx7YMUQIWH4R3r26vSpdHzQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=O/T39WE3; arc=fail smtp.client-ip=52.101.167.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Egv5Dnk4yJkXGdeSUYHer4FJwhlz8INJip22dsmoVI7iOTQz/NYjWxJ5LcXhF8TATin83jAWHmSwq//IN51/TTpMr1fB+uWE0dD//Hnlu1n5qLUd9CtGVbg05er1nH8D9c7/m6soxLy3yLXV91SBhZmjCna6Ik+JcZlTrK8SEQAQ9QPDYdaeM4IIUdHH1g8fwtnHUUnfXrz2iqUobKSFSNDWECtvCD8pmexBw+p1sz32eE8+X8UNdeH94TcnOlqIQyayxx8O6OiTDz4ViKYX/Zt/x4L+zSuN9ei2aI4SjfGQ2DEalR4TWuiV1K+a2XO2YwCymBueZ+Sp292mTyzNdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
+ b=dKMpqC1z6rqssGrHsV+tdjwulfSR3lMFIAvIPpzn53TLVpt9+PTSDE0GUeINuT6DbEtOsnVqmZi+Sxn9GzAs3T++y6MHqDh+GyYUX8jR7K2l+ptX7iFcUw6rbaoLRtPynqIA8D0+dyRLvfIxRPKY9ZzAJu+C5VMKZtGK6FWhR/1vERfxIixq0xyJT7jOwaPvJmU4EOkSXrP8eQe5VDhFf35IxgKqQnWHkrw02KHBxlhNhyxFZY7wnt13fTJVcfW5UdSPAcAwhgHzr+zv5yBSe2eq0hvqpal7tQQDm+rEevDH5mKRVLJLkkxRxTwNvAnkg23ALOgPVaK9aibj81OuIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
+ b=O/T39WE387dmKFWOUyEbc/AMb+wiMp5czSCuOhz2MD3z+cJzEIQ7rPTR+Y+c+ioddrDT6DK6DwydJ89XLq7t7xuW9oqHUzW0XMFeY2g77pnaS9CwikayDdOicdxDNnl87n9H+dALGVNoEDKl6u5xkIJZxK9AsNp2enN/K8x5hW+TwPDye3A7b9JESlsAfgJlNUWqYc+kAiQHKPRAFlzfq/ZT1iJz4yFfiPvKE9t3EXacG9z+wjl4mUCtEdAfFdnXQblLYwS5LCXZvv1AiEFPXnmRAmGKwRGQMFYOAxw5Y08CSNiMHijPlJ+JB8cub0et7BHE379jTbgCd11aFQ70hA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PAYP264MB3469.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:125::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Wed, 20 Mar
+ 2024 17:40:39 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
+ 17:40:39 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Peter Xu <peterx@redhat.com>, Aneesh Kumar K.V
+	<aneesh.kumar@linux.ibm.com>
+CC: Jason Gunthorpe <jgg@nvidia.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Matthew Wilcox <willy@infradead.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Andrew
+ Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Mike
+ Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Michael Ellerman
+	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+Thread-Topic: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+Thread-Index:
+ AQHadZASkAUcDDurK02wtpi3kLRmM7E27NOAgABFZ4CAAAUJAIAGfI2AgAIFYYCAAAWMAIAAcnoAgAClhYCAABmTgA==
+Date: Wed, 20 Mar 2024 17:40:39 +0000
+Message-ID: <2e632389-eb4e-42af-adee-36d5ba6c3d0f@csgroup.eu>
+References: <20240313214719.253873-1-peterx@redhat.com>
+ <20240313214719.253873-10-peterx@redhat.com>
+ <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu> <ZfLzZekFBp3J6JUy@x1n>
+ <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
+ <20240318161519.GA5825@nvidia.com>
+ <e0417c2a-2ef1-4435-b5a7-aadfe90ff8f1@csgroup.eu>
+ <20240319232656.GC159172@nvidia.com>
+ <7ca8f19e-7517-404a-b7bb-92ac516d87c8@csgroup.eu> <ZfsKIResY4YcxkxK@x1n>
+In-Reply-To: <ZfsKIResY4YcxkxK@x1n>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAYP264MB3469:EE_
+x-ms-office365-filtering-correlation-id: c43d50f5-4cc2-493a-7a03-08dc4904dbc8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ XnYadDY/OSq7KnWKfyMz2mxsdpV6ZvbEIcjJb2cU4Qx8VOCY0OpD5ds8sEck7zbahEfuE/Y2tAL3VgJP4dgyg4I1v+zH9Ircq0LbC7ApQFXCxuOqL5rNQQBYSepw3SbuwvSug3FJ0v8nB1Eal4eS8axoHSSkUES0+5yoN30b1n+2iR1clgO08nyke9dfBpy96cg14D8hXVytqyrQ6yirObvBiBa/2+BODcs1axvD51qpzOJB6J9WgVoytcZtc6rVhF6aVlp00rIy1/GwX7ht8wEuJEO3+4GxiXxhelH47YFKJvDNQzaMpRowd1fB4XydAjpCYisQ0dkm68yxf8oE/vOPu4C8tWhPucV3+MywFsGAdMNdzH3EOlMnr2t2hf++CarOJh3AcnQFtjTbVXkXJ3SIeoja4XeBi9oaDT5jWxYHMPGcCQFd+uH6UmUgo8ur49emxo0bu3HXi9QZGz5jNrr4eE01H72hJoqH7JCkMloTTEFq4/zsIFscsuqUW9Mprz37hPIdhu2zk2JZ/5/lamjBMD/9+9cSo0pzqODe1Nyv2r5WXRcwMJtBLPZRHJxWUHXKu+bg2rlOs1G0ENpAG15SNeBgh5k+nKufqxqhjyjGexKKNQ2lpQYxQHktVI0dwXZjOGqlKvVMD17wuwbNkHNMyHLSykHTnwuJJAk/JeUV4LcMvvqUjQKuhln1bfK2USyfX1qyOr0IEJ4EcTFxU6woiJFl1Jd8yyHMYp2YUqc=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?R0k0UUFxamhyMnpiVjBtRGRLYUZDRjRDelNYT2N3dVBWNTJvZWJacWlXYXNB?=
+ =?utf-8?B?TXFKczFZc0NCQUR5UTEvdFhieW4rUXV3RElXNE43WlNCNXcvMGZHYkNYUEZW?=
+ =?utf-8?B?MGY5MEhPYm1PNnU3eXZEbDBPVXpzOTIwbm9HUG5BUVZ2b1VMWm1HaFRjZ01i?=
+ =?utf-8?B?RkZVeGZlRC9xYSs2UWFWbk9wZnp1ZWsxUkZOOHpoeG11K05pemswVTNQdjVk?=
+ =?utf-8?B?QWxETTdFWlFOalNnbVdFek5yNWo5b0FLQnFxSkx2K0R2MDMxdEdvNkNmVkJ3?=
+ =?utf-8?B?Njh3SktkaU9abHZ1VFdJK2drSm56cm5Dd3ZNMWJETXFrbDlhZ042MjdpcjFq?=
+ =?utf-8?B?ZU03d2lsSTU2Z0tJZ1k3WVZqbHA2ODFZaDN3S29lbkFJYTRZOTB4eXF1MWdI?=
+ =?utf-8?B?RnZSTzFnRVRqZEVqUlpzODRCcFFnUHplTUVFVGxZQ2Jrd21hNEVPa1A5elBP?=
+ =?utf-8?B?ZDZCMy90OUR3YjUzaGpjMlVCR0UvbHNlRlJUQUs0N1lYVFluU0JQZFBwN0pu?=
+ =?utf-8?B?TmVXd3k2YnNVc2hWb0VlTEhpa1IwUmZRbXBPbzB6aVZqZG43dDlqZHltS0pO?=
+ =?utf-8?B?NDZ1UnBPQk9LTHI1VW5IaEtENktYRUxiUFJjR0hVUU1pNWZwQ3B1Q3pyaS9M?=
+ =?utf-8?B?TTdiS01zUCtaUmF0cTdwM3lHSzltVjVYbmNEd0N1R25BUGJXZnhqalYzb00r?=
+ =?utf-8?B?MlRTQWMwL0djOUg3TXY4cm03RFNCeCs1UXMyUjVBbzdteXNXdG9KQituRHJw?=
+ =?utf-8?B?QStFSll4YVd5UGR3byttaHBRSGJqQlphcExlWlFZSXE3d1dTQU5HTlAxRlhK?=
+ =?utf-8?B?QUhGYUo0aHhHcU45aFZJNUt4NDV0eVpPQlZJZzYyS1I2SXZVUklMa05UUEVP?=
+ =?utf-8?B?UFRoM1p1cGMzRE1ZU0ZJeU9DbWJqeHlkaXhPM2lDcS9qRnR6NTVkK3lzajJK?=
+ =?utf-8?B?ZjhyeEF0SkFmQWFYUTVLY3pJTHEyVytkVzVydGJjckkxak5QL3RDdmQyUXJK?=
+ =?utf-8?B?OE1vSVZxOWltVk5oaUdtckU1T2xBYUxubE15RWpObDhCeDFId2FUU0RPL0NS?=
+ =?utf-8?B?Ni8wTk8zYXpQQWE2dTRhVVBJam56RzlUc1lRcHFoWi8rYTJFYXpYeVFsSjBs?=
+ =?utf-8?B?NXo0N2dzbld1enhmTzgxUERYdy9mWkpGcDRra3ZBMlUzZjZQd2M2WHg1YlFN?=
+ =?utf-8?B?WjVDc0tPNXVKcVp2blBNTFB0Z1RXcWFtWnVQMjRFblBVdHdnTWtYSHFlaTRK?=
+ =?utf-8?B?WElsT01zTDV1bVJPMWNYMjZkRHZENDBWdlQrSUhpYUNDdDBWUm1CdG9aR2h4?=
+ =?utf-8?B?bHJEdnNienAyTTFKUmVhek16YUZJSU5BbjlBS1JxQjBtYXdKM1MzOGdHRFE1?=
+ =?utf-8?B?cDJaTGxzOS94YlRETEdkTkhpaUZBTStTbGJGWG9BMVlnbDNENlgrMUlKTGE4?=
+ =?utf-8?B?RmpwWnhMMWI3cmhIOXJRNUdHbWdSYXJnMnU0TStRU1YvZWh1ZU5JK0FVa3Fw?=
+ =?utf-8?B?OTJWNjFyelBCK2dGVDlCaDA5SUx0SitNWmxRLytHWEtqTE1YTnBsaU1FN0tx?=
+ =?utf-8?B?ZW5SZUhURGZQNFAyK044TFdhM3dPeVltdzFZNHVjOVp4d3VGTzZFeU1Rb1ow?=
+ =?utf-8?B?SEt0cDFVWE9kOXZrQWs5ZTlZdzREZnJsRCszRXRWYXVvWUpUVG15TkNTdnNL?=
+ =?utf-8?B?Y2x5SzZudHo1V3o1cklYaExGTjdxb2lSUGJWVmJhQ3k2MU5FUmhmUjNwdmdo?=
+ =?utf-8?B?NW1zMW5aNCs3b2tNZHRhTWRONmFacGtkYVFOMGFzbFRtV0ZaOGR3U3diUXJE?=
+ =?utf-8?B?OTdZeTNqNXZ0cFMzOGZNWmRhb1RIL0dVVEozZTVBUDNTREMycHRsSTczWkFq?=
+ =?utf-8?B?TWFJQ2dnMk9hUmxYWHpQVnZjZEg1cXFIaGh6b3JhRTMwMjNZV2VUV0RzL1Vu?=
+ =?utf-8?B?cVZSQTBuZ0tQdG84QWNQcUVpRzZZcUd3MC9rVnNXZ1ZBdlZKZE9hREZFWWxO?=
+ =?utf-8?B?S0dWYkY2UG1rc2ZTWThySW9BVkRjR20zNzJ1S2NneXhzbXQ0MnZ5ZzdhOFRv?=
+ =?utf-8?B?VmViTHlpZklwUjdISU1oQzdBVGtLbXhFZlYwT1BCNHhJWnRmekxySFFibWp5?=
+ =?utf-8?B?cDdzV3FzcnpLUm5QNzQ4OUxqdmh5MXlKUFdUR0RUWUJEcWdJT2VLTWxOTmcv?=
+ =?utf-8?B?VEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <04739AE550E2D34A984B4F873C815E36@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7hxDktwiGEbdrYmU"
-Content-Disposition: inline
-In-Reply-To: <tencent_91E604E3B4D51DA37045625242A81B07F909@qq.com>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c43d50f5-4cc2-493a-7a03-08dc4904dbc8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 17:40:39.5694
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zur3MdYr88Gv9ZdIduMGiafwIOU8AesO3hzRrbRjgGu3IyL8Wo17hU32kN6N2fpIdtPo42HxdoHPLfUmKBv2ISOKV5pPuSt+spxEbABluxY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAYP264MB3469
 
-
---7hxDktwiGEbdrYmU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Mar 06, 2024 at 04:14:33PM +0800, Yangyu Chen wrote:
->=20
->=20
-> > On Mar 6, 2024, at 16:01, Conor Dooley <conor.dooley@microchip.com> wro=
-te:
-> >=20
-> > On Wed, Mar 06, 2024 at 07:38:52AM +0800, Guo Ren wrote:
-> >=20
-> >> On Wed, Mar 6, 2024 at 7:04=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> =
-wrote:
-> >>>=20
-> >>> Since we have Canaan Kendryte K230 with MMU now. The use of SOC_CANAAN
-> >>> is no longer only referred to K210. Split them and add _K210 suffix
-> >>> to the name for old SOC_CANAAN. And allows ARCH_CANAAN to be selected
-> >>> for other Canaan SoCs.
-> >>>=20
-> >>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-> >>> ---
-> >>> arch/riscv/Kconfig.socs                        | 8 +++++---
-> >>> arch/riscv/Makefile                            | 2 +-
-> >>> arch/riscv/configs/nommu_k210_defconfig        | 3 ++-
-> >>> arch/riscv/configs/nommu_k210_sdcard_defconfig | 3 ++-
-> >>> drivers/clk/Kconfig                            | 4 ++--
-> >>> drivers/pinctrl/Kconfig                        | 4 ++--
-> >>> drivers/reset/Kconfig                          | 4 ++--
-> >>> drivers/soc/Makefile                           | 2 +-
-> >>> drivers/soc/canaan/Kconfig                     | 4 ++--
-> >>> 9 files changed, 19 insertions(+), 15 deletions(-)
-> >=20
-> >> This patch cross so many subsystems, I am not sure about it. If I were
-> >> you, I would keep SOC_CANAAN and just add SOC_CANAAN_K230.
-> >=20
-> > Right. That is why I didn't try to rename the symbol, and just left it
-> > as SOC_CANAAN, but if the relevant people ack it, the chances of a
-> > significant conflict are low.
-> >=20
->=20
-> Maybe I should split this patch into different subsystems for better
-> review. I think at least drivers/soc/Makefile should changed to use
-> ARCH_CANAAN. Because we need some SoC drivers for K230 in the future.
-> And arch/riscv/Makefile should use SOC_CANAAN_K210 instead of
-> ARCH_CANAAN.  Because we should avoid the M-Mode loader build for
-> other Canaan SoCs except for K210.
-
-It seems like what Damien requested is pretty much what's done here.
-Can you resend this CCing the maintainers for clk pinctrl and reset?
-If you leave a note under the --- line in this patch about wanting acks
-to take this via riscv, I don't mind picking up this treewide patch if
-the individual maintainers ack it. I don't think there's likely to be a
-significant conflict caused by it going through one tree.
-
-I got a k230 board (the canmv one) so I should be able to test this
-myself before picking stuff up.
-
-Cheers,
-Conor.
-
---7hxDktwiGEbdrYmU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfsfQgAKCRB4tDGHoIJi
-0qhpAP0bH5dwSrdhtgZy8odymGeXP5Eu/mXODpURg5Zun0lG/AD9Fuz5Yc320STN
-idBImdOU5uB7YmUXP6mjgPn82j0uvwY=
-=j7D0
------END PGP SIGNATURE-----
-
---7hxDktwiGEbdrYmU--
+DQoNCkxlIDIwLzAzLzIwMjQgw6AgMTc6MDksIFBldGVyIFh1IGEgw6ljcml0wqA6DQo+IE9uIFdl
+ZCwgTWFyIDIwLCAyMDI0IGF0IDA2OjE2OjQzQU0gKzAwMDAsIENocmlzdG9waGUgTGVyb3kgd3Jv
+dGU6DQo+PiBBdCB0aGUgZmlyc3QgcGxhY2UgdGhhdCB3YXMgdG8gZ2V0IGEgY2xvc2UgZml0IGJl
+dHdlZW4gaGFyZHdhcmUNCj4+IHBhZ2V0YWJsZSB0b3BvbG9neSBhbmQgbGludXggcGFnZXRhYmxl
+IHRvcG9sb2d5LiBCdXQgb2J2aW91c2x5IHdlDQo+PiBhbHJlYWR5IHN0ZXBwZWQgYmFjayBmb3Ig
+NTEyayBwYWdlcywgc28gbGV0J3MgZ28gb25lIG1vcmUgc3RlcCBhc2lkZSBhbmQNCj4+IGRvIHNp
+bWlsYXIgd2l0aCA4TSBwYWdlcy4NCj4+DQo+PiBJJ2xsIGdpdmUgaXQgYSB0cnkgYW5kIHNlZSBo
+b3cgaXQgZ29lcy4NCj4gDQo+IFNvIHlvdSdyZSB0YWxraW5nIGFib3V0IDhNIG9ubHkgZm9yIDh4
+eCwgYW0gSSByaWdodD8NCg0KWWVzIEkgYW0uDQoNCj4gDQo+IFRoZXJlIHNlZW0gdG8gYmUgb3Ro
+ZXIgUG93ZXJQQyBzeXN0ZW1zIHVzZSBodWdlcGQuICBJcyBpdCBwb3NzaWJsZSB0aGF0IHdlDQo+
+IGNvbnZlcnQgYWxsIGh1Z2VwZCBpbnRvIGNvbnRfcHRlIGZvcm0/DQoNCkluZGVlZC4NCg0KU2Vl
+bXMgbGlrZSB3ZSBoYXZlIGh1Z2VwZCBmb3IgYm9vazNzLzY0IGFuZCBmb3Igbm9oYXNoLg0KDQpG
+b3IgYm9vazNzIEkgZG9uJ3Qga25vdywgbWF5IEFuZWVzaCBjYW4gYW5zd2VyLg0KDQpGb3Igbm9o
+YXNoIEkgdGhpbmsgaXQgc2hvdWxkIGJlIHBvc3NpYmxlIGJlY2F1c2UgVExCIG1pc3NlcyBhcmUg
+aGFuZGxlZCANCmJ5IHNvZnR3YXJlLiBFdmVuIHRoZSBlNjUwMCB3aGljaCBoYXMgYSBoYXJkd2Fy
+ZSB0YWJsZXdhbGsgZmFsbHMgYmFjayBvbiANCnNvZnR3YXJlIHdhbGsgd2hlbiBpdCBpcyBhIGh1
+Z2VwYWdlIElJVUMuDQoNCkNocmlzdG9waGUNCg==
 
