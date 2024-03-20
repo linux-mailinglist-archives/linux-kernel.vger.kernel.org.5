@@ -1,147 +1,101 @@
-Return-Path: <linux-kernel+bounces-108412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FEB880A33
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:45:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD6F880A44
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B0F4B229A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:45:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED261F234C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E13E11C92;
-	Wed, 20 Mar 2024 03:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="LXzxLUT/"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABBD4125B4;
+	Wed, 20 Mar 2024 04:03:38 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BBE111AA;
-	Wed, 20 Mar 2024 03:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1EA1364;
+	Wed, 20 Mar 2024 04:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710906340; cv=none; b=NZOFm6nrRTnD54CpmzsxpUc5FvvZsrtRnugiy4e1Rii+g/mSObMvRupX59rAyMADSGo0gahsOhJQrPKeybxqYVxOGeUWvhZfAlLQBS+SUfYYMYDQwuxYo4ql2bZ3ZJT0vIUE+5bNCNPvbkKX+H4Yr3fQSG1njxbX/U/OVUFgEGk=
+	t=1710907418; cv=none; b=TzrNjgmBS6lmcxBYNB8fGjUfmizGHAnCV1j41rJ5LVhpO4Q+KhrDT6hi1iZ8CE1JSbC5++6PlscX1FDdkwj67zsxzB4G3oFJZn72YrOFovEwc0vfOSTuIcM5kphI/M9ZjOWIJ0z1bJGv5t9r1RLihVwiTgYnnteAxU6/01Khi4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710906340; c=relaxed/simple;
-	bh=9B+4hshcFckMEGWpcEnVtr4t0J2t6/ex9MYdj5oM1a4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nm4y792rjSmi6bapbmlewC6nTFmCJaUplmf5B/Pj3ZgtaBiMHEnWRWX+Sf1RxnvejD44sHzMdUkj8ZLZHd4A70knj6V/5E6vkiH3xxC71JTiNFpRXtBwLx4yGJfiDDcPpOidv5KYmMCD/t0CzqWunupR5bIAGjyiVasketI3ts4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=LXzxLUT/; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710906332;
-	bh=bR++7yPqt97FJl7Jg2JDn+hhtKQHx1x0+E2M0WcRl9U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LXzxLUT/yzHx7/wlY07PpNPali9zPrM6dbUZTrZEce2r+ZOma1aWVtvDokWr33X3U
-	 STer9Tmq4aJASu2m7zy+fp77+IgqzyfxsIJ7ymQQDs5DBhVkLsdDEuDEsht+7+OK9O
-	 Xbd0B3VhWufMH03piI7hXtQGTGXEcpJ5tP/9WESdHyHO75psZxTCHeURaIb0yA6jch
-	 ckN0tPHemQGr3DZoK22f15nov+y98rNO2MiBGJqRWNQ+hlarfF2675bFMg9VtVg+Hj
-	 44v0q3X6klirlvbOSmawBpPyDiuKLYEdLbO7GGXL4hmj0IKsABi+hnoWD0JGPaKwuy
-	 awIw2j2QdPjZQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tzvcr014Hz4wbp;
-	Wed, 20 Mar 2024 14:45:31 +1100 (AEDT)
-Date: Wed, 20 Mar 2024 14:45:30 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Barry Song <21cnbao@gmail.com>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, Andrew
- Morton <akpm@linux-foundation.org>, Chris Zankel <chris@zankel.net>, Huacai
- Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>,
- Guenter Roeck <linux@roeck-us.net>, Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] Documentation: coding-style: ask function-like macros
- to evaluate parameters
-Message-ID: <20240320144530.4852845b@canb.auug.org.au>
-In-Reply-To: <CAGsJ_4zpXwVEhsdffoZVBVWiwT4Lw2qEMrW-X92ib=kv=9Yx9g@mail.gmail.com>
-References: <20240320001656.10075-1-21cnbao@gmail.com>
-	<20240320124207.0c127947@canb.auug.org.au>
-	<CAGsJ_4zpXwVEhsdffoZVBVWiwT4Lw2qEMrW-X92ib=kv=9Yx9g@mail.gmail.com>
+	s=arc-20240116; t=1710907418; c=relaxed/simple;
+	bh=a1iPkS19wKvYjByVRjYUWC8hvrMspm4HWjt5L6aSPzE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=e55pbXMVMHnBP851rtCkCxgQFBCh9qMiD2mRyap2LVAsZfgDrsxqJZ7CvkG2BXFrnW+evJyx0bqA/EAABjhOL8i7dsjHqECmjAhfVijlyUThi5Av7ih2wCYuiZ90ERqYHnNwIJdbR0OULAbBbAkadKUM1ZmLbNxfTGvfIt61AuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5062F200B54;
+	Wed, 20 Mar 2024 05:03:30 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 170402016B4;
+	Wed, 20 Mar 2024 05:03:30 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0A0C5183AD0A;
+	Wed, 20 Mar 2024 12:03:27 +0800 (+08)
+From: Richard Zhu <hongxing.zhu@nxp.com>
+To: l.stach@pengutronix.de,
+	bhelgaas@google.com,
+	lorenzo.pieralisi@arm.com,
+	marex@denx.de,
+	frank.li@nxp.com,
+	manivannan.sadhasivam@linaro.org
+Cc: linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
+Date: Wed, 20 Mar 2024 11:45:38 +0800
+Message-Id: <1710906338-4596-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TO1BZgkbiVYW.I8uMU2NSDG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/TO1BZgkbiVYW.I8uMU2NSDG
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Fix i.MX8MP PCIe EP can't trigger MSI issue.
+There is one 64Kbytes minimal requirement on i.MX8M PCIe outbound
+region configuration.
 
-Hi Barry,
+EP uses Bar0 to set the outboud region to configure the MSI setting.
+Set the page_size to "epc_features->align" to meet the requirement,
+let the MSI can be triggered successfully.
 
-On Wed, 20 Mar 2024 16:24:30 +1300 Barry Song <21cnbao@gmail.com> wrote:
->
-> On Wed, Mar 20, 2024 at 2:42=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.o=
-rg.au> wrote:
-> >
-> > On Wed, 20 Mar 2024 13:16:56 +1300 Barry Song <21cnbao@gmail.com> wrote=
-: =20
-> > >
-> > > diff --git a/Documentation/process/coding-style.rst b/Documentation/p=
-rocess/coding-style.rst
-> > > index 9c7cf7347394..8065747fddff 100644
-> > > --- a/Documentation/process/coding-style.rst
-> > > +++ b/Documentation/process/coding-style.rst
-> > > @@ -827,6 +827,13 @@ Macros with multiple statements should be enclos=
-ed in a do - while block:
-> > >                               do_this(b, c);          \
-> > >               } while (0)
-> > >
-> > > +Function-like macros should evaluate their parameters, for unused pa=
-rameters,
-> > > +cast them to void:
-> > > +
-> > > +.. code-block:: c
-> > > +
-> > > +     #define macrofun(a) do { (void) (a); } while (0)
-> > > + =20
-> >
-> > Maybe add some comment about using a static inline function for these
-> > simple versions instead, if at all possible, (it is suggested just
-> > above this section) since that will still type check arguments. =20
->=20
-> right, what about adding the below section together with the above (void)=
- cast?
->=20
-> +Another approach could involve utilizing a static inline function to rep=
-lace
-> +the macro.:
-> +
-> +.. code-block:: c
-> +
-> +       static inline void fun(struct foo *foo)
-> +       {
-> +       }
-> +
+Fixes: 1bd0d43dcf3b ("PCI: imx6: Clean up addr_space retrieval code")
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Reviewed-by: Frank Li <frank.li@nxp.com>
+Acked-by: Jason Liu <jason.hui.liu@nxp.com>
+---
+ drivers/pci/controller/dwc/pci-imx6.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Looks good to me.
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 99a60270b26c..3238b63721bc 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1013,9 +1013,14 @@ static void imx6_pcie_ep_init(struct dw_pcie_ep *ep)
+ {
+ 	enum pci_barno bar;
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
++	const struct pci_epc_features *epc_features;
+ 
+ 	for (bar = BAR_0; bar <= BAR_5; bar++)
+ 		dw_pcie_ep_reset_bar(pci, bar);
++	if (ep->ops->get_features) {
++		epc_features = ep->ops->get_features(ep);
++		ep->page_size = epc_features->align;
++	}
+ }
+ 
+ static int imx6_pcie_ep_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
+-- 
+2.37.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TO1BZgkbiVYW.I8uMU2NSDG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX6W9oACgkQAVBC80lX
-0Gyhhgf9H0RNoO9xgy7+XrcwZ2zfiLubuD4oRaT2LODstAcOZQEKvdZgCun5V7SV
-dNLWDGUkILR7hHHhPSkfFz7qmJXheUxXmkNvbyovSoVQpKCfIJtVwO9AKnwdcafL
-LMBPvD4Fp/b00pLJ8rfETSorRwbE20gD5+NwesE6EtXPuwODDn4zKRwWLJHEl4Wa
-PCZto1uEF+6oO50pfHDTjI/e0YM73MtNDY0H/FnevXBJqvotvRJn78k4lF9vCe5x
-12t/CiOLK8igzbmRH76Em3soUscClwwnPm8U54BEm4hf3Yn72+rFpJRFKjwejFcW
-ErErslr5cReDA7sSPZfE/cJOjqQcmQ==
-=8E06
------END PGP SIGNATURE-----
-
---Sig_/TO1BZgkbiVYW.I8uMU2NSDG--
 
