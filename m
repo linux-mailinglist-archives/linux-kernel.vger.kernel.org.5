@@ -1,130 +1,87 @@
-Return-Path: <linux-kernel+bounces-109144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5364C88153E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:09:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ADB3881543
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D72F1B2300F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BEB41C22D7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EA954BD4;
-	Wed, 20 Mar 2024 16:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B144E54BFD;
+	Wed, 20 Mar 2024 16:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wy7hnMrI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rmqTMWnG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E3853E0D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB9A54F8A;
+	Wed, 20 Mar 2024 16:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710950953; cv=none; b=EWQZE0PxBmu1sb+FEmPySPo1r3/e6VNWba81SRg3YHBBWZhI9H23oro7cFA5rOIwy1nTfr7L3SBuFri0n20kSQ/kD2N/GG/SWu66r43uxRUu/i65xMolUVag+wBbLHr1tHhEG3ewweH4lcJ//cMI9NTi6rJY8+ZOaPtp47I+qQ4=
+	t=1710950986; cv=none; b=R0dvnXXKh0o4QjF3nCUWWR1X2jpSMj58i0qqQmZP6D3/npJi2JZ7zlb/CX/d8wMd9VZDdjUNaHGblWCmxR29VErjbPFORrhmfj6a38BWEqlJNjG7smd5/skvbW9VGHpz5PkoPVu4twYEqTlc1r5W4BcTrHqsKsq/M+3/ptfl9oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710950953; c=relaxed/simple;
-	bh=NYi7TEFzmJfpPsXbUQ+NXX+o1xIpezcbZbtkLnObb7E=;
+	s=arc-20240116; t=1710950986; c=relaxed/simple;
+	bh=eElWcB41AoBcrw2W6dId5StcFH42yYRYig91JzcJ8qQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oNYIkiOmlTcPQ1h5D51hFdocPbpYBKyB5wVHtnvw3uz2YtUl1Jy87UCWeTYRHal8uX2YdPhB4RAfmPii86Cwmn+/yE0KylEPDkRBGCWOyfPKWVLv9DOP3S01A/n4KT9FSkdEyuIcjOmLxaa5hzyZotW9Pz8PI1ZoHz5iXr14s78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wy7hnMrI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710950951;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/kVb2OPEa9Hz3NlGswxjF/cBh1c8MnT1EuBR8prPYIM=;
-	b=Wy7hnMrIDJx1AU55ta/Z4OrB1ijfjr8r9jZyBKWKFuUV6aFjgY7hI3A58HpW+VkHXXozkc
-	CpmZpnwuZPivIQn26pPlnxgoHWoXkMwWxWfMWZ9E6Y/P62RKDLeQ243nBM3TuZjL4A8LYn
-	8j34zSnAKKKcJMDo4H60zqR84UBhEog=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-foHk0Gb9PY2wuefm3pjiMQ-1; Wed, 20 Mar 2024 12:09:09 -0400
-X-MC-Unique: foHk0Gb9PY2wuefm3pjiMQ-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6e67a83e7efso1439149a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:09:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710950948; x=1711555748;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/kVb2OPEa9Hz3NlGswxjF/cBh1c8MnT1EuBR8prPYIM=;
-        b=THTbwt2e2W+DK7WztNppype536fis/kTVjpdXpI0F6yg5QANs6uesZDXpgQVcYZxcI
-         QA6TrMi/7OMnNoNvrZAfZg5d7Be2vRNGqEPq5b3BpgCTHjoLWRLq/62cwYQ97prCBD9Z
-         5bcy6f1KGywAfvBGc0bSg0HITlFKkI94oj17Q48AO9rc2up8dM3lEkbwxMMnztSIED3D
-         1gTyWisuUshDQFDdBDN7mhw2tZEMp0cBrdAAHhBnnLDnTIpUu7qxuZjSrLgtI/ctPDB2
-         ShRmP4v4wAYcJ1eLMcKPnhpVJbvdz8mpOyK/AAAuB74Uksj+ChH5K5P+6PbSXeO/AxgH
-         +MDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5AQbU4+8fUGuR89rObi0YZMlLLf/zdhyM3FnkMxl9wxwEIoDHkAoXCwuI50dBHrh0QAXdLVg3TzB67lHBsA28tgvSlC7jg56wDYu3
-X-Gm-Message-State: AOJu0YxiOxCXSnNuY8xhFuNYUg7KLd6d283Y7Hk89zgaeD7Ap1HGiZh6
-	Kp30ZFC6LE4zXFBHYspTCe6a6m2r8qCulLi5ZshkJkruEEQZkrQpEVQw/z+6YDn8eqvANph/BFu
-	eDVmIyPpChBCqY7PZk8N1qbZLlRo7KR6ce/oPSVNUh/MycLjJV1f4OlIjLPozxg==
-X-Received: by 2002:a9d:7ad9:0:b0:6e6:a1a4:d6ec with SMTP id m25-20020a9d7ad9000000b006e6a1a4d6ecmr5509635otn.3.1710950948527;
-        Wed, 20 Mar 2024 09:09:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUPcSOgWRtuZK7x7eAKmfFnaS1NKw8N142/BtimLIrxti/cRS6mu+CLtqkpSIoYmn0o6zxkQ==
-X-Received: by 2002:a9d:7ad9:0:b0:6e6:a1a4:d6ec with SMTP id m25-20020a9d7ad9000000b006e6a1a4d6ecmr5509595otn.3.1710950948100;
-        Wed, 20 Mar 2024 09:09:08 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fn12-20020ad45d6c000000b00690fed3da61sm7963317qvb.109.2024.03.20.09.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 09:09:07 -0700 (PDT)
-Date: Wed, 20 Mar 2024 12:09:05 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"x86@kernel.org" <x86@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Message-ID: <ZfsKIResY4YcxkxK@x1n>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu>
- <ZfLzZekFBp3J6JUy@x1n>
- <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
- <20240318161519.GA5825@nvidia.com>
- <e0417c2a-2ef1-4435-b5a7-aadfe90ff8f1@csgroup.eu>
- <20240319232656.GC159172@nvidia.com>
- <7ca8f19e-7517-404a-b7bb-92ac516d87c8@csgroup.eu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rBzG1FyVKkI+je9YiT7nIQo4tSdwUUzd2XtiQSZnyUE3gBZy5IB5WiOMgq1GoLiOZjMI+KKIaz0nvhVZcShVV+2f817KrOp51+V/2sHhCcSyNi/WxGwiMXJPGcW53I2/RSteJR8e3QwgkfiwEqprYXux5H0bgHSoU9W6IyJRzbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rmqTMWnG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B65C433C7;
+	Wed, 20 Mar 2024 16:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710950985;
+	bh=eElWcB41AoBcrw2W6dId5StcFH42yYRYig91JzcJ8qQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rmqTMWnG3wf+0ACqT2qYY6cOhL1XEakoZB3MoiZ6kCRTdM7wPGnZqlDbki7KZReX+
+	 fXNgYPhCRdxxCYkU59i4ZvQCWluxF2XtKaQKParMSlFiKrMCrVsqEATGOOaN9Sb1sy
+	 e+hPcjWbB7oVy3CEFEc9SYharoPVcQ5UII1NQMX71rxBVyvSLhMsPLqjNfS/jXUH6A
+	 5V3tkZ85nbAufQUswK8ZDlE5t00rJ/XuqYv9mQUZx6EMstW5wVsbDShcyUl8IXvqUh
+	 tQN90NgT7fmBMrki+OnsQ7owNSN1U9yM0TUUyw0Z8LFt9URqOcCvnYzUfxB0Frpibm
+	 bZpSuSGHSVuEw==
+Date: Wed, 20 Mar 2024 16:09:38 +0000
+From: Simon Horman <horms@kernel.org>
+To: lakshmi.sowjanya.d@intel.com
+Cc: tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
+	corbet@lwn.net, linux-kernel@vger.kernel.org, x86@kernel.org,
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
+	eddie.dong@intel.com, christopher.s.hall@intel.com,
+	jesse.brandeburg@intel.com, davem@davemloft.net,
+	alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+	mcoquelin.stm32@gmail.com, perex@perex.cz,
+	linux-sound@vger.kernel.org, anthony.l.nguyen@intel.com,
+	peter.hilber@opensynergy.com, pandith.n@intel.com,
+	mallikarjunappa.sangannavar@intel.com, subramanian.mohan@intel.com,
+	basavaraj.goudar@intel.com, thejesh.reddy.t.r@intel.com
+Subject: Re: [PATCH v5 11/11] ABI: pps: Add ABI documentation for Intel TIO
+Message-ID: <20240320160938.GV185808@kernel.org>
+References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
+ <20240319130547.4195-12-lakshmi.sowjanya.d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7ca8f19e-7517-404a-b7bb-92ac516d87c8@csgroup.eu>
+In-Reply-To: <20240319130547.4195-12-lakshmi.sowjanya.d@intel.com>
 
-On Wed, Mar 20, 2024 at 06:16:43AM +0000, Christophe Leroy wrote:
-> At the first place that was to get a close fit between hardware 
-> pagetable topology and linux pagetable topology. But obviously we 
-> already stepped back for 512k pages, so let's go one more step aside and 
-> do similar with 8M pages.
+On Tue, Mar 19, 2024 at 06:35:47PM +0530, lakshmi.sowjanya.d@intel.com wrote:
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 > 
-> I'll give it a try and see how it goes.
+> Document sysfs interface for Intel Timed I/O PPS driver.
+> 
+> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> ---
+>  Documentation/ABI/testing/sysfs-platform-pps-tio | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
 
-So you're talking about 8M only for 8xx, am I right?
+Hi Lakshmi,
 
-There seem to be other PowerPC systems use hugepd.  Is it possible that we
-convert all hugepd into cont_pte form?
-
-Thanks,
-
--- 
-Peter Xu
-
+Please consider adding this new file to the
+PPS SUPPORT section in the MAINTAINERS file.
 
