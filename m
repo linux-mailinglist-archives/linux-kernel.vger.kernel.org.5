@@ -1,141 +1,140 @@
-Return-Path: <linux-kernel+bounces-109470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E7B588199B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:42:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3D48819A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A6301C21402
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D77A8283EC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D850B52F78;
-	Wed, 20 Mar 2024 22:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0CED85C58;
+	Wed, 20 Mar 2024 22:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jxgD4Oqn"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WHUUy3ZP"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7430E1EB45
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCAFA3FBBC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710974566; cv=none; b=PoFq1Od1VVRHzY2N6tpSXImcrbWtveTM91HhIVAdaYznpVYwmDt2GyH5cpD2uDlqYZthexSBsWRQ6QsMSNXmBd/e+eLXWimYVpbo5doKxUw3e4is7ZE3aCBVEHBVse14HOLqIiVPYYRZAx69Jwej7d6RnmdPVFhF9kpDB2Qh9u0=
+	t=1710974936; cv=none; b=QuelhVlQeyFRQeS/hT+K8aYclf4R6XqXl2QlK7uFMhFehmo096nK35Eom9yhx89Doj4iAc7DjaO45LbvUVoW71tm9qKf/3+JrFpc1uXEWVQokdsURYn2r3ehSZCxTPMJKNRyJ5ImHGHjnXjzg4WQMLH+cCK5opiqk3DieSxn3rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710974566; c=relaxed/simple;
-	bh=Qzo0wWW+nIU5ofdBtQDFhFG5/t2jk1i61qipHXAvkK4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dfZGJ02C/AXpGFRQwyXtbUpzdzJB45M0wzqRQTyt9Qg5/d4PXcvPwnJEl9zh5cSwNhKCLe+euhaHlDic3+TJV7iCdKxHxfm77fIRM/gb2JIOG8C3YcX8iYks8zsGnAFP8s6Uh8ACHIHuPZ85Ake63uFJoXlqWgfOz3TVbEVwqbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jxgD4Oqn; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1710974936; c=relaxed/simple;
+	bh=V7XSTOhNvjEuLafgGT0fgGD4qu2T4mLPqEmu44WjLQA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uej8a7FGMKo6u6YDU6IQ4AaUileg7B9jBqzDQKUjpvoDPFLmocM1zUiP8ho1T8rVqEBWxSablpCG6CIlpJwR1vjsv86dK0suhGFSzxI/yiQ5uIC/gHJgemMf6gWWQJaXy0favRCSztPi79wXynqNI7kdFzDz0Blb46bi/ktu7q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WHUUy3ZP; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41428b378b9so14275e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:42:44 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a0815e3f9so4567707b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710974563; x=1711579363; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dw6rd0m7MA8k7bHTBxP2bB2jrvpEI2pgQ/Pyev6+gzw=;
-        b=jxgD4OqnCyKWcsDk/FfvSJSzm87Fl5B8tKRjRjBztEya4kHv2y+ckyVXVvLeEXvH3D
-         x4hHUW0VwHvVA93fp7OYwE9EMCDJwe+/Qwj+aoyaVJhZKXB9nKU/dxutfD14g2AeSfYb
-         MBAiO7+1xPMdTxVj2PJCREQEKFbUNk9ySrgyPi1n8vOoO0Yo5fC08CkX4T4+zof3tFyK
-         dd4j7vV5VjLfMx+QoP4XvaAvrcMwYyNe1KuLn2wntpKJcsdWKgHbe1RVbArB/8USACGt
-         FxLoxpFoi5rH4TH6xRUQSP4ZGyg1vyHlQNwaHAmeRatYh5OC+t/1r8/VhMf9dSx79O7Z
-         9ojg==
+        d=google.com; s=20230601; t=1710974933; x=1711579733; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cuJsz9UlwEA6zdfjk+8N140o8FRIcxJ5QLG1a0ozWdY=;
+        b=WHUUy3ZPEKlcPGbCtgfMhAV3BUXSEsHrJPuiSMZ2VCOJzLGZ7RSo1AtgfZkZiJxMf7
+         6zicp3IdB8tX0jnvQXW5fIZZUZKyf90FTzrXfARVAM4AJep1R4+W2BpH/nRziDzW9tSQ
+         1xcpi75Q+PuSkD8E31Cstb5UcOE7hPvYEXyvb5G7iMJ9VaxTOz3pdg9DMCm6Ueo6upuq
+         zuzxXbb/Oltd3gsonrm/t5/xZekyratvSNbDbDxTx+hH14MVAspNvnXMTZKyuvnLx+lF
+         zJc8Bpt2aFSBnC1SvBQs+lE8bzRJC1BBDQwhBBJkVHb5HikR8qY40OJOL8IKBjwYYEFN
+         cLVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710974563; x=1711579363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dw6rd0m7MA8k7bHTBxP2bB2jrvpEI2pgQ/Pyev6+gzw=;
-        b=wJBClP1+OL95p3rVfwmkrzmYHsfWDXsgIBLeSavEAxMidEwUmZx3tPO1KVJ42xxi9i
-         KBemhVdjVBeX3VbeR7PH2DkYRJ1Y1vsR+/I0XSNcWpG8hjG17aWqHXA+97xwKb++Fdd0
-         Zma3/sQPK/CMMti8nRh6vuJqSEsn9hG6HLejCjMqABpPvjgNcW7Cf7f/OXQRGF0fKAX0
-         2esxBSGEIv/UEBRbHbZL0BFCLrlFLhyxxkBwWovqkHPuvgtycjVelvqrBa5Mfhbly+cf
-         dD7I0yT+tWhMXY5gWmvUmdBFFjnpIHd/uNac3rNSNUtO3pyPaDgVrP7JiMtTKfQzXMdP
-         WbkA==
-X-Gm-Message-State: AOJu0YxVEoFRBy7vWL5hRpPpw1hQLILij10OLjCLJSbWVuINHX90lHRB
-	2kPEC5umN/rIqTS92bCDCJacm7xS2sCban2poAYeeGjr08nudzdekyo8YVJIJKR/CNBtlLDIoYU
-	pRuP+ice7keVUoExs0uJ2lB2Yd9/zwHcM8Ec=
-X-Google-Smtp-Source: AGHT+IF0tKBb7Q9NBws/Mg1rBhZwjXFB9MBeOTmCyFrlplp2kRQ2MsYqz84N78CcgdI4Kd7KNbAOFk/00FVz/KaYiUM=
-X-Received: by 2002:a05:600c:1e04:b0:414:3566:eab5 with SMTP id
- ay4-20020a05600c1e0400b004143566eab5mr72998wmb.2.1710974562782; Wed, 20 Mar
- 2024 15:42:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710974933; x=1711579733;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cuJsz9UlwEA6zdfjk+8N140o8FRIcxJ5QLG1a0ozWdY=;
+        b=nbEPrGJlr5XMwAYuN23xDoZ4mEl6Vjd/Ss/ocLcAD4W2H7ZCm3Z1F/Kx2YAwsxgNxC
+         E1YjpAt0j0OJ6DxfokyCXZzYIeuV2THXIlnKZdFgODXHlNTMM6cVU56LMMpBvt79r+2L
+         4Ozg4vJg+bQkzQE1/r1ltp+R+YfM9tu0WXrmI4Ue0UWlkw3j/R0TgUmL0Vv2u8Ep54Cf
+         6a8ZH5G7g0cih4KRTzas3bFV6YxmDRQeUAIhchmw+NJqPtEo3fuA+EsTiQ3kUnR53f3t
+         YDjVOHmHBu50c5EfqYq2wNh7eSHLxN17yNsW546AmQJmTK11IL4Uf9D0ayt3Ps9tDdvX
+         GSSA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkaaWd5gijz4hXaKmUGazKhEh3/pk441+jGdztlEu/ePxzs6hNBtmrbKb37NsAYgMR1N+v+2f/h15yjQ5CT3Fi+i2IqhrQd3F+6THI
+X-Gm-Message-State: AOJu0Yy/MSiH952Ry7jYvHnH2pehHK5dgkSeKNHyEI51kcmfkNFrHfxP
+	1m2B2j22RpU4aAOUBoExQVpkqRE6V7J4cDBTmvf2zMMQlJRA11RHsi/MRHFOwh5t2AFbvsX72H1
+	m/x7J7qGSjZrOYBx5dma/3w==
+X-Google-Smtp-Source: AGHT+IEAdJhJ6XWsfWFvKxMRCTCL0rFzhCdAiYFkka5BbblT+BLyG2u8I3I/0FokOi0qCRO5wy/EMOMrrIZr/UuKig==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:91d7:0:b0:60d:6e32:2f70 with SMTP
+ id i206-20020a8191d7000000b0060d6e322f70mr3604527ywg.0.1710974932857; Wed, 20
+ Mar 2024 15:48:52 -0700 (PDT)
+Date: Wed, 20 Mar 2024 22:48:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240318192846.75299-1-jstultz@google.com> <Zfpy4Z4MhErKrHBZ@linux.ibm.com>
-In-Reply-To: <Zfpy4Z4MhErKrHBZ@linux.ibm.com>
-From: John Stultz <jstultz@google.com>
-Date: Wed, 20 Mar 2024 15:42:31 -0700
-Message-ID: <CANDhNCro84C8uxTo5MJ1xX0wGnTXE7_REm4nqp7jGQ+mN0wfkQ@mail.gmail.com>
-Subject: Re: [RESEND][PATCH v2] sched: Add trace_sched_waking() tracepoint to sched_ttwu_pending()
-To: Vishal Chourasia <vishalc@linux.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Phil Auld <pauld@redhat.com>, 
-	Valentin Schneider <vschneid@redhat.com>, kernel-team@android.com, 
-	Zimuzo Ezeozue <zezeozue@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANJn+2UC/x3NwQqDMAyA4VeRnBeoVgT3KuJhbVINjCqJlg3x3
+ Vd2/C7/f4GxChs8mwuUi5hsuaJ9NBDXV14Yhaqhc13vfDuiHZrj/kVSKayGRYg3TIG4YLI3kpx VGDEMo/ND5OBTDzW3Kyf5/FfTfN8/1lDuSHoAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710974932; l=1938;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=V7XSTOhNvjEuLafgGT0fgGD4qu2T4mLPqEmu44WjLQA=; b=igy7d94UFbUM0TkUAgMVJDxriGbnH+DPKvEXXYKfS+CKktomyiqlyOLzVVQxq4ZffMDfFel3O
+ h2XGTp+4Dh/Asd4C5wNyBMFsacdao+pZNwmAm8/6HIhl+l027RuOSV+
+X-Mailer: b4 0.12.3
+Message-ID: <20240320-strncpy-drivers-video-fbdev-fsl-diu-fb-c-v1-1-3cd3c012fa8c@google.com>
+Subject: [PATCH] video: fbdev: fsl-diu-fb: replace deprecated strncpy with strscpy_pad
+From: Justin Stitt <justinstitt@google.com>
+To: Timur Tabi <timur@kernel.org>, Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Tue, Mar 19, 2024 at 10:24=E2=80=AFPM Vishal Chourasia <vishalc@linux.ib=
-m.com> wrote:
-> On Mon, Mar 18, 2024 at 12:28:33PM -0700, John Stultz wrote:
-> > Zimuzo reported seeing occasional cases in perfetto traces where
-> > tasks went from sleeping directly to trace_sched_wakeup()
-> > without always seeing a trace_sched_waking().
-> >
-> > Looking at the code, trace_sched_wakeup() is only called in
-> > ttwu_do_wakeup()
-> >
-> > The call paths that get you to ttwu_do_wakeup() are:
-> > try_to_wake_up() -> ttwu_do_wakeup()
-> > try_to_wake_up() -> ttwu_runnable() -> ttwu_do_wakeup()
-> > try_to_wake_up() -> ttwu_queue() -> ttwu_do_activate() -> ttwu_do_wakeu=
-p()
-> > sched_ttwu_pending() -> ttwu_do_activate() -> ttwu_do_wakeup()
-> Notably, sched_ttwu_pending() is invoked for remote wakeups.
->
-> Given this, I anticipate a scenario similar to the following
-> occurred: When a process (P) is to be awakened on a remote CPU,
-> the scheduler adds P to the remote CPU's wakelist,a per-CPU queue,
-> and sends an IPI to the remote CPU. This action triggers
-> sched_ttwu_pending() on the remote CPU, which then processes the
-> wakelist and wakes up the queued processes.
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Hey! Thanks for taking a look here and sharing this feedback.
+A better alternative is strscpy() as it guarantees NUL-termination on
+the destination buffer.
 
-Indeed, looking closer here I do have a hard time seeing how we can
-get to sched_ttwu_pending() without having gone through the paths in
-try_to_wake_up() that would call trace_sched_wakeup():
-  try_to_wake_up()->[ttwu_queue ->]
-ttwu_queue_wakelist()->sched_ttwu_pending()->...
+Since we are eventually copying over to userspace, let's ensure we
+NUL-pad the destination buffer by using the pad variant of strscpy.
+- core/fb_chrdev.c:
+234 |	err = copy_to_user(&fix32->id, &fix->id, sizeof(fix32->id));
 
-> In this scenario, the "waking trace" of P, signifying the initiation
-> of the wake-up, is recorded on the CPU where try_to_wake_up was executed.
-> Meanwhile, the "wakeup trace," denoting the completion of the wake-up,
-> is observed on the remote CPU where sched_ttwu_pending() is executed.
->
-> Is there a possibility that something other than the above occurred
-> in your case?
+Furthermore, we can use the new 2-argument variants of strscpy() and
+strscpy_pad() introduced by Commit e6584c3964f2f ("string: Allow
+2-argument strscpy()") to simplify the syntax even more.
 
-I suspect that the case reported may be that the task went to sleep
-right after the trace_sched_waking(). Which could result in the
-transition from sleeping to trace_sched_wakeup() without the
-trace_sched_waking() inbetween.  The added latency from the remote
-wakeup probably increases the chance for this race to occur.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-So I'll withdraw this change for now and sync back up to check if my
-suspicions are correct or not.
+Found with: $ rg "strncpy\("
+---
+ drivers/video/fbdev/fsl-diu-fb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks so much again for pointing this out.
--john
+diff --git a/drivers/video/fbdev/fsl-diu-fb.c b/drivers/video/fbdev/fsl-diu-fb.c
+index 0191141657fd..ea37a60da10c 100644
+--- a/drivers/video/fbdev/fsl-diu-fb.c
++++ b/drivers/video/fbdev/fsl-diu-fb.c
+@@ -787,7 +787,7 @@ static void set_fix(struct fb_info *info)
+ 	struct fb_var_screeninfo *var = &info->var;
+ 	struct mfb_info *mfbi = info->par;
+ 
+-	strncpy(fix->id, mfbi->id, sizeof(fix->id));
++	strscpy_pad(fix->id, mfbi->id);
+ 	fix->line_length = var->xres_virtual * var->bits_per_pixel / 8;
+ 	fix->type = FB_TYPE_PACKED_PIXELS;
+ 	fix->accel = FB_ACCEL_NONE;
+
+---
+base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
+change-id: 20240319-strncpy-drivers-video-fbdev-fsl-diu-fb-c-b69036ceb3f4
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
