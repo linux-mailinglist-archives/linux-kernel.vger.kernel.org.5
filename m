@@ -1,62 +1,51 @@
-Return-Path: <linux-kernel+bounces-109404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1223E8818AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:39:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE1F8818B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 438391C20F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:39:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 690F51F22716
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280A33A8DD;
-	Wed, 20 Mar 2024 20:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2C142AB7;
+	Wed, 20 Mar 2024 20:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PMkqrwzk"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="OrA6x1pw"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83BE12E48
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5389512E48;
+	Wed, 20 Mar 2024 20:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710967136; cv=none; b=I69m+wDbeut/AtPLzcXotwcqKmbQmjUTObr2XI9s/3fhyRLQNc0w+qADylm7B/1hIE+L57tShukgWN9Btku5tRNceY/IwEyVsunjnLoi4bz7VvsOzEHjDpF7pTVj8Z4D+AUlfYt2Q5I21k2uFilkKZCY0KFvB0ElcOJZRQFZyxs=
+	t=1710967287; cv=none; b=RNdCdsCjIC7FsXgBjGSZiKztYcSYpsueqiYZlYXIOG62perQbHxjg/XkIrQoO6PVnLosw14snTvYfCEN4BGQcdMC0Zan8Tfc02My2/dhWhIvsQwv2NWOgBBu88tsXbyv5OnBpUHbqWoY6yp1gJRoKayxlaAxW90sF5behbc8bAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710967136; c=relaxed/simple;
-	bh=QqgcfH7Gs4aFDl7apE5SLWcpDntkG8VEFpyNR7pQaDY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uG1R1829kFG9+qgBbGhSkwlZAJJIUdL/Xg4ksPyEORVI4Iwt0HOhes7wgABsSf1R36olBgcCGjzXOExZyh44g7xhkxwnvIQPSQ7bH4vgQu1SzDSY7CJedVNZGLxhglueMdxOgV6qjaQZAwk8H3/JTa01U+dF2faBhFjWtwNTjqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PMkqrwzk; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KJoP2P027154;
-	Wed, 20 Mar 2024 20:38:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=OnNPBOJG99sLl6xnj4rFf8mUA0PEh3eDPw9A7LF1ZT8=; b=PM
-	kqrwzk062/TPCWIzs/zUpJ9fZCivQm+62RslNWMmsdMyOKgXZmZYpdRtzL6pgO+Z
-	w6moGu6da86qw6SDvkVWCmWdTLgC/4TOOs8u1AnplxFIiCQieLAkYhMa4Ziwg+/N
-	ARz7LULG/cYJIhQmFLOyu5EqrMA/eei2K1MnxGDFL+AaxbQ+vifay9JCxgR2+KTE
-	pmOmcQQrLTe9/Q0qah1cVMaxOVRWtP/b2S9k2FteWRk4UWfgnHNy/aFpeWk2CwD/
-	qqOEgRkMd0aRMs5pAY+Hx+7cWp6Ar/O5/LoA8MO7ettxDkj5FGu+5l2YGt+sGfiB
-	kLrS1UdZhI4n+zwoIPQQ==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyrp7a2ue-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 20:38:30 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KKcK46021230
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 20:38:20 GMT
-Received: from [10.71.108.229] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Mar
- 2024 13:38:19 -0700
-Message-ID: <43149aa6-e6b9-487b-9d98-e2281d65e2bb@quicinc.com>
-Date: Wed, 20 Mar 2024 13:38:09 -0700
+	s=arc-20240116; t=1710967287; c=relaxed/simple;
+	bh=91yG2vmO+tazo8NZS2KIt/t4gbAjam+wzYjaZ8suBzo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YmZWNv2iUDzG8GDYR9tR4+Zr6TR3g4u2AJ2n6AOxN+1fNC1wIF4jlwUVYaAIn0zv0LpPHl/R00vZT3rY8ljp/b6txuxyzmYqU1X1N79CkOzhVxyNBRn8jp26n0SVSyCq0/1SUMOU/7aNYgDu0Q+yCGViDQjMs2ZoEAc0I/F6baM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=OrA6x1pw; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 64A981BF203;
+	Wed, 20 Mar 2024 20:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710967282;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V1rjsEgyVWVkG2lBkygNFoS+ERY9yY1N//Uw/xuZ26A=;
+	b=OrA6x1pw+oPiuzJyJ6Pla7RsogCFk+LQcK4+lE0F3bjgNfUapB5dc+J9P9L6oKhRsURsYY
+	1+wzoAlDzufeHPBu4hIfEgvqTui3nNq4Q7Cfa1x7I9LMd4tBO6sEmJrS0iVbVaTaD1WFB1
+	KkQ/HhxIibIrs0EvHBweSj/5Z7lXSKJJhuatUETaxN8QrZVo6AZIe5DHSADPq0Q77arMbB
+	Kug78hCkX7MmcOPQn+W1L89iwFAHrht83noEZWNrhifBHDefOvwNekMlWe2AO6arp1lc6f
+	wHlWDRxSM7I/HYJqePmmg5vcSEnEB1cARMmii3dEj6Qs9Ozpb+EQLEDHCfDRrg==
+Message-ID: <3698b522-d6dc-46c1-bab2-d5ee3bed1fce@arinc9.com>
+Date: Wed, 20 Mar 2024 23:40:56 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,78 +53,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] drm/panel: ltk050h3146w: add MIPI_DSI_MODE_VIDEO to
- LTK050H3148W flags
-To: Heiko Stuebner <heiko@sntech.de>, <neil.armstrong@linaro.org>,
-        <sam@ravnborg.org>
-CC: <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <quentin.schulz@theobroma-systems.com>,
-        <klaus.goger@theobroma-systems.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>,
-        Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20240320131232.327196-1-heiko@sntech.de>
+Subject: Re: [PATCH 3/3] net: phy: mediatek-ge: do not disable EEE
+ advertisement
+To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+ Russell King <linux@armlinux.org.uk>,
+ SkyLake Huang <SkyLake.Huang@mediatek.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-0-3f17226344e8@arinc9.com>
+ <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-3-3f17226344e8@arinc9.com>
 Content-Language: en-US
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20240320131232.327196-1-heiko@sntech.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1t2UMwHijK8EBCOLBgnA6x-Naz_MlNTe
-X-Proofpoint-GUID: 1t2UMwHijK8EBCOLBgnA6x-Naz_MlNTe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_11,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 phishscore=0 spamscore=0
- impostorscore=0 suspectscore=0 bulkscore=0 mlxscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403140001 definitions=main-2403200164
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-3-3f17226344e8@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-
-
-On 3/20/2024 6:12 AM, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+On 18.03.2024 10:46, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Similar to other variants, the LTK050H3148W wants to run in video mode
-> when displaying data. So far only the Synopsis DSI driver was using this
-> panel and it is always switching to video mode, independent of this flag
-> being set.
+> There's no need to disable Energy-Efficient Ethernet (EEE) advertisement on
+> the MT7530 and MT7531 switch PHYs. EEE works fine on MT7530 and MT7531
+> switch PHYs. Remove the code where EEE advertisement is disabled.
 > 
-> Other DSI drivers might handle this differently, so add the flag.
-> 
-> Fixes: e5f9d543419c ("drm/panel: ltk050h3146w: add support for Leadtek LTK050H3148W-CTA6 variant")
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> This is a bugfix because there's a possible race condition where the
+> mediatek-ge driver would kick in after the MT7530 DSA subdriver which would
+> have EEE disabled until manually enabled.
 
-Hi Heiko,
+Can I get an opinion on this? Is it actually possible that the PHY driver
+would start probing after the DSA subdriver? On the console logs for the
+DSA subdriver, I can see that the name of the PHY driver will appear, which
+makes me believe the PHY driver would actually never probe after the DSA
+subdriver.
 
-Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+[    4.402641] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=POLL)
+[    4.420392] mt7530-mdio mdio-bus:1f lan0 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=POLL)
+[    4.437791] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=POLL)
+[    4.455096] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=POLL)
+[    4.472422] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=POLL)
 
-Thanks,
+I don't want to submit a bugfix to the net tree if the bug won't ever
+happen in real life.
 
-Jessica Zhang
-
-> ---
->   drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> index 30919c872ac8..a50f5330a661 100644
-> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> @@ -326,7 +326,8 @@ static const struct drm_display_mode ltk050h3148w_mode = {
->   static const struct ltk050h3146w_desc ltk050h3148w_data = {
->   	.mode = &ltk050h3148w_mode,
->   	.init = ltk050h3148w_init_sequence,
-> -	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_VIDEO_BURST,
-> +	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-> +		      MIPI_DSI_MODE_VIDEO_BURST,
->   };
->   
->   static int ltk050h3146w_init_sequence(struct ltk050h3146w *ctx)
-> -- 
-> 2.39.2
-> 
+Arınç
 
