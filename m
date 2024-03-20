@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-108606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E0A880CE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:18:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15018880CE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D664283BB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:18:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC641C2213F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10175374CF;
-	Wed, 20 Mar 2024 08:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E04F376E2;
+	Wed, 20 Mar 2024 08:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CGJleZ7Q"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="isDxulfI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFBD37169
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE28933CCC;
+	Wed, 20 Mar 2024 08:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710922713; cv=none; b=NaHDuoye+xBdOkNCRwwj7xYnLT0aiP7FGJvUN5SVK24uTyMGLwpvxfQn83uuLhY2kwIUOhROx0SPZAGnY2dPoP5a5kxRgw4wi8jPgRfwlI6QUkzhwp7x+3B1kgvlRsaqd1vXIMHkUAxjTt1cT4i3jD4kZTLODJz7KfgvayVpQ54=
+	t=1710922731; cv=none; b=p9KF3ETXc2jqJX7w1wdBwJY6V4uDeJ5wpuIXJRzDOKh0rGKqVyDBca4lUyL/dNw3261oZ6b0cBq2cmZaYVdWg5yKP3TkKiIqG3xiaUsq1floTTjP4/lnIAjT4Wdc4vMLf+MEjNSGBHg7fDJAOHUcPp3OYMMyTQRiVl3OOYS2jbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710922713; c=relaxed/simple;
-	bh=Les0+ThlZ7hHfk6wPcIy0e/rZ4aqk7BepLMbbD1qrOE=;
+	s=arc-20240116; t=1710922731; c=relaxed/simple;
+	bh=qPkN9E6b8SUh3Jfe6px/hgR01t6ClvlRlfbmqOmQkmU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UZ9GJhTKuuhtKcITJ7vWQWVeKuNsNDJFJbvMq5bEEHx/Q10agw46AXkbl8uUYcVm+WvnN8nmsh7IP2Lx9DgOhiZsBRu/tq1PVQKWqsqfHDIs+F4EVOYl5XhpG5VR644QiY1zozsqKOOUGcnXrGaFTVrcu1XJmu4b/sVKU12gVrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CGJleZ7Q; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710922710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AMprTuECjX7S7TpqECbNTRgVRVbEeCClI2ScghSpeE0=;
-	b=CGJleZ7QJSc0tGvYUpQ8MBMkCxddnXWS+uGg5fnYcUCK9FT60cnjrynHcuSx3syIR8E/60
-	NqjMJWSFEqt9Qr6JUfEzzXHxQhxlqfyf1eNav5W2+Il53bqVZiYn12R5duznOKxlrAiXEe
-	sjFucgGOAcg1l0qy0QtZDv1ooT0OtnI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-6nQMCBe0MAyN1QsEiAmDgg-1; Wed, 20 Mar 2024 04:18:26 -0400
-X-MC-Unique: 6nQMCBe0MAyN1QsEiAmDgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 72B90800267;
-	Wed, 20 Mar 2024 08:18:26 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id ADB97C1576F;
-	Wed, 20 Mar 2024 08:18:25 +0000 (UTC)
-Date: Wed, 20 Mar 2024 16:18:18 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
-Subject: Re: [PATCH 4/6] mm/mm_init.c: remove meaningless calculation of
- zone->managed_pages in free_area_init_core()
-Message-ID: <ZfqbygfNmFKpBCfR@MiWiFi-R3L-srv>
-References: <20240318142138.783350-1-bhe@redhat.com>
- <20240318142138.783350-5-bhe@redhat.com>
- <Zfm6gzhKUehLwM5-@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FMOhusI9kfS8W49ddcBXEUgbWZQVcaQqDJoXyPBImcykiU8uPO0FTMLlDQcGJ4UBtypPZ1IVHGv8ItZiQi5yovPC6Ls+gLf28hmOsSUAPRIEqQyaohrKWIMgOnJzQLw1HjS9+SZIbA+oMOKhbw79bycPSz2AQg3HAidbOAYsOFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=isDxulfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D9A5C433C7;
+	Wed, 20 Mar 2024 08:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710922731;
+	bh=qPkN9E6b8SUh3Jfe6px/hgR01t6ClvlRlfbmqOmQkmU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=isDxulfIyzdljTz66/ur7DrURNSFKF52SPS19OoCQbZLnk9axIxNTk7X0Fnrgj47J
+	 09g61T17V/Tn4WKF541EW1oP1wJhD3d5tm/Rg0/Hd3U24gGvir6cSUZVf0iTFC1sgy
+	 CuPfD4ZBQzYIJs3f3r+jua+NVXmgb+u5+J72t+kRH/B6wQ8JOeGzoCvMe1oFZvWQgH
+	 iyEoPdNyDq6cwoVHjp/bhvcCZ/qe6pgCgFTnvs0qWmGQLyZOocSrKKs33OHCgEi+Kt
+	 T2/0fq2d2aharchudbchah1r8j1T/Yja3xfWjQszQUeWi1NdRGIlhUbz2dot0JSXnP
+	 UMXIRLwiXD8UQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rmrA2-0000000045f-0ivs;
+	Wed, 20 Mar 2024 09:18:58 +0100
+Date: Wed, 20 Mar 2024 09:18:58 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 0/5] arm64: dts: qcom: sc8280xp: PCIe fixes
+ and GICv3 ITS enable
+Message-ID: <Zfqb8jPK50vlqu5Q@hovoldconsulting.com>
+References: <20240306095651.4551-1-johan+linaro@kernel.org>
+ <171081652637.198276.6219023769904423414.b4-ty@kernel.org>
+ <Zfk98hYPn7kiFGkt@hovoldconsulting.com>
+ <9b475e13-96b9-4bce-8041-e0d8e5a332a1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,52 +74,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zfm6gzhKUehLwM5-@kernel.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <9b475e13-96b9-4bce-8041-e0d8e5a332a1@linaro.org>
 
-On 03/19/24 at 06:17pm, Mike Rapoport wrote:
-> On Mon, Mar 18, 2024 at 10:21:36PM +0800, Baoquan He wrote:
-> > Currently, in free_area_init_core(), when initialize zone's field, a
-> > rough value is set to zone->managed_pages. That value is calculated by
-> > (zone->present_pages - memmap_pages).
+On Wed, Mar 20, 2024 at 09:09:02AM +0100, Krzysztof Kozlowski wrote:
+> On 19/03/2024 08:25, Johan Hovold wrote:
+> > On Mon, Mar 18, 2024 at 09:48:30PM -0500, Bjorn Andersson wrote:
+> >> On Wed, 06 Mar 2024 10:56:46 +0100, Johan Hovold wrote:
+> >>> This series addresses a few problems with the sc8280xp PCIe
+> >>> implementation.
+
+> >> Applied, thanks!
+> >>
+> >> [4/5] arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
+> >>       commit: 2b621971554a94094cf489314dc1c2b65401965c
 > > 
-> > In the meantime, add the value to nr_all_pages and nr_kernel_pages which
-> > represent all free pages of system (only low memory or including HIGHMEM
-> > memory separately). Both of them are gonna be used in
-> > alloc_large_system_hash().
-> > 
-> > However, the rough calculation and setting of zone->managed_pages is
-> > meaningless because
-> >   a) memmap pages are allocated on units of node in sparse_init() or
-> >      alloc_node_mem_map(pgdat); The simple (zone->present_pages -
-> >      memmap_pages) is too rough to make sense for zone;
-> >   b) the set zone->managed_pages will be zeroed out and reset with
-> >      acutal value in mem_init() via memblock_free_all(). Before the
-> >      resetting, no buddy allocation request is issued.
-> > 
-> > Here, remove the meaningless and complicated calculation of
-> > (zone->present_pages - memmap_pages), directly set zone->present_pages to
-> > zone->managed_pages. It will be adjusted in mem_init().
+> > I noticed that you applied both of these for 6.10, but this one is a fix
+> > that should go into 6.9.
 > 
-> Do you mean "set zone->managed_pages to zone->present_pages"?
-
-Hmm, maybe 'set zone->managed_pages as zone->present_pages'
-            or 
-           'assign zone->present_pages to zone->managed_pages'
-which is more precise.
-
-Wwill update.
-
+> Well, mixing fixes for different cycles in one patchset was always
+> discouraged. In case of some subsystems you would receive clear
+> response, that you must split fixes out of the patchset.
 > 
-> I think we can just set zone->managed_pages to 0 in free_area_init_core().
-> Anyway it will be reset before the first use.
+> Fixes being first in the patchset would be probably accepted by the rest
+> of subsystems, but putting it in the middle of the patchset is wrong.
 
-Yeah, setting to 0 is also fine. I thougt of 0 ever. Considering
-zone->present_pages is closer value to actual zone->managed_pages
-than 0, and it may be needed in the future in some way before
-mem_init(). If no strong objection, I will keep the assigning
-'zone->present_pages' to 'zone->managed_pages'.
+Perhaps you should not comment before reading up on the history of this
+series.
 
-Thanks again for careful reviewing.
+This was all intended for 6.9, but merging was stalled for a number of
+reasons so here we are. The patches were also going in through different
+trees, so patch 4/5 is the first Qualcomm SoC patch.
 
+Johan
 
