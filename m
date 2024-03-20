@@ -1,328 +1,147 @@
-Return-Path: <linux-kernel+bounces-108969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4B38812A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:49:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FDC8812AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:50:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4121C20B55
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:49:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B492B21A6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFAE43179;
-	Wed, 20 Mar 2024 13:49:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B23C40BF9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774C544370;
+	Wed, 20 Mar 2024 13:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AA8xkoGy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA1645974;
+	Wed, 20 Mar 2024 13:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710942572; cv=none; b=Y0gzNcPDECed8w5aZ7apA+3wrDOqXhA3gAe4svoOkupmS2PckpGfxVM+1xCDUsBDbeo7BJt8BEebHmI4bfyG+JaEAx6o9Nhlc11lNOvliP84EcQq+vx+rmiFaxQMitmL/wJRHwZimBarOJrLOY4dHP6u2fhHaSETX0OlWv9XmW8=
+	t=1710942581; cv=none; b=HKiLDtDBJsshcwfM+yI0AVpDs2OpkXNfP52H4+X8uLDXSbXvmU1XNSMCeCKXcYXFLceSHdp96I9p3rONW+JJQl0oJ/rYW8YDs7P3aasJDFo/uLBAZhtz6I0NmU5HJF3Qd84y+vU3VJmsy8ikDwasd5QsbubyoKwt1ZWg6wwJIKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710942572; c=relaxed/simple;
-	bh=7+mVQ6uKQsI3S0zF8DGa4Gt8XjyXv589yJSSUfD+m7U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ev6Wash130D9j0OnP5aIy+g9wpMQQCbg9+QlJUWF9X41vUG/m2Cwl/a7xQkArOTb8KsSXMZeknT9GHTHckzOfcFpJvLsdvg2Bx1NTwr9Izaiq+Vt6xaDSaX8BEmxV/+wKU9wA3RmcDX7ZEjbB8UlMhf6Wvi1K5sMNseWn0J+eZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4B681007;
-	Wed, 20 Mar 2024 06:50:03 -0700 (PDT)
-Received: from [10.57.72.78] (unknown [10.57.72.78])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DECD83F64C;
-	Wed, 20 Mar 2024 06:49:26 -0700 (PDT)
-Message-ID: <7ba06704-2090-4eb2-9534-c4d467cc085a@arm.com>
-Date: Wed, 20 Mar 2024 13:49:25 +0000
+	s=arc-20240116; t=1710942581; c=relaxed/simple;
+	bh=EAbJvDEPuUAEHqsHcIRB3brQrJYzFil/dHVXDW9zweU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sc5P2eoe+spqfhiMoKgKMEW5i+JC/xVEt1ifSU5uLtGT8KyWTWrJMIfKhvQ0nUlFPBDenZMojDLVrXSZOTQiRSpXTFmJTfJvkaaBZGHh5w0X+Re6YhBvd/+VlOujbwjADBLwYr5Z7jCclizmIyLddpb0T/mpri42dqfuWqOQgeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AA8xkoGy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E0C2C43330;
+	Wed, 20 Mar 2024 13:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710942581;
+	bh=EAbJvDEPuUAEHqsHcIRB3brQrJYzFil/dHVXDW9zweU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=AA8xkoGyJTDUSmLTVP3F3lutWqk879LSCt3IDdjao/9DHtBwzFCbmcgycwK9ECMBs
+	 5hUQ90mYCPnEQqHiJvSwm08EE1h3ZvW0QzhsD5g3jRoNpY5cVeh3TbSM9hhUW2XPwp
+	 mUiQID8k/GrCYhSxLa1A1ChsHXo67+IH7AgkZDmRbYAl/BPIPhUaydmBoBlzrbttPX
+	 Z1cviJzRTc07w3MAIamWlCEpBFznuCV5SmvsKoiQmpZ/hYpKHzaJHqxwyTs7M360Jf
+	 L6BM0ekPACyf1RcWfaLSyFs7N6f4ptbTc1eDrSdOPdfuD5PsLzeCyZwQHYq0C4o5AM
+	 1lGTvdPT9SsyQ==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4644bde1d4so885777366b.3;
+        Wed, 20 Mar 2024 06:49:41 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWxw2sTxIBQhdvbAz1z+idq/GilEPCG9Pj0cv2NG2kZp852gyRxPZwU4h1KGJmOd3ptI76x0LHcOedNsdZDkE8UuIVK1D3qc3tjkzZ9dZiZovEZxFq8hDRfYa74lUHrYoyKR8MYRXM/Gs6oR0a7Lb1h05mv3SX1cqrmOUSbOEWNbQ==
+X-Gm-Message-State: AOJu0YzL7nN0AzdipP8YiLuIhWg4Ss/9cYbD5HgbleKNeGjByCeMALGd
+	PK2zej89txIgIRXcOpNnrgHnoNA1/ESyBvSuaUzgfvTntlTGjeZ4kty231Z+h4gCN23tOsD/SDS
+	AjeV7hQ7poYpI7SXkP6TrS7Mkzj0=
+X-Google-Smtp-Source: AGHT+IG6MEm+BI8Pn1pGEfr7VXutNJ95vBdKRwS15/HX3UTZBvRAgB1kEBIUPyvnMpx6ZshWbj6yijLu46BWmCWVtow=
+X-Received: by 2002:a17:906:af07:b0:a46:1fba:2c6d with SMTP id
+ lx7-20020a170906af0700b00a461fba2c6dmr1416970ejb.20.1710942579777; Wed, 20
+ Mar 2024 06:49:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
- MADV_COLD
-Content-Language: en-GB
-To: Lance Yang <ioworker0@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, Andrew Morton
- <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-7-ryan.roberts@arm.com>
- <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
- <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
- <CAK1f24k1AuHDdrLFNLvwdoOy=xJTVkVdfY4+SN+KW5-EiMSa9Q@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAK1f24k1AuHDdrLFNLvwdoOy=xJTVkVdfY4+SN+KW5-EiMSa9Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240315024526.394772-1-chenhuacai@loongson.cn> <e8c4062df63f3e8bc8bb2d7209fa2a2a44bd7ed3.camel@xry111.site>
+In-Reply-To: <e8c4062df63f3e8bc8bb2d7209fa2a2a44bd7ed3.camel@xry111.site>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 20 Mar 2024 21:49:28 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H59EzR7gN0UiJP5x2wbs2_TZCej-NE==OZxVcP0cvt7hg@mail.gmail.com>
+Message-ID: <CAAhV-H59EzR7gN0UiJP5x2wbs2_TZCej-NE==OZxVcP0cvt7hg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid mis-optimization
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Huacai Chen <chenhuacai@loongson.cn>, Arnd Bergmann <arnd@arndb.de>, loongarch@lists.linux.dev, 
+	linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>, 
+	Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>, 
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org, 
+	loongson-kernel@lists.loongnix.cn, stable@vger.kernel.org, 
+	Xiaotian Wu <wuxiaotian@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
+	Xing Li <lixing@loongson.cn>, Hongchen Zhang <zhanghongchen@loongson.cn>, 
+	Rui Wang <wangrui@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Lance, Barry,
+Hi, Ruoyao,
 
-Sorry - I totally missed this when you originally sent it!
+On Wed, Mar 20, 2024 at 6:27=E2=80=AFPM Xi Ruoyao <xry111@xry111.site> wrot=
+e:
+>
+> On Fri, 2024-03-15 at 10:45 +0800, Huacai Chen wrote:
+> > From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
+> > global regs in asms"), global registers will no longer be forced to add
+> > to the def-use chain. Then current_thread_info(), current_stack_pointer
+> > and __my_cpu_offset may be lifted out of the loop because they are no
+> > longer treated as "volatile variables".
+>
+> Ooops...  I'm wondering why this issue has not blown up our systems
+> before.  The referred GCC commit is far before LoongArch CPUs are taped.
+>
+> > This optimization is still correct for the current_thread_info() and
+> > current_stack_pointer usages because they are associated to a thread.
+> > However it is wrong for __my_cpu_offset because it is associated to a
+> > CPU rather than a thread: if the thread migrates to a different CPU in
+> > the loop, __my_cpu_offset should be changed.
+> >
+> > Change __my_cpu_offset definition to treat it as a "volatile variable",
+> > in order to avoid such a mis-optimization.
+> >
+> > Cc: stable@vger.kernel.org
+>
+> I suppose we should add Fixes: 5b0b14e550a0 ("LoongArch: Add
+> atomic/locking header") here.
+You are right, but since this patch is in loongarch-next for the pull
+request, I don't want to change things.
 
+Huacai
 
-On 13/03/2024 14:02, Lance Yang wrote:
-> On Wed, Mar 13, 2024 at 5:03 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 13/03/2024 07:19, Barry Song wrote:
->>> On Tue, Mar 12, 2024 at 4:01 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
->>>> folio that is fully and contiguously mapped in the pageout/cold vm
->>>> range. This change means that large folios will be maintained all the
->>>> way to swap storage. This both improves performance during swap-out, by
->>>> eliding the cost of splitting the folio, and sets us up nicely for
->>>> maintaining the large folio when it is swapped back in (to be covered in
->>>> a separate series).
->>>>
->>>> Folios that are not fully mapped in the target range are still split,
->>>> but note that behavior is changed so that if the split fails for any
->>>> reason (folio locked, shared, etc) we now leave it as is and move to the
->>>> next pte in the range and continue work on the proceeding folios.
->>>> Previously any failure of this sort would cause the entire operation to
->>>> give up and no folios mapped at higher addresses were paged out or made
->>>> cold. Given large folios are becoming more common, this old behavior
->>>> would have likely lead to wasted opportunities.
->>>>
->>>> While we are at it, change the code that clears young from the ptes to
->>>> use ptep_test_and_clear_young(), which is more efficent than
->>>> get_and_clear/modify/set, especially for contpte mappings on arm64,
->>>> where the old approach would require unfolding/refolding and the new
->>>> approach can be done in place.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>
->>> This looks so much better than our initial RFC.
->>> Thank you for your excellent work!
->>
->> Thanks - its a team effort - I had your PoC and David's previous batching work
->> to use as a template.
->>
->>>
->>>> ---
->>>>  mm/madvise.c | 89 ++++++++++++++++++++++++++++++----------------------
->>>>  1 file changed, 51 insertions(+), 38 deletions(-)
->>>>
->>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>> index 547dcd1f7a39..56c7ba7bd558 100644
->>>> --- a/mm/madvise.c
->>>> +++ b/mm/madvise.c
->>>> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>         LIST_HEAD(folio_list);
->>>>         bool pageout_anon_only_filter;
->>>>         unsigned int batch_count = 0;
->>>> +       int nr;
->>>>
->>>>         if (fatal_signal_pending(current))
->>>>                 return -EINTR;
->>>> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>                 return 0;
->>>>         flush_tlb_batched_pending(mm);
->>>>         arch_enter_lazy_mmu_mode();
->>>> -       for (; addr < end; pte++, addr += PAGE_SIZE) {
->>>> +       for (; addr < end; pte += nr, addr += nr * PAGE_SIZE) {
->>>> +               nr = 1;
->>>>                 ptent = ptep_get(pte);
->>>>
->>>>                 if (++batch_count == SWAP_CLUSTER_MAX) {
->>>> @@ -447,55 +449,66 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>                         continue;
->>>>
->>>>                 /*
->>>> -                * Creating a THP page is expensive so split it only if we
->>>> -                * are sure it's worth. Split it if we are only owner.
->>>> +                * If we encounter a large folio, only split it if it is not
->>>> +                * fully mapped within the range we are operating on. Otherwise
->>>> +                * leave it as is so that it can be swapped out whole. If we
->>>> +                * fail to split a folio, leave it in place and advance to the
->>>> +                * next pte in the range.
->>>>                  */
->>>>                 if (folio_test_large(folio)) {
->>>> -                       int err;
->>>> -
->>>> -                       if (folio_estimated_sharers(folio) > 1)
->>>> -                               break;
->>>> -                       if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>> -                               break;
->>>> -                       if (!folio_trylock(folio))
->>>> -                               break;
->>>> -                       folio_get(folio);
->>>> -                       arch_leave_lazy_mmu_mode();
->>>> -                       pte_unmap_unlock(start_pte, ptl);
->>>> -                       start_pte = NULL;
->>>> -                       err = split_folio(folio);
->>>> -                       folio_unlock(folio);
->>>> -                       folio_put(folio);
->>>> -                       if (err)
->>>> -                               break;
->>>> -                       start_pte = pte =
->>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>> -                       if (!start_pte)
->>>> -                               break;
->>>> -                       arch_enter_lazy_mmu_mode();
->>>> -                       pte--;
->>>> -                       addr -= PAGE_SIZE;
->>>> -                       continue;
->>>> +                       const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
->>>> +                                               FPB_IGNORE_SOFT_DIRTY;
->>>> +                       int max_nr = (end - addr) / PAGE_SIZE;
->>>> +
->>>> +                       nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>>> +                                            fpb_flags, NULL);
->>>
->>> I wonder if we have a quick way to avoid folio_pte_batch() if users
->>> are doing madvise() on a portion of a large folio.
->>
->> Good idea. Something like this?:
->>
->>         if (pte_pfn(pte) == folio_pfn(folio)
->>                 nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->>                                      fpb_flags, NULL);
->>
->> If we are not mapping the first page of the folio, then it can't be a full
->> mapping, so no need to call folio_pte_batch(). Just split it.
-> 
->                  if (folio_test_large(folio)) {
-> [...]
->                        nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
->                                             fpb_flags, NULL);
-> +                       if (folio_estimated_sharers(folio) > 1)
-> +                               continue;
-> 
-> Could we use folio_estimated_sharers as an early exit point here?
-
-I'm not sure what this is saving where you have it? Did you mean to put it
-before folio_pte_batch()? Currently it is just saving a single conditional.
-
-But now that I think about it a bit more, I remember why I was originally
-unconditionally calling folio_pte_batch(). Given its a large folio, if the split
-fails, we can move the cursor to the pte where the next folio begins so we don't
-have to iterate through one pte at a time which would cause us to keep calling
-folio_estimated_sharers(), folio_test_anon(), etc on the same folio until we get
-to the next boundary.
-
-Of course the common case at this point will be for the split to succeed, but
-then we are going to iterate over ever single PTE anyway - one way or another
-they are all fetched into cache. So I feel like its neater not to add the
-conditionals for calling folio_pte_batch(), and just leave this as I have it here.
-
-> 
->                        if (nr < folio_nr_pages(folio)) {
->                                int err;
-> 
-> -                               if (folio_estimated_sharers(folio) > 1)
-> -                                       continue;
-> [...]
-> 
->>
->>>
->>>> +
->>>> +                       if (nr < folio_nr_pages(folio)) {
->>>> +                               int err;
->>>> +
->>>> +                               if (folio_estimated_sharers(folio) > 1)
->>>> +                                       continue;
->>>> +                               if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>> +                                       continue;
->>>> +                               if (!folio_trylock(folio))
->>>> +                                       continue;
->>>> +                               folio_get(folio);
->>>> +                               arch_leave_lazy_mmu_mode();
->>>> +                               pte_unmap_unlock(start_pte, ptl);
->>>> +                               start_pte = NULL;
->>>> +                               err = split_folio(folio);
->>>> +                               folio_unlock(folio);
->>>> +                               folio_put(folio);
->>>> +                               if (err)
->>>> +                                       continue;
->>>> +                               start_pte = pte =
->>>> +                                       pte_offset_map_lock(mm, pmd, addr, &ptl);
->>>> +                               if (!start_pte)
->>>> +                                       break;
->>>> +                               arch_enter_lazy_mmu_mode();
->>>> +                               nr = 0;
->>>> +                               continue;
->>>> +                       }
->>>>                 }
->>>>
->>>>                 /*
->>>>                  * Do not interfere with other mappings of this folio and
->>>> -                * non-LRU folio.
->>>> +                * non-LRU folio. If we have a large folio at this point, we
->>>> +                * know it is fully mapped so if its mapcount is the same as its
->>>> +                * number of pages, it must be exclusive.
->>>>                  */
->>>> -               if (!folio_test_lru(folio) || folio_mapcount(folio) != 1)
->>>> +               if (!folio_test_lru(folio) ||
->>>> +                   folio_mapcount(folio) != folio_nr_pages(folio))
->>>>                         continue;
->>>
->>> This looks so perfect and is exactly what I wanted to achieve.
->>>
->>>>
->>>>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>>                         continue;
->>>>
->>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
->>>> -
->>>> -               if (!pageout && pte_young(ptent)) {
->>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>> -                                                       tlb->fullmm);
->>>> -                       ptent = pte_mkold(ptent);
->>>> -                       set_pte_at(mm, addr, pte, ptent);
->>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>> +               if (!pageout) {
->>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
->>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
->>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
-> 
-> IIRC, some of the architecture(ex, PPC) don't update TLB with set_pte_at and
-> tlb_remove_tlb_entry. So, didn't we consider remapping the PTE with old after
-> pte clearing?
-
-Sorry Lance, I don't understand this question, can you rephrase? Are you saying
-there is a good reason to do the original clear-mkold-set for some arches?
-
-> 
-> Thanks,
-> Lance
-> 
-> 
-> 
->>>> +                       }
->>>
->>> This looks so smart. if it is not pageout, we have increased pte
->>> and addr here; so nr is 0 and we don't need to increase again in
->>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
->>>
->>> otherwise, nr won't be 0. so we will increase addr and
->>> pte by nr.
->>
->> Indeed. I'm hoping that Lance is able to follow a similar pattern for
->> madvise_free_pte_range().
->>
->>
->>>
->>>
->>>>                 }
->>>>
->>>>                 /*
->>>> --
->>>> 2.25.1
->>>>
->>>
->>> Overall, LGTM,
->>>
->>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->>
->> Thanks!
->>
->>
-
+>
+> > Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
+> > Reported-by: Miao Wang <shankerwangmiao@gmail.com>
+> > Signed-off-by: Xing Li <lixing@loongson.cn>
+> > Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+> > Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > ---
+> >  arch/loongarch/include/asm/percpu.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/inclu=
+de/asm/percpu.h
+> > index 9b36ac003f89..03b98491d301 100644
+> > --- a/arch/loongarch/include/asm/percpu.h
+> > +++ b/arch/loongarch/include/asm/percpu.h
+> > @@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long o=
+ff)
+> >       __my_cpu_offset =3D off;
+> >       csr_write64(off, PERCPU_BASE_KS);
+> >  }
+> > -#define __my_cpu_offset __my_cpu_offset
+> > +
+> > +#define __my_cpu_offset                                      \
+> > +({                                                   \
+> > +     __asm__ __volatile__("":"+r"(__my_cpu_offset)); \
+> > +     __my_cpu_offset;                                \
+> > +})
+> >
+> >  #define PERCPU_OP(op, asm_op, c_op)                                  \
+> >  static __always_inline unsigned long __percpu_##op(void *ptr,         =
+       \
+>
+> --
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
 
