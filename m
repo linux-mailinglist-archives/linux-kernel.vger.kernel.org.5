@@ -1,447 +1,192 @@
-Return-Path: <linux-kernel+bounces-109133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AA088150F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:57:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E1A881512
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389291F21333
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:57:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA831C20958
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22F652F78;
-	Wed, 20 Mar 2024 15:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8E653E2C;
+	Wed, 20 Mar 2024 15:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OaJ9r7Iz"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wxYv5h07"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E230535C2
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7750524D7
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:58:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710950264; cv=none; b=RUkBWHoJicv79IR854a7UrnAfPTqD0Y5zNEA295VxG9yrpRyTXjfjlEcbWj0q1Pj4BNW4mR0KsMVdY71gAK9uA2yCIGX1yvxzM4jXUmtTMEgfQ0LAPV8Yo4/b6CQgqTR8V1SkKvu/3MK+IC/OfBwoUtuGJ1kZqM416KZ4Le0MfE=
+	t=1710950334; cv=none; b=Is3vk0UATznYJiXzjEUw6loj2rKf7Hb7mB+OK5ZZQhYjmiz8inKspk3vk+TR/3JPjdxaApF9YE0juXozO8qsN74/BtEUGrEVG6HUPOVAuRn9ILPhmvJwmuzy5Un2dhnbf2pQpHULo1n8sBoI8GA2y6Jn9oKsb95AEiy8asvfG6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710950264; c=relaxed/simple;
-	bh=r0ak66ssCi3v8L4aH4iJf/K++/fet36yzMs5pVft3bY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rCewKi3LDF0JXMrRqfFVnzaBqTHdDxGaGZp6vA7Pfkl/4k5oxa+0SR1zOwfr3XBAPlZVRvqhQJgRygW3J6l8xe+lQ70NfsxGA7K2GHBJiJpTwZgWfw8MJqLNXhLNXfl5TABaXVgk7jPmFuOdFGj9xu+lhw4LzW9+jvR/p6iJqcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OaJ9r7Iz; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3416a975840so2383653f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:57:42 -0700 (PDT)
+	s=arc-20240116; t=1710950334; c=relaxed/simple;
+	bh=GmmRjBu8OPrKOqfE4JDgrdYsY7XBEdzR9WTE+oGBr6k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=A++tQFz1s0/Pbe7wo49uTSAQ+1CLzXdwrak04/xN92BaNjRUe+lYzDOqMlsHbll2WsstzJ+WoounJAuoPMvZs9/xmsStAdWXPbcAT2kuL9MxbT6nFbJT9Sb+foNQUCtPDl47NhML9i5RHRQ2W/iuu3a88qlHDi0hcVO7abHBM3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wxYv5h07; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e058b9e479so184585ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710950260; x=1711555060; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dvFhOZEdWgbkuIb07EEmslRhXhcd8rV5Y+Pi8wq12vc=;
-        b=OaJ9r7IzbzjJNZX3JWnp8UVUpFlI+NB1EBC7xWWNinLlrTOFuzjGE4BeJiym2jQtUN
-         gfD2Sh1EKVrZv/+Di3ywXozMlQ2EzBlF43YJTBK3JzlqBpLyIHqWlVnvg61XWcw22t7C
-         CBilesWhb9dq1W+i7zbJBKUdWkGwxhdmOy2dvvyPfccJdTRhI/zAXurwaYw+LoAGjQJC
-         LNU8d2VDfPDC0m/oyM9Z3z3bzqlGxGAKjGigGS2dxJYEJw7RURoM49nUC4BYoL2w6Ex2
-         XLY7kyh6EpIMUp6UmqJvnU/JVUh3DjTMbxAcS2u1KFRYg6S4KhjQxfDiQg9/yfHpqsbu
-         ZkhA==
+        d=google.com; s=20230601; t=1710950332; x=1711555132; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4SAiUylEBb4Do6kg5NlBhcM+tFCB4UT2cndOgQS39Kg=;
+        b=wxYv5h07nv/rLa/H/Uqnw4++Kcc0gMtr/v+EOmdHtgAYH8Sg9iMnVcXmksESG1CNp6
+         etHECM0+LYXy5+0lUuIrhUR3z3+WrzHjkk0BzUFDlSNeNP28eRMZmswnQxaCkKu6rzvb
+         ngvgB9UbdTI4J4YvDwuRGDqIRin6IZ2AUwSRKnasMKlRDBz3kUwfy6nzfdU0OS6nJl4T
+         GhHiETz4lWSoIexY/dTEeFv2suA7cIceGJZ+ZKiwBwgwBHPi4FScIBcheyqYdvE0F9a9
+         Jh33drI9D1Y859Ge1ZNfOk+z+9ZipL/3yzX4RJiiD7Oh1qcBE09SQm5/le5ZHgVVVp+w
+         1hMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710950260; x=1711555060;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dvFhOZEdWgbkuIb07EEmslRhXhcd8rV5Y+Pi8wq12vc=;
-        b=XkAFW7u5zQam3UNnc7nO5BRM9nefKmVl5EVrMmblaxSBFzsTg9iZPuGuo9BMmUfBhU
-         F1MGOBkj24afD3OF/7fmfMlwZJSpYUN3QJU3Ht03c0QCeJfiMtKgRsNDsijlxocwu0xc
-         MS+cCSE5F4ugVlw1Ux3RSs6r9tEmn2Lrk68hA6zft2y9FJoNJ96kJiHZLIhN3qGfUgmo
-         TYV+LjH2oKRple0qoeelRb65gnTKt5TmZ/Na1RlwBTqhSqSuyFeGhH6OnL+Q50hoRd9f
-         extYtp3ma7QPsPkk3gE8kqQTBO5+UkyGZEooq/6RRui2iAQsKnnVsS6aQlHIDOXGuJ1b
-         wtog==
-X-Gm-Message-State: AOJu0YwdGFbCEQHfSUl5Q/vXhT+8teJDFlgsLL1W5n4PFgMPW52QqPLp
-	RVGYaK98ljHY6YPez7jnkHbt5DEVZwQ6d4BixMPICh7f5wqWhodpeHHTn/t4O5U=
-X-Google-Smtp-Source: AGHT+IEKaAmnVFo+IjWEqz0fS/YvFUddanev65qDber8aszUxJr1IeD7HI8T7Rjz5kNerYOgzT0sVA==
-X-Received: by 2002:a5d:4cc1:0:b0:33e:7f5c:732c with SMTP id c1-20020a5d4cc1000000b0033e7f5c732cmr13609647wrt.62.1710950260547;
-        Wed, 20 Mar 2024 08:57:40 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id bj26-20020a0560001e1a00b0033ed84facdbsm11762079wrb.82.2024.03.20.08.57.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 08:57:40 -0700 (PDT)
-Message-ID: <f92ddb35-55b3-4d49-8554-20b30257f1b5@linaro.org>
-Date: Wed, 20 Mar 2024 15:57:39 +0000
+        d=1e100.net; s=20230601; t=1710950332; x=1711555132;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4SAiUylEBb4Do6kg5NlBhcM+tFCB4UT2cndOgQS39Kg=;
+        b=pitgZr6AskOI4+TLoYHhlMAa94VVH20IX4tiLH440XzAuk/vSfaAtSSIVMW7HlTiwx
+         nHCfBFXblvLMrwWirIscWo1vZsKndzKoCk47HrlyhQyZvG5Pu6sX/Kst+PEZVpDnSsWS
+         odAIIZN13UqoYuIzkNMCM1Xspx6ly7uRENxVpMhZuuOF/uWoWfuAJ/fn0mBdAVsrPguN
+         kFkb0I0pEnsABrH1ywa2Ng7IcGNmAj7c0EMav7ilvH79nymR5zs4TnDnjEh+RTVQx/bc
+         9PMFu5iGryE7nxsjZTwUw8hK7OFEMjNZHnfGqTIvycb5U2l1WSjPfjGQse0TgqqV4LCI
+         EYhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4bhgMJVF+GGwq+q/2kkdK7vatSLUoADiyOJhJq4xSodh/8U9cg2eqHBLzbv+Sc7h20i3lGpgrH618lcFj9bpZQ7AXf8HUFI59DDu4
+X-Gm-Message-State: AOJu0Yw8OxIgTk37GvZybF/+U9U5AjRnirdIu67pM8nV5fu3CBCmyPaQ
+	Fakpl5+3nH3vPJ+i0SQl96j85vpCOrmGOa3BQdRm+4CBgzGoNZ8Amawns3K8XUAS0ZrpJqN5ut1
+	P82K/m2TulgMQWkTYjC9jr9gdmYN6aLkLJ8uJ
+X-Google-Smtp-Source: AGHT+IH+gChMwdD3bcfIhE7cZKWnqVX+ASAjEpb0BwxuT9gdJcGkpFGM/aRMHTBT1CXACIqug1dPf3Vvu+VIO5R1hIE=
+X-Received: by 2002:a17:902:ecc8:b0:1de:ff9f:e760 with SMTP id
+ a8-20020a170902ecc800b001deff9fe760mr293403plh.0.1710950331830; Wed, 20 Mar
+ 2024 08:58:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/8] media: qcom: camss: Add new VFE driver for SM8550
-Content-Language: en-US
-To: Depeng Shao <quic_depengs@quicinc.com>, rfoss@kernel.org,
- todor.too@gmail.com, andersson@kernel.org, konrad.dybcio@linaro.org,
- mchehab@kernel.org, quic_yon@quicinc.com
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240320141136.26827-1-quic_depengs@quicinc.com>
- <20240320141136.26827-7-quic_depengs@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240320141136.26827-7-quic_depengs@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240301174711.2646944-1-irogers@google.com>
+In-Reply-To: <20240301174711.2646944-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 20 Mar 2024 08:58:37 -0700
+Message-ID: <CAP-5=fU7PNEDgOg=cFKkSMgHe7_Xbi5Y9k6yPoAwOpN-Uwdp7A@mail.gmail.com>
+Subject: Re: [PATCH v1] perf tests: Run tests in parallel by default
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@arm.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/03/2024 14:11, Depeng Shao wrote:
-> From: Yongsheng Li <quic_yon@quicinc.com>
-> 
-> Add IFE driver for SM8550, the main difference with
-> old HW is register offset is different, register
-> update, reset and buf done is moved to CSID. And
-> the image address support 36 bits, so need to right
-> shift the image address when configuring the write
-> master.
-> 
-> Signed-off-by: Yongsheng Li <quic_yon@quicinc.com>
-> Co-developed-by: Depeng Shao <quic_depengs@quicinc.com>
-> Signed-off-by: Depeng Shao <quic_depengs@quicinc.com>
+On Fri, Mar 1, 2024 at 9:47=E2=80=AFAM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> Switch from running tests sequentially to running in parallel by
+> default. Change the opt-in '-p' or '--parallel' flag to '-S' or
+> '--sequential'.
+>
+> On an 8 core tigerlake an address sanitizer run time changes from:
+> 326.54user 622.73system 6:59.91elapsed 226%CPU
+> to:
+> 973.02user 583.98system 3:01.17elapsed 859%CPU
+>
+> So over twice as fast, saving 4 minutes.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Same comment with your co-developed and SOB
+Ping.
+
+Thanks,
+Ian
 
 > ---
->   drivers/media/platform/qcom/camss/Makefile    |   1 +
->   .../media/platform/qcom/camss/camss-vfe-780.c | 455 ++++++++++++++++++
->   drivers/media/platform/qcom/camss/camss-vfe.h |   1 +
->   3 files changed, 457 insertions(+)
->   create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-780.c
-> 
-> diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-> index c5fcd6eec0f2..ac40bbab18a3 100644
-> --- a/drivers/media/platform/qcom/camss/Makefile
-> +++ b/drivers/media/platform/qcom/camss/Makefile
-> @@ -18,6 +18,7 @@ qcom-camss-objs += \
->   		camss-vfe-4-8.o \
->   		camss-vfe-17x.o \
->   		camss-vfe-480.o \
-> +		camss-vfe-780.o \
->   		camss-vfe-gen1.o \
->   		camss-vfe.o \
->   		camss-video.o \
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-780.c b/drivers/media/platform/qcom/camss/camss-vfe-780.c
-> new file mode 100644
-> index 000000000000..a78647f23c8c
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe-780.c
-> @@ -0,0 +1,455 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * camss-vfe-780.c
-> + *
-> + * Qualcomm MSM Camera Subsystem - VFE (Video Front End) Module v780 (SM8550)
-> + *
-> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
+> This change is on top of the test fixes in:
+> https://lore.kernel.org/lkml/20240301074639.2260708-1-irogers@google.com/
+> ---
+>  tools/perf/tests/builtin-test.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-t=
+est.c
+> index ddb2f4e38ea5..73f53b02f733 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -39,8 +39,8 @@
+>   * making them easier to debug.
+>   */
+>  static bool dont_fork;
+> -/* Fork the tests in parallel and then wait for their completion. */
+> -static bool parallel;
+> +/* Don't fork the tests in parallel and wait for their completion. */
+> +static bool sequential;
+>  const char *dso_to_test;
+>  const char *test_objdump_path =3D "objdump";
+>
+> @@ -374,7 +374,7 @@ static int start_test(struct test_suite *test, int i,=
+ int subi, struct child_tes
+>         }
+>         (*child)->process.no_exec_cmd =3D run_test_child;
+>         err =3D start_command(&(*child)->process);
+> -       if (err || parallel)
+> +       if (err || !sequential)
+>                 return  err;
+>         return finish_test(*child, width);
+>  }
+> @@ -440,7 +440,7 @@ static int __cmd_test(int argc, const char *argv[], s=
+truct intlist *skiplist)
+>                         int err =3D start_test(t, curr, -1, &child_tests[=
+child_test_num++], width);
+>
+>                         if (err) {
+> -                               /* TODO: if parallel waitpid the already =
+forked children. */
+> +                               /* TODO: if !sequential waitpid the alrea=
+dy forked children. */
+>                                 free(child_tests);
+>                                 return err;
+>                         }
+> @@ -460,7 +460,7 @@ static int __cmd_test(int argc, const char *argv[], s=
+truct intlist *skiplist)
+>                 }
+>         }
+>         for (i =3D 0; i < child_test_num; i++) {
+> -               if (parallel) {
+> +               if (!sequential) {
+>                         int ret  =3D finish_test(child_tests[i], width);
+>
+>                         if (ret)
+> @@ -536,8 +536,8 @@ int cmd_test(int argc, const char **argv)
+>                     "be more verbose (show symbol address, etc)"),
+>         OPT_BOOLEAN('F', "dont-fork", &dont_fork,
+>                     "Do not fork for testcase"),
+> -       OPT_BOOLEAN('p', "parallel", &parallel,
+> -                   "Run the tests altogether in parallel"),
+> +       OPT_BOOLEAN('S', "sequential", &sequential,
+> +                   "Run the tests one after another rather than in paral=
+lel"),
+>         OPT_STRING('w', "workload", &workload, "work", "workload to run f=
+or testing"),
+>         OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
+>         OPT_STRING(0, "objdump", &test_objdump_path, "path",
+> @@ -564,6 +564,9 @@ int cmd_test(int argc, const char **argv)
+>         if (workload)
+>                 return run_workload(workload, argc, argv);
+>
+> +       if (dont_fork)
+> +               sequential =3D true;
 > +
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +
-> +#include "camss.h"
-> +#include "camss-vfe.h"
-> +
-> +#define VFE_HW_VERSION			(vfe_is_lite(vfe) ? 0x1000 : 0x0)
-> +
-> +#define VFE_IRQ_CMD			(vfe_is_lite(vfe) ? 0x1038 : 0x30)
-> +#define     IRQ_CMD_GLOBAL_CLEAR	BIT(0)
-> +
-> +#define VFE_IRQ_MASK(n)			((vfe_is_lite(vfe) ? 0x1024 : 0x34) + (n) * 4)
-> +#define	    IRQ_MASK_0_BUS_TOP_IRQ	(vfe_is_lite(vfe) ? BIT(0) | BIT(1) | BIT(2) : \
-> +						BIT(0) | BIT(4) | BIT(18))
-> +#define	    IRQ_MASK_1_BUS_TOP_IRQ(n)	(vfe_is_lite(vfe) ? BIT(2 * n + 2) | BIT(2 * n + 3) : \
-> +						BIT(2 * n + 8) | BIT(2 * n + 9))
-> +#define VFE_IRQ_CLEAR(n)		((vfe_is_lite(vfe) ? 0x102C : 0x3C) + (n) * 4)
-> +#define VFE_IRQ_STATUS(n)		((vfe_is_lite(vfe) ? 0x101C : 0x44) + (n) * 4)
-> +
-> +#define BUS_REG_BASE			(vfe_is_lite(vfe) ? 0x1200 : 0xC00)
-> +
-> +#define VFE_BUS_WM_CGC_OVERRIDE		(BUS_REG_BASE + 0x08)
-> +#define		WM_CGC_OVERRIDE_ALL	(0x7FFFFFF)
-> +
-> +#define VFE_BUS_WM_TEST_BUS_CTRL	(BUS_REG_BASE + 0xdc)
-> +
-> +#define VFE_BUS_WM_CFG(n)		(BUS_REG_BASE + 0x200 + (n) * 0x100)
-> +#define		WM_CFG_EN			(0)
-> +#define		WM_VIR_FRM_EN		(1)
-> +#define		WM_CFG_MODE			(16)
-> +#define			MODE_QCOM_PLAIN	(0)
-> +#define			MODE_MIPI_RAW	(1)
-> +#define VFE_BUS_WM_IMAGE_ADDR(n)	(BUS_REG_BASE + 0x204 + (n) * 0x100)
-> +#define VFE_BUS_WM_FRAME_INCR(n)	(BUS_REG_BASE + 0x208 + (n) * 0x100)
-> +#define VFE_BUS_WM_IMAGE_CFG_0(n)	(BUS_REG_BASE + 0x20c + (n) * 0x100)
-> +#define                WM_IMAGE_CFG_0_DEFAULT_WIDTH    (0xFFFF)
-> +#define VFE_BUS_WM_IMAGE_CFG_1(n)	(BUS_REG_BASE + 0x210 + (n) * 0x100)
-> +#define VFE_BUS_WM_IMAGE_CFG_2(n)	(BUS_REG_BASE + 0x214 + (n) * 0x100)
-> +#define                WM_IMAGE_CFG_2_DEFAULT_STRIDE    (0xFFFF)
-> +#define VFE_BUS_WM_PACKER_CFG(n)	(BUS_REG_BASE + 0x218 + (n) * 0x100)
-> +#define VFE_BUS_WM_HEADER_ADDR(n)	(BUS_REG_BASE + 0x220 + (n) * 0x100)
-> +#define VFE_BUS_WM_HEADER_INCR(n)	(BUS_REG_BASE + 0x224 + (n) * 0x100)
-> +#define VFE_BUS_WM_HEADER_CFG(n)	(BUS_REG_BASE + 0x228 + (n) * 0x100)
-> +
-> +#define VFE_BUS_WM_IRQ_SUBSAMPLE_PERIOD(n)	(BUS_REG_BASE + 0x230 + (n) * 0x100)
-> +#define VFE_BUS_WM_IRQ_SUBSAMPLE_PATTERN(n)	(BUS_REG_BASE + 0x234 + (n) * 0x100)
-> +#define VFE_BUS_WM_FRAMEDROP_PERIOD(n)		(BUS_REG_BASE + 0x238 + (n) * 0x100)
-> +#define VFE_BUS_WM_FRAMEDROP_PATTERN(n)		(BUS_REG_BASE + 0x23c + (n) * 0x100)
-> +
-> +#define VFE_BUS_WM_MMU_PREFETCH_CFG(n)	(BUS_REG_BASE + 0x260 + (n) * 0x100)
-> +#define VFE_BUS_WM_MMU_PREFETCH_MAX_OFFSET(n)	(BUS_REG_BASE + 0x264 + (n) * 0x100)
-> +#define VFE_BUS_WM_SYSTEM_CACHE_CFG(n)	(BUS_REG_BASE + 0x268 + (n) * 0x100)
-> +
-> +
-> +/* for titan 780, each bus client is hardcoded to a specific path */
-> +#define RDI_WM(n)			((vfe_is_lite(vfe) ? 0 : 23) + (n))
-
-No admixture of hex and decimal please.
-
-> +
-> +#define MAX_VFE_OUTPUT_LINES	4
-> +#define MAX_VFE_ACT_BUF	1
-> +
-> +static u32 vfe_hw_version(struct vfe_device *vfe)
-> +{
-> +	u32 hw_version = readl_relaxed(vfe->base + VFE_HW_VERSION);
-> +
-> +	u32 gen = (hw_version >> 28) & 0xF;
-> +	u32 rev = (hw_version >> 16) & 0xFFF;
-> +	u32 step = hw_version & 0xFFFF;
-> +
-> +	dev_info(vfe->camss->dev, "VFE HW Version = %u.%u.%u\n", gen, rev, step);
-> +
-> +	return hw_version;
-> +}
-
-Same comment as with CSID, its time to rationalise all of this 
-replicated code down to one place, instead of proliferating it further.
-
-> +static void vfe_global_reset(struct vfe_device *vfe)
-> +{
-> +}
-> +
-> +static void vfe_wm_start(struct vfe_device *vfe, u8 wm, struct vfe_line *line)
-> +{
-> +	struct v4l2_pix_format_mplane *pix =
-> +		&line->video_out.active_fmt.fmt.pix_mp;
-> +
-> +	wm = RDI_WM(wm); /* map to actual WM used (from wm=RDI index) */
-> +
-> +	/* no clock gating at bus input */
-> +	writel_relaxed(0, vfe->base + VFE_BUS_WM_CGC_OVERRIDE);
-> +
-> +	writel_relaxed(0x0, vfe->base + VFE_BUS_WM_TEST_BUS_CTRL);
-> +
-> +	writel_relaxed(ALIGN(pix->plane_fmt[0].bytesperline, 16) * pix->height >> 8,
-> +		       vfe->base + VFE_BUS_WM_FRAME_INCR(wm));
-> +	writel_relaxed((WM_IMAGE_CFG_0_DEFAULT_WIDTH & 0xFFFF),
-> +		       vfe->base + VFE_BUS_WM_IMAGE_CFG_0(wm));
-> +	writel_relaxed(WM_IMAGE_CFG_2_DEFAULT_STRIDE,
-> +		       vfe->base + VFE_BUS_WM_IMAGE_CFG_2(wm));
-> +	writel_relaxed(0, vfe->base + VFE_BUS_WM_PACKER_CFG(wm));
-> +
-> +	/* no dropped frames, one irq per frame */
-> +	writel_relaxed(0, vfe->base + VFE_BUS_WM_FRAMEDROP_PERIOD(wm));
-> +	writel_relaxed(1, vfe->base + VFE_BUS_WM_FRAMEDROP_PATTERN(wm));
-> +	writel_relaxed(0, vfe->base + VFE_BUS_WM_IRQ_SUBSAMPLE_PERIOD(wm));
-> +	writel_relaxed(1, vfe->base + VFE_BUS_WM_IRQ_SUBSAMPLE_PATTERN(wm));
-> +
-> +	writel_relaxed(1, vfe->base + VFE_BUS_WM_MMU_PREFETCH_CFG(wm));
-> +	writel_relaxed(0xFFFFFFFF, vfe->base + VFE_BUS_WM_MMU_PREFETCH_MAX_OFFSET(wm));
-> +
-> +	writel_relaxed(1 << WM_CFG_EN | MODE_MIPI_RAW << WM_CFG_MODE,
-> +		       vfe->base + VFE_BUS_WM_CFG(wm));
-> +}
-> +
-> +static void vfe_wm_stop(struct vfe_device *vfe, u8 wm)
-> +{
-> +	wm = RDI_WM(wm); /* map to actual WM used (from wm=RDI index) */
-> +	writel_relaxed(0, vfe->base + VFE_BUS_WM_CFG(wm));
-> +}
-
-vfe_wm_stop() as an example can/should live in a shared file.
-
-As proof of concept code its fine to copy/paste between files but, to 
-merge we need to get rid of any replicated code - introducing 
-indirection/offsets as necessary.
-
-> +static void vfe_wm_update(struct vfe_device *vfe, u8 wm, u64 addr,
-> +			  struct vfe_line *line)
-> +{
-> +	wm = RDI_WM(wm); /* map to actual WM used (from wm=RDI index) */
-> +	writel_relaxed((addr >> 8) & 0xFFFFFFFF, vfe->base + VFE_BUS_WM_IMAGE_ADDR(wm));
-> +
-> +	dev_dbg(vfe->camss->dev, "wm:%d, image buf addr:0x%llx\n",
-> +		wm, addr);
-> +}
-> +
-> +static void vfe_reg_update(struct vfe_device *vfe, enum vfe_line_id line_id)
-> +{
-> +	int port_id = line_id;
-> +
-> +	v4l2_subdev_notify(&vfe->line[line_id].subdev, NOTIFY_RUP, (void *)&port_id);
-> +}
-> +
-> +static inline void vfe_reg_update_clear(struct vfe_device *vfe,
-> +					enum vfe_line_id line_id)
-> +{
-> +	int port_id = line_id;
-> +
-> +	v4l2_subdev_notify(&vfe->line[line_id].subdev, NOTIFY_RUP_CLEAR, (void *)&port_id);
-> +}
-
-I'm not sure I quite understand why we need to use this API to clear 
-registers inside of the address space of the same driver.
-
-Is there not a much more direct way to write our _internal_ registers ?
-
-
-> +static void vfe_enable_irq_common(struct vfe_device *vfe, enum vfe_line_id line_id)
-> +{
-> +	int port_id = line_id;
-> +
-> +	/* enable top BUS status IRQ */
-> +	writel_relaxed(IRQ_MASK_0_BUS_TOP_IRQ,
-> +				vfe->base + VFE_IRQ_MASK(0));
-> +
-> +	writel_relaxed(IRQ_MASK_1_BUS_TOP_IRQ(port_id),
-> +				vfe->base + VFE_IRQ_MASK(1));
-> +}
-> +
-> +/*
-> + * vfe_isr - VFE module interrupt handler
-> + * @irq: Interrupt line
-> + * @dev: VFE device
-> + *
-> + * Return IRQ_HANDLED on success
-> + */
-> +static irqreturn_t vfe_isr(int irq, void *dev)
-> +{
-> +	struct vfe_device *vfe = dev;
-> +	u32 status;
-> +
-> +	status = readl_relaxed(vfe->base + VFE_IRQ_STATUS(0));
-> +	writel_relaxed(status, vfe->base + VFE_IRQ_CLEAR(0));
-> +	writel_relaxed(IRQ_CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
-> +
-> +	if (status)
-> +		dev_dbg(vfe->camss->dev, "Top Status_0:0x%x\n", status);
-> +
-> +	status = readl_relaxed(vfe->base + VFE_IRQ_STATUS(1));
-> +	writel_relaxed(status, vfe->base + VFE_IRQ_CLEAR(1));
-> +	writel_relaxed(IRQ_CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
-> +
-> +	if (status)
-> +		dev_dbg(vfe->camss->dev, "Top Status_1:0x%x\n", status);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-Why is this ISR required ? What does it do ?
-
-Does it actually run on your reference hardware ?
-
-If the purpose of the ISR is just to clear the status registers, why 
-even enable it ?
-
-> +
-> +/*
-> + * vfe_halt - Trigger halt on VFE module and wait to complete
-> + * @vfe: VFE device
-> + *
-> + * Return 0 on success or a negative error code otherwise
-> + */
-> +static int vfe_halt(struct vfe_device *vfe)
-> +{
-> +	/* rely on vfe_disable_output() to stop the VFE */
-> +	return 0;
-> +}
-> +
-> +static int vfe_get_output(struct vfe_line *line)
-> +{
-> +	struct vfe_device *vfe = to_vfe(line);
-> +	struct vfe_output *output;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&vfe->output_lock, flags);
-> +
-> +	output = &line->output;
-> +	if (output->state > VFE_OUTPUT_RESERVED) {
-> +		dev_err(vfe->camss->dev, "Output is running\n");
-> +		goto error;
-> +	}
-> +
-> +	output->wm_num = 1;
-> +
-> +	/* Correspondence between VFE line number and WM number.
-> +	 * line 0 -> RDI 0, line 1 -> RDI1, line 2 -> RDI2, line 3 -> PIX/RDI3
-> +	 * Note this 1:1 mapping will not work for PIX streams.
-> +	 */
-> +	output->wm_idx[0] = line->id;
-> +	vfe->wm_output_map[line->id] = line->id;
-> +
-> +	output->drop_update_idx = 0;
-> +
-> +	spin_unlock_irqrestore(&vfe->output_lock, flags);
-> +
-> +	return 0;
-> +
-> +error:
-> +	spin_unlock_irqrestore(&vfe->output_lock, flags);
-> +	output->state = VFE_OUTPUT_OFF;
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int vfe_enable_output(struct vfe_line *line)
-> +{
-> +	struct vfe_device *vfe = to_vfe(line);
-> +	struct vfe_output *output = &line->output;
-> +	unsigned long flags;
-> +	unsigned int i;
-> +
-> +	spin_lock_irqsave(&vfe->output_lock, flags);
-> +
-> +	vfe_reg_update_clear(vfe, line->id);
-> +
-> +	if (output->state > VFE_OUTPUT_RESERVED) {
-> +		dev_err(vfe->camss->dev, "Output is not in reserved state %d\n",
-> +			output->state);
-> +		spin_unlock_irqrestore(&vfe->output_lock, flags);
-> +		return -EINVAL;
-> +	}
-> +
-> +	WARN_ON(output->gen2.active_num);
-> +
-> +	output->state = VFE_OUTPUT_ON;
-> +
-> +	output->sequence = 0;
-> +
-> +	vfe_wm_start(vfe, output->wm_idx[0], line);
-> +
-> +	for (i = 0; i < MAX_VFE_ACT_BUF; i++) {
-> +		output->buf[i] = vfe_buf_get_pending(output);
-> +		if (!output->buf[i])
-> +			break;
-> +		output->gen2.active_num++;
-> +		vfe_wm_update(vfe, output->wm_idx[0], output->buf[i]->addr[0], line);
-> +
-> +		vfe_reg_update(vfe, line->id);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&vfe->output_lock, flags);
-> +
-> +	return 0;
-> +}
-
-So you'll see with the WIP code for x1e80100 which is I think the same 
-VFE - no one generation less 680 - that this code is copy/pasted.
-
-But there's again no good reason for that. Common code needs to be 
-squashed down into one place.
-
----
-bod
+>         symbol_conf.priv_size =3D sizeof(int);
+>         symbol_conf.try_vmlinux_path =3D true;
+>
+> --
+> 2.44.0.278.ge034bb2e1d-goog
+>
 
