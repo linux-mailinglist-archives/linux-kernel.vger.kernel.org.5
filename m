@@ -1,165 +1,169 @@
-Return-Path: <linux-kernel+bounces-109051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 077218813FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:00:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FD948813FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B0FD1C22F2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:00:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9CF1F24262
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EC44AEC9;
-	Wed, 20 Mar 2024 14:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2624C629;
+	Wed, 20 Mar 2024 15:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Du4D/XRD"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cGjULKox"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476FB3E46D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17164AEC3;
+	Wed, 20 Mar 2024 15:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710946797; cv=none; b=OiMEsKcrgMeKRvJ+aUJj41aFgiUY/gQqrcA9pXXDplxoZuenA8XTSBipoliv381FldkrYf+NuoX05ck6OdYW761tEvADA0i7jLrB7oZJDal4cJUexa6+qNkA4QOX6n0bJKEtz8OS8pdo6qQ72192TJbJ3xEVe3kjYaWmcC7+suY=
+	t=1710946819; cv=none; b=BjxA447RypsxG8hhPxQ1MFnMY/ugxoIhSwLq7VezNMbwCPD0MYA7sLkxxJ3zHS7u0xwzTbjOE8i1/WcwQLgqpvXgmLp10YsjBlWpchYwbp+eW2xHCBqSmEmRtBooila4bIFED4eVt6z/tDxH+ajXESFqEwGC/4ZZOdhTNP51mCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710946797; c=relaxed/simple;
-	bh=f8Ql61R6HFww77P6kYzWw9QksZwLWDYVdIJJT/aYBV8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uxeMjoxNTJZv+2KwU4H5QOWoIrDz5SE+mFX7Ac9nmQEEBrc5xlvsx++iF3Oi09m5uI/srb8GwUsD1C5ieq6Bc9N9mr+msvhi4Si4EXUC52EBENH2+NG+oHgVP5Q/A3cr9Eq0sDTs95K68f3kUkzFq1XBgGhGxQVJ+aIQ97uSHXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Du4D/XRD; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c8d2e0e9cfso147858439f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710946793; x=1711551593; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uu3XrTQnPclK188rbkolek/Ountn/o+HfDpmNTirMmE=;
-        b=Du4D/XRDjmNzmL0ksykMcWP6cZZKd/0i9jZSlkQ6VZJHP72aGM+AJtRIy9rykeZ4NZ
-         /BZTPERX94PxoufN8Sssf8HVZzoyFgWkx9/CxZBS+dEvC0nQ66LV9Y8iCC9FTzu8hTQI
-         3Db2f/dMQhnlDt2PTpmej/MjFz9aVyAUJVddixqOKnETWTCzlLCzyBjKMuZTldgdOKDB
-         OUL3U3IvRJX50P9Rx/qIZQFhwMNbcVow0aN2wqg1rUVwVgyeuKQ4/DGiU7azKZAoklCH
-         FMeL0zLrKnNlaHL/szrpzsWTSzlnReFVxS6hX8X7TEnuxJnpvaZQVCbPk8EyQYGVCtRf
-         cmuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710946793; x=1711551593;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uu3XrTQnPclK188rbkolek/Ountn/o+HfDpmNTirMmE=;
-        b=FYmffmkJ6PQFXA1T/5mTTUtDBghUA6sKbrvBO61h/JXOaD2LgH04w7OIYH0m2Rnqui
-         ss/bfrqc6hJ+kxF9Bo0ZfMtP5x2dTfr69R+9zn7jaBGKubOpB/8eVPLi6pBpiCZH48yQ
-         CSM8QWJ+MzKRorIB5W5snhrb+J8Hw7MthSjE+k6Y+9Mei+LwMPTOv02xI/uMtle0Ir1Q
-         7/OWC4hf5zAPHGpJCdPjamT4A3OlfnyNWwCZXDpDgZMnkSJBzE3kv1dNTYtFC+ITsUTs
-         PG7jN3qM9PI07EpJs3jPhVFpe5rSKIuXmUqEqpglQUzSDRZpIwZnRmRIzxa8vLz4aVRf
-         QHzA==
-X-Forwarded-Encrypted: i=1; AJvYcCX/7uoJieyeDiwGLCH+vZjaMiY/vGCgxNViiLJpviYbYfeIDru65lrajhzNKpFE4FFg9qOnlHLogASuYfwCYZvLlJ4WKPKv5rP2NOmq
-X-Gm-Message-State: AOJu0YzB4ZfoV1grPDC6yPEzjn4QCKShZdmdcUGUJaWtNvj9hdoYK2oN
-	3yv40d6z5IvzPQJm3vtwNFzGoF7gqkmWSMqzpJypSVBn5TpEulfZ00s1JmqkuLo=
-X-Google-Smtp-Source: AGHT+IHYs3xz0pWt4lkNcOSOAn3q+vYaOoPxrg3Wre2/j0EachnEDYKI6x8jefgAtnsQtnh4JD77YQ==
-X-Received: by 2002:a05:6e02:1a8a:b0:366:c779:f955 with SMTP id k10-20020a056e021a8a00b00366c779f955mr12702751ilv.17.1710946793353;
-        Wed, 20 Mar 2024 07:59:53 -0700 (PDT)
-Received: from [100.64.0.1] ([136.226.86.189])
-        by smtp.gmail.com with ESMTPSA id a9-20020a92d109000000b00366895ef367sm3491581ilb.38.2024.03.20.07.59.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 07:59:52 -0700 (PDT)
-Message-ID: <0a807505-221c-4aa9-ac63-c442417f3030@sifive.com>
-Date: Wed, 20 Mar 2024 09:59:51 -0500
+	s=arc-20240116; t=1710946819; c=relaxed/simple;
+	bh=7naKemsKKoX1Qcb7rvXqIykV5KktCI6MWuU+9KcgL8w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fuQvvTpZNkRUIQtLr2vHNPTnGItzukKe5Bop+DzAyUpFEXKKo+lwfsJnQVKaO0EjAhODvirGbAnFSYHUPx+Ib05OXvh40jV6X0TpR9aRXDFF40jtiNzUI4Amlx08RYp2uLpplsPl6yUZ5YpEczqjU58bn9F+MnvTzIilB+nkYMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cGjULKox; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F91C433F1;
+	Wed, 20 Mar 2024 15:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710946819;
+	bh=7naKemsKKoX1Qcb7rvXqIykV5KktCI6MWuU+9KcgL8w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cGjULKox9mIbDG/r7G7C+ik9Y9Lc+MXiLEScDXIRBrjZP4a9Qhj1kQHbT/82ZUq4l
+	 mw0Fdouqg5Vpm3JV5bjGhCY/QdGNOXB+HVKVDYGc0Y8gJQ222tj5zIzeuExkouCpv9
+	 qsBN9NjEYXha73Z5LBUXQs7EaPhi0DqkZxQRfeALxPW1o0RmKqQ3eDmp1UyBtgQMC6
+	 HioAaSuXupnbRUxck1vhoZ6sD4fkP4gLtgubQX2iyGKlelB1IfmK3SDLU3AfPBKI2r
+	 Y2LItBhI9v/NL05n1AtAlZl2uDPuitFYQrPaB6HOS0x5XhX4709C29u3g1ssE9PeH2
+	 COX6rJE9P9ZgQ==
+Date: Wed, 20 Mar 2024 12:00:15 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf: Suggest inbuilt commands for unknown command
+Message-ID: <Zfr5__Ej3-0C8sJj@x1>
+References: <20240301201306.2680986-1-irogers@google.com>
+ <Zfr4jX_b8FCOG_x_@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clk: starfive: jh7100: Use clk_hw for external input
- clocks
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Conor Dooley <conor.dooley@microchip.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <beb746c7538a4ff720a25fd8f309da20d8d854ef.1710933713.git.geert@linux-m68k.org>
- <47bddec7-953d-4ea4-84f1-b0dcf0641baa@sifive.com>
- <CAMuHMdWP4R6Y6G0qzhMKJy1zJEeHE8a0XEK+Hs_D4wXB2i2BFA@mail.gmail.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <CAMuHMdWP4R6Y6G0qzhMKJy1zJEeHE8a0XEK+Hs_D4wXB2i2BFA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zfr4jX_b8FCOG_x_@x1>
 
-Hi Geert,
+On Wed, Mar 20, 2024 at 11:54:09AM -0300, Arnaldo Carvalho de Melo wrote:
+> On Fri, Mar 01, 2024 at 12:13:05PM -0800, Ian Rogers wrote:
+> > The existing unknown command code looks for perf scripts like
+> > perf-archive.sh and perf-iostat.sh, however, inbuilt commands aren't
+> > suggested. Add the inbuilt commands so they may be suggested too.
+> > 
+> > Before:
+> > ```
+> > $ perf reccord
+> > perf: 'reccord' is not a perf-command. See 'perf --help'.
+> > ```
+> > 
+> > After:
+> > ```
+> > $ perf reccord
+> > perf: 'reccord' is not a perf-command. See 'perf --help'.
+> > 
+> > Did you mean this?
+> >         record
+> > ```
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> > v2. Drops a merged patch and rebases. No functional change. Arnaldo
+> >     reported the patch not working for him, but I've not found a
+> 
+> Not working:
+> 
+> root@number:~# perf reccord
+> Failed to run command 'reccord': No such file or directory
+> root@number:~# 
+> 
+> ⬢[acme@toolbox perf-tools-next]$ git log --oneline -1
+> a65ef8052854ba75 (HEAD) perf: Suggest inbuilt commands for unknown command
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> I use O= with install-bin, trying:
+> 
+> ⬢[acme@toolbox perf-tools-next]$ make -C  tools/perf install-bin
+> ⬢[acme@toolbox perf-tools-next]$ perf raccord
+> Failed to run command 'raccord': No such file or directory
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> Also didn't work
+> 
+> Trying to figure this out...
 
-On 2024-03-20 9:28 AM, Geert Uytterhoeven wrote:
-> On Wed, Mar 20, 2024 at 2:31 PM Samuel Holland
-> <samuel.holland@sifive.com> wrote:
->> On 2024-03-20 6:24 AM, Geert Uytterhoeven wrote:
->>> The Starfive JH7100 clock driver does not use the DT "clocks" property
->>> to find the external main input clock, but instead relies on the name of
->>> the actual clock provider ("osc_sys").  This is fragile, and caused
->>> breakage when sanitizing clock node names in DTS.
->>>
->>> Fix this by obtaining the external main input clock using
->>> devm_clk_get(), and passing the returned clk_hw object to
->>> devm_clk_hw_register_fixed_factor_parent_hw().
->>>
->>> While name-based look-up of the other external input clocks works as-is,
->>> convert them to a similar clk_hw-based scheme to increase uniformity,
->>> and to decrease the number of name-based look-ups.
->>>
->>> Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in node names")
->>> Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator driver")
->>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> 
-> 
->>> --- a/drivers/clk/starfive/clk-starfive-jh7100.c
->>> +++ b/drivers/clk/starfive/clk-starfive-jh7100.c
-> 
->>> @@ -284,8 +293,11 @@ static struct clk_hw *jh7100_clk_get(struct of_phandle_args *clkspec, void *data
->>>
->>>  static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
->>>  {
->>> +     static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
->>> +             { "osc_sys", "osc_aud", "gmac_rmii_ref", "gmac_gr_mii_rxclk" };
->>
->> This should be __initconst. Otherwise:
-> 
-> With
-> 
->     -       static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
->     +       static const char *jh7100_ext_clk[EXT_NUM_CLKS] __initconst =
-> 
-> I get:
-> 
->     drivers/clk/starfive/clk-starfive-jh7100.c: In function
-> ‘clk_starfive_jh7100_probe’:
->     drivers/clk/starfive/clk-starfive-jh7100.c:35:37: error:
-> ‘jh7100_clk_data’ causes a section type conflict with ‘jh7100_ext_clk’
->        35 | static const struct jh71x0_clk_data jh7100_clk_data[]
-> __initconst = {
->           |                                     ^~~~~~~~~~~~~~~
->     drivers/clk/starfive/clk-starfive-jh7100.c:296:28: note:
-> ‘jh7100_ext_clk’ was declared here
->       296 |         static const char *jh7100_ext_clk[EXT_NUM_CLKS]
-> __initconst =
->           |                            ^~~~~~~~~~~~~~
-> 
-> which is a bit strange...
-> What am I missing?
+It somehow gets done_help set to 32767, and this will not run help_unknown_cmd(), continuing after a conf call...
 
-I think you need to add another "const" covering the array itself:
-
-	static const char *const jh7100_ext_clk[EXT_NUM_CLKS] __initconst =
-
-Regards,
-Samuel
-
+(gdb) p *argv
+$7 = 0x7fffffffe4c5 "raccord"
+(gdb) s
+run_argv (argcp=0x7fffffffdfbc, argv=0x7fffffffdfb0) at perf.c:445
+445	{
+(gdb) n
+447		handle_internal_command(*argcp, *argv);
+(gdb) n
+450		execv_dashed_external(*argv);
+(gdb) p *argv
+$8 = (const char **) 0x7fffffffe1d0
+(gdb) p **argv
+$9 = 0x7fffffffe4c5 "raccord"
+(gdb) n
+[Detaching after fork from child process 3245070]
+451		return 0;
+(gdb) n
+452	}
+(gdb) n
+main (argc=1, argv=0x7fffffffe1d0) at perf.c:565
+565			if (errno != ENOENT)
+(gdb) p; errno
+Invalid character ';' in expression.
+(gdb) p errno
+$10 = 2
+(gdb) n
+568			if (!done_help) {
+(gdb) p done_help
+$11 = 32767
+(gdb) list
+563			run_argv(&argc, &argv);
+564	
+565			if (errno != ENOENT)
+566				break;
+567	
+568			if (!done_help) {
+569				struct cmdnames main_cmds;
+570	
+571				for (unsigned int i = 0; i < ARRAY_SIZE(commands); i++) {
+572					add_cmdname(&main_cmds,
+(gdb) 
+573						    commands[i].cmd,
+574						    strlen(commands[i].cmd));
+575				}
+576				cmd = argv[0] = help_unknown_cmd(cmd, &main_cmds);
+577				clean_cmdnames(&main_cmds);
+578				done_help = 1;
+579				if (!cmd)
+580					break;
+581			} else
+582				break;
+(gdb)
 
