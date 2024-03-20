@@ -1,108 +1,184 @@
-Return-Path: <linux-kernel+bounces-108858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E228810F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:31:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A923881105
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:32:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9C61F243C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:31:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3140F1F222DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A553DBB7;
-	Wed, 20 Mar 2024 11:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0F33FB3F;
+	Wed, 20 Mar 2024 11:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MET3jxyq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KD+F/3vI"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="lLCDBYZu"
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A7A3BBC8;
-	Wed, 20 Mar 2024 11:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F633EA62;
+	Wed, 20 Mar 2024 11:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710934256; cv=none; b=dZtF/N88IPJDVE/cwljpyuWXFhn9maDRfKXwdLcZbFXMugA8RNkrv3GjLGLoIxHVfCIjAD4VCf1EerZ0dI2pN2Y3UDSfqKvluooT+x+hMu0xrcrG8dfhVYEglXzAqBG5GvJu+jaUM45GzXoFvM37Uozs2wdrUgl1hTQ2YIZ+PKU=
+	t=1710934355; cv=none; b=H2RFjkYPzNIS3vJQj4KH157hYBylLTLDjl6eMUKySNNTiFkYRHlv8rphhgsAry9rLrBF/FVcYhrlSkBA5PZWnH9Ko7Wo65kUXO7GKxTLLb23huP97xuxaQOSc8iuEGQMZO/+1htMoWho6lUN9mm16rPhVtoyVQqIcrF+HIrFoWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710934256; c=relaxed/simple;
-	bh=a8TOprEuyws5CRENEXE+KPayvt7+FUvQnptRl61id2g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VjzTdcXQDUf/yZItJ/KhFghpbxqzXP2DVzahW+5TDyS+cRg62pJJ3DtZxH+Tf8srnVKGqPb7M29i7PK2fLcuTqju5I1Sq0FQPJQAqTBLK1cYatoTn9ThlR2m6FKVfLMAD7pPKnL7yT3ChavhYBTgYR6tm3wX75UH8BkgGnErVy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MET3jxyq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KD+F/3vI; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710934253;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pwE/GBJYLkV/7/yUUomeUZHide/jRSkFJUzETBE/thU=;
-	b=MET3jxyqm1sXOQn5gphkidNCjfG+Tr/p2/ki9n+/AqGfDi6uzTb2aT/MyL+ioOWks6ndHO
-	MI95oCOA1zQP2cwvzPcoi7DRiq7z2zXhoQrgJCUxMxEHjz9x4uvFfD/XYPX3zBQTUr65XL
-	lNTFECeMgVwWMspuPc3Omri78q9n2MBo8amNB3KLmOlgidIbjna0YRPG5+YXucDf8l0X6t
-	Xe5iJoS5QZsKia9g+j3+SDVmp31i41KL3GoBs5cawaUNf+yvjjaPvcxueJEeMTUBz6dcYS
-	q1ELLfg0R+vKzoni0nnLM5iim2DRcVOb6v7gUhRjGS7rNFMU1AXrXD/j6iMeew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710934253;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pwE/GBJYLkV/7/yUUomeUZHide/jRSkFJUzETBE/thU=;
-	b=KD+F/3vIh9T1cQ/PXywhSvE5rgPwIOfCSkG52QZ7ALq7BZCiJ1z2qhgQYCog3Dp3vC7iyf
-	WkvevLWZUyLc3cCw==
-To: lakshmi.sowjanya.d@intel.com, jstultz@google.com, giometti@enneenne.com,
- corbet@lwn.net, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
- eddie.dong@intel.com, christopher.s.hall@intel.com,
- jesse.brandeburg@intel.com, davem@davemloft.net,
- alexandre.torgue@foss.st.com, joabreu@synopsys.com,
- mcoquelin.stm32@gmail.com, perex@perex.cz, linux-sound@vger.kernel.org,
- anthony.l.nguyen@intel.com, peter.hilber@opensynergy.com,
- pandith.n@intel.com, mallikarjunappa.sangannavar@intel.com,
- subramanian.mohan@intel.com, basavaraj.goudar@intel.com,
- thejesh.reddy.t.r@intel.com, lakshmi.sowjanya.d@intel.com
-Subject: Re: [PATCH v5 01/11] x86/tsc: Add base clock properties in
- clocksource structure
-In-Reply-To: <875xxhi1ty.ffs@tglx>
-References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
- <20240319130547.4195-2-lakshmi.sowjanya.d@intel.com> <875xxhi1ty.ffs@tglx>
-Date: Wed, 20 Mar 2024 12:30:52 +0100
-Message-ID: <87zfutgmxf.ffs@tglx>
+	s=arc-20240116; t=1710934355; c=relaxed/simple;
+	bh=nvuYKgMQZ2dOzH1kP01A+m3+SU8aRkQ0BxBOYVMusPI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MsYZnjMaUoraGE/a3a7lQyfcuUr7bjTR5jctYU9pOZzQVggsaAFQCRJHoxONF8OKdUlpoh/+v/djGVhxshMBd6Xzn8zjHE7f+QDSErU1okCCLVbuNJchcMBT6ehTo5sydhLcmSRsLHrGUmMrIjvkLa8LHtp7ufaenrChqzZK91I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=lLCDBYZu; arc=none smtp.client-ip=52.119.213.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1710934354; x=1742470354;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SagNweem8Fra24984SKbM6xuTks7v+vVjcZ5YAq9KuE=;
+  b=lLCDBYZuMBcREtL3Nt8Q7AfgvJ7wfFgk1RAiCVTW7ehB26Lmz8tGjVNF
+   DpHCwVAahV4ZLMgVMhKB7iLz+pGPlGBftpHJESKMicjvFiM/eEDekesmd
+   htsfHqTUoTaCR5TyKo31c4IBGnhH//wb77cvTdyvmGHwdNnbF2m7LqAbt
+   E=;
+X-IronPort-AV: E=Sophos;i="6.07,140,1708387200"; 
+   d="scan'208";a="192899703"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 11:32:30 +0000
+Received: from EX19MTAEUA001.ant.amazon.com [10.0.43.254:38524]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.45.10:2525] with esmtp (Farcaster)
+ id ff41ffb3-822d-4040-8907-e5fea2025741; Wed, 20 Mar 2024 11:32:28 +0000 (UTC)
+X-Farcaster-Flow-ID: ff41ffb3-822d-4040-8907-e5fea2025741
+Received: from EX19D008EUA004.ant.amazon.com (10.252.50.158) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 20 Mar 2024 11:32:27 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
+ EX19D008EUA004.ant.amazon.com (10.252.50.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 20 Mar 2024 11:32:27 +0000
+Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
+ by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP Server id
+ 15.2.1258.28 via Frontend Transport; Wed, 20 Mar 2024 11:32:26 +0000
+Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
+	id 65438A9F; Wed, 20 Mar 2024 11:32:26 +0000 (UTC)
+From: Maximilian Heyne <mheyne@amazon.de>
+To: 
+CC: Goldwyn Rodrigues <rgoldwyn@suse.com>, Anand Jain <anand.jain@oracle.com>,
+	David Sterba <dsterba@suse.com>, <stable@vger.kernel.org>, Maximilian Heyne
+	<mheyne@amazon.de>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] btrfs: allocate btrfs_ioctl_defrag_range_args on stack
+Date: Wed, 20 Mar 2024 11:31:56 +0000
+Message-ID: <20240320113156.22283-1-mheyne@amazon.de>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20 2024 at 12:23, Thomas Gleixner wrote:
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-> On Tue, Mar 19 2024 at 18:35, lakshmi.sowjanya.d@intel.com wrote:
->> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->>
->> Add base clock hardware abstraction in clocksource structure.
->>
->> Add clocksource ID for x86 ART(Always Running Timer).
->
-> This change log tells the WHAT but not the WHY. You have to add context
-> and explanation WHY this change is required and why it makes sense.
->
-> Also I think this should be ordered differently:
->
->   1) Add the clocksource_base struct and provide the infrastructure in
->      get_device_system_crosststamp()
->
->   2) Make TSC/ART use it
+commit c853a5783ebe123847886d432354931874367292 upstream.
 
-    2a) Remove the art to tsc conversion in drivers
-    2b) Remove art to tsc
+Instead of using kmalloc() to allocate btrfs_ioctl_defrag_range_args,
+allocate btrfs_ioctl_defrag_range_args on stack, the size is reasonably
+small and ioctls are called in process context.
 
->   3) Add the realtime muck
->
-> Thanks,
->
->         tglx
+sizeof(btrfs_ioctl_defrag_range_args) = 48
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+CC: stable@vger.kernel.org # 4.14+
+[ This patch is needed to fix a memory leak of "range" that was
+introduced when commit 173431b274a9 ("btrfs: defrag: reject unknown
+flags of btrfs_ioctl_defrag_range_args") was backported to kernels
+lacking this patch. Now with these two patches applied in reverse order,
+range->flags needed to change back to range.flags.
+This bug was discovered and resolved using Coverity Static Analysis
+Security Testing (SAST) by Synopsys, Inc.]
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+---
+ fs/btrfs/ioctl.c | 25 ++++++++-----------------
+ 1 file changed, 8 insertions(+), 17 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 049b837934e5..ab8ed187746e 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3148,7 +3148,7 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+-	struct btrfs_ioctl_defrag_range_args *range;
++	struct btrfs_ioctl_defrag_range_args range = {0};
+ 	int ret;
+ 
+ 	ret = mnt_want_write_file(file);
+@@ -3180,37 +3180,28 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
+ 			goto out;
+ 		}
+ 
+-		range = kzalloc(sizeof(*range), GFP_KERNEL);
+-		if (!range) {
+-			ret = -ENOMEM;
+-			goto out;
+-		}
+-
+ 		if (argp) {
+-			if (copy_from_user(range, argp,
+-					   sizeof(*range))) {
++			if (copy_from_user(&range, argp, sizeof(range))) {
+ 				ret = -EFAULT;
+-				kfree(range);
+ 				goto out;
+ 			}
+-			if (range->flags & ~BTRFS_DEFRAG_RANGE_FLAGS_SUPP) {
++			if (range.flags & ~BTRFS_DEFRAG_RANGE_FLAGS_SUPP) {
+ 				ret = -EOPNOTSUPP;
+ 				goto out;
+ 			}
+ 			/* compression requires us to start the IO */
+-			if ((range->flags & BTRFS_DEFRAG_RANGE_COMPRESS)) {
+-				range->flags |= BTRFS_DEFRAG_RANGE_START_IO;
+-				range->extent_thresh = (u32)-1;
++			if ((range.flags & BTRFS_DEFRAG_RANGE_COMPRESS)) {
++				range.flags |= BTRFS_DEFRAG_RANGE_START_IO;
++				range.extent_thresh = (u32)-1;
+ 			}
+ 		} else {
+ 			/* the rest are all set to zero by kzalloc */
+-			range->len = (u64)-1;
++			range.len = (u64)-1;
+ 		}
+ 		ret = btrfs_defrag_file(file_inode(file), file,
+-					range, BTRFS_OLDEST_GENERATION, 0);
++					&range, BTRFS_OLDEST_GENERATION, 0);
+ 		if (ret > 0)
+ 			ret = 0;
+-		kfree(range);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+-- 
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
 
