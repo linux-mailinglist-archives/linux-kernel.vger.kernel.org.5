@@ -1,126 +1,119 @@
-Return-Path: <linux-kernel+bounces-109399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0624A8818A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:31:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1AB58818A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:31:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D9F283CD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:31:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B82AB23A77
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592DE17578;
-	Wed, 20 Mar 2024 20:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D247D42057;
+	Wed, 20 Mar 2024 20:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="eJR6sbSR"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3673B1B7F5;
-	Wed, 20 Mar 2024 20:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lkq/o/FI"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0A513AC0;
+	Wed, 20 Mar 2024 20:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710966668; cv=none; b=ntTHjbstj7TqGtgJZBpKW4Gpa4iJgDUw0NILCb6BWSxva7cuYba3T96zf2JJGYPAOGa2quL59a4+jU6XDvHK5FvJ62H8WsceP6L9sVY7zSot96sxKYyYTpCc66YjYxmh8hKjDMAPGALXLAAdHQZjWb8N+DLQyvTFyBK3ChqOafA=
+	t=1710966696; cv=none; b=njm4Vm8AOW2NO0+N+VKxcWk22/Sdby7WXWAGbRWqXRincpD0NtN7z1OIMHuhGaMaEmTRXfonPuplhapdLUNnlG5loqbdBMvXJV37QHKNFYQ7FtzrFLWOh4MpsRc+0DpKQgnvt9l0YqXpCBxKMyJ/7fUcx8OggumPdJtktvk9qOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710966668; c=relaxed/simple;
-	bh=ftELp+AQpN+pT8FlMdTcA2etrhKsXPl9MtAA44puBeI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ijefk5s138sULWnYRdKFBJPfsky3ggqrF5mLjv+rdtxpIQqBEQ++OTUaBQUo0NNdZgYO9x45uMoPQqGzHN8+mwA+JUESfiUGBLWOOJCuirFPh7Igjpu12A6rpm6Twt7AEFA18sx0Jpx5BAwpVVck4A3MyT9/QYzwx/Lg5w5/ufg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eJR6sbSR; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [167.220.2.23])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8A6A720B74C3;
-	Wed, 20 Mar 2024 13:31:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8A6A720B74C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710966666;
-	bh=LjNajcTf5mT64oJtdPlWYXohXjlD7KHbVX6iVtTNaxM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eJR6sbSRnr7jKg1NOAoDHQjhMsLt2lbwNoUurE8453RHuwOP/lav2yod0rrGbe9p7
-	 245ClYUHJ3mecsRXR37rNvTVNg31oEz2ju7BzIZHeIZvg4e6hxTcCVU/+vwVA50149
-	 LDRtRn74I/Tmd9JYCYNcR6ERNpSTh8T0MVBo+5G8=
-Message-ID: <a69805c7-7b8a-44ee-9b32-f9314b5a9763@linux.microsoft.com>
-Date: Wed, 20 Mar 2024 13:31:06 -0700
+	s=arc-20240116; t=1710966696; c=relaxed/simple;
+	bh=IHC7W0vdNvnZRFwRjzxwMFPPCAErFAkI/NZiAIwKitk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cpGrA773lRO8V/55lBIhI0srFdaXX9FJgkj+r1xo20U/ywHV3favmribuBI+xuCENp/vU47ubw3MbyvN/jH4sdLr7sizb/mh4jibQYY6XcRwdUR12eAvzlBYEC7/+y9v74V/mGZhC0F9YaQFz3QD0WAhwbwkdFOe2VsT27qk6qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lkq/o/FI; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso160308a12.0;
+        Wed, 20 Mar 2024 13:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710966694; x=1711571494; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MDxbUkBjk4CfBwXEKRf8dRtsz89f25MfMN5IRAlH4Dk=;
+        b=Lkq/o/FIM/WWsO7QKxWAgfmonBg+XebnUi3fRremxiuU1z84Y0MJ9M8BwOq4zlnJZC
+         Oh3G63Xvwqsu8ibftgvrnnEfeicmpK3ToRIWJVnWxtaf0NQQaJgmwzBsN9BwwU1mUrcK
+         eYXRR+z1iPOj8Jo0nbfWc0DtY9RzZYwcM3eKDrkAL1vzPWjg1tXjW01nZw56LLwNoVfo
+         DrHLIPpfipwaTBQJDAMsvqiZDCemwH67yeoQ1b2jtvyTIIvuiP8DuQLKwxDxdaegIL1h
+         Vs4j3Vb6s8hnmfwk7RSyHIvQ8tyjKF3p1eR6K7Scua9AtpU7q/io28p67bEHnSa3vf0Z
+         3IJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710966694; x=1711571494;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MDxbUkBjk4CfBwXEKRf8dRtsz89f25MfMN5IRAlH4Dk=;
+        b=Kn75ThKJYMxkck4zPg+jVK468kzM52ZuLWKeRmrzMApvB7iWLWrrmX8Csgpa3HkR5d
+         rBNcQDnEDoPz1nMZmWqxIVvuE1nxfK0PAB6y6m5Cg/yMK5G/hebtN+XSk3X9tudAGGg9
+         OoUmPEtM4eTsQlOlE0zlZvE7HfcmWuY+wNgDQHIFidJAr3TY+8NrX9b8V6PGuk2a5yCz
+         trLRGl7xtplyKAwSauxCqAKiSRceJorMgbtBGmUWewHXan8XXrY9tJ8F9CPII9zVtVgC
+         hJOfcBBJapFaQv7oln79SimvgKeZVctf2Kz7untj04SYTKumlttSoScU7GvE5OOmX8uh
+         gQqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXHmc8kznWK4P7xpNXsgzauLAS1r4jSft/kmOZPSGulULXE/GPIxxcEeVzY3Me/67oKzoSBV7zmYGq7pDD+QuiXPc2ET9KQnUX8y4y8HocEK1YjDjZri/uQR4s8o3PBHBvCR1NGqQ==
+X-Gm-Message-State: AOJu0YwSrSBQx+juxEnxusyzx+AKaGrfD64XAoqQtxWwpVS/wya3qMqF
+	Tke6LNbFopJ9YkJZMTHjsk20ueQuMQtez8CJqZTS2n/8Aq6gcYm1xZdPNxfp68Cl5pude9Qpc7c
+	IL0g584kWsNooWMNxFvTRhUlt62WoClaeqeI=
+X-Google-Smtp-Source: AGHT+IHAab/9jqTa5zNphG2tQeRstGzN3AZLZGJkHzVD8WS1O1KnA51gP4O2XQ9c00tGS/TbRDfVXnZUvtDSfcj+l+I=
+X-Received: by 2002:a17:90a:c24b:b0:29f:91bf:12f4 with SMTP id
+ d11-20020a17090ac24b00b0029f91bf12f4mr3146775pjx.42.1710966693926; Wed, 20
+ Mar 2024 13:31:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v15 12/21] security: add security_bdev_setintegrity()
- hook
-Content-Language: en-CA
-To: Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore <paul@paul-moore.com>,
- corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
- tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
- snitzer@kernel.org, eparis@redhat.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1710560151-28904-13-git-send-email-wufan@linux.microsoft.com>
- <f5cf9d285bd5f09bbc3f79b0800d37fc@paul-moore.com>
- <CZYFP5S04YTK.23AJMKWQWVCR8@kernel.org>
- <CZYFR8LEEQB1.8C0J9KCTF8CB@kernel.org>
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <CZYFR8LEEQB1.8C0J9KCTF8CB@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240320182607.1472887-1-jcmvbkbc@gmail.com> <Zfs5KTgGnetmg1we@casper.infradead.org>
+In-Reply-To: <Zfs5KTgGnetmg1we@casper.infradead.org>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Wed, 20 Mar 2024 13:31:22 -0700
+Message-ID: <CAMo8BfJOzPbiOz59kmFuD_4Hkxm50gEujyFYjW2ANqzZNviUGg@mail.gmail.com>
+Subject: Re: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Rich Felker <dalias@libc.org>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Mar 20, 2024 at 12:29=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Wed, Mar 20, 2024 at 11:26:07AM -0700, Max Filippov wrote:
+> > In NUMMU kernel the value of linux_binprm::p is the offset inside the
+> > temporary program arguments array maintained in separate pages in the
+> > linux_binprm::page. linux_binprm::exec being a copy of linux_binprm::p
+> > thus must be adjusted when that array is copied to the user stack.
+> > Without that adjustment the value passed by the NOMMU kernel to the ELF
+> > program in the AT_EXECFN entry of the aux array doesn't make any sense
+> > and it may break programs that try to access memory pointed to by that
+> > entry.
+> >
+> > Adjust linux_binprm::exec before the successful return from the
+> > transfer_args_to_stack().
+>
+> Do you know which commit broke this, ie how far back should this be
+> backported?  Or has it always been broken?
 
+From reading the code I see that linux_binprm::p started being an offset
+in the commit b6a2fea39318 ("mm: variable length argument support")
+which is v2.6.22-3328-gb6a2fea39318 and filling in the AT_EXECFN
+aux entry was added in the commit
+ 5edc2a5123a7 ("binfmt_elf_fdpic: wire up AT_EXECFD, AT_EXECFN, AT_SECURE")
+which is v2.6.27-4641-g5edc2a5123a7. I don't see any translation
+of the linux_binprm::exec at that time so to me it looks like it's always
+been broken.
 
-On 3/20/2024 1:31 AM, Jarkko Sakkinen wrote:
-> On Wed Mar 20, 2024 at 10:28 AM EET, Jarkko Sakkinen wrote:
->> On Wed Mar 20, 2024 at 1:00 AM EET, Paul Moore wrote:
->>> On Mar 15, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
->>>>
->>>> This patch introduces a new hook to save block device's integrity
->>>> data. For example, for dm-verity, LSMs can use this hook to save
->>>> the roothash signature of a dm-verity into the security blob,
->>>> and LSMs can make access decisions based on the data inside
->>>> the signature, like the signer certificate.
->>>>
->>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
->>>>
->>>> --
->>>> v1-v14:
->>>>    + Not present
->>>>
->>>> v15:
->>>>    + Introduced
->>>>
->>>> ---
->>>>   include/linux/lsm_hook_defs.h |  2 ++
->>>>   include/linux/security.h      | 14 ++++++++++++++
->>>>   security/security.c           | 28 ++++++++++++++++++++++++++++
->>>>   3 files changed, 44 insertions(+)
->>>
->>> I'm not sure why you made this a separate patch, help?  If there is
->>> no significant reason why this is separate, please squash it together
->>> with patch 11/21.
->>
->> Off-topic: it is weird to have *RFC* patch set at v15.
->>
->> RFC by de-facto is something that can be safely ignored if you don't
->> have bandwidth. 15 versions of anything that can be safely ignored
->> is by definition spamming :-) I mean just conceptually.
->>
->> So does the RFC still hold or what the heck is going on with this one?
->>
->> Haven't followed for some time now...
-> 
-> I mean if this RFC trend continues I'll just put auto-filter for this
-> thread to put straight to the bin.  There's enough non-RFC patch sets
-> to review.
-> 
-> BR, Jarkko
-
-Sorry about the confusion with the RFC tag – I wasn't fully aware of its 
-conventional meaning and how it's perceived in terms of importance and 
-urgency. Point taken, and I'll make sure to remove the RFC tag for 
-future submissions. Definitely not my intention to clog up the workflow 
-or seem like I'm spamming.
-
--Fan
+--
+Thanks.
+-- Max
 
