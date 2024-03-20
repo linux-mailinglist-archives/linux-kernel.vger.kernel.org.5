@@ -1,94 +1,131 @@
-Return-Path: <linux-kernel+bounces-109391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C83C881880
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:19:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1043881882
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A12B226BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:19:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2FA01C23570
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDDF85937;
-	Wed, 20 Mar 2024 20:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744668593E;
+	Wed, 20 Mar 2024 20:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="FUD/CI4Y"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UMNUcAHv"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19B78594C;
-	Wed, 20 Mar 2024 20:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7759029CE8;
+	Wed, 20 Mar 2024 20:20:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710965951; cv=none; b=oFRLnum0/btMXQi5St9rH3GZ1L03uoN2by5isa597q8fiIG7MRoBzuy+OXRQ0aQsyX687Of3B2pStene4DNTKbtxn9tmtBmUPzYWa2EAE38yk1ZvgJ24DIKYgsTUCr4t/LqnOxLb9cOCDzlTwBtAu/DjrreqlF3gnDYpvvqYy84=
+	t=1710966055; cv=none; b=c24GmtpdsxsucYNBzkJAFmDpWcGHgSBZET2L0hneM578mMeIw9E0Zy/Q6CWap2mBgE9/DPWrfC8XAjalP+A7UBK+sZxtndPHZD1A9GY9z3TVDODO0n7U/TZpy6LmB2MtVbPtU5/mNRv4Bt1v9NhMRls+1CTawWmwk9DqeGc17iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710965951; c=relaxed/simple;
-	bh=1InWQrQRzI8df03YA+uMajlmuvvarx0891Elr78Rzfo=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JRy541NxTdGEtt/cKlI4wc4PhlDrUCJ1eHKGzrkhOtCSyz+0fRSTmzJ1p3qJY5aW1oN8D5PfuX1qtW3cJjM91DzTc/ydm1Cs/9RX/HJqEcXgJADP80uWS+HGAlCiajv58blft6U41e84NBZk6TXW1BvtZqmQLvN0y2SvguZN8Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=FUD/CI4Y; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 7D59D1C007F; Wed, 20 Mar 2024 21:19:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1710965945;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=YzWGo7ZDlHo/gTXMevOf1cRXxQyP40vDt4ohNrfOea4=;
-	b=FUD/CI4Ynd3ojwXbF4td8Z5XNROCnJPOWc7sWz8hfag6L09DLzxdhhVVdcpaVXqhvZVdFc
-	f6TwTZYbYTxYSmo/7KPhr4xp6jjM2AP04a+cDNune89cRQldDq1lfHm03yLuo9BzSg7cE7
-	oUmqeVA+sBITQL3eU4eT6+SpGBSWOFc=
-Date: Wed, 20 Mar 2024 21:19:05 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: linux-kernel@vger.kernel.org, hdegoede@redhat.com, rafael@kernel.org,
-	lenb@kernel.org, linux-acpi@vger.kernel.org
-Subject: Wake-on-LAN stopped working around 6.8-rc7. Thinkpad X220.
-Message-ID: <ZftEufJx0uDXSqFT@duo.ucw.cz>
+	s=arc-20240116; t=1710966055; c=relaxed/simple;
+	bh=6KLApuHLnnboa7nGw7DTgDv4GVeg3my1JXPtaub9h/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ni6TxU9NrhF+y2AnulspKBfrBhGd+cZosgg//AiULX9irbqrdLF8juClYALIY2IgkNvhKWmRH/J6WoLg+HNrRK+wGzAxaDp6qG6NRt9InaiKUNDsk5rBXW5wfmSo7hRSi2lQvmBC1E5Kl8zOSQIdqonnRxh6l8da/x16HynYKpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UMNUcAHv; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710966054; x=1742502054;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6KLApuHLnnboa7nGw7DTgDv4GVeg3my1JXPtaub9h/w=;
+  b=UMNUcAHvAYbJNgH3hVlSvJRZ4Sx+JDrAuBhQxS45QU1xATXPPPipTM5j
+   N/9Uy3LgIvv9WCIhSFj5UZYZyVTxBEMqcP5EindvHkmrxLo6mEoWl+VqP
+   90fTVrKcGBtS+GahobvyxA3WpHKry0xBxDJRQc4x44v8HUttHECk7Yeqz
+   xhzhO0ICBQ7gCHDIPMbITfkLzCRXsJRFO72SIE7N2kjs4RahL/JBVteZO
+   q8yVUQTsedQ8SO7PiGv9VpYVNy+YBgzJ6ofdGOgQSXKjPKLr3/bRVbA+X
+   PWfCvbEnfSuhNSEX1Embd2M2oYzwFeFCef2oYsLAfSR+vJCtea5aeZMG6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6037911"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="6037911"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:20:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="18998840"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:20:41 -0700
+Date: Wed, 20 Mar 2024 13:20:40 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"Yao, Yuan" <yuan.yao@intel.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
+ SEAMCALLs to the TDX module
+Message-ID: <20240320202040.GH1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
+ <3370738d1f6d0335e82adf81ebd2d1b2868e517d.camel@intel.com>
+ <20240320000920.GD1994522@ls.amr.corp.intel.com>
+ <97f8b63bd3a8e9a610c15ef3331b23375f4aeecf.camel@intel.com>
+ <20240320054109.GE1994522@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JFcImNO7Rayn6cOk"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20240320054109.GE1994522@ls.amr.corp.intel.com>
 
+On Tue, Mar 19, 2024 at 10:41:09PM -0700,
+Isaku Yamahata <isaku.yamahata@intel.com> wrote:
 
---JFcImNO7Rayn6cOk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Mar 20, 2024 at 12:11:17AM +0000,
+> "Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+> 
+> > On Tue, 2024-03-19 at 17:09 -0700, Isaku Yamahata wrote:
+> > > > The helper abstracts setting the arguments into the proper
+> > > > registers
+> > > > fields passed in, but doesn't abstract pulling the result out from
+> > > > the
+> > > > register fields. Then the caller has to manually extract them in
+> > > > this
+> > > > verbose way. Why not have the helper do both?
+> > > 
+> > > Yes. Let me update those arguments.
+> > 
+> > What were you thinking exactly, like?
+> > 
+> > tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
+> > 
+> > And for the other helpers?
+> 
+> I have the following four helpers.  Other helpers will have no out argument.
+> 
+> tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
+> tdh_mem_page_aug(kvm_tdx, gpa, hpa, &entry, &level_state);
+> tdh_mem_page_remove(kvm_tdx, gpa, tdx_level, &entry, &level_state);
+> tdh_mem_range_block(kvm_tdx, gpa, tdx_level, &entry, &level_state);
 
-Hi!
+By updating the code, I found that tdh_mem_range_block() doesn't need out
+variables. and tdh_vp_rd() needs output.
+tdh_mem_range_block() doesn't need the out.
 
-I was using wake-on-LAN a lot... and it stopped working.
-
-pavel@duo:/data/l/k$ sudo ethtool enp0s25 | grep Wake-on
-	Supports Wake-on: pumbg
-	Wake-on: g
-
-Hardware is thinkpad x220. ethtool was correct, and I don't think I
-changed anything.
-
-Did something break in ACPI? Does wake-on-LAN work for you?
-
-Best regards,
-							Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---JFcImNO7Rayn6cOk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZftEuQAKCRAw5/Bqldv6
-8lCCAKC2h4M/GqWtqARDbwM73uz1BChUDgCbBTEGyDePE5LbJMzXxHrMC+QALzw=
-=kEU1
------END PGP SIGNATURE-----
-
---JFcImNO7Rayn6cOk--
+u64 tdh_vp_rd(struct vcpu_tdx *tdx, u64 field, u64 *value)
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
