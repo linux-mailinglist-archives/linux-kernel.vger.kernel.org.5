@@ -1,295 +1,191 @@
-Return-Path: <linux-kernel+bounces-108443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF7A880A9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:24:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F16A880AA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEA18B222C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:24:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B75D2839DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3544218AE8;
-	Wed, 20 Mar 2024 05:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4460F14A96;
+	Wed, 20 Mar 2024 05:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="isJ5p0AQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="j2zIImse"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB1A17BD9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71AE1EB25
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710912274; cv=none; b=CwNQt017H06S7+iGhty/foitc/90SL7zhnpjLiftQrkbM3v9TAetEXBc4+APnKmp6xWyUk+RAhZCPk2qmyDeymTFiNvZLAQq7NwhubVlXiMsrCY78cHtKpbJPuCTDBpzd3G/t+fPFpCCFtYFPTe7WdG28b8s7zrhV8NGEO2kcRY=
+	t=1710912302; cv=none; b=ovHlqHqOFOp43LK/d1a8wFA2l6pYeqsJUAsx5P29CTEcdI2KO3rvfjITXVJ3rR0tgFTJcyGzjRjXq/gGPCBh7Rcjyn4WId/iPCD1p9qrIuzlF5O5TOysWahf4MxRSQCazIk9CS/t9LbYJcswQdgV3e2x/85tpIFpfJptqtuE0yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710912274; c=relaxed/simple;
-	bh=caYaSpmjWLfenJmZLDNeCx4DtxlujtzRJi2hwjbOFhI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kxxYn4lDTqHCc/1MjkvkIHydb0dPU+JBZDojKviYRIWjAcmY6zINau6y3X6YCxLm7EBxMcXdpP646bnCK3R0kKXt2lmRlgL7JKGpkfv5w+fVAs3omPIuLn4vV7LrOGT1NjqR4c1/SGzbLuy0fnne5lELuy7wko5tGsOmdjN5tNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=isJ5p0AQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710912271;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=paGiGEEp9xes32fQLOmnOD45tZcdVk+dgcPS6McRIVA=;
-	b=isJ5p0AQi9nlqA45CtubSl+wTaqax4RZPM0sHQf+sjCuiAHFMox6kEBRj0L03wWZq/7+TU
-	r/V0LZLYOS7BSiyKFEtNNebqzjL9vQ96cTQIBFI9yuPU73mIHySGzR9oNI0fdbQ+rjRajK
-	IwEC8P8YKMfla3UHW69cskgeUm5o6wA=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-gizPngTxMcKHMDn4ZKojhg-1; Wed, 20 Mar 2024 01:24:26 -0400
-X-MC-Unique: gizPngTxMcKHMDn4ZKojhg-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6e7827e1b2aso191482b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:24:25 -0700 (PDT)
+	s=arc-20240116; t=1710912302; c=relaxed/simple;
+	bh=9Rw1YCZhkZ1V7Rqmy97JJdjOIIio7DjvkirPjoFaQ6s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZjHoyGv6ezbzGHpCTTYDHpSR9GFE6uAlfqWT3tGt2aWT4ptnXqYSP2mNmQTjkNBuIA/bejYaDCMifHxwaIFf7bAXtcA4Vc+m1XYb8+4Xgdqi+luJreUJYQ6EmB1ub9C6jkVyE3hwhjxtXF6F5TUSSX8FFXAfHuo6TMXLbm3z/WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=j2zIImse; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e6082eab17so5523348b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710912300; x=1711517100; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L6C65Xih+p3VE132AwQb8aSpe0F0WPcTiDrQW5UHg7s=;
+        b=j2zIImseQ9cUN9z/6d0Og4Bk2wUoD22xosH3FZvegXlhV/MKQ7L9HUXFkhkKBSrEfE
+         Q3VKaELw+9ImvfO/p7ukcG1RyaBX3wJSKOP8GBxwYfxoayc9fH5VdZTgl3dfrbdDpJym
+         PRMpsmnWEJQkJE1L9G1n9GzEzTTIVBXadSWIg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710912265; x=1711517065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=paGiGEEp9xes32fQLOmnOD45tZcdVk+dgcPS6McRIVA=;
-        b=YdMmQc5V9uOYroPtVxbNZzp9ROgmPuasjo8yVc0/L6/c0mFZgyT5TZ4/7qbj1xXCy5
-         NFwA3SUz9y7PKv2YuGkyTXwhHoHd5yGLw+Ow/VVAdmsdTySS1fSA2r2rHqEo7Mpxcv9S
-         OMrFp6tIZs9kWqVVP3UsFXFu2v7b3J8i99ccCV4KZKztn8fv+LvZE0oPN4z8Yb6qMFQ2
-         2vO2wVUPLwxU7VM1utNXnEfo3WI9RswU9fNaP8S+6XTuv2ZlYY27ODh3MQpXPAWfyuS3
-         3UU19Xk36BMmJTwSQLPShq1HUJOFYkeTHRIJYinVqGwndWm3kXkhGniGblakTNr7CBCH
-         Wk/g==
-X-Forwarded-Encrypted: i=1; AJvYcCX8tN3LsKBUE8e/HGZIlf4TXwYcOFmQzPYH8TwrxPbAAf5z637+unbj+KprwyQZRbEEJNRWi0wyOaNsveFbD8eCcTsr/RIfEIF5w1ML
-X-Gm-Message-State: AOJu0YxXvoM6hS0Avvmigr+TwejV45v28QiqwVAruIRW5TMhc5VZtfgJ
-	pjhH+6QfelC7NIFZchQ6VN/pNX/JMxo46JqmIVtiTVmiMa0I9PyMQdnW5kfANdEze3kOm2WX4yw
-	TZXsXxysRgj0oEnu7WemY4TAIXNzPD/QlSTukM544CHLiCmhiiLZPBjOshYWtCg==
-X-Received: by 2002:a05:6a20:94ca:b0:1a3:62a9:39c0 with SMTP id ht10-20020a056a2094ca00b001a362a939c0mr8664985pzb.38.1710912264996;
-        Tue, 19 Mar 2024 22:24:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFHmD834wqq1B57Qja9j6q53cvP8FpzYPiHAT8lVP0F2/dYQAzwDSEQXaw57UhbilvqTXb9JA==
-X-Received: by 2002:a05:6a20:94ca:b0:1a3:62a9:39c0 with SMTP id ht10-20020a056a2094ca00b001a362a939c0mr8664968pzb.38.1710912264566;
-        Tue, 19 Mar 2024 22:24:24 -0700 (PDT)
-Received: from [192.168.68.51] ([43.252.115.31])
-        by smtp.gmail.com with ESMTPSA id c8-20020a170903234800b001dd7d00f7afsm12527037plh.18.2024.03.19.22.24.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 22:24:23 -0700 (PDT)
-Message-ID: <3a6c8b23-af9c-47a7-8c22-8e0a78154bd3@redhat.com>
-Date: Wed, 20 Mar 2024 15:24:16 +1000
+        d=1e100.net; s=20230601; t=1710912300; x=1711517100;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=L6C65Xih+p3VE132AwQb8aSpe0F0WPcTiDrQW5UHg7s=;
+        b=kGvdkVgXHiwM2XjZhfUTCjjhDtiDp2hL16AyEAQtL3Gd/Vy3SkMWYW6JxK5EZV5r6Q
+         BUEMFuIE2FYHbUhM/nrpMH0jSW0AiuLkhiBzQrkE+alKl+sK4+VO140H06uIRCRIIQbF
+         6u7OSo/4vWKxVrgZkw+CyFhjzAwmW8vRTw1iurW8rUBj6a5TPoyZ8/zChVDVNBAxKZJt
+         qFxLgHyijTIJGsiLB+3ika6JF05AY3mqSZpwXfg5Izrt+E9IlO3ntLLxMnG5Jg0X55bJ
+         FYzZEDubS6U8jQmdxCtVVZlzUZNU0ewBjLnjHbXV355xthexKe2HVyoArPouJrD7uyNC
+         qSsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/N9EMgelFadTDqdtlqjO2iBWY7e1CJY2mjDWh63EBI1NQIMX3OECIUx4J/B69XG/0nE1k7rZooqE2FJXcjHzGoORj+2y4fXHAB/S/
+X-Gm-Message-State: AOJu0YzPvCECG8kKGW5A3IODBWG2T8bc4ml3Hs3f6mY+OJT3u9roJTNO
+	cnYTYF+HGShvj3vjYyO38Q8qcrS23Uci66c7UsH2Z4oe51mONT2ailYCKxxdWw==
+X-Google-Smtp-Source: AGHT+IGsHqqJIAPjFPjRAtgKAljffZjP7ejm8HcysZ8aeHp7Kmx5hQH5j0ux4Flud82CZIzyswbhEA==
+X-Received: by 2002:a05:6a20:9f4f:b0:1a3:115b:acb5 with SMTP id ml15-20020a056a209f4f00b001a3115bacb5mr18621969pzb.21.1710912300158;
+        Tue, 19 Mar 2024 22:25:00 -0700 (PDT)
+Received: from chromium.org ([202.144.206.254])
+        by smtp.gmail.com with ESMTPSA id sb14-20020a17090b50ce00b0029ffba4bf0esm572355pjb.19.2024.03.19.22.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 22:24:59 -0700 (PDT)
+From: Simon Glass <sjg@chromium.org>
+To: devicetree@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org,
+	Rob Herring <robh@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Simon Glass <sjg@chromium.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v9 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
+Date: Wed, 20 Mar 2024 18:24:48 +1300
+Message-Id: <20240320052449.175786-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Content-Language: en-US
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Will Deacon <will@kernel.org>, virtualization@lists.linux.dev,
- linux-kernel@vger.kernel.org, jasowang@redhat.com,
- xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
- linux-arm-kernel@lists.infradead.org,
- Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
-References: <20240314074923.426688-1-gshan@redhat.com>
- <20240318165924.GA1824@willie-the-truck>
- <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
- <20240319182251.GB3121@willie-the-truck>
- <9500adaf-0075-4ae9-92db-7e310b6598b0@redhat.com>
- <20240319203540-mutt-send-email-mst@kernel.org>
-From: Gavin Shan <gshan@redhat.com>
-In-Reply-To: <20240319203540-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 3/20/24 10:49, Michael S. Tsirkin wrote:> 
-> I think you are wasting the time with these tests. Even if it helps what
-> does this tell us? Try setting a flag as I suggested elsewhere.
-> Then check it in vhost.
-> Or here's another idea - possibly easier. Copy the high bits from index
-> into ring itself. Then vhost can check that head is synchronized with
-> index.
-> 
-> Warning: completely untested, not even compiled. But should give you
-> the idea. If this works btw we should consider making this official in
-> the spec.
-> 
-> 
->   static inline int vhost_get_avail_flags(struct vhost_virtqueue *vq,
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 6f7e5010a673..79456706d0bd 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -685,7 +685,8 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
->   	/* Put entry in available array (but don't update avail->idx until they
->   	 * do sync). */
->   	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
-> -	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
-> +	u16 headwithflag = head | (q->split.avail_idx_shadow & ~(vq->split.vring.num - 1));
-> +	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, headwithflag);
->   
->   	/* Descriptors and available array need to be set before we expose the
->   	 * new available array entries. */
-> 
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index 045f666b4f12..bd8f7c763caa 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -1299,8 +1299,15 @@ static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
->   static inline int vhost_get_avail_head(struct vhost_virtqueue *vq,
->   				       __virtio16 *head, int idx)
->   {
-> -	return vhost_get_avail(vq, *head,
-> +	unsigned i = idx;
-> +	unsigned flag = i & ~(vq->num - 1);
-> +	unsigned val = vhost_get_avail(vq, *head,
->   			       &vq->avail->ring[idx & (vq->num - 1)]);
-> +	unsigned valflag = val & ~(vq->num - 1);
-> +
-> +	WARN_ON(valflag != flag);
-> +
-> +	return val & (vq->num - 1);
->   }
->   
+Add three properties for controlling alignment of partitions, aka
+'entries' in fixed-partition.
 
-Thanks, Michael. The code is already self-explanatory. Since vq->num is 256, I just
-squeezed the last_avail_idx to the high byte. Unfortunately, I'm unable to hit
-the WARN_ON(). Does it mean the low byte is stale (or corrupted) while the high
-byte is still correct and valid?
+For now there is no explicit mention of hierarchy, so a 'section' is
+just the 'fixed-partitions' node.
 
-         avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
-         vq->split.vring.avail->ring[avail] =
-                 cpu_to_virtio16(_vq->vdev, head | (avail << 8));
+These new properties are inputs to the Binman packaging process, but are
+also needed if the firmware is repacked, to ensure that alignment
+constraints are not violated. Therefore they are provided as part of
+the schema.
 
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-         head = vhost16_to_cpu(vq, ring_head);
-         WARN_ON((head >> 8) != (vq->last_avail_idx % vq->num));
-         head = head & 0xff;
+Changes in v9:
+- Move binding example to next batch to avoid build error
 
-One question: Does QEMU has any chance writing data to the available queue when
-vhost is enabled? My previous understanding is no, the queue is totally owned by
-vhost instead of QEMU.
+Changes in v7:
+- Drop patch 'Add binman compatible'
+- Put the alignment properties into the fixed-partition binding
 
-Before this patch was posted, I had debugging code to record last 16 transactions
-to the available and used queue from guest and host side. It did reveal the wrong
-head was fetched from the available queue.
+Changes in v6:
+- Correct schema-validation errors missed due to older dt-schema
+  (enum fix and reg addition)
 
-[   11.785745] ================ virtqueue_get_buf_ctx_split ================
-[   11.786238] virtio_net virtio0: output.0:id 74 is not a head!
-[   11.786655] head to be released: 036 077
-[   11.786952]
-[   11.786952] avail_idx:
-[   11.787234] 000  63985  <--
-[   11.787237] 001  63986
-[   11.787444] 002  63987
-[   11.787632] 003  63988
-[   11.787821] 004  63989
-[   11.788006] 005  63990
-[   11.788194] 006  63991
-[   11.788381] 007  63992
-[   11.788567] 008  63993
-[   11.788772] 009  63994
-[   11.788957] 010  63995
-[   11.789141] 011  63996
-[   11.789327] 012  63997
-[   11.789515] 013  63998
-[   11.789701] 014  63999
-[   11.789886] 015  64000
-[   11.790068]
-[   11.790068] avail_head:
-[   11.790529] 000  075  <--
-[   11.790718] 001  036
-[   11.790890] 002  077
-[   11.791061] 003  129
-[   11.791231] 004  072
-[   11.791400] 005  130
-[   11.791574] 006  015
-[   11.791748] 007  074
-[   11.791918] 008  130
-[   11.792094] 009  130
-[   11.792263] 010  074
-[   11.792437] 011  015
-[   11.792617] 012  072
-[   11.792788] 013  129
-[   11.792961] 014  077    // The last two heads from guest to host: 077, 036
-[   11.793134] 015  036
+Changes in v5:
+- Add value ranges
+- Consistently mention alignment must be power-of-2
+- Mention that alignment refers to bytes
 
-[root@nvidia-grace-hopper-05 qemu.main]# cat /proc/vhost
+Changes in v2:
+- Fix 'a' typo in commit message
 
-avail_idx
-000  63998
-001  64000
-002  63954  <---
-003  63955
-004  63956
-005  63974
-006  63981
-007  63984
-008  63986
-009  63987
-010  63988
-011  63989
-012  63992
-013  63993
-014  63995
-015  63997
+ .../bindings/mtd/partitions/partition.yaml    | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
-avail_head
-000  074
-001  015
-002  072
-003  129
-004  074            // The last two heads seen by vhost is: 074, 036
-005  036
-006  075  <---
-007  036
-008  077
-009  129
-010  072
-011  130
-012  015
-013  074
-014  130
-015  130
-
-used_idx
-000  64000
-001  63882  <---
-002  63889
-003  63891
-004  63898
-005  63936
-006  63942
-007  63946
-008  63949
-009  63953
-010  63957
-011  63981
-012  63990
-013  63992
-014  63993
-015  63999
-
-used_head
-000  072
-001  129
-002  074          // The last two heads published to guest is: 074, 036
-003  036
-004  075  <---
-005  036
-006  077
-007  129
-008  072
-009  130
-010  015
-011  074
-012  130
-013  130
-014  074
-015  015
-
-Thanks,
-Gavin
-
-
-
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+index 1ebe9e2347ea..39c7d7672783 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -57,6 +57,57 @@ properties:
+       user space from
+     type: boolean
+ 
++  align:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry in bytes.
++
++      The entry offset is adjusted so that the entry starts on an aligned
++      boundary within the containing section or image. For example ‘align =
++      <16>’ means that the entry will start on a 16-byte boundary. This may
++      mean that padding is added before the entry. The padding is part of
++      the containing section but is not included in the entry, meaning that
++      an empty space may be created before the entry starts. Alignment
++      must be a power of 2. If ‘align’ is not provided, no alignment is
++      performed.
++
++  align-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry size in bytes. It must be a power
++      of 2.
++
++      For example, to ensure that the size of an entry is a multiple of 64
++      bytes, set this to 64. While this does not affect the contents of the
++      entry within binman itself (the padding is performed only when its
++      parent section is assembled), the end result is that the entry ends
++      with the padding bytes, so may grow. If ‘align-size’ is not provided,
++      no alignment is performed.
++
++  align-end:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment (in bytes) of the end of an entry with respect
++      to the containing section. It must be a power of 2.
++
++      Some entries require that they end on an alignment boundary,
++      regardless of where they start. This does not move the start of the
++      entry, so the contents of the entry will still start at the beginning.
++      But there may be padding at the end. While this does not affect the
++      contents of the entry within binman itself (the padding is performed
++      only when its parent section is assembled), the end result is that the
++      entry ends with the padding bytes, so may grow. If ‘align-end’ is not
++      provided, no alignment is performed.
++
+ if:
+   not:
+     required: [ reg ]
+-- 
+2.34.1
 
 
