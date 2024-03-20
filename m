@@ -1,108 +1,159 @@
-Return-Path: <linux-kernel+bounces-109255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1E1D8816D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:53:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88608816DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A8E1C216CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:53:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79EFDB22E72
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620D96A356;
-	Wed, 20 Mar 2024 17:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7676A35A;
+	Wed, 20 Mar 2024 17:55:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WYEFIp5M"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMs3btg+"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4286E1EB44;
-	Wed, 20 Mar 2024 17:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35CF69DE4;
+	Wed, 20 Mar 2024 17:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957194; cv=none; b=buckbqQI1PRuGLFeeqU8MTaipAv3gg47pEZfVqyvcxPSk5T9kECiYg/sLnsnMrwf5WozxFXXNlsydgfu1k6x4vX6KgQ1pjzzWxQp0Jn3XLyqPUKRi/n6JfnWNtuBBomjd7UWezCmddIoTA6JvEAITkb22AoF1NK/JRMUFTt/Tg8=
+	t=1710957348; cv=none; b=Xq/MCR7Ww1MtR1upzNb7D4QDGzBylYw1bqkzGeKTWvLfO0pXjAgBQp/siyYQpmU1eRkh7mxAruCkuo79OcJ9Wghj9bLVAbnlqDVAGGvqJx8N9Sl+PpcZ/UjBKMNSdMhyEdo0j/AonrFGcmGNjiITzmjVG7gPJfbI7EFkD1rpo6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957194; c=relaxed/simple;
-	bh=U8iDRQhYcvX6/9YMs1ddaL5R1BN0NhkZr5i+4CX1juc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YcmkT3qFpghxj9pXYeozhhQuSowFGf7W7yBxdifHuhp+PRbw78LHfXfx/p6DMgWsSwBkfu/4VxkbZNwSNIE9vkAayOSfXd+GCQ7v0F4Hf5BEyNfxbmqn1osXFLWK/fmqrM9MkYlPzdCnz2QngERo/satUg0PnLA1qgyKlg8+Bfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WYEFIp5M; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1710957348; c=relaxed/simple;
+	bh=THk8a8rK445xrwum+0GkyKoR1i2kDSt6VlDhas4kNYk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=urkT/8TrwcluhbXa6M0SeSA88AdSR3ROHgfiYnWf1Z5sHBogWTUi0UUtmOcj3z1T/EYw1oQUhIJpvytY/aRL13YLjThevq9EkZ3NXOhcK3DjXn425xsD2PFcPhEnqjEz++EshG/OD+K+5Hx1MQFTQmbpVSJzNdqf0YYLhRHKr8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMs3btg+; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1def59b537cso350155ad.2;
-        Wed, 20 Mar 2024 10:53:13 -0700 (PDT)
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4d436ab8a36so41263e0c.0;
+        Wed, 20 Mar 2024 10:55:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710957192; x=1711561992; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RIFOXnlpQn40I+CjIMHCKge6cxVrQe5AAV9uLe3wQSs=;
-        b=WYEFIp5MytuY2OwFF31DQ4MPy+KIOyL6IAazc9WZhAOqBKtEDOPmrFaz64i/umXprw
-         ci31YyIA3fUtracE0D4E3jNdYd7s5DBOJ/hZNSRShHWvKzepHsm7IL/B9WLlB1c/hZn9
-         gbpIQKzcTqOcwPXBMBwySZYlu/A5mSekBxRwuDQ7zGQO/+n+YyKrwINuZn5WrV6ladXA
-         OCPX0reN6N/PJzexJd++1+ec8Ec+a9WWnFjSuZ5NT6o5DGgMLj6CDFu5izJRwHLKoBb5
-         Hy0xMd0UTjNYx17E7gGtbSZG096A5ACkEJy4Sj29FiJrF+KmcuqNRO7ju+OD0tIf0NaH
-         p0fw==
+        d=gmail.com; s=20230601; t=1710957346; x=1711562146; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QxwbgNndHR1MpV8bu3gf7jikTtDYFr6so3dvh0vQDrc=;
+        b=WMs3btg+eiA4lR9ve0DY+cqh/BXN4sJWp2Ice1IhSGXNAl+pRP2KN/u5hKdgr7cQu6
+         ErVBUlG3eEfMhUylO6A2qkU8ZcIEXb6/v9zK+Ox/m/FBQaycp5FyMP9fgK8UkSxhVCG0
+         1H+ylqmUnNHL3W4rhOwcAHi9mR3Ht8Zwip7i8KViZ95Di+FeYU7EhdL1gWBRKp93ovKz
+         2ahsSAZkUPId366bEnpGrB4cUor+jl1d/KsHH4Sc4PjdgiBh+56FPo5Aiey3s51Ro7KZ
+         6ub7C+JEVN6Sk2Xl2tI14mdu+gBh+auk/dMuoBqHMBqG6QkX+xCEtjrVS4pjEuN1jLaZ
+         WdOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957192; x=1711561992;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710957346; x=1711562146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RIFOXnlpQn40I+CjIMHCKge6cxVrQe5AAV9uLe3wQSs=;
-        b=vaL1E0thrcyTcsJok1zGXhKNO3fHUFpc3CFm4JqQa4cL5fvAB8FOfGBz4+QK8sz/tx
-         eoogzRU2vHmVhSJI8gqvJtFK5UdJYxmH0Xb2vTJKUIVgkoOPL3pDqNJDvZBPMwcoKLQ2
-         gIgRXsj0iSsc/Gkx4u2/Hu7gpw55innj+PhAcph/VoCeNP5ijE3koWUf4t/rCl18zU2u
-         ywv/0CX9kJzOZ0L2a39DX1i+rKZoeQITNVmKXZ3BxYdmfjg7XsD63OmjA6UQIqpbTXe6
-         OUfRlmPomBn6fuR3+KbypTg6qbqPjh3IMkj9ISIzgA27BX/GgUnx71QysGU9jxF3qr6H
-         +xdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVpCUEmu4XyXfu0FRXQOAC3mEzrYVqDXL8fdkeK1NUkgTznZ+5BauJqxpyk6DUtCZxQ4Z1V5FW+OfmgqkAvXGAoA92ERVHJq6fY/0Sr38O5KBg8S6BmEnDmZRzAnTmXia/JYvjgtXtSzdM=
-X-Gm-Message-State: AOJu0Yy/SvX4yTUCsfJz4yPY4DYiYU5gRIXffWKk6HOZSV4wOtR6/Puw
-	1sCHiyDyAS1WcMbjlzsqgVxvMaubDEVBlzCD6N0FpCZGYIX6opvA
-X-Google-Smtp-Source: AGHT+IEswqFoovRdTgMjCxwd02FDjhh4fjObRrM9JCNobqGafNr6RKLVaKlu+49oMsKKGN5Ux2+faA==
-X-Received: by 2002:a17:902:d507:b0:1de:f93f:4410 with SMTP id b7-20020a170902d50700b001def93f4410mr16983598plg.8.1710957192578;
-        Wed, 20 Mar 2024 10:53:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y9-20020a17090264c900b001def0897284sm11758039pli.76.2024.03.20.10.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 10:53:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 20 Mar 2024 10:53:11 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Naresh Solanki <naresh.solanki@9elements.com>
-Cc: Jean Delvare <jdelvare@suse.com>, mazziesaccount@gmail.com,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH v3] hwmon: (pmbus/mp2975) Fix IRQ masking
-Message-ID: <50505cde-48c8-47a4-ba0f-48b02fb1fff8@roeck-us.net>
-References: <20240318174406.3782306-1-naresh.solanki@9elements.com>
+        bh=QxwbgNndHR1MpV8bu3gf7jikTtDYFr6so3dvh0vQDrc=;
+        b=s/tdxxbtT1u8fsaoXAXHLFuFBjqtN0boi6unRklGh27ZJLpmypVsJCq5KBPZ3w32gZ
+         msJO1LsbQsueYLpudMO8KJ0GX7B2USh4b8vOJOjbNy6PMEhWhmjntnE1vHnT/r/rq/Bh
+         W0XwPD18eBHmSGqMlbKk5ELSAMugta3SjvqVKZEUqegjgUzEtWj/IGag26rMG5Nq0Vrr
+         ZR5w12Dd1t3A3xHy3kXNgvr9qXkNcD68XgOe6WTCr0N4fSAbrPlQWp3i6S0khwSagya/
+         JvwaQyVMq5Rdr9R9tm/AfM0ADV8kXidsy36cmPlpH97+165rBn73lBZlgGkxvp5mJ3M5
+         03Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCUBargrhiWTpw3MZl1oTdp8GK5yHhGSvE0abjlSwY/lA9st/suGTGSQiXi2h0tjj6p9BB7dnEt0e9IeOFXoQyYldwW6mwrCJx6K+CGOUYJZELLfMKkI0zsHLm2xTaaGM+aIqGGMmQ+M6r7YJOqV1mU=
+X-Gm-Message-State: AOJu0YxIWng3FnyqwwQAKbO6z8CKI536WPy7PfeHBOvgaqKbYkGbFAEa
+	MrMIrmKAG3VJYMmSLNQsE+IPSum7PJukO0fmKq4sbSgTGdowbLMumRPgbN9DUvSzx7mldoqqkSr
+	qlhcPhixnQVGGO6YPWCyN8XGFMamgYoNxadM=
+X-Google-Smtp-Source: AGHT+IFPDmRqOqlLVgrmja7MsWB7SVrrAaDnIVxcW2L0oBscBYnEjTP7y406YUD/jMnsg/Nv/yGzRjDO/VdvqpsSJqc=
+X-Received: by 2002:a05:6122:448b:b0:4d3:cff6:79f0 with SMTP id
+ cz11-20020a056122448b00b004d3cff679f0mr2606811vkb.4.1710957345767; Wed, 20
+ Mar 2024 10:55:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318174406.3782306-1-naresh.solanki@9elements.com>
+References: <bd027379713cbaafa21ffe9e848ebb7f475ca0e7.1710930542.git.geert+renesas@glider.be>
+In-Reply-To: <bd027379713cbaafa21ffe9e848ebb7f475ca0e7.1710930542.git.geert+renesas@glider.be>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Wed, 20 Mar 2024 17:54:19 +0000
+Message-ID: <CA+V-a8vOZPYeZDSNU30JAo2i9WSiBKxqywyjEO_=dUMFhg8YrA@mail.gmail.com>
+Subject: Re: [PATCH] clocksource/drivers/renesas-ostm: Avoid reprobe after
+ successful early probe
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Saravana Kannan <saravanak@google.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+	=?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Liviu Dudau <liviu.dudau@arm.com>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 11:14:05PM +0530, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> The MP2971/MP2973 use a custom 16bit register format for
-> SMBALERT_MASK which doesn't follow the PMBUS specification.
-> 
-> Map the PMBUS defined bits used by the common code onto the custom
-> format used by MPS and since the SMBALERT_MASK is currently never read
-> by common code only implement the mapping for write transactions.
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+On Wed, Mar 20, 2024 at 10:40=E2=80=AFAM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> The Renesas OS Timer (OSTM) driver contains two probe points, of which
+> only one should complete:
+>   1. Early probe, using TIMER_OF_DECLARE(), to provide the sole
+>      clocksource on (arm32) RZ/A1 and RZ/A2 SoCs,
+>   2. Normal probe, using a platform driver, to provide additional timers
+>      on (arm64 + riscv) RZ/G2L and similar SoCs.
+>
+> The latter is needed because using OSTM on RZ/G2L requires manipulation
+> of its reset signal, which is not yet available at the time of early
+> probe, causing early probe to fail with -EPROBE_DEFER.  It is only
+> enabled when building a kernel with support for the RZ/G2L family, so it
+> does not impact RZ/A1 and RZ/A2.  Hence only one probe method can
+> complete on all affected systems.
+>
+> As relying on the order of initialization of subsystems inside the
+> kernel is fragile, set the DT node's OF_POPULATED flag after a succesful
+> early probe.  This makes sure the platform driver's probe is never
+> called after a successful early probe.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Tested on RZ/A2 (after force-enabling the platform driver probe).
+> Regression-tested on RZ/Five (member of the RZ/G2L family).
+>
+> In between commit 4f41fe386a94639c ("clocksource/drivers/timer-probe:
+> Avoid creating dead devices") and its revert 4479730e9263befb (both in
+> v5.7), the clocksource core took care of this.  Other subsystems[1]
+> still handle this, either minimally (by just setting OF_POPULATED), or
+> fully (by also clearing OF_POPULATED again in case of probe failure).
+>
+> Note that despite the revert in the clocksource core, several
+> clocksource drivers[2] still clear the OF_POPULATED flag manually, to
+> force probing the same device using both TIMER_OF_DECLARE() and standard
+> platform device probing (the latter may be done in a different driver).
+>
+> [1] See of_clk_init(), of_gpiochip_scan_gpios(), of_irq_init().
+> [2] drivers/clocksource/ingenic-sysost.c
+>     drivers/clocksource/ingenic-timer.c
+>     drivers/clocksource/timer-versatile.c
+> ---
+>  drivers/clocksource/renesas-ostm.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+Reviwed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Applied to hwmon-next.
+Cheers,
+Prabhakar
 
-Please note that I'll push the branch after the commit window closed.
-
-Thanks,
-Guenter
+> diff --git a/drivers/clocksource/renesas-ostm.c b/drivers/clocksource/ren=
+esas-ostm.c
+> index 8da972dc171365bc..37db7e23a4d29135 100644
+> --- a/drivers/clocksource/renesas-ostm.c
+> +++ b/drivers/clocksource/renesas-ostm.c
+> @@ -210,6 +210,7 @@ static int __init ostm_init(struct device_node *np)
+>                 pr_info("%pOF: used for clock events\n", np);
+>         }
+>
+> +       of_node_set_flag(np, OF_POPULATED);
+>         return 0;
+>
+>  err_cleanup:
+> --
+> 2.34.1
+>
+>
 
