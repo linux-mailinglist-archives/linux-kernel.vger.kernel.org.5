@@ -1,47 +1,62 @@
-Return-Path: <linux-kernel+bounces-108485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7109A880B19
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:14:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A2F880B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:14:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37994B22470
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:14:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE3E21C21FC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEC617BDA;
-	Wed, 20 Mar 2024 06:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B356199AD;
+	Wed, 20 Mar 2024 06:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Aa9VgBo5"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="i8lipXK4"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC88179B7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC53182C5;
+	Wed, 20 Mar 2024 06:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710915255; cv=none; b=GYf/ujmQz28sfQbpZ1no5/rgQSqNV3Lfadx+YmVVT73t0BUat7Ff7yoo1mIj4Dg88UH7YV3zLU4g0mvrz8SbhI9A8X5bNZWmKMbcrAFIkJD09OqMbHzhEfUhiP8n3FS4YfA8K2KvVnJjQLDhuz5g5er3VeVQ1Dfk6ZFtY660Gxc=
+	t=1710915277; cv=none; b=dC0J8PFJ3lxRsy0j1HCwr322cUtCPkqZuh/kETADj1/ID+e05hjlkU0Dxsmy1K/+g8tHiYfueAixYy/atw5mVppRwnqeI5/U+hgkaR/eJaZ/7/tJXLnFHACJrVaKsTIlil4UWH5p4DDAsl83PM4M9wcvUZfliUZj5Puf2lLNhNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710915255; c=relaxed/simple;
-	bh=snOyPHld+qgFruG1hDUnAYVoP1xl95J5yKDm39XL5Kg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f5hELZWJWV5x/DKYc9KajAZgKxZ/ZCsRpE+M6yX808+6q7j9dIFc9aWdvQaOo8lIq0F5hegjvCrOLgOx9BOPRXPKzZ5c/REns1hjJaUrmUtDkkdbumFAVMQ9seGAc8h65QWoPOYGu4ONCS4qKn56lgvHFYv0a9PDP2zblpYjkCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Aa9VgBo5; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 16D353F1;
-	Wed, 20 Mar 2024 07:13:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710915224;
-	bh=snOyPHld+qgFruG1hDUnAYVoP1xl95J5yKDm39XL5Kg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Aa9VgBo5kgJXZbZS8oWTc0Rdeu+GwUcp1l/Wy3A6cccUgR4rZBEDRT+0Q8/Hud/SJ
-	 FmfwGh+Tbc4+0IOESvXIle8Qz5uinbqQ/BA4Lsv4x6TbYQuHgw/wguHz0CTQQWVuPo
-	 mZxEXZbX9kr9yaI5Y9hYW3FAJSIIYu25/xR/jiwY=
-Message-ID: <0fdbb6e4-6be8-4a21-8cf3-2a419b4b44ed@ideasonboard.com>
-Date: Wed, 20 Mar 2024 08:14:08 +0200
+	s=arc-20240116; t=1710915277; c=relaxed/simple;
+	bh=sYjgMXmmRIeUswy8yAn2bF1ZX+zugdRaoOqJPs8SWpM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UlSFu99vvv6TDlxpaGZtb5Iyq14hJhT/l9KKpqRTAYIYybe2DuHeJ56gQFlFeHeuYCVKhubFgrxGBrBBYRM/6vJ12ytOm1xbbIGT2xY23556g3k84oKoUptfQYk33O4K77hnOLo1fp8n9JB/yy5H6llRODzksMOd8NBqE0cNgdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=i8lipXK4; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K4Tn5h003074;
+	Wed, 20 Mar 2024 06:14:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Lif/BQbrb6h/PF0d7/WMWEzXs4USXv3wbzbR/YNq5MY=; b=i8
+	lipXK4QmQsjrrcC/1yW0ceum9ADlCnY6tthU5tkJZNsyPNerczg2ADIqxYBT/VUX
+	3A+EwwiCbCNa5zuuC4Nn0XJWoESzwjh2JmdVNE7EQLay2ga95tFVV28Jm+rH0G9V
+	aZN9Paowz+yhAmBFWYK1B5tJOCcTcEOvH4rdzrm7FIfCSMUftBjqSeC5x/Rgv4W0
+	5Igrv/tPYSs++C8WGd1Ib51RSFAmPjZIJf2TpZSkEPVWM/CZJrVlE0bCLcp6j4gH
+	iTVk3fox6NNSEIV20wdRiaG15DgnMtG0NU3OH2woNXc2nQeDa4tZIIfe/+YfMF/t
+	vpBXUm75OXLWm4CZBOoA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyqh609rr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 06:14:31 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42K6EU74018131
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 06:14:30 GMT
+Received: from [10.216.4.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 23:14:26 -0700
+Message-ID: <8b1da227-ad6b-4fec-b9e9-d07b8bcbd813@quicinc.com>
+Date: Wed, 20 Mar 2024 11:44:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,156 +64,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/8] drm: zynqmp_dp: Rearrange zynqmp_dp for better
- padding
+Subject: Re: [RFC PATCH] rpmsg: glink: Add bounds check on tx path
 Content-Language: en-US
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-5-sean.anderson@linux.dev>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240319225122.3048400-5-sean.anderson@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>, <afaerber@suse.com>,
+        <ivan.ivanov@suse.com>
+References: <20240113002505.15503-1-mkoutny@suse.com>
+ <151f5738-791e-42cb-b8fe-e0cfbf9f7dca@quicinc.com>
+ <egp4g4i54le4iizpdfpxi24k563hniwub7iy2dwrk7ul47uhf4@z5scfrisbd46>
+From: Deepak Kumar Singh <quic_deesin@quicinc.com>
+In-Reply-To: <egp4g4i54le4iizpdfpxi24k563hniwub7iy2dwrk7ul47uhf4@z5scfrisbd46>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Ol2m4hLgpHUiR9bNXbXqpc3G4pfj9RU2
+X-Proofpoint-GUID: Ol2m4hLgpHUiR9bNXbXqpc3G4pfj9RU2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_03,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=547 malwarescore=0 spamscore=0 clxscore=1011
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 phishscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403200048
 
-On 20/03/2024 00:51, Sean Anderson wrote:
-> Sort the members of struct zynqmp_dp to reduce padding necessary for
-> alignment.
+
+
+On 1/29/2024 10:03 PM, Michal Koutný wrote:
+> On Mon, Jan 29, 2024 at 04:18:36PM +0530, Deepak Kumar Singh <quic_deesin@quicinc.com> wrote:
+>> There is already a patch posted for similar problem -
+>> https://lore.kernel.org/all/20231201110631.669085-1-quic_deesin@quicinc.com/
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> ---
+> I was not aware, thanks for the pointer.
 > 
-> Changes in v2:
-> - New
+> Do you plan to update your patch to "just" bail-out/zero instead of
+> using slightly random values (as pointed out by Bjorn)?
 > 
->   drivers/gpu/drm/xlnx/zynqmp_dp.c | 28 ++++++++++++++--------------
->   1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 8635b5673386..f1834c8e3c02 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -255,10 +255,10 @@ struct zynqmp_dp_link_config {
->    * @fmt: format identifier string
->    */
->   struct zynqmp_dp_mode {
-> -	u8 bw_code;
-> -	u8 lane_cnt;
-> -	int pclock;
->   	const char *fmt;
-> +	int pclock;
-> +	u8 bw_code;
-> +	u8 lane_cnt;
->   };
->   
->   /**
-> @@ -295,27 +295,27 @@ struct zynqmp_dp_config {
->    * @train_set: set of training data
->    */
->   struct zynqmp_dp {
-> +	struct drm_dp_aux aux;
-> +	struct drm_bridge bridge;
-> +	struct delayed_work hpd_work;
-> +
-> +	struct drm_bridge *next_bridge;
->   	struct device *dev;
->   	struct zynqmp_dpsub *dpsub;
->   	void __iomem *iomem;
->   	struct reset_control *reset;
-> -	int irq;
-> -
-> -	struct drm_bridge bridge;
-> -	struct drm_bridge *next_bridge;
-> -
-> -	struct zynqmp_dp_config config;
-> -	struct drm_dp_aux aux;
->   	struct phy *phy[ZYNQMP_DP_MAX_LANES];
-> -	u8 num_lanes;
-> -	struct delayed_work hpd_work;
-> +
->   	enum drm_connector_status status;
-> +	int irq;
->   	bool enabled;
->   
-> -	u8 dpcd[DP_RECEIVER_CAP_SIZE];
-> -	struct zynqmp_dp_link_config link_config;
->   	struct zynqmp_dp_mode mode;
-> +	struct zynqmp_dp_link_config link_config;
-> +	struct zynqmp_dp_config config;
-> +	u8 dpcd[DP_RECEIVER_CAP_SIZE];
->   	u8 train_set[ZYNQMP_DP_MAX_LANES];
-> +	u8 num_lanes;
->   };
->   
->   static inline struct zynqmp_dp *bridge_to_dp(struct drm_bridge *bridge)
-
-If you change the order of the fields, you should change the order in 
-the kernel doc accordingly.
-
-To be honest, I'm not sure if I like this patch. We have usually one 
-instance of these structs allocated. How many bytes do we save?
-
-I'm fine with getting easy savings by changing the field order in some 
-cases, but I think the "human" side of the order is important too: 
-usually the fields are grouped in some way, and ordered so that the more 
-base or generic ones are first, and fields for some specific feature are 
-later. And fields protected by a lock should be grouped together, with 
-their lock being first/last in that group.
-
-Looking at the zynqmp_dp struct with this patch, I get an urge to start 
-moving things around: dev, dpsub, iomem, etc first, hpd somewhere later. 
-Base config fields like config, num_lanes, irq would be grouped 
-together. Etc.
-
-  Tomi
-
+> Michal
+Hi Michal,
+Yes, i will be fixing those comments and re post patch.
 
