@@ -1,186 +1,233 @@
-Return-Path: <linux-kernel+bounces-108353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3615E880988
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:20:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 739F38809E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98CD21F23491
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28F22286E9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB75F9CE;
-	Wed, 20 Mar 2024 02:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EbyN2Z8n"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F08112E52;
+	Wed, 20 Mar 2024 02:43:17 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DF1E54C
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FE3125AC;
+	Wed, 20 Mar 2024 02:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710901213; cv=none; b=J8pO+N55s1nXsulNHkY4NqkE4SJdyEeRt+4e59rLmCZp9YTcxaQ/sWeC/ueJSLbO7ZudIKNSi91VFYGiN9H44ZsHdyqu9rDFu0zTyL18vJO62BaaPgQpC6glDoYeq6sDQuHGQk1rsKKef/ClCiId6aEVEQ+qIT24eGog5ReVWYU=
+	t=1710902597; cv=none; b=ZnjlPvlx5Yw7E7F9yVCsvOHCmkJLbSyx9lKe9/GALNr1R84WvjE1VLS/UnzElVlwcSz4PJJykoTs38GzyjBiv21FJ34js3Ru7o9YWmqk1q9/Hl6OFAcMy2De+XxR4XJ1U5OWcHhN9PZwtka3B3N/Z5L1gsnv9Qs2Wq/Nj0sRbac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710901213; c=relaxed/simple;
-	bh=T0GWfvNZD4CoU9h2YcX9DL4cW7mete9K+BslYn1DsKE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=EiemHdDcDBkWDqTJXRFdfDi6qeGn3/GdeUCsbqht1zLcsMnKKJDMXe4s9MR6f4EvilnvEAiRPy+SKwCIWmv+vEadNAD/keZiLed9787zJP8J4gRbek/6I3IilrstoGHOWk7f6O1BCV2lvly3IIXuhzhMLjoI/f8NmdArJMNmwxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EbyN2Z8n; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710901211; x=1742437211;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=T0GWfvNZD4CoU9h2YcX9DL4cW7mete9K+BslYn1DsKE=;
-  b=EbyN2Z8n9RfbyTYRwVk1UvAeBAWwe68fpwAGr6Sxx/s/Sv9XQ+wtKgkh
-   C5f56VRFFSdxK0P9YQou9dqi4WV0HpobSCXv2zTLhV1XNnrQzUjWquWhA
-   zxWVOUKVVE2TFYBpAeEKePes4vMahVvgQJs7RZy/VFlnw4KzNYN0cWjne
-   kyB6iw/dwiNvR6ljakB4ihG+2Aw+GqHGClNkJu461fGZ66tpKWLN46Qn7
-   qIGHRXWHMRjkym9n2vZ/vGVLQTAv3gQrgMusjtGVV7+XVi9ntn98eivIJ
-   WcbBLou9lg3vXMK7/RD3NhSfx8F2evYRUqWcvISL49B9+yjW2ddh8FcSi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5931284"
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="5931284"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 19:20:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="13909615"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 19:20:04 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Barry Song <21cnbao@gmail.com>,  Matthew Wilcox <willy@infradead.org>,
-  <akpm@linux-foundation.org>,  <linux-mm@kvack.org>,
-  <chengming.zhou@linux.dev>,  <chrisl@kernel.org>,  <david@redhat.com>,
-  <hannes@cmpxchg.org>,  <kasong@tencent.com>,
-  <linux-arm-kernel@lists.infradead.org>,  <linux-kernel@vger.kernel.org>,
-  <mhocko@suse.com>,  <nphamcs@gmail.com>,  <shy828301@gmail.com>,
-  <steven.price@arm.com>,  <surenb@google.com>,
-  <wangkefeng.wang@huawei.com>,  <xiang@kernel.org>,
-  <yosryahmed@google.com>,  <yuzhao@google.com>,  "Chuanhua Han"
- <hanchuanhua@oppo.com>,  Barry Song <v-songbaohua@oppo.com>
-Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
-In-Reply-To: <f918354d-12ee-4349-9356-fc02d2457a26@arm.com> (Ryan Roberts's
-	message of "Tue, 19 Mar 2024 12:19:27 +0000")
-References: <20240304081348.197341-1-21cnbao@gmail.com>
-	<20240304081348.197341-6-21cnbao@gmail.com>
-	<87wmq3yji6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4x+t_X4Tn15=QPbH58e1S1FwOoM3t37T+cUE8-iKoENLw@mail.gmail.com>
-	<87sf0rx3d6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
-	<87jzm0wblq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4wTU3cmzXMCu+yQRMnEiCEUA8rO5=QQUopgG0RMnHYd5g@mail.gmail.com>
-	<9ec62266-26f1-46b6-8bb7-9917d04ed04e@arm.com>
-	<87jzlyvar3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<f918354d-12ee-4349-9356-fc02d2457a26@arm.com>
-Date: Wed, 20 Mar 2024 10:18:10 +0800
-Message-ID: <87zfutsl25.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710902597; c=relaxed/simple;
+	bh=o5ByIZ7XZxU6ChSGkQ6PlpxjmusyaP0JdZrXPAErMlU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JNof83rtlrxg8dRKwQH36+ZYYZeG/IYD6YNYrVtJthGOTznq6ZvajCIrw+6BpuLiUkZKYbn6ivX4uhMQorK307/c8l0AqVrBdmFwfvfRV3E14eXMwBAhxxATAvqsLN09XAfxBkJJ7Vw/W5UNbV0AYosIlBqnWithfoqrgJzN5PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TztDR6fxmz1GCKF;
+	Wed, 20 Mar 2024 10:42:47 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id D210B140155;
+	Wed, 20 Mar 2024 10:43:10 +0800 (CST)
+Received: from huawei.com (10.67.189.167) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
+ 2024 10:43:10 +0800
+From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+To: <linux@armlinux.org.uk>, <arnd@arndb.de>, <keescook@chromium.org>,
+	<rmk+kernel@armlinux.org.uk>, <haibo.li@mediatek.com>,
+	<angelogioacchino.delregno@collabora.com>, <amergnat@baylibre.com>,
+	<xiaojiangfeng@huawei.com>
+CC: <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+	<douzhaolei@huawei.com>, <gustavoars@kernel.org>, <jpoimboe@kernel.org>,
+	<kepler.chenxin@huawei.com>, <kirill.shutemov@linux.intel.com>,
+	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+	<nixiaoming@huawei.com>, <peterz@infradead.org>, <wangbing6@huawei.com>,
+	<wangfangpeng1@huawei.com>, <jannh@google.com>, <David.Laight@ACULAB.COM>
+Subject: [PATCH] ARM: unwind: improve unwinders for noreturn case
+Date: Wed, 20 Mar 2024 10:19:29 +0800
+Message-ID: <1710901169-22763-1-git-send-email-xiaojiangfeng@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
+In-Reply-To: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+This is an off-by-one bug which is common in unwinders,
+due to the fact that the address on the stack points
+to the return address rather than the call address.
 
-> On 19/03/2024 09:20, Huang, Ying wrote:
->> Ryan Roberts <ryan.roberts@arm.com> writes:
->> 
->>>>>> I agree phones are not the only platform. But Rome wasn't built in a
->>>>>> day. I can only get
->>>>>> started on a hardware which I can easily reach and have enough hardware/test
->>>>>> resources on it. So we may take the first step which can be applied on
->>>>>> a real product
->>>>>> and improve its performance, and step by step, we broaden it and make it
->>>>>> widely useful to various areas  in which I can't reach :-)
->>>>>
->>>>> We must guarantee the normal swap path runs correctly and has no
->>>>> performance regression when developing SWP_SYNCHRONOUS_IO optimization.
->>>>> So we have to put some effort on the normal path test anyway.
->>>>>
->>>>>> so probably we can have a sysfs "enable" entry with default "n" or
->>>>>> have a maximum
->>>>>> swap-in order as Ryan's suggestion [1] at the beginning,
->>>>>>
->>>>>> "
->>>>>> So in the common case, swap-in will pull in the same size of folio as was
->>>>>> swapped-out. Is that definitely the right policy for all folio sizes? Certainly
->>>>>> it makes sense for "small" large folios (e.g. up to 64K IMHO). But I'm not sure
->>>>>> it makes sense for 2M THP; As the size increases the chances of actually needing
->>>>>> all of the folio reduces so chances are we are wasting IO. There are similar
->>>>>> arguments for CoW, where we currently copy 1 page per fault - it probably makes
->>>>>> sense to copy the whole folio up to a certain size.
->>>>>> "
->>>
->>> I thought about this a bit more. No clear conclusions, but hoped this might help
->>> the discussion around policy:
->>>
->>> The decision about the size of the THP is made at first fault, with some help
->>> from user space and in future we might make decisions to split based on
->>> munmap/mremap/etc hints. In an ideal world, the fact that we have had to swap
->>> the THP out at some point in its lifetime should not impact on its size. It's
->>> just being moved around in the system and the reason for our original decision
->>> should still hold.
->>>
->>> So from that PoV, it would be good to swap-in to the same size that was
->>> swapped-out.
->> 
->> Sorry, I don't agree with this.  It's better to swap-in and swap-out in
->> smallest size if the page is only accessed seldom to avoid to waste
->> memory.
->
-> If we want to optimize only for memory consumption, I'm sure there are many
-> things we would do differently. We need to find a balance between memory and
-> performance. The benefits of folios are well documented and the kernel is
-> heading in the direction of managing memory in variable-sized blocks. So I don't
-> think it's as simple as saying we should always swap-in the smallest possible
-> amount of memory.
+So, for example, when the last instruction of a function
+is a function call (e.g., to a noreturn function), it can
+cause the unwinder to incorrectly try to unwind from
+the function after the callee.
 
-It's conditional, that is,
+foo:
+..
+	bl	bar
+.. end of function and thus next function ...
 
-"if the page is only accessed seldom"
+which results in LR pointing into the next function.
 
-Then, the page swapped-in will be swapped-out soon and adjacent pages in
-the same large folio will not be accessed during this period.
+Fixed this by subtracting 1 from frmae->pc in the call frame
+(but not exception frames) like ORC on x86 does.
 
-So, I suggest to create an algorithm to decide swap-in order based on
-swap-readahead information automatically.  It can detect the situation
-above via reduced swap readahead window size.  And, if the page is
-accessed for quite long time, and the adjacent pages in the same large
-folio are accessed too, swap-readahead window will increase and large
-swap-in order will be used.
+Refer to the unwind_next_frame function in the unwind_orc.c
 
-> You also said we should swap *out* in smallest size possible. Have I
-> misunderstood you? I thought the case for swapping-out a whole folio without
-> splitting was well established and non-controversial?
+Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Link: https://lkml.kernel.org/lkml/20240305175846.qnyiru7uaa7itqba@treble/
+Signed-off-by: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+---
+ arch/arm/include/asm/stacktrace.h |  4 ----
+ arch/arm/kernel/stacktrace.c      |  2 --
+ arch/arm/kernel/traps.c           |  4 ++--
+ arch/arm/kernel/unwind.c          | 18 +++++++++++++++---
+ 4 files changed, 17 insertions(+), 11 deletions(-)
 
-That is conditional too.
+diff --git a/arch/arm/include/asm/stacktrace.h b/arch/arm/include/asm/stacktrace.h
+index 360f0d2..07e4c16 100644
+--- a/arch/arm/include/asm/stacktrace.h
++++ b/arch/arm/include/asm/stacktrace.h
+@@ -21,9 +21,7 @@ struct stackframe {
+ 	struct llist_node *kr_cur;
+ 	struct task_struct *tsk;
+ #endif
+-#ifdef CONFIG_UNWINDER_FRAME_POINTER
+ 	bool ex_frame;
+-#endif
+ };
+ 
+ static __always_inline
+@@ -37,9 +35,7 @@ void arm_get_current_stackframe(struct pt_regs *regs, struct stackframe *frame)
+ 		frame->kr_cur = NULL;
+ 		frame->tsk = current;
+ #endif
+-#ifdef CONFIG_UNWINDER_FRAME_POINTER
+ 		frame->ex_frame = in_entry_text(frame->pc);
+-#endif
+ }
+ 
+ extern int unwind_frame(struct stackframe *frame);
+diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+index 620aa82..1abd4f9 100644
+--- a/arch/arm/kernel/stacktrace.c
++++ b/arch/arm/kernel/stacktrace.c
+@@ -154,9 +154,7 @@ static void start_stack_trace(struct stackframe *frame, struct task_struct *task
+ 	frame->kr_cur = NULL;
+ 	frame->tsk = task;
+ #endif
+-#ifdef CONFIG_UNWINDER_FRAME_POINTER
+ 	frame->ex_frame = in_entry_text(frame->pc);
+-#endif
+ }
+ 
+ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+index 3bad79d..b64e442 100644
+--- a/arch/arm/kernel/traps.c
++++ b/arch/arm/kernel/traps.c
+@@ -84,10 +84,10 @@ void dump_backtrace_entry(unsigned long where, unsigned long from,
+ 	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
+ 		loglvl, where, from);
+ #elif defined CONFIG_BACKTRACE_VERBOSE
+-	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
++	pr_warn("%s[<%08lx>] (%ps) from [<%08lx>] (%pB)\n",
+ 		loglvl, where, (void *)where, from, (void *)from);
+ #else
+-	printk("%s %ps from %pS\n", loglvl, (void *)where, (void *)from);
++	pr_warn("%s %ps from %pB\n", loglvl, (void *)where, (void *)from);
+ #endif
+ 
+ 	if (in_entry_text(from) && end <= ALIGN(frame, THREAD_SIZE))
+diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+index 9d21921..f2baf92 100644
+--- a/arch/arm/kernel/unwind.c
++++ b/arch/arm/kernel/unwind.c
+@@ -30,6 +30,7 @@
+ #include <linux/list.h>
+ #include <linux/module.h>
+ 
++#include <asm/sections.h>
+ #include <asm/stacktrace.h>
+ #include <asm/traps.h>
+ #include <asm/unwind.h>
+@@ -416,8 +417,14 @@ int unwind_frame(struct stackframe *frame)
+ 
+ 	pr_debug("%s(pc = %08lx lr = %08lx sp = %08lx)\n", __func__,
+ 		 frame->pc, frame->lr, frame->sp);
+-
+-	idx = unwind_find_idx(frame->pc);
++	/*
++	 * For a call frame (as opposed to a exception frame), when the last
++	 * instruction of a function is a function call (e.g., to a noreturn
++	 * function), it can cause the unwinder incorrectly try to unwind
++	 * from the function after the callee, fixed this by subtracting 1
++	 * from frame->pc in the call frame like ORC on x86 does.
++	 */
++	idx = unwind_find_idx(frame->ex_frame ? frame->pc : frame->pc - 1);
+ 	if (!idx) {
+ 		if (frame->pc && kernel_text_address(frame->pc)) {
+ 			if (in_module_plt(frame->pc) && frame->pc != frame->lr) {
+@@ -427,6 +434,7 @@ int unwind_frame(struct stackframe *frame)
+ 				 * the state of the stack or the register file
+ 				 */
+ 				frame->pc = frame->lr;
++				frame->ex_frame = in_entry_text(frame->pc);
+ 				return URC_OK;
+ 			}
+ 			pr_warn("unwind: Index not found %08lx\n", frame->pc);
+@@ -454,6 +462,7 @@ int unwind_frame(struct stackframe *frame)
+ 		if (frame->pc == frame->lr)
+ 			return -URC_FAILURE;
+ 		frame->pc = frame->lr;
++		frame->ex_frame = in_entry_text(frame->pc);
+ 		return URC_OK;
+ 	} else if ((idx->insn & 0x80000000) == 0)
+ 		/* prel31 to the unwind table */
+@@ -515,6 +524,7 @@ int unwind_frame(struct stackframe *frame)
+ 	frame->lr = ctrl.vrs[LR];
+ 	frame->pc = ctrl.vrs[PC];
+ 	frame->lr_addr = ctrl.lr_addr;
++	frame->ex_frame = in_entry_text(frame->pc);
+ 
+ 	return URC_OK;
+ }
+@@ -544,6 +554,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+ 		 */
+ here:
+ 		frame.pc = (unsigned long)&&here;
++		frame.ex_frame = false;
+ 	} else {
+ 		/* task blocked in __switch_to */
+ 		frame.fp = thread_saved_fp(tsk);
+@@ -554,11 +565,12 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+ 		 */
+ 		frame.lr = 0;
+ 		frame.pc = thread_saved_pc(tsk);
++		frame.ex_frame = false;
+ 	}
+ 
+ 	while (1) {
+ 		int urc;
+-		unsigned long where = frame.pc;
++		unsigned long where = frame.ex_frame ? frame.pc : frame.pc - 1;
+ 
+ 		urc = unwind_frame(&frame);
+ 		if (urc < 0)
+-- 
+1.8.5.6
 
->> 
->>> But we only kind-of keep that information around, via the swap
->>> entry contiguity and alignment. With that scheme it is possible that multiple
->>> virtually adjacent but not physically contiguous folios get swapped-out to
->>> adjacent swap slot ranges and then they would be swapped-in to a single, larger
->>> folio. This is not ideal, and I think it would be valuable to try to maintain
->>> the original folio size information with the swap slot. One way to do this would
->>> be to store the original order for which the cluster was allocated in the
->>> cluster. Then we at least know that a given swap slot is either for a folio of
->>> that order or an order-0 folio (due to cluster exhaustion/scanning). Can we
->>> steal a bit from swap_map to determine which case it is? Or are there better
->>> approaches?
->> 
->> [snip]
-
---
-Best Regards,
-Huang, Ying
 
