@@ -1,194 +1,219 @@
-Return-Path: <linux-kernel+bounces-108520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A095880BA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2264880BA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:04:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF6E1F237EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:02:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71C351F23AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879B91EB44;
-	Wed, 20 Mar 2024 07:02:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8861EA90;
+	Wed, 20 Mar 2024 07:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KUbLvqrM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JRDIUZ8c"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8E61DA3A;
-	Wed, 20 Mar 2024 07:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710918126; cv=fail; b=OMUDocUF0U53b4gM+S6hgFuZrG0PYlipGAqDnDFQF4eA5yYN/l9K+lsiIVIzzru8W45G5kk13jTos2flp1zl682vgAUrEHu6jCA6KYMpRixPdIAW+WU0LZqJmMgIjbFdv8IEbQPl739KMknH7mJEEKbQ5MQKnwiDkmyr1d6k/FY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710918126; c=relaxed/simple;
-	bh=OghuAn3dNcfWxkSWO6sYrF+3HIB+uysNPFNcN33ZTYY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=PN3u/0XjPz//4Pc9Z3TU59i23AZu2I7PI6iITH3ArvAWQnGCyks9RA2ZrhA3mIOtiV2yfYSjXT899sa/Nc1gBYiwF8DTw6KPDKSRufJpDT/mDE/Z0pjY9G8K0ghSYcu+Z5AhSZDWtMHhJF8Hnqn5eyff5KRwNgmMq8DZLXSVsl0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KUbLvqrM; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710918124; x=1742454124;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=OghuAn3dNcfWxkSWO6sYrF+3HIB+uysNPFNcN33ZTYY=;
-  b=KUbLvqrMkVuo6g9yAZgSNP0XaKJ/zFpq09syv9xAW8TE08nmeuuhQpa3
-   2jO1GQx/npJAUQwAuHHfVdp+x+Scib4ZQWn8z71PJF3zJZNbSKq9Q2YTK
-   W9dKphWUQOSexlGBgKUvDFW1JT4fohjOTA+IrYb6zKKOmFaJpkz5qaSWI
-   Fq7WMrn8FmOhNUEjG/nuyV4b3dbCkJzHa76q78TiKMtTsFduMbZ3S2y4P
-   MJ5x+awhJnImOijfBuVpiuAcproMxPdKahX1lN9MVlaXxTCddMwBnzSj8
-   qQAj4iQ4bVQ7HlVG6tDVKSvGyh5bpX+p/KvYJ+dWYBddSGMG3qR+4hWl0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="16563749"
-X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
-   d="scan'208";a="16563749"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:02:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
-   d="scan'208";a="18718576"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Mar 2024 00:02:02 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 20 Mar 2024 00:02:01 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 20 Mar 2024 00:02:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HWJXNDmzHemlN8LF5MjoCtK9k/sw5J2NIFgP74G3RwS1ber2b1nl2cHLhR5MWce3P0VnXpqZCOJDMUbpFBp3ea7WeZjaM9oYwMFjb+rVewv3JXbYfXYr1KvpVSy41AjQCriz550ARnAS/c9/+KHp3I+a2kQZRPCD7N6uKv2qTn72hcc7FhSpWIPANuBbzKQ5zLf44SZwlk1Q0MCUyZkxLh3qCwbn50C4IHK8moUolVsVnL4FuvTSZouns7RRA7spp5b36zhKDJkgLcAffzPl1eFjBtZku222Y/+PR0u4qPZdSu9k3nb3rNmigXytec80sciJblZrDX/gkuZGjDDF9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KAbwlxzWwVUdBBmb0xiX+VD1m/cI1iBYKYo5q1oVm7o=;
- b=HdxD6dtpmtQXgG4PRzTwshJhQpKoKVXX39lifoxHd+zdKYc0+H3t2BzN7bvqKSZ086kvuiPAl1T8uvZrH4OWijbQl7axtLetlreTRSFkCcPRqaqKufgMC9BEF6Oh3rnpHJNznFAfhQmRlWnYpPPqKNzyB3qEJ9TZO3LBSI8EW6BIR8AWnlH6on2M38PfNW691PZvTeFPfKe8A1QRL8uvecP/7I4/c7S+YqLzg5tFJr2Sk91hYuBwJjPTtM1dCOOttd4C62bb4t1mP/1VTiJuQtQp+4v2FgqeYq3fMmy6ggZDqmDbYhNu3Jd9qc73c4ed27j0xK5r/smoWMuzKE7zJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by CH3PR11MB7795.namprd11.prod.outlook.com (2603:10b6:610:120::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Wed, 20 Mar
- 2024 07:01:59 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e%6]) with mapi id 15.20.7409.010; Wed, 20 Mar 2024
- 07:01:58 +0000
-Date: Wed, 20 Mar 2024 15:01:48 +0800
-From: Chao Gao <chao.gao@intel.com>
-To: <isaku.yamahata@intel.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
-	<sagis@google.com>, Kai Huang <kai.huang@intel.com>, <chen.bo@intel.com>,
-	<hang.yuan@intel.com>, <tina.zhang@intel.com>
-Subject: Re: [PATCH v19 040/130] KVM: TDX: Make pmu_intel.c ignore guest TD
- case
-Message-ID: <ZfqJ3LkYrwR/qpsX@chao-email>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <2eb2e7205d23ec858e6d800fee7da2306216e8f0.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25211DFEA
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710918277; cv=none; b=MDfOv/yxjeBXbKpQqUOxsqEX8Pvvj4j8C2HwRXvwE/jRzHILxqE4yGqf+WeI5jfubiEQxmgj6LTjTucspQMNkRceRY00YqBZj9NMD6oDpv8Jvj17I1T0g26nst0chnZDBbJKzcXpIrszSkQii3IIYXmEhK9KConnXK5C9H4TP9g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710918277; c=relaxed/simple;
+	bh=I3IV91ndQX+iEcDMwkJBEu1Gi7YjSUg57qdCNpilP+4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=k8C+I21YOKNLI5hXT7wUrNH6DWgUBt4paFK58NLjIT9SZOzElZZpXHzbbZBx6qlHOxeBcATe0uSp3zy8nPLSBkDV5nIOAgfpjmuNDztw8A0UK5dvmWbWZVYflJEyfVFTk+jFgL+I9JuJEcCyEKlP5uyNQ1DfhWO/OSwYIGwkR2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JRDIUZ8c; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42K6HVEX004924;
+	Wed, 20 Mar 2024 07:04:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=XpxGHAgCPpjGEO+oF502GL9pyIPi3QKyPPX1JuNn9UY=;
+ b=JRDIUZ8cVBcJo9JRYVmOSVuR4VSJRDyoaS1wvGxi6qYfsCl2vamtwliEhx1j6MWd5E1y
+ l7n0skM2nTWeCy0OVHryRaac7ygikV5BhAXEv8dS+/tS5WK59dcqlybBU+NJHAcTV/L0
+ t9JgSMFQXde4KnA7+ML1lmtxNFbgaoHWqBW8a4Rt456mwvJasDqplmOfpHWjRGEfxxkX
+ em/t4AMMUp/kFAE/5gMSvcKRp5BG0u7vWmdRLWBzXdrdiZtu3u25mad3aP2RPQkjq5KD
+ H4OD6ouzPimHOPtebvqjLfaUnyBlPHxaAg/fGmCfpb4NqT5AtlG5l+ELmpFQFV1UhfD4 WA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wytd4823w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 07:04:20 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42K74KHj011315;
+	Wed, 20 Mar 2024 07:04:20 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wytd4823r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 07:04:20 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42K6nVC4010073;
+	Wed, 20 Mar 2024 07:04:18 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wxvav1r9m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 07:04:18 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42K74EJo16056678
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 20 Mar 2024 07:04:16 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7B4752004B;
+	Wed, 20 Mar 2024 07:04:14 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3F01F20043;
+	Wed, 20 Mar 2024 07:04:14 +0000 (GMT)
+Received: from DESKTOP-2CCOB1S. (unknown [9.171.191.120])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 20 Mar 2024 07:04:14 +0000 (GMT)
+Date: Wed, 20 Mar 2024 08:04:12 +0100
+From: Tobias Huschle <huschle@linux.ibm.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Luis Machado <luis.machado@arm.com>, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, nd <nd@arm.com>
+Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
+Message-ID: <ZfqKbLm4rWXmfPN4@DESKTOP-2CCOB1S.>
+References: <20240228161018.14253-1-huschle@linux.ibm.com>
+ <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
+ <ZfL/hROYxQudcTuX@DESKTOP-2CCOB1S.>
+ <66c4286e-deaf-44a0-be62-0928529ae73f@arm.com>
+ <4b25ab45b762e64b9df09d4d12d8289f@linux.ibm.com>
+ <CAKfTPtDyrsnq-CSFo+upzdOJpuH=JkRzSALad-OL29OvqkK2dg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2eb2e7205d23ec858e6d800fee7da2306216e8f0.1708933498.git.isaku.yamahata@intel.com>
-X-ClientProxiedBy: SI2PR02CA0009.apcprd02.prod.outlook.com
- (2603:1096:4:194::11) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+In-Reply-To: <CAKfTPtDyrsnq-CSFo+upzdOJpuH=JkRzSALad-OL29OvqkK2dg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DZEUY855tEq6hMQlhysb54UCpvyPwX0F
+X-Proofpoint-ORIG-GUID: sfUucA_rWYsBLqcUgVcZL8_D2w_719EB
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|CH3PR11MB7795:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e8e89f5-94e7-495e-8c2c-08dc48aba2ac
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Zzp71og6bIyrZONAjWytE0HSOGWkZRPr/BYcl5T5VTpIW9SRGmRurxr/ttTRBxBeKynGrL1Io/a32pTL+HAQjGiaaKu/qVIGbVQdw/j3RJU8f/5hhrAj7F/HpegRa/8S2RQqJ4gKOkyAF3P9rT7L6zAuaf5HEv9L/21dBKhpe2B5N++7AHuzzubsWOsPHV5Y7U3ZL51Wk3n8Wrsz8P1TEyeEoF0HiwsX92wqgD/vfUA7AWQvcARBS0sL8uSH8uPJ+BhvIfDEapa7bLCIQsnximJbHGfxYpQB3w48vVlLyLVVVMhP/HEbZ5T3aF1r0b4Ju/xLHRDorebb1jjhFMZatdWUWs3++CLR+fTFt8gSGGKtQ2HL9XAbisACdBSwDPU2I9V0pX1SDV/OMa03urUr2/O8HSccid8uqOPfOOfYr9CiDTYEkvtoZUh+pJmNhkL7upqLFAnoR9p3GCrJO79xdIq+TkkGyp+og+2+kHgtbwL05d7M0DH0hpONmxnYynoC7f9RBXS0KkLmDLVGuGAubYqEHKhewdC4XMinemgASu5PQUm9CDGPAkZEps3mrMZA+tf/jKJ6TjrX+Vp87Uhy5dAqNVkBtMDIDfDUoY9gcSIZIf8tH8+nIPCiLTuJ3PnjQ/yaXAsQOoSitDvswL7Qt2CFwpCXw0J4jvuqJgqI+aU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FyrfRcrngTd2UaVEbFtJY8DwqtoVNGyhi8QsQ5PR0VIDFuLreu3rVpRglRD3?=
- =?us-ascii?Q?QOItqNnEGgsZTD9GWChus0PBkFhTG9nlZtCPQkUmnA+ryKuXJPnlsBWpAJic?=
- =?us-ascii?Q?2RdPXmOGOm+dO/ELS85PcGUw1uV3/df31BfPKOV1eyKiSWE7bHB2Jr7ARAQf?=
- =?us-ascii?Q?o//rVOKv7wdeYRr76Bs67YBxMbRNxTQArjzu1tpaGDs2u+ujv7hzyylKe39N?=
- =?us-ascii?Q?1NhyJfSVWE6cIL6aFPzUAXyppQLZuug+CxJk12yxG69Fh2dlS/3dxucWorfB?=
- =?us-ascii?Q?ILJ25jkfVstqFc+792a6BT4LAJY/GK1bAgHraRjE5vw/s2aWydIwJsmpWcp2?=
- =?us-ascii?Q?0bzrV/MHV9XyOYgRu1/nr8tvU7WCitFp5838RQ3fBaO+M+ODCrKd08k7jgpg?=
- =?us-ascii?Q?ITrmSsmqVze1/9kaw+LVaJxtxkMZnMZi4ZFCfwknDHDum5jkMcGzqKXzLn7w?=
- =?us-ascii?Q?pZ0Z5ciNe+weujSdJPG7oIm2WAf3gH9GvoTPrL0gQgTJ4o3E8ipVfYgKI8qq?=
- =?us-ascii?Q?tJylBP6G+4jFwoeu8OlfTnLyoT8e75waERgT5XKxhMOHWUgRFsIoc0cJkLhz?=
- =?us-ascii?Q?vyIR59kUwTPJZRieVYrrZFmtjmFf+joUHUdRdln5sTLadeFk2GAb25N1Y316?=
- =?us-ascii?Q?2sK78/u7N3CoZxaYgVrr8Dz6IyNsW92PQqtPb/cC0rzhihD93j+TsmEH8MVN?=
- =?us-ascii?Q?TtQUZIvio3BGhNgZpzcA9TcnUJra9yVYTzGD4rv9qqYH3SZDlKCPoUWYPSm9?=
- =?us-ascii?Q?2qmPmv/2pnjg/d4oz+1DPGCK24JVT9m+7/woTMi4rHcP1v3cFlT6tajZOgeD?=
- =?us-ascii?Q?ZtuI4KC92bT/qU/n6JzkRrTt51K7jUvrkInrsbon80l0lxvjMqg0DB5AiDHT?=
- =?us-ascii?Q?cbteBREdARG47Spi3PdDzVWW9qpip/RDMnn8fbOWNu4s+vxcWmrfnKobb3tq?=
- =?us-ascii?Q?qSQZ3Jr7glt8BtGZBtSHK3LPDHxO9x6C2O5V4+wGNlvyYtYVst4rmp1jfSiZ?=
- =?us-ascii?Q?7X1ICLSHZW0mUHtmwMl426Nawno36Cf2SJg14GgHa9rj930RSwq0810ejZny?=
- =?us-ascii?Q?djjcoIxRcOOg5ZgZocgnwrTJVJizL3xdfHIbVhYlFaeg+uBkahUzdIIG7ZMe?=
- =?us-ascii?Q?cxwcHoLOhIYJ9LnOA3r8qMRfc5LEVDjRoS1MCtxK1h/sN6ge59ndd2GY5XK9?=
- =?us-ascii?Q?NSgFyL/EWqMdZObperDlDbL3LYtNZJX6HY3+skNHuIdTuBRWJqcyn3RbffCf?=
- =?us-ascii?Q?jSqvAgWjIX/wF+3ikz3ODTrqbGAHq0d752y3MoKlWgbXk1dpeCcANvry94D5?=
- =?us-ascii?Q?0AP5JZaRJ+VYAV8j3DGwIEaCnoOwvcKsZsq7ACILj/qHkzTEz96b77+yaq/K?=
- =?us-ascii?Q?+MIzmQ3KLmVUMKvimZ9+/kgNxP/b7QDZqR9Tm37KHZNiFCh7qbi8GUrEIGIE?=
- =?us-ascii?Q?tub6dU7Z07j+kKwdA6ox8ZtKW90GBHkIYxyHmMrdj59QxWXM8t1mXt0VTjEX?=
- =?us-ascii?Q?uf5wGtr7ARFISEMD6UusJLq51ncvnVBr0tfAK+2+BDOB+7uCYCiAR2FgUVcq?=
- =?us-ascii?Q?iQ5KvH+C20xMbIsY+hoh8t4mQWlTbiwRRRArIMAV?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e8e89f5-94e7-495e-8c2c-08dc48aba2ac
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 07:01:58.7043
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v6vQgUZ+pYy1cKmCrEmfnIC21RocAXR41si1uCc4Iw3lGq8uVkXN9QLCouaWqqmjOvSrzh/Dc7HxTt+YBGI/zQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7795
-X-OriginatorOrg: intel.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_04,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ mlxscore=0 suspectscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403200055
 
-On Mon, Feb 26, 2024 at 12:25:42AM -0800, isaku.yamahata@intel.com wrote:
->From: Isaku Yamahata <isaku.yamahata@intel.com>
->
->Because TDX KVM doesn't support PMU yet (it's future work of TDX KVM
->support as another patch series) and pmu_intel.c touches vmx specific
->structure in vcpu initialization, as workaround add dummy structure to
->struct vcpu_tdx and pmu_intel.c can ignore TDX case.
+On Tue, Mar 19, 2024 at 02:41:14PM +0100, Vincent Guittot wrote:
+> On Tue, 19 Mar 2024 at 10:08, Tobias Huschle <huschle@linux.ibm.com> wrote:
+> >
+> > On 2024-03-18 15:45, Luis Machado wrote:
+> > > On 3/14/24 13:45, Tobias Huschle wrote:
+> > >> On Fri, Mar 08, 2024 at 03:11:38PM +0000, Luis Machado wrote:
+> > >>> On 2/28/24 16:10, Tobias Huschle wrote:
+> > >>>>
+> > >>>> Questions:
+> > >>>> 1. The kworker getting its negative lag occurs in the following
+> > >>>> scenario
+> > >>>>    - kworker and a cgroup are supposed to execute on the same CPU
+> > >>>>    - one task within the cgroup is executing and wakes up the
+> > >>>> kworker
+> > >>>>    - kworker with 0 lag, gets picked immediately and finishes its
+> > >>>>      execution within ~5000ns
+> > >>>>    - on dequeue, kworker gets assigned a negative lag
+> > >>>>    Is this expected behavior? With this short execution time, I
+> > >>>> would
+> > >>>>    expect the kworker to be fine.
+> > >>>
+> > >>> That strikes me as a bit odd as well. Have you been able to determine
+> > >>> how a negative lag
+> > >>> is assigned to the kworker after such a short runtime?
+> > >>>
+> > >>
+> > >> I did some more trace reading though and found something.
+> > >>
+> > >> What I observed if everything runs regularly:
+> > >> - vhost and kworker run alternating on the same CPU
+> > >> - if the kworker is done, it leaves the runqueue
+> > >> - vhost wakes up the kworker if it needs it
+> > >> --> this means:
+> > >>   - vhost starts alone on an otherwise empty runqueue
+> > >>   - it seems like it never gets dequeued
+> > >>     (unless another unrelated task joins or migration hits)
+> > >>   - if vhost wakes up the kworker, the kworker gets selected
+> > >>   - vhost runtime > kworker runtime
+> > >>     --> kworker gets positive lag and gets selected immediately next
+> > >> time
+> > >>
+> > >> What happens if it does go wrong:
+> > >> From what I gather, there seem to be occasions where the vhost either
+> > >> executes suprisingly quick, or the kworker surprinsingly slow. If
+> > >> these
+> > >> outliers reach critical values, it can happen, that
+> > >>    vhost runtime < kworker runtime
+> > >> which now causes the kworker to get the negative lag.
+> > >>
+> > >> In this case it seems like, that the vhost is very fast in waking up
+> > >> the kworker. And coincidentally, the kworker takes, more time than
+> > >> usual
+> > >> to finish. We speak of 4-digit to low 5-digit nanoseconds.
+> > >>
+> > >> So, for these outliers, the scheduler extrapolates that the kworker
+> > >> out-consumes the vhost and should be slowed down, although in the
+> > >> majority
+> > >> of other cases this does not happen.
+> > >
+> > > Thanks for providing the above details Tobias. It does seem like EEVDF
+> > > is strict
+> > > about the eligibility checks and making tasks wait when their lags are
+> > > negative, even
+> > > if just a little bit as in the case of the kworker.
+> > >
+> > > There was a patch to disable the eligibility checks
+> > > (https://lore.kernel.org/lkml/20231013030213.2472697-1-youssefesmat@chromium.org/),
+> > > which would make EEVDF more like EVDF, though the deadline comparison
+> > > would
+> > > probably still favor the vhost task instead of the kworker with the
+> > > negative lag.
+> > >
+> > > I'm not sure if you tried it, but I thought I'd mention it.
+> >
+> > Haven't seen that one yet. Unfortunately, it does not help to ignore the
+> > eligibility.
+> >
+> > I'm inclined to rather propose propose a documentation change, which
+> > describes that tasks should not rely on woken up tasks being scheduled
+> > immediately.
+> 
+> Where do you see such an assumption ? Even before eevdf, there were
+> nothing that ensures such behavior. When using CFS (legacy or eevdf)
+> tasks, you can't know if the newly wakeup task will run 1st or not
+> 
 
-Can we instead factor pmu_intel.c to avoid corrupting memory? how hard would it
-be?
+There was no guarantee of course. place_entity was reducing the vruntime of 
+woken up tasks though, giving it a slight boost, right?. For the scenario 
+that I observed, that boost was enough to make sure, that the woken up tasks 
+gets scheduled consistently. This might still not be true for all scenarios, 
+but in general EEVDF seems to be stricter with woken up tasks.
 
->+bool intel_pmu_lbr_is_enabled(struct kvm_vcpu *vcpu)
->+{
->+	struct x86_pmu_lbr *lbr = vcpu_to_lbr_records(vcpu);
->+
->+	if (is_td_vcpu(vcpu))
->+		return false;
->+
->+	return lbr->nr && (vcpu_get_perf_capabilities(vcpu) & PMU_CAP_LBR_FMT);
+Dismissing the lag on wakeup also does obviously not guarantee getting 
+scheduled, as other tasks might still be involved.
 
-The check about vcpu's perf capabilities is new. is it necessary?
+The question would be if it should be explicitly mentioned somewhere that,
+at this point, woken up tasks are not getting any special treatment and
+noone should rely on that boost for woken up tasks.
 
->-static inline bool intel_pmu_lbr_is_enabled(struct kvm_vcpu *vcpu)
->-{
->-	return !!vcpu_to_lbr_records(vcpu)->nr;
->-}
->-
+> >
+> > Changing things in the code to address for the specific scenario I'm
+> > seeing seems to mostly create unwanted side effects and/or would require
+> > the definition of some magic cut-off values.
+> >
+> >
 
