@@ -1,136 +1,179 @@
-Return-Path: <linux-kernel+bounces-108593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93654880CB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:09:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F4D880CBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:09:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A55EB21A14
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:09:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 621151C20EC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF7C2C86A;
-	Wed, 20 Mar 2024 08:08:58 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0054637169;
+	Wed, 20 Mar 2024 08:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bTQGyRx2"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC021642B;
-	Wed, 20 Mar 2024 08:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0A0374D9
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710922137; cv=none; b=XmXdtldK/cbSHIzOoqKPYqnIaalfFFlu9tRzrKIAVjEBZGYb7Sk+wkRC8z4Yb4T/ntTecc64hMnjcx1CPta5rSEvKjy86UMn6C2r4qlCpYAJCcDXP+I+Mh+VhySmaaibuDA63XXJAscUAcLgjGQJCRNwm3Pgz3p7GynNRxlv+CE=
+	t=1710922149; cv=none; b=KjZRCxM3Q8aW8iLUSFUlS3e9cGqELRe6XvAzanZ16C+G2kcMZy7fw4AdWtWJHME4Mcj7F3JQHpZAKvlbFvcaTXlqp+HlC0pam2qqQnll27t/MpVhNJ+Ep5D1PW4Rym6IpR6yyLGanTkM5reFjglvddHGdN7NDNljOth5esuu3SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710922137; c=relaxed/simple;
-	bh=YHYOadkmOipUMw5vHmVozyaiYQFe3Wgatl1WnyHvUMU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KZLpH1mVvxKvc8N3qDJ8xiuCksBVi+0Talor+EErEkzSIYrFH5CIlXiQ1Rok6z631IrE7oIohD49qGZD+c3XlImH2ejwv28RfB/+zHcxLxucxZ02VOtKKm1IWgmO7okaOwm7kaJjBuRoK55l18OPRd5vF3gdjg94d1se1kTerBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609f359b7b1so75592957b3.1;
-        Wed, 20 Mar 2024 01:08:56 -0700 (PDT)
+	s=arc-20240116; t=1710922149; c=relaxed/simple;
+	bh=g6vL1gQBRUvlde/11uEfc6jiem2SF6/e2PYqvB9Y77U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gdr7mcMSl98pqA37EYNhzmSo18YWHPgUk6HjbkthPg3vZ4j+4J2rFFMo47DbbDNB2pXu5uNit2JXFthat7ny02BgQa6xTTIdif23foH7TfIhHUB7rPMdSCWYEBeIxxOT0Uh2V7oNXZ42CzYue6M2oR8tNx6zY0myqTSIlP03vtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bTQGyRx2; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a466a27d30aso831425366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710922145; x=1711526945; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ASNi9NWUv9VIlSCO1/SKf1kBYpvLWhcXFFZ8p/fVKCI=;
+        b=bTQGyRx23V704SOooG1CNYh9YKC4yAeor9jJjJa8K3J13BCRWFzYswVdl/xA2aPeJb
+         PdEnkISpJrmodS0JCtfxNHTYRm+FexoFCLvPrrlbEmkjegGPOeHfLDsIV7S+1XmUe67r
+         TmEr0hAur2Mqvf97fPGxmi11pBqQFJkTNxc8EztgvpKmq2rynDXGAATlS4GvtsAJYUxa
+         PuIlpYamNAzeE8zbH9AYwdzfJrIbUA9c8k44QjX5Jaggyw9UJLoA8MCg5EUo+j9aXdhA
+         RLIWPJdeR4QTClEHccFiFw8WO5TAlNusgyLRsVNzfBrRauz3nYXLeHiig8Nas1OFib4U
+         w3OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710922134; x=1711526934;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UxAjfDS34SkaeqdOsAUG7ZjS13iVv3mgsYNBQbuG+9o=;
-        b=CTT35BJxGjG91jqMkN0Qlmvj17pcrdP6khHdiQuK5K0IfErFPZOY+SSshO3wPsMIIA
-         rjaD+ugB3Tp1v+9ZD/1Zi8B3tL+QATd6ngQAFv6M0Rhhi+fD/altqf4CwcmAFtZdnOYM
-         J1DbsW1aReZJhcgZK+EYPR8zrua9Vi9rItilg82X//Hgdi0Lf8XRmmZ75Jb9xF1BADB7
-         1cHVhJCvGsh3Mgw147U5fMK3oBNs8vjQvDyjehvBFe6Gi1Poa54dmswlI6CVDceXUAQo
-         a0Aul9Z3s79vHc5FmQqQIoyXshldaHxFXuaaDhy14kaGVa2jZwHjs1Pl23C5CQ7YJEWd
-         /wfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWXHxvhYKAMSw7K34XRNChj61bIyZaUf1Sl6JljR6XwAiQLOc3p3CPZ395APJZZzreZMCb3oX3HRqt/JSXAj1+36Ukzq25x+1RDippgnoLSkhdOTTS2n/JMVgPbs+90gbAzPu7viXtEAg==
-X-Gm-Message-State: AOJu0Yze0QXTThUOlTqKmxQndok+5lwaCPv3kv1k79cGlZtrAcFV3rTd
-	RG6tqP/n9P/oBVJUnGcHNx3zzYioBMv6AiGm2j3Oi85SaAxNtbCWd11HQg5D0+0=
-X-Google-Smtp-Source: AGHT+IGasCsLKtbgBJzbK44zWI4+raapf2xsNEu4QsMmZWQ1hc1o3WHnw/x577Pc62k3/HA3LIbbCw==
-X-Received: by 2002:a81:b2c7:0:b0:610:e46c:18f6 with SMTP id q190-20020a81b2c7000000b00610e46c18f6mr3966229ywh.17.1710922134605;
-        Wed, 20 Mar 2024 01:08:54 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id p1-20020a81ca01000000b00610f3850e14sm249309ywi.131.2024.03.20.01.08.54
+        d=1e100.net; s=20230601; t=1710922145; x=1711526945;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ASNi9NWUv9VIlSCO1/SKf1kBYpvLWhcXFFZ8p/fVKCI=;
+        b=iB2WaDqtwYpKzqMrYTOxDo3Ax+tNbLZG6K5cTIzl2gjY9mcsmDEGIJatPe1nVCJT4A
+         zGeeLNjxtg3U9izmP7LppuhnT9bVttlV/1VX4jrNnO01pnW+aj02AtdTrP4qXiI7e5K/
+         RPYlBwD6f/urhRMJhOeV6aQ0rIbtWf1WNmGTr/8DgufNgicjflb0U8avHaNzMPjQ9jUO
+         uv3/gozcM7nTq7V6Uu8XI2O5tJEx5k84SG89yi4oumbQfdcCyu8UqSjl9TqJdnApaQAH
+         TFYopdM5wwI8E0j5Wx5tmLhPekNQubDTrwWBFb9DfjJPLS2GYInyE9PlC9NNW4O379KN
+         gadQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVhdzXRr3lPPgiRFHO5dDMWaUHCcyruxrBzzQhivGnNcx4yHdxHYVXcNV+hTCgflGDYdyb1VkQBnSI7naBDpqHVDP7wlCGaKxUjJG7o
+X-Gm-Message-State: AOJu0YxLiLhaWHOd8LjLMYntAVbeizOODXJBM3L3dlvCvbjzC6DrirRX
+	qX/uqG3p29WMbf0+qn96CwIm0g7oZ5CwhBPlgg58rXYRmsBrsePrK1FkhGmNKPI=
+X-Google-Smtp-Source: AGHT+IHzLz/YDC6wvNDvpXxhSlIQNsL5c/APZk2tA36UUOOq9RLOFN0hyiFZSdZBuyE5sXQ9isMB3w==
+X-Received: by 2002:a17:906:1796:b0:a46:baa8:6cea with SMTP id t22-20020a170906179600b00a46baa86ceamr3287708eje.10.1710922145614;
+        Wed, 20 Mar 2024 01:09:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id ap2-20020a17090735c200b00a46c1dd36f0sm3065788ejc.173.2024.03.20.01.09.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 01:08:54 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-609f359b7b1so75592767b3.1;
-        Wed, 20 Mar 2024 01:08:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX/vIirLIYjDEH7xzHHiZtNMnZ9eO7W0YwOKX/uMLWWf6qx9lMzh8h2SDd675NBDHX3R4EFDARFr5AOfPydI07qLv49QnsYuIPtNog5beQzz7eIk2GZ9GBaL/CKIcQzGLRI4dgTsN7eZw==
-X-Received: by 2002:a0d:fb87:0:b0:609:fdf7:b443 with SMTP id
- l129-20020a0dfb87000000b00609fdf7b443mr4533721ywf.52.1710922133920; Wed, 20
- Mar 2024 01:08:53 -0700 (PDT)
+        Wed, 20 Mar 2024 01:09:05 -0700 (PDT)
+Message-ID: <9b475e13-96b9-4bce-8041-e0d8e5a332a1@linaro.org>
+Date: Wed, 20 Mar 2024 09:09:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <48ca5e827ca420bbdbabb1643e2179dc95c9e0b7.1710849638.git.geert@linux-m68k.org>
- <d1a1b0b8-41f1-4ead-b393-d8d2f099b0c4@acm.org> <CAMuHMdWzD1OR8qj8oHfUgQ9GMtrD8y69G+A+ONdVm0vTCvYe=w@mail.gmail.com>
- <0d41ae1a-f6aa-4377-b8a3-7fcf067f99ac@acm.org>
-In-Reply-To: <0d41ae1a-f6aa-4377-b8a3-7fcf067f99ac@acm.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 20 Mar 2024 09:08:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVig-cm7KPi76ow9-xyZ55z4YgYrx6QuO9V5A0ni7HxDA@mail.gmail.com>
-Message-ID: <CAMuHMdVig-cm7KPi76ow9-xyZ55z4YgYrx6QuO9V5A0ni7HxDA@mail.gmail.com>
-Subject: Re: [PATCH] scsi: core: Make scsi_lib KUnit tests modular for real
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Mike Christie <michael.christie@oracle.com>, 
-	"James E . J . Bottomley" <jejb@linux.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-scsi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: (subset) [PATCH v4 0/5] arm64: dts: qcom: sc8280xp: PCIe fixes
+ and GICv3 ITS enable
+To: Johan Hovold <johan@kernel.org>, Bjorn Andersson <andersson@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+ Johan Hovold <johan+linaro@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240306095651.4551-1-johan+linaro@kernel.org>
+ <171081652637.198276.6219023769904423414.b4-ty@kernel.org>
+ <Zfk98hYPn7kiFGkt@hovoldconsulting.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <Zfk98hYPn7kiFGkt@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hoi Bart,
+On 19/03/2024 08:25, Johan Hovold wrote:
+> On Mon, Mar 18, 2024 at 09:48:30PM -0500, Bjorn Andersson wrote:
+>>
+>> On Wed, 06 Mar 2024 10:56:46 +0100, Johan Hovold wrote:
+>>> This series addresses a few problems with the sc8280xp PCIe
+>>> implementation.
+>>>
+>>> The DWC PCIe controller can either use its internal MSI controller or an
+>>> external one such as the GICv3 ITS. Enabling the latter allows for
+>>> assigning affinity to individual interrupts, but results in a large
+>>> amount of Correctable Errors being logged on both the Lenovo ThinkPad
+>>> X13s and the sc8280xp-crd reference design.
+>>>
+>>> [...]
+>>
+>> Applied, thanks!
+>>
+>> [4/5] arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
+>>       commit: 2b621971554a94094cf489314dc1c2b65401965c
+> 
+> I noticed that you applied both of these for 6.10, but this one is a fix
+> that should go into 6.9.
 
-CC linux-kselftest@vger.kernel.org
+Well, mixing fixes for different cycles in one patchset was always
+discouraged. In case of some subsystems you would receive clear
+response, that you must split fixes out of the patchset.
 
-On Tue, Mar 19, 2024 at 6:01=E2=80=AFPM Bart Van Assche <bvanassche@acm.org=
-> wrote:
-> On 3/19/24 09:10, Geert Uytterhoeven wrote:
-> > On Tue, Mar 19, 2024 at 5:03=E2=80=AFPM Bart Van Assche <bvanassche@acm=
-org> wrote:
-> >> On 3/19/24 05:02, Geert Uytterhoeven wrote:
-> >> kernel module? What are the advantages compared to the current approac=
-h?
-> >> That information is missing from the patch description.
-> >
-> > SCSI_LIB_KUNIT_TEST is already tristate, so the original author must
-> > have meant it to be modular.  Or perhaps he just copied it from
-> > (most/all) other tests ;-)
-> >
-> > Anyway, I find it very useful to be able to do "modprobe kunit" and
-> > "modprobe <test>" to run a test when I feel the need to do so.
->
-> Why to run hardware-independent kunit tests on the target system instead
-> of on the host? Isn't it much more convenient when developing embedded
-> software to run kunit tests on the host using UML? The script I use to
+Fixes being first in the patchset would be probably accepted by the rest
+of subsystems, but putting it in the middle of the patchset is wrong.
 
-Because test results may differ between target and host?
-It's not uncommon for supposedly hardware-independent tests to behave
-differently on different architectures and platforms, due to subtle
-differences in word size, endianness, alignment rules, CPU topology, ...
+Best regards,
+Krzysztof
 
-> run SCSI kunit tests is available below. And if there is a desire to run
-> SCSI tests on the target system, how about adding triggers in sysfs for
-> running kunit tests? The (GPL v2) Samsung smartphone kernel supports
-> this but I have not yet checked whether their implementation is
-> appropriate for the upstream kernel.
-
-That would require all tests to be built-in, reducing the amount of memory
-(if any remains at all) available to the real application.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
