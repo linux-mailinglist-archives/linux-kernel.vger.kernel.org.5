@@ -1,319 +1,202 @@
-Return-Path: <linux-kernel+bounces-108923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AE28811FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:59:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77AB3881200
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B013C1F24480
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3617283320
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E8B42044;
-	Wed, 20 Mar 2024 12:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E7F40BE5;
+	Wed, 20 Mar 2024 12:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="lhkzHIFK"
-Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="OIuP++8w"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C60640C09;
-	Wed, 20 Mar 2024 12:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996013FE48
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710939554; cv=none; b=J8OThYOGqViwGESZCL1vhkKzUzd1K8nXzDJLVAWWmIJ167dLZzxGDgFDyBeMpbpki8EEtLQEK43b57uq8BTD81HB0g899I8teuIIj5QhO5UGUeYyk4X4Wjf5bboeMamhCnzDs3Jj8yGcreO8yzjQKwdgnTVJu83gNft8gv2HnTM=
+	t=1710939597; cv=none; b=EidSl1v9HhTBXZxrlo0wktZT6kFcQ+w7KVLGoX+qWMeSTtyyctzrkDWzavnSxqiXpRrjvbKVakE7r1LL3ES9oDdvQwP4dlbu9OawdJAIyJR4cvyzE9XAz1NTv+C48FLzMxkfnnE/ZHbLK6vBQlVPERlnPDdIL5zDGxItI/6zVzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710939554; c=relaxed/simple;
-	bh=urnmgvUk2AsupM5W4PgNVGpWIOTT5whoIn81O7GRhxY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uVPDXPeGNukYl3KMo/3d3UFpTk47GrLFIkxXQLnoX8UMYWN1bSyh4JEz+/Ovht+cvtVDGIsWX89lWFdhIoq5WUcf0RsF+3fGU8VSXnJabeE1FF4JVyc9BECyevJkXG+VFw3gldn7LZr7mRsWRjuNmg90yy+WfhbxFXHoJp668Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=lhkzHIFK; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K9gS7m026323;
-	Wed, 20 Mar 2024 08:58:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=DKIM;
-	 bh=Sc/JGX0Z+e3TjPugGgV5yFyv4GPUZaBITSxhZXN10RI=; b=lhkzHIFK1wJo
-	FJ3Pxz7Kc+o9SqXfxawokkE58MzXr8EiMUOm+ArgzDIYAqCLrirHwyV5ikFeWl/I
-	rWMsdnQzIUE2EpVQh7ZwvbbaHHxR4Yg1asS4xrzhTRRCktzDc8iGuevzBi90tKuv
-	xazUgmya9zBKVy6tJtCgKBIBb9n9qvnQTX/MGxo1GtUs/tHD1kXV8lrGlPV4aiyX
-	46Rag20G7NtY8iwCC6WF8cio2LTrC6FalIAiVT2gi85BS4AtjtzIMUko0MgKAuEK
-	zNnk1mdwvB0SuJ7B9+706auOoj6+kKvKX6Pdufs9z2POMUL55BJYOkbi7b1DvBd+
-	Kcv/BV70Hg==
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3wywddgmn9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 08:58:50 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 42KCwnfQ050304
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 20 Mar 2024 08:58:49 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Wed, 20 Mar 2024 08:58:48 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Wed, 20 Mar 2024 08:58:48 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Wed, 20 Mar 2024 08:58:48 -0400
-Received: from radu.ad.analog.com ([10.48.65.243])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42KCwLBx020197;
-	Wed, 20 Mar 2024 08:58:40 -0400
-From: Radu Sabau <radu.sabau@analog.com>
-To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
-        "Rob
- Herring" <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Delphine CC Chiu
-	<Delphine_CC_Chiu@Wiwynn.com>,
-        Radu Sabau <radu.sabau@analog.com>, <linux-hwmon@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-Subject: [PATCH v3 2/2] hwmon: pmbus: adp1050: Add driver support
-Date: Wed, 20 Mar 2024 14:57:12 +0200
-Message-ID: <20240320125727.5615-2-radu.sabau@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240320125727.5615-1-radu.sabau@analog.com>
-References: <20240320125727.5615-1-radu.sabau@analog.com>
+	s=arc-20240116; t=1710939597; c=relaxed/simple;
+	bh=WypSOPYxZf8hLVFguCB+Z349olHSUiTKhbVrkkbcKio=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P6hgu4iCVwqsEk0O6745TMZUsJvqbUi7DG5Utu/l2tTvdnPtROqzSa1Q+k0ba8JoKNoq7w6uPsng7DNstILmiEtQeuTxVuF2sDym9NGGqKB2DT21f1YmU90Oup8S7e3pjAVSq/L6/Df04bZT0wb50p5p7jvMwEcXrYbvt+GheHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=OIuP++8w; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4146af3ebc8so5209585e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1710939593; x=1711544393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ydBKfYW6ZA8FirJ5fQQwt7gjzIdS6ifrf5l5yvc5ZqA=;
+        b=OIuP++8wZ4sCALWiHC5ERsyFxwPrOEX6diekgkESTi12VlrRFs6ZjUzfMKvAjlFGh7
+         IQpF7Oa4DtnzDFvjB4c1zoStl7Me237Rgvyy6o3cAFu+kzOuRRwwocBU11/6xGEKnWYf
+         BG2vLtPlZFq/1x1vUM7CUoE/oOKumwkt1QSBDSTnoQy3Lyr5ygnOmoiOXu3qMKKwZvzx
+         Gp3upc7mGYAIlzUrKroy+YHoXMDytTs+3kdX6xZtZ/1Cm2meh/gxaIflFRaC4JaxiGwh
+         6yGOjG0qJLCgdMd6bM6rgLRHJo/KoiqiRSSEs0kNAag93+nza0uyzGXTPtZfHiQs3x0B
+         FmKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710939593; x=1711544393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ydBKfYW6ZA8FirJ5fQQwt7gjzIdS6ifrf5l5yvc5ZqA=;
+        b=jqnIOpMSSZ1WOVSwjh4pFxJrw2QpurH7fBipmIf5VNhQJf2g2zZ2i7XoRMQcAyFv0/
+         HAqxTa0M1kyngnx2OH915kzf0+1WVQJ9rv/tzO3ecwF3XF2X+EV5ChMKzH95Ah4bCilT
+         kjmqJPLO56up+mqkvxDTFAZ4tmfqzB535+roV4691GblTo3qvIf4ceISjf9PjMIuIyUB
+         vIrPgTJ9vRYD2Y4rLCCqNoGUpLZh4Oo5RfNR3HW9jMqnfoxuQxn4lqvfj6mWPDTcI3yx
+         fkEZyyqysaDbP4uPC+ztaDGPg5o7fbp2fJZXyt24bdFtr+WPFiWWCZg71uIjpi7nmzCd
+         7DGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqKHqn0+Nvowo0UFenIYTWF3Q5NUsUVDfOPtpTfaHR39scb3fEImritNKOkfwZxzmsd4V4jNZfzIP+tM++qdAoBRQl+Al4h4ZmwjSF
+X-Gm-Message-State: AOJu0YyKI3A7VKH1A46xsr/+wqSMNOmcb686RPNUH26fsmmg01KP7mC6
+	JQgpnRYEyV1yZUr5PSi7SOePU9P7FR/pTegjnzjK8/IueVXQklVWOqT0flCR94M=
+X-Google-Smtp-Source: AGHT+IFRXMnhrNxcaSUJEnEEn0kFEye6RzrEeesX/kGIx1Evz1foV2hmWTK7tI2tTGmD48zp4D2g2A==
+X-Received: by 2002:a05:600c:4747:b0:414:6865:b5bc with SMTP id w7-20020a05600c474700b004146865b5bcmr2892959wmo.28.1710939592851;
+        Wed, 20 Mar 2024 05:59:52 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:3d8d:58f9:2a48:529d])
+        by smtp.gmail.com with ESMTPSA id i6-20020a05600c354600b0041464451c81sm2135936wmq.20.2024.03.20.05.59.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 05:59:52 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	stable@vger.kernel.org,
+	Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH] gpio: cdev: sanitize the label before requesting the interrupt
+Date: Wed, 20 Mar 2024 13:59:44 +0100
+Message-Id: <20240320125945.16985-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: aibYJ7nXfDRPF_ode2LF9ZTrlJOQ3hAL
-X-Proofpoint-GUID: aibYJ7nXfDRPF_ode2LF9ZTrlJOQ3hAL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 phishscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 priorityscore=1501 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403200102
 
-Add support for ADP1050 Digital Controller for Isolated Power Supplies
-with PMBus interface Voltage, Current and Temperature Monitor.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The ADP1050 implements several features to enable a robust
-system of parallel and redundant operation for customers who
-require high availability. The device can measure voltage,
-current and temperature that can be used in different
-techniques to identify and safely shut down an erroneous
-power supply in parallel operation mode.
+When an interrupt is requested, a procfs directory is created under
+"/proc/irq/<irqnum>/<label>" where <label> is the string passed to one of
+the request_irq() variants.
 
-Signed-off-by: Radu Sabau <radu.sabau@analog.com>
+What follows is that the string must not contain the "/" character or
+the procfs mkdir operation will fail. We don't have such constraints for
+GPIO consumer labels which are used verbatim as interrupt labels for
+GPIO irqs. We must therefore sanitize the consumer string before
+requesting the interrupt.
+
+Let's replace all "/" with "-".
+
+Cc: stable@vger.kernel.org
+Reported-by: Stefan Wahren <wahrenst@gmx.net>
+Closes: https://lore.kernel.org/linux-gpio/39fe95cb-aa83-4b8b-8cab-63947a726754@gmx.net/
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
-v3:
- *No change.
-v2:
- *Remove mandatory chip unlocking from the probe function, as it is
-  a bit extreme.
- *Remove iin_scale and vin_scale set in the probe function since it makes no
-  sense to force-override it (the user may use the chip's default or even
-  change it himself after the probe).
----
- Documentation/hwmon/adp1050.rst | 65 +++++++++++++++++++++++++++++++++
- Documentation/hwmon/index.rst   |  1 +
- drivers/hwmon/pmbus/Kconfig     | 10 +++++
- drivers/hwmon/pmbus/Makefile    |  1 +
- drivers/hwmon/pmbus/adp1050.c   | 58 +++++++++++++++++++++++++++++
- 5 files changed, 135 insertions(+)
- create mode 100644 Documentation/hwmon/adp1050.rst
- create mode 100644 drivers/hwmon/pmbus/adp1050.c
+ drivers/gpio/gpiolib-cdev.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/hwmon/adp1050.rst b/Documentation/hwmon/adp1050.rst
-new file mode 100644
-index 000000000000..3281b096a53c
---- /dev/null
-+++ b/Documentation/hwmon/adp1050.rst
-@@ -0,0 +1,65 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver adp1050
-+=====================
-+
-+Supported chips:
-+
-+  * Analog Devices ADP1050
-+
-+    Prefix: 'adp1050'
-+
-+    Addresses scanned: I2C 0x70 - 0x77
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-
-+sheets/ADP1050.pdf
-+
-+Authors:
-+
-+  - Radu Sabau <radu.sabau@analog.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supprts hardware monitoring for Analog Devices ADP1050 Digital
-+Controller for Isolated Power Supply with PMBus interface.
-+
-+The ADP1050 is an advanced digital controller with a PMBus™
-+interface targeting high density, high efficiency dc-to-dc power
-+conversion used to monitor system temperatures, voltages and currents.
-+Through the PMBus interface, the device can monitor input/output voltages,
-+input current and temperature.
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate
-+the devices explicitly.
-+Please see Documentation/i2c/instantiating-devices.rst for details.
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+Sysfs Attributes
-+----------------
-+
-+================= ========================================
-+in1_label         "vin"
-+in1_input         Measured input voltage
-+in1_alarm	  Input voltage alarm
-+in2_label	  "vout1"
-+in2_input	  Measured output voltage
-+in2_crit	  Critical maximum output voltage
-+in2_crit_alarm    Output voltage high alarm
-+in2_lcrit	  Critical minimum output voltage
-+in2_lcrit_alarm	  Output voltage critical low alarm
-+curr1_label	  "iin"
-+curr1_input	  Measured input current.
-+curr1_alarm	  Input current alarm
-+temp1_input       Measured temperature
-+temp1_crit	  Critical high temperature
-+temp1_crit_alarm  Chip temperature critical high alarm
-+================= ========================================
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 1ca7a4fe1f8f..9a4fd576e6f6 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -33,6 +33,7 @@ Hardware Monitoring Kernel Drivers
-    adm1266
-    adm1275
-    adm9240
-+   adp1050
-    ads7828
-    adt7410
-    adt7411
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 557ae0c414b0..38e794d83cc3 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -57,6 +57,16 @@ config SENSORS_ADM1275
- 	  This driver can also be built as a module. If so, the module will
- 	  be called adm1275.
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index f384fa278764..8b5e8e92cbb5 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -1083,10 +1083,20 @@ static u32 gpio_v2_line_config_debounce_period(struct gpio_v2_line_config *lc,
+ 	return 0;
+ }
  
-+config SENSORS_ADP1050
-+	tristate "Analog Devices ADP1050 digital controller for Power Supplies"
-+	help
-+	  If you say yes here you get hardware monitoring support for Analog
-+	  Devices ADP1050 digital controller for isolated power supply with
-+	  PMBus interface.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called adp1050.
-+
- config SENSORS_BEL_PFE
- 	tristate "Bel PFE Compatible Power Supplies"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index f14ecf03ad77..95a8dea5e5ed 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
- obj-$(CONFIG_SENSORS_ACBEL_FSG032) += acbel-fsg032.o
- obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
- obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
-+obj-$(CONFIG_SENSORS_ADP1050)	+= adp1050.o
- obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
- obj-$(CONFIG_SENSORS_BPA_RS600)	+= bpa-rs600.o
- obj-$(CONFIG_SENSORS_DELTA_AHE50DC_FAN) += delta-ahe50dc-fan.o
-diff --git a/drivers/hwmon/pmbus/adp1050.c b/drivers/hwmon/pmbus/adp1050.c
-new file mode 100644
-index 000000000000..0a49bea8e13b
---- /dev/null
-+++ b/drivers/hwmon/pmbus/adp1050.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Hardware monitoring driver for Analog Devices ADP1050
-+ *
-+ * Copyright (C) 2024 Analog Devices, Inc.
-+ */
-+#include <linux/bits.h>
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include "pmbus.h"
-+
-+static struct pmbus_driver_info adp1050_info = {
-+	.pages = 1,
-+	.format[PSC_VOLTAGE_IN] = linear,
-+	.format[PSC_VOLTAGE_OUT] = linear,
-+	.format[PSC_CURRENT_IN] = linear,
-+	.format[PSC_TEMPERATURE] = linear,
-+	.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-+		| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
-+		| PMBUS_HAVE_IIN | PMBUS_HAVE_TEMP
-+		| PMBUS_HAVE_STATUS_TEMP,
-+};
-+
-+static int adp1050_probe(struct i2c_client *client)
++static inline char *make_irq_label(const char *orig)
 +{
-+	return pmbus_do_probe(client, &adp1050_info);
++	return kstrdup_and_replace(orig, '/', '-', GFP_KERNEL);
 +}
 +
-+static const struct i2c_device_id adp1050_id[] = {
-+	{"adp1050", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, adp1050_id);
++static inline void free_irq_label(const char *label)
++{
++	kfree(label);
++}
 +
-+static const struct of_device_id adp1050_of_match[] = {
-+	{ .compatible = "adi,adp1050"},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, adp1050_of_match);
+ static void edge_detector_stop(struct line *line)
+ {
+ 	if (line->irq) {
+-		free_irq(line->irq, line);
++		free_irq_label(free_irq(line->irq, line));
+ 		line->irq = 0;
+ 	}
+ 
+@@ -1110,6 +1120,7 @@ static int edge_detector_setup(struct line *line,
+ 	unsigned long irqflags = 0;
+ 	u64 eflags;
+ 	int irq, ret;
++	char *label;
+ 
+ 	eflags = edflags & GPIO_V2_LINE_EDGE_FLAGS;
+ 	if (eflags && !kfifo_initialized(&line->req->events)) {
+@@ -1146,11 +1157,17 @@ static int edge_detector_setup(struct line *line,
+ 			IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
+ 	irqflags |= IRQF_ONESHOT;
+ 
++	label = make_irq_label(line->req->label);
++	if (!label)
++		return -ENOMEM;
 +
-+static struct i2c_driver adp1050_driver = {
-+	.driver = {
-+		.name = "adp1050",
-+		.of_match_table = adp1050_of_match,
-+	},
-+	.probe = adp1050_probe,
-+	.id_table = adp1050_id,
-+};
-+module_i2c_driver(adp1050_driver);
+ 	/* Request a thread to read the events */
+ 	ret = request_threaded_irq(irq, edge_irq_handler, edge_irq_thread,
+-				   irqflags, line->req->label, line);
+-	if (ret)
++				   irqflags, label, line);
++	if (ret) {
++		free_irq_label(label);
+ 		return ret;
++	}
+ 
+ 	line->irq = irq;
+ 	return 0;
+@@ -1973,7 +1990,7 @@ static void lineevent_free(struct lineevent_state *le)
+ 		blocking_notifier_chain_unregister(&le->gdev->device_notifier,
+ 						   &le->device_unregistered_nb);
+ 	if (le->irq)
+-		free_irq(le->irq, le);
++		free_irq_label(free_irq(le->irq, le));
+ 	if (le->desc)
+ 		gpiod_free(le->desc);
+ 	kfree(le->label);
+@@ -2114,6 +2131,7 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	int fd;
+ 	int ret;
+ 	int irq, irqflags = 0;
++	char *label;
+ 
+ 	if (copy_from_user(&eventreq, ip, sizeof(eventreq)))
+ 		return -EFAULT;
+@@ -2198,12 +2216,16 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	if (ret)
+ 		goto out_free_le;
+ 
++	label = make_irq_label(le->label);
++	if (!label)
++		goto out_free_le;
 +
-+MODULE_AUTHOR("Radu Sabau <radu.sabau@analog.com>");
-+MODULE_DESCRIPTION("Analog Devices ADP1050 HWMON PMBus Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(PMBUS);
+ 	/* Request a thread to read the events */
+ 	ret = request_threaded_irq(irq,
+ 				   lineevent_irq_handler,
+ 				   lineevent_irq_thread,
+ 				   irqflags,
+-				   le->label,
++				   label,
+ 				   le);
+ 	if (ret)
+ 		goto out_free_le;
 -- 
-2.34.1
+2.40.1
 
 
