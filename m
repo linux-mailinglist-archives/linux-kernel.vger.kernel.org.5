@@ -1,201 +1,227 @@
-Return-Path: <linux-kernel+bounces-109196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5DB18815FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:58:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A53F881604
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59D351F233D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:58:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EB141C21214
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C535269DF5;
-	Wed, 20 Mar 2024 16:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D62B4EB47;
+	Wed, 20 Mar 2024 16:59:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o8y2anoi"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FE5rrJUs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A4610FA
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:58:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513FF10FA;
+	Wed, 20 Mar 2024 16:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710953883; cv=none; b=X/4iPE7J6e5jaCQ07KTgVmyzpEzV86wY+AY8a5KVnAX1HZn36GAn/i9IiXvW1XgE3hypES/EWXiP/Sr9jed6HNmahM0LDrsAiW33U+oRBTtdn7x8FnhOFuSivejkRk7pd1XTSYm5jf6wf1wqxY1MfUaub/HZ0HLw0ARh098FjKs=
+	t=1710953978; cv=none; b=r41G60QDTUf+eGIf06aIX0G5oaLJj3uozgvkwdUIXVPlkkfLKCywdWtP/zNWKtGKKU0C3zCE2V83WjNvUBT+yYA/5DWR5zoNuPrfvASPs/LpC5v4B7r1MxvlHF8zcHM5Rz4gc/BhYmZgFOAU9XNb5TgtT4FVkhrEOQhLY1pemoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710953883; c=relaxed/simple;
-	bh=IRuGH8muyCnRkEnnvN23mDt01suqChqI8s24B12Nu3g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cQOm4rYRBrZ9ssG811CWhb+rBXB5AGu9yqEFQsBCfVVYpLCkv4kZxfhT6QLQshPENaPg8S8sIiZwWqu1Q0K8IipZ+rxCRTNzzpIB+8G4T/kOCwTmY5MmNPhEB6aGpxET3bnrdjnVuxxl1Qbhuk0A6k2noDSeFX16QZEeoN0aedU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o8y2anoi; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso102660b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710953881; x=1711558681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cSkItorlO3dNJ7unKUHrmGpIhdyL6BNLufZtR6Qkrdc=;
-        b=o8y2anoiPEycvZAkFddGsB0LVMF6sZB1N7zDkH+FmZlFKXjyJ+GXuvYZDcAt8Nzw0z
-         NKaGdKFIKCTVcfw1t6Uq1WEkwevWbPL2bE/+fIK9XDad5x8E3SElO+S7KMMzhtKJ6it7
-         DSbjb1oSnvBIbOatOiolJRpiJWNCnmCcDSrn7lNKmXKBkHs/r4j9sPrEEbOVxRnqHJG/
-         7ty7h0gV3gX8/7854OBjd1IZWXEqHZwfcoU2yjgvZ9eI2UH0RcRBrpPkLKH77djFRjyY
-         6mbmVA/KGuTKJ9q9T261WOwBK3Qvylnc3vW+AKucx2LAqGSR+WYfziiaMkn/wkIAw820
-         krsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710953881; x=1711558681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cSkItorlO3dNJ7unKUHrmGpIhdyL6BNLufZtR6Qkrdc=;
-        b=ZIM56mAIi2PZtLPDGeHwDtgF2mp0x9m1domPcSYoBnQOSEVRI8h7XrA322GWMzjtGN
-         UqMvawPrAreJRduzxh/CWsKjg1KD3+ilF4rBgxnbit2E6Cg4kml/4KJE/Oy65bY2T2Ay
-         rPgosiyvBNFM4TyTQMew9ooSC9VI7kRhuCpHRRnbCNMrWrTenNTzW/M75zHDV9HvPrpB
-         sxphgqunf6w2fc2HWigodDP9JCBqVqaUcdiDYdeHWdHti3rdEWlMWToRSR/Em7TlnKhY
-         mZrVHLS03yXddgF0qkmfRnpRxm85q+j4uarQ8101tg6WDmJSPC8BbvdhQka9Sp69ixhb
-         4K1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXwAWhNXBrvex8xnwllOBYekmDBSB1+3i3krfdy31gfYAYk/FzHeNS816xp/0ea/YDS5fgorjPFAFvi6NZV12i/4vUrCPJyynPL5DN+
-X-Gm-Message-State: AOJu0YyK3TesLcVyxbnrciSHQYTJvTrLUcg9Ep2mRXPs1EtkEZk7LnF7
-	Ipe30YBB5EUMCf5eeLtPDHOMH2tDYrtkfTfgJJd9DUkr3PdXYfFYj93j2MPZ+tBpxE9nt//X8aa
-	PBN2KOJlvhICNwnp7587NEe0R56R/NlMKbfQ1kQ==
-X-Google-Smtp-Source: AGHT+IGGXyloonBMvtnP8c28xGLiQQHpLY8xOHzt8mJUN4JO5yhJjKxjMKfBSUt/AwzV8HTiyE3F6zCmhbxxP6lelS0=
-X-Received: by 2002:a05:6a20:8f05:b0:1a3:54b3:73cc with SMTP id
- b5-20020a056a208f0500b001a354b373ccmr13597898pzk.24.1710953881441; Wed, 20
- Mar 2024 09:58:01 -0700 (PDT)
+	s=arc-20240116; t=1710953978; c=relaxed/simple;
+	bh=s0/aLoxKix13bsWvxqVqF3isscoD1oqKeSGeoPdxMM8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T1Y7cnLBBkCY5LJK7pMhjdgVWLXUwOs1C6w/+cqXI8gHRqsbm40fbyfrQsSHhyBRranFmCssjXoN7coq0ECQh8g7uFmsZh7M21XyH82hOJ4enZmj1AOVJnDSb7Um3paPNpxTeowyBm4NeGAN8QlLsgpLzO1flam/T1irqFxtgKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FE5rrJUs; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710953976; x=1742489976;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=s0/aLoxKix13bsWvxqVqF3isscoD1oqKeSGeoPdxMM8=;
+  b=FE5rrJUsfFsTyR0Wrc901MqAI/Gl6Y0dakmJQWE20wDmgHLmRp3Le5qn
+   qa2okC2c8gZgf65wpbvyrKz8boN4EUtfu34yMIxJJd3Hmo3HV6I4S09et
+   LeqFWP3ZU1ajkapB3rTdkNmuh4GnMMMT//CxuDEuy3eSlGJY41rsywRYk
+   kjssQcnW/i5UDMDC8Q+b5Oh3g2rklOvhsFYj3I1qXfpF/QNNYNq9TPcs2
+   Ar2E9q+LAuM0VP4zZZ9hPJHSF6FKcOACqwBic5hZumCRfFnlEirUR/Nxq
+   Qv/t5eDNvYnBppBzCB3TC1v9Ms8cia3NtqlSR3CSXc/Jvw8cvJoUOES1y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6016995"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="6016995"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 09:59:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="937063900"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="937063900"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Mar 2024 09:59:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 5204330D; Wed, 20 Mar 2024 18:59:32 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Stephen Boyd <swboyd@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Ferry Toth <ftoth@exalondelft.nl>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH v2 1/1] gpiolib: Fix debug messaging in gpiod_find_and_request()
+Date: Wed, 20 Mar 2024 18:58:47 +0200
+Message-ID: <20240320165930.1182653-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220825122726.20819-1-vincent.guittot@linaro.org>
- <20220825122726.20819-2-vincent.guittot@linaro.org> <CABk29NsQf_xStzWg8bB_hpNpPC_LduMs-M058LjdhnDG16wN_A@mail.gmail.com>
-In-Reply-To: <CABk29NsQf_xStzWg8bB_hpNpPC_LduMs-M058LjdhnDG16wN_A@mail.gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 20 Mar 2024 17:57:50 +0100
-Message-ID: <CAKfTPtDSC25N8TvszDAjseqdLdGy4qiDnwobNThkt8piSL_5Pw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] sched/fair: make sure to try to detach at least one
- movable task
-To: Josh Don <joshdon@google.com>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	linux-kernel@vger.kernel.org, zhangqiao22@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Josh,
+When consolidating GPIO lookups in ACPI code, the debug messaging
+had been reworked that the user may see
 
-Sorry for the late reply.
+  [   13.401147] (NULL device *): using ACPI '\_SB.LEDS.led-0' for '(null)' GPIO lookup
+  [   13.401378] gpio gpiochip0: Persistence not supported for GPIO 40
+  [   13.401402] gpio-40 (?): no flags found for (null)
 
-On Mon, 12 Feb 2024 at 21:29, Josh Don <joshdon@google.com> wrote:
->
-> Hi Vincent,
->
-> On Thu, Aug 25, 2022 at 5:27=E2=80=AFAM Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > During load balance, we try at most env->loop_max time to move a task.
-> > But it can happen that the loop_max LRU tasks (ie tail of
-> > the cfs_tasks list) can't be moved to dst_cpu because of affinity.
-> > In this case, loop in the list until we found at least one.
->
-> We had a user recently trigger a hard lockup which we believe is due
-> to this patch. The user in question had O(10k) threads affinitized to
-> a cpu; seems like the process had an out of control thread spawning
-> issue, and was in the middle of getting killed. However, that was
-> being slowed down due to the fact that load balance was iterating all
+instead of
 
-Does it mean that it was progressing but not as fast as you would like
+  [   14.182962] gpio gpiochip0: Persistence not supported for GPIO 40
+  [   14.182994] gpio-40 (?): no flags found for gpios
 
-> these threads and bouncing the rq lock (and making no progress due to
-> ALL_PINNED). Before this patch, load balance would quit after hitting
-> loop_max.
->
-> Even ignoring that specific instance, it seems pretty easy for this
-> patch to cause a softlockup due to a buggy or malicious process.
+The '(null)' parts are less informative and likely scare the users.
+Replace them by '(default)' which can point out to the default connection
+IDs, such as 'gpios'.
 
-The fact that the rq is released regularly should prevent a
-softlockup. And we could even fasten can_migrate() which does a lot of
-useless stuff for task affined to 1 cpu.
+While at it, amend other places where con_id is used in the messages.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index e8270e2e15cb..15bc1067c69d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8920,6 +8920,8 @@ int can_migrate_task(struct task_struct *p,
-struct lb_env *env)
+Reported-by: Ferry Toth <ftoth@exalondelft.nl>
+Fixes: 8eb1f71e7acc ("gpiolib: consolidate GPIO lookups")
+Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: completele reworked solution of
+20231019173457.2445119-1-andriy.shevchenko@linux.intel.com
+ drivers/gpio/gpiolib.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-        lockdep_assert_rq_held(env->src_rq);
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index e2e583b40207..7d26e5de0b44 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2401,6 +2401,11 @@ char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offset)
+ }
+ EXPORT_SYMBOL_GPL(gpiochip_dup_line_label);
+ 
++static inline const char *function_name_or_default(const char *con_id)
++{
++	return con_id ?: "(default)";
++}
++
+ /**
+  * gpiochip_request_own_desc - Allow GPIO chip to request its own descriptor
+  * @gc: GPIO chip
+@@ -2429,10 +2434,11 @@ struct gpio_desc *gpiochip_request_own_desc(struct gpio_chip *gc,
+ 					    enum gpiod_flags dflags)
+ {
+ 	struct gpio_desc *desc = gpiochip_get_desc(gc, hwnum);
++	const char *name = function_name_or_default(label);
+ 	int ret;
+ 
+ 	if (IS_ERR(desc)) {
+-		chip_err(gc, "failed to get GPIO descriptor\n");
++		chip_err(gc, "failed to get GPIO %s descriptor\n", name);
+ 		return desc;
+ 	}
+ 
+@@ -2442,8 +2448,8 @@ struct gpio_desc *gpiochip_request_own_desc(struct gpio_chip *gc,
+ 
+ 	ret = gpiod_configure_flags(desc, label, lflags, dflags);
+ 	if (ret) {
+-		chip_err(gc, "setup of own GPIO %s failed\n", label);
+ 		gpiod_free_commit(desc);
++		chip_err(gc, "setup of own GPIO %s failed\n", name);
+ 		return ERR_PTR(ret);
+ 	}
+ 
+@@ -4157,19 +4163,17 @@ static struct gpio_desc *gpiod_find_by_fwnode(struct fwnode_handle *fwnode,
+ 					      enum gpiod_flags *flags,
+ 					      unsigned long *lookupflags)
+ {
++	const char *name = function_name_or_default(con_id);
+ 	struct gpio_desc *desc = ERR_PTR(-ENOENT);
+ 
+ 	if (is_of_node(fwnode)) {
+-		dev_dbg(consumer, "using DT '%pfw' for '%s' GPIO lookup\n",
+-			fwnode, con_id);
++		dev_dbg(consumer, "using DT '%pfw' for '%s' GPIO lookup\n", fwnode, name);
+ 		desc = of_find_gpio(to_of_node(fwnode), con_id, idx, lookupflags);
+ 	} else if (is_acpi_node(fwnode)) {
+-		dev_dbg(consumer, "using ACPI '%pfw' for '%s' GPIO lookup\n",
+-			fwnode, con_id);
++		dev_dbg(consumer, "using ACPI '%pfw' for '%s' GPIO lookup\n", fwnode, name);
+ 		desc = acpi_find_gpio(fwnode, con_id, idx, flags, lookupflags);
+ 	} else if (is_software_node(fwnode)) {
+-		dev_dbg(consumer, "using swnode '%pfw' for '%s' GPIO lookup\n",
+-			fwnode, con_id);
++		dev_dbg(consumer, "using swnode '%pfw' for '%s' GPIO lookup\n", fwnode, name);
+ 		desc = swnode_find_gpio(fwnode, con_id, idx, lookupflags);
+ 	}
+ 
+@@ -4185,6 +4189,7 @@ struct gpio_desc *gpiod_find_and_request(struct device *consumer,
+ 					 bool platform_lookup_allowed)
+ {
+ 	unsigned long lookupflags = GPIO_LOOKUP_FLAGS_DEFAULT;
++	const char *name = function_name_or_default(con_id);
+ 	/*
+ 	 * scoped_guard() is implemented as a for loop, meaning static
+ 	 * analyzers will complain about these two not being initialized.
+@@ -4207,8 +4212,7 @@ struct gpio_desc *gpiod_find_and_request(struct device *consumer,
+ 		}
+ 
+ 		if (IS_ERR(desc)) {
+-			dev_dbg(consumer, "No GPIO consumer %s found\n",
+-				con_id);
++			dev_dbg(consumer, "No GPIO consumer %s found\n", name);
+ 			return desc;
+ 		}
+ 
+@@ -4230,15 +4234,14 @@ struct gpio_desc *gpiod_find_and_request(struct device *consumer,
+ 		 *
+ 		 * FIXME: Make this more sane and safe.
+ 		 */
+-		dev_info(consumer,
+-			 "nonexclusive access to GPIO for %s\n", con_id);
++		dev_info(consumer, "nonexclusive access to GPIO for %s\n", name);
+ 		return desc;
+ 	}
+ 
+ 	ret = gpiod_configure_flags(desc, con_id, lookupflags, flags);
+ 	if (ret < 0) {
+-		dev_dbg(consumer, "setup of GPIO %s failed\n", con_id);
+ 		gpiod_put(desc);
++		dev_dbg(consumer, "setup of GPIO %s failed\n", name);
+ 		return ERR_PTR(ret);
+ 	}
+ 
+@@ -4354,6 +4357,7 @@ EXPORT_SYMBOL_GPL(gpiod_get_optional);
+ int gpiod_configure_flags(struct gpio_desc *desc, const char *con_id,
+ 		unsigned long lflags, enum gpiod_flags dflags)
+ {
++	const char *name = function_name_or_default(con_id);
+ 	int ret;
+ 
+ 	if (lflags & GPIO_ACTIVE_LOW)
+@@ -4397,7 +4401,7 @@ int gpiod_configure_flags(struct gpio_desc *desc, const char *con_id,
+ 
+ 	/* No particular flag request, return here... */
+ 	if (!(dflags & GPIOD_FLAGS_BIT_DIR_SET)) {
+-		gpiod_dbg(desc, "no flags found for %s\n", con_id);
++		gpiod_dbg(desc, "no flags found for GPIO %s\n", name);
+ 		return 0;
+ 	}
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-+       if (p->nr_cpus_allowed =3D=3D 1)
-+               return 0;
-        /*
-         * We do not migrate tasks that are:
-         * 1) throttled_lb_pair, or
-
->
-> For the tradeoff you were trying to make in this patch (spend more
-> time searching in the hopes that there's something migratable further
-> in the list), perhaps it would be better to adjust
-> sysctl.sched_nr_migrate instead of baking this into the kernel?
-
-That could be a solution but this increases the iterations for all
-cases including those which are more time consuming to sort out and
-the number of tasks that you will migrate in one lb. The latter is the
-one which consumes time
-
-Vincent
-
->
-> Best,
-> Josh
->
-> >
-> > The maximum of detached tasks remained the same as before.
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >  kernel/sched/fair.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index da388657d5ac..02b7b808e186 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -8052,8 +8052,12 @@ static int detach_tasks(struct lb_env *env)
-> >                 p =3D list_last_entry(tasks, struct task_struct, se.gro=
-up_node);
-> >
-> >                 env->loop++;
-> > -               /* We've more or less seen every task there is, call it=
- quits */
-> > -               if (env->loop > env->loop_max)
-> > +               /*
-> > +                * We've more or less seen every task there is, call it=
- quits
-> > +                * unless we haven't found any movable task yet.
-> > +                */
-> > +               if (env->loop > env->loop_max &&
-> > +                   !(env->flags & LBF_ALL_PINNED))
-> >                         break;
-> >
-> >                 /* take a breather every nr_migrate tasks */
-> > @@ -10182,7 +10186,9 @@ static int load_balance(int this_cpu, struct rq=
- *this_rq,
-> >
-> >                 if (env.flags & LBF_NEED_BREAK) {
-> >                         env.flags &=3D ~LBF_NEED_BREAK;
-> > -                       goto more_balance;
-> > +                       /* Stop if we tried all running tasks */
-> > +                       if (env.loop < busiest->nr_running)
-> > +                               goto more_balance;
-> >                 }
-> >
-> >                 /*
-> > --
-> > 2.17.1
-> >
 
