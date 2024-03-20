@@ -1,101 +1,96 @@
-Return-Path: <linux-kernel+bounces-108416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD6F880A44
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:03:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E383880A34
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED261F234C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:03:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4835A1C21651
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABBD4125B4;
-	Wed, 20 Mar 2024 04:03:38 +0000 (UTC)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FF411C83;
+	Wed, 20 Mar 2024 03:46:39 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1EA1364;
-	Wed, 20 Mar 2024 04:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD0E1170B;
+	Wed, 20 Mar 2024 03:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710907418; cv=none; b=TzrNjgmBS6lmcxBYNB8fGjUfmizGHAnCV1j41rJ5LVhpO4Q+KhrDT6hi1iZ8CE1JSbC5++6PlscX1FDdkwj67zsxzB4G3oFJZn72YrOFovEwc0vfOSTuIcM5kphI/M9ZjOWIJ0z1bJGv5t9r1RLihVwiTgYnnteAxU6/01Khi4c=
+	t=1710906398; cv=none; b=EYg5TRgNBsnZ690qZBHfAoBuTDepkiCLIkFVALhThFDHMOgUK/FR0VEWZdDwwjyb+j8ar43/2n+EToZ2AgFhubwVVdaMQ3TB7YAmDaiYm9uqM3mwSh48Xlamn6DT9Kzrhwan+e5kwKIMAEIXjIGhx9rV5x3s65AT6ul2qjoOQZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710907418; c=relaxed/simple;
-	bh=a1iPkS19wKvYjByVRjYUWC8hvrMspm4HWjt5L6aSPzE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=e55pbXMVMHnBP851rtCkCxgQFBCh9qMiD2mRyap2LVAsZfgDrsxqJZ7CvkG2BXFrnW+evJyx0bqA/EAABjhOL8i7dsjHqECmjAhfVijlyUThi5Av7ih2wCYuiZ90ERqYHnNwIJdbR0OULAbBbAkadKUM1ZmLbNxfTGvfIt61AuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5062F200B54;
-	Wed, 20 Mar 2024 05:03:30 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 170402016B4;
-	Wed, 20 Mar 2024 05:03:30 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0A0C5183AD0A;
-	Wed, 20 Mar 2024 12:03:27 +0800 (+08)
-From: Richard Zhu <hongxing.zhu@nxp.com>
-To: l.stach@pengutronix.de,
-	bhelgaas@google.com,
-	lorenzo.pieralisi@arm.com,
-	marex@denx.de,
-	frank.li@nxp.com,
-	manivannan.sadhasivam@linaro.org
-Cc: linux-pci@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de,
-	linux-imx@nxp.com,
-	Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
-Date: Wed, 20 Mar 2024 11:45:38 +0800
-Message-Id: <1710906338-4596-1-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1710906398; c=relaxed/simple;
+	bh=l+mqYCBgZTwxi4ErekRH/lhS4Fi+295tQE8tgGy3YAM=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=jZBGwwYDsGx1oFRAB9uQhq8Vm0h0A3SRTdZvFLqCO1us0cYkOyDWtpeXuSS8szE7tXXGEwJMfCvTHvDDChnxnnoaPKG+8RnFYD04KAoKihFYU2FSi085ArIIRa4QnfTBu0dlQNBtHXy7TbRmFZNiFdIjZ4Sr/yO2WjjvS8+zqlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TzvdY0Kfqz1HBvb;
+	Wed, 20 Mar 2024 11:46:09 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0341F1A0172;
+	Wed, 20 Mar 2024 11:46:32 +0800 (CST)
+Received: from [10.67.111.82] (10.67.111.82) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
+ 2024 11:46:31 +0800
+Subject: Re: [PATCH] ARM: unwind: improve unwinders for noreturn case
+To: Matthew Wilcox <willy@infradead.org>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710901169-22763-1-git-send-email-xiaojiangfeng@huawei.com>
+ <202403191945.661DBCE8@keescook>
+ <fb8c6e8f-de47-8cbc-e30a-60961f5ce7ad@huawei.com>
+ <ZfpZLJ3F3efXUwQf@casper.infradead.org>
+CC: Kees Cook <keescook@chromium.org>, <linux@armlinux.org.uk>,
+	<arnd@arndb.de>, <rmk+kernel@armlinux.org.uk>, <haibo.li@mediatek.com>,
+	<angelogioacchino.delregno@collabora.com>, <amergnat@baylibre.com>,
+	<akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+	<douzhaolei@huawei.com>, <gustavoars@kernel.org>, <jpoimboe@kernel.org>,
+	<kepler.chenxin@huawei.com>, <kirill.shutemov@linux.intel.com>,
+	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+	<nixiaoming@huawei.com>, <peterz@infradead.org>, <wangbing6@huawei.com>,
+	<wangfangpeng1@huawei.com>, <jannh@google.com>, <David.Laight@aculab.com>
+From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Message-ID: <98468785-ed75-f812-7263-1adf677f00d2@huawei.com>
+Date: Wed, 20 Mar 2024 11:46:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <ZfpZLJ3F3efXUwQf@casper.infradead.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-Fix i.MX8MP PCIe EP can't trigger MSI issue.
-There is one 64Kbytes minimal requirement on i.MX8M PCIe outbound
-region configuration.
 
-EP uses Bar0 to set the outboud region to configure the MSI setting.
-Set the page_size to "epc_features->align" to meet the requirement,
-let the MSI can be triggered successfully.
 
-Fixes: 1bd0d43dcf3b ("PCI: imx6: Clean up addr_space retrieval code")
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-Reviewed-by: Frank Li <frank.li@nxp.com>
-Acked-by: Jason Liu <jason.hui.liu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 2024/3/20 11:34, Matthew Wilcox wrote:
+> On Wed, Mar 20, 2024 at 11:30:13AM +0800, Jiangfeng Xiao wrote:
+>> The checkpatch.pl script reports the "WARNING: printk() should
+>> include KERN_<LEVEL> facility level" warning.
+>>
+>> That's why I changed printk to pr_warn.
+>> I should change printk to printk(KERN_DEFAULT).
+> 
+> No, you should ignore checkpatch.  For bonus points, figure out why you
+> should ignore it specifically in this case.
+> .
+> 
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 99a60270b26c..3238b63721bc 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -1013,9 +1013,14 @@ static void imx6_pcie_ep_init(struct dw_pcie_ep *ep)
- {
- 	enum pci_barno bar;
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-+	const struct pci_epc_features *epc_features;
- 
- 	for (bar = BAR_0; bar <= BAR_5; bar++)
- 		dw_pcie_ep_reset_bar(pci, bar);
-+	if (ep->ops->get_features) {
-+		epc_features = ep->ops->get_features(ep);
-+		ep->page_size = epc_features->align;
-+	}
- }
- 
- static int imx6_pcie_ep_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
--- 
-2.37.1
+Thank you. I think I understand.
 
+The checkpatch.pl file is a false report
+because the 'loglvl' already exists.
+
+I'd better keep printk(" %s...", loglvl, ...) still.
 
