@@ -1,236 +1,195 @@
-Return-Path: <linux-kernel+bounces-108499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3576D880B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:35:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3602B880B5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE6B1C22067
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:35:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE7921F22CD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAEC12E4A;
-	Wed, 20 Mar 2024 06:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810BB1802E;
+	Wed, 20 Mar 2024 06:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="msCSRmCf"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aR53uP9t"
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C6DA29;
-	Wed, 20 Mar 2024 06:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B18A29
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916503; cv=none; b=RRKskHIDwf0ygJZnNSJEXqmC0QychfNNnUWQHCXxhGDAGnj+QPF7Ng22MetZgGu2yCJkpnkYIkeTEFdLOUgOBGXqZQG7/TcPCQzSfqAGOwTvHTSHbOrOK1ywON4PXW4Nc0nGE/5O5wQaBdyfQFAZ48C4PSiNI5T+rawyeiX3MiM=
+	t=1710916847; cv=none; b=NskQUI/9hHz05Z0lf2+Yeso8s+l9XrU+t/U7MsV8A75BV9yXoteuH9fDuxOQlXR8X/SeFLIO0SHmK0pL3wmY4F/34UF882w/DBS48XiYFK5y6ddbgYhC4WWw9gjeBT486I9XrZiHKhT3UOnzqiOVocQnlZKMZqZql/jRR8vhTLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916503; c=relaxed/simple;
-	bh=ianIbzzQTFfYXMot1C3h/FL9tFGEeRVdkfcK1e0VSiQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=foNWXQFnjVlwOL4tObu/Ig1Z3hyqzO+wfcC8p+QWieeg08byfYkQqN7lEOdSuhd2YTvYSgwOzLacOqEoFrDgNnJlVQ0qxeJZ3E0MqNCIie/XdS9d8RLj12+rGvt618KAz4c8aiUg0rF3VaFEGDI5p7yKx7rraXKDZoasi2k7l5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=msCSRmCf; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K4I9FJ016465;
-	Wed, 20 Mar 2024 06:34:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=gibPDNh+ncfO0OJ7NGZdgTNIfnqZd+drxwtVVYsvV6U=; b=ms
-	CSRmCfIwhfqYtxU0xAP81OGWZMJZnq8e5z6Bhs7NtRKxffj1+dTNJXB9AEdmHrj6
-	y+OUzT9rt5OMHGYBbmdtOnauqmBlHB8hhFEqBZT76cLB+wh044MAy7pcsg1hnPhp
-	sXb08c3N8CQaBXvXXzwjTarWaL+Odaq6miQxBrVHhX6LVylPxL9mY6Hh5uZ3Ksmx
-	8BET4BBYa0yWBGh05OqT/gxOiBDpOBhtf9DdxN6Geh2/FrAAB/kQ+F6HIiwhWIoX
-	4qrPdUyWPodqLpuzOdrZa1xDApABhOZNlqOH90fNoIQfAyfU0wpeFoymcFUYZJfR
-	YGx7+cRSpTWcziI5iawQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wygbbh4y3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 06:34:27 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42K6YPso019848
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 06:34:25 GMT
-Received: from [10.216.16.222] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
- 2024 23:34:19 -0700
-Message-ID: <58dfa2f5-8b49-a8a9-0857-f75f755f703c@quicinc.com>
-Date: Wed, 20 Mar 2024 12:04:16 +0530
+	s=arc-20240116; t=1710916847; c=relaxed/simple;
+	bh=AJGAFL1dvLEouhNUnRCXPQwOfqJbsFPG6bk43pGZGe4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fGUtDik4o1qoEFUmqBqAKsuownse67Nl6w1Pcw/BYb7Z74Ik97GcYSph4hxYsYqPFS0yBvR3q+EmVFDGaIW6b0UHrpDCXAF8HNpjVZOYPqrvl/gLul//NQLeecOoe+GYOIQMNINC0LXZkuYJdBNnh98dOCZqX0s1kB9ZiAAQzoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aR53uP9t; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7e04e70c372so622150241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710916844; x=1711521644; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kcOOr88hJiSNYgd+zKExyCz3TqPQIrclo94noA5vOy0=;
+        b=aR53uP9t7tKGqfdj2ailUNKhw2r25vatffUjbLiDUqk1MU30gJMxgSzCOCW1jXU0rJ
+         dIFPMxpCUPW+ZpFM7V6+iQFq+bgk4f51GDlbwLQn3RSzVoVCRyoEUI87F9FWwMuiW4sX
+         uvUFYNRKEJWOfj6FlLi2+byOAoaINHbKBWtp/SMQ79F8QOwFbK3VOIblztgfklaVGCom
+         eshlM/Ta95IkDUu0/PsY6Z4yj+7A23GJDrJBesSRKrgP/iTevOorEL6BC+WIkReFmv2V
+         TKZdZD+ImRj3KjdYfZtkzoDP3q3infbJK5bZEpeZvDspkyJZcIvMHaNsjDO6WY0K06La
+         xzLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710916844; x=1711521644;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kcOOr88hJiSNYgd+zKExyCz3TqPQIrclo94noA5vOy0=;
+        b=dkmV2jYTPwA8pkP6+k+NjrTNMYX3U7uDPZ88JC4tBGsuVj8YILnGIeHp7VIfqsPOEX
+         wkL2avmI878MNJMiXmFhAtT1GcCWvP7GHMmXe1QWXs2fMAjSeuamXACHeIzy5r7a6b+J
+         InG8tkYl5Yzg2zywf5264ampf4Io50wyWSSWsl0U0ARA0g+I8/AR+K1bckalyrbMuFD6
+         mOss5Kn/PA3N1OnY2ytjBjLKjH7fYmEszQ36VRuqJq3kCpyWtRnvEEWw3OfxvA5btePh
+         oESaPzpDCEqrUND7K0xFJzrKb/UFtpfZxCG/G0k9cpagOthbvqjD6DYeV4Pov4cNPgsO
+         muhA==
+X-Forwarded-Encrypted: i=1; AJvYcCXucBQd11BuG3d0TXxp6YI1lbGwnwy4KeHxVEB9MhC+S+ZVFBVdonMdqpgodK5xGGlONckBf+rCqkRlcQ/Gd4jqm7NVQqvb6ZNEceN4
+X-Gm-Message-State: AOJu0Yxu6kdveKhS5GA2vFRL5HJmb8mgXkb+jEn+LcB0kgh8CEKBH+ep
+	8i82Hy5QVR4hatC+4hzuSnJf8WeuPJ6N5x23fld0IyB4RTQSk7zUKRWBkKmMbx1h77UTOeLs/ea
+	7BleSd0eVXldW5rQm42Mxr+ruemBj8HzCf1nsyw==
+X-Google-Smtp-Source: AGHT+IFqApbTY6DNgifrc1HfffBhZy3NbvPjVLiTV7SeZTya+2/ILdAElBWlEApNAhzCDtWGwWEVDPx9jkFx9IMZ9us=
+X-Received: by 2002:a67:ffc4:0:b0:473:35b2:7530 with SMTP id
+ w4-20020a67ffc4000000b0047335b27530mr1088871vsq.23.1710916843900; Tue, 19 Mar
+ 2024 23:40:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v4 2/5] drivers: mtd: nand: Add qpic_common API file
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <broonie@kernel.org>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <manivannan.sadhasivam@linaro.org>, <neil.armstrong@linaro.org>,
-        <daniel@makrotopia.org>, <arnd@arndb.de>,
-        <chris.packham@alliedtelesis.co.nz>, <christophe.kerello@foss.st.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>
-References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
- <20240308091752.16136-3-quic_mdalam@quicinc.com>
- <20240315124517.4a546ce9@xps-13>
- <93b08226-3297-2161-cc7d-d33d839c32f0@quicinc.com>
- <20240319114316.4b977d93@xps-13>
- <756ccc79-0077-5c23-73e3-bbb82fbfa8b0@quicinc.com>
- <20240319140924.167f3063@xps-13>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20240319140924.167f3063@xps-13>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BfPakkWhuLrOxL76Q0W3qYhEzZTAFfXw
-X-Proofpoint-GUID: BfPakkWhuLrOxL76Q0W3qYhEzZTAFfXw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_03,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- mlxlogscore=660 phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403200050
+References: <20240315060707.471248-1-sumit.garg@linaro.org>
+ <20240315060707.471248-4-sumit.garg@linaro.org> <ZfRlYnEQUKvwGQ65@gerhold.net>
+ <CAFA6WYMucNzLNm+oHNd-Jb65oigpNphU=mFGM1cD8A-mK-BFDw@mail.gmail.com> <ZfmdWtoiP4ZF7JRk@gerhold.net>
+In-Reply-To: <ZfmdWtoiP4ZF7JRk@gerhold.net>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Wed, 20 Mar 2024 12:10:32 +0530
+Message-ID: <CAFA6WYPzdSHEMmeb_J6LPje8MUkSSq93oN3+O1PMahtZN7hWnA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
+	dmitry.baryshkov@linaro.org, laetitia.mariottini@se.com, 
+	pascal.eberhard@se.com, abdou.saker@se.com, jimmy.lalande@se.com, 
+	benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
+	linux-kernel@vger.kernel.org, Jagdish Gediya <jagdish.gediya@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 19 Mar 2024 at 19:43, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Mon, Mar 18, 2024 at 03:20:46PM +0530, Sumit Garg wrote:
+> > On Fri, 15 Mar 2024 at 20:43, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > On Fri, Mar 15, 2024 at 11:37:07AM +0530, Sumit Garg wrote:
+> > > > Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+> > > > Box Core board based on the Qualcomm APQ8016E SoC.
+> > > >
+> > > > Support for Schneider Electric HMIBSC. Features:
+> > > > - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+> > > > - 1GiB RAM
+> > > > - 8GiB eMMC, SD slot
+> > > > - WiFi and Bluetooth
+> > > > - 2x Host, 1x Device USB port
+> > > > - HDMI
+> > > > - Discrete TPM2 chip over SPI
+> > > > - USB ethernet adaptors (soldered)
+> > > >
+> > > > Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+> > > > Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+> > > > Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
+> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > ---
+> > > >  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+> > > >  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 510 ++++++++++++++++++
+> > > >  2 files changed, 511 insertions(+)
+> > > >  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > >
+> > > > diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> > > > index 39889d5f8e12..ad55e52e950b 100644
+> > > > --- a/arch/arm64/boot/dts/qcom/Makefile
+> > > > +++ b/arch/arm64/boot/dts/qcom/Makefile
+> > > > @@ -5,6 +5,7 @@ apq8016-sbc-usb-host-dtbs     := apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
+> > > >
+> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-usb-host.dtb
+> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-d3-camera-mezzanine.dtb
+> > > > +dtb-$(CONFIG_ARCH_QCOM)      += apq8016-schneider-hmibsc.dtb
+> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8039-t2.dtb
+> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8094-sony-xperia-kitakami-karin_windy.dtb
+> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8096-db820c.dtb
+> > > > diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > > new file mode 100644
+> > > > index 000000000000..9c79a31a04db
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > > @@ -0,0 +1,510 @@
+> > > > [...]
+> > > > +
+> > > > +&pm8916_resin {
+> > > > +     interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_FALLING>;
+> > > > +     linux,code = <KEY_POWER>;
+> > > > +     status = "okay";
+> > > > +};
+> > >
+> > > What is the goal of overriding the interrupt here? It looks like you are
+> > > changing the interrupt type from IRQ_TYPE_EDGE_BOTH to FALLING. This
+> > > sounds a bit like you want the driver to receive just button release
+> > > events (or just press events, not sure about the polarity). I'm not sure
+> > > if the driver will handle this correctly.
+> >
+> > The use-case here is to just act upon button release events and the
+> > driver handles this appropriately. Final use-case of the reset button:
+> >
+> > - Short press and release leads to normal Linux reboot.
+> > - Long press for more than 10 sec or so leads to a hard reset.
+> >
+> > With IRQ_TYPE_EDGE_BOTH, that's not achievable because just a simple
+> > press leads to Linux reboot.
+> >
+>
+> Thanks for explaining your use case. Is the DT really the right place to
+> describe this? In the hardware, this is just a button that provides both
+> press and release events. Linux typically forwards these events to user
+> space, without interpreting them in any way. This means you likely have
+> some user space component that listens to the events (e.g. systemd
+> logind). Ideally that component should be reconfigured to trigger the
+> reboot on release instead of press.
 
+I am not sure if that's really the case. I only see power key value to
+be reported as follows:
 
-On 3/19/2024 6:39 PM, Miquel Raynal wrote:
-> Hi,
-> 
-> quic_mdalam@quicinc.com wrote on Tue, 19 Mar 2024 17:46:05 +0530:
-> 
->> On 3/19/2024 4:13 PM, Miquel Raynal wrote:
->>> Hi,
->>>    
->>>>>> +/**
->>>>>> + * qcom_offset_to_nandc_reg() - Get the actual offset
->>>>>> + * @regs: pointer to nandc_reg structure
->>>>>> + * @offset: register offset
->>>>>> + *
->>>>>> + * This function will reurn the actual offset for qpic controller register
->>>>>> + */
->>>>>> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset)
->>>>>> +{
->>>>>> +	switch (offset) {
->>>>>> +	case NAND_FLASH_CMD:
->>>>>> +		return &regs->cmd;
->>>>>> +	case NAND_ADDR0:
->>>>>> +		return &regs->addr0;
->>>>>> +	case NAND_ADDR1:
->>>>>> +		return &regs->addr1;
->>>>>> +	case NAND_FLASH_CHIP_SELECT:
->>>>>> +		return &regs->chip_sel;
->>>>>> +	case NAND_EXEC_CMD:
->>>>>> +		return &regs->exec;
->>>>>> +	case NAND_FLASH_STATUS:
->>>>>> +		return &regs->clrflashstatus;
->>>>>> +	case NAND_DEV0_CFG0:
->>>>>> +		return &regs->cfg0;
->>>>>> +	case NAND_DEV0_CFG1:
->>>>>> +		return &regs->cfg1;
->>>>>> +	case NAND_DEV0_ECC_CFG:
->>>>>> +		return &regs->ecc_bch_cfg;
->>>>>> +	case NAND_READ_STATUS:
->>>>>> +		return &regs->clrreadstatus;
->>>>>> +	case NAND_DEV_CMD1:
->>>>>> +		return &regs->cmd1;
->>>>>> +	case NAND_DEV_CMD1_RESTORE:
->>>>>> +		return &regs->orig_cmd1;
->>>>>> +	case NAND_DEV_CMD_VLD:
->>>>>> +		return &regs->vld;
->>>>>> +	case NAND_DEV_CMD_VLD_RESTORE:
->>>>>> +		return &regs->orig_vld;
->>>>>> +	case NAND_EBI2_ECC_BUF_CFG:
->>>>>> +		return &regs->ecc_buf_cfg;
->>>>>> +	case NAND_READ_LOCATION_0:
->>>>>> +		return &regs->read_location0;
->>>>>> +	case NAND_READ_LOCATION_1:
->>>>>> +		return &regs->read_location1;
->>>>>> +	case NAND_READ_LOCATION_2:
->>>>>> +		return &regs->read_location2;
->>>>>> +	case NAND_READ_LOCATION_3:
->>>>>> +		return &regs->read_location3;
->>>>>> +	case NAND_READ_LOCATION_LAST_CW_0:
->>>>>> +		return &regs->read_location_last0;
->>>>>> +	case NAND_READ_LOCATION_LAST_CW_1:
->>>>>> +		return &regs->read_location_last1;
->>>>>> +	case NAND_READ_LOCATION_LAST_CW_2:
->>>>>> +		return &regs->read_location_last2;
->>>>>> +	case NAND_READ_LOCATION_LAST_CW_3:
->>>>>> +		return &regs->read_location_last3;
->>>>>
->>>>> Why do you need this indirection?
->>>>
->>>> This indirection I believe is needed by the write_reg_dma function,
->>>> wherein a bunch of registers are modified based on a starting register.
->>>> Can I change this in a separate cleanup series as a follow up to this?
->>>
->>> I think it would be cleaner to make the changes I requested first and
->>> then make a copy. I understand it is more work on your side, so if you
->>> really prefer you can (1) make the copy and then (2) clean it all. But
->>> please do it all in this series.
->> Ok
->>>    
->>>>>> diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
->>>>>> new file mode 100644
->>>>>> index 000000000000..aced15866627
->>>>>> --- /dev/null
->>>>>> +++ b/include/linux/mtd/nand-qpic-common.h
->>>>>> @@ -0,0 +1,486 @@
->>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>>>> +/*
->>>>>> + * QCOM QPIC common APIs header file
->>>>>> + *
->>>>>> + * Copyright (c) 2023 Qualcomm Inc.
->>>>>> + * Authors:     Md sadre Alam           <quic_mdalam@quicinc.com>
->>>>>> + *		Sricharan R             <quic_srichara@quicinc.com>
->>>>>> + *		Varadarajan Narayanan   <quic_varada@quicinc.com>
->>>>>> + *
->>>>>> + */
->>>>>> +#ifndef __MTD_NAND_QPIC_COMMON_H__
->>>>>> +#define __MTD_NAND_QPIC_COMMON_H__
->>>>>> +
->>>>>> +#include <linux/bitops.h>
->>>>>> +#include <linux/clk.h>
->>>>>> +#include <linux/delay.h>
->>>>>> +#include <linux/dmaengine.h>
->>>>>> +#include <linux/dma-mapping.h>
->>>>>> +#include <linux/dma/qcom_adm.h>
->>>>>> +#include <linux/dma/qcom_bam_dma.h>
->>>>>> +#include <linux/module.h>
->>>>>> +#include <linux/mtd/partitions.h>
->>>>>> +#include <linux/mtd/rawnand.h>
->>>>>
->>>>> You really need this?
->>>> Yes , since some generic structure used here.
->>>
->>> Which ones? If this is a common file, you probably should not.
->>    Since we are using this struct qcom_nand_controller { }
->>    for both SPI nand as well as raw nand. In this we are having this
->>    struct nand_controller controller member.
-> 
-> Maybe we should not expose qcom_nand_controller at all and just share
-> the minimum bits which are really common.
+input_report_key(pwrkey->input, pwrkey->code, 1);
+                    or
+input_report_key(pwrkey->input, pwrkey->code, 0);
 
-  Will move all the header files to .c file from nand-qpic-common.h
+It's not like a press event being a rising edge (0->1) or a release
+event being a falling edge (1->0) reported. AFAICS, a reboot is issued
+whenever the value of power key is reported as "1".
 
-> 
+>
+> If you hardcode this behavior in the DT you are essentially describing
+> that the hardware is incapable of detecting the press event before the
+> release event. This is not the case, right? There may be use cases where
+> someone would still want to detect the key press (rather than just
+> release).
+
+As of now there isn't such a use-case for the HMIBSC board.
+
+-Sumit
+
+>
 > Thanks,
-> Miquèl
-
-Thanks,
-Alam.
-
+> Stephan
 
