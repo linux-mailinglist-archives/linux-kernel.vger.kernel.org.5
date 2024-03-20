@@ -1,133 +1,287 @@
-Return-Path: <linux-kernel+bounces-109160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE30888158D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:23:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057AE881592
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:25:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AD7C1C20ECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF398281D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E1454F92;
-	Wed, 20 Mar 2024 16:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C45654BF7;
+	Wed, 20 Mar 2024 16:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="di7w1HgN"
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ADfMT5GJ"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668F642044;
-	Wed, 20 Mar 2024 16:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951807; cv=none; b=IS9xN4JMeFHn0xSX7MK218bxtXUjAsDCFBmaK1Dlom0kxUs+EnUJm1dGq1gtiWs6eaXI84oSGRwT71PFuCxiIiynjfcMOtUYubKwebkPPgex81JkULCPJtfOqcsQkk3YyusPsQF5FiMRyrqmJ/GbXGgEf2f7l+g00fK656sJocU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951807; c=relaxed/simple;
-	bh=mgzJ5FaYkrhvQaKpZV1iW6pBVT3RvVqjQJGbEGYd3qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vw5fcP5B2+D5Rgcd9jgmlR6lX9XU04/azj59agomZGW1PBKEBe19k30ieqTqu0t7EESWeO01w5nPSQlEHMg7ZB62B67JOd+R84VKx7qjQdzu1PTZNLc9Fm/9Z5FIjn78VQZFpOFfSmoKXjP3VuHcKckQAZjp3Dn7kMPQ9RuwOSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=di7w1HgN; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c390f91b22so68523b6e.0;
-        Wed, 20 Mar 2024 09:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710951804; x=1711556604; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h7HCoj6FBfeuvSERwRVEKdrwb/Pg7vtXdaZdOdV0qAk=;
-        b=di7w1HgNrCtaeBmxoo/RNpFMksk5+s9N11EOnsyIdjfszRD+xybYN8uxhFNGWoLBMw
-         BgLdJlkDUfoKybPH3haIyuJQxuz3Yq8Ys+rrQcGdKL+9d1qljj6Yco8X03k4dFGU0hua
-         ixj+OnI2dNGymBmYCBFOlZh/zKVeKyJvTd8GNBJkxCEi4Ivaz4DsaEV6uJ9pJjiUsgtq
-         Nq5IGlJrj/Omp2WBi4JFO7j7XZFEZoXELCYmcTw9FgSDgw3G4Y0ynJIs5gkjn9mD6ggS
-         A7DE9GnE7njYhmHxZxnCEt4vOXdQ+lXUWFiIiNppIrlNArxrAr2RaOV7RULkwYamJnEI
-         VciA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710951804; x=1711556604;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h7HCoj6FBfeuvSERwRVEKdrwb/Pg7vtXdaZdOdV0qAk=;
-        b=tN056+Pthso3HqF4gWuYY/hbyfh83S0a4oLg+NhZm76kuOQRntL1nuAXUGjN9uG3r/
-         Mai1G/NLSyp5HKAo3Z03wU0WrM/OUOq2vbi4Bo1yvk3q+lDkSQaS3DTIR7jiT4IJYjJk
-         rEaDp1lRKFxcVb67/pAIVdq6ox9V/nnUO9uZwLhLbBHPK9LdLeMfEkxHQJWF+Vk5nIw4
-         D0lfVVYUw9eFeTUCnsgU6TZGTL7x+roAjCLYFB7WWaoYjkM5/zFLGsnUdO7M8kZci3ln
-         ZhuOC27fZmh+G4hWzCVSWvpXSDFVBWbOlNvrXsyXPk0UgAv6KBnpcYxq+M5LW0b9/znI
-         sowA==
-X-Forwarded-Encrypted: i=1; AJvYcCXa3PdpS9rmMc3UyFAbh0TIBjgYqhEEc/N6fGNTaQTmz5QGEeXPe7R87rleP/I84siFrdWZawvAkEXbCChIb+0GDUlwuqugI+PI3yO5BgdN+cEqZDwFxr/zkz0iGJndgOsN8lOO3Lzekg==
-X-Gm-Message-State: AOJu0Yx4pGHMWgB2/gB+kZgpi+NRn+FJkE6oijvbV4sutDmdjOIoTbXn
-	cipYf817/eEWTNdtCiB+8taFOxUCv2z3bxRDLw3l03CwWrjFxx0W33XekYOd
-X-Google-Smtp-Source: AGHT+IFMmscs+FUX4ggpUYRNQxo5IayKC9D7xsggUTXCObaS2Z0fpW7smOzoCqb6wznemN2yyO9DXg==
-X-Received: by 2002:a05:6358:726:b0:17e:b7a0:2ecd with SMTP id e38-20020a056358072600b0017eb7a02ecdmr7070587rwj.0.1710951804370;
-        Wed, 20 Mar 2024 09:23:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i2-20020a632202000000b005e2b0671987sm10995523pgi.51.2024.03.20.09.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 09:23:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 20 Mar 2024 09:23:22 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] ext4: Add unit test of ext4_mb_generate_buddy
-Message-ID: <30a8ce01-84d1-48ef-a93d-d14cc61723e3@roeck-us.net>
-References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
- <20240103104900.464789-3-shikemeng@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8B14F1E5
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710951898; cv=fail; b=T7En3ZmmxTH7WWnezzIQYIB8MA7o5GJpxGeFd+3sOPB9yNJ4LsD5vxY3vR/drugBcOWyddlYcsxhy4sjWBQZYNm/h/v58PU67vnoOM+592zFcTdO58Dy5wgTJsjH0kRaFc9Sonp5mlxJIOY+encGE5XHo/+wOyF62h9rUUOh5zQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710951898; c=relaxed/simple;
+	bh=7RmQZwieo+GL4Vu9Gc24Y2R+f/COXG5qM9WoYb5O2jI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sa3I2hJ/mgcxJQYGx7nxAY2OCMflsN5k+/OZVQys3PkPeu97pfcBj0evFQA+O2xto+DT+muv+Yj1Jche1FgYvjulCcyvIYGdLttaabKKSkEDOn034LtLgTOBbXiQBiABCoyFOAPNVByU9vqIipQ8VmFcu8/AXwYDbBA23IP6QZw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ADfMT5GJ; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A/lVuVuHt9sTwvSA5K00cDdqhaVOtFletBeDyk8XnhxBjQvMAVE4uRn06j5HUS497imsI+AnLwowtY6zecDHDOWFgjvuW1cs5v3gaMqdhm+KHZUnvHFI8fFjLRwdb2us0TDWJKF5dH06HfpeaQpf3qK94HEA/v7xIWr4K1DsEXaR2DLhrr2bC+wRsjVjnSO3pdywvhJnG5fCXI4EIjjkEm+bW+bF+aIefghnhutHDNcoDXlSromBWmoPqS//jUqv3dz2qNaEVOsBIJmgdQv8edwhKt3H9mS6p4JG/K2UOsdt+A8SKko/WSXSBXHZ6OVZAnhMqC/JVGhHETcHV/chpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NvskVY2Hke0bUzLx+I9GIqfbD3O/4mepOJrhxn24RmE=;
+ b=MWi0YOprpBjueG6PUFnnBMSrfTeSzvni1JjPiAyziK1+nHsaatX/wugRlTFhNHYGPGkt3WW+BAfaImuA35uYvXad4lqMGrM0lCd+ih5hz589Y0tzE9oWbtoYLhY/xOaMLHMimdv89PKWQ5eLvppOmaoDIPj5aViXSGbpMOEG3W2Ex1iOXWzZIFrER2xTqbWwxj4VK3EI7CMBxXAy9NTFB5DkV8LhLw/44bF4Dq7jemroa8P7gI26wKMdSfCMdDqj2EdMtvi8C1S4IfNl1OU0/uZPYCRdCpTaTj4KkqRw8yijiMCmdt3JhEaQrKZ4T0MwFZhHcMkTm4Pa1GXH6yTWyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NvskVY2Hke0bUzLx+I9GIqfbD3O/4mepOJrhxn24RmE=;
+ b=ADfMT5GJWjbSDpRuPAlOD/z9q31ids0zC7UeuDuOSVIhWirBzg/IYPWYgfujBnGd1HuMc4hf1lhB9zxDqyxdio9t3vRBNlsb8Xtdd15U9S8aJNBPRtEeo53Omwf1BmQYyF/uaQqDR/AJ5I228wHsF8lzzHwIpmR/s/nAz5Lupe9H+rY4KjwUwGTo2Gg8+gPs01Ilu2h2vlQzDo1nP00vcJRL2j2vcQGE05NxgbTt1GOhWzq/65VZg1M04Obh1OFkHzPNEeibceXF1cC+pPJCfQoFIHXVb36IwPtn7BatThxgWImSMtQj4IX+rELZt9WWJcORttavmuUbpxd+jzbtZA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ MN0PR12MB5881.namprd12.prod.outlook.com (2603:10b6:208:379::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Wed, 20 Mar
+ 2024 16:24:52 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7386.031; Wed, 20 Mar 2024
+ 16:24:52 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Yang Shi <shy828301@gmail.com>, Huang Ying <ying.huang@intel.com>,
+ "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ "\"Yin, Fengwei\"" <fengwei.yin@intel.com>, SeongJae Park <sj@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mm/migrate: split source folio if it is on deferred
+ split list
+Date: Wed, 20 Mar 2024 12:24:46 -0400
+X-Mailer: MailMate (1.14r6018)
+Message-ID: <2FA90B72-60FA-4D5E-A66D-D135B64C7C5E@nvidia.com>
+In-Reply-To: <ZfsIp8GlLx2LoW2G@casper.infradead.org>
+References: <20240320014511.306128-1-zi.yan@sent.com>
+ <ZfsIp8GlLx2LoW2G@casper.infradead.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_9C819F3A-5E2A-4F05-ABF9-0B5F9C715F21_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR15CA0037.namprd15.prod.outlook.com
+ (2603:10b6:208:237::6) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240103104900.464789-3-shikemeng@huaweicloud.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MN0PR12MB5881:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92ffb4b7-7af2-479b-9b53-08dc48fa4518
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6HjKa4nl61BbCxDGyqfbRuEk8FvjSjWaQBGmtFQFB8RPTqDX1EWdWuFo/5KfFEBzEo+DXH4UnHE2ipFPNZzD4SmJfG2dARaMIln0M+5BVXrgM1J2X1L0IJG73bktfZZ4Lt38fKffQ1VZ9/2r+8W7QuPJggdXa0z3WPMOf7g4ij4NVdjAo+76iyxblyP8aAUjw1CpH+Mpg8DkirJvTClGR0reSDVYEdiW/QBf6GC80UDZ61JAK+PuV2mLbQCoAWMljtJwK7Y7TXscZIqxMdzIkQ6spcDGhqGyFVTwW8AXnfARXaJsO8WankTVYAjFVoIS7lyM5XtrvZrQWATdtbxfkIrqihiMeUm3LfB6IXiPo4BEOiCW/TXzoR9kpteRdbWQkC4pqM7yMBLkUk3W8pit9HTiy8UjpGtvK3uFloeiRc+ahgotcK0+ceeDz9RAVHyk5h8k/rheEUhl0SUT1YKScBkAqkriUC4iNuCY3tUZGXsFFnvx3y1PyoxpJbVIgVNVrkvXjCSh8n0RrAkkZu5zYyfm6cXqNwGoM2hhTXhM+HNfLiks8KfDMSocw+/jREFquLsccSMH7VGlAJP0PJDgks2FkX9WrwvGnzRlJ5A/3K8tjRfoeJocCt4CVkXevn6Elecl0MgA/O1DwNw4CH2e0KKKASiqfKpe87hnoAdf9BQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?FFmH1Rgun0JuYI6IRl6HHGHVfYIiIIEjvYx9VUwco8g6wkmU+JSFVubtA2vN?=
+ =?us-ascii?Q?kM3/C2UX9EpVedE2R4hevrk8dF/jbO2q4nsRRKsoednSoyr8y4F4WZ+u3KFO?=
+ =?us-ascii?Q?F+7qWfyG5jJeg38KtxtZnbpzN7SPiZgzOAyLrrvJ0LEubXinOGJavMBLo6fG?=
+ =?us-ascii?Q?vbXrs6/fCYgyMw3c8rjzfkyFkJuWeJgFJemGlKJAhziqD49638ro1CBBcFqL?=
+ =?us-ascii?Q?PdQK7slsc2TmkOdV9X5wElaGsEUjUyAjZMoXiCBwkWAUK0QS1g4P7BW5iDPm?=
+ =?us-ascii?Q?W4R8kOY2zg/8ypLneW6Iw4lKoBh8ZZNooeMpbSIMFHEq+RWxdNWup5SOPXyZ?=
+ =?us-ascii?Q?x+i4SRJvVRyZ8IbJHLIdYc5Kg9fr/tvlTQZvsbHODXmi2nB+2yNui8GHOQY1?=
+ =?us-ascii?Q?u1pwtgjmKsvmJbh2l3dqqac4zaYSN7lQRqu6eLiI6yDSCicoVmrzqWoKQ8NS?=
+ =?us-ascii?Q?vjdU2l4HlZ6l/vD6vx13veqtufxpq31FzYbQbcSxdpWEHbrZN6G5+/mbV42K?=
+ =?us-ascii?Q?+jZwb72FTtpMfkfFspTmLqF7VPphye7tqqotxKhwtfG3c9yO+mY4d6w2f91B?=
+ =?us-ascii?Q?pC6wgbMvC92c9oTVNdQ22wrW3V1ZjisvpZ/YXKQPQoJBRBPsy2xuswmsAcOH?=
+ =?us-ascii?Q?seAns/ZHDKl4ym/W/KeKc0lSHO/NqJr7DaxzOLNy/VzNRGdRLgzlLjmN+wqy?=
+ =?us-ascii?Q?XmNOtxp5wX691xClCsgxxwtKKZtWSFUG7wFYb7tpdMAngdbuhdRgMH287UUj?=
+ =?us-ascii?Q?UrR29j2FTRfiY7lZPNYHa+ZdwDzW2WwjXS+JMkXJfle/+2aJ/K6X6DkyuwQ+?=
+ =?us-ascii?Q?AHNOa0fCdBEFp8SDQNpE266WZPJiUMWPaZs3KAnnroDDS0KwiHRFyvDvvhJM?=
+ =?us-ascii?Q?PqoNCEFENEmQKC3mOiudqxUrf/8Oi6gWq9uDP/3WLIec/X54UemQn48XCZzN?=
+ =?us-ascii?Q?xlggysz5axbCO7tVZN3F6AyiYMMReE84V1D/q4D8tjkItzKv1JRJFA5UVQ23?=
+ =?us-ascii?Q?ptNmzgFbz9edwPHI53WIGGwb9KlSszrFEbw40Wu+pTpcSekmH2x/cLXzYMbQ?=
+ =?us-ascii?Q?ZhDh9YexUGwJ/nm6jDURrnFzmGWyjPr0htpqOu6Hh/7iFURlhCchBE8IXpoP?=
+ =?us-ascii?Q?TeboJ66Yyk7Ielg7y+fiqbbS+AgW8NKu7J8KzT7rkBeut6GeUm+DFQRT/iNb?=
+ =?us-ascii?Q?EcMbG443FJTH3wVr9i5rMClmNbI5l0tt8MxYY95GvMCoThYU+nZ9g6gH4rgh?=
+ =?us-ascii?Q?ybDUVslL08KPvZ12nVkB1F2NWfwRQkagnSqAtEdcgmfR+o6tgRCAUL8sYG78?=
+ =?us-ascii?Q?MPg/sGJ4zr8j2zxKCvwLkZqwYuTfJ5r6+f23z52ziI0UjEgfnTCobKWInXD8?=
+ =?us-ascii?Q?VTj75vJwgeNXwQIPiYzH2tltx3yoeEEUxQjodsSWk19m7sihvglEADHeINLw?=
+ =?us-ascii?Q?f3RmRWwQU26o4fB5Gxe8arGpdDuzUw2DRsS4m7thhAfuOaXy0CxC2SRgApu5?=
+ =?us-ascii?Q?T9jmmhJnYZ6zwxT7JwkP1XX+pwXcB2W0LNcmOcx8GDE2M5slyREaFrUH7shb?=
+ =?us-ascii?Q?jRTqSwoXXl4hTJE91NE=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92ffb4b7-7af2-479b-9b53-08dc48fa4518
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 16:24:51.9432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +WFFFfMNfaZnQSIX+EXmFc8txrwIDFXyRTyeV+ayjzjiFYdXQn0M50IXMPTktofW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5881
 
-Hi,
+--=_MailMate_9C819F3A-5E2A-4F05-ABF9-0B5F9C715F21_=
+Content-Type: text/plain
 
-On Wed, Jan 03, 2024 at 06:48:57PM +0800, Kemeng Shi wrote:
-> Add unit test of ext4_mb_generate_buddy
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On 20 Mar 2024, at 12:02, Matthew Wilcox wrote:
 
-With this and other new ext4 tests test in the tree, I see a variety
-of backtraces in the upstream kernel if debug options are enabled.
-An example is
+> On Tue, Mar 19, 2024 at 09:45:11PM -0400, Zi Yan wrote:
+>> +++ b/mm/migrate.c
+>> @@ -1654,25 +1654,65 @@ static int migrate_pages_batch(struct list_head *from,
+>>
+>>  			/*
+>>  			 * Large folio migration might be unsupported or
+>> -			 * the allocation might be failed so we should retry
+>> -			 * on the same folio with the large folio split
+>> +			 * the folio is on deferred split list so we should
+>> +			 * retry on the same folio with the large folio split
+>>  			 * to normal folios.
+>>  			 *
+>>  			 * Split folios are put in split_folios, and
+>>  			 * we will migrate them after the rest of the
+>>  			 * list is processed.
+>>  			 */
+>> -			if (!thp_migration_supported() && is_thp) {
+>> -				nr_failed++;
+>> -				stats->nr_thp_failed++;
+>> -				if (!try_split_folio(folio, split_folios)) {
+>> -					stats->nr_thp_split++;
+>> -					stats->nr_split++;
+>> +			if (is_thp) {
+>> +				bool is_on_deferred_list = false;
+>> +
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +				/*
+>> +				 * Check without taking split_queue_lock to
+>> +				 * reduce locking overheads. The worst case is
+>> +				 * that if the folio is put on the deferred
+>> +				 * split list after the check, it will be
+>> +				 * migrated and not put back on the list.
+>> +				 * The migrated folio will not be split
+>> +				 * via shrinker during memory pressure.
+>> +				 */
+>> +				if (!data_race(list_empty(&folio->_deferred_list))) {
+>> +					struct deferred_split *ds_queue;
+>> +					unsigned long flags;
+>> +
+>> +					ds_queue =
+>> +						get_deferred_split_queue(folio);
+>> +					spin_lock_irqsave(&ds_queue->split_queue_lock,
+>> +							  flags);
+>> +					/*
+>> +					 * Only check if the folio is on
+>> +					 * deferred split list without removing
+>> +					 * it. Since the folio can be on
+>> +					 * deferred_split_scan() local list and
+>> +					 * removing it can cause the local list
+>> +					 * corruption. Folio split process
+>> +					 * below can handle it with the help of
+>> +					 * folio_ref_freeze().
+>> +					 */
+>> +					is_on_deferred_list =
+>> +						!list_empty(&folio->_deferred_list);
+>> +					spin_unlock_irqrestore(&ds_queue->split_queue_lock,
+>> +							       flags);
+>> +				}
+>> +#endif
+>> +				if (!thp_migration_supported() ||
+>> +						is_on_deferred_list) {
+>> +					nr_failed++;
+>> +					stats->nr_thp_failed++;
+>> +					if (!try_split_folio(folio,
+>> +							     split_folios)) {
+>> +						stats->nr_thp_split++;
+>> +						stats->nr_split++;
+>> +						continue;
+>> +					}
+>> +					stats->nr_failed_pages += nr_pages;
+>> +					list_move_tail(&folio->lru, ret_folios);
+>>  					continue;
+>>  				}
+>> -				stats->nr_failed_pages += nr_pages;
+>> -				list_move_tail(&folio->lru, ret_folios);
+>> -				continue;
+>>  			}
+>
+> I don't think we need to try quite this hard.  I don't think we need
+> to take the lock to be certain if it's on the deferred list -- is
+> there anything preventing the folio being added to the deferred list
+> after we drop the lock?
 
-[    6.821447]         KTAP version 1
-[    6.821769]         # Subtest: test_mb_generate_buddy
-[    6.824787] =============================================================================
-[    6.825568] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
-..
-[    6.894341] ok 7 ext4_inode_test
-[    6.895411] =============================================================================
-[    6.895777] BUG inode_cache (Tainted: G    B            N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
+No. OK, I will use the less hard version.
 
-Another example, from another test run, is
+>
+> I also don't think we should account this as a thp split since those
+> are treated by callers as failures.  So maybe this?
 
-[    3.938551]         # Subtest: test_new_blocks_simple
-[    3.947171]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    3.952988]         ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    3.958403]         ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[    3.958890] =============================================================================
-[    3.959159] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xffff8de881adbf68-0xffff8de881adbf6f @offset=16232
+I think we need to match the stats with code behavior, otherwise userspace
+caller can get confused by the results, where only a subset of a folio
+is migrated and split stats and failure stats are not bumped accordingly.
 
-Another one:
+>
+> +++ b/mm/migrate.c
+> @@ -1652,6 +1652,17 @@ static int migrate_pages_batch(struct list_head *from,
+>
+>                         cond_resched();
+>
+> +                       /*
+> +                        * The rare folio on the deferred split list should
+> +                        * be split now.  It should not count as a failure.
+> +                        */
+> +                       if (nr_pages > 2 &&
+> +                           !list_empty(&folio->_deferred_list)) {
+> +                               if (try_split_folio(folio, from) == 0) {
+> +                                       is_large = is_thp = false;
+> +                                       nr_pages = 1;
+> +                               }
+> +                       }
+>                         /*
+>                          * Large folio migration might be unsupported or
+>                          * the allocation might be failed so we should retry
 
-[   18.730473]         # Subtest: test_new_blocks_simple
-[   18.760547]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-[   18.778477] ==================================================================
-[   18.778950] BUG: KFENCE: out-of-bounds write in ext4_mb_init+0x5d7/0xa60
 
-This is just a sample, taken from a quick look at test results.
+--
+Best Regards,
+Yan, Zi
 
-Are those backtraces expected ? If so, would it be possible to execute the
-tests without generating such backtraces ? The backtraces, if intentional,
-hide real problems in the noise.
+--=_MailMate_9C819F3A-5E2A-4F05-ABF9-0B5F9C715F21_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-Thanks,
-Guenter
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmX7Dc4PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUW+YP/jh7W7lho5upV/0bVRYb3nWq1V+K7QC9PrGh
+epZEMOPa7qXebfB3xmMFTMtjSB07JAuaj+YRxhi+i7e1nxfknlYA815fHE7Mn57k
+L2X/UogkRdHxN+FmFrKT0x9J36euHdLYVf5oQx3e5TpW9U0abTwmq188J99ETTu2
+6V0FrGC28SU7ZCIfgqbg6jPWRvwTAYjUWjLWHmqrtVpiMvGcE6zxUANbmb503viN
+UQZrI1Y6fcAfthSfZTbvhgjOAQ2vJn9e0Fznx0Dcp8amEsIriTmJjlyw+5ImmzD8
+t7za1mg4Em6zM/95LbhkY9NYk5IkurvsuLJQUAjbh4qDHjrqufuElGoZDBQWaulO
+VJwMCta04ssZawnXzcHkan8nvzwWC9UOpe003nuwhRX10xmORuiRJ44isPs+WTgI
+kKJB1eg0CtKuzq5mSdO7sXvmJx3gis7Arpsun6SCFXmFp5+1mpYhdGiRlCEpyZ1w
+snCQ5zdtQP7XxwMXY+3LeHmSXq5pJo5S0iFwSsVw7j6ZGdNO9DnEsqSggi66t+8D
+msyjLhjm6IJGrr0W5QhOPIPP9ay2cAJ0mOU1fIdxQ3QMpXKXY3of13WBoGSizcLW
+egNwtDg/ohe4wVHBawnYFMSqGc95zyERmR0FUB8vmOZXoVxKPgK18ywr5S2dZ4Te
+zXSRBT5m
+=KwRb
+-----END PGP SIGNATURE-----
+
+--=_MailMate_9C819F3A-5E2A-4F05-ABF9-0B5F9C715F21_=--
 
