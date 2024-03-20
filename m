@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-108943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E9D881250
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:28:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 287E1881251
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72675B24542
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:28:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584561C226C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32DCD42065;
-	Wed, 20 Mar 2024 13:28:22 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D43A47F63;
+	Wed, 20 Mar 2024 13:28:23 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05D140BE5;
-	Wed, 20 Mar 2024 13:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BFC40C09;
+	Wed, 20 Mar 2024 13:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710941301; cv=none; b=nJOzlSQgu2rp4GpUnTiJ03r9WgA/TBUYgVhRNaVoEUeMyJrMP50A4OIWfdAAnL6veYmbjxLJ0D67cOLXYzPGki+hP16az8djuC9HX8ktgNbdBJoCdELjgOizz8SwmitsVkZeYOSBhOuNU6OqEMnWb4PcyLcNgRcdYlrmhQ5RSzY=
+	t=1710941302; cv=none; b=uqA+YnJgh3WSDvQJUl8umMsPKpl8XqHlKAXrdn/iuZIQQ5ayryTcr6KPCjXZLYcUYNK31VTdtAz09DRzFxiennEeXfWaz6XEYyYcSwTW4DY0RcTKIA8pk7kO/LIBPGPG5w1DE/C5XJfLA7szUPuoGFs/NLYpLsFM2NTDcWiIg2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710941301; c=relaxed/simple;
-	bh=erOBzZetGQeOc5+oyau5RI5nfAQAu9VK/IeB1+EeIo4=;
+	s=arc-20240116; t=1710941302; c=relaxed/simple;
+	bh=PAuV3wGybOkWPg2txqBYQgpyb2BYdYoi5e0uWKeMlW0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=egdv//vjTLv/Dnwgm5FCHtX9kgu/A4joSMg560AJ/lqf+L8Vkg7X4iraBjKnGhniEcDyY5FEBeuNKtIfCAcJQuMxVkVSdlq2s6nDg/9TxlsyyDxvNmXchwqO9tuVfIjyd+i7aKcERnxuWoOL3K4YTia164c1TQi/yRc4qdcw5JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=lTkfP24wKbTOtxboZMRvKWy4OenfC1tmxDwXRSmTPoGjElILx8jrFMCsdidL+bvGfvEQvc3GD9QhrFlxH/RQN/QGZat3L6aAWumeZJv+Xkg2BfwkBv44WFcgH6/ahSKLgJ6vRr0H2GKuuftgdbXhOOBXdxnZndQCUK+/mlZAcHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V08VB5Qf9z1h2mb;
-	Wed, 20 Mar 2024 21:25:38 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4V08XC5lKGzbdBZ;
+	Wed, 20 Mar 2024 21:27:23 +0800 (CST)
 Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1AD731A0172;
+	by mail.maildlp.com (Postfix) with ESMTPS id 89F27140158;
 	Wed, 20 Mar 2024 21:28:12 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
- 2024 21:28:11 +0800
+ 2024 21:28:12 +0800
 From: Ye Bin <yebin10@huawei.com>
 To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
 	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
-Subject: [PATCH v7 3/5] Documentation: tracing: add new type '%pd' and '%pD' for kprobe
-Date: Wed, 20 Mar 2024 21:29:22 +0800
-Message-ID: <20240320132924.2802187-4-yebin10@huawei.com>
+Subject: [PATCH v7 4/5] selftests/ftrace: add kprobe test cases for VFS type "%pd" and "%pD"
+Date: Wed, 20 Mar 2024 21:29:23 +0800
+Message-ID: <20240320132924.2802187-5-yebin10@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240320132924.2802187-1-yebin10@huawei.com>
 References: <20240320132924.2802187-1-yebin10@huawei.com>
@@ -59,40 +59,66 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  canpemm500010.china.huawei.com (7.192.105.118)
 
-Similar to printk() '%pd' is for fetch dentry's name from struct dentry's
-pointer, and '%pD' is for fetch file's name from struct file's pointer.
+This patch adds test cases for new print format type "%pd/%pD".The test cases
+test the following items:
+1. Test README if add "%pd/%pD" type;
+2. Test "%pd" type for dput();
+3. Test "%pD" type for vfs_read();
+
+This test case require enable CONFIG_HAVE_FUNCTION_ARG_ACCESS_API configuration.
 
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- Documentation/trace/kprobetrace.rst | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
 
-diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-index bf9cecb69fc9..f13f0fc11251 100644
---- a/Documentation/trace/kprobetrace.rst
-+++ b/Documentation/trace/kprobetrace.rst
-@@ -58,8 +58,9 @@ Synopsis of kprobe_events
-   NAME=FETCHARG : Set NAME as the argument name of FETCHARG.
-   FETCHARG:TYPE : Set TYPE as the type of FETCHARG. Currently, basic types
- 		  (u8/u16/u32/u64/s8/s16/s32/s64), hexadecimal types
--		  (x8/x16/x32/x64), "char", "string", "ustring", "symbol", "symstr"
--                  and bitfield are supported.
-+		  (x8/x16/x32/x64), VFS layer common type(%pd/%pD), "char",
-+                  "string", "ustring", "symbol", "symstr" and bitfield are
-+                  supported.
- 
-   (\*1) only for the probe on function entry (offs == 0). Note, this argument access
-         is best effort, because depending on the argument type, it may be passed on
-@@ -113,6 +114,9 @@ With 'symstr' type, you can filter the event with wildcard pattern of the
- symbols, and you don't need to solve symbol name by yourself.
- For $comm, the default type is "string"; any other type is invalid.
- 
-+VFS layer common type(%pd/%pD) is a special type, which fetches dentry's or
-+file's name from struct dentry's address or struct file's address.
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+new file mode 100644
+index 000000000000..21a54be6894c
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+@@ -0,0 +1,40 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Kprobe event VFS type argument
++# requires: kprobe_events "%pd/%pD":README
 +
- .. _user_mem_access:
- 
- User Memory Access
++: "Test argument %pd with name"
++echo 'p:testprobe dput name=$arg1:%pd' > kprobe_events
++echo 1 > events/kprobes/testprobe/enable
++grep -q "1" events/kprobes/testprobe/enable
++echo 0 > events/kprobes/testprobe/enable
++grep "dput" trace | grep -q "enable"
++echo "" > kprobe_events
++echo "" > trace
++
++: "Test argument %pd without name"
++echo 'p:testprobe dput $arg1:%pd' > kprobe_events
++echo 1 > events/kprobes/testprobe/enable
++grep -q "1" events/kprobes/testprobe/enable
++echo 0 > events/kprobes/testprobe/enable
++grep "dput" trace | grep -q "enable"
++echo "" > kprobe_events
++echo "" > trace
++
++: "Test argument %pD with name"
++echo 'p:testprobe vfs_read name=$arg1:%pD' > kprobe_events
++echo 1 > events/kprobes/testprobe/enable
++grep -q "1" events/kprobes/testprobe/enable
++echo 0 > events/kprobes/testprobe/enable
++grep "vfs_read" trace | grep -q "enable"
++echo "" > kprobe_events
++echo "" > trace
++
++: "Test argument %pD without name"
++echo 'p:testprobe vfs_read $arg1:%pD' > kprobe_events
++echo 1 > events/kprobes/testprobe/enable
++grep -q "1"  events/kprobes/testprobe/enable
++echo 0 > events/kprobes/testprobe/enable
++grep "vfs_read" trace | grep -q "enable"
++echo "" > kprobe_events
++echo "" > trace
 -- 
 2.31.1
 
