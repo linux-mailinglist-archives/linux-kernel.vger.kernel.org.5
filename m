@@ -1,139 +1,99 @@
-Return-Path: <linux-kernel+bounces-108649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B32A880DE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:53:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4109D880DEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B2851C20DD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:53:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720161C21F64
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272F43D549;
-	Wed, 20 Mar 2024 08:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4ED39FEF;
+	Wed, 20 Mar 2024 08:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="d5+yCEKF"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svykZRpU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AAE3D0D1;
-	Wed, 20 Mar 2024 08:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A0D38F87;
+	Wed, 20 Mar 2024 08:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924763; cv=none; b=aBK/KJa5GDBIqq6fSjm4MHVV3Y4QYq80FS/fixzd8MEEXEbibiTOUlotjnXgBzUyJCzoJhDLa+riMCsFvPPAjaEbUWg+SNHjSaxR6kRuwUtlZ+pH795bD8QhyIoP5n1kTBfEGFk7fsdtVZDyEFZgsMDukUglRBRCk9cvIsc+F0c=
+	t=1710924800; cv=none; b=XORFvZ5W4slC1/rsu3cCr1U20PsZ1loYLuH6JeRUgWfBFX9frucv39NftOgmbtUMJ9NgERL/HPAos2UL9NfkQLK4a6G/8gsjY75l4J/zIxxwT/B4H8ckF0LCbDpt5Mg/zd92AVuQN9bkQeNOiNtlUJXx8m1K2ltwYN14De7fBXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924763; c=relaxed/simple;
-	bh=Y6mEQ/hFHTShTOWNUHTojQ/qnx61oBbZk6LyN0SEfHM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dT4p+YqbyllXPPJUtV6zMttIAzBDTegjBzMw3CqMqRVjSKTkksg8+kXnqnqC4LrmhClVmGYhg7ayG4cdkvvYPUNAVGA09rW6ZqrXFXhaNh5ja0KnMEbEslKO8o7iJD4CNMoMf3E/c6kMj+Al66mzEco7pBLGxxOfIs4SMb8X6eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=d5+yCEKF; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E68581C000D;
-	Wed, 20 Mar 2024 08:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710924758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxoLGnpPdcI2kqvbcSNFfRIJr6iOEENAEB9wuOb1S70=;
-	b=d5+yCEKFkAGewcctxM5DOA0phfHQIWulV63wZ7RifzHZ74xKJxu2hr/yHHcVexxkmJz564
-	ueoVBoSPeJ84KVaE5hidOSM6p51WiderjDbSZHUwDBvbrAvDwpX+Tsrmst6Wl95/EwE4ZW
-	rOxG33jRYTGdF3pDl65J9e2UOB17D7l+djRToJRh3x+A0+kCKO1lvMbzUE+W+N6c2msjSu
-	L7UV4T6ir0s6IhaFcRbIPa3bp9PLejvORCQ7xjYQJEWiXjMaJmDRCqx7rz13ol0EceEjJe
-	kUNDmRWVVWXtJEUopKTaDVNb3moXPR7RXtIuDiNXQwaNs6OeyRFMyPAc4Lf+JA==
-Message-ID: <0bb26153-8bcb-475f-8892-5eb925fec538@bootlin.com>
-Date: Wed, 20 Mar 2024 09:52:37 +0100
+	s=arc-20240116; t=1710924800; c=relaxed/simple;
+	bh=Hm2riJtd650UaySoI5zk2/Fz4N5cO62JP24YUJdeUFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ov1M2vhL6dzLThrz7HI/iLzzqqUgtzC+qWLjPHZDncVUfxtkT5uMHi2MKrqpLyny1Ei4jGsXXEIM96wL9nAh3gxEgG0+r9vSO2HZQ6ib74GTW82g7sifukGZLB+Tw8DYZRsl3otoqUMm3/nn1yhRuosUmXag/u6odpG0wwy3BG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=svykZRpU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61CE8C433C7;
+	Wed, 20 Mar 2024 08:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710924800;
+	bh=Hm2riJtd650UaySoI5zk2/Fz4N5cO62JP24YUJdeUFo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=svykZRpU4KKqc2BI9hhjROoJQvQX+adJEzBEJQogM9CzMFfwi51Lb3qN7cM+l0Yq9
+	 uO8W+G8fURfyMf0bqCQ9jtdwcVTCuaRiEgWb+LMb507VXhi9si6HPAuENby7dNd7Nn
+	 E6ruFi0wK0ahIxkVK+fbLrm8k0/47aMz4/KKlypzdGGUhapz6CbaBGAvQckzVjwZdo
+	 lKW7RoTePwUyUTYl8qoxdMvV/Z5B+ffK+dHR7tnswe3/5svHtaDOH9+QIUmzhPblgf
+	 LbfDovXAU15Vp5yr/tqWsqjFAhkf/3tx+2HF5EN5DXuaUpMx37z7XFYfxICRbl60aq
+	 bonsoz3/1HMqg==
+Date: Wed, 20 Mar 2024 09:53:14 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: mani@kernel.org, kw@linux.com
+Cc: niklas.cassel@wdc.com, bhelgaas@google.com,
+	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
+	jdmason@kudzu.us, jingoohan1@gmail.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
+ interpreted as a free ATU slot
+Message-ID: <Zfqj-mvpG442eyt2@ryzen>
+References: <20240304224616.1238966-1-Frank.Li@nxp.com>
+ <ZfGJUDoGnFXKBoG0@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] ASoC: ti: davinci-i2s: Opitonally drive DX pin
- during capture streams
-Content-Language: en-US
-To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-14-bastien.curutchet@bootlin.com>
- <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfGJUDoGnFXKBoG0@ryzen>
 
-Hi Péter,
-
-On 3/19/24 19:29, Péter Ujfalusi wrote:
+On Wed, Mar 13, 2024 at 12:09:04PM +0100, Niklas Cassel wrote:
+> On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
+> > dw_pcie_ep_inbound_atu()
+> > {
+> > 	...
+> > 	if (!ep->bar_to_atu[bar])
+> > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > 	else
+> > 		free_win = ep->bar_to_atu[bar];
+> > 	...
+> > }
+> > 
+> > The atu index 0 is valid case for atu number. The find_first_zero_bit()
+> > will return 6 when second time call into this function if atu is 0. Suppose
+> > it should use branch 'free_win = ep->bar_to_atu[bar]'.
+> > 
+> > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
+> > it have not allocate atu to the bar.
+> > 
+> > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
+> > Closes: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
+> > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
+> > Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
 > 
-> 
-> On 15/03/2024 13:27, Bastien Curutchet wrote:
->> The McBSP's DX pin that outputs serial data during playback streams can
->> be used during capture streams to repeatedly output a chosen pattern.
->> For instance, this can be useful to drive an active-low signal during
->> captures (by choosing <0> as output pattern).
-> 
-> Are there really any other use of this than to pull down or up the DX
-> pin (0 or 0xffff)
-I don't know, indeed today I can only think about these two patterns.
-I tried to do something in a 'generic' way so it can evolve if needed.
+> Any chance of this fix being picked up?
 
-> If you just use the pin as GPIO then you don't need to change anything
-> in the driver, The playback would not erach the pin, so no need to block it.
-> 
->> Enable this behaviour when the device-tree property 'ti,drive-dx' is
->> present. DX pin is driven with the provided pattern every time a
->> capture stream is launched.
-> 
-> It is an interesting use of the hardware... You are controlling an
-> external device (light an LED when capture is on)?
-
-Yes I control the chip select pin of the ADC that is sending data to DR 
-pin, that's why I need the DX pin to be synchronized with capture
-streams.
-
->> This property is not compatible with classic playback stream so
->> davinci_i2s_trigger() returns an error if a playback stream is started
->> while 'ti,drive-dx' flag is present.
-> 
-> Propbaly add the .startup() callback and block the playback right there?
-> 
-
-Ok, TBH my mastery of the sound subsystem is not high enough to have an
-opinion of where this should go so I'll trust you on this.
-
->>
->> This has been tested on a board designed of a DAVINCI/OMAP-L138 where
->> the DX pin is linked to the chip select pin of the converters of the
->> capture side.
-> 
-> Isn't the DX will be pulled down as soon as the McBSP is enabled?
-> Can you just re-configure the PUPD_SEL for the pin group to make the pin
-> to be pulled the other way?
-> 
-
-Well, the acquisition chain in my use case is a bit convoluted. The DX
-pin's main purpose is to drive ADC chip select but it is also connected
-to other components and all this needs synchronization upon captures.
+Gentle ping.
 
 
-I'll integrate your feedback about the code in next iteration, thank
-you.
-
-
-Best regards,
-Bastien
+Kind regards,
+Niklas
 
