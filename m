@@ -1,180 +1,175 @@
-Return-Path: <linux-kernel+bounces-109136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DF9388151D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:01:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC0B0881520
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9259282ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:01:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 311A11F2168A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0E154BCC;
-	Wed, 20 Mar 2024 16:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07ADA54744;
+	Wed, 20 Mar 2024 16:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zXVPuvRs"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fGBL4m1W";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fGBL4m1W"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D7652F78
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:01:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599CB36137;
+	Wed, 20 Mar 2024 16:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710950506; cv=none; b=cpwHOJaMJQOCo85VBZ+bgE5URV/oJCJ/MYSTRbKHUQUaNmHmlVWxCuTrfALHunyFcuWOml/+xamhcIDsXI1KVf12Mjte55JqVOVL3Ad68d9eqp3uTrQBi2LZqRdTYO3ZC3UdCfJgfHAcrF5LFsnSFXKkzHCaZ2RtQzBPCm79AqA=
+	t=1710950544; cv=none; b=Me2TtVi4bXHHwcqbMlMccmD0sShOcu9+Y6Bpx3tg9CFSV+gH+G62NGeuEedpj9wSH/9quFL9M4m8qrjiBbulKaekvLZhgP37pU3+mxgCg0kTBn43U0dN8gxVumVwJgyE33rNoyvxbCiYlm8rzCvRVm3ntR/BCCixLzQ73LDHfDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710950506; c=relaxed/simple;
-	bh=kJOH+rnAS2hEXejfUJZwazxTlSB8DY7It82kT/meYn8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KSp03qq3b7qbWFLkG48GS4DK3P7u68DM21BKcUc180wq3+UiqkuPcbTGDxyu8bvxr56oTO1la7eLL0OW1x7df3B1/aQNaIJJskbGMFEiOWnvwPo6I1lHhl96SChqODvA3u8N9w547ZwR65fQFHFLcpaoPCMnTzTDBJuYUPZnDxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zXVPuvRs; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3417a3151c4so2487900f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710950503; x=1711555303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kL96kx3LN/9lm4lbLyIo1jNh4JW+F+59O3JF2oZwblI=;
-        b=zXVPuvRs+uJ0obHjQjKp+UmikjjlQfiX3SSIrw2+PtFnxYp8pLjxy6Axv4OQcwsZP7
-         zfBxqAFSQVfHfqMuB1PnWGhf0sGExhi7DTfff2KMJumzQcKfdYI29u08uaODET1zNUJW
-         XNynpWwpGwfar+sgccAMpPE6LdWE4hxFtl9EPUy4iREkHml6OcDfn2vGWVcVOFKhLWmt
-         jm3BESgVJB0Fdm4KwT88CpPrzxkRurtIpI7xgLJm5bfg8w5wYhN3Tvd04lUTfzu8ehGm
-         ZdpQBiZccqXv/pMdWS1dzPd+uI4aekwQ+KSXRiKywcDurPosN4OFthxMJL3sRmhLmxij
-         YIKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710950503; x=1711555303;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kL96kx3LN/9lm4lbLyIo1jNh4JW+F+59O3JF2oZwblI=;
-        b=IenwgEvwV+d2LZQo1w8AIBV2k4d+ETyD8kW3SuO6Zmkg0HW8q3D0TNBCWMe0hNt6aN
-         8kuGWlJmkfmsXGhaaXwIsXsI7c4sM0TFD+Iu5S9oNpC89ECK+zKZhyK/Qk+BBPaPTVbt
-         SiPRaGeKS5fu05Lu/f72GPoR7IB2NOu8w8JJZpuoHkSvuCIu9K6ilipNLmRAe29As5V8
-         EMowci4NSVGC5RXBkDpsmf5SrmOa98hsO1++dSszYsmT1I9Iu+WDmHjOAyYeQZT6qXEi
-         hFdFXvDUiUJkDQ8XIoE1ZWhdFB35XCqmsaYtEMMjwvrlP+XGpEXsm8BeyrWJtDQVp6rF
-         RWPg==
-X-Gm-Message-State: AOJu0YwkGgFPzkm8ZCX+PGV1e51YwaVlbataSxwVwFx+JZDMztepAUiY
-	XwU+4/9j6n83CwhHeee86utPxwvArKq6goNKL6htHvaAiG5chbzWaJ5x315YZOY=
-X-Google-Smtp-Source: AGHT+IFIN6YIRXMa/mq1RLwjoKatqeyjBY5gl4ZOfUmSTIK1vlAArNKVYBMmbIRFvVAbqPe8dmgSPg==
-X-Received: by 2002:a5d:560e:0:b0:33e:bfd0:335c with SMTP id l14-20020a5d560e000000b0033ebfd0335cmr12054591wrv.51.1710950503210;
-        Wed, 20 Mar 2024 09:01:43 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id dd15-20020a0560001e8f00b0033ce727e728sm14983529wrb.94.2024.03.20.09.01.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 09:01:42 -0700 (PDT)
-Message-ID: <944ff951-53dc-40f6-a7b0-5ecfc2cd4771@linaro.org>
-Date: Wed, 20 Mar 2024 16:01:41 +0000
+	s=arc-20240116; t=1710950544; c=relaxed/simple;
+	bh=H6glnNiNteyT0PFBv4r+swJ3nTIxXdqNrocRKyY4WqM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uN/Q61KkNvVv8SIO91tbx77DA/GNaBQ/FLDMkw/i6surE6rCd+zMZJe5NtZ6P5TjGVxDcPRZH9U5Efgqhfo+EA/ga1oam2ACsdV19+T4Ycf5qS8u/XyP1P/HbjzMOfBRFWX6TLEZWnM6aXFlZ3fp4rk1/myKtdTbUhWVXmlo9lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fGBL4m1W; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fGBL4m1W; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 428473476E;
+	Wed, 20 Mar 2024 16:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710950540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zkFAIj4insiWgehfaGHK9ZeiQ+/idmOfPpkDEXOgMxM=;
+	b=fGBL4m1WbxDBjH8NasgS4YdOf8fr3mnzpBS04ti2AwiT7tNwL9venFB8qP4kSiQJDS5RbN
+	8Zkj9kYlgwPy5LZCDxI8VjP/ekk75/sWjE7iMC400EG8WEHnyW1b8mwlDGngSgcEbS0jsd
+	IzY8unF2Bv/natcgNpHYikrWSBWsSro=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710950540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zkFAIj4insiWgehfaGHK9ZeiQ+/idmOfPpkDEXOgMxM=;
+	b=fGBL4m1WbxDBjH8NasgS4YdOf8fr3mnzpBS04ti2AwiT7tNwL9venFB8qP4kSiQJDS5RbN
+	8Zkj9kYlgwPy5LZCDxI8VjP/ekk75/sWjE7iMC400EG8WEHnyW1b8mwlDGngSgcEbS0jsd
+	IzY8unF2Bv/natcgNpHYikrWSBWsSro=
+Date: Wed, 20 Mar 2024 17:02:19 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "Jan Kratochvil (Azul)" <jkratochvil@azul.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4] cgroup2: New memory.max.effective like cgroup1
+ hierarchical_memory_limit
+Message-ID: <cah72hewsmrrzyo3tm2eipaw4mrxnncqv4zbbzz35x7ghjxred@lhdtiobg3bjm>
+References: <ZcvlhOZ4VBEX9raZ@host1.jankratochvil.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 8/8] media: qcom: camss: Add sm8550 support
-Content-Language: en-US
-To: Depeng Shao <quic_depengs@quicinc.com>, rfoss@kernel.org,
- todor.too@gmail.com, andersson@kernel.org, konrad.dybcio@linaro.org,
- mchehab@kernel.org, quic_yon@quicinc.com
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240320141136.26827-1-quic_depengs@quicinc.com>
- <20240320141136.26827-9-quic_depengs@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240320141136.26827-9-quic_depengs@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 20/03/2024 14:11, Depeng Shao wrote:
-> Add in functional logic throughout the code to support the SM8550.
-> 
-> Signed-off-by: Depeng Shao <quic_depengs@quicinc.com>
-> ---
->   .../media/platform/qcom/camss/camss-csid.c    | 19 +++++++++++++++++++
->   .../media/platform/qcom/camss/camss-csiphy.c  |  1 +
->   drivers/media/platform/qcom/camss/camss-vfe.c |  7 +++++++
->   .../media/platform/qcom/camss/camss-video.c   |  1 +
->   4 files changed, 28 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-> index eb27d69e89a1..e9203dc15798 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
-> @@ -590,6 +590,25 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
->   			csid->base = camss->vfe[id].base + VFE_480_LITE_CSID_OFFSET;
->   		else
->   			csid->base = camss->vfe[id].base + VFE_480_CSID_OFFSET;
-> +	} else if (camss->res->version == CAMSS_8550) {
-> +		/* for titan 780, CSID lite registers are inside the VFE lite region,
-> +		 * between the VFE "top" and "bus" registers. this requires
-> +		 * VFE to be initialized before CSID
-> +		 */
-> +		if (id >= 2)
-> +			csid->base = camss->vfe[id].base;
-
-Hard-coded magic numbers are definitely out.
-
-If you need to differentiate - please include something in the struct 
-resources so that the flag is always available and we don't have to 
-start doing funky magic index/magic number gymnastics.
-
-> +		else {
-> +			csid->base =
-> +				devm_platform_ioremap_resource_byname(pdev, res->reg[0]);
-> +			if (id != 0)
-> +				csid->top_base = camss->csid[0].top_base;
-> +			else
-> +				csid->top_base =
-> +					devm_platform_ioremap_resource_byname(pdev, res->reg[1]);
-> +		}
-
-What is the point of hooking the TOP base just to clear our the status 
-registers ?
-
-We take no meaningful action in the ISR that I can see.
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="obcvqv52hinoclhy"
+Content-Disposition: inline
+In-Reply-To: <ZcvlhOZ4VBEX9raZ@host1.jankratochvil.net>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -5.89
+X-Spamd-Result: default: False [-5.89 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.19)[-0.935];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
 
+--obcvqv52hinoclhy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello.
+
+I have some advise about patch desription and only nitpick about
+implementation.
+
+On Wed, Feb 14, 2024 at 05:56:20AM +0800, "Jan Kratochvil (Azul)" <jkratoch=
+vil@azul.com> wrote:
+> which are useful for userland to easily and performance-wise find out the
+> effective cgroup limits being applied.
+
+I think this is a weak reasoning for in-kernel implementation.
+It may be faster but how often do you need to read that limit?
+
+> Otherwise userland has to
+
+Userland is at loss when running inside cgroupns with limited ancestors
+out of the cgroupns. Thus I think this is the reason why kernel can
+provide such an effective value. (And be subject line of the commit, I
+think bringing up cgroup1 is misleading.)
+
+> For cgroup1 it was implemented by:
+> 	memcg: show real limit under hierarchy mode
+> 	https://github.com/torvalds/linux/commit/fee7b548e6f2bd4bfd03a1a45d3afd5=
+93de7d5e9
+> 	Date:   Wed Jan 7 18:08:26 2009 -0800
+
+FTR, commits are usually referenced more concisely like
+	fee7b548e6f2 ("memcg: show real limit under hierarchy mode")=20
+(the document Waiman linked previously has some tips how to get this
+=66rom git).
+
+> +static int memory_max_effective_show(struct seq_file *m, void *v)
+> +{
+> +	unsigned long memory;
+> +	struct mem_cgroup *mi;
 > +
-> +		if (IS_ERR(csid->base))
-> +			return PTR_ERR(csid->base);
->   	} else {
->   		csid->base = devm_platform_ioremap_resource_byname(pdev, res->reg[0]);
->   		if (IS_ERR(csid->base))
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index 45b3a8e5dea4..f35af0dd2147 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -579,6 +579,7 @@ int msm_csiphy_subdev_init(struct camss *camss,
->   	case CAMSS_845:
->   	case CAMSS_8250:
->   	case CAMSS_8280XP:
-> +	case CAMSS_8550:
->   		csiphy->formats = csiphy_formats_sdm845;
->   		csiphy->nformats = ARRAY_SIZE(csiphy_formats_sdm845);
->   		break;
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> index d875237cf244..ff115c5521c6 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> @@ -226,6 +226,7 @@ static u32 vfe_src_pad_code(struct vfe_line *line, u32 sink_code,
->   	case CAMSS_845:
->   	case CAMSS_8250:
->   	case CAMSS_8280XP:
-> +	case CAMSS_8550:
->   		switch (sink_code) {
->   		case MEDIA_BUS_FMT_YUYV8_1X16:
->   		{
-> @@ -296,6 +297,10 @@ int vfe_reset(struct vfe_device *vfe)
->   
->   	reinit_completion(&vfe->reset_complete);
->   
-> +	// The reset has been moved to csid in 8550
+> +	/* Hierarchical information */
+> +	memory =3D PAGE_COUNTER_MAX;
+> +	for (mi =3D mem_cgroup_from_seq(m); mi; mi =3D parent_mem_cgroup(mi))
+> +		memory =3D min(memory, READ_ONCE(mi->memory.max));
 
-Please run checkpatch.pl on your code before submission C++ are not allowed.
+root_mem_cgroup is never charged (thus limited), so you can terminate
+the iteration on !mem_cgroup_is_root(mi), one level earlier
 
----
-bod
+> +static int swap_max_effective_show(struct seq_file *m, void *v)
+> +{
+> +	unsigned long swap;
+> +	struct mem_cgroup *mi;
+> +
+> +	/* Hierarchical information */
+> +	swap =3D PAGE_COUNTER_MAX;
+> +	for (mi =3D mem_cgroup_from_seq(m); mi; mi =3D parent_mem_cgroup(mi))
+> +		swap =3D min(swap, READ_ONCE(mi->swap.max));
+
+ditto
+
+HTH,
+Michal
+
+--obcvqv52hinoclhy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZfsIiAAKCRAGvrMr/1gc
+jjPaAP0UpgJnAoQuiyGpfv2ygAkpZ8Tv5wAS6zlt3p6Kti91cAEAw4Wb0RH30luT
+hhBwGAntr1Pz6mUyND/ds2Ff8CoOGwY=
+=Zh6c
+-----END PGP SIGNATURE-----
+
+--obcvqv52hinoclhy--
 
