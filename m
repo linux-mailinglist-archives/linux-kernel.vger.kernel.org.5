@@ -1,95 +1,135 @@
-Return-Path: <linux-kernel+bounces-109261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C4E98816EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:59:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8712B8816FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:01:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D82B1C20CA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:59:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1E7C1F2352A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC836A35D;
-	Wed, 20 Mar 2024 17:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5156A359;
+	Wed, 20 Mar 2024 18:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="c5w6EmvN"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118961E49B;
-	Wed, 20 Mar 2024 17:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gwPoVxfw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED946A35B;
+	Wed, 20 Mar 2024 18:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957566; cv=none; b=RJ87Sm8hF09QLSj0aHwxJjX9Q7sMiXXj005rz/GtA8fG8enNc8jP0yvn+SQAAFzsdvkpyJ1EKDlNwBVC/+utpEr83D86JeVcWlOFSi5hyJqhuV27VkTURMjPGV/gQsLRnOIG2zOTTz92jJ7zb5aD0FclO/CVFEnYooG/3OhJU18=
+	t=1710957699; cv=none; b=kZpmBy2Hg5te9c3hx/1ox4ZitV/ygas0LZ042ibp9bNHj1HAV6oPLPXRB9uXDukCGsljRAPbVEKbPXMsmY2LAh5B1cdF7G6iUafpZJS5ajHK1HDubVtCIdjB5Jw5UChcpSy5/+i/IDMYzeNics5OnCnTw3iuvYJgm7FE5bqGXWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957566; c=relaxed/simple;
-	bh=hwiRKS8x3Dz/MZcnQGj74zkiU1VvC70pYcQb54qBPsY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aJPsVPoo58LDkqLrY0YphBx29B9Wq5TXJKzGorOHzZRt0Ya8Y1U6b50DeaPTdwBWZBhzAbGdMAYrTLAO0wRiRTQfl6RUv4ez4EfpGG1nFqVuyQBrZLUAmi6OUV5L7oPX69wwp07asql5kJzLzgOL6Vi88RvJqavhw2LjS5Ts4sI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=c5w6EmvN; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.129.161] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 4C44C20B74C0;
-	Wed, 20 Mar 2024 10:59:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4C44C20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710957564;
-	bh=Rato3V56U1xIHpQYHOICTvOn543oqjGwizhO0Sk9Mt0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=c5w6EmvN0GXhAmCwrWt1tnxPQ5dR3a5sHEY1FuqsmONSQeNaTf5VGgGVidSxKORE5
-	 IMhT+F7RGSkDFquY1SPkN9dOnLdA/vbH9kakKUTqGOvpM/Tb7eRcm0QLmv9E/SFmln
-	 EYNRxQL6qS3JppOEVsgQw/ZqwKnjrm7kXZmVC1+8=
-Message-ID: <2c33751e-5995-4be2-a15e-ddca6a6ab4fe@linux.microsoft.com>
-Date: Wed, 20 Mar 2024 10:59:22 -0700
+	s=arc-20240116; t=1710957699; c=relaxed/simple;
+	bh=llIBXk76Yuad8T3alnGEbUTLVx756v+KmjcXU9Ak8MA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m8WBTCLHzLzwbsS5ufjDzjqmJW6hDrniRZAwElLx8m5/SeQVXzkMCn2vWeLjC/kPk8zJRlU0P1Un0UWILkJRXtOqGMmG/9zwja08Y/sIweWk2uTRDrMZPjuP0B8xsJ+5SKcePrQALbk3RBvUc+vpprqNrwA4Y1SQ0/oLWygxfzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gwPoVxfw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15A32C433C7;
+	Wed, 20 Mar 2024 18:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710957699;
+	bh=llIBXk76Yuad8T3alnGEbUTLVx756v+KmjcXU9Ak8MA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gwPoVxfwRZjCBKMju8mA83r6FEoT8PmuO0bob0NvMR2jWn/xwGFZZV4uEV9mG9rh9
+	 dSphKTn11rgn/UyOJ0FZYKqS9Xzh4No/BlfvkbzqaNaXlsLDFn/WuR5ZghgWyWx8PI
+	 08UkSDQGGtwXwJTukevbXDLZyQo58se/7m4N6U3klbycY1A/ukx9ubUYWehVePimC3
+	 LkIUC8IxgydlIEL138wzx6G0IezxFVc+c50zzoyGgprPF47KQok/fArXghUFejLgF0
+	 6gB1EkNtKPlDxf8pgEIaLDEAswHWYrw62VFrl101YqgzGCvvUNSo77+VBdje65XrJV
+	 4MsqNcq4ItQqg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Tony Finch <dot@dotat.at>,
+	Sam Ravnborg <sam@ravnborg.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	Michal Marek <mmarek@suse.cz>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/unifdef: avoid constexpr keyword
+Date: Wed, 20 Mar 2024 18:59:25 +0100
+Message-Id: <20240320180134.100863-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-Content-Language: en-CA
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
- linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
- Shradha Gupta <shradhagupta@microsoft.com>
-References: <1710933451-6312-1-git-send-email-shradhagupta@linux.microsoft.com>
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <1710933451-6312-1-git-send-email-shradhagupta@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/20/2024 4:17 AM, Shradha Gupta wrote:
-> If the network configuration strings are passed as a combination of IPv4
-> and IPv6 addresses, the current KVP daemon does not handle processing for
-> the keyfile configuration format.
-> With these changes, the keyfile config generation logic scans through the
-> list twice to generate IPv4 and IPv6 sections for the configuration files
-> to handle this support.
-> 
-> Testcases ran:Rhel 9, Hyper-V VMs
->               (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> ---
->  Changes in v4
->  * Removed the unnecessary memset for addr in the start
->  * Added a comment to describe how we erase the last comma character
->  * Fixed some typos in the commit description
->  * While using strncat, skip copying the '\0' character.
-> ---
->  tools/hv/hv_kvp_daemon.c | 181 ++++++++++++++++++++++++++++++---------
->  1 file changed, 140 insertions(+), 41 deletions(-)
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-<snip>
-LGTM
+Starting with c23, 'constexpr' is a keyword in C like in C++ and cannot
+be used as an identifier:
 
-Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+scripts/unifdef.c:206:25: error: 'constexpr' can only be used in variable declarations
+  206 | static bool             constexpr;              /* constant #if expression */
+      |                         ^
+scripts/unifdef.c:880:13: error: expected identifier or '('
+  880 |                 constexpr = false;
+      |                           ^
 
-- Easwar
+Rename this instance to allow changing to C23 at some point in the future.
+
+Fixes: d8379ab1dde3 ("unifdef: update to upstream revision 1.190")
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ scripts/unifdef.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/unifdef.c b/scripts/unifdef.c
+index db00e3e30a59..1cc31448fd10 100644
+--- a/scripts/unifdef.c
++++ b/scripts/unifdef.c
+@@ -203,7 +203,7 @@ static int              depth;			/* current #if nesting */
+ static int              delcount;		/* count of deleted lines */
+ static unsigned         blankcount;		/* count of blank lines */
+ static unsigned         blankmax;		/* maximum recent blankcount */
+-static bool             constexpr;		/* constant #if expression */
++static bool             constexpression;	/* constant #if expression */
+ static bool             zerosyms = true;	/* to format symdepth output */
+ static bool             firstsym;		/* ditto */
+ 
+@@ -877,7 +877,7 @@ eval_unary(const struct ops *ops, int *valp, const char **cpp)
+ 		cp = skipcomment(cp);
+ 		if (defparen && *cp++ != ')')
+ 			return (LT_ERROR);
+-		constexpr = false;
++		constexpression = false;
+ 	} else if (!endsym(*cp)) {
+ 		debug("eval%d symbol", ops - eval_ops);
+ 		sym = findsym(cp);
+@@ -895,7 +895,7 @@ eval_unary(const struct ops *ops, int *valp, const char **cpp)
+ 			lt = *valp ? LT_TRUE : LT_FALSE;
+ 			cp = skipargs(cp);
+ 		}
+-		constexpr = false;
++		constexpression = false;
+ 	} else {
+ 		debug("eval%d bad expr", ops - eval_ops);
+ 		return (LT_ERROR);
+@@ -955,10 +955,10 @@ ifeval(const char **cpp)
+ 	int val = 0;
+ 
+ 	debug("eval %s", *cpp);
+-	constexpr = killconsts ? false : true;
++	constexpression = killconsts ? false : true;
+ 	ret = eval_table(eval_ops, &val, cpp);
+ 	debug("eval = %d", val);
+-	return (constexpr ? LT_IF : ret == LT_ERROR ? LT_IF : ret);
++	return (constexpression ? LT_IF : ret == LT_ERROR ? LT_IF : ret);
+ }
+ 
+ /*
+-- 
+2.39.2
+
 
