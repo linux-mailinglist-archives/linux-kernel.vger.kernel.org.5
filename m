@@ -1,70 +1,80 @@
-Return-Path: <linux-kernel+bounces-108935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88744881237
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:19:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF30881248
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F44D282352
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 185E31F24C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750F24120C;
-	Wed, 20 Mar 2024 13:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF9041C86;
+	Wed, 20 Mar 2024 13:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OkRx9DhZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="aVFQoHPn"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1748540BE2
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F71405C1
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:25:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710940762; cv=none; b=ADOghIhGWCPlvY9Z3te2IDCCgS5nJgHIQ5OrlQQJKyyAv36xDm3DUKq9TthaaWx3YSRRqP+FteykJ/JCcQHBqk4a+LT52C+VhdHTSr8VscVFKAqYcYTjtBwEtlQQfInptCkTkKbobQiM2Ag3CDoE+WdrgYOA7HJSKOiPh8JVSvw=
+	t=1710941141; cv=none; b=sv//7Flk/PJ7rA4FsZwVJ/ha4ywyED3UBze5I6DpfP4EwTj6PnacwihRxIGRsw4ziJkKkkz0FX+BAnf8eMpAy/kzkbhYDZgRm44PinOdon7TthlTEop5s4uPXDplWzbSkYJf+1y/PAhjm1zxrHksuWkYDG+6J9ZwQLK9g8pqucU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710940762; c=relaxed/simple;
-	bh=smAQyH3fzoArbGL/EJf370uyvQE26iHCwiLZs0Htze8=;
+	s=arc-20240116; t=1710941141; c=relaxed/simple;
+	bh=gR/FUHdn3EPInPai+cCRTw8sGb1MxWEDTW6umqaTPzQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E1MkvXGw1T9YlQcdfXgQZdX3hqi0pQtahXqXbVZUti/+AZ0lyy4lzpcuEriCAgvoXG/KBK+DYrlaHjrU95XDYel/3vApP8kMV3sLwSIjoJ2jalUJuTCi7NSPhiNaCp1suFm55XcpU0YO7pjU4oKuFOvRmFZRMrCVE4oChutE89g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OkRx9DhZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710940760;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NpmVP7TeXED0UIOg2IhouFjCmnaB0b7XL3z6nYN+g5c=;
-	b=OkRx9DhZdNCL0W8F7nfgsbxaYabqNZOCHZe7CDsQGCW+ga6l3PMHw7F6PEMXWwE1K5Vo0b
-	qUC3PnJPiIyv2YuLp3lbPR2ZWxuuCNocAQ/G+/pxMu7DAXBTtwS7PY2j3+OaR8GqJhpvZP
-	Jm7LjYZE0CXmhPqu0z+mD2QNHe8cAts=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-225-wbANGGN0OhS4SocgmX5KQQ-1; Wed, 20 Mar 2024 09:19:12 -0400
-X-MC-Unique: wbANGGN0OhS4SocgmX5KQQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DF861800266;
-	Wed, 20 Mar 2024 13:19:11 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F7E22166B34;
-	Wed, 20 Mar 2024 13:19:11 +0000 (UTC)
-Date: Wed, 20 Mar 2024 09:21:05 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, jack@suse.cz, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH 1/6] writeback: collect stats of all wb of bdi in
- bdi_debug_stats_show
-Message-ID: <Zfriwb03HCRWJ24q@bfoster>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-2-shikemeng@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=N+vG8VXkvpoVJPSLAQq0W38Di2tVugNtpiDSIllkrwBqXK+MjRY2tY11r9t46d0Pqk1BzlkEL939iAnpbZeRPMT7+s25acCxOeggLrqMhKYSA+J5LSAPb1N3LXDSQRRcUfGLhWBTrsk0V25k5IefaisJr+Mh5DbK5lAl5dbKW38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=aVFQoHPn; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513d23be0b6so7241094e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1710941136; x=1711545936; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+O+9Gk/MHV5z7NRBi1Il6wqa6Gb+IZES0piBkUl54A=;
+        b=aVFQoHPnaDKgDkToXBGA9isd3Vv3eaDU7zEEbuvYX1cKKxj4JqNKgWOd9J2VrCtYBE
+         sJzPNHrBP5lcy1mi4MDaASavoEfeH5A8XaXqSYDGT0Fz22YKu+ssgnLSjhSM3KkYTBXP
+         v926fNbNLG7rNft8VuCRCjDPY9atrnVvR4Pxxh6AbsCpHqhI3VkRI8vzZxPZul4uH9WA
+         VtlIJIUhVVeTPoAFHiw1dfhdXD3oc1OorBFt9WJYD/d3SflqmT19/zXNniNPtGzswt0C
+         PhpttKHR5lfIc2jqyArjkx/kGZlL3MtuKhUJJ3l3322kZ2hM1DNX/YazsoWA5l4hvpon
+         KSsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710941136; x=1711545936;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U+O+9Gk/MHV5z7NRBi1Il6wqa6Gb+IZES0piBkUl54A=;
+        b=tVf8Vbq6rlq612v6DTeIu0rwtXZR+ixOSW5+vx9k6IoXbeSMvW2oCl8RN/5zFKeVxP
+         VvRQkXTLmXHK6B7l+Ork0/M5ZXLLFBdrAbXP9LkCTvC2EYgnyfNBjO/yYdoVLO+MohIT
+         U4qtxKUEm5RsyFre0W2aAQi2rvZA/TcLIp0hRyiXHULx7ToVz8rUOGlub4evwBjBAyv1
+         UClGjY3y9lrJFpS/bkEMxX+TjVcJN5X4T98y7Xw8sJtpfpExh2VFBTzvRuErYQang8Be
+         C88DYmjkCwwiFTKsQpL1e5+b/GaeEc9VmB7fB/4ReaaQUXwcmTQQ/HBCF1gYGW0zjLrh
+         9TgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7vC6aSzyQNsPVwPWhXsrie/lcYgEJRcphXkHQGpwKrqlt6wQxmH4cGR638eR7wRdTFqo/r7rDJ0SW6jnKWJCBXlj3IldLdkk+CsSQ
+X-Gm-Message-State: AOJu0Yy1ysTDSEEVk0Msnqx81lYICXyzdKL/dmRczYBLM0sYOxrwOAoR
+	QpHd1NHHCbfwdn0rIpAunBkv+IIDqB+8vI/G/99hkdLOidJmVXHQHWJFtF6c/eI=
+X-Google-Smtp-Source: AGHT+IH1JTkwnk04Rj4pxpdQhzrL58EhI+ZavY62ptJIN0Og8Gbp4eITtl6DxXmmvXUKf33XTdi5ZA==
+X-Received: by 2002:a05:6512:311c:b0:513:30fb:d64 with SMTP id n28-20020a056512311c00b0051330fb0d64mr1597089lfb.44.1710941136269;
+        Wed, 20 Mar 2024 06:25:36 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id a8-20020a05600c348800b004146bee69aesm2077725wmq.40.2024.03.20.06.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 06:25:35 -0700 (PDT)
+Date: Wed, 20 Mar 2024 14:25:34 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Chen Ni <nichen@iscas.ac.cn>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, grundler@chromium.org,
+	christian.riesch@omicron.at, linux-usb@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: asix: Add check for usbnet_get_endpoints
+Message-ID: <ZfrjzjOuK8deu0Fp@nanopsycho>
+References: <20240320073715.2002973-1-nichen@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,134 +83,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320110222.6564-2-shikemeng@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+In-Reply-To: <20240320073715.2002973-1-nichen@iscas.ac.cn>
 
-On Wed, Mar 20, 2024 at 07:02:17PM +0800, Kemeng Shi wrote:
-> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
-> of whole bdi, but only writeback information of bdi in root cgroup is
-> collected. So writeback information in non-root cgroup are missing now.
-> To be more specific, considering following case:
-> 
-> /* create writeback cgroup */
-> cd /sys/fs/cgroup
-> echo "+memory +io" > cgroup.subtree_control
-> mkdir group1
-> cd group1
-> echo $$ > cgroup.procs
-> /* do writeback in cgroup */
-> fio -name test -filename=/dev/vdb ...
-> /* get writeback info of bdi */
-> cat /sys/kernel/debug/bdi/xxx/stats
-> The cat result unexpectedly implies that there is no writeback on target
-> bdi.
-> 
-> Fix this by collecting stats of all wb in bdi instead of only wb in
-> root cgroup.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  mm/backing-dev.c | 93 ++++++++++++++++++++++++++++++++++++------------
->  1 file changed, 70 insertions(+), 23 deletions(-)
-> 
-> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> index 5f2be8c8df11..788702b6c5dd 100644
-> --- a/mm/backing-dev.c
-> +++ b/mm/backing-dev.c
-..
-> @@ -46,31 +59,65 @@ static void bdi_debug_init(void)
->  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
->  }
->  
-..
-> +#ifdef CONFIG_CGROUP_WRITEBACK
-> +static void bdi_collect_stats(struct backing_dev_info *bdi,
-> +			      struct wb_stats *stats)
-> +{
-> +	struct bdi_writeback *wb;
-> +
-> +	/* protect wb from release */
-> +	mutex_lock(&bdi->cgwb_release_mutex);
-> +	list_for_each_entry(wb, &bdi->wb_list, bdi_node)
-> +		collect_wb_stats(stats, wb);
-> +	mutex_unlock(&bdi->cgwb_release_mutex);
-> +}
-> +#else
-> +static void bdi_collect_stats(struct backing_dev_info *bdi,
-> +			      struct wb_stats *stats)
-> +{
-> +	collect_wb_stats(stats, &bdi->wb);
-> +}
-> +#endif
-> +
+Wed, Mar 20, 2024 at 08:37:15AM CET, nichen@iscas.ac.cn wrote:
+>Add check for usbnet_get_endpoints() and return the error if it fails
+>in order to transfer the error.
+>
+>Fixes: b4cdae20ef95 ("asix: Rename asix.c to asix_devices.c")
 
-I'm not familiar enough with the cgwb code to say for sure (and I'd
-probably wait for more high level feedback before worrying too much
-about this), but do we need the ifdef here just to iterate ->wb_list?
-From looking at the code, it appears bdi->wb ends up on the list while
-the bdi is registered for both cases, so that distinction seems
-unnecessary. WRT to wb release protection, I wonder if this could use a
-combination of rcu_read_lock()/list_for_each_safe() and wb_tryget() on
-each wb before collecting its stats..? See how bdi_split_work_to_wbs()
-works, for example.
+Are you sure this is the commit that introduced this? Too lazy to look,
+but most probably this just moved already buggy code.
 
-Also I see a patch conflict/compile error on patch 2 due to
-__wb_calc_thresh() only taking one parameter in my tree. What's the
-baseline commit for this series?
 
-Brian
-
-> +static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> +{
-> +	struct backing_dev_info *bdi = m->private;
-> +	unsigned long background_thresh;
-> +	unsigned long dirty_thresh;
-> +	struct wb_stats stats;
-> +	unsigned long tot_bw;
-> +
->  	global_dirty_limits(&background_thresh, &dirty_thresh);
-> -	wb_thresh = wb_calc_thresh(wb, dirty_thresh);
-> +
-> +	memset(&stats, 0, sizeof(stats));
-> +	stats.dirty_thresh = dirty_thresh;
-> +	bdi_collect_stats(bdi, &stats);
-> +
-> +	tot_bw = atomic_long_read(&bdi->tot_write_bandwidth);
->  
->  	seq_printf(m,
->  		   "BdiWriteback:       %10lu kB\n"
-> @@ -87,18 +134,18 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
->  		   "b_dirty_time:       %10lu\n"
->  		   "bdi_list:           %10u\n"
->  		   "state:              %10lx\n",
-> -		   (unsigned long) K(wb_stat(wb, WB_WRITEBACK)),
-> -		   (unsigned long) K(wb_stat(wb, WB_RECLAIMABLE)),
-> -		   K(wb_thresh),
-> +		   K(stats.nr_writeback),
-> +		   K(stats.nr_reclaimable),
-> +		   K(stats.wb_thresh),
->  		   K(dirty_thresh),
->  		   K(background_thresh),
-> -		   (unsigned long) K(wb_stat(wb, WB_DIRTIED)),
-> -		   (unsigned long) K(wb_stat(wb, WB_WRITTEN)),
-> -		   (unsigned long) K(wb->write_bandwidth),
-> -		   nr_dirty,
-> -		   nr_io,
-> -		   nr_more_io,
-> -		   nr_dirty_time,
-> +		   K(stats.nr_dirtied),
-> +		   K(stats.nr_written),
-> +		   K(tot_bw),
-> +		   stats.nr_dirty,
-> +		   stats.nr_io,
-> +		   stats.nr_more_io,
-> +		   stats.nr_dirty_time,
->  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
->  
->  	return 0;
-> -- 
-> 2.30.0
+>Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+>---
+> drivers/net/usb/asix_devices.c | 12 +++++++++---
+> 1 file changed, 9 insertions(+), 3 deletions(-)
+>
+>diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+>index f7cff58fe044..4732a2951bf2 100644
+>--- a/drivers/net/usb/asix_devices.c
+>+++ b/drivers/net/usb/asix_devices.c
+>@@ -230,7 +230,9 @@ static int ax88172_bind(struct usbnet *dev, struct usb_interface *intf)
+> 	int i;
+> 	unsigned long gpio_bits = dev->driver_info->data;
 > 
-> 
+>-	usbnet_get_endpoints(dev,intf);
+>+	ret = usbnet_get_endpoints(dev, intf);
+>+	if (ret < 0)
 
+I don't think that usbnet_get_endpoints() can return positive value.
+Better to have just:
+	ret = usbnet_get_endpoints(dev, intf);
+	if (ret)
+
+
+>+		goto out;
+
+just "return ret" here. I know that the rest of the function does this
+too, don't copy odd pattern.
+
+
+> 
+> 	/* Toggle the GPIOs in a manufacturer/model specific way */
+> 	for (i = 2; i >= 0; i--) {
+>@@ -834,7 +836,9 @@ static int ax88772_bind(struct usbnet *dev, struct usb_interface *intf)
+> 
+> 	dev->driver_priv = priv;
+> 
+>-	usbnet_get_endpoints(dev, intf);
+>+	ret = usbnet_get_endpoints(dev, intf);
+>+	if (ret < 0)
+>+		return ret;
+> 
+> 	/* Maybe the boot loader passed the MAC address via device tree */
+> 	if (!eth_platform_get_mac_address(&dev->udev->dev, buf)) {
+>@@ -1258,7 +1262,9 @@ static int ax88178_bind(struct usbnet *dev, struct usb_interface *intf)
+> 	int ret;
+> 	u8 buf[ETH_ALEN] = {0};
+> 
+>-	usbnet_get_endpoints(dev,intf);
+>+	ret = usbnet_get_endpoints(dev, intf);
+>+	if (ret < 0)
+>+		return ret;
+> 
+> 	/* Get the MAC address */
+> 	ret = asix_read_cmd(dev, AX_CMD_READ_NODE_ID, 0, 0, ETH_ALEN, buf, 0);
+>-- 
+>2.25.1
+>
+>
 
