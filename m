@@ -1,147 +1,96 @@
-Return-Path: <linux-kernel+bounces-108652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F469880E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:56:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5FBE880E10
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20A5E283F46
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:56:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B0471F2144C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771933BBDB;
-	Wed, 20 Mar 2024 08:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LDzu7bX+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E2239AC1;
+	Wed, 20 Mar 2024 08:57:55 +0000 (UTC)
+Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2113BB35;
-	Wed, 20 Mar 2024 08:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171A033CC4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.61.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924966; cv=none; b=qpxnyAyD/C4aylWnwPZR8fEtcKttWMEDwTunLdqv7UpcjV0myUuYWpPb2hpODmkWEdYrL3OXiZHmyT/wMyJoDWAMg1m89TR0C+dnoQK/5IvhZXKr7kZAcBgR7AfrdAWVe5oX3krz69cJIqh+kHCN0SkgOXT4ETNq0tqlLXdp0Hk=
+	t=1710925075; cv=none; b=CpP3N+YYn98riHL6YKuwCdL9Ox8Mvdi1Qgt+VX0UKmCdlVu93HRVfvkomkf80doddObRoRFSqAFjsWDoOfPyURjhxpg9MRbsepgB3MT+Y89zGoKjQ4oxCLfruoU4ndUW87ozCnksfekf5Vt4G7gMr4mupGCmWa0/3ztLcf4lTLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924966; c=relaxed/simple;
-	bh=LGyKYM8XcN8nBnrxBDrb0mYgitWNCQAUDnZ3X2WeWo8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K/kN/j2pNY5PYFjcIYqUTSmVTk9TnB//XlqkIHUvM1moNUk5T0dewB+VWom3VginEdYfb8ITV/Zdx13oihkPQFu+gZT53LCNocPvsfH6ZYy2gGKxi0gckArNZQ+FEQWh4l6JjuQ2lhXZcR5xNzcU9RFxiDBna6UGAHRKogw7SR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LDzu7bX+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61EBC433F1;
-	Wed, 20 Mar 2024 08:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710924966;
-	bh=LGyKYM8XcN8nBnrxBDrb0mYgitWNCQAUDnZ3X2WeWo8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=LDzu7bX+x9PSrTH6Xd7JrdDYEcfYLME/QLFo1J+0xPMv1zNhFevPQCPqnFR9nv8p6
-	 pYlxrN1Ua9lqNZOrbuqcybpYY+DZyMZ2QJM2eny/cWSGT0NCr8ch6Z/yeW8XZ926VK
-	 e/iyuMLZyuy113N3ksFxYvrYulgE/baZWZNXi54QFIERh8b7I/LN4Fho2GZ4n0fsQv
-	 7TI9FByBBJ5jo6k+SRty5qb9gQ6cdYZ3LcJM2wWlT5jps1tzc6uu12swfzlwIm9atN
-	 m54GlPIVXAJEh4iFU0V9uZ4aZee8AUBymlPH44qBB5mKnqAOAg6YT/z9/8fK22sQ0x
-	 PVQ2dDa7BgSiQ==
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: linux-integrity@vger.kernel.org
-Cc: Jarkko Sakkinen <jarkko@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Daniel P . Smith" <dpsmith@apertussolutions.com>,
-	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	James Bottomley <James.Bottomley@HansenPartnership.com>,
-	Alexander Steffen <Alexander.Steffen@infineon.com>,
-	keyrings@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] Documentation: tpm_tis
-Date: Wed, 20 Mar 2024 10:56:01 +0200
-Message-ID: <20240320085601.40450-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710925075; c=relaxed/simple;
+	bh=G33CroK7BnYY/9nq8D2Vt+ZqpECFj3JOwYrCg2AerkA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OBgskA1Wy4P20DctCW8yUkdv11vniJwQktJfp3l4HwLHg4v+oqxcqzb1cFuH8p9D1eLwfjptvNl/PzVcfVMJi2jZPr7WOcnYajaYEfbxEjLagkIGNmFGfyoQvSKtNXGEzVTnQaTAKvPgLlrLa5Piql75Qp+MMv1ImD2JpMi9Tvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.61.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inspur.com
+Received: from ssh248.corpemail.net
+        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id RDA00141;
+        Wed, 20 Mar 2024 16:57:41 +0800
+Received: from localhost.localdomain (10.94.17.92) by
+ jtjnmail201610.home.langchao.com (10.100.2.10) with Microsoft SMTP Server id
+ 15.1.2507.35; Wed, 20 Mar 2024 16:57:42 +0800
+From: Bo Liu <liubo03@inspur.com>
+To: <support.opensource@diasemi.com>, <lgirdwood@gmail.com>,
+	<broonie@kernel.org>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <jagan@amarulasolutions.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, Bo Liu <liubo03@inspur.com>
+Subject: [PATCH v1 00/13] regulator: convert to use maple tree register cache
+Date: Wed, 20 Mar 2024 04:57:27 -0400
+Message-ID: <20240320085740.4604-1-liubo03@inspur.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+tUid: 20243201657418796298d1f8af4ba8d88157147d862f2
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 
-Based recent discussions on LKML, provide preliminary bits of tpm_tis_core
-dependent drivers. Includes only bare essentials but can be extended later
-on case by case. This way some people may even want to read it later on.
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache.
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-CC: Daniel P. Smith <dpsmith@apertussolutions.com>
-Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Peter Huewe <peterhuewe@gmx.de>
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
-Cc: keyrings@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v2:
-- Fixed errors reported by Randy:
-  https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@infradead.org/
-- Improved the text a bit to have a better presentation.
----
- Documentation/security/tpm/index.rst   |  1 +
- Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
- create mode 100644 Documentation/security/tpm/tpm_tis.rst
+Bo Liu (13):
+  regulator: da9121: convert to use maple tree register cache
+  regulator: da9211: convert to use maple tree register cache
+  regulator: isl9305: convert to use maple tree register cache
+  regulator: max8973: convert to use maple tree register cache
+  regulator: mt6311: convert to use maple tree register cache
+  regulator: pca9450: convert to use maple tree register cache
+  regulator: pf8x00: convert to use maple tree register cache
+  regulator: pfuze100: convert to use maple tree register cache
+  regulator: rtmv20: convert to use maple tree register cache
+  regulator: rtq6752: convert to use maple tree register cache
+  regulator: tps51632: convert to use maple tree register cache
+  regulator: tps62360: convert to use maple tree register cache
+  regulator: rpi-panel-attiny: convert to use maple tree register cache
 
-diff --git a/Documentation/security/tpm/index.rst b/Documentation/security/tpm/index.rst
-index fc40e9f23c85..f27a17f60a96 100644
---- a/Documentation/security/tpm/index.rst
-+++ b/Documentation/security/tpm/index.rst
-@@ -5,6 +5,7 @@ Trusted Platform Module documentation
- .. toctree::
- 
-    tpm_event_log
-+   tpm_tis
-    tpm_vtpm_proxy
-    xen-tpmfront
-    tpm_ftpm_tee
-diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/security/tpm/tpm_tis.rst
-new file mode 100644
-index 000000000000..b331813b3c45
---- /dev/null
-+++ b/Documentation/security/tpm/tpm_tis.rst
-@@ -0,0 +1,30 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=========================
-+TPM FIFO interface Driver
-+=========================
-+
-+FIFO (First-In-First-Out) is the name of the hardware interface used by the
-+tpm_tis_core dependent drivers. The prefix "tis" comes from the TPM Interface
-+Specification, which is the hardware interface specification for TPM 1.x chips.
-+
-+Communication is based on a 5 KiB buffer shared by the TPM chip through a
-+hardware bus or memory map, depending on the physical wiring. The buffer is
-+further split into five equal-size buffers, which provide equivalent sets of
-+registers for communication between the CPU and TPM. These communication
-+endpoints are called localities in the TCG terminology.
-+
-+When the kernel wants to send commands to the TPM chip, it first reserves
-+locality 0 by setting the requestUse bit in the TPM_ACCESS register. The bit is
-+cleared by the chip when the access is granted. Once it completes its
-+communication, the kernel writes the TPM_ACCESS.activeLocality bit. This
-+informs the chip that the locality has been relinquished.
-+
-+Pending localities are served in order by the chip in descending order, one at
-+a time:
-+
-+- Locality 0 has the lowest priority.
-+- Locality 5 has the highest priority.
-+
-+Further information on the purpose and meaning of the localities can be found
-+in section 3.2 of the TCG PC Client Platform TPM Profile Specification.
+ drivers/regulator/da9121-regulator.c           | 4 ++--
+ drivers/regulator/da9211-regulator.c           | 2 +-
+ drivers/regulator/isl9305.c                    | 2 +-
+ drivers/regulator/max8973-regulator.c          | 2 +-
+ drivers/regulator/mt6311-regulator.c           | 2 +-
+ drivers/regulator/pca9450-regulator.c          | 2 +-
+ drivers/regulator/pf8x00-regulator.c           | 2 +-
+ drivers/regulator/pfuze100-regulator.c         | 2 +-
+ drivers/regulator/rpi-panel-attiny-regulator.c | 2 +-
+ drivers/regulator/rtmv20-regulator.c           | 2 +-
+ drivers/regulator/rtq6752-regulator.c          | 2 +-
+ drivers/regulator/tps51632-regulator.c         | 2 +-
+ drivers/regulator/tps62360-regulator.c         | 2 +-
+ 13 files changed, 14 insertions(+), 14 deletions(-)
+
 -- 
-2.44.0
+2.18.2
 
 
