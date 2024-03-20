@@ -1,127 +1,185 @@
-Return-Path: <linux-kernel+bounces-109141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA807881533
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:05:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA308814CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84EEC28517D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:05:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15B4AB22942
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B5854736;
-	Wed, 20 Mar 2024 16:05:46 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB0352F7D;
+	Wed, 20 Mar 2024 15:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jPerTb4M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FABE54744;
-	Wed, 20 Mar 2024 16:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0912053E0A;
+	Wed, 20 Mar 2024 15:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710950745; cv=none; b=nGiGsVOiqAIf/Z+KDJ5Q/JDbR8as+zpR8oajtaFI8zPSl97ZXGVa0GiPL//UMC3dEYaxn2nAbVkhrjyFmxJVEbVXO+PB0jV/LU9ICG13CVqbe/7OkbdCxqzAG4kDnL805ptlKJYiRZLKUxDtLkE8r+vcRiBF5h/kxBHbeOVfR/Q=
+	t=1710949306; cv=none; b=BM/sLxcOoGkBGhPkOFyCyAbda0zniaXcAY1U2O/nxZ0bJ1pfuK7oQgkncK4txBFNPx/iNeX1HcHKQG4aSUQyVt9RQLag7Cbr+Ilw8ozuBhHmteQglyrzGbF0Ru7fHxF+Bv4mVK5AzzFf2RdfBl83uiBZyv3ktifo4aDFoUtUd/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710950745; c=relaxed/simple;
-	bh=/IfiUa26qG6YiQu8AKOCfYA2x46Rjq20kX1gZ1TFB8o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VHaofabC8q3N7D7OP+ZRkWuKL6Wy5y5TbWuV8M1nmO2Sx01k2MkoUO73VAcWkZURya4r38jr6Ljbi/TqV5x1vo9dda1Q0HqSx3dxJe7+Oui6dVVokID/fnYv5Zwoe5eVjEqQCzXCrxUhO0I2VzjRxIFCr7xxHcacD0Lt7OYH1ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V0D1W2jdvz1vxBr;
-	Thu, 21 Mar 2024 00:04:31 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id B91A41A0172;
-	Thu, 21 Mar 2024 00:05:17 +0800 (CST)
-Received: from huawei.com (10.67.189.167) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 21 Mar
- 2024 00:05:17 +0800
-From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
-To: <linux@armlinux.org.uk>, <linus.walleij@linaro.org>, <arnd@arndb.de>,
-	<keescook@chromium.org>, <rmk+kernel@armlinux.org.uk>,
-	<haibo.li@mediatek.com>, <angelogioacchino.delregno@collabora.com>,
-	<amergnat@baylibre.com>, <xiaojiangfeng@huawei.com>
-CC: <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
-	<douzhaolei@huawei.com>, <gustavoars@kernel.org>, <jpoimboe@kernel.org>,
-	<kepler.chenxin@huawei.com>, <kirill.shutemov@linux.intel.com>,
-	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-	<nixiaoming@huawei.com>, <peterz@infradead.org>, <wangbing6@huawei.com>,
-	<wangfangpeng1@huawei.com>, <jannh@google.com>, <willy@infradead.org>,
-	<David.Laight@ACULAB.COM>
-Subject: [PATCH v3] ARM: unwind: improve unwinders for noreturn case
-Date: Wed, 20 Mar 2024 23:41:34 +0800
-Message-ID: <1710949294-29287-1-git-send-email-xiaojiangfeng@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
-In-Reply-To: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
-References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+	s=arc-20240116; t=1710949306; c=relaxed/simple;
+	bh=AKA5aivXwC/9oh5dXjuszQ2kQ6AwoUeoUA12p1+5Sqw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P63VobXtypvjCYEEd2g6b1/U+D4zlvpye4e2xFb/+VC5dPQaSE31L30lYhGekRGDW6R0HSDI/jnzPHgOlvANw2Xaw0PplQV86qkS26GgVgoEQXPw7ux66kaAnIEdKo1Jii0Y8TucdfGWyZDSviBmjrJROBgsraVDslGTmA7wzZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jPerTb4M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F772C433C7;
+	Wed, 20 Mar 2024 15:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710949305;
+	bh=AKA5aivXwC/9oh5dXjuszQ2kQ6AwoUeoUA12p1+5Sqw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jPerTb4MS8ibZqUx3wp26TmdRXgv+gna2YizPUfUYbxWfutR/xajNU9kpkhIGm51p
+	 D2wRhIFet6PV0CoiRE3fFMOm/i/ivjwdqC7gqOL3mWO+WpOCHTL8d7VxJ/bpEKnEGM
+	 mB0b2O6zDXBaeWemziX8TecGuVmiLlWZlC/6s/TUYTjhn9+c5LcSBpb5iietzlDARD
+	 nS0fPcxLndn8z+PTaFpI7xZpbuPS8gfDIS4W2Soj4DFkiR4hQ777eWnvpwGh4DMSzr
+	 N/wHC1kPiC7f0t+Z4705kpRGXp15d4bujrVuz/Ju9xhUsZw6xf7ta9J/kNtVezf7pe
+	 1nNEEgaVp1jpA==
+Date: Wed, 20 Mar 2024 12:41:42 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf: Suggest inbuilt commands for unknown command
+Message-ID: <ZfsDtr5ejAwGySOR@x1>
+References: <20240301201306.2680986-1-irogers@google.com>
+ <Zfr4jX_b8FCOG_x_@x1>
+ <Zfr5__Ej3-0C8sJj@x1>
+ <CAP-5=fXXrJRH=Dto2ajD_TUDE1YmkkJZO5Ey2pq5YB0wbVAzeg@mail.gmail.com>
+ <Zfr-sQJPbZzbtk8K@x1>
+ <ZfsBopALY3whsst5@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZfsBopALY3whsst5@x1>
 
-This is an off-by-one bug which is common in unwinders,
-due to the fact that the address on the stack points
-to the return address rather than the call address.
+On Wed, Mar 20, 2024 at 12:32:50PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Wed, Mar 20, 2024 at 12:20:20PM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Wed, Mar 20, 2024 at 08:12:56AM -0700, Ian Rogers wrote:
+> > > Ah, the change:
+> > > 
+> > > -               static int done_help;
+> > > +               int done_help;
+> > > 
+> > > created an uninitialized use. Compiler warning/sanitizers? Anyway,
+> > > done_help needs hoisting out of the loop and initializing to zero, or
+> > > being made static again (ugh).
+> > 
+> > ⬢[acme@toolbox perf-tools-next]$ git diff
+> > diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> > index c719e6ccd9e27778..f9532b20e87cbf05 100644
+> > --- a/tools/perf/perf.c
+> > +++ b/tools/perf/perf.c
+> > @@ -459,7 +459,7 @@ static int libperf_print(enum libperf_print_level level,
+> >  
+> >  int main(int argc, const char **argv)
+> >  {
+> > -       int err;
+> > +       int err, done_help = 0;
+> >         const char *cmd;
+> >         char sbuf[STRERR_BUFSIZE];
+> >  
+> > @@ -558,8 +558,6 @@ int main(int argc, const char **argv)
+> >         pthread__block_sigwinch();
+> >  
+> >         while (1) {
+> > -               int done_help;
+> > -
+> >                 run_argv(&argc, &argv);
+> >  
+> >                 if (errno != ENOENT)
+> > ⬢[acme@toolbox perf-tools-next]$ perf raccord
+> >   Fatal: Out of memory, realloc failed
+> > ⬢[acme@toolbox perf-tools-next]$
+> > 
+> > Then:
+> > 
+> > diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> > index c719e6ccd9e27778..54f62aa6612bc290 100644
+> > --- a/tools/perf/perf.c
+> > +++ b/tools/perf/perf.c
+> > @@ -558,7 +558,7 @@ int main(int argc, const char **argv)
+> >         pthread__block_sigwinch();
+> >  
+> >         while (1) {
+> > -               int done_help;
+> > +               static int done_help;
+> >  
+> >                 run_argv(&argc, &argv);
+> >  
+> > ⬢[acme@toolbox perf-tools-next]$ perf raccord
+> >   Fatal: Out of memory, realloc failed
+> > ⬢[acme@toolbox perf-tools-next]$
+> 
+> That main_cmds variable is uninitialized, which ends up making
+> add_cmdname() to explode, are you sure this is working on your side?
+> 
+> Further clarifying, this is without considering the second patch, I
+> haven't got to it yet, from what I recall from the description it
+> shouldn't matter tho.
+> 
+> - Arnaldo
+> 
+> ⬢[acme@toolbox perf-tools-next]$ git diff
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index c719e6ccd9e27778..164b3c78baff4204 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -558,7 +558,7 @@ int main(int argc, const char **argv)
+>         pthread__block_sigwinch();
+>  
+>         while (1) {
+> -               int done_help;
+> +               static int done_help;
+>  
+>                 run_argv(&argc, &argv);
+>  
+> @@ -566,7 +566,7 @@ int main(int argc, const char **argv)
+>                         break;
+>  
+>                 if (!done_help) {
+> -                       struct cmdnames main_cmds;
+> +                       struct cmdnames main_cmds = { 0, };
+>  
+>                         for (unsigned int i = 0; i < ARRAY_SIZE(commands); i++) {
+>                                 add_cmdname(&main_cmds,
+> ⬢[acme@toolbox perf-tools-next]$ perf raccord
+> perf: 'raccord' is not a perf-command. See 'perf --help'.
+> ⬢[acme@toolbox perf-tools-next]$ 
 
-So, for example, when the last instruction of a function
-is a function call (e.g., to a noreturn function), it can
-cause the unwinder to incorrectly try to unwind from
-the function after the callee.
+But:
 
-foo:
-..
-    bl      bar
-.. end of function and thus next function ...
+⬢[acme@toolbox perf-tools-next]$ perf raccord
+perf: 'raccord' is not a perf-command. See 'perf --help'.
+⬢[acme@toolbox perf-tools-next]$ perf ricord
+perf: 'ricord' is not a perf-command. See 'perf --help'.
 
-which results in LR pointing into the next function.
+Did you mean this?
+	record
+⬢[acme@toolbox perf-tools-next]$ perf ricord
+perf: 'ricord' is not a perf-command. See 'perf --help'.
 
-Fixed this by subtracting 1 from frmae->pc in the call frame
-like ORC on x86 does.
+Did you mean this?
+	record
+⬢[acme@toolbox perf-tools-next]$
 
-Refer to the unwind_next_frame function in the unwind_orc.c
+So I'll add that and go on from there.
 
-Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Link: https://lkml.kernel.org/lkml/20240305175846.qnyiru7uaa7itqba@treble/
-Suggested-by: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Link: https://lkml.kernel.org/lkml/Zeg8wRYFemMjcCxG@shell.armlinux.org.uk/
-Signed-off-by: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
----
-ChangeLog v1->v2
-- stay printk("%s...", loglvl, ...)
-ChangeLog v2->v3
-- Redundant code is deleted to simplify the code
----
- arch/arm/kernel/unwind.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
-index 9d21921..abfa8e9 100644
---- a/arch/arm/kernel/unwind.c
-+++ b/arch/arm/kernel/unwind.c
-@@ -514,6 +514,14 @@ int unwind_frame(struct stackframe *frame)
- 	frame->sp = ctrl.vrs[SP];
- 	frame->lr = ctrl.vrs[LR];
- 	frame->pc = ctrl.vrs[PC];
-+	/*
-+	 * When the last instruction of a function is a function call
-+	 * (e.g., to a noreturn function), it can cause the unwinder
-+	 * incorrectly try to unwind from the function after the callee,
-+	 * fixed this by subtracting 1 from frame->pc in the call frame
-+	 * like ORC on x86 does.
-+	 */
-+	frame->pc = frame->pc - 1;
- 	frame->lr_addr = ctrl.lr_addr;
- 
- 	return URC_OK;
--- 
-1.8.5.6
-
+- Arnaldo
 
