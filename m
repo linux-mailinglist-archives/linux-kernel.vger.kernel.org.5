@@ -1,145 +1,176 @@
-Return-Path: <linux-kernel+bounces-108871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C8C488112A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:46:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1C7881134
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A631F23956
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:46:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAB781C2269C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673283EA8A;
-	Wed, 20 Mar 2024 11:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE2D3FBAD;
+	Wed, 20 Mar 2024 11:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewiHOs1w"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Bc76I6FM"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85B73DBB7;
-	Wed, 20 Mar 2024 11:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA06C3F8C3;
+	Wed, 20 Mar 2024 11:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710935161; cv=none; b=sDg361HS0h1xTrYi7q6WWd30N3VWg+pmDmCieaDtdjN48Z/etp/wX8cWTeEZmBKHR5xEa2ysIZQfFTBBVecgggodQNOZkMhmcDQ5e4H86OJjbrEZNEla0aNXmoz+l/Z1s/UVW+zvuoybuo0UmatIYkislWsrRhHr+4FeL93WayU=
+	t=1710935282; cv=none; b=ZJP90ykSHui/YKXv3cVj6o9WajypOB+gJslWoHLGTDH3SIAf+Y+AwWys9qCkcyzmcp+rLhTU+pJM7J46ssursI5/vb2nc8EAuJyKBjp29RrhON1PK9n6QgRu6G11rtXDJSxKShaeisBLZQEpIzLGXrgz4dPgwbaQPW+kj2Tpy58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710935161; c=relaxed/simple;
-	bh=01oY2je8eUOPUwF8l+M2wheZEGh5GUw6lBQ6Dq+yEmk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dlxn2HJl3fLm3nkrIwM8Fc7KohWjZLQ0znDVesqNV7+7cqi9E7ocI4fBBX/qYHsGeRdAxS+BACfbkGpCmbAXPmX0sSm/An/EXn06o4CGtTadWfhgI1aaha7CAHhzTBSpCzWsy+tqReAvKVmRp90wTPOYUz2RFgRvZsYiIl4QF9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewiHOs1w; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33e162b1b71so5600711f8f.1;
-        Wed, 20 Mar 2024 04:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710935158; x=1711539958; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v321yfLmo8GBQ/y8FJ9LR+n1jyv6fOuhCRdabZc9zbA=;
-        b=ewiHOs1wF0IUyDLCJRvJ3oQaCmAY81+I4h/uKzaR+Rd7UVQE/309YT0tnxaaQF0rT/
-         pLgbgNbq4ghIT1cxYNnhdqh0ulJYv5stUhhI1vsubExIUrTUDBgUetnm2rIwdF4XftTE
-         2oEpUVY39O9QThJjUcYcS4aY6oJBqbNJNq0cFYoJuoKkoPlGj60SJk06Zeh6kJfrv0l0
-         RbvRWAZjbmR9v9xyM69gPpswCXzylABqYzf4MNkoyjW7KC7Wr/ztxMHAh7KAMzW2tX5C
-         tdnGryJnBZtetSpXe3Maru6/A2dj9Ludl/ORFZ1x+46PMBkHWw4v23gynfgnFzp0dHEG
-         mbuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710935158; x=1711539958;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v321yfLmo8GBQ/y8FJ9LR+n1jyv6fOuhCRdabZc9zbA=;
-        b=a+Cd7vGSPzhrAucoFtsQQ9A+DUe/UUgPcTbbDF0MIPvNr0jFH34HN5H6K70QbAXa2A
-         dabFXtNnVx8RTq40yE7D6nBhod/EInJyL8VBa1ZAGaIcgRpUHdDoMNXShfHHpyt9QipA
-         2bNQWVgVsRVYyLph+trjtwOisQM6G9YDihiGPkD+5JSu431Hl08vmgpCUf/3cEmZiSk/
-         iOtzNNJVf4d83EHcS3f7ZheVdoduQm4kXRGCoKAGC0LBsnsl8VZ1z/0LYjWDArdb50rT
-         Wxaer0majv1ztM5SYYvb3plpXzGxhXfZo+n+lye4MCIYcfTAAtjvkkmdLgoJOt3UjPBf
-         15hg==
-X-Gm-Message-State: AOJu0YyCpEd5k9w3pU8qTLPaojIT7OvqpaG3oy/Fr/egDmbEewv4P6Ph
-	NMLvE3CYh7SbQ4cRJyLAUVXKTYrNR/nYWc6mSMqAzvpZ9860W5tKgc4MM7NXUtA=
-X-Google-Smtp-Source: AGHT+IHIaGpH1SUarfLTXZGxXsKLAEga/PSUIi9Ln03X0/ldyAVFMhtdUSadRf3ON54Hu7jEdhucQQ==
-X-Received: by 2002:a05:6000:544:b0:33e:bf0f:8156 with SMTP id b4-20020a056000054400b0033ebf0f8156mr3563811wrf.38.1710935157831;
-        Wed, 20 Mar 2024 04:45:57 -0700 (PDT)
-Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
-        by smtp.gmail.com with ESMTPSA id az1-20020adfe181000000b0033ed7181fd1sm11741024wrb.62.2024.03.20.04.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 04:45:57 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 20 Mar 2024 12:45:55 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>
-Cc: linux-tip-commits@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [tip: x86/percpu] x86/percpu: Convert this_percpu_xchg_op() from
- asm() to C code, to generate better code
-Message-ID: <ZfrMcyZXCBQD/sE8@gmail.com>
-References: <20240320083127.493250-1-ubizjak@gmail.com>
- <171093476000.10875.14076471223590027773.tip-bot2@tip-bot2>
+	s=arc-20240116; t=1710935282; c=relaxed/simple;
+	bh=tdv+zR6KY9v8E52vz1Fb060Q1/O3FwV2b1XjMCGO4rQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hmSTzofZOEe2y8yZoJbxgEcnkiIICIetU1twqOfr3iuw3x8dD+WPEBs8ZALUzDi9a6ulcElTFm7/AnX7k2Y5xkBXHRFqKaWzOdtvtB2AtatL7zHwegRMzdDSpBZ2FSmq3vVXYV+f2BO0fbosAFi5zspFRJbcEQ5PRbkr75VUlSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Bc76I6FM; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KBUhJr017914;
+	Wed, 20 Mar 2024 11:47:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=1F0I83yil5m5V53xrdM9fkbdPUJwUJelO21septNlw4=;
+ b=Bc76I6FM+KWJ460xaLpqFREkrbncYzOD5PDYcniZH9W7gHIKwaOnxtSzxF1gP02hRR4n
+ AH1intI8gGH5k+T+OpJjetn75IWRa7ZLDUp72ZJ3UMm9ssdWUwu7cRjDpXOWlKtKqFOc
+ IG3ucPf5ZpOITXv8Ety2O7vRhV4uzvVC1CgVrg3QejLBgSghNxvr1b1DGcQe33yoXQih
+ bxeS+21xVsr6Al2hLislkCHLOS3WUu4NB1lInv0BakI4h+0g4V0Fh5fhcxBYC1PWwZ1q
+ vgQI3IADKV1vJC3OpnyKyKKjQt64+P3bwSRZUI5OjU6sCOw2qYL8VMLVkkNQc6w6iWtV ag== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyxbr83sb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 11:47:48 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KAU3S8017194;
+	Wed, 20 Mar 2024 11:47:47 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrte8ud-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 11:47:47 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KBljb650594262
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 20 Mar 2024 11:47:47 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 387B158061;
+	Wed, 20 Mar 2024 11:47:45 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9A16858057;
+	Wed, 20 Mar 2024 11:47:44 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 20 Mar 2024 11:47:44 +0000 (GMT)
+From: Stefan Berger <stefanb@linux.ibm.com>
+To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
+        bbhushan2@marvell.com, jarkko@kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: Add support for NIST P521 to ecdsa
+Date: Wed, 20 Mar 2024 07:47:12 -0400
+Message-ID: <20240320114725.1644921-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171093476000.10875.14076471223590027773.tip-bot2@tip-bot2>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: EafWTgOxpS2Cc-KeOF8wYqGbOxNSvmzR
+X-Proofpoint-GUID: EafWTgOxpS2Cc-KeOF8wYqGbOxNSvmzR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 malwarescore=0
+ adultscore=0 impostorscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403200093
 
+This series adds support for the NIST P521 curve to the ecdsa module
+to enable signature verification with it.
 
-* tip-bot2 for Uros Bizjak <tip-bot2@linutronix.de> wrote:
+An issue with the current code in ecdsa is that it assumes that input
+arrays providing key coordinates for example, are arrays of digits
+(a 'digit' is a 'u64'). This works well for all currently supported
+curves, such as NIST P192/256/384, but does not work for NIST P521 where
+coordinates are 8 digits + 2 bytes long. So some of the changes deal with
+converting byte arrays to digits and adjusting tests on input byte
+array lengths to tolerate arrays not providing multiples of 8 bytes.
 
-> The following commit has been merged into the x86/percpu branch of tip:
-> 
-> Commit-ID:     0539084639f3835c8d0b798e6659ec14a266b4f1
-> Gitweb:        https://git.kernel.org/tip/0539084639f3835c8d0b798e6659ec14a266b4f1
-> Author:        Uros Bizjak <ubizjak@gmail.com>
-> AuthorDate:    Wed, 20 Mar 2024 09:30:40 +01:00
-> Committer:     Ingo Molnar <mingo@kernel.org>
-> CommitterDate: Wed, 20 Mar 2024 12:29:02 +01:00
-> 
-> x86/percpu: Convert this_percpu_xchg_op() from asm() to C code, to generate better code
-> 
-> Rewrite percpu_xchg_op() using generic percpu primitives instead
-> of using asm. The new implementation is similar to local_xchg() and
-> allows the compiler to perform various optimizations: e.g. the
-> compiler is able to create fast path through the loop, according
-> to likely/unlikely annotations in percpu_try_cmpxchg_op().
+Regards,
+   Stefan
 
-So, while at it, there's two other x86 percpu code generation details I was 
-wondering about:
+v7:
+ - Applied T-b tag from Christian to all patches
+ - Applied R-b tag from Jarkko to some patches
+ - Rephrased some patch descriptions per Jarkko's request
 
-1)
+v6:
+ - Use existing #defines for number of digits rather than plain numbers
+   (1/13, 6/13) following Bharat's suggestion
+ - Initialize result from lowest 521 bits of product rather than going
+   through tmp variable (6/13)
 
-Right now it's GCC-only:
+v5:
+ - Simplified ecc_digits_from_bytes as suggested by Lukas (1/12)
+ - Using nbits == 521 to detect NIST P521 curve rather than strcmp()
+   (5,6/12)
+ - Nits in patch description and comments (11/12)
 
-  config CC_HAS_NAMED_AS
-          def_bool CC_IS_GCC && GCC_VERSION >= 120100
+v4:
+ - Followed suggestions by Lukas Wummer (1,5,8/12)
+ - Use nbits rather than ndigits where needed (8/12)
+ - Renaming 'keylen' variablest to bufsize where necessary (9/12)
+ - Adjust signature size calculation for NIST P521 (11/12)
 
-Because we wanted to create a stable core of known-working functionality.
+v3:
+ - Dropped ecdh support
+ - Use ecc_get_curve_nbits for getting number of bits in NIST P521 curve
+   in ecc_point_mult (7/10)
 
-I suppose we have already established that with the current merge window, 
-so it might be time to expand it.
+v2:
+ - Reformulated some patch descriptions
+ - Fixed issue detected by krobot
+ - Some other small changes to the code
 
-Clang claims to be compatible:
+Stefan Berger (13):
+  crypto: ecc - Use ECC_CURVE_NIST_P192/256/384_DIGITS where possible
+  crypto: ecdsa - Convert byte arrays with key coordinates to digits
+  crypto: ecdsa - Adjust tests on length of key parameters
+  crypto: ecdsa - Extend res.x mod n calculation for NIST P521
+  crypto: ecc - Add nbits field to ecc_curve structure
+  crypto: ecc - Implement vli_mmod_fast_521 for NIST p521
+  crypto: ecc - Add special case for NIST P521 in ecc_point_mult
+  crypto: ecc - Add NIST P521 curve parameters
+  crypto: ecdsa - Replace ndigits with nbits where precision is needed
+  crypto: ecdsa - Rename keylen to bufsize where necessary
+  crypto: ecdsa - Register NIST P521 and extend test suite
+  crypto: asymmetric_keys - Adjust signature size calculation for NIST
+    P521
+  crypto: x509 - Add OID for NIST P521 and extend parser for it
 
-  https://releases.llvm.org/9.0.0/tools/clang/docs/LanguageExtensions.html
+ crypto/asymmetric_keys/public_key.c       |  14 ++-
+ crypto/asymmetric_keys/x509_cert_parser.c |   3 +
+ crypto/ecc.c                              |  44 +++++--
+ crypto/ecc_curve_defs.h                   |  49 ++++++++
+ crypto/ecdsa.c                            |  62 ++++++---
+ crypto/ecrdsa_defs.h                      |   5 +
+ crypto/testmgr.c                          |   7 ++
+ crypto/testmgr.h                          | 146 ++++++++++++++++++++++
+ include/crypto/ecc_curve.h                |   2 +
+ include/crypto/ecdh.h                     |   1 +
+ include/crypto/internal/ecc.h             |  24 +++-
+ include/linux/oid_registry.h              |   1 +
+ 12 files changed, 335 insertions(+), 23 deletions(-)
 
-  "You can also use the GCC compatibility macros __seg_fs and __seg_gs for the
-   same purpose. The preprocessor symbols __SEG_FS and __SEG_GS indicate their
-   support."
+-- 
+2.43.0
 
-I haven't tried it yet though.
-
-2)
-
-Also, is the GCC_VERSION cutoff accurate - are previous GCC versions 
-known-buggy, or was it primarily a risk-reduction cutoff?
-
-Thanks,
-
-	Ingo
 
