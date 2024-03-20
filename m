@@ -1,143 +1,372 @@
-Return-Path: <linux-kernel+bounces-108367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0C9C8809B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:43:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5378809D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C23E28437B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:43:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1551C22B25
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A120134C9;
-	Wed, 20 Mar 2024 02:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BE43FB8F;
+	Wed, 20 Mar 2024 02:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="NyWllr7l"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="AuaPN7m0"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB06FC17
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161B02E62E;
+	Wed, 20 Mar 2024 02:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710902547; cv=none; b=MpxwWBLiyCxngnIMkwL3vaVgnUva9mWxmFBptjf+xHA4yxtkrHGIqlAZ3xy1su3jFFi96nI6Xfk1bgxjtzGBL1xvnd1J5TeYvX+UkCBb4/c1NAxEQtTXJshrc772MaeSs+Xray+xZ+od96MgW59EBBsIubfJ14Tp0Y5Jd9iD1C4=
+	t=1710902557; cv=none; b=HFxxv3HKJykAq4GMHfDZ3R8B00nbCwr6UDYjWussRuOnWTy9qsdAp/c85h2vrhyfkjF/51fOlHBFOSCeuiJjjcGjw9qHKIfhL7Q0naAff6njbCgpA2N/JkLr+7xsRrBpCr9dMmwVdK8H1UQkJOlqHGBZP7PWUziPCylf4CTU4b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710902547; c=relaxed/simple;
-	bh=YzPNp/bNBe/NK++T3MgP34oObjeH/a7wt40c91gratA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KWtZfDmeD0f706R709d+91J0e1Mrhw1lNmepbEJ8chSH25oM6pRHkWWbxkti1fcsKOYXCp2DyaR/PrNyWbw1G51HzFroJkbBwvU33I0jYavsBc9dCMaWGkIzFKLOmNtAI0e21QXvUPdAVRrss4rW2UonvwmXCZyCngV9YMF1Xjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=NyWllr7l; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78a13117a3dso41383385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1710902543; x=1711507343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Gwth4DHc3n7Jk8RbQant6q4qmoLsduwQhc9A8tF9LNs=;
-        b=NyWllr7lZI070fBxf7aqVYRREUG4OKRS/DVLH10s2ofC4Tz1HOulNy+cfe/LNG5QS5
-         IQktS84gTIf2sIDOM/+QgSURQPit27g9OAp+WzqnxCXpLtvkfj2L5md9/nw6ujGVavNf
-         BG+0HpffJq+Xp01WIBgcFxnFfAcuQpYeW2vjl9/G9zErl2If6d+NCMtWyzxzfedTgtz0
-         Nh+TkzE5VSJkYo6sX3F8DMcdjJZbQZbftUHjmLAL4qCl3iFiL+18mL293wyoT9iNIWcD
-         ZBtI0XVepGgzq4hf6bYNsjDXqfA+OMiayTKX9ibAmvnicFtSLYzqk3d1hUikAkW+DM/Q
-         E0hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710902543; x=1711507343;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gwth4DHc3n7Jk8RbQant6q4qmoLsduwQhc9A8tF9LNs=;
-        b=g9Ri5or2ONo4j8BWVGl/qnoUR+YmU0Gy2xZ+gEHmmosJLdZU3BJGbQLm/yx5L8zfPX
-         mjL1TLxSEXPVlbb77QPnBKX2HDrfB/SG1IFWkdXnnxCNMjZ6Ic5mQDtQehqm7MY5DO91
-         pWxoHihp57pnYW9G1lud7Rud6xQJuFUmMcWc7qePwqh9pUueT3NUfJu1LnrKqKQpMHEZ
-         Zd7f6qLern921LykvdNySBzGkvkY2F4X+MAAMDuikno8eFIa8c9KlebkNykurO8z6k6Q
-         q6peLvok8iwuzq9XOpHu8nuWkPKm+RJ+Ou6b8Ks+Jqo6pXSgQ4B6KKbc+IhXsjvl/mxh
-         mTUA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8PTjHR8hKNh/CMSVshKJBBF6bQn0e2lSkWdYfyBGUp/I8k+sH9THqA7QS4R5hGDW+INq7kwI+1GLBiw0OI3i3MMaY0ndB4w4JRw9c
-X-Gm-Message-State: AOJu0YzVzxTa107xQId012HjM47YplwKuInxXFuzpqbGquCQh4v0+7DQ
-	/zOM+CwI8Lrz8vIUCz2CTBssWC2jSX+7uJ1ZTLeW+62ypTCNj62JQBZocaGy+JsDcPNxL4M24+4
-	woQ==
-X-Google-Smtp-Source: AGHT+IGHswrTM4FTiBPD0YXAQUMLyxW4PRx4gQjvpjDC8ST6/12GayLSbc0ihrs1ql7V1uIy1W3KoA==
-X-Received: by 2002:a05:620a:4691:b0:78a:120f:ee44 with SMTP id bq17-20020a05620a469100b0078a120fee44mr2253073qkb.28.1710902543396;
-        Tue, 19 Mar 2024 19:42:23 -0700 (PDT)
-Received: from localhost (pool-74-98-221-57.pitbpa.fios.verizon.net. [74.98.221.57])
-        by smtp.gmail.com with UTF8SMTPSA id d7-20020a05620a136700b0078863e0f829sm5213075qkl.12.2024.03.19.19.42.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 19:42:23 -0700 (PDT)
-From: kaiyang2@cs.cmu.edu
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	dskarlat@cs.cmu.edu
-Subject: [RFC PATCH 4/7] vmstat counter for pages migrated across zones
-Date: Wed, 20 Mar 2024 02:42:15 +0000
-Message-Id: <20240320024218.203491-5-kaiyang2@cs.cmu.edu>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-References: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-Reply-To: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+	s=arc-20240116; t=1710902557; c=relaxed/simple;
+	bh=1zllZdYy1rNcgJGEAXVsgfFZ0TcC//2tl8TP7BTvpBk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JIQZhlqcHjziEgVGQU6ahE3TyaaivYZq+pWVKs293pfBwzuX/k7pC0USTQnoXic7hbPwlnzXbiyVU3+O5Qi8/zcZowyRjKDF3Ym+6AbSzOFlUfHjGF6qKCa7OesgE0+kee5FxszkZkEzgbrnWc/XhFHtfaHaf1OKKhPVNBcFSPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=AuaPN7m0; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 7cdfc800e66311eeb8927bc1f75efef4-20240320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=FvudaGYGUOjlTrZxQbX2KOkrgj9mfK8+nImPKyohWfM=;
+	b=AuaPN7m0ZmXs6hsoKNaljKi9ALlrVEqGTW9UyMeiUriU2gUPD6q1zFWVG6LV+FxqrmAey6PoLJSo3sooPz13URwR9PcStU/mq6SJdRFCBDiaoCCLNyYWZZTQOHU+UjPKatIPhkk1XrVt3QFlvqCQq+q9cgy+LsxXv3byUu0JDrE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:5a84b076-4e86-4708-888d-9f7f1aa41443,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:20
+X-CID-META: VersionHash:6f543d0,CLOUDID:6db73385-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:5,IP:nil,UR
+	L:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
+	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 7cdfc800e66311eeb8927bc1f75efef4-20240320
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 608974531; Wed, 20 Mar 2024 10:42:26 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Mar 2024 10:42:25 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 10:42:25 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v3 08/14] drm/mediatek: Rename files "mtk_drm_ddp_comp.h" to "mtk_ddp_comp.h"
+Date: Wed, 20 Mar 2024 10:42:16 +0800
+Message-ID: <20240320024222.14234-9-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240320024222.14234-1-shawn.sung@mediatek.com>
+References: <20240320024222.14234-1-shawn.sung@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Add a counter for the number of pages migrated across zones in vmstat
+Rename files mtk_drm_ddp_comp.h to mtk_ddp_comp.h.
 
-Signed-off-by: Kaiyang Zhao <zh_kaiyang@hotmail.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 ---
- include/linux/vm_event_item.h | 1 +
- mm/compaction.c               | 2 ++
- mm/vmstat.c                   | 1 +
- 3 files changed, 4 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_crtc.c                             | 2 +-
+ drivers/gpu/drm/mediatek/mtk_crtc.h                             | 2 +-
+ drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.h => mtk_ddp_comp.h} | 0
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c                         | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c                       | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_color.c                       | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c                       | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c                       | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c                         | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c                 | 2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c                        | 2 +-
+ drivers/gpu/drm/mediatek/mtk_dpi.c                              | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c                     | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c                          | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h                          | 2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c                        | 2 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c                              | 2 +-
+ drivers/gpu/drm/mediatek/mtk_ethdr.c                            | 2 +-
+ drivers/gpu/drm/mediatek/mtk_padding.c                          | 2 +-
+ 19 files changed, 18 insertions(+), 18 deletions(-)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.h => mtk_ddp_comp.h} (100%)
 
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 8abfa1240040..be88819085b6 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -79,6 +79,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- 		COMPACTSTALL, COMPACTFAIL, COMPACTSUCCESS,
- 		KCOMPACTD_WAKE,
- 		KCOMPACTD_MIGRATE_SCANNED, KCOMPACTD_FREE_SCANNED,
-+		COMPACT_CROSS_ZONE_MIGRATED,
- #endif
- #ifdef CONFIG_HUGETLB_PAGE
- 		HTLB_BUDDY_PGALLOC, HTLB_BUDDY_PGALLOC_FAIL,
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 03b5c4debc17..dea10ad8ec64 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2552,6 +2552,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 
- 	count_compact_events(COMPACTMIGRATE_SCANNED, cc->total_migrate_scanned);
- 	count_compact_events(COMPACTFREE_SCANNED, cc->total_free_scanned);
-+	if (dst_zone != cc->zone)
-+		count_compact_events(COMPACT_CROSS_ZONE_MIGRATED, nr_succeeded);
- 
- 	trace_mm_compaction_end(cc, start_pfn, end_pfn, sync, ret);
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index c28046371b45..98af82e65ad9 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1324,6 +1324,7 @@ const char * const vmstat_text[] = {
- 	"compact_daemon_wake",
- 	"compact_daemon_migrate_scanned",
- 	"compact_daemon_free_scanned",
-+	"compact_cross_zone_migrated",
- #endif
- 
- #ifdef CONFIG_HUGETLB_PAGE
--- 
-2.40.1
+diff --git a/drivers/gpu/drm/mediatek/mtk_crtc.c b/drivers/gpu/drm/mediatek/mtk_crtc.c
+index 631c1ef2847ef..7710e539e3da1 100644
+--- a/drivers/gpu/drm/mediatek/mtk_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_crtc.c
+@@ -20,8 +20,8 @@
+ #include <drm/drm_vblank.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_gem.h"
+ #include "mtk_drm_plane.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_crtc.h b/drivers/gpu/drm/mediatek/mtk_crtc.h
+index 2d9f28f436aea..fd6c006f0c169 100644
+--- a/drivers/gpu/drm/mediatek/mtk_crtc.h
++++ b/drivers/gpu/drm/mediatek/mtk_crtc.h
+@@ -7,7 +7,7 @@
+ #define MTK_CRTC_H
+
+ #include <drm/drm_crtc.h>
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_plane.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_ddp_comp.h
+similarity index 100%
+rename from drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+rename to drivers/gpu/drm/mediatek/mtk_ddp_comp.h
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+index ba926e797af8a..92acdaddd648d 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+@@ -12,8 +12,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_AAL_EN				0x0000
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
+index 79bcd3c487563..975ee45a0f72c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
+@@ -11,8 +11,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_CCORR_EN				0x0000
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+index 4aa41b1ff2602..91e7837a32c86 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+@@ -11,8 +11,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_COLOR_CFG_MAIN			0x0400
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+index 1a1ee77127ee9..51ae4f947c714 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+@@ -12,8 +12,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_GAMMA_EN				0x0000
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_merge.c b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
+index 32a29924bd54c..3b1e04ecb9d45 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_merge.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
+@@ -10,7 +10,7 @@
+ #include <linux/reset.h>
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_disp_drv.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+index 7f2219c0119be..0ebeaf9830d83 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+@@ -16,8 +16,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_REG_OVL_INTEN			0x0004
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+index 542dc2a20ea90..d957f5c8ccf92 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+@@ -18,8 +18,8 @@
+ #include <linux/soc/mediatek/mtk-mutex.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_ethdr.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+index 04f584372214f..f06b048c12479 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
+@@ -14,8 +14,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DISP_REG_RDMA_INT_ENABLE		0x0000
+diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
+index beb7d9d08e971..fbf63e0441337 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dpi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+@@ -26,9 +26,9 @@
+ #include <drm/drm_of.h>
+ #include <drm/drm_simple_kms_helper.h>
+
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+ #include "mtk_dpi_regs.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ enum mtk_dpi_out_bit_num {
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 24389c6c3561f..ab96b1001de3e 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -15,10 +15,10 @@
+ #include <drm/drm_print.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_plane.h"
+-#include "mtk_drm_ddp_comp.h"
+
+
+ #define DISP_REG_DITHER_EN			0x0000
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 7be3b0546d3df..113fdbaac5a14 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -25,7 +25,7 @@
+ #include <drm/drm_vblank.h>
+
+ #include "mtk_crtc.h"
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_gem.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+index 24c4d59085bd6..78d698ede1bf8 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+@@ -7,7 +7,7 @@
+ #define MTK_DRM_DRV_H
+
+ #include <linux/io.h>
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+
+ #define MAX_CONNECTOR	2
+ #define DDP_COMPONENT_DRM_OVL_ADAPTOR (DDP_COMPONENT_ID_MAX + 1)
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index 720f6b4b08215..63a7a24468c13 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -14,7 +14,7 @@
+ #include <linux/align.h>
+
+ #include "mtk_crtc.h"
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_gem.h"
+ #include "mtk_drm_plane.h"
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index ec9d96396d7b2..e29c37fb5be09 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -28,8 +28,8 @@
+ #include <drm/drm_probe_helper.h>
+ #include <drm/drm_simple_kms_helper.h>
+
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+
+ #define DSI_START		0x00
+diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.c b/drivers/gpu/drm/mediatek/mtk_ethdr.c
+index 41efaafe26f1a..9b0264bd5e731 100644
+--- a/drivers/gpu/drm/mediatek/mtk_ethdr.c
++++ b/drivers/gpu/drm/mediatek/mtk_ethdr.c
+@@ -15,7 +15,7 @@
+ #include <linux/soc/mediatek/mtk-mmsys.h>
+
+ #include "mtk_crtc.h"
+-#include "mtk_drm_ddp_comp.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_ethdr.h"
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_padding.c b/drivers/gpu/drm/mediatek/mtk_padding.c
+index ff6a5c695128c..1f91805cd9aac 100644
+--- a/drivers/gpu/drm/mediatek/mtk_padding.c
++++ b/drivers/gpu/drm/mediatek/mtk_padding.c
+@@ -12,8 +12,8 @@
+ #include <linux/soc/mediatek/mtk-cmdq.h>
+
+ #include "mtk_crtc.h"
++#include "mtk_ddp_comp.h"
+ #include "mtk_disp_drv.h"
+-#include "mtk_drm_ddp_comp.h"
+
+ #define PADDING_CONTROL_REG	0x00
+ #define PADDING_BYPASS			BIT(0)
+--
+2.18.0
 
 
