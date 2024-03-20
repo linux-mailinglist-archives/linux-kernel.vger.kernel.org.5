@@ -1,115 +1,111 @@
-Return-Path: <linux-kernel+bounces-108682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC327880E5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:13:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D3B0880E5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A55B1F22B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:13:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221881F22B88
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299903A1A1;
-	Wed, 20 Mar 2024 09:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A93339FFF;
+	Wed, 20 Mar 2024 09:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="uZW7+ZCG"
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rPLC2rbm"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2838381A1;
-	Wed, 20 Mar 2024 09:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49CA3BB20;
+	Wed, 20 Mar 2024 09:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710925970; cv=none; b=rny5KatR5E4aShbaBsTaDJ1lTrIwobT9Oa52P+14C3kjXcWwZ0Xx+q00ACs1IiDKeNwFXNm/bZwR+tfFYR/CQQroww7Wqr/L4dWWpL7GXnYZ8L3xHPnh8MFTXrtxYzz1/k2cZCfuBUmR+hdtZWPoOHEzgxkQJbLp8+V0GsYbTgo=
+	t=1710926027; cv=none; b=fG5aE5Ccho66SLJukFcWcmVVLpfyTsDEKTWpMDce/dH40H62GSj07dYTysg5lF4bK96YdodrmZNuuObM8MjZeTr6wsRgY8FDea84SOUytavO7AZkZqEEt5Db6FCOSERVrHZKC7xZ+7fFAkCBeYykPyDZ0nxeuyN1EBaHRL3r1e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710925970; c=relaxed/simple;
-	bh=+cQOlbmIo4jx4EXb7qfz4OBixcqEIrAG4ITC5AbEzzQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=s7JzZfR2pq+L0SaXEkulrlnhtVy5qWHxLl4m4cR6p3wuiRiW2E0o7hnvqr9J2rbC5Yw28gm6+ywvHMWAfo93Mh3bRSiN9pAn3fzNImXAhHfJMsIBMWwusWgkzOUKNsZlr13BCkqC4b83TBWFPmFlEu9tPuptjNP/AoURG2FtUNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=uZW7+ZCG; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=+cQOlbmIo4jx4EXb7qfz4OBixcqEIrAG4ITC5AbEzzQ=;
-	t=1710925969; x=1712135569; b=uZW7+ZCGBcDkwTsfFtJiyFeYgkVbl5iMuW66g7VGfLex9nh
-	g8gkQ2lavOhO0lLQBh1jAALO8ouNlMRhtxa7igiMeRXCpZPo9bhmxC0gxTMAMftHpEbwryKmixXFC
-	iwQk8+BV3ufr5dQdLQml6vJfrBJNBjRPK4txH4eyodv0FrjK18PycwalQVue57vLl70+K0rg2IJdB
-	s8DrQgb+yRuMEI7ldhnaT391KBvKtJ66iR4zms6An8tUtV2u+L+9QgP4kSByAgNuEDBVFD1b0mv2f
-	AgPIVHCLVsk98ZFJQJv9Wa3Ml0Py/Pvc2aU4sHBAX5z4dmcX8frkGJPVQw9fnO1w==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rms06-00000006u2O-1aY8;
-	Wed, 20 Mar 2024 10:12:46 +0100
-Message-ID: <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
-Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support
- host mlme
-From: Johannes Berg <johannes@sipsolutions.net>
-To: David Lin <yu-hao.lin@nxp.com>, Brian Norris <briannorris@chromium.org>,
-  Francesco Dolcini <francesco@dolcini.it>
-Cc: "kvalo@kernel.org" <kvalo@kernel.org>, "linux-wireless@vger.kernel.org"
- <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>, 
- "rafael.beims" <rafael.beims@toradex.com>, Francesco Dolcini
- <francesco.dolcini@toradex.com>
-Date: Wed, 20 Mar 2024 10:12:45 +0100
-In-Reply-To: <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
-	 <20240315094927.GA6624@francesco-nb> <ZfTspRKFgrO9xCTH@google.com>
-	 <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
-	 <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-	 <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1710926027; c=relaxed/simple;
+	bh=f5TBxsXEtnxxjUawzCCMKUWjeP88hHOAUk3qAGQHobE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XoP51EGwGPrxUbyR+9gooAGUTiWBvxsQVKa655FdmN4GrUX6ZZ2K6ahv+/uiqbGxZwf7KRXbqJz7ih5OAmjJlfHOOEtZGvG8yE7SDIOFspZZS6TdD2WwYJ7mMUGpmF1q+fufpo0ZZ8A6xVIs8nzD8ktmicZepE5xxm0OQUWNkww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rPLC2rbm; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710926024;
+	bh=f5TBxsXEtnxxjUawzCCMKUWjeP88hHOAUk3qAGQHobE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rPLC2rbmMfSDL7SfVIjwIYPwavzcX5JR0Ow7R6VJm+E3lHQtX+X1awhmPtEvl/gjQ
+	 tI5V9EyYtORf10G8dNND9QJQMNlFh3xkLQoEmJzzBLbXNNIawEU4BV3aYDtc/mp8SN
+	 kcroNKFQ9/PdG2osZ8/MckyJKyPWnJsbfVqQdB34WN+wE3Kp1fPSpKOIB47wqraDJE
+	 cBwBKbwoL/frmwfWy/+2lBZG//ldG2EN4Wv1waiId/wUYvRYReS+Rn/fEmO1swaoVI
+	 z6o+uIxIfzI7w9dPDpNE1nmo/SzvxqLIx23Js0o/fBk1Z/l7U53kyKbL2yneYr17t+
+	 XbT7BCp6+zETw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2D02137813C4;
+	Wed, 20 Mar 2024 09:13:43 +0000 (UTC)
+Message-ID: <c09b063f-a11a-4bc0-8b12-3d66f692c48c@collabora.com>
+Date: Wed, 20 Mar 2024 10:13:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: mediatek: vcodec: Handle invalid decoder vsi
+Content-Language: en-US
+To: Irui Wang <irui.wang@mediatek.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Yunfei Dong <yunfei.dong@mediatek.com>, nicolas.dufresne@collabora.com,
+ sebastian.fricke@collabora.com
+Cc: Longfei Wang <longfei.wang@mediatek.com>,
+ Maoguang Meng <maoguang.meng@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240320061336.2615-1-irui.wang@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240320061336.2615-1-irui.wang@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-03-20 at 01:10 +0000, David Lin wrote:
-> > >=20
-> > > Also decl.h should probably _shrink_ rather than grow, a number of
-> > > things just replicate ieee80211.h (such as MWIFIEX_MGMT_HEADER_LEN
-> > > really is just
-> > > sizeof(ieee80211_mgmt) or so? Not quite correctly.)
-> > >=20
-> >=20
-> > This can be done for feature patches.
+Il 20/03/24 07:13, Irui Wang ha scritto:
+> Handle invalid decoder vsi in vpu_dec_init to ensure the decoder vsi is
+> valid for future use.
+> 
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 
-But this is a feature patch :-)
+This commit needs a Fixes tag, can you please add the relevant one and resend?
 
-> > > So yeah, agree with Brian, not only would this be the first, but it's
-> > > also something we don't really _want_. All other drivers that want
-> > > stuff like this are stuck in staging ...
-> > >=20
-> > > So why is this needed for a supposedly "firmware does it all" driver,
-> > > and why can it not be integrated with mac80211 if it's no longer "fir=
-mware
-> > does it all"?
-> > >=20
-> > > Johannes
-> >=20
-> > Our proprietary driver is cfg80211 driver, it is very hard to create a =
-brand new
-> > mac80211 driver and still can port all tested stuffs from our proprieta=
-ry driver.
+Thanks,
+Angelo
 
-That basically doesn't matter for upstream at all.
+> ---
+>   .../media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c    | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> index 82e57ae983d5..17770993fe5a 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> @@ -231,6 +231,12 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+>   	mtk_vdec_debug(vpu->ctx, "vdec_inst=%p", vpu);
+>   
+>   	err = vcodec_vpu_send_msg(vpu, (void *)&msg, sizeof(msg));
+> +
+> +	if (IS_ERR_OR_NULL(vpu->vsi)) {
+> +		mtk_vdec_err(vpu->ctx, "invalid vdec vsi, status=%d", err);
+> +		return -EINVAL;
+> +	}
+> +
+>   	mtk_vdec_debug(vpu->ctx, "- ret=%d", err);
+>   	return err;
+>   }
 
->=20
-> BTW, vendor should have the choice to use cfg80211 or mac80211 for their =
-chips, right?
-
-No, that's not how it works. The choice should be what makes sense
-architecturally.
-
-johannes
 
