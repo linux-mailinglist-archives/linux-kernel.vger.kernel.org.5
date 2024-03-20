@@ -1,340 +1,169 @@
-Return-Path: <linux-kernel+bounces-108529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D564880BCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:15:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B687880BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:15:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31B88281BBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E74E281825
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6491624A19;
-	Wed, 20 Mar 2024 07:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7985F21100;
+	Wed, 20 Mar 2024 07:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ES0PZWAs"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="knxTLmxe"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB2022F07
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAE11EEE0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710918903; cv=none; b=I1aU0wMw3mbHZz7yHTcar7as11KAVX1mZ3ZlQm9IZWan7rd3panF5o4HA/BoeB2OashHAuDb3kBxtWqvLOSnNtd6EY7LdYxgisSOiUJQ9Kr9AlNPQzqGST2LHuD5SVAW61AKFlVVLfL1ndjumQhZxUQMqdWhJ6Zs46O9gVmhSsU=
+	t=1710918947; cv=none; b=UOHS0Lfd3riVd5WMuf+w/i7kz9KbG59LHin2LdTvoipCQcYLthFloF+cmEU8bVEgqHpieVpp2v90bjW9RPEFty82MKMedOOKbDDCkqCePNOydFbJcBjEna1TjjTflye68GtglGShASsNdUKwJq2LhwZt62jmqzT5P9eaQANXt1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710918903; c=relaxed/simple;
-	bh=JdWtJIJrAVzoAqgk1SP0pQuB/E61e1S1atpKQ3fAHfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hu5Cq2RYe8wgE75Os9pbxaxRpnG/RR1lfm5Qlrd4VIMIPY5Hj7MHRSt3ztFebUULJb0rWQRDl9CLCo5s1wbgi4LrTdUKv8m3Cu/WpahGsqdyqoFN1P6a4sTn5kfq2YtCtTDAj2JA3lY8USZB7QpS5QPMNPfDURR91qus4H91W80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ES0PZWAs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710918900;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Njq0yEyKBRcrvnVgNGH/spn65v7UciN8KbaIQu5L7ZE=;
-	b=ES0PZWAscFh+c/Q3F7MmCIm37XQZmxjPLeWPqW9ko1Zyu4QfmGBYBIfnB9SBPDqpce+IFZ
-	N0//JLQAumXEkSmCDlfLRDBHUgFTLLkH0JEnN6xKNVpvnfllwLhhCNAjAhB3nR0dySSIpm
-	pNWX9s5XgvkJmKA/nRdGwsf3ECmGcr8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-314-5AVnc72cNWSR4onqZb_C_w-1; Wed, 20 Mar 2024 03:14:58 -0400
-X-MC-Unique: 5AVnc72cNWSR4onqZb_C_w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33eb8721b64so3439087f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:14:58 -0700 (PDT)
+	s=arc-20240116; t=1710918947; c=relaxed/simple;
+	bh=uAiOL5GdoR6kEhRwJz3jX8EsnRj9M2m+Ll9g7jlCZ44=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kz6HWhz5DPqTslEb3dvP+OA8W9W04Apwjc5nFUuaJrPM6FC7UmjKJdtXtno5RfGalHtCVh+5StmgeyT3iesgCRhbQq+vvGO0pGBSiB/cDaJutIp97NQ0Bg0vR8ZEVsThx9aGhUeOkWPx7prcD/769mpXu6UOaZCNZYD2OoQe1h8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=knxTLmxe; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a46f79f60afso24803966b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710918944; x=1711523744; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=olh1x6wED1wlUWfy3fPcoEKZFeL0ZQi1R+KL4fAIutY=;
+        b=knxTLmxeVD9VFmFhwQPO2ZJRM1WCabdlp8IewU33LTjCmlGEhV/dwYzWvnlLlVHLG+
+         xoKKmKmXv4W9UO3W6JfZx0vmxh1+kwQWifvdGPBIwty55gZtgii9RffMPnygFNG51VFi
+         aGJewFitEovW467BscVsLrGjN0I6Jnbfn1r7I8ar10VI7fCzQDryuT1S+VpVpAVjT5gy
+         rx7sjNUBZc1wirmKl4duSd0/vzvn77xucdFPgHi6rJ2d2kfNAwHD/tzH90JFhG7kaQu9
+         k9hPEPZPlXtDZB49A3pqXDyxPcpHnuOYpb+w8AfiNwyuu+Gi1TgosmJqVMCkqkNFY5rw
+         LJYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710918897; x=1711523697;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1710918944; x=1711523744;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Njq0yEyKBRcrvnVgNGH/spn65v7UciN8KbaIQu5L7ZE=;
-        b=tKXD5ogFa6uhnFqPkWVQ8YNF77R8sqSdB1Dqr7OrSjpTqnnloEObHypL5FNjs1m24Z
-         lrJEDZe8OZQVgdZ2EvnzHcZZavaSVK6aXA074mWHvit1KQHVkAsTsne3cI3qM5xG8/ue
-         fi8uQL5XJajcMiESxPSM7VVH3bPDy1KvxdY8zjkBrA8SCRKUNZ8nxh3z4E7X58y3/2oi
-         qtpkjMXKx0shzE6umZOsVRZeCKH5u96MepTcZhcjvq56ayrz+iktcL1aZe8d9pJj+sUW
-         Huc3Xl1mXKvhggNScXmRTQVKIIddHuGdQLoF4cb1eXY9LWeo4z1Z2W1UfaVjG/rpoPmK
-         DjKA==
-X-Forwarded-Encrypted: i=1; AJvYcCULhOktQN52FdQeir0hBMYb7mvpyDtHOut0iJcaAD63nBnM2cSk9f3hxBngnaxDVK3HeGHsKkTLeiIcJbDOWf6VR7ZGvEumO1+IgU/k
-X-Gm-Message-State: AOJu0Yxh7MftVgR8pTaOSl6Iw2UqhNT6nMd2gdGsYpTd+XOos72Kx8FT
-	A0gWf8JwdHqZjdC4i1ytMJCyIp1XSAxl7gBCZJBhJzWl/UYzny0thJP3L5hAUNNIPRnpX8GdEwb
-	Jl90Rq+wCVF6oDP9MweefCVYlAczxqfvumP+8tib0JSZ6P8ZNYSgMp1RPHUyEOA==
-X-Received: by 2002:adf:f9cf:0:b0:33d:579e:f462 with SMTP id w15-20020adff9cf000000b0033d579ef462mr3333358wrr.36.1710918897559;
-        Wed, 20 Mar 2024 00:14:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFujaGn+6/sZ8mCjSdKUkwZwZgH1kNHVb5niYMglJWfWBSGt1ESNUy6R4YkPD6nmkgTnBzLQg==
-X-Received: by 2002:adf:f9cf:0:b0:33d:579e:f462 with SMTP id w15-20020adff9cf000000b0033d579ef462mr3333340wrr.36.1710918896915;
-        Wed, 20 Mar 2024 00:14:56 -0700 (PDT)
-Received: from redhat.com ([2.52.6.254])
-        by smtp.gmail.com with ESMTPSA id n8-20020a5d6608000000b0033e45930f35sm14070360wru.6.2024.03.20.00.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 00:14:56 -0700 (PDT)
-Date: Wed, 20 Mar 2024 03:14:52 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Gavin Shan <gshan@redhat.com>
-Cc: Will Deacon <will@kernel.org>, virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org, jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
-	Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Message-ID: <20240320030215-mutt-send-email-mst@kernel.org>
-References: <20240314074923.426688-1-gshan@redhat.com>
- <20240318165924.GA1824@willie-the-truck>
- <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
- <20240319182251.GB3121@willie-the-truck>
- <9500adaf-0075-4ae9-92db-7e310b6598b0@redhat.com>
- <20240319203540-mutt-send-email-mst@kernel.org>
- <3a6c8b23-af9c-47a7-8c22-8e0a78154bd3@redhat.com>
+        bh=olh1x6wED1wlUWfy3fPcoEKZFeL0ZQi1R+KL4fAIutY=;
+        b=Dh72qtbBelImFpl2MeD/1wep62By9rx1BbbLreEnGrDTyQiRS9WExMORoxVbu+JkPf
+         ItOyhoWLwBa6LhU9fi8T0bwL3YVScy19kkeo4GhbnTKWivw9wmKw4gZ+f8vVd2KJT8hY
+         ky1JH81vTufTuqgKcw50T5PKlyie9wXxywxkEDouZqAs5X1tyZrvWiaTBHntvdgY0G2u
+         Cr9VI9IsxTk3IH8tAIugJWA3uUIyxtHJK4fym6bJmN5UJDjmZX+e6M0SWoZ/DadLp1DT
+         Y7g5iRoRaZysHYJb3EmyXyg8sdZC2VypGd734DhzoO09SxrJ3sBsvo/LChwfquvRQQk8
+         bPfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUUslAfIbbGPiXrcdrUGe3UWbDpm3XDwdSTHwqzQ01xbKnatq1lJWw/rTizZnBmmwEuCfVer+BJff1bFjzggjmy2eWV2rRN9OxckWtG
+X-Gm-Message-State: AOJu0YySqk659Ig2ZaQCHU7V4y8pr63JU4NuTyykfRjjnS29ne828Zwg
+	uZ1xh5J2HEm+1e6/QXasAXZSSEONWRmMi61m151e5hDboaxj0gxz+lXsdUIl7nM=
+X-Google-Smtp-Source: AGHT+IGy4pHyrGgiDEtdIBqpgQzGrmuTcbZzIkFUCPPzqcWHeAqI5EV5Mv+IuXtIUiJAwLJqcvp+Jw==
+X-Received: by 2002:a17:906:4554:b0:a46:b8ed:8a9 with SMTP id s20-20020a170906455400b00a46b8ed08a9mr6443836ejq.55.1710918943919;
+        Wed, 20 Mar 2024 00:15:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id gy4-20020a170906f24400b00a45f39b2d16sm6818936ejb.200.2024.03.20.00.15.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 00:15:43 -0700 (PDT)
+Message-ID: <70846fbb-9c17-440a-911d-456b0444dd94@linaro.org>
+Date: Wed, 20 Mar 2024 08:15:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a6c8b23-af9c-47a7-8c22-8e0a78154bd3@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: exynos: gs101: add poweroff node
+To: Alexey Klimov <alexey.klimov@linaro.org>, sre@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ peter.griffin@linaro.org, robh+dt@kernel.org
+Cc: conor+dt@kernel.org, linux-samsung-soc@vger.kernel.org,
+ semen.protsenko@linaro.org, linux-kernel@vger.kernel.org,
+ klimov.linux@gmail.com, kernel-team@android.com, tudor.ambarus@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
+ elder@linaro.org
+References: <20240320020549.71810-1-alexey.klimov@linaro.org>
+ <20240320020549.71810-2-alexey.klimov@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240320020549.71810-2-alexey.klimov@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20, 2024 at 03:24:16PM +1000, Gavin Shan wrote:
-> On 3/20/24 10:49, Michael S. Tsirkin wrote:>
-> > I think you are wasting the time with these tests. Even if it helps what
-> > does this tell us? Try setting a flag as I suggested elsewhere.
-> > Then check it in vhost.
-> > Or here's another idea - possibly easier. Copy the high bits from index
-> > into ring itself. Then vhost can check that head is synchronized with
-> > index.
-> > 
-> > Warning: completely untested, not even compiled. But should give you
-> > the idea. If this works btw we should consider making this official in
-> > the spec.
-> > 
-> > 
-> >   static inline int vhost_get_avail_flags(struct vhost_virtqueue *vq,
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 6f7e5010a673..79456706d0bd 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -685,7 +685,8 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> >   	/* Put entry in available array (but don't update avail->idx until they
-> >   	 * do sync). */
-> >   	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
-> > -	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
-> > +	u16 headwithflag = head | (q->split.avail_idx_shadow & ~(vq->split.vring.num - 1));
-> > +	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, headwithflag);
-> >   	/* Descriptors and available array need to be set before we expose the
-> >   	 * new available array entries. */
-> > 
-> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> > index 045f666b4f12..bd8f7c763caa 100644
-> > --- a/drivers/vhost/vhost.c
-> > +++ b/drivers/vhost/vhost.c
-> > @@ -1299,8 +1299,15 @@ static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq,
-> >   static inline int vhost_get_avail_head(struct vhost_virtqueue *vq,
-> >   				       __virtio16 *head, int idx)
-> >   {
-> > -	return vhost_get_avail(vq, *head,
-> > +	unsigned i = idx;
-> > +	unsigned flag = i & ~(vq->num - 1);
-> > +	unsigned val = vhost_get_avail(vq, *head,
-> >   			       &vq->avail->ring[idx & (vq->num - 1)]);
-> > +	unsigned valflag = val & ~(vq->num - 1);
-> > +
-> > +	WARN_ON(valflag != flag);
-> > +
-> > +	return val & (vq->num - 1);
-> >   }
+On 20/03/2024 03:05, Alexey Klimov wrote:
+> Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
+> ---
+>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> Thanks, Michael. The code is already self-explanatory.
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> index 55e6bcb3689e..9def28393274 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+> @@ -509,6 +509,13 @@ sysreg_apm: syscon@174204e0 {
+>  		pmu_system_controller: system-controller@17460000 {
+>  			compatible = "google,gs101-pmu", "syscon";
+>  			reg = <0x17460000 0x10000>;
+> +
+> +			poweroff {
+> +				compatible = "google,gs101-poweroff";
+> +				samsung,syscon-phandle = <&pmu_system_controller>;
 
-Apparently not. See below.
-
-> Since vq->num is 256, I just
-> squeezed the last_avail_idx to the high byte. Unfortunately, I'm unable to hit
-> the WARN_ON(). Does it mean the low byte is stale (or corrupted) while the high
-> byte is still correct and valid?
-
-
-I would find this very surprising.
-
->         avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
->         vq->split.vring.avail->ring[avail] =
->                 cpu_to_virtio16(_vq->vdev, head | (avail << 8));
-> 
-> 
->         head = vhost16_to_cpu(vq, ring_head);
->         WARN_ON((head >> 8) != (vq->last_avail_idx % vq->num));
->         head = head & 0xff;
-
-This code misses the point of the test.
-The high value you store now is exactly the same each time you
-go around the ring. E.g. at beginning of ring you now always
-store 0 as high byte. So a stale value will not be detected/
-The high value you store now is exactly the same each time you
-go around the ring. E.g. at beginning of ring you now always
-store 0 as high byte. So a stale value will not be detected.
-
-The value you are interested in should change
-each time you go around the ring a full circle.
-Thus you want exactly the *high byte* of avail idx -
-this is what my patch did - your patch instead
-stored and compared the low byte.
-
-
-The advantage of this debugging patch is that it will detect the issue immediately
-not after guest detected the problem in the used ring.
-For example, you can add code to re-read the value, or dump the whole
-ring.
-
-> One question: Does QEMU has any chance writing data to the available queue when
-> vhost is enabled? My previous understanding is no, the queue is totally owned by
-> vhost instead of QEMU.
-
-It shouldn't do it normally.
-
-> Before this patch was posted, I had debugging code to record last 16 transactions
-> to the available and used queue from guest and host side. It did reveal the wrong
-> head was fetched from the available queue.
-
-Oh nice that's a very good hint. And is this still reproducible?
-
-> [   11.785745] ================ virtqueue_get_buf_ctx_split ================
-> [   11.786238] virtio_net virtio0: output.0:id 74 is not a head!
-> [   11.786655] head to be released: 036 077
-> [   11.786952]
-> [   11.786952] avail_idx:
-> [   11.787234] 000  63985  <--
-> [   11.787237] 001  63986
-> [   11.787444] 002  63987
-> [   11.787632] 003  63988
-> [   11.787821] 004  63989
-> [   11.788006] 005  63990
-> [   11.788194] 006  63991
-> [   11.788381] 007  63992
-> [   11.788567] 008  63993
-> [   11.788772] 009  63994
-> [   11.788957] 010  63995
-> [   11.789141] 011  63996
-> [   11.789327] 012  63997
-> [   11.789515] 013  63998
-> [   11.789701] 014  63999
-> [   11.789886] 015  64000
-> [   11.790068]
-> [   11.790068] avail_head:
-> [   11.790529] 000  075  <--
-> [   11.790718] 001  036
-> [   11.790890] 002  077
-> [   11.791061] 003  129
-> [   11.791231] 004  072
-> [   11.791400] 005  130
-> [   11.791574] 006  015
-> [   11.791748] 007  074
-> [   11.791918] 008  130
-> [   11.792094] 009  130
-> [   11.792263] 010  074
-> [   11.792437] 011  015
-> [   11.792617] 012  072
-> [   11.792788] 013  129
-> [   11.792961] 014  077    // The last two heads from guest to host: 077, 036
-> [   11.793134] 015  036
-
-Maybe dump the avail ring from guest to make sure
-it matches the expected contents?
-
-> [root@nvidia-grace-hopper-05 qemu.main]# cat /proc/vhost
-> 
-> avail_idx
-> 000  63998
-> 001  64000
-> 002  63954  <---
-> 003  63955
-> 004  63956
-> 005  63974
-> 006  63981
-> 007  63984
-> 008  63986
-> 009  63987
-> 010  63988
-> 011  63989
-> 012  63992
-> 013  63993
-> 014  63995
-> 015  63997
-> 
-> avail_head
-> 000  074
-> 001  015
-> 002  072
-> 003  129
-> 004  074            // The last two heads seen by vhost is: 074, 036
-> 005  036
-> 006  075  <---
-
-
-And is 074 the previous (stale) value in the ring?
-
-
-> 007  036
-> 008  077
-> 009  129
-> 010  072
-> 011  130
-> 012  015
-> 013  074
-> 014  130
-> 015  130
+This is just senseless... you are the child of pmu, as seen in this DTS.
+You do not need to reference yourself (so the PMU)!
 
 
 
-> used_idx
-> 000  64000
-> 001  63882  <---
-> 002  63889
-> 003  63891
-> 004  63898
-> 005  63936
-> 006  63942
-> 007  63946
-> 008  63949
-> 009  63953
-> 010  63957
-> 011  63981
-> 012  63990
-> 013  63992
-> 014  63993
-> 015  63999
-> 
-> used_head
-> 000  072
-> 001  129
-> 002  074          // The last two heads published to guest is: 074, 036
-> 003  036
-> 004  075  <---
-> 005  036
-> 006  077
-> 007  129
-> 008  072
-> 009  130
-> 010  015
-> 011  074
-> 012  130
-> 013  130
-> 014  074
-> 015  015
-> 
-> Thanks,
-> Gavin
-
-I like this debugging patch, it might make sense to
-polish it up and include in production. We'll want it in
-debugfs naturally not /proc/vhost.
-
-But all in good time.
-
-
-> 
-> 
+Best regards,
+Krzysztof
 
 
