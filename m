@@ -1,129 +1,139 @@
-Return-Path: <linux-kernel+bounces-108538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F253880BF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:24:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F425880C00
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:28:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 163FEB22B05
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:24:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3EE6B2258D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5A020DCD;
-	Wed, 20 Mar 2024 07:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A21D210FE;
+	Wed, 20 Mar 2024 07:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BoLHUiKV"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y9Lh15To"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BE81EEE0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A801EEE0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919473; cv=none; b=uSMjj+u9SrLKsrndR46g1ppXOKxQCBn4wbdYlEQsDexn3HYvkTPPKwxLaOqMcKBKUndpE4QZNTFG/t1Lv/W3NhYwjobDdduNNfiIaNpsSU0rDZpCjlnp5woJ7+KhNT8PkVwrE3Jb8VB9glZgcIhC7uDAqsfiSMsPGXKw4xHPMr0=
+	t=1710919708; cv=none; b=RhuIKtSTrIhzcbYu5GLXZ5W6h/sKnuz+k2oY5UBY/jrNiRNa7TxHLpCG/V1+0fsmhTGIcIpUNgsXvNJ4c6qsxp5EFzCMJ7x5LX6jPEOc/1WJkFuZ0Gx3VM2OLMwRBQkeLxe9N+Wi3ev+3PU+7MuzhdW7GjUdmRuz/euIJwrrM98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919473; c=relaxed/simple;
-	bh=28P57Ke0dbK+IeJ0axzZcEs9sf1skvjRGuluIRciE+8=;
+	s=arc-20240116; t=1710919708; c=relaxed/simple;
+	bh=li2qAWghidOrmM63QJI/fv2vk+a/4nCE+jxZRIXe5LI=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=h3zFg12uSL4SDW79/nbOUbPHRQIKBGMBaz1wqJ88lwf7R3uu0bUuzK33dKTI4JaeVovmcYHiWKVA5eoDOceFgZUs7QAPh7XGWu0MLam0tYaASKz+7q1JF1SNwYNdpCUTLBwWAeTClR5//K9SJsH5ZM21u3KOc9lmnbYxcmF323g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BoLHUiKV; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=nm1w4fxHdYJWA0hP1uEnF5Nz5RpdpMKG3Az9eqxkkVARPGrDXBr2S9RoHCNk+KvMmAWpF+40QLOK16sQH8rl7GZf8rbt+FXcThXGea3kRXP9xIvXbzNZ+/vZkaR650V1+GqQ44GN319KCYz7jaBSxtMoa1M7ReOFzBtE2gSAqHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y9Lh15To; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so11346240276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:24:30 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-610ed1c0f93so20182017b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710919470; x=1711524270; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdxVN0VZOTjmFNJigRO9F2rl5jmImdVJnsiuxriNi0Y=;
-        b=BoLHUiKVbI13VdVfl9qbwJ4R2ynvZBitxHrALui6NzdSWYxi/xOS65ZhdmPiVPNqIS
-         gP4wPz70I76X2tWqyhml9QpX1y/unMC2QA2wLpcY40fn/sqBwc9WMm6PiiyMS3a+QyYG
-         Hyw7K7CjudWbsp9ux0sYcDjTUiTlg5gf89l3rkuHSDJnoV+N+5PATMAdZls/Ksrn8F0T
-         Ld71iIQMfIOnDD3hH5AZIn209dGEzAhoo5oTT2UTAfj3X+AQl4dgEpZG3FNUrE3Tr3l2
-         9VlAqqhELmvGk+sonEcOaLQjZOaXKhf9IV3U+mCWDGSlWDxlY6YJgklVZx3Gb1Xd8XSQ
-         rnHg==
+        d=google.com; s=20230601; t=1710919706; x=1711524506; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8Cf3z+01pPTqaJgUbHcUbvvHLevh6MiiirhgfJW0FB8=;
+        b=y9Lh15To1TfRvFZBWjPg/GOflL8Lh5Of0UG1tWPDlybxLIkJoLCPM1KJnAOoHUWHq4
+         V5N6tt26EwvNsNC7+J1A0HHVedq6zDqZ/xzrFLkoSJyFaEfjgjRBIGYRzNS5ZqZdMkTW
+         fjk7GGmtEk+UmYuX3AoX2hFxhYUvlNXesmVboLBrxxrf5xllzYXQe8amS0U3oZgX/wYL
+         5bc1rskTxFoYT9LbpTwPLgImzUHTXopvZjbCbIWfBuILzwM7naNYXiNR/kYvnPa/l+Ij
+         qwBNEY8cMPrENKhlCAPVvk3U4zY2NBYrkc0FuWgsayr1Iof4SScx2kpXr9UVIF/Jzwns
+         u9Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710919470; x=1711524270;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bdxVN0VZOTjmFNJigRO9F2rl5jmImdVJnsiuxriNi0Y=;
-        b=bu8NwstF/xM/NZi/Pm1rjvIe4i3ndXEejsO3hy/snlehHV9UdSWdj9Iuz9ZoCDtMsY
-         ntqu0PvdmktIYb/jAVR2wMhLj/kQOKSZZyhZys6F65dw3x++iI7BjFVZqtlrA9Qni33n
-         T7JlZHJTP2ZxppbTXFJ98UgBllw07us8d07vySJNkFMdasQYVDBUfmrcBi8GSr5nAsjx
-         vYZi7mxOtF3+u3QGvZJCMlWP+k035drnPJERyjckSZdDnhfh3D2oAjpCZDDCn7jg0OB9
-         Lrgd5XKd8Re8uqyox67v0Ea41YpuSC8LxIGnYHlHdGM3enk8ZsmQlFBwA1/+oNOuf22K
-         B6CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWv0nG00MSKOtiVBPyXmVCHNKlJMUBLqTT7rHcBfEY0ZL1cbx++SFx/gyEj9i7Wfsd1mysYvzjdGQuhIJ5JF+ob8Jtv1YWC4iH/ov+R
-X-Gm-Message-State: AOJu0YzQHkL7DLOrV0c4Qbw6EqeHIXXp0qn7nk2pdKeTmAK8/dYQl8di
-	cYWMwfae45oZDMCSUHlzVj/nlbhGIwD/V4+6w0eLEHAqHC1TPLd3WvdLgteyUN4SMOJADRYyN6j
-	+u2ADuvYkDZ2cfESotg==
-X-Google-Smtp-Source: AGHT+IFAjPaqqQcKbeydP6MHZQdihePR91rwKuw9/CirPYjLnwS1+VvZ7x1qZMlGNReEhNYJtzqSLF4ZeO8jzrSt
+        d=1e100.net; s=20230601; t=1710919706; x=1711524506;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8Cf3z+01pPTqaJgUbHcUbvvHLevh6MiiirhgfJW0FB8=;
+        b=pigFFLTRu7nSDgEogNpUs3P70KurXF6+0TyZQ2nhH82ojwd6KIChBa3XONRLa3eTQ9
+         t5zmdCtlsyBS3qM61knS2zs7ve1buU8l3IAFh99CesySyRO4pXxzlSySx6Ta7stXWKVX
+         A0eAgkFrr4TQ0Q3I+mVibj6FxHNjQB/TSEBl9gUj+p0kv96CS3+7rv1oDvKufClY9J46
+         zqmJXv0BlKaBHcG/+ovMMMDnguzwYTAkyqFh4MdoCuG6tKmLbOdfXbJzR81CGF5+vFF/
+         LYgFCvxxTaZGRJ6krHRF1Q8ScYoI7Wade9idimB9r4SKLLF93b6ILCXezmnp52la9TzW
+         1g6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVcEKUVRcT3DUtKHyxZxpsOkONug1MUGfCeRK839iEUW4FU4SAJcAMRp4GzyOupkZA3YYgLQyVFLmS6K8ZkPQHDRUB4dkrNrQIFYovo
+X-Gm-Message-State: AOJu0YzIFNhZiBjW+EgMqRCcCy8M4qHbdCf9ujjoaHoHLfCfn5Ce4LfL
+	QajHs6dJUjCRed9whouN4rR2A+1pnJe54EbfLlXHL+ufb1tQwDPE+IMO51ctmtV9s570xXHIrKS
+	xHg6CM3vheouyhQq5pw==
+X-Google-Smtp-Source: AGHT+IEfa9xOQhFmuNxE4o9OfZO2Vc/0uULHRYTxqzo99fLnSbA+gg07/JJm2omiBe+ZV95gvHGh1ZOhZxkIbXjt
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:100e:b0:dc9:5ef8:2b2d with
- SMTP id w14-20020a056902100e00b00dc95ef82b2dmr4326404ybt.4.1710919470153;
- Wed, 20 Mar 2024 00:24:30 -0700 (PDT)
-Date: Wed, 20 Mar 2024 07:24:27 +0000
-In-Reply-To: <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2290:b0:dc2:5456:d9ac with
+ SMTP id dn16-20020a056902229000b00dc25456d9acmr992058ybb.5.1710919705944;
+ Wed, 20 Mar 2024 00:28:25 -0700 (PDT)
+Date: Wed, 20 Mar 2024 07:28:24 +0000
+In-Reply-To: <021efce7-1e40-43a6-9bfd-0d968bfcd5a8@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240319-zswap-xarray-v7-1-e9a03a049e86@kernel.org>
- <Zfp-iWaDfqeCOElt@google.com> <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
-Message-ID: <ZfqPK7AVunq2SC1l@google.com>
-Subject: Re: [PATCH v7] zswap: replace RB tree with xarray
+References: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
+ <Zfp7Y9x2iOE_prpp@google.com> <021efce7-1e40-43a6-9bfd-0d968bfcd5a8@kylinos.cn>
+Message-ID: <ZfqQGGfKStVxDwYT@google.com>
+Subject: Re: [PATCH] config/mips: support zswap function
 From: Yosry Ahmed <yosryahmed@google.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="us-ascii"
+To: mengfanhui <mengfanhui@kylinos.cn>
+Cc: tsbogend@alpha.franken.de, geert+renesas@glider.be, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	hannes@cmpxchg.org, nphamcs@gmail.com, chengming.zhou@linux.dev
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-[..]
-> > > -     /* map */
-> > > -     spin_lock(&tree->lock);
-> > >       /*
-> > > -      * The folio may have been dirtied again, invalidate the
-> > > -      * possibly stale entry before inserting the new entry.
-> > > +      * We finish initializing the entry while it's already in xarray.
-> > > +      * This is safe because:
-> > > +      *
-> > > +      * 1. Concurrent stores and invalidations are excluded by folio lock.
-> > > +      *
-> > > +      * 2. Writeback is excluded by the entry not being on the LRU yet.
-> > > +      *    The publishing order matters to prevent writeback from seeing
-> > > +      *    an incoherent entry.
-> >
-> > As I mentioned before, writeback is also protected by the folio lock.
-> > Concurrent writeback will find the folio in the swapcache and abort. The
-> > fact that the entry is not on the LRU yet is just additional protection,
-> > so I don't think the publishing order actually matters here. Right?
-> 
-> Right. This comment is explaining why this publishing order does not
-> matter. I think we are talking about the same thing here?
+On Wed, Mar 20, 2024 at 02:44:21PM +0800, mengfanhui wrote:
+> Zswap and zsmalloc are compression methods, and kernel configuration can =
+be configured simultaneously.
+> zbud is an algorithm, and users can use that method if they want to use i=
+t.It won't affect each other.
 
-The comment literally says "the publishing order matters.." :)
+Zswap compressed swapped out pages in-memory. To store those compressed
+pages, it uses one of three allocators that implement the zpool API:
+zbud, z3fold, and zsmalloc. In that sense, zsmalloc is comparable to
+zbud, not zswap. I suspect you are mixing up zsmalloc and zram.
 
-I believe Johannes meant that we should only publish the entry to the
-LRU once it is fully initialized, to prevent writeback from using a
-partially initialized entry.
+Anyway, zsmalloc is the default allocator and should be better for
+almost all use cases. So unless you have a very good reason to use zbud
+over zsmalloc, please do not use zbud. We are trying to deprecate zbud
+and z3fold.
 
-What I am saying is that, even if we add a partially initialized entry
-to the zswap LRU, writeback will skip it anyway because the folio is
-locked in the swapcache.
-
-So basically I think the comment should say:
-
-	/*
-	 * We finish initializing the entry while it's already in the
-	 * xarray. This is safe because the folio is locked in the swap
-	 * cache, which should protect against concurrent stores,
-	 * invalidations, and writeback.
-	 */
-
-Johannes, what do you think?
+>=20
+> =E5=9C=A8 2024/3/20 14:00, Yosry Ahmed =E5=86=99=E9=81=93:
+> > On Fri, Jan 26, 2024 at 03:55:47PM +0800, mengfanhui wrote:
+> >> Solution /sys/module/zswap/parameters/enabled attribute node
+> >> does not exist issue=EF=BC=8Chandle zpool zbud initialization failed,
+> >> open CONFIG_ZSWAP CONFIG_ZPOOL CONFIG_ZBUD configuration,manual
+> >> zswap function by /sys/module/zswap/parameters/enabled file
+> >>
+> >> Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
+> >> ---
+> >>  arch/mips/configs/generic_defconfig | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/g=
+eneric_defconfig
+> >> index 071e2205c7ed..14884df392f4 100644
+> >> --- a/arch/mips/configs/generic_defconfig
+> >> +++ b/arch/mips/configs/generic_defconfig
+> >> @@ -13,6 +13,9 @@ CONFIG_CGROUP_DEVICE=3Dy
+> >>  CONFIG_CGROUP_CPUACCT=3Dy
+> >>  CONFIG_NAMESPACES=3Dy
+> >>  CONFIG_USER_NS=3Dy
+> >> +CONFIG_ZSWAP=3Dy
+> >> +CONFIG_ZPOOL=3Dy
+> >> +CONFIG_ZBUD=3Dy
+> >=20
+> > Any reason for choosing zbud over zsmalloc, the default zswap allocator=
+?
+> >=20
+> >>  CONFIG_SCHED_AUTOGROUP=3Dy
+> >>  CONFIG_BLK_DEV_INITRD=3Dy
+> >>  CONFIG_BPF_SYSCALL=3Dy
+> >> --=20
+> >> 2.25.1
+> >>
 
