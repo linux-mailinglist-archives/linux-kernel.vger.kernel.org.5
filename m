@@ -1,438 +1,123 @@
-Return-Path: <linux-kernel+bounces-108323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 885E488092C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:42:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B8DB880930
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:42:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A615F1C20F9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:42:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF761F23D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 01:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7138512B7D;
-	Wed, 20 Mar 2024 01:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D4E17BB2;
+	Wed, 20 Mar 2024 01:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=turingpi.com header.i=@turingpi.com header.b="sVzTOqwE"
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MD+Xc+HP"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2FC125AC
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1A014007;
+	Wed, 20 Mar 2024 01:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710898921; cv=none; b=Hv4WWSMECTHnhC5+oK/+ypiq7f9kO982w4a7+L3jt8XoIqmPJNN8uF8cvNeHejDIk+M6ScKR9n3/tmTS6t3aBflVykcmJC2itXWrTgY9ZBe7yuJeg2kraa7emJGEOWKLwiRnlQx9aEufONyOSpg5igstugAfCWVt81TzVicBuO4=
+	t=1710898938; cv=none; b=g7wCkwKa9C/1Pwuql11kluU2axsIfDGM7bpKsVYeqLZOudwBf4cMaToeEK8LDxTk3xsyoL3OoD6j9LFKhCQy6MF1VclcAUpuxqPlyuRrCwTIpjCRJuIeBh2AadXK3KosDhnNT6XLGb/PtPB48oPXwY65I/0kHyHZl1hSgSK9/Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710898921; c=relaxed/simple;
-	bh=MStPja89ObxZXXeU4b4lVLkUj/CkOnw+qYuus9zGsrs=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=Ijip843X4YdjsrAubSf1OQFcrQ//r8ldJE1+cJPE+PowA4+1bYx042+ZJhPVuwco2ufCVu08eMNeRCyqEHAICut15RC7tfssfN3n9iIi73p6LqbuQbkeAbwFeptYlPhSB43Uw1lB9x3OyAYXbLtL9ye7mnsJxrPcrmH04KM8dLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=turingpi.com; spf=pass smtp.mailfrom=turingpi.com; dkim=pass (2048-bit key) header.d=turingpi.com header.i=@turingpi.com header.b=sVzTOqwE; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=turingpi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=turingpi.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7c8dd755793so123881439f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:41:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=turingpi.com; s=google; t=1710898919; x=1711503719; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m6Yma9553umU6CRbnvbx3EkCKMxLDNHzJJu+G+lgZ4E=;
-        b=sVzTOqwEePiyWrC/HjXEN7I6vY+fNR8s2JpXacLYPyRV/xzHjmGIJZyqOfGknBWQOc
-         xEBTnJ4T7JxRZg27S5H20OZ6n8gdIqWgpSvxwloP2uuBTdIZIWqp8fvg7/ULTBiykOla
-         GQ86ZipPX3mczj28Bhn0/3SyIBMSJ8lj/y9ai9W9cjUZl8UXwpCjNHQ8Psc4aClly8lR
-         y/3VziK14aVvvpdQR8WGZjPBEk24psD17cIQdHKW5MVVsTOLCDJW0arhol9Jhb38qPYd
-         5vUdCEeN9kAPXvoiy5Z+ELVgPvW7nrHptBh3BPBpBuHBZy/ozVACcRP61422HEYvK7gu
-         ZGmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710898919; x=1711503719;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=m6Yma9553umU6CRbnvbx3EkCKMxLDNHzJJu+G+lgZ4E=;
-        b=WIxB7DpCiAIdBQO8ygsQVsAKXzp9WcENRojMSI80FUbPufmkmRdcZFw5OfY7gyIwt2
-         ADLnpXraN/mktUJ2aBHs5ipFppM+A/9X2ppORAXlWSdXvfcARKdR/7wcJjZoMnyRpaoM
-         cxMtie9w6+ck/TrrG0TxKfkaz+/NmdzZjPd63lsCG85FfF4s/2qorEpe4sPrQCcqsxk9
-         LzserEsGZk8c0wG8jNiVdkn/PiRrdBcVrFegSVgTFIleFSn7E3m+0+2B5iL75jXPDvDi
-         Nr9dzlpzJNUIEeJ+/yEVMsOTckreEDizqgHOg7MseQnYog5HB/9WvnkDzdP9I5W1+oVD
-         ysHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWsEKnure77G1vIRDdwKZWJ7O7JCJ8yHa5lfLLQgpDNGDpnglJuYvhP0TRypWgakxndFzFtxeE2/Qong0b1/W60vUq0VNLT3DKVXKpq
-X-Gm-Message-State: AOJu0YxCYtUAx8mAxQZ3i76Fuoa8BqNFa3jVtjOwEQ2CG9FfHMb8mtCN
-	OWvu+lzctHYP8KsMQz7o/GtOmrHhNTIQwK2GhQu2aLj7JgvxRNoxbgOYTs848Ac=
-X-Google-Smtp-Source: AGHT+IF8PWqBVNUTVdv1H6sqQcmfhaHlA59RJsL3qqvXJz7CZr2P6TZTb+R9x0W9EMQ0nGTIzUtxmQ==
-X-Received: by 2002:a5e:c248:0:b0:7cb:fdd7:8de with SMTP id w8-20020a5ec248000000b007cbfdd708demr14357252iop.0.1710898918689;
-        Tue, 19 Mar 2024 18:41:58 -0700 (PDT)
-Received: from ?IPV6:2001:470:42c4:101:9af9:b18f:3f69:51be? ([2001:470:42c4:101:9af9:b18f:3f69:51be])
-        by smtp.gmail.com with ESMTPSA id y19-20020a6bc813000000b007cc028ce258sm2632845iof.36.2024.03.19.18.41.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 18:41:58 -0700 (PDT)
-Message-ID: <6c6042bb-456b-4888-8a42-de79c92b2701@turingpi.com>
-Date: Tue, 19 Mar 2024 19:41:58 -0600
+	s=arc-20240116; t=1710898938; c=relaxed/simple;
+	bh=/2XYlF5kyE/AAC5Pi62lNWT/Gf4vDUrDtW5KcwDeAiM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rn/nnd+ycUEVSrrFKUf677CwbvMftsbSpLpWwvgeGf/t6AOyqjUk7bPVJw45e5CICnQUmLLDDUQAlkkWLUGDtoEfifTsHIX/A/OMpH7jOX8a5mXMwVCEmbzzupapEjU+bW5O30ANugj2v5w+HLTPcq8cc3pdoLzqIBnJjeMS3Vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MD+Xc+HP; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710898931;
+	bh=TcLFT4aoOXhTVYvmBbmI8xRkFP/l1aVedP8j396fnzI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=MD+Xc+HPeZU6P7JAv6LtglocVphjBDfcwOu9F1jNGYNd37c8erO7eLugKKY6u7/Gx
+	 2odg+cIy5VvSIjo1WJeQvNu0KFbuggO8QsKcsZeVEoVnNkNpS/IXwOJSYqa7fkFRT9
+	 Nmk3U2YO4sD6TPRGsro3cxLs5V+H9MNAoUHUOHX9Jb+nkyUvJiXWmRAvKyoMG/yY35
+	 WMiFb+/i6IJBNpg3HtEz4+1Ln0oQBrYPXkviYELw3PMsOUH79oz/I8KtbOaZ5yPyCe
+	 3EnssZPAg9iQtuAnVSAGcK2Z3nKOzJ8mPvKCWbd+e8E5899WrXyIQ0xRKmIG4Bwbey
+	 /I7+8vW9SiryQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TzrtS4dYsz4wcb;
+	Wed, 20 Mar 2024 12:42:08 +1100 (AEDT)
+Date: Wed, 20 Mar 2024 12:42:07 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Barry Song <21cnbao@gmail.com>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, Andrew
+ Morton <akpm@linux-foundation.org>, Chris Zankel <chris@zankel.net>, Huacai
+ Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>,
+ Guenter Roeck <linux@roeck-us.net>, Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: [PATCH] Documentation: coding-style: ask function-like macros
+ to evaluate parameters
+Message-ID: <20240320124207.0c127947@canb.auug.org.au>
+In-Reply-To: <20240320001656.10075-1-21cnbao@gmail.com>
+References: <20240320001656.10075-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Sam Edwards <sam@turingpi.com>
-Subject: [RFC PATCH 3/5] i2c: mv64xxx: Refactor FSM
-To: Gregory CLEMENT <gregory.clement@bootlin.com>,
- Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/1UAWAGbxRtmYwKPckeB.frs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Conceptually, there are two FSMs here: a hardware FSM in the MV64XXX
-itself, and a software FSM in the driver. The current software FSM is
-not a "real" FSM: it is just using the hardware status to decide what to
-do next, and the `state` is mostly unused.
+--Sig_/1UAWAGbxRtmYwKPckeB.frs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There are two drawbacks to this approach:
-1) If the hardware returns an unexpected status, the driver will accept
-    it blindly, allowing bugs to go unnoticed and complicating testing.
-2) The driver FSM cannot have states/transitions not represented in
-    hardware.
+Hi Barry,
 
-Rework this by making the hardware status decoder state-aware, and
-introducing an enum of "events" which can be fed to the driver FSM that
-reflect the hardware events deduced by the status decoder. Any
-unexpected status results in an "invalid" event, which triggers the
-driver's error recovery. The state machine logic is otherwise the same:
-the sequence of actions emitted by the FSM is unchanged by this patch.
+On Wed, 20 Mar 2024 13:16:56 +1300 Barry Song <21cnbao@gmail.com> wrote:
+>
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/proce=
+ss/coding-style.rst
+> index 9c7cf7347394..8065747fddff 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -827,6 +827,13 @@ Macros with multiple statements should be enclosed i=
+n a do - while block:
+>  				do_this(b, c);		\
+>  		} while (0)
+> =20
+> +Function-like macros should evaluate their parameters, for unused parame=
+ters,
+> +cast them to void:
+> +
+> +.. code-block:: c
+> +
+> +	#define macrofun(a) do { (void) (a); } while (0)
+> +
 
-Note: The meaning of bytes_left in reads is now the number of byte reads
-left to *start* on the hardware, not the number of bytes left to be read
-from the data register.
+Maybe add some comment about using a static inline function for these
+simple versions instead, if at all possible, (it is suggested just
+above this section) since that will still type check arguments.
 
-Signed-off-by: Sam Edwards <sam@turingpi.com>
----
-  drivers/i2c/busses/i2c-mv64xxx.c | 270 +++++++++++++++++++++----------
-  1 file changed, 185 insertions(+), 85 deletions(-)
+--=20
+Cheers,
+Stephen Rothwell
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c 
-b/drivers/i2c/busses/i2c-mv64xxx.c
-index bb048e655be7..3ae74160001d 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -4,10 +4,12 @@
-   *
-   * Author: Mark A. Greer <mgreer@mvista.com>
-   *
-- * 2005 (c) MontaVista, Software, Inc.  This file is licensed under
-- * the terms of the GNU General Public License version 2.  This program
-- * is licensed "as is" without any warranty of any kind, whether express
-- * or implied.
-+ * 2005 (c) MontaVista, Software, Inc.
-+ * Copyright (c) 2024 Turing Machines, Inc.
-+ *
-+ * This file is licensed under the terms of the GNU General Public 
-License v2.
-+ * This program is licensed "as is" without any warranty of any kind, 
-whether
-+ * express or implied.
-   */
-  #include <linux/kernel.h>
-  #include <linux/slab.h>
-@@ -86,12 +88,24 @@
-  enum mv64xxx_i2c_state {
-  	MV64XXX_I2C_STATE_INVALID,
-  	MV64XXX_I2C_STATE_IDLE,
--	MV64XXX_I2C_STATE_WAITING_FOR_START_COND,
--	MV64XXX_I2C_STATE_WAITING_FOR_RESTART,
--	MV64XXX_I2C_STATE_WAITING_FOR_ADDR_1_ACK,
--	MV64XXX_I2C_STATE_WAITING_FOR_ADDR_2_ACK,
--	MV64XXX_I2C_STATE_WAITING_FOR_SLAVE_ACK,
--	MV64XXX_I2C_STATE_WAITING_FOR_SLAVE_DATA,
-+	MV64XXX_I2C_STATE_START,
-+	MV64XXX_I2C_STATE_RESTART,
-+	MV64XXX_I2C_STATE_SEND_ADDR_1,
-+	MV64XXX_I2C_STATE_SEND_ADDR_2,
-+	MV64XXX_I2C_STATE_WRITE,
-+	MV64XXX_I2C_STATE_READ,
-+};
-+
-+/* Driver events */
-+enum mv64xxx_i2c_event {
-+	MV64XXX_I2C_EVENT_INVALID,
-+	MV64XXX_I2C_EVENT_STARTED,
-+	MV64XXX_I2C_EVENT_ADDR_ACK,
-+	MV64XXX_I2C_EVENT_ADDR_NO_ACK,
-+	MV64XXX_I2C_EVENT_WR_ACK,
-+	MV64XXX_I2C_EVENT_WR_NO_ACK,
-+	MV64XXX_I2C_EVENT_RD_ACKED,
-+	MV64XXX_I2C_EVENT_RD_UNACKED,
-  };
-   /* Driver actions */
-@@ -232,9 +246,73 @@ mv64xxx_i2c_hw_init(struct mv64xxx_i2c_data *drv_data)
-  	drv_data->state = MV64XXX_I2C_STATE_IDLE;
-  }
-  +static enum mv64xxx_i2c_event
-+mv64xxx_i2c_decode_status(struct mv64xxx_i2c_data *drv_data, u32 status)
-+{
-+	/* Decode status to event (state-driven; catches unexpected status) */
-+	switch (drv_data->state) {
-+	case MV64XXX_I2C_STATE_RESTART:
-+	case MV64XXX_I2C_STATE_START:
-+		if (status == MV64XXX_I2C_STATUS_MAST_START ||
-+		    status == MV64XXX_I2C_STATUS_MAST_REPEAT_START)
-+			return MV64XXX_I2C_EVENT_STARTED;
-+		return MV64XXX_I2C_EVENT_INVALID;
-+
-+	case MV64XXX_I2C_STATE_SEND_ADDR_1:
-+		if (drv_data->msg->flags & I2C_M_RD) {
-+			if (status == MV64XXX_I2C_STATUS_MAST_RD_ADDR_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_ACK;
-+			else if (status == MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_NO_ACK;
-+		} else {
-+			if (status == MV64XXX_I2C_STATUS_MAST_WR_ADDR_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_ACK;
-+			else if (status == MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_NO_ACK;
-+		}
-+		return MV64XXX_I2C_EVENT_INVALID;
-+
-+	case MV64XXX_I2C_STATE_SEND_ADDR_2:
-+		if (drv_data->msg->flags & I2C_M_RD) {
-+			if (status == MV64XXX_I2C_STATUS_MAST_RD_ADDR_2_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_ACK;
-+			else if (status == MV64XXX_I2C_STATUS_MAST_RD_ADDR_2_NO_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_NO_ACK;
-+		} else {
-+			if (status == MV64XXX_I2C_STATUS_MAST_WR_ADDR_2_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_ACK;
-+			else if (status == MV64XXX_I2C_STATUS_MAST_WR_ADDR_2_NO_ACK)
-+				return MV64XXX_I2C_EVENT_ADDR_NO_ACK;
-+		}
-+		return MV64XXX_I2C_EVENT_INVALID;
-+
-+	case MV64XXX_I2C_STATE_WRITE:
-+		if (status == MV64XXX_I2C_STATUS_MAST_WR_ACK)
-+			return MV64XXX_I2C_EVENT_WR_ACK;
-+		else if (status == MV64XXX_I2C_STATUS_MAST_WR_NO_ACK)
-+			return MV64XXX_I2C_EVENT_ADDR_NO_ACK;
-+		return MV64XXX_I2C_EVENT_INVALID;
-+
-+	case MV64XXX_I2C_STATE_READ:
-+		if (status == MV64XXX_I2C_STATUS_MAST_RD_DATA_ACK)
-+			return MV64XXX_I2C_EVENT_RD_ACKED;
-+		else if (status == MV64XXX_I2C_STATUS_MAST_RD_DATA_NO_ACK)
-+			return MV64XXX_I2C_EVENT_RD_UNACKED;
-+		return MV64XXX_I2C_EVENT_INVALID;
-+
-+	default:
-+		return MV64XXX_I2C_EVENT_INVALID;
-+	}
-+}
-+
-  static void
-  mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
-  {
-+	enum mv64xxx_i2c_event event;
-+	enum mv64xxx_i2c_state prev_state = drv_data->state;
-+
-+	drv_data->action = MV64XXX_I2C_ACTION_INVALID;
-+
-  	/*
-  	 * If state is idle, then this is likely the remnants of an old
-  	 * operation that driver has given up on or the user has killed.
-@@ -245,99 +323,121 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data 
-*drv_data, u32 status)
-  		return;
-  	}
-  -	/* The status from the ctlr [mostly] tells us what to do next */
--	switch (status) {
--	/* Start condition interrupt */
--	case MV64XXX_I2C_STATUS_MAST_START: /* 0x08 */
--	case MV64XXX_I2C_STATUS_MAST_REPEAT_START: /* 0x10 */
--		drv_data->action = MV64XXX_I2C_ACTION_SEND_ADDR_1;
--		drv_data->state = MV64XXX_I2C_STATE_WAITING_FOR_ADDR_1_ACK;
-+	/*
-+	 * The FSM is broken into 3 parts:
-+	 * 1) Decode `status` to determine the underlying hardware event
-+	 * 2) Handle hardware event driven state transitions
-+	 * 3) Perform internal state transitions and action emission
-+	 */
-+	event = mv64xxx_i2c_decode_status(drv_data, status);
-+
-+	/* Handle event; determine state transition */
-+	switch (event) {
-+	case MV64XXX_I2C_EVENT_STARTED:
-+		drv_data->state = MV64XXX_I2C_STATE_SEND_ADDR_1;
-  		break;
-  -	/* Performing a write */
--	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_ACK: /* 0x18 */
--		if (drv_data->msg->flags & I2C_M_TEN) {
--			drv_data->action = MV64XXX_I2C_ACTION_SEND_ADDR_2;
--			drv_data->state =
--				MV64XXX_I2C_STATE_WAITING_FOR_ADDR_2_ACK;
--			break;
--		}
--		fallthrough;
--	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_2_ACK: /* 0xd0 */
--	case MV64XXX_I2C_STATUS_MAST_WR_ACK: /* 0x28 */
--		if ((drv_data->bytes_left == 0)
--				|| (drv_data->aborting
--					&& (drv_data->byte_posn != 0))) {
--			if (drv_data->send_stop || drv_data->aborting) {
--				drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
--				drv_data->state = MV64XXX_I2C_STATE_IDLE;
--			} else {
--				drv_data->action =
--					MV64XXX_I2C_ACTION_SEND_RESTART;
--				drv_data->state =
--					MV64XXX_I2C_STATE_WAITING_FOR_RESTART;
--			}
--		} else {
--			drv_data->action = MV64XXX_I2C_ACTION_SEND_DATA;
--			drv_data->state =
--				MV64XXX_I2C_STATE_WAITING_FOR_SLAVE_ACK;
--			drv_data->bytes_left--;
--		}
-+	case MV64XXX_I2C_EVENT_ADDR_ACK:
-+		if ((drv_data->state == MV64XXX_I2C_STATE_SEND_ADDR_1)
-+		    && (drv_data->msg->flags & I2C_M_TEN))
-+			drv_data->state = MV64XXX_I2C_STATE_SEND_ADDR_2;
-+		else if (drv_data->msg->flags & I2C_M_RD)
-+			drv_data->state = MV64XXX_I2C_STATE_READ;
-+		else
-+			drv_data->state = MV64XXX_I2C_STATE_WRITE;
-  		break;
-  -	/* Performing a read */
--	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_ACK: /* 40 */
--		if (drv_data->msg->flags & I2C_M_TEN) {
--			drv_data->action = MV64XXX_I2C_ACTION_SEND_ADDR_2;
--			drv_data->state =
--				MV64XXX_I2C_STATE_WAITING_FOR_ADDR_2_ACK;
--			break;
--		}
--		fallthrough;
--	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_2_ACK: /* 0xe0 */
--		if (drv_data->bytes_left == 0) {
--			drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
--			drv_data->state = MV64XXX_I2C_STATE_IDLE;
--			break;
--		}
--		fallthrough;
--	case MV64XXX_I2C_STATUS_MAST_RD_DATA_ACK: /* 0x50 */
--		if (status != MV64XXX_I2C_STATUS_MAST_RD_DATA_ACK)
--			drv_data->action = MV64XXX_I2C_ACTION_CONTINUE;
--		else {
--			drv_data->action = MV64XXX_I2C_ACTION_RCV_DATA;
--			drv_data->bytes_left--;
--		}
--		drv_data->state = MV64XXX_I2C_STATE_WAITING_FOR_SLAVE_DATA;
-+	case MV64XXX_I2C_EVENT_ADDR_NO_ACK:
-+	case MV64XXX_I2C_EVENT_WR_NO_ACK:
-+		/* Doesn't seem to be a device at other end */
-+		drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+		break;
-  -		if ((drv_data->bytes_left == 1) || drv_data->aborting)
--			drv_data->cntl_bits &= ~MV64XXX_I2C_REG_CONTROL_ACK;
-+	case MV64XXX_I2C_EVENT_WR_ACK:
-  		break;
-  -	case MV64XXX_I2C_STATUS_MAST_RD_DATA_NO_ACK: /* 0x58 */
--		drv_data->action = MV64XXX_I2C_ACTION_RCV_DATA_STOP;
--		drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+	case MV64XXX_I2C_EVENT_RD_ACKED:
-+		BUG_ON(drv_data->bytes_left == 0);
-  		break;
-  -	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK: /* 0x20 */
--	case MV64XXX_I2C_STATUS_MAST_WR_NO_ACK: /* 30 */
--	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK: /* 48 */
--		/* Doesn't seem to be a device at other end */
--		drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
--		drv_data->state = MV64XXX_I2C_STATE_IDLE;
--		drv_data->rc = -ENXIO;
-+	case MV64XXX_I2C_EVENT_RD_UNACKED:
-+		BUG_ON(drv_data->bytes_left != 0);
-  		break;
-  +	case MV64XXX_I2C_EVENT_INVALID:
-  	default:
-  		dev_err(&drv_data->adapter.dev,
-  			"mv64xxx_i2c_fsm: Ctlr Error -- state: 0x%x, "
--			"status: 0x%x, addr: 0x%x, flags: 0x%x\n",
--			 drv_data->state, status, drv_data->msg->addr,
-+			"status: 0x%x, event: 0x%x, addr: 0x%x, flags: 0x%x\n",
-+			 drv_data->state, status, event, drv_data->msg->addr,
-  			 drv_data->msg->flags);
-  		drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
-  		mv64xxx_i2c_hw_init(drv_data);
-  		i2c_recover_bus(&drv_data->adapter);
-  		drv_data->rc = -EAGAIN;
-+		return;
-+	}
-+
-+	/* Internal FSM transitions and action emission */
-+	switch (drv_data->state) {
-+	case MV64XXX_I2C_STATE_IDLE:
-+		drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
-+		drv_data->rc = -ENXIO;
-+		break;
-+
-+	case MV64XXX_I2C_STATE_SEND_ADDR_1:
-+		drv_data->action = MV64XXX_I2C_ACTION_SEND_ADDR_1;
-+		break;
-+
-+	case MV64XXX_I2C_STATE_SEND_ADDR_2:
-+		drv_data->action = MV64XXX_I2C_ACTION_SEND_ADDR_2;
-+		break;
-+
-+	case MV64XXX_I2C_STATE_READ:
-+		if (drv_data->bytes_left == 0) {
-+			if (prev_state == MV64XXX_I2C_STATE_READ)
-+				drv_data->action = MV64XXX_I2C_ACTION_RCV_DATA_STOP;
-+			else
-+				drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
-+			drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+		} else {
-+			if (prev_state == MV64XXX_I2C_STATE_READ)
-+				drv_data->action = MV64XXX_I2C_ACTION_RCV_DATA;
-+			else
-+				drv_data->action = MV64XXX_I2C_ACTION_CONTINUE;
-+
-+			/*
-+			 * bytes_left counts the remaining read actions to send
-+			 * to the hardware, not the remaining bytes to be
-+			 * retrieved from the data register
-+			 */
-+			if (drv_data->aborting)
-+				drv_data->bytes_left = 0;
-+			else
-+				drv_data->bytes_left--;
-+
-+			if (drv_data->bytes_left == 0)
-+				drv_data->cntl_bits &= ~MV64XXX_I2C_REG_CONTROL_ACK;
-+		}
-+		break;
-+
-+	case MV64XXX_I2C_STATE_WRITE:
-+		if ((drv_data->bytes_left == 0)
-+		    || (drv_data->aborting && (drv_data->byte_posn != 0))) {
-+			if (drv_data->send_stop || drv_data->aborting) {
-+				drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
-+				drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+			} else {
-+				drv_data->action = MV64XXX_I2C_ACTION_SEND_RESTART;
-+				drv_data->state = MV64XXX_I2C_STATE_RESTART;
-+			}
-+		} else {
-+			drv_data->action = MV64XXX_I2C_ACTION_SEND_DATA;
-+			drv_data->bytes_left--;
-+		}
-+		break;
-+
-+	default:
-  	}
-  }
-  @@ -611,7 +711,7 @@ mv64xxx_i2c_execute_msg(struct mv64xxx_i2c_data 
-*drv_data, struct i2c_msg *msg,
-   	spin_lock_irqsave(&drv_data->lock, flags);
-  -	drv_data->state = MV64XXX_I2C_STATE_WAITING_FOR_START_COND;
-+	drv_data->state = MV64XXX_I2C_STATE_START;
-   	drv_data->send_stop = is_last;
-  	drv_data->block = 1;
--- 
-2.43.2
+--Sig_/1UAWAGbxRtmYwKPckeB.frs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX6Pu8ACgkQAVBC80lX
+0GyEpwf/aSL+18yEkUBFWP3AATiTQvd1wmQOKwRks0Qwr95WDjRjbN/jicgyZmQ5
+ZQffIXV5H8Otk5NnJHeIJ8sBu8vCnWydBwmhRpepb3rDsAB3CdccBVhMqlWznsWs
+aZlcEIHYD2CJbLl56wkKd45KDGr0XjL1qVVwi3mg5wScFUtqaUDj9/v2LYVeAR2u
+EtR3uTxYjfJt/dGDsIyuAvQ+8lsCFiB0z8HeUf0slh1LWfm4ZVac+wBMOAbsGpO2
+kLrRGJ1fHgZR8amEdQPz1ZOHitAf6KBldPltgcF8KScD95Iz+b6tVjBkJ/bvyPbq
+BpWwNvvF4gMwMciooe1yViONfXNgoA==
+=U3iC
+-----END PGP SIGNATURE-----
+
+--Sig_/1UAWAGbxRtmYwKPckeB.frs--
 
