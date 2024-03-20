@@ -1,177 +1,249 @@
-Return-Path: <linux-kernel+bounces-109337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 413B98817CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:22:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 444A48817CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:24:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72C551C2162B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:22:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC3FA1F230DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E418563D;
-	Wed, 20 Mar 2024 19:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172FB85639;
+	Wed, 20 Mar 2024 19:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nWJh5EdR"
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="byvHiINb"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418356AFAE
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D1E85297
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710962539; cv=none; b=XS/c8VHXaAY4VZx5zt+aJbDXKPdtv2LE2urY0+xWSIbWwleYFARePQK6BdGGNUmW+hIf7HIGiTicrW889qpQ6eXCQETVGRSk1hqSGYkW354qBLS+ORuSfvIfjDrJ0p/PLC0VmpaVaB16Ri41t3j3oym7JKqKZ/oZ4OgA9Wu6Was=
+	t=1710962660; cv=none; b=qnvGNs+W5TLzBeEt7A7MnsH0q0hJOl9jHsKWCtlVyfaR7lW1p75tzHgOnvpbrlQWFomweA/fvUqvhs6fkc4s+FYQL2KgU4zU23a8MrNoOWq1Owcot8UKFELGMp420S4LLTn7PxsR2IfDI+CBIxPlk5OicaUTu2O0dgiugCOjRtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710962539; c=relaxed/simple;
-	bh=bJsr6GmD+N1RSONGR4sqICG/kfmdwzIcSNAniUL48D8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QzAtvlS0tiVrCvX7xBJjuA1LVupZiJJM+nxLc9aZlGZ0aj8V2NtimbYhw8y+sbNkksX+IS7yItx3KFAhwGFxIRQYtMYRoN5XlcF8ZAmNt2ZlqOJxaZiAskxgwVqZnkA0hy0T6TfY+rVo3ZIqKlOs6PMZa2Z8XqW4m8844+umYbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nWJh5EdR; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <9ced20e0-dfbd-4337-b5df-223b7baffd9e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710962535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4sLgrJY1ZHs50/OMosMO/w2/lI0zobbFbhfe2FQeSiw=;
-	b=nWJh5EdR/NoeKbO6ajZVjvEdcrTpbnjzliR8Vg196YIG+UjS7Qjc4OZ7PidoKBChgAHQMo
-	EeJhjVQv30LZq8FySDzflVzZEwmatx5h71eEX4JQkM+vFk5naj9XT9KJhrUJwWrphTiRPk
-	KO7KxKja8+lBqyKn/Nx+A/HTKxw3OSY=
-Date: Thu, 21 Mar 2024 03:22:05 +0800
+	s=arc-20240116; t=1710962660; c=relaxed/simple;
+	bh=lMA43VdEHBqBP72UIiAFn6zFxgBbJ+OBQ7Zro7YY/U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MOXlBVl5Dx53ysmDLsQrJmhuMBMBG6BHVmgKAzwDRA6nTRme2Er+qcj61ScnjJwFh85/RrWli7gxBkDSzz8nokGPrishFt6UCwhQ3WdbU1J6l75z+bENQwLkCSCeVKax/fHnErr0Uph55/SQTeOFfTjATZnMAAfUhhVLW5jpxCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=byvHiINb; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ccAdZs1oCvHFT7nKITQ3hrVOSJeKubMiKC4AFoVzgBU=; b=byvHiINb/6kUw/Z0D8woz4k1ly
+	NJWWYgGBamMpIwUbhyfMDy+/VEQkmJ4Pc5Z1KB9/7p4Qg3fit7ScNmLgdUXsELpnDSpzbOkafLAF3
+	ugbLme2b2gfr/gmqQ00VZldC9bGfwJONto3go8Xavz843ysH21d3cnqZUmlFwLRuAqZ4jG+HfnITg
+	VoRZQuu7Bq4/+ml7yCnL7dNMvm3CP5Bt5CzMlLobhF+b7pHWyxmComZK10FG6jx7jMUDnNdQzRE3n
+	KybnjSXI5k1NgFL866OZcw+n+tOE9Ty7rNYUFUUm52r8jupy5PvmLeH03UvC9JUu7BgKM3MwAYF4z
+	6vbb2iUQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rn1Xp-00000004xgA-3HDt;
+	Wed, 20 Mar 2024 19:24:13 +0000
+Date: Wed, 20 Mar 2024 19:24:13 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Svetly Todorov <svetly.todorov@memverge.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	gregory.price@memverge.com, wangkefeng.wang@huawei.com,
+	akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
+	naoya.horiguchi@linux.dev
+Subject: Re: [PATCH v3] kpageflags: respect folio head-page flag placement
+Message-ID: <Zfs33TNtHvnjDX3J@casper.infradead.org>
+References: <20240320-kpageflags-svetly-v3-1-b6725843bfa7@memverge.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] software node: Implement device_get_match_data fwnode
- callback
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Scally <djrscally@gmail.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-acpi@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20240318234222.1278882-1-sui.jingfeng@linux.dev>
- <Zfq85f-Dp1S3CKuG@smile.fi.intel.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <Zfq85f-Dp1S3CKuG@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320-kpageflags-svetly-v3-1-b6725843bfa7@memverge.com>
 
-Hi,
+On Wed, Mar 20, 2024 at 10:28:09AM -0700, Svetly Todorov wrote:
+> Page flags are now stored per-folio. Change kpageflags to report these
+> per-folio flags where appropriate.
 
+I have a somewhat different patch for this.  Let me know what you think.
+It depends on a few other patches in my tree, so probably won't compile
+for you.
 
-On 2024/3/20 18:39, Andy Shevchenko wrote:
-> +Cc: Vladimir
->
-> On Tue, Mar 19, 2024 at 07:42:22AM +0800, Sui Jingfeng wrote:
->> This makes it possible to support (and/or test) a few drivers that
->> originates from DT World on the x86-64 platform. Originally, those
->> drivers using the of_device_get_match_data() function to get match
->> data. For example, drivers/gpu/drm/bridge/simple-bridge.c and
->> drivers/gpu/drm/bridge/display-connector.c. Those drivers works very
->> well in the DT world, however, there is no counterpart to
->> of_device_get_match_data() when porting them to the x86 platform,
->> because x86 CPUs lack DT support.
-> This is not true.
->
-> First of all, there is counter part that called device_get_match_data().
+From 42b20425c8b9b94f1273a410462babd4363622df Mon Sep 17 00:00:00 2001
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Date: Tue, 5 Mar 2024 05:38:33 +0000
+Subject: [PATCH] proc: Rewrite stable_page_flags()
 
-Are you means that the acpi_fwnode_device_get_match_data() implementation?
-As the fwnode API framework has three backend: OF, ACPI, and software node.
-If you are hinting me that the acpi backend has the .device_get_match_data
-implemented. Then you are right.
+Reduce the usage of PageFlag tests and reduce the number of
+compound_head() calls.  We also no longer need to check PageSlab before
+checking page_mapped() as slub does not reuse the mapcount field.
 
+For multi-page folios, we'll now show all pages as having the flags,
+eg if it's locked, all pages will have the locked bit set instead of
+just the head page.  The mapped bit is still per page.
 
-> Second, there *is* DT support for the _selected_ x86 based platforms.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/proc/page.c             | 63 ++++++++++++++++++--------------------
+ include/linux/page-flags.h |  2 +-
+ 2 files changed, 31 insertions(+), 34 deletions(-)
 
-Yeah, you maybe right again here. I guess you means that some special
-hardware or platform may have a *limited* support?
-
-Can you pointed it out for study of learning purpose?
-
-To speak precisely, there are some drm display bridges drivers are
-lack of the DT support on X86. Those display bridges belong to the
-device drivers catalogs.
-
-OK, I will update my commit message at the next version if possible,
-and try my best to describe the problem precisely.
-
->> By replacing it with device_get_match_data() and creating a software
->> graph that mimics the OF graph, everything else works fine, except that
->> there isn't an out-of-box replacement for the of_device_get_match_data()
->> function. Because the software node backend of the fwnode framework lacks
->> an implementation for the device_get_match_data callback.
-> .device_get_match_data
->
->> Implement device_get_match_data fwnode callback fwnode callback to fill
-> .device_get_match_data
-
-
-OK, thanks a lot.
-
->> this gap. Device drivers or platform setup codes are expected to provide
->> a "compatible" string property. The value of this string property is used
->> to match against the compatible entries in the of_device_id table. Which
->> is consistent with the original usage style.
-> Why do you need to implement the graph in the board file?
-
-It can be inside the chip, there is no clear cut.  I means that
-the graph(including fwnode graph, OF graph or swnode graph) can
-be used at anywhere. The examples given here may lead you to
-think it is board specific, but it is not limited to board specific.
-
-fwnode graph, OF graph and swnode graph, all of them are implements
-of the graph. Its common that different hardware vendors bought the
-some IP and has been integrated it into their SoC. So it can be inside
-of the chip if you want *code sharing*.
-
-
-Back to the patch itself, we want to keep the three backends aligned as 
-much as possible. Is this reasonable enough?
-
-> ...
->
-> Have you seen this discussion?
-> https://lore.kernel.org/lkml/20230223203713.hcse3mkbq3m6sogb@skbuf/
->
-
-I really didn't have seen that thread before this patch is sent,
-I'm a graphic developer, I'm mainly focus on graphics domain.
-
-Previously, I have implemented similar functionality at the drivers
-layer [1][2]. But as the instances grows,  I realized there is a
-risk to introducing *boilerplate*.  So I send this patch. [1][2] can
-be drop if this patch could be merged.
-
-[1] https://patchwork.freedesktop.org/patch/575414/?series=129040&rev=1
-
-[2] https://patchwork.freedesktop.org/patch/575411/?series=129040&rev=1
-
-
-After a brief skim,  I guess we encounter similar problems. Oops!
-In a nutshell, there is a need to *emulation* on X86 platform,
-to suit the need of device-driver coding style of DT world.
-
-Besides, at the swnode backend layer, we should not call
-fwnode_property_read_string(), instead, we should usethe property_entry_read_string_array() function. Because the 
-fwnode_property_read_string() is belong to upper layer.
-While backend implementations should call functions from
-bottom layer only.
-
-
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index 195b077c0fac..0f9ef5866c0d 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -107,10 +107,13 @@ static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
+ 	return ((kflags >> kbit) & 1) << ubit;
+ }
+ 
+-u64 stable_page_flags(struct page *page)
++u64 stable_page_flags(const struct page *page)
+ {
+-	u64 k;
+-	u64 u;
++	const struct folio *folio;
++	unsigned long k;
++	unsigned long mapping;
++	bool is_anon;
++	u64 u = 0;
+ 
+ 	/*
+ 	 * pseudo flag: KPF_NOPAGE
+@@ -118,52 +121,46 @@ u64 stable_page_flags(struct page *page)
+ 	 */
+ 	if (!page)
+ 		return 1 << KPF_NOPAGE;
++	folio = page_folio(page);
+ 
+-	k = page->flags;
+-	u = 0;
++	k = folio->flags;
++	mapping = (unsigned long)folio->mapping;
++	is_anon = mapping & PAGE_MAPPING_ANON;
+ 
+ 	/*
+ 	 * pseudo flags for the well known (anonymous) memory mapped pages
+-	 *
+-	 * Note that page->_mapcount is overloaded in SLAB, so the
+-	 * simple test in page_mapped() is not enough.
+ 	 */
+-	if (!PageSlab(page) && page_mapped(page))
++	if (page_mapped(page))
+ 		u |= 1 << KPF_MMAP;
+-	if (PageAnon(page))
++	if (is_anon)
+ 		u |= 1 << KPF_ANON;
+-	if (PageKsm(page))
++	if (mapping & PAGE_MAPPING_KSM)
+ 		u |= 1 << KPF_KSM;
+ 
+ 	/*
+ 	 * compound pages: export both head/tail info
+ 	 * they together define a compound page's start/end pos and order
+ 	 */
+-	if (PageHead(page))
+-		u |= 1 << KPF_COMPOUND_HEAD;
+-	if (PageTail(page))
++	if (page == &folio->page)
++		u |= kpf_copy_bit(k, KPF_COMPOUND_HEAD, PG_head);
++	else
+ 		u |= 1 << KPF_COMPOUND_TAIL;
+-	if (PageHuge(page))
++	if (folio_test_hugetlb(folio))
+ 		u |= 1 << KPF_HUGE;
+ 	/*
+-	 * PageTransCompound can be true for non-huge compound pages (slab
+-	 * pages or pages allocated by drivers with __GFP_COMP) because it
+-	 * just checks PG_head/PG_tail, so we need to check PageLRU/PageAnon
++	 * We need to check PageLRU/PageAnon
+ 	 * to make sure a given page is a thp, not a non-huge compound page.
+ 	 */
+-	else if (PageTransCompound(page)) {
+-		struct page *head = compound_head(page);
+-
+-		if (PageLRU(head) || PageAnon(head))
++	else if (folio_test_large(folio)) {
++		if ((k & PG_lru) || is_anon)
+ 			u |= 1 << KPF_THP;
+-		else if (is_huge_zero_page(head)) {
++		else if (is_huge_zero_folio(folio)) {
+ 			u |= 1 << KPF_ZERO_PAGE;
+ 			u |= 1 << KPF_THP;
+ 		}
+ 	} else if (is_zero_pfn(page_to_pfn(page)))
+ 		u |= 1 << KPF_ZERO_PAGE;
+ 
+-
+ 	/*
+ 	 * Caveats on high order pages: PG_buddy and PG_slab will only be set
+ 	 * on the head page.
+@@ -178,15 +175,15 @@ u64 stable_page_flags(struct page *page)
+ 	if (PageTable(page))
+ 		u |= 1 << KPF_PGTABLE;
+ 
+-	if (page_is_idle(page))
++#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
++	u |= kpf_copy_bit(k, KPF_IDLE,          PG_idle);
++#else
++	if (folio_test_idle(folio))
+ 		u |= 1 << KPF_IDLE;
++#endif
+ 
+ 	u |= kpf_copy_bit(k, KPF_LOCKED,	PG_locked);
+-
+ 	u |= kpf_copy_bit(k, KPF_SLAB,		PG_slab);
+-	if (PageTail(page) && PageSlab(page))
+-		u |= 1 << KPF_SLAB;
+-
+ 	u |= kpf_copy_bit(k, KPF_ERROR,		PG_error);
+ 	u |= kpf_copy_bit(k, KPF_DIRTY,		PG_dirty);
+ 	u |= kpf_copy_bit(k, KPF_UPTODATE,	PG_uptodate);
+@@ -197,7 +194,8 @@ u64 stable_page_flags(struct page *page)
+ 	u |= kpf_copy_bit(k, KPF_ACTIVE,	PG_active);
+ 	u |= kpf_copy_bit(k, KPF_RECLAIM,	PG_reclaim);
+ 
+-	if (PageSwapCache(page))
++#define SWAPCACHE ((1 << PG_swapbacked) | (1 << PG_swapcache))
++	if ((k & SWAPCACHE) == SWAPCACHE)
+ 		u |= 1 << KPF_SWAPCACHE;
+ 	u |= kpf_copy_bit(k, KPF_SWAPBACKED,	PG_swapbacked);
+ 
+@@ -231,7 +229,6 @@ static ssize_t kpageflags_read(struct file *file, char __user *buf,
+ {
+ 	const unsigned long max_dump_pfn = get_max_dump_pfn();
+ 	u64 __user *out = (u64 __user *)buf;
+-	struct page *ppage;
+ 	unsigned long src = *ppos;
+ 	unsigned long pfn;
+ 	ssize_t ret = 0;
+@@ -248,9 +245,9 @@ static ssize_t kpageflags_read(struct file *file, char __user *buf,
+ 		 * TODO: ZONE_DEVICE support requires to identify
+ 		 * memmaps that were actually initialized.
+ 		 */
+-		ppage = pfn_to_online_page(pfn);
++		struct page *page = pfn_to_online_page(pfn);
+ 
+-		if (put_user(stable_page_flags(ppage), out)) {
++		if (put_user(stable_page_flags(page), out)) {
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 068c9bd43ebf..92a64faa851c 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -716,7 +716,7 @@ static __always_inline bool PageKsm(const struct page *page)
+ TESTPAGEFLAG_FALSE(Ksm, ksm)
+ #endif
+ 
+-u64 stable_page_flags(struct page *page);
++u64 stable_page_flags(const struct page *page);
+ 
+ /**
+  * folio_xor_flags_has_waiters - Change some folio flags.
 -- 
-Best regards,
-Sui
+2.43.0
 
 
