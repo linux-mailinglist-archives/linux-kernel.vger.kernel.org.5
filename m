@@ -1,210 +1,500 @@
-Return-Path: <linux-kernel+bounces-108394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9328809F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:51:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552E38809F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:51:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C5701F2532B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39A51F24355
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06126111AA;
-	Wed, 20 Mar 2024 02:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180A113AC4;
+	Wed, 20 Mar 2024 02:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="SZc/Iajj";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="WcwLp502"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CNPvhzY3"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6387C374CF;
-	Wed, 20 Mar 2024 02:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710902950; cv=fail; b=GRZ38btVRCI0arG0sFkaBQb9IK6iyqn3Y5A9KmrOVlsDF0pGSw30In0CEGSCr89gk7cwmf8GM5avcTsalFhpmbD2jhFiLad5lMdAoM2kRTlOaE+GApzlRIhnXHYL3+wHxU+qx8/ZgykZWaqRJf6WB5Kb1XpVYRcHIEyT2dKEEtg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710902950; c=relaxed/simple;
-	bh=TEIFv0RBUWITLrd+XHoJKA3DfXM+KH0LdY55ULjyX0E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GbuegzF6f8BJMHCLMML+bUCKVbmnOkGpZdz+MTxnQE3McsfB6qnzNw4m6YOqrXdrPIUlM6wI5A/lFOh/DHTg48Trh+bcBgLhGsy2lh+DKi80KIHpkSw1Oh1oiJStOlES9+7F1rNNYCBuw92u2pTCK3u0OyOpQhZKYxretqjHGJs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=SZc/Iajj; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=WcwLp502; arc=fail smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 68bb1c8ee66411ee935d6952f98a51a9-20240320
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=TEIFv0RBUWITLrd+XHoJKA3DfXM+KH0LdY55ULjyX0E=;
-	b=SZc/Iajj5gX5klwuHtnLpoME/XXfV3pbqanO66DHFY3rjI1dX7ju4s6oVfrEDuE78hcIMFRx3V+kgOtFSbYPo29QVyJ8W9ZSCDBRFTJuXYGE0xvXx5JyYbp1T0MkbEZvN3ZG7AegR7rDzyidoWYxTS7N+CLls/vkE401vfhXRFA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:628739e3-708b-42ea-9f53-c451f47b47df,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:416cb381-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 68bb1c8ee66411ee935d6952f98a51a9-20240320
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 296550592; Wed, 20 Mar 2024 10:49:02 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 20 Mar 2024 10:49:00 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 10:49:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d1qCH0mg8NHO/dqDGcpxrVDKSoabsn43DrOdyMezvG1GisPpgaVdIbtoD9FyJSvAPV5c2+7BAKs7Cu3dpMOsWqQLRb+AvrI+opEtIqcpZCkbatrEILneiZMV9HaAsyupd8Qo3SHCBNd2cmX5P9DlM84MXabA1Nlifvvj7hQ4DrPGXOdWW4C67iHmSPpd+VAKQvS03zgrVk/mOi/TvemtYZcjSOgvQv35jUUWqeap7DFK41Qr0/yhuW7WaUXSnH2v3r+qiVFbaQtm/m4D7pTcsX7soFDmyVVPmBSgpiopuvPgu3xLcchdTGjuBNJPpzcRNCCvvj4ygerKrYp1KxnFnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TEIFv0RBUWITLrd+XHoJKA3DfXM+KH0LdY55ULjyX0E=;
- b=YcQ/FwrlKAhCw2Xpa4IywqeznHdb43f+v/il0KJM3V2HGa8Y6mu9sPIx+OEFQAJVUy4yPwEVQLteyutkZsN/G6ouO6NCFzyueqAqaGq/R+j71Hzzblhjdop1DiLLgsKvGstiSGKnSoo2o7CincUJSvDSaI+d4MbjR0hnYz+KXnytTLm+QXvpqYRTaPNK/agUGbNAO6OJbqpDNppighkWlBETZDjBuNI9w2bgPM8Wk5bMIRXMNGqXVQ4XMzTz4fCT2tsDQweI/3NMqobzhAoi7lMqioaNbQ3CtO9CKpCvfe8MFPdEpbYcQ6ApQReHOD3EBoFsw77fvDcJJ/1v5Jgbtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5319125DE;
+	Wed, 20 Mar 2024 02:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710902982; cv=none; b=Ke9uV3qfWTPYgnL/Dqdhcbl4412aglxyXMsHFrrHie+/yuxbQudIM36CVQx5u8p7D1pa435hK1stZMjwsSEwK47USYQLFKaWhfsxl/ktjlmZmgMge1Juj/PN4kBjRIa/JIVm5zmsmeYJZTLwdM/y5d5y2QFnic5R2SLlSCbsBk0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710902982; c=relaxed/simple;
+	bh=I38XBXif3WDOPZGd4HX+W842KBGrtupkmvRocUe3FL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M398rSCg88QlW6I7sqpWcMDo5EZELyUpjn7X/ShAiSN6Jv7J88Fgio/LFigdKoKFb1sh6UpbrsXJnCnwodIKeN0KDRmeiPh9FblX1F5FkHgqXIUIYYLFtIvnCJyoRuCqKR3Si/6i/ceqx4gBq/zco/LasHQT5V0fgUYYkrCHd8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CNPvhzY3; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e6ca65edc9so2020739b3a.0;
+        Tue, 19 Mar 2024 19:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TEIFv0RBUWITLrd+XHoJKA3DfXM+KH0LdY55ULjyX0E=;
- b=WcwLp502Cv6vVm7VqSdUA1sNCdLIT5BajWQsjA0z16mweXT6J6R79wFLMeKuPsTE7kWZFanI31DX3e41+gOcI9WWBUvTTCtcuo42ojQEDFS1MBfORLZn39uYNZgQQKbqNp1zX8YfVajNbhX5ch3XVgRww8PP12EmiNzfq0kzPxg=
-Received: from TYZPR03MB6623.apcprd03.prod.outlook.com (2603:1096:400:1f5::13)
- by SEZPR03MB8322.apcprd03.prod.outlook.com (2603:1096:101:192::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Wed, 20 Mar
- 2024 02:48:58 +0000
-Received: from TYZPR03MB6623.apcprd03.prod.outlook.com
- ([fe80::be:5466:6e74:793f]) by TYZPR03MB6623.apcprd03.prod.outlook.com
- ([fe80::be:5466:6e74:793f%6]) with mapi id 15.20.7386.030; Wed, 20 Mar 2024
- 02:48:58 +0000
-From: =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= <Shawn.Sung@mediatek.com>
-To: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>
-CC: "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"christian.koenig@amd.com" <christian.koenig@amd.com>, "daniel@ffwll.ch"
-	<daniel@ffwll.ch>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"shawn.sung@mediatek.corp-partner.google.com"
-	<shawn.sung@mediatek.corp-partner.google.com>, "airlied@gmail.com"
-	<airlied@gmail.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "matthias.bgg@gmail.com"
-	<matthias.bgg@gmail.com>
-Subject: Re: [PATCH v2 11/14] drm/mediatek: Rename files "mtk_drm_plane.c" to
- "mtk_plane.c"
-Thread-Topic: [PATCH v2 11/14] drm/mediatek: Rename files "mtk_drm_plane.c" to
- "mtk_plane.c"
-Thread-Index: AQHaemrhviPaq25Y9kaX0q5S1OVV3LE/7XiA
-Date: Wed, 20 Mar 2024 02:48:58 +0000
-Message-ID: <0af9e986235f9cb1df2c27975d4bc810760ecddb.camel@mediatek.com>
-References: <20240319070257.6443-1-shawn.sung@mediatek.com>
-	 <20240319070257.6443-12-shawn.sung@mediatek.com>
-	 <58072faffa7127e2fd4e47a8149dbaab1256a59e.camel@mediatek.com>
-In-Reply-To: <58072faffa7127e2fd4e47a8149dbaab1256a59e.camel@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6623:EE_|SEZPR03MB8322:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MNIJYQ9m2+pTjyoTVmUbj8M64aOXiy4MLnmGifaLGNT7A//EIaD80gYAaM2fVk/PNnaIBpUmQRPqXlwccsLkf4CMgPh1AYaH7VOXtwBJM0v9aLAeaW2F0zdFbMCq/vdX3KFTY85CaZh56kCL4yn85U59VWMjGXPnUZiOW+gbNq5GRMEjgRq14xIYRVkAubhNMl+l18DdcVGR+RH594MAtU6dHVQKUN7wBIDa5W4dX7g/phK+5yAJ9JfZkebt/GPZQwlTuTANyFj6+AnxeZ18VKdqmUFYqaIuQuB1v4cKsY7k+dUsiuj++vaQn6GOF1kGLUTq7wHzWphIq29PRfuzsdPz9uhV2Ju5FLzAXO9ILeMGc/1mai0oG7jSFxiCwd5uPl4tX2h6hyCjApMJ6puOfBxq6DdBzOMJ1ouujN7kQFkH51tK6SoNwCTzCDLt+/zJdlbSdHf58AK40Da+3X83By28rshUYy5kcmFqwi88HqwWcMwznA67PuSwM5vXrePDFL7JXnTQ0QY3+/PAWmYaUJEQgK7345X1bjvs6Xn9rY+a9eL7KAJmvq9Of7SnLrROxNeSkJX2Nmd5EJPIO8ghe6gl0YAJCDhuBoe6g8fy15HKScsRaRdbtE4I8LrFsHfF1v80yAVk3xDTFBVzRw9rRxZffYfTFpmyV+ZzO2B8irU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6623.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a1FyK2NZYysvMjZGMmcyQUlNQTBlS25pbmpOemNyVGoxem1ZUXVwWnhycE54?=
- =?utf-8?B?MmVtQTNuU2RRbDhsUzBLQi9UR0IydWVyb2Z4eldVOVFmV2pzWUFWWW5yYVRy?=
- =?utf-8?B?ZTU5YkZGUmlmNEhwK0dDT1hEZEwrcytHRTRYcWhFUmM5UTQrdDdFMlhvc251?=
- =?utf-8?B?SURmZkZLK2VGTDFqRk51dWdpMnA1MnE5ajJZWjZ0QUVXeUxseHlkZEwvOER2?=
- =?utf-8?B?UHpwd1hGYlphdEpFcDhEVlRlQU9uVzRra1ZEWFpZRkF2cnoyZE9jWXdDVDl3?=
- =?utf-8?B?enZSV01MaFBHYUJ6ekxwS2JpVkUyZDJ6M0h5enEwNHkvTFdIeUdWUVJMUXNr?=
- =?utf-8?B?ZjEwL0RvQnRYN0x4VS9YMDI3dy9lVFBpR3hXZ2xFb0RnMURBR2NGbzhuaGdr?=
- =?utf-8?B?Q1F0MDFzdjJxM0RTaDVTUGZXL1VnazZVRFNybmZ4ZlNlRkpFaUtOZjZPeW9z?=
- =?utf-8?B?ZjloVnROT2ZqbjR5MnBVcGVjN0E0VXlwY1JqejRIYUtWVkE0YlNueElFRjFG?=
- =?utf-8?B?OUZCbFp2OG9HYXRZVHRkOGJ3M0JNRFl6NVdtMWtQclB6QkowOHpvQTJpekZy?=
- =?utf-8?B?UmpVSUxDMTk1Qk03OFhrUENKQTRON0JINjJwY1duYlZMOUlBWlJYWHRNR215?=
- =?utf-8?B?ZC9EY2xnMkNrNU8yREpFR211NDFna2Urd0d6dUp4YXZncitnS2tXTEZZNkQ3?=
- =?utf-8?B?V2lNeGJsSUl4VHJ5aElRNlNNaGkrSGM0ckVQL1RwZ0p5aDRDTk15K0pvUFJy?=
- =?utf-8?B?MUFGSnZSaHpzNUs4VWRFL2N0THRaK1IxeVdXTTBYbTh3NTdabUFFWnJHS0xX?=
- =?utf-8?B?aTUrTjRBTVRXZko0UzE3Y2dOUFVLMVI0NGtRWThyUFplSER2M3hjV2JhdHpj?=
- =?utf-8?B?bmZGYWh2ays1YTBUb0pGU2N3RW4zRlFVbVlZeHE1RzRzb1pqdTN5RkxobWd2?=
- =?utf-8?B?QUZBMU50cVhJS2pMUUQxN2V5YkppYmpCb2hlbEJhRlQ2ZHpNL3FkQUZ6Z0tl?=
- =?utf-8?B?UXdZcFdaNXZmWm8rSUdOaFFTOFR3TFYwRTU1dzgrQnoreEY1eXFBRHhDZTNF?=
- =?utf-8?B?TUg3OUZhSWtDQlJBWlo4S3J4N1o5aW9vRFJQY1NvUmpqRTdLck52b3NHWmhh?=
- =?utf-8?B?U1RvbysyN2pLdVNkY25mNHFvTUZ6cTAzQlZsZGx5MGFCdm92YUVJc1dtS3Vt?=
- =?utf-8?B?c3NvWTZtMjVwVGN5NkdMOEM1VXY1elFhKzBCNStUaHZZS2dHL3p0MEl1UmlD?=
- =?utf-8?B?c0V2cThSbXMvR25TandyR3lka1VnM1ZPK0lscE5zTlM1dDdsWkc3L0lJM240?=
- =?utf-8?B?Y0JVbWpXVisvWmtlUDZPQm4vQUcxN2ZDQ3ZhRVZUSUxxRDZJVUQ4U20rVlEx?=
- =?utf-8?B?TWdDSkRyOTZreHczQVJuNEI2a1BWc1pjOFYvekYxZk0xNG9HTCt6Y1dzR0dL?=
- =?utf-8?B?V0xUN2o2TTRhZWt3dG96aUhRV3JMWGFUaUk1TkF6TThRTWUvKzZZdFJrNWxx?=
- =?utf-8?B?ZDhzdkY3c215ZFI4bW1JRXl1WEZjTVNRSmt3a29SMVRYbXpraHFZK28wdW9w?=
- =?utf-8?B?NTVnTzNkaG5tTjZYZ2FHdERwRXJ2QVV1bXBZUmJnUklvTjFNeHZHc3lwaVpP?=
- =?utf-8?B?T0tSOVNvQU9Oc0FtOW0xd0xSc0RtdTh1TmhGSlMva0lCOFg3ZmZ3UGRpMkU5?=
- =?utf-8?B?OFhlcVc5QUJtdTB6MUNvTkUxdmpNUC9COWhTemZma2lrM3Q4M01VWFFQYXFx?=
- =?utf-8?B?SVk5cGJqSVo3TWlVWDNwTkNwbkk4R0tyWVpTajI5c1pOaHhET0l0K3dLUkJy?=
- =?utf-8?B?U1I0b0p6M3pHeGZsV21tS2dUWXNtM0pIT1I4ZWE2ZHI3NTlocjYzNHdKTVl6?=
- =?utf-8?B?MHkzTVFTNi9uZngzQysyTzJ2eDFJMldOeWhMZmJLcDh5akNYT00xd1JHWlVQ?=
- =?utf-8?B?ckhEenk5N21IRENJWmlEU0NucUZHd0toRitlTHZOZkdCNE1aVUVjWXpRb2hY?=
- =?utf-8?B?OUUxWmpDbTJvRWMzZldvend2U3o0ZXBFbHV4bDcrRjhUdnpqRldNS0VwbDcy?=
- =?utf-8?B?OStjTG1EbG42c1VrMjJZWnllYzlrQU5FRkV5S1ZZS2hrSmQ0aGJDWlUyTFVp?=
- =?utf-8?B?S3JyemVoOGNiNVREdWl4RldadmhUcjA4SSt1Wng2WWRvWUNwRllMUWpCb1lo?=
- =?utf-8?B?aVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1DA97435E20A2848A6E50B8B5260749D@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1710902980; x=1711507780; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rK5f5lnEOGDA0dNCZVHYPRsxftlJcrb8cEbJ45ahcLU=;
+        b=CNPvhzY3qGrVtR4/UZNgXQ7zI2LdXweGz8Qr4RuBNKrMCITnZLZ0a6YTabWA9U9tOV
+         kGvjR3Ecklc+xRMozMFJO4LMibm9LUO1nkEhpUPK842+LazmuC44ru8OXlzcDh85kBUd
+         gCD25bDo6RFcfGUdNXSS849UI9MhXdG33wwBgGvSCBdu7BgcwS6V3QcV/jNKkjbxhmrr
+         //5HSrdkCr+M/3mi025axgZHwAi2TI+aMD76wzbHmnA8cuA3kxZvn+jgs+lLMXYB8+rA
+         19h++5mk78oUm6+hm3izCXJktBrM6dubslXOzLecFZPB82Lo2nMpKsV2YA0Mirvyepvw
+         mGOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710902980; x=1711507780;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rK5f5lnEOGDA0dNCZVHYPRsxftlJcrb8cEbJ45ahcLU=;
+        b=KioAeWgPH1Jnb3eYXdw+GeeQE4pzbysEW2jTo74WrlTcDZFSPZ31ezFJB32dVqYf7W
+         wiFmT+cb/VLuqztp/pV0R7zSQhgJC28z1s3ib4Cmp6COAfsSG8f/JSGdGy8VsMYSJMKh
+         b61xzuCbsyCK8u0oL5C85ztEPwOqmvzUwdczVo5GLq1vEE3rEgzM3vmajjZf4fc60ur1
+         W2ROs03UeCRXv2YcEsS+0RVFN/cIT14E95vNkOHdZPkCEj8+hIXzOG36webr4yOuV0oT
+         3ka3yJZZEriIthQX2fWmyWs7zIK+o94jtYcis1llEy+d0TdwG+HUFbojMsiChh9ZoNEA
+         DoaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXRt+RST0gOqmnHm6fSEKWDYMDhCTqsrIIi5uCGEZJ9vMC32oW1zJu8MLsrUaDEHV9NOXeR7TfQsp14/tYvKWIwsBp6JZ8cNxRzElJjSgllLood0kHjyoMa3oYHnvbDUVirKRSKOrCWCXSGyaxqiP3yl+iMHHeHTuMkRRYDq7qOVDBw8wBMGzOd1EDziiTJ9Uy1n9vYERNoLZ/wUp7uiceZoyhBBdxdwExNBdJs
+X-Gm-Message-State: AOJu0YxRJu55GPEoSR0cfSogGTPYvRO2p/hAP/CF1gPy4+mz8T1MRuIF
+	vB+jlR3WJqebubj8sflgVAiYVGTwyVe/0s6KNl2c+vZiwZKg7EVO
+X-Google-Smtp-Source: AGHT+IEEmmwgIgoQbNlzSIaaKFkhbsGbkd5CbtIJYv4wDGSywn8Gpt53Dr6SbO0nA5u2nSCtpNhJ+A==
+X-Received: by 2002:a17:902:e80c:b0:1dd:b883:3398 with SMTP id u12-20020a170902e80c00b001ddb8833398mr462837plg.4.1710902979704;
+        Tue, 19 Mar 2024 19:49:39 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id a6-20020a170902ecc600b001dffe8a22aesm7599871plh.262.2024.03.19.19.49.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 19:49:39 -0700 (PDT)
+Date: Wed, 20 Mar 2024 10:49:34 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Ian Rogers <irogers@google.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	namhyung@kernel.org, akpm@linux-foundation.org, bfoster@redhat.com,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/13] lib min_heap: Add args for min_heap_callbacks
+Message-ID: <ZfpOvsD++wbwCTWO@visitorckw-System-Product-Name>
+References: <20240319180005.246930-1-visitorckw@gmail.com>
+ <20240319180005.246930-9-visitorckw@gmail.com>
+ <CAP-5=fUk12o7u-+0u0KeUbdRDYiGzeZU0vgOrTc_3BHEntjn_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6623.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dec355c3-ae02-40bc-c575-08dc48884a7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 02:48:58.1899
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BF4qvQB69ME88yNDYGJen8bTJJPugajJR0d2fGvLgXLrv3tvBScPjA+v2GjQjd1qpSD18XI3jNBEFJ9t2e3sVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8322
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--14.414900-8.000000
-X-TMASE-MatchedRID: zdfKSpJbRLjUL3YCMmnG4ir0r2wNA5jBjLOy13Cgb4/eUmhIcPpKYFDQ
-	UTMuNMdQEOd3g5mfB6NiSVnIdboij5hDg82nqVsGlGudLLtRO1u1k3bRIdXVNDMVY5itbDoD5lA
-	WcqJGaGfi8zVgXoAltj2Xsf5MVCB1ZiFQvkZhFu1q8/xv2Um1avoLR4+zsDTt/KO2LNTSuGMmvw
-	jz6vd7Yx6Tgb6u9/BjvkyCDBzaWlHGjA9y2cpBWg==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--14.414900-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	2E1E375FB81F1E1023B745FC564EE9625F307F7CBEB00B59E9FFF1D1CE893DF12000:8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUk12o7u-+0u0KeUbdRDYiGzeZU0vgOrTc_3BHEntjn_Q@mail.gmail.com>
 
-SGkgQ0ssDQoNCk9uIFdlZCwgMjAyNC0wMy0yMCBhdCAwMjowNCArMDAwMCwgQ0sgSHUgKOiDoeS/
-iuWFiSkgd3JvdGU6DQo+IEhpLCBTaGF3bjoNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9wbGFuZS5jDQo+ID4gYi9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX3BsYW5lLmMNCj4gPiBzaW1pbGFyaXR5IGluZGV4IDk5JQ0KPiA+IHJlbmFtZSBm
-cm9tIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX3BsYW5lLmMNCj4gPiByZW5hbWUg
-dG8gZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19wbGFuZS5jDQo+ID4gaW5kZXggOTVhNDMy
-OGE5YjBiNi4uNDYyNWRlYjIxZDQwNiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
-bWVkaWF0ZWsvbXRrX2RybV9wbGFuZS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19wbGFuZS5jDQo+ID4gQEAgLTE2LDcgKzE2LDcgQEANCj4gPiAgI2luY2x1ZGUgIm10
-a19jcnRjLmgiDQo+ID4gICNpbmNsdWRlICJtdGtfZGRwX2NvbXAuaCINCj4gPiAgI2luY2x1ZGUg
-Im10a19kcm1fZHJ2LmgiDQo+ID4gLSNpbmNsdWRlICJtdGtfZHJtX2dlbS5oIg0KPiA+ICsjaW5j
-bHVkZSAibXRrX2dlbS5oIg0KPiANCj4gVGhpcyBzaG91bGQgYmUgYW5vdGhlciBwYXRjaC4gQWZ0
-ZXIgcmVtb3ZpbmcgdGhpcywNCj4gDQo+IFJldmlld2VkLWJ5OiBDSyBIdSA8Y2suaHVAbWVkaWF0
-ZWsuY29tPg0KPiANCg0KVGhhbmsgeW91IGZvciB0aGUgbm90aWZpY2F0aW9uLg0KV2lsbCBmaXgg
-dGhpcyBlcnJvciBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KDQpSZWdhcmRzLA0KU2hhd24NCg==
+On Tue, Mar 19, 2024 at 01:05:18PM -0700, Ian Rogers wrote:
+> On Tue, Mar 19, 2024 at 11:00 AM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> >
+> > Add a third parameter 'args' for the 'less' and 'swp' functions in the
+> > 'struct min_heap_callbacks'. This additional parameter allows these
+> > comparison and swap functions to handle extra arguments when necessary.
+> >
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> 
+> I've no objection to this but I don't see it used in your changes -
+> that may be my fault :-). Perhaps hold off or add a test with args
+> being non-null?
+>
+
+The parameter will be required in the patches for bcache and bcachefs.
+One is for bucket_min_cmp() and bucket_max_cmp() in
+drivers/md/bcache/alloc.c, and the other is for ec_stripes_heap_swap()
+in fs/bcachefs/ec.c.
+
+Do you have any more specific suggestions for adding non-null
+test cases? I'm unsure about what would be a reasonable way to include
+non-null test items in testing.
+> 
+> > ---
+> >  drivers/md/dm-vdo/repair.c     | 10 +++----
+> >  drivers/md/dm-vdo/slab-depot.c |  8 +++---
+> >  include/linux/min_heap.h       | 51 +++++++++++++++++-----------------
+> >  kernel/events/core.c           | 10 +++----
+> >  lib/test_min_heap.c            | 26 ++++++++---------
+> >  5 files changed, 53 insertions(+), 52 deletions(-)
+> >
+> > diff --git a/drivers/md/dm-vdo/repair.c b/drivers/md/dm-vdo/repair.c
+> > index 7663fa2098f4..528fa100b410 100644
+> > --- a/drivers/md/dm-vdo/repair.c
+> > +++ b/drivers/md/dm-vdo/repair.c
+> > @@ -137,7 +137,7 @@ struct repair_completion {
+> >   * to sort by slot while still ensuring we replay all entries with the same slot in the exact order
+> >   * as they appeared in the journal.
+> >   */
+> > -static bool mapping_is_less_than(const void *item1, const void *item2)
+> > +static bool mapping_is_less_than(const void *item1, const void *item2, void *args)
+> >  {
+> >         const struct numbered_block_mapping *mapping1 =
+> >                 (const struct numbered_block_mapping *) item1;
+> > @@ -156,7 +156,7 @@ static bool mapping_is_less_than(const void *item1, const void *item2)
+> >         return 0;
+> >  }
+> >
+> > -static void swap_mappings(void *item1, void *item2)
+> > +static void swap_mappings(void *item1, void *item2, void *args)
+> >  {
+> >         struct numbered_block_mapping *mapping1 = item1;
+> >         struct numbered_block_mapping *mapping2 = item2;
+> > @@ -182,8 +182,8 @@ static struct numbered_block_mapping *sort_next_heap_element(struct repair_compl
+> >          * restore the heap invariant, and return a pointer to the popped element.
+> >          */
+> >         last = &repair->entries[--heap->heap.nr];
+> > -       swap_mappings(heap->heap.data, last);
+> > -       min_heapify(heap, 0, &repair_min_heap);
+> > +       swap_mappings(heap->heap.data, last, NULL);
+> > +       min_heapify(heap, 0, &repair_min_heap, NULL);
+> >         return last;
+> >  }
+> >
+> > @@ -1121,7 +1121,7 @@ static void recover_block_map(struct vdo_completion *completion)
+> >         repair->replay_heap.heap.data = repair->entries;
+> >         repair->replay_heap.heap.nr = repair->block_map_entry_count;
+> >         repair->replay_heap.heap.size = repair->block_map_entry_count;
+> > -       min_heapify_all(&repair->replay_heap, &repair_min_heap);
+> > +       min_heapify_all(&repair->replay_heap, &repair_min_heap, NULL);
+> >
+> >         vdo_log_info("Replaying %zu recovery entries into block map",
+> >                      repair->block_map_entry_count);
+> > diff --git a/drivers/md/dm-vdo/slab-depot.c b/drivers/md/dm-vdo/slab-depot.c
+> > index 3309480170c3..b8c41d7ccde0 100644
+> > --- a/drivers/md/dm-vdo/slab-depot.c
+> > +++ b/drivers/md/dm-vdo/slab-depot.c
+> > @@ -3288,7 +3288,7 @@ int vdo_release_block_reference(struct block_allocator *allocator,
+> >   * Thus, the ordering is reversed from the usual sense since min_heap returns smaller elements
+> >   * before larger ones.
+> >   */
+> > -static bool slab_status_is_less_than(const void *item1, const void *item2)
+> > +static bool slab_status_is_less_than(const void *item1, const void *item2, void *args)
+> >  {
+> >         const struct slab_status *info1 = item1;
+> >         const struct slab_status *info2 = item2;
+> > @@ -3300,7 +3300,7 @@ static bool slab_status_is_less_than(const void *item1, const void *item2)
+> >         return info1->slab_number < info2->slab_number;
+> >  }
+> >
+> > -static void swap_slab_statuses(void *item1, void *item2)
+> > +static void swap_slab_statuses(void *item1, void *item2, void *args)
+> >  {
+> >         struct slab_status *info1 = item1;
+> >         struct slab_status *info2 = item2;
+> > @@ -3523,7 +3523,7 @@ static int __must_check vdo_prepare_slabs_for_allocation(struct block_allocator
+> >         heap.heap.data = slab_statuses;
+> >         heap.heap.nr = allocator->slab_count;
+> >         heap.heap.size = allocator->slab_count;
+> > -       min_heapify_all(&heap, &slab_status_min_heap);
+> > +       min_heapify_all(&heap, &slab_status_min_heap, NULL);
+> >
+> >         while (heap.heap.nr > 0) {
+> >                 bool high_priority;
+> > @@ -3531,7 +3531,7 @@ static int __must_check vdo_prepare_slabs_for_allocation(struct block_allocator
+> >                 struct slab_journal *journal;
+> >
+> >                 current_slab_status = slab_statuses[0];
+> > -               min_heap_pop(&heap, &slab_status_min_heap);
+> > +               min_heap_pop(&heap, &slab_status_min_heap, NULL);
+> >                 slab = depot->slabs[current_slab_status.slab_number];
+> >
+> >                 if ((depot->load_type == VDO_SLAB_DEPOT_REBUILD_LOAD) ||
+> > diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> > index b1d874f4d536..97d8ba5c32e6 100644
+> > --- a/include/linux/min_heap.h
+> > +++ b/include/linux/min_heap.h
+> > @@ -40,8 +40,8 @@ struct _name {                                \
+> >   * @swp: Swap elements function.
+> >   */
+> >  struct min_heap_callbacks {
+> > -       bool (*less)(const void *lhs, const void *rhs);
+> > -       void (*swp)(void *lhs, void *rhs);
+> > +       bool (*less)(const void *lhs, const void *rhs, void *args);
+> > +       void (*swp)(void *lhs, void *rhs, void *args);
+> >  };
+> >
+> >  /* Initialize a min-heap. */
+> > @@ -79,7 +79,7 @@ bool __min_heap_full(struct __min_heap *heap)
+> >  /* Sift the element at pos down the heap. */
+> >  static __always_inline
+> >  void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
+> > -               const struct min_heap_callbacks *func)
+> > +               const struct min_heap_callbacks *func, void *args)
+> >  {
+> >         void *left, *right;
+> >         void *data = heap->data;
+> > @@ -92,7 +92,7 @@ void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
+> >                         break;
+> >                 left = data + (i * 2 + 1) * elem_size;
+> >                 right = data + (i * 2 + 2) * elem_size;
+> > -               i = func->less(left, right) ? i * 2 + 1 : i * 2 + 2;
+> > +               i = func->less(left, right, args) ? i * 2 + 1 : i * 2 + 2;
+> >         }
+> >
+> >         /* Special case for the last leaf with no sibling. */
+> > @@ -100,38 +100,38 @@ void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
+> >                 i = i * 2 + 1;
+> >
+> >         /* Backtrack to the correct location. */
+> > -       while (i != pos && func->less(root, data + i * elem_size))
+> > +       while (i != pos && func->less(root, data + i * elem_size, args))
+> >                 i = (i - 1) / 2;
+> >
+> >         /* Shift the element into its correct place. */
+> >         j = i;
+> >         while (i != pos) {
+> >                 i = (i - 1) / 2;
+> > -               func->swp(data + i * elem_size, data + j * elem_size);
+> > +               func->swp(data + i * elem_size, data + j * elem_size, args);
+> >         }
+> >  }
+> >
+> > -#define min_heapify(_heap, _pos, _func)        \
+> > -       __min_heapify(&(_heap)->heap, _pos, __minheap_obj_size(_heap), _func)
+> > +#define min_heapify(_heap, _pos, _func, _args) \
+> > +       __min_heapify(&(_heap)->heap, _pos, __minheap_obj_size(_heap), _func, _args)
+> >
+> >  /* Floyd's approach to heapification that is O(nr). */
+> >  static __always_inline
+> >  void __min_heapify_all(struct __min_heap *heap, size_t elem_size,
+> > -               const struct min_heap_callbacks *func)
+> > +               const struct min_heap_callbacks *func, void *args)
+> >  {
+> >         int i;
+> >
+> >         for (i = heap->nr / 2 - 1; i >= 0; i--)
+> > -               __min_heapify(heap, i, elem_size, func);
+> > +               __min_heapify(heap, i, elem_size, func, args);
+> >  }
+> >
+> > -#define min_heapify_all(_heap, _func)  \
+> > -       __min_heapify_all(&(_heap)->heap, __minheap_obj_size(_heap), _func)
+> > +#define min_heapify_all(_heap, _func, _args)   \
+> > +       __min_heapify_all(&(_heap)->heap, __minheap_obj_size(_heap), _func, _args)
+> >
+> >  /* Remove minimum element from the heap, O(log2(nr)). */
+> >  static __always_inline
+> >  void __min_heap_pop(struct __min_heap *heap, size_t elem_size,
+> > -               const struct min_heap_callbacks *func)
+> > +               const struct min_heap_callbacks *func, void *args)
+> >  {
+> >         void *data = heap->data;
+> >
+> > @@ -141,11 +141,11 @@ void __min_heap_pop(struct __min_heap *heap, size_t elem_size,
+> >         /* Place last element at the root (position 0) and then sift down. */
+> >         heap->nr--;
+> >         memcpy(data, data + (heap->nr * elem_size), elem_size);
+> > -       __min_heapify(heap, 0, elem_size, func);
+> > +       __min_heapify(heap, 0, elem_size, func, args);
+> >  }
+> >
+> > -#define min_heap_pop(_heap, _func)     \
+> > -       __min_heap_pop(&(_heap)->heap, __minheap_obj_size(_heap), _func)
+> > +#define min_heap_pop(_heap, _func, _args)      \
+> > +       __min_heap_pop(&(_heap)->heap, __minheap_obj_size(_heap), _func, _args)
+> >
+> >  /*
+> >   * Remove the minimum element and then push the given element. The
+> > @@ -155,19 +155,20 @@ void __min_heap_pop(struct __min_heap *heap, size_t elem_size,
+> >  static __always_inline
+> >  void __min_heap_pop_push(struct __min_heap *heap,
+> >                 const void *element, size_t elem_size,
+> > -               const struct min_heap_callbacks *func)
+> > +               const struct min_heap_callbacks *func,
+> > +               void *args)
+> >  {
+> >         memcpy(heap->data, element, elem_size);
+> > -       __min_heapify(heap, 0, elem_size, func);
+> > +       __min_heapify(heap, 0, elem_size, func, args);
+> >  }
+> >
+> > -#define min_heap_pop_push(_heap, _element, _func)      \
+> > -       __min_heap_pop_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func)
+> > +#define min_heap_pop_push(_heap, _element, _func, _args)       \
+> > +       __min_heap_pop_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func, _args)
+> >
+> >  /* Push an element on to the heap, O(log2(nr)). */
+> >  static __always_inline
+> >  void __min_heap_push(struct __min_heap *heap, const void *element, size_t elem_size,
+> > -               const struct min_heap_callbacks *func)
+> > +               const struct min_heap_callbacks *func, void *args)
+> >  {
+> >         void *data = heap->data;
+> >         void *child, *parent;
+> > @@ -185,13 +186,13 @@ void __min_heap_push(struct __min_heap *heap, const void *element, size_t elem_s
+> >         for (; pos > 0; pos = (pos - 1) / 2) {
+> >                 child = data + (pos * elem_size);
+> >                 parent = data + ((pos - 1) / 2) * elem_size;
+> > -               if (func->less(parent, child))
+> > +               if (func->less(parent, child, args))
+> >                         break;
+> > -               func->swp(parent, child);
+> > +               func->swp(parent, child, args);
+> >         }
+> >  }
+> >
+> > -#define min_heap_push(_heap, _element, _func)  \
+> > -       __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func)
+> > +#define min_heap_push(_heap, _element, _func, _args)   \
+> > +       __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func, _args)
+> >
+> >  #endif /* _LINUX_MIN_HEAP_H */
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 065dfaa8b009..f2a9044058ee 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -3683,7 +3683,7 @@ void __perf_event_task_sched_out(struct task_struct *task,
+> >         perf_cgroup_switch(next);
+> >  }
+> >
+> > -static bool perf_less_group_idx(const void *l, const void *r)
+> > +static bool perf_less_group_idx(const void *l, const void *r, void *args)
+> >  {
+> >         const struct perf_event *le = *(const struct perf_event **)l;
+> >         const struct perf_event *re = *(const struct perf_event **)r;
+> > @@ -3691,7 +3691,7 @@ static bool perf_less_group_idx(const void *l, const void *r)
+> >         return le->group_index < re->group_index;
+> >  }
+> >
+> > -static void swap_ptr(void *l, void *r)
+> > +static void swap_ptr(void *l, void *r, void *args)
+> >  {
+> >         void **lp = l, **rp = r;
+> >
+> > @@ -3779,7 +3779,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+> >                 perf_assert_pmu_disabled((*evt)->pmu_ctx->pmu);
+> >         }
+> >
+> > -       min_heapify_all(&event_heap, &perf_min_heap);
+> > +       min_heapify_all(&event_heap, &perf_min_heap, NULL);
+> >
+> >         while (event_heap.heap.nr) {
+> >                 ret = func(*evt, data);
+> > @@ -3788,9 +3788,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
+> >
+> >                 *evt = perf_event_groups_next(*evt, pmu);
+> >                 if (*evt)
+> > -                       min_heapify(&event_heap, 0, &perf_min_heap);
+> > +                       min_heapify(&event_heap, 0, &perf_min_heap, NULL);
+> >                 else
+> > -                       min_heap_pop(&event_heap, &perf_min_heap);
+> > +                       min_heap_pop(&event_heap, &perf_min_heap, NULL);
+> >         }
+> >
+> >         return 0;
+> > diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+> > index af2e446034d8..b8859d17a19c 100644
+> > --- a/lib/test_min_heap.c
+> > +++ b/lib/test_min_heap.c
+> > @@ -13,17 +13,17 @@
+> >
+> >  MIN_HEAP(int, min_heap_test);
+> >
+> > -static __init bool less_than(const void *lhs, const void *rhs)
+> > +static __init bool less_than(const void *lhs, const void *rhs, void *args)
+> >  {
+> >         return *(int *)lhs < *(int *)rhs;
+> >  }
+> >
+> > -static __init bool greater_than(const void *lhs, const void *rhs)
+> > +static __init bool greater_than(const void *lhs, const void *rhs, void *args)
+> >  {
+> >         return *(int *)lhs > *(int *)rhs;
+> >  }
+> >
+> > -static __init void swap_ints(void *lhs, void *rhs)
+> > +static __init void swap_ints(void *lhs, void *rhs, void *argsss)
+> >  {
+> >         int temp = *(int *)lhs;
+> >
+> > @@ -40,7 +40,7 @@ static __init int pop_verify_heap(bool min_heap,
+> >         int last;
+> >
+> >         last = values[0];
+> > -       min_heap_pop(heap, funcs);
+> > +       min_heap_pop(heap, funcs, NULL);
+> >         while (heap->heap.nr > 0) {
+> >                 if (min_heap) {
+> >                         if (last > values[0]) {
+> > @@ -56,7 +56,7 @@ static __init int pop_verify_heap(bool min_heap,
+> >                         }
+> >                 }
+> >                 last = values[0];
+> > -               min_heap_pop(heap, funcs);
+> > +               min_heap_pop(heap, funcs, NULL);
+> >         }
+> >         return err;
+> >  }
+> > @@ -77,7 +77,7 @@ static __init int test_heapify_all(bool min_heap)
+> >         int i, err;
+> >
+> >         /* Test with known set of values. */
+> > -       min_heapify_all(&heap, &funcs);
+> > +       min_heapify_all(&heap, &funcs, NULL);
+> >         err = pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> >
+> > @@ -86,7 +86,7 @@ static __init int test_heapify_all(bool min_heap)
+> >         for (i = 0; i < heap.heap.nr; i++)
+> >                 values[i] = get_random_u32();
+> >
+> > -       min_heapify_all(&heap, &funcs);
+> > +       min_heapify_all(&heap, &funcs, NULL);
+> >         err += pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> >         return err;
+> > @@ -110,14 +110,14 @@ static __init int test_heap_push(bool min_heap)
+> >
+> >         /* Test with known set of values copied from data. */
+> >         for (i = 0; i < ARRAY_SIZE(data); i++)
+> > -               min_heap_push(&heap, &data[i], &funcs);
+> > +               min_heap_push(&heap, &data[i], &funcs, NULL);
+> >
+> >         err = pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> >         /* Test with randomly generated values. */
+> >         while (heap.heap.nr < heap.heap.size) {
+> >                 temp = get_random_u32();
+> > -               min_heap_push(&heap, &temp, &funcs);
+> > +               min_heap_push(&heap, &temp, &funcs, NULL);
+> >         }
+> >         err += pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> > @@ -143,22 +143,22 @@ static __init int test_heap_pop_push(bool min_heap)
+> >         /* Fill values with data to pop and replace. */
+> >         temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
+> >         for (i = 0; i < ARRAY_SIZE(data); i++)
+> > -               min_heap_push(&heap, &temp, &funcs);
+> > +               min_heap_push(&heap, &temp, &funcs, NULL);
+> >
+> >         /* Test with known set of values copied from data. */
+> >         for (i = 0; i < ARRAY_SIZE(data); i++)
+> > -               min_heap_pop_push(&heap, &data[i], &funcs);
+> > +               min_heap_pop_push(&heap, &data[i], &funcs, NULL);
+> >
+> >         err = pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> >         heap.heap.nr = 0;
+> >         for (i = 0; i < ARRAY_SIZE(data); i++)
+> > -               min_heap_push(&heap, &temp, &funcs);
+> > +               min_heap_push(&heap, &temp, &funcs, NULL);
+> >
+> >         /* Test with randomly generated values. */
+> >         for (i = 0; i < ARRAY_SIZE(data); i++) {
+> >                 temp = get_random_u32();
+> > -               min_heap_pop_push(&heap, &temp, &funcs);
+> > +               min_heap_pop_push(&heap, &temp, &funcs, NULL);
+> >         }
+> >         err += pop_verify_heap(min_heap, &heap, &funcs);
+> >
+> > --
+> > 2.34.1
+> >
 
