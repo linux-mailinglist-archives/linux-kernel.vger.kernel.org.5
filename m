@@ -1,57 +1,63 @@
-Return-Path: <linux-kernel+bounces-108549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214D6880C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:37:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E8A880C22
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F4AC281FC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:37:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD21C1F23748
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D422C69C;
-	Wed, 20 Mar 2024 07:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC92336129;
+	Wed, 20 Mar 2024 07:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r3Gqg2/8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrtdz9EN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37422C683
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206672208B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710920257; cv=none; b=oKHM4mF7/y8l7+gF5z+U14Qt0kJOQjyDOJ18g2sTiW7I5xWEh0J0PiyxyWb+vXGB0dM85QIarazDnvIqLId3nExqrCejCx2zzW3/AMzKce64ZEP+cyB3joiiHR/og3oScDQKU3G24sh3egYDZ0mUkvEwgzK5ta9OhBD1RUNOaow=
+	t=1710920261; cv=none; b=NDfuqzf1NeUNzYAgM9wE2E5oEUgcbkbTx4WQ6J3YRRcPV34/8Ursv267vaRdM3GoG82+7FzOlc7HdSYwJ1p4l58u0IsQKFygLhYOmW4Rw9+r7C81vuiFFoXQGc4fYCbc/rRb3oOpSaK3s/jkBS/FJvFJXi3eEn25RooGqT/Ub7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710920257; c=relaxed/simple;
-	bh=YTMRU0Nf5P5SYGoJuo+TisiaAmlJOWa0iSN0mNp+DiU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J9rTK4REwrFnTCIDGLbKPKQt2aeqZCzrZXmn0RQv96epSTMNzRw1ejQ68jFpgWaRfAIfQNVx6CNxS1k/nfI/qy1Dc6IA2ji7m69n0zVu7RAqryaBDXs3m0JXMr4F97eTLoRXTlZUQ23LRBIQAat+w/4LlWKapHA+89z7yUcQWSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r3Gqg2/8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95FEDC433C7;
-	Wed, 20 Mar 2024 07:37:35 +0000 (UTC)
+	s=arc-20240116; t=1710920261; c=relaxed/simple;
+	bh=hzC9nwLvXTVgwQOMkdq44QZXi1tFep4qsRHVCT+3k4Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Vw3iRTdZ5dasSspZPjkz5q+f8zvIzWgKaogyVB+kYeX++pAIMhFs3q2SDH3jJ0yymKSR+NGJ+5kl5pdqTQ1kNaKbLgujL6oSUyqtZc6pD3slZ02po54F+MZFYLmrWnuCddCDDy1vwReVpjXBcBiMqmllyAyAZ8LvW7F4CoSDUG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lrtdz9EN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3238BC43399;
+	Wed, 20 Mar 2024 07:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710920257;
-	bh=YTMRU0Nf5P5SYGoJuo+TisiaAmlJOWa0iSN0mNp+DiU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=r3Gqg2/8wmLMN5FOuFo7g0GoXHvDzxZy05MxXkftJCg2VDtHDzYUM09zB1nAly1y7
-	 4QQ16V3lFv9MghoR261GCjN3fMWbUwbIauf5mw2yIJRbwtGCXm2YB8QJ8oGFnfeBeC
-	 FeT+nwz3aLfydQy8rc0c/QolFkFlaL0f6S3uES1INjEQvKMU3hW8a9xaZ5ZKf8AQTM
-	 LUSvMhO1YxdyHiJh2yKylPDgWjDGwLImnW9GP66bc9X99MshxR76ecDnb5O1CXPSF3
-	 AiXtYL9Uj4BNDXmcOLPxrXeyQi4DCDtBE/leqHR7eOxzoGMiGQCiSdt7BbpkAi2X1x
-	 zwzFNLEDmF7WQ==
+	s=k20201202; t=1710920260;
+	bh=hzC9nwLvXTVgwQOMkdq44QZXi1tFep4qsRHVCT+3k4Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lrtdz9ENRa11JSKhFuvNFzK8VDpY0QZ3x4rb6MBEa4oyMr2NJgCWpbHV2jZYw40bR
+	 o+z3HRQmduCdwuPMRFCiwdzy6MGkVlEhjTWCTGNYqu7oxcFus/w9HLX0YwV8uDh04h
+	 LqiI/CIgTKp/fa+5dnIicIq1hBK7r/Bdj41woNUyiRQVRrHmwoMRNKzSXt64RKgzyn
+	 p/CBIhtJBRbJtxgEIVB1GFVMzThQDWNeS2DCDX1aXc6SdcK1MXKOFDNN+2z8JuEzkQ
+	 NWaikWuHwAh6prjmxQyspSNviArYSxO43vZLCD5/cZuz28n+XaeKJc9r+l7JG9GlYp
+	 ttRhrdmd7DzPQ==
 From: alexs@kernel.org
 To: Izik Eidus <izik.eidus@ravellosystems.com>,
 	Matthew Wilcox <willy@infradead.org>,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	Hugh Dickins <hughd@google.com>,
 	Chris Wright <chrisw@sous-sol.org>,
-	kasong@tencent.com
+	kasong@tencent.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
+	linux-kernel@vger.kernel.org (open list)
 Cc: linux-kernel@vger.kernel.org,
 	"Alex Shi (tencent)" <alexs@kernel.org>
-Subject: [PATCH 00/11] transfer page to folio in KSM 
-Date: Wed, 20 Mar 2024 15:40:36 +0800
-Message-ID: <20240320074049.4130552-1-alexs@kernel.org>
+Subject: [PATCH 01/11] mm/ksm: Convert get_ksm_page to return a folio
+Date: Wed, 20 Mar 2024 15:40:37 +0800
+Message-ID: <20240320074049.4130552-2-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240320074049.4130552-1-alexs@kernel.org>
+References: <20240320074049.4130552-1-alexs@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,29 +68,99 @@ Content-Transfer-Encoding: 8bit
 
 From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-This is the first part of page to folio transfer on KSM. Since only
-single page could be stored in KSM, we could safely transfer stable tree
-pages to folios. 
-This patchset could reduce ksm.o size to 2487136 from 2547952 bytes on
-latest akpm/mm-stable branch with CONFIG_DEBUG_VM enabled.
+The ksm only contains single pages, so use folio instead of pages to
+save a couple of compound_head calls.
 
+Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Chris Wright <chrisw@sous-sol.org>
+---
+ mm/ksm.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Alex Shi (tencent) (11):
-  mm/ksm: Convert get_ksm_page to return a folio
-  mm/ksm: use a folio in remove_rmap_item_from_tree
-  mm/ksm: use a folio in remove_stable_node
-  mm/ksm: use folio in stable_node_dup
-  mm/ksm: use a folio in scan_get_next_rmap_item func
-  mm/ksm: use folio in write_protect_page
-  mm/ksm: Convert chain series funcs to use folio
-  mm/ksm: Convert stable_tree_insert to use folio
-  mm/ksm: Convert stable_tree_search to use folio
-  mm/ksm: rename get_ksm_page to get_ksm_folio and return type
-  mm/ksm: return folio for chain series funcs
-
- mm/ksm.c | 244 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 122 insertions(+), 122 deletions(-)
-
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 8c001819cf10..fda291b054c2 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -915,10 +915,10 @@ enum get_ksm_page_flags {
+  * a page to put something that might look like our key in page->mapping.
+  * is on its way to being freed; but it is an anomaly to bear in mind.
+  */
+-static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
++static void *get_ksm_page(struct ksm_stable_node *stable_node,
+ 				 enum get_ksm_page_flags flags)
+ {
+-	struct page *page;
++	struct folio *folio;
+ 	void *expected_mapping;
+ 	unsigned long kpfn;
+ 
+@@ -926,8 +926,8 @@ static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
+ 					PAGE_MAPPING_KSM);
+ again:
+ 	kpfn = READ_ONCE(stable_node->kpfn); /* Address dependency. */
+-	page = pfn_to_page(kpfn);
+-	if (READ_ONCE(page->mapping) != expected_mapping)
++	folio = pfn_folio(kpfn);
++	if (READ_ONCE(folio->mapping) != expected_mapping)
+ 		goto stale;
+ 
+ 	/*
+@@ -940,7 +940,7 @@ static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
+ 	 * in folio_migrate_mapping(), it might still be our page,
+ 	 * in which case it's essential to keep the node.
+ 	 */
+-	while (!get_page_unless_zero(page)) {
++	while (!folio_try_get(folio)) {
+ 		/*
+ 		 * Another check for page->mapping != expected_mapping would
+ 		 * work here too.  We have chosen the !PageSwapCache test to
+@@ -949,32 +949,32 @@ static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
+ 		 * in the ref_freeze section of __remove_mapping(); but Anon
+ 		 * page->mapping reset to NULL later, in free_pages_prepare().
+ 		 */
+-		if (!PageSwapCache(page))
++		if (!folio_test_swapcache(folio))
+ 			goto stale;
+ 		cpu_relax();
+ 	}
+ 
+-	if (READ_ONCE(page->mapping) != expected_mapping) {
+-		put_page(page);
++	if (READ_ONCE(folio->mapping) != expected_mapping) {
++		folio_put(folio);
+ 		goto stale;
+ 	}
+ 
+ 	if (flags == GET_KSM_PAGE_TRYLOCK) {
+-		if (!trylock_page(page)) {
+-			put_page(page);
++		if (!folio_trylock(folio)) {
++			folio_put(folio);
+ 			return ERR_PTR(-EBUSY);
+ 		}
+ 	} else if (flags == GET_KSM_PAGE_LOCK)
+-		lock_page(page);
++		folio_lock(folio);
+ 
+ 	if (flags != GET_KSM_PAGE_NOLOCK) {
+-		if (READ_ONCE(page->mapping) != expected_mapping) {
+-			unlock_page(page);
+-			put_page(page);
++		if (READ_ONCE(folio->mapping) != expected_mapping) {
++			folio_unlock(folio);
++			folio_put(folio);
+ 			goto stale;
+ 		}
+ 	}
+-	return page;
++	return folio;
+ 
+ stale:
+ 	/*
 -- 
 2.43.0
 
