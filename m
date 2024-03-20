@@ -1,100 +1,165 @@
-Return-Path: <linux-kernel+bounces-109050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 637AF8813F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:59:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 077218813FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1ABB283668
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:59:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B0FD1C22F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0334C629;
-	Wed, 20 Mar 2024 14:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2EC44AEC9;
+	Wed, 20 Mar 2024 14:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EVVWGDMH"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Du4D/XRD"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BC94AEF0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476FB3E46D
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710946639; cv=none; b=rz1cx1Ej+x17z1ZGphQFZ5NDqFmErUiQrtwha8gZNUFhWaWUOMmWzyZJnXqy1aVqiqSUiVTTt918NqnstZrbzqfWBPWCY2awg7h9WzLXWO63m8G6Llc5O5hbr72+HufexjlXPeOVjrfVfP4OqyqOY01lJSJkovPZze/X92TXtho=
+	t=1710946797; cv=none; b=OiMEsKcrgMeKRvJ+aUJj41aFgiUY/gQqrcA9pXXDplxoZuenA8XTSBipoliv381FldkrYf+NuoX05ck6OdYW761tEvADA0i7jLrB7oZJDal4cJUexa6+qNkA4QOX6n0bJKEtz8OS8pdo6qQ72192TJbJ3xEVe3kjYaWmcC7+suY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710946639; c=relaxed/simple;
-	bh=jxz90Vwk/KeGSdB2hNfASqxAyf8cA8P0aDldD+//xo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PcIU1UXRid8DcUVFefm7s85LGnZZPjXAn0Fv90nNWig8dAWINOLws+hg5GTc1aQu0vYDLg388R6JwSpbyriJ8vhYwTSlQC0WUBNOR8GaxtnOCBXkwQoMjHXDCu0ZbVJIkY3EbaInoVBW3k0VfBG3hmiQ3L5bZqhYtnVi5HuqXO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EVVWGDMH; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Szd1k6J35ASlBha6qDCIcbBM34pxQ+1tlBnb0g8bakY=; b=EVVWGDMHntouYHloCKFTSu25qU
-	hLiwXHyWtSPq4aS6Hmp5aUxbm4R7R/zC730IRBc+tZMghRepCk60nZRJF2VJHmiPQy0U/7W4ocxyk
-	l8pUjKGok21IIOKXID0r4WffiNWPtA4rok3tt2oLwx3m+O2LFh4U1Xsg88EyudMLo5afiNoPG9CbX
-	sILZSufHCo1UOuSS0HlLZ/f5kk9sUQQwP6Bg4Ge6V7+EVra9CA1TQT58jW7W0Z0sAewpVghPvn7t4
-	gei9LJFhbncfTLcClsNHLTMe5rUC0woPmQDBiKsHZ0cTt+3IXeB4WnwjtWoxooWgsns1RAYbVQgAz
-	J+AejQGg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmxNL-00000004Wkk-04sO;
-	Wed, 20 Mar 2024 14:57:07 +0000
-Date: Wed, 20 Mar 2024 14:57:06 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: alexs@kernel.org
-Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Chris Wright <chrisw@sous-sol.org>,
-	kasong@tencent.com, Andrew Morton <akpm@linux-foundation.org>,
-	"open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/11] mm/ksm: use folio in write_protect_page
-Message-ID: <Zfr5QgvplFSury6o@casper.infradead.org>
-References: <20240320074049.4130552-1-alexs@kernel.org>
- <20240320074049.4130552-7-alexs@kernel.org>
+	s=arc-20240116; t=1710946797; c=relaxed/simple;
+	bh=f8Ql61R6HFww77P6kYzWw9QksZwLWDYVdIJJT/aYBV8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uxeMjoxNTJZv+2KwU4H5QOWoIrDz5SE+mFX7Ac9nmQEEBrc5xlvsx++iF3Oi09m5uI/srb8GwUsD1C5ieq6Bc9N9mr+msvhi4Si4EXUC52EBENH2+NG+oHgVP5Q/A3cr9Eq0sDTs95K68f3kUkzFq1XBgGhGxQVJ+aIQ97uSHXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Du4D/XRD; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c8d2e0e9cfso147858439f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:59:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710946793; x=1711551593; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uu3XrTQnPclK188rbkolek/Ountn/o+HfDpmNTirMmE=;
+        b=Du4D/XRDjmNzmL0ksykMcWP6cZZKd/0i9jZSlkQ6VZJHP72aGM+AJtRIy9rykeZ4NZ
+         /BZTPERX94PxoufN8Sssf8HVZzoyFgWkx9/CxZBS+dEvC0nQ66LV9Y8iCC9FTzu8hTQI
+         3Db2f/dMQhnlDt2PTpmej/MjFz9aVyAUJVddixqOKnETWTCzlLCzyBjKMuZTldgdOKDB
+         OUL3U3IvRJX50P9Rx/qIZQFhwMNbcVow0aN2wqg1rUVwVgyeuKQ4/DGiU7azKZAoklCH
+         FMeL0zLrKnNlaHL/szrpzsWTSzlnReFVxS6hX8X7TEnuxJnpvaZQVCbPk8EyQYGVCtRf
+         cmuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710946793; x=1711551593;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uu3XrTQnPclK188rbkolek/Ountn/o+HfDpmNTirMmE=;
+        b=FYmffmkJ6PQFXA1T/5mTTUtDBghUA6sKbrvBO61h/JXOaD2LgH04w7OIYH0m2Rnqui
+         ss/bfrqc6hJ+kxF9Bo0ZfMtP5x2dTfr69R+9zn7jaBGKubOpB/8eVPLi6pBpiCZH48yQ
+         CSM8QWJ+MzKRorIB5W5snhrb+J8Hw7MthSjE+k6Y+9Mei+LwMPTOv02xI/uMtle0Ir1Q
+         7/OWC4hf5zAPHGpJCdPjamT4A3OlfnyNWwCZXDpDgZMnkSJBzE3kv1dNTYtFC+ITsUTs
+         PG7jN3qM9PI07EpJs3jPhVFpe5rSKIuXmUqEqpglQUzSDRZpIwZnRmRIzxa8vLz4aVRf
+         QHzA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/7uoJieyeDiwGLCH+vZjaMiY/vGCgxNViiLJpviYbYfeIDru65lrajhzNKpFE4FFg9qOnlHLogASuYfwCYZvLlJ4WKPKv5rP2NOmq
+X-Gm-Message-State: AOJu0YzB4ZfoV1grPDC6yPEzjn4QCKShZdmdcUGUJaWtNvj9hdoYK2oN
+	3yv40d6z5IvzPQJm3vtwNFzGoF7gqkmWSMqzpJypSVBn5TpEulfZ00s1JmqkuLo=
+X-Google-Smtp-Source: AGHT+IHYs3xz0pWt4lkNcOSOAn3q+vYaOoPxrg3Wre2/j0EachnEDYKI6x8jefgAtnsQtnh4JD77YQ==
+X-Received: by 2002:a05:6e02:1a8a:b0:366:c779:f955 with SMTP id k10-20020a056e021a8a00b00366c779f955mr12702751ilv.17.1710946793353;
+        Wed, 20 Mar 2024 07:59:53 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id a9-20020a92d109000000b00366895ef367sm3491581ilb.38.2024.03.20.07.59.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 07:59:52 -0700 (PDT)
+Message-ID: <0a807505-221c-4aa9-ac63-c442417f3030@sifive.com>
+Date: Wed, 20 Mar 2024 09:59:51 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320074049.4130552-7-alexs@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] clk: starfive: jh7100: Use clk_hw for external input
+ clocks
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+ Hal Feng <hal.feng@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <beb746c7538a4ff720a25fd8f309da20d8d854ef.1710933713.git.geert@linux-m68k.org>
+ <47bddec7-953d-4ea4-84f1-b0dcf0641baa@sifive.com>
+ <CAMuHMdWP4R6Y6G0qzhMKJy1zJEeHE8a0XEK+Hs_D4wXB2i2BFA@mail.gmail.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAMuHMdWP4R6Y6G0qzhMKJy1zJEeHE8a0XEK+Hs_D4wXB2i2BFA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 20, 2024 at 03:40:42PM +0800, alexs@kernel.org wrote:
-> -static int write_protect_page(struct vm_area_struct *vma, struct page *page,
-> +static int write_protect_page(struct vm_area_struct *vma, struct folio *folio,
->  			      pte_t *orig_pte)
->  {
->  	struct mm_struct *mm = vma->vm_mm;
-> -	DEFINE_PAGE_VMA_WALK(pvmw, page, vma, 0, 0);
-> +	DEFINE_PAGE_VMA_WALK(pvmw, &folio->page, vma, 0, 0);
+Hi Geert,
 
-We have a DEFINE_FOLIO_VMA_WALK
+On 2024-03-20 9:28 AM, Geert Uytterhoeven wrote:
+> On Wed, Mar 20, 2024 at 2:31 PM Samuel Holland
+> <samuel.holland@sifive.com> wrote:
+>> On 2024-03-20 6:24 AM, Geert Uytterhoeven wrote:
+>>> The Starfive JH7100 clock driver does not use the DT "clocks" property
+>>> to find the external main input clock, but instead relies on the name of
+>>> the actual clock provider ("osc_sys").  This is fragile, and caused
+>>> breakage when sanitizing clock node names in DTS.
+>>>
+>>> Fix this by obtaining the external main input clock using
+>>> devm_clk_get(), and passing the returned clk_hw object to
+>>> devm_clk_hw_register_fixed_factor_parent_hw().
+>>>
+>>> While name-based look-up of the other external input clocks works as-is,
+>>> convert them to a similar clk_hw-based scheme to increase uniformity,
+>>> and to decrease the number of name-based look-ups.
+>>>
+>>> Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in node names")
+>>> Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator driver")
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> 
+>>> --- a/drivers/clk/starfive/clk-starfive-jh7100.c
+>>> +++ b/drivers/clk/starfive/clk-starfive-jh7100.c
+> 
+>>> @@ -284,8 +293,11 @@ static struct clk_hw *jh7100_clk_get(struct of_phandle_args *clkspec, void *data
+>>>
+>>>  static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
+>>>  {
+>>> +     static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
+>>> +             { "osc_sys", "osc_aud", "gmac_rmii_ref", "gmac_gr_mii_rxclk" };
+>>
+>> This should be __initconst. Otherwise:
+> 
+> With
+> 
+>     -       static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
+>     +       static const char *jh7100_ext_clk[EXT_NUM_CLKS] __initconst =
+> 
+> I get:
+> 
+>     drivers/clk/starfive/clk-starfive-jh7100.c: In function
+> ‘clk_starfive_jh7100_probe’:
+>     drivers/clk/starfive/clk-starfive-jh7100.c:35:37: error:
+> ‘jh7100_clk_data’ causes a section type conflict with ‘jh7100_ext_clk’
+>        35 | static const struct jh71x0_clk_data jh7100_clk_data[]
+> __initconst = {
+>           |                                     ^~~~~~~~~~~~~~~
+>     drivers/clk/starfive/clk-starfive-jh7100.c:296:28: note:
+> ‘jh7100_ext_clk’ was declared here
+>       296 |         static const char *jh7100_ext_clk[EXT_NUM_CLKS]
+> __initconst =
+>           |                            ^~~~~~~~~~~~~~
+> 
+> which is a bit strange...
+> What am I missing?
 
-> -	pvmw.address = page_address_in_vma(page, vma);
-> +	pvmw.address = page_address_in_vma(&folio->page, vma);
+I think you need to add another "const" covering the array itself:
 
-We don't yet have a folio_address_in_vma().  This needs more study,
-so I approve of how you've converted this line.
+	static const char *const jh7100_ext_clk[EXT_NUM_CLKS] __initconst =
 
-> -	BUG_ON(PageTransCompound(page));
+Regards,
+Samuel
 
-I might make this a VM_BUG_ON(folio_test_large(folio))
-
-> @@ -1505,7 +1503,7 @@ static int try_to_merge_one_page(struct vm_area_struct *vma,
->  	 * ptes are necessarily already write-protected.  But in either
->  	 * case, we need to lock and check page_count is not raised.
->  	 */
-> -	if (write_protect_page(vma, page, &orig_pte) == 0) {
-> +	if (write_protect_page(vma, (struct folio *)page, &orig_pte) == 0) {
-
-I don't love this cast.  I see why it's safe (called split_huge_page()
-above), but I'd rather see a call to page_folio() just to keep things
-tidy.
 
