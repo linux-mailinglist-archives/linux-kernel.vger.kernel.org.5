@@ -1,142 +1,73 @@
-Return-Path: <linux-kernel+bounces-108698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD093880EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:37:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CF1880EAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68654286C63
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:37:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 628EB2854DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6D73BBCF;
-	Wed, 20 Mar 2024 09:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342BB3BBCF;
+	Wed, 20 Mar 2024 09:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="goVwELML"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VOg3BRqK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE1D3C482
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:37:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787663BB4B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710927437; cv=none; b=U9Zw4rWXx3LNjiILd8B1YIyFD34BVfWvgwzcESSwKbuTr4+NBv6YRjmN9+cHcsV4VcZ5M/cmPsCxPnmiuT7YoETZ7fygH77YMymsex4i977/xZHJ/uhDuwy3X+homjXbvGSqWwH5Md9WmNgvneTujf1Y07wTJrqtUSwYx98W0fo=
+	t=1710927233; cv=none; b=CisGOb9HBxYqOzL/o8rrPPp4HhnVNxwv+PjE2r7JqSuIBcnFkAgAlOaf9ihqRJ2FuwmQs4g7/7MgP0DTM06sp/u66zdBefH9s2q/bfhomkGytrQNfvVRuTnBHs3WhVNGh7CzmNdRQZU9u7+vK1o0WvS9yBgRC4IHloZDv185uUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710927437; c=relaxed/simple;
-	bh=zWxVl/2X9kouqQYfMwhrr4bM2x0AklA0D8zhl+pUVCI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vDdzJfRLjvPbU3oUs28LFv03Rjq6ISL+tTaUDNHuExamhsuK4uIBfImdwy3nem6yyHYPaH4isEAIjQG49D+3dEbfH94sT/ldOP587E62xb6ls++EaeqN9qp1UYLl/1VGE0mvukPOTILkiWwocdoJAXnPdcnDE54aDWl8zdQVLRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=goVwELML; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=yggb
-	edAkgjOXyhmbcK7TprxYYbcJSubHV1Rs0FZhOlM=; b=goVwELMLPIHWhkE0TmwD
-	/ggjHBXT+DaUaQlHhUisIqOoysuMIxTUJfkO1iUhSimHelJ81t1fU98i9/I94IHC
-	1nNVL7i8uYXt+l6h528AS6zHcEzsY7RCwpVdSuik4bg2g4TqATCzbtpOFgwqNze1
-	TbsxOkYbM5BaA1cj+MRnKDZwGUUqUX00EZdBBfcsAOcrtTWVvL/yZaFezkIV3nHU
-	U1VnLryIKS7ur2kINEkzcUW4E418KUUiT/fJ07kYu1xAxuMKAWZ2Z+7jFQC7fGqT
-	0Cck8FAitqpn1AexRqvJLmazyyBWOhFL+JUEQM8RMtxFcoYzc9WhO7Kz0SrF5PQB
-	Cw==
-Received: (qmail 3157560 invoked from network); 20 Mar 2024 10:30:29 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Mar 2024 10:30:29 +0100
-X-UD-Smtp-Session: l3s3148p1@K7PSPRQUXuxehhYE
-Date: Wed, 20 Mar 2024 10:30:28 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: i2c: renesas,riic: Document
- R9A09G057 support
-Message-ID: <ZfqstNocte2wV_ad@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Rob Herring <robh@kernel.org>
-References: <20240319132503.80628-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240319132503.80628-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	s=arc-20240116; t=1710927233; c=relaxed/simple;
+	bh=IE+o1l0WGWEttVDnKe7FjFvkcYXmDz+elWeacfnwMZU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gDT5dqYesVIKy8GWUjefDGXq5gOMOvWuRCd4wH33fAy/+GnKAKip2SaCyIxblT3m4x4AEFJXxgh7AJF9vX8us9Ngm7dDuUNxoNgnJH0y+2g21smWZ5GGe2UHazp+D+VgA4C2toY2A3nJqLnRQQD96U7379fZbZkRFqj9vJ8btE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VOg3BRqK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55712C433C7;
+	Wed, 20 Mar 2024 09:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710927233;
+	bh=IE+o1l0WGWEttVDnKe7FjFvkcYXmDz+elWeacfnwMZU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VOg3BRqKWZLSqHtq60RdJXWRP4F7nfsNUtfrDO3sbq5vIfcRIK88XmEZsS5EZnbvR
+	 Zrmwmw449xp4CrA+YFDAo85FUcRhLcFY2Z4jaaU6BtrNtwNcPsDSaN8SeZewxtI5c6
+	 OTjtia7ZVRaPyjYqwAIngNRe+156MfJLEyVBLbcpzoBKpmuosXzFr0Mli8+jTjwFjR
+	 6s3ZnETQ8ZgN99U4/ghylzk9NpdAmbzjxlzzq/aGEi5gTfAmGI6WfungbC6a1Vv5tY
+	 rZLZQQK/XoasuSaZD/00B1kNswaaNYN8qs/l/b4C4FSLDhUQ4X4rjHX+WvsoHvA8lk
+	 2P+kYv+clO1QQ==
+Message-ID: <ee24b313-a168-471e-b60f-1404c69e61a7@kernel.org>
+Date: Wed, 20 Mar 2024 17:33:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="L0v9WIsIV3zpzm6c"
-Content-Disposition: inline
-In-Reply-To: <20240319132503.80628-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] f2fs: add REQ_TIME time update for some user behaviors
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
+References: <1710915736-31823-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <1710915736-31823-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2024/3/20 14:22, Zhiguo Niu wrote:
+> some user behaviors requested filesystem operations, which
+> will cause filesystem not idle.
+> Meanwhile adjust some f2fs_update_time(REQ_TIME) positions.
+> 
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
 
---L0v9WIsIV3zpzm6c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-On Tue, Mar 19, 2024 at 01:25:00PM +0000, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->=20
-> Document support for the I2C Bus Interface (RIIC) available in the
-> Renesas RZ/V2H(P) (R9A09G057) SoC.
->=20
-> The RIIC interface in the Renesas RZ/V2H(P) differs from RZ/A in a
-> couple of ways:
-> - Register offsets for the RZ/V2H(P) SoC differ from those of the
->   RZ/A SoC.
-> - RZ/V2H register access is limited to 8-bit, whereas RZ/A supports
->   8/16/32-bit.
-> - RZ/V2H has bit differences in the slave address register.
->=20
-> To accommodate these differences, a new compatible string
-> "renesas,riic-r9a09g057" is added.
->=20
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Rob Herring <robh@kernel.org>
-
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-
---L0v9WIsIV3zpzm6c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmX6rLQACgkQFA3kzBSg
-KbbPwA//dm+xf9wd49JEwk0OxmGbcznYn0957HJ0Y5pH550IwSYDIoag7DN49XvX
-BGDPUUZ/ehUfllSkwy9sFCYZBIUSe9XRHhLv6r29s+akehaH1Mn4gN4myW7rtD2l
-MEy34qNjWCW9xFkamgtEnwOVZnZVAQ9jOZlquZ2G6f89iFSEEM3txXMQrm/vIfgz
-ompBv6spg/hSeihwRgyHrOwted6LGORikWwcCK5C3q//xA0FvTuXIwgqlkuaX/rP
-TB395nk2keIYU0fUumrH/Mn8+4iYylM98Nv0pqCRtP9CbH8brHedP1LR3Sh9dJGv
-ys9dIMTTjqSZQa2CI/A3U97TaDKCh7t1MOKQJV2k1By9P3AkZOxRAwU2fWValbd7
-KHADKNl9vf47XcPI7lo4M/GH/D3XKmmishCVhdMJ2AFeoyypuixZB00qw66Fz8uh
-DsHCm1kRDGM4dBA7xwAkzjwsKelabSngAPMzw4M1PtxHwXbIIdXrfcEqwMVBXQy8
-qV1e+0NHx8OOMqIKKqpGyhUwstX38D+kwPTCgoj1J9dSo2LolwfES9RifXhmbQVV
-tPpyZ54RU4O7Hqvg3zujJVRNQm4cbAemBbHOYT/MpO7lbtQxvZ/W98y+MwoxPQ4v
-04VpxsmuwatvBYjBjutnR/wNSWkp/xC2RRr4KlLH5wS4qBYBX2Y=
-=VMFl
------END PGP SIGNATURE-----
-
---L0v9WIsIV3zpzm6c--
+Thanks,
 
