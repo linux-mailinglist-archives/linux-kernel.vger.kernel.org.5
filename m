@@ -1,166 +1,154 @@
-Return-Path: <linux-kernel+bounces-108403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E31880A0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:01:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6A7880A11
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11F80284B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:01:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EB75B21F9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF0711712;
-	Wed, 20 Mar 2024 03:01:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E29B11182;
+	Wed, 20 Mar 2024 03:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMpbKCiy"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m9MrosA2"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B9E1364;
-	Wed, 20 Mar 2024 03:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324D7101EC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710903694; cv=none; b=mdHw0MW3atEFZ4re8HWYV7Q5lEP5wIGx1Gbc1OfW7X1e84nUEPLXq4s5gVvU08t0TinnqZoecjyYTcO+GE2wZ35DgFpZCmsl5JMr+opXVrAKz2fspsBPvdoZmznVMSy3GAardHMk+pxovcJcYRKA2CXIWPXptvL2YOf8J0jkys0=
+	t=1710904380; cv=none; b=pJB2Q+lcsAZ3FLO3AF/je+rr9meiS9xa0VuazoBwfl+NQ+TxRpA5pFmq1ONQAXgORtEjR+Ta4Q7ntHB2NlJps5wvcWvkMyWlSn7RPCji+hp9pOBU7ojhWvmLxTzt+Y5refPprPJgbqvFr2KgGP6AzBE/3HfwZ493bLiL6LO/SCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710903694; c=relaxed/simple;
-	bh=TyLpdxJTBr3425nDHzYBQd+Ij8cler9kgdT3/QEAlqo=;
+	s=arc-20240116; t=1710904380; c=relaxed/simple;
+	bh=MkTo9AgYFtSpar7DGnEwJDDLlqzlsy4tkwWpmW8VVE4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NYaeNeY47CNKzkTVTkyLSPojs/6dxfrtdQJOvSSdeIEg/3eW7XvbfkV16fvwi72vrC5AwNdnfvJ3qar6GIVpUH8crdfjYn7oPluBAZbEmZ0p+/krCCPInp2AgsZq+YDayTmP0Rq95aZXA/S9Wy4PaOMQsEB+bghV1Y+hjxMcMAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMpbKCiy; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-29d51cdde7eso1914173a91.0;
-        Tue, 19 Mar 2024 20:01:32 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=I41Yi+A/gHA3nY+LellP8XF+rptbKD9nV0A0IbgU26nNdS5cCOtm9yf5B/V8vkGj0hZGFXBmV6fP/tru8v1xkQuOhrH/l3fag1RLNXzZBpDpaipALY1HiM5PaPll+QSuyNugJreUY8Ka+osF63RXwKCMSkWoOIY+ceRgQ88gJ28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m9MrosA2; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dca3951ad9so41905495ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:12:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710903692; x=1711508492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=35rpOMt9N0PQI1HtZYax5BoW4EBNkuuGWd0M4cm/nKw=;
-        b=gMpbKCiyshPdSSVFfx2n678ICLyt+DPM4PBWIXRwXcOxTaBuGBg/y+2h05Nqr3H/IG
-         yGFSrb7oE/8IWe6/pCXxkqAynVxXrbo+vWUPf4/vysVZxwHsq17IjAkBJXcw5/Hu/3SD
-         A2Bd2q32AntyK34r9TUBZ7KgK12QMcgsNZUmhaeF3Km5SdDNgJz7pseaaWrjTlHk7WyR
-         xG4sAGh+85DEVl4psS+HTfXbNWYOsYuNdJZAU1b/jfUDKxw4VByfDU/sTWeaBk+440B6
-         SVlHNs1uN7g1LBV5Y8BMiNJy8e0M9xHK0hmev782+HPveB3X+Y8KSiKVqkgV8w39veeZ
-         vlxg==
+        d=linaro.org; s=google; t=1710904378; x=1711509178; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/dBjb6ZzHDt5IdrLC5Pn/vI9AYnLeEEBZwmmyh0/uJc=;
+        b=m9MrosA2gLEmG56Rq3LY0DT0cMT3O/+zaYSagzTW7t964JgI2GFBivV3smVlnplLkB
+         MQZeUPd/b/VGgf4pa7V4yrfGfYXta7CNOzhvURD04+Rrui4Z/IWWtg31ngQ7hpXC8IFd
+         EKRUeIjzsuBpqWJW8P3f+WHnczgvl2Vr7y4flp3Qk024QUmqYyXNHa4/+AME5F/4JgAd
+         3lGbgf3QauyE0e5hflNjf66kRmwif+ODWw+aWSB5imW9OawuLdGAT9Y0ucSNjn+lKffu
+         zSeI5TbmfKaDOjjlKnUJsjl04p98ps2uac/z4VbFYq4FXscfrgxtQPj7J/3FcQcTeqe3
+         5Cmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710903692; x=1711508492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=35rpOMt9N0PQI1HtZYax5BoW4EBNkuuGWd0M4cm/nKw=;
-        b=maaDFC4XzeW54jRAfzsId5P4rbFQ/xC69HMdi++lF3wMQvTlPQvc40HqQUGBLvfDHd
-         6PvmkMrXla2bh4UMV3Sqm4hWthgcN4nt4UeWjuP/uynpgeJxhf335ao15rRQU73Mkwbl
-         DcKhsah1N7hz45ZaTNbm83eBNr0IbY5Wj0xpTA/HENfC9i6O8qYzt+vv/OqZynjS3rrn
-         1d6Hj/UrIxhryIjn5c6EowLtryjljBFa55STScqFiQq7P1HNnZ7dGCS7fYY9TCS/OmAL
-         SVq34w/2o9GIHxmhansoq6aQFkHmy2hqRP7pyp47K8WAW9foy12BLO9NDPzjM6YqCITb
-         xYRA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6rVn9uCwiLKEK8zODdaN/yV1P/WUJEim1x1DVVls0So1BA5swKjiJ9umR+RSotSnrhEcWRFk6QLMtB4P+WTO3hO7B9QxFQdXMTv+PC4BmnOMfq3b37QKCwKS9mrO/aJR/pHRpiVN36BMnvVPgVvVYF+6Am0dYtjIva0nb2mWXtNkeLF4pJm26OZtt4MDiM4JP9Q5ZL8epI5O1z/TzNdkf4tM/00K5ZnrSYIWk
-X-Gm-Message-State: AOJu0YzE3To3T9KP4y9W19Q/KYLqGGaAbODeQG6fQVXWAdf7zQlzzyQu
-	EFNgrylhaZVSHF+hg0STer5ta0MS/oElx3si5xCWlUdoDyKFLF+H
-X-Google-Smtp-Source: AGHT+IE2pZ+9Hs3pLB7GNfVXiBAJR9GLVUQZAmgXsl3JRbC6bSvpked11TQIwgYq2A8lQ95xjs/DLg==
-X-Received: by 2002:a05:6a20:7f8f:b0:1a3:4721:ded3 with SMTP id d15-20020a056a207f8f00b001a34721ded3mr4617995pzj.1.1710903692352;
-        Tue, 19 Mar 2024 20:01:32 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id w2-20020a1709026f0200b001db2b8b2da7sm12206955plk.122.2024.03.19.20.01.28
+        d=1e100.net; s=20230601; t=1710904378; x=1711509178;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/dBjb6ZzHDt5IdrLC5Pn/vI9AYnLeEEBZwmmyh0/uJc=;
+        b=Jbw79RKifdLtEcFJOF5MvyOGkjKKv0hE3vN+NO8CJ1DC4QeQPtJrouPl2feVTBE6X6
+         BS+ZZ1VcqCQjweTQicH8Fp7qmIM7w6qoJP9yfJyJ73jqFym0YIaIby4dGVeiZthCL8Kd
+         S169MIMFpOwOjcOiYVVr9oddk4/kPMQdLaAHBYW90CXT5VzmQSDM/cBpoG+LZSVzOQcG
+         /TcM8niMIko4OvFt/4yOAaWTKlj+28GQlgBOdnCEYJ7tXASQ+XARltIJQmj9k1Q4Njmu
+         s213YHVNGkf8GyQaPXoriA5VfTL9HCCLuMujMelW7Qp6g7w9w+mRjJMhDXu5mbhBaBL4
+         mEVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXkgD0GChgh0ADLCeuwV9kbchY09eAbaNEjpOUaL/ZJjakjYFwI0dTFOHidP1cbECUaBYmDq3jdwL+x9Yo+27hdysxoDrYjqGuGHjqz
+X-Gm-Message-State: AOJu0YyxB9Najq03Nu/Am0W8MUUlU/0bQX9ef9X4xVdocnJjqF+uUrd3
+	Vk3z0VEnKdjkl/5T2DM+soYSdGxEASz37LOlRjfi05LO0/hxhllf4ghZzlp/wyI=
+X-Google-Smtp-Source: AGHT+IGCIhNUzarpXf/iw4svQe5Q68IZUZa/AEwi23yimLrE9yA4iG8dBuEZUgBYo+cfmBQ6tE12uQ==
+X-Received: by 2002:a17:902:e94f:b0:1dc:7bc:d025 with SMTP id b15-20020a170902e94f00b001dc07bcd025mr5783515pll.4.1710904378250;
+        Tue, 19 Mar 2024 20:12:58 -0700 (PDT)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id h1-20020a170902748100b001ddb505d50asm12270883pll.244.2024.03.19.20.12.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 20:01:31 -0700 (PDT)
-Date: Wed, 20 Mar 2024 11:01:27 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org,
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] treewide: Refactor heap related implementation
-Message-ID: <ZfpRh1pcab4PFLiw@visitorckw-System-Product-Name>
-References: <20240319180005.246930-1-visitorckw@gmail.com>
- <4t6kkvswhacphbjloh3fps7twqp5d3wgxv7yrkvthb5u3uzaoe@6pf7mnvsv3rm>
+        Tue, 19 Mar 2024 20:12:57 -0700 (PDT)
+Date: Wed, 20 Mar 2024 08:42:53 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Harald Mommer <harald.mommer@opensynergy.com>
+Cc: Haixu Cui <quic_haixcui@quicinc.com>, Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_ztu@quicinc.com, Matti Moell <Matti.Moell@opensynergy.com>,
+	Mikhail Golubev <Mikhail.Golubev@opensynergy.com>
+Subject: Re: [PATCH v2 3/3] virtio-spi: Add virtio SPI driver.
+Message-ID: <20240320031253.eutoon7l7nkjehft@vireshk-i7>
+References: <20240304154342.44021-1-Harald.Mommer@opensynergy.com>
+ <20240304154342.44021-4-Harald.Mommer@opensynergy.com>
+ <99afc631-c02b-42da-a8d4-87c65087f390@quicinc.com>
+ <5dedcd26-ed59-415f-b978-87a546a0816d@opensynergy.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <4t6kkvswhacphbjloh3fps7twqp5d3wgxv7yrkvthb5u3uzaoe@6pf7mnvsv3rm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5dedcd26-ed59-415f-b978-87a546a0816d@opensynergy.com>
 
-On Tue, Mar 19, 2024 at 06:12:17PM -0400, Kent Overstreet wrote:
-> On Wed, Mar 20, 2024 at 01:59:52AM +0800, Kuan-Wei Chiu wrote:
-> > Hello,
+Hi Harald,
+
+On 19-03-24, 16:05, Harald Mommer wrote:
+> On 18.03.24 10:39, Haixu Cui wrote:
+> > On 3/4/2024 11:43 PM, Harald Mommer wrote:
+> > > +static int virtio_spi_probe(struct virtio_device *vdev)
+> > > +{
+> > > +    struct device_node *np = vdev->dev.parent->of_node;
+> > > +    struct virtio_spi_priv *priv;
+> > > +    struct spi_controller *ctrl;
+> > > +    int err;
+> > > +    u32 bus_num;
+> > > +    u16 csi;
+> > > +
+> > > +    ctrl = devm_spi_alloc_host(&vdev->dev, sizeof(*priv));
+> > > +    if (!ctrl)
+> > > +        return -ENOMEM;
+> > > +
+> > > +    priv = spi_controller_get_devdata(ctrl);
+> > > +    priv->vdev = vdev;
+> > > +    vdev->priv = priv;
+> > > +    dev_set_drvdata(&vdev->dev, ctrl);
 > > 
-> > This patch series focuses on several adjustments related to heap
-> > implementation. Firstly, a type-safe interface has been added to the
-> > min_heap, along with the introduction of several new functions to
-> > enhance its functionality. Additionally, the heap implementation for
-> > bcache and bcachefs has been replaced with the generic min_heap
-> > implementation from include/linux. Furthermore, several typos have been
-> > corrected.
-> > 
-> > Previous discussion with Kent Overstreet:
-> > https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
+> >     ctrl->dev.of_node is not set, so the child node cannot be parsed. I
+> > would say, it's necessary to support the virtio spi device node in the
+> > format:
 > 
-> Hey, thanks for doing this. Can you post a git repo link? I'll point my
-> CI at it.
->
-Here is the link to my GitHub repository:
-https://github.com/visitorckw/linux.git
+> 
+> What you most probably want to have here is
+> 
+>   ctrl->dev.of_node = np;
 
-The patch series can be found on the 'refactor-heap' branch.
+Looking at how i2c-virtio does it, it should be tied to the device itself
+instead of its parent:
 
-Regards,
-Kuan-Wei
+ctrl->dev.of_node = vdev->dev.of_node;
 
+> >     virtio-spi@4b013000 {
+> >         compatible = "virtio,mmio";
+> >         reg = <0x4b013000 0x1000>;
+> >         interrupts = <0 497 4>;
 > > 
-> > Regards,
-> > Kuan-Wei
+> >         spi {
+> >             compatible = "virtio,device2d";
+> >             #address-cells = <1>;
+> >             #size-cells = <0>;
 > > 
-> > Kuan-Wei Chiu (13):
-> >   perf/core: Fix several typos
-> >   bcache: Fix typo
-> >   bcachefs: Fix typo
-> >   lib min_heap: Add type safe interface
-> >   lib min_heap: Add min_heap_init()
-> >   lib min_heap: Add min_heap_peek()
-> >   lib min_heap: Add min_heap_full()
-> >   lib min_heap: Add args for min_heap_callbacks
-> >   lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
-> >     values
-> >   bcache: Remove heap-related macros and switch to generic min_heap
-> >   lib min_heap: Add min_heap_del()
-> >   lib min_heap: Add min_heap_sift_up()
-> >   bcachefs: Remove heap-related macros and switch to generic min_heap
-> > 
-> >  drivers/md/bcache/alloc.c      |  66 ++++++++----
-> >  drivers/md/bcache/bcache.h     |   2 +-
-> >  drivers/md/bcache/bset.c       |  73 ++++++++-----
-> >  drivers/md/bcache/bset.h       |  38 ++++---
-> >  drivers/md/bcache/btree.c      |  27 ++++-
-> >  drivers/md/bcache/extents.c    |  44 ++++----
-> >  drivers/md/bcache/movinggc.c   |  40 ++++++--
-> >  drivers/md/bcache/super.c      |  16 +++
-> >  drivers/md/bcache/sysfs.c      |   3 +
-> >  drivers/md/bcache/util.c       |   2 +-
-> >  drivers/md/bcache/util.h       |  81 +--------------
-> >  drivers/md/dm-vdo/repair.c     |  29 +++---
-> >  drivers/md/dm-vdo/slab-depot.c |  21 ++--
-> >  fs/bcachefs/clock.c            |  53 +++++++---
-> >  fs/bcachefs/clock_types.h      |   2 +-
-> >  fs/bcachefs/ec.c               |  99 +++++++++++-------
-> >  fs/bcachefs/ec_types.h         |   2 +-
-> >  fs/bcachefs/util.c             |   2 +-
-> >  fs/bcachefs/util.h             | 127 ++---------------------
-> >  include/linux/min_heap.h       | 180 ++++++++++++++++++++++++++-------
-> >  kernel/events/core.c           |  53 +++++-----
-> >  lib/test_min_heap.c            |  75 +++++++-------
-> >  22 files changed, 565 insertions(+), 470 deletions(-)
-> > 
-> > -- 
-> > 2.34.1
-> > 
+> >             spidev {
+> >                 compatible = "xxx";
+> >                 reg = <0>;
+> >                 spi-max-frequency = <100000>;
+> >             };
+> >         };
+> >     };
+
+Right, some work was done in the past to standardize these compatibles:
+
+$ git log -p --stat --reverse 0d8c9e7d4b40..694a1116b405
+
+-- 
+viresh
 
