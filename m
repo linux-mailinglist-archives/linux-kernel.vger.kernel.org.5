@@ -1,94 +1,239 @@
-Return-Path: <linux-kernel+bounces-108855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B4C8810F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 980638810F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:29:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9162CB20EA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:29:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B594A1C22868
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234B03DB8C;
-	Wed, 20 Mar 2024 11:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B324B3D57E;
+	Wed, 20 Mar 2024 11:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A5Ce6O1t";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6AbpP4Vo"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OM1DZP7l"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A363D541;
-	Wed, 20 Mar 2024 11:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D07B3BBE7
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710934151; cv=none; b=B/7C4mGHtuWVKt2NlMNKeqsaTjGdY0SRa+7CBHEHpYCgeKiQzr1z/bqXqBXE9s6LuTcthkJOIW5ZU9SLed1QzIwss31Nve8jMUmXyebTEJigJvMkovopxefFrwSUebe0pPPx9a85jZSc8ppyKxqtn4IObehKawbaXACJJRTYpcE=
+	t=1710934179; cv=none; b=FB2D0wvi7UBuRY1djJ8+EUndUwwSh7r2Eu6LVCbNkSYZ2rnEO0Z3U48aYgHNJsDEcXpj6kuO1rrQW8z+GZpMCITHBXp35F7fpYE7ZcESX6cpZ2QTnvKc9jhyZCSkUSK3dCByFOY0cd0d7Hk2KlAYFJpUYIRUcerdKy5AdS18E2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710934151; c=relaxed/simple;
-	bh=M4qZDfeqdgUN7WwW07gOdPYTQ8hzgSGfC9I8vI9ySrQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Pbhkvagy/oJmYgSZmasExGQ9maLGZ8bcSz4GP2dDbaGsnUoRq7Ge1pmjweSXeG0+sV3Er0Gu/Lu2LOkcuewY1crcqFe26by1hU2soyAG5cEtSEw/dS21c965fJtp5A5XGI39XGaco6P8Ql7PN1ypaJpPitK7fL2ZPSNwipQhdbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A5Ce6O1t; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6AbpP4Vo; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710934148;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M4qZDfeqdgUN7WwW07gOdPYTQ8hzgSGfC9I8vI9ySrQ=;
-	b=A5Ce6O1tFxISLyNmqEAZsC9uJLadVd1q3mUS3sjqQ4msM7jFzzl79ffArFw+5Hvx0kNO4o
-	QPnJExm9F+pf/ZrruBvzkEquNVkyZyRDxIecapw+UAPWH/+V2hQpvbUDKl15gbqoABhlLq
-	+hzuxBEzbsujR4jnk2Xfpjk2IIDQrFPFhY3aJ/ktQsASuYS0VGsAHjQEG679MbXA6/b4xn
-	9tIuH8P88GR6nzKxlWTRKd7EA/eXU5YGpVs/to5qzFuAqQxJsrrbPRHiNqjnMjs5T9vJ5b
-	suCc3kbrUVmlBwGHnJLosTvbfQ780/i9scNqwwYj7kDawAUignheWsMht8MaTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710934148;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M4qZDfeqdgUN7WwW07gOdPYTQ8hzgSGfC9I8vI9ySrQ=;
-	b=6AbpP4VorMVdt2xHPU/GrukrmO9bQSz9DqdX8PyH0teQhWqnYHp1IKhd40ae9cWC2jPdLz
-	UraY84+UL0kipbCg==
-To: lakshmi.sowjanya.d@intel.com, jstultz@google.com, giometti@enneenne.com,
- corbet@lwn.net, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
- eddie.dong@intel.com, christopher.s.hall@intel.com,
- jesse.brandeburg@intel.com, davem@davemloft.net,
- alexandre.torgue@foss.st.com, joabreu@synopsys.com,
- mcoquelin.stm32@gmail.com, perex@perex.cz, linux-sound@vger.kernel.org,
- anthony.l.nguyen@intel.com, peter.hilber@opensynergy.com,
- pandith.n@intel.com, mallikarjunappa.sangannavar@intel.com,
- subramanian.mohan@intel.com, basavaraj.goudar@intel.com,
- thejesh.reddy.t.r@intel.com, lakshmi.sowjanya.d@intel.com
-Subject: Re: [PATCH v5 02/11] timekeeping: Add function to convert realtime
- to base clock
-In-Reply-To: <20240319130547.4195-3-lakshmi.sowjanya.d@intel.com>
-References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
- <20240319130547.4195-3-lakshmi.sowjanya.d@intel.com>
-Date: Wed, 20 Mar 2024 12:29:07 +0100
-Message-ID: <8734sli1ks.ffs@tglx>
+	s=arc-20240116; t=1710934179; c=relaxed/simple;
+	bh=OcApL4d7Arq8AjBdKl4uQc/K2QcIn0+ghw4HCVX9avY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OinytdB7i1s4o/6bP/9frD0nokTh8vRbs299zwc+ndpZ0g6V3raEo5L8p5pikd8PfUqetqZfhE50ebnoqmydoTBWvgkXN/S4K6zdEe/30EI4bABwmgu71z4vpFuv+6aPcheha/kzDNljQ+Nki8fxB7apa7KRw9q1nBSWb7vgb6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OM1DZP7l; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dddad37712so62419195ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 04:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710934177; x=1711538977; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=foBbDOK3qU2e/ouxw1I330bhNf/1gu0pIPvAkw9hmpU=;
+        b=OM1DZP7l8KBZ3PAV6zJogydlPftdYiiZfXc+G4Hszc2o4tqepqPGkqjd5tOaxWkhyG
+         5mNbYhbpaSDwHlsTRA7Vg8PzqMz988qtZ4Z3k5H9zaBwBGm7DzDakqoFqWmCVSFPH4X4
+         D+/yw0K66NfW+7pXvbmhFiXGk/GdXVXFqZUEKGDNq1yiJ24L7fMq5Q3ZooumgnttMffX
+         fPrJ5dgeL86Pn/iM5V8oO5RKDjnseM17mriNBMuqKYgKOSVMEb7je9oFXgUHPyA57CNW
+         0nLwknez0vtQ4lmPQZAH3/k1UVx1AyqxOsA6c16puVlLUQNwIKjTWVtWuDo/xGdVH3ZX
+         KeAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710934177; x=1711538977;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=foBbDOK3qU2e/ouxw1I330bhNf/1gu0pIPvAkw9hmpU=;
+        b=tBHjFuRsJjU7ilzfcvNkcPvan125oPrT/vO1/8/OLUE6SbHNxWHXeTmopNQ/z1CTjY
+         WCPxhwAQ1qo9Y4asSaBtvXVqid3NOZXAZOedwn+xW9K5SYRfyFg1J1aJOveSQpyHA/yz
+         yRkHo1abzTdpvLBpEGDOhvR5Lcwerq31vA+IRiBnqE6IuSI72hsjLXS7URXuJlwLQBtj
+         13vvslQnldN+jq7K8N0ZNIH2I3GP44gcAerVS7SV1NqCmn9071W0vcXMkfguUazO2A8X
+         +xmNnxtRS7m155jopSIW2iPFTBGbnt7cQux2L3rRT8NBdEahACU+PiZFYCKOIMYe95vM
+         HwIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNN65m0UhhokNoPt4b22vB4x6YS4UwMbnpW1+mEFZuPXQfH+MBNsfVoBtJ45S/+akJkVxjUMX3UpIiOu92gJU4cbptVqebgmeqVr4d
+X-Gm-Message-State: AOJu0Yyf2eyISFZRqzTLueR5Brt3heRGsIdhkizqc3RVALSdhxgSvz4P
+	QYGdlmrnRCdB0poC9Ht45+o52QDLVACXHI43sy8OnoKeFSJeVAe7PYPVJIKJ+Q==
+X-Google-Smtp-Source: AGHT+IE8V8wF2FV30LEbxFAaWf+vmCpGAEhYR9/Iz4zaW4K9EGVe0j06LoPmSTUT641/SPg96WrTtw==
+X-Received: by 2002:a17:903:187:b0:1de:de58:2a55 with SMTP id z7-20020a170903018700b001dede582a55mr22557653plg.26.1710934177044;
+        Wed, 20 Mar 2024 04:29:37 -0700 (PDT)
+Received: from thinkpad ([117.207.18.167])
+        by smtp.gmail.com with ESMTPSA id p20-20020a170902ead400b001db9cb62f7bsm13282507pld.153.2024.03.20.04.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 04:29:36 -0700 (PDT)
+Date: Wed, 20 Mar 2024 16:59:28 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Kishon Vijay Abraham I <kvijayab@amd.com>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: endpoint: Migrate to Genalloc framework for
+ outbound window memory allocation
+Message-ID: <20240320112928.GB2525@thinkpad>
+References: <20240317-pci-ep-genalloc-v1-1-70fe52a3b9be@linaro.org>
+ <37cfa724-f9ed-41ef-bad4-f00246a4ee8a@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <37cfa724-f9ed-41ef-bad4-f00246a4ee8a@amd.com>
 
-On Tue, Mar 19 2024 at 18:35, lakshmi.sowjanya.d@intel.com wrote:
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->
-> PPS(Pulse Per Second) generates signals in realtime, but Timed IO
-> hardware understands time in base clock reference. Add an interface,
-> ktime_real_to_base_clock() to convert realtime to base clock.
->
-> Convert the base clock to the system clock using convert_base_to_cs() in
-> get_device_system_crosststamp().
+On Wed, Mar 20, 2024 at 03:26:41PM +0530, Kishon Vijay Abraham I wrote:
+> Hi Mani,
+> 
+> On 3/17/2024 11:39 AM, Manivannan Sadhasivam wrote:
+> > As proposed during the last year 'PCI Endpoint Subsystem Open Items
+> > Discussion' of Linux Plumbers conference [1], let's migrate to Genalloc
+> > framework for managing the endpoint outbound window memory allocation.
+> > 
+> > PCI Endpoint subsystem is using a custom memory allocator in pci-epc-mem
+> > driver from the start for managing the memory required to map the host
+> > address space (outbound) in endpoint. Even though it works well, it
+> > completely defeats the purpose of the 'Genalloc framework', a general
+> > purpose memory allocator framework created to avoid various custom memory
+> > allocators in the kernel.
+> > 
+> > The migration to Genalloc framework is done is such a way that the existing
+> > API semantics are preserved. So that the callers of the EPC mem APIs do not
+> > need any modification (apart from the pcie-designware-epc driver that
+> > queries page size).
+> > 
+> > Internally, the EPC mem driver now uses Genalloc framework's
+> > 'gen_pool_first_fit_order_align' algorithm that aligns the allocated memory
+> > based on the requested size as like the previous allocator. And the
+> > page size passed during pci_epc_mem_init() API is used as the minimum order
+> > for the memory allocations.
+> > 
+> > During the migration, 'struct pci_epc_mem' is removed as it is seems
+> > redundant and the existing 'struct pci_epc_mem_window' in 'struct pci_epc'
+> > is now used to hold the address windows of the endpoint controller.
+> > 
+> > [1] https://lpc.events/event/17/contributions/1419/
+> 
+> Thank you for working on this!
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >   drivers/pci/controller/dwc/pcie-designware-ep.c |  14 +-
+> >   drivers/pci/endpoint/pci-epc-mem.c              | 182 +++++++++---------------
+> >   include/linux/pci-epc.h                         |  25 +---
+> >   3 files changed, 81 insertions(+), 140 deletions(-)
+> > 
+> .
+> .
+> > diff --git a/drivers/pci/endpoint/pci-epc-mem.c b/drivers/pci/endpoint/pci-epc-mem.c
+> > index a9c028f58da1..f9e6e1a6aeaa 100644
+> > --- a/drivers/pci/endpoint/pci-epc-mem.c
+> > +++ b/drivers/pci/endpoint/pci-epc-mem.c
+> > @@ -4,37 +4,18 @@
+> >    *
+> >    * Copyright (C) 2017 Texas Instruments
+> >    * Author: Kishon Vijay Abraham I <kishon@ti.com>
+> > + *
+> > + * Copyright (C) 2024 Linaro Ltd.
+> > + * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> >    */
+> > +#include <linux/genalloc.h>
+> >   #include <linux/io.h>
+> >   #include <linux/module.h>
+> >   #include <linux/slab.h>
+> >   #include <linux/pci-epc.h>
+> > -/**
+> > - * pci_epc_mem_get_order() - determine the allocation order of a memory size
+> > - * @mem: address space of the endpoint controller
+> > - * @size: the size for which to get the order
+> > - *
+> > - * Reimplement get_order() for mem->page_size since the generic get_order
+> > - * always gets order with a constant PAGE_SIZE.
+> > - */
+> > -static int pci_epc_mem_get_order(struct pci_epc_mem *mem, size_t size)
+> > -{
+> > -	int order;
+> > -	unsigned int page_shift = ilog2(mem->window.page_size);
+> > -
+> > -	size--;
+> > -	size >>= page_shift;
+> > -#if BITS_PER_LONG == 32
+> > -	order = fls(size);
+> > -#else
+> > -	order = fls64(size);
+> > -#endif
+> > -	return order;
+> > -}
+> > -
+> >   /**
+> >    * pci_epc_multi_mem_init() - initialize the pci_epc_mem structure
+> >    * @epc: the EPC device that invoked pci_epc_mem_init
+> > @@ -48,17 +29,11 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+> >   			   struct pci_epc_mem_window *windows,
+> >   			   unsigned int num_windows)
+> >   {
+> > -	struct pci_epc_mem *mem = NULL;
+> > -	unsigned long *bitmap = NULL;
+> > -	unsigned int page_shift;
+> > +	struct pci_epc_mem_window *window = NULL;
+> >   	size_t page_size;
+> > -	int bitmap_size;
+> > -	int pages;
+> >   	int ret;
+> >   	int i;
+> > -	epc->num_windows = 0;
+> > -
+> >   	if (!windows || !num_windows)
+> >   		return -EINVAL;
+> > @@ -70,45 +45,51 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
+> >   		page_size = windows[i].page_size;
+> >   		if (page_size < PAGE_SIZE)
+> >   			page_size = PAGE_SIZE;
+> > -		page_shift = ilog2(page_size);
+> > -		pages = windows[i].size >> page_shift;
+> > -		bitmap_size = BITS_TO_LONGS(pages) * sizeof(long);
+> > -		mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+> > -		if (!mem) {
+> > +		windows[i].pool = gen_pool_create(ilog2(page_size), -1);
+> > +		if (!windows[i].pool) {
+> >   			ret = -ENOMEM;
+> > -			i--;
+> > -			goto err_mem;
+> > +			goto err_free_mem;
+> > +		}
+> > +
+> > +		gen_pool_set_algo(windows[i].pool, gen_pool_first_fit_order_align,
+> > +				  NULL);
+> > +
+> > +		windows[i].virt_base = ioremap(windows[i].phys_base, windows[i].size);
+> 
+> Do you have to ioremap upfront the entire window? This could be a problem in
+> 32-bit systems which has limited vmalloc space. I have faced issues before
+> when trying to map the entire memory window and had to manipulate vmalloc
+> boot parameter.
+> 
+> I'd prefer we find a way to do ioremap per allocation as before.
+> 
 
-This really is doing two unrelated things. ktime_real_to_base_clock()
-has absolutely nothing to do with the clocksource_base related changes
-to get_device_system_crosststamp()
+Hmm, thanks for pointing it out. Current genalloc implementation works on the
+virtual address as opposed to physical address (that might be due to majority of
+its users managing the virtual address only). That's the reason I did ioremap of
+the entire window upfront.
+
+Let me see if we can somehow avoid this.
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
