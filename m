@@ -1,177 +1,97 @@
-Return-Path: <linux-kernel+bounces-109000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72ABE881335
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:19:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8159088133A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDD441F25E3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:19:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF0B61C22C96
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5900543ADE;
-	Wed, 20 Mar 2024 14:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uSUFxJ2+"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A72E482E5;
+	Wed, 20 Mar 2024 14:20:08 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FAB43ADC
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B55647794
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710944381; cv=none; b=MtBKA9j1IRZl7EmAnkkh4MiUZimSjRhKKI0a8/1trAtiJXkK/eDbIyCnhM4KNH9nphSBjclmJJYTSku+Pz3dI3NPeA5q1+JN4vpoOGBQ7K6BPkUWUY25Q503a7WXbQxrSUgquouIUzpwpk88W6xbvjgouweA8SE25uHw1GSwaMk=
+	t=1710944407; cv=none; b=YqVGYsQ+rw4J01uSGDWAzXmiG9eNw0dTjanRR/Rf3Ek5H3kHkeGIXbxrSH1Gne3GnxQSofX9LROs9b5S8bvtZZJ983CLfjfiE/JF6RtvbPumCMYSIPxDgI7QBgTcXRRE8YfQcuSQyEik5OVuu1R/ayKwr+QW2FQuRI0UISjF4kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710944381; c=relaxed/simple;
-	bh=UaT7k2gmjmJuDNmAFWziVqd0sZYoQPO1VA3qLt/9T0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bAZEmAxvwKT14JB4Qktk5C1ptVcA4WZlPy9XhCSlgo9ocQ+wOwI/+ANljm12e69a4CRWa3kiIr2Dr/OPkQbU59McBDKVyt9F4R+jgvLIeEjTzBSlBgvjYHXW1dV6zSdlG90kgnlqhLXKS41oKAM/Ut1HRdfbM+ec8wBT9XAGcGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uSUFxJ2+; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513e6777af4so6380882e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710944378; x=1711549178; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=tseffhcRc/A55FYIKavHDEB4t/Se1FCTP2ao/3daC3o=;
-        b=uSUFxJ2+zyfIay03554aAvcBT57UCM0iV6tLjQ6+eWx8HxBkeOQ1sMpQlse3gJqRI7
-         KnCsAyD/1glHjXXiZHzeW6SZFmML01J7UVxSpK5ZAdfQt+aJ5LUetm4xbR4oKSSm2edS
-         2OrYlysBJ+ksxdKUY8zmr3koHLC8qQ9z9erDVhZ/HoACFmvCijsRbYt1TxB2O22QkgRo
-         xuHWNFCOzDbLSPqx0opG7CDEiy6wUaxW5gkbnydTtvSfada7xqXAnNc23e+kBbhdZJ5G
-         6K3ll3ET7xM03M5I5vTEI4w7UaoXwFTWV0xNk0Y4GJycPYy2asjVFDWAUzqgaNWpcJOY
-         +34Q==
+	s=arc-20240116; t=1710944407; c=relaxed/simple;
+	bh=U4PenDBB1njw1+W+z24TpzT7efnUyBjddFGh7Ku/DCs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dzy2juY3kuhA72FUgOkQVxvU9CoBdZBCRfRxOx/lNo/2r7iZLew1sB8ObK1pkPPHVlu3YYEjsq8cHc7hqECRKNIGQzGIsstcTj9dv5dHOGd8Kth+yDw+k8F5fFZV4BXe5wjjnwxR0xWyJMpBnS3MPlqzwZTgAJ6PHtInTnjY6wU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so100140439f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:20:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710944378; x=1711549178;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tseffhcRc/A55FYIKavHDEB4t/Se1FCTP2ao/3daC3o=;
-        b=i1HL4eZCKFMED01nNeun2FGWbEbTZghVbHyNmPAg2M3HIPfOuaVRfbRJKUgs50p+VQ
-         RRQR9n+WktmMlSwod61KtjedfV5pKGnp2rvz8Js0x2mXpxSkZ8lFaUfND81hcqfGDLGQ
-         DMfF5dx3vIS2I7nw7wa88kA5KnbhZmUqsR8iJNdqC0zjhcuzwtr8Ty3S8kG3OPqz8Gbm
-         eDI2FUdjlKdZVMTx7yqEkLxKWF4INFOmGiHXu+WAUyf6OCC7iMH1ruMfBtUgjAXLCXo4
-         0d0SaQ9ElNZ6pXcSehJd7VvSnkQQtzbgBC+DQOA4Nc4+OMyAm66JP1WXnQelJkMBU5YP
-         KrgA==
-X-Forwarded-Encrypted: i=1; AJvYcCXvvcCqKZEnBytZ9f4cjXdPtOnbw0B1gXXV8BK8Qgj9Sd4N1RFGxzORzfh8AuLqR0qzIXvpG4ObBBXVjh3OOe0kzq1oHgJAZxaxipcH
-X-Gm-Message-State: AOJu0Yyx5ePIdW4ogUF9Lbgu3gK9sj281R1oeqWRr7fn8aZd2nT+Osx2
-	Wmy00k5FNR3cdU+MhDKOfQPoTQClNwWqccqb1JvXdPgslKodcU04RsnOOPELinE=
-X-Google-Smtp-Source: AGHT+IGtS32g4S/JY+nQ/oVfpwIz8FRauqjVpODUlS55OFGiMLqGNfr7SgqN3YLuHXNyce8tweEH/w==
-X-Received: by 2002:a19:381b:0:b0:513:26e7:440c with SMTP id f27-20020a19381b000000b0051326e7440cmr9710194lfa.61.1710944377695;
-        Wed, 20 Mar 2024 07:19:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id bp14-20020a17090726ce00b00a46bdc6278csm3709043ejc.71.2024.03.20.07.19.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 07:19:37 -0700 (PDT)
-Message-ID: <473a833c-b166-4002-823c-a71e5aaa784a@linaro.org>
-Date: Wed, 20 Mar 2024 15:19:35 +0100
+        d=1e100.net; s=20230601; t=1710944405; x=1711549205;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f1IUsR6kV07MDW8I1wx0WoXxXZKs91pAq00W+bBUR6M=;
+        b=lrbQhmjkTmjHf4dUl7VpyG3MJwlDwSSa3QCq//rRWsNg1uXYsaQzLxwRYmkqkeie53
+         +bdtu2WLYTjHYXTEaXLaQLcQLQZ/i096714WIb01iAl+9Ll9Y266+hmT+LjhrOl4t5oz
+         U3YZ2NI4PorRFLjuQZPfVG1EgD+oHijlmr5NSf0M6QRftV+BAX807k+8dQauDRaUOYO0
+         4zn4d44s8QUiQTQbW/6j0TP02EgfGOFxOmdkhYrElxJ69uM/WpoDkFFDGp7MWEJdloF1
+         cbCdPQhVVBGAZO5FWmZPh+TrJtqWl7EKbGvZzFL9KoAtIvxcM6sbawX0hTOr4cTec9kM
+         gTtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWoun6J+4F/OFsVDP5LzRrQU6I1Rr0H0+Q17n0tW7wJx5X1P4B3USMsKpQG1Nqe2O8UjgN9/pIXHNQh3SQIEYMN2CubG6Dymf5Q6ucY
+X-Gm-Message-State: AOJu0YxoQNL0ASEpQKfWFoeQMG99GG3nMgmsOvaiduY/w9MgkYq1u3BJ
+	wtxb+1bSTcLwctUD4Fvf3qGmdcXScEbOaVXzGhZV/kgHwgxYmFDt5KEmQ+N4s4Q5LKCmv08IWIQ
+	pXcZAJZSkN3MPpxNuGy4gPVml1tcAnFgsM2KwQIIqbp9iWcl6wvzOiVo=
+X-Google-Smtp-Source: AGHT+IEWPHrTc59k7P2wQWzcYopFmKG07JD0uCDKZoWRP8x0fTDj3ZrpQ0kLcy4ldIilE+R1PHKeJuAl3t17ypSJCNHgW+khmHGo
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
-To: "Sabau, Radu bogdan" <Radu.Sabau@analog.com>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
- "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
-References: <20240320125727.5615-1-radu.sabau@analog.com>
- <SA1PR03MB6499527C7BEE83A3E4EE6AFBF7332@SA1PR03MB6499.namprd03.prod.outlook.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <SA1PR03MB6499527C7BEE83A3E4EE6AFBF7332@SA1PR03MB6499.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:1482:b0:7cc:66b1:fa95 with SMTP id
+ a2-20020a056602148200b007cc66b1fa95mr325628iow.3.1710944404652; Wed, 20 Mar
+ 2024 07:20:04 -0700 (PDT)
+Date: Wed, 20 Mar 2024 07:20:04 -0700
+In-Reply-To: <000000000000adb08b061413919e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007866bb0614184925@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in trie_delete_elem
+From: syzbot <syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, elic@nvidia.com, haoluo@google.com, 
+	hdanton@sina.com, jasowang@redhat.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kafai@fb.com, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, mst@redhat.com, 
+	netdev@vger.kernel.org, parav@nvidia.com, sdf@google.com, song@kernel.org, 
+	songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 20/03/2024 14:05, Sabau, Radu bogdan wrote:
+syzbot has bisected this issue to:
 
->> +examples:
->> +  - |
->> +    i2c {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +        clock-frequency = <100000>;
->> +
->> +        hwmon@70 {
->> +            compatible = "adi,adp1050";
->> +            reg = <0x70>;
->> +            vcc-supply = <&vcc>;
->> +        };
->> +    };
->> +...
-> 
-> Results of bindings testing :
-> 
+commit a3c06ae158dd6fa8336157c31d9234689d068d02
+Author: Parav Pandit <parav@nvidia.com>
+Date:   Tue Jan 5 10:32:03 2021 +0000
 
-Yeah... please do not send patches which contain knowingly wrong code.
-Code is wrong if you perform testing and result is some sort of FAILURE,
-build error, warning message, static checker/linter warning message or
-error.
+    vdpa_sim_net: Add support for user supported devices
 
-If something is not clear, ask via email or IRC, but sending code which
-does not work could cause wasted reviewer's effort.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1626def1180000
+start commit:   f6e922365faf xsk: Don't assume metadata is always requeste..
+git tree:       bpf
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1526def1180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1126def1180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14115c6e180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124fd231180000
 
-About your warning, please start your bindings from example-schema or
-latest reviewed bindings.
+Reported-by: syzbot+9d95beb2a3c260622518@syzkaller.appspotmail.com
+Fixes: a3c06ae158dd ("vdpa_sim_net: Add support for user supported devices")
 
-Best regards,
-Krzysztof
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
