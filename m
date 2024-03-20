@@ -1,76 +1,79 @@
-Return-Path: <linux-kernel+bounces-109249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 859BF8816C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:46:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5294D8816CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB79328275C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:46:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76DC01C2380A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9F26A8BA;
-	Wed, 20 Mar 2024 17:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867AE6A33C;
+	Wed, 20 Mar 2024 17:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GAmFQNll"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N/m0XY6I"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CDA4436E;
-	Wed, 20 Mar 2024 17:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688951E516
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956773; cv=none; b=BzPEUqtPuPdK6/7gdHycvQeaJuI7Ykr2/wAY1YlBVA6FqnGnUnDUdth49q8DF4Ox+3fjJVr5xTOlC/07IjjMcBHRgNriB8JPXyC2oV7IqSC5pmbivtXNEeihHva0IdV2iQzG5ypJx+DF2L34zzvm4JfIEfHMHUdxGHkfHkoVaWA=
+	t=1710956818; cv=none; b=j0ZDLSNEgvMi1ZhnxFYdpBIin+HtkcP+lRmnMvDhyLVq8u9ssHzaM32bTWc1VDO+cPSToSr7ks+l+nq1yhALsZHrJGBHtuLOjKDNmKHEJsokM7t9c5OK8oQRjpVZ8Pr0fnHT60s0IvaQJofIj+afowAQQwTns/kEilPE+Wb+ALc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956773; c=relaxed/simple;
-	bh=4tUKS+lrAbbNWp2JU9fdGghW7+U5wKN3OA2hFRyNMmI=;
+	s=arc-20240116; t=1710956818; c=relaxed/simple;
+	bh=B368G/aSuup6KMLAq/ltvruGfUzolEoBXSk9TLIMxRQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lNQ09pxIcBT4cAtRyPJA45QQOTdvhfH83uaCpRVUbJjKr2oAUR5ppj4fV+BfsLLCqBowXt2IOTtEFMR45ikcc9JD3XYjcOy4uXEvTnkhdDJSmeEMGLTo3Tb1dU5mpCzx7MzAPw1uPz285VMY6xLhqdBL67FTSJXOw/eeI3b52tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GAmFQNll; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710956770; x=1742492770;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4tUKS+lrAbbNWp2JU9fdGghW7+U5wKN3OA2hFRyNMmI=;
-  b=GAmFQNllaZrQmclA0nTO5yLEmWzQRqdJ4DW4fn8Kcv2LVRRAbodwKk4G
-   6DX1lQget9UiyMl+orS8Yy4avUx5vrI627p7terxlzImRv0z8jCNj/FhG
-   X5yiboTcVVy3hj3urpyHcI8ZtD+7ISvEgKxdeUz3Q9SME1P4RDVYpqyh5
-   qAkgLZxyaT64J1cvrX5aMsD5fnWPxy/ZOsifnnnbMbv2tnT2w2e6Ewi+V
-   Wuzr4p/5yjE7ycTtrxNm7gRgRBKtDPbJSYDnnvNcb9otTZzOqXRy+DYH+
-   rU66QROYmB4pWMlFiN90bLkMPtxpoMgOincndGCUWkwUI2QbSp7jHrgrF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6023981"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="6023981"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:46:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="37336134"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.72.188])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:46:09 -0700
-Date: Wed, 20 Mar 2024 10:46:07 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Robert Richter <rrichter@amd.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org, Dan Williams <dan.j.williams@intel.com>,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org, Derick Marks <derick.w.marks@intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 1/3] x86/numa: Fix SRAT lookup of CFMWS ranges with
- numa_fill_memblks()
-Message-ID: <Zfsg3wZpSFVT+Zv2@aschofie-mobl2>
-References: <20240319120026.2246389-1-rrichter@amd.com>
- <20240319120026.2246389-2-rrichter@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eMTPC0BFFaOy9O5n81uZ+Qk5gykuLf6YcIopVWhxL8/u50ZhxqWqL9ViEAiOJDBcZaNwZit0FFVHzhxh1Z0GNP9VozhKk03T3k2xbMRBe4MOTxWi6cEZnE11rlOjduJmJdIF5HeHQjgc7/N5tqGng9EL0t+U8Qkm4ehBzcxxXA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N/m0XY6I; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so37986276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710956816; x=1711561616; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=32FiX/03woyx1MQPLt98zuuoGWjttuDbK7QooonETTg=;
+        b=N/m0XY6I1wc4aYh9QUKA6RbyJM0DVWtieaulK6yy5h87cA4sebUD1m8149SRp0IEyB
+         O+mcIxtV3EaXx5cErw8LeOtzs4JzpGfyCiydPhWSA6cVE0xEM33beU3KKtgxlU+zoWf0
+         eLlcAPLU6AzR1TdUs+w38Wy0jYl+L1myHjgwg5WGM7jqQVGG2H/gz1njRjTqBKk516is
+         mAhNJjrfSTWATRGvngZ50FCI5Q2sTM4Gq7dRaT3skcKIYoYB9bTZG6lBqArFppVxFLA3
+         hZ3gsyQZH9YBoHnjH+9+4kp9eyUxKENXXxHA6WJxSDE37+/3nAwN6JWlHYdRTQieHY8b
+         UvWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710956816; x=1711561616;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=32FiX/03woyx1MQPLt98zuuoGWjttuDbK7QooonETTg=;
+        b=PL7S+aQbtwcOsStRKvWge+zpv/2UOycfoXFwzz9pPSoWQJqaSPo7ccu2ThanRpdVAN
+         Kyd3g4yceOC9yQWZZ2e2KMnIPcmkIACsl43VyQPHNDXiPRlOW9QIly2TEXmVEc0c19Gq
+         O6xwONo5zZ/rlaOMe6Cd1AetWLfrgeYqpJ331SLAPy5fxW9JjyFjZjFF4PXv719navOA
+         KxHoLJsiTvGZSn2F5Zmxbbhs+VYSzbUgT3H6O5Hr9AV0yHFtaC23kUZdzOQWz5pNjn4d
+         ACbPGyzGFK1NNnLaSpBuZJ/U/dzCX97WbZKEQPYYLBx9IJQkvYK4+9d+gUhGtA/SCIU8
+         E7Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCWa4reiFcFtn75ELnyZhXECpi18tbOPPyBqq8Mae+o13q5mx5vO+NrteKwpYYNiby2JxPARdq0KduZdbDrdv6ELZZj/obheeeWB59kr
+X-Gm-Message-State: AOJu0YyWgKilNcXb02AplfkjV/JJtV65Lkdo6N9hQLAJ32lGcKKYHWAc
+	0KG/Q71t9GH7OdXSti8OAQozFH8Z52PAtH0a0dxdxkf1nwJWX9t2
+X-Google-Smtp-Source: AGHT+IGRLxk/UosGsO9ECz2fz4qrLawBVwi5tDcNLfKn6EFRGCfu1HKk/TcEqeAI9780rkObJJX4+w==
+X-Received: by 2002:a25:c78b:0:b0:dcf:c299:2467 with SMTP id w133-20020a25c78b000000b00dcfc2992467mr15358037ybe.5.1710956816247;
+        Wed, 20 Mar 2024 10:46:56 -0700 (PDT)
+Received: from localhost ([2601:344:8301:57f0:a6a6:49c0:6a02:df54])
+        by smtp.gmail.com with ESMTPSA id c15-20020a5b0bcf000000b00dc254858399sm2632978ybr.2.2024.03.20.10.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 10:46:55 -0700 (PDT)
+Date: Wed, 20 Mar 2024 10:46:54 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Dawei Li <dawei.li@shingroup.cn>, andriy.shevchenko@linux.intel.com,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpumask: Create dedicated kmem cache for cpumask var
+Message-ID: <ZfshDg9Vyfl6hqVG@yury-ThinkPad>
+References: <20240319122400.399516-1-dawei.li@shingroup.cn>
+ <5a6f58c5-40f3-4c89-8988-a9fee932e3ca@rasmusvillemoes.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,100 +82,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240319120026.2246389-2-rrichter@amd.com>
+In-Reply-To: <5a6f58c5-40f3-4c89-8988-a9fee932e3ca@rasmusvillemoes.dk>
 
-On Tue, Mar 19, 2024 at 01:00:23PM +0100, Robert Richter wrote:
-> For configurations that have the kconfig option NUMA_KEEP_MEMINFO
-> disabled, the SRAT lookup done with numa_fill_memblks() fails
-> returning NUMA_NO_MEMBLK (-1). An existing SRAT memory range cannot be
-> found for a CFMWS address range. This causes the addition of a
-> duplicate numa_memblk with a different node id and a subsequent page
-> fault and kernel crash during boot.
+On Wed, Mar 20, 2024 at 10:03:02AM +0100, Rasmus Villemoes wrote:
+> On 19/03/2024 13.24, Dawei Li wrote:
+> > alloc_cpumask_var_node() and friends allocate cpumask var dynamically
+> > for CONFIG_CPUMASK_OFFSTACK=y kernel. The allocated size of cpumask var
+> > is cpumask_size(), which is runtime constant after nr_cpu_ids is
+> > freezed.
+> > 
+> > Create a dedicated kmem cache for dynamic allocation of cpumask var.
 > 
-> numa_fill_memblks() is implemented and used in the init section only.
-> The option NUMA_KEEP_MEMINFO is only for the case when NUMA data will
-> be used outside of init. So fix the SRAT lookup by moving
-> numa_fill_memblks() out of the NUMA_KEEP_MEMINFO block to make it
-> always available in the init section.
-> 
-> Note that the issue was initially introduced with [1]. But since
-> phys_to_target_node() was originally used that returned the valid node
-> 0, an additional numa_memblk was not added. Though, the node id was
-> wrong too.
+> Why?
 
-Hi Richard,
+Hi Dawei,
 
-I recall a bit of wrangling w #defines to make ARM64 and LOONGARCH build.
-I'm seeing an x86 build error today:
-
->> arch/x86/mm/numa.c:957:12: error: redefinition of 'numa_fill_memblks'
-     957 | int __init numa_fill_memblks(u64 start, u64 end)
-
-include/linux/numa.h:40:26: note: previous definition of 'numa_fill_memblks' with type
-+'int(u64,  u64)' {aka 'int(long long unsigned int,  long long unsigned int)'}
-      40 | static inline int __init numa_fill_memblks(u64 start, u64 end)
-         |                          ^~~~~~~~~~~~~~~~~
-
-In addition to what you suggest, would something like this diff below be
-a useful safety measure to distinguish num_fill_memblks() success (rc:0)
-and possible non-existence (rc:-1). I don't think it hurts to take a
-second look using phys_to_target_node() (totall untested)
-
-diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 070a52e4daa8..0c48fe32ced4 100644
---- a/drivers/acpi/numa/srat.c
-+++ b/drivers/acpi/numa/srat.c
-@@ -437,9 +437,16 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
-         * found for any portion of the window to cover the entire
-         * window.
-         */
--       if (!numa_fill_memblks(start, end))
-+       rc = numa_fill_memblks(start, end);
-+       if (!rc)
-                return 0;
+Agree with Rasmus. CPUMASK_OFFSTACK=y is quite a rare configuration,
+normally disabled. Can you show the architecture that you're working
+with and how the cache you're adding affects performance.
  
-+       if (rc == NUMA_NO_MEMBLK) {
-+               node = phys_to_target_node(start);
-+               if (node != NUMA_NO_NODE)
-+                       return 0;
-+       }
-+
-        /* No SRAT description. Create a new node. */
+> > The window for creation of cache is somewhat narrow:
+> > - After last update of nr_cpu_ids(via set_nr_cpu_ids())
+> > - After kmem cache is available.
+> > - Before any alloc_cpumask_var_node() invocations(sched_init() e.g).
 
---Alison
+Not only narrow but also not uniform across platforms. For example,
+on XEN xen_smp_count_cpus() may adjust nr_cpu_ids. I don't think that
+people runn XEN with CPUMASK_OFFSTACK=y, but you have to make sure
+that your cache is always created before the 1st allocation.
+ 
+> OK, so this sounds somewhat fragile. It's maybe correct, but I fail to
+> see what is gained by this, and the commit message does not provide any
+> hints.
 
-> 
-> [1] fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
-> 
-> Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
-> Cc: Derick Marks <derick.w.marks@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Alison Schofield <alison.schofield@intel.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
->  arch/x86/mm/numa.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> index 65e9a6e391c0..ce84ba86e69e 100644
-> --- a/arch/x86/mm/numa.c
-> +++ b/arch/x86/mm/numa.c
-> @@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
->  }
->  EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
->  
-> +#endif
-> +
->  static int __init cmp_memblk(const void *a, const void *b)
->  {
->  	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
-> @@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
->  	}
->  	return 0;
->  }
-> -
-> -#endif
-> -- 
-> 2.39.2
-> 
+Agree. To make it less vulnerable, you have to enforce something like:
+
+  bool cpumask_cache_used = false;
+
+  static inline void set_nr_cpu_ids(unsigned int nr)
+  {
+          if (WARN_ON(cpumask_cache_used))
+                  return;
+  
+          nr_cpu_ids = nr;
+          cpumask_cache_destroy();
+          cpumask_cache_init()
+  }
+
+  bool alloc_cpumask_var_node()
+  {
+         cpumask_cache_used = true;
+         *mask = kmalloc_node(cpumask_size(), flags, node);
+         ...
+  }
+
+But at the very first, we need to understand under which scenarios the
+new cache would benefit performance?
+
+Thnaks,
+Yury
+benefits performance 
 
