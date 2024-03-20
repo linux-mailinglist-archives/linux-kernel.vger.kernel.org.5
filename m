@@ -1,131 +1,95 @@
-Return-Path: <linux-kernel+bounces-108793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC60A881008
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67642880FD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8063628380D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:37:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 227842852A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E762E64F;
-	Wed, 20 Mar 2024 10:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DBA3FB39;
+	Wed, 20 Mar 2024 10:27:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="msLXyRZm"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YeKZ41OI"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9932032C;
-	Wed, 20 Mar 2024 10:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64413FB2E;
+	Wed, 20 Mar 2024 10:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710931052; cv=none; b=dDYO3E7ZzYNzylQe7m8dmO1s4LOFrDYTZ3vw7L2ri1Ikipa0/yN2KdCc28hJekJSRsLUALknqb5/TAfhA1ztajnSVYCyhEfIDGpDvHrCP8NAjY7GBC4u48uqSwPFPwXPHTN+l2p3pxt8Vjt2jwu4h+K9O2O8IsR+rhsD+kqD4Ys=
+	t=1710930463; cv=none; b=Fv8mYvXFygM3+x0VINS2LcxIDjQ5GWcphmqVI004NUKn04PBc3/6Wy3xomNsdZt190Ib9WVe5e94bAKPBO1uXHK54eZ9crH71/dtOxvFxr+BvfsIixsMkhSkDWUfGmU1CQ6enQnWTOeaLa3CbJGYSmlLUdh4VPUdOv5GQ/6c5P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710931052; c=relaxed/simple;
-	bh=oMcExfi3dY3kbb1sQnyyDLt0+nzIomwQcaxWzI7t2qk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dVpJpu5utDksS04uOkdWvE0oyr2gsOE5PR5Dc+1HGvNmgBBPxjse8wn5Eka9VEWZp/rkTZ+8DLjRwyW5fVhxnWHy/T0BgwQrmyDZAr8fUsSkZ6QHqy0/MCN3eGQFLp6o06/UTlQqu3KUW9sCAnRYzCjYFj4o+BaP4CCu2IHx+14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=msLXyRZm; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1710930453;
-	bh=oMcExfi3dY3kbb1sQnyyDLt0+nzIomwQcaxWzI7t2qk=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=msLXyRZm3wWEhspe6etI170C6ugUOpgwoo8GpmrfFo1ZjZF8f9/yIqcpwlFXcxrtB
-	 7HMDws+TdWu9+7nRVYJvQQTCs60XeR+sJz48ZZ9tq+rCl7FFqgA2SEUjRSoLs3YY8O
-	 Drz1d2aFmIEOv1ZwQQIe7zrq6fMdn68HgV3URCmc=
-Received: from [192.168.124.9] (unknown [113.140.11.126])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id D09D166F79;
-	Wed, 20 Mar 2024 06:27:29 -0400 (EDT)
-Message-ID: <e8c4062df63f3e8bc8bb2d7209fa2a2a44bd7ed3.camel@xry111.site>
-Subject: Re: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid
- mis-optimization
-From: Xi Ruoyao <xry111@xry111.site>
-To: Huacai Chen <chenhuacai@loongson.cn>, Arnd Bergmann <arnd@arndb.de>, 
- Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev, linux-arch@vger.kernel.org, Xuefeng Li
-	 <lixuefeng@loongson.cn>, Guo Ren <guoren@kernel.org>, Xuerui Wang
-	 <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn, 
-	stable@vger.kernel.org, Xiaotian Wu <wuxiaotian@loongson.cn>, Miao Wang
-	 <shankerwangmiao@gmail.com>, Xing Li <lixing@loongson.cn>, Hongchen Zhang
-	 <zhanghongchen@loongson.cn>, Rui Wang <wangrui@loongson.cn>
-Date: Wed, 20 Mar 2024 18:27:26 +0800
-In-Reply-To: <20240315024526.394772-1-chenhuacai@loongson.cn>
-References: <20240315024526.394772-1-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1710930463; c=relaxed/simple;
+	bh=xhXeyDGOb3pQKxcGo7mj/IRBOHnIFDLmPNQP6tybMTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dkLF41Tt0/9+AZ66pxbgKSs7leTU1+oBgBUSTnRzJac5W/74ctrjKf13js4ISDcT+4UJSHE7CYTx6hw0Q5KFWcnzeJ0ZfYaaELLhoJLq1Lx9ujynpfPbt3IQpi892LFDhotXxz6llu3BrkPKR3ftc9QZq9nzFu7GUzVkcvXZZvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YeKZ41OI; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710930461; x=1742466461;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xhXeyDGOb3pQKxcGo7mj/IRBOHnIFDLmPNQP6tybMTI=;
+  b=YeKZ41OIzTaRKQwyy82xVGHjKE85+XePXJi/3y8RY1FOwq00sOYOkvco
+   9AmJvO+JH8s9MwNakTdBAsBK6MIYMpWvtbDKAU4afNXo2qlhctoZRsfug
+   EPUjpP//BxG/lonthac1aCXUIUQjMgpDx8GQxuqPDfOhBGcd7B5w5hcZz
+   DZRU2uDbRkHTmDjIInWiDMWnAOZuoP3F7+e64LE/vm6sQ1gNVcciT5CB3
+   h98KKh3ZuimcSLXxoyXsO63u4Q1YatS2Vm0SQXM0dJTR9bnRST8qcfA3x
+   7R1vtrgQdKhnY1MITVHIkgJq5hYPoLDtAWW+7UFySyX3R1rPRg8TdotyA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="23303725"
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="23303725"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 03:27:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="914662024"
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="914662024"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 03:27:40 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rmtAX-0000000EXXG-3Kem;
+	Wed, 20 Mar 2024 12:27:37 +0200
+Date: Wed, 20 Mar 2024 12:27:37 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH net-next v1 1/1] nfc: st95hf: Switch to using gpiod API
+Message-ID: <Zfq6GYnPAn000my0@smile.fi.intel.com>
+References: <20240318203923.183943-1-andriy.shevchenko@linux.intel.com>
+ <ZfloHvWaTOQErWfU@nanopsycho>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfloHvWaTOQErWfU@nanopsycho>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, 2024-03-15 at 10:45 +0800, Huacai Chen wrote:
-> From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
-> global regs in asms"), global registers will no longer be forced to add
-> to the def-use chain. Then current_thread_info(), current_stack_pointer
-> and __my_cpu_offset may be lifted out of the loop because they are no
-> longer treated as "volatile variables".
+On Tue, Mar 19, 2024 at 11:25:34AM +0100, Jiri Pirko wrote:
+> Mon, Mar 18, 2024 at 09:39:23PM CET, andriy.shevchenko@linux.intel.com wrote:
+> >This updates the driver to gpiod API, and removes yet another use of
+> >of_get_named_gpio().
+> >
+> net-next is closed, send again next week.
 
-Ooops...  I'm wondering why this issue has not blown up our systems
-before.  The referred GCC commit is far before LoongArch CPUs are taped.
+Same Q: Why to resend? Can't you utilise lore.kernel.org?
 
-> This optimization is still correct for the current_thread_info() and
-> current_stack_pointer usages because they are associated to a thread.
-> However it is wrong for __my_cpu_offset because it is associated to a
-> CPU rather than a thread: if the thread migrates to a different CPU in
-> the loop, __my_cpu_offset should be changed.
->=20
-> Change __my_cpu_offset definition to treat it as a "volatile variable",
-> in order to avoid such a mis-optimization.
->=20
-> Cc: stable@vger.kernel.org
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I suppose we should add Fixes: 5b0b14e550a0 ("LoongArch: Add
-atomic/locking header") here.
 
-> Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
-> Reported-by: Miao Wang <shankerwangmiao@gmail.com>
-> Signed-off-by: Xing Li <lixing@loongson.cn>
-> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-> Signed-off-by: Rui Wang <wangrui@loongson.cn>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
-> =C2=A0arch/loongarch/include/asm/percpu.h | 6 +++++-
-> =C2=A01 file changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include=
-/asm/percpu.h
-> index 9b36ac003f89..03b98491d301 100644
-> --- a/arch/loongarch/include/asm/percpu.h
-> +++ b/arch/loongarch/include/asm/percpu.h
-> @@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long off=
-)
-> =C2=A0	__my_cpu_offset =3D off;
-> =C2=A0	csr_write64(off, PERCPU_BASE_KS);
-> =C2=A0}
-> -#define __my_cpu_offset __my_cpu_offset
-> +
-> +#define __my_cpu_offset					\
-> +({							\
-> +	__asm__ __volatile__("":"+r"(__my_cpu_offset));	\
-> +	__my_cpu_offset;				\
-> +})
-> =C2=A0
-> =C2=A0#define PERCPU_OP(op, asm_op, c_op)					\
-> =C2=A0static __always_inline unsigned long __percpu_##op(void *ptr,		\
-
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
 
