@@ -1,129 +1,106 @@
-Return-Path: <linux-kernel+bounces-108931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF396881225
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:14:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77D4F881227
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63849285B62
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:14:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6D801C23313
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948554176B;
-	Wed, 20 Mar 2024 13:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4599140C14;
+	Wed, 20 Mar 2024 13:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HUeELnCF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hq1PYN/d"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81E240847;
-	Wed, 20 Mar 2024 13:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1326E405CE
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710940438; cv=none; b=IBQ28E857yOPIuWcosWbYs2exuZ0XxEJpiVVC90A/7o4bbGXwy3kwLLFriV27Hk2gII/6C8SlG9yvbLr0Ei45r3+w3nwzocal12lb9D0mHpuN/zvJIalcu3iBbTv3dqReUL04kRUoDihyROrusElcSNLJY+bOipJG+nI5rIEtqs=
+	t=1710940480; cv=none; b=t12LtSvbnI4kUIiA7GtNipcRP/6ceeb7Tt4mCfk6c3R/cecM9nPB+BCNGT1TAZ/c5MawcawKe3NyFrxN0ScREZwJ4RbDbqVFek1p5BJ9De6+IZdFb4g2v+hOccroJrt6doA/+6l+DIrwQmeB8/pnTPfiQvkmeZxhQZaEc5VPZug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710940438; c=relaxed/simple;
-	bh=ghCN61ofXI0Tf62QAiLIvxh+oQl1kd8cAWHEsmu/bDg=;
+	s=arc-20240116; t=1710940480; c=relaxed/simple;
+	bh=Hc8+DRycej1M3IkI1Y6rVDgHKShwuRUDYDmDgh5gpug=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HysKZ5mJzoqPt/4t9pGF1nip2Q270uDY8MHF1GqGLQYkbq4tG06woA21N7jxQoKe/4Jh3Vu5ITYQov0EwUXxUjyFuD/0umqntQ3j9btB+vozlqRynFgV0TEk3rkO8xr014ueb8S2Cg+DucTLxDHKWAMt7x7FwmjUMI7Iuqzrpy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HUeELnCF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9396C433F1;
-	Wed, 20 Mar 2024 13:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710940438;
-	bh=ghCN61ofXI0Tf62QAiLIvxh+oQl1kd8cAWHEsmu/bDg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HUeELnCFnUj3wvloClJuzTNugchOpDzTWWkkMdQaB3sqR8vtfAqyHagXs+H2Xj1mO
-	 ecblLQCaISXQFeqgrXi8ZNaf8EaEaC663/0+5jfAcIxV8cMPHlm0QxutNY/nvBG6tE
-	 JKq1+g+QgLAXEKFWocsj6dvM2Ps6ybe/+G8AVxC/ncU9GOrG9UN955V8DQHkXrJq4p
-	 PDGewkWQ65RfOMJNcTGVS4aCkpd4tRRZfbF01WI4EXaEzbqun2MJLUGyHykPw+frbW
-	 65ijs0IFtmvHd685+YoIjn8J+nJ21RtcsMfVqTp/nTG3cTwvBq/boKoJ8KPm3bD92I
-	 i6s9gHFkYdo7A==
-Date: Wed, 20 Mar 2024 14:13:47 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
-	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, David Howells <dhowells@redhat.com>, 
-	Tyler Hicks <code@tyhicks.com>, Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
-	Dai Ngo <Dai.Ngo@oracle.com>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Amir Goldstein <amir73il@gmail.com>, Namjae Jeon <linkinjeon@kernel.org>, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	netfs@lists.linux.dev, ecryptfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: Re: [PATCH RFC 02/24] filelock: add a lm_set_conflict lease_manager
- callback
-Message-ID: <20240320-gaspreis-mitunter-217e0d82f50f@brauner>
-References: <20240315-dir-deleg-v1-0-a1d6209a3654@kernel.org>
- <20240315-dir-deleg-v1-2-a1d6209a3654@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RhSqsudPdICsx6eu9khdcVJMTDbzAT31qjy8wbNxuPMeKl5HoAIrMgBeGDdB6Cj2mmiBcwOXAEyvr5ENFc8vixYCSH0DqS2xh1LRJcqaO63iXu8b1e9K9XXusMl6zkCm7QGjuiBzXJ87YlZkM7hGuG5V7WD0mCBA88+Y2fowuM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hq1PYN/d; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710940478;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ey4AOs9r3AsCA3ihOFSnMBOT4qisnZYJ1SOYp7h6Xf8=;
+	b=hq1PYN/dZ2W4H/xUNWcsmj0fHa3NrAT/cMkz8Rwpr5+c6IschHkDpeXWfijOQHkloY2+su
+	kEuiGeZ1MXeaEGM2m7taFXsrRaVsGVE1LoC+O+oKzvF7QlaNeQOoRHOl9LGTzrUqCA6AVm
+	JNDZX63u8FFkh10pfmj2993QfSNtVDQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-482-BG7UvSxVMe6KR0RfzBnoGg-1; Wed, 20 Mar 2024 09:14:32 -0400
+X-MC-Unique: BG7UvSxVMe6KR0RfzBnoGg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0615868658;
+	Wed, 20 Mar 2024 13:14:31 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E69040C6DB7;
+	Wed, 20 Mar 2024 13:14:29 +0000 (UTC)
+Date: Wed, 20 Mar 2024 21:14:00 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH 2/6] x86: remove memblock_find_dma_reserve()
+Message-ID: <ZfrhGANU2gxE5+9c@MiWiFi-R3L-srv>
+References: <20240318142138.783350-1-bhe@redhat.com>
+ <20240318142138.783350-3-bhe@redhat.com>
+ <Zfmz_1sbbvSWMj9C@kernel.org>
+ <ZfqV1IEo3+cf9f9I@MiWiFi-R3L-srv>
+ <ZfquM06LOZB4vddu@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240315-dir-deleg-v1-2-a1d6209a3654@kernel.org>
+In-Reply-To: <ZfquM06LOZB4vddu@kernel.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Fri, Mar 15, 2024 at 12:52:53PM -0400, Jeff Layton wrote:
-> The NFSv4.1 protocol adds support for directory delegations, but it
-> specifies that if you already have a delegation and try to request a new
-> one on the same filehandle, the server must reply that the delegation is
-> unavailable.
-> 
-> Add a new lease_manager callback to allow the lease manager (nfsd in
-> this case) to impose extra checks when performing a setlease.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/locks.c               |  5 +++++
->  include/linux/filelock.h | 10 ++++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/fs/locks.c b/fs/locks.c
-> index cb4b35d26162..415cca8e9565 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -1822,6 +1822,11 @@ generic_add_lease(struct file *filp, int arg, struct file_lease **flp, void **pr
->  			continue;
->  		}
+On 03/20/24 at 11:36am, Mike Rapoport wrote:
+> On Wed, Mar 20, 2024 at 03:52:52PM +0800, Baoquan He wrote:
+> > On 03/19/24 at 05:49pm, Mike Rapoport wrote:
+> > > Hi Baoquan,
+> > > 
+> > > On Mon, Mar 18, 2024 at 10:21:34PM +0800, Baoquan He wrote:
+> > > > This is not needed any more.
+> > > 
+> > > I'd swap this and the first patch, so that the first patch would remove
+> > > memblock_find_dma_reserve() and it's changelog will explain why it's not
+> > > needed and then the second patch will simply drop unused set_dma_reserve()
+> > 
+> > Thanks, Mike.
+> > 
+> > My thought on the patch 1/2 splitting is:
+> > patch 1 is removing all relevant codes in mm, including the usage of
+> > dma_reserve in free_area_init_core() and exporting set_dma_reserve()
+> > to any ARCH which want to subtract the dma_reserve from DMA zone.
+> >
+> > Patch 2 purely remove the code in x86 ARCH about how to get dma_reserve.
 >  
-> +		/* Allow the lease manager to veto the setlease */
-> +		if (lease->fl_lmops->lm_set_conflict &&
-> +		    lease->fl_lmops->lm_set_conflict(lease, fl))
-> +			goto out;
-> +
->  		/*
->  		 * No exclusive leases if someone else has a lease on
->  		 * this file:
-> diff --git a/include/linux/filelock.h b/include/linux/filelock.h
-> index daee999d05f3..c5fc768087df 100644
-> --- a/include/linux/filelock.h
-> +++ b/include/linux/filelock.h
-> @@ -49,6 +49,16 @@ struct lease_manager_operations {
->  	int (*lm_change)(struct file_lease *, int, struct list_head *);
->  	void (*lm_setup)(struct file_lease *, void **);
->  	bool (*lm_breaker_owns_lease)(struct file_lease *);
-> +
-> +	/**
-> +	 * lm_set_conflict - extra conditions for setlease
-> +	 * @new: new file_lease being set
-> +	 * @old: old (extant) file_lease
-> +	 *
-> +	 * This allows the lease manager to add extra conditions when
-> +	 * setting a lease.
-> +	 */
-> +	bool (*lm_set_conflict)(struct file_lease *new, struct file_lease *old);
+> I think it's better first to remove the usage of set_dma_reserve() in x86
+> and then clean up the unused code.
 
-Minor, but it seems a bit misnamed to me. I'd recommend calling this
-lm_may_set_lease() or lm_may_lease().
+OK, firslty remove the only user, that sounds reasonable. Will change.
+Thanks.
+
 
