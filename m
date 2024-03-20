@@ -1,333 +1,185 @@
-Return-Path: <linux-kernel+bounces-109162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C78881594
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F231881596
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73665B22B27
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:26:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9299B234EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB9954F9D;
-	Wed, 20 Mar 2024 16:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B1654FB7;
+	Wed, 20 Mar 2024 16:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OeAzk6+U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pGHVAS6p"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0AB53E13;
-	Wed, 20 Mar 2024 16:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E360753E13
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951963; cv=none; b=XZPgbBbpYJ1ZZ6FwZ5LWE+/U+0fH9XBzXuC6+z1US7R+C5V+oL2JWsJkXGXE7c3g2OXL0+7Ft48sHctPCkI/EJMpEcSPopsHs9rOYDFaP9IJOJsiuOywU2U46sidhOCO+OAQl/koe1Qf5KGzQdVq9tmGh+bI7tsTzuttzUBvu6o=
+	t=1710951986; cv=none; b=gl1VaaltbPN3v5o5qmUq0eA652EmqB2p0mw1YE6TEg9+pHUY9fPBca5kYSQOO/Rnw0TdQkFmpvGnE+0Zz12EqK04VM4Puny+Bi2w8huB5qq0WAL7mYv2VwxjlNtXrXylpeSeEHZloaMRaqqVAYF0Ic15tMoYzCx7/VKCn6E+sLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951963; c=relaxed/simple;
-	bh=AbAffIR7MFEWLLKn/T3bv0OnBju5rB/FzYNjiIim1XI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qxQvqoqZE3xDN8IeZJzsDV4XK+eT7jHwk7HW8wt03ab6ISjqmy1lqh4X4FEBnQvGl98wtyprlAde9YxCBfRD2UaKYqr/YuReB6IC9i1fjYGoDXMfDN0wWv9kr/1QL2ob532teR4YYcPxqQcmTF/A/EUXwgfjC4HppYtmQ7xN1lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OeAzk6+U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47769C433F1;
-	Wed, 20 Mar 2024 16:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710951963;
-	bh=AbAffIR7MFEWLLKn/T3bv0OnBju5rB/FzYNjiIim1XI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OeAzk6+Uknf8lI/ls+NRpQRLUwIHUEClV0ZXFnBYSj6z1K3MssrjL31lHxT2bdSxI
-	 7tASlVdmjqFVCz9xbohcXZ6pRB8R3lnoQdhJQrkcB+szwi594VbhF2Ekpqrac6UfE7
-	 5ZwqjuCfzovF2sNiDf6sWvpOiIveEP7EjcsGtFK34APyQT6zRiPNIURKHIRyt2cMay
-	 ZTszs7Ugs4kgtgDNdt8eC+Q4xcYyEoXNKlFboaYn0gzp4Qt/L8VgLTqwlF4n7kJiDf
-	 ZguGeuiAa6AWvvoaz46nzuVTUzlP4JDCVagVMC0BgiP3dY+G2/npXF0VVm+CdMmOdr
-	 jd7UPX0jhxUsA==
-Date: Wed, 20 Mar 2024 16:25:58 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: mtd: atmel-nand: add deprecated bindings
-Message-ID: <20240320-audibly-emoticon-400e3a42550b@spud>
-References: <20240320-linux-next-nand-yaml-v1-0-2d2495363e88@microchip.com>
- <20240320-linux-next-nand-yaml-v1-3-2d2495363e88@microchip.com>
+	s=arc-20240116; t=1710951986; c=relaxed/simple;
+	bh=+wS+o2Y9kpcSMjVdaZN1AtZmfdNjBWtj59lkeN10uQw=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=kTEelFoL8eDDRFjwsycvd5CFXU4L++3TKPnParTxkZ0NS+q2fsgZDF5QCFF9TRA30gPK/mr9CeSEJAetIYkCyyLurQGR5/L0qZ+LIgYFXAEBbd1P9qKJFRnExUcNJfz0nAPTUOXBwGmlBQBT2TdNo6jTW/fa+AUGLI/pa8eQk08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pGHVAS6p; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ad239f8fso112595007b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710951984; x=1711556784; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TpjaWbEXXGPMCnUDGYsVsjoUeJRl4xtMeKFE5VoNlZo=;
+        b=pGHVAS6pTj/GG8GLc2T05+PhBj7mQOxIPsjpA7xWBGfp0aT3BOproP81zxg+WR6HM5
+         HT8UuypHi1lSnSiEbtpFL98WyDAqaJeTw4agWgkOz01lGBgp1AGtBFVw9wEvwBLp1ZQv
+         Rd5L+nCU3NIVbr5/yznCmj12/xt3xbwyQnwfQD0op1A6s3JHyWkE6+uCTFdBn9o7ItTA
+         UdrH2QwfmOCyka0WZdZd8upldt7kKOXMCoL+wJ8PEg5u3Zc/k63M+RlPdIsIkQQhBUn6
+         H/yC29hg4FumA00Cgq8lFmxB9TFK8s6qelwzWjoPvwU5/C6RHVOFVt3icq5a1sOAJtZ5
+         MEOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710951984; x=1711556784;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TpjaWbEXXGPMCnUDGYsVsjoUeJRl4xtMeKFE5VoNlZo=;
+        b=vn7zArjbTkiKgFoy2+QeXBTJayhSjQ5icxaIxkzCJCINb/szsmGcj8Aiv8uGx/HQVC
+         gadafavCUWUqQHagTfXEWnMH12M2JOEiHQu0kY8ZXloG5Vq8i0iBZ/k9IKBDExyod0Iv
+         ONTyUULEVCHXMalW6n28QbVsBMPd4AGUakGFqmMT24lyJ+rZFf0kIWNiRBj5efc4KlDU
+         qoyhiJQ4X1yO/v4kxkSlNioYeblgAW3ouHpD+UMDNA/4X6zIDJvdTkCJjmdv7q/sbxA5
+         i4x2/vZy7c3cVRVYy2r4xV0U2qxu7un1NroaQa6FzBuxlmtAd93gqBhG8hETv+kOtNTf
+         enlw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0MzCzIJdlt5azTiAfco6HCjosdcDIdE37h92Th0t+AVzbWWNY+1rW7QYsR2Tz+tW8q2QUbjnVeS2jaQuwJsLjtlDLBPBOQEwDX46C
+X-Gm-Message-State: AOJu0Yw5pstdWEfaz1b7MVE/o2DmQ033Dmrgqs61xyoXDnAPFox16kNz
+	FGi2qJXSXziyd6cm5f8bJeKGbfNNHrNyseTcVqMlDzCN+RaApi1NkR/WnJMErmPg7sO9L2kG7qt
+	u9B0LqA==
+X-Google-Smtp-Source: AGHT+IFBdqKy9AaBHuJA8oBTGDInO4OP/MmxEhOVgHKwTdC2CpWRoL4O+5eBVeSVUkPiIfGDiAQcgSVTTT+A
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f4f0:8ad8:3c73:cef7])
+ (user=irogers job=sendgmr) by 2002:a81:6d52:0:b0:610:f287:93b5 with SMTP id
+ i79-20020a816d52000000b00610f28793b5mr681040ywc.7.1710951984025; Wed, 20 Mar
+ 2024 09:26:24 -0700 (PDT)
+Date: Wed, 20 Mar 2024 09:26:19 -0700
+Message-Id: <20240320162619.1272015-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bLcjqDi7D14ZgMoA"
-Content-Disposition: inline
-In-Reply-To: <20240320-linux-next-nand-yaml-v1-3-2d2495363e88@microchip.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Subject: [PATCH v1] perf intel-pt: Fix memory sanitizer use-of-uninitialized-value
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Running the test "Miscellaneous Intel PT testing" with a build with
+-fsanitize=memory and -fsanitize-memory-track-origins I saw:
 
---bLcjqDi7D14ZgMoA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+```
+==1257749==WARNING: MemorySanitizer: use-of-uninitialized-value
+    #0 0x5581c00a76b3 in intel_pt_sample_flags tools/perf/util/intel-pt.c:1527:17
+    #1 0x5581c00c5cf6 in intel_pt_run_decoder tools/perf/util/intel-pt.c:2961:3
+    #2 0x5581c00968f8 in intel_pt_process_timeless_queues tools/perf/util/intel-pt.c:3074:4
+    #3 0x5581c007cf49 in intel_pt_process_event tools/perf/util/intel-pt.c:3482:10
+    #4 0x5581bffa269a in auxtrace__process_event tools/perf/util/auxtrace.c:2830:9
+    #5 0x5581bfb826c0 in perf_session__deliver_event tools/perf/util/session.c:1649:8
+    #6 0x5581bfba1d7f in perf_session__process_event tools/perf/util/session.c:1891:9
+    #7 0x5581bfba82e4 in process_simple tools/perf/util/session.c:2452:9
+    #8 0x5581bfbabcc3 in reader__read_event tools/perf/util/session.c:2381:14
+    #9 0x5581bfbad942 in reader__process_events tools/perf/util/session.c:2430:8
+    #10 0x5581bfb78256 in __perf_session__process_events tools/perf/util/session.c:2477:8
+    #11 0x5581bfb702c4 in perf_session__process_events tools/perf/util/session.c:2643:9
+    #12 0x5581bf2da266 in __cmd_script tools/perf/builtin-script.c:2855:8
+    #13 0x5581bf2bfcdd in cmd_script tools/perf/builtin-script.c:4402:8
+    #14 0x5581bf67004b in run_builtin tools/perf/perf.c:350:11
+    #15 0x5581bf66b8ea in handle_internal_command tools/perf/perf.c:403:8
+    #16 0x5581bf66f527 in run_argv tools/perf/perf.c:447:2
+    #17 0x5581bf669d2d in main tools/perf/perf.c:561:3
 
-On Wed, Mar 20, 2024 at 11:22:09AM +0530, Balamanikandan Gunasundar wrote:
-> Add nand bindings for legacy nand controllers. These bindings are not used
-> with the new device trees. This is still maintained to support legacy dt
-> bindings.
->=20
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
-chip.com>
-> ---
->  .../bindings/mtd/atmel-nand-deprecated.yaml        | 156 +++++++++++++++=
-++++++
->  .../devicetree/bindings/mtd/atmel-nand.txt         | 116 ---------------
->  2 files changed, 156 insertions(+), 116 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.=
-yaml b/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.yaml
-> new file mode 100644
-> index 000000000000..c8922ab0f1d5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated.yaml
+  Uninitialized value was stored to memory at
+    #0 0x5581c005ddf8 in intel_pt_walk_insn tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:1256:25
+    #1 0x5581c001a932 in intel_pt_walk_fup tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:1428:9
+    #2 0x5581c000f76c in intel_pt_walk_trace tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:3299:10
+    #3 0x5581c000899b in intel_pt_decode tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:3988:10
+    #4 0x5581c00c5180 in intel_pt_run_decoder tools/perf/util/intel-pt.c:2941:11
+    #5 0x5581c00968f8 in intel_pt_process_timeless_queues tools/perf/util/intel-pt.c:3074:4
+    #6 0x5581c007cf49 in intel_pt_process_event tools/perf/util/intel-pt.c:3482:10
+    #7 0x5581bffa269a in auxtrace__process_event tools/perf/util/auxtrace.c:2830:9
+    #8 0x5581bfb826c0 in perf_session__deliver_event tools/perf/util/session.c:1649:8
+    #9 0x5581bfba1d7f in perf_session__process_event tools/perf/util/session.c:1891:9
+    #10 0x5581bfba82e4 in process_simple tools/perf/util/session.c:2452:9
+    #11 0x5581bfbabcc3 in reader__read_event tools/perf/util/session.c:2381:14
+    #12 0x5581bfbad942 in reader__process_events tools/perf/util/session.c:2430:8
+    #13 0x5581bfb78256 in __perf_session__process_events tools/perf/util/session.c:2477:8
+    #14 0x5581bfb702c4 in perf_session__process_events tools/perf/util/session.c:2643:9
+    #15 0x5581bf2da266 in __cmd_script tools/perf/builtin-script.c:2855:8
+    #16 0x5581bf2bfcdd in cmd_script tools/perf/builtin-script.c:4402:8
+    #17 0x5581bf67004b in run_builtin tools/perf/perf.c:350:11
+    #18 0x5581bf66b8ea in handle_internal_command tools/perf/perf.c:403:8
+    #19 0x5581bf66f527 in run_argv tools/perf/perf.c:447:2
+```
 
-Node name matching the devices please.
+Adding a curly brace initializer for the intel_pt_insn in
+intel_pt_walk_fup rectifies this, however, there may be other issues
+lurking behind this so initialize all similar instances.
 
-> @@ -0,0 +1,156 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/atmel-nand-deprecated.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Atmel NAND flash controller deprecated bindings
+Fixes: f4aa081949e7 ("perf tools: Add Intel PT decoder")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-/stuff/linux-dt/Documentation/devicetree/bindings/mtd/atmel-nand-deprecated=
-=2Eyaml: title: 'Atmel NAND flash controller deprecated bindings' should no=
-t be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-	hint: Everything is a binding/schema, no need to say it. Describe what har=
-dware the binding is for.
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+index b450178e3420..b4a95af2e4cc 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+@@ -1115,7 +1115,7 @@ static void intel_pt_sample_insn(struct intel_pt_decoder *decoder)
+  */
+ static void intel_pt_sample_fup_insn(struct intel_pt_decoder *decoder)
+ {
+-	struct intel_pt_insn intel_pt_insn;
++	struct intel_pt_insn intel_pt_insn = {};
+ 	uint64_t max_insn_cnt, insn_cnt = 0;
+ 	int err;
+ 
+@@ -1418,7 +1418,7 @@ static inline bool intel_pt_fup_with_nlip(struct intel_pt_decoder *decoder,
+ 
+ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
+ {
+-	struct intel_pt_insn intel_pt_insn;
++	struct intel_pt_insn intel_pt_insn = {};
+ 	uint64_t ip;
+ 	int err;
+ 
+@@ -1461,7 +1461,7 @@ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
+ 
+ static int intel_pt_walk_tip(struct intel_pt_decoder *decoder)
+ {
+-	struct intel_pt_insn intel_pt_insn;
++	struct intel_pt_insn intel_pt_insn = {};
+ 	int err;
+ 
+ 	err = intel_pt_walk_insn(decoder, &intel_pt_insn, 0);
+@@ -1626,7 +1626,7 @@ static int intel_pt_emulated_ptwrite(struct intel_pt_decoder *decoder)
+ 
+ static int intel_pt_walk_tnt(struct intel_pt_decoder *decoder)
+ {
+-	struct intel_pt_insn intel_pt_insn;
++	struct intel_pt_insn intel_pt_insn = {};
+ 	int err;
+ 
+ 	while (1) {
+-- 
+2.44.0.291.gc1ea87d7ee-goog
 
-> +
-> +maintainers:
-> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> +
-> +description: |
-> +  This should not be used in the new device trees.
-
-If these should not be used in new files, where are the replacement
-bindings for the three devices listed here? I think, rather than being
-deprecated, these are the only bindings for these devices and what you
-actually want to say here is that these should not be used for /new
-devices/. I'd drop mention of deprecation from the title as these
-bindings are the only ones for this hardware AFAICT and just say that
-new devices should be documented in $new_file.
-
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - atmel,at91rm9200-nand
-> +      - atmel,sama5d2-nand
-> +      - atmel,sama5d4-nand
-> +
-> +  reg:
-
-Missing constraints.
-
-> +    description:
-> +      should specify localbus address and size used for the chip, and
-> +      hardware ECC controller if available. If the hardware ECC is PMECC,
-> +      it should contain address and size for PMECC and PMECC Error Locat=
-ion
-> +      controller.  The PMECC lookup table address and size in ROM is
-> +      optional. If not specified, driver will build it in runtime.
-> +
-> +  atmel,nand-addr-offset:
-> +    description:
-> +      offset for the address latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Missing constraints.
-
-> +
-> +  atmel,nand-cmd-offset:
-> +    description:
-> +      offset for the command latch.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Missing contraints.
-
-> +
-> +  "#address-cells":
-> +    description:
-> +      Must be present if the device has sub-nodes representing partitions
-
-Does this binding even allow partition child nodes? Hint: it doesn't.
-
-> +  "#size-cells":
-> +    description:
-> +      Must be present if the device has sub-nodes representing partition=
-s.
-> +
-> +  gpios:
-> +    description:
-> +      specifies the gpio pins to control the NAND device. detect is an
-> +      optional gpio and may be set to 0 if not present.
-
-Missing constraints (and maybe a type too? I dunno if "gpios" has a
-special case in the -gpios regexes).
-
-> +  atmel,nand-has-dma:
-> +    description:
-> +      support dma transfer for nand read/write.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  atmel,has-pmecc:
-> +    description:
-> +      enable Programmable Multibit ECC hardware, capable of BCH encoding
-> +      and decoding, on devices where it is present.
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  nand-on-flash-bbt:
-> +    description:
-> +      enable on flash bbt option if not present false
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +  nand-ecc-mode:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      operation mode of the NAND ecc mode, soft by default.  Supported
-> +    enum:
-> +      [none, soft, hw, hw_syndrome, hw_oob_first, soft_bch]
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  atmel,pmecc-cap:
-> +    description:
-> +      error correct capability for Programmable Multibit ECC Controller.=
- If
-> +      the compatible string is "atmel,sama5d2-nand", 32 is also valid.
-> +    enum:
-> +      [2, 4, 8, 12, 24]
-
-You're missing an extra permitted value for the sama5d2.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  atmel,pmecc-sector-size:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      sector size for ECC computation.
-> +    enum:
-> +      [512, 1024]
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  atmel,pmecc-lookup-table-offset:
-
-Missing a default since this is optional.
-
-> +    description:
-> +      includes two offsets of lookup table in ROM for different sector
-> +      size. First one is for sector size 512, the next is for sector size
-> +      1024. If not specified, driver will build the table in runtime.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +  nand-bus-width:
-> +    description:
-> +      nand bus width
-> +    enum:
-> +      [8, 16]
-
-Missing a default of 8 here.
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-
-You're missing the optional child node for the "nand flash controller" on
-sama5d2.
-
-> +required:
-> +  - compatible
-> +  - reg
-> +  - atmel,nand-addr-offset
-> +  - atmel,nand-cmd-offset
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - gpios
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand0: nand@40000000,0 {
-
-Drop the unused node name.
-
-> +            compatible =3D "atmel,at91rm9200-nand";
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +            reg =3D <0x40000000 0x10000000
-> +                   0xffffe800 0x200>;
-> +            atmel,nand-addr-offset =3D <21>;	/* ale */
-> +            atmel,nand-cmd-offset =3D <22>;	/* cle */
-> +            nand-on-flash-bbt;
-> +            nand-ecc-mode =3D "soft";
-> +            gpios =3D <&pioC 13 0	/* rdy */
-> +                     &pioC 14 0 /* nce */
-> +                     0		/* cd */
-> +                    >;
-
-Please follow the coding style rather than copy-paste from the text
-based binding. Applies to both examples. An example with the nfc would
-be more helpful than two bindings for the same device.
-
-
-Thanks,
-Conor.
-
-> +    };
-> +  - |
-> +    /* for PMECC supported chips */
-> +    nand1@40000000 {
-> +            compatible =3D "atmel,at91rm9200-nand";
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +            reg =3D <0x40000000 0x10000000	/* bus addr & size */
-> +                   0xffffe000 0x00000600	/* PMECC addr & size */
-> +                   0xffffe600 0x00000200	/* PMECC ERRLOC addr & size */
-> +                   0x00100000 0x00100000>;	/* ROM addr & size */
-> +
-> +            atmel,nand-addr-offset =3D <21>;	/* ale */
-> +            atmel,nand-cmd-offset =3D <22>;	/* cle */
-> +            nand-on-flash-bbt;
-> +            nand-ecc-mode =3D "hw";
-> +            atmel,has-pmecc;	/* enable PMECC */
-> +            atmel,pmecc-cap =3D <2>;
-> +            atmel,pmecc-sector-size =3D <512>;
-> +            atmel,pmecc-lookup-table-offset =3D <0x8000 0x10000>;
-> +            gpios =3D <&pioD 5 0	/* rdy */
-> +                     &pioD 4 0	/* nce */
-> +                     0		/* cd */
-> +                    >;
-> +    };
-
---bLcjqDi7D14ZgMoA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfsOFQAKCRB4tDGHoIJi
-0t3kAP9jY8HZKToi98ltz47V6tQojJLjSgDRdnCw6LafnC0+wgD+JYw2mnTfdEk6
-AskqOwNiZoOOmlMA/wdsvn9DUlQKOwo=
-=XKaT
------END PGP SIGNATURE-----
-
---bLcjqDi7D14ZgMoA--
 
