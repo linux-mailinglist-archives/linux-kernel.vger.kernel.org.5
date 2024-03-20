@@ -1,152 +1,102 @@
-Return-Path: <linux-kernel+bounces-108397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E6828809FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:52:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B82DE8809FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95411B23B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:52:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF28B1C22399
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1891171D;
-	Wed, 20 Mar 2024 02:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5B8101C6;
+	Wed, 20 Mar 2024 02:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jx5CodSg"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="TF5n0Npj"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33AD8F9E9;
-	Wed, 20 Mar 2024 02:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE68828F4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710903118; cv=none; b=D7BDhdkiKhIuAEzQfnSJN9Lo3RWuTRdRA9AVno1mqXAuDx7ZqtDtLczQOI2VlLIZgUEcxuq4B3AJr/qLKqXSZg24hrjU0rL3Lu+l2MhSwsjQNBRrQh+T8f0rHYVF6bzlxMFnIW6QIdQf9fP9gZ/7ccVhsfz9nRbdOgKXY3XCgaI=
+	t=1710903204; cv=none; b=BIijc2lDhc4oLAI8pEyv6aa+QyJKD5z+1E6ntJDsSgQVC9NhZWcJivrmYiagv5zliCnr0cWzi5xkyZzxr3gc+XHJpuYhjh5d819WgdIgU28Hrt+os6RUYsvvikYRqe/39+z2ZXPA8x1PwzylyQm937mo9HxSvcUkN74xHouAHcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710903118; c=relaxed/simple;
-	bh=Ozvz96oEDbbGhiLAGb3pU679lIZRAnAiVuKChCLc13g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jIjp+fHyHXjTCcKQxlJD8yFJj7CXUaBEA8dbi9d60n02ikOXI8IM03j1SNdSBQBo10ghGqWgSqoluFk/4phAKWvCshT4m4O2KvYllRG/hTkS5WKt4m9PKuwBppm4n7F47e/lKCgYWtPrvcGTSD/nT5kN0DxF9huZhKyM/42O5ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jx5CodSg; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e696233f44so1039677b3a.0;
-        Tue, 19 Mar 2024 19:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710903116; x=1711507916; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tOqBNIYKiH/8hqRbBxGjJO8n4CKUboE+5yISgprs/oE=;
-        b=jx5CodSgJwe7HQW95qk1PgiS8Rdg47K6SX8JIln4VkewthS+OEQWMOuQ3e4yyRX5NS
-         TcH1bt5SfsYgCbwrxW8qM7SrdihhvoVkgtC8DffO7hnQnhyBb96MUWz7j6m5Adac11qD
-         /UfkTkfJSyvV4sKMNflNlpBQJnCdpxa6X4My/H8L+a1N8ca6wjXeV85Ca9DoLhcZce/C
-         /AOL6Dcd7Lm23Nk62a9E279MrxLSGFqC3TP/v7wjpRWRfuvvCb6PKOrplsXw9TJ6PwCh
-         fJPrjH//S2eZgRQz17V7fnxbN4l/RG5oPStN3oPiqUTG2N52sXQ+/o2N7N0AOLEBGEIY
-         dCJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710903116; x=1711507916;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tOqBNIYKiH/8hqRbBxGjJO8n4CKUboE+5yISgprs/oE=;
-        b=Q0Elpw8g+MINpnHt65kc5UUFXH1xQgCJTLz+XsCKlH1niU6uUiy8cNeXzDM8J2wJcB
-         ASqKOAeox/saBmPy5Ws+DWFILOddt02wG66VFNvEHALNTTYaqQvzCyGUbvOv4FVQeV97
-         oy9CW4L592Wc6ld3mBV3h7AkQdaiCU7w4Cxi9asBXUZ6itxO9sjpvGIb3hT8Pv7Om7/G
-         VrLhzldYHQ6FKA2X2LbfOnlfYhuGhCvG2Wa8PgTZMx5svrhqasdb4gJkvP4TS42U+Fg1
-         GA0zm0AZXsPu8OqFDdXJG8lZDyFDNnRKLBVgyoKhP34YVnl8HKhasmzVT6Y82DrMYBBc
-         uiYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUIEgtGJ7rHl7unY5I2Xdzr5XtS8DkLF2ntL/dL2QAeBMpObTpowb5LLOGPEV9FfasGZmx9yh1uwQEESN6nK3ZxCXzyIHQeYtsKHfFKMIU2HU3QK8libypyiiERHLY2/8EXcdbGZbNrg2IQBgbc2SIOqFg2lJ5A1F3i6Ty6nwwIsfg1ue3dgCU4ya9ED/v8RmEccoUR1LfDUpr7FWIpltzbHp3r1dYRDYVzs+Qf
-X-Gm-Message-State: AOJu0YzvOCHssPu32lbk4rXLiNo2DT2Y8vnkibAngcarL2HojoZWisV0
-	Deu74YTMTf3mgGpLAd+3WQFFUP7SNCJgzB62JX6RIBhuVFNsvd+8
-X-Google-Smtp-Source: AGHT+IFLF+sW1wqHw8Op+WICxDqpiWGU83Qoyf5GxbFCm3NED9V/egFahqM55WaQWsdQczbNJRdB8w==
-X-Received: by 2002:a05:6a00:9a5:b0:6e7:4ac1:7f9 with SMTP id u37-20020a056a0009a500b006e74ac107f9mr2866611pfg.0.1710903116342;
-        Tue, 19 Mar 2024 19:51:56 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id jw2-20020a056a00928200b006e703e0e2f7sm7105871pfb.194.2024.03.19.19.51.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 19:51:55 -0700 (PDT)
-Date: Wed, 20 Mar 2024 10:51:51 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Ian Rogers <irogers@google.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, akpm@linux-foundation.org, bfoster@redhat.com,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] lib min_heap: Add min_heap_sift_up()
-Message-ID: <ZfpPR1gRGnMwtdVC@visitorckw-System-Product-Name>
-References: <20240319180005.246930-1-visitorckw@gmail.com>
- <20240319180005.246930-13-visitorckw@gmail.com>
- <CAP-5=fVcBAxt8Mw72=NCJPRJfjDaJcqk4rjbadgouAEAHz_q1A@mail.gmail.com>
+	s=arc-20240116; t=1710903204; c=relaxed/simple;
+	bh=3wOx2qDEKjHgiu3tYCtv/UuUYuX2mzOT+NakgfgxUpA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AzuATWqlQnST4eZoF/XVHlUlj3HikIOWFEJC3GPBxHkE/tJx/YzThlk7VySpkMxWn5CwKtkRGutMoUndgP3sHY7aBp7sODAmmy7NUEGqSlpSHOPtkaT1XymABl6MD4DrJ/52K+HiriEo6l9Kj3Jhu+sTnqrBINx5uHUaN71LKhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=TF5n0Npj; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1710903201; x=1742439201;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3wOx2qDEKjHgiu3tYCtv/UuUYuX2mzOT+NakgfgxUpA=;
+  b=TF5n0NpjBF/9oHmPqL1wNDSez2eDUEHo4Lv/7T8cI2pbCzWmQfsXDGN1
+   4HCbBHui7YmrtVURKA2cFj28tm+8g02klLG6DbgBp+QcWB5xBzkEFzM0N
+   PLgbMY3rtP5HI+AuhjQKHiYpZ8doHFq9TecNz4ivWjAF9hIzkVrABAZJf
+   aGyihwrIlJ76fHxqi0ndq05TuirP5uNhvdI7DHklLmvNF6Lw4kRdjB94s
+   x79KQfwUTs7vkdS+gUqW3bX7NieL9pMbswCoqGGgXz7tmW2KT8VBtAyOu
+   Es0pSlKwjnBIXJ6dnUhBSg+TZYzIpJjOghsypKkUALysyM21bww/y/Qei
+   A==;
+X-CSE-ConnectionGUID: C7KcuK3eRZm2UzlPs6x+Yg==
+X-CSE-MsgGUID: 00oSvkqLR/K8e4v0SunErw==
+X-IronPort-AV: E=Sophos;i="6.07,138,1708412400"; 
+   d="scan'208";a="185147938"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Mar 2024 19:53:20 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 19:53:05 -0700
+Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 19:53:03 -0700
+From: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+To: <linux-kernel@vger.kernel.org>
+CC: <balamanikandan.gunasundar@microchip.com>, <hari.prasathge@microchip.com>
+Subject: [PATCH v2] MAINTAINERS: update maintainer for microchip nand drivers
+Date: Wed, 20 Mar 2024 08:22:58 +0530
+Message-ID: <20240320025258.6854-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVcBAxt8Mw72=NCJPRJfjDaJcqk4rjbadgouAEAHz_q1A@mail.gmail.com>
+Content-Type: text/plain
 
-On Tue, Mar 19, 2024 at 01:12:18PM -0700, Ian Rogers wrote:
-> On Tue, Mar 19, 2024 at 11:01 AM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> >
-> > Add min_heap_sift_up() to sift up the element at index 'idx' in the
-> > heap.
-> 
-> Normally sift up is used to implement the min heap but isn't part of
-> the API, eg. there is a sift up in min_heap_push. Should min_heapify
-> be renamed to min_heap_sift_down to align with this name?
-> 
+Update myself as maintainer for Microchip nand and pmecc drivers.
 
-Sure, I can add a patch in v2 to rename min_heapify to min_heap_sift_down.
+Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+---
+v2: Removed the incorrect entry in microchip ecc driver
 
-Regards,
-Kuan-Wei
+ MAINTAINERS | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >  include/linux/min_heap.h | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> >
-> > diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> > index ce085137fce7..586965977104 100644
-> > --- a/include/linux/min_heap.h
-> > +++ b/include/linux/min_heap.h
-> > @@ -199,6 +199,26 @@ bool __min_heap_push(struct __min_heap *heap, const void *element, size_t elem_s
-> >  #define min_heap_push(_heap, _element, _func, _args)   \
-> >         __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func, _args)
-> >
-> > +/* Sift up ith element from the heap, O(log2(nr)). */
-> > +static __always_inline
-> > +void __min_heap_sift_up(struct __min_heap *heap, size_t elem_size, size_t idx,
-> > +               const struct min_heap_callbacks *func, void *args)
-> > +{
-> > +       void *data = heap->data;
-> > +       size_t parent;
-> > +
-> > +       while (idx) {
-> > +               parent = (idx - 1) / 2;
-> > +               if (func->less(data + parent * elem_size, data + idx * elem_size, args))
-> > +                       break;
-> > +               func->swp(data + parent * elem_size, data + idx * elem_size, args);
-> > +               idx = parent;
-> > +       }
-> > +}
-> > +
-> > +#define min_heap_sift_up(_heap, _idx, _func, _args)    \
-> > +       __min_heap_sift_up(&(_heap)->heap, __minheap_obj_size(_heap), _idx, _func, _args)
-> > +
-> >  /* Remove ith element from the heap, O(log2(nr)). */
-> >  static __always_inline
-> >  bool __min_heap_del(struct __min_heap *heap, size_t elem_size, size_t idx,
-> > --
-> > 2.34.1
-> >
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 82896c3e0559..b6582bd3eb2c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14500,8 +14500,9 @@ S:	Maintained
+ F:	drivers/mmc/host/atmel-mci.c
+ 
+ MICROCHIP NAND DRIVER
++M:	Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+ L:	linux-mtd@lists.infradead.org
+-S:	Orphan
++S:	Supported
+ F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
+ F:	drivers/mtd/nand/raw/atmel/*
+ 
+-- 
+2.25.1
+
 
