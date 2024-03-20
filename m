@@ -1,181 +1,135 @@
-Return-Path: <linux-kernel+bounces-108839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF358810BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:17:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F79E8810D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2D51F214C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:17:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AF2F1C21573
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4031F4086C;
-	Wed, 20 Mar 2024 11:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625D93BBE7;
+	Wed, 20 Mar 2024 11:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="NTznYoqz"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="QOFFn/XR"
+Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A853FB93;
-	Wed, 20 Mar 2024 11:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B211171D
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710933408; cv=none; b=cHI4JnrVbheUOlRxhHnbcbcl4I7FSFXUA2e6edNH7OZTSq5cflpP1P6O8G3OXoOIkyV6RVsohXELONDT+0/vU88g3J/jOJWeqmAsPtwKUoolkwIBlp2NXOlC4GxO0dnpyMBj+aHfFi1Pd362b6rLjAH2O7v3HAj9Dzd06U+JNWg=
+	t=1710933796; cv=none; b=sPog7PtDcDhs+lC+fR4n04ERdGVG5CLrC51Zs9wceUkPCB5eia3nvgvIEp4i5+XyT4MZMNh16ZBI/8kU3cR2xb8sIeZvp7I8VJmvFFlYMEaRmaFZ8qEEL+e3TwoSR+SRhP/w5cHGFC77jgSXvriFMjSLxHLJnRs8nyuqtfbV/OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710933408; c=relaxed/simple;
-	bh=jZITW5F1LPSEX35Sne0hsGdLz3H++JJ4tnzWy/SgkTg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=s0Ha10noQrFlDb/AWQ89gOAAVhRQB9ocjam9yjXblrN2OMffgVoP0gHqT9NlhBHLEH0BByLiD2caED26D/YvHxIb2mr5QK7tdS5dFOWsZm0kuJZMFc8JZ56wcB5agz/W9lsuZyPGKL3rkfHqsyAtM8p0WY8JENgvt3cL1sXZDt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=NTznYoqz; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (pd9e59c8a.dip0.t-ipconnect.de [217.229.156.138])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 00EFF2FC0057;
-	Wed, 20 Mar 2024 12:16:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1710933401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+4zpNEIVjjhVbRfRyLCxzzJG4yUwU/PAPb8l9mzJcKI=;
-	b=NTznYoqzURRGHcbjAz6JNcN5eRJt3vLTjWwpy2AXYT5bl8Pz40YzpjhtiaIE1T7PiS1Bsk
-	spa6NzUOryF8o76qC74LsyrHfzYvd7ffScqzi7bVzJoCAnBj9itHKwKRoyEIwR7TYaxTuv
-	WS5n+eUeyBOgHcHd0tyrrKX/yZFKCvI=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
-Date: Wed, 20 Mar 2024 12:16:40 +0100
+	s=arc-20240116; t=1710933796; c=relaxed/simple;
+	bh=nusKVOAceUYCL9CnXyui/hszTDW4cvOOck0z5/kb4KA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=tYGj9ZzIR8MnmfbEVQzM4OFM1KRxMO52M7mTxHro+fCAW/HGXpC9pFbnEXUHSZwWnHdU/1IXqxLgYMGEHDXIg/ifaYXn51AzpAkOTf8mNfMQQMWYLBolg75/flRnJaOHss41/gyBGpBks0Jxl2UgUmdg53xfBXw7syEiwyjY56Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=QOFFn/XR; arc=none smtp.client-ip=203.205.221.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710933791; bh=V2AN3h8sZEyvNDd8KWZE3vxEDjCSIaOb4bVXmJqygsY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=QOFFn/XR/iJ9G5TgGfeA54sx4L1NIcoyNDGiFF+ItZ3G3oLbDpMN9supWM9cOYw2d
+	 gs5VlWv6o94aldjyMy66aUprcQ88ufLVY5rxSLbXabBKCYySTXs++GrcXmiXbxCyLI
+	 KzRNeuXQa96Xsclyn29sqBK1MN76ZOzabnVeKglI=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 43B23EAD; Wed, 20 Mar 2024 19:16:59 +0800
+X-QQ-mid: xmsmtpt1710933419t68z7oox4
+Message-ID: <tencent_7DD17367A377E97CA3B5A443F776776A8605@qq.com>
+X-QQ-XMAILINFO: OZsapEVPoiO6pb6ZN/T6VIT8DrPQBtsIeM42KX8VgYoP7huV0pssSV3w47+sDD
+	 cz0lXOB1smSYy+d2D5iSubYYjIhnUaOTCow96wjqbUOmT45+bTVsI40M773wmDkPcas1EMKclcko
+	 lBnkrXoXZrq8rLXzttIuXXemEWC4q4oT+s4ZwXnitrpf/CkT0idB/mFbWZpVX8v0CtvTq4OEJyYP
+	 OjvrjqBdhV2lBl3ePb6bezWdKSE35GKSRg/XzXldEmw9r2kJMjE0mNXNk5Qa4tK7fr2z/YXZvZOB
+	 O5BUufCYFUX21m/MuiTy9kjn6SSsOcNnjfv7R9LddoJTJglGlZ/6PZVac8oGneiL1zhe6SJV7HIh
+	 N6Vykdiyvy0+QhqRn8lCqXxrUv0KwjYZcCyNZF1V0UqJYsfaUvHEpd9vg8oCjRQe/zomV4qFe5An
+	 kFfWyHP7BCwcamy7QHBTXa+V7FteZS5W0ZYZjw/8K9RPJiOg556uroCNSqOPsPcipkT+qiAU1wev
+	 7SDJ0q30i5eqQy6YCbZ6sqsvVLW796y1JpXVb6OlJQ6oymE0kw8FjAw5QHladLr7I3P+XAHHCpbn
+	 5C0xzFw7+MyRuXy55HY0ZyCch1HvPJn7swp3a6QRKG8esk9bpYW2Tz0HoY5xEGlnbGa9n9UQqgJN
+	 HEYtPg2BcXmZmtAS8qnW+lu+GqIrzry4o90+0UoJLCUL1tDPRLUZ9zX52kVNSSwUSQtgngnBL82o
+	 taV68Y+uYBbR6MR4P9hwNsVV6BI2HN3EUUVCg9ywuv3+rDHcR+eTomIjCgYzvJJANWQqd0UgKCPW
+	 aRJxFnMB+nQfdI3KEV+9/BX7f/DHuz5tt3uC4Q0R1AGvbALzcEoR3MOQp+SYEsY1dgISq1ZN6h1h
+	 XKTWXJOCAk4bN5PBkFvWHXk+9VhTqe7xLqj6Qw6vVCBspvDs3evJt91/xoQiCvZ41x8Xn80wzNmL
+	 mArJr6v7am1iODG/o03Q==
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in check_stack_range_initialized
+Date: Wed, 20 Mar 2024 19:17:00 +0800
+X-OQ-MSGID: <20240320111659.1320058-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000003dc8e00614076ab6@google.com>
+References: <0000000000003dc8e00614076ab6@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Future handling of complex RGB devices on Linux v3
-Content-Language: en-US
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
- linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
- Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>
-References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
- <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
- <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
- <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
- <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
- <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
- <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
- <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
- <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
- <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
- <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
- <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
- <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
- <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
- <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
-In-Reply-To: <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Hans and the others,
+please test oob in check_stack_range_initialized
 
-Am 22.02.24 um 14:14 schrieb Werner Sembach:
-> Hi,
->
-> Thanks everyone for the exhaustive feedback. And at least this thread is a 
-> good comprehesive reference for the future ^^.
->
-> To recap the hopefully final UAPI for complex RGB lighting devices:
->
-> - By default there is a singular /sys/class/leds/* entry that treats the 
-> device as if it was a single zone RGB keyboard backlight with no special effects.
->
-> - There is an accompanying misc device with the sysfs attributes "name", 
-> "device_type",  "firmware_version_string", "serial_number" for device 
-> identification and "use_leds_uapi" that defaults to 1.
->
->     - If set to 0 the /sys/class/leds/* entry disappears. The driver should 
-> keep the last state the backlight was in active if possible.
->
->     - If set 1 it appears again. The driver should bring it back to a static 1 
-> zone setting while avoiding flicker if possible.
->
-> - If the device is not controllable by for example hidraw, the misc device 
-> might also implement additional ioctls or sysfs attributes to allow a more 
-> complex low level control for the keyboard backlight. This is will be a highly 
-> vendor specific UAPI.
-So in the OpenRGB issue thread 
-https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/dynamic-lighting-devices 
-aka HID LampArray was mentioned. I did dismiss it because I thought that is only 
-relevant for firmware, but I now stumbled upon the Virtual HID Framework (VHF) 
-https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/virtual-hid-framework--vhf- 
-and now I wonder if an equivalent exists for Linux? A quick search did not yield 
-any results for me.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
 
-If a virtual HID device is possible and the WMI interface can reasonably be 
-mapped to the LampArray API this might be the best starting point:
 
-- Implement a Virtual HID device with LampArray
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1dd3b99d1bb9..6306925c5e47 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7177,6 +7177,11 @@ static int check_stack_range_initialized(
+ 		return 0;
+ 	}
+ 
++	if (INT_MIN - access_size > max_off) {
++		verbose(env, "invalid access size\n");
++		return -EACCES;
++	}
++
+ 	for (i = min_off; i < max_off + access_size; i++) {
+ 		u8 *stype;
+ 
+@@ -8589,6 +8594,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 		return 0;
+ 	}
+ 
++	printk("1meta:%p, maptr:%p, ks:%d, kv:%d,%s\n",
++		meta, meta->map_ptr, meta->map_ptr->key_size, meta->map_ptr->value_size, __func__);
+ 	if (type_is_pkt_pointer(type) &&
+ 	    !may_access_direct_pkt_data(env, meta, BPF_READ)) {
+ 		verbose(env, "helper access to the packet is not allowed\n");
+@@ -8704,6 +8711,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			verbose(env, "invalid map_ptr to access map->key\n");
+ 			return -EACCES;
+ 		}
++		printk("meta:%p, maptr:%p, ks:%d, reg->map_ptr:%p, %s\n",
++			meta, meta->map_ptr, meta->map_ptr->key_size, reg->map_ptr, __func__);
+ 		err = check_helper_mem_access(env, regno,
+ 					      meta->map_ptr->key_size, false,
+ 					      NULL);
+@@ -8721,6 +8730,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			return -EACCES;
+ 		}
+ 		meta->raw_mode = arg_type & MEM_UNINIT;
++		printk("meta:%p, maptr:%p, vs:%d, reg->map_ptr:%p, %s\n",
++			meta, meta->map_ptr, meta->map_ptr->value_size, reg->map_ptr, __func__);
+ 		err = check_helper_mem_access(env, regno,
+ 					      meta->map_ptr->value_size, false,
+ 					      meta);
+@@ -10248,6 +10259,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 
+ 	meta.func_id = func_id;
+ 	/* check args */
++	printk("meta:%p, maptr:%p, ks:%d, kv:%d,%s\n",
++		meta, meta->map_ptr, meta->map_ptr->key_size, meta->map_ptr->value_size, __func__);
+ 	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+ 		err = check_func_arg(env, i, &meta, fn, insn_idx);
+ 		if (err)
 
-- Implement LampArray in OpenRGB
-
-- (Optional) Implement a generic LampArray leds subsystem driver that maps to 
-the single zone control and ads the use_leds_uapi sysfs switch to the virtual 
-HID device
-
-- (Optional) Implement vendor specific controls for 
-AutonomousMode/built-in-firmware-effects via custom HID commands
-
-- (Optional) Implement Virtual HID devices for actual HID devices that don't 
-support LampArray in firmware (Open question: How to prevent userspace/OpenRGB 
-from interacting with original HID when the virtual HID device is not in 
-AutonomousMode? How to associate the original and virtual HID device to each 
-other that userspace can easily recognize this relation? Or is it possible to 
-add virtual HID commands on top of a real HID device, making it look exactly 
-like the pure virtual devices for userspace?)
-
-The LampArray API hereby is made with the intention to be used for multi leds 
-devices, like per-key-backlight keyboards, unlike the leds UAPI. And it is 
-coming anyway with new RGB devices soon. So it would not conflict with a "don't 
-introduce unnecessary UAPI interfaces" principle. Are there any plans already of 
-Wrapping LampArray in some kind ioctl/sysfs API? Or just have it used via 
-hidraw? Or was there no discussion about it till now?
-
-Regards,
-
-Werner
-
->
->     - The actual logic interacting with this low level UAPI is implemented by 
-> a userspace driver
->
-> Implementation wise: For the creation of the misc device with the 
-> use_leds_uapi switch a helper function/macro might be useful? Wonder if it 
-> should go into leds.h, led-class-multicolor.h, or a new header file?
->
-> - Out of my head it would look something like this:
->
-> led_classdev_add_optional_misc_control(
->     struct led_classdev *led_cdev,
->     char* name,
->     char* device_type,
->     char* firmware_version_string,
->     char* serial_number,
->     void (*deregister_led)(struct led_classdev *led_cdev),
->     void (*reregister_led)(struct led_classdev *led_cdev))
->
-> Let me know your thoughts and hopefully I can start implementing it soon for 
-> one of our devices.
->
-> Kind regards,
->
-> Werner Sembach
->
 
