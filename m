@@ -1,148 +1,176 @@
-Return-Path: <linux-kernel+bounces-108883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C1DC881156
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:50:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6438B881160
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5628B2358E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:50:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 950D91C228B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0567535B4;
-	Wed, 20 Mar 2024 11:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC0B3EA9C;
+	Wed, 20 Mar 2024 11:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="M6h5hQ0U"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MVGXaG9W"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EFD4595C;
-	Wed, 20 Mar 2024 11:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467F32628D;
+	Wed, 20 Mar 2024 11:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710935289; cv=none; b=nYc6atPL/mcx0iZ47G86joS4lagaPxviLS5L3vFysJfanVjTyhsR8xmpmoMwR/IfnapdPyr/QnOTny7Z3UoHPszgTY88q5Qvq+7A9A0kHbudZ9Kmx7rnvkC59Mz3YDT4cFS0wckGrP10Z8q2J7yswYgWOXYF7OEAO4gtgl1hZ+8=
+	t=1710935761; cv=none; b=hu9ccVhD5oWu+d8REHkNkudlTPXfW/41sPUdxlO1J3CrTVpVCLNvOG749eQ5zrYHMalz12qRfu63CTyHYwsSWD7FWbGPfbeROHZKDOTduop7wcqiUnhrABJZKMqQe2dptFwLEpiYpv2Jq+2KqSOSH3QEbnCGMK0P+4Fw3oi/4mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710935289; c=relaxed/simple;
-	bh=osERkD6x25VFZbh9JDDNJ74m6/+fUzUgTEQNEFwZkFA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iGevoZASXndP3V+6uxOyvDwm/LaCmhSvhSlsxzP23F2JIMvF5f6tXvbkCw95np7O8I2hNgXq5k72MUGmzm2hnAuySwv/lF1WuF2KV+SLy0LM3umKm70EdrDp+18tnQ4VsAm07Se3H7uOATSX+t7ej/ic+u0VkO94DHPJTVBYhcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=M6h5hQ0U; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KB0T4N004736;
-	Wed, 20 Mar 2024 11:48:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=EULON2aVDwRpBJ8sxfIz3QiJcn11hx0E9aBparFisOA=;
- b=M6h5hQ0UAJWbX7E1rVIXAQIR9IBIvVn//0mcP/HHNSFa1dFq96vnm8ifzh9BXcH19o2y
- w8xWR4aGbmI3IDGr12UCp4WZfyPBCmaG8vex9c8vI1IhNS6HfDIWZE48BxdGKdxKAa/r
- dS2hY8KjavqNwVMwzMJnSwkkMLtE0n30gA/2Mw9pqnn1WbewEMOPNEIs9rG+o86gjoik
- i9eIWxnKlqMfn4WkvF3V7vWf8kkG5tWQ9vBiLMocYEFdXa40gamm7I7XIhkm2RxoFScQ
- f6tEKW0pFTPoJo7Sjs6C2KFq3APOylW/e/wDWtU3ZZNiwKps3PGc/t3NBu4w+UOCfQWN kg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyx9k83xn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 11:47:59 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42KBlxOO013060;
-	Wed, 20 Mar 2024 11:47:59 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyx9k83xj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 11:47:59 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42K9Y8jo019924;
-	Wed, 20 Mar 2024 11:47:58 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqyknqp0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 11:47:58 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KBltIE23069438
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Mar 2024 11:47:57 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5227658065;
-	Wed, 20 Mar 2024 11:47:55 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A72C158062;
-	Wed, 20 Mar 2024 11:47:54 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Mar 2024 11:47:54 +0000 (GMT)
-From: Stefan Berger <stefanb@linux.ibm.com>
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
-        bbhushan2@marvell.com, jarkko@kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v7 13/13] crypto: x509 - Add OID for NIST P521 and extend parser for it
-Date: Wed, 20 Mar 2024 07:47:25 -0400
-Message-ID: <20240320114725.1644921-14-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240320114725.1644921-1-stefanb@linux.ibm.com>
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1710935761; c=relaxed/simple;
+	bh=q8QhaNhNNYX8Elx4g8xFrYMI0TdoKH97Luxe5R3MT/4=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=sAcsIF5oWhI23KIM8muiY8NvFzetxQrdPr+u16dkpheqTwcJN0+DIFB5Pgol1LRUzygdniI9XV2FeGQn95m4+STL7+nhZzhWzr0V0y+bUQc0v7rMov3Nuwl5bfUicv5I5gwpdCU2e+XKv1b1Y0cXd18gq7HB5JPq2RkV/WXzW7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MVGXaG9W; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710935759; x=1742471759;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=q8QhaNhNNYX8Elx4g8xFrYMI0TdoKH97Luxe5R3MT/4=;
+  b=MVGXaG9Wn8oPH1rMbKrMDWD7BsX3Lzo3xoD4lMp+MTL8fa1BR/SdZ4XC
+   4tz5KpeAHPpf+oKNbvGpidfznANO+yPIn24n7OFyKAdQ3213bY3luMuSF
+   FRj9/VHqSeL+FCGvqoxsXtocEaLPTFMw8L2qdMYokK7c5JbdoX8/Sr0BQ
+   HkpXbERDmJus04pVrQhvi6361G9IKgbgcDFBO1q19fo9uy9uymRIKOHGP
+   HKFhkPyAtIA1RBbIAv8U3JpLq0fAWny/dhANw5WdmXvu7KRPrNxQSkXEr
+   OHHQQbOHBpM6c2AAnzjNlYs2brPxVN1rWQR+LgqkabUxBF/I0MZLboIE2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17258357"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="17258357"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:55:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="14109562"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.16])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:55:56 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 20 Mar 2024 13:55:52 +0200 (EET)
+To: Luke Jones <luke@ljones.dev>
+cc: platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: asus-wmi: support toggling POST sound
+In-Reply-To: <7276ec7b-9b00-4241-a4eb-a8997daeba5c@app.fastmail.com>
+Message-ID: <bdcc3052-1403-8c2f-f703-66180394c461@linux.intel.com>
+References: <20240310061715.16531-1-luke@ljones.dev> <5f853562-cbe0-32d7-2644-d42d2bb9e060@linux.intel.com> <7276ec7b-9b00-4241-a4eb-a8997daeba5c@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vW6K_O31kVkbozqhqwd7a_GtUr6JY_GK
-X-Proofpoint-GUID: A66Xd7lrzOla-pQMMQz86b4w7MjRZauD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=971 lowpriorityscore=0 clxscore=1015
- malwarescore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403200093
+Content-Type: multipart/mixed; boundary="8323328-1644597700-1710935752=:1037"
 
-Enable the x509 parser to accept NIST P521 certificates and add the
-OID for ansip521r1, which is the identifier for NIST P521.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Cc: David Howells <dhowells@redhat.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Tested-by: Lukas Wunner <lukas@wunner.de>
----
- crypto/asymmetric_keys/x509_cert_parser.c | 3 +++
- include/linux/oid_registry.h              | 1 +
- 2 files changed, 4 insertions(+)
+--8323328-1644597700-1710935752=:1037
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 487204d39426..99f809b7910b 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -538,6 +538,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 		case OID_id_ansip384r1:
- 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
- 			break;
-+		case OID_id_ansip521r1:
-+			ctx->cert->pub->pkey_algo = "ecdsa-nist-p521";
-+			break;
- 		default:
- 			return -ENOPKG;
- 		}
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3921fbed0b28..af16d96fbbf2 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -65,6 +65,7 @@ enum OID {
- 	OID_Scram,			/* 1.3.6.1.5.5.14 */
- 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
- 	OID_id_ansip384r1,		/* 1.3.132.0.34 */
-+	OID_id_ansip521r1,		/* 1.3.132.0.35 */
- 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
- 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
- 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
--- 
-2.43.0
+On Wed, 20 Mar 2024, Luke Jones wrote:
+> On Wed, 20 Mar 2024, at 6:48 AM, Ilpo J=C3=A4rvinen wrote:
+> > On Sun, 10 Mar 2024, Luke D. Jones wrote:
+> >=20
+> > > Add support for toggling the BIOS POST sound on some ASUS laptops.
+> > >=20
+> > > Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> > > ---
+> > >  .../ABI/testing/sysfs-platform-asus-wmi       |  7 +++
+> > >  drivers/platform/x86/asus-wmi.c               | 54 +++++++++++++++++=
+++
+> > >  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
+> > >  3 files changed, 64 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Docu=
+mentation/ABI/testing/sysfs-platform-asus-wmi
+> > > index e32b4f0ae15f..f3c53b7453f0 100644
+> > > --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> > > +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> > > @@ -194,3 +194,10 @@ Contact: "Luke Jones" <luke@ljones.dev>
+> > >  Description:
+> > >  Set the target temperature limit of the Nvidia dGPU:
+> > >  * min=3D75, max=3D87
+> > > +
+> > > +What: /sys/devices/platform/<platform>/boot_sound
+> > > +Date: Jun 2023
+> > > +KernelVersion: 6.9
+> > > +Contact: "Luke Jones" <luke@ljones.dev>
+> > > +Description:
+> > > + Set if the BIOS POST sound is played on boot.
 
+> > > @@ -2106,6 +2107,55 @@ static ssize_t panel_od_store(struct device *d=
+ev,
+> > >  }
+> > >  static DEVICE_ATTR_RW(panel_od);
+> > > =20
+> > > +/* Bootup sound ****************************************************=
+***********/
+> > > +
+> > > +static ssize_t boot_sound_show(struct device *dev,
+> > > +      struct device_attribute *attr, char *buf)
+> > > +{
+> > > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> > > + int result;
+> > > +
+> > > + result =3D asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_BOOT_S=
+OUND);
+> > > + if (result < 0)
+> > > + return result;
+> > > +
+> > > + return sysfs_emit(buf, "%d\n", result);
+> > > +}
+> > > +
+> > > +static ssize_t boot_sound_store(struct device *dev,
+> > > +       struct device_attribute *attr,
+> > > +       const char *buf, size_t count)
+> > > +{
+> > > + int result, err;
+> > > + u32 snd;
+> > > +
+> > > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> > > +
+> > > + result =3D kstrtou32(buf, 10, &snd);
+> > > + if (result)
+> > > + return result;
+> > > +
+> > > + if (snd > 1)
+> > > + return -EINVAL;
+> >=20
+> > Why not just use kstrtobool()?
+>=20
+> Consistency with other methods mostly. Plus the possibility that asus=20
+> might do something like add different sounds. I'll change it if a revert=
+=20
+> back to kstrtou32 later doesn't break things.
+
+Hi Luke,
+
+I'd tend to think it's not the most likely scenario. But if they still do=
+=20
+something like that, the code could do both kstrtou32() and kstrtobool()=20
+to keep the sysfs interface backwards compatible.
+
+But it isn't end of the world for me if you want to keep it as=20
+kstrtou32().
+
+Annoyingly the other kstrtou32()s may not be easily converted over to=20
+kstrtobool() because u32 formatting accepts 16-based values too such as
+0x0. Perhaps hex format wouldn't be used by anyone but the risk is still=20
+there and the benefits are not that high.
+
+
+--=20
+ i.
+
+--8323328-1644597700-1710935752=:1037--
 
