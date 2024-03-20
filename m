@@ -1,155 +1,148 @@
-Return-Path: <linux-kernel+bounces-109241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0419B8816A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:38:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E6E8816A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98CD71F2453B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8DC3286504
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A086A33C;
-	Wed, 20 Mar 2024 17:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7566A8B2;
+	Wed, 20 Mar 2024 17:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FoZvniDk"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X3VdWnQl";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p1JLIAXc"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398A21DFC6;
-	Wed, 20 Mar 2024 17:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324476A341;
+	Wed, 20 Mar 2024 17:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956322; cv=none; b=QChtTFDFrT1bRKnsfrLkeXpDQxMiuRuGrDiW30lGRfuPrywSQgTqcftk9J3lDnfqYiEf31obtSexnyp8cyfls94Vdwd0E1BT9e4iLBVaaVcnzxiIET7ZXrCA78538d5w0kUU9kVK/ZBhVVpeg6CLybtheRPwKmQnPe+dsz/O1dY=
+	t=1710956325; cv=none; b=HMXt5bu71H3VxkGjfWcPsVn1Ttutex25Bq4DeXP/DDL9DEzBRKEjK32WfQYyyglaK6pxPmOeSySBv+Ug2AcO1RmW82vqHnpUCcde9YQGVLjswUl5ppy3SGIMJjOgOgM8KzXUnN6JJtr4ehY5DbLDFO2lLp5mjfql/r59vZykrA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956322; c=relaxed/simple;
-	bh=BD1p7xRCkTigXDTwD7AmWB0J0pQlUtQDyhIDykFPkSY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B5iKthwe9prQZH4pdR27KuHDWzuUaD/LH9WSl6DLWp57PNxiXCOWuQtEr+zNOcOAlmm1AZYBuh/xHN+0Lr1Yi8IPXJo4z8oLT/KcwFgfy0suD7Y15pYelLp+nTROQH0LQp9XiFoNtCFqbP3UYDxqhZkWKHz9OUGMNtdNlOAx+j8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FoZvniDk; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KHbmHJ004399;
-	Wed, 20 Mar 2024 17:38:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=eAjxk+fkXKrm1SuTXD0WCw3XZrKkOoH6zPt2wZjeslE=;
- b=FoZvniDkh7Md0XhR9tGimioEn1imLxcVatBDEfRsfA/m5cAIRiJ82tuXBP6L3e/ObEKJ
- 8T1U3DfL/uO7zgKRrdeTuoUWXuAnae6lCRSGQwkqnScY0XsdzSfLU5tKvz7Gys9PItVB
- REWlFxPgX7KgAqB6tplr8DEVEzGtTnrMM9w30jlRug/eoCUR/fOAmvjfWqof4kiZ+bna
- DDMK1d7dwJq0eoJxSj+0+bFwPaDibaiHfyhVb5cv4kEmEA3H1b4cDByy+VwaLHF/0geX
- 6Ynf6rFmJu9s0wb/DZgO1XhuHqazaQe61KVUpr8aWhgwcs7TV+MDJxbODZSGhgN4glhd qw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x04bv004x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 17:38:35 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KGT10A010049;
-	Wed, 20 Mar 2024 17:38:34 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wxvav4rwm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 17:38:34 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KHcUYm49414636
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Mar 2024 17:38:32 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4974F20043;
-	Wed, 20 Mar 2024 17:38:30 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3F06C20040;
-	Wed, 20 Mar 2024 17:38:29 +0000 (GMT)
-Received: from li-e1dea04c-3555-11b2-a85c-f57333552245.ibm.com.com (unknown [9.195.38.202])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Mar 2024 17:38:29 +0000 (GMT)
-From: Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>
-To: linux-doc@vger.kernel.org
-Cc: corbet@lwn.net, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>
-Subject: [PATCH] sched/doc: Update documentation for base_slice_ns and CONFIG_HZ relation
-Date: Wed, 20 Mar 2024 23:08:16 +0530
-Message-ID: <20240320173815.927637-2-mchauras@linux.ibm.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710956325; c=relaxed/simple;
+	bh=xwp4eRRwCGaPiDsjgiJ3KwoPvozYMQ2RaLp7XX1ULPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yn3Yp8t26mEAE/4cu2nNIbnT1JkU2T2dfUT7mTJmZFemyHY9fjBJmZ7Miw0bKm+hbP0MgPRm4e0fOCFha4dy2oMKcvnP20fI6eB3McXPNmXpndLp1FxUt6NVK/TWjzhXAe+BEUBsSax4L2Gz3ID3NwNU3/R3BL0sipVEDtveLvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=X3VdWnQl; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p1JLIAXc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CCFB15C076;
+	Wed, 20 Mar 2024 17:38:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710956321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mqLtQwQxhbXwBUY4R9Zu7ftNuAQlfnwIHtSjEpmlHsg=;
+	b=X3VdWnQlS/g6pWFhuVbT/AUDemD4JAAc4icdTTLYm8HSFLEB4CY8TylpT9RlButKQrQQyQ
+	mgJ4Wzzv3xRXX/ai0LyLOcbN8IlMjpibSs9GMlLHoh/vVpse0Q300vhFuKf5JPd/qksVoy
+	fMCGUY9aKwr/TMoSrR+TyVEA3fWdAH4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710956320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mqLtQwQxhbXwBUY4R9Zu7ftNuAQlfnwIHtSjEpmlHsg=;
+	b=p1JLIAXc7klbNEa+aPwcd4sdocYrjpEL2KLbnLX6Q2Dxu9wwk9YwK+fcSnsxp000H7ojla
+	0H6nKtybZrOGOh0e0fFYObJbLAa8xqtpLH6YmImLsfCiCt7pDk9HfIbGHDmvOoCpR0YEI+
+	SoL6CBaYZqFqR19V+ddbkEECSvsY5+s=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE782136CD;
+	Wed, 20 Mar 2024 17:38:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id oStwJyAf+2V5fwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 20 Mar 2024 17:38:40 +0000
+Date: Wed, 20 Mar 2024 18:38:31 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vladimir Davydov <vdavydov.dev@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH] mm/memcontrol: stop resize loop if limit was changed
+ again
+Message-ID: <ZfsfFyo4fRKX4h9Z@tiehlicka>
+References: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
+ <be05a470-bb31-47ef-b786-557c347de429@redhat.com>
+ <ZfsZElNXNf6bOKSt@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: OOwoNIBYoUxDU3RtGGienYWVL3cIBdOg
-X-Proofpoint-ORIG-GUID: OOwoNIBYoUxDU3RtGGienYWVL3cIBdOg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0 clxscore=1011
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403200142
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfsZElNXNf6bOKSt@tiehlicka>
+X-Spam-Score: 0.44
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=p1JLIAXc
+X-Spamd-Bar: /
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [0.44 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 BAYES_HAM(-0.05)[59.50%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[virtuozzo.com,cmpxchg.org,linux.dev,linux-foundation.org,gmail.com,vger.kernel.org,kvack.org,openvz.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: CCFB15C076
 
-The tunable base_slice_ns is dependent on CONFIG_HZ (i.e. TICK_NSEC)
-for any significant performance improvement. The reason being the
-scheduler tick is not frequent enough to force preemption when
-base_slice expires in case of
+On Wed 20-03-24 18:12:50, Michal Hocko wrote:
+> On Wed 20-03-24 13:09:07, Waiman Long wrote:
+> > 
+> > On 3/20/24 06:03, Pavel Tikhomirov wrote:
+> > > In memory_max_write() we first set memcg->memory.max and only then
+> > > try to enforce it in loop. What if while we are in loop someone else
+> > > have changed memcg->memory.max but we are still trying to enforce
+> > > the old value? I believe this can lead to nasty consequence like getting
+> > > an oom on perfectly fine cgroup within it's limits or excess reclaim.
+> > 
+> > Concurrent write to the same cgroup control file is not possible as the
+> > underlying kernfs_open_file structure has a mutex that serialize access to
+> > the file.
+> 
+> This is good to know and I was not aware of that. Thanks!
 
-           base_slice_ns < TICK_NSEC
-
-The below data is of stress-ng
-Number of CPU: 1
-Stressor threads: 4
-Time: 30sec
-
-On CONFIG_HZ=1000
-
-| base_slice | avg-run (msec) | context-switches |
-| ---------- | -------------- | ---------------- |
-| 3ms        | 2.914          | 10342            |
-| 6ms        | 4.857          | 6196             |
-| 9ms        | 6.754          | 4482             |
-| 12ms       | 7.872          | 3802             |
-| 22ms       | 11.294         | 2710             |
-| 32ms       | 13.425         | 2284             |
-
-On CONFIG_HZ=100
-
-| base_slice | avg-run (msec) | context-switches |
-| ---------- | -------------- | ---------------- |
-| 3ms        | 9.144          | 3337             |
-| 6ms        | 9.113          | 3301             |
-| 9ms        | 8.991          | 3315             |
-| 12ms       | 12.935         | 2328             |
-| 22ms       | 16.031         | 1915             |
-| 32ms       | 18.608         | 1622             |
-
-base_slice: the value of base_slice in ms
-avg-run (msec): average time of the stressor threads got on cpu before
-it got preempted
-context-switches: number of context switches for the stress-ng process
-
-Signed-off-by: Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>
----
- Documentation/scheduler/sched-design-CFS.rst | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/scheduler/sched-design-CFS.rst b/Documentation/scheduler/sched-design-CFS.rst
-index 6cffffe26500..82985d675554 100644
---- a/Documentation/scheduler/sched-design-CFS.rst
-+++ b/Documentation/scheduler/sched-design-CFS.rst
-@@ -100,6 +100,9 @@ which can be used to tune the scheduler from "desktop" (i.e., low latencies) to
- "server" (i.e., good batching) workloads.  It defaults to a setting suitable
- for desktop workloads.  SCHED_BATCH is handled by the CFS scheduler module too.
- 
-+In case the CONFIG_HZ leads to base_slice_ns < TICK_NSEC. The settings of
-+base_slice_ns will have little to no impact on the workloads.
-+
- Due to its design, the CFS scheduler is not prone to any of the "attacks" that
- exist today against the heuristics of the stock scheduler: fiftyp.c, thud.c,
- chew.c, ring-test.c, massive_intr.c all work fine and do not impact
+Btw. even if the interface itself is serialized then uncoordinated
+userspace is still timing dependent so fundamentally racy.
 -- 
-2.44.0
-
+Michal Hocko
+SUSE Labs
 
