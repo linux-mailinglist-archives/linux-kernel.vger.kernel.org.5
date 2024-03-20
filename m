@@ -1,195 +1,102 @@
-Return-Path: <linux-kernel+bounces-108500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3602B880B5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:40:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32219880B61
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE7921F22CD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:40:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E2D51C21D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810BB1802E;
-	Wed, 20 Mar 2024 06:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B339BED0;
+	Wed, 20 Mar 2024 06:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aR53uP9t"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="nMoxPTJU"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B18A29
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12431EEE7
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916847; cv=none; b=NskQUI/9hHz05Z0lf2+Yeso8s+l9XrU+t/U7MsV8A75BV9yXoteuH9fDuxOQlXR8X/SeFLIO0SHmK0pL3wmY4F/34UF882w/DBS48XiYFK5y6ddbgYhC4WWw9gjeBT486I9XrZiHKhT3UOnzqiOVocQnlZKMZqZql/jRR8vhTLU=
+	t=1710916864; cv=none; b=Flz+2Y/yv6n1WLHRooNSGOUH4T9GqMK2w4PQmY8OqQKAMbNldH1MJusW47HCz27kV6s1j/PMngPlKgBhK2aMoh6fuQeyUK9c704rwhRxUPFFjo/w5vnxfMR9x27YL+C75QSo/iEFSoHI8SES1jqz8ADZJoI+xzcrj1kaSh7nnpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916847; c=relaxed/simple;
-	bh=AJGAFL1dvLEouhNUnRCXPQwOfqJbsFPG6bk43pGZGe4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fGUtDik4o1qoEFUmqBqAKsuownse67Nl6w1Pcw/BYb7Z74Ik97GcYSph4hxYsYqPFS0yBvR3q+EmVFDGaIW6b0UHrpDCXAF8HNpjVZOYPqrvl/gLul//NQLeecOoe+GYOIQMNINC0LXZkuYJdBNnh98dOCZqX0s1kB9ZiAAQzoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aR53uP9t; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7e04e70c372so622150241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710916844; x=1711521644; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kcOOr88hJiSNYgd+zKExyCz3TqPQIrclo94noA5vOy0=;
-        b=aR53uP9t7tKGqfdj2ailUNKhw2r25vatffUjbLiDUqk1MU30gJMxgSzCOCW1jXU0rJ
-         dIFPMxpCUPW+ZpFM7V6+iQFq+bgk4f51GDlbwLQn3RSzVoVCRyoEUI87F9FWwMuiW4sX
-         uvUFYNRKEJWOfj6FlLi2+byOAoaINHbKBWtp/SMQ79F8QOwFbK3VOIblztgfklaVGCom
-         eshlM/Ta95IkDUu0/PsY6Z4yj+7A23GJDrJBesSRKrgP/iTevOorEL6BC+WIkReFmv2V
-         TKZdZD+ImRj3KjdYfZtkzoDP3q3infbJK5bZEpeZvDspkyJZcIvMHaNsjDO6WY0K06La
-         xzLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710916844; x=1711521644;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kcOOr88hJiSNYgd+zKExyCz3TqPQIrclo94noA5vOy0=;
-        b=dkmV2jYTPwA8pkP6+k+NjrTNMYX3U7uDPZ88JC4tBGsuVj8YILnGIeHp7VIfqsPOEX
-         wkL2avmI878MNJMiXmFhAtT1GcCWvP7GHMmXe1QWXs2fMAjSeuamXACHeIzy5r7a6b+J
-         InG8tkYl5Yzg2zywf5264ampf4Io50wyWSSWsl0U0ARA0g+I8/AR+K1bckalyrbMuFD6
-         mOss5Kn/PA3N1OnY2ytjBjLKjH7fYmEszQ36VRuqJq3kCpyWtRnvEEWw3OfxvA5btePh
-         oESaPzpDCEqrUND7K0xFJzrKb/UFtpfZxCG/G0k9cpagOthbvqjD6DYeV4Pov4cNPgsO
-         muhA==
-X-Forwarded-Encrypted: i=1; AJvYcCXucBQd11BuG3d0TXxp6YI1lbGwnwy4KeHxVEB9MhC+S+ZVFBVdonMdqpgodK5xGGlONckBf+rCqkRlcQ/Gd4jqm7NVQqvb6ZNEceN4
-X-Gm-Message-State: AOJu0Yxu6kdveKhS5GA2vFRL5HJmb8mgXkb+jEn+LcB0kgh8CEKBH+ep
-	8i82Hy5QVR4hatC+4hzuSnJf8WeuPJ6N5x23fld0IyB4RTQSk7zUKRWBkKmMbx1h77UTOeLs/ea
-	7BleSd0eVXldW5rQm42Mxr+ruemBj8HzCf1nsyw==
-X-Google-Smtp-Source: AGHT+IFqApbTY6DNgifrc1HfffBhZy3NbvPjVLiTV7SeZTya+2/ILdAElBWlEApNAhzCDtWGwWEVDPx9jkFx9IMZ9us=
-X-Received: by 2002:a67:ffc4:0:b0:473:35b2:7530 with SMTP id
- w4-20020a67ffc4000000b0047335b27530mr1088871vsq.23.1710916843900; Tue, 19 Mar
- 2024 23:40:43 -0700 (PDT)
+	s=arc-20240116; t=1710916864; c=relaxed/simple;
+	bh=okw8Zw+eI6UNkZUF1OiXY0hwkTlmjQq/5sbNv6wAMuw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gmgYXZukxV/onqlA5WsjqOKk5tX/BGW/DeT8KYGT5ijjNSqwn60TBSLkHzW4tHnX7MFy2sZBsi7Suikg/PlqLH2pIIDgo/7Hf650DG/WVdxgz5dFzcut+PUE6dJasxiVXwiWEUEJJ35wP0PvwFQxzPYqmJf5Q7zXGtppWuLuG5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=nMoxPTJU; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: cd92a616e68411ee935d6952f98a51a9-20240320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=nyuAhfLKdHPlumW7Kz0BvKW3+g1fkVdh9kODSqgPya4=;
+	b=nMoxPTJUvD2QTpTMP4lMvLROO9oJLPJB00CeMGc8C+CwP0EzuCkPvDqilA+Kmez0PpoPHFmyNeDKt21XYv6sPdFJx4Xs5NorUl8a7gHPL+tNW+IHlhQwY6/5G0G5C3/LHUIwxDe9AyszyxMUCRHNPKitHVIg77jRaZHRXGWy6gk=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:2c397afb-a3f4-4b96-ae07-070d69349039,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:110c9d90-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
+X-UUID: cd92a616e68411ee935d6952f98a51a9-20240320
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1698100268; Wed, 20 Mar 2024 14:40:55 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Mar 2024 14:40:54 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 14:40:54 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH 0/1] Add interface to allocate MediaTek GEM buffer
+Date: Wed, 20 Mar 2024 14:40:42 +0800
+Message-ID: <20240320064043.29780-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315060707.471248-1-sumit.garg@linaro.org>
- <20240315060707.471248-4-sumit.garg@linaro.org> <ZfRlYnEQUKvwGQ65@gerhold.net>
- <CAFA6WYMucNzLNm+oHNd-Jb65oigpNphU=mFGM1cD8A-mK-BFDw@mail.gmail.com> <ZfmdWtoiP4ZF7JRk@gerhold.net>
-In-Reply-To: <ZfmdWtoiP4ZF7JRk@gerhold.net>
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Wed, 20 Mar 2024 12:10:32 +0530
-Message-ID: <CAFA6WYPzdSHEMmeb_J6LPje8MUkSSq93oN3+O1PMahtZN7hWnA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
- board DTS
-To: Stephan Gerhold <stephan@gerhold.net>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
-	dmitry.baryshkov@linaro.org, laetitia.mariottini@se.com, 
-	pascal.eberhard@se.com, abdou.saker@se.com, jimmy.lalande@se.com, 
-	benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
-	linux-kernel@vger.kernel.org, Jagdish Gediya <jagdish.gediya@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK: N
 
-On Tue, 19 Mar 2024 at 19:43, Stephan Gerhold <stephan@gerhold.net> wrote:
->
-> On Mon, Mar 18, 2024 at 03:20:46PM +0530, Sumit Garg wrote:
-> > On Fri, 15 Mar 2024 at 20:43, Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > On Fri, Mar 15, 2024 at 11:37:07AM +0530, Sumit Garg wrote:
-> > > > Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
-> > > > Box Core board based on the Qualcomm APQ8016E SoC.
-> > > >
-> > > > Support for Schneider Electric HMIBSC. Features:
-> > > > - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
-> > > > - 1GiB RAM
-> > > > - 8GiB eMMC, SD slot
-> > > > - WiFi and Bluetooth
-> > > > - 2x Host, 1x Device USB port
-> > > > - HDMI
-> > > > - Discrete TPM2 chip over SPI
-> > > > - USB ethernet adaptors (soldered)
-> > > >
-> > > > Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
-> > > > Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
-> > > > Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
-> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > ---
-> > > >  arch/arm64/boot/dts/qcom/Makefile             |   1 +
-> > > >  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 510 ++++++++++++++++++
-> > > >  2 files changed, 511 insertions(+)
-> > > >  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> > > > index 39889d5f8e12..ad55e52e950b 100644
-> > > > --- a/arch/arm64/boot/dts/qcom/Makefile
-> > > > +++ b/arch/arm64/boot/dts/qcom/Makefile
-> > > > @@ -5,6 +5,7 @@ apq8016-sbc-usb-host-dtbs     := apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
-> > > >
-> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-usb-host.dtb
-> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-d3-camera-mezzanine.dtb
-> > > > +dtb-$(CONFIG_ARCH_QCOM)      += apq8016-schneider-hmibsc.dtb
-> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8039-t2.dtb
-> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8094-sony-xperia-kitakami-karin_windy.dtb
-> > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8096-db820c.dtb
-> > > > diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > > > new file mode 100644
-> > > > index 000000000000..9c79a31a04db
-> > > > --- /dev/null
-> > > > +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
-> > > > @@ -0,0 +1,510 @@
-> > > > [...]
-> > > > +
-> > > > +&pm8916_resin {
-> > > > +     interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_FALLING>;
-> > > > +     linux,code = <KEY_POWER>;
-> > > > +     status = "okay";
-> > > > +};
-> > >
-> > > What is the goal of overriding the interrupt here? It looks like you are
-> > > changing the interrupt type from IRQ_TYPE_EDGE_BOTH to FALLING. This
-> > > sounds a bit like you want the driver to receive just button release
-> > > events (or just press events, not sure about the polarity). I'm not sure
-> > > if the driver will handle this correctly.
-> >
-> > The use-case here is to just act upon button release events and the
-> > driver handles this appropriately. Final use-case of the reset button:
-> >
-> > - Short press and release leads to normal Linux reboot.
-> > - Long press for more than 10 sec or so leads to a hard reset.
-> >
-> > With IRQ_TYPE_EDGE_BOTH, that's not achievable because just a simple
-> > press leads to Linux reboot.
-> >
->
-> Thanks for explaining your use case. Is the DT really the right place to
-> describe this? In the hardware, this is just a button that provides both
-> press and release events. Linux typically forwards these events to user
-> space, without interpreting them in any way. This means you likely have
-> some user space component that listens to the events (e.g. systemd
-> logind). Ideally that component should be reconfigured to trigger the
-> reboot on release instead of press.
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-I am not sure if that's really the case. I only see power key value to
-be reported as follows:
+Add an interface to allocate Mediatek GEM buffers, allow the IOCTLs
+to be used by render nodes.
+This patch also sets the RENDER driver feature.
 
-input_report_key(pwrkey->input, pwrkey->code, 1);
-                    or
-input_report_key(pwrkey->input, pwrkey->code, 0);
+This patch is:
+- Based on 20240320024222.14234-1-shawn.sung@mediatek.com
+- Reviewed on https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/1955361
 
-It's not like a press event being a rising edge (0->1) or a release
-event being a falling edge (1->0) reported. AFAICS, a reboot is issued
-whenever the value of power key is reported as "1".
+CK Hu (1):
+  drm/mediatek: Add interface to allocate MediaTek GEM buffer.
 
->
-> If you hardcode this behavior in the DT you are essentially describing
-> that the hardware is incapable of detecting the press event before the
-> release event. This is not the case, right? There may be use cases where
-> someone would still want to detect the key press (rather than just
-> release).
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 16 ++++++-
+ drivers/gpu/drm/mediatek/mtk_gem.c     | 40 ++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_gem.h     | 11 +++++
+ include/uapi/drm/mediatek_drm.h        | 64 ++++++++++++++++++++++++++
+ 4 files changed, 130 insertions(+), 1 deletion(-)
+ create mode 100644 include/uapi/drm/mediatek_drm.h
 
-As of now there isn't such a use-case for the HMIBSC board.
+--
+2.18.0
 
--Sumit
-
->
-> Thanks,
-> Stephan
 
