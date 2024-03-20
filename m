@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-108861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F5D881109
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:33:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A580088110F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58CD11C21A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:33:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A81D1F21B7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061723E49B;
-	Wed, 20 Mar 2024 11:33:29 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E4B3EA9B;
+	Wed, 20 Mar 2024 11:33:51 +0000 (UTC)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258493D986;
-	Wed, 20 Mar 2024 11:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6833D984;
+	Wed, 20 Mar 2024 11:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710934408; cv=none; b=IFpMaOwaNDXgvTQKq/A+95zpmnXQ3xuwnKTnBphSOV83MCNJA5J1+2zukXaXhYbtkp9mXIuncWztESctBL2Kr7w3rGPLVi2YJMR5FH14xx5gELAZ2L9pqcBIPn/1p5celSpLC3+FvOMUfFpLy7pwFhPhKaFsNQDz4oi+i5Nc7BE=
+	t=1710934431; cv=none; b=krGkB8PMItBPPH5U45+tP1xU9e8Ggafkg/0yOaUq71x1WF6+po4K18S9011UG/fBq8/PLV3SB1hIb0K9i6B+PulDCbRlQzsWtiFmBJOE+DIRiK6zjy1MMSTNe+oUSoz8Y1pm5Cv92EwnQYZT59h2jsgNgk/SIHP5HEkI6fF9G/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710934408; c=relaxed/simple;
-	bh=rJMET6qf9TuxPqMoog5+maGYHy5m/5MkJzg8nUH9IA0=;
+	s=arc-20240116; t=1710934431; c=relaxed/simple;
+	bh=TM83wFJ2guz+/lEd7su3mafeUQuopsAVbb4NPytC03I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rZPi8hy9wOsfgKFvBaVPGcsKdhDC0FkyRee3i9lpNSIlUq7hkvBY806B4i2aa6tVtBBvIgMKXcujMlTjZ7Nl2TnHDAO8pXDKoHKU/PkbdTUGTumPoEbMrfozPSGoz6K/H6jpAw0r9HoG6q3G0bnkUqQhlMoUqLL+ZSeaq0q0BGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+	 To:Cc:Content-Type; b=jV4JBMvok6ZGnCQ5HWVNuX6thXq2X0V9aVReYh1gpqOQUI/aMHMFEELEjUETuuQuzUCWGDjbQxG6CcFhiNyIrcEkUf92+kLtIzgNnTggG2T4DyET335EQ/SjptVAzuxvh9SNzEHUJuk7iJ7xmzTNsB7kWH1VhgZ010vWWjRsahk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-609f1b77728so71372157b3.3;
-        Wed, 20 Mar 2024 04:33:25 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60a057b6601so65333277b3.2;
+        Wed, 20 Mar 2024 04:33:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710934405; x=1711539205;
+        d=1e100.net; s=20230601; t=1710934428; x=1711539228;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yZH7jIIDBiOD+mK/BbEEI+HYtRGY/Yq/9fLqXNr82KA=;
-        b=goXiCBM7Z3/N/yihSjRnzQzJW6UURpOH+iIkneWxGMo5uqtXGNJ4SRLcTxHhU5+mZh
-         hThhdHJ3RA73M8DV/ZwRZji2VZv3eih96bAoMbOCIHvCHbwPPpx2RHOXjzt7sdlh4ylg
-         Z4TpDlS42oGAZv2XV6WRWaNjJtaRdCleiInkOTAqb3PkcF7JOT34ug5gcdxzk9IWTkKi
-         Ro0ztOdHx+C5YuH1ohrRDG8oy9FjI/EWjpfY3AMyVlO9sp2d29jSgr5CFvlhyDZ5LDsS
-         BJp0l/C91YtpOOvlb7vj5KT2p3C4Hh8bQ5GyRXLA3umBdQbIA8hrefrACw5jZ3a60q5g
-         lvLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ9KWXynv1lAMjvIsM9FQLZX1JgIPU41EgiET/elcWTzEmDoK/PTp2ClxMOQaAw4jZYDeEkFz3dczV1LudAWaALmVFFdiRhfDSIHxqUwW30qFU+s+NqBj8HqOs7WQ9X/hpYQdhD25ebcceWA8mOxNWt1BOTvL2sh2yS70ilDReu1P9KGUayg5d83E=
-X-Gm-Message-State: AOJu0YygzLLZDUYdS92ubyxNr52JUG0yLM3qY5iBBVtxQ2mhadh10y/G
-	01YIGEX2YBf6mtgbsZifYcm2tFfS6CWRSPxANN6qaqFpu86CLtskNCOfzqsxjdA=
-X-Google-Smtp-Source: AGHT+IH3svJCewtagxYd0TnoV/23qwbZ2L5MNDXFP4ZBj4XcTo5nD9vhgrtkOPs/gi9HraOta8ZoTg==
-X-Received: by 2002:a0d:fc45:0:b0:609:fbc6:340 with SMTP id m66-20020a0dfc45000000b00609fbc60340mr5853515ywf.40.1710934404822;
-        Wed, 20 Mar 2024 04:33:24 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id p186-20020a0de6c3000000b0060ccac7cae1sm2757835ywe.47.2024.03.20.04.33.24
+        bh=SF8arMhnBafDCLx4QC8exH3xhVUS30LSGL4oZz18twc=;
+        b=O84MG1gKLPW3GXl5s5QAyK6FVv2cgW85noX/lbYBCmyk9eCF04qlfmc9H9sXuBcw41
+         qy3lHcC7GgsvbIVcAhCJojO1rXOsRM6Y69sbRDsYEEbKAwlPiEJ+Ci44KI9jA6ChjDQx
+         NgguWqVyOlXoEy75gXWma4bVQ/bIFARUoCD/8/+c/cWicIsX8uFzTxJ7nlDW/TNfu4lS
+         IhtncB8qUpYYa2azRG2ELAziTxYSsHsqYcEcOtEF6I2GabtkQLzMt5XYhkH8LjjItaXJ
+         xo5aUQxT+qHTa3y4WUbjbAvsOtd5CxaKVK4lk//dJwcfV36dRzgxfPl5ETIWCf5zwXSj
+         RSBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXoiJQOrtr7WTMKAEiNJvGIbcOSlTSTRoVw1it7QLfF9zguqFF0cgn0IKnLT5lM0s0ZEW7Ijd11iMza9xt3h012v3x6w7VeE2Df2G865Vhu4puKvA9/3MwthMTK5ruXa9pQXvCApdEKQXhXQ3ZD2picdSHB00D/wTDJJVse9V36b2P456uxwkkuOkQ=
+X-Gm-Message-State: AOJu0Yxjbl57ayzn3jhiaNV43NeVjanObNi4XY9Z/IFWvkOzX/2+HmwJ
+	47TzOjtt8SInlmNMKlclu1A44UsxPtafsEdmDXjSQjPqQc1K8S5H3L0ZJecS5aY=
+X-Google-Smtp-Source: AGHT+IHxdcT3Vlq+G7b0AuOJ9BLn2cXROpmW03r7w+b2v9Phge8aSwlWx7KJIkp5FKZuXm164yUFRg==
+X-Received: by 2002:a25:8407:0:b0:dcb:fa70:c09 with SMTP id u7-20020a258407000000b00dcbfa700c09mr1222639ybk.28.1710934427893;
+        Wed, 20 Mar 2024 04:33:47 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id v139-20020a252f91000000b00dcbbea79ffcsm2639213ybv.42.2024.03.20.04.33.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 04:33:24 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dd045349d42so5745426276.2;
-        Wed, 20 Mar 2024 04:33:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXw5W/AvvkBhm5HAy/C503Ybh2OpRs+bdErE0cZ8pUWrRT5cH6HQLk8K2R8hl1LTjQ6KZ//MeeRb7Vj1f6DjRV/Ppp9J2tCufiujwhKR+ynaJm08bhyEmug4lev8x+QZVGvX/8wW170NWwq/bTEgYG18qSOJqYWFo9an/0X1AE7+fnB5goMBxOdq7k=
-X-Received: by 2002:a05:6902:1b85:b0:dd1:5194:13e5 with SMTP id
- ei5-20020a0569021b8500b00dd1519413e5mr5147238ybb.22.1710934404494; Wed, 20
- Mar 2024 04:33:24 -0700 (PDT)
+        Wed, 20 Mar 2024 04:33:47 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60a3c48e70fso71565767b3.1;
+        Wed, 20 Mar 2024 04:33:47 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX/WzYEFbV+Pst+iyHF+ECcqswfLxmQZyTWYcp1EYhgoLAFxXwGFAuQ6MMUq4AI/AVgzeGgfjvEVOvxeUHlp/oG5JR06YLVgGpBF72TA/vW8Nr2x42HM01gQMCi+vPxlU98mdRGsNnnOrAXpOUeLeCo3BAb3sJbHUS4TvhxfFgI1meZHElX8aUhdig=
+X-Received: by 2002:a81:9ace:0:b0:610:f5ca:8ac with SMTP id
+ r197-20020a819ace000000b00610f5ca08acmr1288531ywg.11.1710934427270; Wed, 20
+ Mar 2024 04:33:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320082831.9666-1-paul.barker.ct@bp.renesas.com>
-In-Reply-To: <20240320082831.9666-1-paul.barker.ct@bp.renesas.com>
+References: <20240320082831.9666-1-paul.barker.ct@bp.renesas.com> <20240320082831.9666-2-paul.barker.ct@bp.renesas.com>
+In-Reply-To: <20240320082831.9666-2-paul.barker.ct@bp.renesas.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 20 Mar 2024 12:33:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVKe2bLjMRXN-yr0SvGRMcv_93OWAgy9C-yL7UA9-LcDA@mail.gmail.com>
-Message-ID: <CAMuHMdVKe2bLjMRXN-yr0SvGRMcv_93OWAgy9C-yL7UA9-LcDA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] clk: renesas: r9a07g043: Mark mod_clks and resets
- arrays as const
+Date: Wed, 20 Mar 2024 12:33:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX1iJVc1CzwE6P6-Fng8HeHwL8Eq3c_HQCMc=FoVqwJ=Q@mail.gmail.com>
+Message-ID: <CAMuHMdX1iJVc1CzwE6P6-Fng8HeHwL8Eq3c_HQCMc=FoVqwJ=Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: renesas: r9a07g044: Mark resets array as const
 To: Paul Barker <paul.barker.ct@bp.renesas.com>
 Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
 	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
@@ -81,9 +80,8 @@ Content-Transfer-Encoding: quoted-printable
 
 On Wed, Mar 20, 2024 at 9:28=E2=80=AFAM Paul Barker
 <paul.barker.ct@bp.renesas.com> wrote:
-> The r9a07g043_mod_clks and r9a07g043_resets arrays describe the module
-> clocks and reset signals (respectively) in this SoC and do not change at
-> runtime.
+> The r9a07g044_resets array describes the reset signals in this SoC and
+> does not change at runtime.
 >
 > Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 
