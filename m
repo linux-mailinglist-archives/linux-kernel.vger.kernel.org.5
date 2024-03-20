@@ -1,129 +1,137 @@
-Return-Path: <linux-kernel+bounces-108787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE72E880FF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:34:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B710880FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2641C2316F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:34:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C59CAB24AFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76CEE3A1BB;
-	Wed, 20 Mar 2024 10:30:32 +0000 (UTC)
-Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597812D05C;
+	Wed, 20 Mar 2024 10:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ol7/ItQM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010A91426A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AFC51E48E;
+	Wed, 20 Mar 2024 10:30:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930632; cv=none; b=tqtU3NS/oswYmtKU2s6UacKiE1E5kFtXUdl+IXEtzCoITLLVFdxBpOmrk7zeTAuZC+Q75fWanT0nM7kH1knc9V5PBkeKSJapbrdEtVfX3QBnkP+dyNSUPzlmNJuQgqsoim7StOH2+Aoy7AQ0QfdJjGHERkukb0wugrPeUWkZJFw=
+	t=1710930628; cv=none; b=XRdzK1Ei13NYG3HaqFu5uw//kb/v2mlAoP5VoXmeZd6K1d2JSJSytqhnjssS9oAerYNK9ynqHpiYl7iP/BTmQKFz0b5jApfHBsk7KcFwCu2sS/SoPdV+nT1U25nBSYmPuc2LzqcMS/ZuxqVi22DQGaUKgOFVa6sr1gVwbMwfHMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710930632; c=relaxed/simple;
-	bh=pINihG+7YHZfwoZMIr7lzlBBZzwKCYY7QMVa6cAANME=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hXbVRsMKXX2L6FlO0oLGAIqDomHRrhIaZDBP1ispNVquHIRSA1QrzLsOSLQqD6lkGXL0HNab7wQd5uW2w85I7S5v58q/swpdHT9Y+UvR7uc4a1NCsa/JXFuvTULorUjjjuVI5kHmwlcZZYtGUX4BsII50NrO0hVHy51O9Q7HJSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-	by cantor.telenet-ops.be (Postfix) with ESMTPS id 4V04c2215Bz4x1qc
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:30:26 +0100 (CET)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by michel.telenet-ops.be with bizsmtp
-	id 0yWF2C00B0SSLxL06yWFel; Wed, 20 Mar 2024 11:30:19 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rmtCl-004BA6-93;
-	Wed, 20 Mar 2024 11:30:15 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rmtD5-000te6-0r;
-	Wed, 20 Mar 2024 11:30:15 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Saravana Kannan <saravanak@google.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] clocksource/drivers/renesas-ostm: Avoid reprobe after successful early probe
-Date: Wed, 20 Mar 2024 11:30:07 +0100
-Message-Id: <bd027379713cbaafa21ffe9e848ebb7f475ca0e7.1710930542.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710930628; c=relaxed/simple;
+	bh=Ng5N4KT0SCm8Zb4mwGaTwyWKHKjaLEy2Wm0KyGEcEto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aykgGPaDT4JDYFTpikBAJurw3JalHSw43vsltg4eG46i4KpPnVFG5UP3yIGOe5MCWOa0Gsc0AGVfPNyzGEapA4xlbhjOPyHHf/5UKULFWTiYZFObyjs7wyF+3xKXVW7iY4Iw97YacsutKWL0o1TXwj07gIXd34nbjBXZ0x3azW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ol7/ItQM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 920B6C433C7;
+	Wed, 20 Mar 2024 10:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710930628;
+	bh=Ng5N4KT0SCm8Zb4mwGaTwyWKHKjaLEy2Wm0KyGEcEto=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Ol7/ItQM72RsqGXTgcikxJy4dTlaUDho4Kqr5tT+d6X3xM8PArvo61vgr5a1KFSSu
+	 QCjmG1YljRplfNm4JTZdB2xsYsks86a1/z/hL8c7Lsw/X3x6RuLLJ/6VQ25cWsSznv
+	 HyRsrTEIQPmSvit7T+Fj7A3tTy8+9TLd6vrU0J87HGRbeD+XJrEQVod323EJiUUzk+
+	 JIbajnxGaDABod60v59IdWD0zGBcjeSZxM0uVoDsL7UOVz6U2AD8X4NDTAtghd5esM
+	 sgVmRO2DateKvrWQrhbbjte8mLladypCMuXXtDYl39pSNLHVqzjS4Z1/41fOyjRmyA
+	 Fx6LA7Zqb842g==
+Message-ID: <4e251463-8cfb-4cc6-b9b6-ce1dcd7c7052@kernel.org>
+Date: Wed, 20 Mar 2024 11:30:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
+To: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>,
+ Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
+ Wei Wang <weiwan@google.com>, Alexander Duyck <alexanderduyck@fb.com>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <cover.1710877680.git.yan@cloudflare.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <cover.1710877680.git.yan@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The Renesas OS Timer (OSTM) driver contains two probe points, of which
-only one should complete:
-  1. Early probe, using TIMER_OF_DECLARE(), to provide the sole
-     clocksource on (arm32) RZ/A1 and RZ/A2 SoCs,
-  2. Normal probe, using a platform driver, to provide additional timers
-     on (arm64 + riscv) RZ/G2L and similar SoCs.
 
-The latter is needed because using OSTM on RZ/G2L requires manipulation
-of its reset signal, which is not yet available at the time of early
-probe, causing early probe to fail with -EPROBE_DEFER.  It is only
-enabled when building a kernel with support for the RZ/G2L family, so it
-does not impact RZ/A1 and RZ/A2.  Hence only one probe method can
-complete on all affected systems.
+On 19/03/2024 21.44, Yan Zhai wrote:
+> This changeset fixes a common problem for busy networking kthreads.
+> These threads, e.g. NAPI threads, typically will do:
+> 
+> * polling a batch of packets
+> * if there are more work, call cond_resched() to allow scheduling
+> * continue to poll more packets when rx queue is not empty
+> 
+> We observed this being a problem in production, since it can block RCU
+> tasks from making progress under heavy load. Investigation indicates
+> that just calling cond_resched() is insufficient for RCU tasks to reach
+> quiescent states. This also has the side effect of frequently clearing
+> the TIF_NEED_RESCHED flag on voluntary preempt kernels. As a result,
+> schedule() will not be called in these circumstances, despite schedule()
+> in fact provides required quiescent states. This at least affects NAPI
+> threads, napi_busy_loop, and also cpumap kthread.
+> 
+> By reporting RCU QSes in these kthreads periodically before cond_resched, the
+> blocked RCU waiters can correctly progress. Instead of just reporting QS for
+> RCU tasks, these code share the same concern as noted in the commit
+> d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt when safe").
+> So report a consolidated QS for safety.
+> 
+> It is worth noting that, although this problem is reproducible in
+> napi_busy_loop, it only shows up when setting the polling interval to as high
+> as 2ms, which is far larger than recommended 50us-100us in the documentation.
+> So napi_busy_loop is left untouched.
+> 
+> Lastly, this does not affect RT kernels, which does not enter the scheduler
+> through cond_resched(). Without the mentioned side effect, schedule() will
+> be called time by time, and clear the RCU task holdouts.
+> 
+> V4: https://lore.kernel.org/bpf/cover.1710525524.git.yan@cloudflare.com/
+> V3: https://lore.kernel.org/lkml/20240314145459.7b3aedf1@kernel.org/t/
+> V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
+> V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
+> 
+> changes since v4:
+>   * polished comments and docs for the RCU helper as Paul McKenney suggested
+> 
+> changes since v3:
+>   * fixed kernel-doc errors
+> 
+> changes since v2:
+>   * created a helper in rcu header to abstract the behavior
+>   * fixed cpumap kthread in addition
+> 
+> changes since v1:
+>   * disable preemption first as Paul McKenney suggested
+> 
+> Yan Zhai (3):
+>    rcu: add a helper to report consolidated flavor QS
+>    net: report RCU QS on threaded NAPI repolling
+>    bpf: report RCU QS in cpumap kthread
+> 
+>   include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
+>   kernel/bpf/cpumap.c      |  3 +++
+>   net/core/dev.c           |  3 +++
+>   3 files changed, 37 insertions(+)
+> 
 
-As relying on the order of initialization of subsystems inside the
-kernel is fragile, set the DT node's OF_POPULATED flag after a succesful
-early probe.  This makes sure the platform driver's probe is never
-called after a successful early probe.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Tested on RZ/A2 (after force-enabling the platform driver probe).
-Regression-tested on RZ/Five (member of the RZ/G2L family).
-
-In between commit 4f41fe386a94639c ("clocksource/drivers/timer-probe:
-Avoid creating dead devices") and its revert 4479730e9263befb (both in
-v5.7), the clocksource core took care of this.  Other subsystems[1]
-still handle this, either minimally (by just setting OF_POPULATED), or
-fully (by also clearing OF_POPULATED again in case of probe failure).
-
-Note that despite the revert in the clocksource core, several
-clocksource drivers[2] still clear the OF_POPULATED flag manually, to
-force probing the same device using both TIMER_OF_DECLARE() and standard
-platform device probing (the latter may be done in a different driver).
-
-[1] See of_clk_init(), of_gpiochip_scan_gpios(), of_irq_init().
-[2] drivers/clocksource/ingenic-sysost.c
-    drivers/clocksource/ingenic-timer.c
-    drivers/clocksource/timer-versatile.c
----
- drivers/clocksource/renesas-ostm.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/clocksource/renesas-ostm.c b/drivers/clocksource/renesas-ostm.c
-index 8da972dc171365bc..37db7e23a4d29135 100644
---- a/drivers/clocksource/renesas-ostm.c
-+++ b/drivers/clocksource/renesas-ostm.c
-@@ -210,6 +210,7 @@ static int __init ostm_init(struct device_node *np)
- 		pr_info("%pOF: used for clock events\n", np);
- 	}
- 
-+	of_node_set_flag(np, OF_POPULATED);
- 	return 0;
- 
- err_cleanup:
--- 
-2.34.1
-
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
