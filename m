@@ -1,165 +1,206 @@
-Return-Path: <linux-kernel+bounces-109406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C158818B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:45:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 924E58818B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:48:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4161C21044
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:45:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8FC1F22BA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D984F8B2;
-	Wed, 20 Mar 2024 20:45:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234DA6A03E;
+	Wed, 20 Mar 2024 20:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQWk37H3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lWXdp5vC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF6221100;
-	Wed, 20 Mar 2024 20:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710967550; cv=none; b=Y4H3J6GKvKDT2PNYGuL/D1NkuziC0EdV5PWaB2sfNrBr2hEf8UTsS5DmN7dP7rvKvEVVk7Z/DouRwwZzk9WCw011yCZ707fBkL7H60Is9XXIAof9qnRbJizXBIvDOapkEGQs7tcc0BLWjnKF7+VhaaUPaumW6njJ78p9QOC2EWM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710967550; c=relaxed/simple;
-	bh=DVMjMGP9QqjEmQ/ua/wWgAorznBOZGn26NsNd5cqvw4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ClGRgXdi/UICB6/NeMrF5SSKk7M+mgsO4OXFikIxGoJ44pPNgyOFUqn1in6TA72TuJXi4XGGQ4AN32VFf7YULjrqdt+HpUEqfYtA0WSIPI5m0IIXWfwjRVGLAfKuI+NgLSPfbB2zarKtsreL80WLzsOWCCmbe4TGFMFUl0hC9C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQWk37H3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3714CC433F1;
-	Wed, 20 Mar 2024 20:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710967550;
-	bh=DVMjMGP9QqjEmQ/ua/wWgAorznBOZGn26NsNd5cqvw4=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=fQWk37H3YAnWdUfmua2LrFMrdSv6ydI/zeM+G0NOt/G/k7k25jQvMj0nW5hLfXZSK
-	 /Nn/SQYnrA7dO9G6cXz3P2jRXtyKmdrD4iI0xqozXV+4saEuMV9A25SV98lDqUPAoF
-	 DiUJ6VaSy44Y9sqw2JI1zFzQWp/utcsb7lgTdKTA3gphXu+ExQmF+A3o8PkVA6cZC6
-	 IO7RSb19qSNzTXXRP6KA/YbhDPXczoo+0aRvom2OpsCkXsgxkqf+tmq3JmYldpgXj2
-	 aOOnM90wZLR9eHkGU9lmS4iCKTf4wrOtKjLtwRoUfDcfhKTIYViQKeGqgEWT4rNBbt
-	 bZpStGapkm1wg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23FCCC54E58;
-	Wed, 20 Mar 2024 20:45:50 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Wed, 20 Mar 2024 23:45:30 +0300
-Subject: [PATCH net] net: dsa: mt7530: fix improper frames on all 25MHz and
- 40MHz XTAL MT7530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A278133062
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710967728; cv=fail; b=aI9bYwxM22SngI7JsEQZeup9KL5uC87X57UlNYi8VCVMq4Sz5GVSGHwyjAWGwC9eQ+8Lj9UQtSNoRXxJh8AwrFVUM8I3ftcGzaSA9vYphIrW2bfR12wTeaeXtO7L5uLgZQ2PgW4LDX94xIpFd+rzb3OhbW8zDS0bmV63IVTMcOg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710967728; c=relaxed/simple;
+	bh=5M7IM2SFetrnvBZ3f6C+KK8av7ssHIElVwwsv1hf3Ok=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZPQZ7eakDPHZMdnUlTrZTfCfmeZQbgzPcyG7Zte0Y+Sb+8N2F0pJ6ikL7FVYOTdJXl2Kt0UEGlmmfaLMasEGfbr8iHQkhDBwocSUDYJcqPqK4vZaBb6Ytck/qu0dGseWMFWaetkAWwjCG0qxIM89Fv+KS1y1mt1fcUmL4+iqZyI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lWXdp5vC; arc=fail smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710967727; x=1742503727;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=5M7IM2SFetrnvBZ3f6C+KK8av7ssHIElVwwsv1hf3Ok=;
+  b=lWXdp5vCwkVDyJnwx9h12A1WEd5UHwyrlReEn4kWLCNA9uI/DBGgm1UU
+   +Qk90WSDFCkXfusUH7O4OUMxjqhgWYUDlT2YqBbm0Y++Pcba/UXL8bP+I
+   Go4eXfTcO9eB2Y5jTO3A+3wXs/8/NOuI31PjrbTwgHboFOIQ4T3Pb1wey
+   CmQeW35/4P28+5of3o5gXnlY7ZrO1V9vjP+Qhz1pTtBwqJOP7Lf8B6fQg
+   aoRxk3bmcHO0E0xFsW+z0kwM0RcnsLnWbFWriE/frmNMpT7cCe2IBPY2m
+   XV1qE8mI0Jb7dMOPIqFaVrb1Hjjg44DC7CVTUlqeK6bx5J15kvceZIDAY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5808843"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="5808843"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:48:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="14176748"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Mar 2024 13:48:43 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Mar 2024 13:48:42 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 20 Mar 2024 13:48:42 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 20 Mar 2024 13:48:42 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QO8JgzYzM4YBxiZS4+7KeRVTPkinmvMTwFodaO0B0JOYv9pBH0LNg2RSYI5reoyKlcLl2VXKsVte4F6Ig44ekgsXzo/aVuFE/23E6iv/JhWGKUbTzedHeNWh702iv32NlNDQSnAjEVnvXZycdALsWC/QQ7Y2yjbla+TEs03oewg4lu/AtMWpGHTankvKskD8foKH9Vcf1LvPdlOu+cewovg0ppMRgZ8/X8m8WES/W0/pyhh86k+pujz3K422QUjGpj+C7o+8OoO+iGhjO2GPq5EJnlFmN+PdDbCkHpWE7Uldt5w2+eqs5s61NrShq5j6409t++P4fZHozjXzdt1FSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6tWVmwTr8x0M8tJffnCmivQLo5vZ32+zl9vOpDyYP4A=;
+ b=CREs8WDMeyDktL31f3B9gPfNTwF89PQ/+ynTzIX+23SFmoZZPHkR3k5WW/V8AU0m6VBEAA14FvDzFM+g3hkngHDblzrCrluKgY8lPnb3Tt/r+Q1g/8QVsu3Vf1KaueVzJucwUTTiggLwfVLNESAfLNgPzPBpGu2Pn3uDRI7HJRwp0icg9dwAD1X7gm8ODlfDpR2Nkx96FdehkXHLR2yhzBFKQPk8ymno90/smwJZkHs+7hIVnBKULseROdD8/iR0abbsRqWi/MK4EooayhzF+Pjt6kFpai1OPF5Kwll0MwWR5eup3l+4g9K5EwyOOk1SMLvmlcVFvhAFeTVUuZCsAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by MW4PR11MB7102.namprd11.prod.outlook.com (2603:10b6:303:22b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Wed, 20 Mar
+ 2024 20:48:40 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.010; Wed, 20 Mar 2024
+ 20:48:40 +0000
+Message-ID: <e677ab03-8b25-46cd-90ac-cacae6ba5027@intel.com>
+Date: Thu, 21 Mar 2024 09:48:28 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] x86/kexec: do unconditional WBINVD in
+ relocate_kernel()
+Content-Language: en-US
+To: Tom Lendacky <thomas.lendacky@amd.com>, "Kirill A. Shutemov"
+	<kirill.shutemov@linux.intel.com>
+CC: <linux-kernel@vger.kernel.org>, <x86@kernel.org>, <dave.hansen@intel.com>,
+	<bp@alien8.de>, <tglx@linutronix.de>, <mingo@redhat.com>, <hpa@zytor.com>,
+	<luto@kernel.org>, <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
+	<ashish.kalra@amd.com>, <chao.gao@intel.com>, <bhe@redhat.com>,
+	<nik.borisov@suse.com>, <pbonzini@redhat.com>, <seanjc@google.com>
+References: <cover.1710811610.git.kai.huang@intel.com>
+ <e1d37efb8951eb1d38493687b10a21b23353e35a.1710811610.git.kai.huang@intel.com>
+ <tvembdwwh4immxytlfzlhpvd42dlfsz7sddb7msk23kdduhu3t@ogpc66hklorv>
+ <38fca2fa-11b2-4eb7-9e59-dc5d524d172e@amd.com>
+ <689bbd29-aaf0-452e-a97f-41b8e3aa6224@intel.com>
+ <5a2441a3-4d7e-4fee-bfa7-65b53376b0ab@amd.com>
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <5a2441a3-4d7e-4fee-bfa7-65b53376b0ab@amd.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR02CA0022.namprd02.prod.outlook.com
+ (2603:10b6:303:16d::15) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240320-for-net-mt7530-fix-25mhz-xtal-with-direct-phy-access-v1-1-d92f605f1160@arinc9.com>
-X-B4-Tracking: v=1; b=H4sIAOlK+2UC/x2NQQrCMBBFr1Jm7YeYGgSvIi5CMpoBm5Zk0Grp3
- R3cfHiL/95GnZtwp8uwUeOXdJmrwfEwUCqxPhiSjck7f3Kjd7jPDZUVk57DaCgrfJjKF6vGJ96
- iBVkaJ8VSPogpce9gHyPnEJwNmXppbMd/9kpmo9u+/wAysgF6iwAAAA==
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Landen Chao <Landen.Chao@mediatek.com>
-Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>, 
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710967529; l=2945;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=IUAz2iG3lPTlOnHitW8WZ64dit6oJNL3iK9bUDlrZFc=;
- b=9MtA/Y9vEntM4ULwpnIWKrfqRMckl0Wp+4r/3tLyQSs8Vp/HogUBUCCrb6G8Bmi+gvgL+E48f
- eNL7rncPs4HDH+51dumgEwZZhzuvjTqevdlI0Ad8n0q7H08iJY9JB0M
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
-
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
-
-The MT7530 switch after reset initialises with a core clock frequency that
-works with a 25MHz XTAL connected to it. For 40MHz XTAL, the core clock
-frequency must be set to 500MHz.
-
-The mt7530_pll_setup() function is responsible of setting the core clock
-frequency. Currently, it runs on MT7530 with 25MHz and 40MHz XTAL. This
-causes MT7530 switch with 25MHz XTAL to egress and ingress frames
-improperly.
-
-Introduce a check to run it only on MT7530 with 40MHz XTAL.
-
-The core clock frequency is set by writing to a switch PHY's register.
-Access to the PHY's register is done via the MDIO bus the switch is also
-on. Therefore, it works only when the switch makes switch PHYs listen on
-the MDIO bus the switch is on. This is controlled either by the state of
-the ESW_P1_LED_1 pin after reset deassertion or modifying bit 5 of the
-modifiable trap register.
-
-When ESW_P1_LED_1 is pulled high, PHY indirect access is used. That means
-accessing PHY registers via the PHY indirect access control register of the
-switch.
-
-When ESW_P1_LED_1 is pulled low, PHY direct access is used. That means
-accessing PHY registers via the MDIO bus the switch is on.
-
-For MT7530 switch with 40MHz XTAL on a board with ESW_P1_LED_1 pulled high,
-the core clock frequency won't be set to 500MHz, causing the switch to
-egress and ingress frames improperly.
-
-Run mt7530_pll_setup() after PHY direct access is set on the modifiable
-trap register.
-
-With these two changes, all MT7530 switches with 25MHz and 40MHz, and
-P1_LED_1 pulled high or low, will egress and ingress frames properly.
-
-Link: https://github.com/BPI-SINOVOIP/BPI-R2-bsp/blob/4a5dd143f2172ec97a2872fa29c7c4cd520f45b5/linux-mt/drivers/net/ethernet/mediatek/gsw_mt7623.c#L1039
-Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 6986f538a4d0..c856a13bc2f1 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2232,8 +2232,6 @@ mt7530_setup(struct dsa_switch *ds)
- 		     SYS_CTRL_PHY_RST | SYS_CTRL_SW_RST |
- 		     SYS_CTRL_REG_RST);
- 
--	mt7530_pll_setup(priv);
--
- 	/* Lower Tx driving for TRGMII path */
- 	for (i = 0; i < NUM_TRGMII_CTRL; i++)
- 		mt7530_write(priv, MT7530_TRGMII_TD_ODT(i),
-@@ -2249,6 +2247,9 @@ mt7530_setup(struct dsa_switch *ds)
- 	val |= MHWTRAP_MANUAL;
- 	mt7530_write(priv, MT7530_MHWTRAP, val);
- 
-+	if ((val & HWTRAP_XTAL_MASK) == HWTRAP_XTAL_40MHZ)
-+		mt7530_pll_setup(priv);
-+
- 	mt753x_trap_frames(priv);
- 
- 	/* Enable and reset MIB counters */
-
----
-base-commit: 9c6a59543a3965071d65b0f9ea43aa396ce2ed14
-change-id: 20240320-for-net-mt7530-fix-25mhz-xtal-with-direct-phy-access-e2aaed550ed5
-
-Best regards,
--- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|MW4PR11MB7102:EE_
+X-MS-Office365-Filtering-Correlation-Id: 55ec3002-439a-4e20-fab7-08dc491f1f73
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uOojrnb+EXdY3E61wxgzr9uKjpQBa9PU7F106s5mH6fllClkwImeQ2ZI87B61yFyg0/O3i0qq4e65Ik4dRoUSxjdE0agytJOzSvLulC6UbgwP3coi1LFV1BY8VNpWuDfk8I1h2qFwOSZGr8MUPVFDA2qdC18QUOC0iG77im6PHfg2fMBN3JlW8O/NO5vOJ/DMSCemUZZJ9/9k0SosxhfbETO2nQxrq4IlCkqzNtar1a0/M+ExGVoCIYcXufss8I14fBjQcUPwUaVrNDaeK22g/Wu4tJh/oYkw/uh1VjnKLzpMfBgs5hVD0L/DotFuGoWR4Put6s1Cp2RhB68XaOZxdvZ7foA5KHUvlp6Yb+OsC70t2tXdcEICw/WIZWPH5hzkCWPJWk6XAUgy/lLRGtfac9fBxlK2br0Q510HjJLb7ZekFYpWkSNyoa8NrHDye+S2MI4h1x+QWhuJzey9woNlcKWCw5mUeovnY+oXRQ2VbAAsNp9CkYv7LsSHFyl59HxS1U/Gm4eXmviKR4ZuDrJM+QE64SYiaUT2gi+2J55wkZajGLDXiu4jOp1hPrf4i3yQH/Hkpe6vaXVfjCwsftsPV9rR+HWV6/wK1hemdxY0yvw7e2DjJQy8SjlDjAZQKk3WY38ZyeZBKbE7IJeBi7INmsYgHkK9YmHjC1V3V89CLI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TG9WbHE4RW5ITURsWEZVdWszVXpaNXdTcm15cmdTWWhBNVgxa1BBaXhCOW5G?=
+ =?utf-8?B?M2RJSzBUU2xDWU4rNVlrU00zL29JZzhLSmcvczZ2cDkzcDBCVWZwQTlBL2x3?=
+ =?utf-8?B?OEFLdzlvUU8ySGlWNUpubDJKTStNTkFvK0RpZjhUOXdaTFFPNTRLaUM1c1Zm?=
+ =?utf-8?B?K2owSDBQNVZCblg3TVZockJYTWtGNzFuZ3NOV0txaHg2bTl2eE1LbDBYWUtN?=
+ =?utf-8?B?SFJOSGFVMERENkt3eGJhWlpjZUtiVkVwVFVIWDg1SFlrNm5uaU5Qa0FPMEV6?=
+ =?utf-8?B?dkF5dkJhaThnbThQT1czWmU5Z0RoYTV5enhvN2ZLVWZzTFVHVWhtUkhlQlNM?=
+ =?utf-8?B?ZnoxVCtuNmhKUUdETFlJNmpQSUNXWHlLTjZiTXlGTzN2WmRPdk9kakFJN3NV?=
+ =?utf-8?B?dlFIMWhCa0l3OHIvRDU1SUlndysvZERLOTJweFNEUTV2UDBEUjQwWkRqNTR5?=
+ =?utf-8?B?VXF4bVJKeGdrV0RwN3NXVlBmdHJvNytWV3VXSkpuYzhoZDJTYjBibUpJaUpl?=
+ =?utf-8?B?eE9VbWg0dzFYWHMyRTlnUnZmRmJRajA1YlFWQjlWYmNRTEN3Nlp6ZXRnTU5n?=
+ =?utf-8?B?ZFJKV1ZqL251VHdCODFwelpTeTNZZG5BdEFmalNpSGI2N1hwSmV1MmNhTFdZ?=
+ =?utf-8?B?eis5empLZEZCOXlkNVdsNUJtaDVnZTlMVlUwcEdqQkc2WlRJMElRRTJFbHZF?=
+ =?utf-8?B?MlZmYzVUR055dXRyRjBGNkF0R3Y1cjk5WHdwZG9VS2RQMDNSR3hiNXF2U2hu?=
+ =?utf-8?B?cll6TmtJeXAra1pGdEkrR21WUXpXU3JxN3gyc3dWU2Nyam5mVFhiOEt2NWUr?=
+ =?utf-8?B?aU1VMFlqVVU0M0NZNllHWC9Ram5XSE9zWFhnanJSa1NBbEVWMkFFRWV1ODRw?=
+ =?utf-8?B?NFRWMDBaUVQ5dXVRZG1lbWM4QWp0MmZaeEhFKzhtbU1SUDIybEk2VVFuTWlX?=
+ =?utf-8?B?OENwYVNkYlpGcWFtVDhaSkd3QTZ3Ukpjem8vSjBjNW9lSWkwZG5NY2hSNzBJ?=
+ =?utf-8?B?alRkYURPU29GUVI2V1c2OUJPRUpzcjIxUlJjUFZobkI0c3FyM0hLR0NGeE9K?=
+ =?utf-8?B?NTNYOFE3QlkzbGhyL1JmcTYreDVzVEpXMlNkQ2N0VWFOYUd0eEdxYmlmNnpQ?=
+ =?utf-8?B?QmZ1TWVUbE5SSFpPNzN6SjRTaFpOSE1WYm9IenFqbXNzaEhmSVZ4ZkFpWHV6?=
+ =?utf-8?B?T0VCbzAyK1hHaHM2TFJOQU0vUkgyV2VEQmJmcHk1Q0dsd1JFdXdXcUw2TW43?=
+ =?utf-8?B?NEplM1ZSWjZueVRTR1dpUGkxY2xmRnhDcEF0R2NEZVdaeXByZ2tyNWo0WVNO?=
+ =?utf-8?B?NWpON0FpUzFzV0hrb0NPRDVSaUNzVlVxdkF4aXpjbUQ1SHd2Q0NnU2RyR3ho?=
+ =?utf-8?B?a3ZuRGp4YWx5a1JKQnJwTEN3dVQ5eEhJdG42akZUM1cvUGFjSUM2aTBBVFpr?=
+ =?utf-8?B?aDRuZHVSc1VBbXl4bmovR0dPa1VDYU0zanVDZXhzVGVMUzRydWZQTk8vYzRi?=
+ =?utf-8?B?RDAwZlJ0RFRmZ1ZFOEdBTitxNGFiYWNqTzhMaWF4MDN4bjZDZmVJajJYemF3?=
+ =?utf-8?B?dXlWS1lsMldlRTM0K01tblR4OW0rd2lZTmQzZjd4YjlkY0FhV0UwTUlsZFJW?=
+ =?utf-8?B?T1lsM0NvaFdkMXBNa2xxMEFKaGFIY29KajJmYkxLUDVkK3hHcUJGMWhpQTdo?=
+ =?utf-8?B?S05pWk1rRERVcUxlUFd3Mzh2VUFOWTJKWHdBa3JRS1krdFRsNXlLZk4xRCs3?=
+ =?utf-8?B?OENFcUlUZ3M3SHBoczlTbHF6QThKYitWaUxZc0l5eWtQN1grWlhGazNxVE95?=
+ =?utf-8?B?RzJETzcvQVAzT0VYMUQ2NGZnVk9QYXYwU2ZKMSs4NjkxTk85WWgxWG5TeFpp?=
+ =?utf-8?B?TmhwM0p6S1JaVXR6YkxiV3pyNm5GUDJSOHF3OXZGUnpPclZJbTBORVVCRzda?=
+ =?utf-8?B?ekJ2K240T3dTWkgzRW0xNHBuYkloU2xZOHRrT2ZFbDJ1clIyWE1FejhFYlZM?=
+ =?utf-8?B?TTJSNFM1OHAyWVlwb3Fqc3A4dXBnWnJzeXcwbThFeVRuc1lWeERuYW8yVDFm?=
+ =?utf-8?B?SGh2aTlkQXZva0VMMmVMb1Frdk9vQUVJNUw2bzZERm9zRjcxMUdadm9yNDdQ?=
+ =?utf-8?Q?CHrgFowL7S7uLHNsV9GMlpy/S?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55ec3002-439a-4e20-fab7-08dc491f1f73
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 20:48:40.1418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bv8Z91bVIFe/+OycFMUvpeq/q8QrGK1n7E9cyCbvJmSYE7cHBS1uJl3IWHaSIOTG9+NABtYLrMHfC8/H2Bxu9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7102
+X-OriginatorOrg: intel.com
 
 
+>> Hi Tom,
+>>
+>> I am not aware of kexec() support status for SEV-ES/SEV-SNP guests. 
+>> Does patch 1 break them?
+> 
+> SNP guests can kexec with some patches that are currently in process 
+> around shared to private memory conversions. ES guests can only kexec 
+> with a single vCPU. There was a recent patch series to add support for 
+> multiple vCPUs.
+> 
+> Patch #1 doesn't break either ES or SNP because we still have an IDT and 
+> traditional kernel addressing in place, so the #VC can be handled.
+
+How about plain SEV guest?
+
+> 
+> Whereas patch #2 has switched to identity mapping and removed the IDT, 
+> so a #VC causes a triple fault.
+
+That makes sense.  Thanks.
+
+Hi Kirill,
+
+Does TDX guest have similar behaviour -- that WBINVD in stop_this_cpu() 
+can be handled although it causes #VE, while WBINVD in relocate_kernel() 
+will just triple fault the guest?
 
