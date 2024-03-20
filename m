@@ -1,174 +1,174 @@
-Return-Path: <linux-kernel+bounces-109446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5313888194B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:52:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B29C881946
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0C09B21DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2110B283162
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B0785C5D;
-	Wed, 20 Mar 2024 21:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BB285C46;
+	Wed, 20 Mar 2024 21:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lZCnSeSl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NVYwzLlt"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8D533062;
-	Wed, 20 Mar 2024 21:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11902CA6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710971558; cv=none; b=FgSsv+PjDIFQUrALvOmXfni2ig7F6EXWe3Kkjb9UsjSUQcYsE/UjbUJzZK6Dltuoo3Val57Emm9jVzHdjNI1hrIJjfNd8yl2roj/oJ79c+0O+5ZOfVdUj0xIITF5IUk+3Wwq87vGn/czAoawZoZEfliN3K4eSNhhCup20OIX7ms=
+	t=1710971432; cv=none; b=Pb7D7bUNTtn2Rc0ORVX6N7yK/8Ea5lnMaSUslGx5etmWlNCMx61kXgWu3sUe9e7Ek1PCShRxd+QZRuFzK//kWtF5OjGs4y2diDaZq40kqsTSrloro8Qba2S28hyYMkwWUvLY2FGZ62viNQG9M8F/ctWrSQP4uFyKzqPHq/cI3Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710971558; c=relaxed/simple;
-	bh=8zhUcMHgW8RImpLOFFWUdVjfodb9oNMgadrLsX11UVo=;
+	s=arc-20240116; t=1710971432; c=relaxed/simple;
+	bh=GIQekNhKN6ZhVqvNkVI/XRisn39GJLGs4aMBSBeIl80=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XyKCOzz0HGoyTQ9h8OhuVGsb7VNtiVsFY9Js2/VOYXy8nZikY4dTunDflmAGRPhVvl0Pxg8ZPdrOEt6AHIolmNLLJTjTreQiei+Y8CtHOoV/13r9LDPbFzCCOZLn26hYPMq2yiM7HIj/33VbB4Lx3Vwfe3Z0mhRlWf6zo4uxFbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lZCnSeSl; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710971551; x=1742507551;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8zhUcMHgW8RImpLOFFWUdVjfodb9oNMgadrLsX11UVo=;
-  b=lZCnSeSlA4DcmdZl80bV6j7Po5zE27RDGkI+NkNdnsJs0t/8lQ0Pq9cd
-   wy+YzGLG3e8BFuYREcDyGYNoddQVZawy+PXHM0Xf9Ai8jlVuLB9EJ62NL
-   cDPCdLawavS/6PmMEnitDjUvqCMOHUndnmYgRoCALKBGIPvhOXUzmKyHT
-   3rPjPoW6jqeRk+/Cb9ZTorUCRUHqwAEl8Ei3Qt6mueomGg/QnGY3gND2+
-   J9dMXguZF8SQkkBpFnSTLXthzQMqKv0QDTb4LDTxOddrL5EiJflPCAg6b
-   xPhGqnYtjrj4t0X1XXUAexlRFI7a3shS09qsLXvfNgBTEh7v+V5E5oz14
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5816216"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="5816216"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:50:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="45386606"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:50:19 -0700
-Date: Wed, 20 Mar 2024 14:50:13 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 030/130] KVM: TDX: Add helper functions to print TDX
- SEAMCALL error
-Message-ID: <20240320215013.GJ1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1259755bde3a07ec4dc2c78626fa348cf7323b33.1708933498.git.isaku.yamahata@intel.com>
- <315bfb1b-7735-4e26-b881-fcaa25e0d3f3@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WOaRHeLB4/KID/ymN4x9pUOiImq582qJbq4ZuylTpURjExsKpFW1eyO2/fxYjYacPN8A7l5Wl8Q0ayu3mGF+B0CzDYggMdvdaZXkqEzVBH8lhPqCLzvTehIBtSFKQKSJ1FsUTarm8XO9bxIQg9FqvnIe276nM8fCOl68AQbrKno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NVYwzLlt; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e6ae6b56ecso142762a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710971429; x=1711576229; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7e5DS/yA7HbHfT6B5LGwx48ERu4SeNkBqpRXvy8fkH4=;
+        b=NVYwzLlt+EZUjEHnZLPfCjl3Ly/CoWKyg8hQKVjMoUEGHZ1Lfl43lM+eOG2MVzfSjO
+         VhvNzBfsJCSXBaIUEf8fA8Rkv9E7HzMFm3kWLfB6NtpboBkWKNmRoaY5SXgpQXSZcuHQ
+         YyT+6XS7OMORMaq5fW025gX6PTMA+mdTbeEQw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710971429; x=1711576229;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7e5DS/yA7HbHfT6B5LGwx48ERu4SeNkBqpRXvy8fkH4=;
+        b=iD6E+cWcHUNIf10gBmtcXUVE8bebT4rPUOLHp+Gi44TIXVMt9W7pYinS+PVy1ewYid
+         seX7zxrqmsGkpBAYaYvD4ySXAlj3WgNqV4cA1JiyqEluZ6YmGeB/iV4FvtdFkjEfT3H8
+         9NZ2fclQ4sgWmb7lpYFa8tzoJkW0dDSeiU2vY0LFlPiWiI+ydJnTooLsbY0pnL6zSicO
+         sussEkIWmopZYIgbSuNM+xSEHOfe1sCbKbmp73iYJ/hvmZljzeAhjg59Gu2yTzUGmBZd
+         kH92IPFky2Li1BDW5y2qEPsOBr54PdJ7dEQ1S4CSVmrIJ4AwEiuATk89S1W43o0hC/S0
+         e4fg==
+X-Forwarded-Encrypted: i=1; AJvYcCVa9FOuQKyBT3YrUW4rMXqVnMgzFPoNKetv8CPCl3wycBT43LtYqakMK8sujmMd58qQiPkLqSM7KjvqZpSe4yqoF5t/M3BEiAgR9t+O
+X-Gm-Message-State: AOJu0YzD2/egLNQbZmkL2NeVhadztKjaLYH93hNMps9oe9LD3BUbvz7x
+	c5X3El+TZfg2dbxpjnKgVeC4sry2UMSrsDLgy6lumHZ2RJHJpdjAVwMbj5IjLg==
+X-Google-Smtp-Source: AGHT+IH9O5DCRQxgg/juNeTEEUiRb3od5GqM5/PbooTEf3XOb1UYlPpyE3wXSOeN2DuMZCfRVAQBUw==
+X-Received: by 2002:a05:6870:527:b0:221:cb66:c36b with SMTP id j39-20020a056870052700b00221cb66c36bmr3566275oao.4.1710971429612;
+        Wed, 20 Mar 2024 14:50:29 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:8598:2b3d:6e11:4163])
+        by smtp.gmail.com with UTF8SMTPSA id k21-20020a628415000000b006e6bf165a3asm13056754pfd.91.2024.03.20.14.50.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 14:50:29 -0700 (PDT)
+Date: Wed, 20 Mar 2024 14:50:28 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: David Lin <yu-hao.lin@nxp.com>,
+	Francesco Dolcini <francesco@dolcini.it>,
+	"kvalo@kernel.org" <kvalo@kernel.org>,
+	"linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
+	"rafael.beims" <rafael.beims@toradex.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host
+ mlme
+Message-ID: <ZftaJEIeNfV7YrVo@google.com>
+References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
+ <20240315094927.GA6624@francesco-nb>
+ <ZfTspRKFgrO9xCTH@google.com>
+ <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
+ <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <315bfb1b-7735-4e26-b881-fcaa25e0d3f3@intel.com>
+In-Reply-To: <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
 
-On Wed, Mar 20, 2024 at 01:29:07PM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+On Wed, Mar 20, 2024 at 10:12:45AM +0100, Johannes Berg wrote:
+> On Wed, 2024-03-20 at 01:10 +0000, David Lin wrote:
+> > > > 
+> > > > Also decl.h should probably _shrink_ rather than grow, a number of
+> > > > things just replicate ieee80211.h (such as MWIFIEX_MGMT_HEADER_LEN
+> > > > really is just
+> > > > sizeof(ieee80211_mgmt) or so? Not quite correctly.)
+> > > > 
+> > > 
+> > > This can be done for feature patches.
+> 
+> But this is a feature patch :-)
 
-> 
-> 
-> On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Add helper functions to print out errors from the TDX module in a uniform
-> > manner.
-> 
-> Likely we need more information here.  See below.
-> 
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-> > Reviewed-by: Yuan Yao <yuan.yao@intel.com>
-> > ---
-> > v19:
-> > - dropped unnecessary include <asm/tdx.h>
-> > 
-> > v18:
-> > - Added Reviewed-by Binbin.
-> 
-> The tag doesn't show in the SoB chain.
-> 
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> 
-> [...]
-> 
-> > +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out)
-> > +{
-> > +	if (!out) {
-> > +		pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
-> > +				   op, error_code);
-> > +		return;
-> > +	}
-> 
-> I think this is the reason you still want the @out in tdx_seamcall()?
-> 
-> But I am not sure either -- even if you want to have @out *here* -- why
-> cannot you pass a NULL explicitly when you *know* the concerned SEAMCALL
-> doesn't have a valid output?
-> 
-> > +
-> > +#define MSG	\
-> > +	"SEAMCALL (0x%016llx) failed: 0x%016llx RCX 0x%016llx RDX 0x%016llx R8 0x%016llx R9 0x%016llx R10 0x%016llx R11 0x%016llx\n"
-> > +	pr_err_ratelimited(MSG, op, error_code, out->rcx, out->rdx, out->r8,
-> > +			   out->r9, out->r10, out->r11);
-> > +}
-> 
-> Besides the regs that you are printing, there are more regs (R12-R15, RDI,
-> RSI) in the structure.
-> 
-> It's not clear why you only print some, but not all.
-> 
-> AFAICT the VP.ENTER SEAMCALL can have all regs as valid output?
+I'm going to hazard a guess David may have meant "future"?
 
-Only those are used for SEAMCALLs except TDH.VP.ENTER. TDH.VP.ENTER is an
-exception.
+But yeah, I get overwhelemed at how similar-but-not-quite-the-same
+definitions in this driver sometimes. It definitely could use some
+spring cleaning.
 
-As discussed at [1], out can be eliminated. We will have only limited output.
-If we go for that route, we'll have the two following functions.
-Does it make sense?
-
-void pr_tdx_error(u64 op, u64 error_code)
-{
-        pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
-                           op, error_code);
-}
-
-void pr_tdx_sept_error(u64 op, u64 error_code, const union tdx_sept_entry *entry,
-		       const union tdx_sept_level_state *level_state)
-{
-#define MSG \
-        "SEAMCALL (0x%016llx) failed: 0x%016llx entry 0x%016llx level_state 0x%016llx\n"
-        pr_err_ratelimited(MSG, op, error_code, entry->raw, level_state->raw);
-}
-
-
-[1] https://lore.kernel.org/kvm/20240320213600.GI1994522@ls.amr.corp.intel.com/
-
+> > > > So yeah, agree with Brian, not only would this be the first, but it's
+> > > > also something we don't really _want_. All other drivers that want
+> > > > stuff like this are stuck in staging ...
+> > > > 
+> > > > So why is this needed for a supposedly "firmware does it all" driver,
+> > > > and why can it not be integrated with mac80211 if it's no longer "firmware
+> > > does it all"?
+> > > > 
+> > > > Johannes
+> > > 
+> > > Our proprietary driver is cfg80211 driver, it is very hard to create a brand new
+> > > mac80211 driver and still can port all tested stuffs from our proprietary driver.
 > 
-> Anyway, that being said, you might need to put more text in
-> changelog/comment to make this patch (at least more) reviewable.
-> 
+> That basically doesn't matter for upstream at all.
 
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
++1
+
+> > BTW, vendor should have the choice to use cfg80211 or mac80211 for their chips, right?
+> 
+> No, that's not how it works. The choice should be what makes sense
+> architecturally.
+
+And to put some specifics on it, that's what's described here:
+
+https://wireless.wiki.kernel.org/en/developers/documentation/mac80211
+https://wireless.wiki.kernel.org/en/developers/documentation/cfg80211
+
+(I don't consider myself an authority on this stuff, for the record.
+But:)
+
+I've often felt like the SoftMAC designation has a very fuzzy
+definition. Or, that definition is very much subject to the whims of the
+hardware/firmware vendor, and can change from day to day. For instance,
+it feels like there are plenty of "fat firmware" features in mac80211
+drivers today, where pretty much anything and everything *might* be
+handled in some kind of firmware-offload feature, in addition or instead
+of on the host CPU.
+
+But a key point that *is* a pretty hard designation, from the mac80211
+page:
+
+"SoftMAC devices allow for a finer control of the hardware, allowing for
+802.11 frame management to be done in software for them, for both
+parsing and generation of 802.11 wireless frames"
+
+AFAICT, mwifiex firmware still isn't allowing "parsing and generation of
+802.11 wireless frames" in any general form -- everything I see is still
+wrapped in custom firmware command protocols. I do see that the AUTH
+frame looks like it's essentially duplicating the standard mgmt format,
+and uses the driver's TX path for it, but there isn't a corresponding
+ASSOC management frame that I can see...
+..so I really can't tell how much control this firmware *does* give the
+host regarding arbitrary 802.11 frame management.
+
+But that's pretty much business as usual for anybody but the vendor in
+priorietary firmware land; I can't answer pretty much any question,
+other than what I can glean from a driver.
+
+Brian
 
