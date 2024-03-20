@@ -1,117 +1,146 @@
-Return-Path: <linux-kernel+bounces-109478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82238881A07
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:00:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96650881A10
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 226881F22A53
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48CA61F22089
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3738612C;
-	Wed, 20 Mar 2024 23:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC1186128;
+	Wed, 20 Mar 2024 23:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EWD6at8M"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q76+N/er"
+Received: from mail-il1-f202.google.com (mail-il1-f202.google.com [209.85.166.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22871E87E;
-	Wed, 20 Mar 2024 23:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913E56BFDB
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710975609; cv=none; b=XTQu0CzlKC+R1+9KJe8773Ds2VHs/y+YPZz+sH3s1Bqbl64OgkomEkmG3uXBIC150klr+iDq+0nODOXUunc/yz6T30QCYFqEkRRE6gJJS7Whan9UbCnGtbWusnz0W6GNcmWALc9C6pB+wTk8l8YtmkpWAlkMa2Gins/n9Xm8w/c=
+	t=1710975889; cv=none; b=C465AjGvutgsHcCq+Sa+fmNu2DyYyS3yVnf/eBoCItHIgZcjUzOl6sX8caMJftSMzfOZuSKIyIJ3lx2ONwDjVvku/TDr33IQD+KzUKNJL2CuXD777Dcqd0uGVYyDy6KGIkz+a2a/8xrKysEbtPmgdMdbYVMfL/uIvC1C7PrmPUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710975609; c=relaxed/simple;
-	bh=XnbPtg+O2IYA+qWONEybl7Qhpn7SsiI2acn8i+RwEFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PM2aMOOHDHXR/56qQe5RKbTMWXpI29607LbLsTKZKJVLbc6zQD5ZB8bZkq0OCHrnBnOnTgXK0iDRwCV3P2Zrad9FOYNb/D4P467yBvkhP0K4D6hp8LdfeKOjotj34P9OYQBA4LyaN5m3oEALKbchYc7xJCm7xXuy5D98r4QlMhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EWD6at8M; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42e323a2e39so3955801cf.1;
-        Wed, 20 Mar 2024 16:00:07 -0700 (PDT)
+	s=arc-20240116; t=1710975889; c=relaxed/simple;
+	bh=xdt3WcZtzp6V+dVSO0oQ0nQ4PjO+mTElm8qjYyLdYhc=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=AVZYBuen3hmcoRBGlh97rgsmncENb4XKAf6wZZ3K+Sp+/wLvWF2d33cnKXm+pEycQkzeF3oj11ZlwQnZbExto80i7YqUPmPV5EDISAgFoWOyk30I2KL/d1ovrthu8gwqUJUYTIDLRvrE7Fn6BxWZVexUewFemY3UrizCCqrbiHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q76+N/er; arc=none smtp.client-ip=209.85.166.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-il1-f202.google.com with SMTP id e9e14a558f8ab-366c3152af9so3618865ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:04:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710975607; x=1711580407; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B6v8eA1cPx7sUw+dmQFSGsW4h/lZzNvuLTYyd3ImSWM=;
-        b=EWD6at8MQLH3XdwqupvpEpVqMPlN+ap/F99lrUiJarzYYINJin+KIxgDv+azz6hPx7
-         oC3JY5fjePyixStUAHJictFncJEbtof/DnTlr1fg4d3kZsA3wljhczfOLdelbi8eMn3j
-         D4gQq/asqecbCNXPrJtWzOwOblhCncXT69e9F3PKb0jfr53Rt63SK86LFZnZoyZNGMdY
-         aC0eQhUsBEFRjmse7xKzKg17GJnSlJfxGJ4+Zhi2rJCRH51juWXRjfrtQno76WlfVjir
-         vIDNELZ6rjtmwsgVAE+GPGZyuurLIj22Q5aHxJb6/yq4yGLq8MBSZvOH37eJTo6PXXf9
-         s+MA==
+        d=google.com; s=20230601; t=1710975887; x=1711580687; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=g2+RO3cMaS60sPuOhp6UDFq45HF6306U2TZ9coJYJqo=;
+        b=Q76+N/erYG4HtEVqddQUCkoP6uaBdSlr/7SIL5ilXWCfLNZV8voEEccSiVjDX7ZUT2
+         JTZz38Mo2VJOI57FfdHbdIVL4xcFr/Utqwz3bYIuIoDfAnALOPY1gNUint4hd84Eb4bD
+         Hx27l25S2yOx9dvDB9Q4dsHnAZoEWLPYOHeSgPaszW+KYh2/GsNFE8NHMfcQV0WGSO+z
+         YZL4KANTuoSqL7gl0NIha6SX8Gyw+Q50qce20yBhak9s6VYlI6RROqsOyjjKuEQAYDa2
+         SNUxmERbOcYsPIhXVj86sRJAF6CPB+9dsePqXiP/DDEHCKTfwM/SGm4/iDQDazHoomfR
+         bgqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710975607; x=1711580407;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B6v8eA1cPx7sUw+dmQFSGsW4h/lZzNvuLTYyd3ImSWM=;
-        b=Ob0vwVd4a5fK6sz9hfEoVkabnlv/REqrFAgvRpTmjzVyvs+hQgV44Psy5cjjAUrzp3
-         XpIba+JatXA5bZYFInvZ0sASRtv1i/3kNTGw7zYZn9I4ZWQ7/jKI/0OoNeooQ892QDZ8
-         kOJzquEK6Na46xYQQOw9i3NBG3mY4s90G/RzOObxvsYU4Ek7w10AmO/KdckQqnRM08Ll
-         kz/eII9+6wqQf9vFWk1d315Ouv6ooC0QCQECROHHz1LYRFYh16wMxqGSraWwwRWR3q8C
-         QySMefrLkHhzitAebD7EdeFuD9ppNd921RYzH+X9wH9FWi4NoUZl4Pj/CTgcXX5y/AID
-         6+OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVD9EuFDRw0ZZ8vaaHmqcLZshg7X9Y2tda6MRgi6MCYtg8C6je79uZEaUC4HiIYKi9/GjYYQtnTSu3E8u90KFyg+AiwiBjkmPAMKnk5
-X-Gm-Message-State: AOJu0YyFqMyVJw/qHeorTn/h3STRpXWYQBDdKZqgrtCVEGVltfzBFpqW
-	QMdEwNTSjQwZnkJTAqRzSxbTSJiXhuy28g34rBHmnKvSafnzUdZ5
-X-Google-Smtp-Source: AGHT+IFzdVkgFVucq+ZP1v8OpUIXwkxjGJR9OB5Tn+7GHhqMBG8/1E9dagmdQZXN7zOjwbPCjYaFAQ==
-X-Received: by 2002:ac8:7e89:0:b0:431:1d8d:9229 with SMTP id w9-20020ac87e89000000b004311d8d9229mr1897432qtj.24.1710975605218;
-        Wed, 20 Mar 2024 16:00:05 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d4-20020ac85344000000b00430ac082732sm7169592qto.70.2024.03.20.16.00.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 16:00:03 -0700 (PDT)
-Message-ID: <6059f7e5-fd2c-493f-a1dd-acfc7e9e7701@gmail.com>
-Date: Wed, 20 Mar 2024 15:59:59 -0700
+        d=1e100.net; s=20230601; t=1710975887; x=1711580687;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g2+RO3cMaS60sPuOhp6UDFq45HF6306U2TZ9coJYJqo=;
+        b=giZRBCkIkx0tEOypminr/T+K42uV5Nfzdc0NrB7Hyv1/dNtKaqQzqKA0AGGXATMmkf
+         1eqe3s5K7ia3vDGU60xAY1d8xIxH/CDRhqUpb1kpeYXnc8+x2l69PFuAw08CELyvflAo
+         S2/+TK0+KYQElge56eznft8J4oy7W8NH4vWNIfv9RB+HWKmM3w2LzbgEUCwmNBY41fvP
+         +qMMbPS6kg/MLHFGPvKnSyn8Gsr61i/1bdM52lpb4x1MzO4S/VXtTVMFL09+xvnz4xYR
+         M4pGem4UuVvUYDJ/+8UMjRqZeuafzYgjsw3rKwJaIRH+guxZ7Y0GLVOXhzJ1u7ijf/We
+         IoYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXa5xRyTpD4IP4rdlbQfq8755qpc3aQIZueFnwJlZS/2D/8agRyzsxb3LOMlQb1FnhgmrM0pZOUtDxoo5O7XhpDp9aVoU1CytfF16Xu
+X-Gm-Message-State: AOJu0Yys6WRJm3XnFXBer59NmOUlgjsZY16rpcVydxazctZXjdak41wQ
+	yzNmOYHvWKya4JPnOi5zDK2Q48BwC5EtgFOHLO7CEx6iY/gW7P5MITSueaGfwZsrDcWoMvj46Pf
+	bBR2EceOPFLz57z8/4pbOkA==
+X-Google-Smtp-Source: AGHT+IE0SUB2ouJtetdQjpyRX2R1ogJVbIpFy4IGejw06L4AAiIp+tvbaFIe6uUWSz0Q/ZKxotmWusw1YlBBb6OKEg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6e02:1d92:b0:366:a77e:62dc with
+ SMTP id h18-20020a056e021d9200b00366a77e62dcmr201298ila.2.1710975886819; Wed,
+ 20 Mar 2024 16:04:46 -0700 (PDT)
+Date: Wed, 20 Mar 2024 23:04:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net V2 2/2] net: lan743x: support WOL in MAC even when PHY
- does not
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>,
- Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- pabeni@redhat.com, edumazet@google.com, linux-kernel@vger.kernel.org,
- bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com
-References: <20240320042107.903051-1-Raju.Lakkaraju@microchip.com>
- <20240320042107.903051-3-Raju.Lakkaraju@microchip.com>
- <22089299-a3e2-4cbd-942a-65ea070657b8@lunn.ch>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <22089299-a3e2-4cbd-942a-65ea070657b8@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAItr+2UC/x3NwQrCMAyA4VcZORuoXSnDVxEPW5pqLt1INEzG3
+ t3i8bv8/wHGKmxwGw5QdjFZW8f1MgC95vZklNINMcQUxhjQ3tpo+2JRcVZDl8Ir1qWw48fZ5ro gYRpznihxzTRBb23KVfb/5/44zx9EVBqXdwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710975885; l=2023;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=xdt3WcZtzp6V+dVSO0oQ0nQ4PjO+mTElm8qjYyLdYhc=; b=f19YsudHfgvlM7ugu8UM5KyMcxaGHMzV60fbyToO/flwakuV05BaMfUOCc7dw5o6ikznP7JLg
+ lq8Lb1GsU1SB6+LQuJnlOA6neOghUGwiYYU+BFbN8vqiabgKJN2iJdY
+X-Mailer: b4 0.12.3
+Message-ID: <20240320-strncpy-drivers-video-fbdev-uvesafb-c-v1-1-fd6af3766c80@google.com>
+Subject: [PATCH] fbdev: uvesafb: replace deprecated strncpy with strscpy_pad
+From: Justin Stitt <justinstitt@google.com>
+To: Michal Januszewski <spock@gentoo.org>, Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On 3/20/24 15:53, Andrew Lunn wrote:
->> +	if (netdev->phydev) {
->> +		ret = phy_ethtool_set_wol(netdev->phydev, wol);
->> +		if (ret != -EOPNOTSUPP && ret != 0)
->> +			return ret;
-> 
-> I'm not sure this condition is correct.
-> 
-> If there is an error, and the error is not EOPNOTSUPP, you want to
-> report that error. However, if the PHY can support the WoL
-> configuration, it will return 0, and this function should exit, WoL in
-> the MAC is not needed. And doing WoL in the PHY consumes less power
-> since you can suspend the MAC.
-> 
-> So i think it should simply be:
-> 
->> +		if (ret != -EOPNOTSUPP)
->> +			return ret;
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Agreed, that's what I did for bcmgenet_wol.c.
--- 
-Florian
+We expect v86d_path to be NUL-terminated based on its use with the
+C-string format specifier in printf-likes:
+|	pr_err("failed to execute %s\n", v86d_path);
+and
+|	return snprintf(buf, PAGE_SIZE, "%s\n", v86d_path);
+
+Let's also opt to pad v86d_path since it may get used in and around
+userspace:
+|	return call_usermodehelper(v86d_path, argv, envp, UMH_WAIT_PROC);
+
+Considering the above, strscpy_pad() is the best replacement as it
+guarantees both NUL-termination and NUL-padding on the destination
+buffer.
+
+Note that this patch relies on the _new_ 2-argument versions of
+strscpy() and strscpy_pad() introduced in Commit e6584c3964f2f ("string:
+Allow 2-argument strscpy()").
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/video/fbdev/uvesafb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/video/fbdev/uvesafb.c b/drivers/video/fbdev/uvesafb.c
+index e1f421e91b4f..8b554fcf1bfb 100644
+--- a/drivers/video/fbdev/uvesafb.c
++++ b/drivers/video/fbdev/uvesafb.c
+@@ -1867,7 +1867,7 @@ static ssize_t v86d_show(struct device_driver *dev, char *buf)
+ static ssize_t v86d_store(struct device_driver *dev, const char *buf,
+ 		size_t count)
+ {
+-	strncpy(v86d_path, buf, PATH_MAX - 1);
++	strscpy_pad(v86d_path, buf);
+ 	return count;
+ }
+ static DRIVER_ATTR_RW(v86d);
+
+---
+base-commit: a4145ce1e7bc247fd6f2846e8699473448717b37
+change-id: 20240320-strncpy-drivers-video-fbdev-uvesafb-c-43668c4ef6c8
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
