@@ -1,148 +1,209 @@
-Return-Path: <linux-kernel+bounces-108739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D3D6880F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:13:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A72880F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABD2AB22370
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:13:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAE0EB22F2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D023E3CF6A;
-	Wed, 20 Mar 2024 10:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VHssG+tr"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3823CF51;
+	Wed, 20 Mar 2024 10:15:26 +0000 (UTC)
+Received: from esa2.ltts.com (unknown [14.140.155.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778673C47B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BBE2A1B2;
+	Wed, 20 Mar 2024 10:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710929585; cv=none; b=Ey1A2MpCI4YzMtCByOu38dfszMy/fdMdizHFMaKU9HRPXQF2rrLRmUKs57LvVGG+WrUUdwYb6rsz7onhReNhG1Q3X4Xz4vjgnEtPqXDmOeMn282OFAwj1p6Avu69WDSmQKMAvmgwlbkpCs5wizlwDNKblSlJC6T4xLh0Imj1XPs=
+	t=1710929726; cv=none; b=AzS8Sm7POeYHjPp2ZMJhWfWMOmGk25ziuYJP1izCnxLF++lCy2gf7544/Ew6N6OoXNVQH45xApJqF7FMcfqwxCgNms4oZJ3L1XWoKc6XIzWq22fW0hjAD4KmUxh544osMNb/9h4+vrNXKf8NhA4uIc2e8ZRqLa8SuxG+wamz/TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710929585; c=relaxed/simple;
-	bh=5m5rEvrKdIFk1HR0PEKHh2vD/F61aTmd6GSGCitb6rM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lnO8nwN9Br8bX/Ajx3VfoZ9eGpPgzoCGeestZuV+ru5i2HLM7MYKBeZfN6B5bESpPbFrAF0W2FzLrpW44+kZZJ36lxLeqdHGtihr33kdVxFfEe/9nx6CSY/+jFeXz/kd0PRuxyOg+TTzwqAubFKpQzVJd+sk382gXsJ8ukg+W7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VHssG+tr; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78a052a3fc5so165168285a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710929582; x=1711534382; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tTp075kwbc6LfAaXvHEolsZ8AZN/qxf8o0cgwtL8pnM=;
-        b=VHssG+tr0hhL8Hi86d5fXFcp5U5ZHYz2lQvlpINz1kyKQeO8njS6/UgDmjsoDFjAXl
-         2uClfvG4SvXMlpg8ykM/oEfWMT+a53NrWsMVx5D1Ikd0Uj+vhaB4RpRmPtDdG9Zm7OG4
-         F+UfmpD4506NJtRTefVyozJbd8aQ8FXDlA1q7zeOQU2oZcLImc2Bdknzz5J+0DlcKIrO
-         dQc2torENU//UO5rTfW/iZi1bNsjq/ylo+Ops3rzCh6ZkXz5ji3nWKGc5766aB6Jd1yv
-         ZufIoQIxTiDeL27ZMSBLrz0q3ZFswW5jGiAuPEPxE2KRlfLF6gD1nNnURhaw17c4UJlA
-         OZKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710929582; x=1711534382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tTp075kwbc6LfAaXvHEolsZ8AZN/qxf8o0cgwtL8pnM=;
-        b=i0zShpj/uttl9H8RXWYNrtGAL1pbc2tX+Ma/il/5dh5EfhXLd6Ak97O3JSm091+DxX
-         ToX44aTRRovaM1d3xfJqV+zk26bZaQhjeM8aHtezyscUl0qCrGMmuFj5pY5GH5IqCHoZ
-         3Gacq7S1j7y3C8VEBJFwmM2e+Hi002wGYULDOVF7KV+3C8Tv57SPITp7UUH38jOOQU+H
-         Andm65Dg4V7ggz/lCzi6gA9DT7awfqk8vSyyw+R24J8Hcj4WkyeX7eBn6CyMRujkCf5U
-         wG4ZoWhAGdpR/gwrlsCU3BYwDmfppaso7Aj0ULpo9xImWMjBmhMm1ab4o+NN7z1z7jon
-         H6/g==
-X-Forwarded-Encrypted: i=1; AJvYcCUkCcdJb14DUA05ecNMw9hST2ysA8Xr+RKTKaAOgEmB6UNgbcUiNnuRsNZx1L+f557/eWr+VVQ6xOYl5x44J0bV3eidHWlI+m2WgeM7
-X-Gm-Message-State: AOJu0YwCKuNxU/dpJ0KCR5ql30NE1aEvm02IQxQiRLlOIdS599cCIKRB
-	/iJsynH4LvUWugLf6Qzu9XSYLm4dYpez4HEVls//do0frQM4uHl0cD9aeq7eKOXwrE8IFn8Tjgb
-	764YxB98rYRdOiDKarnpL21QP2I5Ti9A91dfS
-X-Google-Smtp-Source: AGHT+IGLI4oQNvj0ZrWfizm7uSaZYg0DWwsg20e7D8kug0TuDxHAh+4D2eaIqN2wxNhaeqBmJNG5Et8TjvmFmBQCIhI=
-X-Received: by 2002:a0c:f38e:0:b0:691:3ccd:62cc with SMTP id
- i14-20020a0cf38e000000b006913ccd62ccmr5727614qvk.6.1710929582254; Wed, 20 Mar
- 2024 03:13:02 -0700 (PDT)
+	s=arc-20240116; t=1710929726; c=relaxed/simple;
+	bh=zfDLbqWgOH8d1+adp9RxEyhJRbc2lOUnCC4kwPqZ5qc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=LseY4B1DSI2HDsGmJvjolHjO3up1hhZe0RzxKRh6ISLGP/NPDKrimwnNCTIEIzVbzSkN7eqzNluqnV1b0rson5F93gvUOpKz0lBndnhoxdun03w6kEqyKKrWYRitXynXllfUQBfIVy1ry4XzBIA0p96Zz9h0Zbrv41jvou5Anpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
+IronPort-SDR: oQrzJEPhxgP8uSFlXa+okPvyeBYCfJjsBKwDc4F+mjozrIdneuUGtuGjWkX3CLcm3b42JOf9Tz
+ bIziGp9kJiug==
+Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
+  by esa2.ltts.com with ESMTP; 20 Mar 2024 15:44:07 +0530
+From: Bhargav Raviprakash <bhargav.r@ltts.com>
+To: jpanis@baylibre.com
+Cc: arnd@arndb.de,
+	bhargav.r@ltts.com,
+	broonie@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	eblanc@baylibre.com,
+	gregkh@linuxfoundation.org,
+	kristo@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	lee@kernel.org,
+	lgirdwood@gmail.com,
+	linus.walleij@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	m.nirmaladevi@ltts.com,
+	nm@ti.com,
+	robh+dt@kernel.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH v3 01/11] mfd: tps6594: Add register definitions for TI TPS65224 PMIC
+Date: Wed, 20 Mar 2024 15:43:54 +0530
+Message-Id: <20240320101354.463936-1-bhargav.r@ltts.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <44295772-4635-42c2-b7b5-cdc37505715e@baylibre.com>
+References: <44295772-4635-42c2-b7b5-cdc37505715e@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319163656.2100766-1-glider@google.com> <20240319163656.2100766-3-glider@google.com>
- <CAHk-=wiUf3Eqqz3PttTCBLyDKqwW2sdpeqjL+PuKtip15vDauA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiUf3Eqqz3PttTCBLyDKqwW2sdpeqjL+PuKtip15vDauA@mail.gmail.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Wed, 20 Mar 2024 11:12:23 +0100
-Message-ID: <CAG_fn=WRz22XEV_Em+M2FJsNjuBr3mZFT7aA5G8YdT4OTf1p1g@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] x86: call instrumentation hooks from copy_mc.c
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, tglx@linutronix.de, 
-	x86@kernel.org, Dmitry Vyukov <dvyukov@google.com>, Marco Elver <elver@google.com>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 19, 2024 at 6:58=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, 19 Mar 2024 at 09:37, Alexander Potapenko <glider@google.com> wro=
-te:
+Hello,
+
+On Fri, 8 Mar 2024 12:24:40 +0100, Julien wrote:
+> On 3/8/24 11:34, Bhargav Raviprakash wrote:
+> > From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
 > >
-> >         if (copy_mc_fragile_enabled) {
-> >                 __uaccess_begin();
-> > +               instrument_copy_to_user(dst, src, len);
-> >                 ret =3D copy_mc_fragile((__force void *)dst, src, len);
-> >                 __uaccess_end();
->
-> I'd actually prefer that instrument_copy_to_user() to be *outside* the
-> __uaccess_begin.
+> > Extend TPS6594 PMIC register and field definitions to support TPS65224
+> > power management IC.
+> >
+> > TPS65224 is software compatible to TPS6594 and can re-use many of the
+> > same definitions, new definitions are added to support additional
+> > controls available on TPS65224.
+> >
+> > Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> > Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> > ---
+> >   include/linux/mfd/tps6594.h | 354 ++++++++++++++++++++++++++++++++++--
+> >   1 file changed, 342 insertions(+), 12 deletions(-)
+> 
+> [...]
+> 
+> > +/* IRQs */
+> > +enum tps65224_irqs {
+> > +	/* INT_BUCK register */
+> > +	TPS65224_IRQ_BUCK1_UVOV,
+> > +	TPS65224_IRQ_BUCK2_UVOV,
+> > +	TPS65224_IRQ_BUCK3_UVOV,
+> > +	TPS65224_IRQ_BUCK4_UVOV,
+> > +	/* INT_LDO_VMON register */
+> > +	TPS65224_IRQ_LDO1_UVOV,
+> > +	TPS65224_IRQ_LDO2_UVOV,
+> > +	TPS65224_IRQ_LDO3_UVOV,
+> > +	TPS65224_IRQ_VCCA_UVOV,
+> > +	TPS65224_IRQ_VMON1_UVOV,
+> > +	TPS65224_IRQ_VMON2_UVOV,
+> > +	/* INT_GPIO register */
+> > +	TPS65224_IRQ_GPIO1,
+> > +	TPS65224_IRQ_GPIO2,
+> > +	TPS65224_IRQ_GPIO3,
+> > +	TPS65224_IRQ_GPIO4,
+> > +	TPS65224_IRQ_GPIO5,
+> > +	TPS65224_IRQ_GPIO6,
+> > +	/* INT_STARTUP register */
+> > +	TPS65224_IRQ_VSENSE,
+> > +	TPS65224_IRQ_ENABLE,
+> > +	TPS65224_IRQ_PB_SHORT,
+> > +	TPS65224_IRQ_FSD,
+> > +	TPS65224_IRQ_SOFT_REBOOT,
+> > +	/* INT_MISC register */
+> > +	TPS65224_IRQ_BIST_PASS,
+> > +	TPS65224_IRQ_EXT_CLK,
+> > +	TPS65224_IRQ_REG_UNLOCK,
+> > +	TPS65224_IRQ_TWARN,
+> > +	TPS65224_IRQ_PB_LONG,
+> > +	TPS65224_IRQ_PB_FALL,
+> > +	TPS65224_IRQ_PB_RISE,
+> > +	TPS65224_IRQ_ADC_CONV_READY,
+> > +	/* INT_MODERATE_ERR register */
+> > +	TPS65224_IRQ_TSD_ORD,
+> > +	TPS65224_IRQ_BIST_FAIL,
+> > +	TPS65224_IRQ_REG_CRC_ERR,
+> > +	TPS65224_IRQ_RECOV_CNT,
+> > +	/* INT_SEVERE_ERR register */
+> > +	TPS65224_IRQ_TSD_IMM,
+> > +	TPS65224_IRQ_VCCA_OVP,
+> > +	TPS65224_IRQ_PFSM_ERR,
+> > +	TPS65224_IRQ_BG_XMON,
+> > +	/* INT_FSM_ERR register */
+> > +	TPS65224_IRQ_IMM_SHUTDOWN,
+> > +	TPS65224_IRQ_ORD_SHUTDOWN,
+> > +	TPS65224_IRQ_MCU_PWR_ERR,
+> > +	TPS65224_IRQ_SOC_PWR_ERR,
+> > +	TPS65224_IRQ_COMM_ERR,
+> > +	TPS65224_IRQ_I2C2_ERR,
+> > +	/* INT_ESM register */
+> > +	TPS65224_IRQ_ESM_MCU_PIN,
+> > +	TPS65224_IRQ_ESM_MCU_FAIL,
+> > +	TPS65224_IRQ_ESM_MCU_RST,
+> 
+> You should remove the 3 lines above for ESM_MCU, since there is none
+> linux driver for ESM_MCU.
+> 
+> > +};
+> > +
+> > +#define TPS65224_IRQ_NAME_BUCK1_UVOV		"buck1_uvov"
+> > +#define TPS65224_IRQ_NAME_BUCK2_UVOV		"buck2_uvov"
+> > +#define TPS65224_IRQ_NAME_BUCK3_UVOV		"buck3_uvov"
+> > +#define TPS65224_IRQ_NAME_BUCK4_UVOV		"buck4_uvov"
+> > +#define TPS65224_IRQ_NAME_LDO1_UVOV		"ldo1_uvov"
+> > +#define TPS65224_IRQ_NAME_LDO2_UVOV		"ldo2_uvov"
+> > +#define TPS65224_IRQ_NAME_LDO3_UVOV		"ldo3_uvov"
+> > +#define TPS65224_IRQ_NAME_VCCA_UVOV		"vcca_uvov"
+> > +#define TPS65224_IRQ_NAME_VMON1_UVOV		"vmon1_uvov"
+> > +#define TPS65224_IRQ_NAME_VMON2_UVOV		"vmon2_uvov"
+> > +#define TPS65224_IRQ_NAME_GPIO1			"gpio1"
+> > +#define TPS65224_IRQ_NAME_GPIO2			"gpio2"
+> > +#define TPS65224_IRQ_NAME_GPIO3			"gpio3"
+> > +#define TPS65224_IRQ_NAME_GPIO4			"gpio4"
+> > +#define TPS65224_IRQ_NAME_GPIO5			"gpio5"
+> > +#define TPS65224_IRQ_NAME_GPIO6			"gpio6"
+> > +#define TPS65224_IRQ_NAME_VSENSE	        "vsense"
+> > +#define TPS65224_IRQ_NAME_ENABLE		"enable"
+> > +#define TPS65224_IRQ_NAME_PB_SHORT		"pb_short"
+> > +#define TPS65224_IRQ_NAME_FSD			"fsd"
+> > +#define TPS65224_IRQ_NAME_SOFT_REBOOT		"soft_reboot"
+> > +#define TPS65224_IRQ_NAME_BIST_PASS		"bist_pass"
+> > +#define TPS65224_IRQ_NAME_EXT_CLK		"ext_clk"
+> > +#define TPS65224_IRQ_NAME_REG_UNLOCK		"reg_unlock"
+> > +#define TPS65224_IRQ_NAME_TWARN			"twarn"
+> > +#define TPS65224_IRQ_NAME_PB_LONG		"pb_long"
+> > +#define TPS65224_IRQ_NAME_PB_FALL		"pb_fall"
+> > +#define TPS65224_IRQ_NAME_PB_RISE		"pb_rise"
+> > +#define TPS65224_IRQ_NAME_ADC_CONV_READY	"adc_conv_ready"
+> > +#define TPS65224_IRQ_NAME_TSD_ORD		"tsd_ord"
+> > +#define TPS65224_IRQ_NAME_BIST_FAIL		"bist_fail"
+> > +#define TPS65224_IRQ_NAME_REG_CRC_ERR		"reg_crc_err"
+> > +#define TPS65224_IRQ_NAME_RECOV_CNT		"recov_cnt"
+> > +#define TPS65224_IRQ_NAME_TSD_IMM		"tsd_imm"
+> > +#define TPS65224_IRQ_NAME_VCCA_OVP		"vcca_ovp"
+> > +#define TPS65224_IRQ_NAME_PFSM_ERR		"pfsm_err"
+> > +#define TPS65224_IRQ_NAME_BG_XMON		"bg_xmon"
+> > +#define TPS65224_IRQ_NAME_IMM_SHUTDOWN		"imm_shutdown"
+> > +#define TPS65224_IRQ_NAME_ORD_SHUTDOWN		"ord_shutdown"
+> > +#define TPS65224_IRQ_NAME_MCU_PWR_ERR		"mcu_pwr_err"
+> > +#define TPS65224_IRQ_NAME_SOC_PWR_ERR		"soc_pwr_err"
+> > +#define TPS65224_IRQ_NAME_COMM_ERR		"comm_err"
+> > +#define TPS65224_IRQ_NAME_I2C2_ERR		"i2c2_err"
+> > +#define TPS65224_IRQ_NAME_ESM_MCU_PIN		"esm_mcu_pin"
+> > +#define TPS65224_IRQ_NAME_ESM_MCU_FAIL		"esm_mcu_fail"
+> > +#define TPS65224_IRQ_NAME_ESM_MCU_RST		"esm_mcu_rst"
+> 
+> You should remove the 3 lines above for ESM_MCU.
+> 
+> Julien
 
-Good point, this is doable.
+Thanks! will get it done in the next version.
 
->
-> In fact, I'm a bit surprised that objtool didn't complain about it in tha=
-t form.
-
-This is because a bunch of KMSAN functions is ignored by objtool:
-https://elixir.bootlin.com/linux/latest/source/tools/objtool/check.c#L1200
-
-> __uaccess_begin() causes the CPU to accept kernel accesses to user
-> mode, and I don't think instrument_copy_to_user() has any business
-> actually touching user mode memory.
-
-Ack.
-
-> In fact it might be better to rename the function and change the prototyp=
-e to
->
->    instrument_src(src, len);
->
-> because you really can't sanely instrument the destination of a user
-> copy, but "instrument_src()" might be useful in other situations than
-> just user copies.
-
-Right now at least for KMSAN it is important to distinguish between a
-usercopy and e.g. a URB submission: both are checked using the same
-function, but depending on what is happening the report title is
-different.
-
-The destination parameter is also used by KMSAN to print fancier error repo=
-rts.
-For an infoleak we show the target userspace address together with
-other information, e.g.:
-
-  BUG: KMSAN: kernel-infoleak in instrument_copy_to_user
-include/linux/instrumented.h:114 [inline]
-  ...
-  Bytes 34-35 of 36 are uninitialized
-  Memory access of size 36 starts at ffff8881152e5680
-  Data copied to user address 00007ffc9a4a12a0
-
-It comes in handy when debugging reproducers locally.
-
-Future debugging tools may also need more insight into the semantics
-of the instrumented accesses.
+Regards,
+Bhargav
 
