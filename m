@@ -1,288 +1,130 @@
-Return-Path: <linux-kernel+bounces-109289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77F9F881734
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:09:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B56B881737
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EA8728180A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:09:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 063FF281E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468926A8C5;
-	Wed, 20 Mar 2024 18:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7E96BB27;
+	Wed, 20 Mar 2024 18:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TkGY8Y9p"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W0y0sftJ"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745AF1DFC6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F9D1DFC6;
+	Wed, 20 Mar 2024 18:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710958151; cv=none; b=esunLfmpqUEfIMOJ4w+iAQK9Rrfga48d2+OJ+Hlmq1hSmU5mUHLoiYW9qFkcr20NTl8FFnWt2JFRVBb08JmsftdVnyoJ+ddXS15kM2LSSkDP7aIivNsbwIMneQRJbB/k/5ZT/EBuPSWgyDVrfiqzJuuYJwTDbWH51K68BcSWgaE=
+	t=1710958250; cv=none; b=rnGubfJiXQ/hIsH7qcuvUxIllVrhPRjGCxyeQupP0Guk8YFqKg2pWf7TsAOfdqHZkvSl3BEpGsG/4oCYBTy8JjnKkHgAhbA9SjA/MLzeaIn1AjK6Du4mwg9iYTthnpJx9ZZpLRyBgquZvDFzX3UB9goMCjAcPCxBDxfYte6e6Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710958151; c=relaxed/simple;
-	bh=YJwn0EHmN4p0C1O8WY5aZR1nYAKu4era8MiJ7mxANe0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CfmEaqsLGlAf1K7fXW9oIbdbLYqLB1jK6x/DG99CAeOfK66CepOt67y2RfhpeM1nA0KQtxUihAKlY02Xee/PgWwRyNsjGW6wKnm4TecLp9F22u3YKP/zoSpFlk/Nd6iBI3I7cxJ+gujBphZVelwF4gEsnXNHIdXbeS7SfOafyzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TkGY8Y9p; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ab69a9e6fso15866167b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:09:09 -0700 (PDT)
+	s=arc-20240116; t=1710958250; c=relaxed/simple;
+	bh=848BvPcWVF2HeOCahhaa+N1S4L9jNZkkt4RSFKyn3JE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=XlnKrfb2pyS83Qdut5QV+vKAZ9QYIquPkj/bZKkDNLevtIg1fNAk8z7vKusfW/th89HwUDTSz5NFOogA+iAi3NAdTGaZ/MFK8SZphlMoF1W2BtJLB6xWHlr9fndjGwTvKrmrxpp62CLb9BdOs5ZiX03ziWKpiL0z/YpVQd4yy7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W0y0sftJ; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0025ef1efso486985ad.1;
+        Wed, 20 Mar 2024 11:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710958148; x=1711562948; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ysil0RDXkCVtzkTohmRbeyotl8h5MD3ps9kD7n3YY/k=;
-        b=TkGY8Y9phbftfHMOkeiOTQO8zgdXhNP1xZDqUTkLUxrgqg0ovJHnfVWKTYA4vktd5f
-         KtgJtlhx+iYAJADqp1QgeZeupiEFZHGtOFoJeD+5rBWYmxcdS3FlAJ3L7Ven44+evw3m
-         wh3zdBDZ51IqDxZ3VQBnodJO1Kii94pQ4t1VNCuR2aW8UsWND1ShJ37uwsQXoiw8qgtk
-         V17vvbWWMVQEk56fomjK/kVhCOa3K2JMEI3Q7KqtCNxbev0UfdoJa7xG/EzIOD1wvAOB
-         /FZVIH7FxeIB2T7DLVwdPF+wmEiNWcA41E+4+8u7FSbPvJp2YtyCcT9KSEFMa7lpmvYz
-         vYzw==
+        d=gmail.com; s=20230601; t=1710958248; x=1711563048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3wOSVnh8h74qXknR828f/YsEXGTUbMVRuCYez3A0XkI=;
+        b=W0y0sftJroLPXTI7nBDugrpgncuIICXny3NMzKL3Mb/q/1RX8Bu9hEGKwl3XIExd2K
+         QRlJ8NnGTwySUykkUjwrm9C08iXOJIhnMLUnPvVxgJVRsNhY3S2aeNuRK8vvsuFkpyBY
+         u6vUinhNEM2CTE/i3tUt9+mdMnKZyhj7rxxEqKygdNtlL9xtcPDPZIc3W8a9jgmrlzdn
+         +1IOtgILIONsMw7es6hx/xUbsvpBlkaZCkvYcEsAHvbKVDp+UapREBfh8him3X6JroCf
+         rEAC8o+3iH0BLT7MGmyZGH+c8o+jTDCxOJ4p/P62Kqyda2h9m3xrPXGdbLHCXFyyPVEo
+         GvJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710958148; x=1711562948;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ysil0RDXkCVtzkTohmRbeyotl8h5MD3ps9kD7n3YY/k=;
-        b=l25fxslljWA/nb08T0QyoSomWTlUZ5bgq2Igbg4l+0bWMoMXXaIaDBOaCE52/pH/o4
-         1OAfbw9TSFkYc3stbhWKHOCN5+VkNnCv7Fz6fKDKIkOK6BF1iRy1tsJ7Knj2OjFdTasD
-         7WSYY4aPEzzizkiNZdf2pSt8oBGUqhj0CDznnzwYP4DNio0ob+I4UjHRYAcHMGgo47t9
-         AVzqGlbc1JqNdkD3uCuDe1j6GBhlsek7z5wxQwvEJJfFNmabtJWlYMxy3NTYT6d1crtH
-         OqBTPXzxvHB13FqN/8krIrMDM3vIAkhOiq3E+wpP2zhOoJnZr/NjDn2Wzq8bPygXGfSf
-         CHcg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4dDU24+Kdmyra7x6V/tL7+7vOe2YVor7w0vU8LiOdkdpABFAeajQ9VgXB49UETO0xEKaKnw/r/326w3rjN0oMBfN76unV7S7Ne8+G
-X-Gm-Message-State: AOJu0Yxp8CPDnC6+QS+fDiNIXJae4dWj3NGakJjCfYaul+NpENJz16p/
-	HDVMA15miAWpe3KlBroFhPopPrXKPq4WybCd94fd5gR3yCZoEPXTS3c7EjzRazgRcUvEpyRyuzs
-	CC8CaIlTx7kCsGw==
-X-Google-Smtp-Source: AGHT+IEIqn8S4bMIHC0aZaRRtDTwe38e01l0HkJ0Kk9R3YvZ5oW6uSg2Ip131RboSd66P7a916XUCWkVV/+A0wE=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a81:494f:0:b0:611:537:2c0f with SMTP id
- w76-20020a81494f000000b0061105372c0fmr9291ywa.2.1710958148515; Wed, 20 Mar
- 2024 11:09:08 -0700 (PDT)
-Date: Wed, 20 Mar 2024 18:09:05 +0000
-In-Reply-To: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
+        d=1e100.net; s=20230601; t=1710958248; x=1711563048;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3wOSVnh8h74qXknR828f/YsEXGTUbMVRuCYez3A0XkI=;
+        b=p8LKLsthUg/exjSv4oeU+toG4bOFJYVSDEeeLpMrvLUfBdDRtge3u5r4HQqVFA0WhH
+         YFdvgqSSgY6UJunjQJWq2S2Nna5Q2vVuz9s48aKkA7xzALpXbWkb3i4WP19f1bLKqrGe
+         fIU5SFDE99IBJkUaMmc3SQpIIdIk5a8/2SABbJTyBCXzZm0iZZntDxR/T2fyM7UnGsWm
+         gVFzet2HiSiX9UPkNr+BHTkDVHYD/pSgSWD2RExuo32sScDfmMZQfNtM6RKOz3Z9Bu9a
+         RBZtTt294WThI4XaoG+ox4t1C5Hgz9ezk9y4qQEA8ABYCQYt8Ozoge1+Tthns8QcolHW
+         Bw5g==
+X-Forwarded-Encrypted: i=1; AJvYcCWSM4CxHwZB2VZp+9dJJhlaFVjjnwYdKR7WyS+xaxxv3aA9PNWMteLGmjQ6zQxelur0qwWqMx6sdq9LkpMp8sqgC8/Y5OjJBM5iHtu6z36JP+wnEaPHCd18ZstlGWn4e+d3ziQbqxf2Ff4=
+X-Gm-Message-State: AOJu0YybSox5fI+AG0bW0YbWbCpYevR3La426coLc20s0ioZsBBXS85/
+	sIQn9sw+DqdMw4b/s2fDz4ugzTNnvli6Q1GLiIIxI/aVDZLQ+a5R
+X-Google-Smtp-Source: AGHT+IH5KlQLZQNDTUaXrq3NSLSPo+atEeIskKFkKOrkBpYI4cNWqfz39ro+Xce65d9Nj1senb0PSg==
+X-Received: by 2002:a17:902:e551:b0:1dd:c24d:4d1f with SMTP id n17-20020a170902e55100b001ddc24d4d1fmr20977195plf.67.1710958248113;
+        Wed, 20 Mar 2024 11:10:48 -0700 (PDT)
+Received: from Ubuntu2.. ([106.194.60.208])
+        by smtp.googlemail.com with ESMTPSA id jc14-20020a17090325ce00b001dd707d5fe6sm13947043plb.158.2024.03.20.11.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 11:10:47 -0700 (PDT)
+From: Chandra Pratap <chandrapratap3519@gmail.com>
+To: 
+Cc: sudipm.mukherjee@gmail.com,
+	teddy.wang@siliconmotion.com,
+	gregkh@linuxfoundation.org,
+	linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev,
+	Chandra Pratap <chandrapratap3519@gmail.com>
+Subject: [PATCH v2] staging: sm750fb: Replace comparisons with NULL and 0
+Date: Wed, 20 Mar 2024 23:39:43 +0530
+Message-Id: <20240320180943.3683-1-chandrapratap3519@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <c4a5e9e8-214a-4ac0-b8ee-01a9e7a1e5f9@moroto.mountain>
+References: <c4a5e9e8-214a-4ac0-b8ee-01a9e7a1e5f9@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240320180905.3858535-1-aliceryhl@google.com>
-Subject: Re: [PATCH v5 3/9] rust: file: add Rust abstraction for `struct file`
-From: Alice Ryhl <aliceryhl@google.com>
-To: brauner@kernel.org
-Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
-	arve@android.com, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
-	boqun.feng@gmail.com, cmllamas@google.com, dan.j.williams@intel.com, 
-	dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org, 
-	peterz@infradead.org, rust-for-linux@vger.kernel.org, surenb@google.com, 
-	tglx@linutronix.de, tkjos@android.com, tmgross@umich.edu, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org, 
-	yakoyoku@gmail.com
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Christian Brauner <brauner@kernel.org> wrote:
-> On Fri, Feb 09, 2024 at 11:18:16AM +0000, Alice Ryhl wrote:
->> From: Wedson Almeida Filho <wedsonaf@gmail.com>
->> 
->> This abstraction makes it possible to manipulate the open files for a
->> process. The new `File` struct wraps the C `struct file`. When accessing
->> it using the smart pointer `ARef<File>`, the pointer will own a
->> reference count to the file. When accessing it as `&File`, then the
->> reference does not own a refcount, but the borrow checker will ensure
->> that the reference count does not hit zero while the `&File` is live.
->> 
->> Since this is intended to manipulate the open files of a process, we
->> introduce an `fget` constructor that corresponds to the C `fget`
->> method. In future patches, it will become possible to create a new fd in
->> a process and bind it to a `File`. Rust Binder will use these to send
->> fds from one process to another.
->> 
->> We also provide a method for accessing the file's flags. Rust Binder
->> will use this to access the flags of the Binder fd to check whether the
->> non-blocking flag is set, which affects what the Binder ioctl does.
->> 
->> This introduces a struct for the EBADF error type, rather than just
->> using the Error type directly. This has two advantages:
->> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
-> 
-> Sorry, where's that method?
+Replace '(opt != NULL)' with '(opt)' and '(*opt != 0)'
+with '(*opt != '\0')' to adhere to the coding standards.
 
-Sorry, this is supposed to say `File::fget`.
+Signed-off-by: Chandra Pratap <chandrapratap3519@gmail.com>
+---
+Changes in v2:
+  - Update the commit message to reflect the changes better
+  - replace (*opt) with (*opt != '\0')
 
->> +/// Wraps the kernel's `struct file`.
->> +///
->> +/// This represents an open file rather than a file on a filesystem. Processes generally reference
->> +/// open files using file descriptors. However, file descriptors are not the same as files. A file
->> +/// descriptor is just an integer that corresponds to a file, and a single file may be referenced
->> +/// by multiple file descriptors.
->> +///
->> +/// # Refcounting
->> +///
->> +/// Instances of this type are reference-counted. The reference count is incremented by the
->> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type `ARef<File>` represents a
->> +/// pointer that owns a reference count on the file.
->> +///
->> +/// Whenever a process opens a file descriptor (fd), it stores a pointer to the file in its `struct
->> +/// files_struct`. This pointer owns a reference count to the file, ensuring the file isn't
->> +/// prematurely deleted while the file descriptor is open. In Rust terminology, the pointers in
->> +/// `struct files_struct` are `ARef<File>` pointers.
->> +///
->> +/// ## Light refcounts
->> +///
->> +/// Whenever a process has an fd to a file, it may use something called a "light refcount" as a
->> +/// performance optimization. Light refcounts are acquired by calling `fdget` and released with
->> +/// `fdput`. The idea behind light refcounts is that if the fd is not closed between the calls to
->> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that time, as the `struct
->> +/// files_struct` holds a reference until the fd is closed. This means that it's safe to access the
->> +/// file even if `fdget` does not increment the refcount.
->> +///
->> +/// The requirement that the fd is not closed during a light refcount applies globally across all
->> +/// threads - not just on the thread using the light refcount. For this reason, light refcounts are
->> +/// only used when the `struct files_struct` is not shared with other threads, since this ensures
->> +/// that other unrelated threads cannot suddenly start using the fd and close it. Therefore,
->> +/// calling `fdget` on a shared `struct files_struct` creates a normal refcount instead of a light
->> +/// refcount.
-> 
-> When the fdget() calling task doesn't have a shared file descriptor
-> table fdget() will not increment the reference count, yes. This
-> also implies that you cannot have task A use fdget() and then pass
-> f.file to task B that holds on to it while A returns to userspace. It's
-> irrelevant that task A won't drop the reference count or that task B
-> won't drop the reference count. Because task A could return back to
-> userspace and immediately close the fd via a regular close() system call
-> at which point task B has a UAF. In other words a file that has been
-> gotten via fdget() can't be Send to another task without the Send
-> implying taking a reference to it.
+ drivers/staging/sm750fb/sm750.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-That matches my understanding.
+diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
+index 04c1b32a22c5..0391235c5666 100644
+--- a/drivers/staging/sm750fb/sm750.c
++++ b/drivers/staging/sm750fb/sm750.c
+@@ -926,7 +926,7 @@ static void sm750fb_setup(struct sm750_dev *sm750_dev, char *src)
+ 		goto NO_PARAM;
+ 	}
+ 
+-	while ((opt = strsep(&src, ":")) != NULL && *opt != 0) {
++	while ((opt = strsep(&src, ":"))  && *opt != '\0') {
+ 		dev_info(&sm750_dev->pdev->dev, "opt=%s\n", opt);
+ 		dev_info(&sm750_dev->pdev->dev, "src=%s\n", src);
+ 
+@@ -1147,7 +1147,7 @@ static int __init lynxfb_setup(char *options)
+ 	 * strsep() updates @options to pointer after the first found token
+ 	 * it also returns the pointer ahead the token.
+ 	 */
+-	while ((opt = strsep(&options, ":")) != NULL) {
++	while ((opt = strsep(&options, ":"))) {
+ 		/* options that mean for any lynx chips are configured here */
+ 		if (!strncmp(opt, "noaccel", strlen("noaccel"))) {
+ 			g_noaccel = 1;
+-- 
+2.34.1
 
-I suppose that technically you can still send it to another thread *if* you
-ensure that the current thread waits until that other thread stops using the
-file before returning to userspace.
-
->> +///
->> +/// Light reference counts must be released with `fdput` before the system call returns to
->> +/// userspace. This means that if you wait until the current system call returns to userspace, then
->> +/// all light refcounts that existed at the time have gone away.
->> +///
->> +/// ## Rust references
->> +///
->> +/// The reference type `&File` is similar to light refcounts:
->> +///
->> +/// * `&File` references don't own a reference count. They can only exist as long as the reference
->> +///   count stays positive, and can only be created when there is some mechanism in place to ensure
->> +///   this.
->> +///
->> +/// * The Rust borrow-checker normally ensures this by enforcing that the `ARef<File>` from which
->> +///   a `&File` is created outlives the `&File`.
-> 
-> The section confuses me a little: Does the borrow-checker always ensure
-> that a &File stays valid or are there circumstances where it doesn't or
-> are you saying it doesn't enforce it?
-
-The borrow-checker always ensures it.
-
-A &File is actually short-hand for &'a File, where 'a is some
-unspecified lifetime. We say that &'a File is annotated with 'a. The
-borrow-checker rejects any code that tries to use a reference after the
-end of the lifetime annotated on it.
-
-So as long as you annotate the reference with a sufficiently short
-lifetime, the borrow checker will prevent UAF. And outside of cases like
-from_ptr, the borrow-checker also takes care of ensuring that the
-lifetimes are sufficiently short.
-
-(Technically &'a File and &'b File are two completely different types,
-so &File is technically a class of types and not a single type. Rust
-will automatically convert &'long File to &'short File.)
-
->> +///
->> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the caller to ensure that the
->> +///   `&File` only exists while the reference count is positive.
-> 
-> What is this used for in binder? If it's not used don't add it.
-
-This is used on the boundary between the Rust part of Binder and the
-binderfs component that is implemented in C. For example:
-
-	unsafe extern "C" fn rust_binder_open(
-	    inode: *mut bindings::inode,
-	    file_ptr: *mut bindings::file,
-	) -> core::ffi::c_int {
-	    // SAFETY: The `rust_binderfs.c` file ensures that `i_private` is set to the return value of a
-	    // successful call to `rust_binder_new_device`.
-	    let ctx = unsafe { Arc::<Context>::borrow((*inode).i_private) };
-	
-	    // SAFETY: The caller provides a valid file pointer to a new `struct file`.
-	    let file = unsafe { File::from_ptr(file_ptr) };
-	    let process = match Process::open(ctx, file) {
-	        Ok(process) => process,
-	        Err(err) => return err.to_errno(),
-	    };
-	    // SAFETY: This file is associated with Rust binder, so we own the `private_data` field.
-	    unsafe {
-	        (*file_ptr).private_data = process.into_foreign().cast_mut();
-	    }
-	    0
-	}
-
-Here, rust_binder_open is the open function in a struct file_operations
-vtable. In this case, file_ptr is guaranteed by the caller to be valid
-for the duration of the call to rust_binder_open. Binder uses from_ptr
-to get a &File from the raw pointer.
-
-As far as I understand, the caller of rust_binder_open uses fdget to
-ensure that file_ptr is valid for the duration of the call, but the Rust
-code doesn't assume that it does this with fdget. As long as file_ptr is
-valid for the duration of the rust_binder_open call, this use of
-from_ptr is okay. It will continue to work even if the caller is changed
-to use fget.
-
-As for how this code ensures that `file` ends up annotated with a
-sufficiently short lifetime, well, that has to do with the signature of
-Process::open. Here it is:
-
-	impl Process {
-	    pub(crate) fn open(ctx: ArcBorrow<'_, Context>, file: &File) -> Result<Arc<Process>> {
-	        Self::new(ctx.into(), ARef::from(file.cred()))
-	    }
-	}
-
-In this case, &File is used without specifying a lifetime. It's a
-function argument, so this means that the lifetime annotated on the
-`file` argument will be exactly the duration in which Process::open is
-called. So any attempt to use `file` after the end of the call to
-Process::open will be rejected by the borrow-checker. (E.g., if
-Process::open tried to schedule something on the workqueue using `file`,
-then that would not compile. Storing it in a global variable would not
-compile either.)
-
-This means that the borrow-checker will not catch mistakes in
-rust_binder_open, but it *will* catch mistakes in Process::open, and
-anything called by Process::open.
-
-These examples come from patch 2 of the Binder RFC:
-https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-2-08ba9197f637@google.com/
-
->> +///
->> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>` in the `struct
-> 
-> Could you explain why there isn't an explicit fdget() then and you have
-> that from_ptr() method?
-
-I don't provide an fdget implementation because Binder never calls it.
-However, if you would like, I would be happy to add one to the patchset.
-
-As for from_ptr, see above.
-
-Alice
 
