@@ -1,86 +1,76 @@
-Return-Path: <linux-kernel+bounces-109248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D84D8816C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:46:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 859BF8816C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8C39282395
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:46:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB79328275C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D84E6A34D;
-	Wed, 20 Mar 2024 17:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9F26A8BA;
+	Wed, 20 Mar 2024 17:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aphH19uY"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GAmFQNll"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20B91E516;
-	Wed, 20 Mar 2024 17:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CDA4436E;
+	Wed, 20 Mar 2024 17:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956769; cv=none; b=U8CK14ZwtOq5EE/z/NVfyUECtkiNYYYon6PD+l1KY9q+kM7VmD4obLu58CfBqBV03EisKAOdoKWXfyQW8IkA5JeQBVZkuSjus2yWTARW1hbATQO0ZcpsCn/CYCExjhAqvpJMoyKycFEgv3yrJIJc9iMtZkR37gD2YjtMlHSaN0I=
+	t=1710956773; cv=none; b=BzPEUqtPuPdK6/7gdHycvQeaJuI7Ykr2/wAY1YlBVA6FqnGnUnDUdth49q8DF4Ox+3fjJVr5xTOlC/07IjjMcBHRgNriB8JPXyC2oV7IqSC5pmbivtXNEeihHva0IdV2iQzG5ypJx+DF2L34zzvm4JfIEfHMHUdxGHkfHkoVaWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956769; c=relaxed/simple;
-	bh=8HRE26fyQkRW9iVsv2sZNw1cR4nxIwXWDyfSWyN29CM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HEmupqSJi3JPKg5xXxoN1vTQPFg/ECjbBnz34ofHpMw0UViUnwADwMnB+WDv8Wxq+K82/JHq/shPpvm1Rqtw2CrP7ICatAdU1KAaGkFWdd/ZASKSQParx/LvJguNWdgyxmfl7NrGij54Qz22FK2fyaLC7sI8iUjzR+h46LyQG/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aphH19uY; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-568a19fcc4eso24885a12.1;
-        Wed, 20 Mar 2024 10:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710956766; x=1711561566; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uLnwr6kAaqCFFqFTCtq0OEf90m0PhQT0u6ZhzLE2J7k=;
-        b=aphH19uYVzUKncumnV0y7KEvzLO5xSsOuEoWHRWE2bYJRGyn7wCzBi0bwF22Df+FQX
-         yT+0yui1eHe5qqZVtZKPmZASp7L6dK83sgVfoYsgHvi5277BV14TAWEwHIAQzac3WMmu
-         kaYsznvygMjiFZmtYqFiP01AfVggc4pIp7BbV5/uAlIdGkPBFQ9F/c9YANT67HDTt/j+
-         j5coMa5Zc14TzFnIhnlgnNKlaUnR9ETFGk7lTuW23Xr60p3j5pAeUYb3b7EbEd/TMcTt
-         nZGVirVCkl0rYGykcFgiskZCnd40QDyRKPxA4N5dKpM5nQzc3d9v8NBHjfgQ/vAZ1Hyv
-         AB6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710956766; x=1711561566;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uLnwr6kAaqCFFqFTCtq0OEf90m0PhQT0u6ZhzLE2J7k=;
-        b=LrmnxtrHyXPMaI/wLKfCEzhO08EID8sIR/nKmxJtXhaaVK5jEOEhFFGIALQ35HTbO2
-         H7J5gIwu2+NTCD+DZR8tcLhtKWLu651g7NDGDaWDh6IIr6XIJnim5mqRmceCV6xp++cw
-         SqIz+laKuTPIl1t8ij1e5VRzcRt3SajxiuqK+/+WLBOIkNqlOQ7T+AyO25wn+v56JgE2
-         nHPQOvTo8Bdu5ZtRqFCcXWUldmh6+uwen6jvvMGB21Wfatn6UgAPPQ/gpcu9cS4qiFsA
-         DmqXBAcbO+rceqWRqtTukEsB0qr7sugUxpKkemwXMZ3bXQkgfKsOca5HN4osUBgm6d9W
-         Ox1g==
-X-Forwarded-Encrypted: i=1; AJvYcCWKQv099jrDpOtrVrqtIEVJHzOXG7n4qFZhWe09HVk6a3mM/MDlOKIK1CIzrm3xkncaBU3+5jA352zntq5pvcqyE02V0Na+t2a0RJjmdHcgBsxxBqN/l+t3+U4z/woSyf1LX0q5RmJ0
-X-Gm-Message-State: AOJu0Yx5sN6VmJ83khK8hp1FMSFfvdLcE+yR3qBwl0gxZXRMWQAB/WRR
-	XyXCtg05eDHPKo4Cz3V9Zj5cg5xNxa7tIEvNGEyjJj1echVZLjZX
-X-Google-Smtp-Source: AGHT+IFYcZuy7aRBYUVRY7RS9GAmgp66Vfk8Ldu1sqzBaKrP34rebcloHPSiHYKKsMFF2/SjpSDH5A==
-X-Received: by 2002:a05:6402:159b:b0:566:be15:9a88 with SMTP id ij27-20020a056402159b00b00566be159a88mr10909593edb.20.1710956765887;
-        Wed, 20 Mar 2024 10:46:05 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:9be1:7bef:ff5c:57fc])
-        by smtp.gmail.com with ESMTPSA id z1-20020aa7cf81000000b0056835320f76sm7211240edx.8.2024.03.20.10.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 10:46:05 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Wed, 20 Mar 2024 18:46:02 +0100
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
-	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
-	ak@it-klinger.de, petre.rodan@subdimension.ro, phil@raspberrypi.com,
-	579lpy@gmail.com, linus.walleij@linaro.org,
-	semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] iio: pressure: Add triggered buffer support for
- BMP280 driver
-Message-ID: <20240320174602.GA36450@vamoiridPC>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
- <20240319002925.2121016-7-vassilisamir@gmail.com>
- <ZfrFc9GF0_Jix5YT@smile.fi.intel.com>
+	s=arc-20240116; t=1710956773; c=relaxed/simple;
+	bh=4tUKS+lrAbbNWp2JU9fdGghW7+U5wKN3OA2hFRyNMmI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lNQ09pxIcBT4cAtRyPJA45QQOTdvhfH83uaCpRVUbJjKr2oAUR5ppj4fV+BfsLLCqBowXt2IOTtEFMR45ikcc9JD3XYjcOy4uXEvTnkhdDJSmeEMGLTo3Tb1dU5mpCzx7MzAPw1uPz285VMY6xLhqdBL67FTSJXOw/eeI3b52tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GAmFQNll; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710956770; x=1742492770;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4tUKS+lrAbbNWp2JU9fdGghW7+U5wKN3OA2hFRyNMmI=;
+  b=GAmFQNllaZrQmclA0nTO5yLEmWzQRqdJ4DW4fn8Kcv2LVRRAbodwKk4G
+   6DX1lQget9UiyMl+orS8Yy4avUx5vrI627p7terxlzImRv0z8jCNj/FhG
+   X5yiboTcVVy3hj3urpyHcI8ZtD+7ISvEgKxdeUz3Q9SME1P4RDVYpqyh5
+   qAkgLZxyaT64J1cvrX5aMsD5fnWPxy/ZOsifnnnbMbv2tnT2w2e6Ewi+V
+   Wuzr4p/5yjE7ycTtrxNm7gRgRBKtDPbJSYDnnvNcb9otTZzOqXRy+DYH+
+   rU66QROYmB4pWMlFiN90bLkMPtxpoMgOincndGCUWkwUI2QbSp7jHrgrF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6023981"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="6023981"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:46:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="37336134"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.72.188])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:46:09 -0700
+Date: Wed, 20 Mar 2024 10:46:07 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, Dan Williams <dan.j.williams@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, Derick Marks <derick.w.marks@intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 1/3] x86/numa: Fix SRAT lookup of CFMWS ranges with
+ numa_fill_memblks()
+Message-ID: <Zfsg3wZpSFVT+Zv2@aschofie-mobl2>
+References: <20240319120026.2246389-1-rrichter@amd.com>
+ <20240319120026.2246389-2-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,126 +79,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfrFc9GF0_Jix5YT@smile.fi.intel.com>
+In-Reply-To: <20240319120026.2246389-2-rrichter@amd.com>
 
-On Wed, Mar 20, 2024 at 01:16:03PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 19, 2024 at 01:29:25AM +0100, Vasileios Amoiridis wrote:
-> > BMP2xx, BMP3xx, and BMP5xx use consecutive buffers for their
-> > temperature, pressure and humidity readings. This facilitates
-> > the use of burst reads in order to acquire data much faster
-> > and in a different way from the one used in oneshot captures.
-> > 
-> > BMP085 and BMP180 use a completely different measurement
-> > process that is well defined and is used in their buffer_handler().
+On Tue, Mar 19, 2024 at 01:00:23PM +0100, Robert Richter wrote:
+> For configurations that have the kconfig option NUMA_KEEP_MEMINFO
+> disabled, the SRAT lookup done with numa_fill_memblks() fails
+> returning NUMA_NO_MEMBLK (-1). An existing SRAT memory range cannot be
+> found for a CFMWS address range. This causes the addition of a
+> duplicate numa_memblk with a different node id and a subsequent page
+> fault and kernel crash during boot.
 > 
-> ...
+> numa_fill_memblks() is implemented and used in the init section only.
+> The option NUMA_KEEP_MEMINFO is only for the case when NUMA data will
+> be used outside of init. So fix the SRAT lookup by moving
+> numa_fill_memblks() out of the NUMA_KEEP_MEMINFO block to make it
+> always available in the init section.
 > 
-> >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_TEMP_MSB,
-> > -			       data->buf, sizeof(data->buf));
-> > +			       data->buf, BMP280_NUM_TEMP_BYTES);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_PRESS_MSB,
-> > -			       data->buf, sizeof(data->buf));
-> > +			       data->buf, BMP280_NUM_PRESS_BYTES);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP280_REG_HUMIDITY_MSB,
-> > -			       &data->be16, sizeof(data->be16));
-> > +			       &data->be16, BME280_NUM_HUMIDITY_BYTES);
-> 
-> > -	adc_humidity = be16_to_cpu(data->be16);
-> > +	adc_humidity = get_unaligned_be16(&data->be16);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP380_REG_TEMP_XLSB,
-> > -			       data->buf, sizeof(data->buf));
-> > +			       data->buf, BMP280_NUM_TEMP_BYTES);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP380_REG_PRESS_XLSB,
-> > -			       data->buf, sizeof(data->buf));
-> > +			       data->buf, BMP280_NUM_PRESS_BYTES);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP580_REG_TEMP_XLSB, data->buf,
-> > -			       sizeof(data->buf));
-> > +			       BMP280_NUM_TEMP_BYTES);
-> 
-> >  	ret = regmap_bulk_read(data->regmap, BMP580_REG_PRESS_XLSB, data->buf,
-> > -			       sizeof(data->buf));
-> > +			       BMP280_NUM_PRESS_BYTES);
-> 
-> These smell to me as candidates to a separate patch with more explanation why.
-> (Yes, with the definitions you introduced.) But I leave it to Jonathan to
-> decide if we need to split.
-> 
-> ...
-> 
-> The below are applicable to the bmp280_buffer_handler(),
-> bmp380_buffer_handler() implementations as well.
-> 
-> ...
-> 
-> > +	/* Burst read data registers */
-> > +	ret = regmap_bulk_read(data->regmap, BMP580_REG_TEMP_XLSB,
-> > +			       data->buf, 6);
-> 
-> Magic size.
-> 
+> Note that the issue was initially introduced with [1]. But since
+> phys_to_target_node() was originally used that returned the valid node
+> 0, an additional numa_memblk was not added. Though, the node id was
+> wrong too.
 
-Hi Andy,
+Hi Richard,
 
-Thank you again for your feedback. When I was writing it, it was 
-looking as a magic number to me as well but then I though that 
-since I put the comment above it could be obvious. Now that I see 
-it again, I think it was not a good idea and maybe some type of 
-definition like
+I recall a bit of wrangling w #defines to make ARM64 and LOONGARCH build.
+I'm seeing an x86 build error today:
 
-	#define BMP280_BURST_READ_NUM_BYTES 6
-	#define BME280_BURST_READ_NUM_BYTES 8
+>> arch/x86/mm/numa.c:957:12: error: redefinition of 'numa_fill_memblks'
+     957 | int __init numa_fill_memblks(u64 start, u64 end)
 
-could look better and be more intuitive.
+include/linux/numa.h:40:26: note: previous definition of 'numa_fill_memblks' with type
++'int(u64,  u64)' {aka 'int(long long unsigned int,  long long unsigned int)'}
+      40 | static inline int __init numa_fill_memblks(u64 start, u64 end)
+         |                          ^~~~~~~~~~~~~~~~~
 
-> ...
-> 
-> > +	/* Temperature calculations */
-> > +	memcpy(&chan_value, &data->buf[3], 3);
-> 
-> _le24() + sign_extend32()?
-> 
+In addition to what you suggest, would something like this diff below be
+a useful safety measure to distinguish num_fill_memblks() success (rc:0)
+and possible non-existence (rc:-1). I don't think it hurts to take a
+second look using phys_to_target_node() (totall untested)
 
-In the next line from your comment the _le24 or _be24 takes place.
-If the sign_extend32() is needed here, shouldn't it also be used
-in all the oneshot captures as well?
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index 070a52e4daa8..0c48fe32ced4 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -437,9 +437,16 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+         * found for any portion of the window to cover the entire
+         * window.
+         */
+-       if (!numa_fill_memblks(start, end))
++       rc = numa_fill_memblks(start, end);
++       if (!rc)
+                return 0;
+ 
++       if (rc == NUMA_NO_MEMBLK) {
++               node = phys_to_target_node(start);
++               if (node != NUMA_NO_NODE)
++                       return 0;
++       }
++
+        /* No SRAT description. Create a new node. */
 
-> ...
-> 
-> > +	/* Pressure calculations */
-> > +	memcpy(&chan_value, &data->buf[0], 3);
-> 
-> _le24() + sign_extend32()?
-> 
-> ...
-> 
-> >  	/*
-> > -	 * Maximum number of consecutive bytes read for a temperature or
-> > -	 * pressure measurement is 3.
-> > +	 * Maximum number of a burst read for temperature, pressure, humidity
-> > +	 * is 8 bytes.
-> >  	 */
-> > -	if (val_size > 3)
-> > +	if (val_size > 8)
-> 
-> sizeof() / new definition for the buf[] size?
-> 
+--Alison
 
-In a previous commit that I was fixing this SPI driver, Jonathan had mentioned
-that there is no need for a specific definition since it will only be used
-here so that's why I kept it as is.
-
-Cheers,
-Vasilis
-> >  		return -EINVAL;
 > 
+> [1] fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
+> 
+> Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
+> Cc: Derick Marks <derick.w.marks@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Alison Schofield <alison.schofield@intel.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> ---
+>  arch/x86/mm/numa.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> index 65e9a6e391c0..ce84ba86e69e 100644
+> --- a/arch/x86/mm/numa.c
+> +++ b/arch/x86/mm/numa.c
+> @@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
+>  }
+>  EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+>  
+> +#endif
+> +
+>  static int __init cmp_memblk(const void *a, const void *b)
+>  {
+>  	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
+> @@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
+>  	}
+>  	return 0;
+>  }
+> -
+> -#endif
 > -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
+> 2.39.2
 > 
 
