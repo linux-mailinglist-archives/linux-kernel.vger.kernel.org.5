@@ -1,131 +1,107 @@
-Return-Path: <linux-kernel+bounces-109392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1043881882
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:21:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35716881889
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:23:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2FA01C23570
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:21:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE2291F231B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744668593E;
-	Wed, 20 Mar 2024 20:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D5E85933;
+	Wed, 20 Mar 2024 20:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UMNUcAHv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lBDZT2Gl"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7759029CE8;
-	Wed, 20 Mar 2024 20:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B169C29CE8
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710966055; cv=none; b=c24GmtpdsxsucYNBzkJAFmDpWcGHgSBZET2L0hneM578mMeIw9E0Zy/Q6CWap2mBgE9/DPWrfC8XAjalP+A7UBK+sZxtndPHZD1A9GY9z3TVDODO0n7U/TZpy6LmB2MtVbPtU5/mNRv4Bt1v9NhMRls+1CTawWmwk9DqeGc17iQ=
+	t=1710966184; cv=none; b=U672NG1fQUJ2oae5IgyBN9D+mdIJ7zO1C/WK8saH4h6PFDHrNRFHQSYrN9Ugho3GI+JHu9Nv4zrqjK2bSk9Zt1NzsXxHEIExGupYuXjgTAMoM0TusiZ3V2bZV+FHl+edXKD4acOjuYloOqC/VQ4ti6to3tUjLkHSYRGqrJCvK/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710966055; c=relaxed/simple;
-	bh=6KLApuHLnnboa7nGw7DTgDv4GVeg3my1JXPtaub9h/w=;
+	s=arc-20240116; t=1710966184; c=relaxed/simple;
+	bh=3D/2C31Jo6cwf5wUXMKjbHS4YEMu6u0BqV/VsQuhICM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ni6TxU9NrhF+y2AnulspKBfrBhGd+cZosgg//AiULX9irbqrdLF8juClYALIY2IgkNvhKWmRH/J6WoLg+HNrRK+wGzAxaDp6qG6NRt9InaiKUNDsk5rBXW5wfmSo7hRSi2lQvmBC1E5Kl8zOSQIdqonnRxh6l8da/x16HynYKpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UMNUcAHv; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710966054; x=1742502054;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6KLApuHLnnboa7nGw7DTgDv4GVeg3my1JXPtaub9h/w=;
-  b=UMNUcAHvAYbJNgH3hVlSvJRZ4Sx+JDrAuBhQxS45QU1xATXPPPipTM5j
-   N/9Uy3LgIvv9WCIhSFj5UZYZyVTxBEMqcP5EindvHkmrxLo6mEoWl+VqP
-   90fTVrKcGBtS+GahobvyxA3WpHKry0xBxDJRQc4x44v8HUttHECk7Yeqz
-   xhzhO0ICBQ7gCHDIPMbITfkLzCRXsJRFO72SIE7N2kjs4RahL/JBVteZO
-   q8yVUQTsedQ8SO7PiGv9VpYVNy+YBgzJ6ofdGOgQSXKjPKLr3/bRVbA+X
-   PWfCvbEnfSuhNSEX1Embd2M2oYzwFeFCef2oYsLAfSR+vJCtea5aeZMG6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6037911"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="6037911"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:20:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="18998840"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 13:20:41 -0700
-Date: Wed, 20 Mar 2024 13:20:40 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>,
-	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-	"Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"Yao, Yuan" <yuan.yao@intel.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
- SEAMCALLs to the TDX module
-Message-ID: <20240320202040.GH1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
- <3370738d1f6d0335e82adf81ebd2d1b2868e517d.camel@intel.com>
- <20240320000920.GD1994522@ls.amr.corp.intel.com>
- <97f8b63bd3a8e9a610c15ef3331b23375f4aeecf.camel@intel.com>
- <20240320054109.GE1994522@ls.amr.corp.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NpubtaCBgwpVKYcmrw96/dzbIBtDPkNpdPZrS4F4fkLoCCHmSTlVfE3QTAiGtz1ZFVT2klT91CzM+0miARy3uWP9pfqVfoQ2PpNrLO3sv5AR50KHkD/xoBDSEY4gPwL60FqG5FM/B8b6KJhwU0Erh+6xvoieNqYo0WigWAUUIow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lBDZT2Gl; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-609f359b7b1so2295147b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710966181; x=1711570981; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=snDVwR9LnpNXTKd4ocxRa1zFXi0aO0gU1t/jX8TRxNw=;
+        b=lBDZT2Gl0mR7a9KWBpJmwkZgyujlMsdEQLwGtMtCM6dMqmfmT7XyclB0dIlKCSDdMm
+         B1ldWuxybM1oklHi02q+atgcI/cDS6Gh4IrpdTUkRwXV/DNZISYiBfqioJz2DfH5GdwV
+         h4Le3bZ35EAS38gCBjfiTn5T9QDDzHrUb0jd0pGJ00ulnmZ/w/guo2Bb9e0ELPAEa7Mp
+         xE+MvKxv7s3ngJbjVLz5ElF4F9Kg3a6/Io9GNQeD9Zbl7xI1jiBeTkAfMPWT0HH17tTV
+         3eSvQxEZSOKQSdE/ZaVXtmkMJUVNxtFZIrr1I24EhbWIlyUthB7+assHlIYaE4J3eulm
+         WTpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710966181; x=1711570981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=snDVwR9LnpNXTKd4ocxRa1zFXi0aO0gU1t/jX8TRxNw=;
+        b=AS1JwL8qYfyVHOUIruPCJJ1Byh93TD6HmwihbaLryPhjBOYKynnkfVnFjCz5R3KIPV
+         O8wZGPmjeeFJsdoGZEXhCgPENjH3d832qOkkFKtIIId1rxCvy3dO3CsZJ6Vvg7hnddM5
+         igLqi/3/21JCkMXi4Nlglz95YNfiJnchysYR1en8C/PMF5XPVmhguRq74RkaGrbZkbEq
+         qIDldqyNvzUnQawp22Ifu0QMuA6tjkahcUuYUn+XrSWGRDHTWz6i1VDwQbdNrAxZRbst
+         aMdKTsP7GLR58jjdI0yQ1m6lCFz/Qm8mOAWt4+jmPZL1Vb04mU6PbZLUzqw0OGN1jHkx
+         34+g==
+X-Forwarded-Encrypted: i=1; AJvYcCW53e1kvz9iyBXcMDkfiADUZ9JMk7hmxTzoaFXALaiaXpJqO4pnxIuMsuNSgGEEVt630HD5ZNqz0BOk88SaasfabEXRgCi2DbscDceu
+X-Gm-Message-State: AOJu0YzvpgNMVqu1s043Q/EtXgCKRWQrQxpST32l4qGeWGmnpUPaG9R3
+	vEkSc+ayUcxZDq2O2o4l7fQ7WKQ9DV7mWNmHn/cHZhI2GFYw59VZmOoUNFYH
+X-Google-Smtp-Source: AGHT+IH2EIq0ng1IcNCHiiHHYA3Q6d1I978t2sNtbYUFsXF5/Dqt9wzlFTRCzK4IAfQazNE+oORfpw==
+X-Received: by 2002:a81:6284:0:b0:610:b930:816a with SMTP id w126-20020a816284000000b00610b930816amr7824743ywb.49.1710966181544;
+        Wed, 20 Mar 2024 13:23:01 -0700 (PDT)
+Received: from localhost ([2601:344:8301:57f0:a6a6:49c0:6a02:df54])
+        by smtp.gmail.com with ESMTPSA id v73-20020a81484c000000b00610b6cc1ff7sm1884925ywa.109.2024.03.20.13.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 13:23:00 -0700 (PDT)
+Date: Wed, 20 Mar 2024 13:22:59 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, russ.anderson@hpe.com,
+	dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH 1/2] cpumask: Add for_each_cpu_from()
+Message-ID: <ZftFo5qESOuv6+XL@yury-ThinkPad>
+References: <20240319185148.985729-1-kyle.meyer@hpe.com>
+ <20240319185148.985729-2-kyle.meyer@hpe.com>
+ <ZfsrdcUOsNp7ATjK@yury-ThinkPad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320054109.GE1994522@ls.amr.corp.intel.com>
+In-Reply-To: <ZfsrdcUOsNp7ATjK@yury-ThinkPad>
 
-On Tue, Mar 19, 2024 at 10:41:09PM -0700,
-Isaku Yamahata <isaku.yamahata@intel.com> wrote:
-
-> On Wed, Mar 20, 2024 at 12:11:17AM +0000,
-> "Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
-> 
-> > On Tue, 2024-03-19 at 17:09 -0700, Isaku Yamahata wrote:
-> > > > The helper abstracts setting the arguments into the proper
-> > > > registers
-> > > > fields passed in, but doesn't abstract pulling the result out from
-> > > > the
-> > > > register fields. Then the caller has to manually extract them in
-> > > > this
-> > > > verbose way. Why not have the helper do both?
-> > > 
-> > > Yes. Let me update those arguments.
+On Wed, Mar 20, 2024 at 11:31:18AM -0700, Yury Norov wrote:
+> On Tue, Mar 19, 2024 at 01:51:47PM -0500, Kyle Meyer wrote:
+> > Add for_each_cpu_from() as a generic cpumask macro.
 > > 
-> > What were you thinking exactly, like?
+> > for_each_cpu_from() is the same as for_each_cpu(), except it starts at
+> > @cpu instead of zero.
 > > 
-> > tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
-> > 
-> > And for the other helpers?
+> > Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
 > 
-> I have the following four helpers.  Other helpers will have no out argument.
-> 
-> tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
-> tdh_mem_page_aug(kvm_tdx, gpa, hpa, &entry, &level_state);
-> tdh_mem_page_remove(kvm_tdx, gpa, tdx_level, &entry, &level_state);
-> tdh_mem_range_block(kvm_tdx, gpa, tdx_level, &entry, &level_state);
+> Acked-by: Kyle Meyer <kyle.meyer@hpe.com>
 
-By updating the code, I found that tdh_mem_range_block() doesn't need out
-variables. and tdh_vp_rd() needs output.
-tdh_mem_range_block() doesn't need the out.
+Sorry, please read: 
 
-u64 tdh_vp_rd(struct vcpu_tdx *tdx, u64 field, u64 *value)
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
