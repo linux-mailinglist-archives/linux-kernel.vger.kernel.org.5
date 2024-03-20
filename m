@@ -1,135 +1,131 @@
-Return-Path: <linux-kernel+bounces-108541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89EE880C05
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:29:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8AB880C09
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 481EAB22AFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:29:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15FA91F23E68
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77902209F;
-	Wed, 20 Mar 2024 07:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jE7D2BU/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9B621100;
+	Wed, 20 Mar 2024 07:31:05 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371D32BD01;
-	Wed, 20 Mar 2024 07:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605AA2030A
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919755; cv=none; b=GnFgWCTm2w4jsQ0eNawJzGVRJa2XHiGJvz01M2SAGXLqB9vlvzAGcyWsESusJ0TW2kPYRR8XPoPwG0XoQ8h9o7j6NTCIW+ZwGgXomh8B39VaCe+5dTtaZC51ejEuBK9W4BCkw6YTebULMTL878Vryotn5Wxw74utoEVapctxOs4=
+	t=1710919865; cv=none; b=QAa/W7Xm3s5XvQirUBahAUJ3OaUTh7mAmQOgunfUKP/um7vqIBHYvQHNTr0kt+mvep4hrSy/rqcS1cO//qkVEeW+0uRkzABmQzC5wXsC6Ffgt+LH74RhSRHCb9Vm2aQlDjzXF701ltPlsEvd6IKJTBqDtUWvgzb+RJh322C0DBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919755; c=relaxed/simple;
-	bh=SIJLQWAZttGxLBgmyLL6igS6AuPkYTJuC02fay6r37E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LBWjF23BquCbWAL6CvAJIhC6e+RXN3T9Ckv3Hh9ZwuMJab2b3Yz+N7amFKbatu7mD0BlnpG2akyd2ca9Yty1XUwfIcdO8eXlHsOnd8qAnmGFnmqq2+hiPFelTG0Eg0gWmZgScosXFWgev4IxnDcgkE1zOsBt2NDklcRbI175/tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jE7D2BU/; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710919753; x=1742455753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SIJLQWAZttGxLBgmyLL6igS6AuPkYTJuC02fay6r37E=;
-  b=jE7D2BU/YpudfW/7il6RsJ/u0w0j+jDWDYtjQObqMiLBj1KtXdXJHiYL
-   Kdh9zAGLPTwj3bbnpxdloZy0wEHg4mDyxPEWwMniIGTlBbtfV2UNdUsqr
-   LiTiuhZ0nK3Ed/vA4eR+HDnPwUOxvWIcwTPtsqWac5CTnizB72+grqCm0
-   oRTnWWpgPLqj0MS+G80wHjuyQXyfIsN2cACaTNK0JZk7OM9WSrXS1agp9
-   6Oo9dXKn+sJFnJDngwzRT0mipGS80MZDVHFOUNySfqzRezInUyZbGsy0E
-   /i+usOi6tdJBrlSbizdq2Hxa7mG22ebW+Oarieh9Hg3vpv7yht6VJl0a+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="9598536"
-X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
-   d="scan'208";a="9598536"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:29:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
-   d="scan'208";a="51507652"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:29:04 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 6E3E911F853;
-	Wed, 20 Mar 2024 09:29:01 +0200 (EET)
-Date: Wed, 20 Mar 2024 07:29:01 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Zhi Mao <zhi.mao@mediatek.com>
-Cc: mchehab@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	laurent.pinchart@ideasonboard.com, shengnan.wang@mediatek.com,
-	yaya.chang@mediatek.com,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	yunkec@chromium.org, conor+dt@kernel.org, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	jacopo.mondi@ideasonboard.com, 10572168@qq.com,
-	hverkuil-cisco@xs4all.nl, heiko@sntech.de, jernej.skrabec@gmail.com,
-	macromorgan@hotmail.com, linus.walleij@linaro.org,
-	hdegoede@redhat.com, tomi.valkeinen@ideasonboard.com,
-	gerald.loacker@wolfvision.net, andy.shevchenko@gmail.com,
-	bingbu.cao@intel.com, dan.scally@ideasonboard.com,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1 2/2] media: i2c: Add GC05A2 image sensor driver
-Message-ID: <ZfqQPTgqzOw7tATK@kekkonen.localdomain>
-References: <20240316025253.2300-1-zhi.mao@mediatek.com>
- <20240316025253.2300-3-zhi.mao@mediatek.com>
+	s=arc-20240116; t=1710919865; c=relaxed/simple;
+	bh=2ROv1GJ5AGVwHAmuJlmT49x+qPwpZZF2PlyQYtwg5dk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d52nb0gnRNXvz8i1tUcXXDSf+B7sPc0FtcN0u4ser24RYv6mV9nZ67VYNraM9Am40+RFIVCVC0KIAARXLhizZ43em7enn8DUDFTY3HRvgNsaC2bpK2TFYyQ6vVMMJm+C5YlLbR9PenespP7Xpq15LyFkHJtfbPq6xCtmTxCf5Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 42K7UOJq005451;
+	Wed, 20 Mar 2024 16:30:24 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
+ Wed, 20 Mar 2024 16:30:24 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 42K7UOVc005448
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 20 Mar 2024 16:30:24 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <dd264bf7-821b-4cf4-802b-60ae3c7b83bd@I-love.SAKURA.ne.jp>
+Date: Wed, 20 Mar 2024 16:30:24 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240316025253.2300-3-zhi.mao@mediatek.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [kernel?] possible deadlock in console_flush_all (2)
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness
+ <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <000000000000e40a2906072e9567@google.com>
+ <ab273ae2-80ec-45da-910a-e74298c71d50@I-love.SAKURA.ne.jp>
+ <CAADnVQLmLMt2bF9aAB26dtBCvy2oUFt+AAKDRgTTrc7Xk_zxJQ@mail.gmail.com>
+ <596aad11-ee69-4ef1-b945-7b67a9fb22d7@I-love.SAKURA.ne.jp>
+ <CAADnVQL6Q3k0+-5X3Xjov7W_xESxkmVXcsCxQRWitQvhTBsf7A@mail.gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAADnVQL6Q3k0+-5X3Xjov7W_xESxkmVXcsCxQRWitQvhTBsf7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Zhi,
+On 2024/03/20 16:12, Alexei Starovoitov wrote:
+> On Wed, Mar 20, 2024 at 12:05 AM Tetsuo Handa
+> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+>>
+>> On 2024/03/20 15:56, Alexei Starovoitov wrote:
+>>> This has nothing to do with bpf.
+>>> bpf never calls printk().
+>>
+>> Please see the Sample crash report in the dashboard.
+>> bpf program is hitting printk() via report_bug().
+> 
+> Exactly. local_bh_neable is simply asking for a splat.
+> _this_ bug is in printk.
+> It's a generic issue.
 
-Thanks for the set.
+I can't catch. printk() is called due to report_bug().
 
-On Sat, Mar 16, 2024 at 10:52:53AM +0800, Zhi Mao wrote:
-> +static int gc05a2_set_ctrl(struct v4l2_ctrl *ctrl)
-> +{
-> +	struct gc05a2 *gc05a2 =
-> +		container_of(ctrl->handler, struct gc05a2, ctrls);
-> +	int ret = 0;
-> +	s64 exposure_max;
-> +	struct v4l2_subdev_state *state;
-> +	const struct v4l2_mbus_framefmt *format;
-> +
-> +	state = v4l2_subdev_get_locked_active_state(&gc05a2->sd);
-> +	format = v4l2_subdev_state_get_format(state, 0);
-> +
-> +	if (ctrl->id == V4L2_CID_VBLANK) {
-> +		/* Update max exposure while meeting expected vblanking */
-> +		exposure_max = format->height + ctrl->val - GC05A2_EXP_MARGIN;
-> +		__v4l2_ctrl_modify_range(gc05a2->exposure,
-> +					 gc05a2->exposure->minimum,
-> +					 exposure_max, gc05a2->exposure->step,
-> +					 exposure_max);
-> +	}
-> +
-> +	/*
-> +	 * Applying V4L2 control value only happens
-> +	 * when power is on for streaming.
-> +	 */
-> +	if (!pm_runtime_get_if_in_use(gc05a2->dev))
+If the reason report_bug() is called is that spin_unlock_bh() is bad,
+this is a bug in sock_map_delete_elem() rather than a bug in printk(), isn't it.
 
-This should be pm_runtime_get_if_active(). Please assume it takes a single
-argument (the device)---see commit
-c0ef3df8dbaef51ee4cfd58a471adf2eaee6f6b3.
+> 
+> sockmap bug is orthogonal.
+> It's already being looked at.
 
-The same comment applies to the GC08A3 if it uses autosuspend, please post
-a new patch for that.
+Then, can we expect that this bug is also fixed shortly?
 
--- 
-Kind regards,
+> 
+>> -> #0 (console_owner){....}-{0:0}:
+>>        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>>        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>>        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+>>        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+>>        lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+>>        console_lock_spinning_enable kernel/printk/printk.c:1873 [inline]
+>>        console_emit_next_record kernel/printk/printk.c:2901 [inline]
+>>        console_flush_all+0x810/0xfd0 kernel/printk/printk.c:2973
+>>        console_unlock+0x13b/0x4d0 kernel/printk/printk.c:3042
+>>        vprintk_emit+0x5a6/0x770 kernel/printk/printk.c:2342
+>>        _printk+0xd5/0x120 kernel/printk/printk.c:2367
+>>        __report_bug lib/bug.c:195 [inline]
+>>        report_bug+0x346/0x500 lib/bug.c:219
+>>        handle_bug+0x3e/0x70 arch/x86/kernel/traps.c:239
+>>        exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:260
+>>        asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
+>>        __local_bh_enable_ip+0x1be/0x200 kernel/softirq.c:362
+>>        spin_unlock_bh include/linux/spinlock.h:396 [inline]
+>>        __sock_map_delete net/core/sock_map.c:424 [inline]
+>>        sock_map_delete_elem+0xca/0x140 net/core/sock_map.c:446
+>>        bpf_prog_2c29ac5cdc6b1842+0x42/0x46
+>>        bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>>        __bpf_prog_run include/linux/filter.h:657 [inline]
+>>        bpf_prog_run include/linux/filter.h:664 [inline]
 
-Sakari Ailus
 
