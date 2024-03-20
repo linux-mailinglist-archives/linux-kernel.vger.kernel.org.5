@@ -1,128 +1,146 @@
-Return-Path: <linux-kernel+bounces-108731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62EED880F4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:07:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C0A880F50
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:08:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93BD41C21D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:07:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A6561F22D71
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92AC3C460;
-	Wed, 20 Mar 2024 10:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F68D3C060;
+	Wed, 20 Mar 2024 10:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="cxAuwV6B"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="01nAMklD"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97913BBE7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59633BB36
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710929224; cv=none; b=mjQocO8oR2Hct8b6f6kCtKZ7KZMYLfBklDwXqP/2By1Txodjnhvexgn6ebbD7cskIF4avdpnB6cKald4ktCUPON7fl50jA/sZxZefp49Xpg1euNRV391QoH5vbL3neFt9ceUAYVIUgvD5mF7KpcqnAGQzTvtlaTNjJb6wxZuriI=
+	t=1710929292; cv=none; b=bPPvm3CdouSPDjC7/Pp0h0MA+46MzEOjIorGaS91xwA2Kt+20NMpW7rsiZ1C05//NTPZdowjYloO7OpYYSkCegNroVvCyHZWw9fUEUR9CcAugAadK1KSkO7YIEVuUTeZUxNP7MYHiVWBYlW3F5ldc6aNzatmXgQ8k8Ow8xRGstY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710929224; c=relaxed/simple;
-	bh=8j6Nh4g7pdDIBz086z/2FkNCN/zIx4mqsZTpE9aItDk=;
+	s=arc-20240116; t=1710929292; c=relaxed/simple;
+	bh=1hptgYlCcZSnoXBrBdypsLIWzxVZcCAgl4Xy644y3kM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mBFBAvBPp5y9Wrq0hnG4+zBoC+VHXfLtCxYaLhHAkvJtmW7SOLvak9avk87hVj1xbynEUOvVgT2riPS5TkPCtogQG6lnrz0CPsP7nWLKR1M3InVqvdbbs/PX6VaJjpDXmhzcVs3ZbQjXNxTn81L+iIquHkJGZvuFSCjWzsaMbfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=cxAuwV6B; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=8j6N
-	h4g7pdDIBz086z/2FkNCN/zIx4mqsZTpE9aItDk=; b=cxAuwV6BbACjhN/8iu4C
-	9ALL4xWjsG+r3J0kwR/2VIzWFmwAn4dM/C10Rrm+w+ckYOP2VmY17uviW8NyyVLd
-	JIOT9Zy1Y6quLWEFWWDF/utnhrI89X9aWJusQ4vcKQC8aQAiqw1xVCuP+6IhUMGP
-	XwsFnAQPMFuiuo1X1WnL3bOrWeCYKuBux50Jl39eaRVimhK/HMGv4lQww4lMqK6z
-	BfFSVHl9DyJSPNWSJW/QkyJvMS4fCQDbJtFLhUe2pKOTAw5+PYipUltR8BuQWT6Z
-	6ohuafflYfccyP0/+HhMuJ28vUo2yMyJstAGnxzwj3IGL7wf8G2DYaJ1iedsf1Lc
-	tw==
-Received: (qmail 3168159 invoked from network); 20 Mar 2024 11:06:58 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Mar 2024 11:06:58 +0100
-X-UD-Smtp-Session: l3s3148p1@23FNwBQU2rRehhYE
-Date: Wed, 20 Mar 2024 11:06:58 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v3 4/4] i2c: riic: Add support for R9A09G057 SoC
-Message-ID: <Zfq1QnvnDSC-dNqN@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240319132503.80628-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240319132503.80628-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GmdY3qJgNexgtrZB1m8kVCY6B1uQGXYVJYoKqDclj1MoNbHZRqk46CsBrRvzqDX3lnDMoHtvEl9SSt/QqYhs4yJbcX8PdQ1ueqVwneQ4o2EhmXJ0Zuzb9Gm53dySdzD66rzYzPBfL2flrL58qYlUc2zm+B3J1RIBZLgegyvmlX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=01nAMklD; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-690fed6816fso42981426d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710929288; x=1711534088; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCvQMo3ZWIjWXG5M214OiwkknCIOzKyMIbVwF3D6h1Q=;
+        b=01nAMklDIXL9t7UBpppjC6co6ljrfCuWQ/fRXfN9ugw9qfdZ4zInrBgV3PjrDUsXTo
+         lfmNrYr9IBLrCPO65PSxeLRwl3ekPHDFPTyvlbUhZmM4YpyXwQ4b/wutj9w4cUuueLnS
+         azjW4kiUsXiIwcjWVt7ReuegyFJYN1Kp2dsEwDvXNZ/TpOLK49AO1Ao4lANNBxB/JnkH
+         YkPgnWwbiLDaHR5J4gfu8nX5QYczp14kmO3xJyNQVTJb+Qz7PyThqGtTEwhi9hePnu4B
+         Ul4N7JrFdaKyAnqhTU11v0q2vnx3noaaBvBi98M+DHYMlC9EGwSuzBi6HIkj0+g0vG3w
+         ibQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710929288; x=1711534088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YCvQMo3ZWIjWXG5M214OiwkknCIOzKyMIbVwF3D6h1Q=;
+        b=Y4TzMteNYmcu5mi1hQ0X7hBOCQg7plrvLL82wx44BL0Gfsz1ZgndtVf2ZcUKtI1uKj
+         JDYWi3EJpRw5FJGAMGCoGmyL/IRS/RjgkoAtrS2iEYFOGvLmKfhD0Tvng+2m3IWnQhnO
+         IVI4/TcrIiTytfK38JhCU1LMfjGGALzTkW8ShOubFox3ViAHGW8HDkNtwqfEcoCZnsVb
+         DL/pmEThIP20FgIIu1mJpHpxyPT7lCiOsZfpL+I3hhxQxoHrcCmKSzKtQd3g4HYUJ8+S
+         13ZMOVkxT4rCSDufVDtbpiUOz5NGKZHBg60pPtBv5TyJz1c7e3pexJBqhIRnd4cND3d2
+         9AZA==
+X-Forwarded-Encrypted: i=1; AJvYcCWe2M3CviJVD2QD50u53MxHQaIJsXIR+V/rMpB+v/TmeNN6QDjlPTfx0cu0evpUkfOaGwHnueKQakM2naXbs85+g+BWwVC50M1zQgDW
+X-Gm-Message-State: AOJu0YxKm14X2dPFemBN49mn6SRuO8vDnXPDw/ZW/9wMNFf/00Fa377R
+	RpmgiD+j5jUV4YPYTmCvLOO0NQ48wY9PMKFly8YgRZI8XS9qhbR+U3mjimINsTk=
+X-Google-Smtp-Source: AGHT+IEWV18aYAjvZ7bxiaK/qFfoU+/v7NHBEw/3Dd1cpE57bgZLsXRcM25hVl8CrDOXyT6aQPlgyw==
+X-Received: by 2002:a0c:c682:0:b0:696:3620:cfdb with SMTP id d2-20020a0cc682000000b006963620cfdbmr3985416qvj.8.1710929288376;
+        Wed, 20 Mar 2024 03:08:08 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id 11-20020ad45bab000000b0069046d929a3sm7550743qvq.145.2024.03.20.03.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 03:08:08 -0700 (PDT)
+Date: Wed, 20 Mar 2024 06:08:03 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Nhat Pham <nphamcs@gmail.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH v7] zswap: replace RB tree with xarray
+Message-ID: <20240320100803.GB294822@cmpxchg.org>
+References: <20240319-zswap-xarray-v7-1-e9a03a049e86@kernel.org>
+ <Zfp-iWaDfqeCOElt@google.com>
+ <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
+ <ZfqPK7AVunq2SC1l@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZK1KxQDIhEaW+sSl"
-Content-Disposition: inline
-In-Reply-To: <20240319132503.80628-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-
---ZK1KxQDIhEaW+sSl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZfqPK7AVunq2SC1l@google.com>
 
-On Tue, Mar 19, 2024 at 01:25:03PM +0000, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->=20
-> Extend the RIIC driver to support the RZ/V2H(P) ("R9A09G057") SoC. It
-> accomplishes this by appending the compatible string list and passing
-> the RZ/V2H-specific OF data.
->=20
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Wed, Mar 20, 2024 at 07:24:27AM +0000, Yosry Ahmed wrote:
+> [..]
+> > > > -     /* map */
+> > > > -     spin_lock(&tree->lock);
+> > > >       /*
+> > > > -      * The folio may have been dirtied again, invalidate the
+> > > > -      * possibly stale entry before inserting the new entry.
+> > > > +      * We finish initializing the entry while it's already in xarray.
+> > > > +      * This is safe because:
+> > > > +      *
+> > > > +      * 1. Concurrent stores and invalidations are excluded by folio lock.
+> > > > +      *
+> > > > +      * 2. Writeback is excluded by the entry not being on the LRU yet.
+> > > > +      *    The publishing order matters to prevent writeback from seeing
+> > > > +      *    an incoherent entry.
+> > >
+> > > As I mentioned before, writeback is also protected by the folio lock.
+> > > Concurrent writeback will find the folio in the swapcache and abort. The
+> > > fact that the entry is not on the LRU yet is just additional protection,
+> > > so I don't think the publishing order actually matters here. Right?
+> > 
+> > Right. This comment is explaining why this publishing order does not
+> > matter. I think we are talking about the same thing here?
+> 
+> The comment literally says "the publishing order matters.." :)
+> 
+> I believe Johannes meant that we should only publish the entry to the
+> LRU once it is fully initialized, to prevent writeback from using a
+> partially initialized entry.
+> 
+> What I am saying is that, even if we add a partially initialized entry
+> to the zswap LRU, writeback will skip it anyway because the folio is
+> locked in the swapcache.
+> 
+> So basically I think the comment should say:
+> 
+> 	/*
+> 	 * We finish initializing the entry while it's already in the
+> 	 * xarray. This is safe because the folio is locked in the swap
+> 	 * cache, which should protect against concurrent stores,
+> 	 * invalidations, and writeback.
+> 	 */
+> 
+> Johannes, what do you think?
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+I don't think that's quite right.
 
+Writeback will bail on swapcache insert, yes, but it will access the
+entry before attempting it. If LRU publishing happened before setting
+entry->swpentry e.g., we'd have a problem, while your comment suggets
+it would be safe to rearrange the code like this.
 
---ZK1KxQDIhEaW+sSl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmX6tUIACgkQFA3kzBSg
-KbZxqBAAovXefEUa41PTmZtGk+KcS1qeyf1ckCAnwtRk5PjBelWFuMyRF1L81Hm5
-OGAMcq4BXG/MT2ZVbC3x2jdsMgNsalFvTEsy65RKsKMUhi9iRNQhmPHlj4aFStsG
-V2n2BtoGfneLXuFfldqjR6e3pkMVddYG9WXeKGg+jwovxWwu4rOGtFxvhgXlkmqH
-M1sXipwx8lPzGcVZtSfZPgt9g8fXDD9IJRFkmU/0/rgVzAoEsqnsgS1Bs93KNdcc
-0IW55APInnMRwltTNEJ3ek7lj7mgSqIR4ZDAgoL0IFjuc42YrUoXf3VPNOSw9503
-RCxgFDfNTQcTk6uHqJ+OpiwRkZPTSXxSny9BjZhK+j5P6uh43Uokgtzlw/P6yKyH
-oc35P1giZ7sOisndpTr8MubVkQZhYQ3fLzmeuV8HMyaSR/GPBtHjy0TJ0R7fEeWl
-9S7a2Y6bvDzUtaaK0csT8rS2kRqMOHgchfseXZyG7sF/Xauku2PJjoteSHFU47tZ
-Fu9HoJmCLJVfdfsH5DV5+XOZlzN/zWCdp2dXPQrxsQY5Nh4c2qZcHYJ0Sse7z+VJ
-c6L7MkRujb9kL/faV3vQU5jQ4ol0unqKfime+7N1ZD57AOKgLsgy7Oy/4+GSX3sB
-N7XsP0KbG2tBX+kJFIV0mYJ13HZdplO6iBvRFetU1iKWyF9H3ZU=
-=mvW9
------END PGP SIGNATURE-----
-
---ZK1KxQDIhEaW+sSl--
+So LRU publishing order does matter.
 
