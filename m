@@ -1,152 +1,161 @@
-Return-Path: <linux-kernel+bounces-109100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D56B88149B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:30:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89F45881499
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC479282850
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:30:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B321D1C2248F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E720D54FA9;
-	Wed, 20 Mar 2024 15:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Xf4yX4sB"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA68B53E26;
+	Wed, 20 Mar 2024 15:30:18 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC8154BFE;
-	Wed, 20 Mar 2024 15:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDD447F77;
+	Wed, 20 Mar 2024 15:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710948623; cv=none; b=f9Fq4xXzGvZq3kQCstOrt1DLML9pxCR9aAs3iChuOnzEcYT4WAEpzT1pyL0I6of9H1GwEdnzm9aucKYls0USvmes1Fm1MHFS3+E8jYtqoVZ7aKGNVQ6+p3HPRxACI0axlb5xHhF5DZvQV/2H0nb1w80d4Q6L2D7XDIQ8nkZnfs0=
+	t=1710948618; cv=none; b=NOmVf3RLpxVVtn7GbHJHWU9Yj8kwn8Ilcxy3a/+pyTGcl7ywqK9vDK3hdxDXjEFomBAgDFP56Y3z+NxC9JRbtD8CgsxtrASuoxJOus9ZNVKnIYHigsMmToMji4luS0LEOhIYjh9ISLp/8LpHw+ok2NEHw6z1ZGfNb8D67LANFwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710948623; c=relaxed/simple;
-	bh=41QkvDnloJQpHX/mvmIYkk7SfwYlD2OLUl5OMcCY33U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B1OD6Vyl0tUIwdX1RguMue+4qXkNkSLi2s53mGWZDYfInH9gDPTgHKHOGNLhGzrLxosXQRrz5W/lt7Ly6w24Go+Uw75b6uqLV0grajHL8TeTYqDtPOuB4USQyXiZvSKAw+K03hD1uoRCQnn41p2zLcBiIXmNWBtOIsdgm43duPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Xf4yX4sB; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KEeUaH015103;
-	Wed, 20 Mar 2024 15:29:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=41QkvDnloJQpHX/mvmIYkk7SfwYlD2OLUl5OMcCY33U=;
- b=Xf4yX4sBcM/5YZ5wFHEuwuel+wMeDDdQUKh64jmhaw63hVRdiSaRV1O4hilgS7AXHeOH
- tMJ+3uK+g6mrNaC3OD6pIcdL10dKd2Isz0TRhcu1WYYnSJDwIpmBnNTe9m2h+mWu7FGL
- ycO/TWEGti0glZyp46GX9EYsXdDg1I/fJkW2Od2LhG6CUixRJVG45dr6bYfHa9KHsJ3U
- gjpA+9IMSzh1dcvhgS8vcpZbHDe37FdpE5cJYYcr7adOoi3KA+HXece0Zkyc1tTRGJgD
- G/f6f6oPorSpDewWL5OXRYZ5Y6Ir+Giip9lZB+TZgWvnLWlx8R/fmX91I9dWf5hpgh28 oA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x01rw04d4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 15:29:53 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42KFTrrV030362;
-	Wed, 20 Mar 2024 15:29:53 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x01rw04d1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 15:29:53 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KDEN9D019843;
-	Wed, 20 Mar 2024 15:29:52 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykps5n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 15:29:52 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KFTkHn52363644
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Mar 2024 15:29:48 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C202F20065;
-	Wed, 20 Mar 2024 15:29:46 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2E17F20040;
-	Wed, 20 Mar 2024 15:29:41 +0000 (GMT)
-Received: from [9.43.11.243] (unknown [9.43.11.243])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Mar 2024 15:29:40 +0000 (GMT)
-Message-ID: <0514fb50-443d-427f-ac5b-a29679b6938b@linux.ibm.com>
-Date: Wed, 20 Mar 2024 20:59:34 +0530
+	s=arc-20240116; t=1710948618; c=relaxed/simple;
+	bh=k+uiAnBPsc4XHfouOVtwfKC4aWoNEiidfKAZ/kUUCp8=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FgkJAR0VfI7aTAINWZv3mmyQD8elWSi0Ly7/Xhb/xUgg5VpcO121YAS4tl39AKKPONVgJjUZRAaMAokyBab3jXf//XZoq1a8u4F8aqxYxFPaFtHeJKuO/Nwh1+swvJzdauWz4yB4ZeHReOJAWZCu1late+j5LCRAAt1e78HrSpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V0CBx5BTFz1h3Bm;
+	Wed, 20 Mar 2024 23:27:37 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 22E0F1A0172;
+	Wed, 20 Mar 2024 23:30:11 +0800 (CST)
+Received: from [10.67.111.82] (10.67.111.82) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
+ 2024 23:30:10 +0800
+Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+CC: <arnd@arndb.de>, <keescook@chromium.org>, <haibo.li@mediatek.com>,
+	<angelogioacchino.delregno@collabora.com>, <amergnat@baylibre.com>,
+	<akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+	<douzhaolei@huawei.com>, <gustavoars@kernel.org>, <jpoimboe@kernel.org>,
+	<kepler.chenxin@huawei.com>, <kirill.shutemov@linux.intel.com>,
+	<linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+	<nixiaoming@huawei.com>, <peterz@infradead.org>, <wangbing6@huawei.com>,
+	<wangfangpeng1@huawei.com>, <jannh@google.com>, <willy@infradead.org>,
+	<David.Laight@aculab.com>
+From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Message-ID: <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+Date: Wed, 20 Mar 2024 23:30:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/3] powerpc/pseries/iommu: Bring back userspace view
- for single level TCE tables
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: tpearson@raptorengineering.com, alex.williamson@redhat.com,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
-        naveen.n.rao@linux.ibm.com, gbatra@linux.vnet.ibm.com,
-        brking@linux.vnet.ibm.com, aik@ozlabs.ru, robh@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, aik@amd.com,
-        msuchanek@suse.de, jroedel@suse.de, vaibhav@linux.ibm.com,
-        svaidy@linux.ibm.com
-References: <171026724548.8367.8321359354119254395.stgit@linux.ibm.com>
- <171026725393.8367.17497620074051138306.stgit@linux.ibm.com>
- <20240319143202.GA66976@ziepe.ca>
-Content-Language: en-US
-From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
-In-Reply-To: <20240319143202.GA66976@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 05_um4XcOnvDcBpMa4NSeN7Rh3q98Cpl
-X-Proofpoint-ORIG-GUID: _jYtsAZMxDuH7SH4XYs0QdvBkKr_lJ4i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403200123
-
-Hi Jason,
-
-On 3/19/24 20:02, Jason Gunthorpe wrote:
-> On Tue, Mar 12, 2024 at 01:14:20PM -0500, Shivaprasad G Bhat wrote:
->> The commit 090bad39b237a ("powerpc/powernv: Add indirect levels to
->> it_userspace") which implemented the tce indirect levels
->> support for PowerNV ended up removing the single level support
->> which existed by default(generic tce_iommu_userspace_view_alloc/free()
->> calls). On pSeries the TCEs are single level, and the allocation
->> of userspace view is lost with the removal of generic code.
-> :( :(
->
-> If this has been broken since 2018 and nobody cared till now can we
-> please go in a direction of moving this code to the new iommu APIs
-> instead of doubling down on more of this old stuff that apparently
-> almost nobody cares about ??
-
-We have existing software stack deployments using VFIO userspace
-device assignment running on Power platform. We have to enable
-similar software stack on newer generation Power10 platform and
-also in a pSeries lpar environment. These distros rely on VFIO enabled
-in kernel and currently have IOMMUFD disabled. This patch series is
-a simpler low risk enablement that functionally get the software stack
-working while we continue to enable and move to IOMMUFD in phases.
-We have to fix the older APIs in order to stage the functional enablement
-in small increments.
-
-We are working on iommufd support for pSeries and looking forward
-to Timothy's patches.
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
 
--Thanks
 
-Shivaprasad
+On 2024/3/20 16:45, Russell King (Oracle) wrote:
+> On Wed, Mar 20, 2024 at 11:44:38AM +0800, Jiangfeng Xiao wrote:
+>> This is an off-by-one bug which is common in unwinders,
+>> due to the fact that the address on the stack points
+>> to the return address rather than the call address.
+>>
+>> So, for example, when the last instruction of a function
+>> is a function call (e.g., to a noreturn function), it can
+>> cause the unwinder to incorrectly try to unwind from
+>> the function after the callee.
+>>
+>> foo:
+>> ...
+>> 	bl	bar
+>> ... end of function and thus next function ...
+>>
+>> which results in LR pointing into the next function.
+>>
+>> Fixed this by subtracting 1 from frmae->pc in the call frame
+>> (but not exception frames) like ORC on x86 does.
+> 
+> The reason that I'm not accepting this patch is because the above says
+> that it fixes it by subtracting 1 from the PC value, but the patch is
+> *way* more complicated than that and there's no explanation why.
+> 
+> For example, the following are unexplained:
+> 
+> - Why do we always need ex_frame
 
-> Jason
+```
+bar:
+..
+.. end of function bar ...
+
+foo:
+    BUG();
+.. end of function foo ...
+```
+
+For example, when the first instruction of function 'foo'
+is a undefined instruction, after function 'foo' is executed
+to trigger an exception, 'arm_get_current_stackframe' assigns
+'regs->ARM_pc' to 'frame.pc'.
+
+If we always decrement frame.pc by 1, unwinder will incorrectly
+try to unwind from the function 'bar' before the function 'foo'.
+
+So we need to 'ext_frame' to distinguish this case
+where we don't need to subtract 1.
+
+
+> - What is the purpose of the change in format string for the display of
+>   backtraces
+```
+unwind_frame(&frame);
+dump_backtrace_entry(...from) //from = frame.pc
+	printk("...%pS\n", ...(void *)from);
+```
+%pB will do sprint_backtrace and print the symbol at (from - 1) address
+%pS will do sprint_symbol_build_id and print the symbol at (from) address
+
+In unwind_frame, although we use 'frame->pc - 1' to execute unwind_find_idx,
+but frame->pc itself does not change, in the noreturn case, frame->pc still
+pointing into the next function. So this is going to be replaced by %pB.
+
+> 
+>>
+>> Refer to the unwind_next_frame function in the unwind_orc.c
+>>
+>> Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+>> Link: https://lkml.kernel.org/lkml/20240305175846.qnyiru7uaa7itqba@treble/
+>> Signed-off-by: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+>> ---
+>> ChangeLog v1->v2
+>> - stay printk("%s...", loglvl, ...)
+
+
+Thank you for your suggestion.
+I'll change the code to be more concise in my [patch v3].
+
+
+>> -- 
+>> 1.8.5.6
+>>
+>>
+> 
 
