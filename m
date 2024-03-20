@@ -1,157 +1,122 @@
-Return-Path: <linux-kernel+bounces-108588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE382880CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:01:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1305D880CA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09C701C216D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:01:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65A11F213BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C84E2E62E;
-	Wed, 20 Mar 2024 08:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KqUuOTgx"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8AD2C68A;
+	Wed, 20 Mar 2024 08:02:06 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A514D2C698
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FF111181
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710921674; cv=none; b=eFlpcBQBCVA6NzhLzR3ZlKuXjsjPvb0B2Xpirkg9x6kkh70gMHq29bguyaySyRSDRfneS66+ZzVthTWTo5AVBiyLYWfE/WK3QMyTY0F9xfvzFleVotVWAfkqG9kyjKi48mqvh98AjWAXP7Mj1oDUysbMOlwYpzFz/eDEbFsygW4=
+	t=1710921725; cv=none; b=sLNXuJ+nfPGpNpmSvJlwZ7SLpByBlrkl9egjy7fzwifU/xGkK5yN676P5GuqhYSsbLaHuNWkKY0BFu35xR7ac8quQx80YvIm6bPFZCM91QQwgIcqsmSs9Dp81rOa1QmlqAcPSjNh0HajjVf6xrHpempJdjssBgRD6CC019sTiOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710921674; c=relaxed/simple;
-	bh=YWDQGj+NIT4RX0QDpgYy97e5lxFO9pkCRRwl+TMF5yA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EGe3UDDGXSTMoufV/u+7TLd7BVU4oY/QWcsDbUWYbEaeHNDmFoEnW1XQBaGpUA/r4/e+0Q4VhfkyGWViF71uCLArQqGIJS+RSsQjgIq7Um+5PFJLAJRoUwhyrepaMPMe9Dz9zHHV4bw51MyIK7K6AZzSEy6G8zA0jdBIP9UBUz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KqUuOTgx; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-568a53d2ce0so7828557a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710921671; x=1711526471; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNs5OHmBIF4OfZczAp5Q6QlN94OHf1q3wmIZoe179dY=;
-        b=KqUuOTgxrX3f7kXUJOCNLLWFh0j4QowpiMG0qQLbLXQ5xycqiaO5BLV0AHyqAcc5KU
-         fv0Hbsm/nneL9O60mh2G3P/ESnOa5xswHKsJ248tHXVqoVZyVyX+zP9YCq1bOYvcK7Yi
-         ULu4X3qW6bDsb+8iXflV4zDmg+cWE2ay0Enf2AL0uDmUNvgbkl/M+BDQmGl8mEsc++Ev
-         2v24IOvs48G9jFkrPoRP3jkbq/S4+OSES2/mNvl64QAp0m8QB0oYtvd9kKZN1OauMJEM
-         7DxKVrS6OHKDgf58+dhNMb+Z5O1s45NjFYm7+5XNCQbbRI7wInyrmrY/iQ732AeSYt4G
-         qQzg==
+	s=arc-20240116; t=1710921725; c=relaxed/simple;
+	bh=FxKCY4s/W6RhBh8EB1c3AXT+49U1UdjMORkFQ5eHvW4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=hJHKBd+7UQDBEMihEokbG2peaDInMgbS+OvMCjMIyqQhYvmmG7TFWNAB0r4Ph+8O4mULbSuifTrbDuDslN1/p7OLYWNsu4qIV+6q2QxjjlPqVhtRszPYCu84YSJ71fvhh4kNw+3E3Dy+918mARDYDI44yj3mNmsnUiAoe+1nu/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36854f4e9b3so5147685ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:02:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710921671; x=1711526471;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nNs5OHmBIF4OfZczAp5Q6QlN94OHf1q3wmIZoe179dY=;
-        b=HrlovTvohrZTJd8ZrU01ewYOaIlKJWEeoaqWP1lnL4BdHEoopDqHBj/UoChz5P0IfR
-         lrh2ESYC28hBqoIApPLGV1cw1MAFBE61ZdBOshI47Mt9JPis5hL++upcPIFvvxm29IWx
-         vQ4CIEhn/sgCJNCGcWo/1+mCAfmXmtzFXif4st0FTMIQdp0miLW7iGoXJK/zewvIrlRp
-         xaMg5T7IRizlUbmLCmuHy5IX72Fc3MVHVHNrRQioqHkzo3ZfuTnKHdFAl/+Isdl2j/Zh
-         nfsVXelkYy9pJFpUnL9oQWbYParJJy9V/iyGOH70q4deO5nbQRcOoWc3puHE9dCI30+Y
-         z/Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCX0NCXDX5ag1LYz5CzgH0pskzrmL0eugliobFoty4LmwqlkQExj1dKq/js7neAw3gVaPQSfCWcBVu1FHOa51k7tYOBXHe6irhElxwm1
-X-Gm-Message-State: AOJu0YxDEVR5Im6LPrRY4mB+i10YLuDld53YfvgKcrdfP19SZu6LIOmz
-	qOdMeuRcCrgjXMw0fxKZ2OR04U4oHiYTKidzdyIoL1vfidTNn5UNcKf82y8tWlY=
-X-Google-Smtp-Source: AGHT+IGmg7JhFd9YGo4SzD4tHxgDPiV+U6ye8mank53lEhUoWpv2I3LZiyYHwc5iz/pzjwNM7K6BOg==
-X-Received: by 2002:a05:6402:2b87:b0:568:9ba8:8f1a with SMTP id fj7-20020a0564022b8700b005689ba88f1amr13766609edb.7.1710921670985;
-        Wed, 20 Mar 2024 01:01:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id es8-20020a056402380800b00568afb0e731sm5435012edb.63.2024.03.20.01.01.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 01:01:10 -0700 (PDT)
-Message-ID: <822989eb-0e8c-47af-b1ae-435f35472cb9@linaro.org>
-Date: Wed, 20 Mar 2024 09:01:08 +0100
+        d=1e100.net; s=20230601; t=1710921723; x=1711526523;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZryK2M/d5ViFlT3YE/LNIF2qPsWg9M+/iJ+gGJOEUgQ=;
+        b=eBMXPJ46tS91Ox6QRTXnns1NnwJ7Purt0H6QC0sXvkiKxq4GkoWILSEF9D8p51Q45a
+         vOuAex0dY4CD9FCxQbCA5kAkAR7pJXt86TGXHdiuiAM7ltKWLkowApLyEJ5zLLVn1XNH
+         UNHmKyvGwn077o2yyYQy1CSl9LYDyKfKsY6Mwxtew8Ab1HTmRuhsd8i+DRbsE/tRiiN4
+         egF+FcZ6wIil5DNsMi9pU0dwzRei9W4k3lLqwz3hEAtDYHc1XbFaIyZoCGb4SIcp5EST
+         aM0bIEMZYZ3dQt/dqhwJxOOqqZwBA0xJNq+JXin7x7gvccTLzycN7nEwoinEXWiHm2Km
+         GHkg==
+X-Forwarded-Encrypted: i=1; AJvYcCU6jEfLwVrpFi/IFlQ9WygY7M90sDWHRENPjJSDxAQhMTPZAuT++/0tDBt3yziWxyyrL6UvlVGEDvMjBwrLrink7GY+1OHQwi2RPXS3
+X-Gm-Message-State: AOJu0YxnG43c8QgmlyFYUqG9jcTiqO/n9FuyB6iJXFvaWd0TGaRLoZsq
+	dzeAt1FAFAxAKL4ljhCdwMqGTaa267srzgLoRzBiEeSLV8yKlm5VsAiUkNewBE1NDrbZrbmdUXI
+	9ho+SD1VKIDpPIaQRzVO+RH/S7n5YyMgjq87nNKV921e068ekIsOtJXE=
+X-Google-Smtp-Source: AGHT+IFq9OweNJwLdUtGBz0GkaFuGnKTaPbVmFqYZ8dQT/jkVzHLImUXRnF/Fn/PglFFDbve7uitvNLB7C7hqrbJZSRtzBJnMej3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy:
- document PHY AUX clock on SM8[456]50 SoCs
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-0-926d7a4ccd80@linaro.org>
- <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-1-926d7a4ccd80@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-1-926d7a4ccd80@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1528:b0:366:be6a:10b7 with SMTP id
+ i8-20020a056e02152800b00366be6a10b7mr366927ilu.2.1710921723377; Wed, 20 Mar
+ 2024 01:02:03 -0700 (PDT)
+Date: Wed, 20 Mar 2024 01:02:03 -0700
+In-Reply-To: <tencent_79DD6EEACCA727D846F212CE8679C998EE06@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008f8e88061413011f@google.com>
+Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in check_stack_range_initialized
+From: syzbot <syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 19/03/2024 11:44, Neil Armstrong wrote:
-> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock named
-> "PHY_AUX_CLK" which is an input of the Global Clock Controller (GCC) which
-> is muxed & gated then returned to the PHY as an input.
-> 
-> Document the clock IDs to select the PIPE clock or the AUX clock,
-> also enforce a second clock-output-names and a #clock-cells value of 1
-> for the PCIe Gen4x2 PHY found in the SM8[456]50 SoCs.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Hello,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in check_stack_range_initialized
 
-Best regards,
-Krzysztof
+mio: -8, mao: -8, as: -2147483647, check_stack_range_initialized
+------------[ cut here ]------------
+UBSAN: array-index-out-of-bounds in kernel/bpf/verifier.c:7193:12
+index -1 is out of range for type 'u8[8]' (aka 'unsigned char[8]')
+CPU: 0 PID: 5496 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-05230-g114b5b3b4bde-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:415
+ check_stack_range_initialized+0x13d8/0x1630 kernel/bpf/verifier.c:7193
+ check_helper_mem_access+0x2eb/0xfa0 kernel/bpf/verifier.c:7297
+ check_helper_call+0x263c/0x7220 kernel/bpf/verifier.c:10255
+ do_check+0x9e29/0x10530 kernel/bpf/verifier.c:17804
+ do_check_common+0x14bd/0x1dd0 kernel/bpf/verifier.c:20503
+ do_check_main kernel/bpf/verifier.c:20594 [inline]
+ bpf_check+0x136ab/0x19010 kernel/bpf/verifier.c:21264
+ bpf_prog_load+0x1667/0x20f0 kernel/bpf/syscall.c:2895
+ __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5631
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fb440a7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb4417ef0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fb440babf80 RCX: 00007fb440a7dda9
+RDX: 0000000000000090 RSI: 00000000200000c0 RDI: 0000000000000005
+RBP: 00007fb440aca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fb440babf80 R15: 00007ffc0626c2f8
+ </TASK>
+---[ end trace ]---
+
+
+Tested on:
+
+commit:         114b5b3b bpf, arm64: fix bug in BPF_LDX_MEMSX
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14084006180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=33f4297b5f927648741a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16c4aa31180000
 
 
