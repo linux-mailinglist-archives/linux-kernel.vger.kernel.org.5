@@ -1,139 +1,135 @@
-Return-Path: <linux-kernel+bounces-108540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F425880C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C89EE880C05
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:29:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3EE6B2258D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:28:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 481EAB22AFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A21D210FE;
-	Wed, 20 Mar 2024 07:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D77902209F;
+	Wed, 20 Mar 2024 07:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y9Lh15To"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jE7D2BU/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9A801EEE0
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371D32BD01;
+	Wed, 20 Mar 2024 07:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919708; cv=none; b=RhuIKtSTrIhzcbYu5GLXZ5W6h/sKnuz+k2oY5UBY/jrNiRNa7TxHLpCG/V1+0fsmhTGIcIpUNgsXvNJ4c6qsxp5EFzCMJ7x5LX6jPEOc/1WJkFuZ0Gx3VM2OLMwRBQkeLxe9N+Wi3ev+3PU+7MuzhdW7GjUdmRuz/euIJwrrM98=
+	t=1710919755; cv=none; b=GnFgWCTm2w4jsQ0eNawJzGVRJa2XHiGJvz01M2SAGXLqB9vlvzAGcyWsESusJ0TW2kPYRR8XPoPwG0XoQ8h9o7j6NTCIW+ZwGgXomh8B39VaCe+5dTtaZC51ejEuBK9W4BCkw6YTebULMTL878Vryotn5Wxw74utoEVapctxOs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919708; c=relaxed/simple;
-	bh=li2qAWghidOrmM63QJI/fv2vk+a/4nCE+jxZRIXe5LI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nm1w4fxHdYJWA0hP1uEnF5Nz5RpdpMKG3Az9eqxkkVARPGrDXBr2S9RoHCNk+KvMmAWpF+40QLOK16sQH8rl7GZf8rbt+FXcThXGea3kRXP9xIvXbzNZ+/vZkaR650V1+GqQ44GN319KCYz7jaBSxtMoa1M7ReOFzBtE2gSAqHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y9Lh15To; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-610ed1c0f93so20182017b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:28:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710919706; x=1711524506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8Cf3z+01pPTqaJgUbHcUbvvHLevh6MiiirhgfJW0FB8=;
-        b=y9Lh15To1TfRvFZBWjPg/GOflL8Lh5Of0UG1tWPDlybxLIkJoLCPM1KJnAOoHUWHq4
-         V5N6tt26EwvNsNC7+J1A0HHVedq6zDqZ/xzrFLkoSJyFaEfjgjRBIGYRzNS5ZqZdMkTW
-         fjk7GGmtEk+UmYuX3AoX2hFxhYUvlNXesmVboLBrxxrf5xllzYXQe8amS0U3oZgX/wYL
-         5bc1rskTxFoYT9LbpTwPLgImzUHTXopvZjbCbIWfBuILzwM7naNYXiNR/kYvnPa/l+Ij
-         qwBNEY8cMPrENKhlCAPVvk3U4zY2NBYrkc0FuWgsayr1Iof4SScx2kpXr9UVIF/Jzwns
-         u9Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710919706; x=1711524506;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8Cf3z+01pPTqaJgUbHcUbvvHLevh6MiiirhgfJW0FB8=;
-        b=pigFFLTRu7nSDgEogNpUs3P70KurXF6+0TyZQ2nhH82ojwd6KIChBa3XONRLa3eTQ9
-         t5zmdCtlsyBS3qM61knS2zs7ve1buU8l3IAFh99CesySyRO4pXxzlSySx6Ta7stXWKVX
-         A0eAgkFrr4TQ0Q3I+mVibj6FxHNjQB/TSEBl9gUj+p0kv96CS3+7rv1oDvKufClY9J46
-         zqmJXv0BlKaBHcG/+ovMMMDnguzwYTAkyqFh4MdoCuG6tKmLbOdfXbJzR81CGF5+vFF/
-         LYgFCvxxTaZGRJ6krHRF1Q8ScYoI7Wade9idimB9r4SKLLF93b6ILCXezmnp52la9TzW
-         1g6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVcEKUVRcT3DUtKHyxZxpsOkONug1MUGfCeRK839iEUW4FU4SAJcAMRp4GzyOupkZA3YYgLQyVFLmS6K8ZkPQHDRUB4dkrNrQIFYovo
-X-Gm-Message-State: AOJu0YzIFNhZiBjW+EgMqRCcCy8M4qHbdCf9ujjoaHoHLfCfn5Ce4LfL
-	QajHs6dJUjCRed9whouN4rR2A+1pnJe54EbfLlXHL+ufb1tQwDPE+IMO51ctmtV9s570xXHIrKS
-	xHg6CM3vheouyhQq5pw==
-X-Google-Smtp-Source: AGHT+IEfa9xOQhFmuNxE4o9OfZO2Vc/0uULHRYTxqzo99fLnSbA+gg07/JJm2omiBe+ZV95gvHGh1ZOhZxkIbXjt
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2290:b0:dc2:5456:d9ac with
- SMTP id dn16-20020a056902229000b00dc25456d9acmr992058ybb.5.1710919705944;
- Wed, 20 Mar 2024 00:28:25 -0700 (PDT)
-Date: Wed, 20 Mar 2024 07:28:24 +0000
-In-Reply-To: <021efce7-1e40-43a6-9bfd-0d968bfcd5a8@kylinos.cn>
+	s=arc-20240116; t=1710919755; c=relaxed/simple;
+	bh=SIJLQWAZttGxLBgmyLL6igS6AuPkYTJuC02fay6r37E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LBWjF23BquCbWAL6CvAJIhC6e+RXN3T9Ckv3Hh9ZwuMJab2b3Yz+N7amFKbatu7mD0BlnpG2akyd2ca9Yty1XUwfIcdO8eXlHsOnd8qAnmGFnmqq2+hiPFelTG0Eg0gWmZgScosXFWgev4IxnDcgkE1zOsBt2NDklcRbI175/tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jE7D2BU/; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710919753; x=1742455753;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SIJLQWAZttGxLBgmyLL6igS6AuPkYTJuC02fay6r37E=;
+  b=jE7D2BU/YpudfW/7il6RsJ/u0w0j+jDWDYtjQObqMiLBj1KtXdXJHiYL
+   Kdh9zAGLPTwj3bbnpxdloZy0wEHg4mDyxPEWwMniIGTlBbtfV2UNdUsqr
+   LiTiuhZ0nK3Ed/vA4eR+HDnPwUOxvWIcwTPtsqWac5CTnizB72+grqCm0
+   oRTnWWpgPLqj0MS+G80wHjuyQXyfIsN2cACaTNK0JZk7OM9WSrXS1agp9
+   6Oo9dXKn+sJFnJDngwzRT0mipGS80MZDVHFOUNySfqzRezInUyZbGsy0E
+   /i+usOi6tdJBrlSbizdq2Hxa7mG22ebW+Oarieh9Hg3vpv7yht6VJl0a+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="9598536"
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="9598536"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:29:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,139,1708416000"; 
+   d="scan'208";a="51507652"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 00:29:04 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 6E3E911F853;
+	Wed, 20 Mar 2024 09:29:01 +0200 (EET)
+Date: Wed, 20 Mar 2024 07:29:01 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Zhi Mao <zhi.mao@mediatek.com>
+Cc: mchehab@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	laurent.pinchart@ideasonboard.com, shengnan.wang@mediatek.com,
+	yaya.chang@mediatek.com,
+	Project_Global_Chrome_Upstream_Group@mediatek.com,
+	yunkec@chromium.org, conor+dt@kernel.org, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	jacopo.mondi@ideasonboard.com, 10572168@qq.com,
+	hverkuil-cisco@xs4all.nl, heiko@sntech.de, jernej.skrabec@gmail.com,
+	macromorgan@hotmail.com, linus.walleij@linaro.org,
+	hdegoede@redhat.com, tomi.valkeinen@ideasonboard.com,
+	gerald.loacker@wolfvision.net, andy.shevchenko@gmail.com,
+	bingbu.cao@intel.com, dan.scally@ideasonboard.com,
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1 2/2] media: i2c: Add GC05A2 image sensor driver
+Message-ID: <ZfqQPTgqzOw7tATK@kekkonen.localdomain>
+References: <20240316025253.2300-1-zhi.mao@mediatek.com>
+ <20240316025253.2300-3-zhi.mao@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126075547.1521556-1-mengfanhui@kylinos.cn>
- <Zfp7Y9x2iOE_prpp@google.com> <021efce7-1e40-43a6-9bfd-0d968bfcd5a8@kylinos.cn>
-Message-ID: <ZfqQGGfKStVxDwYT@google.com>
-Subject: Re: [PATCH] config/mips: support zswap function
-From: Yosry Ahmed <yosryahmed@google.com>
-To: mengfanhui <mengfanhui@kylinos.cn>
-Cc: tsbogend@alpha.franken.de, geert+renesas@glider.be, 
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	hannes@cmpxchg.org, nphamcs@gmail.com, chengming.zhou@linux.dev
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240316025253.2300-3-zhi.mao@mediatek.com>
 
-On Wed, Mar 20, 2024 at 02:44:21PM +0800, mengfanhui wrote:
-> Zswap and zsmalloc are compression methods, and kernel configuration can =
-be configured simultaneously.
-> zbud is an algorithm, and users can use that method if they want to use i=
-t.It won't affect each other.
+Hi Zhi,
 
-Zswap compressed swapped out pages in-memory. To store those compressed
-pages, it uses one of three allocators that implement the zpool API:
-zbud, z3fold, and zsmalloc. In that sense, zsmalloc is comparable to
-zbud, not zswap. I suspect you are mixing up zsmalloc and zram.
+Thanks for the set.
 
-Anyway, zsmalloc is the default allocator and should be better for
-almost all use cases. So unless you have a very good reason to use zbud
-over zsmalloc, please do not use zbud. We are trying to deprecate zbud
-and z3fold.
+On Sat, Mar 16, 2024 at 10:52:53AM +0800, Zhi Mao wrote:
+> +static int gc05a2_set_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct gc05a2 *gc05a2 =
+> +		container_of(ctrl->handler, struct gc05a2, ctrls);
+> +	int ret = 0;
+> +	s64 exposure_max;
+> +	struct v4l2_subdev_state *state;
+> +	const struct v4l2_mbus_framefmt *format;
+> +
+> +	state = v4l2_subdev_get_locked_active_state(&gc05a2->sd);
+> +	format = v4l2_subdev_state_get_format(state, 0);
+> +
+> +	if (ctrl->id == V4L2_CID_VBLANK) {
+> +		/* Update max exposure while meeting expected vblanking */
+> +		exposure_max = format->height + ctrl->val - GC05A2_EXP_MARGIN;
+> +		__v4l2_ctrl_modify_range(gc05a2->exposure,
+> +					 gc05a2->exposure->minimum,
+> +					 exposure_max, gc05a2->exposure->step,
+> +					 exposure_max);
+> +	}
+> +
+> +	/*
+> +	 * Applying V4L2 control value only happens
+> +	 * when power is on for streaming.
+> +	 */
+> +	if (!pm_runtime_get_if_in_use(gc05a2->dev))
 
->=20
-> =E5=9C=A8 2024/3/20 14:00, Yosry Ahmed =E5=86=99=E9=81=93:
-> > On Fri, Jan 26, 2024 at 03:55:47PM +0800, mengfanhui wrote:
-> >> Solution /sys/module/zswap/parameters/enabled attribute node
-> >> does not exist issue=EF=BC=8Chandle zpool zbud initialization failed,
-> >> open CONFIG_ZSWAP CONFIG_ZPOOL CONFIG_ZBUD configuration,manual
-> >> zswap function by /sys/module/zswap/parameters/enabled file
-> >>
-> >> Signed-off-by: mengfanhui <mengfanhui@kylinos.cn>
-> >> ---
-> >>  arch/mips/configs/generic_defconfig | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/g=
-eneric_defconfig
-> >> index 071e2205c7ed..14884df392f4 100644
-> >> --- a/arch/mips/configs/generic_defconfig
-> >> +++ b/arch/mips/configs/generic_defconfig
-> >> @@ -13,6 +13,9 @@ CONFIG_CGROUP_DEVICE=3Dy
-> >>  CONFIG_CGROUP_CPUACCT=3Dy
-> >>  CONFIG_NAMESPACES=3Dy
-> >>  CONFIG_USER_NS=3Dy
-> >> +CONFIG_ZSWAP=3Dy
-> >> +CONFIG_ZPOOL=3Dy
-> >> +CONFIG_ZBUD=3Dy
-> >=20
-> > Any reason for choosing zbud over zsmalloc, the default zswap allocator=
-?
-> >=20
-> >>  CONFIG_SCHED_AUTOGROUP=3Dy
-> >>  CONFIG_BLK_DEV_INITRD=3Dy
-> >>  CONFIG_BPF_SYSCALL=3Dy
-> >> --=20
-> >> 2.25.1
-> >>
+This should be pm_runtime_get_if_active(). Please assume it takes a single
+argument (the device)---see commit
+c0ef3df8dbaef51ee4cfd58a471adf2eaee6f6b3.
+
+The same comment applies to the GC08A3 if it uses autosuspend, please post
+a new patch for that.
+
+-- 
+Kind regards,
+
+Sakari Ailus
 
