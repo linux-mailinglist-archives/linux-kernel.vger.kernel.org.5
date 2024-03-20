@@ -1,155 +1,118 @@
-Return-Path: <linux-kernel+bounces-109067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 023CA88143E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:12:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57EB1881443
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:13:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96AD51F22F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:12:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52842816B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086654F206;
-	Wed, 20 Mar 2024 15:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC58A524B7;
+	Wed, 20 Mar 2024 15:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hsSWeJj6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="m0sgJUSK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Kt8qapt7"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C2540866;
-	Wed, 20 Mar 2024 15:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2034DA1A;
+	Wed, 20 Mar 2024 15:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710947562; cv=none; b=rnOA2DUXrIFtlf5VeFloe1f887zWqh3WPYJ2KzVR2Mw8OCnJLqIo8T9JQgo1yusGwhYfp3aqpzeYcYRGHX+dtp8q9jJV+PlffRgNxGhwpysy5m2pgAQw4dZUgzjN3L8OEmVT7l2GX+lbQfqJf9NcT5pREkoUBQG4JdAkbHiMbfg=
+	t=1710947592; cv=none; b=M5sgx/b7cyzL0N1FIVd15prj0hUTc0eog4JJD4DfM//CcyEp2OABRqq5X81lzxdumf1LD2JMa8v3yFwdPbGw8DzK9wqRu6ZsUbpV0irSRMRvByUZkyhoLv6HvXfkOLs7qCYhbMisbcEa4aRG58hArOSD0zEMyU5cJb4FKbKs0/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710947562; c=relaxed/simple;
-	bh=348HASSEk8QxvS/erlMJDq6aP8awionNlExKtmUlpmY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UFvvucAifK9uaauaQT0S0viXJTulvLtBE2U6ra/Ug7/8jl1mxMCYL71dg55WShZY1lMwYNfODshVrHQtMdobSXtWcESbMjAfi9FEhdxyNVr/OH9jelwzqJlpKK19sVmLsipqTXPyhQFX0VtCJad8rpWb57Sjih/wcDVRzdV1EuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hsSWeJj6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=m0sgJUSK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 20 Mar 2024 16:12:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710947557;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqY42itfFZLfggmIMz0Q0EsnZ8t+OvYnRDCYFxlevL8=;
-	b=hsSWeJj6TrjiUW12brMWme8K6vVyTafHuy7VucCN2pHD7oP9IzsRSDYDbMRyKKiW+rpe0K
-	0lQTuaY8Gb0C0agF9+dqf19jbIktNHJdaOmSwN1z0PoH7lxCqSXYtzkONRDQr1sOv1ui1B
-	zl7O3qNhZ//OQ0iXLcHOW8uJtC7szpRnetpo3uoOMhOVhnoyIGU6vhsgIhytRz2hLI+dNC
-	2UWzyk8c3b+4QBNjt1fpE0ulqdZmzSEJI9E4du7A5tJEuNIZhhpzIAlHXvHZvqzWf+L71I
-	zVixRX82UFTkA/TWt2vANyOu/DUYUvfha8Eq6+0gdHdqm5+WoonfcpwUTy/+jw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710947557;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LqY42itfFZLfggmIMz0Q0EsnZ8t+OvYnRDCYFxlevL8=;
-	b=m0sgJUSKkUfQ2JAu2rnH2dWsfJHsEXLemQ6lVHKz3ifzzl4lFVr09Cu4Pgzt9uE+JBxc9q
-	17j4Lrw6ww0J7KAg==
-From: Nam Cao <namcao@linutronix.de>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: tglx@linutronix.de, Paul Walmsley <paul.walmsley@sifive.com>,
- samuel@sholland.org, Marc Zyngier <maz@kernel.org>, guoren@kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2] irqchip/sifive-plic: enable interrupt if needed
- before EOI
-Message-ID: <20240320161235.7e6916d9@namcao>
-In-Reply-To: <mhng-2ab049d5-bab9-4d62-8d68-a7159a987f12@palmer-ri-x1c9>
-References: <87wmr8hd7j.ffs@tglx>
-	<mhng-2ab049d5-bab9-4d62-8d68-a7159a987f12@palmer-ri-x1c9>
+	s=arc-20240116; t=1710947592; c=relaxed/simple;
+	bh=pcGxRvY/FbBvBlq97QB2rq5HTC92beOMYNwfDm8kMEY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OD7RrS4V8MKoDpw5nXgdIDBg/9xrQ+fyPpeBuTtAT1UPYEI3t5L2KiDuEl++tYxG0mfKzG7JHNvYeG4Pv/mYz8V0a5D6B1m+qyHlbFnfl57QSJJynnRZpumFZa06XZjSu5Q5vHbh73f04zom5r30DcwIe1VmpylCE6DDPtm5KRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Kt8qapt7; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KEk4k5003864;
+	Wed, 20 Mar 2024 15:12:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=D1YOUigZ032H/1z4ozAs2t77AHgioIzVm+TtWp1zuOo=; b=Kt
+	8qapt7ufd0OQx13srzzsbnT9KvPuHggjZiFmhQWTtpzZ7fuYLIb4wkGrmqX6RGDG
+	Rc1duXWK14KJjXhdOX62pJBvfoEA9E/TgHfCkKcSHudS5m3/aTtMiFo60X01uBuv
+	thB47g7Ct+V6vzwji5jyArPCnt9asMr+hhNvI+WewvdeQmp2j05vAwbuCjLgOoNw
+	jQeYJf6GtV3Kl/LUkhMsle+uZ52t82m9xTk4vV62uUVDOFu54XR6/dz1oC/X4C+H
+	bozfSe/O2mmTCdURveUvk5LMMHoXYmNVn7vHslc3ah4rA33EGkZW88oVYoXJiGUd
+	bUgCcZxUWKP6qtYKCGkg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x01br85fy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 15:12:48 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KFCl7l027483
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 15:12:47 GMT
+Received: from [10.110.120.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Mar
+ 2024 08:12:47 -0700
+Message-ID: <9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
+Date: Wed, 20 Mar 2024 08:12:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
+Content-Language: en-US
+To: Breno Leitao <leitao@debian.org>, Kalle Valo <kvalo@kernel.org>,
+        Jeff
+ Johnson <jjohnson@kernel.org>
+CC: <kuba@kernel.org>, <keescook@chromium.org>,
+        "open list:NETWORKING DRIVERS
+ (WIRELESS)" <linux-wireless@vger.kernel.org>,
+        "open list:QUALCOMM ATHEROS
+ ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
+        open list
+	<linux-kernel@vger.kernel.org>
+References: <20240319104754.2535294-1-leitao@debian.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240319104754.2535294-1-leitao@debian.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: q7s0hFZrLjK3gu1dnGtitAhln06Gey-B
+X-Proofpoint-ORIG-GUID: q7s0hFZrLjK3gu1dnGtitAhln06Gey-B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 mlxlogscore=943 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403200121
 
-On 20/Mar/2024 Palmer Dabbelt wrote:
-> On Tue, 13 Feb 2024 02:26:40 PST (-0800), tglx@linutronix.de wrote:
-> > Nam!
-> >
-> > On Wed, Jan 31 2024 at 09:19, Nam Cao wrote:  
-> >> RISC-V PLIC cannot "end-of-interrupt" (EOI) disabled interrupts, as
-> >> explained in the description of Interrupt Completion in the PLIC spec:
-> >>
-> >> "The PLIC signals it has completed executing an interrupt handler by
-> >> writing the interrupt ID it received from the claim to the claim/complete
-> >> register. The PLIC does not check whether the completion ID is the same
-> >> as the last claim ID for that target. If the completion ID does not match
-> >> an interrupt source that *is currently enabled* for the target, the
-> >> completion is silently ignored."
-> >>
-> >> Commit 69ea463021be ("irqchip/sifive-plic: Fixup EOI failed when masked")
-> >> ensured that EOI is successful by enabling interrupt first, before EOI.
-> >>
-> >> Commit a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask
-> >> operations") removed the interrupt enabling code from the previous
-> >> commit, because it assumes that interrupt should already be enabled at the
-> >> point of EOI. However, this is incorrect: there is a window after a hart
-> >> claiming an interrupt and before irq_desc->lock getting acquired,
-> >> interrupt can be disabled during this window. Thus, EOI can be invoked
-> >> while the interrupt is disabled, effectively nullify this EOI. This
-> >> results in the interrupt never gets asserted again, and the device who
-> >> uses this interrupt appears frozen.  
-> >
-> > Nice detective work!
-> >  
-> >> Make sure that interrupt is really enabled before EOI.
-> >>
-> >> Fixes: a1706a1c5062 ("irqchip/sifive-plic: Separate the enable and mask operations")
-> >> Cc: <stable@vger.kernel.org>
-> >> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> >> ---
-> >> v2:
-> >>   - add unlikely() for optimization
-> >>   - re-word commit message to make it clearer
-> >>
-> >>  drivers/irqchip/irq-sifive-plic.c | 8 +++++++-
-> >>  1 file changed, 7 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> >> index e1484905b7bd..0a233e9d9607 100644
-> >> --- a/drivers/irqchip/irq-sifive-plic.c
-> >> +++ b/drivers/irqchip/irq-sifive-plic.c
-> >> @@ -148,7 +148,13 @@ static void plic_irq_eoi(struct irq_data *d)
-> >>  {
-> >>  	struct plic_handler *handler = this_cpu_ptr(&plic_handlers);
-> >>
-> >> -	writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> >> +	if (unlikely(irqd_irq_disabled(d))) {
-> >> +		plic_toggle(handler, d->hwirq, 1);
-> >> +		writel(d->hwirq, handler->hart_base + CONTEXT_CLAIM);
-> >> +		plic_toggle(handler, d->hwirq, 0);  
-> >
-> > It's unfortunate to have this condition in the hotpath, though it should
-> > be cache hot, easy to predict and compared to the writel() completely in
-> > the noise.  
+On 3/19/2024 3:47 AM, Breno Leitao wrote:
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
 > 
-> Ya, I think it's fine.
+> Un-embed the net_device from struct ath10k by converting it
+> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> net_device object at ath10k_core_create(). The free of the device occurs
+> at ath10k_core_destroy().
 > 
-> I guess we could try and play some tricks.  Maybe hide the load latency 
-> with a relaxed writel and some explict fencing, or claim interrupts when 
-                                                     ^ you mean complete?
-> enabling them.  Those both seem somewhat race-prone, though, so I'm not 
-> even sure if they're sane.
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-The latter option is what I also have in mind. Just need to make sure the
-interrupt is masked and we should be safe. Though there is the question of
-whether it's worth the effort.
+NAK this based upon the ath11k patch results.
 
-I may do that one day when I stop being lazy.
+As suggested there we should just use kmalloc/kfree to match the existing logic.
 
-Best regards,
-Nam
-
+/jeff
 
