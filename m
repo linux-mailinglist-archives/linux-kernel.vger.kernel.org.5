@@ -1,78 +1,80 @@
-Return-Path: <linux-kernel+bounces-108348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BB55880976
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:09:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D88E880977
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DCF1F232CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:09:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02252285366
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47F9101C2;
-	Wed, 20 Mar 2024 02:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C37410942;
+	Wed, 20 Mar 2024 02:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yvh0fv4N"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2vS6Er52"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A520F519
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3200CF9CE
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710900509; cv=none; b=bSInn0I/wSxK5GyuoNtUDJ+zTm2EMMED889O/tG1zRDzhWYOCK6ME0LFbpUodR8h4dLoMobXoqQNjBqyG5PDgli1D5JvaqIBaN/P1TtXu3BPuBmeMr62f16b83GtzN4TRg/irFaER/KCr2ApamLOswgy86hOi2BfeX5gMShmj2M=
+	t=1710900509; cv=none; b=VN0Mz7kRZm488wa+aH1+ew+fTIp2Wro/kN7X/L2AMQ6V86Cc812OGNkTiZNjh2FC1QJ44Nzyw0j3rkUNTcyBy8JfBqZIKmErGAn7ja9A0e+r2RE/MczRq3p3P3H6caaQYjGq80gMPRRZC1TVMI8XozsIuhNAzfkNp2qkO7rnazE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710900509; c=relaxed/simple;
-	bh=FIzuKYDAkoINuSiIZV6ZsNqzCJaExKmuCjePFZHvsVA=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=bOjehchW10WAz9YPQDF6DXfNOJgjR7mis33aAOIlIgtKn1UfrksMRBts3J7dLS/i1j5v9zUt6sK0JSwfI6ctl0cLWbO7R8ObvLdKUENIeHsnMo9Qi9vF8/4LR9UID4efyjcZBoqdT+aL8zGdYnqZ0HZd8OmVP48UsNzU9u/ClRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yvh0fv4N; arc=none smtp.client-ip=209.85.128.202
+	bh=6b1HSPl6nsepzN39xGf0RLV0KItmZQ4a71qGKlaYe+o=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Ta81cfTjGZYwC2dIGi7u6w/JZ4sWZll87D4d+FHe+6DOJkx8Qa8sXQ0r9LLeEH+wnIrtKd8tA8DgkPepRgsezYJjYi1vLleVdINj0xnwmvJJdGT0DzuKY0b+ZqSleb19FXUFKcQ2CSJQrq1PxL2Q5zNEOK4ykZWP9HAY7p4dvss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2vS6Er52; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60f9d800a29so76023287b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:08:26 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ff1816749so76766077b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:08:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710900505; x=1711505305; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yYVHze7eFk58oRqMFdcZXvqqb2SqrJB7jmdU82oAHB0=;
-        b=Yvh0fv4NLxpxGJ2REGUxH9m52EIPIO8KubKCeRsqV1X7nE+UwlKYNKJpbJPBmgWlV0
-         DxfhEB9TNFtrHkrEgiHqIQziLyASNTizxyUEy1Fafx7hwmwzlKfLEY1yV9xUUIessvGt
-         3Ns2SHTve4Fti3k17jLBuu/bm6Vpx1xU+GOvqvlhRCs+dqOoDc21KdKjcOsA8xWYIwBZ
-         kTzGOlofUUHKt9Vcnz8BFjFF0WhpbJsT2ufiqjs2bAkJ4MsaGZw8aKiIrHi1aHI1BiHi
-         IHD5LiXXYUwLyNGPjKF0J9ta0T6tNbXKW4GzVY6idJERjInCQW3Uhxdv4nnW4fpEBKn0
-         aLJQ==
+        d=google.com; s=20230601; t=1710900507; x=1711505307; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4f2cmQGIIvYk0KlMI8Lk64bezK2vGQGAMrw9pw7eCqU=;
+        b=2vS6Er520gnUvxILLS/ezGlHLtFa9xl+xDe4YENJCaDgSwBealWui/gdE3PoYeCzIa
+         pmzbDDc1khooKpMDWW6fU97TbJeItcIVsQB4m3vK6PbhOEUN/8lFRdzfemTxebQquUHd
+         cSqbdhEaU8CP6b1qDMaW1+ENgEoqtufxbuYpTVU4EZyMd7vPQX9nekZ2AJbKc+q2eSXy
+         qZQvmVmjris+rDX/VrI4TnxJRV80TrBWlNc8AKswuRLzRaFz/nK3sMGOSOJQX/eca3YZ
+         sBuTnIqD7pC2ztT6lAogRgPJOh7aB89pg7DqmO7HfkAmRaKqQqRe91sbdm19DFIamdMu
+         BjKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710900505; x=1711505305;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yYVHze7eFk58oRqMFdcZXvqqb2SqrJB7jmdU82oAHB0=;
-        b=pLZVug/UJcmSFdV48qafGheVdkQlUO9TrgzPi7tG6aGKYvDcuX/eG3wBtPat837Grz
-         IDGghsb43znBuY2bodYwur5WnoeUm2f+v4avk5eHae2/XzS6dkZNjOJXOUDeU6GFKs+j
-         Bfnml6+00Oc2JKHi4m0lYM69yANRs5lgN2fSnusuNrG56ArqThdPsZx9g4Etfyi0Ty8X
-         DRWE8jZAQ3unQtTXZWAD48kMF7DIPKUjy7EsNFq2ZoLSdoVsJj7wIJfkZthChvJzfpvR
-         zxdm+EaVxE7TrReH67+FVWlm9HK4B7QK3IA7Awo5S/Cxkp5qzWztwrN+rQD7pxPXnipV
-         x02g==
-X-Forwarded-Encrypted: i=1; AJvYcCWEdfKyJjEqigUiNUFtF9AXDwbmeDb5e5sLoCFqmOHt8AUTtuEzkaBV6ffkGSV71nrVDzvbpcnDsFfPXv/BEtoa7GpMxL2yQey9MIBj
-X-Gm-Message-State: AOJu0YzVP51HoK399wLBQs+Rhzs3rD6M+yZAsGseqlYxEZri6/YWqSMo
-	JA3bS0xMUUN/GbE0on/EePaacNFP9XamTt6uiL+WVo6VC9ijuy3W41qteCBR4jcGtuhKgz5mtkO
-	Ks/KQvejmeS011DuqRg==
-X-Google-Smtp-Source: AGHT+IHmnbH7OIFT3vXCgDBMNN/LSpOqXUQlqADVGRo/DP6oT7pIALKkMG8DtSLjyTbflgHEateyR8upPPsuWMd6
+        d=1e100.net; s=20230601; t=1710900507; x=1711505307;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4f2cmQGIIvYk0KlMI8Lk64bezK2vGQGAMrw9pw7eCqU=;
+        b=jUnI4si5yISY6frg5lDVwFB/wKSkrH87qiwhbHA3HA0uPYRR9RL+DN1GsqiJR0FjRx
+         jP2i6S6ay4FxO2SZbIwF2+PxuqYjHuYrG2mPp3pOb2vWJYzYlIenJDrV7zF7DmfvN3j/
+         Zva2w+IXnzpAQgDFIzoGCsD7LrwtrLPJsbnnHyTwf+J2rM0M3tVDlq6bqhGwt7yAIh2t
+         9hVzrdRKVE2/obBouxv9NUo1DeFn9d2gI42Hitslp08KD5hHNPY+ogr7jWtvbuxfcuQ3
+         OoNDAuKBG6TG6GBv8clx71CYCRNYu5+1ts9tqLZrFD4RTBEd57uGyGQcDeVJGYSdjCj4
+         X49g==
+X-Forwarded-Encrypted: i=1; AJvYcCXtNpChHXDy2DisxvJCVRTc9lbX0orQFJykZDFYvl9+Up/gLXqzZ38EqX42sEwl8veGbTLl/1fyvQo0gS6nKRdo+16zIMkBUnD8pT/o
+X-Gm-Message-State: AOJu0YyMEededR01EfZIVo9u05AOgaAF0I+hdQJTWVSQo0PaX0QMP5Gy
+	HXfXgAkY7gPv4OOOdKA++/7vencgqYaextmecqc4O9Lfhlt/CfhorOl/sZKtePb+YiVu0yKUuct
+	VEOjgVodNnrwh2MqfYg==
+X-Google-Smtp-Source: AGHT+IFsvhJOuJBMAwJK0L9AcJGw/zZI7HjSUBr+0ZmCaaIAiZxx6HFfHdp9ILj8xjHSBNtVwPjPcmu8Za+Wats5
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:70e:b0:dcc:6bf0:2eb6 with SMTP
- id k14-20020a056902070e00b00dcc6bf02eb6mr966645ybt.6.1710900505416; Tue, 19
- Mar 2024 19:08:25 -0700 (PDT)
-Date: Wed, 20 Mar 2024 02:08:22 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a0d:d54e:0:b0:60a:2307:e3b with SMTP id
+ x75-20020a0dd54e000000b0060a23070e3bmr3040512ywd.3.1710900507103; Tue, 19 Mar
+ 2024 19:08:27 -0700 (PDT)
+Date: Wed, 20 Mar 2024 02:08:23 +0000
+In-Reply-To: <20240320020823.337644-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240320020823.337644-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240320020823.337644-1-yosryahmed@google.com>
-Subject: [PATCH 1/2] mm: zswap: increase shrinking protection for zswap
- swapins only
+Message-ID: <20240320020823.337644-2-yosryahmed@google.com>
+Subject: [PATCH 2/2] mm: zswap: remove nr_zswap_stored atomic
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -80,105 +82,83 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
 	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Currently, the number of protected zswap entries corresponding to an
-lruvec are incremented every time we swapin a page. This happens
-regardless of whether or not the page originated in zswap. Hence,
-swapins from disk will lead to increasing protection on potentially
-stale zswap entries. Furthermore, the increased shrinking protection can
-lead to more pages skipping zswap and going to disk, eventually leading
-to even more swapins from disk and starting a vicious circle.
+zswap_nr_stored is used to maintain the number of stored pages in zswap
+that are not same-filled pages. It is used in zswap_shrinker_count() to
+scale the number of freeable compressed pages by the compression ratio.
+That is, to reduce the amount of writeback from zswap with higher
+compression ratios as the ROI from IO diminishes.
 
-Instead, only increase the protection when pages are loaded from zswap.
-This also has a nice side effect of removing zswap_folio_swapin() and
-replacing it with a static helper that is only called from zswap_load().
+However, the need for this counter is questionable due to two reasons:
+- It is redundant. The value can be inferred from (zswap_stored_pages -
+  zswap_same_filled_pages).
+- When memcgs are enabled, we use memcg_page_state(memcg,
+  MEMCG_ZSWAPPED), which includes same-filled pages anyway (i.e.
+  equivalent to zswap_stored_pages).
 
-No problems were observed in practice, this was found through code
-inspection.
+Use zswap_stored_pages instead in zswap_shrinker_count() to keep things
+consistent whether memcgs are enabled or not, and add a comment about
+the number of freeable pages possibly being scaled down more than it
+should if we have lots of same-filled pages (i.e. inflated compression
+ratio).
+
+Remove nr_zswap_stored and one atomic operation in the store and free
+paths.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- include/linux/zswap.h |  2 --
- mm/swap_state.c       |  8 ++------
- mm/zswap.c            | 10 +++-------
- 3 files changed, 5 insertions(+), 15 deletions(-)
+ mm/zswap.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index 2a85b941db975..1f020b5427e3d 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -34,7 +34,6 @@ int zswap_swapon(int type, unsigned long nr_pages);
- void zswap_swapoff(int type);
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
- void zswap_lruvec_state_init(struct lruvec *lruvec);
--void zswap_folio_swapin(struct folio *folio);
- bool is_zswap_enabled(void);
- #else
- 
-@@ -58,7 +57,6 @@ static inline int zswap_swapon(int type, unsigned long nr_pages)
- static inline void zswap_swapoff(int type) {}
- static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
- static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
--static inline void zswap_folio_swapin(struct folio *folio) {}
- 
- static inline bool is_zswap_enabled(void)
- {
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index bfc7e8c58a6d3..32e151054ec47 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -696,10 +696,8 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	/* The page was likely read above, so no need for plugging here */
- 	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
- 					&page_allocated, false);
--	if (unlikely(page_allocated)) {
--		zswap_folio_swapin(folio);
-+	if (unlikely(page_allocated))
- 		swap_read_folio(folio, false, NULL);
--	}
- 	return folio;
- }
- 
-@@ -872,10 +870,8 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
- 	/* The folio was likely read above, so no need for plugging here */
- 	folio = __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ_ilx,
- 					&page_allocated, false);
--	if (unlikely(page_allocated)) {
--		zswap_folio_swapin(folio);
-+	if (unlikely(page_allocated))
- 		swap_read_folio(folio, false, NULL);
--	}
- 	return folio;
- }
- 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index b31c977f53e9c..323f1dea43d22 100644
+index 323f1dea43d22..ffcfce05a4408 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -773,14 +773,9 @@ void zswap_lruvec_state_init(struct lruvec *lruvec)
- 	atomic_long_set(&lruvec->zswap_lruvec_state.nr_zswap_protected, 0);
+@@ -181,8 +181,6 @@ struct zswap_pool {
+ 
+ /* Global LRU lists shared by all zswap pools. */
+ static struct list_lru zswap_list_lru;
+-/* counter of pages stored in all zswap pools. */
+-static atomic_t zswap_nr_stored = ATOMIC_INIT(0);
+ 
+ /* The lock protects zswap_next_shrink updates. */
+ static DEFINE_SPINLOCK(zswap_shrink_lock);
+@@ -880,7 +878,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	else {
+ 		zswap_lru_del(&zswap_list_lru, entry);
+ 		zpool_free(zswap_find_zpool(entry), entry->handle);
+-		atomic_dec(&zswap_nr_stored);
+ 		zswap_pool_put(entry->pool);
+ 	}
+ 	if (entry->objcg) {
+@@ -1305,7 +1302,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ #else
+ 	/* use pool stats instead of memcg stats */
+ 	nr_backing = zswap_total_pages();
+-	nr_stored = atomic_read(&zswap_nr_stored);
++	nr_stored = atomic_read(&zswap_stored_pages);
+ #endif
+ 
+ 	if (!nr_stored)
+@@ -1325,6 +1322,11 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	 * This ensures that the better zswap compresses memory, the fewer
+ 	 * pages we will evict to swap (as it will otherwise incur IO for
+ 	 * relatively small memory saving).
++	 *
++	 * The memory saving factor calculated here takes same-filled pages into
++	 * account, but those are not freeable since they almost occupy no
++	 * space. Hence, we may scale nr_freeable down a little bit more than we
++	 * should if we have a lot of same-filled pages.
+ 	 */
+ 	return mult_frac(nr_freeable, nr_backing, nr_stored);
  }
+@@ -1570,7 +1572,6 @@ bool zswap_store(struct folio *folio)
+ 	if (entry->length) {
+ 		INIT_LIST_HEAD(&entry->lru);
+ 		zswap_lru_add(&zswap_list_lru, entry);
+-		atomic_inc(&zswap_nr_stored);
+ 	}
+ 	spin_unlock(&tree->lock);
  
--void zswap_folio_swapin(struct folio *folio)
-+static void zswap_lruvec_inc_protected(struct lruvec *lruvec)
- {
--	struct lruvec *lruvec;
--
--	if (folio) {
--		lruvec = folio_lruvec(folio);
--		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
--	}
-+	atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- }
- 
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
-@@ -1644,6 +1639,7 @@ bool zswap_load(struct folio *folio)
- 	zswap_entry_free(entry);
- 
- 	folio_mark_dirty(folio);
-+	zswap_lruvec_inc_protected(folio_lruvec(folio));
- 
- 	return true;
- }
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
