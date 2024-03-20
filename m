@@ -1,190 +1,139 @@
-Return-Path: <linux-kernel+bounces-108467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB70880ADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:58:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D88A880AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AE721F22885
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:58:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D19A5B21F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C7A17557;
-	Wed, 20 Mar 2024 05:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC2C17BD9;
+	Wed, 20 Mar 2024 05:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="j0Pt+dgg"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MOuL+v2E"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5629C8479
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BC511C83;
+	Wed, 20 Mar 2024 05:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710914275; cv=none; b=R3Bc3DeX4fQtAOn0ZivvTHvpXJV9KN44+BBO7EB3Xbs2tQCJmczMu4KdIIDWdkFzwI1aqo7fxmJELIjjtXTOSLxq1lI75CsOFapV4I4Ida1hwj5lsgDW38oyzrqPGBSNDRNsBljfkCbCDPkM8T1gTg0gR51UaotsEhlgOWtMKnU=
+	t=1710914374; cv=none; b=fak/v80jjeO2C/OGD/5ARMgS0MqfkiNtRXPqI1r4s0MCKuomA4hMpclRmosl9p+oIgd4HY8jQEaf2ePldbJGvDb+gDdTPnHwHhuOYmmo/7ChxXUYiiAWzGtH0h4+60cIwOcp+FmxUY/NpnFes/ogWzMucv1MCV5bDUj5brWdVtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710914275; c=relaxed/simple;
-	bh=JXvk8dstHIu8UWKTRAezMBXq/1qjBKqCbZ3BQ+4oYzI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R7G8kZBfGSGCOCmRqEkWM9ZIBRDApdPSAbaNpiBlu4/1kQNjpT+CaHQuCGO5r8L7PDAxFoUT4HOGxhorsih8FRkUB7uyKru/3zd1yHfXgKg9r6vSgD9HQe6b8jM0GriMOo8kJ3rreJlXy/d+rsFj+w5luD1nj+b35zy9jTlrGeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=j0Pt+dgg; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E94F1B1;
-	Wed, 20 Mar 2024 06:57:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710914244;
-	bh=JXvk8dstHIu8UWKTRAezMBXq/1qjBKqCbZ3BQ+4oYzI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j0Pt+dggxPjDI6vwHy+hca18gvX6qR3+63wontFIxVqzlKAgARE+pUnJJRqygnQgf
-	 flbl+HW5/UHvKwmWYI3VHHSbYCpFhpkiiW+nN65/hryfRh21f1lwMBbjdFDf4Zl60C
-	 eJk63JJNbIJvftaS7GclLk1UvSydCwEHCw13VLVo=
-Message-ID: <c16665d3-ff3a-48d7-9f4e-076473a3b45d@ideasonboard.com>
-Date: Wed, 20 Mar 2024 07:57:48 +0200
+	s=arc-20240116; t=1710914374; c=relaxed/simple;
+	bh=wnWVQmhHXO6OdkrpkR/yCVSPqVGouB39dOVXMCOUoG8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eNFDx4JWSO+L4EuEv0eV+P/lNcWZYEtwGa+GIrFYJVfuF6W8pLfUniye8k9YxSu08Av8CGy6xN54ohKi0TtgGpjKr0NYHmnMThfnTuAYoSNmT5/NE9NIEWUY32jD7QIq0dNRY5F2ra1CYG2NI0Ks3S6MlrjwNNV/cr1PxAwd4jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MOuL+v2E; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so2435867f8f.2;
+        Tue, 19 Mar 2024 22:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710914371; x=1711519171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZpRbuT9S1qz2rJkIt3EtSAXCW5aYksYriH4Qy/fKXiY=;
+        b=MOuL+v2EuMmX3l5RjILiophWn1QkjST1W8KtboMWu2csIvnk+L3v5CV8JPuIS3ZJ4Y
+         DtUSZWvI+WaQpufROY/BecWSWwQStSA/DXdNkargr3Kz0Z4NQJOiP8046hAXekrvAPo9
+         7hv9DJZamiFMmkrwPaX7CPB0IgKJGj8v4oftpjfSWqcO0kiAwWnkvjTULBDWvTjn0DhI
+         /Njt2MUia+oN1UfNSQkbStAIMONms75z8IXU4uwabHioNWBjJXcPgiTj/ayAQHGdOP9u
+         qVNMoJ5at55lXDo8uRUMGZy7oZpKd/5ABuW23pkY1VAdWoqvbZczceHLPLZZ1aY4MjoH
+         kuXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710914371; x=1711519171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZpRbuT9S1qz2rJkIt3EtSAXCW5aYksYriH4Qy/fKXiY=;
+        b=a91UQAeJyLArwfbEHZrSsZ/I2ljp8wBOAxYAleNnX8QBWaEcSMsitv3CzBa1fgLvf0
+         NNKPuzkImyr3FXULvU+9KAnmY56nVRF7o754E57sahyiS/355+A2vQKZRxjNM9Uq+7Li
+         ZbZ+RtgZBxoJA4npboyJuGQ9bEefe88o70v8dHZbVzfYl13HAXePee526v13TS1fPKbb
+         XI/mBxwL4n8iDoz8fTSCRrDO21KwG/FvjH7FC8jTzkBxOgwtia6QsJUrH5NnuXMHVozN
+         nk8XV9nMtyqic9aMt7UJ+i8FIH52t5RnMcG9BzLrMZa1QGr7RW8pfitKx6x7BC6YyqCp
+         iaYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3CVu/7VqLQpjYW3AVtRh/kYPPPIuVj1MIjV2eJCbV1p13H2H62h32RExwR3FFAAuOkZPYDakajtNEwAUZT/QSu0uFIiaiAq+x5DCKROhVXZyH2EDbidFmNgHyQj2yHS6IQfKQiLAPUDHLrtAyHVjmuzD3ztugOZIi
+X-Gm-Message-State: AOJu0YwG48q5jwBaHmvqddL/yakLGPvevXBvSdthxvR0oLaPXtQvgJ3K
+	gj/8DCn8UZXbUdxgcxeW33vyM2qQa6C1R+lS66OWI9Sv6Zd1qDK/CW2Gr5Mr6xaHLxD8Np3hvb6
+	A4y+vvQdQG+aEEorosDj+H2oEm20=
+X-Google-Smtp-Source: AGHT+IEuKq/oeh8snLQ1ysN7bWmnWgb0yRXr8arOzHpM4V7w0eKbDoS/ntI55AumVzU20oSWmMMY7wkSNpe+2XjHps4=
+X-Received: by 2002:a5d:4c82:0:b0:33b:187c:4ca0 with SMTP id
+ z2-20020a5d4c82000000b0033b187c4ca0mr3345363wrs.62.1710914371012; Tue, 19 Mar
+ 2024 22:59:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/8] drm: zynqmp_dp: Adjust training values per-lane
-Content-Language: en-US
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-4-sean.anderson@linux.dev>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240319225122.3048400-4-sean.anderson@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240313140205.3191564-1-asavkov@redhat.com>
+In-Reply-To: <20240313140205.3191564-1-asavkov@redhat.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 19 Mar 2024 22:59:20 -0700
+Message-ID: <CAADnVQKgkz=gUHbPc0-hcAcirzUe-mYhioACNpORuXGS6-moaA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] arm64: bpf: zero upper bits after rev32
+To: Artem Savkov <asavkov@redhat.com>, Puranjay Mohan <puranjay12@gmail.com>
+Cc: Xi Wang <xi.wang@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/03/2024 00:51, Sean Anderson wrote:
-> The feedback we get from the DPRX is per-lane. Make changes using this
-> information, instead of picking the maximum values from all lanes. This
-> results in more-consistent training on marginal links.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+On Wed, Mar 13, 2024 at 7:02=E2=80=AFAM Artem Savkov <asavkov@redhat.com> w=
+rote:
+>
+> Commit d63903bbc30c7 ("arm64: bpf: fix endianness conversion bugs")
+> added upper bits zeroing to byteswap operations, but it assumes they
+> will be already zeroed after rev32, which is not the case on some
+> systems at least:
+>
+> [ 9757.262607] test_bpf: #312 BSWAP 16: 0x0123456789abcdef -> 0xefcd jite=
+d:1 8 PASS
+> [ 9757.264435] test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 =
+jited:1 ret 1460850314 !=3D -271733879 (0x5712ce8a !=3D 0xefcdab89)FAIL (1 =
+times)
+> [ 9757.266260] test_bpf: #314 BSWAP 64: 0x0123456789abcdef -> 0x67452301 =
+jited:1 8 PASS
+> [ 9757.268000] test_bpf: #315 BSWAP 64: 0x0123456789abcdef >> 32 -> 0xefc=
+dab89 jited:1 8 PASS
+> [ 9757.269686] test_bpf: #316 BSWAP 16: 0xfedcba9876543210 -> 0x1032 jite=
+d:1 8 PASS
+> [ 9757.271380] test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 =
+jited:1 ret -1460850316 !=3D 271733878 (0xa8ed3174 !=3D 0x10325476)FAIL (1 =
+times)
+> [ 9757.273022] test_bpf: #318 BSWAP 64: 0xfedcba9876543210 -> 0x98badcfe =
+jited:1 7 PASS
+> [ 9757.274721] test_bpf: #319 BSWAP 64: 0xfedcba9876543210 >> 32 -> 0x103=
+25476 jited:1 9 PASS
+>
+> Fixes: d63903bbc30c7 ("arm64: bpf: fix endianness conversion bugs")
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
 > ---
-> 
-> (no changes since v1)
-> 
->   drivers/gpu/drm/xlnx/zynqmp_dp.c | 23 ++++++++---------------
->   1 file changed, 8 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 98a32e6a0459..8635b5673386 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -605,28 +605,21 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
->   				   u8 link_status[DP_LINK_STATUS_SIZE])
->   {
->   	u8 *train_set = dp->train_set;
-> -	u8 voltage = 0, preemphasis = 0;
->   	u8 i;
->   
->   	for (i = 0; i < dp->mode.lane_cnt; i++) {
-> -		u8 v = drm_dp_get_adjust_request_voltage(link_status, i);
-> -		u8 p = drm_dp_get_adjust_request_pre_emphasis(link_status, i);
-> +		u8 voltage = drm_dp_get_adjust_request_voltage(link_status, i);
-> +		u8 preemphasis =
-> +			drm_dp_get_adjust_request_pre_emphasis(link_status, i);
->   
-> -		if (v > voltage)
-> -			voltage = v;
-> +		if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
-> +			voltage |= DP_TRAIN_MAX_SWING_REACHED;
->   
-> -		if (p > preemphasis)
-> -			preemphasis = p;
-> -	}
-> +		if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
-> +			preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
->   
-> -	if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
-> -		voltage |= DP_TRAIN_MAX_SWING_REACHED;
-> -
-> -	if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
-> -		preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
-> -
-> -	for (i = 0; i < dp->mode.lane_cnt; i++)
->   		train_set[i] = voltage | preemphasis;
-> +	}
->   }
->   
->   /**
+>  arch/arm64/net/bpf_jit_comp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.=
+c
+> index c5b461dda4385..e86e5ba74dca2 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -944,7 +944,8 @@ static int build_insn(const struct bpf_insn *insn, st=
+ruct jit_ctx *ctx,
+>                         break;
+>                 case 32:
+>                         emit(A64_REV32(is64, dst, dst), ctx);
+> -                       /* upper 32 bits already cleared */
+> +                       /* zero-extend 32 bits into 64 bits */
+> +                       emit(A64_UXTW(is64, dst, dst), ctx);
 
-Looks fine to me, but a few cosmetic suggestions, feel free to ignore if 
-not to your liking:
+What does arm64 ISA say about rev32?
+Since rev16 is special, it kinda makes sense, but still.
 
-1)
-
-u8 voltage, preemphasis;
-
-voltage = drm_dp_get_adjust_request_voltage(link_status, i);
-preemphasis = drm_dp_get_adjust_request_pre_emphasis(link_status, i);
-
-2)
-
-for (unsigned int i = 0; i < dp->mode.lane_cnt; i++)
-
-3)
-
-dp->train_set[i] = voltage | preemphasis;
-
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
+Puranjay,
+could you please help review this fix?
 
