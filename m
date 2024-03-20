@@ -1,112 +1,131 @@
-Return-Path: <linux-kernel+bounces-108775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D5E3880FD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:31:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC60A881008
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D997FB24162
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:31:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8063628380D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5723F3EA92;
-	Wed, 20 Mar 2024 10:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E762E64F;
+	Wed, 20 Mar 2024 10:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mWHJny5Z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="msLXyRZm"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E2920DCC;
-	Wed, 20 Mar 2024 10:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9932032C;
+	Wed, 20 Mar 2024 10:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930439; cv=none; b=e0nS/NrsCrPO908cuuXLk40DWCnBgVjYaL1U/6wQpktjIlJMlca0Du6+UnC8Oplt7Kt7hkrc1PBRGVS9IS5JBS++R+3pvw3vkziNdfa5GZ82odG1wRcqKR8VfojoisA28FaNZARCkOzSw3TXsn0y0/GA5dpbYVrvTJtt0HwyAIw=
+	t=1710931052; cv=none; b=dDYO3E7ZzYNzylQe7m8dmO1s4LOFrDYTZ3vw7L2ri1Ikipa0/yN2KdCc28hJekJSRsLUALknqb5/TAfhA1ztajnSVYCyhEfIDGpDvHrCP8NAjY7GBC4u48uqSwPFPwXPHTN+l2p3pxt8Vjt2jwu4h+K9O2O8IsR+rhsD+kqD4Ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710930439; c=relaxed/simple;
-	bh=m+ppsTnGG/Ma89URp1KraJSSqmWDFSiBo+T3M7bu1o8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=UGg7cg4O3zaA+zfISkWiOXbbdCrNimnIBWNpaL9E2mZPXLGkdQGvzogHDD3aAzX91CSblHNgnsf91GMq2A+yOqX/Gz8lQVD4EUBj0ggZwUZxehtUOEfQH0ya+a7aXV1155/oMKfnUvNC7NcIJjXS81Y2rIXQjq8qXCVQ4RTfPqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mWHJny5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D84C433C7;
-	Wed, 20 Mar 2024 10:27:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710930439;
-	bh=m+ppsTnGG/Ma89URp1KraJSSqmWDFSiBo+T3M7bu1o8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mWHJny5ZLy9yEA/AkzesaYpVIzr+sIW4vhtLD4fFv7bDtLaFaZ6rEnWsFv0ESydIx
-	 mQsA0l01rrgK+qB7QbkqYYyQMr0WSG/ObQt0PZtggUE9WRaWbV268Y2OdP76WtGIBU
-	 3lJWwT6RjVE28qYB8b1e8qZ0HAYRTLji9nm9YkWGd5FV2OP/r9ymmwF5vYNChq6r3E
-	 Wg5UJ+LqJVJzqMPCPm5GW3TqCj/t8879o5Xgbx9RYDskVmoydZxFHuOVY/wU+juMd3
-	 WbBYwi7cPYLTh4arX8x236cUDqH9tq7aRgBvatbtWVCKzQoDhxOU1AtVOImzIKE5Zh
-	 gUbdJLtfX41/Q==
-Date: Wed, 20 Mar 2024 19:27:15 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing: Explicitly cast divisor to fix Coccinelle
- warning
-Message-Id: <20240320192715.22eeeba84c0fd3a8c2353c79@kernel.org>
-In-Reply-To: <20240318105243.117911-2-thorsten.blum@toblux.com>
-References: <20240318105243.117911-2-thorsten.blum@toblux.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710931052; c=relaxed/simple;
+	bh=oMcExfi3dY3kbb1sQnyyDLt0+nzIomwQcaxWzI7t2qk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dVpJpu5utDksS04uOkdWvE0oyr2gsOE5PR5Dc+1HGvNmgBBPxjse8wn5Eka9VEWZp/rkTZ+8DLjRwyW5fVhxnWHy/T0BgwQrmyDZAr8fUsSkZ6QHqy0/MCN3eGQFLp6o06/UTlQqu3KUW9sCAnRYzCjYFj4o+BaP4CCu2IHx+14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=msLXyRZm; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1710930453;
+	bh=oMcExfi3dY3kbb1sQnyyDLt0+nzIomwQcaxWzI7t2qk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=msLXyRZm3wWEhspe6etI170C6ugUOpgwoo8GpmrfFo1ZjZF8f9/yIqcpwlFXcxrtB
+	 7HMDws+TdWu9+7nRVYJvQQTCs60XeR+sJz48ZZ9tq+rCl7FFqgA2SEUjRSoLs3YY8O
+	 Drz1d2aFmIEOv1ZwQQIe7zrq6fMdn68HgV3URCmc=
+Received: from [192.168.124.9] (unknown [113.140.11.126])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id D09D166F79;
+	Wed, 20 Mar 2024 06:27:29 -0400 (EDT)
+Message-ID: <e8c4062df63f3e8bc8bb2d7209fa2a2a44bd7ed3.camel@xry111.site>
+Subject: Re: [PATCH] LoongArch: Change __my_cpu_offset definition to avoid
+ mis-optimization
+From: Xi Ruoyao <xry111@xry111.site>
+To: Huacai Chen <chenhuacai@loongson.cn>, Arnd Bergmann <arnd@arndb.de>, 
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev, linux-arch@vger.kernel.org, Xuefeng Li
+	 <lixuefeng@loongson.cn>, Guo Ren <guoren@kernel.org>, Xuerui Wang
+	 <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn, 
+	stable@vger.kernel.org, Xiaotian Wu <wuxiaotian@loongson.cn>, Miao Wang
+	 <shankerwangmiao@gmail.com>, Xing Li <lixing@loongson.cn>, Hongchen Zhang
+	 <zhanghongchen@loongson.cn>, Rui Wang <wangrui@loongson.cn>
+Date: Wed, 20 Mar 2024 18:27:26 +0800
+In-Reply-To: <20240315024526.394772-1-chenhuacai@loongson.cn>
+References: <20240315024526.394772-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-On Mon, 18 Mar 2024 11:52:44 +0100
-Thorsten Blum <thorsten.blum@toblux.com> wrote:
+On Fri, 2024-03-15 at 10:45 +0800, Huacai Chen wrote:
+> From GCC commit 3f13154553f8546a ("df-scan: remove ad-hoc handling of
+> global regs in asms"), global registers will no longer be forced to add
+> to the def-use chain. Then current_thread_info(), current_stack_pointer
+> and __my_cpu_offset may be lifted out of the loop because they are no
+> longer treated as "volatile variables".
 
-> Explicitly cast the divisor to u32 to fix a Coccinelle/coccicheck warning
-> reported by do_div.cocci.
-> 
+Ooops...  I'm wondering why this issue has not blown up our systems
+before.  The referred GCC commit is far before LoongArch CPUs are taped.
 
-Hmm, strange, trace_do_benchmark() has another do_div(u64, u64). 
+> This optimization is still correct for the current_thread_info() and
+> current_stack_pointer usages because they are associated to a thread.
+> However it is wrong for __my_cpu_offset because it is associated to a
+> CPU rather than a thread: if the thread migrates to a different CPU in
+> the loop, __my_cpu_offset should be changed.
+>=20
+> Change __my_cpu_offset definition to treat it as a "volatile variable",
+> in order to avoid such a mis-optimization.
+>=20
+> Cc: stable@vger.kernel.org
 
-                do {
-                        last_seed = seed;
-                        seed = stddev;
-                        if (!last_seed)
-                                break;
-                        do_div(seed, last_seed);
-                        seed += last_seed;
-                        do_div(seed, 2);
-                } while (i++ < 10 && last_seed != seed);
+I suppose we should add Fixes: 5b0b14e550a0 ("LoongArch: Add
+atomic/locking header") here.
 
-Didn't Coccinelle find that?
-
-Thank you,
-
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> Reported-by: Xiaotian Wu <wuxiaotian@loongson.cn>
+> Reported-by: Miao Wang <shankerwangmiao@gmail.com>
+> Signed-off-by: Xing Li <lixing@loongson.cn>
+> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+> Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 > ---
->  kernel/trace/trace_benchmark.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_benchmark.c b/kernel/trace/trace_benchmark.c
-> index 54d5fa35c90a..218b40050629 100644
-> --- a/kernel/trace/trace_benchmark.c
-> +++ b/kernel/trace/trace_benchmark.c
-> @@ -105,7 +105,7 @@ static void trace_do_benchmark(void)
->  		stddev = 0;
->  
->  	delta = bm_total;
-> -	do_div(delta, bm_cnt);
-> +	do_div(delta, (u32)bm_cnt);
->  	avg = delta;
->  
->  	if (stddev > 0) {
-> -- 
-> 2.44.0
-> 
+> =C2=A0arch/loongarch/include/asm/percpu.h | 6 +++++-
+> =C2=A01 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include=
+/asm/percpu.h
+> index 9b36ac003f89..03b98491d301 100644
+> --- a/arch/loongarch/include/asm/percpu.h
+> +++ b/arch/loongarch/include/asm/percpu.h
+> @@ -29,7 +29,12 @@ static inline void set_my_cpu_offset(unsigned long off=
+)
+> =C2=A0	__my_cpu_offset =3D off;
+> =C2=A0	csr_write64(off, PERCPU_BASE_KS);
+> =C2=A0}
+> -#define __my_cpu_offset __my_cpu_offset
+> +
+> +#define __my_cpu_offset					\
+> +({							\
+> +	__asm__ __volatile__("":"+r"(__my_cpu_offset));	\
+> +	__my_cpu_offset;				\
+> +})
+> =C2=A0
+> =C2=A0#define PERCPU_OP(op, asm_op, c_op)					\
+> =C2=A0static __always_inline unsigned long __percpu_##op(void *ptr,		\
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
