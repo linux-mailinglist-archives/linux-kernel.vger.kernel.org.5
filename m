@@ -1,129 +1,153 @@
-Return-Path: <linux-kernel+bounces-108834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42608810AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:15:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2CD588106A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42980B226F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3A4B1C23366
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778B14A9B0;
-	Wed, 20 Mar 2024 11:13:18 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20343C46B;
+	Wed, 20 Mar 2024 11:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yu+5nK3s"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6213FB85;
-	Wed, 20 Mar 2024 11:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D233B293;
+	Wed, 20 Mar 2024 11:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710933197; cv=none; b=X+NkiRYvR9OQBklImjARKR75y1OYiiJriNVKUM+IXgxoCkKn4KfN9mSGbD4iqytgneAnjQtCeRqZQgBagMyWifz9sJkmY0j3D7Jsrafar7J1LKgVYC3kgN8WfOWpDbgNdZgyIMI4qyWKDRiCSJ/NmnjNJ16xOrEMdqKPViYxdBU=
+	t=1710932766; cv=none; b=M0e2XZTeuymCBvDAigkh+li5A76JnpuUERuSRvTPBnysC1bp1hvOQFRVJs4NjP8ui44XEW1b2PPc6rMshIBdOkzPuf2s7/cFDasKHdaDpFgs1PvTjhz/z+vF286gEK+6WADpjraCNRTqSpAtw1+LRc/FqC8sPyc+Q7wlCfLAfPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710933197; c=relaxed/simple;
-	bh=qgIE2jFp9im9LqSBP/kwSYaRQY8JGtGSjb9/WzRyD+E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WVajRWAc7TTF5bohaTAamfIHZ4TT/LiirWUbTMHEeTWb8MjCjbmvbFJ8+qYfsxF3qV/y0q/CldzuVjqc6+jrl0dT3plab/4a28NKuIoaGTSOxqdYtoGqSet4ppxh1FZQF1NbTG0I0o1P//cMrC9WTPXD8ofHmJNdmNKuk+8G2Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V05YG6lmzz4f3kpW;
-	Wed, 20 Mar 2024 19:13:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E6B451A016E;
-	Wed, 20 Mar 2024 19:13:12 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBG5xPplGX0fHg--.18516S13;
-	Wed, 20 Mar 2024 19:13:12 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	djwong@kernel.org,
-	hch@infradead.org,
-	brauner@kernel.org,
-	david@fromorbit.com,
-	tytso@mit.edu,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH v4 9/9] iomap: do some small logical cleanup in buffered write
-Date: Wed, 20 Mar 2024 19:05:48 +0800
-Message-Id: <20240320110548.2200662-10-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
-References: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1710932766; c=relaxed/simple;
+	bh=tPdwuzKiTw4ZFvAg3Qj/XFVE/x7MXCkgcJpWEmJgm8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=biBE75z/7GBVpXHVTiBbDThhBEk2YMebUPNfM5dC4vw//FA/HNeYAYtyyTYhVXGUOOOBU1uPBUY3jBdCjZtBxvvkkZv2tQqi27pZxEZTs4bOVzrEc+Q0ffCEFz0IzC4PI7ts/qJ/KpoPH2X2ne5l5OREqjPadbBXjsXxO0QbRP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yu+5nK3s; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710932766; x=1742468766;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tPdwuzKiTw4ZFvAg3Qj/XFVE/x7MXCkgcJpWEmJgm8Y=;
+  b=Yu+5nK3syKTwN4OXk2pknJW+1hlj8lbF1H2664EZ+i7QvK9mkt2XQyc8
+   wRVRba7GldHq8sWf1juItKoYlHGazqG8G3UzlAqndhf4qycTcz3yVfdgc
+   AN422kBFFsIctJLpG9p6eI18ZUwwQxyX/8BHuxper2OF4n5XioUj0aAmz
+   DquivRN+aDvfJuRdE6571+CU1R6R1mrCFGeBdoWeDywM+GBooTh7z4PFn
+   ckAxEK2wPNVDZEPQGGqcREugUurXQmI9nny7wZmB4hDiCRhc9j/oh2lCi
+   2VC+njKNov8+GzSgR6Ghs3XV/c0is02Pa7Hak+BVTby96OmY9wMbY42Ss
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17295182"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="17295182"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:06:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="914662993"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="914662993"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:06:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rmtle-0000000EY6h-3Iuv;
+	Wed, 20 Mar 2024 13:05:58 +0200
+Date: Wed, 20 Mar 2024 13:05:58 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+	linus.walleij@linaro.org, semen.protsenko@linaro.org,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] iio: pressure: Add SCALE and RAW values for
+ channels
+Message-ID: <ZfrDFl-rmts9tPjk@smile.fi.intel.com>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
+ <20240319002925.2121016-5-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBG5xPplGX0fHg--.18516S13
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrykWry8urWrAFW5Cr4fGrg_yoW8GrWkpF
-	nxKaykurW0qw17u3WkAF9ruFWjya93Kry7GrW8Gw45urs8ArWYgFy09ayYv3W8Xr97CryS
-	yr4vy348W3W5ArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl
-	2NtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319002925.2121016-5-vassilisamir@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Tue, Mar 19, 2024 at 01:29:23AM +0100, Vasileios Amoiridis wrote:
+> Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> able to calculate the processed value with standard userspace IIO
+> tools. Can be used for triggered buffers as well.
+> 
+> Even though it is not a good design choice to have SCALE, RAW and
+> PROCESSED together, the PROCESSED channel is kept for ABI compatibility.
 
-Since iomap_write_end() can never return a partial write length, the
-comparison between written, copied and bytes becomes useless, just
-merge them with the unwritten branch.
+..
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/iomap/buffered-io.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+> +	case IIO_CHAN_INFO_RAW:
+> +		switch (chan->type) {
+> +		case IIO_HUMIDITYRELATIVE:
+> +			ret = data->chip_info->read_humid(data, &chan_value);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = chan_value;
+> +			return IIO_VAL_INT;
+> +		case IIO_PRESSURE:
+> +			ret = data->chip_info->read_press(data, &chan_value);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = chan_value;
+> +			return IIO_VAL_INT;
+> +		case IIO_TEMP:
+> +			ret = data->chip_info->read_press(data, &chan_value);
+> +			if (ret)
+> +				return ret;
+> +
+> +			*val = chan_value;
+> +			return IIO_VAL_INT;
+> +		default:
+> +			return -EINVAL;
+> +		}
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index dc863a76c72a..a111e8b816df 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -937,11 +937,6 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 
- 		if (old_size < pos)
- 			pagecache_isize_extended(iter->inode, old_size, pos);
--		if (written < bytes)
--			iomap_write_failed(iter->inode, pos + written,
--					   bytes - written);
--		if (unlikely(copied != written))
--			iov_iter_revert(i, copied - written);
- 
- 		cond_resched();
- 		if (unlikely(written == 0)) {
-@@ -951,6 +946,9 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
- 			 * halfway through, might be a race with munmap,
- 			 * might be severe memory pressure.
- 			 */
-+			iomap_write_failed(iter->inode, pos, bytes);
-+			iov_iter_revert(i, copied);
-+
- 			if (chunk > PAGE_SIZE)
- 				chunk /= 2;
- 			if (copied) {
+> +		return 0;
+
+Dead code.
+
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (chan->type) {
+> +		case IIO_HUMIDITYRELATIVE:
+> +			*val = data->chip_info->humid_coeffs[0];
+> +			*val2 = data->chip_info->humid_coeffs[1];
+> +			return data->chip_info->humid_coeffs_type;
+> +		case IIO_PRESSURE:
+> +			*val = data->chip_info->press_coeffs[0];
+> +			*val2 = data->chip_info->press_coeffs[1];
+> +			return data->chip_info->press_coeffs_type;
+> +		case IIO_TEMP:
+> +			*val = data->chip_info->temp_coeffs[0];
+> +			*val2 = data->chip_info->temp_coeffs[1];
+> +			return data->chip_info->temp_coeffs_type;
+> +		default:
+> +			return -EINVAL;
+> +		}
+
+> +		return 0;
+
+Ditto.
+
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
 
