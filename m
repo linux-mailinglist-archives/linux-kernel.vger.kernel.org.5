@@ -1,478 +1,239 @@
-Return-Path: <linux-kernel+bounces-108808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 094DD88104C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:55:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFBF88104E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:55:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A4E01F2342C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8AE2835C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE7B3B1B2;
-	Wed, 20 Mar 2024 10:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53D63A26E;
+	Wed, 20 Mar 2024 10:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="asBgSqLB"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b="vy0bi5ld"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2101.outbound.protection.outlook.com [40.107.104.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193C31CD1D;
-	Wed, 20 Mar 2024 10:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710932106; cv=none; b=eRf+JSmCe27Zy6xfGJnWlHtp2XMD7o99/tl5AZDyJojji8NZLvDJDbJ3/uB/8E/5At7mXO/XoZFM/SgnPBjMUYkFzR57AP1JHuEPH+NVqd2EEp3J+mu5bZ9ckmZRO8UxHuVTkfmgdYFGDDtTh072/RYdeXcFlr7NauE8ifeiIys=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710932106; c=relaxed/simple;
-	bh=9MEx+/630x8YJHJEXTgrms3jD2HafETD4hjcSjPg2ZE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fuLogiFAG1PcTk+XtchEnGYIMDHiTTlRwq1TcCoIupgRJgpZfIVeLQKRQegC/aDl2gcHwNhSRZj32vf0lfDyBxnf2aGZn0nJGpFXcMSorJnrXk+XyaUHaBBJSViVpOeXJ4wtqUkK/8fdTn8ZbULDfAAKtASSACaN31jcVSYqsvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=asBgSqLB; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33ececeb19eso3051096f8f.3;
-        Wed, 20 Mar 2024 03:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710932102; x=1711536902; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CojcT9cRLJ5Bl337jcNfU0rqx9pdOlMvmn0shABcZak=;
-        b=asBgSqLBS5ztovkBpZJ8o/Pn0ABFzk59wyAKgejYtS+EKlD6/c13P5jnHsjeeIBc4U
-         Ip44/jnkAvut1VPUdowJWl3Dvibn/8E3q3cwZGRHeEXMM59FkoQBZRBtaNWaDTSNSaCf
-         +hgMvmgJ/V6eCTwRlisWCwqbsrpGBsRiylH/JdDc0ZJWv+UnE+ZW/4if8dqp8u7Bwfd1
-         u70MqZA7SJ3Sf2WvfbWh+JgSKtTrSF+xxyG0g2gLUO3id6Kb6JIQ972vbd1KYAsNIQMY
-         CHmvfKEfA9ZmK3R7xxkPmi8LrwPytrQrYfKctER/UurjVmWo9ExV1cLrSD1Uw1vDdG61
-         FSIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710932102; x=1711536902;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CojcT9cRLJ5Bl337jcNfU0rqx9pdOlMvmn0shABcZak=;
-        b=gENIp5OzYLTbYcl0t7fKu/oDy0gNvKFJXBXQzdkm4WYYLZLhj7MGjMnoKaXoa0vmQL
-         jaq9QhpO/GhyRttVbNeI65cp6rCeGLXLBiBvmcZiJN3oR9QNyBUBaijJ4CWUMyLX8qxz
-         Rai+Tg7Y4e7ZDOBnvAc37+MgC67joEYy7a304I2HQmD1hss1FiBoZ9tSeHxlHf7g9n1i
-         5i+VX94m1MH/jMoPwxV0kNLiEsN9DBj5KMh0BFJfCEPFzH5WrAmpsJEOeXT95GHONs5X
-         jWcWRSZhnGLAWFn5Gma5M1kiuFHvYI/+sXbWkJ3qR2dZAfwd3M93eCYBnhpjAbeerVp4
-         5Z/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWB8SYL1hp9j3hh05H2nCgyH1t6jM2bsOSdGquldXUmfimjSG4KbDpoOHOzwqxkN2xdx25RFGJ905Dd9NloeFAvrYBiypqKdA/VrollE1pUOjDJMlBblj6LG6LPtkUWFWuOLqtGW0nf0PC0JfqRgiNmrd9u5oH6WgQO
-X-Gm-Message-State: AOJu0YxjGD+ZII0ccPxHxr3am5ESZmY2TFpWTbfZshSc1eEOPOulxFNe
-	qg8YxOO2vDM0cnd6agrAU3YSbmWh/Hq4cHjoIgwRa5A+edxvtKpH
-X-Google-Smtp-Source: AGHT+IEy6JZfLQalCuFkIMrHkVu1a1n1fJ1XRhpe4sO2kek5wBWWMQRhG2cEIUkyFVaABlSMXiD/HA==
-X-Received: by 2002:adf:f105:0:b0:33e:1e95:cac2 with SMTP id r5-20020adff105000000b0033e1e95cac2mr11207495wro.11.1710932102100;
-        Wed, 20 Mar 2024 03:55:02 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id bw11-20020a0560001f8b00b0033e7a204dc7sm3867731wrb.32.2024.03.20.03.55.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Mar 2024 03:55:01 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf] bpf: verifier: prevent userspace memory access
-Date: Wed, 20 Mar 2024 10:54:36 +0000
-Message-Id: <20240320105436.4781-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45987381AC;
+	Wed, 20 Mar 2024 10:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710932122; cv=fail; b=DSb5FHeIFrs7l7OgnySFeqRIzuoDPlCpcZxvy4WsPaitStltg5Emhf4zZikyTeaz33/0zp926SldDaphm6EImSq2bchrCdkzt4Rn+Ygf7H9mPOg5x8llfWORqRvEHSNTtCoRUJ5HkWhgAflxeSCXCKztOqrqCL9vaDkrCVy+hoU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710932122; c=relaxed/simple;
+	bh=NzvjaKLoqH2H9dQaFQkue56NAwZPYL70eUDEnYX2G/I=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=CsZz42whCO3167s33Bu9OLSuwkNJ0fjvFN3jbIyM1EacBgtZDlRTxt5j5AF+XBbTmhcKYRVUY+8zru/6OXhJTzCpBDtAC0sbWqikR5ZnY/zOQG3HIAJrxiFGOng6L0ulwCgo/WEzC9MwgstBmUC2RXEaFgLI9/CVlFSUn5pWI2E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com; spf=pass smtp.mailfrom=virtuozzo.com; dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b=vy0bi5ld; arc=fail smtp.client-ip=40.107.104.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=virtuozzo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=monbVy1sP3JA6gWE7zSuAsPBZK44g34nNj32McsgFwqEg9UJq/Nx0SdAbTe3jQqKnKNM5V/ahfw74gI3aVugb9Hmvq6WHzTXWdH4plb1H/+f7MEbnBW5HZC1nG8TtUEq82h6o+plUHs98RzSjewkCPjsnwsl4xa8t8cfgltkC0GNJws/Dfgv1nAdg0R4JCkCAMxbLvD7LuqJ1MpwOHwadCasRv3th6magZjsmSIcaXzhCiT0BYjCGsBkV54kgzhLJ3tQ35aUkk8xuyIrCZt//ml6i5DRV+DwvVrPKuL2fsX+vHZWKkCcLR+DcIaMf9PWacOH3gDgV/pzzLVWoN8K0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1Wn0hRJWYtMA2BHuz9foWcgH4fPaNPeLClzOhB/tZw8=;
+ b=NqrwT+OGs4qkd5EOL6SyW56wvTnmTh+1H1pLVqCbY3uLY30oYiNk9/3e1UhMhaZ2yBGUmDKuPzT5rWp0BEWqUOvZNO3/bRSZw610SF+187/1l5eqjMt7lSDknNCcPOSk+wSna5Y5o815IJHfjaRlF8IFR79+JCZ09xRSDI/OalnbgEIBOn8cqbH/4ST4woZUIRhmwRrwTbk6u0NR09P0TFsXWSOwU3MkwC3g0qjgswVHF7LPXs/fpVZ4IinZnpiuwVOOJHmN6uzUEFgrb277/wFCB6VTYf2k73fMm8obMQWU3l+VgzOHLRAVrUc1xYHe6pJolQgF8/ttJwDDKHU/gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Wn0hRJWYtMA2BHuz9foWcgH4fPaNPeLClzOhB/tZw8=;
+ b=vy0bi5ldpY0w2/enwCAgja2sdmrKAXGr0JaVpESIibN+V6wZvrfTAZwoQ6XjF9THVSItkC82BcPPzVzKEI3afgKLdX5XOhT303smUUfmgfkN+QEYYoCw3HP8nHkb1WZanCbReA0KblVgmXKgqlSR1r4Z2ZhLlMUXel9Kl6Kh9hUfpKpBSp7eCu5obbYyxu2jyiCtAaUQn3Rl/c/KmSI6FwRAGCSS2zau4TNGeaFLAWxjd4VEK6ELCL5ve8qhHocjIO0otb9TeD1skX93nx7wq3hwFB6In42KJgk/AheIte/Hn914lU+4IhtMQq8VchX1EJlH5wAGlFcNAjIP2UJ/6Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=virtuozzo.com;
+Received: from DU0PR08MB9003.eurprd08.prod.outlook.com (2603:10a6:10:471::13)
+ by PAXPR08MB7525.eurprd08.prod.outlook.com (2603:10a6:102:24b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Wed, 20 Mar
+ 2024 10:55:13 +0000
+Received: from DU0PR08MB9003.eurprd08.prod.outlook.com
+ ([fe80::ade0:bad9:96bb:6bd0]) by DU0PR08MB9003.eurprd08.prod.outlook.com
+ ([fe80::ade0:bad9:96bb:6bd0%3]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
+ 10:55:13 +0000
+Message-ID: <be8cfada-f4bd-4894-848d-1b7706b14035@virtuozzo.com>
+Date: Wed, 20 Mar 2024 18:55:05 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/memcontrol: stop resize loop if limit was changed
+ again
+Content-Language: en-US
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Vladimir Davydov <vdavydov.dev@gmail.com>, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
+ <Zfq6XaACmN2JssTW@tiehlicka>
+From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+In-Reply-To: <Zfq6XaACmN2JssTW@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: KL1PR02CA0005.apcprd02.prod.outlook.com
+ (2603:1096:820:c::10) To DU0PR08MB9003.eurprd08.prod.outlook.com
+ (2603:10a6:10:471::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9003:EE_|PAXPR08MB7525:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84a8df26-7ba0-41b7-cb45-08dc48cc381e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kWxVfZR9tuAlImmuqTKdXqbxzFdUH0Co6D4222bxrFVGkzQVsb+TOi+GNvFfMOqcbhW3j188w5uQmxVzTKp8iV7vAKoIciM6ej6uwtxOjpDALaVjgYouIcE6eEV0ovLr4US4RbTLX/vwtg0PsDKhxqDVahuvw2yswpYT1ZWSu3e5+1rdwm5O+uWhZSAbl4t/IYHC0t+4YyQd4q5lrpudEgz96QNHN2QwLMuXzDtdp9CeeJO1zuyQoaYRN2nT5PWFaLUdocOxcs8qxhe8cmdT++uRkoMdZLrDWaPbR6tfr6oQpkeAJgs1Ml2MERf0JBFIgRMJaWbqicUYLuq+Q08Gg64+WYrDY33S8x2LerGcNrTVT/zGug4XT7Y/QyBjEcjjWoLRKSmgbax6CVJRVglGwgEkNW4eppEXzGFOSt/IRTrgsslsmbxCNdrBgIT1NScxFt2LYuW9GW2if0BX/J+MylAjARH8uFT6mEpcZ5FN0ewcxAq4IZRILFhJlI3FnoF6usyYC/cScnZQPklkpYhFLXgopgfbUalZhmwCc1xBFqGVYqXvoZ5uf+W1mtCcH5wM4EyXKNaHM05QIu0Raa42jSTR8U9yEXCiYr0ya1OcfWshfG1tlJA9ub9UhUx6V39200OHllmJKxvtwXNRufecLuaBZTTJB6yXFe2liEB4BYw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9003.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MW16SWRlRmNYNmNQR1VyempsVmVPZ2lKdmdwdGJWdVV0OWpReXdxMlRQSXll?=
+ =?utf-8?B?T1JMRWNiZDBwVTFiMnNzaFJGQ1pOVWNLdFo1eS9sK1JyTXN1aXNsMlZmeTBO?=
+ =?utf-8?B?RzVvZ0JHWDllVDlDOWRHTmdja1lwWFFrbysvekpXM2NXN21ad0JXRlB5K3VH?=
+ =?utf-8?B?VWZnTXN4VENIS1RieENpMjJHRHpWMEVJRnRoUTVDS0FmeE5qUUswc2FvVms3?=
+ =?utf-8?B?ei8rOWIzRkI0MkNSTERFODh1cXlQeEpwamV5TTNmcE15N2hyb2tnTXc0cHg4?=
+ =?utf-8?B?dXBKcENFUFZkQm9pUWIwalBUWmthN3ExN0tvdUsrMEpLNExVMDU2bHdTcTRs?=
+ =?utf-8?B?Y2hzdVFJeklSYnc1Rm9LMndZZU9PNWdoTjQxVmVMQm1VL09ZdXFoTy9UOGg0?=
+ =?utf-8?B?L0J1ZFduVDd6M1ZFQWF2OHhVbS9qamtLVnRxNDdZaVNPb2o3VXIya3RwZkY2?=
+ =?utf-8?B?YVJIVE9CRW9EZGlaY3dCdzZaLzlYZjBvQ2dBVitQVHFKY25MdCt5QnNJMGdX?=
+ =?utf-8?B?TzZEWFYzRUFDWkwrbnBjM0hEbGxlR3pJZUluUHdNU0xFeDZHdkJlYVBFdUg1?=
+ =?utf-8?B?Tm91dUhNaFFFbGdyd2ZTY0dpSmpwTlRaQmp2MFBIVDBnQURCVEdZL1FFdWZp?=
+ =?utf-8?B?QVl6YllMMDYrNHFMUndUTkRRME1iNzJocldNVlpxRXhwa2tBSytaV2p5d2xy?=
+ =?utf-8?B?SFAvZ2dpVmhMbDllT0lxWkNJNHV2OUNtS3VoaTEwenNoKzFSMWFLemlXSlJB?=
+ =?utf-8?B?Q1UyVUc1QStFdnlaYWRnWCtIeXNEN01SVmhBV3B0cGcyaVVqSEV4cGFTUmRa?=
+ =?utf-8?B?cUE1S09Lb3R5Z0hCenVTWUdRdHhHancxV0orenRhYnFoUEFhWGxDU3VybFk4?=
+ =?utf-8?B?VkQxNmRwazFVY3JVcE8xejdkaHdibnpDWUMvTlJHTE5QUjVRZzBQLzVZQUJG?=
+ =?utf-8?B?TzZtem5iU2VJYVZFSUZDbXFMdzVrV0c4ZWZSNDhLYnExaktTQUZOUzUxeEFD?=
+ =?utf-8?B?LzZ5MXpJbGkrVXNHRDZKK29NUUh4bXJuRktaaGx2bXdZMXhkK29QYStjYzVq?=
+ =?utf-8?B?RmxENEpka1FMR09qbGI2YjcwV1podkdJcDhPck5rWnVJZ0RycUV6ckp6YXFZ?=
+ =?utf-8?B?RHhHR2s1eG1FTlVDalpuOGF1Q1htYlVBcmMxc1RRa0FOZ2dJNitkQXY4cXgy?=
+ =?utf-8?B?czJ6WFRyZHhtSlZWNFA2V0ovVC9pUFVYTW5rdVlPeXBNWGZqd0dTejN4YWZH?=
+ =?utf-8?B?NzJ2RnZHWWhNKy9tYlIvZkVGcFR4OVFqZE0rTitDY0k5SDQzZkRZTUkxaEhy?=
+ =?utf-8?B?UUhveGV6UGNaUUcvZEVFWExlYk1YeG1CUlFRVlFYTkUxRG5wTGJ6RVg0eXds?=
+ =?utf-8?B?aE8xaEUvWkJkVUU4MGxGeDRoRzZLbHB1ZWpOQ0xxNEFzazdmQ3AyN2Erckt4?=
+ =?utf-8?B?U1FjSDdtS2FDK1JxNElFdm5YQkc0bkl2VDNiUXBEK3ZPOUllZ3RtUzBiY24r?=
+ =?utf-8?B?RmM0bTZFK09kNEU3TjRabHdYa3FyeUFtWUNaS1VWcjhHMGJnMUJxSGVwMld4?=
+ =?utf-8?B?Y3Q5dzhnVW5pckVsWFdrQXUyUE1mMy9pbkRGKzhNTThKamo4dENZenR1US9R?=
+ =?utf-8?B?bEdpUmJjU3NWbFFHb2xFeHJmd0lHSnZzdG81cTNrYUx4U1M0LzF3UXB2bkJO?=
+ =?utf-8?B?ellFcHBVSEFpYnpKbnVZRDI5UjMwUW44UHZQLzJkR2hDNmZGZHNjQmlQOWlO?=
+ =?utf-8?B?cFlXUEl0cnFjOWZQRzZiUzI5TkVGWVRKR3V3clNvaWhvTkJGV2lkakIvYU4y?=
+ =?utf-8?B?a213TWhBVlFUbUpYeUlrb1BVaXFTZVQyT2pIYnRRMW5jaDVoR1BTTFhPd0Z4?=
+ =?utf-8?B?dU02ZlJKTjNDZkVpZUJoYzIwdGlFOXptUE9pSkVLOVcxNzNjQmFBMmpsVkto?=
+ =?utf-8?B?Wm1rRHM0eWdGRXZhS0RHbDJ1bjN2bTZCNG05ais0TmZOellOMjdoV0JDaW5I?=
+ =?utf-8?B?dEd1TDZjSlNuQnR4aXBNQzFxZVRzR0ZlUytSbG9tVEpvc0FvT05IVEhFZENC?=
+ =?utf-8?B?bUY2VU1ROFEvQXAweE5DSXF2dWxYRThZcEY5R3Q2TVIvN1lETDV5MHEzYTdq?=
+ =?utf-8?B?ZkpLblBOdVd6OE15eUFTcXNUYTZZRjlsYlBoN25yUDBCQkwxQmEwZURlT2tr?=
+ =?utf-8?B?eU9kb2RnbXd3ZVB1RlZwYjZCMlpaQTNiQVhOdHI0MU85ekhObkV3WTUvRG8w?=
+ =?utf-8?B?MW1tN0lvUWlObmFQYlJ0RHhsSnpBPT0=?=
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84a8df26-7ba0-41b7-cb45-08dc48cc381e
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9003.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 10:55:13.4604
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X2jDTyb6Kg68EY1LfgnFNhgHWuMmBeFR52AxAErQnENLIhm2VH407t9fyUgxX69/m7DEjyQlRkdyrEYwnVPICKXR1B2kL+B7zWVRH3pZjlA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR08MB7525
 
-With BPF_PROBE_MEM, BPF allows de-referencing an untrusted pointer. To
-thwart invalid memory accesses, the JITs add an exception table entry
-for all such accesses. But in case the src_reg + offset overflows and
-turns into a userspace address, the BPF program might read that memory if
-the user has mapped it.
 
-There are architectural features that prevent the kernel from accessing
-userspace memory, like Privileged Access Never (PAN) on ARM64,
-Supervisor Mode Access Prevention (SMAP) on x86-64, Supervisor User
-Memory access (SUM) on RISC-V, etc. But BPF should not rely on the
-existence of these features.
 
-Make the verifier add guard instructions around such memory accesses and
-skip the load if the address falls into the userspace region.
+On 20/03/2024 18:28, Michal Hocko wrote:
+> On Wed 20-03-24 18:03:30, Pavel Tikhomirov wrote:
+>> In memory_max_write() we first set memcg->memory.max and only then
+>> try to enforce it in loop. What if while we are in loop someone else
+>> have changed memcg->memory.max but we are still trying to enforce
+>> the old value? I believe this can lead to nasty consequence like getting
+>> an oom on perfectly fine cgroup within it's limits or excess reclaim.
+> 
+> I would argue that uncoordinated hard limit configuration can cause
+> problems on their own.
 
-The JITs need to implement bpf_arch_uaddress_limit() to define where
-the userspace addresses end for that architecture or TASK_SIZE is taken
-as default.
+Sorry, didn't know that.
 
-The implementation is as follows:
+> Beside how is this any different from changing
+> the high limit while we are inside the reclaim loop?
 
-REG_AX =  SRC_REG
-if(offset)
-	REG_AX += offset;
-REG_AX >>= 32;
-if (REG_AX <= (uaddress_limit >> 32))
-	DST_REG = 0;
-else
-	DST_REG = *(size *)(SRC_REG + offset);
+I believe reclaim loop rereads limits on each iteration, e.g. in 
+reclaim_high(), so it should always be enforcing the right limit.
 
-Comparing just the upper 32 bits of the load address with the upper
-32 bits of uaddress_limit implies that the values are being aligned down
-to a 4GB boundary before comparison.
+> 
+>> We also have exactly the same thing in memory_high_write().
+>>
+>> So let's stop enforcing old limits if we already have a new ones.
+> 
+> I do see any reasons why this would be harmful I just do not see why
+> this is a real thing or why the new behavior is any better for racing
+> updaters as those are not deterministic anyway. If you have any actual
+> usecase then more details would really help to justify this change.
+> 
+> The existing behavior makes some sense as it enforces the given limit
+> deterministically.
 
-The above means that all loads with address <= uaddress_limit + 4GB are
-skipped. This is acceptable because there is a large hole (much larger
-than 4GB) between userspace and kernel space memory, therefore a
-correctly functioning BPF program should not access this 4GB memory
-above the userspace.
+I don't have any actual problem, usecase or reproduce at hand, I only 
+see a potential problem:
 
-Let's analyze what this patch does to the following fentry program
-dereferencing an untrusted pointer:
+Let's imagine that:
 
-  SEC("fentry/tcp_v4_connect")
-  int BPF_PROG(fentry_tcp_v4_connect, struct sock *sk)
-  {
-                *(volatile long *)sk;
-                return 0;
-  }
+a) We set cgroup max limit to some small value, memory_max_write updates 
+memcg->memory.max and starts spinning in loop as it wants to reclaim 
+some memory which does not fit in new limit.
 
-    BPF Program before              |           BPF Program after
-    ------------------              |           -----------------
+b) We don't need small limit anymore and we raise the limit to a big 
+value, but memory_max_write() from (a) is still spinning. And if we are 
+lucky enough and processes of cgroup are constantly consuming memory, to 
+compensate effect from memory_max_write() from (a), so that it will 
+continue spinning there forever.
 
-  0: (79) r1 = *(u64 *)(r1 +0)          0: (79) r1 = *(u64 *)(r1 +0)
-  -----------------------------------------------------------------------
-  1: (79) r1 = *(u64 *)(r1 +0) --\      1: (bf) r11 = r1
-  ----------------------------\   \     2: (77) r11 >>= 32
-  2: (b7) r0 = 0               \   \    3: (b5) if r11 <= 0x8000 goto pc+2
-  3: (95) exit                  \   \-> 4: (79) r1 = *(u64 *)(r1 +0)
-                                 \      5: (05) goto pc+1
-                                  \     6: (b7) r1 = 0
-                                   \--------------------------------------
-                                        7: (b7) r0 = 0
-                                        8: (95) exit
+Yes it is not that bad, because memory_max/high_write() also constantly 
+checks for pending signals in loop so they won't actually get 
+irreversibly stuck. But I just thought it was worth fixing.
 
-As you can see from above, in the best case (off=0), 5 extra instructions
-are emitted.
+> 
+>> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+>> ---
+>>   mm/memcontrol.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 61932c9215e7..81b303728491 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -6769,6 +6769,9 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>>   		unsigned long nr_pages = page_counter_read(&memcg->memory);
+>>   		unsigned long reclaimed;
+>>   
+>> +		if (memcg->memory.high != high)
+>> +			break;
+>> +
+>>   		if (nr_pages <= high)
+>>   			break;
+>>   
+>> @@ -6817,6 +6820,9 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+>>   	for (;;) {
+>>   		unsigned long nr_pages = page_counter_read(&memcg->memory);
+>>   
+>> +		if (memcg->memory.max != max)
+>> +			break;
+>> +
+>>   		if (nr_pages <= max)
+>>   			break;
+>>   
+>> -- 
+>> 2.43.0
+> 
 
-Now, we analyse the same program after it has gone through the JITs of
-X86-64, ARM64, and RISC-V architectures. We follow the single load
-instruction that has the untrusted pointer and see what instrumentation
-has been added around it.
-
-                                x86-64 JIT
-                                ==========
-     JIT's Instrumentation                  Verifier's Instrumentation
-          (upstream)                               (This patch)
-     ---------------------                  --------------------------
-
-   0:   nopl   0x0(%rax,%rax,1)             0:   nopl   0x0(%rax,%rax,1)
-   5:   xchg   %ax,%ax                      5:   xchg   %ax,%ax
-   7:   push   %rbp                         7:   push   %rbp
-   8:   mov    %rsp,%rbp                    8:   mov    %rsp,%rbp
-   b:   mov    0x0(%rdi),%rdi               b:   mov    0x0(%rdi),%rdi
-  ------------------------------------------------------------------------
-   f:   movabs $0x800000000000,%r11         f:   mov    %rdi,%r10
-  19:   cmp    %r11,%rdi                   12:   shr    $0x20,%r10
-  1c:   jb     0x000000000000002a          16:   cmp    $0x8000,%r10
-  1e:   mov    %rdi,%r11                   1d:   jbe    0x0000000000000025
-  21:   add    $0x0,%r11              /--> 1f:   mov    0x0(%rdi),%rdi
-  28:   jae    0x000000000000002e    /     23:   jmp    0x0000000000000027
-  2a:   xor    %edi,%edi            /      25:   xor    %edi,%edi
-  2c:   jmp    0x0000000000000032  / /------------------------------------
-  2e:   mov    0x0(%rdi),%rdi  ---/ /      27:   xor    %eax,%eax
-  ---------------------------------/       29:   leave
-  32:   xor    %eax,%eax                   2a:   ret
-  34:   leave
-  35:   ret
-
-The x86-64 JIT already emits some instructions to protect against user
-memory access. The implementation in this patch leads to a smaller
-number of instructions being emitted. In the worst case the JIT will
-emit 9 extra instructions and this patch decreases it to 7.
-
-                                  ARM64 JIT
-                                  =========
-
-        No Intrumentation                       Verifier's Instrumentation
-           (upstream)                                  (This patch)
-        -----------------                       --------------------------
-
-   0:   add     x9, x30, #0x0                0:   add     x9, x30, #0x0
-   4:   nop                                  4:   nop
-   8:   paciasp                              8:   paciasp
-   c:   stp     x29, x30, [sp, #-16]!        c:   stp     x29, x30, [sp, #-16]!
-  10:   mov     x29, sp                     10:   mov     x29, sp
-  14:   stp     x19, x20, [sp, #-16]!       14:   stp     x19, x20, [sp, #-16]!
-  18:   stp     x21, x22, [sp, #-16]!       18:   stp     x21, x22, [sp, #-16]!
-  1c:   stp     x25, x26, [sp, #-16]!       1c:   stp     x25, x26, [sp, #-16]!
-  20:   stp     x27, x28, [sp, #-16]!       20:   stp     x27, x28, [sp, #-16]!
-  24:   mov     x25, sp                     24:   mov     x25, sp
-  28:   mov     x26, #0x0                   28:   mov     x26, #0x0
-  2c:   sub     x27, x25, #0x0              2c:   sub     x27, x25, #0x0
-  30:   sub     sp, sp, #0x0                30:   sub     sp, sp, #0x0
-  34:   ldr     x0, [x0]                    34:   ldr     x0, [x0]
---------------------------------------------------------------------------------
-  38:   ldr     x0, [x0] ----------\        38:   add     x9, x0, #0x0
------------------------------------\\       3c:   lsr     x9, x9, #32
-  3c:   mov     x7, #0x0            \\      40:   cmp     x9, #0x10, lsl #12
-  40:   mov     sp, sp               \\     44:   b.ls    0x0000000000000050
-  44:   ldp     x27, x28, [sp], #16   \\--> 48:   ldr     x0, [x0]
-  48:   ldp     x25, x26, [sp], #16    \    4c:   b       0x0000000000000054
-  4c:   ldp     x21, x22, [sp], #16     \   50:   mov     x0, #0x0
-  50:   ldp     x19, x20, [sp], #16      \---------------------------------------
-  54:   ldp     x29, x30, [sp], #16         54:   mov     x7, #0x0
-  58:   add     x0, x7, #0x0                58:   mov     sp, sp
-  5c:   autiasp                             5c:   ldp     x27, x28, [sp], #16
-  60:   ret                                 60:   ldp     x25, x26, [sp], #16
-  64:   nop                                 64:   ldp     x21, x22, [sp], #16
-  68:   ldr     x10, 0x0000000000000070     68:   ldp     x19, x20, [sp], #16
-  6c:   br      x10                         6c:   ldp     x29, x30, [sp], #16
-                                            70:   add     x0, x7, #0x0
-                                            74:   autiasp
-                                            78:   ret
-                                            7c:   nop
-                                            80:   ldr     x10, 0x0000000000000088
-                                            84:   br      x10
-
-There are 6 extra instructions added in ARM64 in the best case. This will
-become 7 in the worst case (off != 0).
-
-                           RISC-V JIT (RISCV_ISA_C Disabled)
-                           ==========
-
-        No Intrumentation           Verifier's Instrumentation
-           (upstream)                      (This patch)
-        -----------------           --------------------------
-
-   0:   nop                            0:   nop
-   4:   nop                            4:   nop
-   8:   li      a6, 33                 8:   li      a6, 33
-   c:   addi    sp, sp, -16            c:   addi    sp, sp, -16
-  10:   sd      s0, 8(sp)             10:   sd      s0, 8(sp)
-  14:   addi    s0, sp, 16            14:   addi    s0, sp, 16
-  18:   ld      a0, 0(a0)             18:   ld      a0, 0(a0)
----------------------------------------------------------------
-  1c:   ld      a0, 0(a0) --\         1c:   mv      t0, a0
---------------------------\  \        20:   srli    t0, t0, 32
-  20:   li      a5, 0      \  \       24:   lui     t1, 4096
-  24:   ld      s0, 8(sp)   \  \      28:   sext.w  t1, t1
-  28:   addi    sp, sp, 16   \  \     2c:   bgeu    t1, t0, 12
-  2c:   sext.w  a0, a5        \  \--> 30:   ld      a0, 0(a0)
-  30:   ret                    \      34:   j       8
-                                \     38:   li      a0, 0
-                                 \------------------------------
-                                      3c:   li      a5, 0
-                                      40:   ld      s0, 8(sp)
-                                      44:   addi    sp, sp, 16
-                                      48:   sext.w  a0, a5
-                                      4c:   ret
-
-There are 7 extra instructions added in RISC-V.
-
-Fixes: 800834285361 ("bpf, arm64: Add BPF exception tables")
-Reported-by: Breno Leitao <leitao@debian.org>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/x86/net/bpf_jit_comp.c | 72 +++++--------------------------------
- include/linux/filter.h      |  1 +
- kernel/bpf/core.c           |  9 +++++
- kernel/bpf/verifier.c       | 30 ++++++++++++++++
- 4 files changed, 48 insertions(+), 64 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 4900b1ee019f..9b3136187938 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1327,7 +1327,6 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
- 		u8 b2 = 0, b3 = 0;
- 		u8 *start_of_ldx;
- 		s64 jmp_offset;
--		s16 insn_off;
- 		u8 jmp_cond;
- 		u8 *func;
- 		int nops;
-@@ -1802,78 +1801,18 @@ st:			if (is_imm8(insn->off))
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
--			insn_off = insn->off;
--
--			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
--			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
--				/* Conservatively check that src_reg + insn->off is a kernel address:
--				 *   src_reg + insn->off >= TASK_SIZE_MAX + PAGE_SIZE
--				 * src_reg is used as scratch for src_reg += insn->off and restored
--				 * after emit_ldx if necessary
--				 */
--
--				u64 limit = TASK_SIZE_MAX + PAGE_SIZE;
--				u8 *end_of_jmp;
--
--				/* At end of these emitted checks, insn->off will have been added
--				 * to src_reg, so no need to do relative load with insn->off offset
--				 */
--				insn_off = 0;
--
--				/* movabsq r11, limit */
--				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
--				EMIT((u32)limit, 4);
--				EMIT(limit >> 32, 4);
--
--				if (insn->off) {
--					/* add src_reg, insn->off */
--					maybe_emit_1mod(&prog, src_reg, true);
--					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
--				}
--
--				/* cmp src_reg, r11 */
--				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
--				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
--
--				/* if unsigned '>=', goto load */
--				EMIT2(X86_JAE, 0);
--				end_of_jmp = prog;
--
--				/* xor dst_reg, dst_reg */
--				emit_mov_imm32(&prog, false, dst_reg, 0);
--				/* jmp byte_after_ldx */
--				EMIT2(0xEB, 0);
--
--				/* populate jmp_offset for JAE above to jump to start_of_ldx */
--				start_of_ldx = prog;
--				end_of_jmp[-1] = start_of_ldx - end_of_jmp;
--			}
-+			start_of_ldx = prog;
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
- 			    BPF_MODE(insn->code) == BPF_MEMSX)
--				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
-+				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			else
--				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
-+				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
- 			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
- 				struct exception_table_entry *ex;
- 				u8 *_insn = image + proglen + (start_of_ldx - temp);
- 				s64 delta;
- 
--				/* populate jmp_offset for JMP above */
--				start_of_ldx[-1] = prog - start_of_ldx;
--
--				if (insn->off && src_reg != dst_reg) {
--					/* sub src_reg, insn->off
--					 * Restore src_reg after "add src_reg, insn->off" in prev
--					 * if statement. But if src_reg == dst_reg, emit_ldx
--					 * above already clobbered src_reg, so no need to restore.
--					 * If add src_reg, insn->off was unnecessary, no need to
--					 * restore either.
--					 */
--					maybe_emit_1mod(&prog, src_reg, true);
--					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
--				}
--
- 				if (!bpf_prog->aux->extable)
- 					break;
- 
-@@ -3473,3 +3412,8 @@ bool bpf_jit_supports_ptr_xchg(void)
- {
- 	return true;
- }
-+
-+u64 bpf_arch_uaddress_limit(void)
-+{
-+	return TASK_SIZE_MAX + PAGE_SIZE;
-+}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index c0d51bff8f96..cf12bfa2a78c 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -965,6 +965,7 @@ bool bpf_jit_supports_far_kfunc_call(void);
- bool bpf_jit_supports_exceptions(void);
- bool bpf_jit_supports_ptr_xchg(void);
- bool bpf_jit_supports_arena(void);
-+u64 bpf_arch_uaddress_limit(void);
- void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
- bool bpf_helper_changes_pkt_data(void *func);
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5aacb1d3c4cc..bb8024eacc31 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2958,6 +2958,15 @@ bool __weak bpf_jit_supports_arena(void)
- 	return false;
- }
- 
-+u64 __weak bpf_arch_uaddress_limit(void)
-+{
-+#ifdef CONFIG_64BIT
-+	return TASK_SIZE;
-+#else
-+	return -ENOTSUPP;
-+#endif
-+}
-+
- /* Return TRUE if the JIT backend satisfies the following two conditions:
-  * 1) JIT backend supports atomic_xchg() on pointer-sized words.
-  * 2) Under the specific arch, the implementation of xchg() is the same
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index de7813947981..6eb0d7643af1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19657,6 +19657,36 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
- 		}
- 
-+		/* Make it impossible to de-reference a userspace address */
-+		if (BPF_CLASS(insn->code) == BPF_LDX &&
-+		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
-+		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
-+			struct bpf_insn *patch = &insn_buf[0];
-+			u64 uaddress_limit = bpf_arch_uaddress_limit();
-+
-+			if (uaddress_limit < 0)
-+				goto next_insn;
-+
-+			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
-+			if (insn->off)
-+				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
-+			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
-+			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
-+			*patch++ = *insn;
-+			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
-+			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
-+
-+			cnt = patch - insn_buf;
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		}
-+
- 		/* Implement LD_ABS and LD_IND with a rewrite, if supported by the program type. */
- 		if (BPF_CLASS(insn->code) == BPF_LD &&
- 		    (BPF_MODE(insn->code) == BPF_ABS ||
 -- 
-2.42.0
-
+Best regards, Tikhomirov Pavel
+Senior Software Developer, Virtuozzo.
 
