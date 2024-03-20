@@ -1,591 +1,229 @@
-Return-Path: <linux-kernel+bounces-109419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF118818DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:57:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD0C8818E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 981F3284CFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:57:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 400A31C20F56
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5AF85C44;
-	Wed, 20 Mar 2024 20:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4801D85C4E;
+	Wed, 20 Mar 2024 21:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lQbwvaP+"
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WmQV/4Gn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65FA8592E
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710968227; cv=none; b=bkUOLXU8P13Y0PHVZkvZmE8FYDpDanA6nSW4Kt4X6PubbEVbWJVVlus8KkcT+gcAv3Qe8cTnjZ2uTSEiyy4QsIJUAi3aSu4/ctXvr0hpAtQHKPyLnhV43aaFmyMFqbVli1yIBbr4qbpRr94sv6Tr0CjT2jsjESlotFe5CKnCYqY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710968227; c=relaxed/simple;
-	bh=RzgPG8o2aNGGbG1Ys2w1Hkus7AZD5HPy2ZUus3QLzg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uW8T/y6SdlBd3JJq+ZYMMPa4yu/Ldh5WRwyAEtz+gRgwVVZudJBzI9MvnAW+eYnwI52uOwleoCUL6exUlR4D3vuqjYxlgDplcliSHWrD2AXP14BjLsBj6wvFFfI7/a9T9dGbCvX78bbGrRBk2Z+PyfBcQAbYu1e/g1DnsKaegoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lQbwvaP+; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 20 Mar 2024 16:56:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710968221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f/wbOSkQpRKVox7WVZRvGgkB0CyQ+6xmcaFv9sdKixQ=;
-	b=lQbwvaP+JTlMiOJCBkU31IaK8RKR1m7uD9VAMawTP6naUjvRHvB/323rJsqCaTOwESuycJ
-	WkoZpzpRdCq1PjgjMc0YEN85BSglmhPqCLU2bMjFES4MWnXoVXKheWxoPbNrmyISeRtme/
-	CqB3Te+1+US2eD/ARkgxF8933X84V0g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
-	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 04/15] lib min_heap: Add type safe interface
-Message-ID: <iz6wl3twuc72txd4ifxy73bbbfijo3ecy7izw3drsmcb2payeu@b2dusfoqobgu>
-References: <20240320145417.336208-1-visitorckw@gmail.com>
- <20240320145417.336208-5-visitorckw@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797E6EDB;
+	Wed, 20 Mar 2024 21:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710968447; cv=fail; b=dtFDN+Q7L/cKPixBolyBpNV2P7XRHIGhhglgLHZWJ20hGk+1yWb5h7DH7HB5bACViPkyYS9twr+dTTqoUo7hOz2mnivkJwvwQgoXXO7DcsBTpwzmKJR19eIxljAQ+ai0SDxJJLRBiwa1IFvVygX1DFK+hA8tmZ6+NvTQmbBj1QU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710968447; c=relaxed/simple;
+	bh=uHpzS+fLg3+viI5dIjKIGmGqVirSb8h1b3le54N3t6k=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=unGGwgP5Owa9olAXUOEkzNsYF8sKMQe0k+xR+JOKwzjY5QPLXinbrxw9rCcTlE4IC9ZCgzZyJ1sfDX35K4smJM1h0bfOy5aFQTsUNLtX3zijuVapSKxMQWJsDME+HHR6hthg4JGOLKdJaR9JiqT1yZvvHfSVU6NkRNKENNdKjes=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WmQV/4Gn; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710968446; x=1742504446;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uHpzS+fLg3+viI5dIjKIGmGqVirSb8h1b3le54N3t6k=;
+  b=WmQV/4Gn4CSX/daKoItUpbqNJ5I67UG0NW7vToyGZfMAGjl+nmxPM58I
+   oeZCcHmQ1bkCpRISQGgf0f50mc1B997B3bkeFsS6UmihLB697+TePraG0
+   7GzqWLHZ8HuB9SecuY+2156DtR5n+sMzx+rm2f71lps8WuTJJJpL8XjIu
+   IaNeFcIU8jaAJAU+NIHakexYMTr0HlNZ9biEnsX5gWx8c9Rqwg2wdNcY9
+   uk9xXn9YsphW25mglyeISupsWXuxTgvHluOP6bzlNrZ5k0vunJ+GvuaQJ
+   XBQ2653W01M8JpMR8nFNXXSOBexMTbjbsmV1jzGyJVeUXNiXvWkCXhx2W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6133077"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="6133077"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:00:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="14360687"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Mar 2024 14:00:44 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 20 Mar 2024 14:00:44 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 20 Mar 2024 14:00:44 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 20 Mar 2024 14:00:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H6bmPzGYux1L9/VqfXEu7HlSTBce2IZ6RCuCd1gQ+h87o0Wx/Whk/rq/h0sVD2EYtVdPChNvqoaxwMxG+dRTynruTJYIYvhgxn2PFrHHilMP/G16jrWNqs7Km0S21Akx3i6+8C1Gq/gumKLM/3v/RzkDsT3YAM2ZKdjC2U4Hu33x4J2k1g7CsGuN7uOWo1Mtw8yyUomwJGQBCgSjQjg1Aov7CDny6t6HpPFqBqZoJp3q+IWVXjFJlH/MWtQmF8XjHEeojbIElo6Lw+MwLBmvy9auM42tzZ5EA8mzoPuoYkHnEQd98On653vtrL6tNfLDkpi+artxopBy6vAKdBP+Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pk4RxMaRIsqLnncBxUxwFvjE2ZpbLAmMVvGn0bbELYE=;
+ b=CDgmQbMdo/jlidL72vsQ0/1cQj+sJMNcw6/ShbR58TCVzfNhWA5dKHrgYkeGwnpa2kxG7qn9MVvenG4Vrxti4/JAsTOcSrSfePoeXdjx6RqR8SOq6Qaw2ym3QcDa1SC9NiTZaCmCl9UjTe2yIyLhE3WmowYCdfQ8BRMVnvel44Ot410j6PFStVdJPIr8ZzSCpFcjpUGWi+Te7QeqkOfXRUs//fvRKuINf4C9HxF6C63fyWhOKBmEP8u5Q247EdosWDt+4jrjwLEaaFKdtaAZ9RETgCtYhLvGRzZ1IUTLbz411vUb8ksTwjhF2vdvIoB7W/ln7ZPsQfkw9Pv1dh0o1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by PH8PR11MB7094.namprd11.prod.outlook.com (2603:10b6:510:216::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Wed, 20 Mar
+ 2024 21:00:39 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.010; Wed, 20 Mar 2024
+ 21:00:39 +0000
+Message-ID: <cc3a968d-c581-4784-b69b-b887d3b90a94@intel.com>
+Date: Thu, 21 Mar 2024 10:00:24 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
+Content-Language: en-US
+To: Dave Hansen <dave.hansen@intel.com>, "seanjc@google.com"
+	<seanjc@google.com>
+CC: "Zhang, Tina" <tina.zhang@intel.com>, "Edgecombe, Rick P"
+	<rick.p.edgecombe@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "isaku.yamahata@gmail.com"
+	<isaku.yamahata@gmail.com>, "Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, "Yamahata, Isaku" <isaku.yamahata@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
+ <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com>
+ <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
+ <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com>
+ <ZfR4UHsW_Y1xWFF-@google.com>
+ <ea85f773-b5ef-4cf6-b2bd-2c0e7973a090@intel.com>
+ <ZfSjvwdJqFJhxjth@google.com>
+ <8d79db2af4e0629ad5dea6d8276fc5cda86a890a.camel@intel.com>
+ <70d7a20a-72dc-4ded-a35f-684de44eb6e6@intel.com>
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <70d7a20a-72dc-4ded-a35f-684de44eb6e6@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0111.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::26) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320145417.336208-5-visitorckw@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|PH8PR11MB7094:EE_
+X-MS-Office365-Filtering-Correlation-Id: afac53b2-6428-481e-d1f1-08dc4920cc3b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: urKsSF+NUr+A/iWYSNoofub9ZxavyXvnIqvAzK332KfMDFMVJWRLF7gFxek/BfX/ECvE/8F78Ow/O06ul78D7F7cR0QXR/1bAUde157dLTK+teqShO9Okb3yC4HUZcseD/2InzWVSMYZMWGVYYodKtQlHw0+b0kaCOdqSZ9OZxuKSAUTxCMD9teSgyjqzGJ6JiZ8fbK/GP26xuf5oLJoD+Lq2qYpgj/PqQZKYGaZE5yLGcgPv+dScG9kLRMoTcTA0b5G8S27I3o4XFfoXvGqelSL5kkulp/YIDK8DhQWycYHcQj4xfek/SYj4MsGeABTVRneSC51d8hZRzousH3vxyVaxgEd1IbfDpDSEuEZc27U3OOuWh5Rb90hosNAPdU+/KADV2rJfWDJnnH7s5G5pXOr3XloZ2aw0E/BW/dEIErOq4NPfv4EzDWG4q788Z5g68uG3InMLNJRG76UPWLw/BAsjqTG8L0zE6Yv9904ImLRliVbXdj5q+K+wZ6N2iWCyAqOV2s+y4BwT9V90J1oONJjjaLreWiCBWO+BooYAN21/r768dCMn1E0FtjXk99sY5bPoNEF9xkvFyNeD2aPHV5qdvXZQo7HXqdwNfuykgQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R2FuSVVCT1o0WnUrQ3h4SklOQ1hzVGZsTUdCTWU3UFM0Uk5JT3FpRWc5YmNW?=
+ =?utf-8?B?N2RMZE1DdDNhem8rS013bEJNWDZuRUU4Z3prQnBtb3RlWkJXNzhIMjJnVFZt?=
+ =?utf-8?B?bmNidmN5VkFxY2UvckdJWCsrWTEvbXRaL1E5SE5NK2tnUytSOHZaTVpZRUFx?=
+ =?utf-8?B?ek9LTEtyZHY2ZkZKTFBGbmZvN25ld1h4cWRHVFNadEFiSGlGSDJNZWhpK3l3?=
+ =?utf-8?B?NWhDWjMxU2t2c01XTnZ2Wkx6UGpQVmNvWUNDcGVCdWI5NEREL01qdkc1V1Bu?=
+ =?utf-8?B?QmhkeDAxalpqQXpXNWYzNWFwUXBpMXJ6QkxsUkl1dGt3bmtCS3lxNFUvY3lw?=
+ =?utf-8?B?RWIra2ZrNmJTSVRvYjdYb0NZeGo4a1ptNHpabng4b01HMDVzNXc1N0ZaZVpE?=
+ =?utf-8?B?aU04bFBSZ05XNHl2cmFLU0E0aDc0Z0I2Yk1qTGo4Y01ZZVZsN3JyZFZ2V3dR?=
+ =?utf-8?B?cmd0U0NBMitKUGJlTldyclpqaDRsVGVXT1hYc3oxOVVRQUUzOGFHNEF5VkhC?=
+ =?utf-8?B?Y0NFb0lzcVNKTDFFUjdFUHhxM0xVdXNqU1dvaEM5Z0lJQUU2MnhHbWxKUzd3?=
+ =?utf-8?B?bVVySFNBdjVTSWtTM1V5bE5RbmZLQnBySnFnc1hBQ1VsWjhxdENFNnFyNzlJ?=
+ =?utf-8?B?Qms2STA1N24rT0RqNTlsWVhySmExcGZUYkp2bXlGem1raFJWOE1BOXFINVlD?=
+ =?utf-8?B?TUk3R1NxamoyczBwZkNDS2t4VDgzdHZIMjF2ajdoay9OY1NoeDA4V3NiZUxY?=
+ =?utf-8?B?TmZPdldhOHNNT1RwSjI5Tks0Q0FwYWJrWU5EZUxNV0UvaURkakRka2lKajd1?=
+ =?utf-8?B?ajU3WWRmaWJuNEw4cTd6TkVhOElwVFQ3L3ZPdEsvRXVXMHRBZ3pKVkp1Um5t?=
+ =?utf-8?B?Slg3ckFUR2FCajQvVUlxY0g2Qkl1MU9aUWI5UGdUeXpBNXZmQ0N2aHVVcjly?=
+ =?utf-8?B?RFJHbTFUT1Z4dThXclJPeUkwOG42ZnN3cld2WXZGZTlEWUI3V1dMeTd3Z29x?=
+ =?utf-8?B?RThZdmQzTEtUdFl4U045N2FFdWxhbU0velNwK1BSY0hXdEh0NUpISFdnb3JP?=
+ =?utf-8?B?RHhqRDk2US9Fd3pCYU5na2tTeisrWEZCKzVDZk1rR1lyNEYxaGNRVVk1aGtq?=
+ =?utf-8?B?RHF6YlkzSy9WV0hFMEVCdm50NEtiaHJIQy9CdHVjKzRiaDU0QlFzWnM4SnFt?=
+ =?utf-8?B?MVFUdUVJTDhxOGk1QnpBblpRU3FoZ0FOVU5sSHJmeFBBcWdiazlYSXUxM1NM?=
+ =?utf-8?B?UnV1bktpV2ovb3QzTzI2c212TE1nNnE1SVJTcVRVNGYxZzRlNHNCY202blpu?=
+ =?utf-8?B?OGNuNVVYNkZwbHFwOVRYY2JIdmw3VnljMW1NVVJDT2FqbWIvRUlMVFlzb0pR?=
+ =?utf-8?B?MkJqZmZKREZUU0hZN1lwNjBNaEdnSWJObWxra25RcTEvK1Avbms2NDVEeVFD?=
+ =?utf-8?B?SGtObjRyZ00yR2hjMUpVWC9aRmUvZnNMU2xnckp1QnA4WExZMWhUZnZvS3Rq?=
+ =?utf-8?B?TjZBc3RNMU5LOU02LzFJWjA1TVBuckJqaDRhTlBZWTd5SzNWOXI5LytPeVZS?=
+ =?utf-8?B?SWl3WFd3R2ZoUXNCc3Z2dnB4R2gxNklwTDI5WHFwazFYaVVrcXdsZnJEWEdy?=
+ =?utf-8?B?UGJaOXF1aGNSTnhIbnFUU1lVcU5OdkEzZ3E4ZmNFUEFwNjJnOUhlOHlJdm5N?=
+ =?utf-8?B?UU1Xb0xQUHVOUCtoemUwQXBZRGZNbHkyd2RVSVJpVk80a214RkYwUTdOelpw?=
+ =?utf-8?B?aktqRkFWbUlCQU5YZlY0S1k2NWs4QmZWOTF0Z1dRQU05TS9FaXRkdnhCS3Y0?=
+ =?utf-8?B?V3kxMC8xaEFGZlZHQlRPQlp0OW5uVlNySjBFMU5SL3gwcTFWbFRuSWpnYTRC?=
+ =?utf-8?B?bVI5OHNvVnJNNHlSNDhhdkdJaG5FZTMvYUUyOVVKMGtCMU9IaCsyZDdTL0wr?=
+ =?utf-8?B?TlIrOHhSL0w1cC9ZU3JLOXB3c3hmRFlKSENpVU00NnBhR2c4MFBub3pkQ0tH?=
+ =?utf-8?B?KzBvY3VDQ0VCWnltU014UHQ1Vy9saVB1cGsrNUxkSHpuQ2JNbU1BWC9wK0p3?=
+ =?utf-8?B?aGFhQmVOTTNNbW1lOUhCT0tPNnBvaVZLaVNVemZONGxuc0MzOXdndHIxaWhP?=
+ =?utf-8?Q?fABk+3gJYxdonPG8e3NInux41?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: afac53b2-6428-481e-d1f1-08dc4920cc3b
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 21:00:39.5518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ChwefPmXNg3iiM38G6TT/pEqefnbrPVd14+JrnjCvOhp5Z6sZ27fsPxecVPGFTam9nZRDkGT2BrqNG7PulaNUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7094
+X-OriginatorOrg: intel.com
 
-On Wed, Mar 20, 2024 at 10:54:06PM +0800, Kuan-Wei Chiu wrote:
-> Introduce a type-safe interface for min_heap by adding small macro
-> wrappers around functions and using a 0-size array to store type
-> information. This enables the use of __minheap_cast and
-> __minheap_obj_size macros for type casting and obtaining element size.
-> The implementation draws inspiration from generic-radix-tree.h,
-> eliminating the need to pass element size in min_heap_callbacks.
 
-let's avoid the heap->heap.nr - darray (fs/bcachefs/darray.h) has a
-trick for that. All heaps have the same memory layout, so we can just
-cast to a void pointer heap to get something the C code can use.
+
+On 21/03/2024 4:07 am, Dave Hansen wrote:
+> On 3/20/24 05:09, Huang, Kai wrote:
+>> I can try to do if you guys believe this should be done, and should be done
+>> earlier than later, but I am not sure _ANY_ optimization around SEAMCALL will
+>> have meaningful performance improvement.
+> 
+> I don't think Sean had performance concerns.
+> 
+> I think he was having a justifiably violent reaction to how much more
+> complicated the generated code is to do a SEAMCALL versus a good ol' KVM
+> hypercall.
+
+Ah, I automatically linked "generating better code" to "in order to have 
+better performance".  My bad.
 
 > 
-> Link: https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> ---
->  drivers/md/dm-vdo/repair.c     | 21 +++++-----
->  drivers/md/dm-vdo/slab-depot.c | 13 +++---
->  include/linux/min_heap.h       | 75 +++++++++++++++++++++++-----------
->  kernel/events/core.c           | 35 ++++++++--------
->  lib/test_min_heap.c            | 49 +++++++++++-----------
->  5 files changed, 107 insertions(+), 86 deletions(-)
+> "Complicated" in this case means lots more instructions and control
+> flow.  That's slower, sure, but the main impact is that when you go to
+> debug it, it's *MUCH* harder to debug the SEAMCALL entry assembly than a
+> KVM hypercall.
+
+[...]
+
 > 
-> diff --git a/drivers/md/dm-vdo/repair.c b/drivers/md/dm-vdo/repair.c
-> index defc9359f10e..7663fa2098f4 100644
-> --- a/drivers/md/dm-vdo/repair.c
-> +++ b/drivers/md/dm-vdo/repair.c
-> @@ -51,6 +51,8 @@ struct recovery_point {
->  	bool increment_applied;
->  };
->  
-> +MIN_HEAP(struct numbered_block_mapping *, replay_heap);
-> +
->  struct repair_completion {
->  	/* The completion header */
->  	struct vdo_completion completion;
-> @@ -97,7 +99,7 @@ struct repair_completion {
->  	 * order, then original journal order. This permits efficient iteration over the journal
->  	 * entries in order.
->  	 */
-> -	struct min_heap replay_heap;
-> +	struct replay_heap replay_heap;
->  	/* Fields tracking progress through the journal entries. */
->  	struct numbered_block_mapping *current_entry;
->  	struct numbered_block_mapping *current_unfetched_entry;
-> @@ -163,25 +165,24 @@ static void swap_mappings(void *item1, void *item2)
->  }
->  
->  static const struct min_heap_callbacks repair_min_heap = {
-> -	.elem_size = sizeof(struct numbered_block_mapping),
->  	.less = mapping_is_less_than,
->  	.swp = swap_mappings,
->  };
->  
->  static struct numbered_block_mapping *sort_next_heap_element(struct repair_completion *repair)
->  {
-> -	struct min_heap *heap = &repair->replay_heap;
-> +	struct replay_heap *heap = &repair->replay_heap;
->  	struct numbered_block_mapping *last;
->  
-> -	if (heap->nr == 0)
-> +	if (heap->heap.nr == 0)
->  		return NULL;
->  
->  	/*
->  	 * Swap the next heap element with the last one on the heap, popping it off the heap,
->  	 * restore the heap invariant, and return a pointer to the popped element.
->  	 */
-> -	last = &repair->entries[--heap->nr];
-> -	swap_mappings(heap->data, last);
-> +	last = &repair->entries[--heap->heap.nr];
-> +	swap_mappings(heap->heap.data, last);
->  	min_heapify(heap, 0, &repair_min_heap);
->  	return last;
->  }
-> @@ -1117,11 +1118,9 @@ static void recover_block_map(struct vdo_completion *completion)
->  	 * Organize the journal entries into a binary heap so we can iterate over them in sorted
->  	 * order incrementally, avoiding an expensive sort call.
->  	 */
-> -	repair->replay_heap = (struct min_heap) {
-> -		.data = repair->entries,
-> -		.nr = repair->block_map_entry_count,
-> -		.size = repair->block_map_entry_count,
-> -	};
-> +	repair->replay_heap.heap.data = repair->entries;
-> +	repair->replay_heap.heap.nr = repair->block_map_entry_count;
-> +	repair->replay_heap.heap.size = repair->block_map_entry_count;
->  	min_heapify_all(&repair->replay_heap, &repair_min_heap);
->  
->  	vdo_log_info("Replaying %zu recovery entries into block map",
-> diff --git a/drivers/md/dm-vdo/slab-depot.c b/drivers/md/dm-vdo/slab-depot.c
-> index 46e4721e5b4f..3309480170c3 100644
-> --- a/drivers/md/dm-vdo/slab-depot.c
-> +++ b/drivers/md/dm-vdo/slab-depot.c
-> @@ -3309,7 +3309,6 @@ static void swap_slab_statuses(void *item1, void *item2)
->  }
->  
->  static const struct min_heap_callbacks slab_status_min_heap = {
-> -	.elem_size = sizeof(struct slab_status),
->  	.less = slab_status_is_less_than,
->  	.swp = swap_slab_statuses,
->  };
-> @@ -3509,7 +3508,7 @@ static int get_slab_statuses(struct block_allocator *allocator,
->  static int __must_check vdo_prepare_slabs_for_allocation(struct block_allocator *allocator)
->  {
->  	struct slab_status current_slab_status;
-> -	struct min_heap heap;
-> +	MIN_HEAP(struct slab_status *, heap) heap;
->  	int result;
->  	struct slab_status *slab_statuses;
->  	struct slab_depot *depot = allocator->depot;
-> @@ -3521,14 +3520,12 @@ static int __must_check vdo_prepare_slabs_for_allocation(struct block_allocator
->  		return result;
->  
->  	/* Sort the slabs by cleanliness, then by emptiness hint. */
-> -	heap = (struct min_heap) {
-> -		.data = slab_statuses,
-> -		.nr = allocator->slab_count,
-> -		.size = allocator->slab_count,
-> -	};
-> +	heap.heap.data = slab_statuses;
-> +	heap.heap.nr = allocator->slab_count;
-> +	heap.heap.size = allocator->slab_count;
->  	min_heapify_all(&heap, &slab_status_min_heap);
->  
-> -	while (heap.nr > 0) {
-> +	while (heap.heap.nr > 0) {
->  		bool high_priority;
->  		struct vdo_slab *slab;
->  		struct slab_journal *journal;
-> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> index d52daf45861b..c3635a7fdb88 100644
-> --- a/include/linux/min_heap.h
-> +++ b/include/linux/min_heap.h
-> @@ -7,45 +7,59 @@
->  #include <linux/types.h>
->  
->  /**
-> - * struct min_heap - Data structure to hold a min-heap.
-> + * struct __min_heap - Data structure to hold a min-heap.
->   * @data: Start of array holding the heap elements.
->   * @nr: Number of elements currently in the heap.
->   * @size: Maximum number of elements that can be held in current storage.
->   */
-> -struct min_heap {
-> +struct __min_heap {
->  	void *data;
->  	int nr;
->  	int size;
->  };
->  
-> +/*
-> + * We use a 0 size array to stash the type we're storing without taking any
-> + * space at runtime - then the various accessor macros can use typeof() to get
-> + * to it for casts/sizeof - we also force the alignment so that storing a type
-> + * with a ridiculous alignment doesn't blow up the alignment or size of the
-> + * min_heap.
-> + */
-> +#define MIN_HEAP(_type, _name)			\
-> +struct _name {				\
-> +	struct __min_heap	heap;		\
-> +	_type type[0] __aligned(1);	\
-> +}
-> +
-> +#define __minheap_cast(_heap)		(typeof((_heap)->type[0]) *)
-> +#define __minheap_obj_size(_heap)	sizeof((_heap)->type[0])
-> +
->  /**
->   * struct min_heap_callbacks - Data/functions to customise the min_heap.
-> - * @elem_size: The nr of each element in bytes.
->   * @less: Partial order function for this heap.
->   * @swp: Swap elements function.
->   */
->  struct min_heap_callbacks {
-> -	int elem_size;
->  	bool (*less)(const void *lhs, const void *rhs);
->  	void (*swp)(void *lhs, void *rhs);
->  };
->  
->  /* Sift the element at pos down the heap. */
->  static __always_inline
-> -void min_heapify(struct min_heap *heap, int pos,
-> +void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
->  		const struct min_heap_callbacks *func)
->  {
->  	void *left, *right;
->  	void *data = heap->data;
-> -	void *root = data + pos * func->elem_size;
-> +	void *root = data + pos * elem_size;
->  	int i = pos, j;
->  
->  	/* Find the sift-down path all the way to the leaves. */
->  	for (;;) {
->  		if (i * 2 + 2 >= heap->nr)
->  			break;
-> -		left = data + (i * 2 + 1) * func->elem_size;
-> -		right = data + (i * 2 + 2) * func->elem_size;
-> +		left = data + (i * 2 + 1) * elem_size;
-> +		right = data + (i * 2 + 2) * elem_size;
->  		i = func->less(left, right) ? i * 2 + 1 : i * 2 + 2;
->  	}
->  
-> @@ -54,31 +68,37 @@ void min_heapify(struct min_heap *heap, int pos,
->  		i = i * 2 + 1;
->  
->  	/* Backtrack to the correct location. */
-> -	while (i != pos && func->less(root, data + i * func->elem_size))
-> +	while (i != pos && func->less(root, data + i * elem_size))
->  		i = (i - 1) / 2;
->  
->  	/* Shift the element into its correct place. */
->  	j = i;
->  	while (i != pos) {
->  		i = (i - 1) / 2;
-> -		func->swp(data + i * func->elem_size, data + j * func->elem_size);
-> +		func->swp(data + i * elem_size, data + j * elem_size);
->  	}
->  }
->  
-> +#define min_heapify(_heap, _pos, _func)	\
-> +	__min_heapify(&(_heap)->heap, _pos, __minheap_obj_size(_heap), _func)
-> +
->  /* Floyd's approach to heapification that is O(nr). */
->  static __always_inline
-> -void min_heapify_all(struct min_heap *heap,
-> +void __min_heapify_all(struct __min_heap *heap, size_t elem_size,
->  		const struct min_heap_callbacks *func)
->  {
->  	int i;
->  
->  	for (i = heap->nr / 2 - 1; i >= 0; i--)
-> -		min_heapify(heap, i, func);
-> +		__min_heapify(heap, i, elem_size, func);
->  }
->  
-> +#define min_heapify_all(_heap, _func)	\
-> +	__min_heapify_all(&(_heap)->heap, __minheap_obj_size(_heap), _func)
-> +
->  /* Remove minimum element from the heap, O(log2(nr)). */
->  static __always_inline
-> -void min_heap_pop(struct min_heap *heap,
-> +void __min_heap_pop(struct __min_heap *heap, size_t elem_size,
->  		const struct min_heap_callbacks *func)
->  {
->  	void *data = heap->data;
-> @@ -88,27 +108,33 @@ void min_heap_pop(struct min_heap *heap,
->  
->  	/* Place last element at the root (position 0) and then sift down. */
->  	heap->nr--;
-> -	memcpy(data, data + (heap->nr * func->elem_size), func->elem_size);
-> -	min_heapify(heap, 0, func);
-> +	memcpy(data, data + (heap->nr * elem_size), elem_size);
-> +	__min_heapify(heap, 0, elem_size, func);
->  }
->  
-> +#define min_heap_pop(_heap, _func)	\
-> +	__min_heap_pop(&(_heap)->heap, __minheap_obj_size(_heap), _func)
-> +
->  /*
->   * Remove the minimum element and then push the given element. The
->   * implementation performs 1 sift (O(log2(nr))) and is therefore more
->   * efficient than a pop followed by a push that does 2.
->   */
->  static __always_inline
-> -void min_heap_pop_push(struct min_heap *heap,
-> -		const void *element,
-> +void __min_heap_pop_push(struct __min_heap *heap,
-> +		const void *element, size_t elem_size,
->  		const struct min_heap_callbacks *func)
->  {
-> -	memcpy(heap->data, element, func->elem_size);
-> -	min_heapify(heap, 0, func);
-> +	memcpy(heap->data, element, elem_size);
-> +	__min_heapify(heap, 0, elem_size, func);
->  }
->  
-> +#define min_heap_pop_push(_heap, _element, _func)	\
-> +	__min_heap_pop_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func)
-> +
->  /* Push an element on to the heap, O(log2(nr)). */
->  static __always_inline
-> -void min_heap_push(struct min_heap *heap, const void *element,
-> +void __min_heap_push(struct __min_heap *heap, const void *element, size_t elem_size,
->  		const struct min_heap_callbacks *func)
->  {
->  	void *data = heap->data;
-> @@ -120,17 +146,20 @@ void min_heap_push(struct min_heap *heap, const void *element,
->  
->  	/* Place at the end of data. */
->  	pos = heap->nr;
-> -	memcpy(data + (pos * func->elem_size), element, func->elem_size);
-> +	memcpy(data + (pos * elem_size), element, elem_size);
->  	heap->nr++;
->  
->  	/* Sift child at pos up. */
->  	for (; pos > 0; pos = (pos - 1) / 2) {
-> -		child = data + (pos * func->elem_size);
-> -		parent = data + ((pos - 1) / 2) * func->elem_size;
-> +		child = data + (pos * elem_size);
-> +		parent = data + ((pos - 1) / 2) * elem_size;
->  		if (func->less(parent, child))
->  			break;
->  		func->swp(parent, child);
->  	}
->  }
->  
-> +#define min_heap_push(_heap, _element, _func)	\
-> +	__min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func)
-> +
->  #endif /* _LINUX_MIN_HEAP_H */
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 10ac2db83f14..065dfaa8b009 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3698,19 +3698,20 @@ static void swap_ptr(void *l, void *r)
->  	swap(*lp, *rp);
->  }
->  
-> +MIN_HEAP(struct perf_event *, perf_event_min_heap);
-> +
->  static const struct min_heap_callbacks perf_min_heap = {
-> -	.elem_size = sizeof(struct perf_event *),
->  	.less = perf_less_group_idx,
->  	.swp = swap_ptr,
->  };
->  
-> -static void __heap_add(struct min_heap *heap, struct perf_event *event)
-> +static void __heap_add(struct perf_event_min_heap *heap, struct perf_event *event)
->  {
-> -	struct perf_event **itrs = heap->data;
-> +	struct perf_event **itrs = heap->heap.data;
->  
->  	if (event) {
-> -		itrs[heap->nr] = event;
-> -		heap->nr++;
-> +		itrs[heap->heap.nr] = event;
-> +		heap->heap.nr++;
->  	}
->  }
->  
-> @@ -3738,7 +3739,7 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  	struct perf_cpu_context *cpuctx = NULL;
->  	/* Space for per CPU and/or any CPU event iterators. */
->  	struct perf_event *itrs[2];
-> -	struct min_heap event_heap;
-> +	struct perf_event_min_heap event_heap;
->  	struct perf_event **evt;
->  	int ret;
->  
-> @@ -3747,11 +3748,9 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  
->  	if (!ctx->task) {
->  		cpuctx = this_cpu_ptr(&perf_cpu_context);
-> -		event_heap = (struct min_heap){
-> -			.data = cpuctx->heap,
-> -			.nr = 0,
-> -			.size = cpuctx->heap_size,
-> -		};
-> +		event_heap.heap.data = cpuctx->heap;
-> +		event_heap.heap.nr = 0;
-> +		event_heap.heap.size = cpuctx->heap_size;
->  
->  		lockdep_assert_held(&cpuctx->ctx.lock);
->  
-> @@ -3760,15 +3759,13 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  			css = &cpuctx->cgrp->css;
->  #endif
->  	} else {
-> -		event_heap = (struct min_heap){
-> -			.data = itrs,
-> -			.nr = 0,
-> -			.size = ARRAY_SIZE(itrs),
-> -		};
-> +		event_heap.heap.data = itrs;
-> +		event_heap.heap.nr = 0;
-> +		event_heap.heap.size = ARRAY_SIZE(itrs);
->  		/* Events not within a CPU context may be on any CPU. */
->  		__heap_add(&event_heap, perf_event_groups_first(groups, -1, pmu, NULL));
->  	}
-> -	evt = event_heap.data;
-> +	evt = event_heap.heap.data;
->  
->  	__heap_add(&event_heap, perf_event_groups_first(groups, cpu, pmu, NULL));
->  
-> @@ -3777,14 +3774,14 @@ static noinline int visit_groups_merge(struct perf_event_context *ctx,
->  		__heap_add(&event_heap, perf_event_groups_first(groups, cpu, pmu, css->cgroup));
->  #endif
->  
-> -	if (event_heap.nr) {
-> +	if (event_heap.heap.nr) {
->  		__link_epc((*evt)->pmu_ctx);
->  		perf_assert_pmu_disabled((*evt)->pmu_ctx->pmu);
->  	}
->  
->  	min_heapify_all(&event_heap, &perf_min_heap);
->  
-> -	while (event_heap.nr) {
-> +	while (event_heap.heap.nr) {
->  		ret = func(*evt, data);
->  		if (ret)
->  			return ret;
-> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
-> index 7b01b4387cfb..af2e446034d8 100644
-> --- a/lib/test_min_heap.c
-> +++ b/lib/test_min_heap.c
-> @@ -11,6 +11,8 @@
->  #include <linux/printk.h>
->  #include <linux/random.h>
->  
-> +MIN_HEAP(int, min_heap_test);
-> +
->  static __init bool less_than(const void *lhs, const void *rhs)
->  {
->  	return *(int *)lhs < *(int *)rhs;
-> @@ -30,16 +32,16 @@ static __init void swap_ints(void *lhs, void *rhs)
->  }
->  
->  static __init int pop_verify_heap(bool min_heap,
-> -				struct min_heap *heap,
-> +				struct min_heap_test *heap,
->  				const struct min_heap_callbacks *funcs)
->  {
-> -	int *values = heap->data;
-> +	int *values = heap->heap.data;
->  	int err = 0;
->  	int last;
->  
->  	last = values[0];
->  	min_heap_pop(heap, funcs);
-> -	while (heap->nr > 0) {
-> +	while (heap->heap.nr > 0) {
->  		if (min_heap) {
->  			if (last > values[0]) {
->  				pr_err("error: expected %d <= %d\n", last,
-> @@ -63,13 +65,12 @@ static __init int test_heapify_all(bool min_heap)
->  {
->  	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
->  			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-> -	struct min_heap heap = {
-> -		.data = values,
-> -		.nr = ARRAY_SIZE(values),
-> -		.size =  ARRAY_SIZE(values),
-> -	};
-> +	struct min_heap_test heap;
-> +
-> +	heap.heap.data = values;
-> +	heap.heap.nr = ARRAY_SIZE(values);
-> +	heap.heap.size =  ARRAY_SIZE(values);
->  	struct min_heap_callbacks funcs = {
-> -		.elem_size = sizeof(int),
->  		.less = min_heap ? less_than : greater_than,
->  		.swp = swap_ints,
->  	};
-> @@ -81,8 +82,8 @@ static __init int test_heapify_all(bool min_heap)
->  
->  
->  	/* Test with randomly generated values. */
-> -	heap.nr = ARRAY_SIZE(values);
-> -	for (i = 0; i < heap.nr; i++)
-> +	heap.heap.nr = ARRAY_SIZE(values);
-> +	for (i = 0; i < heap.heap.nr; i++)
->  		values[i] = get_random_u32();
->  
->  	min_heapify_all(&heap, &funcs);
-> @@ -96,13 +97,12 @@ static __init int test_heap_push(bool min_heap)
->  	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
->  			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
->  	int values[ARRAY_SIZE(data)];
-> -	struct min_heap heap = {
-> -		.data = values,
-> -		.nr = 0,
-> -		.size =  ARRAY_SIZE(values),
-> -	};
-> +	struct min_heap_test heap;
-> +
-> +	heap.heap.data = values;
-> +	heap.heap.nr = 0;
-> +	heap.heap.size =  ARRAY_SIZE(values);
->  	struct min_heap_callbacks funcs = {
-> -		.elem_size = sizeof(int),
->  		.less = min_heap ? less_than : greater_than,
->  		.swp = swap_ints,
->  	};
-> @@ -115,7 +115,7 @@ static __init int test_heap_push(bool min_heap)
->  	err = pop_verify_heap(min_heap, &heap, &funcs);
->  
->  	/* Test with randomly generated values. */
-> -	while (heap.nr < heap.size) {
-> +	while (heap.heap.nr < heap.heap.size) {
->  		temp = get_random_u32();
->  		min_heap_push(&heap, &temp, &funcs);
->  	}
-> @@ -129,13 +129,12 @@ static __init int test_heap_pop_push(bool min_heap)
->  	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
->  			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
->  	int values[ARRAY_SIZE(data)];
-> -	struct min_heap heap = {
-> -		.data = values,
-> -		.nr = 0,
-> -		.size =  ARRAY_SIZE(values),
-> -	};
-> +	struct min_heap_test heap;
-> +
-> +	heap.heap.data = values;
-> +	heap.heap.nr = 0;
-> +	heap.heap.size =  ARRAY_SIZE(values);
->  	struct min_heap_callbacks funcs = {
-> -		.elem_size = sizeof(int),
->  		.less = min_heap ? less_than : greater_than,
->  		.swp = swap_ints,
->  	};
-> @@ -152,7 +151,7 @@ static __init int test_heap_pop_push(bool min_heap)
->  
->  	err = pop_verify_heap(min_heap, &heap, &funcs);
->  
-> -	heap.nr = 0;
-> +	heap.heap.nr = 0;
->  	for (i = 0; i < ARRAY_SIZE(data); i++)
->  		min_heap_push(&heap, &temp, &funcs);
->  
-> -- 
-> 2.34.1
+> My takeaway from this, though, is that we are relying on the compiler
+> for a *LOT*.  There are also so many levels in the helpers that it's
+> hard to avoid silly things like two _separate_ retry loops.
 > 
+> We should probably be looking at the generated code a _bit_ more often
+> than never, and it's OK to tinker a _bit_ to make things out-of-line or
+> make sure that the compiler optimizes everything that we think that it
+> should.
+
+Yeah, agreed.
+
+> 
+> Also remember that there are very fun tools out there that can make this
+> much easier than recompiling the kernel a billion times:
+> 
+> 	https://godbolt.org/z/8ooE4d465
+
+Ah, this is useful.  Thanks for sharing :-)
 
