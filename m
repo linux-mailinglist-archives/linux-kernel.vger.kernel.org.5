@@ -1,135 +1,342 @@
-Return-Path: <linux-kernel+bounces-108847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F79E8810D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:23:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AD008810C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AF2F1C21573
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:23:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 850A2B246F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 625D93BBE7;
-	Wed, 20 Mar 2024 11:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC613A1BB;
+	Wed, 20 Mar 2024 11:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="QOFFn/XR"
-Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B211171D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.210
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="n1/+jpI3"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2CA3BB3D;
+	Wed, 20 Mar 2024 11:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710933796; cv=none; b=sPog7PtDcDhs+lC+fR4n04ERdGVG5CLrC51Zs9wceUkPCB5eia3nvgvIEp4i5+XyT4MZMNh16ZBI/8kU3cR2xb8sIeZvp7I8VJmvFFlYMEaRmaFZ8qEEL+e3TwoSR+SRhP/w5cHGFC77jgSXvriFMjSLxHLJnRs8nyuqtfbV/OE=
+	t=1710933454; cv=none; b=YT8n8/3Uvjv/aK+TUITg6CTyuI76kD84NQ7xgf9qnRV3dkWiwBIL88uszndGp17ZwcS4SnjZ5uLAxlqVff9tNjEO5xhSrQ5xacZ4ZzAXCrYKuZJqK3ilfRIEPgNOV9A92c4RapF6J6ioDiQviIycnIfpDChu7miwVmhS2rN77kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710933796; c=relaxed/simple;
-	bh=nusKVOAceUYCL9CnXyui/hszTDW4cvOOck0z5/kb4KA=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=tYGj9ZzIR8MnmfbEVQzM4OFM1KRxMO52M7mTxHro+fCAW/HGXpC9pFbnEXUHSZwWnHdU/1IXqxLgYMGEHDXIg/ifaYXn51AzpAkOTf8mNfMQQMWYLBolg75/flRnJaOHss41/gyBGpBks0Jxl2UgUmdg53xfBXw7syEiwyjY56Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=QOFFn/XR; arc=none smtp.client-ip=203.205.221.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710933791; bh=V2AN3h8sZEyvNDd8KWZE3vxEDjCSIaOb4bVXmJqygsY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QOFFn/XR/iJ9G5TgGfeA54sx4L1NIcoyNDGiFF+ItZ3G3oLbDpMN9supWM9cOYw2d
-	 gs5VlWv6o94aldjyMy66aUprcQ88ufLVY5rxSLbXabBKCYySTXs++GrcXmiXbxCyLI
-	 KzRNeuXQa96Xsclyn29sqBK1MN76ZOzabnVeKglI=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 43B23EAD; Wed, 20 Mar 2024 19:16:59 +0800
-X-QQ-mid: xmsmtpt1710933419t68z7oox4
-Message-ID: <tencent_7DD17367A377E97CA3B5A443F776776A8605@qq.com>
-X-QQ-XMAILINFO: OZsapEVPoiO6pb6ZN/T6VIT8DrPQBtsIeM42KX8VgYoP7huV0pssSV3w47+sDD
-	 cz0lXOB1smSYy+d2D5iSubYYjIhnUaOTCow96wjqbUOmT45+bTVsI40M773wmDkPcas1EMKclcko
-	 lBnkrXoXZrq8rLXzttIuXXemEWC4q4oT+s4ZwXnitrpf/CkT0idB/mFbWZpVX8v0CtvTq4OEJyYP
-	 OjvrjqBdhV2lBl3ePb6bezWdKSE35GKSRg/XzXldEmw9r2kJMjE0mNXNk5Qa4tK7fr2z/YXZvZOB
-	 O5BUufCYFUX21m/MuiTy9kjn6SSsOcNnjfv7R9LddoJTJglGlZ/6PZVac8oGneiL1zhe6SJV7HIh
-	 N6Vykdiyvy0+QhqRn8lCqXxrUv0KwjYZcCyNZF1V0UqJYsfaUvHEpd9vg8oCjRQe/zomV4qFe5An
-	 kFfWyHP7BCwcamy7QHBTXa+V7FteZS5W0ZYZjw/8K9RPJiOg556uroCNSqOPsPcipkT+qiAU1wev
-	 7SDJ0q30i5eqQy6YCbZ6sqsvVLW796y1JpXVb6OlJQ6oymE0kw8FjAw5QHladLr7I3P+XAHHCpbn
-	 5C0xzFw7+MyRuXy55HY0ZyCch1HvPJn7swp3a6QRKG8esk9bpYW2Tz0HoY5xEGlnbGa9n9UQqgJN
-	 HEYtPg2BcXmZmtAS8qnW+lu+GqIrzry4o90+0UoJLCUL1tDPRLUZ9zX52kVNSSwUSQtgngnBL82o
-	 taV68Y+uYBbR6MR4P9hwNsVV6BI2HN3EUUVCg9ywuv3+rDHcR+eTomIjCgYzvJJANWQqd0UgKCPW
-	 aRJxFnMB+nQfdI3KEV+9/BX7f/DHuz5tt3uC4Q0R1AGvbALzcEoR3MOQp+SYEsY1dgISq1ZN6h1h
-	 XKTWXJOCAk4bN5PBkFvWHXk+9VhTqe7xLqj6Qw6vVCBspvDs3evJt91/xoQiCvZ41x8Xn80wzNmL
-	 mArJr6v7am1iODG/o03Q==
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in check_stack_range_initialized
-Date: Wed, 20 Mar 2024 19:17:00 +0800
-X-OQ-MSGID: <20240320111659.1320058-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000003dc8e00614076ab6@google.com>
-References: <0000000000003dc8e00614076ab6@google.com>
+	s=arc-20240116; t=1710933454; c=relaxed/simple;
+	bh=G08oD3Z49wArGuljMx/EjSy0XiLoWdlnVjqTATC9B08=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Z/WPKBl8+kAYV4DjfeQOonjU8Gdi7eCLK1LQmWD1wYvJJW1KTj1c0ZKLbKaL5C3+JayQuRmp+uU4gljJFhJaN4bwccMuZoWuCdJ9wivS5Ck1sekAiqeRDTgCR7AtpbUhrOkZgCRdayXhwT1jlZRyp7Yh2BJlQH818xqIsa+URPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=n1/+jpI3; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 0DF4520B74C0; Wed, 20 Mar 2024 04:17:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0DF4520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710933452;
+	bh=ToCqVGJ9qsoOL9pg19mG+XRuSbpqCQMxtAL+wYSMZc0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=n1/+jpI3oKnn/UwqaCd9tExCtGJ5DyhKZplTlnNEiSwio4XvIClR30TE2Pd1LBEaX
+	 KN94d7s9nMzc22K/SQilyfKoFXgus8fk3MRBRS8Bw+5cx5tApNvDCeNvBF0L4NOlAI
+	 9dYu+3WCneL812r1lnD50T8ZKogsV9LMF68zc680=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Olaf Hering <olaf@aepfle.de>,
+	Ani Sinha <anisinha@redhat.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH v4] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for keyfile format
+Date: Wed, 20 Mar 2024 04:17:31 -0700
+Message-Id: <1710933451-6312-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-please test oob in check_stack_range_initialized
+If the network configuration strings are passed as a combination of IPv4
+and IPv6 addresses, the current KVP daemon does not handle processing for
+the keyfile configuration format.
+With these changes, the keyfile config generation logic scans through the
+list twice to generate IPv4 and IPv6 sections for the configuration files
+to handle this support.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+Testcases ran:Rhel 9, Hyper-V VMs
+              (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ Changes in v4
+ * Removed the unnecessary memset for addr in the start
+ * Added a comment to describe how we erase the last comma character
+ * Fixed some typos in the commit description
+ * While using strncat, skip copying the '\0' character.
+---
+ tools/hv/hv_kvp_daemon.c | 181 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 140 insertions(+), 41 deletions(-)
 
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1dd3b99d1bb9..6306925c5e47 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7177,6 +7177,11 @@ static int check_stack_range_initialized(
- 		return 0;
- 	}
+diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+index 318e2dad27e0..d64d548a802f 100644
+--- a/tools/hv/hv_kvp_daemon.c
++++ b/tools/hv/hv_kvp_daemon.c
+@@ -76,6 +76,12 @@ enum {
+ 	DNS
+ };
  
-+	if (INT_MIN - access_size > max_off) {
-+		verbose(env, "invalid access size\n");
-+		return -EACCES;
++enum {
++	IPV4 = 1,
++	IPV6,
++	IP_TYPE_MAX
++};
++
+ static int in_hand_shake;
+ 
+ static char *os_name = "";
+@@ -102,6 +108,11 @@ static struct utsname uts_buf;
+ 
+ #define MAX_FILE_NAME 100
+ #define ENTRIES_PER_BLOCK 50
++/*
++ * Change this entry if the number of addresses increases in future
++ */
++#define MAX_IP_ENTRIES 64
++#define OUTSTR_BUF_SIZE ((INET6_ADDRSTRLEN + 1) * MAX_IP_ENTRIES)
+ 
+ struct kvp_record {
+ 	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
+@@ -1171,6 +1182,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
+ 	return 0;
+ }
+ 
++int ip_version_check(const char *input_addr)
++{
++	struct in6_addr addr;
++
++	if (inet_pton(AF_INET, input_addr, &addr))
++		return IPV4;
++	else if (inet_pton(AF_INET6, input_addr, &addr))
++		return IPV6;
++
++	return -EINVAL;
++}
++
+ /*
+  * Only IPv4 subnet strings needs to be converted to plen
+  * For IPv6 the subnet is already privided in plen format
+@@ -1197,14 +1220,75 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
+ 	return plen;
+ }
+ 
++static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
++				  int ip_sec)
++{
++	char addr[INET6_ADDRSTRLEN], *output_str;
++	int ip_offset = 0, error = 0, ip_ver;
++	char *param_name;
++
++	if (type == DNS)
++		param_name = "dns";
++	else if (type == GATEWAY)
++		param_name = "gateway";
++	else
++		return -EINVAL;
++
++	output_str = (char *)calloc(OUTSTR_BUF_SIZE, sizeof(char));
++	if (!output_str)
++		return -ENOMEM;
++
++	while (1) {
++		memset(addr, 0, sizeof(addr));
++
++		if (!parse_ip_val_buffer(ip_string, &ip_offset, addr,
++					 (MAX_IP_ADDR_SIZE * 2)))
++			break;
++
++		ip_ver = ip_version_check(addr);
++		if (ip_ver < 0)
++			continue;
++
++		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
++		    (ip_ver == IPV6 && ip_sec == IPV6)) {
++			/*
++			 * do a bound check to avoid out-of bound writes
++			 */
++			if ((OUTSTR_BUF_SIZE - strlen(output_str)) >
++			    (strlen(addr) + 1)) {
++				strncat(output_str, addr,
++					OUTSTR_BUF_SIZE -
++					strlen(output_str) - 1);
++				strncat(output_str, ",",
++					OUTSTR_BUF_SIZE -
++					strlen(output_str) - 1);
++			}
++		} else {
++			continue;
++		}
 +	}
 +
- 	for (i = min_off; i < max_off + access_size; i++) {
- 		u8 *stype;
++	if (strlen(output_str)) {
++		/*
++		 * This is to get rid of that extra comma character
++		 * in the end of the string
++		 */
++		output_str[strlen(output_str) - 1] = '\0';
++		error = fprintf(f, "%s=%s\n", param_name, output_str);
++	}
++
++	free(output_str);
++	return error;
++}
++
+ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+-				int is_ipv6)
++				int ip_sec)
+ {
+ 	char addr[INET6_ADDRSTRLEN];
+ 	char subnet_addr[INET6_ADDRSTRLEN];
+ 	int error, i = 0;
+ 	int ip_offset = 0, subnet_offset = 0;
+-	int plen;
++	int plen, ip_ver;
  
-@@ -8589,6 +8594,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		return 0;
- 	}
+ 	memset(addr, 0, sizeof(addr));
+ 	memset(subnet_addr, 0, sizeof(subnet_addr));
+@@ -1216,10 +1300,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+ 						       subnet_addr,
+ 						       (MAX_IP_ADDR_SIZE *
+ 							2))) {
+-		if (!is_ipv6)
++		ip_ver = ip_version_check(addr);
++		if (ip_ver < 0)
++			continue;
++
++		if (ip_ver == IPV4 && ip_sec == IPV4)
+ 			plen = kvp_subnet_to_plen((char *)subnet_addr);
+-		else
++		else if (ip_ver == IPV6 && ip_sec == IPV6)
+ 			plen = atoi(subnet_addr);
++		else
++			continue;
  
-+	printk("1meta:%p, maptr:%p, ks:%d, kv:%d,%s\n",
-+		meta, meta->map_ptr, meta->map_ptr->key_size, meta->map_ptr->value_size, __func__);
- 	if (type_is_pkt_pointer(type) &&
- 	    !may_access_direct_pkt_data(env, meta, BPF_READ)) {
- 		verbose(env, "helper access to the packet is not allowed\n");
-@@ -8704,6 +8711,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			verbose(env, "invalid map_ptr to access map->key\n");
- 			return -EACCES;
- 		}
-+		printk("meta:%p, maptr:%p, ks:%d, reg->map_ptr:%p, %s\n",
-+			meta, meta->map_ptr, meta->map_ptr->key_size, reg->map_ptr, __func__);
- 		err = check_helper_mem_access(env, regno,
- 					      meta->map_ptr->key_size, false,
- 					      NULL);
-@@ -8721,6 +8730,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			return -EACCES;
- 		}
- 		meta->raw_mode = arg_type & MEM_UNINIT;
-+		printk("meta:%p, maptr:%p, vs:%d, reg->map_ptr:%p, %s\n",
-+			meta, meta->map_ptr, meta->map_ptr->value_size, reg->map_ptr, __func__);
- 		err = check_helper_mem_access(env, regno,
- 					      meta->map_ptr->value_size, false,
- 					      meta);
-@@ -10248,6 +10259,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		if (plen < 0)
+ 			return plen;
+@@ -1238,12 +1328,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
  
- 	meta.func_id = func_id;
- 	/* check args */
-+	printk("meta:%p, maptr:%p, ks:%d, kv:%d,%s\n",
-+		meta, meta->map_ptr, meta->map_ptr->key_size, meta->map_ptr->value_size, __func__);
- 	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 		err = check_func_arg(env, i, &meta, fn, insn_idx);
- 		if (err)
+ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ {
+-	int error = 0;
++	int error = 0, ip_ver;
+ 	char if_filename[PATH_MAX];
+ 	char nm_filename[PATH_MAX];
+ 	FILE *ifcfg_file, *nmfile;
+ 	char cmd[PATH_MAX];
+-	int is_ipv6 = 0;
+ 	char *mac_addr;
+ 	int str_len;
+ 
+@@ -1421,52 +1510,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	if (error)
+ 		goto setval_error;
+ 
+-	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+-		error = fprintf(nmfile, "\n[ipv6]\n");
+-		if (error < 0)
+-			goto setval_error;
+-		is_ipv6 = 1;
+-	} else {
+-		error = fprintf(nmfile, "\n[ipv4]\n");
+-		if (error < 0)
+-			goto setval_error;
+-	}
+-
+ 	/*
+-	 * Now we populate the keyfile format
++	 * The keyfile format expects the IPv6 and IPv4 configuration in
++	 * different sections. Therefore we iterate through the list twice,
++	 * once to populate the IPv4 section and the next time for IPv6
+ 	 */
++	ip_ver = IPV4;
++	do {
++		if (ip_ver == IPV4) {
++			error = fprintf(nmfile, "\n[ipv4]\n");
++			if (error < 0)
++				goto setval_error;
++		} else {
++			error = fprintf(nmfile, "\n[ipv6]\n");
++			if (error < 0)
++				goto setval_error;
++		}
+ 
+-	if (new_val->dhcp_enabled) {
+-		error = kvp_write_file(nmfile, "method", "", "auto");
+-		if (error < 0)
+-			goto setval_error;
+-	} else {
+-		error = kvp_write_file(nmfile, "method", "", "manual");
++		/*
++		 * Now we populate the keyfile format
++		 */
++
++		if (new_val->dhcp_enabled) {
++			error = kvp_write_file(nmfile, "method", "", "auto");
++			if (error < 0)
++				goto setval_error;
++		} else {
++			error = kvp_write_file(nmfile, "method", "", "manual");
++			if (error < 0)
++				goto setval_error;
++		}
++
++		/*
++		 * Write the configuration for ipaddress, netmask, gateway and
++		 * name services
++		 */
++		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
++					     (char *)new_val->sub_net,
++					     ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
+ 
+-	/*
+-	 * Write the configuration for ipaddress, netmask, gateway and
+-	 * name services
+-	 */
+-	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+-				     (char *)new_val->sub_net, is_ipv6);
+-	if (error < 0)
+-		goto setval_error;
+-
+-	/* we do not want ipv4 addresses in ipv6 section and vice versa */
+-	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
+-		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
++		error = process_dns_gateway_nm(nmfile,
++					       (char *)new_val->gate_way,
++					       GATEWAY, ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
+ 
+-	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
+-		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
++		error = process_dns_gateway_nm(nmfile,
++					       (char *)new_val->dns_addr, DNS,
++					       ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
++
++		ip_ver++;
++	} while (ip_ver < IP_TYPE_MAX);
++
+ 	fclose(nmfile);
+ 	fclose(ifcfg_file);
+ 
+-- 
+2.34.1
 
 
