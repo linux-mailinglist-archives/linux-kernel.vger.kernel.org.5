@@ -1,165 +1,315 @@
-Return-Path: <linux-kernel+bounces-108349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D88E880977
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:09:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 169E088097A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:11:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02252285366
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:09:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2E171F2312F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C37410942;
-	Wed, 20 Mar 2024 02:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5339879F6;
+	Wed, 20 Mar 2024 02:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2vS6Er52"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jfS7L1tV"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3200CF9CE
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B787D7464;
+	Wed, 20 Mar 2024 02:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710900509; cv=none; b=VN0Mz7kRZm488wa+aH1+ew+fTIp2Wro/kN7X/L2AMQ6V86Cc812OGNkTiZNjh2FC1QJ44Nzyw0j3rkUNTcyBy8JfBqZIKmErGAn7ja9A0e+r2RE/MczRq3p3P3H6caaQYjGq80gMPRRZC1TVMI8XozsIuhNAzfkNp2qkO7rnazE=
+	t=1710900702; cv=none; b=tEkMJQGBzVGPu8QZE8qikIKl1CNn+pEpD1D6V8sdfTy3L1ZEDIjKMIly4lH4TMmllHlragWRCmwvyCX7VWTiLzu6RpcPcWmTDiT/JMAm6wcntnt7KxRftmuzkBi9tULvreQlI30JkC4hR7lDITe1eoUopf0d+VOteOqjX5WHz7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710900509; c=relaxed/simple;
-	bh=6b1HSPl6nsepzN39xGf0RLV0KItmZQ4a71qGKlaYe+o=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ta81cfTjGZYwC2dIGi7u6w/JZ4sWZll87D4d+FHe+6DOJkx8Qa8sXQ0r9LLeEH+wnIrtKd8tA8DgkPepRgsezYJjYi1vLleVdINj0xnwmvJJdGT0DzuKY0b+ZqSleb19FXUFKcQ2CSJQrq1PxL2Q5zNEOK4ykZWP9HAY7p4dvss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2vS6Er52; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ff1816749so76766077b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:08:27 -0700 (PDT)
+	s=arc-20240116; t=1710900702; c=relaxed/simple;
+	bh=lzxLsMVdwcPAMXkHC3RNt0usmP7tGhKFAczR2Lqss+c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RH1yranWQR49ZkaHa31GM0LBK48iarAkJGN/WCJbaGMan2+MxJrXVFdKDR9qHJl0HOJ+07UzNu8FkzNHHqm+sYpo0CMTsKCsoeFBIwN1qOKi3QU3rhfGdIFPF3zJG6ZcF431eaHs/scgmTFZ82BA6AIkV8zblGbvCDqgiO1vzTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jfS7L1tV; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7cd06b9682aso76281839f.3;
+        Tue, 19 Mar 2024 19:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710900507; x=1711505307; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4f2cmQGIIvYk0KlMI8Lk64bezK2vGQGAMrw9pw7eCqU=;
-        b=2vS6Er520gnUvxILLS/ezGlHLtFa9xl+xDe4YENJCaDgSwBealWui/gdE3PoYeCzIa
-         pmzbDDc1khooKpMDWW6fU97TbJeItcIVsQB4m3vK6PbhOEUN/8lFRdzfemTxebQquUHd
-         cSqbdhEaU8CP6b1qDMaW1+ENgEoqtufxbuYpTVU4EZyMd7vPQX9nekZ2AJbKc+q2eSXy
-         qZQvmVmjris+rDX/VrI4TnxJRV80TrBWlNc8AKswuRLzRaFz/nK3sMGOSOJQX/eca3YZ
-         sBuTnIqD7pC2ztT6lAogRgPJOh7aB89pg7DqmO7HfkAmRaKqQqRe91sbdm19DFIamdMu
-         BjKw==
+        d=gmail.com; s=20230601; t=1710900700; x=1711505500; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E68i2axyuKVX+pAKCm1Dr5BpFi26SQMx7ONiMhlC3wI=;
+        b=jfS7L1tVrpbMKmvekv/LFGAiov7wTYrr2WOEf1EK+60uviGY/plVruko8naitXUHFX
+         Yoq8YO5B8wSt/CNwUsb1qS0qusf/0RqLBXiE5UzqrYaPVQ8IuPL5rHCqLDYuFfTKOuVq
+         brjlfeEdRNemCUr+ysIOoP4PJRAXqOrgtC79dvhi/lE7iKiEww4ApvMITj/MiI4ndk6r
+         9ELj+Azb73++UXkWFXCuY0wrF9nA90Olrv49m9P8pnojHWwPwplOXEV+Rf3bKfBeZgq4
+         bqR2Gv1DEtRJrA/YkDhFhCGnl6U1nxPNDjxpf2gHs7TY+0K3neCeHvEIrZACe0DX1fw5
+         Kw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710900507; x=1711505307;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4f2cmQGIIvYk0KlMI8Lk64bezK2vGQGAMrw9pw7eCqU=;
-        b=jUnI4si5yISY6frg5lDVwFB/wKSkrH87qiwhbHA3HA0uPYRR9RL+DN1GsqiJR0FjRx
-         jP2i6S6ay4FxO2SZbIwF2+PxuqYjHuYrG2mPp3pOb2vWJYzYlIenJDrV7zF7DmfvN3j/
-         Zva2w+IXnzpAQgDFIzoGCsD7LrwtrLPJsbnnHyTwf+J2rM0M3tVDlq6bqhGwt7yAIh2t
-         9hVzrdRKVE2/obBouxv9NUo1DeFn9d2gI42Hitslp08KD5hHNPY+ogr7jWtvbuxfcuQ3
-         OoNDAuKBG6TG6GBv8clx71CYCRNYu5+1ts9tqLZrFD4RTBEd57uGyGQcDeVJGYSdjCj4
-         X49g==
-X-Forwarded-Encrypted: i=1; AJvYcCXtNpChHXDy2DisxvJCVRTc9lbX0orQFJykZDFYvl9+Up/gLXqzZ38EqX42sEwl8veGbTLl/1fyvQo0gS6nKRdo+16zIMkBUnD8pT/o
-X-Gm-Message-State: AOJu0YyMEededR01EfZIVo9u05AOgaAF0I+hdQJTWVSQo0PaX0QMP5Gy
-	HXfXgAkY7gPv4OOOdKA++/7vencgqYaextmecqc4O9Lfhlt/CfhorOl/sZKtePb+YiVu0yKUuct
-	VEOjgVodNnrwh2MqfYg==
-X-Google-Smtp-Source: AGHT+IFsvhJOuJBMAwJK0L9AcJGw/zZI7HjSUBr+0ZmCaaIAiZxx6HFfHdp9ILj8xjHSBNtVwPjPcmu8Za+Wats5
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a0d:d54e:0:b0:60a:2307:e3b with SMTP id
- x75-20020a0dd54e000000b0060a23070e3bmr3040512ywd.3.1710900507103; Tue, 19 Mar
- 2024 19:08:27 -0700 (PDT)
-Date: Wed, 20 Mar 2024 02:08:23 +0000
-In-Reply-To: <20240320020823.337644-1-yosryahmed@google.com>
+        d=1e100.net; s=20230601; t=1710900700; x=1711505500;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E68i2axyuKVX+pAKCm1Dr5BpFi26SQMx7ONiMhlC3wI=;
+        b=TsI3SIO+oIn5YgC98UY8VxUVqAwp3SWqs/FgkzFbrE6CmNLrEGh5+Jf7FZq46F+buM
+         kelLl1jZQL+ZoBCl+vjXq8Ola5pwoLPwv5i4iyf0u9W8EPF4iGeQNtDE4vHdBWNSr6Y2
+         Xvxyio2vtqgZdkQGN8OOR0dGq+gwZlFG0iJHmcLl17bJnI27zq/CxxqKeO82d9e6bO2N
+         awRG4YVKPv/VwhuLR8WxRL+aj2Prt7KT8HIDuz5DuNVl4CMXAt6Kls0mYxNSPLFKBgnW
+         X7PbNuR1jbmy4ZovdaGPEbP7Kk5/lq2KZPDAdnNCJ4QY1l6kcPTk1b87UiJNZKd4x4Vg
+         hITQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEElFPENevxdRRSGnE6Pcx9Gl6v/cd4LoE9Whqn8l9foyCvKUYwzB/c4VjseSHOfLTKcecRho7lyxvvQo1v3oEP6mGasEnOIBBGvt3YRex7CiVdteOgrJ4LBhsksp9gihjU9SVnNBn
+X-Gm-Message-State: AOJu0YxP79TG3PPF6f8Qjc48t7d0QEUqgiS7AWM6IzOj6QnlxKpue+w7
+	STw4bNt8OgeZg2E7jebFGFaFDnlodgRkMrfgCrz3v6YnShknD5vHUkwCN9V3L01yPt+BgAKWLVt
+	GDc0yN2KxqAl4x7+dblrbGahS249xf9ymTmeKCg==
+X-Google-Smtp-Source: AGHT+IHhJev0TqCHoeBZ/G8P415iS43EsvpMRA02NklfIYZ/S018w7Eo+6OHjyyDm1Db/bDl/DI++n43myZ6cNddat8=
+X-Received: by 2002:a92:cbc2:0:b0:366:2f7d:d292 with SMTP id
+ s2-20020a92cbc2000000b003662f7dd292mr16561775ilq.6.1710900699697; Tue, 19 Mar
+ 2024 19:11:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240320020823.337644-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240320020823.337644-2-yosryahmed@google.com>
-Subject: [PATCH 2/2] mm: zswap: remove nr_zswap_stored atomic
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
+MIME-Version: 1.0
+References: <1710743811-1698-1-git-send-email-shengjiu.wang@nxp.com>
+ <DU0PR04MB941745611C0FE10E847C4B25882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <20240319073540.2zvwq7fvft3h6mbr@pengutronix.de>
+In-Reply-To: <20240319073540.2zvwq7fvft3h6mbr@pengutronix.de>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Wed, 20 Mar 2024 10:11:28 +0800
+Message-ID: <CAA+D8APofupb5UdnKuzwkvRhj544kQ8yKBU_84esTQDN=MKzBQ@mail.gmail.com>
+Subject: Re: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power saving
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Peng Fan <peng.fan@nxp.com>, "S.J. Wang" <shengjiu.wang@nxp.com>, 
+	"abelvesa@kernel.org" <abelvesa@kernel.org>, "mturquette@baylibre.com" <mturquette@baylibre.com>, 
+	"sboyd@kernel.org" <sboyd@kernel.org>, "shawnguo@kernel.org" <shawnguo@kernel.org>, 
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "kernel@pengutronix.de" <kernel@pengutronix.de>, 
+	"festevam@gmail.com" <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, 
+	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-zswap_nr_stored is used to maintain the number of stored pages in zswap
-that are not same-filled pages. It is used in zswap_shrinker_count() to
-scale the number of freeable compressed pages by the compression ratio.
-That is, to reduce the amount of writeback from zswap with higher
-compression ratios as the ROI from IO diminishes.
+On Tue, Mar 19, 2024 at 3:35=E2=80=AFPM Marco Felsch <m.felsch@pengutronix.=
+de> wrote:
+>
+> On 24-03-18, Peng Fan wrote:
+> > > Subject: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power
+> > > saving
+> > >
+> > > Add pm_runtime support for power saving. In pm runtime suspend state =
+the
+> > > registers will be reseted, so add registers save in pm runtime suspen=
+d and
+> > > restore them in pm runtime resume.
+>
+> We had similar patches in our downstream repo but didn't upstream yet
+> since there was an clk-handing issue. IIRC the issue was regarding the
+> global clock-prepare lock and a circular dependency on it. Is this
+> resolved now?
 
-However, the need for this counter is questionable due to two reasons:
-- It is redundant. The value can be inferred from (zswap_stored_pages -
-  zswap_same_filled_pages).
-- When memcgs are enabled, we use memcg_page_state(memcg,
-  MEMCG_ZSWAPPED), which includes same-filled pages anyway (i.e.
-  equivalent to zswap_stored_pages).
+Seems I didn't meet the issue you mentioned.
 
-Use zswap_stored_pages instead in zswap_shrinker_count() to keep things
-consistent whether memcgs are enabled or not, and add a comment about
-the number of freeable pages possibly being scaled down more than it
-should if we have lots of same-filled pages (i.e. inflated compression
-ratio).
+But I found another issue with my implementation that the pm_runtime_enable
+need to move before the clk registered, Otherwise the core->rpm_enabled
+is not ture at clk registering.
 
-Remove nr_zswap_stored and one atomic operation in the store and free
-paths.
+I will update in next version.
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/zswap.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 323f1dea43d22..ffcfce05a4408 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -181,8 +181,6 @@ struct zswap_pool {
- 
- /* Global LRU lists shared by all zswap pools. */
- static struct list_lru zswap_list_lru;
--/* counter of pages stored in all zswap pools. */
--static atomic_t zswap_nr_stored = ATOMIC_INIT(0);
- 
- /* The lock protects zswap_next_shrink updates. */
- static DEFINE_SPINLOCK(zswap_shrink_lock);
-@@ -880,7 +878,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
- 	else {
- 		zswap_lru_del(&zswap_list_lru, entry);
- 		zpool_free(zswap_find_zpool(entry), entry->handle);
--		atomic_dec(&zswap_nr_stored);
- 		zswap_pool_put(entry->pool);
- 	}
- 	if (entry->objcg) {
-@@ -1305,7 +1302,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- #else
- 	/* use pool stats instead of memcg stats */
- 	nr_backing = zswap_total_pages();
--	nr_stored = atomic_read(&zswap_nr_stored);
-+	nr_stored = atomic_read(&zswap_stored_pages);
- #endif
- 
- 	if (!nr_stored)
-@@ -1325,6 +1322,11 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	 * This ensures that the better zswap compresses memory, the fewer
- 	 * pages we will evict to swap (as it will otherwise incur IO for
- 	 * relatively small memory saving).
-+	 *
-+	 * The memory saving factor calculated here takes same-filled pages into
-+	 * account, but those are not freeable since they almost occupy no
-+	 * space. Hence, we may scale nr_freeable down a little bit more than we
-+	 * should if we have a lot of same-filled pages.
- 	 */
- 	return mult_frac(nr_freeable, nr_backing, nr_stored);
- }
-@@ -1570,7 +1572,6 @@ bool zswap_store(struct folio *folio)
- 	if (entry->length) {
- 		INIT_LIST_HEAD(&entry->lru);
- 		zswap_lru_add(&zswap_list_lru, entry);
--		atomic_inc(&zswap_nr_stored);
- 	}
- 	spin_unlock(&tree->lock);
- 
--- 
-2.44.0.291.gc1ea87d7ee-goog
-
+Best regards
+Shengjiu Wang
+>
+> Regards,
+>   Marco
+>
+> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> >
+> > Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  drivers/clk/imx/clk-imx8mp-audiomix.c | 99 +++++++++++++++++++++++++=
++-
+> > >  1 file changed, 96 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/=
+clk-
+> > > imx8mp-audiomix.c
+> > > index 55ed211a5e0b..d2bf53e2aacf 100644
+> > > --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
+> > > +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+> > > @@ -7,10 +7,12 @@
+> > >
+> > >  #include <linux/clk-provider.h>
+> > >  #include <linux/device.h>
+> > > +#include <linux/io.h>
+> > >  #include <linux/mod_devicetable.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/of.h>
+> > >  #include <linux/platform_device.h>
+> > > +#include <linux/pm_runtime.h>
+> > >
+> > >  #include <dt-bindings/clock/imx8mp-clock.h>
+> > >
+> > > @@ -18,6 +20,7 @@
+> > >
+> > >  #define CLKEN0                     0x000
+> > >  #define CLKEN1                     0x004
+> > > +#define EARC                       0x200
+> > >  #define SAI1_MCLK_SEL              0x300
+> > >  #define SAI2_MCLK_SEL              0x304
+> > >  #define SAI3_MCLK_SEL              0x308
+> > > @@ -26,6 +29,12 @@
+> > >  #define SAI7_MCLK_SEL              0x314
+> > >  #define PDM_SEL                    0x318
+> > >  #define SAI_PLL_GNRL_CTL   0x400
+> > > +#define SAI_PLL_FDIVL_CTL0 0x404
+> > > +#define SAI_PLL_FDIVL_CTL1 0x408
+> > > +#define SAI_PLL_SSCG_CTL   0x40C
+> > > +#define SAI_PLL_MNIT_CTL   0x410
+> > > +#define IPG_LP_CTRL                0x504
+> > > +#define REGS_NUM           16
+> > >
+> > >  #define SAIn_MCLK1_PARENT(n)                                        =
+       \
+> > >  static const struct clk_parent_data                                 =
+       \
+> > > @@ -182,13 +191,65 @@ static struct clk_imx8mp_audiomix_sel sels[] =
+=3D {
+> > >     CLK_SAIn(7)
+> > >  };
+> > >
+> > > +struct clk_imx8mp_audiomix_regs {
+> > > +   u32 regs_num;
+> > > +   u32 regs_off[];
+> > > +};
+> > > +
+> > > +static const struct clk_imx8mp_audiomix_regs audiomix_regs =3D {
+> > > +   .regs_num =3D REGS_NUM,
+> > > +   .regs_off =3D {
+> > > +           CLKEN0,
+> > > +           CLKEN1,
+> > > +           EARC,
+> > > +           SAI1_MCLK_SEL,
+> > > +           SAI2_MCLK_SEL,
+> > > +           SAI3_MCLK_SEL,
+> > > +           SAI5_MCLK_SEL,
+> > > +           SAI6_MCLK_SEL,
+> > > +           SAI7_MCLK_SEL,
+> > > +           PDM_SEL,
+> > > +           SAI_PLL_GNRL_CTL,
+> > > +           SAI_PLL_FDIVL_CTL0,
+> > > +           SAI_PLL_FDIVL_CTL1,
+> > > +           SAI_PLL_SSCG_CTL,
+> > > +           SAI_PLL_MNIT_CTL,
+> > > +           IPG_LP_CTRL
+> > > +   },
+> > > +};
+> > > +
+> > > +struct clk_imx8mp_audiomix_drvdata {
+> > > +   void __iomem *base;
+> > > +   u32 regs_save[REGS_NUM];
+> > > +};
+> > > +
+> > > +static void clk_imx8mp_audiomix_save_restore(struct device *dev, boo=
+l
+> > > +save) {
+> > > +   struct clk_imx8mp_audiomix_drvdata *drvdata =3D
+> > > dev_get_drvdata(dev);
+> > > +   void __iomem *base =3D drvdata->base;
+> > > +   int i;
+> > > +
+> > > +   if (save) {
+> > > +           for (i =3D 0; i < audiomix_regs.regs_num; i++)
+> > > +                   drvdata->regs_save[i] =3D readl(base +
+> > > audiomix_regs.regs_off[i]);
+> > > +   } else {
+> > > +           for (i =3D 0; i < audiomix_regs.regs_num; i++)
+> > > +                   writel(drvdata->regs_save[i], base +
+> > > audiomix_regs.regs_off[i]);
+> > > +   }
+> > > +}
+> > > +
+> > >  static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)  =
+{
+> > > +   struct clk_imx8mp_audiomix_drvdata *drvdata;
+> > >     struct clk_hw_onecell_data *priv;
+> > >     struct device *dev =3D &pdev->dev;
+> > >     void __iomem *base;
+> > >     struct clk_hw *hw;
+> > > -   int i;
+> > > +   int i, ret;
+> > > +
+> > > +   drvdata =3D devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> > > +   if (!drvdata)
+> > > +           return -ENOMEM;
+> > >
+> > >     priv =3D devm_kzalloc(dev,
+> > >                         struct_size(priv, hws,
+> > > IMX8MP_CLK_AUDIOMIX_END), @@ -202,6 +263,9 @@ static int
+> > > clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+> > >     if (IS_ERR(base))
+> > >             return PTR_ERR(base);
+> > >
+> > > +   drvdata->base =3D base;
+> > > +   dev_set_drvdata(dev, drvdata);
+> > > +
+> > >     for (i =3D 0; i < ARRAY_SIZE(sels); i++) {
+> > >             if (sels[i].num_parents =3D=3D 1) {
+> > >                     hw =3D devm_clk_hw_register_gate_parent_data(dev,
+> > > @@ -257,10 +321,38 @@ static int clk_imx8mp_audiomix_probe(struct
+> > > platform_device *pdev)
+> > >     if (IS_ERR(hw))
+> > >             return PTR_ERR(hw);
+> > >
+> > > -   return devm_of_clk_add_hw_provider(&pdev->dev,
+> > > of_clk_hw_onecell_get,
+> > > -                                      priv);
+> > > +   ret =3D devm_of_clk_add_hw_provider(&pdev->dev,
+> > > of_clk_hw_onecell_get,
+> > > +                                     priv);
+> > > +   if (ret)
+> > > +           return ret;
+> > > +
+> > > +   pm_runtime_enable(&pdev->dev);
+> > > +   clk_imx8mp_audiomix_save_restore(&pdev->dev, true);
+> > > +
+> > > +   return 0;
+> > >  }
+> > >
+> > > +static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev) {
+> > > +   clk_imx8mp_audiomix_save_restore(dev, true);
+> > > +
+> > > +   return 0;
+> > > +}
+> > > +
+> > > +static int clk_imx8mp_audiomix_runtime_resume(struct device *dev) {
+> > > +   clk_imx8mp_audiomix_save_restore(dev, false);
+> > > +
+> > > +   return 0;
+> > > +}
+> > > +
+> > > +static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops =3D {
+> > > +   SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
+> > > +                      clk_imx8mp_audiomix_runtime_resume, NULL)
+> > > +   SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> > > +                                 pm_runtime_force_resume)
+> > > +};
+> > > +
+> > >  static const struct of_device_id clk_imx8mp_audiomix_of_match[] =3D =
+{
+> > >     { .compatible =3D "fsl,imx8mp-audio-blk-ctrl" },
+> > >     { /* sentinel */ }
+> > > @@ -272,6 +364,7 @@ static struct platform_driver
+> > > clk_imx8mp_audiomix_driver =3D {
+> > >     .driver =3D {
+> > >             .name =3D "imx8mp-audio-blk-ctrl",
+> > >             .of_match_table =3D clk_imx8mp_audiomix_of_match,
+> > > +           .pm =3D &clk_imx8mp_audiomix_pm_ops,
+> > >     },
+> > >  };
+> > >
+> > > --
+> > > 2.34.1
+> >
+> >
+> >
 
