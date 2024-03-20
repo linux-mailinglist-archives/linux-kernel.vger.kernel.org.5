@@ -1,152 +1,155 @@
-Return-Path: <linux-kernel+bounces-108948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53BF88125F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3BD881267
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14681B242C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:33:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8E37B22D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B53B4120C;
-	Wed, 20 Mar 2024 13:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8AB441C86;
+	Wed, 20 Mar 2024 13:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GxXmnk+1";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vsvWO/0c"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RDsB6ZPV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1632340BE2;
-	Wed, 20 Mar 2024 13:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18273FB3E;
+	Wed, 20 Mar 2024 13:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710941631; cv=none; b=jcv8Cmj5cirdumJWzzEdRxxEnZ8yyzFR5V3vIjj7TYKbBGupC8fSZo5AZGaAW+WTNRmVR4GU3709npoJ3p18Kms2OFG8HL04ljCvXwFpFQAxpJ55Ilz7aQQEMLGyWIPdwJgLck2Xd0p/ycN92FMkL9FU8H4pelTATw2qkgyLFZ8=
+	t=1710941778; cv=none; b=OOanQN9MXSTL/ghVjlLJffZJbXBCkR0/coblZBeqPfNYZJhM1erLt0E77fL/eoZlVnNEH6eruQeGJZVkKBm4u+YTmaCY01d6Bfz1jv/Qn8j5rqLKL4ju1bjAfNJ8O4eZWJ5MC3Xk9fnhG1mktg8dIfZmHRfX36wq4Kpz20AvhFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710941631; c=relaxed/simple;
-	bh=GDiJZ38CTJw7wnpOWIhwLFBfLixZL6WvagrpsS+vtAI=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=rTiYRxmgKODDjsIXFFmlcDtRsLH71yu1nw2IvOt2Lc4V2Is73fG7EWQAbHzS73AhQnG5OpWb9Citd5Qp2Fw+ka+kSy2v3CZ9wcIr0G16Fxbpjx9hsCoa41nML/0lPbMYxnXJq7KCc0Mg/iHBClT8JRFsEuNXIFtXqBZ6zS315tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GxXmnk+1; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vsvWO/0c; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 20 Mar 2024 13:33:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710941627;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ex8bou4kB+2rtEdHnDeTFtmRS71UnWOZIqNtXLmn0Go=;
-	b=GxXmnk+1VW3z+FpUrBibncFBWi9rlnubpnOlFnuDdW4w8fLnE1q3ZWdgRd4lgCpVjeb1z5
-	iNbOQxaq1XGaeBXsVg6XGRPf+L1gsu4Mcg+p6DXaTGfJ0svrXr/xEUeIrb78QeZNxFlxsP
-	5x2etzBWQnLV/20frZF4hVC1lpjeIMv1Qdjh0SobFrNKK95THt2K4Xy02o4M/bkFgcH+dx
-	E455cSf8QHEvovyQuIPp5Lg1jsOsbsi8UIvv9ebGfDEJpfXChRedSODLMisnEp8fbiaCOR
-	Dnk+NwJ77/RoO5jfSEYoBMHZt9QPjh9gxTGbAC5uR7GdMoGo6V/PNABktKEnLg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710941627;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ex8bou4kB+2rtEdHnDeTFtmRS71UnWOZIqNtXLmn0Go=;
-	b=vsvWO/0cXamxFoVFVXmw5hRpskPf+D6qzK1iqzRL9m+WPD0rqliWSoKLb6vC5qCXFqVyTq
-	D9jJXGMVmBxVs4Aw==
-From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/percpu: Re-enable named address spaces with
- KASAN for GCC 13.3+
-Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
- Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Ard Biesheuvel <ardb@kernel.org>, Jakub Jelinek <jakub@redhat.com>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Sean Christopherson <seanjc@google.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240320124603.566923-1-ubizjak@gmail.com>
-References: <20240320124603.566923-1-ubizjak@gmail.com>
+	s=arc-20240116; t=1710941778; c=relaxed/simple;
+	bh=op7s3VIhu6ib3PNmj5YG5b+N/TeJP1zP0hWcTZI3rwA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HOD3XXOVN7Y+ElOscbWIaACRVfTFZRLq/QbVCp9zeFqNZvucpWnsDI8ohHxW1RsvuducydWx7VQ4nS22GrE0jM/OUuq9JQYqBCBVfw/nHi7zmlS44dB7S/Cno0i2XYp2UD0J1dDuUpD9qRSAbKbDd73U8tJTKcxGe9ccLDDqYME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RDsB6ZPV; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710941775; x=1742477775;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=op7s3VIhu6ib3PNmj5YG5b+N/TeJP1zP0hWcTZI3rwA=;
+  b=RDsB6ZPVrVpxNStV1Wam/SrJdZlCOCV7oT3U0C7qnar9A0ttdwCUmsgI
+   BZpgQcq5PS4SEP0d3rHAmUgvHLjd1sUNlBvGJ6p4ruqs4gK42RbQPhf/Q
+   VKBX0zjbgVQURznhc49zby4AVaYf+dm9UVTIaGNcfm410y9jVCQG8Z2Pz
+   ofCv4q/HkhiuXCqUhvLZUKHikwIlpzNfodJ5ZR6kKXSwuikNuXYXpiyRq
+   yaXvzFrFZIWC7uHapz8aMvKOH5HvzILBaNz0+hCV1OGWj0iB+mp6h+Yib
+   BGwoEF2habDhEcM4F14AVO6JAwWhOs24HLN7eS9KVLHu6SCnURmAKK6kx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17007644"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="17007644"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 06:36:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="14235955"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 20 Mar 2024 06:36:11 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rmw6y-000IeJ-2m;
+	Wed, 20 Mar 2024 13:36:08 +0000
+Date: Wed, 20 Mar 2024 21:35:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
+	thomas.lendacky@amd.com, dan.j.williams@intel.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, graf@amazon.de, dwmw@amazon.co.uk,
+	bchalios@amazon.es, xmarcalx@amazon.co.uk
+Subject: Re: [PATCH v1 4/4] virt: vmgenid: add support for devicetree bindings
+Message-ID: <202403202139.GabdWRiZ-lkp@intel.com>
+References: <20240319143253.22317-5-sudanl@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171094162686.10875.4624002937424858657.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319143253.22317-5-sudanl@amazon.com>
 
-The following commit has been merged into the x86/percpu branch of tip:
+Hi Sudan,
 
-Commit-ID:     f61f02d1ff788ae5ad485ef8edd88d9c93557994
-Gitweb:        https://git.kernel.org/tip/f61f02d1ff788ae5ad485ef8edd88d9c93557994
-Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Wed, 20 Mar 2024 13:45:49 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 20 Mar 2024 14:22:56 +01:00
+kernel test robot noticed the following build warnings:
 
-x86/percpu: Re-enable named address spaces with KASAN for GCC 13.3+
+[auto build test WARNING on robh/for-next]
+[also build test WARNING on linus/master v6.8 next-20240320]
+[cannot apply to crng-random/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Commit:
+url:    https://github.com/intel-lab-lkp/linux/commits/Sudan-Landge/virt-vmgenid-rearrange-code-to-make-review-easier/20240319-223642
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240319143253.22317-5-sudanl%40amazon.com
+patch subject: [PATCH v1 4/4] virt: vmgenid: add support for devicetree bindings
+config: x86_64-randconfig-121-20240320 (https://download.01.org/0day-ci/archive/20240320/202403202139.GabdWRiZ-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240320/202403202139.GabdWRiZ-lkp@intel.com/reproduce)
 
-  68fb3ca0e408 ("x86/percpu: Disable named address spaces for KASAN")
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403202139.GabdWRiZ-lkp@intel.com/
 
-.. disabled support for named address spaces with KASAN due to
-the incompatibility issue between named AS and KASAN.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/virt/vmgenid.c:133:50: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned char [usertype] *next_id @@     got void [noderef] __iomem * @@
+   drivers/virt/vmgenid.c:133:50: sparse:     expected unsigned char [usertype] *next_id
+   drivers/virt/vmgenid.c:133:50: sparse:     got void [noderef] __iomem *
 
-GCC 13.3 has fixed this issue (GCC PR sanitizer/111736) so the
-support for named address spaces can be re-enabled with KASAN
-for GCC compiler version >= 13.3.
+vim +133 drivers/virt/vmgenid.c
 
-Note that the patch considers GCC 14 to be fixed - if somebody is
-using snapshots of the GCC 14 before the fix, they should upgrade.
+   114	
+   115	static int vmgenid_add_of(struct device *dev, struct vmgenid_state *state)
+   116	{
+   117		struct resource res;
+   118		int ret = 0;
+   119	
+   120		if (of_address_to_resource(dev->of_node, 0, &res)) {
+   121			dev_err(dev, "Failed to get resources from device tree");
+   122			ret = -EINVAL;
+   123			goto out;
+   124		}
+   125	
+   126		if (!__request_mem_region(res.start, resource_size(&res),
+   127					  "vmgenid", IORESOURCE_EXCLUSIVE)) {
+   128			dev_err(dev, "Failed to request mem region");
+   129			ret = -EINVAL;
+   130			goto out;
+   131		}
+   132	
+ > 133		ret = setup_vmgenid_state(state, of_iomap(dev->of_node, 0));
+   134		if (ret)
+   135			goto out;
+   136	
+   137		state->irq = irq_of_parse_and_map(dev->of_node, 0);
+   138		dev->driver_data = state;
+   139	
+   140		if (request_irq(state->irq, vmgenid_of_irq_handler,
+   141				IRQF_SHARED, "vmgenid", dev) < 0) {
+   142			dev_err(dev, "request_irq failed");
+   143			dev->driver_data = NULL;
+   144			ret = -EINVAL;
+   145			goto out;
+   146		}
+   147	
+   148	out:
+   149		return ret;
+   150	}
+   151	
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Jakub Jelinek <jakub@redhat.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Link: https://lore.kernel.org/r/20240320124603.566923-1-ubizjak@gmail.com
----
- arch/x86/Kconfig |  9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7aed87c..09455d9 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2435,14 +2435,17 @@ endmenu
- config CC_HAS_NAMED_AS
- 	def_bool CC_IS_GCC && GCC_VERSION >= 120100
- 
-+config CC_HAS_NAMED_AS_FIXED_ASAN
-+	def_bool CC_IS_GCC && GCC_VERSION >= 130300
-+
- config USE_X86_SEG_SUPPORT
- 	def_bool y
- 	depends on CC_HAS_NAMED_AS
- 	#
--	# -fsanitize=kernel-address (KASAN) is at the moment incompatible
--	# with named address spaces - see GCC PR sanitizer/111736.
-+	# -fsanitize=kernel-address (KASAN) is incompatible with named
-+	# address spaces with GCC < 13.3 - see GCC PR sanitizer/111736.
- 	#
--	depends on !KASAN
-+	depends on !KASAN || CC_HAS_NAMED_AS_FIXED_ASAN
- 
- config CC_HAS_SLS
- 	def_bool $(cc-option,-mharden-sls=all)
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
