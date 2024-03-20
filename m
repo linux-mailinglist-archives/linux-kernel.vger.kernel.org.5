@@ -1,113 +1,110 @@
-Return-Path: <linux-kernel+bounces-109172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B008A8815B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:33:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5462D8815E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4237528148A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:33:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E92171F217FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3FF138C;
-	Wed, 20 Mar 2024 16:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GpTm3xKu"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1CE69DFE;
+	Wed, 20 Mar 2024 16:47:21 +0000 (UTC)
+Received: from mx2.mythic-beasts.com (mx2.mythic-beasts.com [46.235.227.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891A6EDB
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D64C187F;
+	Wed, 20 Mar 2024 16:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710952377; cv=none; b=Uzxmaz96PH8UJLcR6SZbwK1/mgakhJNygnunLOqGo7CCf+uaLNdUb3gvjFdzKZme5Ln/xX1F1vO63fbTGXj4/VL5uJt3vXtz347WbDKP0oq+kFe7iRe1S37bfowzehmQaIOHBSllFM1Yh5yh4Emsrjx8eoUjYmTTWE1jx1zgibQ=
+	t=1710953240; cv=none; b=n6rdhA6rApr1gHPOZErXqu/xOXmq8JXaMPm4emyvMG376w3I82JakTgNHeHlUbYd2CUFT/U0PSHEArk2zVqCMk43Ymj8AUGsMpWwYzltqeNRqaw1eBxfmM/qjgVMp4jh1Ku6rMrCGHJLnqdxnz3qlGuSc5gXqPuwwEzXTIRnymU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710952377; c=relaxed/simple;
-	bh=RPvZL/F/5+LZWPkRsGvRCYGU0F/BRfHT875AjHjPcQk=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=j9UPn61aPy7HY3WKapEjIvZohlRoarziw78l3AC1tDYnXi3FDnMp2AhA/VavBdto87n/q4hED+0USzu2gJzSOwHSqzGNLe1Matvm1tjXVcPrLvb6zf1p0pd1508gVbYdPSeHvGuaSRe5o/Ad6gTK9C6qpTrTE6SepuhVe8uSMR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GpTm3xKu; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso9015947276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:32:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710952374; x=1711557174; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PPh3+JK8STaNVcaoNnrH04Bjmq+JVNkjWGAVdUYYJeY=;
-        b=GpTm3xKuy410sMKsXDSQGUFIj+rNkFZsErRGI/47uYdGayXTv4rxHDu49yW38OC3pQ
-         wmuH5ojL/XEeFlSFhmP9k0unaNCsYYJ/hVXrgintVjT2TmS/halhKarxvlBZbsNGRNqR
-         1Tm29B+cGE2yJNXyX1+KAvpFHc30NeLnL/gedZmzQpHjsN/33jReS8WzGXQBxMDqXC6h
-         PMQvMHfWbvjyhUFOMuaNes3j4uHoT107GN1gncHvTvRHjNfA6+2x95UBuAfjOxCDz3IK
-         f5DMjQGA/qp4P8JM6V9RpMEGz0XHNNAAF9nr0o6Lu8+azN4dSCX5sivDMg2U+cpf18iy
-         LtAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710952374; x=1711557174;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PPh3+JK8STaNVcaoNnrH04Bjmq+JVNkjWGAVdUYYJeY=;
-        b=OKzq6MNkEvRtbCkiiJnjb1FtwAzitMJGC/qWOtSV31jnp6AfiVlKv+vH03Yg6oGsK8
-         aGRvKjQZrxV9PviGlhl/9NCYzPmfZkEuGzx5Oa7bIrJxclNYsVEk6IVw17wdXMJmXq6K
-         mJQnI45bCdaOsOCXa5TzZ0GmIlP/5qnuS3FxVfV7QBOCv1o7UUErQI8SQij+ElAi15yQ
-         ZbMLs74YuPy9sWVgxfnfm/z5kNYc4XW4jlwYQUZk1w2kCc8YalxkB6GP4YIZnZsfpf6x
-         S7RuywW/NkbpubZ9rgi71YRXdBwCeLg/TpNBX+UmK2QgdNZq+i/ehH+s/EZLqlHNSokG
-         2b+g==
-X-Forwarded-Encrypted: i=1; AJvYcCXKmcZK8rSbd7AXcaiEsmoUfgPwg3GF9MKWbIdYsmbOeULTgL3Ek9xbSGf/1ve1IEfkkWnQ51PLY9xMH8uQ90db6aVRwSHyYlof2VB8
-X-Gm-Message-State: AOJu0Yxb/NYUlDr5wXPDfcpcty10jRyx+CMrB4MUTNx9je+91AMuwD2L
-	1R2PyVbXSkYSnVUcBlBSmG7BJJ4a6RvDjG4l4+LXUXEVDriFEpKU09rPfsLMlQtk/yr1phApUGn
-	PqFqEvA==
-X-Google-Smtp-Source: AGHT+IFy9qjZJ8qJt0m0fdcRwFHSNGZaErdUyns14VLHFaZriYh2eKSTtrlv5EWKfPlpoppugb2t3dHqFr41
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f4f0:8ad8:3c73:cef7])
- (user=irogers job=sendgmr) by 2002:a05:6902:124b:b0:dd9:312c:83c8 with SMTP
- id t11-20020a056902124b00b00dd9312c83c8mr460549ybu.10.1710952374659; Wed, 20
- Mar 2024 09:32:54 -0700 (PDT)
-Date: Wed, 20 Mar 2024 09:32:44 -0700
-Message-Id: <20240320163244.1287780-1-irogers@google.com>
+	s=arc-20240116; t=1710953240; c=relaxed/simple;
+	bh=KB4S6lfaY4jS9DUXhlshuPyIa2efuohtTmYPcJtq7Ew=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=sPwo2cPnYNDSKFwNUoF3awNzsqU26V7RYGJkurI1laFuy7SDXD4TLj1z2HdrE8NG8pkG6pE5B++uaeYz/bMt+7fc0jj2265IC1Mr8ouF9u9t/F+74VN549rHrQtI7wPREJh/vAVlfTbwcsgUAhAwJGrgETJOcvgNpA9jfTEd690=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jic23.retrosnub.co.uk; spf=pass smtp.mailfrom=jic23.retrosnub.co.uk; arc=none smtp.client-ip=46.235.227.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jic23.retrosnub.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jic23.retrosnub.co.uk
+Received: by mailhub-hex-d.mythic-beasts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <jic23@jic23.retrosnub.co.uk>)
+	id 1rmyt8-00BNeD-Pz; Wed, 20 Mar 2024 16:34:18 +0000
+Date: Wed, 20 Mar 2024 16:33:02 +0000
+From: Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
+To: Julia Lawall <julia.lawall@inria.fr>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+CC: Jakub Kicinski <kuba@kernel.org>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
+User-Agent: K-9 Mail for Android
+In-Reply-To: <f1bdbed9-8549-3787-bd17-ecd62851e8a@inria.fr>
+References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain> <20240319124317.3c3f16cd@kernel.org> <facf5615-d7ac-4167-b23c-6bab7c123138@moroto.mountain> <f1bdbed9-8549-3787-bd17-ecd62851e8a@inria.fr>
+Message-ID: <10F403F7-E8B7-48F0-90CF-3C8A8BEB10F2@jic23.retrosnub.co.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Subject: [PATCH v1] perf build: Pretend scandirat is missing with msan
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-BlackCat-Spam-Score: 0
 
-Memory sanitizer lacks an interceptor for scandirat, reporting all
-memory it allocates as uninitialized. Memory sanitizer has a scandir
-interceptor so use the fallback function in this case. This allows
-perf test to run under memory sanitizer.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Makefile.config | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 1fe8df97fe88..74e0b17050b5 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -486,7 +486,10 @@ ifdef NO_DWARF
- endif
- 
- ifeq ($(feature-scandirat), 1)
--  CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
-+  # Ignore having scandirat with memory sanitizer that lacks an interceptor.
-+  ifeq ($(filter s% -fsanitize=memory%,$(EXTRA_CFLAGS),),)
-+    CFLAGS += -DHAVE_SCANDIRAT_SUPPORT
-+  endif
- endif
- 
- ifeq ($(feature-sched_getcpu), 1)
--- 
-2.44.0.291.gc1ea87d7ee-goog
+On 20 March 2024 07:32:17 GMT, Julia Lawall <julia=2Elawall@inria=2Efr> wr=
+ote:
+>
+>
+>On Wed, 20 Mar 2024, Dan Carpenter wrote:
+>
+>> On Tue, Mar 19, 2024 at 12:43:17PM -0700, Jakub Kicinski wrote:
+>> > On Sat, 16 Mar 2024 12:44:40 +0300 Dan Carpenter wrote:
+>> > > -	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
+>> > > -	void *mac_buf __free(kfree);
+>> > > +	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) =3D NULL;
+>> > > +	void *mac_buf __free(kfree) =3D NULL;
+>> >
+>> > This is just trading one kind of bug for another, and the __free()
+>> > magic is at a cost of readability=2E
+>> >
+>> > I think we should ban the use of __free() in all of networking,
+>> > until / unless it cleanly handles the NULL init case=2E
+>>
+>> Free handles the NULL init case, it doesn't handle the uninitialized
+>> case=2E  I had previously argued that checkpatch should complain about
+>> every __free() pointer if the declaration doesn't have an assignment=2E
+>>
+>> The =3D NULL assignment is unnecessary if the pointer is assigned to
+>> something else before the first return, so this might cause "unused
+>> assignment" warnings?  I don't know if there are any tools which
+>> complain about that in that situation=2E  I think probably we should ju=
+st
+>> make that an exception and do the checkpatch thing because it's such a
+>> simple rule to implement=2E
+>
+>My understanding from Jonathan Cameron was that Linus wants a NULL always=
+,
+>unless there is an initialization with the declaration=2E
 
+I don't have thread to hand but Linus strongly preferred moving any declar=
+ation using this to
+ where it is assigned so that it was obvious that the allocator and freer =
+match=2E
+
+Not checked if that makes sense here though=20
+>
+>julia
 
