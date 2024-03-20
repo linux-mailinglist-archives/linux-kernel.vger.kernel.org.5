@@ -1,98 +1,153 @@
-Return-Path: <linux-kernel+bounces-108597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C869880CC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:11:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 729A8880CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 013A11F235A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:11:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6938B21B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85FA2E415;
-	Wed, 20 Mar 2024 08:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A3A2DF7D;
+	Wed, 20 Mar 2024 08:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="PfB7bBnl"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpHocqaw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D705A2C68A;
-	Wed, 20 Mar 2024 08:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7732C698;
+	Wed, 20 Mar 2024 08:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710922254; cv=none; b=LkggX0ELxPxL1y3mpe2CAGL0p7ez1tEU/M11RYk9b7vWnzN8LWL1ipqaXxh6ndghJA3hiOMT3bq8oVSnfj1HtvEv7UZepv4CV2+fL+BHzm3h3nJwNHAOLfrfnljqon+3PhvN1QrK3RCUROOy4LFxumJuYibz3S8JG/jRgEc649Y=
+	t=1710922329; cv=none; b=itM0y5aExt/+H269tDMwGSiy+grv6wxS9ofy541DPQMqk869wNdLPMmW38GfULHaqjW6HPF54nj3bsrNGcqSLonas/wwKPFoGlT/KePoiVjYFp5+suXBAnFz0h/cVzsdlri7kdbVh9vE4f0S6O8MP4umOEJLsZ3TBF03mHD6s9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710922254; c=relaxed/simple;
-	bh=WIh25D4UDwcanH5bYSHrwFXTlS6u6SDi3NuZcoh1ptc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bjhswm5KHJcrbhV2/U8D7ZbAvwIr2lfsnYttiQk/eFm0W/r1OjMIzjqmGyUOYsqxQqCmstXL4HO8hbEKiTfKGcu+Y1lpkqYa0d0l6eRA95dueuMwSOSp1vhafV5xXb61MhgjO/kIysmMTRpQTWTnsUd4Il2rBaFgjVlyrEnly9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=PfB7bBnl; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 59D56C000D;
-	Wed, 20 Mar 2024 08:10:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710922246;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SaWDM3C4NrbrAUXV6EDAofx5hE7nR6MhxlVcBrFRh+U=;
-	b=PfB7bBnliBYXJICYCLKkGAUdhqDbSe1Sjs8BsDpqoiBbXMMZuapjDYLwI4WR3e0HWifNUl
-	kcGtmIrXrDK1U2uIGf1sKPv/tyxOpCEgWihHoJuGa166wDxniLBi/4p2bueL2CpFKMMJea
-	uJI2T4pzWMw3GtHZaD7swteQgcqm3whZ8mJBLrAGR1s6+2UwZrdkQO9kZJ5896ihbNKkQQ
-	JHIfK6+xssnsH+YH/pfk1DC3oZJXhc6xKMBhcQD81kvrSIljRRFZYjfinei42CJ4Io6B2f
-	GIaBr1GZkasDCw01DmMlCCE6HZItBsQBLXJjVIPlvsTJ+/EuvnkMEOYHLCl/XQ==
-Message-ID: <9d111cc9-c73a-4d3c-83f5-3f59e6c8841f@arinc9.com>
-Date: Wed, 20 Mar 2024 11:10:19 +0300
+	s=arc-20240116; t=1710922329; c=relaxed/simple;
+	bh=awbQ0Ep7VHcHdIe0ZE07B5fkjUV7A9KmfScsQi612S8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=fsqmwo5m+/p9nUjtj0UjE74BbYYJls8rb4AnPEolUS5zigzVRxfo6Gd3M6YoxNgax0o4jWK3LtNlI2nZAnaUEvxCxMmCxEFq4lnMaIomiqVIzNEjydJUgD+P/DzEUuPc2tW0Sgbs1aqhl9HXLgyax8dyWelL0K162z9n1psDODI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpHocqaw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 329F2C433F1;
+	Wed, 20 Mar 2024 08:12:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710922329;
+	bh=awbQ0Ep7VHcHdIe0ZE07B5fkjUV7A9KmfScsQi612S8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mpHocqawgkxvcZXo7zXtsqCOQXdAo34GU9lsZF2Vz7dRhtR76b8DS/V9AxuZSfl3A
+	 PO1/2mIsFQcfohNvROykb5bJj1GeBCH04G/l+nAox6/ybpSxfAtY2s/LOmANvKvSqf
+	 ec0CxXkJ31SXAfdXUtPrwGjArtG5IskfC3SJwkfti+3iNxgXKFdXvo5JoqH1EeN+C9
+	 7Nrb1g+BXs2+OUuCy/bYlDMQa/cPxWH15PqbEfUwR+IdA/nZKz9RYT3JU8OkugU6bi
+	 RBbTQgDQRk+GURtX7zjNZwFMU9lgupD6U6ly+a++w8HwYrhF7aH62FnITWJG68Wdyu
+	 hFOefrxjfllEA==
+Date: Wed, 20 Mar 2024 17:12:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jinghao Jia <jinghao7@illinois.edu>
+Cc: Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Qiang
+ Zhang <zzqq0103.hey@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Peter
+ Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [PATCH v2] kprobes/x86: Use copy_from_kernel_nofault() to read
+ from unsafe address
+Message-Id: <20240320171203.d493d214dea91a18114994cd@kernel.org>
+In-Reply-To: <12453ce8-0b78-4c1c-9aca-de4cc366e3e1@illinois.edu>
+References: <20240315000753.a448251fce0291e041f76c13@kernel.org>
+	<171042945004.154897.2221804961882915806.stgit@devnote2>
+	<fb6919c5-8acf-4ee3-8fd2-1d483b274867@illinois.edu>
+	<20240316224630.01bd6b91938720f5083e0d07@kernel.org>
+	<12453ce8-0b78-4c1c-9aca-de4cc366e3e1@illinois.edu>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
- Russell King <linux@armlinux.org.uk>,
- SkyLake Huang <SkyLake.Huang@mediatek.com>,
- Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-0-3f17226344e8@arinc9.com>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-0-3f17226344e8@arinc9.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 18.03.2024 10:46, Arınç ÜNAL via B4 Relay wrote:
-> Hi.
+On Sun, 17 Mar 2024 10:53:59 -0500
+Jinghao Jia <jinghao7@illinois.edu> wrote:
+
 > 
-> This patch series fixes EEE support for MT7531 and the switch on the MT7988
-> SoC. EEE did not work on MT7531 on most boards before this, it is unclear
-> what's the status on MT7988 SoC switch as I don't have the hardware.
 > 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> On 3/16/24 08:46, Masami Hiramatsu (Google) wrote:
+> > On Thu, 14 Mar 2024 18:56:35 -0500
+> > Jinghao Jia <jinghao7@illinois.edu> wrote:
+> > 
+> >> On 3/14/24 10:17, Masami Hiramatsu (Google) wrote:
+> >>> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >>>
+> >>> Read from an unsafe address with copy_from_kernel_nofault() in
+> >>> arch_adjust_kprobe_addr() because this function is used before checking
+> >>> the address is in text or not. Syzcaller bot found a bug and reported
+> >>> the case if user specifies inaccessible data area,
+> >>> arch_adjust_kprobe_addr() will cause a kernel panic.
+> >>
+> >> IMHO there is a check on the address in kallsyms_lookup_size_offset to see
+> >> if it is a kernel text address before arch_adjust_kprobe_addr is invoked.
+> > 
+> > Yeah, kallsyms does not ensure the page (especially data) exists.
+> > 
+> >>
+> >> The call chain is:
+> >>
+> >> register_kprobe()
+> >>   _kprobe_addr()
+> >>     kallsyms_lookup_size_offset() <- check on addr is here
+> >>     arch_adjust_kprobe_addr()
+> >>
+> >> I wonder why this check was not able to capture the problem in this bug
+> >> report (I cannot reproduce it locally).
+> > 
+> > I could reproduce it locally, it tried to access 'Y' data.
+> > (I attached my .config) And I ensured that this fixed the problem.
+> > 
+> > The reproduce test actually tried to access initdata area
+> > 
+> > ffffffff82fb5450 d __alt_reloc_selftest_addr
+> > ffffffff82fb5460 d int3_exception_nb.1
+> > ffffffff82fb5478 d tsc_early_khz
+> > ffffffff82fb547c d io_delay_override
+> > ffffffff82fb5480 d fxregs.0
+> > ffffffff82fb5680 d y                    <--- access this
+> > ffffffff82fb5688 d x
+> > ffffffff82fb56a0 d xsave_cpuid_features
+> > ffffffff82fb56c8 d l1d_flush_mitigation
+> > 
+> > `y` is too generic, so check `io_delay_override` which is on the
+> > same page.
+> > 
+> > $ git grep io_delay_override
+> > arch/x86/kernel/io_delay.c:static int __initdata io_delay_override;
+> > 
+> > As you can see, it is marked as `__initdata`, and the initdata has been
+> > freed before starting /init.
+> > 
+> > ----
+> > [    2.679161] Freeing unused kernel image (initmem) memory: 2888K
+> > [    2.688731] Write protecting the kernel read-only data: 24576k
+> > [    2.691802] Freeing unused kernel image (rodata/data gap) memory: 1436K
+> > [    2.746994] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+> > [    2.748022] x86/mm: Checking user space page tables
+> > [    2.789520] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+> > [    2.790527] Run /init as init process
+> > ----
+> > 
+> > So this has been caused because accessing freed initdata.
+> 
+> Thanks a lot for the explanation! I have confirmed the bug and tested the
+> patch with CONFIG_DEBUG_PAGEALLOC_ENABLE_DEFAULT=y (which explicitly marks
+> the init pages as not-present after boot).
+> 
+> Tested-by: Jinghao Jia <jinghao7@illinois.edu>
+> 
 
-I see the state of this patch series is deferred on patchwork. I see that I
-forgot to delegate this to the net tree. As I don't see any objections in
-this series, I'll send v2 with it tomorrow.
+Thank you for testing!
 
-Arınç
+Regards,
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
