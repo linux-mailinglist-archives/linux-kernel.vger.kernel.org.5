@@ -1,174 +1,168 @@
-Return-Path: <linux-kernel+bounces-109083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07426881472
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:22:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78A84881476
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B67C7283B95
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:22:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D8EEB21814
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:22:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EA6524D4;
-	Wed, 20 Mar 2024 15:21:27 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C16150260;
+	Wed, 20 Mar 2024 15:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cVn4UH9R"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2025.outbound.protection.outlook.com [40.92.99.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B91A53E02;
-	Wed, 20 Mar 2024 15:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710948087; cv=none; b=abA1j+eQBd05rKlxLD/7ZIjYunxa5dbzplLt8bfV57K14X8VrkUh7YAdWS9v6q2l6MgM9Fk167f7SqROs5XLy8DNxLfixV+GX9oYyFTxi792+nglDrEKymUjpuhVs4S9ugsfcDMBbms/4goQZFXzA818fS3MBWpUwb/YEX3VBE4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710948087; c=relaxed/simple;
-	bh=7EtSSNSy2ryF+ATDOn8xw+BRs/v4pwXxWNT6O+sQk54=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MFvp1DujNOx9PENqi5UjQ/2tB8vab1MIuicuAHfTWVLC0GmhwUuuHN0/MbvCXLfgGRUhuxky64mv9HXOSiBUZ96vc8hf8IqxFprXOzUalNwkiC2gzwACWdc6aFs9rn5n1ufY48NY8xPxuso4+jUKEoJvHMVao1PXMjBSRXv/Qfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from [192.168.2.4] (51b6960e.dsl.pool.telekom.hu [::ffff:81.182.150.14])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000076BD5.0000000065FAFEEE.0022CD79; Wed, 20 Mar 2024 16:21:18 +0100
-Message-ID: <af9264dd7993e2904ce8f35bfa3654dcf38920f5.camel@irl.hu>
-Subject: Re: [PATCH v2 RESEND] media: uvcvideo: uvc_ctrl_get_rel_speed: use
- 0 as default
-From: Gergo Koteles <soyer@irl.hu>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-  Mauro Carvalho Chehab <mchehab@kernel.org>,
-  linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Wed, 20 Mar 2024 16:21:17 +0100
-In-Reply-To: <CANiDSCsXeuNLHSGhqYjkRoyhgW6MZo1xufONbYdm42OcRrj2ng@mail.gmail.com>
-References: 
-	<eb4f7f29a94231c5fa404f7492dba8e7fd9fbb23.1686746422.git.soyer@irl.hu>
-	 <088902f67634fb0931da7b045e05afe5c8197cdc.1700505816.git.soyer@irl.hu>
-	 <CANiDSCsXeuNLHSGhqYjkRoyhgW6MZo1xufONbYdm42OcRrj2ng@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32394F214;
+	Wed, 20 Mar 2024 15:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.99.25
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710948128; cv=fail; b=CmYUWLGwnQx1QHwocvsmPlBhjOLFAeID+zMOfDQ2zfFzb9lRKwOSqS/27luNaN4rniwWvKse9Z0yroZRzA7U5A/GTmcm7ICAoIdxQvabmFZobP3KAzBh1SxmY/CyW979Beb40c0uPMyWgqphrWB8mGdMb/p/ffWtpFO/c88Hj/A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710948128; c=relaxed/simple;
+	bh=h5wttCx3aAYbLTpzzFtxbepXglbmi10NeFo4rCxUAtk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Rq/L8yuwZtdq2zzGc5n5R3s68lXekxl1a2AkSXg1yodCt5GAYpYIWZOXgLfcj6FKzoKHECer80JFpNn+jBTdaq/n8ga89VGOVFMRN3MpGT8pLoSvDMyqRjWWvPdMLCS4wYy6WkF+T9HGlX5oEDuBBPY+3StJVHp9HjmtICHcVRY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cVn4UH9R; arc=fail smtp.client-ip=40.92.99.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HW5JDH4U6YJVsr00phkqEY3HUPnV6/+oFYYBF3a0jvlmjAf41Oe6b6qnm8HZVoQ+4fgLCx5Nlm/bs1tJkGlCSgquyFEXKbwIlDQsHuZiZeBK/ZoKVlBkUP3LEEhhEfZ7V2UQHRpr2T4j4wsP4g7K6RuihRuCxaxy9FPPQ2eWW/F98Z66qVAAQH2t3Nzwwxz9Yo1YOR1TSur+oPcv1aDZ94DEiSzW1KhGSSK7ILKYVTtKj1atOTcCgDzEsifHaZhR3z8wYqyqk39FMYFOIT6Mezm7xuGH0HNZ3VLLkIw6HSv/uJDspr6tkKiFrL8MC0sP6Q1mMocVjn7tSAcPfiC09A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+UDOalIrKDQ8Stzn9flsbkKGgvaV6Pc1/k2KeLc/MWc=;
+ b=CMKGbMlY5fa9AktEysNDIOfJS1DHjRZxZPIt9Ji2K9MXS6cMxy46+EXcoqMtpKGT07V/efqQPklkeeOT4Zysz7o0CGZn4Q5JIk0nLPmOkE+n49kE2yQC3Whz7V+gifMAIsDXJl+QDyiuymHjKhbquKOEyBzWcBp+nAoOeb1fjBtimHpQ+YPFJfrDe4QSsuOCq6cx9NDGbb2Y036HrRqgi5T9Q+txAYZ65ZkllAzq0vwLK3sQq5VWlyhvOr0hZw4Xx2AknQV8jBBEFwLuBqj2iwe3i1HVzqLeQ7syeos5ywtV1G08d79WL/cyf40wnkKGsvYyPeHpr2spwPO7G/AyAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+UDOalIrKDQ8Stzn9flsbkKGgvaV6Pc1/k2KeLc/MWc=;
+ b=cVn4UH9RB79p8gaQpMzFPt5ToqOIYobMJTrVn8MCVYN+ZmSztDZMEutGN/sMjUFquvmc678xMSiYoHX2xSBK1bIPJHAD9v917dWW+wGkfQjdrtUlgXYmj2+ytPAnCkMOJY37BeXTS8ME5Y+Y88fev3WPzj/UI3tU5k914n9Jx5LJHDstKNbSKUqAn+7zwlBS2CyM81fP6hBOwg0Nv4ddexFlwSGLqJr1/L56oV+Gc2qo3f/hswIF9eF/K0niO852pKRoF9qm9fuoIK8XshyWb3IvxLivyo9qTBL1bqpByTb8Yia0/tSGggjGyQQWgTxK0c4KZeTigmSBcAOnoziULw==
+Received: from TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:256::8)
+ by TY3P286MB2562.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:22e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Wed, 20 Mar
+ 2024 15:22:04 +0000
+Received: from TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::d127:7317:59e9:143e]) by TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::d127:7317:59e9:143e%4]) with mapi id 15.20.7386.030; Wed, 20 Mar 2024
+ 15:22:04 +0000
+From: Songyang Li <leesongyang@outlook.com>
+To: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Songyang Li <leesongyang@outlook.com>
+Subject: [PATCH] MIPS: Octeon: Add PCIe link status check
+Date: Wed, 20 Mar 2024 23:22:00 +0800
+Message-ID:
+ <TY3P286MB27542582C36379EB4A128DEFB4332@TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [xSexVDk8IWs74z85TBYDJvZ4tq2DCD/T]
+X-ClientProxiedBy: TYCP286CA0048.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b5::11) To TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:256::8)
+X-Microsoft-Original-Message-ID:
+ <20240320152200.8271-1-leesongyang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY3P286MB2754:EE_|TY3P286MB2562:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4815c572-31e0-400c-f7ee-08dc48f17f2e
+X-MS-Exchange-SLBlob-MailProps:
+	Vs63Iqe4sQk8N0yY9albUc+E2gbT5Qb45bcPRRKiE0NCRmCl89oJwaR7LhkAkC9rNTLh/6WerkVWBIXK3xyRivGAbYA35+xQkGmQQzoTjVaZTqjVgVTfxJMftZjDSa8g89IvGu7osMPfAA8G7zjRe1ECIVIo5Yc4n6MDdZkRrxLDjG1PBnFc6J0vsJqir2Tgf4Y3olSIJd0sfbykQbPqtRiiS+uD80ddAKcMUnudh/jEDyQ9Da5bfwGLx2u+JCbmHtGG2KmcRq5Rny9GV3/bLFnCohhl8fYiSiZG1mXixEe+P8xZ5r9k2KDPnPxc47aPVFjQPDXqxxfLvx2hILqQfUlXorBF6BNmdYw38YVk3uQzTjQYWw1dshs4wplrSDvNj1zeXIkVDDA8aW/UlNoTDdW1VROiqD0dxResfLp+6/UDqoaP9CBEICRtP/c4pcKe7gOyd8caGEvVRGBjbbCFMJdn4XccW0zsrgjWotWfjNu/TkZgESfH42yWcVGXruS535zw3pNvDQIb131Plhf+muNwt7bCVZ5JKZ8LZyamvN4IlFLro4hLWKBHbSaBrpg3aJ/Iz6bp/KpfCFPDdHCREEw3u62OUBRBvDygdm7B8DkHMCWydz1KT8rVqiEJXgpXmxlUrpkZROAy7Z/o6rjv97IF4c6Oee7/yVF/GJU0IB5ACxL199HdZsEp0XHlchIBhk6vJD931sm7zHnU/SSbzw+1G+ma/GJkwIk69BBxbh0=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	luJzAsYBB9lxy1jf/H79OsTB+Sz+LiBG+a0bBU9CD0vVzrlkwUhHGjIatl6iIzkCfOMYtd57mO2CtZmgV4hneWba0ELEZrrk+ZC1J6clgp0tJrcf4+ANRlmdnYlw6BXURtxHnBMt+qWrVpyPIFQXZH/M8pHO9iFRrLYDmIgMS6HlIZbK2Evjj881A8jFC/F43q/splCOHkBk8m7x9NHLHp51Kq4qn1EuKiPz8+ukky3E4dsyd9k4QDlWe85vTETC+Vm0xJwPpTeE+6quWSQLULNdExMeWsbDQG95KhKBljP86ijhl7jvJkcNxK/RbcJA4gr3zbVIafqobno1Gpr7qu0JNXxaxPWHmjvlCDJVBkTrE0hoLhLhMbX0jBF8wr/ARt5nt5tvpWoazMFmwv/wO0ETSIF4N4iSI8H6foQbXXHChek94vFbG6VQRQYfTRTyHXpjqpf3QNL41sU5DuixiGKF5DAwM7TDY9j3EmBnM2R+YF6VqjjyhQPTL7qkrOXL8hqJAPQFbU73WYchTeqYTa/DVmHBQqWO9pneLU5i/xgceHiN8i3PnlmEuUmPuh8/v7Etf+ExoR7YkzdrGf/7igDRdPcikvgEx/8ItyHzpUSUvtTbBtnjfyQR/7GAqYZi
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?3PTqGsYF4aEhch3MkWzZ4A1qnUiznALv7Lwa8VJlOeWO3muEXX4Mew/wZOqD?=
+ =?us-ascii?Q?z2XIWvooOhTOuqEeCr3VGPtsVeH0A7Lgg46xvo+oy1ALLS1/2VFxbqukPEOH?=
+ =?us-ascii?Q?426yV1voLmWoPF57mIM+MNQNaL11b7x36eEAujNNAaM5zg2lySUzAxsHHKA0?=
+ =?us-ascii?Q?ZCAgfmy6RnbkJtrl6bi52cJOo2UB4sGBlOz4nzbnuzExR0/YhKV3B//m3gJ8?=
+ =?us-ascii?Q?4lZ/lnxTR40RyxWCgi2TGS/nYtqjvDkJB59g6UpOOukqC139fARmnwFd9eDd?=
+ =?us-ascii?Q?mY8ct5GjHcI6QXdcx0EDkEBqYNfTAgueIVOnox5s42V58cNv7xeMCFnPyeHu?=
+ =?us-ascii?Q?76wXLM+jIVgwQC66nBHLsFrCTGaOmREHC9GaIrWMLb4VBs2PxtaiRskjQMFn?=
+ =?us-ascii?Q?vP1rkUPeLej/44CnfPPadOd+xZc6jNJqZGX0p0kNlyO9DLiCAh5S/uNbclRm?=
+ =?us-ascii?Q?Zy9zsuucntj4izX8+qx0TkgKvvrvRdPshPE3vvgVInDbJ3V1BiH1p9JC8qtB?=
+ =?us-ascii?Q?my8x6FdN19qhOZosx1mfMydZpbnmmNt2Nh6zeS6kj3U9SRbt5LNwwX2Xyc6B?=
+ =?us-ascii?Q?FQrWWfr8xi4yX36JT6ik2HpgyzQVAykzdrJMCNUIkPYtsYE32SdOw6eZZfNz?=
+ =?us-ascii?Q?LYafjh1SXouy3vhOsMYMPe0hOEWgOWMJ2d5+RtnEsGn8PS1hvdf48WtlS1V1?=
+ =?us-ascii?Q?heSw+BiWzz+LNPNLljeiV+53sGZg0a8DFL4/3iDOCFyVdSI/JjaM1H1q0rvT?=
+ =?us-ascii?Q?3K5n9qjVV3laBFYp8QMcyA8KJirUeaIFAqo5D++/PFyqMJELH+DQaPQhbmN4?=
+ =?us-ascii?Q?5CB/KrejTLrOhNqA1wvcjqV+zVTAlgumYo5QgvhUXD7ggQDSW/xDM7LQiJqq?=
+ =?us-ascii?Q?Y98ElMPnkt0Nz+LwcTi+t+cJduwQAkHfUw7oCesBifzvzQ2PAG2t4piNCoRr?=
+ =?us-ascii?Q?LmhM3EfRS+GVH3r/C4GYdo7Ga4yzO0GOY4aMV54WmktTcwduR3s2Z08txmJn?=
+ =?us-ascii?Q?vzJIbL0cTf2K9VdR7ic8+X8aYY2LuyxMM4eYJFIIydQFR7Dq2SSHvIc0hd7F?=
+ =?us-ascii?Q?YXQ8Hc6u2Z+tD62eQ0E/GWHCNPMQ3YAL7kR2fBSr/Tp4YNdxyugUVw2jtRiS?=
+ =?us-ascii?Q?q8pOcHCX7+NJEa3urT0Tx4IJHjxy9seDsZx6HcqUbktFC40vcBJspMNy5Cez?=
+ =?us-ascii?Q?evTCx9T30Ap40Cb9hTGeh5g50HRLaoxTvCqbhNjWpjrsRoaLhpWSbPbe+Br2?=
+ =?us-ascii?Q?/Tn0fwXCLrrXv0KPddOF?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4815c572-31e0-400c-f7ee-08dc48f17f2e
+X-MS-Exchange-CrossTenant-AuthSource: TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 15:22:04.3074
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB2562
 
-Hi Ricardo,
+The standard PCIe configuration read-write interface is used to
+access the configuration space of the peripheral PCIe devices
+of the mips processor after the PCIe link surprise down, it can
+generate kernel panic caused by "Data bus error". So it is
+necessary to add PCIe link status check for system protection.
+When the PCIe link is down or in training, assigning a value
+of 0 to the configuration address can prevent read-write behavior
+to the configuration space of peripheral PCIe devices, thereby
+preventing kernel panic.
 
-On Tue, 2024-03-19 at 10:43 +0100, Ricardo Ribalda wrote:
-> Hi Gergo
->=20
-> I missed sending the reviewed-by sorry :)
->=20
-> Btw, do you still have access to the device? Could you tell me what
-> you get from  and UVC_GET_MAX, UVC_GET_MIN for
-> UVC_CT_PANTILT_RELATIVE_CONTROL and UVC_CT_ZOOM_RELATIVE_CONTROL ?
->=20
+Signed-off-by: Songyang Li <leesongyang@outlook.com>
+---
+ arch/mips/pci/pcie-octeon.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+ mode change 100644 => 100755 arch/mips/pci/pcie-octeon.c
 
-PTZ Pro and BCC950 only have UVC_CT_ZOOM_ABSOLUTE_CONTROL, not
-UVC_CT_ZOOM_RELATIVE_CONTROL.
-
-v4l2-ctl -l:
-
-zoom_absolute(int): min=3D100 max=3D1000 step=3D1 default=3D100 value=3D100
-pan_speed(int): min=3D-1 max=3D1 step=3D1 default=3D1 value=3D0
-tilt_speed(int): min=3D-1 max=3D1 step=3D1 default=3D1 value=3D0
-
-printing data[first], data[first+1] in uvc_ctrl_get_rel_speed:
-
-GET_DEF: 0 1
-GET_MIN: 0 1
-GET_MAX: 0 1
-GET_RES: 0 1
-GET_CUR: 0 1
-
-
-I found the output of Obsbot Tiny v4l2-ctl -l at
-https://www.labohyt.net/blog/gadget/post-7643:
-
-pan_absolute(int): min=3D-468000 max=3D468000 step=3D3600 default=3D0 value=
-=3D0
-tilt_absolute(int): min=3D-324000 max=3D324000 step=3D7200 default=3D0 valu=
-e=3D0
-focus_absolute(int): min=3D0 max=3D100 step=3D1 default=3D0 value=3D0
-flags=3Dinactive
-focus_automatic_continuous(bool): default=3D1 value=3D1
-zoom_absolute(int): min=3D0 max=3D100 step=3D1 default=3D0 value=3D0
-zoom_continuous(int): min=3D0 max=3D100 step=3D1 default=3D100 value=3D0
-pan_speed(int): min=3D-1 max=3D160 step=3D1 default=3D20 value=3D0
-tilt_speed(int): min=3D-1 max=3D120 step=3D1 default=3D20 value=3D0
-
-This is where the default value of pan_speed/tilt_speed/zoom_continuous
-can be useful, even if they don't work exactly like the defaults for
-other controls.
-
-So this patch isn't that good after all.
-
-Regards,
-Gergo
-
-
-> Thanks!
->=20
-> On Mon, 20 Nov 2023 at 19:53, Gergo Koteles <soyer@irl.hu> wrote:
-> >=20
-> > Devices with pan/tilt controls but without pan/tilt speed controls
-> > return 1 for the default value of V4L2_CID_PAN_SPEED or
-> > V4L2_CID_TILT_SPEED. For these controls, the value of 1 means a
-> > move and that's not a good default.
-> >=20
-> > Currently, for these controls the UVC_GET_DEF query returns
-> > bPanSpeed or bTiltSpeed of CT_PANTILT_RELATIVE_CONTROL.
-> >=20
-> > According to the UVC 1.5 specification, the default value of bPanSpeed
-> > or bTiltSpeed should be 1 if the pan/tilt control doesn't support
-> > speed control.
-> >=20
-> > "If the control does not support speed control for the Tilt control,
-> > it will return the value 1 in this field for all these requests."
-> >=20
-> > This patch modifies the uvc_ctrl_get_rel_speed to return hardcoded 0
-> > for UVC_GET_DEF query, because that's the stop or don't move value
-> > for these V4L2 controls.
-> >=20
-> > Previous discussion
-> > Link: https://lore.kernel.org/all/CAP_ceTy6XVmvTTAmvCp1YU2wxHwXqnarm69Y=
-az8K4FmpJqYxAg@mail.gmail.com/
-> >=20
-> > Signed-off-by: Gergo Koteles <soyer@irl.hu>
-> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_ctrl.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/u=
-vc_ctrl.c
-> > index 5e9d3da862dd..e131958c0930 100644
-> > --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> > +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> > @@ -444,9 +444,10 @@ static s32 uvc_ctrl_get_rel_speed(struct uvc_contr=
-ol_mapping *mapping,
-> >                 return -data[first+1];
-> >         case UVC_GET_MAX:
-> >         case UVC_GET_RES:
-> > +               return data[first+1];
-> >         case UVC_GET_DEF:
-> >         default:
-> > -               return data[first+1];
-> > +               return 0;
-> >         }
-> >  }
-> >=20
-> >=20
-> > base-commit: be9aac187433af6abba5fcc2e73d91d0794ba360
-> > --
-> > 2.42.0
-> >=20
-> >=20
->=20
->=20
+diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
+old mode 100644
+new mode 100755
+index 2583e318e8c6..b080c7c6cc46
+--- a/arch/mips/pci/pcie-octeon.c
++++ b/arch/mips/pci/pcie-octeon.c
+@@ -230,12 +230,18 @@ static inline uint64_t __cvmx_pcie_build_config_addr(int pcie_port, int bus,
+ {
+ 	union cvmx_pcie_address pcie_addr;
+ 	union cvmx_pciercx_cfg006 pciercx_cfg006;
++	union cvmx_pciercx_cfg032 pciercx_cfg032;
+ 
+ 	pciercx_cfg006.u32 =
+ 	    cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG006(pcie_port));
+ 	if ((bus <= pciercx_cfg006.s.pbnum) && (dev != 0))
+ 		return 0;
+ 
++	pciercx_cfg032.u32 =
++		cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG032(pcie_port));
++	if ((pciercx_cfg032.s.dlla == 0) || (pciercx_cfg032.s.lt == 1))
++		return 0;
++
+ 	pcie_addr.u64 = 0;
+ 	pcie_addr.config.upper = 2;
+ 	pcie_addr.config.io = 1;
+-- 
+2.34.1
 
 
