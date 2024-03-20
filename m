@@ -1,100 +1,61 @@
-Return-Path: <linux-kernel+bounces-109159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42928881585
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:22:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9ED881553
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED07C283D24
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:22:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B92F1F251B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD11E56754;
-	Wed, 20 Mar 2024 16:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F421854BF7;
+	Wed, 20 Mar 2024 16:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bF5heiU9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="McsXNZ/m";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JDIcfAXn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQHvRJC6"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9PJ4h2R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081F754BFD;
-	Wed, 20 Mar 2024 16:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4CA54BDB;
+	Wed, 20 Mar 2024 16:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951716; cv=none; b=gSpy9NnFdV2MCxoUKcsGLwnDmjQ00jUh0zWePc994zC/pI7/Aq/peIKigdWQ45ykDBVEwbsLaZCbWlCsiktJojXVUYIy27mMAfZ+6JyZMJ/3vzA5JSowT2RUG3TXr7MSf1rfy07c7Aol60MbKtDCMWjZJ2aVUY1S7VV++iIqxKY=
+	t=1710951334; cv=none; b=UMU8Cnzfg/n2b6rDvzNpNUjoJvGUdZpnNCJef1sm86DdmbNCKDUZG9hyhxeIT3HaamJYllT9NkG0YMbT3gZO9yl09b81xKEmw+M2BOS8yQPuEEzJUX4VSaFEuyclr1lPdS1TIJ2hCjInvKOlaghhM8+ZoAM/Ly6vU7y/E1EaHKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951716; c=relaxed/simple;
-	bh=ZmXcOT2M7y1OmxH/SEp9ytHnYcwwQWvq2UwG3089PQU=;
+	s=arc-20240116; t=1710951334; c=relaxed/simple;
+	bh=ieuHVkiJ3mvxSTBYRy2oxHanwhxgK3q2OFoG5+yAQVQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tI7I/EE+OEjwglGlKl/FvrCeq6jUrJV3mDHfoalaXDYvHoNwmZrVGk8ph2+9DqqjB0FVmGLoSeeS5k0m2LMeuFkF9IqOlMNQVSW+dtq4PlCOL9A5ALaETxtRZiDFMFiLDvxmwqX+cqk/z/VkPAnR8xclgKv+NCxHKPqZdXGem6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bF5heiU9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=McsXNZ/m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JDIcfAXn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQHvRJC6; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD1BF5BF34;
-	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710951712;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=bF5heiU9lZlOxJ7sb27QO9chlKb3kbhK7em6NtYKoN7YBYVxitQCBUUh36OYpm3pmjGcnF
-	3waG4fSEVrUyNMY3+9Zxn4z260/sd1qo1jBfjyJ4OSOCyAjDy8GPH3rPEwUfwRm2MUwqhJ
-	gzCcHCr/x0HzFdGKMF0KVFBuf/sZJZQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710951712;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=McsXNZ/mbf8MeBIaJemGCPCpS4SUFpZLu87Gl5brQVnG8obcHAecuE99YzRQk7DM78ZxyK
-	rwfO4KfVQ8oeAHBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710951711;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=JDIcfAXnDteeFPv+o9oBlO1bHyYU0fRPgMQ5j7Htgnz0KLdk4TLUa0tnRv3I1POz+O4tXl
-	T6ciwjBmFIV32CwBSfcUm8w+TpDuPK2/1H1Ks9lHO3ZOg98+SsZCMWzOuq4pJGn6jxj4mv
-	Pq/uzGDP6fHruG5ikDHmVWzyRrsWBPY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710951711;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=ZQHvRJC6fn4T+b6WK/fikmf2EAXzHJWDlsbn0Ym/bnnWofpPtSjM8OIolzNG5rFMNTPWBr
-	38hXFWq+fPpU9zBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9922C136D6;
-	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id m4YzJR8N+2WdZgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 20 Mar 2024 16:21:51 +0000
-Date: Wed, 20 Mar 2024 17:14:33 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Maximilian Heyne <mheyne@amazon.de>
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>,
-	Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
-	stable@vger.kernel.org, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: allocate btrfs_ioctl_defrag_range_args on stack
-Message-ID: <20240320161433.GF14596@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240320113156.22283-1-mheyne@amazon.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=K95mmpF46yt9OzKCjdg+j0Oni9L92ieOwrlkSgGfoe23aRG6584ecqTspT5rXvr0g8elefCo5+xyPbaQmsRSi+aN6F71XrzDRITh34PnkHbQzmzHJudvORpJkWLdZYtI9tRXODNx/wOTXoyDQQwWYpm7O6w/YOTgCqHs4PajHYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9PJ4h2R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 611FAC433C7;
+	Wed, 20 Mar 2024 16:15:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710951333;
+	bh=ieuHVkiJ3mvxSTBYRy2oxHanwhxgK3q2OFoG5+yAQVQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C9PJ4h2RY6P99YTLQRRGAgHBuOSWlMhblYdFowfc+El6TXbIXtyDUKTGqG6OBwVCe
+	 Vcpb7I7GcpZKqZiujvrtk5NBa39AL6WCJVugX5zE1LHScxqtqQHlsx96fBG6qYd3VF
+	 a9aymwRdPN226FPrZqYAe2WhXFnfQMzz4SuZig7LigRlOy0BYdY6EuxoTPW3CHCc/0
+	 QfGBTg39m+l+Tkuh7uL7+xyCk7/mqFITmZPRBZl63Q3H+YomUXfQFa9qPd+htiEuiN
+	 /omcOBrFLrozCxhAqRzn0QwtnrSXhYLxT9EIOza3K8S4U9udr8EGm6ouoX/6A6rNZR
+	 jNfMsiYd3GtWg==
+Date: Wed, 20 Mar 2024 11:15:31 -0500
+From: Rob Herring <robh@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
+	dan.j.williams@intel.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, graf@amazon.de, bchalios@amazon.es,
+	xmarcalx@amazon.co.uk, ardb@kernel.org,
+	benh <benh@kernel.crashing.org>
+Subject: Re: [PATCH v1 0/4] virt: vmgenid: Add devicetree bindings support
+Message-ID: <20240320161531.GA1810860-robh@kernel.org>
+References: <20240319143253.22317-1-sudanl@amazon.com>
+ <23692c07-98bd-477d-b244-bba14c50352c@linaro.org>
+ <38aad6c0e698c8e804694276d1762d61f2068ce8.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,69 +64,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320113156.22283-1-mheyne@amazon.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JDIcfAXn;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZQHvRJC6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.31 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.10)[65.31%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,oracle.com:email,amazon.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -1.31
-X-Rspamd-Queue-Id: BD1BF5BF34
-X-Spam-Flag: NO
+In-Reply-To: <38aad6c0e698c8e804694276d1762d61f2068ce8.camel@infradead.org>
 
-On Wed, Mar 20, 2024 at 11:31:56AM +0000, Maximilian Heyne wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> commit c853a5783ebe123847886d432354931874367292 upstream.
-> 
-> Instead of using kmalloc() to allocate btrfs_ioctl_defrag_range_args,
-> allocate btrfs_ioctl_defrag_range_args on stack, the size is reasonably
-> small and ioctls are called in process context.
-> 
-> sizeof(btrfs_ioctl_defrag_range_args) = 48
-> 
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> CC: stable@vger.kernel.org # 4.14+
-> [ This patch is needed to fix a memory leak of "range" that was
-> introduced when commit 173431b274a9 ("btrfs: defrag: reject unknown
-> flags of btrfs_ioctl_defrag_range_args") was backported to kernels
-> lacking this patch. Now with these two patches applied in reverse order,
-> range->flags needed to change back to range.flags.
-> This bug was discovered and resolved using Coverity Static Analysis
-> Security Testing (SAST) by Synopsys, Inc.]
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+On Wed, Mar 20, 2024 at 01:50:43PM +0000, David Woodhouse wrote:
+> On Tue, 2024-03-19 at 16:24 +0100, Krzysztof Kozlowski wrote:
+> > On 19/03/2024 15:32, Sudan Landge wrote:
+> > > This small series of patches aims to add devicetree bindings support for
+> > > the Virtual Machine Generation ID (vmgenid) driver.
+> > > 
+> > > Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
+> > > ("virt: vmgenid: notify RNG of VM fork and supply generation ID") as an
+> > > ACPI only device.
+> > > We would like to extend vmgenid to support devicetree bindings because:
+> > > 1. A device should not be defined as an ACPI or DT only device.
 
-Acked-by: David Sterba <dsterba@suse.com>
+This (and the binding patch) tells me nothing about what "Virtual 
+Machine Generation ID driver" is and isn't really justification for 
+"why".
 
-for backport to stable as a prerequisite for 173431b274a9a5 ("btrfs:
-defrag: reject unknown flags of btrfs_ioctl_defrag_range_args").
+> > 
+> > Virtual stuff is not a device, so your first assumption or rationale is
+> > not correct.
+> > 
+> > Virtual stuff can be ACPI only, because DT is not for Virtual stuff.
+> 
+> I strongly disagree with this.
+> 
+> Discovering things is what the device-tree is *for*.
+
+DT/ACPI is for discovering what hardware folks failed to make 
+discoverable. But here, both sides are software. Can't the software 
+folks do better?
+
+This is just the latest in $hypervisor bindings[1][2][3]. The value add 
+must be hypervisors because every SoC vendor seems to be creating their 
+own with their own interfaces.
+
+
+> We don't want to add extra complexity and overhead on both host and
+> guest side to make things discoverable in a *less* efficient way.
+> 
+> The device-tree isn't just a last-resort for when we can't possibly do
+> things differently in a discoverable way. The device-tree is a first-
+> class citizen and perfectly valid choice as a way to discover things.
+> 
+> We shouldn't be forcing people to turn things into PCI devices just to
+> avoid adding DT bindings for them.
+> 
+> And we *certainly* shouldn't be directing people towards all the
+> awfulness of ACPI, and in-kernel bytecode interpreters, and all that
+> horridness, just because we don't want to use DT to... describe things.
+
+I assume you have other calls into the hypervisor and notifications from 
+the hypervisor? Are you going to add DT nodes for each one? I'd be more 
+comfortable with DT describing THE communication channel with the 
+hypervisor than what sounds like a singular function. Otherwise, what's 
+the next binding?
+
+Rob
+
+[1] https://lore.kernel.org/all/20240222-gunyah-v17-2-1e9da6763d38@quicinc.com/
+[2] https://lore.kernel.org/all/20240129083302.26044-4-yi-de.wu@mediatek.com/
+[3] https://lore.kernel.org/all/20240127004321.1902477-2-davidai@google.com/
 
