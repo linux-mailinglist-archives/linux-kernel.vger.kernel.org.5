@@ -1,83 +1,76 @@
-Return-Path: <linux-kernel+bounces-109427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E11178818F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:13:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFA88818F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 960F11F213AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:13:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA0A22837BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150D785C42;
-	Wed, 20 Mar 2024 21:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5138595F;
+	Wed, 20 Mar 2024 21:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H5MRRhkY"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MRA1FaFZ"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003A16A8C5
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5EB6A8C5
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:14:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710969207; cv=none; b=PyPveustStkbEqLvDd54/4FAhg/69Cz6S2cyIPQHWC9cnbbrtmoZharlHysQJgyAckjXYMf3HK2lvx5JhRr8BEJvs9hhtwRASAxor5Dy3ymnQCdU59HK5mZFQXQVZ6FeS0XSHkDytYwvUpMSi306BfTvVjXuqUUr7oPt1xj3Uvo=
+	t=1710969297; cv=none; b=LMUEFFqxyOlV24Gxmu90K7jWLGSX7BnxCS0clSZa6AIyzWOBvd0trjLQJpv/D4z1w8O88g7TdtxDdgrtoDvaSJOQPRUnJOvlmL0uDig6wM0XCwfwN4h0d8lq8ucCGNIfEyJvrjuBaL96xchcKTc5pXatGmXYkyzTMIqlqDIROlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710969207; c=relaxed/simple;
-	bh=NVi+vcAVEgF9R3S44WE03lAkRfqkBmKGPJxLBY/3iZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l14wvX0XDSQD9gxvgzKwTg5zx/xuQelvMzgRYRNW37kEzEkMDzVFj3zLOWQOHctmKrU/okkNiU31DOP6r1yEQ/+XvpqYcxbh8cG/PRbZQuUpbOW5QYnncvtwbuLAgunLYLspQBl4wWeweol6OBbfEv6PVde60xYOPJZ+t8NwqHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H5MRRhkY; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dee5daa236so2197275ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:13:25 -0700 (PDT)
+	s=arc-20240116; t=1710969297; c=relaxed/simple;
+	bh=wd1nYr8m1KR2n3urOxGOjtHYYjJVJHI4iyGiHvDBp6c=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CnK8U354x1JblA6/+cBuSFmhXTOqSzvhHCYlV784JQmHoaDbnKC4U7E7+VwzhK0u8Bwajro6OL8M69tRXlJcYS0v0G8FfgcvTzGPT5oqzDGXSoDLS3XctTh76w0HStLpSFSsZDr17MTnBZRietf9E+rTMop5G46O5x+4NuEPG34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MRA1FaFZ; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e034607879so2230495ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710969205; x=1711574005; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9hrhAdvacwtFgAecoSHjqV+1IjYrudfe2yxm0DSIjUc=;
-        b=H5MRRhkY1H6N8FEUXE1s57alQwt0+ywDqGw3nRE7c/Tgu2vXPh5zDSvfsJtbbmGuze
-         JTHOVgp7Emb+5hHCHRQ2bEHfG1xjGntFKjKDIzkiHkzSFyebSCPB/p8fiZ8Y+J3R6oho
-         azV37GLRs3zONOQX1HvB7MJ31NZTz4mZ21EPM=
+        d=gmail.com; s=20230601; t=1710969295; x=1711574095; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f7fFGAwFervR59ppe1kqtK+ZKXlEJIswmFJJz9qkT1I=;
+        b=MRA1FaFZ2iNTL2dnlnCL5G5BJfoLqY2KclK2sulnP+RrRQ9qHEu93Hta6680RUFs/Y
+         uMB7LOwo/sM1MubqkNCqhvToAPB9orjyw2YwAni93pcCmHEJjd93slfpEg6l82+sfNTH
+         wtXKW+mRhiLI1yZB9MaQ1nxGOVjXDF3FViVHMjiw/Yb9nxhEuQTsflDV6Z4ke+xP/kgO
+         tzR92G/VSweQF4tPRkINoV661JDVVWHny2xsivsJ1BR7IyA72fHsXDrBMLxXqZZhRFeg
+         faxGPvzLwQs8Y2zu51Si8rZurH06nxJADNXO25nnLzBIINAyQOTc4cFDzXZZ/tFTy283
+         VgkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710969205; x=1711574005;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9hrhAdvacwtFgAecoSHjqV+1IjYrudfe2yxm0DSIjUc=;
-        b=pZY6EPrwOuvY5IPNNQIkNmNXhxdjidWsJ7K4F10kaFb1eAHD+XlK8oDq+3YNgwd5OI
-         m3eqNYMxRgW+ohomFoxgoyVutfhc0D6Z1P7QcXG+K7JHQdmhzWS4+f9qVD986938dOLb
-         AnsBvtTC3VhPcQrfFC8dqZ8mz7atmNwVMGuPx8rgT1yelbS//VuhylADWJa7PJDW5p0/
-         JGwsWHKzRyyWR1bW/8710UGdep6seLBpp+Ti4NFhvAu/jZxozTgDC8dC43uYZtjoexBu
-         9QoXZWN5/bNXvwGa/QfvK/3unqhiLDgc2wQtzaR0nFhbveFt/tI4zYl2saf0p7VcqvYy
-         TEbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVxAABqab9S2vH1lO7iXcglprCXAt47v9kx+AMLNEgiF51ugl/xOG6n4ep4zHhDFVdxOnTV0R9/UMa575yO7DqlSUg9QCRLe08qbxMA
-X-Gm-Message-State: AOJu0YzmqRlpaQLYGIiXmi/wfw2p2G6JoXz7O/01W7UH5y8joddzjhTm
-	/bwfwo8o+ZM4HWu0/r4rroCIY7poEWTLEDiLSUTRJxmzyM5iZE6kVOqXphPyxA==
-X-Google-Smtp-Source: AGHT+IGIAq8iLg723by1a+a246+lqYpGlBeuedEfSl1ZxJDHAqdrZl0MqFJiXg4yCvXjtAi7S3odHA==
-X-Received: by 2002:a17:902:c942:b0:1e0:444:5f55 with SMTP id i2-20020a170902c94200b001e004445f55mr4272915pla.47.1710969205306;
-        Wed, 20 Mar 2024 14:13:25 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:8598:2b3d:6e11:4163])
-        by smtp.gmail.com with UTF8SMTPSA id z5-20020a170903018500b001ddc83fda95sm5854661plg.186.2024.03.20.14.13.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 14:13:25 -0700 (PDT)
-Date: Wed, 20 Mar 2024 14:13:24 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: David Lin <yu-hao.lin@nxp.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kvalo@kernel.org" <kvalo@kernel.org>,
-	"francesco@dolcini.it" <francesco@dolcini.it>,
-	Pete Hsieh <tsung-hsien.hsieh@nxp.com>,
-	"rafael.beims" <rafael.beims@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host
- mlme
-Message-ID: <ZftRdB5_Po-1Qnb7@google.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
- <ZfTiz_fhzPwRk4Xb@google.com>
- <PA4PR04MB96388A076FC16CF4C76F661AD12D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+        d=1e100.net; s=20230601; t=1710969295; x=1711574095;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f7fFGAwFervR59ppe1kqtK+ZKXlEJIswmFJJz9qkT1I=;
+        b=N+tEF8D4Wp7hXRoSCG1cC2vvOG4pB/gBlngBcjRz8H9+m52FUk+oqVHAsmrSakrl+E
+         lQIs+89YSJidAjYgEjKp/lJTFcTsumEn0ShbIiDM1SfeCw8ks0/Rbg8WT36t6+FarKaK
+         +g6StI8Dbafk3tOe7aKJLAp8SBxD6k/76wWIwEiikG1pHvXe8Pwro8MhlS/8MQiosn6j
+         uqxRSAelAl504DhkLD1JuR+dh5XLSCiiNQEBxSad9+y14+mwAMkhe2E20OT8TW2L1Bxh
+         jebNrz72j9rng6hCmhY8SBlCnwst1AJhRZaxePYX0ist7QqdD6JotFueOIbEhXefAVPb
+         gLJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXWF9btZH4yZM14JrF9vElns/gY/8LhR4njB7TET6DSeO9gd8epy7qcCK4O5CXPl+TYjCM1qqx8F9gx0OgBlKzBJ8+VViJciZRoK+Zb
+X-Gm-Message-State: AOJu0YxekvzJPE7t/ReU/TOfp0N4hPTt/Y4GY0AODNTqtRvnvuyB+xGR
+	65DHno/zdPGP7bnm+MDHMAazinZUzCy1IVeA/BLq/QC/odDqa5PG300x+AYQy6A=
+X-Google-Smtp-Source: AGHT+IEN4zZwUIlDsr0tDIndaRJ8gb8+vxa1njntTQABc8skaQTzg+nHVWus0UDTG+TjZJ+f9r3nCQ==
+X-Received: by 2002:a17:902:ea10:b0:1e0:1496:91ec with SMTP id s16-20020a170902ea1000b001e0149691ecmr8658280plg.20.1710969294813;
+        Wed, 20 Mar 2024 14:14:54 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902c40500b001dd635551f1sm14145020plk.255.2024.03.20.14.14.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 14:14:54 -0700 (PDT)
+Date: Thu, 21 Mar 2024 02:44:51 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Subject: [PATCH v3 0/3] Trivial code cleanup patches
+Message-ID: <cover.1710965653.git.ayushtiw0110@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,28 +79,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PA4PR04MB96388A076FC16CF4C76F661AD12D2@PA4PR04MB9638.eurprd04.prod.outlook.com>
 
-Hi David,
+Address different kinds of checkpatch complains for the rtl8712 module
+to ensure adherence to coding style guidelines.
 
-On Mon, Mar 18, 2024 at 02:20:56AM +0000, David Lin wrote:
-> > From: Brian Norris <briannorris@chromium.org>
+Changes in v3: Fixed issues about backupPMKIDList and verified with
+CONFIG_WERROR set and built the kernel.
 
-> > I'm not sure if this has been asked/answered before, but are
-> > the MLME/WPA3 limitations exclusively tied to the firmware support ("V2 Key
-> > API")? Or are there hardware limitations on top (e.g., some firmware might get
-> > "V2 Key API" but still be unsupported on a given chip family)? Could other
-> > chips chips theoretically get this feature-set in the future?
-> 
-> If firmware reported support of V2 Key API, then host mlme can be
-> supported without issues. There is a flag 'host_mlme' in struct
-> 'mwifiex_sdio_device' to indicate if host mlme should be supported. If
-> this flag is set, driver will still check if firmware can support V2
-> Key API. If firmware can't support it, host mlme will be disabled.
+Changes in v2: Checked any possible reuse of backup_PMKID_list
+manually and rebuilt, rebooted the kernel and loaded the driver
+with modprobe.
 
-Thanks! If I can distill the answer: it's just a software/firmware
-limitation, and not a hardware limitation. The hardware limitation flag
-in this series is added just out of caution.
+Ayush Tiwari (3):
+  staging: rtl8712: rename backupPMKIDList to backup_PMKID_list
+  staging: rtl8712: rename backupPMKIDIndex to backup_PMKID_index
+  staging: rtl8712: rename backupTKIPCountermeasure to
+    backup_TKIP_countermeasure
 
-Brian
+ drivers/staging/rtl8712/mlme_linux.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+-- 
+2.40.1
+
 
