@@ -1,159 +1,152 @@
-Return-Path: <linux-kernel+bounces-109097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6B9881497
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:29:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D56B88149B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:30:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F3D91C21F64
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC479282850
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3B0524B7;
-	Wed, 20 Mar 2024 15:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E720D54FA9;
+	Wed, 20 Mar 2024 15:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="Ic/l4w7/";
-	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="h3dLUlY7"
-Received: from mx0b-00230701.pphosted.com (mx0b-00230701.pphosted.com [148.163.158.9])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Xf4yX4sB"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621931EB44;
-	Wed, 20 Mar 2024 15:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC8154BFE;
+	Wed, 20 Mar 2024 15:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710948550; cv=none; b=iEK65opwh1zhLTSIn91gfPKjIKht/D+X34e1h4fyVjcfBWl1FfvERcbKAmv94HHvlxH0CRZOBROC3Vu42os8C9rMbLb0uxWq9A5BmLnvePK4ewFcTwU+ehoj9mPwxLk/A8aLBDao/FjAP0qFR1dz3vadpU2jA3739cue794M5E8=
+	t=1710948623; cv=none; b=f9Fq4xXzGvZq3kQCstOrt1DLML9pxCR9aAs3iChuOnzEcYT4WAEpzT1pyL0I6of9H1GwEdnzm9aucKYls0USvmes1Fm1MHFS3+E8jYtqoVZ7aKGNVQ6+p3HPRxACI0axlb5xHhF5DZvQV/2H0nb1w80d4Q6L2D7XDIQ8nkZnfs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710948550; c=relaxed/simple;
-	bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=jMvjhQ4vDGNNWFWRYmDTB0Kk//PUaAuekA9Y6xt6pEpsba5ewcMO2BSNoDO9xmzNCGhoGYthPhtteqPc2O+uPE/VWvWD+amgX9RjdYJNeOWrx4GXFuggES+ayXtIpTM7en3Oz8s56E8A+Hz/QEmaHzQ5LyHkeJeL/7XtgholmiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com; spf=pass smtp.mailfrom=synopsys.com; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=Ic/l4w7/; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=h3dLUlY7; arc=none smtp.client-ip=148.163.158.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synopsys.com
-Received: from pps.filterd (m0098572.ppops.net [127.0.0.1])
-	by mx0b-00230701.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KDXNiA029987;
-	Wed, 20 Mar 2024 08:28:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=
-	from:to:cc:subject:date:message-id; s=pfptdkimsnps; bh=xwEnEgNmd
-	ia2OaQNO3Qw1uAkOGxJ+2PH6QxnIB8iPco=; b=Ic/l4w7/SyaR+OMNoJiKy7VRL
-	8rwzvopHqbHVF0Hk0X8jDNUlcCmvGTureqVtqSj5eQYLfJPjFxyEeYVuS3PbPR10
-	0cJzpvaSe3vLgpOTVnUCSKwR1VMHgm9hHYC/vMSqzvypFQvF3d3aeLddpXQJvxR0
-	LiLXmHoBkpF6TS7Goc8WIZgYTHqZa5NJP9/lHqktm6/h+gfloQGFsmCBGL6h9QUw
-	DuwtIF/A0RCWwCpXmTTrbX3F0huBCwBTKCYR18oDuXcsrW5REGXbYfJ2vhvQMH2T
-	CAEcdbxrd3KBvhaMLn5s9Z+zRqoWaGSxE8twcsOsaiu8BdTw6uFZEH2puscmg==
-Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.87.133])
-	by mx0b-00230701.pphosted.com (PPS) with ESMTPS id 3wwa2d2tsn-1
+	s=arc-20240116; t=1710948623; c=relaxed/simple;
+	bh=41QkvDnloJQpHX/mvmIYkk7SfwYlD2OLUl5OMcCY33U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B1OD6Vyl0tUIwdX1RguMue+4qXkNkSLi2s53mGWZDYfInH9gDPTgHKHOGNLhGzrLxosXQRrz5W/lt7Ly6w24Go+Uw75b6uqLV0grajHL8TeTYqDtPOuB4USQyXiZvSKAw+K03hD1uoRCQnn41p2zLcBiIXmNWBtOIsdgm43duPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Xf4yX4sB; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KEeUaH015103;
+	Wed, 20 Mar 2024 15:29:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=41QkvDnloJQpHX/mvmIYkk7SfwYlD2OLUl5OMcCY33U=;
+ b=Xf4yX4sBcM/5YZ5wFHEuwuel+wMeDDdQUKh64jmhaw63hVRdiSaRV1O4hilgS7AXHeOH
+ tMJ+3uK+g6mrNaC3OD6pIcdL10dKd2Isz0TRhcu1WYYnSJDwIpmBnNTe9m2h+mWu7FGL
+ ycO/TWEGti0glZyp46GX9EYsXdDg1I/fJkW2Od2LhG6CUixRJVG45dr6bYfHa9KHsJ3U
+ gjpA+9IMSzh1dcvhgS8vcpZbHDe37FdpE5cJYYcr7adOoi3KA+HXece0Zkyc1tTRGJgD
+ G/f6f6oPorSpDewWL5OXRYZ5Y6Ir+Giip9lZB+TZgWvnLWlx8R/fmX91I9dWf5hpgh28 oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x01rw04d4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 08:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-	t=1710948538; bh=CQySag7xm2muRwM/T32TWtIU0dCJiXAtitG8wW/6ZwE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=h3dLUlY7pY/W5eXBsu8su9hnYtorjoWAAG8ABb7MA/B6f2fX/whLLAYGQoCzV7DeO
-	 hQvaEVyK9P/VcO3VA5Uq0nQ3IEPt4s2wEtDAY5gpe2embjNgOBfawXtyIZA4PS414c
-	 4zuNwi1SO6fOSE89V5qsSeaj0zAWKaD3yYUfXJiGvTA97i4ZAJf4GvkwtIZBB6vCKw
-	 XxHNGnVuts1QbpxJOZqS9WxdB4IAkvH6xQBGDWzxJx8zKpIaUIBaLtseKneAsphZfC
-	 K8VK+OHUx0WJfhCmlcEKWUD9B4u+1gGOQfn8v1mULzSaxBriOJchNczRe+B1S+Ea9W
-	 douD72xHNfQwQ==
-Received: from mailhost.synopsys.com (badc-mailhost3.synopsys.com [10.192.0.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
-	 client-signature RSA-PSS (2048 bits))
-	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 8031F401D4;
-	Wed, 20 Mar 2024 15:28:58 +0000 (UTC)
-Received: from us01odcvde44181.internal.synopsys.com (us01odcvde44181.internal.synopsys.com [10.192.159.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client did not present a certificate)
-	by mailhost.synopsys.com (Postfix) with ESMTPSA id 258AEA00CD;
-	Wed, 20 Mar 2024 15:28:58 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From: Joao Pinto <Joao.Pinto@synopsys.com>
-To: Eugeniy.Paltsev@synopsys.com, dmaengine@vger.kernel.org
-Cc: Joao.Pinto@synopsys.com, Martin.McKenny@synopsys.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Avoid hw_desc array overrun in dw-axi-dmac
-Date: Wed, 20 Mar 2024 15:28:45 +0000
-Message-Id: <1710948525-45471-1-git-send-email-jpinto@synopsys.com>
-X-Mailer: git-send-email 2.6.3
-X-Proofpoint-ORIG-GUID: hYAtkIeHxNylq951z4uwgP0XupkakxBa
-X-Proofpoint-GUID: hYAtkIeHxNylq951z4uwgP0XupkakxBa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
- priorityscore=1501 spamscore=0 clxscore=1011 adultscore=0 suspectscore=0
- malwarescore=0 impostorscore=0 phishscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403140001 definitions=main-2403200123
+	Wed, 20 Mar 2024 15:29:53 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42KFTrrV030362;
+	Wed, 20 Mar 2024 15:29:53 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x01rw04d1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 15:29:53 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KDEN9D019843;
+	Wed, 20 Mar 2024 15:29:52 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykps5n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 15:29:52 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KFTkHn52363644
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 20 Mar 2024 15:29:48 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C202F20065;
+	Wed, 20 Mar 2024 15:29:46 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2E17F20040;
+	Wed, 20 Mar 2024 15:29:41 +0000 (GMT)
+Received: from [9.43.11.243] (unknown [9.43.11.243])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 20 Mar 2024 15:29:40 +0000 (GMT)
+Message-ID: <0514fb50-443d-427f-ac5b-a29679b6938b@linux.ibm.com>
+Date: Wed, 20 Mar 2024 20:59:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/3] powerpc/pseries/iommu: Bring back userspace view
+ for single level TCE tables
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: tpearson@raptorengineering.com, alex.williamson@redhat.com,
+        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+        naveen.n.rao@linux.ibm.com, gbatra@linux.vnet.ibm.com,
+        brking@linux.vnet.ibm.com, aik@ozlabs.ru, robh@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, aik@amd.com,
+        msuchanek@suse.de, jroedel@suse.de, vaibhav@linux.ibm.com,
+        svaidy@linux.ibm.com
+References: <171026724548.8367.8321359354119254395.stgit@linux.ibm.com>
+ <171026725393.8367.17497620074051138306.stgit@linux.ibm.com>
+ <20240319143202.GA66976@ziepe.ca>
+Content-Language: en-US
+From: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+In-Reply-To: <20240319143202.GA66976@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 05_um4XcOnvDcBpMa4NSeN7Rh3q98Cpl
+X-Proofpoint-ORIG-GUID: _jYtsAZMxDuH7SH4XYs0QdvBkKr_lJ4i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403200123
 
-I have a use case where nr_buffers = 3 and in which each descriptor is composed by 3
-segments, resulting in the DMA channel descs_allocated to be 9. Since axi_desc_put()
-handles the hw_desc considering the descs_allocated, this scenario would result in a
-kernel panic (hw_desc array will be overrun).
+Hi Jason,
 
-To fix this, the proposal is to add a new member to the axi_dma_desc structure,
-where we keep the number of allocated hw_descs (axi_desc_alloc()) and use it in
-axi_desc_put() to handle the hw_desc array correctly.
+On 3/19/24 20:02, Jason Gunthorpe wrote:
+> On Tue, Mar 12, 2024 at 01:14:20PM -0500, Shivaprasad G Bhat wrote:
+>> The commit 090bad39b237a ("powerpc/powernv: Add indirect levels to
+>> it_userspace") which implemented the tce indirect levels
+>> support for PowerNV ended up removing the single level support
+>> which existed by default(generic tce_iommu_userspace_view_alloc/free()
+>> calls). On pSeries the TCEs are single level, and the allocation
+>> of userspace view is lost with the removal of generic code.
+> :( :(
+>
+> If this has been broken since 2018 and nobody cared till now can we
+> please go in a direction of moving this code to the new iommu APIs
+> instead of doubling down on more of this old stuff that apparently
+> almost nobody cares about ??
 
-Additionally I propose to remove the axi_chan_start_first_queued() call after completing
-the transfer, since it was identified that unbalance can occur (started descriptors can
-be interrupted and transfer ignored due to DMA channel not being enabled).
+We have existing software stack deployments using VFIO userspace
+device assignment running on Power platform. We have to enable
+similar software stack on newer generation Power10 platform and
+also in a pSeries lpar environment. These distros rely on VFIO enabled
+in kernel and currently have IOMMUFD disabled. This patch series is
+a simpler low risk enablement that functionally get the software stack
+working while we continue to enable and move to IOMMUFD in phases.
+We have to fix the older APIs in order to stage the functional enablement
+in small increments.
 
-Signed-off-by: Joao Pinto <jpinto@synopsys.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 7 ++-----
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          | 1 +
- 2 files changed, 3 insertions(+), 5 deletions(-)
+We are working on iommufd support for pSeries and looking forward
+to Timothy's patches.
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index a86a81f..b39f37a 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -302,6 +302,7 @@ static struct axi_dma_desc *axi_desc_alloc(u32 num)
- 		kfree(desc);
- 		return NULL;
- 	}
-+	desc->nr_hw_descs = num;
- 
- 	return desc;
- }
-@@ -328,7 +329,7 @@ static struct axi_dma_lli *axi_desc_get(struct axi_dma_chan *chan,
- static void axi_desc_put(struct axi_dma_desc *desc)
- {
- 	struct axi_dma_chan *chan = desc->chan;
--	int count = atomic_read(&chan->descs_allocated);
-+	int count = desc->nr_hw_descs;
- 	struct axi_dma_hw_desc *hw_desc;
- 	int descs_put;
- 
-@@ -1139,9 +1139,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 		/* Remove the completed descriptor from issued list before completing */
- 		list_del(&vd->node);
- 		vchan_cookie_complete(vd);
--
--		/* Submit queued descriptors after processing the completed ones */
--		axi_chan_start_first_queued(chan);
- 	}
- 
- out:
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index 454904d..ac571b4 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -104,6 +104,7 @@ struct axi_dma_desc {
- 	u32				completed_blocks;
- 	u32				length;
- 	u32				period_len;
-+	u32				nr_hw_descs;
- };
- 
- struct axi_dma_chan_config {
--- 
-1.8.3.1
 
+-Thanks
+
+Shivaprasad
+
+> Jason
 
