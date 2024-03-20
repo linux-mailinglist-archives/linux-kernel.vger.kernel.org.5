@@ -1,318 +1,185 @@
-Return-Path: <linux-kernel+bounces-108340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF5A6880967
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:06:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BB55880976
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8CD2852E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DCF1F232CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65D85107A6;
-	Wed, 20 Mar 2024 02:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47F9101C2;
+	Wed, 20 Mar 2024 02:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VeMfMQhy"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yvh0fv4N"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA85179EA
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A520F519
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:08:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710900357; cv=none; b=Wha9OXVjIi95fyq8z/wFj6ue0vKID6OyhzZSivHaeiQZNczntAxtPp9pQ0s5FmL4jyLY3jEWDj0i8ZRkNiDUeFLuJOl5BhMXSO1BPYT9aOkcXn/l2E2g/0BTF0W48rQPXizKnaM3n95iFMpO2v2Oxe7Jzo+MjB1xqq1A6f83ug0=
+	t=1710900509; cv=none; b=bSInn0I/wSxK5GyuoNtUDJ+zTm2EMMED889O/tG1zRDzhWYOCK6ME0LFbpUodR8h4dLoMobXoqQNjBqyG5PDgli1D5JvaqIBaN/P1TtXu3BPuBmeMr62f16b83GtzN4TRg/irFaER/KCr2ApamLOswgy86hOi2BfeX5gMShmj2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710900357; c=relaxed/simple;
-	bh=vaa+2ijoVtcb7E9zbnqicdNU3+R9K/2vv81NGhoGNJQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aejisIeGtXJTwcez1opQ55Fpj5j5NfM0ZuZAljFA4h7vwxRwiefjttMFjYqJWQ/jTrhTocDAAMYu+fh0i7rGxPxfqfgTWGX3xgmeRiB/NeByIwgE60BhllAgO1k2sjVq1zeBrgnq1cystydmp+xDaXn6BfHwK9DxYszM1hkp4zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VeMfMQhy; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-414633f7a52so15335365e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:05:54 -0700 (PDT)
+	s=arc-20240116; t=1710900509; c=relaxed/simple;
+	bh=FIzuKYDAkoINuSiIZV6ZsNqzCJaExKmuCjePFZHvsVA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=bOjehchW10WAz9YPQDF6DXfNOJgjR7mis33aAOIlIgtKn1UfrksMRBts3J7dLS/i1j5v9zUt6sK0JSwfI6ctl0cLWbO7R8ObvLdKUENIeHsnMo9Qi9vF8/4LR9UID4efyjcZBoqdT+aL8zGdYnqZ0HZd8OmVP48UsNzU9u/ClRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yvh0fv4N; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60f9d800a29so76023287b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710900353; x=1711505153; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8onlL6eaVMOKsrmQglnPXgtQA9k3jRb7PbaPmYQjRaA=;
-        b=VeMfMQhyd1flff19ahd//yu2uFX5lOoIBkB3kbvVDYBqagSSdFXYj/v1gdrPiZfloG
-         FD2u3PfLTlkBaDb0FBaA722yjgfB9ENmAK+6vZo7I27GP4/T5kp8UqV9qqJlzWy+mWn4
-         AKtvNVlTtL6t2XDhHXUmZjwwVkvvD9jfjGF9lozY/GegaztbztDYg2sLOMleUrJvIEyr
-         3r20lpldv/XgARSDDIP5E5E8a6ZPBskZ1YxBPS95abD60ERKvtFc2zYt2JOxu/XSgCpO
-         OohigjPAGGYBawXB1mOAFDUc87Gtnqzf0+ME2LI/Ig2zY5RL6uQMv8N/SIB4C7W+pd1b
-         OOEw==
+        d=google.com; s=20230601; t=1710900505; x=1711505305; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yYVHze7eFk58oRqMFdcZXvqqb2SqrJB7jmdU82oAHB0=;
+        b=Yvh0fv4NLxpxGJ2REGUxH9m52EIPIO8KubKCeRsqV1X7nE+UwlKYNKJpbJPBmgWlV0
+         DxfhEB9TNFtrHkrEgiHqIQziLyASNTizxyUEy1Fafx7hwmwzlKfLEY1yV9xUUIessvGt
+         3Ns2SHTve4Fti3k17jLBuu/bm6Vpx1xU+GOvqvlhRCs+dqOoDc21KdKjcOsA8xWYIwBZ
+         kTzGOlofUUHKt9Vcnz8BFjFF0WhpbJsT2ufiqjs2bAkJ4MsaGZw8aKiIrHi1aHI1BiHi
+         IHD5LiXXYUwLyNGPjKF0J9ta0T6tNbXKW4GzVY6idJERjInCQW3Uhxdv4nnW4fpEBKn0
+         aLJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710900353; x=1711505153;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8onlL6eaVMOKsrmQglnPXgtQA9k3jRb7PbaPmYQjRaA=;
-        b=PMU/mgsUcakBL99nsz00CyuIdDtDMlxe1GXMMmkoE25F4gZfQ2S5LoUEEx+rNwcEhl
-         FM5tD9Lv1DVRAKlzntaAukKU3H7rg77+MlPHnQS25fSP97ioDnllSly9Gvda5Avys7Af
-         KRPQ2/g5MtI0fdAGg4koL6Esc8Ic8FpH8JnacuC6CtU1R72JfWWSpAZBSEKrD72NVCDb
-         I+N6/mhZ85axfQK5iSUppRHbP4hzzDcVLEJa2VcGC9WIJNPksNabPj8Ov3+0pUrRm6q+
-         3kh7jD+HoYmsK0OUfQQ22txAwGQVKJyqcF8tX4olBFfJMygqFk73qFovUCTYGxcdCDmj
-         7s1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWck03MjjBvCK3yvucuLUz5wvWef2lfM7RZye7ipKnKBOkg6+ii0XSQjdVM112Pw4FBX+UwUKv4toxoKIaw+L3K6WA4Ge9OibBF2xQp
-X-Gm-Message-State: AOJu0Yyd+JAdU9bhUh+ZxsblERGVB9T7nlRLA1bHSULR/e+yOYoBoGFA
-	FbDnGDjvurWnwzTEGakBf6eECkTknMHmyfduCSlAL1O2fd0MuBpTvJYJJ/EsnjE=
-X-Google-Smtp-Source: AGHT+IE68IgbQV2m5xaeAAIsPInh5pDFP6u6jfPE18/dwJApj36Y7blQSDKqq5/s9aU2fs3UkSbn8Q==
-X-Received: by 2002:adf:f292:0:b0:33d:1eea:4346 with SMTP id k18-20020adff292000000b0033d1eea4346mr10012461wro.37.1710900353298;
-        Tue, 19 Mar 2024 19:05:53 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:c7c:7213:c700:e992:6869:474c:a63f])
-        by smtp.gmail.com with ESMTPSA id u14-20020a056000038e00b0033e34c53354sm9209295wrf.56.2024.03.19.19.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 19:05:52 -0700 (PDT)
-From: Alexey Klimov <alexey.klimov@linaro.org>
-To: sre@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	peter.griffin@linaro.org,
-	robh+dt@kernel.org
-Cc: conor+dt@kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	semen.protsenko@linaro.org,
-	linux-kernel@vger.kernel.org,
-	klimov.linux@gmail.com,
-	kernel-team@android.com,
-	tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	alexey.klimov@linaro.org,
-	alim.akhtar@samsung.com,
-	linux-arm-kernel@lists.infradead.org,
-	elder@linaro.org
-Subject: [PATCH 3/3] power: reset: add new gs101-poweroff driver
-Date: Wed, 20 Mar 2024 02:05:49 +0000
-Message-ID: <20240320020549.71810-3-alexey.klimov@linaro.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240320020549.71810-1-alexey.klimov@linaro.org>
-References: <20240320020549.71810-1-alexey.klimov@linaro.org>
+        d=1e100.net; s=20230601; t=1710900505; x=1711505305;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yYVHze7eFk58oRqMFdcZXvqqb2SqrJB7jmdU82oAHB0=;
+        b=pLZVug/UJcmSFdV48qafGheVdkQlUO9TrgzPi7tG6aGKYvDcuX/eG3wBtPat837Grz
+         IDGghsb43znBuY2bodYwur5WnoeUm2f+v4avk5eHae2/XzS6dkZNjOJXOUDeU6GFKs+j
+         Bfnml6+00Oc2JKHi4m0lYM69yANRs5lgN2fSnusuNrG56ArqThdPsZx9g4Etfyi0Ty8X
+         DRWE8jZAQ3unQtTXZWAD48kMF7DIPKUjy7EsNFq2ZoLSdoVsJj7wIJfkZthChvJzfpvR
+         zxdm+EaVxE7TrReH67+FVWlm9HK4B7QK3IA7Awo5S/Cxkp5qzWztwrN+rQD7pxPXnipV
+         x02g==
+X-Forwarded-Encrypted: i=1; AJvYcCWEdfKyJjEqigUiNUFtF9AXDwbmeDb5e5sLoCFqmOHt8AUTtuEzkaBV6ffkGSV71nrVDzvbpcnDsFfPXv/BEtoa7GpMxL2yQey9MIBj
+X-Gm-Message-State: AOJu0YzVP51HoK399wLBQs+Rhzs3rD6M+yZAsGseqlYxEZri6/YWqSMo
+	JA3bS0xMUUN/GbE0on/EePaacNFP9XamTt6uiL+WVo6VC9ijuy3W41qteCBR4jcGtuhKgz5mtkO
+	Ks/KQvejmeS011DuqRg==
+X-Google-Smtp-Source: AGHT+IHmnbH7OIFT3vXCgDBMNN/LSpOqXUQlqADVGRo/DP6oT7pIALKkMG8DtSLjyTbflgHEateyR8upPPsuWMd6
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:70e:b0:dcc:6bf0:2eb6 with SMTP
+ id k14-20020a056902070e00b00dcc6bf02eb6mr966645ybt.6.1710900505416; Tue, 19
+ Mar 2024 19:08:25 -0700 (PDT)
+Date: Wed, 20 Mar 2024 02:08:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240320020823.337644-1-yosryahmed@google.com>
+Subject: [PATCH 1/2] mm: zswap: increase shrinking protection for zswap
+ swapins only
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The driver allows switching off the Google gs101 SoC (Pixel6 family of
-mobile phones). The syscon-poweroff cannot be used since gs101 requires
-smc-based regmap i.e. a write to PMU register done from EL3 is required.
-Additionally the power off write should be performed when power button
-is not pressed.
+Currently, the number of protected zswap entries corresponding to an
+lruvec are incremented every time we swapin a page. This happens
+regardless of whether or not the page originated in zswap. Hence,
+swapins from disk will lead to increasing protection on potentially
+stale zswap entries. Furthermore, the increased shrinking protection can
+lead to more pages skipping zswap and going to disk, eventually leading
+to even more swapins from disk and starting a vicious circle.
 
-When USB charging cable is connected then this leads to a reboot of
-a device initiated by bootloader/firmware.
+Instead, only increase the protection when pages are loaded from zswap.
+This also has a nice side effect of removing zswap_folio_swapin() and
+replacing it with a static helper that is only called from zswap_load().
 
-Signed-off-by: Alexey Klimov <alexey.klimov@linaro.org>
+No problems were observed in practice, this was found through code
+inspection.
+
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- drivers/power/reset/Kconfig          |   7 ++
- drivers/power/reset/Makefile         |   1 +
- drivers/power/reset/gs101-poweroff.c | 157 +++++++++++++++++++++++++++
- 3 files changed, 165 insertions(+)
- create mode 100644 drivers/power/reset/gs101-poweroff.c
+ include/linux/zswap.h |  2 --
+ mm/swap_state.c       |  8 ++------
+ mm/zswap.c            | 10 +++-------
+ 3 files changed, 5 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index fece990af4a7..e7323b3b4a61 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -100,6 +100,13 @@ config POWER_RESET_GPIO_RESTART
- 	  If your board needs a GPIO high/low to restart, say Y and
- 	  create a binding in your devicetree.
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 2a85b941db975..1f020b5427e3d 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -34,7 +34,6 @@ int zswap_swapon(int type, unsigned long nr_pages);
+ void zswap_swapoff(int type);
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+ void zswap_lruvec_state_init(struct lruvec *lruvec);
+-void zswap_folio_swapin(struct folio *folio);
+ bool is_zswap_enabled(void);
+ #else
  
-+config POWER_RESET_GS101_POWEROFF
-+	tristate "GS101 power-off driver"
-+	depends on ARCH_EXYNOS || COMPILE_TEST
-+	help
-+	  This driver supports turning off the Google Tensor Pixel6 GS101 phones.
-+	  Select this if you're building a kernel with Google Tensor SoC support.
-+
- config POWER_RESET_HISI
- 	bool "Hisilicon power-off driver"
- 	depends on ARCH_HISI
-diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-index a95d1bd275d1..7065b7e4ce77 100644
---- a/drivers/power/reset/Makefile
-+++ b/drivers/power/reset/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_POWER_RESET_BRCMSTB) += brcmstb-reboot.o
- obj-$(CONFIG_POWER_RESET_GEMINI_POWEROFF) += gemini-poweroff.o
- obj-$(CONFIG_POWER_RESET_GPIO) += gpio-poweroff.o
- obj-$(CONFIG_POWER_RESET_GPIO_RESTART) += gpio-restart.o
-+obj-$(CONFIG_POWER_RESET_GS101_POWEROFF) += gs101-poweroff.o
- obj-$(CONFIG_POWER_RESET_HISI) += hisi-reboot.o
- obj-$(CONFIG_POWER_RESET_LINKSTATION) += linkstation-poweroff.o
- obj-$(CONFIG_POWER_RESET_MSM) += msm-poweroff.o
-diff --git a/drivers/power/reset/gs101-poweroff.c b/drivers/power/reset/gs101-poweroff.c
-new file mode 100644
-index 000000000000..2be903de16a1
---- /dev/null
-+++ b/drivers/power/reset/gs101-poweroff.c
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * GS101 Poweroff Driver
-+ *
-+ * Copyright (c) 2024, Linaro Ltd.
-+ * Author: Alexey Klimov <alexey.klimov@linaro.org>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/devm-helpers.h>
-+#include <linux/input.h>
-+#include <linux/io.h>
-+#include <linux/keyboard.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/soc/samsung/exynos-pmu.h>
-+
-+#define shwork_to_poweroff(x)		\
-+	container_of(x, struct gs101_poweroff, shutdown_work)
-+
-+#define keyboard_nb_to_poweroff(x)	\
-+	container_of(x, struct gs101_poweroff, keyboard_nb)
-+
-+struct gs101_poweroff {
-+	struct notifier_block keyboard_nb;
-+	bool power_key_pressed;
-+	struct work_struct shutdown_work;
-+	struct regmap *map;
-+	u32 offset;
-+	u32 mask;
-+};
-+
-+static struct gs101_poweroff *gs101_poweroff_ctx;
-+
-+static void gs101_shutdown_work_fn(struct work_struct *work)
-+{
-+	struct gs101_poweroff *gs101 = shwork_to_poweroff(work);
-+
-+	while (1) {
-+		/* wait for power button release */
-+		if (!gs101->power_key_pressed) {
-+			/* Issue the poweroff */
-+			regmap_update_bits(gs101->map,
-+					   gs101->offset,
-+					   gs101->mask, 0);
-+		} else {
-+			/*
-+			 * if power button is not released,
-+			 * wait and check TA again
-+			 */
-+			pr_info("power key is not released.\n");
-+		}
-+		mdelay(1000);
-+	}
-+}
-+
-+static int gs101_keyboard_notifier_call(struct notifier_block *nb,
-+					unsigned long code, void *_param)
-+{
-+	struct keyboard_notifier_param *param = _param;
-+
-+	if (param->value == KEY_POWER) {
-+		struct gs101_poweroff *gs101 = keyboard_nb_to_poweroff(nb);
-+
-+		gs101->power_key_pressed = param->down;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+static void gs101_poweroff(void)
-+{
-+	schedule_work(&gs101_poweroff_ctx->shutdown_work);
-+}
-+
-+static int gs101_poweroff_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct gs101_poweroff *gs101;
-+	int ret;
-+
-+	gs101 = devm_kzalloc(dev, sizeof(*gs101), GFP_KERNEL);
-+	if (!gs101)
-+		return -ENOMEM;
-+
-+	gs101->map = exynos_get_pmu_regmap_by_phandle(dev->of_node,
-+						      "samsung,syscon-phandle");
-+	if (IS_ERR(gs101->map))
-+		return PTR_ERR(gs101->map);
-+
-+	if (of_property_read_u32(dev->of_node, "offset", &gs101->offset)) {
-+		dev_err(dev, "unable to read 'offset' from DT\n");
-+		return -EINVAL;
-+	}
-+
-+	if (of_property_read_u32(dev->of_node, "mask", &gs101->mask)) {
-+		dev_err(dev, "unable to read 'mask' from DT\n");
-+		return -EINVAL;
-+	}
-+
-+	gs101->keyboard_nb.notifier_call = gs101_keyboard_notifier_call;
-+	ret = register_keyboard_notifier(&gs101->keyboard_nb);
-+	if (ret) {
-+		dev_err(dev, "failed to register keyboard notifier: %i\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_work_autocancel(dev, &gs101->shutdown_work,
-+				   gs101_shutdown_work_fn);
-+	if (ret) {
-+		dev_err(dev, "failed to register gs101 shutdown_work: %i\n", ret);
-+		unregister_keyboard_notifier(&gs101->keyboard_nb);
-+		return ret;
-+	}
-+
-+	gs101_poweroff_ctx = gs101;
-+	platform_set_drvdata(pdev, gs101);
-+
-+	/*
-+	 * At this point there is a chance that psci_sys_poweroff already
-+	 * registered as pm_power_off hook but unfortunately it cannot power
-+	 * off the gs101 SoC hence we are rewriting it here just as is.
-+	 */
-+	pm_power_off = gs101_poweroff;
-+
-+	return 0;
-+}
-+
-+static void gs101_poweroff_remove(struct platform_device *pdev)
-+{
-+	struct gs101_poweroff *gs101 = platform_get_drvdata(pdev);
-+
-+	if (pm_power_off == gs101_poweroff)
-+		pm_power_off = NULL;
-+
-+	unregister_keyboard_notifier(&gs101->keyboard_nb);
-+}
-+
-+static const struct of_device_id gs101_poweroff_of_match[] = {
-+	{ .compatible = "google,gs101-poweroff" },
-+	{}
-+};
-+
-+static struct platform_driver gs101_poweroff_driver = {
-+	.probe = gs101_poweroff_probe,
-+	.remove_new = gs101_poweroff_remove,
-+	.driver = {
-+		.name = "gs101-poweroff",
-+		.of_match_table = gs101_poweroff_of_match,
-+	},
-+};
-+
-+module_platform_driver(gs101_poweroff_driver);
-+MODULE_AUTHOR("Alexey Klimov <alexey.klimov@linaro.org>");
-+MODULE_DESCRIPTION("Google GS101 poweroff driver");
-+MODULE_LICENSE("GPL v2");
+@@ -58,7 +57,6 @@ static inline int zswap_swapon(int type, unsigned long nr_pages)
+ static inline void zswap_swapoff(int type) {}
+ static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
+ static inline void zswap_lruvec_state_init(struct lruvec *lruvec) {}
+-static inline void zswap_folio_swapin(struct folio *folio) {}
+ 
+ static inline bool is_zswap_enabled(void)
+ {
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index bfc7e8c58a6d3..32e151054ec47 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -696,10 +696,8 @@ struct folio *swap_cluster_readahead(swp_entry_t entry, gfp_t gfp_mask,
+ 	/* The page was likely read above, so no need for plugging here */
+ 	folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+ 					&page_allocated, false);
+-	if (unlikely(page_allocated)) {
+-		zswap_folio_swapin(folio);
++	if (unlikely(page_allocated))
+ 		swap_read_folio(folio, false, NULL);
+-	}
+ 	return folio;
+ }
+ 
+@@ -872,10 +870,8 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
+ 	/* The folio was likely read above, so no need for plugging here */
+ 	folio = __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ_ilx,
+ 					&page_allocated, false);
+-	if (unlikely(page_allocated)) {
+-		zswap_folio_swapin(folio);
++	if (unlikely(page_allocated))
+ 		swap_read_folio(folio, false, NULL);
+-	}
+ 	return folio;
+ }
+ 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index b31c977f53e9c..323f1dea43d22 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -773,14 +773,9 @@ void zswap_lruvec_state_init(struct lruvec *lruvec)
+ 	atomic_long_set(&lruvec->zswap_lruvec_state.nr_zswap_protected, 0);
+ }
+ 
+-void zswap_folio_swapin(struct folio *folio)
++static void zswap_lruvec_inc_protected(struct lruvec *lruvec)
+ {
+-	struct lruvec *lruvec;
+-
+-	if (folio) {
+-		lruvec = folio_lruvec(folio);
+-		atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+-	}
++	atomic_long_inc(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+ }
+ 
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+@@ -1644,6 +1639,7 @@ bool zswap_load(struct folio *folio)
+ 	zswap_entry_free(entry);
+ 
+ 	folio_mark_dirty(folio);
++	zswap_lruvec_inc_protected(folio_lruvec(folio));
+ 
+ 	return true;
+ }
 -- 
-2.43.0
+2.44.0.291.gc1ea87d7ee-goog
 
 
