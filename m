@@ -1,134 +1,151 @@
-Return-Path: <linux-kernel+bounces-108867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 457D4881118
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:37:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC33C88111A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00AB0282C5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:37:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A19D1F246E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B293EA64;
-	Wed, 20 Mar 2024 11:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343FF3EA76;
+	Wed, 20 Mar 2024 11:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Au6Ln1WC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4cS2aF01";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lrhykz4Z"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD63C381D3;
-	Wed, 20 Mar 2024 11:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C7EF9F8;
+	Wed, 20 Mar 2024 11:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710934627; cv=none; b=RaT/OkD3Fh8mUWwcdLjw1rWQ2aTQm5lCI9uYZisGL5heyrP9TLue3o4UrPYAUXJgHNrDKYQFP2zB3uU889ZxYgcZ9/5lBjHcpFfX2vr6zgixerDkjqB3G1sx7Ey2Hl42yc132JUXG5EH1+DrXOkOGDn4g+AJcQuGqUQ6BuaZDK8=
+	t=1710934763; cv=none; b=f91MvqPlEXKWkIeiabJr0YvPD3LRJvll5y1aqb/jt649nJCv581Z+5DKGM9BSpEOp54B4Zf4J0OtPTHHxsU8F56nLDKHSoCTNY6ISn6/f71zP1r6Vl6qmlgn5Y7xBKYtQAgvqdeiAkNAfyIATxEsQ1aQOfuu10ocfTjwSf4Ix0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710934627; c=relaxed/simple;
-	bh=zTNjM8Y+eEgduYplmMXU470dypJv2FhrWwqUBO0aOjE=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=u8B/Izkz6a4WxIYlGqW98EbPO58b6OjZPoAyxeyickmIBhVe20hAHsfy/mzq0hjtb0j8SgIqKUS6ayG5bLLvGWtUDY6BrDr33FitstgUGGhd6jiwcZc2FNnkp9YVuXssHsdbU8HFF46x9nGGKA6UyFJvBbT61CxQKUlw+59T0ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Au6Ln1WC; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710934626; x=1742470626;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=zTNjM8Y+eEgduYplmMXU470dypJv2FhrWwqUBO0aOjE=;
-  b=Au6Ln1WC+VQw8WfeFlmw6HSk7dB/3dQsFsPlCpSwSSluJtMVpuasDKHw
-   VetAShQrAnVVLo8iqca5WNxBO/WywvHb9SQ94fxZfJ7YpPZyot+BhRO+u
-   MdgWMGR9GA3jRJnJ84kyzV6kQYyVxlwTsoPZB9+x8/FV+ALFKW6h7IluM
-   YxjQjX6RPGCeDjW87B4Nh75Z7gzJsokbBhYcN4OPj7qbQWvrHyH+XyUQh
-   MZ98pZ477olA17nf2CnhQQZSpvrDsMQ8mfEAkHKbZim+kDczQpANZ5SQ/
-   98sEYFuLv+slbWAWgbfN2ePsF8deCVXQ1G02apGi86NXb0EdR9p3QBtjw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="23353615"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="23353615"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:37:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="14203899"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.16])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 04:37:01 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 20 Mar 2024 13:36:58 +0200 (EET)
-To: "Luke D. Jones" <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] platform/x86: asus-wmi: add support variant of
- TUF RGB
-In-Reply-To: <20240320011442.11608-2-luke@ljones.dev>
-Message-ID: <5d5e8895-8843-a0bf-de97-b293528a0643@linux.intel.com>
-References: <20240320011442.11608-1-luke@ljones.dev> <20240320011442.11608-2-luke@ljones.dev>
+	s=arc-20240116; t=1710934763; c=relaxed/simple;
+	bh=jqkItR4wT9GcZzRc3hNh6hJd4rYluNqBTu2a2/JnBSU=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=apziW5Iywyx4stg/vJ/Ah8KRSljVr9WebLKP489jcUkYIJxQmTfCift7WQpeKIG3Arpk8Ya8ZsigsQUnuYhPDXpSg0lIgKldyFHHbKUskqGC6OZRKzly3yDM2xd4Wjvn+lol1CDxUDGO35EBA7U2w5jFSp+9/+z7cNnn0a/yRTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4cS2aF01; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lrhykz4Z; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 20 Mar 2024 11:39:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710934760;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0RIGXNyY9BGocUDDfqdCyOD3A3U0G464OrHQC8qam6M=;
+	b=4cS2aF01WVDdWPE7JOka0LvxHBwf6FD3YU82eFcttzcalhLpn/nM2PkKC2DFcLmQs8SvDT
+	NB+4gV/9oS0rWBn7dUrqNvGMBJtAcS/kU/Q7fR7PfT6tC2nWPeg0sr74B2fNOXPSB1IdrB
+	8fHwMOXjsAwzw+ezSwoH2zVTT6O51QW1VXLVTSo9aiarWsFciPNhHVTCD9BgMKEGzTVe1i
+	V7cGMD4xqgelFxPe/bAOytkq2RjmqSjSqV7ik3iw5W7BW0WMDYlVzBDWoZ8PevDEv0u8yz
+	QD6fXO47r7Nv08j5H3hHEYDoYev2F+leNY841FTp1SscanPh921urh59I+JSyw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710934760;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0RIGXNyY9BGocUDDfqdCyOD3A3U0G464OrHQC8qam6M=;
+	b=lrhykz4ZOmGGJmp3nw+qyhs1WT9rQqxc17/r0KPh4agFFqfWFELDGhQ2AXOo/KQYRjxhsP
+	oLXQXsnYtLHu7WAw==
+From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/percpu] x86/percpu: Move raw_percpu_xchg_op() to a better place
+Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240320083127.493250-2-ubizjak@gmail.com>
+References: <20240320083127.493250-2-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-523568904-1710934361=:1037"
-Content-ID: <9d3e5125-d4d9-6974-9847-0c4bdb5ed5e1@linux.intel.com>
+Message-ID: <171093475924.10875.15112548554818833406.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The following commit has been merged into the x86/percpu branch of tip:
 
---8323328-523568904-1710934361=:1037
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <a1a754a9-a482-e651-1732-b988a89a7b45@linux.intel.com>
+Commit-ID:     ce99b9c8daff3352a2ae0c72acf44e0663095fea
+Gitweb:        https://git.kernel.org/tip/ce99b9c8daff3352a2ae0c72acf44e0663095fea
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Wed, 20 Mar 2024 09:30:41 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 20 Mar 2024 12:29:17 +01:00
 
-On Wed, 20 Mar 2024, Luke D. Jones wrote:
+x86/percpu: Move raw_percpu_xchg_op() to a better place
 
-> Adds support for a second TUF RGB wmi call that some versions of the TUF
-> laptop come with. Also adjusts existing support to select whichever is
-> available.
->=20
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  drivers/platform/x86/asus-wmi.c            | 13 +++++++++++--
->  include/linux/platform_data/x86/asus-wmi.h |  1 +
->  2 files changed, 12 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-=
-wmi.c
-> index b9a2fb8007c0..0d8a2b82cc06 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
+Move raw_percpu_xchg_op() together with this_percpu_xchg_op()
+and trivially rename some internal variables to harmonize them
+between macro implementations.
 
-> @@ -4544,6 +4545,14 @@ static int asus_wmi_add(struct platform_device *pd=
-ev)
->  =09=09asus->gpu_mux_dev =3D ASUS_WMI_DEVID_GPU_MUX_VIVO;
->  =09}
-> =20
-> +=09if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE)) {
+No functional changes intended.
 
-The patch itself is fine,
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20240320083127.493250-2-ubizjak@gmail.com
+---
+ arch/x86/include/asm/percpu.h | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
-However,
-
-There's a major problem in the way you're submitting these. This patch is=
-=20
-built on top of the GPU_MUX_VIVO patch as can be seen from the context
-above. Yet, you're sending these independently instead of series. I=20
-suspect there are other similar problems among these patches that there's=
-=20
-hidden dependency order in which these should be applied. This will cause=
-=20
-problems if maintainer applies the patches in wrong order (they may even=20
-misapply with fuzz).
-
-Only if the patches are truly independent, that is, focus on solving=20
-entirely differently thing (functional independency) and do not have any=20
-linewise conflicts (code locality independecy) either, it's fine to send=20
-patches as independent ones without making a series out of them. But=20
-clearly it's not the case here.
-
---=20
- i.
---8323328-523568904-1710934361=:1037--
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index de991e6..7563e69 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -230,6 +230,17 @@ do {									\
+ })
+ 
+ /*
++ * raw_cpu_xchg() can use a load-store since
++ * it is not required to be IRQ-safe.
++ */
++#define raw_percpu_xchg_op(_var, _nval)					\
++({									\
++	typeof(_var) pxo_old__ = raw_cpu_read(_var);			\
++	raw_cpu_write(_var, _nval);					\
++	pxo_old__;							\
++})
++
++/*
+  * this_cpu_xchg() is implemented using cmpxchg without a lock prefix.
+  * xchg is expensive due to the implied lock prefix. The processor
+  * cannot prefetch cachelines if xchg is used.
+@@ -499,18 +510,6 @@ do {									\
+ #define raw_cpu_or_1(pcp, val)		percpu_to_op(1, , "or", (pcp), val)
+ #define raw_cpu_or_2(pcp, val)		percpu_to_op(2, , "or", (pcp), val)
+ #define raw_cpu_or_4(pcp, val)		percpu_to_op(4, , "or", (pcp), val)
+-
+-/*
+- * raw_cpu_xchg() can use a load-store since it is not required to be
+- * IRQ-safe.
+- */
+-#define raw_percpu_xchg_op(var, nval)					\
+-({									\
+-	typeof(var) pxo_ret__ = raw_cpu_read(var);			\
+-	raw_cpu_write(var, (nval));					\
+-	pxo_ret__;							\
+-})
+-
+ #define raw_cpu_xchg_1(pcp, val)	raw_percpu_xchg_op(pcp, val)
+ #define raw_cpu_xchg_2(pcp, val)	raw_percpu_xchg_op(pcp, val)
+ #define raw_cpu_xchg_4(pcp, val)	raw_percpu_xchg_op(pcp, val)
 
