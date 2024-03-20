@@ -1,124 +1,129 @@
-Return-Path: <linux-kernel+bounces-109293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D2BC88174F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:26:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9117881755
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F24851F23376
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:26:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49EB7B217C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23F26CDB2;
-	Wed, 20 Mar 2024 18:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33B67992D;
+	Wed, 20 Mar 2024 18:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ClG9T9QN"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M09ebZgi"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAC96A03E;
-	Wed, 20 Mar 2024 18:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD99578B5C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710959199; cv=none; b=m4T6paEWSXgE+J1x6mVqGmL3cjzClGr+t8AZ1klQ02wIQC8G4LOirVrx0nL3OM/DRxhco2QAV5bcv5PODM0wMicevprMTSH5ODfvg4uhFL9Lq0prgaWxN2jwqXro9LhcerJdTDLjo/YJa++zQk7LMFFOZLGcX0kTz1OfayLve3M=
+	t=1710959481; cv=none; b=GqWwq0ZjdUMEHlK+OuTt1NPigMyalMqTwxKZlHtgxysA/apFwtUURiLYK5Pa78gUsKJcV9PI8hAG6o7M3Z65W31952CpTMujmnz1g74A/R649FYkzqG18Xr6pp4WCuZYwC46SKhr4Tnu6gFt1Ha2J86inef9LouDxIYegejdnnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710959199; c=relaxed/simple;
-	bh=D1LXc0UmUagZVPqKr1Rh4M2j2+83SmyrSsFiinK2Gn0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tppC1Rn8r0uAHinB6r2T2WVrrMDbf+utP/wlivq1xMunkciiMetlfAK66tPOr1stMcwktVSBPqWxwhIPsh3s+BAt47txdnK9FL2ozME+6Gb0sOyAayFpitvYJJvBOliczWBgHRRPLlBRB7kBddk7+Dqh2psY+6ICdt/0hD7EXUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ClG9T9QN; arc=none smtp.client-ip=209.85.161.51
+	s=arc-20240116; t=1710959481; c=relaxed/simple;
+	bh=DSs966mJjsiG+7AQTgBXXi34pMgfUEsx3ESCD1Y+zng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F+N7fOzhiJ9tTXrbkos7pcrBojjgim0wwupL7IYQSST87rcyTWrWh387sY+OxPQ3iIEgMcd4DYiZph7UtXlkVDdP7ut/AVLxTt2EK++P3zbs0yqrbcfw2UGHuiKSxX81ng4ahsBf4E653KbcHk7KQNOgtd7URhTdX57SBHO5IAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M09ebZgi; arc=none smtp.client-ip=209.85.128.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a470320194so70956eaf.3;
-        Wed, 20 Mar 2024 11:26:37 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6098b9ed2a3so1053847b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:31:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710959196; x=1711563996; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8B7P/zRiu0s9e23bBiGTn371yzLAFaX1RO8T0tzOVR4=;
-        b=ClG9T9QNaF2d2HvKKqZyCV3yWTWAxX92RL5kbFoNpqxtuJ1G9n50fCDnCdrYCmkZz2
-         TgOtKJRyOrWOhQ4TPcnfxQpLaKiKZInksxwG3lhFCMxo/P2GUaKMcnhqFG5aQwfo/VnI
-         3wPxf5KYtBDsMZexcZv50pwfLovfEckdldNBAyrhQvWlNmxh1V3Eb4z82GVLtPn1nxxh
-         lghax66nR2vL0LSqO+TlHmsEwi2ouPxdqICuvniANL6yt34h6Op5DRSZzh7B9QMuhXPa
-         pcuzgWKvbb4FM/fLng3ng2ZPSfKY3v9iWkr3XvqqnMfYSZ+4f8DV5A2GVVUoZ2s9YuEs
-         7erw==
+        d=gmail.com; s=20230601; t=1710959478; x=1711564278; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K68ya0JqOFHoBU4O4OIl9a5+/vzjyqM9x6q+SdVkY0g=;
+        b=M09ebZgirwU6fT+GoG9XMG7f9JVBpGvPlGkIP2vVyAHPbTfgF9ulgP9HPxRYwSk4ij
+         YDE42WQNivRMGLvJeZlW9LmT1E0KNtZ0bltyIa2xkTYDNSSy2i9TGBJdjaENIqQ3uVZO
+         v16sl9zDVzjUjbnG65Wt28/rdraKvNPZEebxaS4jEN2nL7zLA8baKcBYy/f8vfv2TyWM
+         3q0fuGnSifmVLPW5XeFtOZQYCX9zcP8nY+RmFuI4CkjCGKe36ZG26VLQTs8lr7nRk2l7
+         rtid4sx3dYZrDXXWZrp+0GU+9Z3fsjofaTGwakKBicCuPkddKptIsGcu3+b6mRhCLEZ+
+         igoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710959196; x=1711563996;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8B7P/zRiu0s9e23bBiGTn371yzLAFaX1RO8T0tzOVR4=;
-        b=wb0SFZdRIvJ4o4Tz1XEde+Xre6XaYrzKZMa36Cmn/1V2P/c4KsE19Gj2uodHgv/+xA
-         BCwI2hW3lxTF+Afk7tqNZRFw/GQbCnwgrjGBFJoXUnKBIVmTKeUMgKxIB43Vycp62z9M
-         ugV3kYtjugJTk0N92n2ZaF1LRVtWitrmW21loeDSNTmqfs9i95uBjSLtKRVpHkjTw809
-         k6VqLKqWJSTMaoG5+b713+xKAupOFkIBjsoD2gF+nUXWvgz5TQhZDLmGJp38aFfENMRP
-         OB9RQ7lmJ7mQSv6GK/SXtOznGI5NdINiLsVIADEkzRpOzWqny4I6rKSScZ3i/HYU5NLN
-         9dtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVUIk1hSH9e7wt6uw2/GuZ8gYTbWPk4EGBygzByKk+Yp4AW1/Ffrt4Tuz4wFjmBM1kJm5udw0TrPYD3kuR7sjE75m/zAVP+iaVMAWjjX6Vt328NM8bzG0p2kPtXQmJzlohqBpIaMg==
-X-Gm-Message-State: AOJu0Yw9AXI5NBhSUAQ0vz8IfPiwIlUwWW3xKHEzh/VSQ4d/otL6fdPt
-	naK4b5HkpbhXwrj4oAxflTaIIX8x/io/2LeeOm49WqQUT/n38OP5oC/5fvF+
-X-Google-Smtp-Source: AGHT+IEE0OoJUKSUHMpvSdcMuTsIv8qJSqKoDqQqd6beQBy3Y/6x9dVKIRV+jdBEc2+m4h/rFRMqTQ==
-X-Received: by 2002:a05:6358:7f1a:b0:17e:c5b9:5f6d with SMTP id p26-20020a0563587f1a00b0017ec5b95f6dmr7427978rwn.14.1710959196191;
-        Wed, 20 Mar 2024 11:26:36 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:646:a200:bbd0:b371:84ee:dcf6:87b4])
-        by smtp.gmail.com with ESMTPSA id h62-20020a638341000000b005dc832ed816sm11209679pge.59.2024.03.20.11.26.35
+        d=1e100.net; s=20230601; t=1710959478; x=1711564278;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K68ya0JqOFHoBU4O4OIl9a5+/vzjyqM9x6q+SdVkY0g=;
+        b=DkERwS7xWe6Hr+YnSIm+3aZgZ74T3p7EdS0bdBJkuNBjiUV+E3y5KzF6oRIEkE/DST
+         1P+IQ1m0ACJYKaijzxJbpxZo2Y8I0bUzW7EaDe5K9PUabweSS0htv2jsW3sQMb4NTWxH
+         I4Z6mFCJ33tk2sv7tIeNcSma3HI+xTFYBnr5I4QJHtgI6frOr4wP4wgYgyxZbsfITr9N
+         2qG3+UPsj14wxkd9DxOF5e3ZPpyn6953pZ2MQq4AUK11gNdL0gb4+QTKIlKDdAoSezDc
+         asCxvM0Tx6s+5Ujp+TOXuENrzEkekQUuhyq39NqHFnuDg7Pg8X0byPViSciZHkMprbKH
+         bNRA==
+X-Forwarded-Encrypted: i=1; AJvYcCWwlGPCuL+A5SSWUR2GG2Pq+yPOaFloPdQRbjkdMuO2HaKjDnWKRse/JpOkYViQD2bfsZZS/vvbow183IY6hUITYo5Rn3dKL3X3EH7Q
+X-Gm-Message-State: AOJu0YyJd/oFdMnn9tQuDy9rGFuRW6aoq1PU47/XtB62RRLhvMkvgvTG
+	tgtFKZaPBrrfj8tbBoCK1BN9PzH1iLDQruhAh5x23az9J/bBjvse
+X-Google-Smtp-Source: AGHT+IFpokRYuZBJeyKANNo1mgKaUFSLfzKJJYxsqMuCigj7vZ7mfpM7dNgEOXyAj1sk8+CqM8xRZQ==
+X-Received: by 2002:a81:5342:0:b0:610:b259:fa65 with SMTP id h63-20020a815342000000b00610b259fa65mr11616658ywb.48.1710959478540;
+        Wed, 20 Mar 2024 11:31:18 -0700 (PDT)
+Received: from localhost ([2601:344:8301:57f0:a6a6:49c0:6a02:df54])
+        by smtp.gmail.com with ESMTPSA id n16-20020a81eb10000000b00610bdea0d08sm1591215ywm.62.2024.03.20.11.31.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:26:35 -0700 (PDT)
-From: Max Filippov <jcmvbkbc@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Rich Felker <dalias@libc.org>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
-Date: Wed, 20 Mar 2024 11:26:07 -0700
-Message-Id: <20240320182607.1472887-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 20 Mar 2024 11:31:18 -0700 (PDT)
+Date: Wed, 20 Mar 2024 11:31:17 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, russ.anderson@hpe.com,
+	dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH 1/2] cpumask: Add for_each_cpu_from()
+Message-ID: <ZfsrdcUOsNp7ATjK@yury-ThinkPad>
+References: <20240319185148.985729-1-kyle.meyer@hpe.com>
+ <20240319185148.985729-2-kyle.meyer@hpe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319185148.985729-2-kyle.meyer@hpe.com>
 
-In NUMMU kernel the value of linux_binprm::p is the offset inside the
-temporary program arguments array maintained in separate pages in the
-linux_binprm::page. linux_binprm::exec being a copy of linux_binprm::p
-thus must be adjusted when that array is copied to the user stack.
-Without that adjustment the value passed by the NOMMU kernel to the ELF
-program in the AT_EXECFN entry of the aux array doesn't make any sense
-and it may break programs that try to access memory pointed to by that
-entry.
+On Tue, Mar 19, 2024 at 01:51:47PM -0500, Kyle Meyer wrote:
+> Add for_each_cpu_from() as a generic cpumask macro.
+> 
+> for_each_cpu_from() is the same as for_each_cpu(), except it starts at
+> @cpu instead of zero.
+> 
+> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
 
-Adjust linux_binprm::exec before the successful return from the
-transfer_args_to_stack().
+Acked-by: Kyle Meyer <kyle.meyer@hpe.com>
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- fs/exec.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index af4fbb61cd53..5ee2545c3e18 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -895,6 +895,7 @@ int transfer_args_to_stack(struct linux_binprm *bprm,
- 			goto out;
- 	}
- 
-+	bprm->exec += *sp_location - MAX_ARG_PAGES * PAGE_SIZE;
- 	*sp_location = sp;
- 
- out:
--- 
-2.39.2
-
+> ---
+>  include/linux/cpumask.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 1c29947db848..655211db38ff 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -368,6 +368,16 @@ unsigned int __pure cpumask_next_wrap(int n, const struct cpumask *mask, int sta
+>  #define for_each_cpu_or(cpu, mask1, mask2)				\
+>  	for_each_or_bit(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
+>  
+> +/**
+> + * for_each_cpu_from - iterate over every cpu present in @mask, starting at @cpu
+> + * @cpu: the (optionally unsigned) integer iterator
+> + * @mask: the cpumask pointer
+> + *
+> + * After the loop, cpu is >= nr_cpu_ids.
+> + */
+> +#define for_each_cpu_from(cpu, mask)				\
+> +	for_each_set_bit_from(cpu, cpumask_bits(mask), small_cpumask_bits)
+> +
+>  /**
+>   * cpumask_any_but - return a "random" in a cpumask, but not this one.
+>   * @mask: the cpumask to search
+> -- 
+> 2.44.0
 
