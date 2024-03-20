@@ -1,134 +1,136 @@
-Return-Path: <linux-kernel+bounces-109422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C6EE8818E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:05:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EE68818E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2100A284073
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:05:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ADEA1F22077
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843278595B;
-	Wed, 20 Mar 2024 21:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB0385941;
+	Wed, 20 Mar 2024 21:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="JuoJStpP"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="kukgWbT+"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58688565B;
-	Wed, 20 Mar 2024 21:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E869EDB
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710968728; cv=none; b=DIOHo3I1ZWDuulWLN7mTFEmajfOcSAPOCdHGiXpULAzsKn+5+s9Ux/EsN0xpra2Au/4zjtvNFRs8BOa7HiuHIxOx0frkANJXcifHhLIzxmQCr3zyJ3Ldzz6FqUN+9GjJLlB83N8RTEPMdCdlgJ1udbNaeiVVHDGVEa4ltDGTYIM=
+	t=1710968713; cv=none; b=kJkanMviy882z+a5lfwHLfgk1U2iaZ9TMM67o8LTP3ze9voY4ClQMyr4wk4NKCrqt22yvxO0SLmaX2YTm0kyxCDNfVOCQaTDdIDFaV/Cz2/8Zvnk0na8+O3HxMW36a2wZwlc18QPGww0t606OIN/u9gYjKtMqjUpSSdGY9OmjLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710968728; c=relaxed/simple;
-	bh=2fuJvgCp/TQfwxtVb1Kj0pQKhEPlbMyqXlkRbqCIatk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ouvT3Kxjs//2Su3C5SETPU00ltttVeSVCVyq77unXbeTKvErm75r4w+jW5h5Qiq+E+ZHNhZPZi5Fo5gz6kbj5wgf45R++q7V0dYr5j9KAf3moCsgDDCb2k7rszMsIUvLBzFnVx9ZAyyzZAEOzdNhAlXTF72gxQS6HHQHABeLqjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=JuoJStpP; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1939E1C0004;
-	Wed, 20 Mar 2024 21:05:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710968717;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u+eA4poe7YhKyyg6S2zgB/KMMtaqy46s40/9yE4njUg=;
-	b=JuoJStpPp45vWbK9MnkL1uOhTmNJiyG2ZlZsMk0v5ZWHIETQDf8hVwpIWGRJX8ZBwkMDo0
-	wytv9+y/VJJMh9NTSqO8LXurlX8T81aySSDJTWyqCaNceHNP/SNrTAG8dhJgvVo8BnZu/7
-	aOp+j16m4940s+7uik7lxvDcmFTA7w9HCP2asUiDZUg2k/RTprEhAL4F/a5LTGuTj4klcf
-	psNinjH1BMvNlbXZhtCtmrX9i8OQTy8juOVOCVJVYYaAa4vwmkWT+Z57je5orX65jGZuwT
-	ZQd079JYQiGDOwFGxHi4rM4YRFo/QjB9ublP+8iMj40zmM310fmmvAxLwXQn4g==
-Message-ID: <dc487e20-7d6c-48b7-a590-cb3bd815cd21@arinc9.com>
-Date: Thu, 21 Mar 2024 00:04:50 +0300
+	s=arc-20240116; t=1710968713; c=relaxed/simple;
+	bh=Wyhez9FL5Ho+UmwZKIK3g6PGWtYemMdQMXRG7Iosh+s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Z03b5NWhQEbsgI2IoYGIeYoI+B/dhe3ixLiRy4D9sfU9BQhzF8zWA28zYj3CEW+Z7MpUnhKMrU6UwQooTaBvQRyyLtNEzPO9DV7/jahRGIGD4VyeiBPTNWTbBiBzO4F5uObrFgWu5CoAP7XGwGJe2GrSgR0Y0JyLAxW3TBBGfMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=kukgWbT+; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=DaEIabmCpPYeVfCnqcTR0G+EdrgHTPTuHfPVasDyRdg=;
+  b=kukgWbT+xGfq5/9uvX9N7ywdGDBTrWS+9Sf1iK73Xupv/1agITqwFMfd
+   6SxNUjC/9fCGjB+giKjfnqI5wuWvmBC9Pi6ZHXt50NZekstUyr6ifNu5S
+   zgSLlzbQozMYFA4ocBzOD85Yk+8sT48SRaqbS2Wcj1yQLNfWNWuXIfvzT
+   M=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,141,1708383600"; 
+   d="scan'208";a="82705121"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 22:05:04 +0100
+Date: Wed, 20 Mar 2024 22:05:03 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com, 
+    gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
+    linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v2] staging: rtl8712: Change type and name of local
+ variable
+In-Reply-To: <Zfs+GKmt9hDZdWt/@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+Message-ID: <alpine.DEB.2.22.394.2403202203470.3361@hadrien>
+References: <Zfs+GKmt9hDZdWt/@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] net: phy: mediatek-ge: do not disable EEE
- advertisement
-Content-Language: en-US
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
- SkyLake Huang <SkyLake.Huang@mediatek.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-0-3f17226344e8@arinc9.com>
- <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v1-3-3f17226344e8@arinc9.com>
- <3698b522-d6dc-46c1-bab2-d5ee3bed1fce@arinc9.com>
- <ZftM2vDYQ2+5nSRV@shell.armlinux.org.uk>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <ZftM2vDYQ2+5nSRV@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=US-ASCII
 
-On 20.03.2024 23:53, Russell King (Oracle) wrote:
-> On Wed, Mar 20, 2024 at 11:40:56PM +0300, Arınç ÜNAL wrote:
->> On 18.03.2024 10:46, Arınç ÜNAL via B4 Relay wrote:
->> Can I get an opinion on this? Is it actually possible that the PHY driver
->> would start probing after the DSA subdriver? On the console logs for the
->> DSA subdriver, I can see that the name of the PHY driver will appear, which
->> makes me believe the PHY driver would actually never probe after the DSA
->> subdriver.
->>
->> [    4.402641] mt7530-mdio mdio-bus:1f wan (uninitialized): PHY [mt7530-0:00] driver [MediaTek MT7530 PHY] (irq=POLL)
->> [    4.420392] mt7530-mdio mdio-bus:1f lan0 (uninitialized): PHY [mt7530-0:01] driver [MediaTek MT7530 PHY] (irq=POLL)
->> [    4.437791] mt7530-mdio mdio-bus:1f lan1 (uninitialized): PHY [mt7530-0:02] driver [MediaTek MT7530 PHY] (irq=POLL)
->> [    4.455096] mt7530-mdio mdio-bus:1f lan2 (uninitialized): PHY [mt7530-0:03] driver [MediaTek MT7530 PHY] (irq=POLL)
->> [    4.472422] mt7530-mdio mdio-bus:1f lan3 (uninitialized): PHY [mt7530-0:04] driver [MediaTek MT7530 PHY] (irq=POLL)
->>
->> I don't want to submit a bugfix to the net tree if the bug won't ever
->> happen in real life.
-> 
-> It would be really great if you could tell us which bug fixes you're
-> submitting are for a real problem that you or a user have encountered,
-> and which are down to essentially code inspection and things that
-> "aren't correct". Basically, don't do this.
 
-I agree. Patch 1 fixes a real problem, patch 2 "fixes" a problem found with
-code inspection. Though, it would be great if you could review patch 2.
 
-> 
-> It isn't true that the PHY specific driver will be probed before DSA
-> initialises - consider the case where the DSA driver is built-in but
-> the PHY specific driver is modular and on the not-yet-mounted rootfs.
-> That would result in the generic PHY driver being used even when the
-> PHY specific driver were to be loaded later - and thus only basic
-> standard 802.3 PHY behaviour will be supported.
-> 
-> That's not specific to mt7530, it applies to everything that uses
-> phylib. It isn't something that really warrants "bug fixing" in each
-> and every driver.
+On Thu, 21 Mar 2024, Ayush Tiwari wrote:
 
-That makes sense. But there's a special case with the MT7530 DSA subdriver
-and mediatek-ge driver. The PHY driver is needed for the PHYs to function
-properly. So the DSA subdriver forces mediatek-ge to be selected [1]. So
-the PHY driver could only be compiled as a module when the DSA subdriver is
-also compiled so. And that designates mediatek-ge as a dependency for the
-DSA subdriver, if I understand correctly.
+> Change data type of local variable blnPending from u8 to bool and
+> renamed it to len_padding since it only assumes 0 or 1 values and
+> seems to add a padding based on wr_sz. This change also address the
+> checkpatch warning "Avoid Camelcase".
+>
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> ---
+> Changes in v2: Changed values of blnPending from 0/1 to false/true
+> and renamed blnPending to len_padding
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=fb4bb62aaac715e50c7c007714af19a2698db88b
+I don't think "len" is a good choice.  That suggests length, which would
+be an integer.  I suspect that bln is an abbreviation of boolean, and the
+while thing should go.  But when you remove that, you get pending, not
+padding.
+
+julia
+
+>
+>  drivers/staging/rtl8712/rtl8712_cmd.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
+> index bb7db96ed821..f499bbbf5bf5 100644
+> --- a/drivers/staging/rtl8712/rtl8712_cmd.c
+> +++ b/drivers/staging/rtl8712/rtl8712_cmd.c
+> @@ -284,7 +284,7 @@ int r8712_cmd_thread(void *context)
+>  		pcmd = cmd_hdl_filter(padapter, pcmd);
+>  		if (pcmd) { /* if pcmd != NULL, cmd will be handled by f/w */
+>  			struct dvobj_priv *pdvobj = &padapter->dvobjpriv;
+> -			u8 blnPending = 0;
+> +			bool len_padding = false;
+>  			u16 cmdcode = pcmd->cmdcode;
+>
+>  			pcmdpriv->cmd_issued_cnt++;
+> @@ -294,12 +294,12 @@ int r8712_cmd_thread(void *context)
+>  						     0x0000ffff);
+>  			if (pdvobj->ishighspeed) {
+>  				if ((wr_sz % 512) == 0)
+> -					blnPending = 1;
+> +					len_padding = true;
+>  			} else {
+>  				if ((wr_sz % 64) == 0)
+> -					blnPending = 1;
+> +					len_padding = true;
+>  			}
+> -			if (blnPending) { /* 32 bytes for TX Desc - 8 offset */
+> +			if (len_padding) { /* 32 bytes for TX Desc - 8 offset */
+>  				pdesc->txdw0 |= cpu_to_le32(((TXDESC_SIZE +
+>  						OFFSET_SZ + 8) << OFFSET_SHT) &
+>  						0x00ff0000);
+> @@ -318,7 +318,7 @@ int r8712_cmd_thread(void *context)
+>  					       (pcmdpriv->cmd_seq << 24));
+>  			pcmdbuf += 2; /* 8 bytes alignment */
+>  			memcpy((u8 *)pcmdbuf, pcmd->parmbuf, pcmd->cmdsz);
+> -			if (blnPending)
+> +			if (len_padding)
+>  				wr_sz += 8;   /* Append 8 bytes */
+>  			r8712_write_mem(padapter, RTL8712_DMA_H2CCMD, wr_sz,
+>  					(u8 *)pdesc);
+> --
+> 2.40.1
+>
+>
+>
 
