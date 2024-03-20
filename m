@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-109276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989BB881717
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:05:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59F5D881719
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A46B1F23A5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:05:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D78281758
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804946BFCD;
-	Wed, 20 Mar 2024 18:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556C96CDC7;
+	Wed, 20 Mar 2024 18:04:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="0g/90nVD"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="pq/eelzv"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33206A010
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896226A8DD
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957897; cv=none; b=ZgmBIYtw9xjZsnDjuRM6nGgyZf6GEInwwowpFSUUOuOnUuXInK0VcNqBexTnX6Ebc0ojqzGfx/OwahCyPZWDXgOX6KT8IbpST/Pcp1jzVoEGYwqmZgKOfCf5kgTJeibmn51cdn/6yIdpujolm57+/xEFE81YLrWz2cqgW0tP8cw=
+	t=1710957898; cv=none; b=qK3ERD1ElIp23zRRw1ssSWO0LDn6WSDRpjdBqnRWC4bTHX9AiINjU0Im5p1DmbEaMnr5V1FRO8t7o+rHM9GKfebLi/OLMWOkeWemal3Pp0ZSxyGMh9elUn0l6rgfe/sG6JRIaeSm5d5+RWM+MUWykhG1bZYujHUFOPZT3uhAw+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957897; c=relaxed/simple;
-	bh=zMKmZdkkzKtk9Q/OCnNBuxwjuv/WnG/o79eAJs14Hq4=;
+	s=arc-20240116; t=1710957898; c=relaxed/simple;
+	bh=bDLy9d7U903B92nDMy/OaOfaoSVQM75tRwno6iRYYME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uwvt+Vxfik5cVa3bjCqDMhCiNFkUhlUIlqAkxRzQ22aU1E9i5gLDv5Y/4xx/Vo/9JIrfxoNTbjfs2PS4YkdYk2TmDUfG0n33xRmPwefJDcTlJZ1o34Ah7YPV2WCMOD94Vjgn8gsdeYkQQZq1j3e9t0IYxFhHrXUE8XyOQnrB9Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=0g/90nVD; arc=none smtp.client-ip=209.85.160.169
+	 MIME-Version; b=grq4vafgRs1q6cNh/cfRcR3Yhxn3ZLm1YrLSxhoAnRpK0tjhXeZTkdCXzwz6obBgZhyYDYTznuGwCtxBsoad33Yt0cjtwQcZAcwrm4oXZ4TIm8gI3+GOMytGvaJFrEG+uGmcqk8FneYfFpun7J7ijM3ha6dHWMrOWsUsL0ok0Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=pq/eelzv; arc=none smtp.client-ip=209.85.167.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-430c4b1a439so936771cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:04:54 -0700 (PDT)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbc649c275so119102b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957894; x=1711562694; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957895; x=1711562695; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HCOZaDSQS3uSogr2y2Y4MtomH1kr/Fi4b+AnkoSHYG0=;
-        b=0g/90nVDDAWf8MlBvLX9nRCd6KV9Sk2v0FwTBAY4xIp89n+7Yoy3QfjFZ3nkkhtHeO
-         P6eHgNTf1zEzQQBNlwhaEJ01jZicA/1XsisDWfZMgx9AijcKbeqYGvbeFi4GFjZiYcMs
-         EX22Mtw+AHZhwirAdJHlWMrsHd1SlKbtpii/hgjsF+dMpQisPQjgxMYfa4hhyteYTOM+
-         XsW0owMTP7XaDvvX/7qGdPLoEeMAjiVCM8w5/3gNY0RgFpBy1BIiMfXbBIwmNM8IGShf
-         MOPDYinoZZVqZrxWjcXFSpWfsoP7MyzkQ6mE0OJwQR24oEqOYQQ6Y0M/gvwWdHTg1Hms
-         PMvQ==
+        bh=T7r0X9mNHsEvKFNd3QjZ02+rYxlZ2ijHgMC19/7k7mQ=;
+        b=pq/eelzvJZi1mGXcbvg1/6OXf2KA6x9X9t4Fu8lNkZGJBzzQ+Rz7zaHE0OQyWLxjTs
+         NXByTyutYEhIVMgIAgEJXza+fxC/yOgAzCCyC0XzUKxqd8E72ow4w3UdJRi7jxftBHQL
+         bOM0Uy7brnRNO3UjV7upzoUfVtX/ONchy1Z86nhtHDVqfpZygaRrHfm7pZ15QRKNLf/X
+         fM0Sglw5wiDe4M8xok6mCGrPqpwOT8PkXendP/W+kGArt0bIcRJOYUxwkC7Nmwt0mN7r
+         6VH/NT4F7gsCrFltEx4FaLd4xLXun3lCPF+ZTExU/TqSpYkwTWXnFYMR6Gaz8xWkgCCl
+         7gtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957894; x=1711562694;
+        d=1e100.net; s=20230601; t=1710957895; x=1711562695;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HCOZaDSQS3uSogr2y2Y4MtomH1kr/Fi4b+AnkoSHYG0=;
-        b=BMWIFtP5OrwZZqzo2yivIFpMIRgCVHV6CSM5CHk72DKeuK+PH04ZNcDqOtVCYXsdFA
-         90QKdJu+I4UVzBNMQMcnx4IaQPkieobDYdVaRDBM5gzt87UZnFdd9anbh7bk0NbgUPzh
-         oisYreXTQF1k19y31ztayIiTSeaysujMTuFiVfc5dcFGixKFGWJ+idWXtuaam7nyrRCj
-         eGUPx9UQf/8g8d+Yq6thnNm2xVFt1JvWlIiRRZggbdT+hUdLTMQ0iE0KkARhFM7mK/qG
-         FR8lClhre4D6iCzMTM+usz47JEK3pFw61zcJLGelMlukVgxyX8oBiFQZO6Sr7tIUmbYx
-         13Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCWAq1RQ2qdCnWvRvGWged49p+11FWyInbhS/Zc+1QUpMnqnbU7Y4/0MQd8VZl5kg4dfai/+7XMHWdCN7cX6N5gn/WrbsQ/NO+nx4y70
-X-Gm-Message-State: AOJu0YwJe8A1TlXRwNQzUm0F/XHVRKNuZehWp8vLfdtwojFqh29s/Hul
-	nFRzuY3/9CK6d77edGMt5wlr76VwzM7DBVkPsVN18WRLFBp+ehJG8YjhEUSYA2Y=
-X-Google-Smtp-Source: AGHT+IF5UfXc5lTV+1+ZbEqDKnB2S/2dMfIITfLAmk8SgkXLoh8oySBupjmVBPzQZ9ttFuOzueZSzQ==
-X-Received: by 2002:a05:622a:54:b0:42f:20f2:c4cf with SMTP id y20-20020a05622a005400b0042f20f2c4cfmr2979645qtw.31.1710957894003;
-        Wed, 20 Mar 2024 11:04:54 -0700 (PDT)
+        bh=T7r0X9mNHsEvKFNd3QjZ02+rYxlZ2ijHgMC19/7k7mQ=;
+        b=T50klSvA3NjDvGbCJ7ebn6gG8Au1rsabGwZssXTA/oDAgv+FylR4sZnRHhnWhFqsy5
+         WZ6m/DTTIN+xdckjPymoR7K7SCppOfbh5nxIkDTl4Gs5Gw5Aezcy3zpwfH/AwvyFEOIx
+         SIvaiCLpAGvFqGEj6fpfLFrLtQN86bbIS4wSH9x3VSVWjGCV73epTaKEle3RMXU1f41a
+         Ie5V1ipI4INidsGIUAjsafdaNwrh7BWtNkpGNuAL3I2Of7M14dZKz/OMdZOfx/gmH98f
+         glNVYvD40UbcCPQ05HuwqW7rs/ss1dF+RCDEB4HIA510O6c6nVXShr3C/wT7+XeSrhJs
+         Z9YA==
+X-Forwarded-Encrypted: i=1; AJvYcCXP5+ONy05w7lNiq5XXF6lulepQsGgsqCF6LAYUBGRMVh5c6Xxgnc05iELTnHY/rcQKGEhtsvGHl78xMalvSas6gGaEMorS1CCKUBem
+X-Gm-Message-State: AOJu0YylhIWs5lSX064waHt84Qa0mwUZB8B6oBe4fYKcu8yhaL4rB9rH
+	TF/GiMJvI2K2auL1DMM9nDzDGHnXknBLJj7zalQtbodxvL4gfGBLC3Ckre7UxOk=
+X-Google-Smtp-Source: AGHT+IEjrZQWghTRcTpqpNffkDCKSOVahuvg3qnwvR8ayQXYPdrYk9RXL0q0Eb9YG2QM0kUquwP9xQ==
+X-Received: by 2002:a05:6808:130d:b0:3c3:8339:6ef6 with SMTP id y13-20020a056808130d00b003c383396ef6mr3008346oiv.45.1710957895377;
+        Wed, 20 Mar 2024 11:04:55 -0700 (PDT)
 Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id y17-20020a05622a005100b00430d8e11bebsm3231779qtw.64.2024.03.20.11.04.53
+        by smtp.gmail.com with ESMTPSA id fg14-20020a05622a580e00b00430bddc75a5sm5411969qtb.23.2024.03.20.11.04.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:04:53 -0700 (PDT)
+        Wed, 20 Mar 2024 11:04:55 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Vlastimil Babka <vbabka@suse.cz>,
@@ -75,9 +75,9 @@ Cc: Vlastimil Babka <vbabka@suse.cz>,
 	David Hildenbrand <david@redhat.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/10] mm: page_alloc: optimize free_unref_folios()
-Date: Wed, 20 Mar 2024 14:02:07 -0400
-Message-ID: <20240320180429.678181-3-hannes@cmpxchg.org>
+Subject: [PATCH 03/10] mm: page_alloc: fix up block types when merging compatible blocks
+Date: Wed, 20 Mar 2024 14:02:08 -0400
+Message-ID: <20240320180429.678181-4-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240320180429.678181-1-hannes@cmpxchg.org>
 References: <20240320180429.678181-1-hannes@cmpxchg.org>
@@ -89,92 +89,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move direct freeing of isolated pages to the lock-breaking block in
-the second loop. This saves an unnecessary migratetype reassessment.
+The buddy allocator coalesces compatible blocks during freeing, but it
+doesn't update the types of the subblocks to match. When an allocation
+later breaks the chunk down again, its pieces will be put on freelists
+of the wrong type. This encourages incompatible page mixing (ask for
+one type, get another), and thus long-term fragmentation.
 
-Minor comment and local variable scoping cleanups.
+Update the subblocks when merging a larger chunk, such that a later
+expand() will maintain freelist type hygiene.
 
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+v2:
+- remove spurious change_pageblock_range() move (Zi Yan)
+
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 Tested-by: "Huang, Ying" <ying.huang@intel.com>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/page_alloc.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ mm/page_alloc.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 60a632b7c9f6..994e4f790e92 100644
+index 994e4f790e92..4529893d9f04 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -2524,7 +2524,7 @@ void free_unref_folios(struct folio_batch *folios)
- 	unsigned long __maybe_unused UP_flags;
- 	struct per_cpu_pages *pcp = NULL;
- 	struct zone *locked_zone = NULL;
--	int i, j, migratetype;
-+	int i, j;
+@@ -785,10 +785,17 @@ static inline void __free_one_page(struct page *page,
+ 			 */
+ 			int buddy_mt = get_pfnblock_migratetype(buddy, buddy_pfn);
  
- 	/* Prepare folios for freeing */
- 	for (i = 0, j = 0; i < folios->nr; i++) {
-@@ -2536,14 +2536,15 @@ void free_unref_folios(struct folio_batch *folios)
- 			folio_undo_large_rmappable(folio);
- 		if (!free_pages_prepare(&folio->page, order))
- 			continue;
--
- 		/*
--		 * Free isolated folios and orders not handled on the PCP
--		 * directly to the allocator, see comment in free_unref_page.
-+		 * Free orders not handled on the PCP directly to the
-+		 * allocator.
- 		 */
--		migratetype = get_pfnblock_migratetype(&folio->page, pfn);
--		if (!pcp_allowed_order(order) ||
--		    is_migrate_isolate(migratetype)) {
-+		if (!pcp_allowed_order(order)) {
-+			int migratetype;
-+
-+			migratetype = get_pfnblock_migratetype(&folio->page,
-+							       pfn);
- 			free_one_page(folio_zone(folio), &folio->page, pfn,
- 					order, migratetype, FPI_NONE);
- 			continue;
-@@ -2560,15 +2561,29 @@ void free_unref_folios(struct folio_batch *folios)
- 		struct zone *zone = folio_zone(folio);
- 		unsigned long pfn = folio_pfn(folio);
- 		unsigned int order = (unsigned long)folio->private;
-+		int migratetype;
- 
- 		folio->private = NULL;
- 		migratetype = get_pfnblock_migratetype(&folio->page, pfn);
- 
- 		/* Different zone requires a different pcp lock */
--		if (zone != locked_zone) {
-+		if (zone != locked_zone ||
-+		    is_migrate_isolate(migratetype)) {
- 			if (pcp) {
- 				pcp_spin_unlock(pcp);
- 				pcp_trylock_finish(UP_flags);
-+				locked_zone = NULL;
-+				pcp = NULL;
+-			if (migratetype != buddy_mt
+-					&& (!migratetype_is_mergeable(migratetype) ||
+-						!migratetype_is_mergeable(buddy_mt)))
+-				goto done_merging;
++			if (migratetype != buddy_mt) {
++				if (!migratetype_is_mergeable(migratetype) ||
++				    !migratetype_is_mergeable(buddy_mt))
++					goto done_merging;
++				/*
++				 * Match buddy type. This ensures that
++				 * an expand() down the line puts the
++				 * sub-blocks on the right freelists.
++				 */
++				set_pageblock_migratetype(buddy, migratetype);
 +			}
-+
-+			/*
-+			 * Free isolated pages directly to the
-+			 * allocator, see comment in free_unref_page.
-+			 */
-+			if (is_migrate_isolate(migratetype)) {
-+				free_one_page(zone, &folio->page, pfn,
-+					      order, migratetype, FPI_NONE);
-+				continue;
- 			}
+ 		}
  
- 			/*
-@@ -2581,7 +2596,6 @@ void free_unref_folios(struct folio_batch *folios)
- 				pcp_trylock_finish(UP_flags);
- 				free_one_page(zone, &folio->page, pfn,
- 					      order, migratetype, FPI_NONE);
--				locked_zone = NULL;
- 				continue;
- 			}
- 			locked_zone = zone;
+ 		/*
 -- 
 2.44.0
 
