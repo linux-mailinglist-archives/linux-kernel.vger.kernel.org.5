@@ -1,346 +1,229 @@
-Return-Path: <linux-kernel+bounces-109233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3AA1881684
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:23:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B76881686
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E121C23691
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 955C4286EBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B06B6A8D0;
-	Wed, 20 Mar 2024 17:22:44 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606506A326
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E616BFC1;
+	Wed, 20 Mar 2024 17:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="puN0of6f";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtK5pfCB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="puN0of6f";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtK5pfCB"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4651E6A8C0;
+	Wed, 20 Mar 2024 17:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710955363; cv=none; b=asFw9uPrqs49auml3YrZnHnI1W+DGalqHa+HsEJnaGSH863OhDJR/fHWPJl+8DaNuRLLGMKVh0jefPqz9uWaiHz+08zd4lYmdkel+tnwl1FgaWW89mRbVaTXYMQPW3oMj5Cx1uhc39uk664TSQ2dO2G13w6H9T3M7gH/fQRICsc=
+	t=1710955365; cv=none; b=gALy2rZeD2FtKPela7FsnkxUMzypS1VSibV3psmm2KsnSGHF2JUZVS8glbxCz7ceUBAOnWs+NtCDkFGnMjzY68kRB3wQbRryyAIsPlXBwx7xK0qe9kXWgwRDyelHbAGN8IzxvqsNKwMnnTT5e9stcOxycb7xrfoByHyAtHeVFoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710955363; c=relaxed/simple;
-	bh=Dboex1JOPKImMgkbPtAMCrvsxXL5E9rjh9oZLtCGJsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K7qtHWRJQi3z2j9gxAIzkdliZ+VsbUu57ITa5kEBmieFAvY6lvypdP83UZocGwVTJGvkdWZ2DA2DRZneimPLtI+Ftw9GSQ4ij2vbSg7S4HyVx4MlzwZICfEie9ggu5BwH9HCgNjlLR9oqLFZRZ0V1p2TPac3QJdstpUP3hFH/MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3255D1007;
-	Wed, 20 Mar 2024 10:23:14 -0700 (PDT)
-Received: from [10.57.51.202] (unknown [10.57.51.202])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C9EB3F762;
-	Wed, 20 Mar 2024 10:22:36 -0700 (PDT)
-Message-ID: <15081257-2cf0-4e05-9f2c-3f38059a58b6@arm.com>
-Date: Wed, 20 Mar 2024 17:22:34 +0000
+	s=arc-20240116; t=1710955365; c=relaxed/simple;
+	bh=DxJg+RgyKlnBqSxnRERu5DEqGICa3qsb7JyTUi2s88o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FRz10ZNI0SZyXKoZrRnGEbVzm8OFyjhuLjguQrAWRVFqEHQqXrNDAvOV2s0kESUhFSBBcD6oTiSt64qZErKAidRR/hTDFepckppjXWXup3iSAuiHnT49v5i9uR8Cm/cbLKv3mn7fauEKMrCf3JaeN6nfsdfgOaA2qUBm7b++PNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=puN0of6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtK5pfCB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=puN0of6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtK5pfCB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BCCB34875;
+	Wed, 20 Mar 2024 17:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710955361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nuvmLSJGfAFUcRzkMmUxW9qRIUCVm3vOjIWb2YFRR4Y=;
+	b=puN0of6fZNsYdGdaQb+O2UNBhGxZGe41YGTYx6LNl9cTaOkEUZyQhYQq5K0UoLbemQ9B8J
+	XTrMub46H8kdFIFLs31iK/FEbDsIIVcSsnLDxG5TyGVUy85k/H4Y+5gn+hSrWTv4mBHkVR
+	v/uURHYPn9NJmGfCvSAcfKTcMGnFtOg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710955361;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nuvmLSJGfAFUcRzkMmUxW9qRIUCVm3vOjIWb2YFRR4Y=;
+	b=RtK5pfCBrNdbWQdznWPb0bH3fXRJV1S0BeSoIuMbnSmvcZsHD356E9XKAnLW/tdw5sQVe3
+	WLqhuiWwzyR1K8DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710955361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nuvmLSJGfAFUcRzkMmUxW9qRIUCVm3vOjIWb2YFRR4Y=;
+	b=puN0of6fZNsYdGdaQb+O2UNBhGxZGe41YGTYx6LNl9cTaOkEUZyQhYQq5K0UoLbemQ9B8J
+	XTrMub46H8kdFIFLs31iK/FEbDsIIVcSsnLDxG5TyGVUy85k/H4Y+5gn+hSrWTv4mBHkVR
+	v/uURHYPn9NJmGfCvSAcfKTcMGnFtOg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710955361;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nuvmLSJGfAFUcRzkMmUxW9qRIUCVm3vOjIWb2YFRR4Y=;
+	b=RtK5pfCBrNdbWQdznWPb0bH3fXRJV1S0BeSoIuMbnSmvcZsHD356E9XKAnLW/tdw5sQVe3
+	WLqhuiWwzyR1K8DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 314E2136CD;
+	Wed, 20 Mar 2024 17:22:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Ay0JDGEb+2VhegAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 20 Mar 2024 17:22:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D0E85A080F; Wed, 20 Mar 2024 18:22:40 +0100 (CET)
+Date: Wed, 20 Mar 2024 18:22:40 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	peterz@infradead.org
+Subject: Re: [PATCH 0/6] Improve visibility of writeback
+Message-ID: <20240320172240.7buswiv7zj2m5odg@quack3>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 3/7] sched/uclamp: Introduce root_cfs_util_uclamp
- for rq
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
- Morten Rasmussen <morten.rasmussen@arm.com>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org,
- David Dai <davidai@google.com>, Saravana Kannan <saravanak@google.com>
-References: <cover.1706792708.git.hongyan.xia2@arm.com>
- <68fbd0c0bb7e2ef7a80e7359512672a235a963b1.1706792708.git.hongyan.xia2@arm.com>
- <169ae6a7-7bdd-4c54-8825-b3ad5ca1cf64@arm.com>
- <757cbe97-ba55-44b7-9b25-ad1581410147@arm.com>
- <dab54fa0-be56-4438-9a1b-cd9e01fb1ba7@arm.com>
-Content-Language: en-US
-From: Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <dab54fa0-be56-4438-9a1b-cd9e01fb1ba7@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: ****
+X-Spam-Score: 4.30
+X-Spamd-Result: default: False [4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-On 20/03/2024 15:27, Dietmar Eggemann wrote:
-> On 19/03/2024 12:50, Hongyan Xia wrote:
->> On 18/03/2024 18:21, Dietmar Eggemann wrote:
->>> On 01/02/2024 14:11, Hongyan Xia wrote:
->>>
->>> [...]
->>>
->>>>        /*
->>>>         * The code below (indirectly) updates schedutil which looks at
->>>> @@ -6769,6 +6770,10 @@ enqueue_task_fair(struct rq *rq, struct
->>>> task_struct *p, int flags)
->>>>    #ifdef CONFIG_UCLAMP_TASK
->>>>        util_uclamp_enqueue(&rq->cfs.avg, p);
->>>>        update_util_uclamp(0, 0, 0, &rq->cfs.avg, p);
->>>> +    if (migrated)
->>>
->>> IMHO, you don't need 'bool __maybe_unused migrated'. You can use:
->>>
->>>     if (flags & ENQUEUE_MIGRATED)
->>
->> I'm not sure if they are entirely equivalent. Both
->> task_on_rq_migrating() and !task_on_rq_migrating() can have
->> last_update_time == 0 but ENQUEUE_MIGRATED flag is only for the former.
->> Maybe I'm missing something?
+On Wed 20-03-24 19:02:16, Kemeng Shi wrote:
+> This series tries to improve visilibity of writeback. Patch 1 make
+> /sys/kernel/debug/bdi/xxx/stats show writeback info of whole bdi
+> instead of only writeback info in root cgroup. Patch 2 add a new
+> debug file /sys/kernel/debug/bdi/xxx/wb_stats to show per wb writeback
+> info. Patch 4 add wb_monitor.py to monitor basic writeback info
+> of running system, more info could be added on demand. Rest patches
+> are some random cleanups. More details can be found in respective
+> patches. Thanks!
 > 
-> That's true. There are 2:
+> Following domain hierarchy is tested:
+>                 global domain (320G)
+>                 /                 \
+>         cgroup domain1(10G)     cgroup domain2(10G)
+>                 |                 |
+> bdi            wb1               wb2
 > 
->    (!task_on_rq_migrating() && !p->se.avg.last_update_time)
+> /* all writeback info of bdi is successfully collected */
+> # cat /sys/kernel/debug/bdi/252:16/stats:
+> BdiWriteback:              448 kB
+> BdiReclaimable:        1303904 kB
+> BdiDirtyThresh:      189914124 kB
+> DirtyThresh:         195337564 kB
+> BackgroundThresh:     32516508 kB
+> BdiDirtied:            3591392 kB
+> BdiWritten:            2287488 kB
+> BdiWriteBandwidth:      322248 kBps
+> b_dirty:                     0
+> b_io:                        0
+> b_more_io:                   2
+> b_dirty_time:                0
+> bdi_list:                    1
+> state:                       1
 > 
-> cases:
+> /* per wb writeback info is collected */
+> # cat /sys/kernel/debug/bdi/252:16/wb_stats:
+> cat wb_stats
+> WbCgIno:                    1
+> WbWriteback:                0 kB
+> WbReclaimable:              0 kB
+> WbDirtyThresh:              0 kB
+> WbDirtied:                  0 kB
+> WbWritten:                  0 kB
+> WbWriteBandwidth:      102400 kBps
+> b_dirty:                    0
+> b_io:                       0
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      1
+> WbCgIno:                 4284
+> WbWriteback:              448 kB
+> WbReclaimable:         818944 kB
+> WbDirtyThresh:        3096524 kB
+> WbDirtied:            2266880 kB
+> WbWritten:            1447936 kB
+> WbWriteBandwidth:      214036 kBps
+> b_dirty:                    0
+> b_io:                       0
+> b_more_io:                  1
+> b_dirty_time:               0
+> state:                      5
+> WbCgIno:                 4325
+> WbWriteback:              224 kB
+> WbReclaimable:         819392 kB
+> WbDirtyThresh:        2920088 kB
+> WbDirtied:            2551808 kB
+> WbWritten:            1732416 kB
+> WbWriteBandwidth:      201832 kBps
+> b_dirty:                    0
+> b_io:                       0
+> b_more_io:                  1
+> b_dirty_time:               0
+> state:                      5
 > 
-> (1) wakeup migration: ENQUEUE_MIGRATED (0x40) set in ttwu_do_wakeup()
+> /* monitor writeback info */
+> # ./wb_monitor.py 252:16 -c
+>                   writeback  reclaimable   dirtied   written    avg_bw
+> 252:16_1                  0            0         0         0    102400
+> 252:16_4284             672       820064   9230368   8410304    685612
+> 252:16_4325             896       819840  10491264   9671648    652348
+> 252:16                 1568      1639904  19721632  18081952   1440360
 > 
-> (2) new task: wake_up_new_task() -> activate_task(), ENQUEUE_MIGRATED is
->      not set.
 > 
-> I assume you want to add the task's util_avg_uclamp to
-> rq->root_cfs_util_uclamp in (2) too? So:
-> 
->      if (flags & ENQUEUE_MIGRATED || task_new)
+>                   writeback  reclaimable   dirtied   written    avg_bw
+> 252:16_1                  0            0         0         0    102400
+> 252:16_4284             672       820064   9230368   8410304    685612
+> 252:16_4325             896       819840  10491264   9671648    652348
+> 252:16                 1568      1639904  19721632  18081952   1440360
+> ...
 
-I see. Maybe we don't need to check last_update_time. I'll take a look.
+So I'm wondering: Are you implementing this just because this looks
+interesting or do you have a real need for the functionality? Why?
 
-Although if we want to integrate sum aggregation with se rather than 
-making it fully independent (in your comments below) like util_est, 
-we'll probably just do that in
-
-update_util_avg()
-     if (!se->avg.last_update_time && (flags & DO_ATTACH)) { ... }
-
-and don't bother doing it in the outside loop of enqueue_task_fair() anyway.
-
-> [...]
-> 
->>>>    /* avg must belong to the queue this se is on. */
->>>> -void update_util_uclamp(struct sched_avg *avg, struct task_struct *p)
->>>> +void update_util_uclamp(u64 now,
->>>> +            u64 last_update_time,
->>>> +            u32 period_contrib,
->>>> +            struct sched_avg *avg,
->>>> +            struct task_struct *p)
->>>>    {
->>>
->>> I was wondering why you use such a long parameter list for this
->>> function.
->>>
->>> IMHO
->>>
->>>     update_util_uclamp(u64 now, struct cfs_rq *cfs_rq, struct
->>> sched_entity *se)
->>>
->>> would work as well. You could check whether se represents a task inside
->>> update_util_uclamp() as well as get last_update_time and period_contrib.
->>>
->>> The only reason I see is that you want to use this function for the RT
->>> class as well later, where you have to deal with 'struct rt_rq' and
->>> 'struct sched_rt_entity'.
->>>
->>> IMHO, it's always better to keep the implementation to the minimum and
->>> only introduce changes which are related to the functionality you
->>> present. This would make reviewing so much easier.
->>
->> Those parameters are necessary because of
->>
->> if (___update_load_sum()) {
->>      ___update_load_avg();
->>      update_util_uclamp();
->> }
-> 
-> So you need ___update_load_avg() happening for the `normal uclamp path`
-> and `last_uptade_time` and `period_contrib` for the `decay path` (1) of
-> update_util_uclamp()?
-> 
-> This is pretty hard to grasp. Isn't there a cleaner solution for this?
-
-You are correct. Not sure if there's a better way.
-
-> Why do you need the:
-> 
->    if (!avg)
->      return;
-> 
-> thing in update_util_uclamp()? __update_load_avg_blocked_se() calls
-> update_util_uclamp(..., avg = NULL, ...) but this should follow (1)?
-
-I added it as a guard to rule out edge cases, but I think when you do 
-__update_load_avg_blocked_se(), it has to be !on_rq so it will never 
-enter this path. I think it doesn't hurt but I can remove it.
-
->> We have to cache last_update_time and period_contrib, because after
->> ___update_load_sum() is done, both parameters in sched_avg have already
->> been updated and overwritten and we lose the timestamp when the
->> sched_avg was previously updated. update_util_uclamp() needs to know
->> when sched_avg was previously updated.
->>
->>>
->>>>        unsigned int util, uclamp_min, uclamp_max;
->>>>        int delta;
->>>>    -    if (!p->se.on_rq)
->>>> +    if (!p->se.on_rq) {
->>>> +        ___update_util_uclamp_towards(now,
->>>> +                          last_update_time,
->>>> +                          period_contrib,
->>>> +                          &p->se.avg.util_avg_uclamp,
->>>> +                          0);
->>>>            return;
->>>> +    }
->>>
->>> You decay 'p->se.avg.util_avg_uclamp' which is not really related to
->>> root_cfs_util_uclamp (patch header). IMHO, this would belong to 2/7.
->>
->> I would say this still belongs to 3/7, because 2/7 only implements
->> utilization for on_rq tasks. This patch implements utilization for both
->> on_rq and !on_rq. For rq, we have rq->cfs.avg.util_avg_uclamp (for
->> on_rq) and rq->root_cfs_util_uclamp (for on_rq plus !on_rq).
-> 
-> Looks like you maintain `rq->cfs.avg.util_avg_uclamp` (2) (consider all
-> runnable tasks) to be able to:
-> 
-> (a) set rq->root_cfs_util_uclamp (3) to max((3), (2))
-> 
-> (b) check that if 'rq->cfs.h_nr_running == 0' that (2) = 0 too.
-> 
-> uclamp is based on runnable tasks (so enqueue/dequeue) but you uclamp
-> around util_avg which has contributions from blocked tasks. And that's
-> why you have to maintain (3). And (3) only decays within
-> __update_load_avg_cfs_rq().
-> Can this be the reason why th implementation is so convoluted? It's
-> definitely more complicated than util_est with its easy layout:
-> 
->    enqueue_task_fair()
->      util_est_enqueue()
-> 
->    dequeue_task_fair()
->      util_est_dequeue()
->      util_est_update()
-There's only one rule here, which is the root value must be the sum of 
-all task util_avg_uclamp values. If PELT slowly decays each util_avg, 
-then the sum will also decay in a similar fashion. The code here is just 
-doing that.
-
-This 'convoluted' property is from PELT and not from sum aggregation. 
-Actually this is what PELT used to do a while back, when the root CFS 
-util was the sum of all tasks instead of being tracked separately, and 
-we do the same decay here as we did back then.
-
-You are right that this feels convoluted, but sum aggregation doesn't 
-attempt to change how PELT works so the decaying property is there due 
-to PELT. I can keep exploring new ways to make the logic easier to follow.
-
->> For tasks, we also have two utilization numbers, one is on_rq and the
->> other is on_rq plus !on_rq. However, we know they do not have to be
->> stored in separate variables and util_avg_uclamp can capture both.
-> 
-> Here you lost me. Which value does 'p->se.avg.util_avg_uclamp' store?
-> 'runnable' or 'runnable + blocking'? I would say it's the latter one but
-> like in PELT we don't update the task signal when it's sleeping.
-
-The latter. We don't update the task signal when it's sleeping but we do 
-when we need to use it, and that's enough. This is also the case for all 
-blocked util_avg.
-
->> Moving this to 2/7 might be fine, although then this would be the only
->> !on_rq utilization in 2/7. I can add comments to clarify the situation.
->>
->>> This is the util_avg_uclamp handling for a se (task):
->>>
->>> enqueue_task_fair()
->>>
->>>     util_uclamp_enqueue()
->>>
->>>     update_util_uclamp()                 (1)
->>>
->>>       if (!p->se.on_rq)                  (x)
->>>         ___update_util_uclamp_towards()  (2)
->>>
->>> dequeue_task_fair()
->>>
->>>     util_uclamp_dequeue()
->>>
->>> __update_load_avg_blocked_se()
->>>
->>>     update_util_uclamp()
->>>
->>>       (x)
->>>
->>> __update_load_avg_se()
->>>
->>>     update_util_uclamp()
->>>
->>>       (x)
->>>
->>> Why is it so unbalanced? Why do you need (1) and (2)?
->>>
->>> Isn't this just an indication that the se util_avg_uclamp
->>> is done at the wrong places?
->>>
->>> Is there an other way to provide a task/rq signal as the base
->>> for uclamp sum aggregation?
->>
->> (2) won't happen, because at that point p->se.on_rq must be 1.
-> 
-> I see.
-> 
->> The sequence during enqueue_task_fair() is:
->>
->> enqueue_task_fair(p)
->>      enqueue_entity(se)
->>          update_load_avg(se)
->>              update_util_uclamp(p) (decay path)
->>          p->se.on_rq = 1;
->>      util_uclamp_enqueue(p)
->>      update_util_uclamp(p) (update path)
->>
->> The only reason why we want to issue update_util_uclamp() after seeing
->> on_rq == 1 is that now it goes down the normal uclamp path and not the
->> decay path. Otherwise, uclamp won't immediately engage during enqueue
->> and has to wait a timer tick.
-> 
-> OK, I see, the task contribution should be visible immediately after the
-> enqueue.
-> 
->> Ideally, we should:
->>
->> enqueue_task_fair(p)
->>      enqueue_entity(se)
->>          update_load_avg(se)
->>              util_uclamp_enqueue(p)
->>              update_util_uclamp(p) (force update path)
->>          p->se.on_rq = 1;
->>
->> This requires us to invent a new flag to update_util_uclamp() to force
->> the update path even when p->se.on_rq is 0.
-> 
-> I guess you have to go this way to achieve a cleaner/easier integration
-> of 'util_avg_uclamp'.
-
-If we don't want to keep util_avg_uclamp separately like util_est but 
-move it closer to se, then we can explore this option.
-
->> At the moment I'm treating util_avg_uclamp in the same way as util_est
->> after the comments in v1, which is independent and has its own code
->> path. We can go back to the old style, where util_avg_uclamp is closer
->> to how we treat se rather than a separate thing like util_est.
-> 
-> Except that 'util_est' integration is much easier to understand. And
-> this is because of 'util_est' is clear runnable based only and is not
-> linked to any blocked part.
-
-True.
-
-Well, I can go back to the style in RFC v1. One big advantage of v2 is 
-that we can compile out the support of uclamp very easily because it's 
-treated more or less like an independent thing.
-
-> [...]
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
