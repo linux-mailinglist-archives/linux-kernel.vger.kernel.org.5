@@ -1,112 +1,227 @@
-Return-Path: <linux-kernel+bounces-108496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF89880B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:28:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59047880B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773C11F22A46
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:28:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F825283864
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994791A27D;
-	Wed, 20 Mar 2024 06:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD1D1DFE3;
+	Wed, 20 Mar 2024 06:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="X4dOTilF"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="E/x1RWGC";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="NzJTOMpN"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950811864A;
-	Wed, 20 Mar 2024 06:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916108; cv=none; b=rqG+VqjA5Z4BRMgWJ0K3Dgy8HdqZ/Jb2A4gJkZpeplihOW2lJdHQFHnC1RjwpBmCZjOvcAx/NXczEnbJVjeBgICc35SPR/ble4uk7hzT879MMO4WMQouUwJr9y/eCk71O8pwS7aaL4YBmzLhn+69tBddgc22alJ5gIF2qkCfa3Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916108; c=relaxed/simple;
-	bh=NHf4lcNnbKil3Xd3j0ggC1F+MXxx5165hkG+xD5RsMs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p5Ht/pG3qeXQB4U/cVPXRGO+yLi5M2Zf4a7QSYIU2h+vX4f7HARGuTSGkK/xrOc/IrYgeOZvHycHlKGbTiiCLK9VoeauwV54TsfOzagWj37RraaUp7WekuVbwcCpH+VDjCnm8sb4j3hQvI3uEgpWHz1lVnVhkwkE+GE6Rt20F/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=X4dOTilF; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=+uvbFMBaxnEo7FnlRK2VWajdBLpdj74HCBLMlUuMnzs=;
-	t=1710916106; x=1711348106; b=X4dOTilFLlgayLWWCqi/gx7N9s7/xqE38i/e7uH+77VYwTK
-	sgdY/JzK4jlAtJJpHxb+AAQiUjenqEhjEzl5AbkbX1Fd07fhCM9wQKWJ0mghctqnypInTb6ZAanDI
-	CtrW5tWGXlT7d9mjqwRzN9HLQBHoH3Q0bPB1LW2eI6atPosLTY/9XkA78EC4y+AFnyUuSZGZq4F5Z
-	Z2XIkkOEhRMFf9w/fyi9ar7hZMiAWOJittvQCjjOOYg8lVzeC50ZjsfsEppvWwB2SRCRbPOANc0ti
-	PCCoG41xuhBFbUyggeTfpKr0gvy/SVww8reMFcXhWLrUsYw6xfJlQu43nKQOp6Lg==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rmpR0-0007mH-ND; Wed, 20 Mar 2024 07:28:22 +0100
-Message-ID: <9490757c-4d7c-4d8b-97e2-812a237f902b@leemhuis.info>
-Date: Wed, 20 Mar 2024 07:28:22 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07C81DDD6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710916121; cv=fail; b=TrG65ywWXgq7yyxPdJ3YOihynyRWdQX5BqJjrdERdP/KumCMAQediqjP8Ah6CzUUgcIYVTLZjdLWgJm7EIBP8Vtf8RLfafaR5/aEJYf0YW2LPNtFMNyxIFcHBf7sI/Em4DFvDfzIHckGjw1/dimJp0XR58kSMI4vWuC6RF6A9qc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710916121; c=relaxed/simple;
+	bh=Y+mSJVb86upbBahMdSNSzKoB0F6z86vRI6IjH0wam3I=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fQlVEqe0M+sCShtbMOCbVtQVe5/rI9wnlnvnAWGryrmthjUSIV2eeIXEJjpT7Jw6amAezCiZWsisIQjgNqo3xtJFktc1HDYxPqb69ZjLE4veJXIE2klbriZJimPsDtB1IhiYcsT26HgpPfudBbzexnsRYt0SwmvMEf7p/qvBZSc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=E/x1RWGC; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=NzJTOMpN; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 1187bff2e68311ee935d6952f98a51a9-20240320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=Y+mSJVb86upbBahMdSNSzKoB0F6z86vRI6IjH0wam3I=;
+	b=E/x1RWGCn5trTXxBeZelPci+/Zn0pOWC6j9IXojAGR2wSK7zFo7PHnPv1Bf1Tu7rZVkAzfw9fdfuryZmhmcz06/ratJtGcV9jnMEicNEwacP+n8INKFb2txb7Au8RfQdeDX3ZJDrryZ5EbYtpL4kwITfJ+CUxJCV6xYH1b+7wx4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:82f60847-af99-4bf4-b864-70f7cb59985f,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:d2bbb581-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 1187bff2e68311ee935d6952f98a51a9-20240320
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <ck.hu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1033051203; Wed, 20 Mar 2024 14:28:30 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Mar 2024 14:28:29 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 14:28:29 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IGjuD85T6yCw4ZzTGp7qBQAj64UxlfXELlnipwB111JwtyVmuRZET9tH2aX1JkDHJWvpscOP3tjKA+fiZeqL12Lc6wt+oQjU/LYEJBPro7yzrT+Bd+4YCd0bD5xJQ/vwHT2ZPkIPhl2sgwiXRDlmXTEnjwIubPwGLY8zErZxCaxFSzomG//Wmls56oFlRD/LWGUHcuaP72zuHG8fqPmigNyGxS9Hl/9zsg4LoqIzW/hw4tOcgZ/Msvt9DyUT/EWs4746jhwiflRGv2dCThVSCCcWhmsWj+13Uf7u4/qfzYAW4ILRIScha1pfO6D+hlBNxRn1mJdZpjGKfuCYEKayUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y+mSJVb86upbBahMdSNSzKoB0F6z86vRI6IjH0wam3I=;
+ b=O5t1HJqLstcrwalqC2m04yAOyy0BN2gqOx6i+YLdX9z/j7rhSo6IwZ2hv9FYIj31TXccEeKvqmk5eAsP/Ive869BWZHPTreJu34SDg7K6XzjfVFE9/yZWR2bQzizkCWNu9E2w1RczIHJUffnSMEKCmjhvzj3Dym7BsQWtgb+nEHV+XeRYLn7tpyp3R0oRWvjgAFebWi8ixpqzvvr6wfDhrtvW3bIXDNs1H230dzNFPcYZJVwzDAtXTlv4MEVcA8T+mLXoRhxv3JObVBZDK1Wvmp2AzKX71Rfz1+hf5Cs5m5KEHii0guPMfa0vDgkdvWOjL8L3jwb6JCEuJIQQYxiKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y+mSJVb86upbBahMdSNSzKoB0F6z86vRI6IjH0wam3I=;
+ b=NzJTOMpNyVkEsu2YMRK5dI8d+bK/pTMF5b4HDpBVNGwXm0eCN7lZuhTn+NcF0kvnQT8D3fw8duufup8Ltm497NZcj5IV2gxL4+49f856c4Daz+p8cSPe+oAJjV5r6CFXkjbhAAyT38266I8K6ApWBHtIZdsGNVKqNpMp/yXXR7A=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by SI6PR03MB9070.apcprd03.prod.outlook.com (2603:1096:4:21f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Wed, 20 Mar
+ 2024 06:28:25 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::f3b6:91a7:e0fb:cb27]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::f3b6:91a7:e0fb:cb27%7]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
+ 06:28:25 +0000
+From: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To: =?utf-8?B?U2h1aWppbmcgTGkgKOadjuawtOmdmSk=?= <Shuijing.Li@mediatek.com>,
+	"chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+	=?utf-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "p.zabel@pengutronix.de"
+	<p.zabel@pengutronix.de>, "airlied@gmail.com" <airlied@gmail.com>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>
+CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Project_Global_Chrome_Upstream_Group
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: Re: [PATCH] mediatek: dsi: Correct calculation formula of PHY Timing
+Thread-Topic: [PATCH] mediatek: dsi: Correct calculation formula of PHY Timing
+Thread-Index: AQHadqqO+1utL1q/a0qcZFiB4g3hmrFAMkkA
+Date: Wed, 20 Mar 2024 06:28:25 +0000
+Message-ID: <f75837894e356b072481b69e7b4745bfce90ec1c.camel@mediatek.com>
+References: <20240315072945.19502-1-shuijing.li@mediatek.com>
+In-Reply-To: <20240315072945.19502-1-shuijing.li@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SI6PR03MB9070:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nOEHWBPziyVm9H3gRjK+jV8UMLxTHT2X51ET0gZQm9oVTVNzZJrvK115cFavvAhJ5pL4XrB+dm4jd5lrm+EvloPSZ4PnUUOqK3SoZAxZFjjLK6PzZW7+laZK3mDbyVKpNtSUNDNEZr+YNEF/ehKfx4x7FLoderZRHt7oY+2TRnxaKLLA4feTYNLQqgawsvamFXHfmHm0cAUIQboDZ1DyuKnDWytUw8EBXLbtVx2MyoqRsx4XbmefSaq+6MhSSI3wjqjzBpxr/WHKA7MQIdkspfRIFMf+k5BIJpt/oLNWPv1Sab2s7dwiHWZM/o4/JMrdSOmWsg6WOeXr8ke/VqNRqztulJt7GsIK24XxtQc6EaUwSuMBfmtrtyB8o0vcuIwARy/mvp/rOzLzNvm2zJtvfGhHbkwXR9+cU399MpMmmo/efa8RQaHDgF6LOkLkPh6Gq2oyUI8J4F0Bi4z+/r2L4TTTHQQw3qn0/0FgUz2aT3QeeJxcFAEOT3HnWLIcjyYbZqqM01BZAU5gyrWIML0CdhKr7DLdIGLqBwKbE6oM7bR9ZroNdjFDocHIJKZtdSJSVh17/7ZT6YWEqZusqdp3HGXNfG6kt/OVGuNSZretQKBmuQ3HaSkLO449p2vEeWN+sK1j3rISt0U8UxCOgAZ5DesoOgUeQACSADTasfPZkbE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVpzR0p4Q2ZsdE45ZnlObmtpV3d3SG9qRytmdi96VnlRamM2U3JmZWhKOWp3?=
+ =?utf-8?B?eVc2STNGWVp2aXVvaFFySkpXSFppUVk0SkZ5WDFLMU84QU8xSmFCNUtUeFNC?=
+ =?utf-8?B?dWdJV2dRMUVZS1grZmpTVVh6QXV5T3RzN245Rld2cDlBNS9XNk1oME8rVlds?=
+ =?utf-8?B?cXNZZmYxS2xnOFZ4Z2lTNmF3K3AreWsxZ1piZWRNOW5RYlhma1p0ZVJuRzFa?=
+ =?utf-8?B?SXFEU25zOWQ0WVpmK3lHT3NzYlJYeEo0MXNhRS8zajZLc1hJaDQvSGdLTWV3?=
+ =?utf-8?B?bWxUa1ZCZGdvUEgxdTRRTzlXVFcxU0hiK3ArYzlPZlZYRE1DVHV5RTI5OTd2?=
+ =?utf-8?B?cHhMc3Q3ZGl2V3pyQWVoOUwyM05KaXdCcGg2b2lMWWQrZGlsUmNlR0MwMDRq?=
+ =?utf-8?B?bGxQWWM0NVhmYUZDSmJMdzdXQ0Uwa2dlS2dNT2dXZ0ZmcXl5YU91amlkUnVE?=
+ =?utf-8?B?N3lRUnF6SW5FVmpxMjhRRjJleWhnRTdxeDBuTW82TjZQaWh6eXR5TG4wQXlJ?=
+ =?utf-8?B?UmpGRWxQOTg3cmdjU2FPNDM3U05sNzZBTmpaWmwrR0lSRk9EamVjKzkxb1VD?=
+ =?utf-8?B?OGlvcVFPc2pNOEhTSkMxUHlaTW9nWTMwQXpqdGNmUVFST0tCR2I4Rmx4RnBZ?=
+ =?utf-8?B?dTNybWtEaUl6eG5RM3N0UjRTTGpKMnhsTjYzL1I0YlpzbU1RNWlYRUc3TFUw?=
+ =?utf-8?B?MllmYjFObkxWZzZWbCtBNUtWRE85ZE9XRUU3VXhzVVp2VUZUQ1FvR1pFUzhl?=
+ =?utf-8?B?TFc5amQ2ODN1eWV5T2RRMCs0Mk9ONzFRYXgyUHNBc09wZEVmV0tMRHhxUng0?=
+ =?utf-8?B?RXBWbWJjTE96RVQ4ZWhYSi85Ny9oMGNMQ1dPRlpwOG8zKzlCdm5sSUk0bjNW?=
+ =?utf-8?B?YytQT1pvVXdOR2djZmZwdXN5RVQ4VUlkN0FDS2VQc1ZwRTRTcytFdEhFb3Rk?=
+ =?utf-8?B?UWtJQXNaSHpieGJoaGFQV0VPUFlIdEpBT3pueGJQYy9rb0pVM2ZqSlBDMGh4?=
+ =?utf-8?B?c1pLUTc3OWFLUzU3RDAxUHJmd2dVMjlpZnlmOFB5RG54N09tNGNFbDJISmFC?=
+ =?utf-8?B?Tm1udDRLSU80RDRZMmQ4L3VzekordEZoTDUrc29aUWt6Y0x3UE9ERy9sb1pZ?=
+ =?utf-8?B?UzZMdVluQktNcThHay9zS2lGWnZBVnBKcEppS1J4UUZpRW1kV1ZqRUhXT0o0?=
+ =?utf-8?B?Yk1QQ1k2d0FrdklFQnNTTG41YjZ6NDdwVzJPdjdwOUxicnNHMmRhbHJqMUdj?=
+ =?utf-8?B?czNvMlhzT0tlUnRPMDNwc3BURGdCdENkZmRpKzY4bEVtWEV3b0V4aW1NV2Jr?=
+ =?utf-8?B?eGIwUGFjTmtuWnEzOVJnQ0JqL3IrMjYxajFZeWVhdm1MMDhlYlU2TWdGdXBu?=
+ =?utf-8?B?R1hBd1dtSlJmbDdMdmNFSE5scUVkZGJINkY3Ukx6Q2pPRTIzdFRBVUc5dFMz?=
+ =?utf-8?B?dVUyT1Rna2dxNXFoMzB5V085ODM4WFZyWnJSUmgrbG1YNERlTUZSU0l6a2lJ?=
+ =?utf-8?B?RGRDRlozS2RmMGdDS3BLK2puYVJEdkdmak5udFpyWVRheEl4Zm1LeWgybWpQ?=
+ =?utf-8?B?dkFraDdIanJWelpEQzBVOEUrYUxpcnQyeTFkMGhFS1ZBdVdIM2JMU0hOS1FC?=
+ =?utf-8?B?OWZxRHhrU3ZkaCtwK01rUDA2Rnd2djcwQlJYME1FdEhlZm05QVA0aFZGdTly?=
+ =?utf-8?B?T0kvMW53aEg1Rml3REQ3UlVGaVJXbjhuL2hNT21uQXFyMXcyN2ZUUjEydDdS?=
+ =?utf-8?B?TXZ6VHR0YlpaT0trcmpNbldJdk1XcHN4aGtIaGVJZmpyVUplK09SN012bUhP?=
+ =?utf-8?B?UDFXclB4Q281MGMrRnNNQXMxSGFlWXB4bS9pSTlvUU14Vm1VV3lRN25wckdp?=
+ =?utf-8?B?elJuSk13VW0vVUNwQncyNUlmaFRBcjRzM0hDbS9OTUd1aElpMEFxNFlEc2xH?=
+ =?utf-8?B?L001Tm9wVzZvWTVsd2VGOUpPSDFOQUQrV09UUDluSzBnZTJXZUlyeWNJdFpw?=
+ =?utf-8?B?S3lZWnJWV0JVZUwrbm5KTjFiK0U4NEpCOXFQMWdIYmlZd3A3NlkwWkhoZGkz?=
+ =?utf-8?B?Ui96WFpVcUpHWjBKTVQ0NmN0bzA2QUw4VjZDZi9rMTA1dlVUdWNHaFVaVGFT?=
+ =?utf-8?Q?WCvc2cb/15b4OCnd3d4CA7/MU?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3620B601D9B8DE4E929C63702F36BC8F@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-Content-Language: en-US, de-DE
-To: "bumyong.lee" <bumyong.lee@samsung.com>,
- 'Linux regressions mailing list' <regressions@lists.linux.dev>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- 'karthikeyan' <karthikeyan@linumiz.com>, vkoul@kernel.org
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
- <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
- <000001da6ecc$adb25420$0916fc60$@samsung.com>
- <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
- <000001da7140$6a0f1570$3e2d4050$@samsung.com>
- <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
- <001001da7a60$78603130$69209390$@samsung.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <001001da7a60$78603130$69209390$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710916106;93568396;
-X-HE-SMSGID: 1rmpR0-0007mH-ND
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e655441-cf35-4941-a77a-08dc48a6f28c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 06:28:25.0242
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /z4E+Y8Bf4IhUKXVY03bJVRFja3PNyjdMa3QGn+Chm7lqeyO0x6ztt9vX4hjD1+/2/uUxtLgHrGFcIVy622bgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI6PR03MB9070
 
-On 20.03.24 01:49, bumyong.lee wrote:
->>>> Hmmm. 6.8 final is due. Is that something we can live with? Or would
->>>> it be a good idea to revert above commit for now and reapply it when
->>>> something better emerged? I doubt that the answer is "yes, let's do
->>>> that", but I have to ask.
->>>
->>> I couldn't find better way now.
->>> I think it's better to follow you mentioned
->>
->> 6.8 is out, but that issue afaics was not resolved, so allow me to ask:
->> did "submit a revert" fell through the cracks or is there some other
->> solution in the works? Or am I missing something?
-> 
-> "submit a revert" would fix the issue. but it would make another issue
-> that the errata[1] 719340 described.
-
-"Make" as it "that other issue was present before the culprit was
-applied"? Then that other issue does not matter due to the "no
-regression" rule and how Linus afaics wants to see it applied in
-practice. For details on the latter, see the quotes from him here:
-https://docs.kernel.org/process/handling-regressions.html
- Hence please submit a revert (or tell me if I misunderstood something)
--- or of course a workaround for the other issue that does not cause the
-regression people reported.
-
-> [...]
-> [1]: https://developer.arm.com/documentation/genc008428/latest
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+SGksIFNodWlqaW5nOg0KDQpPbiBGcmksIDIwMjQtMDMtMTUgYXQgMTU6MjkgKzA4MDAsIFNodWlq
+aW5nIExpIHdyb3RlOg0KPiBUaGlzIHBhdGNoIGNvcnJlY3QgY2FsY3VsYXRpb24gZm9ybXVsYSBv
+ZiBQSFkgdGltaW5nLg0KPiBNYWtlIGFjdHVhbCBwaHkgdGltaW5nIG1vcmUgYWNjdXJhdGUuDQoN
+ClBsZWFzZSBkZWZpbmUgd2hhdCBpcyBhY2N1cmF0ZSBhbmQgaG93IG11Y2ggdGhpcyBwYXRjaCBp
+bXByb3ZlLiBGb3INCmV4YW1wbGUsIHRoZSBzcGVjIGRlZmluZSBldmVudCAyIGhhcHBlbiBhZnRl
+ciBldmVudCAxIGFuZCB0aGUgZHVyYXRpb24NCmJldHdlZW4gZXZlbnQgMSBhbmQgZXZlbnQgMiBz
+aG91bGQgYmUgZnJvbSA1MHVzIHRvIDEwMHVzLiBCdXQgY3VycmVudA0KZHVyYXRpb24gaXMgNjB1
+cyBhbmQgaXMgbmVhciB0aGUgYm91bmRhcnkuIFNvIHRoaXMgcGF0Y2ggbWFrZSB0aGUNCmR1cmF0
+aW9uIHRvIDcwdXMgc28gaXQgaXMgbmVhciB0aGUgc2FmZSByYW5nZS4NCg0KUmVnYXJkcywNCkNL
+DQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFNodWlqaW5nIExpIDxzaHVpamluZy5saUBtZWRpYXRl
+ay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kc2kuYyB8IDMz
+ICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0NCj4gLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAx
+NyBpbnNlcnRpb25zKCspLCAxNiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlh
+dGVrL210a19kc2kuYw0KPiBpbmRleCBhMmZkZmM4ZGRiMTUuLmQxYmQ3ZDY3MTg4MCAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kc2kuYw0KPiArKysgYi9kcml2
+ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQo+IEBAIC0yMzUsMjIgKzIzNSwyMyBAQCBz
+dGF0aWMgdm9pZCBtdGtfZHNpX3BoeV90aW1jb25maWcoc3RydWN0DQo+IG10a19kc2kgKmRzaSkN
+Cj4gIAl1MzIgZGF0YV9yYXRlX21oeiA9IERJVl9ST1VORF9VUChkc2ktPmRhdGFfcmF0ZSwgMTAw
+MDAwMCk7DQo+ICAJc3RydWN0IG10a19waHlfdGltaW5nICp0aW1pbmcgPSAmZHNpLT5waHlfdGlt
+aW5nOw0KPiAgDQo+IC0JdGltaW5nLT5scHggPSAoNjAgKiBkYXRhX3JhdGVfbWh6IC8gKDggKiAx
+MDAwKSkgKyAxOw0KPiAtCXRpbWluZy0+ZGFfaHNfcHJlcGFyZSA9ICg4MCAqIGRhdGFfcmF0ZV9t
+aHogKyA0ICogMTAwMCkgLyA4MDAwOw0KPiAtCXRpbWluZy0+ZGFfaHNfemVybyA9ICgxNzAgKiBk
+YXRhX3JhdGVfbWh6ICsgMTAgKiAxMDAwKSAvIDgwMDAgKw0KPiAxIC0NCj4gLQkJCSAgICAgdGlt
+aW5nLT5kYV9oc19wcmVwYXJlOw0KPiAtCXRpbWluZy0+ZGFfaHNfdHJhaWwgPSB0aW1pbmctPmRh
+X2hzX3ByZXBhcmUgKyAxOw0KPiAtDQo+IC0JdGltaW5nLT50YV9nbyA9IDQgKiB0aW1pbmctPmxw
+eCAtIDI7DQo+IC0JdGltaW5nLT50YV9zdXJlID0gdGltaW5nLT5scHggKyAyOw0KPiAtCXRpbWlu
+Zy0+dGFfZ2V0ID0gNCAqIHRpbWluZy0+bHB4Ow0KPiAtCXRpbWluZy0+ZGFfaHNfZXhpdCA9IDIg
+KiB0aW1pbmctPmxweCArIDE7DQo+IC0NCj4gLQl0aW1pbmctPmNsa19oc19wcmVwYXJlID0gNzAg
+KiBkYXRhX3JhdGVfbWh6IC8gKDggKiAxMDAwKTsNCj4gLQl0aW1pbmctPmNsa19oc19wb3N0ID0g
+dGltaW5nLT5jbGtfaHNfcHJlcGFyZSArIDg7DQo+IC0JdGltaW5nLT5jbGtfaHNfdHJhaWwgPSB0
+aW1pbmctPmNsa19oc19wcmVwYXJlOw0KPiAtCXRpbWluZy0+Y2xrX2hzX3plcm8gPSB0aW1pbmct
+PmNsa19oc190cmFpbCAqIDQ7DQo+IC0JdGltaW5nLT5jbGtfaHNfZXhpdCA9IDIgKiB0aW1pbmct
+PmNsa19oc190cmFpbDsNCj4gKwl0aW1pbmctPmxweCA9ICg4MCAqIGRhdGFfcmF0ZV9taHogLyAo
+OCAqIDEwMDApKSArIDE7DQo+ICsJdGltaW5nLT5kYV9oc19wcmVwYXJlID0gKDU5ICogZGF0YV9y
+YXRlX21oeiArIDQgKiAxMDAwKSAvIDgwMDANCj4gKyAxOw0KPiArCXRpbWluZy0+ZGFfaHNfemVy
+byA9ICgxNjMgKiBkYXRhX3JhdGVfbWh6ICsgMTEgKiAxMDAwKSAvIDgwMDAgKw0KPiAxIC0NCj4g
+KwkJdGltaW5nLT5kYV9oc19wcmVwYXJlOw0KPiArCXRpbWluZy0+ZGFfaHNfdHJhaWwgPSAoNzgg
+KiBkYXRhX3JhdGVfbWh6ICsgNyAqIDEwMDApIC8gODAwMCArDQo+IDE7DQo+ICsNCj4gKwl0aW1p
+bmctPnRhX2dvID0gNCAqIHRpbWluZy0+bHB4Ow0KPiArCXRpbWluZy0+dGFfc3VyZSA9IDMgKiB0
+aW1pbmctPmxweCAvIDI7DQo+ICsJdGltaW5nLT50YV9nZXQgPSA1ICogdGltaW5nLT5scHg7DQo+
+ICsJdGltaW5nLT5kYV9oc19leGl0ID0gKDExOCAqIGRhdGFfcmF0ZV9taHogLyAoOCAqIDEwMDAp
+KSArIDE7DQo+ICsNCj4gKwl0aW1pbmctPmNsa19oc19wcmVwYXJlID0gKDU3ICogZGF0YV9yYXRl
+X21oeiAvICg4ICogMTAwMCkpICsgMTsNCj4gKwl0aW1pbmctPmNsa19oc19wb3N0ID0gKDY1ICog
+ZGF0YV9yYXRlX21oeiArIDUzICogMTAwMCkgLyA4MDAwICsNCj4gMTsNCj4gKwl0aW1pbmctPmNs
+a19oc190cmFpbCA9ICg3OCAqIGRhdGFfcmF0ZV9taHogKyA3ICogMTAwMCkgLyA4MDAwICsNCj4g
+MTsNCj4gKwl0aW1pbmctPmNsa19oc196ZXJvID0gKDMzMCAqIGRhdGFfcmF0ZV9taHogLyAoOCAq
+IDEwMDApKSArIDEgLQ0KPiArCQl0aW1pbmctPmNsa19oc19wcmVwYXJlOw0KPiArCXRpbWluZy0+
+Y2xrX2hzX2V4aXQgPSAoMTE4ICogZGF0YV9yYXRlX21oeiAvICg4ICogMTAwMCkpICsgMTsNCj4g
+IA0KPiAgCXRpbWNvbjAgPSB0aW1pbmctPmxweCB8IHRpbWluZy0+ZGFfaHNfcHJlcGFyZSA8PCA4
+IHwNCj4gIAkJICB0aW1pbmctPmRhX2hzX3plcm8gPDwgMTYgfCB0aW1pbmctPmRhX2hzX3RyYWls
+IDw8IDI0Ow0K
 
