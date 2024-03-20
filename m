@@ -1,79 +1,49 @@
-Return-Path: <linux-kernel+bounces-108805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3901881041
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:49:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2F7D881043
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BA64284ABC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E1801C2217A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF92339FFD;
-	Wed, 20 Mar 2024 10:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3FC3A1B7;
+	Wed, 20 Mar 2024 10:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="Iwqqg2Mz"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0DN0sPi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E143629CEB
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D3129CEB;
+	Wed, 20 Mar 2024 10:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710931786; cv=none; b=kQvL8RiglQxuIL0Le5UFYfpCnXcCC5P+um56DW7W4Key3wCFbhDChUwfDrbrCHAQ2C/1Io/3pFnuYeluz28Fkzc0IvjnzpdWENDcc6rxOziZv4zMy/vw0WVyxNCIFTblIkksSUkXvCeHfcpC1aoQgGVfolcZ+oAnwLIdSwkEooI=
+	t=1710931829; cv=none; b=mYdYday9QIx9bxukESpFycLFHgCmr5iDzhAzxx0uc7HOvY39yN3bQ5r/wY15BUrQOVp2gCGYTNfOK03FstmTudgoM+0c5/MmNJ/VCy1k1XQy5XcOs73IIEHNX9Ly6ifXb8pIYypKT9zlz2+W7eo8SCRlGhOHb3B62/oVmmpGbQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710931786; c=relaxed/simple;
-	bh=t1TrKITjPnw/EArrpDUtUW0J3HKSodUqgn3N+ztvLRg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bWjaFVGA8pWEX1NRHqTxI1s3Rnhf8dEItNG4GfKeXBhDkAYp9wEb2kJ3ITx5oLSE8cVv3C9NIs5+m0SrdrOsIarTa6B+Psz9uTR9fox11kYpY8lx+IoKAhp/vmZpFZD11P/lRhQz7k0STR88uasVxJQ8FksphNOm2c7wSEV/h+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=Iwqqg2Mz; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56b9e5ed074so2092544a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1710931783; x=1711536583; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vjQpv43RsbyZPpH2EK5mjEDZoLFEPdnIRs0RsD7dBMo=;
-        b=Iwqqg2Mzr/HprEUXvFiP3zjkzbBtIpoP1UqPgR31A5a/M9jA0IZdpnYp3KfFV8H9M7
-         dbNc26xGapqzFilH2CkA96BD4dC1yuRb18c59E5jUuPgsQdLAZ59VaLkqgC2xtCaF4fg
-         y2er15Xkfj34SjoSH4bgh9giC3/rUxU+9wyu8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710931783; x=1711536583;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vjQpv43RsbyZPpH2EK5mjEDZoLFEPdnIRs0RsD7dBMo=;
-        b=HU1yZ7cG1L0QbvqWdQAF5nqWwbXdxz7cFpy6PbzlPRBEULqNq98zLHeKViJN1NF/pe
-         A69VZSVYFjOUY9YzNlMt2Y3sPZCN9jSc1mAEB7CIbvCXQaiPqDaIAAbPtS6NlOM1KOzm
-         Yu4K6B6udrfWAvws9ybb43sUV/Y5f3gaYxrPBkNUPmxxACUNMcmEd0vnvIVy4qfgKcaT
-         050wNX7Z9/YUc//CGdEDVny+AFnG260oTLOguRB0w0BkZWAYQ3BrdLP2Vd8A3mQbdygQ
-         7hhW8d1a091YFz2Fb/5wb4E99HCzcx3nYh6s/smKvjFKruovLj851n4RnJibk6zb2UUN
-         sz7A==
-X-Forwarded-Encrypted: i=1; AJvYcCXahDN7rpPaD3+9/xOvhnpu2x8iGGLx7EeTplFFc4k6fbdYk/GFBrR4hTtp8fuqQUJX0IAGctbHXeeXplC5xf6Xa/woyMrYS4vuik2E
-X-Gm-Message-State: AOJu0YxdtBdKClFxuzG8OgzqUvFbgQIr27Kn1xK1SOKhzq+fX1uTsu+x
-	Hdulsrivw/mnnfsWziIEaLltFTqXLKZBXtVH25/qSMy0XN/zr2zdkebcNud1LQI=
-X-Google-Smtp-Source: AGHT+IG6IU2dlJVmfC6TljYpywN0I/ValR6I0IV2RbZWDK2G/AHMthaopzSlCWJYMoMDG62gqjGIfQ==
-X-Received: by 2002:a05:6402:5025:b0:567:a318:ac0b with SMTP id p37-20020a056402502500b00567a318ac0bmr1552209eda.16.1710931783220;
-        Wed, 20 Mar 2024 03:49:43 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id l8-20020aa7c308000000b0056b7ed75a46sm2738978edq.27.2024.03.20.03.49.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 03:49:42 -0700 (PDT)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] thermal: armada: simplify name sanitization
-Date: Wed, 20 Mar 2024 11:49:39 +0100
-Message-Id: <20240320104940.65031-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.40.1.1.g1c60b9335d
+	s=arc-20240116; t=1710931829; c=relaxed/simple;
+	bh=33eYdkLv+vFOfzW7fW+bW6YTvn0TxW/yQv61af3+pCw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=SdlUv5HWw5OpE73JoLwlGBXQ0dq5lXZwnCXQpSwbmUcTvfUzXgoNSbCnj72ow4X3YaLOLJBlpcxVpn6Ei6IGCIU2ttK7JGiH2MBY6K9XMQ4JSksO0dE7mMDBp45QgWDqktrPMdpD98af8qM+/lud6i8Qo/j7jSpI3jYaFG1IRBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0DN0sPi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 56951C433C7;
+	Wed, 20 Mar 2024 10:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710931829;
+	bh=33eYdkLv+vFOfzW7fW+bW6YTvn0TxW/yQv61af3+pCw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=G0DN0sPidV9DZaSKasMn2t9y3aA7tTejW/wV3BwaYb9BrHSudtxiWh94qn4zC/0oy
+	 QwCF5y7d0t+j8mxolVgaBrtn2z2yrvOvR4LNRmnyjFOJdlqZ6cQHVNnSRoViVO12wg
+	 xbgKQ2mEl+BT/Z+KaxgpkRuLCTGmfIfegZgcQipyl1jZ7o/OadfScNl/OL7b7N3gsZ
+	 Gb8QrZ3afXE0yjcmphzsy+ZjeqvRjysEHEq2LmbFRCB5WfXXn2saOzm/xA4eqaIOB0
+	 kcKDoKhRkXAZWnDogvSmwHV9K0pTZMW32nTq20E20xIq71vYmDP5inTBbiKFAwB2Xx
+	 Lt0rYsO6esHkw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 45E89D95060;
+	Wed, 20 Mar 2024 10:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,42 +51,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [v2 net PATCH 0/5] octeontx2-pf: RVU Mailbox fixes
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171093182928.6411.11540341489392829464.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Mar 2024 10:50:29 +0000
+References: <1710754198-18632-1-git-send-email-sbhatta@marvell.com>
+In-Reply-To: <1710754198-18632-1-git-send-email-sbhatta@marvell.com>
+To: Subbaraya Sundeep <sbhatta@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+ hkelam@marvell.com, naveenm@marvell.com, horms@kernel.org
 
-Simplify the code by using the helper we have for doing exactly this.
+Hello:
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- drivers/thermal/armada_thermal.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+This series was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/drivers/thermal/armada_thermal.c b/drivers/thermal/armada_thermal.c
-index f783547ef964..fdcb077cfd54 100644
---- a/drivers/thermal/armada_thermal.c
-+++ b/drivers/thermal/armada_thermal.c
-@@ -763,7 +763,6 @@ static void armada_set_sane_name(struct platform_device *pdev,
- 				 struct armada_thermal_priv *priv)
- {
- 	const char *name = dev_name(&pdev->dev);
--	char *insane_char;
- 
- 	if (strlen(name) > THERMAL_NAME_LENGTH) {
- 		/*
-@@ -781,12 +780,8 @@ static void armada_set_sane_name(struct platform_device *pdev,
- 	/* Save the name locally */
- 	strscpy(priv->zone_name, name, THERMAL_NAME_LENGTH);
- 
--	/* Then check there are no '-' or hwmon core will complain */
--	do {
--		insane_char = strpbrk(priv->zone_name, "-");
--		if (insane_char)
--			*insane_char = '_';
--	} while (insane_char);
-+	/* Then ensure there are no '-' or hwmon core will complain */
-+	strreplace(priv->zone_name, '-', '_');
- }
- 
- /*
+On Mon, 18 Mar 2024 14:59:53 +0530 you wrote:
+> This patchset fixes the problems related to RVU mailbox.
+> During long run tests some times VF commands like setting
+> MTU or toggling interface fails because VF mailbox is timedout
+> waiting for response from PF.
+> 
+> Below are the fixes
+> Patch 1: There are two types of messages in RVU mailbox namely up and down
+> messages. Down messages are synchronous messages where a PF/VF sends
+> a message to AF and AF replies back with response. UP messages are
+> notifications and are asynchronous like AF sending link events to
+> PF. When VF sends a down message to PF, PF forwards to AF and sends
+> the response from AF back to VF. PF has to forward VF messages since
+> there is no path in hardware for VF to send directly to AF.
+> There is one mailbox interrupt from AF to PF when raised could mean
+> two scenarios one is where AF sending reply to PF for a down message
+> sent by PF and another one is AF sending up message asynchronously
+> when link changed for that PF. Receiving the up message interrupt while
+> PF is in middle of forwarding down message causes mailbox errors.
+> Fix this by receiver detecting the type of message from the mbox data register
+> set by sender.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,net,1/5] octeontx2: Detect the mbox up or down message via register
+    https://git.kernel.org/netdev/net/c/a88e0f936ba9
+  - [v2,net,2/5] octeontx2-pf: Wait till detach_resources msg is complete
+    https://git.kernel.org/netdev/net/c/cbf2f24939a5
+  - [v2,net,3/5] octeontx2-pf: Use default max_active works instead of one
+    https://git.kernel.org/netdev/net/c/7558ce0d974c
+  - [v2,net,4/5] octeontx2-pf: Send UP messages to VF only when VF is up.
+    https://git.kernel.org/netdev/net/c/dfcf6355f53b
+  - [v2,net,5/5] octeontx2-af: Use separate handlers for interrupts
+    https://git.kernel.org/netdev/net/c/50e60de381c3
+
+You are awesome, thank you!
 -- 
-2.40.1.1.g1c60b9335d
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
