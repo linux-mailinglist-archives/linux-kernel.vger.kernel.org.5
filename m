@@ -1,186 +1,87 @@
-Return-Path: <linux-kernel+bounces-108480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A69E3880B0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:11:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CA6880B0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:12:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55AA2282751
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:11:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 870421F231E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0654B1EF18;
-	Wed, 20 Mar 2024 06:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="QApSrugh"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9355E17BDA;
+	Wed, 20 Mar 2024 06:12:05 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941761D52C
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B19182CC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710915051; cv=none; b=lFIS8JIn8GcDnYAnZxJzQd0MVIn1f7SnUst01/2tIyhJz1BaNY3EPg0/Is+EIZyUdriIaPm2Aigfh346C4OA6bDGz9QBMeqkkUnsCQAue8UVS+iTTB7Jnj7UqaPWRiopHRJQDggJGMES5JrHSds03bmY3b2AsICBwdwKT/zQuTg=
+	t=1710915125; cv=none; b=YbwaxTxGAGsRKmLmHZsGgdpIeRIv34m2jz2Z8l481MJ1y4YKhAM0fP3SJkedPfJzuWGL5Teb+1c6VYN2iqq3F590DkSfCVa26gN4TBb288/x7wTTUur3UNuJfavNA4k0ka+NnCL1qvsZbVxFWHQp392SCq2S7VFuq95Xbu8PqOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710915051; c=relaxed/simple;
-	bh=J8aboBH2NNf/knR7707BomgJdaL1PmX4mVybR7fdxQs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X1NwHg2rGZawHRUNz/iezJaiSlYjVHEHCXARVFXXjMlK34AgkQw0cOGFHA2AhdskSdpYQrlObKzjU3oPW/6KtKzl8dJduBxCZ3VRukKpVYwzSGembomu5VIFSst38mk29LVtmGtj6rMf8ed4/WRqhflEoaxeklV18H8zlkLlGJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=QApSrugh; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-789e2bf854dso273609385a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1710915048; x=1711519848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwGW4X7oulIIcxRnBbYYicnOB+KsMIm/U2BqanKa/fk=;
-        b=QApSrughB8bNRoVI7ESz5xpm7w+O0Rvl6SWYFVjloNX/ZFs9k8RBK4X6mDEKpz4zdk
-         sm9OoPRe/mUSITvsiUH6hwG2i9z55RkN/DWnb8VocsWpXlHMQBJ2TnwkGzu5B9ddEQmk
-         hRPEi7v8AtGUDz6NlRHoWfjIIMOE67fpN35rqljXQOFSgJ4WY04zhIljDslt8AmkZE+J
-         6l90rr7xUC4ULA8FoRlyEIaFI5Ku1tJZUMGr3l56daicjoduHtCF8a5cnWzTo+pa+zWX
-         w014nvMZh5QKthcZrKaoAZFt1KFqlQ2aCzTa5D8tA5NBxaWthhipIyXh95P0wTW68Bs7
-         9oaw==
+	s=arc-20240116; t=1710915125; c=relaxed/simple;
+	bh=Fg3+p9aGxeQZ/9oyVfu/Bs1KEeita6s240ybpqDaibU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=lBdKt4Sm6/kVVwf2db46g2OSNI7Jqz3DJdA6e7wCo90JFaWs757Sk5/IsI17lCGYW62VncEo0ckspJMLtq+zNluSoWGM+4FPcEWgsD+WYhnSpZkFXZAg/cw2CiOAJmbBT0PSwzWSJXwLqhkUwD8LyN12m1klfQAkPxDbz9HXlSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso457703039f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:12:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710915048; x=1711519848;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SwGW4X7oulIIcxRnBbYYicnOB+KsMIm/U2BqanKa/fk=;
-        b=TFD/8kWWIO7LFXkWfQktzGuPfWU+X6KS+bLHPQcDbYTglFFG5spdnswIsiUsYKC86d
-         d7uyFxAt4+pLZ0ZTBp1xgFWkuk8cDU/XORh33ZWwue5SucecRg/jyYip6XB1BuFElY1J
-         PUDx3Eti9eeanDoZaB8Z/Xq2xl3F9wt2ptSPaAyxJZ8hu1WK43ViBeqVmOUYyrfB7Ums
-         nFdTh6MXS/zSMHXcbZSxxa9BblUkepsTSF73E7TsdkIl98KPIQgcCOkEdiN36Xapaso6
-         WMRlHuaa+Z/9Zjyoz/g6s3uEUUvFf613R0GSmc3sSG80IgDoN7Fevi9pjMymZRLVaJ8K
-         kbqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUC20WS7t+iR9+6trTkkfFaiiVQ0F+OsaSizYG1rboupmzSUYSurWuBk/rPgz8aiPNvLWgrt7ctPM78iNjhaTypXsQADqAxhfdYWGC3
-X-Gm-Message-State: AOJu0YwQwHCCqjFuXcF5tdh8wTz+g4PgAU/PzGxpldi+V8OknebbE3qs
-	6EvamTVZ1ojChevwKK6jFfk9ltD4giGc1dm36vhIu7+8hsZUfXYfQ41rNHJL35A=
-X-Google-Smtp-Source: AGHT+IHdkJX6NQs9WDxlJlRWWOdNZMk+MQxYM/ZXt6WuZ6YnuVS9Rv2sdEvJFxxXOqmF9Wn7sJFtAA==
-X-Received: by 2002:a05:620a:884:b0:78a:4d4:92f1 with SMTP id b4-20020a05620a088400b0078a04d492f1mr4703702qka.72.1710915048681;
-        Tue, 19 Mar 2024 23:10:48 -0700 (PDT)
-Received: from n231-228-171.byted.org ([130.44.215.123])
-        by smtp.gmail.com with ESMTPSA id r15-20020a05620a03cf00b0078a042376absm2295914qkm.22.2024.03.19.23.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 23:10:48 -0700 (PDT)
-From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-To: "Huang, Ying" <ying.huang@intel.com>,
-	"Gregory Price" <gourry.memverge@gmail.com>,
-	aneesh.kumar@linux.ibm.com,
-	mhocko@suse.com,
-	tj@kernel.org,
-	john@jagalactic.com,
-	"Eishan Mirakhur" <emirakhur@micron.com>,
-	"Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,
-	"Ravis OpenSrc" <Ravis.OpenSrc@micron.com>,
-	"Alistair Popple" <apopple@nvidia.com>,
-	"Srinivasulu Thanneeru" <sthanneeru@micron.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
-	qemu-devel@nongnu.org
-Subject: [PATCH v3 2/2] memory tier: dax/kmem: abstract memory types put
-Date: Wed, 20 Mar 2024 06:10:40 +0000
-Message-Id: <20240320061041.3246828-3-horenchuang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240320061041.3246828-1-horenchuang@bytedance.com>
-References: <20240320061041.3246828-1-horenchuang@bytedance.com>
+        d=1e100.net; s=20230601; t=1710915123; x=1711519923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGhV+BjFTmT2BRGB/4pS+DB4I2X3ipzTIt7FUzSRHWw=;
+        b=eiTzfFqwgp3hyookbNalnqgDjGwXWOmpebazALAZCUcD1nc93XhHXuWOyPfKKYcfmS
+         cVvZtOLLU0EtqEqWqmEYuThRoiCz9eBvnH/XyYiLVyfKe4twN3W0/PaDkEs1Oj+hz9if
+         1pwwZwQws65fuX4KYFrC2vdHcN8PN6CcTEcPz3WNqq4ur0nZ2Ys8CbX85dbvt/r2DGaC
+         ozZsQ7+8pP5U7XADnyTziKAAFfb02cwqb5Pi4cxkNQ91OstK6277AcWD0HbYjNiwR5+J
+         klRygQNxSWz4YAh0DdkoqIRECa6iRZBoCsMlDfJALA1o6X1WIlmcYBa3BEJAmbAYq8Gu
+         FslA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZ5oYi+Gp4BM8e0HJMKd/O65ssZ+gjW+eQm0VYyIlLKGniKfv4tkzej9rq7OdWUZbZYtMjz0XoUTSrwSLRkiRIHobg5uPUQZzvHclP
+X-Gm-Message-State: AOJu0Yy9sbZQCoSbWdsk1EXJsH18r7oLmSkQOrbo52MIkBzfmL4NDkP6
+	nxxScB1thvxqujDRuy/EpBoV/GeC4XtCL6Yc+f6Q9u9plCqhYTLNfHe20S6IeLUT3tbnP33gbXH
+	T+XzWw19P0SfFK6H+pSH/p1eSiuXCw+6TLimhKQUjJp5wBOrKCGxacus=
+X-Google-Smtp-Source: AGHT+IGU/qjjRg+iFnh0XV8rbPxCgFHKjyUJ7lfwD/79GZ3RLd9rgNbteeYz+Ih6Qhu6AEfq4m0FCpckZ5ER9pr5gNHc8NbD+0BD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:3423:b0:7cc:ea7:4f0f with SMTP id
+ n35-20020a056602342300b007cc0ea74f0fmr347660ioz.3.1710915122555; Tue, 19 Mar
+ 2024 23:12:02 -0700 (PDT)
+Date: Tue, 19 Mar 2024 23:12:02 -0700
+In-Reply-To: <20240319185946.GA1134281@fedora>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001f00030614117851@google.com>
+Subject: Re: [syzbot] [virtualization?] upstream boot error: WARNING: refcount
+ bug in __free_pages_ok
+From: syzbot <syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com>
+To: jasowang@redhat.com, linux-kernel@vger.kernel.org, mst@redhat.com, 
+	pbonzini@redhat.com, stefanha@redhat.com, syzkaller-bugs@googlegroups.com, 
+	virtualization@lists.linux.dev, xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 
-Abstract `kmem_put_memory_types()` into `mt_put_memory_types()` to
-accommodate various memory types and enhance flexibility,
-similar to `mt_find_alloc_memory_type()`.
+Hello,
 
-Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
----
- drivers/dax/kmem.c           |  7 +------
- include/linux/memory-tiers.h |  6 ++++++
- mm/memory-tiers.c            | 12 ++++++++++++
- 3 files changed, 19 insertions(+), 6 deletions(-)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index de1333aa7b3e..01399e5b53b2 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -66,13 +66,8 @@ static struct memory_dev_type *kmem_find_alloc_memory_type(int adist)
- 
- static void kmem_put_memory_types(void)
- {
--	struct memory_dev_type *mtype, *mtn;
--
- 	mutex_lock(&kmem_memory_type_lock);
--	list_for_each_entry_safe(mtype, mtn, &kmem_memory_types, list) {
--		list_del(&mtype->list);
--		put_memory_type(mtype);
--	}
-+	mt_put_memory_types(&kmem_memory_types);
- 	mutex_unlock(&kmem_memory_type_lock);
- }
- 
-diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-index b2135334ac18..a44c03c2ba3a 100644
---- a/include/linux/memory-tiers.h
-+++ b/include/linux/memory-tiers.h
-@@ -50,6 +50,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
- int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
- struct memory_dev_type *mt_find_alloc_memory_type(int adist,
- 							struct list_head *memory_types);
-+void mt_put_memory_types(struct list_head *memory_types);
- #ifdef CONFIG_MIGRATION
- int next_demotion_node(int node);
- void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
-@@ -143,5 +144,10 @@ struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *m
- {
- 	return NULL;
- }
-+
-+void mt_put_memory_types(struct list_head *memory_types)
-+{
-+
-+}
- #endif	/* CONFIG_NUMA */
- #endif  /* _LINUX_MEMORY_TIERS_H */
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index d9b96b21b65a..6246c28546ba 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -662,6 +662,18 @@ struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *m
- }
- EXPORT_SYMBOL_GPL(mt_find_alloc_memory_type);
- 
-+
-+void mt_put_memory_types(struct list_head *memory_types)
-+{
-+	struct memory_dev_type *mtype, *mtn;
-+
-+	list_for_each_entry_safe(mtype, mtn, memory_types, list) {
-+		list_del(&mtype->list);
-+		put_memory_type(mtype);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mt_put_memory_types);
-+
- /*
-  * This is invoked via late_initcall() to create
-  * CPUless memory tiers after HMAT info is ready or
--- 
-Ho-Ren (Jack) Chuang
+Reported-and-tested-by: syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         52998cdd Merge branch '6.8/scsi-staging' into 6.8/scsi..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7b1f286a7e950707
+dashboard link: https://syzkaller.appspot.com/bug?extid=70f57d8a3ae84934c003
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
