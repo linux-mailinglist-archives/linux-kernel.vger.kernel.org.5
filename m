@@ -1,100 +1,166 @@
-Return-Path: <linux-kernel+bounces-109374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E1F881835
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:01:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4B4881836
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:01:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE08C285371
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:01:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C7C71C22DCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747CE85927;
-	Wed, 20 Mar 2024 20:01:09 +0000 (UTC)
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E381785927;
+	Wed, 20 Mar 2024 20:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="TIlQOZ5j";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UsiUIFyI"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DD269DF4;
-	Wed, 20 Mar 2024 20:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A3885923;
+	Wed, 20 Mar 2024 20:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710964869; cv=none; b=qVaegnLhw78zT/vM9g+UZ1VEEseOWrXV9cjJQWusvP/5PM/56BdZZc6/Ysxl39HJAh4vCRHi1355WnECH9jTxj/tmZyutCVaOJPmILJYfBHbL21SrWaPm1Uol18lCB4TTsuLwJX6UzLaFmCp7Jr+2jspyfGeboQ4eKvtkz5PNbA=
+	t=1710964893; cv=none; b=BEL8NKml+GSfrh0x3Wa77k8TYsBd/dWD5JhsHMWl5R8f7ePNxw+EboeDlIOnX9xMDMSlr1Z3R8CMqMvc9zUL+RdTfmIcXQZ4j31VYRn1YUk/xjKEjDj6jDWQuCQuLA4X3AtRSTAj0kKkJITwFFDg38vTR+IAOsZXiXBZPmAnr00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710964869; c=relaxed/simple;
-	bh=PEJK4d4YdMXR0AsXMOStldl4zFxOtfPf3D5VxkkFrQI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=px2Y7l3100tnOXhSiucwD7ZiWlRYjT3x3CIoDtyMw2MLObPQp3bMiWo7hyJkRGJ961XQVXB4XhSRRHduleAPoU235PlUDyn636SK7jhZ70owKM9nemnSQI+e3I4RyiypuHoTK9N48LGKORC2XxtQB0sZJwkIFa1wJaEzr6aTISA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e681fad78cso23122a34.0;
-        Wed, 20 Mar 2024 13:01:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710964867; x=1711569667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PEJK4d4YdMXR0AsXMOStldl4zFxOtfPf3D5VxkkFrQI=;
-        b=p3ljatDvBRhQtYEnVvvHyLQZvWYsUnESO+DHzzNVPU8AWvLxnw90lHsbdynD/Ib7x4
-         EJoGJTwsQTMplwOwrGtGTX3w3PWE1UMZxS+53dg5VEpye/TiFqwc6xFJxCDfuYufsmbM
-         mitzIaadTmVY9rG0ueySRo9W5Xo0nxj4YBRx6Gr7vMb7CTPybXDlGCklVJxEE6MEIoYs
-         JniCN+sjmoflUHloMPJDs2qn+nIQ7SU9Peou2Xiu5kavGnnAu+MQDdRIF3sxOBmb9Jyq
-         MmOs4fiXyZ30nuj5zlwnVGWjysADzRr63vDaJM1kmU+gQnLGfg+WdjrjBK41bOknqHXz
-         d/oQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXDZsPKyP5WEWBDZMC4wZvQAyErUM4Belwl7EQNDoY77yme6YLYB6mPKQJLNY0u/5Rj3H8E/n+oPt+UdVUDkn01ODBDwv81H45yy40kGEW1zQx/WETco3eCZaFEl7alVl935FNwnzbs+g==
-X-Gm-Message-State: AOJu0YyG806hAMhvSfNGuvJKzX7BqfZxbskncmVAfd+eAQrnWovtO6Mf
-	HkeiCoK9zZRuJav6BGvdnq2u+i+qF/roI8/IofvbragnIlXgo4UEytXREfveC2n+drZNKlMdDFi
-	MFsQkAQweMOomDwDI5w72O6cKSDI=
-X-Google-Smtp-Source: AGHT+IGaGoBeSE4UB6667YOwykswCxISQ0gVBli2Vn788iB4Dqf6sqyahEi3HmxP+DcD2/+PLFxqL2UZjfCiiiTR9kI=
-X-Received: by 2002:a05:6871:580b:b0:220:cdfe:cdde with SMTP id
- oj11-20020a056871580b00b00220cdfecddemr6367101oac.1.1710964866655; Wed, 20
- Mar 2024 13:01:06 -0700 (PDT)
+	s=arc-20240116; t=1710964893; c=relaxed/simple;
+	bh=IeLoxB+NsSJEWuKPkn/vovqzZ0GvfZSkvqANV6t7FIo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=DhNoW8Hcog6BTCsGQibLPlKmNlkOxemhGc6aEeXu70WWuuCZdQfACs0mR5usxOYV5YLGVkJFIGXMap3Zhl5Jeo+spuPSbN9Y6NRO8SpEohGCDdLDv+D7heBi7mYLuikyl8YOAArpBrMuV3NTDFhTiZ6jnybIEgK+D0SCPp/rHtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=TIlQOZ5j; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UsiUIFyI; arc=none smtp.client-ip=66.111.4.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 9A2A05C006A;
+	Wed, 20 Mar 2024 16:01:29 -0400 (EDT)
+Received: from imap41 ([10.202.2.91])
+  by compute2.internal (MEProxy); Wed, 20 Mar 2024 16:01:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1710964889;
+	 x=1711051289; bh=AZSqN4s5zsG3HqEikLmq10h58qPWmcD/hoS2dTSCdbg=; b=
+	TIlQOZ5jXkvVFAJaxUGXZHmbWaqvKxcTFdabnmW+hJpcgxON9S58WfllXNNftVP8
+	UJIXMiwQWEc3Ammu+nbGh6c5LG/YYbk4RrZ3CL2yO+ToLbSJF+DyZAudpRtabn8I
+	3qcPD12ostETxRrKT/9f5SeIsM3Hcfsyn0MqOsFQWSXLjCZxnTLvgGQU7QyiyFyD
+	650aD5TqWKgRVZKKe8riLBHrBb0KeJVDBCGDmY3mN9m2QO48vr9/J5znuunTGzgM
+	GlGEaJVsQyONfIJ9pBHYg4taZHHAYWEDpHYMBchoz0IuZV1EapXGf/QP0BbYnudH
+	LacqtH+56wpRqYk7dV99DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710964889; x=
+	1711051289; bh=AZSqN4s5zsG3HqEikLmq10h58qPWmcD/hoS2dTSCdbg=; b=U
+	siUIFyIzk2xcW4jJT+UvcbdFcli49JWvxKj0rmXNwbMxKqQEb6uCkKf1H22AX6JE
+	lyvcReqVGy8pB//wa+8iwab4bRVTRP/EaABY0xXyGQjiLpCtwhSVkWKycr1HYIJH
+	PuGZ8FdDaSPhAaIAxauAk3z8TN+cgl5wIMEiNA27KohcKqDDe+RxIiSBWFVBmy2P
+	zxJS9kf4H6lSz3I8JF7lxVa6V7VqZT+VFQDIhYxCWV3q10Efuo3CUCv+pxNZnfAW
+	j1XVSsl+LFUbUwIRyYnbSM+7hdWr5SaZLbbs18NXyRdQQE46bQCWJRO5D0wegqpz
+	T1jN8FXSZBeAemr6K475g==
+X-ME-Sender: <xms:mUD7ZSE6Oc306wJI2SS_c_XH4HuHaTIvnf-jPeFEgDDx6vbsPiRUsA>
+    <xme:mUD7ZTWC-UfGp93_2p54aI335Y4XGVUcewEGr40paBk12O6JEnM-yC8-iQzWbxVw2
+    0wtCYW2RFMP7JlDGi4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleeggddufeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfn
+    uhhkvgculfhonhgvshdfuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrth
+    htvghrnhepfeeugffhvdeufeehieelvdegfeffveegleehtddvheegkeetueegtdegueeh
+    vdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplh
+    hukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:mUD7ZcJmdMZ8S7N6xDXIZ_65HYPOcLxDsGuGguIx7L9gcjsZpIylaQ>
+    <xmx:mUD7ZcF4nU__0awuNlzv96B3uD98rjINlOS_cY_7rtTSjEoVvyPsOg>
+    <xmx:mUD7ZYWUuUzmaRS3oC3hiqpLnI90lTM9yujJr9c4rdLM2wFegP9Iig>
+    <xmx:mUD7ZfNW9ieQnMbPH-TTuXducPtmmHIO3mvtaM7mj3yuXqYQ7WDz8w>
+    <xmx:mUD7ZfSHiYqzeTQXVqDUiJ2gcbsoH-HvvTIZjkYxwXLiSov7ib8dxA>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 381572340080; Wed, 20 Mar 2024 16:01:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320180302.143707-1-arnd@kernel.org> <65fb3fee96ec7_aa222949b@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-In-Reply-To: <65fb3fee96ec7_aa222949b@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 20 Mar 2024 21:00:55 +0100
-Message-ID: <CAJZ5v0ivpUuKGx9pW+QeQPSSXNWSSbJwN2oN9p_hmE-nV5VQKA@mail.gmail.com>
-Subject: Re: [PATCH] acpi: EINJ: mark remove callback as non-__exit
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Arnd Bergmann <arnd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Ben Cheatham <Benjamin.Cheatham@amd.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>, 
-	Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>, Avadhut Naik <Avadhut.Naik@amd.com>, 
-	Shuai Xue <xueshuai@linux.alibaba.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <e67f4e91-56dd-471a-b2c6-46161c38883f@app.fastmail.com>
+In-Reply-To: <5d5e8895-8843-a0bf-de97-b293528a0643@linux.intel.com>
+References: <20240320011442.11608-1-luke@ljones.dev>
+ <20240320011442.11608-2-luke@ljones.dev>
+ <5d5e8895-8843-a0bf-de97-b293528a0643@linux.intel.com>
+Date: Thu, 21 Mar 2024 09:01:07 +1300
+From: "Luke Jones" <luke@ljones.dev>
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: "Hans de Goede" <hdegoede@redhat.com>, corentin.chary@gmail.com,
+ platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] platform/x86: asus-wmi: add support variant of TUF RGB
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2024 at 8:58=E2=80=AFPM Dan Williams <dan.j.williams@intel.=
-com> wrote:
->
-> Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The remove callback of a device is called whenever it is unbound,
-> > which may happen during runtime e.g. through sysfs, so this is not
-> > allowed to be dropped from the binary:
-> >
-> > WARNING: modpost: vmlinux: section mismatch in reference: einj_driver+0=
-x8 (section: .data) -> einj_remove (section: .exit.text)
-> > ERROR: modpost: Section mismatches detected.
-> >
-> > Remove that annotation.
->
-> Looks good, not sure why the build robots missed this while this was
-> sitting in -next. Yes, this was a side effect of reusing the former
-> einj_exit() as the device remove callback.
->
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->
-> Rafael, can you pick this up?
 
-I will, thanks!
+
+On Thu, 21 Mar 2024, at 12:36 AM, Ilpo J=C3=A4rvinen wrote:
+> On Wed, 20 Mar 2024, Luke D. Jones wrote:
+>=20
+> > Adds support for a second TUF RGB wmi call that some versions of the=
+ TUF
+> > laptop come with. Also adjusts existing support to select whichever =
+is
+> > available.
+> >=20
+> > Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> > ---
+> >  drivers/platform/x86/asus-wmi.c            | 13 +++++++++++--
+> >  include/linux/platform_data/x86/asus-wmi.h |  1 +
+> >  2 files changed, 12 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/=
+asus-wmi.c
+> > index b9a2fb8007c0..0d8a2b82cc06 100644
+> > --- a/drivers/platform/x86/asus-wmi.c
+> > +++ b/drivers/platform/x86/asus-wmi.c
+>=20
+> > @@ -4544,6 +4545,14 @@ static int asus_wmi_add(struct platform_devic=
+e *pdev)
+> >  asus->gpu_mux_dev =3D ASUS_WMI_DEVID_GPU_MUX_VIVO;
+> >  }
+> > =20
+> > + if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE)) {
+>=20
+> The patch itself is fine,
+>=20
+> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+>=20
+> However,
+>=20
+> There's a major problem in the way you're submitting these. This patch=
+ is=20
+> built on top of the GPU_MUX_VIVO patch as can be seen from the context
+> above. Yet, you're sending these independently instead of series. I=20
+> suspect there are other similar problems among these patches that ther=
+e's=20
+> hidden dependency order in which these should be applied. This will ca=
+use=20
+> problems if maintainer applies the patches in wrong order (they may ev=
+en=20
+> misapply with fuzz).
+>=20
+> Only if the patches are truly independent, that is, focus on solving=20
+> entirely differently thing (functional independency) and do not have a=
+ny=20
+> linewise conflicts (code locality independecy) either, it's fine to se=
+nd=20
+> patches as independent ones without making a series out of them. But=20
+> clearly it's not the case here.
+
+Honestly, yeah I should have made them a series. I was sick at the time =
+of submission and shouldn't have been near a computer at all but I have =
+a long backlog.
+
+I'll go through your other reviews and then turn the lot in as a series =
+to prevent any mishaps.
 
