@@ -1,160 +1,170 @@
-Return-Path: <linux-kernel+bounces-109330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC28F8817B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:14:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A778817BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4475C1F22D0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:14:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E23D6B21EDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A10585636;
-	Wed, 20 Mar 2024 19:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A20E85642;
+	Wed, 20 Mar 2024 19:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gu77r8Kx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="B1VWiDKI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FE48527E;
-	Wed, 20 Mar 2024 19:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F6D85626;
+	Wed, 20 Mar 2024 19:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710962069; cv=none; b=i3anSFpTcglSKPYhtANZuKSkCTixDGHuhNZt9Z/ljD8miVcjX26ajSspB7fjPE/2/7O83vIxT1hV4ZmR6nedxPZzLKxFYipg1bokSMqBMN5BJtQihEdyaI4M3CUC4U2OLW3MQQyO+ysaxH88sXTgI7Uj9KA1DJjpVxUxUCVNCxs=
+	t=1710962119; cv=none; b=TSN4hwVK2XrMe3K+P2zYbkW5djcfSSvStO+0f0UHusx6UnoHMJOf4lIfmXlUbT5nwbwvPjxlMTca1x8ULLlRex4xlbiMmlvDTIcQpelNgxxpZJL7ddSGYB3pR2aURJ9zkNlpsuvh0IYjfxXZc/6GuUoXAHsFq0qil2akS+Fvl8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710962069; c=relaxed/simple;
-	bh=vdStA58m6oWiq0YPE3E6Jl0PhdD4tzGOlQ3v2Yf0374=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BKmd0zXi3VdH2qdnf0KqO3yZKN6TCpiikWuY4BG9j8hsXFBi7J0WbFbWwRLTTD86OBadwZYAg44544Brsd8d/QbgBsV8NHav3SMk0F7sajMOwK6LguH9aQVrmj25r97aogHo4qo56aCyflQQvo1zfLUPMeunxpSLVd9aH/Oelg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gu77r8Kx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3089C433C7;
-	Wed, 20 Mar 2024 19:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710962068;
-	bh=vdStA58m6oWiq0YPE3E6Jl0PhdD4tzGOlQ3v2Yf0374=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Gu77r8Kxbp07AAMvWBsTv//Mru9P/hLWuCtGKeT1YAjqJko2pfrpTXnOX58Vj3FPs
-	 A9JD+OtOUNKk9ursQk7H5bkNCMbV4qSSphr6zpbE+Fg4suuNQbjezFvnhb51/I+9+Y
-	 ioSDn3Hggpn6/pCbAjf6thBev6YywlZ7f2dedU0esQmB+knZQuKUyPOSomsPc18d78
-	 iuSr5LLOFdd9mkH3+A6uk7ZVZvQaNNbgE5AzAVlwzLPOx1SICieaM2ZhFg90G7/NtR
-	 D+alrjePK4MM0LiCM7yTUAyavONDokRGwiYHTmdhuy4aOoc2WJbCJ4Nh7AS5ZVHqK0
-	 BcTFTMq18CrYQ==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513e89d0816so296919e87.0;
-        Wed, 20 Mar 2024 12:14:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUohNQ+z484ilAA6p+NzwtZGo+hE0OHb75H70Jb5y4PfGCFa5OtQXD43nyACzrtSsPRL4PL+L4+7hA3H0Z9JlajXqAx52QY+lYNqw3sqwdis2N7ZoQp+ZPrrNnRbHIZvPkbyZReZWfC/w==
-X-Gm-Message-State: AOJu0Yzk0No6chaLftt4FNG8QHoorAx1u033mF4RKxbqJEkhlzCM9POx
-	Fc106TpjFEcPJ1UjjnW6toSsVwSOl/2yajgp5zMnmR7iGzaS4jT/oD6cBkIhpeWLx/2uqnVxIii
-	sWUbxBYv8X9B8QGHHVl5tbDPkkA==
-X-Google-Smtp-Source: AGHT+IFI9fLeJlIFi6fxeDLBoqwvE4TgyRBpj1IFM/gAiXp/lJ+A0PnSQ+FgKh3zALXla6OFqxpDuM4Zp6O2TsUNIRc=
-X-Received: by 2002:ac2:5f94:0:b0:514:c829:13b3 with SMTP id
- r20-20020ac25f94000000b00514c82913b3mr4315562lfe.32.1710962067220; Wed, 20
- Mar 2024 12:14:27 -0700 (PDT)
+	s=arc-20240116; t=1710962119; c=relaxed/simple;
+	bh=z+JJu0xQoW3dM54mrpxZ3kL3VRvxY9C0AzdnCinEaxc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljCXjXV6U49IYwqZigBfPKSpZgYFdRN7iPxndATNITuP4JtV6t5Kek+9N9iQt+90lC8x917VD7ih19JnHfDMnOpU95UKel+eNyk1gtuk74KFqubWS7gM485Z90fW5zYRWYVW9avNdmg0+2liHu2xAh9PYyEG6DklgRlnQymQAYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=B1VWiDKI; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710962115;
+	bh=z+JJu0xQoW3dM54mrpxZ3kL3VRvxY9C0AzdnCinEaxc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B1VWiDKI1tUhF4pRktoC0eVPZNgiRldDLP2xGOb75MPTlScONOBZX0rX4t3ATjZVG
+	 oGRD9jWNegiZ6o80vmfWoCL7PCBh7MmHCrGLPGKT/aTG5+qcEKrRUuk2VvR5nkegrv
+	 UCa5mSiGxrbyTF+FvV0iWAftyrJmb6mhk9A92+N9Ih+LgUP2gRWKLZSIuMngwTu9U8
+	 Krpx6FxqZCTBuiKaPTl01PEWE0UI26CNo7wd0SsWBMkKcwvzcoQiaiW6UjmIm49p7s
+	 XeAn6D7Zm8HIEu17xszWTg4ck4Vgqneq6usFWY33lTKV2CAC4Tm/KPWbR/eAjOheuj
+	 mZjW/02iYvGQA==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 99D173780BFE;
+	Wed, 20 Mar 2024 19:15:15 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 3C9B21060704; Wed, 20 Mar 2024 20:15:15 +0100 (CET)
+Date: Wed, 20 Mar 2024 20:15:15 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc: linux-kernel@vger.kernel.org, 
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
+	Robin Murphy <robin.murphy@arm.com>, Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
+	Dragan Simic <dsimic@manjaro.org>, Shreeya Patel <shreeya.patel@collabora.com>, 
+	Chris Morgan <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, 
+	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
+Subject: Re: [PATCH 1/4] dt-bindings: iommu: rockchip: Fix rk3588 variant
+Message-ID: <uund5em6hnexqpzxj3iazpu5gjbfwtdcolhkit4cljgfldiqyf@4jmgeh6aaw7v>
+References: <20240320173736.2720778-1-linkmauve@linkmauve.fr>
+ <20240320173736.2720778-2-linkmauve@linkmauve.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230317053415.2254616-1-frowand.list@gmail.com>
- <20230317053415.2254616-2-frowand.list@gmail.com> <886049ed-4f5f-4e17-86f4-1245024ade3a@roeck-us.net>
- <CAL_JsqKsF53v7d7uZ3XT4kPFy-2FBWHfvKNSFdTx2oZhmSZkDA@mail.gmail.com> <66409df9-6f5f-4fbe-ae7f-47b86665c113@roeck-us.net>
-In-Reply-To: <66409df9-6f5f-4fbe-ae7f-47b86665c113@roeck-us.net>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Wed, 20 Mar 2024 14:14:14 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+0JHTDmBPr94ZZF_5rtQg14q8OmWH6WpRspjHMX-MZmg@mail.gmail.com>
-Message-ID: <CAL_Jsq+0JHTDmBPr94ZZF_5rtQg14q8OmWH6WpRspjHMX-MZmg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] of: create of_root if no dtb provided
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Stephen Boyd <sboyd@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lizhi Hou <lizhi.hou@xilinx.com>, Allan Nielsen <allan.nielsen@microchip.com>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, 
-	Steen Hegelund <steen.hegelund@microchip.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hcmholarfddiyvvu"
+Content-Disposition: inline
+In-Reply-To: <20240320173736.2720778-2-linkmauve@linkmauve.fr>
+
+
+--hcmholarfddiyvvu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 4:31=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
-wrote:
->
-> On 3/18/24 12:26, Rob Herring wrote:
-> > +Stephen
-> >
-> > On Mon, Mar 18, 2024 at 12:09=E2=80=AFPM Guenter Roeck <linux@roeck-us.=
-net> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On Fri, Mar 17, 2023 at 12:34:14AM -0500, Frank Rowand wrote:
-> >>> When enabling CONFIG_OF on a platform where of_root is not populated =
-by
-> >>> firmware, we end up without a root node. In order to apply overlays a=
-nd
-> >>> create subnodes of the root node, we need one. Create this root node
-> >>> by unflattening an empty builtin dtb.
-> >>>
-> >>> If firmware provides a flattened device tree (FDT) then the FDT is
-> >>> unflattened via setup_arch().  Otherwise setup_of(), which is called
-> >>> immediately after setup_arch(), will create the default root node
-> >>> if it does not exist.
-> >>>
-> >>> Signed-off-by: Frank Rowand <frowand.list@gmail.com>
-> >>
-> >> This patch results in a crash on nios2.
-> >
-> > This patch was never applied. I assume you meant a later version of it
-> > that did get applied.
-> >
-> >>
-> >> Building nios2:10m50-ghrd:10m50_defconfig:10m50_devboard.dts ... runni=
-ng ...R failed (crashed)
-> >
-> > Booting with DT?
-> >
-> >> ------------
-> >> qemu log:
-> >> earlycon: uart8250 at MMIO32 0x18001600 (options '')
-> >> printk: legacy bootconsole [uart8250] enabled
-> >> Linux version 6.8.0-11409-gf6cef5f8c37f (groeck@desktop) (nios2-linux-=
-gcc (GCC) 11.4.0, GNU ld (GNU Binutils) 2.40) #1 Sun Mar 17 23:38:59 PDT 20=
-24
-> >> Kernel panic - not syncing: early_init_dt_alloc_memory_arch: Failed to=
- allocate 72 bytes align=3D0x40
-> >> ---[ end Kernel panic - not syncing: early_init_dt_alloc_memory_arch: =
-Failed to allocate 72 bytes align=3D0x40 ]---
-> >
-> > nios2 looks utterly broken to me. This change should be a nop unless
-> > initial_boot_params is NULL. It looks like it is possible for r6 (dtb
-> > address) to be 0 depending on kconfig options, but that would have
-> > skipped copying and unflattening which would then panic in
-> > setup_cpuinfo(). If initial_boot_params is not NULL, then the same
-> > early_init_dt_alloc_memory_arch() calls should fail when copying the
-> > DT. So I don't see how nios2 booting with DT ever worked.
-> >
->
-> For nios2, in early_init_devtree():
->
-> void __init early_init_devtree(void *params)
-> {
->          __be32 *dtb =3D (u32 *)__dtb_start;
->         ...
->          if (be32_to_cpu((__be32) *dtb) =3D=3D OF_DT_HEADER)
->                  params =3D (void *)__dtb_start;
->
-> That worked fine until this patch. Starting with this patch, __dtb_start
-> always points to a valid empty devicetree blob, which overrides the
-> devicetree blob passed to early_init_devtree(). This causes the problem.
+Hello Emmanuel,
 
-With an external DTB, it doesn't boot with or without this patch. It
-just dies in different spots. Before it just skipped any memory
-allocs. With 'CONFIG_NIOS2_DTB_SOURCE=3D"10m50_devboard.dts"', it boots
-fine for me with or without this patch. This is what I'm running:
+On Wed, Mar 20, 2024 at 06:37:30PM +0100, Emmanuel Gil Peyrot wrote:
+> The documentation got added in f8aa519976b38e67aae02d2db3e2998513305e80,
+> but it hasn=E2=80=99t been added to the driver so it was unused.
+>=20
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> ---
 
-qemu-system-nios2 -kernel .build-nios2/vmlinux -nographic -dtb
-build-nios2/arch/nios2/boot/dts/10m50_devboard.dtb -append
-"earlycon=3Duart8250,mmio32,0x18001600,115200n8"
+Everything is fine with f8aa519976b38e67aae02d2db3e2998513305e80
+(well the patch description could be better :)) and this patch is
+just wrong. The documentation explicitly adds the combination of
+rk3588-iommu with rk3568-iommu as fallback. The idea is, that the
+driver handles it just like an rk3568 iommu. If some differences
+are found in the future, the driver can switch to handle the more
+specific compatible without any DT changes (which is ABI).
 
-Rob
+I suggest watching this presentation:
+
+https://www.youtube.com/watch?v=3D6iguKSJJfxo
+
+Greetings,
+
+-- Sebastian
+
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 2 +-
+>  drivers/iommu/rockchip-iommu.c            | 3 +++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/=
+dts/rockchip/rk3588s.dtsi
+> index 87b83c87bd55..2a23b4dc36e4 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -704,7 +704,7 @@ vp3: port@3 {
+>  	};
+> =20
+>  	vop_mmu: iommu@fdd97e00 {
+> -		compatible =3D "rockchip,rk3588-iommu", "rockchip,rk3568-iommu";
+> +		compatible =3D "rockchip,rk3588-iommu";
+>  		reg =3D <0x0 0xfdd97e00 0x0 0x100>, <0x0 0xfdd97f00 0x0 0x100>;
+>  		interrupts =3D <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH 0>;
+>  		clocks =3D <&cru ACLK_VOP>, <&cru HCLK_VOP>;
+> diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iomm=
+u.c
+> index da79d9f4cf63..da0e93c139d1 100644
+> --- a/drivers/iommu/rockchip-iommu.c
+> +++ b/drivers/iommu/rockchip-iommu.c
+> @@ -1361,6 +1361,9 @@ static const struct of_device_id rk_iommu_dt_ids[] =
+=3D {
+>  	{	.compatible =3D "rockchip,rk3568-iommu",
+>  		.data =3D &iommu_data_ops_v2,
+>  	},
+> +	{	.compatible =3D "rockchip,rk3588-iommu",
+> +		.data =3D &iommu_data_ops_v2,
+> +	},
+>  	{ /* sentinel */ }
+>  };
+> =20
+> --=20
+> 2.44.0
+>=20
+
+--hcmholarfddiyvvu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmX7Nb8ACgkQ2O7X88g7
++po3QA//ZGRsC3BtWsJE9IZElMcFAVIscBSPpnfwYskq0O3KIoMWwvFQGlHgRQ9G
+dAvpcGMTmFuhv3ZIqiltdO/+bIeOUztINGSzbWNz7uGhpXvTkVkjFzraNUnUKvNh
+oR3U29wGba+FJJODcJ3uSapaPsX8RbCk/nZ2dV32SC1/XK6nOeKXHiqGHJoDNzKL
+OIBE8QDo5+YuElwXkDFs336VtOo1jsyUTefahIfAlJh0MNCXJ8Gq+IoK9Rb0gBH5
+HFmrJY4GodMvwQcNrAIW+FHnV/QNXIGZmbf57ktHUDU3oXqqTr313xTLwcbQO9bL
+Go7UEqWBQV2iUtfsz8eKnmh001LQ6iPyBW/Da+Xv979UrgGemV4yZbn9gZnWeDiC
+wUAnrdQGuyQBNYmdAL5LucuDnoWupwuPI6v6UuxkWI7aTUvESvuNGDHEK2ZhV15U
+Y1Cz3x6g1o9RXKeMST767Xd1AOC/Zs3sunicG3elgWRvMEThrweqZ35fM9b5LSeW
+q2JvJ5C85XF1Ast3dIXZ6EM/WwozjzzCGV+YjX8g7rmx/+3AixhXyzVLKHM81/j8
+YVEwVmIXpBlwxf9mnUyduc7buIGMPYAevwrdk8R08ROhJN5D0YDEfvMGkiPRFiNx
+TTunFW/jz6+B0GOKl9HomDGWAowhIlJvpJWLRtQ3uetHzFgW9LI=
+=7AoS
+-----END PGP SIGNATURE-----
+
+--hcmholarfddiyvvu--
 
