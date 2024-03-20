@@ -1,84 +1,66 @@
-Return-Path: <linux-kernel+bounces-109270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DBA88170D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:03:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB23988170F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 021FD1F23305
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:03:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 908791F236A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92C76A8BA;
-	Wed, 20 Mar 2024 18:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iP93OzJq"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC47BA45;
-	Wed, 20 Mar 2024 18:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C0F6A8B5;
+	Wed, 20 Mar 2024 18:03:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D2D6A8A4;
+	Wed, 20 Mar 2024 18:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957812; cv=none; b=KvWuz3sRHKjBKls37AUg+Rw1J46Ai+ok5c4aiqlssz38offIVFqSGD+QiNSQesRnL3IRQroMUHuD5xiFRLYF74wSWGgIwrCGnN2Bw3aRUa6WFTT3IAtywacYa3RwRbwKU+WUlFq+bqC6HeTPtNW/2lHoMn8AHSIS6K7eF/7YBlY=
+	t=1710957838; cv=none; b=WpU9yinbiA6UKETQfGubQ2OHfS0EdsA/NJqY0z6FbiWB2F6ux36C4uM9SrCr9gS5R7hDxNFpGnGciS1AQ+penVFMqE+9Mq1dYmmoQLA6k4E0YmfidXx2KCj/MIL210Ch9fUYvKJH67t3OlnyrZr2dHLk/bGIZPfO+a5p1oGfjHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957812; c=relaxed/simple;
-	bh=Ed1I1kIY0Feqy3rs76Gh064Y1IF28xMwtxyZdBPm2NU=;
+	s=arc-20240116; t=1710957838; c=relaxed/simple;
+	bh=afr0MOAqLqtv3YfQ4k+Meq+aEdBVU04DiUCM/8TGLhU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t7015FXYR4R7s22GsIkJF3KESKUBNV03O7wITm60FcMdev9mHjimNVSLeOve6OoB8cfgm34haLlTqdQdqpjfPAIbfBBGKbr/X4Ol1gR5AJKWml+3qPuwBu/aUEcycIRGycPc5/wYB6qxUKZSTYd2zXSjvS3KTgAFqFUpzHAhYXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iP93OzJq; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dfff641d10so277945ad.2;
-        Wed, 20 Mar 2024 11:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710957810; x=1711562610; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fe7+QgceZjZtuMFOC/wsDTnTO94d6hKvWRrBFM6nBWE=;
-        b=iP93OzJqSAbyYpCERL7fMvUaSRjtX+WBXCAcu5ob2NGsTq8zFGfA630NzYucvPE/ly
-         PvSyuVn5B8msv1HAs2mGtO3y3+1xd6Pi/sVnFoV09yc6Mz9YpJ5vDUOLUfZFeYLV7+Ri
-         1iiR+c2onau+EO6XqpXOVk//74G3MBM8QrqDDjaR9iBqotU+vJZpUuTUvzKxq1Hr3f6f
-         7pax4vPSUuRaRM4T5RPlwpbKCYciHdomvOVU5b8iAaM9qm8xstDfF8/NuLNe2I7ULmx4
-         qJWib01E30+LOJn4ITXCcIRy6CuzM3/Udn+59tLe+pe29WwiwTyChavVW6lNKt6ipQQ6
-         m9VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957810; x=1711562610;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fe7+QgceZjZtuMFOC/wsDTnTO94d6hKvWRrBFM6nBWE=;
-        b=kLakEWZjn7/Bww7XGUewa/AZ+hzFOmlmmBIPHFY1tCxSpHstGLelW/ljWXiF9k3yL0
-         LXgC3iREgSq76RydAsw/XoyfvnuqlzX2d0lecGibW9lqwOoqXGLeP3P6s3pfwnQhgApZ
-         ocoRBUoBtdSVjF0al4TonkjLuDittee8GpY+VgJk8obAXhqlB0e3NwhuAoUxGat2lQXQ
-         uPgCPzKHsTglD2jSHQ+EmpHtTCaSJt4GoyWHu2AzkceMJYg9DTK8V/HqKTE2Fr/W8Jmb
-         RGBacgKte0oLUEa9nC60QvfDBQu8PJwlpBwaHJNcHnAeHhno113BtJZmp8ONYOSJwNvg
-         fE+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWeBADOO+TefesbYAsSqgXTe7F+HotI5Q8K9Z1fhh3d2gDqoJ56EIxJu34NWjQIExAv7aDnc5siLiEwlCNRrBCGV9FlHxypBxnbvMsSe1ugQAu9j76/qdyhylmKUudDmC4MuwWPL4ju8sUFWXatE+97p/+cLDcuLS+IxivyiWOGWdKKEzRI
-X-Gm-Message-State: AOJu0Yzpei0K1cAjXN8nA4dXeSZZ09laoaFt+qTYLqiVXvvcLvKLwx5g
-	TYEAoTf2N1zom4iaYOoA7udPCn/vqPMAKlKiMV61+Lo1IyJrM7WR
-X-Google-Smtp-Source: AGHT+IFFRnrbIv+zEXFsZYEZVqnWgrBJ55jSh4gJkPcPwRtlksgsWMna4/o7BKn9T2JkLcq5eMh0Xg==
-X-Received: by 2002:a17:902:7c87:b0:1de:eca6:483d with SMTP id y7-20020a1709027c8700b001deeca6483dmr16898141pll.27.1710957809804;
-        Wed, 20 Mar 2024 11:03:29 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u13-20020a170902e80d00b001dd95b5dd0fsm9801984plg.69.2024.03.20.11.03.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:03:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 20 Mar 2024 11:03:28 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, peiyu li <579lpy@gmail.com>,
-	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: hwmon: lm87: convert to dtschema
-Message-ID: <13eff821-e800-415c-bf0c-6d9c11ece565@roeck-us.net>
-References: <20240320-hwmon_yaml-v1-0-a349ca21ccab@gmail.com>
- <20240320-hwmon_yaml-v1-1-a349ca21ccab@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qluEXuNpcyfKdrOsa3hmnb13RvvfmI93eX8wVlZwvo6iijYBkS8+uDY76L8JaZl2ks77Rm2RjaSsvH6xUMiyLHjGy4J+Da+LaB6ca+8PqNfy4lCZGgnPF9qWvdOFwkz0kswV5R2uvW+FBMLA+nuEjmP/AG7Zs44TT+02fJSqM8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D6E01007;
+	Wed, 20 Mar 2024 11:04:27 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.34.144])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19D053F762;
+	Wed, 20 Mar 2024 11:03:49 -0700 (PDT)
+Date: Wed, 20 Mar 2024 18:03:45 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: =?us-ascii?Q?Bj=22orn_T=22opel?= <bjorn@kernel.org>
+Cc: Puranjay Mohan <puranjay12@gmail.com>, Andy Chiu <andy.chiu@sifive.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Guo Ren <guoren@kernel.org>,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+	Bjorn Topel <bjorn@rivosinc.com>,
+	Song Shuai <suagrfillet@gmail.com>,
+	Cl'ement L'eger <cleger@rivosinc.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jisheng Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Robbin Ehn <rehn@rivosinc.com>
+Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
+Message-ID: <ZfslAb_W0Gk-0pmR@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240306165904.108141-1-puranjay12@gmail.com>
+ <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
+ <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N>
+ <8734suqsth.fsf@all.your.base.are.belong.to.us>
+ <mb61pplvw6grf.fsf@gmail.com>
+ <87zfv0onre.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,20 +69,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320-hwmon_yaml-v1-1-a349ca21ccab@gmail.com>
+In-Reply-To: <87zfv0onre.fsf@all.your.base.are.belong.to.us>
 
-On Wed, Mar 20, 2024 at 06:04:57PM +0100, Javier Carrasco wrote:
-> Convert existing bindings to dtschema to support validation.
+On Thu, Mar 14, 2024 at 04:07:33PM +0100, Bj"orn T"opel wrote:
+> After reading Mark's reply, and discussing with OpenJDK folks (who does
+> the most crazy text patching on all platforms), having to patch multiple
+> instructions (where the address materialization is split over multiple
+> instructions) is a no-go. It's just a too big can of worms. So, if we
+> can only patch one insn, it's CALL_OPS.
 > 
-> This is a straightforward conversion with no new properties.
+> A couple of options (in addition to Andy's), and all require a
+> per-function landing address ala CALL_OPS) tweaking what Mark is doing
+> on Arm (given the poor branch range).
 > 
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ..and maybe we'll get RISC-V rainbows/unicorns in the future getting
+> better reach (full 64b! ;-)).
+> 
+> A) Use auipc/jalr, only patch jalr to take us to a common
+>    dispatcher/trampoline
+>   
+>  | <func_trace_target_data_8B> # probably on a data cache-line != func .text to avoid ping-pong
+>  | ...
+>  | func:
+>  |   ...make sure ra isn't messed up...
+>  |   aupic
+>  |   nop <=> jalr # Text patch point -> common_dispatch
+>  |   ACTUAL_FUNC
+>  | 
+>  | common_dispatch:
+>  |   load <func_trace_target_data_8B> based on ra
+>  |   jalr
+>  |   ...
+> 
+> The auipc is never touched, and will be overhead. Also, we need a mv to
+> store ra in a scratch register as well -- like Arm. We'll have two insn
+> per-caller overhead for a disabled caller.
 
-Applied to hwmon-next.
+Is the AUIPC a significant overhead? IIUC that's similar to Arm's ADRP, and I'd
+have expected that to be pretty cheap.
 
-Please note that I'll push the branch after the commit window closed.
+IIUC your JALR can choose which destination register to store the return
+address in, and if so, you could leave the original ra untouched (and recover
+that in the common trampoline). Have I misunderstood that?
 
-Thanks,
-Guenter
+Maybe that doesn't play nicely with something else?
+
+> B) Use jal, which can only take us +/-1M, and requires multiple
+>    dispatchers (and tracking which one to use, and properly distribute
+>    them. Ick.)
+> 
+>  | <func_trace_target_data_8B> # probably on a data cache-line != func .text to avoid ping-pong
+>  | ...
+>  | func:
+>  |   ...make sure ra isn't messed up...
+>  |   nop <=> jal # Text patch point -> within_1M_to_func_dispatch
+>  |   ACTUAL_FUNC
+>  | 
+>  | within_1M_to_func_dispatch:
+>  |   load <func_trace_target_data_8B> based on ra
+>  |   jalr
+> 
+> C) Use jal, which can only take us +/-1M, and use a per-function
+>    trampoline requires multiple dispatchers (and tracking which one to
+>    use). Blows up text size A LOT.
+> 
+>  | <func_trace_target_data_8B> # somewhere, but probably on a different cacheline than the .text to avoid ping-ongs
+>  | ...
+>  | per_func_dispatch
+>  |   load <func_trace_target_data_8B> based on ra
+>  |   jalr
+>  | func:
+>  |   ...make sure ra isn't messed up...
+>  |   nop <=> jal # Text patch point -> per_func_dispatch
+>  |   ACTUAL_FUNC
+
+Beware that with option (C) you'll need to handle that in your unwinder for
+RELIABLE_STACKTRACE. If you don't have a symbol for per_func_dispatch (or
+func_trace_target_data_8B), PC values within per_func_dispatch would be
+symbolized as the prior function/data.
+
+> It's a bit sad that we'll always have to have a dispatcher/trampoline,
+> but it's still better than stop_machine(). (And we'll need a fencei IPI
+> as well, but only one. ;-))
+> 
+> Today, I'm leaning towards A (which is what Mark suggested, and also
+> Robbin).. Any other options?
+
+Assuming my understanding of JALR above is correct, I reckon A is the nicest
+option out of A/B/C.
+
+Mark.
 
