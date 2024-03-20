@@ -1,203 +1,129 @@
-Return-Path: <linux-kernel+bounces-108537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46DA880BF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:24:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F253880BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:24:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED946B228A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:23:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 163FEB22B05
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3EC1EB51;
-	Wed, 20 Mar 2024 07:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5A020DCD;
+	Wed, 20 Mar 2024 07:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OJleVZIZ"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BoLHUiKV"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244C31EEF8
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BE81EEE0
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710919427; cv=none; b=C/so+w9lLI4ocfyy4QCTgJdZjZh4R1NYMHrExMp2fyBJ9czlyAmL/+Yr5LBEYNJ9JO2y3+NpPxFI6bwrGyFUY+WBgtrZopiU6vgUpP//CP7hIdBoZQGwVJmdwJ0QiZev1x1AWbMtvvRrHJAzN7Dsb03GI8A1GHPqgFO+3Mq2OEs=
+	t=1710919473; cv=none; b=uSMjj+u9SrLKsrndR46g1ppXOKxQCBn4wbdYlEQsDexn3HYvkTPPKwxLaOqMcKBKUndpE4QZNTFG/t1Lv/W3NhYwjobDdduNNfiIaNpsSU0rDZpCjlnp5woJ7+KhNT8PkVwrE3Jb8VB9glZgcIhC7uDAqsfiSMsPGXKw4xHPMr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710919427; c=relaxed/simple;
-	bh=EkqWs0W3q04YVqE2gPo5awQuY3J0Lng3bMWEGITru1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CgxRC5x2YR8N73BzPL5xLlQaK7LCA70xsu7YejwY1uT7J1LGiproxr43Sn2W4rchX9TvR/cDHIGOU3pkWrqOD2rH97nfIjgaN2ymnHj/qFZMbgXZVpOhFHDPSjJmqJrV8R6GJRO92x1bAi+K7PQEnIbFO5ZiHsPH7SoAyQ2fwhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OJleVZIZ; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso3217991a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:23:44 -0700 (PDT)
+	s=arc-20240116; t=1710919473; c=relaxed/simple;
+	bh=28P57Ke0dbK+IeJ0axzZcEs9sf1skvjRGuluIRciE+8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=h3zFg12uSL4SDW79/nbOUbPHRQIKBGMBaz1wqJ88lwf7R3uu0bUuzK33dKTI4JaeVovmcYHiWKVA5eoDOceFgZUs7QAPh7XGWu0MLam0tYaASKz+7q1JF1SNwYNdpCUTLBwWAeTClR5//K9SJsH5ZM21u3KOc9lmnbYxcmF323g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BoLHUiKV; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so11346240276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 00:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710919423; x=1711524223; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3jlY94/eeyZ6RcBk4RP2SNOK962GMXwjEvU51sOt6s=;
-        b=OJleVZIZCLEsZQWLXTg7B/L2QFjEJEuzof2ZZCL9xntszCLEPYL4XrfYLo61na3r9h
-         +9y/Q/gsmQlkQO/H7AKtCpQ2MEruK1jP/OZuMoFqrdcWtBDqA2J7t3MZbK3yzqxee5tD
-         /Zxf6n9g2oClipaY2/mNIv4VHT9mQrmarCrpM/gDj34vzDWQ6TVf6pJFmrOun/lJ9uoy
-         4+XksrDnI+m0IyBHx+M+RvOP2ZC01xD6xN7dqQ3hso3MNNnluBS5gAdYOyildx9Pqcqn
-         JrCcmHpklDqcoTOLnUqS+rwlu8EZgAMX7KD37d1fY24cHYufswoWZ+qxy3kI+feu/u1F
-         cKWQ==
+        d=google.com; s=20230601; t=1710919470; x=1711524270; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bdxVN0VZOTjmFNJigRO9F2rl5jmImdVJnsiuxriNi0Y=;
+        b=BoLHUiKVbI13VdVfl9qbwJ4R2ynvZBitxHrALui6NzdSWYxi/xOS65ZhdmPiVPNqIS
+         gP4wPz70I76X2tWqyhml9QpX1y/unMC2QA2wLpcY40fn/sqBwc9WMm6PiiyMS3a+QyYG
+         Hyw7K7CjudWbsp9ux0sYcDjTUiTlg5gf89l3rkuHSDJnoV+N+5PATMAdZls/Ksrn8F0T
+         Ld71iIQMfIOnDD3hH5AZIn209dGEzAhoo5oTT2UTAfj3X+AQl4dgEpZG3FNUrE3Tr3l2
+         9VlAqqhELmvGk+sonEcOaLQjZOaXKhf9IV3U+mCWDGSlWDxlY6YJgklVZx3Gb1Xd8XSQ
+         rnHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710919423; x=1711524223;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i3jlY94/eeyZ6RcBk4RP2SNOK962GMXwjEvU51sOt6s=;
-        b=tvsbN7rnmRYl3HOE4GCJnXMieyUTtz73SqdxhWtzs6bdFdjD6rWVV50j26oGFSUdUb
-         pb3Ew37uzicCjmnRoO7zwGhogmQKbtwDRe6TTmagyeRNXobnVxkroKJb80VRtkc8nOq6
-         n3Y9lxDy/PWPN21G6O6JvOGbFO3RKO14AgfuyKOXj2B/Z8BTPQqzurg775ijnE6mE7Kh
-         CzJnMCFBVVr6BgPniusXFbcMuXoAs9+zaK6i3KDsv4WGcauyRR9nod3jPmUiBa7x1hw+
-         yZ0BT+ePgY2j76Nz9sbk42Yqx+MY5EEoM7qCt9NK20TeZ5bDkBSPZTD1lAivlgSi0ImI
-         feXw==
-X-Forwarded-Encrypted: i=1; AJvYcCXhXBljRFTROc8PZIvl6OKUusyMm3l6+iAISnC6JxScIeNedMt4f5J2lWR/reRenHtZrkVopT+7L9F6vuYyn+u3PkD+iQwwDcp0cxwb
-X-Gm-Message-State: AOJu0Yz87b/Yh5GcChwdlDf9LMUZcJfevZOBkpelJSKK/w9fLzhALl3Z
-	4urZYrftWXqCy/Jrx7UsCiSER+hekiKt7xcEif+JlHkj8SY3OTGMqhmkMUv017I=
-X-Google-Smtp-Source: AGHT+IHfT2z0OxThuuxSUr06aWZGYCKZSymdnckDGx+Y83LSi19WiCYtHnyAy4GauWep8eYh4xrfgw==
-X-Received: by 2002:a17:906:c80a:b0:a45:c027:372 with SMTP id cx10-20020a170906c80a00b00a45c0270372mr676128ejb.68.1710919423329;
-        Wed, 20 Mar 2024 00:23:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id s10-20020a1709060c0a00b00a44899a44ddsm7038094ejf.11.2024.03.20.00.23.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 00:23:42 -0700 (PDT)
-Message-ID: <0ad9a94a-0fb6-4ff4-84bf-56ce0ff682f1@linaro.org>
-Date: Wed, 20 Mar 2024 08:23:41 +0100
+        d=1e100.net; s=20230601; t=1710919470; x=1711524270;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bdxVN0VZOTjmFNJigRO9F2rl5jmImdVJnsiuxriNi0Y=;
+        b=bu8NwstF/xM/NZi/Pm1rjvIe4i3ndXEejsO3hy/snlehHV9UdSWdj9Iuz9ZoCDtMsY
+         ntqu0PvdmktIYb/jAVR2wMhLj/kQOKSZZyhZys6F65dw3x++iI7BjFVZqtlrA9Qni33n
+         T7JlZHJTP2ZxppbTXFJ98UgBllw07us8d07vySJNkFMdasQYVDBUfmrcBi8GSr5nAsjx
+         vYZi7mxOtF3+u3QGvZJCMlWP+k035drnPJERyjckSZdDnhfh3D2oAjpCZDDCn7jg0OB9
+         Lrgd5XKd8Re8uqyox67v0Ea41YpuSC8LxIGnYHlHdGM3enk8ZsmQlFBwA1/+oNOuf22K
+         B6CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWv0nG00MSKOtiVBPyXmVCHNKlJMUBLqTT7rHcBfEY0ZL1cbx++SFx/gyEj9i7Wfsd1mysYvzjdGQuhIJ5JF+ob8Jtv1YWC4iH/ov+R
+X-Gm-Message-State: AOJu0YzQHkL7DLOrV0c4Qbw6EqeHIXXp0qn7nk2pdKeTmAK8/dYQl8di
+	cYWMwfae45oZDMCSUHlzVj/nlbhGIwD/V4+6w0eLEHAqHC1TPLd3WvdLgteyUN4SMOJADRYyN6j
+	+u2ADuvYkDZ2cfESotg==
+X-Google-Smtp-Source: AGHT+IFAjPaqqQcKbeydP6MHZQdihePR91rwKuw9/CirPYjLnwS1+VvZ7x1qZMlGNReEhNYJtzqSLF4ZeO8jzrSt
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:100e:b0:dc9:5ef8:2b2d with
+ SMTP id w14-20020a056902100e00b00dc95ef82b2dmr4326404ybt.4.1710919470153;
+ Wed, 20 Mar 2024 00:24:30 -0700 (PDT)
+Date: Wed, 20 Mar 2024 07:24:27 +0000
+In-Reply-To: <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] clk: samsung: Implement manual PLL control for
- ARM64 SoCs
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240301015118.30072-1-semen.protsenko@linaro.org>
- <CAPLW+4=_yD3ShU5DvLWFyEzVrVHNVCsB+4bVkP+x_boRmC-vEw@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAPLW+4=_yD3ShU5DvLWFyEzVrVHNVCsB+4bVkP+x_boRmC-vEw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240319-zswap-xarray-v7-1-e9a03a049e86@kernel.org>
+ <Zfp-iWaDfqeCOElt@google.com> <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
+Message-ID: <ZfqPK7AVunq2SC1l@google.com>
+Subject: Re: [PATCH v7] zswap: replace RB tree with xarray
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On 19/03/2024 19:47, Sam Protsenko wrote:
-> On Thu, Feb 29, 2024 at 7:51 PM Sam Protsenko
-> <semen.protsenko@linaro.org> wrote:
->>
->> Some ARM64 Exynos chips are capable to control PLL clocks automatically.
->> For those chips, whether the PLL is controlled automatically or manually
->> is chosen in PLL_CON1 register with next bits:
->>
->>     [28]  ENABLE_AUTOMATIC_CLKGATING
->>     [1]   MANUAL_PLL_CTRL
->>     [0]   AUTO_PLL_CTRL
->>
->> The bl2 bootloader sets 0x10000001 value for some PLL_CON1 registers,
->> which means any attempt to control those PLLs manually (e.g.
->> disabling/enabling those PLLs or changing MUX parent clocks) would lead
->> to PLL lock timeout with error message like this:
->>
->>     Could not lock PLL ...
->>
->> At the moment, all Samsung clock drivers implement manual clock control.
->> So in order to make it possible to control PLLs, corresponding PLL_CON1
->> registers should be set to 0x2 first.
->>
->> Some older ARM64 chips don't implement the automatic clock control
->> though. It also might be desirable to configure some PLLs for manual
->> control, while keeping the default configuration for the rest. So it'd
->> convenient to choose this PLL mode for each CMU separately. Introduce
->> .manual_plls field to CMU structure to choose the PLL control mode.
->> Because it'll be initialized with "false" in all existing CMU
->> structures by default, it won't affect any existing clock drivers,
->> allowing for this feature to be enabled gradually when it's needed with
->> no change for the rest of users. In case .manual_plls is set, set
->> PLL_CON1 registers to manual control, akin to what's already done for
->> gate clocks in exynos_arm64_init_clocks(). Of course, PLL_CON1 registers
->> should be added to corresponding struct samsung_cmu_info::clk_regs array
->> to make sure they get initialized.
->>
->> No functional change. This patch adds a feature, but doesn't enable it
->> for any users.
->>
->> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
->> ---
+[..]
+> > > -     /* map */
+> > > -     spin_lock(&tree->lock);
+> > >       /*
+> > > -      * The folio may have been dirtied again, invalidate the
+> > > -      * possibly stale entry before inserting the new entry.
+> > > +      * We finish initializing the entry while it's already in xarray.
+> > > +      * This is safe because:
+> > > +      *
+> > > +      * 1. Concurrent stores and invalidations are excluded by folio lock.
+> > > +      *
+> > > +      * 2. Writeback is excluded by the entry not being on the LRU yet.
+> > > +      *    The publishing order matters to prevent writeback from seeing
+> > > +      *    an incoherent entry.
+> >
+> > As I mentioned before, writeback is also protected by the folio lock.
+> > Concurrent writeback will find the folio in the swapcache and abort. The
+> > fact that the entry is not on the LRU yet is just additional protection,
+> > so I don't think the publishing order actually matters here. Right?
 > 
-> Hi Krzysztof,
-> 
-> If it looks ok to you, can you please apply this series?
-> 
->     [PATCH 1/3] clk: samsung: Implement manual PLL control for ARM64 SoCs
->     [PATCH 2/3] clk: samsung: exynos850: Add CMU_CPUCL0 and CMU_CPUCL1
->     [PATCH 3/3] arm64: dts: exynos: Add CPU clocks for Exynos850
-> 
-> That concludes my efforts on CPU clock enablement in Exynos850.
+> Right. This comment is explaining why this publishing order does not
+> matter. I think we are talking about the same thing here?
 
-Please do not ping during merge window, for anything else than fixes
-(and me only for fixes being serious regressions or serious issues, not
-for fixing something which never worked thus will not get to fixes
-branch). Not only me, but don't ping that way any of the maintainers.
+The comment literally says "the publishing order matters.." :)
 
-Best regards,
-Krzysztof
+I believe Johannes meant that we should only publish the entry to the
+LRU once it is fully initialized, to prevent writeback from using a
+partially initialized entry.
 
+What I am saying is that, even if we add a partially initialized entry
+to the zswap LRU, writeback will skip it anyway because the folio is
+locked in the swapcache.
+
+So basically I think the comment should say:
+
+	/*
+	 * We finish initializing the entry while it's already in the
+	 * xarray. This is safe because the folio is locked in the swap
+	 * cache, which should protect against concurrent stores,
+	 * invalidations, and writeback.
+	 */
+
+Johannes, what do you think?
 
