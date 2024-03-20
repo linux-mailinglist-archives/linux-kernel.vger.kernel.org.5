@@ -1,181 +1,236 @@
-Return-Path: <linux-kernel+bounces-108729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25717880F44
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:06:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3405880F3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C701F23093
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:06:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FEDE1F23353
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC533C082;
-	Wed, 20 Mar 2024 10:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A37E3CF6A;
+	Wed, 20 Mar 2024 10:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b="Z2OgY89N"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2093.outbound.protection.outlook.com [40.107.104.93])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HnixBj/W"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508DB38F94;
-	Wed, 20 Mar 2024 10:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.93
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710929180; cv=fail; b=TPAOtso9YVBW6EDKcb0NvHRbR/xo0Ndeep+9MLnWTukwapDybZXbOiJSGQHn9rmk3EJ8ZCHTUwbcfiTlWXtKMsYijW0oltfFJuX4rOhGoOJfMdd2plBwLRtggb/YRYz1DcLMb+ioAQddvR2LdeqKBRYYeyRNJNE2gn1eQ6W1kKg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710929180; c=relaxed/simple;
-	bh=OvxnQ238DyKymwvltCQE3fOJTWKdyVQmKkO72JDg8N0=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=gGiVW00mcAG6EfE6rQKSLtbzCIa7J4axQvZw9yb2sqBmOMCrbqTrBTRI+BPbHo08mOsy+6q9MsbEujcrpFSMFDrODQGOWLuon+FIGmj3b6CAQkF+1esMtgA/p0vgtVz+QZn46tGdpsmNTseYmWunmqW+5DRgNp5uGN6HLYCBnrU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com; spf=pass smtp.mailfrom=virtuozzo.com; dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b=Z2OgY89N; arc=fail smtp.client-ip=40.107.104.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=virtuozzo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gn1MnHkysLZEa7iPDX6ljaRcfDEUNnd6kBb/isZlsfOfUcjCqIrM38bGYyZ93jlZleUeqFuWEkjhkU+P+f5NqiUAfm33AmdtyFVHJF12pRgrHrhOlm/o12ImJpZUV8W3bn93Qz+LsQ01xadTkxIzNDHww4EYvgDJlr8um2LazUaO4LZiJIfX8h67Ci5JawpBAmeWOmqtBoAccsDrExVodCm2XZGSLC55U+Hw1Lc+xx5lvOdNcU4dzhComfoe+LiNh/bKfQxf0FA1XtVDIL5mFdefQyoy0OTCTi918s7GvBQHtKNy0HPNjVR2JpwANQdUSfYo4kpDK6VIbi5Z9cfamQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tC8jldkPksl7L0pWIKVCXudCf2/yVpdYZ2UZLhm3CU4=;
- b=Xy6QOvLfKeFNYqXNg6YwJjXzPxHipmkbasF9b020083vzluFMxJaFzV/5A5X8BMMogYGnmrUc+pe8SO7GuNdwkUTryC5umwq9cFu9FIS1maNI2DtNcZywZgkLIzouM1ALcexNrKexxaumjBiDihmgeqDwd6/FUR4OL/4ymOQQ71P/gQmML82aoL5XHpKgWavUws/b1WkrRHWY7FRyOClQYbgSl+oAiyk8s21dYcG5bodXpWc6qFnCI2AbRCjBwg5eIqt0a/2nG8yA+Ye/Pg8htWoStywDExYxkaO6pKQ3HSCPbO2GTsckTwWBSpu68zKHD5mZedSThJb7yppduUP2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
- header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tC8jldkPksl7L0pWIKVCXudCf2/yVpdYZ2UZLhm3CU4=;
- b=Z2OgY89NG9SMQ3FnkP8JHLOjtoJ4FIMGcdEa1r9FDl1S8SX/zOqfSRfrx6hL5/vOZu88h1kSYRTOLCOFSWnlrLAZ5w2vO5zECJ6a7mk58dSDTb8h5NtCClG7IAZjCBWL0qTtaThY3t6nR7Pf+x+AnyaUzUlBIbtwPDX/jL01O1sEST1YMzZm4eurEztufDfmZbGuGlJg7mDaypPauC2qTQ3t5+XfKtUho+Ahxv3ekc2MB0JUu5vcCJMpL+Sqwpym+KWO9Whs24APBB3YVRymant4oP7Jf3CGYqxB+fjvPNPf3EJJmUyV3v6Sph+A0sX6bqDspR5p4HXu694uryvt5A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=virtuozzo.com;
-Received: from DU0PR08MB9003.eurprd08.prod.outlook.com (2603:10a6:10:471::13)
- by PA4PR08MB7435.eurprd08.prod.outlook.com (2603:10a6:102:2a6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Wed, 20 Mar
- 2024 10:06:14 +0000
-Received: from DU0PR08MB9003.eurprd08.prod.outlook.com
- ([fe80::ade0:bad9:96bb:6bd0]) by DU0PR08MB9003.eurprd08.prod.outlook.com
- ([fe80::ade0:bad9:96bb:6bd0%3]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
- 10:06:14 +0000
-From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	kernel@openvz.org,
-	Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Subject: [PATCH] mm/memcontrol: stop resize loop if limit was changed again
-Date: Wed, 20 Mar 2024 18:03:30 +0800
-Message-ID: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: KL1PR01CA0054.apcprd01.prod.exchangelabs.com
- (2603:1096:820:5::18) To DU0PR08MB9003.eurprd08.prod.outlook.com
- (2603:10a6:10:471::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F9C38F82;
+	Wed, 20 Mar 2024 10:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710929062; cv=none; b=NTiu1wpJnNgTlNLuQ/iltxUkQqHsraiMmXIDsKbTSGbzg9h6UHvw3RF7DDjGmLWDyV76xiRcWojnVLQZ9fJ6MDIH2WAVgCGKBsqw+kFf52QIwaz1FfJS9rggKHMPBqKpNBcSTncBNujogd/xqFy48IyykyhHwCyr8Eiq8fcoVFs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710929062; c=relaxed/simple;
+	bh=nIqkjMSHV9EcCxgnfZD3kI/SawCNOWAjVuJ+etAG/KE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P0yYQGCqX73ASQMLDp8ZAoSyqnCAYs0i3hsPDbE90R78811JMBmJhpSQgG1zKYRsybF9ZQ3P7DercRoQJtsyAITbisHaX+48iBSaBszPw/y+TFy48RBdjXO1Ic4mlE+Vx3ETPZeTj7DgBT9HF7d23nHFi63ioZ+CAphn5PkTg/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HnixBj/W; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K7dJNU023914;
+	Wed, 20 Mar 2024 10:04:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=NSwShFQocCiNdxEXdDTWS
+	rFKKz5ddmj/SrKnvqOPygI=; b=HnixBj/WDkUf8h0JAZxntqc7AuKKwlmDNwhiG
+	WxDg9KO1gk2y9llKT4/0zEfn+AWy5BQY24HmSmvG3QYrPIdKGhOsuorIrVzm03wF
+	s8IHZeBOclGeD3su3QcMJyLqo65mV+76NRHJ3OcbMENv9B35ZYfnblWxYrz2ZNEU
+	x+g+VLaptQO8Uzjl2ZgoPppSyK9rHal7Xu0pGZNfac3HR7r/u9ggCRhWuoOre+Rx
+	xsmVr2XmiNa9W8U7betciiLFruNUXMEISu5YsUnuUb89LGHB3+SgaO6gO36GoEqL
+	FALi0uJdJw+GqmkouU74STgpLbnl+eoYZlRppE6EUsMBvzejw==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wypxq0ub4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 10:04:04 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KA43mK029663
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 10:04:03 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 20 Mar 2024 03:04:00 -0700
+Date: Wed, 20 Mar 2024 15:33:56 +0530
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/31] arm64: dts: qcom: ipq9574-*: Remove thermal zone
+ polling delays
+Message-ID: <Zfq0jF93iJVgd1+R@hu-varada-blr.qualcomm.com>
+References: <20240319-topic-msm-polling-cleanup-v1-0-e0aee1dbcd78@linaro.org>
+ <20240319-topic-msm-polling-cleanup-v1-3-e0aee1dbcd78@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR08MB9003:EE_|PA4PR08MB7435:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12da4412-e651-46c5-9ebc-08dc48c56032
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	2b2Nima6eW7Ay6kAxgpMQzmvXza+o3EqS2lSI6I3b4FXvg24iHO0VWkrTY3p4PVDXdDkHOj4F7oN9WFr3XaBwSOB6tcgFPCwK+3yMA6mLJTDF4ncs/crXxAVhxfoUWNzytlhG/lfsXsPijJBkGvXs8BHxDfu6DxlzneCcCoDerIKboCaCTaqzftjr06WOiy0bmAqnnLQSdf22Mhj0hdMtJxZQyMPAGtPUZmjYBWbq8pWzVHi5/wo54cx3ZMtrXhGGALeEFABNTJlD45AsIT5kTe1oEP6mU+2OLMs2x+QO9rkb0XwoY7Q6cFUoKJXnf4e5Wn0EEcVpEWVbIvMh5PQ++ePZEnP6+o/Y1ykIPq9W+s+BYKPj0Hk4d22YNxk2D5rOHDTzkPdxt3Hm8CeN05E0Gnpycd/9SnsvTzNfFGYXsKDJa4R5cYVu3GAmr6siD0FlpG23G6jnF2ytACI3a358jx03Nci6I6kxqIBu4QzW0Sl5Q+P05RPMkZG5iDKuVuFkqSR+ckIKDBZjbq4UdaKLb2454qFrEOdx4K97ujwutk3AcvKNaeELB2RZis+8CzAVFOjRe/hXoa6vfkTeY/jSgTcB3K7NbA/QbA3DzFd0h5xWWUX/BjqWb2+hCAd316THaGyJLLlObDcnFf9BE8PkOKynY5CeKHs/ubPm22I1XM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9003.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(52116005)(366007)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?n/rWpzhq1P7lwp0l2jO9wZUbgqpZTvQvFjkB4op+TaDREEyplinexw8PyAB7?=
- =?us-ascii?Q?HmefpM0/aQ4CQv0KKIKMCwZM+LaLDIRZ5FtV7ok6+M7PeIlkKgog65sznnm2?=
- =?us-ascii?Q?1hDaoxVRWoXJE8fzeFGfv6yFRBwA8HS1YoNPT2UOXotrvBeGTiSjZwV08jan?=
- =?us-ascii?Q?98Nr+GZQT7NSoQIERxIEMkhGfR7PsAbrPAxLSAOeLBOUlmdZKT5ojk5m54st?=
- =?us-ascii?Q?sv7yesviwD2CFY5P5MvmxtuRHc4Ijnd4ikGhj4XdpOFklrfXKu9GzmHSPQvZ?=
- =?us-ascii?Q?6o4jG3wZuHZ1KD6c28T2Zc2VuLSELdx0iJs0NzWttRAq53BPajaUgGaC1uhW?=
- =?us-ascii?Q?zjz2r4YRk7YjSo6YRQRk67HAOjSNwA3GhBBI2xrbDRnjvAD/+jR7jQhBzOn/?=
- =?us-ascii?Q?yOpBhawKoXieU05RyQUStXceiYCosg6jAXXtHpoO8656WS04Cm6zjNh0H6i8?=
- =?us-ascii?Q?WpyxF965xDwQEb2I4ElUACI419Htpn6n05+/Af0EvptGCdoP25gUJnQSjS/0?=
- =?us-ascii?Q?+LPRMi/VgsUrwwLiw6wyJUr28OIGJGAkew7ChZbGNLhSP6LkK7IYDqbFKrxo?=
- =?us-ascii?Q?KZEvceayfMSMyQzdbyGEqTUs+bZ3UF0A0KT6x00cE0C+aUKJuMouUEBVEmvZ?=
- =?us-ascii?Q?J8r6VhGgPrlGi/55WTt4xcCFmAMH1XgxBk/Sv0cGFXvY8GxLZzIR0zyNrR7b?=
- =?us-ascii?Q?TzbVPKOLv46GBvHU/Q72DI5rCcUa/v/sZX5pCxJavtKbV1F7+QjcduHVd/vo?=
- =?us-ascii?Q?CIMsPzIQzPJmuwlnA9Cx15o6spP9G5onxXvmDVixeq3TQxClfMDoFkAL8KlI?=
- =?us-ascii?Q?5yrPR8FTe7ihFyuw1OY4c1ScZzKmmJvVfemRHGu94sQnU1uBDZvcC4i6yAn6?=
- =?us-ascii?Q?fgM8QUWRCd2JKggSS+cyk6+ulfklGFfgACX5W8+fJdxo+zG7YriuzW0n7ce1?=
- =?us-ascii?Q?c0NfMhoZodyGTS19xRaI323NeGs6PogcuJeKxcfRkhfZailorux0iDHqD1dN?=
- =?us-ascii?Q?EPBZu4i4eKN6gZfspD5BHL6gXIIUqT3lFLLz/lyXIhf8rMThpDqZrJGfn69T?=
- =?us-ascii?Q?i8WRDT9JunkNkAHzmok2m6bMjJ8EN+ToIDLvsnnHDi76Tg57P/CvHfpR8O6U?=
- =?us-ascii?Q?caxqe8r6ER92zfyZf8vHL/8+0FQ7Q/mxE1Doitdo/Ti7oTzwrgXNAcKh0U9s?=
- =?us-ascii?Q?aS69o2vafVT6K4c6cV9dkJMfn9gppeSpAJgJYnTAGnnihWVIIr+JK6khdCC3?=
- =?us-ascii?Q?PYmi9dR3G9gh2howExyStBCRwAvd3ntN7CdI/BM3hpRMtol84N9ihR/JpqOc?=
- =?us-ascii?Q?BnPf9ibgL6RtJUyA4+yKz3CZazZrwLHAlyck0dFyxq8dtCzb8CcfMYx2mrL1?=
- =?us-ascii?Q?05QKOx9TInhwvcw4E7WtBueUNNF/wZ3wjgcobU07ApHOGD4mT5ANTkZW0KEg?=
- =?us-ascii?Q?rZRd4zMX4ngamfvkzyjyp7k7IqK4XP6LmbwDPcfjb8ZqT2+9tCmUXmQCUCQW?=
- =?us-ascii?Q?vE/TmsfbcsZjSCk1b7LueLTzb5qD4ItXQ/D+GU4KgqDdZhn7+zgtHenOVLVR?=
- =?us-ascii?Q?9qRXBBEND31/eNFKKLrE674QkoQrfOVTXP/pjyW/TrVH3OoLSlHHFFBZ+vjY?=
- =?us-ascii?Q?uXYUIT5vUeY6su4M/Mz3f8IoUMlYHV3PxjvVTXFCSqcD6+ZGqzTD5EYkWOGo?=
- =?us-ascii?Q?Bd9IEA=3D=3D?=
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12da4412-e651-46c5-9ebc-08dc48c56032
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9003.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 10:06:14.6384
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XZp4bIb1N0CvFpvwNg/tjfXMBiw6m3GL54BiAM/RxjfQL3WlEzcS1t28jZguZHwRAup0ee//k9FCuBsMvBmzEQxSZPVygMHEg/UvpZ81I14=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB7435
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240319-topic-msm-polling-cleanup-v1-3-e0aee1dbcd78@linaro.org>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ogZc7Fp0078mp0OWJuL9-WjMhYyv9J7V
+X-Proofpoint-GUID: ogZc7Fp0078mp0OWJuL9-WjMhYyv9J7V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_06,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1011 malwarescore=0
+ priorityscore=1501 mlxlogscore=865 adultscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403140001 definitions=main-2403200078
 
-In memory_max_write() we first set memcg->memory.max and only then
-try to enforce it in loop. What if while we are in loop someone else
-have changed memcg->memory.max but we are still trying to enforce
-the old value? I believe this can lead to nasty consequence like getting
-an oom on perfectly fine cgroup within it's limits or excess reclaim.
+On Tue, Mar 19, 2024 at 05:13:33PM +0100, Konrad Dybcio wrote:
+> All of the thermal zone suppliers are interrupt-driven, remove the
+> bogus and unnecessary polling that only wastes CPU time.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 26 --------------------------
+>  1 file changed, 26 deletions(-)
 
-We also have exactly the same thing in memory_high_write().
+Reviewed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 
-So let's stop enforcing old limits if we already have a new ones.
+Thanks
+Varada
 
-Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
----
- mm/memcontrol.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 61932c9215e7..81b303728491 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6769,6 +6769,9 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		unsigned long nr_pages = page_counter_read(&memcg->memory);
- 		unsigned long reclaimed;
- 
-+		if (memcg->memory.high != high)
-+			break;
-+
- 		if (nr_pages <= high)
- 			break;
- 
-@@ -6817,6 +6820,9 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 	for (;;) {
- 		unsigned long nr_pages = page_counter_read(&memcg->memory);
- 
-+		if (memcg->memory.max != max)
-+			break;
-+
- 		if (nr_pages <= max)
- 			break;
- 
--- 
-2.43.0
-
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index 7f2e5cbf3bbb..98c5623f4391 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -749,8 +749,6 @@ frame@b128000 {
+>  
+>  	thermal-zones {
+>  		nss-top-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 3>;
+>  
+>  			trips {
+> @@ -763,8 +761,6 @@ nss-top-critical {
+>  		};
+>  
+>  		ubi-0-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 4>;
+>  
+>  			trips {
+> @@ -777,8 +773,6 @@ ubi_0-critical {
+>  		};
+>  
+>  		ubi-1-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 5>;
+>  
+>  			trips {
+> @@ -791,8 +785,6 @@ ubi_1-critical {
+>  		};
+>  
+>  		ubi-2-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 6>;
+>  
+>  			trips {
+> @@ -805,8 +797,6 @@ ubi_2-critical {
+>  		};
+>  
+>  		ubi-3-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 7>;
+>  
+>  			trips {
+> @@ -819,8 +809,6 @@ ubi_3-critical {
+>  		};
+>  
+>  		cpuss0-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 8>;
+>  
+>  			trips {
+> @@ -833,8 +821,6 @@ cpu-critical {
+>  		};
+>  
+>  		cpuss1-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 9>;
+>  
+>  			trips {
+> @@ -847,8 +833,6 @@ cpu-critical {
+>  		};
+>  
+>  		cpu0-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 10>;
+>  
+>  			trips {
+> @@ -877,8 +861,6 @@ map0 {
+>  		};
+>  
+>  		cpu1-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 11>;
+>  
+>  			trips {
+> @@ -907,8 +889,6 @@ map0 {
+>  		};
+>  
+>  		cpu2-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 12>;
+>  
+>  			trips {
+> @@ -937,8 +917,6 @@ map0 {
+>  		};
+>  
+>  		cpu3-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 13>;
+>  
+>  			trips {
+> @@ -967,8 +945,6 @@ map0 {
+>  		};
+>  
+>  		wcss-phyb-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 14>;
+>  
+>  			trips {
+> @@ -981,8 +957,6 @@ wcss_phyb-critical {
+>  		};
+>  
+>  		top-glue-thermal {
+> -			polling-delay-passive = <0>;
+> -			polling-delay = <0>;
+>  			thermal-sensors = <&tsens 15>;
+>  
+>  			trips {
+> 
+> -- 
+> 2.40.1
+> 
+> 
 
