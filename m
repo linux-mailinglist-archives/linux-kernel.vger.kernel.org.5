@@ -1,125 +1,76 @@
-Return-Path: <linux-kernel+bounces-109458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E1688197F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:36:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E81F88197B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B11C61C2126E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:36:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 318E8283C60
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB078381AA;
-	Wed, 20 Mar 2024 22:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE6286158;
+	Wed, 20 Mar 2024 22:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ER8oSDVy"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="uAZ8jKkL"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B34585C58
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AD117562;
+	Wed, 20 Mar 2024 22:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710974172; cv=none; b=r6P34ycL74pcYpK+/m0xb+3f3xEqj7fgV2ow219VIDRhoYZerNuA8hGOoC32i8MFNB8THx7l56y2klqik49UsdCimUKvbmkXykTmdOuEJjMSpwLfAtVYlRwG226zYGk8hUNMdt44IJvhZrvwv5XwqMt34yh12Nlj7qtCsxvs5d0=
+	t=1710974113; cv=none; b=kTGxFSNPnfDIGu1WCT5/DtQPQsuTjJZlX5U1HBMkv6ZCwBAGt5A3koGNRPfXUo8f0J33D4I61TT/V6cI/w69y0AyHF9qFhA+ZLEU8nLsdNa/6V8Ai1LUFgSV7wUzomXLzNMyevi41M4dcekswi1vnFs9lAh5DBzHn/SPA+d8ARw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710974172; c=relaxed/simple;
-	bh=FrDJYOWwf0Ic6PWmCehY4eGVyxmoLrR6fV2hXhRI9/Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Hvq0SbpbA/Me3MYc1jnn0UXSnBRrUREgxDjHirapVYDHiHyzm8kMfJel/sa5nmVn8ZMazEOaI/U/5ot3qHMllxDHyQQbZSMcsd5F6WyBHC1bPRZiP+Q7pPf2c4Cxo0lYMVwADwnoJdaaWC8rM5bWlIEWIcgpRk0KgzM7PHggxks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ER8oSDVy; arc=none smtp.client-ip=192.19.144.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 2C1A3C0000F1;
-	Wed, 20 Mar 2024 15:27:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 2C1A3C0000F1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-	s=dkimrelay; t=1710973631;
-	bh=FrDJYOWwf0Ic6PWmCehY4eGVyxmoLrR6fV2hXhRI9/Q=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ER8oSDVyI4SJemYdbsgNDwpfuVSQeWV7O2fsjUkexdgoUpfAYVJF0CsaG8zXRVHWv
-	 yCJ9ZAjuaYfFtblXku6S7QQS0lDWMKy7VFlC7wGmYO/ldblsPv0kekiCYfXob+yNZG
-	 qAAgxKj9kMvY0ep7wc4FbfKjEOwcJQ/l3QM3wXQc=
-Received: from bcacpedev-irv-3.lvn.broadcom.net (bcacpedev-irv-3.lvn.broadcom.net [10.173.232.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 6420918041CAC4;
-	Wed, 20 Mar 2024 15:27:09 -0700 (PDT)
-From: William Zhang <william.zhang@broadcom.com>
-To: Linux MTD List <linux-mtd@lists.infradead.org>
-Cc: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
-	joel.peshkin@broadcom.com,
-	f.fainelli@gmail.com,
-	miquel.raynal@bootlin.com,
-	dregan@mail.com,
-	kamal.dasu@broadcom.com,
-	kursad.oney@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-kernel@vger.kernel.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Regan <dregan@broadcom.com>
-Subject: [PATCH] mtd: rawnand: brcmnand: Fix data access violation for STB chip
-Date: Wed, 20 Mar 2024 15:26:22 -0700
-Message-Id: <20240320222623.35604-1-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.37.3
+	s=arc-20240116; t=1710974113; c=relaxed/simple;
+	bh=rQ9ayU8h3vbhmp2fjgE+N6j3VApmNmtzYBgCEM8r62Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QqB6OMyIORn/aqqftkj/iz7rdCY5yM4oVpJasWgWSeFHwyQ5tJCyu8p4dFUNwDlDgl2QAYGUOdmPrJ+SM8Tp09scIhMICqPWlcJI5OKggICDgNr2ypal+UUUe0KUvjWVEjbqTHG+Yi02LFwOVuibISOJ8BuCrJGUTJ86uuemwjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=uAZ8jKkL; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=E7i4Ih95/AYaHh8sYn8scPJ9xcj4zGqhtLHoX6z4xCk=; b=uAZ8jKkLhRdROnRWFFtuTTT+y4
+	ABPZrO+Senebtu53YCh8jhIGFSGhz50P90JAEtcdvup+f2UPvpsoKkP6IeaSPOkMuwXrLNnFzRF7P
+	XwPJEvFao/H5w8AXsF33gfVt34ItfGhJbtKdp2gC4TkCQKOzZ3ltGBJaizeRkp8SHhRs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rn4WO-00Aop5-Rj; Wed, 20 Mar 2024 23:34:56 +0100
+Date: Wed, 20 Mar 2024 23:34:56 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: David Thompson <davthompson@nvidia.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, u.kleine-koenig@pengutronix.de, leon@kernel.org,
+	asmaa@nvidia.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1] mlxbf_gige: stop PHY during open() error paths
+Message-ID: <9e21ceae-e889-4177-8397-9df250ba558d@lunn.ch>
+References: <20240320193117.3232-1-davthompson@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320193117.3232-1-davthompson@nvidia.com>
 
-Florian reported the following kernel NULL pointer dereference issue on
-a BCM7250 board:
-[    2.829744] Unable to handle kernel NULL pointer dereference at virtual address 0000000c when read
-[    2.838740] [0000000c] *pgd=80000000004003, *pmd=00000000
-[    2.844178] Internal error: Oops: 206 [#1] SMP ARM
-[    2.848990] Modules linked in:
-[    2.852061] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-next-20240305-gd95fcdf4961d #66
-[    2.860436] Hardware name: Broadcom STB (Flattened Device Tree)
-[    2.866371] PC is at brcmnand_read_by_pio+0x180/0x278
-[    2.871449] LR is at __wait_for_common+0x9c/0x1b0
-[    2.876178] pc : [<c094b6cc>]    lr : [<c0e66310>]    psr: 60000053
-[    2.882460] sp : f0811a80  ip : 00000012  fp : 00000000
-[    2.887699] r10: 00000000  r9 : 00000000  r8 : c3790000
-[    2.892936] r7 : 00000000  r6 : 00000000  r5 : c35db440  r4 : ffe00000
-[    2.899479] r3 : f15cb814  r2 : 00000000  r1 : 00000000  r0 : 00000000
+On Wed, Mar 20, 2024 at 03:31:17PM -0400, David Thompson wrote:
+> The mlxbf_gige_open() routine starts the PHY as part of normal
+> initialization.  The mlxbf_gige_open() routine must stop the
+> PHY during its error paths.
+> 
+> Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
+> Signed-off-by: David Thompson <davthompson@nvidia.com>
+> Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
 
-The issue only happens when dma mode is disabled or not supported on STB
-chip. The pio mode transfer calls brcmnand_read_data_bus function which
-dereferences ctrl->soc->read_data_bus. But the soc member in STB chip is
-NULL hence triggers the access violation. The function needs to check
-the soc pointer first.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Fixes: 546e42599120 ("mtd: rawnand: brcmnand: Add BCMBCA read data bus interface")
-
-Reported-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-
----
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index a8d12c71f987..1b2ec0fec60c 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -857,7 +857,7 @@ static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
- 	struct brcmnand_soc *soc = ctrl->soc;
- 	int i;
- 
--	if (soc->read_data_bus) {
-+	if (soc && soc->read_data_bus) {
- 		soc->read_data_bus(soc, flash_cache, buffer, fc_words);
- 	} else {
- 		for (i = 0; i < fc_words; i++)
--- 
-2.37.3
-
+    Andrew
 
