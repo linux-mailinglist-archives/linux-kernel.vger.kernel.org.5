@@ -1,185 +1,120 @@
-Return-Path: <linux-kernel+bounces-109178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622C78815CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:40:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A46858815CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 944531C21B9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:40:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57FBA1F220D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DFE15C3;
-	Wed, 20 Mar 2024 16:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEB31FA5;
+	Wed, 20 Mar 2024 16:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOKmvugh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B2TYOo+T"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9D31C20;
-	Wed, 20 Mar 2024 16:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0BA15A5
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710952816; cv=none; b=nCRcwR+NhyervhLI5jbpbbA27lHy8Auglf+FJ5uJYnh0k2J8nBxRYYKjRT8SsVfL/rnji+Tz1097B5a8MPDY1ct69O+8qfI2wJNN56obU0dnRoX1lZt9CicMAtyK5y1Koxg7vL81VIDIVb/P+8SshWiaN7yCvuIYTQZ5A9+in4g=
+	t=1710952847; cv=none; b=Fl6s4s7SFgSdukOPG0qye/sGztIzBsUpgwMUJQaUNQ1heq3cHvGWXZ5Gu/7wQk7vwsR7bidw9RCprew5OpNZTuY1DcB/RbZjtk27ih/RA+rOdGIaXBpLslPMEwO8WnV7gaN3zQTCOgB76YfWz3zRRzq60pAffe8OtQC8derxLIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710952816; c=relaxed/simple;
-	bh=1Jiit+psOx+w3ZLWPRwFAlOd6Nj6twJmRshP++j8nWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lgf7wxbKcDFEOMgHpWk+x3F7a5mnZkHH0K1FwxxZN+UbgdnExKkRM7arX6YmaOaZD05/98dWlWgqZaQbwGDwdLQeIBymFAFw+QCUVgxF9cKN/0GIpXK6ggWfBK56/Tk5oB4fk5R9kmP1l8PJs4Ua5jiKCPbN5G7qOrFhtqqem3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOKmvugh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EBEC433F1;
-	Wed, 20 Mar 2024 16:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710952815;
-	bh=1Jiit+psOx+w3ZLWPRwFAlOd6Nj6twJmRshP++j8nWs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MOKmvughlofy+rngsD/rKW+tCtOXQ3l2f8RY8A0GFHgGpvF+Yp5g5+Xro8AMAfuOk
-	 8cIjDMngUJyF2j5GMFwV62c2hbj+c3n5BNdvvZy5FSfq88SMfe9NskXd3wca1GI9Nu
-	 /+bJZtXHsrDy+2RVIeG4oIKq3bfZtGiSIhkRtcRs1RgBaYCxwsSugXPCh/1dpVElSy
-	 FDjTqg+lH/SfLdC/5sfX5APEWpUreM8khaEFlqw/T33kWhF9IGER4+eoLr6agn9xDs
-	 l7edI1tFVbcr8sPGdFtw4zhY0aCOJX9CUfbwGlrTLz8vGvweZo3PE6F/EwIPc3hF5G
-	 5NH3NWc+ylUFg==
-Date: Wed, 20 Mar 2024 16:40:10 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: atmel-nand: add atmel pmecc
-Message-ID: <20240320-unafraid-fidelity-669f937c846a@spud>
-References: <20240320-linux-next-nand-yaml-v1-0-2d2495363e88@microchip.com>
- <20240320-linux-next-nand-yaml-v1-2-2d2495363e88@microchip.com>
+	s=arc-20240116; t=1710952847; c=relaxed/simple;
+	bh=IPFJcENiCyzyUJ0Rcq2tI05Ded+kvu7vtcAY8HhSnFM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sHtF3rTDbyFvRwnbysEXilqWJHiMni+LJWpA1a8eZapZIdxRxqk/Bt4Uuc7WRgGSDkod1tDEsOSSxbLqVP3RXtcN30WQSVzlH3SV3ux0Ai90SdKANPgcSfyveKSzXCd/yXziwQZxhJC/T/sKEG9KS586gHVhjBRsa8NVEtxSQow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B2TYOo+T; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42ee0c326e8so2551cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710952844; x=1711557644; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2Iioua2lyhsilXiJJfaF8CCrcEUXRoDq4VH/C+Uq1U=;
+        b=B2TYOo+TB5/IzVY/NQHHP+S2PCrjCrzwDxoydNWzbz2sb+34SjrB7/daM35F6KKQYy
+         m3rXSqNHJwuhvrZTTsxTjgYWeY48+ZH2w2Ei+aD5cc14UGb3xO0b8j2VYspZkL3TpR4N
+         0jcwlzSer/4G/BcU5KrR2JbOxGFY5aw6v0FnNIJLNx8M8pD4SstnQ2GaoQd6BINXbgVB
+         bd6O7AkiMWZNWwAdRHrJZwLLjsKzHqEVNqqOMfOtuTFUI27iopl3M7tDe/IrKqU+4rE3
+         s4rhHP2rzauXe148UmHDNxonq/GTnUtM8XyvLbN//vNImbwPe8FKa5lPYMvF3VvrT0Cg
+         3e+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710952844; x=1711557644;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E2Iioua2lyhsilXiJJfaF8CCrcEUXRoDq4VH/C+Uq1U=;
+        b=kIn1ZoyYj7aZ/8NF5mDQ2ujKWmGoJRObn28tYQBeEUn4GapINhMOHkNnS/db8z0UVz
+         yW+OUDcZEw72CRA+6GgvxARLHcDZqA5IJvfVQRyp0Mtun5Lxua/cyIn24laIZ5CNgLm7
+         f+7VpdfLvcthMAgejoqJZO9tcjMIEm1Kl/LVNQ5LwpgpDpmuzKzlEdAGNGMgUYu4e8UI
+         amaKfzoPYell/TTaDtZLzBCOfz8ME6IDc56vq71XArQdSsnFWd6WqbEvSWf192ANOluQ
+         YAXyH9DkPl7XYveiJB1Uyf+wgAtq07PU3BurWLBvlJ3z5NKt4KKnSYu/2BC+rLuPfibB
+         pN/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXMKeDONOwKBCPDTr0eTDb8jR2dgTkyXKoZVY6KpyCThXR93jUaqFHbtA5DbH5EdgAopI9UmH+VJlUvRgCPkojHAMW9G38bEy0/H8v
+X-Gm-Message-State: AOJu0YwvuYOSJSlZ8+seiJJ6wqmIXnSlgd86SyrfjP09s4AdbvLn95f/
+	ridspmVN1ppuM631NtuLa/Szy/Iq26FR5ZXUALNYRfULkc8iEMhJ/9x/tujNA/EHdTvdmoZFI5U
+	NDssEnm9j6rxGyEadK5WGKKOE+Lo/w/rgWXaz
+X-Google-Smtp-Source: AGHT+IGiVjjeu/I+qCPN7/5tTyBw/r40GN/5VRWHH4Ks7bnzHDezQwHcKs4lD6F55rSEQaRGRR9F3BFwXms+THBnfjA=
+X-Received: by 2002:a05:622a:1904:b0:431:55a:57fa with SMTP id
+ w4-20020a05622a190400b00431055a57famr221576qtc.16.1710952844403; Wed, 20 Mar
+ 2024 09:40:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Z/ovpiDLJ7pJUqlX"
-Content-Disposition: inline
-In-Reply-To: <20240320-linux-next-nand-yaml-v1-2-2d2495363e88@microchip.com>
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-3-xiong.y.zhang@linux.intel.com>
+In-Reply-To: <20240126085444.324918-3-xiong.y.zhang@linux.intel.com>
+From: Raghavendra Rao Ananta <rananta@google.com>
+Date: Wed, 20 Mar 2024 09:40:31 -0700
+Message-ID: <CAJHc60ww7cOhtbWNp9WP7bxWKXCZtcT=6e4Fk2TaB63YqWMWbw@mail.gmail.com>
+Subject: Re: [RFC PATCH 02/41] perf: Support guest enter/exit interfaces
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org, 
+	mizhang@google.com, kan.liang@intel.com, zhenyuw@linux.intel.com, 
+	dapeng1.mi@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
+	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com, 
+	Kan Liang <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Kan,
 
---Z/ovpiDLJ7pJUqlX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Mar 20, 2024 at 11:22:08AM +0530, Balamanikandan Gunasundar wrote:
-> Add bindings for programmable multibit error correction code controller
-> (PMECC).
->=20
-> Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@micro=
-chip.com>
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-pmecc.yaml b/Doc=
-umentation/devicetree/bindings/mtd/atmel-pmecc.yaml
-
-Filename matching a compatible please.
-
-> new file mode 100644
-> index 000000000000..872401e9dda3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-pmecc.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/atmel-pmecc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>
+> +static void __perf_force_exclude_guest_pmu(struct perf_event_pmu_context *pmu_ctx,
+> +                                          struct perf_event *event)
+> +{
+> +       struct perf_event_context *ctx = pmu_ctx->ctx;
+> +       struct perf_event *sibling;
+> +       bool include_guest = false;
 > +
-> +title: Microchip pmecc controller
-> +
-> +maintainers:
-> +  - Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
-> +
-> +description: |
-> +  Bindings for microchip Programmable Multibit Error Correction Code
-> +  Controller (PMECC). pmecc is a programmable BCH encoder/decoder. This
-> +  block is passed as the value to the "ecc-engine" property of microchip
-> +  nand flash controller node.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - atmel,at91sam9g45-pmecc
-> +          - atmel,sama5d2-pmecc
-> +          - atmel,sama5d4-pmecc
-> +          - microchip,sam9x60-pmecc
-> +          - microchip,sam9x7-pmecc
-> +      - items:
-> +          - const: microchip,sam9x60-pmecc
-> +          - const: atmel,at91sam9g45-pmecc
-> +
-> +  reg:
-> +    description:
-> +      The first should point to the PMECC block. The second should point=
- to the
-> +      PMECC_ERRLOC block.
+> +       event_sched_out(event, ctx);
+> +       if (!event->attr.exclude_guest)
+> +               include_guest = true;
+> +       for_each_sibling_event(sibling, event) {
+> +               event_sched_out(sibling, ctx);
+> +               if (!sibling->attr.exclude_guest)
+> +                       include_guest = true;
+> +       }
+> +       if (include_guest) {
+> +               perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
+> +               for_each_sibling_event(sibling, event)
+> +                       perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
+> +       }
+Does the perf core revert the PERF_EVENT_STATE_ERROR state somewhere
+from the perf_guest_exit() path, or is it expected to remain in this
+state?
+IIUC, in the perf_guest_exit() path, when we land into
+merge_sched_in(), we never schedule the event back if event->state <=
+PERF_EVENT_STATE_OFF.
 
-Constraints please. In fact, describe it as an items list and then you
-don't need constraints or a free-form text explanation of what each
-entry is :)
-
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: microchip,sam9x7-pmecc
-> +    then:
-> +      properties:
-> +        clocks:
-> +          description:
-> +            The clock source for pmecc controller
-> +          maxItems: 1
-
-Please define the property at the top level and constrain it on a per
-device basis.
-
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    pmecc: ecc-engine@ffffc070 {
-
-Drop the unused label please.
-
-Thanks,
-Conor.
-
-> +            compatible =3D "microchip,sam9x7-pmecc";
-> +            reg =3D <0xffffe000 0x300>,
-> +                  <0xffffe600 0x100>;
-> +            clocks =3D <&pmc 2 48>;
-> +    };
->=20
-> --=20
-> 2.25.1
->=20
-
---Z/ovpiDLJ7pJUqlX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfsRagAKCRB4tDGHoIJi
-0gpnAPsFDklQs2uawCixXd1EqxeDXmWagdQ0y/IUTND16hB7UgEA/SExCMWY8kCh
-TPV2Y3aXY+TdAAOAGsf6xL8p9JGcPQ8=
-=c65W
------END PGP SIGNATURE-----
-
---Z/ovpiDLJ7pJUqlX--
+Thank you.
+Raghavendra
 
