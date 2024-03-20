@@ -1,106 +1,141 @@
-Return-Path: <linux-kernel+bounces-108954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABCCC881273
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:41:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822D688127E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 613C828683F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:41:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CC4B2869D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2939941C86;
-	Wed, 20 Mar 2024 13:41:32 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E4247F48;
+	Wed, 20 Mar 2024 13:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fs/pI/jS"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C6739AF4;
-	Wed, 20 Mar 2024 13:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B211CD1D;
+	Wed, 20 Mar 2024 13:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710942091; cv=none; b=Swp6dDAjcdkU5RqbYNt5xDe369ll372trAHzsCaJUrWwEVXsNfpHrLhnuAC3MyFufKo85h1jncpuWLgO2s3Q8qhL+XoT6POdOILX8hXdcPATHLw+D9eyVhHs7UhGS6Dja7yzP3qynbDa7vbzDWkqJa3v1Duy9C/B2iOlMzi21oM=
+	t=1710942175; cv=none; b=FcLVOnGknZz1W3ZHxF+eY0+AsqNXbAbZ1kwMCzJF4w8JufDrUt5s+DV1tHh2QV158VcrTpjMpuFAPdNgANzOPhsgYZ1hApnTRuYp2zBjJkCkL6ACyj+mJjW3fCMn2fQwOIH/eMi+gdqoElOTRE1Z7LiWdJxo5GGaNEgmqapdJkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710942091; c=relaxed/simple;
-	bh=pEE//CzmqH/Wyb5j/9DW8vPD34aHxyBPeeCM+l52oiM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e95Epz0cAUTF5+6Aydv1J03yaancZW4fteee/CB9AXK4ajxs1xeWWGoLboFSbcyjHyuADhSptt32s8HWBAf1PMf64lQI7JUi4W3g4DedvBc9E23b+09Cvxc7sqiiSQPvDCYVb6+b2RXidLZAg9sRla+t5cg0eUUD7b1RV/M71f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 78BF61C007F; Wed, 20 Mar 2024 14:41:21 +0100 (CET)
-Date: Wed, 20 Mar 2024 14:41:20 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sasha Levin <sashal@kernel.org>, marex@denx.de, broonie@kernel.org,
-	tzimmermann@suse.de, omosnace@redhat.com, paul@paul-moore.com,
-	yi.zhang@huawei.com, jack@suse.cz, tytso@mit.edu
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 5.10 00/73] 5.10.213-rc1 review
-Message-ID: <ZfrngHBf1hbHohFa@duo.ucw.cz>
-References: <20240313164640.616049-1-sashal@kernel.org>
+	s=arc-20240116; t=1710942175; c=relaxed/simple;
+	bh=AH7TDRqzam+wc6fjabuqQvfYB0R0X9EFttJ6umY4PSQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Sl3ZtGoL/DZpSn6WK0diLavyTHT4AxjYr0FlmN7dMRh2cuBlnGU3CJb9R6Rgkn33SbJoqnnvzV1ats3FDTMS6gX1qxiX6HdA9SWBFdKWBC5BdOY1PfnCkZp78qQZDGtnS+9b5DynovGJ0Aa/oo22fYQfmOk2N8Sx0vzfjFpQrFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fs/pI/jS; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KBj2LR018340;
+	Wed, 20 Mar 2024 13:42:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=qcppdkim1; bh=uBlYCP3C3SsY5VY7iT+E
+	kSZrVAy7mvH1RiFc+YVnXWs=; b=fs/pI/jSlJ3k9yDvQYIFFV66BXQgClx281cs
+	N2/R2+P7hGaBclpkdIeKGJzWNSO//JGUld99YwUfAV5iozVE3v3IgdHHSIGymKpb
+	6e1GYTKZtgJLldVD8jqQXHe6sQXtDmBkG2VHvHVz9bFA+9x7mpWo2VK8WKD4IpbA
+	dZz1UquuHD3VduhwH2mbGz2psn6eBsHFNTluO9BiSfGL/SfCLLs3U4If5lluwCyk
+	/ZLvMSRwrd8jMGoIcrU492gMl54+orXVpfzpv/X3396x9tZ1jY2w+PAp3KDaaC+e
+	2rexs7wN24j5xX/06eZOKnHwcJncjOBZkp/kecjjaa6Y0MvPlA==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyxq90aks-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 13:42:48 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KDglHC018116
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 13:42:47 GMT
+Received: from hu-depengs-sha.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 20 Mar 2024 06:42:44 -0700
+From: Depeng Shao <quic_depengs@quicinc.com>
+To: <rfoss@kernel.org>, <todor.too@gmail.com>, <bryan.odonoghue@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <quic_yon@quicinc.com>
+CC: <quic_depengs@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH v1 0/8] media: qcom: camss: Add sm8550 support
+Date: Wed, 20 Mar 2024 19:12:19 +0530
+Message-ID: <20240320134227.16587-1-quic_depengs@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nmJXcxMwPEUfxBap"
-Content-Disposition: inline
-In-Reply-To: <20240313164640.616049-1-sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QWba4sJliUw1Gsk6Xdg3aWU3CO0qUDL5
+X-Proofpoint-GUID: QWba4sJliUw1Gsk6Xdg3aWU3CO0qUDL5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_09,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=852
+ clxscore=1011 priorityscore=1501 impostorscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403200107
 
+SM8550 is a Qualcomm flagship SoC. This series adds support to
+bring up the CSIPHY, CSID, VFE/RDI interfaces in SM8550.
 
---nmJXcxMwPEUfxBap
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+SM8550 provides
 
-Hi!
+- 3 x VFE, 3 RDI per VFE
+- 2 x VFE Lite, 4 RDI per VFE
+- 3 x CSID
+- 2 x CSID Lite
+- 8 x CSI PHY
 
-> This is the start of the stable review cycle for the 5.10.213 release.
-> There are 73 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Fri Mar 15 04:46:39 PM UTC 2024.
-> Anything received after that time might be too late.
+This series is rebased based on：
+https://patchew.org/linux/20240222-b4-camss-sc8280xp-v6-0-0e0e6a2f8962@linaro.org/
 
-> Ondrej Mosnacek (1):
->   lsm: fix default return value of the socket_getpeersec_*() hooks
+The changes are verified on SM8550 AIM300 board, the base dts for AIM300 is
+https://patchew.org/linux/20231117101817.4401-1-quic._5Ftengfan@quicinc.com/
 
-I don't see this one in 6.1.=20
+Depeng Shao (3):
+  media: qcom: camss: Add new params for csid_device
+  media: qcom: camss: Add CSID gen3 driver
+  media: qcom: camss: Add sm8550 support
 
-> Zhang Yi (2):
->   ext4: convert to exclusive lock while inserting delalloc extents
+Yongsheng Li (5):
+  media: qcom: camss: Add CAMSS_8550 enum
+  media: qcom: camss: Add subdev notify support
+  media: qcom: camss: Add new csiphy driver 2-1-2
+  media: qcom: camss: Add new VFE driver for SM8550
+  media: qcom: camss: Add sm8550 resources
 
-I don't see this one in 6.1.
+ drivers/media/platform/qcom/camss/Makefile    |   3 +
+ .../platform/qcom/camss/camss-csid-gen3.c     | 639 ++++++++++++++++++
+ .../platform/qcom/camss/camss-csid-gen3.h     |  26 +
+ .../media/platform/qcom/camss/camss-csid.c    |  19 +
+ .../media/platform/qcom/camss/camss-csid.h    |  10 +
+ .../platform/qcom/camss/camss-csiphy-2-1-2.c  | 343 ++++++++++
+ .../media/platform/qcom/camss/camss-csiphy.c  |   1 +
+ .../media/platform/qcom/camss/camss-csiphy.h  |   3 +
+ .../media/platform/qcom/camss/camss-vfe-780.c | 455 +++++++++++++
+ drivers/media/platform/qcom/camss/camss-vfe.c |   7 +
+ drivers/media/platform/qcom/camss/camss-vfe.h |   3 +
+ .../media/platform/qcom/camss/camss-video.c   |   1 +
+ drivers/media/platform/qcom/camss/camss.c     | 395 +++++++++++
+ drivers/media/platform/qcom/camss/camss.h     |   8 +
+ 14 files changed, 1913 insertions(+)
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen3.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-gen3.h
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csiphy-2-1-2.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-780.c
 
-> Marek Vasut (1):
->   regmap: Add bulk read/write callbacks into regmap_config
+-- 
+2.17.1
 
-This one quite intrusive for the stable. Plus, at least "regmap: Add
-missing map->bus check" is marked as fixing this one.
-
-Best regards,
-								Pavel
-
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---nmJXcxMwPEUfxBap
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZfrngAAKCRAw5/Bqldv6
-8lMwAJ9gJBm+C04F5xEeycMNj/ijEtt9oACgmw8BxUHgiyWwWJdhXfin9VL40X4=
-=crbb
------END PGP SIGNATURE-----
-
---nmJXcxMwPEUfxBap--
 
