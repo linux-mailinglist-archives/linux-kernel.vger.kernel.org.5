@@ -1,268 +1,270 @@
-Return-Path: <linux-kernel+bounces-109451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BB8881958
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:05:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090DB881963
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F242845ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:04:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 771781F23DC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3749C85C6A;
-	Wed, 20 Mar 2024 22:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A4585C46;
+	Wed, 20 Mar 2024 22:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RusWDa4P"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Nv8JNhxc"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4092CA6;
-	Wed, 20 Mar 2024 22:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B18185C6A;
+	Wed, 20 Mar 2024 22:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710972289; cv=none; b=S0u+j9uzfdymzL/5ANgiZX4ffsDeG74L0HIKfgn9NtnwR11wvdfrgv4YzJsKcpWnd7h/rN5G4zGLjWaNGg4oeegCoGpC631/doAcR5Na8kE2/PYF3wcpSe7+CWEmwvINLQclV3RRqPfzw9Auv7ZGC7zI0bIOxLyqmPbRSpvFFRk=
+	t=1710972619; cv=none; b=QW7UyTHmJnWXtQUxtSIj/hNTkR2s/H3k3ck8f2tlO82TuVQgaCtokHWyqn1vrzyx1jpuEcHRO8uiLucSEe/tUgU3g0cqo9cFTCsf6tfTnm6aaM2BiTAWE00WJEfQfi9mplEtLOKn9vJRssrQ8AMwCJ9tDQYByuWOZXig4uZZp8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710972289; c=relaxed/simple;
-	bh=rQSedZF7x5w5CBcWQj3ApLjCKzMLnQMFwdN5vVIHFxg=;
-	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=Od6DV6y8yx7GFq+8Gv94MInIWxiyA0Y5jn5qxpuqevS5s/Z9cpllTkYNMeKJt9qK6HLjESfXeIlJ9BfzTHZDWdkbQFbdBPAtiEqHUQDvlTMTptvwGGaECglrY+KBoKDExj4jLAmk2WDw19PXJTTXHx8bsaIejrm9G6hShUHGf/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RusWDa4P; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710972282; x=1742508282;
-  h=subject:from:to:cc:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rQSedZF7x5w5CBcWQj3ApLjCKzMLnQMFwdN5vVIHFxg=;
-  b=RusWDa4PBBNDzpD6mNTwgATAuC0HHCEv4y4+OHw80Sz1/M1olG0qqFJe
-   Wlf9xhLlAEaiSfx8lEur58EDWXEwUsSMVBMNS7mKZXktBSyPF+wjsptyO
-   WtDgUI9i6tQJDuRQo3t6EdUp6CDKYH8Gcld93ACPVMkRdHPtY078Qf0TD
-   k0I3cx7gNgoWuRoBn+MwaynJ6rX4bC5hYrGvKyBUDkxDg8vXmzHFJM/hd
-   HVUsD+nxrJfKmA+808+JEYx2mY28SF/gFHLlTYiNRMiKqWcKRSskEXfyd
-   VWn84Z1dU6ZRYBmmulDvxgMcFgqKFgXk6bBNydnvmBoca0BGUrO648i8o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5799992"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="5799992"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 15:04:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="14686157"
-Received: from sunkaras-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.209.79.95])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 15:04:41 -0700
-Subject: [PATCH] cleanup: Add usage and style documentation
-From: Dan Williams <dan.j.williams@intel.com>
-To: peterz@infradead.org, torvalds@linux-foundation.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Ilpo =?utf-8?b?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
- Lukas Wunner <lukas.wunner@intel.com>, Jonathan Corbet <corbet@lwn.net>,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org, linux-doc@vger.kernel.org
-Date: Wed, 20 Mar 2024 15:04:41 -0700
-Message-ID: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+	s=arc-20240116; t=1710972619; c=relaxed/simple;
+	bh=CsJEQmADrhPtwSvw4VsmHPtfUHOgnMp/31Ev3IRt72I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WocBmembfNx6G4SMJqWC4QzqN2LolZx3D+1MauPwLt/gcA7dQ91JLOr/3OqrQ7j1X1ULI6qfXLMvEXTeguXjnmCAYdTZqnu+/sff74xlbEgZTx3pa7bjipq+UcXxzGVRTSiLmR9fUk1wJCv/yCzq1hp+38GMHFQTJEJA0YFbkfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Nv8JNhxc; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710972600; x=1711577400; i=w_armin@gmx.de;
+	bh=bBDJ89eKrYBnC5jCQdMNiAA43zoSa7FO4K0DYa5qj6Y=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Nv8JNhxc2HY7lFElxE7IwtnEeoKwVd2oQadfRV9DbXn3MvT8BpxN815smlDihpbq
+	 /C7KYE78FbV2RVdIAfCPMYatbSylgwy10tsAlXBxYSqWByDCRaq35uNUoMqqhRoMV
+	 v+U2bXl7CR8mWlXlNAOGdmJroxy9/brkvzYg7WsaDTpDXU9uX9nQSKEtpalL1dNmz
+	 we9N/BJIJbZoAKoye+wrR/5zSrEFx874nKSijJOvvkyCCWI5TQmaZxLeH0WBfUkN5
+	 /EDCzsXd9dJg1n635aw9YiiFhiam0lx/yS5v+BJCZVZ6zLkonWNIb5r53ymTvZsYo
+	 Qx+1tIbPJ3niY1KoTQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N5mGB-1qg7YR1Y67-017G9e; Wed, 20
+ Mar 2024 23:10:00 +0100
+Message-ID: <3e069b7a-fa22-453b-a507-dccc48eb60a3@gmx.de>
+Date: Wed, 20 Mar 2024 23:09:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
+To: James Seo <james@equiv.tech>
+Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318215732.322798-1-W_Armin@gmx.de>
+ <Zfkm71dmnRsdmYJz@equiv.tech> <a2c2ef97-3830-4277-8560-b97cfb8eb78e@gmx.de>
+ <ZfowhGaCWffQ2N1K@equiv.tech> <600844b1-0d62-4b74-89b7-f185a793038b@gmx.de>
+ <ZftC9ojx42l1VAUe@equiv.tech>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <ZftC9ojx42l1VAUe@equiv.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:7WH5sVgc4uu67eTNbgk3R4mJdc3/qTKwsOWtOBgWZVN75QhOZeN
+ JO6e7oPud/fIxldAlL3wcD1G4Wcg4WULPwnWgILluwDNVaZDVJfNug0NbWNLKeGUMoK8ZNY
+ 5pddpgMem4b2lLHGvcfP1Cm++bjnUs0tQEz61zqNTXQ59CMhZP9OfrA+5FkKMZLrIYRl5EW
+ k48j8jPRoM42MloNFWmLw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:UnGSoemeVAQ=;Tr587FPkH1h6y4ii5EI7Y1oforS
+ W/16v4jB1cw6oTk9t1ZCOp06SADg4tcQKGhBEgSPD0Irtu8SIbeQLYkcSjFCkswkGiNMvLlAT
+ Abl8jFCAJCgZDAAncOvGZnwAPNZmr80Qb6a2vc1tur0lom3nYIQBOd/QZgYcTC0SAaDFRFNZX
+ k+MecdzPu7BuY07NPqh3fMB6KkG6tlUk6fB7B2cx8pp6lTbfbWjcD+rjyTfhc73/njUWayjBg
+ rdu0dklEWEfXkKPPxCcjtu7NkSlLXmwCyhCBd+G8DDGFiTyRztvCBTp6w/0QhkPBj9m8UxFE2
+ PxMqqVSIHETBFmkZwCRgxdtd0cYsYj6ig0wEigaPun7+KHpisqxH9My/ZpF7FLoUVTIL5r/84
+ /9/mPIjn+vh+D2mevRN+pGNNStwCLeXasQZLOyRwUNQwGH52RNLrcRdmxBrB8h4MkO1LJr8ih
+ EW1qgAjF3keIBwwpCQDsXxreL8Acv4O8l2GlljqBPlovX1qDUF1FFDyoXXX1Qv5GGtlzpOMXI
+ Vmu3y+s42US25T66mUdF//WE7BqqkhdQKuAvEhyXSCm3RVeShGtziGNNiaSSKxyM/B0zs9ttT
+ m3pXkVn3dnTS+uuTo/B1cUfMkBZ4w7NZEwKfDLbVU15NsyyJY6NsPQmauq00l+eQvxKv1j7Gi
+ W422/tP++1DtBU0OJU1vuhdxM4vQRy+eEjltza9DQFZ1WmOrSdmTr74bbUpY9vNl84Q5YUJ8i
+ 0A0ur+AwQleLUS6YRhMxtohm7nMcEJZMFRd5TI5aKSL7sh7eL3kNJ2+nwJd0LZ/XSJOkSV6Uh
+ wzG0KUB9YJj61OqBhSClJkOnXJn+L++fkDSUXrSooKPjk=
 
-When proposing that PCI grow some new cleanup helpers for pci_dev_put()
-and pci_dev_{lock,unlock} [1], Bjorn had some fundamental questions
-about expectations and best practices. Upon reviewing an updated
-changelog with those details he recommended adding them to documentation
-in the header file itself.
+Am 20.03.24 um 21:11 schrieb James Seo:
 
-Add that documentation and link it into the rendering for
-Documentation/core-api/.
+> On Wed, Mar 20, 2024 at 04:13:59PM +0100, Armin Wolf wrote:
+>> Am 20.03.24 um 01:40 schrieb James Seo:
+>>
+>>> On Tue, Mar 19, 2024 at 02:00:06PM +0100, Armin Wolf wrote:
+>>>> Am 19.03.24 um 06:47 schrieb James Seo:
+>>>>
+>>>>> On Mon, Mar 18, 2024 at 10:57:31PM +0100, Armin Wolf wrote:
+>>>>>> Currently, the hp-wmi-sensors driver needs to be loaded manually
+>>>>>> on supported machines. This however is unnecessary since the WMI
+>>>>>> id table can be used to support autoloading.
+>>>>>>
+>>>>>> However the driver might conflict with the hp-wmi driver since both
+>>>>>> seem to use the same WMI GUID for registering notify handler.
+>>>>>>
+>>>>>> I am thus submitting this patch as an RFC for now.
+>>>>>>
+>>>>>> Armin Wolf (1):
+>>>>>>      hwmon: (hp-wmi-sensors) Add missing MODULE_DEVICE_TABLE()
+>>>>>>
+>>>>>>     drivers/hwmon/hp-wmi-sensors.c | 2 ++
+>>>>>>     1 file changed, 2 insertions(+)
+>>>>>>
+>>>>>> --
+>>>>>> 2.39.2
+>>>>>>
+>>>>> Autoloading was deliberately left out for now because of the GUID
+>>>>> conflict with hp-wmi's WMI notify handler.
+>>>>>
+>>>>> HP's GUID reuse across product lines for different types of WMI
+>>>>> objects with different names and shapes means that with a patch like
+>>>>> this, many systems that should only load hp-wmi-sensors but not
+>>>>> hp-wmi will try to autoload both. (Perhaps all of them; I want to say
+>>>>> that the GUID 5FB7F034-2C63-45e9-BE91-3D44E2C707E4, which is the
+>>>>> second of the two GUIDs that hp-wmi uses to autoload, exists on every
+>>>>> HP system I've examined.)
+>>>>>
+>>>>> Meanwhile, hp-wmi does various other platform things, and there's so
+>>>>> much hardware out there that who knows, maybe there are some systems
+>>>>> that really should load both. I don't think so but I can't rule it
+>>>>> out.
+>>>>>
+>>>>> Unlike hp-wmi-sensors, hp-wmi doesn't survive failure to install its
+>>>>> notify handler, which sets up a potential race condition depending on
+>>>>> when hp-wmi and hp-wmi-sensors loads on a given system.
+>>>>>
+>>>>> Therefore, I intended to add autoloading at the same time as
+>>>>> converting hp-wmi-sensors to use the bus-based WMI interface once
+>>>>> aggregate WMI devices are better supported.
+>>>>>
+>>>>> As you mentioned [1], I ran into issues when I tried to do the
+>>>>> conversion by simply adding the GUID to struct wmi_driver.id_table.
+>>>>> That resulted in two separate independent instances of hp_wmi_sensors
+>>>>> being loaded, which isn't what I wanted.
+>>>> After taking a look at a ACPI table dump of a HP machine, i noticed that
+>>>> HPBIOS_BIOSEvent has the GUID 2B814318-4BE8-4707-9D84-A190A859B5D0, which is
+>>>> different than the event GUID used by hp-wmi.
+>>>>
+>>>> According your comment in hp_wmi_notify(), i assume that some machines have
+>>>> mixed-up event GUIDs.
+>>> I investigated further. Every HP machine in the Linux Hardware Database that
+>>> has \\.\root\WMI\hpqBEvnt at 95F24279-4D7B-4334-9387-ACCDC67EF61C also has
+>>> \\.\root\WMI\HPBIOS_BIOSEvent at 2B814318-4BE8-4707-9D84-A190A859B5D0.
+>> Could it be that using 95F24279-4D7B-4334-9387-ACCDC67EF61C is a mistake?
+>> Or do you know of a machine which indeed uses this GUID to deliver sensor events?
+>> Because it not, then we can just avoid this GUID conflict entirely by using the
+>> other GUID.
+>>
+> No, it's not a mistake, it's HP reusing GUIDs. Both my test machines use
+> 95F24279-4D7B-4334-9387-ACCDC67EF61C for \\.\root\WMI\HPBIOS_BIOSEvent.
+>
+> Previously I examined a sample of ACPI dumps from machines with both
+> hpqBEvnt and HPBIOS_BIOSEvent, and concluded:
+>
+>    - hpqBEvnt is for various events on both business and non-business
+>      machines that are of no interest to hp-wmi-sensors (e.g. hotkeys)
+>
+>    - some machines with hpqBEvnt also have HPBIOS_BIOSEvent at GUID
+>      2B814318-4BE8-4707-9D84-A190A859B5D0
+>
+>    - no machines with both hpqBEvnt and HPBIOS_BIOSEvent actually surface
+>      relevant sensor events (e.g. fan speed too high) via HPBIOS_BIOSEvent;
+>      they only surface non-sensor events (e.g. BIOS setting was changed)
+>      that are of no interest to hp-wmi-sensors
+>
+>    - therefore, 2B814318-4BE8-4707-9D84-A190A859B5D0 does not need to be
+>      handled in hp-wmi-sensors
+>
+> But this time I have done an exhaustive examination and concluded that a
+> few machines with both events do surface sensor events via HPBIOS_BIOSEvent.
 
-Link: http://lore.kernel.org/r/20240104183218.GA1820872@bhelgaas [1]
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Cc: Lukas Wunner <lukas.wunner@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
-Peter, Linus,
+This would have interesting implications for the WMI subsystem. Can you send me
+the output of "acpidump" on those test machines?
 
-I am starting to see more usage of the cleanup helpers and some
-style confusion or misunderstanding on best practices on how to use
-them. As I mention above, Bjorn found the writeup I did for justifying
-__free(pci_dev_put) and guard(pci_dev) useful, so here is an attempt to
-uplevel and centralize those notes.
+It also seems that there are machines which do use the other GUID, see here:
+https://github.com/lm-sensors/lm-sensors/issues/471 (acpidump at the bottom)
 
-Linus, I include you directly since you have expressed some opinions on
-how these helpers are used and want to capture that in a central
-location.
+>>>> I thing it would be best to create a separate WMI driver for the event and
+>>>> use a notifier chain (see include/linux/notifier.h) to distribute the event data.
+>>>>
+>>>> In case of event GUID 95F24279-4D7B-4334-9387-ACCDC67EF61C, both hp-wmi and
+>>>> hp-wmi-sensors can subscribe on this notifier and receive event data without
+>>>> stepping on each other's toes.
+>>>>
+>>>> The same can be done for the event GUID 2B814318-4BE8-4707-9D84-A190A859B5D0,
+>>>> with a separate notifier chain.
+>>>>
+>>>> This would decouple the event handling from the event data consumers, allowing
+>>>> both hp-wmi and hp-wmi-sensors to coexist.
+>>> No objections from me for this specific use case to work around the GUID conflict.
+>>> hp-wmi-sensors should indeed subscribe on 2B814318-4BE8-4707-9D84-A190A859B5D0
+>>> for some of those machines.
+>>>
+>>> Any ideas for getting rid of wmi_query_block() for fetching
+>>> \\.\root\HP\InstrumentedBIOS\HPBIOS_PlatformEvents? I know other drivers are
+>>> also using it for getting blocks other than their "main" GUID.
+>> Good question, it seems that HPBIOS_PlatformEvents is optional, so using the component
+>> framework will not work.
+>>
+> Yes, HPBIOS_PlatformEvents is optional, but it's pretty much necessary for
+> alarm and intrusion events. Without it, it's not possible to know whether a
+> machine even reports such events until after they occur (rare). We'd have
+> to assume that all machines always support such events.
+>
+>> If those WMI data blocks are always associated with the same ACPI device used by the
+>> sensors GUID, then maybe i could create some sort of API for checking if a given GUID
+>> exists the ACPI device associated with a WMI device.
+> For all HP machines in the Linux Hardware Database, all machines with
+> HPBIOS_PlatformEvents also have HPBIOS_BIOSNumericSensor. The reverse is
+> not true. Neither WMI object appears under multiple GUIDs.
+>
+>> However i thing the event GUID issue is more important right now.
+> Sure. I also wonder if your idea could be expanded into a generic driver
+> for publishing simple WMI events. This would be usable in other drivers
+> that are currently using legacy handlers for receiving event data.
 
-This patch stops short of updating coding-style or checkpatch, but I
-expect that it can later be used as a reference for that work.
+You are completely right, this driver could allow clients to register a
+notifier block for a event identified by a GUID, and this notifier block
+is then called every time this event is received.
 
- Documentation/core-api/cleanup.rst |    8 +++
- Documentation/core-api/index.rst   |    1 
- include/linux/cleanup.h            |  112 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 121 insertions(+)
- create mode 100644 Documentation/core-api/cleanup.rst
+> More broadly, if hp-wmi-drivers is any indication, aggregate WMI devices
+> could be a pain. Primary WMI object, associated WMI objects (optional or
+> mandatory), multiple aggregate devices allowed to bind to the same
+> objects. And if using GUIDs for identification, multiple allowable GUIDs.
 
-diff --git a/Documentation/core-api/cleanup.rst b/Documentation/core-api/cleanup.rst
-new file mode 100644
-index 000000000000..527eb2f8ec6e
---- /dev/null
-+++ b/Documentation/core-api/cleanup.rst
-@@ -0,0 +1,8 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===========================
-+Scope-based Cleanup Helpers
-+===========================
-+
-+.. kernel-doc:: include/linux/cleanup.h
-+   :doc: scope-based cleanup helpers
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 7a3a08d81f11..845fbd54948f 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -36,6 +36,7 @@ Library functionality that is used throughout the kernel.
-    kobject
-    kref
-    assoc_array
-+   cleanup
-    xarray
-    maple_tree
-    idr
-diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
-index c2d09bc4f976..4620a475faee 100644
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -4,6 +4,118 @@
- 
- #include <linux/compiler.h>
- 
-+/**
-+ * DOC: scope-based cleanup helpers
-+ *
-+ * The "goto error" pattern is notorious for introducing subtle resource
-+ * leaks. It is tedious and error prone to add new resource acquisition
-+ * constraints into code paths that already have several unwind
-+ * conditions. The "cleanup" helpers enable the compiler to help with
-+ * this tedium and can aid in maintaining FILO (first in last out)
-+ * unwind ordering to avoid unintentional leaks.
-+ *
-+ * As drivers make up the majority of the kernel code base lets describe
-+ * the Theory of Operation, Coding Style implications, and motivation
-+ * for using these helpers through the example of cleaning up PCI
-+ * drivers with DEFINE_FREE() and DEFINE_GUARD(), e.g.:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
-+ *	DEFINE_GUARD(pci_dev, struct pci_dev *, pci_dev_lock(_T), pci_dev_unlock(_T))
-+ *
-+ * The DEFINE_FREE(pci_dev_put, ...) definition allows for declaring
-+ * variables like this:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	struct pci_dev *dev __free(pci_dev_put) =
-+ *		pci_get_slot(parent, PCI_DEVFN(0, 0));
-+ *
-+ * The above will automatically call pci_dev_put() if @pdev is non-NULL
-+ * when @pdev goes out of scope (automatic variable scope). If a
-+ * function wants to invoke pci_dev_put() on error, but return @pdev
-+ * (i.e. without freeing it) on success, it can do:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	return no_free_ptr(pdev);
-+ *
-+ * ...or:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	return_ptr(pdev);
-+ *
-+ * Note that unwind order is dictated by declaration order. That
-+ * contraindicates a pattern like the following:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	int num, ret = 0;
-+ *	struct pci_dev *bridge = ctrl->pcie->port;
-+ *	struct pci_bus *parent = bridge->subordinate;
-+ *	struct pci_dev *dev __free(pci_dev_put) = NULL;
-+ *
-+ *	pci_lock_rescan_remove();
-+ *
-+ *	dev = pci_get_slot(parent, PCI_DEVFN(0, 0));
-+ *
-+ * In this case @dev is declared in x-mas tree style in a preamble
-+ * declaration block. That is problematic because it destroys the
-+ * compiler's ability to infer proper unwind order. If other cleanup
-+ * helpers appeared in such a function that depended on @dev being live
-+ * to complete their unwind then using the "struct obj_type *obj
-+ * __free(...) = NULL" style is an anti-pattern that potentially causes
-+ * a use-after-free bug. Instead, the expectation is this conversion:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	int num, ret = 0;
-+ *	struct pci_dev *bridge = ctrl->pcie->port;
-+ *	struct pci_bus *parent = bridge->subordinate;
-+ *
-+ *	pci_lock_rescan_remove();
-+ *
-+ *	struct pci_dev *dev __free(pci_dev_put) =
-+ *		pci_get_slot(parent, PCI_DEVFN(0, 0));
-+ *
-+ * ...which implies that declaring variables in mid-function scope is
-+ * not only allowed, but expected.
-+ *
-+ * The motivation for deploying DEFINE_FREE(pci_dev_put, ...) is that at
-+ * the time of writing of this documentation there are ~590 instances of
-+ * pci_dev_put(), ~70 of them with 10 lines of a goto implying that a
-+ * significant number of gotos might be cleaned up for incremental
-+ * maintenance burden relief.
-+ *
-+ * The guard() helper holds the associated lock for the remainder of the
-+ * current scope in which it was invoked. So, for example:
-+ *
-+ * .. code-block:: c
-+ *
-+ *	func(...)
-+ *	{
-+ *		if (...) {
-+ *			...
-+ *			guard(pci_dev); // pci_dev_lock() invoked here
-+ *			...
-+ *		} // <- implied pci_dev_unlock() triggered here
-+ *	}
-+ *
-+ * ...in other words, the lock is held for the remainder of the current
-+ * scope not the remainder of "func()".
-+ *
-+ * At the time of writing there are 15 invocations of pci_dev_unlock() in
-+ * the kernel with 5 within 10 lines of a goto.
-+ *
-+ * Conversions of existing code to use cleanup helpers should convert
-+ * all resources so that no "goto" unwind statements remain. If not all
-+ * resources are amenable to cleanup then additional refactoring is
-+ * needed to build helper functions, or the function is simply not a
-+ * good candidate for conversion.
-+ */
-+
- /*
-  * DEFINE_FREE(name, type, free):
-  *	simple helper macro that defines the required wrapper for a __free()
+I agree, part of it stems from many OEMs designing their interfaces in such
+a way that it is impossible to discover if some optional features are present.
 
+I suspect this happens because under Windows, the OEMs just check all GUIDs
+once the system has "finished booting" (aka reached the login screen), and
+this is afaik not possible with device drivers.
+
+However we cannot export WMI method/events/etc to userspace, as this would
+be a security nightmare (random RPC with buggy ACPI firmware, yay!).
+
+In the future we might need an API for at least discovering and interacting
+with WMI devices backed by the same ACPI device, however this might take some
+time.
+
+I will focus on this WMI event driver for now.
+
+Thanks,
+Armin Wolf
+
+> Thanks,
+>
+> James
+>
+>> Thanks,
+>> Armin Wolf
+>>
+>>>> I can provide a prototype implementation, but unfortunately i have no HP machine
+>>>> myself for testing. But i might be able to find one to test my changes.
+>>> Happy to test. (Also happy to try it myself, but I'd need some help.)
+>>>
+>>>> Thanks,
+>>>> Armin Wolf
+>>>>
+>>>>> [1] https://lore.kernel.org/linux-hwmon/cd81a7d6-4b81-f074-1f28-6d1b5300b937@gmx.de/
+>>>>>
 
