@@ -1,153 +1,159 @@
-Return-Path: <linux-kernel+bounces-109388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D82188187A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:17:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BC6288187C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA47F1F2257B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:17:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0845284B1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51838594B;
-	Wed, 20 Mar 2024 20:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4892A8593C;
+	Wed, 20 Mar 2024 20:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xR4qmmjm"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VNlW0smn"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F15E85933;
-	Wed, 20 Mar 2024 20:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA80984A43
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710965821; cv=none; b=V9w8SbhYRbS6T/R/torpGsv3IFbXXixJlu/QcUKc8o8+byD7gRrOtpW5m0MtnlAPAsuTFQo5e7Y/bfsc8ktQ6wV6Bg+41iLoyY6Smq3U6DYcDNVBs7PUpzfgbFlSCCBOgDFOnE9KSu0v7FmSG8AUtqCP7V4hNIkuTni6e4gk5xw=
+	t=1710965917; cv=none; b=apAIBPJ8hysyOhB+uk4gULWHQaiVyEm+GFg7BqKADXUhIMgmWz7wPYbrMQEQcC5T2k4Y3SXm/LBl/NG3EEnHuLdY3yxtyp1HG/ZFXRW2OkOk1tbGL+EVXeoANMT6qxsdUHn75zZqdVN6Ons+qallvcXUaPA6MI728D4xEubb6Ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710965821; c=relaxed/simple;
-	bh=nj7MzyFExeNZhnwzBI8kDS3G0ZyqJ2Qb0WQL/c4YNTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tuKtofglu3UHcMUNuCTW2sg5dgBG4dvtla/igviHQVjKGadCnxwFTEHPez441vIic/hiIyFdom6NkwyFgDJvqAfLMGLBKyiVRYIJeZCTnDPyp+eqIO9a4dLeXgi9YLw/rD2PX0Dp7rFKsl94QYJyzVMTiPdTAQN+8aCDQ4mUGZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xR4qmmjm; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710965817;
-	bh=nj7MzyFExeNZhnwzBI8kDS3G0ZyqJ2Qb0WQL/c4YNTQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=xR4qmmjmVsPHZiwnD1RdLOW7zqjrJdorBZiwzDr7tAN4XceB3s8mavvGGo/RQpYbq
-	 NErdndNsfObCsEajJM53XCuwRLGcmy53XT9RFdZTSH4PbU0himWp5bJ6ziSE6/gwZP
-	 C+3wBjpB+7JYKlT9V2UvkOAawuOAjtG47Vn/INijwJydYJtYlKn1YjaMJ9KMRhBYOi
-	 0gexHeXZAZViBT6JVTZzrmy3WYVRDysem/ZwN1/lwkMbWa5LfMAOOKPzCA7feecy/A
-	 gzWzdXJxx9r6eEj1gU7PBa9Hud6lVpNwRFiE+hXGibLtyr3PO+MHEey9XOkFsgFNhO
-	 cgoeR/01S4SaQ==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 762FA37814A4;
-	Wed, 20 Mar 2024 20:16:57 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id F3F9B1060704; Wed, 20 Mar 2024 21:16:56 +0100 (CET)
-Date: Wed, 20 Mar 2024 21:16:56 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc: linux-kernel@vger.kernel.org, 
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, Cristian Ciocaltea <cristian.ciocaltea@collabora.com>, 
-	Dragan Simic <dsimic@manjaro.org>, Shreeya Patel <shreeya.patel@collabora.com>, 
-	Chris Morgan <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, 
-	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
-Subject: Re: [PATCH 2/4] media: dt-binding: media: Document =?utf-8?Q?rk35?=
- =?utf-8?B?ODjigJlz?= vepu121
-Message-ID: <uxdndbyetuxxt6icjw7ptlsq6h2ltup7dc35vwbs2i3qvmid2c@33gztzqf7ehm>
-References: <20240320173736.2720778-1-linkmauve@linkmauve.fr>
- <20240320173736.2720778-3-linkmauve@linkmauve.fr>
+	s=arc-20240116; t=1710965917; c=relaxed/simple;
+	bh=P8Domv5WqTvgS1GmnEkQPzqgFNJc7dGQVd7liXEnfi8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DnoSJY/01mY7Th1PhDaQYZX1CgP7iTk4ykdJTJlbZrzMYofgFTqrzsWzX9UAJiIzXDgnxJY/nVUQYO451idufCgj2rz2z3qaQJdDpu8C2pmP1O+6Fe7esmcT4koENvVVwGTeW2JR9SbxNpZuatCBvEfkvgRG7uHoYQBDmpDcdEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VNlW0smn; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430d3fcc511so7191cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710965915; x=1711570715; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZcBOsw97Cw3dCwC0IpeN5YUGl16Tlt2YUvn3jG+nAW8=;
+        b=VNlW0smnGQK/f2a53vzC5XACTkHZEOXKJepTUC/FSffNflkkX6SA+vjHEFpq/Fm876
+         AJHGS5fEY/ANEf+r1k+frfta/eXFF7csj1h+pybjNwjrZNZIx+s3Urn545GLblwvDEqu
+         KQxSe9fXq/IaXutmdnaeF2YBL6+0CCDqRp1Nucd7ngPCiieOA7uXEKUXk4gVuB81ha58
+         dg5+Gct/V6dQqufdUElCi+X76ujfdSrzXEjXBJ/cJwUfEjPo4Mp5mUVTDgrXmtO21p+r
+         qRe1EDEmGIfYKe8McAlaB8vxfnPFAOxblPLEeWpzd3HxZaYls6VVXHciZxbetDJz3R1B
+         3+iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710965915; x=1711570715;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZcBOsw97Cw3dCwC0IpeN5YUGl16Tlt2YUvn3jG+nAW8=;
+        b=RAbJOim7Y/DCGmxfZny+ul9XKU/Yl9J9rbjLI7+8QgevnT7vfG2gJRHml5BKDwV+CQ
+         Wp/aNJrYyis8I97C1VpImy7ij64jbmYRZrpc7N8Sdo7xqEXFEepf/neoVV6J/Ncy8M/C
+         A4XwpXYSNvgUKP4qsukD7c+QvJ64+hI9f+nKvr2Afb6GCeZ9KzvSLhkNL9cypSbxkYzV
+         TazVn/GSzhTkZsDkU0nKsjYhypCmbQio4V6UYAfk9SFrRzX+mQyqBNm8KNpg3OnnxEMH
+         kVmy86UkbSfsuMg720focIif8WcF5g2nF9h7iyYNif/uOIRjLsusq4l7MuVrd1ZuX49X
+         WrhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWRh3wnh+6JbHBMkXAK4Y7p6Q8DCHEbBvGkwse38+HTxPEG+uG76NFjnUEyvYzhoDYgCMwAuYIHnopb5xCFD9cuCrUj3zBznOz5vtJd
+X-Gm-Message-State: AOJu0YySMIy4MWezTYR+8vMOK8aN7YgrqrY9N8wY6rZFnRFbG+CrPoxw
+	SHKvd3YBSzuzHOPcBVtXo6SnI4TZnxd6z4ly0uHFOaINWiAI0ocylYtfo+p2wtIFxVfiBc/NmM4
+	pmBDvlk9uAp/tLyeNQQzc3cGd2hPXAf1Itj8N
+X-Google-Smtp-Source: AGHT+IEEdkkrAwg9Hn12Fn2f8WRvxvqM4dUNa2hRJvQECS2Cceasc/eOQXEDSl8MHwRDyIE6jx27qFryR5Xcu6CHesg=
+X-Received: by 2002:a05:622a:55:b0:431:608:ef03 with SMTP id
+ y21-20020a05622a005500b004310608ef03mr61735qtw.0.1710965914619; Wed, 20 Mar
+ 2024 13:18:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h5b2n4ltpigo6emq"
-Content-Disposition: inline
-In-Reply-To: <20240320173736.2720778-3-linkmauve@linkmauve.fr>
-
-
---h5b2n4ltpigo6emq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <bd027379713cbaafa21ffe9e848ebb7f475ca0e7.1710930542.git.geert+renesas@glider.be>
+In-Reply-To: <bd027379713cbaafa21ffe9e848ebb7f475ca0e7.1710930542.git.geert+renesas@glider.be>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 20 Mar 2024 13:17:58 -0700
+Message-ID: <CAGETcx_KNvY4NyQ+HSfkgVJS625R-LVNh_tsoZMM0or78ryEWg@mail.gmail.com>
+Subject: Re: [PATCH] clocksource/drivers/renesas-ostm: Avoid reprobe after
+ successful early probe
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+	=?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Liviu Dudau <liviu.dudau@arm.com>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Wed, Mar 20, 2024 at 06:37:31PM +0100, Emmanuel Gil Peyrot wrote:
-> This encoder-only device is present four times on this SoC, and should
-> support everything the rk3568 vepu supports (so JPEG, H.264 and VP8
-> encoding).
->=20
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+On Wed, Mar 20, 2024 at 3:30=E2=80=AFAM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> The Renesas OS Timer (OSTM) driver contains two probe points, of which
+> only one should complete:
+>   1. Early probe, using TIMER_OF_DECLARE(), to provide the sole
+>      clocksource on (arm32) RZ/A1 and RZ/A2 SoCs,
+>   2. Normal probe, using a platform driver, to provide additional timers
+>      on (arm64 + riscv) RZ/G2L and similar SoCs.
+>
+> The latter is needed because using OSTM on RZ/G2L requires manipulation
+> of its reset signal, which is not yet available at the time of early
+> probe, causing early probe to fail with -EPROBE_DEFER.  It is only
+> enabled when building a kernel with support for the RZ/G2L family, so it
+> does not impact RZ/A1 and RZ/A2.  Hence only one probe method can
+> complete on all affected systems.
+>
+> As relying on the order of initialization of subsystems inside the
+> kernel is fragile, set the DT node's OF_POPULATED flag after a succesful
+> early probe.  This makes sure the platform driver's probe is never
+> called after a successful early probe.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  .../devicetree/bindings/media/rockchip,rk3568-vepu.yaml          | 1 +
+> Tested on RZ/A2 (after force-enabling the platform driver probe).
+> Regression-tested on RZ/Five (member of the RZ/G2L family).
+>
+> In between commit 4f41fe386a94639c ("clocksource/drivers/timer-probe:
+> Avoid creating dead devices") and its revert 4479730e9263befb (both in
+> v5.7), the clocksource core took care of this.  Other subsystems[1]
+> still handle this, either minimally (by just setting OF_POPULATED), or
+> fully (by also clearing OF_POPULATED again in case of probe failure).
+>
+> Note that despite the revert in the clocksource core, several
+> clocksource drivers[2] still clear the OF_POPULATED flag manually, to
+> force probing the same device using both TIMER_OF_DECLARE() and standard
+> platform device probing (the latter may be done in a different driver).
+>
+> [1] See of_clk_init(), of_gpiochip_scan_gpios(), of_irq_init().
+> [2] drivers/clocksource/ingenic-sysost.c
+>     drivers/clocksource/ingenic-timer.c
+>     drivers/clocksource/timer-versatile.c
+> ---
+>  drivers/clocksource/renesas-ostm.c | 1 +
 >  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu=
-=2Eyaml b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> index 9d90d8d0565a..947ad699cc5e 100644
-> --- a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> +++ b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
-> @@ -17,6 +17,7 @@ properties:
->    compatible:
->      enum:
->        - rockchip,rk3568-vepu
-> +      - rockchip,rk3588-vepu121
+>
+> diff --git a/drivers/clocksource/renesas-ostm.c b/drivers/clocksource/ren=
+esas-ostm.c
+> index 8da972dc171365bc..37db7e23a4d29135 100644
+> --- a/drivers/clocksource/renesas-ostm.c
+> +++ b/drivers/clocksource/renesas-ostm.c
+> @@ -210,6 +210,7 @@ static int __init ostm_init(struct device_node *np)
+>                 pr_info("%pOF: used for clock events\n", np);
+>         }
+>
+> +       of_node_set_flag(np, OF_POPULATED);
+>         return 0;
 
-Looks like they are fully compatible. In that case it's better to
-use a fallback compatible (i.e. like the iommu binding), which does
-not need any drivers changes. So binding should be like this:
+Couldn't you also solve this by using the more specific compatible
+strings for the driver and TIMER_OF_DECLARE()?
 
-compatible:
-  oneOf:
-    - const: rockchip,rk3568-vepu
-    - items:
-      - enum:
-          - rockchip,rk3588-vepu121
-      - const: rockchip,rk3568-vepu
+-Saravana
 
-Then in DT (i.e. the following patch) you use
-
-compatible =3D "rockchip,rk3588-vepu121", "rockchip,rk3568-vepu";
-
-And patch 4/4 can be dropped.
-
-Greetings,
-
--- Sebastian
-
---h5b2n4ltpigo6emq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmX7RC4ACgkQ2O7X88g7
-+pq/5g/+IlGV2VBxSGO7OhBFSPRfHCOwTmN5HMpgyVmMQ0b/V+5c4KFuNR5EJJL/
-X0ysDd35GBI8qi8M9h3SziSkGjMqyW+HEWKvsTX+nk+AiQav93ze2cVJdcbbHvh8
-HGJc1Wu3FxvjIpTGResLeDEPxYxJLtABD+jUE7/897Ra15JBmVRkhutCMljxKZve
-lu4/9vWD2D0gDLOlo3Foxrt4zPrGzQuRQQ+0ATrc+auWQmxgXqztnNJXjDBvOfoo
-+6822tBJH03S0dp1/i+rmkZO9qPSqh2dcLURkAThhr5YI7fmHhjGjKfo/aDXvmBD
-olNJcBjTtkswotDHN/i/arBcQIgPyYAZgoKSwVGR9yq+PbRJyliF63pFVlXZSfIc
-rOEU3+5j5ydliUe8VKV1mVJBzvTB47xnccHSS89CjhhrovYl2u8wDNexy9YWo4WN
-tB2msuOHWH+m3YbVAln6IYRt5OxX0MF5rhoFiB5HFWY9xpfmhUFAaUKPfwCibWDp
-WjH4S2VHQh2kFfyjPvTMSZME6QPCKkgCaxOkyEJFVUABge2Bb/fZHx2yekNghF7i
-GpEYx+FuzFMkli7dcJ+gPX4rEQLkb4wEiUnW0+yIvB+5L660JARx7i+uDakR/C9Z
-59dOdJSv6tFDkvu/rqTeQBKssjO5505TiDVwYcn55iFKCMGcUk0=
-=pn+0
------END PGP SIGNATURE-----
-
---h5b2n4ltpigo6emq--
+>
+>  err_cleanup:
+> --
+> 2.34.1
+>
 
