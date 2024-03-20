@@ -1,276 +1,238 @@
-Return-Path: <linux-kernel+bounces-109013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E249388135D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:33:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A84F388135F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6AC41C22641
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:33:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE6D81F23D4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2882B47F6A;
-	Wed, 20 Mar 2024 14:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456A447F72;
+	Wed, 20 Mar 2024 14:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8Ehzo7B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="bcHeZ3YE"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2139.outbound.protection.outlook.com [40.107.21.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9A3848E;
-	Wed, 20 Mar 2024 14:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710945174; cv=none; b=RFvxteSegr+WCtWrgw9zfoHTRwTVvGLPQjrE6jadwM8CDUdCdhlbMEAwPbZQ+w1SwBcRSSmlWUNuAeLHbflX7wVn/8sUGy65euFYTY8CuGT7n1H9hO3bXi/bDOG0hfyC6HDnecqxYbLPEtaF1ncmtnO5YLHAIBB7431FVHGNJUQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710945174; c=relaxed/simple;
-	bh=3JQ9oCUa5g8iZh84z/dzwbM73ILVKpXL8PoHZSM9gvk=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=VdHwoIcSxPY12RRCh1Oa24NpqjEmHPfWweAstenry7s1iGE3Ad6fQwjClC5FHXFecZ2FhrnbzEUhwbMgV0745Rr3xCwter0FTnr5vCdc0AVJOMC2Z8Gi+2/cZaamd98syb3xqop62dGLLcHEeBgShW+hPJcdJTS2NqDdytIabUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8Ehzo7B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EA6C433F1;
-	Wed, 20 Mar 2024 14:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710945173;
-	bh=3JQ9oCUa5g8iZh84z/dzwbM73ILVKpXL8PoHZSM9gvk=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=c8Ehzo7BsszXKbeF3LNKpF6Noap1iL3xRmv2MnDQjRhbF+toiBF9BaRxOKKcRFkXv
-	 1xpyj1S8yy1sD+lkm5SiEcx19yx+IjzXO+t9hL1CRkMljzLPJyBjsVbGvfUx7WhMR1
-	 m2MDFZ/x2Onu4npbOlbJFMfArm6DCgIbWWkSc/McJA1zkI6zwc9u/ixbwcBNbdd9ng
-	 19PafV4b/09z9cPu7fgQ3sUWEAGVT/JrML6OOBeKdWw5zXWWNbfl4JaDtcDagSSpHu
-	 gDunFaw3IdNDYmKRg97fk3tsPmo2Lv8y8OelQS/imOBg5D4jy02kJAxC8daTuudfBW
-	 JQBttvHSEW84w==
-From: Kalle Valo <kvalo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Jeff Johnson <jjohnson@kernel.org>,  kuba@kernel.org,
-  keescook@chromium.org,  linux-wireless@vger.kernel.org (open
- list:NETWORKING DRIVERS (WIRELESS)),  ath11k@lists.infradead.org (open
- list:QUALCOMM ATHEROS ATH11K WIRELESS DRIVER),
-  linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] wifi: ath11k: allocate dummy net_device dynamically
-References: <20240319185735.1268980-1-leitao@debian.org>
-Date: Wed, 20 Mar 2024 16:32:49 +0200
-In-Reply-To: <20240319185735.1268980-1-leitao@debian.org> (Breno Leitao's
-	message of "Tue, 19 Mar 2024 11:57:33 -0700")
-Message-ID: <871q85as8e.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0723FB97;
+	Wed, 20 Mar 2024 14:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.139
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710945217; cv=fail; b=kh1TEiniT8xME3FSHeXjPNE8qmll1kD9H67qIy+rBTXv5tZLZLHbcrtc+o6yMQbTBZ+fzjQrzWBjl7VFj/V896PBWjT01yRIv6xtvbhQh7StBfkKbBsOnHz1CmMKtgNsUKdUifQv9ItS3LoEXg7IDqp1sf/dePPsRx4OnF5CDB8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710945217; c=relaxed/simple;
+	bh=iEkkRR1Ggnu0U4KksbiHEKS21yVgdlrmK1IpxqWM+20=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NLWV9BwTjqUqMR2sKfdW2rTLf5RuJBbyG3eW3S7dztmiMdqU4m+vivF0Qo+7Cb+Q/EWkGR0m7P2aaQJmyFw6lk+jZKC1h8vwLxDgHkMvuCzujNEdWK7enpgV13UnpJPswXlggCMDaZzFZFGhHxMmxBzHBHb7C/abcV3I5eAbOIU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=bcHeZ3YE; arc=fail smtp.client-ip=40.107.21.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E2/skxd5PC4yGaIMiZMtHYeJSRm0giVhrq3W30IncR/ainCZcS0COOqFguxjV8Fs0gVQ5zjRI9ZiaXwy8uE1LCtagNDH97CC7eOyDOPiqdUwNJJeoX63Ww9I/DOY1PED0wE83syCOSHeO1deZa4nN0D6zvanHDGT0AvlI6iBTAaYWSsq78bBNvlDXrvIFVirrkWV/JlFGhTPQgy6cu/aNsAnR0IiFEvOlGKW+EV+97FDs8ZXHwnUdKCgZdGXyWC5KNtCwpTL5HQBlaPdLUNl/6E3LfW7mNePPRIR1QCPdblyGSx2Bj3GeOO81dCdi982pLMNd5xI0BKXrSEo1CLQAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iEkkRR1Ggnu0U4KksbiHEKS21yVgdlrmK1IpxqWM+20=;
+ b=jQHUeXCPDxMNPqrZqvgQALuCxz7jucJADk8XW2gNJMFBhlXv3PMtUrkhYjFPF+uYCG3AvGI5xgMvQ/dyQu67Q+kD21al6cpmG4l9sjv4YeK6E9uPyWAGoVbCEB9r4VJnIthij2xrtvmdhzXf596v/+PiRkPN4r8dgH0yZh4PVgzcgWXiyOoLmk/p6URuSN5xmtxK5Y0fztuxCLmDs8O93OeIg6N9x/M5yCmjFSk2jlLjNzirqG10+/RlR1A8Kp4ukdBKbseulN1drYfCwmyLcfdZzRCJjw/DWSS1eHy/lGGJcdcS60pH6SEDwwox0+dLA41iEVMzvRL7KpY7NJyyYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iEkkRR1Ggnu0U4KksbiHEKS21yVgdlrmK1IpxqWM+20=;
+ b=bcHeZ3YEJoReg3WKrU+yyALSXh4gX5ibm6tgWh7V62ZztY93itc5UTlbs8ZclNBKA87SU8wsBetJ8nDEeNLDxKwgoF2EA1y5dde+fB8BkP14R06kjC66gVRyruzzlQUuTWUMCUXehEFn5vpcw8gc3Va0foJ777hDpsM1dFz7q2s=
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by AS8PR04MB8819.eurprd04.prod.outlook.com (2603:10a6:20b:42e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.25; Wed, 20 Mar
+ 2024 14:33:27 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::57e1:e1cb:74e2:2e9d]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::57e1:e1cb:74e2:2e9d%5]) with mapi id 15.20.7386.031; Wed, 20 Mar 2024
+ 14:33:24 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Jiri Pirko <jiri@resnulli.us>
+CC: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: add warning for truncated mdio bus
+ id
+Thread-Topic: [PATCH] net: dsa: mv88e6xxx: add warning for truncated mdio bus
+ id
+Thread-Index: AQHaes1eqLrk3YtcdE6GnHKqfgAD+rFAqraAgAAG0AA=
+Date: Wed, 20 Mar 2024 14:33:24 +0000
+Message-ID: <c76c95af-71cb-4eb6-b3af-846ae318d18d@solid-run.com>
+References:
+ <20240320-mv88e6xxx-truncate-busid-v1-1-cface50b2efb@solid-run.com>
+ <Zfrt_dlYvBzlxull@nanopsycho>
+In-Reply-To: <Zfrt_dlYvBzlxull@nanopsycho>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM9PR04MB7586:EE_|AS8PR04MB8819:EE_
+x-ms-office365-filtering-correlation-id: 09d31143-f9b1-4fb4-7053-08dc48eab315
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ XcMF+5hRaVpGsU+wy/3CPO6uzaK02V3i8M7304GrLjGHoJ7wDglP2ukkRLJZP8ve5AD4oA54RTMmN5lLB9q3oW3gXIO1HnUvMQMiD8a28L4tr3JWfzzby+swZjk3ORScthqfb8CS3hl+yLba4O80f0qbjo76aiFVDLuJqGTLfW5Red+y4tyeMJfOQmEwTAgVxGHqb8JOmqTCvMV4hvXfXefTbuVHUcVFnfV19iZSYcBR3K26kAXQlGbb85MmwG5Vs4h5sH2z723U0Br9/fq8gqWTMYOHeJfkLrxrxWiyCF2PO+DSFp5p8ngwIE17+hAyz8Ym22UvMonD8BaPqwzqAap+/2oHLZuCyBQP+IscCAHNYaxsvebFA56s+5goZZ8MBog/nHBUkf1n5VD+1WgbmEaXoHiLHrkVPNte8dv8nrzjRdw3OSkAeqT1Ue1h5jTFhz1OXF/dxBYzwlkMkLAizZpAaCVPvEAtexT7WVE6cfcMXcW58XMD3pdP/VGHTukIoSC9pmIsMYMrqEvqTuwru3FgMUFoTR7MGBBG3jXY4eYiasCURh5E0gpqX1vfjflV9LLXbkoHcRoNHbecLajamalV3L6AxyMnv0TS29SRtHQw8bdjtUoPBh1L1X4jGG++fzwnUZ11+k67P2cQccYvlsJEhC4E/aNwAuqpfG3UOOdwxLOJEjDxw3tLdjEeGMeJgaw2CoWbLdC0v2x0CvaLzlSh+jNbMGl2ol2a5syeDBE=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?U2VOTEE3OFNyeUgyWGY3NXdSL21ieGl5MmNxL1E0Nkg0Q0xyZVpYTlBONDc5?=
+ =?utf-8?B?WnRLMXFNL0l0YklkbFdlNWM5R0tMNENQVVoxOGN6T3lzZWwvNzg2cGhKN2Nn?=
+ =?utf-8?B?OHFIT1NUdVY0Zm9BdG5sN2ZGcXpEa25qY2N6d2lPblZvWk5nSGV0aVhZM2Vr?=
+ =?utf-8?B?Q2xNM1JXOXJNbnFUN0hEd1FkamNJaVpkeE9pYk83Z3hCMCsrM1VPZ2Fab3FW?=
+ =?utf-8?B?bHpkQUZIb3YxYTVub3o2S3FZVmFHNHdkQzM1ZC9yWXB2VkZOZVRaR2I2QUhZ?=
+ =?utf-8?B?ZDNpaU9Lc2E1eCs3NmQ5MWJzMWlCUFVHMTJ5K2loYjdicXdjdjdhOHdTbk5V?=
+ =?utf-8?B?dzZTSDVPcUtOSFFoblFDZXJRbGh0MVlyTmdoTE9iQWQvL2YrT3FjN3A1ZzB6?=
+ =?utf-8?B?Sk9lcHB0NFZZb1lnaG9qUm5DQnAyZVJuSGd3bS8yL0M5UnhqTk5FODR4UGc3?=
+ =?utf-8?B?SkRqMXRnUFhxeHZ2OXRHL0RSZlI0dFFCZ2VZRzc5RWhkODFkdnN3dGpiQTNw?=
+ =?utf-8?B?RjJzSS94TFdaNThuK0ltTzR1TlA4aDRJc2psdEgvTU12UWUyMnk1T1Q1cjJn?=
+ =?utf-8?B?VUNsazFRaVhUWGppTm45Q21wZlI1ZjRqWmVIMjArMm91YlYxWmVRSzF3KzF3?=
+ =?utf-8?B?bWd6ckFpUUVRMTRMY05zWk1oWTZSbFpRWEdMUGNGcy9YUW1CTU1rUFlhN21M?=
+ =?utf-8?B?eGE4ZWdIUDZQZkNxRTM0SDE1WTVWWjI1ZVcyS3UwZkpiZlZxbkhuMGNMNnpQ?=
+ =?utf-8?B?RXgxZG5GcXdPK2dEY2REY2pKOEczNDZ6YVlpNDFFc1VkQ1NON3gxb0dLWFRD?=
+ =?utf-8?B?bmFMZzdIa2tRZGNQM2Z1aldDYXZ3MXFpdWplZWExZU9DRGNPUUhKcnQ1MHpu?=
+ =?utf-8?B?MGpiVFNpdjRiN2VuUmdnRmdKNGt5QkRob1BzanRTcmdEbXVVWHovclUzS0NL?=
+ =?utf-8?B?SGdmc3dDSllvTWgxOFE5dStydkJUb1FUWlBpYzl5R254NjhHOEd0bkhmRTFk?=
+ =?utf-8?B?dkdYd3F3N0pnU3ExQjhHUisrVjZuNWVYaTY1dXhHT3pROWk5RGM0ZkgwN0tY?=
+ =?utf-8?B?OTZwRWlKR1FuZk9uTDVnV1ZaQzRURXY5enJjRUJyT2Y2L3lFNkdNd3Z2Y1Yw?=
+ =?utf-8?B?ZVcrZU5PTWorVHhILzA3WHNzb3pYOS9MYWFMc1R2bzRINWROTEpWNHBXaUZa?=
+ =?utf-8?B?QlFmSFBpRHFWRmJaWVhsdGpVb1ZYa3AyU0VIdWRHcjVnaHdRbnA1cHIvejhi?=
+ =?utf-8?B?M2tseENsWXFLRFJFSy9tbHFNQnR0REk5Q2ZMMnNRQy9kM3pnSVpCZHRRTk5H?=
+ =?utf-8?B?MDdjUTltZ3RuZUcxVW1yK1RsdmJVSE1jQXg4VHM2czhHOFEyV1JCMEpWbElx?=
+ =?utf-8?B?bFF1SlRxeWRkZSttdFdOQ3VKMStuV3pKeXBLR1NwdkhMaFRsU1ptbkVlc2FT?=
+ =?utf-8?B?TitJaWhpSHVYa01rT2cwWUN6RENFMGZCVVhwRStxMDFhS25xc2VlZjJaazZS?=
+ =?utf-8?B?TXA5dG91ckluZk03bHhSbjloaVlZVmR0UFhHZEN4NU9leWN2KzZuWWZnUzBP?=
+ =?utf-8?B?b2wxbUVHdHFHR2ZhS2R0UHJWRFRPUXBlU005Z3pPdHc1WHpWdFN4R0F2SE1h?=
+ =?utf-8?B?SnplUnQzQVhFTVErV1lSaUJEeGdmNUowVi9oT2xiZzlZSnYxZEhTdUZjS0lX?=
+ =?utf-8?B?dnVyRXozcWJCa1JkRW1nTmlyWEJrREQ2RUE5UVF5Z0JXUFV1cmgzZ2o0cVR4?=
+ =?utf-8?B?T0pKSitPOUtGWW9LOVNMK2o5R0pVMVR2SExDajhFaTVTQjZGTW9wbHFuRUht?=
+ =?utf-8?B?M2Nmbk12ck05dHF1RTJ4MmhrRzFGbVhSa0pFeHp3S1lmNWVFWEpUYW5vUVBE?=
+ =?utf-8?B?MERMQk92RG45ZUovdE4yKzIveE4vQ3ZFMjUxM0YzNXZmbUZkN3lMdWZUanFI?=
+ =?utf-8?B?UW54eEw2aE1SdHAzZ2ZwOFRKM2x3bGtrbVliWndlYXhzSzlCK295WFZVYXpN?=
+ =?utf-8?B?T2RhU3E2bEhhUndaUzRxVkxVdHpha2xEb2pxSTRRS2NDdWZzd09pMW0xSWth?=
+ =?utf-8?B?OWd5QWNYV2wwdGZySlRlbTE5NFRLVCtsbmZFczhKTC9MTnhSMVRXRGVXWEQx?=
+ =?utf-8?Q?acCc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B17FF685FE8C0246B08E03954D0E63CA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09d31143-f9b1-4fb4-7053-08dc48eab315
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 14:33:24.3646
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vEt/0/LHzt9+EN/XqW03xmr0nWQMaIXr/3hWsstY14OppFbXx4ugewWk0ylH+2hvPidbVLsYxFuK2ujiLoBdYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8819
 
-Breno Leitao <leitao@debian.org> writes:
-
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
->
-> Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at ath11k_ahb_config_ext_irq() for ahb, and
-> ath11k_pcic_ext_irq_config() for pcic.
->
->  The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
-> case, and ath11k_pcic_free_ext_irq() for the pcic case.
->
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-
-This crashes on my nuc x86 test box with WCN6855 hw2.0 when running
-rmmod, stacktrace below. I used tag ath-202403201010 from my ath.git
-tree as the baseline. Sorry that I'm not able to debug this further
-right now.
-
-[  116.584290] rmmod ath11k_pci
-[  117.274127] general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN
-[  117.274175] KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-[  117.274210] CPU: 1 PID: 1467 Comm: rmmod Not tainted 6.8.0-wt-ath+ #1338
-[  117.274259] Hardware name: Intel(R) Client Systems NUC8i7HVK/NUC8i7HVB, BIOS HNKBLi70.86A.0067.2021.0528.1339 05/28/2021
-[  117.274290] RIP: 0010:memcmp (lib/string.c:666) 
-[ 117.274335] Code: 24 0f 85 1a ff ff ff 49 83 ed 08 48 83 c3 08 49 83 c4 08 49 83 fd 07 0f 86 fb fe ff ff 48 89 d8 48 89 de 48 c1 e8 03 83 e6 07 <42> 0f b6 14 30 48 8d 43 07 48 89 c1 48 c1 e9 03 40 38 f2 40 0f 9e
-All code
-========
-   0:	24 0f                	and    $0xf,%al
-   2:	85 1a                	test   %ebx,(%rdx)
-   4:	ff                   	(bad)
-   5:	ff                   	(bad)
-   6:	ff 49 83             	decl   -0x7d(%rcx)
-   9:	ed                   	in     (%dx),%eax
-   a:	08 48 83             	or     %cl,-0x7d(%rax)
-   d:	c3                   	ret
-   e:	08 49 83             	or     %cl,-0x7d(%rcx)
-  11:	c4                   	(bad)
-  12:	08 49 83             	or     %cl,-0x7d(%rcx)
-  15:	fd                   	std
-  16:	07                   	(bad)
-  17:	0f 86 fb fe ff ff    	jbe    0xffffffffffffff18
-  1d:	48 89 d8             	mov    %rbx,%rax
-  20:	48 89 de             	mov    %rbx,%rsi
-  23:	48 c1 e8 03          	shr    $0x3,%rax
-  27:	83 e6 07             	and    $0x7,%esi
-  2a:*	42 0f b6 14 30       	movzbl (%rax,%r14,1),%edx		<-- trapping instruction
-  2f:	48 8d 43 07          	lea    0x7(%rbx),%rax
-  33:	48 89 c1             	mov    %rax,%rcx
-  36:	48 c1 e9 03          	shr    $0x3,%rcx
-  3a:	40 38 f2             	cmp    %sil,%dl
-  3d:	40                   	rex
-  3e:	0f                   	.byte 0xf
-  3f:	9e                   	sahf
-
-Code starting with the faulting instruction
-===========================================
-   0:	42 0f b6 14 30       	movzbl (%rax,%r14,1),%edx
-   5:	48 8d 43 07          	lea    0x7(%rbx),%rax
-   9:	48 89 c1             	mov    %rax,%rcx
-   c:	48 c1 e9 03          	shr    $0x3,%rcx
-  10:	40 38 f2             	cmp    %sil,%dl
-  13:	40                   	rex
-  14:	0f                   	.byte 0xf
-  15:	9e                   	sahf
-[  117.274385] RSP: 0018:ffffc90004177af0 EFLAGS: 00010246
-[  117.274423] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffffffff57f2de9
-[  117.274461] RDX: 0000000000000020 RSI: 0000000000000000 RDI: 0000000000000000
-[  117.274493] RBP: ffffc90004177b20 R08: 0000000000000001 R09: fffffbfff57f3342
-[  117.274529] R10: ffffffffabf99a17 R11: ffffffffaa325926 R12: ffff888112c54bf8
-[  117.274568] R13: 0000000000000020 R14: dffffc0000000000 R15: ffff888112c54688
-[  117.274603] FS:  00007f1520d33740(0000) GS:ffff888231c00000(0000) knlGS:0000000000000000
-[  117.274637] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  117.274672] CR2: 00007f675c010d68 CR3: 000000010a9a0001 CR4: 00000000003706f0
-[  117.274707] Call Trace:
-[  117.274740]  <TASK>
-[  117.274776] ? show_regs (arch/x86/kernel/dumpstack.c:479) 
-[  117.274841] ? die_addr (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:460) 
-[  117.274891] ? exc_general_protection (arch/x86/kernel/traps.c:701 arch/x86/kernel/traps.c:643) 
-[  117.274935] ? asm_exc_general_protection (./arch/x86/include/asm/idtentry.h:564) 
-[  117.274983] ? do_syscall_64 (arch/x86/entry/common.c:52 (discriminator 1) arch/x86/entry/common.c:83 (discriminator 1)) 
-[  117.275019] ? memcmp (lib/string.c:666) 
-[  117.275050] dev_addr_check (net/core/dev_addr_lists.c:513 (discriminator 1)) 
-[  117.275090] dev_addr_flush (net/core/dev_addr_lists.c:535) 
-[  117.275127] free_netdev (net/core/dev.c:10976) 
-[  117.275164] ath11k_pcic_free_irq (drivers/net/wireless/ath/ath11k/pcic.c:312 (discriminator 2) drivers/net/wireless/ath/ath11k/pcic.c:334 (discriminator 2)) ath11k
-[  117.275234] ath11k_pci_remove (drivers/net/wireless/ath/ath11k/pci.c:478 drivers/net/wireless/ath/ath11k/pci.c:987) ath11k_pci
-[  117.275273] pci_device_remove (./include/linux/pm_runtime.h:140 drivers/pci/pci-driver.c:477) 
-[  117.275309] device_remove (drivers/base/dd.c:570) 
-[  117.275338] device_release_driver_internal (drivers/base/dd.c:1274 drivers/base/dd.c:1295) 
-[  117.275374] ? __kasan_check_read (mm/kasan/shadow.c:32) 
-[  117.275412] driver_detach (drivers/base/dd.c:1359) 
-[  117.275448] bus_remove_driver (drivers/base/bus.c:736) 
-[  117.275481] driver_unregister (drivers/base/driver.c:275) 
-[  117.275518] pci_unregister_driver (./include/linux/spinlock.h:351 drivers/pci/pci-driver.c:85 drivers/pci/pci-driver.c:1472) 
-[  117.275553] ? find_module_all (kernel/module/main.c:357 (discriminator 1)) 
-[  117.275588] ath11k_pci_exit (drivers/net/wireless/ath/ath11k/pci.c:1069) ath11k_pci
-[  117.275625] __do_sys_delete_module (kernel/module/main.c:756) 
-[  117.275663] ? module_flags (kernel/module/main.c:700) 
-[  117.275697] ? kmem_cache_free (mm/slub.c:4299 (discriminator 3) mm/slub.c:4363 (discriminator 3)) 
-[  117.275726] ? __fput (fs/file_table.c:390) 
-[  117.275763] ? debug_smp_processor_id (lib/smp_processor_id.c:61) 
-[  117.275802] __x64_sys_delete_module (kernel/module/main.c:698) 
-[  117.275890] do_syscall_64 (arch/x86/entry/common.c:52 (discriminator 1) arch/x86/entry/common.c:83 (discriminator 1)) 
-[  117.275925] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
-[  117.275954] RIP: 0033:0x7f1520e80c8b
-[ 117.275994] Code: 73 01 c3 48 8b 0d 05 c2 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d5 c1 0c 00 f7 d8 64 89 01 48
-All code
-========
-   0:	73 01                	jae    0x3
-   2:	c3                   	ret
-   3:	48 8b 0d 05 c2 0c 00 	mov    0xcc205(%rip),%rcx        # 0xcc20f
-   a:	f7 d8                	neg    %eax
-   c:	64 89 01             	mov    %eax,%fs:(%rcx)
-   f:	48 83 c8 ff          	or     $0xffffffffffffffff,%rax
-  13:	c3                   	ret
-  14:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
-  1b:	00 00 00 
-  1e:	90                   	nop
-  1f:	f3 0f 1e fa          	endbr64
-  23:	b8 b0 00 00 00       	mov    $0xb0,%eax
-  28:	0f 05                	syscall
-  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	ret
-  33:	48 8b 0d d5 c1 0c 00 	mov    0xcc1d5(%rip),%rcx        # 0xcc20f
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
-
-Code starting with the faulting instruction
-===========================================
-   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
-   6:	73 01                	jae    0x9
-   8:	c3                   	ret
-   9:	48 8b 0d d5 c1 0c 00 	mov    0xcc1d5(%rip),%rcx        # 0xcc1e5
-  10:	f7 d8                	neg    %eax
-  12:	64 89 01             	mov    %eax,%fs:(%rcx)
-  15:	48                   	rex.W
-[  117.276031] RSP: 002b:00007ffe05526498 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-[  117.276069] RAX: ffffffffffffffda RBX: 00005582d521c7e0 RCX: 00007f1520e80c8b
-[  117.276098] RDX: 000000000000000a RSI: 0000000000000800 RDI: 00005582d521c848
-[  117.276134] RBP: 00007ffe055264f8 R08: 0000000000000000 R09: 0000000000000000
-[  117.276174] R10: 00007f1520efcac0 R11: 0000000000000206 R12: 00007ffe055266d0
-[  117.276208] R13: 00007ffe05527eb7 R14: 00005582d521b2a0 R15: 00005582d521c7e0
-[  117.276245]  </TASK>
-[  117.276280] Modules linked in: ath11k_pci(-) ath11k mac80211 libarc4 cfg80211 qmi_helpers qrtr_mhi mhi qrtr nvme nvme_core
-[  117.276380] ---[ end trace 0000000000000000 ]---
-[  117.298338] RIP: 0010:memcmp (lib/string.c:666) 
-[ 117.298394] Code: 24 0f 85 1a ff ff ff 49 83 ed 08 48 83 c3 08 49 83 c4 08 49 83 fd 07 0f 86 fb fe ff ff 48 89 d8 48 89 de 48 c1 e8 03 83 e6 07 <42> 0f b6 14 30 48 8d 43 07 48 89 c1 48 c1 e9 03 40 38 f2 40 0f 9e
-All code
-========
-   0:	24 0f                	and    $0xf,%al
-   2:	85 1a                	test   %ebx,(%rdx)
-   4:	ff                   	(bad)
-   5:	ff                   	(bad)
-   6:	ff 49 83             	decl   -0x7d(%rcx)
-   9:	ed                   	in     (%dx),%eax
-   a:	08 48 83             	or     %cl,-0x7d(%rax)
-   d:	c3                   	ret
-   e:	08 49 83             	or     %cl,-0x7d(%rcx)
-  11:	c4                   	(bad)
-  12:	08 49 83             	or     %cl,-0x7d(%rcx)
-  15:	fd                   	std
-  16:	07                   	(bad)
-  17:	0f 86 fb fe ff ff    	jbe    0xffffffffffffff18
-  1d:	48 89 d8             	mov    %rbx,%rax
-  20:	48 89 de             	mov    %rbx,%rsi
-  23:	48 c1 e8 03          	shr    $0x3,%rax
-  27:	83 e6 07             	and    $0x7,%esi
-  2a:*	42 0f b6 14 30       	movzbl (%rax,%r14,1),%edx		<-- trapping instruction
-  2f:	48 8d 43 07          	lea    0x7(%rbx),%rax
-  33:	48 89 c1             	mov    %rax,%rcx
-  36:	48 c1 e9 03          	shr    $0x3,%rcx
-  3a:	40 38 f2             	cmp    %sil,%dl
-  3d:	40                   	rex
-  3e:	0f                   	.byte 0xf
-  3f:	9e                   	sahf
-
-Code starting with the faulting instruction
-===========================================
-   0:	42 0f b6 14 30       	movzbl (%rax,%r14,1),%edx
-   5:	48 8d 43 07          	lea    0x7(%rbx),%rax
-   9:	48 89 c1             	mov    %rax,%rcx
-   c:	48 c1 e9 03          	shr    $0x3,%rcx
-  10:	40 38 f2             	cmp    %sil,%dl
-  13:	40                   	rex
-  14:	0f                   	.byte 0xf
-  15:	9e                   	sahf
-[  117.298448] RSP: 0018:ffffc90004177af0 EFLAGS: 00010246
-[  117.298504] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffffffff57f2de9
-[  117.298554] RDX: 0000000000000020 RSI: 0000000000000000 RDI: 0000000000000000
-[  117.298600] RBP: ffffc90004177b20 R08: 0000000000000001 R09: fffffbfff57f3342
-[  117.298651] R10: ffffffffabf99a17 R11: ffffffffaa325926 R12: ffff888112c54bf8
-[  117.298700] R13: 0000000000000020 R14: dffffc0000000000 R15: ffff888112c54688
-[  117.298749] FS:  00007f1520d33740(0000) GS:ffff888231c00000(0000) knlGS:0000000000000000
-[  117.298810] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  117.298871] CR2: 00007f675c010d68 CR3: 000000010a9a0001 CR4: 00000000003706f0
-[  117.298924] Kernel panic - not syncing: Fatal exception
-[  117.299488] Kernel Offset: 0x26600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-[  117.328105] Rebooting in 10 seconds..
-
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+QW0gMjAuMDMuMjQgdW0gMTU6MDkgc2NocmllYiBKaXJpIFBpcmtvOg0KPiBXZWQsIE1hciAyMCwg
+MjAyNCBhdCAwMjo0ODo1NVBNIENFVCwgam9zdWFAc29saWQtcnVuLmNvbSB3cm90ZToNCj4+IG12
+ODhlNnh4eCBzdXBwb3J0cyBtdWx0aXBsZSBtZGlvIGJ1c2VzIGFzIGNoaWxkcmVuLCBlLmcuIHRv
+IG1vZGVsIGJvdGgNCj4+IGludGVybmFsIGFuZCBleHRlcm5hbCBwaHlzLiBJZiB0aGUgY2hpbGQg
+YnVzZXMgbWRpbyBpZHMgYXJlIHRydW5jYXRlZCwNCj4+IHRoZXkgbWlnaHQgY29sbGlkZSB3aGlj
+aCBlYWNoIG90aGVyIGxlYWRpbmcgdG8gYW4gb2JzY3VyZSBlcnJvciBmcm9tDQo+PiBrb2JqZWN0
+X2FkZC4NCj4+DQo+PiBUaGUgbWF4aW11bSBsZW5ndGggb2YgYnVzIGlkIGlzIGN1cnJlbnRseSBk
+ZWZpbmVkIGFzIDYxDQo+PiAoTUlJX0JVU19JRF9TSVpFKS4gVHJ1bmNhdGlvbiBjYW4gb2NjdXIg
+b24gcGxhdGZvcm1zIHdpdGggbG9uZyBub2RlDQo+PiBuYW1lcyBhbmQgbXVsdGlwbGUgbGV2ZWxz
+IGJlZm9yZSB0aGUgcGFyZW50IGJ1cyBvbiB3aGlpY2ggdGhlIGRzYSBzd2l0Y2gNCj4gcy93aGlp
+Y2gvd2hpY2gvDQo+DQo+DQo+PiBzaXRzIHN1Y2ggYXMgb24gQ045MTMwIFsxXS4NCj4+DQo+PiBU
+ZXN0IHdoZXRoZXIgdGhlIHJldHVybiB2YWx1ZSBvZiBzbnByaW50ZiBleGNlZWRzIHRoZSBtYXhp
+bXVtIGJ1cyBpZA0KPj4gbGVuZ3RoIGFuZCBwcmludCBhIHdhcm5pbmcuDQo+Pg0KPj4gWzFdDQo+
+PiBbICAgIDguMzI0NjMxXSBtdjg4ZTYwODUgZjIxMmEyMDAubWRpby1taWk6MDQ6IHN3aXRjaCAw
+eDE3NjAgZGV0ZWN0ZWQ6IE1hcnZlbGwgODhFNjE3NiwgcmV2aXNpb24gMQ0KPj4gWyAgICA4LjM4
+OTUxNl0gbXY4OGU2MDg1IGYyMTJhMjAwLm1kaW8tbWlpOjA0OiBUcnVuY2F0ZWQgYnVzLWlkIG1h
+eSBjb2xsaWRlLg0KPj4gWyAgICA4LjU5MjM2N10gbXY4OGU2MDg1IGYyMTJhMjAwLm1kaW8tbWlp
+OjA0OiBUcnVuY2F0ZWQgYnVzLWlkIG1heSBjb2xsaWRlLg0KPj4gWyAgICA4LjYyMzU5M10gc3lz
+ZnM6IGNhbm5vdCBjcmVhdGUgZHVwbGljYXRlIGZpbGVuYW1lICcvZGV2aWNlcy9wbGF0Zm9ybS9j
+cDAvY3AwOmNvbmZpZy1zcGFjZUBmMjAwMDAwMC9mMjEyYTIwMC5tZGlvL21kaW9fYnVzL2YyMTJh
+MjAwLm1kaW8tbWlpL2YyMTJhMjAwLm1kaW8tbWlpOjA0L21kaW9fYnVzLyFjcDAhY29uZmlnLXNw
+YWNlQGYyMDAwMDAwIW1kaW9AMTJhMjAwIWV0aGVybmV0LXN3aXRjaEA0IW1kaScNCj4+IFsgICAg
+OC43ODU0ODBdIGtvYmplY3Q6IGtvYmplY3RfYWRkX2ludGVybmFsIGZhaWxlZCBmb3IgIWNwMCFj
+b25maWctc3BhY2VAZjIwMDAwMDAhbWRpb0AxMmEyMDAhZXRoZXJuZXQtc3dpdGNoQDQhbWRpIHdp
+dGggLUVFWElTVCwgZG9uJ3QgdHJ5IHRvIHJlZ2lzdGVyIHRoaW5ncyB3aXRoIHRoZSBzYW1lIG5h
+bWUgaW4gdGhlIHNhbWUgZGlyZWN0b3J5Lg0KPj4gWyAgICA4LjkzNjUxNF0gbGlicGh5OiBtaWlf
+YnVzIC9jcDAvY29uZmlnLXNwYWNlQGYyMDAwMDAwL21kaW9AMTJhMjAwL2V0aGVybmV0LXN3aXRj
+aEA0L21kaSBmYWlsZWQgdG8gcmVnaXN0ZXINCj4+IFsgICAgOC45NDYzMDBdIG1kaW9fYnVzICFj
+cDAhY29uZmlnLXNwYWNlQGYyMDAwMDAwIW1kaW9AMTJhMjAwIWV0aGVybmV0LXN3aXRjaEA0IW1k
+aTogX19tZGlvYnVzX3JlZ2lzdGVyOiAtMjINCj4+IFsgICAgOC45NTYwMDNdIG12ODhlNjA4NSBm
+MjEyYTIwMC5tZGlvLW1paTowNDogQ2Fubm90IHJlZ2lzdGVyIE1ESU8gYnVzICgtMjIpDQo+PiBb
+ICAgIDguOTY1MzI5XSBtdjg4ZTYwODU6IHByb2JlIG9mIGYyMTJhMjAwLm1kaW8tbWlpOjA0IGZh
+aWxlZCB3aXRoIGVycm9yIC0yMg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEpvc3VhIE1heWVyIDxq
+b3N1YUBzb2xpZC1ydW4uY29tPg0KPiBUaGlzIGlzIG5vdCBidWcgZml4LCBhc3N1bWUgeW91IHRh
+cmdldCBuZXQtbmV4dC4gUGxlYXNlOg0KPiAxKSBOZXh0IHRpbWUsIGluZGljYXRlIHRoYXQgaW4g
+dGhlIHBhdGNoIHN1YmplY3QgbGlrZSB0aGlzOg0KPiAgICBbcGF0Y2ggbmV0LW5leHRdIHh4eA0K
+PiAyKSBuZXQtbmV4dCBpcyBjdXJyZW50bHkgY2xvc2VkLCByZXBvc3QgbmV4dCB3ZWVrLg0KQ29y
+cmVjdCwgdGhhbmtzIC0gd2lsbCBkby4NCkp1c3QgZm9yIGZ1dHVyZSByZWZlcmVuY2UgZm9yIHRo
+b3NlIG9jY2FzaW9uYWwgY29udHJpYnV0b3JzIC0NCmlzIHRoZXJlIHN1Y2ggYSB0aGluZyBhcyBh
+biBsa21sIGNhbGVuZGFyPw0KPg0KPj4gLS0tDQo+PiBkcml2ZXJzL25ldC9kc2EvbXY4OGU2eHh4
+L2NoaXAuYyB8IDYgKysrKy0tDQo+PiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAy
+IGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9kc2EvbXY4OGU2
+eHh4L2NoaXAuYyBiL2RyaXZlcnMvbmV0L2RzYS9tdjg4ZTZ4eHgvY2hpcC5jDQo+PiBpbmRleCA2
+MTRjYWJiNWMxYjAuLjFjNDBmNzYzMWFiMSAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvbmV0L2Rz
+YS9tdjg4ZTZ4eHgvY2hpcC5jDQo+PiArKysgYi9kcml2ZXJzL25ldC9kc2EvbXY4OGU2eHh4L2No
+aXAuYw0KPj4gQEAgLTM3MzEsMTAgKzM3MzEsMTIgQEAgc3RhdGljIGludCBtdjg4ZTZ4eHhfbWRp
+b19yZWdpc3RlcihzdHJ1Y3QgbXY4OGU2eHh4X2NoaXAgKmNoaXAsDQo+Pg0KPj4gCWlmIChucCkg
+ew0KPj4gCQlidXMtPm5hbWUgPSBucC0+ZnVsbF9uYW1lOw0KPj4gLQkJc25wcmludGYoYnVzLT5p
+ZCwgTUlJX0JVU19JRF9TSVpFLCAiJXBPRiIsIG5wKTsNCj4+ICsJCWlmIChzbnByaW50ZihidXMt
+PmlkLCBNSUlfQlVTX0lEX1NJWkUsICIlcE9GIiwgbnApID49IE1JSV9CVVNfSURfU0laRSkNCj4+
+ICsJCQlkZXZfd2FybihjaGlwLT5kZXYsICJUcnVuY2F0ZWQgYnVzLWlkIG1heSBjb2xsaWRlLlxu
+Iik7DQo+IEhvdyBhYm91dCBpbnN0ZWFkIG9mIHdhcm4mZmFpbCBmYWxsYmFjayB0byBzb21lIGRp
+ZmZlcmVudCBuYW1lIGluIHRoaXMNCj4gY2FzZT8NCkR1cGxpY2F0ZSBjb3VsZCBiZSBhdm9pZGVk
+IGJ5IHRydW5jYXRpbmcgZnJvbSB0aGUgc3RhcnQsDQpob3dldmVyIEkgZG9uJ3Qga25vdyBpZiB0
+aGF0IGlzIGEgZ29vZCBpZGVhLg0KSXQgYWZmZWN0cyBuYW1pbmcgb2YgcGF0aHMgaW4gc3lzZnMs
+IGFuZCB0aGUgcm9vdCBjYXVzZSBpcw0KZGlmZmljdWx0IHRvIHNwb3QuDQo+PiAJfSBlbHNlIHsN
+Cj4+IAkJYnVzLT5uYW1lID0gIm12ODhlNnh4eCBTTUkiOw0KPj4gLQkJc25wcmludGYoYnVzLT5p
+ZCwgTUlJX0JVU19JRF9TSVpFLCAibXY4OGU2eHh4LSVkIiwgaW5kZXgrKyk7DQo+PiArCQlpZiAo
+c25wcmludGYoYnVzLT5pZCwgTUlJX0JVU19JRF9TSVpFLCAibXY4OGU2eHh4LSVkIiwgaW5kZXgr
+KykgPj0gTUlJX0JVU19JRF9TSVpFKQ0KPiBIb3cgZXhhY3RseSB0aGlzIG1heSBoYXBwZW4/DQpJ
+dCBjYW4gaGFwcGVuIG9uIHN3aXRjaCBub2RlcyBhdCBkZWVwIGxldmVscyBpbiB0aGUgZGV2aWNl
+LXRyZWUsDQp3aGlsZSBkZXNjcmliaW5nIGJvdGggaW50ZXJuYWwgYW5kIGV4dGVybmFsIG1kaW8g
+YnVzZXMgb2YgYSBzd2l0Y2guDQpFLmcuIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9uZXQvZHNhL21hcnZlbGwsbXY4OGU2eHh4LnlhbWwNCg0KT24gQ045MTMwIHBsYXRmb3JtIGRl
+dmljZS10cmVlIGxvb2tzIGxpa2UgdGhpczoNCg0KLyB7DQrCoMKgIMKgY3AwIHsNCsKgwqAgwqDC
+oMKgwqAgY29uZmlnLXNwYWNlQGYyMDAwMDAwIHsNCsKgwqAgwqDCoMKgwqAgwqDCoMKgIG1kaW9A
+MTJhMjAwIHsNCsKgwqAgwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBldGhlcm5ldC1zd2l0Y2hANCB7
+DQrCoMKgIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIG1kaW8geyAuLi4gfTsNCsKgwqAg
+wqDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgbWRpby1leHRlcm5hbCB7IC4uLiB9Ow0KwqDC
+oCDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIH07DQrCoMKgIMKgwqDCoMKgIMKgwqDCoCB9Ow0KwqDC
+oCDCoMKgwqDCoCB9Ow0KwqDCoCDCoH07DQp9Ow0KDQpGb3IgbWRpby1leHRlcm5hbCBjaGlsZCBh
+bGwgdGhlIG5hbWVzIGFsb25lLCB3aXRob3V0IHNlcGFyYXRvcnMsDQptYWtlIHVwIDY2IGNoYXJh
+Y3RlcnMsIGV4Y2VlZGluZzogTUlJX0JVU19JRF9TSVpFOg0KY3AwY29uZmlnLXNwYWNlQGYyMDAw
+MDAwbWRpb0AxMmEyMDBldGhlcm5ldC1zd2l0Y2hANG1kaW8tZXh0ZXJuYWwNCg0KV2l0aCBzZXBh
+cmF0b3JzICgnIScpIHdlIGhhdmU6DQpjcDAhY29uZmlnLXNwYWNlQGYyMDAwMDAwIW1kaW9AMTJh
+MjAwIWV0aGVybmV0LXN3aXRjaEA0IW1kaW8NCmNwMCFjb25maWctc3BhY2VAZjIwMDAwMDAhbWRp
+b0AxMmEyMDAhZXRoZXJuZXQtc3dpdGNoQDQhbWRpby1leHRlcm5hbA0KVHJ1bmNhdGVkIHRvIE1J
+SV9CVVNfSURfU0laRToNCmNwMCFjb25maWctc3BhY2VAZjIwMDAwMDAhbWRpb0AxMmEyMDAhZXRo
+ZXJuZXQtc3dpdGNoQDQhbWRpDQpjcDAhY29uZmlnLXNwYWNlQGYyMDAwMDAwIW1kaW9AMTJhMjAw
+IWV0aGVybmV0LXN3aXRjaEA0IW1kaQ0KVGhleSBiZWNvbWUgZHVwbGljYXRlcy4NCg0KPj4gKwkJ
+CWRldl93YXJuKGNoaXAtPmRldiwgIlRydW5jYXRlZCBidXMtaWQgbWF5IGNvbGxpZGUuXG4iKTsN
+CkFub3RoZXIgb3B0aW9uIChpbW8pIGlzIHRvIGZvcmNlIHRoZSBpc3N1ZSBhbmQgcmV0dXJuIGVy
+cm9yIGNvZGUuDQpUaGVuIHRoZSBvbmx5IHdheSBvdXQgd291bGQgYmUgaW5jcmVhc2Ugb2YgTUlJ
+X0JVU19JRF9TSVpFLg0KPj4gCX0NCj4+DQo+PiAJYnVzLT5yZWFkID0gbXY4OGU2eHh4X21kaW9f
+cmVhZDsNCj4+DQo+PiAtLS0NCj4+IGJhc2UtY29tbWl0OiBlOGY4OTdmNGFmZWYwMDMxZmU2MThh
+OGU5NDEyN2EwOTM0ODk2YWJhDQo+PiBjaGFuZ2UtaWQ6IDIwMjQwMzIwLW12ODhlNnh4eC10cnVu
+Y2F0ZS1idXNpZC0zNGExZDI3NjliYmYNCj4+DQo+PiBTaW5jZXJlbHksDQo+PiAtLSANCj4+IEpv
+c3VhIE1heWVyIDxqb3N1YUBzb2xpZC1ydW4uY29tPg0KPj4NCj4+DQo=
 
