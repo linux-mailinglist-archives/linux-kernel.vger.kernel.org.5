@@ -1,124 +1,152 @@
-Return-Path: <linux-kernel+bounces-108365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545488809AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8806F8809CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:45:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B9F2282FCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:42:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42A072855FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:45:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1362B1173F;
-	Wed, 20 Mar 2024 02:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988EC3A29C;
+	Wed, 20 Mar 2024 02:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="R5q+Vv4l"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="ZZsLEGhM"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC087F9E8
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FC210795;
+	Wed, 20 Mar 2024 02:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710902546; cv=none; b=gA3TxpETtY1ADT27wJlXuPGXkW9S2okqH5HAsa7rLfpWVNWg45LuY7MCsrgkNwQmqR6Akw7EJZW1M/boOwbO/jgSxx4m4kOtxX22p21qEgBsbm5RvnKH3UlHj8o9z5TUhRh1relZGl/ld5xLqf+8w/v9nNcYpUuuav/aS/OOjIg=
+	t=1710902555; cv=none; b=ENGKyhKApdbjO4PWs95PjoG22Liok1AUN6HLNlaruaILAt6BwsvPAMu4Utf61A16ZiGbDwnrUBQhSItBZpiEDCq9qMIExa3FryZn5PRR8A58dfY+r0q/zLlGlRf6wS5oO57xY4i257CY17ABk36DmfLuPslhlWSWfgAu+2rch/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710902546; c=relaxed/simple;
-	bh=qrzIBtExBXCUXHgWYojzqnQkh/sdDvI8P9QCLSv5BYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qpiw2pidyB70QOX58EK6QNB/EpXbBJQP0H+aAAQJFRd8w169A7Qm38g6DcgP9erL2JMoyjfA9uBoguNQXqCuJlLQ3i8rF6O29DVdXpbQ7meB49EGA25Vy9yuL9Dde2IEIOxWD6fKbj8Mhz3YlTOpHyUJrqyP3obAGyqKkxR9jy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=R5q+Vv4l; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-789ddcd57f4so376556785a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1710902541; x=1711507341; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3nx6/aDk3VJUuN8aHF02HR1BsWsxIjtwUpot61xzcjI=;
-        b=R5q+Vv4lYkMVZG43PwoUBAvHC4CcqWkyhX+gSGfpGf5sF7Jpba8MTEWto87m6xo8bJ
-         v2CNiRT5MJ1u1ZU/CoG6tihqWa/wE82KP8SpqgjumeTKh+L6lLzap380INLdeY5IS1O0
-         LHuQmWldNc3p2N7Lt4SOeNtvE6seGRWLpaEHeiev7A/AxTHRhizxqAAUdE2dSAQ5WR5J
-         qvcL7kSeiClHicaLjgSqjTTLo4CkKjhDdTDG80nYbP5UMm+2WYd7iK82paSzY7PNmNQq
-         RIXXhrQ2FlFwmZSc3PiOw1TwYNw6GjpRUSlHATybkDNFv1c56i9+MvB7Dhx0owCLck3x
-         +7aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710902541; x=1711507341;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3nx6/aDk3VJUuN8aHF02HR1BsWsxIjtwUpot61xzcjI=;
-        b=gUWn0pH27chjdx4AqPgF9cWfTlfoI65xo3fsAaQ9LRMaxKuwG662aeanyaDfW1Q1ZK
-         3nC7AARWK4in9dJHR0EagmtrGztjAgNVHMydImbKI7DpQtisq10lA+IoV2S2kvPKvHcU
-         Mvu0AjcRf/OkeukaB9C1DkUFlLRm+MGkzPmpTGqH1faSI4TTIcHn5/QPjyLll1OHBFhD
-         aUYAqTEt38wgrHLGbPQtTaVvhW+BpFQyrgg75x7mgLkKvuDN5zGG8Z2KHPjJOjSqg2TI
-         YIoFfLgSgc7cd6hdVrjzBGC/IWwgpY0hkaD69CN2UnPBMhSUpqO2OqB0XbeaE5tMzmni
-         EPJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXUaXQBNUYrqLqVilsOnvglVot3LnDigJc1BIRLASPrlxfAoZ7Og9BliQ7dFIy0f+Guk+8UIcQ+Juo0cGT+vB/bzFSyN/zpgMES+QtC
-X-Gm-Message-State: AOJu0YzIhIOU4UnwHAtVs5+zx/+d1hafu03XinTIfeUMKiuah7nh73GA
-	z1kduNKPeZytNqN54qPfr8g8vr6SFz+8ubtwBSlGRBWptxbtPyUNPoSO2o1cuA==
-X-Google-Smtp-Source: AGHT+IE8ey/Y7RHs4C66DCwZWoviXuK1UpbUhJUPjIEBgTvetqJ0Lw+B0vwcdezjuc587wrWuN/E9w==
-X-Received: by 2002:a05:620a:4484:b0:788:30a5:6aaf with SMTP id x4-20020a05620a448400b0078830a56aafmr22805144qkp.52.1710902541638;
-        Tue, 19 Mar 2024 19:42:21 -0700 (PDT)
-Received: from localhost (pool-74-98-221-57.pitbpa.fios.verizon.net. [74.98.221.57])
-        by smtp.gmail.com with UTF8SMTPSA id vr17-20020a05620a55b100b00789ea5b08bcsm4074525qkn.23.2024.03.19.19.42.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 19:42:21 -0700 (PDT)
-From: kaiyang2@cs.cmu.edu
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	dskarlat@cs.cmu.edu
-Subject: [RFC PATCH 2/7] Disallows high-order movable allocations in other zones if ZONE_MOVABLE is populated
-Date: Wed, 20 Mar 2024 02:42:13 +0000
-Message-Id: <20240320024218.203491-3-kaiyang2@cs.cmu.edu>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-References: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-Reply-To: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+	s=arc-20240116; t=1710902555; c=relaxed/simple;
+	bh=w1mhFTw7N92BZzeiQwqCKxmmY5tlfQmZboFBZTT6uwU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rFrNbXWEaUB43OhWqe6DoVVQxE0EVq/2edmN9FXh9PT/HnhsB+vVCvGrvkoNMzAoNscVUZJTpmpskLfRjzm8rulI2GQXjnjKWA6rliq6Ce/GjQCBoqMsWTBS+Cur3vCD45ylOR/bz41l2PEIjSzDNT27ffJ8r0HCOqnrTl9GUpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=ZZsLEGhM; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 7c94cbace66311ee935d6952f98a51a9-20240320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=IxfoSJRgtLM7Y9Q8+5O2pEW6twqTFjA7H0y0agURdlM=;
+	b=ZZsLEGhMgVVs+MKp1X9Zy9fKerm3q0s1OcS+LkbFE+72fi8btXinC6Vc4nxkUM34FASYWm50wXN50jLMh+vk1IhnW7omLQVAMf/MqygbHwcvmq4931kNjdzYHSr89hSY2sLi709Dt5SD/dZH4q0ukdnjCRG7vrRwAMFMYmL8TO8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:8c793cd1-95ec-4ce9-936a-e8bce799f092,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:5b7f9a90-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 7c94cbace66311ee935d6952f98a51a9-20240320
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 67162710; Wed, 20 Mar 2024 10:42:26 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Mar 2024 10:42:25 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 10:42:24 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v3 05/14] drm/mediatek: Rename "mtk_drm_hdmi" to "mtk_hdmi"
+Date: Wed, 20 Mar 2024 10:42:13 +0800
+Message-ID: <20240320024222.14234-6-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240320024222.14234-1-shawn.sung@mediatek.com>
+References: <20240320024222.14234-1-shawn.sung@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Use ZONE_MOVABLE exclusively for non-0 order allocations
+Rename all "mtk_drm_hdmi" to "mtk_hdmi":
+- To align the naming rule
+- To reduce the code size
 
-Signed-off-by: Kaiyang Zhao <zh_kaiyang@hotmail.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 ---
- mm/page_alloc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_hdmi.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 47421bedc12b..9ad9357e340a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3403,6 +3403,16 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 		struct page *page;
- 		unsigned long mark;
- 
-+		/*
-+		 * Disallows high-order movable allocations in other zones if
-+		 * ZONE_MOVABLE is populated on this node.
-+		 */
-+		if (ac->highest_zoneidx >= ZONE_MOVABLE &&
-+			order > 0 &&
-+			zone_idx(zone) != ZONE_MOVABLE &&
-+			populated_zone(&(zone->zone_pgdat->node_zones[ZONE_MOVABLE])))
-+				continue;
-+
- 		if (cpusets_enabled() &&
- 			(alloc_flags & ALLOC_CPUSET) &&
- 			!__cpuset_zone_allowed(zone, gfp_mask))
--- 
-2.40.1
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index 86133bf16326b..d2876da1b43a7 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -1687,7 +1687,7 @@ static int mtk_hdmi_register_audio_driver(struct device *dev)
+ 	return 0;
+ }
+
+-static int mtk_drm_hdmi_probe(struct platform_device *pdev)
++static int mtk_hdmi_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_hdmi *hdmi;
+ 	struct device *dev = &pdev->dev;
+@@ -1746,7 +1746,7 @@ static int mtk_drm_hdmi_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+
+-static void mtk_drm_hdmi_remove(struct platform_device *pdev)
++static void mtk_hdmi_remove(struct platform_device *pdev)
+ {
+ 	struct mtk_hdmi *hdmi = platform_get_drvdata(pdev);
+
+@@ -1790,7 +1790,7 @@ static const struct mtk_hdmi_conf mtk_hdmi_conf_mt8167 = {
+ 	.cea_modes_only = true,
+ };
+
+-static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
++static const struct of_device_id mtk_hdmi_of_ids[] = {
+ 	{ .compatible = "mediatek,mt2701-hdmi",
+ 	  .data = &mtk_hdmi_conf_mt2701,
+ 	},
+@@ -1801,14 +1801,14 @@ static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
+ 	},
+ 	{}
+ };
+-MODULE_DEVICE_TABLE(of, mtk_drm_hdmi_of_ids);
++MODULE_DEVICE_TABLE(of, mtk_hdmi_of_ids);
+
+ static struct platform_driver mtk_hdmi_driver = {
+-	.probe = mtk_drm_hdmi_probe,
+-	.remove_new = mtk_drm_hdmi_remove,
++	.probe = mtk_hdmi_probe,
++	.remove_new = mtk_hdmi_remove,
+ 	.driver = {
+ 		.name = "mediatek-drm-hdmi",
+-		.of_match_table = mtk_drm_hdmi_of_ids,
++		.of_match_table = mtk_hdmi_of_ids,
+ 		.pm = &mtk_hdmi_pm_ops,
+ 	},
+ };
+--
+2.18.0
 
 
