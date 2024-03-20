@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-109281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC3488171C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:06:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBB688171E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DF5281B7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:06:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD611C210F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FA26D1B1;
-	Wed, 20 Mar 2024 18:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B4870CBE;
+	Wed, 20 Mar 2024 18:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ur0JuruC"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="wp8yL/c4"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EB66E5EC
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECAF6FE37
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957904; cv=none; b=Ih/CoQtxaLWgyICLeMJTM5KXj5p9HABvqQufYxvUIRrF1zOI60FSa6UwC6nCWhy+0grnoe0TjYQK+NBmNERm4MVb4A6gL+NOMzRfl9d+Z1K6SGkHvvjy/gsm+VEoWZwusLth2y6X96Yqmdp2fvhe5zMzQpfJOGNCtolmPt6/Nj8=
+	t=1710957905; cv=none; b=kdAOViFGeoL/6zx0y4AIM8XemshHGPdWZtppM4ntU8C0MlmWNIlnACC51iBPyhtNff4E8mc3te5S1sTj5YFa5aZIPvDW5H7cachE4Z+5RCnWvZckT8W7YUJskWNcvzlpLkY1A0YGeR8/J40L1tOuCZBg4jyiUdm3jKbbn+Y8kE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957904; c=relaxed/simple;
-	bh=vgs1fSn63PW51Wej021f8rVcPq+RIeHb4BdM8Eq5vK0=;
+	s=arc-20240116; t=1710957905; c=relaxed/simple;
+	bh=a5Hd9QHmzdUL3ZAgZf882mRDeq1mAtAaKRwDN3PrUTU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RCZZPxXxYGT+Iogzm+HU3j89TpBcVhs/A1TQuarCJ0NHN2q/NF4kXVDuzIHCM5kI4H4bmyY8U2QQOglbeOMynlrDmT6g9dsZRkVxPs891v9Q+TeP9hPlhx/vSISu4DCl7n38cqqGzv6M3digm+vs+5vj8Io6kwgBR6BUn5v/w0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ur0JuruC; arc=none smtp.client-ip=209.85.219.52
+	 MIME-Version; b=SULiKmZwHNri71k39kVCMojK5x20tOoEGmDLOWrSzB9LiHoeBL2XW6U1zL+9ES1FLpihWFsJDZ11dp3wz08GqIpT1xgf6C0uMRLHwguzeQ8j4m6EzWYQ/n9nCbMo+PLGxlhWS+RyCOMPBAYb2fneWNPOdnua6daOiPCGtvVO71U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=wp8yL/c4; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-690fed6816fso1159286d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:05:02 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-789e6e1d96eso10281485a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957901; x=1711562701; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957903; x=1711562703; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=flNXTtbOi6l1opPzPulo8MxPNWZbuYfRY5TPRoxN0V8=;
-        b=ur0JuruChaxtUELNnIfd3d+MPEKilCPRR6KJuAuaOTjFBN5nn2mUpJGSFztvBKo4kE
-         g+WGn8pASnhKWnbaE9ghiETm/D7xDZ/n1Mym8pcWXJNxooP24znJGlYwGvqLQjDhYm3m
-         FjRIGJJd6RIDZ4mL9ZH6gMZaLcDq93it6MY8MBlu/1RBqxpOSlkvfb2mHmCFMHdnJaLw
-         u2tuKdsbYFEidOEYw3srx/VfgzXjXQAOcEYasCpewVVM9d1bOnLbd2+sfau9xw8bF/sP
-         tcXpRf06VP3rkcPknrf9FiseUGNxcd31epDe7mvD/zVWmxMhyO05R39y1EPKsQ9/aXgw
-         1U7Q==
+        bh=/agc7Iq+rpxvE93VG+YAHYepTCDVe1OJjvDT1Xeceos=;
+        b=wp8yL/c4TdGVoNhDI2CRYI0IP4ibTxyFQEOcJx3ypVX9f/TpNG+sD608mKENz8VRxt
+         lzOe+mck5rZlfhcPXu5gx2HkvyFjMhA5EcwVgZV7hMr3rJz+OkQ/D1MJ1LMAcUpuSdro
+         keQ0UYvs1m/OH11fg39vfy+F5RtXranFRa/+BkMVboaGoKXHvc59xEJgClBUAfufeCoO
+         eKUlZkLAwVWRBZwI30dnib2d5fH0QgbDlaFXGxDDoxm1QAiGRKMG/kJohNsVxh7BZaUL
+         BM8PIMHAU2IlXSTVXRqjv+yArEVPp4eVQby7k5f60mSyQ9hvJUEazgz55vEFBN9S24Rs
+         0sCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957901; x=1711562701;
+        d=1e100.net; s=20230601; t=1710957903; x=1711562703;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=flNXTtbOi6l1opPzPulo8MxPNWZbuYfRY5TPRoxN0V8=;
-        b=oPNVutagaIoR59Ew/59J+udteqOqfFcjD1jitzQXhYI1baupcHvkFCr6zXtiHTypMj
-         7qA4CwOlKzPKuUSVkgOmq43C9z8yrFSizj6NuqJoOSXDuTo3/3XkgsvgP5mvgkyA5DZq
-         cb0NW8W2/SXjxoxgu9bE9tah00YQ+lZkZ60inVv1axIym0AwYUrHly1CRb7ZGvYFygRW
-         0eg43bvzObATIV1ax1p+J0O36pG26KyAUTUJWUxc8rNHdtZ/3ZZEUz4IWXu4WL01b13X
-         UXCTY2qIlD91tYzxlgEG4FmsaGIqyXKqfeoM+UyXWWI+EMUWfI4rH33XFFjRNhZJ/LHf
-         AiXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWO6by3kG6fzALeycmiBNsDIbT2UjfVA799L0rh+mOpxwsvZ6qt/ul5dAJHe8A/mErYYR8vAsPhydGXkB1oIHuRrGpLnipZd1TjclI
-X-Gm-Message-State: AOJu0YzsJqPLohqyp/ZXWAiMZdt00OXSQX0TcspfsWKStEXIeOAKFfQQ
-	cI1Ro/CaakBTYfg3EHuh/TGz/GruSuUIv4Hm8lmtGoOIoR3Mgluw5aj8OTLE7NY=
-X-Google-Smtp-Source: AGHT+IFZ8dHGGlrLtFAYw7pJUEMpCiD9DvUpZzuKYVnmjN5J3RADhgWs7NKoZjpYmw1YXPj55rjIPA==
-X-Received: by 2002:ad4:55d1:0:b0:696:48ca:99ad with SMTP id bt17-20020ad455d1000000b0069648ca99admr1661910qvb.14.1710957901465;
-        Wed, 20 Mar 2024 11:05:01 -0700 (PDT)
+        bh=/agc7Iq+rpxvE93VG+YAHYepTCDVe1OJjvDT1Xeceos=;
+        b=HNL4nD2r0mjnBDJqqzcoph4T7cPHh6riG2WhSZQTe2Nk2cS+NBv6nakxjqNodsY5Dv
+         yeeoTUVDSlGAYuvuM5Kz5Rq2N0jiLoEzE1AN8D/0BmNaUhT7uU6PZRVAB5JNXo4DPRGM
+         KmsElbxxDzXd8UtB+yDZgmxtBFaQ9b8QJhv+qWrrIOd+7IEnfaZkw9rQ3kryOEA9h0cp
+         zC+YB1FHEXpDvfMxg7hUg0Uktk4jGzepVGRfQzkw/zrWhuM9wQLriZleiNpVk3sds+0i
+         jm63eJ/wpWLfHYXTgMUWdJVBpwPoWYZ93kzw2xTw3cJsrm0mf/oTrP/txb6TejLTZ/re
+         aCEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtzF700FVTe3QA9v4IigCSCSep2KCE10gyidu7H2XgXnk4kVxXZECrtWb6LpVMle20OYG8t8tSXAoFPKwYRVhhre9J47qWNrKXXmTk
+X-Gm-Message-State: AOJu0Yyl/rUiFVNZDyImqxQXmbrbIALbKlYrxrt4a5omvBMPI4j9AuzD
+	p0M1dES2ytM50WvSZqHqudq1uDSmcOpn+OO4U0Be3qbRBwWjyzibtBpCqWnlCv4=
+X-Google-Smtp-Source: AGHT+IHVDZsbT9cqnC3HSTs2AyL3KxvP5tWB415HoSJ1bTxAaB/NmMu1L5tzkR6Fc/n91vn14sa1gw==
+X-Received: by 2002:a37:db11:0:b0:78a:86:534f with SMTP id e17-20020a37db11000000b0078a0086534fmr2673755qki.76.1710957902810;
+        Wed, 20 Mar 2024 11:05:02 -0700 (PDT)
 Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id jm14-20020ad45ece000000b00690c5cc0ff6sm8102285qvb.124.2024.03.20.11.05.00
+        by smtp.gmail.com with ESMTPSA id w8-20020a05620a094800b0078a210372fasm900228qkw.86.2024.03.20.11.05.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:05:00 -0700 (PDT)
+        Wed, 20 Mar 2024 11:05:02 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Vlastimil Babka <vbabka@suse.cz>,
@@ -75,9 +75,9 @@ Cc: Vlastimil Babka <vbabka@suse.cz>,
 	David Hildenbrand <david@redhat.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 07/10] mm: page_alloc: close migratetype race between freeing and stealing
-Date: Wed, 20 Mar 2024 14:02:12 -0400
-Message-ID: <20240320180429.678181-8-hannes@cmpxchg.org>
+Subject: [PATCH 08/10] mm: page_alloc: set migratetype inside move_freepages()
+Date: Wed, 20 Mar 2024 14:02:13 -0400
+Message-ID: <20240320180429.678181-9-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240320180429.678181-1-hannes@cmpxchg.org>
 References: <20240320180429.678181-1-hannes@cmpxchg.org>
@@ -89,175 +89,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are three freeing paths that read the page's migratetype
-optimistically before grabbing the zone lock. When this races with
-block stealing, those pages go on the wrong freelist.
+From: Zi Yan <ziy@nvidia.com>
 
-The paths in question are:
-- when freeing >costly orders that aren't THP
-- when freeing pages to the buddy upon pcp lock contention
-- when freeing pages that are isolated
-- when freeing pages initially during boot
-- when freeing the remainder in alloc_pages_exact()
-- when "accepting" unaccepted VM host memory before first use
-- when freeing pages during unpoisoning
+This avoids changing migratetype after move_freepages() or
+move_freepages_block(), which is error prone. It also prepares for
+upcoming changes to fix move_freepages() not moving free pages
+partially in the range.
 
-None of these are so hot that they would need this optimization at the
-cost of hampering defrag efforts. Especially when contrasted with the
-fact that the most common buddy freeing path - free_pcppages_bulk - is
-checking the migratetype under the zone->lock just fine.
-
-In addition, isolated pages need to look up the migratetype under the
-lock anyway, which adds branches to the locked section, and results in
-a double lookup when the pages are in fact isolated.
-
-Move the lookups into the lock.
-
-Reported-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/page_alloc.c | 52 ++++++++++++++++++-------------------------------
- 1 file changed, 19 insertions(+), 33 deletions(-)
+ mm/page_alloc.c     | 27 +++++++++++++--------------
+ mm/page_isolation.c |  7 +++----
+ 2 files changed, 16 insertions(+), 18 deletions(-)
 
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e7d0d4711bdd..3f65b565eaad 100644
+index 3f65b565eaad..d687f27d891f 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -1227,18 +1227,15 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	spin_unlock_irqrestore(&zone->lock, flags);
- }
+@@ -1581,9 +1581,8 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
+ #endif
  
--static void free_one_page(struct zone *zone,
--				struct page *page, unsigned long pfn,
--				unsigned int order,
--				int migratetype, fpi_t fpi_flags)
-+static void free_one_page(struct zone *zone, struct page *page,
-+			  unsigned long pfn, unsigned int order,
-+			  fpi_t fpi_flags)
- {
- 	unsigned long flags;
-+	int migratetype;
+ /*
+- * Move the free pages in a range to the freelist tail of the requested type.
+- * Note that start_page and end_pages are not aligned on a pageblock
+- * boundary. If alignment is required, use move_freepages_block()
++ * Change the type of a block and move all its free pages to that
++ * type's freelist.
+  */
+ static int move_freepages(struct zone *zone, unsigned long start_pfn,
+ 			  unsigned long end_pfn, int migratetype)
+@@ -1593,6 +1592,9 @@ static int move_freepages(struct zone *zone, unsigned long start_pfn,
+ 	unsigned int order;
+ 	int pages_moved = 0;
  
- 	spin_lock_irqsave(&zone->lock, flags);
--	if (unlikely(has_isolate_pageblock(zone) ||
--		is_migrate_isolate(migratetype))) {
--		migratetype = get_pfnblock_migratetype(page, pfn);
--	}
-+	migratetype = get_pfnblock_migratetype(page, pfn);
- 	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
- 	spin_unlock_irqrestore(&zone->lock, flags);
- }
-@@ -1246,21 +1243,13 @@ static void free_one_page(struct zone *zone,
- static void __free_pages_ok(struct page *page, unsigned int order,
- 			    fpi_t fpi_flags)
- {
--	int migratetype;
- 	unsigned long pfn = page_to_pfn(page);
- 	struct zone *zone = page_zone(page);
- 
- 	if (!free_pages_prepare(page, order))
- 		return;
- 
--	/*
--	 * Calling get_pfnblock_migratetype() without spin_lock_irqsave() here
--	 * is used to avoid calling get_pfnblock_migratetype() under the lock.
--	 * This will reduce the lock holding time.
--	 */
--	migratetype = get_pfnblock_migratetype(page, pfn);
--
--	free_one_page(zone, page, pfn, order, migratetype, fpi_flags);
-+	free_one_page(zone, page, pfn, order, fpi_flags);
- 
- 	__count_vm_events(PGFREE, 1 << order);
- }
-@@ -2533,7 +2522,7 @@ void free_unref_page(struct page *page, unsigned int order)
- 	struct per_cpu_pages *pcp;
- 	struct zone *zone;
- 	unsigned long pfn = page_to_pfn(page);
--	int migratetype, pcpmigratetype;
-+	int migratetype;
- 
- 	if (!free_pages_prepare(page, order))
- 		return;
-@@ -2545,23 +2534,23 @@ void free_unref_page(struct page *page, unsigned int order)
- 	 * get those areas back if necessary. Otherwise, we may have to free
- 	 * excessively into the page allocator
- 	 */
--	migratetype = pcpmigratetype = get_pfnblock_migratetype(page, pfn);
-+	migratetype = get_pfnblock_migratetype(page, pfn);
- 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
- 		if (unlikely(is_migrate_isolate(migratetype))) {
--			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
-+			free_one_page(page_zone(page), page, pfn, order, FPI_NONE);
- 			return;
- 		}
--		pcpmigratetype = MIGRATE_MOVABLE;
-+		migratetype = MIGRATE_MOVABLE;
- 	}
- 
- 	zone = page_zone(page);
- 	pcp_trylock_prepare(UP_flags);
- 	pcp = pcp_spin_trylock(zone->per_cpu_pageset);
- 	if (pcp) {
--		free_unref_page_commit(zone, pcp, page, pcpmigratetype, order);
-+		free_unref_page_commit(zone, pcp, page, migratetype, order);
- 		pcp_spin_unlock(pcp);
- 	} else {
--		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
-+		free_one_page(zone, page, pfn, order, FPI_NONE);
- 	}
- 	pcp_trylock_finish(UP_flags);
- }
-@@ -2591,12 +2580,8 @@ void free_unref_folios(struct folio_batch *folios)
- 		 * allocator.
- 		 */
- 		if (!pcp_allowed_order(order)) {
--			int migratetype;
--
--			migratetype = get_pfnblock_migratetype(&folio->page,
--							       pfn);
--			free_one_page(folio_zone(folio), &folio->page, pfn,
--					order, migratetype, FPI_NONE);
-+			free_one_page(folio_zone(folio), &folio->page,
-+				      pfn, order, FPI_NONE);
- 			continue;
- 		}
- 		folio->private = (void *)(unsigned long)order;
-@@ -2632,7 +2617,7 @@ void free_unref_folios(struct folio_batch *folios)
- 			 */
- 			if (is_migrate_isolate(migratetype)) {
- 				free_one_page(zone, &folio->page, pfn,
--					      order, migratetype, FPI_NONE);
-+					      order, FPI_NONE);
- 				continue;
- 			}
- 
-@@ -2645,7 +2630,7 @@ void free_unref_folios(struct folio_batch *folios)
- 			if (unlikely(!pcp)) {
- 				pcp_trylock_finish(UP_flags);
- 				free_one_page(zone, &folio->page, pfn,
--					      order, migratetype, FPI_NONE);
-+					      order, FPI_NONE);
- 				continue;
- 			}
- 			locked_zone = zone;
-@@ -6823,13 +6808,14 @@ bool take_page_off_buddy(struct page *page)
- bool put_page_back_buddy(struct page *page)
- {
- 	struct zone *zone = page_zone(page);
--	unsigned long pfn = page_to_pfn(page);
- 	unsigned long flags;
--	int migratetype = get_pfnblock_migratetype(page, pfn);
- 	bool ret = false;
- 
- 	spin_lock_irqsave(&zone->lock, flags);
- 	if (put_page_testzero(page)) {
-+		unsigned long pfn = page_to_pfn(page);
-+		int migratetype = get_pfnblock_migratetype(page, pfn);
++	VM_WARN_ON(start_pfn & (pageblock_nr_pages - 1));
++	VM_WARN_ON(start_pfn + pageblock_nr_pages - 1 != end_pfn);
 +
- 		ClearPageHWPoisonTakenOff(page);
- 		__free_one_page(page, pfn, zone, 0, migratetype, FPI_NONE);
- 		if (TestClearPageHWPoison(page)) {
+ 	for (pfn = start_pfn; pfn <= end_pfn;) {
+ 		page = pfn_to_page(pfn);
+ 		if (!PageBuddy(page)) {
+@@ -1610,6 +1612,8 @@ static int move_freepages(struct zone *zone, unsigned long start_pfn,
+ 		pages_moved += 1 << order;
+ 	}
+ 
++	set_pageblock_migratetype(pfn_to_page(start_pfn), migratetype);
++
+ 	return pages_moved;
+ }
+ 
+@@ -1837,7 +1841,6 @@ steal_suitable_fallback(struct zone *zone, struct page *page,
+ 	if (free_pages + alike_pages >= (1 << (pageblock_order-1)) ||
+ 			page_group_by_mobility_disabled) {
+ 		move_freepages(zone, start_pfn, end_pfn, start_type);
+-		set_pageblock_migratetype(page, start_type);
+ 		return __rmqueue_smallest(zone, order, start_type);
+ 	}
+ 
+@@ -1911,12 +1914,10 @@ static void reserve_highatomic_pageblock(struct page *page, struct zone *zone)
+ 	/* Yoink! */
+ 	mt = get_pageblock_migratetype(page);
+ 	/* Only reserve normal pageblocks (i.e., they can merge with others) */
+-	if (migratetype_is_mergeable(mt)) {
+-		if (move_freepages_block(zone, page, MIGRATE_HIGHATOMIC) != -1) {
+-			set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
++	if (migratetype_is_mergeable(mt))
++		if (move_freepages_block(zone, page,
++					 MIGRATE_HIGHATOMIC) != -1)
+ 			zone->nr_reserved_highatomic += pageblock_nr_pages;
+-		}
+-	}
+ 
+ out_unlock:
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+@@ -1995,7 +1996,6 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
+ 			 * not fail on zone boundaries.
+ 			 */
+ 			WARN_ON_ONCE(ret == -1);
+-			set_pageblock_migratetype(page, ac->migratetype);
+ 			if (ret > 0) {
+ 				spin_unlock_irqrestore(&zone->lock, flags);
+ 				return ret;
+@@ -2711,10 +2711,9 @@ int __isolate_free_page(struct page *page, unsigned int order)
+ 			 * Only change normal pageblocks (i.e., they can merge
+ 			 * with others)
+ 			 */
+-			if (migratetype_is_mergeable(mt) &&
+-			    move_freepages_block(zone, page,
+-						 MIGRATE_MOVABLE) != -1)
+-				set_pageblock_migratetype(page, MIGRATE_MOVABLE);
++			if (migratetype_is_mergeable(mt))
++				move_freepages_block(zone, page,
++						     MIGRATE_MOVABLE);
+ 		}
+ 	}
+ 
+diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+index 71539d7b96cf..f84f0981b2df 100644
+--- a/mm/page_isolation.c
++++ b/mm/page_isolation.c
+@@ -188,7 +188,6 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
+ 			return -EBUSY;
+ 		}
+ 		__mod_zone_freepage_state(zone, -nr_pages, mt);
+-		set_pageblock_migratetype(page, MIGRATE_ISOLATE);
+ 		zone->nr_isolate_pageblock++;
+ 		spin_unlock_irqrestore(&zone->lock, flags);
+ 		return 0;
+@@ -262,10 +261,10 @@ static void unset_migratetype_isolate(struct page *page, int migratetype)
+ 		 */
+ 		WARN_ON_ONCE(nr_pages == -1);
+ 		__mod_zone_freepage_state(zone, nr_pages, migratetype);
+-	}
+-	set_pageblock_migratetype(page, migratetype);
+-	if (isolated_page)
++	} else {
++		set_pageblock_migratetype(page, migratetype);
+ 		__putback_isolated_page(page, order, migratetype);
++	}
+ 	zone->nr_isolate_pageblock--;
+ out:
+ 	spin_unlock_irqrestore(&zone->lock, flags);
 -- 
 2.44.0
 
