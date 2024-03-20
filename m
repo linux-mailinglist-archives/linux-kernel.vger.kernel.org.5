@@ -1,73 +1,59 @@
-Return-Path: <linux-kernel+bounces-108673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 569AB880E3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:05:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9226F880E45
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3DFCB214C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47F2D1F22205
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9AC3B78E;
-	Wed, 20 Mar 2024 09:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BHbgCDEb"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F7738FA0;
+	Wed, 20 Mar 2024 09:06:36 +0000 (UTC)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5913AC01
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6723138DF1
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710925535; cv=none; b=ZWDqwhdbU7dLnU4RuLDu2Z7Mdmxd9J2ErwCCRqPL1A+iile3sJmY2t2F7ZKDcHWa2npSAP/LJ2P1IQdYbdX7jGJEvD5e138SLAh9klQVwRlmk+V3ap2bWaHw2auCXVT6W1xCZYxkXnFO5LGO0LjETniTfT6uF04kf6220Zkl0uA=
+	t=1710925596; cv=none; b=ZXIoINZ0V3hR4jonpgMwM+QG71OLSRsYLLGIr9/THOX2JtRY0zj9kCPR6WwtZcI8gvVDnwT72rDs8s57u6ODA+y8bVjrd3LsaosKWT8TUmCGGVH84I8V/Dk4EXMwQYc45sjq1L0yGjwGf0+eSgkvieN8M/tnKJXBfBjfFK4i1rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710925535; c=relaxed/simple;
-	bh=CZqW0SANkHrHUbk3+lBZfjPR+ooDxCrNYjscq7Y1A1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cVeT3QXPqlCU8i9SqUm3lakDdKAOco9YOQ2kVuax6wsHxqhinQS+nd0NK1s0nwga3u3oRzY+MmK4AqXclrNsLYrpkux6VvdLGdE9wFiMPqFTuv6KPFLK6eWj0+RfBQzUJU0I7/opnsljE48GYS9RUiFffROEGi7JVPCvGi26kE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHbgCDEb; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1710925596; c=relaxed/simple;
+	bh=6yo+qgVl01Qo1BF1UC4nxMuI0iLiXWCwLlUG0wpTjWA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gt7CHwW9bzLgLxTl+k516PK7PU5VBqw3dSVmBZRih5hQYpNFiqS7mQUk9sB10rYGOpKyye+nTGDwHI5GCSRUbVtnIqlNpY6QQwgyU89FOf8U8ppLOy0RMW8gE/Hy6/EiBOwN126CvLCKk7vzVubz3NVw591QXJieboAdxmteXpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dddbeac9f9so44751405ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710925533; x=1711530333; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eOl5FJq1jF6A4kdSR20ohjox802dBiYkdAwfXGs190Y=;
-        b=BHbgCDEbdrkClb8xHn2irOJBoRkXsbRglDzDjVQTT5GQH/Z54+T+S7yr4B/GB6Mjkh
-         sfViMt93DWfY9tY/iKneaeFsGYWV05h990J7wiePZ8yzXkCALczWLg/iWwV7FN+vFG+M
-         RTZzo2tKVk233Dvy9+8y7lt/upjLaBm18cJGInQ3W257vXNKy+CLYU838wTpiaIsSbBm
-         rKfj1XZIePVWP0u9VEExCyIxHq6IuPUqdBdu8MvuGfrPPKEplUDY6lfK8KAllquHTKCB
-         5GKOv/at1++CCrDCsYUTM55F7tvXanVoOu2PC71yEU0kVlUgHA2zOdAq7yxOvSZ6DIGn
-         IaEQ==
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e12bcf6adso1281563f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:06:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710925533; x=1711530333;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20230601; t=1710925593; x=1711530393;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eOl5FJq1jF6A4kdSR20ohjox802dBiYkdAwfXGs190Y=;
-        b=HQ5EBKymJ4VTSk6+Oxp6TDitkxGSxMZS9Cs/QmjEKrVu8iZX6cVa2A6xZ/U9yYUdfm
-         Tf6ZUGKP0lZj7/IBYxlkIWJsGSFnl1hTLFGkm/70MPRps9wx0cF8j4O2aNvoKr4pcV2B
-         bLVfYC9qf5vDJnrq56cmpgSTCt92dXZhZ7La1GdLpHgisT8Uq9n0ob/e4HfE/q+x2Wgb
-         0nmBOALILDtPjwfPNriCLFmY556eG5qu7cPoz4FBKeWn8cy3tLsD44GE5KoWQIj9m9XG
-         VNxzOTjtTbtL8iiLgjo3rKj7C2cUsKKnfNd8aIIoHONMh/ry2vO47kQGW1iPJnTvrkOq
-         XsIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcRF1rWVvIiG9jEbTzqHLHCRTMRhfFw8EInkAmAVoiJw8T2Xm53sItjvk3Odp9QOpgiZWVz0fKN7X9SjI4VcwJCTkHxdFYj5T6QJKj
-X-Gm-Message-State: AOJu0Yx1aOzJoe+nnrbieG+12ffupL7Lk2/OrGKnUTfla9+7fnrn7vJq
-	pvG6inWqngsw6ikkFDe4l00GEtgw464673wL6MSoigOUIrwFW9Fw
-X-Google-Smtp-Source: AGHT+IGIjIr/BC0UGlwJERHJDfupOBUPN7oxWvwBJmJVqtmIJ3uz3YdttYX2qR6r5icsC0/2gshLwQ==
-X-Received: by 2002:a17:903:1251:b0:1dc:696d:ec6e with SMTP id u17-20020a170903125100b001dc696dec6emr18695368plh.21.1710925532844;
-        Wed, 20 Mar 2024 02:05:32 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id bi5-20020a170902bf0500b001e039a22e6asm4144772plb.65.2024.03.20.02.05.30
+        bh=6yo+qgVl01Qo1BF1UC4nxMuI0iLiXWCwLlUG0wpTjWA=;
+        b=dLRzNpeNXzyfid8oTpsAU/u6WwiLtkDgkhbLOkdO5QEfcvU+c8dGK+n3BE/Stf+jhD
+         uBsKudg+1+XyLU0xfzI+rLR39Ojt6mA27pTS30yyRxdy+rvFxu3cvqc747AqKFC/oAFx
+         CjQIgJ/brBVOhjQ7O0rU/axshmEeA9xkdmz3o9x0rZuY+n7Y3ZSQ2q7OXaqx8J87OWSB
+         etrKp3EVKv2ZPkYTvWrZ/EVr+he6qqMNnLan/G1THxwvwIuhqlr27XW96McQ7O3pr96O
+         M7j2nj1JdTM3PlET8iAU13SrSqEx7p4cRo+scsoloCc4Dc8EPxgAgvqLGjE0taRs9AeC
+         PzjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGP4p9745YtU3U8Rqswwv99KLMBQOWH8OXH3uGLGTERa0+9XOVM0VCcxkIDgI9ky60u3pHpSHq0EBzjVYVxC6/2jFB2+DOyku8I8aQ
+X-Gm-Message-State: AOJu0YxFvb/hA0aCwmXTW90TfafLijT40uvBrT1omlmtYCs77XRHxh6I
+	2AX+qyszOJZID2X2HZnB/ggc3ynIXd+aJtd7Dc5Xe/925/gtG0tj
+X-Google-Smtp-Source: AGHT+IEw9+P2JdVs73otAM3hXGLxpH87fe+1tvU44C8aG9UtPwVZ6tid9SowJLGsDChZTcaXJ3kC/Q==
+X-Received: by 2002:adf:c988:0:b0:33d:9e15:12bf with SMTP id f8-20020adfc988000000b0033d9e1512bfmr865963wrh.3.1710925592737;
+        Wed, 20 Mar 2024 02:06:32 -0700 (PDT)
+Received: from [10.50.4.153] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
+        by smtp.gmail.com with ESMTPSA id i9-20020a5d6309000000b0033e0dd83be1sm14034690wru.91.2024.03.20.02.06.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 02:05:32 -0700 (PDT)
-Message-ID: <54a8ec22-ce00-425c-bb58-54cf8606a362@gmail.com>
-Date: Wed, 20 Mar 2024 17:05:29 +0800
+        Wed, 20 Mar 2024 02:06:32 -0700 (PDT)
+Message-ID: <a1ebff42-4ddb-4e17-978c-2f02106a9d90@grimberg.me>
+Date: Wed, 20 Mar 2024 11:06:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,73 +61,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] mm/ksm: catch tail page abnormal in
- page_stable_node
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
- kasong@tencent.com, Andrew Morton <akpm@linux-foundation.org>,
- "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240318121443.3991104-1-alexs@kernel.org>
- <7a0d7d0e-d241-4942-b6c1-e60d597b3dd6@redhat.com>
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <7a0d7d0e-d241-4942-b6c1-e60d597b3dd6@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] nvme-multipath: fix bogus request queue reference put
+Content-Language: he-IL, en-US
+To: mengfanhui <mengfanhui@kylinos.cn>, Christoph Hellwig <hch@lst.de>
+Cc: kbusch@kernel.org, axboe@kernel.dk, linux-kernel@vger.kernel.org,
+ linux-nvme@lists.infradead.org
+References: <20240117065043.79192-1-mengfanhui@kylinos.cn>
+ <b926d754-130d-424e-b099-001e14badc50@grimberg.me>
+ <20240117143952.GA27918@lst.de>
+ <c934831a-ec84-4ea4-a156-782880086ffe@kylinos.cn>
+ <2db9e75c-7c17-4f1d-9328-5eb18fd86d23@grimberg.me>
+ <4b9e1f54-9032-48b6-bfbb-d47a4b7857e3@kylinos.cn>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <4b9e1f54-9032-48b6-bfbb-d47a4b7857e3@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
-On 3/18/24 8:25 PM, David Hildenbrand wrote:
-> On 18.03.24 13:14, alexs@kernel.org wrote:
->> From: Alex Shi <alexs@kernel.org>
->>
->> commit 19138349ed59 ("mm/migrate: Add folio_migrate_flags()") change the
->> meaning of func page_stable_node() to check the compound head for tail
->> 'page' instead of tail page self.
->> But seems both semantics are same at results, the func always return NULL
->>   for tail page. So adding a bug monitor here in case of abnormal.
->>
->> Signed-off-by: Alex Shi <alexs@kernel.org>
->> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Hugh Dickins <hughd@google.com>
->> Cc: Chris Wright <chrisw@sous-sol.org>
->> To: linux-kernel@vger.kernel.org
->> To: linux-mm@kvack.org
->> To: Andrew Morton <akpm@linux-foundation.org>
->> ---
->>   mm/ksm.c | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/ksm.c b/mm/ksm.c
->> index 8c001819cf10..3ff469961927 100644
->> --- a/mm/ksm.c
->> +++ b/mm/ksm.c
->> @@ -1091,7 +1091,12 @@ static inline struct ksm_stable_node *folio_stable_node(struct folio *folio)
->>     static inline struct ksm_stable_node *page_stable_node(struct page *page)
->>   {
->> -    return folio_stable_node(page_folio(page));
->> +    struct ksm_stable_node *node;
->> +
->> +    node = folio_stable_node(page_folio(page));
->> +    VM_BUG_ON_PAGE(PageTail(page) && node, page);
-> 
-> I don't really understand why we would want this.
-> 
-> Only KSM folios can have a node in the stable tree. KSM folios cannot be large folios. At that is precisely what folio_stable_node() checks.
-> 
-> If we'd have a large folio identify as a KSM folio we'd be in much bigger trouble.
-> 
-> 
-> Besides, I'm sure you read "22) Do not crash the kernel" in Documentation/process/coding-style.rst
-> 
+On 20/03/2024 4:03, mengfanhui wrote:
+> In this scenario. upstream should also appear.
 
-Hi David, 
+I'd be surprised if it is,
 
-Thanks for comments!
-Forgive my stupidity, I understand KSM stable tree has no compound pages, but when searching a tail page in ksm_do_scan(), why we couldn't be in a race, that another VM doing THP collapse on the same contents pages, while the 3rd vm is doing hugepage spliting?
+The proposed patch was superseded by:
+f165fb89b71f ("nvme-multipath: convert to blk_alloc_disk/blk_cleanup_disk")
 
-Best regards!
-Alex
+Please verify that this exists upstream.
 
