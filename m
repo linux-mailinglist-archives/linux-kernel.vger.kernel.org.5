@@ -1,300 +1,243 @@
-Return-Path: <linux-kernel+bounces-109333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FEDC8817C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:18:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D50A3881762
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06E44284445
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:18:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3372CB21450
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6023A85658;
-	Wed, 20 Mar 2024 19:17:47 +0000 (UTC)
-Received: from mailscanner01.zoner.fi (mailscanner01.zoner.fi [84.34.166.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBFE8529D;
+	Wed, 20 Mar 2024 18:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5TIoIGo"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A8385297
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.34.166.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01914F214;
+	Wed, 20 Mar 2024 18:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710962266; cv=none; b=T89IkXLUAr1Sc6YpaNqFqDGa/DPM1zsQYpGjYTaZAAGs4BgxB/ToV+GuDTCU3RNS011KyQGwfzUdbI00gaSXIDxPbCSK5qUoY9B7wdpYPL0wFJAPFswh+/+UDVBaZRJt1H0eoBgMmCKj0VP1uOBz09GDPoJ+6ndj9qgWFbES4Ao=
+	t=1710959994; cv=none; b=PyCxHCSWDy0BGa2VEIjTV+88YoMj+URjARyaWAWr6aK2LGiVE+Aeg9TIiLhcS37u/RtZDY8oKSWpoO7iiPoyAuUBtEcCz9qrIx/uIuZeYx+LtmEnCde031l0+RxxPnNRI1V/AnhqJdIlxENCXGMn/hou3QR+CcG+p9Scs7ZnOeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710962266; c=relaxed/simple;
-	bh=BduBwpnC+lnh0fNzh+quQgYOi+N1VvuKwdT8DqQQw6I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FRA8J70IYqyLLkGuMQvjYNXcdYrGcpCr/pF7WUcwlyXsBTB1AmRB3rneOBceF9F2rCKdSP7NIw3WicaW8v7U4ewcqI/+8pz5xD4oO3hwiFtAM8MhO2Ni6TnCbQa9nD+EyKyPCyUz8Sen1rcPfpEX9NIrLuF2uybdc/4ouc4sZyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=84.34.166.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
-Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-	by mailscanner01.zoner.fi (Postfix) with ESMTPS id 2E1EA4220B;
-	Wed, 20 Mar 2024 21:17:42 +0200 (EET)
-Received: from mail.zoner.fi ([84.34.147.244])
-	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
-	(envelope-from <lasse.collin@tukaani.org>)
-	id 1rn0qU-0001dW-2z;
-	Wed, 20 Mar 2024 20:39:26 +0200
-From: Lasse Collin <lasse.collin@tukaani.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Lasse Collin <lasse.collin@tukaani.org>,
-	Jia Tan <jiat0218@gmail.com>,
-	Jubin Zhong <zhongjubin@huawei.com>,
-	Jules Maselbas <jmaselbas@zdiv.net>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] xz: Adjust arch-specific options for better kernel compression
-Date: Wed, 20 Mar 2024 20:38:44 +0200
-Message-ID: <20240320183846.19475-12-lasse.collin@tukaani.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240320183846.19475-1-lasse.collin@tukaani.org>
-References: <20240320183846.19475-1-lasse.collin@tukaani.org>
+	s=arc-20240116; t=1710959994; c=relaxed/simple;
+	bh=S/sytZTQ/V3fEb3RY0qv+twoobr9IaTxQMa2BQaJYzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kR87SUe8BFHuxu8IeZ1h1n9c1iAHqqsaYU32d3Xa7Bjb8Ghhb1gED4ylLXO8q9yhGibHNEpJEVIuMXcEbfK9dPVaau1EJItzri11rUv+GX3zlLMU9IBXi49wy49VWsHL3VaYfzljACjMReSHLbjKnf52u7nk0jQi3UaFD13zjaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5TIoIGo; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-430a7497700so1302031cf.1;
+        Wed, 20 Mar 2024 11:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710959992; x=1711564792; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xWRvU83WE/XxBo1v/F0X5t/KDOzdzaHYVuEHQEDHtYc=;
+        b=H5TIoIGoevzaoQUUJ+xBevuzfXysfgwcWqbsiNERd84oyEwpTiggF3ODIjjfSnku9x
+         zeLO1EFpufEHDvUMe0rrcR/EzbhdJa0ELd2rdHdi93/2u8yzsFcEySyCh3kEqEElq+uh
+         wbk7JPlkNnGfiOfIb3ugNeEIeSTaBVwPGf6O+fb3WSwQFyghxs1x8MFedogloiygajfW
+         XjTSpKW0+IULbjPtWXk344XscuCrOLpa/qBM7xmWpuQflye1A+EMsFeQ5fA71noPeCBA
+         tBBaBKzgP2HVhjfRJK4kD7nI6i7dMH2s8hrDfk9tMrgrifCRsREZISXQP8NKGlpYY99z
+         43mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710959992; x=1711564792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xWRvU83WE/XxBo1v/F0X5t/KDOzdzaHYVuEHQEDHtYc=;
+        b=HykhJh5t95OQ2GZ7ERhhXkYTiH29PXEXz2sNV0/Rk5a6o7huCzWsUCRumaqgpRC41M
+         caQb0yWcXha+cop0aTAADFD94YY6VfD2WPQ65EHHO1AM7pDI1qPpgoeOv+hvIL03TQBt
+         43RKLlp6mZxFt8S1Htmetf8TscKxuEjUwYaCO3PzGXS+2cQfdD8m3Ie6EnvisuJIuJCT
+         yD0I9NctKnFYQsw2R57MS7npSPoQyqNJAZ81g65gZccsmddnoIJcwburKdZwH6DfdnY4
+         qTV7e563+yh/0Bby8GxQFTp20S41S7KFZySSeDNoeBh1+m9omoxNj6YE4PhKWo+QyMRk
+         Kztg==
+X-Forwarded-Encrypted: i=1; AJvYcCV6CikpnL5frIs1ZCzTeqnfiwMee0LmZcZx889YNPY5rX9stALf+mYvAJKKupykTyy60STjbp7ExzDlDFKNxUZZT43uwoNN8581VCSGJsnUxualKhJJ5R9q/XeEgvCKcxQYTgDWa8024SV4E+s=
+X-Gm-Message-State: AOJu0YzsamEDoGKCfVAZACsGcA/ol+c6BZhsLfdY9g2hTsLWp3niNX8b
+	4FrdH8xrnyKJiwKgonWo4fMw17D/QkMt7mvIEz14VhPTXyKiVfli
+X-Google-Smtp-Source: AGHT+IFS9uSNLSBh1XOFh0ALtqPOKyEM9BMZXRgz5Y/IEkIql9atTB8xsItHCTfp9JxRAMGj2zrWjg==
+X-Received: by 2002:a05:622a:1804:b0:430:ba7a:fe7b with SMTP id t4-20020a05622a180400b00430ba7afe7bmr14742759qtc.44.1710959991779;
+        Wed, 20 Mar 2024 11:39:51 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id fb19-20020a05622a481300b004309cf16815sm4019519qtb.39.2024.03.20.11.39.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 11:39:51 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id A2C461200066;
+	Wed, 20 Mar 2024 14:39:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 20 Mar 2024 14:39:50 -0400
+X-ME-Sender: <xms:dS37ZTNLe09Fb7QwOs_4Cujp7ENOGs-njgdpGennczPhcTwd-YgdVA>
+    <xme:dS37Zd_yCHIJFuLvi_TKJu0-dPELv3Bf73eEmduVhXvuhQqRo3maMfitV-R9wWc7U
+    K3GCxI41HRCDwCd8g>
+X-ME-Received: <xmr:dS37ZSQb-NYnQ1yYjHx8GtzVqhXmtY62C6woSsHouHuE-My41hy_g5xYvGimWg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleeggdduudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeejiefhtdeuvdegvddtudffgfegfeehgfdtiedvveevleevhfekhefftdek
+    ieehvdenucffohhmrghinheprhhushhtqdhlrghnghdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgr
+    uhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsoh
+    hquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:di37ZXtSGfJ4RJiEyvT6nQBMtYNjN417sebdNcahW2VJ27hGoq8NOQ>
+    <xmx:di37ZbdkisSEkTyCzfdzGZ3luAiBYSGNElPGLy-tvk3l1XEbmSY17g>
+    <xmx:di37ZT3oAxGEE_yQp_rk9e19dg15LESFaPP63oZOqs8wlqSPmjq1Sw>
+    <xmx:di37ZX9BKjIVQXbhRVtudAZ7rGPrcTvVNMWRjmCPbiox5G5ke6bugQ>
+    <xmx:di37ZemxcpF3Eo5mHsgVJRWuSxWUfQnKBdLyruG4jkKOjg6lIA-c8yOIHF4>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Mar 2024 14:39:49 -0400 (EDT)
+Date: Wed, 20 Mar 2024 11:39:33 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v3 1/4] rust: uaccess: add userspace pointers
+Message-ID: <ZfstZZbagFLj7dqq@boqun-archlinux>
+References: <20240311-alice-mm-v3-0-cdf7b3a2049c@google.com>
+ <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
 
-Use LZMA2 options that match the arch-specific alignment of instructions.
-This change reduces compressed kernel size 0-2 % depending on the arch.
-On 1-byte-aligned x86 it makes no difference and on 4-byte-aligned archs
-it helps the most.
+On Mon, Mar 11, 2024 at 10:47:13AM +0000, Alice Ryhl wrote:
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+> 
+[...]
+> +/// # Examples
+> +///
+> +/// Takes a region of userspace memory from the current process, and modify it
+> +/// by adding one to every byte in the region.
+> +///
+> +/// ```no_run
+> +/// use alloc::vec::Vec;
+> +/// use core::ffi::c_void;
+> +/// use kernel::error::Result;
+> +/// use kernel::uaccess::UserSlice;
+> +///
+> +/// pub fn bytes_add_one(uptr: *mut c_void, len: usize) -> Result<()> {
 
-Use the ARM-Thumb filter for ARM-Thumb2 kernels. This reduces compressed
-kernel size about 5 %.[1] Previously such kernels were compressed using
-the ARM filter which didn't do anything useful with ARM-Thumb2 code.
+I hit the following compile error when trying to run kunit test:
 
-Add BCJ filter support for ARM64 and RISC-V. On ARM64 the compressed
-kernel size is reduced about 5 % and on RISC-V by 7-8 % compared to
-unfiltered XZ or plain LZMA. However:
+	ERROR:root:error: unreachable `pub` item
+	    --> rust/doctests_kernel_generated.rs:4167:1
+	     |
+	4167 | pub fn bytes_add_one(uptr: *mut c_void, len: usize) -> Result<()> {
+	     | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	     | |
+	     | help: consider restricting its visibility: `pub(crate)`
+	     |
+	     = help: or consider exporting it for use by other crates
+	     = note: requested on the command line with `-D unreachable-pub`
 
-  - arch/arm64/boot/Makefile and arch/riscv/boot/Makefile don't include
-    the build rule (two lines) for XZ support even though they support
-    six other compressors. It would be trivial to add the rule but boot
-    loaders would need XZ support too.
+	error: unreachable `pub` item
+	    --> rust/doctests_kernel_generated.rs:4243:1
+	     |
+	4243 | pub fn get_bytes_if_valid(uptr: *mut c_void, len: usize) -> Result<Vec<u8>> {
+	     | ---^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	     | |
+	     | help: consider restricting its visibility: `pub(crate)`
+	     |
+	     = help: or consider exporting it for use by other crates
 
- - A new enough version of the xz tool is required: 5.4.0 for ARM64 and
-   5.6.0 for RISC-V. With an old xz version a message is printed to
-   standard error and the kernel is compressed without the filter.
+	error: aborting due to 2 previous errors
 
-Update lib/decompress_unxz.c to match the changes to xz_wrap.sh.
+, which should be fixed if we make the function in the example not
+`pub`.
 
-Update the CONFIG_KERNEL_XZ help text in init/Kconfig:
-  - Add the RISC-V and ARM64 filters.
-  - Clarify that the PowerPC filter is for big endian only.
-  - Omit IA-64.
+> +///     let (read, mut write) = UserSlice::new(uptr, len).reader_writer();
+> +///
+> +///     let mut buf = Vec::new();
+> +///     read.read_all(&mut buf)?;
+> +///
+> +///     for b in &mut buf {
+> +///         *b = b.wrapping_add(1);
+> +///     }
+> +///
+> +///     write.write_slice(&buf)?;
+> +///     Ok(())
+> +/// }
+> +/// ```
+> +///
+> +/// Example illustrating a TOCTOU (time-of-check to time-of-use) bug.
+> +///
+> +/// ```no_run
+> +/// use alloc::vec::Vec;
+> +/// use core::ffi::c_void;
+> +/// use kernel::error::{code::EINVAL, Result};
+> +/// use kernel::uaccess::UserSlice;
+> +///
+> +/// /// Returns whether the data in this region is valid.
+> +/// fn is_valid(uptr: *mut c_void, len: usize) -> Result<bool> {
+> +///     let read = UserSlice::new(uptr, len).reader();
+> +///
+> +///     let mut buf = Vec::new();
+> +///     read.read_all(&mut buf)?;
+> +///
+> +///     todo!()
+> +/// }
+> +///
+> +/// /// Returns the bytes behind this user pointer if they are valid.
+> +/// pub fn get_bytes_if_valid(uptr: *mut c_void, len: usize) -> Result<Vec<u8>> {
 
-Link: https://lore.kernel.org/lkml/1637379771-39449-1-git-send-email-zhongjubin@huawei.com/ [1]
-Reviewed-by: Jia Tan <jiat0218@gmail.com>
-Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
----
- init/Kconfig          |   5 +-
- lib/decompress_unxz.c |  14 ++++-
- scripts/xz_wrap.sh    | 141 ++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 151 insertions(+), 9 deletions(-)
+Ditto here.
 
-diff --git a/init/Kconfig b/init/Kconfig
-index f3ea5dea9c85..785e15aa5395 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -308,8 +308,9 @@ config KERNEL_XZ
- 	  BCJ filters which can improve compression ratio of executable
- 	  code. The size of the kernel is about 30% smaller with XZ in
- 	  comparison to gzip. On architectures for which there is a BCJ
--	  filter (i386, x86_64, ARM, IA-64, PowerPC, and SPARC), XZ
--	  will create a few percent smaller kernel than plain LZMA.
-+	  filter (i386, x86_64, ARM, ARM64, RISC-V, big endian PowerPC,
-+	  and SPARC), XZ will create a few percent smaller kernel than
-+	  plain LZMA.
- 
- 	  The speed is about the same as with LZMA: The decompression
- 	  speed of XZ is better than that of bzip2 but worse than gzip
-diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
-index 46aa3be13fc5..cae00395d7a6 100644
---- a/lib/decompress_unxz.c
-+++ b/lib/decompress_unxz.c
-@@ -126,11 +126,21 @@
- #ifdef CONFIG_X86
- #	define XZ_DEC_X86
- #endif
--#ifdef CONFIG_PPC
-+#if defined(CONFIG_PPC) && defined(CONFIG_CPU_BIG_ENDIAN)
- #	define XZ_DEC_POWERPC
- #endif
- #ifdef CONFIG_ARM
--#	define XZ_DEC_ARM
-+#	ifdef CONFIG_THUMB2_KERNEL
-+#		define XZ_DEC_ARMTHUMB
-+#	else
-+#		define XZ_DEC_ARM
-+#	endif
-+#endif
-+#ifdef CONFIG_ARM64
-+#	define XZ_DEC_ARM64
-+#endif
-+#ifdef CONFIG_RISCV
-+#	define XZ_DEC_RISCV
- #endif
- #ifdef CONFIG_SPARC
- #	define XZ_DEC_SPARC
-diff --git a/scripts/xz_wrap.sh b/scripts/xz_wrap.sh
-index c8c36441ab70..5bdf0c35cc85 100755
---- a/scripts/xz_wrap.sh
-+++ b/scripts/xz_wrap.sh
-@@ -6,14 +6,145 @@
- #
- # Author: Lasse Collin <lasse.collin@tukaani.org>
- 
-+# This has specialized settings for the following archs. However,
-+# XZ-compressed kernel isn't currently supported on every listed arch.
-+#
-+#   Arch        Align   Notes
-+#   arm          2/4    ARM and ARM-Thumb2
-+#   arm64         4
-+#   csky          2
-+#   loongarch     4
-+#   mips         2/4    MicroMIPS is 2-byte aligned
-+#   parisc        4
-+#   powerpc       4     Uses its own wrapper for compressors instead of this.
-+#   riscv        2/4
-+#   s390          2
-+#   sh            2
-+#   sparc         4
-+#   x86           1
-+
-+# A few archs use 2-byte or 4-byte aligned instructions depending on
-+# the kernel config. This function is used to check if the relevant
-+# config option is set to "y".
-+is_enabled()
-+{
-+	grep -q "^$1=y$" include/config/auto.conf
-+}
-+
-+# Set XZ_VERSION (and LIBLZMA_VERSION). This is needed to disable features
-+# that aren't available in old XZ Utils versions.
-+eval "$($XZ --robot --version)" || exit
-+
-+# Assume that no BCJ filter is available.
- BCJ=
--LZMA2OPTS=
- 
-+# Set the instruction alignment to 1, 2, or 4 bytes.
-+#
-+# Set the BCJ filter if one is available.
-+# It must match the #ifdef usage in lib/decompress_unxz.c.
- case $SRCARCH in
--	x86)            BCJ=--x86 ;;
--	powerpc)        BCJ=--powerpc ;;
--	arm)            BCJ=--arm ;;
--	sparc)          BCJ=--sparc ;;
-+	arm)
-+		if is_enabled CONFIG_THUMB2_KERNEL; then
-+			ALIGN=2
-+			BCJ=--armthumb
-+		else
-+			ALIGN=4
-+			BCJ=--arm
-+		fi
-+		;;
-+
-+	arm64)
-+		ALIGN=4
-+
-+		# ARM64 filter was added in XZ Utils 5.4.0.
-+		if [ "$XZ_VERSION" -ge 50040002 ]; then
-+			BCJ=--arm64
-+		else
-+			echo "$0: Upgrading to xz >= 5.4.0" \
-+				"would enable the ARM64 filter" \
-+				"for better compression" >&2
-+		fi
-+		;;
-+
-+	csky)
-+		ALIGN=2
-+		;;
-+
-+	loongarch)
-+		ALIGN=4
-+		;;
-+
-+	mips)
-+		if is_enabled CONFIG_CPU_MICROMIPS; then
-+			ALIGN=2
-+		else
-+			ALIGN=4
-+		fi
-+		;;
-+
-+	parisc)
-+		ALIGN=4
-+		;;
-+
-+	powerpc)
-+		ALIGN=4
-+
-+		# The filter is only for big endian instruction encoding.
-+		if is_enabled CONFIG_CPU_BIG_ENDIAN; then
-+			BCJ=--powerpc
-+		fi
-+		;;
-+
-+	riscv)
-+		if is_enabled CONFIG_RISCV_ISA_C; then
-+			ALIGN=2
-+		else
-+			ALIGN=4
-+		fi
-+
-+		# RISC-V filter was added in XZ Utils 5.6.0.
-+		if [ "$XZ_VERSION" -ge 50060002 ]; then
-+			BCJ=--riscv
-+		else
-+			echo "$0: Upgrading to xz >= 5.6.0" \
-+				"would enable the RISC-V filter" \
-+				"for better compression" >&2
-+		fi
-+		;;
-+
-+	s390)
-+		ALIGN=2
-+		;;
-+
-+	sh)
-+		ALIGN=2
-+		;;
-+
-+	sparc)
-+		ALIGN=4
-+		BCJ=--sparc
-+		;;
-+
-+	x86)
-+		ALIGN=1
-+		BCJ=--x86
-+		;;
-+
-+	*)
-+		echo "$0: Arch-specific tuning is missing for '$SRCARCH'" >&2
-+
-+		# Guess 2-byte-aligned instructions. Guessing too low
-+		# should hurt less than guessing too high.
-+		ALIGN=2
-+		;;
-+esac
-+
-+# Select the LZMA2 options matching the instruction alignment.
-+case $ALIGN in
-+	1)  LZMA2OPTS= ;;
-+	2)  LZMA2OPTS=lp=1 ;;
-+	4)  LZMA2OPTS=lp=2,lc=2 ;;
-+	*)  echo "$0: ALIGN wrong or missing" >&2; exit 1 ;;
- esac
- 
- # Use single-threaded mode because it compresses a little better
--- 
-2.44.0
+> +///     if !is_valid(uptr, len)? {
+> +///         return Err(EINVAL);
+> +///     }
+> +///
+> +///     let read = UserSlice::new(uptr, len).reader();
+> +///
+> +///     let mut buf = Vec::new();
+> +///     read.read_all(&mut buf)?;
+> +///
+> +///     // THIS IS A BUG! The bytes could have changed since we checked them.
+> +///     //
+> +///     // To avoid this kind of bug, don't call `UserSlice::new` multiple
+> +///     // times with the same address.
+> +///     Ok(buf)
+> +/// }
+> +/// ```
+> +///
+> +/// [`std::io`]: https://doc.rust-lang.org/std/io/index.html
+> +/// [`clone_reader`]: UserSliceReader::clone_reader
+> +pub struct UserSlice {
+> +    ptr: *mut c_void,
+> +    length: usize,
+> +}
+> +
 
+Regards,
+Boqun
+
+[...]
 
