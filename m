@@ -1,172 +1,124 @@
-Return-Path: <linux-kernel+bounces-109481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4127F881A16
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:06:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB71881A19
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B58FB217F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:06:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AC001C21172
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5856B86146;
-	Wed, 20 Mar 2024 23:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 831408613B;
+	Wed, 20 Mar 2024 23:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHTaeHuw"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wtnlTsix"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BEB85C7F;
-	Wed, 20 Mar 2024 23:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CACB86BFDB
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710975953; cv=none; b=E9ioDgWIR5CqB4pc2wbMkcbplkW77M1JqeaJZGsS5TKLbQN8xKHAWRykBHLimVLW8dNzh2bbR040H0lj1XbHhtnHS9WoZMc143aoMQNpw7Q5oIhvD4g/IBmcG+VVGXtLuGNme+Zuf+3EoUkSNh75WFqownKRFxc9zx4n4vs2dKg=
+	t=1710976141; cv=none; b=WYScDjMM8PWC7Vc8u30+0mzkm1NBHVt9HPUSg3onw9KPT2/3zLB8VydWw+8ynzQ4+/NCJDbgNmR0Hw7dtbaqrBkxvfO4J7+5JHWE/XXadAGhSoVcx8v7yUXIXk4mu8uMdxJ+kWKeJcGOiT653coeYpt0dXsk3EaiAt3Wn26SniQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710975953; c=relaxed/simple;
-	bh=ELyhYMDZed5LfXvPYq9GtdT7SjQr8w1n1G6fOIXkz9Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KgG3CmcbROjQ9P+0q6r4yvs1qXDUIk/icrljYaQWTV1wbErdLkqOM2Bm85T9Um87+wOv/qtFQX8BUEt68SG6x3fRv/YGvBTAqR2xYYdKSx2Fy1/imVU22mXE7g61s8+7n0OxG3oSvGE9iRYzUBy4xMdvVo3alC6Fz/ibKLQm+m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHTaeHuw; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3412f49bac7so239744f8f.0;
-        Wed, 20 Mar 2024 16:05:51 -0700 (PDT)
+	s=arc-20240116; t=1710976141; c=relaxed/simple;
+	bh=wEitcMtU69ELTQ6HFUAJtJm8A18kUQS1wB/GUBQBwI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GvRARxV8vdo1usii4LF60NxtaktaI3LpZ33GRIx9q/eCwK3/7Ze9Id6wRye0Qu91JL/EtCcv/4wk/Ne5WZehJVNDO9aR0ILrwhx+R/FnO5gLcQYxglWCdtBf54dkuReR0rNKD0GzrAtdUM/ahv+NzlMeP0nM0ZHB7vHwjyKJTfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wtnlTsix; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d49871732fso991671fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:08:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710975950; x=1711580750; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yG+x+jaCoD6sMzDeeYBU8wB6RIeoBL6DiU2NzqQrX6g=;
-        b=XHTaeHuwsJJimootsiKCyw4pHycHMCWWEKXQ47rBaewttwFEi4Jpzb311wzMBkAPQb
-         iNIV/vdyC8jYLL2zn8YJPxL/7piVmJ/Viq0JchTIgir+nSVLc9i+QNYNNg13iDc//V8K
-         RCvBJ5sNqZ2/SCq60sV7E08vS5TMzagqUUoltSc+hvEdIKbkKwgkG/3bb8V9+rG0YR5V
-         pOD7MWwfoCaQMTxxZ3btVFpdqA/Ygrc7+CNtqr8ELIOb2Wi1L8zOeE6LUCUMwB/f/kIU
-         OzKD7TnYiSE0FSh6+AVjDEh90PAEiIIH9MOB3mFrmiZ2CiwJmpmUlIRSlLo7g7IGzhb/
-         u05Q==
+        d=linaro.org; s=google; t=1710976137; x=1711580937; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IkXn2l9aQZGCQHALJx17Ml36xPwVxX2TSWrjLHWJzFk=;
+        b=wtnlTsixQ64fAnB5ADKJxhH89+rsYZIPpYp9XtwjJ6FRckH39iNaShQD9RbsqAvcbX
+         +qAMDGacbSSriXNZ1zT0XFptmilwmlhpn37OX8ZUU57+een8eqBu943FFmczZaw45Iub
+         sqSvQFgs98JrLma8+UCiZzOvwTnG9Dug1qh8tNT8e1MSptv+AMrUMZwyyGCXO6xPJ2tG
+         QL5AvWqX3oKaFKw7Z3ARA+Z9H94d4L/lgH8802OBhl87piOIu8XF+K/n1lTXUutBPzYg
+         f7W00tD3icjlCjwyGsmbaImqU35yuXbriuspn+i+QgsclTzhabB18cv01Xq8AqEfWpYK
+         SrQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710975950; x=1711580750;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yG+x+jaCoD6sMzDeeYBU8wB6RIeoBL6DiU2NzqQrX6g=;
-        b=Xr2X3Y/BaVvkVY8hkMCF481NoSGC8zkX2pjPlgXJZcjQ3jFzsdYaB08Zmez+jT+c0X
-         gvPRe5Js74GFzKw1whb7sWHrJnzdz2tN9VMW48jIUp/IUiMt8uE9vA4MKI7uGygzSypW
-         1ZQtvirqmMcRaXepQFIZdYOx7MwI84hf0PCcgQFgpRxkrsLmwrY3FRH+RHsXyCta1aXB
-         U24YTNJ7M89c6LIJ0MukZDqs0Sd9mTNRjGDO3fAjK4Bap+uvz/a1WAQT4dzaGXANc33W
-         Eck+ltG2sLrrW5uDvXzTPIE6wHldOzBYCrIUZIkOWbAbxXewcr9TB5JBgznPnIsaONRf
-         zOUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQPRr4E5fXRn4ExlbtxknUIfu8DSqxN8IpmQG24syCzcBO54kUDS0+mfiJvzM2mepY1YKBenkK6u+jW1aOOYw5TrIOrVnp/gPp9rnKlUtb0WEOWCqtzDnt9oqY37METbGkHcqNxf/o7hBXUMOHzVz34tUXmZUvjmhFIetb7khhy3MB
-X-Gm-Message-State: AOJu0YwtkDdnykpiKCItvNNqiGBc3ijkQsbgHRcPUJrVrZqjpCVGQ76w
-	Zmri6DWwI7i8H99Ux2vWsjNH4mlqs+rABbiaZ7qEbRypI3Opan9ANz4xlq2t3XLI/BNIrawMVvs
-	27gQOZNlMhnkQi+8oXnWB5IKnFBo=
-X-Google-Smtp-Source: AGHT+IHjpYfe2cpITcZt0Bmhy3zO3JabTkcQRk31hDBaFg0+bErKPWOGxypSYPor1TZYoSpm5/ECmKeYDVahQzcCwQU=
-X-Received: by 2002:adf:f9d0:0:b0:33e:c528:c900 with SMTP id
- w16-20020adff9d0000000b0033ec528c900mr293487wrr.55.1710975950002; Wed, 20 Mar
- 2024 16:05:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710976137; x=1711580937;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IkXn2l9aQZGCQHALJx17Ml36xPwVxX2TSWrjLHWJzFk=;
+        b=rjPO2l4cyOz0HiNUrkd7Y0y/xgoGMA1VJR3O5YZhlkZ5ImJ56M/s0YL7S7Ybzp1LgF
+         cHhdjFKYlvF/wGM9J3TYP2UJL9HeFuhODN7JAOAeCGHu3NTZdwQc6bxtYEs4cfux59pl
+         MuErPNiXIugw9UJdSeki4zwaJIHW1zydNpODrtBUs1LJEE1DMO9FYL5hYeYhrF0FGAZW
+         tjdOwuC7UebFXLcSNtR3w9TRf56Do5tUtQMPI0GnRbiPaEjxlHcVmYtdvS0PPPZplecC
+         G4uo9YNtcsY3SoZVqbkoQco/CSNT8SQ3deggx/GEXpe20L+YT5/TyM+e6wKYTYuo+c65
+         f+hw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXa2XK2H8ivGnpxjxhUYaYJCNB2o3XuiPVdABuWtiUkL57z2ItqaErXAf4Oa/Qfia6weltWn+QGZal+Sho6i2cHDPLGqa9kNUni9sK
+X-Gm-Message-State: AOJu0YxA1ZNNCFUhJAlW7/nwKHOLL3+/bTVLQT9EIFzYW5xGsyhmnlh2
+	whymSMKca0HvZOM86qdkaJcJ8054C78p6+km+WS0Vo0XYh96ctwpyhQk0pVB5NY=
+X-Google-Smtp-Source: AGHT+IH4oiswGEj49f2wWDyVtL3HMN3AVR4jZcyvrpnyiJp+ismyJGeVgL2Opz5yeSH2QEe/aSfmeQ==
+X-Received: by 2002:a05:651c:1068:b0:2d6:93fa:ce20 with SMTP id y8-20020a05651c106800b002d693face20mr1646812ljm.0.1710976136987;
+        Wed, 20 Mar 2024 16:08:56 -0700 (PDT)
+Received: from [192.168.1.102] (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
+        by smtp.gmail.com with ESMTPSA id e7-20020a05651c038700b002d4aa0bcf15sm1181328ljp.71.2024.03.20.16.08.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 16:08:55 -0700 (PDT)
+Message-ID: <65c8614e-d54a-42bb-923c-1c2bfc1d3bc1@linaro.org>
+Date: Thu, 21 Mar 2024 01:08:45 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319050302.1085006-1-josef@netflix.com> <Zfr1jQ6W6yaLsHID@mtj.duckdns.org>
-In-Reply-To: <Zfr1jQ6W6yaLsHID@mtj.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 20 Mar 2024 16:05:38 -0700
-Message-ID: <CAADnVQJV83CB+ENhRzwNyFbA8rdq3ZGtx6A8Jm7d+Wx9p2rgow@mail.gmail.com>
-Subject: Re: [PATCH V3 bpf-next 1/2] bpf: add bpf_task_get_cgroup kfunc
-To: Tejun Heo <tj@kernel.org>
-Cc: Jose Fernandez <josef@netflix.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Tycho Andersen <tycho@tycho.pizza>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] arch: arm64: dts: sm8650-hdk: add support for the
+ Display Card overlay
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318-topic-sm8650-upstream-hdk-v2-0-b63a5d45a784@linaro.org>
+ <20240318-topic-sm8650-upstream-hdk-v2-3-b63a5d45a784@linaro.org>
+From: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+In-Reply-To: <20240318-topic-sm8650-upstream-hdk-v2-3-b63a5d45a784@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20, 2024 at 7:41=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> On Mon, Mar 18, 2024 at 11:03:01PM -0600, Jose Fernandez wrote:
-> > This patch enhances the BPF helpers by adding a kfunc to retrieve the
-> > cgroup v2 of a task, addressing a previous limitation where only
-> > bpf_task_get_cgroup1 was available for cgroup v1. The new kfunc is
-> > particularly useful for scenarios where obtaining the cgroup ID of a
-> > task other than the "current" one is necessary, which the existing
-> > bpf_get_current_cgroup_id helper cannot accommodate. A specific use
-> > case at Netflix involved the sched_switch tracepoint, where we had to
-> > get the cgroup IDs of both the prev and next tasks.
-> >
-> > The bpf_task_get_cgroup kfunc acquires and returns a reference to a
-> > task's default cgroup, ensuring thread-safe access by correctly
-> > implementing RCU read locking and unlocking. It leverages the existing
-> > cgroup.h helper, and cgroup_tryget to safely acquire a reference to it.
-> >
-> > Signed-off-by: Jose Fernandez <josef@netflix.com>
-> > Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
-> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> > Acked-by: Stanislav Fomichev <sdf@google.com>
->
-> Acked-by: Tejun Heo <tj@kernel.org>
->
-> but some questions below
->
-> > +__bpf_kfunc struct cgroup *bpf_task_get_cgroup(struct task_struct *tas=
-k)
-> > +{
-> > +     struct cgroup *cgrp;
-> > +
-> > +     rcu_read_lock();
-> > +     cgrp =3D task_dfl_cgroup(task);
-> > +     if (!cgroup_tryget(cgrp))
-> > +             cgrp =3D NULL;
-> > +     rcu_read_unlock();
-> > +     return cgrp;
-> > +}
->
-> So, as this is a lot easier in cgroup2, the above can probably be written
-> directly in BPF (untested and not sure the necessary annotations are in
-> place, so please take it with a big grain of salt):
->
->         bpf_rcu_read_lock();
->         cgrp =3D task->cgroups->dfl_cgrp;
->         cgrp =3D bpf_cgroup_from_id(cgrp->kn.id);
->         bpf_rcu_read_unlock();
->
-> If all you need is ID, it's even simpler:
->
->         bpf_rcu_read_lock();
->         cgrp_id =3D task->cgroups->dfl_cgrp->kn.id;
->         bpf_rcu_read_unlock();
+Hi Neil,
 
-Good point.
-Looks like this kfunc isn't really needed.
+On 3/18/24 11:51, Neil Armstrong wrote:
+> With the SM8650-HDK, a Display Card kit can be connected to provide
+> a VTDR6130 display with Goodix Berlin Touch controller.
+> 
+> In order to route the DSI lanes to the connector for the Display
+> Card kit, a switch must be changed on the board.
+> 
+> The HDMI nodes are disabled since the DSI lanes are shared with
+> the DSI to HDMI transceiver.
+> 
+> Add support for this card as an overlay and apply it it at
+> build-time to the sm8650-hdk dtb.
+> 
+> Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 
-We even have the following in one of the selftests:
-        /* simulate bpf_get_current_cgroup_id() helper */
-        bpf_rcu_read_lock();
-        cgroups =3D task->cgroups;
-        if (!cgroups)
-                goto unlock;
-        cgroup_id =3D cgroups->dfl_cgrp->kn->id;
-unlock:
-        bpf_rcu_read_unlock();
+Now I've successfully tested the change on v6.8 with commit 0581bcc48048
+("drm/panel: visionox-vtdr6130: Set prepare_prev_first flag") applied.
 
+Please feel free to add my tag:
 
-> In the first example, it's not great that we go from task pointer to cgro=
-up
-> pointer to ID and then back to acquired cgroup pointer. I wonder whether
-> what we really want is to support something like the following:
->
->         bpf_rcu_read_lock();
->         cgrp =3D bpf_cgroup_tryget(task->cgroups->dfl_cgrp);
->         bpf_rcu_read_unlock();
+Tested-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 
-this one should work already.
-that's existing bpf_cgroup_acquire().
-
-pw-bot: cr
+--
+Best wishes,
+Vladimir
 
