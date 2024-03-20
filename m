@@ -1,152 +1,109 @@
-Return-Path: <linux-kernel+bounces-109494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66893881A32
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:38:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 080AD881A34
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97E121C20C65
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:38:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63386281ED8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACEC8615C;
-	Wed, 20 Mar 2024 23:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD12E8613E;
+	Wed, 20 Mar 2024 23:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="g+JfZlv5"
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55F11E87E;
-	Wed, 20 Mar 2024 23:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.9
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cHqjRs10"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64081E87E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710977925; cv=none; b=t/FofJQhtX0KhjAKYeTnhF/sx9heQCRfSmNXepYtiipBKadYhCdQSYgWuIOXfX9+rr4cMMhRctwRVchT4n6iu9atyqySkdW5YuCMKpfEarTNOwmxi1nxqxQ/7sxSnv6KKPTV/CMbFNNuw+fPIa8sWshCIDxy4pFzSXoIP5rJ5Z4=
+	t=1710978032; cv=none; b=CTb3qXtLOSWFSNmCbpmR60sLK0jWGLCTY7O+fvFqhJDtiEmQTGnjIrIXjMJJlbY/oritAuW/jH764QSCJz6DCwyHuq64n0ykbtvzLeJN5t7piWE3Y5zuiLuvmhq0wfzixUYX12v5Z4XzViMjsEyA9kXbjD8B/ta9ntPOmOVMkLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710977925; c=relaxed/simple;
-	bh=+2SWIsd88ucu5ws7uxhQnlemEmeUg8lx9NbQy9iP82Q=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=HWV4J5J48mTD8iVJIndjQZWp5OPZVSYE7+HVafEvI3AK8+FND6Ws0thuMUXRMlgrvZdODYBJ4kClL9Tdr3W5qrRK3SfsI/8f+oH5rWu6nrDKNKw6LKkPZ8r+I3eZAnAKFg0fyiuxcmxbid3pnpbaPWljPL0Dm2dghmMXVRokFhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=g+JfZlv5; arc=none smtp.client-ip=220.197.31.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
-	Message-Id; bh=NJNvmjRg6+oJD+f8rosyW4DUgth/EkIgF8KUF7RekOg=; b=g
-	+JfZlv5pCw6ae43XDwcHmzR4d1lHl9pvpTQMsm/WZKERzH+NIsNImOSiXpm874dC
-	/VMHqVTcE3m8EeA1J4Yjy9UUK46cBsAfUT+mN9ytXs+zgIDZTwkyxGNJ09QY2o95
-	kGbaV+VzJ03oaiCxpnz2mK1Jk7VQNuQRIeYw4+idAA=
-Received: from smtpclient.apple (unknown [119.143.49.21])
-	by gzga-smtp-mta-g1-5 (Coremail) with SMTP id _____wD3Py80c_tl2DLlAA--.33361S2;
-	Thu, 21 Mar 2024 07:37:26 +0800 (CST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Meiyong Yu <meiyong.yu@126.com>
+	s=arc-20240116; t=1710978032; c=relaxed/simple;
+	bh=KwWyMblbIYq6UPISgPw6fcBtxkC9yr1d9jOgmG9zOt4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ts1m1SZcCR87xvFrYZloWDE1U1Pgn+kwMRv6SgWvC1XvnesxCBNU91G6t3hbHrRO/zUE+sYEeYMmOi2YoLAJH8Eld4W/VEfL4g8iye4SoL3ITfCW5RR9AIXY2RiGsJOGLGnng8oS9guAtmRGQxny8SZVvJmwMeWQHGqv3Re8qew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cHqjRs10; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso48913966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710978029; x=1711582829; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kZ6dgO/nF0HWzmJ0fegbH9GxYNvSqLI3xGG2gpHeyg0=;
+        b=cHqjRs102lUBBt5d48EMAlProEekPodVQVx2yYrFQ4siE5QuFCuv1XMKt75xOTW5Gz
+         ll4xes7AAtVsd94O1bxo78LL37AX4WCcuVqxdx/CimIN/qafEktmkXud7+G0Bonguejf
+         1Hr9/EC7XNTn8Ga7Q2c9QwH6AowvsrKrB//r8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710978029; x=1711582829;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kZ6dgO/nF0HWzmJ0fegbH9GxYNvSqLI3xGG2gpHeyg0=;
+        b=hO9S3ihKtANmFzoNpBDt0FZd1rCbhkTQY1c/FJzGUfpcvGWrfPO25Tx20nCKSacQAk
+         I5eQYWgeqnG/CQYYX6/Qr68KnkrlMPH7DB3KTHVoRNhP7Q0N0HyXRFdUAB7xld/TtsPa
+         BreIcVW4DuRcarIOUti30xM9B2TeMtuQfc+92Cgb8Yzl8B4SEIVMKW0yy5F3pdpEfW19
+         fbH8dGVJD1G84AmgbnYiDLXPLxr63B+H2mmhBvm+wD5LAs/neFnA9EC68H+EnVaL2j8v
+         lpefENi28cNAPpcr0Mhi0nLclki1iK8erKJkWtSDQksMIeVKM64Ktu0oxbQLWg51jcB1
+         fpqQ==
+X-Gm-Message-State: AOJu0YzPEAT801xgrBSqcbqhegaNxG1EGLhQL+dmS4iXyguL0tM4tkOL
+	oR2C0Q4yd5PLewjrSiyIXA15y0vKoKYc0TnSRgedIrv+0N+AKzGlcXorOBLLaE83RCZ0JthJ61+
+	yXPXJOw==
+X-Google-Smtp-Source: AGHT+IFc3cX3mqJac9REYaIiP5hWA/YIYAS9MoaGG4zpxairTZc5Ev1+RbsF7YbZp6hmDTxShfrlHA==
+X-Received: by 2002:a17:906:40c9:b0:a47:100c:b2e7 with SMTP id a9-20020a17090640c900b00a47100cb2e7mr10831ejk.17.1710978028916;
+        Wed, 20 Mar 2024 16:40:28 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id gx27-20020a1709068a5b00b00a465fd3977esm7971883ejc.143.2024.03.20.16.40.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 16:40:28 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso48912866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:40:28 -0700 (PDT)
+X-Received: by 2002:a17:906:640b:b0:a46:3d7d:358 with SMTP id
+ d11-20020a170906640b00b00a463d7d0358mr211213ejm.10.1710978027941; Wed, 20 Mar
+ 2024 16:40:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] Documentation: coding-style: ask function-like macros to evaluate parameters
-Date: Thu, 21 Mar 2024 07:37:14 +0800
-Message-Id: <EFB48F08-F0B5-47C0-8C47-00A542344AC9@126.com>
-References: <20240320001656.10075-1-21cnbao@gmail.com>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
- Andrew Morton <akpm@linux-foundation.org>, Chris Zankel <chris@zankel.net>,
- Huacai Chen <chenhuacai@loongson.cn>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Guenter Roeck <linux@roeck-us.net>, Max Filippov <jcmvbkbc@gmail.com>
-In-Reply-To: <20240320001656.10075-1-21cnbao@gmail.com>
-To: Barry Song <21cnbao@gmail.com>
-X-Mailer: iPhone Mail (21E219)
-X-CM-TRANSID:_____wD3Py80c_tl2DLlAA--.33361S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWrur45Xr1DtrW3Zw15XFb_yoW5Gr1xpF
-	Z8JF47Xa18XFyUArnrJ392yFyxJrWrCFW3Wrsxtry5uF43A3Z2gry3tr15uan7Ar409ay7
-	ua12krsruFyayrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bbiSdUUUUU=
-X-CM-SenderInfo: 5phl501qjo53a6rslhhfrp/1tbijh2nhmVLZvJUWgABsH
+MIME-Version: 1.0
+References: <20240320112214.01bc5339@gandalf.local.home>
+In-Reply-To: <20240320112214.01bc5339@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 20 Mar 2024 16:40:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjCj-LWq4C3GdCeU7kRFVCuhbKTucc-9KSCHNdbe5-O_A@mail.gmail.com>
+Message-ID: <CAHk-=wjCj-LWq4C3GdCeU7kRFVCuhbKTucc-9KSCHNdbe5-O_A@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing/tools: Updates for v6.9
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Daniel Bristot de Oliveira <bristot@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 20 Mar 2024 at 08:19, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> - Update makefiles for latency-collector and RTLA, using tools/build/
+>   makefiles like perf does, inheriting its benefits.
 
-> On Mar 20, 2024, at 08:17, Barry Song <21cnbao@gmail.com> wrote:
->=20
-> =EF=BB=BFFrom: Barry Song <v-songbaohua@oppo.com>
->=20
-> Recent commit 77292bb8ca69c80 ("crypto: scomp - remove memcpy if
-> sg_nents is 1 and pages are lowmem") leads to warnings on xtensa
-> and loongarch,
->   In file included from crypto/scompress.c:12:
->   include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
->   include/crypto/scatterwalk.h:76:30: warning: variable 'page' set but not=
- used [-Wunused-but-set-variable]
->      76 |                 struct page *page;
->         |                              ^~~~
->   crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
->>> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wunused=
--variable]
->     174 |                         struct page *dst_page =3D sg_page(req->d=
-st);
->         |
->=20
-> The reason is that flush_dcache_page() is implemented as a noop
-> macro on these platforms as below,
->=20
-> #define flush_dcache_page(page) do { } while (0)
->=20
-> The driver code, for itself, seems be quite innocent and placing
-> maybe_unused seems pointless,
->=20
-> struct page *dst_page =3D sg_page(req->dst);
->=20
-> for (i =3D 0; i < nr_pages; i++)
->    flush_dcache_page(dst_page + i);
->=20
-> And it should be independent of architectural implementation
-> differences.
->=20
-> Let's have a guidance in codingstyle to ask for the evaluation
-> of parameters.
->=20
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Huacai Chen <chenhuacai@loongson.cn>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Suggested-by: Max Filippov <jcmvbkbc@gmail.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
-> Documentation/process/coding-style.rst | 7 +++++++
-> 1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/process/coding-style.rst b/Documentation/proces=
-s/coding-style.rst
-> index 9c7cf7347394..8065747fddff 100644
-> --- a/Documentation/process/coding-style.rst
-> +++ b/Documentation/process/coding-style.rst
-> @@ -827,6 +827,13 @@ Macros with multiple statements should be enclosed in=
- a do - while block:
->                do_this(b, c);        \
->        } while (0)
->=20
+Lovely. Now it all worked for me, and gave me the legible
 
+  Auto-detecting system features:
+  ...                           libtraceevent: [ on  ]
+  ...                              libtracefs: [ OFF ]
 
-> +Function-like macros should evaluate their parameters, for unused paramet=
-ers,
-I do not support this point, if the parameter is unused, why not to remove i=
-t.
+  libtracefs is missing. Please install libtracefs-dev/libtracefs-devel
+  Makefile.config:29: *** Please, check the errors above..  Stop.
 
-about the warning,  is  tool misreport,  the tool must make better
+and after installing libtracefs-devel as suggested it finished cleanly.
 
-> +cast them to void:
-> +
-> +.. code-block:: c
-> +
-> +    #define macrofun(a) do { (void) (a); } while (0)
-> +
-> Things to avoid when using macros:
->=20
-> 1) macros that affect control flow:
-> --
-> 2.34.1
->=20
+Let's see if it works for others too,
 
+             Linus
 
