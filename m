@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-109309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 329EC881777
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:47:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2013881786
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE284284DAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:47:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975881F22BE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900E585632;
-	Wed, 20 Mar 2024 18:47:48 +0000 (UTC)
-Received: from mailscanner01.zoner.fi (mailscanner01.zoner.fi [84.34.166.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FD885637;
+	Wed, 20 Mar 2024 18:49:26 +0000 (UTC)
+Received: from mailscanner11.zoner.fi (mailscanner11.zoner.fi [5.44.246.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E4E6A8A6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.34.166.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3726185623
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.44.246.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710960468; cv=none; b=pC/w6xI4u9zOmUh6L9bba2rRXPUdKVaOiLyHyRl4nTh2DmwFD9SEdoUFxBE0KFHLTmpSqhsx4OP4d9ZZF09M9QD9yhkrzx9s9p7HCVh51MbRrKD5CG35yj2bJ4xhiTK/X4oN/hdDG8wzCNMLmSuitjISRUCxTu6vUJfgi+qppcI=
+	t=1710960565; cv=none; b=g6Ppy4rqDsEuTKc6zteajNdOwe/Xv4B/rPxbW5xmuT+Y3OI5KelHj8rzKCMrGWnOaMZS+s8UrZrW+TQKtkrJ5sAMUJHN9pe3rhQy+UNeDY5dLiP4IhhjGfN3BcHdZAHTb6IcC1gRJlFUsBv5yO3VZbB9vgtgXeL764ZGIqoPIKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710960468; c=relaxed/simple;
-	bh=3mhzjDEKYr5v5j74va0Zmjj1DohqL1K2cOtcr+XhpeQ=;
+	s=arc-20240116; t=1710960565; c=relaxed/simple;
+	bh=j0isJCYION1kfv7Iyxp5a8hbbdmD6XkxP4eup1q1PPw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u8hEkEXOcyNVlj2tQVm9vQo0dy7lnrK0b3UDzNRQRe+erInWiqwS/w5Q3iyX3FZ3GJSFWTcxgjxvMo2qKqwTxQ7OD737YhMnhxq/0uC/GLEfZS3BrAMdgucYWcjf2noIhOIfnQeSmjy0b8Yq1AuYcG0HbEtL32xjevJUjHq/Vac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=84.34.166.10
+	 MIME-Version; b=MELP9MvPXEDmF2azPSQDySp7qKZr8MBPNE9WuP9n71RXw9L4jgZhKDnnflFHbN2PewSgW7aPQBgZ1DLj2h8iT41dagdhUSk23MogMLKFL4O3bAZZ50XA+Y0Fb064c4rFb1xx83lTBLJHdeqazuXhSVju0UCyMtLehYQA9/D2i3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=5.44.246.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
 Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-	by mailscanner01.zoner.fi (Postfix) with ESMTPS id 7BD364251A;
+	by mailscanner11.zoner.fi (Postfix) with ESMTPS id 8C1E320ED0;
 	Wed, 20 Mar 2024 20:39:26 +0200 (EET)
 Received: from mail.zoner.fi ([84.34.147.244])
 	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
 	(envelope-from <lasse.collin@tukaani.org>)
-	id 1rn0qU-0001dW-0x;
+	id 1rn0qU-0001dW-1H;
 	Wed, 20 Mar 2024 20:39:26 +0200
 From: Lasse Collin <lasse.collin@tukaani.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Lasse Collin <lasse.collin@tukaani.org>,
 	Jia Tan <jiat0218@gmail.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] xz: Fix comments and coding style
-Date: Wed, 20 Mar 2024 20:38:38 +0200
-Message-ID: <20240320183846.19475-6-lasse.collin@tukaani.org>
+Subject: [PATCH 06/11] xz: Cleanup CRC32 edits from 2018
+Date: Wed, 20 Mar 2024 20:38:39 +0200
+Message-ID: <20240320183846.19475-7-lasse.collin@tukaani.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240320183846.19475-1-lasse.collin@tukaani.org>
 References: <20240320183846.19475-1-lasse.collin@tukaani.org>
@@ -55,122 +55,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-- Update the URL of the .xz file format specification.
-- Fix comments that were no longer in sync with the code below them.
-- Fix language errors.
-- Fix coding style.
+The commit faa16bc404d72a5a ("lib: Use existing define with polynomial")
+in 2018 added a dependency on <linux/crc32poly.h> to avoid duplicating
+the same constant in multiple files. Two months later it was found to be
+a bad idea and the commit 242cdad873a75652 ("lib/xz: Put CRC32_POLY_LE
+in xz_private.h") added the definition of CRC32_POLY_LE macro into
+xz_private.h to avoid including <linux/crc32poly.h>.
+
+xz_private.h is a wrong place for it too. Revert back to the upstream
+version which has the poly in xz_crc32_init() in xz_crc32.c.
 
 Reviewed-by: Jia Tan <jiat0218@gmail.com>
 Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
 ---
- lib/decompress_unxz.c | 20 ++++++++++----------
- lib/xz/Kconfig        |  3 ++-
- lib/xz/xz_stream.h    |  2 +-
- scripts/Makefile.lib  | 13 ++++++++-----
- 4 files changed, 21 insertions(+), 17 deletions(-)
+ lib/xz/xz_crc32.c   | 2 +-
+ lib/xz/xz_private.h | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
-index 34bb7efc0412..46aa3be13fc5 100644
---- a/lib/decompress_unxz.c
-+++ b/lib/decompress_unxz.c
-@@ -102,7 +102,7 @@
- #ifdef STATIC
- #	define XZ_PREBOOT
- #else
--#include <linux/decompress/unxz.h>
-+#	include <linux/decompress/unxz.h>
- #endif
- #ifdef __KERNEL__
- #	include <linux/decompress/mm.h>
-@@ -219,7 +219,7 @@ void *memmove(void *dest, const void *src, size_t size)
- #endif
+diff --git a/lib/xz/xz_crc32.c b/lib/xz/xz_crc32.c
+index 30b8a27110b1..effdf34ec48d 100644
+--- a/lib/xz/xz_crc32.c
++++ b/lib/xz/xz_crc32.c
+@@ -28,7 +28,7 @@ STATIC_RW_DATA uint32_t xz_crc32_table[256];
  
- /*
-- * Since we need memmove anyway, would use it as memcpy too.
-+ * Since we need memmove anyway, we could use it as memcpy too.
-  * Commented out for now to avoid breaking things.
-  */
- /*
-@@ -389,17 +389,17 @@ STATIC int INIT unxz(unsigned char *in, long in_size,
- }
- 
- /*
-- * This macro is used by architecture-specific files to decompress
-+ * This function is used by architecture-specific files to decompress
-  * the kernel image.
-  */
- #ifdef XZ_PREBOOT
--STATIC int INIT __decompress(unsigned char *buf, long len,
--			   long (*fill)(void*, unsigned long),
--			   long (*flush)(void*, unsigned long),
--			   unsigned char *out_buf, long olen,
--			   long *pos,
--			   void (*error)(char *x))
-+STATIC int INIT __decompress(unsigned char *in, long in_size,
-+			     long (*fill)(void *dest, unsigned long size),
-+			     long (*flush)(void *src, unsigned long size),
-+			     unsigned char *out, long out_size,
-+			     long *in_used,
-+			     void (*error)(char *x))
+ XZ_EXTERN void xz_crc32_init(void)
  {
--	return unxz(buf, len, fill, flush, out_buf, pos, error);
-+	return unxz(in, in_size, fill, flush, out, in_used, error);
- }
+-	const uint32_t poly = CRC32_POLY_LE;
++	const uint32_t poly = 0xEDB88320;
+ 
+ 	uint32_t i;
+ 	uint32_t j;
+diff --git a/lib/xz/xz_private.h b/lib/xz/xz_private.h
+index 2412a5d54801..811add814ae4 100644
+--- a/lib/xz/xz_private.h
++++ b/lib/xz/xz_private.h
+@@ -104,10 +104,6 @@
+ #	endif
  #endif
-diff --git a/lib/xz/Kconfig b/lib/xz/Kconfig
-index aef086a6bf2f..6b80453d8f54 100644
---- a/lib/xz/Kconfig
-+++ b/lib/xz/Kconfig
-@@ -5,7 +5,8 @@ config XZ_DEC
- 	help
- 	  LZMA2 compression algorithm and BCJ filters are supported using
- 	  the .xz file format as the container. For integrity checking,
--	  CRC32 is supported. See Documentation/staging/xz.rst for more information.
-+	  CRC32 is supported. See Documentation/staging/xz.rst for more
-+	  information.
  
- if XZ_DEC
- 
-diff --git a/lib/xz/xz_stream.h b/lib/xz/xz_stream.h
-index 55f9f6f94b78..242500bd025d 100644
---- a/lib/xz/xz_stream.h
-+++ b/lib/xz/xz_stream.h
-@@ -18,7 +18,7 @@
- 
+-#ifndef CRC32_POLY_LE
+-#define CRC32_POLY_LE 0xedb88320
+-#endif
+-
  /*
-  * See the .xz file format specification at
-- * https://tukaani.org/xz/xz-file-format.txt
-+ * https://xz.tukaani.org/format/xz-file-format.txt
-  * to understand the container format.
-  */
- 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1bd59b8db05f..986c79c5af89 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -500,14 +500,17 @@ quiet_cmd_uimage = UIMAGE  $@
- 
- # XZ
- # ---------------------------------------------------------------------------
--# Use xzkern to compress the kernel image and xzmisc to compress other things.
-+# Use xzkern or xzkern_with_size to compress the kernel image and xzmisc to
-+# compress other things.
- #
- # xzkern uses a big LZMA2 dictionary since it doesn't increase memory usage
- # of the kernel decompressor. A BCJ filter is used if it is available for
--# the target architecture. xzkern also appends uncompressed size of the data
--# using size_append. The .xz format has the size information available at
--# the end of the file too, but it's in more complex format and it's good to
--# avoid changing the part of the boot code that reads the uncompressed size.
-+# the target architecture.
-+#
-+# xzkern_with_size also appends uncompressed size of the data using
-+# size_append. The .xz format has the size information available at the end
-+# of the file too, but it's in more complex format and it's good to avoid
-+# changing the part of the boot code that reads the uncompressed size.
- # Note that the bytes added by size_append will make the xz tool think that
- # the file is corrupt. This is expected.
- #
+  * Allocate memory for LZMA2 decoder. xz_dec_lzma2_reset() must be used
+  * before calling xz_dec_lzma2_run().
 -- 
 2.44.0
 
