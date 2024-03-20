@@ -1,197 +1,137 @@
-Return-Path: <linux-kernel+bounces-109487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C317F881A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:26:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276C8881A29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8601BB21EAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:26:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CAEA1F21BDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE668613C;
-	Wed, 20 Mar 2024 23:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161EB86253;
+	Wed, 20 Mar 2024 23:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hStn0eeB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="i2cfZ1FE"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F9D85C7B;
-	Wed, 20 Mar 2024 23:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E46885C7B
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710977189; cv=none; b=LMfYXKi0Ll/OKR1XmUOJ5zjxLMcV7jPSOV2QGB8dW/3LaBG3K3+ergP24yao7vz5SS6KzrPZO0ZFd+xYEvsvF+a3VXt/rF5JQYaaJym1jecOH8CQDqUUgUDBWie6UQJHXN2OSZk3u65ydRO/NLC2y1K56k/UBisu7U+Ta5jqIyQ=
+	t=1710977237; cv=none; b=FUnINhSJJ7+4kW1DwBFjCloBdnf14kwk1KdN5wOFVoJXGYGa8ntaK6r7Ah11EC3w2Kc75I6CYRjPlflVbSrUsB7fmTBy/CJM/yH2lrBhYqm858NVNUg8vGmEjJRvJYzv/C18xZDYJqxZExlM174vf4lV6JSWT9suD9ckSTu0ZiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710977189; c=relaxed/simple;
-	bh=HUiXtmZVmWbudl79yLaJO/xtAU7ZNwqJ4U3OHT2U+E4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hPRUZvgKllXZozSmr6/4qxiDjko/iGdMaXYWtkNfjOEouvg0iBjpxXNlvoKlwtGyM+irVhN+Ji/RkekxzmxG1i4tOVCf1hjf4kTvGmB5/jqgh3aplmZKW5DFHtJxdbOiDMGbt+LShCDL+W/dDTHNNJqZDThyj6Eq4bJfs8bxh68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hStn0eeB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F913C433C7;
-	Wed, 20 Mar 2024 23:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710977188;
-	bh=HUiXtmZVmWbudl79yLaJO/xtAU7ZNwqJ4U3OHT2U+E4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=hStn0eeBLLoNRVpporeWB7R1CAVklf7oicZcI2l3m5gV/IlJWwzAq3/bkLj29FpEe
-	 WHH+3vZ9ZqmCWlIHq2Xuc3qxoLQrHZDsTPzM306SPp6DVYNQtKEe4dwhW32iH73dqZ
-	 MAMI8Keeh3g6JGQJaQuDurkoWUfsVBYuHOtLG3hB+Tx0wb3dWkAb6w7YLPBKyHUUW2
-	 WWnMXIiN0l5pg1Plh7kVrkl0QREpcbNcVNGdQUZa2zWzsll2KY7M0nvEJG1h+OV7YY
-	 UwZdwsyMMxuIxSp8dlqw+IQYo4klHbswhWU9nLK9ePyYP0n2Lx1sgCMeRRNgXEBTVV
-	 UvFUfCKWI/sXw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id E4095CE0716; Wed, 20 Mar 2024 16:26:26 -0700 (PDT)
-Date: Wed, 20 Mar 2024 16:26:26 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	linux-kernel@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, neeraj.iitr10@gmail.com,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v4] rcu/tree: Reduce wake up for synchronize_rcu() common
- case
-Message-ID: <2868ad8a-78b7-484a-a48d-c6fcbe1d6881@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240319185458.3968308-1-joel@joelfernandes.org>
- <Zfr0XVpgugTK8MMi@pc636>
+	s=arc-20240116; t=1710977237; c=relaxed/simple;
+	bh=LEtK8/Irn1SeDDdEPxmXnIY2M7EQZz0VFSkinrgsrwQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CcXCI2QfkzLdrkuRCX9Y+Tgz+7McSqvosbnXajVScqipyjxD48pQTYJk7+iXjeeq2aUKQLeYbXGg6gCO4upCuOb3J91YF+WvY2YeQGAFBZSd3Tz7xDyqiiNRqyX9U5CE4pO9sudi58ylvboXl0l99qsVpD6DSZOC2y2J70SLUFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=i2cfZ1FE; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60a3c48e70fso3580477b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710977234; x=1711582034; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q6wHVvQOpEVBe9GN/RDfS0/7UHobpz6yHjFxam80y4A=;
+        b=i2cfZ1FErcW8hCzBGKpd9pYxgNJhFAwgd/1gylI00ZqWOPtatYoERChojvyPGaJUDJ
+         KORISgCBpbhzHikyJbc1IYBkxzBQ8BcO/mlXlnFkLlyggMgK8T7skSAYuwg9fZyaAnAo
+         s8SFdjh3MXJstRfqjYWLHEwqc2XZ9wGNANTFdEMPN5G/P1Yt/q+zBSttQ8adsnRMn9Yp
+         Df0+e6IFyIYn/3aU6EacXIt/FBgjfm1L8nMYFlHi02fz7A+GVqqikkCi95hzqxpQDp04
+         V66A7Cuqsq8WVYyUKBHl0SI9YmnNj41eO7I1Mi+lNsVVgo3bmmFW+lyhNMrLzVqLS8fb
+         QSFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710977234; x=1711582034;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q6wHVvQOpEVBe9GN/RDfS0/7UHobpz6yHjFxam80y4A=;
+        b=jFLBj2pazIC9PEenpuEmhN/BUb5XUKtP5Y9Iip2KIcdOkmOQVry6AIuvObjr66Qskg
+         TB9eSnKz/PDUrLo8BEqY4A4TiUhY8LFIBDvrUb+HY2ToZ8Nnrs3+oH9ZzeEehjeKU7YA
+         ULoE6B/hDr7ue0ZKgNyCWNmrtz9X+htgPPH3DEJZCeQZFO+W0RLJBPxtyBa24+9GSnKO
+         Q5EMu7ruJ/dY75uedoW2oTKOryKxS0uxEIAg3+isZ9Z0jhlpYw+Oo3GkbjOQgf4WxRjg
+         DdFNdKvYywsO0DPFwhYPKlDjY20j/yXkpKoULq2UPeHFnAE7PssGq6uZd5IujhCb12Wc
+         ScPg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTdTPtL9EHG0eZrocGeTc4Qylv1MSCW9gWOriiAKHyZZTpGxL88Ea4XTw/GbmGxHugxP8jD+3eg/OvvxfzMS7AIJqpXsgO23ZxhD/V
+X-Gm-Message-State: AOJu0YxzqDQ96rikZ72SGWPR9pRxf6wHCT9ZfKUkf/18YK6noxgRpd2d
+	AOtk1K2bJgGmxkh8uWcya+0EE475LJAVeQY5yXqupx18iD96X6UdeevKPCYkKnd4rT4/rLOryqt
+	CO5zCWKSnIzUfjmZO3E8Rt8LLhE9cTsY0ho2wCAZ+Xbbc8NzGW8nEVw==
+X-Google-Smtp-Source: AGHT+IHMZiJ7GkUOJyGqjV4avkqTTAvlzqr7ytyomStzfgostSKHBO29LXnvCAgrpDc5T+ElSP6cMdrouh2QdUXOToE=
+X-Received: by 2002:a25:b847:0:b0:dc6:da83:88e6 with SMTP id
+ b7-20020a25b847000000b00dc6da8388e6mr3262598ybm.32.1710977234540; Wed, 20 Mar
+ 2024 16:27:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfr0XVpgugTK8MMi@pc636>
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
+ <20240319215915.832127-6-samuel.holland@sifive.com> <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
+ <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com> <17BE5F38AFE245E5.29196@lists.riscv.org>
+In-Reply-To: <17BE5F38AFE245E5.29196@lists.riscv.org>
+From: Deepak Gupta <debug@rivosinc.com>
+Date: Wed, 20 Mar 2024 16:27:03 -0700
+Message-ID: <CAKC1njTnheUHs44qUE2sTdr4N=pwUiOc2H1VEMYzYM84JMwe9w@mail.gmail.com>
+Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
+ per-thread envcfg bits
+To: debug@rivosinc.com
+Cc: Samuel Holland <samuel.holland@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org, 
+	tech-j-ext@lists.risc-v.org, Conor Dooley <conor@kernel.org>, kasan-dev@googlegroups.com, 
+	Evgenii Stepanov <eugenis@google.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Andrew Jones <ajones@ventanamicro.com>, Guo Ren <guoren@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 20, 2024 at 03:36:13PM +0100, Uladzislau Rezki wrote:
-> On Tue, Mar 19, 2024 at 02:54:57PM -0400, Joel Fernandes (Google) wrote:
-> > In the synchronize_rcu() common case, we will have less than
-> > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> > is pointless just to free the last injected wait head since at that point,
-> > all the users have already been awakened.
-> > 
-> > Introduce a new counter to track this and prevent the wakeup in the
-> > common case.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> > v1->v2: Rebase on paul/dev
-> > v2->v3: Additional optimization for wait_tail->next == NULL case.
-> > v3->v4: Apply clean ups from Vlad. Tested rcutorture all scenarios.
-> > ---
-> >  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
-> >  kernel/rcu/tree.h |  1 +
-> >  2 files changed, 31 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 9fbb5ab57c84..f3193670fe42 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
-> >  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-> >  	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
-> >  		rcu_sr_normal_gp_cleanup_work),
-> > +	.srs_cleanups_pending = ATOMIC_INIT(0),
-> >  };
-> >  
-> >  /* Dump rcu_node combining tree at boot to verify correct setup. */
-> > @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >  	 * the done tail list manipulations are protected here.
-> >  	 */
-> >  	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > -	if (!done)
-> > +	if (!done) {
-> > +		/* See comments below. */
-> > +		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-> >  		return;
-> > +	}
-> >  
-> >  	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> >  	head = done->next;
-> > @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >  
-> >  		rcu_sr_put_wait_head(rcu);
-> >  	}
-> > +
-> > +	/* Order list manipulations with atomic access. */
-> > +	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-> >  }
-> >  
-> >  /*
-> > @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >   */
-> >  static void rcu_sr_normal_gp_cleanup(void)
-> >  {
-> > -	struct llist_node *wait_tail, *next, *rcu;
-> > +	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
-> >  	int done = 0;
-> >  
-> >  	wait_tail = rcu_state.srs_wait_tail;
-> > @@ -1699,16 +1706,34 @@ static void rcu_sr_normal_gp_cleanup(void)
-> >  			break;
-> >  	}
-> >  
-> > -	// concurrent sr_normal_gp_cleanup work might observe this update.
-> > -	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > +	/*
-> > +	 * Fast path, no more users to process except putting the second last
-> > +	 * wait head if no inflight-workers. If there are in-flight workers,
-> > +	 * they will remove the last wait head.
-> > +	 *
-> > +	 * Note that the ACQUIRE orders atomic access with list manipulation.
-> > +	 */
-> > +	if (wait_tail->next && wait_tail->next->next == NULL &&
-> > +	    rcu_sr_is_wait_head(wait_tail->next) &&
-> > +	    !atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
-> > +		rcu_sr_put_wait_head(wait_tail->next);
-> > +		wait_tail->next = NULL;
-> > +	}
-> > +
-> > +	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
-> >  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
-> > +	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> >  
-> >  	/*
-> >  	 * We schedule a work in order to perform a final processing
-> >  	 * of outstanding users(if still left) and releasing wait-heads
-> >  	 * added by rcu_sr_normal_gp_init() call.
-> >  	 */
-> > -	queue_work(sync_wq, &rcu_state.srs_cleanup_work);
-> > +	if (wait_tail->next) {
-> > +		atomic_inc(&rcu_state.srs_cleanups_pending);
-> > +		if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
-> > +			atomic_dec(&rcu_state.srs_cleanups_pending);
-> > +	}
-> >  }
-> >  
-> >  /*
-> > diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-> > index bae7925c497f..affcb92a358c 100644
-> > --- a/kernel/rcu/tree.h
-> > +++ b/kernel/rcu/tree.h
-> > @@ -420,6 +420,7 @@ struct rcu_state {
-> >  	struct llist_node *srs_done_tail; /* ready for GP users. */
-> >  	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
-> >  	struct work_struct srs_cleanup_work;
-> > +	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
-> >  };
-> >  
-> >  /* Values for rcu_state structure's gp_flags field. */
-> > -- 
-> > 2.34.1
-> > 
-> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > >
+> > > And instead of context switching in `_switch_to`,
+> > > In `entry.S` pick up `envcfg` from `thread_info` and write it into CSR.
+> >
+> > The immediate reason is that writing envcfg in ret_from_exception() adds cycles
+> > to every IRQ and system call exit, even though most of them will not change the
+> > envcfg value. This is especially the case when returning from an IRQ/exception
+> > back to S-mode, since envcfg has zero effect there.
+> >
+> > The CSRs that are read/written in entry.S are generally those where the value
+> > can be updated by hardware, as part of taking an exception. But envcfg never
+> > changes on its own. The kernel knows exactly when its value will change, and
+> > those places are:
+> >
+> >  1) Task switch, i.e. switch_to()
+> >  2) execve(), i.e. start_thread() or flush_thread()
+> >  3) A system call that specifically affects a feature controlled by envcfg
+>
+> Yeah I was optimizing for a single place to write instead of
+> sprinkling at multiple places.
+> But I see your argument. That's fine.
+>
 
-Queued and pushed, thank you both!
+Because this is RFC and we are discussing it. I thought a little bit
+more about this.
 
-							Thanx, Paul
+If we were to go with the above approach that essentially requires
+whenever a envcfg bit changes, `sync_envcfg`
+has to be called to reflect the correct value.
+
+What if some of these features enable/disable are exposed to `ptrace`
+(gdb, etc use cases) for enable/disable.
+How will syncing work then ?
+
+I can see the reasoning behind saving some cycles during trap return.
+But `senvcfg` is not actually a user state, it
+controls the execution environment configuration for user mode. I
+think the best place for this CSR to be written is
+trap return and writing at a single place from a single image on stack
+reduces chances of bugs and errors. And allows
+`senvcfg` features to be exposed to other kernel flows (like `ptrace`)
+
+We can figure out ways on how to optimize in trap return path to avoid
+writing it if we entered and exiting on the same
+task.
 
