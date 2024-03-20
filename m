@@ -1,185 +1,179 @@
-Return-Path: <linux-kernel+bounces-109163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F231881596
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:26:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A352A881598
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9299B234EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:26:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0161CB23BF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B1654FB7;
-	Wed, 20 Mar 2024 16:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A0254FAA;
+	Wed, 20 Mar 2024 16:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pGHVAS6p"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="w/9nXy0I"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E360753E13
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C5D854F91
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951986; cv=none; b=gl1VaaltbPN3v5o5qmUq0eA652EmqB2p0mw1YE6TEg9+pHUY9fPBca5kYSQOO/Rnw0TdQkFmpvGnE+0Zz12EqK04VM4Puny+Bi2w8huB5qq0WAL7mYv2VwxjlNtXrXylpeSeEHZloaMRaqqVAYF0Ic15tMoYzCx7/VKCn6E+sLc=
+	t=1710951998; cv=none; b=SweALANrgLv/Rlz8DGnO/3K5uh5I0O4SUQ3/9cwAw3WH71xOFMv0/ZSP/U1JgwE4WhfU7d8a1z47VIm5YlGwCLv8UApU0PBFMzXFGY2fQZa+D8GxhB4PnbSNx0oCf/zP6GPCnHwTOriZp8xaLvtNP2PyWj9TzU3TQm7P0URLcRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951986; c=relaxed/simple;
-	bh=+wS+o2Y9kpcSMjVdaZN1AtZmfdNjBWtj59lkeN10uQw=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=kTEelFoL8eDDRFjwsycvd5CFXU4L++3TKPnParTxkZ0NS+q2fsgZDF5QCFF9TRA30gPK/mr9CeSEJAetIYkCyyLurQGR5/L0qZ+LIgYFXAEBbd1P9qKJFRnExUcNJfz0nAPTUOXBwGmlBQBT2TdNo6jTW/fa+AUGLI/pa8eQk08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pGHVAS6p; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ad239f8fso112595007b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:26:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710951984; x=1711556784; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TpjaWbEXXGPMCnUDGYsVsjoUeJRl4xtMeKFE5VoNlZo=;
-        b=pGHVAS6pTj/GG8GLc2T05+PhBj7mQOxIPsjpA7xWBGfp0aT3BOproP81zxg+WR6HM5
-         HT8UuypHi1lSnSiEbtpFL98WyDAqaJeTw4agWgkOz01lGBgp1AGtBFVw9wEvwBLp1ZQv
-         Rd5L+nCU3NIVbr5/yznCmj12/xt3xbwyQnwfQD0op1A6s3JHyWkE6+uCTFdBn9o7ItTA
-         UdrH2QwfmOCyka0WZdZd8upldt7kKOXMCoL+wJ8PEg5u3Zc/k63M+RlPdIsIkQQhBUn6
-         H/yC29hg4FumA00Cgq8lFmxB9TFK8s6qelwzWjoPvwU5/C6RHVOFVt3icq5a1sOAJtZ5
-         MEOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710951984; x=1711556784;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TpjaWbEXXGPMCnUDGYsVsjoUeJRl4xtMeKFE5VoNlZo=;
-        b=vn7zArjbTkiKgFoy2+QeXBTJayhSjQ5icxaIxkzCJCINb/szsmGcj8Aiv8uGx/HQVC
-         gadafavCUWUqQHagTfXEWnMH12M2JOEiHQu0kY8ZXloG5Vq8i0iBZ/k9IKBDExyod0Iv
-         ONTyUULEVCHXMalW6n28QbVsBMPd4AGUakGFqmMT24lyJ+rZFf0kIWNiRBj5efc4KlDU
-         qoyhiJQ4X1yO/v4kxkSlNioYeblgAW3ouHpD+UMDNA/4X6zIDJvdTkCJjmdv7q/sbxA5
-         i4x2/vZy7c3cVRVYy2r4xV0U2qxu7un1NroaQa6FzBuxlmtAd93gqBhG8hETv+kOtNTf
-         enlw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0MzCzIJdlt5azTiAfco6HCjosdcDIdE37h92Th0t+AVzbWWNY+1rW7QYsR2Tz+tW8q2QUbjnVeS2jaQuwJsLjtlDLBPBOQEwDX46C
-X-Gm-Message-State: AOJu0Yw5pstdWEfaz1b7MVE/o2DmQ033Dmrgqs61xyoXDnAPFox16kNz
-	FGi2qJXSXziyd6cm5f8bJeKGbfNNHrNyseTcVqMlDzCN+RaApi1NkR/WnJMErmPg7sO9L2kG7qt
-	u9B0LqA==
-X-Google-Smtp-Source: AGHT+IFBdqKy9AaBHuJA8oBTGDInO4OP/MmxEhOVgHKwTdC2CpWRoL4O+5eBVeSVUkPiIfGDiAQcgSVTTT+A
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f4f0:8ad8:3c73:cef7])
- (user=irogers job=sendgmr) by 2002:a81:6d52:0:b0:610:f287:93b5 with SMTP id
- i79-20020a816d52000000b00610f28793b5mr681040ywc.7.1710951984025; Wed, 20 Mar
- 2024 09:26:24 -0700 (PDT)
-Date: Wed, 20 Mar 2024 09:26:19 -0700
-Message-Id: <20240320162619.1272015-1-irogers@google.com>
+	s=arc-20240116; t=1710951998; c=relaxed/simple;
+	bh=FfQXqQTqxprasFQA5/334WseHrA55WQtEW3YznheWUI=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=JB/aqNjyHKUnF6PFlHFgzyJzboNW/p40Byu8rZNq8wUzoKHV4HZnbtavRAn7i08bmQEUqXe7dHjabtLf5imeFQ7WePfjk5dDd4fW4tYM0G1Da5p9epn6lDsvD+pykzAnJs/toAR3F2lwJ6bwWKR/bqUVdY2Pd4Jsq+HO9Oy3KTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=w/9nXy0I; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1710951988;
+	bh=FfQXqQTqxprasFQA5/334WseHrA55WQtEW3YznheWUI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=w/9nXy0IGUf9pVQPcvRVZOLdrt53zmoG0+uXJLi1hY32TQU9I8wIBUm2PBbjdstVS
+	 0aACOB5YcpOuvrhjTdfdJSusQswbJI9G2ZcjSujk5h3/63N98KfmzMY6FqpMPikhOD
+	 NfKYaxUeQ6wvqk8ft3H7n6nuisqjLjORCEBiHOAoDAh1v/nFveuW4D9nGilxO6o6q6
+	 cx16Y2By/qFIchJ5ijgwEmnwRKI4il/d4lTXj9MbUF44HaOaqOJPk/M3w1m92cCMVS
+	 4w0pmVeS4xQUQouK6QlFBPAdwgifskZZWZ0mAW+89U5Dhijkupg/gAADVDlHITpB/+
+	 yHaho5bVXjTeg==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4V0DVq6FgCzkh1;
+	Wed, 20 Mar 2024 12:26:27 -0400 (EDT)
+Message-ID: <218bd8f1-d382-4024-a90f-59b5fef5184a@efficios.com>
+Date: Wed, 20 Mar 2024 12:26:47 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Subject: [PATCH v1] perf intel-pt: Fix memory sanitizer use-of-uninitialized-value
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Liam Howlett <liam.howlett@oracle.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: "carlos@redhat.com" <carlos@redhat.com>, DJ Delorie <dj@redhat.com>,
+ Florian Weimer <fw@deneb.enyo.de>
+Cc: Olivier Dion <odion@efficios.com>, Michael Jeanson
+ <mjeanson@efficios.com>, libc-alpha <libc-alpha@sourceware.org>,
+ paulmck <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Boqun Feng <boqun.feng@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Christoph Lameter <cl@linux.com>, linux-mm <linux-mm@kvack.org>
+Subject: [RFC] A new per-cpu memory allocator for userspace in librseq
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Running the test "Miscellaneous Intel PT testing" with a build with
--fsanitize=memory and -fsanitize-memory-track-origins I saw:
+Hi!
 
-```
-==1257749==WARNING: MemorySanitizer: use-of-uninitialized-value
-    #0 0x5581c00a76b3 in intel_pt_sample_flags tools/perf/util/intel-pt.c:1527:17
-    #1 0x5581c00c5cf6 in intel_pt_run_decoder tools/perf/util/intel-pt.c:2961:3
-    #2 0x5581c00968f8 in intel_pt_process_timeless_queues tools/perf/util/intel-pt.c:3074:4
-    #3 0x5581c007cf49 in intel_pt_process_event tools/perf/util/intel-pt.c:3482:10
-    #4 0x5581bffa269a in auxtrace__process_event tools/perf/util/auxtrace.c:2830:9
-    #5 0x5581bfb826c0 in perf_session__deliver_event tools/perf/util/session.c:1649:8
-    #6 0x5581bfba1d7f in perf_session__process_event tools/perf/util/session.c:1891:9
-    #7 0x5581bfba82e4 in process_simple tools/perf/util/session.c:2452:9
-    #8 0x5581bfbabcc3 in reader__read_event tools/perf/util/session.c:2381:14
-    #9 0x5581bfbad942 in reader__process_events tools/perf/util/session.c:2430:8
-    #10 0x5581bfb78256 in __perf_session__process_events tools/perf/util/session.c:2477:8
-    #11 0x5581bfb702c4 in perf_session__process_events tools/perf/util/session.c:2643:9
-    #12 0x5581bf2da266 in __cmd_script tools/perf/builtin-script.c:2855:8
-    #13 0x5581bf2bfcdd in cmd_script tools/perf/builtin-script.c:4402:8
-    #14 0x5581bf67004b in run_builtin tools/perf/perf.c:350:11
-    #15 0x5581bf66b8ea in handle_internal_command tools/perf/perf.c:403:8
-    #16 0x5581bf66f527 in run_argv tools/perf/perf.c:447:2
-    #17 0x5581bf669d2d in main tools/perf/perf.c:561:3
+When looking at what is missing make librseq a generally usable
+project to support per-cpu data structures in user-space, I noticed
+that what we miss is a per-cpu memory allocator conceptually similar
+to what the Linux kernel internally provides [1].
 
-  Uninitialized value was stored to memory at
-    #0 0x5581c005ddf8 in intel_pt_walk_insn tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:1256:25
-    #1 0x5581c001a932 in intel_pt_walk_fup tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:1428:9
-    #2 0x5581c000f76c in intel_pt_walk_trace tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:3299:10
-    #3 0x5581c000899b in intel_pt_decode tools/perf/util/intel-pt-decoder/intel-pt-decoder.c:3988:10
-    #4 0x5581c00c5180 in intel_pt_run_decoder tools/perf/util/intel-pt.c:2941:11
-    #5 0x5581c00968f8 in intel_pt_process_timeless_queues tools/perf/util/intel-pt.c:3074:4
-    #6 0x5581c007cf49 in intel_pt_process_event tools/perf/util/intel-pt.c:3482:10
-    #7 0x5581bffa269a in auxtrace__process_event tools/perf/util/auxtrace.c:2830:9
-    #8 0x5581bfb826c0 in perf_session__deliver_event tools/perf/util/session.c:1649:8
-    #9 0x5581bfba1d7f in perf_session__process_event tools/perf/util/session.c:1891:9
-    #10 0x5581bfba82e4 in process_simple tools/perf/util/session.c:2452:9
-    #11 0x5581bfbabcc3 in reader__read_event tools/perf/util/session.c:2381:14
-    #12 0x5581bfbad942 in reader__process_events tools/perf/util/session.c:2430:8
-    #13 0x5581bfb78256 in __perf_session__process_events tools/perf/util/session.c:2477:8
-    #14 0x5581bfb702c4 in perf_session__process_events tools/perf/util/session.c:2643:9
-    #15 0x5581bf2da266 in __cmd_script tools/perf/builtin-script.c:2855:8
-    #16 0x5581bf2bfcdd in cmd_script tools/perf/builtin-script.c:4402:8
-    #17 0x5581bf67004b in run_builtin tools/perf/perf.c:350:11
-    #18 0x5581bf66b8ea in handle_internal_command tools/perf/perf.c:403:8
-    #19 0x5581bf66f527 in run_argv tools/perf/perf.c:447:2
-```
+The per-CPU memory allocator is analogous to TLS (Thread-Local
+Storage) memory: TLS is Thread-Local Storage, whereas the per-CPU
+memory allocator provides CPU-Local Storage.
 
-Adding a curly brace initializer for the intel_pt_insn in
-intel_pt_walk_fup rectifies this, however, there may be other issues
-lurking behind this so initialize all similar instances.
+My goal is to improve locality and remove the need to waste precious
+cache lines with padding when indexing per-cpu data as an array of
+items.
 
-Fixes: f4aa081949e7 ("perf tools: Add Intel PT decoder")
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+So we decided to go ahead and implement a per-cpu allocator for
+userspace in the librseq project [2,3] with the following
+characteristics:
 
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index b450178e3420..b4a95af2e4cc 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1115,7 +1115,7 @@ static void intel_pt_sample_insn(struct intel_pt_decoder *decoder)
-  */
- static void intel_pt_sample_fup_insn(struct intel_pt_decoder *decoder)
- {
--	struct intel_pt_insn intel_pt_insn;
-+	struct intel_pt_insn intel_pt_insn = {};
- 	uint64_t max_insn_cnt, insn_cnt = 0;
- 	int err;
- 
-@@ -1418,7 +1418,7 @@ static inline bool intel_pt_fup_with_nlip(struct intel_pt_decoder *decoder,
- 
- static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
- {
--	struct intel_pt_insn intel_pt_insn;
-+	struct intel_pt_insn intel_pt_insn = {};
- 	uint64_t ip;
- 	int err;
- 
-@@ -1461,7 +1461,7 @@ static int intel_pt_walk_fup(struct intel_pt_decoder *decoder)
- 
- static int intel_pt_walk_tip(struct intel_pt_decoder *decoder)
- {
--	struct intel_pt_insn intel_pt_insn;
-+	struct intel_pt_insn intel_pt_insn = {};
- 	int err;
- 
- 	err = intel_pt_walk_insn(decoder, &intel_pt_insn, 0);
-@@ -1626,7 +1626,7 @@ static int intel_pt_emulated_ptwrite(struct intel_pt_decoder *decoder)
- 
- static int intel_pt_walk_tnt(struct intel_pt_decoder *decoder)
- {
--	struct intel_pt_insn intel_pt_insn;
-+	struct intel_pt_insn intel_pt_insn = {};
- 	int err;
- 
- 	while (1) {
+* Allocations are performed in memory pools (mempool). Allocations
+   are power of 2, fixed sized, configured at pool creation.
+
+* Memory pools can be added to a pool set to allow allocation of
+   variable size records.
+
+* Allocating "items" from a memory pool allocates memory for all
+   CPUs.
+
+* The "stride" to index per-cpu data is user-configurable. Indexing
+   per-cpu data from an allocated pointer is as simple as:
+
+     (uintptr_t) ptr + (cpu * stride)
+
+   Where the multiplication is actually a shift because stride is
+   a power of 2 constant.
+
+* Pools consist of a linked list of "ranges" (a stride worth of
+   item allocation), thus making the pool extensible when running
+   out of space, up to a user-configurable limit.
+
+* Freeing a pointer only requires the pointer to free as input
+   (and the pool stride constant). Finding the range and pool
+   associated with the pointer is done by applying a mask to
+   the pointer. The memory mappings of the ranges are aligned
+   to make this mask find the range base, and thus allow accessing
+   the range structure placed in a header page immediately before.
+
+One interesting problem we faced is what should be done to prevent
+wasting memory due to allocation of useless pages in a system where
+there are lots of configured CPUs, but very few are actually used
+by the application due to a combination of cpu affinity, cpusets,
+and cpu hotplug. Minimizing the amount of page allocation while
+offering the ability to allocate zeroed (or pre-initialized)
+items is the crux of this issue.
+
+We thus came up with two approaches based on copy-on-write (COW)
+to tackle this, which we call the "pool populate policy":
+
+* RSEQ_MEMPOOL_POPULATE_COW_INIT (default):
+
+Rely on copy-on-write (COW) of per-cpu pages to populate per-cpu pages
+from the initial values pages on first write.
+
+The COW_INIT approach maps an extra "initial values" stride with each
+pool range as MAP_SHARED from a memfd. All per-cpu strides map these
+initial values as MAP_PRIVATE, so the first write access from an active
+CPU will trigger a COW page allocation. The downside of this scheme
+is that its use of MAP_SHARED is not compatible with using the pool
+from children processes after fork, and its use of COW is not
+compatible with shared memory use-cases.
+
+* RSEQ_MEMPOOL_POPULATE_COW_ZERO:
+
+Rely on copy-on-write (COW) of per-cpu pages to populate per-cpu pages
+from the zero page on first write. As long as the user only uses malloc,
+zmalloc, or malloc_init with zeroed content to allocate items, it does
+not trigger COW of all per-cpu pages, leaving in place the zero page
+until an active CPU writes to its per-cpu item.
+
+The COW_ZERO approach maps the per-cpu strides as private anonymous
+memory, and therefore only triggers COW page allocation when a CPU
+writes over those zero pages. As a downside, this scheme will trigger
+COW page allocation for all possible CPUs when using zmalloc_init()
+to populate non-zeroed initial values for an item. Its upsides are
+that this scheme can be used across fork and eventually can be used
+over shared memory.
+
+Other noteworthy features are that this mempool allocator can be
+used as a global allocator as well. It has an optional "robust"
+attribute which enables checks for memory corruption and
+double-free.
+
+Users with more custom use-cases can register an "init" callback
+to be called for after each new range/cpu are allocated.
+
+Feedback is welcome !
+
+Thanks,
+
+Mathieu
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/percpu.h
+[2] https://git.kernel.org/pub/scm/libs/librseq/librseq.git/tree/include/rseq/mempool.h
+[3] https://git.kernel.org/pub/scm/libs/librseq/librseq.git/tree/src/rseq-mempool.c
+
 -- 
-2.44.0.291.gc1ea87d7ee-goog
-
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
