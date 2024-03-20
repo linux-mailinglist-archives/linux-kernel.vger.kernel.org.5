@@ -1,111 +1,78 @@
-Return-Path: <linux-kernel+bounces-109260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967358816EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:57:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611878816E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 379A9B21414
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:57:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 175201F21505
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE6F6A35F;
-	Wed, 20 Mar 2024 17:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cS0C06tz"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46E96A8C5;
+	Wed, 20 Mar 2024 17:55:56 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0F61E49B;
-	Wed, 20 Mar 2024 17:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553E469DE4;
+	Wed, 20 Mar 2024 17:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957460; cv=none; b=KWcly4M7ggRikmbJ9lrBwFkGr5TWsV52NaDwAlpMn647XQyKpY38QLiBzGLKLlHmFKSPeerbe5SZ6rseemsKemPYuGzS3FrJZ7cQlvyxkBi6tIMZtaC36gegnvmlGmkBdo8VjueypD41vLDZ/9XKB0SgEuS3d+SyOFrndVDsXLY=
+	t=1710957356; cv=none; b=ZDkaZDoXxe7LcUfm+Xu7KJk2H43jWzJtNIstlsmb01UJYY3MyzZmdMcg7AqpenjH9kbqoku+3t4HF0h+Gc+HTgw9RcOHAXqLRrur7OMQB/GiZJOdLWNUm/gdqaimzcG5ZqiO6ixaACvOlPLoKQhgQ0QLRCOaqPJkM2J74j49Bww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710957460; c=relaxed/simple;
-	bh=m8HMpkp3Ija5+aozkUZQ69YAEYrm43pkhpPtMTD/pi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HJQbyzGmr8YV0T2jn2rF25ICA1Ll/5JjI7BL3AQ4PN0oPUGuiIDr/W5zlcqusovgiCYL8cRNCLMvGHWeGXp5Mf1DWwZYN+R+oc3tnsMx4sGAoa8DF952223lLGDL9CMvFZ4/w9DdLGVvjR6k3hpPS0oSOfwEddToeaDTOcBhYi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cS0C06tz; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e74bd85f26so160029b3a.1;
-        Wed, 20 Mar 2024 10:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710957458; x=1711562258; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SDfSPb8l7GG7oLbxOIDW4/dlXcVC3Y//bNvSJJG/gxI=;
-        b=cS0C06tzdWcO2kaG0IOTLtPBayvZKyVoDMYmC/QLrI897YudTmhDURvvocAfHXGNqN
-         bdl1aj74hFYYBVzASOadudCDq+j7YRsueghAIqu8dSgsIj4FPC/3BcIAlR/8d5nQCa5W
-         qlPDMXuot9TDdPlPyQWglQxn5uYzD1enbqPX+OpFszk2ZRhn3fSHSznBL2wafJClyv1d
-         CXrUlvepzmQBoyRzQnJUKPOUSdBXaqCzsfeFdhCOTwrqd+gRbL/301jYUABwDyfatLZi
-         6nQyPenwci4A3f5KqoshXrNHZtFolhXV0QWl2jZtp0uOpQmD6B+dgHohxFKweNkxPk/V
-         qB1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957458; x=1711562258;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SDfSPb8l7GG7oLbxOIDW4/dlXcVC3Y//bNvSJJG/gxI=;
-        b=T2Fz0HiOsYUM94tQfGsXTLy3+cVjPhwxsodhVIdfA4X2S1Hg6QVqKdn+pWPfLXNZ7k
-         MoN7PM0tx9CvFLM8WfZLCaBzEvzb16fZUeINC+Gm5GvGZHKeRjUsh3+5iOyF/GBKdFZq
-         WtSrAklf3pAwYFoMqmrbOunGtg1zzXRCy79qPLfizNp5CZD64+XxZ0sEG6Z5vO93X6bI
-         /0CkVxsZSzZ3gYRayI5ernwXBZL76BWTBjCgDWXuojV3dgVZrgbJwPXIBpY9BuLzz7qd
-         xwdRq7DdyPmTzHuVANKM2KY1L1ncqhjJb91bGJ/06yEY7TYsrynCTvkqCDKm0WV1pmQl
-         31wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3PoLAdvKyOJdfayNK2NIB5Z3aDq8NbqlWYPzZO5NaMwTXaALESjV8FgtCeXLNGJesKcDsbo6uSS0lX5p2QeY//rYzLMEbq0NAoskh07ePZDLMUlCiavWnFHE9KyGKH0Fk4048oZI=
-X-Gm-Message-State: AOJu0YzkXI2SFy6IK/HLObv/IHqLzaKRLTrVE/kYxux8UJTiCiupMGMQ
-	tyDorma6mZovqiKWQ9KkyMJ0pwAeSYZM9B/UaccXiKFM1GHzlSnr
-X-Google-Smtp-Source: AGHT+IGUBHP10ptXH0poZtV8r4rtr/jPPrYxkkQnqC5bnL4dDK2bANsLAQ7mFcX7pDaWtd78XVwWdA==
-X-Received: by 2002:a05:6a00:398a:b0:6e6:9b50:8c73 with SMTP id fi10-20020a056a00398a00b006e69b508c73mr17212485pfb.15.1710957458498;
-        Wed, 20 Mar 2024 10:57:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 16-20020a056a00071000b006e47e57d976sm11889521pfl.166.2024.03.20.10.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 10:57:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 20 Mar 2024 10:57:37 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Kousik Sanagavarapu <five231003@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-	Jean Delvare <jdelvare@suse.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: Re: [PATCH v2 2/2] hwmon: lm70: fix links in doc and comments
-Message-ID: <6f5f3110-355e-4933-840d-735b90d53ee6@roeck-us.net>
-References: <20240318130840.74589-1-five231003@gmail.com>
- <20240318154540.90613-1-five231003@gmail.com>
- <20240318154540.90613-3-five231003@gmail.com>
+	s=arc-20240116; t=1710957356; c=relaxed/simple;
+	bh=yvxdZcmVH4E1WLSo9+lpEe8WBNOQkbGm6Jg3v9hHgZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DPgT/kjpNJ1daMz+NDoZAO7bTVlnVZNPKmQEsZbUKaRmlaFdq25NQet5+p29sm+Wks8GC0y12ZOe2PY9eJfu2SnpBzQqTim3eL4JRoyawRKrRGxPbnEDB/YWljyCScD6042OqP9tqRuvlrVQekqlOKpniBSfItUEaNwlDab/K78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B179C433C7;
+	Wed, 20 Mar 2024 17:55:54 +0000 (UTC)
+Date: Wed, 20 Mar 2024 13:58:19 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Will Deacon
+ <will@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng
+ <boqun.feng@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [RFC][PATCH] tracing: Introduce restart_critical_timings()
+Message-ID: <20240320135819.4a25c50f@gandalf.local.home>
+In-Reply-To: <0015569b-15dc-4ccd-b322-67c3665c585e@efficios.com>
+References: <20240320122012.2c1f461f@gandalf.local.home>
+	<0015569b-15dc-4ccd-b322-67c3665c585e@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318154540.90613-3-five231003@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 09:08:35PM +0530, Kousik Sanagavarapu wrote:
-> Update links in the documentation and in-code comments which point to
-> the datasheet.
+On Wed, 20 Mar 2024 13:15:39 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+
+> > I would like to introduce restart_critical_timings() and place it in
+> > locations that have this behavior.  
 > 
-> The current links don't work because National Semiconductor (which is
-> the manufacturer of this board and lm70) has been a part of Texas
-> Instruments since 2011 and hence http://www.national.com/ doesn't work
-> anymore.
-> 
-> Fixes: e1a8e913f97e ("[PATCH] lm70: New hardware monitoring driver")
-> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+> Is there any way you could move this to need_resched() rather than
+> sprinkle those everywhere ?
 
-Applied to hwmon-next.
+Because need_resched() itself does not mean it's going to schedule
+immediately. I looked at a few locations that need_resched() is called.
+Most are in idle code where the critical timings are already handled.
 
-Please note that I'll push the branch after the commit window closed.
+I'm not sure I'd add it for places like mm/memory.c or drivers/md/bcache/btree.c.
 
-Thanks,
-Guenter
+A lot of places look to use it more for PREEMPT_NONE situations as a open
+coded cond_resched().
+
+The main reason this one is particularly an issue, is that it spins as long
+as the owner is still running. Which may be some time, as here it was 7ms.
+
+-- Steve
 
