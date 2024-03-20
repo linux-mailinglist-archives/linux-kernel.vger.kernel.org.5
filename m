@@ -1,249 +1,309 @@
-Return-Path: <linux-kernel+bounces-109338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 444A48817CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:24:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 179328817CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:24:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC3FA1F230DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C21262856D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 172FB85639;
-	Wed, 20 Mar 2024 19:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC6985297;
+	Wed, 20 Mar 2024 19:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="byvHiINb"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QYKpL+qx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D1E85297
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8644E85636
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710962660; cv=none; b=qnvGNs+W5TLzBeEt7A7MnsH0q0hJOl9jHsKWCtlVyfaR7lW1p75tzHgOnvpbrlQWFomweA/fvUqvhs6fkc4s+FYQL2KgU4zU23a8MrNoOWq1Owcot8UKFELGMp420S4LLTn7PxsR2IfDI+CBIxPlk5OicaUTu2O0dgiugCOjRtY=
+	t=1710962683; cv=none; b=Ab6sAkbz4+kFPWDYMB0V1pZvKZuReE88dLaZ5UmPFQZiIxFgLZtpfs5ek3xE6usZXb6iBGGm7ugkFNYIyVl/dSPopdn4gMTLoOPXK6g40+7WMbQS9oVO6PmDTf9WCZd5U6SdGRq4N5P0LSt51c42ululatJ9+faeqwz0RqeUNNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710962660; c=relaxed/simple;
-	bh=lMA43VdEHBqBP72UIiAFn6zFxgBbJ+OBQ7Zro7YY/U4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MOXlBVl5Dx53ysmDLsQrJmhuMBMBG6BHVmgKAzwDRA6nTRme2Er+qcj61ScnjJwFh85/RrWli7gxBkDSzz8nokGPrishFt6UCwhQ3WdbU1J6l75z+bENQwLkCSCeVKax/fHnErr0Uph55/SQTeOFfTjATZnMAAfUhhVLW5jpxCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=byvHiINb; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ccAdZs1oCvHFT7nKITQ3hrVOSJeKubMiKC4AFoVzgBU=; b=byvHiINb/6kUw/Z0D8woz4k1ly
-	NJWWYgGBamMpIwUbhyfMDy+/VEQkmJ4Pc5Z1KB9/7p4Qg3fit7ScNmLgdUXsELpnDSpzbOkafLAF3
-	ugbLme2b2gfr/gmqQ00VZldC9bGfwJONto3go8Xavz843ysH21d3cnqZUmlFwLRuAqZ4jG+HfnITg
-	VoRZQuu7Bq4/+ml7yCnL7dNMvm3CP5Bt5CzMlLobhF+b7pHWyxmComZK10FG6jx7jMUDnNdQzRE3n
-	KybnjSXI5k1NgFL866OZcw+n+tOE9Ty7rNYUFUUm52r8jupy5PvmLeH03UvC9JUu7BgKM3MwAYF4z
-	6vbb2iUQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rn1Xp-00000004xgA-3HDt;
-	Wed, 20 Mar 2024 19:24:13 +0000
-Date: Wed, 20 Mar 2024 19:24:13 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Svetly Todorov <svetly.todorov@memverge.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	gregory.price@memverge.com, wangkefeng.wang@huawei.com,
-	akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
-	naoya.horiguchi@linux.dev
-Subject: Re: [PATCH v3] kpageflags: respect folio head-page flag placement
-Message-ID: <Zfs33TNtHvnjDX3J@casper.infradead.org>
-References: <20240320-kpageflags-svetly-v3-1-b6725843bfa7@memverge.com>
+	s=arc-20240116; t=1710962683; c=relaxed/simple;
+	bh=Z8zOpRe23G3rEgXuexMNpYPkYOkpCD3dluzXVqDuh18=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lEDp0/OysW+k8tC8KVZ6QDlbjXHj5cVPmbdZA/gvTQjanv/8Ad/ysclDJBw7JcGG3DCxcGuOfMp3sLp3/2whWgOqtX2Lba2yjlq03t+T67rJF2rxuzB3wbpmYhVSnfGRSGyaogHHJKDx4dcwJ4f4R1ksdvdXG+wamO8gCHtLSB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QYKpL+qx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61583C433C7;
+	Wed, 20 Mar 2024 19:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710962683;
+	bh=Z8zOpRe23G3rEgXuexMNpYPkYOkpCD3dluzXVqDuh18=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=QYKpL+qx/ATcxpUa9YvUz2aaQyPnT6WoF5SftfZ64I55zpsWSAG0ssYDGnRNXyhFf
+	 MIstR2Xu6QdCv4bS1+otLEUFQBsZjp6BBk9/O5yQBtC38bDGBDXzhy5apZBBCssmKi
+	 VA6wvzQIYL9HlS4rD7q4Vzi+fjiKtDtv3LbPU3q8xINm3fA4bvrlnPcUR9/OgTBvFV
+	 1vubcXgxdOc1929Agl7lsrXYKeqN8/NfGuxjleQPGpu4QHAmt9Nr9dyl+WhnqQslzj
+	 soznFVl5xUSySBwh28wQefTSIbnh5RRXCcDHucXCf9v81GUpqJWAtVnMLDi9sYrv5l
+	 DTNYLPU48o52g==
+Message-ID: <d7d8540e-c417-41fa-aea9-acb80541a30d@kernel.org>
+Date: Wed, 20 Mar 2024 20:24:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320-kpageflags-svetly-v3-1-b6725843bfa7@memverge.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Content-Language: en-US, pt-BR, it-IT
+To: Joel Fernandes <joel@joelfernandes.org>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <1e26ce6d-5567-477f-847b-445160b2f18c@joelfernandes.org>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <1e26ce6d-5567-477f-847b-445160b2f18c@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20, 2024 at 10:28:09AM -0700, Svetly Todorov wrote:
-> Page flags are now stored per-folio. Change kpageflags to report these
-> per-folio flags where appropriate.
+On 3/20/24 01:03, Joel Fernandes wrote:
+> 
+> 
+> On 11/4/2023 6:59 AM, Daniel Bristot de Oliveira wrote:
+>> Among the motivations for the DL servers is the real-time throttling
+>> mechanism. This mechanism works by throttling the rt_rq after
+>> running for a long period without leaving space for fair tasks.
+>>
+>> The base dl server avoids this problem by boosting fair tasks instead
+>> of throttling the rt_rq. The point is that it boosts without waiting
+>> for potential starvation, causing some non-intuitive cases.
+>>
+>> For example, an IRQ dispatches two tasks on an idle system, a fair
+>> and an RT. The DL server will be activated, running the fair task
+>> before the RT one. This problem can be avoided by deferring the
+>> dl server activation.
+>>
+>> By setting the zerolax option, the dl_server will dispatch an
+>> SCHED_DEADLINE reservation with replenished runtime, but throttled.
+>>
+>> The dl_timer will be set for (period - runtime) ns from start time.
+>> Thus boosting the fair rq on its 0-laxity time with respect to
+>> rt_rq.
+>>
+>> If the fair scheduler has the opportunity to run while waiting
+>> for zerolax time, the dl server runtime will be consumed. If
+>> the runtime is completely consumed before the zerolax time, the
+>> server will be replenished while still in a throttled state. Then,
+>> the dl_timer will be reset to the new zerolax time
+>>
+>> If the fair server reaches the zerolax time without consuming
+>> its runtime, the server will be boosted, following CBS rules
+>> (thus without breaking SCHED_DEADLINE).
 
-I have a somewhat different patch for this.  Let me know what you think.
-It depends on a few other patches in my tree, so probably won't compile
-for you.
+notice: at this point in history, the term zero-laxity was removed from
+the latest code we have, the term was moved to defer server... I will
+remove from the long in the next time I send it.
 
-From 42b20425c8b9b94f1273a410462babd4363622df Mon Sep 17 00:00:00 2001
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Date: Tue, 5 Mar 2024 05:38:33 +0000
-Subject: [PATCH] proc: Rewrite stable_page_flags()
+>> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> 
+> Hi, Daniel,
+> We have one additional patch (other than the 15 I just sent).
 
-Reduce the usage of PageFlag tests and reduce the number of
-compound_head() calls.  We also no longer need to check PageSlab before
-checking page_mapped() as slub does not reuse the mapcount field.
+Those 15 are the next thing I will review... I was working in the merge window.
 
-For multi-page folios, we'll now show all pages as having the flags,
-eg if it's locked, all pages will have the locked bit set instead of
-just the head page.  The mapped bit is still per page.
+Since I have just
+> 3 more working days for the next 3 weeks, I thought I might as well reply inline
+> here since it might be unnecessary to resend all 15 patches so soon just for the
+> one new addition below. I am replying to this patch here, because the new patch
+> is related (to 0-laxity).  But once I am back from holiday, I can resend it with
+> the set I have unless you've applied it.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/proc/page.c             | 63 ++++++++++++++++++--------------------
- include/linux/page-flags.h |  2 +-
- 2 files changed, 31 insertions(+), 34 deletions(-)
+before starting... in three weeks, we will be very far still from any attempt to
+ping Peter & ingo to ask if they could think about putting us into a queue.
+Have fun :-)
 
-diff --git a/fs/proc/page.c b/fs/proc/page.c
-index 195b077c0fac..0f9ef5866c0d 100644
---- a/fs/proc/page.c
-+++ b/fs/proc/page.c
-@@ -107,10 +107,13 @@ static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
- 	return ((kflags >> kbit) & 1) << ubit;
- }
- 
--u64 stable_page_flags(struct page *page)
-+u64 stable_page_flags(const struct page *page)
- {
--	u64 k;
--	u64 u;
-+	const struct folio *folio;
-+	unsigned long k;
-+	unsigned long mapping;
-+	bool is_anon;
-+	u64 u = 0;
- 
- 	/*
- 	 * pseudo flag: KPF_NOPAGE
-@@ -118,52 +121,46 @@ u64 stable_page_flags(struct page *page)
- 	 */
- 	if (!page)
- 		return 1 << KPF_NOPAGE;
-+	folio = page_folio(page);
- 
--	k = page->flags;
--	u = 0;
-+	k = folio->flags;
-+	mapping = (unsigned long)folio->mapping;
-+	is_anon = mapping & PAGE_MAPPING_ANON;
- 
- 	/*
- 	 * pseudo flags for the well known (anonymous) memory mapped pages
--	 *
--	 * Note that page->_mapcount is overloaded in SLAB, so the
--	 * simple test in page_mapped() is not enough.
- 	 */
--	if (!PageSlab(page) && page_mapped(page))
-+	if (page_mapped(page))
- 		u |= 1 << KPF_MMAP;
--	if (PageAnon(page))
-+	if (is_anon)
- 		u |= 1 << KPF_ANON;
--	if (PageKsm(page))
-+	if (mapping & PAGE_MAPPING_KSM)
- 		u |= 1 << KPF_KSM;
- 
- 	/*
- 	 * compound pages: export both head/tail info
- 	 * they together define a compound page's start/end pos and order
- 	 */
--	if (PageHead(page))
--		u |= 1 << KPF_COMPOUND_HEAD;
--	if (PageTail(page))
-+	if (page == &folio->page)
-+		u |= kpf_copy_bit(k, KPF_COMPOUND_HEAD, PG_head);
-+	else
- 		u |= 1 << KPF_COMPOUND_TAIL;
--	if (PageHuge(page))
-+	if (folio_test_hugetlb(folio))
- 		u |= 1 << KPF_HUGE;
- 	/*
--	 * PageTransCompound can be true for non-huge compound pages (slab
--	 * pages or pages allocated by drivers with __GFP_COMP) because it
--	 * just checks PG_head/PG_tail, so we need to check PageLRU/PageAnon
-+	 * We need to check PageLRU/PageAnon
- 	 * to make sure a given page is a thp, not a non-huge compound page.
- 	 */
--	else if (PageTransCompound(page)) {
--		struct page *head = compound_head(page);
--
--		if (PageLRU(head) || PageAnon(head))
-+	else if (folio_test_large(folio)) {
-+		if ((k & PG_lru) || is_anon)
- 			u |= 1 << KPF_THP;
--		else if (is_huge_zero_page(head)) {
-+		else if (is_huge_zero_folio(folio)) {
- 			u |= 1 << KPF_ZERO_PAGE;
- 			u |= 1 << KPF_THP;
- 		}
- 	} else if (is_zero_pfn(page_to_pfn(page)))
- 		u |= 1 << KPF_ZERO_PAGE;
- 
--
- 	/*
- 	 * Caveats on high order pages: PG_buddy and PG_slab will only be set
- 	 * on the head page.
-@@ -178,15 +175,15 @@ u64 stable_page_flags(struct page *page)
- 	if (PageTable(page))
- 		u |= 1 << KPF_PGTABLE;
- 
--	if (page_is_idle(page))
-+#if defined(CONFIG_PAGE_IDLE_FLAG) && defined(CONFIG_64BIT)
-+	u |= kpf_copy_bit(k, KPF_IDLE,          PG_idle);
-+#else
-+	if (folio_test_idle(folio))
- 		u |= 1 << KPF_IDLE;
-+#endif
- 
- 	u |= kpf_copy_bit(k, KPF_LOCKED,	PG_locked);
--
- 	u |= kpf_copy_bit(k, KPF_SLAB,		PG_slab);
--	if (PageTail(page) && PageSlab(page))
--		u |= 1 << KPF_SLAB;
--
- 	u |= kpf_copy_bit(k, KPF_ERROR,		PG_error);
- 	u |= kpf_copy_bit(k, KPF_DIRTY,		PG_dirty);
- 	u |= kpf_copy_bit(k, KPF_UPTODATE,	PG_uptodate);
-@@ -197,7 +194,8 @@ u64 stable_page_flags(struct page *page)
- 	u |= kpf_copy_bit(k, KPF_ACTIVE,	PG_active);
- 	u |= kpf_copy_bit(k, KPF_RECLAIM,	PG_reclaim);
- 
--	if (PageSwapCache(page))
-+#define SWAPCACHE ((1 << PG_swapbacked) | (1 << PG_swapcache))
-+	if ((k & SWAPCACHE) == SWAPCACHE)
- 		u |= 1 << KPF_SWAPCACHE;
- 	u |= kpf_copy_bit(k, KPF_SWAPBACKED,	PG_swapbacked);
- 
-@@ -231,7 +229,6 @@ static ssize_t kpageflags_read(struct file *file, char __user *buf,
- {
- 	const unsigned long max_dump_pfn = get_max_dump_pfn();
- 	u64 __user *out = (u64 __user *)buf;
--	struct page *ppage;
- 	unsigned long src = *ppos;
- 	unsigned long pfn;
- 	ssize_t ret = 0;
-@@ -248,9 +245,9 @@ static ssize_t kpageflags_read(struct file *file, char __user *buf,
- 		 * TODO: ZONE_DEVICE support requires to identify
- 		 * memmaps that were actually initialized.
- 		 */
--		ppage = pfn_to_online_page(pfn);
-+		struct page *page = pfn_to_online_page(pfn);
- 
--		if (put_user(stable_page_flags(ppage), out)) {
-+		if (put_user(stable_page_flags(page), out)) {
- 			ret = -EFAULT;
- 			break;
- 		}
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 068c9bd43ebf..92a64faa851c 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -716,7 +716,7 @@ static __always_inline bool PageKsm(const struct page *page)
- TESTPAGEFLAG_FALSE(Ksm, ksm)
- #endif
- 
--u64 stable_page_flags(struct page *page);
-+u64 stable_page_flags(const struct page *page);
- 
- /**
-  * folio_xor_flags_has_waiters - Change some folio flags.
--- 
-2.43.0
+as I explained at LPC.. and in chat... there is no "0-laxity", and repeating it
+only creates more confusion. Let's use a deferred server... a regular deadline
+reservation with deferred starting time at (now + period - runtime), and at that point
+il will receive a new deadline one period away - (not one runtime away).
 
+There will always be a person reading these emails and echoing the wrong things...
+using 0-lax/0-laxity term here is a lose-lose.
+
+> So, Vineeth and me came up with a patch below to "max cap" the DL server 0-lax
+> time (max cap is default off keeping the regular behavior). This is needed to
+> guarantee bandwidth for periodic CFS runners/sleepers.
+
+Another point... "guarantee bandwidth"... the bandwith is provided under certain conditions.
+If the conditions are not respected, the guarantee a dl reservation will provide is that
+the task will not put a utilization higher than the one requested, so yes, a dl reservation
+can and will enforce a lower utilization if the task does not respect the conditions.
+Also, if the reservation is ready, but no task is ready...
+
+> 
+> The example usecase is:
+> 
+> Consider DL server params 25ms / 50ms.
+> 
+> Consider CFS task with duty cycle of 25ms / 76ms (run 25ms sleep 51ms).
+
+define duty... like, runtime 25, period 76? sleeps for 51 relative to a starting time
+or not?
+
+there are some holes in your explanation, it is tricky to reply inline for these cases...
+I am continuing but....
+
+> 
+>          run 25ms                    run 25ms
+>          _______                     _______
+>         |       | sleep 51          |       |  sleep 51
+> -|------|-------|---------|---------|-------|----------|--------|------> t
+>  0     25      50       101        126      151       202      227
+>                           \ 0-lax /                    \ 0-lax /
+
+
+trying to understand...
+
+at time 0 the task is activated... RT tasks are spinning... assuming that so the
+server was deferred to 25?
+
+At 25, it becomes DL, with a new deadline of 75. If there is no other DL
+task, run [25..50].
+
+at 75 the task would have another 25 ms... but it decided not to run, throwing
+away 25 ms until 100. At this point, I would say: is not an odd setup....
+
+At point 100, the deferred server assumes that the starvation condition is gone,
+and goes to the initial state.
+
+now, that 0-lax means what? the zero-laxity time for the task... but not
+from its start time, but from the beginning of the deferred server = 25 + 76 = 101
+.. also 0-lax is a range?
+
+and here, the system seems to start the same cycle with a 1 shift to repeat the
+case that the task and the reservation did not match.
+
+looking back, for the first cycle... with defer at 75, without at point 50, there
+would be time for the server to run, but the task is just ready, so runtime is
+thrown away.
+
+So, this miss match between the configuration and the task setup is... clearly
+causing runtime to be wasted... but one can change the parameter for them
+to be better in sync...
+
+and here, I assume that there is something missing in the explanation because...
+
+
+> Here the 0-lax addition in the original v5's zero-lax patch causes lesser bandwidth.
+
+which addition?
+
+> So the task runs 50ms every 227ms, instead of 50ms every 152ms.
+
+..
+
+> 
+> A simple unit test confirms the issue, and it is fixed by Vineeth's patch below:
+> 
+> Please take a look at the patch below (applies only to v5.15 but Vineeth is
+> rebase on mainline as we speak), thanks.
+> 
+> -----8<--------
+> From: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> Subject: [PATCH] sched/deadline/dlserver: sysctl for dlserver maxdefer time
+> 
+> Inorder to avoid dlserver preempting RT tasks when it wakes up, dlserver
+> is throttled(deferred) until zero lax time. This is the farthest time
+> before deadline where dlserver can meet its deadline.
+> 
+> Zero lax time causes cfs tasks with sleep/run pattern where the cfs
+> tasks doesn't get the bandwidth promised by dlserver. So introduce a
+> sysctl for limiting the defer time of dlserver.
+
+so... that explanation before to reach to the conclusion that limiting the
+amount of time to defer the server is a fix? there is a huge gap here.
+
+> 
+> Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> ---
+>  include/linux/sched/sysctl.h | 2 ++
+>  kernel/sched/deadline.c      | 6 ++++++
+>  kernel/sysctl.c              | 7 +++++++
+>  3 files changed, 15 insertions(+)
+> 
+> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> index 4939e6128840..a27fba6fe0ab 100644
+> --- a/include/linux/sched/sysctl.h
+> +++ b/include/linux/sched/sysctl.h
+> @@ -41,6 +41,8 @@ extern unsigned int sysctl_iowait_apply_ticks;
+>  extern unsigned int sysctl_sched_dl_period_max;
+>  extern unsigned int sysctl_sched_dl_period_min;
+>  +extern unsigned int sysctl_sched_dlserver_maxdefer_ms;
+> +
+>  #ifdef CONFIG_UCLAMP_TASK
+>  extern unsigned int sysctl_sched_uclamp_util_min;
+>  extern unsigned int sysctl_sched_uclamp_util_max;
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index d638cc5b45c7..69c9fd80a67d 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -1071,6 +1071,11 @@ static int start_dl_timer(struct sched_dl_entity *dl_se)
+>  	if (dl_se->dl_defer_armed) {
+>  		WARN_ON_ONCE(!dl_se->dl_throttled);
+>  		act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
+> +		if (sysctl_sched_dlserver_maxdefer_ms) {
+> +			ktime_t dlserver_maxdefer = rq_clock(rq) +
+> ms_to_ktime(sysctl_sched_dlserver_maxdefer_ms);
+> +			if (ktime_after(act, dlserver_maxdefer))
+> +				act = dlserver_maxdefer;
+
+
+that is, having a global limit... we have a per-cpu set of variables,
+that is bounded by a global limit.
+
+<joking>
+It is already hard to put in sync with two parameters. Now we need a
+third one that is global :-)
+<joking>
+
+reading the code was actually more instructive than reading the comments.
+The good point is that this puts a nail in the coffin of "zerolax" :-)
+
+that is, you all want also to control for how long the defer happens. Now
+it is fixed... (period - runtime). You all would like to have the ability
+to set it so something closer, so to defer less.
+
+That phrase is simple :-)
+
+It is already possible! how? This can be done by adjusting runtime/period.
+Which are already per CPU. The DL server does not need to give an entire
+chuck all at once; one can split it into smaller runtime/period slices,
+as EEVDF does. And here we get back to the things we talked about when
+trying to use EDF... but now it is only for one task :-) It is easier.
+
+This also reduces the amount of time thrown away because there is no
+task ready. It is the main cause of time wasted anyway. And the CFS
+scheduler is really aperiodic, in practice, these more corner
+case timelines will hardly happen... unless you try to force with
+a simple test case.
+
+now... could I change the defer per-cpu option to have a value between
+0 and (period - runtime) so we could defer less than (period - runtime),
+with proper check and granularity (per cpu) in the next version I send
+for the interface.... maybe... it is less prone to have a no no from
+people who care a lot about the interface.
+
+But I am asking myself: is it worth the complexity? I would try first
+getting used with the runtime/period setup only...
+
+I will start reviewing the other patches as soon as the worries
+of the merge window passes away. Hopefully tomorrow.
+
+-- Daniel
 
