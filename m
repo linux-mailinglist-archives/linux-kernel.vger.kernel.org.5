@@ -1,483 +1,119 @@
-Return-Path: <linux-kernel+bounces-109053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C96A881400
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:00:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBF1881402
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 854B81C22EEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:00:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE79F1F25026
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5EE4C631;
-	Wed, 20 Mar 2024 15:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85074C61C;
+	Wed, 20 Mar 2024 15:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aOfPP05O"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="HLR9STqi"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12AE4C61C;
-	Wed, 20 Mar 2024 15:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8E840866
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710946835; cv=none; b=ALs3QTeT5XPnHzGIkD7uduOKUj0EmickfAUVMqoPXPfOzQHSc9YEYaPR+uvIjxKDgl3eUXeNA6f8Vkfxz+SYEGaMdFNIjLI0WgF4v+SOCuPXfkaty8xisT2txorTVqw7qeiuOriyf1LKvPsEhF7dcRCODkK6Ln2n/BoyZ15yOvQ=
+	t=1710946886; cv=none; b=Y3d5w5LJJM9CQ2HZcFgW0Rbq4QuClqbaI7kS6/D9TwmOLVn6GmdcOWNf1wJmNhguenTXSTvr+Zn9T7+p1p/YNc9QjAkDpQrxNzf/abhUzKCnxfQ2oeczvAB8q6kMXGyeuLqQWpmFXEsDzzfcxrUs0jVF/kbKo1tqXlqB+a3vzTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710946835; c=relaxed/simple;
-	bh=cybB2ILQSWkP+qDem/ecrGvZQ4vNRh+GU9RLJyFVt50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nqFsOp/x2PqvNiaT1+0WDYy19tEAi57+vD/HDrGM8B47js8/HTx6xtdA9Mvm04Bj5WYr0NDX7EouBZ71ub1UMnQCvSlaJFAWwYBKXE+VsuiLIzwOEcsXaWLIx4488+m6W+1DcN8TM+6lmcHVHeBVFrGgfLUIQBjGItBAvNo+/Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aOfPP05O; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710946833; x=1742482833;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cybB2ILQSWkP+qDem/ecrGvZQ4vNRh+GU9RLJyFVt50=;
-  b=aOfPP05O/g9yQGDSmBm7Xp4nLeNKhGA0+lC6dSzVd9Fj6mnkhblkmCJg
-   lg1Bvnu/O/a21z65OrmWrSDdefVOfDYoHQ6GRCX5vlNtRCCRTfKwcDtYy
-   VzZ7aLbtov7RrM/Yu+U66S1ahT2kiL4ozGG4x8sYfYpr5dX7Gdy5P7kNC
-   R8QFb28erZGgfFhrVHFWJWsQldxpGRWz5uAOAB4Tk1v/A8XZrFnK9BD6M
-   mfMSlcF3ytgoufo9Psdn39i50aHUd0MGEmM8xLJKeFMQTm+tsz8wMIYez
-   ZeQCu0tEv+7BXKP5uBXdOymMVjX/9JrlOrwcBPO8UgIqrKknZFEj5bZbj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="16416020"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="16416020"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 08:00:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="14831504"
-Received: from manikgoy-mobl1.amr.corp.intel.com (HELO [10.212.106.67]) ([10.212.106.67])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 08:00:26 -0700
-Message-ID: <1d0399d2-684f-490e-8711-f636e987a0b8@linux.intel.com>
-Date: Wed, 20 Mar 2024 10:00:24 -0500
+	s=arc-20240116; t=1710946886; c=relaxed/simple;
+	bh=QYn8wEwrd9F4hJD7q6hMGPoTg3d1RRAdEsqO+3Eu13k=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=sc0OtO+OSG6T2PxpJFg6HD/a/Ir8DVCIwlJdhZKGhgfm4O8MuyU6DJsmH9Iz7MZsbDCENTe8j+rcTcLV5aeaO4iH9HfbPn+A5dznIbGXQE2MHObA1bzdTFGLOFSJEC5irmLZtTCG+hMgUND/Ig3cUmTWi3Q4T/ZjOqyBjRwoXqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=HLR9STqi; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515830dc79cso1911950e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1710946882; x=1711551682; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9vWgthiM1p7crGecz228u37xQ7MHayTxVxgS78EJVGE=;
+        b=HLR9STqi06aeHzo2WG4kI+lXAYGbJZNVFeQkTD76izmdp8Hk5Os5Ll64nucGVivLPs
+         ohqiAyhrIqme5cMLihF5PUjK5elFADY7G7hqmGSwlEZIJxJmyTzYtTGqGQgnd7b1p7si
+         vzOSPn+W0xjwBvMvRHEWZ4e7sYLKi5nI9xn8Yt672IFNLoP4tLKm+0VPFqnMRX/6ll8A
+         tYhCT1ABU/axn5luqOYrAPIuO36d+YuceJrxg2aN0wOm+xgMiSPR2x1yZKWcUqPKmQc+
+         hO/VS3MNsexRU43VyMUnUzr2Xql9bv2r3RHx0XY6b0KhcSsDiVqPQGvV/wMBQW8msEm+
+         tXTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710946882; x=1711551682;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9vWgthiM1p7crGecz228u37xQ7MHayTxVxgS78EJVGE=;
+        b=v9+UaGSHQYqPh9IwJSnQjOFFnF7UveYOs189LXSzftKZOFXFcbfeOry+cmdlvE8xl3
+         BK7VTDjBy/Sazru6RjVEd9ZZ4eCo29gu5nXbym1tGQBVVX90L9QRVv82zy9W0X1JPJWb
+         RZvpLRGpYNCAEOyapUZR6udp6p3uJp4fx1iLlntJoAZfQfUYnFFFoda2nlo3RkDZtKCA
+         a0ysaEqAI+pYOUk+T4f9EYDM7hp49+QxRFXnkUjkAzlT1n1XId4NXHpq8acvmkzUnFz/
+         85ve9ru2GjiNpAUIcdOdigHeP8m5p4pYKR1cp5VcRHK6B7OKqJdJYwn26/GKh0SuA61N
+         AWnA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfy5EtOcdc/RQYeUIDHVhGy+PKOOGw6Fz74Vcqrt75WfiF3k477aPDwiIx3hinmxRPjM6IAPA0AG97Czfm9sjEoKHPW9RFKbo+mecw
+X-Gm-Message-State: AOJu0YwGzcUgnr3aWE42+EnTAyo5V3Zru+77U8uGmSTpH7RKOKXszkmt
+	eBsqxa75JCJrmB822Nr+tT7oRchZU3ZvTlGlfHO9yNJmNKgCGObQWx7U5Uuvwec=
+X-Google-Smtp-Source: AGHT+IH28ox2ZKxLrWNtq84tgrFDOkL6Ztn0chSueQwh894ihTgGyWEffg6JNmV6hMqYn9YUSIJGfg==
+X-Received: by 2002:a19:690f:0:b0:513:ee27:2054 with SMTP id e15-20020a19690f000000b00513ee272054mr5625764lfc.42.1710946882374;
+        Wed, 20 Mar 2024 08:01:22 -0700 (PDT)
+Received: from smtpclient.apple ([2001:a61:10c6:ce01:6198:fd02:45af:2ca2])
+        by smtp.gmail.com with ESMTPSA id pv27-20020a170907209b00b00a44fcdf20d1sm7371801ejb.189.2024.03.20.08.01.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Mar 2024 08:01:21 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ASoC: cdns: Add drivers of Cadence Multi-Channel
- I2S Controller
-Content-Language: en-US
-To: Xingyu Wu <xingyu.wu@starfivetech.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Claudiu Beznea <Claudiu.Beznea@microchip.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor.dooley@microchip.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-References: <20240320090239.168743-1-xingyu.wu@starfivetech.com>
- <20240320090239.168743-3-xingyu.wu@starfivetech.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240320090239.168743-3-xingyu.wu@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] tracing: Explicitly cast divisor to fix Coccinelle
+ warning
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <20240320192715.22eeeba84c0fd3a8c2353c79@kernel.org>
+Date: Wed, 20 Mar 2024 16:01:10 +0100
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EAA3D15D-F96D-48AC-B9C0-B2290E1B38AA@toblux.com>
+References: <20240318105243.117911-2-thorsten.blum@toblux.com>
+ <20240320192715.22eeeba84c0fd3a8c2353c79@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
+On 20. Mar 2024, at 11:27, Masami Hiramatsu (Google) =
+<mhiramat@kernel.org> wrote:
+>=20
+> Hmm, strange, trace_do_benchmark() has another do_div(u64, u64).=20
+>=20
+>                do {
+>                        last_seed =3D seed;
+>                        seed =3D stddev;
+>                        if (!last_seed)
+>                                break;
+>                        do_div(seed, last_seed);
+>                        seed +=3D last_seed;
+>                        do_div(seed, 2);
+>                } while (i++ < 10 && last_seed !=3D seed);
+>=20
+> Didn't Coccinelle find that?
 
-> diff --git a/sound/soc/cdns/Kconfig b/sound/soc/cdns/Kconfig
-> new file mode 100644
-> index 000000000000..61ef718ebfe7
-> --- /dev/null
-> +++ b/sound/soc/cdns/Kconfig
-> @@ -0,0 +1,18 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config SND_SOC_CADENCE_I2S_MC
-> +        tristate "Cadence I2S Multi-Channel Controller Device Driver"
-> +	depends on HAVE_CLK
+Coccinelle also finds this one, but please ignore this patch as I just =
+realized
+this was already fixed in another patch of mine from February.
 
-indentation is off
+Sorry for the inconvenience.
 
-> +        select SND_SOC_GENERIC_DMAENGINE_PCM
-> +        help
-> +         Say Y or M if you want to add support for I2S driver for the
-> +         Cadence Multi-Channel I2S Controller device. The device supports
-> +         up to a maximum of 8 channels each for play and record.
-
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Cadence Multi-Channel I2S controller PCM driver
-> + *
-> + * Copyright (c) 2022-2023 StarFive Technology Co., Ltd.
-
-2024?
-
-> + */
-> +
-> +#include <linux/io.h>
-> +#include <linux/rcupdate.h>
-> +#include <sound/pcm_params.h>
-> +#include "cdns-i2s-mc.h"
-> +
-> +#define PERIOD_BYTES_MIN	4096
-> +#define BUFFER_BYTES_MAX	(3 * 2 * 8 * PERIOD_BYTES_MIN)
-
-what are those 3 and 2 and 8 factors? a comment or the use of macros
-would help.
-
-> +#define PERIODS_MIN		2
-> +
-> +static unsigned int cdns_i2s_pcm_tx(struct cdns_i2s_dev *dev,
-> +				    struct snd_pcm_runtime *runtime,
-> +				    unsigned int tx_ptr, bool *period_elapsed,
-> +				    snd_pcm_format_t format)
-> +{
-> +	unsigned int period_pos = tx_ptr % runtime->period_size;
-
-not following what the modulo is for, usually it's modulo the buffer size?
-
-> +	const u16 (*p16)[2] = (void *)runtime->dma_area;
-> +	const u32 (*p32)[2] = (void *)runtime->dma_area;
-> +	u32 data[2];
-> +	int i;
-> +
-> +	for (i = 0; i < CDNS_I2S_FIFO_DEPTH; i++) {
-> +		if (format == SNDRV_PCM_FORMAT_S16_LE) {
-> +			data[0] = p16[tx_ptr][0];
-> +			data[1] = p16[tx_ptr][1];
-> +		} else if (format == SNDRV_PCM_FORMAT_S32_LE) {
-> +			data[0] = p32[tx_ptr][0];
-> +			data[1] = p32[tx_ptr][1];
-> +		}
-
-what about other formats implied by the use of 'else if' ?
-> +
-> +		iowrite32(data[0], dev->base + CDNS_FIFO_MEM);
-> +		iowrite32(data[1], dev->base + CDNS_FIFO_MEM);
-> +		period_pos++;
-> +		if (++tx_ptr >= runtime->buffer_size)
-> +			tx_ptr = 0;
-> +	}
-> +
-> +	*period_elapsed = period_pos >= runtime->period_size;
-> +	return tx_ptr;
-> +}
-
-> +static void cdns_i2s_pcm_transfer(struct cdns_i2s_dev *dev, bool push)
-
-'push' really means 'tx' so what not use a simpler naming?
-
-> +{
-> +	struct snd_pcm_substream *substream;
-> +	bool active, period_elapsed;
-> +
-> +	rcu_read_lock();
-> +	if (push)
-> +		substream = rcu_dereference(dev->tx_substream);
-> +	else
-> +		substream = rcu_dereference(dev->rx_substream);
-> +
-> +	active = substream && snd_pcm_running(substream);
-> +	if (active) {
-> +		unsigned int ptr;
-> +		unsigned int new_ptr;
-> +
-> +		if (push) {
-> +			ptr = READ_ONCE(dev->tx_ptr);
-> +			new_ptr = dev->tx_fn(dev, substream->runtime, ptr,
-> +					     &period_elapsed, dev->format);
-> +			cmpxchg(&dev->tx_ptr, ptr, new_ptr);
-> +		} else {
-> +			ptr = READ_ONCE(dev->rx_ptr);
-> +			new_ptr = dev->rx_fn(dev, substream->runtime, ptr,
-> +					     &period_elapsed, dev->format);
-> +			cmpxchg(&dev->rx_ptr, ptr, new_ptr);
-> +		}
-> +
-> +		if (period_elapsed)
-> +			snd_pcm_period_elapsed(substream);
-> +	}
-> +	rcu_read_unlock();
-> +}
-> +
-> +void cdns_i2s_pcm_push_tx(struct cdns_i2s_dev *dev)
-> +{
-> +	cdns_i2s_pcm_transfer(dev, true);
-> +}
-> +
-> +void cdns_i2s_pcm_pop_rx(struct cdns_i2s_dev *dev)
-> +{
-> +	cdns_i2s_pcm_transfer(dev, false);
-> +}
-> +
-> +static int cdns_i2s_pcm_open(struct snd_soc_component *component,
-> +			     struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-> +	struct cdns_i2s_dev *dev = snd_soc_dai_get_drvdata(snd_soc_rtd_to_cpu(rtd, 0));
-> +
-> +	snd_soc_set_runtime_hwparams(substream, &cdns_i2s_pcm_hardware);
-> +	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-> +	runtime->private_data = dev;
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_i2s_pcm_close(struct snd_soc_component *component,
-> +			      struct snd_pcm_substream *substream)
-> +{
-> +	synchronize_rcu();
-> +	return 0;
-
-runtime->private_data = NULL?
-
-> +}
-> +
-> +static int cdns_i2s_pcm_hw_params(struct snd_soc_component *component,
-> +				  struct snd_pcm_substream *substream,
-> +				  struct snd_pcm_hw_params *hw_params)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	struct cdns_i2s_dev *dev = runtime->private_data;
-> +
-> +	dev->format = params_format(hw_params);
-
-don't you need to test if the formats are supported?
-
-> +	dev->tx_fn = cdns_i2s_pcm_tx;
-> +	dev->rx_fn = cdns_i2s_pcm_rx;
-> +
-> +	return 0;
-> +}
-
-> +static int cdns_i2s_start(struct cdns_i2s_dev *i2s,
-> +			  struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	unsigned char max_ch = i2s->max_channels;
-> +	unsigned char i2s_ch;
-> +	int i;
-> +
-> +	/* Each channel is stereo */
-> +	i2s_ch = runtime->channels / 2;
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		if ((i2s_ch + i2s->tx_using_channels) > max_ch) {
-> +			dev_err(i2s->dev,
-> +				"Max %d channels: using %d for TX, do not support %d for RX\n",
-> +				max_ch, i2s->tx_using_channels, i2s_ch);
-> +			return -ENOMEM;
-
-ENOMEM is for memory allocation, that looks more like EINVAL?
-
-> +		}
-> +
-> +		i2s->rx_using_channels = i2s_ch;
-> +		/* Enable channels from 0 to 'max_ch' as tx */
-> +		for (i = 0; i < i2s_ch; i++)
-> +			cdns_i2s_channel_start(i2s, CDNS_I2S_CM_0 << i,
-> +					       CDNS_I2S_TC_RECEIVER);
-> +
-> +	} else {
-> +		if ((i2s_ch + i2s->rx_using_channels) > max_ch) {
-> +			dev_err(i2s->dev,
-> +				"Max %d channels: using %d for RX, do not support %d for TX\n",
-> +				max_ch, i2s->rx_using_channels, i2s_ch);
-> +			return -ENOMEM;
-> +		}
-> +
-> +		i2s->tx_using_channels = i2s_ch;
-> +		/* Enable channels from 'max_ch' to 0 as rx */
-> +		for (i = (max_ch - 1); i > (max_ch - i2s_ch - 1); i--) {
-> +			if (i < 0)
-> +				return -EINVAL;
-
-that is a test you can probably factor out of the loop before doing
-anything that's inconsistent.
-
-> +
-> +			cdns_i2s_channel_start(i2s, CDNS_I2S_CM_0 << i,
-> +					       CDNS_I2S_TC_TRANSMITTER);
-> +		}
-> +	}
-> +	cdns_i2s_enable_clock(i2s, substream->stream);
-> +
-> +	if (i2s->irq >= 0)
-> +		cdns_i2s_set_all_irq_mask(i2s, false);
-> +
-> +	cdns_i2s_clear_int(i2s);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_i2s_stop(struct cdns_i2s_dev *i2s,
-> +			 struct snd_pcm_substream *substream)
-> +{
-> +	unsigned char i2s_ch;
-> +	int i;
-> +
-> +	cdns_i2s_clear_int(i2s);
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		i2s_ch = i2s->rx_using_channels;
-> +		for (i = 0; i < i2s_ch; i++)
-> +			cdns_i2s_channel_stop(i2s, (CDNS_I2S_CM_0 << i));
-> +
-> +		i2s->rx_using_channels = 0;
-> +	} else {
-> +		unsigned char max_ch = i2s->max_channels;
-> +
-> +		i2s_ch = i2s->tx_using_channels;
-> +		for (i = (max_ch - 1); i > (max_ch - i2s_ch - 1); i--) {
-> +			if (i < 0)
-> +				return -EINVAL;
-
-same here, first test if the channel maps are valid, then do the loop?
-
-> +
-> +			cdns_i2s_channel_stop(i2s, (CDNS_I2S_CM_0 << i));
-> +		}
-> +
-> +		i2s->tx_using_channels = 0;
-> +	}
-> +
-> +	if (i2s->irq >= 0 && !i2s->tx_using_channels && !i2s->rx_using_channels)
-> +		cdns_i2s_set_all_irq_mask(i2s, true);
-> +
-> +	return 0;
-> +}
-
-> +static int cdns_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
-> +			    unsigned int fmt)
-> +{
-> +	struct cdns_i2s_dev *i2s = snd_soc_dai_get_drvdata(cpu_dai);
-> +	int ret = 0;
-> +
-> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +	case SND_SOC_DAIFMT_CBM_CFM:
-> +		i2s->tx_sync_ms_mode = CDNS_I2S_MASTER_MODE;
-> +		i2s->rx_sync_ms_mode = CDNS_I2S_MASTER_MODE;
-> +		cdns_i2s_set_ms_mode(i2s);
-> +		break;
-> +	case SND_SOC_DAIFMT_CBS_CFS:
-> +		i2s->tx_sync_ms_mode = CDNS_I2S_SLAVE_MODE;
-> +		i2s->rx_sync_ms_mode = CDNS_I2S_SLAVE_MODE;
-> +		cdns_i2s_set_ms_mode(i2s);
-> +		break;
-> +	case SND_SOC_DAIFMT_CBM_CFS:
-> +	case SND_SOC_DAIFMT_CBS_CFM:
-
-that's the old stuff, use CBP/CBC macros please.
-
-> +		ret = -EINVAL;
-> +		break;
-> +	default:
-> +		dev_dbg(i2s->dev, "Invalid master/slave format\n");
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +	return ret;
-> +}
-
-> +#ifdef CONFIG_PM
-
-Do we need this or just rely on __unused?
-
-> +static int cdns_i2s_runtime_suspend(struct device *dev)
-> +{
-> +	struct cdns_i2s_dev *i2s = dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(i2s->clks[1].clk); /* ICG clock */
-> +	return 0;
-> +}
-> +
-> +static int cdns_i2s_runtime_resume(struct device *dev)
-> +{
-> +	struct cdns_i2s_dev *i2s = dev_get_drvdata(dev);
-> +
-> +	return clk_prepare_enable(i2s->clks[1].clk); /* ICG clock */
-> +}
-> +#endif
-
-> +static int cdns_i2s_probe(struct platform_device *pdev)
-> +{
-> +	struct cdns_i2s_dev *i2s;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
-> +	if (!i2s) {
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +	platform_set_drvdata(pdev, i2s);
-> +
-> +	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> +	if (IS_ERR(i2s->base)) {
-> +		ret = PTR_ERR(i2s->base);
-> +		goto err;
-> +	}
-> +
-> +	i2s->dev = &pdev->dev;
-> +	i2s->phybase = res->start;
-> +
-> +	ret = cdns_i2s_init(i2s);
-> +	if (ret)
-> +		goto err;
-> +
-> +	i2s->irq = platform_get_irq(pdev, 0);
-> +	if (i2s->irq >= 0) {
-> +		ret = devm_request_irq(&pdev->dev, i2s->irq, cdns_i2s_irq_handler,
-> +				       0, pdev->name, i2s);
-> +		if (ret < 0) {
-> +			dev_err(&pdev->dev, "request_irq failed\n");
-> +			goto err;
-> +		}
-> +	}
-> +
-> +	ret = devm_snd_soc_register_component(&pdev->dev,
-> +					      &cdns_i2s_component,
-> +					      &cdns_i2s_dai, 1);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "couldn't register component\n");
-> +		goto err;
-> +	}
-> +
-> +	if (i2s->irq >= 0)
-> +		ret = cdns_i2s_pcm_register(pdev);
-> +	else
-> +		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-> +
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "could not register pcm: %d\n", ret);
-> +		goto err;
-> +	}
-> +
-> +	pm_runtime_enable(&pdev->dev);
-> +	if (pm_runtime_enabled(&pdev->dev))
-> +		cdns_i2s_runtime_suspend(&pdev->dev);
-
-that sequence looks suspicious.... Why would you suspend immediately
-during the probe? You're probably missing all the autosuspend stuff?
-
-> +
-> +	dev_dbg(&pdev->dev, "I2S supports %d stereo channels with %s.\n",
-> +		i2s->max_channels, ((i2s->irq < 0) ? "dma" : "interrupt"));
-> +
-> +	return 0;
-> +
-> +err:
-> +	return ret;
-> +}
-> +
-> +static int cdns_i2s_remove(struct platform_device *pdev)
-> +{
-> +	pm_runtime_disable(&pdev->dev);
-> +	if (!pm_runtime_status_suspended(&pdev->dev))
-> +		cdns_i2s_runtime_suspend(&pdev->dev);
-
-.. and this one too. Once you've disabled pm_runtime, checking the
-status is irrelevant...
-
-> +
-> +	return 0;
-> +}
-> +
+Link: =
+https://lore.kernel.org/linux-kernel/20240225164507.232942-2-thorsten.blum=
+@toblux.com/=
 
