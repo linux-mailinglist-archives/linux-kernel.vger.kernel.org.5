@@ -1,49 +1,51 @@
-Return-Path: <linux-kernel+bounces-109334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22CF68817C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:18:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FEDC8817C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:18:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 542EF1C2138B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:18:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06E44284445
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B4D85926;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6023A85658;
 	Wed, 20 Mar 2024 19:17:47 +0000 (UTC)
-Received: from mailscanner05.zoner.fi (mailscanner05.zoner.fi [5.44.246.14])
+Received: from mailscanner01.zoner.fi (mailscanner01.zoner.fi [84.34.166.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8073B8562D
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.44.246.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A8385297
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:17:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.34.166.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710962267; cv=none; b=ZHFrDkKEhiIMqh6OXzMn3idIqOdUdb5nmKMIOD5H2lgU5Eb8x3zHA3h7UaN6Hl8rMerul4Mllhzuccz8sB/t80BKdSIvI0Z/45R+6Pcjsw27DoTs+ppAo3moPcwfYG7fuuuAoC3tBhuUvNh+m9+afTSxdkkd+GMGOcK+cXl1gUo=
+	t=1710962266; cv=none; b=T89IkXLUAr1Sc6YpaNqFqDGa/DPM1zsQYpGjYTaZAAGs4BgxB/ToV+GuDTCU3RNS011KyQGwfzUdbI00gaSXIDxPbCSK5qUoY9B7wdpYPL0wFJAPFswh+/+UDVBaZRJt1H0eoBgMmCKj0VP1uOBz09GDPoJ+6ndj9qgWFbES4Ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710962267; c=relaxed/simple;
-	bh=1STaSSKFT9aWSutIcaXf5t9tigM61VZiBi4b8crf1L0=;
+	s=arc-20240116; t=1710962266; c=relaxed/simple;
+	bh=BduBwpnC+lnh0fNzh+quQgYOi+N1VvuKwdT8DqQQw6I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZmN9DiQpAin3kMEyS0OMvSXEaf+hGjkdFf910gbk0snFPzm/2gVtu8dqDn12wZem5PRY89UgKlo750rNSoh72mzGbMbcU3dRoEoZHoWJlO6FRPAtUEFO4d1KpaAIWIZ6DR21kRUcLI0SHE81QY8VOt06gH+9Cn2NMi/Bghjfcb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=5.44.246.14
+	 MIME-Version; b=FRA8J70IYqyLLkGuMQvjYNXcdYrGcpCr/pF7WUcwlyXsBTB1AmRB3rneOBceF9F2rCKdSP7NIw3WicaW8v7U4ewcqI/+8pz5xD4oO3hwiFtAM8MhO2Ni6TnCbQa9nD+EyKyPCyUz8Sen1rcPfpEX9NIrLuF2uybdc/4ouc4sZyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=84.34.166.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
 Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-	by mailscanner05.zoner.fi (Postfix) with ESMTPS id 4D5E3211A4;
+	by mailscanner01.zoner.fi (Postfix) with ESMTPS id 2E1EA4220B;
 	Wed, 20 Mar 2024 21:17:42 +0200 (EET)
 Received: from mail.zoner.fi ([84.34.147.244])
 	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
 	(envelope-from <lasse.collin@tukaani.org>)
-	id 1rn0qU-0001dW-2g;
+	id 1rn0qU-0001dW-2z;
 	Wed, 20 Mar 2024 20:39:26 +0200
 From: Lasse Collin <lasse.collin@tukaani.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Lasse Collin <lasse.collin@tukaani.org>,
 	Jia Tan <jiat0218@gmail.com>,
+	Jubin Zhong <zhongjubin@huawei.com>,
+	Jules Maselbas <jmaselbas@zdiv.net>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] xz: Use 128 MiB dictionary and force single-threaded mode
-Date: Wed, 20 Mar 2024 20:38:43 +0200
-Message-ID: <20240320183846.19475-11-lasse.collin@tukaani.org>
+Subject: [PATCH 11/11] xz: Adjust arch-specific options for better kernel compression
+Date: Wed, 20 Mar 2024 20:38:44 +0200
+Message-ID: <20240320183846.19475-12-lasse.collin@tukaani.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240320183846.19475-1-lasse.collin@tukaani.org>
 References: <20240320183846.19475-1-lasse.collin@tukaani.org>
@@ -55,56 +57,243 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This only affects kernel image compression, not any other xz usage.
+Use LZMA2 options that match the arch-specific alignment of instructions.
+This change reduces compressed kernel size 0-2 % depending on the arch.
+On 1-byte-aligned x86 it makes no difference and on 4-byte-aligned archs
+it helps the most.
 
-Desktop kernels on x86-64 are already around 60 MiB. Using a dictionary
-larger than 32 MiB should have no downsides nowadays as anyone building
-the kernel should have plenty of RAM. 128 MiB dictionary needs 1346 MiB
-of RAM with xz versions 5.0.x - 5.6.x in single-threaded mode. On archs
-that use xz_wrap.sh, kernel decompression is done in single-call mode so
-a larger dictionary doesn't affect boot-time memory requirements.
+Use the ARM-Thumb filter for ARM-Thumb2 kernels. This reduces compressed
+kernel size about 5 %.[1] Previously such kernels were compressed using
+the ARM filter which didn't do anything useful with ARM-Thumb2 code.
 
-xz >= 5.6.0 uses multithreaded mode by default which compresses slightly
-worse than single-threaded mode. Kernel compression rarely used more
-than one thread anyway because with 32 MiB dictionary size the default
-block size was 96 MiB in multithreaded mode. So only a single thread
-was used anyway unless the kernel was over 96 MiB.
+Add BCJ filter support for ARM64 and RISC-V. On ARM64 the compressed
+kernel size is reduced about 5 % and on RISC-V by 7-8 % compared to
+unfiltered XZ or plain LZMA. However:
 
-Comparison to CONFIG_KERNEL_LZMA: It uses "lzma -9" which mapped to
-32 MiB dictionary in LZMA Utils 4.32.7 (the final release in 2008).
-Nowadays the lzma tool on most systems is from XZ Utils where -9 maps
-to 64 MiB dictionary. So using a 32 MiB dictionary with CONFIG_KERNEL_XZ
-may have compressed big kernels slightly worse than the old LZMA option.
+  - arch/arm64/boot/Makefile and arch/riscv/boot/Makefile don't include
+    the build rule (two lines) for XZ support even though they support
+    six other compressors. It would be trivial to add the rule but boot
+    loaders would need XZ support too.
 
-Comparison to CONFIG_KERNEL_ZSTD: zstd uses 128 MiB dictionary.
+ - A new enough version of the xz tool is required: 5.4.0 for ARM64 and
+   5.6.0 for RISC-V. With an old xz version a message is printed to
+   standard error and the kernel is compressed without the filter.
 
+Update lib/decompress_unxz.c to match the changes to xz_wrap.sh.
+
+Update the CONFIG_KERNEL_XZ help text in init/Kconfig:
+  - Add the RISC-V and ARM64 filters.
+  - Clarify that the PowerPC filter is for big endian only.
+  - Omit IA-64.
+
+Link: https://lore.kernel.org/lkml/1637379771-39449-1-git-send-email-zhongjubin@huawei.com/ [1]
 Reviewed-by: Jia Tan <jiat0218@gmail.com>
 Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
 ---
- scripts/xz_wrap.sh | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ init/Kconfig          |   5 +-
+ lib/decompress_unxz.c |  14 ++++-
+ scripts/xz_wrap.sh    | 141 ++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 151 insertions(+), 9 deletions(-)
 
+diff --git a/init/Kconfig b/init/Kconfig
+index f3ea5dea9c85..785e15aa5395 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -308,8 +308,9 @@ config KERNEL_XZ
+ 	  BCJ filters which can improve compression ratio of executable
+ 	  code. The size of the kernel is about 30% smaller with XZ in
+ 	  comparison to gzip. On architectures for which there is a BCJ
+-	  filter (i386, x86_64, ARM, IA-64, PowerPC, and SPARC), XZ
+-	  will create a few percent smaller kernel than plain LZMA.
++	  filter (i386, x86_64, ARM, ARM64, RISC-V, big endian PowerPC,
++	  and SPARC), XZ will create a few percent smaller kernel than
++	  plain LZMA.
+ 
+ 	  The speed is about the same as with LZMA: The decompression
+ 	  speed of XZ is better than that of bzip2 but worse than gzip
+diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
+index 46aa3be13fc5..cae00395d7a6 100644
+--- a/lib/decompress_unxz.c
++++ b/lib/decompress_unxz.c
+@@ -126,11 +126,21 @@
+ #ifdef CONFIG_X86
+ #	define XZ_DEC_X86
+ #endif
+-#ifdef CONFIG_PPC
++#if defined(CONFIG_PPC) && defined(CONFIG_CPU_BIG_ENDIAN)
+ #	define XZ_DEC_POWERPC
+ #endif
+ #ifdef CONFIG_ARM
+-#	define XZ_DEC_ARM
++#	ifdef CONFIG_THUMB2_KERNEL
++#		define XZ_DEC_ARMTHUMB
++#	else
++#		define XZ_DEC_ARM
++#	endif
++#endif
++#ifdef CONFIG_ARM64
++#	define XZ_DEC_ARM64
++#endif
++#ifdef CONFIG_RISCV
++#	define XZ_DEC_RISCV
+ #endif
+ #ifdef CONFIG_SPARC
+ #	define XZ_DEC_SPARC
 diff --git a/scripts/xz_wrap.sh b/scripts/xz_wrap.sh
-index bb760b721b2c..c8c36441ab70 100755
+index c8c36441ab70..5bdf0c35cc85 100755
 --- a/scripts/xz_wrap.sh
 +++ b/scripts/xz_wrap.sh
-@@ -16,4 +16,15 @@ case $SRCARCH in
- 	sparc)          BCJ=--sparc ;;
+@@ -6,14 +6,145 @@
+ #
+ # Author: Lasse Collin <lasse.collin@tukaani.org>
+ 
++# This has specialized settings for the following archs. However,
++# XZ-compressed kernel isn't currently supported on every listed arch.
++#
++#   Arch        Align   Notes
++#   arm          2/4    ARM and ARM-Thumb2
++#   arm64         4
++#   csky          2
++#   loongarch     4
++#   mips         2/4    MicroMIPS is 2-byte aligned
++#   parisc        4
++#   powerpc       4     Uses its own wrapper for compressors instead of this.
++#   riscv        2/4
++#   s390          2
++#   sh            2
++#   sparc         4
++#   x86           1
++
++# A few archs use 2-byte or 4-byte aligned instructions depending on
++# the kernel config. This function is used to check if the relevant
++# config option is set to "y".
++is_enabled()
++{
++	grep -q "^$1=y$" include/config/auto.conf
++}
++
++# Set XZ_VERSION (and LIBLZMA_VERSION). This is needed to disable features
++# that aren't available in old XZ Utils versions.
++eval "$($XZ --robot --version)" || exit
++
++# Assume that no BCJ filter is available.
+ BCJ=
+-LZMA2OPTS=
+ 
++# Set the instruction alignment to 1, 2, or 4 bytes.
++#
++# Set the BCJ filter if one is available.
++# It must match the #ifdef usage in lib/decompress_unxz.c.
+ case $SRCARCH in
+-	x86)            BCJ=--x86 ;;
+-	powerpc)        BCJ=--powerpc ;;
+-	arm)            BCJ=--arm ;;
+-	sparc)          BCJ=--sparc ;;
++	arm)
++		if is_enabled CONFIG_THUMB2_KERNEL; then
++			ALIGN=2
++			BCJ=--armthumb
++		else
++			ALIGN=4
++			BCJ=--arm
++		fi
++		;;
++
++	arm64)
++		ALIGN=4
++
++		# ARM64 filter was added in XZ Utils 5.4.0.
++		if [ "$XZ_VERSION" -ge 50040002 ]; then
++			BCJ=--arm64
++		else
++			echo "$0: Upgrading to xz >= 5.4.0" \
++				"would enable the ARM64 filter" \
++				"for better compression" >&2
++		fi
++		;;
++
++	csky)
++		ALIGN=2
++		;;
++
++	loongarch)
++		ALIGN=4
++		;;
++
++	mips)
++		if is_enabled CONFIG_CPU_MICROMIPS; then
++			ALIGN=2
++		else
++			ALIGN=4
++		fi
++		;;
++
++	parisc)
++		ALIGN=4
++		;;
++
++	powerpc)
++		ALIGN=4
++
++		# The filter is only for big endian instruction encoding.
++		if is_enabled CONFIG_CPU_BIG_ENDIAN; then
++			BCJ=--powerpc
++		fi
++		;;
++
++	riscv)
++		if is_enabled CONFIG_RISCV_ISA_C; then
++			ALIGN=2
++		else
++			ALIGN=4
++		fi
++
++		# RISC-V filter was added in XZ Utils 5.6.0.
++		if [ "$XZ_VERSION" -ge 50060002 ]; then
++			BCJ=--riscv
++		else
++			echo "$0: Upgrading to xz >= 5.6.0" \
++				"would enable the RISC-V filter" \
++				"for better compression" >&2
++		fi
++		;;
++
++	s390)
++		ALIGN=2
++		;;
++
++	sh)
++		ALIGN=2
++		;;
++
++	sparc)
++		ALIGN=4
++		BCJ=--sparc
++		;;
++
++	x86)
++		ALIGN=1
++		BCJ=--x86
++		;;
++
++	*)
++		echo "$0: Arch-specific tuning is missing for '$SRCARCH'" >&2
++
++		# Guess 2-byte-aligned instructions. Guessing too low
++		# should hurt less than guessing too high.
++		ALIGN=2
++		;;
++esac
++
++# Select the LZMA2 options matching the instruction alignment.
++case $ALIGN in
++	1)  LZMA2OPTS= ;;
++	2)  LZMA2OPTS=lp=1 ;;
++	4)  LZMA2OPTS=lp=2,lc=2 ;;
++	*)  echo "$0: ALIGN wrong or missing" >&2; exit 1 ;;
  esac
  
--exec $XZ --check=crc32 $BCJ --lzma2=$LZMA2OPTS,dict=32MiB
-+# Use single-threaded mode because it compresses a little better
-+# (and uses less RAM) than multithreaded mode.
-+#
-+# For the best compression, the dictionary size shouldn't be
-+# smaller than the uncompressed kernel. 128 MiB dictionary
-+# needs less than 1400 MiB of RAM in single-threaded mode.
-+#
-+# On the archs that use this script to compress the kernel,
-+# decompression in the preboot code is done in single-call mode.
-+# Thus the dictionary size doesn't affect the memory requirements
-+# of the preboot decompressor at all.
-+exec $XZ --check=crc32 --threads=1 $BCJ --lzma2=$LZMA2OPTS,dict=128MiB
+ # Use single-threaded mode because it compresses a little better
 -- 
 2.44.0
 
