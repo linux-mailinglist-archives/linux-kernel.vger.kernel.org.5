@@ -1,148 +1,178 @@
-Return-Path: <linux-kernel+bounces-109152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B886881564
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5D188156F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC931F2497F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:17:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3362C1F21160
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC0854F9D;
-	Wed, 20 Mar 2024 16:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E55254FA9;
+	Wed, 20 Mar 2024 16:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nx02CsiX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5DC5474D;
-	Wed, 20 Mar 2024 16:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490C91A291;
+	Wed, 20 Mar 2024 16:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951470; cv=none; b=KjpmVHTYbvEsxE1e3y4qyG9IhbM9Km88TJ7ebwRyveKw18AP4YvgQBMyqj05dD+RMuVq5Yj/J74c9r9eE8wSrbLHMgTaLiQHg1NQ4lKUA1E9P9CPOOc9Irazr02wwuXXJsQbO2WkdjNv7jv0YNndlPUVSWojBX9BOSAkfVACKsI=
+	t=1710951657; cv=none; b=gSH2JmX16W7+PQ4m7OO6vI0bqWKO0uyr9xaSW6O/Yuv0oGA763H+5c08iC8sDUaV2gp4HvkwBN6WT4lKifJ/AWBANe4yMcmO8b10jtEubpqhM6eHQZUtxhzAh46iDxU9KhgptbDCDYDVcIeBsPyJKbx0TEoO5oEsYYPdXTU55xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951470; c=relaxed/simple;
-	bh=MjsTErL++3mNSNQUdfMEPoHEWuqAralTC+D1xVnk5Gg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SPqDanPLWdnW0ZHFV2yXkG6HQExKHIOUdmjT9nxHM8N0Kr4Arzpf9AsNvQsQnt79QP6Jz2aDWzIWQNEGGS/3Eq1Sth1QxhOSLbqByl4fk+Z2Zc5DtYF/ow9A9Dqa7PH7CsqrmGkIKc663mXrjeT5di3km/DPeBmVmA/YsxZ4214=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38AC6C433F1;
-	Wed, 20 Mar 2024 16:17:48 +0000 (UTC)
-Date: Wed, 20 Mar 2024 12:20:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Will Deacon
- <will@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng
- <boqun.feng@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: [RFC][PATCH] tracing: Introduce restart_critical_timings()
-Message-ID: <20240320122012.2c1f461f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710951657; c=relaxed/simple;
+	bh=z3FvKvwYws62zU5YpFKEphxiNYUrulGGQ60bCVxWjQY=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=Ra6V4q1upZtSpHCz6aZnE+P8t3WHrBzRBrmBJOmmyU/G5sWpERlUBrzTMxvIyodj+5qyFDs3bN2XSeX6FPjsuC6Po59S74akR2J+a1ch9dDS3ZDuDrJtCoK0dJjjDYkyjv8AvNZ9ado6AgQDaWRsS1lz7z/Wwg2854MxKAjF0Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nx02CsiX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C0F5C433F1;
+	Wed, 20 Mar 2024 16:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710951656;
+	bh=z3FvKvwYws62zU5YpFKEphxiNYUrulGGQ60bCVxWjQY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=Nx02CsiXwVEYOyUBA4DS/d5BGB1Djh+gF8drspEXVId+yIsnkbelmAlDNOzSFhfr9
+	 ozUPOsIjtsutc1jxzgLxMZA/NIaQmXp4T1PDkMmg5Cn3wPYU172gm6bGt8UnZFTJZQ
+	 Tk6gcYfrwqn0O7IDUso2VwOzqzz1QHCRHWe048sUYqGQMwsbG95Kdhzu/mAYr6l4OD
+	 n76Q83o70zGwJTHlMdY887t3mNOn0fk8e4i1x7GIcwGiOzyqTen2z8jwwE6HthEauQ
+	 Zd1ARj2TrPRZaIriHLZpI4XPZrRiA7ZAaboqNqnHV/RimiFUNvA16Pp1kz9Pwb0c7A
+	 /X8DK2kQIpQ5A==
+Date: Wed, 20 Mar 2024 11:20:55 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ devicetree@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Bjorn Andersson <andersson@kernel.org>, linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ linux-arm-msm@vger.kernel.org
+In-Reply-To: <20240319091020.15137-1-quic_kbajaj@quicinc.com>
+References: <20240319091020.15137-1-quic_kbajaj@quicinc.com>
+Message-Id: <171095148554.1943200.12080115651498296993.robh@kernel.org>
+Subject: Re: [PATCH 0/3] Add devicetree support of USB for QDU/QRU1000
 
-From: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-I'm debugging some latency issues on a Chromebook and the preemptirqsoff
-tracer hit this:
+On Tue, 19 Mar 2024 14:40:17 +0530, Komal Bajaj wrote:
+> This series adds devicetree nodes to support interconnects and usb for qdu/qru1000.
+> This is based on previously sent driver series[1].
+> [1]
+> https://lore.kernel.org/linux-arm-msm/20240319090729.14674-1-quic_kbajaj@quicinc.com/
+> 
+> ------
+> Changes in v2:
+> * Changes qmpphy node name
+> * Changes dr_mode to otg and added USB-B port USB role switch
+> * Dropped maximum-speed property from usb dwc3 node
+> * Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120859.18489-1-quic_kbajaj@quicinc.com/
+> 
+> Komal Bajaj (3):
+>   arm64: dts: qcom: qdu1000: Add USB3 and PHY support
+>   arm64: dts: qcom: qdu1000-idp: enable USB nodes
+>   arm64: dts: qcom: qru1000-idp: enable USB nodes
+> 
+>  arch/arm64/boot/dts/qcom/qdu1000-idp.dts |  65 +++++++++++
+>  arch/arm64/boot/dts/qcom/qdu1000.dtsi    | 133 +++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/qru1000-idp.dts |  65 +++++++++++
+>  3 files changed, 263 insertions(+)
+> 
+> --
+> 2.42.0
+> 
+> 
+> 
 
-# tracer: preemptirqsoff
-#
-# preemptirqsoff latency trace v1.1.5 on 5.15.148-21853-g165fd2387469-dirty
-# --------------------------------------------------------------------
-# latency: 7813 us, #60/60, CPU#1 | (M:preempt VP:0, KP:0, SP:0 HP:0 #P:2)
-#    -----------------
-#    | task: init-1 (uid:0 nice:0 policy:0 rt_prio:0)
-#    -----------------
-#  => started at: rwsem_optimistic_spin
-#  => ended at:   rwsem_optimistic_spin
-#
-#
-#                    _------=> CPU#            
-#                   / _-----=> irqs-off        
-#                  | / _----=> need-resched    
-#                  || / _---=> hardirq/softirq 
-#                  ||| / _--=> preempt-depth   
-#                  |||| / _-=> migrate-disable 
-#                  ||||| /     delay           
-#  cmd     pid     |||||| time  |   caller     
-#     \   /        ||||||  \    |    /       
-   <...>-1         1...1.    0us!: rwsem_optimistic_spin+0x20/0x194 <-rwsem_optimistic_spin+0x20/0x194
-   <...>-1         1.N.1. 7813us : rwsem_optimistic_spin+0x140/0x194 <-rwsem_optimistic_spin+0x140/0x194
-   <...>-1         1.N.1. 7814us+: tracer_preempt_on+0x4c/0x6a <-rwsem_optimistic_spin+0x140/0x194
-   <...>-1         1.N.1. 7824us : <stack trace>
- => rwsem_optimistic_spin+0x140/0x194
- => rwsem_down_write_slowpath+0xc9/0x3fe
- => copy_process+0xd08/0x1b8a
- => kernel_clone+0x94/0x256
- => __x64_sys_clone+0x7a/0x9a
- => do_syscall_64+0x51/0xa1
- => entry_SYSCALL_64_after_hwframe+0x5c/0xc6
 
-Which isn't a real issue, as it's in the rwsem_optimistic_spin() code that
-spins with interrupts enabled, preempt disabled, and checks for
-need_resched(). If it is true, it breaks out and schedules.
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
 
-Hence, it's hiding real issues, because it can spin for a very long time
-and this is not the source of the latency I'm tracking down.
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
 
-I would like to introduce restart_critical_timings() and place it in
-locations that have this behavior.
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+  pip3 install dtschema --upgrade
 
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index 147feebd508c..e9f97f60bfc0 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -145,6 +145,13 @@ do {						\
- # define start_critical_timings() do { } while (0)
- #endif
- 
-+/* Used in spins that check need_resched() with preemption disabled */
-+static inline void restart_critical_timings(void)
-+{
-+	stop_critical_timings();
-+	start_critical_timings();
-+}
-+
- #ifdef CONFIG_DEBUG_IRQFLAGS
- extern void warn_bogus_irq_restore(void);
- #define raw_check_bogus_irq_restore()			\
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 2340b6d90ec6..fa7b43e53d20 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -27,6 +27,7 @@
- #include <linux/export.h>
- #include <linux/rwsem.h>
- #include <linux/atomic.h>
-+#include <linux/irqflags.h>
- #include <trace/events/lock.h>
- 
- #ifndef CONFIG_PREEMPT_RT
-@@ -780,6 +781,7 @@ rwsem_spin_on_owner(struct rw_semaphore *sem)
- 		 */
- 		barrier();
- 
-+		restart_critical_timings();
- 		if (need_resched() || !owner_on_cpu(owner)) {
- 			state = OWNER_NONSPINNABLE;
- 			break;
-@@ -912,6 +914,7 @@ static bool rwsem_optimistic_spin(struct rw_semaphore *sem)
- 		 * a writer, need_resched() check needs to be done here.
- 		 */
- 		if (owner_state != OWNER_WRITER) {
-+			restart_critical_timings();
- 			if (need_resched())
- 				break;
- 			if (rt_task(current) &&
+
+New warnings running 'make CHECK_DTBS=y qcom/qdu1000-idp.dtb qcom/qru1000-idp.dtb' for 20240319091020.15137-1-quic_kbajaj@quicinc.com:
+
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /: usb-conn-gpio: {'compatible': ['gpio-usb-b-connector'], 'vbus-gpio': [[90, 7, 0]], 'id-gpio': [[91, 42, 0]], 'vbus-supply': [[99]], 'pinctrl-0': [[100, 101]], 'pinctrl-names': ['default'], 'port': {'endpoint': {'remote-endpoint': [[102]], 'phandle': [[88]]}}} is not of type 'array'
+	from schema $id: http://devicetree.org/schemas/gpio/gpio-consumer.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /: usb-conn-gpio: {'compatible': ['gpio-usb-b-connector'], 'vbus-gpio': [[86, 7, 0]], 'id-gpio': [[87, 42, 0]], 'vbus-supply': [[95]], 'pinctrl-0': [[96, 97]], 'pinctrl-names': ['default'], 'port': {'endpoint': {'remote-endpoint': [[98]], 'phandle': [[84]]}}} is not of type 'array'
+	from schema $id: http://devicetree.org/schemas/gpio/gpio-consumer.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: phy@88e3000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy'] is too long
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc8180x-usb-hs-phy', 'qcom,usb-snps-femto-v2-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sa8775p-usb-hs-phy', 'qcom,sc8280xp-usb-hs-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc7280-usb-hs-phy', 'qcom,sdx55-usb-hs-phy', 'qcom,sdx65-usb-hs-phy', 'qcom,sm6375-usb-hs-phy', 'qcom,sm8150-usb-hs-phy', 'qcom,sm8250-usb-hs-phy', 'qcom,sm8350-usb-hs-phy', 'qcom,sm8450-usb-hs-phy']
+	'qcom,usb-snps-hs-5nm-phy' was expected
+	from schema $id: http://devicetree.org/schemas/phy/qcom,usb-snps-femto-v2.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/phy@88e3000: failed to match any schema with compatible: ['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: phy@88e3000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy'] is too long
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc8180x-usb-hs-phy', 'qcom,usb-snps-femto-v2-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sa8775p-usb-hs-phy', 'qcom,sc8280xp-usb-hs-phy']
+	'qcom,qdu1000-usb-hs-phy' is not one of ['qcom,sc7280-usb-hs-phy', 'qcom,sdx55-usb-hs-phy', 'qcom,sdx65-usb-hs-phy', 'qcom,sm6375-usb-hs-phy', 'qcom,sm8150-usb-hs-phy', 'qcom,sm8250-usb-hs-phy', 'qcom,sm8350-usb-hs-phy', 'qcom,sm8450-usb-hs-phy']
+	'qcom,usb-snps-hs-5nm-phy' was expected
+	from schema $id: http://devicetree.org/schemas/phy/qcom,usb-snps-femto-v2.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/phy@88e3000: failed to match any schema with compatible: ['qcom,qdu1000-usb-hs-phy', 'qcom,usb-snps-hs-7nm-phy']
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/phy@88e5000: failed to match any schema with compatible: ['qcom,qdu1000-qmp-usb3-uni-phy']
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: usb@a6f8800: compatible:0: 'qcom,qdu1000-dwc3' is not one of ['qcom,ipq4019-dwc3', 'qcom,ipq5018-dwc3', 'qcom,ipq5332-dwc3', 'qcom,ipq6018-dwc3', 'qcom,ipq8064-dwc3', 'qcom,ipq8074-dwc3', 'qcom,ipq9574-dwc3', 'qcom,msm8953-dwc3', 'qcom,msm8994-dwc3', 'qcom,msm8996-dwc3', 'qcom,msm8998-dwc3', 'qcom,qcm2290-dwc3', 'qcom,qcs404-dwc3', 'qcom,sa8775p-dwc3', 'qcom,sc7180-dwc3', 'qcom,sc7280-dwc3', 'qcom,sc8280xp-dwc3', 'qcom,sdm660-dwc3', 'qcom,sdm670-dwc3', 'qcom,sdm845-dwc3', 'qcom,sdx55-dwc3', 'qcom,sdx65-dwc3', 'qcom,sdx75-dwc3', 'qcom,sm4250-dwc3', 'qcom,sm6115-dwc3', 'qcom,sm6125-dwc3', 'qcom,sm6350-dwc3', 'qcom,sm6375-dwc3', 'qcom,sm8150-dwc3', 'qcom,sm8250-dwc3', 'qcom,sm8350-dwc3', 'qcom,sm8450-dwc3', 'qcom,sm8550-dwc3', 'qcom,sm8650-dwc3', 'qcom,x1e80100-dwc3']
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/phy@88e5000: failed to match any schema with compatible: ['qcom,qdu1000-qmp-usb3-uni-phy']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: usb@a6f8800: compatible:0: 'qcom,qdu1000-dwc3' is not one of ['qcom,ipq4019-dwc3', 'qcom,ipq5018-dwc3', 'qcom,ipq5332-dwc3', 'qcom,ipq6018-dwc3', 'qcom,ipq8064-dwc3', 'qcom,ipq8074-dwc3', 'qcom,ipq9574-dwc3', 'qcom,msm8953-dwc3', 'qcom,msm8994-dwc3', 'qcom,msm8996-dwc3', 'qcom,msm8998-dwc3', 'qcom,qcm2290-dwc3', 'qcom,qcs404-dwc3', 'qcom,sa8775p-dwc3', 'qcom,sc7180-dwc3', 'qcom,sc7280-dwc3', 'qcom,sc8280xp-dwc3', 'qcom,sdm660-dwc3', 'qcom,sdm670-dwc3', 'qcom,sdm845-dwc3', 'qcom,sdx55-dwc3', 'qcom,sdx65-dwc3', 'qcom,sdx75-dwc3', 'qcom,sm4250-dwc3', 'qcom,sm6115-dwc3', 'qcom,sm6125-dwc3', 'qcom,sm6350-dwc3', 'qcom,sm6375-dwc3', 'qcom,sm8150-dwc3', 'qcom,sm8250-dwc3', 'qcom,sm8350-dwc3', 'qcom,sm8450-dwc3', 'qcom,sm8550-dwc3', 'qcom,sm8650-dwc3', 'qcom,x1e80100-dwc3']
+	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: /soc@0/usb@a6f8800: failed to match any schema with compatible: ['qcom,qdu1000-dwc3', 'qcom,dwc3']
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: /soc@0/usb@a6f8800: failed to match any schema with compatible: ['qcom,qdu1000-dwc3', 'qcom,dwc3']
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: pmic@0: gpio@c000: 'usb-vbus-det-default' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/mfd/qcom,spmi-pmic.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: pmic@0: gpio@c000: 'usb-vbus-det-default' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/mfd/qcom,spmi-pmic.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: gpio@c000: 'usb-vbus-det-default' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: gpio@c000: 'usb-vbus-det-default' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: pinctrl@f000000: Unevaluated properties are not allowed ('usb-id-det-default', 'usb-vbus-boost-default' were unexpected)
+	from schema $id: http://devicetree.org/schemas/pinctrl/qcom,qdu1000-tlmm.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: pinctrl@f000000: Unevaluated properties are not allowed ('usb-id-det-default', 'usb-vbus-boost-default' were unexpected)
+	from schema $id: http://devicetree.org/schemas/pinctrl/qcom,qdu1000-tlmm.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: usb-conn-gpio: compatible: 'oneOf' conditional failed, one must be fixed:
+	['gpio-usb-b-connector'] is too short
+	'gpio-usb-b-connector' is not one of ['usb-a-connector', 'usb-b-connector', 'usb-c-connector']
+	'samsung,usb-connector-11pin' was expected
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: usb-conn-gpio: 'anyOf' conditional failed, one must be fixed:
+	'vbus-gpios' is a required property
+	'id-gpios' is a required property
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+arch/arm64/boot/dts/qcom/qru1000-idp.dtb: usb-conn-gpio: Unevaluated properties are not allowed ('compatible', 'id-gpio', 'vbus-gpio' were unexpected)
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: usb-conn-gpio: compatible: 'oneOf' conditional failed, one must be fixed:
+	['gpio-usb-b-connector'] is too short
+	'gpio-usb-b-connector' is not one of ['usb-a-connector', 'usb-b-connector', 'usb-c-connector']
+	'samsung,usb-connector-11pin' was expected
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: usb-conn-gpio: 'anyOf' conditional failed, one must be fixed:
+	'vbus-gpios' is a required property
+	'id-gpios' is a required property
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+arch/arm64/boot/dts/qcom/qdu1000-idp.dtb: usb-conn-gpio: Unevaluated properties are not allowed ('compatible', 'id-gpio', 'vbus-gpio' were unexpected)
+	from schema $id: http://devicetree.org/schemas/connector/usb-connector.yaml#
+
+
+
+
+
 
