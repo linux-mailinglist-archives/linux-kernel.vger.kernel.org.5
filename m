@@ -1,196 +1,236 @@
-Return-Path: <linux-kernel+bounces-108498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D77D2880B3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3576D880B41
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:35:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03C121C220FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:34:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE6B1C22067
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641F2EC5;
-	Wed, 20 Mar 2024 06:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAEC12E4A;
+	Wed, 20 Mar 2024 06:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czpL0F2d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="msCSRmCf"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C157FB
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C6DA29;
+	Wed, 20 Mar 2024 06:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710916465; cv=none; b=Q7nk6XUCD/w35MQZMRL+XwIaIn+g5aYOYefcWIZn97DKDmlnFS1qoxe5nRPdRXYO8BpxVh1i9u6IH5qUS01qGqrUIDxkJTnFu/3zQWvempz/CxrA26vr5p9lfXup5UnzjCCBc7oJsPp5KLXdoqquYdkRRIbhfcArSbjgJ7Sa3Xc=
+	t=1710916503; cv=none; b=RRKskHIDwf0ygJZnNSJEXqmC0QychfNNnUWQHCXxhGDAGnj+QPF7Ng22MetZgGu2yCJkpnkYIkeTEFdLOUgOBGXqZQG7/TcPCQzSfqAGOwTvHTSHbOrOK1ywON4PXW4Nc0nGE/5O5wQaBdyfQFAZ48C4PSiNI5T+rawyeiX3MiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710916465; c=relaxed/simple;
-	bh=8YIsJhztsQo4cn+hAiQEWTFMgbIPhMPSRmYKdPK3qFA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LrqkVzs3yfK/AtqUFdh9NWul7q0QwGIl7v3M/0HSSeRXfVj8Li1F4e1DTkKbM0VJ+Xk+ObScTzQ/DJe9O9RG2cESX/eoeIDI17t3DnJhnSYk8PbAJmFEyR8XbD1I2eBeHr/vRIeMDhVdNsKbg+b1hXIn6XqxU1RCAOSreeG7eNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czpL0F2d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383C1C433C7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710916465;
-	bh=8YIsJhztsQo4cn+hAiQEWTFMgbIPhMPSRmYKdPK3qFA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=czpL0F2d2Hd2etmc/VPeVMWnDVPTEXWI4QiUzE2meqhqN9m5J48bb8T6kpmbfS03g
-	 Xz7kChQeqPSj+Ros32TFCVxyaJNkt00pI6oo8KDSAli78foTkKFaFZidzuzEqaa0Ey
-	 bg8dO21QYVNTCcbRupximb8LT1PkpFWfIH0mLgDEhGd+QvWX9OT0vNoH6eMEYDMB3C
-	 tgNLbbyJsoXA6yAgBEnyWRKRZWncO6xfS6LkMS7hIoeoKmhdrL3uvr1TN6XdgUrsUA
-	 K2/IUAOZxnorlYWg1CCuDgdTSbXJgUk43SbJN7qZARuTyJ7CDeEgYJiK94SM4J13sZ
-	 j/Fji4eZokX7A==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so85156051fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:34:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXCsAJxSFQ5o1rJ6cUvyjPCOB9HT8Nnc8npAkwOfbO6VCnGLLnksRXWn3PISjBvPYKgOu5xU8nOB3E7VA6sNdt2rjhW2hAQIDcNM4cG
-X-Gm-Message-State: AOJu0YyO+BaprA0v1JOsE/s7N3cHlsgrT6LBkAPCvL4hIMf6Q6kvd5tD
-	ywgu0Z+dFXIsXF4YhpKoQqc/JLQVWRF4QXpJCptvcDiimjOTzvaycn+9mp8620S/i8tNQXr60QN
-	Du7EDY7f4ZUnvwpYn4UeFMZw63w==
-X-Google-Smtp-Source: AGHT+IGJ6/WTNTLkpCgBE1HGeVyLIaTs55r9cXEfvXhnpD34wDATWmklKNEPBCa8Yb9gfgnWgEhFob9fbm3DOe0H41U=
-X-Received: by 2002:a2e:9093:0:b0:2d2:6608:3d05 with SMTP id
- l19-20020a2e9093000000b002d266083d05mr709889ljg.52.1710916463813; Tue, 19 Mar
- 2024 23:34:23 -0700 (PDT)
+	s=arc-20240116; t=1710916503; c=relaxed/simple;
+	bh=ianIbzzQTFfYXMot1C3h/FL9tFGEeRVdkfcK1e0VSiQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=foNWXQFnjVlwOL4tObu/Ig1Z3hyqzO+wfcC8p+QWieeg08byfYkQqN7lEOdSuhd2YTvYSgwOzLacOqEoFrDgNnJlVQ0qxeJZ3E0MqNCIie/XdS9d8RLj12+rGvt618KAz4c8aiUg0rF3VaFEGDI5p7yKx7rraXKDZoasi2k7l5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=msCSRmCf; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K4I9FJ016465;
+	Wed, 20 Mar 2024 06:34:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=gibPDNh+ncfO0OJ7NGZdgTNIfnqZd+drxwtVVYsvV6U=; b=ms
+	CSRmCfIwhfqYtxU0xAP81OGWZMJZnq8e5z6Bhs7NtRKxffj1+dTNJXB9AEdmHrj6
+	y+OUzT9rt5OMHGYBbmdtOnauqmBlHB8hhFEqBZT76cLB+wh044MAy7pcsg1hnPhp
+	sXb08c3N8CQaBXvXXzwjTarWaL+Odaq6miQxBrVHhX6LVylPxL9mY6Hh5uZ3Ksmx
+	8BET4BBYa0yWBGh05OqT/gxOiBDpOBhtf9DdxN6Geh2/FrAAB/kQ+F6HIiwhWIoX
+	4qrPdUyWPodqLpuzOdrZa1xDApABhOZNlqOH90fNoIQfAyfU0wpeFoymcFUYZJfR
+	YGx7+cRSpTWcziI5iawQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wygbbh4y3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 06:34:27 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42K6YPso019848
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 06:34:25 GMT
+Received: from [10.216.16.222] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 23:34:19 -0700
+Message-ID: <58dfa2f5-8b49-a8a9-0857-f75f755f703c@quicinc.com>
+Date: Wed, 20 Mar 2024 12:04:16 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319-zswap-xarray-v7-1-e9a03a049e86@kernel.org> <Zfp-iWaDfqeCOElt@google.com>
-In-Reply-To: <Zfp-iWaDfqeCOElt@google.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 19 Mar 2024 23:34:11 -0700
-X-Gmail-Original-Message-ID: <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
-Message-ID: <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
-Subject: Re: [PATCH v7] zswap: replace RB tree with xarray
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 19, 2024 at 11:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> On Tue, Mar 19, 2024 at 10:52:26PM -0700, Chris Li wrote:
-> > Very deep RB tree requires rebalance at times. That
-> > contributes to the zswap fault latencies. Xarray does not
-> > need to perform tree rebalance. Replacing RB tree to xarray
-> > can have some small performance gain.
-> >
-> > One small difference is that xarray insert might fail with
-> > ENOMEM, while RB tree insert does not allocate additional
-> > memory.
-> >
-> > The zswap_entry size will reduce a bit due to removing the
-> > RB node, which has two pointers and a color field. Xarray
-> > store the pointer in the xarray tree rather than the
-> > zswap_entry. Every entry has one pointer from the xarray
-> > tree. Overall, switching to xarray should save some memory,
-> > if the swap entries are densely packed.
-> >
-> > Notice the zswap_rb_search and zswap_rb_insert always
-> > followed by zswap_rb_erase. Use xa_erase and xa_store
-> > directly. That saves one tree lookup as well.
-> >
-> > Remove zswap_invalidate_entry due to no need to call
-> > zswap_rb_erase any more. Use zswap_free_entry instead.
-> >
-> > The "struct zswap_tree" has been replaced by "struct xarray".
-> > The tree spin lock has transferred to the xarray lock.
-> >
-> > Run the kernel build testing 10 times for each version, averages:
-> > (memory.max=3D2GB, zswap shrinker and writeback enabled,
-> > one 50GB swapfile, 24 HT core, 32 jobs)
-> >
-> > mm-unstable-a824831a082f     xarray v7
-> > user       3547.264                   3541.509
-> > sys        531.176                      526.111
-> > real       200.752                      201.334
-> >
-> > ---
->
-> I believe there shouldn't be a separator before Rb and Sb below.
-
-Ack.
-
->
-> > Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> >
-> > Signed-off-by: Chris Li <chrisl@kernel.org>
->
-> I have some comments below, with them addressed:
->
-> Acked-by: Yosry Ahmed <yosryahmed@google.com>
->
-> [..]
-> > @@ -1556,28 +1474,43 @@ bool zswap_store(struct folio *folio)
-> >  insert_entry:
-> >       entry->swpentry =3D swp;
-> >       entry->objcg =3D objcg;
-> > +
-> > +     old =3D xa_store(tree, offset, entry, GFP_KERNEL);
-> > +     if (xa_is_err(old)) {
-> > +             int err =3D xa_err(old);
->
-> There should be a blank line after the declaration.
->
-> > +             WARN_ONCE(err !=3D -ENOMEM, "unexpected xarray error: %d\=
-n", err);
-> > +             zswap_reject_alloc_fail++;
-> > +             goto store_failed;
-> > +     }
-> > +
-> > +        /*
-> > +         * We may have had an existing entry that became stale when
-> > +         * the folio was redirtied and now the new version is being
-> > +         * swapped out. Get rid of the old.
-> > +         */
->
-> This comment is mis-indented.
-
-Ah, there is some space instead of a tab because the comment was
-copied from an email. Will fix it.
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v4 2/5] drivers: mtd: nand: Add qpic_common API file
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <broonie@kernel.org>,
+        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+        <manivannan.sadhasivam@linaro.org>, <neil.armstrong@linaro.org>,
+        <daniel@makrotopia.org>, <arnd@arndb.de>,
+        <chris.packham@alliedtelesis.co.nz>, <christophe.kerello@foss.st.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>
+References: <20240308091752.16136-1-quic_mdalam@quicinc.com>
+ <20240308091752.16136-3-quic_mdalam@quicinc.com>
+ <20240315124517.4a546ce9@xps-13>
+ <93b08226-3297-2161-cc7d-d33d839c32f0@quicinc.com>
+ <20240319114316.4b977d93@xps-13>
+ <756ccc79-0077-5c23-73e3-bbb82fbfa8b0@quicinc.com>
+ <20240319140924.167f3063@xps-13>
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20240319140924.167f3063@xps-13>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BfPakkWhuLrOxL76Q0W3qYhEzZTAFfXw
+X-Proofpoint-GUID: BfPakkWhuLrOxL76Q0W3qYhEzZTAFfXw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_03,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ mlxlogscore=660 phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403200050
 
 
->
-> checkpatch would have caught these btw.
->
-> > +     if (old)
-> > +             zswap_entry_free(old);
-> > +
-> >       if (objcg) {
-> >               obj_cgroup_charge_zswap(objcg, entry->length);
-> > -             /* Account before objcg ref is moved to tree */
-> >               count_objcg_event(objcg, ZSWPOUT);
-> >       }
-> >
-> > -     /* map */
-> > -     spin_lock(&tree->lock);
-> >       /*
-> > -      * The folio may have been dirtied again, invalidate the
-> > -      * possibly stale entry before inserting the new entry.
-> > +      * We finish initializing the entry while it's already in xarray.
-> > +      * This is safe because:
-> > +      *
-> > +      * 1. Concurrent stores and invalidations are excluded by folio l=
-ock.
-> > +      *
-> > +      * 2. Writeback is excluded by the entry not being on the LRU yet=
-.
-> > +      *    The publishing order matters to prevent writeback from seei=
-ng
-> > +      *    an incoherent entry.
->
-> As I mentioned before, writeback is also protected by the folio lock.
-> Concurrent writeback will find the folio in the swapcache and abort. The
-> fact that the entry is not on the LRU yet is just additional protection,
-> so I don't think the publishing order actually matters here. Right?
 
-Right. This comment is explaining why this publishing order does not
-matter. I think we are talking about the same thing here?
+On 3/19/2024 6:39 PM, Miquel Raynal wrote:
+> Hi,
+> 
+> quic_mdalam@quicinc.com wrote on Tue, 19 Mar 2024 17:46:05 +0530:
+> 
+>> On 3/19/2024 4:13 PM, Miquel Raynal wrote:
+>>> Hi,
+>>>    
+>>>>>> +/**
+>>>>>> + * qcom_offset_to_nandc_reg() - Get the actual offset
+>>>>>> + * @regs: pointer to nandc_reg structure
+>>>>>> + * @offset: register offset
+>>>>>> + *
+>>>>>> + * This function will reurn the actual offset for qpic controller register
+>>>>>> + */
+>>>>>> +__le32 *qcom_offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+>>>>>> +{
+>>>>>> +	switch (offset) {
+>>>>>> +	case NAND_FLASH_CMD:
+>>>>>> +		return &regs->cmd;
+>>>>>> +	case NAND_ADDR0:
+>>>>>> +		return &regs->addr0;
+>>>>>> +	case NAND_ADDR1:
+>>>>>> +		return &regs->addr1;
+>>>>>> +	case NAND_FLASH_CHIP_SELECT:
+>>>>>> +		return &regs->chip_sel;
+>>>>>> +	case NAND_EXEC_CMD:
+>>>>>> +		return &regs->exec;
+>>>>>> +	case NAND_FLASH_STATUS:
+>>>>>> +		return &regs->clrflashstatus;
+>>>>>> +	case NAND_DEV0_CFG0:
+>>>>>> +		return &regs->cfg0;
+>>>>>> +	case NAND_DEV0_CFG1:
+>>>>>> +		return &regs->cfg1;
+>>>>>> +	case NAND_DEV0_ECC_CFG:
+>>>>>> +		return &regs->ecc_bch_cfg;
+>>>>>> +	case NAND_READ_STATUS:
+>>>>>> +		return &regs->clrreadstatus;
+>>>>>> +	case NAND_DEV_CMD1:
+>>>>>> +		return &regs->cmd1;
+>>>>>> +	case NAND_DEV_CMD1_RESTORE:
+>>>>>> +		return &regs->orig_cmd1;
+>>>>>> +	case NAND_DEV_CMD_VLD:
+>>>>>> +		return &regs->vld;
+>>>>>> +	case NAND_DEV_CMD_VLD_RESTORE:
+>>>>>> +		return &regs->orig_vld;
+>>>>>> +	case NAND_EBI2_ECC_BUF_CFG:
+>>>>>> +		return &regs->ecc_buf_cfg;
+>>>>>> +	case NAND_READ_LOCATION_0:
+>>>>>> +		return &regs->read_location0;
+>>>>>> +	case NAND_READ_LOCATION_1:
+>>>>>> +		return &regs->read_location1;
+>>>>>> +	case NAND_READ_LOCATION_2:
+>>>>>> +		return &regs->read_location2;
+>>>>>> +	case NAND_READ_LOCATION_3:
+>>>>>> +		return &regs->read_location3;
+>>>>>> +	case NAND_READ_LOCATION_LAST_CW_0:
+>>>>>> +		return &regs->read_location_last0;
+>>>>>> +	case NAND_READ_LOCATION_LAST_CW_1:
+>>>>>> +		return &regs->read_location_last1;
+>>>>>> +	case NAND_READ_LOCATION_LAST_CW_2:
+>>>>>> +		return &regs->read_location_last2;
+>>>>>> +	case NAND_READ_LOCATION_LAST_CW_3:
+>>>>>> +		return &regs->read_location_last3;
+>>>>>
+>>>>> Why do you need this indirection?
+>>>>
+>>>> This indirection I believe is needed by the write_reg_dma function,
+>>>> wherein a bunch of registers are modified based on a starting register.
+>>>> Can I change this in a separate cleanup series as a follow up to this?
+>>>
+>>> I think it would be cleaner to make the changes I requested first and
+>>> then make a copy. I understand it is more work on your side, so if you
+>>> really prefer you can (1) make the copy and then (2) clean it all. But
+>>> please do it all in this series.
+>> Ok
+>>>    
+>>>>>> diff --git a/include/linux/mtd/nand-qpic-common.h b/include/linux/mtd/nand-qpic-common.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..aced15866627
+>>>>>> --- /dev/null
+>>>>>> +++ b/include/linux/mtd/nand-qpic-common.h
+>>>>>> @@ -0,0 +1,486 @@
+>>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>>> +/*
+>>>>>> + * QCOM QPIC common APIs header file
+>>>>>> + *
+>>>>>> + * Copyright (c) 2023 Qualcomm Inc.
+>>>>>> + * Authors:     Md sadre Alam           <quic_mdalam@quicinc.com>
+>>>>>> + *		Sricharan R             <quic_srichara@quicinc.com>
+>>>>>> + *		Varadarajan Narayanan   <quic_varada@quicinc.com>
+>>>>>> + *
+>>>>>> + */
+>>>>>> +#ifndef __MTD_NAND_QPIC_COMMON_H__
+>>>>>> +#define __MTD_NAND_QPIC_COMMON_H__
+>>>>>> +
+>>>>>> +#include <linux/bitops.h>
+>>>>>> +#include <linux/clk.h>
+>>>>>> +#include <linux/delay.h>
+>>>>>> +#include <linux/dmaengine.h>
+>>>>>> +#include <linux/dma-mapping.h>
+>>>>>> +#include <linux/dma/qcom_adm.h>
+>>>>>> +#include <linux/dma/qcom_bam_dma.h>
+>>>>>> +#include <linux/module.h>
+>>>>>> +#include <linux/mtd/partitions.h>
+>>>>>> +#include <linux/mtd/rawnand.h>
+>>>>>
+>>>>> You really need this?
+>>>> Yes , since some generic structure used here.
+>>>
+>>> Which ones? If this is a common file, you probably should not.
+>>    Since we are using this struct qcom_nand_controller { }
+>>    for both SPI nand as well as raw nand. In this we are having this
+>>    struct nand_controller controller member.
+> 
+> Maybe we should not expose qcom_nand_controller at all and just share
+> the minimum bits which are really common.
 
-Chris
+  Will move all the header files to .c file from nand-qpic-common.h
+
+> 
+> Thanks,
+> Miquèl
+
+Thanks,
+Alam.
+
 
