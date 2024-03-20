@@ -1,215 +1,415 @@
-Return-Path: <linux-kernel+bounces-109151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA7288155D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:16:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3B888157A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:21:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D825E1F21AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:16:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A463728281B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D47B5644E;
-	Wed, 20 Mar 2024 16:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB2257300;
+	Wed, 20 Mar 2024 16:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yas7dPUI"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="fEWG19CR"
+Received: from smtpcmd0641.aruba.it (smtpcmd0641.aruba.it [62.149.156.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAFA55792;
-	Wed, 20 Mar 2024 16:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD06554FAD
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 16:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951393; cv=none; b=eNMOFRqo6eF+apXO/iEtiQn941+4tXAAG2cgY5zqlG4JAZtQ5ciyMK8ZnUtlssof7GbQ1ap+zo9PVodkr+IwORac4SjN1+1BX+g7NvFKTuGtZKclxxEg0BeA7vVGFjq9kn5TELEdJOV6a+4NwYPm7YkOxGckyt3zVlwrXz4EaKo=
+	t=1710951663; cv=none; b=UtQI8jCIgElnKkT23w4KPD8jbBUsFTeOYYCUS01kOzUobRTS4/cQzWCDryk4IyP1ac0DxjjmkDJQF9QWzqmBxj6Cwpre9Ot+lSsTCtj5kzhO47PZob43BB8T+ngrKNTqhZ5gK4V1OcAxTwcZEgBC7t98VwY9MB5wJl1yUsMaeEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951393; c=relaxed/simple;
-	bh=0RvBV5HPHCypiG8/1C2bPVwFxUctq8TGU6kkO100MJQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZzuUDm/HAHDIn5uiIQ2sJNNb2GZVn3HZRsEIiOpYkXVe1Kc+DlDRPQ+PGCDROcq+cf9hw0TR+ffhfjHu7pSPRhxiLB1HtOrAvApNz+nvo09n9BE8vawMSH2iGMTknmFjNkQM/HchQZ6rp1uWWE1x9IKAaEPf82NQNcgCyQtQFLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yas7dPUI; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KG0ATk020257;
-	Wed, 20 Mar 2024 16:16:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=HfuSXD61T3jEkncOiw8gApr3+P2Z8+cmNdGxNiRWng0=;
- b=Yas7dPUI7lofd074WfRo3wi04lnUOmlek1xutDTWtXuumYq7/0q4W/wuhxUeBJIA+Ime
- F50/+zSAVt87cOCp19vpzy9iU/4M41QrBQ1wY9GYeR5dNGsgCuXyayqYkCEesPlY9Qj0
- hP5TWJFESbXp9NPtaFNdLPP35suFIRFkG2CYUn2BbREmVcmpmLlbeVN/6rk+pBhxyunM
- nJyfNbxgjwNtOF7mhf6NdJ8Z9VBh93VvaQcansoUehkl8hc7NUcws+dC0HAPmpgjpcl+
- ZumydteDpUz7MfBt0bToYqif3oIV9qoyNPL0SsP+SK0Phd/FF+H6b0bba5gLW3jNtPc+ Wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x008rgg24-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 16:16:05 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42KGG5rQ012184;
-	Wed, 20 Mar 2024 16:16:05 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x008rgg21-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 16:16:05 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KE9wci017231;
-	Wed, 20 Mar 2024 16:16:04 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrtfhps-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 16:16:04 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KGG1Vd40174240
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Mar 2024 16:16:03 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C0F795805B;
-	Wed, 20 Mar 2024 16:15:59 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BE40F58065;
-	Wed, 20 Mar 2024 16:15:58 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Mar 2024 16:15:58 +0000 (GMT)
-Message-ID: <afc9471c-1c28-4384-82c1-29464ca1fb1f@linux.ibm.com>
-Date: Wed, 20 Mar 2024 12:15:56 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Documentation: tpm_tis
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, linux-integrity@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,
-        "Daniel P . Smith" <dpsmith@apertussolutions.com>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Alexander Steffen <Alexander.Steffen@infineon.com>,
-        keyrings@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-References: <20240320085601.40450-1-jarkko@kernel.org>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240320085601.40450-1-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: G6cDu7hnCJlnPlQMBwAxaYs3jmZHVtef
-X-Proofpoint-GUID: 0WxVBd-OTimkKLLzsWkImZ5r7x7NwVMt
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1710951663; c=relaxed/simple;
+	bh=ctS95Q/KqX2J/LUXSQyKH/pl2BP05hlflbuiDxVyUyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m16lC5F6RNJntO5hT83HRTpAdXZRjvfR/dusijSqbWC/gJE59aF1Go/el5SKF2cnI3WJB8otT604P0RnbhnogRjHZZNnBgk9CUVlqFi2JgHPrDSQPGnWCKsMpUEj0AZ5upA+nGNMKaJoFQT3PPLvLZY0gJHXclpVrGbRjh1uLP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com; spf=pass smtp.mailfrom=enneenne.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=fEWG19CR; arc=none smtp.client-ip=62.149.156.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enneenne.com
+Received: from [192.168.1.59] ([79.0.204.227])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id mydRrZKfJABX0mydSraZYc; Wed, 20 Mar 2024 17:17:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1710951472; bh=ctS95Q/KqX2J/LUXSQyKH/pl2BP05hlflbuiDxVyUyk=;
+	h=Date:MIME-Version:Subject:To:From:Content-Type;
+	b=fEWG19CRlTCije51eKJeWgbgQkcpKTUa/eJ8vGADiEhNzEoOZtLYDOgN7zM0WSaIn
+	 u/lswLkrYKB4QWg468VN3n3kemWYbuPwf7g2rGf9lG+bj2BDroy4of8ZtBe3fT3ivU
+	 OiRnOv0BDVXEAmu0jHpxQS2enXXpWvbgyQKMGrx8PLBC+BfRDoJaECWnvMKvUGZMCC
+	 p0ob78whtTAr56SEiMsM2gwdGFNQFA4ZlcFFEjqI6BEbWbrcPDJ6bVpg8y1teXeaXD
+	 XUAjbzuX9B56/PXuDgzYBsAjjFOJOnXJBKeH/x/hAnT0Izp3DarF+IWvVgv2gpXZIN
+	 LGsIZt3XpW8kA==
+Message-ID: <27762fd2-123c-4286-904c-7ecaa748e9ff@enneenne.com>
+Date: Wed, 20 Mar 2024 17:17:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
- definitions=main-2403200130
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 09/11] pps: generators: Add PPS Generator TIO Driver
+Content-Language: en-US
+To: lakshmi.sowjanya.d@intel.com, tglx@linutronix.de, jstultz@google.com,
+ corbet@lwn.net, linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, andriy.shevchenko@linux.intel.com,
+ eddie.dong@intel.com, christopher.s.hall@intel.com,
+ jesse.brandeburg@intel.com, davem@davemloft.net,
+ alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+ mcoquelin.stm32@gmail.com, perex@perex.cz, linux-sound@vger.kernel.org,
+ anthony.l.nguyen@intel.com, peter.hilber@opensynergy.com,
+ pandith.n@intel.com, mallikarjunappa.sangannavar@intel.com,
+ subramanian.mohan@intel.com, basavaraj.goudar@intel.com,
+ thejesh.reddy.t.r@intel.com
+References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
+ <20240319130547.4195-10-lakshmi.sowjanya.d@intel.com>
+From: Rodolfo Giometti <giometti@enneenne.com>
+In-Reply-To: <20240319130547.4195-10-lakshmi.sowjanya.d@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBQ3W1huGSm9HfyrIvb/sLpAPYZQlnEzdbAk5JwPRPc3uyz7Crng2g7hyJhJHOgua9I6/cH/vmxv4crNW/YjbciHweksht9+knPA1mxarj7t0NP7visW
+ cCisaCmzTT73xYdkBAtXM7Yw8cGhqdgm7aYjSU+Sd61qhtsEQuh5Q7PtF2xvARUfqwr4oihER5csY1brvRZin/MPaEHYnQqbyQxuro4+FbLa7/tLC9xB4uDQ
+ n+5q7m1uMpMiXGSAstwWuUizAJfFOlb6dsBVxCBrddE9UJS/7CWIXrN2f0WnQ4WfRWl+QetNxU8ehFAzgRQ8+pNaMIcEVgWugz5yOowt87gTWp0XBoe1nd7/
+ sn7VZA56qgydY7Vk388+lYdbCYmBjrFomzGY1E9yuV14x8O/BKrY3bryJzcXwp1tWT7i9yxjR/RhsqDWPJQOrcchjrA6D5+dYRHiupfBrdNwLbFS4iFJ/1HK
+ lRRt+5op9RHPTfu+qoX0SXsw4gyLltvW50vpb6Z7a5XUZIodyDsN5AefM2K8QNvBFKfsgG4tFx7NFbs9urmweCG211IjuFtRNl6Hppj76IrSGBi79auFZtEP
+ lQaRFidQqTAUozQWyJz34OeXXa0jiaiA/jE7iRM4uc68Tgriuq8dE1DKINYNnHku4tagZYKlUulDGoN+NOvaZVrancmcwJaBQWGTjuSFkSDV0Jhm02KQzT6N
+ EXmX22y0wlAEZTpyhDNb+Vp2vQ0a4I8KlYgj4KZXooxhAkR3fHGYfwUuAq7t3PjDFR1ldnkM7FnPcImuGBdXb2b0RZaB9bo13sd6qnIQXvIqXWrV+pT4xXc5
+ XUj2aojbyr0VhgorKLKUSH4cr97hh8jjVkEVb7zyBRvRC9YEVY6RXtHwUQ0MwBjCkK32tlItk+Oh+cVO8Wx/tjrEKw5nOm2ajSKTxdpSkYVt/EiFN/UrBuO9
+ fC/P9feaLnYjrm3E6Tzy1FNa0nIuhbWb2vjh9eFoV2SWRJ7XFHsfyflrVCD4LawMZ9S19wP+CbmxOTX/zxPbWL02sCShwhjZOdefACmbcF6P2ve6rbMypZHD
+ JBrfpvRwyZqxCQQArwIxZqAG4ItlQqeW9/jKn4Z+TED6Ac/EPjrSEHS2v6tTHQL2CVGW9B8Y3BuQIQ==
 
-
-
-On 3/20/24 04:56, Jarkko Sakkinen wrote:
-> Based recent discussions on LKML, provide preliminary bits of tpm_tis_core
-> dependent drivers. Includes only bare essentials but can be extended later
-> on case by case. This way some people may even want to read it later on.
+On 19/03/24 14:05, lakshmi.sowjanya.d@intel.com wrote:
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 > 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> CC: Daniel P. Smith <dpsmith@apertussolutions.com>
-> Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Peter Huewe <peterhuewe@gmx.de>
-> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> v2:
-> - Fixed errors reported by Randy:
->    https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@infradead.org/
-> - Improved the text a bit to have a better presentation.
-> ---
->   Documentation/security/tpm/index.rst   |  1 +
->   Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
->   2 files changed, 31 insertions(+)
->   create mode 100644 Documentation/security/tpm/tpm_tis.rst
+> The Intel Timed IO PPS generator driver outputs a PPS signal using
+> dedicated hardware that is more accurate than software actuated PPS.
+> The Timed IO hardware generates output events using the ART timer.
+> The ART timer period varies based on platform type, but is less than 100
+> nanoseconds for all current platforms. Timed IO output accuracy is
+> within 1 ART period.
 > 
-> diff --git a/Documentation/security/tpm/index.rst b/Documentation/security/tpm/index.rst
-> index fc40e9f23c85..f27a17f60a96 100644
-> --- a/Documentation/security/tpm/index.rst
-> +++ b/Documentation/security/tpm/index.rst
-> @@ -5,6 +5,7 @@ Trusted Platform Module documentation
->   .. toctree::
+> PPS output is enabled by writing '1' the 'enable' sysfs attribute. The
+> driver uses hrtimers to schedule a wake-up 10 ms before each event
+> (edge) target time. At wakeup, the driver converts the target time in
+> terms of CLOCK_REALTIME to ART trigger time and writes this to the Timed
+> IO hardware. The Timed IO hardware generates an event precisely at the
+> requested system time without software involvement.
+> 
+> Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
+> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+> Co-developed-by: Pandith N <pandith.n@intel.com>
+> Signed-off-by: Pandith N <pandith.n@intel.com>
+> Co-developed-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
+> Signed-off-by: Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>
+> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> Reviewed-by: Eddie Dong <eddie.dong@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+
+> ---
+>   drivers/pps/generators/Kconfig       |  16 ++
+>   drivers/pps/generators/Makefile      |   1 +
+>   drivers/pps/generators/pps_gen_tio.c | 245 +++++++++++++++++++++++++++
+>   3 files changed, 262 insertions(+)
+>   create mode 100644 drivers/pps/generators/pps_gen_tio.c
+> 
+> diff --git a/drivers/pps/generators/Kconfig b/drivers/pps/generators/Kconfig
+> index d615e640fcad..0f090932336f 100644
+> --- a/drivers/pps/generators/Kconfig
+> +++ b/drivers/pps/generators/Kconfig
+> @@ -12,3 +12,19 @@ config PPS_GENERATOR_PARPORT
+>   	  If you say yes here you get support for a PPS signal generator which
+>   	  utilizes STROBE pin of a parallel port to send PPS signals. It uses
+>   	  parport abstraction layer and hrtimers to precisely control the signal.
+> +
+> +config PPS_GENERATOR_TIO
+> +	tristate "TIO PPS signal generator"
+> +	depends on X86 && CPU_SUP_INTEL
+> +	help
+> +	  If you say yes here you get support for a PPS TIO signal generator
+> +	  which generates a pulse at a prescribed time based on the system clock.
+> +	  It uses time translation and hrtimers to precisely generate a pulse.
+> +	  This hardware is present on 2019 and newer Intel CPUs. However, this
+> +	  driver is not useful without adding highly specialized hardware outside
+> +	  the Linux system to observe these pulses.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pps_gen_tio.
+> +
+> +	  If unsure, say N.
+> diff --git a/drivers/pps/generators/Makefile b/drivers/pps/generators/Makefile
+> index 2d56dd0495d5..07004cfd3996 100644
+> --- a/drivers/pps/generators/Makefile
+> +++ b/drivers/pps/generators/Makefile
+> @@ -4,6 +4,7 @@
+>   #
 >   
->      tpm_event_log
-> +   tpm_tis
->      tpm_vtpm_proxy
->      xen-tpmfront
->      tpm_ftpm_tee
-> diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/security/tpm/tpm_tis.rst
+>   obj-$(CONFIG_PPS_GENERATOR_PARPORT) += pps_gen_parport.o
+> +obj-$(CONFIG_PPS_GENERATOR_TIO) += pps_gen_tio.o
+>   
+>   ifeq ($(CONFIG_PPS_DEBUG),y)
+>   EXTRA_CFLAGS += -DDEBUG
+> diff --git a/drivers/pps/generators/pps_gen_tio.c b/drivers/pps/generators/pps_gen_tio.c
 > new file mode 100644
-> index 000000000000..b331813b3c45
+> index 000000000000..3ee271524482
 > --- /dev/null
-> +++ b/Documentation/security/tpm/tpm_tis.rst
-> @@ -0,0 +1,30 @@
-> +.. SPDX-License-Identifier: GPL-2.0
+> +++ b/drivers/pps/generators/pps_gen_tio.c
+> @@ -0,0 +1,245 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Intel PPS signal Generator Driver
+> + *
+> + * Copyright (C) 2023 Intel Corporation
+> + */
 > +
-> +=========================
-> +TPM FIFO interface Driver
-> +=========================
+> +#include <linux/bits.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/cleanup.h>
+> +#include <linux/container_of.h>
+> +#include <linux/cpu.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/hrtimer.h>
+> +#include <linux/io-64-nonatomic-hi-lo.h>
+> +#include <linux/kstrtox.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/timekeeping.h>
+> +#include <linux/types.h>
 > +
-> +FIFO (First-In-First-Out) is the name of the hardware interface used by the
-
-FIFO is the type. I am surprised you call it a 'name'. I would say TIS 
-is the 'name'.
-
-> +tpm_tis_core dependent drivers. The prefix "tis" comes from the TPM Interface
-
-tis is a tla -- a three letter *acronym*. You aren't using it as a 'prefix'.
-
-> +Specification, which is the hardware interface specification for TPM 1.x chips.
-
-It's also available for TPM2.
-
+> +#include <asm/cpu_device_id.h>
 > +
-> +Communication is based on a 5 KiB buffer shared by the TPM chip through a
-
-I thought it was typically 4 KiB.
-
-> +hardware bus or memory map, depending on the physical wiring. The buffer is
-> +further split into five equal-size buffers, which provide equivalent sets of
-
-equal-sized MMIO regions?
-
-> +registers for communication between the CPU and TPM. These communication
-> +endpoints are called localities in the TCG terminology.
+> +#define TIOCTL			0x00
+> +#define TIOCOMPV		0x10
 > +
-> +When the kernel wants to send commands to the TPM chip, it first reserves
-> +locality 0 by setting the requestUse bit in the TPM_ACCESS register. The bit is
-> +cleared by the chip when the access is granted. Once it completes its
-> +communication, the kernel writes the TPM_ACCESS.activeLocality bit. This
-> +informs the chip that the locality has been relinquished.
+> +/* Control Register */
+> +#define TIOCTL_EN			BIT(0)
+> +#define TIOCTL_DIR			BIT(1)
+> +#define TIOCTL_EP			GENMASK(3, 2)
+> +#define TIOCTL_EP_RISING_EDGE		FIELD_PREP(TIOCTL_EP, 0)
+> +#define TIOCTL_EP_FALLING_EDGE		FIELD_PREP(TIOCTL_EP, 1)
+> +#define TIOCTL_EP_TOGGLE_EDGE		FIELD_PREP(TIOCTL_EP, 2)
 > +
-> +Pending localities are served in order by the chip in descending order, one at
-> +a time:
+> +#define SAFE_TIME_NS			(10 * NSEC_PER_MSEC) /* Safety time to set hrtimer early */
+> +#define MAGIC_CONST			(NSEC_PER_SEC - SAFE_TIME_NS)
+> +#define ART_HW_DELAY_CYCLES		2
+> +
+> +struct pps_tio {
+> +	struct hrtimer timer;
+> +	struct device *dev;
+> +	spinlock_t lock;
+> +	struct attribute_group attrs;
+> +	void __iomem *base;
+> +	bool enabled;
+> +};
+> +
+> +static inline u32 pps_ctl_read(struct pps_tio *tio)
+> +{
+> +	return readl(tio->base + TIOCTL);
+> +}
+> +
+> +static inline void pps_ctl_write(struct pps_tio *tio, u32 value)
+> +{
+> +	writel(value, tio->base + TIOCTL);
+> +}
+> +
+> +/* For COMPV register, It's safer to write higher 32-bit followed by lower 32-bit */
+> +static inline void pps_compv_write(struct pps_tio *tio, u64 value)
+> +{
+> +	hi_lo_writeq(value, tio->base + TIOCOMPV);
+> +}
+> +
+> +static inline ktime_t first_event(struct pps_tio *tio)
+> +{
+> +	return ktime_set(ktime_get_real_seconds() + 1, MAGIC_CONST);
+> +}
+> +
+> +static u32 pps_tio_disable(struct pps_tio *tio)
+> +{
+> +	u32 ctrl;
+> +
+> +	ctrl = pps_ctl_read(tio);
+> +	pps_compv_write(tio, 0);
+> +
+> +	ctrl &= ~TIOCTL_EN;
+> +	pps_ctl_write(tio, ctrl);
+> +
+> +	return ctrl;
+> +}
+> +
+> +static void pps_tio_direction_output(struct pps_tio *tio)
+> +{
+> +	u32 ctrl;
+> +
+> +	ctrl = pps_tio_disable(tio);
+> +
+> +	/* We enable the device, be sure that the 'compare' value is invalid */
+> +	pps_compv_write(tio, 0);
+> +
+> +	ctrl &= ~(TIOCTL_DIR | TIOCTL_EP);
+> +	ctrl |= TIOCTL_EP_TOGGLE_EDGE;
+> +	pps_ctl_write(tio, ctrl);
+> +
+> +	ctrl |= TIOCTL_EN;
+> +	pps_ctl_write(tio, ctrl);
+> +}
+> +
+> +static bool pps_generate_next_pulse(struct pps_tio *tio, ktime_t expires)
+> +{
+> +	u64 art;
+> +
+> +	if (!ktime_real_to_base_clock(expires, CSID_X86_ART, &art)) {
+> +		pps_tio_disable(tio);
+> +		return false;
+> +	}
+> +
+> +	pps_compv_write(tio, art - ART_HW_DELAY_CYCLES);
+> +	return true;
+> +}
+> +
+> +static enum hrtimer_restart hrtimer_callback(struct hrtimer *timer)
+> +{
+> +	struct pps_tio *tio = container_of(timer, struct pps_tio, timer);
+> +	ktime_t expires, now;
+> +
+> +	guard(spinlock)(&tio->lock);
+> +
+> +	expires = hrtimer_get_expires(timer);
+> +	now = ktime_get_real();
+> +
+> +	if (now - expires < SAFE_TIME_NS) {
+> +		if (!pps_generate_next_pulse(tio, expires + SAFE_TIME_NS))
+> +			return HRTIMER_NORESTART;
+> +	}
+> +
+> +	hrtimer_forward(timer, now, NSEC_PER_SEC / 2);
+> +	return HRTIMER_RESTART;
+> +}
+> +
+> +static ssize_t enable_store(struct device *dev, struct device_attribute *attr, const char *buf,
+> +			    size_t count)
+> +{
+> +	struct pps_tio *tio = dev_get_drvdata(dev);
+> +	bool enable;
+> +	int err;
+> +
+> +	err = kstrtobool(buf, &enable);
+> +	if (err)
+> +		return err;
+> +
+> +	guard(spinlock_irqsave)(&tio->lock);
+> +	if (enable && !tio->enabled) {
+> +		if (!timekeeping_clocksource_has_base(CSID_X86_ART)) {
+> +			dev_err(tio->dev, "PPS cannot be started as clock is not related to ART");
+> +			return -EPERM;
+> +		}
+> +		pps_tio_direction_output(tio);
+> +		hrtimer_start(&tio->timer, first_event(tio), HRTIMER_MODE_ABS);
+> +		tio->enabled = true;
+> +	} else if (!enable && tio->enabled) {
+> +		hrtimer_cancel(&tio->timer);
+> +		pps_tio_disable(tio);
+> +		tio->enabled = false;
+> +	}
+> +	return count;
+> +}
+> +
+> +static ssize_t enable_show(struct device *dev, struct device_attribute *devattr, char *buf)
+> +{
+> +	struct pps_tio *tio = dev_get_drvdata(dev);
+> +	u32 ctrl;
+> +
+> +	ctrl = pps_ctl_read(tio);
+> +	ctrl &= TIOCTL_EN;
+> +
+> +	return sysfs_emit(buf, "%u\n", ctrl);
+> +}
+> +static DEVICE_ATTR_RW(enable);
+> +
+> +static struct attribute *pps_tio_attrs[] = {
+> +	&dev_attr_enable.attr,
+> +	NULL
+> +};
+> +ATTRIBUTE_GROUPS(pps_tio);
+> +
+> +static int pps_tio_probe(struct platform_device *pdev)
+> +{
+> +	struct pps_tio *tio;
+> +
+> +	if (!(cpu_feature_enabled(X86_FEATURE_TSC_KNOWN_FREQ) &&
+> +	      cpu_feature_enabled(X86_FEATURE_ART))) {
+> +		dev_warn(&pdev->dev, "TSC/ART is not enabled");
+> +		return -ENODEV;
+> +	}
+> +
+> +	tio = devm_kzalloc(&pdev->dev, sizeof(*tio), GFP_KERNEL);
+> +	if (!tio)
+> +		return -ENOMEM;
+> +
+> +	tio->dev = &pdev->dev;
+> +	tio->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(tio->base))
+> +		return PTR_ERR(tio->base);
+> +
+> +	pps_tio_disable(tio);
+> +	hrtimer_init(&tio->timer, CLOCK_REALTIME, HRTIMER_MODE_ABS);
+> +	tio->timer.function = hrtimer_callback;
+> +	spin_lock_init(&tio->lock);
+> +	tio->enabled = false;
+> +	platform_set_drvdata(pdev, tio);
+> +
+> +	return 0;
+> +}
+> +
+> +static int pps_tio_remove(struct platform_device *pdev)
+> +{
+> +	struct pps_tio *tio = platform_get_drvdata(pdev);
+> +
+> +	hrtimer_cancel(&tio->timer);
+> +	pps_tio_disable(tio);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct acpi_device_id intel_pmc_tio_acpi_match[] = {
+> +	{ "INTC1021" },
+> +	{ "INTC1022" },
+> +	{ "INTC1023" },
+> +	{ "INTC1024" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, intel_pmc_tio_acpi_match);
+> +
+> +static struct platform_driver pps_tio_driver = {
+> +	.probe          = pps_tio_probe,
+> +	.remove         = pps_tio_remove,
+> +	.driver         = {
+> +		.name                   = "intel-pps-generator",
+> +		.acpi_match_table       = intel_pmc_tio_acpi_match,
+> +		.dev_groups             = pps_tio_groups,
+> +	},
+> +};
+> +module_platform_driver(pps_tio_driver);
+> +
+> +MODULE_AUTHOR("Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>");
+> +MODULE_AUTHOR("Christopher Hall <christopher.s.hall@intel.com>");
+> +MODULE_AUTHOR("Pandith N <pandith.n@intel.com>");
+> +MODULE_AUTHOR("Thejesh Reddy T R <thejesh.reddy.t.r@intel.com>");
+> +MODULE_DESCRIPTION("Intel PMC Time-Aware IO Generator Driver");
+> +MODULE_LICENSE("GPL");
 
-I think I know what pending localities are because I have worked with 
-this device but I am not sure whether the user can deduce this from the 
-paragraph above. Also, why this particular detail when the driver only 
-uses locality 0 and nobody is competing about access to localities?
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming
 
-> +
-> +- Locality 0 has the lowest priority.
-> +- Locality 5 has the highest priority.
-> +
-> +Further information on the purpose and meaning of the localities can be found
-> +in section 3.2 of the TCG PC Client Platform TPM Profile Specification.
 
