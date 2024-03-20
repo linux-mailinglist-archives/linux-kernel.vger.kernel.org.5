@@ -1,192 +1,126 @@
-Return-Path: <linux-kernel+bounces-108369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62D4A8809BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:43:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C32E8809C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB5B32849D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:43:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08483285820
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD2C1946F;
-	Wed, 20 Mar 2024 02:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDF3101C6;
+	Wed, 20 Mar 2024 02:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="ebfEqXGg"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="tMN9xvJ9"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DBB107A6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 02:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB1E22F0A;
+	Wed, 20 Mar 2024 02:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710902548; cv=none; b=e/v7KO+hyB3Vj6ahbAgZs6xKr8HDfD8QMPcff1wXtx32CUNlTp83MCF/jTTqnkIb2FSFfeLq6ZYVF9fOhpPtOQTlamhzYUpx1GbbAdwQjiitV3FTUytLl+ooIFudTMRoSuXd3quWuhRP79yIEtiOAsNQCvoxPoFn0Jo0PDgKVYk=
+	t=1710902554; cv=none; b=MgEeepaY2JmEKx259K4yOotjXFfkZA+em1LYQaED/wmcUvkg8B9ezxWW7CXIXOJ4HAmI3y5IKF+qUJA9ebzEhxu4+pZiy4JSZ3xX9mI1/nYoPg3ofckTYnqzYlVLZL8RUDgfugsuSnrMF1MGqwEhbKptONhEe/kBPUTgXz3LlE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710902548; c=relaxed/simple;
-	bh=xfUq48QO6OVoxR0oxw0nGWYHlbBWHnOlmAnISATgV2g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jlhTiKcGMtjh+5Ww5cOZuwTgYxZ6KPnP+ynvqxfu1A/Ms55ivBbWSdgRDEJKxSn3otq9TPwh6GFJhtRtxbYiba9X1es0YcTP+kX20Ebb3f78PO4mSrc/ate8BtsskhixuM685auYsTE79EpxpdXrXNktjZV2/rLvVGh2U+KbMLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=ebfEqXGg; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-430a25ed4e7so38551311cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1710902545; x=1711507345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WzVosZB8NV09/ZiVxYfUQEEiRP/cgORaiI2cKH0KzxM=;
-        b=ebfEqXGg6zInbzB7p1gP3M53nHGWaA5XWy7Fae8D7C2svwmpxRiNO5UYt7NnqZAgyG
-         D2x3EJwSi7B+FE7L8ugadDarYDrtoN99P12ISP5ubQzMJIc5YWTDaB9D5TcQoMdY0L+U
-         GP2SD7/xnUJNUitgdQ3uzXdQmlKKiBkAxXH2SrB1erchbMkzqeSxhk6TDlEkk/1ixFtA
-         ByzYJG13YznlEKkZqDPddbZynW6Nfc+zV84irNNHVwYfbIt4J2LWku85lnO2dzY4lrXF
-         ryh++Pu6PtqrqI+2+hTmDp8GgOc8LrhnxySiUUiiMzU3mr0gubmht78e3zly0F9yfTHO
-         NOSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710902545; x=1711507345;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WzVosZB8NV09/ZiVxYfUQEEiRP/cgORaiI2cKH0KzxM=;
-        b=M+anUt8jLvl7XmO1V364Eez9n5VtcHwM1skF+TPp9t0eh8lXQD8zE3rH4m5fs78jGB
-         z2sAZTb6MM9OJW7ecjbB/8Kmdwfju6ZRrRbBZ+RcYV3TbmmqIygVSGVgTb5Y7OvYwTTZ
-         gBloZeWiQGqdry7eZse2nVbkf9PRyzjEX2lm3fbZc4zML8RroYiTgSqqIbMJkOzIoAAA
-         r7a3WUGth80mz2ERn8B31kcam9xGfrKNn3vMCf/mW/xYNmsNCUpf3DMHRxpzrbJwseuq
-         9iATjcIzJK/Gz5DRsQS9EvzWu++WKn5EICjAviqpkk3VBPxPeQ+KjlNbU/Qsf63LIQNH
-         IFvg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiO3DRPFtjp/CMK0h0ZLwGHWa74ZT+AE2Zr3cttUE1ujguTd1o2T1VJ3Xv02RskECkyRq5Hd+3fFX1houuYEqyB+4ZGAtJnO87HENH
-X-Gm-Message-State: AOJu0YyVIoVEfpV91Pweqogyg65tFYeQ5+UWwvgtHMwg3sdnZK8Fi66Q
-	6JHaxBLdITkZAyN3VWr7Dwmy/4VSDHtwJgDbotbCy2wiAIb1j63OzEDYFcNocA==
-X-Google-Smtp-Source: AGHT+IGEfbBr6cutAmN+mlO7n/aShmIQU3GTmhE5CM9Lh4mCEbZf0tbj0IjwPIaD6NVNuXa3bBmlRg==
-X-Received: by 2002:a05:622a:110a:b0:431:baa:ab0c with SMTP id e10-20020a05622a110a00b004310baaab0cmr135047qty.50.1710902544986;
-        Tue, 19 Mar 2024 19:42:24 -0700 (PDT)
-Received: from localhost (pool-74-98-221-57.pitbpa.fios.verizon.net. [74.98.221.57])
-        by smtp.gmail.com with UTF8SMTPSA id fg14-20020a05622a580e00b00430bddc75a5sm4582852qtb.23.2024.03.19.19.42.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 19:42:24 -0700 (PDT)
-From: kaiyang2@cs.cmu.edu
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	dskarlat@cs.cmu.edu
-Subject: [RFC PATCH 6/7] pass gfp mask of the allocation that waked kswapd to track number of pages scanned on behalf of each alloc type
-Date: Wed, 20 Mar 2024 02:42:17 +0000
-Message-Id: <20240320024218.203491-7-kaiyang2@cs.cmu.edu>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-References: <20240320024218.203491-1-kaiyang2@cs.cmu.edu>
-Reply-To: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+	s=arc-20240116; t=1710902554; c=relaxed/simple;
+	bh=MPllQIqTnkopYdBEjoinh9WMZ5nxfWwCb4wdlSkYl4Y=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=vCZr7gQbyFdiJ15MRbdpyHcewqfQoE3TrT/1caWDjluhYVvv03e/jaZdbsOPcgutlcQ/qHRj0eANsuUCCcM/A5SOa0W62GoNWMZLZE3Rcjax6k9kvVMA3XlJRDkDm5CdyD5anr0JhaRDEy75a4OIZy93w8J7V8s43JD2ZLfzvi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=tMN9xvJ9; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 7c992f58e66311ee935d6952f98a51a9-20240320
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=L4wIjJjGf0swJVl62co4wgMlC4/a0Q7gGxPi5eINvzg=;
+	b=tMN9xvJ9LtXYIYIdD48ze/LlfH3qgRsOcyqg5/zL51bH9ddPk0K1UqlcP682sfzP0NonenYXpiO8zqEeZQpWnLfEjrEJ8fTIB4yNJ6al2gT6zJ/IuTvn5LBAfMM/t/9WuJopHIEWjm7whBBbXdZ1pvOWMLQzRQ1WCShupmqcepU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:887d91a3-c4e0-4a58-927a-f04634105867,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:5a7f9a90-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 7c992f58e66311ee935d6952f98a51a9-20240320
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1746623168; Wed, 20 Mar 2024 10:42:26 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 20 Mar 2024 10:42:25 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 20 Mar 2024 10:42:25 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v3 09/14] drm/mediatek: Rename files "mtk_drm_ddp_comp.c" to "mtk_ddp_comp.c"
+Date: Wed, 20 Mar 2024 10:42:17 +0800
+Message-ID: <20240320024222.14234-10-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240320024222.14234-1-shawn.sung@mediatek.com>
+References: <20240320024222.14234-1-shawn.sung@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-In preparation for exporting the number of pages scanned for each alloc
-type
+Rename files mtk_drm_ddp_comp.c to mtk_ddp_comp.c and
+modify the Makefile accordingly.
 
-Signed-off-by: Kaiyang Zhao <zh_kaiyang@hotmail.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 ---
- include/linux/mmzone.h |  1 +
- mm/vmscan.c            | 13 +++++++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/Makefile                               | 2 +-
+ drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.c => mtk_ddp_comp.c} | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.c => mtk_ddp_comp.c} (100%)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a4889c9d4055..abc9f1623c82 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1288,6 +1288,7 @@ typedef struct pglist_data {
- 	struct task_struct *kswapd;	/* Protected by kswapd_lock */
- 	int kswapd_order;
- 	enum zone_type kswapd_highest_zoneidx;
-+	gfp_t kswapd_gfp;
+diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/mediatek/Makefile
+index 0198b50820d4c..bdb71738e1f31 100644
+--- a/drivers/gpu/drm/mediatek/Makefile
++++ b/drivers/gpu/drm/mediatek/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
  
- 	int kswapd_failures;		/* Number of 'reclaimed == 0' runs */
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index aa21da983804..ed0f47e2e810 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -7330,7 +7330,7 @@ clear_reclaim_active(pg_data_t *pgdat, int highest_zoneidx)
-  * or lower is eligible for reclaim until at least one usable zone is
-  * balanced.
-  */
--static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
-+static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx, gfp_t gfp_mask)
- {
- 	int i;
- 	unsigned long nr_soft_reclaimed;
-@@ -7345,6 +7345,8 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
- 		.order = order,
- 		.may_unmap = 1,
- 	};
-+	if (is_migrate_movable(gfp_migratetype(gfp_mask)))
-+		sc.gfp_mask |= __GFP_MOVABLE;
- 
- 	set_task_reclaim_state(current, &sc.reclaim_state);
- 	psi_memstall_enter(&pflags);
-@@ -7659,6 +7661,7 @@ static int kswapd(void *p)
- 	pg_data_t *pgdat = (pg_data_t *)p;
- 	struct task_struct *tsk = current;
- 	const struct cpumask *cpumask = cpumask_of_node(pgdat->node_id);
-+	gfp_t gfp_mask;
- 
- 	if (!cpumask_empty(cpumask))
- 		set_cpus_allowed_ptr(tsk, cpumask);
-@@ -7680,6 +7683,7 @@ static int kswapd(void *p)
- 
- 	WRITE_ONCE(pgdat->kswapd_order, 0);
- 	WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
-+	WRITE_ONCE(pgdat->kswapd_gfp, 0);
- 	atomic_set(&pgdat->nr_writeback_throttled, 0);
- 	for ( ; ; ) {
- 		bool ret;
-@@ -7687,6 +7691,7 @@ static int kswapd(void *p)
- 		alloc_order = reclaim_order = READ_ONCE(pgdat->kswapd_order);
- 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
- 							highest_zoneidx);
-+		gfp_mask = READ_ONCE(pgdat->kswapd_gfp);
- 
- kswapd_try_sleep:
- 		kswapd_try_to_sleep(pgdat, alloc_order, reclaim_order,
-@@ -7696,8 +7701,10 @@ static int kswapd(void *p)
- 		alloc_order = READ_ONCE(pgdat->kswapd_order);
- 		highest_zoneidx = kswapd_highest_zoneidx(pgdat,
- 							highest_zoneidx);
-+		gfp_mask = READ_ONCE(pgdat->kswapd_gfp);
- 		WRITE_ONCE(pgdat->kswapd_order, 0);
- 		WRITE_ONCE(pgdat->kswapd_highest_zoneidx, MAX_NR_ZONES);
-+		WRITE_ONCE(pgdat->kswapd_gfp, 0);
- 
- 		ret = try_to_freeze();
- 		if (kthread_should_stop())
-@@ -7721,7 +7728,7 @@ static int kswapd(void *p)
- 		trace_mm_vmscan_kswapd_wake(pgdat->node_id, highest_zoneidx,
- 						alloc_order);
- 		reclaim_order = balance_pgdat(pgdat, alloc_order,
--						highest_zoneidx);
-+						highest_zoneidx, gfp_mask);
- 		if (reclaim_order < alloc_order)
- 			goto kswapd_try_sleep;
- 	}
-@@ -7759,6 +7766,8 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
- 	if (READ_ONCE(pgdat->kswapd_order) < order)
- 		WRITE_ONCE(pgdat->kswapd_order, order);
- 
-+	WRITE_ONCE(pgdat->kswapd_gfp, gfp_flags);
-+
- 	if (!waitqueue_active(&pgdat->kswapd_wait))
- 		return;
- 
+ mediatek-drm-y := mtk_crtc.o \
++		  mtk_ddp_comp.o \
+ 		  mtk_disp_aal.o \
+ 		  mtk_disp_ccorr.o \
+ 		  mtk_disp_color.o \
+@@ -9,7 +10,6 @@ mediatek-drm-y := mtk_crtc.o \
+ 		  mtk_disp_ovl.o \
+ 		  mtk_disp_ovl_adaptor.o \
+ 		  mtk_disp_rdma.o \
+-		  mtk_drm_ddp_comp.o \
+ 		  mtk_drm_drv.o \
+ 		  mtk_drm_gem.o \
+ 		  mtk_drm_plane.o \
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
+similarity index 100%
+rename from drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+rename to drivers/gpu/drm/mediatek/mtk_ddp_comp.c
 -- 
-2.40.1
+2.18.0
 
 
