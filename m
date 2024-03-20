@@ -1,136 +1,131 @@
-Return-Path: <linux-kernel+bounces-109212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E76C88163C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:13:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D0F881643
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D26EF1F2499A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:13:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 735781C231BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850826A01C;
-	Wed, 20 Mar 2024 17:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B426A037;
+	Wed, 20 Mar 2024 17:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fFVnI46b";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fFVnI46b"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZK+zV9NB"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1178769DEE;
-	Wed, 20 Mar 2024 17:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CA869DF4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710954778; cv=none; b=Wcc8Cx8qRVLPQD84EmjCDthC48DLrAsleBE2vMsafaA54E3iuCf/gV7H8sotIW9ySl0T92nb2FK5TdynechBTG3yDEfQowfCGvf1WVyL3Mxox4CiiNoSsWE9BNJe8vpbxEBVGINDWcsUsz23qI4IAI1f30I97rjqWM1Nfjh4G68=
+	t=1710954832; cv=none; b=InViVn6cxUZCBFXrdf3l62eFeDAje9sWVCzcPVRvjfhHi6XVbnyA9a18ai67w+I5rhP2Lu+FdopXjvW7RHZZeU84G5UZvR0TFcaJHXKaBEvZRMiM7KskwKpvH7L3V9P8/idThLyoQKGWSM3VByov5KozsZ6/OKqJWG+R92FcLfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710954778; c=relaxed/simple;
-	bh=RJrXqMW+w+hi9QE80+m6W2e3jA+FozIDfWRkYXdcaG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nv6Em4xHl7hH8BqVlGHAX6l4JhxS1cmQImL1XzckT72TUxYbt3UepvnngjySGyUjl/vldOO99JwzbNEReH8Yp+np2DRvHaCV/JLVkU5S66YwfOWMuiJiBY96fCrY0Q0aHYeD2k6kBTVxWbkPxc5JPGxrZxERmY9fBG2D1EVw9Yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fFVnI46b; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fFVnI46b; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3C2593487A;
-	Wed, 20 Mar 2024 17:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710954775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKC29gVMHa68RPkUNE5y3QIPIaFgwQ0ogCdZiW99o4Y=;
-	b=fFVnI46bwaaJqWv9CMJQomIukyzK4/LpqBmE6tCL2mr0RDqiBRrsbwr5XgtFnOPPbgo/BF
-	DX107ymc805OPGH8HqiTwV9YLNmmHa/+WlPe08AvOKHbTtVgeGOQ61Mc5JJv/hyC2dBNBv
-	VTF6dnQmp2Wjia5UD4c0u5AtXOZtIAw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710954775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YKC29gVMHa68RPkUNE5y3QIPIaFgwQ0ogCdZiW99o4Y=;
-	b=fFVnI46bwaaJqWv9CMJQomIukyzK4/LpqBmE6tCL2mr0RDqiBRrsbwr5XgtFnOPPbgo/BF
-	DX107ymc805OPGH8HqiTwV9YLNmmHa/+WlPe08AvOKHbTtVgeGOQ61Mc5JJv/hyC2dBNBv
-	VTF6dnQmp2Wjia5UD4c0u5AtXOZtIAw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B45A136CD;
-	Wed, 20 Mar 2024 17:12:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EghGBBcZ+2VLdwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 20 Mar 2024 17:12:55 +0000
-Date: Wed, 20 Mar 2024 18:12:50 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vladimir Davydov <vdavydov.dev@gmail.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH] mm/memcontrol: stop resize loop if limit was changed
- again
-Message-ID: <ZfsZElNXNf6bOKSt@tiehlicka>
-References: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
- <be05a470-bb31-47ef-b786-557c347de429@redhat.com>
+	s=arc-20240116; t=1710954832; c=relaxed/simple;
+	bh=Z2QMshSRUV/Ic6Kf5osNo4mJkuPuXiVLb5k5is3/ucs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vBfnGSWASa/HHfi8XlrpktGR76TOehy7upWTO2OutI5L4cfL1DB85hB+vyv5OJ86JUlBAAvsEANH81tQjGbMDqdACmVRnN4rsU/VWOkL5xFPRDilEYYVUywCFePjad6BtOLHPZ2mL5njfDtp3+Pwp49PnZvrvmeM3GGMiMIO1OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZK+zV9NB; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dee917abd5so6845ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710954830; x=1711559630; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f+GdX2jdkDlWHWBVOsGIoAg8YOz++4sTFpjiRVGx7IY=;
+        b=ZK+zV9NBZTGdUYxJDa0k4CUSddFVcRdznVDuyaWV2v9j+WFlVMsdDdBRV1L+CmxX0X
+         bmo3Z+MMeBnkO3FqSMVNsTJM9g0iCFHq+bJV5VX6JYMsm5Kw8EGBjbfn4Jhb1bWwYgaD
+         Prrgc0ja1NiG3CP++dvo52ABLpFt1wXJ5vJUy3DpvJFa8pScbd7ZK0Dz9uv+7OTPxbTh
+         JosWOiQdZuEBKQi9XlkDxbR1Ch6d5jdqza0hkWfrNRwFKqR9jganS7bPoT9mihccCGHZ
+         2n788+mQpUecUZ1ErlGOyPm55tcvJn8L52TNtou7B0KHq84EF4neGpyOA0mpqBJ/4DMF
+         rb/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710954830; x=1711559630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f+GdX2jdkDlWHWBVOsGIoAg8YOz++4sTFpjiRVGx7IY=;
+        b=Vlo76AhasXcrto23wDhQyPhGlG0Dewm0V6Qxuil16JK59bufzawohpRyltWxRFnpND
+         4PcWgG8+J38QzymKtdEMkWBqQy9F4DgRO1Pwv3DzW0gg063STXZdrQGBa03L+SJgktv7
+         vV41pN2DVE2hC9qw0oZ1/QVExRl8hNCiFGrO0p9smQdB2E6BNl/aMYpK6HZlLkMBA93U
+         zN4Gj3iN4eFg4krXwk/7xohRWlMo5svb4SAAFibt5xxOfTym0xl6WpMuDIwqBJkpWzoC
+         wcEhxzbVXKaK3ZRC7sTqd50Gm5C/y5uGj/HLipgDHepvNIzAxkh1SAdBEzbi5hS6E17z
+         Gs7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWDMhLFmHLfXR9kWdHQgWOQRll3/qj7YduskAcPjlCt1YthxqABLW2OHXVIuWqHQuUlwUFuAj+Dnk+xCErjylY781Ii5wNulsBQRrx8
+X-Gm-Message-State: AOJu0YzQPgZoSQBZvF6KBlhqwI97Wim1boHmmvOsqg1jUQIejadjVkkj
+	aWb375fKyUjOVC0qj1DEwmkb70/ppFcTbgw1ujhozrijJS5QoUlm85Wg0q+tOhHAP5f67g8ZxEi
+	Gp0klOMkZ9wHI51kWX+xiu3/mZjPQ3Pnpfi7G
+X-Google-Smtp-Source: AGHT+IH0qAID20MP6jp6NpXqn9mW2kuq00RtO9yb0PwCHdZ99yKuZBY632oWoHKU4JglvZUaklYHu5xGsWpmsCAynaA=
+X-Received: by 2002:a17:902:6805:b0:1de:fdbd:930d with SMTP id
+ h5-20020a170902680500b001defdbd930dmr312651plk.16.1710954830070; Wed, 20 Mar
+ 2024 10:13:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be05a470-bb31-47ef-b786-557c347de429@redhat.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.64
-X-Spamd-Result: default: False [0.64 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.06)[61.08%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[virtuozzo.com,cmpxchg.org,linux.dev,linux-foundation.org,gmail.com,vger.kernel.org,kvack.org,openvz.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20240320145417.336208-1-visitorckw@gmail.com> <20240320145417.336208-6-visitorckw@gmail.com>
+In-Reply-To: <20240320145417.336208-6-visitorckw@gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 20 Mar 2024 10:13:38 -0700
+Message-ID: <CAP-5=fXcWRfsAnByOnX5z6aBJrW6+CLRpj=bQ6uiLM38OZjbRw@mail.gmail.com>
+Subject: Re: [PATCH v2 05/15] lib min_heap: Add min_heap_init()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, 
+	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 20-03-24 13:09:07, Waiman Long wrote:
-> 
-> On 3/20/24 06:03, Pavel Tikhomirov wrote:
-> > In memory_max_write() we first set memcg->memory.max and only then
-> > try to enforce it in loop. What if while we are in loop someone else
-> > have changed memcg->memory.max but we are still trying to enforce
-> > the old value? I believe this can lead to nasty consequence like getting
-> > an oom on perfectly fine cgroup within it's limits or excess reclaim.
-> 
-> Concurrent write to the same cgroup control file is not possible as the
-> underlying kernfs_open_file structure has a mutex that serialize access to
-> the file.
+On Wed, Mar 20, 2024 at 7:54=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com=
+> wrote:
+>
+> Add min_heap_init() for initializing heap with data, nr, and size.
+>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-This is good to know and I was not aware of that. Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Thanks, is it possible to update lib/test_min_heap.c to use min_heap_init?
+
+Ian
+
+> ---
+>  include/linux/min_heap.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> index c3635a7fdb88..ed462f194b88 100644
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
+> @@ -44,6 +44,18 @@ struct min_heap_callbacks {
+>         void (*swp)(void *lhs, void *rhs);
+>  };
+>
+> +/* Initialize a min-heap. */
+> +static __always_inline
+> +void __min_heap_init(struct __min_heap *heap, void *data, int size)
+> +{
+> +       heap->data =3D data;
+> +       heap->nr =3D 0;
+> +       heap->size =3D size;
+> +}
+> +
+> +#define min_heap_init(_heap, _data, _size)     \
+> +       __min_heap_init(&(_heap)->heap, _data, _size)
+> +
+>  /* Sift the element at pos down the heap. */
+>  static __always_inline
+>  void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
+> --
+> 2.34.1
+>
 
