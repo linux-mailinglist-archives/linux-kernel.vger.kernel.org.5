@@ -1,120 +1,179 @@
-Return-Path: <linux-kernel+bounces-109204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BB688161F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:08:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC13D881626
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28B201F23643
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED9AB1C21F60
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B3569E0C;
-	Wed, 20 Mar 2024 17:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0674B6A029;
+	Wed, 20 Mar 2024 17:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X+7zz1pp"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hxcmjFpS"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7342869DEF
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B031769DEF;
+	Wed, 20 Mar 2024 17:08:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710954491; cv=none; b=kGAyXDWx0fIQ0OLxz0PtWrMSFK+vshvKRSwOUFrsvOSZEsQRBwmtaYrgy71bLlEbSAfi6azsBCYZuOdK6Z/S+T6ZoWbrqiOHTJMkiqrVAKX3sUdqdaPU42ZIc3dAZIhkxExXEK8g/JlutZCzXqg9rRCz+YkFYDPyaPJf+Ec+Pqw=
+	t=1710954532; cv=none; b=QC8y7HIPeCXFHEnKvxmqRG7hkKt3Lg2rHj2PgN+nvHHVDOGOEkc+RId06SblzSaod+1luLbHBfJQDkEYBjs8XCPd6RWIufbuAPA0pDm6DothoyNG1BXVuO7MCKc9drwICL+4Ej1quG6XxFeqUClmpwhLAsQ1GWwc/PZZc1MkffE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710954491; c=relaxed/simple;
-	bh=85r+DfNp8r2TD/2QmjSIEznYmx3IMc+tj2n1acPGGzw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=naJoEM80KMGtkrh8JKJFnS7QuZ1LR55oYKlouCBAVqNqZMFP2MquRhAgVOfwe1w5T98s+x2onOgCEcSuLHAwo17Y2OMK5R6Gq09W2v+SXDtaacWm66Q1K/pwqWyme9MNMozZ/6rWiW8LevlxsAATIJF5DnAxzW9Vsp3qBWuVgXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X+7zz1pp; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36646d1c2b7so3645ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710954489; x=1711559289; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TMxo92nPL1tU74F7vzopWpNv7uTXZVq+Z4BSgnoG358=;
-        b=X+7zz1ppBTY+732rUZT7CTV0CMd54y5AIEb35E+ZvzwB48JppbG7sZp2jkb80L4og0
-         5jFSvr9R++OSIvnHwn5MDzIij11yciaGTnzHtNLoqC5vsPRLlRnzQ9iwPiNxDKayHudk
-         2NgzvmMxQpS+H9YDpRPlv5Y8FbiQ69opj1ly14e965Ixca71Bv9DaBjg2kxPx70B//P4
-         dIdin6Gf6RJK1g6O+DUFzGbK6S0A7mvYqshgxpcJBihT7Kdtk7nZdAUxCyCg0GyySZfH
-         Nbp72crDGfR5IDk4Jz6XLNp4TShQM3Gl9tDhtk1HcLwjK6FlQMj55KqFlIqJWq7haX4l
-         ik2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710954489; x=1711559289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TMxo92nPL1tU74F7vzopWpNv7uTXZVq+Z4BSgnoG358=;
-        b=sZknXBlzSYuvaXeOLvuN758464QaBkxzw2b/xT+V/ZUDkpEaBb2g8Wc9bw3aEyZ65g
-         53nj8lChdjHBYbos6GV3Nt+6bFR5ToNaypgD1QT6Pad84YaftoYUrszsql2Prdr1JSUB
-         42nPO8ZJg9iBG6bE/P1WCXPeOK1v2hVcoKjSMMksNa6VFhR55tjrsKR98qYoUTU2eFk7
-         H4dPKccIBKFuOMqBxI5Ed/dZF1Vkn8ZfSLKbbbnxCTa3aOvm1kzq+sjXWcLAeqx282H1
-         oJcNrBeKDKGuYqq6MsZtSPoZbEb9nDDVjSFyBo0CQDcDV4QgLrWUFAvpH4yHcgVHkg9m
-         UWBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK1RwOClztzyMUTPhLVKp1mz7beCOpCD7Gcs/WayVXOz6wAYJDvmsZ9zXFoNkfCxfyr6Q9Iq6lZRokVIz7NrwSwG0hajz/p+pu7TUs
-X-Gm-Message-State: AOJu0YzZmpFEt2HclFvmT9aEFm9rfgVlPKtvi8LsfMdIK/8osdx2MvUW
-	v2+fMFZhNS1iHaYI5aki9ymy0Dj3RGElYpdwrb0O+mzsKFdJkkvRRCJ9y2XkaJms2ZZ3XwBBBL4
-	mfH4Wnom3zzB6LmddnkFl0ru2/xaLQBZsXbMQ
-X-Google-Smtp-Source: AGHT+IEKpU3MTlSc7cRMi4o36SLCrdLYi22Iqsn/nljIj023NT2fMYHM6r9jWIRJq1WhbHoH76YkxNWLXAoCXw/NIDI=
-X-Received: by 2002:a05:6e02:152b:b0:363:db1c:22ef with SMTP id
- i11-20020a056e02152b00b00363db1c22efmr336295ilu.24.1710954489399; Wed, 20 Mar
- 2024 10:08:09 -0700 (PDT)
+	s=arc-20240116; t=1710954532; c=relaxed/simple;
+	bh=8kJjEg5oZzMxRIneLopSxQOQPEokcxyAnvhzEeygCH0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XXm/gpvlIXuMEa/BlUNRhlJ/1RqaqnXYTfJLpcLduKlttoXiQAudAbtXRZbCk7jQ3D51hwzcQ5B+YEk7BJqYvUStxkXiFz6f+m8ccw1TsRztZTwoY2bbOZkcovqX34hbjPbKyZNF+zKK4qbtWCQBUahpKWpXFLg0PKbJxsCl4IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hxcmjFpS; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KGHFuG011885;
+	Wed, 20 Mar 2024 17:08:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=W3c2Ki/rrQQbC0kKjrOLvX5JTBp+FdNp6TjIx/lPAT4=; b=hx
+	cmjFpSmlPEIU/E+iYVNzojH7nZAZ9E3VMaBO2tJQK6km7K1BgDgXSSD7Qqs9vYbw
+	8aUOqQfaZ7xXouYiTriBoHPyB0kAI9bAAhslTzJZeFaChNmDadlcDC6ChQpGPAmo
+	PiRjYfKcRPdddHJhdjAe/VpXSBUrw0HIoX9lOZZBPc9ZrZgI/lV7GcaW/Xb3kRA0
+	OoANaQ+cpUtqOcGID5Go1M3CHuxcEcvr94YQPmBJRKbU8MbO9gk5IRQqZBd2dIl6
+	tTGpVXlmU06p6bVFCdyeZ4sChvXq8rQPjoWWgYHUii06/P8RDCMlBWLIKIYCPgbZ
+	zuV0DIL3PEaeF3cAGy/g==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyq60ss5k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 17:08:39 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KH8cop021480
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 17:08:39 GMT
+Received: from [10.50.49.240] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Mar
+ 2024 10:08:33 -0700
+Message-ID: <69364c99-9b99-4727-812b-209bb82254a7@quicinc.com>
+Date: Wed, 20 Mar 2024 22:38:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301201306.2680986-1-irogers@google.com> <Zfr4jX_b8FCOG_x_@x1>
- <Zfr5__Ej3-0C8sJj@x1> <CAP-5=fXXrJRH=Dto2ajD_TUDE1YmkkJZO5Ey2pq5YB0wbVAzeg@mail.gmail.com>
- <Zfr-sQJPbZzbtk8K@x1> <ZfsBopALY3whsst5@x1> <ZfsDtr5ejAwGySOR@x1> <ZfsEWoi6eevwLRQC@x1>
-In-Reply-To: <ZfsEWoi6eevwLRQC@x1>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 20 Mar 2024 10:07:55 -0700
-Message-ID: <CAP-5=fUbiudT+ocbGEauca2aX8PJSV9rHQUCCxQ4bxWXL6eoyA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] perf: Suggest inbuilt commands for unknown command
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] dt-bindings: interconnect: add clock property to
+ enable QOS on SC7280
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Georgi
+ Djakov" <djakov@kernel.org>, Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Kees Cook <keescook@chromium.org>, <cros-qcom-dts-watchers@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <quic_rlaggysh@quicinc.com>,
+        <quic_mdtipton@quicinc.com>
+References: <20240306073016.2163-1-quic_okukatla@quicinc.com>
+ <20240306073016.2163-4-quic_okukatla@quicinc.com>
+ <7ccb838b-f548-4ca4-9859-051689935eb7@linaro.org>
+From: Odelu Kukatla <quic_okukatla@quicinc.com>
+In-Reply-To: <7ccb838b-f548-4ca4-9859-051689935eb7@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: VPPrqXpNbPfX2C93aomTgHO54xrA78C4
+X-Proofpoint-GUID: VPPrqXpNbPfX2C93aomTgHO54xrA78C4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_10,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ impostorscore=0 priorityscore=1501 malwarescore=0 spamscore=0
+ clxscore=1011 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403140001 definitions=main-2403200137
 
-On Wed, Mar 20, 2024 at 8:44=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Wed, Mar 20, 2024 at 12:41:45PM -0300, Arnaldo Carvalho de Melo wrote:
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$ perf raccord
-> > perf: 'raccord' is not a perf-command. See 'perf --help'.
->
-> This works with the second patch.
->
-> - Arnaldo
->
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$ perf ricord
-> > perf: 'ricord' is not a perf-command. See 'perf --help'.
-> >
-> > Did you mean this?
-> >       record
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$ perf ricord
-> > perf: 'ricord' is not a perf-command. See 'perf --help'.
-> >
-> > Did you mean this?
-> >       record
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$
-> >
-> > So I'll add that and go on from there.
 
-Thanks, let me know if I need to send a v3 with the 2 uninitialized
-variables fixed.
+
+On 3/6/2024 1:56 PM, Krzysztof Kozlowski wrote:
+> On 06/03/2024 08:30, Odelu Kukatla wrote:
+>> Added clock property to enable clocks required for accessing
+>> qos registers.
+>>
+>> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
+>> ---
+>>  .../interconnect/qcom,sc7280-rpmh.yaml        | 49 +++++++++++++++++++
+>>  1 file changed, 49 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,sc7280-rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,sc7280-rpmh.yaml
+>> index b135597d9489..758a6e924037 100644
+>> --- a/Documentation/devicetree/bindings/interconnect/qcom,sc7280-rpmh.yaml
+>> +++ b/Documentation/devicetree/bindings/interconnect/qcom,sc7280-rpmh.yaml
+>> @@ -53,10 +53,50 @@ allOf:
+>>        required:
+>>          - reg
+>>  
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,sc7280-aggre1-noc
+>> +    then:
+>> +      properties:
+>> +        clocks:
+> 
+> All properties must be defined in top-level.
+> 
+
+I will address this in v4, "clocks" property could be optional.
+
+>> +          items:
+>> +            - description: aggre UFS PHY AXI clock
+>> +            - description: aggre USB3 PRIM AXI clock
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,sc7280-aggre2-noc
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          items:
+>> +            - description: RPMH CC IPA clock
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,sc7280-aggre1-noc
+>> +              - qcom,sc7280-aggre2-noc
+>> +    then:
+>> +      required:
+>> +        - clocks
+> 
+> That's an ABI break without reason. This is a stable and already used
+> platform, so clear NAK.
+> 
+> Best regards,
+> Krzysztof
+> 
 
 Thanks,
-Ian
+Odelu
 
