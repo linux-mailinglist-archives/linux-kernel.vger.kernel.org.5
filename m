@@ -1,145 +1,149 @@
-Return-Path: <linux-kernel+bounces-109455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C60881979
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:35:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C7788197D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1331BB2116C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39F7283C1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF933381AA;
-	Wed, 20 Mar 2024 22:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8AE54FAD;
+	Wed, 20 Mar 2024 22:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TfC5lqXb"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="eV/obVnn"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232F312E52;
-	Wed, 20 Mar 2024 22:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D747A381AA
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710974111; cv=none; b=mojlw9YvJiTXPlEAGUzN//kqvgs6uksa8q4HNk3hfEiV9LC/75igOkaQn5iu5mblbWjyFcS9d8DStg8UNdnWt8aU4E8QjhmL5BRsEbeXYvtNFQr5ftzs+Tsdg4tuYmry5KMc+mpqVvK0oO80hhKBy4a3DCbyyHWcodSPyFvLhDs=
+	t=1710974142; cv=none; b=dCxZARgu1nqh1NIScFarHbMxVYBk6OQRDECyg9UpgoWAOF8Q1KpCyL8jQsyMJ/QJ5c1DhWw/gHOhg85AfUrtxXUXJ/yY58ijiAFVBBjA3ttoY6hRMQL06odmUasNtE0phB/3BJIOBhdHggAf5Vu8ohLATYWJvMofUGBHoZyRJh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710974111; c=relaxed/simple;
-	bh=/fsBbXw03619bUqlEGeLUsRsq6EMtANrA9Jhs5wFcvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eXKUH4oZKCwia1AvbMUvVx1aiuyNuHiwncIUsLSYfAncrhlI+1Q3Q4czbtc9hPKt64CHwk4z8XSIVeV4LaCoERgrJjJrSf2GTAFU7BLzaOtETF8whGfJH6yykQtUSIR/ivMfdqNVx/MZfTJZxT6clDkbaVJxKjMuiBOYeNbNN+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TfC5lqXb; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51381021af1so623929e87.0;
-        Wed, 20 Mar 2024 15:35:08 -0700 (PDT)
+	s=arc-20240116; t=1710974142; c=relaxed/simple;
+	bh=NMlbaJEt7YuPuHyd8puVAOBb7ZGjFfwrKm2bJ1oJU84=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QnjE9WS/JBYz7q+GgGRsB1UIfcY/zDSI2SY8O2IgewXLqiJlW7xRdC4YUr4rxqWg9Ci+q8frBUMeCXL9LLMdEvuSoZ5ABLjuyAAfc8iFbCPdSM3rBMZ5O4pJjNhOaeZYi26KsaB4haPeRvvF3u3amFx7wgZHQZgwiHIwqpf8izA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eV/obVnn; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d4541bf57eso4974891fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 15:35:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710974107; x=1711578907; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y6uLkytCveodnbEWWcUmeLnZpizFS2D2Bpb03TRInaE=;
-        b=TfC5lqXbdG75Cw1pRoBG1lxRBLQ4mCUhENBzaN593gWlGlAxL+kIGsij0FMpbRSo9M
-         JbbNvj4OqXNoTGtd3VEwmFeUizojmVC4J0fzeOC5UYMlFR+SE/EJSn3B4p4WpDMTye2d
-         HDh7xFinFC8rDlbJ2ALJO9P14tMsWEGxu7fVEQOb7Waw8LpxA0B7skQBxN5wF2sPd5S4
-         kgajKofxzxauzwppfc2QMD0B4WPlVQpK5v10iTigfoAU0fwHfjzlrJMp6XC0xxbKXS36
-         nsF/ppQgJRmJj2baKekZcnUePPN7F7v/qzcTK9UG/0sWutH6uI1YadaIBol1SnWrLFdC
-         T1Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710974107; x=1711578907;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1710974139; x=1711578939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y6uLkytCveodnbEWWcUmeLnZpizFS2D2Bpb03TRInaE=;
-        b=sDZaLdST2SUTPqMZIbYtGyaajklRZ4PiWtRnAsTkgXbx3ZO39sggIoKTO6tZNk6E3F
-         yajc5b+nWc4++IGfbbkG8G5qPM2SXwM5zlYOMkZ4RSZSg/quGI0QmWEbYYo758zCZ5gk
-         9xw7GGzXKgsOXbWZOcKYEY4E7jwtr/+83ef2ICUJFO1UHMUOG1jubtk0ZE+u7SEnYqhP
-         9/iuQKsGRsraKm3NSjHIgI3HQcNA0CIPTBiI5eTZ09DdbNwF1bpzfR29RZQHsSY6WeFl
-         40TT/uIewy7h2RIxw3bMHfHutKpRll12EDpYd8VI5iAO3VKodtlXgAo/qPK2uRkxNkQW
-         LeSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVEYfcav2a7ZswySdgvSlYHcCJriFaSxZAHlAss1hgiUlJN5MD3kQjIHa6VQWuev0TemXGcFrU/sGca9W5dJnhFAoXa0VsCbKZXSSAKtuPdgi9rKwlvFJ9X44nldCHv9yCBDOAgG57qFXHfsVsUePl0uOzHlWdx9f91f1meCdMj
-X-Gm-Message-State: AOJu0YwtoKXbbv63cFASMgjw6UlXrXgqWaz6gm5FdSJFJWf02KTUmIZM
-	GRXT0mhT5Mxm8lcOKeH8HaqOyURMHT1CCe0C6Bw79/6ndbkmkx6cExaHl/2qMetOdQ==
-X-Google-Smtp-Source: AGHT+IG5bitWH3Wn0hUC64Y2ptJDiGS2is9++uKcULphEyCayziP1oG59fDb4lRmo1n/NpFN50q/KQ==
-X-Received: by 2002:ac2:46d6:0:b0:513:d372:20e5 with SMTP id p22-20020ac246d6000000b00513d37220e5mr290631lfo.16.1710974107030;
-        Wed, 20 Mar 2024 15:35:07 -0700 (PDT)
-Received: from fedora (host-95-250-206-50.retail.telecomitalia.it. [95.250.206.50])
-        by smtp.gmail.com with ESMTPSA id an14-20020a17090656ce00b00a465b72a1f3sm5262273ejc.85.2024.03.20.15.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 15:35:06 -0700 (PDT)
-Date: Wed, 20 Mar 2024 23:35:05 +0100
-From: Francesco Valla <valla.francesco@gmail.com>
-To: Simon Horman <horms@kernel.org>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	fabio@redaril.me, linux-can@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] Documentation: networking: document CAN ISO-TP
-Message-ID: <ZftkmQfna3HIyYal@fedora>
-References: <20240313223445.87170-1-valla.francesco@gmail.com>
- <20240313223445.87170-2-valla.francesco@gmail.com>
- <20240319120625.GI185808@kernel.org>
+        bh=n/Eqc8JOcHZY7IXZvTiJ/8bJTfQGWaXx+KUSs3MCDdw=;
+        b=eV/obVnn+pkRFC3DIHtOu5DiaFg9XNthy/K/L8aCgvXkkVDNtcfuWph3MLxuKV98UX
+         M0JYxVfXuG+JJokGK4wic7VpBuTRAZOWTbXrsPtAKPSUtBcw8TBRijyUyponujSD3QS2
+         +Z2nqUTZmEvsKLFJyNZoig9Vr/F5mxjH3UqxHkK+w0MUE5HqWbGoWGmVjZWB8gyKoLCi
+         lTXr6JXgp1RRCl7og/nEiCyZXQbkHWWGQvvUavvB5FvqthlhPN7NcPPCIL0oLeCvqx81
+         VsqJtBQXQE0v88j4tshpdM8NspKjyTVDY7oIIRJHurS42m2GpMGgXR8mx/Ry+Y+TpaZ/
+         XoEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710974139; x=1711578939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n/Eqc8JOcHZY7IXZvTiJ/8bJTfQGWaXx+KUSs3MCDdw=;
+        b=k7KRWzKR8TxlH1n1sZjr7aY4JLOumY0ZIq5k5kleezUfPJd9yXzVFRC7oZd2DunfX2
+         FzutCP6n7SuYc5cckrmzVO0ifXpsEtxPt8uEkLUkIlJI+YBxARHLVKbvKLX7zLCbV6B2
+         ZjuL7yqJGWYchZru/F/IFkLSU1fEmo1SvXtMzWslHVwTIBwd4wUR3AjyPWkBvwt3jA0D
+         bsqGgG99LZUX6jypj5JcvZDzh4gQszATE/k4vAckHI0wsJmRMqyXJIHv55Rbgmq+PQFG
+         /ufBLVmuONpHL5Bjmb1IkXTRu6e6xn6+qdKzh0FF3vHo39cG4ooc8H0zcz7UvUDYpBPb
+         o0Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZVmi727X9FCpNGvegv6zRFogVk5BK0dzknhbo50/OzJA/2DVgvZhkHiDpB/W618G0fO0CwHkew/xWZcV1bkUDcXnBStkJlwVNnznj
+X-Gm-Message-State: AOJu0YyocdM9gMoU9WKfEbNy1957B15nHU19zDZB6hxKpIAU6+ABV1NP
+	3Rc/A3cHWV4tjbyveDtFdBXSRUpa1xTq1YvaRsuxkqNKeVTNgzFFXOd78XK8u6cUVpeNaXcVe2A
+	4Qo/P39UstvOqZxfsnK7LYEEUoDB4qTvsCNk+
+X-Google-Smtp-Source: AGHT+IEn5Owi2sPtfaUxycTRYFwNeKA+Pm2rq41oCVa8/UT2ciC5oEejXaO971X27DHZCT9SSJ+kpz2ClHcFLTEpRno=
+X-Received: by 2002:a19:431c:0:b0:513:e17d:cf3c with SMTP id
+ q28-20020a19431c000000b00513e17dcf3cmr8896729lfa.1.1710974138867; Wed, 20 Mar
+ 2024 15:35:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319120625.GI185808@kernel.org>
+References: <20240318-strncpy-drivers-video-fbdev-au1200fb-c-v1-1-680802a9f10a@google.com>
+ <53670007-edbc-4762-9e57-0b3c29220d9e@gmx.de>
+In-Reply-To: <53670007-edbc-4762-9e57-0b3c29220d9e@gmx.de>
+From: Justin Stitt <justinstitt@google.com>
+Date: Wed, 20 Mar 2024 15:35:26 -0700
+Message-ID: <CAFhGd8ppVq9aGbfFLeL30jQ15KHS=FoLh0c1udXo=Z+pCfXL1g@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: au1200fb: replace deprecated strncpy with strscpy
+To: Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-Hi Simon,
+On Wed, Mar 20, 2024 at 12:56=E2=80=AFAM Helge Deller <deller@gmx.de> wrote=
+:
+>
+> On 3/19/24 00:46, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > Let's use the new 2-argument strscpy() which guarantees NUL-termination
+> > on the destination buffer while also simplifying the syntax. Note that
+> > strscpy() will not NUL-pad the destination buffer like strncpy() does.
+> >
+> > However, the NUL-padding behavior of strncpy() is not required since
+> > fbdev is already NUL-allocated from au1200fb_drv_probe() ->
+> > frameuffer_alloc(), rendering any additional NUL-padding redundant.
+> > |     p =3D kzalloc(fb_info_size + size, GFP_KERNEL);
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> >
+> > Found with: $ rg "strncpy\("
+> > ---
+> >   drivers/video/fbdev/au1200fb.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/video/fbdev/au1200fb.c b/drivers/video/fbdev/au120=
+0fb.c
+> > index 6f20efc663d7..e718fea63662 100644
+> > --- a/drivers/video/fbdev/au1200fb.c
+> > +++ b/drivers/video/fbdev/au1200fb.c
+> > @@ -1557,7 +1557,7 @@ static int au1200fb_init_fbinfo(struct au1200fb_d=
+evice *fbdev)
+> >               return ret;
+> >       }
+> >
+> > -     strncpy(fbi->fix.id, "AU1200", sizeof(fbi->fix.id));
+> > +     strscpy(fbi->fix.id, "AU1200");
+>
+> I wonder if you really build-tested this, as this driver is for the mips =
+architecture...
+> And I don't see a strscpy() function which takes just 2 arguments.
+> But I might be wrong....
 
-On Tue, Mar 19, 2024 at 12:06:25PM +0000, Simon Horman wrote:
-> On Wed, Mar 13, 2024 at 11:34:31PM +0100, Francesco Valla wrote:
-> > Document basic concepts, APIs and behaviour of the CAN ISO-TP (ISO
-> > 15765-2) stack.
-> > 
-> > Signed-off-by: Francesco Valla <valla.francesco@gmail.com>
-> 
-> Hi Francesco,
-> 
-> As it looks like there will be a v2 of this patchset
-> please consider running checkpatch.pl --codespell
-> and addressing the warnings it reports.
-> 
+I did build successfully :thumbs_up:
 
-Will do before v2, thanks for the suggestion.
+Commit e6584c3964f2f ("string: Allow 2-argument strscpy()") introduced
+this new strscpy() form; it is present in string.h on Linus' tree.
 
-> ...
-> 
-> > +Transport protocol and associated frame types
-> > +---------------------------------------------
-> > +
-> > +When transmitting data using the ISO-TP protocol, the payload can either fit
-> > +inside one single CAN message or not, also considering the overhead the protocol
-> > +is generating and the optional extended addressing. In the first case, the data
-> > +is transmitted at once using a so-called Single Frame (SF). In the second case,
-> > +ISO-TP defines a multi-frame protocol, in which the sender asks (through a First
-> > +Frame - FF) to the receiver the maximum supported size of a macro data block
-> > +(``blocksize``) and the minimum time time between the single CAN messages
-> > +composing such block (``stmin``). Once these informations have been received,
-> 
-> nit: Once this information has
+>
+> Helge
 
-I never grasped the usage of "information" in English, which is not my
-first language. I'll make this correction here.
-
-> 
-> > +the sender starts to send frames containing fragments of the data payload
-> > +(called Consecutive Frames - CF), stopping after every ``blocksize``-sized block
-> > +to wait confirmation from the receiver (which should then send a Flow Control
-> > +frame - FC - to inform the sender about its availability to receive more data).
-> > +
-> 
-> ...
-
-Thanks for the review!
-
-Regards,
-Francesco
-
+Thanks
+Justin
 
