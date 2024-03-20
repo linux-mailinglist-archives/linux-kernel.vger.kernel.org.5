@@ -1,121 +1,129 @@
-Return-Path: <linux-kernel+bounces-108405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1842B880A17
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D8E9880A1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:21:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158751C2215B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:17:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF3C41C2211C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3574411717;
-	Wed, 20 Mar 2024 03:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AEF81170B;
+	Wed, 20 Mar 2024 03:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AYwkd9zr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G0rDXsb+"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D64F101EC;
-	Wed, 20 Mar 2024 03:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E7510A16
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 03:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710904644; cv=none; b=TzrNzQbRs86Cmk5lFzdfYVIhd3tyPoz3+WZE2UFu4ae1mBrEQ243c/XyXX9wSg5VmTXdI3Af9mY/hplFC2sS1EnXJwLxhuX9OKv2SfMsNNOBTtm0h5yr6WPxP+ceWGLCQKscS46hDEb8hBglB422NddbgSvVfW0oHb4tfDULDkE=
+	t=1710904864; cv=none; b=nCWMAibbIa66g1In8MtEsCeUxE2DO7oqHjsDVz8NVvj+k4lc3k8igjFC8NRWAuuxSmpiX5JEoXIiYDKvPHLrd6VngipZbpnWKgP1TPXWdtAWiOu9dwgF9rXLRsosZlSR4sjR/in2GcrW3xxtre36W5ZCKdFqfWOvMOjyU4rKfUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710904644; c=relaxed/simple;
-	bh=FHEe1pX8Lh1a2rackEtx2e+ZX13Jt6G1A6UdQ/Ju+3g=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Oyehk7uCsDq8KwBh2K9dx70fjDSQAgOIDPuafbmydo8IK1oqnZrDnhz5mwDGSjhB70tgNmDTirvOOF1mktBcA7QQ95hAVHLeg8oPXrwEhJbTiCcK64L+xDMS/VjIaqU+JWGuqvSG1xUBsoRL9T6RJRhW4TnDI+752dZvXp8Ra/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AYwkd9zr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57857C433F1;
-	Wed, 20 Mar 2024 03:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710904642;
-	bh=FHEe1pX8Lh1a2rackEtx2e+ZX13Jt6G1A6UdQ/Ju+3g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AYwkd9zrRDoLsoiO+ozA12ei/PoImRASKbJ1GHi0THgDhXHEmpD0R+NT2mB1h9otg
-	 9IUJABMpdYLtAMHoB75EgGVRQar/Uk01T9z0qWK7CLPHE8zLy5kVQrfgtTFNNgTK0b
-	 Xi1W3CSTtcxuOyWKd95eqXdizb0O/UJds6F8azMGlmcGK/EN2g4dntbSkGjGdI1rDa
-	 lF7fcGlfwkpHZkSof0rG4M+ZgpUiaBDaqEUMAuqSeOdovVOL0hsaSKzIVTe7+OFNs0
-	 z19wuQmZwt1jHzL8H3cTh1xz3yVtlm++6MZxf4NGqtpCLatq9DvdiF+3ZcZ+XDdVl1
-	 K5Dz/5ZuzFajg==
-Date: Wed, 20 Mar 2024 12:17:17 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
- rostedt@goodmis.org, bpf@vger.kernel.org, mathieu.desnoyers@efficios.com,
- linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org
-Subject: Re: [PATCH v2 0/3] uprobes: two common case speed ups
-Message-Id: <20240320121717.eda8ecd602d8d153925e2236@kernel.org>
-In-Reply-To: <CAEf4BzaFfQeD8TY7pXEyX4h5UeAg0HZpx8psJF=Z6GJmr3VF5w@mail.gmail.com>
-References: <20240318181728.2795838-1-andrii@kernel.org>
-	<20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
-	<CAEf4BzaFfQeD8TY7pXEyX4h5UeAg0HZpx8psJF=Z6GJmr3VF5w@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710904864; c=relaxed/simple;
+	bh=P+Zkz/NOWOsgVlncUTyNmvXcTlE9NnXrsFiBq9pCUv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P6MnSxGSdz417PpEUP2z+G2IYkzQR/axHj1HIhVW1tozhmjqiF7/0aWnfut9zW0Ez9/0FJFuSTDQvrzdXV5AKpCtAQbP2d+kn4dJ7OJD1/KhmVc5LvK8GSGiii6e/Tmf3G8rsWoeGyLWqZ1Wz5u6btHOavmCh/bbziVt1FY1dAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G0rDXsb+; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-22215ccbafeso3156320fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:21:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710904860; x=1711509660; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o4P//duYekxql85fsXRWTB88tD2kAUJ1b3yRQNxznTM=;
+        b=G0rDXsb+nnyNVMah+5vN0hFi+6hfWke8yQ1q9G5UNpAEAUUhX38zmgYTPxFFhHRpNU
+         ttX5BaihaFfw+rH0NbboHBbWRdmpxO6avCv5o9uBZw79HwXpjdpTA91E+h7nA4IBMggK
+         76hd7s57uVZLWZYH1tU2t75sgBr/lCFjcsXjM5O2Lw5mSygTpQE6nhqCUSwUP4J5cOWE
+         lRPRPjEofRNgfXKoxzWCIt0oNpxxhAkr6Up5h2UrsQXU1dsg9ZUcD8T8dsKB5EWe64Qg
+         j8B3/gKxVRqYTyvfFXKbfqmEAm3+LVwe0G0kW8hlt4R2PiMXWvPn3Tbl/DdnxduAhhFg
+         jhfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710904860; x=1711509660;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o4P//duYekxql85fsXRWTB88tD2kAUJ1b3yRQNxznTM=;
+        b=ubi6OFgDIYcQ3X2ELFe0uIdUEWS87jkuc4yXdwvEZZuz93EM/vCSq3BDY8nbY4CRtW
+         vnbVV86BWz1yD1UKLRN27Uw5cmUOXHUimEWGF1+UjZxRPIfctoH6A0bGomoWb20KTw6H
+         HC3TzxiSP/TIn6tLT8izl7CMgRcuNmq/vwn1CX5vJ1hQplbRFhAPUby4ilcvXi3JMXiW
+         3fyg2xomKO05iV8dsMprCVpyhH2MgrrE/tdM54FrJPPp5BLfqli+y0j5sKSjQyJU8j+N
+         KFYT1mdajlTqYOHCWwfIw+f8VEjDBnG3GfFQhL5sXp1iGIYDOON2zMUE3rIjSkl/gDO4
+         GPIA==
+X-Forwarded-Encrypted: i=1; AJvYcCVk6vbuvybT0v02NS/utfjz4NEm+glDoPmq63MyNLUxIkUYxgddfR5TdCPKYjC3OvSXdevXzQ8VA4kjQEml/5/jYeF6HotSJ2e+2m0o
+X-Gm-Message-State: AOJu0Yxb2t8lPPiQ+3oLwWCQkxUH1yaMNY6Ndspc0hP+PvR6tFt2Q4Sy
+	hHDu+2tirvlMxKwl9xkjrbS80gKcTTxkMbupad0mExnM/kSqXX2Q9dzuYCqLG9s=
+X-Google-Smtp-Source: AGHT+IHbL+Bh9CUX9P3VLguZSd1oALL1RLaIYp2Dzz7vCxIzDX/QpNrzopRTUMNJ3l7QFS1qhsmagQ==
+X-Received: by 2002:a05:6870:c1d2:b0:220:94b4:2074 with SMTP id i18-20020a056870c1d200b0022094b42074mr19107005oad.37.1710904860544;
+        Tue, 19 Mar 2024 20:21:00 -0700 (PDT)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id 4-20020a056a00070400b006e71d70c795sm5416714pfl.96.2024.03.19.20.20.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 20:21:00 -0700 (PDT)
+Date: Wed, 20 Mar 2024 08:50:56 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Xuewen Yan <xuewen.yan@unisoc.com>
+Cc: rafael@kernel.org, ke.wang@unisoc.com, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xuewen.yan94@gmail.com,
+	di.shen@unisoc.com
+Subject: Re: [PATCH] cpufreq: Use a smaller freq for the policy->max when
+ verify
+Message-ID: <20240320032056.2noz6lu3k2utcpid@vireshk-i7>
+References: <20240319080153.3263-1-xuewen.yan@unisoc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319080153.3263-1-xuewen.yan@unisoc.com>
 
-On Tue, 19 Mar 2024 09:19:19 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Mon, Mar 18, 2024 at 9:21 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, 18 Mar 2024 11:17:25 -0700
-> > Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > > This patch set implements two speed ups for uprobe/uretprobe runtime execution
-> > > path for some common scenarios: BPF-only uprobes (patches #1 and #2) and
-> > > system-wide (non-PID-specific) uprobes (patch #3). Please see individual
-> > > patches for details.
-> >
-> > This series looks good to me. Let me pick it on probes/for-next.
+On 19-03-24, 16:01, Xuewen Yan wrote:
+> When driver use the cpufreq_frequency_table_verify() as the
+> cpufreq_driver->verify's callback. It may cause the policy->max
+> bigger than the freq_qos's max freq.
 > 
-> Great, at least I guessed the Git repo right, if not the branch.
-> Thanks for pulling it in! I assume some other uprobe-related follow up
-> patches should be based on probes/for-next as well, right?
-
-Yes, I'll pick those on linux-trace tree's probes/* branchs
-(if there is an urgent patch, it will go through probes/fixes)
-
-Thank you! 
-
+> Just as follow:
 > 
-> >
-> > Thanks!
-> >
-> > >
-> > > v1->v2:
-> > >   - rebased onto trace/core branch of tracing tree, hopefully I guessed right;
-> > >   - simplified user_cpu_buffer usage further (Oleg Nesterov);
-> > >   - simplified patch #3, just moved speculative check outside of lock (Oleg);
-> > >   - added Reviewed-by from Jiri Olsa.
-> > >
-> > > Andrii Nakryiko (3):
-> > >   uprobes: encapsulate preparation of uprobe args buffer
-> > >   uprobes: prepare uprobe args buffer lazily
-> > >   uprobes: add speculative lockless system-wide uprobe filter check
-> > >
-> > >  kernel/trace/trace_uprobe.c | 103 +++++++++++++++++++++---------------
-> > >  1 file changed, 59 insertions(+), 44 deletions(-)
-> > >
-> > > --
-> > > 2.43.0
-> > >
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_available_frequencies
+> 614400 768000 988000 1228800 1469000 1586000 1690000 1833000 2002000 2093000
+> 
+> unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling_max_freq
+> unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling_min_freq
+> unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_max_freq
+> 2002000
+> unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_min_freq
+> 2002000
+> 
+> When user set the qos_min and qos_max as the same value, and the value
+> is not in the freq-table, the above scenario will occur.
+> 
+> This is because in cpufreq_frequency_table_verify() func, when it can not
+> find the freq in table, it will change the policy->max to be a bigger freq,
+> as above, because there is no 1.9G in the freq-table, the policy->max would
+> be set to 2.002G. As a result, the cpufreq_policy->max is bigger than the
+> user's qos_max. This is unreasonable.
+> 
+> So use a smaller freq when can not find the freq in fre-table, to prevent
 
+                                                      freq-table
+
+> the policy->max exceed the qos's max freq.
+> 
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+>  drivers/cpufreq/freq_table.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+viresh
 
