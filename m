@@ -1,165 +1,215 @@
-Return-Path: <linux-kernel+bounces-109352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43CBE8817EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:33:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622B58817F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:34:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE8CC1F21F3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:33:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 867E11C2270A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08168565A;
-	Wed, 20 Mar 2024 19:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C4B85654;
+	Wed, 20 Mar 2024 19:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RqQWYs5c"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PHi35EOr"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5EA6A02A
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CAC5026C
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710963157; cv=none; b=O6eJ0bYLrCz2sj5rL5Y7HoT9SeXMUGppxJgm2ON739gpaMD8GTEmuFuNMjQVHn9nDZ7iLibrGMpWuTN7H4YiF0hlphI0WgTL2XAdPPdZJz/lUwOmn7tSkhhVCzvQ8AkMotgO2PpgGQrRVx4d75XImigAyVtaJMoEMDfy5o2e3EI=
+	t=1710963280; cv=none; b=Jx1lqwZNc7/U+Zfap3ZysFpkhy5ZqXWdhHrHyhjT2QcI3UIUh0jKYMerTiTs7mhn6deORkcFzYhkTmVZV06exTDd8r8UHMI9Z+K09C+gi4bBh2mz/SSRyAOuKXjFzv+SV6POGuLdP/EDRY5w/D2Dk9cdRn+buzGJ695MF9viiI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710963157; c=relaxed/simple;
-	bh=zU6HfdEt0n6J7E0KRf9O2/4bM68psIyCtb53kHS3Ps4=;
+	s=arc-20240116; t=1710963280; c=relaxed/simple;
+	bh=492wikoy0OHUbBn/iZb2GR4/b4Ep02LVSmfNlpr1w24=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=B1l4jRuRmmubz2WdxsXLvJBWpQ4DA4cZABG8S6E/73OYxah+0eU+rZg5gaHtQhsrlckb+P37xITuYaIJ8FhyyKUhuI30LM4/I+1GJvEijghInONeC8CDENCh5/SZXYZh+v4u2J2nO+4YNjSVTLWKwUzGCxGcjxr7fZIw9YvzYjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RqQWYs5c; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=eAhGwkzJPL4HkrMzQ2Q2dfjnzB7/cvoaQS9+KHz9Yl5SWVpUsgCyg6vO3BTEPqMIDtR6qvVfTAjln7qFsiAWdfKSBuJkP7tZd5rsBGvmSpYOlOwY7/aZ5EcbaZ1OSEXJGTUdlk4L9/ncCrALcDtM4OhZKylSD3J176q0JoDerBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PHi35EOr; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61100c749afso2707627b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:32:36 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so240106276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710963155; x=1711567955; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zU6HfdEt0n6J7E0KRf9O2/4bM68psIyCtb53kHS3Ps4=;
-        b=RqQWYs5czrKpr4st+xGkUhbxB37jRwL/T8GVxRmVj96Nt2hmim1u9FrSUJ6w3E3l0P
-         wCH3sTYg/hvGfGQhLAd9rINpjyeO7pqGIFd/q8pHU+ojPKF8beIq3oWMs9Ipx5JAv29J
-         j3IqtUdfwekYAyMR3HSWExGMMCD5i9TqAk0NmTedIZwiE3b+HKfuwrLfJKeiqUtRfCu3
-         qTDD34R9+29k0MUOyUg12sDr1nXBSO1JJegBKGReulw5VP/YReJ5YiQ0l97QCDL65hFc
-         PhkimOPY/66hoHQXzgHK0qtJuqHhAoBhjpcGuLyS0Vz8ZcVmKIkOq/NY9jWJYp/TaHU9
-         cNig==
+        d=google.com; s=20230601; t=1710963278; x=1711568078; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nCtNOSJdwwctkwSnXfVUE4a/gFZD0gzHtS0vQGF5kXs=;
+        b=PHi35EOrtI6LiOowjPQkzEKEWrrj9NfwrpNKiobEi/mrXU3RZ4g3v56iXq2EYQkSO7
+         6AY+hL2gDSQtUjBB3+0I0ILUyvJdnILo0qJSi96QVzDjOUiX9kR31GwuG2/jL8PY+DKP
+         SPM1b+f17ZPhnqZ57iOACywTE7yN2PBOZWBE/plitdbOjCj/GoQj7qLEjvr+vkDmkpbc
+         vhF7DKgZgsAJ33Vv9LlowAUj9P8vAfK4NQs0TAdUQCV9SDahIkPp1yqbXrWcVWTPDmKC
+         gZYF0wlVV5iKyDfoOmi/1zoQ07sVp5xSgoET43XAwd6qQ1ENjIO6RYADz9wUTjljzdqw
+         eO5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710963155; x=1711567955;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zU6HfdEt0n6J7E0KRf9O2/4bM68psIyCtb53kHS3Ps4=;
-        b=kFEZFnjeLNLYz+nXT2tLeZfRWHdpj7iN07I38KYp71o3b03lavOsPeb2gzBZieENI2
-         wtgKQe8kW4Tkeeao6ug40TNrbtMH/5P/QAfLfm9Tc56M5EGlTuL4GD3We1022orDrsTS
-         zBIFK4ph0qpl/Bq1VaSNxnrgToNDTt3qSHUK1aJzXBx2lFnrdk3BfkfsrEIjzgMTrEPR
-         piIwVEqeqdOW/S7m0nZERwVYe/hlZLKX9WepbNpXoYJBh7xjVnGLJlljms32GmvIPBIa
-         w98jW1wb0pQfRE9Xad+WXcVMHSwVrsoXVn5/hsmM+QjeVLEDCPAaSC4qxEgL+y5GxxWf
-         LiPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX79nWrzUK7MJkL1BSgbR7ntY22LDpgYIYGO0HQLo5qN57dJBsOqdHhy8AkTas+NTTDHvNL5b7C9fHPLGU7YZqGexyYIbZeDMVlfQoG
-X-Gm-Message-State: AOJu0YzMxwbjZ4KpWOms59lXpj6G2jEFbaEaUTmDzPyX/nKQlVhrlPN0
-	g9q819ViCoXc2Ysu2XzltpEMuHygQjnAWVEGbGSnXhUZl0yDbjsVg0kuOPeqqGNKIxHCZJlTj30
-	gmfRG6f6qNZWgWouEdQ==
-X-Google-Smtp-Source: AGHT+IHe0JLeXDle0EC2yBifL9imMy9PxVYfZirzbgToNKkjp+aG6E6OD+MSxTTdsJT8QB/n17787kHK9ZX0Fh6o
+        d=1e100.net; s=20230601; t=1710963278; x=1711568078;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nCtNOSJdwwctkwSnXfVUE4a/gFZD0gzHtS0vQGF5kXs=;
+        b=JeYKlrrADqg+Cf/Oieg/dUHxFsoK9NW/q4Omx0M9sZxPUaYt4k+8tRlIiX6IAnjURt
+         clsvQSvT/WTFtNUNSpKJlAQcNAJVaEg+fTlm0g4sMsYiDbzujkeQ5SgZwrvwy2b00Xqf
+         ZjBYy7jgQI7i5NMn+wOn4YXfV5g3TiyJLq6ePHw1kiCsi7Nx4UP8l5Jd/Qq8CED4N13o
+         1Dl/SzPfErh2dRccUayQ0XwauZi+ASlWK3d2NiuucTLkzpvjqN6IBOlNcGoCtz1jMNjb
+         MzERGyLELeblzJa+EiSSTiHNB4y02e4fOVodB9QCJOgUr7HjEqFNVAc76C42cf2Qgkmx
+         F/+A==
+X-Forwarded-Encrypted: i=1; AJvYcCU/M9ufHSwsU4cLvZBYrfiqpaVVoyaMfCO7abOajcQlXrOo1ukFoUZnTqqfc785ForyGU0T0or0SYuNyQLAwF4HZ48A8fhPlLWqQomF
+X-Gm-Message-State: AOJu0Yxtrqk62/aGiiCJjd9tUQTx4BaXMfC8AyN57JpE1lY1AmuAwY8E
+	1jr2WF9VikWvCwk2wFlha5QxtmlPoZlGFclaqGW3kgCSqMh4c/eh42JEv+TB84V0hpC0l6647GK
+	e/L7bSzvZcC4msUS9vw==
+X-Google-Smtp-Source: AGHT+IG+D7riHHTgenWZerCEUVXqrKvvCbK0pOaP+HMOgVPdxYRUXyMEprWnBYPidPoo3JHK251YueLjBLppeNA7
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a81:a0c1:0:b0:609:f088:cf9c with SMTP
- id x184-20020a81a0c1000000b00609f088cf9cmr4267979ywg.1.1710963155237; Wed, 20
- Mar 2024 12:32:35 -0700 (PDT)
-Date: Wed, 20 Mar 2024 19:32:33 +0000
-In-Reply-To: <CAKEwX=ODDeetg_iv2kcds_DziJ5og2F6STsLSXE85qufYET=eg@mail.gmail.com>
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2204:b0:dcc:f01f:65e1 with
+ SMTP id dm4-20020a056902220400b00dccf01f65e1mr5026622ybb.8.1710963278170;
+ Wed, 20 Mar 2024 12:34:38 -0700 (PDT)
+Date: Wed, 20 Mar 2024 19:34:36 +0000
+In-Reply-To: <20240320192558.GF294822@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240320020823.337644-1-yosryahmed@google.com>
- <20240320095053.GA294822@cmpxchg.org> <CAKEwX=ODDeetg_iv2kcds_DziJ5og2F6STsLSXE85qufYET=eg@mail.gmail.com>
-Message-ID: <Zfs50cdvcOpvnd8F@google.com>
-Subject: Re: [PATCH 1/2] mm: zswap: increase shrinking protection for zswap
- swapins only
+References: <20240319-zswap-xarray-v7-1-e9a03a049e86@kernel.org>
+ <Zfp-iWaDfqeCOElt@google.com> <CANeU7Q=yxf0dnerTOZfe_ioeCbjnZd2Fpb-szvW7-Q1BzCUpOw@mail.gmail.com>
+ <ZfqPK7AVunq2SC1l@google.com> <20240320100803.GB294822@cmpxchg.org>
+ <Zfs06maKhjH_gXqL@google.com> <20240320192558.GF294822@cmpxchg.org>
+Message-ID: <Zfs6TP8pdmNHcDfA@google.com>
+Subject: Re: [PATCH v7] zswap: replace RB tree with xarray
 From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Nhat Pham <nphamcs@gmail.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Mar 20, 2024 at 07:48:13AM -0700, Nhat Pham wrote:
-> On Wed, Mar 20, 2024 at 2:51=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.o=
-rg> wrote:
-> >
-> > On Wed, Mar 20, 2024 at 02:08:22AM +0000, Yosry Ahmed wrote:
-> > > Currently, the number of protected zswap entries corresponding to an
-> > > lruvec are incremented every time we swapin a page.
-> >
-> > Correct. This is the primary signal that the shrinker is being too
-> > aggressive in moving entries to disk and should slow down...?
->=20
-> Yup. Currently, there are two scenarios in which we increase zswap
-> protection area:
->=20
-> 1. zswap lru movement - for instance, if a page for some reasons is
-> rotated in the LRU. When this happens, we increment the protection
-> size, so that the page at the tail end of the protected area does not
-> lose its protection because of (potentially) spurious LRU churnings.
+On Wed, Mar 20, 2024 at 03:25:58PM -0400, Johannes Weiner wrote:
+> On Wed, Mar 20, 2024 at 07:11:38PM +0000, Yosry Ahmed wrote:
+> > On Wed, Mar 20, 2024 at 06:08:03AM -0400, Johannes Weiner wrote:
+> > > On Wed, Mar 20, 2024 at 07:24:27AM +0000, Yosry Ahmed wrote:
+> > > > [..]
+> > > > > > > -     /* map */
+> > > > > > > -     spin_lock(&tree->lock);
+> > > > > > >       /*
+> > > > > > > -      * The folio may have been dirtied again, invalidate the
+> > > > > > > -      * possibly stale entry before inserting the new entry.
+> > > > > > > +      * We finish initializing the entry while it's already in xarray.
+> > > > > > > +      * This is safe because:
+> > > > > > > +      *
+> > > > > > > +      * 1. Concurrent stores and invalidations are excluded by folio lock.
+> > > > > > > +      *
+> > > > > > > +      * 2. Writeback is excluded by the entry not being on the LRU yet.
+> > > > > > > +      *    The publishing order matters to prevent writeback from seeing
+> > > > > > > +      *    an incoherent entry.
+> > > > > >
+> > > > > > As I mentioned before, writeback is also protected by the folio lock.
+> > > > > > Concurrent writeback will find the folio in the swapcache and abort. The
+> > > > > > fact that the entry is not on the LRU yet is just additional protection,
+> > > > > > so I don't think the publishing order actually matters here. Right?
+> > > > > 
+> > > > > Right. This comment is explaining why this publishing order does not
+> > > > > matter. I think we are talking about the same thing here?
+> > > > 
+> > > > The comment literally says "the publishing order matters.." :)
+> > > > 
+> > > > I believe Johannes meant that we should only publish the entry to the
+> > > > LRU once it is fully initialized, to prevent writeback from using a
+> > > > partially initialized entry.
+> > > > 
+> > > > What I am saying is that, even if we add a partially initialized entry
+> > > > to the zswap LRU, writeback will skip it anyway because the folio is
+> > > > locked in the swapcache.
+> > > > 
+> > > > So basically I think the comment should say:
+> > > > 
+> > > > 	/*
+> > > > 	 * We finish initializing the entry while it's already in the
+> > > > 	 * xarray. This is safe because the folio is locked in the swap
+> > > > 	 * cache, which should protect against concurrent stores,
+> > > > 	 * invalidations, and writeback.
+> > > > 	 */
+> > > > 
+> > > > Johannes, what do you think?
+> > > 
+> > > I don't think that's quite right.
+> > > 
+> > > Writeback will bail on swapcache insert, yes, but it will access the
+> > > entry before attempting it. If LRU publishing happened before setting
+> > > entry->swpentry e.g., we'd have a problem, while your comment suggets
+> > > it would be safe to rearrange the code like this.
+> > > 
+> > > So LRU publishing order does matter.
+> > 
+> > Ah yes, you are right. entry->swpentry should be set to make sure we
+> > lookup the correct entry in the swapcache and the tree.
+> > 
+> > Perhaps we should spell this out in the comment and make the
+> > initialization ordering more explicit? Maybe something like:
+> > 
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index d8a14b27adcd7..70924b437743a 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1472,9 +1472,6 @@ bool zswap_store(struct folio *folio)
+> >  		goto put_pool;
+> >  
+> >  insert_entry:
+> > -	entry->swpentry = swp;
+> > -	entry->objcg = objcg;
+> > -
+> >  	old = xa_store(tree, offset, entry, GFP_KERNEL);
+> >  	if (xa_is_err(old)) {
+> >  		int err = xa_err(old);
+> > @@ -1491,6 +1488,7 @@ bool zswap_store(struct folio *folio)
+> >  	if (old)
+> >  		zswap_entry_free(old);
+> >  
+> > +	entry->objcg = objcg;
+> >  	if (objcg) {
+> >  		obj_cgroup_charge_zswap(objcg, entry->length);
+> >  		count_objcg_event(objcg, ZSWPOUT);
+> > @@ -1498,15 +1496,16 @@ bool zswap_store(struct folio *folio)
+> >  
+> >  	/*
+> >  	 * We finish initializing the entry while it's already in xarray.
+> > -	 * This is safe because:
+> > -	 *
+> > -	 * 1. Concurrent stores and invalidations are excluded by folio lock.
+> > +	 * This is safe because the folio is locked in the swapcache, which
+> > +	 * protects against concurrent stores and invalidations.
+> >  	 *
+> > -	 * 2. Writeback is excluded by the entry not being on the LRU yet.
+> > -	 *    The publishing order matters to prevent writeback from seeing
+> > -	 *    an incoherent entry.
+> > +	 * Concurrent writeback is not possible until we add the entry to the
+> > +	 * LRU. We need to at least initialize entry->swpentry *before* adding
+> > +	 * the entry to the LRU to make sure writeback looks up the correct
+> > +	 * entry in the swapcache.
+> >  	 */
+> >  	if (entry->length) {
+> > +		entry->swpentry = swp;
+> >  		INIT_LIST_HEAD(&entry->lru);
+> >  		zswap_lru_add(&zswap_list_lru, entry);
+> >  		atomic_inc(&zswap_nr_stored);
+> > 
+> > 
+> > This also got me wondering, do we need a write barrier between
+> > initializing entry->swpentry and zswap_lru_add()?
+> > 
+> > I guess if we read the wrong swpentry in zswap_writeback_entry() we will
+> > eventually fail the xa_cmpxchg() and drop it anyway, but it seems
+> > bug-prone.
+> 
+> I think it's more robust the way Chris has it now. Writeback only
+> derefs ->swpentry today, but who knows if somebody wants to make a
+> changes that relies on a different member. Having submembers follow
+> different validity rules and timelines is error prone and makes the
+> code less hackable without buying all that much. The concept of
+> "publishing" an object like this is more common: if you can see it,
+> you can expect it to be coherent.
 
-I don't think we update the protected area during rotations anymore,
-only when a new entry is added to the LRU (with potential decay).
-
-> 2. swapin - when this happens, it is a signal that the shrinker is
-> being too... enthusiastic in its reclaiming action. We should be more
-> conservative, hence the increase in protection.
->=20
-> I think there's some confusion around this, because we use the
-> same-ish mechanism for two different events. Maybe I should have put
-> yet another fat comment at the callsites of zswap_folio_swapin() too
-> :)
-
-I think it makes sense. The confusion was mostly around the
-interpretation of finding a page on disk. I was focused on pages that
-skip zswap, but the main intention was for pages that were written back,
-as I explained in my response to Johannes.
-
->=20
-> >
-> > > This happens regardless of whether or not the page originated in
-> > > zswap. Hence, swapins from disk will lead to increasing protection
-> > > on potentially stale zswap entries. Furthermore, the increased
->=20
-> Hmmm my original thinking was that, had we protected the swapped-in
-> page back when it was still in zswap, we would have prevented this IO.
-> And since the pages in zswap are (at least conceptually) "warmer" than
-> the swapped in page, it is appropriate to increase the zswap
-> protection.
->=20
-> In fact, I was toying with the idea to max out the protection on
-> swap-in to temporarily cease all zswap shrinking, but that is perhaps
-> overkill :)
-
-This would be problematic for pages that skip zswap IIUC, we'd want more
-shrinking in this case.
-
->=20
-> > > shrinking protection can lead to more pages skipping zswap and going
->=20
-> I think this can only happen when the protection is so strong that the
-> zswap pool is full, right?
-
-Yeah that's what I had in mind.=20
-
->=20
-> In practice I have never seen this happen though. Did you observe it?
-> We have a fairly aggressive lru-size-based protection decaying as
-> well, so that should not happen...
-
-No this was all code inspection as I mentioned :)
-
->=20
-> Also technically the protection only applies to the dynamic shrinker -
-> the capacity-driven shrinking is not affected (although it's not very
-> effective - perhaps we can rework this?)
-
-That logic is flawed anyway imo due to the acceptance threshold. We
-should really get rid of that as we discussed before.
+Fair enough, but don't we still need a barrier there? Couldn't some
+initializations still be reorder after zswap_lru_add()?
 
