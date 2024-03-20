@@ -1,179 +1,210 @@
-Return-Path: <linux-kernel+bounces-109245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D128816B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:40:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B3D8816B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A5A71C21F1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:40:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 383B1B2158B
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064246A33E;
-	Wed, 20 Mar 2024 17:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E35D6A33C;
+	Wed, 20 Mar 2024 17:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="O/T39WE3"
-Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022018.outbound.protection.outlook.com [52.101.167.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RlxGXUjt"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF3B1DFC6;
-	Wed, 20 Mar 2024 17:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956444; cv=fail; b=bCUPmPagCF0+N4ZJNltop1w72YiZrB7CGDx8+qS0O8T6ejMlTFSLFZOPZN5EJg+IOuFTO9Jq4c9wSVgH60iJfItMCOwbahCp1JHsPwtUs5KXfQqZUdM07O9sTQI05A+eL8mFcKOPNrZ5B1aUmK1Z9c2u8s3mq1TZerWjEHB5R9o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956444; c=relaxed/simple;
-	bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TfdbYxsMvPiu9Y9pcPxrBmSp5b82+Pcget1FlAaBP6bGRp1ZnZGxmY8Stv+I/+++Km4fcTzFTPGBwtwKLIEUJ3Q9p5AhwGMtCB3n27D4CQfcMq/du/Glt5Qj4K4oYjR/nrOD4HPRmwKdmcEvX9XUYx7YMUQIWH4R3r26vSpdHzQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=O/T39WE3; arc=fail smtp.client-ip=52.101.167.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Egv5Dnk4yJkXGdeSUYHer4FJwhlz8INJip22dsmoVI7iOTQz/NYjWxJ5LcXhF8TATin83jAWHmSwq//IN51/TTpMr1fB+uWE0dD//Hnlu1n5qLUd9CtGVbg05er1nH8D9c7/m6soxLy3yLXV91SBhZmjCna6Ik+JcZlTrK8SEQAQ9QPDYdaeM4IIUdHH1g8fwtnHUUnfXrz2iqUobKSFSNDWECtvCD8pmexBw+p1sz32eE8+X8UNdeH94TcnOlqIQyayxx8O6OiTDz4ViKYX/Zt/x4L+zSuN9ei2aI4SjfGQ2DEalR4TWuiV1K+a2XO2YwCymBueZ+Sp292mTyzNdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
- b=dKMpqC1z6rqssGrHsV+tdjwulfSR3lMFIAvIPpzn53TLVpt9+PTSDE0GUeINuT6DbEtOsnVqmZi+Sxn9GzAs3T++y6MHqDh+GyYUX8jR7K2l+ptX7iFcUw6rbaoLRtPynqIA8D0+dyRLvfIxRPKY9ZzAJu+C5VMKZtGK6FWhR/1vERfxIixq0xyJT7jOwaPvJmU4EOkSXrP8eQe5VDhFf35IxgKqQnWHkrw02KHBxlhNhyxFZY7wnt13fTJVcfW5UdSPAcAwhgHzr+zv5yBSe2eq0hvqpal7tQQDm+rEevDH5mKRVLJLkkxRxTwNvAnkg23ALOgPVaK9aibj81OuIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kOEx3oQ/1i2MhkrtAyWd+CaXyIGmAu4iJGtcVg1w5vg=;
- b=O/T39WE387dmKFWOUyEbc/AMb+wiMp5czSCuOhz2MD3z+cJzEIQ7rPTR+Y+c+ioddrDT6DK6DwydJ89XLq7t7xuW9oqHUzW0XMFeY2g77pnaS9CwikayDdOicdxDNnl87n9H+dALGVNoEDKl6u5xkIJZxK9AsNp2enN/K8x5hW+TwPDye3A7b9JESlsAfgJlNUWqYc+kAiQHKPRAFlzfq/ZT1iJz4yFfiPvKE9t3EXacG9z+wjl4mUCtEdAfFdnXQblLYwS5LCXZvv1AiEFPXnmRAmGKwRGQMFYOAxw5Y08CSNiMHijPlJ+JB8cub0et7BHE379jTbgCd11aFQ70hA==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAYP264MB3469.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:125::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Wed, 20 Mar
- 2024 17:40:39 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
- 17:40:39 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Peter Xu <peterx@redhat.com>, Aneesh Kumar K.V
-	<aneesh.kumar@linux.ibm.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Andrew
- Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Mike
- Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, "Naveen N. Rao"
-	<naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Topic: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Index:
- AQHadZASkAUcDDurK02wtpi3kLRmM7E27NOAgABFZ4CAAAUJAIAGfI2AgAIFYYCAAAWMAIAAcnoAgAClhYCAABmTgA==
-Date: Wed, 20 Mar 2024 17:40:39 +0000
-Message-ID: <2e632389-eb4e-42af-adee-36d5ba6c3d0f@csgroup.eu>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu> <ZfLzZekFBp3J6JUy@x1n>
- <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
- <20240318161519.GA5825@nvidia.com>
- <e0417c2a-2ef1-4435-b5a7-aadfe90ff8f1@csgroup.eu>
- <20240319232656.GC159172@nvidia.com>
- <7ca8f19e-7517-404a-b7bb-92ac516d87c8@csgroup.eu> <ZfsKIResY4YcxkxK@x1n>
-In-Reply-To: <ZfsKIResY4YcxkxK@x1n>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAYP264MB3469:EE_
-x-ms-office365-filtering-correlation-id: c43d50f5-4cc2-493a-7a03-08dc4904dbc8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- XnYadDY/OSq7KnWKfyMz2mxsdpV6ZvbEIcjJb2cU4Qx8VOCY0OpD5ds8sEck7zbahEfuE/Y2tAL3VgJP4dgyg4I1v+zH9Ircq0LbC7ApQFXCxuOqL5rNQQBYSepw3SbuwvSug3FJ0v8nB1Eal4eS8axoHSSkUES0+5yoN30b1n+2iR1clgO08nyke9dfBpy96cg14D8hXVytqyrQ6yirObvBiBa/2+BODcs1axvD51qpzOJB6J9WgVoytcZtc6rVhF6aVlp00rIy1/GwX7ht8wEuJEO3+4GxiXxhelH47YFKJvDNQzaMpRowd1fB4XydAjpCYisQ0dkm68yxf8oE/vOPu4C8tWhPucV3+MywFsGAdMNdzH3EOlMnr2t2hf++CarOJh3AcnQFtjTbVXkXJ3SIeoja4XeBi9oaDT5jWxYHMPGcCQFd+uH6UmUgo8ur49emxo0bu3HXi9QZGz5jNrr4eE01H72hJoqH7JCkMloTTEFq4/zsIFscsuqUW9Mprz37hPIdhu2zk2JZ/5/lamjBMD/9+9cSo0pzqODe1Nyv2r5WXRcwMJtBLPZRHJxWUHXKu+bg2rlOs1G0ENpAG15SNeBgh5k+nKufqxqhjyjGexKKNQ2lpQYxQHktVI0dwXZjOGqlKvVMD17wuwbNkHNMyHLSykHTnwuJJAk/JeUV4LcMvvqUjQKuhln1bfK2USyfX1qyOr0IEJ4EcTFxU6woiJFl1Jd8yyHMYp2YUqc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?R0k0UUFxamhyMnpiVjBtRGRLYUZDRjRDelNYT2N3dVBWNTJvZWJacWlXYXNB?=
- =?utf-8?B?TXFKczFZc0NCQUR5UTEvdFhieW4rUXV3RElXNE43WlNCNXcvMGZHYkNYUEZW?=
- =?utf-8?B?MGY5MEhPYm1PNnU3eXZEbDBPVXpzOTIwbm9HUG5BUVZ2b1VMWm1HaFRjZ01i?=
- =?utf-8?B?RkZVeGZlRC9xYSs2UWFWbk9wZnp1ZWsxUkZOOHpoeG11K05pemswVTNQdjVk?=
- =?utf-8?B?QWxETTdFWlFOalNnbVdFek5yNWo5b0FLQnFxSkx2K0R2MDMxdEdvNkNmVkJ3?=
- =?utf-8?B?Njh3SktkaU9abHZ1VFdJK2drSm56cm5Dd3ZNMWJETXFrbDlhZ042MjdpcjFq?=
- =?utf-8?B?ZU03d2lsSTU2Z0tJZ1k3WVZqbHA2ODFZaDN3S29lbkFJYTRZOTB4eXF1MWdI?=
- =?utf-8?B?RnZSTzFnRVRqZEVqUlpzODRCcFFnUHplTUVFVGxZQ2Jrd21hNEVPa1A5elBP?=
- =?utf-8?B?ZDZCMy90OUR3YjUzaGpjMlVCR0UvbHNlRlJUQUs0N1lYVFluU0JQZFBwN0pu?=
- =?utf-8?B?TmVXd3k2YnNVc2hWb0VlTEhpa1IwUmZRbXBPbzB6aVZqZG43dDlqZHltS0pO?=
- =?utf-8?B?NDZ1UnBPQk9LTHI1VW5IaEtENktYRUxiUFJjR0hVUU1pNWZwQ3B1Q3pyaS9M?=
- =?utf-8?B?TTdiS01zUCtaUmF0cTdwM3lHSzltVjVYbmNEd0N1R25BUGJXZnhqalYzb00r?=
- =?utf-8?B?MlRTQWMwL0djOUg3TXY4cm03RFNCeCs1UXMyUjVBbzdteXNXdG9KQituRHJw?=
- =?utf-8?B?QStFSll4YVd5UGR3byttaHBRSGJqQlphcExlWlFZSXE3d1dTQU5HTlAxRlhK?=
- =?utf-8?B?QUhGYUo0aHhHcU45aFZJNUt4NDV0eVpPQlZJZzYyS1I2SXZVUklMa05UUEVP?=
- =?utf-8?B?UFRoM1p1cGMzRE1ZU0ZJeU9DbWJqeHlkaXhPM2lDcS9qRnR6NTVkK3lzajJK?=
- =?utf-8?B?ZjhyeEF0SkFmQWFYUTVLY3pJTHEyVytkVzVydGJjckkxak5QL3RDdmQyUXJK?=
- =?utf-8?B?OE1vSVZxOWltVk5oaUdtckU1T2xBYUxubE15RWpObDhCeDFId2FUU0RPL0NS?=
- =?utf-8?B?Ni8wTk8zYXpQQWE2dTRhVVBJam56RzlUc1lRcHFoWi8rYTJFYXpYeVFsSjBs?=
- =?utf-8?B?NXo0N2dzbld1enhmTzgxUERYdy9mWkpGcDRra3ZBMlUzZjZQd2M2WHg1YlFN?=
- =?utf-8?B?WjVDc0tPNXVKcVp2blBNTFB0Z1RXcWFtWnVQMjRFblBVdHdnTWtYSHFlaTRK?=
- =?utf-8?B?WElsT01zTDV1bVJPMWNYMjZkRHZENDBWdlQrSUhpYUNDdDBWUm1CdG9aR2h4?=
- =?utf-8?B?bHJEdnNienAyTTFKUmVhek16YUZJSU5BbjlBS1JxQjBtYXdKM1MzOGdHRFE1?=
- =?utf-8?B?cDJaTGxzOS94YlRETEdkTkhpaUZBTStTbGJGWG9BMVlnbDNENlgrMUlKTGE4?=
- =?utf-8?B?RmpwWnhMMWI3cmhIOXJRNUdHbWdSYXJnMnU0TStRU1YvZWh1ZU5JK0FVa3Fw?=
- =?utf-8?B?OTJWNjFyelBCK2dGVDlCaDA5SUx0SitNWmxRLytHWEtqTE1YTnBsaU1FN0tx?=
- =?utf-8?B?ZW5SZUhURGZQNFAyK044TFdhM3dPeVltdzFZNHVjOVp4d3VGTzZFeU1Rb1ow?=
- =?utf-8?B?SEt0cDFVWE9kOXZrQWs5ZTlZdzREZnJsRCszRXRWYXVvWUpUVG15TkNTdnNL?=
- =?utf-8?B?Y2x5SzZudHo1V3o1cklYaExGTjdxb2lSUGJWVmJhQ3k2MU5FUmhmUjNwdmdo?=
- =?utf-8?B?NW1zMW5aNCs3b2tNZHRhTWRONmFacGtkYVFOMGFzbFRtV0ZaOGR3U3diUXJE?=
- =?utf-8?B?OTdZeTNqNXZ0cFMzOGZNWmRhb1RIL0dVVEozZTVBUDNTREMycHRsSTczWkFq?=
- =?utf-8?B?TWFJQ2dnMk9hUmxYWHpQVnZjZEg1cXFIaGh6b3JhRTMwMjNZV2VUV0RzL1Vu?=
- =?utf-8?B?cVZSQTBuZ0tQdG84QWNQcUVpRzZZcUd3MC9rVnNXZ1ZBdlZKZE9hREZFWWxO?=
- =?utf-8?B?S0dWYkY2UG1rc2ZTWThySW9BVkRjR20zNzJ1S2NneXhzbXQ0MnZ5ZzdhOFRv?=
- =?utf-8?B?VmViTHlpZklwUjdISU1oQzdBVGtLbXhFZlYwT1BCNHhJWnRmekxySFFibWp5?=
- =?utf-8?B?cDdzV3FzcnpLUm5QNzQ4OUxqdmh5MXlKUFdUR0RUWUJEcWdJT2VLTWxOTmcv?=
- =?utf-8?B?VEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <04739AE550E2D34A984B4F873C815E36@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9965628
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710956535; cv=none; b=iY2maeivyxMapfPSrEqjQE15V92w95OQtswZZInH8ykj+e7BzyEVTlS5l/QecVRbkZ7a2prmU4rvzw/2EBkv2E7+L8Q7Yl4NAs5c6SmXUt4mRXJ1hl30BWQXIGMC4I5UY4B4SgWzEK8FSwAgLFfuNYIj6HA2bh65BtIV7nvmYSY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710956535; c=relaxed/simple;
+	bh=VhGg694ao/0WXM3Z9YmE2+/9/baWtANWAVHD4wIPwk8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l9exQgPTTXpxMZvHyGa5Mwhgpahwt1huo6wxzCst4wOsFuDFEUgzA7jO5M0G3hAnAQCj2ElNDYcoCVH3yL5/aFYHl/v7cKbbjUBvY6sZ0T2dBtXIw5g4MFeYAICtRkqHH8fgw6OmCPRgG0aTNCvGoNcTZv6iSYXSsSSY5stIGxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RlxGXUjt; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7dec16fc4b2so34759241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710956533; x=1711561333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NW19ZZi2sVI9kzIhS7t3Wxp6wjDVebKp4FeXycGbrmk=;
+        b=RlxGXUjtzNYbZjyJhyDQ7o7Y0e6L8PPERcPw3qkmX8rDZP50GKXh9w17OAVkPcptC9
+         A6RJJ2nT9YEKLSyiXdBMtqAJewzq75lse/TRfYEQ1OQS0KLA/DM63WX/6Hva4HDgDhD+
+         xEtH6cf5hav5uOeAvp0O3nnvGC2kMs8ttUEMfwdSgL+FtpjhdTFCKtXbrqsHaPM0cpa4
+         xMuBX6Jk1kr8Ht2VF3sS77+xCmmILAnEURfLnrdgmNZKdIM1dPlELzxrdrmnr+YmF9/i
+         bSureDhwqPQmaaYcxjF16F3L7YsbbiS/DEJ1fqXACZMmzrQCbH4CLEWCp+ZIB5BnhmrB
+         BKFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710956533; x=1711561333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NW19ZZi2sVI9kzIhS7t3Wxp6wjDVebKp4FeXycGbrmk=;
+        b=WpDEzd+PJbUQvFF9stMVfbuTQ9jwdbrlbxPFcv5KtcSm9WjRcnadw5p22n9QeC4SMq
+         qM9kKff9+zzx6EkSVTScttPoQWeL8SIbtn5PfQhb+LRz7aYxqQ/QWPuzKmoKAc8AxDMQ
+         mipJF9qqGcgJQ0yC8PHeZihRjYhcgo/YnUbWZRadQdHhA2uUi//A9IstL6l0J2J/Tz4X
+         JQVqMJaN6Nc7rHZTFAv098cJ99lp2WanXmlMALE/KUgwxRsTmn+zkcHcFH484bY7bFk9
+         zpCpPw/52Zn9fgsj/Al1VgXVR29GpAkCK/vCjG5GiV2j9yEMSMKJyHkRZARsNi1ZIOjs
+         WseA==
+X-Gm-Message-State: AOJu0YxPhpUPOZH3pe4bO1zyv3eCE50XWGeP+I2H3sriDR7Ei8Fzr5GE
+	YQshS//zLi03kS5fPr7LFV8emYDlcbiiUUMSy/ruchPesLbdbajt4JLGaD3RDrpJlbOw5aSLKuh
+	u79DL2rObjV7cIse3hzjzP8U0+fM=
+X-Google-Smtp-Source: AGHT+IF+OiH30Ak1ZIPDrfPiWCrr77p7WnNH2Gz47qu2eWme2cStI+UdwFIiEtA2ErBVpGZw05MEhC3fqogHCKhTqQ8=
+X-Received: by 2002:a67:b64b:0:b0:476:5404:5f11 with SMTP id
+ e11-20020a67b64b000000b0047654045f11mr15013127vsm.25.1710956532744; Wed, 20
+ Mar 2024 10:42:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c43d50f5-4cc2-493a-7a03-08dc4904dbc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Mar 2024 17:40:39.5694
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Zur3MdYr88Gv9ZdIduMGiafwIOU8AesO3hzRrbRjgGu3IyL8Wo17hU32kN6N2fpIdtPo42HxdoHPLfUmKBv2ISOKV5pPuSt+spxEbABluxY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAYP264MB3469
+References: <20240319212316.4193790-1-daeho43@gmail.com> <712f380c-68ef-4743-bd9b-7342e838ced7@kernel.org>
+In-Reply-To: <712f380c-68ef-4743-bd9b-7342e838ced7@kernel.org>
+From: Daeho Jeong <daeho43@gmail.com>
+Date: Wed, 20 Mar 2024 10:42:01 -0700
+Message-ID: <CACOAw_yAWGbx2Bx2or1OyVUUw6HSgTd=fo3e151d1JHU+Op5qQ@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v3] f2fs: prevent writing without fallocate()
+ for pinned files
+To: Chao Yu <chao@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+	kernel-team@android.com, Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDIwLzAzLzIwMjQgw6AgMTc6MDksIFBldGVyIFh1IGEgw6ljcml0wqA6DQo+IE9uIFdl
-ZCwgTWFyIDIwLCAyMDI0IGF0IDA2OjE2OjQzQU0gKzAwMDAsIENocmlzdG9waGUgTGVyb3kgd3Jv
-dGU6DQo+PiBBdCB0aGUgZmlyc3QgcGxhY2UgdGhhdCB3YXMgdG8gZ2V0IGEgY2xvc2UgZml0IGJl
-dHdlZW4gaGFyZHdhcmUNCj4+IHBhZ2V0YWJsZSB0b3BvbG9neSBhbmQgbGludXggcGFnZXRhYmxl
-IHRvcG9sb2d5LiBCdXQgb2J2aW91c2x5IHdlDQo+PiBhbHJlYWR5IHN0ZXBwZWQgYmFjayBmb3Ig
-NTEyayBwYWdlcywgc28gbGV0J3MgZ28gb25lIG1vcmUgc3RlcCBhc2lkZSBhbmQNCj4+IGRvIHNp
-bWlsYXIgd2l0aCA4TSBwYWdlcy4NCj4+DQo+PiBJJ2xsIGdpdmUgaXQgYSB0cnkgYW5kIHNlZSBo
-b3cgaXQgZ29lcy4NCj4gDQo+IFNvIHlvdSdyZSB0YWxraW5nIGFib3V0IDhNIG9ubHkgZm9yIDh4
-eCwgYW0gSSByaWdodD8NCg0KWWVzIEkgYW0uDQoNCj4gDQo+IFRoZXJlIHNlZW0gdG8gYmUgb3Ro
-ZXIgUG93ZXJQQyBzeXN0ZW1zIHVzZSBodWdlcGQuICBJcyBpdCBwb3NzaWJsZSB0aGF0IHdlDQo+
-IGNvbnZlcnQgYWxsIGh1Z2VwZCBpbnRvIGNvbnRfcHRlIGZvcm0/DQoNCkluZGVlZC4NCg0KU2Vl
-bXMgbGlrZSB3ZSBoYXZlIGh1Z2VwZCBmb3IgYm9vazNzLzY0IGFuZCBmb3Igbm9oYXNoLg0KDQpG
-b3IgYm9vazNzIEkgZG9uJ3Qga25vdywgbWF5IEFuZWVzaCBjYW4gYW5zd2VyLg0KDQpGb3Igbm9o
-YXNoIEkgdGhpbmsgaXQgc2hvdWxkIGJlIHBvc3NpYmxlIGJlY2F1c2UgVExCIG1pc3NlcyBhcmUg
-aGFuZGxlZCANCmJ5IHNvZnR3YXJlLiBFdmVuIHRoZSBlNjUwMCB3aGljaCBoYXMgYSBoYXJkd2Fy
-ZSB0YWJsZXdhbGsgZmFsbHMgYmFjayBvbiANCnNvZnR3YXJlIHdhbGsgd2hlbiBpdCBpcyBhIGh1
-Z2VwYWdlIElJVUMuDQoNCkNocmlzdG9waGUNCg==
+On Wed, Mar 20, 2024 at 2:38=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
+>
+> On 2024/3/20 5:23, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > In a case writing without fallocate(), we can't guarantee it's allocate=
+d
+> > in the conventional area for zoned stroage.
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > ---
+> > v2: covered the direct io case
+> > v3: covered the mkwrite case
+> > ---
+> >   fs/f2fs/data.c | 14 ++++++++++++--
+> >   fs/f2fs/file.c | 16 ++++++++--------
+> >   2 files changed, 20 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index c21b92f18463..d3e5ab2736a6 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct =
+f2fs_map_blocks *map, int flag)
+> >
+> >       /* use out-place-update for direct IO under LFS mode */
+> >       if (map->m_may_create &&
+> > -         (is_hole || (f2fs_lfs_mode(sbi) && flag =3D=3D F2FS_GET_BLOCK=
+_DIO))) {
+> > -             if (unlikely(f2fs_cp_error(sbi))) {
+> > +         (is_hole || (f2fs_lfs_mode(sbi) && flag =3D=3D F2FS_GET_BLOCK=
+_DIO &&
+> > +                      !f2fs_is_pinned_file(inode)))) {
+> > +             if (unlikely(f2fs_cp_error(sbi)) ||
+> > +                 (f2fs_is_pinned_file(inode) && is_hole &&
+> > +                  flag !=3D F2FS_GET_BLOCK_PRE_DIO)) {
+> >                       err =3D -EIO;
+> >                       goto sync_out;
+> >               }
+> > @@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_inf=
+o *sbi,
+> >               f2fs_map_lock(sbi, flag);
+> >               locked =3D true;
+> >       } else if ((pos & PAGE_MASK) >=3D i_size_read(inode)) {
+> > +             if (f2fs_is_pinned_file(inode))
+> > +                     return -EIO;
+> >               f2fs_map_lock(sbi, flag);
+> >               locked =3D true;
+> >       }
+> > @@ -3407,6 +3412,11 @@ static int prepare_write_begin(struct f2fs_sb_in=
+fo *sbi,
+> >
+> >       if (!f2fs_lookup_read_extent_cache_block(inode, index,
+> >                                                &dn.data_blkaddr)) {
+> > +             if (f2fs_is_pinned_file(inode)) {
+> > +                     err =3D -EIO;
+> > +                     goto out;
+> > +             }
+> > +
+> >               if (locked) {
+> >                       err =3D f2fs_reserve_block(&dn, index);
+> >                       goto out;
+> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > index 82277e95c88f..4db3b21c804b 100644
+> > --- a/fs/f2fs/file.c
+> > +++ b/fs/f2fs/file.c
+> > @@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_faul=
+t *vmf)
+> >       struct inode *inode =3D file_inode(vmf->vma->vm_file);
+> >       struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> >       struct dnode_of_data dn;
+> > -     bool need_alloc =3D true;
+> > +     bool need_alloc =3D !f2fs_is_pinned_file(inode);
+>
+> Will this check races w/ pinfile get|set?
+
+Do you mean "set/clear" case? I believe "set" case is okay, since we
+can't set if the inode already has a data block. For "clear" case, I
+believe mkwrite failure is okay in racy conditions caused by clearing
+the pin flag. What do you think?
+
+>
+> Thanks,
+>
+> >       int err =3D 0;
+> >       vm_fault_t ret;
+> >
+> > @@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_=
+fault *vmf)
+> >               goto out_sem;
+> >       }
+> >
+> > +     set_new_dnode(&dn, inode, NULL, NULL, 0);
+> >       if (need_alloc) {
+> >               /* block allocation */
+> > -             set_new_dnode(&dn, inode, NULL, NULL, 0);
+> >               err =3D f2fs_get_block_locked(&dn, page->index);
+> > -     }
+> > -
+> > -#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > -     if (!need_alloc) {
+> > -             set_new_dnode(&dn, inode, NULL, NULL, 0);
+> > +     } else {
+> >               err =3D f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_N=
+ODE);
+> >               f2fs_put_dnode(&dn);
+> >       }
+> > -#endif
+> > +
+> >       if (err) {
+> >               unlock_page(page);
+> >               goto out_sem;
+> > @@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct kiocb =
+*iocb, struct iov_iter *iter,
+> >                       return ret;
+> >       }
+> >
+> > +     /* For pinned files, it should be fallocate()-ed in advance. */
+> > +     if (f2fs_is_pinned_file(inode))
+> > +             return 0;
+> > +
+> >       /* Do not preallocate blocks that will be written partially in 4K=
+B. */
+> >       map.m_lblk =3D F2FS_BLK_ALIGN(pos);
+> >       map.m_len =3D F2FS_BYTES_TO_BLK(pos + count);
 
