@@ -1,132 +1,163 @@
-Return-Path: <linux-kernel+bounces-109440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C81B881932
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:35:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED31881934
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96CAFB21710
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:35:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF791F226C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C670F85C44;
-	Wed, 20 Mar 2024 21:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5C085C46;
+	Wed, 20 Mar 2024 21:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="avjYfL9e"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XGONm0er"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC7D33062;
-	Wed, 20 Mar 2024 21:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBA633062;
+	Wed, 20 Mar 2024 21:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710970512; cv=none; b=JfUDKUYkxUma7EKO+QRM4wwu+EtSNN50PCAge3ayKPdnzVJXl49tzKoA1aQ1qnDK60+9KJBv0N/MNi3ZgfemhZjO1LHpFcsWxz9FVPPHhxL8mPdG+YuxYLLQYf+XvudWC2UEoWtR7nRNSlsUy7zIBJf4BazG9+TSoHZWt+4IUto=
+	t=1710970566; cv=none; b=eTxGCMNJvrp2H/h2GdKSSh8FiQtrmazQnuRaK2ly0OAMXL92UYlGJOXXR2SulE1xZvMVWTWLf/hNNqtocQpYich9XafBNantY7kDivYB1dhp3VARsDp0phxEuXusLCJ8D0sDGy3Rq5uo4FnIXQYWniwTOeL6VCcBW3FYZGZ6s4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710970512; c=relaxed/simple;
-	bh=TcWmYjPumbIlPBomNV9YOOX92d2441jgONKaND86xeg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LmV/udWm+iHCAEUuWsbBfVYS0E3ZHWcBnsO4/Amdhr8GUffWy1ezFTSY8PjXvEGGVotH2kORRGvn9UfE5hKMl7PS42ZBsV0Dt4DFVNq9o53nMByX9ueHGFtcHRfrO2bMu5E9ShmW36k1e4/7uHPcM++ioJEJkIfFjT2IJWE9HNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=avjYfL9e; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso39510666b.3;
-        Wed, 20 Mar 2024 14:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710970509; x=1711575309; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2488KgiQz0Ozm6AmLdfbpRuHfsugl87Zu2zk1y9WHjg=;
-        b=avjYfL9ekBibXEI6Upo8xCed7Fg/n83urK/8LViFVocshnqPdlWcK7vZi0OCIZzqUl
-         kHbZ5i2LihT8PyHDxiiaI585WZAZV9IxLl5U8q30ZqYOogJQbwwXiOM0khkR8rQKJRz2
-         NEkxHX+uEjvG8It03Cg1op58KVTXL6nh+G8u0M9a3RYMudoWNTakOHc6ybvxhqwkdxPk
-         T6Gafkay7sIJOZbyrL9SvAnVB62Ik5VW6CWVEe2f/QeZVMF+cVj6EWFMspnl062Op0Ld
-         AHs7RvzDmtt44nB1USbq9DHCHyVjNlu7nXalzGQVPihgA16OxDxKXDS04/Pz/VzJvg/2
-         QSPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710970509; x=1711575309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2488KgiQz0Ozm6AmLdfbpRuHfsugl87Zu2zk1y9WHjg=;
-        b=BH5ZjWY+myaYQ3NpAKLfdqeJFxc/0qS1lT4GQ1kzwstwa7ND1+hO6YEv140b0nZkZM
-         +yXU2oKPpMHDSa/d1ToosazSPYhQ5ll8uQhsPGyIpMHti1RNyXztOQ3nHBJAUgcFfiOG
-         HGkSEL1iE3uispwe4dWADI2XhdEal+Z0o/7hOCvPRtzy45IwAtCBBzxTeZ4WV7ucwD0K
-         6CbNGXqa1A4lYqToWGSG54snJPXggZ4eeDTgYjJpAp3kBNZLybpqtaO6mk+Oo72rpHCL
-         fDHC9WY1KgDzIEP1xpRPNOdbSxlnTz1EjnNwPUGdYXE+DsxazApok+BIzky56fBng8HC
-         wNIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUElehLtkCmhx2x1z95VFzGMiQE+WfATOEl/W7TIlTNH88rBKxYRz/17j+fZa3Q7BGbq49PA3VhouQLmD0QTj8VkvUaEaTEUi+YRDr6ZfNMyQfbYguddG/6Tqd+WEafSpa3b6yMaxRG
-X-Gm-Message-State: AOJu0YySKanz7YBm2I8EMZRcM/UWd6Kp4mT5MQ1+0pkLJq24s+33Ge6D
-	B17WVrdqjKlY5IoscbfI/2h/wsN/IkzVpmMqSHKAJOd3yfeV/fdu
-X-Google-Smtp-Source: AGHT+IH8szzncBG1aLLxaZjuATsI9dcfMdIIBEgaidEn0FkFhM1jMeSmv2gEXSy/ocnkY1wlGxOkow==
-X-Received: by 2002:a17:906:4f18:b0:a46:a17b:c44e with SMTP id t24-20020a1709064f1800b00a46a17bc44emr84105eju.30.1710970508756;
-        Wed, 20 Mar 2024 14:35:08 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:9be1:7bef:ff5c:57fc])
-        by smtp.gmail.com with ESMTPSA id wp2-20020a170907060200b00a46faaf7427sm964913ejb.121.2024.03.20.14.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 14:35:08 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Wed, 20 Mar 2024 22:35:05 +0100
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
-	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
-	ak@it-klinger.de, petre.rodan@subdimension.ro, phil@raspberrypi.com,
-	579lpy@gmail.com, linus.walleij@linaro.org,
-	semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] iio: pressure: Add triggered buffer support for
- BMP280 driver
-Message-ID: <20240320213505.GB52721@vamoiridPC>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
- <20240319002925.2121016-7-vassilisamir@gmail.com>
- <ZfrFc9GF0_Jix5YT@smile.fi.intel.com>
- <20240320174602.GA36450@vamoiridPC>
- <ZftUWg31QvA99syr@smile.fi.intel.com>
+	s=arc-20240116; t=1710970566; c=relaxed/simple;
+	bh=hX4pslLlcBSoPea9E2mRxNlAbfGvx83GcoZjftStHUw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BLKsK4hj6UwtO6Px5rGwUcZyQK9uQ9nNDwmNgEiCEBTUY1wCRRg/FtT9fm6U1p6hUrOMJTprNOfJKE+D8HxggTnU1vEzkxTnty/sOxlyGDFCd09P6EefeZN73iCDCXolNtwmIdpWFzh+Wq/Y0vDNtJaq4Ch79Q51UlN4y3H+kD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XGONm0er; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710970563; x=1742506563;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hX4pslLlcBSoPea9E2mRxNlAbfGvx83GcoZjftStHUw=;
+  b=XGONm0er79JI42oC0Fi1tKlURM51T8UrS43sYJo8L4FVmHrUk02CM4H9
+   tn5CXyouSSsi3f0PpZTYrwubVabORvXDxCPljNoZxA+tkSzDv4ashMLaW
+   Nha4twMMDpHJ8lVpbCevsHz+2h3WAAUyPKaixkuQ3jTi0aQA1BVVOBfaN
+   pxfcbclG2SfXlbrPwoU75sxmdz3BlWF2fNj8MiJAmSedZ+B11k8w+zAU8
+   1UlCU4Ux140avVjqKqSMr1HVBe3TYBtiYdlN5HZIqLskpCbPlFWDSzwff
+   lDwTn3JnW8lJz4SSqDJpJqkdhAsidrPmktaVsw7fNiYxLRW44jsjc9vfA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5783585"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="5783585"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:36:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="18869398"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:36:01 -0700
+Date: Wed, 20 Mar 2024 14:36:00 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	Binbin Wu <binbin.wu@linux.intel.com>,
+	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
+ SEAMCALLs to the TDX module
+Message-ID: <20240320213600.GI1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
+ <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZftUWg31QvA99syr@smile.fi.intel.com>
+In-Reply-To: <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
 
-On Wed, Mar 20, 2024 at 11:25:46PM +0200, Andy Shevchenko wrote:
-> On Wed, Mar 20, 2024 at 06:46:02PM +0100, Vasileios Amoiridis wrote:
-> > On Wed, Mar 20, 2024 at 01:16:03PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Mar 19, 2024 at 01:29:25AM +0100, Vasileios Amoiridis wrote:
-> 
-> ...
-> 
-> > > >  	/*
-> > > > -	 * Maximum number of consecutive bytes read for a temperature or
-> > > > -	 * pressure measurement is 3.
-> > > > +	 * Maximum number of a burst read for temperature, pressure, humidity
-> > > > +	 * is 8 bytes.
-> > > >  	 */
-> > > > -	if (val_size > 3)
-> > > > +	if (val_size > 8)
-> > > 
-> > > sizeof() / new definition for the buf[] size?
-> > 
-> > In a previous commit that I was fixing this SPI driver, Jonathan had mentioned
-> > that there is no need for a specific definition since it will only be used
-> > here so that's why I kept it as is.
-> 
-> It seems not only here, but also in the buf[] definition in the struct.
-> 
+On Wed, Mar 20, 2024 at 01:03:21PM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-You are totally right, I didn't think of that!
-It makes sense to use a definition.
-
-Cheers,
-Vasilis
-
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> > +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
+> > +			       struct tdx_module_args *out)
+> > +{
+> > +	u64 ret;
+> > +
+> > +	if (out) {
+> > +		*out = *in;
+> > +		ret = seamcall_ret(op, out);
+> > +	} else
+> > +		ret = seamcall(op, in);
 > 
+> I think it's silly to have the @out argument in this way.
 > 
+> What is the main reason to still have it?
+> 
+> Yeah we used to have the @out in __seamcall() assembly function.  The
+> assembly code checks the @out and skips copying registers to @out when it is
+> NULL.
+> 
+> But it got removed when we tried to unify the assembly for TDCALL/TDVMCALL
+> and SEAMCALL to have a *SINGLE* assembly macro.
+> 
+> https://lore.kernel.org/lkml/cover.1692096753.git.kai.huang@intel.com/
+> 
+> To me that means we should just accept the fact we will always have a valid
+> @out.
+> 
+> But there might be some case that you _obviously_ need the @out and I
+> missed?
+
+As I replied at [1], those four wrappers need to return values.
+The first three on error, the last one on success.
+
+  [1] https://lore.kernel.org/kvm/20240320202040.GH1994522@ls.amr.corp.intel.com/
+
+  tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
+  tdh_mem_page_aug(kvm_tdx, gpa, hpa, &entry, &level_state);
+  tdh_mem_page_remove(kvm_tdx, gpa, tdx_level, &entry, &level_state);
+  u64 tdh_vp_rd(struct vcpu_tdx *tdx, u64 field, u64 *value)
+
+We can delete out from other wrappers.
+Because only TDH.MNG.CREATE() and TDH.MNG.ADDCX() can return TDX_RND_NO_ENTROPY,
+we can use __seamcall().  The TDX spec doesn't guarantee such error code
+convention.  It's very unlikely, though.
+
+
+> > +static inline u64 tdh_sys_lp_shutdown(void)
+> > +{
+> > +	struct tdx_module_args in = {
+> > +	};
+> > +
+> > +	return tdx_seamcall(TDH_SYS_LP_SHUTDOWN, &in, NULL);
+> > +}
+> 
+> As Sean already pointed out, I am sure it's/should not used in this series.
+> 
+> That being said, I found it's not easy to determine whether one wrapper will
+> be used by this series or not.  The other option is we introduce the
+> wrapper(s) when they get actally used, but I can see (especially at this
+> stage) it's also a apple vs orange question that people may have different
+> preference.
+> 
+> Perhaps we can say something like below in changelog ...
+> 
+> "
+> Note, not all VM-managing related SEAMCALLs have a wrapper here, but only
+> provide wrappers that are essential to the run the TDX guest with basic
+> feature set.
+> "
+> 
+> ... so that people will at least to pay attention to this during the review?
+
+Makes sense. We can split this patch into other patches that first use the
+wrappers.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
