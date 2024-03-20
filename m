@@ -1,134 +1,118 @@
-Return-Path: <linux-kernel+bounces-108940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5431488124B
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:27:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E73A488124E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99B51F249C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:27:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52F54B24486
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003D64315B;
-	Wed, 20 Mar 2024 13:26:39 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E868841C8B;
+	Wed, 20 Mar 2024 13:28:21 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8969D42067;
-	Wed, 20 Mar 2024 13:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE0640847;
+	Wed, 20 Mar 2024 13:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710941198; cv=none; b=kdsmjGMbBQZFVci918cMkjvx1k5taWNfPHvOX0FiTdMd0cq1gnrnx8Exebj7/JG9VGcPnxExwGhisO1X3SzcogSqHxrN2j0JZp2fVyxrYnVBQXXnWJ17tZYCHLhqsXKctmwDWIxd3E2JHp42iBu17sjdFtDqkC6o9JUr83xh7lQ=
+	t=1710941301; cv=none; b=Yg3Txb/B7djIWUNoHEUaXWtzYcOjVe+DMWnBIwJsZUAmQD+jQl5f8+2JVG72QFD82CHybQw8w98xtGMJ8z575DU6fAl82q2i+fMb3XVbZmu4bi1XhOeH+nuV82j9PSpjO8sAvsbMjpXrt4er1+hdSnQUY3ZSiDhu0KTTiskjpEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710941198; c=relaxed/simple;
-	bh=pCGuVjWlRAi0vFh0p3CgV+1RcpDoThiqGVZ0AmE/iGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dLhc1gdarFBygc4QY5CkbtXBeN9oHfsSxftptqpmQMqezWxIt/VJczv/RT1Nx0o/22hD6/jDmWSxSTunI5beLowDC7mdtkRCbQrBr3bpxNxLvO/c35DhZVlBw+XDhlQFIvbWiqmwdEAx6uA2QXztwD8dpOQWDsESRVqaT/pjAN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DF63C43390;
-	Wed, 20 Mar 2024 13:26:37 +0000 (UTC)
-Date: Wed, 20 Mar 2024 09:29:02 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] tracing/tools: Updates for 6.9
-Message-ID: <20240320092902.0840c87a@gandalf.local.home>
-In-Reply-To: <20f9d90e-454e-448c-989d-84900d380561@kernel.org>
-References: <20240318174116.420584-1-bristot@kernel.org>
-	<20240319190259.0086706f@gandalf.local.home>
-	<20f9d90e-454e-448c-989d-84900d380561@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710941301; c=relaxed/simple;
+	bh=zQ+5z4yVaRw12jlqHXhGReM65NfBvYTIyI0IGWbbO+I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TVkagOGu2SdhxWRdH/RiN1yBtWSwTP3CaoSfHZNyWwNGx300E4nqkd7F6P9yhKrghKEZsWO5Bhqtt0oQanZ6muIUsnXieyb+SnL0fISK3yL4l9F/wunjPR/S4qHOHtiz5k1U1TXr/t2iWb8grPyh5D1hsH20S9mLHdY1EDvtbBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4V08V60BkWzXjMG;
+	Wed, 20 Mar 2024 21:25:34 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id C029914040D;
+	Wed, 20 Mar 2024 21:28:10 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 20 Mar
+ 2024 21:28:10 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
+Subject: [PATCH v7 0/5] support '%pd' and '%pD' for print file name
+Date: Wed, 20 Mar 2024 21:29:19 +0800
+Message-ID: <20240320132924.2802187-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-On Wed, 20 Mar 2024 13:41:12 +0100
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+During fault locating, the file name needs to be printed based on the
+dentry/file address. The offset needs to be calculated each time, which
+is troublesome. Similar to printk, kprobe supports printing file names
+for dentry/file addresses.
 
-> On 3/20/24 00:02, Steven Rostedt wrote:
-> > On Mon, 18 Mar 2024 18:41:13 +0100
-> > Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
-> >   
-> >> Steven,
-> >>
-> >> Tracing tooling updates for 6.9
-> >>
-> >> Tracing:
-> >>         - Update makefiles for latency-collector and RTLA,
-> >>           using tools/build/ makefiles like perf does, inheriting
-> >>           its benefits. For example, having a proper way to
-> >>           handle dependencies.
-> >>
-> >>         - The timerlat tracer has an interface for any tool to use.
-> >>           rtla timerlat tool uses this interface dispatching its
-> >>           own threads as workload. But, rtla timerlat could also be
-> >>           used for any other process. So, add 'rtla timerlat -U'
-> >>           option, allowing the timerlat tool to measure the latency of
-> >>           any task using the timerlat tracer interface.
-> >>
-> >> Verification:
-> >>         - Update makefiles for verification/rv, using tools/build/
-> >>           makefiles like perf does, inheriting its benefits.
-> >>           For example, having a proper way to handle dependencies.
-> >>
-> >>
-> >> Please pull the latest trace-tools-v6.9 tree, which can be found at:
-> >>
-> >>
-> >>   git://git.kernel.org/pub/scm/linux/kernel/git/bristot/linux.git
-> >> trace-tools-v6.9  
-> > 
-> > Looks like you just built on top of a random commit from Linus's tree:  
-> 
-> yeah :-/
-> 
-> > commit f6cef5f8c37f58a3bc95b3754c3ae98e086631ca
-> > Merge: 906a93befec8 8f06fb458539
-> > Author: Linus Torvalds <torvalds@linux-foundation.org>
-> > Date:   Sun Mar 17 16:59:33 2024 -0700
-> > 
-> >     Merge tag 'i3c/for-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux
-> > 
-> > Linus prefers basing off of real tags or previous pulls from us.  
-> 
-> Ack, took note. I will do on top v6.8 tag.
-> 
-> > Can you rebase your changes on v6.8 and resend?
-> > 
-> >   $ git checkout v6.8
-> >   $ git cherry-pick f6cef5f8c37f58a3bc95b3754c3ae98e086631ca..trace-tools-v6.9
-> > 
-> > Appears to work fine.  
-> 
-> questions: when something go wrong in a pull request....
-> 
-> 	- Should I keep the old tag, and then do another one with -2
-> 	  (it seems you do like this), or delete the old tag and send it again
-> 	  with the same name?
+Diff v7 vs v6:
+1. Squash [1/8] to [3/8] patches into 1 patch;
+2. Split readme_msg[] into each patch;
 
-Just create a new tag.
+Diff v6 vs v5:
+1. Add const for 'bufsize' in PATCH [1];
+2. Move PATCH 'tracing/probes: support '%pd/%pD' type for fprobe' after
+PATCH "tracing/probes: support '%pd' type for print struct dentry's name".
+3. Add requires '"%pd/%pD":README' for testcase.
 
-> 
-> 	- Should I resend the PULL request with something in the log or
-> 	  at the Subject saying it is a v2 of the pull request?
+Diff v5 vs v4:
+1. Use glob_match() instead of str_has_suffix(), so remove the first patch;
+2. Allocate buffer from heap for expand dentry;
+3. Support "%pd/%pD" print type for fprobe;
+4. Use $arg1 instead of origin register in test case;
+5. Add test case for fprobe;
 
-Yes please.
+Diff v4 vs v3:
+1. Use "argv[i][idx + 3] == 'd'" instead of "argv[i][strlen(argv[i]) - 1] == 'd'"
+to judge print format in PATCH[4/7];
 
-> 
-> I could ask via chat, but I think it is good for the community to
-> have access to these info.
+Diff v3 vs v2:
+1. Return the index of where the suffix was found in str_has_suffix();
 
-+1
-
-Thanks,
+Diff v2 vs v1:
+1. Use "%pd/%pD" print format instead of "pd/pD" print format;
+2. Add "%pd/%pD" in README;
+3. Expand "%pd/%pD" argument before parameter parsing;
+4. Add more detail information in ftrace documentation;
+5. Add test cases for new print format in selftests/ftrace;
 
 
--- Steve
+Ye Bin (5):
+  tracing/probes: support '%pd' type for print struct dentry's name
+  tracing/probes: support '%pD' type for print struct file's name
+  Documentation: tracing: add new type '%pd' and '%pD' for kprobe
+  selftests/ftrace: add kprobe test cases for VFS type "%pd" and "%pD"
+  selftests/ftrace: add fprobe test cases for VFS type "%pd" and "%pD"
+
+ Documentation/trace/kprobetrace.rst           |  8 ++-
+ kernel/trace/trace.c                          |  2 +-
+ kernel/trace/trace_fprobe.c                   |  6 ++
+ kernel/trace/trace_kprobe.c                   |  6 ++
+ kernel/trace/trace_probe.c                    | 63 +++++++++++++++++++
+ kernel/trace/trace_probe.h                    |  2 +
+ .../ftrace/test.d/dynevent/fprobe_args_vfs.tc | 40 ++++++++++++
+ .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 40 ++++++++++++
+ 8 files changed, 164 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+
+-- 
+2.31.1
+
 
