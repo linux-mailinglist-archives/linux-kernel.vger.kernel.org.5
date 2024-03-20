@@ -1,236 +1,112 @@
-Return-Path: <linux-kernel+bounces-108726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3405880F3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:04:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF315881017
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:40:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FEDE1F23353
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:04:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A89FF282940
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A37E3CF6A;
-	Wed, 20 Mar 2024 10:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1443B19D;
+	Wed, 20 Mar 2024 10:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HnixBj/W"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norik.com header.i=@norik.com header.b="jbjwjpsd"
+Received: from cpanel.siel.si (cpanel.siel.si [46.19.9.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F9C38F82;
-	Wed, 20 Mar 2024 10:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56EF739FED;
+	Wed, 20 Mar 2024 10:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.19.9.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710929062; cv=none; b=NTiu1wpJnNgTlNLuQ/iltxUkQqHsraiMmXIDsKbTSGbzg9h6UHvw3RF7DDjGmLWDyV76xiRcWojnVLQZ9fJ6MDIH2WAVgCGKBsqw+kFf52QIwaz1FfJS9rggKHMPBqKpNBcSTncBNujogd/xqFy48IyykyhHwCyr8Eiq8fcoVFs=
+	t=1710931230; cv=none; b=SJP5c59zlz1/g4u2cPSQ8RZ6ODbBqzsSbfE2uNDhAdU9gBS7bpjD27Po/ycLWTcp3Kp8cbVImedST/CgXT507e4f/Sf7M9+0CGGgzS8h/5FcLrPpYStQ6IR1pp3itHtiW15X7b4rty+bfk+krtliqkusgWhNoPSB/03Ezo+PnfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710929062; c=relaxed/simple;
-	bh=nIqkjMSHV9EcCxgnfZD3kI/SawCNOWAjVuJ+etAG/KE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P0yYQGCqX73ASQMLDp8ZAoSyqnCAYs0i3hsPDbE90R78811JMBmJhpSQgG1zKYRsybF9ZQ3P7DercRoQJtsyAITbisHaX+48iBSaBszPw/y+TFy48RBdjXO1Ic4mlE+Vx3ETPZeTj7DgBT9HF7d23nHFi63ioZ+CAphn5PkTg/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HnixBj/W; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42K7dJNU023914;
-	Wed, 20 Mar 2024 10:04:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=NSwShFQocCiNdxEXdDTWS
-	rFKKz5ddmj/SrKnvqOPygI=; b=HnixBj/WDkUf8h0JAZxntqc7AuKKwlmDNwhiG
-	WxDg9KO1gk2y9llKT4/0zEfn+AWy5BQY24HmSmvG3QYrPIdKGhOsuorIrVzm03wF
-	s8IHZeBOclGeD3su3QcMJyLqo65mV+76NRHJ3OcbMENv9B35ZYfnblWxYrz2ZNEU
-	x+g+VLaptQO8Uzjl2ZgoPppSyK9rHal7Xu0pGZNfac3HR7r/u9ggCRhWuoOre+Rx
-	xsmVr2XmiNa9W8U7betciiLFruNUXMEISu5YsUnuUb89LGHB3+SgaO6gO36GoEqL
-	FALi0uJdJw+GqmkouU74STgpLbnl+eoYZlRppE6EUsMBvzejw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wypxq0ub4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 10:04:04 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42KA43mK029663
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 10:04:03 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 20 Mar 2024 03:04:00 -0700
-Date: Wed, 20 Mar 2024 15:33:56 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/31] arm64: dts: qcom: ipq9574-*: Remove thermal zone
- polling delays
-Message-ID: <Zfq0jF93iJVgd1+R@hu-varada-blr.qualcomm.com>
-References: <20240319-topic-msm-polling-cleanup-v1-0-e0aee1dbcd78@linaro.org>
- <20240319-topic-msm-polling-cleanup-v1-3-e0aee1dbcd78@linaro.org>
+	s=arc-20240116; t=1710931230; c=relaxed/simple;
+	bh=ls6xLhp/KwBA1fCnfVdKXiKvpHzqIRtYfTSXA2EgX4o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TZhJWC8GKa/NlLkwprTGzaL+wbLU+fc/6u8jBBfRwA8JtAsUuW1Swnu3lIfMF+ynysXc9JBetdwfRuNkJrtSZ1m4XDesG0L8ml2y49hBehgTD0lQUFvAxJ5l1KxpOPpG6T1IYMJGhhdY7K/ZVlZpZ5IgVI6jq0D+IMq08I8+doY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com; spf=pass smtp.mailfrom=norik.com; dkim=pass (2048-bit key) header.d=norik.com header.i=@norik.com header.b=jbjwjpsd; arc=none smtp.client-ip=46.19.9.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=norik.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
+	s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=k/hQjJjKM/6k2dIpkZOd1CRB2GRUhhh9M/CTbWGkxv4=; b=jbjwjpsdmK16TTuRIvVxOmhZIc
+	HlhCLjlWDtjLAD9FUfGYndwLoeClywCY8MSkgv3l8kFFL30PvXMfY8fFQafC7itVkT9bhXVsQc3P2
+	8o5+caqTrTmGyCBCJkHfJUnxW2kLSdt66gTADdXVxy98l/ZaOA214ohvxJ3JFTsLJ0MqCAzmUaoAx
+	wYOneq0ntlulQr8RziSi/iwJT1J6jWfQ1jpwNLr91Wdv6REaiqf70ygVvK5Bd20KbSecQNIXMpS8v
+	o1ZvqXn5xAp1qQrPbLb/Lselh3/zNPuMH5Y8yZUExM+UFJZNqmWEL1jQkI26cEm6UR5pDFGzZQX40
+	tajbO/GA==;
+Received: from [89.212.21.243] (port=57750 helo=localhost.localdomain)
+	by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <andrej.picej@norik.com>)
+	id 1rmsnx-005Tm8-0g;
+	Wed, 20 Mar 2024 11:04:17 +0100
+From: Andrej Picej <andrej.picej@norik.com>
+To: haibo.chen@nxp.com,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org
+Cc: jic23@kernel.org,
+	lars@metafoo.de,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	upstream@lists.phytec.de
+Subject: [PATCH 0/2] i.MX93 ADC calibration settings
+Date: Wed, 20 Mar 2024 11:04:04 +0100
+Message-Id: <20240320100407.1639082-1-andrej.picej@norik.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240319-topic-msm-polling-cleanup-v1-3-e0aee1dbcd78@linaro.org>
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ogZc7Fp0078mp0OWJuL9-WjMhYyv9J7V
-X-Proofpoint-GUID: ogZc7Fp0078mp0OWJuL9-WjMhYyv9J7V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_06,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 malwarescore=0
- priorityscore=1501 mlxlogscore=865 adultscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403140001 definitions=main-2403200078
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpanel.siel.si
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - norik.com
+X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: andrej.picej@norik.com
+X-Authenticated-Sender: cpanel.siel.si: andrej.picej@norik.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-On Tue, Mar 19, 2024 at 05:13:33PM +0100, Konrad Dybcio wrote:
-> All of the thermal zone suppliers are interrupt-driven, remove the
-> bogus and unnecessary polling that only wastes CPU time.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 26 --------------------------
->  1 file changed, 26 deletions(-)
+Hi all,
 
-Reviewed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+we had some problems with failing ADC calibration on the i.MX93 boards.
+Changing default calibration settings fixed this. The board where this
+patches are useful is not yet upstream but will be soon (hopefully).
 
-Thanks
-Varada
+Since we had these patches laying around we thought they might also be
+useful for someone else.
 
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> index 7f2e5cbf3bbb..98c5623f4391 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-> @@ -749,8 +749,6 @@ frame@b128000 {
->  
->  	thermal-zones {
->  		nss-top-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 3>;
->  
->  			trips {
-> @@ -763,8 +761,6 @@ nss-top-critical {
->  		};
->  
->  		ubi-0-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 4>;
->  
->  			trips {
-> @@ -777,8 +773,6 @@ ubi_0-critical {
->  		};
->  
->  		ubi-1-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 5>;
->  
->  			trips {
-> @@ -791,8 +785,6 @@ ubi_1-critical {
->  		};
->  
->  		ubi-2-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 6>;
->  
->  			trips {
-> @@ -805,8 +797,6 @@ ubi_2-critical {
->  		};
->  
->  		ubi-3-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 7>;
->  
->  			trips {
-> @@ -819,8 +809,6 @@ ubi_3-critical {
->  		};
->  
->  		cpuss0-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 8>;
->  
->  			trips {
-> @@ -833,8 +821,6 @@ cpu-critical {
->  		};
->  
->  		cpuss1-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 9>;
->  
->  			trips {
-> @@ -847,8 +833,6 @@ cpu-critical {
->  		};
->  
->  		cpu0-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 10>;
->  
->  			trips {
-> @@ -877,8 +861,6 @@ map0 {
->  		};
->  
->  		cpu1-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 11>;
->  
->  			trips {
-> @@ -907,8 +889,6 @@ map0 {
->  		};
->  
->  		cpu2-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 12>;
->  
->  			trips {
-> @@ -937,8 +917,6 @@ map0 {
->  		};
->  
->  		cpu3-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 13>;
->  
->  			trips {
-> @@ -967,8 +945,6 @@ map0 {
->  		};
->  
->  		wcss-phyb-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 14>;
->  
->  			trips {
-> @@ -981,8 +957,6 @@ wcss_phyb-critical {
->  		};
->  
->  		top-glue-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
->  			thermal-sensors = <&tsens 15>;
->  
->  			trips {
-> 
-> -- 
-> 2.40.1
-> 
-> 
+Best regards,
+Andrej
+
+Andrej Picej (2):
+  iio: adc: imx93: Make calibration properties configurable
+  dt-bindings: iio: adc: nxp,imx93-adc.yaml: Add calibration properties
+
+ .../bindings/iio/adc/nxp,imx93-adc.yaml       | 15 +++++
+ drivers/iio/adc/imx93_adc.c                   | 66 +++++++++++++++++--
+ 2 files changed, 76 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
 
