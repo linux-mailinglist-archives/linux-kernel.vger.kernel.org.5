@@ -1,121 +1,141 @@
-Return-Path: <linux-kernel+bounces-110612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97029886147
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:51:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F6E88614A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC3A81C21E84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:51:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 233AB1C215AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83294134424;
-	Thu, 21 Mar 2024 19:51:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9B0134723;
+	Thu, 21 Mar 2024 19:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MywJxB2E"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U8sRqRSw"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7527B12BF16
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 19:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DAF133997;
+	Thu, 21 Mar 2024 19:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711050664; cv=none; b=f5vkeYTIK/TP5WdVIjaC+4VlAAzPafzKYydCG3uJlOdvwfUnDSly7B7FIFJtcC/lH5BdWB2a9p3KexXOpfdcCLbKYQrlYsfFolIRtK2zR//TnNyngbfkCDFFttMbtqKLDPzemlEo5BdbCqxEo+r00dRXvla5wyFnQZxFv4npyn4=
+	t=1711050750; cv=none; b=jRglM07eaZg3X+ZaMhKDQJ2nqePQg25WXGLqLk73wu4W5sNJd8r0T7aY3hEyIOcDveMRWtX2DMtXyYO6p3T+OQ3ICqj+G3xwPMLT4Y5C9IZFpHmSxeZs+ckMKYpD+J+q7Ry945fd039dpLyq5UFNhLceVMLyN6HpnB1FpryMC6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711050664; c=relaxed/simple;
-	bh=iixGjUfXCfJMUnrcexrZ0eyfEWhjuM3K/uWarfVEAVk=;
+	s=arc-20240116; t=1711050750; c=relaxed/simple;
+	bh=zHyKqEmeTxvw8dg11FT8bhX85OPIH4GvobQHVZQABxs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CZ9HpnjrXAD8NzQcdwqnD4xiWUuG04Dd5EEZOChN/98a40zz9PzCFotJq0WveD5bNInDJCJ5p7RraNKw0gVwqv3tDqsDTQx55lokiNw8jIuHRlgWp/tbDMB6iWI31M1NpyQkfPKnSvVMf7EOT/8/zh/eJ9+dw57cWdDxpxQgb3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MywJxB2E; arc=none smtp.client-ip=209.85.166.41
+	 To:Cc:Content-Type; b=GAsXOCLCtTUT3I4dG++MNjgoVxU8P+EXaGnR3OVsS/N6gEIhuHl0Hdni9RsyAK+/X+gD3lqAnmNk3qSazMI4CJUDXv3mGZfRgqwiKdrOPEPDY+qyVkFTaaGLln3xMEsU0X2I5f0Gh5XlboDURYriBYQ9TiWQDNwUEjdf4TXJwKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U8sRqRSw; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so19706139f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:51:03 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dde26f7e1dso10188705ad.1;
+        Thu, 21 Mar 2024 12:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711050662; x=1711655462; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711050748; x=1711655548; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iixGjUfXCfJMUnrcexrZ0eyfEWhjuM3K/uWarfVEAVk=;
-        b=MywJxB2Ev/EvIGUXTp6CDZKJBaV1dTAPU/uYJ7z6rh+gGTet72+HrZ3UfP2hIUeh2c
-         eyCUcyzj7g25EkXl2p7dMtf5YWfQk6oi3ls9GS68vybOO6htWUjgXTey/z9pZ6HxSCie
-         T1pPbmVH7KzE6IbthrC3vrkyaORnRLdtaPmmYv5ThOEs6+x8ypRmtRKAe2DfZZvrO/ux
-         KFJrZitNhzCWl41+lw+4gT+lufzmEVFzn8B37wQZ5MFegdtzp34gykcMzWohbJdwbP1e
-         BwEcS5sO+nrf5W2aRZJ6rxd0E53rP5VzvBxgDk43WVMyQnVzIZKnCtvQpN6XoFbeTQXL
-         e6kQ==
+        bh=7g9NCGY01ymluNhJoggsG8hQO99YWuEg4encn9wbinI=;
+        b=U8sRqRSwiCW9ESh0lgqQLbdwL+S4b4uOtERLJ+6rRt8mkp/r7Y0SEAveS1QSTs7FBN
+         iWpYF18JM2I0WZjKzaBBACVt5yJw5OWNgNxe75NTcS2DR7WgvgpCPfvZaMsdySijf1Cx
+         gp/bZGesZedbiW3j3fdXpADPh3ca23m+C+11WZfc/LWtlcPC0vRTACyEpSs5bEEr/rJm
+         lA3YHZluXjArBL+IOAM5LeLjBPqh5mF4cEds3kFg5MuaAn16yz0ugWx/DACfgEm0owE0
+         qn/dY8sq0CFhDq5oV5dcu6mXzxeMdLF7ZGVu4nJu8evChy7jfsQaDwp5BEj1o5zlskwW
+         EncA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711050662; x=1711655462;
+        d=1e100.net; s=20230601; t=1711050748; x=1711655548;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iixGjUfXCfJMUnrcexrZ0eyfEWhjuM3K/uWarfVEAVk=;
-        b=J/7Das4EbIlGx8YRaKWDubu4IUcrqcvDWZ3k42qMsW140odJdH+zEcMJPM0ZeXwBqR
-         g+ssmlKKdHHo4KQUQ0+3v0xZ65g11gX/2P+HXB8tIcBo4EMfwyBrlBjvEpHCIHccjpyQ
-         YfX44CpoXXYS1AN60/cq4vbplKBwO0ECiQCU0W2Yyd/H9bDFWH3GKT7Kq8U9bcS5zlk0
-         xZpQBLuMxOyBXAs7n3ZmEUSek/wOB6bHBqyyvPfUAfgrvUgnhCn66e7ZabfONgGlA7rr
-         cCugML32kK+ThrBAtNeLo3E4yBIgNVmU2BpQAFuaDDV/3nBjEeEhm+vvxi/2I7V/2rzQ
-         6xzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXO8s6D8EnFg9t+1PiyIpKef/MmAkIqhHOo7E3BTbnOm+M0TSILUuRpuylSz+tTJrCQtiS8F8wkOYypgR6I3qx3Is2vRYTYwJ438ZAM
-X-Gm-Message-State: AOJu0YxF8Movg2Tk6B9EYqm0LbwB5+A1ZPjkDgza4psZh3FscqDGYrTe
-	mVU9yiEqx6mgy9dTCp0fYBZvBH5Mg/UvaKS//avdhahRu65ykYSDtDLbMfLXMARE49VuM4Noo8G
-	vsQqLtWgYZjFl/j8vt8kkfu+LZAQ=
-X-Google-Smtp-Source: AGHT+IHC04Mxu4uYGYqSg1xnE6M0Y538u9f25FwsU4ZoeEecU70fYnSo3hpS+8ZP7mILcujhKphNK14BU0LOGThs+x0=
-X-Received: by 2002:a92:d450:0:b0:366:b0bd:3a1a with SMTP id
- r16-20020a92d450000000b00366b0bd3a1amr555954ilm.1.1711050662557; Thu, 21 Mar
- 2024 12:51:02 -0700 (PDT)
+        bh=7g9NCGY01ymluNhJoggsG8hQO99YWuEg4encn9wbinI=;
+        b=Xi5k7GsZqee7T7UX9+lCcUbAxuuK5RkIl8BkLV+aNjiz4bgt5WX/BCZOHhi/jUNudN
+         os6bo/zQFzrGiNHlcwqfNu9VHHiEAyXZXdlbpnnVA2UFoQi9GCQPmbyWRi5vMef7uzcI
+         LM7GT52GXn41narLqiQSq1ndR1Z3prKb9A6j0AupwFKRX0sNRbSJJtPcT2uaJzKucRmd
+         i9z/KVnJc9nb9n/feZGISRHD8P5QUMxKFukxws/MrVd5b0GrD/u0vUWIaeS8+0db63Ll
+         Xr2z4Lnpa3u/jvOtDBT2IHzWmOggdWoQRGay8jSqCazFS2xdTRxNwpQZWzPWwo7uoP8A
+         PXbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXEXNyC3YZ0dCHaYacMEGL2zdE4jtjjuKfNzexe268PouRj+L0TdswztoQryW36o2Sn9R/+vaNcxo4bCdgEJLgkXpmqFt1HP02XUIxKwskrgdSYnFHmg5IapITPt7a6POaxPmdzVA==
+X-Gm-Message-State: AOJu0YwHCjWDQHVtl5Gi/EQi5FBRx2XcT9hLExr93YJzwo0mNx6R0t7C
+	U8w8WJccBNTCNarFU6gIfX42ZvwhgHowR7cx8hH0SQZdSbxhoxArZSUGzQJSFwH4Gp4n0r5ZgyV
+	WJjxANH2Ua2O72ugvpBv5R9z1a98=
+X-Google-Smtp-Source: AGHT+IHeRGYnu8OY3eiPPYKq0YGvx2izwmmbVrGCsmBFaLYt0yE8OEZ9pzFlZGLmywWhWPikpexuKk1/hqI8uulgA4o=
+X-Received: by 2002:a17:903:230f:b0:1dc:51ac:88f5 with SMTP id
+ d15-20020a170903230f00b001dc51ac88f5mr434224plh.65.1711050747888; Thu, 21 Mar
+ 2024 12:52:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315091434.10622-1-dmitrii.bundin.a@gmail.com>
- <CAADnVQ+o9WQNdY2iApYMN=KnKSxnKGb6NcYzYkDD9V36Di6bCw@mail.gmail.com>
- <CANXV_XwaPOOYuAsveVbfNU4tFbw30rkX3AKrBdKzrNNsUxer+Q@mail.gmail.com> <CACGdZYLn5pokOQN-uqeaVPSOtVUHy+CGmuBduhgtV+Vft8WxbQ@mail.gmail.com>
-In-Reply-To: <CACGdZYLn5pokOQN-uqeaVPSOtVUHy+CGmuBduhgtV+Vft8WxbQ@mail.gmail.com>
-From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
-Date: Thu, 21 Mar 2024 22:50:51 +0300
-Message-ID: <CANXV_XzktootzRkRSWVCgBTUOdS5eOxKZyGV3w+uMYO1uAavKg@mail.gmail.com>
-Subject: Re: [PATCH] tools/resolve_btfids: Include linux/types.h
-To: Khazhy Kumykov <khazhy@chromium.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Daniel Xu <dxu@dxuuu.xyz>, Viktor Malik <vmalik@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>
+References: <20240320182607.1472887-1-jcmvbkbc@gmail.com> <202403211004.19F5EE27F@keescook>
+In-Reply-To: <202403211004.19F5EE27F@keescook>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Thu, 21 Mar 2024 12:52:16 -0700
+Message-ID: <CAMo8Bf+jbsnok=zy3gT2Z-F8=LCMVVFhAoiJ8sjwaEBSbbJXzw@mail.gmail.com>
+Subject: Re: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Rich Felker <dalias@libc.org>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 7:56=E2=80=AFPM Khazhy Kumykov <khazhy@chromium.org=
-> wrote:
-> I'm also seeing this, on clang.
+On Thu, Mar 21, 2024 at 10:05=E2=80=AFAM Kees Cook <keescook@chromium.org> =
+wrote:
+>
+> On Wed, Mar 20, 2024 at 11:26:07AM -0700, Max Filippov wrote:
+> > In NUMMU kernel the value of linux_binprm::p is the offset inside the
+> > temporary program arguments array maintained in separate pages in the
+> > linux_binprm::page. linux_binprm::exec being a copy of linux_binprm::p
+> > thus must be adjusted when that array is copied to the user stack.
+> > Without that adjustment the value passed by the NOMMU kernel to the ELF
+> > program in the AT_EXECFN entry of the aux array doesn't make any sense
+> > and it may break programs that try to access memory pointed to by that
+> > entry.
+> >
+> > Adjust linux_binprm::exec before the successful return from the
+> > transfer_args_to_stack().
+>
+> What's the best way to test this? (Is there a qemu setup I can use to
+> see the before/after of AT_EXECFN?)
 
-I think the error is more related to the libc version. I updated the
-libc6 to 2.35 and noticed that the <linux/types.h> header is included
-indirectly through <sys/stat.h>. The relevant sample of the include
-hierarchy for <sys/stat.h> with libc6 v2.35 looks as follows:
+I put a readme with the steps to build such system here:
+  http://jcmvbkbc.org/~dumb/tmp/202403211236/README
+it uses a prebuilt rootfs image and a 6.8 kernel branch with two
+patches on top of it: one adds a dts and a defconfig and the other
+is this fix. The rootfs boots successfully with this fix, but panics
+if this fix is removed.
+The easiest way to actually see the AT_EXECFN is, I guess, to
+do something like that:
+---8<---
+diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+index fefc642541cb..22d34272a570 100644
+--- a/fs/binfmt_elf_fdpic.c
++++ b/fs/binfmt_elf_fdpic.c
+@@ -659,6 +659,7 @@ static int create_elf_fdpic_tables(struct
+linux_binprm *bprm,
+       NEW_AUX_ENT(AT_EGID,    (elf_addr_t)
+from_kgid_munged(cred->user_ns, cred->egid));
+       NEW_AUX_ENT(AT_SECURE,  bprm->secureexec);
+       NEW_AUX_ENT(AT_EXECFN,  bprm->exec);
++       pr_info("%s: AT_EXECFN =3D %#lx\n", __func__, bprm->exec);
 
- /usr/include/x86_64-linux-gnu/sys/stat.h
-. /usr/include/x86_64-linux-gnu/bits/stat.h
-.. /usr/include/x86_64-linux-gnu/bits/struct_stat.h
-. /usr/include/x86_64-linux-gnu/bits/statx.h
-.. /linux/tools/include/uapi/linux/stat.h
-... /linux/tools/include/linux/types.h
+#ifdef ARCH_DLINFO
+       nr =3D 0;
+---8<---
 
-The <linux/types.h> is included on the latest line of the sample.
-Starting the version 2.28 there's an inclusion of <bits/statx.h> which
-was not presented in 2.27.
+> How did you encounter the problem?
 
-When building the resolve_btfids with the libc6 version 2.27
-<linux/types.h> is not included through <sys/stat.h>. The include
-hierarchy for <sys/stat.h> with libc6 v2.27 looks as follows:
+I'm doing xtensa FDPIC port of musl libc and this issue popped up when
+I began testing it on qemu-system-xtensa with the real linux kernel.
+Related post to the musl ML:
+  https://www.openwall.com/lists/musl/2024/03/20/2
 
- /usr/include/x86_64-linux-gnu/sys/stat.h
-. /usr/include/x86_64-linux-gnu/bits/stat.h
- /usr/include/fcntl.h
-
-To avoid being dependent on the inclusion of <linux/types.h> at some
-other place it looks reasonable to include it explicitly to bring all
-the necessary declarations before their usage.
-
-What do you think?
+--
+Thanks.
+-- Max
 
