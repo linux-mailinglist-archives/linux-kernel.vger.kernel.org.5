@@ -1,103 +1,79 @@
-Return-Path: <linux-kernel+bounces-109630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFF7881B9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:45:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FF1881BA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF8001C21726
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:45:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A257A281F79
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFE99BA4B;
-	Thu, 21 Mar 2024 03:45:36 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F13FBA4B;
+	Thu, 21 Mar 2024 03:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="trvVzPXI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6576D39;
-	Thu, 21 Mar 2024 03:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF1AB651;
+	Thu, 21 Mar 2024 03:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710992736; cv=none; b=mCF+ZtsLeiCdvnxC27nCHsHiWyMFyBRP5oQdD0ukv2uNeOipvuJDeWsMbvId7/s9nGWz6fiWxuY0tEn+NmJa2NZtmEpEh8Xa8AYmoLlig/kCqttdKJMV4hQM5ocfluleLguKecai9kXr7efVyV/Lci/+E9qHZRMDBOeF2bgQRZA=
+	t=1710992764; cv=none; b=WH3zhjPnKGheVUUnR1OsWHMNg1ddMhoJ3S3KL8HMUfXO+O05gLzZzwsRilvv+ATk8YdQDX9TAtx0fz2T8H3lghJbQHnKrgJw6LG00WJkOVFI8DFvjI5Qq+e4QgGEyaDOQVjXWknwYgNIjm4gBTx7bieCex/lfdqfCWSPvSN3gyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710992736; c=relaxed/simple;
-	bh=NHjn5I2E8OUKAyyvwBV0GVI+3EQB1r6fWHAfZDjadSM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=W4hNK1umG+2dONgIj4if1XQRsOzWUzRumOZwQ3UVWWWLJ51IFyhgb6+px+NU6SwIAJPSZCnZi75ZfDF0ztkAn2Of1qGLcCj7c6Sq91oGBQfjDM6jDEW1Lkq65R0VnbjOeLDwkJJGKRh9fzHeZ3nRHtIMKONeHZirTfzT4Yw4lzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V0WZD4qL6z4f3jHt;
-	Thu, 21 Mar 2024 11:45:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id AD7191A0C84;
-	Thu, 21 Mar 2024 11:45:30 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP3 (Coremail) with SMTP id _Ch0CgC3w5tZrftlDzDuHQ--.36010S2;
-	Thu, 21 Mar 2024 11:45:30 +0800 (CST)
-Subject: Re: [PATCH 2/6] writeback: support retrieving per group debug
- writeback stats of bdi
-To: Tejun Heo <tj@kernel.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- willy@infradead.org, bfoster@redhat.com, jack@suse.cz, dsterba@suse.com,
- mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-3-shikemeng@huaweicloud.com>
- <Zfr6QV-2IWD6yCI1@mtj.duckdns.org>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <956133f9-f758-002f-64a3-4c44d4bd04d5@huaweicloud.com>
-Date: Thu, 21 Mar 2024 11:45:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1710992764; c=relaxed/simple;
+	bh=bwid3uwKWHuUNT9wA19C7cl1ryQUBQSJA1FQcFOtxnE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iagPZ9m/91lDIhh35GaDjSGDZeOoDz1izSfivIGxweOubZMEK/sN7VM+gLyMsZn1glQy3RwhxJi5q/l3alzUjKDA1jSwaANe3ShGe/GB0TFOEjgIYtdj4RXoPXTRuycuJhssmxT/Qu9Fg3fNhCHUuDnuM5VwwWEF08QjN3TjTXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=trvVzPXI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014D5C433C7;
+	Thu, 21 Mar 2024 03:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710992763;
+	bh=bwid3uwKWHuUNT9wA19C7cl1ryQUBQSJA1FQcFOtxnE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=trvVzPXI+hS8/hfoisdeodsAoz8BsbzpM+9oedrBNyS616bHlDU6Z3FrXdZm85mdD
+	 EZ1IClPq0vDJLftlZ871oyE7P1NBLOlgC34rIUmlVaeCUBHdkn8hv14Sg6W60XGmzp
+	 0dGU6tQO07ePCpgxQs111SBGv1qeT1brjDN6y0tHA8MAM0ZLJj6DBDRcpqB2BSH7CT
+	 P7yYN40hCo2b9NDP7Qiu4OzlKVjneu4/sPybCx6hjvRvrfjAJ1C5HPM5zhWGEh38MJ
+	 FfhDalCvQwu2NS/JjklpTRlIsIDaTTudrp7h4p7kC3BYcI9xGCQ5KvbYo9GR2Ci7f/
+	 zaLHXnJ/Pqu2A==
+Date: Wed, 20 Mar 2024 20:46:02 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Duanqiang Wen <duanqiangwen@net-swift.com>
+Cc: netdev@vger.kernel.org, jiawenwu@trustnetic.com,
+ mengyuanlou@net-swift.com, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, maciej.fijalkowski@intel.com, andrew@lunn.ch,
+ wangxiongfeng2@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v3] net: txgbe: fix i2c dev name cannot match clkdev
+Message-ID: <20240320204602.59687f28@kernel.org>
+In-Reply-To: <20240321020901.443642-1-duanqiangwen@net-swift.com>
+References: <20240321020901.443642-1-duanqiangwen@net-swift.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zfr6QV-2IWD6yCI1@mtj.duckdns.org>
-Content-Type: text/plain; charset=gbk
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgC3w5tZrftlDzDuHQ--.36010S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF48WF4kGF4DXF1fWFyUJrb_yoW3Xrc_u3
-	y5Ar4kuFsxXF1kW3WxZFn8JrZ8K3ykWF17ZanYqryDtFn5AFZ5ZryfWFZrJ347K3WrZFnI
-	93Z3Xw47Wr4DujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UQzVbUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-
-
-on 3/20/2024 11:01 PM, Tejun Heo wrote:
-> On Wed, Mar 20, 2024 at 07:02:18PM +0800, Kemeng Shi wrote:
->> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
->> index 9845cb62e40b..bb1ce1123b52 100644
->> --- a/include/linux/writeback.h
->> +++ b/include/linux/writeback.h
->> @@ -355,6 +355,7 @@ int dirtytime_interval_handler(struct ctl_table *table, int write,
->>  
->>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty);
->>  unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh);
->> +unsigned long wb_calc_cg_thresh(struct bdi_writeback *wb);
+On Thu, 21 Mar 2024 10:09:01 +0800 Duanqiang Wen wrote:
+> txgbe clkdev shortened clk_name, so i2c_dev info_name
+> also need to shorten. Otherwise, i2c_dev cannot initialize
+> clock. And had "i2c_dw" string in a define.
 > 
-> Would cgwb_calc_thresh() be an easier name?
+> Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID limits")
 > 
-Sure, will rename it in next version. Thansk!
-> Thanks.
-> 
+> Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
 
+No empty lines between Fixes and Signed-off... please.
+
+And please read:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+-- 
+pw-bot: cr
+pv-bot: 24h
 
