@@ -1,92 +1,142 @@
-Return-Path: <linux-kernel+bounces-110692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE6788627C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:22:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 612D088627D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD411C220E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:22:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E51771F231D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EA613664C;
-	Thu, 21 Mar 2024 21:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCC2136649;
+	Thu, 21 Mar 2024 21:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KXyqdB/5"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CiJNTqx7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED1E135A72
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630EC135A55;
+	Thu, 21 Mar 2024 21:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711056143; cv=none; b=EAe4a3j7W+whxeBSd9yW1fW5xn9XfRXLsuot/I6xDQayvRdQHs4gCGiI6aVQvM9hpIW3CWJ7qrQYaCJ5L7lGtcTghw1jpJgiUChRjUuKMbAzcQzp4m8DDT/lRtyoiwPE1FofUQ/L2jJa6Hw053RSZ0Mla5zrLeymWZFPZaP4pSs=
+	t=1711056256; cv=none; b=KqIIc93a3U+7hzPZE6yWIc9hT8Jn5qT8/AnYGfr5ZpW2TePBUzMBbkEXcWwcQHqTLV12C4D8bi8t/c5psL4gW/T7ErLqE6gMHxRKc8151Eauc2S20GKGGb2gIDd3Osf7XD+PN9D85vvftgElZ6p2TcaRvyK0AZEeKHgfagAbJEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711056143; c=relaxed/simple;
-	bh=Anq4NcuB/lwgoTXLF75lThmEeR+MuCgA6bicmSCWtE4=;
+	s=arc-20240116; t=1711056256; c=relaxed/simple;
+	bh=0YXDk0lo2amfuxfoAWLgdqVOuj49kR3I7zPhp3zFKBQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=atOXxiBVElGY0R+/CFOLB/QoX+F5204Q0moOQdDPsmVzIMYaTsa9J5NHYI57q6rZHYQsJBd4WSgMpB+mb5uEYINQSOIR9sXauIsTzouK2DLQ6JoPGCOflT+xSbQk7+0JZxSr6RT7IA2icopDJ0NiSgZmsTCefVP6Ojn3n76CxwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KXyqdB/5; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 21 Mar 2024 17:22:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711056139;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S05qIGXtD9xW8hBhYLVEJF2bePesL9LF4WflE+oBdCA=;
-	b=KXyqdB/5x6fm8sKDy7Wx6c1+9/aaeEK0c6jkGhTWGiLB9kU+pA76QZmr1Kf9DTr66Dc60G
-	fB2C5gKBmUG3J3KTzZLaNkFSoCZTsVYWkK9kLZLejwfJhbprlY/Qz7wCVcISG86ycSSRRM
-	37QJ0vm12wWgJX97hIfyhbDmoQVqYJg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
-	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 04/15] lib min_heap: Add type safe interface
-Message-ID: <mi3uq4gqvseubfiylslxfrnwupfzopz753md5f53v6brlgiamv@l5bxmctqnz6g>
-References: <20240320145417.336208-1-visitorckw@gmail.com>
- <20240320145417.336208-5-visitorckw@gmail.com>
- <iz6wl3twuc72txd4ifxy73bbbfijo3ecy7izw3drsmcb2payeu@b2dusfoqobgu>
- <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gJsFsuD2KSh+ODOCAfaV44Lc9fnShoS2WocTBJgMxYLOB0HzdepnkLtNjLx9/iJZrzrEqjmqmcErpvQtFvHmtFAcsRJliJNjiZxWVBnWLlL/Tts2LDcg8rkO/bQiUf94JQqfhmbKp9UdBZOz+sK++Jj8EKi24nPU1kuVWAaDo7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CiJNTqx7; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711056254; x=1742592254;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=0YXDk0lo2amfuxfoAWLgdqVOuj49kR3I7zPhp3zFKBQ=;
+  b=CiJNTqx7EL8rdHXuut3DhS9wrX3J1d4vo8CVbcJ9AqA9tVfTVX1Jk6xW
+   fxy7Gr2LPRUw7TP3vtLLcCsqFGXS2tx0SJW6y3Hn9fMQSemEknjrNpE9O
+   Uw9frRpCIt9vYyIOHZxpqt7Vz6LEGQWITMfb8Y5cHUPR9oNbnQhFc0nXj
+   /b4dqvzbf9eFdY64eyIiNDlukLSwBahKjJLwPDEXqn/Ra995RqFXWbCni
+   j2Vah4QPO2fpNdjrXuGo6t5NaR9+Z1zlxu+EnCCd023cIihekbS2Ts1er
+   3gBtDOoyEjEfNvt6pz5Riknzs/ZklCqYG6zb9oCIPGenb4pCjJD+Erg7K
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="9847269"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="9847269"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:24:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="14627431"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:24:12 -0700
+Date: Thu, 21 Mar 2024 14:24:12 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 056/130] KVM: x86/tdp_mmu: Init role member of struct
+ kvm_mmu_page at allocation
+Message-ID: <20240321212412.GR1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5d2307efb227b927cc9fa3e18787fde8e1cb13e2.1708933498.git.isaku.yamahata@intel.com>
+ <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
 
-On Thu, Mar 21, 2024 at 07:57:47PM +0800, Kuan-Wei Chiu wrote:
-> On Wed, Mar 20, 2024 at 04:56:57PM -0400, Kent Overstreet wrote:
-> > On Wed, Mar 20, 2024 at 10:54:06PM +0800, Kuan-Wei Chiu wrote:
-> > > Introduce a type-safe interface for min_heap by adding small macro
-> > > wrappers around functions and using a 0-size array to store type
-> > > information. This enables the use of __minheap_cast and
-> > > __minheap_obj_size macros for type casting and obtaining element size.
-> > > The implementation draws inspiration from generic-radix-tree.h,
-> > > eliminating the need to pass element size in min_heap_callbacks.
+On Thu, Mar 21, 2024 at 12:11:11AM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+
+> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
+> > To handle private page tables, argument of is_private needs to be
+> > passed
+> > down.  Given that already page level is passed down, it would be
+> > cumbersome
+> > to add one more parameter about sp. Instead replace the level
+> > argument with
+> > union kvm_mmu_page_role.  Thus the number of argument won't be
+> > increased
+> > and more info about sp can be passed down.
 > > 
-> > let's avoid the heap->heap.nr - darray (fs/bcachefs/darray.h) has a
-> > trick for that. All heaps have the same memory layout, so we can just
-> > cast to a void pointer heap to get something the C code can use.
-> >
-> If I understand correctly, you're suggesting adding APIs similar to
-> darray_top(), darray_first(), and darray_last() within min_heap and
-> having them return a pointer. However, some users are using heap.nr in
-> conditional statements instead of utilizing heap.nr for memory
-> operations, so returning pointers may not be as convenient. What about
-> adding get and set functions for nr instead?
+> > For private sp, secure page table will be also allocated in addition
+> > to
+> > struct kvm_mmu_page and page table (spt member).  The allocation
+> > functions
+> > (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know
+> > if the
+> > allocation is for the conventional page table or private page table. 
+> > Pass
+> > union kvm_mmu_role to those functions and initialize role member of
+> > struct
+> > kvm_mmu_page.
+> 
+> tdp_mmu_alloc_sp() is only called in two places. One for the root, and
+> one for the mid-level tables.
+> 
+> In later patches when the kvm_mmu_alloc_private_spt() part is added,
+> the root case doesn't need anything done. So the code has to take
+> special care in tdp_mmu_alloc_sp() to avoid doing anything for the
+> root.
+> 
+> It only needs to do the special private spt allocation in non-root
+> case. If we open code that case, I think maybe we could drop this
+> patch, like the below.
+> 
+> The benefits are to drop this patch (which looks to already be part of
+> Paolo's series), and simplify "KVM: x86/mmu: Add a private pointer to
+> struct kvm_mmu_page". I'm not sure though, what do you think? Only
+> build tested.
 
-No, I mean not having separate inner and outer types. Want me to sketch
-something out?
+Makes sense.  Until v18, it had config to disable private mmu part at
+compile time.  Those functions have #ifdef in mmu_internal.h.  v19
+dropped the config for the feedback.
+  https://lore.kernel.org/kvm/Zcrarct88veirZx7@google.com/
+
+After looking at mmu_internal.h, I think the following three function could be
+open coded.
+kvm_mmu_private_spt(), kvm_mmu_init_private_spt(), kvm_mmu_alloc_private_spt(),
+and kvm_mmu_free_private_spt().
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
