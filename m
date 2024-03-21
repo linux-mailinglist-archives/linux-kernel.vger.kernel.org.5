@@ -1,111 +1,85 @@
-Return-Path: <linux-kernel+bounces-110098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50A4C8859FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:34:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F04DD885A04
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D1E6B21C5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:34:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB3862821A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5470584A52;
-	Thu, 21 Mar 2024 13:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B4784A54;
+	Thu, 21 Mar 2024 13:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nQSi3vn9"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IVgs5M3U"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0AD84A41
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D885810B;
+	Thu, 21 Mar 2024 13:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711028051; cv=none; b=DmZGJbTbAXN6eZHO6QZqmT7TOW5spPGwOG4B9Px+qAFYuDLU2Aiaziigu6ZSLxwe/YlUXsnKXD8l0GWqwVU9d/+GGjq8shpwgYgffuBQ1bSEjXtbjZr+dwsC7awN5g/AHEijAM8SvYy2LpCqIZR+qu3YmjKqUY1PLGuqUdKEB/4=
+	t=1711028120; cv=none; b=Uyd+ViSpA0pGy3RYw0QXRNlOdPK2KZ76xNdtrFq3vzg4SBxWyUbFRYRqy40Bdo+KXETdbO/gaZjBIq3hZNiJZZsu9xoMwiaBFpDr3FwgFfRTkb6SOLXgwzVJcheqwmA6TS3Zy1MLa1/6cXfH4/oUhuxP19HzuuINdjfDtobzuuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711028051; c=relaxed/simple;
-	bh=4rGCuazBqIHOXvtaI7Wo0zKZRsaUt8SJwAl/0Nh+JqU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=da8bJiMp4YEQG+CKf7TTGhsp3gdvZ7u7guScUiRUxogGt2dBdD0V5ZGZyqegeIi0seQps0Dyc7Z3xs77dlXq5fLTRJaVpsDtciMHt03bwqTbRQBZLjgOm2If4DaHgDsp7NfWdHK786CN5ug8YSrq31RSb01CVSLrrbEDplIADvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nQSi3vn9; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso959929276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711028049; x=1711632849; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=b7bxt9nrUotSd041Jk9I1N2RXEe6VR/TERlrPfMUlBo=;
-        b=nQSi3vn9h0FL9kh8bQkPn9T1yNjHOzCo5t9fjNdr17TTF7fHN5v30Nlu9IJHmw9fly
-         Cy7MegFn3QHB6an27Y0mqPN2xq7CLocQPdLWTAkHnbEoQIgAyGScU7XQ6Bp3Byq+Ulhc
-         +M6UGsE8y9MztGW7usVFo9u9XVWy57gF9GD96St8ZAIJzGJiL/2A3sxT6iy6Xo8KVosG
-         4Lz6wiwWW3Utrn+bpJd/IU0nKK5Bg/QfJVRwVjNV4UFbrT1XqvGNcc76iP3kIFUD6dUy
-         CB+i4SiU4XDHhLESM5U0fuNTG8epRi6SG4tzs8vhXtpDY+hPcnHoV3KMxXEcM11BS8i1
-         H4Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711028049; x=1711632849;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b7bxt9nrUotSd041Jk9I1N2RXEe6VR/TERlrPfMUlBo=;
-        b=ZIsCRXuuMHkW7s3mLhsBBD/FHvFIa5zBKn3AUXwv73XCNNZAcJPCXYsNolxpNA7So1
-         IPlFfFtreeGf95DfWOF14TKbQ4ocrLuNfZXFvRa7xH6QZXSv4+AwRuo4IynFJ+w/FH01
-         MUgcaqfuED/xcZCgizIqM7Rmm2C5lRsU/h4JPSAqwIwje6pGkAMjmASyfcqNU6qWaFTJ
-         Vhx0Fjsvd1p/q8Kw/EIpdZ/1C3eEZsZUQ2UfzXeM9xSU3y8hZf6h1HQZNhOr+09DqihK
-         epDWi5QT9CiaFRDmKcUqma7ZyyDovC18+zPCknwQtkcr6OjfV6rvJOxelMGKQv0S21rw
-         u4MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdnbS8eh8Y0iKoe31lMHNi3wsQvCFx3nMywls4S7eezQN/qdhEJEi2phfrln5gwRtN/9hoWHMe8qLhUVnhEWwIOIpX7MZqNHgYiiHv
-X-Gm-Message-State: AOJu0YzlQllNsWkQ2AVV+oeHYIRydvXaCPJWY7iWRa4BVnn3GXKXKJPl
-	bztUoyJkjO8226hq7bC3+MP/CCWx3nEzsp7fXbP+00fl2vQthisPa23FQC5bgM0Qot88Sc0Bl53
-	Uga3ZPBfRytIqRP+3XsWn9viN2RaJf8ouNSpfgOkrr9u2A3cl
-X-Google-Smtp-Source: AGHT+IEMV70cy2lfVctFclzg46XTHw7b9TCUBAofP7jsI4yCoZ9ytwZlQ3WAG5PxiT1bzKqOtfrpUpK2FbkGF4MjIas=
-X-Received: by 2002:a05:6902:2305:b0:dcd:24b6:1aee with SMTP id
- do5-20020a056902230500b00dcd24b61aeemr9277695ybb.47.1711028049057; Thu, 21
- Mar 2024 06:34:09 -0700 (PDT)
+	s=arc-20240116; t=1711028120; c=relaxed/simple;
+	bh=JpD2OHISkkjxiWqxZe4gvt3KE6laF2S8GHpaK5KN600=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dXakTzL+FSVS6XWbULatdsdp/gyXf4CwgGRmcsiNlXmBzygFFX242d6bKZfVR4pvmYawY280udxfZIcNCgCkgRxh4aRjimE3v6u7Nny2s2cc/fYIDcITfobTkuZl4sPP6gdkQi0i61B2ewuyx+E0X2V0OLtjdkSB5Bkr2R6JPTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IVgs5M3U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77EEEC433C7;
+	Thu, 21 Mar 2024 13:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711028120;
+	bh=JpD2OHISkkjxiWqxZe4gvt3KE6laF2S8GHpaK5KN600=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IVgs5M3U2fy7JgNBFDaw7i3SKbHIZjBHPK/mGVImZXYCb8UOcWIUGSzO5kc/EcFSG
+	 sJU0W4H2QJVryB9kOxIZnXBzYFnvhe9wZkibLS0hw3/rlqjjLujFe39mcOdz/JKSKl
+	 f1ii5dk+WTSs1i0vtseKFGoKEE1IAB3/+F/cGM8BY9//sxQ8R9I2PmTo1+6/hJSNtC
+	 DDdNIJzwBVfTZgIS06Jv+nY0Ut8aO7ueCAxbBCj/0XR8MEKimKVJCaqRqmv1MBhHMA
+	 wzJM8Bu+Q7iRh/5ox2JXBThuOPbqYFWlObC6QOZ030lgBTxtpuY8cFn7Y0jymZmbZv
+	 cIyFGQef6vU1w==
+Date: Thu, 21 Mar 2024 14:35:15 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Donald Buczek <buczek@molgen.mpg.de>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, it+linux@molgen.mpg.de
+Subject: Re: possible 6.6 regression: Deadlock involving super_lock()
+Message-ID: <20240321-brecheisen-lasst-7ac15aff03b1@brauner>
+References: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321-apss-ipq-pll-cleanup-v2-0-201f3cf79fd4@gmail.com> <20240321-apss-ipq-pll-cleanup-v2-2-201f3cf79fd4@gmail.com>
-In-Reply-To: <20240321-apss-ipq-pll-cleanup-v2-2-201f3cf79fd4@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 21 Mar 2024 15:33:57 +0200
-Message-ID: <CAA8EJpqqDBQTLmrit33n5XoqVOP05Ts=C5xLr2qOwhPSA8rMuw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] clk: qcom: apss-ipq-pll: move Huayra register map
- to 'clk_alpha_pll_regs'
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
 
-On Thu, 21 Mar 2024 at 09:50, Gabor Juhos <j4g8y7@gmail.com> wrote:
->
-> Move the locally defined Huayra register map to 'clk_alpha_pll_regs'
-> in order to allow using that by other drivers, like the clk-cbf-8996.
->
-> No functional changes.
->
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
-> Changes in v2:
->  - rework the patch as requested by Dmitry Baryshkov by moving the register
->    map into clk-alpha-pll.c instead of keeping that locally
->  - Link to v1: https://lore.kernel.org/r/20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com
-> ---
->  drivers/clk/qcom/apss-ipq-pll.c  | 20 +-------------------
->  drivers/clk/qcom/clk-alpha-pll.c | 10 ++++++++++
->  drivers/clk/qcom/clk-alpha-pll.h |  1 +
->  3 files changed, 12 insertions(+), 19 deletions(-)
+> Also, one writeback thread was blocked. I mention that, because I
+> don't get how these these two threads could depend on each other:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Writeback holds s_umount. So writeback seems to not make progress and
+blocks the mount. So right now it seems unlikely that this is related.
+Any chance you can try and reproduce this with v6.7 and newer?
 
-
--- 
-With best wishes
-Dmitry
+> # # /proc/39359/task/39359: kworker/u268:5+flush-0:58 : 
+> # cat /proc/39359/task/39359/stack
+> 
+> [<0>] folio_wait_bit_common+0x135/0x350
+> [<0>] write_cache_pages+0x1a0/0x3a0
+> [<0>] nfs_writepages+0x12a/0x1e0 [nfs]
+> [<0>] do_writepages+0xcf/0x1e0
+> [<0>] __writeback_single_inode+0x46/0x3a0
+> [<0>] writeback_sb_inodes+0x1f5/0x4d0
+> [<0>] __writeback_inodes_wb+0x4c/0xf0
+> [<0>] wb_writeback+0x1f5/0x320
+> [<0>] wb_workfn+0x350/0x4f0
+> [<0>] process_one_work+0x142/0x300
+> [<0>] worker_thread+0x2f5/0x410
+> [<0>] kthread+0xe8/0x120
+> [<0>] ret_from_fork+0x34/0x50
+> [<0>] ret_from_fork_asm+0x1b/0x30
 
