@@ -1,152 +1,251 @@
-Return-Path: <linux-kernel+bounces-110253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EBE6885C22
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:39:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA2B1885C29
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A96FD1C2198D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:39:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FB46280DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD82C86628;
-	Thu, 21 Mar 2024 15:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F12A86637;
+	Thu, 21 Mar 2024 15:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E3s41Xaa"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nGHL3Xkv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29D88624C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF9986AC6;
+	Thu, 21 Mar 2024 15:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035242; cv=none; b=cyMCl8rCn753rAP/ux7+UMPBEFLG98XTzWbvdrlrMSxDGoiLMZ7QcYG4nk1Xli7PsjyCkppqSMcoFrKJ8F0lDGF7OeN4EYvwCEc6WQqYTWpRd0yYuWxzGHDd3ke11jAYXMS0UWaAUL5cghe6aadHLQhdvO4knVcChyrlG2NJXzo=
+	t=1711035265; cv=none; b=LtdV7mixDNRh6ETsglc/BI9FeFYbldAn5g/OajPBoQIWDn1c8PkpGCkxomkxQMXOv8INZh35UeWKE9LYxNJEwBpQkSBZYyUissQnc03N4SSDuiCP86c5FZBk/v+UBgrtRNQ5gdOzKhlSIXmyhI6GwVY6ntDsryiwOoowzfccO3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035242; c=relaxed/simple;
-	bh=11R+SzgEQ+nRo4cF+wHX4BeHS/CSRZ/WfDarIFy1ZWU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H5LTnTXgu4hlQewBjBRoOZSdPYP9aNxRSLWj3y9M/BIelOtoZTH8an1LKecgiLOSagrqBHctIfA+DXUtqpRXX27mE3TEfZdDfqaTsp+NAeBQH7hW+gbKBCh8AU3W5JlH/bhJhwDFgII8uSV4Hq6VRL7VMtDT3YgiOuuMJ9U0nT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E3s41Xaa; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2c38ac1c-cc0e-43b3-86d3-5b6a2f00f9e7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711035238;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XcnhGHIAXVuRsv4I7TSZ/EDA+Yw6Y/dChRxdQ571Ims=;
-	b=E3s41Xaaumg9Q3b3HHjrJAk+X6nZFsmGTFFJijUT4my3g35hQDUK4Dy6V6Uv+DSeQJ2nlM
-	g/Fe36s3KsD2tF4r2fe/ROT2RF/Y0xqsdijJZo6Wm/ozQKbzJK8+yrCmC0EJI/4Y00gWGa
-	/NUb+IB+brWq0eM+xTZqXw5VovE6+kI=
-Date: Thu, 21 Mar 2024 11:33:52 -0400
+	s=arc-20240116; t=1711035265; c=relaxed/simple;
+	bh=NHdYAaxvtVR1hgs4LTAu4brIdcf4tG0DdKMRKvsq9hc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RzN2sDX9bYDEUO755gEFJGdERhRkvD4RA/6vpJabOYIxWSTWqUT6Hn6Y+ebgydkj8Y72f7HDZsZ3Fa6Omf35sMp4QTjn7VLpBnCxcJpvwhxnZxO0cJ9u7YPua+g1/46UiboqfezA4bj1/wnO3fr6S2SURjTakh5xDY1NTYL1oiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nGHL3Xkv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADCDC433F1;
+	Thu, 21 Mar 2024 15:34:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711035265;
+	bh=NHdYAaxvtVR1hgs4LTAu4brIdcf4tG0DdKMRKvsq9hc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nGHL3XkvR3+D5mCUGkXbXVSrM8ykvghnJNr89wu3Cs4z0DG7wcnfRUG7FqEzl63cb
+	 IAsqbwoEcEhKfp/XHuzkO6jww0XfkgnKx6N3837tG1/I3hmqKzQLS3Sxs0OBwhqlb1
+	 KAOFGyZ4EUO7iaFSVfmVmUIUYphDcRdIJasOuhtuUygx0qkGZOJvDV8RPQq9UjLkny
+	 6X5wZ+AJtJxzUS/uz1TVUJJDFH1RtY9Qv8m5WOy021xqn8CkceiCR1GBiOClIj7UeG
+	 RXRYZFff7LtoCTsU4k1iQ5jcpqndflp22xL1g+9twCKaaa+Xe+cyWcZkoPTVvHb6rG
+	 nQSEabUZen2Sg==
+Date: Thu, 21 Mar 2024 15:34:17 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Parthiban.Veerasooran@microchip.com
+Cc: krzysztof.kozlowski@linaro.org, andrew@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, saeedm@nvidia.com, anthony.l.nguyen@intel.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	corbet@lwn.net, linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
+	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v3 12/12] dt-bindings: net: add Microchip's
+ LAN865X 10BASE-T1S MACPHY
+Message-ID: <20240321-upcountry-finless-b0e9b1ab4deb@spud>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-13-Parthiban.Veerasooran@microchip.com>
+ <20240306-spree-islamist-957acf0ee368@spud>
+ <4c5968a3-c043-45fc-8fff-2a9eaa6de341@lunn.ch>
+ <20240306-ripeness-dimple-e360a031ccde@spud>
+ <05a9a7ee-e4f0-443e-9c8a-8ee649a11448@microchip.com>
+ <2f384a54-74a0-4a75-a325-8985257b5d66@linaro.org>
+ <ba37c212-fb98-407d-9bee-6d14801754d9@microchip.com>
+ <96493beb-afbf-42f2-88f0-ad645422ecdb@linaro.org>
+ <1735add6-4a6a-452b-bf26-1cf19c95493e@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/8] drm: xlnx: Fix kerneldoc
-Content-Language: en-US
-To: Randy Dunlap <rdunlap@infradead.org>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-2-sean.anderson@linux.dev>
- <e2eba421-cba1-4dd5-837c-6be5f07ed402@ideasonboard.com>
- <d4072aa1-47e4-45d3-9e04-2cd9d782b593@infradead.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <d4072aa1-47e4-45d3-9e04-2cd9d782b593@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Hkhej6qqS7FQuj9S"
+Content-Disposition: inline
+In-Reply-To: <1735add6-4a6a-452b-bf26-1cf19c95493e@microchip.com>
 
-On 3/20/24 02:05, Randy Dunlap wrote:
-> 
-> 
-> On 3/19/24 22:42, Tomi Valkeinen wrote:
->> On 20/03/2024 00:51, Sean Anderson wrote:
->>> Fix a few errors in the kerneldoc. Mostly this addresses missing/renamed
->>> members.
->>>
->>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
->>> ---
->>>
->>> Changes in v2:
->>> - New
->>>
->>>   drivers/gpu/drm/xlnx/zynqmp_disp.c  | 6 +++---
->>>   drivers/gpu/drm/xlnx/zynqmp_dpsub.h | 1 +
->>>   drivers/gpu/drm/xlnx/zynqmp_kms.h   | 4 ++--
->>>   3 files changed, 6 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
->>> index 407bc07cec69..f79bf3fb8110 100644
->>> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
->>> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
->>> @@ -128,9 +128,9 @@ struct zynqmp_disp_layer {
->>>    * struct zynqmp_disp - Display controller
->>>    * @dev: Device structure
->>>    * @dpsub: Display subsystem
->>> - * @blend.base: Register I/O base address for the blender
->>> - * @avbuf.base: Register I/O base address for the audio/video buffer manager
->>> - * @audio.base: Registers I/O base address for the audio mixer
->>> + * @blend: Register I/O base address for the blender
->>> + * @avbuf: Register I/O base address for the audio/video buffer manager
->>> + * @audio: Registers I/O base address for the audio mixer
->> 
->> Afaics, the kernel doc guide:
->> 
->> https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
->> 
->> says that the current version is correct. Or is the issue that while, say, 'base' is documented, 'blend' was not?
-> 
-> Hi,
-> 
-> I would do it more like so:
-> 
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c |    3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff -- a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -128,8 +128,11 @@ struct zynqmp_disp_layer {
->   * struct zynqmp_disp - Display controller
->   * @dev: Device structure
->   * @dpsub: Display subsystem
-> + * @blend: blender iomem info
->   * @blend.base: Register I/O base address for the blender
-> + * @avbuf: audio/video buffer iomem info
->   * @avbuf.base: Register I/O base address for the audio/video buffer manager
-> + * @audio: audio mixer iomem info
->   * @audio.base: Registers I/O base address for the audio mixer
->   * @layers: Layers (planes)
->   */
-> 
-> 
-> but in my testing, Sean's way or my way result in no warning/errors.
-> 
 
-The specific errors are:
+--Hkhej6qqS7FQuj9S
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'blend' not described in 'zynqmp_disp'
-./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'avbuf' not described in 'zynqmp_disp'
-./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'audio' not described in 'zynqmp_disp'
+On Thu, Mar 21, 2024 at 12:00:56PM +0000, Parthiban.Veerasooran@microchip.c=
+om wrote:
+> Hi Krzysztof,
+>=20
+> On 21/03/24 2:10 pm, Krzysztof Kozlowski wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> >=20
+> > On 21/03/2024 09:38, Parthiban.Veerasooran@microchip.com wrote:
+> >> Hi Krzysztof,
+> >>
+> >> On 20/03/24 3:23 pm, Krzysztof Kozlowski wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you kno=
+w the content is safe
+> >>>
+> >>> On 20/03/2024 09:40, Parthiban.Veerasooran@microchip.com wrote:
+> >>>> Hi Conor & Andrew,
+> >>>>
+> >>>> Please find my reply below by consolidating other two emails comments
+> >>>> related to this.
+> >>>>
+> >>>> On 07/03/24 12:31 am, Conor Dooley wrote:
+> >>>>> On Wed, Mar 06, 2024 at 07:48:57PM +0100, Andrew Lunn wrote:
+> >>>>>>>> +description:
+> >>>>>>>> +  The LAN8650/1 combines a Media Access Controller (MAC) and an=
+ Ethernet
+> >>>>>>>> +  PHY to enable 10BASE=E2=80=91T1S networks. The Ethernet Media=
+ Access Controller
+> >>>>>>>> +  (MAC) module implements a 10 Mbps half duplex Ethernet MAC, c=
+ompatible
+> >>>>>>>> +  with the IEEE 802.3 standard and a 10BASE-T1S physical layer =
+transceiver
+> >>>>>>>> +  integrated into the LAN8650/1. The communication between the =
+Host and
+> >>>>>>>> +  the MAC-PHY is specified in the OPEN Alliance 10BASE-T1x MACP=
+HY Serial
+> >>>>>>>> +  Interface (TC6).
+> >>>>>>>> +
+> >>>>>>>> +allOf:
+> >>>>>>>> +  - $ref: ethernet-controller.yaml#
+> >>>>>>>> +
+> >>>>>>>> +properties:
+> >>>>>>>> +  compatible:
+> >>>>>>>> +    oneOf:
+> >>>>>>>> +      - items:
+> >>>>>>>> +          - const: microchip,lan8650
+> >>>>>>>> +          - const: microchip,lan8651
+> >>>>>>> The order here is wrong, lan8561 needs to come before the fallbac=
+k of
+> >>>>>>> lan8650.
+> >>>>>> I don't think it is a fallback. There are two devices, and hence t=
+wo
+> >>>>>> different compatibles. So i suspect the -items: is wrong here?
+> >>>>> It'd just be a two entry enum then, but I did take a quick look at =
+the
+> >>>>> driver earlier and saw:
+> >>>>> +static const struct of_device_id lan865x_dt_ids[] =3D {
+> >>>>> +    { .compatible =3D "microchip,lan8650" },
+> >>>>> +    { .compatible =3D "microchip,lan8651" },
+> >>>>> +    { /* Sentinel */ }
+> >>>>> +};
+> >>>>>
+> >>>>> That, along with no other of_device_is_compatible() type operations
+> >>>>> made me think that having a fallback actually was suitable.
+> >>>>>
+> >>>>> You cropped it out, but the patch had:
+> >>>>>> +  compatible:
+> >>>>>> +    oneOf:
+> >>>>>> +      - items:
+> >>>>>> +          - const: microchip,lan8650
+> >>>>>> +          - const: microchip,lan8651
+> >>>>>> +      - enum:
+> >>>>>> +          - microchip,lan8650
+> >>>>> So it doesn't appear to be an accidental items in place of an enum,
+> >>>>> since the other compatible is in another enum.
+> >>>> As per Andrew's comment in another email, both LAN8650 and LAN8651 a=
+re
+> >>>> two different variants but they both share almost all characteristics
+> >>>> except one thing that is LAN8651 has "Single 3.3V supply with integr=
+ated
+> >>>> 1.8V regulator" which doesn't have anything to do with driver. That's
+> >>>
+> >>> So why this is not reflected in your driver? Why didn't you address t=
+hat
+> >>> part, but ignored?
+> >> No, it is not ignored. This difference is specific to hardware and the=
+re
+> >> is no configuration/setting to be done from driver.
+> >>>
+> >>>> why I have kept them as fallback as Conor said in this email. Hope y=
+ou
+> >>>> all OK with this.
+> >>>
+> >>> Did you read the feedback? Your response is not solving here anything.
+> >>> How 8650 can be used twice? Please point me to DTS showing both usage=
+s.
+> >> May be I have a misunderstanding here. Let's clarify it.
+> >>
+> >> LAN8650 and LAN8651 both are two different variants but both implements
+> >> same functionality. The only difference is LAN8651 has "Single 3.3V
+> >> supply with integrated" where LAN8650 doesn't have this. This is
+> >> hardware specific difference and there is no configuration/setting to =
+be
+> >> done in the driver specific to this difference in the LAN8651. So
+> >> basically the driver can support for both variants without any
+> >> additional settings.
+> >>
+> >> LAN8650: https://www.microchip.com/en-us/product/lan8650
+> >> LAN8651: https://www.microchip.com/en-us/product/lan8651
+> >>
+> >> The below link shows the difference between them,
+> >> https://www.microchip.com/en-us/product-comparison.lan8650.lan8651
+> >>
+> >> With the above details, I would change the microchip,lan865x.yaml with
+> >> the below details.
+> >>
+> >> compatible:
+> >>     enum:
+> >>       - microchip,lan8650
+> >>       - microchip,lan8651
+> >>
+> >> And in the lan865x.c, I would remove the below line because
+> >> .compatible =3D "microchip,lan8650" already supports for LAN8651 as we=
+ll.
+> >>
+> >> .compatible =3D "microchip,lan8651"
+> >>
+> >> Let me know your opinion on this proposal? or do you have any
+> >> misunderstanding here?
+> >=20
+> > It's still wrong. Upstream your DTS and then test it. You will
+> > immediately see that it does not work. So first make it working, then
+> > send code to review.
+> Sorry for the inconvenience. I did the below changes in my=20
+> microchip,lan865x.yaml file and executed dt_binding_check. It=20
+> successfully created the microchip,lan865x.example.dts without any=20
+> errors. Herewith I have attached the updated microchip,lan865x.yaml file=
+=20
+> and the generated microchip,lan865x.example.dts file for your reference.
+>=20
+> properties:
+>    compatible:
+>      oneOf:
+>        - items:
+>            - const: microchip,lan8651
+>            - const: microchip,lan8650
 
-I don't see the need to document a single-member struct twice. Actually,
-maybe it would be better to just lift the .base member to live in
-zynqmp_disp. But I think that would be better in another series.
+No, this is not right either. You need to also allow the lan8650 on its
+own. All you had to do with the original items list was flip the order
+of the lan8650 and lan8651.
 
---Sean
+--Hkhej6qqS7FQuj9S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfxTaAAKCRB4tDGHoIJi
+0pn7APwPC0i09RDDMqIEPSfbO956debgSpLA0amibHHjDDzYXwD+Lt2CLi8me13G
+AKnDr07DjFN0MT6eFRZNd48M/6ZVDwA=
+=920K
+-----END PGP SIGNATURE-----
+
+--Hkhej6qqS7FQuj9S--
 
