@@ -1,121 +1,156 @@
-Return-Path: <linux-kernel+bounces-110608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728BD88613E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:44:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8FAE886140
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20B721F22917
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:44:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83EE7281C78
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4B6134435;
-	Thu, 21 Mar 2024 19:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEA6134424;
+	Thu, 21 Mar 2024 19:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="rUgkUQ4p"
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mN6OH1DH";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NpTtFjFd"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E302132C38;
-	Thu, 21 Mar 2024 19:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746AE1339AB;
+	Thu, 21 Mar 2024 19:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711050274; cv=none; b=NR7imQrWVqHJdc+qWPC2yToodQ2wuba9b+GdfKKCvPELw5nS2BeUX8/W05L3wComR/dhl3M8Q6IvMLxQLQgpcNGNAN6tRpTqtBEjIcabC4jFe7F5EV9hEi1WQV7dS7sJJDOMBpMQJZEHZMZNAYKZ7Wk6bRNOSpKU8dDVDFFEUdo=
+	t=1711050319; cv=none; b=RTj2U8u29kF7FUuLYuexOcxCFcGApNg7JkldVlRs+9pc5WZxfsPMEVqBjuIEXQoZVWFtX4VBcAduXSwTB58rLG/2IyAxXPMCm15BYQcz1x4gSLsGvnsEEv/0SFbVtat3XrAsHP4hz813s0ZzQ2JyF3z/IvqjFvxAm/KCWHia7rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711050274; c=relaxed/simple;
-	bh=rbdZgAx5OMc44/b4taFIydsj3IvyxH7jHFsK3TNL/BQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=HqMlrV3QkZ9hjlTfoWpFvKWwTbma28aFpmlHk2SeXoZw1+QJHfXlla2lhf8qDBqhUPwZgHTqGiEzr1uaYtIKQ2PzkG10Bv4+oJqk9x5m5TruX2m8RpipXh15+hwfNdfov1A2XmyX6tNxnnt2++4XQGceSwSGtu0n681gSyg4jmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=rUgkUQ4p; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4V0wrw3Y7ZzlgVnF;
-	Thu, 21 Mar 2024 19:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1711050263; x=1713642264; bh=SpVSKe2FDWsZA6RlvkSY8fUG
-	PrZo8UAPmj+w+wT8abY=; b=rUgkUQ4pKvRo0MnKMv8HBajk8pKVG9x3IEojHuPf
-	Ksp0ApJU9+XRXIEOYNl6KEdaEMhGZ/HAPli/vwcHJ3F/ghYkYIZmqZYQpzGkFLLA
-	KQNMM5bw3tVq5qbSjO5ztqkqXkvgQCTZNc+088HlNcasrDeXjnZve3u8diVNwnkL
-	hqJNbyih6MHR/86S2+cBdrEg2Lg1vIrbZBqbl6jo4MUNgw6ifBWs8Avsmr7CmB/Z
-	Y4dzECXDa+aqHwSnkL0rh3mcnM2CcTQRtqwjCDZM4KtwTr9JukhvizlTlTjxqfv9
-	+ai3/saCPjc9cNvBevTZo+ZGjgvVBRGjnFcymG1fT4BU2w==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id TjaQfJAj6kku; Thu, 21 Mar 2024 19:44:23 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4V0wrh4tZhzlgTGW;
-	Thu, 21 Mar 2024 19:44:20 +0000 (UTC)
-Message-ID: <e170642d-9ae8-4d5a-90d9-2837f1bcef9b@acm.org>
-Date: Thu, 21 Mar 2024 12:44:19 -0700
+	s=arc-20240116; t=1711050319; c=relaxed/simple;
+	bh=NObd3l5CfBnBCW6AFvUHVZaPNsnb1nk94JtsLxVskHc=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=us3qRRe5luz14i3nflYfbif180nK5eaGnySVsEKtoIOwBwbYL0bmiEsUPOBSPazuLFu1uVMmuHTcZ/apU0Dv+F25f0K+/54iqIotSe6eUN4UF7l6Mz0OQg2/7tJublJj8Dboqy7wUOhIkp/0Yt5aQdQpVtR/X8W0n0+XhbASh+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mN6OH1DH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NpTtFjFd; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 21 Mar 2024 19:45:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711050315;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EI5/D8ujKIfjCzHQQXS5t7nEm6z7SaRdD7RwSveBEMA=;
+	b=mN6OH1DHLaxiPL9+rlByUQii1iYgcy94mKkM4SuvUsc4aELxrsp3GuYUzpK0pr0DJtLWE+
+	gLFF5n7yONrdbqaAagTAv9qNyDstpBkFCWmQiFaT+9TenTvrVPB4En5UmoAKgg/9GW9P23
+	aC9J4wCTXi2V7JsXPxnbVrVYdL/yIaKmHasqIocuAlVZMRl8miaUN4FEIHTRxXjTR1Ja5E
+	E3JpnWWfqRnxstZtMq0UydSxllJruo24ddOitE5oqbP6/HRCatZTzv+BVHydwf9kMYHOFR
+	saJf1JF0/5acM8gAziRbawp1xQc4fgxAnD63cCRQ16CA2BPN1xZJUSWsS9fkcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711050315;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EI5/D8ujKIfjCzHQQXS5t7nEm6z7SaRdD7RwSveBEMA=;
+	b=NpTtFjFdncR6T7n9qjZDbYiNDyDrBf9TBAGvDqtHxWbhmMQTBCTT1bJK3ZrkhyDKbR6Lps
+	5hm/n8YgafOfleBw==
+From: "tip-bot2 for Mukesh Kumar Chaurasiya" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/doc: Update documentation for base_slice_ns
+ and CONFIG_HZ relation
+Cc: Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>,
+ Ingo Molnar <mingo@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240320173815.927637-2-mchauras@linux.ibm.com>
+References: <20240320173815.927637-2-mchauras@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] block: implement NVMEM provider
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>,
- Jan Kara <jack@suse.cz>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Damien Le Moal <dlemoal@kernel.org>,
- Li Lingfeng <lilingfeng3@huawei.com>, Christian Brauner
- <brauner@kernel.org>, Christian Heusel <christian@heusel.eu>,
- Min Li <min15.li@samsung.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
- Christian Loehle <CLoehle@hyperstone.com>, Bean Huo <beanhuo@micron.com>,
- Yeqi Fu <asuk4.q@gmail.com>, Victor Shih <victor.shih@genesyslogic.com.tw>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Dominique Martinet <dominique.martinet@atmark-techno.com>,
- "Ricardo B. Marliere" <ricardo@marliere.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-block@vger.kernel.org
-References: <cover.1711048433.git.daniel@makrotopia.org>
- <7555db6eb71d4ccb2b9d5ebe3b41dc34088c6316.1711048433.git.daniel@makrotopia.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <7555db6eb71d4ccb2b9d5ebe3b41dc34088c6316.1711048433.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <171105031473.10875.823907471048599597.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-On 3/21/24 12:34, Daniel Golle wrote:
-> On embedded devices using an eMMC it is common that one or more partitions
-> on the eMMC are used to store MAC addresses and Wi-Fi calibration EEPROM
-> data. Allow referencing the partition in device tree for the kernel and
-> Wi-Fi drivers accessing it via the NVMEM layer.
+The following commit has been merged into the sched/urgent branch of tip:
 
-Why to store calibration data in a partition instead of in a file on a
-filesystem?
+Commit-ID:     a26979377bf34534ce5ee2712d2a46157ec61498
+Gitweb:        https://git.kernel.org/tip/a26979377bf34534ce5ee2712d2a46157ec61498
+Author:        Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>
+AuthorDate:    Wed, 20 Mar 2024 23:08:16 +05:30
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Mar 2024 20:34:16 +01:00
 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8c88f362feb55..242a0a139c00a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3662,6 +3662,11 @@ L:	linux-mtd@lists.infradead.org
->   S:	Maintained
->   F:	drivers/mtd/devices/block2mtd.c
->   
-> +BLOCK NVMEM DRIVER
-> +M:	Daniel Golle <daniel@makrotopia.org>
-> +S:	Maintained
-> +F:	block/blk-nvmem.c
+sched/doc: Update documentation for base_slice_ns and CONFIG_HZ relation
 
-Why to add this functionality to the block layer instead of somewhere
-in the drivers/ directory?
+The tunable base_slice_ns is dependent on CONFIG_HZ (i.e. TICK_NSEC)
+for any significant performance improvement. The reason being the
+scheduler tick is not frequent enough to force preemption when
+base_slice expires in case of:
 
-Thanks,
+           base_slice_ns < TICK_NSEC
 
-Bart.
+The below data is of stress-ng:
+
+	Number of CPU: 1
+	Stressor threads: 4
+	Time: 30sec
+
+	On CONFIG_HZ=1000
+
+	| base_slice | avg-run (msec) | context-switches |
+	| ---------- | -------------- | ---------------- |
+	| 3ms        | 2.914          | 10342            |
+	| 6ms        | 4.857          | 6196             |
+	| 9ms        | 6.754          | 4482             |
+	| 12ms       | 7.872          | 3802             |
+	| 22ms       | 11.294         | 2710             |
+	| 32ms       | 13.425         | 2284             |
+
+	On CONFIG_HZ=100
+
+	| base_slice | avg-run (msec) | context-switches |
+	| ---------- | -------------- | ---------------- |
+	| 3ms        | 9.144          | 3337             |
+	| 6ms        | 9.113          | 3301             |
+	| 9ms        | 8.991          | 3315             |
+	| 12ms       | 12.935         | 2328             |
+	| 22ms       | 16.031         | 1915             |
+	| 32ms       | 18.608         | 1622             |
+
+	base_slice: the value of base_slice in ms
+	avg-run (msec): average time of the stressor threads got on cpu before
+	it got preempted
+	context-switches: number of context switches for the stress-ng process
+
+Signed-off-by: Mukesh Kumar Chaurasiya <mchauras@linux.ibm.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20240320173815.927637-2-mchauras@linux.ibm.com
+---
+ Documentation/scheduler/sched-design-CFS.rst | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/scheduler/sched-design-CFS.rst b/Documentation/scheduler/sched-design-CFS.rst
+index 6cffffe..e030876 100644
+--- a/Documentation/scheduler/sched-design-CFS.rst
++++ b/Documentation/scheduler/sched-design-CFS.rst
+@@ -100,6 +100,9 @@ which can be used to tune the scheduler from "desktop" (i.e., low latencies) to
+ "server" (i.e., good batching) workloads.  It defaults to a setting suitable
+ for desktop workloads.  SCHED_BATCH is handled by the CFS scheduler module too.
+ 
++In case CONFIG_HZ results in base_slice_ns < TICK_NSEC, the value of
++base_slice_ns will have little to no impact on the workloads.
++
+ Due to its design, the CFS scheduler is not prone to any of the "attacks" that
+ exist today against the heuristics of the stock scheduler: fiftyp.c, thud.c,
+ chew.c, ring-test.c, massive_intr.c all work fine and do not impact
 
