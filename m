@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-110541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7466886051
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:07:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FAE88603B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DCE01F2139D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5CD1F23717
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D361332B6;
-	Thu, 21 Mar 2024 18:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39601332AA;
+	Thu, 21 Mar 2024 18:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bZwHZa4D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxSiIFgl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5CC1332A6;
-	Thu, 21 Mar 2024 18:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130378613B;
+	Thu, 21 Mar 2024 18:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044454; cv=none; b=UNPWmesNqp+gpAmZ1LCVzNd8w9x/u/FaHuxhiArQtiejVzR63YdHuRWC3SNCqMZyJQXODgHXLI9frfLMhz2kBT6gO8E0C1s6q6YTQZNqB8Wj9q81HkbRgs/N/Rg3fDF2yWBfI55PV4yzv1M/MXmLYjdk0Er1cI3BH1BUKFONCWg=
+	t=1711044206; cv=none; b=VOzrD3NdudN3N8+jcyx92uB6THQUqj6fY1KSeKb3zoUKTmMhIJuK7YpMF1GbtaLIOSbnUNVj789NJ7q1SUwgEjXW8FlSMaCoye3y3JsQOYsLh6FK1GfIsXL/dyYJSU29CJQmH2IgU852DxNNdOhFhta7ROOk8REhjWP42k14ITs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044454; c=relaxed/simple;
-	bh=Vre0bbpj/RHcM0b8xIt3T8ZHT/uKOL2/xho9jNKOy7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=qZ+yyuSn4m/hcoORSrvY7QiXwtfiZh+25PavHOxZN1Bc9BrjUHK7o51X2kKXx6oGg39MDly7lzUuiR1/x0S/J5Ed5EO4+F2NIpMx7k8U4sscbSqSjQAGds8Q6IF7fv/BbudPCM4KbxBwjkNIHAGkOlu83L0UZ0keKJJzB+xhQYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZwHZa4D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600ECC433F1;
-	Thu, 21 Mar 2024 18:07:34 +0000 (UTC)
+	s=arc-20240116; t=1711044206; c=relaxed/simple;
+	bh=sCdLXz2FGoLIYbxZ6Ggaxi6+JlxzyXAOAvvDKudzdu0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jmXJUSJQ03uL+rCij7PeVQgl6rJSpoAxFv5LJzsPvEQ9/zSS49JKCvZT8mqFrc5QhPGD0JaxPMGt1wAXdduA+XtCmmBcNqSqY2fwRWRem+glTdEEmZsfocoDcdd+4dhIB1rBKqN1ejhuKBZo6oFBFEM1QV5yoZ0tdRvrfLLxCE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxSiIFgl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A910CC433C7;
+	Thu, 21 Mar 2024 18:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711044454;
-	bh=Vre0bbpj/RHcM0b8xIt3T8ZHT/uKOL2/xho9jNKOy7I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=bZwHZa4DGdc1+POLrg1fU5cxYlcVXhNYn2Q8g7wr0BHoyw7DlTGMU9Si9QxGJrezN
-	 0N1NXNbHW7h19po3hbpHk5A9b66DFGlyRzCh84lo/BLGpIO0AiwD2ETbAMvhV8pK2s
-	 T1ZSXNGLmLdKt9Qz+YsiI+yrgOogPxYs/L0wdJ8FZ4jFl4+9paHHZMFfgPyDjQqkqn
-	 D3LWXMWloKiEwsU8yx8OjQr6PEUI9XHHgkvLh3u3DrDg8GrMmu2u5innfjvE+3sDQQ
-	 MsqzEVTEN0gLMrQOW+jVKjOrfUkgfruSZLqK2WTwLnuLNTGbOcTtO54Hifq7eV0FJI
-	 9OFEWmR2jJXvw==
-Date: Thu, 21 Mar 2024 13:07:32 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Frank Li <Frank.Li@nxp.com>, niklas.cassel@wdc.com, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org
-Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <20240321180732.GA1329092@bhelgaas>
+	s=k20201202; t=1711044205;
+	bh=sCdLXz2FGoLIYbxZ6Ggaxi6+JlxzyXAOAvvDKudzdu0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SxSiIFgly+OkYViveqUiMzJ2xWwvoS+z9vzxkK4K4SZ9gLpnlrElKDt1xXlSXoTil
+	 9o644uhspGUGlBY1JjiHTr4lkFAdyHvUa3zfQn917aA8r+zC48Lmg3/VLdL6ni9l7g
+	 dhRGYoHaV3yLYN+DYuFOBd6l0+DEa3vHAjTpUinaPJNAnjgpkfBIsNxtdi0vr+3ONQ
+	 z3CWv5ORPZ7Tey2roNPv/yKBVPMNvCkWN4VLoH6CT3TdFGMbT6r2HUjBagm1iv1VWd
+	 aHeWePNyeWxQArVxZfpR1pTn9bSNMr5MMfrE15jBwTRYA9WZaxEpiv4pluzNHTkFHH
+	 rBizgE2hR1Z1w==
+Date: Thu, 21 Mar 2024 11:08:19 -0700
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Davis <afd@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Sibi Sankar <quic_sibis@quicinc.com>, Abel Vesa <abel.vesa@linaro.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Joakim Zhang <joakim.zhang@cixtech.com>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: Re: [GIT PULL] remoteproc updates for v6.9
+Message-ID: <yniwjzjynmyndzqglfmwpy2th3vtadmms6ifxqs2ojo7wr66ne@ydnr3rltaddn>
+References: <20240321125518.1675903-1-andersson@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,60 +60,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321171345.GA2385@thinkpad>
+In-Reply-To: <20240321125518.1675903-1-andersson@kernel.org>
 
-On Thu, Mar 21, 2024 at 10:43:45PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
-> > dw_pcie_ep_inbound_atu()
-> > {
-> > 	...
-> > 	if (!ep->bar_to_atu[bar])
-> > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> > 	else
-> > 		free_win = ep->bar_to_atu[bar];
-> > 	...
-> > }
-> > 
-> > The atu index 0 is valid case for atu number. The find_first_zero_bit()
-> > will return 6 when second time call into this function if atu is 0. Suppose
-> > it should use branch 'free_win = ep->bar_to_atu[bar]'.
-> > 
-> > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
-> > it have not allocate atu to the bar.
+On Thu, Mar 21, 2024 at 05:55:13AM -0700, Bjorn Andersson wrote:
+> I'm sorry for the late pull request, I apparently had managed to get git
+> send-email to only deliver my mail to /dev/null on the machine where I prepared
+> this.
 > 
-> I'd rewrite the commit message as below:
-> 
-> "The mapping between PCI BAR and iATU inbound window are maintained in the
-> dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for a
-> BAR, dw_pcie_ep_inbound_atu() API will first check for the availability of the
-> existing mapping in the array and if it is not found (i.e., value in the array
-> indexed by the BAR is found to be 0), then it will allocate a new map value
-> using find_first_zero_bit().
-> 
-> The issue here is, the existing logic failed to consider the fact that the map
-> value '0' is a valid value for BAR0. Because, find_first_zero_bit() will return
-> '0' as the map value for BAR0 (note that it returns the first zero bit
-> position).
-> 
-> Due to this, when PERST# assert + deassert happens on the PERST# supported
-> platforms, the inbound window allocation restarts from BAR0 and the existing
-> logic to find the BAR mapping will return '6' for BAR0 instead of '0' due to the
-> fact that it considers '0' as an invalid map value.
-> 
-> So fix this issue by always incrementing the map value before assigning to
-> bar_to_atu[] array and then decrementing it while fetching. This will make sure
-> that the map value '0' always represents the invalid mapping."
 
-This translates C code to English in great detail, but still doesn't
-tell me what's broken from a user's point of view, how urgent the fix
-is, or how it should be handled.
+I was further notified that this conflicts with your tree, Linus. Below
+is the resolution for this conflict.
 
-DMA doesn't work because ATU setup is wrong?  Driver MMIO access to
-the device doesn't work?  OS crashes?  How?  Incorrectly routed access
-causes UR response?  Happens on every boot?  Only after a reboot or
-controller reset?  What platforms are affected?  "PERST# supported
-platforms" is not actionable without a lot of research or pre-existing
-knowledge.  Should this be backported to -stable?
+Please let me know if you'd like me to create some form of merge commit
+for this.
 
+Regards,
 Bjorn
+
+diff --cc drivers/remoteproc/imx_dsp_rproc.c
+index d73727a5828a,56a799cb8b36..087506e21508
+--- a/drivers/remoteproc/imx_dsp_rproc.c
++++ b/drivers/remoteproc/imx_dsp_rproc.c
+@@@ -1090,9 -1154,7 +1090,7 @@@ static int imx_dsp_rproc_probe(struct p
+  	return 0;
+  
+  err_detach_domains:
+ -	imx_dsp_detach_pm_domains(priv);
+ +	dev_pm_domain_detach_list(priv->pd_list);
+- err_put_rproc:
+- 	rproc_free(rproc);
+  
+  	return ret;
+  }
+@@@ -1104,8 -1166,7 +1102,7 @@@ static void imx_dsp_rproc_remove(struc
+  
+  	pm_runtime_disable(&pdev->dev);
+  	rproc_del(rproc);
+ -	imx_dsp_detach_pm_domains(priv);
+ +	dev_pm_domain_detach_list(priv->pd_list);
+- 	rproc_free(rproc);
+  }
+  
+  /* pm runtime functions */
+diff --cc drivers/remoteproc/qcom_q6v5_adsp.c
+index 93f9a1537ec6,34ac996a93b2..1d24c9b656a8
+--- a/drivers/remoteproc/qcom_q6v5_adsp.c
++++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+@@@ -704,13 -713,15 +704,13 @@@ static int adsp_probe(struct platform_d
+  
+  	ret = adsp_init_clock(adsp, desc->clk_ids);
+  	if (ret)
+- 		goto free_rproc;
++ 		return ret;
+  
+ -	ret = qcom_rproc_pds_attach(adsp->dev, adsp,
+ -				    desc->proxy_pd_names);
+ +	ret = qcom_rproc_pds_attach(adsp, desc->pd_names, desc->num_pds);
+  	if (ret < 0) {
+  		dev_err(&pdev->dev, "Failed to attach proxy power domains\n");
+- 		goto free_rproc;
++ 		return ret;
+  	}
+ -	adsp->proxy_pd_count = ret;
+  
+  	ret = adsp_init_reset(adsp);
+  	if (ret)
+@@@ -742,11 -753,8 +742,8 @@@
+  	return 0;
+  
+  disable_pm:
+ -	qcom_rproc_pds_detach(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
+ +	qcom_rproc_pds_detach(adsp);
+  
+- free_rproc:
+- 	rproc_free(rproc);
+- 
+  	return ret;
+  }
+  
+@@@ -760,8 -768,7 +757,7 @@@ static void adsp_remove(struct platform
+  	qcom_remove_glink_subdev(adsp->rproc, &adsp->glink_subdev);
+  	qcom_remove_sysmon_subdev(adsp->sysmon);
+  	qcom_remove_ssr_subdev(adsp->rproc, &adsp->ssr_subdev);
+ -	qcom_rproc_pds_detach(adsp, adsp->proxy_pds, adsp->proxy_pd_count);
+ +	qcom_rproc_pds_detach(adsp);
+- 	rproc_free(adsp->rproc);
+  }
+  
+  static const struct adsp_pil_data adsp_resource_init = {
 
