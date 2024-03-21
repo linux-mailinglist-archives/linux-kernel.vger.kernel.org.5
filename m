@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-110737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4CF886300
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:10:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF7F886303
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812FA1C21F3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:10:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B65D1F230BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947D1136986;
-	Thu, 21 Mar 2024 22:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3971386C5;
+	Thu, 21 Mar 2024 22:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dIiA8dA1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jd6/fIsO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C080413792C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722041386A9
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711058911; cv=none; b=F9hSEZjJNrQnROKAC1nCqfaW7dv+oJOtSTXrAdTs8WGQKo64gbXLKhoSg3KKcDRt4Mj8nl8mfV/FGZn6ea3lb5Qi+XPVjcPAdW3CBuHxvYhZ9WlUlltYaYDsYSmb64+wfFWOW0dVGLC3Q9FjEd+D8DmAxbGjG82NB26gXnPc+Qg=
+	t=1711058916; cv=none; b=d0DJATnfHL+Mzoitbzfq53eq1qUOEz5fVgRfCnh64imBx2r9JzEV4lv6K4jsKu/WBxojmOyKg26axEpCNyMCn1heBBWjy8XJrztuZr+DvQvzWwwrf5RFwvFxDao/L+ofrfPZj7GZq3yQZtuAJ8BQHMwchFqRymjcmQdqql3hkDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711058911; c=relaxed/simple;
-	bh=vIJxD1xmNJcziuLdkeQlq8aVMJXM76SBgb0FOm9yvPE=;
+	s=arc-20240116; t=1711058916; c=relaxed/simple;
+	bh=JCGnxD1BohZitMTzx7yYKiVmGWHn7FCotr9St3beHS4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fjiNhPmeXj5c3pIkt2XPO62pAp4dl8bZdjtbt1/l5i9sGZJMvjOr6ZKGrzDwu2V+6YjGDyBrEEFUwI5nOezvRfhVrttpgF+3FRRCJfbge80NrNIxrvfowhqdwjv6wX4aS16nN/iE5XANy7cktUMWFyqzvXoFeCyP7xUY3gUsznI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dIiA8dA1; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=eWFzVGoDRn9+BjDLZEtBitiLfuosAIoIDodIJFP9d0p26LwRisOJZtC2ev14Mf52hvz99ba5tQEzWcr5eHo4PAMc8rS1Ze97VwMog1OuLc7YynBB3gHDzlYYpOXcyGOJR6FTebgjujEI1oYsfwEgOlKvA5/I6uk9pK2ozQOjiJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jd6/fIsO; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711058909;
+	s=mimecast20190719; t=1711058913;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=o0KbP6b9RlV02LlNjzHhHyMPZ1vhd/KMB6w1UdD4tH4=;
-	b=dIiA8dA1EoTmPTTsoe2Log5FBWyUKBYLvL87GFBN9x5jG/K2G3vHoYtA0qYNKd9BZl90Bg
-	msbFEhE8JwxYwXDIr0XESd9gyTgvvehJfyz2L+9+twEU2d9aK0yt5p1QqarGsJDH17s1pf
-	1DqzY+Kis0sUCINqiksQt1xN6a6aznc=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=kKAkS039JEm9eSlNjnxGInSB8mOTV3IHPzDUFjGHTVk=;
+	b=Jd6/fIsOSh/xM+NSmFc9k2PILZ0AQz0Rd+zhfRve2OVQNF1hBiKkDHVnbfdzmTcjCHDTus
+	rXENBlpcxPxVHg04MetFWzcJfZh0uS/QyiE+mJcLWeumw/kUqaZcu7p2cZDnFnEHFmy5tP
+	wBEdePRwCW9PlssxMQNLWcCz/UcowjI=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-644-reuvHv2pP4Khd5wKcVdyLg-1; Thu, 21 Mar 2024 18:08:27 -0400
-X-MC-Unique: reuvHv2pP4Khd5wKcVdyLg-1
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-222b55202f4so525966fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:08:27 -0700 (PDT)
+ us-mta-85-Y7qGGGu6OF29F7vdo4oEZQ-1; Thu, 21 Mar 2024 18:08:32 -0400
+X-MC-Unique: Y7qGGGu6OF29F7vdo4oEZQ-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-221a566a435so551712fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:08:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711058907; x=1711663707;
+        d=1e100.net; s=20230601; t=1711058909; x=1711663709;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o0KbP6b9RlV02LlNjzHhHyMPZ1vhd/KMB6w1UdD4tH4=;
-        b=jC14gpS/CgPQNb5ChCgoU5iRpIVKetlfH/YJSN1XJ5JTkCHFR5BaGtgNyTRerqcp9H
-         KafjlT2OknbA/cnorb7Y4pi8X1VP93f39adOqTRz5heP54l3TLJZlEBjsR+OOelLilna
-         2QvEIjZXmEfd9Zox1CGq0/h0+2yYhmF0LPL6u8F/khHDuVmTyERzoHpj9yRCCZDqnSaH
-         VoWMLRUixOmgxRX78Tllbq+26JjAFckXtNxGqVqoTFa8sjUniFFf9pTs0lWqNRqyUANn
-         fLXb/bUJbZVk1Yw6o4z0R8UCa+4/lh7u6N1fwadKTehivWNG0AdUuGOQOEwkXl7VlwQq
-         6X+w==
-X-Forwarded-Encrypted: i=1; AJvYcCX3Mv4nZaEhEml5vmXpRjaeqd4yqqjA7stnzckyi5RSSHEj9X+mPT1jN45Ts9/8aAQxy9yDOKweGSa4UT4/vWht6m0D1AOh9bVNTEb0
-X-Gm-Message-State: AOJu0YzytB/rmE3EGBAsQi11Lv+X+4dD0yz75ssvAISB+RFbt5FXEwSZ
-	0Cf6CE+pCwPdex64sfCIeUbCgEAfkMk9fYaZnO+14PVWgHelnvdhZikBDFIMb1ZdgBoG5V/V3Xg
-	zi/Mvvd+ii0eA07FsXX3Sv4VWcdgpckMjaXcUm4rJ2gY0MXSKW11+ltc6b33fNw==
-X-Received: by 2002:a05:6870:4189:b0:229:8575:875b with SMTP id y9-20020a056870418900b002298575875bmr520309oac.5.1711058906669;
-        Thu, 21 Mar 2024 15:08:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHyRVGIH/+XEvquuQvEBSJicroe5v4UAFWGp7nk+sM4AQMJKL66g328LmVlireG12paxfzEyQ==
-X-Received: by 2002:a05:6870:4189:b0:229:8575:875b with SMTP id y9-20020a056870418900b002298575875bmr520279oac.5.1711058906111;
-        Thu, 21 Mar 2024 15:08:26 -0700 (PDT)
+        bh=kKAkS039JEm9eSlNjnxGInSB8mOTV3IHPzDUFjGHTVk=;
+        b=ds3YpMiROOfyDGcH8OjK39Wq71GWmyQ8oKsC/DXhy3bqnTJaDZY4LzxTjknhDnF4Sj
+         r76xNvGglrWCnY7IUsi5iMid0kyc5Xz/XBfP0cUvlZQuUCJm+66FPrPSH7fztPSJT2fF
+         1qH3ntAY0u94OlPq6lZDho+lT+r2rt5tU9f3BMbWZvXA9gk9DXxzDTDkvxm6motDm7kG
+         na4DoW+nYqIMmpM6nhfb/tfUmsk6QOFZ8dyHJczQjPgYNTLooOYPqre0/WuGdmDz1gQB
+         FZvDSzUn7388qhYqM++yT3jzrPWJVJ8USOPst0XRqBFIsDoLedYQPGDQ58kEuv/E6iOF
+         qnVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6VYRJfIs61YeYBrIa9H7lcr4M5MMmnivg4hUKHyWI5JO+Tx9/v2qphpF/IjbxTN3ROVV8zkq0lSqH2Dd39tA26Oa3NF5v5WORXZWL
+X-Gm-Message-State: AOJu0YxFVZZP2heZl28wiEu0oszdGgbMf7WookMMM45bdAvUt/FQMuRS
+	XOBuDCutHmMqytDNtpY9Mlz1SJ42uTI+c7BztqZwp1Qob89oQ5yyEW+KK1bkAHfxLya/I53Dmun
+	carcUk5YtfKGb4Bxkl4G3xJ37KgMXYifZVPcpowyb9erGfpCncIvYGhepB7iVPw==
+X-Received: by 2002:a4a:d5ce:0:b0:5a2:26c7:397b with SMTP id a14-20020a4ad5ce000000b005a226c7397bmr912023oot.0.1711058909583;
+        Thu, 21 Mar 2024 15:08:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH7bJa0sTEC4z3o8Ei9oO8UNdi6+GHr5ekBXamqtFS26QUeqg4nthASLLtCNNWPAVCCH5AJXA==
+X-Received: by 2002:a4a:d5ce:0:b0:5a2:26c7:397b with SMTP id a14-20020a4ad5ce000000b005a226c7397bmr911987oot.0.1711058909121;
+        Thu, 21 Mar 2024 15:08:29 -0700 (PDT)
 Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id o6-20020a0562140e4600b00690baf5cde9sm351663qvc.118.2024.03.21.15.08.24
+        by smtp.gmail.com with ESMTPSA id o6-20020a0562140e4600b00690baf5cde9sm351663qvc.118.2024.03.21.15.08.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 15:08:25 -0700 (PDT)
+        Thu, 21 Mar 2024 15:08:28 -0700 (PDT)
 From: peterx@redhat.com
 To: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
@@ -100,9 +100,9 @@ Cc: linuxppc-dev@lists.ozlabs.org,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
 	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v3 11/12] mm/gup: Handle hugepd for follow_page()
-Date: Thu, 21 Mar 2024 18:08:01 -0400
-Message-ID: <20240321220802.679544-12-peterx@redhat.com>
+Subject: [PATCH v3 12/12] mm/gup: Handle hugetlb in the generic follow_page_mask code
+Date: Thu, 21 Mar 2024 18:08:02 -0400
+Message-ID: <20240321220802.679544-13-peterx@redhat.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240321220802.679544-1-peterx@redhat.com>
 References: <20240321220802.679544-1-peterx@redhat.com>
@@ -116,169 +116,173 @@ Content-Transfer-Encoding: 8bit
 
 From: Peter Xu <peterx@redhat.com>
 
-Hugepd is only used in PowerPC so far on 4K page size kernels where hash
-mmu is used.  follow_page_mask() used to leverage hugetlb APIs to access
-hugepd entries.  Teach follow_page_mask() itself on hugepd.
+Now follow_page() is ready to handle hugetlb pages in whatever form, and
+over all architectures.  Switch to the generic code path.
 
-With previous refactors on fast-gup gup_huge_pd(), most of the code can be
-easily leveraged.  There's something not needed for follow page, for
-example, gup_hugepte() tries to detect pgtable entry change which will
-never happen with slow gup (which has the pgtable lock held), but that's
-not a problem to check.
+Time to retire hugetlb_follow_page_mask(), following the previous
+retirement of follow_hugetlb_page() in 4849807114b8.
 
-Since follow_page() always only fetch one page, set the end to "address +
-PAGE_SIZE" should suffice.  We will still do the pgtable walk once for each
-hugetlb page by setting ctx->page_mask properly.
+There may be a slight difference of how the loops run when processing slow
+GUP over a large hugetlb range on cont_pte/cont_pmd supported archs: each
+loop of __get_user_pages() will resolve one pgtable entry with the patch
+applied, rather than relying on the size of hugetlb hstate, the latter may
+cover multiple entries in one loop.
 
-One thing worth mentioning is that some level of pgtable's _bad() helper
-will report is_hugepd() entries as TRUE on Power8 hash MMUs.  I think it at
-least applies to PUD on Power8 with 4K pgsize.  It means feeding a hugepd
-entry to pud_bad() will report a false positive. Let's leave that for now
-because it can be arch-specific where I am a bit declined to touch.  In
-this patch it's not a problem as long as hugepd is detected before any bad
-pgtable entries.
+A quick performance test on an aarch64 VM on M1 chip shows 15% degrade over
+a tight loop of slow gup after the path switched.  That shouldn't be a
+problem because slow-gup should not be a hot path for GUP in general: when
+page is commonly present, fast-gup will already succeed, while when the
+page is indeed missing and require a follow up page fault, the slow gup
+degrade will probably buried in the fault paths anyway.  It also explains
+why slow gup for THP used to be very slow before 57edfcfd3419 ("mm/gup:
+accelerate thp gup even for "pages != NULL"") lands, the latter not part of
+a performance analysis but a side benefit.  If the performance will be a
+concern, we can consider handle CONT_PTE in follow_page().
+
+Before that is justified to be necessary, keep everything clean and simple.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/gup.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 66 insertions(+), 7 deletions(-)
+ include/linux/hugetlb.h |  7 ----
+ mm/gup.c                | 15 +++------
+ mm/hugetlb.c            | 71 -----------------------------------------
+ 3 files changed, 5 insertions(+), 88 deletions(-)
 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 52d9efcf1edf..85e1c9931ae5 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -328,13 +328,6 @@ static inline void hugetlb_zap_end(
+ {
+ }
+ 
+-static inline struct page *hugetlb_follow_page_mask(
+-    struct vm_area_struct *vma, unsigned long address, unsigned int flags,
+-    unsigned int *page_mask)
+-{
+-	BUILD_BUG(); /* should never be compiled in if !CONFIG_HUGETLB_PAGE*/
+-}
+-
+ static inline int copy_hugetlb_page_range(struct mm_struct *dst,
+ 					  struct mm_struct *src,
+ 					  struct vm_area_struct *dst_vma,
 diff --git a/mm/gup.c b/mm/gup.c
-index 00cdf4cb0cd4..43a2e0a203cd 100644
+index 43a2e0a203cd..2eb5911ba849 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -30,6 +30,11 @@ struct follow_page_context {
- 	unsigned int page_mask;
- };
- 
-+static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
-+				  unsigned long addr, unsigned int pdshift,
-+				  unsigned int flags,
-+				  struct follow_page_context *ctx);
-+
- static inline void sanity_check_pinned_pages(struct page **pages,
- 					     unsigned long npages)
+@@ -997,18 +997,11 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
  {
-@@ -871,6 +876,9 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
- 		return no_page_table(vma, flags, address);
- 	if (!pmd_present(pmdval))
- 		return no_page_table(vma, flags, address);
-+	if (unlikely(is_hugepd(__hugepd(pmd_val(pmdval)))))
-+		return follow_hugepd(vma, __hugepd(pmd_val(pmdval)),
-+				     address, PMD_SHIFT, flags, ctx);
- 	if (pmd_devmap(pmdval)) {
- 		ptl = pmd_lock(mm, pmd);
- 		page = follow_devmap_pmd(vma, address, pmd, flags, &ctx->pgmap);
-@@ -921,6 +929,9 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
- 	pud = READ_ONCE(*pudp);
- 	if (!pud_present(pud))
- 		return no_page_table(vma, flags, address);
-+	if (unlikely(is_hugepd(__hugepd(pud_val(pud)))))
-+		return follow_hugepd(vma, __hugepd(pud_val(pud)),
-+				     address, PUD_SHIFT, flags, ctx);
- 	if (pud_leaf(pud)) {
- 		ptl = pud_lock(mm, pudp);
- 		page = follow_huge_pud(vma, address, pudp, flags, ctx);
-@@ -944,10 +955,13 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
- 
- 	p4dp = p4d_offset(pgdp, address);
- 	p4d = READ_ONCE(*p4dp);
--	if (!p4d_present(p4d))
--		return no_page_table(vma, flags, address);
- 	BUILD_BUG_ON(p4d_leaf(p4d));
--	if (unlikely(p4d_bad(p4d)))
-+
-+	if (unlikely(is_hugepd(__hugepd(p4d_val(p4d)))))
-+		return follow_hugepd(vma, __hugepd(p4d_val(p4d)),
-+				     address, P4D_SHIFT, flags, ctx);
-+
-+	if (!p4d_present(p4d) || p4d_bad(p4d))
- 		return no_page_table(vma, flags, address);
- 
- 	return follow_pud_mask(vma, address, p4dp, flags, ctx);
-@@ -981,7 +995,7 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
- 			      unsigned long address, unsigned int flags,
- 			      struct follow_page_context *ctx)
- {
--	pgd_t *pgd;
-+	pgd_t *pgd, pgdval;
+ 	pgd_t *pgd, pgdval;
  	struct mm_struct *mm = vma->vm_mm;
- 
- 	ctx->page_mask = 0;
-@@ -996,11 +1010,17 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
- 						&ctx->page_mask);
- 
- 	pgd = pgd_offset(mm, address);
-+	pgdval = *pgd;
- 
--	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
--		return no_page_table(vma, flags, address);
-+	if (unlikely(is_hugepd(__hugepd(pgd_val(pgdval)))))
-+		page = follow_hugepd(vma, __hugepd(pgd_val(pgdval)),
-+				     address, PGDIR_SHIFT, flags, ctx);
-+	else if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
-+		page = no_page_table(vma, flags, address);
-+	else
-+		page = follow_p4d_mask(vma, address, pgd, flags, ctx);
- 
--	return follow_p4d_mask(vma, address, pgd, flags, ctx);
-+	return page;
- }
- 
- struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
-@@ -3037,6 +3057,37 @@ static int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
- 
- 	return 1;
- }
-+
-+static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
-+				  unsigned long addr, unsigned int pdshift,
-+				  unsigned int flags,
-+				  struct follow_page_context *ctx)
-+{
 +	struct page *page;
-+	struct hstate *h;
-+	spinlock_t *ptl;
-+	int nr = 0, ret;
-+	pte_t *ptep;
-+
-+	/* Only hugetlb supports hugepd */
-+	if (WARN_ON_ONCE(!is_vm_hugetlb_page(vma)))
-+		return ERR_PTR(-EFAULT);
-+
-+	h = hstate_vma(vma);
-+	ptep = hugepte_offset(hugepd, addr, pdshift);
-+	ptl = huge_pte_lock(h, vma->vm_mm, ptep);
-+	ret = gup_huge_pd(hugepd, addr, pdshift, addr + PAGE_SIZE,
-+			  flags, &page, &nr);
-+	spin_unlock(ptl);
-+
-+	if (ret) {
-+		WARN_ON_ONCE(nr != 1);
-+		ctx->page_mask = (1U << huge_page_order(h)) - 1;
-+		return page;
-+	}
-+
-+	return NULL;
-+}
- #else
- static inline int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
- 		unsigned int pdshift, unsigned long end, unsigned int flags,
-@@ -3044,6 +3095,14 @@ static inline int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
- {
- 	return 0;
- }
-+
-+static struct page *follow_hugepd(struct vm_area_struct *vma, hugepd_t hugepd,
-+				  unsigned long addr, unsigned int pdshift,
-+				  unsigned int flags,
-+				  struct follow_page_context *ctx)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_ARCH_HAS_HUGEPD */
  
- static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+-	ctx->page_mask = 0;
+-
+-	/*
+-	 * Call hugetlb_follow_page_mask for hugetlb vmas as it will use
+-	 * special hugetlb page table walking code.  This eliminates the
+-	 * need to check for hugetlb entries in the general walking code.
+-	 */
+-	if (is_vm_hugetlb_page(vma))
+-		return hugetlb_follow_page_mask(vma, address, flags,
+-						&ctx->page_mask);
++	vma_pgtable_walk_begin(vma);
+ 
++	ctx->page_mask = 0;
+ 	pgd = pgd_offset(mm, address);
+ 	pgdval = *pgd;
+ 
+@@ -1020,6 +1013,8 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+ 	else
+ 		page = follow_p4d_mask(vma, address, pgd, flags, ctx);
+ 
++	vma_pgtable_walk_end(vma);
++
+ 	return page;
+ }
+ 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index abec04575c89..2e320757501b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -6883,77 +6883,6 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
+ }
+ #endif /* CONFIG_USERFAULTFD */
+ 
+-struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
+-				      unsigned long address, unsigned int flags,
+-				      unsigned int *page_mask)
+-{
+-	struct hstate *h = hstate_vma(vma);
+-	struct mm_struct *mm = vma->vm_mm;
+-	unsigned long haddr = address & huge_page_mask(h);
+-	struct page *page = NULL;
+-	spinlock_t *ptl;
+-	pte_t *pte, entry;
+-	int ret;
+-
+-	hugetlb_vma_lock_read(vma);
+-	pte = hugetlb_walk(vma, haddr, huge_page_size(h));
+-	if (!pte)
+-		goto out_unlock;
+-
+-	ptl = huge_pte_lock(h, mm, pte);
+-	entry = huge_ptep_get(pte);
+-	if (pte_present(entry)) {
+-		page = pte_page(entry);
+-
+-		if (!huge_pte_write(entry)) {
+-			if (flags & FOLL_WRITE) {
+-				page = NULL;
+-				goto out;
+-			}
+-
+-			if (gup_must_unshare(vma, flags, page)) {
+-				/* Tell the caller to do unsharing */
+-				page = ERR_PTR(-EMLINK);
+-				goto out;
+-			}
+-		}
+-
+-		page = nth_page(page, ((address & ~huge_page_mask(h)) >> PAGE_SHIFT));
+-
+-		/*
+-		 * Note that page may be a sub-page, and with vmemmap
+-		 * optimizations the page struct may be read only.
+-		 * try_grab_page() will increase the ref count on the
+-		 * head page, so this will be OK.
+-		 *
+-		 * try_grab_page() should always be able to get the page here,
+-		 * because we hold the ptl lock and have verified pte_present().
+-		 */
+-		ret = try_grab_page(page, flags);
+-
+-		if (WARN_ON_ONCE(ret)) {
+-			page = ERR_PTR(ret);
+-			goto out;
+-		}
+-
+-		*page_mask = (1U << huge_page_order(h)) - 1;
+-	}
+-out:
+-	spin_unlock(ptl);
+-out_unlock:
+-	hugetlb_vma_unlock_read(vma);
+-
+-	/*
+-	 * Fixup retval for dump requests: if pagecache doesn't exist,
+-	 * don't try to allocate a new page but just skip it.
+-	 */
+-	if (!page && (flags & FOLL_DUMP) &&
+-	    !hugetlbfs_pagecache_present(h, vma, address))
+-		page = ERR_PTR(-EFAULT);
+-
+-	return page;
+-}
+-
+ long hugetlb_change_protection(struct vm_area_struct *vma,
+ 		unsigned long address, unsigned long end,
+ 		pgprot_t newprot, unsigned long cp_flags)
 -- 
 2.44.0
 
