@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-109854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A835D88568D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:31:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08C02885694
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D654B21247
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:31:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F7C3282BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:33:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBC65337F;
-	Thu, 21 Mar 2024 09:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A52F53384;
+	Thu, 21 Mar 2024 09:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="wsOg9C2n"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Oc2UNrB6"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D51B125CB;
-	Thu, 21 Mar 2024 09:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C705579A;
+	Thu, 21 Mar 2024 09:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711013485; cv=none; b=pIUjEfrZRK4jyzaAlHY5VuutL9vqdo5YQdDBXmWKIBl5ilyuAcfLFSbfnCXYg6pN76+2U9jWLB7naBkzlBCC4CMtkFut0xBrWtTMTB9JWgPCpLiCT/+CwdQQdGEhmffvq2C7sZkc5Kk7UZAhltOylaYH208jUSJLezj6oNBFU9s=
+	t=1711013587; cv=none; b=mtxOuKzP0dl8u8GQ0/gTzB+bHJjmXZZDMFAJMfHeh+tlPLL2S1TnSIsfPuM19IKkoxSa3vSW0yLWfp8y5RkI+rLnZyG9BUYbOggc86zYl73s7EUkvMvsD9NdoH5V0P5cIAHqlBrmcXqmnoTTe3KuHp9OR9cpou3PfiZ9B0PqZEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711013485; c=relaxed/simple;
-	bh=TzFlFyBicWglBuM6+5UuyMfMcNrvW9nqeLaEKUhN0Uo=;
+	s=arc-20240116; t=1711013587; c=relaxed/simple;
+	bh=XicOA/rd5rXSwjpSJrCdlLs6Mlqt1T3aAFaf41e77ks=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RW3dXDXijshiar+KW0N8Ulnmk+uC+m1F53YmTxHmFL996iZkaqLYoIvEdb6o+rn4YR87uzqukbFVdC19joOk7fc6RJ21sHzyjAANRX4+7LmPaCabbLzf5taWOdWnuwLPHwtWipkeysqnyphkr1K4mr+rlZUHxXo7TPBrXJyisBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=wsOg9C2n; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+	 In-Reply-To:Content-Type; b=oDq/k2sMdK5GJtCrrkcFfc49inkcxmBXQEwqaHHfuWF73+bR9q2JGAf/D1T0QrAKYuKCDqNOJpTwnloV/tMj8jvlO5rT+ghCWA+Cvi5q9bVicrZ3GJzH0kFdKGXTusMhFtd8cumM2AlqP9KU0wvKVgJpGr6izypu1wuj3qCqMNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Oc2UNrB6; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=gn3aXvf5VTogYoFCNQ+hze3URTCA0KPJcqB9uzyTWx8=;
-	t=1711013483; x=1711445483; b=wsOg9C2nMK1CryZat1gIgOb3nBUBNq/sOtpmFvIT9mCjUfa
-	CdSG6CfCjbXRepKqxzHUtjFXE7XjwwNaB7+e75HivQA/1gHxAqrcC8uDK5jan4CytAWo/GNNczrYM
-	vchwN4Sw/+NkoNSECrWL1jPFZm/2lGvVppaCTuSP6KeDZocjY2rBoblyYzN15K/+odi2GNT3cJmwN
-	I9k9W0iK+F+r3cicWXS5KFhNlFUTomltpjEVoHZbF1J5X8VyC1kRwr4t0ji5/bXyKZMxuV/tVUM4j
-	coM45dqxwPncaO5e4iv0PemIRogq/izRBKd+qenlQIlqyGnd8T2kIewOzhVVo/qg==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rnElb-0005Vn-2F; Thu, 21 Mar 2024 10:31:19 +0100
-Message-ID: <7ed15eea-24f9-4c75-abf0-f120c7f5b09a@leemhuis.info>
-Date: Thu, 21 Mar 2024 10:31:18 +0100
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=webeErP71bGrCtrnKMl3CyhYpAF0y0SlAUiPvCaWPVw=; b=Oc2UNrB6E4lFSOnZpA7d1IatjG
+	W6hsUIFRGF6ZFdsUcV+Adz6oXUqJdPj+7cEAaWcSBjDWNgoRuI2o27QS02PykktSaeAZdv749sCRa
+	GdhddvtLxLuV4PC7ecOpTa1Y/35qamO+DvRbrZCenbBNBj3ZolBVbDPH/6oOyDG9UQpmYYsgMTitk
+	keK7SpcRac5G2tKjYbEz4qh0FgAbUW/zsobZ/WBh/npQDKa63ho3GLNifaGtQM7cc1/VHRA70bpV0
+	wrvzKP3/QqHx02S0Azo0b9GZC6bYxv2ww0qOEcALXPKWsZBEKrHBF6rbKfJCMZt3IeZ48LE5HcH0T
+	OTZF9h8g==;
+Received: from fpd2fa7e2a.ap.nuro.jp ([210.250.126.42] helo=[192.168.1.8])
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnEmp-00000006Qam-3O3a;
+	Thu, 21 Mar 2024 09:32:36 +0000
+Message-ID: <ec1b6bdf-1676-48fb-99f0-a8cc2a99dd17@infradead.org>
+Date: Thu, 21 Mar 2024 18:32:25 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,79 +53,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] Failure to hibernate on Dell Latitude 7430
-Content-Language: en-US, de-DE
-To: David McFarland <corngood@gmail.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- Chris Feng <chris.feng@mediatek.com>, linux-pm@vger.kernel.org,
- Alex Hung <alexhung@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <20240318191153.6978-1-corngood@gmail.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20240318191153.6978-1-corngood@gmail.com>
+Subject: Re: [PATCH] powerpc: ps3: mark ps3_notification_device static for
+ stack usage
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+ Nathan Chancellor <nathan@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
+ Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>,
+ Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Kevin Hao <haokexin@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20240320180333.151043-1-arnd@kernel.org>
+ <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
+Content-Language: en-US
+From: Geoff Levand <geoff@infradead.org>
+In-Reply-To: <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1711013483;97f36e79;
-X-HE-SMSGID: 1rnElb-0005Vn-2F
 
-On 18.03.24 20:11, David McFarland wrote:
-> I have a Dell Latitude 7430, and recently whenever I hibernate with
-> `systemctl hibernate`, the machine would immediately wake.
+Hi Geert,
 
-Thanks for the report and the proposed patch.
-
-> I bisected it to:
+On 3/21/24 17:32, Geert Uytterhoeven wrote:
+>>  static int ps3_probe_thread(void *data)
+>>  {
+>> -       struct ps3_notification_device dev;
+>> +       static struct ps3_notification_device dev;
+>>         int res;
+>>         unsigned int irq;
+>>         u64 lpar;
 > 
-> 0c4cae1bc00d PM: hibernate: Avoid missing wakeup events during hibernation
+> Making it static increases kernel size for everyone.  So I'd rather
+> allocate it dynamically. The thread already allocates a buffer, which
+> can be replaced at no cost by allocating a structure containing both
+> the ps3_notification_device and the buffer.
 
-I CCed the author of that change, which should at least be aware of this
-any maybe help out.
+This seems like a much better solution.
 
-Also CCed the people that take care of the code your patch modifies,
-they should be the best to judge what should be done here.
+-Geoff
 
-FWIW, the start of the thread and the proposed patch can be found here:
-https://lore.kernel.org/all/20240318191153.6978-1-corngood@gmail.com/
-
-Ciao, Thorsten
-
-> However, the underlying problem seems to be that during hibernation, my
-> system gets a 0xcf (power button release) event, and the above change
-> causes it to abort hibernation correctly.
-> 
-> I also noticed that holding the power button down (when it's configured
-> to suspend) causes the system to suspend and then wake upon release, if
-> it's held long enough.
-> 
-> I'm attaching a patch which fixes the problem for me, by skipping the
-> wake on any of the release events.  These events are all marked
-> KEY_IGNORE, so think this is a reasonable thing to do.
-> 
-> I'm a little worried about the consequences of doing this
-> unconditionally in intel-hid.  Perhaps it should be a quirk?
-> 
-> David McFarland (1):
->   platform/x86/intel/hid: Don't wake on 5-button releases
-> 
->  drivers/platform/x86/intel/hid.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-
-P.S.: To be sure the issue doesn't fall through the cracks unnoticed,
-I'm adding it to regzbot, the Linux kernel regression tracking bot:
-
-#regzbot ^introduced 0c4cae1bc00d
-#regzbot title PM: hibernate: & platform/x86/intel/hid: hibernate on
-Dell Latitude 7430 fails
-#regzbot ignore-activity
-
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
 
 
