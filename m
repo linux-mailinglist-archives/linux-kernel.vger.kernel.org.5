@@ -1,41 +1,74 @@
-Return-Path: <linux-kernel+bounces-109835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCD8885646
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:15:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65FF088564D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:20:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0E2282509
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:15:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA6361F21FC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB683FBAD;
-	Thu, 21 Mar 2024 09:15:33 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15C245948;
+	Thu, 21 Mar 2024 09:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CjggUsPe"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F756883C;
-	Thu, 21 Mar 2024 09:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFF13BBC4
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711012532; cv=none; b=asKNnE2SuoxLd8RmREd4luL3KqUjputuAz7YjKrfR01m+SgS5tqOVcm9N4Ia91TmzqD7Ss08xtTdlXAWOcMQxGspI4KMcszVsaJVISiyfxpZ2p6SAlmkp6h2m9LvTsxzwgSWOSnYbP0qiKLQ/2qCoTd5GLu0IBWlHrUasCUOYfo=
+	t=1711012801; cv=none; b=YOaMc8cCNz0mbAieJF13sdmGuCru9wxz7VhK44wbN9Nw3Ux1yvOz6BoxKOAtpfz/r0Jw+0QVjid72aiAnZA+fHWcAD/5F6MlO079cBkOIbrOWCm0+PBFX71bzR1Q7ywMEWzfs64ctC+skMYVLEzklXrwdxWXoOo2QDi+LdCeiq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711012532; c=relaxed/simple;
-	bh=7mZ+Ap7YfWnxtKv8WqQRdUUF6tDAryF5ikk9T8xbk1E=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=n/A+F1PirkPd1+Mq1A5hFTJgd1Wd1rv8aqA+73776Yju7pTa8bPvCiuQBH4q8CWx0GbGQqeyUXhnLYQ5NBxShl4yBm6tdwFJ9CB1vbhLeB0/Nuo5Zmm0XsrsK5gI0qmzEF0sFsHT+AWXuLjuiU+A+kutRjslR24FwzdyFBgDafk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [141.14.31.7] (theinternet.molgen.mpg.de [141.14.31.7])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: buczek)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7E94061E5FE0A;
-	Thu, 21 Mar 2024 10:15:05 +0100 (CET)
-Message-ID: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
-Date: Thu, 21 Mar 2024 10:15:04 +0100
+	s=arc-20240116; t=1711012801; c=relaxed/simple;
+	bh=OpPTfb6qaEpkPkfkuKGzKaqr8JmtOCHMyQRPHWlpa9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g3sVpUPUtbBiotmYqcdjQv/RCYRmrpV5OtIVBUb/CQZXlOEp8LYRpnYboqDymxm1V829X8H/xNQVMTv8E5IDcJZy9IO/FNYA75vz7uZNoW4hDWbvAmC8qewEM5HHCNxSg99s1AiVHRLasBgpMo2QrjNQXRtkAf0rs70zXLN7ukc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CjggUsPe; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46f60cc80aso96027766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:19:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711012798; x=1711617598; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=y9o6XSHuV6Rg9KXXUPNQI/05zH9LN9kPlAx4Zl2+03o=;
+        b=CjggUsPed1UM2xWN2b+IMZAixvm64MCww0KVXEkMFiesUSX02xc7Lxj67XdvcROcso
+         F2wvF+HfU2yE2vfVK3HU0eCnxBwj/ybLlgR01OXB4uGWBQIAPVfLk+6YA0DofS4yxC8y
+         Z7SZDbHvjz3hHf/uouwU0Rwv7RsU59hAIEY/PuqsIcWEtCVsqMLlNnQP4/Ck88xlT1Ij
+         eS3id/XuMxi1GkYHOahdUywbbw/SQJldCM2/aYbLUrMekUzUCD5DfpV4M0BXcp9dIcrU
+         0PgFvoHo91yb632ONOazplpY7bboKjSMvLzyA0z0eHCMB/YbS2HQ/LqEPDQJvqR/sf3E
+         0w3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711012798; x=1711617598;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y9o6XSHuV6Rg9KXXUPNQI/05zH9LN9kPlAx4Zl2+03o=;
+        b=JeXEBJsyhzic6fWokip2yG7PTZEGaOS3U207MFXtcoXFRoLiT7CPI9LhdQvU4RB4pW
+         hNBAofvqK5YxH8JfEDDnccWZBDcyAegDGkLpiESyayfOf2LPOUS3z9kpqRvc3IsZBcRt
+         Xm1Jc0YumDSrZrCh1HDuR3YavYo4eEVj8N14SSIV5XpXzb3HflbrYrZVHdPXoUbccLfr
+         3odE8ER1PKFO6alvMZhmi7m83mbI6aFznoTqo9yj7aNrTGDsrXvQxaSrE1Y8jwWjo73D
+         wOvT6ytPz/IqhlbyUO9Dfsl6K114Ne77NZYDgeH+22pZapSBCVkAgvE422GmiRbnHpI2
+         DGbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVw0gQmeZk6RBxNEwm1rPlG0DU5VtfKxu6WuYrzuD36kemXcXU2nBgnORvCCELUGUDPqRY7xlyT/fGPhdzjUJT+hmU6D+Odj74R+oH0
+X-Gm-Message-State: AOJu0Yz6hcsPMQYv2jFc8Pyaf8yrjZDtbQMGvWJSwwpGTn7Ioi39saZK
+	IgZPi44eulhlvepKE+mD3vnYGaenPGusT4j/EQEzZy+ioHbnTuUov9g1Xzas8R8=
+X-Google-Smtp-Source: AGHT+IF9916kM88PSoRglR66YCcVmLN+62YSmph8pj40Ei4HCql0ciJAUzxwTQXAbPksJsFHjE255A==
+X-Received: by 2002:a17:906:190a:b0:a46:8c10:c75a with SMTP id a10-20020a170906190a00b00a468c10c75amr3106595eje.38.1711012798372;
+        Thu, 21 Mar 2024 02:19:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id gf9-20020a170906e20900b00a46a27794f6sm6172838ejb.123.2024.03.21.02.19.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 02:19:57 -0700 (PDT)
+Message-ID: <70439a01-7949-46bf-a701-c82ba961171a@linaro.org>
+Date: Thu, 21 Mar 2024 10:19:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,86 +76,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: =?UTF-8?Q?Re=3A_=5BPATCH_2/4=5D_media=3A_dt-binding=3A_media=3A_Doc?=
+ =?UTF-8?Q?ument_rk3588=E2=80=99s_vepu121?=
+To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>, linux-kernel@vger.kernel.org
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Dragan Simic <dsimic@manjaro.org>,
+ Shreeya Patel <shreeya.patel@collabora.com>,
+ Chris Morgan <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ iommu@lists.linux.dev
+References: <20240320173736.2720778-1-linkmauve@linkmauve.fr>
+ <20240320173736.2720778-3-linkmauve@linkmauve.fr>
+ <4c05d3c0-aa79-4ce0-918c-7d0967ace520@linaro.org>
+ <855507987.0ifERbkFSE@diego>
 Content-Language: en-US
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, it+linux@molgen.mpg.de
-From: Donald Buczek <buczek@molgen.mpg.de>
-Subject: possible 6.6 regression: Deadlock involving super_lock()
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <855507987.0ifERbkFSE@diego>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 21/03/2024 09:47, Heiko Stübner wrote:
+>>>      enum:
+>>>        - rockchip,rk3568-vepu
+>>> +      - rockchip,rk3588-vepu121
+>>
+>> What is 121?
+> 
+> That is the strange naming of the ip block inside the soc.
+> 
+> I.e. the rk3588 TRM lists a number of different video encoders and decoders:
+> - VDPU121 is decoding h.263 and mpeg1,2,4
+> - VDPU381 is decoding h.265, h.264 and some more
+> - VDPU720 is decoding jpeg
+> - VDPU981 decodes AV1
+> - VEPU121 is the jpeg encoder above
+> - VEPU580 encodes h.264 and h.265
+> 
+> Each of those are separate IP blocks with their own io-memory, their own
+> interrupts and their own iommus, etc.
 
-we have a set of 6 systems with similar usage patterns which ran on 5.15 kernels for over a year.  Only two weeks after we've switched one of the systems from a 5.15 kernel to a 6.6 kernel, it went into a deadlock. I'm aware that I don't have enough information that this could be analyzed, but I though I drop it here anyway, because the deadlock seems to involve the locking of a superblock and I've seen that some changes in that area went into 6.6. Maybe someone has an idea or suggestions for further inspection if this happens the next time.
+Thanks for explanation. Short introduction in commit msg would be nice
+(e.g. VEPU121, one of two VEPU encoders). OTOH, why not documenting all
+of them? Bindings are supposed to be as complete as possible.
 
-These systems
+Best regards,
+Krzysztof
 
-- use automounter a lot (many mount/umount events)
-- use nfs a lot (most data is on remote filesystems over nfs)
-- are used interactively (users occasionally overload any resource like memory, cores or network)
-
-When we've noticed the problem, several processes were blocked, including the automounter which waited for a mount that didn't complete:
-
-# # /proc/73777/task/73777: mount.nfs : /sbin/mount.nfs rabies:/amd/rabies/M/MG009/project/avitidata /project/avitidata -s -o rw,nosuid,sec=mariux
-# cat /proc/73777/task/73777/stack
-
-[<0>] super_lock+0x40/0x140
-[<0>] grab_super+0x29/0xc0
-[<0>] grab_super_dead+0x2e/0x140
-[<0>] sget_fc+0x1e1/0x2d0
-[<0>] nfs_get_tree_common+0x86/0x520 [nfs]
-[<0>] vfs_get_tree+0x21/0xb0
-[<0>] nfs_do_submount+0x128/0x180 [nfs]
-[<0>] nfs4_submount+0x566/0x6d0 [nfsv4]
-[<0>] nfs_d_automount+0x16b/0x230 [nfs]
-[<0>] __traverse_mounts+0x8f/0x210
-[<0>] step_into+0x32a/0x740
-[<0>] link_path_walk.part.0.constprop.0+0x246/0x380
-[<0>] path_lookupat+0x3e/0x190
-[<0>] filename_lookup+0xe8/0x1f0
-[<0>] vfs_path_lookup+0x52/0x80
-[<0>] mount_subtree+0xa0/0x150
-[<0>] do_nfs4_mount+0x269/0x360 [nfsv4]
-[<0>] nfs4_try_get_tree+0x48/0xd0 [nfsv4]
-[<0>] vfs_get_tree+0x21/0xb0
-[<0>] path_mount+0x79e/0xa50
-[<0>] __x64_sys_mount+0x11a/0x150
-[<0>] do_syscall_64+0x46/0x90
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-
-Also, one writeback thread was blocked. I mention that, because I don't get how these these two threads could depend on each other:
-
-# # /proc/39359/task/39359: kworker/u268:5+flush-0:58 : 
-# cat /proc/39359/task/39359/stack
-
-[<0>] folio_wait_bit_common+0x135/0x350
-[<0>] write_cache_pages+0x1a0/0x3a0
-[<0>] nfs_writepages+0x12a/0x1e0 [nfs]
-[<0>] do_writepages+0xcf/0x1e0
-[<0>] __writeback_single_inode+0x46/0x3a0
-[<0>] writeback_sb_inodes+0x1f5/0x4d0
-[<0>] __writeback_inodes_wb+0x4c/0xf0
-[<0>] wb_writeback+0x1f5/0x320
-[<0>] wb_workfn+0x350/0x4f0
-[<0>] process_one_work+0x142/0x300
-[<0>] worker_thread+0x2f5/0x410
-[<0>] kthread+0xe8/0x120
-[<0>] ret_from_fork+0x34/0x50
-[<0>] ret_from_fork_asm+0x1b/0x30
-
-As a result, of course, more and more processes were blocked. A full list of all stack traces and some more info from the system in the blocked state is at https://owww.molgen.mpg.de/~buczek/2024-03-18_mount/info.log
-
-dmesg not included in that file, but I've reviewed it and there was nothing unusual in it.
-
-
-Thanks
-
-  Donald
-
--- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 14  
 
