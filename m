@@ -1,186 +1,302 @@
-Return-Path: <linux-kernel+bounces-109961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C786885844
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:25:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0009C885833
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDEBD282039
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:25:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB5E32823D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A58B5A4D4;
-	Thu, 21 Mar 2024 11:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DDD58AB0;
+	Thu, 21 Mar 2024 11:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QiDTb8t6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3jZnZioC"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pw44NNZb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04B158229;
-	Thu, 21 Mar 2024 11:24:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711020298; cv=none; b=kGfQ0pe+ZR6RE6qw4WR5XRgDfzOwzc6N+U37z/4RFgtdIwxsHHdstfYCkqQkISumPDjQPkyEKhQ3r4QJwSVjfUqzkrwDBvuz6I+qYW4Yg/Yi8GwdXHmQaYmGjgnmwmhOEXKdLS4KKmo1DOSCyIgVR3/5fa61mzufGIdpuNSOEko=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711020298; c=relaxed/simple;
-	bh=gst+oXGb/4n8bIDsyLM0AG1Y3wMsVD9IZ4qrzg7eWkE=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=dxRzn2Xw1QD8+kCramEW5M0KC1XdwEJhQ/afSr1dbPsmUVhxQKSkku8lZznlm8Zw7JI3kmrg2r02OFBqyMprPmLOEqGlk+lMIBjnXAzfnVOYH5piYQNf9iBH0Y5l8sq4JJAWPLvz4GFNV2I3rlgLU+/LQtdlzxUXoU7Q9SZDavQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QiDTb8t6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3jZnZioC; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 21 Mar 2024 11:24:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711020295;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gvgV9uRQ5mokoL+CWA1BFsXEAKiRYoaGZVn2rpFo8oc=;
-	b=QiDTb8t6rcTwfdDayxmhLU6lL9U8sgtxRaFjC0bJI03zZXhylD0Aoz9lWyxGUM++S1iaRu
-	2MLBzF/8f10tsvk2Tv8R525fcGB4LUlQstbkd4g25QyHULBqXY8QunBTWEkLLzfLERd2KT
-	3L0hkQJ3Hni44TBkyfspO71DMxSs202JVNltQDSxhgMIHwbGQMyPDgs42QxRlga8T15lgb
-	Za5ryDiAJjkQbX9AaO8b389M/Hy8Coo2tVLl26irNVkcEMWGz6Yfxo4cu4CobtAgfLXiF2
-	Uiht+/uuMQwe4No6NcdtNLMDTaB0RSLGfogcjU3qFYgDtSbarwR5Ew7QRMY3xA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711020295;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gvgV9uRQ5mokoL+CWA1BFsXEAKiRYoaGZVn2rpFo8oc=;
-	b=3jZnZioCScL1heQGmCqA89Lxn1TCLZ3x9/mJI1CRz+ade8upFhXqv0duESZHmHkYt4zQuB
-	IwcQjPsGQfuK5eDg==
-From: "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] timers/migration: Fix endless timer requeue
- after idle interrupts
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240318230729.15497-2-frederic@kernel.org>
-References: <20240318230729.15497-2-frederic@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873B457867;
+	Thu, 21 Mar 2024 11:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711020212; cv=fail; b=Su5tf4ERV68+J1AZ767tw/+dnMSM+8HymqGCgiVuQkqTxfYUkNGR1wOeRjabpw/vzyWfnSHO7Q8zvmmLk6mD7CzuuhL+x9odLsa+4V7Ckqm2jBQm0YMHWuMjLe5DumTwnEZ9qGBMQ7IXEI97W5vgHlDQscOIq88mFr4q7qo297w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711020212; c=relaxed/simple;
+	bh=4E9hXhPdOFNdRgC4UX538e7QIcAI9tlWTKAaCc44g2s=;
+	h=Message-ID:Date:Subject:From:To:CC:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=QmP4yNBsozI3wS5f8l/DeSEH/jIzbOWh+eENQWoUOqAT4gpwwOzBC0T8d7FDhQOleadoa3wsGyMmfAm4CVSI5PAzaWQwSWSt4YIoOHPiX2OAn3RrC3Oim4eath5NpKrAaCo7qwBIQp0y5NPgi78iq0euR+HdmeQBGBWvLvkxToU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pw44NNZb; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711020211; x=1742556211;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4E9hXhPdOFNdRgC4UX538e7QIcAI9tlWTKAaCc44g2s=;
+  b=Pw44NNZbFzuMG2tua3rFgCYEsX8TSQAB2oLDfp6CISkv8rXGGP3bb39E
+   CNsGU4pW1K7RV36fYrBXzloTmOcOh2kCGYqM6+oNGCke5uiQjoXPpCffb
+   xWx5gfAe1AqUfTQSNW7rExUJ1KVmqHDO1mwFWWazoVK9VV6OcgsY9MDuF
+   /BcTsH2cv3brY80fgXhqBcvElEIHi4e/YZr+XxvYzYkT4KXQKoi5RinVU
+   v8b0qlZvaO5drccjnW2OyvM/eThBILGk1s/V57XHV07H2sUvaeFbObPTd
+   RerI0kgINhz+0OxvwevTtQ4LFkdyFM03FWycvCDZ1fxo2grEZIFV0QB0v
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="16734234"
+X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
+   d="scan'208";a="16734234"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 04:23:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
+   d="scan'208";a="14477815"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 04:23:20 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 04:23:19 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 04:23:19 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 04:23:19 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tbt+kW9aXEsDjpTEidluZKU3+vFIl41Hr0JPuOjjxBBK0VA3YVQ9p3nSG6ySykY/EAjNxAfsXp6QZWZzSx/Z7mg+Mcs0w2+p03KGAotnPpPmnJ80TUpwKoOzg+3ArHnUA2lMDD9XI7yW5G99nukm+ZxA2Y6nyRO4SJzsoIazqZYVzxN9bBcRX86dRUGGRxk6sIMXFF9L/rich5MrDonGkErKCYWHMUBOZzAfSlw4+WSW7Pu36KDOS2Hqf3qRrgO3Ee3h71yc8yJ1YRef4Tj7iEFBWK4dPdiGLIJtBbCvuWbV3HkNpdNaDf51zgG13vpG50lh9gOD8NFgNojMp8uHwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TZO6jAKop416tNTsQJ9/u9R1AnrxQssaBKnMhiwGYF4=;
+ b=KBHwOYkuoksDeB5+OQ+qXIQsg6eYbyWH1vxiRZohcPqnAigFAcA/c+8Xj9LUEaryLvF6kN/2zkOzvr8VzbBQ9cTwsCxQgP/iL9p7CgvXEub/i3lm1oE9NJ+GViVJ99jCr9VoXfRC+hvaBu3b3SGzaY+4HMO/sWSQoM5AvPm5esCwVBbytEgfgiRcDn8O9fpxuJN8AilhMlbIUQ78vid2T8xDD1crKNX7AArO46PqiNtDEbE1Ta6SMUutagEprHci0obBAYvQYRUmyz8EPLKyAtVLaF58ZfWnetVvOTzUJVpSfXnNSJTpphSxyUUEqvbo5v84k5UYUu4mRBAQahESbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by DM4PR11MB6095.namprd11.prod.outlook.com (2603:10b6:8:aa::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Thu, 21 Mar
+ 2024 11:23:17 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::faf8:463a:6c86:5996]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::faf8:463a:6c86:5996%6]) with mapi id 15.20.7409.010; Thu, 21 Mar 2024
+ 11:23:16 +0000
+Message-ID: <7a4777dd-2359-4bcd-839e-c2d0b5f6be14@intel.com>
+Date: Thu, 21 Mar 2024 19:26:41 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/8] iommu: Introduce a replace API for device pasid
+Content-Language: en-US
+From: Yi Liu <yi.l.liu@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Baolu Lu <baolu.lu@linux.intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+	"joro@8bytes.org" <joro@8bytes.org>, "alex.williamson@redhat.com"
+	<alex.williamson@redhat.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
+	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>
+References: <20231127063428.127436-1-yi.l.liu@intel.com>
+ <20231127063428.127436-2-yi.l.liu@intel.com>
+ <20240115171950.GL734935@nvidia.com>
+ <c831bf5e-f623-402d-9347-8718987d1610@intel.com>
+ <BN9PR11MB52766161477C2540969C83568C242@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <585423de-9173-4c97-b596-71e1564d8b4e@intel.com>
+ <87a2be0d-6a24-4ca8-be30-35287072dda4@linux.intel.com>
+ <749b23c7-ab0e-42b4-9992-e1867fc7d4d7@intel.com>
+ <20240318165247.GD5825@nvidia.com>
+ <13645a9f-239a-46c9-bde2-a1d5c365df4f@intel.com>
+ <20240320123803.GD159172@nvidia.com>
+ <65c517a9-72dc-4342-b2f2-c3c44735bfad@intel.com>
+In-Reply-To: <65c517a9-72dc-4342-b2f2-c3c44735bfad@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0034.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::10) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171102029421.10875.6095806684976626047.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|DM4PR11MB6095:EE_
+X-MS-Office365-Filtering-Correlation-Id: f59d8caa-a06e-45e6-fb22-08dc49994dca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5Y3TFheWJwwo4aNzozFglBFkCtXptxcVqUjXLQXH5thtnr1++oEMekrBGf7Al+0gY3FtKDJ28Nd/FMWjeAp4WLuT3nItr/XWzk74ItSQBWqponz0tr7tg3vZYxqFxC9ZnktO5TWVnzKWLFvMItfER1CTa84cqj82GY9t/TrdwNuSV/N+r53pQFmsHy8sPDTIR1gOupJwQhiggNQJxEEThGcA+0AzH2vhDTjl2FGHQO4XsKhujSXKuWpNNO4eNfcISPI+0YJvGW2O78pGAFsDyNoxBz+xpapyGGwCEqeqrw9uL6CjM7L7jUF9gVL6ukSiOWR3ELdsaeZbQlr/SIZfPy8Y8rwIk7P7HqvwOnAPzeq6PQX9GFdHMnvLA+Q2iGuY16VBGHglVndiNHxTq3J7iFbS3fGllcofARWVSES7P5CCKmSJKrpkNNFml+kLtxFIbGwWcMVPZI6f/6usc20tZY2C4TyXVaal/QDKRjOh32H4VSd3wcV3IP3VCoAta+HMaylOy6gWf9KCCgGWXEfxhPJZBZkUfKSKrrFlSDyp2TzAEAfkr0JhiCjrjqm4iu/Qlvuq7PFhjRXA5EANNgdk7RqUzw+4Z8UFjFtPReawqigT4vodqGjeYnpcNLC5cA7m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STlEbzF6WW14WlVwWDZIME9IMWRzS3BCM0NpdGFOOUdERUhkQXU0Z1lWSzBr?=
+ =?utf-8?B?Z3NqalJmVGRheUhVdHhWREZmSHR3a0JtTFNJVE5HcDJZL1FudUFiZGs2LzFL?=
+ =?utf-8?B?R2d0dHE5ZzFXYlhMY3hGZm9XRjVvL2RTYW1CbHo2MnZPOElkZEpOZGRKNElG?=
+ =?utf-8?B?eG1jeEI1b2E2WUdqMlJ2SE1SY29td2RkaDRjOUh0ZVZCTEswYStSVkNTOHZa?=
+ =?utf-8?B?R1F0b1FXeFhwZGNKV3FIcE5jUllNbUlTcmNKU0hPZ2NvcFd5OE43WnRQWjU3?=
+ =?utf-8?B?OExmSGdzZHluUldKMGtaWlNIWHFkd0hLNFE0VmRkRHlsMGhiYXhzVnQzbUR5?=
+ =?utf-8?B?Rnh3MHdpYWtmOW4xMmJiSUgrLzZSYkl2WDB0ZjNwb1JRc1NHY1Nud0MyQmNr?=
+ =?utf-8?B?Ky90UDZwZHdMRjQ0MUZYd2hZWnluM1FrMTF6T213RXVxNjdHaXBvdi83aGVY?=
+ =?utf-8?B?SldLTEVBTlRwTFBiVXV1emZUQk5UMmx4bFErSmQwczA3TTYzOFNUQ3Y3dFpj?=
+ =?utf-8?B?dnNyeU9Hc1J5a0RBcXpReEp5Q2d6SFViNlBjYVhVazFQL0N5eEtKQkxFdGpi?=
+ =?utf-8?B?RVRRay85NncxV2VWYjJPYlU4ZTRBMWFKMElaS1lHUk50RUNPYUhXazR3bXho?=
+ =?utf-8?B?eTRSU0dsdWZUUVViQXRmRWdRRmRzN0hBQUVFcjRCQS9IMTVrdUFyUStKb0cy?=
+ =?utf-8?B?cUhJdXJkWGJxVUV2WGxOTGQ5c1VUNUJEaHBpOXpNYjFBS0hod0FLck9ERDVk?=
+ =?utf-8?B?ODJaOFFCWUxWNVZKUXZLUFBldjc3NWdPVnhSQ0tUNTVtNjRFZmVJRmZjTE1C?=
+ =?utf-8?B?OGZZazJjY1hpRzlyRXI3VjREaGlDM2VhVHZUSHg2Lzl3K2F3SjV3Vm8zcDI1?=
+ =?utf-8?B?cU5TTEJsTGk4eE9ERzZRM3RmQlNDQnF1MUpLL0tIWVErd3RKam1tWWx6S0dJ?=
+ =?utf-8?B?UHhhelJSRnFXVXRZUC80S2szQUNTTVpuZ3EvSEhJQVVmZW1yVElHU21pdElq?=
+ =?utf-8?B?MUl5S0hTeUx0QUN2Rk1kbDRuSGZGMStZTzNCZnhZWXdhZjlrQmJ4N05SaWRz?=
+ =?utf-8?B?V0FqMjNhQUZxbWQ2dDJ4cHlPZUFycUt6Q1hBR201bGhWUVVXKzhnTEZwZWtN?=
+ =?utf-8?B?dERsbXhWanRrWTZtSjc2cUNVdVZUbHhMZG9MVjVYY0pBZHpwUmRSYlhGRW5P?=
+ =?utf-8?B?Z09JMGpQMUh6VUY4dVlBelQyM1NKcTRVbTROdVkxb1l1MzRIRjRDcFFvUkF6?=
+ =?utf-8?B?SlRUOURpN05MMEI1VDFENldrazNWUCtib2M4bHk4eWVJYkY2d1QrY2czVVRv?=
+ =?utf-8?B?YnVLTDlRREpQUlU2MVYrYi9vd1hoRXhHZHZtcFpoUGZ2T24zaVdTeVk1aU0y?=
+ =?utf-8?B?ZzJvOVdsNEs0ekR1S3Q0QkRHUW1OZ3MzMXhSdVk0clNtWGgwOVU5cGFuaU5O?=
+ =?utf-8?B?NDIwY0lVMmI2MFdoYjlPcXdjNXpCRG5Bdmt3TEM4Yk5RMWppWTMxUWtDVWUr?=
+ =?utf-8?B?dUZiZ3k5TnBtaTg4Mlhsdis4MjdvNk9oNmtFZnZreW5qajRuNU50MXV5ajNS?=
+ =?utf-8?B?NHdZbHFyM2VBRkF4K2lCK1BHT3BLZnpUQjBxMFQrR2cxTTYxMmZLWWpaZk95?=
+ =?utf-8?B?NFdvdE9ZVkpQdUZzUXVWdlhzM2YvbkNyVUlSRFRMdFdLc1QxbWFsdC91UDMr?=
+ =?utf-8?B?a1ZIVnIrTGhGalVQYXJLeFFEWGJLeFpTWWE5Z2MyRUt2V25QZnkvcytRZGor?=
+ =?utf-8?B?cG9LRndZN3JBWTFEU2lZWWh1VHVqb1Y3a0tmVUtCemwzaHRVNlNoRkN1WDg3?=
+ =?utf-8?B?SlQ4QlJqUldiVmZTejZBQXp1WnpwaC94VWRyNjl1cVNCMFl1dEdlVmhrOTR3?=
+ =?utf-8?B?OTZ2N0ZZdnZkRmlWakhScDVYL0oxb1pNWm5sYkhESitNRENCS01saU03WUdm?=
+ =?utf-8?B?WjlRa29HZXdPNVU4d1BjZmthREJ5dGRtL3VXVUxlRGVyMlJVbkhmVlhMZUs1?=
+ =?utf-8?B?dk1DbXE4TmJtUzVnQWNpcStUU2N5eW9sN1N1anBlelFhMGd4WUxKSzhsbkVC?=
+ =?utf-8?B?bHF1aDE3a2hmWk5DNFJKSW9yODE1SkZLMGdNV0c3Wm9FTndoRGxqVEVEYndJ?=
+ =?utf-8?Q?sVnbaygoBktEcA5WFJZ4N7CLO?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f59d8caa-a06e-45e6-fb22-08dc49994dca
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 11:23:16.7054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yHj5eAQEWaT/g43vfu+irkX728v9g+xYv19gHiLzloFvn5D7+4eEI8HXPmBGeivDiYA0lgBOJFms0v/nX6lKgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6095
+X-OriginatorOrg: intel.com
 
-The following commit has been merged into the timers/urgent branch of tip:
+On 2024/3/21 14:16, Yi Liu wrote:
+> On 2024/3/20 20:38, Jason Gunthorpe wrote:
+>> On Tue, Mar 19, 2024 at 03:29:39PM +0800, Yi Liu wrote:
+>>> On 2024/3/19 00:52, Jason Gunthorpe wrote:
+>>>> On Wed, Mar 13, 2024 at 04:11:41PM +0800, Yi Liu wrote:
+>>>>
+>>>>> yes. how about your opinion? @Jason. I noticed the set_dev_pasid callback
+>>>>> and pasid_array update is under the group->lock, so update it should be
+>>>>> fine to adjust the order to update pasid_array after set_dev_pasid 
+>>>>> returns.
+>>>>
+>>>> Yes, it makes some sense
+>>>>
+>>>> But, also I would like it very much if we just have the core pass in
+>>>> the actual old domain as a an addition function argument.
+>>>
+>>> ok, this works too. For normal attach, just pass in a NULL old domain.
+>>>
+>>>> I think we have some small mistakes in multi-device group error
+>>>> unwinding for remove because the global xarray can't isn't actually
+>>>> going to be correct in all scenarios.
+>>>
+>>> do you mean the __iommu_remove_group_pasid() call in the below function?
+>>> Currently, it is called when __iommu_set_group_pasid() failed. However,
+>>> __iommu_set_group_pasid() may need to do remove itself when error happens,
+>>> so the helper can be more self-contained. Or you mean something else?
+>>
+>> Yes..
+>>
+>>> int iommu_attach_device_pasid(struct iommu_domain *domain,
+>>>                   struct device *dev, ioasid_t pasid)
+>>> {
+>>>     /* Caller must be a probed driver on dev */
+>>>     struct iommu_group *group = dev->iommu_group;
+>>>     void *curr;
+>>>     int ret;
+>>>
+>>>     if (!domain->ops->set_dev_pasid)
+>>>         return -EOPNOTSUPP;
+>>>
+>>>     if (!group)
+>>>         return -ENODEV;
+>>>
+>>>     if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
+>>>         return -EINVAL;
+>>>
+>>>     mutex_lock(&group->mutex);
+>>>     curr = xa_cmpxchg(&group->pasid_array, pasid, NULL, domain, 
+>>> GFP_KERNEL);
+>>>     if (curr) {
+>>>         ret = xa_err(curr) ? : -EBUSY;
+>>>         goto out_unlock;
+>>>     }
+>>>
+>>>     ret = __iommu_set_group_pasid(domain, group, pasid);
+>>
+>> So here we have the xa set to the new domain
+> 
+> aha, yes. The underlying driver won't be able to get the correct domain
+> in the remove_dev_pasid callback.
+> 
+>>>     if (ret) {
+>>>         __iommu_remove_group_pasid(group, pasid);
+>>
+>> And here we still have it set to the new domain even though some of
+>> the devices within the group failed to attach. The logic needs to be
+>> more like the main domain attach path where iterate and then undo only
+>> what we did
+> 
+> yes, the correct way is to undo what have been done before the fail
+> device. However, I somehow remember that pasid capability is only
+> available when the group is singleton. So iterate all devices of the
+> devices just means one device in fact. If this is true, then the
+> current code is fine although a bit confusing.
+> 
+>> And the whole thing is easier to reason about if an input argument
+>> specifies the current attached domain instead of having the driver
+>> read it from the xarray.
+> 
+> yep, will correct it as a fix patch.
 
-Commit-ID:     f55acb1e44f3d4bf1ca7926d777895a67d4ec606
-Gitweb:        https://git.kernel.org/tip/f55acb1e44f3d4bf1ca7926d777895a67d4ec606
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Tue, 19 Mar 2024 00:07:28 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 19 Mar 2024 10:14:55 +01:00
+Hi Jason,
 
-timers/migration: Fix endless timer requeue after idle interrupts
+It appears there are two solutions here.
 
-When a CPU is an idle migrator, but another CPU wakes up before it,
-becomes an active migrator and handles the queue, the initial idle
-migrator may end up endlessly reprogramming its clockevent, chasing ghost
-timers forever such as in the following scenario:
+First, only undo the devices that have set_dev_pasid successfully in
+the __iommu_set_group_pasid(), so the problematic
+__iommu_remove_group_pasid() call at line 3378 [1] would go away.
+This also makes the helper more self-contained. Draft patch in [2]
 
-               [GRP0:0]
-             migrator = 0
-             active   = 0
-             nextevt  = T1
-              /         \
-             0           1
-          active        idle (T1)
+Second, pass in the domain to remove_dev_pasid(). Draft patch in [3]
 
-0) CPU 1 is idle and has a timer queued (T1), CPU 0 is active and is
-the active migrator.
+Either of the above two should be able to solve the mistake you mentioned.
+BTW. They are orthogonal, so it's also possible to apply both of them.
+Which one is your preference then?
 
-               [GRP0:0]
-             migrator = NONE
-             active   = NONE
-             nextevt  = T1
-              /         \
-             0           1
-          idle        idle (T1)
-          wakeup = T1
+[1] 
+https://github.com/torvalds/linux/blob/b3603fcb79b1036acae10602bffc4855a4b9af80/drivers/iommu/iommu.c#L3378
+[2] 
+https://github.com/yiliu1765/iommufd/commit/bb83270767ab460978a3452750f5e032b43e59bf
+[3] 
+https://github.com/yiliu1765/iommufd/commit/bd270b7b6619b8ba35dfaf9870df8728e370163f
 
-1) CPU 0 is now idle and is therefore the idle migrator. It has
-programmed its next timer interrupt to handle T1.
+Regards,
+Yi Liu
 
-                [GRP0:0]
-             migrator = 1
-             active   = 1
-             nextevt  = KTIME_MAX
-              /         \
-             0           1
-          idle        active
-          wakeup = T1
-
-2) CPU 1 has woken up, it is now active and it has just handled its own
-timer T1.
-
-3) CPU 0 gets a timer interrupt to handle T1 but tmigr_handle_remote()
-realize it is not the migrator anymore. So it early returns without
-observing that T1 has been expired already and therefore without
-updating its ->wakeup value.
-
-4) CPU 0 goes into tmigr_cpu_new_timer() which also early returns
-because it doesn't queue a timer of its own. So ->wakeup is left
-unchanged and the next timer is programmed to fire now.
-
-5) goto 3) forever
-
-This results in timer interrupt storms in idle and also in nohz_full (as
-observed in rcutorture's TREE07 scenario).
-
-Fix this with forcing a re-evaluation of tmc->wakeup while trying
-remote timer handling when the CPU isn't the migrator anymmore. The
-check is inherently racy but in the worst case the CPU just races setting
-the KTIME_MAX value that a remote expiry also tries to set.
-
-Fixes: 7ee988770326 ("timers: Implement the hierarchical pull model")
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240318230729.15497-2-frederic@kernel.org
-
----
- kernel/time/timer_migration.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index 611cd90..c63a0af 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -1038,8 +1038,15 @@ void tmigr_handle_remote(void)
- 	 * in tmigr_handle_remote_up() anyway. Keep this check to speed up the
- 	 * return when nothing has to be done.
- 	 */
--	if (!tmigr_check_migrator(tmc->tmgroup, tmc->childmask))
--		return;
-+	if (!tmigr_check_migrator(tmc->tmgroup, tmc->childmask)) {
-+		/*
-+		 * If this CPU was an idle migrator, make sure to clear its wakeup
-+		 * value so it won't chase timers that have already expired elsewhere.
-+		 * This avoids endless requeue from tmigr_new_timer().
-+		 */
-+		if (READ_ONCE(tmc->wakeup) == KTIME_MAX)
-+			return;
-+	}
- 
- 	data.now = get_jiffies_update(&data.basej);
- 
 
