@@ -1,153 +1,159 @@
-Return-Path: <linux-kernel+bounces-110637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD85B886193
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:23:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C1D1886196
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB4991C21F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:22:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7CDD1F22DDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:26:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9EB134CEC;
-	Thu, 21 Mar 2024 20:22:52 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB29134CC7;
+	Thu, 21 Mar 2024 20:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Wb5frFT7"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E081332B8;
-	Thu, 21 Mar 2024 20:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6ED79F0
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711052571; cv=none; b=dtPak7eSbV+7cjRW7E0oxb00INeKAtR1G6DLqJAk8FOHWd1IWlndUmcV/J86+7J6ygPaPP4JkZDT75tqDT0HPp3MmdQbwpTNRZWixxzt0ppfkaWv4Tk8dX+hXM4GgIzPHT9XD++M+BKDxkwoN5jTzchSzYD18Vw4l9orWmBGCjI=
+	t=1711052754; cv=none; b=lH1XcmBc2l/+1cljFR9Nn4kDTujC3DX6wDs/wRZ7Bn0W2ckGQ/ptmYdJdEbr6I5qw1S5Ftic2KexEgf9295QAdul+3U8/j8ZpwBxy0Y6/mcyc/t8uiYUsDRPCAw4YkEbXiL4OxxFt7mDY3RNAvGnf9n7oSSycjlyGMEpxGDTDy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711052571; c=relaxed/simple;
-	bh=c6UtEIX10Dr+Hx/y+0/Bd09nWB7sQpI4NOWhdd+BG64=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IP71qdqwIEu7WLJkdyzz6RkdG+5GXxFOWZNzI+LZzO2hLZSiPoq8Ph6MY1qktKn4IaEhiAhrSoL85uNz6/vQOupZ3lqesnTgcnSqot50LTRM5J/soYdJPNIWgTD+//SZ1m7RG7/hF0etD4vRglej+UExjPJK5H1MlbAVoa9Ydik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rnOvW-0000Y8-0R;
-	Thu, 21 Mar 2024 20:22:14 +0000
-Date: Thu, 21 Mar 2024 20:22:10 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
-	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Li Lingfeng <lilingfeng3@huawei.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Christian Heusel <christian@heusel.eu>,
-	Min Li <min15.li@samsung.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
-	Christian Loehle <CLoehle@hyperstone.com>,
-	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dominique Martinet <dominique.martinet@atmark-techno.com>,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 4/8] block: implement NVMEM provider
-Message-ID: <ZfyW8jTAgclicAWd@makrotopia.org>
-References: <cover.1711048433.git.daniel@makrotopia.org>
- <7555db6eb71d4ccb2b9d5ebe3b41dc34088c6316.1711048433.git.daniel@makrotopia.org>
- <e170642d-9ae8-4d5a-90d9-2837f1bcef9b@acm.org>
+	s=arc-20240116; t=1711052754; c=relaxed/simple;
+	bh=KFPqyrctUaYq3cli0WFxDcsfh2suA7GJpBgvoQCG1WA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mF2IVp6nHhDSxj8mD0nm76x8hahi/RYXyIOwTXVjJboWqQPt2E5xQ7nlk0rZj0pqoiqJo36+rJvkS/WBW8boJ4IoWBOmm+cyZ2AFD2/XXTL2szRxoNXGSbFAZJPc+LmN0XJkLv9HBHPckoecu7IJhBp1AMYszLR5jp4BwnxXZXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Wb5frFT7; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56b9dac4e6cso450a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711052751; x=1711657551; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KFPqyrctUaYq3cli0WFxDcsfh2suA7GJpBgvoQCG1WA=;
+        b=Wb5frFT7aidgDpbBdzBaFW025n/Ekv+RHP+QqWDbro7HCTapHWJRPkiKs7w54GsnlQ
+         B4TNk0flfGbQ3U3njwkL2CYMZQXbJCio5GeoTJMojWmV/LDNbG0UoorSmYUQew3H4vJX
+         OUHgOg5W3P021ahqWwmupfy1ycUrjH0oatr5UrzHgP55hNF6kdGjyJg7xAh5i+CYauH3
+         SNvvAxY2f9Vi5vWTnOiUbZUPwLGDSvO4/IEzWcLEftCCAhnRkAgtcQM4ezflkJ+AXgId
+         dAMeeiDNQ9B23xCD0fnngsxHam83Ug8fQObm2rRX//aK4JjTM3O8if4ffFIfGkdiRv2o
+         OiPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711052751; x=1711657551;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KFPqyrctUaYq3cli0WFxDcsfh2suA7GJpBgvoQCG1WA=;
+        b=wSSH0MU46SXJXsh74HjhKnWVLZoUhEAzFzxBV6ORMD2ByB3CujYalg/VDmswgZm6kS
+         PAffxnlhlmhN+ODdAPMh2mLpVFFuvrrtv8GVQnzRVrsD3hxQPbJClP/jOEnvDVRmSq9H
+         rg7/59HNpjhT9QPH8QdOp2TCz7Ts8oaHaLDXQMzhWfCFKgP5JWzNfILQOfguFWLDWVBf
+         JXzBokoDLPhyMAT1aeF4TUXVWXDSNapIfc2qEvCNN4o7Uo7aUAm7xAR4i9m1gd9tStfi
+         BcksHuKotFmVz2bDa+kSFgxxfdReU5FwrrK/7rACskUwZhcVEEoX+i4iAguxz5dwHVux
+         NVZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXoTTbDRIrkvmb9vPZ8d7jmZQ9n9h22NdlpxlVmjQaUkO1GfDqhMll7FKG0JicBqXamCYqeIzrtbW/t9eWAETTy0c9IDIm7Y42gCu29
+X-Gm-Message-State: AOJu0YyBvZBu1Zf8FspdsihSYJt8cu8l9hY9R+YUdDcTzmXpFCKNfAin
+	oqtcnCaAGfCWixpIPAtf/VSWWsp4r+5tJe4oNFnWvwdwjuJRmyxGdkHcGBhYMxlCzkw/fkYDa3D
+	o113WlLvvRkvK4epGAf7Bj+gxdbSkKk8IURUA
+X-Google-Smtp-Source: AGHT+IEfSUNCQOhpAtDYrpFxqJCdx/9aTLDUe7gh8vSWGiAmT1kQ4XWHeuhhZ5QcoBuJNWUJoCsdHuOniv4PcJcKPdo=
+X-Received: by 2002:aa7:d156:0:b0:56b:a060:1e4 with SMTP id
+ r22-20020aa7d156000000b0056ba06001e4mr278342edo.2.1711052750857; Thu, 21 Mar
+ 2024 13:25:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e170642d-9ae8-4d5a-90d9-2837f1bcef9b@acm.org>
+References: <20220825122726.20819-1-vincent.guittot@linaro.org>
+ <20220825122726.20819-2-vincent.guittot@linaro.org> <CABk29NsQf_xStzWg8bB_hpNpPC_LduMs-M058LjdhnDG16wN_A@mail.gmail.com>
+ <CAKfTPtDSC25N8TvszDAjseqdLdGy4qiDnwobNThkt8piSL_5Pw@mail.gmail.com>
+In-Reply-To: <CAKfTPtDSC25N8TvszDAjseqdLdGy4qiDnwobNThkt8piSL_5Pw@mail.gmail.com>
+From: Josh Don <joshdon@google.com>
+Date: Thu, 21 Mar 2024 13:25:38 -0700
+Message-ID: <CABk29NuU30DHproFY-i3_baEhXxofCyLQx-Z5LV74y8_6m7uGA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] sched/fair: make sure to try to detach at least one
+ movable task
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	linux-kernel@vger.kernel.org, zhangqiao22@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Bart,
+On Wed, Mar 20, 2024 at 9:58=E2=80=AFAM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> Hi Josh,
+>
+> Sorry for the late reply.
 
-thank you for looking at the patches!
+No worries, responses to your comments inline below.
 
-On Thu, Mar 21, 2024 at 12:44:19PM -0700, Bart Van Assche wrote:
-> On 3/21/24 12:34, Daniel Golle wrote:
-> > On embedded devices using an eMMC it is common that one or more partitions
-> > on the eMMC are used to store MAC addresses and Wi-Fi calibration EEPROM
-> > data. Allow referencing the partition in device tree for the kernel and
-> > Wi-Fi drivers accessing it via the NVMEM layer.
-> 
-> Why to store calibration data in a partition instead of in a file on a
-> filesystem?
+> > We had a user recently trigger a hard lockup which we believe is due
+> > to this patch. The user in question had O(10k) threads affinitized to
+> > a cpu; seems like the process had an out of control thread spawning
+> > issue, and was in the middle of getting killed. However, that was
+> > being slowed down due to the fact that load balance was iterating all
+>
+> Does it mean that it was progressing but not as fast as you would like
 
-First of all, it's just how it is already in the practical world out
-there. The same methods for mass-production are used independently of
-the type of flash memory, so vendors don't care if in Linux the flash
-ends up as MMC/block (in case of an eMMC) device or MTD device (in
-case of SPI-NOR, for example). I can name countless devices of
-numerous vendors following this generally very common practise (and
-then ending up extracting that using ugly custom drivers, or poking
-around in the block devices in early userland, ... none of it is nice,
-which is the motivation for this series).
-Adtran, GL-iNet, Netgear, ... to name just a few very popular vendors.
+It was a hard lockup, so it's more than just "not fast enough".
+Indeed it was progressing, but not at a rate sufficient to avoid
+lockup.
 
-The devices are already out there, and the way they store those
-details is considered part of the low level firmware which will never
-change. Yet it would be nice to run vanilla Linux on them (or
-OpenWrt), and make sure things like NFS root can work, and for that
-the MAC address needs to be in place already, ie. extracting it in
-userland would be too late.
+> > these threads and bouncing the rq lock (and making no progress due to
+> > ALL_PINNED). Before this patch, load balance would quit after hitting
+> > loop_max.
+> >
+> > Even ignoring that specific instance, it seems pretty easy for this
+> > patch to cause a softlockup due to a buggy or malicious process.
+>
+> The fact that the rq is released regularly should prevent a
+> softlockup.
 
-However, I also believe there is nothing wrong with that and using a
-filesystem comes with many additional pitfalls, such as being possibly
-not cleanly unmounted, the file could be renamed or deleted by the
-user, .... All that should not result in a device not having it's
-proper MAC address any more.
+That doesn't prevent a softlockup; kernel is stuck looping over a long
+list of tasks for too long, regardless of whether it is releasing and
+re-acquiring the rq locks.
 
-Why have all the complexity for something as simple as storing 6 bytes
-of MAC address?
+Note also that load balance can come from softirq in a context where
+we have IRQ disabled, which can lead to hard lockup as well.
 
-I will not re-iterate over all that discussion now, you may look at
-list archives where this has been explained and discussed also for the
-first run of the RFC series last year.
+> And we could even fasten can_migrate() which does a lot of
+> useless stuff for task affined to 1 cpu.
 
-> 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 8c88f362feb55..242a0a139c00a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3662,6 +3662,11 @@ L:	linux-mtd@lists.infradead.org
-> >   S:	Maintained
-> >   F:	drivers/mtd/devices/block2mtd.c
-> > +BLOCK NVMEM DRIVER
-> > +M:	Daniel Golle <daniel@makrotopia.org>
-> > +S:	Maintained
-> > +F:	block/blk-nvmem.c
-> 
-> Why to add this functionality to the block layer instead of somewhere
-> in the drivers/ directory?
+That seems like a useful optimization, but not really relevant? It
+doesn't matter how small we make the constant factor, we still have an
+O(n) operation in kernel mode here.
 
-Simply because we need notifications about appearing and disappearing
-block devices, or a way to iterate over all block devices in a system.
-For both there isn't currently any other interface than using a
-class_interface for that, and that requires access to &block_class
-which is considered a block subsystem internal.
+> > For the tradeoff you were trying to make in this patch (spend more
+> > time searching in the hopes that there's something migratable further
+> > in the list), perhaps it would be better to adjust
+> > sysctl.sched_nr_migrate instead of baking this into the kernel?
+>
+> That could be a solution but this increases the iterations for all
+> cases including those which are more time consuming to sort out and
+> the number of tasks that you will migrate in one lb. The latter is the
+> one which consumes time
 
-Also note that the same is true for the MTD NVMEM provider (in
-drivers/mtd/mtdcore.c) as well as the UBI NVMEM provider (in
-drivers/mtd/ubi/nvmem.c), both are considered an integral part of
-their corresponding subsystems -- despite the fact that in those cases
-this wouldn't even be stricktly needed as for MTD we got
-register_mtd_user() and for UBI we'd have
-ubi_register_volume_notifier().
+Is is really that bad? loop_max will be unchanged for most cases since
+it gets min'd with nr_running anyway. And, even if loop_max ends up
+larger in some other instances, we still terminate the iteration after
+fixing up env->imbalance (granted, we'll migrate more tasks to achieve
+a better balance with a larger loop_max, which I think is your point).
 
-Doing it differently for block devices would hence not only complicate
-things unnessesarily, it would also be inconsistent.
+
+Another idea then: what about separating the number of tasks we can
+move from the number of tasks we can search? You effectively want to
+keep the number of tasks that can be migrated small (nr_migrate), but
+be able to search deeper in the list for things to pull (a larger
+search_depth).
+
+- Josh
 
