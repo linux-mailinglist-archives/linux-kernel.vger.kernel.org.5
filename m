@@ -1,195 +1,119 @@
-Return-Path: <linux-kernel+bounces-109827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6403A88562D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:05:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03FE088562B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D3E31C21079
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:05:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B34D6282853
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF808383B5;
-	Thu, 21 Mar 2024 09:05:26 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6C63065B;
+	Thu, 21 Mar 2024 09:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJiYw/tB"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C05446DD
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1061412B81
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711011926; cv=none; b=mg2+GKqAfIFBZOpTeLiJqAVnrX1p30V+3tfcq0+IMK3+ODOe6QSMiA6MBwWYY1wzW0oTOqpWdUpC/dEYSTw1WTCr4esbPYouSJRRQw4yGKgCcbTtlKryjFOSL3duJjZpw2b/zYAq57Bu5+OYPNh5/Bc3LHMaQF0o76K0u+f9bKQ=
+	t=1711011914; cv=none; b=pjURebPsktZoiVKcMdkBJwF/G/F8N8GTvyU8g2TEQVCEdyzUkbISR4BjP+b9KSubCph1rfc6ed34zgvdqt7n2YKMJ2FXST65eRNOmkYvLAuZ2qAh+DCWf0dhBX1yO1TNr51nvClypAkyf39fdLHe90Uf3id1BQ0t7lRDFG7eTyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711011926; c=relaxed/simple;
-	bh=9IyX9VQ0UZOYUm24nSmmirQeHR+zSjf33d/U4cQ9MiY=;
+	s=arc-20240116; t=1711011914; c=relaxed/simple;
+	bh=RbLg7MaGJOGAFV1mwvCqAprC6ZR81N7GmJHstjv4J1w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GD9xpdAfYfPjVKU+2cW1R2nRZLqOOcwPzi500R/OBk4UDJx8B+LHUZRPOXdrpXbUuQ+uuMcSPeCrKNao/8c5WfGRMAmRQugKMBVWEN79jjWq3UABwX65B8TaKHVuH5NPna1+5DdbTBRdG6K+6XOSv9+AckI50osKw47EJvDtz9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rnEM3-0003TV-Nk; Thu, 21 Mar 2024 10:04:55 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rnEM2-007cVx-T9; Thu, 21 Mar 2024 10:04:54 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 760542A8A7F;
-	Thu, 21 Mar 2024 09:04:54 +0000 (UTC)
-Date: Thu, 21 Mar 2024 10:04:53 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com, 
-	sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, 
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, shengjiu.wang@gmail.com, 
-	linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] clk: imx: imx8mp: Add pm_runtime support for power
- saving
-Message-ID: <20240321-apply-swore-f9c17ad3a8d2-mkl@pengutronix.de>
-References: <1711010211-6825-1-git-send-email-shengjiu.wang@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mOoUZUrJOhQNJ1LLRtmBRoj2gTiPDXcc712yW3leSnpLEViM3bYJ4sxmc/obAqqevN7e148HHgPH57d6ytXxvMS7THrCbNmmER63VUxoTmABarqpzmJKm+tXQyzYAwdQ1lcSFFup6dkgVBy6ye2xbvkCd0gsJ4kuP/ExZ1yVEqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJiYw/tB; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3417a3151c5so338364f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711011911; x=1711616711; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wMfCNckqVrAsywyGK5R6R9q4bGSZNnDSiYwDwMnWypQ=;
+        b=mJiYw/tB4Hq+hvoGw4xb8TSxmND/YaTrXS6F/5fM4b1yIpVrq7z1wGWY+CnWZ9980y
+         LUAfngXERB2u2yaVIHUS0dlPeONbfOJyMkxE62FPJptksBGpF3k2Fw18LZgFgUPId8Le
+         aH8T2+2lm8Q/if6npCaYLePH+A77hLR9Fef1EYkJgpQorFCLgdF5vXZjwmMpyq96cIuN
+         JHDT972xyl/lHxv9+pck4m9udwPEzEvmla+8dFAfEeCNBIeGqk0jScp0q0rVDdj8YYAd
+         v7+SLVyrk+mYA4u0IX8Qjb//Iotz3TqkqVdp1GFt0flNQS3Bqu0LksneZwtnaKqmTDeI
+         5XlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711011911; x=1711616711;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wMfCNckqVrAsywyGK5R6R9q4bGSZNnDSiYwDwMnWypQ=;
+        b=vZqJrxWe0Q2CwJYyDg0DALY0J1TNXFl1OWWCQGY30pv0WawWjzRC0rFKKl38W6Ojqi
+         /81kLmZsFbBc/3IhNxbOnLQWmIHT0+Bg9Z8fseXQfmhQuqDjPO+NJ0WnQOOxXaCVX18q
+         YKA7EY0K54LVpOvRSmGrZPMmebpSJD4TMe4YHopNvQ2jsvgvn8Gel+vMYbpK/wJ/f4aL
+         E8BauNdC1gJW/QW856TOp6TBHx8r/ubXBptKZrPifz4IPw7/PZy3IziltGzXVpvK54DH
+         wIEdqb5KBm43YTCirBCxPbWnJ04lxid1XJcx+z9QxxI7H8GSoB2h7QK9h2bsblO31+xB
+         QKWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFNTMFDTNGy77nNsmhPfBvbElAaWIRQYNr6M+is9lwkLrxLjrfSHB+Hx0HtJgjNAwghhy9DIEEGGIXvnfBWQrQua9tn0fESeiAJ+l4
+X-Gm-Message-State: AOJu0Yx8mjk/juNpz1QiqbAGNtSexUjFvudmg0dsJkdkjmjBnH1C4nFW
+	+pjdOisBG6kXwGYcLYL28lsc/bU2dEsfR+WsvyiATzI9BWFiOeve
+X-Google-Smtp-Source: AGHT+IH+ROSk1wmGVxObe+F0ZhpT6q9s51tpK3sDwL+XsxPaqJXNv5PR0KUhiyT+WBMNX8iI1yqgtA==
+X-Received: by 2002:adf:f38f:0:b0:33e:69a5:68f9 with SMTP id m15-20020adff38f000000b0033e69a568f9mr5375345wro.17.1711011910984;
+        Thu, 21 Mar 2024 02:05:10 -0700 (PDT)
+Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
+        by smtp.gmail.com with ESMTPSA id z18-20020adfec92000000b0033e7de97214sm16642393wrn.40.2024.03.21.02.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 02:05:10 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 21 Mar 2024 10:05:08 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Joan Bruguera =?iso-8859-1?Q?Mic=F3?= <joanbrugueram@gmail.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uros Bizjak <ubizjak@gmail.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 2/2] x86/bpf: Fix IP for relocating call depth accounting
+Message-ID: <Zfv4RGwe5+h0zNI5@gmail.com>
+References: <20240316232104.368561-1-joanbrugueram@gmail.com>
+ <20240316232104.368561-3-joanbrugueram@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7z4esfqbug4ywn5r"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1711010211-6825-1-git-send-email-shengjiu.wang@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240316232104.368561-3-joanbrugueram@gmail.com>
 
 
---7z4esfqbug4ywn5r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Joan Bruguera Micó <joanbrugueram@gmail.com> wrote:
 
-On 21.03.2024 16:36:51, Shengjiu Wang wrote:
-> Add pm_runtime support for power saving. In pm runtime suspend
-> state the registers will be reseted, so add registers save
-> in pm runtime suspend and restore them in pm runtime resume.
->=20
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> The recently introduced support for %rip-relative relocations in the
+> call thunk template assumes that the code is being patched in-place,
+> so the destination of the relocation matches the address of the code.
+> This is not true for the call depth accounting emitted by the BPF JIT,
+> so the calculated address is wrong and usually causes a page fault.
+> 
+> Pass the destination IP when the BPF JIT emits call depth accounting.
+> 
+> Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
+> Signed-off-by: Joan Bruguera Micó <joanbrugueram@gmail.com>
 > ---
-> changes in v3:
-> - remove REGS_NUM, use the ARRAY_SIZE
-> - merge clk_imx8mp_audiomix_drvdata and clk_hw_onecell_data together.
+>  arch/x86/include/asm/alternative.h |  4 ++--
+>  arch/x86/kernel/callthunks.c       |  4 ++--
 
-Look way nicer, but still room for improvement.
+For the generic x86 changes - I guess you want to push this upstream via 
+the networking tree:
 
-> changes in v2:
-> - move pm_runtime_enable before the clk register
->=20
->  drivers/clk/imx/clk-imx8mp-audiomix.c | 157 ++++++++++++++++++++++----
->  1 file changed, 136 insertions(+), 21 deletions(-)
->=20
-> diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-=
-imx8mp-audiomix.c
-> index 55ed211a5e0b..5ae33bce8ad8 100644
-> --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-> +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-> @@ -7,10 +7,12 @@
-> =20
->  #include <linux/clk-provider.h>
->  #include <linux/device.h>
-> +#include <linux/io.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> =20
->  #include <dt-bindings/clock/imx8mp-clock.h>
-> =20
-> @@ -18,6 +20,7 @@
-> =20
->  #define CLKEN0			0x000
->  #define CLKEN1			0x004
-> +#define EARC			0x200
->  #define SAI1_MCLK_SEL		0x300
->  #define SAI2_MCLK_SEL		0x304
->  #define SAI3_MCLK_SEL		0x308
-> @@ -26,6 +29,11 @@
->  #define SAI7_MCLK_SEL		0x314
->  #define PDM_SEL			0x318
->  #define SAI_PLL_GNRL_CTL	0x400
-> +#define SAI_PLL_FDIVL_CTL0	0x404
-> +#define SAI_PLL_FDIVL_CTL1	0x408
-> +#define SAI_PLL_SSCG_CTL	0x40C
-> +#define SAI_PLL_MNIT_CTL	0x410
-> +#define IPG_LP_CTRL		0x504
-> =20
->  #define SAIn_MCLK1_PARENT(n)						\
->  static const struct clk_parent_data					\
-> @@ -182,26 +190,82 @@ static struct clk_imx8mp_audiomix_sel sels[] =3D {
->  	CLK_SAIn(7)
->  };
-> =20
-> +static const u16 audiomix_regs[] =3D {
-> +	CLKEN0,
-> +	CLKEN1,
-> +	EARC,
-> +	SAI1_MCLK_SEL,
-> +	SAI2_MCLK_SEL,
-> +	SAI3_MCLK_SEL,
-> +	SAI5_MCLK_SEL,
-> +	SAI6_MCLK_SEL,
-> +	SAI7_MCLK_SEL,
-> +	PDM_SEL,
-> +	SAI_PLL_GNRL_CTL,
-> +	SAI_PLL_FDIVL_CTL0,
-> +	SAI_PLL_FDIVL_CTL1,
-> +	SAI_PLL_SSCG_CTL,
-> +	SAI_PLL_MNIT_CTL,
-> +	IPG_LP_CTRL,
-> +};
-> +
-> +struct clk_imx8mp_audiomix_priv {
-> +	void __iomem *base;
-> +	struct clk_hw_onecell_data *clk_hw_data;
-> +	u32 regs_save[ARRAY_SIZE(audiomix_regs)];
+  Acked-by: Ingo Molnar <mingo@kernel.org>
 
-Put the "struct clk_hw_onecell_data clk_hw_data" at the end of the
-struct. Then allocating should be easier and you don't need the
-additional pointer.
+Thanks,
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---7z4esfqbug4ywn5r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmX7+DMACgkQKDiiPnot
-vG8IVQf2O5/UkwGcC3bi6XlI+KC+dh+zm8EbiuYW62sdysCPOWaJiETytc186x/E
-YaABZOfWMeH+liQM/GCMIumSeixIEd4o3fY56edmW24lE3oUtEnDTsdEDLchMaOe
-5aLweRpoVbwlKyx17z0cB+ct64AvfsUP/F67kJLikpS/S5WNtpR9kupkLDypZ5Zt
-yXVwKsRHt095Krn2lHlaRBKV96cbwCmPQN+FWLhwjkUsUAlHyHoc9jHIfRN7cATQ
-hyMaJr/WOFfA58JQOUelntlnEp8Td/c+IwSHadD+aHOUUQ4jnW2jNuhx2dZh1jUS
-Kptm9jdx4XpV94CGDj5lFQLlUttl
-=tk43
------END PGP SIGNATURE-----
-
---7z4esfqbug4ywn5r--
+	Ingo
 
