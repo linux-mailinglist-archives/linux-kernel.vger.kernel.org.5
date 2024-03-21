@@ -1,140 +1,145 @@
-Return-Path: <linux-kernel+bounces-110339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1022885D6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:29:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30E86885D76
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66A3B1F26169
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:29:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E16C6283957
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BA512CDB2;
-	Thu, 21 Mar 2024 16:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1BF132494;
+	Thu, 21 Mar 2024 16:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LYJ9/HV+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="odhXariL"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A4A86249;
-	Thu, 21 Mar 2024 16:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B28E132493
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711038580; cv=none; b=rKG9NI/nkFB5SHS3oiIT1Q7Y0UIX4AtKUDltZyjnwzddrWVPDkVwPmq3oW2/ScPXoq3Un5fEVjFDFFmqUwABd1wI3eM3Izo9ASoyweWgPwuVyF+rJNYGHEZR7do0D3s/+vS2JBeN9P+Z2zW5v1DR3B7DjU7a4BqzG6zSW7+2ECA=
+	t=1711038678; cv=none; b=kV8a+/UHj0GbSwI2nEF5rW3SnW92RFS2BeMUDLHEuZ+KORTGwO97nQ9tiCzL2D/MlpL9nTg7Cq0mn78P8rqKKb6m/HRyJMCyTUa/GQJQ0dqNfQQLqd569YQI/XpTh4wGBtiJFQv/4VMvN3caOgpMEN6rfYSRNRL8J2K/dpf1adY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711038580; c=relaxed/simple;
-	bh=yqJggufrP1i89wxFjM8Tt9txIjYYksGH/+vHGN6ns3E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SebUMi00dRO+PpPT+LSpJKT/iFQ1t6fL/g5q75prMIwYxQICYevCSqu/9qBqOBzcJnuTYnszTM1RQzyVkHbCkcdL+NomIN66m6ekUBN2zFYZd2iDDucDEBu4T+cIjRqfNkLnjmM80yHPWyJ8rFnrAgJz52MP47JYOU2dlSFWUJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LYJ9/HV+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 05EFBC43390;
-	Thu, 21 Mar 2024 16:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711038580;
-	bh=yqJggufrP1i89wxFjM8Tt9txIjYYksGH/+vHGN6ns3E=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=LYJ9/HV+39Y7te7sja2d7kBc5OIodn3VAoSiWqcK2J5rjzi/3XGBLpjAQRzbegsoK
-	 L6G9TVYtsqbLO2dX2HzqOFkTSItY4nXYVPNJcC/U4zqhcwCN/R0cyiY8FH8X2VKyKe
-	 Vv0E6Ir8DN9lXN45HM81UCaZz3j25Tjz+7+vuKQwOz0Y0IMFfW9E24/afhMpsDM93d
-	 Mcw4qkd5kZmP71Pm+i6ZwYMeS+RPXjWedRc7n2V1di1TtPIBFcdCMHQz7A+PKVw4GY
-	 4Ifk0zfWANkEC3/TxZm+orsBYwzhUqxYHcRmHIgDFsyaOsQ4met3yIvN6VMRUDaPOR
-	 dbK53Vy7+c2Tw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB9C5C54E58;
-	Thu, 21 Mar 2024 16:29:39 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Thu, 21 Mar 2024 19:29:14 +0300
-Subject: [PATCH net v2 2/2] net: dsa: mt7530: fix disabling EEE on failure
- on MT7531 and MT7988
+	s=arc-20240116; t=1711038678; c=relaxed/simple;
+	bh=lXo1rQc6MtQsZ+k/JkJu9FHmX1nIfKfYoOVOD3ov3ws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nfL+YddKMSBP2yJ4iuxm8CX4tWlHmHlefDri3iLLxenpD0a/W6ivG19gnzbh9aIa+qJeTLaizJPQdJEE//EiWasWcVMDMPkcF0C5HxDX3qOFFG4nzywGUvWn1BjTfkewTm8jAf+xUdiKaqP0d7EIYHFRUIxz/uXvUIq0PPSIGbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=odhXariL; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 945BE7E9;
+	Thu, 21 Mar 2024 17:30:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711038646;
+	bh=lXo1rQc6MtQsZ+k/JkJu9FHmX1nIfKfYoOVOD3ov3ws=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=odhXariLwUyoW+4tIZ/DzRQ9V67ESMFriO9QE7P6DoQAcSsl3PO6iJrxzZceDJZiw
+	 GrnSL7yjlGlfl1E8jKnx8FheYYK/SgS1W2BGFKWc1XKyWMu0JQKoZ3DmRwLJiH0MfG
+	 5liA4+EgVWaeki/y6MM/L9zlXIHU7ngTops/OeO8=
+Message-ID: <aa559c02-b8df-41f8-9439-d7182ac55ffe@ideasonboard.com>
+Date: Thu, 21 Mar 2024 18:31:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-2-9af9d5041bfe@arinc9.com>
-References: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
-In-Reply-To: <20240321-for-net-mt7530-fix-eee-for-mt7531-mt7988-v2-0-9af9d5041bfe@arinc9.com>
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- =?utf-8?q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>, 
- Russell King <linux@armlinux.org.uk>, 
- SkyLake Huang <SkyLake.Huang@mediatek.com>, 
- Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>, 
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711038558; l=1925;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=DsZ4XshfmuCrCshjsgaop6WdjUbPqTHmbY230mILEL4=;
- b=G2zxEWZRPd7T5UKeb3EAgsPQG9cW8YK9hK0H++LcTnAJNjhhJgyhrSeiqfRJhNLEsGOYGv3YL
- Xz5cm9hMjd9D4wjOKTWIi8jOtYCQjRFlvYMfzdA2Qu+EhTkWIamreOF
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/8] drm: zynqmp_dp: Add debugfs interface for
+ compliance testing
+Content-Language: en-US
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-9-sean.anderson@linux.dev>
+ <7aa16340-6a87-4110-8114-c1b863b100c9@ideasonboard.com>
+ <76831c1e-216f-430b-bacd-2d50f352e61f@linux.dev>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <76831c1e-216f-430b-bacd-2d50f352e61f@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On 21/03/2024 18:08, Sean Anderson wrote:
+> On 3/20/24 03:49, Tomi Valkeinen wrote:
+>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>
+>>> +/**
+>>> + * enum test_pattern - Test patterns for test testing
+>>
+>> "for test testing"? =)
+>>
+>>> @@ -1655,6 +2321,9 @@ static void zynqmp_dp_hpd_irq_work_func(struct work_struct *work)
+>>>        u8 status[DP_LINK_STATUS_SIZE + 2];
+>>>        int err;
+>>>    +    if (READ_ONCE(dp->ignore_hpd))
+>>> +        return;
+>>> +
+>>>        mutex_lock(&dp->lock);
+>>>        err = drm_dp_dpcd_read(&dp->aux, DP_SINK_COUNT, status,
+>>>                       DP_LINK_STATUS_SIZE + 2);
+>>
+>> Why do you need READ/WRITE_ONCE() for ignore_hpd?
+> 
+> It's not protected by dp->lock so we don't have to take it for
+> zynqmp_dp_hpd_work_func. Although maybe we should make a version of
+> zynqmp_dp_bridge_detect which assumes we already hold the lock.
 
-The MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 bits let the
-PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits determine the 1G/100 EEE
-abilities of the MAC. If MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 are
-unset, the abilities are left to be determined by PHY auto polling.
+Does using the macros solve some potential issue, or is it just for 
+documenting that this variable is accessed without lock?
 
-The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
-made it so that the PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits are set on
-mt753x_phylink_mac_link_up(). But it did not set the MT7531_FORCE_EEE1G and
-MT7531_FORCE_EEE100 bits. Because of this, EEE will be enabled on the
-switch MACs by polling the PHY, regardless of the result of phy_init_eee().
-
-Define these bits and add them to MT7531_FORCE_MODE which is being used by
-the subdriver. With this, EEE will be prevented from being enabled on the
-switch MACs when phy_init_eee() fails.
-
-Fixes: 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 509ed5362236..5b99aeca34b4 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -299,11 +299,15 @@ enum mt7530_vlan_port_acc_frm {
- #define  MT7531_FORCE_DPX		BIT(29)
- #define  MT7531_FORCE_RX_FC		BIT(28)
- #define  MT7531_FORCE_TX_FC		BIT(27)
-+#define  MT7531_FORCE_EEE100		BIT(26)
-+#define  MT7531_FORCE_EEE1G		BIT(25)
- #define  MT7531_FORCE_MODE		(MT7531_FORCE_LNK | \
- 					 MT7531_FORCE_SPD | \
- 					 MT7531_FORCE_DPX | \
- 					 MT7531_FORCE_RX_FC | \
--					 MT7531_FORCE_TX_FC)
-+					 MT7531_FORCE_TX_FC | \
-+					 MT7531_FORCE_EEE100 | \
-+					 MT7531_FORCE_EEE1G)
- #define  PMCR_LINK_SETTINGS_MASK	(PMCR_TX_EN | PMCR_FORCE_SPEED_1000 | \
- 					 PMCR_RX_EN | PMCR_FORCE_SPEED_100 | \
- 					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
-
--- 
-2.40.1
-
+  Tomi
 
 
