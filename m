@@ -1,163 +1,112 @@
-Return-Path: <linux-kernel+bounces-110646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429C78861B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:30:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B62FB8861BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:32:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1CAF288229
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D85501C21A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C721353F9;
-	Thu, 21 Mar 2024 20:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD931353EC;
+	Thu, 21 Mar 2024 20:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X3eqR5Br"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="myqqqaYb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA03134CF8;
-	Thu, 21 Mar 2024 20:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A00E5680;
+	Thu, 21 Mar 2024 20:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711052993; cv=none; b=i/O+OP1xI/BHmlDIfKMuQQG3UlqfDL6g4m0tQu+41yVmpv76ZJxgUqZ02DJE78GmUncWcfv0JmIHGe3QNtjFLxMeqdk/QJ1TCcfhnS0+l4iAAei9P6dlNlHO/bPiOaQVgv0p0hLFS7VUC2r//dcANkZ/2ZPmHVXfTGSzHZfVKUU=
+	t=1711053111; cv=none; b=U8f0onOFfhAERUKKryZoe7bfx9AAEsYqbeRp9UhkdEtPE5JYse6Ee8sn15F08GlQ1ZnnZ/iFDFY9McLbcQa91UpvvSRdHNrSB2WNDU6SFFXjGge6x3Y2yzY5o/DQs/nly50FYYYwqzw4oHHx0cdEf6fZJe+7PXWLERSOu/uzdPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711052993; c=relaxed/simple;
-	bh=2wXA6Ael6yWaRfU8iCscuDKtn9ua3SRp6qM1HO4Qv5I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jzDBxUMMoRO/gXZto+K5SkhKOj7wVM557A66TtWxMyHW17fKVARa8nUbdnFDghkh4hnZR/gUsZYHn7069WopLU5KY0GbOcZiCJlfmE8hqwbQJmzJHWmaNoExxE28ep0S5SVSt9X6QnPVceYdI0Yy1K/pXZPDKLbNpMcDHhMs4QY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X3eqR5Br; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7e09ba2ac02so703682241.1;
-        Thu, 21 Mar 2024 13:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711052991; x=1711657791; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dvUundGT9VWuWy9NB7xPMf/jJU0G9U18//kTI/zsuts=;
-        b=X3eqR5Br4QqLd5fqP4NQjCJrPpM4Dz7mZJRZM3Sowr6Aa0LrZbkOoRLuUXmL5bbvYe
-         8y6WNEMAknK0bqv+P0Wp7+KB5x/EV2GPB0hYQZU/iT7n8br5gotV6GNFj1TksmgozCZB
-         GhhiHTMEqd9CXlXADrOtFc02Fm67ZEmiLgwN/KWUuSPGrbuYEVkoOsdlDcDq1P2HKx4I
-         BAxSItGGhxhQqxmhyCDqiwHtMVR6aPF9ISbqA4+8wquzHLqanXpQCQMoi02MS0bBKiuM
-         QyVD7N+zNOfQGpt926RNZUyK4cOevt3D6L8dlmUWfWZrAI5JB+PPC9JjRgm/OKJdsW5I
-         u5Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711052991; x=1711657791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dvUundGT9VWuWy9NB7xPMf/jJU0G9U18//kTI/zsuts=;
-        b=mAFV29ihD1sYzO747klMC8eJv2Bcx5L6gqPQKvHgKlOCvNWkypib5yb0u/xRM3N34I
-         yFeOx67aDXG1oJlhU1mpUIqpiwkZadQl3KcGaaTc7sg0d1qZXnP0X5cUYHMUyfR8710f
-         Oy9hm5Kzajzvug03EbvrfoOO9i9nQ/y8vAtSKUifyQjNz3s5fENWUm7Wwg/gKrCGBe0d
-         o97XCP7wjHuBFhHOHh/h39n7MwTOf8Oq8vBDZmm040Ik/OV6B6KIGSI3GDS147KIbnyS
-         /XKhAgDSwb7deqRA0iyf+cCzjDWP5VEsZIGutro1j77/f1CKFItVzK3HcqBkIdQz7ULG
-         3flw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTRy2VFHpWN7an/aaM6RvqpoAgAUCu0ksS2LkNGMPTVF4OB0OdU2nziaVh1Dh/Q2MSr0OTecEEd7ZeSMWE5UofFF3FiWD7wOy628CrZ9xgoEs7+MYklc06rTWLB1KWxoVnszdIYiKmxU/hbFU/d3o88NciWSaB93qymccW/44U9miI
-X-Gm-Message-State: AOJu0YwszI1IIYvmrq6FF7i3K2C+TZCGzSm/WeVQLmdlKEoJRfrf6q3K
-	6XD//FxZ7Wi0a3rlA0Ik/DKStOkNQkyhh4uPqFrtbl6uIb3kxvdIHVE9mlrBIDv398O3bPawGmf
-	nd6XAyqtpC0BOFfIurs7nz3EE53g=
-X-Google-Smtp-Source: AGHT+IFxi6JHUIyJzT2arpPtcGKNs+NYm5EYrmCqaoSsqXkLiIcrFBpnt91X3QkQIltUoU3uOAf1GVaoWrpkEKbh5NY=
-X-Received: by 2002:a05:6102:dd4:b0:476:b885:4c0 with SMTP id
- e20-20020a0561020dd400b00476b88504c0mr810811vst.23.1711052991024; Thu, 21 Mar
- 2024 13:29:51 -0700 (PDT)
+	s=arc-20240116; t=1711053111; c=relaxed/simple;
+	bh=baRa6A2qOinOd5YVAtWej5lfyO2Yw47YmlHbzlE1Jvg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=OE+semlzvoEKhY1+ZzXqxt61kWAta5CLgzXWUp+ilDqSxYI7VV0Ph2ix9CoWZfcqW2kCbGRn7dS9UOtC3oi5eUO1q5uskRm4BbLtWW+Tj97ajKqTsszNZDCtkpG0pNDWJtf7DX8Z/WrShhh+73u78YkN0+T2fHOxMItE6xc0lZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=myqqqaYb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C826DC433C7;
+	Thu, 21 Mar 2024 20:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1711053110;
+	bh=baRa6A2qOinOd5YVAtWej5lfyO2Yw47YmlHbzlE1Jvg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=myqqqaYbliRJE7PVgZhrPNW4VsZSILLB+0SlZqyShzqltI9nE6pTdWnygoFZn4dbb
+	 cd7SNGeTgLc7GfmU2xwl33gTqeb9pkt91tBji4fk8llEMAbUkAQtFXJU5/LCiWBvgC
+	 EtAkHaVZ9tqLwxhvUHQb1iYeHrpwdBWq8Zx/XJf4=
+Date: Thu, 21 Mar 2024 13:31:47 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com, elver@google.com, dvyukov@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org, Alexander Viro
+ <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
+Message-Id: <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
+In-Reply-To: <20240321163705.3067592-6-surenb@google.com>
+References: <20240321163705.3067592-1-surenb@google.com>
+	<20240321163705.3067592-6-surenb@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240320001656.10075-1-21cnbao@gmail.com> <20240320124207.0c127947@canb.auug.org.au>
- <CAGsJ_4zpXwVEhsdffoZVBVWiwT4Lw2qEMrW-X92ib=kv=9Yx9g@mail.gmail.com>
- <20240320084919.8e18adb418347feed6bfc8ae@linux-foundation.org>
- <CAGsJ_4y+1HovQ52HPis8NBDqp4-fiGRwehX+NH0New0HoEU5GQ@mail.gmail.com> <fb744859-ba2a-41c9-bcfa-4ea1cb8c036a@sirena.org.uk>
-In-Reply-To: <fb744859-ba2a-41c9-bcfa-4ea1cb8c036a@sirena.org.uk>
-From: Barry Song <21cnbao@gmail.com>
-Date: Fri, 22 Mar 2024 09:29:39 +1300
-Message-ID: <CAGsJ_4xSj7i-3Y+ALBh8coa=-6CGx19Zh=CPFGJq9hv4MDZZ=Q@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: coding-style: ask function-like macros to
- evaluate parameters
-To: Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, corbet@lwn.net, workflows@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Barry Song <v-songbaohua@oppo.com>, Chris Zankel <chris@zankel.net>, 
-	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Guenter Roeck <linux@roeck-us.net>, Max Filippov <jcmvbkbc@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 22, 2024 at 12:15=E2=80=AFAM Mark Brown <broonie@kernel.org> wr=
-ote:
->
-> On Thu, Mar 21, 2024 at 07:48:36AM +1300, Barry Song wrote:
-> > On Thu, Mar 21, 2024 at 4:49=E2=80=AFAM Andrew Morton <akpm@linux-found=
-ation.org> wrote:
->
-> > > Stronger than that please.  Just tell people not to use macros in suc=
-h
-> > > situations.  Always code it in C.
->
-> > While I appreciate the consistency of always using "static inline"
-> > instead of macros,
-> > I've noticed numerous instances of (void) macros throughout the kernel.
->
-> ...
->
-> > I'm uncertain whether people would find it disconcerting if they comple=
-tely
-> > deviate from the current approach.
->
-> > If you believe it won't pose an issue, I can proceed with v3 to elimina=
-te
-> > the first option, casting to (void).
->
-> It might be worth adding a note somewhere in the file that talks about
-> how the coding style document is convering the current state of the art
-> but some files might older and not following the current style.  This
-> isn't going to be the only thing where there'll be issues like this.
+On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> We're introducing alloc tagging, which tracks memory allocations by
+> callsite. Converting alloc_inode_sb() to a macro means allocations will
+> be tracked by its caller, which is a bit more useful.
 
-I'm not entirely sure where to add the comment, but at least I can address
-this specific case by rewriting it as follows:
+I'd have thought that there would be many similar
+inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inode(). 
+Do we have to go converting things to macros as people report
+misleading or less useful results, or is there some more general
+solution to this?
 
-diff --git a/Documentation/process/coding-style.rst
-b/Documentation/process/coding-style.rst
-index 9c7cf7347394..791d333a57fd 100644
---- a/Documentation/process/coding-style.rst
-+++ b/Documentation/process/coding-style.rst
-@@ -827,6 +827,22 @@ Macros with multiple statements should be
-enclosed in a do - while block:
-                                do_this(b, c);          \
-                } while (0)
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3083,11 +3083,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
+>   * This must be used for allocating filesystems specific inodes to set
+>   * up the inode reclaim context correctly.
+>   */
+> -static inline void *
+> -alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
+> -{
+> -	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+> -}
+> +#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
 
-+Function-like macros with unused parameters should be replaced by static
-+inline functions to avoid the issue of unused variables:
-+
-+.. code-block:: c
-+
-+       static inline void fun(struct foo *foo)
-+       {
-+       }
-+
-+For historical reasons, many files still use the cast to (void) to evaluat=
-e
-+parameters, but this method is not recommended:
-+
-+.. code-block:: c
-+
-+       #define macrofun(foo) do { (void) (foo); } while (0)
-+
- Things to avoid when using macros:
-
- 1) macros that affect control flow:
-
-
-Mark, Andrew,
-Does it make sense to you?
-
-Thanks
-Barry
+Parenthesizing __sb seems sensible here?  
 
