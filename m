@@ -1,164 +1,145 @@
-Return-Path: <linux-kernel+bounces-110024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E26885903
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F354E885907
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D151F22212
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:22:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91C4F1F213D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5525676036;
-	Thu, 21 Mar 2024 12:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AABF7603C;
+	Thu, 21 Mar 2024 12:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B3XLhYx4"
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Lkj3c18Y"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3F2224F2
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A0075811;
+	Thu, 21 Mar 2024 12:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711023749; cv=none; b=SwUBf6nBKfaXiuGOTXKqEgzn1foCIPO0keNkK5ZcKiMreFnHyXx040SFEpYWF+JP+1DYOz516R23hTiX801yZMaas8LRVNuUtn+bCVXmH5DgoQEcc4ySrqcwvCOU/xa39lizrRsDne9hWVOBGy4hQrYcFeHjsK+hm+rELqh2IMA=
+	t=1711023814; cv=none; b=KhrTgrYQDM0y/BwqRcth7s5vrxvSydjUbwAUojUBhFETCMP2gfVBuGdlk5ygJJSjfBmMxmmlj7S1slIhX4uZPeL7+/nuKIxPCCHalDN//2lsIHBIGwmhWj1avN8kPrykYaK3G4y9owvuvHFESmxA4OBnxzBapWg/4w37o6n1hm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711023749; c=relaxed/simple;
-	bh=v3Nq2GqirEEJ6VTPoP4neja2FAVeVekFR2Tb5rF8Abk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tLxJI5F8yVwSSnEZXoAYf0hiroQINsV+Yc4BcLkPXtzR7qVBdpWWdvVoDMSCY0ppaDauQPMwB/EZ+rseNXycKaVyZwDR6/2TEGdUJ9xmaaaaSY5MMqYNEZ0d7X+z+76IdghtJ8xvRdwqdKhlV9aUcUvlZImRE2eon7GV5cf9RpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B3XLhYx4; arc=none smtp.client-ip=209.85.221.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4d44e2e9f13so360387e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 05:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711023747; x=1711628547; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BJtjyUU93UByaqE7DctDE27rbESuDSaozbO+roW89C8=;
-        b=B3XLhYx4rgPZxeqUsH8h3RpnJxham7K+2i48b2/jiPLoztucidk1JiK0HGaKh/dSD+
-         AXkIB07sWYG4AVFD+I0Zd0gx5i6N2t/hO/ChOsETY0XEaAsfREtyA5vyWDWBuSUYYcZK
-         IqyTz0jQYmqtk1OQFS5/G//0Tsg3erx8Y92IkfiCuaLxhGi/EPFML8fGFglaC9VDdJrj
-         ARgPozWnppT++Auu/HK1sLXXD3aCtM0yM78pcnyIaqkTeDMkP+Kh71Ixcd7WrTdy6oik
-         hmDDg4KxuVlonKBP126or60r+y65Z/8ZuAFZjpBvOMIbsIPEvNPXUJPfYeU3RCHUilao
-         fbRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711023747; x=1711628547;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BJtjyUU93UByaqE7DctDE27rbESuDSaozbO+roW89C8=;
-        b=Q0rlZRFiYcE1ZztB4hYQBEX+A6i+wzsrroc7nycy3zp+OAIR45STLR1C8Dd9I4UWN1
-         Vjmf1L+jsoXOuPc88ObWKPq2BUkLJuQL8Kj8FSlRiNssYontyOs8kDIUFiKfjcJA6Qa2
-         /W8rcVz55vMw8Hnc54bj7qeCkivZ+uNdp2o8BD6jfw5UwLphnopKFtKP01cs+7KEr7tv
-         64Ie1zOxtNNfeA4Vyi52e3UrRbe0euefA2iPYxj+VuXh/qVpK9Usu2CMI+a+5+2HEWbp
-         kyHF44ljx8Oho8bkkPsANs2nYLk2vgqtTF8IQ3aZEUJiet+PR1Y3loW72MF1JjUdD+6W
-         nA3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUdGt4b3yL4Ztfoi94MC3hh5WA+JsIMi/GsAOPXINnWw7wqWjvdhXLkZ+336I4FkouZZTgtPrVzQYjTyydOdVfVLr7LmxD96erDpCsQ
-X-Gm-Message-State: AOJu0YwF2kV/AFV6CIWMi4H9TOBFAbNF/1b7JUSJSDOlb+VZSFUQCCTm
-	bcQZTyg75fuPKK1M/rHJfomEH9uybym+ZlLis+mYQD+jJyETQbZJiyYfDeRf5kNpxJnWZdHialV
-	ekWWGdb8rd1H4yAoakf2Pa8iiKx+hrJpY2C6Q
-X-Google-Smtp-Source: AGHT+IH2D8QrIZ0C+AbDylyT5s9WD+GesvP+2mcUDbCJiXNIQ/C51SuKQRl9uBoE041q1vP3W14+xs9e5cGFhMUCtaU=
-X-Received: by 2002:a05:6122:3659:b0:4c0:2d32:612f with SMTP id
- dv25-20020a056122365900b004c02d32612fmr5775412vkb.15.1711023746707; Thu, 21
- Mar 2024 05:22:26 -0700 (PDT)
+	s=arc-20240116; t=1711023814; c=relaxed/simple;
+	bh=z0N29RLfNcOGlvR4fveRMkFS5KdyxhdBZ5rmI2uvv4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U5kIvSFcAiXkph14S3ucStB2VCRWLOflNqI052aSxEPPuIay+KR4iBQ+GQTJ1hlYlZjPkPxgeWpd7oFThb3orbxELJb7X/ogwlL5RIcwvpEblFCwRgRUGRLtGtHXF+4lzkUYLn+5qeuJsTBj3JYF4wTWwNRFRzIBkBWoEdzO4Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Lkj3c18Y; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=bv5iaIHPCtllbUdTBibdobMZ0uFxV6D8XvDh1qKAPRc=; b=Lkj3c18YRRBepAzzJc64myDSZ6
+	vTbXteiIViBqHGeU6E9lDwpYqA0nDPgbUdpNDKiKND3D3T7kC05v3NOAPvITBZ8sQH/gZ/oYjHuR0
+	Jr9QRYKBkKGYOSs1J56y0aTRsIsA7gFEzzc4ioVpgPvb96lA+eVHPF27AqqLR96jTwaTeYsmli5DK
+	6lHemPYIN4ZXJrAQ8ki1duGAs00GxSlSMT5x5tqU7qxB7/sU9bKdNQuB3hXCxVSDzBg5CdCm9aXGM
+	t7xvvUgoUj6DAWZuSdv/CrgjYFfm8lenv+szEn2gueWVKhEgXbVFPfutWDZd7VNTtqWD43wt/75rk
+	5W9R5S2w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55568)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rnHRo-0007XB-0R;
+	Thu, 21 Mar 2024 12:23:04 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rnHRi-0003dh-TB; Thu, 21 Mar 2024 12:22:58 +0000
+Date: Thu, 21 Mar 2024 12:22:58 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: David Laight <David.Laight@aculab.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	'Jiangfeng Xiao' <xiaojiangfeng@huawei.com>,
+	"arnd@arndb.de" <arnd@arndb.de>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"haibo.li@mediatek.com" <haibo.li@mediatek.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"amergnat@baylibre.com" <amergnat@baylibre.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
+	"gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>,
+	"kepler.chenxin@huawei.com" <kepler.chenxin@huawei.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"nixiaoming@huawei.com" <nixiaoming@huawei.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>,
+	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+	"jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Message-ID: <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+ <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+ <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+ <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
+ <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320101851.2589698-1-glider@google.com>
-In-Reply-To: <20240320101851.2589698-1-glider@google.com>
-From: Marco Elver <elver@google.com>
-Date: Thu, 21 Mar 2024 13:21:48 +0100
-Message-ID: <CANpmjNMNL9At6Ow41TxQUhg_HK7ctxk6XAG1=Ndh0nxit+K8Sg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] mm: kmsan: implement kmsan_memmove()
-To: Alexander Potapenko <glider@google.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, tglx@linutronix.de, 
-	x86@kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Dmitry Vyukov <dvyukov@google.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, 20 Mar 2024 at 11:18, Alexander Potapenko <glider@google.com> wrote:
->
-> Provide a hook that can be used by custom memcpy implementations to tell
-> KMSAN that the metadata needs to be copied. Without that, false positive
-> reports are possible in the cases where KMSAN fails to intercept memory
-> initialization.
->
-> Link: https://lore.kernel.org/all/3b7dbd88-0861-4638-b2d2-911c97a4cadf@I-love.SAKURA.ne.jp/
-> Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+On Thu, Mar 21, 2024 at 12:07:51PM +0000, David Laight wrote:
+> From: Russell King
+> > Sent: 21 March 2024 11:24
+> > 
+> > On Thu, Mar 21, 2024 at 10:22:30AM +0000, David Laight wrote:
+> > > How aggressively does the compiler optimise 'noreturn' functions?
+> > 
+> > I've seen cases where the compiler emits a BL instruction as the very
+> > last thing in the function, and nothing after it.
+> 
+> I've also seen the compiler defer generating a stack frame until
+> after an initial conditional.
 
-Reviewed-by: Marco Elver <elver@google.com>
+. which is why we pass -mno-sched-prolog to GCC.
 
-> ---
->  include/linux/kmsan-checks.h | 15 +++++++++++++++
->  mm/kmsan/hooks.c             | 11 +++++++++++
->  2 files changed, 26 insertions(+)
->
-> diff --git a/include/linux/kmsan-checks.h b/include/linux/kmsan-checks.h
-> index c4cae333deec5..e1082dc40abc2 100644
-> --- a/include/linux/kmsan-checks.h
-> +++ b/include/linux/kmsan-checks.h
-> @@ -61,6 +61,17 @@ void kmsan_check_memory(const void *address, size_t size);
->  void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
->                         size_t left);
->
-> +/**
-> + * kmsan_memmove() - Notify KMSAN about a data copy within kernel.
-> + * @to:   destination address in the kernel.
-> + * @from: source address in the kernel.
-> + * @size: number of bytes to copy.
-> + *
-> + * Invoked after non-instrumented version (e.g. implemented using assembly
-> + * code) of memmove()/memcpy() is called, in order to copy KMSAN's metadata.
-> + */
-> +void kmsan_memmove(void *to, const void *from, size_t to_copy);
-> +
->  #else
->
->  static inline void kmsan_poison_memory(const void *address, size_t size,
-> @@ -78,6 +89,10 @@ static inline void kmsan_copy_to_user(void __user *to, const void *from,
->  {
->  }
->
-> +static inline void kmsan_memmove(void *to, const void *from, size_t to_copy)
-> +{
-> +}
-> +
->  #endif
->
->  #endif /* _LINUX_KMSAN_CHECKS_H */
-> diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
-> index 5d6e2dee5692a..364f778ee226d 100644
-> --- a/mm/kmsan/hooks.c
-> +++ b/mm/kmsan/hooks.c
-> @@ -285,6 +285,17 @@ void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
->  }
->  EXPORT_SYMBOL(kmsan_copy_to_user);
->
-> +void kmsan_memmove(void *to, const void *from, size_t size)
-> +{
-> +       if (!kmsan_enabled || kmsan_in_runtime())
-> +               return;
-> +
-> +       kmsan_enter_runtime();
-> +       kmsan_internal_memmove_metadata(to, (void *)from, size);
-> +       kmsan_leave_runtime();
-> +}
-> +EXPORT_SYMBOL(kmsan_memmove);
-> +
->  /* Helper function to check an URB. */
->  void kmsan_handle_urb(const struct urb *urb, bool is_out)
->  {
-> --
-> 2.44.0.291.gc1ea87d7ee-goog
->
+> That might mean you can get the BL in the middle of a function
+> but where the following instruction is for the 'no stack frame'
+> side of the branch.
+> That is very likely to break any stack offset calculations. 
+
+No it can't. At any one point in the function, the stack has to be in
+a well defined state, so that access to local variables can work, and
+also the stack can be correctly unwound. If there exists a point in
+the function body which can be reached where the stack could be in two
+different states, then the stack can't be restored to the parent
+context.
+
+> > This is where the problem lies - because the link register value
+> > created by the BL instruction will point to the instruction after the
+> > BL which will _not_ part of the function that invoked the BL. That
+> > will probably cause issues for the ELF unwinder, which means this
+> > issue probably goes beyond _just_ printing the function name.
+> 
+> Isn't this already in the unwinder?
+> A BL itself isn't going to fault with PC = next-instruction.
+
+You are missing the fact that the PC can be the saved LR, and thus
+can very well be the next instruction.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
