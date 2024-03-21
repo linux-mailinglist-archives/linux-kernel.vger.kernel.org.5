@@ -1,78 +1,85 @@
-Return-Path: <linux-kernel+bounces-110065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C26D885984
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:01:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78754885985
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6A572822A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:01:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFF81B22F6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CD974E05;
-	Thu, 21 Mar 2024 13:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E7683CD5;
+	Thu, 21 Mar 2024 13:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VWV9re48"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WISc2sBX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95E783CCE;
-	Thu, 21 Mar 2024 13:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8755183CCA
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711026100; cv=none; b=f2Jg7gjGwoStCQOYXdh5chfBLa2Pvapv6vFwVsTihvihGq0X6/CvwlBL7aF+bapAqm+X4WBiRLY/UdaUPeQj5mylfpz4NTU7vE74iyr2kLwmjcWPSP6NFIMQCewe/dUvwRs2MCpT/KktX06MGj0xovuESAHSJEqzTBvm/DbwCug=
+	t=1711026123; cv=none; b=AmrXXvzX3VQpmhwzNITfwK0faQAEhAeObnhakgLRvh2PkrBbPTF0/j0C0t15hZi10Dp54Rpa/BSU6ODKve7KKPfI03XW6ficmNKtksfyFRDqdh3u/aB1AB7diPFc6GAX3FUj4KRjq67PIQxa8E8ovMKYtP4kaGA7gg9ZdlseHfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711026100; c=relaxed/simple;
-	bh=1tjUQe6eS6hPTgoewZ3zPpyZkfJqprwJqK2fvHDOGjA=;
+	s=arc-20240116; t=1711026123; c=relaxed/simple;
+	bh=0Ar5ThuOqYzRFLh58h2aLngrXREFPZj7zmTgtNptjYE=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=T/7DU1oAfMnEqPBlGhVrjo7iypAuw9Us21ktzBA/Qmo2p7H2gK5IsNoRVDUUcWtEaHTGTgfWFZBZgef/AP1emCBWWalmThzgkTBrcYSD4BoO4lieOfnIi8vkNC9nUO9azxG1fmF7uWnpCct7BszgGjpqajAwBtESHwE2/K+6qqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VWV9re48; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2689C433C7;
-	Thu, 21 Mar 2024 13:01:38 +0000 (UTC)
+	 Content-Disposition; b=dQSOubIMhCw0jZ0MxK2N26U9b/24AiZsnoAPmhJch7B2kktos0ApfldWsNLfVWxcL4eMJ/XfIIc8CpMpkLXwoh3ywDQWVsA5WMkuiJ157OjCzFjDgzzPbcVOTUzTY6ZwjjWZEGZ8pPof7S7DkWb90ZKqEiC3ZRI3d+en8apwaes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WISc2sBX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74A0C433C7;
+	Thu, 21 Mar 2024 13:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711026099;
-	bh=1tjUQe6eS6hPTgoewZ3zPpyZkfJqprwJqK2fvHDOGjA=;
+	s=korg; t=1711026123;
+	bh=0Ar5ThuOqYzRFLh58h2aLngrXREFPZj7zmTgtNptjYE=;
 	h=Date:From:To:Cc:Subject:From;
-	b=VWV9re48aS2VA+wkv62dmu1FLhrBZsug1efTVLOC2H5XIisl1Qb6ALfyHQ/Nd2Hrk
-	 Vam9tQ81+6/Ou1QDldZQHK6g21wQIWgI08P5VGXms89y07UODv8Oi8Fy8N7jQR1TIb
-	 EZXoVqSOE5WbDLHTH0KbjlZhuUuPjTAlRyUlSxhs=
-Date: Thu, 21 Mar 2024 14:01:36 +0100
+	b=WISc2sBX6Nyv+lB93KWSCEdcDH4xWb2pNM4mkL1BR2R6XQCYg5CtG5BLAT5dFSHtq
+	 t/IHsRa8D/avt9SHF3WvyUiFqDOGL3D2Iol5I4iz2/xlisLQPc9NllkEH0fEi5n5Ne
+	 y1DiaPKo2QrKh9g+HTMVGcmvvjO6Z9vkwzwOk7dM=
+Date: Thu, 21 Mar 2024 14:01:59 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [GIT PULL] Staging driver updates for 6.9-rc1
-Message-ID: <ZfwvsKB20azzCoYR@kroah.com>
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+	Saravana Kannan <saravanak@google.com>
+Subject: [GIT PULL] Driver core changes for 6.9-rc1
+Message-ID: <Zfwvx6WFIVY-YW0Z@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-6.9-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.9-rc1
 
-for you to fetch changes up to 68bb540b1aefded1d58a9f956568d5316643d291:
+for you to fetch changes up to 6aeb8850e0f39869d43768603a75c0431562a429:
 
-  staging: greybus: Replaces directive __attribute__((packed)) by __packed as suggested by checkpatch (2024-03-07 21:40:52 +0000)
+  device: core: Log warning for devices pending deferred probe on timeout (2024-03-07 22:10:31 +0000)
 
 ----------------------------------------------------------------
-Staging driver cleanups for 6.9-rc1
+Driver core changes for 6.9-rc1
 
-Here is the big set of Staging driver cleanups for 6.9-rc1.  Nothing
-major in here, lots of small coding style cleanups for most drivers, and
-the removal of some obsolete hardare (the emxx_udc and some
-drivers/staging/board/ files).
+Here is the "big" set of driver core and kernfs changes for 6.9-rc1.
+
+Nothing all that crazy here, just some good updates that include:
+  - automatic attribute group hiding from Dan Williams (he fixed up my
+    horrible attempt at doing this.)
+  - kobject lock contention fixes from Eric Dumazet
+  - driver core cleanups from Andy
+  - kernfs rcu work from Tejun
+  - fw_devlink changes to resolve some reported issues
+  - other minor changes, all details in the shortlog
 
 All of these have been in linux-next for a long time with no reported
 issues.
@@ -80,253 +87,90 @@ issues.
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Christophe JAILLET (3):
-      staging: greybus: Remove usage of the deprecated ida_simple_xx() API
-      staging: fieldbus: Remove usage of the deprecated ida_simple_xx() API
-      staging: axis-fifo: Use sysfs_emit()
+Andy Shevchenko (4):
+      driver core: Drop unneeded 'extern' keyword in fwnode.h
+      driver core: Move fw_devlink stuff to where it belongs
+      device property: Move enum dev_dma_attr to fwnode.h
+      device property: Don't use "proxy" headers
 
-Colin Ian King (3):
-      staging: greybus: Remove redundant variable 'mask'
-      staging: rtl8723bs: remove redundant variable hoffset
-      staging: fbtft: remove unused variable 'count'
+Christophe JAILLET (1):
+      platform-msi: Remove usage of the deprecated ida_simple_xx() API
 
-Dan Carpenter (1):
-      staging: greybus: fix get_channel_from_mode() failure path
+Dan Williams (5):
+      sysfs: Introduce a mechanism to hide static attribute_groups
+      sysfs: Introduce a mechanism to hide static attribute_groups
+      sysfs: Fix crash on empty group attributes array
+      sysfs: Document new "group visible" helpers
+      sysfs: Introduce DEFINE_SIMPLE_SYSFS_GROUP_VISIBLE()
 
-Dorine Tipo (1):
-      Staging: octeon: Match parenthesis alignment
+Dmitry Torokhov (1):
+      firmware_loader: introduce __free() cleanup hanler
 
-Erick Archer (2):
-      staging: rtl8723bs: Use kcalloc() instead of kzalloc()
-      greybus: audio: apbridgea: Remove flexible array from struct audio_apbridgea_hdr
+Eric Dumazet (2):
+      kobject: make uevent_seqnum atomic
+      kobject: reduce uevent_sock_mutex scope
 
-Geert Uytterhoeven (4):
-      staging: emxx_udc: Remove EMMA Mobile USB Gadget driver
-      staging: board: Remove KZM9D board staging code
-      staging: board: Remove Armadillo-800-EVA board staging code
-      staging: Remove board staging code
+Greg Kroah-Hartman (3):
+      driver core: cpu: make cpu_subsys const
+      Merge 6.8-rc5 into driver-core-next
+      Merge tag 'sysfs_hidden_attribute_groups-6.9-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core into driver-core-next
 
-Greg Kroah-Hartman (1):
-      staging: greybus: gbphy: make gbphy_bus_type const
+Johannes Berg (1):
+      debugfs: fix wait/cancellation handling during remove
 
-Hoorad Farrokh (1):
-      staging: rtl8712: remove unnecessary braces in while loop
+Mukesh Ojha (1):
+      firmware_loader: Suppress warning on FW_OPT_NO_WARN flag
 
-John Garry (1):
-      staging: octeon: Don't bother filling in ethtool driver version
+Neel Natu (1):
+      kernfs: fix false-positive WARN(nr_mmapped) in kernfs_drain_open_files
 
-Jonathan Bergh (3):
-      staging: vme_user: Fix misaligned closing comment */
-      staging: greybus: Replace __attribute__((packed)) by __packed in various instances
-      staging: greybus: Replaces directive __attribute__((packed)) by __packed as suggested by checkpatch
+Nícolas F. R. A. Prado (3):
+      driver: core: Log probe failure as error and with device metadata
+      driver: core: Use dev_* instead of pr_* so device metadata is added
+      device: core: Log warning for devices pending deferred probe on timeout
 
-Kees Cook (1):
-      greybus: Avoid fake flexible array for response data
+Randy Dunlap (1):
+      driver core: component: fix spellos
 
-Marc Dietrich (2):
-      staging/nvec: update comment regarding udelay in the isr
-      staging/nvec: update TODO
+Ricardo B. Marliere (1):
+      workqueue: make wq_subsys const
 
-Matthias Yee (1):
-      staging: vt6655: fix open parentheses alignment
+Rohan Kollambalath (1):
+      sysfs:Addresses documentation in sysfs_merge_group and sysfs_unmerge_group.
 
-Meir Elisha (3):
-      Staging: rtl8723bs: rtw_ieee80211: Remove extra space
-      Staging: rtl8723bs: Remove unnecessary braces in rtw_update_ht_cap
-      Staging: rtl8723bs: Remove dead code from _rtw_free_network()
+Saravana Kannan (3):
+      driver core: Adds flags param to fwnode_link_add()
+      driver core: Add FWLINK_FLAG_IGNORE to completely ignore a fwnode link
+      of: property: fw_devlink: Add support for "post-init-providers" property
 
-Michael Straube (7):
-      staging: rtl8192e: remove return statement from void function
-      staging: rtl8192e: remove braces from single statement blocks
-      staging: rtl8192e: remove return from void function rtl92e_set_channel
-      staging: rtl8192e: initialize variables at declaration
-      staging: rtl8192e: rename rateIndex to rate_index
-      staging: rtl8192e: remove empty cases from switch statements
-      staging: rtl8192e: rename enum members to upper case
+Tejun Heo (2):
+      kernfs: Rearrange kernfs_node fields to reduce its size on 64bit
+      kernfs: RCU protect kernfs_nodes and avoid kernfs_idr_lock in kernfs_find_and_get_node_by_id()
 
-Moritz C. Weber (2):
-      Staging: vc04_services: bcm2835-camera: fix blank line style check
-      Staging: vc04_services: bcm2835-camera: fix brace code style check
-
-Philipp Hortmann (8):
-      staging: rtl8192e: Remove variables tsf, beacon_time and Antenna
-      staging: rtl8192e: Remove variables Wakeup, Reserved0 and AGC
-      staging: rtl8192e: Remove unused variable bShift
-      staging: rtl8192e: Remove variables bIsQosData and RxIs40MHzPacket
-      staging: rtl8192e: Remove variables fraglength and packetlength
-      staging: rtl8192e: Remove unused variables nic_type and RxPower
-      staging: rtl8192e: Remove unused variables bShortPreamble and fragoffset
-      staging: rtl8192e: Remove unused variables ntotalfrag and Seq_Num
-
-Pranav Athreya (1):
-      staging: vt6655: Remove extra blank lines between code blocks
-
-Ricardo B. Marliere (5):
-      staging: fieldbus: make anybus_bus const
-      staging: vc04_services: vchiq_arm: make vchiq_bus_type const
-      staging: vme: make vme_bus_type const
-      staging: gdm724x: constantify the struct device_type usage
-      staging: fieldbus: make fieldbus_class constant
-
-Shahar Avidar (5):
-      staging: pi433: Remove a duplicated FIFO_SIZE define
-      staging: pi433: Remove a duplicated F_OSC define
-      staging: pi433: Redefine F_OSC using units.h macro
-      staging: pi433: Remove the unused FREQUENCY define
-      staging: pi433: Move FIFO_THRESHOLD define to source file
-
-Tree Davies (67):
-      Staging: rtl8192e: Remove unnecessary parenthesis in rtllib_softmac_new_net()
-      Staging: rtl8192e: Rename variable SlotIndex
-      Staging: rtl8192e: Rename function rtllib_MgntDisconnectAP()
-      Staging: rtl8192e: Rename variable bMulticast
-      Staging: rtl8192e: Rename variable MaxPeriod
-      Staging: rtl8192e: Rename variable bAwakePktSent
-      Staging: rtl8192e: Rename variable bSupportNmode
-      Staging: rtl8192e: Rename variable bBusyTraffic
-      Staging: rtl8192e: Rename function rtllib_MgntDisconnect()
-      Staging: rtl8192e: Rename variable bFilterOutNonAssociatedBSSID
-      Staging: rtl8192e: Rename variable array Bssid
-      Staging: rtl8192e: Rename variable NumRxUnicastOkInPeriod
-      Staging: rtl8192e: Rename variable SlotNum
-      Staging: rtl8192e: Rename variable RemoveAllTS
-      Staging: rtl8192e: Rename function RemovePeerTS()
-      Staging: rtl8192e: Rename function rtllib_MlmeDisassociateRequest()
-      Staging: rtl8192e: Rename function SendDisassociation()
-      Staging: rtl8192e: Rename variable bHalfSupportNmode
-      Staging: rtl8192e: Rename variable PMKCacheIdx
-      Staging: rtl8192e: Rename function GetNmodeSupportBySecCfg()
-      Staging: rtl8192e: Rename variable AsocRetryCount
-      Staging: rtl8192e: Rename variable FirstIe_InScan
-      Staging: rtl8192e: Rename function rtllib_rx_ADDBARsp()
-      Staging: rtl8192e: Rename variable LPSAwakeIntvl_tmp
-      Staging: rtl8192e: Rename variable LPSDelayCnt
-      Staging: rtl8192e: Rename function pointer SetHwRegHandler()
-      Staging: rtl8192e: Rename function MgntQuery_TxRateExcludeCCKRates()
-      Staging: rtl8192e: Rename variable PeerHTCapBuf
-      Staging: rtl8192e: Rename variable PeerHTInfoBuf
-      Staging: rtl8192e: Rename variable LPSAwakeIntvl
-      Staging: rtl8192e: Rename variable SelfHTCap
-      Staging: rtl8192e: Fix paren alignment for rtllib_disable_net_monitor_mode()
-      Staging: rtl8192e: Fixup if statement broken across multiple lines.
-      Staging: rtl8192e: Remove unnecessary blank line
-      Staging: rtl8192e: Fix if statement alignment with open parenthesis
-      Staging: rtl8192e: Rename variable Octet
-      Staging: rtl8192e: Rename variable LpsIdleCount
-      Staging: rtl8192e: Rename variable NumRecvBcnInPeriod
-      Staging: rtl8192e: Rename variable bForcedBgMode
-      Staging: rtl8192e: Rename function rtllib_rx_ADDBAReq()
-      Staging: rtl8192e: Rename variable NumRecvDataInPeriod
-      Staging: rtl8192e: Rename function SecIsInPMKIDList()
-      Staging: rtl8192e: Rename variable PMKIDList
-      Staging: rtl8192e: Rename variable Turbo_Enable
-      Staging: rtl8192e: Rename variable osCcxRmCap
-      Staging: rtl8192e: Rename variable bCkipSupported
-      Staging: rtl8192e: Rename variable bCcxRmEnable
-      Staging: rtl8192e: Rename variable CcxRmCapBuf
-      Staging: rtl8192e: Rename variable BssCcxVerNumber
-      Staging: rtl8192e: Rename variable CcxVerNumBuf
-      Staging: rtl8192e: Rename variable asRsn
-      Staging: rtl8192e: Rename variable AironetIeOui
-      Staging: rtl8192e: Rename variable osCcxAironetIE
-      Staging: rtl8192e: Rename variable CcxAironetBuf
-      Staging: rtl8192e: Rename varoable osCcxVerNum
-      Staging: rtl8192e: Rename varoable asSta
-      Staging: rtl8192e: Rename reference AllowAllDestAddrHandler
-      Staging: rtl8192e: Rename boolean variable bHalfWirelessN24GMode
-      Staging: rtl8192e: Rename function MgntQuery_MgntFrameTxRate
-      Staging: rtl8192e: Fix 5 chckpatch alignment warnings in rtl819x_BAProc.c
-      Staging: rtl8192e: Rename variable TxRxSelect
-      Staging: rtl8192e: Rename function rtllib_send_ADDBAReq()
-      Staging: rtl8192e: Rename function rtllib_send_ADDBARsp()
-      Staging: rtl8192e: Rename goto OnADDBAReq_Fail
-      Staging: rtl8192e: Rename goto OnADDBARsp_Reject
-      Staging: rtl8192e: Rename function rtllib_FlushRxTsPendingPkts()
-      Staging: rtl8192e: Rename function GetHalfNmodeSupportByAPsHandler()
-
- drivers/staging/Kconfig                            |    4 -
- drivers/staging/Makefile                           |    2 -
- drivers/staging/axis-fifo/axis-fifo.c              |    7 +-
- drivers/staging/board/Kconfig                      |   12 -
- drivers/staging/board/Makefile                     |    4 -
- drivers/staging/board/TODO                         |    2 -
- drivers/staging/board/armadillo800eva.c            |   88 -
- drivers/staging/board/board.c                      |  204 --
- drivers/staging/board/board.h                      |   46 -
- drivers/staging/board/kzm9d.c                      |   26 -
- drivers/staging/emxx_udc/Kconfig                   |   11 -
- drivers/staging/emxx_udc/Makefile                  |    2 -
- drivers/staging/emxx_udc/TODO                      |    6 -
- drivers/staging/emxx_udc/emxx_udc.c                | 3223 --------------------
- drivers/staging/emxx_udc/emxx_udc.h                |  554 ----
- drivers/staging/fbtft/fbtft-core.c                 |    2 -
- drivers/staging/fieldbus/anybuss/arcx-anybus.c     |    6 +-
- drivers/staging/fieldbus/anybuss/host.c            |    2 +-
- drivers/staging/fieldbus/dev_core.c                |    8 +-
- drivers/staging/gdm724x/gdm_lte.c                  |    2 +-
- drivers/staging/greybus/audio_apbridgea.h          |    1 -
- drivers/staging/greybus/audio_manager.c            |    8 +-
- drivers/staging/greybus/audio_topology.c           |    3 -
- drivers/staging/greybus/authentication.c           |    6 +-
- drivers/staging/greybus/bootrom.c                  |    8 +-
- drivers/staging/greybus/fw-download.c              |   15 +-
- drivers/staging/greybus/fw-management.c            |   20 +-
- drivers/staging/greybus/gbphy.c                    |    8 +-
- drivers/staging/greybus/greybus_authentication.h   |    6 +-
- drivers/staging/greybus/greybus_firmware.h         |    8 +-
- drivers/staging/greybus/light.c                    |    8 +-
- drivers/staging/greybus/loopback.c                 |    6 +-
- drivers/staging/greybus/raw.c                      |    6 +-
- drivers/staging/greybus/vibrator.c                 |    6 +-
- drivers/staging/nvec/TODO                          |    7 +-
- drivers/staging/nvec/nvec.c                        |    7 +-
- drivers/staging/octeon/ethernet-mdio.c             |    2 -
- drivers/staging/octeon/octeon-stubs.h              |    2 +-
- drivers/staging/pi433/pi433_if.c                   |    1 +
- drivers/staging/pi433/rf69.c                       |    4 +-
- drivers/staging/pi433/rf69.h                       |    4 -
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c     |  103 +-
- drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c     |    1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c       |   64 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c         |   37 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_ps.c         |    4 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c         |    4 +-
- drivers/staging/rtl8192e/rtl819x_BAProc.c          |   70 +-
- drivers/staging/rtl8192e/rtl819x_HT.h              |    6 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c          |   44 +-
- drivers/staging/rtl8192e/rtl819x_Qos.h             |    2 +-
- drivers/staging/rtl8192e/rtl819x_TSProc.c          |   30 +-
- drivers/staging/rtl8192e/rtllib.h                  |   98 +-
- drivers/staging/rtl8192e/rtllib_rx.c               |   50 +-
- drivers/staging/rtl8192e/rtllib_softmac.c          |  278 +-
- drivers/staging/rtl8192e/rtllib_softmac_wx.c       |    8 +-
- drivers/staging/rtl8192e/rtllib_tx.c               |   18 +-
- drivers/staging/rtl8192e/rtllib_wx.c               |    2 +-
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c     |    4 +-
- drivers/staging/rtl8723bs/core/rtw_mlme.c          |    9 +-
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c       |    3 +-
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c  |   14 +-
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c  |    3 +-
- .../vc04_services/bcm2835-camera/bcm2835-camera.c  |   61 +-
- .../vc04_services/interface/vchiq_arm/vchiq_bus.c  |    2 +-
- .../vc04_services/interface/vchiq_arm/vchiq_bus.h  |    2 +-
- drivers/staging/vme_user/vme.c                     |    2 +-
- drivers/staging/vme_user/vme.h                     |    2 +-
- drivers/staging/vme_user/vme_tsi148.h              |    6 +-
- drivers/staging/vt6655/card.c                      |   74 +-
- drivers/staging/vt6655/rxtx.h                      |    1 -
- include/linux/greybus/greybus_protocols.h          |    8 +-
- 72 files changed, 537 insertions(+), 4820 deletions(-)
- delete mode 100644 drivers/staging/board/Kconfig
- delete mode 100644 drivers/staging/board/Makefile
- delete mode 100644 drivers/staging/board/TODO
- delete mode 100644 drivers/staging/board/armadillo800eva.c
- delete mode 100644 drivers/staging/board/board.c
- delete mode 100644 drivers/staging/board/board.h
- delete mode 100644 drivers/staging/board/kzm9d.c
- delete mode 100644 drivers/staging/emxx_udc/Kconfig
- delete mode 100644 drivers/staging/emxx_udc/Makefile
- delete mode 100644 drivers/staging/emxx_udc/TODO
- delete mode 100644 drivers/staging/emxx_udc/emxx_udc.c
- delete mode 100644 drivers/staging/emxx_udc/emxx_udc.h
+ drivers/base/component.c            |   4 +-
+ drivers/base/core.c                 |  72 +++++++++++++++++-
+ drivers/base/cpu.c                  |   2 +-
+ drivers/base/dd.c                   |  32 ++++----
+ drivers/base/firmware_loader/main.c |  16 ++--
+ drivers/base/platform-msi.c         |   6 +-
+ drivers/base/property.c             |  67 ++---------------
+ drivers/base/swnode.c               |  13 +++-
+ drivers/firmware/efi/sysfb_efi.c    |   2 +-
+ drivers/of/property.c               |  15 +++-
+ fs/debugfs/inode.c                  |  25 +++++--
+ fs/kernfs/dir.c                     |  31 +++++---
+ fs/kernfs/file.c                    |   8 +-
+ fs/kernfs/kernfs-internal.h         |   2 +
+ fs/sysfs/group.c                    |  55 ++++++++++----
+ include/linux/cpu.h                 |   2 +-
+ include/linux/firmware.h            |   3 +
+ include/linux/fwnode.h              |  18 +++--
+ include/linux/kernfs.h              |  10 ++-
+ include/linux/kobject.h             |   2 +-
+ include/linux/property.h            |   9 +--
+ include/linux/sysfs.h               | 142 +++++++++++++++++++++++++++++++++---
+ kernel/ksysfs.c                     |   2 +-
+ kernel/workqueue.c                  |   2 +-
+ lib/kobject_uevent.c                |  24 +++---
+ 25 files changed, 387 insertions(+), 177 deletions(-)
 
