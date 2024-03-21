@@ -1,174 +1,342 @@
-Return-Path: <linux-kernel+bounces-110353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F0F885D9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:37:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C14885E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66D07281E79
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:37:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9627E1C21E42
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:42:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C1B10782;
-	Thu, 21 Mar 2024 16:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C669113792E;
+	Thu, 21 Mar 2024 16:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="e7vK/CND"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gAPRlQUz"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9441FA2;
-	Thu, 21 Mar 2024 16:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B18713774F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039031; cv=none; b=DdSLIkWqSQ/ii0Vydi+JX8gzW72i3I4u3H52ZN8InOyhZAb5RUWC+92AhjwOZFeQ+LilI4ljqkh2j3ZaLwFUCNbZ03FzuOfnzsa/0qdrKnjrY3AHYGvwxh/66bnemZFXhXO1tk0tGJ6rOuLKlzfyrMeRUOo1aFqZNj/D1BJgyG8=
+	t=1711039064; cv=none; b=kpFxK/5uLSwEMgnPUEmW+hx/NNfqHxdKfV6LSzcdSei6c1GBmFHbXUV5/rkSYWqAbV8q5QR17rBKgy5iR+My88E+b/lnTUkGVAHCbl6xC/5fiMUIEEpGgK7Vdjj41ujPNqjfZTyZojW3MI8ezlqiZlux/Y074pq8P2XyUgvDoa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039031; c=relaxed/simple;
-	bh=H+X49mgBo/tGpAsbI1/ADCVDDPwFjXTM12dknG8EjJs=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=UQm9TE4g7wvqws9NqSm2FVsqc0H3tVU3dscu1WOZ45clbYsuVEcMci82QW9yoGHjtPwAJKrasp+38zh4AYPduX2t1FIJ4DKqDY56TCrlcc3ktFXIBmTj7EFykw0O7ASokA4noppJrYGxNDW0oF+nvOq7C+FcYS0zTgpkCiFKZYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=e7vK/CND; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LFppRn012292;
-	Thu, 21 Mar 2024 16:36:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=noF5Z/4P3tWdvqLDRBEcGEenfy6p/hfhy5qZF5Nd16k=;
- b=e7vK/CNDFKaGaiNgv8RXALUNHOgz7zPj4bc4Vu85/R6Q0IojBgB2nIwFrr9Ala3eHdk6
- LKFxmw065WhaxZZHbwcJLBjAxDghc12U0kc/ojbqbnK4ElUQkL4cJCx1it0n5qieGYvM
- 8N8WralOzs5x2guh0dGsSKXQ+sRvL30JxSpS73o8eoQp9g2/dmPfeLVeLcMTwWhyMifU
- EpctFjPfQ5sD09S9MIW15NNEgIV2ch7k9gpRKgKtWWzPwsPYlxpIZ7gTgyrRcnk83DQH
- 4zxtJJVs+lHXSOLZciupH+DrbQkCGIY/JVnPg3XaY6xzVd2XGQIp0FW6bQHGqpfOdnjQ 2Q== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0nq48gvw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 16:36:54 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LGW8GN002773;
-	Thu, 21 Mar 2024 16:36:40 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2wy30-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 16:36:40 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LGab8k16646850
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 16:36:39 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AB0EF5804B;
-	Thu, 21 Mar 2024 16:36:37 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 961A458055;
-	Thu, 21 Mar 2024 16:36:36 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Mar 2024 16:36:36 +0000 (GMT)
-Message-ID: <cce10484-99cb-4c2e-9768-862fc35a6725@linux.ibm.com>
-Date: Thu, 21 Mar 2024 12:36:36 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Lukas Wunner <lukas@wunner.de>
-Cc: Stefan Berger <stefanb@linux.vnet.ibm.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-kernel@vger.kernel.org,
-        saulo.alessandre@tse.jus.br, bbhushan2@marvell.com
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <ZfiMhi9D2Rhh89BI@wunner.de>
- <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
- <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org> <Zfp20bLB0onXo7FV@wunner.de>
- <20240320-quirky-truthful-manul-da6eb9@lemur>
- <CZZKAZB5K1PD.2UKMDD28AUCEC@kernel.org>
- <CZZKCJGKVP5N.3GUU48O4Y62KQ@kernel.org>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CZZKCJGKVP5N.3GUU48O4Y62KQ@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: WA26ICbuccV_KwjfhoKogfMoU_q1NJEp
-X-Proofpoint-GUID: WA26ICbuccV_KwjfhoKogfMoU_q1NJEp
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1711039064; c=relaxed/simple;
+	bh=+nXctbG4IOQrslvig2NTXz9yuPec0H8Ft5HG0m+Y1H4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=L15oAMc729EisVQwYw4PDdGdR7flXm8jePR131U6ess4Q3heCT19Wu9mAs7lAzACYmz0Gu1t1U3g8Xs8p7AOoGK3O2m5ppQha48PCjGT76fT8Bp/j3bsQUN3eM1tFOUERudIFz69VixZcBa2F7M47oYe47XEEsW0tymMuU4j7FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gAPRlQUz; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cbba6f571so21986847b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711039061; x=1711643861; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VEuENejKrKvwi5jd3fEQOIFk9pMWLkQIYT8gJCjoD3E=;
+        b=gAPRlQUz4PanaYdh7wgqgIcC5oNsJozBVWIYC4pQOjELSgbx4IRw3QlQRALhhExZZg
+         +XR7PjTNxaWQ8zT+BLMLEBBXmw3GBfBxeNrna6K+EzOF6XUuqggvU9EKrpxggwc81z7T
+         qkhdwgOYuNiE8CnMsYqSYiEkQN2ggBYnOJWDf0H1ePAX57rmGvKcxoLbea+cDhaLxHj8
+         GxpyKRin2Cht2im7fzixdgo6y9UZeb6gJaCrSvA75ZwGX5IeA0AU/6r2nlNz7hTFkDtz
+         5+ocaWjBiIUUH+jfvdfRHG4POKDt5S7sOmvMBw3swLJbVL3skK8TUdqfyGgT7rJNNOtg
+         sQ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711039061; x=1711643861;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VEuENejKrKvwi5jd3fEQOIFk9pMWLkQIYT8gJCjoD3E=;
+        b=maJE4+2dEqo1UuuJgVr/78avrDHGC9FsfhHp6ZCNpAIfm/ij8PEfj5/xhiSq90Ajiw
+         OMjEi5v2QWZDaiHK9vDd5krR3hYnMn4Cgh8gqWxfvkb2rp52ybazf7UCUSKuVcIRqId6
+         1HSt/rwGBGkelUG7Rs8Q30Ith85Kj0et/WCce089zN6hwFpgbVpqtkUnzfs0RhlkBAIF
+         tyedcfPkQB+ag8ZG3a0DEpOClpHiuyrZ4a1CAkPGuL3IiLygATl0xzOcLtmvrlG3Qua6
+         LulaAQrGQyGFaXcYO9SEfnLd01Ip2yfIqa+3ZzEhRhSBCxXy3npCtlO2ccfZHttGdRoF
+         jBng==
+X-Forwarded-Encrypted: i=1; AJvYcCWLLR5NUkdRlqOZsi+ZIjDH6+YTUR4vxYrIQNhKeclOlDn935V2xn9vvJj40z586vSCXZejTkBUGhZXmSaew5HVnB1vtvtPdR+NTr1S
+X-Gm-Message-State: AOJu0YwlXROTHFcER8+OHXIq1JJbpiZ2sC1hTYZhxcynrKVg8aaaLzLc
+	XVgsKCQcumxZZJ1vOH5IQpO4TIs7GHGd1pyGLkANIeEfot1uGeTv44mefoEYUMXv+PEOE7++0o2
+	onA==
+X-Google-Smtp-Source: AGHT+IFNQMTWyzDytJBsiwO6OlHwO/XgSIlxcnK6gjsE8Q4BevLiMexdP0sp4DeK7t/kONH0yJROFT8KJZw=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
+ (user=surenb job=sendgmr) by 2002:a05:6902:1507:b0:dcd:ad52:6932 with SMTP id
+ q7-20020a056902150700b00dcdad526932mr5791743ybu.5.1711039060482; Thu, 21 Mar
+ 2024 09:37:40 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:36:36 -0700
+In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 mlxlogscore=783 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403210121
+Mime-Version: 1.0
+References: <20240321163705.3067592-1-surenb@google.com>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240321163705.3067592-15-surenb@google.com>
+Subject: [PATCH v6 14/37] lib: introduce support for page allocation tagging
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	surenb@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Introduce helper functions to easily instrument page allocators by
+storing a pointer to the allocation tag associated with the code that
+allocated the page in a page_ext field.
 
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+---
+ include/linux/page_ext.h    |  1 -
+ include/linux/pgalloc_tag.h | 78 +++++++++++++++++++++++++++++++++++++
+ lib/Kconfig.debug           |  1 +
+ lib/alloc_tag.c             | 17 ++++++++
+ mm/mm_init.c                |  1 +
+ mm/page_alloc.c             |  4 ++
+ mm/page_ext.c               |  4 ++
+ 7 files changed, 105 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/pgalloc_tag.h
 
-On 3/21/24 12:19, Jarkko Sakkinen wrote:
-> On Thu Mar 21, 2024 at 6:17 PM EET, Jarkko Sakkinen wrote:
->> On Wed Mar 20, 2024 at 4:41 PM EET, Konstantin Ryabitsev wrote:
->>> On Wed, Mar 20, 2024 at 06:40:33AM +0100, Lukas Wunner wrote:
->>>> If Herbert applies patches with "b4 am --apply-cover-trailers" or
->>>> "b4 shazam --apply-cover-trailers" (I don't know if he does),
->>>> it is completely irrelevant whether Stefan strips my Tested-by from
->>>> individual patches:  It will automatically be re-added when the
->>>> series gets applied.
->>>
->>> Applying trailers sent to the cover letter is now the default behaviour in
->>> 0.13, so this flag is no longer required (it does nothing).
->>>
->>> -K
->>
->> The whole policy of how to put tested-by in my experience is subsystem
->> dependent.
->>
->> https://www.kernel.org/doc/html/latest/process/submitting-patches.html
->>
->> Official documentation only speaks about patches so perhaps it should
->> then be refined for the series.
->>
->> I'm hearing about this option in b4 for the first time in my life.
-> 
-> It is also pretty relevant to know when you read the commit log e.g.
-> when bisecting what was *actually* tested.
-> 
-> If you put tested-by to whole series it probably means that you've
-> tested the uapi and are getting the expected results. Thus in this
-> case it would 13/13 that is *actually* tested.
+diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+index be98564191e6..07e0656898f9 100644
+--- a/include/linux/page_ext.h
++++ b/include/linux/page_ext.h
+@@ -4,7 +4,6 @@
+ 
+ #include <linux/types.h>
+ #include <linux/stacktrace.h>
+-#include <linux/stackdepot.h>
+ 
+ struct pglist_data;
+ 
+diff --git a/include/linux/pgalloc_tag.h b/include/linux/pgalloc_tag.h
+new file mode 100644
+index 000000000000..66bd021eb46e
+--- /dev/null
++++ b/include/linux/pgalloc_tag.h
+@@ -0,0 +1,78 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * page allocation tagging
++ */
++#ifndef _LINUX_PGALLOC_TAG_H
++#define _LINUX_PGALLOC_TAG_H
++
++#include <linux/alloc_tag.h>
++
++#ifdef CONFIG_MEM_ALLOC_PROFILING
++
++#include <linux/page_ext.h>
++
++extern struct page_ext_operations page_alloc_tagging_ops;
++extern struct page_ext *page_ext_get(struct page *page);
++extern void page_ext_put(struct page_ext *page_ext);
++
++static inline union codetag_ref *codetag_ref_from_page_ext(struct page_ext *page_ext)
++{
++	return (void *)page_ext + page_alloc_tagging_ops.offset;
++}
++
++static inline struct page_ext *page_ext_from_codetag_ref(union codetag_ref *ref)
++{
++	return (void *)ref - page_alloc_tagging_ops.offset;
++}
++
++/* Should be called only if mem_alloc_profiling_enabled() */
++static inline union codetag_ref *get_page_tag_ref(struct page *page)
++{
++	if (page) {
++		struct page_ext *page_ext = page_ext_get(page);
++
++		if (page_ext)
++			return codetag_ref_from_page_ext(page_ext);
++	}
++	return NULL;
++}
++
++static inline void put_page_tag_ref(union codetag_ref *ref)
++{
++	page_ext_put(page_ext_from_codetag_ref(ref));
++}
++
++static inline void pgalloc_tag_add(struct page *page, struct task_struct *task,
++				   unsigned int nr)
++{
++	if (mem_alloc_profiling_enabled()) {
++		union codetag_ref *ref = get_page_tag_ref(page);
++
++		if (ref) {
++			alloc_tag_add(ref, task->alloc_tag, PAGE_SIZE * nr);
++			put_page_tag_ref(ref);
++		}
++	}
++}
++
++static inline void pgalloc_tag_sub(struct page *page, unsigned int nr)
++{
++	if (mem_alloc_profiling_enabled()) {
++		union codetag_ref *ref = get_page_tag_ref(page);
++
++		if (ref) {
++			alloc_tag_sub(ref, PAGE_SIZE * nr);
++			put_page_tag_ref(ref);
++		}
++	}
++}
++
++#else /* CONFIG_MEM_ALLOC_PROFILING */
++
++static inline void pgalloc_tag_add(struct page *page, struct task_struct *task,
++				   unsigned int nr) {}
++static inline void pgalloc_tag_sub(struct page *page, unsigned int nr) {}
++
++#endif /* CONFIG_MEM_ALLOC_PROFILING */
++
++#endif /* _LINUX_PGALLOC_TAG_H */
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index d9a6477afdb1..ca2c466056d5 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -978,6 +978,7 @@ config MEM_ALLOC_PROFILING
+ 	depends on PROC_FS
+ 	depends on !DEBUG_FORCE_WEAK_PER_CPU
+ 	select CODE_TAGGING
++	select PAGE_EXTENSION
+ 	help
+ 	  Track allocation source code and record total allocation size
+ 	  initiated at that code location. The mechanism can be used to track
+diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
+index f09c8a422bc2..cb5adec4b2e2 100644
+--- a/lib/alloc_tag.c
++++ b/lib/alloc_tag.c
+@@ -3,6 +3,7 @@
+ #include <linux/fs.h>
+ #include <linux/gfp.h>
+ #include <linux/module.h>
++#include <linux/page_ext.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_buf.h>
+ #include <linux/seq_file.h>
+@@ -115,6 +116,22 @@ static bool alloc_tag_module_unload(struct codetag_type *cttype,
+ 	return module_unused;
+ }
+ 
++static __init bool need_page_alloc_tagging(void)
++{
++	return true;
++}
++
++static __init void init_page_alloc_tagging(void)
++{
++}
++
++struct page_ext_operations page_alloc_tagging_ops = {
++	.size = sizeof(union codetag_ref),
++	.need = need_page_alloc_tagging,
++	.init = init_page_alloc_tagging,
++};
++EXPORT_SYMBOL(page_alloc_tagging_ops);
++
+ static struct ctl_table memory_allocation_profiling_sysctls[] = {
+ 	{
+ 		.procname	= "mem_profiling",
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 370a057dae97..3e48afcd0faa 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -24,6 +24,7 @@
+ #include <linux/page_ext.h>
+ #include <linux/pti.h>
+ #include <linux/pgtable.h>
++#include <linux/stackdepot.h>
+ #include <linux/swap.h>
+ #include <linux/cma.h>
+ #include <linux/crash_dump.h>
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 4491d0240bc6..48cdd25261ea 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -54,6 +54,7 @@
+ #include <linux/khugepaged.h>
+ #include <linux/delayacct.h>
+ #include <linux/cacheinfo.h>
++#include <linux/pgalloc_tag.h>
+ #include <asm/div64.h>
+ #include "internal.h"
+ #include "shuffle.h"
+@@ -1101,6 +1102,7 @@ __always_inline bool free_pages_prepare(struct page *page,
+ 		/* Do not let hwpoison pages hit pcplists/buddy */
+ 		reset_page_owner(page, order);
+ 		page_table_check_free(page, order);
++		pgalloc_tag_sub(page, 1 << order);
+ 		return false;
+ 	}
+ 
+@@ -1140,6 +1142,7 @@ __always_inline bool free_pages_prepare(struct page *page,
+ 	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
+ 	reset_page_owner(page, order);
+ 	page_table_check_free(page, order);
++	pgalloc_tag_sub(page, 1 << order);
+ 
+ 	if (!PageHighMem(page)) {
+ 		debug_check_no_locks_freed(page_address(page),
+@@ -1533,6 +1536,7 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+ 
+ 	set_page_owner(page, order, gfp_flags);
+ 	page_table_check_alloc(page, order);
++	pgalloc_tag_add(page, current, 1 << order);
+ }
+ 
+ static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
+diff --git a/mm/page_ext.c b/mm/page_ext.c
+index 4548fcc66d74..3c58fe8a24df 100644
+--- a/mm/page_ext.c
++++ b/mm/page_ext.c
+@@ -10,6 +10,7 @@
+ #include <linux/page_idle.h>
+ #include <linux/page_table_check.h>
+ #include <linux/rcupdate.h>
++#include <linux/pgalloc_tag.h>
+ 
+ /*
+  * struct page extension
+@@ -82,6 +83,9 @@ static struct page_ext_operations *page_ext_ops[] __initdata = {
+ #if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
+ 	&page_idle_ops,
+ #endif
++#ifdef CONFIG_MEM_ALLOC_PROFILING
++	&page_alloc_tagging_ops,
++#endif
+ #ifdef CONFIG_PAGE_TABLE_CHECK
+ 	&page_table_check_ops,
+ #endif
+-- 
+2.44.0.291.gc1ea87d7ee-goog
 
-Btw, we have 2 entry points into the code and those are uapi and testmgr.
-
-So if I was to exercise the uapi with a NIST P521 key then are you 
-saying that none of the other code was exercised and therefore wasn't 
-tested? How would YOU suggest to test individual patches then?
-
-What the docs at the link above say is this:
-
-A Tested-by: tag indicates that the patch has been successfully tested 
-(in some environment) by the person named. This tag informs maintainers 
-that some testing has been performed, provides a means to locate testers 
-for future patches, and ensures credit for the testers.
-
-Note: 'some testing' 'in some environment'. We probably can reasonably 
-assume that not only 13/13 is necessary but also several of the other 
-patches are necessary to support this new curve and were exercised with 
-either UAPI and probably also testmgr.
-
-> 
-> Putting tested-by to every possible patch only degrades the quality
-> of the commit log.
-
-I would still be interested how one would test individual patches in a 
-series so they are worthy of a Tested-by tag.
-
-> 
-> I don't see how this is "irrelevant".
-> 
-> BR, Jarkko
 
