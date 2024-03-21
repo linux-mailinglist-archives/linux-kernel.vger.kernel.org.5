@@ -1,340 +1,265 @@
-Return-Path: <linux-kernel+bounces-110093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 294818859F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:30:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874808859D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A884C1F219BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:30:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F05BAB21945
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FED284A41;
-	Thu, 21 Mar 2024 13:30:50 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C3D84A31;
+	Thu, 21 Mar 2024 13:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IWFqDMYP"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A638D83CCE;
-	Thu, 21 Mar 2024 13:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDFA8405B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711027849; cv=none; b=cFtvK11/xGX113MZ+CSG3fsSUrR1ADNs+XLcl7P1lWBX+yQvX34EYQr41pzHg5nY4c1E2dK9pE5oJAnOzJeqU7Ej+J1Gkt/a7VE99dCdH9ruJ0xcFmr+aOCRTPLLTsoYIrnKCjfq5OIU/R/7slg3rAtWdKOgdqQHBAsTzxs0YXU=
+	t=1711026986; cv=none; b=lX0S1GvG3NGLzryDkM0sBZN7E0bezWc0FOCNSTWWNVKhb9zUVnAKE5uP9kag0573dmdn0JjHz1/wsj5G+Uhgzxy0D778Qirv+FbtCLqwYKI2di36Oco7OxJqiomwM291keMHkEw5S+LClJO0eb75tE+4s6PgwkBgPyqsByCly70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711027849; c=relaxed/simple;
-	bh=kxspY95vYGYTOvbO2uG5v443F1J4LThpxAicjseqQ3k=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=p/wY5s4LNc/VHrzluYN/r0PVzpimHwmSdIgEe/AVGKphFZw/MwlUPRMU1DK+7BAcwQb4QAsoDBhtZL1d8Q0AelOCF5hOGCFtrKTDXS8aCVH0egyG22nULULyzNbXvJTMoHWXMfkYerH9LUGTlsZI0eu182Hqo1KybHt3ZjOQlmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 385201A080B;
-	Thu, 21 Mar 2024 14:30:40 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A38B21A0101;
-	Thu, 21 Mar 2024 14:30:39 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6834B1834868;
-	Thu, 21 Mar 2024 21:30:37 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: abelvesa@kernel.org,
-	peng.fan@nxp.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	shengjiu.wang@gmail.com
-Cc: linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] clk: imx: imx8mp: Add pm_runtime support for power saving
-Date: Thu, 21 Mar 2024 21:14:02 +0800
-Message-Id: <1711026842-7268-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1711026986; c=relaxed/simple;
+	bh=Nk9b5oqwgKE06yFCMJlcUgDcBJvztR/AqGsXmLiNX+E=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Azb/nX33jSdl2noHaZzqJmygQoKhgfPiP3Qmjj+W5s76s7XM/JLwPCfx1sLCGnH3XiSzZtxtznIT0Et/SqAA0rpPYY7iAM7DCM4bRMYuA6QbxBMStuZSFNZmdSD295NOYbiNbjV7/04aFBCXK2xZAI5vFQi5PWtnewaEwSRPWPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IWFqDMYP; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711026975; x=1711286175;
+	bh=0/ojodZuZWU9umhLIhWLYR7XmIcfv7rcwjbeCgN2brI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=IWFqDMYPUsqeZgQ45aFrjE6/9xYtmwZFoQ9z4oTPMSbsr2ZeDE4Dj/4L3pPLQ6yIc
+	 DQbn7Q//kH4L8bqOOZScCu09j3nawzYCm8I3obNH1gjVi2JPF6HLC6wCCb4RM9B0U6
+	 K9ZB15K5Z6YXMXo7P49PIdoqer+fZqAu/+6HXYQmzu1sFY0AKlQE+43Ap0snIcszG0
+	 nfFaWVWe7xYJQcmSWrcFUmy/evESXDYDBxmAXxnP4LhZOqaVv3DlGvT1+cgYhoqcD6
+	 juCz+O2Hv9mM1MXbITepHM1DpoIOScpW9kk3QCC/DyYWusCB+HXUYePpdSySvhX94z
+	 BwayFaWfAl7Qg==
+Date: Thu, 21 Mar 2024 13:15:58 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, arnd@arndb.de, arve@android.com, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Subject: Re: [PATCH v3 4/4] rust: add abstraction for `struct page`
+Message-ID: <9ed03148-5ceb-40f2-9c2d-31e2b8918888@proton.me>
+In-Reply-To: <20240320084630.2727355-1-aliceryhl@google.com>
+References: <baee63d9-273a-48aa-b3cc-f15e3782156b@proton.me> <20240320084630.2727355-1-aliceryhl@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Add pm_runtime support for power saving. In pm runtime suspend
-state the registers will be reseted, so add registers save
-in pm runtime suspend and restore them in pm runtime resume.
+On 3/20/24 09:46, Alice Ryhl wrote:
+>> On 3/11/24 11:47, Alice Ryhl wrote:
+>>> +/// A pointer to a page that owns the page allocation.
+>>> +///
+>>> +/// # Invariants
+>>> +///
+>>> +/// The pointer points at a page, and has ownership over the page.
+>>
+>> Why not "`page` is valid"?
+>> Do you mean by ownership of the page that `page` has ownership of the
+>> allocation, or does that entail any other property/privilege?
+>=20
+> I can add "at a valid page".
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
----
-changes in v4:
-- use struct clk_hw_onecell_data clk_data in priv struct
+I don't think that helps, what you need as an invariant is that the
+pointer is valid.
 
-changes in v3:
-- remove REGS_NUM, use the ARRAY_SIZE
-- merge clk_imx8mp_audiomix_drvdata and clk_hw_onecell_data together.
+> By ownership I mean that we are allowed to pass it to __free_page and
+> that until we do, we can access the page. If you want me to reword this,
+> please tell me what you want it to say.
 
-changes in v2:
-- move pm_runtime_enable before the clk register
+I see, no need to change it.
 
- drivers/clk/imx/clk-imx8mp-audiomix.c | 157 ++++++++++++++++++++++----
- 1 file changed, 136 insertions(+), 21 deletions(-)
+>>> +// SAFETY: It is safe to transfer page allocations between threads.
+>>
+>> Why?
+>>
+>>> +unsafe impl Send for Page {}
+>=20
+> How about:
+>=20
+> // SAFETY: Pages have no logic that relies on them staying on a given
+> // thread, so moving them across threads is safe.
 
-diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
-index 55ed211a5e0b..574a032309c1 100644
---- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-+++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-@@ -7,10 +7,12 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/device.h>
-+#include <linux/io.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- 
- #include <dt-bindings/clock/imx8mp-clock.h>
- 
-@@ -18,6 +20,7 @@
- 
- #define CLKEN0			0x000
- #define CLKEN1			0x004
-+#define EARC			0x200
- #define SAI1_MCLK_SEL		0x300
- #define SAI2_MCLK_SEL		0x304
- #define SAI3_MCLK_SEL		0x308
-@@ -26,6 +29,11 @@
- #define SAI7_MCLK_SEL		0x314
- #define PDM_SEL			0x318
- #define SAI_PLL_GNRL_CTL	0x400
-+#define SAI_PLL_FDIVL_CTL0	0x404
-+#define SAI_PLL_FDIVL_CTL1	0x408
-+#define SAI_PLL_SSCG_CTL	0x40C
-+#define SAI_PLL_MNIT_CTL	0x410
-+#define IPG_LP_CTRL		0x504
- 
- #define SAIn_MCLK1_PARENT(n)						\
- static const struct clk_parent_data					\
-@@ -182,26 +190,82 @@ static struct clk_imx8mp_audiomix_sel sels[] = {
- 	CLK_SAIn(7)
- };
- 
-+static const u16 audiomix_regs[] = {
-+	CLKEN0,
-+	CLKEN1,
-+	EARC,
-+	SAI1_MCLK_SEL,
-+	SAI2_MCLK_SEL,
-+	SAI3_MCLK_SEL,
-+	SAI5_MCLK_SEL,
-+	SAI6_MCLK_SEL,
-+	SAI7_MCLK_SEL,
-+	PDM_SEL,
-+	SAI_PLL_GNRL_CTL,
-+	SAI_PLL_FDIVL_CTL0,
-+	SAI_PLL_FDIVL_CTL1,
-+	SAI_PLL_SSCG_CTL,
-+	SAI_PLL_MNIT_CTL,
-+	IPG_LP_CTRL,
-+};
-+
-+struct clk_imx8mp_audiomix_priv {
-+	void __iomem *base;
-+	u32 regs_save[ARRAY_SIZE(audiomix_regs)];
-+
-+	/* Must be last */
-+	struct clk_hw_onecell_data clk_data;
-+};
-+
-+static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool save)
-+{
-+	struct clk_imx8mp_audiomix_priv *priv = dev_get_drvdata(dev);
-+	void __iomem *base = priv->base;
-+	int i;
-+
-+	if (save) {
-+		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
-+			priv->regs_save[i] = readl(base + audiomix_regs[i]);
-+	} else {
-+		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
-+			writel(priv->regs_save[i], base + audiomix_regs[i]);
-+	}
-+}
-+
- static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- {
--	struct clk_hw_onecell_data *priv;
-+	struct clk_imx8mp_audiomix_priv *priv;
-+	struct clk_hw_onecell_data *clk_hw_data;
- 	struct device *dev = &pdev->dev;
- 	void __iomem *base;
- 	struct clk_hw *hw;
--	int i;
-+	int i, ret;
- 
- 	priv = devm_kzalloc(dev,
--			    struct_size(priv, hws, IMX8MP_CLK_AUDIOMIX_END),
-+			    struct_size(priv, clk_data.hws, IMX8MP_CLK_AUDIOMIX_END),
- 			    GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
--	priv->num = IMX8MP_CLK_AUDIOMIX_END;
-+	clk_hw_data = &priv->clk_data;
-+	clk_hw_data->num = IMX8MP_CLK_AUDIOMIX_END;
- 
- 	base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
-+	priv->base = base;
-+	dev_set_drvdata(dev, priv);
-+
-+	/*
-+	 * pm_runtime_enable needs to be called before clk register.
-+	 * That is to make core->rpm_enabled to be true for clock
-+	 * usage.
-+	 */
-+	pm_runtime_get_noresume(dev);
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	for (i = 0; i < ARRAY_SIZE(sels); i++) {
- 		if (sels[i].num_parents == 1) {
- 			hw = devm_clk_hw_register_gate_parent_data(dev,
-@@ -216,10 +280,12 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 				0, NULL, NULL);
- 		}
- 
--		if (IS_ERR(hw))
--			return PTR_ERR(hw);
-+		if (IS_ERR(hw)) {
-+			ret = PTR_ERR(hw);
-+			goto err_clk_register;
-+		}
- 
--		priv->hws[sels[i].clkid] = hw;
-+		clk_hw_data->hws[sels[i].clkid] = hw;
- 	}
- 
- 	/* SAI PLL */
-@@ -228,39 +294,86 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
- 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_parents),
- 		CLK_SET_RATE_NO_REPARENT, base + SAI_PLL_GNRL_CTL,
- 		0, 2, 0, NULL, NULL);
--	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
-+	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
- 
- 	hw = imx_dev_clk_hw_pll14xx(dev, "sai_pll", "sai_pll_ref_sel",
- 				    base + 0x400, &imx_1443x_pll);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
--	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
- 
- 	hw = devm_clk_hw_register_mux_parent_data_table(dev,
- 		"sai_pll_bypass", clk_imx8mp_audiomix_pll_bypass_sels,
- 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_bypass_sels),
- 		CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
- 		base + SAI_PLL_GNRL_CTL, 16, 1, 0, NULL, NULL);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
--	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+
-+	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
- 
- 	hw = devm_clk_hw_register_gate(dev, "sai_pll_out", "sai_pll_bypass",
- 				       0, base + SAI_PLL_GNRL_CTL, 13,
- 				       0, NULL);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
--	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
- 
- 	hw = devm_clk_hw_register_fixed_factor(dev, "sai_pll_out_div2",
- 					       "sai_pll_out", 0, 1, 2);
--	if (IS_ERR(hw))
--		return PTR_ERR(hw);
-+	if (IS_ERR(hw)) {
-+		ret = PTR_ERR(hw);
-+		goto err_clk_register;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
-+					  clk_hw_data);
-+	if (ret)
-+		goto err_clk_register;
-+
-+	pm_runtime_put_sync(dev);
-+	return 0;
-+
-+err_clk_register:
-+	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
-+	return ret;
-+}
-+
-+static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
-+{
-+	clk_imx8mp_audiomix_save_restore(dev, true);
- 
--	return devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
--					   priv);
-+	return 0;
- }
- 
-+static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
-+{
-+	clk_imx8mp_audiomix_save_restore(dev, false);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
-+	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
-+			   clk_imx8mp_audiomix_runtime_resume, NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				      pm_runtime_force_resume)
-+};
-+
- static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
- 	{ .compatible = "fsl,imx8mp-audio-blk-ctrl" },
- 	{ /* sentinel */ }
-@@ -269,9 +382,11 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
- 
- static struct platform_driver clk_imx8mp_audiomix_driver = {
- 	.probe	= clk_imx8mp_audiomix_probe,
-+	.remove = clk_imx8mp_audiomix_remove,
- 	.driver = {
- 		.name = "imx8mp-audio-blk-ctrl",
- 		.of_match_table = clk_imx8mp_audiomix_of_match,
-+		.pm = &clk_imx8mp_audiomix_pm_ops,
- 	},
- };
- 
--- 
-2.34.1
+Sounds good.
+
+>>> +// SAFETY: As long as the safety requirements for `&self` methods on t=
+his type
+>>> +// are followed, there is no problem with calling them in parallel.
+>>
+>> Why?
+>>
+>>> +unsafe impl Sync for Page {}
+>=20
+> How about:
+>=20
+> // SAFETY: Pages have no logic that relies on them not being accessed
+> // concurrently, so accessing them concurrently is safe.
+
+Sounds good.
+
+>>> +        // SAFETY: The specified order is zero and we want one page.
+>>
+>> This doesn't explain why it is sound to call the function. I expect that
+>> it is always sound to call this function with valid arguments.
+>>
+>>> +        let page =3D unsafe { bindings::alloc_pages(gfp_flags, 0) };
+>=20
+> How about:
+>=20
+> // SAFETY: Depending on the value of `gfp_flags`, this call may sleep.
+> // Other than that, it is always safe to call this method.
+
+Sounds good.
+
+>>> +        // INVARIANT: We checked that the allocation succeeded.
+>>
+>> Doesn't mention ownership.
+>>
+>>> +        Ok(Self { page })
+>=20
+> How about:
+>=20
+> // INVARIANT: We just successfully allocated a page, so we now have
+> // ownership of the newly allocated page. We transfer that ownership to
+> // the new `Page` object.
+
+Sounds good.
+
+>>> +    /// Runs a piece of code with this page mapped to an address.
+>>> +    ///
+>>> +    /// The page is unmapped when this call returns.
+>>> +    ///
+>>> +    /// It is up to the caller to use the provided raw pointer correct=
+ly.
+>>
+>> This says nothing about what 'correctly' means. What I gathered from the
+>> implementation is that the supplied pointer is valid for the execution
+>> of `f` for `PAGE_SIZE` bytes.
+>> What other things are you allowed to rely upon?
+>>
+>> Is it really OK for this function to be called from multiple threads?
+>> Could that not result in the same page being mapped multiple times? If
+>> that is fine, what about potential data races when two threads write to
+>> the pointer given to `f`?
+>>
+>>> +    pub fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) ->=
+ T {
+>=20
+> I will say:
+>=20
+> /// It is up to the caller to use the provided raw pointer correctly.
+> /// The pointer is valid for `PAGE_SIZE` bytes and for the duration in
+> /// which the closure is called. Depending on the gfp flags and kernel
+> /// configuration, the pointer may only be mapped on the current thread,
+> /// and in those cases, dereferencing it on other threads is UB. Other
+> /// than that, the usual rules for dereferencing a raw pointer apply.
+> /// (E.g., don't cause data races, the memory may be uninitialized, and
+> /// so on.)
+
+I would simplify and drop "depending on the gfp flags and kernel..." and
+just say that the pointer is only valid on the current thread.
+
+Also would it make sense to make the pointer type *mut [u8; PAGE_SIZE]?
+
+> It's okay to map it multiple times from different threads.
+
+Do you still need to take care of data races?
+So would it be fine to execute this code on two threads in parallel?
+
+     static PAGE: Page =3D ...; // assume we have a page accessible by both=
+ threads
+    =20
+     PAGE.with_page_mapped(|ptr| {
+         loop {
+             unsafe { ptr.write(0) };
+             pr_info!("{}", unsafe { ptr.read() });
+         }
+     });
+
+If this is not allowed, I don't really like the API. As a raw version it
+would be fine, but I think we should have a safer version (eg by taking
+`&mut self`).
+
+>>> +        // SAFETY: This unmaps the page mapped above.
+>>
+>> This doesn't explain why it is sound.
+>>
+>>> +        //
+>>> +        // Since this API takes the user code as a closure, it can onl=
+y be used
+>>> +        // in a manner where the pages are unmapped in reverse order. =
+This is as
+>>> +        // required by `kunmap_local`.
+>>> +        //
+>>> +        // In other words, if this call to `kunmap_local` happens when=
+ a
+>>> +        // different page should be unmapped first, then there must ne=
+cessarily
+>>> +        // be a call to `kmap_local_page` other than the call just abo=
+ve in
+>>> +        // `with_page_mapped` that made that possible. In this case, i=
+t is the
+>>> +        // unsafe block that wraps that other call that is incorrect.
+>>> +        unsafe { bindings::kunmap_local(mapped_addr) };
+>=20
+> Why do you say that? The kunmap_local method requires that the address
+> being unmapped is currently mapped, and that pages are unmapped in
+> reverse order. The safety comment explains that the page is currently
+> mapped and that this method cannot be used to unmap them in anything
+> other than reverse order.
+
+Sorry it seems I thought that the safety comment ended after the first
+sentence. Can you (re)move that first sentence, since it is not part of
+a justification?
+The rest is fine.
+
+>>> +    /// Runs a piece of code with a raw pointer to a slice of this pag=
+e, with
+>>> +    /// bounds checking.
+>>> +    ///
+>>> +    /// If `f` is called, then it will be called with a pointer that p=
+oints at
+>>> +    /// `off` bytes into the page, and the pointer will be valid for a=
+t least
+>>> +    /// `len` bytes. The pointer is only valid on this task, as this m=
+ethod uses
+>>> +    /// a local mapping.
+>>
+>> This information about the pointer only being valid on this task should
+>> also apply to `with_page_mapped`, right?
+>>
+>>> +    ///
+>>> +    /// If `off` and `len` refers to a region outside of this page, th=
+en this
+>>> +    /// method returns `EINVAL` and does not call `f`.
+>>> +    ///
+>>> +    /// It is up to the caller to use the provided raw pointer correct=
+ly.
+>>
+>> Again, please specify what 'correctly' means.
+>=20
+> I will remove the "The pointer is only valid on this task, as this
+> method uses a local mapping." sentence and copy the same paragraph as
+> previously (without the `PAGE_SIZE` remark).
+
+Sounds good.
+
+--=20
+Cheers,
+Benno
 
 
