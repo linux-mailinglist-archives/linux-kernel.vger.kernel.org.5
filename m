@@ -1,149 +1,165 @@
-Return-Path: <linux-kernel+bounces-109883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A758688572C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:13:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FBA885751
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0C7CB22196
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE6601C20938
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F47855C3A;
-	Thu, 21 Mar 2024 10:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB07956448;
+	Thu, 21 Mar 2024 10:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JZzdcuzN"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T2QWm8qW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rzqqpvn+";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T2QWm8qW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rzqqpvn+"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C27273FE;
-	Thu, 21 Mar 2024 10:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1462125CB
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:18:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711015992; cv=none; b=TH+sVtalgr75oQSS8bFyUMwGyERupN7OlH9mMY9k5JiTIaDAt/hDTeQ8Q0+d7+ds4Qh0hwQG/asr/HasvuwqxzmEcQcl0kMFQUWzdMfJRZc30Bgou419uz9zWeSS44NzUBUyapIFpQtnfBjstEhclygsJcw8zIkqYEX63C4pN4U=
+	t=1711016318; cv=none; b=UBLWqs5qBAN2e+NMzgh8j3/q2TWjkemg3szIaYsuBYsce236b9U3olhUtcEDt0NExHJVQaCSxBrqtOTXAWX7HWeZK+ocm8Cfdv/cp/Boa5SCayS3ZKy36dG01c75orkBbs8VkgjazaWZm/VnODuql9YxCmwGPn09/ylL+LIVabw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711015992; c=relaxed/simple;
-	bh=NDlc9kSKVp6whfV6OCumf4TLoMiSy65wKZXhPwkDNls=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=d+D+mdUwqvZdUWe+/k7lxxHVyATiC9TVJLrnsOMQQmRsdNmqs7oxiHNDjL7rN9UAUOelr5WvxjzzE6LFqd3bCFQIPTUznmvzpgaSjZQvJc29jS+7fUQsHVq7m38dcmNPBXARMLQBVMAqXlEyc4ES8id5SWWCs54j1dal2v4Bbec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JZzdcuzN; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34169f28460so365166f8f.2;
-        Thu, 21 Mar 2024 03:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711015989; x=1711620789; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MitwkFHcwxqVaWGfFKUTbbx5/3olZ8yXIR5unmZmN/I=;
-        b=JZzdcuzNFJVzqPkPvynBmyyJKhKaFLc+xVsXrSLtkhGR12wN6iNztpuFoSgtA0ItaQ
-         mXX+yi/PeYb7W6eHjqb7FOXCr/C5YnhSPC7Y/P93PNhQz0EWMsIDtbbJTz9RgQNsmtkX
-         8VkIl4KQE95AdkUvi3iIK8PFdBN2OiBpLChwevE4tB2z7xoCkJUfZV7KP0KNqcKfp0F7
-         nb9LZQhSFev4z7XhPhpuRFbCOfqp7AqhL8Iwj0i+yoUyLX7z8ApnPQZBWo7e/clMWeRk
-         jzvEZ7Iw7L4W6QfWyIPmJjvhiqWOUsT9R/QCal5J64gplaED8n3npeXanvh8s86WQUdN
-         8m/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711015989; x=1711620789;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MitwkFHcwxqVaWGfFKUTbbx5/3olZ8yXIR5unmZmN/I=;
-        b=jCtvJVPEA8PX2iVFWirH4C/Hxe9xnyUXgymGnki2nX+daEhO8guRLtMtUGmGddAf/L
-         SFAAgb4qzAW2xAgrJ+JDAOgLxbxiQTDto2ZB+KJySwDm3JCsgEzaFJK6zLiWkVwCACEt
-         vrihI8Tfam3i8yEhroN0eb3IlQFg2A76rnXqYE7u8mucxqnmNGtJEUQDd4vGBiZ6QWxg
-         nCOrEj/Ok27EWqXTEHP4yHmkeka8+2u6wnyG6FvxfNaHuq+z3Vu7laH/Px7xBW/Gc2y6
-         4z06bZyde6rMsUqSgKHvA8HXGkYVblXE9TgX2kEnpRc1C0Wh35ldfFbtHClRinQmJYqN
-         6R+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXs6Zv6YFagURWdNdoOWHLyUjSbvOvwyyjbSSA6s7XM0/jMU5FdlPMpzdK2FiVFVJQIYhha00zQSExOfNSy5PvZhgXV2zeMT5b17dBjb8/Yn6yfH85e03854taDAjxt4EXe+i5l6Dfz6z1kmMGcEfqN7wtqUqBAuM81
-X-Gm-Message-State: AOJu0YwkOqU/C3wlgiWo7aygR5kNIm88HhZ0rap5rcd6K1oK8miJhhcH
-	wR6aClSnUr5+TFzpIING08pakApxWsdsquMeQjnrIWPLwengiNuP
-X-Google-Smtp-Source: AGHT+IH3lgtbtEkFdAZ5LS4VQ7Wsu2mG0uTJGuw0oiji2OqfMfgdDtslJiSxdtvEYObdfwPwln0zXw==
-X-Received: by 2002:a5d:5346:0:b0:33e:767a:c3a2 with SMTP id t6-20020a5d5346000000b0033e767ac3a2mr5429651wrv.17.1711015989199;
-        Thu, 21 Mar 2024 03:13:09 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id co14-20020a0560000a0e00b0033e052be14fsm3822595wrb.98.2024.03.21.03.13.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Mar 2024 03:13:08 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin"
- <hpa@zytor.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, Network
- Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf] bpf: verifier: prevent userspace memory access
-In-Reply-To: <ed5cozsc7mduzmgbwrlw3lou4tlb6zpivhs2xrqwgpq2rhvkue@l7aifknll4tb>
-References: <20240320105436.4781-1-puranjay12@gmail.com>
- <CAADnVQJ3o6DsURi=N_KXx+mbW9r7__3LrwYLyYwuoMOsqFHPkw@mail.gmail.com>
- <ed5cozsc7mduzmgbwrlw3lou4tlb6zpivhs2xrqwgpq2rhvkue@l7aifknll4tb>
-Date: Thu, 21 Mar 2024 10:13:06 +0000
-Message-ID: <mb61pzfursxjh.fsf@gmail.com>
+	s=arc-20240116; t=1711016318; c=relaxed/simple;
+	bh=KH1DAtbwkIgE/3yFCBobdyfmXqzoTQdnhdEFXA1kgxQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rxEA6WTfMuLso4hb86ybXyAzZ3Jpz5XHUdvYUb3rFKBHlLSutNTxgUkt95R4jVIfSCM10zPRRBPNhy3nEB3DQI1lKrTim+8KukpX+7fuw4g6lUx6vuRexquRjwGQXPV7273hOKUnw8V6upA6bqY8lB4eVAFuNNJ0ymdE4fDcbBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T2QWm8qW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rzqqpvn+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T2QWm8qW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rzqqpvn+; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BF3065CC22;
+	Thu, 21 Mar 2024 10:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711016314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
+	b=T2QWm8qWdk6yS4X/0bAANhZpcmr+2JyQFhimv/yIFExkpTnHDdB43ipDYO4xnHDE2Eo+BM
+	LVRonvW3qpfqGTy/a0m7aPHGHhMu6+cOMDRbwvcihlPYCiYT+xWJC5MyKdV03LezYoOINA
+	IFEbVz7wRXvF5sZkx6egYYxBGyVy+1I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711016314;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
+	b=rzqqpvn+tYK+d2QiZOvmmXyyvV6RGdAM1ciYMvgL9NcGS1Y4yc+X7YbNDpMVQjDqPFMML1
+	RnbR881FQSiyYCCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711016314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
+	b=T2QWm8qWdk6yS4X/0bAANhZpcmr+2JyQFhimv/yIFExkpTnHDdB43ipDYO4xnHDE2Eo+BM
+	LVRonvW3qpfqGTy/a0m7aPHGHhMu6+cOMDRbwvcihlPYCiYT+xWJC5MyKdV03LezYoOINA
+	IFEbVz7wRXvF5sZkx6egYYxBGyVy+1I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711016314;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
+	b=rzqqpvn+tYK+d2QiZOvmmXyyvV6RGdAM1ciYMvgL9NcGS1Y4yc+X7YbNDpMVQjDqPFMML1
+	RnbR881FQSiyYCCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B09113976;
+	Thu, 21 Mar 2024 10:18:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 011+D3oJ/GUBGwAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Thu, 21 Mar 2024 10:18:34 +0000
+Date: Thu, 21 Mar 2024 11:20:00 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: Muchun Song <muchun.song@linux.dev>
+Cc: syzbot <syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] kernel BUG in const_folio_flags
+Message-ID: <ZfwJ0JOgcMCTcSgZ@localhost.localdomain>
+References: <0000000000006cfe98061423cde7@google.com>
+ <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=T2QWm8qW;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rzqqpvn+
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.49 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-1.48)[91.54%];
+	 TAGGED_RCPT(0.00)[3b9148f91b7869120e81];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Score: -3.49
+X-Rspamd-Queue-Id: BF3065CC22
+X-Spam-Flag: NO
 
-Ilya Leoshkevich <iii@linux.ibm.com> writes:
+On Thu, Mar 21, 2024 at 05:49:49PM +0800, Muchun Song wrote:
+> There are some more page dumping information from console:
+> 
+> [ 61.367144][ T42] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888028132880 pfn:0x28130
+> [ 61.371430][ T42] flags: 0xfff80000000000(node=0|zone=1|lastcpupid=0xfff)
+> [ 61.374455][ T42] page_type: 0xffffffff()
+> [ 61.376096][ T42] raw: 00fff80000000000 ffff888015ecd540 dead000000000100 0000000000000000
+> [ 61.379994][ T42] raw: ffff888028132880 0000000000190000 00000000ffffffff 0000000000000000
+> 
+> Alright, the page is freed (with a refcount of 0).
 
-> On Wed, Mar 20, 2024 at 11:08:00PM -0700, Alexei Starovoitov wrote:
->> On Wed, Mar 20, 2024 at 3:55=E2=80=AFAM Puranjay Mohan <puranjay12@gmail=
-com> wrote:
->> >
->> > The JITs need to implement bpf_arch_uaddress_limit() to define where
->> > the userspace addresses end for that architecture or TASK_SIZE is taken
->> > as default.
->> >
->> > The implementation is as follows:
->> >
->> > REG_AX =3D  SRC_REG
->> > if(offset)
->> >         REG_AX +=3D offset;
->> > REG_AX >>=3D 32;
->> > if (REG_AX <=3D (uaddress_limit >> 32))
->> >         DST_REG =3D 0;
->> > else
->> >         DST_REG =3D *(size *)(SRC_REG + offset);
->>=20
->> The patch looks good, but it seems to be causing s390 CI failures.
->>=20
->> Ilya,
->> could you help us understand is this check needed on s390
->> and if so, what should be the uaddress_limit ?
->
-> s390x does not define ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
-> Userspace and kernel run in completely different and isolated address
-> spaces, so it's not possible to determine from a pointer value whether
-> it's a user or a kernel pointer.
-> But the good news is that whatever you deference without using
-> special instruction sequences will refer to the kernel address space.
-> So I wonder if we could somehow disable this check on s390x altogether?
-> And if we are not sure whether it's a valid pointer, use BPF_PROBE_MEM
-> as always.
+Yes, basically the page changed betwen folio_test_large() (returned true
+for PG_Head) and the call to const_folio_flags() (which now returned
+false for PG_Head).
 
-Thanks for the details. I understand that s390x doesn't need this extra
-check because all normal accesses are in the kernel address space and they
-will be marked with BPF_PROBE_MEM by the verifier if the pointer is
-untrusted.
+As David pointed out, Willy is working on making PageHutelb more
+robust [1].
 
-I have sent v2 of this patch with this check disabled on s390x
-https://lore.kernel.org/bpf/20240321101058.68530-1-puranjay12@gmail.com/
+ 
+[1] https://lore.kernel.org/linux-mm/20240314012506.1600378-1-willy@infradead.org/
 
-Thanks,
-Puranjay
-
+-- 
+Oscar Salvador
+SUSE Labs
 
