@@ -1,103 +1,154 @@
-Return-Path: <linux-kernel+bounces-110614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F064888614F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:53:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F92D886153
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB46E284DE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:53:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45342281D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:53:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F951134CFC;
-	Thu, 21 Mar 2024 19:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB42A134CD4;
+	Thu, 21 Mar 2024 19:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="qNIH0Hs0"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fAQkvuRD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73A013441C;
-	Thu, 21 Mar 2024 19:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E5E13442E;
+	Thu, 21 Mar 2024 19:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711050758; cv=none; b=hXefctsERmg/rGDyIKgzQwEmT5ao/aFovphGLwvbltkayWXAG4rJRCM9elGHW4BtlJeP+V3iKtBnKBo9LYdzgQS6IkDPVqzlZTsEVZBPMW+/txRGkRBIKRq3WtBf4x1U8FanB/qmQonhWHsonyP0/UT4r751n8SzWQ3G8/vL7O8=
+	t=1711050786; cv=none; b=euEIkqb8bwXmBY4j5ma2CSqooJH8HELWMgcLo+qCKIchjc+5NjyWlff43hKL9zuJP1jy698d8vuQBGnJwWD5JT3Iq02Q2YZJkz5tCawE8vLZnTiVvRpCw4csMd/DqPcu5UDh4qMGgstQ+otidfuaSEThD1wIsJHT3EYgIht554Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711050758; c=relaxed/simple;
-	bh=x9bF2GlKwBQBROkfQn8ZkL7g6dXhyRklXjeoJ7+o78Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=digEmqud/333ip89ZWFL+akeJYEsI6svcZK1rTirFmnTYZ3UPUt1J+gIBiwzd4uhtgDaT3Hn7SeKnAz2x1E+KFjnJSAHNC8l9IxmVFXK/eeJR0+sNlpHwRW6uXHJIU8mLJmvIhXhmeAQIzNqOZaLBospZWYBwGoHOkIO8+P9Kv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=qNIH0Hs0; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V0x2648xpz6Cnk8t;
-	Thu, 21 Mar 2024 19:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1711050744; x=1713642745; bh=x9bF2GlKwBQBROkfQn8ZkL7g
-	6dXhyRklXjeoJ7+o78Q=; b=qNIH0Hs0SVRamEYXBAlL3R8NxsWmvf0F4PHIjKf0
-	F60nOEwPPcs2nTqPPLGPAeHFPtUzTP6Gn/OMprkUlSoJNy9qyrZ8EQP9EEbKbDE3
-	fzs1DTU8ZQ9+lUVJySklU4z4ygGuvWVyGt7wdARk8OSbRif15zuiBgLWp7TybU3x
-	SHFhiEEKk5utahJQerMtwOg/siqOA/ra7Dv0RUUsykNAop28QxZ9yiN9XwThYUNR
-	h3/qESF2JBeIi/VOWiSVka58EbJP8YElNcTrBbA1FAAuHrVOAPItSZZSCv//fA+1
-	VJc9C1fmGJfgByVbHanmDRv0f5BxU3hZK8bUKEbHUhHPUA==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id daY4BxjVFOom; Thu, 21 Mar 2024 19:52:24 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V0x1w433Qz6Cnk8s;
-	Thu, 21 Mar 2024 19:52:20 +0000 (UTC)
-Message-ID: <2ed2dadc-bdc4-4a21-8aca-a2aac0c6479a@acm.org>
-Date: Thu, 21 Mar 2024 12:52:19 -0700
+	s=arc-20240116; t=1711050786; c=relaxed/simple;
+	bh=0AZsgEksMv0v7XeGuddRbuorgH0+GV74G/W/bjtGFUk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TFEq4UyELipmVWSVB3vKyvultijybfVXuljkEe1sexYoBPhIP8HJ+Oy0QCz+qY37TT1sKioemSUqu0rhjVMYDubO2p9r2i7nuGRJ80skYlLv5xk/+RabIlRJ9i3rdURR8eejC5Zu/Q6TMBPfPXcWqXhTdhXVm/i3Pi4hvsiu9XI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fAQkvuRD; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711050784; x=1742586784;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0AZsgEksMv0v7XeGuddRbuorgH0+GV74G/W/bjtGFUk=;
+  b=fAQkvuRDDmdDmsMAIroOiMv6OsnNxMz3hyC8F8AcgZU8XtcWtLIFJKb0
+   qA8JbWd+5F6Jew5GtwqNmVuuO29QcoVfVMPyeGojjKVP1cUaaRrJlh3zE
+   r8BrT/17fttRgc0u9kJuPvf3yg0R+Vt1Bs+A5O2gOTjsokFYl1bwyiZUe
+   wkkHR96qNlCfW1f2RnpTzzOVIRUETzcyAeP+6jb0pa6tr8HabCylCr58L
+   riCb3uyagLntFgbtWqA9EXQfUvx6omLdniF0ANzOMBQfCI4EQDqV3kjjJ
+   0Dp6VzhGWbjM3rtXM5JpYNqN0Uua5vzi1791aA5BUwzc9cRs8bYZxfMPI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="28541701"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="28541701"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 12:53:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="19285155"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 21 Mar 2024 12:52:59 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rnOTA-000Jjz-2l;
+	Thu, 21 Mar 2024 19:52:56 +0000
+Date: Fri, 22 Mar 2024 03:52:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
+	thomas.lendacky@amd.com, dan.j.williams@intel.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, graf@amazon.de, dwmw@amazon.co.uk,
+	bchalios@amazon.es, xmarcalx@amazon.co.uk
+Subject: Re: [PATCH v2 4/4] virt: vmgenid: add support for devicetree bindings
+Message-ID: <202403220322.EGtpD4Jw-lkp@intel.com>
+References: <20240321025105.53210-5-sudanl@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
-Content-Language: en-US
-To: Christian Loehle <christian.loehle@arm.com>,
- Qais Yousef <qyousef@layalina.io>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org,
- juri.lelli@redhat.com, mingo@redhat.com, rafael@kernel.org,
- dietmar.eggemann@arm.com, vschneid@redhat.com, vincent.guittot@linaro.org,
- Johannes.Thumshirn@wdc.com, adrian.hunter@intel.com, ulf.hansson@linaro.org,
- andres@anarazel.de, asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org,
- linux-mmc@vger.kernel.org
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
- <0dc6a839-2922-40ac-8854-2884196da9b9@arm.com>
- <c5b7fc1f-f233-4d25-952b-539607c2a0cc@acm.org>
- <2784c093-eea1-4b73-87da-1a45f14013c8@arm.com>
- <20240321123935.zqscwi2aom7lfhts@airbuntu>
- <1ff973fc-66a4-446e-8590-ec655c686c90@arm.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1ff973fc-66a4-446e-8590-ec655c686c90@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321025105.53210-5-sudanl@amazon.com>
 
-On 3/21/24 10:57, Christian Loehle wrote:
-> In the long-term it looks like for UFS the problem will disappear as we are
-> expected to get one queue/hardirq per CPU (as Bart mentioned), on NVMe that
-> is already the case.
+Hi Sudan,
 
-Why the focus on storage controllers with a single completion interrupt?
-It probably won't take long (one year?) until all new high-end
-smartphones may have support for multiple completion interrupts.
+kernel test robot noticed the following build warnings:
 
-Thanks,
+[auto build test WARNING on a4145ce1e7bc247fd6f2846e8699473448717b37]
 
-Bart.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sudan-Landge/virt-vmgenid-rearrange-code-to-make-review-easier/20240321-105317
+base:   a4145ce1e7bc247fd6f2846e8699473448717b37
+patch link:    https://lore.kernel.org/r/20240321025105.53210-5-sudanl%40amazon.com
+patch subject: [PATCH v2 4/4] virt: vmgenid: add support for devicetree bindings
+config: x86_64-randconfig-123-20240321 (https://download.01.org/0day-ci/archive/20240322/202403220322.EGtpD4Jw-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240322/202403220322.EGtpD4Jw-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403220322.EGtpD4Jw-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/virt/vmgenid.c:153:43: sparse: sparse: cast removes address space '__iomem' of expression
+
+vim +/__iomem +153 drivers/virt/vmgenid.c
+
+   133	
+   134	static int vmgenid_add_of(struct device *dev, struct vmgenid_state *state)
+   135	{
+   136	#ifdef	CONFIG_OF
+   137		struct resource res;
+   138		int ret = 0;
+   139	
+   140		if (of_address_to_resource(dev->of_node, 0, &res)) {
+   141			dev_err(dev, "Failed to get resources from device tree");
+   142			ret = -EINVAL;
+   143			goto out;
+   144		}
+   145	
+   146		if (!__request_mem_region(res.start, resource_size(&res),
+   147					  "vmgenid", IORESOURCE_EXCLUSIVE)) {
+   148			dev_err(dev, "Failed to request mem region");
+   149			ret = -EINVAL;
+   150			goto out;
+   151		}
+   152	
+ > 153		ret = setup_vmgenid_state(state, (u8 *)of_iomap(dev->of_node, 0));
+   154		if (ret)
+   155			goto out;
+   156	
+   157		state->irq = irq_of_parse_and_map(dev->of_node, 0);
+   158		dev->driver_data = state;
+   159	
+   160		if (request_irq(state->irq, vmgenid_of_irq_handler,
+   161				IRQF_SHARED, "vmgenid", dev) < 0) {
+   162			dev_err(dev, "request_irq failed");
+   163			dev->driver_data = NULL;
+   164			ret = -EINVAL;
+   165			goto out;
+   166		}
+   167	
+   168	out:
+   169		return ret;
+   170	#else
+   171		(void)dev;
+   172		(void)state;
+   173		return -EINVAL;
+   174	#endif
+   175	}
+   176	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
