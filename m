@@ -1,122 +1,151 @@
-Return-Path: <linux-kernel+bounces-109778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84236885591
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A655C88559C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B158282D86
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6593C282C97
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C37959147;
-	Thu, 21 Mar 2024 08:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310655A0FE;
+	Thu, 21 Mar 2024 08:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aTjTpQ7/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518405A0FE
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Cpt04Lry"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A3B2AF18;
+	Thu, 21 Mar 2024 08:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711009099; cv=none; b=UuRQztmborAsd7TKd+cyI0MGTSh08ow/BE3Y7qDq8OZognceKfdwNpsqSE/oleTUQr/rQ9+Td1pAcvPa8kDJQzbOT2KY3Br9niC/HBKhEIImb0X1SxLu+lhqNELrFQ2S3kuhrlnviJcwT7qplcL6gubfNpbCYmdUZjg+v37yEvk=
+	t=1711009446; cv=none; b=AMQkccvjbtLFlCKw+V8D8itpIUEGFcRMBaOxwxfBr3+8VZbOvQwP79aRS7Sys1CczkaxNug4vwlG7gBP5YLFgOTT0gMn/o+r4lmvezzlD5hgAkCVqu7XQw7kEDSsu+ydFfw04TRAnTUR53NLFipT2sZU9VLzDdHc9usJqfBnKyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711009099; c=relaxed/simple;
-	bh=tUl6Y+ILB3eCX9Bq6p+WZ/03L1ZXrx8Zy6xZm4TJ2Rg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BPVVLNaD0kRCMp4tkyXzbfACH9pSFqYzZQVteUEHQG1+tgIGLOfdfye+YrwwGuQC15boI14SrQTEtNSNEltypiPBwA+H77rZEc+jozhn3sFcv6C2ngp+v33tJ96ZR5hkPE9D9O0wKGl/yoZWrON9xccsF14Zxvw1C5k6pkLFj6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aTjTpQ7/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711009096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fNwara8hmM/oqZZWTbZfweFJpIhXMITtHmwHDwGJec8=;
-	b=aTjTpQ7/2IL0nIsYZbPSd/NLSsGn8FYe8OfN473HY9NGIqDO19XzZTMm8SGbMBZMQkXXd0
-	48wxtCP+ES88PkuiVL13ZeB+PkOwmTeWYglyzPOZmy6Y47iwbIOubUK8A39U5tmqsN7vIU
-	vFM4O60OELjZipfGrRtPwv+Rb2JrOvw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-wsHdh9YcM1OadUS2IBFShg-1; Thu, 21 Mar 2024 04:18:14 -0400
-X-MC-Unique: wsHdh9YcM1OadUS2IBFShg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A11E9185A786;
-	Thu, 21 Mar 2024 08:18:13 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.43.17.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F0A041C060A4;
-	Thu, 21 Mar 2024 08:18:11 +0000 (UTC)
-From: Artem Savkov <asavkov@redhat.com>
-To: Xu Kuohai <xukuohai@huawei.com>,
-	Xi Wang <xi.wang@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	linux-kernel@vger.kernel.org,
-	Artem Savkov <asavkov@redhat.com>,
-	Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v2] arm64: bpf: fix 32bit unconditional bswap
-Date: Thu, 21 Mar 2024 09:18:09 +0100
-Message-ID: <20240321081809.158803-1-asavkov@redhat.com>
-In-Reply-To: <20240313140205.3191564-1-asavkov@redhat.com>
-References: <20240313140205.3191564-1-asavkov@redhat.com>
+	s=arc-20240116; t=1711009446; c=relaxed/simple;
+	bh=+BH1D9XwwG7TGc7KaVa6ZJNH37YfmEFhUPnxCApI7fs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=qMYPaHkrzmhbCWXM4/g2vYpRkxOp+pXtMtjsMZF8xgbq9lv0i4u704u9NabMW9j7SjiY08ZurGILJdNDkAdvYzmMaICH3sB7bx/Y8xlfo0BPyi0rpYADPaMsRGzxaTcxb2htj1v2hUYz0FXQwjCEYJL9XjUDQlg3KHus9iHsEPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Cpt04Lry; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 8DD9920B74C1; Thu, 21 Mar 2024 01:24:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8DD9920B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711009443;
+	bh=XMjNN1pkCPSeOdEAarp9KWhuQJ8O/sk+OMdl/nM1iQ4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Cpt04Lryi9dMUY425YRABwxLGvNwraJUnawK3PjtA13q+v5YRZuNSL5u9mHNMINWr
+	 fwv2btTiNiW6Otk4KbRo2IlkGbzXE9P3APluSELafT8zJSjunIhR8rVv0lMZuLDrJm
+	 /j6JrAZC4Crt9NYUrqG97xevOoZb2pj8WEphzkJQ=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hpa@zytor.com,
+	x86@kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: ernis@microsoft.com,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Subject: [PATCH] x86/hyperv: Cosmetic changes for hv_apic.c
+Date: Thu, 21 Mar 2024 01:22:05 -0700
+Message-Id: <1711009325-21894-1-git-send-email-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-In case when is64 == 1 in emit(A64_REV32(is64, dst, dst), ctx) the
-generated insn reverses byte order for both high and low 32-bit words,
-resuling in an incorrect swap as indicated by the jit test:
+Fix issues reported by checkpatch.pl script for hv_apic.c file
+- Alignment should match open parenthesis
+- Remove unnecessary parenthesis
 
-[ 9757.262607] test_bpf: #312 BSWAP 16: 0x0123456789abcdef -> 0xefcd jited:1 8 PASS
-[ 9757.264435] test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 ret 1460850314 != -271733879 (0x5712ce8a != 0xefcdab89)FAIL (1 times)
-[ 9757.266260] test_bpf: #314 BSWAP 64: 0x0123456789abcdef -> 0x67452301 jited:1 8 PASS
-[ 9757.268000] test_bpf: #315 BSWAP 64: 0x0123456789abcdef >> 32 -> 0xefcdab89 jited:1 8 PASS
-[ 9757.269686] test_bpf: #316 BSWAP 16: 0xfedcba9876543210 -> 0x1032 jited:1 8 PASS
-[ 9757.271380] test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 ret -1460850316 != 271733878 (0xa8ed3174 != 0x10325476)FAIL (1 times)
-[ 9757.273022] test_bpf: #318 BSWAP 64: 0xfedcba9876543210 -> 0x98badcfe jited:1 7 PASS
-[ 9757.274721] test_bpf: #319 BSWAP 64: 0xfedcba9876543210 >> 32 -> 0x10325476 jited:1 9 PASS
+No functional changes intended.
 
-Fix this by forcing 32bit variant of rev32.
-
-Fixes: 1104247f3f979 ("bpf, arm64: Support unconditional bswap")
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
-Tested-by: Puranjay Mohan <puranjay12@gmail.com>
-Acked-by: Puranjay Mohan <puranjay12@gmail.com>
+Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
 ---
- arch/arm64/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm resending this patch because I have missed some email aliases in my
+previous mail.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index c5b461dda4385..c3ededd23cbf6 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -943,7 +943,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			emit(A64_UXTH(is64, dst, dst), ctx);
- 			break;
- 		case 32:
--			emit(A64_REV32(is64, dst, dst), ctx);
-+			emit(A64_REV32(0, dst, dst), ctx);
- 			/* upper 32 bits already cleared */
- 			break;
- 		case 64:
+ arch/x86/hyperv/hv_apic.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
+index 5fc45543e955..0569f579338b 100644
+--- a/arch/x86/hyperv/hv_apic.c
++++ b/arch/x86/hyperv/hv_apic.c
+@@ -105,7 +105,7 @@ static bool cpu_is_self(int cpu)
+  * IPI implementation on Hyper-V.
+  */
+ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+-		bool exclude_self)
++			       bool exclude_self)
+ {
+ 	struct hv_send_ipi_ex *ipi_arg;
+ 	unsigned long flags;
+@@ -132,8 +132,8 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+ 	if (!cpumask_equal(mask, cpu_present_mask) || exclude_self) {
+ 		ipi_arg->vp_set.format = HV_GENERIC_SET_SPARSE_4K;
+ 
+-		nr_bank = cpumask_to_vpset_skip(&(ipi_arg->vp_set), mask,
+-				exclude_self ? cpu_is_self : NULL);
++		nr_bank = cpumask_to_vpset_skip(&ipi_arg->vp_set, mask,
++						exclude_self ? cpu_is_self : NULL);
+ 
+ 		/*
+ 		 * 'nr_bank <= 0' means some CPUs in cpumask can't be
+@@ -147,7 +147,7 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+ 	}
+ 
+ 	status = hv_do_rep_hypercall(HVCALL_SEND_IPI_EX, 0, nr_bank,
+-			      ipi_arg, NULL);
++				     ipi_arg, NULL);
+ 
+ ipi_mask_ex_done:
+ 	local_irq_restore(flags);
+@@ -155,7 +155,7 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+ }
+ 
+ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+-		bool exclude_self)
++			    bool exclude_self)
+ {
+ 	int cur_cpu, vcpu, this_cpu = smp_processor_id();
+ 	struct hv_send_ipi ipi_arg;
+@@ -181,7 +181,7 @@ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+ 			return false;
+ 	}
+ 
+-	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
++	if (vector < HV_IPI_LOW_VECTOR || vector > HV_IPI_HIGH_VECTOR)
+ 		return false;
+ 
+ 	/*
+@@ -218,7 +218,7 @@ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+ 	}
+ 
+ 	status = hv_do_fast_hypercall16(HVCALL_SEND_IPI, ipi_arg.vector,
+-				     ipi_arg.cpu_mask);
++					ipi_arg.cpu_mask);
+ 	return hv_result_success(status);
+ 
+ do_ex_hypercall:
+@@ -241,7 +241,7 @@ static bool __send_ipi_one(int cpu, int vector)
+ 			return false;
+ 	}
+ 
+-	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
++	if (vector < HV_IPI_LOW_VECTOR || vector > HV_IPI_HIGH_VECTOR)
+ 		return false;
+ 
+ 	if (vp >= 64)
 -- 
-2.44.0
+2.34.1
 
 
