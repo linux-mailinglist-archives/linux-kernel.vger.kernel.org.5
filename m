@@ -1,89 +1,99 @@
-Return-Path: <linux-kernel+bounces-110200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7AD885B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:09:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37128885B70
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66CBE286DA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:09:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69D191C21F24
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B206086241;
-	Thu, 21 Mar 2024 15:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UhF4jUSr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4604C86249;
+	Thu, 21 Mar 2024 15:10:32 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011AE85943;
-	Thu, 21 Mar 2024 15:09:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5A585943
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033777; cv=none; b=X2apdffCrs1yvSwrgeJ9X8GeWlGJJqE9J01Jq7nIAcx6srflqyleERwlL95jUe9qpPwB8YL7t6HCoN2YHHaAfs5YJRopsLIbc7VFT+vxZ1g8MF/zR+XuAtn0xO6THdODk7ZDW7pryi9pn8c6r2lcaJ4zbMk3JG8L/5EzuzNh2mE=
+	t=1711033831; cv=none; b=ce0fotZOS6VHbN+4N/2NukUcedGAZGlkSz7owG6hSYZS1siE/WfX0AyPG4rFOvtesA7ypzp9j7jsfGVMiiB6Fh41Eg7D/ZRF6ZEtXJ6aIo1fob8QbGKOUPYK7iiWA6yYjN8XrbGhax1ZIEPWpkz+1fLhbwGswiWgT4i/xSfCygA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711033777; c=relaxed/simple;
-	bh=G6NTJt7joh2QpS7GqQPcdEuL7u8Et9P+QNk32/jLYpU=;
-	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=QF8olpmMttj89M+GKeuCaxJl56bM3Uh5yXaBecdE7MMfnLHd2zhjWyDHGA3k+/DCM1T2kVLxvFAB6qY+aXXxN6rQa94Dm2kyA1QMZpnNBLbyrCiVRAeqOC+WNRd66ikjJSHaA0DTR6OU7nkKoco9D4qNu9+Lrtn9fSnZLNN1Sc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UhF4jUSr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15787C433F1;
-	Thu, 21 Mar 2024 15:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711033776;
-	bh=G6NTJt7joh2QpS7GqQPcdEuL7u8Et9P+QNk32/jLYpU=;
-	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=UhF4jUSrSYeHjbQJYC6o8CrUYZzhIXPYMqF2agwKGGPwKAvgjwXmg4k/3SP1aZY9y
-	 M3UlBEyWsshsaL564wcKgUTrxx6Ogi+MudSF7fWrz37OcS3PZu4aF+sESH7h9tqJGX
-	 sWP5NR2w4TZ7dquuQGjRTU/zaXSuE2OIaG+KP1tngGSsNc9Zn5ykSFiqXW0kVvtz8C
-	 5CgasnTuVk7i0BlEsunY0mNWOQAktV0Kh5haPE8fI1Hya0ThYEi0QNtSB7OjbJ49ph
-	 75AlOTMX307Py4sfpTUP0xlQy20SPjPcPUIlbt3uQ5hz3TzPS8UzP5cKsJ926NtKmJ
-	 Ptuatsy0cm51A==
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1711033831; c=relaxed/simple;
+	bh=lkwGELEVRrIIvXlvXJsBZZkp2IgOovTNvk11SNLj5tk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DNMI7C6VZYqJVqtnknznRMomRtnyPj5PjF5WbNum7sQr31JUT6/dFHjSDUAZvrDU9dUkkyFPT/MH+cYlppnqG5A8ioUYARBjBpJ9PAkcfkn3cJiaUXzDi6axihHhjwgbKIEVN9muA7FDaAA6+q0rWP9qFmzdrmykZAa440EgBw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cbf3ec6a96so199027539f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:10:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711033829; x=1711638629;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mt2HNZyZoapYjaOUsclhOl7e3kA64Zv5KEZzZn4Zy4o=;
+        b=t+j3V5wwyGRNSBS2zJblPHcpBdr15LJ57R9CRDiO7zmi3VDIQ42PGk2RxRurN0mkVx
+         AVGa/BAACH+PeaoEi8bCAj7Fh7QEF0NK5XqmPCmX/FBDgIw8Ab470ZsPpEpscRxS108T
+         uZo4lJicplaQF5Y46q3P7uKNro6xHDeTcqKzRH2FkfjZ6GLHOft6Ost5S/L+3hB2D3mI
+         /zBSPLGXj5BGfv0QFUXxEVnzEJttUJqzdNF7WSycPqyemlfWh1ULcOYfS54XyKe8LUEu
+         Nc85zkRIy9gY+lf7kQRiIBWqBckCSGF6juZsA++X634iKeZKs4dT1B9f24pWw5otfwIp
+         fcpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU6PQw+lqgCGdaOhI78XxOK43Nfat5dXnMIOwkEtorqGqBjsJyDXR1tmnbY7nFkpw3F5ifOINgSTNWnocjwMafmNZB453ZVthxj8Yri
+X-Gm-Message-State: AOJu0YxoColO6qxTyO9XqAsX5jR0P4M2DWp01Ygax7h3gpsb1Drj4QZq
+	6wJZlOQqVR0et5S2MXAEG1Mi4rgbrppFbwGR4BHeYaU4Gh7W4iyOwXvyuw/X/8Ei5MxYKFAecia
+	Rxm2jW5aYb1O2K4UZWKsqKGzTOCKg1tD+Dl8Qb/GcgFHLq6biOnU9NqI=
+X-Google-Smtp-Source: AGHT+IEKMhB9ZG2lXARfsTj9O9X+nYpyS5T7vlLFwtRWGNc7OzuulrlNwf0KpGrcMFM+ugXTAm+ECMn7rUGaHfpRvo4Nai1LtKz5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wifi: qtnfmac: allocate dummy net_device dynamically
-From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240319172634.894327-1-leitao@debian.org>
-References: <20240319172634.894327-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Igor Mitsyanko <imitsyanko@quantenna.com>,
- Sergey Matyukevich <geomatsi@gmail.com>, kuba@kernel.org,
- keescook@chromium.org,
- linux-wireless@vger.kernel.org (open list:QUANTENNA QTNFMAC WIRELESS DRIVER),
- linux-kernel@vger.kernel.org (open list)
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <171103377318.103792.6654245785464194890.kvalo@kernel.org>
-Date: Thu, 21 Mar 2024 15:09:34 +0000 (UTC)
+X-Received: by 2002:a05:6638:13c3:b0:477:307d:abd9 with SMTP id
+ i3-20020a05663813c300b00477307dabd9mr163534jaj.0.1711033829646; Thu, 21 Mar
+ 2024 08:10:29 -0700 (PDT)
+Date: Thu, 21 Mar 2024 08:10:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d6f3a06142d1b9c@google.com>
+Subject: [syzbot] Monthly xfs report (Mar 2024)
+From: syzbot <syzbot+lista1e41fd3fe8612aa32c2@syzkaller.appspotmail.com>
+To: chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Breno Leitao <leitao@debian.org> wrote:
+Hello xfs maintainers/developers,
 
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
-> 
-> Un-embed the net_device from struct qtnf_bus by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at qtnf_pcie_probe(). The free of the device occurs at
-> qtnf_pcie_remove().
-> 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+This is a 31-day syzbot report for the xfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/xfs
 
-Patch applied to wireless-next.git, thanks.
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 7 issues are still open and 20 have been fixed so far.
 
-61cdb09ff760 wifi: qtnfmac: allocate dummy net_device dynamically
+Some of the still happening issues:
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240319172634.894327-1-leitao@debian.org/
+Ref Crashes Repro Title
+<1> 604     Yes   KASAN: stack-out-of-bounds Read in xfs_buf_lock
+                  https://syzkaller.appspot.com/bug?extid=0bc698a422b5e4ac988c
+<2> 14      No    possible deadlock in xfs_ilock
+                  https://syzkaller.appspot.com/bug?extid=d247769793ec169e4bf9
+<3> 8       No    possible deadlock in xfs_qm_dqget_cache_insert
+                  https://syzkaller.appspot.com/bug?extid=8fdff861a781522bda4d
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
