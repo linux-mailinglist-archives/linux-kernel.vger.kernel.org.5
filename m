@@ -1,86 +1,201 @@
-Return-Path: <linux-kernel+bounces-110599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD9488611C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:35:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FED8860F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:29:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32EC1F21DAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:35:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3831A283669
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8453135A65;
-	Thu, 21 Mar 2024 19:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C778A13440B;
+	Thu, 21 Mar 2024 19:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="FNpaZYZ3"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="J5hTRsz2";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sbo62S3D"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BE41350D8;
-	Thu, 21 Mar 2024 19:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45130383A4;
+	Thu, 21 Mar 2024 19:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711049668; cv=none; b=Cn4VUBjpmybpLL+H1xCOSCoFlQ0sULuXk40cNscIakrVX1+RnVd7TmaFYa0lJPK8NqLiXevbGlzlmwnDMByd3ZS3dxPYdt+rZF1cD+rcnrV6GqAWfSjEKt8SBo83T7mKJHhGA0W/6UTkdq6FKmvBmblbeaesvN/XQQApsXqFGlE=
+	t=1711049334; cv=none; b=L2mX/wjnEKNuEzA0hnDs5ieLnO3+575z69R4ALsEtcYNGULUU6E2rk4fbzRDKAwFa4rNYfoGY2SThAeX2L24uc6qi7r5N2ZX8YV4dCO+SxSKG4tD+kSFBX3Cl5JAhoB8+NklUfNTk8xFzrUFL4y0g2JiscXxT2qTLD96jsNyuKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711049668; c=relaxed/simple;
-	bh=2TGyXt9LLGvKUhdncEm/RUgIXkLTtUF74W253pT6vZs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CQQrtP5ly6sr2KhmjM6wWt5g7mPzRgv8UBck3ds4o/JuZbG4bSC6bLoz99alrBqCguoVervIVYqyTbj6TFWdhBxD7IiUQUFettH1nI0oUO6kVZxI2QtA2WCayEhT9W70GFHmzVG2wG6zIE/8zMaSyIpiEQkUWjLp75+2BFD/nv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=FNpaZYZ3; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id a12ad0389b7fd623; Thu, 21 Mar 2024 20:34:18 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 53FC766B8D7;
-	Thu, 21 Mar 2024 20:34:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711049658;
-	bh=2TGyXt9LLGvKUhdncEm/RUgIXkLTtUF74W253pT6vZs=;
-	h=From:To:Cc:Subject:Date;
-	b=FNpaZYZ3no2oxb91IyuC80QoQKzdpU0SQ+4cJc2vlCgZJng/fZGhNIs+tQXwuUtNX
-	 noRUo1eHW/ots+l/uub6pP3Nt/bV7wqGzOGcJ+BEf6NizjhhurCV8sZoXr5PkEn2N1
-	 MN3faStNm7zvZ7zbW3BrmdWrgA5a7BtiQuud+CO9/tDz4RLI7jmyhxOuKavOHfPmLQ
-	 Ws9+v/zZiHxyn0NPuKF91c4dwt//9G5DMVja2ouUyJBLSYedogvxpeI9ZRiKgz29xu
-	 vLI6HPAcIpx7l+w3NA5Qq6O451lXMxT7laTwIffOwPZXFAoqNPOlOZkSJ6r1y/fV07
-	 QKeXv+uapvZlA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v1 0/5] intel_pstate: Some code cleanups,
- mostly related to concurrency
-Date: Thu, 21 Mar 2024 20:28:25 +0100
-Message-ID: <12409658.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1711049334; c=relaxed/simple;
+	bh=+HfeYKVj40c/2f1PLoMFV40ylLLkAUWKHF/jm55a6ks=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=aGadZzzsx2Dm3pphx5Pde1zMr/eq1AszT3lSoqeZj0xkVLBVaKm/9fSCQJV00XvkTashEmhnJhsvckBOADQtfOcjw2cYYazhOncJt/jqnFfFkgNqb8bi3i00IPAAp2aw20wD3OxcCtzKnVfFgKWVss3Zz75lekQ+AhT4PQRbKbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=J5hTRsz2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sbo62S3D; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 21 Mar 2024 19:28:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711049329;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iJo4O80+v+kL2DH6Bjx3amWedhVg5KvDDDWnG1/kmDY=;
+	b=J5hTRsz232CvVoG+IeI/qQDdE0a90l1+WWyDqYYsSq6nx+8bVD9OKxtRC3IFq/bssSsQ2+
+	wX/GC+QftgbiqPtOk1m3gAGBZ7wqRoNIbncfzxmhyuXYFfZU6Tfsugl4aJesZcttIjAIRm
+	AIwBy+bml4E8gTWQ9wOa7aDBXRO0IqtqkW6MxM9DPRNU49E84XwOiwPowIUDsozQO7ofba
+	Gm0atHaN7cD2VIbphUwqmgBerA2wNePdluh9GJcvRB6uxXbXBuMpU278BOsMvSFd8g8AQF
+	84L2dsbhiDKPFrx7nj5xRvBItup3BD+tyVTQYfKhKJaKUdI9PwAsTEgdVlANaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711049329;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iJo4O80+v+kL2DH6Bjx3amWedhVg5KvDDDWnG1/kmDY=;
+	b=sbo62S3DnDiowNfCTMGsepGVaw+2OneGnBhGesdXxobQw17tcA4IJIpt4KZeqpquNbX49R
+	97Sw9w6DLOrTWKCw==
+From: "tip-bot2 for Brian Gerst" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/boot: Simplify boot stack setup
+Cc: Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Uros Bizjak <ubizjak@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240321180506.89030-1-brgerst@gmail.com>
+References: <20240321180506.89030-1-brgerst@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrleejgdeiiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeffffffkefgheehffelteeiveeffeevhfelteejvddvieejjeelvdeiheeuveeuffenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Message-ID: <171104932866.10875.947190714531211341.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi Everyone,
+The following commit has been merged into the x86/boot branch of tip:
 
-This series consists of a few cleanups of the intep_pstate driver, mostly
-related to spinlock locking and synchronization.
+Commit-ID:     2cb16181a1d1f93a88f2b4640e7638fc0549da93
+Gitweb:        https://git.kernel.org/tip/2cb16181a1d1f93a88f2b4640e7638fc0549da93
+Author:        Brian Gerst <brgerst@gmail.com>
+AuthorDate:    Thu, 21 Mar 2024 14:05:06 -04:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Mar 2024 20:17:54 +01:00
 
-The patches are not expected to alter functionality in a visible way.
+x86/boot: Simplify boot stack setup
 
-Please see individual patch changelogs for details.
+Define the symbol __top_init_kernel_stack instead of duplicating
+the offset from __end_init_task in multiple places.
 
-Thanks!
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Uros Bizjak <ubizjak@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Link: https://lore.kernel.org/r/20240321180506.89030-1-brgerst@gmail.com
+---
+ arch/x86/include/asm/processor.h |  6 ++----
+ arch/x86/kernel/head_32.S        | 11 +----------
+ arch/x86/kernel/head_64.S        |  2 +-
+ arch/x86/kernel/vmlinux.lds.S    |  3 +++
+ arch/x86/xen/xen-head.S          |  2 +-
+ 5 files changed, 8 insertions(+), 16 deletions(-)
 
-
-
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 811548f..7fa01d9 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -636,12 +636,10 @@ static __always_inline void prefetchw(const void *x)
+ #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
+ 
+ #else
+-extern unsigned long __end_init_task[];
++extern unsigned long __top_init_kernel_stack[];
+ 
+ #define INIT_THREAD {							\
+-	.sp	= (unsigned long)&__end_init_task -			\
+-		  TOP_OF_KERNEL_STACK_PADDING -				\
+-		  sizeof(struct pt_regs),				\
++	.sp	= (unsigned long)&__top_init_kernel_stack,		\
+ }
+ 
+ extern unsigned long KSTK_ESP(struct task_struct *task);
+diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
+index b50f364..a9de527 100644
+--- a/arch/x86/kernel/head_32.S
++++ b/arch/x86/kernel/head_32.S
+@@ -44,9 +44,6 @@
+ #define X86_CAPABILITY	new_cpu_data+CPUINFO_x86_capability
+ #define X86_VENDOR_ID	new_cpu_data+CPUINFO_x86_vendor_id
+ 
+-
+-#define SIZEOF_PTREGS 17*4
+-
+ /*
+  * Worst-case size of the kernel mapping we need to make:
+  * a relocatable kernel can live anywhere in lowmem, so we need to be able
+@@ -488,13 +485,7 @@ SYM_DATA_END(initial_page_table)
+ 
+ .data
+ .balign 4
+-/*
+- * The SIZEOF_PTREGS gap is a convention which helps the in-kernel unwinder
+- * reliably detect the end of the stack.
+- */
+-SYM_DATA(initial_stack,
+-		.long init_thread_union + THREAD_SIZE -
+-		SIZEOF_PTREGS - TOP_OF_KERNEL_STACK_PADDING)
++SYM_DATA(initial_stack, .long __top_init_kernel_stack)
+ 
+ __INITRODATA
+ int_msg:
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index d8198fb..b115268 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -66,7 +66,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+ 	mov	%rsi, %r15
+ 
+ 	/* Set up the stack for verify_cpu() */
+-	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
++	leaq	__top_init_kernel_stack(%rip), %rsp
+ 
+ 	/* Setup GSBASE to allow stack canary access for C code */
+ 	movl	$MSR_GS_BASE, %ecx
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 56451fd..91085c3 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -172,6 +172,9 @@ SECTIONS
+ 		/* init_task */
+ 		INIT_TASK_DATA(THREAD_SIZE)
+ 
++		/* equivalent to task_pt_regs(&init_task) */
++		__top_init_kernel_stack = __end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE;
++
+ #ifdef CONFIG_X86_32
+ 		/* 32 bit has nosave before _edata */
+ 		NOSAVE_DATA
+diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+index 04101b9..758bcd4 100644
+--- a/arch/x86/xen/xen-head.S
++++ b/arch/x86/xen/xen-head.S
+@@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
+ 	ANNOTATE_NOENDBR
+ 	cld
+ 
+-	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
++	leaq	__top_init_kernel_stack(%rip), %rsp
+ 
+ 	/* Set up %gs.
+ 	 *
 
