@@ -1,411 +1,205 @@
-Return-Path: <linux-kernel+bounces-110782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F5C58863E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:10:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAA78863E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57060B21A31
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:10:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C2931C21D48
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5E7B669;
-	Thu, 21 Mar 2024 23:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED95114271;
+	Thu, 21 Mar 2024 23:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y7C/EAKo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dmY/gsQu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D238BFD;
-	Thu, 21 Mar 2024 23:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711062622; cv=none; b=YaISlXg/VynuceVZhAqqU08phz5Nbdn9nXLUCiXLdQ0AGhbaNNWbKcFR4XjDDKSeekHzwAsp2FK/COIJ1NO+ogHkNGiiDNwAFLaaAXqzn0thZbGA9AM1IuKvwt5+wBz6naAZVQgBcY6N8dllmA54UlVjbxl26TBCb1BQnTSQXeA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711062622; c=relaxed/simple;
-	bh=Syj3VIsbBHyNODRuAcpAPAnpfPox+6CfQY/gUxvqRfs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VOBid51NvlsUO0ND2Vsrze2Fs0fk535TT/pbva2/bnhMnIJo/93MhlfeZPjiEBvXnYPLNRer1koekj/ATEDK2c2pc7vk1oZJgsDYrEZFlp9peXJaLlj9GBkwJqzwzMljTqAgIVkYX16/NYRj7nropg0hnwjdBN4YPirLg7Hdrds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y7C/EAKo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EDDC433F1;
-	Thu, 21 Mar 2024 23:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711062621;
-	bh=Syj3VIsbBHyNODRuAcpAPAnpfPox+6CfQY/gUxvqRfs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y7C/EAKoe5psO3Rz+5pmEOOSZjeGKAu5uygqUpHmccnNhpXmVNkVtt0IDme9MgOj2
-	 4AUD7d3EoYRG8pIVy4lG3LTnr8aLhG+WbVCzBxzFEmeVeHWuuRQaYh21BWw+Tg1ByY
-	 Z3rS04HcTBw5X7TiYhGWy/IkZXJX4IZVUG9WUVUC53gYO94iQOBs2Tunx8U3AmX8aH
-	 rOywz64c3KTxpk7s8RsvG1FouZ75uGrAKNPZTeueY0ZmAvYAvrPmtEMc0E5C0yGEGE
-	 h4mKXHOsmWBMKWxaq88p4lH/tHlLV8WXLZQ/TkE6awIXp0ukoco8+xNdLWd2V10lmW
-	 7QVfDJgXTSbuw==
-From: SeongJae Park <sj@kernel.org>
-To: "Prasad, Aravinda" <aravinda.prasad@intel.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	"damon@lists.linux.dev" <damon@lists.linux.dev>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"s2322819@ed.ac.uk" <s2322819@ed.ac.uk>,
-	"Kumar, Sandeep4" <sandeep4.kumar@intel.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	"Hansen, Dave" <dave.hansen@intel.com>,
-	"Williams, Dan J" <dan.j.williams@intel.com>,
-	"Subramoney, Sreenivas" <sreenivas.subramoney@intel.com>,
-	"Kervinen, Antti" <antti.kervinen@intel.com>,
-	"Kanevskiy, Alexander" <alexander.kanevskiy@intel.com>
-Subject: RE: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
-Date: Thu, 21 Mar 2024 16:10:19 -0700
-Message-Id: <20240321231019.81064-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <MW5PR11MB5907D65A7557AA1381B477B0F2332@MW5PR11MB5907.namprd11.prod.outlook.com>
-References: 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5070279CB;
+	Thu, 21 Mar 2024 23:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711062764; cv=fail; b=GRruwSvXhYxySuSZW+vfD3cuLAu+haxdBv9Tz/AhqOB8JDAGlLhWQMG77I7dWwBos7dHaKWaz2nzyKNU//IBz7x3RVjaZRHpEyyH4igCKMv2Qp0/aDsmpNuB1uUUZCrrBnnvk2N967eNm6eu00ulAIqPd9IN1lYFQQX+64ncWm8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711062764; c=relaxed/simple;
+	bh=+47F1NXJ/mSVuETkb7qqHj3gQi/XrSX0TnCO5OfBuao=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CpWLvEgZLsEbwG7uPPLKBd46wB8kzBEFoYnLSAxmkUi0n3j0JFZ50YQ3p8v4ORpuFDukR7Kbfp7YSktDaxKlS6JVXGQiNpPzQVTr0h1ifV7PiJKqAspDCqpPVKlakoTxeWVBX8a1dEM29OsCy3aPEpO6QXXtQkj8gmw1AQ4UIyM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dmY/gsQu; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711062763; x=1742598763;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=+47F1NXJ/mSVuETkb7qqHj3gQi/XrSX0TnCO5OfBuao=;
+  b=dmY/gsQuBNfRZfLUhDFjkZOLIK/7v5C3BABnwN7Z1FQQQ16Oria/onGJ
+   JhiNDMuUhX9G6i0sS+O4PcVy8Dgif0T6UnnK4ZmKZ48QPLe61c4ZB7Gf+
+   rHjKMTPR6PDQURMgWgT1r33wvY60sLM7eNquNyNCmdvG6MK7EFaXuj+PY
+   ckbGYO3oZ0IRdCqo2r0Gk7TFXAvZJm5oe4FzdqNx0kPFCcvJnqnYMc9XV
+   rijPlbOsHwB09aay4Jx2TxvPoMlBl3A5as6mSkavQhL728Q1jFfaZIEvA
+   3ul6tsZ6h4ILOdYY2VrAl2mOpEUosKZVIX2FdRW4xhE7VCrgscoqWRb2I
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="23545250"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="23545250"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:12:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="15098913"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 16:12:41 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 16:12:41 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 16:12:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 16:12:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mFD2I28IB3xFTBLm7WlMWQERvkaiDo8njgeP0huuNgG4zL06HcoTw8th3ATDJn35hdWpu0kmJjOIZY0jbuJ7NqdBurMMGmzWojKQdwNfj48wHQ1UFRfOcGC2n5y6+cmGlDV2CjHM+yTWWlT8z65/aUcBlKzVf0F53f6vmwNrXu/qM6APN5MockxNZ0c99n3EmwKc9TqsRcUIreTJhRXRJBvpMHP1gnHGDDasUO/yEDIjh0aoW6ijUtUSjniLhOn4KTvqZxPr8uhn9BTBgqo3ZPQJdDUUaANizE+25H8jBUz2kPYOFS8QnscLisqf/D7r7VXnMjqzK9L2QL93njy+8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+47F1NXJ/mSVuETkb7qqHj3gQi/XrSX0TnCO5OfBuao=;
+ b=OnmQOJn+boIkiRxARt6qP7EyhaQh9pp57OU9e/Z5W2zcPf3gbj5A+GAZdqmz+p3vZ7KJ3Mg4M4zDBkex/EHUS7jdxt4aw7VH+wm+qH6Dqw3DAvF+zgAM9dAxwEZ4vKI2eKUz0lDGrAcE/RQROAQpG3LoUeU8Olm7HxV5NhWtRwI/rzJtuQ30IsPk+btSMF0E0YDDfSGa1DPJORX/eiGCKkbw/nTPaKH+HXJnzym2pU9v7zmd1/H+Xz21pawGra2f13UiPX5SBuAQyPsKa05LEDaxnK2xyxf2lfDCBDEZ4ehZySj5xv4WZlkLGwz4gZ3euY0vXQe0pdE97AHNJDiYug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by CH3PR11MB8435.namprd11.prod.outlook.com (2603:10b6:610:169::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Thu, 21 Mar
+ 2024 23:12:03 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795%5]) with mapi id 15.20.7409.023; Thu, 21 Mar 2024
+ 23:12:02 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Yamahata,
+ Isaku" <isaku.yamahata@intel.com>
+CC: "Zhang, Tina" <tina.zhang@intel.com>, "seanjc@google.com"
+	<seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Huang, Kai"
+	<kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com"
+	<sagis@google.com>, "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>
+Subject: Re: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
+ KVM_SET_CPUID2
+Thread-Topic: [PATCH v19 130/130] RFC: KVM: x86, TDX: Add check for
+ KVM_SET_CPUID2
+Thread-Index: AQHadnriF1ZBxh+AQEWxyxeO2jbjmbFC3WOA
+Date: Thu, 21 Mar 2024 23:12:02 +0000
+Message-ID: <e1eb51e258138cd145ec9a461677304cb404cc43.camel@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+	 <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
+In-Reply-To: <d394938197044b40bbe6d9ce2402f72a66a99e80.1708933498.git.isaku.yamahata@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CH3PR11MB8435:EE_
+x-ms-office365-filtering-correlation-id: afa76212-605f-4fe5-f5a8-08dc49fc5169
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bL5DXaGIBuM/Yyggyp10UQiZwW81mYgKblqMdssQ/6fvgRfOVYltdAMx6jpDaif2qhecZPwgsjFMDYcvF1cKzJ0P5B/KzAkGUkdDAotfBij9bYwQktmFvaA/ZFMzCLBrePSwvWIJmYM+UR69Z4r3hwC5Z405VuIbhK2DRkWFgskxiGhEOmenoogwW0GCfanKqsQq4iFan+4KAIzvUfY0gxgoCyBNWnhOSnxw88S/nI2joSUw1ct4+MDROqe7wSzwwLPkrXAainX59bbnzHcBCrG0JzgLVBFW1sQNSYzNYk5rrvkXZuyZnMSKNUY2e+7Wzi3TPuZgixbUVWSio0faQMJcaISfjQLxr0mfRAWYWWBLCDWIderB0kp3WmnNx3PW8m8yvXXJCdNKSopWlTcoruSltm30vODMhOZpg7h5A8Uw9v+gBjlaFxg1mRVla6L6PubqCRxqG5EyaU7uslghhHWVkkxaStME6xJ7OgCeumG/K3IVnszrn4gEUFS17tmFqi2p2FXcluYbtxjQl3z4roGCAdunV2JnuXa2Wsm7f4N6DJMOCzKqDlzd5WhAuzBvKWjrhQiFg34SCa4UtuLjVUXb0aVRNl8ZCYFLHqoxErgR1w/eRi6a8/s8V2Bs6i1ltqq7B7yvJuAbSaEMuEp1T//NF4/jbNsfgZ2N1sf6D2N5oziQuXGh9yXz1VtQCG/cKccRihYI83UQucsroSL+L+/l0l71ZZBXuTAXDeHdsyI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V2dSZ1ZvcVMyL3lkRi9YSE8wQkx2TjBMbmxMNzFMcHVxeWxuMVFoOE1xWXFp?=
+ =?utf-8?B?MEU2RVY1WHp1cUIyQkRHWmx1c0sxUUZLUlVteGI2cllXb3N2WlU5TnZNYlF3?=
+ =?utf-8?B?MlRiVks2blVSRno3anQ0bFFzMXNoTlRaNTJJbDJSYmhXZ0xwdERkSGl4VzZZ?=
+ =?utf-8?B?a0FCYysxYXVMYm9sN1V6Q3ZvSFo0bUhjRkZ0RHRwbTV4YnplRVVSRTRnaDBk?=
+ =?utf-8?B?VjFpbGRmcU80dFE4UkI3amRXa0JwQzJVQ09pS00yK2ZTNEYzS2taWFFPN0oz?=
+ =?utf-8?B?UTZNeWd6Z1JQM0E5c3gzUTJ1QmJDcVFtZENPb3ltWUE1Ym1JcjZRb0llRmZw?=
+ =?utf-8?B?YjB2TjR6NTNuVmF6VWUyMUNQZHFnZ1NLNmdkN2taeFIrazg3ZFZRZlE5WkdN?=
+ =?utf-8?B?VWRIYzNndTlUTTd0aSt4NGsyMkhsL24rdzBnOGhGOWxjVi9mQndCaTZvZmJ6?=
+ =?utf-8?B?alI1TVRldVo0U082NVRJSFRSSjNPVkRweUpLRUZOT1VycC9Da1VnUjhLMnpv?=
+ =?utf-8?B?WlNwbDR5clhRcHF6bDg1VDlQZnlreFF3MUhDeVUxTmJYQm1xbjZNK1g0QWQ3?=
+ =?utf-8?B?UkJseldhVEVrbGE5Szc0WUVxRUtHa0hEbmdtSUhEeHNzWC85QlFERm0zWUxm?=
+ =?utf-8?B?RXBmdlEvaDRaYmV4MVV2blpnMlAxY3FmK1UyZW1yV3M0dVptMzlHNkI3N0Fs?=
+ =?utf-8?B?dlA1ckhBYzZHWndYYXRKaUJHcVVFa1R2TFZMSGlaZHFWcHJhWmc5TnQ3QUR6?=
+ =?utf-8?B?N1FWWmxzdWlGM0VUaXA3cVhESCtKWEh1M2hxS2lwcUxVemt0dGxsQkN6M3pY?=
+ =?utf-8?B?cC9oT0NiczE3ZmcrWjROSnZEVXk5bERVditYMEtrZklIdDVZMEZnZUdBWmMz?=
+ =?utf-8?B?MEI1YWZGNFNYblAvNDBtL3VURlo4dFB5U0FRb1o4azJVVXphN29iUkF2T3VV?=
+ =?utf-8?B?QjNKNGxVL0dQVkJrckR0aGxaeW1ldU9razZGYTBQeXZtaWNJRjBoRFFPZDYz?=
+ =?utf-8?B?ZkJ0aytKYm5OOHhIMFp5U2pTVTlHNDlHMzVyRUw4ZVE3NUk4dGJBMGpvc2I0?=
+ =?utf-8?B?clhMWjZWa3dnRmJlVDJ3R21SWHRrSDNSYzBpazBIZ3VPaVVMMjNSWjhLVHFi?=
+ =?utf-8?B?anhvL09sRTZhK3h3MDNmNDFxYkx2d29DaGk0dVBoUndONEg4MWtLOE5OSjdz?=
+ =?utf-8?B?cUFVOU1iWllleVF0dVJ6TmFJSGtHVHFYYm1UMlc0R2FGeTdERmhROGV6SE5z?=
+ =?utf-8?B?N29uQlpVdEtUeUdiR1FWYTljTDRJbGlKTEpITVVGTU1DR3pzeFdVVWNGbnd4?=
+ =?utf-8?B?YVhpaGFGc21TUHZZU3FFeWNiL3A3T2dDbG9EN1IwandsR1k4Um4vdnVDRFR2?=
+ =?utf-8?B?dWxrKy9VR3lVNHN2ZGZHWnJpRUZqNzFxWkZjTXYzY1pHVUVTR3V1NWR4WGI1?=
+ =?utf-8?B?d1hhQkE2cVE1YkpTZkdyN2xQOFBXSENpSmxBU2RNNnBPb0ZIWUNteDMzSXlh?=
+ =?utf-8?B?SGd0V3BYZmJGTkVZQURUN0pDd1BuUmh1ejlpa3pqbjhNSUpyR3k4NXdkcHVY?=
+ =?utf-8?B?ZmRyK1lXYkNwSm4ydGh3ZzUxK2U2YnZRZ2NUa3RpNVlwQ2RRbEhLUmRWd0ti?=
+ =?utf-8?B?NHRjR0cwNHp3d0VBMEVSc05IYXlMb2RCQlI3RnFvZzhpUGV0MGQrNU5DMjNm?=
+ =?utf-8?B?eTFtcHkram1JanBNV21xdWJnalZhaGJISjRCam1qdDBOak1Zdk1Ub0puYnM4?=
+ =?utf-8?B?WXpGVC91bkxjbldHdU9XRVl4Ui9aMnRnbUFxdlorZSt2QVFiRFl0Yzd0VjVT?=
+ =?utf-8?B?ZkFMeWFkczkrSktodkZKODhlakFkTzZvVUNiVVBBUXRVTDdvLzRkUVIvZTZs?=
+ =?utf-8?B?ZHZpaW02RDZvWmJtMllpeUVybHdXVzFDRFJUbjdmNTZFMERSR3NFM0F2QkRm?=
+ =?utf-8?B?YTlFVFNzd1k0NTE3OHdvM2Y5RG5ReVlHTm1FV1pGUHROcUlRTGxrbWFjNDNS?=
+ =?utf-8?B?TmR6dHdHY3VpbWZwRVFMaEdObjN6TlBiYUFIUlpsLzQ4V0FaMS82T3VSd2JX?=
+ =?utf-8?B?aVBrd3ozVW9JR2c4Mi80eDBaT0lQVU1STW4veS9raE5MOUJMSmg4dDVaSW9o?=
+ =?utf-8?B?QWF2OE5HU2tVYytVSUhmMHA3bXBVbDRrUjcwUUJDNDN0Q0FwczBjOGZJZGlh?=
+ =?utf-8?B?YlE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2263C105CE0BD24C9031A3A5D73110DB@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afa76212-605f-4fe5-f5a8-08dc49fc5169
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 23:12:02.6002
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VsIil3T95cCUKnYZ4fTOimIZ/3WWqbhjVT/tMvop0P5eb5H8jU0RvDAks/FFlyKofYmHr3lKOJCt0a/xf8r6QFs0iLjV74E6oCHz/brvjJg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8435
+X-OriginatorOrg: intel.com
 
-On Wed, 20 Mar 2024 12:31:17 +0000 "Prasad, Aravinda" <aravinda.prasad@intel.com> wrote:
-
-> 
-> 
-> > -----Original Message-----
-> > From: SeongJae Park <sj@kernel.org>
-> > Sent: Tuesday, March 19, 2024 10:51 AM
-> > To: Prasad, Aravinda <aravinda.prasad@intel.com>
-> > Cc: damon@lists.linux.dev; linux-mm@kvack.org; sj@kernel.org; linux-
-> > kernel@vger.kernel.org; s2322819@ed.ac.uk; Kumar, Sandeep4
-> > <sandeep4.kumar@intel.com>; Huang, Ying <ying.huang@intel.com>; Hansen,
-> > Dave <dave.hansen@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
-> > Subramoney, Sreenivas <sreenivas.subramoney@intel.com>; Kervinen, Antti
-> > <antti.kervinen@intel.com>; Kanevskiy, Alexander
-> > <alexander.kanevskiy@intel.com>
-> > Subject: Re: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
-> > 
-> > Hi Aravinda,
-> > 
-> > 
-> > Thank you for posting this new revision!
-> > 
-> > I remember I told you that I don't see a high level significant problems on on the
-> > reply to the previous revision of this patch[1], but I show a concern now.
-> > Sorry for not raising this earlier, but let me explain my humble concerns before
-> > being even more late.
-> 
-> Please find my comments below:
-> 
-> > 
-> > On Mon, 18 Mar 2024 18:58:45 +0530 Aravinda Prasad
-> > <aravinda.prasad@intel.com> wrote:
-> > 
-> > > DAMON randomly samples one or more pages in every region and tracks
-> > > accesses to them using the ACCESSED bit in PTE (or PMD for 2MB pages).
-> > > When the region size is large (e.g., several GBs), which is common for
-> > > large footprint applications, detecting whether the region is accessed
-> > > or not completely depends on whether the pages that are actively
-> > > accessed in the region are picked during random sampling.
-> > > If such pages are not picked for sampling, DAMON fails to identify the
-> > > region as accessed. However, increasing the sampling rate or
-> > > increasing the number of regions increases CPU overheads of kdamond.
-> > 
-> > DAMON uses sampling because it considers a region as accessed if a portion of
-> > the region that big enough to be detected via sampling is all accessed.  If a region
-> > is having some pages that really accessed but the proportion is too small to be
-> > found via sampling, I think DAMON could say the overall access to the region is
-> > only modest and could even be ignored.  In my humble opinion, this fits with the
-> > definition of DAMON region: A memory address range that constructed with
-> > pages having similar access frequency.
-> 
-> Agree that DAMON considers a region as accessed if a good portion of the region
-> is accessed. But few points I would like to discuss:
-> 
-> For large regions (say 10GB, that has 2,621,440 4K pages), sampling at PTE level
-> will not cover a good portion of the region. For example, default 5ms sampling
-> and 100ms aggregation samples only 20 4K pages in an aggregation interval. 
-
-If the 20 attempts all failed at finding any single accessed 4K page, I think
-it roughly means less than 5% of the region is accessed within the
-user-specified time (aggregation interval).  I would translate that as only
-tiny portion of the region is accessed within the user-specified time, and
-hence DAMON is ok to say the region is nearly not accessed.
-
-> Increasing sampling to 1 ms and aggregation to 1 second can only cover 
-> 1000 4K pages, but results in higher CPU overheads due to frequent sampling. 
-> Even increasing the aggregation interval to 60 seconds but sampling at 5ms can
-> only cover 12000 samples, but region splitting and merging happens once
-> in 60 seconds.
-
-At the beginning of each sampling interval, DAMON randomly picks one page per
-region, clear their accessed bits, wait until the sampling interval is
-finished, and check the accessed bits again.  In other words, DAMON shows only
-accesses that made in last sampling interval.
-
-Increasing number of samples per aggregation interval can help DAMON knows the
-access frequency of regions in finer granularity, but doesn't allow DAMON see
-more accesses.  Rather than that, if the aggregation interval is fixed
-(reducing sampling interval), DAMON can show even less amount of accesses.
-
-What we need here is giving the workload longer sampling time so that the
-workload can make access to a size of memory regions that large enough to be
-found by DAMON.
-
-> 
-> In addition, this worsens when region sizes are say 100GB+. We observe that
-> sampling at PTE level does not help for large regions as more samples are
-> are required. So, decreasing/increasing the sampling or aggressions intervals
-> proportional to the region size is not practical as all regions are of not equal
-> size, we can have 100GB regions as well as many small regions (e.g., 16KB
-> to 1MB).
-
-IMO, it becomes worse because the minimum size of accessed memory regions that
-can be found by DAMON via sampling has increased together, while you didn't
-give more sampling time (a.k.a the time to let the workload make accesses that
-DAMON can show).
-
-> So tuning sampling rate and aggregation interval did not help for large
-> regions.
-
-Due to the mechanism of the DAMON's sampling I mentioned above, I think this is
-what expected.  We need to increase sampling interval.
-
-> 
-> It can also be observed that large regions cannot be avoided. Large regions
-> are created by merging adjacent smaller regions or at the beginning of
-> profiling (depending on min regions parameter which defaults to 10). 
-> Increasing min region reduces the size of regions but increases kdamond
-> overheads, hence, not preferable.
-> 
-> So, sampling at PTE level cannot precisely detect accesses to large regions
-> resulting in inaccuracies, even though it works for small regions. 
-> From our experiments, we found that with 10% hot data in a large region
-> (80+GB regions in a 1TB+ footprint application), DAMON was not able to
-> detect a single access to that region in 95+% cases with different sample
-> and aggregation interval combinations. But DAMON works good for
-> applications with footprint <50GB where regions are typically small.
-> 
-> Now consider the scenario with the proposed enhancement. With a
-> 100GB region, if we sample a PUD entry that covers 1GB address
-> space, then the default 5ms sampling and 100ms aggregation samples
-> 20 PUD entries that is 20 GB portion of the region. This gives a good
-> estimate of the portion of the region that is accessed. But the downside
-> is that as PUD accessed bit is set even if a small set of pages are accessed
-> under its subtree this can report more access as real as you noted.
-> 
-> But such large regions are split into two in the next aggregation interval. 
-> As the splitting of the regions continues, in next few aggregation intervals
-> many smaller regions are formed. Once smaller regions are formed,
-> the proposed enhancement cannot pick higher levels of the page table
-> tree and behaves as good as default DAMON. So, with the proposed
-> enhancement, larger regions are quickly split into smaller regions if they
-> have only small set of pages accessed.
-
-I fully agree.  This is what could be a real and important benefits.
-
-> 
-> To avoid misinterpreting region access count, I feel that the "age" of the
-> region is of real help and should be considered by both DAMON and the
-> proposed enhancement. If the age of a region is small (<10) then that
-> region should not be considered stable and hence should not be
-> considered for any memory tiering decisions. For regions with age, 
-> say >10, can be considered as stable as they reflect the actual access
-> frequency.
-
-I think this is a good approach, but difficult to be used by default.  I think
-we might be able to get the benefit without making problem at the
-over-reporting accesses by using the high level accessed bit check results as a
-hint for better quality of region split?
-
-Also, if we can allow large enough age, the random region split will eventually
-find the small hot regions even without high level accessed bit hint.  Of
-course the hint could help finding it earlier.  I think that was one of my
-comment on the first version of this patch.
-
-> 
-> > 
-> > >
-> > > This patch proposes profiling different levels of the
-> > > application\u2019s page table tree to detect whether a region is
-> > > accessed or not. This patch set is based on the observation that, when
-> > > the accessed bit for a page is set, the accessed bits at the higher
-> > > levels of the page table tree (PMD/PUD/PGD) corresponding to the path
-> > > of the page table walk are also set. Hence, it is efficient to check
-> > > the accessed bits at the higher levels of the page table tree to
-> > > detect whether a region is accessed or not. For example, if the access
-> > > bit for a PUD entry is set, then one or more pages in the 1GB PUD
-> > > subtree is accessed as each PUD entry covers 1GB mapping. Hence,
-> > > instead of sampling thousands of 4K/2M pages to detect accesses in a
-> > > large region, sampling at the higher level of page table tree is faster and
-> > efficient.
-> > 
-> > Due to the above reason, I concern this could result in making DAMON monitoring
-> > results be inaccurately biased to report more than real accesses.
-> 
-> DAMON, even without the proposed enhancement, can result in inaccuracies
-> for large regions, (see examples above).
-
-I think temporarily missing such tiny portion of accesses is not a critical
-problem.  If this is a problem, the user should increase the sampling interval
-in my opinion.  That said, as mentioned above, DAMON would better to improve
-its regions split mechanism.
-
-> 
-> > 
-> > >
-> > > This patch set is based on 6.8-rc5 kernel (commit: f48159f8,
-> > > mm-unstable
-> > > tree)
-> > >
-> > > Changes since v1 [1]
-> > > ====================
-> > >
-> > >  - Added support for 5-level page table tree
-> > >  - Split the patch to mm infrastructure changes and DAMON enhancements
-> > >  - Code changes as per comments on v1
-> > >  - Added kerneldoc comments
-> > >
-> > > [1] https://lkml.org/lkml/2023/12/15/272
-> > >
-> > > Evaluation:
-> > >
-> > > - MASIM benchmark with 1GB, 10GB, 100GB footprint with 10% hot data
-> > >   and 5TB with 10GB hot data.
-> > > - DAMON: 5ms sampling, 200ms aggregation interval. Rest all
-> > >   parameters set to default value.
-> > > - DAMON+PTP: Page table profiling applied to DAMON with the above
-> > >   parameters.
-> > >
-> > > Profiling efficiency in detecting hot data:
-> > >
-> > > Footprint	1GB	10GB	100GB	5TB
-> > > ---------------------------------------------
-> > > DAMON		>90%	<50%	 ~0%	  0%
-> > > DAMON+PTP	>90%	>90%	>90%	>90%
-> > 
-> > Sampling interval is the time interval that assumed to be large enough for the
-> > workload to make meaningful amount of accesses within the interval.  Hence,
-> > meaningful amount of sampling interval depends on the workload's characteristic
-> > and system's memory bandwidth.
-> > 
-> > Here, the size of the hot memory region is about 100MB, 1GB, 10GB, and 10GB
-> > for the four cases, respectively.  And you set the sampling interval as 5ms.  Let's
-> > assume the system can access, say, 50 GB per second, and hence it could be able
-> > to access only up to 250 MB per 5ms.  So, in case of 1GB and footprint, all hot
-> > memory region would be accessed while DAMON is waiting for next sampling
-> > interval.  Hence, DAMON would be able to see most accesses via sampling.  But
-> > for 100GB footprint case, only 250MB / 10GB = about 2.5% of the hot memory
-> > region would be accessed between the sampling interval.  DAMON cannot see
-> > whole accesses, and hence the precision could be low.
-> > 
-> > I don't know exact memory bandwith of the system, but to detect the 10 GB hot
-> > region with 5ms sampling interval, the system should be able to access 2GB
-> > memory per millisecond, or about 2TB memory per second.  I think systems of
-> > such memory bandwidth is not that common.
-> > 
-> > I show you also explored a configuration setting the aggregation interval higher.
-> > But because each sampling checks only access between the sampling interval,
-> > that might not help in this setup.  I'm wondering if you also explored increasing
-> > sampling interval.
-> >
-> 
-> What we have observed that many real-world benchmarks we experimented
-> with do not saturate the memory bandwidth. We also experimented with
-> masim microbenchmark to understand the impact on memory access rate
-> (we inserted delay between memory access operations in do_rnd_ro() and
-> other functions). We see decrease in the precision as access intensity is
-> reduced. We have experimented with different sampling and aggregation
-> intervals, but that did not help much in improving precision. 
-
-Again, please note that DAMON can show only accesses made between each sampling
-interval at a time.  The important factor for expectation of DAMON's accuracy
-is, the balance between the memory access intensity of the workload, and the
-length of the sampling interval.  The workload should be access intensive
-enough to make sufficient amount of accesses between sampling interval.  The
-sampling interval should be long enough to allow the workload makes sufficient
-amount of accesses within the time interval.
-
-The fact that the workloads were not saturating the memory bandwidth is not
-enough to know if that means the workload was memory intensive enough, and the
-sampling interval was long enough.
-
-I was mentioning the memory bandwidth as only the maximum memory intensity of
-the system that could be achieved.
-
-> 
-> So, what I think is it that most of the cases the precision depends on the page
-> (hot or cold) that is randomly picked for sampling than the sampling rate. Most
-> of the time only cold 4K pages are picked in a large region as they typically
-> account for 90% of the pages in the region and hence DAMON does not
-> detect any accesses at all. By profiling higher levels of the page table tree
-> this can be improved.
-
-Again, agreed.  This is an important and grateful finding.  Thank you.  And
-again as mentioned above, I don't think we can merge this patch as is, but we
-could think about using the high level access bit check results as a hint to
-better split the regions.
-
-Indeed, DAMON's monitoring mechanism has many rooms for improvements.  I also
-have some ideas but my time was more spent on more capabilities of DAMON/DAMOS
-so far.  It was a bit intentional proiority setting since I got no real DAMON
-accuracy problem report from the production usage, and improving the accuracy
-will deliver the benefit to all DAMON/DAMOS features.
-
-Since an important milestone of DAMOS, namely auto-tuning, has merged into the
-mainline, I think I may better to spend more time on monitoring accuracy
-improvement.  I have some immature ideas in my head.  I will try to summarize
-and share the ideas in near future.
-
->  
-> > Sorry again for finding this concern not early enough.  But I think we may need to
-> > discuss about this first.
-> 
-> Absolutely no problem. Please let me know your thoughts.
-
-Thank you for patiently walking with me :)
-
-
-Thanks,
-SJ
-
-> 
-> Regards,
-> Aravinda
-> 
-> > 
-> > [1] https://lkml.kernel.org/r/20231215201159.73845-1-sj@kernel.org
-> > 
-> > 
-> > Thanks,
-> > SJ
-> > 
-> > 
-> > >
-> > > CPU overheads (in billion cycles) for kdamond:
-> > >
-> > > Footprint	1GB	10GB	100GB	5TB
-> > > ---------------------------------------------
-> > > DAMON		1.15	19.53	3.52	9.55
-> > > DAMON+PTP	0.83	 3.20	1.27	2.55
-> > >
-> > > A detailed explanation and evaluation can be found in the arXiv paper:
-> > > https://arxiv.org/pdf/2311.10275.pdf
-> > >
-> > >
-> > > Aravinda Prasad (3):
-> > >   mm/damon: mm infrastructure support
-> > >   mm/damon: profiling enhancement
-> > >   mm/damon: documentation updates
-> > >
-> > >  Documentation/mm/damon/design.rst |  42 ++++++
-> > >  arch/x86/include/asm/pgtable.h    |  20 +++
-> > >  arch/x86/mm/pgtable.c             |  28 +++-
-> > >  include/linux/mmu_notifier.h      |  36 +++++
-> > >  include/linux/pgtable.h           |  79 ++++++++++
-> > >  mm/damon/vaddr.c                  | 233 ++++++++++++++++++++++++++++--
-> > >  6 files changed, 424 insertions(+), 14 deletions(-)
-> > >
-> > > --
-> > > 2.21.3
+T24gTW9uLCAyMDI0LTAyLTI2IGF0IDAwOjI3IC0wODAwLCBpc2FrdS55YW1haGF0YUBpbnRlbC5j
+b20gd3JvdGU6DQo+IEltcGxlbWVudCBhIGhvb2sgb2YgS1ZNX1NFVF9DUFVJRDIgZm9yIGFkZGl0
+aW9uYWwgY29uc2lzdGVuY3kgY2hlY2suDQo+IA0KPiBJbnRlbCBURFggb3IgQU1EIFNFViBoYXMg
+YSByZXN0cmljdGlvbiBvbiB0aGUgdmFsdWUgb2YgY3B1aWQuwqAgRm9yDQo+IGV4YW1wbGUsDQo+
+IHNvbWUgdmFsdWVzIG11c3QgYmUgdGhlIHNhbWUgYmV0d2VlbiBhbGwgdmNwdXMuwqAgQ2hlY2sg
+aWYgdGhlIG5ldw0KPiB2YWx1ZXMNCj4gYXJlIGNvbnNpc3RlbnQgd2l0aCB0aGUgb2xkIHZhbHVl
+cy7CoCBUaGUgY2hlY2sgaXMgbGlnaHQgYmVjYXVzZSB0aGUNCj4gY3B1aWQNCj4gY29uc2lzdGVu
+Y3kgaXMgdmVyeSBtb2RlbCBzcGVjaWZpYyBhbmQgY29tcGxpY2F0ZWQuwqAgVGhlIHVzZXIgc3Bh
+Y2UNCj4gVk1NDQo+IHNob3VsZCBzZXQgY3B1aWQgYW5kIE1TUnMgY29uc2lzdGVudGx5Lg0KDQpJ
+IHNlZSB0aGF0IHRoaXMgd2FzIHN1Z2dlc3RlZCBieSBTZWFuLCBidXQgY2FuIHlvdSBleHBsYWlu
+IHRoZSBwcm9ibGVtDQp0aGF0IHRoaXMgaXMgd29ya2luZyBhcm91bmQ/IEZyb20gdGhlIGxpbmtl
+ZCB0aHJlYWQsIGl0IHNlZW1zIGxpa2UgdGhlDQpwcm9ibGVtIGlzIHdoYXQgdG8gZG8gd2hlbiB1
+c2Vyc3BhY2UgYWxzbyBjYWxscyBTRVRfQ1BVSUQgYWZ0ZXIgYWxyZWFkeQ0KY29uZmlndXJpbmcg
+Q1BVSUQgdG8gdGhlIFREWCBtb2R1bGUgaW4gdGhlIHNwZWNpYWwgd2F5LiBUaGUgY2hvaWNlcw0K
+ZGlzY3Vzc2VkIGluY2x1ZGVkOg0KMS4gUmVqZWN0IHRoZSBjYWxsDQoyLiBDaGVjayB0aGUgY29u
+c2lzdGVuY3kgYmV0d2VlbiB0aGUgZmlyc3QgQ1BVSUQgY29uZmlndXJhdGlvbiBhbmQgdGhlDQpz
+ZWNvbmQgb25lLg0KDQoxIGlzIGEgbG90IHNpbXBsZXIsIGJ1dCB0aGUgcmVhc29uaW5nIGZvciAy
+IGlzIGJlY2F1c2UgInNvbWUgS1ZNIGNvZGUNCnBhdGhzIHJlbHkgb24gZ3Vlc3QgQ1BVSUQgY29u
+ZmlndXJhdGlvbiIgaXQgc2VlbXMuIElzIHRoaXMgYQ0KaHlwb3RoZXRpY2FsIG9yIHJlYWwgaXNz
+dWU/IFdoaWNoIGNvZGUgcGF0aHMgYXJlIHByb2JsZW1hdGljIGZvcg0KVERYL1NOUD8NCg0KSnVz
+dCB0cnlpbmcgdG8gYXNzZXNzIHdoYXQgd2Ugc2hvdWxkIGRvIHdpdGggdGhlc2UgdHdvIHBhdGNo
+ZXMuDQo=
 
