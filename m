@@ -1,150 +1,178 @@
-Return-Path: <linux-kernel+bounces-109712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 497E2881CAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:00:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7872881CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:02:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB6C91F22022
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:00:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5A21C20BCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2218758212;
-	Thu, 21 Mar 2024 07:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472A24D9F4;
+	Thu, 21 Mar 2024 07:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVNT3/no"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ynCQXy92"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7715820D;
-	Thu, 21 Mar 2024 07:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A5556450;
+	Thu, 21 Mar 2024 07:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711004421; cv=none; b=tI4ta9Jz4kIukJu8XVJLL3jEABQHlkqf1iNgkpP3vs2WqqaXCQ2B81wdcl3VwS/cQzRVhKuwC9SacESLXcGwjEytUA0bm7oCthDJnc/LDnjE9c68WgRg30IC0YKssCx5NOvCBlV432/oZ3Ty+RyQ2m9amJ/JpA1ui7s2dnXlJno=
+	t=1711004526; cv=none; b=BiEVJVxNjcGtm7WdJT+HKzl2h3whZpz2zo64wdzepjqmzcKh88MamEoi2W+Q14X4QQ1w4ZRIaX2CuxNUJA9W2+/lg6i99u5p7LnyMOUHL8wx2YgNdNX3BpohBpDdGz7qRiAw2oYfrKJ2XQIT6hX1KwJDJ7UcR8TWo4dQIBf7TGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711004421; c=relaxed/simple;
-	bh=C6RQygeMnW/XJWtdkg9o9IMsvbD+zCntQd3itTZvF3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ai7oJ4H/OaOW97kVI6gsFaKAacqRX4ojWhCqOks/tMp6ielIcY60SdtUYnB0S/vpGrP+JmHKw1waoxhqvyHxYWwW4+vec9WPxwKjt13Tc9iZBgqAFta6SpU1voH0uXIg0zAnjwO2aLH14dBIym7z0MiaSkscZllCd1/kd0Ny25k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZVNT3/no; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dee6672526so1250625ad.1;
-        Thu, 21 Mar 2024 00:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711004419; x=1711609219; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yuRYtnmCnecoco60awXI1rXerQ2CUVZkzhEeKkO92PI=;
-        b=ZVNT3/nopOOkG0BRC7l0YPUZLCZ0kDjd3wVql8tiy8S+A9eh8ohyUOOwvVvsoAHn8n
-         IxXhs81ngSljsGL7+EQy0GoHcZJ/jzkZHOBcPTW31dOOFxE5hMsVTuTIPc27aBwGSyfU
-         vQuwTFsIn2P7UQYnrBQGzmPS5WzPk51w19aFjymQELmDtXr5PaIta8XgfEIldhWo79Qz
-         ITbYLmXz386/6E6lpcF2C5JP/IAve9n/DFDzoVs+b1tmMIDSKkk1Z2hwUJBnf9DrHzMB
-         Cd26QaPa0DXig6fRUNt/25RxE+80PWTetTCm+xqHpZW8lV165k5tJEgMdJIRBBcXFa0j
-         H5bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711004419; x=1711609219;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yuRYtnmCnecoco60awXI1rXerQ2CUVZkzhEeKkO92PI=;
-        b=RwUS+i5L0M0lahCUKJfVAp1rOR4cULa4s0MrN6e73xwgVO552vcQiT3d6b3qTq7vLw
-         ieoMxV4zA3fPWxlFgVSVgz9bFZVI/dlzOqSOzl3QYQkwCOn3kf6h1+boHBDbUHUeACDm
-         WFTzLf6zidUhshFtznsBR4uDNrmjagjXUCFtMqb3Xs0w80hV7FpBUgD/wZPNGrgTAwwK
-         uPZ8UzrMeZR8FD+xIWrTnhdj2t2bIQ9jvQK6uZlmB9+vkGcyE24QCtzYbLIuQwWZqmeL
-         6fOF1wezQUvXu2ZIBaN6QAP46QJMILXIJJohMKqMcIeXX44XhKIEnY9vFp26anvJGo1E
-         TeRA==
-X-Forwarded-Encrypted: i=1; AJvYcCVeXTZlFVr/KYgYACEHqs+DVfnhlb+ZeodDCxL523BXl0mcBZ+gzwel+vB2+UolUDZyXKzDGi+6OSbZw1imPUl0lNBxLoB4NFliwL0MVE/oFx4lcQ8mwz6YUqr0FdznedAIYT3eUqyVoko+HUUl/rkxrWGGrf293+WeAVQbi1rR5L/SS/xbM0DD5tIJCW8yHbHLL8C7Q4ZfxznpqGkeCNRJpytarVG+78+xNPIT
-X-Gm-Message-State: AOJu0Yxie1RPlmg5rcrA4u+M2ezThlFxFoQoav/yP/+u1MBd2jQlL1rO
-	A5WOucJIUE7Ketc1Obrt8I62GUoiA4Oa7a2FBFefGkhOrRijxqWq
-X-Google-Smtp-Source: AGHT+IGetQAA3uKa4M11qYFc4ZpIk2cFDmpiqBhR080pzhKlAYhF5Nq5NnMOAwNr6bGazui6FenSig==
-X-Received: by 2002:a17:902:ea03:b0:1dd:a3d6:3aff with SMTP id s3-20020a170902ea0300b001dda3d63affmr22699523plg.3.1711004419070;
-        Thu, 21 Mar 2024 00:00:19 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001db5ecd115bsm13468894plh.276.2024.03.21.00.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 00:00:18 -0700 (PDT)
-Date: Thu, 21 Mar 2024 15:00:14 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Ian Rogers <irogers@google.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, akpm@linux-foundation.org, bfoster@redhat.com,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
-	dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 09/15] lib min_heap: Add min_heap_sift_up()
-Message-ID: <Zfva/gJ8h5G+1YfC@visitorckw-System-Product-Name>
-References: <20240320145417.336208-1-visitorckw@gmail.com>
- <20240320145417.336208-10-visitorckw@gmail.com>
- <CAP-5=fWAF33f+RnaXNQd6NNJUr=UQzNGAEo_-G07CD5q8Xmrow@mail.gmail.com>
+	s=arc-20240116; t=1711004526; c=relaxed/simple;
+	bh=SwY21QFiwGpD1kcAiZUZyOjCoiCibVmG8EdjAluDzsM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MRhbdMEIrp7vYCZXFSJtY2rQqv1v0Jwwpcw81v0dfei5czuG0N4TqYQOs2SFyb7X2ws5mCg7ptS1t7GHJNEJ4NXs5Bci81IAxc/UH0XGkajWT8H2KOQfXCS9gY/MxVDv5PKy9QoEGVtTLQw8Ts/8vOl7BIYt4DD6qT2RtIlJQos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ynCQXy92; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42L71i5j014711;
+	Thu, 21 Mar 2024 02:01:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711004504;
+	bh=DJP47pseD2ZY7NaP7759rSonBuFE54K/AWpHpbwV2W8=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=ynCQXy92jpkozeHVfpylGUaOryqC5wpun1PGjj78Nwq45Xs+k+6557eX5mXIk2v2Y
+	 FE4kkQCieLeMddWZM903qMSfVP3AXoM2q24eWz8CAgq34XBjHJvZn9cuNSjI3CZS5D
+	 8Vt3q84dN6xT5sAi0Crz1+RR3zZumL/qOhDOL4w0=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42L71ik3011527
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Mar 2024 02:01:44 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Mar 2024 02:01:44 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Mar 2024 02:01:44 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42L71dYr072133;
+	Thu, 21 Mar 2024 02:01:40 -0500
+Message-ID: <b2cc9610-1bc8-4ad8-bf0c-f7343ae0de75@ti.com>
+Date: Thu, 21 Mar 2024 12:31:38 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/6] arm64: dts: ti: k3-j784s4: Add alias to MCU CPSW2G
+Content-Language: en-US
+To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Tero
+ Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
+ Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
+References: <20240131101441.1362409-1-c-vankar@ti.com>
+ <20240131101441.1362409-3-c-vankar@ti.com>
+ <469a7f15-0539-48e9-993c-5b9c638917e0@ti.com>
+ <0512d57f-af22-4bd8-8266-33d943d7eb4a@ti.com>
+ <c4b91154-7a8b-4642-a642-6ae93b448115@ti.com>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <c4b91154-7a8b-4642-a642-6ae93b448115@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWAF33f+RnaXNQd6NNJUr=UQzNGAEo_-G07CD5q8Xmrow@mail.gmail.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Mar 20, 2024 at 10:15:08AM -0700, Ian Rogers wrote:
-> On Wed, Mar 20, 2024 at 7:55 AM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> >
-> > Add min_heap_sift_up() to sift up the element at index 'idx' in the
-> > heap.
-> 
-> Thanks, should min_heap_push be updated to use this sift up rather
-> than its inline version?
-> 
-It's better to do it that way.
-I'll make that change in v3.
 
-Regards,
-Kuan-Wei
+
+On 19/03/24 21:05, Andrew Davis wrote:
+> On 3/11/24 5:44 AM, Chintan Vankar wrote:
+>>
+>>
+>> On 31/01/24 21:06, Andrew Davis wrote:
+>>> On 1/31/24 4:14 AM, Chintan Vankar wrote:
+>>>> Add alias for the MCU CPSW2G port to enable Linux to fetch MAC Address
+>>>> for the port directly from U-Boot.
+>>>
+>>> Could you explain *how* this alias allows Linux to fetch a MAC
+>>> address from U-Boot? Sounds like we are doing something hacky here..
+>>>
+>> Using "probe_daughtercards()" function U-Boot parses MAC addresses from
+>> EEPROM, then it internally calls "eth_env_set_enetaddr_by_index()"
+>> function which stores these MAC addresses into environment variables
+>> ethaddr, eth1addr, eth2addr and so on based on number of ports.
+>>
+>> U-Boot loads DTB during boot process, and it calls
+>> "fdt_fixup_ethernet()" function, which uses environment variables to
+>> update MAC addresses of ethernet ports as specified in the aliases
+>> section.
+>>
 > 
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> > ---
-> >  include/linux/min_heap.h | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> >
-> > diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> > index 36023e0be232..af12531474a4 100644
-> > --- a/include/linux/min_heap.h
-> > +++ b/include/linux/min_heap.h
-> > @@ -194,6 +194,26 @@ void __min_heap_push(struct __min_heap *heap, const void *element, size_t elem_s
-> >  #define min_heap_push(_heap, _element, _func)  \
-> >         __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_heap), _func)
-> >
-> > +/* Sift up ith element from the heap, O(log2(nr)). */
-> > +static __always_inline
-> > +void __min_heap_sift_up(struct __min_heap *heap, size_t elem_size, size_t idx,
-> > +               const struct min_heap_callbacks *func, void *args)
-> > +{
-> > +       void *data = heap->data;
-> > +       size_t parent;
-> > +
-> > +       while (idx) {
-> > +               parent = (idx - 1) / 2;
-> > +               if (func->less(data + parent * elem_size, data + idx * elem_size, args))
-> > +                       break;
-> > +               func->swp(data + parent * elem_size, data + idx * elem_size, args);
-> > +               idx = parent;
-> > +       }
-> > +}
-> > +
-> > +#define min_heap_sift_up(_heap, _idx, _func, _args)    \
-> > +       __min_heap_sift_up(&(_heap)->heap, __minheap_obj_size(_heap), _idx, _func, _args)
-> > +
-> >  /* Remove ith element from the heap, O(log2(nr)). */
-> >  static __always_inline
-> >  bool __min_heap_del(struct __min_heap *heap, size_t elem_size, size_t idx,
-> > --
-> > 2.34.1
-> >
+> So maybe a better question would by why does it need to use aliases
+> for this?
+> 
+
+Since "probe_daughtercards()" in U-Boot is implemented in a way that
+it gets the MAC addresses fromm EEPROM and "fdt_fixup_ethernet()"
+function configures MAC addresses for the ethernet ports as specified
+in aliases section.
+
+>>> Why can't Linux fetch the MAC from efuses the same way U-Boot does,
+>>
+>> Linux can fetch the MAC address from efuses if "ti,syscon-efuse"
+>> property is enabled.
+>>
+> 
+> Then let's do it this way always.
+> 
+Yes, Linux reads MAC addresses from efuse this way only, but the
+functionality of Linux getting the MAC addresses from EEPROM is
+not implemented.
+
+>>> what happens if I don't use U-Boot to boot?
+>>
+>> If you don't use U-Boot to boot then the equivalent of
+>> "probe_daughtercards()" has to be implemented which is currently
+>> missing.
+>>
+> 
+> Or we just let Linux fetch it instead of implementing that function
+> in all the possible bootloaders. This would also remove a DTB fixup.
+> Those fixups should be avoided if at all possible.
+> 
+
+Yes, we can let Linux fetch MAC addresses, but right now the Ethernet
+driver in Linux can only fetch MAC addresses from "EFUSE" and not from
+"EEPROM", and since the functionality to fetch MAC addresses from
+"EEPROM" is implemented in U-Boot we are utilizing it.
+
+> Andrew
+> 
+>>>
+>>> Andrew
+>>>
+>>>> ---
+>>>>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 1 +
+>>>>   1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts 
+>>>> b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>>> index f34b92acc56d..b74f7d3025de 100644
+>>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>>> @@ -27,6 +27,7 @@ aliases {
+>>>>           mmc1 = &main_sdhci1;
+>>>>           i2c0 = &wkup_i2c0;
+>>>>           i2c3 = &main_i2c0;
+>>>> +        ethernet0 = &mcu_cpsw_port1;
+>>>>       };
+>>>>       memory@80000000 {
 
