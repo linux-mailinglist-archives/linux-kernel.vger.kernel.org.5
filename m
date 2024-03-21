@@ -1,150 +1,135 @@
-Return-Path: <linux-kernel+bounces-110802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084E5886420
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22999886422
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2F771F214C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:52:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBDD11F2219B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8BA3A8CB;
-	Thu, 21 Mar 2024 23:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6837C24B23;
+	Thu, 21 Mar 2024 23:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XRVnwmHb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="antIcENk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E3C1DFCF;
-	Thu, 21 Mar 2024 23:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966A01E51D
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711065137; cv=none; b=nUDX1eSZexFlkIW1Lvfj95IaKoBTGvFxhTfLA+HjzyzADtLGbfNPqdRtjr6WBdBQ9n82xnBzDqu6PjxLiT7Kje1Hja6lCYeHcuPKWyb+Fbi0vT46/Z13HPGg6hdni7DMQuwWW/ZpEjszWTIWC7w2vR0fAwIGjDSSofg4OnbrMqk=
+	t=1711065170; cv=none; b=spbZtXkNX777fXM9iRiN7sL6XKm18T2nLJ7KBrpT3tyAOILl28Ijx8NItTTFAplcj5IybZU02WEQXTLLGHF+DtXrIJIZ+MNNhPtdrhgEUNNvnvftdpB3XiHgPc4YltVEwYE6lLR821LU9oqA4cu7T59QPnzjM9/ZCqzS8ERUAr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711065137; c=relaxed/simple;
-	bh=A6ppOylSGg1w6xWuXb/YW2+KGjwJm/zoyUI49PmjYEM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f8iTdKzr+Rtnk80TI7SKu3Rd1sh7okG0bDWon0T7H9uNVi525bK8MuSEfwj1GvUuuwaBGgk+x6H4imPdynTi8Pm1niqTXbaRyjuXkBlFcMZ4lwN05Kr+KE0MxfOkefzhKn+v82Gh/eHruuekO1isY+ZOLzPWVsOhXZc7GBGJ5rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XRVnwmHb; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711065135; x=1742601135;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A6ppOylSGg1w6xWuXb/YW2+KGjwJm/zoyUI49PmjYEM=;
-  b=XRVnwmHbmH/9o3C+Shqkj4vqgabRzVQPifQrldV0fZbAliig8E0g6vso
-   tDLF0NDWwfo+S8nM3W8bYFm4qrwHFFABljVtFY9fE5V8fL4FJwcx5SJvT
-   mmG9MeIBo9l6KuyFgroQwTL4b3ALLSfpWgIk6BNPC1bzfWRiHwiCeeSxG
-   H1KM7uXKP8eILBEr2mf0vxfHHZPZoGizIQd3SlfjXA6BHA3fLjcsd+GDv
-   IA5nPKbvLJf0sXQxedoP3Xro9uMfNevF4L4cv4/4NDqdJYS2aTpCqjOV+
-   p2RdN4kYz4lfNjDkweCtCWqRd4BdAEWHKPSwhGBXlVIjPHLfxk59IcfVn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="17490815"
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="17490815"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:52:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="19345136"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:52:14 -0700
-Date: Thu, 21 Mar 2024 16:52:14 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 030/130] KVM: TDX: Add helper functions to print TDX
- SEAMCALL error
-Message-ID: <20240321235214.GV1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1259755bde3a07ec4dc2c78626fa348cf7323b33.1708933498.git.isaku.yamahata@intel.com>
- <315bfb1b-7735-4e26-b881-fcaa25e0d3f3@intel.com>
- <20240320215013.GJ1994522@ls.amr.corp.intel.com>
- <76e918cf-44ef-4e9b-9e56-84256b637398@intel.com>
+	s=arc-20240116; t=1711065170; c=relaxed/simple;
+	bh=4Q+p2QjxUsyn/rIV7g00o61wU/Eh8gkjD4j0glgts/k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PaZE0mG9wK91+y3/IDy6LoLorQ8U5GlqtKUJML83CsupezkNToiyOYE/jDPXMswmi7TkMd/Rj2f1FK1GwXjWGGVjmefabElOWTEpeLL+RByAkN6hwlQHrZSxEModETKCF330rC7waJTDos7MvRx1HSBczEHWLIwY6njQ50Ysrio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=antIcENk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711065166;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ph3FIOMOHyBf+pCthVqaqeQaRLXOxCyWEwyLs7Vklo8=;
+	b=antIcENkGrghyONTvDdn9NT1xWg3wtef1IWrROFOKDSdSjIT4mvtwGblp3c6NocRnmkhPN
+	67LbtFk7vSslAZf66aWSVmdhJIB4NMJw8xxIKCJhnGGiVt6yXGpS+8Ls5q3Z0ZlXA1ADbc
+	4QbtgVirOCp6LJ3jfKVu9d6EzA10Bj0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-393-r4TfCC1VOJm8N5GRtB0_pA-1; Thu,
+ 21 Mar 2024 19:52:43 -0400
+X-MC-Unique: r4TfCC1VOJm8N5GRtB0_pA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 92C5C1C04198;
+	Thu, 21 Mar 2024 23:52:42 +0000 (UTC)
+Received: from [10.22.32.107] (unknown [10.22.32.107])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 443603C20;
+	Thu, 21 Mar 2024 23:52:42 +0000 (UTC)
+Message-ID: <feb68b86-899e-42a2-a680-4a73366e540d@redhat.com>
+Date: Thu, 21 Mar 2024 19:52:21 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <76e918cf-44ef-4e9b-9e56-84256b637398@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] locking/qspinlock: Use atomic_try_cmpxchg_relaxed() in
+ xchg_tail()
+Content-Language: en-US
+To: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
+References: <20240321195309.484275-1-ubizjak@gmail.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240321195309.484275-1-ubizjak@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Thu, Mar 21, 2024 at 12:09:57PM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+On 3/21/24 15:52, Uros Bizjak wrote:
+> Use atomic_try_cmpxchg_relaxed(*ptr, &old, new) instead of
+> atomic_cmpxchg_relaxed (*ptr, old, new) == old in xchg_tail().
+> x86 CMPXCHG instruction returns success in ZF flag,
+> so this change saves a compare after cmpxchg.
+>
+> No functional change intended.
+>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>   kernel/locking/qspinlock.c | 13 +++++--------
+>   1 file changed, 5 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
+> index ebe6b8ec7cb3..1df5fef8a656 100644
+> --- a/kernel/locking/qspinlock.c
+> +++ b/kernel/locking/qspinlock.c
+> @@ -220,21 +220,18 @@ static __always_inline void clear_pending_set_locked(struct qspinlock *lock)
+>    */
+>   static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
+>   {
+> -	u32 old, new, val = atomic_read(&lock->val);
+> +	u32 old, new;
+>   
+> -	for (;;) {
+> -		new = (val & _Q_LOCKED_PENDING_MASK) | tail;
+> +	old = atomic_read(&lock->val);
+> +	do {
+> +		new = (old & _Q_LOCKED_PENDING_MASK) | tail;
+>   		/*
+>   		 * We can use relaxed semantics since the caller ensures that
+>   		 * the MCS node is properly initialized before updating the
+>   		 * tail.
+>   		 */
+> -		old = atomic_cmpxchg_relaxed(&lock->val, val, new);
+> -		if (old == val)
+> -			break;
+> +	} while (!atomic_try_cmpxchg_relaxed(&lock->val, &old, new));
+>   
+> -		val = old;
+> -	}
+>   	return old;
+>   }
+>   #endif /* _Q_PENDING_BITS == 8 */
 
-> > Does it make sense?
-> > 
-> > void pr_tdx_error(u64 op, u64 error_code)
-> > {
-> >          pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
-> >                             op, error_code);
-> > }
-> 
-> Should we also have a _ret version?
-> 
-> void pr_seamcall_err(u64 op, u64 err)
-> {
-> 	/* A comment to explain why using the _ratelimited() version? */
+LGTM, note that this xchg_tail() variant is not used in all the distros 
+that I am aware of as it requires NR_CPUS >= 16k.
 
-Because KVM can hit successive seamcall erorrs e.g. during desutructing TD,
-(it's unintentional sometimes), ratelimited version is preferred as safe guard.
-For example, SEAMCALL on all or some LPs (TDH_MNG_KEY_FREEID) can fail at the
-same time.  And the number of LPs can be hundreds.
+Reviewed-by: Waiman Long <longman@redhat.com>
 
 
-> 	pr_err_ratelimited(...);
-> }
-> 
-> void pr_seamcall_err_ret(u64 op, u64 err, struct tdx_module_args *arg)
-> {
-> 	pr_err_seamcall(op, err);
-> 	
-> 	pr_err_ratelimited(...);
-> }
-> 
-> (Hmm... if you look at the tdx.c in TDX host, there's similar code there,
-> and again, it was a little bit annoying when I did that..)
-> 
-> Again, if we just use seamcall_ret() for ALL SEAMCALLs except VP.ENTER, we
-> can simply have one..
-
-What about this?
-
-void pr_seamcall_err_ret(u64 op, u64 err, struct tdx_module_args *arg)
-{
-        pr_err_ratelimited("SEAMCALL (0x%016llx) failed: 0x%016llx\n",
-                           op, error_code);
-        if (arg)	
-        	pr_err_ratelimited(...);
-}
-
-
-
-> > void pr_tdx_sept_error(u64 op, u64 error_code, const union tdx_sept_entry *entry,
-> > 		       const union tdx_sept_level_state *level_state)
-> > {
-> > #define MSG \
-> >          "SEAMCALL (0x%016llx) failed: 0x%016llx entry 0x%016llx level_state 0x%016llx\n"
-> >          pr_err_ratelimited(MSG, op, error_code, entry->raw, level_state->raw);
-> > }
-> 
-> A higher-level wrapper to print SEPT error is fine to me, but do it in a
-> separate patch.
-
-Ok, Let's postpone custom version.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
