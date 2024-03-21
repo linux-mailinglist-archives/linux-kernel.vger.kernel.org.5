@@ -1,155 +1,110 @@
-Return-Path: <linux-kernel+bounces-109726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8494B881CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE07883824
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5B7A1C2127A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:18:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DF9A1C211ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31BA5103E;
-	Thu, 21 Mar 2024 07:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B16451C44;
+	Thu, 21 Mar 2024 07:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ncafNp/r"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LJ3wWVD/"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C253A1DE
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD424E1D6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711005522; cv=none; b=dF3os0nVNKvtgliVJQcuVnPlCv8m4DZBOYw9ziGrBrgUmhJwhc8kofpGDHtr6aNXV17GUGoh/2TWq9km3rlu6bVQJXyjUdca30MlEx+r+nbEveBQvkQkV5efY6g9yH9oTMDghv9kEVXTQzcS+X1sgslTDANOaB26pz6xRSa5CXk=
+	t=1711005624; cv=none; b=Q3Nrtv6E/Bj1OGeoVprsesBr7tF4JOs2jI408MjspqetGD/EBfHnsA62W3nvNd5OqXiwB8zz7x85ufrvIbV5hkHPcgoIJNdcbgypx2QW+H045Tzauug76dUrCS8dtiV0vQa9j4ddvOUgYfU9J4L+t90yJ9Rh86zurrnYqfal9CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711005522; c=relaxed/simple;
-	bh=1ague1U2mCN70HfjssMUu5eUMmcNH7R01LQCzPfoZ60=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p7gHVxAku2mwnVuNpoLLpQsoxWqbjIvzQVCpwPOFNvhVLzAfIUexUqWj0jmMY5NSaex5jwMNSRbIog23byb5+PSWP9RyYPVv8KckVgEtq2Kk3i4uEAb41Yc3VqFl2Wewc46O7BjHtoNNERgbBcJVyOh4WG1eTfakCGKnL9ntyq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ncafNp/r; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1711005624; c=relaxed/simple;
+	bh=M/pE1qtuba0xAb4ithnVVZnIuFnsFrNwP1v7PJ5rEqc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nLj3Tj77d+IuCdHsCgAU+ABHiW8L89t8BwlAFr5eS/5xLeyqexbt5lxQvPWeMJfcbPt2KkN9i+T1cVAUDVgKugO2fmWcHLD7snR3gd/bVDXiTfBREMJLu/lvrqf8L54zVNLPNGgy4jY/PHabf1XTRS//PQQIY8M/ImcOIFoZBzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LJ3wWVD/; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bc7b07df7so550853a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:18:39 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d6a1af9c07so4491181fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711005518; x=1711610318; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dt8V+WfthBso77AcF0LgpovSLtj2INJubeq4ho3W+FM=;
-        b=ncafNp/rDgAUOMGQuU/Nr8AuS+mPcBh1C/Qah8WAJmAQJn3Y+ijdEBDQ2CCSt2kTYA
-         whn6bnd07X1mluAp9Gasfh5LkPpebB47ohpFeg+6M/zZtbd7WJ3Yy0B4sTV2N97uRLgY
-         ht7lZPEoHz1QmXU7yoF9lPD1JDG+bO49K0Xka4Gb5FM4bxZsaf5NwalU+594phfDEI6n
-         5BUufvkyi9vQ+/5P7XfmZATX9Ywy5t8Z8+ClsCdfecwQIK0oXc3vbd26L1f2ArtkL4u8
-         MFNEfMGTdzUZQ8u/zeS6sZ5WX/3E5F8LM+PSbqrRaoRdWFZhTkydRM3oD3L4TfVfTg5c
-         8BrA==
+        d=linaro.org; s=google; t=1711005621; x=1711610421; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yhN50euko1HcLlbzreWy4UyMhBRrqu5b6P2NFYTbhuE=;
+        b=LJ3wWVD/WYeHDkalIXeELXgogbQXoSuG8GOqZKM2HUYOmYcnPreqfS+0LZuzBa0ic4
+         MiXfXQjNphC3MehZKnJLO1YIOr8op3cAwJYXGUL/y9IDpbkBJj/Y0fBaQghaGAHjROhV
+         cnYds5kahOvuziY7URmx4c/xeM5FMgqxWSr7ussSdv2WWpOahptXE7QPTROXUEqQIFRD
+         bFvL+DlsX1OSa6ZJA0aHPwvD4E0YUDKPLni0/odOLuTP71nFYzehI5953xlPwNTaHEtz
+         ODO4XzUQFvOd30al+C83EFkvpSUR0Ii6fYhZc8PGqBYxZet9L80HyGuX4AuR9eWAOBtT
+         lbiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711005518; x=1711610318;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711005621; x=1711610421;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Dt8V+WfthBso77AcF0LgpovSLtj2INJubeq4ho3W+FM=;
-        b=gZmmevv6b7ZhiM+5ky+wb/iow3PVIurgH1Czs+n94ew1qsw8Q/gi/4nbzyidpYTALW
-         D1tKVmfwzcaRbvWDoRzNIkqbUIjk9VDwu1663bEwgitVC2KkLokyVuzdycah+wCCpaN6
-         pv4gdJnmU+CMxFQHMpqwGiu4XTK1ZWOo6TV721oOG5b+YT1B7+n71nVP6DyenPVhaSP7
-         eV9KeXMzJaf7vr1o3ryIkOfJ0DiXCcK7AQ2EvrE3OIMnM/K2+q8LXdIgjB4jv2DFyGxs
-         KPpi0k7D4h3ytYWtuVMAviuGwe9fg+kAtqELyKwk7TltAGzRXFfv0IMnbZwYZ7xVZ3vo
-         m7uQ==
-X-Gm-Message-State: AOJu0Yz5fibl9rL+J1CGdSAlNXBZTY87l61SLZOBTlW1Z6l4ZzSEjY2p
-	A99I3mffvouPPvdqbg0tib8x7N0vRAyvUMC+RGIfBQfm6LR6nzrZx0rxFx4dkSA=
-X-Google-Smtp-Source: AGHT+IEFbAXELSpgnfv4OSIfYDAkJ85jXliTDWI9oB1R5tk68u/yAOKYPWpp13aMaHs6GYNnEot/uw==
-X-Received: by 2002:a17:907:b9cf:b0:a46:f563:a642 with SMTP id xa15-20020a170907b9cf00b00a46f563a642mr1676295ejc.7.1711005518437;
-        Thu, 21 Mar 2024 00:18:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id sa37-20020a1709076d2500b00a4635a21ff0sm8081298ejc.38.2024.03.21.00.18.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 00:18:37 -0700 (PDT)
-Message-ID: <3c5efec9-cb29-4226-8701-2917ce3c2876@linaro.org>
-Date: Thu, 21 Mar 2024 08:18:36 +0100
+        bh=yhN50euko1HcLlbzreWy4UyMhBRrqu5b6P2NFYTbhuE=;
+        b=dRtwhxT0zkOUatonaFiLMvlpDJiId6Lhak8Yf3t8qBIGaeiGCydomHgTiTjRK6g3bX
+         lJrYf25aNMU3rucq0uxKcsZs4jfc/WkXoxaVZTfkrkKMShmIa081mpIu95TD03k90dgS
+         lVcZ4W9qQ/3nMUdeiiEysOUF4E7i1rdhHs+ITgs6oDiG6mG/sb1tLx9cQgionJ+0GCO5
+         dURvrDwEfPY2U2H/PlX0aJWOcwiCo2PfZz+PJXIm26Xlm/EafL5vPa1y97vj5N6Ql9BK
+         BR4ttz7s5AENT9RZxQuWCZegNMTqVxoL8Gm/lBRhVOL1F3yRDrWSsr5KBdukmTL1V/vE
+         yKfA==
+X-Forwarded-Encrypted: i=1; AJvYcCUKyuhDimIopxv8S5Yy9fZlv0mjOfmY52MEUTFybIBQ192M7viyRU6q5BCbP6CCMFcbnRuFaGJG6LbJAPuuQpH3JPqTv2z4h2qd3Xuf
+X-Gm-Message-State: AOJu0Yw2W6mvFYjfgKJVY1GeDxCOgK40htrj639Oaz1Lm1w9N1wk38uH
+	JHFUt8Ge8E5cnUYVAz5n5m7xUn6KUa+qucC9aoGFp2vWsO54gVarLUbDw8vMi20=
+X-Google-Smtp-Source: AGHT+IHTGPQhf3H6O7uDwt2LrjWYhTXQdcE9UvrgcJNxEE8My4b+onTtxcBz4scNfQjOEmaFcuPkPg==
+X-Received: by 2002:a19:ee14:0:b0:513:39a0:1fec with SMTP id g20-20020a19ee14000000b0051339a01fecmr12178552lfb.66.1711005620894;
+        Thu, 21 Mar 2024 00:20:20 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id bg38-20020a05600c3ca600b004146e631a81sm3616918wmb.5.2024.03.21.00.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 00:20:20 -0700 (PDT)
+Date: Thu, 21 Mar 2024 10:20:15 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v3] staging: rtl8712: Fix line length exceeding 100
+ columns
+Message-ID: <1f355628-87d0-4d54-a1ed-64da9da784c9@moroto.mountain>
+References: <ZfvaZd92bnoZ9M1m@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] reset: gpio: Fix missing gpiolib dependency for GPIO
- reset controller
-To: Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: linux-kernel@vger.kernel.org
-References: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfvaZd92bnoZ9M1m@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-On 20/03/2024 20:59, Mark Brown wrote:
-> The GPIO reset controller uses gpiolib but there is no Kconfig
-> dependency reflecting this fact, add one.
+On Thu, Mar 21, 2024 at 12:27:41PM +0530, Ayush Tiwari wrote:
+> Split the argument list of the kthread_run function call across two
+> lines to address the checkpatch warning "line length exceeds 100
+> columns".
 > 
-> With the addition of the controller to the arm64 defconfig this is
-> causing build breaks for arm64 virtconfig in -next:
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 > 
-> aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_reset_gpio_lookup':
-> /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined reference to `gpio_device_find_by_fwnode'
+> ---
 > 
+> Changes in v3: fixed the issue in v2, created the patch against
+> a clean staging tree.
+> 
+> Changes in v2: Fixed the alignment to address checkpatch.pl
+> warning.
 
-Lack of dependency was intentional: because there is no dependency.
-GPIOLIB is optional. Because of that I added few stubs for missing
-GPIOLIB functions, but I missed this stub here.
+Thanks!
 
-I propose to add gpio_device_find_by_fwnode() stub for !GPIOLIB case,
-instead of adding dependency.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Best regards,
-Krzysztof
+regards,
+dan carpenter
 
 
