@@ -1,43 +1,45 @@
-Return-Path: <linux-kernel+bounces-110549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32CBA88606B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:16:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3BB886078
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63FFE1C22E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:16:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 394BCB21015
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A84F13340B;
-	Thu, 21 Mar 2024 18:16:32 +0000 (UTC)
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA9D133413;
+	Thu, 21 Mar 2024 18:24:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0EQyOKG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37B884A28;
-	Thu, 21 Mar 2024 18:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D66379C3;
+	Thu, 21 Mar 2024 18:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044991; cv=none; b=gVZesJB6/EhqrcblRoxFqbqPx57jBJV5YZAl3VFvRZKIxqXgwWrt8dKH7D8g382Gh/2r8V61FGtVy0Cxkf/O9g1Du6Z1O5RWVfmQz86hRj/frQX9f3pKF9e2RNpEduuckXaCVYb+K3dj+24xerv5CNV4ZpObnkblOLXw22sQr9U=
+	t=1711045473; cv=none; b=XXhyxR25tQ6TV6/E73Vr2FLQa9nfzt1kFomoKLXLWRlVLSg5iZ2gG0gW52enFO3Kg/i3+MBHz8x9E+pdv3iqPnGqBmd+j/sIMapfZWD8m7C9+SlDQwzU4KkQ9Jmdax3jc1FpN0PnPl+8JKjJ49ApqpMR1IHlQYgL1w43tTFtIks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044991; c=relaxed/simple;
-	bh=kzF3PP5TBxeeyiFtNbxnHwiSOrORgk8U71rb5F3qK3Y=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
-	 References:In-Reply-To; b=V3B9n3Md8F94dGWLpzOd/IimDlPU47tzEOzyHyZLsvQXV3AiuC8D22cupWWlwV0eceJisZTzBu2NCpjcHM7+Ki9y+Cx3Tcngq1u6UVQd2Zs7kxkhG92CNcLsyQn0dD45JTwCaP+PCZvlYueGOv95oHyv4CDioqjUDcOyXv8OZRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-Received: from localhost (koleje-wifi-0015.koleje.cuni.cz [78.128.191.15])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42LIGAOn098122
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 19:16:12 +0100 (CET)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1711045473; c=relaxed/simple;
+	bh=6XDm0H7ukgWK62f8uLvS2K0zAt4z5bHjRTxNVSBu7FU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=giDvePGzZcjP7GJUHhYmxnLi25gryZotNusl4ynlbi1AdIDweeTldlUxhbFa7UZOckdT/Rqc0yBhtzr/iNq+GjvcKWhJTQ685GrcQPcU/D3kVhH4b7te8UNX2ZcXyqizOZHETDvH8qw/EDF3QOwFqE0TEOUFEVWrAEX57TByBy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0EQyOKG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E949C433F1;
+	Thu, 21 Mar 2024 18:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711045472;
+	bh=6XDm0H7ukgWK62f8uLvS2K0zAt4z5bHjRTxNVSBu7FU=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=l0EQyOKGlSqTAnbBIdyevJIWPpZnrVnPa3Y0y3Z5RlyshAt52oVRZPMfLjqK+PcfD
+	 7sHFf4AyhqH+80XW6vhex7Zav9GuzAIaD1aPG7NGNNobWOx7BpZl+OtMmVFXL4kk4l
+	 YZOM0VbcOrraIPYwN+JfmfS4w8bnuyAB7UnEcJzvDpzEiJVUKk+T9XywBSogUjxgUl
+	 +VSCZC+YLqL/rkaF2rhhnNkIUGbmC3nqkcI8zkDRmuadYe52u33ZXLsgCxHI7dSxwl
+	 mCtqtWCvm4rCktdJ97xjRo0qTvTNUdPqF2YHsBTiHeYvw0rs4o8pIIuvK1DMej6x2a
+	 Z8RbdXpTWjRnA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,59 +48,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:16:43 +0100
-Message-Id: <CZZMTZBZ5S7B.2HR8A6LEY08D4@matfyz.cz>
-Cc: "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley"
- <conor+dt@kernel.org>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        "Liam
- Girdwood" <lgirdwood@gmail.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
-Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
-To: "Mark Brown" <broonie@kernel.org>
-From: "Karel Balej" <balejk@matfyz.cz>
-References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
- <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
- <20240321154211.GA13211@google.com> <CZZK759UU6G7.MFPYOI0HBB6I@matfyz.cz>
- <20240321162045.GC13211@google.com> <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
- <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
- <CZZLDK79D5VK.2VK3X59OHIY2Z@matfyz.cz>
- <45079e37-dde9-4310-a112-7af49f35ac77@sirena.org.uk>
- <CZZLVS3T3QIS.223XHI5OZ7UBG@matfyz.cz>
- <e9c7bd38-49cd-44c2-8842-292bc0b4205f@sirena.org.uk>
-In-Reply-To: <e9c7bd38-49cd-44c2-8842-292bc0b4205f@sirena.org.uk>
+Date: Thu, 21 Mar 2024 20:24:28 +0200
+Message-Id: <CZZMZWQE3AKZ.3O07JH2ZNJC9V@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
+ <lukas@wunner.de>, <bbhushan2@marvell.com>
+Subject: Re: [PATCH v7 05/13] crypto: ecc - Add nbits field to ecc_curve
+ structure
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
+ <davem@davemloft.net>
+X-Mailer: aerc 0.17.0
+References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
+ <20240320114725.1644921-6-stefanb@linux.ibm.com>
+ <CZZLKGMM0B9E.7J1CGE8EIGQX@kernel.org>
+ <58166047-b339-4234-832b-a1aad6bf49de@linux.ibm.com>
+In-Reply-To: <58166047-b339-4234-832b-a1aad6bf49de@linux.ibm.com>
 
-Mark Brown, 2024-03-21T17:48:28+00:00:
-> On Thu, Mar 21, 2024 at 06:32:03PM +0100, Karel Balej wrote:
-> > Mark Brown, 2024-03-21T17:17:40+00:00:
+On Thu Mar 21, 2024 at 7:42 PM EET, Stefan Berger wrote:
 >
-> > > Do they both genuinely have the same maximum register?
 >
-> > They do according to the downstream driver which is my only reference.
-> > In fact, there the driver defines the configs separately for each regma=
-p
-> > but with the same values.
+> On 3/21/24 13:17, Jarkko Sakkinen wrote:
+> > On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
+> >> Add the number of bits a curve has to the ecc_curve definition to be a=
+ble
+> >> to derive the number of bytes a curve requires for its coordinates fro=
+m it.
+> >> It also allows one to identify a curve by its particular size. Set the
+> >> number of bits on all curve definitions.
+> >>
+> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >> Tested-by: Lukas Wunner <lukas@wunner.de>
+> >> ---
 >
-> This is a downstream driver - are you sure it's got the best code
-> quality?
+> >>   		.y =3D tc512b_g_y,
+> >> diff --git a/include/crypto/ecc_curve.h b/include/crypto/ecc_curve.h
+> >> index 70964781eb68..63d5754e7614 100644
+> >> --- a/include/crypto/ecc_curve.h
+> >> +++ b/include/crypto/ecc_curve.h
+> >> @@ -23,6 +23,7 @@ struct ecc_point {
+> >>    * struct ecc_curve - definition of elliptic curve
+> >>    *
+> >>    * @name:	Short name of the curve.
+> >> + * @nbits:	The number of bits of a curve.
+> >>    * @g:		Generator point of the curve.
+> >>    * @p:		Prime number, if Barrett's reduction is used for this curve
+> >>    *		pre-calculated value 'mu' is appended to the @p after ndigits.
+> >> @@ -34,6 +35,7 @@ struct ecc_point {
+> >>    */
+> >>   struct ecc_curve {
+> >>   	char *name;
+> >> +	unsigned int nbits;
+> >=20
+> > Nit:
+> >=20
+> > Hmm not strongly opionated here but wouldn't it be more consistent to
+> > use u32 here as the types below are also exact bitsize types?
+>
+> I will change this for v8. I will probably delay v8 until this patch=20
+> here has been queued for upstreaming because 11/13 will need a similar=20
+> module alias.
+>
+> https://lore.kernel.org/linux-crypto/20240321144433.1671394-1-stefanb@lin=
+ux.ibm.com/T/#u
 
-No, that is why I have rewritten it and tried to improve on this. But
-like I said, it is my only reference. Is there some other way to verify
-this value (besides perhaps the datasheet)?
+Right for this:
 
-> I'm not seeing any references to registers with numbers as high as the
-> maximum register that's there in your driver for example.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Indeed, I have performed the same check with the same findings. But that
-doesn't necessarily mean that the maximum should be lower, no?
+.. given that I don't have strong opinion on the choice :-)
 
-Do you have some specific modifications of my code in mind regarding
-this?
-
-Thank you,
-K. B.
+BR, Jarkko
 
