@@ -1,117 +1,177 @@
-Return-Path: <linux-kernel+bounces-110621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF8D88615F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:58:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0113886162
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF5101C21899
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:58:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A307285C7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:00:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2411F134432;
-	Thu, 21 Mar 2024 19:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653D6134431;
+	Thu, 21 Mar 2024 19:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="WK54Qvh1"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ff7/4oH4"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64403134422;
-	Thu, 21 Mar 2024 19:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2449613441F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 19:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711051092; cv=none; b=HI0RkLwtuJcgn4SByP6wMD1P1cJ25lCV6+gauRWRWYf7TyifY9bUD2uRqk7YC7S2/neIwg3Z4lo9sTrRM7Sf5ipZRFQmrnYx1+uqPRrXNMOF88aqhj2YkTMwyKWryeZk7qjQr5Nt1VDRpLCK2eB3BUpYrD0VTMQKFAWJ8Q41bcA=
+	t=1711051194; cv=none; b=atkUaQ5BJiVxPZKQgDqNWgU27ddIswvhh7m3pcabCwADosUUZuPgP5OFp4VQkKJklCXVbD7rQa8+iAVz5LZYvtIzaK5SS5wxb8rFZcIdwq49H/1ME4SwcHMeAXyO7k6cf7VlA3trFay+nwvVLQ3DXgFO21wQOCbtO3792cepsNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711051092; c=relaxed/simple;
-	bh=wIJ+KoMAFPGnOWz5mM3Dq9a7rmOXRTwxGoBU1sVmoL4=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=aK+SZF6qnZXffVS8N1nezyr0HSTC2yKir2G4c+9MO1q6M3JPxcfWdrl54+jvJsU/yKP2zHBgD9RyjSlhZA5zxSQBf/YzlKRlI+EODsgUGoUVFH+2hROmE/znu5Ecmz3pp4WFzWtLbIYceYPCsMdmJBTWULS2Y5/Rpj3Bc4S3CjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=WK54Qvh1; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1711051082;
-	bh=wIJ+KoMAFPGnOWz5mM3Dq9a7rmOXRTwxGoBU1sVmoL4=;
-	h=Date:From:To:Subject:From;
-	b=WK54Qvh1bgK7dT+NGgBXVvwdpHWgQ/wyYWqJ3k6KU2r8dbrWB8L4wVDHZ6ah6Sz/2
-	 WPqojASp201H8wu40iEmI1DnHEbrIAlQIZJ4OtxokQpw7EpHTIRjR2Mp0ryEOWrlvR
-	 3Hd3bGK6RCgoB4CcHa8gpsTeRseussEa2PZuQScZtRhHCvBmRltPy/rTU0/5Ci/3yU
-	 TfOWALeQ0OHezT9OIc7Wn613GQVILk3U6a9wgPG5bE3eHBCv3zNpo14KW4PSpgKOM6
-	 sf9kFti6bEp34H0A1oZWJemci+RSWxxKcKoDlkRlyhSa03ei5pzcZbPLrE6vSt2e/p
-	 3j4PvfSkWV9oQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4V0x8V1C3tzlr8;
-	Thu, 21 Mar 2024 15:58:02 -0400 (EDT)
-Message-ID: <b0c3b8ec-90fe-4813-8df5-92168f621808@efficios.com>
-Date: Thu, 21 Mar 2024 15:58:22 -0400
+	s=arc-20240116; t=1711051194; c=relaxed/simple;
+	bh=z0wA0KLIzdreobgSK4RcmRycyOJQ6P5PXTREgfAUx3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VPaEunieX/QVrlNtx4VL7qAB8pt42SmwSpmVPydYI7fXQOnsxDbf9DnVP+x8Hx5P9B+mlJE+znAwn8xFGX9B8LzVKMoNugcMlJIgL2oUQKpqv9Yti9Z+o/QuRsfsoyHHQQzsXpUTv8VbdVuJRzE2Krjnlp3wJi+ovf0CXAi8Vvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ff7/4oH4; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=BYPwtyCYd5a4JYAUK9MQluNVapG0iz3U/+Y3po5f7DY=; b=Ff7/4oH45A2jTNadCdQVtTteKx
+	GvDjUzmbI7lEkAktx9oWHQ81RLamkG6ExAICJUUhg155LXm0ylzDEHKTR9u0rI3DAEpkBIVGyZr4P
+	NJe28imfM7bV3S2h8MfNysnm3habPiFSxr5enFrID713fhv8sUVVroA2OKSIsUQ7tsezkJK0d+gtp
+	F3tPZwVPVxo7QQahLjompHhMnHd8jHkNjYGbg/X5c1QvJZT7EdNGzBkKXHBQ8XWs7ISCJKpY5vIiW
+	ALjGJNPK+9zDOdGzkqj0fAtug+lqv9JTolICvWh99R/7Q4GE3vWl1bCP4GCXJSjcKFPT7ZSgHRadF
+	NcIql1Ng==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnOZn-00000007Tdd-1WHx;
+	Thu, 21 Mar 2024 19:59:47 +0000
+Date: Thu, 21 Mar 2024 19:59:47 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Svetly Todorov <svetly.todorov@memverge.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	gregory.price@memverge.com, wangkefeng.wang@huawei.com,
+	akpm@linux-foundation.org, david@redhat.com, vbabka@suse.cz,
+	naoya.horiguchi@linux.dev
+Subject: Re: [PATCH v3] kpageflags: respect folio head-page flag placement
+Message-ID: <ZfyRsyq03aYVcZ13@casper.infradead.org>
+References: <20240320-kpageflags-svetly-v3-1-b6725843bfa7@memverge.com>
+ <Zfs33TNtHvnjDX3J@casper.infradead.org>
+ <c1425f97-0d9b-441e-a06b-ea00d75a2e73@memverge.com>
+ <ZfxaZa8f0UUY0dCZ@casper.infradead.org>
+ <c2df31dc-185f-4bd1-9e58-b32e024241c3@memverge.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: lttng-dev <lttng-dev@lists.lttng.org>,
- Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
- linux-trace-users <linux-trace-users@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Subject: [RELEASE] LTTng-modules 2.12.16 and 2.13.12 (Linux kernel tracer)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2df31dc-185f-4bd1-9e58-b32e024241c3@memverge.com>
 
-Hi,
+On Thu, Mar 21, 2024 at 12:08:01PM -0700, Svetly Todorov wrote:
+> > > > -	if (PageKsm(page))
+> > > > +	if (mapping & PAGE_MAPPING_KSM)
+> > > >    		u |= 1 << KPF_KSM;
+> > > This might need an #ifdef?
+> > > Say mapping is movable and anon -- then (mapping & PAGE_MAPPING_KSM) is
+> > > true. Before, we called PageKsm, which falls through to a PG_ksm check.
+> > > If !CONFIG_KSM then that flag is always false. But now, we're liable to
+> > > report KPF_KSM even if !CONFIG_KSM.
+> > 
+> > I'm not sure where you see a PG_ksm check:
+> > 
+> > static __always_inline bool folio_test_ksm(const struct folio *folio)
+> > {
+> >          return ((unsigned long)folio->mapping & PAGE_MAPPING_FLAGS) ==
+> >                                  PAGE_MAPPING_KSM;
+> > }
+> > 
+> > static __always_inline bool PageKsm(const struct page *page)
+> > {
+> >          return folio_test_ksm(page_folio(page));
+> > }
+> My bad. What I meant was, if CONFIG_KSM is undefined, then
+> 
+> > #ifdef CONFIG_KSM
+> > ...
+> > static __always_inline bool PageKsm(struct page *page)
+> > {
+> > 	return folio_test_ksm(page_folio(page));
+> > }
+> 
+> will fall through to
+> 
+> > # else
+> > TESTPAGEFLAG_FALSE(Ksm, ksm)
+> > #endif
+> 
+> And you're right -- there is no PG_ksm comparison --
+> but the autogenerated PageKsm will always return false:
 
-This is a release announcement for the currently maintained
-LTTng-modules Linux kernel tracer stables branches.
+Yes, that's true.  Usually we care about this because we can optimise
+out large chunks of code if a config option (eg CONFIG_KSM) is disabled.
+In this case, we're talking about a couple of instructions, and it's
+generally not worth optimising those out in order to add an ifdef in
+the code.  We've got quite a long way with Linux without it becoming
+overrun with ifdefs (compare, eg, the Mach source code), and long may
+that continue ;-)
 
-* New and noteworthy in these releases:
+> > 00	file (or NULL)
+> > 01	anon
+> > 10	movable
+> > 11	KSM
+> > 
+> > Perhaps it might be clearer to say that anon pages are inherently
+> > movable; the movable type really means that the reset of the mapping
+> > pointer refers to a movable_operations instead of a mapping or anon_vma.
+> I see. I misunderstood how the flags are applied.
+> I thought that 11 == (01 | 10) -- i.e. that KSM was an intersection of
+> MOVABLE and ANON. But they're more like mutually-exclusive states. And
+> I doubt that a page will end up in the KSM "state" if CONFIG_KSM is
+> disabled. So we don't need to rely on PageKsm() for the CONFIG_KSM
+> check.
+> 
+> That said, won't
+> 
+> 	if (mapping & PAGE_MAPPING_KSM)
+> 
+> return true even if a mapping is ANON (01) or MOVABLE (10)
+> but not KSM (11)? Shouldn't this at least be
+> 
+> 	if (mapping & PAGE_MAPPING_KSM == PAGE_MAPPING_KSM)
 
-Linux kernel v6.8 is now supported by LTTng modules 2.13.12. If you need
-support for recent kernels (v5.18+), you will need to upgrade to a
-recent LTTng-modules 2.13.x.
+Uh, yeah, that was a mistake.  This should do the trick:
 
-Both releases correct issues with SLE kernel version ranges detection.
+        if (is_anon) {
+                u |= 1 << KPF_ANON;
+                if (mapping & PAGE_MAPPING_KSM)
+                        u |= 1 << KPF_KSM;
+        }
 
-A compilation fix for RHEL 9.3 kernel is present in v2.13.12.
+(all KSM pages are reported as anon pages as well, both before and after
+this patch; see how folio_test_anon() only checks the bottom bit)
 
-Feedback is welcome!
+> > I see your confusion.  We have three cases; head, tail and neither
+> > (obviously a page is never both head & tail).  If a page is neither,
+> > it's order-0 and it is the only page in the folio.  So we handle head
+> > or neither in the first leg of the 'if' where we set KPF_COMPOUND_HEAD
+> > if PG_head is set, and tail in the 'else' leg.
+> 
+> Dumb mistake on my part. For some reason, I thought that every
+> folio->page had its PG_head set.
 
-Thanks,
+At this point, it's bad naming, but it's not worth the churn of fixing
+it; we have a better destination in mind, and we'll get there soon enough.
 
-Mathieu
+> Cool! Thanks for bearing with me. Beyond the KSM stuff, my only
+> hangup is that this patch doesn't account for the handful of
+> remaining per-page flags (KPF_HWPOISON, KPF_ARCH_*). Should I
+> take this diff, tack those on in a second commit, and then put
+> up a v4? Forgive me, I'm very green to the kernel dev process...
 
-Project website: https://lttng.org
-Documentation: https://lttng.org/docs
-Download link: https://lttng.org/download
-
-Detailed change logs:
-
-2024-03-21 (National Common Courtesy Day) LTTng modules 2.13.12
-         * docs: Add supported versions and fix-backport policy
-         * docs: Add links to project resources
-         * Fix: Correct minimum version in jbd2 SLE kernel range
-         * Fix: Handle recent SLE major version codes
-         * Fix: build on sles15sp4
-         * Compile fixes for RHEL 9.3 kernels
-         * Fix: ext4_discard_preallocations changed in linux 6.8.0-rc3
-         * Fix: btrfs_get_extent flags and compress_type changed in linux 6.8.0-rc1
-         * Fix: btrfs_chunk tracepoints changed in linux 6.8.0-rc1
-         * Fix: strlcpy removed in linux 6.8.0-rc1
-         * Fix: timer_start changed in linux 6.8.0-rc1
-         * Fix: sched_stat_runtime changed in linux 6.8.0-rc1
-
-2024-03-21 (National Common Courtesy Day) 2.12.16
-         * fix: lttng-probe-kvm-x86-mmu build with linux 6.6
-         * docs: Add supported versions and fix-backport policy
-         * docs: Add links to project resources
-         * Fix: Correct minimum version in jbd2 SLE kernel range
-         * Fix: Handle recent SLE major version codes
-         * Fix: build on sles15sp4
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Oh, yes, that's a bug on my part.  HWPOISON is definitely per-page,
+not per-folio (although the handling of it differs for hugetlb)
+and I haven't looked at the PG_arch gunk yet.  We are trying to
+sliminate the per-page flags, because there's no space for them in the
+future (we'll have special handling for hwpoison because that really is
+very special)
 
