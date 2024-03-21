@@ -1,90 +1,120 @@
-Return-Path: <linux-kernel+bounces-110038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D92CC885932
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:35:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01440885934
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9400B284BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:35:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943921F2435E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7E183CB6;
-	Thu, 21 Mar 2024 12:35:38 +0000 (UTC)
-Received: from new-mail.astralinux.ru (new-mail.astralinux.ru [51.250.53.244])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983ED83CAA;
+	Thu, 21 Mar 2024 12:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="I3CZK9S+"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9521CA98;
-	Thu, 21 Mar 2024 12:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.250.53.244
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835E51CA98
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711024538; cv=none; b=mDz48pPcd6PMrByqM634gXy+nBqGlb9vJorr1dvkNFIqjI/ldjK0f71tg8pVpDudKjxsAD1c61txGYShnACCJD2EFKbJyYnxSvhHH5Ay+zigxHZ+f/VeDmQFh3Da1Ni9JjevIxe0YsNzy/aiQ/nt0D4OafCIXKV/bs6LZ3+JL6E=
+	t=1711024578; cv=none; b=qo9OOMwvcI1JJt9mBeuwvw86Qs9Kfjqj4WEgvIlLATFV6F+qycVLtl9WwBy4UZolGDiPO6Sfx8ILQGl1bo78d50QJifIiRt9Rs3GhgusuSJsK7SKyU1Fi6Jm/du8mDkZyQyKKEorSQiuVYo5Fuh9u+6eIE4Nc5+1zVij9HcHrB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711024538; c=relaxed/simple;
-	bh=4TKY33L5OYoSI/i+t5Rf7IO4C2V8xKSF29Hm5DbaqXU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CLurwKlMXQXx1VVv6NVzBkh84CJLeuwEdBCoUnXiQzFzjsh/dOMi3DV+NlJSz9lrGZ4ScA/BPzLl6R4FTjBrxmaVLYLZdcuXtdYaUkM5gp/WVZ61zQKmW4bl0t3xydPAq1ldStePfXgAbEJKhu6pE6brI/cCg0s4NwshmAXZ4DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; arc=none smtp.client-ip=51.250.53.244
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [176.59.168.90])
-	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4V0lKt2Rb3zlVps;
-	Thu, 21 Mar 2024 15:35:30 +0300 (MSK)
-From: Anastasia Belova <abelova@astralinux.ru>
-To: "David S. Miller" <davem@davemloft.net>
-Cc: Anastasia Belova <abelova@astralinux.ru>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH v2] flow_dissector: prevent NULL pointer dereference in __skb_flow_dissect
-Date: Thu, 21 Mar 2024 15:34:46 +0300
-Message-Id: <20240321123446.7012-1-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <Zfrmv4u0tVcYGS5n@nanopsycho>
-References: 
+	s=arc-20240116; t=1711024578; c=relaxed/simple;
+	bh=xzWeLsPkYxdX/aZFv4V6kVlUnEU81ZiTAYh3+I2p0xs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YVt731j/TVNvEzNISVpBCThFkbps3EM0M75G3nJPfqWMq00eATHlIsfBH9RxZ64SERIwbOcG1DfvM4M2gX3UxCmmqBehmhCrs84QuQHOEIAlPqYV05ozVQ+2P4m7px6j5eoNL+oGmJncfdNEbOy48fl9Hlog9qJmTGkpgb9EedA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=I3CZK9S+; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=J4v4xirv+alWZBlX1A2mLEAEUfB1AfURODTs/cKQ8J0=; b=I3CZK9S+8W08hz7sUGmxiBQpuz
+	myBzWd9z3pRPoqiy4FxS+j59C1f626HLaO3HKDdmcYVuc4qTxZdYxCdu+s4gOckUkCzflMRuQxgy2
+	pB6wmo6531q7rsdgmtxMVDL+lPzHsBbWGcVNTASGeKXMazAByUJOe4AbLiAoGpfm0U9Xvnw9LICdl
+	6m3vunIU4E4jR4Y1rgFErFjNvOilkNG+6lax9JbIX0OvE0KjIBBL7/OdHnvyIenNWCbz8fX2JhuXH
+	mkE/w98nC+Ur67s2KdobYxmqB7ucVEfZb6dYHjtXlCGGlIVANtFg1MNKu7gnWb3xU/6p05o9XchsD
+	J4/8y1QA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnHeU-00000006j1S-0J5h;
+	Thu, 21 Mar 2024 12:36:10 +0000
+Date: Thu, 21 Mar 2024 12:36:09 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
+ mm: fix a race scenario in folio_isolate_lru
+Message-ID: <ZfwpuRjAZV07_lc3@casper.infradead.org>
+References: <be75859d7e4245939d825da5e881902c@BJMBX01.spreadtrum.com>
+ <Zfg0WLrcOmCtdn_M@casper.infradead.org>
+ <CAGWkznGhiuzkqfeewNq-ykKehvFTBjH2v_==xAS2_7iFqsFk5A@mail.gmail.com>
+ <Zfj_-LbiIsAVWcPX@casper.infradead.org>
+ <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DrWeb-SpamScore: -100
-X-DrWeb-SpamState: legit
-X-DrWeb-SpamDetail: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehuddgtddvucetufdoteggodetrfcurfhrohhfihhlvgemucfftfghgfeunecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeetnhgrshhtrghsihgruceuvghlohhvrgcuoegrsggvlhhovhgrsegrshhtrhgrlhhinhhugidrrhhuqeenucggtffrrghtthgvrhhnpeevhfduuefhueektdefkedvgfekgfekffegvdetffehfefhffejhfehveevudeigfenucffohhmrghinheplhhinhhugihtvghsthhinhhgrdhorhhgnecukfhppedujeeirdehledrudeikedrledtnecurfgrrhgrmhephhgvlhhopehrsghtrgdqmhhskhdqlhhtqddutdeitdeivddrrghsthhrrghlihhnuhigrdhruhdpihhnvghtpedujeeirdehledrudeikedrledtmeegfedvjeejpdhmrghilhhfrhhomheprggsvghlohhvrgesrghsthhrrghlihhnuhigrdhruhdpnhgspghrtghpthhtohepkedprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtoheprggsvghlohhvrgesrghsthhrrghlihhnuhigrdhruhdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtohhmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehjihhrihesrhgvshhnuhhllhhirdhushdprhgtph
- htthhopehnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvhgtqdhprhhojhgvtghtsehlihhnuhigthgvshhtihhnghdrohhrgh
-X-DrWeb-SpamVersion: Vade Retro 01.423.251#02 AS+AV+AP Profile: DRWEB; Bailout: 300
-X-AntiVirus: Checked by Dr.Web [MailD: 11.1.19.2307031128, SE: 11.1.12.2210241838, Core engine: 7.00.62.01180, Virus records: 12528158, Updated: 2024-Mar-21 10:27:40 UTC]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
 
-skb is an optional parameter, so it may be NULL.
-Add check defore dereference in eth_hdr.
+On Thu, Mar 21, 2024 at 04:25:07PM +0800, Zhaoyang Huang wrote:
+> ok. Could the scenario below be suspicious on leaving an orphan folio
+> in step 7 and introduce the bug in step 8. In the scenario,
+> Thread_filemap behaves as a backdoor for Thread_madv by creating the
+> pte after Thread_truncate finishes cleaning all page tables.
+> 
+> 0. Thread_bad gets the folio by folio_get_entry and stores it in its
+> local fbatch_bad and go to sleep
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+There's no function called folio_get_entry(), but clearly thread_bad
+should have a refcount on it at this point.
 
-Fixes: 690e36e726d0 ("net: Allow raw buffers to be passed into the flow dissector.")
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
----
- net/core/flow_dissector.c | 2 ++
- 1 file changed, 2 insertions(+)
+> 1. Thread_filemap get the folio via
+> filemap_map_pages->next_uptodate_folio->xas_next_entry and gets
+> preempted
+>     refcnt == 1(page_cache), PG_lru == true
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 272f09251343..68a8228ffae3 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -1139,6 +1139,8 @@ bool __skb_flow_dissect(const struct net *net,
- 
- 	if (dissector_uses_key(flow_dissector,
- 			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
-+		if (!skb)
-+			goto out_bad;
- 		struct ethhdr *eth = eth_hdr(skb);
- 		struct flow_dissector_key_eth_addrs *key_eth_addrs;
- 
--- 
-2.30.2
+so the refcount should be 2 here.
 
+> 2. Thread_truncate get the folio via
+> truncate_inode_pages_range->find_lock_entries
+>     refcnt == 2(fbatch_trunc, page_cache), PG_lru == true
+> 
+> 3. Thread_truncate proceed to truncate_cleanup_folio
+>     refcnt == 2(fbatch_trunc, page_cache), PG_lru == true
+> 
+> 4. Thread_truncate proceed to delete_from_page_cache_batch
+>     refcnt == 1(fbatch_trunc), PG_lru == true
+> 
+> 5. Thread_filemap schedule back and proceed to setup a pte and have
+> folio->_mapcnt = 0 & folio->refcnt += 1
+>     refcnt == 2(pte, fbatch_temp), PG_lru == true
+> 
+> 6. Thread_madv clear folio's PG_lru by
+> madvise_xxx_pte_range->folio_isolate_lru->folio_test_clear_lru
+>     refcnt == 2(pte,fbatch_temp), PG_lru == false
+> 
+> 7. Thread_truncate call folio_fbatch_release and failed in freeing
+> folio as refcnt not reach 0
+>     refcnt == 1(pte), PG_lru == false
+> ********folio becomes an orphan here which is not on the page cache
+> but on the task's VM**********
+> 
+> 8. Thread_xxx scheduled back from 0 to do release_pages(fbatch_bad)
+> and have the folio introduce the bug.
+
+.. because if these steps happen as 7, 8, 6, you hit the BUG in
+folio_isolate_lru().
 
