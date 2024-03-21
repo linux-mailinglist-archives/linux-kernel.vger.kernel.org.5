@@ -1,168 +1,182 @@
-Return-Path: <linux-kernel+bounces-109975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1E7885874
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:38:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F4E885876
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68520B21181
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:38:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A41B6B21851
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D522358AD3;
-	Thu, 21 Mar 2024 11:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742C059B76;
+	Thu, 21 Mar 2024 11:39:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NFKKE+Ih"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ymD8F85R";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wuaX50Yn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zBpTmHrT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/XrvFpRf"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2962958AA6
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E1E59148
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711021102; cv=none; b=j0JL0zT/4Pn4TONE/hDYOXHLHMRDrcsRwxE4b2hzyNvYlyC1PMVGm1SvOIIUc2ACxOK5cCKtjeq4zVtA5AX0h1ICJS8jKb7t9/7oraosVYLIJeJ2mZMKUsMKHpi9qfuxX58uRH7j/r0lZ+oUeoBD0ekLfrtlHRV2s9z8/vhy3Zw=
+	t=1711021141; cv=none; b=WkK5tkWQs52iqxWrNdVaTk0jeZ1Y5tz339glsiWwl0My0HLYk+Fdzb1rJj2tBmcVRnq9DAxpOeTgTUU2edZ8Mjb2s0djrAW5pvt1seVaUXUTHMZ0lGcOXgijhqrhIvaNe8KwKejteHpX/vRfr4bI/RNjr7OH+QPZGohqVn9SEYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711021102; c=relaxed/simple;
-	bh=iYK9jfu9DC6BFEctqDupK3Qad3FBXBEHAMO4m8Soxi0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JZfWJm3t1LL3av7/Y2Vd9Gmke301kmYC6LzUJnlxwO8EuJ2QHUVGHtscOypT9q9nfjjev+k8k5UwK+EuA5AeuyZV8KIif6XySrQeLWMmR/h/ic28Fpthp75eVOPYbCXyPdJAHOTJlHYvcIJhtOYiqL9b63uDnirPKmgEJwzP9Rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NFKKE+Ih; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-568c714a9c7so912333a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711021098; x=1711625898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=HudGhkdL0TRk/kAqLEQEzSVrWU3AjDG9efwax4XYpOU=;
-        b=NFKKE+IhFcv8Plt/wBv5LU9WCIdcrOMGxOlkEac/y/yi5vhISGe4OzEkRjBNKxjKfW
-         5Y2ZqN5rMMbZSg+NHLGUtqmBUQPZgyVZKtZ0JNXESLlH26HytwWB8NLexuXky/tTT3aM
-         k2x69W9/DOkSJakPHM0t8WHboXXXcelRZ3rUvRADeRIn6qFSJIfB+cJmXzLOcRfQtxQs
-         7/pjNIZe3SEZSO7hEC3G7vRbyIg033x/E8jg7QbBaJVA84zvQVLQ7ODZ1k8WGAX/8Vjs
-         3laROPhXHEhI2tpCovsSzeZ00HLwQr/O46Y1Kp0hHCJ3xse3HFnkDlLebJWM+/OStWzm
-         7jnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711021098; x=1711625898;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HudGhkdL0TRk/kAqLEQEzSVrWU3AjDG9efwax4XYpOU=;
-        b=HNuRGETAzWCPaCSVDxtnAmL5HkDzimEWsRh5fGKKII1MjligqEPv77vyaO7R0H0gzg
-         xWdUxd/3rRhRMm1We5G7U7658kVkcRFYyIWvzQxn/Ia44ePjKb6aaNAgwidK8jlidBZc
-         l6jVGXoRsTLaXmqmsr+phgj1jhAZdicBZ0/xmd6htxoiMd35/vvqVI0Y96KMB6iDj3Mq
-         hHXukI0KwdbWYHy6TziD4jzGGpTsH0LMqTCkME5B3JTuxbekvtQMSj2YxB/iuBynamSx
-         q4kvBtaDGI4wjdwyHPYENdbpY6zfvJ/1bNTroAm89cunscthorQOFuoE4tKqkG2iAR2I
-         UHAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKF8t2EY4uZnGdH6JGcbFup566GOkltoLmuEJOO4iJfvw9y3DniUWOTg9g1kx6uOljKhpZ9Lpp1PyoVJ0vVF4LlIz3ok9W7mmXNsdj
-X-Gm-Message-State: AOJu0YzOxwWFpcvF9HXCr5oX60St/I3v8mfUCjoaWj01RatBg7CXgcQ0
-	gQLbzo2Z+lxqXGgCgm0kesGczodB/pdNi6TBUTpjkOqDt20ShiK0mCWr6BE0gBQ=
-X-Google-Smtp-Source: AGHT+IExzt3Ti4Xm50L8szl/w8vFlZj7BHP1L1Bis5u1v03h3e9ZqDmR29bn6CUPaoIZV7aAdWNFdg==
-X-Received: by 2002:a50:d702:0:b0:568:b484:8a04 with SMTP id t2-20020a50d702000000b00568b4848a04mr1267210edi.35.1711021098263;
-        Thu, 21 Mar 2024 04:38:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id p5-20020aa7d305000000b0056a2b87787dsm4384571edq.37.2024.03.21.04.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 04:38:17 -0700 (PDT)
-Message-ID: <93a6fb3d-b96b-4640-8194-7f778a70fdbe@linaro.org>
-Date: Thu, 21 Mar 2024 12:38:16 +0100
+	s=arc-20240116; t=1711021141; c=relaxed/simple;
+	bh=YR9q8iX1LsMRbqJycj05LpnC1vzuyORxCMBLEDPHkzs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SK1ht8eMhRuWqJ9H7wcRP0CFdVyHacXFbJzGHtEqGs8vZWIt1224FFkNC6cjwXZzEXblW+IeQtAZ6KS7iGKVIaiqo4ri4X4lRefH42t50SHslaLFgqsObDoDzFRdHjZuj0Y4eCm730i/7Nawn/35JFvDwarD7lpaA3AvXWbJFrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ymD8F85R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wuaX50Yn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zBpTmHrT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/XrvFpRf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A6EAF372DF;
+	Thu, 21 Mar 2024 11:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711021136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pt3+2/nDTFR616tg5a69R25p8gHMQ8L45m+oyGrsQFM=;
+	b=ymD8F85RIUZAxh/l7P9lYEmI0mPCxwGXdPCf3MkKG7U9ujXTLCodUPVWtT+F7gh3XB/yPq
+	jC/cr1RMa9YSFSm5d4PZ6YCxWR065UVlnUnQXMpShGqZRHd/NpEzrvqflVCBcOVtpxR5WP
+	hk3wOCkVlk6JcPG/Nqx1kqXVLAGppq0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711021136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pt3+2/nDTFR616tg5a69R25p8gHMQ8L45m+oyGrsQFM=;
+	b=wuaX50YnFTJqwgi41Fj0EU6hhYRJw8uHlbqlduAsulFpP06KU8NmZwXbLWxAsUJdJEUALe
+	JqaTToDNcVkkX+BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711021133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pt3+2/nDTFR616tg5a69R25p8gHMQ8L45m+oyGrsQFM=;
+	b=zBpTmHrTdPQOEMrXGSmHyxDxWSCZKqO54njWMUR/WJTe+ImBjeMlAO2gMFyEgUEU6pE6Mx
+	nPNgi/x98bA4oVV0GP1MA4g1jek17RSig/i7eWdz/8ryJzD/c4snWDVQsmZhI+mtbgndF0
+	Wfk7sYuJuZUOvWlj23Kfo9iP4bwZi8g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711021133;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Pt3+2/nDTFR616tg5a69R25p8gHMQ8L45m+oyGrsQFM=;
+	b=/XrvFpRfPYITHNqpD+ls/w3AGp7UQfUAtaYfMJwvy90ZS5uGJW9HW5qM67PFdFmn6qCj5S
+	rA/FslVbKfLFliBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C8D513976;
+	Thu, 21 Mar 2024 11:38:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zjczJk0c/GVzNQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Mar 2024 11:38:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 44C52A080F; Thu, 21 Mar 2024 12:38:49 +0100 (CET)
+Date: Thu, 21 Mar 2024 12:38:49 +0100
+From: Jan Kara <jack@suse.cz>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Jan Kara <jack@suse.cz>, wenyang.linux@foxmail.com,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Dave Young <dyoung@redhat.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 8/9] fs: inotify: delete these unnecessary
+ static variables it_zero and it_int_max
+Message-ID: <20240321113849.hfzmnz6p3cjbmmwt@quack3>
+References: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+ <tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
+ <CGME20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6@eucas1p2.samsung.com>
+ <20240320103603.u6uqhk6viu4qkaht@quack3>
+ <20240321105555.f4qg5g3wbe57mzzx@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] reset: gpio: Fix missing gpiolib dependency for GPIO
- reset controller
-To: Mark Brown <broonie@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- linux-kernel@vger.kernel.org
-References: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
- <3c5efec9-cb29-4226-8701-2917ce3c2876@linaro.org>
- <94f51c4d-d954-45f6-b222-18ff3be5b5d1@sirena.org.uk>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <94f51c4d-d954-45f6-b222-18ff3be5b5d1@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321105555.f4qg5g3wbe57mzzx@joelS2.panther.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zBpTmHrT;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="/XrvFpRf"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.12 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[foxmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,foxmail.com,xmission.com,kernel.org,chromium.org,redhat.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.11)[95.72%]
+X-Spam-Score: -3.12
+X-Rspamd-Queue-Id: A6EAF372DF
+X-Spam-Flag: NO
 
-On 21/03/2024 11:59, Mark Brown wrote:
-> On Thu, Mar 21, 2024 at 08:18:36AM +0100, Krzysztof Kozlowski wrote:
->> On 20/03/2024 20:59, Mark Brown wrote:
+On Thu 21-03-24 11:55:55, Joel Granados wrote:
+> On Wed, Mar 20, 2024 at 11:36:03AM +0100, Jan Kara wrote:
+> > On Tue 19-03-24 23:57:49, wenyang.linux@foxmail.com wrote:
+> > > From: Wen Yang <wenyang.linux@foxmail.com>
+> > > 
+> > > Delete unnecessary static variables (it_zero and it_int_max)
+> > > and encode them directly in the table entry.
+> > > 
+> > > Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+> > > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> > > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Joel Granados <j.granados@samsung.com>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: "Darrick J. Wong" <djwong@kernel.org>
+> > > Cc: linux-kernel@vger.kernel.org
+> > 
+> > This looks as a sensible cleanup but I don't see the first patch in the
+> > series (and neither it is archived at lore.kernel.org) so I cannot really
+> > verify whether your conversion is correct...
+> This was my original comment. If you want to see the cover letter
+> look for this mail ID tencent_06797E65CFC655DCD4F0414B9380E95ECC08@qq.com
 > 
->>> The GPIO reset controller uses gpiolib but there is no Kconfig
->>> dependency reflecting this fact, add one.
-> 
->> Lack of dependency was intentional: because there is no dependency.
->> GPIOLIB is optional. Because of that I added few stubs for missing
->> GPIOLIB functions, but I missed this stub here.
-> 
->> I propose to add gpio_device_find_by_fwnode() stub for !GPIOLIB case,
->> instead of adding dependency.
-> 
-> In general the stubs do make sense however in this specific case given
-> that the driver is specifically to control a GPIO rather than using a
-> GPIO along with controlling some other thing a dependency does seem like
-> it makes sense.
+> Not sure why it separates the cover letter from the rest of the patches.
 
-Then you add dependency in wrong place. The warning you have is in:
-drivers/reset/core.o
+No, that is actually a different email :) Based on lore the message ID
+should be:
+26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com
 
-But the dependency you add is in RESET_GPIO, which is a separate driver.
-While the driver indeed wants GPIO, this won't solve the original
-problem. You still can have RESET_GPIO disabled and core still has the
-gpiolib call to missing stub.
+but the email is not in the archive...
 
-Best regards,
-Krzysztof
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
