@@ -1,134 +1,95 @@
-Return-Path: <linux-kernel+bounces-110485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C45F1885F91
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:21:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A6A885F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 651C7B2626D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:21:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5E091C233E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F3812C814;
-	Thu, 21 Mar 2024 17:19:55 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A6956768;
+	Thu, 21 Mar 2024 17:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOv9vGLj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D5685280
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07CB79E0;
+	Thu, 21 Mar 2024 17:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041595; cv=none; b=f0kCg1M2SDPlmCU8uevHr6A4EqkHxGe5hcOg7Zka1AUPRWNlze91O09FzjCAIzePlf9ti0sBu0RTbbeJvX6dj/YUtibwyQBrkSM1TCOdF2m7C0zfuVbDMU3IoOXlNqOEQSr4GtkpbAxSwmxaT9OoLicJbA0PjC2TXF+9vo+Ev1c=
+	t=1711041563; cv=none; b=MfrdG3sYGnQ889QkONiuwD79wwt3pl/OhZwgQ2EgzgjEmKu5l1cupXlm3752IXfrDzwdvI2JmU7KKy3jonBgZyx4sVbhZ0JKfHUW4/Fr3pzKTo/gDM97IhE7XN/s/ulV5hcDwixIP4ycuNDvIeBljmd3tQbcWnvB+XRDXlF74VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041595; c=relaxed/simple;
-	bh=u1+YL1chG1fDzrnBGltFxRHMEuYiPqoh/58IrrzbAxE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ah6xIMvExd8uOwUXZr9VqflCQ0Mm9N0DdzWvCvOhN9L4b6lErBFj2HPGWCHOMYAgnsadPZrkzFcyiTK8/9aDLCiCnKA68+BtlO41ojrBGgbOhS4Wj+FmNl7XD0PqJWNyYyCX9wQ6h5SMnG0M2gQv0DhU0W5/Exb/liHgaZCvLOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V0sHP02Mtz9xqpf
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:03:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 53797140390
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:19:39 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.81.213.73])
-	by APP1 (Coremail) with SMTP id LxC2BwAH_BQNbPxlII6+BA--.51964S4;
-	Thu, 21 Mar 2024 18:19:38 +0100 (CET)
-From: Petr Tesarik <petrtesarik@huaweicloud.com>
-To: Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Michael Kelley <mhklinux@outlook.com>,
-	Will Deacon <will@kernel.org>,
-	linux-kernel@vger.kernel.org (open list),
-	iommu@lists.linux.dev (open list:DMA MAPPING HELPERS)
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	Petr Tesarik <petr@tesarici.cz>
-Subject: [PATCH v3 2/2] bug: introduce ASSERT_VAR_CAN_HOLD()
-Date: Thu, 21 Mar 2024 18:19:02 +0100
-Message-Id: <20240321171902.85-3-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240321171902.85-1-petrtesarik@huaweicloud.com>
-References: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+	s=arc-20240116; t=1711041563; c=relaxed/simple;
+	bh=e9QuUBFXFc8Wyy/GNM5FNS29OFCC+SFfSjmFYLP2fno=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=ja+ftCZrqcwycM5LI5yz+PyZw+CtorD0Ilqv+OV35zycWK45sHB2zCeoTyVS2Dq/Mbs4KL0hQaBAJKO42Hbqso6fiBYPxVeBeUKHJxWUjPBdkLdJuC3U6VrdYQP5o1R4v81h9EDyKrZ37k6A0kdgwmfh2ab2JC0t6O9Sno3XUIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IOv9vGLj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB0F0C433F1;
+	Thu, 21 Mar 2024 17:19:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711041563;
+	bh=e9QuUBFXFc8Wyy/GNM5FNS29OFCC+SFfSjmFYLP2fno=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=IOv9vGLjMeR3MvY8Vzj+ClFKnODJDn5UeWSa1KBet3xlZjuno6nHcjjUrFh+H8zWw
+	 7u6RXZoZ+WaoPGhIYpJYvEoEQSY4Dqcl3uvX/0a1VC2kLcnx0cWPOeF5VzGhMQuURC
+	 Iu0RzdP3Sm1PdLJblarYt01eS7GoyZ4LZVcdT6yXvN1W7pXO369OvKhr8uE5TmnyEX
+	 //fMstz3YdK1LddLowxS7HyuVQHwn8gLc+BGpHoJUnt9pF0hORKJDaYG/B1Bz2CmKW
+	 zsNb8ybdYzk3SyOXmMzw705og+oDk7mJNpJvNAttV3T9WZuVnrl0oRd2YIb9HyO+jb
+	 9s3Z7Vi5Uvwqw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwAH_BQNbPxlII6+BA--.51964S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1DWF1xKw4ktr45GrW8tFb_yoW8WFy7pF
-	9xArn5KF4jqFyxZF12k3srCF1fK34v9347Cas0gryYvr17tF9aqFWDKrW3Wa4qqr4vgF4a
-	kw1FgrWYyw1UArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-	ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x0JUzWlgUUUUU=
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 21 Mar 2024 19:19:20 +0200
+Message-Id: <CZZLM1BW7UAS.2K5EI7YU6TI3L@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
+ <lukas@wunner.de>, <bbhushan2@marvell.com>
+Subject: Re: [PATCH v7 09/13] crypto: ecdsa - Replace ndigits with nbits
+ where precision is needed
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
+ <davem@davemloft.net>
+X-Mailer: aerc 0.17.0
+References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
+ <20240320114725.1644921-10-stefanb@linux.ibm.com>
+In-Reply-To: <20240320114725.1644921-10-stefanb@linux.ibm.com>
 
-From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
+> Replace the usage of ndigits with nbits where precise space calculations
+> are needed, such as in ecdsa_max_size where the length of a coordinate is
+> determined.
+>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Tested-by: Lukas Wunner <lukas@wunner.de>
+> ---
+>  crypto/ecdsa.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+> index 1814f009f971..4daefb40c37a 100644
+> --- a/crypto/ecdsa.c
+> +++ b/crypto/ecdsa.c
+> @@ -266,7 +266,7 @@ static unsigned int ecdsa_max_size(struct crypto_akci=
+pher *tfm)
+>  {
+>  	struct ecc_ctx *ctx =3D akcipher_tfm_ctx(tfm);
+> =20
+> -	return ctx->pub_key.ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
+> +	return DIV_ROUND_UP(ctx->curve->nbits, 8);
+>  }
+> =20
+>  static int ecdsa_nist_p384_init_tfm(struct crypto_akcipher *tfm)
 
-Introduce an ASSERT_VAR_CAN_HOLD() macro to check at build time that a
-variable can hold the given value.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Use this macro in swiotlb to make sure that the list and pad_slots fields
-of struct io_tlb_slot are big enough to hold the maximum possible value of
-IO_TLB_SEGSIZE.
-
-Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
----
- include/linux/build_bug.h | 10 ++++++++++
- kernel/dma/swiotlb.c      |  2 ++
- 2 files changed, 12 insertions(+)
-
-diff --git a/include/linux/build_bug.h b/include/linux/build_bug.h
-index 3aa3640f8c18..6e2486508af0 100644
---- a/include/linux/build_bug.h
-+++ b/include/linux/build_bug.h
-@@ -86,4 +86,14 @@
- 		"Offset of " #field " in " #type " has changed.")
- 
- 
-+/*
-+ * Compile time check that a variable can hold the given value
-+ */
-+#define ASSERT_VAR_CAN_HOLD(var, value) ({		\
-+	typeof(value) __val = (value);			\
-+	typeof(var) __tmp = __val;			\
-+	BUILD_BUG_ON_MSG(__tmp != __val,		\
-+		#var " cannot hold " #value ".");	\
-+})
-+
- #endif	/* _LINUX_BUILD_BUG_H */
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 3779a48eec9b..8256fcdc0cf6 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -285,6 +285,8 @@ static void swiotlb_init_io_tlb_pool(struct io_tlb_pool *mem, phys_addr_t start,
- 		mem->areas[i].used = 0;
- 	}
- 
-+	ASSERT_VAR_CAN_HOLD(mem->slots[0].list, IO_TLB_SEGSIZE);
-+	ASSERT_VAR_CAN_HOLD(mem->slots[0].pad_slots, IO_TLB_SEGSIZE);
- 	for (i = 0; i < mem->nslabs; i++) {
- 		mem->slots[i].list = min(IO_TLB_SEGSIZE - io_tlb_offset(i),
- 					 mem->nslabs - i);
--- 
-2.34.1
-
+BR, Jarkko
 
