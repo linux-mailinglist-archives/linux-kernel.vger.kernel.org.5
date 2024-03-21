@@ -1,80 +1,92 @@
-Return-Path: <linux-kernel+bounces-109953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8777788582B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:22:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83ECF88583F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42135283156
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:22:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 237D3B21BCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BAD58229;
-	Thu, 21 Mar 2024 11:22:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1615822B;
+	Thu, 21 Mar 2024 11:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QjUcB880"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="W99tkOqB"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BDB56B9C;
-	Thu, 21 Mar 2024 11:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A4B58228;
+	Thu, 21 Mar 2024 11:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711020154; cv=none; b=n5BM3NV0HvAOED7rv6WvrM04sB/H1q7el5Qc1/fsxQdjqwIGG6TqhTi7FqvT+nMaoi09Vlhjhz2BPvlQb2IombEfbn2TxMLxiqYXQ79pGQQODVIvtlnrBwg4xOaYHUeprFyTXMQZoaIX5l8hGXU9M3GrO8uO8yq6hkr98hZgZLc=
+	t=1711020278; cv=none; b=DqdoqsmPZX8AEG55T29y3qqsU/yNyr6TNBUjOKDLbp/S87LGp7OQI3DytqW/3Z7zgOG1/IymVdS2eMzpiErvOXFZT2Njxfkh5yONZzVLehPx2mnZ5ny7NbOMjUm8iLkBURpD6neluPfpjiw3Z4CKre+4Ixh4Uts1f2SN5X6tAA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711020154; c=relaxed/simple;
-	bh=B5hYVgV8ybe0NDF3WjWOs8927InHswBxtTUnOsK0Th8=;
+	s=arc-20240116; t=1711020278; c=relaxed/simple;
+	bh=2xmJIUpAnX0WoR/2adOWV/CSntMFENrOlMHHKXNqdjQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y5XiQlarvdLxToBD2w3GX2PYVMAay8C/Q9P6I320RkEfweLBMkTKYCu5PekjaqMQag++wswvub7VvzHU/gpZ09XSdFSgByXq3cKHJaTjebaC1vvB3F6Jrp/3TO6/UGfuOE79uSh9rEYIa4d8pZnO6UuAffVpnALRBTG4RECPemE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QjUcB880; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711020153; x=1742556153;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B5hYVgV8ybe0NDF3WjWOs8927InHswBxtTUnOsK0Th8=;
-  b=QjUcB880CM66JXIepPu7tgzU9DGQGmxziQZ+UnSyaYHPB+H2h6MQ3UZV
-   23KdZg3eQki6n/HJTD20GcFWbU3zicjApCeluh7pyQ7BZaSnZC13kx2Eq
-   NGA+DznE8sJUoBGmmcXRrbL7D8yYyYBLxDFn+YitADSON9NxobvNZHQAD
-   Ozs+zsxG3ZCUTVUcW/FX4764zva0Q/cIT7Qr9omABkV3nq8FQvEYM4Ch6
-   GSzX9j/FekQkuE5wQPEJoyiL0N5ZuintXdGHRdCxFg+UTwKKWJ0C0IN6c
-   asJEzPQUFH8h6BojkeB402OF9Wiq3Tm9lfIhld1t7gtOxI5GDYpfmlEiN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6115754"
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="6115754"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 04:22:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="914704304"
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="914704304"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 04:22:28 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rnGV7-0000000Eqax-42sD;
-	Thu, 21 Mar 2024 13:22:25 +0200
-Date: Thu, 21 Mar 2024 13:22:25 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
-	mazziesaccount@gmail.com, ak@it-klinger.de,
-	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
-	linus.walleij@linaro.org, semen.protsenko@linaro.org,
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] iio: pressure: Add timestamp and scan_masks for
- BMP280 driver
-Message-ID: <ZfwYcSB2B2WtlFgM@smile.fi.intel.com>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
- <20240319002925.2121016-6-vassilisamir@gmail.com>
- <ZfrDW1ESxnFg__od@smile.fi.intel.com>
- <20240320184516.GB36450@vamoiridPC>
- <ZftJK3cqFNU9-dCG@smile.fi.intel.com>
- <20240320213139.GA52721@vamoiridPC>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fED/qPVSN663kh3X01UD4mHGXbN1+s2GuOFYFw1oC09Azgh2t34Ri9IHvKZL0N2is1gi5CY+HsUCkU98AJnVKAbMaP4da3oTul/Qm3sfWMI79DDR7gCHmp0SYCkzNSwr0U/dLrvzneUmg3cLX+6EXuZ2Zzcr1H6LK8qOiAOySLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=W99tkOqB; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/68CR4f0azvzcAmAfC291AOl4wS99r8FrcRejyLq6xM=; b=W99tkOqBejY893YpC1mtzh9mSp
+	gSa43/zdRcQpaebucrIyVrHxRsSIDRvVgZnItXAPDixGHUB5u4//H27eDTOTj5newSQixHC6+jynm
+	r5qETHV1Ogr4iSiXWxS3zADgqkER/fq/MSBqvSy/GOvGWWlzeV+SY1pG5MjPt9mOY5lligJmN3UIf
+	yDp2jMybyFbaLB866k7EJlMFVUhcd0byz9JSyy+ds6mo4HUA1IBkeXoaAVNobNqzOepGc56fHbhct
+	zKUDDEkpK0iAbRYRuCslUcOC/6KBZycr2Okkdz1t+aI3TOKfG5SePHOuDK5s5Tw7nf21CYpdbDkyk
+	AQVn5l7g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46498)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rnGWd-0007UH-2y;
+	Thu, 21 Mar 2024 11:24:01 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rnGWW-0003bL-0S; Thu, 21 Mar 2024 11:23:52 +0000
+Date: Thu, 21 Mar 2024 11:23:51 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: David Laight <David.Laight@aculab.com>,
+	Ard Biesheuvel <ardb@kernel.org>
+Cc: 'Jiangfeng Xiao' <xiaojiangfeng@huawei.com>,
+	"arnd@arndb.de" <arnd@arndb.de>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"haibo.li@mediatek.com" <haibo.li@mediatek.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"amergnat@baylibre.com" <amergnat@baylibre.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
+	"gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>,
+	"kepler.chenxin@huawei.com" <kepler.chenxin@huawei.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"nixiaoming@huawei.com" <nixiaoming@huawei.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>,
+	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+	"jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Message-ID: <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+ <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+ <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,50 +95,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240320213139.GA52721@vamoiridPC>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Wed, Mar 20, 2024 at 10:31:39PM +0100, Vasileios Amoiridis wrote:
-> On Wed, Mar 20, 2024 at 10:38:03PM +0200, Andy Shevchenko wrote:
-> > On Wed, Mar 20, 2024 at 07:45:16PM +0100, Vasileios Amoiridis wrote:
-> > > On Wed, Mar 20, 2024 at 01:07:07PM +0200, Andy Shevchenko wrote:
-> > > > On Tue, Mar 19, 2024 at 01:29:24AM +0100, Vasileios Amoiridis wrote:
+On Thu, Mar 21, 2024 at 10:22:30AM +0000, David Laight wrote:
+> How aggressively does the compiler optimise 'noreturn' functions?
 
-..
+I've seen cases where the compiler emits a BL instruction as the very
+last thing in the function, and nothing after it.
 
-> > > > > +enum bmp280_scan {
-> > > > > +	BMP280_TEMP,
-> > > > > +	BMP280_PRESS,
-> > > > > +	BME280_HUMID
-> > > > 
-> > > > The last is not a terminator, please leave trailing comma.
-> > > > 
-> > > > > +};
-> > > 
-> > > What do you mean it is not a terminator? In general with the enum
-> > > variables I would write:
-> > > 
-> > > 	enum var { a, b, c };
-> > 
-> > This example is different to what you used. I.o.w. _this_ example is okay.
-> > 
-> > > Why in this case there is a comma needed after the BME280_HUMID element?
-> > 
-> > It's pure style issue that helps to avoid the unneeded churn in the future in
-> > case the list is getting expanded. You can easily imagine what I mean.
-> > 
-> 
-> Ok, that definitely makes sense, thank you! In general, should this be applied
-> to structs as well?
+This is where the problem lies - because the link register value
+created by the BL instruction will point to the instruction after the
+BL which will _not_ part of the function that invoked the BL. That
+will probably cause issues for the ELF unwinder, which means this
+issue probably goes beyond _just_ printing the function name.
 
-Yes, to structs and/or arrays initializers when the list has a potential
-expanding. We don't have trailing comma when:
-1) it's a terminator entry (nothing must be after);
-2) it's on the one line (as in your above example).
+I have vague memories that Ard has been involved in the unwinder,
+maybe he could comment on this problem? Maybe we need the unwinder
+itself to do the correction? I also wonder whether we should only
+do the correction if we detect that we're pointing at the first
+instruction of a function, and the previous instruction in the
+text segment was a BL.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
