@@ -1,235 +1,129 @@
-Return-Path: <linux-kernel+bounces-110582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8EAE8860EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:18:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805FD8860EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6801D2851B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:18:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E99E1F23C4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5661339AB;
-	Thu, 21 Mar 2024 19:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D99E134402;
+	Thu, 21 Mar 2024 19:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QjTdQaqb"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f/thp/5F";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="c1iv8jqh"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A80383A4
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 19:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B7613341A;
+	Thu, 21 Mar 2024 19:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711048684; cv=none; b=f2GYnPJ4KEH67+3QJzf1mZAnvGohDalTrJmsfz8h9WvbZGN2G43el1OJJ8aI+wj0+VnQfZFKiXUQ4ey9dNV+6Ca37V/6WdXBR/ygppK76bIrb1q6TCroapd8I4ndpOqRv2AAlxrWGL8gy2WRvRez/aLqvjChE1PRe1hiZKQuQZE=
+	t=1711048861; cv=none; b=KrlpuB/dV5Pp9CkSQZa4Ct9F7UpY9QX/A3nwxUX4nRcOZ8jp81cdAEO83kdGVjmFIVCIaebM367o4Pib5KO/cFLkoDhBcIRrEOhhjmar+kvFFPTECnvb04IpV/NEd/PkPykz0mcnsEOMwzeZKxUMsZKetSPjWcQULh9PcGV0IAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711048684; c=relaxed/simple;
-	bh=p8Ou2G/RlNyzRT5XlnLQ1UUYykGxdhEu0TuutbvWHIc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uZnyKf1AYi5AVZGvFk/A9GSQ0slbKvoBdfCEBXgNpWl0jLXxwh1nNB3woVcc5Du6YRcfwTElvivcOJDmsQG5IWlEscBGD3w6XVflzsOlQgQewdqM5BoMUmPDLq8CQiQFJVg0AB/TqeKCJThokxHwmsZ3I8qGIAoUOnY/vKYv3gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QjTdQaqb; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711048678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711048861; c=relaxed/simple;
+	bh=atXL0Gjof7O2+DckvspFpzkt0LG8lU6zn8MpAKBl8hI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Mu6+PDjQcbs+XBFM0RRv9MjZwmayB7gtFmO6L4USwsev4+LFvqURq1fSzhsF2I/U+gcWumHg8gEUCmwUVMg3eMZixX5+Qm+LzRKlJcoS+jRizOGvMam1qJbgwrMq1tYakvjTO/pTF4dtcr8G3ORGfrp7kPy/i4GS2YYxira0Cfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f/thp/5F; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=c1iv8jqh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 21 Mar 2024 19:20:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711048857;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kOtlv+4nkRuh9/gidbp7rsR+GDOClRxPEKCNqAqOIQE=;
-	b=QjTdQaqbcBNzwpEMBU9IBZugzAMlhMMFdYxNitzgmpucKHWzSGX4Zk92SZbCFTpFDonZjf
-	pR5tzcoM7uCYTAMk9SurGcJc2Qm0uPmQNJefv19v1kVOGATsq+dIEWbuchV5Ebs4siq+pE
-	4Bo/MU9UxGB63aNxcb3ud210HehtSBc=
-Date: Thu, 21 Mar 2024 15:17:44 -0400
+	bh=ewl+E6trDEwiIkwR4RjKfDmS2foWpVfS4m+Kh4nbms0=;
+	b=f/thp/5Fw6NuwC6VJS1psi1LPUgl2V3rTvi5UCXJUG29/jhfsmHXEtEDK1BTiZ9b9Ct5X/
+	hCHb+e11hR2ViOKIogDQKs+b8I/A4gmU4hZkmJrBg4v/ke7YgAc+E6Ar3k4WMuYq4SI+dG
+	3h3pFe8ruiqSdch1Pzk8k0Jm5zTAaUPnud95n2ggxRwzpax9egTM10nGYYk+rXtBupNvWo
+	qP8T5+80w+OlDKyB+qMpbPfcTqvaKUAOiX5Xh8iX1nr2ay5T7kKoa8JSQpmvPKtGUMBP8c
+	nMKfd/s/osWPkFrOZrpEAJ31kK1fgX72Yqs1Ez8NrnOC1FOEg841nkVweGpwpA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711048857;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ewl+E6trDEwiIkwR4RjKfDmS2foWpVfS4m+Kh4nbms0=;
+	b=c1iv8jqhe2CnbBH6iKh4tprScOMggH2LG1oyozYS/4kj4bgQ8qUF0uhnfT+qvptnLgWWVd
+	oeiM17wvG6OVjbBw==
+From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/percpu] x86/percpu: Enable named address spaces for GCC 9.1+
+Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Andy Lutomirski <luto@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Kees Cook <keescook@chromium.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240321164647.289879-1-ubizjak@gmail.com>
+References: <20240321164647.289879-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-Content-Language: en-US
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
- <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
- <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Message-ID: <171104885594.10875.6089335444765928119.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On 3/21/24 15:08, Tomi Valkeinen wrote:
-> On 21/03/2024 20:01, Sean Anderson wrote:
->> On 3/21/24 13:25, Tomi Valkeinen wrote:
->>> On 21/03/2024 17:52, Sean Anderson wrote:
->>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>>>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>>>> Retraining the link can take a while, and might involve waiting for
->>>>>> DPCD reads/writes to complete. This is inappropriate for an IRQ handler.
->>>>>> Just schedule this work for later completion. This is racy, but will be
->>>>>> fixed in the next commit.
->>>>>
->>>>> You should add the locks first, and use them here, rather than first
->>>>> adding a buggy commit and fixing it in the next one.
->>>>
->>>> I didn't think I could add the locks first since I only noticed the IRQ
->>>> was threaded right before sending out this series. So yeah, we could add
->>>> locking, add the workqueue, and then unthread the IRQ.
->>>>
->>>>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
->>>>>> ---
->>>>>> Actually, on second look this IRQ is threaded. So why do we have a
->>>>>> workqueue for HPD events? Maybe we should make it unthreaded?
->>>>>
->>>>> Indeed, there's not much work being done in the IRQ handler. I don't know why it's threaded.
->>>>>
->>>>> We could move the queued work to be inside the threaded irq handler,
->>>>> but with a quick look, the HPD work has lines like "msleep(100)" (and
->>>>> that's inside a for loop...), which is probably not a good thing to do
->>>>> even in threaded irq handler.
->>>>>
->>>>> Although I'm not sure if that code is good to have anywhere. Why do we
->>>>> even have such code in the HPD work path... We already got the HPD
->>>>> interrupt. What does "It takes some delay (ex, 100 ~ 500 msec) to get
->>>>> the HPD signal with some monitors" even mean...
->>>>
->>>> The documentation for this bit is
->>>>
->>>> | HPD_STATE    0    ro    0x0    Contains the raw state of the HPD pin on the DisplayPort connector.
->>>>
->>>> So I think the idea is to perform some debouncing.
->>>
->>> Hmm, it just looks a bit odd to me. It can sleep for a second. And the wording "It takes some delay (ex, 100 ~ 500 msec) to get the HPD signal with some monitors" makes it sound like some kind of a hack...
->>>
->>> The docs mention debounce once:
->>>
->>> https://docs.amd.com/r/en-US/pg299-v-dp-txss1/Hot-Plug-Detection
->>
->> Are you sure this is the right document? This seems to be documentation for [1]. Is that instantiated as a hard block on the ZynqMP?
->>
->> [1] https://www.xilinx.com/products/intellectual-property/ef-di-displayport.html
-> 
-> You're right, wrong document. The registers and bitfield names I looked at just matched, so I didn't think it through...
-> 
-> The right doc says even less:
-> 
-> https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm/Upon-HPD-Assertion
-> 
->>> But it's not immediately obvious what the SW must do and what's done by the HW. Debounce is not mentioned later, e.g. in the HPD Event Handling. But if debounce is needed, wouldn't it be perhaps in a few milliseconds, instead of hundreds of milliseconds...
->>
->> Well, the DP spec says
->>
->> | If the HPD is the result of a new device being connected, either
->> | directly to the Source device (signaled by a long HPD), –or– downstream
->> | of a Branch device (indicated by incrementing the DFP_COUNT field value
->> | in the DOWN_STREAM_PORT_COUNT register (DPCD 00007h[3:0]) and signaled
->> | by an IRQ_HPD pulse), the Source device shall read the new DisplayID or
->> | legacy EDID that has been made available to it to ensure that content
->> | being transmitted over the link is able to be properly received and
->> | rendered.
->> |
->> | Informative Note: If the HPD signal toggling (or bouncing) is the
->> |                   result of the Hot Unplug followed by Hot Plug of a
->> |                   cable-connector assembly, the HPD signal is likely
->> |                   to remain unstable during the de-bouncing period,
->> |                   which is in the order of tens of milliseconds. The
->> |                   Source device may either check the HPD signal’s
->> |                   stability before initiating an AUX read transaction,
->> |                   –or– immediately initiate the AUX read transaction
->> |                   after each HPD rising edge.
->>
->> So a 100 ms delay seems plausible for some monitors.
-> 
-> I read the text above as "it may take tens of milliseconds for HPD to stabilize". So polling it for total of 100ms sounds fine, but we're polling it for 1000ms.
-> 
-> And I think checking for stability is fine, but for detect() I think it goes overboard: if the cable is disconnected, every detect call spends a second checking for HPD, even if we haven't seen any sign of an HPD =).
-> 
-> And if we're checking the HPD stability, wouldn't we, say, poll the HPD for some time, and see if it stays the same? At the moment the code proceeds right away if HPD is high, but keeps polling if HPD is low.
-> 
->> That said, maybe we can just skip this and always read the DPCD.
-> 
-> If the HPD is bouncing, is the AUX line also unstable?
-> 
-> I don't mind a HPD stability check, I think it makes sense as (I think) the HW doesn't handle de-bouncing here. I think think it could be much much shorter than what it is now, and that it would make sense to observe the HPD for a period, instead of just waiting for the HPD to go high.
-> 
-> But this could also be left for later, I don't think it matters in the context of this series.
-> 
->>> zynqmp_dp_bridge_detect() is used for drm_bridge_funcs.detect(), and if the cable is not connected, it'll sleep for 1 second (probably more) until returning not connected. It just doesn't sound correct to me.
->>>
->>> Well, it's not part of this patch as such, but related to the amount of time we spend in the interrupt handler (and also the detect()).
->>>
->>>>> Would it be possible to clean up the work funcs a bit (I haven't
->>>>> looked a the new work func yet), to remove the worst extra sleeps, and
->>>>> just do all that inside the threaded irq handler?
->>>>
->>>> Probably not, since a HPD IRQ results in link retraining, which can take a while.
->>>
->>> But is it any different if you have a workqueue? Isn't a threaded interrupt handler basically the same thing?
->>>
->>> Probably at least the zynqmp_dp_hpd_work_func() could be done in the threaded irq just fine, if the insane 1s sleep can be dropped.
->>
->> Anything involving AUX shouldn't been in an IRQ, since
->> zynqmp_dp_aux_transfer will retry for up to 50ms by default.
-> 
-> Perhaps. I'm still not sure if that's a problem. If a threaded irq is essentially a workqueue dedicated for this device, and we don't need to handle other irqs while the work is being done, then... What's the difference with a threaded irq and a workqueue?
-> 
-> Oh, but we do need to handle irqs, we have the vblank irq in there. We don't want the vblanks to stop if there's a HPD IRQ.
-> 
-> Btw, looks like zynqmp_dpsub_drm_handle_vblank() can sleep, so we can't move to non-threaded irq.
+The following commit has been merged into the x86/percpu branch of tip:
 
-I don't see that. We have
+Commit-ID:     b429eafe0d9f765d8626e53221ce3108b783da5e
+Gitweb:        https://git.kernel.org/tip/b429eafe0d9f765d8626e53221ce3108b783da5e
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Thu, 21 Mar 2024 17:46:41 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Mar 2024 20:16:20 +01:00
 
-zynqmp_dpsub_drm_handle_vblank
-  drm_crtc_handle_vblank
-    drm_handle_vblank
-      spin_lock_irqsave(...)
-      ...
-      spin_lock_irqsave(...)
-      vblank_disable_fn(...)
-        spin_lock_irqsave(...)
-        ...
-        spin_lock_irqrestore(...)
+x86/percpu: Enable named address spaces for GCC 9.1+
 
-so no sleeping AFAICT.
+Enable named address spaces also for GCC 9, GCC 10 and GCC 11
+releases. These compilers all produce kernel images that boot
+without problems.
 
---Sean
+GCC_VERSION cutoff is arbitrary. It is primary a risk-reduction
+cutoff, older compilers will be tested and enabled in linux 6.10
+release.
 
->>>>> Do we need to handle interrupts while either delayed work is being done?
->>>>
->>>> Probably not.
->>>>
->>>>> If we do need a delayed work, would just one work be enough which
->>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>>>
->>>> Maybe, but then we need to determine which pending events we need to
->>>> handle. I think since we have only two events it will be easier to just
->>>> have separate workqueues.
->>>
->>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
->>
->> Yeah, but we can use a mutex for this which means there is not too much
->> interesting going on.
-> 
-> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
-> 
-> I'd still prefer just one workqueue, though...
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20240321164647.289879-1-ubizjak@gmail.com
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
-
---Sean
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 09455d9..03c9d11 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2433,7 +2433,7 @@ source "kernel/livepatch/Kconfig"
+ endmenu
+ 
+ config CC_HAS_NAMED_AS
+-	def_bool CC_IS_GCC && GCC_VERSION >= 120100
++	def_bool CC_IS_GCC && GCC_VERSION >= 90100
+ 
+ config CC_HAS_NAMED_AS_FIXED_ASAN
+ 	def_bool CC_IS_GCC && GCC_VERSION >= 130300
 
