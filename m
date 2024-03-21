@@ -1,138 +1,166 @@
-Return-Path: <linux-kernel+bounces-110800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B703188641B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:50:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AA6088641D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AAC7283EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:50:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31C32833DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAFA1E539;
-	Thu, 21 Mar 2024 23:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAA631A8F;
+	Thu, 21 Mar 2024 23:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bVsAM9By"
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="DP54qrRT"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E586F1DFCF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52691DFD6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711065023; cv=none; b=qWoaB9Ff5AHvVtg4oTxpnh6qWPPDK+ikGDFUc79+aBqbW6Y8Gq3YTi797tL49KvuW3KjUKtlKvCQ+a30uI6nQ0fNqpg+ihfdnes7PW/CLQBIwP3OtGZHY31Q7SOfhh4aj6avULwsQ5afGdD2wZi9lG88mIgA9SsZ9Rlxn8sei3E=
+	t=1711065098; cv=none; b=t3JHEevhb055x2G8/9fIM+LOEVagnfNfjVfxQRBY/VwwKnFaYuH/wlvAdhF+82e4IEBT90rzUDNJw5nIFWr8WXBSPvYrEKlAskuyo8Kmm4wxJpd05ujQAi5Iv/lwTGpgemLP4uU6ry9N83LWUxcxfGttFxE4ZBI3lX4w9Ws7Z6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711065023; c=relaxed/simple;
-	bh=TZO4+cozYPSKDbCtI28YTEVD/Esl0MisAiIACAehqUY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BBG+dp/gF0PfXSNBOx7XKZ6fdq/AgiKwPCtXzHwM88kxcEZweGk5utvSbPNb39dpy5D8ENt/1Ch4bGnQ7p4vK3ByxKniAkOSQ3Mc+QjyOosvWTvsDUyMbZwjkAHTa6Tx+TsMRDC7gjxrUuzEXWa150gwbkro4a9J/wFO965xvOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bVsAM9By; arc=none smtp.client-ip=209.85.222.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7dac7cfbea0so270032241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:50:21 -0700 (PDT)
+	s=arc-20240116; t=1711065098; c=relaxed/simple;
+	bh=xW80rWOlFHvVSoFt0FE2CMnMtCrSafEX4MbK88/mY5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zz3y8l8zsjUzwBdZ5NDsE8gAFNWooDh6iDZAbvZuiASoPUngtm/w9aX3VcKPlCDtWkqT9MTX2AhKaadfk91rOO9Yro6NTwRE79sY87DtGpg/7OXvQV36+PkAyy//gInDa0iFJBUG7Ody6ZWK4xmtrKxkh5cqlgLMj/oimHf0Q9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=DP54qrRT; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36867dfe940so3581115ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:51:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711065021; x=1711669821; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AInUnOXLyp8jyRpi/mQ+Hq2H5NzsN1cFn4pjjPB7jgI=;
-        b=bVsAM9ByqmMj/6Ao1ptzSk+hju033u+p4iVfmQshdPsds9qAR/3GV6y5auXZLBcjCQ
-         fV/w0d9K7wNfhnxWt7Qw7dpimrQoA+YC3bb4yRjtuz+D3SnKfWs2wwI8xWRnbMXorqrR
-         6L7M8v1ej7pRX8eA+E/CiBxFD87joQkrxOVbJYnXrdohSbZSZ+dYRA61W1CmXnj10j5C
-         mD6nFDaQDdSPUaUg3S1kdRmt9eskoBbBMjfC6FWMi00rxy2nIn0JQ8gmdDsTnHyrE88a
-         PykIC7i4gLC5g/lQ4HGLuNfzrmWYnqhtnfaoe/et8yhCR0p82ce0W9TbTDlYS7vgLbhj
-         Zipw==
+        d=sifive.com; s=google; t=1711065093; x=1711669893; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZNqlzzs3C3okF1Ihs4S4kvN5WrFgjE+GlyvdPE0dOGo=;
+        b=DP54qrRTYYqyASdalC9kq72lU1wWtpzCs0Ru7p2AHu1ONctSNu140YEjzlXpuGOnuI
+         D1zDB17CJXnYj6A+WEcunVteD1yJHvk8HWstDZ3ZU/u3jhLJnkE7rU2ZkuxpB+6EcX8O
+         AQGon8LDmL3+iO54Z85lNqRzZVMUbyu6Zz/2OsQYp60Ex/8TUCDPf+kFIEa5stLAvRWG
+         OxrcMw4NCAEtwAYHcOnjmwD+FcyhDXx1RQMt9RYhSY7pRrfc3jblIjmVvsxZr9sj2mTE
+         kyWH9a/wlYrFivg5+IyRnw/4er9qQZqFB3T1nxeO2EiERw0hP+Gf7o256gW7LmshCoAL
+         fHjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711065021; x=1711669821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AInUnOXLyp8jyRpi/mQ+Hq2H5NzsN1cFn4pjjPB7jgI=;
-        b=kjVkpQ6yOaWe3kAH9dfkhXDwmSB6CxqV9Bogoqk6cIbPnh41dxneHRdR1/j7dUYyOJ
-         XNcP8bcDU00/tfXFQIezlNTFtthrlIJ5p0l1SKANMtB0UgdaeiU6AXr7aa7t4cFaxdPM
-         DnQzKh8P+zQcs0jCDsG4HCwkpnEAIymesWkM0zyk6GOEx5gAN75Py2Zge4V2I2o3x6ix
-         N+pwzbyjzLWNvF/JJ4zlIL9FPkqOVlf8TdtHP3RuMokAzi7dz5rHpZAIxiTaICdb0LJQ
-         hTVDMmmGa1N/GVn5VqHNA9sd7KGzXlos3id653lnTPUAuUflTW+iJee7CrvlYqe51DnQ
-         4inw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3UThLurPZG0DxsKhXJkDXG9gBXDTXYDkeD21w5N9g8xN6oNPL1ehvaeIxeXwQPHYrjh/r+ldsgw3QAZjmUDF9z12fNo7yumSrDVFx
-X-Gm-Message-State: AOJu0YxIOp+IX2HCUKvebhJfoJNw5QsFw1xuZ7xjWaHKEaxHF42Glb5H
-	TF6P0QAqunsFV0PxIqdpgwfC98no2oYNd0vhY2qHquhvJP/5bOa3W0mL6sdt91/hkMessWOZUgC
-	SJ2LpZE//ungmKbrhRC1bEWKXaYFDsUai7AThNA==
-X-Google-Smtp-Source: AGHT+IEjHxE3NhMhC7z5tyeF+/EQhg1vliYvm3aSpXESl3bBnRXS4LG+lUGnQCqX0ViAtOaFedIBQQjXFVcbk0K3RWA=
-X-Received: by 2002:a05:6102:dd4:b0:476:bf60:9556 with SMTP id
- e20-20020a0561020dd400b00476bf609556mr1467512vst.26.1711065020670; Thu, 21
- Mar 2024 16:50:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711065093; x=1711669893;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZNqlzzs3C3okF1Ihs4S4kvN5WrFgjE+GlyvdPE0dOGo=;
+        b=SAYN+7MUeDXELogT9ALtt0y8tFMfXStrfiKK/F2QkxYTKbDL+2JAcgY11biRZzva1r
+         FF7XmI+EEtXYuI+86Vc1lK0DTeZfbgwV57f7YecBgd2+uF2JSwF0A2s3aQ4EettWZxEP
+         R1K4SxjUamIf5+6t8S9lj0nrfyVQRP72HNsRuQ/a/wRsdsjP8aoG15inNfZHM7Pi3Dqj
+         ar9Rrz9ezb0bVyuthoET9zAImM37qDRO7huAw6q1Xz4uSjNFcXlEF98PzDVHW9IXoSYm
+         0s3O/sJcs/r8UESmsylMwdEOu3UwHTYPbW4nfz4VAjbB7oRd7UUd8BUQpfXYeNSGdIbE
+         wRVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUhhwCpEG5c+2NMDvJ+VOTr5y0Qqc8NKehJnB4w9kWw/J+8l1ycYRkcCz2+nf5TOqwY9OpUIrJqdoFHnLwD+JnaffnOJu0zIhEqoGsU
+X-Gm-Message-State: AOJu0YwrpBfGQXpuTLIWunCI68Vjc15eXj8SEGYQhreojtGoHltqVVXq
+	WLsZ6585KA4bHTW4kYOZ2sDeDHCh8ysT5kKSyvdWKWUkE5LOh/HpJ/bT469bTnQ=
+X-Google-Smtp-Source: AGHT+IG8c+yACk8/X3Es/Xp0PMdBsSuZwh0qwYwidFyL/zRGltJfSOCF3y2cOWM1wkvDI9gGTrG31A==
+X-Received: by 2002:a92:dcce:0:b0:366:40dc:4d99 with SMTP id b14-20020a92dcce000000b0036640dc4d99mr986208ilr.30.1711065092945;
+        Thu, 21 Mar 2024 16:51:32 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id t5-20020a92cc45000000b00366b66af14asm237709ilq.17.2024.03.21.16.51.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 16:51:32 -0700 (PDT)
+Message-ID: <3010bb57-c13f-494a-9e8c-0ae6393b1eee@sifive.com>
+Date: Thu, 21 Mar 2024 18:51:31 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320020823.337644-1-yosryahmed@google.com>
- <20240320020823.337644-2-yosryahmed@google.com> <CAJD7tkYb-=Ho85e2AJbkfe-FmT6KXpJpUgPRaXQb5-+sY5j4Hg@mail.gmail.com>
-In-Reply-To: <CAJD7tkYb-=Ho85e2AJbkfe-FmT6KXpJpUgPRaXQb5-+sY5j4Hg@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 21 Mar 2024 16:50:07 -0700
-Message-ID: <CAKEwX=PjpJCewYEMp+=g+92=R-Wr2y+7pwJ81xb9-pogohFC4w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: zswap: remove nr_zswap_stored atomic
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Do not save the scratch CSR during suspend
+Content-Language: en-US
+To: JeeHeng Sia <jeeheng.sia@starfivetech.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Cc: Albert Ou <aou@eecs.berkeley.edu>, Andrew Jones
+ <ajones@ventanamicro.com>, Conor Dooley <conor.dooley@microchip.com>,
+ Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Pavel Machek <pavel@ucw.cz>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+References: <20240312195641.1830521-1-samuel.holland@sifive.com>
+ <BJSPR01MB0561EC63D6654543D1266AD79C28A@BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <BJSPR01MB0561EC63D6654543D1266AD79C28A@BJSPR01MB0561.CHNPR01.prod.partner.outlook.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 2:09=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Tue, Mar 19, 2024 at 7:08=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > zswap_nr_stored is used to maintain the number of stored pages in zswap
-> > that are not same-filled pages. It is used in zswap_shrinker_count() to
-> > scale the number of freeable compressed pages by the compression ratio.
-> > That is, to reduce the amount of writeback from zswap with higher
-> > compression ratios as the ROI from IO diminishes.
-> >
-> > However, the need for this counter is questionable due to two reasons:
-> > - It is redundant. The value can be inferred from (zswap_stored_pages -
-> >   zswap_same_filled_pages).
+On 2024-03-14 11:55 PM, JeeHeng Sia wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Samuel Holland <samuel.holland@sifive.com>
+>> Sent: Wednesday, March 13, 2024 3:57 AM
+>> To: Palmer Dabbelt <palmer@dabbelt.com>; linux-riscv@lists.infradead.org
+>> Cc: Samuel Holland <samuel.holland@sifive.com>; Albert Ou <aou@eecs.berkeley.edu>; Andrew Jones <ajones@ventanamicro.com>;
+>> Conor Dooley <conor.dooley@microchip.com>; Leyfoon Tan <leyfoon.tan@starfivetech.com>; Paul Walmsley
+>> <paul.walmsley@sifive.com>; Pavel Machek <pavel@ucw.cz>; Rafael J. Wysocki <rafael@kernel.org>; JeeHeng Sia
+>> <jeeheng.sia@starfivetech.com>; linux-kernel@vger.kernel.org; linux-pm@vger.kernel.org
+>> Subject: [PATCH] riscv: Do not save the scratch CSR during suspend
+>>
+>> While the processor is executing kernel code, the value of the scratch
+>> CSR is always zero, so there is no need to save the value. Continue to
+>> write the CSR during the resume flow, so we do not rely on firmware to
+>> initialize it.
+>>
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>>
+>>  arch/riscv/include/asm/suspend.h | 1 -
+>>  arch/riscv/kernel/suspend.c      | 3 +--
+>>  2 files changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
+>> index 491296a335d0..6569eefacf38 100644
+>> --- a/arch/riscv/include/asm/suspend.h
+>> +++ b/arch/riscv/include/asm/suspend.h
+>> @@ -13,7 +13,6 @@ struct suspend_context {
+>>  	/* Saved and restored by low-level functions */
+>>  	struct pt_regs regs;
+>>  	/* Saved and restored by high-level functions */
+>> -	unsigned long scratch;
+>>  	unsigned long envcfg;
+>>  	unsigned long tvec;
+>>  	unsigned long ie;
+>> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
+>> index 299795341e8a..3d306d8a253d 100644
+>> --- a/arch/riscv/kernel/suspend.c
+>> +++ b/arch/riscv/kernel/suspend.c
+>> @@ -14,7 +14,6 @@
+>>
+>>  void suspend_save_csrs(struct suspend_context *context)
+>>  {
+>> -	context->scratch = csr_read(CSR_SCRATCH);
+>>  	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+>>  		context->envcfg = csr_read(CSR_ENVCFG);
+>>  	context->tvec = csr_read(CSR_TVEC);
+>> @@ -37,7 +36,7 @@ void suspend_save_csrs(struct suspend_context *context)
+>>
+>>  void suspend_restore_csrs(struct suspend_context *context)
+>>  {
+>> -	csr_write(CSR_SCRATCH, context->scratch);
+>> +	csr_write(CSR_SCRATCH, 0);
+> If the register is always zero, do we need to explicitly write zero to the register during resume?
 
-Ah, I forgot about this. For context, nr_stored was originally a
-zswap_pool-specific stat, but I think Chengming has pulled it out and
-converted it into a global pool stat in an earlier patch - yet,
-globally, we already have zswap_stored_pages that is (mostly) the same
-counter.
+The register contains zero while executing in the kernel. While executing in
+userspace, the value is nonzero. The value is checked at the beginning of
+handle_exception(). We must ensure the value is zero before enabling interrupts,
+or we might incorrectly think the interrupt was entered from userspace.
 
-Might as well use existing counters (zswap_stored_pages) then, rather
-than a newly introduced counter. Probably will shave off a couple
-cycles here and there for the atomic increment/decrement :)
+We don't know what the value will be when the hart comes out of non-retentive
+suspend. Per the SBI HSM specification, Table 6: "All other registers remain in
+an undefined state."
 
-> > - When memcgs are enabled, we use memcg_page_state(memcg,
-> >   MEMCG_ZSWAPPED), which includes same-filled pages anyway (i.e.
-> >   equivalent to zswap_stored_pages).
+Regards,
+Samuel
 
-This is fine I suppose. I was aware of this weird inaccuracy. However,
-for the CONFIG_MEMCG case, it was kinda silly to introduce the counter
-for per-cgroup same filled zswap pages, just for this one purpose, so
-I decided to accept the inaccuracy.
-
-> >
-> > Use zswap_stored_pages instead in zswap_shrinker_count() to keep things
-> > consistent whether memcgs are enabled or not, and add a comment about
-> > the number of freeable pages possibly being scaled down more than it
-> > should if we have lots of same-filled pages (i.e. inflated compression
-> > ratio).
-> >
-> > Remove nr_zswap_stored and one atomic operation in the store and free
-> > paths.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->
-> Any thoughts on this patch? Should I resend it separately?
-
-Might be worth resending it separately, but up to you and Andrew!
-
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
