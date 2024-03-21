@@ -1,114 +1,97 @@
-Return-Path: <linux-kernel+bounces-109617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB807881B6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:12:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACEB6881B6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:19:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDD1D1C21574
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:12:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D62F01C215B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C6CB645;
-	Thu, 21 Mar 2024 03:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273B879C0;
+	Thu, 21 Mar 2024 03:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dN2NPO+j"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JT/sppwU"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955559468
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 03:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405381C05
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 03:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710990750; cv=none; b=l0ffkMAS1dHOaV9MWNpkzPTWctvrC8QXZZkry+NonX7JSgCcSjzAxA2+sdCn0GUfeW6lLAi9S8kgIa9xJPB8YFOOTV8RzNb8/+CaVAZQ4F1xgym9CxW5q9eXM00oRgEexjeja7I959poF7Tp9OkhywQ3ttGRC10iyistabeOZ8I=
+	t=1710991135; cv=none; b=r9EQmxT5pZOz5XFBBYQYWQUS3fV9/7VLoO7IK3lLp2uKx6UuCHp80d6rg7M4+JlyXEjbqp05u49sjgGUuPpr3rxn8q1DYLzoYApBicIUzUzm7ZABavIjVE2QRpkgPAQSXK2AGka/qMqIg+mkZv+hG7a3rv3vGvxcs1bXsBbE6SE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710990750; c=relaxed/simple;
-	bh=u8eei/XaFU11jj/r3wr8/HgwJCHdhFvIb3bpo9INGr0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CiZDsyLasbDtjCtlrfnt9zeN+NQmCH6WPpq9hL5kdT2yfnPOiJEWDz/hed0iIYskXJ87KxBBNhyIXThWXqSj8v2uNwF9VCu9qlOpkQMvpCL60MKK7avAEePLImGsCHDs8VekU14/oLKXRiCmRevN40MicRzPUi7IT5aqt9Jturw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dN2NPO+j; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <62b4dd34-bf05-4da6-94ea-cb85ac48bbeb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710990746;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IkNEqpC4qw9eN2pRZI4l4aAjsLspOt5MnQaAsK4vE2s=;
-	b=dN2NPO+jnsoAfDnhNxR7Gfb8ObZXwpQU4qwsX4kVFYl/aTei8h6hfwAdvL1ptAM7a7/kqm
-	UdppMg5so3r8sPH5/RaWjxQR7nMSqESQ93T/wy2JBPQ8eCpXArpUTED5yz+6TkGmvD69iG
-	kguv3oPptq5ghx9zCI1OoyX0sErgPws=
-Date: Thu, 21 Mar 2024 11:12:20 +0800
+	s=arc-20240116; t=1710991135; c=relaxed/simple;
+	bh=GzSDKQhiRCQSt0L09OfmSYnjlXAOvmpt8J1zOXRAbyk=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=N+lIBnfJieMYHGgDg2LVSEsYsw75EUFn3eH1JxGNfFn3GFXYfkWsbFWRblkDN/4icaBJzbTspfZfvcN/jbQC1Suj8hLVctWHS9yTAKWBNHkfpVENzwWp7bfpWZ5cWEyo50AQzpZAa/edNloYShdADH/YqlyN8Gz6yhWplD/yhUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=JT/sppwU; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710991123; bh=8m/CAoX3eEJt7qH5krqwbAsWAww+IK1kpegYgkGAcOU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=JT/sppwUNCEHJjKil//r2ksy8E06Pkipapw9rLPxtXcIDxrptv52a172y7F3337Bw
+	 ODvH+9uY9TPCVeQ/pYmN7LT15z5nVq+VCYoCCQsHHctNTRE5SztLgG+TANFPJWCGMT
+	 WH2hJ5k6zWULBjOK4sqTWfGCZdDRkdzwlIqG55Hs=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id 4A9236EB; Thu, 21 Mar 2024 11:18:41 +0800
+X-QQ-mid: xmsmtpt1710991121tnvyk21kg
+Message-ID: <tencent_3436E64BE674C577BF66883D6937C4979409@qq.com>
+X-QQ-XMAILINFO: M5WvXNp9ZPrQqp2hrqdfAOiKfuaGMJkB2PvE4B1HNqQsKwGf753UnOcJSDG9kA
+	 uOPl2wzgpG73FxU8/MqHm9uYG2PXc/s85BLy0AopL4vcsHayhjalgPMrgCYf+NfDz+V7S88iwrCw
+	 LsEpP9bH1NbnFKVeFzzQNdSuFcmcrjaUfuEF4S4s2C+J+icl8zCEfv83ABpjV6UaDbpplplQSF0p
+	 /aiifv5bImiJYEeYTr7EXYCHvxpZ7ckJ2KQ2Ohjl60bIJmqPRSSxqDPWK/osK1zB49KAvaRQCLeS
+	 u/7mVOMYft9nSRd1ztZcPWYg4ZFjiE0I8WDThDLHakN/MG4pnnf8EnfdK0giUsXWXkkfAhlETGNT
+	 cAxF4gK3HUMSkUd+lrqR3v5DdLI38CnYYnhMOPEf6BTULvknObqoVGukwVk7s7qFYFrOa6ccLn69
+	 iwlkSIO7LWs/fp+5DQhUTdtfRmUdZn0iTSpMEA4Ji/K+AyhFBcMB+XKOeqqSyQYdW7O9hs2CjYDb
+	 A0q1bDiVSU+rTB1fYk52cBQRoXnx4JiNfveeaOawTv6d8mQfpxLm+Ii+JwKYaC5lXiODQixUiWyB
+	 B5ZeMiUuWCniYG2xQRmAHPYJfRdpxbZekeSdHEJi0cB74FNxYRa/0qQTLaykMPz+JyB820F4GD+c
+	 QObqN+q4q4fjSlz06hqfuLp+6+lobOfNfwAQosoo23TMmXd5wUGdnlWIlxUvbpPMCwlL23bKmguK
+	 wEdvc8vhSo8V45SYtix1c2T7GxRB79iUcQBfB09oLOfut1Rp11h6U7NVRbS8pVrylAiS/2IHCanu
+	 j0MYVahTDQRq7bSLgspwI8r6EzD+pRtNO0sGqSUTSeUbyDE4sPg8HpThwKbOReBqnAnaUt9hJS2h
+	 EJyJNOvVAUrB68stB4KEtcZy/E8xpLKcZuYFN7akbRTJfL0Uwo7ncR7k1l4mTyv+46kI3zO5e/RT
+	 /5H+xJQPnOnQSvMhHx/9A6MxxAVBAMUg0KduNxlSwWFQf2C8/qQSnOkN9CSoQfxjmQvFKmKO3DfR
+	 /1oxfKspiWpl0tUh22
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [wireless?] [usb?] UBSAN: array-index-out-of-bounds in htc_issue_send
+Date: Thu, 21 Mar 2024 11:18:42 +0800
+X-OQ-MSGID: <20240321031841.1890167-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000004e41110614187d35@google.com>
+References: <0000000000004e41110614187d35@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm/slub: mark racy accesses on slab->slabs
-Content-Language: en-US
-To: linke li <lilinke99@qq.com>
-Cc: 42.hyeyoo@gmail.com, akpm@linux-foundation.org, cl@linux.com,
- iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- penberg@kernel.org, rientjes@google.com, roman.gushchin@linux.dev,
- vbabka@suse.cz
-References: <8bc1aebf-8395-416f-8c23-53cbd25d0eef@linux.dev>
- <tencent_BF745A1543ABB0579DFC20480AA1A4456307@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <tencent_BF745A1543ABB0579DFC20480AA1A4456307@qq.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 2024/3/21 10:48, linke li wrote:
-> Sorry for a late reply, I just found this because of my bad email client.
-> 
->> There is another unmarked access of "slab->slabs" in the show_slab_objects(),
->> which you can change too.
-> 
-> Yes, I think show_slab_objects() has a similar situation. Should I
-> consider to submit a V2 patch for this?
+please test oob in htc_issue_send
 
-Yes, I think so.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
 
-> 
->> I'm not sure that it's really safe to access "slab->slabs" here without any protection?
->> Although it should be no problem in practice, alternative choice maybe putting partial
->> slabs count in the kmem_cache_cpu struct.
-> 
-> I think it is ok, because it seems that slab->slabs in slub_percpu_partial
-> and show_slab_objects() are just used for showing some infomation.
-> 
-> I noticed Paul summarized some of these strategies in access-marking.txt[1]
+diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+index eb631fd3336d..0d1115d1cc29 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -295,6 +295,9 @@ int htc_connect_service(struct htc_target *target,
+ 	}
+ 
+ 	*conn_rsp_epid = target->conn_rsp_epid;
++	if (*conn_rsp_epid < 0 || *conn_rsp_epid > ENDPOINT_MAX)
++		return -EINVAL;
++
+ 	return 0;
+ err:
+ 	kfree_skb(skb);
 
-Ok, thanks.
-
-> 
-> Quote from it:
-> 
-> "Use of the data_race() Macro
-> ----------------------------
-> 
-> Here are some situations where data_race() should be used instead of
-> READ_ONCE() and WRITE_ONCE():
-> 
-> 1.	Data-racy loads from shared variables whose values are used only
-> 	for diagnostic purposes.
-> 
-> 2.	Data-racy reads whose values are checked against marked reload.
-> 
-> 3.	Reads whose values feed into error-tolerant heuristics.
-> 
-> 4.	Writes setting values that feed into error-tolerant heuristics.
-> "
-> 
-> Thanks,
-> Linke
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-> 
 
