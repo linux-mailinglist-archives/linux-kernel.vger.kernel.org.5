@@ -1,129 +1,174 @@
-Return-Path: <linux-kernel+bounces-110189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7F2885B4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:01:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A1F885B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:01:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B24F21F23A69
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:01:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E24B9B21860
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF2E86244;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76768615C;
 	Thu, 21 Mar 2024 15:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="SiD/LbjN"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K6LV5WN3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1271E522;
-	Thu, 21 Mar 2024 15:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E462155792;
+	Thu, 21 Mar 2024 15:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033272; cv=none; b=vA4GGGRc2+gjxD+aLLEsPfYFwikGcJTMfuqjt8K6lkTmRzYxJhnHgNFHeA21Y/dfuTsyfxI9qdeDwwnbPOoapV7Kw/0MM4H14cE17uGKtosMHy1n+86f3nx8V4xjWqtv+xagENmXAClauHm7s5FZ/uU/x0CWN7fuesMPh5lAD4Y=
+	t=1711033272; cv=none; b=MbPvBGcAtK4EvipYUWC3JT0/ziHPukT3UH59U2xf1MhVWmZWZ3ERFHfCVl/FdkO/G9djOZ0xEvFoynv5btR79C7ipuZC5YpegZEjQiLSwizzUURCsAdc9i+kNeTtWbCiqmgho/z+mw7EK8vJixsmTfxs0mI+fLGfDoaIcFR5/+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711033272; c=relaxed/simple;
-	bh=MeHpHFngmGDIRw0t6x3fj84LYp7O6nC0DGzx+CxZmLk=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=BMoW3imUhQOjEQHXshOfk9vlZcv9Xg3pFo5Y+P+mcZ4wZ76rUxrgzJQgc/zSeARzJoo+xZqHVEOv4g0NuJSEeqOmc0mOluupG127/0OsgunKGN2rWQhYBAYZL97FvqZhrh6fIPrj3bYWsx3ag6O4iOf+SApzE9/c0REyEvR0Dls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=SiD/LbjN; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	bh=PEJrHSKt1U+K2L5GVnfRCuafwN7gw0OYFsINbYiBTdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pHx4i6QuDYUBmTUYXVFIeDKTTCOtVERy8Ckj68iz1ipQ/aMaVwja5YljDTfgg+Iha1GqnIfnT6aHfuI9fp1jORNFkf/N5gJlLC3wPSlpDEmkZ3smcgnWEAdZoaN5WxnwaJ3tYwnh3X+4tdeqSfl5Mo8A6ni9h6VOn486dN+4K7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K6LV5WN3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 223A7C433F1;
+	Thu, 21 Mar 2024 15:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711033271;
+	bh=PEJrHSKt1U+K2L5GVnfRCuafwN7gw0OYFsINbYiBTdE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K6LV5WN3cJeKpxPr3PEudhZ0rutxUFjpiz3rzcP/5XF2mJaGCmyGDuWItvM5/n1iZ
+	 COlgIKNmhcOb9DYaAS6ZdSy/HZ/CHws+xOsblsl48Vrd5RDmc+XfABK4KocwyhQA1C
+	 dN64eFtIXZijfLOG6/6vHR2aTpyz3yHWeUVCEn/NikbQDND8CcmYNvkUnAykAAk26d
+	 yBJ9zVEE/S2/2TS6E7/fYHA5t9wuOH4mec2abjoSpOXUZ+DiBCbcwTrtYsjIgnNB1x
+	 yaKSy2LARjVFcd5pG6sxsynBawEy51576AMJONfeQRIsQ21FsySBxdYfyJB4CjKTzJ
+	 QPwyEdJFtIBOA==
+Date: Thu, 21 Mar 2024 16:01:06 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: =?utf-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
+Cc: jikos@kernel.org, benjamin.tissoires@redhat.com, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] HID: uclogic: Store firmware name in params
+Message-ID: <dadh7jtdpdf3iahcgxdaqadpc6k6gnaz6gatxycxpd4u2atl7a@2f4vzqwzt7n3>
+References: <20240321144553.262409-1-jose.exposito89@gmail.com>
+ <20240321144553.262409-2-jose.exposito89@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1711033265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sft1JFZk5skzUoNvqsIk2m0oGI7tbYzzfxLI3ZVhHZo=;
-	b=SiD/LbjNKb4AO6tgV6/Tnd6/ux2gXYJ3AEfGypJAFLS34zSNhV4XKCSvE/81nMKXYNQhF7
-	ts3F5nJiVETb0Sah0NxVllHxkf0/7k++xFSPaPaC7CisDQOwvahcKSqR+5faVYq+aLzZ3i
-	bhNuRVjzJ6AriEpWFupgQFXvoVcfflf7f8IoYBpyFrU3eeLF8F91W0VAw7ajiONOZ+Q1Tw
-	+6hFdXCd9duHSvBucRVIIOkJRpiB4fNzECssiiTWd+kd6EntvPe6HtfiB9Eukv/iM0z1p1
-	mlpiDY1iM7rkx9N6ildz9N+ILdA31tAOirTTM2GfwPibJYUnLgQ7MU6dw1ai4A==
-Date: Thu, 21 Mar 2024 16:01:04 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Alex Bee <knaerzche@gmail.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Linus Walleij
- <linus.walleij@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Chris Zhong <zyw@rock-chips.com>, Zhang Qing
- <zhangqing@rock-chips.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 0/5] Add RK816 PMIC support
-In-Reply-To: <20240321143911.90210-2-knaerzche@gmail.com>
-References: <20240321143911.90210-2-knaerzche@gmail.com>
-Message-ID: <9a79e319d671b6a257f13ff945ee87e5@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240321144553.262409-2-jose.exposito89@gmail.com>
 
-Hello Alex,
 
-On 2024-03-21 15:39, Alex Bee wrote:
-> This series aims to add support for Rockchip RK816 PMIC series. As per
-> datasheet it's targeted for RK3126/RK3128 (RK816-1), RK1108 (RK816-2) 
-> and
-> PX3-SE (RK816-3) but might be used for other SoCs as well. The mfd 
-> consists
-> of an integrated RTC, a GPIO controller, two 32k clock outputs, a power 
-> key
-> (output), 4 buck- and 5 ldo regulators, 3 regulator-switches, and 
-> charger
-> with integrated fuel gauge. Charger and fuel gauge are not part of this
-> series. Two of the switches (otg/boost) are part of the binding, but 
-> not of
-> the driver. They must only ever by enabled if no battery charging is
-> happening, but it will be enabled automatically if a battery is 
-> attached.
-> Thus they need some incorporation of a yet to be added charger driver.
-> Integration in the existing rk8xx-infrastructure was pretty 
-> straightforward
-> and only needed very little tweaking. In order to not further bloat the
-> driver(s) too much with additional definitions I tried to re-use 
-> existing
-> ones wherever possible.
+Hi José,
+
+On Mar 21 2024, José Expósito wrote:
+> A future patch will need to access the firmware name to expose it to
+> userspace via sysfs.
 > 
-> The patches are loosely based on the vendor's implementation, verified
-> against the datasheet and tested/measured on RK3126 board. As they are
-> touching several subsystems I'm sending them (very) early for the
-> 6.10-cycle.
-
-I went quickly through all patches in the series except the one that 
-adds
-the bindings, and I've spotted no glaring issues.  My main focus was on
-ensuring there should be no regressions.
-
-Thus, not worth a Reviewed-by tag, but still counting as a review.
-
-> Alex Bee (5):
->   dt-bindings: mfd: Add rk816 binding
->   mfd: rk8xx: Add RK816 support
->   pinctrl: rk805: Add rk816 pinctrl support
->   regulator: rk808: Support apply_bit for
->     rk808_set_suspend_voltage_range
->   regulator: rk808: Add RK816 support
+> Store it in `uclogic_params->fw_name`.
 > 
->  .../bindings/mfd/rockchip,rk816.yaml          | 259 ++++++++++++++++++
->  drivers/mfd/Kconfig                           |   4 +-
->  drivers/mfd/rk8xx-core.c                      | 103 +++++++
->  drivers/mfd/rk8xx-i2c.c                       |  45 ++-
->  drivers/pinctrl/pinctrl-rk805.c               |  68 +++++
->  drivers/regulator/rk808-regulator.c           | 218 ++++++++++++++-
->  include/linux/mfd/rk808.h                     | 141 ++++++++++
->  7 files changed, 831 insertions(+), 7 deletions(-)
->  create mode 100644 
-> Documentation/devicetree/bindings/mfd/rockchip,rk816.yaml
+> Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+> ---
+>  drivers/hid/hid-uclogic-params.c | 14 +++++++-------
+>  drivers/hid/hid-uclogic-params.h |  5 +++++
+>  2 files changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-uclogic-params.c b/drivers/hid/hid-uclogic-params.c
+> index 9859dad36495..79ec3eb80f84 100644
+> --- a/drivers/hid/hid-uclogic-params.c
+> +++ b/drivers/hid/hid-uclogic-params.c
+> @@ -121,6 +121,7 @@ void uclogic_params_hid_dbg(const struct hid_device *hdev,
+>  		params->invalid ? "true" : "false");
+>  	hid_dbg(hdev, ".desc_ptr = %p\n", params->desc_ptr);
+>  	hid_dbg(hdev, ".desc_size = %u\n", params->desc_size);
+> +	hid_dbg(hdev, ".fw_name = %s\n", params->fw_name);
+>  	hid_dbg(hdev, ".pen = {\n");
+>  	uclogic_params_pen_hid_dbg(hdev, &params->pen);
+>  	hid_dbg(hdev, "\t}\n");
+> @@ -652,6 +653,7 @@ void uclogic_params_cleanup(struct uclogic_params *params)
+>  	if (!params->invalid) {
+>  		size_t i;
+>  		kfree(params->desc_ptr);
+> +		kfree(params->fw_name);
+>  		uclogic_params_pen_cleanup(&params->pen);
+>  		for (i = 0; i < ARRAY_SIZE(params->frame_list); i++)
+>  			uclogic_params_frame_cleanup(&params->frame_list[i]);
+> @@ -837,7 +839,6 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
+>  	/* The resulting parameters (noop) */
+>  	struct uclogic_params p = {0, };
+>  	static const char transition_ver[] = "HUION_T153_160607";
+> -	char *ver_ptr = NULL;
+>  	const size_t ver_len = sizeof(transition_ver) + 1;
+>  	__u8 *params_ptr = NULL;
+>  	size_t params_len = 0;
+> @@ -870,14 +871,14 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
+>  	}
+>  
+>  	/* Try to get firmware version */
+> -	ver_ptr = kzalloc(ver_len, GFP_KERNEL);
+> -	if (ver_ptr == NULL) {
+> +	p.fw_name = kzalloc(ver_len, GFP_KERNEL);
+> +	if (!p.fw_name) {
+>  		rc = -ENOMEM;
+>  		goto cleanup;
+>  	}
+> -	rc = usb_string(udev, 201, ver_ptr, ver_len);
+> +	rc = usb_string(udev, 201, p.fw_name, ver_len);
+>  	if (rc == -EPIPE) {
+> -		*ver_ptr = '\0';
+> +		*p.fw_name = '\0';
+>  	} else if (rc < 0) {
+>  		hid_err(hdev,
+>  			"failed retrieving Huion firmware version: %d\n", rc);
+> @@ -885,7 +886,7 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
+>  	}
+>  
+>  	/* If this is a transition firmware */
+> -	if (strcmp(ver_ptr, transition_ver) == 0) {
+> +	if (strcmp(p.fw_name, transition_ver) == 0) {
+>  		hid_dbg(hdev,
+>  			"transition firmware detected, not probing pen v2 parameters\n");
+>  	} else {
+> @@ -1028,7 +1029,6 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
+>  	rc = 0;
+>  cleanup:
+>  	kfree(params_ptr);
+> -	kfree(ver_ptr);
+>  	uclogic_params_cleanup(&p);
+>  	return rc;
+>  }
+> diff --git a/drivers/hid/hid-uclogic-params.h b/drivers/hid/hid-uclogic-params.h
+> index d6ffadb2f601..412c916770f5 100644
+> --- a/drivers/hid/hid-uclogic-params.h
+> +++ b/drivers/hid/hid-uclogic-params.h
+> @@ -232,6 +232,11 @@ struct uclogic_params {
+>  	 * List of event hooks.
+>  	 */
+>  	struct uclogic_raw_event_hook *event_hooks;
+> +	/*
+> +	 * Firmware name, exposed to userspace via sysfs as it is used to
+> +	 * identify the tablet.
+> +	 */
+> +	char *fw_name;
+
+I can't remember if this was on the table or not, but any reasons to not
+use hid->uniq[64] field instead of a custom sysfs?
+If there is already a value, we could just append the firmware version
+with a colon (:) separator.
+
+The main reason would be to not export a new sysfs specifically for this
+driver, but it would also allow HID-BPF to have access to the value and
+thus allow to detect if the device works with the given bpf program.
+
+Cheers,
+Benjamin
+
+>  };
+>  
+>  /* Driver data */
+> -- 
+> 2.44.0
+> 
 
