@@ -1,131 +1,212 @@
-Return-Path: <linux-kernel+bounces-109986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58017885897
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371898858A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 565A41C218CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:52:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 923F7B21FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3155FB9C;
-	Thu, 21 Mar 2024 11:52:51 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08065B1F7;
+	Thu, 21 Mar 2024 11:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wLyXcSx9"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6525FB86
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7FE3C17;
+	Thu, 21 Mar 2024 11:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711021970; cv=none; b=aaZ4oJHt+zw+bDlqZugK2CSyQvxpW/fUYkGE2PmzTBoD6QBIoCCnTJo4ICmrg5OP6oGMtAhxEUi/gJIOP240bcMskGS4LSD3G5riP/Gm1xQuTNhAFWm0J1+vX8TsIolXUM12lvLqsuqpORUSbzDhh03zxtU8WloGNEqgcPcZHUI=
+	t=1711022159; cv=none; b=AhWGAH/RLXE909gImteopLLXFHJy2R7wbGTv0Yql1I1DB4Cirz2LyFLUiNAS2QT66uu9nzwZ1PgUF9eVgzBSTE1pRbQey3FujV3MwpFhsePLCkISe3En5k8C10zHePtkCrThxXQQTSW2+oslGPhu4kDZf0FtNn1ork0U0dqNI6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711021970; c=relaxed/simple;
-	bh=o2AqpfgJy55VzmFbrCOgMCQrm+/rhvOZuJ6STrHhJkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Skdd/Qzl5hNMMFMPM6Yk9Pf4IBampDA/BQmci56GGPKbJAqar/5ISFdpqG5pwtxC1+7SQA7gJ41nesrkZwr0uPM+kxPm+ALEyn1jb84qW+k4zePUjr6wyK4SLhQxGIcdZBdYUNw5iDQ58KqrsqECrwc9sTBo+VgQjCBl1kSNlBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6F9BD37307;
-	Thu, 21 Mar 2024 11:52:47 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A855013976;
-	Thu, 21 Mar 2024 11:52:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +W1lJo4f/GVjOgAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Thu, 21 Mar 2024 11:52:46 +0000
-Date: Thu, 21 Mar 2024 12:54:08 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: [PATCH v2 2/2] mm,page_owner: Fix accounting of pages when
- migrating
-Message-ID: <Zfwf4Ei_DJVSytbR@localhost.localdomain>
-References: <20240319183212.17156-1-osalvador@suse.de>
- <20240319183212.17156-3-osalvador@suse.de>
- <Zfnd_w0ZLOVhgACt@casper.infradead.org>
- <ZfptWDsfdxBltN6T@localhost.localdomain>
- <ed41d5cf-d068-412d-b7bb-5468df2fefb7@suse.cz>
- <ZfwU1mGQKejNaKIk@localhost.localdomain>
- <e291e52a-ae98-42ac-88c3-7463f952d490@suse.cz>
+	s=arc-20240116; t=1711022159; c=relaxed/simple;
+	bh=OOKeFMdqN/oRnbdKq0PnsVOa1ssNxlZTwhJ9GrYbeOI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z4FowFJroMD7AY65vfKUuDGM4qCna6eNCSsLr/3NzqmQoXE3y4t9ndZ9k6wWr74kj/pVt36Od8IgUftR+smlNEISWxsb6Y2M0ZqFndMQjb9wQjFndVpb3QCMgDfaWXrCWuvlJvRztsn2NKHgoJbiCEMTTM2PyuJAaO3dJG4jg0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wLyXcSx9; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42LBtIum009191;
+	Thu, 21 Mar 2024 06:55:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711022118;
+	bh=bfXSNgzfF39TmycWQT9ljrIkLfLOmINJWk7nXQyV6gU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=wLyXcSx94ZSt8JqZDiY6Ry8Ubk8G1CwXaejforsyVW7LKcjbYEi9+6tIwpVDAS/yo
+	 agpOJCZdtJ8VLLYAnPSZSyK1kQ2nQYVxTjllp40J54ikcgBili0q9Zx4GdZsiei8kV
+	 Zkx9l6Yg/JahLyS2WsZYKN19Bc61AsbWYZEvknPY=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42LBtIV2032767
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Mar 2024 06:55:18 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Mar 2024 06:55:18 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Mar 2024 06:55:18 -0500
+Received: from [10.24.69.142] ([10.24.69.142])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42LBtAWR111394;
+	Thu, 21 Mar 2024 06:55:10 -0500
+Message-ID: <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
+Date: Thu, 21 Mar 2024 17:25:09 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e291e52a-ae98-42ac-88c3-7463f952d490@suse.cz>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 6F9BD37307
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Content-Language: en-US
+To: Michael Walle <mwalle@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Ayush Singh
+	<ayushdevel1325@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>, <jkridner@beagleboard.org>,
+        <robertcnelson@beagleboard.org>, <lorforlinux@beagleboard.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Derek Kiernan
+	<derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
+	<arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown
+	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder
+	<elder@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ BINDINGS" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/TEXAS INSTRUMENTS
+ K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SPI
+ SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM"
+	<greybus-dev@lists.linaro.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+ <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+ <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
+ <b62915ca-c151-4e37-bb03-c92c569c84ff@lunn.ch>
+ <4b319264-bff7-48e5-85e8-201ca0bafec6@ti.com>
+ <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
+ <ded6c350-4c70-4a26-8b18-6605dcc6e084@ti.com>
+ <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
+From: Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Mar 21, 2024 at 12:20:24PM +0100, Vlastimil Babka wrote:
-> Understood, but migration is kinda heavy and non-fast-path operation already
-> so the extra lookup wouldn't be in a critical fast path.
 
-Ok, you convinced me, let us save that memory.
 
-> When I mean is we have __set_page_owner_handle() setting up everything for
-> tail pages and then we have __folio_copy_owner updating only the head page,
-> so this will create kinda a mixed up information. Which might not be an
-> issue as __folio_copy_owner() should mean it's a proper folio thus compound
-> page thus nobody ever will check those mismatched tail pages... Maybe we
-> could adjust  __set_page_owner_handle() to skip tail pages for compound
-> pages as well and unify this, and tail pages would be only setup for those
-> weird high-order non-compound pages so that the odd case in __free_pages()
-> works?
+On 21/03/24 15:08, Michael Walle wrote:
+> Hi,
 > 
-> Or maybe page_owner is considered debugging functionality enough so it might
-> be worth having the redundant data in tail pages in case something goes
-> wrong. But either way now it seems we're not doing it consistently.
+>>> Is that because the current software support is too limited? Are there
+>>> manufactures who want to create more complex designed, but are limited
+>>> by what can be described in the manifest?
+>>>
+>>
+>> most mikroBUS add-on boards in production lies in the category of
+>> sensors, displays, connectivity, mixed signal (ADC/DAC .etc) and if you
+>> look at the existing bindings under bindings/iio/ , most devices need
+>> only simple descriptions and the properties are mainly standard bus
+>> properties (SPI/I2C properties), IRQ, named-gpios, named properties,
+>> regulators, clocks the extension to manifest was made taking this into
+>> account and the named property description interface just maps the
+>> manifest entries to the unified device property interface under
+>> include/linux/property.h
+> 
+> How will the ethernet boards ([1], [2]) work? Where do they get
+> their MAC address from, for example. The DT has some nice properties
+> for that, but I doubt that will be possible with the manifest files.
+> I've looked at the manifest file for the w5500 board [3] and to me
+> it looks like that board will come up with a random MAC address on
+> each start. Thus, even today, you have some boards which require
+> a more complex description.
+> 
 
-So we basically have two options here, 1) is to also update tail pages
-in __folio_copy_owner, and 2) is to follow __folio_copy_owner example
-and skip tail pages in __set_page_owner.
+Agreed, this is a limitation, unless the corresponding 
+drivers/subsystems use device_property_read_* helper to fetch 
+properties, it will not work and net/core/of_net.c only implements 
+of_get_* helpers even though the underlying functions can be implemented 
+with equivalent device_property_read_* equivalent as well.
 
-The thing is, going with 2) might mean, as you pointed out, that if
-something goes wrong we lose the information for those pages as
-page_owner does not have a record for them.
+> Apart from the discussion whether the manifest is a suitable or
+> sufficient mechanism to describe the hardware, I think the main
+> problem with the proposed binding, is that it doesn't follow the
+> binding Rob was proposing for a socket. If I want to use DT
+> overlays, how would you describe an add-on board?
+> 
+> The proposal was that the base board has something like
+> 
+> mikrobus: socket {
+> 	compatible = "mikrobus-socket";
+> 	i2c-parent = <&i2c0>;
+> 	spi-parent = <&spi0>;
+> 
+> 	i2c {};
+> 	spi {};
+> };
+> 
+> an add-on board can then have a DT snippet/overlay like the
+> following:
+> 
+> &mikrobus {
+> 	i2c {
+> 		eeprom@52: {
+> 			reg = <52>;
+> 			compatible = <atmel,at24..>;
+> 		}
+> 	};
+> 
+> 	spi {
+> 		sensor@0: {
+> 			reg = <0>;
+> 			compatible = <foobar>;
+> 		};
+> 	};
+> };
+> 
+> That should be possible with a binding for the mikrobus, which
+> in fact it is just a pin header with a standard pinout. Also as
+> Russell pointed out in v3, the EEPROM/manifest is not part of the
+> mikrobus standard. So maybe that deserves an own compatible, like
+> 
+>     compatible = "mikroe,click", "mikrobus-socket";
+> 
+> Or maybe click-eeprom? Although click seems to be the brand name of
+> MikroElektronika.
 
-OTOH, would that information be really useful? Sure we could see the stack, but
-AFAICS not even the migrate_reason would be recorded in those tail
-pages, which means that if they are migrated and freed, we would only
-see that they were freed. (the free stack would point to the migrate
-code though, so that is a hint).
+Agreed, there is nothing preventing us to convert the binding and update 
+the driver to follow the above proposed format and will be done in next 
+revision. Click is brand name of MikroElektronika and they don't allow 
+custom boards to use that branding, however clickid can be used in the 
+case where EEPROM is present/enable the socket to be probeable.
 
-Not really sure which path to take here, skipping tail pages would be
-less of a complexity but at a risk of loosing information.
+Thanks and Regards,
+Vaishnav
 
-Anyway, let me first tackle the issue at hand here, and then I will
-think more about that.
-
-Thanks!
-
--- 
-Oscar Salvador
-SUSE Labs
+> 
+> -michael
+> 
+> [1] https://www.mikroe.com/eth-3-click
+> [2] https://www.mikroe.com/eth-wiz-click
+> [3] https://github.com/MikroElektronika/click_id/blob/main/manifests/ETH-WIZ-CLICK.mnfs
 
