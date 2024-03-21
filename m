@@ -1,142 +1,98 @@
-Return-Path: <linux-kernel+bounces-110693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 612D088627D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:24:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63545886282
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E51771F231D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:24:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7A9FB213F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCC2136649;
-	Thu, 21 Mar 2024 21:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908D135A72;
+	Thu, 21 Mar 2024 21:25:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CiJNTqx7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="PPg4n7vg"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630EC135A55;
-	Thu, 21 Mar 2024 21:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281361353EC
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711056256; cv=none; b=KqIIc93a3U+7hzPZE6yWIc9hT8Jn5qT8/AnYGfr5ZpW2TePBUzMBbkEXcWwcQHqTLV12C4D8bi8t/c5psL4gW/T7ErLqE6gMHxRKc8151Eauc2S20GKGGb2gIDd3Osf7XD+PN9D85vvftgElZ6p2TcaRvyK0AZEeKHgfagAbJEs=
+	t=1711056328; cv=none; b=SnBMxnakB46FmA9KUYQHzdVYLzXPFhBlWl8136wTe27txX+2fH4O+9iVWnNLtCjuaFodldm0Gqc3XmHFJFYBYbXes4/HZ1yPzDfmrkPc24kM41ScGpwioIWm6FARwGm3h45wPkLNjNMMEj43LVjiybz1cC0cUieiImMGKRnO2Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711056256; c=relaxed/simple;
-	bh=0YXDk0lo2amfuxfoAWLgdqVOuj49kR3I7zPhp3zFKBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gJsFsuD2KSh+ODOCAfaV44Lc9fnShoS2WocTBJgMxYLOB0HzdepnkLtNjLx9/iJZrzrEqjmqmcErpvQtFvHmtFAcsRJliJNjiZxWVBnWLlL/Tts2LDcg8rkO/bQiUf94JQqfhmbKp9UdBZOz+sK++Jj8EKi24nPU1kuVWAaDo7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CiJNTqx7; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711056254; x=1742592254;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=0YXDk0lo2amfuxfoAWLgdqVOuj49kR3I7zPhp3zFKBQ=;
-  b=CiJNTqx7EL8rdHXuut3DhS9wrX3J1d4vo8CVbcJ9AqA9tVfTVX1Jk6xW
-   fxy7Gr2LPRUw7TP3vtLLcCsqFGXS2tx0SJW6y3Hn9fMQSemEknjrNpE9O
-   Uw9frRpCIt9vYyIOHZxpqt7Vz6LEGQWITMfb8Y5cHUPR9oNbnQhFc0nXj
-   /b4dqvzbf9eFdY64eyIiNDlukLSwBahKjJLwPDEXqn/Ra995RqFXWbCni
-   j2Vah4QPO2fpNdjrXuGo6t5NaR9+Z1zlxu+EnCCd023cIihekbS2Ts1er
-   3gBtDOoyEjEfNvt6pz5Riknzs/ZklCqYG6zb9oCIPGenb4pCjJD+Erg7K
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="9847269"
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="9847269"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:24:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="14627431"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:24:12 -0700
-Date: Thu, 21 Mar 2024 14:24:12 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 056/130] KVM: x86/tdp_mmu: Init role member of struct
- kvm_mmu_page at allocation
-Message-ID: <20240321212412.GR1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5d2307efb227b927cc9fa3e18787fde8e1cb13e2.1708933498.git.isaku.yamahata@intel.com>
- <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
+	s=arc-20240116; t=1711056328; c=relaxed/simple;
+	bh=ZmeXOty/8haX7G/IQpzwTPK1G6wnQWo2YpkXl5B1tEw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iib8f9dcvogkLElgcHEV91TER0ueXGNr6/JjIZfKT+4rQJPmv2Gq/5OQiJm6F2sncmOYpHAYscEg/27wkp5xX4PevQP6wWDQz7qltMHpEHYLYOneyouY1u57/Qi+Ro9azvF2YyTikuDNEh/y/YjNBCm3CAdcjQaTQwd1++MRD5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=PPg4n7vg; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7e096ab9287so543832241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iwanders.net; s=google; t=1711056325; x=1711661125; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZmeXOty/8haX7G/IQpzwTPK1G6wnQWo2YpkXl5B1tEw=;
+        b=PPg4n7vgZMhHVL7qHRoVMVdHbuRJDg3UmZHpH3eKGVgp/BZE8Mx+s/3obwSClXiyFM
+         XRdM9Y6j6B2X/HMJVLa4F8+wipXXNISLg5WHuU/+2Av0dvyEnIQ0YaS6ejH2vE0iwUEB
+         9iWqPoYjrBBxwLvDEBCpiCayYgRwebKWJwRC8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711056325; x=1711661125;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZmeXOty/8haX7G/IQpzwTPK1G6wnQWo2YpkXl5B1tEw=;
+        b=NVBTRuDnQXoZu7IISqI/QQ3Jh7k7VAq9ZGkqS61ZKQW5736ZM35v/8/lZ0bzq7m0Ck
+         /z+/cJ4R/b6VWdgrWlzsRfCV92DMjh0DIyuG5koJNU6XMg4WssFER77A7ZIndZ5nsowa
+         YzwTzQCCB8vDUxK1RsPlNkSoOvnsZ444ytBbfH4IrHhYmBwZtFUJb/X5x238VeQf9d/q
+         XMSoL7gYC0VTsFnLhFkKkNqYtC8595V9FG7HM66Vl6INwQSk6Q69OM7ZoZyr4uVpFbMp
+         VMsWK9r2iybHajA54FMg2P9yTltnxrl3mLXHnZjD5P8xiY5XiMSAAAj/BMfKr8h6o0Uu
+         xzCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPqiRsAXq0Lr/FDAkk6dL+bPyjHiQFFL+OWfQ2f+J67tbNpnljUIWhbAZwSCZ7OzwnmocDQQN9jLQ7ZHQdGUvn3w7nlfI2KNsYXGk1
+X-Gm-Message-State: AOJu0YxgTCbUAopovaf/pLfFL0vovVrR+5hOcFFlDAqQNSPRvWdwa7EX
+	SlCxPHDAShtiFSgMThrF1JhukfYDKD2hzgpKHvYYarPo31POvCgG9ogwjZWA+RA=
+X-Google-Smtp-Source: AGHT+IFGVoYlWmW/2LhORkKDCpnHJ5RgISbUB2EttX/8dcFtWMsr/KoKwOBaHZgcy59oLKuTzjc1+g==
+X-Received: by 2002:a67:eb57:0:b0:473:3801:e113 with SMTP id x23-20020a67eb57000000b004733801e113mr777972vso.23.1711056324851;
+        Thu, 21 Mar 2024 14:25:24 -0700 (PDT)
+Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
+        by smtp.gmail.com with ESMTPSA id js4-20020a0562142aa400b0069049298fccsm313202qvb.65.2024.03.21.14.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 14:25:24 -0700 (PDT)
+From: Ivor Wanders <ivor@iwanders.net>
+To: ilpo.jarvinen@linux.intel.com
+Cc: hdegoede@redhat.com,
+	ivor@iwanders.net,
+	linux-kernel@vger.kernel.org,
+	luzmaximilian@gmail.com,
+	platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] platform/surface: platform_profile: add fan profile switching
+Date: Thu, 21 Mar 2024 17:25:21 -0400
+Message-Id: <20240321212521.3834-1-ivor@iwanders.net>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <71c9e24b-c64b-581c-87f0-fb0c58066ceb@linux.intel.com>
+References: <71c9e24b-c64b-581c-87f0-fb0c58066ceb@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
 
-On Thu, Mar 21, 2024 at 12:11:11AM +0000,
-"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
-> > To handle private page tables, argument of is_private needs to be
-> > passed
-> > down.  Given that already page level is passed down, it would be
-> > cumbersome
-> > to add one more parameter about sp. Instead replace the level
-> > argument with
-> > union kvm_mmu_page_role.  Thus the number of argument won't be
-> > increased
-> > and more info about sp can be passed down.
-> > 
-> > For private sp, secure page table will be also allocated in addition
-> > to
-> > struct kvm_mmu_page and page table (spt member).  The allocation
-> > functions
-> > (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know
-> > if the
-> > allocation is for the conventional page table or private page table. 
-> > Pass
-> > union kvm_mmu_role to those functions and initialize role member of
-> > struct
-> > kvm_mmu_page.
-> 
-> tdp_mmu_alloc_sp() is only called in two places. One for the root, and
-> one for the mid-level tables.
-> 
-> In later patches when the kvm_mmu_alloc_private_spt() part is added,
-> the root case doesn't need anything done. So the code has to take
-> special care in tdp_mmu_alloc_sp() to avoid doing anything for the
-> root.
-> 
-> It only needs to do the special private spt allocation in non-root
-> case. If we open code that case, I think maybe we could drop this
-> patch, like the below.
-> 
-> The benefits are to drop this patch (which looks to already be part of
-> Paolo's series), and simplify "KVM: x86/mmu: Add a private pointer to
-> struct kvm_mmu_page". I'm not sure though, what do you think? Only
-> build tested.
+What is the process to get this merged if no further review is coming in?
+Maximilian Luz approved v1 already. I just confirmed this patch still
+applies cleanly on the latest upstream master. Do I need to send v3 with
+this reviewed-by tag added to the commit or can this version be merged?
 
-Makes sense.  Until v18, it had config to disable private mmu part at
-compile time.  Those functions have #ifdef in mmu_internal.h.  v19
-dropped the config for the feedback.
-  https://lore.kernel.org/kvm/Zcrarct88veirZx7@google.com/
+Thanks,
 
-After looking at mmu_internal.h, I think the following three function could be
-open coded.
-kvm_mmu_private_spt(), kvm_mmu_init_private_spt(), kvm_mmu_alloc_private_spt(),
-and kvm_mmu_free_private_spt().
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+~Ivor
 
