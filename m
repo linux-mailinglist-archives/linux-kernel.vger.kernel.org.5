@@ -1,161 +1,112 @@
-Return-Path: <linux-kernel+bounces-109598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7BF8881B43
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:42:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0C6881B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E405B22006
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:42:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA6BF282BFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4B6567F;
-	Thu, 21 Mar 2024 02:42:23 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBE95CB5;
+	Thu, 21 Mar 2024 02:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gWWr4v1A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6421E17F7
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A20E5660
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710988942; cv=none; b=di99U+u7BmSMF9X+MIJmnOZC7pKJL0QX9m5UxIW6wPGv926kV6ZxGD8hRazjMNiytXTtzqUi9siqwF1vZbkF4f/pZRcXGe2i3JRMIyNukGhuxesqzhN3ETjolSdvHDZSBS7JbhxHeAjdGV3/xbuuF9ghMVKlB2yOWj77qEQ78bM=
+	t=1710988971; cv=none; b=rFfAOPAyIgL8jKiLSMFWUgBdD9jieVhZWaor3XgMUalk8vvcpydhHQv+hpRPeNiHlR+l0DAv5+v9VVit+dhoTXjp7WL6CDKfHWJkCEYqzMMjjC+x7k6gZ3fgs/bcguJ9g1HTcE+ppLwSonGGT2t5V7X9JLZKQ7jCWqxq6uPrj8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710988942; c=relaxed/simple;
-	bh=Moyi9It4HDn0Wqnsa384HlzmialjvkrXk5CH1nKNAzo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HJFxdt7LPHwCD1BaRM4RTCGjjmoisTc6vgwr8kAMdN4CZxT77d4+L6A38Ybrhrp9DaPwJuCL21sGjCO9zw4nrLZe9+x34dumOlX93lCj2Wpv1d700OSVf7uSVSLtUVfPLVKTJSnunr9JRuXTdtRjWhVt1bhjVuhARkkLHg5KZK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc0a422d43so52125739f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:42:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710988940; x=1711593740;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gXKz2V3ME9fD+k/BB3OJKDkhzsKI05dxAOLxSgfJSSM=;
-        b=LbhAyIQ5JiYUqoR2u1okMWkylyiqceRhQ2j62WeqzmVBWCD8N2APzlXPbsOmplA2Ur
-         e4oxbE3e+dXCzWTkvzm7W5gt3AHYSAGO/w8sUqwhsTRSC1GwN0BQk1JHt4ndJqfY1Ial
-         lG8Mr2IbUDtwrP59ytJuNuL/NdWs5ZZdRf2zRFkfDzRwgRVK8SgbyGQRS0whSFAOSPPg
-         htyVV1cucZriXV2tlKe3LwVXGdMEso28PASb8nGgyKhi6MJpOQyfWF9qSJLfyCSil29H
-         zCFwbgw3aGGJpn4PHrHtSqDah7xXdgFaarABcidkblEosSPduHbNLcV3zIINYpNY2dJu
-         z96Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUFwOOelIPqbvlL22gpmw9PkLFTTsqO4uKmRzgb7ym5X0XWUZ3AtAxgzjwV6v7uIvUTqgMMXB3UJ86bCVSUCgkcvC4wwxzXpF2DSbqG
-X-Gm-Message-State: AOJu0YyE1gKVXPAiwET9nOuRX9E0QTMKBe3bRyXExwsDhq7Txp/uhIc8
-	ig+OxWR+YcMOquV163waMuSc3fYFR6aVgLHN/3hCjLRXktcyxcHeIuBwiGHfszIxdCzeK8K446v
-	lFle/yQ5l7cALT8wzmvtJwXvp6JgJ7PPlgX6DoAfo24VFFh/JwN3eR0A=
-X-Google-Smtp-Source: AGHT+IHaJLyLhFYGuxU/qA70H+kInufpacI1MqSCsvIV+tXUQCBqMAxE9w0GQUMmakSSmz60cRnSEW31nstDH7yuaKGobO0hjTQK
+	s=arc-20240116; t=1710988971; c=relaxed/simple;
+	bh=ND3Q6+ESxisTfW3w6/xHdoln2tpbUoz0Cd7/rISA0Nc=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=KedEgs6RivgqJIMU4lZQkFF7ANcLrc6EmOfBxfoII2XjKhx4JR+zQrXXBbjZYYanCcAxmZQjiODebaeSCQkJWZXQUJwz0UuFvz8xzW+D0hX+J0pIZH3koi5Sn6XKJzlWJ7KHf4/mP6TWZlON4Xt2DzQ7V9KzePqig34Z2/uyBbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gWWr4v1A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7084CC43394
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710988970;
+	bh=ND3Q6+ESxisTfW3w6/xHdoln2tpbUoz0Cd7/rISA0Nc=;
+	h=From:Date:Subject:To:Cc:From;
+	b=gWWr4v1A/RPLYgiXIjxYPJzCUCdU3xTCpoJ1PDS7ZCANgrIfOjVEPCV+r/suVB9Sp
+	 YEyGwPlgH9WfXTqpbN7ZVZ6x17glYYQNiTGZ+kYWk6zZnaRKHJnJuE5xh1CdCkHnm1
+	 9curc/2uqUqyajMYQ05O3QssDqMscodgKglYbcgXVFhQc/4VUQ/8Wq+9hTzcxb6sPI
+	 Jam+MHyeAXl3Tj3YwL0Lq7sMpS2MHWyMXHB9yn4ei8Ha37j8FxDURll+tyfRCOHzx3
+	 wd14QQGSdzWsVOB0CnEpEbADIp7bLxSb5gXR1xaiC0LR/rrQw/tkg0fg3Cb3L+3tMW
+	 8/Lyo6M9ABpNg==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a1fa3cf5eeso193706eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 19:42:50 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwNB2rLaruD1uyyT6xxiWqh7+Ar632wFZQxXWoSiEAItg/hBZjU
+	ymgZqh4+pYcP9x+cPOGVZK+KeO0YjIZ5RrRmKd4AN4Pcvpy/EDmxudeJIbMEsw6eQbgKu60NyPi
+	Doa0qXdm4oiJzZbILxnA1UgrTFIk=
+X-Google-Smtp-Source: AGHT+IE38QaBvjwFcJR+2ahM5aUtmP4iUkbHIUbV70NpnMljQ9Iib6wcwBZ3hrvQ0xE42tgLfQPZDtDJT/l0qX8tV+g=
+X-Received: by 2002:a05:6870:ac28:b0:222:73c1:4a06 with SMTP id
+ kw40-20020a056870ac2800b0022273c14a06mr20959642oab.1.1710988969781; Wed, 20
+ Mar 2024 19:42:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:34aa:b0:477:303f:e0a5 with SMTP id
- t42-20020a05663834aa00b00477303fe0a5mr284557jal.3.1710988940642; Wed, 20 Mar
- 2024 19:42:20 -0700 (PDT)
-Date: Wed, 20 Mar 2024 19:42:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005a1e1061422a8f1@google.com>
-Subject: [syzbot] [usb?] WARNING: ODEBUG bug in usb_unbind_interface (2)
-From: syzbot <syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Thu, 21 Mar 2024 11:42:38 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-iGLkXgDa8cj8Un7xz_8zW-AYncpyfy16-2y9KNLNJig@mail.gmail.com>
+Message-ID: <CAKYAXd-iGLkXgDa8cj8Un7xz_8zW-AYncpyfy16-2y9KNLNJig@mail.gmail.com>
+Subject: [GIT PULL] exfat update for 6.9-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+	"Yuezhang.Mo" <Yuezhang.Mo@sony.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Hi Linus,
 
-syzbot found the following issue on:
+This is exfat update pull request for v6.9-rc1. I add description of
+this pull request on below. Please pull exfat with following ones.
 
-HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=155b7959180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5b814e91787669
-dashboard link: https://syzkaller.appspot.com/bug?extid=9665bf55b1c828bbcd8a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Thanks!
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The following changes since commit 855684c7d938c2442f07eabc154e7532b4c1fbf9:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5f73b6ef963d/disk-480e035f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/46c949396aad/vmlinux-480e035f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e3b4d0f5a5f8/bzImage-480e035f.xz
+  Merge tag 'x86_tdx_for_6.9' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2024-03-11
+20:20:36 -0700)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
+are available in the Git repository at:
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object: ffff88807b455180 object type: work_struct hint: usbnet_deferred_kevent+0x0/0xb90 drivers/net/usb/usbnet.c:1589
-WARNING: CPU: 0 PID: 5151 at lib/debugobjects.c:517 debug_print_object+0x17a/0x1f0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 0 PID: 5151 Comm: kworker/0:3 Not tainted 6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:debug_print_object+0x17a/0x1f0 lib/debugobjects.c:514
-Code: e8 fb b9 4a fd 4c 8b 0b 48 c7 c7 20 dd fe 8b 48 8b 74 24 08 48 89 ea 44 89 e1 4d 89 f8 ff 34 24 e8 eb 3e aa fc 48 83 c4 08 90 <0f> 0b 90 90 ff 05 8c d5 d9 0a 48 83 c4 10 5b 41 5c 41 5d 41 5e 41
-RSP: 0018:ffffc900046e7278 EFLAGS: 00010286
-RAX: cd024ab54396bd00 RBX: ffffffff8ba9ef40 RCX: 0000000000040000
-RDX: ffffc90012937000 RSI: 000000000003b781 RDI: 000000000003b782
-RBP: ffffffff8bfedea0 R08: ffffffff8157cc12 R09: fffffbfff1bf9650
-R10: dffffc0000000000 R11: fffffbfff1bf9650 R12: 0000000000000000
-R13: ffffffff8bfeddb8 R14: dffffc0000000000 R15: ffff88807b455180
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0e043ad988 CR3: 000000002a986000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
- debug_check_no_obj_freed+0x45b/0x580 lib/debugobjects.c:1019
- slab_free_hook mm/slub.c:2078 [inline]
- slab_free mm/slub.c:4280 [inline]
- kfree+0x110/0x380 mm/slub.c:4390
- device_release+0x99/0x1c0
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x22f/0x480 lib/kobject.c:737
- usb_unbind_interface+0x1d4/0x850 drivers/usb/core/driver.c:461
- device_remove drivers/base/dd.c:569 [inline]
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x503/0x7c0 drivers/base/dd.c:1295
- bus_remove_device+0x34f/0x420 drivers/base/bus.c:574
- device_del+0x581/0xa30 drivers/base/core.c:3828
- usb_disable_device+0x3bf/0x850 drivers/usb/core/message.c:1416
- usb_disconnect+0x340/0x950 drivers/usb/core/hub.c:2267
- hub_port_connect drivers/usb/core/hub.c:5323 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5623 [inline]
- port_event drivers/usb/core/hub.c:5783 [inline]
- hub_event+0x1e62/0x50f0 drivers/usb/core/hub.c:5865
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa00/0x1770 kernel/workqueue.c:3335
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
+  git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git
+tags/exfat-for-6.9-rc1
 
+for you to fetch changes up to dc38fdc51ba650871f12e4032bfe170f5b0e8ed0:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  exfat: remove duplicate update parent dir (2024-03-19 20:56:10 +0900)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+----------------------------------------------------------------
+Description for this pull request:
+  - Improve dirsync performance by syncing on a dentry-set rather than
+    on a per-directory entry
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+----------------------------------------------------------------
+Yuezhang Mo (10):
+      exfat: add __exfat_get_dentry_set() helper
+      exfat: add exfat_get_empty_dentry_set() helper
+      exfat: convert exfat_add_entry() to use dentry cache
+      exfat: convert exfat_remove_entries() to use dentry cache
+      exfat: move free cluster out of exfat_init_ext_entry()
+      exfat: convert exfat_init_ext_entry() to use dentry cache
+      exfat: convert exfat_find_empty_entry() to use dentry cache
+      exfat: remove unused functions
+      exfat: do not sync parent dir if just update timestamp
+      exfat: remove duplicate update parent dir
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+ fs/exfat/dir.c      | 290 +++++++++++++++++++++----------------------
+ fs/exfat/exfat_fs.h |  25 ++--
+ fs/exfat/inode.c    |   2 +-
+ fs/exfat/namei.c    | 352 ++++++++++++++++++++--------------------------------
+ 4 files changed, 293 insertions(+), 376 deletions(-)
 
