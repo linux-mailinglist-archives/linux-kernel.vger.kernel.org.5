@@ -1,171 +1,116 @@
-Return-Path: <linux-kernel+bounces-110154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0A1885AE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:38:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA6EC885B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A398B216E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:38:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C6D28480E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E1784FA0;
-	Thu, 21 Mar 2024 14:38:00 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BD38528B;
+	Thu, 21 Mar 2024 14:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bL5cFI7r"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46C51EB3B
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE4DA947;
+	Thu, 21 Mar 2024 14:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711031879; cv=none; b=Bax/xhBJqZCSpp4jvY4XOAM65KVlJRmHCuiByHiPgZzSF+Lh31q2jnrBy2P6Ac0h26Ozk6l6BkOf7auIpFCztAfzdImGnL+ARaaOcZMzA6QYjMMPvNhqzU0N5MLXZ/8IPJ9qKcOFB2v0/2mdi1pHAEOrrlQmtOCqpcaLgW4MV9k=
+	t=1711032363; cv=none; b=A+mEno+F6v2v3SdHhD3ymoeDHla5d04grVdNiG5lG4iSuSCV9Z2k+V1LHncL4/ZCn9Ix7kD6PSZXMPo1AUEEgWd/dMG4ATQ6oyYgp92v0+HIXUYTpFwjuAEgqruaNdhakUgGqS/k0Ievg97bY8BA8E3eX4CZSl0UyydDBYVfO+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711031879; c=relaxed/simple;
-	bh=LP3FeeZH4nKE2ePG3cz0fkEKsYcfyJbnepgga50dUlM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=tZqTjto6N0i5M3AltxsEnn2ebdJrmosJjDCwgP2vAq32vstjthfv9quO/7EMPuCcOCroAq0ggBzjwXANm+kQNI9HUsWT5FSdMj2cdHt/RJRvHdBlgvYYxn5X+1EMQFpUURPPdsj9MbCpXGCNTH8cHOYrewukWhV4YP3hUnSXENk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-187-6fRfpWVCPDm3cO9Kixse_g-1; Thu, 21 Mar 2024 14:37:54 +0000
-X-MC-Unique: 6fRfpWVCPDm3cO9Kixse_g-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Mar
- 2024 14:37:28 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 21 Mar 2024 14:37:28 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Russell King' <linux@armlinux.org.uk>
-CC: Ard Biesheuvel <ardb@kernel.org>, 'Jiangfeng Xiao'
-	<xiaojiangfeng@huawei.com>, "arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
-	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
-	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
-	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
-	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
-	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
-	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHAgAAWtoCAAAVW8IAACy4AgAADrmCAAAjqAIAAC+ng
-Date: Thu, 21 Mar 2024 14:37:28 +0000
-Message-ID: <9d6057b110034c04b6b590522c8c69cc@AcuMS.aculab.com>
-References: <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
- <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
- <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
- <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
- <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
- <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
- <0fd55e156195440bb1d815dd8300894b@AcuMS.aculab.com>
- <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
-In-Reply-To: <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1711032363; c=relaxed/simple;
+	bh=hmFR+A1emygyeDkPd3cRDw5F7A9p/5ewMxdwGilktg4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bI/m/BqNB1FxH1b/+90dWQH4hpo3s0ugOXY+/PvNEsXvww+FU5zSMp5EP0kLBLh0lUnhIjjUb1Z+HsHaj36JYKId0gvKSz+L7HRWJXVuxcQSlZjINu6W/i2yLJ/qAMtIcwJhwC7cmjK33/kUd4EVexw8Q8Xd5A7V5TJgowemJ48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bL5cFI7r; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41464711dc8so8842435e9.1;
+        Thu, 21 Mar 2024 07:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711032360; x=1711637160; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fb6fGfxlkuJOz49c8nIlvUqhq4r8FWilTvBwvl4ZbcQ=;
+        b=bL5cFI7rf1tnNgeGnqCnumumdGlPBxGopBUG7z+pBmhPM1mqCKXT2IQkG+JgHWTvse
+         ll94QPvkgThLu0zpeoC6N3p+yrzNbdX8sbpMleZTb2QcwQhWjklchqlaNriBCnBXpgFz
+         tGWCF55Jah87Y1o2Ez52FyAXR6LFAbktHk29bY1Mq8vvn+mg73Xc4I3fTuxxF5AVDsOz
+         eskNpZs+A4EOjD1uzPDktJm2f6yYmZH+TRE5LPqKozjkegEqT4B3b83jb/qcLtquUNKK
+         GvDGfJMWMlKQJUyq9X/8HlJcXnqitNkF3G/t2fWAhesKIeeuyoz8FuCSmMgyuIlmjx+8
+         K5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711032360; x=1711637160;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fb6fGfxlkuJOz49c8nIlvUqhq4r8FWilTvBwvl4ZbcQ=;
+        b=txGvVfz08bBwis2Bb+RZ2JqQgZvgrsRs++fCDsrh3cH+owz/45tc9tOJ3d95HMOq7f
+         38JxGpn1YpdJ3Zs78YTDj86qKZXeCFvFLxqDnE82Se3CQWmAK7jmHxlcx0wKP/s9239S
+         HFsU4tRNSCWicGmgEDWdp61PJ11SK9/TbUp+k0l9QMZdFMv/G+4hCA0ijK7zk66CVlLj
+         stGrL8UXb9PS4dQnNLTX0ilzy0om8usPz3O1uQXOI2qRcOwLp/G/Ik5J0DaJV2uuD62J
+         ULtFAD6VoQlBdv9ZqbUzc6K9ktSBHJ/ZGsLhNqbxhfmxBb6KcxwJvdYmzHmcAFLcnl5D
+         //PA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlXcLDh7qex0S0LsI1BTym/JTXZcj+iRjyW7d0oWfpXzXREsINuYFX2x54QvaaQ3O0t0hJMoIQFIoAWGDXl8u4H+XT1CJgWkTKCThc97Rel8ZNflRC4VLhxU+6KOa8icQoIK+BYNYxjnY=
+X-Gm-Message-State: AOJu0YywI5WyH/PcUyUE9AhsMqXEMRaue58G1z/xxOEWD9+B/DEQa2Lm
+	jDuFyGtKFil+Tqt954069Cr1Jmx2WhrCuAiGjUCMTqSAiTTYEs2H
+X-Google-Smtp-Source: AGHT+IGOnpTSDTXcx2YzcYG1iGrfHlL5tUyK4tl9tQ+b3d2DT1+yOy/4J3eUUxg5Q0xXnmjv2XZ9Cg==
+X-Received: by 2002:a05:600c:4f0e:b0:413:f3f0:c591 with SMTP id l14-20020a05600c4f0e00b00413f3f0c591mr4896762wmq.41.1711032359784;
+        Thu, 21 Mar 2024 07:45:59 -0700 (PDT)
+Received: from fedora.. ([94.73.33.46])
+        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b004146d736fcdsm5253378wmo.36.2024.03.21.07.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 07:45:59 -0700 (PDT)
+From: =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To: jikos@kernel.org
+Cc: benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH 0/2] Expose firmware name to identify tablets in libwacom
+Date: Thu, 21 Mar 2024 15:38:03 +0100
+Message-ID: <20240321144553.262409-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-From: Russell King
-> Sent: 21 March 2024 13:08
->=20
-> On Thu, Mar 21, 2024 at 12:57:07PM +0000, David Laight wrote:
-> > From: Russell King
-> > > Sent: 21 March 2024 12:23
-> > ...
-> > > > That might mean you can get the BL in the middle of a function
-> > > > but where the following instruction is for the 'no stack frame'
-> > > > side of the branch.
-> > > > That is very likely to break any stack offset calculations.
-> > >
-> > > No it can't. At any one point in the function, the stack has to be in
-> > > a well defined state, so that access to local variables can work, and
-> > > also the stack can be correctly unwound. If there exists a point in
-> > > the function body which can be reached where the stack could be in tw=
-o
-> > > different states, then the stack can't be restored to the parent
-> > > context.
-> >
-> > Actually you can get there with a function that has a lot of args.
-> > So you can have:
-> > =09if (...) {
-> > =09=09push x
-> > =09=09bl func
-> > =09=09add %sp, #8
-> > =09}
-> > =09code;
-> > which is fine.
->=20
-> No you can't.... and that isn't even Arm code. Arm doesn't use %sp.
-> Moreover, that "bl" will stomp over the link register, meaning this
-> function can not return.
+Hi everyone,
 
-With 9+ arguments they spill to see https://godbolt.org/z/Yj3ovd8bY
+This series exposes the UCLogic tablets firmware name to user userspace
+via sysfs.
 
-Where the compiler generates:
-f9:
-        cmp     w0, 0
-        ble     .L2
-        sub     sp, sp, #32
-        mov     w7, w0
-        mov     w6, w0
-        mov     w5, w0
-        mov     w4, w0
-        mov     w3, w0
-        stp     x29, x30, [sp, 16]
-        add     x29, sp, 16
-        mov     w2, w0
-        mov     w1, w0
-        str     w0, [sp]
-        bl      f
-L2:
-        ret
+libwacom can use it to identify this family of tablets, which has been
+very difficult until now because vendor keep reusing the same VIP/PID.
 
+This is the PR consuming the new interface:
+https://github.com/linuxwacom/libwacom/pull/620
 
-A traceback from inside f() definitely needs to use LR-4
-for the stack offset.
+Finally, I created a tool to generate a list of firmware name <-> table
+model for UCLogic-like drawing tablets:
+https://github.com/JoseExposito/uclogic-firmware-names
 
-(arm64 doesn't seem to support -mno-sched-prolog).
+Best wishes,
+José Expósito
 
-I've failed to get different sized stack frames for the true/false
-sides of the branch.
-The compiler seems to pre-allocate the space for extra args rather
-than using 'push' type instructions.
-This was certainly better for some x86 cpu (p-pro?) but has now
-gone out of fashion.
+José Expósito (2):
+  HID: uclogic: Store firmware name in params
+  HID: uclogic: Expose firmware name via sysfs
 
-=09David
+ drivers/hid/hid-uclogic-core.c   | 16 ++++++++++++++++
+ drivers/hid/hid-uclogic-params.c | 14 +++++++-------
+ drivers/hid/hid-uclogic-params.h |  5 +++++
+ 3 files changed, 28 insertions(+), 7 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+-- 
+2.44.0
 
 
