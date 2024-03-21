@@ -1,265 +1,79 @@
-Return-Path: <linux-kernel+bounces-110082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874808859D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 214558859D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F05BAB21945
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:16:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6978B2200E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C3D84A31;
-	Thu, 21 Mar 2024 13:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="IWFqDMYP"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD0484A50;
+	Thu, 21 Mar 2024 13:16:55 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDFA8405B
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756FA84A37;
+	Thu, 21 Mar 2024 13:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711026986; cv=none; b=lX0S1GvG3NGLzryDkM0sBZN7E0bezWc0FOCNSTWWNVKhb9zUVnAKE5uP9kag0573dmdn0JjHz1/wsj5G+Uhgzxy0D778Qirv+FbtCLqwYKI2di36Oco7OxJqiomwM291keMHkEw5S+LClJO0eb75tE+4s6PgwkBgPyqsByCly70=
+	t=1711027015; cv=none; b=owbiqVX0nIMCkJElthlxSj2ZSHJCBXDTV1J4oTP0ZIU+HYRMtWgMLSYm8n6gLab2hwt79ZF+R6zZLoRGKH41Obn6/gVpRYxchATFLXAPjwokzvI+445LBVNF0H8GD7myhWUoAkYnAvfUnAha47TSYXPST+H8TEYZKzVlSFT5Fx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711026986; c=relaxed/simple;
-	bh=Nk9b5oqwgKE06yFCMJlcUgDcBJvztR/AqGsXmLiNX+E=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Azb/nX33jSdl2noHaZzqJmygQoKhgfPiP3Qmjj+W5s76s7XM/JLwPCfx1sLCGnH3XiSzZtxtznIT0Et/SqAA0rpPYY7iAM7DCM4bRMYuA6QbxBMStuZSFNZmdSD295NOYbiNbjV7/04aFBCXK2xZAI5vFQi5PWtnewaEwSRPWPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=IWFqDMYP; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711026975; x=1711286175;
-	bh=0/ojodZuZWU9umhLIhWLYR7XmIcfv7rcwjbeCgN2brI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=IWFqDMYPUsqeZgQ45aFrjE6/9xYtmwZFoQ9z4oTPMSbsr2ZeDE4Dj/4L3pPLQ6yIc
-	 DQbn7Q//kH4L8bqOOZScCu09j3nawzYCm8I3obNH1gjVi2JPF6HLC6wCCb4RM9B0U6
-	 K9ZB15K5Z6YXMXo7P49PIdoqer+fZqAu/+6HXYQmzu1sFY0AKlQE+43Ap0snIcszG0
-	 nfFaWVWe7xYJQcmSWrcFUmy/evESXDYDBxmAXxnP4LhZOqaVv3DlGvT1+cgYhoqcD6
-	 juCz+O2Hv9mM1MXbITepHM1DpoIOScpW9kk3QCC/DyYWusCB+HXUYePpdSySvhX94z
-	 BwayFaWfAl7Qg==
-Date: Thu, 21 Mar 2024 13:15:58 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, arnd@arndb.de, arve@android.com, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Subject: Re: [PATCH v3 4/4] rust: add abstraction for `struct page`
-Message-ID: <9ed03148-5ceb-40f2-9c2d-31e2b8918888@proton.me>
-In-Reply-To: <20240320084630.2727355-1-aliceryhl@google.com>
-References: <baee63d9-273a-48aa-b3cc-f15e3782156b@proton.me> <20240320084630.2727355-1-aliceryhl@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711027015; c=relaxed/simple;
+	bh=NnhdgZ+fHdsMTH63wmWpTrWtLm6hi5tB7hLyZAa6TPM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ClMOoJhFVt7YpBRpLzNJvKfyU2+fxlJBiZwNYJSTOFDFOaNaXrx1HGCobZcCiR5yqlv79TtyC9zvI8VaTRKv95elr4bhobUv6A+8OE3iWJpJ6ncrV86+FNvr+Z0RCTvIR2CC52jZyKCykHXc51yCeaTBd3aTUn/YSKuKbru/a6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V0mBb53zvzwPZB;
+	Thu, 21 Mar 2024 21:14:15 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9341F140FEA;
+	Thu, 21 Mar 2024 21:16:49 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 21:16:49 +0800
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise
+	<bcrl@kvack.org>, Christian Brauner <brauner@kernel.org>, Jan Kara
+	<jack@suse.cz>, <linux-kernel@vger.kernel.org>, Matthew Wilcox
+	<willy@infradead.org>
+CC: <linux-aio@kvack.org>, <linux-fsdevel@vger.kernel.org>, Kefeng Wang
+	<wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 0/3] fs: aio: more folio conversion
+Date: Thu, 21 Mar 2024 21:16:37 +0800
+Message-ID: <20240321131640.948634-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-On 3/20/24 09:46, Alice Ryhl wrote:
->> On 3/11/24 11:47, Alice Ryhl wrote:
->>> +/// A pointer to a page that owns the page allocation.
->>> +///
->>> +/// # Invariants
->>> +///
->>> +/// The pointer points at a page, and has ownership over the page.
->>
->> Why not "`page` is valid"?
->> Do you mean by ownership of the page that `page` has ownership of the
->> allocation, or does that entail any other property/privilege?
->=20
-> I can add "at a valid page".
+Convert to use folio throughout aio.
 
-I don't think that helps, what you need as an invariant is that the
-pointer is valid.
+v2:
+- fix folio check returned from __filemap_get_folio()
+- use folio_end_read() suggested by Matthew
 
-> By ownership I mean that we are allowed to pass it to __free_page and
-> that until we do, we can access the page. If you want me to reword this,
-> please tell me what you want it to say.
+Kefeng Wang (3):
+  fs: aio: use a folio in aio_setup_ring()
+  fs: aio: use a folio in aio_free_ring()
+  fs: aio: convert to ring_folios and internal_folios
 
-I see, no need to change it.
+ fs/aio.c | 91 +++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 47 insertions(+), 44 deletions(-)
 
->>> +// SAFETY: It is safe to transfer page allocations between threads.
->>
->> Why?
->>
->>> +unsafe impl Send for Page {}
->=20
-> How about:
->=20
-> // SAFETY: Pages have no logic that relies on them staying on a given
-> // thread, so moving them across threads is safe.
-
-Sounds good.
-
->>> +// SAFETY: As long as the safety requirements for `&self` methods on t=
-his type
->>> +// are followed, there is no problem with calling them in parallel.
->>
->> Why?
->>
->>> +unsafe impl Sync for Page {}
->=20
-> How about:
->=20
-> // SAFETY: Pages have no logic that relies on them not being accessed
-> // concurrently, so accessing them concurrently is safe.
-
-Sounds good.
-
->>> +        // SAFETY: The specified order is zero and we want one page.
->>
->> This doesn't explain why it is sound to call the function. I expect that
->> it is always sound to call this function with valid arguments.
->>
->>> +        let page =3D unsafe { bindings::alloc_pages(gfp_flags, 0) };
->=20
-> How about:
->=20
-> // SAFETY: Depending on the value of `gfp_flags`, this call may sleep.
-> // Other than that, it is always safe to call this method.
-
-Sounds good.
-
->>> +        // INVARIANT: We checked that the allocation succeeded.
->>
->> Doesn't mention ownership.
->>
->>> +        Ok(Self { page })
->=20
-> How about:
->=20
-> // INVARIANT: We just successfully allocated a page, so we now have
-> // ownership of the newly allocated page. We transfer that ownership to
-> // the new `Page` object.
-
-Sounds good.
-
->>> +    /// Runs a piece of code with this page mapped to an address.
->>> +    ///
->>> +    /// The page is unmapped when this call returns.
->>> +    ///
->>> +    /// It is up to the caller to use the provided raw pointer correct=
-ly.
->>
->> This says nothing about what 'correctly' means. What I gathered from the
->> implementation is that the supplied pointer is valid for the execution
->> of `f` for `PAGE_SIZE` bytes.
->> What other things are you allowed to rely upon?
->>
->> Is it really OK for this function to be called from multiple threads?
->> Could that not result in the same page being mapped multiple times? If
->> that is fine, what about potential data races when two threads write to
->> the pointer given to `f`?
->>
->>> +    pub fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) ->=
- T {
->=20
-> I will say:
->=20
-> /// It is up to the caller to use the provided raw pointer correctly.
-> /// The pointer is valid for `PAGE_SIZE` bytes and for the duration in
-> /// which the closure is called. Depending on the gfp flags and kernel
-> /// configuration, the pointer may only be mapped on the current thread,
-> /// and in those cases, dereferencing it on other threads is UB. Other
-> /// than that, the usual rules for dereferencing a raw pointer apply.
-> /// (E.g., don't cause data races, the memory may be uninitialized, and
-> /// so on.)
-
-I would simplify and drop "depending on the gfp flags and kernel..." and
-just say that the pointer is only valid on the current thread.
-
-Also would it make sense to make the pointer type *mut [u8; PAGE_SIZE]?
-
-> It's okay to map it multiple times from different threads.
-
-Do you still need to take care of data races?
-So would it be fine to execute this code on two threads in parallel?
-
-     static PAGE: Page =3D ...; // assume we have a page accessible by both=
- threads
-    =20
-     PAGE.with_page_mapped(|ptr| {
-         loop {
-             unsafe { ptr.write(0) };
-             pr_info!("{}", unsafe { ptr.read() });
-         }
-     });
-
-If this is not allowed, I don't really like the API. As a raw version it
-would be fine, but I think we should have a safer version (eg by taking
-`&mut self`).
-
->>> +        // SAFETY: This unmaps the page mapped above.
->>
->> This doesn't explain why it is sound.
->>
->>> +        //
->>> +        // Since this API takes the user code as a closure, it can onl=
-y be used
->>> +        // in a manner where the pages are unmapped in reverse order. =
-This is as
->>> +        // required by `kunmap_local`.
->>> +        //
->>> +        // In other words, if this call to `kunmap_local` happens when=
- a
->>> +        // different page should be unmapped first, then there must ne=
-cessarily
->>> +        // be a call to `kmap_local_page` other than the call just abo=
-ve in
->>> +        // `with_page_mapped` that made that possible. In this case, i=
-t is the
->>> +        // unsafe block that wraps that other call that is incorrect.
->>> +        unsafe { bindings::kunmap_local(mapped_addr) };
->=20
-> Why do you say that? The kunmap_local method requires that the address
-> being unmapped is currently mapped, and that pages are unmapped in
-> reverse order. The safety comment explains that the page is currently
-> mapped and that this method cannot be used to unmap them in anything
-> other than reverse order.
-
-Sorry it seems I thought that the safety comment ended after the first
-sentence. Can you (re)move that first sentence, since it is not part of
-a justification?
-The rest is fine.
-
->>> +    /// Runs a piece of code with a raw pointer to a slice of this pag=
-e, with
->>> +    /// bounds checking.
->>> +    ///
->>> +    /// If `f` is called, then it will be called with a pointer that p=
-oints at
->>> +    /// `off` bytes into the page, and the pointer will be valid for a=
-t least
->>> +    /// `len` bytes. The pointer is only valid on this task, as this m=
-ethod uses
->>> +    /// a local mapping.
->>
->> This information about the pointer only being valid on this task should
->> also apply to `with_page_mapped`, right?
->>
->>> +    ///
->>> +    /// If `off` and `len` refers to a region outside of this page, th=
-en this
->>> +    /// method returns `EINVAL` and does not call `f`.
->>> +    ///
->>> +    /// It is up to the caller to use the provided raw pointer correct=
-ly.
->>
->> Again, please specify what 'correctly' means.
->=20
-> I will remove the "The pointer is only valid on this task, as this
-> method uses a local mapping." sentence and copy the same paragraph as
-> previously (without the `PAGE_SIZE` remark).
-
-Sounds good.
-
---=20
-Cheers,
-Benno
+-- 
+2.27.0
 
 
