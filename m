@@ -1,130 +1,340 @@
-Return-Path: <linux-kernel+bounces-110081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C638859D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:14:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294818859F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:30:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3A901C21E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A884C1F219BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF1584A36;
-	Thu, 21 Mar 2024 13:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZSmSI5Ai"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FED284A41;
+	Thu, 21 Mar 2024 13:30:50 +0000 (UTC)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5883E83CB4
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A638D83CCE;
+	Thu, 21 Mar 2024 13:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711026893; cv=none; b=M1gF7hmzyrRsFvJ54ZH8B8jUhUZMVemuQzzok2prXh+bFTRFYyZLtsV04Te8tZWh5+3ormExcm5CrbcG3kDejJciT1oXbuvDFTiqg8lpVhntdO+FGcS2uRvaOMRSjXHRAPPGtNse7n5zszp/7PbcdZ3nzQEPWxT6OLSiEAN0Ro4=
+	t=1711027849; cv=none; b=cFtvK11/xGX113MZ+CSG3fsSUrR1ADNs+XLcl7P1lWBX+yQvX34EYQr41pzHg5nY4c1E2dK9pE5oJAnOzJeqU7Ej+J1Gkt/a7VE99dCdH9ruJ0xcFmr+aOCRTPLLTsoYIrnKCjfq5OIU/R/7slg3rAtWdKOgdqQHBAsTzxs0YXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711026893; c=relaxed/simple;
-	bh=uUcG4ueqo4aDKX6sq0fsVLjN/etCWtJNlb9OkLiVhEU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IgMkhEElJMgdJxvUUuL8dkI1z2yBF1/PoKZb2kVSvX9BJgC74fl39juB0xpIPDrpi2YeP1cSxZwtQzqcsYDxVmNMxgO61BndizFLHAZE2bohmRvXGDxSn1aGMAlNqvCRlQovJf6mpwqfCtgFd3CypMnbZhAOShGf15kt0F/VbOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZSmSI5Ai; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711026890; x=1742562890;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uUcG4ueqo4aDKX6sq0fsVLjN/etCWtJNlb9OkLiVhEU=;
-  b=ZSmSI5AikijSMJhQDYHfwT1bG7Av4vVTvqE5DJf+9OXNbwCGHSSo15HQ
-   fTHq/6nMypgpwnVROm+54qVk8/SKTgW8q8gwIEucTZSBtx0P5bPQFtjIt
-   tPs7Zei1ZaR/X+KR0CdwWtDlXS/HCCfIOS4pXtbQEkNtgjXnRd7Dkob4J
-   RRsj3haS/H09iII/El2e4IPxW8/az7xdzR1iIIuAf22/4sBQVfS1+zS80
-   2oDkRDilJfbLp4hE6AHSn8pJfllhpN8jkP0Az8Ow0kzxsuOUp+MwcZDri
-   kmu9ppCywM7Q1t7J/AZxRJUdtHWh8Md5bbQi6f7z1OYdS4CcIDuZL2Xul
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5904361"
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="5904361"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 06:14:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="18974602"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 21 Mar 2024 06:14:47 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rnIFo-000JRb-1U;
-	Thu, 21 Mar 2024 13:14:44 +0000
-Date: Thu, 21 Mar 2024 21:13:57 +0800
-From: kernel test robot <lkp@intel.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
-	Zi Yan <ziy@nvidia.com>, "Huang, Ying" <ying.huang@intel.com>,
-	David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/10] mm: page_isolation: prepare for hygienic freelists
-Message-ID: <202403212118.ye7lcKjD-lkp@intel.com>
-References: <20240320180429.678181-10-hannes@cmpxchg.org>
+	s=arc-20240116; t=1711027849; c=relaxed/simple;
+	bh=kxspY95vYGYTOvbO2uG5v443F1J4LThpxAicjseqQ3k=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=p/wY5s4LNc/VHrzluYN/r0PVzpimHwmSdIgEe/AVGKphFZw/MwlUPRMU1DK+7BAcwQb4QAsoDBhtZL1d8Q0AelOCF5hOGCFtrKTDXS8aCVH0egyG22nULULyzNbXvJTMoHWXMfkYerH9LUGTlsZI0eu182Hqo1KybHt3ZjOQlmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 385201A080B;
+	Thu, 21 Mar 2024 14:30:40 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A38B21A0101;
+	Thu, 21 Mar 2024 14:30:39 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6834B1834868;
+	Thu, 21 Mar 2024 21:30:37 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: abelvesa@kernel.org,
+	peng.fan@nxp.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	shengjiu.wang@gmail.com
+Cc: linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] clk: imx: imx8mp: Add pm_runtime support for power saving
+Date: Thu, 21 Mar 2024 21:14:02 +0800
+Message-Id: <1711026842-7268-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320180429.678181-10-hannes@cmpxchg.org>
 
-Hi Johannes,
+Add pm_runtime support for power saving. In pm runtime suspend
+state the registers will be reseted, so add registers save
+in pm runtime suspend and restore them in pm runtime resume.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+---
+changes in v4:
+- use struct clk_hw_onecell_data clk_data in priv struct
 
-[auto build test WARNING on akpm-mm/mm-everything]
+changes in v3:
+- remove REGS_NUM, use the ARRAY_SIZE
+- merge clk_imx8mp_audiomix_drvdata and clk_hw_onecell_data together.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Weiner/mm-page_alloc-remove-pcppage-migratetype-caching/20240321-020814
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240320180429.678181-10-hannes%40cmpxchg.org
-patch subject: [PATCH 09/10] mm: page_isolation: prepare for hygienic freelists
-config: i386-randconfig-003-20240321 (https://download.01.org/0day-ci/archive/20240321/202403212118.ye7lcKjD-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240321/202403212118.ye7lcKjD-lkp@intel.com/reproduce)
+changes in v2:
+- move pm_runtime_enable before the clk register
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403212118.ye7lcKjD-lkp@intel.com/
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 157 ++++++++++++++++++++++----
+ 1 file changed, 136 insertions(+), 21 deletions(-)
 
-All warnings (new ones prefixed by >>):
-
-   mm/page_alloc.c: In function 'move_freepages_block_isolate':
->> mm/page_alloc.c:688:17: warning: array subscript 11 is above array bounds of 'struct free_area[11]' [-Warray-bounds]
-     688 |  zone->free_area[order].nr_free--;
-         |  ~~~~~~~~~~~~~~~^~~~~~~
->> mm/page_alloc.c:688:17: warning: array subscript 11 is above array bounds of 'struct free_area[11]' [-Warray-bounds]
-
-
-vim +688 mm/page_alloc.c
-
-6ab0136310961eb Alexander Duyck 2020-04-06  677  
-6ab0136310961eb Alexander Duyck 2020-04-06  678  static inline void del_page_from_free_list(struct page *page, struct zone *zone,
-6ab0136310961eb Alexander Duyck 2020-04-06  679  					   unsigned int order)
-6ab0136310961eb Alexander Duyck 2020-04-06  680  {
-36e66c554b5c6a9 Alexander Duyck 2020-04-06  681  	/* clear reported state and update reported page count */
-36e66c554b5c6a9 Alexander Duyck 2020-04-06  682  	if (page_reported(page))
-36e66c554b5c6a9 Alexander Duyck 2020-04-06  683  		__ClearPageReported(page);
-36e66c554b5c6a9 Alexander Duyck 2020-04-06  684  
-bf75f200569dd05 Mel Gorman      2022-06-24  685  	list_del(&page->buddy_list);
-6ab0136310961eb Alexander Duyck 2020-04-06  686  	__ClearPageBuddy(page);
-6ab0136310961eb Alexander Duyck 2020-04-06  687  	set_page_private(page, 0);
-6ab0136310961eb Alexander Duyck 2020-04-06 @688  	zone->free_area[order].nr_free--;
-6ab0136310961eb Alexander Duyck 2020-04-06  689  }
-6ab0136310961eb Alexander Duyck 2020-04-06  690  
-
+diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+index 55ed211a5e0b..574a032309c1 100644
+--- a/drivers/clk/imx/clk-imx8mp-audiomix.c
++++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+@@ -7,10 +7,12 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/device.h>
++#include <linux/io.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <dt-bindings/clock/imx8mp-clock.h>
+ 
+@@ -18,6 +20,7 @@
+ 
+ #define CLKEN0			0x000
+ #define CLKEN1			0x004
++#define EARC			0x200
+ #define SAI1_MCLK_SEL		0x300
+ #define SAI2_MCLK_SEL		0x304
+ #define SAI3_MCLK_SEL		0x308
+@@ -26,6 +29,11 @@
+ #define SAI7_MCLK_SEL		0x314
+ #define PDM_SEL			0x318
+ #define SAI_PLL_GNRL_CTL	0x400
++#define SAI_PLL_FDIVL_CTL0	0x404
++#define SAI_PLL_FDIVL_CTL1	0x408
++#define SAI_PLL_SSCG_CTL	0x40C
++#define SAI_PLL_MNIT_CTL	0x410
++#define IPG_LP_CTRL		0x504
+ 
+ #define SAIn_MCLK1_PARENT(n)						\
+ static const struct clk_parent_data					\
+@@ -182,26 +190,82 @@ static struct clk_imx8mp_audiomix_sel sels[] = {
+ 	CLK_SAIn(7)
+ };
+ 
++static const u16 audiomix_regs[] = {
++	CLKEN0,
++	CLKEN1,
++	EARC,
++	SAI1_MCLK_SEL,
++	SAI2_MCLK_SEL,
++	SAI3_MCLK_SEL,
++	SAI5_MCLK_SEL,
++	SAI6_MCLK_SEL,
++	SAI7_MCLK_SEL,
++	PDM_SEL,
++	SAI_PLL_GNRL_CTL,
++	SAI_PLL_FDIVL_CTL0,
++	SAI_PLL_FDIVL_CTL1,
++	SAI_PLL_SSCG_CTL,
++	SAI_PLL_MNIT_CTL,
++	IPG_LP_CTRL,
++};
++
++struct clk_imx8mp_audiomix_priv {
++	void __iomem *base;
++	u32 regs_save[ARRAY_SIZE(audiomix_regs)];
++
++	/* Must be last */
++	struct clk_hw_onecell_data clk_data;
++};
++
++static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool save)
++{
++	struct clk_imx8mp_audiomix_priv *priv = dev_get_drvdata(dev);
++	void __iomem *base = priv->base;
++	int i;
++
++	if (save) {
++		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
++			priv->regs_save[i] = readl(base + audiomix_regs[i]);
++	} else {
++		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
++			writel(priv->regs_save[i], base + audiomix_regs[i]);
++	}
++}
++
+ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ {
+-	struct clk_hw_onecell_data *priv;
++	struct clk_imx8mp_audiomix_priv *priv;
++	struct clk_hw_onecell_data *clk_hw_data;
+ 	struct device *dev = &pdev->dev;
+ 	void __iomem *base;
+ 	struct clk_hw *hw;
+-	int i;
++	int i, ret;
+ 
+ 	priv = devm_kzalloc(dev,
+-			    struct_size(priv, hws, IMX8MP_CLK_AUDIOMIX_END),
++			    struct_size(priv, clk_data.hws, IMX8MP_CLK_AUDIOMIX_END),
+ 			    GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->num = IMX8MP_CLK_AUDIOMIX_END;
++	clk_hw_data = &priv->clk_data;
++	clk_hw_data->num = IMX8MP_CLK_AUDIOMIX_END;
+ 
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
++	priv->base = base;
++	dev_set_drvdata(dev, priv);
++
++	/*
++	 * pm_runtime_enable needs to be called before clk register.
++	 * That is to make core->rpm_enabled to be true for clock
++	 * usage.
++	 */
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(sels); i++) {
+ 		if (sels[i].num_parents == 1) {
+ 			hw = devm_clk_hw_register_gate_parent_data(dev,
+@@ -216,10 +280,12 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ 				0, NULL, NULL);
+ 		}
+ 
+-		if (IS_ERR(hw))
+-			return PTR_ERR(hw);
++		if (IS_ERR(hw)) {
++			ret = PTR_ERR(hw);
++			goto err_clk_register;
++		}
+ 
+-		priv->hws[sels[i].clkid] = hw;
++		clk_hw_data->hws[sels[i].clkid] = hw;
+ 	}
+ 
+ 	/* SAI PLL */
+@@ -228,39 +294,86 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_parents),
+ 		CLK_SET_RATE_NO_REPARENT, base + SAI_PLL_GNRL_CTL,
+ 		0, 2, 0, NULL, NULL);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
+ 
+ 	hw = imx_dev_clk_hw_pll14xx(dev, "sai_pll", "sai_pll_ref_sel",
+ 				    base + 0x400, &imx_1443x_pll);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
+ 
+ 	hw = devm_clk_hw_register_mux_parent_data_table(dev,
+ 		"sai_pll_bypass", clk_imx8mp_audiomix_pll_bypass_sels,
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_bypass_sels),
+ 		CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
+ 		base + SAI_PLL_GNRL_CTL, 16, 1, 0, NULL, NULL);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
+ 
+ 	hw = devm_clk_hw_register_gate(dev, "sai_pll_out", "sai_pll_bypass",
+ 				       0, base + SAI_PLL_GNRL_CTL, 13,
+ 				       0, NULL);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
+ 
+ 	hw = devm_clk_hw_register_fixed_factor(dev, "sai_pll_out_div2",
+ 					       "sai_pll_out", 0, 1, 2);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++
++	ret = devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
++					  clk_hw_data);
++	if (ret)
++		goto err_clk_register;
++
++	pm_runtime_put_sync(dev);
++	return 0;
++
++err_clk_register:
++	pm_runtime_put_sync(dev);
++	pm_runtime_disable(dev);
++	return ret;
++}
++
++static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
++static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
++{
++	clk_imx8mp_audiomix_save_restore(dev, true);
+ 
+-	return devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
+-					   priv);
++	return 0;
+ }
+ 
++static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
++{
++	clk_imx8mp_audiomix_save_restore(dev, false);
++
++	return 0;
++}
++
++static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
++	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
++			   clk_imx8mp_audiomix_runtime_resume, NULL)
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				      pm_runtime_force_resume)
++};
++
+ static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
+ 	{ .compatible = "fsl,imx8mp-audio-blk-ctrl" },
+ 	{ /* sentinel */ }
+@@ -269,9 +382,11 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
+ 
+ static struct platform_driver clk_imx8mp_audiomix_driver = {
+ 	.probe	= clk_imx8mp_audiomix_probe,
++	.remove = clk_imx8mp_audiomix_remove,
+ 	.driver = {
+ 		.name = "imx8mp-audio-blk-ctrl",
+ 		.of_match_table = clk_imx8mp_audiomix_of_match,
++		.pm = &clk_imx8mp_audiomix_pm_ops,
+ 	},
+ };
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
