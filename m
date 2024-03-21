@@ -1,52 +1,66 @@
-Return-Path: <linux-kernel+bounces-110630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3D4988617F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F3414886175
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B57B284983
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0CCD284C8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C58134CC8;
-	Thu, 21 Mar 2024 20:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C63134735;
+	Thu, 21 Mar 2024 20:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Ohj113M2"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="NhgpRkmp";
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="J11aJGIJ"
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712A156B98;
-	Thu, 21 Mar 2024 20:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C2F56B98;
+	Thu, 21 Mar 2024 20:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711051905; cv=none; b=OMeC+fpjwAN0DtJvflQnKjYQkXZvQ3RDU526dBw4g9SekL+ksvjD2UwRKMmg3bfGYLBQ1ooMpfYp21u53TfO2blYd4v63cteyhsrgONBL5cHvGpyFyZ2qc4yThjH8qp8IvS5gmvzauKucd/rY7crjEFbevjrTbaJSutHpeA8ZD8=
+	t=1711051721; cv=none; b=QwAAxv4RGyIaM1M4tsOiwka8PFoNxs3eaYAszOqTD+roQKNUyOEjMSuWUY5CEVLgps92BTXU0U9f5nm/l7Uv5FoEldmOzX0ypQMOZxEuV3Xv75qX6BegQN8ylAVih7VEMUQk8S2R34DSmlNQuG+sTn3V/d7u+2GiWb00lggtZi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711051905; c=relaxed/simple;
-	bh=/2XDIlMNYS8/iY2ARJ5Fld7/GNYjUZk7UV6XTc7Kqsk=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=eq8tuzO7t1c+wAwKD99wDP6dImS7hpEux7D+5MMcdxxUPEa2hTNCf6B6KFOn7Qg/Pi2r63H+AnNKAdyv/W8uXdq4i4n5ucxFJGFrZFyxx6tGVA8nmgHGVFDi7R8p3r4G6UdHdR4JZD3QDlJobTvIOhum/dYrtkbepxS4EiscCwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Ohj113M2; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1711051895; x=1711656695; i=markus.elfring@web.de;
-	bh=HP94er+kV3GasVjf02u3F9ZYkvcXZGx9D3xC+m1al/k=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=Ohj113M2xWNnZpo7zw6o3IRAbBcp6R/t4iips3r3U920IM3MjiGXBn15VjlXyh2b
-	 iszYGr5qT9m6SsC5r3viqzQ9GkIs8+AXPkRcTvMgiH75mFEhvOEDNx0ezD/Vb0Fdv
-	 hP3Qm3UHC+pZCytnyRUinD7w+2QmtfOhHzykHXmw1X/8N17Pnsgd3V9J27LDUjWiL
-	 K7GmKt2QTfjYy3uQJlDFW9AyGDsa3WUt2izVju3+IIdqmBEuwN+PHfVKl/UkUEOLW
-	 TsDlKXLFuIgcSXUqRZv0v9Ps+OQctuJnMr5MSwlYBUNzXWuN3q45rrlW5ZIkXDFfL
-	 L+RW7rMXRujdp9jmXg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M8C07-1rjnlJ0KNn-00CkW1; Thu, 21
- Mar 2024 21:05:38 +0100
-Message-ID: <0d7062e1-995b-42bc-8a62-d57c8cb588ee@web.de>
-Date: Thu, 21 Mar 2024 21:05:35 +0100
+	s=arc-20240116; t=1711051721; c=relaxed/simple;
+	bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DZDhWXcaFe33w92Aot7Ogg2xMAqDi/bgVgrWEJ0n0514OB1AhsnctrXFD6f9h+Wekf3mQ8sqXrXPPW8ynRzz3k1FrmJR8BWPaqe1NGTwKHYwe8llJvUE2JAkCBoQxuCdC2uVuqZkVudxQgYbnMdUvwHkuqCV6k8rD/AI6Gj3Rfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=NhgpRkmp; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=J11aJGIJ; arc=none smtp.client-ip=161.53.235.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 522E660177;
+	Thu, 21 Mar 2024 21:08:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1711051711; bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NhgpRkmpaELC3IgHFCQSNu7fqQEPrvN5IsFBw9UTqN0QeoDPNZOgJes0i7r8MkFPA
+	 7CFDdj+rDmrasfbKNl4yAoRKFKD/JkA0IZnxbVuvlY+KkPz+boZD3vIS5d5HPOWcrD
+	 5ie23M+5Ct9qLSHgqrFP7h8J+goIRqAnVFvsQZ8PsdGxSl3YeyypBVCNzXa9mTFx/C
+	 2hMgT3vTgo7QOz/TaVEzS09KbdQldMD0R7s4MLxgDoEwfLAGIqCISwGsw9J87tA9zr
+	 vwc68SPtkqUu9RGhuAO2AoFxq4uNkrJA3HMNsBBKy7LcGDlKYL9+kdqqDSuJIYV01v
+	 MGTxhPNg549YA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id K_VLVDRACGJo; Thu, 21 Mar 2024 21:08:21 +0100 (CET)
+Received: from [192.168.178.20] (dh207-43-75.xnet.hr [88.207.43.75])
+	by domac.alu.hr (Postfix) with ESMTPSA id 52A9760171;
+	Thu, 21 Mar 2024 21:08:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1711051701; bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=J11aJGIJN7evfjv67dCMlKaaKGTR1GoGMvraFsn/F1yw7zaGMAVxH/uXWjf4x3dwX
+	 KUTy+0hCuMjJT+fTx8LlNhi5ZR5hb4UccsNHhkuN+yppcAgxgNdYFjkaZB5VuJArUB
+	 UH29WEoryFs/lXzDS4YwYj/lGoeYM3mhjN3lnloT9+N/MY6wQVJp+rwCqnf6wA0yBS
+	 qPqlEvf7I7oQzFIuPdQ75/GauwTQMMXcsvAWu4Qp1JGGjMz7rOzeixOAuWY6NPjSDr
+	 +a21v3PcEKzHgbEA20ttLZUm+AqPR2xosM39deK6PizCBIUJJc6phwUZ4IrZgkVd1j
+	 utctc85mSBFCg==
+Message-ID: <88bef146-bc24-4b6f-8f84-09b818061372@alu.unizg.hr>
+Date: Thu, 21 Mar 2024 21:08:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,103 +68,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- David Laight <David.Laight@aculab.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
- Julia Lawall <julia.lawall@inria.fr>, Kees Cook <keescook@chromium.org>,
- Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
- Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
-References: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
-Subject: Re: [PATCH v2 net] ice: Fix freeing uninitialized pointers
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [BUG] selftests/net: test_vxlan_mdb.sh: 84 out of 642 tests
+ [FAIL]
+To: Ido Schimmel <idosch@nvidia.com>
+Cc: Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <5bb50349-196d-4892-8ed2-f37543aa863f@alu.unizg.hr>
+ <Zfe2cGv_EWFAZXAJ@Laptop-X1>
+ <f005453c-c7cf-4e1d-b266-ffe1cf8fc79e@alu.unizg.hr>
+ <ZfmgdVUmy-DgNklu@shredder>
+ <87634afb-d14b-42ce-be25-1000591ee57c@alu.unizg.hr>
+ <ZfrB7hATyOcl4RSy@shredder>
+Content-Language: en-US
+From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZfrB7hATyOcl4RSy@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:f30MnlCTiWPDt1zm7PlXXn3w8Vl/ZOlATngou/8kstVjQ3Vtjmc
- NwEr7iAZYqjF/kCilniZdpv/ZLPs3A65OoLDtTMhNEIpAf2F3c8X9j/zin2Z/6rxkVK/bL3
- Wd7ZA7beckUcLMwzclkVVdoZI80PLUcb7qXLoHdtCIh0JsPV3Ctj3JBF/3V2PoYrWqycho0
- 7onxYACnS19+yZ9c1V4Ag==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:X2SR5Bg9eus=;EsgC33vWFTVn58hHEBNEPF38Rrl
- CULKBP/GMFGAZzCkl/I+QKpv2zx/UmKeEXzWhzA8tkpmH4pA05yI58gXd8aPMlQRo+vXZ0g9e
- 3vdZ9gUpf1OvJ5ENRAHCnG+NQZabvdjqV/6JwkdcO06hQYZqEUL6w1svA2UmD8fTX3L7eDuSy
- GthD2D2GbGCQN3t4gIypBIGb1bD0ATnGsIL1qSaVEr34JZtp2H8QZYootESVtgminvoM5ZIHz
- CrETzHiOnDA9HSVpijq0dh7Gk29iyNk4CjyKBx2nnC9Oa6+HuhEiE8VKNKOkQLKscw5S+rz0r
- n+IRXcV95zmeKDKKr7ICaj6oRIXfJ+SuIf6YBEZhjK16xQ3bhXUKRpvl6WFKxw1ibBrrg4r7N
- JOdj2N9961SHi9BJsH0gKdka+QsUM93IbN1Mjy1d/mv4lKZmx83TDciQVgF71Dq6lFkwWPye6
- YHPXzvmcQmPRvgCyNmGBhyKcMlw9E4Pf9b1ABrq8Trf2psGZHrDUtWCN5pcMP+NoSkVJwqTGm
- kRAYADbhG6fDuduIZWi3kYTWSMmF2E+HnN6xHjox+VRGFx+0Mrg8APJrVR55AnRpmaIwK6fPF
- /I891Y3iTsB+qN2zup5tfSw072LFbBWBYq/BNwxDYuSOH17vkWLoEhpG6bKy5vvoXGMNl9qY+
- IDt5KkknnGPMuSGwxczBT4PZeQIYsQHf7tuaPt24XxSofTBQNJ87zdG4pp2OUNzAC2xDjAoqf
- Cx/ojIX9EGvYib8qjgKvy8asvEyUZ9e9uzCh7kkNekla2o60ns7KRvW17qUhZZl9DFw0jvI0Q
- oUSTbhHJflD2aEv7pc2aOHIYjEEoYQLDzH960/3o/GttE=
-
-> Automatically cleaned up pointers need to be initialized before exiting
-> their scope.  In this case, they need to be initialized to NULL before
-> any return statement.
-
-Will any adjustments become relevant also for this change description
-if scope reductions would become more appealing for affected local variables?
-
-How much can a small script (like the following) for the semantic patch language
-(Coccinelle software) help to achieve a better common understanding for
-possible source code transformations?
-
-// See also:
-// drivers/net/ethernet/intel/ice/ice_common.c
-@movement1@
-attribute name __free;
-@@
--struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
- ... when any
-+struct ice_aqc_get_phy_caps_data *
- pcaps
-+__free(kfree)
- = kzalloc(sizeof(*pcaps), ...);
-
-@movement2@
-attribute name __free;
-@@
--void *mac_buf __free(kfree);
- ... when any
-+void *
- mac_buf
-+__free(kfree)
- = kcalloc(2, sizeof(struct ice_aqc_manage_mac_read_resp), ...);
-
-// See also:
-// drivers/net/ethernet/intel/ice/ice_ethtool.c
-@movement3@
-attribute name __free;
-@@
--u8 *tx_frame __free(kfree);
- int i;
- ... when any
- if (ice_fltr_add_mac(test_vsi, ...))
- { ... }
-+
-+{
-+u8 *tx_frame __free(kfree) = NULL;
- if (ice_lbtest_create_frame(pf, &tx_frame, ...))
- { ... }
- ... when any
-+}
-+
- valid_frames = ice_lbtest_receive_frames(...);
 
 
-Regards,
-Markus
+
+On 3/20/24 12:01, Ido Schimmel wrote:
+> On Wed, Mar 20, 2024 at 01:47:36AM +0100, Mirsad Todorovac wrote:
+>> On 3/19/24 15:25, Ido Schimmel wrote:
+>>> Will look into it today or later this week.
+>>
+>> Thank you for considering this.
+> 
+> Can you please try the following patch?
+> 
+> https://github.com/idosch/linux/commit/58f25dd8766dbe9ac50c76b44f9ba92350ebb5c6.patch
+
+Congratulations, apparently, your patch had fixed them all:
+
+# TEST: Torture test                                                  [ OK ]
+#
+# Data path: MDB torture test - IPv6 overlay / IPv6 underlay
+# ----------------------------------------------------------
+# TEST: Torture test                                                  [ OK ]
+#
+# Tests passed: 642
+# Tests failed:   0
+ok 90 selftests: net: test_vxlan_mdb.sh
+
+Please consider adding:
+
+Tested-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+
+at your convenience.
+
+Shalom, and have a great evening!
+
+Best regards,
+Mirsad Todorovac
 
