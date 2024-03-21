@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-110426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66064885EF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:00:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7F4885EF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:01:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977E21C21A75
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:00:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C202814B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB33F13A894;
-	Thu, 21 Mar 2024 16:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5114213AA3F;
+	Thu, 21 Mar 2024 16:52:04 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB0213A871
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6908113A871
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039920; cv=none; b=seZhxzDuH8nL+LX+Gab7APED1q9ZdujY4tPrXvu88KNkWzM90ikbcfdYi9P7BDFBBqHrt/TsJSjtIzHDJsmAYngZRf0Wtvo5w/K5UT4cPnTdYxiL2H79br8l2cndeiftKGIJCdvloMM5UzWor2gnRi8eYKtK/W21wXpz2nTXSlo=
+	t=1711039923; cv=none; b=g+SxNHmNJCpWDMDIpUufmqpeQ7FQlT8JoSMlS1axLrMOKqlCv1CzGSOGiPFNhK4AjjTlO7p8OIwoOuh3HfhrdvRdQMzhM4M72Nw8F3ufBy5WbOXhd4dTEKHaZUC/avhBeAj+2Vqf541z/XEcjewJEPbvHSIalscU9lfRZfcFvB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039920; c=relaxed/simple;
-	bh=o1zn+OQp7jij+/S14yaNK/v9gJcYPVyuhx5I/BBFRX0=;
+	s=arc-20240116; t=1711039923; c=relaxed/simple;
+	bh=6l0woSci/M9LuyNXUr+GtqcEVurpBvAOSknwrS4QAIQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i43Vn8M2Zx7vxYkOX2jDhuzdgdBzvZMjzQJmRQ40kgCq+PAJVYNtwFDD07JKT4HElYbt+dZxWCFLXsj8nt+OvvNuSvICaV/DOVQXbAHlPAOtOKBh3c20WTbrD2eoKoXqgkCv0J6mI4fMC/hJ1vf4PEHHZto48CXo261WXgFDMSg=
+	 MIME-Version; b=UV87nsivUyr7/HmXNvHNtQ6wjeu+Ma9ZXDmBWwfQfy/QajeXkbH7lbJQ/qhX/hpgVgILdD0Fj7iJd2DeIGXyqaFdgWf+vic51AEWZaa9Jpcn5XI7MkKi4PD+bPXmgfqx12ggrqFogzeJfU81aq9DTImYUQVtTNIvbp3GB/WGK3Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB50A1063;
-	Thu, 21 Mar 2024 09:52:32 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EB281007;
+	Thu, 21 Mar 2024 09:52:36 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C7B03F67D;
-	Thu, 21 Mar 2024 09:51:55 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D46373F67D;
+	Thu, 21 Mar 2024 09:51:58 -0700 (PDT)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>,
 	Dave Martin <dave.martin@arm.com>
-Subject: [PATCH v1 09/31] x86/resctrl: Add a resctrl helper to reset all the resources
-Date: Thu, 21 Mar 2024 16:50:44 +0000
-Message-Id: <20240321165106.31602-10-james.morse@arm.com>
+Subject: [PATCH v1 10/31] x86/resctrl: Move monitor init work to a resctrl init call
+Date: Thu, 21 Mar 2024 16:50:45 +0000
+Message-Id: <20240321165106.31602-11-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240321165106.31602-1-james.morse@arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
@@ -72,72 +72,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On umount(), resctrl resets each resource back to its default
-configuration. It only ever does this for all resources in one go.
+rdt_get_mon_l3_config() is called from the architecture's
+resctrl_arch_late_init(), and initialises both architecture specific
+fields, such as hw_res->mon_scale and resctrl filesystem fields
+by calling dom_data_init().
 
-reset_all_ctrls() is architecture specific as it works with struct
-rdt_hw_resource.
+To separate the filesystem and architecture parts of resctrl, this
+function needs splitting up.
 
-Add an architecture helper to reset all resources.
+Add resctrl_mon_resource_init() to do the filesystem specific work,
+and call it from resctrl_init(). This runs later, but is still before
+the filesystem is mounted and the rmid_ptrs[] array can be used.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/include/asm/resctrl.h         |  2 ++
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 16 +++++++++++-----
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 24 +++++++++++++++++-------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  4 ++++
+ 3 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
-index f61382258743..5f6a5375bb4a 100644
---- a/arch/x86/include/asm/resctrl.h
-+++ b/arch/x86/include/asm/resctrl.h
-@@ -15,6 +15,8 @@
-  */
- #define X86_RESCTRL_EMPTY_CLOSID         ((u32)~0)
- 
-+void resctrl_arch_reset_resources(void);
-+
- /**
-  * struct resctrl_pqr_state - State cache for the PQR MSR
-  * @cur_rmid:		The cached Resource Monitoring ID
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 1a49c9918f8d..13c24cb18d76 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2859,6 +2859,14 @@ static int reset_all_ctrls(struct rdt_resource *r)
- 	return 0;
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 031948322eab..7a0c74779c53 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -540,6 +540,7 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg);
+ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ 		    struct rdt_domain *d, struct rdtgroup *rdtgrp,
+ 		    int evtid, int first);
++int resctrl_mon_resource_init(void);
+ void mbm_setup_overflow_handler(struct rdt_domain *dom,
+ 				unsigned long delay_ms,
+ 				int exclude_cpu);
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 06565153ceb2..929ec1430b45 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -1003,12 +1003,28 @@ static void l3_mon_evt_init(struct rdt_resource *r)
+ 		list_add_tail(&mbm_local_event.list, &r->evt_list);
  }
  
-+void resctrl_arch_reset_resources(void)
++int resctrl_mon_resource_init(void)
 +{
-+	struct rdt_resource *r;
++	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
++	int ret;
 +
-+	for_each_capable_rdt_resource(r)
-+		reset_all_ctrls(r);
++	if (!r->mon_capable)
++		return 0;
++
++	ret = dom_data_init(r);
++	if (ret)
++		return ret;
++
++	l3_mon_evt_init(r);
++
++	return 0;
 +}
 +
- /*
-  * Move tasks from one to the other group. If @from is NULL, then all tasks
-  * in the systems are moved unconditionally (used for teardown).
-@@ -2968,16 +2976,14 @@ static void rmdir_all_sub(void)
- 
- static void rdt_kill_sb(struct super_block *sb)
+ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
  {
--	struct rdt_resource *r;
+ 	unsigned int mbm_offset = boot_cpu_data.x86_cache_mbm_width_offset;
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	unsigned int threshold;
+-	int ret;
+ 
+ 	resctrl_rmid_realloc_limit = boot_cpu_data.x86_cache_size * 1024;
+ 	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale;
+@@ -1036,10 +1052,6 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+ 	 */
+ 	resctrl_rmid_realloc_threshold = resctrl_arch_round_mon_val(threshold);
+ 
+-	ret = dom_data_init(r);
+-	if (ret)
+-		return ret;
 -
- 	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
+ 	if (rdt_cpu_has(X86_FEATURE_BMEC)) {
+ 		u32 eax, ebx, ecx, edx;
  
- 	rdt_disable_ctx();
+@@ -1057,8 +1069,6 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+ 		}
+ 	}
  
--	/*Put everything back to default values. */
--	for_each_alloc_capable_rdt_resource(r)
--		reset_all_ctrls(r);
-+	/* Put everything back to default values. */
-+	resctrl_arch_reset_resources();
+-	l3_mon_evt_init(r);
+-
+ 	r->mon_capable = true;
+ 
+ 	return 0;
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 13c24cb18d76..7a9696f53f2b 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -4138,6 +4138,10 @@ int __init resctrl_init(void)
+ 
+ 	rdtgroup_setup_default();
+ 
++	ret = resctrl_mon_resource_init();
++	if (ret)
++		return ret;
 +
- 	rmdir_all_sub();
- 	rdt_pseudo_lock_release();
- 	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
+ 	ret = sysfs_create_mount_point(fs_kobj, "resctrl");
+ 	if (ret)
+ 		return ret;
 -- 
 2.39.2
 
