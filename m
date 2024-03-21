@@ -1,53 +1,58 @@
-Return-Path: <linux-kernel+bounces-110099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F04DD885A04
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:35:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A3BA885A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB3862821A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:35:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC113B22663
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B4784A54;
-	Thu, 21 Mar 2024 13:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BA584A54;
+	Thu, 21 Mar 2024 13:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IVgs5M3U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aWL3OMvA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D885810B;
-	Thu, 21 Mar 2024 13:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E925810B;
+	Thu, 21 Mar 2024 13:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711028120; cv=none; b=Uyd+ViSpA0pGy3RYw0QXRNlOdPK2KZ76xNdtrFq3vzg4SBxWyUbFRYRqy40Bdo+KXETdbO/gaZjBIq3hZNiJZZsu9xoMwiaBFpDr3FwgFfRTkb6SOLXgwzVJcheqwmA6TS3Zy1MLa1/6cXfH4/oUhuxP19HzuuINdjfDtobzuuA=
+	t=1711028151; cv=none; b=o0jYGmLChB8zhsFlUKvFMN4It2Y7gGVQss0r6rTAMilPZYucKBM7zJej64O+mc4nJ4F1EEhDEJm7xaL0U6Yl5Kw4pebhLvnrWZFR8Rj0UdlV7e3k7NaSSKVgLB6/eMkl7hX2Ifhw7B0scdTZsaT9lUq9qH4nEk7YTEHMkcdSLRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711028120; c=relaxed/simple;
-	bh=JpD2OHISkkjxiWqxZe4gvt3KE6laF2S8GHpaK5KN600=;
+	s=arc-20240116; t=1711028151; c=relaxed/simple;
+	bh=fYG4E4wFakwbj3fhrxbqt2XkujIXeIIfV+EnH3hriVw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dXakTzL+FSVS6XWbULatdsdp/gyXf4CwgGRmcsiNlXmBzygFFX242d6bKZfVR4pvmYawY280udxfZIcNCgCkgRxh4aRjimE3v6u7Nny2s2cc/fYIDcITfobTkuZl4sPP6gdkQi0i61B2ewuyx+E0X2V0OLtjdkSB5Bkr2R6JPTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IVgs5M3U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77EEEC433C7;
-	Thu, 21 Mar 2024 13:35:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B6Qydh7+v7Fx5AH1lT/R45qHTAZ65btKYUILK2yV6YRjNUV37FAcCWE7HaVuPdzXAPbea+XhwNLVGjxTA53x7vpZAlscP9KZtzQTsT1lpRlFagXkWCbcDCcMDtzaTSqMHOgESq/cVeOD0zC+Ip56vZp7cWie8GLErKVyxeN8c7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aWL3OMvA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33725C433F1;
+	Thu, 21 Mar 2024 13:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711028120;
-	bh=JpD2OHISkkjxiWqxZe4gvt3KE6laF2S8GHpaK5KN600=;
+	s=k20201202; t=1711028148;
+	bh=fYG4E4wFakwbj3fhrxbqt2XkujIXeIIfV+EnH3hriVw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IVgs5M3U2fy7JgNBFDaw7i3SKbHIZjBHPK/mGVImZXYCb8UOcWIUGSzO5kc/EcFSG
-	 sJU0W4H2QJVryB9kOxIZnXBzYFnvhe9wZkibLS0hw3/rlqjjLujFe39mcOdz/JKSKl
-	 f1ii5dk+WTSs1i0vtseKFGoKEE1IAB3/+F/cGM8BY9//sxQ8R9I2PmTo1+6/hJSNtC
-	 DDdNIJzwBVfTZgIS06Jv+nY0Ut8aO7ueCAxbBCj/0XR8MEKimKVJCaqRqmv1MBhHMA
-	 wzJM8Bu+Q7iRh/5ox2JXBThuOPbqYFWlObC6QOZ030lgBTxtpuY8cFn7Y0jymZmbZv
-	 cIyFGQef6vU1w==
-Date: Thu, 21 Mar 2024 14:35:15 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Donald Buczek <buczek@molgen.mpg.de>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, it+linux@molgen.mpg.de
-Subject: Re: possible 6.6 regression: Deadlock involving super_lock()
-Message-ID: <20240321-brecheisen-lasst-7ac15aff03b1@brauner>
-References: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
+	b=aWL3OMvAh+ElF/VUhZ0KMxI0c3OGNrXWdU89Qndzm30HdLttjDBbytGBGm+ZKGGxr
+	 /ZDjPlJ2b3WgNPNl2kNDpOPl7sYsFHqjBL4EeH+4QG0BTxmH99DhLwtoE8XeDYxD5H
+	 Xje8VqXOhHjlI+o1tODEpGtBtJM2lQ5ydgHn1BRur3eDQgd3fEEvw4hDdiK6FNu042
+	 E4PoAN6lcZoSfw4Zmre3F+ovsfU/pRAlbP8lW4l2Y0UggQthuxlFUkPBrK6rum6PfG
+	 uebbkN6Db7OL2XKiFa8sSqWpMd+/vsixn5BsyzJD+kb56iazj2t6GvQ/WzqeOiAU0R
+	 DuuqNKMOb7dXw==
+Date: Thu, 21 Mar 2024 10:35:45 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH 1/5] perf beauty: Introduce scrape script for various fs
+ syscalls 'flags' arguments
+Message-ID: <Zfw3sRGespUx-qQ4@x1>
+References: <20240320193115.811899-1-acme@kernel.org>
+ <20240320193115.811899-2-acme@kernel.org>
+ <CAP-5=fWXCL0AAdp4bSQHPo_XR1iiF8KY4=Bo4756XC1tE0PDUw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,30 +61,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fWXCL0AAdp4bSQHPo_XR1iiF8KY4=Bo4756XC1tE0PDUw@mail.gmail.com>
 
-> Also, one writeback thread was blocked. I mention that, because I
-> don't get how these these two threads could depend on each other:
-
-Writeback holds s_umount. So writeback seems to not make progress and
-blocks the mount. So right now it seems unlikely that this is related.
-Any chance you can try and reproduce this with v6.7 and newer?
-
-> # # /proc/39359/task/39359: kworker/u268:5+flush-0:58 : 
-> # cat /proc/39359/task/39359/stack
+On Wed, Mar 20, 2024 at 06:47:28PM -0700, Ian Rogers wrote:
+> On Wed, Mar 20, 2024 at 12:31 PM Arnaldo Carvalho de Melo
+> > +++ b/tools/perf/Makefile.perf
+> > @@ -489,6 +489,12 @@ beauty_ioctl_outdir := $(beauty_outdir)/ioctl
+> >  # Create output directory if not already present
+> >  $(shell [ -d '$(beauty_ioctl_outdir)' ] || mkdir -p '$(beauty_ioctl_outdir)')
+> >
+> > +fs_at_flags_array := $(beauty_outdir)/fs_at_flags_array.c
+> > +fs_at_flags_tbl := $(srctree)/tools/perf/trace/beauty/fs_at_flags.sh
+> > +
+> > +$(fs_at_flags_array): $(beauty_uapi_linux_dir)/fcntl.h $(fs_at_flags_tbl)
+> > +       $(Q)$(SHELL) '$(fs_at_flags_tbl)' $(beauty_uapi_linux_dir) > $@
+> > +
 > 
-> [<0>] folio_wait_bit_common+0x135/0x350
-> [<0>] write_cache_pages+0x1a0/0x3a0
-> [<0>] nfs_writepages+0x12a/0x1e0 [nfs]
-> [<0>] do_writepages+0xcf/0x1e0
-> [<0>] __writeback_single_inode+0x46/0x3a0
-> [<0>] writeback_sb_inodes+0x1f5/0x4d0
-> [<0>] __writeback_inodes_wb+0x4c/0xf0
-> [<0>] wb_writeback+0x1f5/0x320
-> [<0>] wb_workfn+0x350/0x4f0
-> [<0>] process_one_work+0x142/0x300
-> [<0>] worker_thread+0x2f5/0x410
-> [<0>] kthread+0xe8/0x120
-> [<0>] ret_from_fork+0x34/0x50
-> [<0>] ret_from_fork_asm+0x1b/0x30
+> I wonder if rather than update Makefile.perf, we could push more of
+> the logic into tools/perf/trace/beauty/Build. It would also be nice to
+> add there the shellcheck logic:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/Build?h=perf-tools-next#n81
+
+Sure, I thought about consolidating lots of boilerplate there and also
+to move it to tools/perf/trace/beauty/Build. Will see if I can do it in
+this series at some point.
+
+Thanks for reviewing the patches,
+
+- Arnaldo
 
