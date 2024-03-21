@@ -1,193 +1,116 @@
-Return-Path: <linux-kernel+bounces-110477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07C1885F7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:17:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10AC9885F7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F4991F2349C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:17:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56C9B24FE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACF529CEA;
-	Thu, 21 Mar 2024 17:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0D117590;
+	Thu, 21 Mar 2024 17:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBlmFhni"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8o0ZpY1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17AAC2E9;
-	Thu, 21 Mar 2024 17:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF3F224D7;
+	Thu, 21 Mar 2024 17:17:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041440; cv=none; b=Lj7cpLqHGy491RhbxWKQVfXRFKqen7EAULj2KJG6tooW0gCYpQe0KtG+nO6ZfeZMZcmp3MQK+z5SA0xchy0QwQoaqMjPGxQTeZ+VWCuNLDenT0loNq57ycfQ/0f7h+dBFuRz11rDBSQ+FQVpnGQVSV31v6aZybJgLE8bSXPZP00=
+	t=1711041467; cv=none; b=c0/vjp0cWGRcVQo0iOfkPLyai9/yyK3a18C2pVU2JWLGtlw0UGjQg59vEDeiKz+J+0qj1eFkAGWnXd5VbWDGUyCwZ+nYBLVY2XOZzRMDu8IgsLs3AJXsBtJJfyiEJPPxAA/htICo1jAw8bTH3rQyld/82rRZgIprIGWsQ28s/uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041440; c=relaxed/simple;
-	bh=9ac2pFm45Vkb4zyIlPdYjwUY5c7XpoySPr8khkoLHbY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=fQwq6tEY4qMkigKB9PhqVbp22KlehFFTDz4AvCskrVELTk2g/WmE3qEDrGDGgqxOzhQiJk3FzggjO0/dDdmI4xEomMswYy5g1k1zKwlCMRjt67C5Ka0VDwhM+Iam4Gy/IZcvm2sed3eijNmUKI3z+QTPFHW1HbXpNTWktyaDAYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBlmFhni; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 616D0C433F1;
-	Thu, 21 Mar 2024 17:17:18 +0000 (UTC)
+	s=arc-20240116; t=1711041467; c=relaxed/simple;
+	bh=1L/duXBiIPiVo7GCjSeUY9hylRmojjGd3gub4/7cGB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fMMXngLr3L9tM/Xg4JEOyxclFoEzQxcqRXi/TBOQKZnG+VX+7MFFyfIyDJGX0b5nbu0jS/bMUfau/mv127lWjhpTPDKpidUb+I9DHlPtYxHX5634rVDCh04kEI0mIiTX9AQ6QkOGZfU8dI4Nln32TpBBEQlk7AMnvbDAEx46WtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8o0ZpY1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9759FC433F1;
+	Thu, 21 Mar 2024 17:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711041440;
-	bh=9ac2pFm45Vkb4zyIlPdYjwUY5c7XpoySPr8khkoLHbY=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=RBlmFhnivZexbInTZDJc+eICAX81KkmJawXjaNdXrtVnjPUjVqsp6kfe4fdNYXUzX
-	 yFGOQux2Ncm1+jaBSKCQ7wwJWKYleWIf5qxy/iZsADTfjVDY9rVU1kXTmMQBcgEC63
-	 Z1eyYHGwH6TBnKbzPgUcUAxotQjwIGldeB+5ed8bdcS4Ud6Y+GpqhxCwDNMRNxyavY
-	 uuCQSABxCBPTb+DGGVOB0t/Uk4+7911qdL67fqAWOjL9jrMJsdjJfdF8BqrHYD7hd7
-	 meIfWlby2JRU3OrdZgs97i7psq853pKXMrnmZQv+AxmN0QAOb2XUgjTWV9mU50gieZ
-	 JRQJHrBJOTWxw==
+	s=k20201202; t=1711041467;
+	bh=1L/duXBiIPiVo7GCjSeUY9hylRmojjGd3gub4/7cGB4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K8o0ZpY1mORa3rA1SZPj71EfUvQ/wRgEAFvOc9SnBV5ozsrvIXEIIeV3ehfSupap5
+	 JndNoTEicC610bIW+GeQqg1F2cP7beIlC9E1MCVwYXPpGMdfzS3NYpmu8PmAbl9QRN
+	 1guiY6dxqSX+3dOopVLaliM8Qm2ggtJ8gJjoTtG4TTB9PNf0iDfqZgOzGA98I9P3F7
+	 RNXPSaIRBNIpSdpvlMcTZgYqJtZ1VZSdkoswogKQf0vmtDOlbgjaBobCRWssKkC5NM
+	 wtC/U2MFabtmplYAtBCCxdQ/qq/t/W8IXXiTLrfow3zjTwSm0noSgjJk4Lfy7XQ4dk
+	 IMTxavIkasHMg==
+Date: Thu, 21 Mar 2024 17:17:40 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Karel Balej <balejk@matfyz.cz>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
+Message-ID: <45079e37-dde9-4310-a112-7af49f35ac77@sirena.org.uk>
+References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
+ <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
+ <20240321154211.GA13211@google.com>
+ <CZZK759UU6G7.MFPYOI0HBB6I@matfyz.cz>
+ <20240321162045.GC13211@google.com>
+ <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
+ <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
+ <CZZLDK79D5VK.2VK3X59OHIY2Z@matfyz.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:17:16 +0200
-Message-Id: <CZZLKGMM0B9E.7J1CGE8EIGQX@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>
-Subject: Re: [PATCH v7 05/13] crypto: ecc - Add nbits field to ecc_curve
- structure
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
- <20240320114725.1644921-6-stefanb@linux.ibm.com>
-In-Reply-To: <20240320114725.1644921-6-stefanb@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="oJHv45Mb4kHzpP0z"
+Content-Disposition: inline
+In-Reply-To: <CZZLDK79D5VK.2VK3X59OHIY2Z@matfyz.cz>
+X-Cookie: MIT:
 
-On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
-> Add the number of bits a curve has to the ecc_curve definition to be able
-> to derive the number of bytes a curve requires for its coordinates from i=
-t.
-> It also allows one to identify a curve by its particular size. Set the
-> number of bits on all curve definitions.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
-> ---
->  crypto/ecc_curve_defs.h    | 4 ++++
->  crypto/ecrdsa_defs.h       | 5 +++++
->  include/crypto/ecc_curve.h | 2 ++
->  3 files changed, 11 insertions(+)
->
-> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
-> index 9719934c9428..ab1ef3d94be5 100644
-> --- a/crypto/ecc_curve_defs.h
-> +++ b/crypto/ecc_curve_defs.h
-> @@ -17,6 +17,7 @@ static u64 nist_p192_b[] =3D { 0xFEB8DEECC146B9B1ull, 0=
-x0FA7E9AB72243049ull,
->  				0x64210519E59C80E7ull };
->  static struct ecc_curve nist_p192 =3D {
->  	.name =3D "nist_192",
-> +	.nbits =3D 192,
->  	.g =3D {
->  		.x =3D nist_p192_g_x,
->  		.y =3D nist_p192_g_y,
-> @@ -43,6 +44,7 @@ static u64 nist_p256_b[] =3D { 0x3BCE3C3E27D2604Bull, 0=
-x651D06B0CC53B0F6ull,
->  				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
->  static struct ecc_curve nist_p256 =3D {
->  	.name =3D "nist_256",
-> +	.nbits =3D 256,
->  	.g =3D {
->  		.x =3D nist_p256_g_x,
->  		.y =3D nist_p256_g_y,
-> @@ -75,6 +77,7 @@ static u64 nist_p384_b[] =3D { 0x2a85c8edd3ec2aefull, 0=
-xc656398d8a2ed19dull,
->  				0x988e056be3f82d19ull, 0xb3312fa7e23ee7e4ull };
->  static struct ecc_curve nist_p384 =3D {
->  	.name =3D "nist_384",
-> +	.nbits =3D 384,
->  	.g =3D {
->  		.x =3D nist_p384_g_x,
->  		.y =3D nist_p384_g_y,
-> @@ -95,6 +98,7 @@ static u64 curve25519_a[] =3D { 0x000000000001DB41, 0x0=
-000000000000000,
->  				0x0000000000000000, 0x0000000000000000 };
->  static const struct ecc_curve ecc_25519 =3D {
->  	.name =3D "curve25519",
-> +	.nbits =3D 255,
->  	.g =3D {
->  		.x =3D curve25519_g_x,
->  		.ndigits =3D 4,
-> diff --git a/crypto/ecrdsa_defs.h b/crypto/ecrdsa_defs.h
-> index 0056335b9d03..1c2c2449e331 100644
-> --- a/crypto/ecrdsa_defs.h
-> +++ b/crypto/ecrdsa_defs.h
-> @@ -47,6 +47,7 @@ static u64 cp256a_b[] =3D {
-> =20
->  static struct ecc_curve gost_cp256a =3D {
->  	.name =3D "cp256a",
-> +	.nbits =3D 256,
->  	.g =3D {
->  		.x =3D cp256a_g_x,
->  		.y =3D cp256a_g_y,
-> @@ -80,6 +81,7 @@ static u64 cp256b_b[] =3D {
-> =20
->  static struct ecc_curve gost_cp256b =3D {
->  	.name =3D "cp256b",
-> +	.nbits =3D 256,
->  	.g =3D {
->  		.x =3D cp256b_g_x,
->  		.y =3D cp256b_g_y,
-> @@ -117,6 +119,7 @@ static u64 cp256c_b[] =3D {
-> =20
->  static struct ecc_curve gost_cp256c =3D {
->  	.name =3D "cp256c",
-> +	.nbits =3D 256,
->  	.g =3D {
->  		.x =3D cp256c_g_x,
->  		.y =3D cp256c_g_y,
-> @@ -166,6 +169,7 @@ static u64 tc512a_b[] =3D {
-> =20
->  static struct ecc_curve gost_tc512a =3D {
->  	.name =3D "tc512a",
-> +	.nbits =3D 512,
->  	.g =3D {
->  		.x =3D tc512a_g_x,
->  		.y =3D tc512a_g_y,
-> @@ -211,6 +215,7 @@ static u64 tc512b_b[] =3D {
-> =20
->  static struct ecc_curve gost_tc512b =3D {
->  	.name =3D "tc512b",
-> +	.nbits =3D 512,
->  	.g =3D {
->  		.x =3D tc512b_g_x,
->  		.y =3D tc512b_g_y,
-> diff --git a/include/crypto/ecc_curve.h b/include/crypto/ecc_curve.h
-> index 70964781eb68..63d5754e7614 100644
-> --- a/include/crypto/ecc_curve.h
-> +++ b/include/crypto/ecc_curve.h
-> @@ -23,6 +23,7 @@ struct ecc_point {
->   * struct ecc_curve - definition of elliptic curve
->   *
->   * @name:	Short name of the curve.
-> + * @nbits:	The number of bits of a curve.
->   * @g:		Generator point of the curve.
->   * @p:		Prime number, if Barrett's reduction is used for this curve
->   *		pre-calculated value 'mu' is appended to the @p after ndigits.
-> @@ -34,6 +35,7 @@ struct ecc_point {
->   */
->  struct ecc_curve {
->  	char *name;
-> +	unsigned int nbits;
 
-Nit:
+--oJHv45Mb4kHzpP0z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hmm not strongly opionated here but wouldn't it be more consistent to
-use u32 here as the types below are also exact bitsize types?
+On Thu, Mar 21, 2024 at 06:08:16PM +0100, Karel Balej wrote:
+> Mark Brown, 2024-03-21T16:58:44+00:00:
 
->  	struct ecc_point g;
->  	u64 *p;
->  	u64 *n;
+> > > > > > > +static const struct regmap_config pm886_i2c_regmap = {
+> > > > > > > +	.reg_bits = 8,
+> > > > > > > +	.val_bits = 8,
+> > > > > > > +	.max_register = PM886_REGMAP_CONF_MAX_REG,
+> > > > > > > +};
 
-BR, Jarkko
+..
+
+> > You shouldn't be creating two regmaps for the same set of registers,
+> > that just opens the potential for confusion.
+
+> Just the regmap config is the same. Otherwise, each regmap lives at a
+> different I2C address.
+
+Do they both genuinely have the same maximum register?
+
+--oJHv45Mb4kHzpP0z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX8a7QACgkQJNaLcl1U
+h9AzgQf/ZFwxdRh8PV6KEsERNGwwS8v1mrS7lrZyYJ3WLjvxLW4IGIhGJlvYT0QK
+6qY1L7OPpALhBqB9PJOMmzj25gYUrH0G7Xm/mgNLHGUfcziiy+aYFK+qMJz+WhmA
+4jJZonmfKnPo14Q3P0BTRbQ31Sea749XWHsBX6Lj35znOawhFuAveCYPFnmkXV8z
+IGGDK1JzLfPpzqIAt4sQSAK4IxcVZlhW431iWlsOjT6fGjUoCYJ024vfjt/Qe5a9
+LV21+ek3qXEgkiHcJN4J4hVDwm2yQ/+AbTPPjwu1zWmSDWGu9GURK3MJaJYw4xQ0
+8xeNT4PV3q7NHyFblyIuRyKnCJRIXg==
+=XIFj
+-----END PGP SIGNATURE-----
+
+--oJHv45Mb4kHzpP0z--
 
