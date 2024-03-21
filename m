@@ -1,93 +1,337 @@
-Return-Path: <linux-kernel+bounces-109797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7914E8855D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:35:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AA50885614
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4124C2820E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:35:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76831F21F7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2371756E;
-	Thu, 21 Mar 2024 08:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1ZrnHCJ7"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7792837E;
+	Thu, 21 Mar 2024 08:53:36 +0000 (UTC)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9246CC2E6;
-	Thu, 21 Mar 2024 08:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CF0BE6E;
+	Thu, 21 Mar 2024 08:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711010125; cv=none; b=EBRGSrVids14V0lgD2WRu8X3HJKKYbqb8pUWOBpeLf7Zb4anM3xEE06YGB6bXGNjmL5j/8kGjgtwEMDMjEnGButWgZAKUqW4LLlbtciS5sruftlyJWOXk+6bioIzbVxuRuy1oJJhV4NX3zwDF6E3/mmwcBb4ajW2SZ8rws35dhE=
+	t=1711011216; cv=none; b=ok4HMlaS+uv9a/4gcuDBY1vRZUyK/or3bZa2+0Hj/aP3PSn8H8GohVRrqfl5C3Vble2r0oksqOgnwEAOi+D7XW9Ab4ilm+9igrzY2Rph0/u/4hTUA+tp9XN2y5/QjAfStdJXoCLTyIlAMp2FnCpdpK+GHQLvr7oOb85kj15huqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711010125; c=relaxed/simple;
-	bh=IIW6SQQLgLtDClFTOxTHaTcvrjEa+NJrpFMbCdwEEwk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PxBvvCU83LJ2QqWhDM8KkQKdTnGgCW3A90spFCHfPI4t5hAHmn/130QbqLYgjvO1bUYA6bso5D1jCP/U6r8E7vr8xwoPFqD38ZPQ5hdYo1yF7VkHETnaNrmBBUqHb0fFR8jF02LeIRpDUiBZ0I8vRu/t5kkg+tPxp+73397cYk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1ZrnHCJ7; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711010121;
-	bh=IIW6SQQLgLtDClFTOxTHaTcvrjEa+NJrpFMbCdwEEwk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=1ZrnHCJ766YQlCIASvqysbAjbHcfbkuX1Qdhm6mI6cy5OiUasCwAjTlU3RdY65h9K
-	 R7FTO3MyniSsnvZrxjet1GyCus0KoAdGFKy8l/I316cO8yzgWhnT0XWU5NQcDNOIqx
-	 hbvO9QMctus6Nf+qDQkREb6mxp2YXPnb4c7eT5C1esd1SXQ8OdTJoAFkQ9ErSZK4qF
-	 vtM1V+UClNRJm0Fuv+z7tLvXxKbhgrzuOy7ARD/SLyBWBQvDm0RC8zPITxzIKnvWu7
-	 6IkkNp6UrqKpmOtdvq9A6gzXGRNPLuc3kKBxQsSkFPNgv5qZAmhqoR4l24z81r51yj
-	 jW4hK58giEUNA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E57B53780BFE;
-	Thu, 21 Mar 2024 08:35:20 +0000 (UTC)
-Message-ID: <87800bcf-564b-4a8d-a866-3dba0ead6190@collabora.com>
-Date: Thu, 21 Mar 2024 09:35:20 +0100
+	s=arc-20240116; t=1711011216; c=relaxed/simple;
+	bh=b924mGehVaz7RM1Ell0G0QnlUCZl3Tnwtr/AfmvR5Z0=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=k4W+pcNi1dvRkwaB64Jxj6NOkKGj3fJnpcVyjl6Kv6X/qD4ZDH+ejDsqdEOLHIMCCqD1w/EP2tkzvGu+HrN9B34TGNrK2SGwovJ10parjGr/6mxICqw7Rfv/tUutXlim2j6h8kx9oviGfOm4VQp3jGRV8NtV2/m59Zc8h08wDn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 356611A2438;
+	Thu, 21 Mar 2024 09:53:32 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D07D71A0DED;
+	Thu, 21 Mar 2024 09:53:31 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 650AC180222D;
+	Thu, 21 Mar 2024 16:53:30 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: abelvesa@kernel.org,
+	peng.fan@nxp.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	linux-imx@nxp.com,
+	shengjiu.wang@gmail.com
+Cc: linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] clk: imx: imx8mp: Add pm_runtime support for power saving
+Date: Thu, 21 Mar 2024 16:36:51 +0800
+Message-Id: <1711010211-6825-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] media: mediatek: vcodec: Handle invalid decoder vsi
-Content-Language: en-US
-To: Irui Wang <irui.wang@mediatek.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>, nicolas.dufresne@collabora.com,
- sebastian.fricke@collabora.com
-Cc: Longfei Wang <longfei.wang@mediatek.com>,
- Maoguang Meng <maoguang.meng@mediatek.com>,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240321014754.6540-1-irui.wang@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240321014754.6540-1-irui.wang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Il 21/03/24 02:47, Irui Wang ha scritto:
-> Handle invalid decoder vsi in vpu_dec_init to ensure the decoder vsi is
-> valid for future use.
-> 
-> Fixes: 590577a4e525 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Decoder Driver")
-> 
+Add pm_runtime support for power saving. In pm runtime suspend
+state the registers will be reseted, so add registers save
+in pm runtime suspend and restore them in pm runtime resume.
 
-There shouldn't be extra lines between Fixes: and S-o-b: tags, but I guess this
-can be fixed while applying the patch.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+---
+changes in v3:
+- remove REGS_NUM, use the ARRAY_SIZE
+- merge clk_imx8mp_audiomix_drvdata and clk_hw_onecell_data together.
 
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+changes in v2:
+- move pm_runtime_enable before the clk register
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 157 ++++++++++++++++++++++----
+ 1 file changed, 136 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-imx8mp-audiomix.c
+index 55ed211a5e0b..5ae33bce8ad8 100644
+--- a/drivers/clk/imx/clk-imx8mp-audiomix.c
++++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
+@@ -7,10 +7,12 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/device.h>
++#include <linux/io.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #include <dt-bindings/clock/imx8mp-clock.h>
+ 
+@@ -18,6 +20,7 @@
+ 
+ #define CLKEN0			0x000
+ #define CLKEN1			0x004
++#define EARC			0x200
+ #define SAI1_MCLK_SEL		0x300
+ #define SAI2_MCLK_SEL		0x304
+ #define SAI3_MCLK_SEL		0x308
+@@ -26,6 +29,11 @@
+ #define SAI7_MCLK_SEL		0x314
+ #define PDM_SEL			0x318
+ #define SAI_PLL_GNRL_CTL	0x400
++#define SAI_PLL_FDIVL_CTL0	0x404
++#define SAI_PLL_FDIVL_CTL1	0x408
++#define SAI_PLL_SSCG_CTL	0x40C
++#define SAI_PLL_MNIT_CTL	0x410
++#define IPG_LP_CTRL		0x504
+ 
+ #define SAIn_MCLK1_PARENT(n)						\
+ static const struct clk_parent_data					\
+@@ -182,26 +190,82 @@ static struct clk_imx8mp_audiomix_sel sels[] = {
+ 	CLK_SAIn(7)
+ };
+ 
++static const u16 audiomix_regs[] = {
++	CLKEN0,
++	CLKEN1,
++	EARC,
++	SAI1_MCLK_SEL,
++	SAI2_MCLK_SEL,
++	SAI3_MCLK_SEL,
++	SAI5_MCLK_SEL,
++	SAI6_MCLK_SEL,
++	SAI7_MCLK_SEL,
++	PDM_SEL,
++	SAI_PLL_GNRL_CTL,
++	SAI_PLL_FDIVL_CTL0,
++	SAI_PLL_FDIVL_CTL1,
++	SAI_PLL_SSCG_CTL,
++	SAI_PLL_MNIT_CTL,
++	IPG_LP_CTRL,
++};
++
++struct clk_imx8mp_audiomix_priv {
++	void __iomem *base;
++	struct clk_hw_onecell_data *clk_hw_data;
++	u32 regs_save[ARRAY_SIZE(audiomix_regs)];
++};
++
++static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool save)
++{
++	struct clk_imx8mp_audiomix_priv *priv = dev_get_drvdata(dev);
++	void __iomem *base = priv->base;
++	int i;
++
++	if (save) {
++		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
++			priv->regs_save[i] = readl(base + audiomix_regs[i]);
++	} else {
++		for (i = 0; i < ARRAY_SIZE(audiomix_regs); i++)
++			writel(priv->regs_save[i], base + audiomix_regs[i]);
++	}
++}
++
+ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ {
+-	struct clk_hw_onecell_data *priv;
++	struct clk_imx8mp_audiomix_priv *priv;
++	struct clk_hw_onecell_data *clk_hw_data;
+ 	struct device *dev = &pdev->dev;
+ 	void __iomem *base;
+ 	struct clk_hw *hw;
+-	int i;
++	int i, ret;
+ 
+ 	priv = devm_kzalloc(dev,
+-			    struct_size(priv, hws, IMX8MP_CLK_AUDIOMIX_END),
++			    sizeof(*priv) + struct_size(clk_hw_data, hws, IMX8MP_CLK_AUDIOMIX_END),
+ 			    GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->num = IMX8MP_CLK_AUDIOMIX_END;
++	priv->clk_hw_data = (struct clk_hw_onecell_data *)((void *)priv + sizeof(*priv));
++
++	clk_hw_data = priv->clk_hw_data;
++	clk_hw_data->num = IMX8MP_CLK_AUDIOMIX_END;
+ 
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
++	priv->base = base;
++	dev_set_drvdata(dev, priv);
++
++	/*
++	 * pm_runtime_enable needs to be called before clk register.
++	 * That is to make core->rpm_enabled to be true for clock
++	 * usage.
++	 */
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
+ 	for (i = 0; i < ARRAY_SIZE(sels); i++) {
+ 		if (sels[i].num_parents == 1) {
+ 			hw = devm_clk_hw_register_gate_parent_data(dev,
+@@ -216,10 +280,12 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ 				0, NULL, NULL);
+ 		}
+ 
+-		if (IS_ERR(hw))
+-			return PTR_ERR(hw);
++		if (IS_ERR(hw)) {
++			ret = PTR_ERR(hw);
++			goto err_clk_register;
++		}
+ 
+-		priv->hws[sels[i].clkid] = hw;
++		clk_hw_data->hws[sels[i].clkid] = hw;
+ 	}
+ 
+ 	/* SAI PLL */
+@@ -228,39 +294,86 @@ static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_parents),
+ 		CLK_SET_RATE_NO_REPARENT, base + SAI_PLL_GNRL_CTL,
+ 		0, 2, 0, NULL, NULL);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_REF_SEL] = hw;
+ 
+ 	hw = imx_dev_clk_hw_pll14xx(dev, "sai_pll", "sai_pll_ref_sel",
+ 				    base + 0x400, &imx_1443x_pll);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL] = hw;
+ 
+ 	hw = devm_clk_hw_register_mux_parent_data_table(dev,
+ 		"sai_pll_bypass", clk_imx8mp_audiomix_pll_bypass_sels,
+ 		ARRAY_SIZE(clk_imx8mp_audiomix_pll_bypass_sels),
+ 		CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
+ 		base + SAI_PLL_GNRL_CTL, 16, 1, 0, NULL, NULL);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_BYPASS] = hw;
+ 
+ 	hw = devm_clk_hw_register_gate(dev, "sai_pll_out", "sai_pll_bypass",
+ 				       0, base + SAI_PLL_GNRL_CTL, 13,
+ 				       0, NULL);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
+-	priv->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++	clk_hw_data->hws[IMX8MP_CLK_AUDIOMIX_SAI_PLL_OUT] = hw;
+ 
+ 	hw = devm_clk_hw_register_fixed_factor(dev, "sai_pll_out_div2",
+ 					       "sai_pll_out", 0, 1, 2);
+-	if (IS_ERR(hw))
+-		return PTR_ERR(hw);
++	if (IS_ERR(hw)) {
++		ret = PTR_ERR(hw);
++		goto err_clk_register;
++	}
++
++	ret = devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
++					  clk_hw_data);
++	if (ret)
++		goto err_clk_register;
++
++	pm_runtime_put_sync(dev);
++	return 0;
++
++err_clk_register:
++	pm_runtime_put_sync(dev);
++	pm_runtime_disable(dev);
++	return ret;
++}
++
++static int clk_imx8mp_audiomix_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
++static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev)
++{
++	clk_imx8mp_audiomix_save_restore(dev, true);
+ 
+-	return devm_of_clk_add_hw_provider(&pdev->dev, of_clk_hw_onecell_get,
+-					   priv);
++	return 0;
+ }
+ 
++static int clk_imx8mp_audiomix_runtime_resume(struct device *dev)
++{
++	clk_imx8mp_audiomix_save_restore(dev, false);
++
++	return 0;
++}
++
++static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
++	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
++			   clk_imx8mp_audiomix_runtime_resume, NULL)
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				      pm_runtime_force_resume)
++};
++
+ static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
+ 	{ .compatible = "fsl,imx8mp-audio-blk-ctrl" },
+ 	{ /* sentinel */ }
+@@ -269,9 +382,11 @@ MODULE_DEVICE_TABLE(of, clk_imx8mp_audiomix_of_match);
+ 
+ static struct platform_driver clk_imx8mp_audiomix_driver = {
+ 	.probe	= clk_imx8mp_audiomix_probe,
++	.remove = clk_imx8mp_audiomix_remove,
+ 	.driver = {
+ 		.name = "imx8mp-audio-blk-ctrl",
+ 		.of_match_table = clk_imx8mp_audiomix_of_match,
++		.pm = &clk_imx8mp_audiomix_pm_ops,
+ 	},
+ };
+ 
+-- 
+2.34.1
 
 
