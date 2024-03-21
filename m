@@ -1,144 +1,120 @@
-Return-Path: <linux-kernel+bounces-110671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3026788621B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:54:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2E588621D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA1DA1F2179A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:54:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5553282C66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE47135A41;
-	Thu, 21 Mar 2024 20:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F59135418;
+	Thu, 21 Mar 2024 20:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S62aIT41"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LdBGofkv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A012DF84;
-	Thu, 21 Mar 2024 20:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47A11350EF;
+	Thu, 21 Mar 2024 20:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711054471; cv=none; b=dg353gR1nR222Tkc5KbhF5DJmDU/BwVUfEL7BOUkAGoQXWIJ/JoUbwkfyRuhpmgpKP7aRLj0MWaueD8DFL6tkH3mu6wiyth13ThX30ANsJtbIstCqeaLy9pLJx71rkk9HLVhEDXnfX0BSMFCxAwx7Q7kOPciCD+q8j0GQDOAVjA=
+	t=1711054488; cv=none; b=u7PU/BkomAszaV+STDOlfiLQrbTamhvsJ6N7TfxONphedkdweZhRYOKxuoegBQUXeR/cHetfPDFoxreQVvsiPs0ger9dixo8pRDXFEnB/KgJry6MxNDjV+obDRitbqKq3tcuZCJ65Jfp9cpLsKveKoFqpIOB8Annfxatp6GwEzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711054471; c=relaxed/simple;
-	bh=mjDg7wzzBQCmz5jgRMm1V55TPwPVl9hYFeFJAZQ5Fhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PVgqGQtYv44fowJtikN7CYVCoZotDx+FzNcW0HFMb4Aru7VgEPQ0JH6RZsZGD0lvw5Rj7iAPMatPXecn4OkXhMsks9DZssoGLGaBUsWOkn6xCcglkppAZhPLvr/gPQW6TdiipzAi/uRwSgyuUlyW5A4DZa4eZiIJLbxRABxFDw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S62aIT41; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513e89d0816so1853446e87.0;
-        Thu, 21 Mar 2024 13:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711054468; x=1711659268; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4dpqtSWJGyTeUnxqugJzMO94Z9iV/f5bgYjvchhbNxE=;
-        b=S62aIT41CKMejP4Jx1oxEyKBWGx6K88G0mabjcf/8nRtsOflE9Pv381ZO6LK2o6O2V
-         FtQP6HncXJjpIO4N6o4kUkYEtUH20ZhX+Q3n22b/m1kuZNouamMFBmetN6BigwJAWVVZ
-         pn3ez2uOBHmT5sOXeQUem43AgRVGfKQG8io9xkn16wFi43PPWdXd/G9cBOVChcsVIfT2
-         b6ZXhAnVv0+yhtnTEz0/1VQ6ozw5bDDQglQ1tSwF6VtNHq4Fc+JoS5B3W1Qokkk99SFQ
-         rOncIby5jc4P2htZboWDUsW4zT9SLw0MsWhyCKODK2NdEFGBMsFNV0ybfCaZNXbc5p81
-         qgfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711054468; x=1711659268;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4dpqtSWJGyTeUnxqugJzMO94Z9iV/f5bgYjvchhbNxE=;
-        b=jvWI6kfOXgWNFtP/+pL1WclsnhXebqAZohOtIiQGKUhv6a7T4R9v6SPUXzlSCJ1aCt
-         7cw22Md/wuZNwBkHaLms9D1VcewHklNlnPOKm7Seuj8UUpCD2Q810/D7J/72kLv/7ijJ
-         Kz0XjQEQJaJIZF9JSnttbJtujYileMzMHiwTwivBVtNeLiKGUBVW3A8yG8WLnU1wE8tJ
-         vJbQF0Y0KMWi6Qcl8t9R0Pw2+R1DaIHE5jheSMTxBN8pegw/PHL/o+nduHg4RFfzyLO2
-         8MZz818RWOptcpwaJ04I+qSx13vlutKc7KbUDJnMfN2XWc/kcKQ202jfL0etbtFzFKC5
-         9oCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWeI8ERfbTYvDQjrJEip/ogbCDY+OJAY5ajEUcncmvov5pbQGKJDw6IBKBZLMtzt6c/45nS7FLj+kl1e2WrYbvz6fiq80L6pMHa0N672PUOB5KqL/nMVnAFhko1ihShmdJxbV+RL36uMbT9h3sAW8oOe6Bhsy1ApPk6M/JltBl0jCuSMGOt
-X-Gm-Message-State: AOJu0Yz37n4k3D/RM2R6lb5Y+DgjGPaWSZPH8pRPeu+7kpCYpUnRTIQG
-	2P3Te+NvE18TO4vrvd4M7VYBJo0MqSH1zmC5dT5SmfDIRO2sEtLe
-X-Google-Smtp-Source: AGHT+IF00jvltcjrS4QawwDsCnX+RLKRo6CEUXlNmaAZkEy6czLuI6rU56WPSUMOFR9qHZGoD99mGg==
-X-Received: by 2002:a05:6512:3051:b0:513:9e13:6403 with SMTP id b17-20020a056512305100b005139e136403mr390726lfb.21.1711054467418;
-        Thu, 21 Mar 2024 13:54:27 -0700 (PDT)
-Received: from ?IPV6:2a02:8389:41cf:e200:9fd4:5a72:5943:9800? (2a02-8389-41cf-e200-9fd4-5a72-5943-9800.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:9fd4:5a72:5943:9800])
-        by smtp.gmail.com with ESMTPSA id gt32-20020a1709072da000b00a46ee5b9aa1sm302555ejc.90.2024.03.21.13.54.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 13:54:27 -0700 (PDT)
-Message-ID: <469068f9-b219-4d80-bab4-cbffaa04a67d@gmail.com>
-Date: Thu, 21 Mar 2024 21:54:25 +0100
+	s=arc-20240116; t=1711054488; c=relaxed/simple;
+	bh=AlXcd6BU1PdgV9t1OUjfyQ8MP4DXyg5Bru1eSL7IS1Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E7ASiY81exvvFDqr6MYK5Ww2O7T1V9Ne1ZXCeX5RJs1gWFZpwswdUO8f03jR+vy1FHyc5leGaadEn+JufKTpldKbkbUTh0q/aIrjrM+dRWbcNQ8K2zc5cQ8y8KFkmbx9tv8UQZHmF2PcbAqXbOIBJvRaBjSvHuePdvCfGW5dIVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LdBGofkv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E539C433F1;
+	Thu, 21 Mar 2024 20:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711054488;
+	bh=AlXcd6BU1PdgV9t1OUjfyQ8MP4DXyg5Bru1eSL7IS1Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LdBGofkv8EeV/a9BMklXeGE/imMgVO7CfjHf4g6tgRcHGEy0R/kdidNwDKXjzOOWn
+	 BjFLBfQNYQeTWPJdxi057nTzyYaCQTm0rkA89EEdTISdAbA4j3yHdig+Sx6HQjadZj
+	 ZtHSAZCBb/n5L78pYh7bfQop5DO0I5TAyZrz7VmbHfrM9Qxmx9XFyXC37je21ETVV9
+	 yASzG7gFd1ViikML1rfRnbPX/pkEfCN8zr+2p0mkLt9FdqG7CEHtVzVSgNi6iPrVJV
+	 Kf6LM3ZFwW1uj/hNguArJ9YrIWQ0qiWYcDQsVnK2s3n2uw9fFCCCIoAUSAOzymlHDn
+	 PlygkW4iV+tZg==
+Date: Thu, 21 Mar 2024 21:54:43 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Sam Edwards <sam@turingpi.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND RFC PATCH 0/5] Enhancements for mv64xxx I2C driver
+Message-ID: <wdpnjnuahedvbakhfavoobukdkocjfpfrgsu374sgjhkyy7exz@er4lyeadftyz>
+References: <CAF8uH3tYaUwhkkeFuY+PdsnSPqeTtWtOsB_hy9oOjF=f-2Hdaw@mail.gmail.com>
+ <p37qqpplxgmfzlq6wz7fvmvnrsumy6ra5nivzi4hd2gbvlbezx@dlh6ygyjbk24>
+ <4a043be8-8e88-4b92-913c-abd8f138b90d@turingpi.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] dt-bindings: hwmon: ibmpowernv: convert to dtschema
-To: Rob Herring <robh@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-hwmon@vger.kernel.org, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Nicholas Piggin <npiggin@gmail.com>, Jean Delvare <jdelvare@suse.com>,
- Conor Dooley <conor+dt@kernel.org>, linuxppc-dev@lists.ozlabs.org,
- devicetree@vger.kernel.org, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20240321-hwmon_dtschema-v1-0-96c3810c3930@gmail.com>
- <20240321-hwmon_dtschema-v1-2-96c3810c3930@gmail.com>
- <171105391076.2619280.17497439995032037227.robh@kernel.org>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <171105391076.2619280.17497439995032037227.robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a043be8-8e88-4b92-913c-abd8f138b90d@turingpi.com>
 
-On 3/21/24 21:45, Rob Herring wrote:
-> 
-> On Thu, 21 Mar 2024 19:43:43 +0100, Javier Carrasco wrote:
->> Convert existing binding to support validation.
->>
->> This is a straightforward conversion with now new properties.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> ---
->>  .../devicetree/bindings/hwmon/ibm,powernv.yaml     | 37 ++++++++++++++++++++++
->>  .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 --------------
->>  2 files changed, 37 insertions(+), 23 deletions(-)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/hwmon/ibm,powernv.example.dtb: /example-0/sensor: failed to match any schema with compatible: ['st,stts751']
-> 
+Hi Sam,
 
-Obvious mistake, this compatible belongs to another patch of the series.
+On Thu, Mar 21, 2024 at 12:24:43AM -0600, Sam Edwards wrote:
+> On 3/20/24 20:28, Andi Shyti wrote:
+> > > Sorry about the resend; it seems my mail client "helpfully" swallowed the
+> > > newlines on any line consisting only of whitespace, garbling the patches.
+> > 
+> > I received three series from you:
+> > 
+> >   1. [RESEND v2 RFC 1/5] i2c: mv64xxx: Clear bus errors before transfer
+> >   2. [RFC PATCH 0/5] Enhancements for mv64xxx I2C driver
+> >   3. [RESEND RFC PATCH 0/5] Enhancements for mv64xxx I2C driver
+> > 
+> > By the versioning, 1. is good, the rest is not good. Standing to
+> > the time sent and comments in patch '0', 3. is good, the rest
+> > not.
+> > 
+> > Which one should be discarded? Can you please state it clearly?
 
-Will be fixed for v2.
+..
 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240321-hwmon_dtschema-v1-2-96c3810c3930@gmail.com
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
-> 
+> I sent the series in the order 2-3-1, so 1 is the version to look at (though
+> I made no content changes between resends as I was only fighting my mail
+> client's formatting).
 
-Best regards,
-Javier Carrasco
+so that it's the [RFC v2 ...] the right series... are you sure?
+
+The order of arrival is:
+
+ 1. Date: Tue, 19 Mar 2024 16:51:51 -0600
+ 2. Date: Tue, 19 Mar 2024 19:40:51 -0600
+ 3. Date: Tue, 19 Mar 2024 22:19:53 -0600
+
+Anyway, I will take "1" as the good one, being a v2. I will
+discard "2" and "3".
+
+Then, please, do not forget next time the patch 0 and the
+changelog.
+
+..
+
+> > Can you please make sure, next time (unless someone asks to
+> > resend them again), that the patches are threaded? You can send
+> > them to yourself first and see if they are really threaded.
+> 
+> Yes, definitely. I take it from your phrasing that you're willing to collect
+> the scattered mails yourself this one time only? If so, thank you for
+> cleaning up after my mess. :)
+> 
+> If not (and/or if someone else doesn't like the mess), I can always resend.
+> I have already made one cleanup (removing the useless `default:` at the end
+> of the FSM) so I guess it would technically be an "RFC v2" at this point.
+
+For now no need to resend (unless someone complains). Let's give
+it some time for review.
+
+Andi
 
