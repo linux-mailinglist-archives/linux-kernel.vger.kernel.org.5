@@ -1,121 +1,90 @@
-Return-Path: <linux-kernel+bounces-110059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43333885976
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:56:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CEF188596D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0C95282623
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:56:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0681F22441
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A7A83CCE;
-	Thu, 21 Mar 2024 12:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6058405F;
+	Thu, 21 Mar 2024 12:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KNYi/Ufs"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iLvncpF9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253F3134CD;
-	Thu, 21 Mar 2024 12:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720DC83CC3;
+	Thu, 21 Mar 2024 12:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025782; cv=none; b=ZiUBM2JS5gLj/8MQDUSz/xDoAhkXXKVNOG7yqWMYeaXTM5e/12ZXZCBjrqdhmDNZ0NvY5C91DBQiWHEtZtNxJvzPt5eFEgTXKBYmIen4+LDSFERPPhhcFPK6bPtmBRXwplApmmTPNwhZxPgEGguB/iPD+Z+3GaXWS705CpokcqQ=
+	t=1711025519; cv=none; b=vGFEZ3DVAfnrUwq+Ib8o8KNOWOXWHeoxq5OXVpLEeLK/LPBWIuI5CbTW/uypEj5rruE6ZGMuR3kwA/oSXkPbS1He17ByntJ4RMfHRHkfoPqSlHT1P5aeGMZNK7xMZVtF3Q8f0lxjiUaaxHS6U/bNC6Sm8L7oaU2/fFHTK7Eya1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025782; c=relaxed/simple;
-	bh=BxiWdf4/7BU0N7jaavO3/onZ7Kj2pPXj4FUIl3z2O1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hmd9cH8U+x5mrnEUT8oVP6O9Czzv8FLz/ve5zlp1K267JhVeiYylGgJn9bz9Nu2GCSRXbikMKVE09ohlXGk1gCt7+pesR2DQPyacD3TRYldQd1+3ojR0VEV1V46OQvXRGXbU+9QUsUcdMIGO+p+i2ZLkO9FbkoPMypfbO2JdUa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=KNYi/Ufs; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=/VkiJjn/Ujsmq+U16JaWHWXV190NKV6cULGPu225XxU=; b=KNYi/UfsvbbcIhqHWGMXIBUscE
-	0NUwAsju2opk5jzCII3uqEkHR38PO9RlU5fEkVlNiKk6G/xRsfJT95BBpVXuicO7xdAiJj2zANZVH
-	b3cNy9k8i9zEFRfFL/mszQHX62S3jxZ+AaOcjMQvO2euRivm6dUzLycyLG+9z5r7rO+s=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rnHxe-00AsKQ-Pb; Thu, 21 Mar 2024 13:55:58 +0100
-Date: Thu, 21 Mar 2024 13:55:58 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Vaishnav Achath <vaishnav.a@ti.com>
-Cc: Michael Walle <mwalle@kernel.org>,
-	"Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Ayush Singh <ayushdevel1325@gmail.com>,
-	open list <linux-kernel@vger.kernel.org>, jkridner@beagleboard.org,
-	robertcnelson@beagleboard.org, lorforlinux@beagleboard.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Derek Kiernan <derek.kiernan@amd.com>,
-	Dragan Cvetic <dragan.cvetic@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	"open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-	"moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-	Vaishnav M A <vaishnav@beagleboard.org>
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Message-ID: <3904c7eb-c179-4596-ba42-d6b545a562a6@lunn.ch>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-2-ayushdevel1325@gmail.com>
- <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
- <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
- <b62915ca-c151-4e37-bb03-c92c569c84ff@lunn.ch>
- <4b319264-bff7-48e5-85e8-201ca0bafec6@ti.com>
- <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
- <ded6c350-4c70-4a26-8b18-6605dcc6e084@ti.com>
- <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
- <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
+	s=arc-20240116; t=1711025519; c=relaxed/simple;
+	bh=AJeureSQ7z+1aHfZed2T9ZG9lVLmPdFGaRIni9f2ZfI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dhKWbPig7tTFa6k9axYqO0lgTvNrqbDBK9wArI3v0OCcn//tFo5pUq0M74SIr6OJOAsrbN4D7wFKTZrHEpIK7YCQG0olCUJn/MtcNLi0xn01noaOemxQUWJ8tuBET3+cJ/HUY8nmFWveiOZftf22c3XvYjRmed+s/cz9M0GO60A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iLvncpF9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB82C433C7;
+	Thu, 21 Mar 2024 12:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711025519;
+	bh=AJeureSQ7z+1aHfZed2T9ZG9lVLmPdFGaRIni9f2ZfI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iLvncpF9M/tSdfTl2yltcI5YnPeMoNItBlui+RKCLCEkpWBWyG4+HQYLu2l1Un8nR
+	 xTJz6KGeESHDWvfSmCqFr5dW/jeL5C4HD85n6sBYInljhUVUk6SzTXNtodZeGkbDbP
+	 O9g1526Tn1hpz04e+zH04kvOEnIKx1MQva/wXnTAxYNuAVqu06+5R7trJsWzdbiQOm
+	 huEiDLLpY3kzq9mJl7M5szxJO7EXurQ3ZHrai12GkeV4/Pxf/r0yVrYJJUeec/9010
+	 o4bVCfZ7cv6qfFr1EbwcuHkPp/026dvt7Uw8lZXCis4WpBRdCO9WU5R9rJot0Cqkgq
+	 lcohumOxzNEzg==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	"Ricardo B . Marliere" <ricardo@marliere.net>
+Subject: [GIT PULL] rpmsg updates for v6.9
+Date: Thu, 21 Mar 2024 05:56:51 -0700
+Message-ID: <20240321125653.1676534-1-andersson@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
+Content-Transfer-Encoding: 8bit
 
-> > How will the ethernet boards ([1], [2]) work? Where do they get
-> > their MAC address from, for example. The DT has some nice properties
-> > for that, but I doubt that will be possible with the manifest files.
-> > I've looked at the manifest file for the w5500 board [3] and to me
-> > it looks like that board will come up with a random MAC address on
-> > each start. Thus, even today, you have some boards which require
-> > a more complex description.
-> > 
-> 
-> Agreed, this is a limitation, unless the corresponding drivers/subsystems
-> use device_property_read_* helper to fetch properties, it will not work and
-> net/core/of_net.c only implements of_get_* helpers even though the
-> underlying functions can be implemented with equivalent
-> device_property_read_* equivalent as well.
 
-I think this is a good example of the limitations. For an Ethernet
-NIC, you often want to describe properties of both the MAC and the
-PHY. What phy-mode should be used, what delays on the RGMII bus, what
-LEDs are there etc. This is a pretty much solved problem with DT, we
-have a well defined sub tree to represent the MAC, the MDIO bus and
-the PHY on the bus.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-But we do have two classes of properties here. The MAC address is
-unique to a board. So that does need to be stored in the EEPROM, and
-cannot be in a one time converted manifest to DT file stored in
-/lib/firmware. However, to some extent, this is a solved problem. We
-have a DT representation of how to look in an EEPROM to find the MAC
-address. So the DT just needs to point to some bytes in the manifest
-in the EEPROM.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-	Andrew
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rpmsg-v6.9
+
+for you to fetch changes up to b03aa6d4e9a74c4289929b6cf3c6bcc80270682d:
+
+  rpmsg: core: Make rpmsg_bus const (2024-02-05 13:43:22 -0700)
+
+----------------------------------------------------------------
+rpmsg updates for v6.9
+
+This transitions rpmsg_ctrl and rpmsg_char drivers away from the
+deprecated ida_simple_*() API. It also makes the rpmsg_bus const.
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      rpmsg: Remove usage of the deprecated ida_simple_xx() API
+
+Ricardo B. Marliere (1):
+      rpmsg: core: Make rpmsg_bus const
+
+ drivers/rpmsg/rpmsg_char.c | 12 ++++++------
+ drivers/rpmsg/rpmsg_core.c |  2 +-
+ drivers/rpmsg/rpmsg_ctrl.c | 12 ++++++------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
