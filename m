@@ -1,159 +1,92 @@
-Return-Path: <linux-kernel+bounces-110689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB51C886276
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:19:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE6788627C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35B832854B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:19:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDD411C220E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ECF13667D;
-	Thu, 21 Mar 2024 21:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EA613664C;
+	Thu, 21 Mar 2024 21:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vt9M+rxE"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KXyqdB/5"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57177135A7C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:18:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED1E135A72
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711055936; cv=none; b=Q6M7LOWxmWPiCIrQd2upvWUu9dBwo2KlY5dBK4YCWUjAeqt8fd2BayaIyTVSncivYz5hfM+mvkI6XOnscbu5rw0+hwQ6JOYOf8IZztKK5umhPilK2+kUl+mhvGg7NvG8CZY580NqC1fhUY6ALubHI7iKEvc5HBvsPVovT47/IiI=
+	t=1711056143; cv=none; b=EAe4a3j7W+whxeBSd9yW1fW5xn9XfRXLsuot/I6xDQayvRdQHs4gCGiI6aVQvM9hpIW3CWJ7qrQYaCJ5L7lGtcTghw1jpJgiUChRjUuKMbAzcQzp4m8DDT/lRtyoiwPE1FofUQ/L2jJa6Hw053RSZ0Mla5zrLeymWZFPZaP4pSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711055936; c=relaxed/simple;
-	bh=6SncT2xHQVsN3uYWdyB3MAV/FUGjtqsa2MWM+AyiGoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N0I1XywjstHRW5CrQ3HaJA72/WIto7Mv3J2w4Hkfknix7JEbBsAqmGfLg/s6PWZGJC+BHr8oBlkgqYd2o86SsWa5JL6tB9XSmFxfbu81W0gljrz/FKID0XKzEo1U8M2st06I5/8anGLu1tXuHghf2U15AKAPLM9pmOB+UDLXJPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vt9M+rxE; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4727b9d7b1fso148802137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711055933; x=1711660733; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m536zU+Ql7UMC3jfupH+HQpHMUR1QBM11u8xquMxNgk=;
-        b=Vt9M+rxE2PVYuPALvBz+9IDI5/S/9r7JtHVkraVjEoB1yFnjed7wOBs6NMKgXANh55
-         yLtY+7B8G27C7aGUj2ypA7PZxotP+S7kSfCTv5LgNiNo6ZQaBwydJwXp3IvyIP3W4mzc
-         wezZk8fYXv3vjtAQMU/kTVAdgEXBBBZbRFo3XdBL7AoOwXmYDo9O8mVbcP1R45s4sD8j
-         4LTH1JmrzeOxSESrRiy4XGqsrKdbtvnrjNXyQmRToz5/MR75Z5ugZHXybRgK57EU1+KF
-         OzhFyLwGru777JeiYZDYGixCa411/m2D/hEpJheMO6lo/j1BZm6IVIUKhE5yavpH2UTl
-         kTPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711055933; x=1711660733;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m536zU+Ql7UMC3jfupH+HQpHMUR1QBM11u8xquMxNgk=;
-        b=kpv5cW1AKTdKTms97fmp6x1Qp6zCvh4Vm5Am7tp/hxe6krFoo9VQOZb7mKseS1ovhL
-         w96CRcN6GRnDDNr8ly5/QcwrWU6s9P4UO8qWNdsZztrhEgaCXaNOJjxayi94TO3YBydP
-         60wNL/vrol6z+R3/yt4pfkcD+qGFpfIDPxEVr6ekJFWD3IImbhUo4LdYIZsltEw6qFQV
-         Y5VDWK2N+/2uphAqvAu4QajZJzu6Oa7J6QHmRae2zQl+oiL4AZ3FV0E5wk/5iZAdSqRR
-         ugQ5OC0TxQJexv2sOPXM2lrZwIqNVZZGrtyIVOxpPYifXJoGUKLq2MLujHCvAMqz0RF5
-         e96Q==
-X-Gm-Message-State: AOJu0Yx+Qm47an7EsZIcmdpZDe45MH0NVX2hV7Vatr35YjZxplLQmtYs
-	FpoyzZ7wmxpVgCOl1BF9EvRvC0NCVxC6WRTR+wRjYNJlYCe5Zgj3ufVmVEQ=
-X-Google-Smtp-Source: AGHT+IHyNPjsDXQagST7CTkdGw8YNDbD2bvIttXtqno9fzpxybO8vKGN7xGWjd10kwQLrlGOd34SSQ==
-X-Received: by 2002:a05:6102:508a:b0:474:c306:9062 with SMTP id bl10-20020a056102508a00b00474c3069062mr1044686vsb.12.1711055933444;
-        Thu, 21 Mar 2024 14:18:53 -0700 (PDT)
-Received: from citadel.lan (2600-6c4a-4d3f-6d5c-0000-0000-0000-1019.inf6.spectrum.com. [2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id gs7-20020a056214226700b006961cdc3f7csm304903qvb.85.2024.03.21.14.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 14:18:52 -0700 (PDT)
-From: Brian Gerst <brgerst@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 2/2] x86/syscall/compat: Remove ia32_unistd.h
-Date: Thu, 21 Mar 2024 17:18:47 -0400
-Message-ID: <20240321211847.132473-3-brgerst@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240321211847.132473-1-brgerst@gmail.com>
-References: <20240321211847.132473-1-brgerst@gmail.com>
+	s=arc-20240116; t=1711056143; c=relaxed/simple;
+	bh=Anq4NcuB/lwgoTXLF75lThmEeR+MuCgA6bicmSCWtE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=atOXxiBVElGY0R+/CFOLB/QoX+F5204Q0moOQdDPsmVzIMYaTsa9J5NHYI57q6rZHYQsJBd4WSgMpB+mb5uEYINQSOIR9sXauIsTzouK2DLQ6JoPGCOflT+xSbQk7+0JZxSr6RT7IA2icopDJ0NiSgZmsTCefVP6Ojn3n76CxwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KXyqdB/5; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 21 Mar 2024 17:22:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711056139;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S05qIGXtD9xW8hBhYLVEJF2bePesL9LF4WflE+oBdCA=;
+	b=KXyqdB/5x6fm8sKDy7Wx6c1+9/aaeEK0c6jkGhTWGiLB9kU+pA76QZmr1Kf9DTr66Dc60G
+	fB2C5gKBmUG3J3KTzZLaNkFSoCZTsVYWkK9kLZLejwfJhbprlY/Qz7wCVcISG86ycSSRRM
+	37QJ0vm12wWgJX97hIfyhbDmoQVqYJg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 04/15] lib min_heap: Add type safe interface
+Message-ID: <mi3uq4gqvseubfiylslxfrnwupfzopz753md5f53v6brlgiamv@l5bxmctqnz6g>
+References: <20240320145417.336208-1-visitorckw@gmail.com>
+ <20240320145417.336208-5-visitorckw@gmail.com>
+ <iz6wl3twuc72txd4ifxy73bbbfijo3ecy7izw3drsmcb2payeu@b2dusfoqobgu>
+ <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
+X-Migadu-Flow: FLOW_OUT
 
-This header is now just a wrapper for unistd_32_ia32.h.
+On Thu, Mar 21, 2024 at 07:57:47PM +0800, Kuan-Wei Chiu wrote:
+> On Wed, Mar 20, 2024 at 04:56:57PM -0400, Kent Overstreet wrote:
+> > On Wed, Mar 20, 2024 at 10:54:06PM +0800, Kuan-Wei Chiu wrote:
+> > > Introduce a type-safe interface for min_heap by adding small macro
+> > > wrappers around functions and using a 0-size array to store type
+> > > information. This enables the use of __minheap_cast and
+> > > __minheap_obj_size macros for type casting and obtaining element size.
+> > > The implementation draws inspiration from generic-radix-tree.h,
+> > > eliminating the need to pass element size in min_heap_callbacks.
+> > 
+> > let's avoid the heap->heap.nr - darray (fs/bcachefs/darray.h) has a
+> > trick for that. All heaps have the same memory layout, so we can just
+> > cast to a void pointer heap to get something the C code can use.
+> >
+> If I understand correctly, you're suggesting adding APIs similar to
+> darray_top(), darray_first(), and darray_last() within min_heap and
+> having them return a pointer. However, some users are using heap.nr in
+> conditional statements instead of utilizing heap.nr for memory
+> operations, so returning pointers may not be as convenient. What about
+> adding get and set functions for nr instead?
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/entry/entry_64_compat.S   |  1 -
- arch/x86/include/asm/ia32_unistd.h | 11 -----------
- arch/x86/include/asm/seccomp.h     |  2 +-
- arch/x86/kernel/signal_32.c        |  2 +-
- 4 files changed, 2 insertions(+), 14 deletions(-)
- delete mode 100644 arch/x86/include/asm/ia32_unistd.h
-
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index eabf48c4d4b4..49cc4b8cfbb5 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -7,7 +7,6 @@
- #include <asm/asm-offsets.h>
- #include <asm/current.h>
- #include <asm/errno.h>
--#include <asm/ia32_unistd.h>
- #include <asm/thread_info.h>
- #include <asm/segment.h>
- #include <asm/irqflags.h>
-diff --git a/arch/x86/include/asm/ia32_unistd.h b/arch/x86/include/asm/ia32_unistd.h
-deleted file mode 100644
-index 7bcb82951c11..000000000000
---- a/arch/x86/include/asm/ia32_unistd.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_X86_IA32_UNISTD_H
--#define _ASM_X86_IA32_UNISTD_H
--
--/*
-- * This file contains the system call numbers of the ia32 compat ABI,
-- * this is for the kernel only.
-- */
--#include <asm/unistd_32_ia32.h>
--
--#endif /* _ASM_X86_IA32_UNISTD_H */
-diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-index fef16e398161..42bcd42d70d1 100644
---- a/arch/x86/include/asm/seccomp.h
-+++ b/arch/x86/include/asm/seccomp.h
-@@ -9,7 +9,7 @@
- #endif
- 
- #ifdef CONFIG_COMPAT
--#include <asm/ia32_unistd.h>
-+#include <asm/unistd_32_ia32.h>
- #define __NR_seccomp_read_32		__NR_ia32_read
- #define __NR_seccomp_write_32		__NR_ia32_write
- #define __NR_seccomp_exit_32		__NR_ia32_exit
-diff --git a/arch/x86/kernel/signal_32.c b/arch/x86/kernel/signal_32.c
-index c12624bc82a3..ef654530bf5a 100644
---- a/arch/x86/kernel/signal_32.c
-+++ b/arch/x86/kernel/signal_32.c
-@@ -34,7 +34,7 @@
- #include <asm/gsseg.h>
- 
- #ifdef CONFIG_IA32_EMULATION
--#include <asm/ia32_unistd.h>
-+#include <asm/unistd_32_ia32.h>
- 
- static inline void reload_segments(struct sigcontext_32 *sc)
- {
--- 
-2.44.0
-
+No, I mean not having separate inner and outer types. Want me to sketch
+something out?
 
