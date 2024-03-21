@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-109713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7872881CB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:02:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE9A881CBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5A21C20BCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:02:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0901F21C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:08:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472A24D9F4;
-	Thu, 21 Mar 2024 07:02:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B6250267;
+	Thu, 21 Mar 2024 07:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ynCQXy92"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="nhmui8e1"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A5556450;
-	Thu, 21 Mar 2024 07:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854E552F70;
+	Thu, 21 Mar 2024 07:08:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711004526; cv=none; b=BiEVJVxNjcGtm7WdJT+HKzl2h3whZpz2zo64wdzepjqmzcKh88MamEoi2W+Q14X4QQ1w4ZRIaX2CuxNUJA9W2+/lg6i99u5p7LnyMOUHL8wx2YgNdNX3BpohBpDdGz7qRiAw2oYfrKJ2XQIT6hX1KwJDJ7UcR8TWo4dQIBf7TGM=
+	t=1711004893; cv=none; b=CSGA6cQQi25yGK65yHJ4c6XpF5w4ql+4fWLJxndVGx/Naj2w13XArA2z0FFzTgtOuSWRC0g3X/HGNk/UkSYS5eJjFA3nyTfu+2M/Jy7HEzaU9WZqVbLsUvde+iiCOlbPCjOeqPbh0x9hllOXbOR8+6DMcat4Q0loN2DnALVK2kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711004526; c=relaxed/simple;
-	bh=SwY21QFiwGpD1kcAiZUZyOjCoiCibVmG8EdjAluDzsM=;
+	s=arc-20240116; t=1711004893; c=relaxed/simple;
+	bh=uy0mTMJPuf2amvrZ+mjeLMK5I7Cy7ICcR146zGb66mY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=MRhbdMEIrp7vYCZXFSJtY2rQqv1v0Jwwpcw81v0dfei5czuG0N4TqYQOs2SFyb7X2ws5mCg7ptS1t7GHJNEJ4NXs5Bci81IAxc/UH0XGkajWT8H2KOQfXCS9gY/MxVDv5PKy9QoEGVtTLQw8Ts/8vOl7BIYt4DD6qT2RtIlJQos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ynCQXy92; arc=none smtp.client-ip=198.47.19.141
+	 In-Reply-To:Content-Type; b=Ltcv8jaIjUeEbvwV1JN4bCVnL1YYlHshROzFf0+bRSzGNP4sKYNCl7ZAU5P/rS+4oxhFMpCJ/6nfBQ33dMJ8mcUIHD8X/kL07/FURvm6YjpANyX0cc8m5w7JDCo7cBwvmeRTFvJWSZ8eGtjzQILaQ6vawKsSo9TQV+V3HFLRseQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=nhmui8e1; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42L71i5j014711;
-	Thu, 21 Mar 2024 02:01:44 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42L77nEt070288;
+	Thu, 21 Mar 2024 02:07:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711004504;
-	bh=DJP47pseD2ZY7NaP7759rSonBuFE54K/AWpHpbwV2W8=;
+	s=ti-com-17Q1; t=1711004869;
+	bh=bIbFFh/UMsEvkruGmEgvqDcn1jVngW3XTM1axT6qu7o=;
 	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=ynCQXy92jpkozeHVfpylGUaOryqC5wpun1PGjj78Nwq45Xs+k+6557eX5mXIk2v2Y
-	 FE4kkQCieLeMddWZM903qMSfVP3AXoM2q24eWz8CAgq34XBjHJvZn9cuNSjI3CZS5D
-	 8Vt3q84dN6xT5sAi0Crz1+RR3zZumL/qOhDOL4w0=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42L71ik3011527
+	b=nhmui8e10qPiqSjzmEiVMY44RZTmLLgWOr1ri0bgQYQxOPVz4EgLy6gsvfSSLA9/j
+	 LX2/nOTWOEt+rzZKnpnHT63nyPQ8Hg7PmQADb96UkGGoJx71twPLG4keSj8lLjYCTn
+	 5OmdA2QEeO2zNn2QBpFlX0I4mFDnY/BJ83IaCATk=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42L77nnh010129
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 21 Mar 2024 02:01:44 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 21 Mar 2024 02:07:49 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Mar 2024 02:01:44 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2024 02:07:49 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Mar 2024 02:01:44 -0500
-Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42L71dYr072133;
-	Thu, 21 Mar 2024 02:01:40 -0500
-Message-ID: <b2cc9610-1bc8-4ad8-bf0c-f7343ae0de75@ti.com>
-Date: Thu, 21 Mar 2024 12:31:38 +0530
+ Frontend Transport; Thu, 21 Mar 2024 02:07:49 -0500
+Received: from [10.24.69.142] ([10.24.69.142])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42L77eHF097425;
+	Thu, 21 Mar 2024 02:07:41 -0500
+Message-ID: <ded6c350-4c70-4a26-8b18-6605dcc6e084@ti.com>
+Date: Thu, 21 Mar 2024 12:37:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,115 +64,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/6] arm64: dts: ti: k3-j784s4: Add alias to MCU CPSW2G
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
 Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
-        Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Tero
- Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
- Menon <nm@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>
-References: <20240131101441.1362409-1-c-vankar@ti.com>
- <20240131101441.1362409-3-c-vankar@ti.com>
- <469a7f15-0539-48e9-993c-5b9c638917e0@ti.com>
- <0512d57f-af22-4bd8-8266-33d943d7eb4a@ti.com>
- <c4b91154-7a8b-4642-a642-6ae93b448115@ti.com>
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <c4b91154-7a8b-4642-a642-6ae93b448115@ti.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Ayush Singh <ayushdevel1325@gmail.com>, Michael Walle <mwalle@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, <jkridner@beagleboard.org>,
+        <robertcnelson@beagleboard.org>, <lorforlinux@beagleboard.org>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Derek Kiernan
+	<derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
+	<arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown
+	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder
+	<elder@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ BINDINGS" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/TEXAS INSTRUMENTS
+ K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SPI
+ SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM"
+	<greybus-dev@lists.linaro.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+ <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+ <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
+ <b62915ca-c151-4e37-bb03-c92c569c84ff@lunn.ch>
+ <4b319264-bff7-48e5-85e8-201ca0bafec6@ti.com>
+ <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
+From: Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+Hi Andrew,
 
-
-On 19/03/24 21:05, Andrew Davis wrote:
-> On 3/11/24 5:44 AM, Chintan Vankar wrote:
+On 20/03/24 00:53, Andrew Lunn wrote:
+> On Tue, Mar 19, 2024 at 11:05:37PM +0530, Vaishnav Achath wrote:
+>> Hi Andrew,
 >>
->>
->> On 31/01/24 21:06, Andrew Davis wrote:
->>> On 1/31/24 4:14 AM, Chintan Vankar wrote:
->>>> Add alias for the MCU CPSW2G port to enable Linux to fetch MAC Address
->>>> for the port directly from U-Boot.
+>> On 19/03/24 17:55, Andrew Lunn wrote:
+>>>> The device tree defines the SPI controller associated with mikroBUS SPI
+>>>> pins. The driver on match queries and takes a reference to the SPI
+>>>> controller but does nothing with it. Once a mikroBUS add-on board is
+>>>> detected (by passing manifest using sysfs or reading from 1-wire EEPROM),
+>>>> the driver parses the manifest, and if it detects an SPI device in manifest,
+>>>> it registers SPI device along with setting properties such as `chip_select`,
+>>>> `max_speed_hz`, `mode`, etc.,
 >>>
->>> Could you explain *how* this alias allows Linux to fetch a MAC
->>> address from U-Boot? Sounds like we are doing something hacky here..
+>>> How complex can the description of the hardware be in the manifest?
 >>>
->> Using "probe_daughtercards()" function U-Boot parses MAC addresses from
->> EEPROM, then it internally calls "eth_env_set_enetaddr_by_index()"
->> function which stores these MAC addresses into environment variables
->> ethaddr, eth1addr, eth2addr and so on based on number of ports.
+>>> Could i describe an SPI to I2C converter? And then a few temperature
+>>> sensors, a fan controller, and a GPIO controller on that I2C bus? And
+>>> the GPIO controller is then used for LEDs and a push button? DT
+>>> overlays could describe that. Can the manifest?
 >>
->> U-Boot loads DTB during boot process, and it calls
->> "fdt_fixup_ethernet()" function, which uses environment variables to
->> update MAC addresses of ethernet ports as specified in the aliases
->> section.
->>
+>> No, it cannot describe such complex hardware, it can only describe simple
+>> devices (sensors/displays .etc) on a standard mikroBUS add-on board, we did
+>> a analysis on what mikroBUS add-on boards have driver support in Linux and
+>> then noticed that most devices does not need this kind of complex
+>> description to work:
+>> https://elinux.org/MikroEClicks_with_Linux_Support
 > 
-> So maybe a better question would by why does it need to use aliases
-> for this?
+> Is that because the current software support is too limited? Are there
+> manufactures who want to create more complex designed, but are limited
+> by what can be described in the manifest?
 > 
 
-Since "probe_daughtercards()" in U-Boot is implemented in a way that
-it gets the MAC addresses fromm EEPROM and "fdt_fixup_ethernet()"
-function configures MAC addresses for the ethernet ports as specified
-in aliases section.
+most mikroBUS add-on boards in production lies in the category of 
+sensors, displays, connectivity, mixed signal (ADC/DAC .etc) and if you 
+look at the existing bindings under bindings/iio/ , most devices need 
+only simple descriptions and the properties are mainly standard bus 
+properties (SPI/I2C properties), IRQ, named-gpios, named properties, 
+regulators, clocks the extension to manifest was made taking this into 
+account and the named property description interface just maps the 
+manifest entries to the unified device property interface under 
+include/linux/property.h
 
->>> Why can't Linux fetch the MAC from efuses the same way U-Boot does,
->>
->> Linux can fetch the MAC address from efuses if "ti,syscon-efuse"
->> property is enabled.
->>
-> 
-> Then let's do it this way always.
-> 
-Yes, Linux reads MAC addresses from efuse this way only, but the
-functionality of Linux getting the MAC addresses from EEPROM is
-not implemented.
-
->>> what happens if I don't use U-Boot to boot?
->>
->> If you don't use U-Boot to boot then the equivalent of
->> "probe_daughtercards()" has to be implemented which is currently
->> missing.
->>
-> 
-> Or we just let Linux fetch it instead of implementing that function
-> in all the possible bootloaders. This would also remove a DTB fixup.
-> Those fixups should be avoided if at all possible.
+> Do you have a list of boards without Linux support? Why do they not
+> have Linux support? Is there a "vendor crap" driver which makes them
+> work? Does it make them work by working around the manifest
+> limitations?
 > 
 
-Yes, we can let Linux fetch MAC addresses, but right now the Ethernet
-driver in Linux can only fetch MAC addresses from "EFUSE" and not from
-"EEPROM", and since the functionality to fetch MAC addresses from
-"EEPROM" is implemented in U-Boot we are utilizing it.
+I did the survey in 2020, close to 600 board did not have Linux support 
+and 150 board had support then, the boards which did not have Linux 
+support was mostly because there was no corresponding driver present and 
+a lot of these were similar to the 150 that had support (IIO sensors, 
+ADC, DACs .etc), there is no vendor(Example MikroElektronika) drivers 
+being maintained, so I am not sure if there are drivers working around 
+limitations of manifests , but for the 150 boards that we have tested 
+support we never had to make any changes to the underlying device 
+drivers to be supported.
 
-> Andrew
+>> The greybus manifest already is being used in the greybus susbystem for
+>> describing an interface and there are already greybus controllers (SPI/I2C
+>> .etc) being created according to the manifest contents, all this driver does
+>> is to extend that format to be able to instantiate devices on these buses.
 > 
->>>
->>> Andrew
->>>
->>>> ---
->>>>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 1 +
->>>>   1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts 
->>>> b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> index f34b92acc56d..b74f7d3025de 100644
->>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> @@ -27,6 +27,7 @@ aliases {
->>>>           mmc1 = &main_sdhci1;
->>>>           i2c0 = &wkup_i2c0;
->>>>           i2c3 = &main_i2c0;
->>>> +        ethernet0 = &mcu_cpsw_port1;
->>>>       };
->>>>       memory@80000000 {
+> I don't know anything about greybus, so let me ask a few background
+> questions. Are these SPI and I2C controller plain Linux SPI and I2C
+> controllers? They fit the usual device model, they appear in
+> /sys/class/bus etc? Are the GPIO controllers also just plain Linux
+> GPIO controllers? All the drivers have a bottom interface which uses
+> greybus to perform some sort of RPC, but the top interface is standard
+> Linux. So in fact they are not so different to I2C over USB, SPI over
+> USB, GPIO over USB?
+
+They are very similar and all the details you mentioned are correct, I 
+will provide some comments on the DT proposal you made and why we could 
+not implement that approach initially, primarily it is because PCIe and 
+USB has OF device tree support and USB interface nodes are children of 
+USB device nodes and there is some hardware parent we can tie USB 
+interface to and share/derive the of_node, but in case of greybus we 
+could not find such mapping - looking at your proposal that is more 
+maintainable in the long term, have some doubts regarding the proposal 
+will post in the other thread.
+
+Thanks and Regards,
+Vaishnav
+
+> 
+>       Andrew
 
