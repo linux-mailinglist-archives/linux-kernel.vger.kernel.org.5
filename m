@@ -1,249 +1,606 @@
-Return-Path: <linux-kernel+bounces-110072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 467FF8859A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:09:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A500C8858F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B744D2827B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:09:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3CEB2275F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2FF484A4A;
-	Thu, 21 Mar 2024 13:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B02A762FA;
+	Thu, 21 Mar 2024 12:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="lC0zz9I5"
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="NW+GZeoH"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D89E84A2C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.178.238
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711026529; cv=fail; b=WpUZS5R5HOh55sC+DgO5laWXfibbXw3PUCgxygS9rb4gaeNbwfijhNa6KipkB6D6BsSp2FHlJ3lhWVzZgmYC8wDYfo1IJJcj0/RQogX+r8krhFr62+dTQBKmpAWni3muzzwCcW8W5ejhJMghOdwjCR3McwRK63dH8M3qlJehfo8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711026529; c=relaxed/simple;
-	bh=dLcEcDtj53+NNrH34WPraAjd6UBsG4Ktx7SvbdwuAv0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=j3+WaLQjufpp9f/vjxfvt6b5k3N3E//eL6mq4FjGAjtVZdmJ4ZX9NzHlW4W5Mj9pQZfQpLPMdz0pf43f0XMAzh+thx/EFpGroflAmi69IuHZFysq6vito1+W0LS7L59V5EF9OOpAotwEgNu5n/6sSUfUlytTUtUl0QTp/qg/MSc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=lC0zz9I5; arc=fail smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42L6omad000532;
-	Thu, 21 Mar 2024 12:20:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:references:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=
-	PPS06212021; bh=rOCowNz8cBqADztTcjL/Zxd57OetXnTY7MO1ZT7fxH8=; b=
-	lC0zz9I5n1+fUiCx3AeFqInNvGw71XSLFUbpTWBPsVaFQ5Ns+mPPozghAszJdY0M
-	ppAeKfWca9DEEPJuwxUD/RkvL52z06mwLvSA8798JS6TwaXmZKomcp/TxQ1M2qup
-	t2MiFo3m6RrCNjLAvUkYCmJW6x3huUoGV3upMgEsGA3z6d1LYZayD76cgTBs+Hm3
-	9ueGGy7Su8QjAgOl+zCR5LUOrv8t6cdc7IZL9BOSGW9a2D3RauiQpVIBgqVmjOqT
-	f4C6Lh+Pgc5MnIini0KMr5KPGIMG18YyKEVmoNW5RVv2eNcuOrsYFQ8AFcqXP5V4
-	Pd0Ie5ZQUUinqVTC2euzAQ==
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ww2d6n0vs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 12:20:46 +0000 (GMT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CTBBzoonyHC1mileI0AVW2dkJtCi8EI0LWdIbUEFp6+/CUJ7lrDbIGaDK3m5Bb71zpgRA+tqzKfRC/yzfr+eMidMJImiWFn2U4SCJQl+SDvwUpSNdN4+4FMALbemFTBlKEC34HZMvkMWxhPQYdlsvOQZDZZYgs5XJKAf7OZNjMGxFPreOQKIPZSQRPrQiwXu9g0S0AOECLQhGc/vmCCrSlT1Y1EnT1NdERSqvv2cCphDodPSDNc6rcvMiSeG08iejQWmDRr7foHSN7sOn/oa7ILEpGtUKxW00twjmZV7ifIm9RuHSLKt91tPaIkrYsYBy498QU4+CbMhgCLJYGIIDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rOCowNz8cBqADztTcjL/Zxd57OetXnTY7MO1ZT7fxH8=;
- b=BIaI31n3Hka1Yvw9vXXEFMLiYCg0G3QPvxBO2rqRbDpsYwB4IbB5RZTvjrMM0IaJMm6OFBFvZNbaAaZlJuWKCxfNwiM/OO+UltP7Yj9TPtaLrQD8lHmsKbJZtkwsewoq5jYOTr9wVqs6Oc6MHvH0Eb9WNWa3rMVUIleQHXj9sYYoQd3XQpRXCoSJaqfs4xQ0eXPlLjT7U/Lc/ir+VMqH5Nye0JReiJCZFm2sBmo9okxqP2rU2TiAHD6EJ3L3lNvK5zf81nh/Ji4YtozLM5pXZubbP/cXjL4jdiQxnD0vGmkUjSiyP9oaNVmTrXrcVWkpSDGIctmwhza3KetR/j6tjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from PH0PR11MB5192.namprd11.prod.outlook.com (2603:10b6:510:3b::9)
- by DS0PR11MB7458.namprd11.prod.outlook.com (2603:10b6:8:145::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Thu, 21 Mar
- 2024 12:20:42 +0000
-Received: from PH0PR11MB5192.namprd11.prod.outlook.com
- ([fe80::8cb4:86ac:461a:d683]) by PH0PR11MB5192.namprd11.prod.outlook.com
- ([fe80::8cb4:86ac:461a:d683%4]) with mapi id 15.20.7409.022; Thu, 21 Mar 2024
- 12:20:39 +0000
-From: "Song, Xiongwei" <Xiongwei.Song@windriver.com>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>, "cl@linux.com" <cl@linux.com>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "rientjes@google.com"
-	<rientjes@google.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz"
-	<vbabka@suse.cz>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>
-CC: "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "xiujianfeng@huawei.com"
-	<xiujianfeng@huawei.com>
-Subject: RE: [PATCH -next] mm/slub: remove dummy slabinfo functions
-Thread-Topic: [PATCH -next] mm/slub: remove dummy slabinfo functions
-Thread-Index: AQHae2zR49nd4JIODEC+LaQAnyvx1LFCHC3A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F7E224F2
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711023645; cv=none; b=O/A7kPOHKPP4YWBuqZ5KQLddd0iuvtSj8cDlH9TzdinOeZtBJdR3cYNEzdmewFzSQkoeMXJ4jMGQlWej+ypMRnsvYooXcInb3/OH6hNFXMiw2wcRsA343NdnWEwZOg0kxhjoPdHiSgcdv7AjtcDnEIXDpuVJNtxbK9DlGG7Txbs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711023645; c=relaxed/simple;
+	bh=z7LDdfllwJu48JaZ/Nej+e7s/IT8dLpUv6vXI1KXRW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gGclxkkkdVTvBw82LPRLFPYwp7QFZW2p4/9OhOGdDQvpRaXqS0p2xpeXadcXDY1LrFSMembmQaPkAbgJU6YNcwZnWmwlwNvaqxFrWC8c1UO6K97wwjG0WgRDaYdPQ98RdnQbF0IWn4+xpdEnVem42wkW5gUvwPU3wtonrFjo3Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=NW+GZeoH; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4146e9eadfaso6389925e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 05:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1711023641; x=1711628441; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xkT9rhjSnIvGD86mWzv33h0PkVQc3TF175cE9CIKu4c=;
+        b=NW+GZeoHxWPGcPYTEwPygU8R9Y7GzAeuC+P+Bmr26mZvQHT9ulYINaX4X9o4Ei3i4Z
+         UoYxzllNSMkMzOXPoF2jyF0c5fp/lQg0uBcqeAoC94R4cBY5/r9DR4rRWJWHm+XLGJjB
+         /7N+frqOFGAcZH5DzhDuRY5tCawFSt/9H5T8l0xO5svkF8h81+moZyBNFiQ/4Ryw51uQ
+         jiLmQBbR4uJxTbJqDAXWEZhMUC/fWYehlyd8IVwCzMLvqxfV1wr2GyNSkn6VpnuI08N3
+         PUbe11Qlq8nMKKTVmgPx6/vClB/TdwczsnLrKmUM+JVc85ey1r8uKFUbyd9Q49tKxcqy
+         5gmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711023641; x=1711628441;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xkT9rhjSnIvGD86mWzv33h0PkVQc3TF175cE9CIKu4c=;
+        b=rn7xfucYKFWdkbgGa81s5N8An5WganitDgX2v0HRUvBKE4jxW6lu/8mXANLR22VzEO
+         AMyB5LS7h81A4zbEScozLk7Dc3zb6UrCfjTe3rSAfr4g09u5Or5Qi3bXkx12/o43yVFm
+         t1yg16bdTzJ74MWzF4lCWSJu3QAKkPNE7FQNhPOylVHQCy+iX8sBxnCZ3Uct0x7L1TpS
+         q99yzvikKVvllNrUjMxnbx35aNmdOLfJgAPh9ss/2C3qX1rHBWrdmai6IybZaTYRfOAo
+         syOI5LHl/AVeKSje+m9rOQ+H26HztAxHnxZLjaqrtBZh741hseOhHfUe7AUbC1otH1yk
+         Q8Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCX7V3TK0dHZJSKTeNrkDlH0+CPfecbDLMpdn99Ccj1WfFezc0BWqo2+gonz6DMAWXEr+CUenb1zf56mXl7n88zJsOCZ0KihdbArY74k
+X-Gm-Message-State: AOJu0Yx/W9bDal82l1h6tn25KdJsdrz93XNjCMe+NMCh2mcVThbq/i3Q
+	KzlpionvXxYPnxUKrCPVsijUJcn2aXNSYEfXvXu/F8I7UJSLK57lJkH/x3F7mdQ=
+X-Google-Smtp-Source: AGHT+IHmMVmlqsSK4TLXXcmzZvH4LX+tgd9+MIRj5i5/5UISfx2wxl+m8i9Bb/pir8kpc6qTyxqj/g==
+X-Received: by 2002:a05:600c:2116:b0:413:1741:28b5 with SMTP id u22-20020a05600c211600b00413174128b5mr6024252wml.9.1711023641234;
+        Thu, 21 Mar 2024 05:20:41 -0700 (PDT)
+Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
+        by smtp.gmail.com with ESMTPSA id l5-20020a05600c1d0500b004146a1bf590sm5460721wms.32.2024.03.21.05.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 05:20:40 -0700 (PDT)
 Date: Thu, 21 Mar 2024 12:20:39 +0000
-Message-ID: 
- <PH0PR11MB51924AC8A58ABB22B8015296EC322@PH0PR11MB5192.namprd11.prod.outlook.com>
-References: <20240321084415.265643-1-xiujianfeng@huaweicloud.com>
-In-Reply-To: <20240321084415.265643-1-xiujianfeng@huaweicloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR11MB5192:EE_|DS0PR11MB7458:EE_
-x-ms-office365-filtering-correlation-id: 0c87ae28-2f0d-4b7b-742c-08dc49a151f3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- 4kzCHz733bldCHTkSX6buTs0PIkl21zxOnoPRC53c+6rBG1WFBqZydGw7HZI/Sp31c+Gd9uvnmdWgUXBLbSaPsMVTneoacNavxF5BptMgsT4iaEtjrEClFuiMsA0o8Ln0faynEFqnwpj7FwP6MdEHim0BXIByetT5evne7wgtZWjG7OeWpGUwCS/bAwTNLd1KteIGTRnRGo4X5WicOVKZrUR4w6CVi2AQiX/weXNl+9sm0cqnU4M5uHMylTFuwMu0jghzJuMHCNlQK3VHVPJhye/oaoAaPJdjVNrYKFRINNhYRzFgVBfwXBkO8N5kIb11lTF4b38NHRAysKyQFIlq/HdaeqtQG66zfw/089oeTO5fPpRPuadlh6qxcCkEMuSywKsl7m5zlcQz/4UjGbMKo/rMq2peUPMPLs4rsNlq7EPYZg6VDYtm2YfkBSqPQvVkG+Dnfhd1MAO89S3oKG+fmwEJA75QlwEqo3WT1cy66WflG3idp5IMYLHNNvJGZK9nUZoDVon48wQkR7zvWB9ZiQhPD3BTfLmroGoJvl/ZqgsRrzrhZuLPvNcVpqFrfD7Ne6hSa4n7FNeGxgD8wQZwFYP2DfNkp5uTEc1juiVrXFfSN9EYUHtpup/FqfH1xgz44zI4MAPu0JOHso0AUlisEa/YivXLLTXwO3hxBkP3T4EhwWJh8xQngvh9ihPtl5g8YMVqrpx5PrAnF9P95TvVnnuuZ4RBrPbJDmQP+/rgeQ=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5192.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?HiGgwaCSlXfDfY+w0Eq7osQV9CZmZq0ZfF/fmmXJBUSvMxaGYxLckvphjojj?=
- =?us-ascii?Q?GqyEQn7l7Di9Dbm3DxyvTGvi+HhAqLUPKD1uGo/gJX3glIBh/dU7aXKx1tLO?=
- =?us-ascii?Q?VyjhBzOrwMBR7tYgB4moEwZOWjDv+MgAwQtQr1pZl+Fxoko/zHADjWfra5rK?=
- =?us-ascii?Q?l6Y7R6rdKMwY+z5k2LmPI0ftm7tE+DdOWVWgt7mnv6Jvw2FGceuwLLkmIKAe?=
- =?us-ascii?Q?syAQ9IPoBpQN/85mEZAOdTVeQD7mqjXuPzcqR5xyuUDjiof+Ks6JO5W2F/1F?=
- =?us-ascii?Q?3UX4eO54O80F/PwtnOD+plv8d91o7bA2r3n+r27KjjryPuGRVAiPofgwBQvi?=
- =?us-ascii?Q?Mh8Q19oZ5S1kGDBNqIEznvJg/zOSSL/n37Ld9oayPUM8yfVVmdHy2625ro/w?=
- =?us-ascii?Q?TaF0Zrys+xzSqJMDCOVc2Zldca+b2rrhUt2yZsv2d71QZZsqcgSmpHQobyIc?=
- =?us-ascii?Q?0lPYicqBmgViCQT31TDCy23j+yh2GQ78sWCcDIeW40XJARNkyX59yaj2DgQr?=
- =?us-ascii?Q?EI4lYsh0huiNBY/K+m0UGNBOahumGCJY9W6bat/7D3hU/sPA/nYUYDH/g9Ek?=
- =?us-ascii?Q?fkr1P6PaXWNyYYa7R2jRcHiHbA88tFaCFOCB3C9MnPK5q9AHyzY1KWqGhUY2?=
- =?us-ascii?Q?rpamc0XVgr0K5u0ZHEuLdjhb0jCUjJ3r1RnkiqlpHPAN12bj8jfzdDLVTN7l?=
- =?us-ascii?Q?iFOrc5B4wHTqeV+G/LWmDVfPb46SsVq3XVEcjfoMbYQghmQhnRfEn1olwHWB?=
- =?us-ascii?Q?fiJSzngxBgF9vUnF4Yhs3DciIfqR5mSS84E4LC9AQpr4mYz8DtnQt9dhR5o3?=
- =?us-ascii?Q?tdkD2266MuRJz7IM82Khm1VJ/oY5VmTYFFzig1FDvc0g9i7c0KFiiY7W918J?=
- =?us-ascii?Q?KINw0HZto9/moi8xGxDLnxLZZyeJ9SrfQ3dpzW9y9yu534052P0fU5n5141D?=
- =?us-ascii?Q?mx2Pwv03DxIXQvWDl8v5l8xOLT7AdUHaDiE/epFysBKduHN4ysPS4lUgVJ3/?=
- =?us-ascii?Q?GHbhtCCA/sZeM/m8TGPhWsiXngtNHf0UaSgXgeRywdgL285xLLD8PUSj0fpe?=
- =?us-ascii?Q?LCWlNTaT2+1HW+iQ8RtCdjfBMXQM52EDwqAmpZFuh/3o1wiNtjvn5yjg1jcm?=
- =?us-ascii?Q?RymPtckI91mpxVCDOqDrkMJvpApe3aU94/agYo5RwG2C6h7dfN2deoJX/lAa?=
- =?us-ascii?Q?6glFwp4QwHhW+1ulXgtIVme0s9eXBfYklGNNUe9tEZ3CVogjqRiyFauZ/Zq0?=
- =?us-ascii?Q?SFtA/OAh92SsPcMUuWmC9pqHawiQstZGxOiZxuYmwj5s3W7MW7xz9OukM6YS?=
- =?us-ascii?Q?pVIMPv5y9G/yya5FC0W2uLlZnDkjJljfteJEHgGOh/2Kme9wNTFNpzanEfIm?=
- =?us-ascii?Q?/3M8a6bmKZEOB83WJH1ruI2cDPObM/ZHTgkP/BzY5tqLqp5rB+n+ufq1zwDZ?=
- =?us-ascii?Q?fCr1nF1V11K4M2EVwwhi63PfLWUUcpwBsmq34SGRs3VjE5/6MB8JC28zsS2q?=
- =?us-ascii?Q?IvIq27HRQ9pz+SDJbp2/kcG41jNUruFpPGCgWtQ3Ea8OjGohDqTjVMzNYbLd?=
- =?us-ascii?Q?qlKl5OezoqSNRB4yAmqLC/dIEpIErH3glivOXPC7AC0qQnnH2PuwmoCxIb7/?=
- =?us-ascii?Q?yw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: Qais Yousef <qyousef@layalina.io>
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Message-ID: <20240321122039.7gk2mc3syvkrvhjz@airbuntu>
+References: <20240220225622.2626569-1-qyousef@layalina.io>
+ <20240220225622.2626569-3-qyousef@layalina.io>
+ <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
+ <20240303174416.7m3gv5wywcmedov4@airbuntu>
+ <20240306214704.uditboboedut2lm2@airbuntu>
+ <CAKfTPtBLUkZ0hEd8K=e9wjg+zn9N5jgia-7wwLa3jaeYK+qkCw@mail.gmail.com>
+ <20240307103527.y5zrnkjvwoqhtyll@airbuntu>
+ <c39352f3-6018-49c5-b413-b8da1b601d65@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5192.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c87ae28-2f0d-4b7b-742c-08dc49a151f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 12:20:39.3042
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: khHHCmhC+J94QE2DWkxQV0x5xZiNiyimyxzxA30V1I+Lx1bToyfQFabpvoik9oRN25IU1h0vq47PKaZPoDCgEkqveZ+AmUIIif4ahdt4miw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7458
-X-Proofpoint-GUID: lVY5Qkp8LwdW4dn-AqR-AprlqgkIE15B
-X-Proofpoint-ORIG-GUID: lVY5Qkp8LwdW4dn-AqR-AprlqgkIE15B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1011 mlxlogscore=999
- impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403210086
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c39352f3-6018-49c5-b413-b8da1b601d65@arm.com>
+
+On 03/07/24 18:54, Dietmar Eggemann wrote:
+> On 07/03/2024 11:35, Qais Yousef wrote:
+> > On 03/07/24 10:14, Vincent Guittot wrote:
+> >> On Wed, 6 Mar 2024 at 22:47, Qais Yousef <qyousef@layalina.io> wrote:
+> >>>
+> >>> On 03/03/24 17:44, Qais Yousef wrote:
+> >>>
+> >>>>       diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>>>       index 174687252e1a..b0e60a565945 100644
+> >>>>       --- a/kernel/sched/fair.c
+> >>>>       +++ b/kernel/sched/fair.c
+> >>>>       @@ -8260,6 +8260,8 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
+> >>>>                       cpumask_t *cpumask;
+> >>>>
+> >>>>                       cpumask = cpu_capacity_span(entry);
+> >>>>       +               if (!cpumask_intersects(cpu_active_mask, cpumask))
+> >>>>       +                       continue;
+> >>>>                       if (!cpumask_intersects(p->cpus_ptr, cpumask))
+> >>>>                               continue;
+> >>>>
+> >>>>       @@ -8269,6 +8271,53 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
+> >>>>               rcu_read_unlock();
+> >>>>        }
+> >>>>
+> >>>>       +static void __update_tasks_max_allowed_capacity(unsigned long capacity)
+> >>>>       +{
+> >>>>       +       struct task_struct *g, *p;
+> >>>>       +
+> >>>>       +       for_each_process_thread(g, p) {
+> >>>>       +               if (fair_policy(p->policy) && p->max_allowed_capacity == capacity)
+> >>>
+> >>> This condition actually not good enough. We need to differentiate between going
+> >>> online/offline. I didn't want to call set_task_max_allowed_capacity()
+> >>> unconditionally and make hotplug even slower.
+> >>
+> >> But should we even try to fix this ? hotplugging a cpu is a special
+> >> case and with patch 4 you will not increase lb_interval anymore
+> > 
+> > I don't care to be honest and this was my first reaction, but I couldn't ignore
+> > the report.
+> 
+> Seeing a 'max_allowed_capacity' on the task which is not achievable
+> anymore due to CPU hp will still cause MF activity. So it's a special
+> case but CPU hp is part of mainline ... ?
+
+We shouldn't leave anything broken for sure. What's the failure mode you're
+worrying about? The side effect is that we'll do unnecessary misfit load
+balance. The biggest impact I see is that if we have true imbalance, then
+because misfit_lb type is more important of other ones then we can end up
+delaying the other type of lb. But we won't drive the balance_interval etc high
+anymore.
+
+> 
+> > I will need to do something to handle the dynamic EM changing capacities anyway
+> > after 6.9 merge window. Or maybe now; I still haven't thought about it. I am
+> 
+> Do you think about the case that the reloadable EM contains a
+> 'table[ highest OPP].performance' value which is different to
+> arch_scale_cpu_capacity()?
+
+Yeah, this is supported right?
+
+> 
+> Can we reject those EM reloads to avoid this mismatch?
+
+This would defeat the purpose of updating the EM though?
+
+> 
+> > hoping I can trigger the update somewhere from the topology code. Maybe that
+> > work will make handling hotplug easier than the approach I've taken now on
+> > rq_online/offline.
+> > 
+> > FWIW, I have a working patch that solves the problem. The only drawback is that
+> > rq_online/offline() are not only called from sched_cpu_activate/deactivate()
+> > path but from build_sched_domains() path which for some reasons ends up calling
+> > rq_offline/online() for each cpu in the map.  To be even more efficient I need
+> 
+> This can be avoided IMHO when you do this only for 'cpu_of(rq) ==
+> smp_processor_id()'.
+
+It feels hacky, but probably the more straightforward way to do it. I was
+thinking we can refactor to be more specific when rq_offline() is done due to
+hotplug or not.
+
+> 
+> For off-lining there will be only one such call to rq_offline_fair()
+> (from sched_cpu_deactivate()) but for on-lining there are still 2 such
+> calls to rq_online_fair() (from sched_cpu_activate() and rq_attach_root()).
+> 
+> > to teach rq_offline/online() to differentiate between the two. Or refactor the
+> > code. Which if you don't think it's important too I'd be happy to drop this and
+> > replace it with a comment to see if someone cares. Only testing and dev could
+> > end up using hotplug; so there could be a difference in behavior in regards how
+> > often misfit migration can kick. But as you said hopefully with these fixes
+> > it'd just end up being unnecessary work. The only potential problem maybe is
+> > that misfit lb has a precedence over other types of lb types; so we could
+> > end up delaying load imbalance if there's a pointless misfit lb?
+> > 
+> > I'm happy to follow the crowd. But it'd be nice if this series can be made
+> > mergeable with follow up work. It'd make life much easier for me.
+> 
+> Or is the plan to only go with '[PATCH v6 4/4] sched/fair: Don't double
+> balance_interval for migrate_misfit' ?
+
+Yeah I think this is enough as hotplug operations to make a whole capacity
+level disappear is not a normal operation even during testing and development
+which. Systems with a single big core could easily lead to this situation, but
+if someone is testing with this, then the perf impact of losing this whole
+capacity level is more impactful than the minor sub optimality we have here.
+Load balance should not be delayed, but could kick off unnecessarily.
+
+I think we can skip the handling unless someone comes up with a stronger reason
+to care, but for the record here's a working patch. Unless I hear strong
+opinions it is worth it, I'll send v8 to address your other comments.
 
 
+Thanks!
 
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
->=20
-> Slab has been removed since 6.5, so there is no other versions of
+--
+Qais Yousef
 
-Removed since 6.8. The changes looks good.
 
-Regards,
-Xiongwei
+--->8---
 
-> slabinfo_show_stats() and slabinfo_write(), then we can remove these
-> two dummy functions.
->=20
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  mm/slab.h        |  3 ---
->  mm/slab_common.c |  2 --
->  mm/slub.c        | 10 ----------
->  3 files changed, 15 deletions(-)
->=20
-> diff --git a/mm/slab.h b/mm/slab.h
-> index d2bc9b191222..78e205b46e19 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -496,9 +496,6 @@ struct slabinfo {
->  };
->=20
->  void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo);
-> -void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
-> -ssize_t slabinfo_write(struct file *file, const char __user *buffer,
-> -                      size_t count, loff_t *ppos);
->=20
->  #ifdef CONFIG_SLUB_DEBUG
->  #ifdef CONFIG_SLUB_DEBUG_ON
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f5234672f03c..67c03d6bd26c 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1078,7 +1078,6 @@ static void cache_show(struct kmem_cache *s, struct=
- seq_file *m)
->                    sinfo.limit, sinfo.batchcount, sinfo.shared);
->         seq_printf(m, " : slabdata %6lu %6lu %6lu",
->                    sinfo.active_slabs, sinfo.num_slabs, sinfo.shared_avai=
-l);
-> -       slabinfo_show_stats(m, s);
->         seq_putc(m, '\n');
->  }
->=20
-> @@ -1155,7 +1154,6 @@ static const struct proc_ops slabinfo_proc_ops =3D =
-{
->         .proc_flags     =3D PROC_ENTRY_PERMANENT,
->         .proc_open      =3D slabinfo_open,
->         .proc_read      =3D seq_read,
-> -       .proc_write     =3D slabinfo_write,
->         .proc_lseek     =3D seq_lseek,
->         .proc_release   =3D seq_release,
->  };
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 1bb2a93cf7b6..cc7e68fbdbba 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -7099,14 +7099,4 @@ void get_slabinfo(struct kmem_cache *s, struct sla=
-binfo *sinfo)
->         sinfo->objects_per_slab =3D oo_objects(s->oo);
->         sinfo->cache_order =3D oo_order(s->oo);
->  }
-> -
-> -void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s)
-> -{
-> -}
-> -
-> -ssize_t slabinfo_write(struct file *file, const char __user *buffer,
-> -                      size_t count, loff_t *ppos)
-> -{
-> -       return -EIO;
-> -}
->  #endif /* CONFIG_SLUB_DEBUG */
-> --
-> 2.34.1
->=20
+
+From b350e1abd7006873336c35005adfa6b3d8c807bf Mon Sep 17 00:00:00 2001
+From: Qais Yousef <qyousef@layalina.io>
+Date: Mon, 5 Feb 2024 02:08:25 +0000
+Subject: [PATCH 2/4] sched/fair: Check a task has a fitting cpu when updating
+ misfit
+
+If a misfit task is affined to a subset of the possible cpus, we need to
+verify that one of these cpus can fit it. Otherwise the load balancer
+code will continuously trigger needlessly leading the balance_interval
+to increase in return and eventually end up with a situation where real
+imbalances take a long time to address because of this impossible
+imbalance situation.
+
+This can happen in Android world where it's common for background tasks
+to be restricted to little cores.
+
+Similarly if we can't fit the biggest core, triggering misfit is
+pointless as it is the best we can ever get on this system.
+
+To be able to detect that; we use asym_cap_list to iterate through
+capacities in the system to see if the task is able to run at a higher
+capacity level based on its p->cpus_ptr. We do that when the affinity
+change, a fair task is forked, or when a task switched to fair policy.
+We store the max_allowed_capacity in task_struct to allow for cheap
+comparison in the fast path.
+
+If cpu hotplug causes a capacity level to disappear, we will update the
+max_allowed_capacity accordingly.
+
+Improve check_misfit_status() function by removing redundant checks.
+misfit_task_load will be 0 if the task can't move to a bigger CPU. And
+nohz_balancer_kick() already checks for cpu_check_capacity() before
+calling check_misfit_status().
+
+Test:
+=====
+
+Add
+
+	trace_printk("balance_interval = %lu\n", interval)
+
+in get_sd_balance_interval().
+
+run
+	if [ "$MASK" != "0" ]; then
+		adb shell "taskset -a $MASK cat /dev/zero > /dev/null"
+	fi
+	sleep 10
+	// parse ftrace buffer counting the occurrence of each valaue
+
+Where MASK is either:
+
+	* 0: no busy task running
+	* 1: busy task is pinned to 1 cpu; handled today to not cause
+	  misfit
+	* f: busy task pinned to little cores, simulates busy background
+	  task, demonstrates the problem to be fixed
+
+Results:
+========
+
+Note how occurrence of balance_interval = 128 overshoots for MASK = f.
+
+BEFORE
+------
+
+	MASK=0
+
+		   1 balance_interval = 175
+		 120 balance_interval = 128
+		 846 balance_interval = 64
+		  55 balance_interval = 63
+		 215 balance_interval = 32
+		   2 balance_interval = 31
+		   2 balance_interval = 16
+		   4 balance_interval = 8
+		1870 balance_interval = 4
+		  65 balance_interval = 2
+
+	MASK=1
+
+		  27 balance_interval = 175
+		  37 balance_interval = 127
+		 840 balance_interval = 64
+		 167 balance_interval = 63
+		 449 balance_interval = 32
+		  84 balance_interval = 31
+		 304 balance_interval = 16
+		1156 balance_interval = 8
+		2781 balance_interval = 4
+		 428 balance_interval = 2
+
+	MASK=f
+
+		   1 balance_interval = 175
+		1328 balance_interval = 128
+		  44 balance_interval = 64
+		 101 balance_interval = 63
+		  25 balance_interval = 32
+		   5 balance_interval = 31
+		  23 balance_interval = 16
+		  23 balance_interval = 8
+		4306 balance_interval = 4
+		 177 balance_interval = 2
+
+AFTER
+-----
+
+Note how the high values almost disappear for all MASK values. The
+system has background tasks that could trigger the problem without
+simulate it even with MASK=0.
+
+	MASK=0
+
+		 103 balance_interval = 63
+		  19 balance_interval = 31
+		 194 balance_interval = 8
+		4827 balance_interval = 4
+		 179 balance_interval = 2
+
+	MASK=1
+
+		 131 balance_interval = 63
+		   1 balance_interval = 31
+		  87 balance_interval = 8
+		3600 balance_interval = 4
+		   7 balance_interval = 2
+
+	MASK=f
+
+		   8 balance_interval = 127
+		 182 balance_interval = 63
+		   3 balance_interval = 31
+		   9 balance_interval = 16
+		 415 balance_interval = 8
+		3415 balance_interval = 4
+		  21 balance_interval = 2
+
+Signed-off-by: Qais Yousef <qyousef@layalina.io>
+---
+ include/linux/sched.h |   1 +
+ init/init_task.c      |   1 +
+ kernel/sched/fair.c   | 134 +++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 120 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index ffe8f618ab86..774cddbeab09 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -835,6 +835,7 @@ struct task_struct {
+ #endif
+ 
+ 	unsigned int			policy;
++	unsigned long			max_allowed_capacity;
+ 	int				nr_cpus_allowed;
+ 	const cpumask_t			*cpus_ptr;
+ 	cpumask_t			*user_cpus_ptr;
+diff --git a/init/init_task.c b/init/init_task.c
+index 7ecb458eb3da..b3dbab4c959e 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -77,6 +77,7 @@ struct task_struct init_task __aligned(L1_CACHE_BYTES) = {
+ 	.cpus_ptr	= &init_task.cpus_mask,
+ 	.user_cpus_ptr	= NULL,
+ 	.cpus_mask	= CPU_MASK_ALL,
++	.max_allowed_capacity	= SCHED_CAPACITY_SCALE,
+ 	.nr_cpus_allowed= NR_CPUS,
+ 	.mm		= NULL,
+ 	.active_mm	= &init_mm,
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8e30e2bb77a0..9a9ddf611ffe 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5092,15 +5092,19 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
+ 
+ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+ {
++	int cpu = cpu_of(rq);
++
+ 	if (!sched_asym_cpucap_active())
+ 		return;
+ 
+-	if (!p || p->nr_cpus_allowed == 1) {
+-		rq->misfit_task_load = 0;
+-		return;
+-	}
++	/*
++	 * Affinity allows us to go somewhere higher?  Or are we on biggest
++	 * available CPU already? Or do we fit into this CPU ?
++	 */
++	if (!p || (p->nr_cpus_allowed == 1) ||
++	    (arch_scale_cpu_capacity(cpu) == p->max_allowed_capacity) ||
++	    task_fits_cpu(p, cpu)) {
+ 
+-	if (task_fits_cpu(p, cpu_of(rq))) {
+ 		rq->misfit_task_load = 0;
+ 		return;
+ 	}
+@@ -8241,6 +8245,100 @@ static void task_dead_fair(struct task_struct *p)
+ 	remove_entity_load_avg(&p->se);
+ }
+ 
++/*
++ * Set the max capacity the task is allowed to run at for misfit detection.
++ */
++static void set_task_max_allowed_capacity(struct task_struct *p, bool hotplug)
++{
++	struct asym_cap_data *entry;
++
++	if (!hotplug && !sched_asym_cpucap_active())
++		return;
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
++		cpumask_t *cpumask;
++
++		cpumask = cpu_capacity_span(entry);
++		if (!cpumask_intersects(cpu_active_mask, cpumask))
++			continue;
++		if (!cpumask_intersects(p->cpus_ptr, cpumask))
++			continue;
++
++		p->max_allowed_capacity = entry->capacity;
++		break;
++	}
++	rcu_read_unlock();
++}
++
++static void __update_tasks_max_allowed_capacity(unsigned long capacity,
++						cpumask_t *cpumask,
++						bool online)
++{
++	struct task_struct *g, *p;
++
++	for_each_process_thread(g, p) {
++		if (p->sched_class != &fair_sched_class)
++			continue;
++
++		if (!cpumask_intersects(p->cpus_ptr, cpumask))
++			continue;
++
++		/*
++		 * Should we expand if a capacity level re-appeared?
++		 * Or should we shrink if a capacity level disappeared?
++		 */
++		if ((online && p->max_allowed_capacity < capacity) ||
++		    (!online && p->max_allowed_capacity == capacity))
++			set_task_max_allowed_capacity(p, true);
++	}
++}
++
++/*
++ * Handle a cpu going online/offline changing the available capacity levels.
++ */
++static void update_tasks_max_allowed_capacity(int cpu, bool online)
++{
++	struct asym_cap_data *entry;
++	bool do_update = false;
++	cpumask_t *cpumask;
++
++	/*
++	 * We can't check for sched_asym_cpucap_active() here as we can't
++	 * differentiate when an online operation will enable the key.
++	 */
++
++	if (cpuhp_tasks_frozen)
++		return;
++
++	rcu_read_lock();
++	/* Did a capacity level appear/disappear? */
++	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
++		unsigned int nr_active;
++
++		cpumask = cpu_capacity_span(entry);
++
++		if (!cpumask_test_cpu(cpu, cpumask))
++			continue;
++
++		nr_active = cpumask_weight_and(cpu_active_mask, cpumask);
++		if (online)
++			do_update = nr_active == 1;
++		else
++			do_update = !nr_active;
++		break;
++	}
++	if (do_update)
++		__update_tasks_max_allowed_capacity(entry->capacity, cpumask, online);
++	rcu_read_unlock();
++}
++
++static void set_cpus_allowed_fair(struct task_struct *p, struct affinity_context *ctx)
++{
++	set_cpus_allowed_common(p, ctx);
++	set_task_max_allowed_capacity(p, false);
++}
++
+ static int
+ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ {
+@@ -8249,6 +8347,8 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 
+ 	return newidle_balance(rq, rf) != 0;
+ }
++#else
++static inline void set_task_max_allowed_capacity(struct task_struct *p, bool hotplug) {}
+ #endif /* CONFIG_SMP */
+ 
+ static void set_next_buddy(struct sched_entity *se)
+@@ -9601,16 +9701,10 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+ 				(arch_scale_cpu_capacity(cpu_of(rq)) * 100));
+ }
+ 
+-/*
+- * Check whether a rq has a misfit task and if it looks like we can actually
+- * help that task: we can migrate the task to a CPU of higher capacity, or
+- * the task's current CPU is heavily pressured.
+- */
+-static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
++/* Check if the rq has a misfit task */
++static inline bool check_misfit_status(struct rq *rq)
+ {
+-	return rq->misfit_task_load &&
+-		(arch_scale_cpu_capacity(rq->cpu) < rq->rd->max_cpu_capacity ||
+-		 check_cpu_capacity(rq, sd));
++	return rq->misfit_task_load;
+ }
+ 
+ /*
+@@ -11922,7 +12016,7 @@ static void nohz_balancer_kick(struct rq *rq)
+ 		 * When ASYM_CPUCAPACITY; see if there's a higher capacity CPU
+ 		 * to run the misfit task on.
+ 		 */
+-		if (check_misfit_status(rq, sd)) {
++		if (check_misfit_status(rq)) {
+ 			flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
+ 			goto unlock;
+ 		}
+@@ -12461,6 +12555,8 @@ static void rq_online_fair(struct rq *rq)
+ 	update_sysctl();
+ 
+ 	update_runtime_enabled(rq);
++
++	update_tasks_max_allowed_capacity(cpu_of(rq), true);
+ }
+ 
+ static void rq_offline_fair(struct rq *rq)
+@@ -12472,6 +12568,8 @@ static void rq_offline_fair(struct rq *rq)
+ 
+ 	/* Ensure that we remove rq contribution to group share: */
+ 	clear_tg_offline_cfs_rqs(rq);
++
++	update_tasks_max_allowed_capacity(cpu_of(rq), false);
+ }
+ 
+ #endif /* CONFIG_SMP */
+@@ -12645,6 +12743,8 @@ static void task_fork_fair(struct task_struct *p)
+ 	rq_lock(rq, &rf);
+ 	update_rq_clock(rq);
+ 
++	set_task_max_allowed_capacity(p, false);
++
+ 	cfs_rq = task_cfs_rq(current);
+ 	curr = cfs_rq->curr;
+ 	if (curr)
+@@ -12768,6 +12868,8 @@ static void switched_to_fair(struct rq *rq, struct task_struct *p)
+ {
+ 	attach_task_cfs_rq(p);
+ 
++	set_task_max_allowed_capacity(p, false);
++
+ 	if (task_on_rq_queued(p)) {
+ 		/*
+ 		 * We were most likely switched from sched_rt, so
+@@ -13139,7 +13241,7 @@ DEFINE_SCHED_CLASS(fair) = {
+ 	.rq_offline		= rq_offline_fair,
+ 
+ 	.task_dead		= task_dead_fair,
+-	.set_cpus_allowed	= set_cpus_allowed_common,
++	.set_cpus_allowed	= set_cpus_allowed_fair,
+ #endif
+ 
+ 	.task_tick		= task_tick_fair,
+-- 
+2.34.1
 
 
