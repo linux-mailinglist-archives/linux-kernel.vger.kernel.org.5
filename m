@@ -1,150 +1,157 @@
-Return-Path: <linux-kernel+bounces-109745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6FD5885529
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B270D88552D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24B051C20A64
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:51:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4EB1C20E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470D77828D;
-	Thu, 21 Mar 2024 07:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 889C97868C;
+	Thu, 21 Mar 2024 07:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WKmDXSHx"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OmGWHcvf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDA577F2D;
-	Thu, 21 Mar 2024 07:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BDD5914C;
+	Thu, 21 Mar 2024 07:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711007419; cv=none; b=Vgwb1X2qXEeK1ny2NU8qJrLw7j5slpP3NXWo0R2s+0lFTjNSJSGlXAtB8oTK3EGRNnqgGoqbYiPbbfPCmXhnoTLbYZadm7L6YRoIQLThcyn1uP6BWh4rTDdopXeIbRP2uVJJVgSi1MXZC8eUdReXMh68OaSDpLeQVynxtELb9sY=
+	t=1711007425; cv=none; b=uj39rPlIQMvBHXOor0SZ5FgK5zGzGCFtAaKycasUGEEoVYZEFJ60Vo3flC22iG8yCO2BT+VJwVi3rS4jWYMiyoZpnqKaOei2gaMBcyntaPddgIrZMn5VtOOJCu1ctO+SA0VzsT33+1kbb4+3+CcUFSGVuubyOYHlFYI9W2cdSNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711007419; c=relaxed/simple;
-	bh=DVHMTHd9cw8fYFLji10BJ/X3RxtwR7CoHYOkARmz740=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EuGhK9tfwJGqV9vY7bPDAduvOZ06mP5gt3w1X3Ytmn5txPK/dYJKh3enw6Al7EdZHlWyRB7FJnq+YMCbZKLfpX5HSAO80JMcfC2T/2J7ubxr8cRwp8Urwnq/fPQyP4S4EA5lqvu/+s1Sdb+vvN3QRnxhASgTXsXzxlpKgK3SXXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WKmDXSHx; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-414633f7a52so6643835e9.0;
-        Thu, 21 Mar 2024 00:50:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711007416; x=1711612216; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oMgePyPqtHXUGa3piv5tLSTW7fonCxVeBttImy15UeU=;
-        b=WKmDXSHxfAGf1M8z878XISsHFU27GtgGfK2HK5hAf+33iDw3nArWqRO8Pja+FakqnL
-         PimkPmmYapL0KdeBnjqN+A1XPlytNlcqXHBUYsiA9/L9ZrlpGV0psEUGwLbPEj0dM8VJ
-         rwxiBqUSeZMRqnxZal4HkK33vHoIwBgmC05dSJuFjJ1Edr3+sAQ4aj0CMgQL1Mz6pWSD
-         lFCrMT8/+nT+rXIwQ20ospXF64nH2WqTx9jq7Eck2JYvImuUd55TYP7XyA/oBQ8II4RX
-         n8b2Tc+J1HEkYT0gmGS78IrZNpSsM2kPVIoQK1XrrELnlraAcAz2YSqwkd3nO2n5Uafa
-         l6Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711007416; x=1711612216;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oMgePyPqtHXUGa3piv5tLSTW7fonCxVeBttImy15UeU=;
-        b=ecPa+KiI87g1A689S5MDE1lnAXNtuvhHEldAWk6zbqUg/deexvCH+9at9SMpTPiBmS
-         rWD2SQMPbAuRhHoS8RT9ADXbzX6J+naSrnbfc1rorsqiXyIkETSEWPsWhfaI/MbWbv2L
-         bufJ7XPQFLl37tUQbqVVUGHnlNdHy9AFOCKaUcFVfI80mFhX7Cjc+1GRJo1HOMUZctdO
-         6Aq5SUpRg+gWcew8jNtgUlCBtd+ZAPJ8nHfaYslDRjhjtuF7ORzmTeBzscMR2J4TS19O
-         bWW6m1D4uEA3rIgFNDO4przUmxbxyA/CRCrU4TvllDOzcRvT7OH62Mly4rgK7DOjpGBB
-         7rHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHVppMovZqx5d8C9ncBwPRyWf0QDC+VbHAzRwyln2T4W0jodEEjXCwe+FbFn6EYFkM6Lmn/2vLpCKqYzUlunX3aAI1GkO6qlyPqFsAUtKkq+rTdvcgg7aLCAhc5uzq+xH7c0A0WY/7
-X-Gm-Message-State: AOJu0YyWohmZY1KG9WeTOAOFho9La9t2PL+hEARc9+NzdgDpoQoAR0JS
-	oCDbjFee2G5X2mX55KiYZ9f3BDVEfWHAjLkcTwF8vQJhG9u0MdNUhFT2rAOh
-X-Google-Smtp-Source: AGHT+IFBxiVcxHlAt0MfenJ1sZGVg/Umm4dOVc/7FHqmtl04FBAihzW5AKA70GImVUAiAUI6QCTPhg==
-X-Received: by 2002:a05:600c:1395:b0:413:271d:8889 with SMTP id u21-20020a05600c139500b00413271d8889mr970161wmf.11.1711007416283;
-        Thu, 21 Mar 2024 00:50:16 -0700 (PDT)
-Received: from [192.168.1.253] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id p1-20020a05600c1d8100b004146bda6c32sm4637096wms.9.2024.03.21.00.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 00:50:15 -0700 (PDT)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Thu, 21 Mar 2024 08:49:59 +0100
-Subject: [PATCH v2 6/6] clk: qcom: clk-cbf-8996: use HUAYRA_APPS register
- map for cbf_pll
+	s=arc-20240116; t=1711007425; c=relaxed/simple;
+	bh=jz0FnzSzpqsMaLVsUsazaeeE2gPTKuo3vV3JKyGyhmI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lDBmcQpMIJ2iMPFJ0RwsXMRUYE3FWW3PebU0jta6Jd8LMh2DiWEbtEoxYY9GLyPMiJlIFVY4ugarUS1T1FC69PbFKROq82GMmt1anARgHqgYTqSsvncrnm0O1zldgAwDepWky8sCmB/Nudibpt474398/UI5L8i1WZrsE1DY71I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OmGWHcvf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D84C433F1;
+	Thu, 21 Mar 2024 07:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1711007424;
+	bh=jz0FnzSzpqsMaLVsUsazaeeE2gPTKuo3vV3JKyGyhmI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OmGWHcvf2B5O4nBtgvkYXiC24XKm73vjYH7lJpZWzI+HqkLZZg8lHtqfxltjaWIC1
+	 mhD7oZ9/d+73UluyADfIYRvecLPptfFXBG3eMj2/mp3L1ibZbhqLzvsRjoDjLK9tho
+	 5GEmSFNeo9QGPkFnjyItNXLCEZIcq7eRUKOWI8SM=
+Date: Thu, 21 Mar 2024 08:50:20 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com, kvalo@kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, toke@toke.dk
+Subject: Re: [PATCH usb] wifi: ath9k: fix oob in htc_issue_send
+Message-ID: <2024032107-discover-sulfide-af1d@gregkh>
+References: <0000000000004e41110614187d35@google.com>
+ <tencent_7225DC0D859205DD8BDDAE191CCFBF0D8907@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240321-apss-ipq-pll-cleanup-v2-6-201f3cf79fd4@gmail.com>
-References: <20240321-apss-ipq-pll-cleanup-v2-0-201f3cf79fd4@gmail.com>
-In-Reply-To: <20240321-apss-ipq-pll-cleanup-v2-0-201f3cf79fd4@gmail.com>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_7225DC0D859205DD8BDDAE191CCFBF0D8907@qq.com>
 
-The register map used for 'cbf_pll' is the same as the one defined for
-the CLK_ALPHA_PLL_TYPE_HUAYRA_APSS indice in the 'clk_alpha_pll_regs'
-array.
+On Thu, Mar 21, 2024 at 03:31:33PM +0800, Edward Adam Davis wrote:
+> [syzbot reported]
+> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+> ath9k_htc 1-1:1.0: ath9k_htc: HTC initialized with 33 credits
+> ------------[ cut here ]------------
+> UBSAN: array-index-out-of-bounds in drivers/net/wireless/ath/ath9k/htc_hst.c:26:51
+> index 255 is out of range for type 'htc_endpoint [22]'
+> CPU: 1 PID: 2494 Comm: kworker/1:2 Not tainted 6.8.0-rc6-syzkaller-00190-ga788e53c05ae #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+> Workqueue: events request_firmware_work_func
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+>  ubsan_epilogue lib/ubsan.c:217 [inline]
+>  __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:347
+>  htc_issue_send.constprop.0+0x209/0x230 drivers/net/wireless/ath/ath9k/htc_hst.c:26
+>  ath9k_wmi_cmd_issue drivers/net/wireless/ath/ath9k/wmi.c:305 [inline]
+>  ath9k_wmi_cmd+0x424/0x630 drivers/net/wireless/ath/ath9k/wmi.c:342
+>  ath9k_regread+0xdb/0x160 drivers/net/wireless/ath/ath9k/htc_drv_init.c:242
+>  ath9k_hw_read_revisions drivers/net/wireless/ath/ath9k/hw.c:287 [inline]
+>  __ath9k_hw_init drivers/net/wireless/ath/ath9k/hw.c:572 [inline]
+>  ath9k_hw_init+0xf02/0x2b30 drivers/net/wireless/ath/ath9k/hw.c:700
+>  ath9k_init_priv drivers/net/wireless/ath/ath9k/htc_drv_init.c:662 [inline]
+>  ath9k_init_device drivers/net/wireless/ath/ath9k/htc_drv_init.c:839 [inline]
+>  ath9k_htc_probe_device+0xb37/0x25f0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:963
+>  ath9k_htc_hw_init+0x33/0x70 drivers/net/wireless/ath/ath9k/htc_hst.c:529
+>  ath9k_hif_usb_firmware_cb+0x272/0x620 drivers/net/wireless/ath/ath9k/hif_usb.c:1273
+>  request_firmware_work_func+0x13a/0x240 drivers/base/firmware_loader/main.c:1163
+>  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+>  process_scheduled_works kernel/workqueue.c:2706 [inline]
+>  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+>  kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:243
+>  </TASK>
+> ---[ end trace ]---
+> [Fix]
+> If the target does not return a valid end point id during the device connection
+> process, returns a failure.
+> 
+> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
+> Reported-and-tested-by: syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+> index eb631fd3336d..0d1115d1cc29 100644
+> --- a/drivers/net/wireless/ath/ath9k/htc_hst.c
+> +++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+> @@ -295,6 +295,9 @@ int htc_connect_service(struct htc_target *target,
+>  	}
+>  
+>  	*conn_rsp_epid = target->conn_rsp_epid;
+> +	if (*conn_rsp_epid < 0 || *conn_rsp_epid > ENDPOINT_MAX)
+> +		return -EINVAL;
+> +
+>  	return 0;
+>  err:
+>  	kfree_skb(skb);
+> -- 
+> 2.43.0
+> 
+> 
 
-Drop the local register map and use the global one instead to reduce
-code duplication.
+Hi,
 
-No functional changes intended. Compile tested only.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-Changes since v1:
-  - new patch
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Note: Although this patch is not strictly related to the subject of the
-series but as the change has been suggested by Dmitry during the review
-process it has been added here for completeness.
----
- drivers/clk/qcom/clk-cbf-8996.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
 
-diff --git a/drivers/clk/qcom/clk-cbf-8996.c b/drivers/clk/qcom/clk-cbf-8996.c
-index fe24b4abeab48..76bf523431b85 100644
---- a/drivers/clk/qcom/clk-cbf-8996.c
-+++ b/drivers/clk/qcom/clk-cbf-8996.c
-@@ -41,17 +41,6 @@ enum {
- 
- #define CBF_PLL_OFFSET 0xf000
- 
--static const u8 cbf_pll_regs[PLL_OFF_MAX_REGS] = {
--	[PLL_OFF_L_VAL] = 0x08,
--	[PLL_OFF_ALPHA_VAL] = 0x10,
--	[PLL_OFF_USER_CTL] = 0x18,
--	[PLL_OFF_CONFIG_CTL] = 0x20,
--	[PLL_OFF_CONFIG_CTL_U] = 0x24,
--	[PLL_OFF_TEST_CTL] = 0x30,
--	[PLL_OFF_TEST_CTL_U] = 0x34,
--	[PLL_OFF_STATUS] = 0x28,
--};
--
- static struct alpha_pll_config cbfpll_config = {
- 	.l = 72,
- 	.config_ctl_val = 0x200d4828,
-@@ -67,7 +56,7 @@ static struct alpha_pll_config cbfpll_config = {
- 
- static struct clk_alpha_pll cbf_pll = {
- 	.offset = CBF_PLL_OFFSET,
--	.regs = cbf_pll_regs,
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_HUAYRA_APSS],
- 	.flags = SUPPORTS_DYNAMIC_UPDATE | SUPPORTS_FSM_MODE,
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "cbf_pll",
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
--- 
-2.44.0
+thanks,
 
+greg k-h's patch email bot
 
