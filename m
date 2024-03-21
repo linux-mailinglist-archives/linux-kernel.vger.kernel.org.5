@@ -1,94 +1,82 @@
-Return-Path: <linux-kernel+bounces-110026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F354E885907
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:23:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BBF885905
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91C4F1F213D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28003282F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AABF7603C;
-	Thu, 21 Mar 2024 12:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895AC7605F;
+	Thu, 21 Mar 2024 12:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Lkj3c18Y"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PKVtGhTu"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A0075811;
-	Thu, 21 Mar 2024 12:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1749428379;
+	Thu, 21 Mar 2024 12:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711023814; cv=none; b=KhrTgrYQDM0y/BwqRcth7s5vrxvSydjUbwAUojUBhFETCMP2gfVBuGdlk5ygJJSjfBmMxmmlj7S1slIhX4uZPeL7+/nuKIxPCCHalDN//2lsIHBIGwmhWj1avN8kPrykYaK3G4y9owvuvHFESmxA4OBnxzBapWg/4w37o6n1hm4=
+	t=1711023790; cv=none; b=dN7MyVKnVIX2mj0L6iuoF7lrOTAhtbu9Fq4qxuOLka2d/jtEVKDcJjYkN0w9OB1MDNp206kfI9eG+LAyE+nveq2qGMZaLbN3pL1VhSvPYLTBuQhqcRgn/Ur/NPl6vuezmboZmz7TI/u4z8ybhK4/PPejmseC0cilI3HfDWGWR3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711023814; c=relaxed/simple;
-	bh=z0N29RLfNcOGlvR4fveRMkFS5KdyxhdBZ5rmI2uvv4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U5kIvSFcAiXkph14S3ucStB2VCRWLOflNqI052aSxEPPuIay+KR4iBQ+GQTJ1hlYlZjPkPxgeWpd7oFThb3orbxELJb7X/ogwlL5RIcwvpEblFCwRgRUGRLtGtHXF+4lzkUYLn+5qeuJsTBj3JYF4wTWwNRFRzIBkBWoEdzO4Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Lkj3c18Y; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=bv5iaIHPCtllbUdTBibdobMZ0uFxV6D8XvDh1qKAPRc=; b=Lkj3c18YRRBepAzzJc64myDSZ6
-	vTbXteiIViBqHGeU6E9lDwpYqA0nDPgbUdpNDKiKND3D3T7kC05v3NOAPvITBZ8sQH/gZ/oYjHuR0
-	Jr9QRYKBkKGYOSs1J56y0aTRsIsA7gFEzzc4ioVpgPvb96lA+eVHPF27AqqLR96jTwaTeYsmli5DK
-	6lHemPYIN4ZXJrAQ8ki1duGAs00GxSlSMT5x5tqU7qxB7/sU9bKdNQuB3hXCxVSDzBg5CdCm9aXGM
-	t7xvvUgoUj6DAWZuSdv/CrgjYFfm8lenv+szEn2gueWVKhEgXbVFPfutWDZd7VNTtqWD43wt/75rk
-	5W9R5S2w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55568)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rnHRo-0007XB-0R;
-	Thu, 21 Mar 2024 12:23:04 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rnHRi-0003dh-TB; Thu, 21 Mar 2024 12:22:58 +0000
-Date: Thu, 21 Mar 2024 12:22:58 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: David Laight <David.Laight@aculab.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	'Jiangfeng Xiao' <xiaojiangfeng@huawei.com>,
-	"arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"haibo.li@mediatek.com" <haibo.li@mediatek.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"amergnat@baylibre.com" <amergnat@baylibre.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
-	"gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>,
-	"kepler.chenxin@huawei.com" <kepler.chenxin@huawei.com>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"nixiaoming@huawei.com" <nixiaoming@huawei.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>,
-	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
-	"jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Message-ID: <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
-References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
- <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
- <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
- <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
- <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
- <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
+	s=arc-20240116; t=1711023790; c=relaxed/simple;
+	bh=zPQPtG8FlPDzdRl/IlTPYX+93JqW3jbsX1nFS16TQpY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YpOm4mMaNhk5M1R2reSmgbgeFLgjvQv+01s6Ec6NIFNktM8POSLQXLEHkNJ0XsJWPCzFZLolIMHzAxShL7jsfJWU0Iv+UF9P5iocYK9zOr011gCtWSCvk0SVd9MywuVLUDsHhrA/UiX0sqpWuinUapmZxl8wrxwFAke5WLqC3cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PKVtGhTu; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46f97b8a1bso117075866b.0;
+        Thu, 21 Mar 2024 05:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711023787; x=1711628587; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VPsUYtU0/oIu1g6pXqWAWl6e/kRaRRBG+QVumvEzpho=;
+        b=PKVtGhTu7kJJS1v90wkTRH0VMeTi1VWGMMyno2B5iNh/m7Aoy8en/1s9uuBHFjZvDD
+         ckFCnoJozydgPRDVPSkaBYr+LcUfcRKk3SlaXwmjLWtPY5n3gWv0pT/5gyGZuGqVUUKH
+         /5YsZ4q/qF1e6oB0tJd7+mNynIOkRVhvIrLG7pKF+wZ/awR9Og3Yl3e4PbEzhLyuYRtl
+         quEXEb8/BCaP8TcgEfgnfojaJcv/R4g0+CYawfP8Ja6QEnk1ymaa9V39Y+GOuJBjro/8
+         S+4xthJvr7DwtJ4bGTA91tX8AcBgBnGvDsHecDm0KQJP+xxmve/oSKZwV+mppTYwXJfX
+         PzkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711023787; x=1711628587;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VPsUYtU0/oIu1g6pXqWAWl6e/kRaRRBG+QVumvEzpho=;
+        b=jHfWAQMoalrfD71HCCLGAcRd2wtBr5y3g8q4HQisLYpIPRVmLG5sqK+ozFf7dZxD0y
+         aqCn+SX5Jjol0FSgQ1TGbF5gKH7+hJY3IJ8vD6xtjPyNv1RkhPaSgpfHLS2syxEF9gTV
+         XBZd85Tou+HXi9T4XfGaFFRoDboZw6k500hLPDHy9jEAn43vmklgXG2H8KHlXAyH3tfn
+         IbD23WcPXC8tuOd+rDWB+TYfcP2CMJTt2ZVKFZ67ZLLV8u7By7tNZ3VD9x1NNUPMdKRg
+         q4tm7Vcll6D9lYhpmfMm8ONS4+Djj+znytVkkrcQYU7w3TJFaZKL1ZLXQhMZmNCMrPqf
+         Rg3g==
+X-Forwarded-Encrypted: i=1; AJvYcCX1a0dwZuQSPH/dioimdXKeVVt2FnkMkbH2h9EXRZ9xdtFhWeT4F3z8gs6d3WgN8EqV03KZD9S75trRD5LUxGP3xhWbazRKZMfmNuBWVzAmn12iQdRYDUWtcWCGYnQznrWp
+X-Gm-Message-State: AOJu0YwCGHRiXobez0myGL8JBMdrHEu1FtyLJRzXYO++Dslb4UWeRYua
+	mcUQRUsonrhW8JbvRaksdbFkKRua5eHo7zSh7Wo1tzMPs7DTn1iG
+X-Google-Smtp-Source: AGHT+IEzDCrv2Y2A3UeDXzKt7t5e/ypEKGDj3d7eSdRbJ6MGDn65UZ9b0bq9orAPSjMTHBB+6+O4kQ==
+X-Received: by 2002:a17:906:280f:b0:a46:d6f7:e82c with SMTP id r15-20020a170906280f00b00a46d6f7e82cmr5898972ejc.22.1711023787063;
+        Thu, 21 Mar 2024 05:23:07 -0700 (PDT)
+Received: from bxlr ([62.96.37.222])
+        by smtp.gmail.com with ESMTPSA id lg21-20020a170906f89500b00a46cc25b550sm4129120ejb.5.2024.03.21.05.23.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 05:23:06 -0700 (PDT)
+From: Mikhail Malyshev <mike.malyshev@gmail.com>
+X-Google-Original-From: Mikhail Malyshev <mikem>
+Date: Thu, 21 Mar 2024 13:23:04 +0100
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: Mikhail Malyshev <mike.malyshev@gmail.com>, jgg@ziepe.ca, 
+	yi.l.liu@intel.com, kevin.tian@intel.com, tglx@linutronix.de, 
+	reinette.chatre@intel.com, stefanha@redhat.com, abhsahu@nvidia.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] Reenable runtime PM for dynamically unbound devices
+Message-ID: <23maxefvqgcelvlpckq6jmnzqeo5e3j7ku2pquykwvupgzyl6k@f6tt4wtzsxnj>
+References: <20240319120410.1477713-1-mike.malyshev@gmail.com>
+ <20240319085011.2da113ae.alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,49 +85,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240319085011.2da113ae.alex.williamson@redhat.com>
 
-On Thu, Mar 21, 2024 at 12:07:51PM +0000, David Laight wrote:
-> From: Russell King
-> > Sent: 21 March 2024 11:24
-> > 
-> > On Thu, Mar 21, 2024 at 10:22:30AM +0000, David Laight wrote:
-> > > How aggressively does the compiler optimise 'noreturn' functions?
-> > 
-> > I've seen cases where the compiler emits a BL instruction as the very
-> > last thing in the function, and nothing after it.
+On Tue, Mar 19, 2024 at 08:50:11AM -0600, Alex Williamson wrote:
+> On Tue, 19 Mar 2024 12:04:09 +0000
+> Mikhail Malyshev <mike.malyshev@gmail.com> wrote:
 > 
-> I've also seen the compiler defer generating a stack frame until
-> after an initial conditional.
-
-. which is why we pass -mno-sched-prolog to GCC.
-
-> That might mean you can get the BL in the middle of a function
-> but where the following instruction is for the 'no stack frame'
-> side of the branch.
-> That is very likely to break any stack offset calculations. 
-
-No it can't. At any one point in the function, the stack has to be in
-a well defined state, so that access to local variables can work, and
-also the stack can be correctly unwound. If there exists a point in
-the function body which can be reached where the stack could be in two
-different states, then the stack can't be restored to the parent
-context.
-
-> > This is where the problem lies - because the link register value
-> > created by the BL instruction will point to the instruction after the
-> > BL which will _not_ part of the function that invoked the BL. That
-> > will probably cause issues for the ELF unwinder, which means this
-> > issue probably goes beyond _just_ printing the function name.
+> > When trying to run a VM with PCI passthrough of intel-eth-pci ETH device
+> > QEMU fails with "Permission denied" error. This happens only if
+> > intel-eth-pci driver is dynamically unbound from the device using
+> > "echo -n $DEV > /sys/bus/pci/drivers/stmmac/unbind" command. If
+> > "vfio-pci.ids=..." is used to bind the device to vfio-pci driver and the
+> > device is never probed by intel-eth-pci driver the problem does not occur.
+> > 
+> > When intel-eth-pci driver is dynamically unbound from the device
+> > .remove()
+> >   intel_eth_pci_remove()
+> >     stmmac_dvr_remove()
+> >       pm_runtime_disable();
 > 
-> Isn't this already in the unwinder?
-> A BL itself isn't going to fault with PC = next-instruction.
+> Why isn't the issue in intel-eth-pci?
+> 
+> For example stmmac_dvr_remove() does indeed call pm_runtime_disable()
+> unconditionally, but stmmac_dvr_probe() only conditionally calls
+> pm_runtime_enable() with logic like proposed here for vfio-pci.  Isn't
+> it this conditional enabling which causes an unbalanced disable depth
+> that's the core of the problem?
+> 
+The common code in the stmmac driver is used for both PCI and non-PCI
+drivers and this code doen't handle this correctly. That condition is
+actually wrong
 
-You are missing the fact that the PC can be the saved LR, and thus
-can very well be the next instruction.
+> It doesn't seem like it should be the responsibility of the next driver
+> to correct the state from the previous driver.  You've indicated that
+> the device works with vfio-pci if there's no previous driver, so
+> clearly intel-eth-pci isn't leaving the device in the same runtime pm
+> state that it found it.  Thanks,
+yes, I agree. I was confused by a number of driver calling
+pm_runtime_disabe in their remove() function but those are not PCI
+drivers. Unfortunataly runtime PM documentation is not very clear on
+this topic. I'll submit another patch for the driver. Are there any
+subsystems other than PCI that call pm_runtime_enable/disable? Right now
+my patch for the driver do not call them only for PCI case.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+BR,
+Mikhail
+> 
+> Alex
+> 
+> > Later when QEMU tries to get the device file descriptor by calling
+> > VFIO_GROUP_GET_DEVICE_FD ioctl pm_runtime_resume_and_get returns -EACCES.
+> > It happens because dev->power.disable_depth == 1 .
+> > 
+> > vfio_group_fops_unl_ioctl(VFIO_GROUP_GET_DEVICE_FD)
+> >   vfio_group_ioctl_get_device_fd()
+> >     vfio_device_open()
+> >       ret = device->ops->open_device()
+> >         vfio_pci_open_device()
+> >           vfio_pci_core_enable()
+> >               ret = pm_runtime_resume_and_get();
+> > 
+> > This behavior was introduced by
+> > commit 7ab5e10eda02 ("vfio/pci: Move the unused device into low power state with runtime PM")
+> > 
+> > This may be the case for any driver calling pm_runtime_disable() in its
+> > .remove() callback.
+> > 
+> > The case when a runtime PM may be disable for a device is not handled so we
+> > call pm_runtime_enable() in vfio_pci_core_register_device to re-enable it.
+> > 
+> > Mikhail Malyshev (1):
+> >   vfio/pci: Reenable runtime PM for dynamically unbound devices
+> > 
+> >  drivers/vfio/pci/vfio_pci_core.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > --
+> > 2.34.1
+> > 
+> 
 
