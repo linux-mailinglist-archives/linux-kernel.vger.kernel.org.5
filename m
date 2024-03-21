@@ -1,350 +1,111 @@
-Return-Path: <linux-kernel+bounces-110771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45921886376
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:48:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83DAE886379
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E065B284625
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F0A4284510
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B53668F77;
-	Thu, 21 Mar 2024 22:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0521379F9;
+	Thu, 21 Mar 2024 22:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d72K/5/g"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V9kUQWHU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BA01860
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449DC522F;
+	Thu, 21 Mar 2024 22:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711061281; cv=none; b=qUGWAc+RyAfgn+iXaqYeM9BeuGR9btW7iRaeTYiUJQkNKvFLqosPOy+R6acPdFQbHNIv6LusG/9VFjFmlRn3mysQZgkiKNlqQXHmnpKyXjCihYkk5Bv5vFoGHQGggdOBv2lKBThM6OZAmaCkehgwLmF/AwDPiIaC4sbvzssKiXw=
+	t=1711061302; cv=none; b=V4SJGonnk1AuXYDXOwm55eDRQ3H/44cpHfWjylweQFUASIrU/UoyDhlIRLZ4CGfBwoCNRD3e7FLW3w+SYuJslFfXtE77Wk2vsXg61rZG+8YlSZ0HNobcazJX1ZrEsP+rjlZncs/8bf5LihZn9jXpzzVt52Fv9PllGZfPRtfPNhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711061281; c=relaxed/simple;
-	bh=EwwVucOL3SWalyTW56zmelV6w60sbsIsKcfCIBixIWA=;
+	s=arc-20240116; t=1711061302; c=relaxed/simple;
+	bh=8kZQaLxa0VikRd55GghvL73ntNDipBA2PLPwjJcF8O0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MDWT+AL4THzpljyiIJmLVI1iiU5iM6PhdnUOcAmcSydUxH1DI3gzgxCEQsJUxnABYOb7wu+zAgGxM9V2F1isROukvPVI3x+6SWcEnE1kaPjicXMZ9h4Y7u33uYOjYDBhriOlnXLvp6lintsbft5u4VkGQmfbxIq+SMZ3byOAVAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d72K/5/g; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609f3ca61e0so15831897b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711061278; x=1711666078; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pZUn+CabKddPK7NEf/S7R2Utterh/ASXmWz24mderPg=;
-        b=d72K/5/gg02ekOTLdcmZXuILhD4E+SE8cHOLcn4Rej9wDqOU+FQqtvl6YVkbvHnZ29
-         w/kj3gr+fWjh50hW7Tkpq+V7NpHv3XyKQp87vVkzJeh4w5EZ3Knm8QVyS1/5ypQARR9w
-         1KJb7gOszrUBmBsOc7eCRlNBDdL8rM/dnx57+35g2q+dd8yoL40qloe6EYxOH9fcaz4I
-         ARqgtSuNyVxVdHKNYrm+3ON8iTZ1qss0xkRshyoQFvuRwHUs22LGBuwdb4jTlLSj9GPN
-         QEBGWnLJQ+57swQ+kqY8L250sIVW1Qcl9AKcXM/xzmx8Vo43q0p0dWT4ka1FSaIwnTmm
-         xOqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711061278; x=1711666078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pZUn+CabKddPK7NEf/S7R2Utterh/ASXmWz24mderPg=;
-        b=kE45H/+6FUWmExhdPkc9uBRbnToSIj2+w1etJARar+iVn8qKZEihZFhMyz83ViZwWR
-         Fu9a4fDGxc71fGjv7xXZE+NwD5qT4MUHdLfrDvRm/F2774rtOdza1STUsl8/4t6BkD9t
-         BypzlSDdo6jjOn+YesoDGFGd6hQeyBPvvURjK/jujeKeeBelrHNEJxBG75U45YpurK2M
-         A8N2KaH5WJU3voUvjCDuBv67FjaCgNaKI7Gl1cUPV+9sGvEKtup29KIok24HPIGo6O/p
-         s10gx3WeEiz6Zt+dPFYcbIsUYFigN4ceRJPxrYtcfFVvOV57MyeSYiry3jPHKuTiqklg
-         uwWw==
-X-Forwarded-Encrypted: i=1; AJvYcCVexu1MDkkT0i+4PC1+IiN/zbjmfWRyhG9QAilZDVvX1P/GnalhJBhZMJBbl80Vg8esYxWPAz2Kcx/S9opBgs/CU5WFkoT73d/jtAUx
-X-Gm-Message-State: AOJu0YzH6SL6m9zx+7y1xh9aKoYoaxchz4wjwyEoOljgxmNZm1kzrANc
-	Sz+k+c+ImOK6jKvw5t7CIy6sosHmVfY0u5N2SYPgiMkLMEhvyjvujmm/8n1rhHjMPhoSuFMC7xA
-	La4XRZson3bOVvQogHGSYzz0wsH8mbmc7sKtm
-X-Google-Smtp-Source: AGHT+IGTw1XuAorKpNX3Gh3/aZ4ugL4PM6jVqN6SCRojDxfSlrpu19ifc/cFi9jRyUBtPtqG+w5x/ZJTfS8KJ2Dmf6E=
-X-Received: by 2002:a25:8047:0:b0:dda:aace:9665 with SMTP id
- a7-20020a258047000000b00ddaaace9665mr551844ybn.60.1711061278005; Thu, 21 Mar
- 2024 15:47:58 -0700 (PDT)
+	 To:Cc:Content-Type; b=sNDcfr7KQXdLFi0eqcKIFcNN25YHaeNCE5+PePqHF6wF/XdscVl6wHl02gTzzX181M4senUVu6s22uI7+7lnflP5WByHniMDVk4m3Eb/EmjCf/2idMGo80FUF40SuLILM55CFIS/yGwTEnieswDUw4UaeSqa6Azt1gp+7wmRymk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V9kUQWHU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3562C433B2;
+	Thu, 21 Mar 2024 22:48:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711061302;
+	bh=8kZQaLxa0VikRd55GghvL73ntNDipBA2PLPwjJcF8O0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=V9kUQWHUKrAxIDxKddw6QS53ZHLQ6X5EYKqO5x7O1t7DEKuxHMXMh6JCkM2F4qCts
+	 YdIRzCqNRpMqefFTHj/9fTlxvASCuXh0Ayg0j5XHlF/OpKZUmsyPogMln+W0aLVa5d
+	 SQVQZg2SXI834AJTH97UhGNjxCCUx9vZa9PXldDWMhimfumYd4qqF4aofD0QocHC7P
+	 KlRHApAQFTB2VVaNbBTOfxM84xa8antNJDqyK9YAhr/bXAQis24xj0NpgKcI34Uma7
+	 r6iOdFrjEY6GOaYXwt/31XSHvMMWOt5asDXifnesPwqoY4QLTjazUsnVlJEXaCzHo3
+	 VgbaYExkvtApA==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d68cf90ec4so25318461fa.1;
+        Thu, 21 Mar 2024 15:48:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX4HOHp7pO3kVcCSO3gu4BKNUSCqA5YTgb9cec7ejfyPRwsTQJngIMIZKcj+Mj9hSHKUKdxtWTXEId6P6w6RNCbdIqYVCUYXZhzCSHjC0jeokAOY94sClmSygUKYaqiUyUWwQfHgdSF
+X-Gm-Message-State: AOJu0YzSkW6RNCbv/u/OUD+CA2f3NotT3y8+iJgWc6AVtkdeUqo5g9pJ
+	6n7w4sNZcV9uSrg0wmMaeq9MA/BVmWSLk/+FUufVMLFRvvmqfbFDtLfU1nOFP16V8zAmfxWGurX
+	0KDPbS5UrfdvvioWZDMPNgtO+Ql0=
+X-Google-Smtp-Source: AGHT+IEkCE0TynYKmXJrH9D+6ZeTFav9F1+QTT/OoQMMonJCMsI6pzVreSsRQjPGTG1b43KSouEEZp1/wKs3HUzoxhg=
+X-Received: by 2002:a05:6512:34c4:b0:515:940f:b7af with SMTP id
+ w4-20020a05651234c400b00515940fb7afmr391674lfr.52.1711061300349; Thu, 21 Mar
+ 2024 15:48:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-6-surenb@google.com>
- <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
- <gnqztvimdnvz2hcepdh3o3dpg4cmvlkug4sl7ns5vd4lm7hmao@dpstjnacdubq>
- <20240321150908.48283ba55a6c786dee273ec3@linux-foundation.org> <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75>
-In-Reply-To: <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 21 Mar 2024 15:47:44 -0700
-Message-ID: <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
-Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, mhocko@suse.com, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20240321150510.GI8211@craftyguy.net>
+In-Reply-To: <20240321150510.GI8211@craftyguy.net>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 21 Mar 2024 23:48:09 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+Message-ID: <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: Clayton Craft <clayton@craftyguy.net>, Hans de Goede <hdegoede@redhat.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 3:17=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
+(cc Hans)
+
+On Thu, 21 Mar 2024 at 23:05, Clayton Craft <clayton@craftyguy.net> wrote:
 >
-> On Thu, Mar 21, 2024 at 03:09:08PM -0700, Andrew Morton wrote:
-> > On Thu, 21 Mar 2024 17:15:39 -0400 Kent Overstreet <kent.overstreet@lin=
-ux.dev> wrote:
-> >
-> > > On Thu, Mar 21, 2024 at 01:31:47PM -0700, Andrew Morton wrote:
-> > > > On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@googl=
-e.com> wrote:
-> > > >
-> > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > >
-> > > > > We're introducing alloc tagging, which tracks memory allocations =
-by
-> > > > > callsite. Converting alloc_inode_sb() to a macro means allocation=
-s will
-> > > > > be tracked by its caller, which is a bit more useful.
-> > > >
-> > > > I'd have thought that there would be many similar
-> > > > inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inode(=
-).
-> > > > Do we have to go converting things to macros as people report
-> > > > misleading or less useful results, or is there some more general
-> > > > solution to this?
-> > >
-> > > No, this is just what we have to do.
-> >
-> > Well, this is something we strike in other contexts - kallsyms gives us
-> > an inlined function and it's rarely what we wanted.
-> >
-> > I think kallsyms has all the data which is needed to fix this - how
-> > hard can it be to figure out that a particular function address lies
-> > within an outer function?  I haven't looked...
+> I've been chasing a problem with 32-bit EFI mixed mode booting on two different
+> (x86_64) Intel Bay Trail platforms, where the system reboots or hangs seemingly
+> very early somewhere before or after loading the kernel. I've not been able to
+> get any output from the kernel or stub over efifb when the issue happens[0], and
+> do not have serial console access on these systems.
 >
-> This is different, though - even if a function is inlined in multiple
-> places there's only going to be one instance of a static var defined
-> within that function.
+> v6.8 fails for me, and presumably so does everything back to v6.2. v6.1 is able
+> to boot OK on these platforms with mixed mode, and it looks like there are a lot
+> of changes from 6.1..6.2 for EFI/mixed mode booting.
 
-I guess one simple way to detect the majority of these helpers would
-be to filter all entries from /proc/allocinfo which originate from
-header files.
+v6.1 just received some EFI related backports, so please check the
+latest v6.1.y as well.
 
-~# grep ".*\.h:." /proc/allocinfo
-      933888      228 include/linux/mm.h:2863 func:pagetable_alloc
-         848       53 include/linux/mm_types.h:1175 func:mm_alloc_cid
-           0        0 include/linux/bpfptr.h:70 func:kvmemdup_bpfptr
-           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
-           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
-           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
-           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
-           0        0 include/linux/bpf.h:2249 func:bpf_map_kvcalloc
-           0        0 include/linux/bpf.h:2243 func:bpf_map_kzalloc
-           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
-           0        0 include/linux/ptr_ring.h:471
-func:__ptr_ring_init_queue_alloc
-           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
-           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
-           0        0 include/net/tcx.h:80 func:tcx_entry_create
-           0        0 arch/x86/include/asm/pgalloc.h:156 func:p4d_alloc_one
-      487424      119 include/linux/mm.h:2863 func:pagetable_alloc
-           0        0 include/linux/mm.h:2863 func:pagetable_alloc
-         832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
-           0        0 include/linux/jbd2.h:1591 func:jbd2_alloc_handle
-           0        0 fs/nfs/iostat.h:51 func:nfs_alloc_iostats
-           0        0 include/net/netlabel.h:281 func:netlbl_secattr_cache_=
-alloc
-           0        0 include/net/netlabel.h:381 func:netlbl_secattr_alloc
-           0        0 include/crypto/internal/acompress.h:76
-func:__acomp_request_alloc
-        8064       84 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-        1016       74 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-         384        4 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-         704        3 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-          32        1 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-          64        1 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-          40        2 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-          32        1 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-       30000      625 include/acpi/platform/aclinuxex.h:67
-func:acpi_os_acquire_object
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:67
-func:acpi_os_acquire_object
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-         512        1 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-         192        6 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-         192        3 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
-ocate
-       61992      861 include/acpi/platform/aclinuxex.h:67
-func:acpi_os_acquire_object
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 include/acpi/platform/aclinuxex.h:67
-func:acpi_os_acquire_object
-           0        0 include/acpi/platform/aclinuxex.h:57
-func:acpi_os_allocate_zeroed
-           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
-page
-           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
-page
-           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
-page
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/hid_bpf.h:154 func:call_hid_bpf_rdesc_f=
-ixup
-           0        0 include/linux/skbuff.h:3392 func:__dev_alloc_pages
-      114688       56 include/linux/ptr_ring.h:471
-func:__ptr_ring_init_queue_alloc
-           0        0 include/linux/skmsg.h:415 func:sk_psock_init_link
-           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
-           0        0 include/linux/ptr_ring.h:628 func:ptr_ring_resize_mul=
-tiple
-       24576        3 include/linux/ptr_ring.h:471
-func:__ptr_ring_init_queue_alloc
-           0        0 include/net/netlink.h:1896 func:nla_memdup
-           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
-           0        0 include/net/request_sock.h:131 func:reqsk_alloc
-           0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
-           0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
-           0        0 include/crypto/hash.h:586 func:ahash_request_alloc
-           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
-           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
-           0        0 net/sunrpc/auth_gss/auth_gss_internal.h:38
-func:simple_get_netobj
-           0        0 include/crypto/hash.h:586 func:ahash_request_alloc
-           0        0 include/net/netlink.h:1896 func:nla_memdup
-           0        0 include/crypto/skcipher.h:869 func:skcipher_request_a=
-lloc
-           0        0 include/net/fq_impl.h:361 func:fq_init
-           0        0 include/net/netlabel.h:316 func:netlbl_catmap_alloc
+> I did managed to bisect the
+> issue to:
+>
+>         commit e2ab9eab324cdf240de89741e4a1aa79919f0196
+>         Author: Ard Biesheuvel <ardb@kernel.org>
+>         Date:   Tue Nov 22 17:10:02 2022 +0100
+>
+>             x86/boot/compressed: Move 32-bit entrypoint code into .text section
+>
+> However I'm not sure how to proceed from here, or if my bisect is all that
+> useful since the commit seems to be in the middle of a bunch of changes I do not
+> understand. I've been using systemd-boot to test this (both the full bootloader
+> and UKI w/ the sd-boot stub). Is 32-bit mixed mode on x86_64 working for others?
+>
 
-and it finds our example:
+I usually test on 32-bit OVMF built with LOAD_X64_ON_IA32_ENABLE,
+which allows the use of the compat entry point. This is different from
+the EFI handover protocol, and I am not sure which one you are using.
 
-         832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
-
-Interestingly the inlined functions which are called from multiple
-places will have multiple entries with the same file+line:
-
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-           0        0 include/linux/dma-fence-chain.h:91
-func:dma_fence_chain_alloc
-
-So, duplicate entries can be also used as an indication of an inlined alloc=
-ator.
-I'll go chase these down and will post a separate patch converting them.
+I have never had any reports, or noticed any issues myself. Last time
+I tried (some weeks ago) it was working for me.
+CC'ing Hans who may have more data points.
 
