@@ -1,179 +1,180 @@
-Return-Path: <linux-kernel+bounces-110057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3FDA88596F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE5B4885966
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5061DB23105
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64C14B22D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD72783CDD;
-	Thu, 21 Mar 2024 12:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B6383CC5;
+	Thu, 21 Mar 2024 12:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eoVNRrd4";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LFpWYcGw";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eoVNRrd4";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LFpWYcGw"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jw6IvNzz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779B7134CD;
-	Thu, 21 Mar 2024 12:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856C73717B;
+	Thu, 21 Mar 2024 12:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025536; cv=none; b=JdeWPcEfP4Wx5OOwM82HMlNQk3Sh6gdEpheizuHTntzT6v03X7hmec24TZLXdv7zbM+5Edbo1yZxNBtBXeex9iwvyDvWgHzRujgqG5EECztNbSbjqYvYDBjLS35CBaD5sbbo6sb9VnF8/0UVpqzetH3ObqEgP5saLA+rzlu61Cg=
+	t=1711025428; cv=none; b=IvAIikfjvCkMspmZrXc6IhpshKzcaWMhTn5bj2Dy8cwJ9Umtio/Qqkp2KvI6KuoXGV2PlnlAty+7mGgoVN/iUcz9hkbmDVH8p4ROIfVu+QHhR+cKTlzXfIDXSwF2KE+08a1Bxe8sc8wnmQfFabT73+WNMOT08sreapm02XHHoIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025536; c=relaxed/simple;
-	bh=dFQnHdvjN+PdZaRydPaL5YzOnVbqxPf19LkEFEHeg70=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lunPOsCXyrLUmS1tcLQxi2/e3CrfaT5SKzuvP+hRn8NjAtLVOHOApy033g36uVKnqYS/042qnf4WpwhVjrxyXRN2oMiDANYVhP5FT/ywUZfdrDQh4ZQXVo5Nbw0dbQDJL4/F+8gyxHqcHq524iqsZoyUp6msymUV36Taam8CjXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eoVNRrd4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LFpWYcGw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eoVNRrd4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LFpWYcGw; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 68B5A373B8;
-	Thu, 21 Mar 2024 12:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711025532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
-	b=eoVNRrd493B4kd4SgEFrTiFnhtXtfXH4QfaHq19hp2F9W/017zepPUlWvUCyv+CLJGFyvf
-	TWUNjXNgBHy+5dXd22I1bL4zaAz4oSICy6BMYFHjDoZqXle5J5bQofjK2l6Ibw85p8IZhe
-	VakJ63YYdJNzhF3i13AiV6d2L7qZT3k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711025532;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
-	b=LFpWYcGwnvQABaHyDr3USzpnLGp/1HpgFX5uqxBY0aD9RiPl1y49qIR7K1wb6LfVALwaQR
-	G+bn68nAIntgWPCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711025532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
-	b=eoVNRrd493B4kd4SgEFrTiFnhtXtfXH4QfaHq19hp2F9W/017zepPUlWvUCyv+CLJGFyvf
-	TWUNjXNgBHy+5dXd22I1bL4zaAz4oSICy6BMYFHjDoZqXle5J5bQofjK2l6Ibw85p8IZhe
-	VakJ63YYdJNzhF3i13AiV6d2L7qZT3k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711025532;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
-	b=LFpWYcGwnvQABaHyDr3USzpnLGp/1HpgFX5uqxBY0aD9RiPl1y49qIR7K1wb6LfVALwaQR
-	G+bn68nAIntgWPCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99F1A136AD;
-	Thu, 21 Mar 2024 12:52:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Ib5vIXst/GXVTgAAD6G6ig
-	(envelope-from <dkirjanov@suse.de>); Thu, 21 Mar 2024 12:52:11 +0000
-Message-ID: <a8174c07-00c9-4a8e-9c2e-c2d759379f09@suse.de>
-Date: Thu, 21 Mar 2024 15:52:10 +0300
+	s=arc-20240116; t=1711025428; c=relaxed/simple;
+	bh=T48VhPL7uTyMjF8hE8VTkaJAtzTXjPh6XEzhs1te5hM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QfO1fU3wEna/2j/AIKF7GRZjFQ4zmQcCvmYYGL9Ua63XHdP2AsGZLeOXjBgs6TXPDzoZzkqT4IC2evSo/eEETE8SBA7Fr8PpYcI+zVbMfyYim6uUe5iL4QAkYPe0iAfjHF90AG5kuJkNTfiL1nSXL14BhSlKU/cM9Zr9RrlZQho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jw6IvNzz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EBDC433F1;
+	Thu, 21 Mar 2024 12:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711025428;
+	bh=T48VhPL7uTyMjF8hE8VTkaJAtzTXjPh6XEzhs1te5hM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jw6IvNzzkZzIUDIVBvBGSx1oIznHpgsyibO8XYde2Ltu1vIjJldA9wG5rolCd0YOE
+	 OulgRx0EK5tsjlrmk/YI7PshMLcyRRBB8dqiS4MkMsbLacfOMPlGIAyQaTAcLUzaaE
+	 KeDbnFQCCLgzCqUj9inkvxv/UOMI5nGunhMK/RbC2v6sYjyHJISmKG8tcNQiBd3P3u
+	 upZOkhWaYRTuxmBH29et6GK7IflPNn7qoRT7y7p5Pk5u1F8icK5qUwyQ6c7ts44GJW
+	 yVDcx4l4qHX/PPBS6uRAIO7cCk5iVcp+FYQW1RgBze9ui1w5jn/oQ58zZdcyuDhQbc
+	 iGYDSgmqEDfZA==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Davis <afd@ti.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Sibi Sankar <quic_sibis@quicinc.com>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Joakim Zhang <joakim.zhang@cixtech.com>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [GIT PULL] remoteproc updates for v6.9
+Date: Thu, 21 Mar 2024 05:55:13 -0700
+Message-ID: <20240321125518.1675903-1-andersson@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] flow_dissector: prevent NULL pointer dereference in
- __skb_flow_dissect
-Content-Language: en-US
-To: Anastasia Belova <abelova@astralinux.ru>,
- "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20240321123446.7012-1-abelova@astralinux.ru>
-From: Denis Kirjanov <dkirjanov@suse.de>
-In-Reply-To: <20240321123446.7012-1-abelova@astralinux.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=eoVNRrd4;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LFpWYcGw
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[41.68%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[astralinux.ru:email,suse.de:dkim,linuxtesting.org:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -2.50
-X-Rspamd-Queue-Id: 68B5A373B8
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
+I'm sorry for the late pull request, I apparently had managed to get git
+send-email to only deliver my mail to /dev/null on the machine where I prepared
+this.
 
+Regards,
+Bjorn
 
-On 3/21/24 15:34, Anastasia Belova wrote:
-> skb is an optional parameter, so it may be NULL.
-> Add check defore dereference in eth_hdr.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 690e36e726d0 ("net: Allow raw buffers to be passed into the flow dissector.")
-> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-As request in the previous email please show the actual data flow that leads to a null pointer
-dereference.
-Also please read function description:
-..
- * @skb: sk_buff to extract the flow from, can be NULL if the rest are specified
-..
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-> ---
->  net/core/flow_dissector.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-> index 272f09251343..68a8228ffae3 100644
-> --- a/net/core/flow_dissector.c
-> +++ b/net/core/flow_dissector.c
-> @@ -1139,6 +1139,8 @@ bool __skb_flow_dissect(const struct net *net,
->  
->  	if (dissector_uses_key(flow_dissector,
->  			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
-> +		if (!skb)
-> +			goto out_bad;
->  		struct ethhdr *eth = eth_hdr(skb);
->  		struct flow_dissector_key_eth_addrs *key_eth_addrs;
->  
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rproc-v6.9
+
+for you to fetch changes up to 62210f7509e13a2caa7b080722a45229b8f17a0a:
+
+  remoteproc: qcom_q6v5_pas: Unload lite firmware on ADSP (2024-03-05 20:02:07 -0800)
+
+----------------------------------------------------------------
+remoteproc updates for v6.9
+
+Qualcomm SM8650 audio, compute and modem remoteproc are added. Qualcomm
+X1 Elite audio and compute remoteprocs are added, after support for
+shutting down the bootloader-loaded firmware loaded into the audio DSP..
+
+A dozen drivers in the subsystem are transitioned to use devres helpers
+for remoteproc and memory allocations.
+
+It makes it possible to acquire in-kernel handle to individual
+remoteproc instances in a cluster.
+
+The release of DMA memory for remoteproc virtio is corrected to ensure
+that restarting due to a watchdog bite doesn't attempt to allocate the
+memory again without first freeing it.
+
+Last, but not least, a couple of DeviceTree binding cleanups.
+
+----------------------------------------------------------------
+Abel Vesa (1):
+      dt-bindings: remoteproc: qcom,sm8550-pas: document the X1E80100 aDSP & cDSP
+
+Andrew Davis (17):
+      remoteproc: k3-dsp: Use devm_rproc_alloc() helper
+      remoteproc: k3-dsp: Add devm action to release reserved memory
+      remoteproc: k3-dsp: Use devm_kcalloc() helper
+      remoteproc: imx_dsp_rproc: Use devm_rproc_alloc() helper
+      remoteproc: imx_rproc: Use devm_rproc_alloc() helper
+      remoteproc: st: Use devm_rproc_alloc() helper
+      remoteproc: stm32: Use devm_rproc_alloc() helper
+      remoteproc: k3-dsp: Use devm_ti_sci_get_by_phandle() helper
+      remoteproc: k3-dsp: Use devm_kzalloc() helper
+      remoteproc: k3-dsp: Add devm action to release tsp
+      remoteproc: k3-dsp: Use devm_ioremap_wc() helper
+      remoteproc: k3-dsp: Use devm_rproc_add() helper
+      remoteproc: qcom_q6v5_adsp: Use devm_rproc_alloc() helper
+      remoteproc: qcom_q6v5_mss: Use devm_rproc_alloc() helper
+      remoteproc: qcom_q6v5_pas: Use devm_rproc_alloc() helper
+      remoteproc: qcom_q6v5_wcss: Use devm_rproc_alloc() helper
+      remoteproc: qcom_wcnss: Use devm_rproc_alloc() helper
+
+Arnaud Pouliquen (2):
+      remoteproc: stm32: Fix incorrect type in assignment for va
+      remoteproc: stm32: Fix incorrect type assignment returned by stm32_rproc_get_loaded_rsc_tablef
+
+Dmitry Baryshkov (1):
+      remoteproc: qcom: pas: correct data indentation
+
+Joakim Zhang (1):
+      remoteproc: virtio: Fix wdg cannot recovery remote processor
+
+Krzysztof Kozlowski (2):
+      dt-bindings: remoteproc: qcom,glink-rpm-edge: drop redundant type from label
+      dt-bindings: remoteproc: do not override firmware-name $ref
+
+Mathieu Poirier (1):
+      remoteproc: Make rproc_get_by_phandle() work for clusters
+
+Neil Armstrong (3):
+      dt-bindings: remoteproc: qcom,sm8550-pas: document the SM8650 PAS
+      remoteproc: qcom: pas: make region assign more generic
+      remoteproc: qcom: pas: Add SM8650 remoteproc support
+
+Sibi Sankar (2):
+      remoteproc: qcom_q6v5_pas: Add support for X1E80100 ADSP/CDSP
+      remoteproc: qcom_q6v5_pas: Unload lite firmware on ADSP
+
+ .../devicetree/bindings/remoteproc/mtk,scp.yaml    |   4 +-
+ .../bindings/remoteproc/qcom,glink-rpm-edge.yaml   |   1 -
+ .../bindings/remoteproc/qcom,qcs404-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sc7180-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sc7280-wpss-pil.yaml  |   2 +-
+ .../bindings/remoteproc/qcom,sc8180x-pas.yaml      |   2 +-
+ .../bindings/remoteproc/qcom,sm6115-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sm6350-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sm6375-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sm8150-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sm8350-pas.yaml       |   2 +-
+ .../bindings/remoteproc/qcom,sm8550-pas.yaml       |  51 +++-
+ .../bindings/remoteproc/qcom,wcnss-pil.yaml        |   2 +-
+ drivers/remoteproc/imx_dsp_rproc.c                 |  11 +-
+ drivers/remoteproc/imx_rproc.c                     |  16 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c                |  14 +-
+ drivers/remoteproc/qcom_q6v5_mss.c                 |  28 +-
+ drivers/remoteproc/qcom_q6v5_pas.c                 | 326 ++++++++++++++-------
+ drivers/remoteproc/qcom_q6v5_wcss.c                |  24 +-
+ drivers/remoteproc/qcom_wcnss.c                    |  17 +-
+ drivers/remoteproc/remoteproc_core.c               |  29 +-
+ drivers/remoteproc/remoteproc_virtio.c             |   6 +-
+ drivers/remoteproc/st_remoteproc.c                 |  15 +-
+ drivers/remoteproc/stm32_rproc.c                   |  10 +-
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c          | 156 ++++------
+ 25 files changed, 419 insertions(+), 309 deletions(-)
 
