@@ -1,93 +1,128 @@
-Return-Path: <linux-kernel+bounces-110408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98796885ED1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:56:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 390DF885EDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53AF5282D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B0AA1C2333C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0E1135A7D;
-	Thu, 21 Mar 2024 16:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CC71369BC;
+	Thu, 21 Mar 2024 16:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="e/IoVVTm"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gGi8xJlV"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28BC5135A44
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF69A18AE8;
+	Thu, 21 Mar 2024 16:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039667; cv=none; b=GxQ7HBkME02e/abU3rT7oD/5LDBB3sDFydGnvFNtrhT9x8i4bgK2Epjl5zaK5enuHmX5RxqkbvNIXCr1vD52r+j8DdefZu3C4PzOPMNQ3pSOrbdbof4+ADH9Gh8EOSXIq2WBd1PvvTrbdh64Xk6cfdzB/Oydy7MXkwVS7XVfWrc=
+	t=1711039767; cv=none; b=bhpLsmamGzj3K5uLsPmqq4c2oAj8/6kOjwdKBGIXrGZUnkyl81L3EOM9KjSVifbmokUcvo4lo45pz7G0uFUlXMGAZhZlf7JZbue/szYF0LOQDGuugZ0ZBFbMCn4haJOO3srV+Vr+h45kbLz3Ocpt0Z/J24CNT6e8kew7X9x7DMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039667; c=relaxed/simple;
-	bh=/D5CQh4Eg1MhDFUZ7iYEj/DbReP3vFnJJrBiJS67l3g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jk17+6X9Hq8P/kxPB2lVf7tIjKL9ObNgsnXN7vfyTQSXDEm+XWbN7YRNX5C+tFE9ZN1XIEXzjub1YFvu2F7lVon/uixrIpP8EK22BkOJibG/WbOFoMNI07IyW9APpvPs+oYgA03/N8E53H+otKVe/UO4nBAaz3rdOYGqifb8B3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=e/IoVVTm; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from tundra.lovozera (unknown [83.149.199.65])
-	by mail.ispras.ru (Postfix) with ESMTPSA id CB3A74076740;
-	Thu, 21 Mar 2024 16:47:35 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru CB3A74076740
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1711039655;
-	bh=r2m1IFOo39rYh7Yqg1o38OZbzAZc486wtJtHt6GKQN8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e/IoVVTmJcjYmoIvO2d8hMVtfnMzisXAIkALho404ABalv/p1MYVojBoqBYofIZCU
-	 6OsYZtHgKk26MxAe/VkoFI4rcAY0B0UlTSUPWs+cXZH6nAR7QgVRbtwhpxKZrB1rmh
-	 IVgkNjmcazOJjWGj9olJPuX826H8+xk551pjtIgE=
-From: Mikhail Kobuk <m.kobuk@ispras.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Mikhail Kobuk <m.kobuk@ispras.ru>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-	linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: [PATCH 2/2] phy: marvell: a3700-comphy: Fix hardcoded array size
-Date: Thu, 21 Mar 2024 19:47:31 +0300
-Message-ID: <20240321164734.49273-2-m.kobuk@ispras.ru>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240321164734.49273-1-m.kobuk@ispras.ru>
-References: <20240321164734.49273-1-m.kobuk@ispras.ru>
+	s=arc-20240116; t=1711039767; c=relaxed/simple;
+	bh=+nZPFZSgmWagI1A3CCJDLhLURWtV5kOkFvKlclMvVCQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SUfBtNQiUvTYACv5CLU4kYvC9Raad4qR0XaClQIVKcfG1ZfCRSEVcdd0s+RfBo2d+p9J9h9mVvI4NmB3SAhk6wpJWnHxMHw8+7pj3oLfEMYcqdn2HwbRgwgtyS6zZ6rFKPEyOuE8dUZv7b3LOog5SsOHqK5BR8v7yOAKOPauLxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gGi8xJlV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=V9mrRuAn6P0CI166dm0Zpc+lSpGuhBwRxOMqznP0Qc8=; b=gGi8xJlVLOIZ3mUkkfMoCqE6+p
+	GYatoWTGuIQd5mIJqoYod0ls6FiejI1yWosjlReTKpX/4QcfgRsdMndn7H2he5AtOEWNIEMdv6DPj
+	ZRkrHCddWZIHbCcvrE7/i9TnUatU/rJkC1W5mkzmB2GMm50FbmFnSbKcERrsBngy84FyJ5zDJA3ue
+	b28mrMSpQRD3X9KSoKdZo5dJvgVF7WsSod91+d2J7u195+hFp7vmMB1eLvYgh26B8RIToR3Z1idYQ
+	7DqIqZWDxe4h3KOCq8qN6htm+cvV2ALDrz/yfvX53nfhNfOQ9l3tfg2VOFzpq0RrFF/sMMqgsASJ6
+	2EI1+HZQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnLb3-0000000793s-1qG7;
+	Thu, 21 Mar 2024 16:48:53 +0000
+Date: Thu, 21 Mar 2024 16:48:53 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 20/37] mm: fix non-compound multi-order memory
+ accounting in __free_pages
+Message-ID: <Zfxk9aFhF7O_-T3c@casper.infradead.org>
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-21-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321163705.3067592-21-surenb@google.com>
 
-Replace hardcoded 'gbe_phy_init' array size by explicit one.
+On Thu, Mar 21, 2024 at 09:36:42AM -0700, Suren Baghdasaryan wrote:
+>  static inline void pgalloc_tag_add(struct page *page, struct task_struct *task,
+>  				   unsigned int nr) {}
+>  static inline void pgalloc_tag_sub(struct page *page, unsigned int nr) {}
+>  static inline void pgalloc_tag_split(struct page *page, unsigned int nr) {}
+> +static inline struct alloc_tag *pgalloc_tag_get(struct page *page) { return NULL; }
+> +static inline void pgalloc_tag_sub_pages(struct alloc_tag *tag, unsigned int nr) {}
+>  
+>  #endif /* CONFIG_MEM_ALLOC_PROFILING */
+>  
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index fd1cc5b80a56..00e0ae4cbf2d 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4700,12 +4700,15 @@ void __free_pages(struct page *page, unsigned int order)
+>  {
+>  	/* get PageHead before we drop reference */
+>  	int head = PageHead(page);
+> +	struct alloc_tag *tag = pgalloc_tag_get(page);
+>  
+>  	if (put_page_testzero(page))
+>  		free_the_page(page, order);
+> -	else if (!head)
+> +	else if (!head) {
+> +		pgalloc_tag_sub_pages(tag, (1 << order) - 1);
+>  		while (order-- > 0)
+>  			free_the_page(page + (1 << order), order);
+> +	}
 
-Fixes: 934337080c6c ("phy: marvell: phy-mvebu-a3700-comphy: Add native kernel implementation")
-Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
----
- drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Why do you need these new functions instead of just:
 
-diff --git a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
-index 41162d7228c9..15bf10710de0 100644
---- a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
-+++ b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
-@@ -603,7 +603,7 @@ static void comphy_gbe_phy_init(struct mvebu_a3700_comphy_lane *lane,
- 	u16 val;
- 
- 	fix_idx = 0;
--	for (addr = 0; addr < 512; addr++) {
-+	for (addr = 0; addr < ARRAY_SIZE(gbe_phy_init); addr++) {
- 		/*
- 		 * All PHY register values are defined in full for 3.125Gbps
- 		 * SERDES speed. The values required for 1.25 Gbps are almost
--- 
-2.44.0
-
++	else if (!head) {
++		pgalloc_tag_sub(page, (1 << order) - 1);
+		while (order-- > 0)
+			free_the_page(page + (1 << order), order);
++	}
 
