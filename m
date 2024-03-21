@@ -1,142 +1,121 @@
-Return-Path: <linux-kernel+bounces-109790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEAEE8855BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:33:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DE638855C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:33:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E239BB21117
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:32:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF75D1C21004
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:33:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B2A13AE8;
-	Thu, 21 Mar 2024 08:32:51 +0000 (UTC)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BE0043AC1;
+	Thu, 21 Mar 2024 08:32:56 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC5CC8FF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE81200BA;
+	Thu, 21 Mar 2024 08:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711009971; cv=none; b=acZ2s6J9SUa7oCp+r3DPiC48Awf44hDkIjdC4rIzjA18NO/dyoH3TNLi2+9YG4+VhLnspy5Pwh3zGjJ37Pnpq5otFJKlShU1mewU28pWgYdWLjoLfFc/ADNN05uZL862TmGcRjaaLPsEAz0Veir0PB5ZNcqvcrsJxvlkuirp9CM=
+	t=1711009975; cv=none; b=UQZ2bCH0jTrHZ/RWlAuLm0Wt7WQ6t1VUPKPelczORBVI4FK4H7b1KI9bRZQwLr0UvCv3dN0r4QYd2ObmpNb3H/HxKqdtu7N2qq42G4AzW338AqNFLjFXIdEdIP8RUQTOPItE3xShyeUKgmFJN4DjDY7aHnLiMLHcQs+QuzwRYm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711009971; c=relaxed/simple;
-	bh=2SeI0KLkQK8keeZfc3uwhguEk/P0UYOP26RJRbCSQS8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QMpNyBdCw78otFYTtKhCFEyRKWUbyu5GR7jpPESi0uJVeYNvlFDR+Gd7fUZqJ6zUh+yKBm3f0hViT+tDq3CFBWp/rHipnwtk//+mWQUWywnZu0d/ufuZghsJyNsJjoDsy6JskDu/6TegwmLoiSqI0X0bGfeo1TFv2OecAVJoGwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60a0579a955so8297107b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:32:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711009967; x=1711614767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5mUmrGrAX3Duzs64PPgK1QzuxSOry2pd/+ceHDEcKUU=;
-        b=frIAE8CbB6ZMcJ8tVJdD/I6ZQHh4sARUg+ln0SHprONW9iukohr6MWvlyNW17tg3Tm
-         CDqn6HG2+Yyh+N9WIvVtSkt7w4PjvcWMgAHnyIn5Ukl7ji+D7he8kWaSdakDfJrNrUmm
-         wVryzk5bR55+Q7uCket5yh1gBDrN2+sUjX4bctSi7nhlWY6yr4pR+CyoJaE6v4a5rfX3
-         9+h1hFvajLlJ44COeyrwtPxsJDA+4bTQaZ1perCs5WdLvkyoAsAbOF0g2gxQOjkLS0Ff
-         vhnJjo7Q3+bBnnFZ5KetPjVwIrda2/UxF7f98Im7YuSSsqpE0xf6WUkIQZ+TdCh+L78d
-         aXQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWlwtG+36Hr9liyz60PqZGDh7vrtcvrvOGhP9PlEyRTPeK3MrcqQGACyHI4DXZu0ttijGU5jOcFDhKyX6DM8bd0/dV/wRv+dO2eyT8
-X-Gm-Message-State: AOJu0Yw1uSrG4lTJE3l02rXwpkfS4nNDbKfefp+u1TpXDUIQ1v/RZiu6
-	JcI1ffMoaa4EsIE7HBFqAeJvJSzmcHInDfyLCT1EP+Ig55XnlMkzWxVNPWta1/w=
-X-Google-Smtp-Source: AGHT+IEKMj3f58w3s1PIvZTBLyljSXo3xqMxc0dEM3UpUtQTEmyiTOr5XG7zq+3LL6QS9ya5irwiFQ==
-X-Received: by 2002:a05:6902:cb:b0:dcc:53c6:113a with SMTP id i11-20020a05690200cb00b00dcc53c6113amr6862004ybs.59.1711009966632;
-        Thu, 21 Mar 2024 01:32:46 -0700 (PDT)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
-        by smtp.gmail.com with ESMTPSA id x76-20020a25ce4f000000b00dcd3e78d086sm3002612ybe.46.2024.03.21.01.32.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 01:32:45 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60a0579a955so8296607b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:32:45 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW1yX2iJVqRfwHiDz3xMQMNePu9hE3nt2lF6SjD7pBBW5b4gYNYy6w2RLUkrlyuVgaH/pHzXKW6F1ydbINuAGn2xDI6ZN0OnEJRK3Le
-X-Received: by 2002:a5b:ecc:0:b0:dc6:be64:cfd1 with SMTP id
- a12-20020a5b0ecc000000b00dc6be64cfd1mr7256066ybs.36.1711009965385; Thu, 21
- Mar 2024 01:32:45 -0700 (PDT)
+	s=arc-20240116; t=1711009975; c=relaxed/simple;
+	bh=JQe2hA73NUK4BTZbJZTGWFApkIPtA+TtSzkxkKSsioU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tQuv85h6z0nWddQbqwDCbAxaqmkUpFM9l5OePm0nRZFAiff/87BP+KluYLYxGxyn5gouS78CAQit2lBBd1V39c7Vd+TgbLUq5KwBvTnMeUALJEiG+70xPkAlPSMb8eiuaeIOJlmEyJplyE05rTiqBBYgSilrqDd7JpiXskn77GE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V0dxl4zyTz4f3kFP;
+	Thu, 21 Mar 2024 16:32:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id B383E1A0172;
+	Thu, 21 Mar 2024 16:32:49 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP3 (Coremail) with SMTP id _Ch0CgDH05uw8PtlnGQCHg--.7682S2;
+	Thu, 21 Mar 2024 16:32:49 +0800 (CST)
+Message-ID: <dec82e88-6961-4bf6-92b7-9acc753aaad4@huaweicloud.com>
+Date: Thu, 21 Mar 2024 16:32:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320180333.151043-1-arnd@kernel.org>
-In-Reply-To: <20240320180333.151043-1-arnd@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 21 Mar 2024 09:32:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
-Message-ID: <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: ps3: mark ps3_notification_device static for
- stack usage
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Geoff Levand <geoff@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nathan Chancellor <nathan@kernel.org>, Paul Mackerras <paulus@ozlabs.org>, 
-	Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Kevin Hao <haokexin@gmail.com>, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2] arm64: bpf: fix 32bit unconditional bswap
+Content-Language: en-US
+To: Artem Savkov <asavkov@redhat.com>, Xi Wang <xi.wang@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org,
+ Puranjay Mohan <puranjay12@gmail.com>
+References: <20240313140205.3191564-1-asavkov@redhat.com>
+ <20240321081809.158803-1-asavkov@redhat.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20240321081809.158803-1-asavkov@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgDH05uw8PtlnGQCHg--.7682S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cry3KF1fKF1DKF45CF1ftFb_yoW8ur1fpr
+	43trsakrWUKF17Jay0gws7Ar1fAFWvy34UAr90qrW3ta90yw1DWr1rK3y29rsxtrWvvw45
+	uFyjyF93C3Z7tw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Hi Arnd,
+On 3/21/2024 4:18 PM, Artem Savkov wrote:
+> In case when is64 == 1 in emit(A64_REV32(is64, dst, dst), ctx) the
+> generated insn reverses byte order for both high and low 32-bit words,
+> resuling in an incorrect swap as indicated by the jit test:
+> 
+> [ 9757.262607] test_bpf: #312 BSWAP 16: 0x0123456789abcdef -> 0xefcd jited:1 8 PASS
+> [ 9757.264435] test_bpf: #313 BSWAP 32: 0x0123456789abcdef -> 0xefcdab89 jited:1 ret 1460850314 != -271733879 (0x5712ce8a != 0xefcdab89)FAIL (1 times)
+> [ 9757.266260] test_bpf: #314 BSWAP 64: 0x0123456789abcdef -> 0x67452301 jited:1 8 PASS
+> [ 9757.268000] test_bpf: #315 BSWAP 64: 0x0123456789abcdef >> 32 -> 0xefcdab89 jited:1 8 PASS
+> [ 9757.269686] test_bpf: #316 BSWAP 16: 0xfedcba9876543210 -> 0x1032 jited:1 8 PASS
+> [ 9757.271380] test_bpf: #317 BSWAP 32: 0xfedcba9876543210 -> 0x10325476 jited:1 ret -1460850316 != 271733878 (0xa8ed3174 != 0x10325476)FAIL (1 times)
+> [ 9757.273022] test_bpf: #318 BSWAP 64: 0xfedcba9876543210 -> 0x98badcfe jited:1 7 PASS
+> [ 9757.274721] test_bpf: #319 BSWAP 64: 0xfedcba9876543210 >> 32 -> 0x10325476 jited:1 9 PASS
+> 
+> Fix this by forcing 32bit variant of rev32.
+> 
+> Fixes: 1104247f3f979 ("bpf, arm64: Support unconditional bswap")
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> Tested-by: Puranjay Mohan <puranjay12@gmail.com>
+> Acked-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index c5b461dda4385..c3ededd23cbf6 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -943,7 +943,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>   			emit(A64_UXTH(is64, dst, dst), ctx);
+>   			break;
+>   		case 32:
+> -			emit(A64_REV32(is64, dst, dst), ctx);
+> +			emit(A64_REV32(0, dst, dst), ctx);
+>   			/* upper 32 bits already cleared */
+>   			break;
+>   		case 64:
 
-On Wed, Mar 20, 2024 at 7:03=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The device is way too large to be on the stack, causing a warning for
-> an allmodconfig build with clang:
->
-> arch/powerpc/platforms/ps3/device-init.c:771:12: error: stack frame size =
-(2064) exceeds limit (2048) in 'ps3_probe_thread' [-Werror,-Wframe-larger-t=
-han]
->   771 | static int ps3_probe_thread(void *data)
->
-> There is only a single thread that ever accesses this, so it's fine to
-> make it static, which avoids the warning.
->
-> Fixes: b4cb2941f855 ("[POWERPC] PS3: Use the HVs storage device notificat=
-ion mechanism properly")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Xu Kuohai <xukuohai@huawei.com>
 
-Thanks for your patch!
-
-> --- a/arch/powerpc/platforms/ps3/device-init.c
-> +++ b/arch/powerpc/platforms/ps3/device-init.c
-> @@ -770,7 +770,7 @@ static struct task_struct *probe_task;
->
->  static int ps3_probe_thread(void *data)
->  {
-> -       struct ps3_notification_device dev;
-> +       static struct ps3_notification_device dev;
->         int res;
->         unsigned int irq;
->         u64 lpar;
-
-Making it static increases kernel size for everyone.  So I'd rather
-allocate it dynamically. The thread already allocates a buffer, which
-can be replaced at no cost by allocating a structure containing both
-the ps3_notification_device and the buffer.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
