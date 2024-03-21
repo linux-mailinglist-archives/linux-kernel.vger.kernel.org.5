@@ -1,155 +1,213 @@
-Return-Path: <linux-kernel+bounces-110312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15464885D08
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:09:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA58D885D14
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACE61C218EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56BD9288155
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2425A12BF37;
-	Thu, 21 Mar 2024 16:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6C412C54F;
+	Thu, 21 Mar 2024 16:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zoo3Siob"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lmLA+WYg"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB83812BF1A
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EDF12C531;
+	Thu, 21 Mar 2024 16:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711037391; cv=none; b=ralrvxS2jrB8SRTSEgs96aDQ0imcN4b/GVjgIasUFBQRpHMtKAEaEyfYJ/zGhzhGwE45eBUHHWqQbaPj/ZroAZ+K+RpUz6huFlhegwzoz3gBVhsq3sGMX32a7ZPB4o0vXIxGEm0cQjlOxvYpUl42cBtxmGLSI4Lh5qJYeYV2yGE=
+	t=1711037488; cv=none; b=GYekPuDQJnA3AQBixVPtQKpYXCkPnfBAJCqkepH/nPyG4fVN4g73Rt+EzLDVje+v/9HhiydNejq+JRW4aWEMyDBna764dhkpVkSiKalGMMZ5eRQhnXZImTRafJ5qa+u7XsV8HeP/bKuMlYM1eXcz5GTojz9TFgfjVSutMhBMnpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711037391; c=relaxed/simple;
-	bh=Efa9pooFtZFexc8t2FHAlDSOT6+OQH2tDlvcl4EcU6s=;
+	s=arc-20240116; t=1711037488; c=relaxed/simple;
+	bh=GXzDY6aQIzbC3/65zz7zxM+4qBX0ieLULr+Gd+ARJ0w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s1h25r17iK47SGGHSoDiRrKin6j9dSadjUneAqSdi5Ev3Dweu02SH1a3jlNhg0zCFHQfoI3PNBvEGZLzozyH3rKMQu4LGSwPjZM0kw8gNLQ0k98z2a7f9IxuCSNA3fwIqst47PYv2vohuo0RAIjDVzrMhLd/Gn3bglsDQapkX6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zoo3Siob; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711037388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4cR8GpDLO+4FVgHiOEVtV5NgNDutqCmPeOvWuL5WwZo=;
-	b=Zoo3Sioby/zzX/878P7HZKdxDD+j4mIoD+9EIxeWxYvtR/dKD5BjX3ok8d+iZOHChTSyUH
-	fz6xu5F0Os8/xK5EeQTaRZHEui7wi6YCU3AD/pjR03Q6ClsadrbQ9pCtH6b0rMkPofWc+r
-	LBcnaMwmKbixhlRnFsbiV5ErE58DR/I=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-16-2VBo6QdyOTG6Bbg179lG2g-1; Thu, 21 Mar 2024 12:09:46 -0400
-X-MC-Unique: 2VBo6QdyOTG6Bbg179lG2g-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-568728e521bso1060678a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:09:46 -0700 (PDT)
+	 To:Cc:Content-Type; b=AozL81S/C/sDGLv1YQihhmz8fZ1Jnx/Gu8u2eeUmJ0KqbraMRoN5EF7jbKLtdl705P3MjG0a4LbpWXtyrxNTT1w+YOOJYoY8k3dt1Cct/5PhuWHAlju2nlXLfAu8ZnVBVmYZM8F+upCuHUZfpu8yyUOPo0prZdcdW+FZH2nskTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lmLA+WYg; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e01c38f98cso7581955ad.3;
+        Thu, 21 Mar 2024 09:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711037486; x=1711642286; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZZ4Ih7l6K3kM42eSjSiX1HZ7od3Xj13k1HeO4ATrU/E=;
+        b=lmLA+WYgZKiZLzChOCWEP+mbQdFa90PDX1vCQ8NDc9L3jjnlS92p30Z4kBEh/j1GjL
+         H9xACE4dV4CaJEAnIKU02nEV4wc4QFouosEV2PvNmw5/Jq+6ccbevt5NcYli5rSp8t7E
+         hZa95M+ep+p9gYwrXxvRJWLcWd1JX+q+2M+AbECycAIsm5yl57z8K70pt6yHZYsCaa6G
+         UnXkxQXqfxRdEu4znN1yQ8Jk6uCV8RsFD3ORP0JP8Qn6xpfjAVW8eg7xDq6rBzCMpUaE
+         JJ5k1FLGeoWErs92nnL8dl5TEeoxGJUQddBzpI6iiJUiXEng1LUlFG2E2futdYXzSCnw
+         SCrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711037385; x=1711642185;
+        d=1e100.net; s=20230601; t=1711037486; x=1711642286;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4cR8GpDLO+4FVgHiOEVtV5NgNDutqCmPeOvWuL5WwZo=;
-        b=WitsCJJ52EiSvGsrRgcoPD2uE25sxdnJqoLPG4I5WlOqA4OLX077bJUwpD7LYhPn2p
-         hbns5QfEGxOBv/SjQ6GhZ35gvAxQ4Kt9ikcq7NjMIQPvwaVkfbOFV/5x0xIWFF7QOhce
-         y5dneNOwb6Qj03PSjePI985IwqyecpzjvPL/3sfvHlNfjssk5bEegtrbDBpwNmt+MBRY
-         VeRnsXd6OKK4YKOjsltgVorYjpXcwEr1OfB2Bd/QcRiiirS73vCLSuf6dQIaiPBUm289
-         Tsvb2uK+DPuDDKn/Z4PYbGPeTD3j1002YsmbNPtfXJ6g/cYkvbUjaDHOVndbhH6VWzSV
-         SN6A==
-X-Forwarded-Encrypted: i=1; AJvYcCXlBHyt+1dqmvkW1x5D3hg2qDFaz7bUTBuCe7MNKEEybKnNS6kNZ7C/fxz6JuWzNAuZIKerbkKGh2tXBTV8j1CINlGyyES83tLbbWO8
-X-Gm-Message-State: AOJu0YycLiuC6ku9wd0E3cpg+hjZUlFnAD0GoDExDiAhWNFkYjwkvJ4Q
-	GyfQ718z6W0zvlnVZcD68vkPmqqQHRAh3vCjPb7D/QrYufKjMk1GsuE8mFesf6JiUoasy9zurKP
-	zdNsEHxXP/fuVgJOP6pIJXuniBDYD5FWdRvYqR5L3Z9j4mXUbNOTsZjPna2z6R+ffK4+SE5+KP3
-	fYLQ1HvmXpUATZVJfwFt5aV7xMgizhx1B1StjL
-X-Received: by 2002:a05:6402:2421:b0:566:f5d6:4b4 with SMTP id t33-20020a056402242100b00566f5d604b4mr6854709eda.12.1711037385197;
-        Thu, 21 Mar 2024 09:09:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFJczUOKWHiXnEN5u0YPmmuAnhgkpGir9OOZXAH68RtsDs3o/mdfwXGaEp7tIlIBwPP814Hb6KspJCMPCXLbDI=
-X-Received: by 2002:a05:6402:2421:b0:566:f5d6:4b4 with SMTP id
- t33-20020a056402242100b00566f5d604b4mr6854684eda.12.1711037384888; Thu, 21
- Mar 2024 09:09:44 -0700 (PDT)
+        bh=ZZ4Ih7l6K3kM42eSjSiX1HZ7od3Xj13k1HeO4ATrU/E=;
+        b=l3PEWDt1ohSlfsie7FlUuzWoIYLLeQ1QZ/CaRRnChUp7dO/YY1qOt9DhKvL4yVygjK
+         VIVg/5yKDuKX48Qd9chrkzd2IRhz71BQ/tZOyf5FgaBcSt8W/2GTMRidsB32FEONAnPH
+         Bk1iIRGKw5RN574wOAO8hk/kV5gj2PLYl/KeeS55c7080STcT6l/XmEynAJCjOLwJpvD
+         lIzKOCySlbo6B/sapWkW9He53lgRghqQc8SWJwcPuWLxJhVPOTr3vgEHv93me3fV3rOT
+         /OY0/LjPh6WNE4I6oSV0XfpfHv48u5XXucv+5zAFyfD+yDGL49RWq3j2DgNS7mPwKrhk
+         jFVg==
+X-Forwarded-Encrypted: i=1; AJvYcCW4Z4JXd7vAlDYVsbKdLIb/DNVFOExZ6sINFialB8seq2Ce7Ww2OS7oP3wdvLj49gjINyOJj54s/1McVngbFSeev22FeDySYKIBJ8X+p/riuBPuzvclcRXhr7Lmo03pzy3POwVu0JEkZKaA++kLP3Zw04C9h06xOvbjJ0vElwNGWAOUjg==
+X-Gm-Message-State: AOJu0YxtF8jmSaanDxEg5JptbKUBf08slYIzc4JRZbLc6VcvDxg9v2MT
+	wBLtWdphqNXyma7ibKbjq2Yg6qOmufANWIDFBtvmV7pc8rvCK2eMjD+UAB/8PO4mRbDaNgMWmz8
+	rX2A+tLXF1f9TvmeFw77QJuctauc=
+X-Google-Smtp-Source: AGHT+IHDPeFBzIGiNXonW5nWzq3MXfueHO6nXYor8nCmrNu//8R7Jtu6D6mspudJPCoU7Zd/7+sAnxFndjEpFpwsUQw=
+X-Received: by 2002:a17:903:1c4:b0:1dd:6781:49ab with SMTP id
+ e4-20020a17090301c400b001dd678149abmr3174875plh.59.1711037486471; Thu, 21 Mar
+ 2024 09:11:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
- <20240315-hid-bpf-sleepable-v4-4-5658f2540564@kernel.org> <bee98dce6c5bf59fb1ad06855f0a1740b8195d45.camel@gmail.com>
-In-Reply-To: <bee98dce6c5bf59fb1ad06855f0a1740b8195d45.camel@gmail.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Thu, 21 Mar 2024 17:09:32 +0100
-Message-ID: <CAO-hwJLh00--9AbS=7z4+W7FgA+hLA8hViMmaMMfz2mERcMwhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/6] bpf/helpers: mark the callback of
- bpf_timer_set_sleepable_cb() as sleepable
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
+In-Reply-To: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 21 Mar 2024 09:11:14 -0700
+Message-ID: <CAEf4BzZnf-ibDHuS_RqSgpe1nC+2HBkQ7RYD-qGjRL18rOa7RA@mail.gmail.com>
+Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
+To: Jonathan Haslam <jonathan.haslam@gmail.com>
+Cc: linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, 
+	rostedt@goodmis.org, mhiramat@kernel.org, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 12:54=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
+On Thu, Mar 21, 2024 at 7:57=E2=80=AFAM Jonathan Haslam
+<jonathan.haslam@gmail.com> wrote:
 >
-> On Fri, 2024-03-15 at 15:29 +0100, Benjamin Tissoires wrote:
-> [...]
+> Active uprobes are stored in an RB tree and accesses to this tree are
+> dominated by read operations. Currently these accesses are serialized by
+> a spinlock but this leads to enormous contention when large numbers of
+> threads are executing active probes.
 >
-> > @@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifie=
-r_env *env,
-> >
-> >  static bool in_sleepable(struct bpf_verifier_env *env)
-> >  {
-> > -     return env->prog->sleepable;
-> > +     return env->prog->sleepable ||
-> > +            (env->cur_state && env->cur_state->in_sleepable);
-> >  }
+> This patch converts the spinlock used to serialize access to the
+> uprobes_tree RB tree into a reader-writer spinlock. This lock type
+> aligns naturally with the overwhelmingly read-only nature of the tree
+> usage here. Although the addition of reader-writer spinlocks are
+> discouraged [0], this fix is proposed as an interim solution while an
+> RCU based approach is implemented (that work is in a nascent form). This
+> fix also has the benefit of being trivial, self contained and therefore
+> simple to backport.
+
+Yep, makes sense, I think we'll want to backport this ASAP to some of
+the old kernels we have. Thanks!
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
 >
-> I was curious why 'env->cur_state &&' check was needed and found that
-> removing it caused an error in the following fragment:
+> This change has been tested against production workloads that exhibit
+> significant contention on the spinlock and an almost order of magnitude
+> reduction for mean uprobe execution time is observed (28 -> 3.5 microsecs=
+).
 >
-> static int do_misc_fixups(struct bpf_verifier_env *env)
-> {
->                 ...
->                 if (is_storage_get_function(insn->imm)) {
->                         if (!in_sleepable(env) ||
->                             env->insn_aux_data[i + delta].storage_get_fun=
-c_atomic)
->                                 insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, =
-(__force __s32)GFP_ATOMIC);
->                         else
->                                 insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, =
-(__force __s32)GFP_KERNEL);
->                         ...
+> [0] https://docs.kernel.org/locking/spinlocks.html
+>
+> Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> ---
+>  kernel/events/uprobes.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 929e98c62965..42bf9b6e8bc0 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree =3D RB_ROOT;
+>   */
+>  #define no_uprobe_events()     RB_EMPTY_ROOT(&uprobes_tree)
+>
+> -static DEFINE_SPINLOCK(uprobes_treelock);      /* serialize rbtree acces=
+s */
+> +static DEFINE_RWLOCK(uprobes_treelock);        /* serialize rbtree acces=
+s */
+>
+>  #define UPROBES_HASH_SZ        13
+>  /* serialize uprobe->pending_list */
+> @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode=
+, loff_t offset)
+>  {
+>         struct uprobe *uprobe;
+>
+> -       spin_lock(&uprobes_treelock);
+> +       read_lock(&uprobes_treelock);
+>         uprobe =3D __find_uprobe(inode, offset);
+> -       spin_unlock(&uprobes_treelock);
+> +       read_unlock(&uprobes_treelock);
+>
+>         return uprobe;
+>  }
+> @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *up=
+robe)
+>  {
+>         struct uprobe *u;
+>
+> -       spin_lock(&uprobes_treelock);
+> +       write_lock(&uprobes_treelock);
+>         u =3D __insert_uprobe(uprobe);
+> -       spin_unlock(&uprobes_treelock);
+> +       write_unlock(&uprobes_treelock);
+>
+>         return u;
+>  }
+> @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+>         if (WARN_ON(!uprobe_is_active(uprobe)))
+>                 return;
+>
+> -       spin_lock(&uprobes_treelock);
+> +       write_lock(&uprobes_treelock);
+>         rb_erase(&uprobe->rb_node, &uprobes_tree);
+> -       spin_unlock(&uprobes_treelock);
+> +       write_unlock(&uprobes_treelock);
+>         RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+>         put_uprobe(uprobe);
+>  }
+> @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+>         min =3D vaddr_to_offset(vma, start);
+>         max =3D min + (end - start) - 1;
+>
+> -       spin_lock(&uprobes_treelock);
+> +       read_lock(&uprobes_treelock);
+>         n =3D find_node_in_range(inode, min, max);
+>         if (n) {
+>                 for (t =3D n; t; t =3D rb_prev(t)) {
+> @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+>                         get_uprobe(u);
 >                 }
->                 ...
-> }
+>         }
+> -       spin_unlock(&uprobes_treelock);
+> +       read_unlock(&uprobes_treelock);
+>  }
 >
-> When do_misc_fixups() is done env->cur_state is NULL.
-> Current implementation would use GFP_ATOMIC allocation even for
-> sleepable callbacks, where GFP_KERNEL is sufficient.
-> Is this is something we want to address?
-
-I honestly have no idea of the impact there.
-
-AFAICT, if env->cur_state is not set, we don't even know if the
-callback will be sleepable or not, so if there is a small penalty,
-then it's the safest option, no?
-
-Cheers,
-Benjamin
-
+>  /* @vma contains reference counter, not the probed instruction. */
+> @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigne=
+d long start, unsigned long e
+>         min =3D vaddr_to_offset(vma, start);
+>         max =3D min + (end - start) - 1;
 >
-> >
-> >  /* The non-sleepable programs and sleepable programs with explicit bpf=
-_rcu_read_lock()
+> -       spin_lock(&uprobes_treelock);
+> +       read_lock(&uprobes_treelock);
+>         n =3D find_node_in_range(inode, min, max);
+> -       spin_unlock(&uprobes_treelock);
+> +       read_unlock(&uprobes_treelock);
 >
-
+>         return !!n;
+>  }
+> --
+> 2.43.0
+>
 
