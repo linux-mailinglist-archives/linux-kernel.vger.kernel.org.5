@@ -1,212 +1,177 @@
-Return-Path: <linux-kernel+bounces-110488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C5F0885F9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0950F885FA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:23:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35EF91C2094E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:22:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27B5C1C2169C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762D584A28;
-	Thu, 21 Mar 2024 17:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35EB1292CE;
+	Thu, 21 Mar 2024 17:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="WTbukJoU"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Wp4O/Vn1"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD69B16410;
-	Thu, 21 Mar 2024 17:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041753; cv=fail; b=BWIyU5L78g8XGWKTfpRE0x7Opc1ANAgcaoAC1JfEzE5tSAJVg/ph0U4bfTKsQnU4NdvYV1hCwSVnh/xHb2xws0fRjgXZ1mONkS1fk86VYlhjqMyNXkyl8xxexLemrBw4yyDyJz8E348h55s2RQ7b+bLyr8uGhCRhVtr2RGkh6Gc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041753; c=relaxed/simple;
-	bh=OhkM2HNMeBU5OmW53EeTDfaMfSjlI0VtUNysCthVwKE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Echx2BKLtOLatdR62QXGP/g1wRllN+hPSAQIJid5SOOy3buVrIiVyw+gBu8xAe04ql7A49M7BUHr1cW6w8u38pg87jTUMnSyQCOvsqXP5zgV5q6yXQsHfEC7GFYu+zVKydqYEXuViy51mzhzXn3QyDYX09ptrUNex/xX/6uWd6Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=WTbukJoU; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42L9GnWP001448;
-	Thu, 21 Mar 2024 10:22:05 -0700
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x04cuv5wu-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 10:22:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lgiydwIOd82FoAytEeyUlWhlj393H5tjyIZEuRiWvoX0451uZOQC5YVkZ3sFa1bJbdodM2tkuelTyanz2IY+psQmaVyvpbjMfk3JLIadohjpFKgkpX4auzFvEfC+PZHnsoANiXF54bjvL63hfWNgSWEeqpHLdjiMR6rZzOZNBFPy89Xc0DT+pG2MsEW5YedUm7AGSz/RlihimkVJUOjhBHvKwh1SOdKqvodTIUrzFl2MeI5akIn7CswZ1TXyMIzlEq8gkE3K8ZGJ73eJzX7GMSSeloC87NsiJHCU4lLsGSbtVtQdYjS1aBz24uhXRwVPaUdedzfi34f+K+VFblQmHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iqExk0W6noGcJSnekTcmdAphbR5JhyfprQkzeppoib0=;
- b=NJSVFcL4gcPK5bS7xcuaJqMzku3GsrCsWKQNztO6XIdcvYJAdhWKbpGQ84YgmFAfKc/JQjLAdkhBZAjC0b/K5qhsV0tkULbOV9EpSGV/ULPvTNjSwDhEy7IySV/aSAFCE9G980CxTj6fcWwH0EEaufsxqZ54wMUj+oNHtItA1nbGfYcajQ5DoQ1t/Xh5x0ulbLXvcRZtte/cHxY2+ojV142VUlwCxW2XFTZ/xlnGqVH2ncFQlF8yEp/57G+1G99VOe7BLQFSkYRHPMxKYBzT8AQz5vNZO8qZodctRn5yUdf1gN9OoZncGdeOlfChGGgNEwHW5pcDm2w57L4C4TaM6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iqExk0W6noGcJSnekTcmdAphbR5JhyfprQkzeppoib0=;
- b=WTbukJoUX34Ky8N3HFEgaNs9QgOQLfqDENXqKfZ1qs8qqnlbhyCd4L4lrdOCd8X9OasvThGRn0rhZ3/5TGEA0x/zdxhZl4uzwQbNT6OiiLRvY3IKOT88bxlOBpw0yDUdtqGseW6H3wMJsDc5VShaedsvokS22OYF0warWWYcu84=
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com (2603:10b6:408:11c::10)
- by PH0PR18MB5018.namprd18.prod.outlook.com (2603:10b6:510:11d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.25; Thu, 21 Mar
- 2024 17:22:02 +0000
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::7471:7657:9316:1494]) by BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::7471:7657:9316:1494%7]) with mapi id 15.20.7386.031; Thu, 21 Mar 2024
- 17:22:01 +0000
-From: Elad Nachman <enachman@marvell.com>
-To: Andrew Lunn <andrew@lunn.ch>
-CC: Taras Chornyi <taras.chornyi@plvision.eu>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-        "przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
-        "dkirjanov@suse.de" <dkirjanov@suse.de>,
-        "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v2 1/5] net: marvell: prestera: fix driver
- reload
-Thread-Topic: [EXTERNAL] Re: [PATCH v2 1/5] net: marvell: prestera: fix driver
- reload
-Thread-Index: AQHaeur1JZLk7MSy40+/riWFv1ZU97FBPlOAgAEzX5A=
-Date: Thu, 21 Mar 2024 17:22:01 +0000
-Message-ID: 
- <BN9PR18MB4251367BBD2F9EB77679E91DDB322@BN9PR18MB4251.namprd18.prod.outlook.com>
-References: <20240320172008.2989693-1-enachman@marvell.com>
- <20240320172008.2989693-2-enachman@marvell.com>
- <d02e6c38-042f-416e-b5c8-96dc55e1fd5f@lunn.ch>
-In-Reply-To: <d02e6c38-042f-416e-b5c8-96dc55e1fd5f@lunn.ch>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR18MB4251:EE_|PH0PR18MB5018:EE_
-x-ms-office365-filtering-correlation-id: c4dea6cf-b98f-421a-ed60-08dc49cb6bd6
-x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- 6i/wcmGLJXjzIaHicdtlkQd7/nbxKLB3TOpKSKIc/1csrA13ODWqKs/IReNSWPnNvZQ8Xu4XdqYOlPq3bjdvnUBYb0B73KDWslmyU6ab50iHbBGiksthw+UMRInnA7FJnU+ZL37/FBp2CkSrOFFBlj76bEYdTtLZ28m3/8DteOaqd/KRWZxf5zg6PGgRf7kSnIt4++Tg2pJrWPnhjyKos9hun2xFe2yf9YWc2tK4nvDLcdjb/WszrwQLYiddw7gb8OG+KHsGIcR3urB2u1fsf295KACFin8uDwhAy5pg0NNxP8nyuhdWa8Z0RyWgn8dpE4YHOouknbCeFG8xo+NvMU1TG8UtI9GQ60C+P/u0i0AE4p1fd08ld7cyWr2LHcHkA7YOvTAK6VX+Xln9FDaIj2lHUpoC9G4px97zEiXcnOngx+1ZMpFNRYHNNSbH39aEOj94ZcZSGd2P2/KB9lKb5F5GLZMbPWnjLKxNOqEqVT4Sk8LPe2MxSY9zxrZDsHtCWFCk3K3796T+OrW3hUi2BNq3Ntrxh5gWL1Spa92f7HkRQivpqlMrsQCIlkE0BqVpKjQasWuZuXSjUU6jVN7qDUYWhfGZXsDgFPlhZSR83HjCDlpCBoMbUvr9NvrHZL3s992r4zzcOOKOiDTYFW0tl+rRFDM9iCKfpP3kuPz59XOuoxU19ikIkiGuryUsH+SRx38SqrwIztLkvuf6YKtavdqUvy0tDoizui4g2yRkjmE=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR18MB4251.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?ChtzwnMIVLt4y7o+Gp7WbKSpKjxGx6eVocqdRyf+knwc74UXKx7PH3yFIkca?=
- =?us-ascii?Q?wTDVEsxRCy34m+ZKay+V8IBEi49Yo20iifzw9UzRrQ8u2Lf0i5+osa7L24e4?=
- =?us-ascii?Q?/NCquymRho+rJocWz9RYrRo73wQQQF/mxzSCroUHLWU57S/rU1auzG9kIwrn?=
- =?us-ascii?Q?xI3p/GuR1cEXpNT1qq2ZLkqtU++JUhtXgkVibWtHbWcocp1Z9qpnesJFmwdj?=
- =?us-ascii?Q?Q7z2OgztiTl2flC8lfgF3lMEPdKyAtXKgzrm/jMi+Htqdk/fdbKlm/2ebU5W?=
- =?us-ascii?Q?/7R8Q+8oLqVa7nhdrUny7bwIxb0AEmNh03KAcM+8S2UeDDLQeDhr2BE46xIU?=
- =?us-ascii?Q?hhaJVWnNkuQEz9WmKN2e38TK4tHO85u9oBAfaG5+xVYO1HfohFZlQb0ChHfy?=
- =?us-ascii?Q?zcguWUI5b8KmLRCu8y6/OrBf+KAQ3wNFnQJwxGERgKiYF6ln+bZuehOd/4NE?=
- =?us-ascii?Q?v/fLmxZ7h6ReE5zn7fZJAtIKw+0b4hggtNx4HG0S22XBwU1PBRKj3MqWPsnK?=
- =?us-ascii?Q?YsfD90XraRJmH0QoW+bdhFa82WVWSRWnXwo8u4FKtK87hyeOHOJtpf+K2fbU?=
- =?us-ascii?Q?2c0MQ0MRf20Ey4CW68TxZfUMNDiLmSiwYgv12xE954Ju/ZbD1bj0QMDPxWFP?=
- =?us-ascii?Q?hUVC1sGBnNLROswxmPodl1akTTWIxRueuO3KbldsWXSJbV5TEcG4AOdDrA+M?=
- =?us-ascii?Q?IwHkB+BLJchaIrJPpOQGEOgU1LBqv3Kx+3oinvKbV9/pwVcHr+znb6lvA/7y?=
- =?us-ascii?Q?vzKAbU7BiodlQdDpzt/WIjH+YU1l9/vJpEd03VyE3HT95/p3QP5HoJz9YuC/?=
- =?us-ascii?Q?Buboq2aqrOoRLa+h8MW5p/VPTUAY4aULRixfyg1wr/tHuRO7jhHImtJc4gyM?=
- =?us-ascii?Q?wDu4fn+K1QbPanQY5jIssdGcr6NkEG7afJHbD25YuYNHojNcm0Edrp+IEKev?=
- =?us-ascii?Q?7duGZ6KddOIMupQUFT56Zkv2hSIfrpYqSVV0dDyXr4VVnKgdHEZRqKRWJk26?=
- =?us-ascii?Q?QLB9z2l3tU5j6JOL3kGCfCpKcXm0Swf+08vW5mXIPCJpPzCMm2Sxl0XO6auU?=
- =?us-ascii?Q?B3/TKEnDh/CDlLqSB8SIsQCyGOn4alKWJr7o8F4Wv+7LxkP2rspz26J6MSB7?=
- =?us-ascii?Q?xu6b3YNT5V1bfKVrnNMlP9a3E0Ze3cNLkIaf1/oTR2s5uW1M981meQK+Ca/Y?=
- =?us-ascii?Q?0FUKbFpMBuIF0Ij6SjXRErxYL5VUeWi2z+WkX5etnaWGQ/X7Kqua8wCLNpYJ?=
- =?us-ascii?Q?9d+vAdtt7LoETMdIyk+IZlPJdPHpI56RvJxJtvaJ8VB06bmj1ZgB9CPz10lC?=
- =?us-ascii?Q?hPFLWUW3RqQRzj43gYQaSfj2tOQnMMOrTp3P8rWMgnXd2x4ZRdVOtxeWp8KO?=
- =?us-ascii?Q?kBLYG4kuYwrOuDiz/ZuMHz4RR+PLJdua64yGUIHv70OtkWMn7qiTVpH30YU2?=
- =?us-ascii?Q?8vnQrHJzE6nIZmhNgbD6PEm6dcCo+Fwqqy+Fj3AyMzNd7Y0EP+pNs71jN+Cp?=
- =?us-ascii?Q?slO1z6qiiLLljjSb8QL2TdOApRzs9mGIXEgZ9t/N3kxEhX0EaHB+OZwrt2QD?=
- =?us-ascii?Q?g8JsYtLWBeDiorYp7jKSeThnCM2bzeb7iTzftyEG?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE3B16410
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711041780; cv=none; b=R/ct0St9+XNP7ZivWvZdf65SXP1+5NEflf45cCfdfwIlbhtempbTqoEIaM26fyvOi+4stF5xh3yfIimE9l2+KJ99OxPoKlNxQJHKRFBIbQbsTHCZDtYlWTttpKQrvvSG89+Mry5QiHgx8nYYLtTqBsvgaPcejkDNBeyPlvyjAdU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711041780; c=relaxed/simple;
+	bh=Bla6ImeaxPC0l/wXS4fIkd5VYa4ZJlHCrM9gFW+aZB8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ha2RaaA5W/EHhlr5nt24EDJU4VNEbh6zlKk7eXoK0fEWRgF4JMHs1CB6m1Fsl1Tx/vy66sFHkyZ/JOK9+IVkNKmwN9Ezm3rdfMGRBj9NjzOmJjvAeu8y1XRXfzHdiZBNwlvmFfRPOm5yhdYlGFy+cZCcFJ6Je1R6dMJ2WlXhKCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Wp4O/Vn1; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc236729a2bso1169348276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711041778; x=1711646578; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w4sCto2weX/tSraSWS0s5CjzL8cyi2xaSDvgaVtTzPM=;
+        b=Wp4O/Vn1x+NjMVoyH1hqeGz5tXez/gLF44IpWIScGFPlcJyu5RJ7vJiJU/gQPl/4Dn
+         htaniwwXNzQB2aWwR4yMm/3f9OHS4M1G8T1ih8wSy7E8R98XYDyIdy1jTczSEl4g7Tki
+         2K3rqQo1QM00/qrcEl7zDLRPvvZs4YkH89pwYltNrD0UKP1BKGxtDCd05YExk5woVyxA
+         Kybp7/HSuoE9rKnv0dGGk54Y1+pnsiL0uYJR4mXC9UMEnzzDuoTz/6cp8K1CpYa0qZHa
+         p639zE4maeZirBKWuTl3ZpCOmTXcQPxMrIlmbNfQbca/Zm3qv+NrJ2T9roplqehch6lG
+         fW6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711041778; x=1711646578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w4sCto2weX/tSraSWS0s5CjzL8cyi2xaSDvgaVtTzPM=;
+        b=gyx8phL0nN5WDn5vmLaKams7yBGHocPFUP7eYLgRyDakn55X+ELnnnc2Rjj6ZEr30c
+         qATvfN5oISddy34cQEe7RxZ/2qUO26LrIw4WdvUkGOh8dZNufqkbf7LTju2+NJTgxrnJ
+         CSPCrg3vElXfHxjirodrWg1tGTnUJSTSuZoeu8dH+rglnidCseqkdIQ5dpNmiA9RvZE8
+         NGTDde88oUjY7CluhNp0004GzkZXQZVQoYQeCrDnqexuSkoxMI7foX5cAn7VyPOGMc6H
+         a6tcIWs4F5vUbUJaqyI4a1kwSSfNOTN07Spq+9PeHtiu5qx+s5qq6Dtau8WL3lXh5ghY
+         DW7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWSLUDv0e2fSV9WrtOpfKIJBGjWbyCD6g/zcZPPRkC4V+EJ7qnVPYQBEvf6K1KZmqDP30iSPp4kkWmugsSPfzpzn1S00PUvKDOmZBrb
+X-Gm-Message-State: AOJu0YwDttY1t6HOkeOxZSvJSUOFXOMG3t03giiWmIPgep+/3CGJ8e7A
+	/waOAuavDB/aaTYUbxTKDgW+W1oSTg/4SFDIeSWWD3nZ5yXGKCkCQ6P+Ajne0gI8NgJax8EfW1w
+	/ideYjNtPsM41tb319lKjDMwM/QlbZiTR1PdS
+X-Google-Smtp-Source: AGHT+IEchVac4khjBai8ZMUeOEG+pay6R0DITToEq3FetB5+Bz6Fx0tQ3dmiDUpIWg8REeoZLlH/6+Ca7JUBqPCCrBc=
+X-Received: by 2002:a25:3607:0:b0:dcc:323e:e1a4 with SMTP id
+ d7-20020a253607000000b00dcc323ee1a4mr19870609yba.6.1711041777566; Thu, 21 Mar
+ 2024 10:22:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR18MB4251.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4dea6cf-b98f-421a-ed60-08dc49cb6bd6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 17:22:01.6162
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fSqfTmD+mgsv8HtYmqstc9bWAgxGl0fjMGq0yLeKMMeHe++WZ/UdV/ouft6KPneA1rtW1CPtdl+o7dPq4I9r/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB5018
-X-Proofpoint-GUID: _CH7fYfE4rqG9p1XX7yn23NWFPjvxFNg
-X-Proofpoint-ORIG-GUID: _CH7fYfE4rqG9p1XX7yn23NWFPjvxFNg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
+References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-21-surenb@google.com>
+ <Zfxk9aFhF7O_-T3c@casper.infradead.org> <ZfxohXDDCx-_cJYa@casper.infradead.org>
+ <CAJuCfpHjfKYNyGeALZzwJ1k_AKOm_qcgKkx5zR+X6eyWmsZTLw@mail.gmail.com>
+In-Reply-To: <CAJuCfpHjfKYNyGeALZzwJ1k_AKOm_qcgKkx5zR+X6eyWmsZTLw@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 21 Mar 2024 10:22:46 -0700
+Message-ID: <CAJuCfpGeep=4CqW+z4K=hXf2A6V3aWZLi_XSeEuEz1v=S7qKnw@mail.gmail.com>
+Subject: Re: [PATCH v6 20/37] mm: fix non-compound multi-order memory
+ accounting in __free_pages
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-> -----Original Message-----
-> From: Andrew Lunn <andrew@lunn.ch>
-> Sent: Thursday, March 21, 2024 12:58 AM
-> To: Elad Nachman <enachman@marvell.com>
-> Cc: Taras Chornyi <taras.chornyi@plvision.eu>; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
-> kory.maincent@bootlin.com; thomas.petazzoni@bootlin.com;
-> miquel.raynal@bootlin.com; przemyslaw.kitszel@intel.com;
-> dkirjanov@suse.de; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [EXTERNAL] Re: [PATCH v2 1/5] net: marvell: prestera: fix driver
-> reload
->=20
-> Prioritize security for external emails: Confirm sender and content safet=
-y
-> before clicking links or opening attachments
->=20
-> ----------------------------------------------------------------------
-> On Wed, Mar 20, 2024 at 07:20:04PM +0200, Elad Nachman wrote:
-> > From: Elad Nachman <enachman@marvell.com>
+On Thu, Mar 21, 2024 at 10:19=E2=80=AFAM Suren Baghdasaryan <surenb@google.=
+com> wrote:
+>
+> On Thu, Mar 21, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.=
+org> wrote:
 > >
-> > Driver rmmod after insmod would fail because API call to reset the
-> > switch HW and restart the firmware CPU code loading procedure was
-> > missing in driver removal code handler.
+> > On Thu, Mar 21, 2024 at 04:48:53PM +0000, Matthew Wilcox wrote:
+> > > On Thu, Mar 21, 2024 at 09:36:42AM -0700, Suren Baghdasaryan wrote:
+> > > > +++ b/mm/page_alloc.c
+> > > > @@ -4700,12 +4700,15 @@ void __free_pages(struct page *page, unsign=
+ed int order)
+> > > >  {
+> > > >     /* get PageHead before we drop reference */
+> > > >     int head =3D PageHead(page);
+> > > > +   struct alloc_tag *tag =3D pgalloc_tag_get(page);
+> > > >
+> > > >     if (put_page_testzero(page))
+> > > >             free_the_page(page, order);
+> > > > -   else if (!head)
+> > > > +   else if (!head) {
+> > > > +           pgalloc_tag_sub_pages(tag, (1 << order) - 1);
+> > > >             while (order-- > 0)
+> > > >                     free_the_page(page + (1 << order), order);
+> > > > +   }
+> > >
+> > > Why do you need these new functions instead of just:
+> > >
+> > > +     else if (!head) {
+> > > +             pgalloc_tag_sub(page, (1 << order) - 1);
+> > >               while (order-- > 0)
+> > >                       free_the_page(page + (1 << order), order);
+> > > +     }
 > >
-> > Firmware reset and reload is needed as the firmware termination will
-> > make the firmware loader change its state machine to the firmware
-> > loading state, and thus will be able to load new firmware, which is
-> > done at the beginning of the probing of the prestera_pci module.
+> > Actually, I'm not sure this is safe (I don't fully understand codetags,
+> > so it may be safe).  What can happen is that the put_page() can come in
+> > before the pgalloc_tag_sub(), and then that page can be allocated again=
+.
+> > Will that cause confusion?
+
+I indirectly answered your question in the reason #2 but to be clear,
+we obtain codetag before we do put_page() here, therefore it's valid.
+If another page is allocated and it points to the same codetag, then
+it will operate on the same codetag per-cpu counters and that should
+not be a problem.
+
+>
+> So, there are two reasons I unfortunately can't reuse pgalloc_tag_sub():
+>
+> 1. We need to subtract `bytes` counter from the codetag but not the
+> `calls` counter, otherwise the final accounting will be incorrect.
+> This is because we effectively allocated multiple pages with one call
+> but freeing them with separate calls here. pgalloc_tag_sub_pages()
+> subtracts bytes but keeps calls counter the same. I mentioned this in
+> here: https://lore.kernel.org/all/CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4J=
+ct3=3DWHzAv+kg@mail.gmail.com/
+> 2. The codetag object itself is stable, it's created at build time.
+> The exception is when we unload modules and the codetag section gets
+> freed but during module unloading we check that all module codetags
+> are not referenced anymore and we prevent unloading this section if
+> any of them are still referenced (should not normally happen). That
+> said, the reference to the codetag (in this case from the page_ext)
+> might change from under us and we have to make sure it's valid. We
+> ensure that here by getting the codetag itself with pgalloc_tag_get()
+> *before* calling put_page_testzero(), which ensures its stability.
+>
 > >
-> > Without this reset, the firmware loader will stay in the wrong state,
-> > causing the next firmware loading phase in the probe to fail.
->=20
-> What is missing from this is an explanation why you need to reload the
-> firmware at the next re-probe. That just seems like a waste of time if yo=
-u have
-> already loaded it once.
->=20
->     Andrew
-
-Unfortunately that's how the firmware loader on the firmware cpu state mach=
-ine works.
-There is no ABI interface to verify which firmware is already loaded, and t=
-hen supporting
-Warm boot reading of the values back to the kernel.
-Since many of these firmware binaries are secure-boot protected, upgrading =
-is very tricky.
-
-Elad.
 
