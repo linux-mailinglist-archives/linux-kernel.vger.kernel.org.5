@@ -1,105 +1,120 @@
-Return-Path: <linux-kernel+bounces-109552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B84E881AC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:51:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F1EA881AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3557E282F72
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:51:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7D61282FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1E31C17;
-	Thu, 21 Mar 2024 01:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AF71C2E;
+	Thu, 21 Mar 2024 01:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="meMuQzjL"
-Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iY6ebiun"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90339AD32
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6053E370
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710985858; cv=none; b=bRcxFtQZVZrJaHxrv5cJswk84Be+2BRuRAK13EBqp4ObpcpVHVFQUaGZ0e7/R/4P/XexxosUuRKSVK7rqJcFxAh4Gd5qI3sdZt5LaN2cpAK3cvsD85pLe4ECTLVnOvxv23+VMH0GAZe4wzxnH/luH2x6UxTKBPXBH9hf/m3lkGY=
+	t=1710985652; cv=none; b=YIJ1dY9Ba6wkKYtW4OWlpHAaTSgKp6f56RnWO/bn3Eg8uT3C9SRbARj11WOhOahVMU8KKibYGEUENL9yov+aeY4sagadk5T5KDo588hkx7q1M3tXLnk9hMG4dAJDRpescEjipa5w5D6c2wQHj+9a51q4CQY2qrZuzKL67Y3igqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710985858; c=relaxed/simple;
-	bh=/sHlsPSnOZc0LfxrgrKONDIB2LMzGmk216AHR8Om51Y=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=HM3cYfR1qh+AYdFRRulsfLHWE2lUpC1Gm/DFhwvuVf2NFjogF6nIUTzAtAG7nWiJkXqGHAr6u7q/JNQqYR5JURQb/BVjB35m3ajpp2qvZkC9kUTMVfK7pJOZUBG9iBaqREbB0l/qVgP3udqv33clbzQhWeuEs0pzCgjSKrPSxLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=meMuQzjL; arc=none smtp.client-ip=203.205.221.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710985554; bh=YDTkjNP0OTljJ09a+6XSTbShy94/N4fLanURXVYYMss=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=meMuQzjLfNCyUcP9QlVXXAHvY2HApDUn4W7kNnCOuViDtvGwCIIZSrw4rGExpnRzH
-	 1fGWLM14tPRLQhvb8ZYr5/JwgSK2s/M/Mxfi248uA4JmnVf4R1Mi7vj1Ev8HkQMpsw
-	 dw6wCSdJu5wmT+XW/EXrEzDDnaJQgRgr8mFBIvWw=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 9E9018E3; Thu, 21 Mar 2024 09:39:41 +0800
-X-QQ-mid: xmsmtpt1710985181t4b31hzpn
-Message-ID: <tencent_38BA83BB7233789ED71B8B4B181BD325F208@qq.com>
-X-QQ-XMAILINFO: NSTsyPg8kQQYTg96rLLlKoXINR2DVOWpQE8H77w3aZgka0iELJVy05LsYD/H10
-	 CcriQ7mUMCkoDBuZBNEsvmNcNF0yuN4BqkXW8yzPsfAtRDvLXTVtqeMyCw9mexH9NchXCrE4DB3R
-	 HHq7ZbhrmEfUB0QV6C6Bb74Uin/eCVQtF0Dq42g41au1jXhsOLoIuKvZx2PijBvud20hBmPd8UC8
-	 myB/ymIrDkFt1xqc86IdBnzmxueRqAaFBiXGQIRIVDhcYOuT70noLtkrwJzi/nQruaa4+gWdLVW+
-	 M3FPmD4ORCKG3T9IyqmtrM5HBl5dciYP5TCUUGMfgeTsElWZp0NZoSavt/+ai1u7oExtDuqvr9ct
-	 hncit6t8DVNmclU5oDYSk0yonwOIJa8aQULHc78VWAtPLdMv6jpQNV/bggnOxSuPKdzTh2HQ4gnc
-	 uYTcHvxdhh/7x9th+w8V+6YK86naofTtPeqA6kNJLDZDKi08ove70LFwIYkKZ6fuO6a5rZvhntyr
-	 VVMmuKuUZf9e9Y1NhiJu/8lGLGcOucd5CxnkVxVdVK4kUsz+CZKEYGuqqQOnEsHKQj8pqYP3z+Yv
-	 8GcBtgJJutvryRoJGZmuT56eDqizeKzhLkHkpWa3WS84S492mlvCyT5vU4YOc4p+eKXGmn0iqG8l
-	 GHj362UsqETGroPFxZXqYfgoRe0HnYcb2fo+DoeQVhLsw/c1g/KiGGWEhFahQywRcPymwXPCKTRE
-	 0bqwLIxp1wX0MYoN/1Opd5qxes22QuCC4wgg6pr/+cd8vy2DobH6VAvZjMp2m0u+kUANUr8+CNDg
-	 KkUvLzuaupRqXRGOMcgU9S+AOyo68k43PAcpsT29hE6M9kAzAOmakxPPoXwzIDg8SsmfBNWq2qsz
-	 pkJjLTZlIZZeYwxBo024yGKabADKf8GmyKS6myDqvoCWSdEvPO2Y9Bm8qJF6ePe+oIajQCT/Z4gT
-	 YpNIcpSNokZrDdVxc8O2x9KL0FnS9oWiGBx3gDmO9hiVvMFqwTH1rXFbNiczyhDBS70+yVZWHklh
-	 pWPbhPyaH4ZCiXU4Mk
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [wireless?] [usb?] UBSAN: array-index-out-of-bounds in htc_issue_send
-Date: Thu, 21 Mar 2024 09:39:41 +0800
-X-OQ-MSGID: <20240321013940.1784691-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000004e41110614187d35@google.com>
-References: <0000000000004e41110614187d35@google.com>
+	s=arc-20240116; t=1710985652; c=relaxed/simple;
+	bh=3yffF7vBmofXAlEr63Jn2oR9H4cVLjxiNPDdSR/FG4U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TuJqz9SmaxUEYF44juqWRhXdmyU4jliUloSVjGdrLGP9gPVT7be+GA8sKxdHiFHNTQxRLFrP8P5P/07KUXn3lmEiejpewyryPdw+R0jSdIybfZRDSa6i+2h2gjsMWwokrm11gpeEXiA05IAkCFwd7NdYAWr8yNI4qqh7vB785LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iY6ebiun; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1de0f92e649so3111765ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710985651; x=1711590451; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uwwXtXCvbSQVnkT5BGfOsi+2LxDqXEltVUJKwHfmTtQ=;
+        b=iY6ebiunOd7PmvEk2cwUTHPsenmdCj9iCPmJDpK+78+qwK3L/fp5JnAHCZ9jZ1xW25
+         2/enZYNPcWiOpE6LlC2C21nIaN9UKgbsQvPvIohybWIdM9Q5aeo4MZsnhHGpG/ZmwZQS
+         eQHQEzFSE4tiQ5RrQGJ2K4dRhqCK/D/wIdZQ7aKMkqtvLv8BhAx0RmCFVAIllzIiiLEg
+         w4x+ImDAicreJ6aL+159fuZrxaLzvS3fKivZOc0ldYimCjxaYsoI3Girag0kgQz0PrtR
+         X3SlrfeXNgRsepTYSl/0AHZhjCro4hxcQMKMmXUcDas4DeQwMcLjfPddc4J2EX/48DfV
+         yG9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710985651; x=1711590451;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uwwXtXCvbSQVnkT5BGfOsi+2LxDqXEltVUJKwHfmTtQ=;
+        b=gpxx4CyZjnnyi7xcm9odrZPlje+AINSb5CnjBZrkiuNyen4EWRv7fxWmlSC/2menP1
+         O9CtFjpvI2ctVHhbNbapz0V3DoDyK7x/ndKhhXDUC3sZiPevJlLb92NbajEWd7GGTjIA
+         ayvctjHih1tae85NxFkX2CqRH1QlizIgxpCykoxnWbVs235GPGxPRtHgZzQujBsPZ1b5
+         3IM7ZnujtaW2iwneQcfo3KIjVqcjQ5skwm1OkIQsS+VOlkXp6m4KQqMjkh+HzFf0TuYG
+         JhEMH8Rx9PxbWVZ+ngO1CGqi3i9N3z+LlqluRFhyxG84lyu3FGb4Q07CRtDl5Crmf2xV
+         InKw==
+X-Forwarded-Encrypted: i=1; AJvYcCWnwkBxFUUkFCC0mdlewCA4YyaYSp0Qv56oNYXk6LrNFNPA9iKtfc6uNf9eFgXyez7mvADxo+h4r5gvx7uySlezab34tNLUPMa9ZTDP
+X-Gm-Message-State: AOJu0Yy0HYMPtCJ8zi5D2HelfaR4OTjSPV7+EO63AmpTJ+fxvfc1QUJM
+	FB0J5i1YDJRWEoC68BtZHcZbBVViumLYRNYC7o2j93jhl1oloKAs
+X-Google-Smtp-Source: AGHT+IETbDCXSfnyDw4E7ZxgsR0AeuF9hqGIzboQZu3z4KQzKauZvY+l6Tsh2CopSifk1TuSpOFVUA==
+X-Received: by 2002:a17:903:1cc:b0:1de:f569:cf41 with SMTP id e12-20020a17090301cc00b001def569cf41mr21259195plh.26.1710985650634;
+        Wed, 20 Mar 2024 18:47:30 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.25])
+        by smtp.gmail.com with ESMTPSA id z5-20020a170903018500b001ddc83fda95sm6121927plg.186.2024.03.20.18.47.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 18:47:30 -0700 (PDT)
+Message-ID: <1c8e6fbc-ef1b-49fb-9d3e-b163a58cee10@gmail.com>
+Date: Thu, 21 Mar 2024 09:47:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/11] mm/ksm: Convert stable_tree_search to use folio
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>, alexs@kernel.org
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
+ Andrea Arcangeli <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Chris Wright <chrisw@sous-sol.org>, kasong@tencent.com,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240320074049.4130552-1-alexs@kernel.org>
+ <20240320074049.4130552-10-alexs@kernel.org>
+ <ZfsAEl5nipppfeLx@casper.infradead.org>
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <ZfsAEl5nipppfeLx@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-please test oob in htc_issue_send
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
 
-diff --git a/drivers/net/wireless/ath/ath9k/wmi.c b/drivers/net/wireless/ath/ath9k/wmi.c
-index 805ad31edba2..5d531aacedbc 100644
---- a/drivers/net/wireless/ath/ath9k/wmi.c
-+++ b/drivers/net/wireless/ath/ath9k/wmi.c
-@@ -275,6 +275,7 @@ int ath9k_wmi_connect(struct htc_target *htc, struct wmi *wmi,
- 	connect.service_id = WMI_CONTROL_SVC;
- 
- 	ret = htc_connect_service(htc, &connect, &wmi->ctrl_epid);
-+	printk("ret: %d, wmi: %p, epid: %d, %s\n", ret, wmi, wmi->ctrl_epid, __func__);
- 	if (ret)
- 		return ret;
- 
-@@ -304,6 +305,9 @@ static int ath9k_wmi_cmd_issue(struct wmi *wmi,
- 	wmi->last_seq_id = wmi->tx_seq_id;
- 	spin_unlock_irqrestore(&wmi->wmi_lock, flags);
- 
-+	printk("wmi: %p, epid: %d, %s\n", wmi, wmi->ctrl_epid, __func__);
-+	if (wmi->ctrl_epid < 0 || wmi->ctrl_epid > ENDPOINT_MAX)
-+		return -EINVAL;
- 	return htc_send_epid(wmi->htc, skb, wmi->ctrl_epid);
- }
- 
+On 3/20/24 11:26 PM, Matthew Wilcox wrote:
+> On Wed, Mar 20, 2024 at 03:40:45PM +0800, alexs@kernel.org wrote:
+>> @@ -1820,28 +1820,30 @@ static struct page *stable_tree_search(struct page *page)
+>>  	struct rb_node *parent;
+>>  	struct ksm_stable_node *stable_node, *stable_node_dup, *stable_node_any;
+>>  	struct ksm_stable_node *page_node;
+>> +	struct folio *folio;
+>>  
+>> -	page_node = page_stable_node(page);
+>> +	folio = (struct folio *)page;
+> 
+> These casts make me nervous.  Remember that we're heading towards a
+> future where struct page and struct folio don't point to the same
+> memory, and part of that will be finding all these casts and removing
+> them.  Please, unless there's a good reason, just use page_folio().
+> 
 
+Hi willy,
+
+Thanks a lot for all comments. Yes，all of them are very right. I will rewrite and send the patchset.
+
+Best Regards!
+Alex
 
