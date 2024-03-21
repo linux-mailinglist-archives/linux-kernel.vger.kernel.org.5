@@ -1,212 +1,184 @@
-Return-Path: <linux-kernel+bounces-109987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371898858A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:56:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1988858A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 923F7B21FBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:56:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D612827C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08065B1F7;
-	Thu, 21 Mar 2024 11:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19D55D733;
+	Thu, 21 Mar 2024 11:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wLyXcSx9"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itpAkv0S"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7FE3C17;
-	Thu, 21 Mar 2024 11:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4401758AAF;
+	Thu, 21 Mar 2024 11:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711022159; cv=none; b=AhWGAH/RLXE909gImteopLLXFHJy2R7wbGTv0Yql1I1DB4Cirz2LyFLUiNAS2QT66uu9nzwZ1PgUF9eVgzBSTE1pRbQey3FujV3MwpFhsePLCkISe3En5k8C10zHePtkCrThxXQQTSW2+oslGPhu4kDZf0FtNn1ork0U0dqNI6g=
+	t=1711022203; cv=none; b=REmNzSYE4z8pioBMe/aMD2zIaq3Dasad4v/Aw2C+nCaAeGYB+G1QoLMxyBmNAW/FqFfsZk93pH8kBED+pqjPy8LCOj9/joEmeEXt0eVAdMe4RTInC8tuNhA12v+/hRWzISQCnfUvGvFsKG52ST1LvdPsb4mANx9dP8Hsy1MRX6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711022159; c=relaxed/simple;
-	bh=OOKeFMdqN/oRnbdKq0PnsVOa1ssNxlZTwhJ9GrYbeOI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Z4FowFJroMD7AY65vfKUuDGM4qCna6eNCSsLr/3NzqmQoXE3y4t9ndZ9k6wWr74kj/pVt36Od8IgUftR+smlNEISWxsb6Y2M0ZqFndMQjb9wQjFndVpb3QCMgDfaWXrCWuvlJvRztsn2NKHgoJbiCEMTTM2PyuJAaO3dJG4jg0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wLyXcSx9; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42LBtIum009191;
-	Thu, 21 Mar 2024 06:55:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711022118;
-	bh=bfXSNgzfF39TmycWQT9ljrIkLfLOmINJWk7nXQyV6gU=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=wLyXcSx94ZSt8JqZDiY6Ry8Ubk8G1CwXaejforsyVW7LKcjbYEi9+6tIwpVDAS/yo
-	 agpOJCZdtJ8VLLYAnPSZSyK1kQ2nQYVxTjllp40J54ikcgBili0q9Zx4GdZsiei8kV
-	 Zkx9l6Yg/JahLyS2WsZYKN19Bc61AsbWYZEvknPY=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42LBtIV2032767
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 21 Mar 2024 06:55:18 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
- Mar 2024 06:55:18 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 21 Mar 2024 06:55:18 -0500
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42LBtAWR111394;
-	Thu, 21 Mar 2024 06:55:10 -0500
-Message-ID: <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
-Date: Thu, 21 Mar 2024 17:25:09 +0530
+	s=arc-20240116; t=1711022203; c=relaxed/simple;
+	bh=ClOpV1tUHPrV9xbbPmCV71AFRJniHeEgt5+wDpHdPuI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oLlkUKUK2s0VUt1U34uN+CBjF50CgFhBkQq0yOzbNpi/Zo0Y0BC4K2bLAhzTCeF7Swgx4dHclVRrCHipYeMJlSOPfjhTZEZGaRDPkLUjJlEbwPutgALngFr1Nltc+rU7q3mQCDWLZX5BbLZVK4rAnxujt4ZdQBSsN/kwtwhe2xM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itpAkv0S; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512f54fc2dbso910903e87.1;
+        Thu, 21 Mar 2024 04:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711022199; x=1711626999; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qroAAFcs7TC1tOdTn1sB37AUBpgXbN1aHENpqRPoyEw=;
+        b=itpAkv0SePTYNevgPlq4Ns4hfmR8925Z4mz1eYaF7VZiPy9+ThNzBkC9aHnkUmEFcx
+         PCD/gof8HJvnrgNM6lheFsDVrVsUp17EELTW03Zx761R0Y8wO+XO64ubt6jOuaRwLKkg
+         k3l9ij4FfC1BwOP79tyq10SbX6/UwXSpUn4xbiV7MQ6UtBOmCTYOuH4dqnuisgq+C+x+
+         K5ZCV+IMq6dZnggvcHWgICdSJPXR7kQDnOz4kJ9WB6kwLMF3AHzdlKanv0pDbD+Zq91r
+         eHMyH5FYzw2J9x5x70UcPywJ96MO9xQb6RZKU7Mfs/9S1EZAEzz+CxbQccnJ8vn2OFjF
+         sWcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711022199; x=1711626999;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qroAAFcs7TC1tOdTn1sB37AUBpgXbN1aHENpqRPoyEw=;
+        b=oeedb5k08ClJOAYbHjM5oBI+h4VIwWNuSXHEl9Y6KfWOWW+aOakpqAsUi87nZzUr5s
+         YgUfY3Fj5efWufxceHrMD7glqSFkRI2tiG9Elxq7oK2trSuGUfFD2uYP9IOABXqXHQmh
+         35n/HIo+L8oAh8GV3827JyTIBWEBwSrEd3lSjdeKFQPW4kJnht0dvSiEM0GkXmVnECzW
+         ouoVZ6TeSfhzkVoO3lO9ZR2f8iKbELGCm9HBn2jAYDBX/s8DnbkylvB8/JLqzzAskOll
+         TqK/Nk3oku9UZBdt86W6YnPpxkKYouxHt/4BFKbOj7RsWgeUpX1KRrTjHtvjSLYV/5x/
+         2ssQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUI6LcleibY41khsjPOelNfELVzEJWTJ5CYE8EJY03FukNKPuhRp5qo0SqwBt/uuFI3nxkVfweRlDiWHFO+/6A33K2gvumN5PzOQzMKGJ8YcEhiUGB/aA0ejsq1InLKzjKWtJPdQnk005/YF/8qJ+jyXp/yG9mnq7ak8fGjjSkcw==
+X-Gm-Message-State: AOJu0Yw2MIVZsKJ62yp0qD3sxFZdo2AUDbTbIpDTHUUU+Gg3G07LtYYe
+	YIseVuOZOV6WP+cROZ7H1hDLfdyE9pVC7EryW5l8LNMtYvccdqBiRVcjTWzE3g/HCpW+k9BDmm4
+	vUgCSkLTJGD56LI9A3qtBkt3LypQ=
+X-Google-Smtp-Source: AGHT+IGoMlZM1r7Zbtwlbo2uEyA+VsoDZudn1PSQ5QwgZ9K0dJhVnqBX5wuYEerXv39Ut1ues4IiMPxranFe7AEBRTc=
+X-Received: by 2002:a19:ca5a:0:b0:515:9479:a997 with SMTP id
+ h26-20020a19ca5a000000b005159479a997mr691094lfj.10.1711022199188; Thu, 21 Mar
+ 2024 04:56:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Ayush Singh
-	<ayushdevel1325@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>, <jkridner@beagleboard.org>,
-        <robertcnelson@beagleboard.org>, <lorforlinux@beagleboard.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Derek Kiernan
-	<derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
-	<arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown
-	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder
-	<elder@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>,
-        "moderated list:ARM/TEXAS INSTRUMENTS
- K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SPI
- SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM"
-	<greybus-dev@lists.linaro.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-2-ayushdevel1325@gmail.com>
- <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
- <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
- <b62915ca-c151-4e37-bb03-c92c569c84ff@lunn.ch>
- <4b319264-bff7-48e5-85e8-201ca0bafec6@ti.com>
- <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
- <ded6c350-4c70-4a26-8b18-6605dcc6e084@ti.com>
- <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240310-realtek-led-v1-0-4d9813ce938e@gmail.com>
+ <20240310-realtek-led-v1-1-4d9813ce938e@gmail.com> <d2568101-f3e0-4c2d-8613-52d023e22b77@kernel.org>
+In-Reply-To: <d2568101-f3e0-4c2d-8613-52d023e22b77@kernel.org>
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Date: Thu, 21 Mar 2024 08:56:27 -0300
+Message-ID: <CAJq09z6q2gaZYqc-=fQEMOA1ViAKTEJqT9iF2xsYCde9syouig@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/4] dt-bindings: net: dsa: realtek: describe LED usage
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Vladimir Oltean <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Krzysztof
 
+> On 10/03/2024 05:51, Luiz Angelo Daros de Luca wrote:
+> > Each port can have up to 4 LEDs (3 for current rtl8365mb devices). The
+> > LED reg property will indicate its LED group.
+> >
+>
+> Please use scripts/get_maintainers.pl to get a list of necessary people
+> and lists to CC (and consider --no-git-fallback argument). It might
+> happen, that command when run on an older kernel, gives you outdated
+> entries. Therefore please be sure you base your patches on recent Linux
+> kernel.
+>
+> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+> people, so fix your workflow. Tools might also fail if you work on some
+> ancient tree (don't, instead use mainline), work on fork of kernel
+> (don't, instead use mainline) or you ignore some maintainers (really
+> don't). Just use b4 and everything should be fine, although remember
+> about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+>
+> > An example of LED usage was included in an existing switch example.
+> >
+> > Cc: devicetree@vger.kernel.org
+>
+> Please drop the autogenerated scripts/get_maintainer.pl CC-entries from
+> commit msg. There is no single need to store automated output of
+> get_maintainers.pl in the git log. It can be easily re-created at any
+> given time, thus its presence in the git history is redundant and
+> obfuscates the log.
 
-On 21/03/24 15:08, Michael Walle wrote:
-> Hi,
-> 
->>> Is that because the current software support is too limited? Are there
->>> manufactures who want to create more complex designed, but are limited
->>> by what can be described in the manifest?
->>>
->>
->> most mikroBUS add-on boards in production lies in the category of
->> sensors, displays, connectivity, mixed signal (ADC/DAC .etc) and if you
->> look at the existing bindings under bindings/iio/ , most devices need
->> only simple descriptions and the properties are mainly standard bus
->> properties (SPI/I2C properties), IRQ, named-gpios, named properties,
->> regulators, clocks the extension to manifest was made taking this into
->> account and the named property description interface just maps the
->> manifest entries to the unified device property interface under
->> include/linux/property.h
-> 
-> How will the ethernet boards ([1], [2]) work? Where do they get
-> their MAC address from, for example. The DT has some nice properties
-> for that, but I doubt that will be possible with the manifest files.
-> I've looked at the manifest file for the w5500 board [3] and to me
-> it looks like that board will come up with a random MAC address on
-> each start. Thus, even today, you have some boards which require
-> a more complex description.
-> 
+It is a left-over before I adopted b4. I'll do the cleanup.
 
-Agreed, this is a limitation, unless the corresponding 
-drivers/subsystems use device_property_read_* helper to fetch 
-properties, it will not work and net/core/of_net.c only implements 
-of_get_* helpers even though the underlying functions can be implemented 
-with equivalent device_property_read_* equivalent as well.
+>
 
-> Apart from the discussion whether the manifest is a suitable or
-> sufficient mechanism to describe the hardware, I think the main
-> problem with the proposed binding, is that it doesn't follow the
-> binding Rob was proposing for a socket. If I want to use DT
-> overlays, how would you describe an add-on board?
-> 
-> The proposal was that the base board has something like
-> 
-> mikrobus: socket {
-> 	compatible = "mikrobus-socket";
-> 	i2c-parent = <&i2c0>;
-> 	spi-parent = <&spi0>;
-> 
-> 	i2c {};
-> 	spi {};
-> };
-> 
-> an add-on board can then have a DT snippet/overlay like the
-> following:
-> 
-> &mikrobus {
-> 	i2c {
-> 		eeprom@52: {
-> 			reg = <52>;
-> 			compatible = <atmel,at24..>;
-> 		}
-> 	};
-> 
-> 	spi {
-> 		sensor@0: {
-> 			reg = <0>;
-> 			compatible = <foobar>;
-> 		};
-> 	};
-> };
-> 
-> That should be possible with a binding for the mikrobus, which
-> in fact it is just a pin header with a standard pinout. Also as
-> Russell pointed out in v3, the EEPROM/manifest is not part of the
-> mikrobus standard. So maybe that deserves an own compatible, like
-> 
->     compatible = "mikroe,click", "mikrobus-socket";
-> 
-> Or maybe click-eeprom? Although click seems to be the brand name of
-> MikroElektronika.
+> > +patternProperties:
+> > +  '^(ethernet-)?ports$':
+> > +    type: object
+> > +    additionalProperties: true
+> > +
+> > +    patternProperties:
+> > +      '^(ethernet-)?port@[0-6]$':
+> > +        type: object
+> > +        additionalProperties: true
+> > +
+> > +        properties:
+> > +          leds:
+>
+> type: object
+> additionalProperties: false
+>
+> > +            description:
+> > +              "LEDs associated with this port"
+>
+> Drop quotes.
 
-Agreed, there is nothing preventing us to convert the binding and update 
-the driver to follow the above proposed format and will be done in next 
-revision. Click is brand name of MikroElektronika and they don't allow 
-custom boards to use that branding, however clickid can be used in the 
-case where EEPROM is present/enable the socket to be probeable.
+At some in my frequent system upgrades (rolling release), it
+uninstalled the yamllint
 
-Thanks and Regards,
-Vaishnav
+warning: python package 'yamllint' not installed, skipping
 
-> 
-> -michael
-> 
-> [1] https://www.mikroe.com/eth-3-click
-> [2] https://www.mikroe.com/eth-wiz-click
-> [3] https://github.com/MikroElektronika/click_id/blob/main/manifests/ETH-WIZ-CLICK.mnfs
+It should have catched that before.
+
+>
+> > +
+> > +            patternProperties:
+> > +              '^led@[a-f0-9]+$':
+>
+> [0-3]
+
+leds are already defined for a port. I'm just trying to add a
+restriction to allow only 0-3 leds and use that to identify the group.
+These suggestions will redefine the leds property, forcing me to
+declare #address-cells, #size-cells for leds and reference the led
+schema in led@[0-3]. Is there a way to just add a constraint to what
+is already present?
+
+>
+> > +                type: object
+> > +                additionalProperties: true
+>
+> This cannot be 'true'. Which then will point you to errors and missing
+> ref to leds schema and need to use unevaluatedProperties: false.
+>
+>
+> > +
+> > +                properties:
+> > +                  reg:
+> > +                    description:
+> > +                      "reg indicates the LED group for this LED"
+>
+> Drop quotes
+>
+>
+> Best regards,
+> Krzysztof
+>
 
