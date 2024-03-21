@@ -1,174 +1,106 @@
-Return-Path: <linux-kernel+bounces-110188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A1F885B4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:01:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ABB3885B52
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E24B9B21860
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08F121F23336
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76768615C;
-	Thu, 21 Mar 2024 15:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2D186241;
+	Thu, 21 Mar 2024 15:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K6LV5WN3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rBS3hh6a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E462155792;
-	Thu, 21 Mar 2024 15:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFD21E522;
+	Thu, 21 Mar 2024 15:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033272; cv=none; b=MbPvBGcAtK4EvipYUWC3JT0/ziHPukT3UH59U2xf1MhVWmZWZ3ERFHfCVl/FdkO/G9djOZ0xEvFoynv5btR79C7ipuZC5YpegZEjQiLSwizzUURCsAdc9i+kNeTtWbCiqmgho/z+mw7EK8vJixsmTfxs0mI+fLGfDoaIcFR5/+o=
+	t=1711033319; cv=none; b=VDHYo5P0gsSwSMEALbyka+ltC7M49eCUXOUwrmT90XvAQ/vxwj/dycV94aQLmsGfaEzuovW0RW/d9fyjsvv/hC9F6o7w7/B2d3um775r7AI+3cmXKsTnWKVHJXc7V1+2w8y3zXEc7aAyhtU8D33jl5gxZmEzZkDXwoFwZDxX2NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711033272; c=relaxed/simple;
-	bh=PEJrHSKt1U+K2L5GVnfRCuafwN7gw0OYFsINbYiBTdE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pHx4i6QuDYUBmTUYXVFIeDKTTCOtVERy8Ckj68iz1ipQ/aMaVwja5YljDTfgg+Iha1GqnIfnT6aHfuI9fp1jORNFkf/N5gJlLC3wPSlpDEmkZ3smcgnWEAdZoaN5WxnwaJ3tYwnh3X+4tdeqSfl5Mo8A6ni9h6VOn486dN+4K7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K6LV5WN3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 223A7C433F1;
-	Thu, 21 Mar 2024 15:01:09 +0000 (UTC)
+	s=arc-20240116; t=1711033319; c=relaxed/simple;
+	bh=kmMw7UrxyYm+FrW2p/kXhJw0xpkOp6iNmX0mZMs6h10=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=CknHHaSmFcnQZbWAPUXBPBvQfNPtsT2wjoe/PFkQd3OYgT4vSdwzLamztvKy/MChjNUucC5+k+I3l2VSIkRWnElSLnV+/BO53B19qOr7IfwCywL+LotzTtpooVlZMugl4INyGB75R55NVzyGTX2Zp8srKsjs6JPnbVNk0I7+GYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rBS3hh6a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA1CC433F1;
+	Thu, 21 Mar 2024 15:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711033271;
-	bh=PEJrHSKt1U+K2L5GVnfRCuafwN7gw0OYFsINbYiBTdE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K6LV5WN3cJeKpxPr3PEudhZ0rutxUFjpiz3rzcP/5XF2mJaGCmyGDuWItvM5/n1iZ
-	 COlgIKNmhcOb9DYaAS6ZdSy/HZ/CHws+xOsblsl48Vrd5RDmc+XfABK4KocwyhQA1C
-	 dN64eFtIXZijfLOG6/6vHR2aTpyz3yHWeUVCEn/NikbQDND8CcmYNvkUnAykAAk26d
-	 yBJ9zVEE/S2/2TS6E7/fYHA5t9wuOH4mec2abjoSpOXUZ+DiBCbcwTrtYsjIgnNB1x
-	 yaKSy2LARjVFcd5pG6sxsynBawEy51576AMJONfeQRIsQ21FsySBxdYfyJB4CjKTzJ
-	 QPwyEdJFtIBOA==
-Date: Thu, 21 Mar 2024 16:01:06 +0100
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: =?utf-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
-Cc: jikos@kernel.org, benjamin.tissoires@redhat.com, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] HID: uclogic: Store firmware name in params
-Message-ID: <dadh7jtdpdf3iahcgxdaqadpc6k6gnaz6gatxycxpd4u2atl7a@2f4vzqwzt7n3>
-References: <20240321144553.262409-1-jose.exposito89@gmail.com>
- <20240321144553.262409-2-jose.exposito89@gmail.com>
+	s=k20201202; t=1711033319;
+	bh=kmMw7UrxyYm+FrW2p/kXhJw0xpkOp6iNmX0mZMs6h10=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rBS3hh6a7XnbPCyETgHuyP4Gzi5T8ulrzuCZY+NwYdZDihY0vZO3F5Mjz7RHz3+fT
+	 LMjOby+wmiv4ooIDcbTGjMopnVv9ktbF7vA0sbV5mymIByAjdI0VH45ZIxILykinyn
+	 Vwjmre3d4jdgMUY7Zwj/otTwNTOB9/TJrDCgDcOjye4EiEDXn6l+yvfj3bXa1gshLG
+	 Jwxv9UHOk60VLQatPPF3B93u2lR+AWnYxCfx8I9qirKVjQ3iRsSHR1cHg/isw8jZ6g
+	 RDYqlvFNBoUj50Au2d5INpAkMPtMcqDpp7kbDDw+6Tu1N9f9ziHSejrBzjSTrVSUZU
+	 rWnd+1I9UpKlA==
+From: Mark Brown <broonie@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Fei Shao <fshao@chromium.org>
+Cc: Daniel Kurtz <djkurtz@chromium.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <20240321070942.1587146-1-fshao@chromium.org>
+References: <20240321070942.1587146-1-fshao@chromium.org>
+Subject: Re: [PATCH v2 0/2] Fixes NULL pointer access in spi-mt65xx.c
+Message-Id: <171103331749.114773.10634941088175436463.b4-ty@kernel.org>
+Date: Thu, 21 Mar 2024 15:01:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240321144553.262409-2-jose.exposito89@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-
-Hi José,
-
-On Mar 21 2024, José Expósito wrote:
-> A future patch will need to access the firmware name to expose it to
-> userspace via sysfs.
+On Thu, 21 Mar 2024 15:08:56 +0800, Fei Shao wrote:
+> This series contains two patches for spi-mt65xx.c, both focusing on its
+> interrupt handler mtk_spi_interrupt().
 > 
-> Store it in `uclogic_params->fw_name`.
+> The first patch is to fix a NULL pointer access in the interrupt
+> handler, which is first found on a MT8186 Chromebook device when the
+> system tries to establish host communication with its embedded
+> controller.
 > 
-> Signed-off-by: José Expósito <jose.exposito89@gmail.com>
-> ---
->  drivers/hid/hid-uclogic-params.c | 14 +++++++-------
->  drivers/hid/hid-uclogic-params.h |  5 +++++
->  2 files changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-uclogic-params.c b/drivers/hid/hid-uclogic-params.c
-> index 9859dad36495..79ec3eb80f84 100644
-> --- a/drivers/hid/hid-uclogic-params.c
-> +++ b/drivers/hid/hid-uclogic-params.c
-> @@ -121,6 +121,7 @@ void uclogic_params_hid_dbg(const struct hid_device *hdev,
->  		params->invalid ? "true" : "false");
->  	hid_dbg(hdev, ".desc_ptr = %p\n", params->desc_ptr);
->  	hid_dbg(hdev, ".desc_size = %u\n", params->desc_size);
-> +	hid_dbg(hdev, ".fw_name = %s\n", params->fw_name);
->  	hid_dbg(hdev, ".pen = {\n");
->  	uclogic_params_pen_hid_dbg(hdev, &params->pen);
->  	hid_dbg(hdev, "\t}\n");
-> @@ -652,6 +653,7 @@ void uclogic_params_cleanup(struct uclogic_params *params)
->  	if (!params->invalid) {
->  		size_t i;
->  		kfree(params->desc_ptr);
-> +		kfree(params->fw_name);
->  		uclogic_params_pen_cleanup(&params->pen);
->  		for (i = 0; i < ARRAY_SIZE(params->frame_list); i++)
->  			uclogic_params_frame_cleanup(&params->frame_list[i]);
-> @@ -837,7 +839,6 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
->  	/* The resulting parameters (noop) */
->  	struct uclogic_params p = {0, };
->  	static const char transition_ver[] = "HUION_T153_160607";
-> -	char *ver_ptr = NULL;
->  	const size_t ver_len = sizeof(transition_ver) + 1;
->  	__u8 *params_ptr = NULL;
->  	size_t params_len = 0;
-> @@ -870,14 +871,14 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
->  	}
->  
->  	/* Try to get firmware version */
-> -	ver_ptr = kzalloc(ver_len, GFP_KERNEL);
-> -	if (ver_ptr == NULL) {
-> +	p.fw_name = kzalloc(ver_len, GFP_KERNEL);
-> +	if (!p.fw_name) {
->  		rc = -ENOMEM;
->  		goto cleanup;
->  	}
-> -	rc = usb_string(udev, 201, ver_ptr, ver_len);
-> +	rc = usb_string(udev, 201, p.fw_name, ver_len);
->  	if (rc == -EPIPE) {
-> -		*ver_ptr = '\0';
-> +		*p.fw_name = '\0';
->  	} else if (rc < 0) {
->  		hid_err(hdev,
->  			"failed retrieving Huion firmware version: %d\n", rc);
-> @@ -885,7 +886,7 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
->  	}
->  
->  	/* If this is a transition firmware */
-> -	if (strcmp(ver_ptr, transition_ver) == 0) {
-> +	if (strcmp(p.fw_name, transition_ver) == 0) {
->  		hid_dbg(hdev,
->  			"transition firmware detected, not probing pen v2 parameters\n");
->  	} else {
-> @@ -1028,7 +1029,6 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
->  	rc = 0;
->  cleanup:
->  	kfree(params_ptr);
-> -	kfree(ver_ptr);
->  	uclogic_params_cleanup(&p);
->  	return rc;
->  }
-> diff --git a/drivers/hid/hid-uclogic-params.h b/drivers/hid/hid-uclogic-params.h
-> index d6ffadb2f601..412c916770f5 100644
-> --- a/drivers/hid/hid-uclogic-params.h
-> +++ b/drivers/hid/hid-uclogic-params.h
-> @@ -232,6 +232,11 @@ struct uclogic_params {
->  	 * List of event hooks.
->  	 */
->  	struct uclogic_raw_event_hook *event_hooks;
-> +	/*
-> +	 * Firmware name, exposed to userspace via sysfs as it is used to
-> +	 * identify the tablet.
-> +	 */
-> +	char *fw_name;
+> [...]
 
-I can't remember if this was on the table or not, but any reasons to not
-use hid->uniq[64] field instead of a custom sysfs?
-If there is already a value, we could just append the firmware version
-with a colon (:) separator.
+Applied to
 
-The main reason would be to not export a new sysfs specifically for this
-driver, but it would also allow HID-BPF to have access to the value and
-thus allow to detect if the device works with the given bpf program.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Cheers,
-Benjamin
+Thanks!
 
->  };
->  
->  /* Driver data */
-> -- 
-> 2.44.0
-> 
+[1/2] spi: spi-mt65xx: Fix NULL pointer access in interrupt handler
+      commit: a20ad45008a7c82f1184dc6dee280096009ece55
+[2/2] spi: spi-mt65xx: Rename a variable in interrupt handler
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
