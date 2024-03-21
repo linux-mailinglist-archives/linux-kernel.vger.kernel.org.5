@@ -1,207 +1,143 @@
-Return-Path: <linux-kernel+bounces-110750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F61886336
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:20:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BAB886339
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D058BB229D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:20:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515D1286324
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CFC135A50;
-	Thu, 21 Mar 2024 22:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BTvHcJKP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B60136679;
+	Thu, 21 Mar 2024 22:21:50 +0000 (UTC)
+Received: from mail115-118.sinamail.sina.com.cn (mail115-118.sinamail.sina.com.cn [218.30.115.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2149013340E
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE3E135A52
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711059626; cv=none; b=jj2ol5CyqnRJlHGO96LLN/oU6mgdcjZX5H37hTTyjBuQxiC8PxRpA/FxTm43cpvHQYMRIIMH9X07DrN9t+x9/1LprfgMhM27IWIfcZwLAfbrsbAnCAIf+xKjLYOzgXIUfh9qbsN7WPsKEHe8sT1WdirJlBHZVXRgY/o+9nC4zwg=
+	t=1711059710; cv=none; b=LsiWWJcDH6wzdEEMt8w1l3crkBR2kVlNkwggjDalhKHEg6B6mEWpoIArbGbbgABjBmiO4SdNjBcB1LwN2Sx/yKD9K+Gdx14Gfa4MB/xg/HOq2FA8MSdPl816Jh/eRj9HpJUNBqMZDKy1mDP2FZj0hDzZkPNnvREgU85aquPCvME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711059626; c=relaxed/simple;
-	bh=/n2jv8rDgKaqJpNpQ+HnJmah8AfLfxdaeNnParnJZkI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ly9qE1yci1rVHRRh4ngrW7S8TTCphRWCtEX/T3zJOLKobY6azxO280DNdIeye5G/NovjW+spuk9C2gAbNP2uU7JpZSq7c6R6PblWeYYIKcmpzvGQnHaiuKlf7F46RAk6MKbvZpdB7GGjjH0xVmdxs0hYG/qcFZSRcJXUmG9ma4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BTvHcJKP; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711059623;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sCyRimbdU2wwu1d7eDel2TgdYhJ1/JYW04ucq+z++Uk=;
-	b=BTvHcJKPCd0u0V2jqVYXylFbhD6ZMiQAqSlz/K1nmj2YnMzSnJUW1Sql2BRJuttX0C3oB9
-	02leonjoyNEuRRvUFdbbVaagl8TCZbQrGVYERXfxknc0tzGVc+f6WHw//AHaBe30uZwxPb
-	4cdu/K/WyUShghL6jsP/j7grtkRL8mw=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-172-6F0GOKFJNZaqSHVMEQB7ZA-1; Thu, 21 Mar 2024 18:20:22 -0400
-X-MC-Unique: 6F0GOKFJNZaqSHVMEQB7ZA-1
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-21e4604101bso415582fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:20:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711059621; x=1711664421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sCyRimbdU2wwu1d7eDel2TgdYhJ1/JYW04ucq+z++Uk=;
-        b=HPvxm2cX/9+XALsetpLbnd+5se1PT5nYT0b+FNcQsS9uYIMyR2hzOdNUNnam6y7Ekx
-         q+yh2pFYRARa6Gcsl3ZJf6w5y/fnluT+8akO/nDNzKdUaeZeSh1Ka/F0wq67yd4+7G4d
-         HCZYgqS7Y/CbO9ioFzGBnCSTijEdVKz9RNp2y8mk36btiDViDeV+w9wP/wUaQrVuP4Sc
-         NBbE8RlSgh/ftj72eBzZtuc5UO7Ty3c2h2tBPvsvCSmVR8TUSBr4v7zLwMfap6LqeTfu
-         PRUYYT9eGcIvROJ4LDTlMpShGx2G7yNYJ8EbR7s1OdSHCj6PAdhGsJOaghNKYiEd4XC0
-         OJVQ==
-X-Gm-Message-State: AOJu0Yyhhz8tYVsGqPQ18C43vBbMk6TjOwd2Rzc1V7KYcojqsYIdSOum
-	mrYtAfrp5gNUVPkRC2ltAWDvl7p7x5MFu/J3SApxIKpITWbWgeDhisKvsD5OXo40YvAuowl1Lge
-	EYea+yo1rXqUx2SgdJYsQl9U9AJmaD96uTJRPCBuIVOCKO2F8ICNt/DMk8tFZMUe0s5bViA==
-X-Received: by 2002:a05:6870:f80f:b0:229:e46d:763a with SMTP id fr15-20020a056870f80f00b00229e46d763amr219189oab.0.1711059620830;
-        Thu, 21 Mar 2024 15:20:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFAsJ1BNGnICQuxlCUIGt0YZ8AO8lhg+b2h4UmNz9/iXMpHRYabaisHPwVf7UL0HBtNAl4TZQ==
-X-Received: by 2002:a05:6870:f80f:b0:229:e46d:763a with SMTP id fr15-20020a056870f80f00b00229e46d763amr219170oab.0.1711059620305;
-        Thu, 21 Mar 2024 15:20:20 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id pt19-20020a056214049300b00690f23c8605sm374850qvb.23.2024.03.21.15.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 15:20:20 -0700 (PDT)
-Date: Thu, 21 Mar 2024 18:20:17 -0400
-From: Peter Xu <peterx@redhat.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] mm/userfaultfd: don't place zeropages when
- zeropages are disallowed
-Message-ID: <ZfyyodKYWtGki7MO@x1n>
-References: <20240321215954.177730-1-david@redhat.com>
- <20240321215954.177730-2-david@redhat.com>
+	s=arc-20240116; t=1711059710; c=relaxed/simple;
+	bh=9lGxldt3FbC/qdsB/K46SIm3mDeWP61ycUXkypW+u+s=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Uj+C3h32BQ1e5XelN95BjkkrReRzAgfQXubBZMMopWkIp97zuTsQJ/32ADjhHpONhwJoAdi3cwoBGmv7BUmG+hLYv+9V0n+4z4yqS2hDkunhMMRZno6jD0GbRWghfHSF/PDEUEdMUpOTsQl9r95+tGfOxg6b41dVwyp+2481jCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.69.35])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65FCB2D0000027B1; Thu, 22 Mar 2024 06:21:07 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 2410634210281
+X-SMAIL-UIID: CD374027FD7243C79AF4A8326B3E6537-20240322-062107-1
+From: Hillf Danton <hdanton@sina.com>
+To: Antoine Tenart <atenart@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com,
+	Eric Dumazet <edumazet@google.com>,
+	syzbot <syzbot+99b8125966713aa4b0c3@syzkaller.appspotmail.com>
+Subject: Re: [syzbot] [net?] INFO: task hung in register_nexthop_notifier (3)
+Date: Fri, 22 Mar 2024 06:20:54 +0800
+Message-Id: <20240321222054.2462-1-hdanton@sina.com>
+In-Reply-To: <171101294595.5492.6904692183666798713@kwain>
+References: <0000000000009485160613eda067@google.com> <CANn89iKnOzz_Bs_ygLWZGjsTw=266p8KALv=QWheTanoHYj+nw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240321215954.177730-2-david@redhat.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 10:59:53PM +0100, David Hildenbrand wrote:
-> s390x must disable shared zeropages for processes running VMs, because
-> the VMs could end up making use of "storage keys" or protected
-> virtualization, which are incompatible with shared zeropages.
+On Thu, 21 Mar 2024 10:22:25 +0100 Antoine Tenart <atenart@kernel.org>
+> Quoting Eric Dumazet (2024-03-18 15:46:37)
+> > On Mon, Mar 18, 2024 at 12:26=E2=80=AFPM syzbot
+> > <syzbot+99b8125966713aa4b0c3@syzkaller.appspotmail.com> wrote:
+> > >
+> > > INFO: task syz-executor.3:6975 blocked for more than 143 seconds.
+> > >       Not tainted 6.8.0-rc7-syzkaller-02500-g76839e2f1fde #0
+> > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this messag=
+> e.
+> > > task:syz-executor.3  state:D stack:20920 pid:6975  tgid:6975  ppid:1   =
+>    flags:0x00004006
+> > > Call Trace:
+> > >  <TASK>
+> > >  context_switch kernel/sched/core.c:5400 [inline]
+> > >  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
+> > >  __schedule_loop kernel/sched/core.c:6802 [inline]
+> > >  schedule+0x149/0x260 kernel/sched/core.c:6817
+> > >  schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6874
+> > >  __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+> > >  __mutex_lock+0x6a3/0xd70 kernel/locking/mutex.c:752
+> > >  register_nexthop_notifier+0x84/0x290 net/ipv4/nexthop.c:3863
+> > >  nsim_fib_create+0x8a6/0xa70 drivers/net/netdevsim/fib.c:1587
+> > >  nsim_drv_probe+0x747/0xb80 drivers/net/netdevsim/dev.c:1582
+> > >  really_probe+0x29e/0xc50 drivers/base/dd.c:658
+> > >  __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+> > >  driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+> > >  __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
+> > >  bus_for_each_drv+0x24e/0x2e0 drivers/base/bus.c:457
+> > >  __device_attach+0x333/0x520 drivers/base/dd.c:1030
+> > >  bus_probe_device+0x189/0x260 drivers/base/bus.c:532
+> > >  device_add+0x8ff/0xca0 drivers/base/core.c:3639
+> > >  nsim_bus_dev_new drivers/net/netdevsim/bus.c:442 [inline]
+> > >  new_device_store+0x3f2/0x890 drivers/net/netdevsim/bus.c:173
+> > >  kernfs_fop_write_iter+0x3a4/0x500 fs/kernfs/file.c:334
+> >=20
+> > So we have a sysfs handler ultimately calling register_nexthop_notifier()=
+>  or any
+> > other network control path requiring RTNL.
+> >=20
+> > Note that we have rtnl_trylock() for a reason...
 > 
-> Yet, with userfaultfd it is possible to insert shared zeropages into
-> such processes. Let's fallback to simply allocating a fresh zeroed
-> anonymous folio and insert that instead.
+> Mentioning the below in case that gives some ideas; feel free to
+> disregard.
 > 
-> mm_forbids_zeropage() was introduced in commit 593befa6ab74 ("mm: introduce
-> mm_forbids_zeropage function"), briefly before userfaultfd went
-> upstream.
+> When I looked at similar issues a while ago the rtnl deadlock actually
+> happened with the kernfs_node refcount; haven't looked at this one in
+> details though. The mutex in there was just preventing concurrent
+> writers.
 > 
-> Note that we don't want to fail the UFFDIO_ZEROPAGE request like we do
-> for hugetlb, it would be rather unexpected. Further, we also
-> cannot really indicated "not supported" to user space ahead of time: it
-> could be that the MM disallows zeropages after userfaultfd was already
-> registered.
+> > Or maybe the reason is wrong, if we could change kernfs_fop_write_iter()
+> > to no longer hold a mutex...
+
+Better after working out why RCU stalled [1]
+
+5 locks held by kworker/u4:7/23559:
+ #0: ffff888015ea4938 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
+ #0: ffff888015ea4938 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
+ #1: ffffc90012b8fd20 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:2608 [inline]
+ #1: ffffc90012b8fd20 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x825/0x1420 kernel/workqueue.c:2706
+ #2: ffffffff8f36d250 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x16a/0xcc0 net/core/net_namespace.c:591
+ #3: ffffffff8f3798c8 (rtnl_mutex){+.+.}-{3:3}, at: cleanup_net+0x6af/0xcc0 net/core/net_namespace.c:627
+ #4: ffffffff8e136440 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x4c/0x550 kernel/rcu/tree.c:4064
+
+[1] https://lore.kernel.org/lkml/0000000000009485160613eda067@google.com/
+
 > 
-> Fixes: c1a4de99fada ("userfaultfd: mcopy_atomic|mfill_zeropage: UFFDIO_COPY|UFFDIO_ZEROPAGE preparation")
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Peter Xu <peterx@redhat.com>
-
-Still, a few comments below.
-
-> ---
->  mm/userfaultfd.c | 35 +++++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
+> At the time I found a way to safely drop the refcount of those
+> kernfs_node which then allowed to call rtnl_lock from sysfs handlers,
+> https://lore.kernel.org/all/20231018154804.420823-1-atenart@kernel.org/T/
 > 
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 712160cd41eca..1d1061ccd1dea 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -316,6 +316,38 @@ static int mfill_atomic_pte_copy(pmd_t *dst_pmd,
->  	goto out;
->  }
->  
-> +static int mfill_atomic_pte_zeroed_folio(pmd_t *dst_pmd,
-> +		 struct vm_area_struct *dst_vma, unsigned long dst_addr)
-> +{
-> +	struct folio *folio;
-> +	int ret;
-
-nitpick: we can set -ENOMEM here, then
-
-> +
-> +	folio = vma_alloc_zeroed_movable_folio(dst_vma, dst_addr);
-> +	if (!folio)
-> +		return -ENOMEM;
-
-return ret;
-
-> +
-> +	ret = -ENOMEM;
-
-drop.
-
-> +	if (mem_cgroup_charge(folio, dst_vma->vm_mm, GFP_KERNEL))
-> +		goto out_put;
-> +
-> +	/*
-> +	 * The memory barrier inside __folio_mark_uptodate makes sure that
-> +	 * preceding stores to the page contents become visible before
-> +	 * the set_pte_at() write.
-> +	 */
-
-This comment doesn't apply.  We can drop it.
-
-Thanks,
-
-> +	__folio_mark_uptodate(folio);
-> +
-> +	ret = mfill_atomic_install_pte(dst_pmd, dst_vma, dst_addr,
-> +				       &folio->page, true, 0);
-> +	if (ret)
-> +		goto out_put;
-> +
-> +	return 0;
-> +out_put:
-> +	folio_put(folio);
-> +	return ret;
-> +}
-> +
->  static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
->  				     struct vm_area_struct *dst_vma,
->  				     unsigned long dst_addr)
-> @@ -324,6 +356,9 @@ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
->  	spinlock_t *ptl;
->  	int ret;
->  
-> +	if (mm_forbids_zeropage(dst_vma->mm))
-> +		return mfill_atomic_pte_zeroed_folio(dst_pmd, dst_vma, dst_addr);
-> +
->  	_dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
->  					 dst_vma->vm_page_prot));
->  	ret = -EAGAIN;
-> -- 
-> 2.43.2
+> Note that this relied on how net device are unregistered (calling
+> device_del under rtnl and later waiting for refs on the netdev to drop
+> outside of the lock; and a few other things), so extra modifications
+> would be needed to generalize the approach. Also it's a tradeoff between
+> fixing those deadlocks without rtnl_trylock and maintaining a quite
+> complex logic...
 > 
-
--- 
-Peter Xu
-
+> Antoine
+> 
 
