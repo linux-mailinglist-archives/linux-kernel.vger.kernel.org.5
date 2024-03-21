@@ -1,173 +1,150 @@
-Return-Path: <linux-kernel+bounces-110279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BE3885C7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:48:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602DE885C3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAA7A1F230BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:48:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1396E1F243D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BEA8625F;
-	Thu, 21 Mar 2024 15:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092F186622;
+	Thu, 21 Mar 2024 15:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="HhUFPzpk"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UTAqrAyE"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C058A1E879
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998408624B;
+	Thu, 21 Mar 2024 15:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711036076; cv=none; b=PIPWgG/AEKwkUrYx6ZiJUyrwUsNFDp619Ipojqw5r2cJsWem2sLeBYXy33xIiKHoki9lViSBbVSRyjSdWluUGIOhBGLBGnBZGqsZS9aeOHEEe7rKR7+Oi9LEcmENgVOt95T8wUz8QZkBwqYBhJ3X3neX2FjOEHNNj0o9aNF8rug=
+	t=1711035586; cv=none; b=U19SvsbDg0SyAuI5Vac5oxhMjE3ttcywYgUwYH+H3sWf+qKX+R/xyStNiW0yL74z0x7WhVv8tiiarHtqQcQPbyvwoFgb6ssSaMT8I3fWm66GckOPVe8i78cpKx/GU+NNS/7aR6+5rH1v+rRq6f1xqzxqUGmgl5XDqgz2tnDkKjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711036076; c=relaxed/simple;
-	bh=jeeFGFpFQcMeiPnqG1XhNR17H2LPGzyB/MVHRtQ7nxA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jY10qaRPTMcivkGCBt9+8q4QsRO1a3Myk8PnYyNdIycei+Eq7M2AgQZCpFkWL7eh+wG2fZwCoB5Io4ip+KlSXE3UZrDoQSW3kMWLTkVcPiG/BW1Mb7eRm/GXcGLKD+tYc/83jdX/AIOXEUf5gw8Ddh4KTL8cn00Yp7QW5jUV5a4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=HhUFPzpk; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1711036064;
-	bh=eFb5mGkBNhSImhI4kWEKhUE6z0crGzcN6/hptGkBZi0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=HhUFPzpknp/Nrd9zQtSJBBPC9/4ryBOd+sXJEUVmFTs5iKC2r9XvANoNn/zXpSFza
-	 yFNdePCAlbDjjLWNNpSsi3Y59dv1N+cslmejn2l3BDWrmSl9wb3glyj5xMwdyH6uaf
-	 m/7+XyEaQj5wxS30vkJ59AI39dW69CImwNMtGAmY=
-Received: from [IPV6:2409:8961:2b17:549c:98ce:49d:c167:4134] ([2409:8961:2b17:549c:98ce:49d:c167:4134])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 9CAAC4C3; Thu, 21 Mar 2024 23:39:10 +0800
-X-QQ-mid: xmsmtpt1711035550tfx2v8zko
-Message-ID: <tencent_583360D51D354010FEE44A3A3B739D5FF506@qq.com>
-X-QQ-XMAILINFO: OFXVMg8LeyWMW6CuZuhrlYUls5evNkZeZR7IwrVp+YzTm/M0xFaWG9TSeMujhq
-	 ZYZacY2WgZPrUfRq9J48NYt9QMpF0t3jHP3nbRBfVyODkrj5TRPTsFxvQxRGa2U/2ZMAfxbEUved
-	 n4cCty2V7pz/3H+FPgaa78YlATHLAY2MYX6GkdHfvUEAr/TK2o9h1gYxNVJc4N3w9aVi+FqVn5Nm
-	 SMQvPUIn0y86TcW6L7KZfnpY8ngdWQclZL5xW1IG5cPHFFnkIwR0eatJp/1AAaZ4YG8U/nwrPGLN
-	 YDgexG5/zHls93yYpuAwh0j2a1DYBiad/I7fQGHhFCj87gZwXm1LGISg5XifO5wH2qcUPXmVN0hg
-	 s8jn2aYTQ+8X1mkLrY2qUy05ydf08ODrhU5cNFJY5uaswuHDyZy67Yj0MXuj/dooDuye1LMQ5+tm
-	 4sNFNtzuiX0ayYuu2OfzoIKJoV1pBQOefajgN6UvNoVFFOkT0lrG8vTZAyaIYjZqf4FRC5N5jzC0
-	 hRf/35jdUYG1joN94Jhuq2D8K8yx7+dYa+HUhraep1j7ktUil7QnJhQUWF799i+5VOYOjIZq3FYP
-	 R3ax4bgNvw90VTM4gmIQCAj3mRsvuFoDMHEaty6IFcJKlza0ikrzmMsCiWw6OQ875xs+LdkaEcuT
-	 f5EYyIaLKMHKX+d2vlUPtMC7Y+EDuQOH1OySDr1jvgKmepi/CGyEtUOBpTyBmKWkpbQ0ietds0OV
-	 X6z4wyxs4CT6LnYR/wkI4OhHdZE14gQigHmr5dJeSzXKg8+EqznXqwZB3KEmW8afV1xlDXtvOC34
-	 qJp+1kVZIxW1T5qxfK0wlmx2MTbzkpz8j8SJbcH9kDgnVlYzgrfTk3Y6wrpQhWNU3viy04tZxC9t
-	 REV6KPuFlYHSB7DEb86IghR8zL24BRfBXysXlA0ezGIgGxiSJ6xh1sVS+aK5e+/MyT5MVaExIWSX
-	 HMGb9kkEg+hW/mVL4CrO24LOBsrMk1HPB/MJuPB74bKg/nT9W5yxKr941bA9UTAtbacZv4CLfoxa
-	 JVp4pTVrq4eaqnSVdZA/98J6duxOV58asZ9D2hsq0AgDubeSDDwPXtNFhiPnvEpoRjkaptSgfi5z
-	 5B5j/9XJuGchNE4gQYhr/9Sxr01OiPA4Zw+t0d
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-X-OQ-MSGID: <d82d69fb-0e2c-8a11-94b9-14763b411fd7@foxmail.com>
-Date: Thu, 21 Mar 2024 23:39:10 +0800
+	s=arc-20240116; t=1711035586; c=relaxed/simple;
+	bh=zmAWQQMh7Czalgq6ff5HKbw7t4LUEUkl12QHvaq3bwk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cnq4wZBspb7k5Wzx6CeeOLt5e05XQQJAX1C9dkWCSWUO/x4crHRrSibnjw96JztFs8X1AZcoTbXkf35WBwJPoHGr53i6mra0M0mbSqxsEUzbk6G0nEIrovOrXU2OradwWSaKKUdfR1ofSFVuYKJnd/wqEnaFCknMrz04vhRitUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UTAqrAyE; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-414783a4a4eso1109175e9.0;
+        Thu, 21 Mar 2024 08:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711035583; x=1711640383; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J6DTJ6OPuAKII4pcTJJo4yMQiS4Vgzpfa0hoNMISqtI=;
+        b=UTAqrAyEeGqhTlfXpn/b5BOVrvT8KN11fdhAh0vSHSs18NWsKGkr/vx9sxs+byvr8n
+         2K/2vCqGpjeKR/e9w3gkQY8SUw15TClcaj6ZdlhkaM1shXKPoJer1C4PYT2RVRAsl4D4
+         QBz7kAGMQ0LUp17cKg8TqwG3uYejL1X9kXFzwO8D9Ob5TwZO1IZA1Sm3zGRsQ7pHDOSW
+         2qMK+9FLRkey+unyug75j51HSKXVHUN9Y1Lmtb61YSo5DfoJ1JebQ2ZXQVg5CiXfekZ0
+         Ssz3/0DgsrlU2NZlgVxoFwD3vi80hJY6rIjr7hKGykkfVnslIBA4ENA9E/nPmVCr4kar
+         3agg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711035583; x=1711640383;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J6DTJ6OPuAKII4pcTJJo4yMQiS4Vgzpfa0hoNMISqtI=;
+        b=KmkgtjGkmn098yw1K1/ttT3NCBNsQ9CaDSNJAqr/FRLky32T0HfZbr/1ro0LMuCz5H
+         qKJQD1v7Fd9WHGDuA+Y1dLl+pxbiBB+/LySS89cSBEiqBHWQUa9LVQ1akS0Q7SMseR65
+         MFAACTdxyQqgLz0mkHWrjl9ghroP4BzZALweV8ka9zwrByDkhfhBZEQCOAu98JbbrZQR
+         u5pL8eYPN30GPMbEK87jjj93iFO0iLZ1UI47KNUMVoyZESsdCiqJU7OH2qXCF/U2kpcz
+         QCt68Nx9RogOXd0Wk62VTs1Kc6VTzNhuZEqnjBoXxCHmsht4w9wvyZGSDPpdARNBTTln
+         B/oA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNeQ6PHzV+XEfe1nSuHzNpJnYg9L7RMjOqqwLTgTheXudnj57b9IusyTMg5sud8DFrfEEf0zQdmFRmuyYydS/zGukSrYIjMc8IO5ME/0MeoGwK34exYMdd0Oz5pQDGvctE
+X-Gm-Message-State: AOJu0YwMqQm9QRRepTgbL6I0CvFp2swqLSvy/+V2esZfebDZ1LzX4ZWS
+	XthINNYO3+XETyNx/GAFkpgESUfDwJ8cL5a576NapQ852wT+VC8Ry300Q/FjRvsgyZt+
+X-Google-Smtp-Source: AGHT+IEhiPIRmvJR0woMqs6zzhGV450+aT5ag5DR7RwlcSbyuGifL7x0RY5n309NWzEUpUZjOkEx3Q==
+X-Received: by 2002:a05:600c:4fd5:b0:414:9d1:d67b with SMTP id o21-20020a05600c4fd500b0041409d1d67bmr3626570wmq.36.1711035582687;
+        Thu, 21 Mar 2024 08:39:42 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id i12-20020a05600c354c00b004101f27737asm5935444wmq.29.2024.03.21.08.39.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Mar 2024 08:39:42 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [RESEND PATCH bpf] bpf: verifier: fix addr_space_cast from as(1) to as(0)
+Date: Thu, 21 Mar 2024 15:39:39 +0000
+Message-Id: <20240321153939.113996-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 0/9] encode the values directly in the table entry
-Content-Language: en-US
-To: Joel Granados <j.granados@samsung.com>
-Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
- Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org
-References: <CGME20240309103209eucas1p25311b485e321e701eeacbdb3e2ba8758@eucas1p2.samsung.com>
- <tencent_C5E6023F97E7CC2A046AAEA09BC9ACF43907@qq.com>
- <20240321152143.yxoonjy3m6bdddkf@joelS2.panther.com>
-From: Wen Yang <wenyang.linux@foxmail.com>
-In-Reply-To: <20240321152143.yxoonjy3m6bdddkf@joelS2.panther.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+The verifier currently converts addr_space_cast from as(1) to as(0) that
+is: BPF_ALU64 | BPF_MOV | BPF_X with off=1 and imm=1
+to
+BPF_ALU | BPF_MOV | BPF_X with imm=1 (32-bit mov)
 
+Because of this imm=1, the JITs that have bpf_jit_needs_zext() == true,
+interpret the converted instruction as BPF_ZEXT_REG(DST) which is a
+special form of mov32, used for doing explicit zero extension on dst.
+These JITs will just zero extend the dst reg and will not move the src to
+dst before the zext.
 
-On 2024/3/21 23:21, Joel Granados wrote:
-> On Sat, Mar 09, 2024 at 06:31:17PM +0800, wenyang.linux@foxmail.com wrote:
->> From: Wen Yang <wenyang.linux@foxmail.com>
->>
->> The boundary check of multiple modules uses these static variables (such as
->> two_five_five, n_65535, ue_int_max, etc), and they are also not changed.
-> This message is a bit cryptic. I had to do a fair amount of research to
-> get what you meant here. Having the context in front is OK with me, but
-> I would add a bit more information so the reader does not have to go to
-> the code and grep for the variables that you mean. Something like this:
-> "When using a sysctl proc_handler that requires a boundary check (like
-> proce_dointvec_minmax) it is common to use a const variable like n_65535
-> in net/rxrpc/sysctl.c or OTHER EXAMPLES...). This is suboptimal because
-> YOUR REASONS HERE"
-> 
-> 
+Fix do_misc_fixups() to set imm=0 when converting addr_space_cast to a
+normal mov32.
 
-Thanks a lot for your very considerate input – this is highly 
-appreciated. We will revise the change message and send v3 later.
+The JITs that have bpf_jit_needs_zext() == true rely on the verifier to
+emit zext instructions. Mark dst_reg as subreg when doing cast from
+as(1) to as(0) so the verifier emits a zext instruction after the mov.
 
---
-Best wishes,
-Wen
+Fixes: 6082b6c328b5 ("bpf: Recognize addr_space_cast instruction in the verifier.")
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ kernel/bpf/verifier.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-
->>
->> Eric points out: "by turning .extra1 and .extra2 into longs instead of
->> keeping them as pointers and needing constants to be pointed at somewhere
->> ... The only people I can see who find a significant benefit by
->> consolidating all of the constants into one place are people who know how
->> to stomp kernel memory."
-> I think it would be better to just link to the lore discussion.
-> 
->>
->> This patch series achieves direct encoding values in table entries and still
->> maintains compatibility with existing extra1/extra2 pointers.
->> Afterwards, we can remove these unnecessary static variables progressively and
->> also gradually kill the shared const array.
-> Two things:
-> 1. Please name the const array: sysctl_vals
-> 2. What is missing from this patchset to completely kill sysctl_vals?
-> 
->>
->> Wen Yang (9):
->>    sysctl: support encoding values directly in the table entry
->>    kernel/sysctl-test: add some kunit test cases for min/max detection
->>    rxrpc: delete these unnecessary static variables n_65535, four,
->>      max_500, etc
->>    net: ipv6: delete these unnecessary static variables two_five_five and
->>      minus_one
->>    svcrdma: delete these unnecessary static variables min_ord, max_ord,
->>      etc
->>    sysctl: delete these unnecessary static variables i_zero and
->>      i_one_hundred
->>    epoll: delete these unnecessary static variables long_zero and
->>      long_max
->>    fs: inotify: delete these unnecessary static variables it_zero and
->>      it_int_max
->>    ucounts: delete these unnecessary static variables ue_zero and
->>      ue_int_max
->>
->>   fs/eventpoll.c                   |  19 +-
->>   fs/notify/inotify/inotify_user.c |  49 +++--
->>   include/linux/sysctl.h           | 108 ++++++++++-
->>   kernel/sysctl-test.c             | 300 +++++++++++++++++++++++++++++++
->>   kernel/sysctl.c                  |  61 +++++--
->>   kernel/ucount.c                  |   8 +-
->>   lib/test_sysctl.c                |  12 +-
->>   net/ipv6/addrconf.c              |  15 +-
->>   net/rxrpc/sysctl.c               | 169 ++++++++---------
->>   net/sunrpc/xprtrdma/svc_rdma.c   |  21 +--
->>   10 files changed, 571 insertions(+), 191 deletions(-)
->>
->> Cc: Eric W. Biederman <ebiederm@xmission.com>
->> Cc: Luis Chamberlain <mcgrof@kernel.org>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Joel Granados <j.granados@samsung.com>
->> Cc: Christian Brauner <brauner@kernel.org>
->> Cc: linux-kernel@vger.kernel.org
->>
->> -- 
->> 2.25.1
->>
-> 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index de7813947981..ee796402ef60 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14046,8 +14046,11 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 				if (insn->imm) {
+ 					/* off == BPF_ADDR_SPACE_CAST */
+ 					mark_reg_unknown(env, regs, insn->dst_reg);
+-					if (insn->imm == 1) /* cast from as(1) to as(0) */
++					if (insn->imm == 1) { /* cast from as(1) to as(0) */
+ 						dst_reg->type = PTR_TO_ARENA;
++						/* PTR_TO_ARENA is 32-bit */
++						dst_reg->subreg_def = env->insn_idx + 1;
++					}
+ 				} else if (insn->off == 0) {
+ 					/* case: R1 = R2
+ 					 * copy register state to dest reg
+@@ -19606,8 +19609,9 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			    (((struct bpf_map *)env->prog->aux->arena)->map_flags & BPF_F_NO_USER_CONV)) {
+ 				/* convert to 32-bit mov that clears upper 32-bit */
+ 				insn->code = BPF_ALU | BPF_MOV | BPF_X;
+-				/* clear off, so it's a normal 'wX = wY' from JIT pov */
++				/* clear off and imm, so it's a normal 'wX = wY' from JIT pov */
+ 				insn->off = 0;
++				insn->imm = 0;
+ 			} /* cast from as(0) to as(1) should be handled by JIT */
+ 			goto next_insn;
+ 		}
+-- 
+2.40.1
 
 
