@@ -1,226 +1,194 @@
-Return-Path: <linux-kernel+bounces-109759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4014E885558
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:13:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD8F388555A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63A801C211E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:13:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1B521C211F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8A178263;
-	Thu, 21 Mar 2024 08:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WGmXxNnN"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE8258AD6;
+	Thu, 21 Mar 2024 08:13:02 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D0177F14;
-	Thu, 21 Mar 2024 08:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2AB56450;
+	Thu, 21 Mar 2024 08:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711008759; cv=none; b=qDvfZvJny6p/q5EyxyGGSrsiLE0xLiYoLNRTNZ3Y9p7CSKwWFccUXBi8u43dbX76A+48IC16yfR6vAjov+fcOWbOW36tBuREPS0ZmRRaTWAW0JcHQY+B+LHyAe1BZQlsKmEdR6FLhJjbkFzNxsJIHESQW53mhpMbr/Wnr4z9JII=
+	t=1711008782; cv=none; b=Y8VONTSAb9ixhXc5Ze9jqV1vN9wvTFOoSbogGvYVh6i1E+U3mCtTJgm3bfPYvxsZ0IXQLdgVTPYzh3roGy1LhUfwChXYLJGGTSp4RvxA4SxNQYvLmXTApOxUCeavYLntLoWUtkDFoJt/vxyaM+tQkpLc12c0E0H+q5fuSDFvP+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711008759; c=relaxed/simple;
-	bh=Kj8KUSghrmg0GoKUmi5UVBDNwlsLdNHc1SqFPZMjA5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DNGaXT93RKrkfa9SHE75tp1HymzAkJwEnnAqqWQJ+ZeaGyYsI6DGak8Jc4xv09dQaaebc/C4+YGSSluF/+OLP/P7mFcf1LIc+nw75mO1eKJUijOYwWPYvrUCVyb/APp31XIPSl3aml0hkdTtfMFhqI3+vD7tLTdPeI4cIjNOi3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WGmXxNnN; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42L4xSXp026240;
-	Thu, 21 Mar 2024 08:12:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iTRimnW+D2YIFUe/aOmIWkblXn+SJABHdBSkm41+Nro=;
- b=WGmXxNnNYOtUrWtdAWI4AQUUjlEUpZrJzBT07pCUHqgsWpaJZMoV8K35dy8c2CEN3kiU
- OgFDVspWZW1yV23KIoHq2FN1LOlgC34o66Hs8N2/BtdIhB90aVN+QqKq5E7WKmzgXWZu
- D9Q2XKFh/fw0CAxePf9E5LhEC1ecn+62LXqqEC8DDIxYTZr2/7VfKGaXrmEJ6sdX8x98
- O+4T6lZj7ZYxOCKqoOgKEBr/MMwj5WYWaHnFq4hnHSdNmK3O3K68eSGjyuX4pAqFiLzf
- lu61cCvvnCScybWOz7c2GJ/eVtFpYn112TupEozr8eDaTT1yRUneW61xI8Qmw+G2/nGm 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0an3rp2k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 08:12:33 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42L8CW0b025773;
-	Thu, 21 Mar 2024 08:12:32 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0an3rp2e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 08:12:32 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42L5frBV017242;
-	Thu, 21 Mar 2024 08:12:32 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrtkywt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 08:12:31 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42L8CQVO51773914
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 08:12:28 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B65F920040;
-	Thu, 21 Mar 2024 08:12:26 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BA40E20043;
-	Thu, 21 Mar 2024 08:12:25 +0000 (GMT)
-Received: from [9.179.15.41] (unknown [9.179.15.41])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Mar 2024 08:12:25 +0000 (GMT)
-Message-ID: <1b3428f6-1fcc-4aba-80a0-0743c7c0c138@linux.ibm.com>
-Date: Thu, 21 Mar 2024 09:12:19 +0100
+	s=arc-20240116; t=1711008782; c=relaxed/simple;
+	bh=FkAdzwcMeQLFzLGB1YGZSL1vSZ1on4dbpbSvVflmwwU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=uBsYyTGpcuNyuSY0/gCZg+/omIYauz59XzJygTaZxb0Rqf3a/9QQwNGyt8YifH5zKvJ/qj4YJDfjLmvg0y8M7dGpxwhhyZx7hEN7LlJ7bOrsyBJgU4dci6PJQl+TnLwO+4aW3EQGGbTOg+FUipJfW5BWkH1trLF/3RiKPVrONvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V0dVn3NJHz4f3jcr;
+	Thu, 21 Mar 2024 16:12:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 7E1FB1A0172;
+	Thu, 21 Mar 2024 16:12:55 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgCHoQoE7PtlB3B5Hg--.2097S2;
+	Thu, 21 Mar 2024 16:12:54 +0800 (CST)
+Subject: Re: [PATCH 0/6] Improve visibility of writeback
+To: Jan Kara <jack@suse.cz>
+Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ willy@infradead.org, bfoster@redhat.com, dsterba@suse.com,
+ mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320172240.7buswiv7zj2m5odg@quack3>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <44e3b910-8b52-5583-f8a9-37105bf5e5b6@huaweicloud.com>
+Date: Thu, 21 Mar 2024 16:12:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v4 10/11] net/smc: adapt cursor update when
- sndbuf and peer DMB are merged
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
-        twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org
-References: <20240317100545.96663-1-guwen@linux.alibaba.com>
- <20240317100545.96663-11-guwen@linux.alibaba.com>
-From: Jan Karcher <jaka@linux.ibm.com>
-Organization: IBM - Network Linux on Z
-In-Reply-To: <20240317100545.96663-11-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20240320172240.7buswiv7zj2m5odg@quack3>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: z9YziVEJzFcbbcV0eWp2ZNC8zo7KLreG
-X-Proofpoint-GUID: 9zCpydCXa2yomG6ecs39FNB_K3MqK4wz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_05,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2403140000 definitions=main-2403210055
+X-CM-TRANSID:cCh0CgCHoQoE7PtlB3B5Hg--.2097S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1xGry7CF47XF4rWF15urg_yoW5tF4Dpa
+	95Cw1Utr48Z34xArsakF1aqryYy3yUXFy3Xr92vFWxCrn0gr15trWvg3yFy3W5ZrZxAFy3
+	JFsxZryvqr4vvaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
 
 
-On 17/03/2024 11:05, Wen Gu wrote:
-> Since ghost sndbuf shares the same physical memory with peer DMB,
-> the cursor update processing needs to be adapted to ensure that the
-> data to be consumed won't be overwritten.
+on 3/21/2024 1:22 AM, Jan Kara wrote:
+> On Wed 20-03-24 19:02:16, Kemeng Shi wrote:
+>> This series tries to improve visilibity of writeback. Patch 1 make
+>> /sys/kernel/debug/bdi/xxx/stats show writeback info of whole bdi
+>> instead of only writeback info in root cgroup. Patch 2 add a new
+>> debug file /sys/kernel/debug/bdi/xxx/wb_stats to show per wb writeback
+>> info. Patch 4 add wb_monitor.py to monitor basic writeback info
+>> of running system, more info could be added on demand. Rest patches
+>> are some random cleanups. More details can be found in respective
+>> patches. Thanks!
+>>
+>> Following domain hierarchy is tested:
+>>                 global domain (320G)
+>>                 /                 \
+>>         cgroup domain1(10G)     cgroup domain2(10G)
+>>                 |                 |
+>> bdi            wb1               wb2
+>>
+>> /* all writeback info of bdi is successfully collected */
+>> # cat /sys/kernel/debug/bdi/252:16/stats:
+>> BdiWriteback:              448 kB
+>> BdiReclaimable:        1303904 kB
+>> BdiDirtyThresh:      189914124 kB
+>> DirtyThresh:         195337564 kB
+>> BackgroundThresh:     32516508 kB
+>> BdiDirtied:            3591392 kB
+>> BdiWritten:            2287488 kB
+>> BdiWriteBandwidth:      322248 kBps
+>> b_dirty:                     0
+>> b_io:                        0
+>> b_more_io:                   2
+>> b_dirty_time:                0
+>> bdi_list:                    1
+>> state:                       1
+>>
+>> /* per wb writeback info is collected */
+>> # cat /sys/kernel/debug/bdi/252:16/wb_stats:
+>> cat wb_stats
+>> WbCgIno:                    1
+>> WbWriteback:                0 kB
+>> WbReclaimable:              0 kB
+>> WbDirtyThresh:              0 kB
+>> WbDirtied:                  0 kB
+>> WbWritten:                  0 kB
+>> WbWriteBandwidth:      102400 kBps
+>> b_dirty:                    0
+>> b_io:                       0
+>> b_more_io:                  0
+>> b_dirty_time:               0
+>> state:                      1
+>> WbCgIno:                 4284
+>> WbWriteback:              448 kB
+>> WbReclaimable:         818944 kB
+>> WbDirtyThresh:        3096524 kB
+>> WbDirtied:            2266880 kB
+>> WbWritten:            1447936 kB
+>> WbWriteBandwidth:      214036 kBps
+>> b_dirty:                    0
+>> b_io:                       0
+>> b_more_io:                  1
+>> b_dirty_time:               0
+>> state:                      5
+>> WbCgIno:                 4325
+>> WbWriteback:              224 kB
+>> WbReclaimable:         819392 kB
+>> WbDirtyThresh:        2920088 kB
+>> WbDirtied:            2551808 kB
+>> WbWritten:            1732416 kB
+>> WbWriteBandwidth:      201832 kBps
+>> b_dirty:                    0
+>> b_io:                       0
+>> b_more_io:                  1
+>> b_dirty_time:               0
+>> state:                      5
+>>
+>> /* monitor writeback info */
+>> # ./wb_monitor.py 252:16 -c
+>>                   writeback  reclaimable   dirtied   written    avg_bw
+>> 252:16_1                  0            0         0         0    102400
+>> 252:16_4284             672       820064   9230368   8410304    685612
+>> 252:16_4325             896       819840  10491264   9671648    652348
+>> 252:16                 1568      1639904  19721632  18081952   1440360
+>>
+>>
+>>                   writeback  reclaimable   dirtied   written    avg_bw
+>> 252:16_1                  0            0         0         0    102400
+>> 252:16_4284             672       820064   9230368   8410304    685612
+>> 252:16_4325             896       819840  10491264   9671648    652348
+>> 252:16                 1568      1639904  19721632  18081952   1440360
+>> ...
 > 
-> So in this case, the fin_curs and sndbuf_space that were originally
-> updated after sending the CDC message should be modified to not be
-> update until the peer updates cons_curs.
-> 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->   net/smc/smc_cdc.c | 52 +++++++++++++++++++++++++++++++++++++----------
->   1 file changed, 41 insertions(+), 11 deletions(-)
-> 
-> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
-> index 3c06625ceb20..bf5b214ec15a 100644
-> --- a/net/smc/smc_cdc.c
-> +++ b/net/smc/smc_cdc.c
-> @@ -18,6 +18,7 @@
->   #include "smc_tx.h"
->   #include "smc_rx.h"
->   #include "smc_close.h"
-> +#include "smc_ism.h"
->   
->   /********************************** send *************************************/
->   
-> @@ -255,17 +256,25 @@ int smcd_cdc_msg_send(struct smc_connection *conn)
->   		return rc;
->   	smc_curs_copy(&conn->rx_curs_confirmed, &curs, conn);
->   	conn->local_rx_ctrl.prod_flags.cons_curs_upd_req = 0;
-> -	/* Calculate transmitted data and increment free send buffer space */
-> -	diff = smc_curs_diff(conn->sndbuf_desc->len, &conn->tx_curs_fin,
-> -			     &conn->tx_curs_sent);
-> -	/* increased by confirmed number of bytes */
-> -	smp_mb__before_atomic();
-> -	atomic_add(diff, &conn->sndbuf_space);
-> -	/* guarantee 0 <= sndbuf_space <= sndbuf_desc->len */
-> -	smp_mb__after_atomic();
-> -	smc_curs_copy(&conn->tx_curs_fin, &conn->tx_curs_sent, conn);
-> +	if (!smc_ism_support_dmb_nocopy(conn->lgr->smcd)) {
-> +		/* Ghost sndbuf shares the same memory region with
-> +		 * peer DMB, so don't update the tx_curs_fin and
-> +		 * sndbuf_space until peer has consumed the data.
-> +		 */
-
-Hi Wen Gu,
-
-move this comment above the if please. Two consecutive multiline 
-comments are difficult to read here.
-
-> +		/* Calculate transmitted data and increment free
-> +		 * send buffer space
-> +		 */
-> +		diff = smc_curs_diff(conn->sndbuf_desc->len, &conn->tx_curs_fin,
-> +				     &conn->tx_curs_sent);
-> +		/* increased by confirmed number of bytes */
-> +		smp_mb__before_atomic();
-> +		atomic_add(diff, &conn->sndbuf_space);
-> +		/* guarantee 0 <= sndbuf_space <= sndbuf_desc->len */
-> +		smp_mb__after_atomic();
-> +		smc_curs_copy(&conn->tx_curs_fin, &conn->tx_curs_sent, conn);
->   
-> -	smc_tx_sndbuf_nonfull(smc);
-> +		smc_tx_sndbuf_nonfull(smc);
-> +	}
->   	return rc;
->   }
->   
-> @@ -323,7 +332,7 @@ static void smc_cdc_msg_recv_action(struct smc_sock *smc,
->   {
->   	union smc_host_cursor cons_old, prod_old;
->   	struct smc_connection *conn = &smc->conn;
-> -	int diff_cons, diff_prod;
-> +	int diff_cons, diff_prod, diff_tx;
->   
->   	smc_curs_copy(&prod_old, &conn->local_rx_ctrl.prod, conn);
->   	smc_curs_copy(&cons_old, &conn->local_rx_ctrl.cons, conn);
-> @@ -339,6 +348,27 @@ static void smc_cdc_msg_recv_action(struct smc_sock *smc,
->   		atomic_add(diff_cons, &conn->peer_rmbe_space);
->   		/* guarantee 0 <= peer_rmbe_space <= peer_rmbe_size */
->   		smp_mb__after_atomic();
-> +
-> +		if (conn->lgr->is_smcd &&
-> +		    smc_ism_support_dmb_nocopy(conn->lgr->smcd)) {
-> +			/* Ghost sndbuf shares the same memory region with
-> +			 * peer RMB, so update tx_curs_fin and sndbuf_space
-> +			 * when peer has consumed the data.
-> +			 */
-
-Same as above.
+> So I'm wondering: Are you implementing this just because this looks
+> interesting or do you have a real need for the functionality? Why?
+Hi Jan, I added debug files to test change in [1] which changes the way how
+dirty background threshold of wb is calculated. Without debug files, we could
+only monitor writeback to imply that threshold is corrected.
+In current patchset, debug info has not included dirty background threshold yet,
+I will add it when discution of calculation of dirty background threshold in [1]
+is done.
+The wb_monitor.py is suggested by Tejun in [2] to improve visibility of writeback.
+The script is more convenient than trace to monitor writeback behavior of the running
+system.
 
 Thanks
-- Jan
 
-> +			/* calculate peer rmb consumed data */
-> +			diff_tx = smc_curs_diff(conn->sndbuf_desc->len,
-> +						&conn->tx_curs_fin,
-> +						&conn->local_rx_ctrl.cons);
-> +			/* increase local sndbuf space and fin_curs */
-> +			smp_mb__before_atomic();
-> +			atomic_add(diff_tx, &conn->sndbuf_space);
-> +			/* guarantee 0 <= sndbuf_space <= sndbuf_desc->len */
-> +			smp_mb__after_atomic();
-> +			smc_curs_copy(&conn->tx_curs_fin,
-> +				      &conn->local_rx_ctrl.cons, conn);
-> +
-> +			smc_tx_sndbuf_nonfull(smc);
-> +		}
->   	}
->   
->   	diff_prod = smc_curs_diff(conn->rmb_desc->len, &prod_old,
+[1] https://lore.kernel.org/lkml/a747dc7d-f24a-08bd-d969-d3fb35e151b7@huaweicloud.com/
+[2] https://lore.kernel.org/lkml/ZcUsOb_fyvYr-zZ-@slm.duckdns.org/
+> 
+> 								Honza
+> 
+
 
