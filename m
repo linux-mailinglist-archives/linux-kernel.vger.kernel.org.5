@@ -1,180 +1,121 @@
-Return-Path: <linux-kernel+bounces-110053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE5B4885966
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:50:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43333885976
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64C14B22D7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:50:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0C95282623
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B6383CC5;
-	Thu, 21 Mar 2024 12:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A7A83CCE;
+	Thu, 21 Mar 2024 12:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jw6IvNzz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KNYi/Ufs"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856C73717B;
-	Thu, 21 Mar 2024 12:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253F3134CD;
+	Thu, 21 Mar 2024 12:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025428; cv=none; b=IvAIikfjvCkMspmZrXc6IhpshKzcaWMhTn5bj2Dy8cwJ9Umtio/Qqkp2KvI6KuoXGV2PlnlAty+7mGgoVN/iUcz9hkbmDVH8p4ROIfVu+QHhR+cKTlzXfIDXSwF2KE+08a1Bxe8sc8wnmQfFabT73+WNMOT08sreapm02XHHoIY=
+	t=1711025782; cv=none; b=ZiUBM2JS5gLj/8MQDUSz/xDoAhkXXKVNOG7yqWMYeaXTM5e/12ZXZCBjrqdhmDNZ0NvY5C91DBQiWHEtZtNxJvzPt5eFEgTXKBYmIen4+LDSFERPPhhcFPK6bPtmBRXwplApmmTPNwhZxPgEGguB/iPD+Z+3GaXWS705CpokcqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025428; c=relaxed/simple;
-	bh=T48VhPL7uTyMjF8hE8VTkaJAtzTXjPh6XEzhs1te5hM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QfO1fU3wEna/2j/AIKF7GRZjFQ4zmQcCvmYYGL9Ua63XHdP2AsGZLeOXjBgs6TXPDzoZzkqT4IC2evSo/eEETE8SBA7Fr8PpYcI+zVbMfyYim6uUe5iL4QAkYPe0iAfjHF90AG5kuJkNTfiL1nSXL14BhSlKU/cM9Zr9RrlZQho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jw6IvNzz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51EBDC433F1;
-	Thu, 21 Mar 2024 12:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711025428;
-	bh=T48VhPL7uTyMjF8hE8VTkaJAtzTXjPh6XEzhs1te5hM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jw6IvNzzkZzIUDIVBvBGSx1oIznHpgsyibO8XYde2Ltu1vIjJldA9wG5rolCd0YOE
-	 OulgRx0EK5tsjlrmk/YI7PshMLcyRRBB8dqiS4MkMsbLacfOMPlGIAyQaTAcLUzaaE
-	 KeDbnFQCCLgzCqUj9inkvxv/UOMI5nGunhMK/RbC2v6sYjyHJISmKG8tcNQiBd3P3u
-	 upZOkhWaYRTuxmBH29et6GK7IflPNn7qoRT7y7p5Pk5u1F8icK5qUwyQ6c7ts44GJW
-	 yVDcx4l4qHX/PPBS6uRAIO7cCk5iVcp+FYQW1RgBze9ui1w5jn/oQ58zZdcyuDhQbc
-	 iGYDSgmqEDfZA==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-remoteproc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Davis <afd@ti.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Sibi Sankar <quic_sibis@quicinc.com>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Joakim Zhang <joakim.zhang@cixtech.com>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [GIT PULL] remoteproc updates for v6.9
-Date: Thu, 21 Mar 2024 05:55:13 -0700
-Message-ID: <20240321125518.1675903-1-andersson@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711025782; c=relaxed/simple;
+	bh=BxiWdf4/7BU0N7jaavO3/onZ7Kj2pPXj4FUIl3z2O1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hmd9cH8U+x5mrnEUT8oVP6O9Czzv8FLz/ve5zlp1K267JhVeiYylGgJn9bz9Nu2GCSRXbikMKVE09ohlXGk1gCt7+pesR2DQPyacD3TRYldQd1+3ojR0VEV1V46OQvXRGXbU+9QUsUcdMIGO+p+i2ZLkO9FbkoPMypfbO2JdUa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=KNYi/Ufs; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=/VkiJjn/Ujsmq+U16JaWHWXV190NKV6cULGPu225XxU=; b=KNYi/UfsvbbcIhqHWGMXIBUscE
+	0NUwAsju2opk5jzCII3uqEkHR38PO9RlU5fEkVlNiKk6G/xRsfJT95BBpVXuicO7xdAiJj2zANZVH
+	b3cNy9k8i9zEFRfFL/mszQHX62S3jxZ+AaOcjMQvO2euRivm6dUzLycyLG+9z5r7rO+s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rnHxe-00AsKQ-Pb; Thu, 21 Mar 2024 13:55:58 +0100
+Date: Thu, 21 Mar 2024 13:55:58 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Vaishnav Achath <vaishnav.a@ti.com>
+Cc: Michael Walle <mwalle@kernel.org>,
+	"Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Ayush Singh <ayushdevel1325@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>, jkridner@beagleboard.org,
+	robertcnelson@beagleboard.org, lorforlinux@beagleboard.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Derek Kiernan <derek.kiernan@amd.com>,
+	Dragan Cvetic <dragan.cvetic@amd.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	"open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+	"moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+	Vaishnav M A <vaishnav@beagleboard.org>
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Message-ID: <3904c7eb-c179-4596-ba42-d6b545a562a6@lunn.ch>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+ <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+ <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
+ <b62915ca-c151-4e37-bb03-c92c569c84ff@lunn.ch>
+ <4b319264-bff7-48e5-85e8-201ca0bafec6@ti.com>
+ <4c299d42-84c7-46fc-952f-292cef1bb4b4@lunn.ch>
+ <ded6c350-4c70-4a26-8b18-6605dcc6e084@ti.com>
+ <CZZBT3ZMDCVI.40UX5MB6LY4I@kernel.org>
+ <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef6a1c28-70dc-4077-b644-2704ac3cf30f@ti.com>
 
-I'm sorry for the late pull request, I apparently had managed to get git
-send-email to only deliver my mail to /dev/null on the machine where I prepared
-this.
+> > How will the ethernet boards ([1], [2]) work? Where do they get
+> > their MAC address from, for example. The DT has some nice properties
+> > for that, but I doubt that will be possible with the manifest files.
+> > I've looked at the manifest file for the w5500 board [3] and to me
+> > it looks like that board will come up with a random MAC address on
+> > each start. Thus, even today, you have some boards which require
+> > a more complex description.
+> > 
+> 
+> Agreed, this is a limitation, unless the corresponding drivers/subsystems
+> use device_property_read_* helper to fetch properties, it will not work and
+> net/core/of_net.c only implements of_get_* helpers even though the
+> underlying functions can be implemented with equivalent
+> device_property_read_* equivalent as well.
 
-Regards,
-Bjorn
+I think this is a good example of the limitations. For an Ethernet
+NIC, you often want to describe properties of both the MAC and the
+PHY. What phy-mode should be used, what delays on the RGMII bus, what
+LEDs are there etc. This is a pretty much solved problem with DT, we
+have a well defined sub tree to represent the MAC, the MDIO bus and
+the PHY on the bus.
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+But we do have two classes of properties here. The MAC address is
+unique to a board. So that does need to be stored in the EEPROM, and
+cannot be in a one time converted manifest to DT file stored in
+/lib/firmware. However, to some extent, this is a solved problem. We
+have a DT representation of how to look in an EEPROM to find the MAC
+address. So the DT just needs to point to some bytes in the manifest
+in the EEPROM.
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/rproc-v6.9
-
-for you to fetch changes up to 62210f7509e13a2caa7b080722a45229b8f17a0a:
-
-  remoteproc: qcom_q6v5_pas: Unload lite firmware on ADSP (2024-03-05 20:02:07 -0800)
-
-----------------------------------------------------------------
-remoteproc updates for v6.9
-
-Qualcomm SM8650 audio, compute and modem remoteproc are added. Qualcomm
-X1 Elite audio and compute remoteprocs are added, after support for
-shutting down the bootloader-loaded firmware loaded into the audio DSP..
-
-A dozen drivers in the subsystem are transitioned to use devres helpers
-for remoteproc and memory allocations.
-
-It makes it possible to acquire in-kernel handle to individual
-remoteproc instances in a cluster.
-
-The release of DMA memory for remoteproc virtio is corrected to ensure
-that restarting due to a watchdog bite doesn't attempt to allocate the
-memory again without first freeing it.
-
-Last, but not least, a couple of DeviceTree binding cleanups.
-
-----------------------------------------------------------------
-Abel Vesa (1):
-      dt-bindings: remoteproc: qcom,sm8550-pas: document the X1E80100 aDSP & cDSP
-
-Andrew Davis (17):
-      remoteproc: k3-dsp: Use devm_rproc_alloc() helper
-      remoteproc: k3-dsp: Add devm action to release reserved memory
-      remoteproc: k3-dsp: Use devm_kcalloc() helper
-      remoteproc: imx_dsp_rproc: Use devm_rproc_alloc() helper
-      remoteproc: imx_rproc: Use devm_rproc_alloc() helper
-      remoteproc: st: Use devm_rproc_alloc() helper
-      remoteproc: stm32: Use devm_rproc_alloc() helper
-      remoteproc: k3-dsp: Use devm_ti_sci_get_by_phandle() helper
-      remoteproc: k3-dsp: Use devm_kzalloc() helper
-      remoteproc: k3-dsp: Add devm action to release tsp
-      remoteproc: k3-dsp: Use devm_ioremap_wc() helper
-      remoteproc: k3-dsp: Use devm_rproc_add() helper
-      remoteproc: qcom_q6v5_adsp: Use devm_rproc_alloc() helper
-      remoteproc: qcom_q6v5_mss: Use devm_rproc_alloc() helper
-      remoteproc: qcom_q6v5_pas: Use devm_rproc_alloc() helper
-      remoteproc: qcom_q6v5_wcss: Use devm_rproc_alloc() helper
-      remoteproc: qcom_wcnss: Use devm_rproc_alloc() helper
-
-Arnaud Pouliquen (2):
-      remoteproc: stm32: Fix incorrect type in assignment for va
-      remoteproc: stm32: Fix incorrect type assignment returned by stm32_rproc_get_loaded_rsc_tablef
-
-Dmitry Baryshkov (1):
-      remoteproc: qcom: pas: correct data indentation
-
-Joakim Zhang (1):
-      remoteproc: virtio: Fix wdg cannot recovery remote processor
-
-Krzysztof Kozlowski (2):
-      dt-bindings: remoteproc: qcom,glink-rpm-edge: drop redundant type from label
-      dt-bindings: remoteproc: do not override firmware-name $ref
-
-Mathieu Poirier (1):
-      remoteproc: Make rproc_get_by_phandle() work for clusters
-
-Neil Armstrong (3):
-      dt-bindings: remoteproc: qcom,sm8550-pas: document the SM8650 PAS
-      remoteproc: qcom: pas: make region assign more generic
-      remoteproc: qcom: pas: Add SM8650 remoteproc support
-
-Sibi Sankar (2):
-      remoteproc: qcom_q6v5_pas: Add support for X1E80100 ADSP/CDSP
-      remoteproc: qcom_q6v5_pas: Unload lite firmware on ADSP
-
- .../devicetree/bindings/remoteproc/mtk,scp.yaml    |   4 +-
- .../bindings/remoteproc/qcom,glink-rpm-edge.yaml   |   1 -
- .../bindings/remoteproc/qcom,qcs404-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sc7180-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sc7280-wpss-pil.yaml  |   2 +-
- .../bindings/remoteproc/qcom,sc8180x-pas.yaml      |   2 +-
- .../bindings/remoteproc/qcom,sm6115-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sm6350-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sm6375-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sm8150-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sm8350-pas.yaml       |   2 +-
- .../bindings/remoteproc/qcom,sm8550-pas.yaml       |  51 +++-
- .../bindings/remoteproc/qcom,wcnss-pil.yaml        |   2 +-
- drivers/remoteproc/imx_dsp_rproc.c                 |  11 +-
- drivers/remoteproc/imx_rproc.c                     |  16 +-
- drivers/remoteproc/qcom_q6v5_adsp.c                |  14 +-
- drivers/remoteproc/qcom_q6v5_mss.c                 |  28 +-
- drivers/remoteproc/qcom_q6v5_pas.c                 | 326 ++++++++++++++-------
- drivers/remoteproc/qcom_q6v5_wcss.c                |  24 +-
- drivers/remoteproc/qcom_wcnss.c                    |  17 +-
- drivers/remoteproc/remoteproc_core.c               |  29 +-
- drivers/remoteproc/remoteproc_virtio.c             |   6 +-
- drivers/remoteproc/st_remoteproc.c                 |  15 +-
- drivers/remoteproc/stm32_rproc.c                   |  10 +-
- drivers/remoteproc/ti_k3_dsp_remoteproc.c          | 156 ++++------
- 25 files changed, 419 insertions(+), 309 deletions(-)
+	Andrew
 
