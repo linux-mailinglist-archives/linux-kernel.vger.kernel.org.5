@@ -1,143 +1,175 @@
-Return-Path: <linux-kernel+bounces-109906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9E188579E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:49:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917CE8857A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AAE81F22934
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:49:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A603B21786
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830C557315;
-	Thu, 21 Mar 2024 10:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18A157304;
+	Thu, 21 Mar 2024 10:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVWnG9CU"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TGV647uj";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O0um/ZCs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bf3yVEuQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UafGAvGq"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D51756B62;
-	Thu, 21 Mar 2024 10:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2236B5644E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711018139; cv=none; b=k2QFV0hby1IRlYkSr+Y+/ab4bgvE4RafAFFlZ95GtQO2pzu1PiFiOSwYzgKfXIrFtwXvuC7gfvC9IjaAL52VL55gAQmimPRJW0aN+3nzc63Lv7rkt6wLy96mZmZ2D0kmOC3y6t42vunApdHWVNcetRUFb7glc9SnSrKdZb1O45s=
+	t=1711018240; cv=none; b=VBUx6z/jRcS7iY2NRUL7Fb+/BMST8ripmkvBmeZspPqXfy7SVI/lT8wcaPFhrf3YE2RO3AaeJst7ZL/6pTuuWc7QthtDM5jsWq9T8fTJfTkPW+ATH1nDglIFF5Usrdx95rXV3RuVE65z6Vqk6nKTjd0SEFcQzA/OaHrLXBXeKwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711018139; c=relaxed/simple;
-	bh=DChmwEJKHLGfsagqvFXszTi2o+zS3bX0xANXY2SOI8U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LeQisLrKH4il20gmJbXPyiqIf6yrILXTRvAYi1c/w6R4UIlzDynVzwu0LGDp/oAPrsV+49Ac95Ie2UwSTcFd6CN0pIXzRWPiv9I6NeHInvLMtTQO3BaxEFKbpwVG1un9NL6tJNrR7oKBLw2MmLmF5jhFZOTAzeVAQDJlQVD8tq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gVWnG9CU; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4d47000f875so356052e0c.2;
-        Thu, 21 Mar 2024 03:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711018137; x=1711622937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GYMT//X5m0TjSR6RQUtuidLM8s9IhUqzQIkXUWqix1I=;
-        b=gVWnG9CUbIblMChzTid2WjF7lE/SUVsXvO3dG+hWbH/ym1r9uZRfFXjFEHQO4nDala
-         6sACriDszyBu17yKRcW8IQfksHmboZU5By7s2LkP8LYkbm0pf/16EsGJYYGznbOlS3JA
-         FSrD2p/RwIKulCnOS15p1Lya7L/yD4mfDwIsrywM5O/sSORDTM8118JOEAIWwdi8C1e0
-         Z4KpuzE6A3/of0Bv6Nvv1uv0mxiHujyZOf4xuVgFzVDvQO21T2PuzzSVi/n6+57n/FM2
-         8k1vCnFGKAY4oUiaTWvoaF7OwW2SnVtgYCxa+ZTY1d9kZCsowNpRbFzB71cLy8qVkKLI
-         Gzqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711018137; x=1711622937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GYMT//X5m0TjSR6RQUtuidLM8s9IhUqzQIkXUWqix1I=;
-        b=aCABPQ7gRWVy31dzZZP5M1g//TgL16UQkT+O/PuyC1LVXrtSrXJ8NIC68Hmo3KZFl2
-         KA8eQGN94Jyt1mzKjx/aYoozIVpO7kd5hnI3rYZn3VwL39ny4RRtdqH+qLXDZwiGOELY
-         5i7HXC0oIAniRkmjpKG6ujOcmo5ID29p1xWJgDsHR+cOC6HEfB970HZQ1gk3n9cz3t0u
-         MM6x/AiuGdL5Uj3lLfCAU/qzu5F3JLCIdDTRdUDvxostOBOCSDnqw0tgq/mQE2ItdvXq
-         zcou4FTKRrfaRIBqGVbLZPFsg+iBvnAlzIN3YUvM33GmYfpZAYS1jSII1lUyQmZ0L/dp
-         HlBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWehgujn4lF/vSs0JnjQHcCnzC6HZK21KPRy/GtZsPrdrgh9+zx3/3/l/0fQGC0JbNJrgByqAJOFNWIxA2Ut1lBvZ8uspUwc1Qvy1DGLLMwOWc40T7khmF659glGxp3vF2i/wL3KL7e12IbwfLcNFgHCx0AHKIMHx/ccBUB2sHPK81HcRd3eEJkwq2FNTgofzZTGBcHzhdb8x3USnHTCDJoEhFlQziQvYh5
-X-Gm-Message-State: AOJu0YyBV9M4dDqtqCeyItey5nqC8GjTsUWV7UNlpcZcQJftEYvEFQLW
-	bp2PdpPJ1/ImCjiPXU3bnjQbnZIGGiHRVrkxUhMHy5YlwoBAVysJGwiWvEd2wMvePPs1s0C/EvP
-	jumqYQGuHPlw6uICOAOBuKj4iC0o=
-X-Google-Smtp-Source: AGHT+IGBf8WnuJERoGKNt9AXT2yzOxOoXSubDlZfKRrIjnA6QZ/SmEFLy8idHDrIbtM03PHF7EKnDe+aGhKQwDfJWDI=
-X-Received: by 2002:a05:6122:984:b0:4d4:3fc:2869 with SMTP id
- g4-20020a056122098400b004d403fc2869mr4627749vkd.15.1711018135623; Thu, 21 Mar
- 2024 03:48:55 -0700 (PDT)
+	s=arc-20240116; t=1711018240; c=relaxed/simple;
+	bh=HX68hSzTAcjMDkDZGRIL39hdwSHNbaZPZnmVZn4Yons=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C/1xneUzQIZzRdHdQnc6xkeJY2tpwpaMuQjVxatQcD6xtNIjsCC0q103MVKMNqXFoZVYsHWI4cqP5I7m9Lko/nw2DsNT7Czhp1qySR/U5LgFWmYtFuGNzgMDF/JjXu0DJnRhfh9jBZsZmfWITSp71+Cqcg+8cjEtUrn8df+hrTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TGV647uj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O0um/ZCs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bf3yVEuQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UafGAvGq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E5EFB5CC90;
+	Thu, 21 Mar 2024 10:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711018237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3MkA3INDRNrQmyii/A1Er4UKsQqNsow2c9O8EOAoimo=;
+	b=TGV647ujMQMD9P/44azK1++hnYVprPTitT1iBwUxc3WKMcwcwAH+qmJZMY0PXCALBlbuRV
+	xQk91wyrYLPY/JAWPV3hRUuOqg60Gp8/0nyy3Yq3FywIKc1OixnP2sIhwYPZw1uL0+mVYR
+	sAgbJhwBRDOPJAgUkDgXqkSX9pGqIQQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711018237;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3MkA3INDRNrQmyii/A1Er4UKsQqNsow2c9O8EOAoimo=;
+	b=O0um/ZCsYEDTkSq6O/1z+N6jBNMwWroTr0EEDcPFJhvwkuFbvVeLLrsDQEG87XUWG3bA0A
+	OkCyyjsCGI6Q8yCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711018236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3MkA3INDRNrQmyii/A1Er4UKsQqNsow2c9O8EOAoimo=;
+	b=bf3yVEuQ0R7YJNEJO87pQGedAOLqemHiYI6CdtPgLob77SIfhK+/CZjpilvGPlZUq3n5sr
+	rEZe7zEHzqYrgOW+TG++qOTOrXXMRAEmStMUJsRhOLIIznlFhagO71gakZ5lo9jNqXrtyN
+	3e2/UII5UXz4pxRqVbiHKJFQxy9ilH4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711018236;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3MkA3INDRNrQmyii/A1Er4UKsQqNsow2c9O8EOAoimo=;
+	b=UafGAvGqBrejNTrrT3Lsf9XntQh5zFs41qz06HNSy77C9TRt6So1WyXOQuow0DUEhTRiBP
+	3NnxdpRghbLSCSAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD366136AD;
+	Thu, 21 Mar 2024 10:50:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id T2PAMfwQ/GUVJgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 21 Mar 2024 10:50:36 +0000
+Message-ID: <ed41d5cf-d068-412d-b7bb-5468df2fefb7@suse.cz>
+Date: Thu, 21 Mar 2024 11:50:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318172102.45549-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240318172102.45549-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240320143709.GA1676859-robh@kernel.org>
-In-Reply-To: <20240320143709.GA1676859-robh@kernel.org>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 21 Mar 2024 10:48:29 +0000
-Message-ID: <CA+V-a8uOf=D96FkSyW=M6HC9SxC-Sr+=Y0R=S44zgMAB4KQFbA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] dt-bindings: serial: renesas,scif: Document
- R9A09G057 support
-To: Rob Herring <robh@kernel.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] mm,page_owner: Fix accounting of pages when
+ migrating
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>, Matthew Wilcox <willy@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
+ Marco Elver <elver@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+References: <20240319183212.17156-1-osalvador@suse.de>
+ <20240319183212.17156-3-osalvador@suse.de>
+ <Zfnd_w0ZLOVhgACt@casper.infradead.org>
+ <ZfptWDsfdxBltN6T@localhost.localdomain>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZfptWDsfdxBltN6T@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.29
+X-Spamd-Result: default: False [-1.29 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.00)[30.81%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,suse.com,google.com,gmail.com,i-love.sakura.ne.jp];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-Hi Rob,
+On 3/20/24 06:00, Oscar Salvador wrote:
+> On Tue, Mar 19, 2024 at 06:48:31PM +0000, Matthew Wilcox wrote:
+>> Is this the right way to fix this problem?  I would have thought we'd
+>> be better off accounting this as migration freeing the old page and
+>> allocating the new page.  If I understand correctly, this is the code
+>> which says "This page was last allocated by X and freed by Y", and I
+>> would think that being last freed (or allocated) by the migration code
+>> would be a very nice hint about where a problem might stem from.
+> 
+> I hear you, and I had the same thought when I stumbled upon this.
+> I did not know that the handle was being changed, otherwise it would
+> have saved me quite a lot of debugging time.
+> 
+> Checking the history of this, I can see this decision was made in
+> 2016 in:
+> 
+>  commit d435edca928805074dae005ab9a42d9fa60fc702
+>  Author: Vlastimil Babka <vbabka@suse.cz>
+>  Date:   Tue Mar 15 14:56:15 2016 -0700
+>  
+>      mm, page_owner: copy page owner info during migration
+> 
 
-Thank you for the review.
+Yeah I think we could keep that logic.
 
-On Wed, Mar 20, 2024 at 2:37=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Mon, Mar 18, 2024 at 05:21:01PM +0000, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Document support for the Serial Communication Interface with FIFO (SCIF=
-)
-> > available in the Renesas RZ/V2H(P) (R9A09G057) SoC. The SCIF interface =
-in
-> > the Renesas RZ/V2H(P) is similar to that available in the RZ/G2L
-> > (R9A07G044) SoC, with the only difference being that the RZ/V2H(P) SoC =
-has
-> > three additional interrupts: one for Tx end/Rx ready and the other two =
-for
-> > Rx and Tx buffer full, which are edge-triggered.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > ---
-> > v2->v3
-> > - Added SoC specific compat string
-> > ---
-> >  .../bindings/serial/renesas,scif.yaml         | 33 +++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml=
- b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> > index 53f18e9810fd..e4ce13e20cd7 100644
-> > --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> > @@ -79,6 +79,8 @@ properties:
-> >                - renesas,scif-r9a08g045      # RZ/G3S
-> >            - const: renesas,scif-r9a07g044   # RZ/G2{L,LC} fallback
-> >
-> > +      - const: renesas,scif-r9a09g057       # RZ/V2H(P)
->
-> I don't understand why there's not a fallback. Looks like the existing
-> driver would work if you had one. It should be fine to ignore the new
-> interrupts. Though with Geert's comments, it seems there are more
-> differences than you say.
->
-Apart from the interrupt differences there are some register bit
-differences too (as pointed by Geert in patch 4/4).
+But we could also simply subtract the refcount of the old handle (the
+"allocated for migration") in __folio_copy_owner() no? Then we wouldn't need
+the extra migrate_handle.
 
-Cheers,
-Prabhakar
+Also we might have more issues here. Most page owner code takes care to set
+everything for all pages within a folio, but __folio_copy_owner() and
+__set_page_owner_migrate_reason() don't.
+
 
