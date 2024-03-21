@@ -1,99 +1,71 @@
-Return-Path: <linux-kernel+bounces-109884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7FBA885751
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:18:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA239885757
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE6601C20938
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:18:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14BEE1F225DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB07956448;
-	Thu, 21 Mar 2024 10:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BBB56763;
+	Thu, 21 Mar 2024 10:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T2QWm8qW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rzqqpvn+";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="T2QWm8qW";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rzqqpvn+"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tk/Lk+/b"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1462125CB
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C230200D3;
+	Thu, 21 Mar 2024 10:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711016318; cv=none; b=UBLWqs5qBAN2e+NMzgh8j3/q2TWjkemg3szIaYsuBYsce236b9U3olhUtcEDt0NExHJVQaCSxBrqtOTXAWX7HWeZK+ocm8Cfdv/cp/Boa5SCayS3ZKy36dG01c75orkBbs8VkgjazaWZm/VnODuql9YxCmwGPn09/ylL+LIVabw=
+	t=1711016398; cv=none; b=sGzwXnpLTHaIEPzRVOGlIkBIGKot3wtJOvwsPSZODLwDIeVGXX2qSb+JqwRYalz1TJXFm9NcK5sZhXtRHt5XIwSGHj4dSSgwlAKc0pUyq75QYLP0eGF92/DhJtyiwEN0CyLPPMGF4abndfmp+ml2IbeCDLRBHzV5GSz5RxtJ5BI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711016318; c=relaxed/simple;
-	bh=KH1DAtbwkIgE/3yFCBobdyfmXqzoTQdnhdEFXA1kgxQ=;
+	s=arc-20240116; t=1711016398; c=relaxed/simple;
+	bh=lO/wG4XF/5dsIZJ2dAHwfekBZW7O4cljkSFhVC8pbVM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rxEA6WTfMuLso4hb86ybXyAzZ3Jpz5XHUdvYUb3rFKBHlLSutNTxgUkt95R4jVIfSCM10zPRRBPNhy3nEB3DQI1lKrTim+8KukpX+7fuw4g6lUx6vuRexquRjwGQXPV7273hOKUnw8V6upA6bqY8lB4eVAFuNNJ0ymdE4fDcbBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T2QWm8qW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rzqqpvn+; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=T2QWm8qW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rzqqpvn+; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BF3065CC22;
-	Thu, 21 Mar 2024 10:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711016314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
-	b=T2QWm8qWdk6yS4X/0bAANhZpcmr+2JyQFhimv/yIFExkpTnHDdB43ipDYO4xnHDE2Eo+BM
-	LVRonvW3qpfqGTy/a0m7aPHGHhMu6+cOMDRbwvcihlPYCiYT+xWJC5MyKdV03LezYoOINA
-	IFEbVz7wRXvF5sZkx6egYYxBGyVy+1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711016314;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
-	b=rzqqpvn+tYK+d2QiZOvmmXyyvV6RGdAM1ciYMvgL9NcGS1Y4yc+X7YbNDpMVQjDqPFMML1
-	RnbR881FQSiyYCCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711016314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
-	b=T2QWm8qWdk6yS4X/0bAANhZpcmr+2JyQFhimv/yIFExkpTnHDdB43ipDYO4xnHDE2Eo+BM
-	LVRonvW3qpfqGTy/a0m7aPHGHhMu6+cOMDRbwvcihlPYCiYT+xWJC5MyKdV03LezYoOINA
-	IFEbVz7wRXvF5sZkx6egYYxBGyVy+1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711016314;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0JrAJs2mKSXHbeA7yys/qJrodJcZdvqB2ovIVFOOfg=;
-	b=rzqqpvn+tYK+d2QiZOvmmXyyvV6RGdAM1ciYMvgL9NcGS1Y4yc+X7YbNDpMVQjDqPFMML1
-	RnbR881FQSiyYCCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B09113976;
-	Thu, 21 Mar 2024 10:18:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 011+D3oJ/GUBGwAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Thu, 21 Mar 2024 10:18:34 +0000
-Date: Thu, 21 Mar 2024 11:20:00 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Muchun Song <muchun.song@linux.dev>
-Cc: syzbot <syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] kernel BUG in const_folio_flags
-Message-ID: <ZfwJ0JOgcMCTcSgZ@localhost.localdomain>
-References: <0000000000006cfe98061423cde7@google.com>
- <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f4VKbfwOQhGR9Xk6cSexPNDUEAMFOCo888IyGxtBbw5bGEOitXVfjoOiuFIwZ24qEL2HaN2pT9QLwKa5xZWUTq1WXDHkFRcpAV0Izt/ErSI0kCNtvG8icmGFv869wuSCurR2yfhBffkXUhQNeHL0Q4m62IGugaj+T218FZWQFBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tk/Lk+/b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDAF0C433C7;
+	Thu, 21 Mar 2024 10:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711016397;
+	bh=lO/wG4XF/5dsIZJ2dAHwfekBZW7O4cljkSFhVC8pbVM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tk/Lk+/bAWQql2fWtlvB8hAGfJaZLUBJP0Tymf+c+vFJN7ADMvZ8w7MdAfUTGhs44
+	 g7Ln2i+vIu72lW4s1TGBaOUieUqfZmlBKEUowXtlzKae5gQXBkevW1hHPoGPi+Ma8N
+	 c9vFf4L4btQdQObh4pK0zM33sqyxZ+eWy5ysNjb55P/QDukzaOUVTceElLKT1pRk33
+	 5cdlldCYPrR3q1zZo0FySdz0Xn6A5KWAX4A79VBPRVcxThczUaCeXNG8o5cl9rydjW
+	 xTO84YzSK/Id//i4Nfk+kMe+La84xps8U4VszaL3efXd4o7BvyvDfkxwN/hTJURNVp
+	 Gzy1eAhxTxhXg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rnFWn-000000005Hl-09if;
+	Thu, 21 Mar 2024 11:20:05 +0100
+Date: Thu, 21 Mar 2024 11:20:05 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Jagadeesh Kona <quic_jkona@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Taniya Das <quic_tdas@quicinc.com>,
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+	Ajit Pandey <quic_ajipan@quicinc.com>,
+	Imran Shaik <quic_imrashai@quicinc.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH V2 RESEND 4/6] dt-bindings: clock: qcom: Add SM8650
+ camera clock controller
+Message-ID: <ZfwJ1cgFLlWdj7xp@hovoldconsulting.com>
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-5-quic_jkona@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,64 +74,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=T2QWm8qW;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rzqqpvn+
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.49 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-1.48)[91.54%];
-	 TAGGED_RCPT(0.00)[3b9148f91b7869120e81];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Score: -3.49
-X-Rspamd-Queue-Id: BF3065CC22
-X-Spam-Flag: NO
+In-Reply-To: <20240321092529.13362-5-quic_jkona@quicinc.com>
 
-On Thu, Mar 21, 2024 at 05:49:49PM +0800, Muchun Song wrote:
-> There are some more page dumping information from console:
+On Thu, Mar 21, 2024 at 02:55:27PM +0530, Jagadeesh Kona wrote:
+> Add device tree bindings for the camera clock controller on
+> Qualcomm SM8650 platform.
 > 
-> [ 61.367144][ T42] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0xffff888028132880 pfn:0x28130
-> [ 61.371430][ T42] flags: 0xfff80000000000(node=0|zone=1|lastcpupid=0xfff)
-> [ 61.374455][ T42] page_type: 0xffffffff()
-> [ 61.376096][ T42] raw: 00fff80000000000 ffff888015ecd540 dead000000000100 0000000000000000
-> [ 61.379994][ T42] raw: ffff888028132880 0000000000190000 00000000ffffffff 0000000000000000
-> 
-> Alright, the page is freed (with a refcount of 0).
+> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Yes, basically the page changed betwen folio_test_large() (returned true
-for PG_Head) and the call to const_folio_flags() (which now returned
-false for PG_Head).
+Did Krzysztof really review this version?
 
-As David pointed out, Willy is working on making PageHutelb more
-robust [1].
+> @@ -18,6 +19,7 @@ description: |
+>      include/dt-bindings/clock/qcom,sm8550-camcc.h
+>      include/dt-bindings/clock/qcom,sc8280xp-camcc.h
+>      include/dt-bindings/clock/qcom,x1e80100-camcc.h
+> +    include/dt-bindings/clock/qcom,sm8650-camcc.h
 
- 
-[1] https://lore.kernel.org/linux-mm/20240314012506.1600378-1-willy@infradead.org/
+This does not look like alphabetical order.
 
--- 
-Oscar Salvador
-SUSE Labs
+>  allOf:
+>    - $ref: qcom,gcc.yaml#
+> @@ -29,6 +31,7 @@ properties:
+>        - qcom,sm8450-camcc
+>        - qcom,sm8550-camcc
+>        - qcom,x1e80100-camcc
+> +      - qcom,sm8650-camcc
+
+And neither does this.
+
+Johan
 
