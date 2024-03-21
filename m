@@ -1,129 +1,178 @@
-Return-Path: <linux-kernel+bounces-110209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99C69885B8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:19:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7AD885B8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:21:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBA3C1C2203C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:19:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D99D6B224EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD488624F;
-	Thu, 21 Mar 2024 15:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lloGY6fs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCF08624E;
+	Thu, 21 Mar 2024 15:21:28 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC49441775;
-	Thu, 21 Mar 2024 15:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5748595B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711034377; cv=none; b=j4JBE6ZaedleOI36uC3n+TrS99IJ2ZlK5KTXDwXay/xpCe8E1+Q6E9uyqkEl7gKo25DplxhFO/wtzc0TcUFi/jyQSRUihOLNtXia2eWXdD0f1u+0CAKXe8XqKhWevQ+2quklnbhaspYqs4LCGgdreJepYxvPHyn9VtpTpApIp/E=
+	t=1711034488; cv=none; b=uivq8Q4zpQh3G0GVWfFJL9qoJaneijTyDy5ZGsZINsLyOtN58bSNxGCtNaCgQbBK0uU4uQXXEtZhuPyiX67uyIvow+1SojajFUCrD6ert/c+fBQ29Z0b8ZEMr8dvflhrPRjBFYDaY29/GMS1XEE2n61lyR5EpADR0K3LaDyNiTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711034377; c=relaxed/simple;
-	bh=JagbLAWs5oV14b4pWzc+FAMEcZLOG8pm8iM+Ow8+Yi8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=n93ii+9krFgWKxINA1zNf9w0ehbMXLTIlLLN2cedJ9mal3JL4to5sPdHq1y3b54kLA/dNh7kF7RSsH+SnhYW1RgM4k89R08WAAjx3sFaoH7xIt+CSXgyulzZKiwrock5NKaNQj/lkjMZuQ5W7bCd5A1YDmAFsqFRSnsrl51aUMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lloGY6fs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A73DC433F1;
-	Thu, 21 Mar 2024 15:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711034377;
-	bh=JagbLAWs5oV14b4pWzc+FAMEcZLOG8pm8iM+Ow8+Yi8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=lloGY6fskoz0QoaV3F3FSzytf1O/aBgLGQ22LWzI4+uWeyq3k28tqrFHRJdrjYzUh
-	 Vgp9G1uZJFZMRT53k5yySWR7HJnjgaNpVQdTVGZBP0NgBf15udFFIipYCDwwloJ+5n
-	 2LjymdGHXgjlJI3BRD7++RRMutEKb6/M9JfDp4oGF1jkRNyz9N4jR/nA1d4Vt12tc0
-	 F/yyAP8PbskZnmJljEGPp81inRm46EsXrM3tfb+rI8O2ATL26gSUh/VRwmHhBM+cRw
-	 1rqsuNw9Fe/PBWZfF5KR0Wq/b+KrdOQjMBQxWLlGyVajg+kFlrlIcTL6nutfRPOrSI
-	 S9Pnf/Z7t3jxg==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Thu, 21 Mar 2024 16:19:27 +0100
-Subject: [PATCH] MAINTAINERS: update Benjamin's email address
+	s=arc-20240116; t=1711034488; c=relaxed/simple;
+	bh=Tz9YlKhIZctUK372Bg+H0LceqSnjtHniwyH8jxYl8Iw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Myrg34ElD/gJnCQushZa0dpJ7qDnb4BiCqI/4I4KWmxkcaPVtl0V0/96WjubwbNcc4Q6HBC9Szs54oN+/NrbGjkBY7cxVaOv6xV4d87Z5jxAjmjQN+WYe115X3YlzOdtq2xKxWclSyZOVd7LwGowwM1STMtiDExRLnzTvVQAuJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-27-Q5suj0RZNn-WJXs-ToOs6A-1; Thu, 21 Mar 2024 15:21:23 +0000
+X-MC-Unique: Q5suj0RZNn-WJXs-ToOs6A-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Mar
+ 2024 15:20:57 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 21 Mar 2024 15:20:57 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Russell King' <linux@armlinux.org.uk>
+CC: Ard Biesheuvel <ardb@kernel.org>, 'Jiangfeng Xiao'
+	<xiaojiangfeng@huawei.com>, "arnd@arndb.de" <arnd@arndb.de>,
+	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
+	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
+	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
+	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
+	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
+	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
+	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
+	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHAgAAWtoCAAAVW8IAACy4AgAADrmCAAAjqAIAAC+nggAASTICAAASwMA==
+Date: Thu, 21 Mar 2024 15:20:57 +0000
+Message-ID: <401453a216644af98d577f51c12d292b@AcuMS.aculab.com>
+References: <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+ <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+ <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
+ <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
+ <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
+ <0fd55e156195440bb1d815dd8300894b@AcuMS.aculab.com>
+ <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
+ <9d6057b110034c04b6b590522c8c69cc@AcuMS.aculab.com>
+ <ZfxKiQuNM/zruxSd@shell.armlinux.org.uk>
+In-Reply-To: <ZfxKiQuNM/zruxSd@shell.armlinux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240321-bentiss_kernel-v1-1-eeaa04b4bfbc@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAP5P/GUC/x3MSwqAMAwA0atI1haaVvBzFRGpmmpQqjQignh3i
- 8u3mHlAKDIJNNkDkS4W3kMC5hmMiwszKZ6SwWhTaGtQDRROFulXioE2VVvEynssrXOQoiOS5/s
- ftt37fj60LWJgAAAA
-To: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, linux-input@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711034376; l=2226;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=JagbLAWs5oV14b4pWzc+FAMEcZLOG8pm8iM+Ow8+Yi8=;
- b=idxzU9NqEHxAzS692QigZ1cfATnvQkTmfk4T7+2MITO9upCXANUoonubIkHGuOE/CNc05KzKP
- BQ6RMsjI1tqBxtfkSKaZ4sXrFK8D88kJpRGnbyEkvI4qhc3JZN6I6Di
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Update my email address to the kernel.org one, as it's getting
-more convenient this way.
+From: Russell King
+> Sent: 21 March 2024 14:56
+>=20
+> On Thu, Mar 21, 2024 at 02:37:28PM +0000, David Laight wrote:
+> > From: Russell King
+> > > Sent: 21 March 2024 13:08
+> > >
+> > > On Thu, Mar 21, 2024 at 12:57:07PM +0000, David Laight wrote:
+> > > > From: Russell King
+> > > > > Sent: 21 March 2024 12:23
+> > > > ...
+> > > > > > That might mean you can get the BL in the middle of a function
+> > > > > > but where the following instruction is for the 'no stack frame'
+> > > > > > side of the branch.
+> > > > > > That is very likely to break any stack offset calculations.
+> > > > >
+> > > > > No it can't. At any one point in the function, the stack has to b=
+e in
+> > > > > a well defined state, so that access to local variables can work,=
+ and
+> > > > > also the stack can be correctly unwound. If there exists a point =
+in
+> > > > > the function body which can be reached where the stack could be i=
+n two
+> > > > > different states, then the stack can't be restored to the parent
+> > > > > context.
+> > > >
+> > > > Actually you can get there with a function that has a lot of args.
+> > > > So you can have:
+> > > > =09if (...) {
+> > > > =09=09push x
+> > > > =09=09bl func
+> > > > =09=09add %sp, #8
+> > > > =09}
+> > > > =09code;
+> > > > which is fine.
+> > >
+> > > No you can't.... and that isn't even Arm code. Arm doesn't use %sp.
+> > > Moreover, that "bl" will stomp over the link register, meaning this
+> > > function can not return.
+> >
+..
+>=20
+> Don't show me Arm64 assembly when we're discussing Arm32.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
-Basically it's getting easier for me to use the kernel.org address
-instead of my company's one. So let's do it.
+Oops - I'd assumed no one did 32bit :-)
+In any case it is much the same, see https://godbolt.org/z/7dcbKrs76
 
-Note sure if I should go through the whole tree to change the different
-occurences of my email, but worse case this can happen in a separate
-patch.
----
- .mailmap    | 2 ++
- MAINTAINERS | 4 ++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+f4:
+        push    {r3, lr}
+        subs    r3, r0, #0
+        ble     .L2
+        mov     r2, r3
+        mov     r1, r3
+        bl      f
+L2:
+        pop     {r3, pc}
 
-diff --git a/.mailmap b/.mailmap
-index e90797de3256..25019ddf467c 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -96,6 +96,8 @@ Ben Widawsky <bwidawsk@kernel.org> <ben@bwidawsk.net>
- Ben Widawsky <bwidawsk@kernel.org> <ben.widawsky@intel.com>
- Ben Widawsky <bwidawsk@kernel.org> <benjamin.widawsky@intel.com>
- Benjamin Poirier <benjamin.poirier@gmail.com> <bpoirier@suse.de>
-+Benjamin Tissoires <bentiss@kernel.org> <benjamin.tissoires@gmail.com>
-+Benjamin Tissoires <bentiss@kernel.org> <benjamin.tissoires@redhat.com>
- Bjorn Andersson <andersson@kernel.org> <bjorn@kryo.se>
- Bjorn Andersson <andersson@kernel.org> <bjorn.andersson@linaro.org>
- Bjorn Andersson <andersson@kernel.org> <bjorn.andersson@sonymobile.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c50e72258ba9..52bb6f2c3e7b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9546,7 +9546,7 @@ F:	kernel/power/
- 
- HID CORE LAYER
- M:	Jiri Kosina <jikos@kernel.org>
--M:	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-+M:	Benjamin Tissoires <bentiss@kernel.org>
- L:	linux-input@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git
-@@ -22685,7 +22685,7 @@ F:	drivers/usb/host/ehci*
- 
- USB HID/HIDBP DRIVERS (USB KEYBOARDS, MICE, REMOTE CONTROLS, ...)
- M:	Jiri Kosina <jikos@kernel.org>
--M:	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-+M:	Benjamin Tissoires <bentiss@kernel.org>
- L:	linux-usb@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git
+f5:
+        subs    r3, r0, #0
+        ble     .L6
+        push    {lr}
+        sub     sp, sp, #12
+        mov     r2, r3
+        mov     r1, r3
+        str     r3, [sp]
+        bl      f
+L6:
+        bx      lr
 
----
-base-commit: 3e78a6c0d3e02e4cf881dc84c5127e9990f939d6
-change-id: 20240321-bentiss_kernel-93118ff173aa
+That is with -mno-sched-prolog but with 5+ args they spill to stack
+and the %sp change is pulled into the conditional.
 
-Best regards,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
+It does look like %lr is being saved (and for arm64 I think).
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
