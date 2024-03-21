@@ -1,121 +1,118 @@
-Return-Path: <linux-kernel+bounces-109858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B5188569F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:35:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0536F8856A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:44:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5F1A1C21374
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:35:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE181F21A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6809454BDB;
-	Thu, 21 Mar 2024 09:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="kbh53oNI"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC2654BDB;
+	Thu, 21 Mar 2024 09:44:01 +0000 (UTC)
+Received: from new-mail.astralinux.ru (new-mail.astralinux.ru [51.250.53.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2FC2E6;
-	Thu, 21 Mar 2024 09:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63430C2E6;
+	Thu, 21 Mar 2024 09:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.250.53.164
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711013749; cv=none; b=eSjRpkewsOQy9JgVQokuE86OmVd6KZgokKkzLDJFzxv6rIO5FGM7WzFRQ1yD2PfC2tfvu/oi9zBMbDf166z42s9QS9vUG6t3PlUe9OONkcr3CIwr0a0vi7np64P3Twd4TH2WtfUFD1Ccg1+jSqr8dUmUe9az8l5ORGAekUVpqP0=
+	t=1711014241; cv=none; b=iL4sELiYtmgOWw48/3cAYxIJRollGp6QYP1aDY2NIpvd4oY9lSiFkcAWwxbbD5bOWSxpRpDf/peOqk/3RzlsGCD9l8zwP3I9y+T/yCtWrLHtY0QV1uv0UBJta5fHhw8jSw+0ibG5oLWhGF/uKWflU32uwytET3XslyPO0BEO7NE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711013749; c=relaxed/simple;
-	bh=yC8T7DEpTLZYJHID9PjAHySKLfNAf2ftqvmmAA3S9dM=;
+	s=arc-20240116; t=1711014241; c=relaxed/simple;
+	bh=pE1D1CwmKJCNu/grzQTR/2Ua4Iq0YHN5QiyjUaPNT0Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bzWw7e5unBuO913vnYZY2GRVWNpSlyRR9iy+hQ7v6nodZVCkbXPi7MtJXfawM3KVtJmpCk7ZItBy/YwXzKgnP0uiMqBLkN/LaV4d6xWYirBQ+ZSjtyo2Wkk1S4D2XV2e8CG3t1IPOcSAkCj/bYNPZiMSR4DVJcLd+qVYdb/eoJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=kbh53oNI; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 52CC7FF803;
-	Thu, 21 Mar 2024 09:35:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1711013739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y+rBfIRgdxEs51rdHUYVQ/1yd5TKf+EWpb7ciHqkYBQ=;
-	b=kbh53oNIAEdV5keF04s/uI5E0To0uvj8OoQ68AdJvnq0A+7IKcBHmCFDbi8kr75Craa13D
-	T9iT6zbTzks/LC1LT950Y5LFXg10GlbSbi1M0LNWxR4dQI6nzxKXSN2wsvPZ+pRMJx+bHX
-	i3wP/ii9tp8ZA5FKFur5sZ5eKPNzDXbOr7+KS8lTHPE5qWervRh7rlp2G5YVLPhUFGZUy6
-	WpdmYLhITI7h3V+L5cB9/vBeams9gkdqEQnI8Mm6OZea3mAnuWVZgcu+7K5leO583caOA6
-	d0jXU5sVLwRS6k4CDn+iHidyJfFeh/x2WcK5UFDCW4pcK2RFs1bbo3xFS52Hqg==
-Message-ID: <68b7908d-1756-4a0f-b0fc-7c0fb806ff9f@arinc9.com>
-Date: Thu, 21 Mar 2024 12:35:11 +0300
+	 In-Reply-To:Content-Type; b=Efk/XtfFITAdm/WZVGicVNgtNp3j6txK4QjApza5iqngxU8O2XZU9bozEsNKuI4B1jnuYeaNM4ZC1xxiCM7EQ3nNI2cKzOL3O/0HUtIcWRu/dYlzdmkalK+sElLErXV7HSBSjP6hwpEfUktqvBUeAEfA9qhFhmJ5jV4mxPxKvQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru; spf=pass smtp.mailfrom=astralinux.ru; arc=none smtp.client-ip=51.250.53.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=astralinux.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=astralinux.ru
+Received: from [172.20.10.9] (unknown [176.59.43.255])
+	by new-mail.astralinux.ru (Postfix) with ESMTPA id 4V0gNc0YG3zqSPj;
+	Thu, 21 Mar 2024 12:37:35 +0300 (MSK)
+Message-ID: <b67f3efb-509e-4280-90f2-729d217c20c7@astralinux.ru>
+Date: Thu, 21 Mar 2024 12:36:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 0/2] MT7530 DSA subdriver fix VLAN egress and
- handling of all link-local frames
-To: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
- DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Frank Wunderlich <frank-w@public-files.de>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240314-b4-for-net-mt7530-fix-link-local-vlan-v2-0-7dbcf6429ba0@arinc9.com>
- <f6f064b8-efb2-4ab0-94f1-468d5d273d6e@arinc9.com>
- <9762d71f1b3858c6b362696277702409e885fa1d.camel@redhat.com>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <9762d71f1b3858c6b362696277702409e885fa1d.camel@redhat.com>
+User-Agent: RuPost Desktop
+Subject: Re: [PATCH] flow_dissector: prevent NULL pointer dereference in
+ __skb_flow_dissect
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
+References: <20240320125635.1444-1-abelova@astralinux.ru>
+ <Zfrmv4u0tVcYGS5n@nanopsycho>
+Content-Language: ru
+From: Anastasia Belova <abelova@astralinux.ru>
+In-Reply-To: <Zfrmv4u0tVcYGS5n@nanopsycho>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+X-DrWeb-SpamScore: -100
+X-DrWeb-SpamState: legit
+X-DrWeb-SpamDetail: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehuddgtddvucetufdoteggodetrfcurfhrohhfihhlvgemucfftfghgfeunecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthekredttderjeenucfhrhhomheptehnrghsthgrshhirgcuuegvlhhovhgruceorggsvghlohhvrgesrghsthhrrghlihhnuhigrdhruheqnecuggftrfgrthhtvghrnhepkeetkefhhedugfekfeevteefuedufffggedvheetgedtgefhleeghfeghfekledtnecuffhomhgrihhnpehlihhnuhigthgvshhtihhnghdrohhrghdpkhgvrhhnvghlrdhorhhgnecukfhppedujeeirdehledrgeefrddvheehnecurfgrrhgrmhephhgvlhhopegludejvddrvddtrddutddrlegnpdhinhgvthepudejiedrheelrdegfedrvdehheemheekieekvddpmhgrihhlfhhrohhmpegrsggvlhhovhgrsegrshhtrhgrlhhinhhugidrrhhupdhnsggprhgtphhtthhopeejpdhrtghpthhtohepjhhirhhisehrvghsnhhulhhlihdruhhspdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopegvughumhgriigvthesghhoohhglhgvrdgtohhmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehnvghtuggvvhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
+ hnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvhgtqdhprhhojhgvtghtsehlihhnuhigthgvshhtihhnghdrohhrgh
+X-DrWeb-SpamVersion: Vade Retro 01.423.251#02 AS+AV+AP Profile: DRWEB; Bailout: 300
+X-AntiVirus: Checked by Dr.Web [MailD: 11.1.19.2307031128, SE: 11.1.12.2210241838, Core engine: 7.00.62.01180, Virus records: 12528093, Updated: 2024-Mar-21 08:02:36 UTC]
 
-On 21.03.2024 12:29, Paolo Abeni wrote:
-> On Wed, 2024-03-20 at 19:41 +0300, Arınç ÜNAL wrote:
->> On 14.03.2024 12:33, Arınç ÜNAL via B4 Relay wrote:
->>> Hi.
->>>
->>> This patch series fixes the VLAN tag egress procedure for link-local
->>> frames, and fixes handling of all link-local frames.
->>>
->>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->>> ---
->>> Changes in v2:
->>> - Add Fixes: tag to both patches.
->>> - Link to v1: https://lore.kernel.org/r/20240311-b4-for-net-mt7530-fix-link-local-vlan-v1-0-d67e6cc31af2@arinc9.com
->>>
->>> ---
->>> Arınç ÜNAL (2):
->>>         net: dsa: mt7530: fix link-local frames that ingress vlan filtering ports
->>>         net: dsa: mt7530: fix handling of all link-local frames
->>>
->>>    drivers/net/dsa/mt7530.c | 52 ++++++++++++++++++++++++++++++++++++++++--------
->>>    drivers/net/dsa/mt7530.h | 22 +++++++++++++++++++-
->>>    2 files changed, 65 insertions(+), 9 deletions(-)
->>> ---
->>> base-commit: d7d75124965aee23e5e4421d78376545cf070b0a
->>> change-id: 20240208-b4-for-net-mt7530-fix-link-local-vlan-af6e9928ad8d
->>>
->>> Best regards,
+
+
+20/03/24 16:38, Jiri Pirko пишет:
+> Wed, Mar 20, 2024 at 01:56:35PM CET, abelova@astralinux.ru wrote:
+>> skb is an optional parameter, so it may be NULL.
+>> Add check defore dereference in eth_hdr.
 >>
->> Reminder this patch series is waiting to be applied.
-> 
-> I hoped to get some feedback from the DSA crew, so it waited a bit in
-> patchwork. Anyway it looks like it staged long enough and I'll go
-> through it soon.
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> Either drop this line which provides no value, or attach a link to the
+> actual report.
+>
 
-Vladimir used to help me a lot. I hope everything's okay on their end.
+It is an established practice for our project. You can find 700+ applied
+patches with similar line:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=linuxtesting.org
 
-Arınç
+
+>> Fixes: 67a900cc0436 ("flow_dissector: introduce support for Ethernet addresses")
+> This looks incorrect. I believe that this is the offending commit:
+> commit 690e36e726d00d2528bc569809048adf61550d80
+> Author: David S. Miller <davem@davemloft.net>
+> Date:   Sat Aug 23 12:13:41 2014 -0700
+>
+>      net: Allow raw buffers to be passed into the flow dissector.
+>
+
+Got it.
+
+>
+>> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+>> ---
+>> net/core/flow_dissector.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+>> index 272f09251343..05db3a8aa771 100644
+>> --- a/net/core/flow_dissector.c
+>> +++ b/net/core/flow_dissector.c
+>> @@ -1137,7 +1137,7 @@ bool __skb_flow_dissect(const struct net *net,
+>> 		rcu_read_unlock();
+>> 	}
+>>
+>> -	if (dissector_uses_key(flow_dissector,
+>> +	if (skb && dissector_uses_key(flow_dissector,
+>> 			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
+>> 		struct ethhdr *eth = eth_hdr(skb);
+>> 		struct flow_dissector_key_eth_addrs *key_eth_addrs;
+> Looks like FLOW_DISSECT_RET_OUT_BAD should be returned in case the
+> FLOW_DISSECTOR_KEY_ETH_ADDRS are selected and there is no skb, no?
+
+I agree, I'll send the second version.
+
+Anastasia Belova
+
 
