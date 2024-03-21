@@ -1,171 +1,173 @@
-Return-Path: <linux-kernel+bounces-110261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E22885C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:41:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40BE3885C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 770D7285FC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:41:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAA7A1F230BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1069126F35;
-	Thu, 21 Mar 2024 15:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BEA8625F;
+	Thu, 21 Mar 2024 15:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MOVl1PFY"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="HhUFPzpk"
+Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC6C86262;
-	Thu, 21 Mar 2024 15:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C058A1E879
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035522; cv=none; b=oRmbCgaiVH8Tj9ML4OkskeUw00W0fZwaBqrcVu6vThqiaSOwIQM3ft/Rj6ievIIJBPbj0pVuCeXjoiG7J4pMVBZfIzRliRWp8ETuFD8rdWS3GW1b8pNtbeQ6ueZrmp1HYZOl9NOLSuxCcmEHDsAbRKVYky8nWuv6Fk1MQ4NqM3s=
+	t=1711036076; cv=none; b=PIPWgG/AEKwkUrYx6ZiJUyrwUsNFDp619Ipojqw5r2cJsWem2sLeBYXy33xIiKHoki9lViSBbVSRyjSdWluUGIOhBGLBGnBZGqsZS9aeOHEEe7rKR7+Oi9LEcmENgVOt95T8wUz8QZkBwqYBhJ3X3neX2FjOEHNNj0o9aNF8rug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035522; c=relaxed/simple;
-	bh=vJEZk6/IF32GmYoS+ANMbVDaYuQ49rxjNBklyzfSgt8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=bLZHDI+5c49XGuGwOHr+dbSggjbihY4cOX2PXSlKkQuPJT5syMrzXzH62QbdKbLelXMMiQZwnB2eZw6OH/DzIH/oWKhi+tKLJxJvfJIV+bnzFWLFbIF65QNbdnKe1JN+sNQLxt2bSlWQl6XvW2+riSQq7f+V9+QY8iMwTFaVEVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MOVl1PFY; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51381021af1so1816478e87.0;
-        Thu, 21 Mar 2024 08:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711035518; x=1711640318; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s8qJ2xinG15xjfWxzz0ilp8huPxskxcCawEncmzpJpY=;
-        b=MOVl1PFYA7wQRMRje+zVU53/4qOsyVpb+Ab2+mtzUFVww6LebsCj/UnP2qCdqCur5H
-         sogDK1lsrP8YEMcrn3GD1qiFB8vknoGMw0ifQp5dRkS2BAjxw6LkhFahRys0CvFgBWi/
-         BECN3UsTGgL31Du0uJukc4WEZwKmn2KpG+wBPz5gEbDHfNjX4DXX04muZJAkJLLpcTzt
-         6B89ZsPta+mHy0/vAeGegMZLPBmpVI71iQWlboH5IBnLsG/4l2jfmWdS8QK7+Jr9gPK3
-         I9QjjzdUcm18cmAVs59UjfxgOcuYWjA+gxpYKc66T41nb9Qd+WCGKUkaR9mwb1q/hK0s
-         EwEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711035518; x=1711640318;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s8qJ2xinG15xjfWxzz0ilp8huPxskxcCawEncmzpJpY=;
-        b=nPTDlV2WOQFn31+P7RElWPo+es5x5ti5ct3d+KCVh+Qbblz4wo/kbe2uxWdVvRHKS9
-         LZm5bdSqflg2yYIzWfVCHliIun3gmZ/9FNmQFeFHU2y7jk5ZwvLHi9VHCvFQOyTCu3a1
-         LKlMBsfTEf/J8BZ13AjyCXrjLCqyG2MsZFgTuMDw1Qomb2Ys80LstZhQHSAafHZhmoHh
-         cGMWpe3Fc77wyEXo3t8c8hR8ENvKji+AMFQ2LueJCJO32TeSMGCLKlJXkxmyUrGyO8hn
-         W+TVxEDRLC7M8zhwoMLFdJTfB7B+oshWmnY8o8Tv7UOO7T+o3dMB8XaBV3roz0NrvaaG
-         otoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpAs9pSkJ0s7NlbbOXtRIMfwgXW5iVrZCRyymSqZ7B6JvBQhItjIWYWHpO7VRc5YwcgCBo1o7hpM3bjMGcrBXa5ORBtQfBTi3oq1ztl94f0QAGtfa25ynz/5oM9c7P6oED
-X-Gm-Message-State: AOJu0Yx7R0QRAp6bbmHPSOcn9LaAVjSOon5GrQdGEkP96PmKg0JDDW8a
-	imejiPUhR8S7zMNOlrrKHunXniWfJxeAp4Tm+b/u+6eFJ740bRkNwVDXPcV/mPaLi0auoRRB4q/
-	J32TEe7AQ0JPsZsr8T6bN0l3IxWI=
-X-Google-Smtp-Source: AGHT+IEGteT+xsETnK9Rs87EItJsWax6ttFqGmrPj5jSxE+SV6YJGe8bsXUYa/0Rq0FpxFoA4hiV/plVe92gS0ccnLI=
-X-Received: by 2002:a19:3848:0:b0:513:ce01:592b with SMTP id
- d8-20020a193848000000b00513ce01592bmr2031312lfj.6.1711035518046; Thu, 21 Mar
- 2024 08:38:38 -0700 (PDT)
+	s=arc-20240116; t=1711036076; c=relaxed/simple;
+	bh=jeeFGFpFQcMeiPnqG1XhNR17H2LPGzyB/MVHRtQ7nxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jY10qaRPTMcivkGCBt9+8q4QsRO1a3Myk8PnYyNdIycei+Eq7M2AgQZCpFkWL7eh+wG2fZwCoB5Io4ip+KlSXE3UZrDoQSW3kMWLTkVcPiG/BW1Mb7eRm/GXcGLKD+tYc/83jdX/AIOXEUf5gw8Ddh4KTL8cn00Yp7QW5jUV5a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=HhUFPzpk; arc=none smtp.client-ip=203.205.251.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1711036064;
+	bh=eFb5mGkBNhSImhI4kWEKhUE6z0crGzcN6/hptGkBZi0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=HhUFPzpknp/Nrd9zQtSJBBPC9/4ryBOd+sXJEUVmFTs5iKC2r9XvANoNn/zXpSFza
+	 yFNdePCAlbDjjLWNNpSsi3Y59dv1N+cslmejn2l3BDWrmSl9wb3glyj5xMwdyH6uaf
+	 m/7+XyEaQj5wxS30vkJ59AI39dW69CImwNMtGAmY=
+Received: from [IPV6:2409:8961:2b17:549c:98ce:49d:c167:4134] ([2409:8961:2b17:549c:98ce:49d:c167:4134])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 9CAAC4C3; Thu, 21 Mar 2024 23:39:10 +0800
+X-QQ-mid: xmsmtpt1711035550tfx2v8zko
+Message-ID: <tencent_583360D51D354010FEE44A3A3B739D5FF506@qq.com>
+X-QQ-XMAILINFO: OFXVMg8LeyWMW6CuZuhrlYUls5evNkZeZR7IwrVp+YzTm/M0xFaWG9TSeMujhq
+	 ZYZacY2WgZPrUfRq9J48NYt9QMpF0t3jHP3nbRBfVyODkrj5TRPTsFxvQxRGa2U/2ZMAfxbEUved
+	 n4cCty2V7pz/3H+FPgaa78YlATHLAY2MYX6GkdHfvUEAr/TK2o9h1gYxNVJc4N3w9aVi+FqVn5Nm
+	 SMQvPUIn0y86TcW6L7KZfnpY8ngdWQclZL5xW1IG5cPHFFnkIwR0eatJp/1AAaZ4YG8U/nwrPGLN
+	 YDgexG5/zHls93yYpuAwh0j2a1DYBiad/I7fQGHhFCj87gZwXm1LGISg5XifO5wH2qcUPXmVN0hg
+	 s8jn2aYTQ+8X1mkLrY2qUy05ydf08ODrhU5cNFJY5uaswuHDyZy67Yj0MXuj/dooDuye1LMQ5+tm
+	 4sNFNtzuiX0ayYuu2OfzoIKJoV1pBQOefajgN6UvNoVFFOkT0lrG8vTZAyaIYjZqf4FRC5N5jzC0
+	 hRf/35jdUYG1joN94Jhuq2D8K8yx7+dYa+HUhraep1j7ktUil7QnJhQUWF799i+5VOYOjIZq3FYP
+	 R3ax4bgNvw90VTM4gmIQCAj3mRsvuFoDMHEaty6IFcJKlza0ikrzmMsCiWw6OQ875xs+LdkaEcuT
+	 f5EYyIaLKMHKX+d2vlUPtMC7Y+EDuQOH1OySDr1jvgKmepi/CGyEtUOBpTyBmKWkpbQ0ietds0OV
+	 X6z4wyxs4CT6LnYR/wkI4OhHdZE14gQigHmr5dJeSzXKg8+EqznXqwZB3KEmW8afV1xlDXtvOC34
+	 qJp+1kVZIxW1T5qxfK0wlmx2MTbzkpz8j8SJbcH9kDgnVlYzgrfTk3Y6wrpQhWNU3viy04tZxC9t
+	 REV6KPuFlYHSB7DEb86IghR8zL24BRfBXysXlA0ezGIgGxiSJ6xh1sVS+aK5e+/MyT5MVaExIWSX
+	 HMGb9kkEg+hW/mVL4CrO24LOBsrMk1HPB/MJuPB74bKg/nT9W5yxKr941bA9UTAtbacZv4CLfoxa
+	 JVp4pTVrq4eaqnSVdZA/98J6duxOV58asZ9D2hsq0AgDubeSDDwPXtNFhiPnvEpoRjkaptSgfi5z
+	 5B5j/9XJuGchNE4gQYhr/9Sxr01OiPA4Zw+t0d
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-OQ-MSGID: <d82d69fb-0e2c-8a11-94b9-14763b411fd7@foxmail.com>
+Date: Thu, 21 Mar 2024 23:39:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321150300.66598-1-puranjay12@gmail.com>
-In-Reply-To: <20240321150300.66598-1-puranjay12@gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Thu, 21 Mar 2024 16:38:26 +0100
-Message-ID: <CANk7y0jJN7D8Df0b9-6TSvpwqMuQFyf8mmtyRBQ6hNtKFU3mvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: verifier: fix addr_space_cast from as(1) to as(0)
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 0/9] encode the values directly in the table entry
+Content-Language: en-US
+To: Joel Granados <j.granados@samsung.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org
+References: <CGME20240309103209eucas1p25311b485e321e701eeacbdb3e2ba8758@eucas1p2.samsung.com>
+ <tencent_C5E6023F97E7CC2A046AAEA09BC9ACF43907@qq.com>
+ <20240321152143.yxoonjy3m6bdddkf@joelS2.panther.com>
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <20240321152143.yxoonjy3m6bdddkf@joelS2.panther.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 4:03=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> The verifier currently converts addr_space_cast from as(1) to as(0) that
-> is: BPF_ALU64 | BPF_MOV | BPF_X with off=3D1 and imm=3D1
-> to
-> BPF_ALU | BPF_MOV | BPF_X with imm=3D1 (32-bit mov)
->
-> Because of this imm=3D1, the JITs that have bpf_jit_needs_zext() =3D=3D t=
-rue,
-> interpret the converted instruction as BPF_ZEXT_REG(DST) which is a
-> special form of mov32, used for doing explicit zero extension on dst.
-> These JITs will just zero extend the dst reg and will not move the src to
-> dst before the zext.
->
-> Fix do_misc_fixups() to set imm=3D0 when converting addr_space_cast to a
-> normal mov32.
->
-> The JITs that have bpf_jit_needs_zext() =3D=3D true rely on the verifier =
-to
-> emit zext instructions. Mark dst_reg as subreg when doing cast from
-> as(1) to as(0) so the verifier emits a zext instruction after the mov.
->
-> Fixes: 6082b6c328b5 ("bpf: Recognize addr_space_cast instruction in the v=
-erifier.")
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index de7813947981..ee796402ef60 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14046,8 +14046,11 @@ static int check_alu_op(struct bpf_verifier_env =
-*env, struct bpf_insn *insn)
->                                 if (insn->imm) {
->                                         /* off =3D=3D BPF_ADDR_SPACE_CAST=
- */
->                                         mark_reg_unknown(env, regs, insn-=
->dst_reg);
-> -                                       if (insn->imm =3D=3D 1) /* cast f=
-rom as(1) to as(0) */
-> +                                       if (insn->imm =3D=3D 1) { /* cast=
- from as(1) to as(0) */
->                                                 dst_reg->type =3D PTR_TO_=
-ARENA;
-> +                                               /* PTR_TO_ARENA is 32-bit=
- */
-> +                                               dst_reg->subreg_def =3D e=
-nv->insn_idx + 1;
-> +                                       }
->                                 } else if (insn->off =3D=3D 0) {
->                                         /* case: R1 =3D R2
->                                          * copy register state to dest re=
-g
-> @@ -19606,8 +19609,9 @@ static int do_misc_fixups(struct bpf_verifier_env=
- *env)
->                             (((struct bpf_map *)env->prog->aux->arena)->m=
-ap_flags & BPF_F_NO_USER_CONV)) {
->                                 /* convert to 32-bit mov that clears uppe=
-r 32-bit */
->                                 insn->code =3D BPF_ALU | BPF_MOV | BPF_X;
-> -                               /* clear off, so it's a normal 'wX =3D wY=
-' from JIT pov */
-> +                               /* clear off and imm, so it's a normal 'w=
-X =3D wY' from JIT pov */
->                                 insn->off =3D 0;
-> +                               insn->imm =3D 0;
->                         } /* cast from as(0) to as(1) should be handled b=
-y JIT */
->                         goto next_insn;
->                 }
-> --
-> 2.40.1
->
 
-This did not reach the list somehow.
-I will have to resend to trigger the CI.
 
-Sorry for the noise.
+On 2024/3/21 23:21, Joel Granados wrote:
+> On Sat, Mar 09, 2024 at 06:31:17PM +0800, wenyang.linux@foxmail.com wrote:
+>> From: Wen Yang <wenyang.linux@foxmail.com>
+>>
+>> The boundary check of multiple modules uses these static variables (such as
+>> two_five_five, n_65535, ue_int_max, etc), and they are also not changed.
+> This message is a bit cryptic. I had to do a fair amount of research to
+> get what you meant here. Having the context in front is OK with me, but
+> I would add a bit more information so the reader does not have to go to
+> the code and grep for the variables that you mean. Something like this:
+> "When using a sysctl proc_handler that requires a boundary check (like
+> proce_dointvec_minmax) it is common to use a const variable like n_65535
+> in net/rxrpc/sysctl.c or OTHER EXAMPLES...). This is suboptimal because
+> YOUR REASONS HERE"
+> 
+> 
 
-Puranjay
+Thanks a lot for your very considerate input – this is highly 
+appreciated. We will revise the change message and send v3 later.
+
+--
+Best wishes,
+Wen
+
+
+>>
+>> Eric points out: "by turning .extra1 and .extra2 into longs instead of
+>> keeping them as pointers and needing constants to be pointed at somewhere
+>> ... The only people I can see who find a significant benefit by
+>> consolidating all of the constants into one place are people who know how
+>> to stomp kernel memory."
+> I think it would be better to just link to the lore discussion.
+> 
+>>
+>> This patch series achieves direct encoding values in table entries and still
+>> maintains compatibility with existing extra1/extra2 pointers.
+>> Afterwards, we can remove these unnecessary static variables progressively and
+>> also gradually kill the shared const array.
+> Two things:
+> 1. Please name the const array: sysctl_vals
+> 2. What is missing from this patchset to completely kill sysctl_vals?
+> 
+>>
+>> Wen Yang (9):
+>>    sysctl: support encoding values directly in the table entry
+>>    kernel/sysctl-test: add some kunit test cases for min/max detection
+>>    rxrpc: delete these unnecessary static variables n_65535, four,
+>>      max_500, etc
+>>    net: ipv6: delete these unnecessary static variables two_five_five and
+>>      minus_one
+>>    svcrdma: delete these unnecessary static variables min_ord, max_ord,
+>>      etc
+>>    sysctl: delete these unnecessary static variables i_zero and
+>>      i_one_hundred
+>>    epoll: delete these unnecessary static variables long_zero and
+>>      long_max
+>>    fs: inotify: delete these unnecessary static variables it_zero and
+>>      it_int_max
+>>    ucounts: delete these unnecessary static variables ue_zero and
+>>      ue_int_max
+>>
+>>   fs/eventpoll.c                   |  19 +-
+>>   fs/notify/inotify/inotify_user.c |  49 +++--
+>>   include/linux/sysctl.h           | 108 ++++++++++-
+>>   kernel/sysctl-test.c             | 300 +++++++++++++++++++++++++++++++
+>>   kernel/sysctl.c                  |  61 +++++--
+>>   kernel/ucount.c                  |   8 +-
+>>   lib/test_sysctl.c                |  12 +-
+>>   net/ipv6/addrconf.c              |  15 +-
+>>   net/rxrpc/sysctl.c               | 169 ++++++++---------
+>>   net/sunrpc/xprtrdma/svc_rdma.c   |  21 +--
+>>   10 files changed, 571 insertions(+), 191 deletions(-)
+>>
+>> Cc: Eric W. Biederman <ebiederm@xmission.com>
+>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Joel Granados <j.granados@samsung.com>
+>> Cc: Christian Brauner <brauner@kernel.org>
+>> Cc: linux-kernel@vger.kernel.org
+>>
+>> -- 
+>> 2.25.1
+>>
+> 
+
 
