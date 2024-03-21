@@ -1,133 +1,179 @@
-Return-Path: <linux-kernel+bounces-110055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB37988596B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FDA88596F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B70AB22B75
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5061DB23105
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64C11CA83;
-	Thu, 21 Mar 2024 12:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD72783CDD;
+	Thu, 21 Mar 2024 12:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NrrGZyrK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eoVNRrd4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LFpWYcGw";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eoVNRrd4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LFpWYcGw"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A2783CAA
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779B7134CD;
+	Thu, 21 Mar 2024 12:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025512; cv=none; b=iFuOnTu8uIsRQovnGxVHMOjRB1cq3q1Dx9kfEimE0iLEk98xdUAfnEsUh4luXtjiDmagBE6w+oNyuI/PsvyINeHXMXcLkbDm3LutS/prD0i8hmw7R7RJUJoFoyOI2uuOlzo9hKQn69yNAd/C2P2ebBenBKxCe2jBZwlOMZ5BYL8=
+	t=1711025536; cv=none; b=JdeWPcEfP4Wx5OOwM82HMlNQk3Sh6gdEpheizuHTntzT6v03X7hmec24TZLXdv7zbM+5Edbo1yZxNBtBXeex9iwvyDvWgHzRujgqG5EECztNbSbjqYvYDBjLS35CBaD5sbbo6sb9VnF8/0UVpqzetH3ObqEgP5saLA+rzlu61Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025512; c=relaxed/simple;
-	bh=tGUTPWiNZmyTEBmQziDuediW/cGY2FBlQG+fCi+BA9Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YfdqL3m9/XejQSlHD6XUpslEjZLvXtG2e/bx9fSLnP/g314Z9r1jkL/gBHtIl4UkcpchqQvOF0FJvWVGibjzj/uiWwsqrhzKFewMj0VG+4tcYBbZPynNtIerI0aUCf7ZTw72wohLXIoiWi4bxdOCesG+/jWvrF+wBA6sIozEE6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NrrGZyrK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0180C43399
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711025511;
-	bh=tGUTPWiNZmyTEBmQziDuediW/cGY2FBlQG+fCi+BA9Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NrrGZyrKKjEECTuzKq90MGyAqyzkdLIF/toSoU6Lk+8XHIJ9sJVzN/VOMV/BL4qzy
-	 jtY6ag8zvgAH38pm70TXiTVxNxCs5CopB9s8l79AqIOjzl3ND1sQuykH+MKvRLfNcJ
-	 H8cGR76cM92+6qGaTYPfaTWjlmDai/J9iy+63B7rby5RY6By4dQqeyCyVYcX86HiFZ
-	 D+Z15kOglwQN1SjaA7IyypBxwvUb3CvI3s8B7j+LOtC0W79S49aGFw/6HAJFqRHosp
-	 yC/GMfwuqQphk3N/NDdpuVz1EfdXFQXPG3bzzV/+ygg2A+t+N4xa6N85FmorSnjdQt
-	 hlmGLUGI/WaMw==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a46ba938de0so132495666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 05:51:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUpI2gnyuU77u8EXXitefOTQJti1YSEZJgaXUCGKVzLzfM0uGlToAQKzDUQylZPwZQTc5O6EUTZ1qePs9KG5GvePpogXndAv3pIbIgr
-X-Gm-Message-State: AOJu0YxWe6vDsP1kPeMVn/t/43Kn0X5RUUilwP3wSpmgL+Q55nYlFCvl
-	FDtKJY7b+Dc/eR5IOaJMetkxf6wlH31uDfyAJ6/qmZ0LWO2DKgKGZON0wcQzKhxTjhwUR/fYUtc
-	Eow8OlX0Clvy3Zb2y9AuQNE5Q+JmIP2P0gpR6+g==
-X-Google-Smtp-Source: AGHT+IF9LJJnNu/4TATmxOndPgF92tRzgiGuIaKaFdbT3d+oswzEGtu0Ett6AQN5j84PqwLpl+thbLmTq/iDiVXd1zk=
-X-Received: by 2002:a17:906:11db:b0:a46:6808:2cee with SMTP id
- o27-20020a17090611db00b00a4668082ceemr14453611eja.66.1711025510397; Thu, 21
- Mar 2024 05:51:50 -0700 (PDT)
+	s=arc-20240116; t=1711025536; c=relaxed/simple;
+	bh=dFQnHdvjN+PdZaRydPaL5YzOnVbqxPf19LkEFEHeg70=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lunPOsCXyrLUmS1tcLQxi2/e3CrfaT5SKzuvP+hRn8NjAtLVOHOApy033g36uVKnqYS/042qnf4WpwhVjrxyXRN2oMiDANYVhP5FT/ywUZfdrDQh4ZQXVo5Nbw0dbQDJL4/F+8gyxHqcHq524iqsZoyUp6msymUV36Taam8CjXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eoVNRrd4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LFpWYcGw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eoVNRrd4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LFpWYcGw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 68B5A373B8;
+	Thu, 21 Mar 2024 12:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711025532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
+	b=eoVNRrd493B4kd4SgEFrTiFnhtXtfXH4QfaHq19hp2F9W/017zepPUlWvUCyv+CLJGFyvf
+	TWUNjXNgBHy+5dXd22I1bL4zaAz4oSICy6BMYFHjDoZqXle5J5bQofjK2l6Ibw85p8IZhe
+	VakJ63YYdJNzhF3i13AiV6d2L7qZT3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711025532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
+	b=LFpWYcGwnvQABaHyDr3USzpnLGp/1HpgFX5uqxBY0aD9RiPl1y49qIR7K1wb6LfVALwaQR
+	G+bn68nAIntgWPCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711025532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
+	b=eoVNRrd493B4kd4SgEFrTiFnhtXtfXH4QfaHq19hp2F9W/017zepPUlWvUCyv+CLJGFyvf
+	TWUNjXNgBHy+5dXd22I1bL4zaAz4oSICy6BMYFHjDoZqXle5J5bQofjK2l6Ibw85p8IZhe
+	VakJ63YYdJNzhF3i13AiV6d2L7qZT3k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711025532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=diCeKBUDpUeOaEDHZJ+/O8iEUxC3MlV9oxExIu8D4cg=;
+	b=LFpWYcGwnvQABaHyDr3USzpnLGp/1HpgFX5uqxBY0aD9RiPl1y49qIR7K1wb6LfVALwaQR
+	G+bn68nAIntgWPCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99F1A136AD;
+	Thu, 21 Mar 2024 12:52:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Ib5vIXst/GXVTgAAD6G6ig
+	(envelope-from <dkirjanov@suse.de>); Thu, 21 Mar 2024 12:52:11 +0000
+Message-ID: <a8174c07-00c9-4a8e-9c2e-c2d759379f09@suse.de>
+Date: Thu, 21 Mar 2024 15:52:10 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227160928.2671-1-quic_priyjain@quicinc.com>
- <CAHLCerModb=01WX=q6XU0XO8dr5EaSQ5RaBoFLFc_=vpOGAgaw@mail.gmail.com> <06ab4347-3ed0-432a-cc36-49837d8a28de@quicinc.com>
-In-Reply-To: <06ab4347-3ed0-432a-cc36-49837d8a28de@quicinc.com>
-From: Amit Kucheria <amitk@kernel.org>
-Date: Thu, 21 Mar 2024 18:21:39 +0530
-X-Gmail-Original-Message-ID: <CAHLCerPnyT56WukNqX6_4gM7siczYBpSsb7XM_eW=vb5dBwceA@mail.gmail.com>
-Message-ID: <CAHLCerPnyT56WukNqX6_4gM7siczYBpSsb7XM_eW=vb5dBwceA@mail.gmail.com>
-Subject: Re: [PATCH v3] thermal/drivers/tsens: Add suspend to RAM support for tsens
-To: Priyansh Jain <quic_priyjain@quicinc.com>
-Cc: Thara Gopinath <thara.gopinath@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_manafm@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] flow_dissector: prevent NULL pointer dereference in
+ __skb_flow_dissect
+Content-Language: en-US
+To: Anastasia Belova <abelova@astralinux.ru>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20240321123446.7012-1-abelova@astralinux.ru>
+From: Denis Kirjanov <dkirjanov@suse.de>
+In-Reply-To: <20240321123446.7012-1-abelova@astralinux.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=eoVNRrd4;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LFpWYcGw
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[41.68%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[astralinux.ru:email,suse.de:dkim,linuxtesting.org:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -2.50
+X-Rspamd-Queue-Id: 68B5A373B8
+X-Spam-Flag: NO
 
-On Tue, Mar 19, 2024 at 4:19=E2=80=AFPM Priyansh Jain <quic_priyjain@quicin=
-c.com> wrote:
->
->
->
-> On 3/17/2024 1:37 AM, Amit Kucheria wrote:
-> > On Tue, Feb 27, 2024 at 9:40=E2=80=AFPM Priyansh Jain <quic_priyjain@qu=
-icinc.com> wrote:
-> >>
-> >> As part of suspend to RAM, tsens hardware will be turned off.
-> >> While resume callback, re-initialize tsens hardware.
-> >>
-> >> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
-> >> ---
-> >> V2 -> V3: Remove suspend callback & interrupt enablement part from
-> >> resume callback.
-> >> V1 -> V2: Update commit text to explain the necessity of this patch
-> >>
-> >>   drivers/thermal/qcom/tsens-v2.c |  1 +
-> >>   drivers/thermal/qcom/tsens.c    | 40 +++++++++++++++++++++++++++++++=
-++
-> >>   drivers/thermal/qcom/tsens.h    |  6 +++++
-> >>   3 files changed, 47 insertions(+)
-> >>
-> >> diff --git a/drivers/thermal/qcom/tsens-v2.c b/drivers/thermal/qcom/ts=
-ens-v2.c
-> >> index 29a61d2d6ca3..0cb7301eca6e 100644
-> >> --- a/drivers/thermal/qcom/tsens-v2.c
-> >> +++ b/drivers/thermal/qcom/tsens-v2.c
-> >> @@ -107,6 +107,7 @@ static const struct reg_field tsens_v2_regfields[M=
-AX_REGFIELDS] =3D {
-> >>   static const struct tsens_ops ops_generic_v2 =3D {
-> >>          .init           =3D init_common,
-> >>          .get_temp       =3D get_temp_tsens_valid,
-> >> +       .resume         =3D tsens_resume_common,
-> >>   };
-> >
-> > Please add resume callbacks for the other tsens hardware too and make
-> > sure that your reinit function handles them too.
-> >
-> We have discussed internally on this and we think that if someone wants
-> to extend the support (and do the validation) of one of those old
-> platforms they can add the resume ops for that platform. There are many
-> versions of tsens hardware so we are bit skeptical to add reinit support
-> for all these platforms with any validations(since S2R mode is not
-> enabled for all these older platforms so it is not possible to validate).
 
-Then why does tsens_reinit refer to tsens_version(priv) >=3D VER_0_1
-when re-enabling the irq?
 
-Perhaps we should explicitly disable platforms that are not validated
-for this functionality (.resume =3D NULL) and have the reinit function
-only work for validated platforms (tsens_version >=3D VER_2_X)?
+On 3/21/24 15:34, Anastasia Belova wrote:
+> skb is an optional parameter, so it may be NULL.
+> Add check defore dereference in eth_hdr.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 690e36e726d0 ("net: Allow raw buffers to be passed into the flow dissector.")
+> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
 
-Regards,
-Amit
+As request in the previous email please show the actual data flow that leads to a null pointer
+dereference.
+Also please read function description:
+..
+ * @skb: sk_buff to extract the flow from, can be NULL if the rest are specified
+..
+
+> ---
+>  net/core/flow_dissector.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> index 272f09251343..68a8228ffae3 100644
+> --- a/net/core/flow_dissector.c
+> +++ b/net/core/flow_dissector.c
+> @@ -1139,6 +1139,8 @@ bool __skb_flow_dissect(const struct net *net,
+>  
+>  	if (dissector_uses_key(flow_dissector,
+>  			       FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
+> +		if (!skb)
+> +			goto out_bad;
+>  		struct ethhdr *eth = eth_hdr(skb);
+>  		struct flow_dissector_key_eth_addrs *key_eth_addrs;
+>  
 
