@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-109631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7FF1881BA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59E7B881BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A257A281F79
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:46:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1578F281FFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F13FBA4B;
-	Thu, 21 Mar 2024 03:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA653BA4B;
+	Thu, 21 Mar 2024 03:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="trvVzPXI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VNBlNzNG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF1AB651;
-	Thu, 21 Mar 2024 03:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B108B651;
+	Thu, 21 Mar 2024 03:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710992764; cv=none; b=WH3zhjPnKGheVUUnR1OsWHMNg1ddMhoJ3S3KL8HMUfXO+O05gLzZzwsRilvv+ATk8YdQDX9TAtx0fz2T8H3lghJbQHnKrgJw6LG00WJkOVFI8DFvjI5Qq+e4QgGEyaDOQVjXWknwYgNIjm4gBTx7bieCex/lfdqfCWSPvSN3gyk=
+	t=1710992823; cv=none; b=Q7Uwa85EeiPIyXFZDq5N6sLwvpKyJtXDx/7kiwM1zTFv05jX//wvk7dKjexLfAf3UTeop1JXgXqbJ94vTWAWdAxp/wgMKDSmWXQGz/6+19P/6wr1mZMTtApZDSDhigsY7CxRexymcvvlQzd0u1zmH5+D0i6YKj6P+FBxc3MSyKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710992764; c=relaxed/simple;
-	bh=bwid3uwKWHuUNT9wA19C7cl1ryQUBQSJA1FQcFOtxnE=;
+	s=arc-20240116; t=1710992823; c=relaxed/simple;
+	bh=UjsWGfC89SDoNkzeY4LPC8JcQOjMf7eJwJBKewmtRqY=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iagPZ9m/91lDIhh35GaDjSGDZeOoDz1izSfivIGxweOubZMEK/sN7VM+gLyMsZn1glQy3RwhxJi5q/l3alzUjKDA1jSwaANe3ShGe/GB0TFOEjgIYtdj4RXoPXTRuycuJhssmxT/Qu9Fg3fNhCHUuDnuM5VwwWEF08QjN3TjTXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=trvVzPXI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014D5C433C7;
-	Thu, 21 Mar 2024 03:46:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EPAp+5tuobMnSgRae1aB/A/Uhyz0jgq+lMazSUqlBKC4dX7MzhUpOLsGaPf6N0tZbvHunlR20z6gman+hktit5qaMQpB+4dePNxe+JgDjfd/nvNnAZtWSCU+LZ0JpAV4ekM8Ha8fVtpXogVxTfIu58bXMOmA7Ogbj84p9Jbruuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VNBlNzNG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0298AC433C7;
+	Thu, 21 Mar 2024 03:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710992763;
-	bh=bwid3uwKWHuUNT9wA19C7cl1ryQUBQSJA1FQcFOtxnE=;
+	s=k20201202; t=1710992822;
+	bh=UjsWGfC89SDoNkzeY4LPC8JcQOjMf7eJwJBKewmtRqY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=trvVzPXI+hS8/hfoisdeodsAoz8BsbzpM+9oedrBNyS616bHlDU6Z3FrXdZm85mdD
-	 EZ1IClPq0vDJLftlZ871oyE7P1NBLOlgC34rIUmlVaeCUBHdkn8hv14Sg6W60XGmzp
-	 0dGU6tQO07ePCpgxQs111SBGv1qeT1brjDN6y0tHA8MAM0ZLJj6DBDRcpqB2BSH7CT
-	 P7yYN40hCo2b9NDP7Qiu4OzlKVjneu4/sPybCx6hjvRvrfjAJ1C5HPM5zhWGEh38MJ
-	 FfhDalCvQwu2NS/JjklpTRlIsIDaTTudrp7h4p7kC3BYcI9xGCQ5KvbYo9GR2Ci7f/
-	 zaLHXnJ/Pqu2A==
-Date: Wed, 20 Mar 2024 20:46:02 -0700
+	b=VNBlNzNGmyYIT0jm/sLX0LuDA9AxU6BAbqarAIsgmSBFEAQMmpFGFmY5uv6xVUm7e
+	 sLu7X/EVlbqsNK3TehYFnmvyuLIMVLyAZ3i+4S96kXGBwsbIHhmJBElhVCQrHJ/3VN
+	 Dnz6m7ICfvgSivHiuly6nKFO4n3hVl5FGe//iQORnABPhwALFJpsqczrz5ITV5VkFW
+	 PE3ntSqP1M2bKiAbjRoplW1i31YmWPHMw2JEq++30eusg7yCBNAqYrUfUf+sU8Ehs+
+	 n+7wxpY0PTzgNi4oosoJe8QjzNjRQ+GTXFlIkX79bcdbOY7tSqEAMxcJp+s50fYZEO
+	 haM1SZ2V+hNdQ==
+Date: Wed, 20 Mar 2024 20:47:01 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Duanqiang Wen <duanqiangwen@net-swift.com>
-Cc: netdev@vger.kernel.org, jiawenwu@trustnetic.com,
- mengyuanlou@net-swift.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, maciej.fijalkowski@intel.com, andrew@lunn.ch,
- wangxiongfeng2@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] net: txgbe: fix i2c dev name cannot match clkdev
-Message-ID: <20240320204602.59687f28@kernel.org>
-In-Reply-To: <20240321020901.443642-1-duanqiangwen@net-swift.com>
-References: <20240321020901.443642-1-duanqiangwen@net-swift.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Andrew Halaney
+ <ahalaney@redhat.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel@quicinc.com
+Subject: Re: [PATCH net-next v1] net: Rename mono_delivery_time to
+ tstamp_type for scalibilty
+Message-ID: <20240320204701.6012a58d@kernel.org>
+In-Reply-To: <20240320211839.1214034-1-quic_abchauha@quicinc.com>
+References: <20240320211839.1214034-1-quic_abchauha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,20 +64,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 21 Mar 2024 10:09:01 +0800 Duanqiang Wen wrote:
-> txgbe clkdev shortened clk_name, so i2c_dev info_name
-> also need to shorten. Otherwise, i2c_dev cannot initialize
-> clock. And had "i2c_dw" string in a define.
-> 
-> Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID limits")
-> 
-> Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
+On Wed, 20 Mar 2024 14:18:39 -0700 Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
 
-No empty lines between Fixes and Signed-off... please.
+## Form letter - net-next-closed
 
-And please read:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+The merge window for v6.9 has begun and we have already posted our pull
+request. Therefore net-next is closed for new drivers, features, code
+refactoring and optimizations. We are currently accepting bug fixes only.
+
+Please repost when net-next reopens after March 25th.
+
+RFC patches sent for review only are obviously welcome at any time.
+
+See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
 -- 
-pw-bot: cr
-pv-bot: 24h
+pw-bot: defer
+
 
