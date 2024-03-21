@@ -1,196 +1,178 @@
-Return-Path: <linux-kernel+bounces-110020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF2068858FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:21:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F404A885901
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABAB0281541
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:21:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7759281709
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C087603D;
-	Thu, 21 Mar 2024 12:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="n9SEt14e"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2060.outbound.protection.outlook.com [40.107.102.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B77776036;
-	Thu, 21 Mar 2024 12:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711023666; cv=fail; b=jfyC+IPk8wAA9MzfaIdHKnIMhqM8KZ2dsE2O3eCk+mTTT+N9r2QPJg8JJR7hqtoIVNM51R6AqdfEWM8WOReujHffH5W44DpGaxnNRB2hHD7xbmlPvLqN1tSUoHK40VfOevVAcK9/cmKBMRmPzAAfKvlmU3QcdcZ9RLdOPyQq7Cs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711023666; c=relaxed/simple;
-	bh=jQPd6cvsVu4mQktSqBfgcngJrfIVtb/wBXVFYZ9GB64=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ST6c+IhgmZ6y73JyjvJT6lOxuCH5N5vnuml65+0vzujAKxSicnpMtckp217yDhJ1Qu6eAMtOmOR/85ROANJ4Zg3XK8IM4Hl6CjFyNTS4z/tGoWykwT8Gy6gnUXhhUI7K8hQuUMSGndKTBjJPuGOsE9YUnDnhwoZv4pIVrCQvI7U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=n9SEt14e; arc=fail smtp.client-ip=40.107.102.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cC8UEQcqAKhpJXfGmiY1NL5KGD2DOALOh8owgQ1kGepnDQcNmRfM+2BYSRPfhmjHUhcNRpKOFkHyI0F4G+TPI0Pi9b/EJ9NHGtwhNQSiW+5sZOLGy6c5d9JichG8JW8p/RZXE6dPPZHaooYLPvESy12nSsfhMdPWp4SOmRMHTqSKbAXBtyuhFCljyhdg67DzoaANuo3qpoMoSW7lAc1H0XWThyKZtY4hHEpMHYxmnRsq3ET0qDTz1iPyAlZcMFTcsO+2v8E8AoHDStCOD4lCfBiiflF7y/p+OS9Qkr/OpPcTgVDLwgJzTqKEn9uw2jVwbQ7OTRTBY3FcWsus5BdXeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LT8nA4i0LOk5junzXH5nk+eGkTi7XKyhTzr6VFE9vCI=;
- b=hhVhcasvSADADVGK1nNKIZ+8R5bTqbtX3ErszqF5jbIsre6Vauf06uZUMSm8iK9TiL0cw8jbfIIE+ctuIw6SA74j0arv9KkNKQkpT012S4eg2z32Uy9U0g4fnbvSmlCtJC1A5AKG6ath0GNUWT/Epeo4RGc0wQCaXXZqF/blIb6L/P7ddpBRKGttq9r/2wEDFCLocFnMwmfqa3U+60hxlbyfEK9Icye06KNY3RgP18c4HL5xIEJnW0/gsIe4QlUXs2vDH3U/GTRVGEuwohPpWN8vdH+9916tvmt1b7P6+Jwp5ogxqg+Skk39iQHCfI82PmSA5rNBn6+/eT6rOK+Tcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LT8nA4i0LOk5junzXH5nk+eGkTi7XKyhTzr6VFE9vCI=;
- b=n9SEt14ehqdlXCbRrcaESHK7qDSoqiwspTn2ABikmIjj+5o+OBSAFyExhu8jb2NXyiemE2cRrMVApcjRgBO8yt04TNjSZ/iMSqO2SWsix1mYbj7jeiAAjXPn/Ck1Qg7tbS6bkQ6ORIUyglaXogDtwu74HTycpbtBKZxAXcge76dvC+sJgiJ0L3A9Lvfe+fkEmVFIcNef1tc2xBSF7kif+ybomXWBK7mmEYxO+dZZsoKC47JPVBPWF7d4PlP+GU6AFk73M8Fo25rA8h+tGvw/4ITG5l57E6cLE+mueistEaWR0HKDow4d0pBnLFQyTFNzqlG8GTg5XC3bqwWOZbkcTA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by SJ2PR12MB8689.namprd12.prod.outlook.com (2603:10b6:a03:53d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.29; Thu, 21 Mar
- 2024 12:21:00 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.030; Thu, 21 Mar 2024
- 12:21:00 +0000
-Date: Thu, 21 Mar 2024 09:20:59 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Yi Liu <yi.l.liu@intel.com>
-Cc: Baolu Lu <baolu.lu@linux.intel.com>,
-	"Tian, Kevin" <kevin.tian@intel.com>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"cohuck@redhat.com" <cohuck@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-	"chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-	"yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-	"peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
-	"lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-	"joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-	"Zeng, Xin" <xin.zeng@intel.com>,
-	"Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH 1/8] iommu: Introduce a replace API for device pasid
-Message-ID: <20240321122059.GF159172@nvidia.com>
-References: <c831bf5e-f623-402d-9347-8718987d1610@intel.com>
- <BN9PR11MB52766161477C2540969C83568C242@BN9PR11MB5276.namprd11.prod.outlook.com>
- <585423de-9173-4c97-b596-71e1564d8b4e@intel.com>
- <87a2be0d-6a24-4ca8-be30-35287072dda4@linux.intel.com>
- <749b23c7-ab0e-42b4-9992-e1867fc7d4d7@intel.com>
- <20240318165247.GD5825@nvidia.com>
- <13645a9f-239a-46c9-bde2-a1d5c365df4f@intel.com>
- <20240320123803.GD159172@nvidia.com>
- <65c517a9-72dc-4342-b2f2-c3c44735bfad@intel.com>
- <7a4777dd-2359-4bcd-839e-c2d0b5f6be14@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a4777dd-2359-4bcd-839e-c2d0b5f6be14@intel.com>
-X-ClientProxiedBy: BLAPR05CA0047.namprd05.prod.outlook.com
- (2603:10b6:208:335::28) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F71762D6;
+	Thu, 21 Mar 2024 12:21:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6069A75802
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711023713; cv=none; b=mpgtDgvpQpfaYsbR6UIDBvZH6DwouGL0LAtl4x0CE91Zf+FWbvtfEbWGEKNWunOSBnXdvd7iyccHFKDEJZoaeRL5GQtvMDyLe9AQMS3ZgR4Z9oHyaa5rZZmHkosxRxKtN9V9/5cL5aKAEGPZN1HwYk/1PTI3R/p3O+FPYC7OtPc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711023713; c=relaxed/simple;
+	bh=mV4Xl2jjTaaJlI5+F4YYCSAISA4g4bwCAklA1AlaAMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qYYPbI/m+f64ah1HMnwV34fvkSOv3hbTKcHkbdQ5usuWCAGsQt7dM0S4keHtHtPPXUHmWTfzvqevaRJScwChN1ZNok4HDPtI4OGvacdHKtAHe6M/Z0wOOgE1ehq731b2xMKTSmgBVSPaufoAe0J7oXeN6H5vx7sPXfbd/qw89zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBC721007;
+	Thu, 21 Mar 2024 05:22:23 -0700 (PDT)
+Received: from [10.1.33.177] (XHFQ2J9959.cambridge.arm.com [10.1.33.177])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB6E83F762;
+	Thu, 21 Mar 2024 05:21:47 -0700 (PDT)
+Message-ID: <b22a222b-7fd8-4648-84a7-21d35f529f27@arm.com>
+Date: Thu, 21 Mar 2024 12:21:46 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SJ2PR12MB8689:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0d5742d-4024-4f24-33af-08dc49a15e5a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VwPUh74zcyOir6DFPClVxZFKgm6l8KhFwvb93BWMlGc1GpprObBqMXMDeHnfual6Fu11hvtEDMmEe4YMh/SlJfrb/R2od9jpGOC3U1ubZsdXGHzT7fylR8wZhF6a44LHYl34uuMiXaaZne+wMuVGaHd+sc5w69WZECryMTrblix2iVaIap/tZHBLfg5gp2RopdASJoMakeIMdY8WmIlRNJJJ7+iljAp2CwsxDhF2uI9gZlIu+82reMef3N43yzGi/1/WEykY8+TUnxiaLTApDPDTlXCgxW776l3UY6Frum/rUot80V8s973mf3bOC85mBNejYJXAY6TZDN72W9mDqo/FjWmGGuqipDbsqcwIY3SnDK/Cv0KnTXewCvCkShJ7m9bE2+gDS+QDlZdET80aKuMniDwXgdVy39ypsc762RIe61YiEpH/KEmWuFr0ijPJbPeRkqzFIF7n9MLGSI3BuCYvt5FS6rG802jpBMXxjCo6ruKSw75STZfUsKVk5pYCmNMiE3Pq3bQEyWPCspydgfzBbNToZt8+/IaPmJyz7G0jBa2NlVu7tEQ830TN7n82B3uSDMKLZ5FSkOoOCh9kxBIwC2LzO3x5qY56Lhh4C83lIU9yt5jDjEsSc3mLehlCIjUZ+MQOnHs1qmJUVt9OVxwrX7gDLPMHbryWH1AV7nw=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?7zWrlVUZyxNYv7TY/qnbzek2HMFETLZ/Kh4rRtLn5TB0ZM7G/7Yhh5vans7x?=
- =?us-ascii?Q?scHwusie6tucSdOy1yWDPgEbczh5wfh1OVZFMa9yqT8mF3fgTMPb47NSGVHN?=
- =?us-ascii?Q?JYeMZqFnBAy1EKKfT2nwzBBKHFppUXlhsSIvrgIUdEnwGO+I6AcUM9RaipOM?=
- =?us-ascii?Q?9kNm59lrlBf+JtqoYp2ZykRr6sXXULSODOWraTL82GfrHd12PG/Z/PWz3KXc?=
- =?us-ascii?Q?RQXNaj0QhdmmCn7GnV1RhSkxYBzPKFaCrC8FYv3GSR1UdLBTKYziedE4RbwN?=
- =?us-ascii?Q?5TSy24h6zGvRE1GzHroO04A/OfMNEDX809Z5RxCeA/ZGmKzpNl7EoEyuZ2R8?=
- =?us-ascii?Q?4lDSKKmM6HEPpA3J6C/vVcr0vfwWTfA+C70G2KOKAsVPOlvwP58a2fWrrEWS?=
- =?us-ascii?Q?Z2b91y4AWOm2RQfWntpXDluRGpwpL4GixAZc5hPruS7Mcoriu2VvQ1w73nXN?=
- =?us-ascii?Q?jBQJTykxV/fBVEs+o4COmstn/hNmMAc7mDbevizymJLkmHK4tKBCNAjm6KW7?=
- =?us-ascii?Q?eRoCw/EFCUy8LSC42vHHjcOgNQgDJginBiU8goB4vXo6r3MNeHcWlmWwqerQ?=
- =?us-ascii?Q?4M0skb24uPns7XAOxUPr0+YYL/InDBLNrL95/kFPsHP+3/uX517t2LDv66St?=
- =?us-ascii?Q?A0mYo21z00/KIKPJ0ZrFDij3JyQs7GUXzFe9lJpzH/weO+7df+RGTf1GONqe?=
- =?us-ascii?Q?7DAXOORGPacvlh2srtCc5Sl4MS1opD6KPxdWC+c5NkSfc50YU7xyWOZgo0pk?=
- =?us-ascii?Q?Q4KkQmaNI5IScCEolRLkL/C4U7XhsOQahgrnKAz1sMq1m9XeLjQRvtG6Pxre?=
- =?us-ascii?Q?jXLs00HZ4SX/O5qUddbmg0U1uz01FVmDv+SN6sye2mAy8lzEvrbL3WP4+Km9?=
- =?us-ascii?Q?B0ekQKrRLVaMG9+P3e3fAXKoZWW8qa/OUQB+3bzg/W6h/VtUPs9f2HbsKxp8?=
- =?us-ascii?Q?MPxY237fGf9q+BMLOCeJl/1Pc8mNdfuFQubVxYN+S17xH2BGNg1v9GchZXEp?=
- =?us-ascii?Q?yAV3iC7fos8WRO2kHdyTVZ0HPeclT0ULe7gWdM3fNtf3kGiV/KQLVRthLIkJ?=
- =?us-ascii?Q?u1RT4ydfytDf0UAVmYIFTXMV7Yb5z3q3Tn4tdK736kOr+TIdeqHiHNnZuY1o?=
- =?us-ascii?Q?VLkIVmpRDZJxHxK84ajoDOXo/3ikKxXi0EMuQcCqn07lMqdowBCXZ9InLIRt?=
- =?us-ascii?Q?95e4Zu7Tiit0NU745j61mIE716N4A+X0qPSJoIpDkKPYNSbpCij5J9NYUgOo?=
- =?us-ascii?Q?as5Ku2uzWaG3njFNQrubckEfusc8qlWrEdP39dusi6z1yg5K1TmWMF7iW0gr?=
- =?us-ascii?Q?4qAL2SqyHFYNJFd+y2I1ce6QYq7xjVBUmmk6Kqd//NyO6+bd9X/bKlsdaNyt?=
- =?us-ascii?Q?QSKmbNzMBazGcSPli44PM6bnFWbkz6b24GGclq2sH28bi6tZuB+KCDK8MpQF?=
- =?us-ascii?Q?RnsPVa2i4hNXSYPo3Swssvjz3feZSv4+vNL5XNRjYjTB6RMDhHpS09SKmVyb?=
- =?us-ascii?Q?8Tdll1v6la+3+WUIOFJPR1i+F/pPK8Hx+cct4Y+oEdkorV6hmxNra0tTuMqV?=
- =?us-ascii?Q?4DDIZmCMZqDV/22SxmYUUd57fuqPh8tiadviIAnR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0d5742d-4024-4f24-33af-08dc49a15e5a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 12:21:00.2374
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DzOUFdPR9Mpb3auK80b61qne9uemaiYPO8MvN7CUqyU4Y3cbS2n5NqrdohcqoEwu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8689
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/6] mm: swap: Allow storage of all mTHP orders
+Content-Language: en-GB
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-5-ryan.roberts@arm.com>
+ <87jzm751n3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <d6ac1097-2ca3-4e6d-902d-1b942cacf0fb@arm.com>
+ <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 07:26:41PM +0800, Yi Liu wrote:
-> > yes, the correct way is to undo what have been done before the fail
-> > device. However, I somehow remember that pasid capability is only
-> > available when the group is singleton. So iterate all devices of the
-> > devices just means one device in fact. If this is true, then the
-> > current code is fine although a bit confusing.
+On 21/03/2024 04:39, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> Hi Huang, Ying,
+>>
+>>
+>> On 12/03/2024 07:51, Huang, Ying wrote:
+>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>
+>>>> Multi-size THP enables performance improvements by allocating large,
+>>>> pte-mapped folios for anonymous memory. However I've observed that on an
+>>>> arm64 system running a parallel workload (e.g. kernel compilation)
+>>>> across many cores, under high memory pressure, the speed regresses. This
+>>>> is due to bottlenecking on the increased number of TLBIs added due to
+>>>> all the extra folio splitting when the large folios are swapped out.
+>>>>
+>>>> Therefore, solve this regression by adding support for swapping out mTHP
+>>>> without needing to split the folio, just like is already done for
+>>>> PMD-sized THP. This change only applies when CONFIG_THP_SWAP is enabled,
+>>>> and when the swap backing store is a non-rotating block device. These
+>>>> are the same constraints as for the existing PMD-sized THP swap-out
+>>>> support.
+>>>>
+>>>> Note that no attempt is made to swap-in (m)THP here - this is still done
+>>>> page-by-page, like for PMD-sized THP. But swapping-out mTHP is a
+>>>> prerequisite for swapping-in mTHP.
+>>>>
+>>>> The main change here is to improve the swap entry allocator so that it
+>>>> can allocate any power-of-2 number of contiguous entries between [1, (1
+>>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>>>> order and allocating sequentially from it until the cluster is full.
+>>>> This ensures that we don't need to search the map and we get no
+>>>> fragmentation due to alignment padding for different orders in the
+>>>> cluster. If there is no current cluster for a given order, we attempt to
+>>>> allocate a free cluster from the list. If there are no free clusters, we
+>>>> fail the allocation and the caller can fall back to splitting the folio
+>>>> and allocates individual entries (as per existing PMD-sized THP
+>>>> fallback).
+>>>>
+>>>> The per-order current clusters are maintained per-cpu using the existing
+>>>> infrastructure. This is done to avoid interleving pages from different
+>>>> tasks, which would prevent IO being batched. This is already done for
+>>>> the order-0 allocations so we follow the same pattern.
+>>>>
+>>>> As is done for order-0 per-cpu clusters, the scanner now can steal
+>>>> order-0 entries from any per-cpu-per-order reserved cluster. This
+>>>> ensures that when the swap file is getting full, space doesn't get tied
+>>>> up in the per-cpu reserves.
+>>>>
+>>>> This change only modifies swap to be able to accept any order mTHP. It
+>>>> doesn't change the callers to elide doing the actual split. That will be
+>>>> done in separate changes.
+>>
+>> [...]
+>>
+>>>> @@ -905,17 +961,18 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
+>>>>  	}
+>>>>  
+>>>>  	if (si->swap_map[offset]) {
+>>>> +		VM_WARN_ON(order > 0);
+>>>>  		unlock_cluster(ci);
+>>>>  		if (!n_ret)
+>>>>  			goto scan;
+>>>>  		else
+>>>>  			goto done;
+>>>>  	}
+>>>> -	WRITE_ONCE(si->swap_map[offset], usage);
+>>>> -	inc_cluster_info_page(si, si->cluster_info, offset);
+>>>> +	memset(si->swap_map + offset, usage, nr_pages);
+>>>
+>>> Add barrier() here corresponds to original WRITE_ONCE()?
+>>> unlock_cluster(ci) may be NOP for some swap devices.
+>>
+>> Looking at this a bit more closely, I'm not sure this is needed. Even if there
+>> is no cluster, the swap_info is still locked, so unlocking that will act as a
+>> barrier. There are a number of other callsites that memset(si->swap_map) without
+>> an explicit barrier and with the swap_info locked.
+>>
+>> Looking at the original commit that added the WRITE_ONCE() it was worried about
+>> a race with reading swap_map in _swap_info_get(). But that site is now annotated
+>> with a data_race(), which will suppress the warning. And I don't believe there
+>> are any places that read swap_map locklessly and depend upon observing ordering
+>> between it and other state? So I think the si unlock is sufficient?
+>>
+>> I'm not planning to add barrier() here. Let me know if you disagree.
+> 
+> swap_map[] may be read locklessly in swap_offset_available_and_locked()
+> in parallel.  IIUC, WRITE_ONCE() here is to make the writing take effect
+> as early as possible there.
 
-Platform devicse don't have that limitation.. It is PCI only.
+Afraid I'm not convinced by that argument; if it's racing, it's racing - the
+lockless side needs to be robust (it is). Adding the compiler barrier limits the
+compiler's options which could lead to slower code in this path. If your
+argument is that you want to reduce the window where
+swap_offset_available_and_locked() could observe a free swap slot but then see
+that its taken after it gets the si lock, that seems like a micro-optimization
+to me, which we should avoid if we can.
 
-> > > And the whole thing is easier to reason about if an input argument
-> > > specifies the current attached domain instead of having the driver
-> > > read it from the xarray.
-> > 
-> > yep, will correct it as a fix patch.
-> 
-> Hi Jason,
-> 
-> It appears there are two solutions here.
-> 
-> First, only undo the devices that have set_dev_pasid successfully in
-> the __iommu_set_group_pasid(), so the problematic
-> __iommu_remove_group_pasid() call at line 3378 [1] would go away.
-> This also makes the helper more self-contained. Draft patch in [2]
-> 
-> Second, pass in the domain to remove_dev_pasid(). Draft patch in [3]
-> 
-> Either of the above two should be able to solve the mistake you mentioned.
-> BTW. They are orthogonal, so it's also possible to apply both of them.
-> Which one is your preference then?
+By remnoving the WRITE_ONCE() and using memset, the lockless reader could
+observe tearing though. I don't think that should cause a problem (because
+everything is rechecked with under the lock), but if we want to avoid it, then
+perhaps we just need to loop over WRITE_ONCE() here instead of using memset?
 
-I would do both because I also think it is not nice that the drivers
-always have to have the boiler plate to read the xarray in their
-remove..
 
-Jason
+> 
+>>
+>>>
+>>>> +	add_cluster_info_page(si, si->cluster_info, offset, nr_pages);
+>>>>  	unlock_cluster(ci);
+> 
+> --
+> Best Regards,
+> Huang, Ying
+
 
