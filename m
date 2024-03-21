@@ -1,140 +1,127 @@
-Return-Path: <linux-kernel+bounces-110615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AEA4886151
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:53:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D42886157
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:54:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC2231C21657
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:53:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 054731C21148
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89263134723;
-	Thu, 21 Mar 2024 19:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF2913442F;
+	Thu, 21 Mar 2024 19:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Wn7sVzO8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZBuDx+YE"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lYthmPnI"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4C013441C;
-	Thu, 21 Mar 2024 19:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCB358AC0;
+	Thu, 21 Mar 2024 19:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711050774; cv=none; b=UL6r0PMSmSmdrmWOdG1Bo+ZAjKC/uQxCfFciQ9xVrotL58KPD4zrKBquJG0MAW5wFxVsxoyzBuCp+iGA06OHI9PBo0qWfT8wL7KOrQrM0ncismTbQDxHzM7DILjSCH3nKJ1hrDNedHfdFe8uxfsx38XZEohFmv04Q1Wt5flugd8=
+	t=1711050883; cv=none; b=tcbYGovT8HKatAHBOf9SKu/0PMYm1tCU4sLknsONDhDWaQZ+UpUKKJVqRwmsYim25FTjC7+QAonarrvx8RQ9CMsGZUediTgkaV7ASWQx8TlKvNRCZoTV8ss22n0OR2Km95SP//yII3APQpyyY1xM/duA0aVrsVfjBV24wGQF3QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711050774; c=relaxed/simple;
-	bh=OG4oZDlj7xSAP0j1SD7NCJmENp5RQXYQObEeb4Is2hc=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=mKMAMr7iST3r6KH8NJyLew7W/HkQuijpTKZyGBUghoHHrHXXy94XN4cliF6ZpqRfjLiuUoVG2rWombQ9RYzp8EA7rLIBBeYm27c58wvvDHbdkTDxXGCLTmxgSCy5hVgNIiVs8rIs0P+MP2VIuNBFdT/xjAl5BZ2xjYIpnO0H8lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Wn7sVzO8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZBuDx+YE; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 21 Mar 2024 19:52:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711050771;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nggiyJFhgjwRPFJ4jzj9pqC5QV0DGtas+sT2vrcFy3U=;
-	b=Wn7sVzO8ufj5zBYJQdFNpin9dfchuazNbgphg6V6L5RSMtLGu6A4jktrt3GlRuXP7eLO1p
-	BfmWnZRnQC5U0KNs/eGd7R3CgYiri20DcdMW+lIpP1fqLJ9Ty+/xom7xjJ5hTwXlY7Sf1+
-	O0Z8woUVdu72jvzPvb83oE0b/0Ec5YIYFCkjk2ETZK9bVtwq7fX3q/fJmQfvyRaoQn6A4g
-	3+m+7iX2syi7rfFbOCfVo7Rg2uRudYk4ZBEiHLPto1rECKE2pLriFl+oLO4OpuewSvW4C/
-	ggL9kNvdItB26R3xDf/d2BtktO732QdKvetZlxHhWeDOO8RMhjg4OC1XySnfgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711050771;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nggiyJFhgjwRPFJ4jzj9pqC5QV0DGtas+sT2vrcFy3U=;
-	b=ZBuDx+YExIGZrBJG1VFgvwG6XhtVlLga+OKws7DYp9qJ2m0QtowINN3Rozw4TiKqF6UOBz
-	a6Og6v94b60UBrBQ==
-From: "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/qspinlock: Always evaluate lockevent*
- non-event parameter once
-Cc: Ingo Molnar <mingo@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240319005004.1692705-1-longman@redhat.com>
-References: <20240319005004.1692705-1-longman@redhat.com>
+	s=arc-20240116; t=1711050883; c=relaxed/simple;
+	bh=OiYdnSL+AKG5nj3ekBU6CFDhM4MmswGCM84UgPCDb8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TPW1FBabJ4tZvD1DEr/v6EVXtXwILahXNyHiI9xQvBOXma8gj2aC8RzKmKn0F4yxBrkinEQZqX5+6ixn5za83jaEG5DYdx22bclOTNfgsrh4tmclvr5UGfcpT4/uSJ9zrdqH08KWjdHMTnWHfqxrWl7Gepe7EE56YuLb3uhRc/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lYthmPnI; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3416df43cabso749057f8f.3;
+        Thu, 21 Mar 2024 12:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711050880; x=1711655680; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jDZlJEtHFIm6Gl+7kSgG5qWF5bEblRoSU2T4MYJXNV8=;
+        b=lYthmPnIETj1G3Uw4oo14IE3LnJcUTgdxvxhQaQwHekUi7qW5DdOUJj8CflXQiqbRg
+         DM8TyQYh1R8p1gsBSYclTcGz13q7QhClqC6AaqKVYIZETIIK4PfvEQ6k1RZmqYo60cwn
+         p2ytlMXkS9uIYiuCU6qgcORBngQ6SsCnu0G/jDp6oKt5pzlyhXDvvMCiUTGI856qcppz
+         xXvg96zmDYjAtUJw/npDUI+itjLTnKV0jhNFGHxZ4IoZvVjVTRZ8ZsqyIUi/kjvvYz80
+         G7nKSvzxqlqtp/1W8SShJKE6sZYf4fdXDkyeD+murUcxJmaqDBUFs9AspWWRFrlYW9Sj
+         TwIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711050880; x=1711655680;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jDZlJEtHFIm6Gl+7kSgG5qWF5bEblRoSU2T4MYJXNV8=;
+        b=PnZ2+9wxotgPnENB7k7p8MPO4mdHyKX0+jB47yRsJ91Pp5ZTz6fibqm87z4bjZizV1
+         QJUiOdiDyIXxngLFHq7npWFVjODuPFY+PBl8E2i0G6C3O4gHYh7i+3CrNpm/M1NK6WSd
+         8AmKOYD4T0vDZe7UbORgKACzb90ZXC8nRQqUuXwPz5gwNwV6+Xsw0UMISzGDOuGoTl5f
+         8dheTVhK3nziTYISrCOckKNfIYaCdFZCLA5I8fb9syYBBXwBv03FQP+bo5ap/JJz3Ev4
+         vbL5ISByw8VP1wQt249vAw3iS64WdntII4SlUv8b8bE6BF77S1LJx9wGtnPIpPlw4vUR
+         nPvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWz2YxioEEBgsGBwWeVqXKYhPTl6+yPSqpYxJT6S4S06YYEx7rJKfa+OhZ9MzqDb6Rle//4TY4hgkz6PZP8bZUYqdn9VUIEkPBLhA==
+X-Gm-Message-State: AOJu0Yx2xlQAP5xwtxFTJNHJIgUFmy4gxtaz5DOmItjQjpYsWUQDoVAQ
+	n/XNrP/XheFqrcTkmxX9p5aTCo1FiazZQOlRFUhtyNjjRrQG3f3k
+X-Google-Smtp-Source: AGHT+IEOclJy/CKjgZg3kBSaqvyZWV4BNEYGoWmUbWBMk90pFzsmw4VkSdit7UdC6gAJ/ZWAiox1gg==
+X-Received: by 2002:a05:6000:1843:b0:33d:c657:6ae3 with SMTP id c3-20020a056000184300b0033dc6576ae3mr125312wri.7.1711050879879;
+        Thu, 21 Mar 2024 12:54:39 -0700 (PDT)
+Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
+        by smtp.gmail.com with ESMTPSA id r29-20020adfa15d000000b0033e79eca6dfsm355492wrr.50.2024.03.21.12.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 12:54:39 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 21 Mar 2024 20:54:37 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: "Xin Li (Intel)" <xin@zytor.com>
+Cc: linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-arch@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, jgross@suse.com, boris.ostrovsky@oracle.com,
+	arnd@arndb.de, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v2 1/1] x86: Rename __{start,end}_init_task to
+ __{start,end}_init_stack
+Message-ID: <ZfyQfQrluph6GxLS@gmail.com>
+References: <20240318071429.910454-1-xin@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171105077065.10875.8732979745826273189.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240318071429.910454-1-xin@zytor.com>
 
-The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     3774b28d8f3b9e8a946beb9550bee85e5454fc9f
-Gitweb:        https://git.kernel.org/tip/3774b28d8f3b9e8a946beb9550bee85e5454fc9f
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Mon, 18 Mar 2024 20:50:04 -04:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 21 Mar 2024 20:45:17 +01:00
+* Xin Li (Intel) <xin@zytor.com> wrote:
 
-locking/qspinlock: Always evaluate lockevent* non-event parameter once
+> The stack of a task has been separated from the memory of a task_struct
+> struture for a long time on x86, as a result __{start,end}_init_task no
+> longer mark the start and end of the init_task structure, but its stack
+> only.
+> 
+> Rename __{start,end}_init_task to __{start,end}_init_stack.
+> 
+> Note other architectures are not affected because __{start,end}_init_task
+> are used on x86 only.
+> 
+> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+> ---
+> 
+> Change since v1:
+> * Revert an accident insane change, init_task to init_stack (Jürgen Groß).
+> ---
+>  arch/x86/include/asm/processor.h  | 4 ++--
+>  arch/x86/kernel/head_64.S         | 2 +-
+>  arch/x86/xen/xen-head.S           | 2 +-
+>  include/asm-generic/vmlinux.lds.h | 6 +++---
+>  4 files changed, 7 insertions(+), 7 deletions(-)
 
-The 'inc' parameter of lockevent_add() and the cond parameter of
-lockevent_cond_inc() are only evaluated when CONFIG_LOCK_EVENT_COUNTS
-is on. That can cause problem if those parameters are expressions
-with side effect like a "++". Fix this by evaluating those non-event
-parameters once even if CONFIG_LOCK_EVENT_COUNTS is off. This will also
-eliminate the need of the __maybe_unused attribute to the wait_early
-local variable in pv_wait_node().
+Note that this is now in conflict with this cleanup by Brian Gerst:
 
-Suggested-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Link: https://lore.kernel.org/r/20240319005004.1692705-1-longman@redhat.com
----
- kernel/locking/lock_events.h        | 4 ++--
- kernel/locking/qspinlock_paravirt.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+   2cb16181a1d1 x86/boot: Simplify boot stack setup
 
-diff --git a/kernel/locking/lock_events.h b/kernel/locking/lock_events.h
-index a6016b9..d2345e9 100644
---- a/kernel/locking/lock_events.h
-+++ b/kernel/locking/lock_events.h
-@@ -53,8 +53,8 @@ static inline void __lockevent_add(enum lock_events event, int inc)
- #else  /* CONFIG_LOCK_EVENT_COUNTS */
- 
- #define lockevent_inc(ev)
--#define lockevent_add(ev, c)
--#define lockevent_cond_inc(ev, c)
-+#define lockevent_add(ev, c)		do { (void)(c); } while (0)
-+#define lockevent_cond_inc(ev, c)	do { (void)(c); } while (0)
- 
- #endif /* CONFIG_LOCK_EVENT_COUNTS */
- 
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index ae2b12f..169950f 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -294,7 +294,7 @@ static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
- {
- 	struct pv_node *pn = (struct pv_node *)node;
- 	struct pv_node *pp = (struct pv_node *)prev;
--	bool __maybe_unused wait_early;
-+	bool wait_early;
- 	int loop;
- 
- 	for (;;) {
+.. which removed __end_init_task[] entirely.
+
+Thanks,
+
+	Ingo
 
