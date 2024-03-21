@@ -1,122 +1,111 @@
-Return-Path: <linux-kernel+bounces-109923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB3E8857D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:11:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4208857D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C83E91F23643
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:11:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 413181C21663
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:13:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1A15813B;
-	Thu, 21 Mar 2024 11:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B145812F;
+	Thu, 21 Mar 2024 11:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="geqy61L+"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="UrV3KXCb"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCB054FAE;
-	Thu, 21 Mar 2024 11:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAA857311;
+	Thu, 21 Mar 2024 11:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019500; cv=none; b=RFqKIYPG6My3ns1faHKtkwzkvih1ThVu1OitY3N/Us1FB1yGHLOWD6g04/MWU3+3372INds/NRR5V9UGUw5k7sVuav/iSnxO7acbYFwIWLgIxW7J1qjMEVEQS3W9ckE8w7/qL/g76szoHMV1CJLmlLA5RWRDD4I+OtfMB6TfcUI=
+	t=1711019576; cv=none; b=bjwt9goHlpGc95U+y+TMIDncvTQ2fcP8e0uH9yTPkEWSMV7WUnnMmjYaPrkxdS02cBQJLQqge5mbCN7vLPzjrOz25KZUoxxIS3zw7O+2obed+Bjg7CFKO6FEs/0y8cTuw24N0FlfFEE3c2WeaFCTD5nKOMBZdTESDcnbtacPMMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019500; c=relaxed/simple;
-	bh=kA7rppNBHHosBNFKeKCGHJ5/OraR593RUSJ/nSWvTgw=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=W8OT0cd649ylkysjqW2veP+T6apTc62ve7+AHRKzp3VuRlvCZKaU7/7lnkIy/6b44yazQVCSygf1zRJf+sRMdHAn0KVdrF73hvSB+Qnv8ghdRRxWtjlwlqhUluEgEufOwUx6H3sJmvdb/+IZ4gnp3E//q7ON9VsF27nqHPYWNPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=geqy61L+; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e162b1b71so573222f8f.1;
-        Thu, 21 Mar 2024 04:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711019496; x=1711624296; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DwKO+pneZj6JBZBv7gzgwWyz25XUZMBuMw/dNsRAuoo=;
-        b=geqy61L+2q73Uv+StSN3JY3YNC9z6DeYeSn8PEtlIoHdz5TJlYJF+8j6M02D0+GkLJ
-         JpLvNwn3ftODB8dd2+fOYgFEpZE1wMjGOJJtuQ3n/nRvi1Nl79Q4u8r93jqOxiOxb6XW
-         ESCY8l4dkOEZV6blu16wlIv1o3Zm2HxxaPsdgX6b66bf8kd4tmnguIeVB3uoXlL8BdQY
-         s0HblUuvSz4w44f9iIFbTggYLrMZabsthgHL1BOr/zwOs+aFvQJpQK0NrGIEVhBqPbaY
-         y/ILVVnatwFdqzXCow0RwiN9M0k1J2frm1TMWuuCVMa65+VwSv8ZP7SfnDon2Z4YRcpR
-         KU7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711019496; x=1711624296;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DwKO+pneZj6JBZBv7gzgwWyz25XUZMBuMw/dNsRAuoo=;
-        b=Lq/XgkmgFR9zFBVWEY11LPAdsFqfvyI26S/Z0ZCxharRAC398937LoxhI8/tgJswS0
-         DYwWMh2R9BFH/vP1Kv3CBtB8ThlXOKSFg86HO56ogyuGphJb7TfJJ5EiZ9rVtug0C35u
-         ypRU7snqxr0pyO4VI6Asm5R0B9jT7aYudwmMhucT+OHD6P/CHbODUM9++cXdpQcRaJ+B
-         Dy2VngnbXYwl8Scb6OguEuSyBbsiYCmyul9UKAEAYd9xQPwVd0lhS2wH1hyRoIdO7tDL
-         y5cLhaphFClZO3FAMAX+b2NM8v32+03/vCU/DR7xKG0GKma2Fah2PxHaVhPuXvxZaIvu
-         GIUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYuwjU34NNXBzA7/ezSlMg+rbKel+WyoBLSYoSxIBnlJQE66SgFBGgjhyyBAdOVhoEN6JeF2MmxFQ9Qg+/j5DSBSd8egBBKTKB1yKf
-X-Gm-Message-State: AOJu0Ywfv59xkK4FHNr8SVbwXOe7YsyfecEQ+x2C52p6/WsoKo8IdrB0
-	g9pSQth49MSaOpnRMihM4RmOxX9sIZ9CkCEuPwtovVD1oBnJxsky
-X-Google-Smtp-Source: AGHT+IHKjqnDHCIyK/uLI8tCquYfyujoxldzxJb6p5R4VC/Mx9iAb76Wz3j1PAJ7gC+5uJX1bqeAaA==
-X-Received: by 2002:a5d:5102:0:b0:341:938a:cd95 with SMTP id s2-20020a5d5102000000b00341938acd95mr3420087wrt.0.1711019496569;
-        Thu, 21 Mar 2024 04:11:36 -0700 (PDT)
-Received: from [192.168.16.136] (54-240-197-226.amazon.com. [54.240.197.226])
-        by smtp.gmail.com with ESMTPSA id q2-20020a05600000c200b0033dedd63382sm16862061wrx.101.2024.03.21.04.11.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 04:11:36 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <db8b8156-07b7-4ee1-9343-9f7862fdf98c@xen.org>
-Date: Thu, 21 Mar 2024 11:11:35 +0000
+	s=arc-20240116; t=1711019576; c=relaxed/simple;
+	bh=Y1vEpjXP+hUSiO75YanMSSda5LJPJ5/Uc3Fh6hMJB3o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lAKzFF8EdZlYtlGsv/9MQwBd/kIn05dbdPpZhNs8KcTIBGWcjSGLm7wf62fr1MFH3TA+KNjNsT4vme8qGcS5OAtvrhBtCcN6+evZPCTV8hVpOL/vkny4wTGKfHEjejnGROAvy9F5r/Dwr7fsXc1VjevofAwzgMRPHetWmUEECX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=UrV3KXCb; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from umang.jain (unknown [103.86.18.138])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 38DAA7E9;
+	Thu, 21 Mar 2024 12:12:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711019545;
+	bh=Y1vEpjXP+hUSiO75YanMSSda5LJPJ5/Uc3Fh6hMJB3o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UrV3KXCbceAkCKZa88ecK4iAyv7+O9XsMURdZ9UwMQtyXgLmKaGBzwTIUy+Bu3G8N
+	 v/GOwNpCak/bMAwk6yr8YUea/ANzV7YDIXSnB3DjZThiu0YUH6RdAHr1iFpGiRcI8r
+	 +EVXLV+Ak2lAmjKW7+olf1EHaBXsWtHf7Pb55Dyw=
+From: Umang Jain <umang.jain@ideasonboard.com>
+To: linux-media@vger.kernel.org
+Cc: Alexander Shiyan <eagle.alexander923@gmail.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v3 0/6] media: imx335: 2/4 lane ops and improvements
+Date: Thu, 21 Mar 2024 16:42:33 +0530
+Message-ID: <20240321111239.808735-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 2/3] KVM: Check validity of offset+length of
- gfn_to_pfn_cache prior to activation
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com,
- David Woodhouse <dwmw2@infradead.org>
-References: <20240320001542.3203871-1-seanjc@google.com>
- <20240320001542.3203871-3-seanjc@google.com>
-Organization: Xen Project
-In-Reply-To: <20240320001542.3203871-3-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 20/03/2024 00:15, Sean Christopherson wrote:
-> When activating a gfn_to_pfn_cache, verify that the offset+length is sane
-> and usable before marking the cache active.  Letting __kvm_gpc_refresh()
-> detect the problem results in a cache being marked active without setting
-> the GPA (or any other fields), which in turn results in KVM trying to
-> refresh a cache with INVALID_GPA.
-> 
-> Attempting to refresh a cache with INVALID_GPA isn't functionally
-> problematic, but it runs afoul of the sanity check that exactly one of
-> GPA or userspace HVA is valid, i.e. that a cache is either GPA-based or
-> HVA-based.
-> 
-> Reported-by: syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/0000000000005fa5cc0613f1cebd@google.com
-> Fixes: 721f5b0dda78 ("KVM: pfncache: allow a cache to be activated with a fixed (userspace) HVA")
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Paul Durrant <paul@xen.org>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   virt/kvm/pfncache.c | 16 +++++++++-------
->   1 file changed, 9 insertions(+), 7 deletions(-)
-> 
+(Re-sending as previous time, I forgot to CC linux-media@, no wonder
+I didn't receive any feedback on this series).
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+Another batch of improvements of the imx335 driver.
+
+Patch 1/6 adds support for 2 or 4 lane operation modes.
+
+Patch 2/6 call the V4L2 fwnode device parser to handle controls that are
+standardised by the framework.
+
+Patch 3/6 introduces the use of CCI for registers access.
+
+Patch 4/5 uses decimal values for sizes registers (instead of
+hexadecimal). This improves overall readability
+
+Patch 5/6 fixes the height value discrepency. Accessible height is 1944,
+as per the data sheet in all-pixel scan mode.
+
+Patch 6/6 fixes the max analogue gain value.
+
+changes in v3:
+- fix patch 2/6 where we need to free ctrl handler
+  on error path.
+
+changes in v2:
+- New patch 4/6
+- Drop calculating the pixel clock from link freq.
+- CCI register address sort (incremental)
+- Fix cci_write for REG_HOLD handling and add a comment.
+- Remove  unused macros as part of 3/6
+
+Kieran Bingham (2):
+  media: imx335: Support 2 or 4 lane operation modes
+  media: imx335: Parse fwnode properties
+
+Umang Jain (4):
+  media: imx335: Use V4L2 CCI for accessing sensor registers
+  media: imx335: Use integer values for size registers
+  media: imx335: Fix active area height discrepency
+  media: imx335: Limit analogue gain value
+
+ drivers/media/i2c/Kconfig  |   1 +
+ drivers/media/i2c/imx335.c | 646 ++++++++++++++++++-------------------
+ 2 files changed, 310 insertions(+), 337 deletions(-)
+
+
+base-commit: 54ee11761885407056f4ca60309739e2db6b02dc
+-- 
+2.43.0
 
 
