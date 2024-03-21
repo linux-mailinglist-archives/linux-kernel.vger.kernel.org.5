@@ -1,130 +1,101 @@
-Return-Path: <linux-kernel+bounces-110461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2A59885F44
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:09:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A4A885F46
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 847501F2660F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:09:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 850D31C23FE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38B5137776;
-	Thu, 21 Mar 2024 17:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F61116439;
+	Thu, 21 Mar 2024 17:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="fNCuajIk"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="M+pn//Ef"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E665137757
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B0412B70
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711040706; cv=none; b=Z+3ge0dn7JtANEX4ZkyVD6KWAL37DCrzDd3jrwJ739DGvttLmzuaai4xVtFQgZrx46Xb8P6Axbp7oxKjppNtj/fXtzIwqydIxhvBiaLVN+K7+39SuU/c/2EiWLKknYl4iTlE8YjRyrjaAYWDZ4KpySjYNr1po9gRVBZfm7J+TLw=
+	t=1711040836; cv=none; b=pzUaKwANMhmbpXZDryq9MQHJkYU4GVP4y1Km9OaREvWlkg452RB64tNRXkdlv/B6skW3hiB4sX50UYUK3o416K/AxNqmHxuq0vsvfO7XntLyKO1Z53H2pL9QEM9x/1OZavUBtBQjZOQQ0K0lCBL8e/96ImHcybEjAI5Dm5TPJaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711040706; c=relaxed/simple;
-	bh=F7BZPRrnGiUnAuBv0KvmsW8b1nfHOpvDFLxdGkrbpm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ozo9pOl1d5MnZL5TrWm/pfib/mmvLPBj2eEi1OJgSibFMvEmdwEbJnH0oQJeKH+jdovXMcudvQR/b/Y0e/ZTjq6e00w9kFsYhjk48R6g4hXy5BFCQKIe9ZHDsIelTXCGYl+Cn25KgTJqa4gemPdM2Gx6EJQSQOkoF/jC8vZN+vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=fNCuajIk; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e8f76f18d3so999337b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:05:03 -0700 (PDT)
+	s=arc-20240116; t=1711040836; c=relaxed/simple;
+	bh=kJJk/+Zdsmcv1wL0Fg0q/2+f4j2RqoeS5rRQ6udYmmc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cU/8BoM9Jnd8KhWdIN801DPeYSmtMMY1//yyoQALEH6FBCQjFKGgrVTDZPyKrRxeuITCENmC3s1eEgt8uKN5iFM5UGr2ZO2zpqKbS8ZG9R36w1NPmue1WW35Yd/MI5ZyNW6drIhOIVVv7+9dMoXlQK3Y5eiUqM5LMZR+75E2+Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=M+pn//Ef; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46d0a8399aso391306166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711040703; x=1711645503; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=abV1KSQfMj1DzU4Wxs3gXedK8VwaffSMAGzyZA+mQ48=;
-        b=fNCuajIkfUB0fTpb8UiK4C/yfMmbOvutmU/1Ppb6FePYcwb4lU2BnxCqo0vlNNniwg
-         180bQbGurOpKxEeR1LilXtOfvwIilSztCthOJb9wXUIYJ6Ycqr5v8zEL02FY1tmwT+YK
-         Ujk2x1j6oHhqotvox6FVelVonE5C7hZYMDV/M=
+        d=linux-foundation.org; s=google; t=1711040833; x=1711645633; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MsVbd2140swEcLwTG+MF1x3NLhBkmZkIVQJKoZyOCjI=;
+        b=M+pn//EfA1MuK4BF+Fbm2x/XNZD/iBfBiOSkkWOxn/vDiZEyVEz7dC59pY6xDsDsza
+         s9STbnx/vqeuYsBSDBs4gFHkpgtR3j4LtIB5dFr/VhiWfEohJKdIwNnFDGuHRJop1u9r
+         K8duH05tIn86hRvFiX118pvcTec4iQeUPFiVA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711040703; x=1711645503;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=abV1KSQfMj1DzU4Wxs3gXedK8VwaffSMAGzyZA+mQ48=;
-        b=hMMutmLQrQIVypUgXSkHLyNxjaKF7yFrPsz1dJSVWtuloOIV7ft8FdHgJyR1z8/uPa
-         Ouy0yDVc1ae6ofAq6+MevOt8Kb2ZZn67FbV4dclu9bvxNDjoILfen7CZ08whFameUGxy
-         KB7KYk7R3BIakn5gLlPWCOTvFfmj2QgQS0p5tJdLfthh5e56jnRvMWj+wUVBsZY88H+6
-         m8PT0xekL22soj1JTNE7nkDg4W4KWniF4hvWYLKKdYuJwvIE42p5nOtBiC59ts8q/pqJ
-         oktTzyhsAvfR0OV64W+dqjcEOx9ypNwxq0ztf7O2kdSpNjLW5vUSf0jWMtHK5ZP7TV6B
-         AbVA==
-X-Gm-Message-State: AOJu0YzIkCe+DD1zTs3AGRueVngw3mX2G1MAxTCMniQibvdKdMM3ZMNv
-	OUEurGuAKEVNlzbQbmBGrkKTeRJIFfTvhuT4J4hdL9f35zVQ9DSxDZOcHoUv8U4gD7ZZhlkSItA
-	=
-X-Google-Smtp-Source: AGHT+IHjXoA11dA50WtbnjUSI44eAM2tLeRUNZtkfUInXbO/jmancQD+KVgSdBcSUYmuk5/U/6YV+A==
-X-Received: by 2002:a05:6a00:3a05:b0:6e6:5291:1779 with SMTP id fj5-20020a056a003a0500b006e652911779mr4275257pfb.6.1711040703382;
-        Thu, 21 Mar 2024 10:05:03 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t16-20020a62d150000000b006e731b44241sm73573pfl.42.2024.03.21.10.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 10:05:02 -0700 (PDT)
-Date: Thu, 21 Mar 2024 10:05:02 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Rich Felker <dalias@libc.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
-Message-ID: <202403211004.19F5EE27F@keescook>
-References: <20240320182607.1472887-1-jcmvbkbc@gmail.com>
+        d=1e100.net; s=20230601; t=1711040833; x=1711645633;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MsVbd2140swEcLwTG+MF1x3NLhBkmZkIVQJKoZyOCjI=;
+        b=HQ6axJWKgY9w+UUywjedNFJtZlHT3KY+8vmJAfj2p+JBMyAmpDSC4YiK8ovvrCFdWt
+         hKcNZFDMV1v7YlDXWmKwWio2aUMwPmcy37o8cy006V9MhpuE7UaQzyvNyvDzY6hMUeFF
+         hPLzIswCRmYOhkLOG/jlnoJzwnVd3Tig+larTa+OfJZWXu50rag3jmqO4MzqhMFtiMV0
+         aTdWgOshhAs8XT1yhOpfNN9x6TAUe4VodsV4jkQ6Z25HYhu26+ir7ZaWV/8qj4GxjEpL
+         SD8/rC8PVqDbm/EhRckMw1hcDv1VadZEH9Tpod4NEkBYvilMm2X8Fxf4Dr1TdewcRLj1
+         ErOw==
+X-Gm-Message-State: AOJu0Yw0KUhO2OvGM219lh84pwoDRW6eieSjIGvy7+xpXX1aSfFmUXbr
+	QsxNpAe7FOZNoforvURISRN/scDBycAXB6WmbX1qp62ZcXOI5qiU/VDe/7jMQic8hSlmK8cLp+m
+	A6NSKIw==
+X-Google-Smtp-Source: AGHT+IG84ngfCaKHrA1MWkTVSn/zGfDuEmT4wacopo9FjnuS1fWZAvlbRk1lupqFIWZg/+tBFVZhnQ==
+X-Received: by 2002:a17:906:1b49:b0:a46:bcd6:b64f with SMTP id p9-20020a1709061b4900b00a46bcd6b64fmr89360ejg.12.1711040832813;
+        Thu, 21 Mar 2024 10:07:12 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id js20-20020a170906ca9400b00a44ef54b6b6sm114850ejb.58.2024.03.21.10.07.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 10:07:10 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56bc7b07df7so1636128a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:07:10 -0700 (PDT)
+X-Received: by 2002:a17:906:360e:b0:a47:1c5a:6577 with SMTP id
+ q14-20020a170906360e00b00a471c5a6577mr1106916ejb.35.1711040830359; Thu, 21
+ Mar 2024 10:07:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320182607.1472887-1-jcmvbkbc@gmail.com>
+References: <Zfuy5ZyocT7SRNCa@liuwe-devbox-debian-v2>
+In-Reply-To: <Zfuy5ZyocT7SRNCa@liuwe-devbox-debian-v2>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 21 Mar 2024 10:06:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
+Message-ID: <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
+Subject: Re: [GIT PULL] Hyper-V commits for 6.9
+To: Wei Liu <wei.liu@kernel.org>
+Cc: Linux Kernel List <linux-kernel@vger.kernel.org>, 
+	Linux on Hyper-V List <linux-hyperv@vger.kernel.org>, kys@microsoft.com, haiyangz@microsoft.com, 
+	decui@microsoft.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 20, 2024 at 11:26:07AM -0700, Max Filippov wrote:
-> In NUMMU kernel the value of linux_binprm::p is the offset inside the
-> temporary program arguments array maintained in separate pages in the
-> linux_binprm::page. linux_binprm::exec being a copy of linux_binprm::p
-> thus must be adjusted when that array is copied to the user stack.
-> Without that adjustment the value passed by the NOMMU kernel to the ELF
-> program in the AT_EXECFN entry of the aux array doesn't make any sense
-> and it may break programs that try to access memory pointed to by that
-> entry.
-> 
-> Adjust linux_binprm::exec before the successful return from the
-> transfer_args_to_stack().
+On Wed, 20 Mar 2024 at 21:09, Wei Liu <wei.liu@kernel.org> wrote:
+>
+>   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20240320
 
-What's the best way to test this? (Is there a qemu setup I can use to
-see the before/after of AT_EXECFN?)
+Pulled, but...
 
-How did you encounter the problem?
+Your pgp key expired two weeks ago. Please extend the expiration date
+(and not something small!) and make sure to refresh the kernel.org
+repo and/or other keyservers.
 
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-> ---
->  fs/exec.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index af4fbb61cd53..5ee2545c3e18 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -895,6 +895,7 @@ int transfer_args_to_stack(struct linux_binprm *bprm,
->  			goto out;
->  	}
->  
-> +	bprm->exec += *sp_location - MAX_ARG_PAGES * PAGE_SIZE;
->  	*sp_location = sp;
->  
->  out:
-> -- 
-> 2.39.2
-> 
-
--- 
-Kees Cook
+                 Linus
 
