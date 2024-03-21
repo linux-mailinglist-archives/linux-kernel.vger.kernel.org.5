@@ -1,126 +1,140 @@
-Return-Path: <linux-kernel+bounces-110627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3414886175
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:08:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A58B886178
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0CCD284C8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 188E428484A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C63134735;
-	Thu, 21 Mar 2024 20:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380E7134721;
+	Thu, 21 Mar 2024 20:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="NhgpRkmp";
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b="J11aJGIJ"
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bhJIYjW+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EUWvwVjn"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C2F56B98;
-	Thu, 21 Mar 2024 20:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE1A847B;
+	Thu, 21 Mar 2024 20:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711051721; cv=none; b=QwAAxv4RGyIaM1M4tsOiwka8PFoNxs3eaYAszOqTD+roQKNUyOEjMSuWUY5CEVLgps92BTXU0U9f5nm/l7Uv5FoEldmOzX0ypQMOZxEuV3Xv75qX6BegQN8ylAVih7VEMUQk8S2R34DSmlNQuG+sTn3V/d7u+2GiWb00lggtZi0=
+	t=1711051821; cv=none; b=DHg7xw8w59cQTroteLPB3DORuJgmGAbUWN/CQtVL14jFUr+wLWYYraXJiSVw5zDOzqNwmsrY17WuCwuXpIn3Bl7ys5Yfp44hsJkvJIpaFdlmeXn4x3nN+0hhcRnGyPvgsPDy/FcxjalY7Ed1tnIk+kkxocuhweadXBxyISvB85M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711051721; c=relaxed/simple;
-	bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DZDhWXcaFe33w92Aot7Ogg2xMAqDi/bgVgrWEJ0n0514OB1AhsnctrXFD6f9h+Wekf3mQ8sqXrXPPW8ynRzz3k1FrmJR8BWPaqe1NGTwKHYwe8llJvUE2JAkCBoQxuCdC2uVuqZkVudxQgYbnMdUvwHkuqCV6k8rD/AI6Gj3Rfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr; spf=pass smtp.mailfrom=alu.unizg.hr; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=NhgpRkmp; dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.b=J11aJGIJ; arc=none smtp.client-ip=161.53.235.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alu.unizg.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.unizg.hr
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 522E660177;
-	Thu, 21 Mar 2024 21:08:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711051711; bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NhgpRkmpaELC3IgHFCQSNu7fqQEPrvN5IsFBw9UTqN0QeoDPNZOgJes0i7r8MkFPA
-	 7CFDdj+rDmrasfbKNl4yAoRKFKD/JkA0IZnxbVuvlY+KkPz+boZD3vIS5d5HPOWcrD
-	 5ie23M+5Ct9qLSHgqrFP7h8J+goIRqAnVFvsQZ8PsdGxSl3YeyypBVCNzXa9mTFx/C
-	 2hMgT3vTgo7QOz/TaVEzS09KbdQldMD0R7s4MLxgDoEwfLAGIqCISwGsw9J87tA9zr
-	 vwc68SPtkqUu9RGhuAO2AoFxq4uNkrJA3HMNsBBKy7LcGDlKYL9+kdqqDSuJIYV01v
-	 MGTxhPNg549YA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id K_VLVDRACGJo; Thu, 21 Mar 2024 21:08:21 +0100 (CET)
-Received: from [192.168.178.20] (dh207-43-75.xnet.hr [88.207.43.75])
-	by domac.alu.hr (Postfix) with ESMTPSA id 52A9760171;
-	Thu, 21 Mar 2024 21:08:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1711051701; bh=QMqBRt3qEO8LJ5O3+VuzCT6Y+LAtdZG1pvlw1Zc6YBA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=J11aJGIJN7evfjv67dCMlKaaKGTR1GoGMvraFsn/F1yw7zaGMAVxH/uXWjf4x3dwX
-	 KUTy+0hCuMjJT+fTx8LlNhi5ZR5hb4UccsNHhkuN+yppcAgxgNdYFjkaZB5VuJArUB
-	 UH29WEoryFs/lXzDS4YwYj/lGoeYM3mhjN3lnloT9+N/MY6wQVJp+rwCqnf6wA0yBS
-	 qPqlEvf7I7oQzFIuPdQ75/GauwTQMMXcsvAWu4Qp1JGGjMz7rOzeixOAuWY6NPjSDr
-	 +a21v3PcEKzHgbEA20ttLZUm+AqPR2xosM39deK6PizCBIUJJc6phwUZ4IrZgkVd1j
-	 utctc85mSBFCg==
-Message-ID: <88bef146-bc24-4b6f-8f84-09b818061372@alu.unizg.hr>
-Date: Thu, 21 Mar 2024 21:08:18 +0100
+	s=arc-20240116; t=1711051821; c=relaxed/simple;
+	bh=Lf3HfrYLrzAhvEjepEXMVanxjHeOHhN8pY5Shd4ocfk=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=N0aMX9TlELRPASryQ4dPS7nRprh73t7sZ1ImyXRu6rbgJR/6MIDSbDPzDX6bta//Cj0lPZp/TTs3wLfH/bZ9EL+YRezjnTz+vJllQq1kLjtyEypIF2bnG96HXnR5DhURhdsJB09sSCZ6fICLw7XNt4CRBKhW0cjiJ56aFRtNeQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bhJIYjW+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=EUWvwVjn; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 21 Mar 2024 20:10:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711051818;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Eb6K5oovm67eA2MqQVFdKN97AFgRU83d114MwSaVLHQ=;
+	b=bhJIYjW+hQuiYq1kNFpPzOh+DGYTbtCHYKtwAR0uK5HLL3izxMsHUZQHiGwLoTNGFm1scN
+	FMdGz2Xeo70tL1itbkdBIJxXCq3Dr901gN0gODoRKN2nBSjRQcGUwTLaZa+g4x+j4PkhMA
+	S+urejKDdtLqXgGfcDkePcMTxjLsUGyRk8fye+r677ZXm3N3Y6//o4PKa4hpceU9zil/Iy
+	Mo81wfNp5LY0Fd94jzvx9LZTcJiA7TdrbbNZKWDqHMZlVMm47u4howY6nDxKwo3tZfW0ZK
+	WIUdmh1xm+mNoIaCAsJpPGR76V6Igy2ty4Md6zB6WN/2ZfRi5xzHPVlSej+KNA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711051818;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Eb6K5oovm67eA2MqQVFdKN97AFgRU83d114MwSaVLHQ=;
+	b=EUWvwVjntADpkN3/nPwS3YDaHjmkVbw8tqUrvdKtrqsssy0jv4lREyXI9MNBmHKnkZkLZm
+	Tu3TF/S3Lv+ZdyBg==
+From: "tip-bot2 for Erick Archer" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/rapl: Prefer struct_size() over open coded
+ arithmetic
+Cc: Erick Archer <erick.archer@gmx.com>, Ingo Molnar <mingo@kernel.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kees Cook <keescook@chromium.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240317164442.6729-1-erick.archer@gmx.com>
+References: <20240317164442.6729-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] selftests/net: test_vxlan_mdb.sh: 84 out of 642 tests
- [FAIL]
-To: Ido Schimmel <idosch@nvidia.com>
-Cc: Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <5bb50349-196d-4892-8ed2-f37543aa863f@alu.unizg.hr>
- <Zfe2cGv_EWFAZXAJ@Laptop-X1>
- <f005453c-c7cf-4e1d-b266-ffe1cf8fc79e@alu.unizg.hr>
- <ZfmgdVUmy-DgNklu@shredder>
- <87634afb-d14b-42ce-be25-1000591ee57c@alu.unizg.hr>
- <ZfrB7hATyOcl4RSy@shredder>
-Content-Language: en-US
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZfrB7hATyOcl4RSy@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <171105181695.10875.13663803002214703429.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the perf/core branch of tip:
 
+Commit-ID:     dfbc411e0a5ea72fdd563b2c7d627e9d993d865c
+Gitweb:        https://git.kernel.org/tip/dfbc411e0a5ea72fdd563b2c7d627e9d993d865c
+Author:        Erick Archer <erick.archer@gmx.com>
+AuthorDate:    Sun, 17 Mar 2024 17:44:42 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 21 Mar 2024 20:58:43 +01:00
 
-On 3/20/24 12:01, Ido Schimmel wrote:
-> On Wed, Mar 20, 2024 at 01:47:36AM +0100, Mirsad Todorovac wrote:
->> On 3/19/24 15:25, Ido Schimmel wrote:
->>> Will look into it today or later this week.
->>
->> Thank you for considering this.
-> 
-> Can you please try the following patch?
-> 
-> https://github.com/idosch/linux/commit/58f25dd8766dbe9ac50c76b44f9ba92350ebb5c6.patch
+perf/x86/rapl: Prefer struct_size() over open coded arithmetic
 
-Congratulations, apparently, your patch had fixed them all:
+This is an effort to get rid of all multiplications from allocation
+functions in order to prevent integer overflows:
 
-# TEST: Torture test                                                  [ OK ]
-#
-# Data path: MDB torture test - IPv6 overlay / IPv6 underlay
-# ----------------------------------------------------------
-# TEST: Torture test                                                  [ OK ]
-#
-# Tests passed: 642
-# Tests failed:   0
-ok 90 selftests: net: test_vxlan_mdb.sh
+  https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+  https://github.com/KSPP/linux/issues/160
 
-Please consider adding:
+As the "rapl_pmus" variable is a pointer to "struct rapl_pmus" and
+this structure ends in a flexible array:
 
-Tested-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+  struct rapl_pmus {
+	[...]
+	struct rapl_pmu *pmus[] __counted_by(maxdie);
+  };
 
-at your convenience.
+the preferred way in the kernel is to use the struct_size() helper to
+do the arithmetic instead of the calculation "size + count * size" in
+the kzalloc() function.
 
-Shalom, and have a great evening!
+This way, the code is more readable and safer.
 
-Best regards,
-Mirsad Todorovac
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20240317164442.6729-1-erick.archer@gmx.com
+---
+ arch/x86/events/rapl.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index fb2b196..8ef08b5 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -675,10 +675,8 @@ static const struct attribute_group *rapl_attr_update[] = {
+ static int __init init_rapl_pmus(void)
+ {
+ 	int maxdie = topology_max_packages() * topology_max_dies_per_package();
+-	size_t size;
+ 
+-	size = sizeof(*rapl_pmus) + maxdie * sizeof(struct rapl_pmu *);
+-	rapl_pmus = kzalloc(size, GFP_KERNEL);
++	rapl_pmus = kzalloc(struct_size(rapl_pmus, pmus, maxdie), GFP_KERNEL);
+ 	if (!rapl_pmus)
+ 		return -ENOMEM;
+ 
 
