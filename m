@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-110429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1217C885EF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:01:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B686885EFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C00362815DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:01:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD4B9B2880A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D5F13B2A5;
-	Thu, 21 Mar 2024 16:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E2513B791;
+	Thu, 21 Mar 2024 16:52:14 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C3713AA57
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470C413B780
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039930; cv=none; b=D4R89x9CFIuooBOmrUed3wdNVxy3h7dmwEEUq2zV5kB9qw9sAqVG2Oa74XvQWo6h+dP7oWkebWat1Ve9RcvoLAVj9g2BT2t60Gi2hJBicgJbKhhLfgFbHWWoBZhmqHlLelTyJBw3IkjGadOJrzhFXKwVT6bhz7wolx6ksOVped8=
+	t=1711039933; cv=none; b=Hgo2Upjyf31vamQinPLXMf4veq0ZB+2n5EBJG6aMJcKpqA2Vdv8c99uX6Ycl3lV9bHPAuvYWfsYwhRr+vDI/NH59N1T+KQisMxQBP8pMqbcCKOJ/fhMaeZzKm9HiSoKG8lNede92sGm3rFeoDlluxCNChLHn7QnVtRSbSwUiV9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039930; c=relaxed/simple;
-	bh=qL+CEZKFNzM/T58NpznbtIj1E02zISZO6LxqIK6/ScA=;
+	s=arc-20240116; t=1711039933; c=relaxed/simple;
+	bh=0Vqi5Wx3au01zGMPQ0SvcadMahs8zs+MK2D4miuUQ80=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OyH8owl4O9uJZvZ1zFlFwqV7EzsfUR12PhuJ/qwE56Z9y7BPFOSFIEygdXfxV0cyZK8aK3dq4IZt7e8XYefixvug27UaNSOF0JdqFK3AQZpmf4FCBOibcvCTcW9Qgtsg9DomkcL5AbRsgteQH99FcOT6poUThSmuRvMvn5fyrdM=
+	 MIME-Version; b=rxLWHWCK1XkGHoqoxkZaixVVP0IdPFJ78lnen/7ogyH7/okLwnhdg9/6Rj/7cWRWz6irar0xcm24poEDslxQnIJMG5y66ovScNJo93EF0A2XiPXR5cDqzkF7Rkt3DcpTjKt0VKuMp8MJzOlK/IofeldyfzFN5CXjNwyt6F2dKmY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94CAB1688;
-	Thu, 21 Mar 2024 09:52:42 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 007631007;
+	Thu, 21 Mar 2024 09:52:46 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FC1F3F67D;
-	Thu, 21 Mar 2024 09:52:05 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B71663F67D;
+	Thu, 21 Mar 2024 09:52:08 -0700 (PDT)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>,
 	Dave Martin <dave.martin@arm.com>
-Subject: [PATCH v1 12/31] x86/resctrl: Move max_{name,data}_width into resctrl code
-Date: Thu, 21 Mar 2024 16:50:47 +0000
-Message-Id: <20240321165106.31602-13-james.morse@arm.com>
+Subject: [PATCH v1 13/31] x86/resctrl: Stop using the for_each_*_rdt_resource() walkers
+Date: Thu, 21 Mar 2024 16:50:48 +0000
+Message-Id: <20240321165106.31602-14-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240321165106.31602-1-james.morse@arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
@@ -72,101 +72,137 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-max_name_width and max_data_width are used to pad the strings in the
-resctrl schemata file.
+The for_each_*_rdt_resource() helpers walk the architectures array
+of structures, using the resctrl visible part as an iterator. These
+became over-complex when the structures were split into a
+filesystem and architecture-specific struct. This approach avoided
+the need to touch every call site.
 
-This should be part of the fs code as it influences the user-space
-interface, but currently max_data_width is generated by the arch init code.
-max_name_width is already managed by schemata_list_add().
+Once the filesystem parts of resctrl are moved to /fs/, both the
+architecture's resource array, and the definition of those structures
+is no longer accessible. To support resctrl, each architecture would
+have to provide equally complex macros.
 
-Move the variables and max_data_width's initialisation code to rdtgroup.c.
-There is no need for an extra rdt_init_padding() helper as the length
-of the name can be considered when schemata_list_add() creates each
-schema entry.
+Change the resctrl code that uses these to walk through the resource_level
+enum and check the mon/alloc capable flags instead. Instances in core.c,
+and resctrl_arch_reset_resources() remain part of x86's architecture
+specific code.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/kernel/cpu/resctrl/core.c     | 22 ----------------------
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 22 deletions(-)
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  7 +++++-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 30 +++++++++++++++++++----
+ 2 files changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 9a09a64bbb7f..9551ca4a6480 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -44,12 +44,6 @@ static DEFINE_MUTEX(domain_list_lock);
-  */
- DEFINE_PER_CPU(struct resctrl_pqr_state, pqr_state);
- 
--/*
-- * Used to store the max resource name width and max resource data width
-- * to display the schemata in a tabular format
-- */
--int max_name_width, max_data_width;
--
- /*
-  * Global boolean for rdt_alloc which is true if any
-  * resource allocation is enabled.
-@@ -648,20 +642,6 @@ static int resctrl_arch_offline_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--/*
-- * Choose a width for the resource name and resource data based on the
-- * resource that has widest name and cbm.
-- */
--static __init void rdt_init_padding(void)
--{
--	struct rdt_resource *r;
--
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 884b88e25141..f2315a50ea4f 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -840,6 +840,7 @@ bool rdtgroup_cbm_overlaps_pseudo_locked(struct rdt_domain *d, unsigned long cbm
+ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
+ {
+ 	cpumask_var_t cpu_with_psl;
++	enum resctrl_res_level i;
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *d_i;
+ 	bool ret = false;
+@@ -854,7 +855,11 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
+ 	 * First determine which cpus have pseudo-locked regions
+ 	 * associated with them.
+ 	 */
 -	for_each_alloc_capable_rdt_resource(r) {
--		if (r->data_width > max_data_width)
--			max_data_width = r->data_width;
--	}
--}
--
- enum {
- 	RDT_FLAG_CMT,
- 	RDT_FLAG_MBM_TOTAL,
-@@ -959,8 +939,6 @@ static int __init resctrl_arch_late_init(void)
- 	if (!get_rdt_resources())
- 		return -ENODEV;
- 
--	rdt_init_padding();
--
- 	state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
- 				  "x86/resctrl/cat:online:",
- 				  resctrl_arch_online_cpu,
++	for (i = 0; i < RDT_NUM_RESOURCES; i++) {
++		r = resctrl_arch_get_resource(i);
++		if (!r->alloc_capable)
++			continue;
++
+ 		list_for_each_entry(d_i, &r->domains, list) {
+ 			if (d_i->plr)
+ 				cpumask_or(cpu_with_psl, cpu_with_psl,
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 6cf4ebe9c058..e736e4d20f63 100644
+index e736e4d20f63..3f16e7854411 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -58,6 +58,12 @@ static struct kernfs_node *kn_mongrp;
- /* Kernel fs node for "mon_data" directory under root */
- static struct kernfs_node *kn_mondata;
+@@ -98,12 +98,17 @@ void rdt_last_cmd_printf(const char *fmt, ...)
  
-+/*
-+ * Used to store the max resource name width and max resource data width
-+ * to display the schemata in a tabular format
-+ */
-+int max_name_width, max_data_width;
+ void rdt_staged_configs_clear(void)
+ {
++	enum resctrl_res_level i;
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *dom;
+ 
+ 	lockdep_assert_held(&rdtgroup_mutex);
+ 
+-	for_each_alloc_capable_rdt_resource(r) {
++	for (i = 0; i < RDT_NUM_RESOURCES; i++) {
++		r = resctrl_arch_get_resource(i);
++		if (!r->alloc_capable)
++			continue;
 +
- static struct seq_buf last_cmd_status;
- static char last_cmd_status_buf[512];
+ 		list_for_each_entry(dom, &r->domains, list)
+ 			memset(dom->staged_config, 0, sizeof(dom->staged_config));
+ 	}
+@@ -2181,6 +2186,7 @@ static int rdtgroup_mkdir_info_resdir(void *priv, char *name,
  
-@@ -2595,6 +2601,12 @@ static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type
- 	if (cl > max_name_width)
- 		max_name_width = cl;
+ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
+ {
++	enum resctrl_res_level i;
+ 	struct resctrl_schema *s;
+ 	struct rdt_resource *r;
+ 	unsigned long fflags;
+@@ -2205,8 +2211,12 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
+ 			goto out_destroy;
+ 	}
  
-+	/*
-+	 * Choose a width for the resource data based on the resource that has
-+	 * widest name and cbm.
-+	 */
-+	max_data_width = max(max_data_width, r->data_width);
+-	for_each_mon_capable_rdt_resource(r) {
+-		fflags = r->fflags | RFTYPE_MON_INFO;
++	for (i = 0; i < RDT_NUM_RESOURCES; i++) {
++		r = resctrl_arch_get_resource(i);
++		if (!r->mon_capable)
++			continue;
 +
- 	INIT_LIST_HEAD(&s->list);
- 	list_add(&s->list, &resctrl_schema_all);
++		fflags =  r->fflags | RFTYPE_MON_INFO;
+ 		sprintf(name, "%s_MON", r->name);
+ 		ret = rdtgroup_mkdir_info_resdir(r, name, fflags);
+ 		if (ret)
+@@ -2615,10 +2625,15 @@ static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type
  
+ static int schemata_list_create(void)
+ {
++	enum resctrl_res_level i;
+ 	struct rdt_resource *r;
+ 	int ret = 0;
+ 
+-	for_each_alloc_capable_rdt_resource(r) {
++	for (i = 0; i < RDT_NUM_RESOURCES; i++) {
++		r = resctrl_arch_get_resource(i);
++		if (!r->alloc_capable)
++			continue;
++
+ 		if (resctrl_arch_get_cdp_enabled(r->rid)) {
+ 			ret = schemata_list_add(r, CDP_CODE);
+ 			if (ret)
+@@ -3166,6 +3181,7 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
+ 			     struct rdtgroup *prgrp,
+ 			     struct kernfs_node **dest_kn)
+ {
++	enum resctrl_res_level i;
+ 	struct rdt_resource *r;
+ 	struct kernfs_node *kn;
+ 	int ret;
+@@ -3184,7 +3200,11 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
+ 	 * Create the subdirectories for each domain. Note that all events
+ 	 * in a domain like L3 are grouped into a resource whose domain is L3
+ 	 */
+-	for_each_mon_capable_rdt_resource(r) {
++	for (i = 0; i < RDT_NUM_RESOURCES; i++) {
++		r = resctrl_arch_get_resource(i);
++		if (!r->mon_capable)
++			continue;
++
+ 		ret = mkdir_mondata_subdir_alldom(kn, r, prgrp);
+ 		if (ret)
+ 			goto out_destroy;
 -- 
 2.39.2
 
