@@ -1,253 +1,199 @@
-Return-Path: <linux-kernel+bounces-110141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8061D885A8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:20:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160E8885A95
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E50B81F22658
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:20:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B10C1C21386
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D668526B;
-	Thu, 21 Mar 2024 14:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02938528B;
+	Thu, 21 Mar 2024 14:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="InaLxO/o"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="FBaOWFsv"
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91FC8526C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6634484A5A;
+	Thu, 21 Mar 2024 14:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711030810; cv=none; b=Hu0D5tQY6Zo+rLD9KM9R42B1lNQsTiSRAKYY/fzR/5S5nugnaEWXL0+n2scb/atzPOTu4hCFDfgzSypHYsUA5+p5YPMvHl0cI0UH8EVuzJftNyAy/R5QAw7B/M64KOPKHiiybzFPnH6ToE/cnYebxFf1Z3Ln2D2dOqIxaGsOugs=
+	t=1711031009; cv=none; b=FzNlc1RA6Y7vMeWAENQfuTuZ8PyuV8gx23/jO14itO0ZXZ+TEje/67s92CYf/21R+YcOfOFlKhGL0kkGTHxgKYpV1v7pSm5M+SxdlDvj7zQsQxhMOwNvcjl5Nh3wwJiVqrSYguaWNxOWmLJbaVbg5O/b6yg55e00hN8cCYnVI6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711030810; c=relaxed/simple;
-	bh=6xyeLUgAwxmqGgmY+Lxx+AP/kDtnBc74/itYOT89GNM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oCue+5MyyCi9oM5tnavrgCfBXjIEBFKbjwot3uyu6NjKtQunPzL+nWaiut32sH7U10xDvTx+zZxQNmbqi8Iy1Zk2tgjVy7pQc9R4YPXbXPL2aE7zvJ5+vKhU5Z3TuRbeYK2FQKqoXk3//fLPwUnJwkgQTXpBFwaPLg2UuslW/r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=InaLxO/o; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=rz63pa25ejeqzkhf77wqfydujq.protonmail; t=1711030803; x=1711290003;
-	bh=NiTFkvVVIBt3Zp4d7bg0Q/59Q6CidDiKN7ppRU78CAw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=InaLxO/o6NGTLercgTkCaaGLUifhedx7egjA4JUq0AH/FATkjVUxf0CCPLiFbwGGa
-	 T+NwtBfwQOPrJChIfXCvJVFx1WmDhDjJOpt57nHQSbE9orwx+TJgq02S9JiKDTmqg3
-	 ucDDPWXR9gLHQRsvZGLU7ynjWmsYmN1DC+eOPRMwIvNZfhiHclxw19COQMK+kzK3Z5
-	 tz/xRwUOBXa6fBQguKESxk0M3rJHdDIXhksKEtFWKt1/P5TaseaZ5NpVLm+WQOSZPO
-	 ogf7fcdC/+qCI5QgrW1mghPY6JfPkElUmSd5i0BSA1+PYTTsYAdD15/REEX/EmIPKK
-	 DE1n0eqx8LQvg==
-Date: Thu, 21 Mar 2024 14:19:48 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, arnd@arndb.de, arve@android.com, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Subject: Re: [PATCH v3 4/4] rust: add abstraction for `struct page`
-Message-ID: <504d1e4e-97f6-425b-98a2-a2a32dff1313@proton.me>
-In-Reply-To: <CAH5fLggy1ci+gu2eVzjo0nHtNzT=+NgaaU5WAwq8qHrhu1QCYw@mail.gmail.com>
-References: <baee63d9-273a-48aa-b3cc-f15e3782156b@proton.me> <20240320084630.2727355-1-aliceryhl@google.com> <9ed03148-5ceb-40f2-9c2d-31e2b8918888@proton.me> <CAH5fLgj_vmhCV-Ptfbjbq=FZOuVSLOEsatELaPmz=BuDuemghw@mail.gmail.com> <e088f9a2-c0aa-41b6-993b-01adb5fba929@proton.me> <CAH5fLggy1ci+gu2eVzjo0nHtNzT=+NgaaU5WAwq8qHrhu1QCYw@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711031009; c=relaxed/simple;
+	bh=i3k8D2smcuGUV4zTuQXD6d2NhakJ/CGMge0aDELRsnE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=etkXpkzKVeqkJLwRr50ySzB1/V7NmTtUPvZIrccWvlahZbRAMudsPHggIf3v6tZeIbjpvQ6nbNi//NVWLfUmmdp+IrqroIhA4dI71oVgVxHe94vk5lnHmRKzMz28K7hgCwJ3n0/ozv2oW8QKiFRhhQihbxF99kTFPp6coqaVH9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=FBaOWFsv; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42LDJwZD012506;
+	Thu, 21 Mar 2024 10:23:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=Vp84VOTUBzRN
+	rg+9EBiIB86THBzBhgqxHNyRGEzeUZs=; b=FBaOWFsvHGDRDzPBqza+z9hYKXYm
+	1belL/9dwLg6HgBL3vB0QzLSv8WF/IJRYMi5v6VAAUoxHKCJqmy67P9ivX4A5MHp
+	jupkSPqJHyGzJQXkBPAy/aKVHPiSQSl9yThlHDRj9I73fip/fkVGYL3YwPveBPvv
+	XkOHsMyawINN66/Ajjlilz/30IzoOi+qx+z7T0Z38PusxlHUddBOsKUzntj5xe8M
+	lZyaOIyXY8r9N5LPNFsLKDju4H05iyXvbLfYjR6hlLxTHoZThXB829WhAV5A129a
+	oGECOT+FIH2GjGcOH+AG2N21ZkKRKsEIk3kkMtUiESRqs5JQ8g6Kk9pLVw==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3wwr8njx1g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 10:23:11 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 42LENACi034186
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Mar 2024 10:23:10 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 21 Mar
+ 2024 10:23:09 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 21 Mar 2024 10:23:09 -0400
+Received: from radu.ad.analog.com ([10.48.65.243])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42LEMqp8014288;
+	Thu, 21 Mar 2024 10:22:55 -0400
+From: Radu Sabau <radu.sabau@analog.com>
+To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        Rob
+ Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Delphine CC Chiu
+	<Delphine_CC_Chiu@Wiwynn.com>,
+        Radu Sabau <radu.sabau@analog.com>, <linux-hwmon@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-i2c@vger.kernel.org>
+Subject: [PATCH v4 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
+Date: Thu, 21 Mar 2024 16:21:42 +0200
+Message-ID: <20240321142201.10330-1-radu.sabau@analog.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: tL-Alckf2BwH53rQv9qeyXDUN_2aMS7l
+X-Proofpoint-GUID: tL-Alckf2BwH53rQv9qeyXDUN_2aMS7l
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_10,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403210103
 
-On 3/21/24 15:11, Alice Ryhl wrote:
-> On Thu, Mar 21, 2024 at 2:56=E2=80=AFPM Benno Lossin <benno.lossin@proton=
-me> wrote:
->>
->> On 3/21/24 14:42, Alice Ryhl wrote:
->>> On Thu, Mar 21, 2024 at 2:16=E2=80=AFPM Benno Lossin <benno.lossin@prot=
-on.me> wrote:
->>>>
->>>> On 3/20/24 09:46, Alice Ryhl wrote:
->>>>>> On 3/11/24 11:47, Alice Ryhl wrote:
->>>>>>> +/// A pointer to a page that owns the page allocation.
->>>>>>> +///
->>>>>>> +/// # Invariants
->>>>>>> +///
->>>>>>> +/// The pointer points at a page, and has ownership over the page.
->>>>>>
->>>>>> Why not "`page` is valid"?
->>>>>> Do you mean by ownership of the page that `page` has ownership of th=
-e
->>>>>> allocation, or does that entail any other property/privilege?
->>>>>
->>>>> I can add "at a valid page".
->>>>
->>>> I don't think that helps, what you need as an invariant is that the
->>>> pointer is valid.
->>>
->>> To me "points at a page" implies that the pointer is valid. I mean, if
->>> it was dangling, it would not point at a page?
->>>
->>> But I can reword to something else if you have a preferred phrasing.
->>
->> I would just say "`page` is valid" or "`self.page` is valid".
->>
->>>>>>> +    /// Runs a piece of code with this page mapped to an address.
->>>>>>> +    ///
->>>>>>> +    /// The page is unmapped when this call returns.
->>>>>>> +    ///
->>>>>>> +    /// It is up to the caller to use the provided raw pointer cor=
-rectly.
->>>>>>
->>>>>> This says nothing about what 'correctly' means. What I gathered from=
- the
->>>>>> implementation is that the supplied pointer is valid for the executi=
-on
->>>>>> of `f` for `PAGE_SIZE` bytes.
->>>>>> What other things are you allowed to rely upon?
->>>>>>
->>>>>> Is it really OK for this function to be called from multiple threads=
-?
->>>>>> Could that not result in the same page being mapped multiple times? =
-If
->>>>>> that is fine, what about potential data races when two threads write=
- to
->>>>>> the pointer given to `f`?
->>>>>>
->>>>>>> +    pub fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T=
-) -> T {
->>>>>
->>>>> I will say:
->>>>>
->>>>> /// It is up to the caller to use the provided raw pointer correctly.
->>>>> /// The pointer is valid for `PAGE_SIZE` bytes and for the duration i=
-n
->>>>> /// which the closure is called. Depending on the gfp flags and kerne=
-l
->>>>> /// configuration, the pointer may only be mapped on the current thre=
-ad,
->>>>> /// and in those cases, dereferencing it on other threads is UB. Othe=
-r
->>>>> /// than that, the usual rules for dereferencing a raw pointer apply.
->>>>> /// (E.g., don't cause data races, the memory may be uninitialized, a=
-nd
->>>>> /// so on.)
->>>>
->>>> I would simplify and drop "depending on the gfp flags and kernel..." a=
-nd
->>>> just say that the pointer is only valid on the current thread.
->>>
->>> Sure, that works for me.
->>>
->>>> Also would it make sense to make the pointer type *mut [u8; PAGE_SIZE]=
-?
->>>
->>> I think it's a trade-off. That makes the code more error-prone, since
->>> `pointer::add` now doesn't move by a number of bytes, but a number of
->>> pages.
->>
->> Yeah. As long as you document that the pointer is valid for r/w with
->> offsets in `0..PAGE_SIZE` bytes, leaving the type as is, is fine by me.
->>
->>
->>>>> It's okay to map it multiple times from different threads.
->>>>
->>>> Do you still need to take care of data races?
->>>> So would it be fine to execute this code on two threads in parallel?
->>>>
->>>>        static PAGE: Page =3D ...; // assume we have a page accessible =
-by both threads
->>>>
->>>>        PAGE.with_page_mapped(|ptr| {
->>>>            loop {
->>>>                unsafe { ptr.write(0) };
->>>>                pr_info!("{}", unsafe { ptr.read() });
->>>>            }
->>>>        });
->>>
->>> Like I said, the usual pointer rules apply. Two threads can access it
->>> in parallel as long as one of the following are satisfied:
->>>
->>> * Both accesses are reads.
->>> * Both accesses are atomic.
->>> * They access disjoint byte ranges.
->>>
->>> Other than the fact that it uses a thread-local mapping on machines
->>> that can't address all of their memory at the same time, it's
->>> completely normal memory. It's literally just a PAGE_SIZE-aligned
->>> allocation of PAGE_SIZE bytes.
->>
->> Thanks for the info, what do you think of this?:
->>
->> /// It is up to the caller to use the provided raw pointer correctly. Th=
-e pointer is valid for reads
->> /// and writes for `PAGE_SIZE` bytes and for the duration in which the c=
-losure is called. The
->> /// pointer must only be used on the current thread. The caller must als=
-o ensure that no data races
->> /// occur: when mapping the same page on two threads accesses to memory =
-with the same offset must be
->> /// synchronized.
->=20
-> I would much rather phrase it in terms of "the usual pointer" rules. I
-> mean, the memory could also be uninitialized if you don't pass
-> __GFP_ZERO when you create it, so you also have to make sure to follow
-> the rules about uninitialized memory. I don't want to be in the
-> business of listing all requirements for accessing memory here.
+Add dt-bindings for adp1050 digital controller for isolated power supply
+with pmbus interface voltage, current and temperature monitor.
 
-Sure you can add that part again, I just want to highlight that mapping
-the same page multiple times means that the caller has to synchronize
-accesses to those pointers even if the pointers do not have the same
-address value. That is not normally something you need to take care of,
-ie normally if `ptr1.addr() !=3D ptr2.addr()` then you can access them
-without synchronization.
+Signed-off-by: Radu Sabau <radu.sabau@analog.com>
+---
+v4:
+ *Fix typo in schema link causing warnings at build.
+v3:
+ *Remove extra line before '$id'.
+ *Remove 'address-cells' and 'size-cells' from adp1050 node.
+ *Rename adp1050 node to generic name.
+ *Fix typo from 'adress-cells' to 'address-cells' causing errors in the
+  dt-bindings build.
+v2:
+ *Fix identation for example.
+ *Remove 'adi,vin-scale-monitor' and 'iin-scale-monitor' since they are not used
+  anymore.
+ *Fix typo for 'compatbile' to 'compatible'.
+ *Add blank line under datasheet link.
+---
+ .../bindings/hwmon/pmbus/adi,adp1050.yaml     | 49 +++++++++++++++++++
+ MAINTAINERS                                   |  7 +++
+ 2 files changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
 
->>>> If this is not allowed, I don't really like the API. As a raw version =
-it
->>>> would be fine, but I think we should have a safer version (eg by takin=
-g
->>>> `&mut self`).
->>>
->>> I don't understand what you mean. It is the *most* raw API that `Page`
->>> has. I can make them private if you want me to. The API cannot take
->>> `&mut self` because I need to be able to unsafely perform concurrent
->>> writes to disjoint byte ranges.
->>
->> If you don't need these functions to be public, I think we should
->> definitely make them private.
->> Also we could add a `raw` suffix to the functions to make it clear that
->> it is a primitive API. If you think that it is highly unlikely that we
->> get a safer version, then I don't think there is value in adding the
->> suffix.
->=20
-> The old code on the Rust branch didn't have these functions, but
-> that's because the old `read_raw` and `write_raw` methods did all of
-> these things directly in their implementation:
->=20
-> * Map the memory so we can get a pointer.
-> * Get a pointer to a subslice (with bounds checks!)
-> * Do the actual read/write.
->=20
-> I thought that doing this many things in a single function was
-> convoluted, so I decided to refactor the code by extracting the "get a
-> pointer to the page" logic into `with_page_mapped` and the "point to
-> subslice with bounds check" logic into `with_pointer_into_page`. That
-> way, each function has only one responsibility, instead of mixing
-> three responsibilities into one.
-
-I think that design decision is good.
-
-> So even if we get a safer version, I would not want to get rid of this
-> method. I don't want to inline its implementation into more
-> complicated functions. The safer method would call the raw method, and
-> then do whatever additional logic it wants to do on top of that.
-
-I was not suggesting removing this method, rather renaming it to reflect
-that it is a primitive API that should be avoided if possible.
-
---=20
-Cheers,
-Benno
+diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+new file mode 100644
+index 000000000000..10c2204bc3df
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/pmbus/adi,adp1050.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices ADP1050 digital controller with PMBus interface
++
++maintainers:
++  - Radu Sabau <radu.sabau@analog.com>
++
++description: |
++   The ADP1050 is used to monitor system voltages, currents and temperatures.
++   Through the PMBus interface, the ADP1050 targets isolated power supplies
++   and has four individual monitors for input/output voltage, input current
++   and temperature.
++   Datasheet:
++     https://www.analog.com/en/products/adp1050.html
++
++properties:
++  compatible:
++    const: adi,adp1050
++
++  reg:
++    maxItems: 1
++
++  vcc-supply: true
++
++required:
++  - compatible
++  - reg
++  - vcc-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        clock-frequency = <100000>;
++
++        hwmon@70 {
++            compatible = "adi,adp1050";
++            reg = <0x70>;
++            vcc-supply = <&vcc>;
++        };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 43b39956694a..b45753e94756 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -479,6 +479,13 @@ L:	linux-wireless@vger.kernel.org
+ S:	Orphan
+ F:	drivers/net/wireless/admtek/adm8211.*
+ 
++ADP1050 HARDWARE MONITOR DRIVER
++M:	Radu Sabau <radu.sabau@analog.com>
++L:	linux-hwmon@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Dcumentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
++
+ ADP1653 FLASH CONTROLLER DRIVER
+ M:	Sakari Ailus <sakari.ailus@iki.fi>
+ L:	linux-media@vger.kernel.org
+-- 
+2.34.1
 
 
