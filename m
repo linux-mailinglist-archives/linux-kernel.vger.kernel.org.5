@@ -1,145 +1,132 @@
-Return-Path: <linux-kernel+bounces-109738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAAC4885513
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:45:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBC7885517
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F099281F57
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:45:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C0AF1C21149
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7721D57894;
-	Thu, 21 Mar 2024 07:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5CA5820D;
+	Thu, 21 Mar 2024 07:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TCDYZoQg"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NEDZBoRy"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287B9339B1
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09EA41E4E;
+	Thu, 21 Mar 2024 07:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711007104; cv=none; b=Ht6zQepz2fEvMHkWGcLcSWJLCJGlYmbLAlENki1TM+YNC9Ub6wjFgyviuuNRbhGmCQF3EHDEdc5ogZTfDXDo6fABnEKtytafkdRFY524apKrP+t428FPc7RM3WmpjY/aBu5/0CMQfXvSIyptDBX4C5prHU8Mp25ASM52UU/41S4=
+	t=1711007411; cv=none; b=a92rIZFM7E7++IEeJJ6CIlc/151nt1UxgdxyLGbJMvK/RXA2UOEz6wiI12TRqjdwIDCZi3BMgiCgkzeWw9fRB5TqfAKw2qNLrnyiOAp4VrfNRaQE+wS8S4maOeOCw+f6tk+Z2efSYyNBExM70GIIKB/Bjl2xJWYyOGEtFq561tU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711007104; c=relaxed/simple;
-	bh=n8mYR3pta6zA293sNqKbCFaXX/BYE15HF+gwHIKFsUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mK5hw+gCvzrz6uB9n0KT9c2iF/kQKTxGP/ElpNwGqWv3LX8YYA36Ph1AOfUlU+10oK47mcXIXWWV2ipCg/Ty0wF/beAv+nvg2FeUM0+w4eP4F1hfFAT0T1PHbdX1NIFROHS3vtfJ3hoNbo9KEIXLxkByhpHIviUkaPQtm50nORI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TCDYZoQg; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d3907ff128so499562a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:45:02 -0700 (PDT)
+	s=arc-20240116; t=1711007411; c=relaxed/simple;
+	bh=FNRcqeDJ23ezcSIiELqF9WTGRyuefiXNZGwjyBGo8MY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=L2CGSzlmGGaj18XSdoAAEDXum9C9SAGdJMOnHmqiJpOBiMgh5hHXi053mrUJzXMRnhmIBrW9nXHJj4ZI+NN/Ru6wioMvnEOmS8LUJTQuaF/1fGKPxXKv3Ctw2P4de8CZD/zOg+QD/HW9HY37+zZ6Xzx2Uk6+PeY6bco4Pwyid6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NEDZBoRy; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d46dd8b0b8so9082791fa.2;
+        Thu, 21 Mar 2024 00:50:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711007102; x=1711611902; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q7hSEzNRzZ851Uhhtifz0JYUcGL34CYdaLX6j7n3oFA=;
-        b=TCDYZoQgk6a1AT0wRtdffZXMYnrX1sZ9aQn450/4aAwX8wVLomiYXiA/TmgSt+eRKP
-         4xPhGdvt6boIkEo+l/3XfdtHy5l2EiBo24vc7TApo0iB5K9SYwpOYNMvEtScbUR5XQmo
-         vkoxfK+BhjCN/x1Cy6AYxSUHyb+VJ+yDyq9wH4Vrn5tJ+NXUpwX2KMXQeoBXRyr7Wp6M
-         OJbsofIYTtnahpAQjFtEIgG8gk3s4vEi+GRv5qYCCO4uusDGUA9xcpeeIlIDanWfN0IB
-         D9ysK5ANkB+ywoqx/C2R12/LVjzIW1ZNXTZ/a/QVEFHIEhsd1dSbR/WFup58/wtpVRhR
-         suMQ==
+        d=gmail.com; s=20230601; t=1711007408; x=1711612208; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vGccOu1VKuavIsm40qKIEGM+Cd72GKkJnR7gjFgC8Ik=;
+        b=NEDZBoRy18rx6bRSGZgrVVxToMZqMfhuNtzr+kINetHN9KW6EGkkXHqjpEchsvh4Xd
+         JweEIG2ViguGiuHLHCzsnuC/KwhmwIhhYUBSg5Vbx0V40Nh5pbzIMqmA2X7Smiq9+/kK
+         7J19d3psDhNTh+sbxvfxQ+9QTMlIguWr8SJ1R3CMMXIzdQE6QTzaZboL9l8KwHx20Aox
+         g0ODFbhxQEd6eYqMxa2Q6KU4Mmjrdx+8lVsS5wAams85HtFtKOxZ0mSj4YyVQRQdk95M
+         rQnn3mfpdU1QjccD6cSJsZh8nPmXRYLlqe+SSAYwyEK/jLRjoKMC/rpfYb2bZq1M69j+
+         ThPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711007102; x=1711611902;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711007408; x=1711612208;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q7hSEzNRzZ851Uhhtifz0JYUcGL34CYdaLX6j7n3oFA=;
-        b=LRKkUXqpQENbtRpSsV+SR3GrPdMLxtTFLa+ACF8Bb14E3uGbOrUB0mvB57pv9V2ZEx
-         DUI4zvDQcOQungVgaMlxCVsAeEI77O7vftT3JCp3V6Cspbx6DFJJcykTys26S+HpMuId
-         ynKnW3q1E3He2Bht42OGkNDXRSvrE7H7l6DeZCwCX5Qb43t486AZpSBpJC/ipTx/19om
-         fHHGQBq38FrllEXvd7vaL7MNI8CMNwL+WotRMyEoWgIq3jgIFVNWIROSeE5ngIYRsQ4f
-         SJasStNsVFpMJ5mZlxvuOjfI6h8Lddq3w6dzufYKmy3ZuWdnBiXbi+ANNZkYJDkiIH+v
-         VxLA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaikcOk8vfthF7/8LfS6QR8/Vsjxxq+AwhWKYdvE8y+mWe+bkv2bdEHq1+pNit/zJJ0iTpP7FXpQyFBlqRV/OoAPF12spogy4ZQiZE
-X-Gm-Message-State: AOJu0Yyhca01AafNGBRe5M3s7u2zoYIO3iwmjdzFRb60jDNCiuJhOX0f
-	r63JDVax3S9QsPLgf/yfdM2819IXCb7cplPSB0NCgJYm4YYcZ1YkXfgu4zX8D9IVQaA4gsra9Eu
-	v6fFbNoIHeCO063uStq3087G+zyKVVtIesaPuKw==
-X-Google-Smtp-Source: AGHT+IHgam8NQRs6BCAYVH0uOovl0Io/T7Sha0lKrrrkcNdLRUyAAN8eQMuvfT6SqnVtaWwPh0I2wQ1JkAj5X3QHXQ0=
-X-Received: by 2002:a17:90b:30ce:b0:29f:e772:61c3 with SMTP id
- hi14-20020a17090b30ce00b0029fe77261c3mr5492177pjb.27.1711007102322; Thu, 21
- Mar 2024 00:45:02 -0700 (PDT)
+        bh=vGccOu1VKuavIsm40qKIEGM+Cd72GKkJnR7gjFgC8Ik=;
+        b=N/uJShz2dJxoGIXbcbi+YX+MbaUkli3GBngh+HtFKjHV+Sm5SjmP7wdYs5zUaP8nfQ
+         twTM7+okhAnvLg8RRnXdkLbpJa2pKRTy+XrJG8zk7mtvZnqEVM/5Vtwg7x0HKMFD+qQh
+         UcvYeCYfOxvmRFQa/4FHs84aq67VLGfPgKdCR06dlgT08fD6Ylbs/18wfM4e/JSkdtIU
+         bkONlJBDqV9GNsg0tqPX+im9uMb1rSDoa0keubP1p46NdI24s6LS+of+HxYQtX2V2yqJ
+         DG2q15dlnqk1LtvDT/5mzL5pRGLA2aLhMaTRgQm4cN9/F8m45rihjg2pwcveqdCoiUzI
+         hF7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUB3+DEJEoCsQWcS/EcEvuTd40moMxUmv6yewYap+23nZGDA0HtuvY3QqhATlZoKdOIaHVCVQGy2ZrNZLS9OTmcDOnYERC8HDtCGyNdOIbcLGzSeKdvuhX1g6eu5A0mnLviAIootspg
+X-Gm-Message-State: AOJu0YyWMybtsd7zpGYuE0sgb/Hf/1Mf9q4HDjJYAuhUKlINH4YHnJHo
+	Gd4CN3X01Yyxkg7uZHrxPuOn25yHF0cRkOZfigDttVZiK0dufahfBul6QlL8
+X-Google-Smtp-Source: AGHT+IEt9imL380eotJY058uuV666FxWnZeZZusAy2pnyp+RzhoWy/fZoP9F/ziYDELJF14X6PG7wg==
+X-Received: by 2002:a2e:7004:0:b0:2d4:93d3:11ab with SMTP id l4-20020a2e7004000000b002d493d311abmr10057315ljc.6.1711007407579;
+        Thu, 21 Mar 2024 00:50:07 -0700 (PDT)
+Received: from [192.168.1.253] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.googlemail.com with ESMTPSA id p1-20020a05600c1d8100b004146bda6c32sm4637096wms.9.2024.03.21.00.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 00:50:07 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Subject: [PATCH v2 0/6] clk: qcom: apss-ipq-pll: various cleanups
+Date: Thu, 21 Mar 2024 08:49:53 +0100
+Message-Id: <20240321-apss-ipq-pll-cleanup-v2-0-201f3cf79fd4@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313150133.1182298-1-sshegde@linux.ibm.com> <20240313150133.1182298-2-sshegde@linux.ibm.com>
-In-Reply-To: <20240313150133.1182298-2-sshegde@linux.ibm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 21 Mar 2024 08:44:50 +0100
-Message-ID: <CAKfTPtBYAibCdsPumTAPDKBwNfLP9nr5577MSNKffV_VDmHDgA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/fair: Check rd->overload value before update
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, dietmar.eggemann@arm.com, 
-	qyousef@layalina.io, linux-kernel@vger.kernel.org, vschneid@redhat.com, 
-	qperret@google.com, yu.c.chen@intel.com, srikar@linux.ibm.com, 
-	pierre.gondois@arm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKHm+2UC/22NQQ6CMBBFr0Jm7Zi20khdeQ/DoqFTmKRAbZVoC
+ He3krhz+V7y318hU2LKcKlWSLRw5nkqoA4VdIOdekJ2hUEJVYuT1GhjzsjxjjEE7ALZ6RnRSjL
+ GeuMaXUOZxkSeX3v21hYeOD/m9N5fFvm1v2DzP7hIFKiVPxtdK+O0u/aj5XDs5hHabds+kfQWN
+ 7gAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.12.3
 
-On Wed, 13 Mar 2024 at 16:02, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
->
-> Overload is an indicator used to inform if there is any rq in the root
-> domain has 2 or more running tasks. Root domain is a global structure per
-> cpuset island.
->
-> Overload status is updated when adding a task to the runqueue.
-> It is cleared in update_sd_lb_stats during load balance, if none of the
-> rq has 2 or more running task. It is used during to newidle
-> balance to see if its worth doing load balance. If it is set, then
-> newidle balance will try aggressively to pull a task.
->
-> Since commit 630246a06ae2 ("sched/fair: Clean-up update_sg_lb_stats
-> parameters"), overload is being updated unconditionally. The change in
-> value of this depends on the workload. On typical workloads, it is
-> likely that this value doesn't change often. Write causes the
-> cacheline to be invalidated. This would cause true sharing when the same
-> variable is accessed in newidle_balance. On large systems this would
-> cause more CPU bus traffic.
->
-> Perf probes prove that actual change in value is less often. So it would
-> be better to check the value before updating it. Detailed perf probes
-> and annotation can be found in the cover letter. CPU bus traffic reduces
+This series contains a few patches to perform some cleanup in the
+apss-ipq-pll driver.
 
-the cover letter will not be merged. It's better to put the figures
-here if you want to mention them
+The set is based on v6.8 and it depends on the following patches:
+  - "clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to fix boot failure"
+     Link: https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
+  - "clk: qcom: clk-alpha-pll: Stromer register cleanup"
+     Link: https://lore.kernel.org/r/20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com
 
-> with the patch.
->
-> Fixes: 630246a06ae2 ("sched/fair: Clean-up update_sg_lb_stats parameters")
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Changes in v2:
+  - add a new patch at the end to remove the 'cbf_pll_regs' register map
+    from clk-cbf-8996.c
+  - change patch 2 to move huayra register map to clk-alpha-pll.c
+  - collect Reviewed-by tags
+  - Link to v1: https://lore.kernel.org/r/20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com
 
-I don't think it's worth a Fixes tag. This is an improvement more than
-a fix as the current code works fine but generates more bus traffic
+---
+Gabor Juhos (6):
+      clk: qcom: apss-ipq-pll: reuse Stromer reg offsets from 'clk_alpha_pll_regs'
+      clk: qcom: apss-ipq-pll: move Huayra register map to 'clk_alpha_pll_regs'
+      clk: qcom: apss-ipq-pll: remove 'pll_type' field from struct 'apss_pll_data'
+      clk: qcom: apss-ipq-pll: constify match data structures
+      clk: qcom: apss-ipq-pll: constify clk_init_data structures
+      clk: qcom: clk-cbf-8996: use HUAYRA_APPS register map for cbf_pll
 
-With these minor changes in the commit message:
+ drivers/clk/qcom/apss-ipq-pll.c  | 68 ++++++++++------------------------------
+ drivers/clk/qcom/clk-alpha-pll.c | 10 ++++++
+ drivers/clk/qcom/clk-alpha-pll.h |  1 +
+ drivers/clk/qcom/clk-cbf-8996.c  | 13 +-------
+ 4 files changed, 28 insertions(+), 64 deletions(-)
+---
+base-commit: 9b65bf93985e8bd5bc5476beef59ba56f3f99697
+change-id: 20240315-apss-ipq-pll-cleanup-a1e99af9d854
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
 
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-> ---
->  kernel/sched/fair.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 02d4d224b436..eeebadd7d9ae 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10621,7 +10621,8 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->
->         if (!env->sd->parent) {
->                 /* update overload indicator if we are at root domain */
-> -               WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
-> +               if (READ_ONCE(env->dst_rq->rd->overload) != (sg_status & SG_OVERLOAD))
-> +                       WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
->
->                 /* Update over-utilization (tipping point, U >= 0) indicator */
->                 set_rd_overutilized_status(env->dst_rq->rd,
-> --
-> 2.39.3
->
 
