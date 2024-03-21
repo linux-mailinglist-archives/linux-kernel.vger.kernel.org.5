@@ -1,121 +1,176 @@
-Return-Path: <linux-kernel+bounces-110631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C2D886180
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:12:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED9F886182
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:13:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ED8A1F22961
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 745881F221A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E850B1350DE;
-	Thu, 21 Mar 2024 20:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8GPmMZI"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D7A134735;
+	Thu, 21 Mar 2024 20:13:37 +0000 (UTC)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F465134CEF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA3E56B98
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711051908; cv=none; b=BBo+o7ET/5N3FEbcn1D5Oi9+RJiWxrJU/MGXJrXBGaBy/D6hnM3InrTLECht+kIrvbX66nT/gyK207uYkIk+Y29rvTWOnNR9TM3ZKL94i69V+xrpMqDkYlY+MzHABZ9Fcvw/IbuqNDYRlamZwwBUj/KZa8Wbd/dqSgbFTb6xHiU=
+	t=1711052017; cv=none; b=tmnB860Lo0mavEBMkgfZFW+xwh2UVtT6B5KNOIP/oSrubZTzJupmipbVFaP6cWrwT8L1ZdmwOzXocb/aebEByFV2tVDWEsCxhXbuVpZcf+5cnRESpG+2FHDhetqfEN63vKVyXEWHKv0EXDm3mbcDcxcT85aXs/Wnf5gnqeX+J6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711051908; c=relaxed/simple;
-	bh=uhX6GYDNNtlyCovC9hT+neR70GADXG1ymHwW1MOCHL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mR7P7RNuZLeV2bBKIEncwCi3GVVK8Ba+Ai7U/fk2T+ZosYYTY3CsO3n8g/geRMTdbS+D4CU10x/64mXVh/HjN6TH26izSPmdYxOXkcQrtUdnQE8A4VQwY/bgUm472revQZ4ChWU9npKAqz28EVztUXfuGErpq5zUUfPdNmyAn4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8GPmMZI; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4146a1ac117so8825625e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711051904; x=1711656704; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eC6jgE/JRdFrOaz09LGSTM9P5P7XxBJ+9PvcFKNpvbM=;
-        b=a8GPmMZIyccg9PlPAUnVKTN2iclwufZVoZx4hyWCCk1XvD0jK3eCPeLBh8juKGrPRn
-         VMnVx3bU06fDEKrEeMtlra0GM+jTfepVLyJwogJXGCuEDsvjiECXxdYND+GbDiLplHHy
-         WSzGHMzWlEYBRYcNPjl47f74ofda3jsgQ9kPhiLHHeWiPpQ+AaO4ZQg5qkQnNy0JnlGc
-         4rTkXRkCxeUEtC7V6QsLKc0Hoe10Hh/Xm8+siIk/yXvAVb4BmLa1eO55Vt5kQM1e7X4+
-         Ah/mi22NGnMn8K0v3l+Yt25vXbNKz+2i8DuiqhyDlhEzVInchweAWnAlD7nXLHzcWv7K
-         0/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711051904; x=1711656704;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eC6jgE/JRdFrOaz09LGSTM9P5P7XxBJ+9PvcFKNpvbM=;
-        b=ViT1NC7fzCJTJHMjZFs2xXeRBsk4SUH2QNDAPw9eqX0nm56cL7o/T/IxWeSqiT8aGY
-         Q4lYvDbP43ezIcQaLud8cDn4fC5slrpKQSoWtsBrZ0SECSbHUwjMkhx8a2vGX0H0cjvE
-         kOFk/9CaqK4sOmzPy1aDiaRkAu0dVoJXPC/3SUUSd2LyMP0ek4UHsGW5tr5/5KHwF5Dl
-         ae/KN/CWiBVvydFG4sZNR9y7SSAvW+mNgOZhiNt9+rcNJYqsXtSeRNpq7XCo9nt523pZ
-         jr/V2cVgLnJKf6kqxviwWyXHih/oAbgPBZhH4yMD9SAbhEYBgylWCNiIttJFWhC+8HtQ
-         Llgg==
-X-Gm-Message-State: AOJu0YzmCPKUFRohDVkRlNcIPAJpt8ntpaJjayktpMionJfKSfb1x7kH
-	qw78rcCbDKK4jg3G+xSY9b9yeMr05xRP/0Bc9UWKlxrzRxvozKzW
-X-Google-Smtp-Source: AGHT+IEsmrZsSBcMFJfimUf1shifE2MvIuVcK3gKjl47KpvXKh6BXPrCVH+d4D1A82MetbbMNGysGw==
-X-Received: by 2002:a05:600c:1d02:b0:414:6a1d:2013 with SMTP id l2-20020a05600c1d0200b004146a1d2013mr20651wms.16.1711051903977;
-        Thu, 21 Mar 2024 13:11:43 -0700 (PDT)
-Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
-        by smtp.gmail.com with ESMTPSA id n11-20020a05600c3b8b00b00413eb5aa694sm759878wms.38.2024.03.21.13.11.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 13:11:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Thu, 21 Mar 2024 21:11:41 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Maksim Davydov <davydov-max@yandex-team.ru>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, gpiccoli@igalia.com,
-	den-plotnikov@yandex-team.ru, dave.hansen@linux.intel.com,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-Subject: Re: [PATCH] x86/split_lock: fix delayed detection enabling
-Message-ID: <ZfyUfTI4vjmeu8Kv@gmail.com>
-References: <20240321195522.24830-1-davydov-max@yandex-team.ru>
+	s=arc-20240116; t=1711052017; c=relaxed/simple;
+	bh=xPK6KriN8FJ64fJxKuCKJrirRN9FLJBqVqo7UzTaMYg=;
+	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=Bl8wmwr8HLy6gquUltUbz2VxS7KYPwik95pMpnSxMLIXy/WFgwfjEFrKbYv7E4xZ2mZ7PwDGQpqDvTlsxdNORqVrYEk+lpPiWgcnifNTBGE7i7HfGOAr4EMQ/X2Wn+flgVSLhbqP2t8P0SeNpdE+mDoMxdzyLRrlFF+2ZjJCy6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1A06F626FAE8;
+	Thu, 21 Mar 2024 21:13:25 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id JxriTs8HOKul; Thu, 21 Mar 2024 21:13:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7576C645094A;
+	Thu, 21 Mar 2024 21:13:24 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Vfu0TxaASbAW; Thu, 21 Mar 2024 21:13:24 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 55840626FAE8;
+	Thu, 21 Mar 2024 21:13:24 +0100 (CET)
+Date: Thu, 21 Mar 2024 21:13:24 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1722992374.86554.1711052004278.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBI and UBIFS updates for v6.9-rc1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321195522.24830-1-davydov-max@yandex-team.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: VyzumXf1JtEN0irCPs3T+5iw33+zvQ==
+Thread-Topic: UBI and UBIFS updates for v6.9-rc1
 
+Linus,
 
-* Maksim Davydov <davydov-max@yandex-team.ru> wrote:
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
 
-> If the warn mode with disabled mitigation mode is used, then on each cpu
-> where the split lock occurred detection will be disabled in order to make
-> progress and delayed work will be scheduled, which then will enable
-> detection back. Now it turns out that all CPUs use one global delayed
-> work structure. This leads to the fact that if a split lock occurs on
-> several CPUs at the same time (within 2 jiffies), only one cpu will
-> schedule delayed work, but the rest will not. The return value of
-> schedule_delayed_work_on() would have shown this, but it is not checked
-> in the code
-> In order to fix the warn mode with disabled mitigation mode, delayed work
-> has to be a per-cpu.
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
 
-Please be more careful about changelog typography. The above portion has:
+are available in the Git repository at:
 
- - ~3 capitalization inconsistencies
- - one missing period
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.9-rc1
 
-> +/*
-> + * In order for each cpu to schedule itself delayed work independently of the
-> + * others, delayed work struct should be per-cpu. This is not required when
-> + * sysctl_sld_mitigate is enabled because of the semaphore that limits
-> + * the number of simultaneously scheduled delayed works to 1.
-> + */
+for you to fetch changes up to b8a77b9a5f9c2ba313f2beef8440b6f9f69768e7:
 
-.. and some of that seeped into this comment block as well, plus there's a 
-missing comma as well.
+  mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems (2024-03-10 22:14:28 +0100)
 
-Thanks,
+----------------------------------------------------------------
+This pull request contains updates for UBI and UBIFS:
 
-	Ingo
+UBI:
+        - Add Zhihao Cheng as reviewer
+	- Attach via device tree
+	- Add NVMEM layer
+	- Various fastmap related fixes
+
+UBIFS:
+        - Add Zhihao Cheng as reviewer
+	- Convert to folios
+	- Various fixes (memory leaks in error paths, function prototypes)
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      ubifs: fix sort function prototype
+      ubifs: fix function pointer cast warnings
+
+Daniel Golle (8):
+      dt-bindings: mtd: add basic bindings for UBI
+      dt-bindings: mtd: ubi-volume: allow UBI volumes to provide NVMEM
+      mtd: ubi: block: use notifier to create ubiblock from parameter
+      mtd: ubi: attach from device tree
+      mtd: ubi: introduce pre-removal notification for UBI volumes
+      mtd: ubi: populate ubi volume fwnode
+      mtd: ubi: provide NVMEM layer over UBI volumes
+      mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems
+
+Guo Xuenan (1):
+      ubi: fix slab-out-of-bounds in ubi_eba_get_ldesc+0xfb/0x130
+
+Kunwu Chan (1):
+      ubifs: Remove unreachable code in dbg_check_ltab_lnum
+
+Matthew Wilcox (Oracle) (15):
+      ubifs: Set page uptodate in the correct place
+      ubifs: Convert from writepage to writepages
+      ubifs: Convert ubifs_writepage to use a folio
+      ubifs: Use a folio in do_truncation()
+      ubifs: Convert do_writepage() to take a folio
+      ubifs: Convert ubifs_vm_page_mkwrite() to use a folio
+      ubifs: Convert write_begin_slow() to use a folio
+      ubifs: Convert ubifs_write_begin() to use a folio
+      ubifs: Convert ubifs_write_end() to use a folio
+      ubifs: Convert do_readpage() to take a folio
+      ubifs: Convert allocate_budget() to work on a folio
+      ubifs: Convert cancel_budget() to take a folio
+      ubifs: Pass a folio into ubifs_bulk_read() and ubifs_do_bulk_read()
+      ubifs: Use a folio in ubifs_do_bulk_read()
+      ubifs: Convert populate_page() to take a folio
+
+Richard Weinberger (2):
+      MAINTAINERS: Add Zhihao Cheng as UBI/UBIFS reviewer
+      ubi: Check for too small LEB size in VTBL code
+
+Zhang Yi (1):
+      ubi: correct the calculation of fastmap size
+
+ZhaoLong Wang (1):
+      ubi: Correct the number of PEBs after a volume resize failure
+
+Zhihao Cheng (3):
+      ubifs: dbg_check_idx_size: Fix kmemleak if loading znode failed
+      ubifs: ubifs_symlink: Fix memleak of inode->i_link in error path
+      ubifs: Queue up space reservation tasks if retrying many times
+
+ .../bindings/mtd/partitions/linux,ubi.yaml         |  75 ++++
+ .../bindings/mtd/partitions/ubi-volume.yaml        |  40 ++
+ Documentation/mm/page_cache.rst                    |  10 +
+ MAINTAINERS                                        |   2 +
+ drivers/mtd/ubi/Kconfig                            |  13 +
+ drivers/mtd/ubi/Makefile                           |   1 +
+ drivers/mtd/ubi/block.c                            | 136 +++----
+ drivers/mtd/ubi/build.c                            | 154 +++++--
+ drivers/mtd/ubi/eba.c                              |   7 +
+ drivers/mtd/ubi/fastmap.c                          |   7 +-
+ drivers/mtd/ubi/kapi.c                             |  56 ++-
+ drivers/mtd/ubi/nvmem.c                            | 191 +++++++++
+ drivers/mtd/ubi/ubi.h                              |   3 +
+ drivers/mtd/ubi/vmt.c                              |  75 +++-
+ drivers/mtd/ubi/vtbl.c                             |   6 +
+ fs/ubifs/debug.c                                   |   9 +-
+ fs/ubifs/dir.c                                     |   2 +
+ fs/ubifs/file.c                                    | 443 ++++++++++-----------
+ fs/ubifs/find.c                                    |  32 +-
+ fs/ubifs/journal.c                                 | 171 +++++++-
+ fs/ubifs/lprops.c                                  |   6 +-
+ fs/ubifs/lpt_commit.c                              |   1 -
+ fs/ubifs/super.c                                   |   2 +
+ fs/ubifs/tnc.c                                     |   9 +-
+ fs/ubifs/tnc_misc.c                                |  22 +
+ fs/ubifs/ubifs.h                                   |   5 +
+ include/linux/mtd/ubi.h                            |   2 +
+ 27 files changed, 1060 insertions(+), 420 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
 
