@@ -1,212 +1,303 @@
-Return-Path: <linux-kernel+bounces-110794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BC7886404
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:44:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FCDD88640E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C04FC1F22221
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:44:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43D511C2158C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81D21E526;
-	Thu, 21 Mar 2024 23:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D6B31758;
+	Thu, 21 Mar 2024 23:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="i+41FxcM"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lTmUJF4f"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C1029A9;
-	Thu, 21 Mar 2024 23:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15E5F516;
+	Thu, 21 Mar 2024 23:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711064681; cv=none; b=hAnAW/crD0bpSg3hVpKspVSCaQypY2mjOrO80vWpmnLtrWAkLcX6Wh+UgUflDhh/fozwceItyerdp5GeJcanfPp5RYr6BS5UawiMtrLOtAymOi+64Ts3dTZlkeTkkEVux/iYiBW8DUXaRMczdYyTw/uxvEYPoZyRYdp0Crg//go=
+	t=1711064746; cv=none; b=CIUfHGe8jQTR8fy1gdAVj4wkKPGCTYEg3TvgArF+8m9AP6HamFeCHjktz8BIFcgj1zVMcwF41ET958cCDJBigLJasUzwE1EXzs49xd8jxqhTHuTJiQDFtrz1hK7/tGh3G89i+Y56hJzDTnnqNhzVXOIfobJwP1JFwe0O1d2zw9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711064681; c=relaxed/simple;
-	bh=vi3VgwEPLVWNlHS9byb7LzKzryG68oasOkwzi2W6T/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MjIbj0eCVl4+WxYioS08UEqD05RUdW3qAMiXRMuFUArpUIGAa1cS731PvY6ESp+ABkvFgx7cT0XvAkzrsnvGUjvoFPFDHTgXhM1A06Pb131YZi23ysOXXX0UmrcjP0g0azTvqSYFH5CLv+lQI4Q+tvCqJYvn5ZTibbcpDxjnLiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=i+41FxcM; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1D5E8BEB;
-	Fri, 22 Mar 2024 00:44:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711064649;
-	bh=vi3VgwEPLVWNlHS9byb7LzKzryG68oasOkwzi2W6T/E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i+41FxcMbJv7FjzALvLMSa+WX1G5ohLHzO1BUsLa7mRFdjOyYGlhpWm4yUQaJ52DH
-	 6yySld8FpuVC2w7SZoMKrtMLaKmnKG2a3hsKsf8Qf+9Ja2SwTyeIxq0TnwdcMD86wn
-	 omNu+1QjPf9WdTCpqGaIlFqHSXbPEb4A+SI9mpB0=
-Date: Fri, 22 Mar 2024 01:44:34 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>,
-	linux-media@vger.kernel.org
-Subject: Re: [PATCH v9 3/6] media: uvcvideo: Quirk for invalid dev_sof in
- Logitech C922
-Message-ID: <20240321234434.GC20938@pendragon.ideasonboard.com>
-References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
- <20220920-resend-hwtimestamp-v9-3-55a89f46f6be@chromium.org>
+	s=arc-20240116; t=1711064746; c=relaxed/simple;
+	bh=jW38JzanhRNpu03oZcnIFmEukYYO360wk+qtFn4vZEQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TCIsSWpMY8SSY0rOGjPtLI/gyqx8nVFiDCay9le1j4y+GZnF5GqSYpfk83td3+xAxYTe43EmA/+8OSbhpmHUALu9UZZSVliQhDYWiXbClSDv83WGbPY+200UIiiUGXIazvtrsWAE1sJuteWJaNmBzGnsU+Od5H9WsSAHJ0KrEEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lTmUJF4f; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711064745; x=1742600745;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jW38JzanhRNpu03oZcnIFmEukYYO360wk+qtFn4vZEQ=;
+  b=lTmUJF4fk3NOhGc8DCMDgh9GEwsSZEWLgqODS85iiS4pWITFrxdiwoaU
+   WM/pJBjyiE7uPNrkq29IA9Bfb7LITOMryBbOXXOmkY+9rF31HzKhE8AMD
+   HvwfeRx4xLh+S28zBll4u8IwKUUkuccjLZKaN5Y2/kb8AE9asT6iNgLJ+
+   8F9SY3kzL7BhyIfWwaAkSDTzmcIF6Q19/75rPcRKAP6oSXSJnafD7l8/1
+   OX8CPq8k5nJ5l+aJ3gWO9r8K4cVywb0B+VKfUCMWAojz8OsTFTN2Q1/nX
+   2PthVxZ7fVkzfO1/fNCwx0/q0Vw9gsG7gYvrTgvmZX3qt15e++5LC8DFS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="17246015"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="17246015"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:45:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="15106951"
+Received: from dongshen-mobl1.amr.corp.intel.com (HELO [10.212.116.150]) ([10.212.116.150])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:45:44 -0700
+Message-ID: <dfce9f2e-2253-43b8-b94a-82585879f59d@intel.com>
+Date: Thu, 21 Mar 2024 16:45:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220920-resend-hwtimestamp-v9-3-55a89f46f6be@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 17/29] KVM: selftests: TDX: Add TDX MMIO reads test
+To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
+ Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
+ Erdem Aktas <erdemaktas@google.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
+ Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-18-sagis@google.com>
+Content-Language: en-US
+From: "Zhang, Dongsheng X" <dongsheng.x.zhang@intel.com>
+In-Reply-To: <20231212204647.2170650-18-sagis@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Ricardo,
 
-Thank you for the patch.
 
-On Wed, Mar 15, 2023 at 02:30:14PM +0100, Ricardo Ribalda wrote:
-> Logitech C922 internal SOF does not increases at a stable rate of 1kHz.
-
-The next thing you know they will redefine to value of pi to be 3.
-
-> This causes that the device_sof and the host_sof run at different rates,
-> breaking the clock domain conversion algorithm. Eg:
+On 12/12/2023 12:46 PM, Sagi Shahar wrote:
+> The test verifies MMIO reads of various sizes from the host to the guest.
 > 
-> 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-> 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-> 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-> 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-> * 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-> * 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-> 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-> ...
-> 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-> 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-> 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-> * 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-> * 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-> 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-> 
-> Instead of disabling completely the hardware timestamping for such
-> hardware we take the assumption that the packet handling jitter is
-> under 2ms and use the host_sof as dev_sof.
-> 
-> We can think of the UVC hardware clock as a system with a coarse clock
-> (the SOF) and a fine clock (the PTS). The coarse clock can be replaced
-> with a clock on the same frequency, if the jitter of such clock is
-> smaller than its sampling rate. That way we can save some of the
-> precision of the fine clock.
-> 
-> To probe this point we have run three experiments on the Logitech C922.
-> On that experiment we run the camera at 33fps and we analyse the
-> difference in msec between a frame and its predecessor. If we display
-> the histogram of that value, a thinner histogram will mean a better
-> meassurement. The results for:
-> - original hw timestamp: https://ibb.co/D1HJJ4x
-> - pure software timestamp: https://ibb.co/QC9MgVK
-> - modified hw timestamp: https://ibb.co/8s9dBdk
-> 
-> This bug in the camera firmware has been confirmed by the vendor.
-> 
-> lsusb -v
-> 
-> Bus 001 Device 044: ID 046d:085c Logitech, Inc. C922 Pro Stream Webcam
-> Device Descriptor:
->   bLength                18
->   bDescriptorType         1
->   bcdUSB               2.00
->   bDeviceClass          239 Miscellaneous Device
->   bDeviceSubClass         2
->   bDeviceProtocol         1 Interface Association
->   bMaxPacketSize0        64
->   idVendor           0x046d Logitech, Inc.
->   idProduct          0x085c C922 Pro Stream Webcam
->   bcdDevice            0.16
->   iManufacturer           0
->   iProduct                2 C922 Pro Stream Webcam
->   iSerial                 1 80B912DF
->   bNumConfigurations      1
-> 
-> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Sagi Shahar <sagis@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ryan Afranji <afranji@google.com>
 > ---
->  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
->  drivers/media/usb/uvc/uvc_video.c  | 8 ++++++++
->  drivers/media/usb/uvc/uvcvideo.h   | 1 +
->  3 files changed, 18 insertions(+)
+>  .../selftests/kvm/include/x86_64/tdx/tdcall.h |  2 +
+>  .../selftests/kvm/include/x86_64/tdx/tdx.h    |  3 +
+>  .../kvm/include/x86_64/tdx/test_util.h        | 23 +++++
+>  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 19 ++++
+>  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 87 +++++++++++++++++++
+>  5 files changed, 134 insertions(+)
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 7aefa76a42b3..678a5736c9df 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2549,6 +2549,15 @@ static const struct usb_device_id uvc_ids[] = {
->  	  .bInterfaceSubClass	= 1,
->  	  .bInterfaceProtocol	= 0,
->  	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> +	/* Logitech HD Pro Webcam C922 */
-> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-> +				| USB_DEVICE_ID_MATCH_INT_INFO,
-> +	  .idVendor		= 0x046d,
-> +	  .idProduct		= 0x085c,
-> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
-> +	  .bInterfaceSubClass	= 1,
-> +	  .bInterfaceProtocol	= 0,
-> +	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
->  	/* Chicony CNF7129 (Asus EEE 100HE) */
->  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
->  				| USB_DEVICE_ID_MATCH_INT_INFO,
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index 1f416c494acc..4d566edb73e7 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -547,6 +547,14 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
->  	stream->clock.last_sof = dev_sof;
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+> index b5e94b7c48fa..95fcdbd8404e 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+> @@ -9,6 +9,8 @@
 >  
->  	host_sof = usb_get_current_frame_number(stream->dev->udev);
+>  #define TDG_VP_VMCALL_INSTRUCTION_IO_READ 0
+>  #define TDG_VP_VMCALL_INSTRUCTION_IO_WRITE 1
+> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO_READ 0
+> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE 1
+>  
+>  #define TDG_VP_VMCALL_SUCCESS 0x0000000000000000
+>  #define TDG_VP_VMCALL_INVALID_OPERAND 0x8000000000000000
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> index b18e39d20498..13ce60df5684 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> @@ -12,6 +12,7 @@
+>  #define TDG_VP_VMCALL_INSTRUCTION_IO 30
+>  #define TDG_VP_VMCALL_INSTRUCTION_RDMSR 31
+>  #define TDG_VP_VMCALL_INSTRUCTION_WRMSR 32
+> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO 48
+>  
+>  void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu);
+>  uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
+> @@ -22,5 +23,7 @@ uint64_t tdg_vp_vmcall_get_td_vmcall_info(uint64_t *r11, uint64_t *r12,
+>  uint64_t tdg_vp_vmcall_instruction_rdmsr(uint64_t index, uint64_t *ret_value);
+>  uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value);
+>  uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag);
+> +uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
+> +					uint64_t *data_out);
+>  
+>  #endif // SELFTEST_TDX_TDX_H
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+> index 8a9b6a1bec3e..af412b764604 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+> @@ -35,6 +35,29 @@
+>  			(VCPU)->run->io.direction);			\
+>  	} while (0)
+>  
 > +
-> +	/*
-> +	 * On some devices, like the Logitech C922, the device SOF does not run
-> +	 * at a stable rate of 1kHz. For those devices use the host SOF instead.
-
-I'm still not very convinced, as without a formal proof I think there's
-some luck involved, and it may break later. This being said, given that
-this is gated by a quirk, it won't impact other devices, and we can deal
-with regressions when they happen. Could we record it here:
-
-	 * On some devices, like the Logitech C922, the device SOF does not run
-	 * at a stable rate of 1kHz. For those devices use the host SOF instead.
-	 * This improves the timestamp precision in the tests performed so far,
-	 * even if the exact reason hasn't been fully determined.
-
-or something along those lines ?
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +	 */
-> +	if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> +		dev_sof = host_sof;
+> +/**
+> + * Assert that some MMIO operation involving TDG.VP.VMCALL <#VERequestMMIO> was
+> + * called in the guest.
+> + */
+> +#define TDX_TEST_ASSERT_MMIO(VCPU, ADDR, SIZE, DIR)			\
+> +	do {								\
+> +		TEST_ASSERT((VCPU)->run->exit_reason == KVM_EXIT_MMIO,	\
+> +			"Got exit_reason other than KVM_EXIT_MMIO: %u (%s)\n", \
+> +			(VCPU)->run->exit_reason,			\
+> +			exit_reason_str((VCPU)->run->exit_reason));	\
+> +									\
+> +		TEST_ASSERT(((VCPU)->run->exit_reason == KVM_EXIT_MMIO) && \
+> +			((VCPU)->run->mmio.phys_addr == (ADDR)) &&	\
+> +			((VCPU)->run->mmio.len == (SIZE)) &&		\
+> +			((VCPU)->run->mmio.is_write == (DIR)),		\
+> +			"Got an unexpected MMIO exit values: %u (%s) %llu %d %d\n", \
+> +			(VCPU)->run->exit_reason,			\
+> +			exit_reason_str((VCPU)->run->exit_reason),	\
+> +			(VCPU)->run->mmio.phys_addr, (VCPU)->run->mmio.len, \
+> +			(VCPU)->run->mmio.is_write);			\
+> +	} while (0)
 > +
->  	time = uvc_video_get_time();
+>  /**
+>   * Check and report if there was some failure in the guest, either an exception
+>   * like a triple fault, or if a tdx_test_fatal() was hit.
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> index 9485bafedc38..b19f07ebc0e7 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> @@ -124,3 +124,22 @@ uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag)
 >  
->  	/*
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 9a596c8d894a..07b2fdb80adf 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -73,6 +73,7 @@
->  #define UVC_QUIRK_FORCE_Y8		0x00000800
->  #define UVC_QUIRK_FORCE_BPP		0x00001000
->  #define UVC_QUIRK_WAKE_AUTOSUSPEND	0x00002000
-> +#define UVC_QUIRK_INVALID_DEVICE_SOF	0x00004000
+>  	return __tdx_hypercall(&args, 0);
+>  }
+> +
+> +uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
+> +					uint64_t *data_out)
+> +{
+> +	uint64_t ret;
+> +	struct tdx_hypercall_args args = {
+> +		.r11 = TDG_VP_VMCALL_VE_REQUEST_MMIO,
+> +		.r12 = size,
+> +		.r13 = TDG_VP_VMCALL_VE_REQUEST_MMIO_READ,
+> +		.r14 = address,
+> +	};
+> +
+> +	ret = __tdx_hypercall(&args, TDX_HCALL_HAS_OUTPUT);
+> +
+> +	if (data_out)
+> +		*data_out = args.r11;
+> +
+> +	return ret;
+> +}
+> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> index 5fae4c6e5f95..48902b69d13e 100644
+> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> @@ -799,6 +799,92 @@ void verify_guest_hlt(void)
+>  	_verify_guest_hlt(0);
+>  }
 >  
->  /* Format flags */
->  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-> 
+> +/* Pick any address that was not mapped into the guest to test MMIO */
+> +#define TDX_MMIO_TEST_ADDR 0x200000000
+> +
+> +void guest_mmio_reads(void)
+> +{
+> +	uint64_t data;
+> +	uint64_t ret;
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 1, &data);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +	if (data != 0x12)
+> +		tdx_test_fatal(1);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 2, &data);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +	if (data != 0x1234)
+> +		tdx_test_fatal(2);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 4, &data);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +	if (data != 0x12345678)
+> +		tdx_test_fatal(4);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 8, &data);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +	if (data != 0x1234567890ABCDEF)
+> +		tdx_test_fatal(8);
+> +
+> +	// Read an invalid number of bytes.
+> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 10, &data);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	tdx_test_success();
+> +}
+> +
+> +/*
+> + * Varifies guest MMIO reads.
 
--- 
-Regards,
+Nit: typo?  Varifies ==> Verifies
 
-Laurent Pinchart
+> + */
+> +void verify_mmio_reads(void)
+> +{
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	vm = td_create();
+> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
+> +	vcpu = td_vcpu_add(vm, 0, guest_mmio_reads);
+> +	td_finalize(vm);
+> +
+> +	printf("Verifying TD MMIO reads:\n");
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 1, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
+> +	*(uint8_t *)vcpu->run->mmio.data = 0x12;
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 2, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
+> +	*(uint16_t *)vcpu->run->mmio.data = 0x1234;
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 4, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
+> +	*(uint32_t *)vcpu->run->mmio.data = 0x12345678;
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 8, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
+> +	*(uint64_t *)vcpu->run->mmio.data = 0x1234567890ABCDEF;
+> +
+> +	td_vcpu_run(vcpu);
+> +	TEST_ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
+> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[1], TDG_VP_VMCALL_INVALID_OPERAND);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
+> +
+> +	kvm_vm_free(vm);
+> +	printf("\t ... PASSED\n");
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	setbuf(stdout, NULL);
+> @@ -818,6 +904,7 @@ int main(int argc, char **argv)
+>  	run_in_new_process(&verify_guest_msr_writes);
+>  	run_in_new_process(&verify_guest_msr_reads);
+>  	run_in_new_process(&verify_guest_hlt);
+> +	run_in_new_process(&verify_mmio_reads);
+>  
+>  	return 0;
+>  }
 
