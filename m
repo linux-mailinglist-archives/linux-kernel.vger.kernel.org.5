@@ -1,134 +1,155 @@
-Return-Path: <linux-kernel+bounces-110806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70710886428
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:56:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D873886429
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:58:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BD5C284510
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:56:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB52A2842E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15715288AE;
-	Thu, 21 Mar 2024 23:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F167C288AE;
+	Thu, 21 Mar 2024 23:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jSiEApUe"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E/AIWHy2"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B175429A9
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797DD3232
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711065406; cv=none; b=DB6sZhJjbGOSw4K2yCZUn2TDJyi3wyyTBZGd4x4NhNltOHwh8nRD8qfo6YVModlEGkoWtaKx5/tIut1/SAGKjcm6wA2nipe6qjbgyyJRv8aVqz/W10P03UeJnfqRqabKC3NDxoASa+lIc4PnK8bznC6z7GOn8IvSVtnu9LHoOG4=
+	t=1711065487; cv=none; b=ddrJhs36rrTmLeEShBIZydTbNhqFIj2OK3EfeK8r8/Pw5Dr0V1OnmybRgsvJQrUD0sq9olSAUCRfc8RUXjFkU1EtoU0zsIQ2OV/RZdEKnmMEBAEE4jBsgAarEHLbxyRNOrpXrcbm87ehM3sQb9PL9GLmFDFfUoIJipNAetgo/ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711065406; c=relaxed/simple;
-	bh=7bIfYiaYkeJwspESoCS4UBIhEkQ37NoZG52mzXvOdQo=;
+	s=arc-20240116; t=1711065487; c=relaxed/simple;
+	bh=D3spBzrZCMW5GEaWKfvQ7BuGSOqDGgSKDmzylSP5FUc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o0Zpcelr0m4RevKWwXqhB5htmTTpb2/mpmgL87oHO16yA9Jc4IcgeFc1LmngmvO8F5nATEG46ri9+DvXHWvRh3KEIEB2/rjU5AJhgQEj6OycZkL9mSC7potMuou08ytsHsaSORsIMWNrLHC2CmPkk6iS1nNlMKMl9VXryJeQMAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jSiEApUe; arc=none smtp.client-ip=209.85.167.42
+	 To:Cc:Content-Type; b=bzVIeLI5zJgRswevPLlyZBlx5qhgmJthffHTzXZ+jcMW7O7nxxYxxRTywt+Kr9BBwXgnbXHp5u3i1SgCbP5TEZUeH1cu27Dn1dtA/GYIRlKT0CKzwISX8d6rpU1ftH3XHIAye+3m2HwPGj9naj0aOe1jwUX3/oVx8r+pSaJBxtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E/AIWHy2; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512f54fc2dbso1576523e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:56:44 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46cc947929so220711766b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711065403; x=1711670203; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711065484; x=1711670284; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q7hLBXZVRvGfE/2Hpd2oBop/g59lqRf4KQplnrPKrJs=;
-        b=jSiEApUefNvwvKJwV6EfVniTOsOPTup055VGS/MW9ceKdGhitkG7mymFpztRVN7/wq
-         E2zxlZQgz9IQutyF82c6FBwR24JAnrcVnZzosuVpdIDUTAUErfe6fVVbLBLuqaVtf1E7
-         p7gAJVwzApeAH1KxI9VsMtK5caZS/OBE1YVp6rAC4y3DMhOHgMmA5Z8Xd5s1FFZKhQz3
-         kN5bVVBbc4l2zUJ8TYUUiuoiiPStBDBELaZa8nShUhOb2uhiKH7IeqtGYYCLwD26mD0Z
-         /80D/fwoBaAu/ccryNyDDiWxNjcKVFMSVHBw3BdAxL3K1eTROYHV7Ft7Ao8lvD3fJurG
-         nnXA==
+        bh=ul906RHRjtTt9ICgM5G5gAfi1fYFVLGfZkDm8s9ACk0=;
+        b=E/AIWHy2kUhdi3ylQFwNaEfElX3VmpAR4a9kUwzaxVNiuluLP3TrySnZXHQRISIEkK
+         PlrG13hwwupceFSkA1X6DYNxR5Zo648FEXaah+Ogo7MlPyVMsot0bmpv1nBEMxP02tIb
+         zsR1P+oCeRQj3ZrxFb4N5FY+c+uTeC1Ogi0mr0BCrYsc0PBGg0tN7oEX6eENMnnZXY3w
+         jUV8FQ119UNddvbH8rgla9iUkgZtooxVR1MK9QJMkt1334GQSgR+gyxPfxBlhmEPsjJk
+         g7ZODYY7W3OJOG4agd13whrEmq0z4St5mn1E6bQ3xSqjXf9dpGpUxbDcxApwuvhJt8UJ
+         SnMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711065403; x=1711670203;
+        d=1e100.net; s=20230601; t=1711065484; x=1711670284;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q7hLBXZVRvGfE/2Hpd2oBop/g59lqRf4KQplnrPKrJs=;
-        b=F4zv7BonMDHnhsY2ZDTJGOff9ZM09i+TGlmHI4Hh1UN8v1QH1cLUmHrQqgJAsli7Jx
-         sXmVSq2ob4FbJPB+Ei+mnP9acwX2+lI23Cy4o2m5vU3W+0GFV4kLHuNTQqqmm2GmiRpm
-         dowDYfxOIqBoVqusruPGmJQ5BAxBqIlXuCdniDlMDZbDr586c2gUyQahk7ZPmORuY20S
-         7N6VNAUqdIL6qFRotJ1PXQNaAca0NiLg04yX03HugmXtIojvTKQxBgE/ktHezhZfvi3j
-         r5xmyD0uD4mebruiSRh3vLJ3dbpdTa4bS3sMfPeo2hOujTZPZz8DLywHzD+YoKY4+yTF
-         FSEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWk75boEIuRMVYYCFfDmujDkHHu3wbrq0TACSKQaCDwdqT3VTpmN/Ezq0yHGw5fdzIzFqjhWaYNJKMsr0sOaOocNv035KMRbUsFKSrU
-X-Gm-Message-State: AOJu0Yyc/hJPEq6pcvRerWoA5PcvJFK2+NSFRF8sdoG4RTiHTI+QiS/U
-	MDqomR9Iw42bBdpZgN4e1ReYKBaq/YWY7jfsJXFL4qMggEdO9yIurt1pGouFs3slDHSkBUcAsQm
-	RFk9DUY7aiqvFDfb9bI51aYm6zGLWqWvwdThHvFIyKjUJqpg30w==
-X-Google-Smtp-Source: AGHT+IEBnyEucTPs+PzbUoRwIWW8ICXSNiNdqnOVM+OXaugIGXlD0uviQekxj8YFoz7OGp2LjhUyW0jv+uHGl/MM6KY=
-X-Received: by 2002:a05:6512:2ea:b0:513:46b4:4eb4 with SMTP id
- m10-20020a05651202ea00b0051346b44eb4mr526727lfq.3.1711065402566; Thu, 21 Mar
- 2024 16:56:42 -0700 (PDT)
+        bh=ul906RHRjtTt9ICgM5G5gAfi1fYFVLGfZkDm8s9ACk0=;
+        b=c0/+UJmL7MJws2JmlXzfCJcHAy5yOTIiwZ8PnmTCdulm+z5z6eFE+J8QQQ2LV4nJyf
+         PAVqTFiLpoEgwyKoIfs43W8R7IFNpp8zxT46YjA5UVuOucgOknxE2tRH1bA+aZKIJkxM
+         Uf4H/v4bDGMBLU/QENfxoUmFH3QeYUoXQghncbhhpfp/w2fg0fQs9uPBm6kAOGveEXRz
+         SIoGh1uxpPNBRKO0r/WF8XBPYCIgezFDtSH7AnidCJRv6ncxiDVBjtmipRSAWG1LJC81
+         2cFZD2Syvj6F6aUP2h+a7qjzrmcr0hy6laJN+/Ig7pSJvWKKa3q1BthHJYT1Nux648Bx
+         v0Fg==
+X-Forwarded-Encrypted: i=1; AJvYcCWh/MUAtWlwWXMWPwtTRSBrARD2KzT42HFbVnhunLiRBnTQjsdGSUWpjRn5imZXzgm+bN/BtfLyDaF9aja5aLr0i2u1VnIHFy/fu1LN
+X-Gm-Message-State: AOJu0YwNd8yfH0F8tCKoh5VROSpAGjI3c4C53y+lyxy8pDI6Emf67bCv
+	6UpVkHtbYCj4Mc1UnlgjjlZA0c4kxaNk9NrB/zOqxeBUPSPZxgrwiT5+zBVkS5Zlh90tcdb98xT
+	tQuiq912Br2EW4DZiiuMm69z4F3eSKVKFzLKjmoLtHESu+cj2IA==
+X-Google-Smtp-Source: AGHT+IF5f1CTZlnm2Xl7nXWvcQsW6QwnCYmk7+9IjBQsblTlSyNewbp8mF70Rfoe45h0EzCiIdM8zWpvtSCe0UPev0k=
+X-Received: by 2002:a17:906:c349:b0:a47:876:28b9 with SMTP id
+ ci9-20020a170906c34900b00a47087628b9mr532234ejb.42.1711065483601; Thu, 21 Mar
+ 2024 16:58:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
-In-Reply-To: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
+References: <20240320020823.337644-1-yosryahmed@google.com>
+ <20240320020823.337644-2-yosryahmed@google.com> <CAJD7tkYb-=Ho85e2AJbkfe-FmT6KXpJpUgPRaXQb5-+sY5j4Hg@mail.gmail.com>
+ <CAKEwX=PjpJCewYEMp+=g+92=R-Wr2y+7pwJ81xb9-pogohFC4w@mail.gmail.com>
+In-Reply-To: <CAKEwX=PjpJCewYEMp+=g+92=R-Wr2y+7pwJ81xb9-pogohFC4w@mail.gmail.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 21 Mar 2024 16:56:05 -0700
-Message-ID: <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com>
-Subject: Re: [PATCH] zswap: initialize entry->pool on same filled entry
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Chengming Zhou <zhouchengming@bytedance.com>
+Date: Thu, 21 Mar 2024 16:57:27 -0700
+Message-ID: <CAJD7tkaC5eTe8Os6f0VsGx9o06YE8zX1r0R0PPMvExRfcGhPgg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap: remove nr_zswap_stored atomic
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 4:53=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
+On Thu, Mar 21, 2024 at 4:50=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
+:
 >
-> Current zswap will leave the entry->pool uninitialized if
-> the page is same  filled. The entry->pool pointer can
-> contain data written by previous usage.
+> On Thu, Mar 21, 2024 at 2:09=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > On Tue, Mar 19, 2024 at 7:08=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > >
+> > > zswap_nr_stored is used to maintain the number of stored pages in zsw=
+ap
+> > > that are not same-filled pages. It is used in zswap_shrinker_count() =
+to
+> > > scale the number of freeable compressed pages by the compression rati=
+o.
+> > > That is, to reduce the amount of writeback from zswap with higher
+> > > compression ratios as the ROI from IO diminishes.
+> > >
+> > > However, the need for this counter is questionable due to two reasons=
+:
+> > > - It is redundant. The value can be inferred from (zswap_stored_pages=
+ -
+> > >   zswap_same_filled_pages).
 >
-> Initialize entry->pool to zero for the same filled zswap entry.
->
-> Signed-off-by: Chris Li <chrisl@kernel.org>
-> ---
-> Per Yosry's suggestion to split out this clean up
-> from the zxwap rb tree to xarray patch.
->
-> https://lore.kernel.org/all/ZemDuW25YxjqAjm-@google.com/
-> ---
->  mm/zswap.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index b31c977f53e9..f04a75a36236 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1527,6 +1527,7 @@ bool zswap_store(struct folio *folio)
->                         kunmap_local(src);
->                         entry->length =3D 0;
->                         entry->value =3D value;
-> +                       entry->pool =3D 0;
+> Ah, I forgot about this. For context, nr_stored was originally a
+> zswap_pool-specific stat, but I think Chengming has pulled it out and
+> converted it into a global pool stat in an earlier patch - yet,
+> globally, we already have zswap_stored_pages that is (mostly) the same
+> counter.
 
-This should be NULL.
+Thanks for the context.
 
-That being said, I am working on a series that should make non-filled
-entries not use a zswap_entry at all. So I think this cleanup is
-unnecessary, especially that it is documented in the definition of
-struct zswap_entry that entry->pool is invalid for same-filled
-entries.
+>
+> Might as well use existing counters (zswap_stored_pages) then, rather
+> than a newly introduced counter. Probably will shave off a couple
+> cycles here and there for the atomic increment/decrement :)
+>
+> > > - When memcgs are enabled, we use memcg_page_state(memcg,
+> > >   MEMCG_ZSWAPPED), which includes same-filled pages anyway (i.e.
+> > >   equivalent to zswap_stored_pages).
+>
+> This is fine I suppose. I was aware of this weird inaccuracy. However,
+> for the CONFIG_MEMCG case, it was kinda silly to introduce the counter
+> for per-cgroup same filled zswap pages, just for this one purpose, so
+> I decided to accept the inaccuracy.
+>
+> > >
+> > > Use zswap_stored_pages instead in zswap_shrinker_count() to keep thin=
+gs
+> > > consistent whether memcgs are enabled or not, and add a comment about
+> > > the number of freeable pages possibly being scaled down more than it
+> > > should if we have lots of same-filled pages (i.e. inflated compressio=
+n
+> > > ratio).
+> > >
+> > > Remove nr_zswap_stored and one atomic operation in the store and free
+> > > paths.
+> > >
+> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> >
+> > Any thoughts on this patch? Should I resend it separately?
+>
+> Might be worth resending it separately, but up to you and Andrew!
 
->                         atomic_inc(&zswap_same_filled_pages);
->                         goto insert_entry;
->                 }
+I will resend to add some context and include your R-b, thanks.
+
 >
-> ---
-> base-commit: a824831a082f1d8f9b51a4c0598e633d38555fcf
-> change-id: 20240315-zswap-fill-f65f44574760
->
-> Best regards,
-> --
-> Chris Li <chrisl@kernel.org>
->
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
