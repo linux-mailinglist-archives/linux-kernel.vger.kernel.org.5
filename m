@@ -1,216 +1,416 @@
-Return-Path: <linux-kernel+bounces-109747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515E888552F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C2C4885531
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:52:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D1E2821D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:52:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 450B2282A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C2958212;
-	Thu, 21 Mar 2024 07:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D3058AD6;
+	Thu, 21 Mar 2024 07:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g/DhxQGo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jtK8LtCx"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447C853819;
-	Thu, 21 Mar 2024 07:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711007527; cv=fail; b=ovYTszqc+Sjhd67ykZH8VO+71HMyFXBWE2PRoUwp16RJ+CHP+XeEQcg5Ec1bYaq5slVeiJybpbhAF/4iL7Pi/FnYnBuwGXxnnFu1CjYgYD64Hf6Qgitn49+9k6tyOmdZ3bg0N2iPjU13iIZPZRoLMo0IVBGRdGYp+tEFUaZTjk0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711007527; c=relaxed/simple;
-	bh=SezpptO0C+Q+YMIAevtipE4pVe8NzIZDHtsQ4RYboMI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YDqztAY8ALUqBUU/ImP8xg/yKI4gVW0QisjEmrHSmfkbjzADI4sddMxv/42E/8d7GRxhbE+/toe1QWAdH3Q3Ie/fHFRjDs5ZIAdWJHVQlKKidcVfplckwdT8Uhx4uSCKHB5ujDRmnrwDEt8ahcHmwPk6hrMaF0oRP7oFEEGU0QU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g/DhxQGo; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711007524; x=1742543524;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=SezpptO0C+Q+YMIAevtipE4pVe8NzIZDHtsQ4RYboMI=;
-  b=g/DhxQGo9bvMTzRZgAU1qmb2dKp+KGZHkaHRn4EghrNgAELjpuNUWyfq
-   zDESsrhwPbREwO0jjgExQRESRQDu+TzKsixxYwmMNI1aBTOG8h8avnnTv
-   vRDap/Qf2O5zRwEvylesGjPTCYkCSA3y+LoPML089kxb5Kc16kLHbbtDB
-   t/YFmpa1JUEIlSpa+BqV+STJDb2sAq92DHQqGYrsRepk4FYOsPp22f1bS
-   PN5lYELLexD7fDl5rPyaf4BQeGLt5GgQVekXi58jzT9WMyiXsaS7WPeD8
-   Wc9s/NoTf62fPgHz/gjAK8SxMbXLooM6WyHt9y1DZJOuOf9H6mAvGLVsE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="17375505"
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="17375505"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 00:52:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="14487841"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 00:52:02 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 21 Mar 2024 00:52:02 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 00:52:02 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 21 Mar 2024 00:52:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q9fSJgN17CU7aN2dHETfM+jO4WtZ3VCExzVeh5M0NdGUDYkQ0+zZieErhZ9+KLBVWz9/gJqLyWdQjfp1AzGBUygmxlYqFsfC4sdUF7DJ022cuGkw/pRG6G4c6NDlr0m/U4DkhwDVU12hi6JZLj5AMbEHQCiue2BUbesm4zqWN3g7xVi16MHEN0QplO878XRw47LYzQGq7dLfoLsxRf/4I2PvQsmxLPqnn+HJxnRwOJaUXSkHOJ32hrx3ujjXcWQrzw550dYqfX9o5ZNKmvQL4vKXTT0gBSyEi3jKE3U8RIkD2udx3c23S+/L+MWJiowcZGet9a3gT0v7hD1wpbHiqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gMjLdi+mXu4jKey3U2Q6jFdOcwBLqBmQ3ABDDMyXCow=;
- b=DbSq+z48AVDou19ZxhRxTlcH6Tyd6vQ5DcQ5oRXilYKLvx7S1p68Ft3ZNmd87+7ECNJZsu//BXOvFXlTkY4aSacc4vii8JRQHtBc/QokXNt8DpVWPiInxvXlXD8xcQl11wzmNFq+SboA5N9gf5mV2prk/s2p7aHYlmmgvcsqOC0AKHZb1PC3wiZv4UQ/Ca6ab4TxD9VHk47ExIEsFZw9BeyC3ZTZsQlNM8XA2KqD5lCA4SVlMPETqBLFrHIfTCDBKz1uQR0CcLr4HXPCgNz2VPxER1IYwUhZcEwWR+B9k442eTKrTBwnwKvKT7TiGw9HkvJK01VVUJWOJ2+x/HomCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by MW4PR11MB5823.namprd11.prod.outlook.com (2603:10b6:303:186::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Thu, 21 Mar
- 2024 07:52:00 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::6440:4b82:c32c:9eb7]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::6440:4b82:c32c:9eb7%5]) with mapi id 15.20.7409.023; Thu, 21 Mar 2024
- 07:51:59 +0000
-Date: Thu, 21 Mar 2024 08:51:40 +0100
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: Tony Luck <tony.luck@intel.com>
-CC: Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre
-	<reinette.chatre@intel.com>, Peter Newman <peternewman@google.com>, "Jonathan
- Corbet" <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
-	<x86@kernel.org>, Shaopeng Tan <tan.shaopeng@fujitsu.com>, James Morse
-	<james.morse@arm.com>, Jamie Iles <quic_jiles@quicinc.com>, Babu Moger
-	<babu.moger@amd.com>, Randy Dunlap <rdunlap@infradead.org>, Drew Fustini
-	<dfustini@baylibre.com>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <patches@lists.linux.dev>
-Subject: Re: [PATCH v16 0/9] Add support for Sub-NUMA cluster (SNC) systems
-Message-ID: <bn4wtfyec4mfoztcr35rctgcbibypjh5gmxdr3fro72glh2y3n@vmqsuxgjlonw>
-References: <20240312214247.91772-1-tony.luck@intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240312214247.91772-1-tony.luck@intel.com>
-X-ClientProxiedBy: WA2P291CA0027.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1f::18) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B9156B8B;
+	Thu, 21 Mar 2024 07:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711007561; cv=none; b=ghMDWv0JmU7FIj0ibxvo5TBm3qDIMbsXU+kmrVselAH/cJGI4pEJdk3ntPANZ5ffb/KgAiMcTMlB07PKOQFrguYyvBFP7SUqv89yU3mfXoD4d9+UAHukjn7BkR0UEXNkpXlrOOC+9FvRZbCAWgAHkFJ6fNR1RGDsdxavGWuAP98=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711007561; c=relaxed/simple;
+	bh=ikyLJhFNSfpTPQwmoghzzzs78xD98IsmzrkOBMplNss=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=QRxtAYJzfqHskZKI+IJHVPKQHMb5ApoPL4pEEafUEwVyDGNecv/aPF8qR2muQDvlZ6xbvGOzyn/lZFBsaAbwLOhHRo/MR8fM4xPHLKHiwqWOlCK/L5nhXjct6hV2Pw11ubzLK+VlhZrMuatyzyVl4s+map0Amf7NYJ336VR7hpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jtK8LtCx; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e704078860so575806b3a.0;
+        Thu, 21 Mar 2024 00:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711007559; x=1711612359; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rgEl/WsFIni8VjXWeady1tpoD9wZSmpZIdYRdj57m+E=;
+        b=jtK8LtCxqm8HJRBMVYBmahobM3cl0Ze4alHokCepEsJRwFWWZsAjJ9Iuy4Vo1+07Qx
+         jgnAgmLFcFhMYF1vbHJ+M8XjwKoMPVP1baBIQgMgc8CTIqxlNwr5N5CXbhptc3ds0vs0
+         tsZ7M+mdThUQBM41nNRxL4tkpe9rWHomhyPZGj9Lc/GIm7bmFQY0XoV7jguicBa0rsxg
+         dIVZ18ijUYd3obdcVgrsBeiw0BxzT/v4JqwovDOolg2/pd4/Yx68NraA/CrkG2dtwnWH
+         WXms1SJ8+FCXn9duDhJZG2Csxqsw0MUP9LhhoFk+vVZ8uoiW8DHe9Fu6QEXbXpeSulYZ
+         LYBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711007559; x=1711612359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rgEl/WsFIni8VjXWeady1tpoD9wZSmpZIdYRdj57m+E=;
+        b=YduxjagYAa3hFiFmzz6moWv5WeVYOI5ZOTMRp2uoaegonrwB+3ZNIwJPRu24eLSRgB
+         TO26s8E2gLKVdPpzIAzR2LA941KeJW1QGiki2O5DurzLgE+Hs7JdaLNN0rofsGvSSgAh
+         TD6E2IqIferTmlKvoxUxsLY8anjCG6kK3L1WdHK0eBub6Rz5GC3oV8kfZr70iNAisdHP
+         kCkD8PC47Q1DD/3t39kGrQNP29zqp7G4BXRadmZLL453QY/eYNvS1k1DJ6YRylfu1MfI
+         Vm/wi1lvFoAEiNW5JxgfoDFhMfHEx3f3GdhT5ZKhtBQqW/UdrE4hj5229HfcgPLyKZQW
+         VV2Q==
+X-Gm-Message-State: AOJu0YwJ8hISN5VYOPhVk2m0hhpU3Gce0kM/KNZSTHqZpbnJUP8pi/6s
+	8UI3STJkWwHxEUCRul9pa7mD/NtfyqJi+gS2QkOFZrzSp1UOdfRoAueuoWkLaYNMFZ8gYbkjBMH
+	aAO0s7Nktbc0kfnv+lJOdz233tpx6vXRFS88qlw==
+X-Google-Smtp-Source: AGHT+IF/e5/abMI/HQIGf4yjarIFARE1eh8E6vikXCABiZ3vlA0RFcc6/93a68CZXfefysRSzffMskQLW5HRTMbABiU=
+X-Received: by 2002:a17:90a:f697:b0:29c:75c6:450c with SMTP id
+ cl23-20020a17090af69700b0029c75c6450cmr16386925pjb.49.1711007558563; Thu, 21
+ Mar 2024 00:52:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|MW4PR11MB5823:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb2d2f13-92ec-4e9d-ca27-08dc497bc9a5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bHLHrU1mU4Obn+K5I7WRu1eBYpwHuJatWAFrUoY2Sgs2Fnh3YDpAijhGAygmfMfZbp5NtxM/pa3aW6maBTfO8d4lvavcuZdAXmnWacVsT7kDO8XYA67mJRIshlN8wSgb5Yn6FMcEX0dcKxdLRQBc/WZ4S6q4SHV777lTzNLmvYIeKCBwMhXdq12BkApteYiOVcxTLXRJpydZK6aaAbQpGgeUcEviV/3VQYHQtnEY2qeS/8vOwlMl9sBGTeJTsTTPyrnhDqWUMNh+rrS2w8iwFywXn8DqNz3qGCUQf6LHgq2VrvY11l7wEWAfO/d23J3YTG1xdHneddEmfMLYVjHXLBYaGxumv2kr60CyX9HrgVKPhEMtWWYJuNeAkCiaOHt3vqI8jRonaJGgg5//KFhHbYhJSH0mm9Nr9KNgmkUZLGX41MixqLyG3wynwWwhhF1ClDOLI1l3Ml4/L4HGHwhry6raPlIqtCaMceVE4yOUIpKvOrhWcZoAD2Cn2cP//uX2fjMN4Xp2MhkjFxSSDUzKdZxbgJn4yE5o0unWlhSpz+ZdaSq7vTnE/t+t4XeIgralwZd5lvdt56/YvU3l9kHnk/ou3qSduADoP9Cpb9dMcmeIOoBf9ZFcEMhgzaBMHu9yH0hKMYQ26WCMjFqjZ5NgqEbyTZKbXivsqwqBSt8CGEs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007)(27256008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?mAjrY95KCDOyVKT3BrfFN/L3F+7QLuw+IWSgbCMtLK3/xpEVuSq220fBTo?=
- =?iso-8859-1?Q?yUAfgWzBpQONTQ/yPEw5VctEtdf29Hak5wh4GMN7BV/kk0iIrGqoMKlJxG?=
- =?iso-8859-1?Q?4Hs5nRxsYc9LpGrLMDuR9mGdCaJAM4IAe8R7JmgU+gu8S92jAewGbzSHpV?=
- =?iso-8859-1?Q?yNgQ+/jCjy9fZQlzm+EOy5ZmO0h/+H2kthPpzK9UCek00P1pHzrrliRwH0?=
- =?iso-8859-1?Q?vKUsTzZ8aaY99aqAHgBL8uzzJfDDjpApw14f8ex9vD0JM8vAY8fDCKTU94?=
- =?iso-8859-1?Q?nIfTp2fXfuU7tjDR9XR/EQZizIGdgBrTvbkAQNnasagUw7eVdCPm80jato?=
- =?iso-8859-1?Q?mYYHsNdNWREcUcjGfWG2uaOPP7AEdh2oLPMYWZivaaaGdLpow8Dx+MpeLl?=
- =?iso-8859-1?Q?paH1QZ6eces1uTrlGEV+CZkfBUta7Oi2bFbUyoQCuQzbTTVOul5iE6RRsk?=
- =?iso-8859-1?Q?pujLmrE96Scrayt/i8niiH2gO3TxUswwI1dGpFuAmE+Xy+vZALSZ0+viNo?=
- =?iso-8859-1?Q?8NnZjNtiQAOXS8t5bn8vnxi/0ikMce30mIjhTzxCh/zKf/A+ImvQvbYZoT?=
- =?iso-8859-1?Q?rT9wkXShAVO6fzzNK9z6+fIfQV2N3b6YmlM0CEifa++pD3+2aAltRUmrWb?=
- =?iso-8859-1?Q?+vLHb1NyWfZX6lWFb65EQxgdzUGOsb88qH1yekwFr794ufsjiDfJkhSW0p?=
- =?iso-8859-1?Q?dkhuzOromay+Yz7ExS5f2+1VYluj64i3n/XnpvtotVkzt+F4ssZV+omxVt?=
- =?iso-8859-1?Q?TJFaOGhB+r8D+XdXGVyXOqQ1s55mHE7eitOV+VByp+ewjoWfy5alPKNZWj?=
- =?iso-8859-1?Q?fnCsZH2Q8pbtzw5c5sEWRQux5lyNjNZjfzVBhi9mLL9DcZqsKjHmTz6+S4?=
- =?iso-8859-1?Q?U9mbJhHh5PTLdiwkkEYdPvZ2D2LkWxuaoRNt/+APBzN6Rasy2jmfmS7vjR?=
- =?iso-8859-1?Q?FfIRbDmXeMVWi3epkYbFouIUl3UwUzlWcTUIXmfbCehSYlDe6VSJSjRnL1?=
- =?iso-8859-1?Q?jZPpHbWDWvj/ejwQmtABOtjJPsUd3rsij8KvLx/Nx/JQrbudu3hUHd8N2D?=
- =?iso-8859-1?Q?YkMmTWZ4o47JvZ4/I4UsBTMCVk+cEmXANb6STHXK+3Hf+4o+5ZDFJbvcHo?=
- =?iso-8859-1?Q?Gs4/EqszkaZn9rYNy59+jxJ/LZYEcMRgUA4Oaj4EGPkKNHQqczNQdt0zuj?=
- =?iso-8859-1?Q?LZeqKCZ3bF89GHc1W+3dIv2+AN98v/TCfGLKHfrHSH9PRs/RNwuxkOyKTM?=
- =?iso-8859-1?Q?kXnV/0G52Fx4N6YMb0kzwxc3E5icKjTSxyv7rJzqTKEse+7FNal1RNHwlP?=
- =?iso-8859-1?Q?G5NjVOzFZ5dpdjh4D+t2K4BpNzUZBVWpXGvM8v5P82ae+6nd36cVXQPC6C?=
- =?iso-8859-1?Q?wzI+h7hlYOaiII0Bkr9b/D45fWrVhUSHdxnjD7FvgfcBWphHW6ehgnsmWf?=
- =?iso-8859-1?Q?gMURwD8bgHhrnUJPk+jN7pk3GamNbsQDYevurTkBjsWeExdN0KSDpH8NYZ?=
- =?iso-8859-1?Q?JxzmZEofahz84jUvElyGMr2qiWkuIhq9LKNruUB6ME1CdgNs9B+WbvG5SA?=
- =?iso-8859-1?Q?T60rcHyNpIhlv7yKwr65jotKUbXrEc2CSMPscrUr8QN19ZxGRxHbY5joPv?=
- =?iso-8859-1?Q?nLRpdhNamU16hgOwFEMO//5+jO/yxnsjBdZkLoOiqjJzMI+5VnV+D4IoBE?=
- =?iso-8859-1?Q?Rgv+6A4A1TCnQS/WUbc=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb2d2f13-92ec-4e9d-ca27-08dc497bc9a5
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 07:51:59.6653
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oT4F2B4B75RumBo6WCqRr4ZzEt4Qmpc473bNYnztUnwDYcoxcsdhLQaXv9xnZMHSEPdXjO6LvPlkM/E58lxbAS16vlAAYb1Ol7o3+H20S+c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5823
-X-OriginatorOrg: intel.com
+From: xingwei lee <xrivendell7@gmail.com>
+Date: Thu, 21 Mar 2024 15:52:27 +0800
+Message-ID: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
+Subject: BUG: unable to handle kernel paging request in fuse_copy_do
+To: linux-fsdevel@vger.kernel.org, miklos@szeredi.hu
+Cc: linux-kernel@vger.kernel.org, samsun1006219@gmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Tony,
+Hello I found a bug titled "BUG: unable to handle kernel paging
+request in fuse_copy_do=E2=80=9D with modified syzkaller, and maybe it is
+related to fs/fuse.
+I also confirmed in the latest upstream.
 
-On 2024-03-12 at 14:42:38 -0700, Tony Luck wrote:
->The Sub-NUMA cluster feature on some Intel processors partitions the CPUs
->that share an L3 cache into two or more sets. This plays havoc with the
->Resource Director Technology (RDT) monitoring features.  Prior to this
->patch Intel has advised that SNC and RDT are incompatible.
->
->Some of these CPU support an MSR that can partition the RMID counters in
->the same way. This allows monitoring features to be used. With the caveat
->that users must be aware that Linux may migrate tasks more frequently
->between SNC nodes than between "regular" NUMA nodes, so reading counters
->from all SNC nodes may be needed to get a complete picture of activity
->for tasks.
->
->Cache and memory bandwidth allocation features continue to operate at
->the scope of the L3 cache.
->
->Signed-off-by: Tony Luck <tony.luck@intel.com>
->
->---
->Changes since v15: Link: https://lore.kernel.org/all/20240228112935.8087-tony.luck@intel.com/
->
->0) Note that v14 Reviewed/Testing tags have been removed because of the
->   extent of refactoring to catch up with upstream. But nothing
->   fundamental changed, so everything should look familiar.
->
->1) Refactor to apply on top of Link: https://lore.kernel.org/all/20240308213846.77075-1-tony.luck@intel.com/
->   [So base commit is either tip x86/cache, or upstream current merge PLUS
->    the two patches in that series]
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Reported-by: yue sun <samsun1006219@gmail.com>
 
-I'm having problems with cleanly applying this series. Here are the steps I
-took:
+kernel: upstream 23956900041d968f9ad0f30db6dede4daccd7aa9
+kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3D9f=
+47e8dfa53b0b11
+with KASAN enabled
+compiler: gcc (Debian 12.2.0-14) 12.2.0
 
-- I pulled this series with b4.
-- I pulled two patches from the "Pass domain to target CPU" series with b4.
-- Then I hard reseted my branch to tip x86/cache
-- Tried applying first the two patches and then this series.
+BUG: unable to handle kernel paging request in fuse_copy_do
+UDPLite: UDP-Lite is deprecated and scheduled to be removed in 2025,
+please contact the netdev mailing list
+BUG: unable to handle page fault for address: ffff88802c29c000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 13001067 P4D 13001067 PUD 13002067 PMD 24c8d063 PTE 800fffffd3d63060
+Oops: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 PID: 8221 Comm: 1e9 Not tainted 6.8.0-05202-g9187210eee7d-dirty #21
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-1.fc38 04/01/2014
+RIP: 0010:memcpy+0xc/0x20 arch/x86/lib/memcpy_64.S:38
+Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90
+90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 48 89 f80
+RSP: 0018:ffffc9001065f9c8 EFLAGS: 00010246
+RAX: ffffc9001065fb10 RBX: ffffc9001065fc78 RCX: 0000000000000010
+RDX: 0000000000000010 RSI: ffff88802c29c000 RDI: ffffc9001065fb10
+RBP: 0000000000000010 R08: ffff88802c29c000 R09: 0000000000000001
+R10: ffffffff8ea82ed7 R11: ffffc9001065fd98 R12: ffffc9001065fac0
+R13: 0000000000000010 R14: ffffc9001065faf0 R15: ffffc9001065fcbc
+FS: 000000000f82d480(0000) GS:ffff88823bc00000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88802c29c000 CR3: 000000002dd7c000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+<TASK>
+fuse_copy_do+0x152/0x340 fs/fuse/dev.c:758
+fuse_copy_one fs/fuse/dev.c:1007 [inline]
+fuse_dev_do_write+0x1df/0x26a0 fs/fuse/dev.c:1863
+fuse_dev_write+0x129/0x1b0 fs/fuse/dev.c:1960
+call_write_iter include/linux/fs.h:2108 [inline]
+new_sync_write fs/read_write.c:497 [inline]
+vfs_write+0x62e/0x10a0 fs/read_write.c:590
+ksys_write+0xf6/0x1d0 fs/read_write.c:643
+do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+do_syscall_64+0x7c/0x1d0 arch/x86/entry/common.c:83
+entry_SYSCALL_64_after_hwframe+0x6c/0x74
 
-And here I'm getting conflicts on patch 0002 "Prepare to split rdt_domain
-structure". I also tried with tip master and applying James Morse's series
-before your patches but I got the same problem. Am I doing something wrong?
+=3D* repro.c =3D*
+#define _GNU_SOURCE
 
-I wanted to find what causes the conflict so I can give more details but three
-way merging doesn't seem to work and git am doesn't leave any conflict markers,
-just fails.
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
--- 
-Kind regards
-Maciej Wieczór-Retman
+#ifndef __NR_memfd_secret
+#define __NR_memfd_secret 447
+#endif
+
+static __thread int clone_ongoing;
+static __thread int skip_segv;
+static __thread jmp_buf segv_env;
+
+static void segv_handler(int sig, siginfo_t* info, void* ctx) {
+ if (__atomic_load_n(&clone_ongoing, __ATOMIC_RELAXED) !=3D 0) {
+   exit(sig);
+ }
+ uintptr_t addr =3D (uintptr_t)info->si_addr;
+ const uintptr_t prog_start =3D 1 << 20;
+ const uintptr_t prog_end =3D 100 << 20;
+ int skip =3D __atomic_load_n(&skip_segv, __ATOMIC_RELAXED) !=3D 0;
+ int valid =3D addr < prog_start || addr > prog_end;
+ if (skip && valid) {
+   _longjmp(segv_env, 1);
+ }
+ exit(sig);
+}
+
+static void install_segv_handler(void) {
+ struct sigaction sa;
+ memset(&sa, 0, sizeof(sa));
+ sa.sa_handler =3D SIG_IGN;
+ syscall(SYS_rt_sigaction, 0x20, &sa, NULL, 8);
+ syscall(SYS_rt_sigaction, 0x21, &sa, NULL, 8);
+ memset(&sa, 0, sizeof(sa));
+ sa.sa_sigaction =3D segv_handler;
+ sa.sa_flags =3D SA_NODEFER | SA_SIGINFO;
+ sigaction(SIGSEGV, &sa, NULL);
+ sigaction(SIGBUS, &sa, NULL);
+}
+
+#define NONFAILING(...)                                  \
+ ({                                                     \
+   int ok =3D 1;                                          \
+   __atomic_fetch_add(&skip_segv, 1, __ATOMIC_SEQ_CST); \
+   if (_setjmp(segv_env) =3D=3D 0) {                        \
+     __VA_ARGS__;                                       \
+   } else                                               \
+     ok =3D 0;                                            \
+   __atomic_fetch_sub(&skip_segv, 1, __ATOMIC_SEQ_CST); \
+   ok;                                                  \
+ })
+
+static void sleep_ms(uint64_t ms) {
+ usleep(ms * 1000);
+}
+
+static uint64_t current_time_ms(void) {
+ struct timespec ts;
+ if (clock_gettime(CLOCK_MONOTONIC, &ts))
+   exit(1);
+ return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static bool write_file(const char* file, const char* what, ...) {
+ char buf[1024];
+ va_list args;
+ va_start(args, what);
+ vsnprintf(buf, sizeof(buf), what, args);
+ va_end(args);
+ buf[sizeof(buf) - 1] =3D 0;
+ int len =3D strlen(buf);
+ int fd =3D open(file, O_WRONLY | O_CLOEXEC);
+ if (fd =3D=3D -1)
+   return false;
+ if (write(fd, buf, len) !=3D len) {
+   int err =3D errno;
+   close(fd);
+   errno =3D err;
+   return false;
+ }
+ close(fd);
+ return true;
+}
+
+static void kill_and_wait(int pid, int* status) {
+ kill(-pid, SIGKILL);
+ kill(pid, SIGKILL);
+ for (int i =3D 0; i < 100; i++) {
+   if (waitpid(-1, status, WNOHANG | __WALL) =3D=3D pid)
+     return;
+   usleep(1000);
+ }
+ DIR* dir =3D opendir("/sys/fs/fuse/connections");
+ if (dir) {
+   for (;;) {
+     struct dirent* ent =3D readdir(dir);
+     if (!ent)
+       break;
+     if (strcmp(ent->d_name, ".") =3D=3D 0 || strcmp(ent->d_name, "..") =3D=
+=3D 0)
+       continue;
+     char abort[300];
+     snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+              ent->d_name);
+     int fd =3D open(abort, O_WRONLY);
+     if (fd =3D=3D -1) {
+       continue;
+     }
+     if (write(fd, abort, 1) < 0) {
+     }
+     close(fd);
+   }
+   closedir(dir);
+ } else {
+ }
+ while (waitpid(-1, status, __WALL) !=3D pid) {
+ }
+}
+
+static void setup_test() {
+ prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+ setpgrp();
+ write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+ int iter =3D 0;
+ for (;; iter++) {
+   int pid =3D fork();
+   if (pid < 0)
+     exit(1);
+   if (pid =3D=3D 0) {
+     setup_test();
+     execute_one();
+     exit(0);
+   }
+   int status =3D 0;
+   uint64_t start =3D current_time_ms();
+   for (;;) {
+     if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) =3D=3D pid)
+       break;
+     sleep_ms(1);
+     if (current_time_ms() - start < 5000)
+       continue;
+     kill_and_wait(pid, &status);
+     break;
+   }
+ }
+}
+
+uint64_t r[3] =3D {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffff=
+ff};
+
+void execute_one(void) {
+ intptr_t res =3D 0;
+ NONFAILING(memcpy((void*)0x20002040, "./file0\000", 8));
+ syscall(__NR_mkdirat, /*fd=3D*/0xffffff9c, /*path=3D*/0x20002040ul, /*mode=
+=3D*/0ul);
+ NONFAILING(memcpy((void*)0x20002080, "/dev/fuse\000", 10));
+ res =3D syscall(__NR_openat, /*fd=3D*/0xffffffffffffff9cul, /*file=3D*/0x2=
+0002080ul,
+               /*flags=3D*/2ul, /*mode=3D*/0ul);
+ if (res !=3D -1)
+   r[0] =3D res;
+ NONFAILING(memcpy((void*)0x200020c0, "./file0\000", 8));
+ NONFAILING(memcpy((void*)0x20002100, "fuse\000", 5));
+ NONFAILING(memcpy((void*)0x20002140, "fd", 2));
+ NONFAILING(*(uint8_t*)0x20002142 =3D 0x3d);
+ NONFAILING(sprintf((char*)0x20002143, "0x%016llx", (long long)r[0]));
+ NONFAILING(*(uint8_t*)0x20002155 =3D 0x2c);
+ NONFAILING(memcpy((void*)0x20002156, "rootmode", 8));
+ NONFAILING(*(uint8_t*)0x2000215e =3D 0x3d);
+ NONFAILING(sprintf((char*)0x2000215f, "%023llo", (long long)0x4000));
+ NONFAILING(*(uint8_t*)0x20002176 =3D 0x2c);
+ NONFAILING(memcpy((void*)0x20002177, "user_id", 7));
+ NONFAILING(*(uint8_t*)0x2000217e =3D 0x3d);
+ NONFAILING(sprintf((char*)0x2000217f, "%020llu", (long long)0));
+ NONFAILING(*(uint8_t*)0x20002193 =3D 0x2c);
+ NONFAILING(memcpy((void*)0x20002194, "group_id", 8));
+ NONFAILING(*(uint8_t*)0x2000219c =3D 0x3d);
+ NONFAILING(sprintf((char*)0x2000219d, "%020llu", (long long)0));
+ NONFAILING(*(uint8_t*)0x200021b1 =3D 0x2c);
+ NONFAILING(*(uint8_t*)0x200021b2 =3D 0);
+ syscall(__NR_mount, /*src=3D*/0ul, /*dst=3D*/0x200020c0ul, /*type=3D*/0x20=
+002100ul,
+         /*flags=3D*/0ul, /*opts=3D*/0x20002140ul);
+ res =3D syscall(__NR_memfd_secret, /*flags=3D*/0ul);
+ if (res !=3D -1)
+   r[1] =3D res;
+ syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0xb36000ul,
+         /*prot=3DPROT_GROWSUP|PROT_READ*/ 0x2000001ul,
+         /*flags=3DMAP_STACK|MAP_POPULATE|MAP_FIXED|MAP_SHARED*/ 0x28011ul,
+         /*fd=3D*/r[1], /*offset=3D*/0ul);
+ syscall(__NR_ftruncate, /*fd=3D*/r[1], /*len=3D*/7ul);
+ res =3D syscall(__NR_socket, /*domain=3D*/2ul, /*type=3D*/2ul, /*proto=3D*=
+/0x88);
+ if (res !=3D -1)
+   r[2] =3D res;
+ NONFAILING(*(uint32_t*)0x20000280 =3D 0);
+ syscall(__NR_getsockopt, /*fd=3D*/r[2], /*level=3D*/1, /*optname=3D*/0x11,
+         /*optval=3D*/0ul, /*optlen=3D*/0x20000280ul);
+ NONFAILING(*(uint32_t*)0x20000000 =3D 0x50);
+ NONFAILING(*(uint32_t*)0x20000004 =3D 0);
+ NONFAILING(*(uint64_t*)0x20000008 =3D 0);
+ NONFAILING(*(uint32_t*)0x20000010 =3D 7);
+ NONFAILING(*(uint32_t*)0x20000014 =3D 0x27);
+ NONFAILING(*(uint32_t*)0x20000018 =3D 0);
+ NONFAILING(*(uint32_t*)0x2000001c =3D 0);
+ NONFAILING(*(uint16_t*)0x20000020 =3D 0);
+ NONFAILING(*(uint16_t*)0x20000022 =3D 0);
+ NONFAILING(*(uint32_t*)0x20000024 =3D 0);
+ NONFAILING(*(uint32_t*)0x20000028 =3D 0);
+ NONFAILING(*(uint16_t*)0x2000002c =3D 0);
+ NONFAILING(*(uint16_t*)0x2000002e =3D 0);
+ NONFAILING(memset((void*)0x20000030, 0, 32));
+ syscall(__NR_write, /*fd=3D*/r[0], /*arg=3D*/0x20000000ul, /*len=3D*/0x50u=
+l);
+}
+int main(void) {
+ syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*prot=3D*=
+/0ul,
+         /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/-=
+1,
+         /*offset=3D*/0ul);
+ syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul,
+         /*prot=3DPROT_WRITE|PROT_READ|PROT_EXEC*/ 7ul,
+         /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/-=
+1,
+         /*offset=3D*/0ul);
+ syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=3D*=
+/0ul,
+         /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/-=
+1,
+         /*offset=3D*/0ul);
+ install_segv_handler();
+ loop();
+ return 0;
+}
+
+=3D* repro.txt =3D*
+mkdirat(0xffffffffffffff9c, &(0x7f0000002040)=3D'./file0\x00', 0x0)
+r0 =3D openat$fuse(0xffffffffffffff9c, &(0x7f0000002080), 0x2, 0x0)
+mount$fuse(0x0, &(0x7f00000020c0)=3D'./file0\x00', &(0x7f0000002100),
+0x0, &(0x7f0000002140)=3D{{'fd', 0x3d, r0}, 0x2c, {'rootmode', 0x3d,
+0x4000}})
+r1 =3D memfd_secret(0x0)
+mmap(&(0x7f0000000000/0xb36000)=3Dnil, 0xb36000, 0x2000001, 0x28011, r1, 0x=
+0)
+ftruncate(r1, 0x7)
+r2 =3D socket$inet_udplite(0x2, 0x2, 0x88)
+getsockopt$sock_cred(r2, 0x1, 0x11, 0x0, &(0x7f0000000280))
+write$FUSE_INIT(r0, &(0x7f0000000000)=3D{0x50}, 0x50)
+
+
+see aslo https://gist.github.com/xrivendell7/961be96ae091c9671bb56efea902ce=
+c4.
+
+I hope it helps.
+best regards.
+xingwei Lee
 
