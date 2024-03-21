@@ -1,124 +1,226 @@
-Return-Path: <linux-kernel+bounces-110281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F352885C92
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:51:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802CE885C98
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A16C282F53
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A47741C22FE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747108627F;
-	Thu, 21 Mar 2024 15:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175DC8627E;
+	Thu, 21 Mar 2024 15:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oBKDKkH3"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AlfcfTh0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F651E879;
-	Thu, 21 Mar 2024 15:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3943A86261;
+	Thu, 21 Mar 2024 15:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711036267; cv=none; b=RUN/U7OXRfQjungU32Wted7uMEoVwa/oAb5SAYIIgj8VPYHSKZvtZq6o3t+7VS++xkyO7bBoTqsjBwDILb5IssHx2W4nmCjhSL3brE+qaCeToN9HnBOpJcmoKQWdMEBV5nsMY642pW5wRJ98z8UY5Gpx9IN2SQ+/zTJwKgEbUsw=
+	t=1711036292; cv=none; b=WRr9AmUdOTy8ihuRex2HnvYHqKzOYJAkMohMpjYECjmJDhYjkWZ67La6uH8v1RYT7YqY6DVjlZlb1g5O0VJWl89byQYpoCOp3dPAbOI0DSZq0XfmyKOzkcudO3CMItDKOhmAxVREcdTSA5o8TZGpbEOPtOchudv09uiNBDNrxCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711036267; c=relaxed/simple;
-	bh=NcoABh9qQqWyHeyP/BJpH8RDi7iEiqb/AKOW3kyJ7Hk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enr9cjIK/XHfqpvKswRRpQZG8xQaFAXHEQpTtLhRfI0zPRd7J2x2s7NWFT1zbZQIacZl0nNe9OFLcIy6rD8Ec2JyOB8CoNDst2JFXAf4EAyZvWwa4mQcZOc8XWsLlBwG+ioWRBMmDgoEa8YNkC9V1wAnOohvaf8fOlJvjjCdzms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oBKDKkH3; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42LFOW30010746;
-	Thu, 21 Mar 2024 15:50:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=FRj4LVlZr5NDfUAqAPS+X
-	NAuH+YYahtbNBB1SbEdMAM=; b=oBKDKkH38UMpT2lFxBJvGBHAI7ipNAdSu7t7d
-	xYezGRKPqmIGRvI9X+rvP5942Kq9O6LQ7V5NpoaxzaMH53PFRZP2Yvf34mUpiL8F
-	Mb+MCyUa2LCAU2UtYIA9BzaVVRcbq21eqd0V6XCaC7Aw22UgNWhOidTKpSgCuBkn
-	iYygFm7MNNdAOcuLjMZA4HSHMyZFqyXVVYxMgIo7NSC8VtcjqcxkfMuWnEpJsr2G
-	CW01W4OGJbcKRHzS5ma7EdsfzsLU64Jc5MN5d8MdMAdeqIWqbmn/sOQNQVhem/SO
-	U5RAwycD/5U8avMp2SDcN/u+OLLEuKVpxlDTtm6sMkosKlNfA==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x0f1nhd6w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 15:50:58 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42LFovDG006831
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 15:50:57 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 21 Mar 2024 08:50:53 -0700
-Date: Thu, 21 Mar 2024 21:20:49 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Rob Herring <robh@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <djakov@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm IPQ9574
- support
-Message-ID: <ZfxXWaNzJoai6VpV@hu-varada-blr.qualcomm.com>
-References: <20240321043149.2739204-1-quic_varada@quicinc.com>
- <20240321043149.2739204-2-quic_varada@quicinc.com>
- <20240321143549.GA1679970-robh@kernel.org>
+	s=arc-20240116; t=1711036292; c=relaxed/simple;
+	bh=L+ezlLpknXEsEQmDMvyoEjsnzgAHFu4Z1IjpCnTiL2E=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=iVuZsTPaUAqNBtm/gV6JSFlCUuk418eZZGdfa+ShRurWbee2QawJGA8o9TyisGfaHP3RFQikbNY3TUKFlwMJYVuay/0QwDLyo6rBVAsvUL4yxk7bnaCubesgKcHnIJ/dA0SIA7HSN9DZYwShtQvZA7XMPS9p+CGnnkZ5sxXIDcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AlfcfTh0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27AA9C433F1;
+	Thu, 21 Mar 2024 15:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711036291;
+	bh=L+ezlLpknXEsEQmDMvyoEjsnzgAHFu4Z1IjpCnTiL2E=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=AlfcfTh01ISixGjDcDgIRSwydLeh5ZF8jX8uFZzxsIRZZi6Ktg07imY+eCoGmUOVx
+	 MNTP7MtIERvRNFTLQ9TvOSkDDD0q/gufWcvtgBvVkFIWeVWFJIHLX2FNUf5+Ji6N1L
+	 zWxJIqlrOO4Af0/F1R9S0W63/ZwAfUbmTtdf8WMXlq/UKMTOyvdQLDliUbNbm0FXNq
+	 x17Bl3oDr0H/7RnuMRMsHWuyt/Bwfu4ZXRl7RchcMmB7j8JTF9tBAnai71o/qiTb4h
+	 fe0F9PAED4RhS96LpR3seCSdmqDR/tR+EVjPDSuJ0l23kv9aBg2NTpkoedObt1EVCv
+	 I2RTaokxbIORg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240321143549.GA1679970-robh@kernel.org>
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S01h8yhEomAX6KFUw1hiZzgJAvomdgE-
-X-Proofpoint-ORIG-GUID: S01h8yhEomAX6KFUw1hiZzgJAvomdgE-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403210115
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 21 Mar 2024 17:51:27 +0200
+Message-Id: <CZZJQR121P7H.3QS68A6320S32@kernel.org>
+Cc: "Jonathan Corbet" <corbet@lwn.net>, "Daniel P . Smith"
+ <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
+ <peterhuewe@gmx.de>, "James Bottomley"
+ <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
+ <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Randy Dunlap"
+ <rdunlap@infradead.org>
+Subject: Re: [PATCH v2] Documentation: tpm_tis
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>,
+ <linux-integrity@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240320085601.40450-1-jarkko@kernel.org>
+ <afc9471c-1c28-4384-82c1-29464ca1fb1f@linux.ibm.com>
+In-Reply-To: <afc9471c-1c28-4384-82c1-29464ca1fb1f@linux.ibm.com>
 
-On Thu, Mar 21, 2024 at 09:35:49AM -0500, Rob Herring wrote:
-> On Thu, Mar 21, 2024 at 10:01:48AM +0530, Varadarajan Narayanan wrote:
-> > Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
-> > interfaces. This will be used by the gcc-ipq9574 driver
-> > that will for providing interconnect services using the
-> > icc-clk framework.
-> >
-> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > ---
-> >  .../dt-bindings/interconnect/qcom,ipq9574.h   | 62 +++++++++++++++++++
-> >  1 file changed, 62 insertions(+)
-> >  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
-> >
-> > diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> > new file mode 100644
-> > index 000000000000..96f79a86e8d2
-> > --- /dev/null
-> > +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> > @@ -0,0 +1,62 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+On Wed Mar 20, 2024 at 6:15 PM EET, Stefan Berger wrote:
 >
-> Where did you come up with GPL-2.0+? Every other qcom interconnect
-> header is GPL-2.0-only. Is your employer okay with GPLv3 AND after?
+>
+> On 3/20/24 04:56, Jarkko Sakkinen wrote:
+> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
+ore
+> > dependent drivers. Includes only bare essentials but can be extended la=
+ter
+> > on case by case. This way some people may even want to read it later on=
+.
+> >=20
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > CC: Daniel P. Smith <dpsmith@apertussolutions.com>
+> > Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Peter Huewe <peterhuewe@gmx.de>
+> > Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> > Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
+> > Cc: keyrings@vger.kernel.org
+> > Cc: linux-doc@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-integrity@vger.kernel.org
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> > v2:
+> > - Fixed errors reported by Randy:
+> >    https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@inf=
+radead.org/
+> > - Improved the text a bit to have a better presentation.
+> > ---
+> >   Documentation/security/tpm/index.rst   |  1 +
+> >   Documentation/security/tpm/tpm_tis.rst | 30 +++++++++++++++++++++++++=
++
+> >   2 files changed, 31 insertions(+)
+> >   create mode 100644 Documentation/security/tpm/tpm_tis.rst
+> >=20
+> > diff --git a/Documentation/security/tpm/index.rst b/Documentation/secur=
+ity/tpm/index.rst
+> > index fc40e9f23c85..f27a17f60a96 100644
+> > --- a/Documentation/security/tpm/index.rst
+> > +++ b/Documentation/security/tpm/index.rst
+> > @@ -5,6 +5,7 @@ Trusted Platform Module documentation
+> >   .. toctree::
+> >  =20
+> >      tpm_event_log
+> > +   tpm_tis
+> >      tpm_vtpm_proxy
+> >      xen-tpmfront
+> >      tpm_ftpm_tee
+> > diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/sec=
+urity/tpm/tpm_tis.rst
+> > new file mode 100644
+> > index 000000000000..b331813b3c45
+> > --- /dev/null
+> > +++ b/Documentation/security/tpm/tpm_tis.rst
+> > @@ -0,0 +1,30 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > +TPM FIFO interface Driver
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > +
+> > +FIFO (First-In-First-Out) is the name of the hardware interface used b=
+y the
+>
+> FIFO is the type. I am surprised you call it a 'name'. I would say TIS=20
+> is the 'name'.
 
-Oops. Will fix it in the next version.
+It's what the official specification calls it [1].
 
-Thanks
-Varada
+
+>
+> > +tpm_tis_core dependent drivers. The prefix "tis" comes from the TPM In=
+terface
+>
+> tis is a tla -- a three letter *acronym*. You aren't using it as a 'prefi=
+x'.
+
+I don't know what "tla" means.
+
+>
+> > +Specification, which is the hardware interface specification for TPM 1=
+x chips.
+>
+> It's also available for TPM2.
+=20
+Yes, but TIS is the name used by the legacy specification.
+
+>
+> > +
+> > +Communication is based on a 5 KiB buffer shared by the TPM chip throug=
+h a
+>
+> I thought it was typically 4 KiB.
+
+You are basing this on table 9 in [1]?
+
+>
+> > +hardware bus or memory map, depending on the physical wiring. The buff=
+er is
+> > +further split into five equal-size buffers, which provide equivalent s=
+ets of
+>
+> equal-sized MMIO regions?
+
+I'm not sure what spec you are referring to but [1] defines also other
+communication paths.
+
+>
+> > +registers for communication between the CPU and TPM. These communicati=
+on
+> > +endpoints are called localities in the TCG terminology.
+> > +
+> > +When the kernel wants to send commands to the TPM chip, it first reser=
+ves
+> > +locality 0 by setting the requestUse bit in the TPM_ACCESS register. T=
+he bit is
+> > +cleared by the chip when the access is granted. Once it completes its
+> > +communication, the kernel writes the TPM_ACCESS.activeLocality bit. Th=
+is
+> > +informs the chip that the locality has been relinquished.
+> > +
+> > +Pending localities are served in order by the chip in descending order=
+, one at
+> > +a time:
+>
+> I think I know what pending localities are because I have worked with=20
+> this device but I am not sure whether the user can deduce this from the=
+=20
+> paragraph above. Also, why this particular detail when the driver only=20
+> uses locality 0 and nobody is competing about access to localities?
+
+This is pretty good summary that is IMHO somewhat useful.
+
+You are welcome to contribute to the documentation but it has to start
+from something.
+
+>
+> > +
+> > +- Locality 0 has the lowest priority.
+> > +- Locality 5 has the highest priority.
+> > +
+> > +Further information on the purpose and meaning of the localities can b=
+e found
+> > +in section 3.2 of the TCG PC Client Platform TPM Profile Specification=
+.
+o
+
+
+[1] https://trustedcomputinggroup.org/resource/pc-client-platform-tpm-profi=
+le-ptp-specification/
+
+BR, Jarkko
 
