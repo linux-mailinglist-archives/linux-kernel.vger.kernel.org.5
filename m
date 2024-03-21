@@ -1,179 +1,151 @@
-Return-Path: <linux-kernel+bounces-110577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306CE8860D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 907098860CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813C5B22806
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:01:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0235B22339
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B68134406;
-	Thu, 21 Mar 2024 19:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E1113398E;
+	Thu, 21 Mar 2024 18:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kWoEaLmI"
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="gJQM4XnZ"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DBCE57B;
-	Thu, 21 Mar 2024 19:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFA15CB5
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711047665; cv=none; b=CQmbEkUK7f66tm6URqvpbyd4UdJDUNVn9HMXhoo+R8LVibrU30xCosVlr0s63YaKNeBMzBu/gpAgFJ9KGR0Z+4CWYw4OUGiIftgbWTXky8yUdhVwm84pcyH9TTTrzHEDkntbx+HiztBwagh26IbC2/jfm8qQXtgIV2qe6+M2Hp8=
+	t=1711047490; cv=none; b=TUnxOeX+4yX5ziwJps4DGdVSCWxnwcHMcjoXit+YRw46lUZUzCW/oEgX3Xg+v3UaWcX1+Qfu3CV5RLykd7tmSwjDOSv4Y2HO1qLfA8cWJ7wE2gg6v3iXWvDHp9qqJCV4Tx3SJyI3P0+sNM43Gh5i1c/4uqkgUGTSZkubMvtA/AI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711047665; c=relaxed/simple;
-	bh=YUX9RxKkWXgLUlg1ZO2OrjKycS8zeiDnhjRiRetu/Zo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EaFJQw+diSTe2Bm6Rnm3H2EtsxrxEa8b95YckPik4RlBXgdYIpc6WwLNvbaiqjNbgTmH/V5UEvijMuap4mVe/fLkY8lkOGRt8ebtTPJBOkDKxqVD9TpkOCGUdCv0jT5AB/xjhLxLEXkiSbfScoqxTfMYFDqfTskbwYp37HcG3jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kWoEaLmI; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd72353d9fso788428b6e.3;
-        Thu, 21 Mar 2024 12:01:02 -0700 (PDT)
+	s=arc-20240116; t=1711047490; c=relaxed/simple;
+	bh=wfl5BO/287jsyabQVYApJwdvqbKhOKhf+US7q+/8nks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Byi/jlWDeTgebMDvACuDdg2rovK7ITeIYEqN5d5e0UBrluC+Xsc/T4lab+C214noNCd2jbMuBLFl6fykjIJDiXywMh2W9D682sgTtlUgER5mRnD2M+J3MUUDMWzD52dZraM+G6+Lcik+Tt6XBBaqcEvQNl3ygWasXBx5QsuV+mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=gJQM4XnZ; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-789f3bbe3d6so97318485a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:58:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711047662; x=1711652462; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m9LMHhAil+e1DwoMOsUUxTokSN39rbYNgoUrrRrbF2I=;
-        b=kWoEaLmIXiGjmFQK3GsB6EU58NUz7N61bcM7ctc2naO3BuqiY0v6tGpWyA9qDeoN6O
-         Nvg3PAIkYenyqiqjsc0wKzABFuJnmGEsRekO/Qek0+jErRSDpovz1u/603R06890f1iq
-         o8ffRb0/C/FRxj/fOaMMC4KUYIqr5GwP8lc9oQocycJZTE0ZthcfxV+Y7Toj0GQ3L9jY
-         wDYwGyHPzjiYbXRCJVL0IlGgnygxqT4m3ruYSHnHsTqc55GME8yS9/Xz1NWBMNyLZ+v4
-         qJI29ieRxV87EVg3pw79OEDjBubg7kBPb4NfP002gGpGt7mSeetm6kvRofNw28CxbIdL
-         k5ZQ==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711047486; x=1711652286; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j1RSbdCHe2fKV0Yk4hs6rwghyLM721fWE3T8qG0MI14=;
+        b=gJQM4XnZEwwfw+sQPQAjtEgJza4iGs9UnIrxjCDU59h0M3lpmUwdldRtZOkoFbDHEe
+         8jtfEejrDyQeyZOivZA3GrpwQmrZNUuxk+zZzSHW1ujclCCuIznztpyNRU6hdexSbzHA
+         qPHZ5i153Sg6sgW4ynwimfDELJDiW7qbHe2yiREiM4tCKb6tKY19X2+ZxGdHCoXVJRkW
+         sQFOUgjras3c1rSk5oIXV7QJPO+GXxTsX+uEpdNXc5FpStZXmW2TXVCL2Ngor3kIfPil
+         TJW7hs4+ik1z0lvRE9sHDzbLFZfZRSJxXuGycK3uzBflGEeK1VhgmpGCh7+npznmSVzD
+         SWnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711047662; x=1711652462;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m9LMHhAil+e1DwoMOsUUxTokSN39rbYNgoUrrRrbF2I=;
-        b=cWmqU/J07Gq90aTr8tMVcgZ1BFmBzvFWLCQQO2p8Mhd2X8IhK5/pVt0Yk/A41vcM5X
-         F+b+KGGTlKsddcmZ5+W7L2AMmD1KzzGlvCGO2uhYjTfeIXmXBMnsMyQokp7Omadzc7i/
-         Tt7XDASVHCGQt1uDL5MXk9hX0PNB6hDpxTA54hDC46QWhIWMCMC1qsaNLe/aS28u0eXk
-         MjPfz4v6oeOzS2VUzLH2KFsbGxnzXkdat7tV3lSO1ExPsns8o2t/W3MHeZtraUyiluSA
-         4F3DTx4W0cSoacUhxmcBjYN/aBhl4bkNf42JwtgCP2t50j52wBsfhecO8yeBZhx2YZJX
-         hZjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWyaCAIsdhtFZ5sXkXod7nZByg0RYl1mxT+gmh8s2BdWYHeDzU0+uPmjdvtZcgtSxAVpd+XpykCYMeepx0YbalYRWsDS8cZuMlFIWM/YJf5+I55tSbzpwepn9rZN1y1nCEh
-X-Gm-Message-State: AOJu0YyKHSgNrfUrMxhpY7eGBNV8LRNa12fkKuTV6ooKAi7h6F3PEBBi
-	+SsXwtOl6uuy4YndyhOVWcKyLLDaLCNVv+JKMS2B95jQEAQScncgGkw29GesP0IjjyecVnvPAmu
-	oMt1oNCAE6oUAw2//+uhsGg+NFXhH5W6zcXA=
-X-Google-Smtp-Source: AGHT+IFgzxgAPRHvuLr0wrtOjzi8zMJYI0ETlh7IR0JuYFGwPrOAo/6WwU9MifXa5daKL6je4JiBoOkXEMF3UnHuLRQ=
-X-Received: by 2002:a05:6a20:4394:b0:1a3:6e5c:46f4 with SMTP id
- i20-20020a056a20439400b001a36e5c46f4mr625119pzl.7.1711047166738; Thu, 21 Mar
- 2024 11:52:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711047486; x=1711652286;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j1RSbdCHe2fKV0Yk4hs6rwghyLM721fWE3T8qG0MI14=;
+        b=Vk2KnpXs2dMSH7eukTpe9v+raOjXr2voftIbwhFxTmnkMlj26BwRulQG7iVFvF9AhE
+         /CvjVFexW+9Tizv7H/AbcaglTD6LBVAu+rAftTwVXtJMjxK/wCzki/2CMCwPSNf/smz/
+         72rsuU1rCbPppWlG6PpLlPYh532y1Yx/T6el17TodkUmd3YHEZFrlbYaaQ3wAp2HqRL6
+         ZLRaVjAaKscXh1EO14le3c4VVZvmtSGJnGA2Z7f80uDvM/qM2EajLO17IneeCBVyBaKk
+         1CQgeXuokBGzmuccw8wNRP08cudHhhxw4TRzdae+2L2sR6DTt8kt4x0bZjjzjwjWpvgu
+         nURA==
+X-Forwarded-Encrypted: i=1; AJvYcCXyKXhQRdgQFGMDi61rFzK15UZbESnrjBsDj+XPPctz9Kp43UXm4PwMclK/ep7lIStDUw5j/qwXHdr6Jx3k1EPudBoepWKSu87cUzcZ
+X-Gm-Message-State: AOJu0Yyclv/GTOjRbxMxMhGjRBWEqkIE++fkZOiFERwdxROWhSVvNxVH
+	ZfZq/53tZOL28mER36ZTZ1UXm8ge+RSGZotRIf/dvbBYyY2sel8KULEvZUX23tY=
+X-Google-Smtp-Source: AGHT+IHaqKnPjbeF9DkE8OAIMrQn/yg3h/qvNhnVka/p03SEAhYE5s3kETq0WcRaXPXz6KfiExc3Vg==
+X-Received: by 2002:a05:620a:990:b0:789:d140:5ab7 with SMTP id x16-20020a05620a099000b00789d1405ab7mr65798qkx.11.1711047485844;
+        Thu, 21 Mar 2024 11:58:05 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:6036])
+        by smtp.gmail.com with ESMTPSA id a6-20020a05620a102600b00789e2961225sm145765qkk.61.2024.03.21.11.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 11:58:05 -0700 (PDT)
+Date: Thu, 21 Mar 2024 14:58:04 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	=?iso-8859-1?B?Suly9G1l?= Poulin <jeromepoulin@gmail.com>
+Subject: Re: [PATCH] mm: zswap: fix writeback shinker GFP_NOIO/GFP_NOFS
+ recursion
+Message-ID: <20240321185804.GA3154@cmpxchg.org>
+References: <20240321182532.60000-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321170444.388225-1-chen.dylane@gmail.com>
-In-Reply-To: <20240321170444.388225-1-chen.dylane@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 21 Mar 2024 11:52:34 -0700
-Message-ID: <CAEf4BzYJeEViQaRJb6u06GJSLa6uBmykRZa4JnWJ9VXw+WoX2g@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: add specific btf name info when do core
-To: Tao Chen <chen.dylane@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240321182532.60000-1-hannes@cmpxchg.org>
 
-On Thu, Mar 21, 2024 at 10:04=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> w=
-rote:
->
-> No logic changed, just add specific btf name when core info
-> print, maybe it seems more understandable.
->
-> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
+On Thu, Mar 21, 2024 at 02:25:32PM -0400, Johannes Weiner wrote:
+> Kent forwards this bug report of zswap re-entering the block layer
+> from an IO request allocation and locking up:
+> 
+> [10264.128242] sysrq: Show Blocked State
+> [10264.128268] task:kworker/20:0H   state:D stack:0     pid:143   tgid:143   ppid:2      flags:0x00004000
+> [10264.128271] Workqueue: bcachefs_io btree_write_submit [bcachefs]
+> [10264.128295] Call Trace:
+> [10264.128295]  <TASK>
+> [10264.128297]  __schedule+0x3e6/0x1520
+> [10264.128303]  schedule+0x32/0xd0
+> [10264.128304]  schedule_timeout+0x98/0x160
+> [10264.128308]  io_schedule_timeout+0x50/0x80
+> [10264.128309]  wait_for_completion_io_timeout+0x7f/0x180
+> [10264.128310]  submit_bio_wait+0x78/0xb0
+> [10264.128313]  swap_writepage_bdev_sync+0xf6/0x150
+> [10264.128317]  zswap_writeback_entry+0xf2/0x180
+> [10264.128319]  shrink_memcg_cb+0xe7/0x2f0
+> [10264.128322]  __list_lru_walk_one+0xb9/0x1d0
+> [10264.128325]  list_lru_walk_one+0x5d/0x90
+> [10264.128326]  zswap_shrinker_scan+0xc4/0x130
+> [10264.128327]  do_shrink_slab+0x13f/0x360
+> [10264.128328]  shrink_slab+0x28e/0x3c0
+> [10264.128329]  shrink_one+0x123/0x1b0
+> [10264.128331]  shrink_node+0x97e/0xbc0
+> [10264.128332]  do_try_to_free_pages+0xe7/0x5b0
+> [10264.128333]  try_to_free_pages+0xe1/0x200
+> [10264.128334]  __alloc_pages_slowpath.constprop.0+0x343/0xde0
+> [10264.128337]  __alloc_pages+0x32d/0x350
+> [10264.128338]  allocate_slab+0x400/0x460
+> [10264.128339]  ___slab_alloc+0x40d/0xa40
+> [10264.128345]  kmem_cache_alloc+0x2e7/0x330
+> [10264.128348]  mempool_alloc+0x86/0x1b0
+> [10264.128349]  bio_alloc_bioset+0x200/0x4f0
+> [10264.128352]  bio_alloc_clone+0x23/0x60
+> [10264.128354]  alloc_io+0x26/0xf0 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
+> [10264.128361]  dm_submit_bio+0xb8/0x580 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
+> [10264.128366]  __submit_bio+0xb0/0x170
+> [10264.128367]  submit_bio_noacct_nocheck+0x159/0x370
+> [10264.128368]  bch2_submit_wbio_replicas+0x21c/0x3a0 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
+> [10264.128391]  btree_write_submit+0x1cf/0x220 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
+> [10264.128406]  process_one_work+0x178/0x350
+> [10264.128408]  worker_thread+0x30f/0x450
+> [10264.128409]  kthread+0xe5/0x120
+> 
+> The zswap shrinker resumes the swap_writepage()s that were intercepted
+> by the zswap store. This will enter the block layer, and may even
+> enter the filesystem depending on the swap backing file.
+> 
+> Make it respect GFP_NOIO and GFP_NOFS.
+> 
+> Link: https://lore.kernel.org/linux-mm/rc4pk2r42oyvjo4dc62z6sovquyllq56i5cdgcaqbd7wy3hfzr@n4nbxido3fme/
+> Reported-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Can you elaborate on what problem you are trying to solve?
-Conceptually libbpf does look for types in vmlinux (meaning main
-kernel BTF), even if user overrides BTF location (presumably because
-of old kernel). So even when we emit "vmlinux" in logs, it seems
-correct.
+Andrew can you please also add:
 
-pw-bot: cr
+Reported-by: Jérôme Poulin <jeromepoulin@gmail.com>
 
-
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index afd09571c482..b32154288b4a 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -5653,7 +5653,8 @@ static int load_module_btfs(struct bpf_object *obj)
->  }
->
->  static struct bpf_core_cand_list *
-> -bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf,=
- __u32 local_type_id)
-> +bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf,=
- __u32 local_type_id,
-> +                   const char *targ_btf_path)
->  {
->         struct bpf_core_cand local_cand =3D {};
->         struct bpf_core_cand_list *cands;
-> @@ -5680,7 +5681,8 @@ bpf_core_find_cands(struct bpf_object *obj, const s=
-truct btf *local_btf, __u32 l
->
->         /* Attempt to find target candidates in vmlinux BTF first */
->         main_btf =3D obj->btf_vmlinux_override ?: obj->btf_vmlinux;
-> -       err =3D bpf_core_add_cands(&local_cand, local_essent_len, main_bt=
-f, "vmlinux", 1, cands);
-> +       err =3D bpf_core_add_cands(&local_cand, local_essent_len, main_bt=
-f,
-> +                                targ_btf_path ?: "vmlinux", 1, cands);
->         if (err)
->                 goto err_out;
->
-> @@ -5793,7 +5795,8 @@ static int bpf_core_resolve_relo(struct bpf_program=
- *prog,
->                                  int relo_idx,
->                                  const struct btf *local_btf,
->                                  struct hashmap *cand_cache,
-> -                                struct bpf_core_relo_res *targ_res)
-> +                                struct bpf_core_relo_res *targ_res,
-> +                                const char *targ_btf_path)
->  {
->         struct bpf_core_spec specs_scratch[3] =3D {};
->         struct bpf_core_cand_list *cands =3D NULL;
-> @@ -5813,7 +5816,7 @@ static int bpf_core_resolve_relo(struct bpf_program=
- *prog,
->
->         if (relo->kind !=3D BPF_CORE_TYPE_ID_LOCAL &&
->             !hashmap__find(cand_cache, local_id, &cands)) {
-> -               cands =3D bpf_core_find_cands(prog->obj, local_btf, local=
-_id);
-> +               cands =3D bpf_core_find_cands(prog->obj, local_btf, local=
-_id, targ_btf_path);
->                 if (IS_ERR(cands)) {
->                         pr_warn("prog '%s': relo #%d: target candidate se=
-arch failed for [%d] %s %s: %ld\n",
->                                 prog_name, relo_idx, local_id, btf_kind_s=
-tr(local_type),
-> @@ -5920,7 +5923,8 @@ bpf_object__relocate_core(struct bpf_object *obj, c=
-onst char *targ_btf_path)
->                         if (prog->obj->gen_loader)
->                                 continue;
->
-> -                       err =3D bpf_core_resolve_relo(prog, rec, i, obj->=
-btf, cand_cache, &targ_res);
-> +                       err =3D bpf_core_resolve_relo(prog, rec, i, obj->=
-btf, cand_cache, &targ_res,
-> +                                                   targ_btf_path);
->                         if (err) {
->                                 pr_warn("prog '%s': relo #%d: failed to r=
-elocate: %d\n",
->                                         prog->name, i, err);
-> --
-> 2.34.1
->
+Thanks
 
