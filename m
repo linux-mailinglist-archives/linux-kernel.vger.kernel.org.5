@@ -1,93 +1,98 @@
-Return-Path: <linux-kernel+bounces-109865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3A768856D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:49:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2AD58856D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D56F71C218AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:49:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88CDF1F21A18
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E619B54F86;
-	Thu, 21 Mar 2024 09:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF0754FA9;
+	Thu, 21 Mar 2024 09:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="tKGF7EGI"
-Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ZQPC+7IZ"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10872C86A
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A055645B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711014581; cv=none; b=d9AYfsoeBrF9H+5VIoxCnOh9/3/7MTvTQEIXckYm883vM3nbDLAcxGWa86wZGVjCl9hezNuO7abcgF6pJSqtippzVWCXiDJZc+elAmPXcY8xCwwnSDJeVtS7ujocwWHmdya6qoQs22IMe03YnNHjGEfDt/iX3InYYqu66MZjcqI=
+	t=1711014552; cv=none; b=a6VurV5OsYp1IvKo/ZrEOPCoiGdecScu06gek5Ng1xwaqm4KwCP5wGDoW8n1vo0phfHrsxF8z7vwRBPahbAZbt2isuRBFeBGb/R/eI7J9rJTfiRZdHS3SNm5Dj6eEXTpk180pWTwibb5eHOgO+obFafcfdbmK2cTwpceLTyzDt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711014581; c=relaxed/simple;
-	bh=Bf4NuAPDhqMrn5J24FreL4tpQ7ONfil0t3MoZPMed5Q=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=csvHQWkP3PmVr+0WnVCnJWke+ESmjtSUbYPdZtrnbJfQ0mkrWaaJ+G5lP0Flv5AnEAHmrPX8OKg/Zg7UUjJFjZy1AlhAFlDrM5GrysQ/mLCkXlvVegJzG7yo2guSQmvGhwUR/QkhuATW2yloTfEn/Naz2AJKpEncn1Qk//LKhcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=tKGF7EGI; arc=none smtp.client-ip=203.205.221.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711014571; bh=HEeC4ByInjM1kRju0iAR0X6ZVteQxEDiMYLCDkSSO+g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=tKGF7EGIBrnE+lsLx9ko5dR/TwyjXnVJrI08MnXaK/0fBPSq5yt2tsJXfLL7wGUCW
-	 cV6Wo3GkUhKgHz/OxygbDESEggUz49uKVksaMyt30sUNCtlW9bhaulvHT7IzSkyfyj
-	 mK27581vJDjD4SzxyaiO7Tkq2OiJVbMhq9vMgLzI=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id C0FB2457; Thu, 21 Mar 2024 17:48:15 +0800
-X-QQ-mid: xmsmtpt1711014495t1570eglk
-Message-ID: <tencent_E4CF8DA81272DDA55DD319044F9F8D88A507@qq.com>
-X-QQ-XMAILINFO: Mdc3TkmnJyI/VlmtfTzmjpg/xvw6jITExioCpsPAWTnxujqSYgHxHKRLAJCy4U
-	 WFRzmLBUFzvn226XTy5FGRtojjsTfEWzkuLxrFi8IZumYMJdC7vY+X9jjyE8j3LsTpe+m8089rQ8
-	 AIb/gjGifMiQyPc7SL80LDm5PDhixUoBb0ojL5CobDsGYQXydJ9wdWHHptZeFTCENnLoESUsLaPO
-	 SaVoGmcrrlOTRrJY15KrhVRJL80mILX8MiPI+OaymAsurYKizO76VNU4i4G2bmgqwkwb6vfm7TFF
-	 lDx+dyfN2raBQyFzJ/nvrXsi9sFu1E0vVs3YQyA1BxEHIRSowb1VCbFohryrlLNn5J2QbpgowCLU
-	 mqlmspZD2tv1Ku3And9iVw5FJ+MGO+k1qHT+jFMHs9YCG1bMXeTxAjq2ep3jfK/hbm5p/bVw/0Vx
-	 qLvA2eNeEnVHnm0UYxAYslESK/hi7SS00oB9OhCpZIFvTKVCjZqcepGzIPKpHTk3+FbNu3guku+d
-	 qzdJQfUn+WFXDG2UDdG16QAEnJ2KitB61/FUNsDzRA8m7ynGlT7UDLLFJ3r1heX0PAxMd20x6Hjx
-	 CH3loMVMBkdaDB8CISEm6yX2gyrOIZjYMUjvCRcJr9CzySsXbXsvlCuB3Dn3a7iaWxRdaVwzmUZd
-	 fFUFKnuDndkiv5MCMHRhI1AMTlx9nwx5Rrz8BodRin7lcf9o5oCamIASWxdjNzYXa2ndoO9GtJwp
-	 dvVBNjqElqMM+oH6yMTE2YY3Tn07OYvMDn6/l9Eygp+gvlPEFX4LGhg6IBXLRcvy2S2DXhB1MHmT
-	 /DgwMtPyXzLmozeBRShDJBY/FZSbmqDgaM6mhHUnSRRuQprNVTs69LyLUPJA4gXHaQ4G6knhy3/K
-	 qHpsrgRoGdx+zb374EuClGdgPfAr3UESx6e8OxuRYF0fT+u+xfyjFy7cP2rrPW48JoK8lh+rgx
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+65f53dd6a0f7ad64c0cb@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfs_find_1st_rec_by_cnid
-Date: Thu, 21 Mar 2024 17:48:16 +0800
-X-OQ-MSGID: <20240321094815.2359097-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000008fd9bc061428179e@google.com>
-References: <0000000000008fd9bc061428179e@google.com>
+	s=arc-20240116; t=1711014552; c=relaxed/simple;
+	bh=l3ghcW6Wpc01USfRbBDFgdXMiPSFcEy9PO1CFvr9MzY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qvgl0eFDL3JyB2Xv1atX+oCO4hdx/aMf7Pb8elP5fSE5gznLjCoDIzvPm6baEG61n07zC9D0A7i4YqHO7PkXQxtNVSEg1/VOV4HLHaoIZ82fW6OG10rfZvqWqD4aUo0od11qWZOcznGVZ3EZB0EMls6UpFuAVJAFrUHD6Lkru3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ZQPC+7IZ; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-341950a6c9aso500159f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711014523; x=1711619323; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YQnaVRKvIjzKZu/W9svAkJqqB541GQ+AgFRgogKa+oc=;
+        b=ZQPC+7IZrh7UOTSELthV+dbIaYcZTg3R7VX+FsoP7NWz+jdgsQFaC70YCDHgcDozW/
+         tj+abfD+IYjUW/hZm7mADgwztUKyWBOgZMqL0W5uwY6WQf8PrIWy0vpZ/kr4exOulvi9
+         WlVDg75O3V9wZcGVmoGYtTqh+SjmdAuFyBwDd/TVHlpKUrJ40VRYS8O1WINEjoRqZAkP
+         yoMcNiCIVIgwVzUb4kfdWh1BBoqZvK4EyJk0WbecL/3gAD1mXmvJxB99rU74+MqVRCf4
+         fBhNAhzu+ZuR1QGdH19YRkcl+b0cK63HeJIWOVk5qf21BkisMiG7KwSDPGF474lO9c1l
+         p67A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711014523; x=1711619323;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YQnaVRKvIjzKZu/W9svAkJqqB541GQ+AgFRgogKa+oc=;
+        b=cn+5cmXoAJVzcpOtYEiK7pdTVsLPqQN3TxNSl6f7Zr7Tfv8gQf4IntEYsi59y0+bW5
+         7l/0ZrtjAKNtJ0SUDPQkZlOc2hS9VuERqI1a/Rtbvg6KvFFiPFSCyOMjhIOnZNRK6FOn
+         NKRL/prZQacYdHjjIIMj1TTsZGkhj0IJqNvkoot3/st5zrBjoJGM2CJR60ULzmiO8HlR
+         yOPm39V1lIdqClIO0eFrzo8ANT93I5358mgBrQcUipLobNe2cGt2NTlMU6pSREb0amBN
+         JNMcKYLdVq+40miAX/5uKZtE3kFQO7EyVvLoRGkqifn/4QWiF4sy+CBmoKonVG443yG/
+         ejCg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8oezLM7t85uOI4byNva/xKv+HAAvJqkhJQpu/wCCEmgxNop/9u9kg38icBmLybOOh5alKymaj8wQHnQF1mZ6VXsZIe4zDd+aTkBdO
+X-Gm-Message-State: AOJu0YwlstTA8NQNEXWaVtM8gwOKrmx/OX0pJqdILz35ZKTBglnUO+rC
+	DqGa5S/30UojPEFL1s/L0c0O25Yg/bzJ3yTAlZhx7rBv2FNEtLy2A8fsT3qHvaY=
+X-Google-Smtp-Source: AGHT+IGvSZEOt1oQ+NlJ1ttHSdpngsPBxO1aKwqD8k2tM3F3kCenyeLG4fsre/EN6wfoIDduTKE1xw==
+X-Received: by 2002:a5d:490d:0:b0:33e:bb67:9596 with SMTP id x13-20020a5d490d000000b0033ebb679596mr1273242wrq.64.1711014522487;
+        Thu, 21 Mar 2024 02:48:42 -0700 (PDT)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id p6-20020adfe606000000b0033e79eca6dfsm16682495wrm.50.2024.03.21.02.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 02:48:41 -0700 (PDT)
+Date: Thu, 21 Mar 2024 10:48:39 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: David Thompson <davthompson@nvidia.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, u.kleine-koenig@pengutronix.de, leon@kernel.org,
+	asmaa@nvidia.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v1] mlxbf_gige: stop PHY during open() error paths
+Message-ID: <ZfwCd_7RuyEJRpcq@nanopsycho>
+References: <20240320193117.3232-1-davthompson@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320193117.3232-1-davthompson@nvidia.com>
 
-please test uninit-value in hfs_find_1st_rec_by_cnid
+Wed, Mar 20, 2024 at 08:31:17PM CET, davthompson@nvidia.com wrote:
+>The mlxbf_gige_open() routine starts the PHY as part of normal
+>initialization.  The mlxbf_gige_open() routine must stop the
+>PHY during its error paths.
+>
+>Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
+>Signed-off-by: David Thompson <davthompson@nvidia.com>
+>Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
-index ca2ba8c9f82e..b939dc879dac 100644
---- a/fs/hfsplus/bfind.c
-+++ b/fs/hfsplus/bfind.c
-@@ -18,7 +18,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- 
- 	fd->tree = tree;
- 	fd->bnode = NULL;
--	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
-+	ptr = kzalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
- 	fd->search_key = ptr;
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
