@@ -1,112 +1,117 @@
-Return-Path: <linux-kernel+bounces-109932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D87F8857E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:15:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE708857DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E791F21998
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:15:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ADD82820E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00577604BE;
-	Thu, 21 Mar 2024 11:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7165FBA0;
+	Thu, 21 Mar 2024 11:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="ZAJ348vF"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="coiYMLs+"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8000604AE;
-	Thu, 21 Mar 2024 11:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F316F5EE97;
+	Thu, 21 Mar 2024 11:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019603; cv=none; b=k1ooMABnztdtaJ1RMli2lXoEItD52pvTLio41rjO47mgvjmvBdg7YS7W+Obnqs3XcDOyEmDuIRffAzrk+/CyE9i11edSuYGDuTP0lBC0RFBhVACu9RxnlVJCsLy/NBcBto054v9yRRwV2mrkX9ApruYXZk+bciNXU7vPutugwcM=
+	t=1711019589; cv=none; b=dqr0NNw1i6CYQOq7Bjh3FAHK5XAlT/CaCWQPPTPpKePRuyN9Dnfgnqj73DPJ+tYdYrQWKzdLslstkAtXYIbixgqdHlUSsSWcmZ+eULbvv7QbZTOEAC6OTeC/vp1TQIm66DZpS/vX7Pcr3WthArSc9y+kyOg5wbWK58c5hrFFZq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019603; c=relaxed/simple;
-	bh=xiE+4s/2bcGKpcSbUmB3pNcXJFGnXmhWhAmSMO4hU7o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kOHubuYACMbCopvZOV5Nd37I5LwKAz+eiW04G+7iS9w675PBz25CyNr44KWDwAu9SPutJlnBbBMPxVYYjCW0Tt/XarPsy8wxKZiN5u3/J6nGTi6e8nmZX7Q23m6bCqyFVfFVZtry0YLwDnKpRjrBeHVjLXNAhVMq/kbGlBfRoKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=ZAJ348vF; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from umang.jain (unknown [103.86.18.138])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8D7498CC;
-	Thu, 21 Mar 2024 12:12:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711019572;
-	bh=xiE+4s/2bcGKpcSbUmB3pNcXJFGnXmhWhAmSMO4hU7o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZAJ348vF0h+iybGwGHwUXE6JiAEn2RCEWxy+IJbx7LDgh5fmbWs+2SoWuLWM2hD+x
-	 rjMhOP2IwhE9PiSUR2P6YMTGKLcZrKG64yT7cdS5vUDHFLnqPc72oJ+SqCjjeAfam2
-	 rReCIvUV4aAecUfo2IQs7XZbf6tkbyfPX1Ix6y9c=
-From: Umang Jain <umang.jain@ideasonboard.com>
-To: linux-media@vger.kernel.org
-Cc: Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	Tommaso Merciai <tomm.merciai@gmail.com>
-Subject: [PATCH v3 6/6] media: imx335: Limit analogue gain value
-Date: Thu, 21 Mar 2024 16:42:39 +0530
-Message-ID: <20240321111239.808735-7-umang.jain@ideasonboard.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240321111239.808735-1-umang.jain@ideasonboard.com>
-References: <20240321111239.808735-1-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1711019589; c=relaxed/simple;
+	bh=B+AlRq5wD4cwKio/BwnlSW6HPEA5QfwG/R6CJTZ8mjk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hChlHTKDWKgO09zaxSdzJplzRMgLW7OD+evfAwsYVWXGM5VY086EfMgu8g72HDXxAYwsLvz7yRzheZKs/y2x7eyKIP7KyM84bco0WEN7cX8KjBUrWg/8AUCp9Ty4R8yKRHlgm+mXqWEmPxyGTyGqQRcI7N6Y2VARsyuBLwBeU4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=coiYMLs+; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e285a33bdso421968f8f.2;
+        Thu, 21 Mar 2024 04:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711019586; x=1711624386; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/cbRd6FJvpAd6q8sCN6S7DaJi3dR5jcQCtvHDUVwB4s=;
+        b=coiYMLs+est4Nm+KDbvN8FMJlPuToEsv3hiKd1vftPIosjFMg4zrWuuP/ncw+/YEka
+         fsm5oJU3vGePgK3GjWHU+1O2reO2oZCKcsGCL8rkjqEgcU7vKvqkgjZr+xAteb7EpRMv
+         URbWNUUb5HIPvsZwsPSyioAKdKoedEjkDQwxZvptvo8L/nrzFUHoydhMzw9txwCtalAc
+         4ZSRiZNNQ6KvA81qQqsox48HCgWGFfFtm5ZgVYapz3tcmCXg7Mr9Efpu6QfS+L3AqHo2
+         Z7Ps835KtcTxBN333LiO+G1NnmU/wuuWsQQ0zo6VTmPKF9Yqjvtx0q3zN2/OLBkd7vo0
+         f0tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711019586; x=1711624386;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/cbRd6FJvpAd6q8sCN6S7DaJi3dR5jcQCtvHDUVwB4s=;
+        b=lfCDTKdrfM8d5dPgW7nBiw1rpHmBeZoX2rI2LCheowKlsekj+TLd1tckKG7M9O6UAX
+         WzR14Dg7bmuP1vbOKvwUidmb9dapO0zkRXNLpEICRdFcAMIGvdZ1WzhDn/SoEWLsJ/g8
+         lIyVtZLUPVWreqhLa9XXRZIXVhjt8A3aIevrGM+VCWansB9LtqMhTsh3TdaBFjR+Rw9L
+         rf2rfF1adkiz5XtM+tiWV2Eps/AqZlgQ/UobCxYSGa13GT7jEmYqJT1Ebe9/5JjzbRG8
+         9XASvaRXtTf6eJvnD1vyVeEnfdLIJumOJBfQUXN1MYX/svHYU4NqwGQ85wf/kGQN/QQ7
+         C1Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCWxdW4y7T13FG9+BGkzMq5O77b20DwxXlQ2I7vrDeupg54zR/0U3QM1+dg0/Dbvr7fAxsncd6/+u0gkXIIXWe4ut9rBtTRb0Jgdqj5q
+X-Gm-Message-State: AOJu0YyJxqlpj4t29Tfkc1afK65wOJUku1DrouXnsPvxmO6Xu3qOBsSt
+	Ugtyp439SA4hj1esc3oK9fvi5ieCTBb53vzg2EhnKqKLbWIf8Pgc
+X-Google-Smtp-Source: AGHT+IF1qcjGqILJGRttiMz+xlyqBsK2ZvkeTOZ/NL2ddPVFWT5/4nVJZeIZwrHSd8camWTZIH4qdw==
+X-Received: by 2002:a05:6000:402c:b0:341:a079:4aa6 with SMTP id cp44-20020a056000402c00b00341a0794aa6mr3000966wrb.20.1711019586317;
+        Thu, 21 Mar 2024 04:13:06 -0700 (PDT)
+Received: from [192.168.16.136] (54-240-197-226.amazon.com. [54.240.197.226])
+        by smtp.gmail.com with ESMTPSA id q2-20020a05600000c200b0033dedd63382sm16862061wrx.101.2024.03.21.04.13.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 04:13:05 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <0a1d48f9-7628-4c70-ba83-efb6263f6bfa@xen.org>
+Date: Thu, 21 Mar 2024 11:13:05 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 3/3] KVM: Explicitly disallow activatating a
+ gfn_to_pfn_cache with INVALID_GPA
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20240320001542.3203871-1-seanjc@google.com>
+ <20240320001542.3203871-4-seanjc@google.com>
+Organization: Xen Project
+In-Reply-To: <20240320001542.3203871-4-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The sensor gain (both analog and digital) are controlled by a
-single gain value where:
-- 0dB to 30dB correspond to analog gain
-- 30.3dB to 72dB correspond to digital gain
-  (with 0.3dB step)
+On 20/03/2024 00:15, Sean Christopherson wrote:
+> Explicit disallow activating a gfn_to_pfn_cache with an error gpa, i.e.
+> INVALID_GPA, to ensure that KVM doesn't mistake a GPA-based cache for an
+> HVA-based cache (KVM uses INVALID_GPA as a magic value to differentiate
+> between GPA-based and HVA-based caches).
+> 
+> WARN if KVM attempts to activate a cache with INVALID_GPA, purely so that
+> new caches need to at least consider what to do with a "bad" GPA, as all
+> existing usage of kvm_gpc_activate() guarantees gpa != INVALID_GPA.  I.e.
+> removing the WARN in the future is completely reasonable if doing so would
+> yield cleaner/better code overall.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   virt/kvm/pfncache.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
 
-Hence, limit the analogue gain value to 100.
-For digital gain, support can be added later if needed.
-
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
- drivers/media/i2c/imx335.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 10a09830dbd6..9eb8f70836fd 100644
---- a/drivers/media/i2c/imx335.c
-+++ b/drivers/media/i2c/imx335.c
-@@ -52,7 +52,7 @@
- /* Analog gain control */
- #define IMX335_REG_AGAIN		CCI_REG8(0x30e8)
- #define IMX335_AGAIN_MIN		0
--#define IMX335_AGAIN_MAX		240
-+#define IMX335_AGAIN_MAX		100
- #define IMX335_AGAIN_STEP		1
- #define IMX335_AGAIN_DEFAULT		0
- 
-@@ -1175,6 +1175,14 @@ static int imx335_init_controls(struct imx335 *imx335)
- 					     IMX335_EXPOSURE_STEP,
- 					     IMX335_EXPOSURE_DEFAULT);
- 
-+	/*
-+	 * The sensor has an analog gain and a digital gain, both controlled
-+	 * through a single gain value, expressed in 0.3dB increments. Values
-+	 * from 0.0dB (0) to 30.0dB (100) apply analog gain only, higher values
-+	 * up to 72.0dB (240) add further digital gain. Limit the range to
-+	 * analog gain only, support for digital gain can be added separately
-+	 * if needed.
-+	 */
- 	imx335->again_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
- 					       &imx335_ctrl_ops,
- 					       V4L2_CID_ANALOGUE_GAIN,
--- 
-2.43.0
+Reviewed-by: Paul Durrant <paul@xen.org>
 
 
