@@ -1,303 +1,180 @@
-Return-Path: <linux-kernel+bounces-110795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FCDD88640E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FAE3886410
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43D511C2158C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:45:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EDF1C2179A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D6B31758;
-	Thu, 21 Mar 2024 23:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6DF3BB29;
+	Thu, 21 Mar 2024 23:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lTmUJF4f"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="VsCJse60"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15E5F516;
-	Thu, 21 Mar 2024 23:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3B91B263
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711064746; cv=none; b=CIUfHGe8jQTR8fy1gdAVj4wkKPGCTYEg3TvgArF+8m9AP6HamFeCHjktz8BIFcgj1zVMcwF41ET958cCDJBigLJasUzwE1EXzs49xd8jxqhTHuTJiQDFtrz1hK7/tGh3G89i+Y56hJzDTnnqNhzVXOIfobJwP1JFwe0O1d2zw9U=
+	t=1711064794; cv=none; b=W6bnKdUdVKu5G3VHX658/araEkTECLbymRk8NEqM2OaqXBCgYaxCdJ2aPni4T7WCxFCntSCzIg9EjEHL3SlUUcQOVma394G4CX2xNJiTR+wum2X8jNgH+XkBBNFCuQbKLtsCY7yCWeG5pE1wILGV2txRsPIP1yQ2etVxZlqq0K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711064746; c=relaxed/simple;
-	bh=jW38JzanhRNpu03oZcnIFmEukYYO360wk+qtFn4vZEQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TCIsSWpMY8SSY0rOGjPtLI/gyqx8nVFiDCay9le1j4y+GZnF5GqSYpfk83td3+xAxYTe43EmA/+8OSbhpmHUALu9UZZSVliQhDYWiXbClSDv83WGbPY+200UIiiUGXIazvtrsWAE1sJuteWJaNmBzGnsU+Od5H9WsSAHJ0KrEEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lTmUJF4f; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711064745; x=1742600745;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jW38JzanhRNpu03oZcnIFmEukYYO360wk+qtFn4vZEQ=;
-  b=lTmUJF4fk3NOhGc8DCMDgh9GEwsSZEWLgqODS85iiS4pWITFrxdiwoaU
-   WM/pJBjyiE7uPNrkq29IA9Bfb7LITOMryBbOXXOmkY+9rF31HzKhE8AMD
-   HvwfeRx4xLh+S28zBll4u8IwKUUkuccjLZKaN5Y2/kb8AE9asT6iNgLJ+
-   8F9SY3kzL7BhyIfWwaAkSDTzmcIF6Q19/75rPcRKAP6oSXSJnafD7l8/1
-   OX8CPq8k5nJ5l+aJ3gWO9r8K4cVywb0B+VKfUCMWAojz8OsTFTN2Q1/nX
-   2PthVxZ7fVkzfO1/fNCwx0/q0Vw9gsG7gYvrTgvmZX3qt15e++5LC8DFS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="17246015"
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="17246015"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:45:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="15106951"
-Received: from dongshen-mobl1.amr.corp.intel.com (HELO [10.212.116.150]) ([10.212.116.150])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:45:44 -0700
-Message-ID: <dfce9f2e-2253-43b8-b94a-82585879f59d@intel.com>
-Date: Thu, 21 Mar 2024 16:45:43 -0700
+	s=arc-20240116; t=1711064794; c=relaxed/simple;
+	bh=GBp117Rw9ou09bC9vlczg3WmwjqjNQ4BV42hmHgOAGM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Eud1qnJRLCPs4pUJvtotLk1FjWQBLe0coattIhbf9nYbHnXddd3bqOpTA7TLo1hJ/fdKYQRv6PpOaALmk3ZR1YUT84d1bg0x3orZUS9kkRbbHKw6Pi9B1YmeGe4NuHHOnudBM6o/P630FnWV6eIY6AVeNmJuBetsE7qKiVgqap4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VsCJse60; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso2997864276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711064791; x=1711669591; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TKcHHCSWCqgul2AOMbuKphpbCV9drtQafSH0+0DTZms=;
+        b=VsCJse60j86WLf2PNMFujVaQX/q9AyhsHXmv/C09+wPlP+I0eZpkWyVD2nuHIr3e2w
+         NsGGQJV5cM/vpLFlHwltfelhumVPrZR13P5ANwKcFg82SeZY9ULvH/FytwRXQTwCrYOI
+         q8sitGGwDRXrgrziLBI6tJGwsJe3E13S4xFCW1BPRfOrawWEkh95DkZ1fmFUelM0zJj9
+         g9fjDuAjILXtG7hGSbDt0wodKzHspkM/8kb3Ic/wV0fvs4U5UozufWb/ndF9eyK0GbY8
+         gckRVGUM09dqaPOSPeL9t1MJZ+Nu093QYtukD/aDnHaX+VfZjnKRwbzFKF3n5ZHfoj7d
+         CxNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711064791; x=1711669591;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TKcHHCSWCqgul2AOMbuKphpbCV9drtQafSH0+0DTZms=;
+        b=i04DscAoWKQ8Rd/Z0I870NHGyX5U1ipsHrxMCwCxptk2XClFcja8jA3IRmHoglW4Tr
+         x0qRQDfofYVjvi4KjxS070C+HCK7gxj9DqpwGEJd4Z2XSW3eg3sHR/+9sipbf94aGMHc
+         M5BI9E0KBD98o+5CyCsK+i0d0brL65EPcOilvLlbd7hQyD2eO0YAiSLNNQ3gv7Imof5f
+         qqQgSsTWWTt/xgjEuDgCylJGfE7GWxyEnMul4mwHg/EwgQpggmoAFC4JK/hdb7JJzAmd
+         YHyb1Cnsyw/LIiwgtNiCfmjxKnkzW7T9pRvhz0kIyOBBK5b3DuSuYr4h6ReyJ7j6MM5S
+         vC9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWRteGKE397Fqnf5TfHPnLbuLPndZ8tl7kwvCjrB4iEahbhaW+dbMxfDSpNv8EXWClAxbmIQjQdqVxiBhmpHXroAxUExXUFqw8PpMoz
+X-Gm-Message-State: AOJu0Ywu8u969qnCRmA9WeT2njTCPSZHomjkAisw5YVcIlwh0nRZskR2
+	eoAI9yxsbSIUpR0CpqoqZqhX4snkidUGP9123HiErKmASlrEeUlLzafIcCQvAbL/QbSwgIYOg3H
+	T+44vEIZCfjy0NnE3MrxSQw==
+X-Google-Smtp-Source: AGHT+IGslFJ7I58NprLlYtxvFu8RungPyoqKiB8iuMyQ7S0Xf45CcMjYFnGLqEJkvq/9SAAdc0Ta5veeJ5B3mcEUmw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:100a:b0:dc6:ff2b:7e1b with
+ SMTP id w10-20020a056902100a00b00dc6ff2b7e1bmr196400ybt.4.1711064791522; Thu,
+ 21 Mar 2024 16:46:31 -0700 (PDT)
+Date: Thu, 21 Mar 2024 23:46:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 17/29] KVM: selftests: TDX: Add TDX MMIO reads test
-To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
- Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
- Erdem Aktas <erdemaktas@google.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
- Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-18-sagis@google.com>
-Content-Language: en-US
-From: "Zhang, Dongsheng X" <dongsheng.x.zhang@intel.com>
-In-Reply-To: <20231212204647.2170650-18-sagis@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANLG/GUC/x3MwQqDMAwA0F+RnA1oLQr+ytjB1WQGpJakikP8d
+ 8uO7/IuMFIhg7G6QOkQky0WtHUFYZnil1DmYnCN803nWrSsMaQfsuHCltbd8JxyVgzo6cPUD+x DP0MJkhLL+c9f7/t+AA3Ex21sAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711064790; l=3560;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=GBp117Rw9ou09bC9vlczg3WmwjqjNQ4BV42hmHgOAGM=; b=7eliCTZlOhrbirCoWB7C+nw7yQJFi+JZPUgfpGG0LQzr9Zvxig7qUqczMOmzK471p6Oo4nxWE
+ EZp5nx2evR3AhFnqMtbF8E/P5IbKnWIgUu8C3qx4/qaT1i9Z166dvrZ
+X-Mailer: b4 0.12.3
+Message-ID: <20240321-strncpy-fs-hfsplus-xattr-c-v1-1-0c6385a10251@google.com>
+Subject: [PATCH] hfsplus: refactor copy_name to not use strncpy
+From: Justin Stitt <justinstitt@google.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
+strncpy() is deprecated with NUL-terminated destination strings [1].
 
+The copy_name() method does a lot of manual buffer manipulation to
+eventually arrive with its desired string. If we don't know the
+namespace this attr has or belongs to we want to prepend "osx." to our
+final string. Following this, we're copying xattr_name and doing a
+bizarre manual NUL-byte assignment with a memset where n=1.
 
-On 12/12/2023 12:46 PM, Sagi Shahar wrote:
-> The test verifies MMIO reads of various sizes from the host to the guest.
-> 
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ryan Afranji <afranji@google.com>
-> ---
->  .../selftests/kvm/include/x86_64/tdx/tdcall.h |  2 +
->  .../selftests/kvm/include/x86_64/tdx/tdx.h    |  3 +
->  .../kvm/include/x86_64/tdx/test_util.h        | 23 +++++
->  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 19 ++++
->  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 87 +++++++++++++++++++
->  5 files changed, 134 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
-> index b5e94b7c48fa..95fcdbd8404e 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
-> @@ -9,6 +9,8 @@
->  
->  #define TDG_VP_VMCALL_INSTRUCTION_IO_READ 0
->  #define TDG_VP_VMCALL_INSTRUCTION_IO_WRITE 1
-> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO_READ 0
-> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE 1
->  
->  #define TDG_VP_VMCALL_SUCCESS 0x0000000000000000
->  #define TDG_VP_VMCALL_INVALID_OPERAND 0x8000000000000000
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> index b18e39d20498..13ce60df5684 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> @@ -12,6 +12,7 @@
->  #define TDG_VP_VMCALL_INSTRUCTION_IO 30
->  #define TDG_VP_VMCALL_INSTRUCTION_RDMSR 31
->  #define TDG_VP_VMCALL_INSTRUCTION_WRMSR 32
-> +#define TDG_VP_VMCALL_VE_REQUEST_MMIO 48
->  
->  void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu);
->  uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
-> @@ -22,5 +23,7 @@ uint64_t tdg_vp_vmcall_get_td_vmcall_info(uint64_t *r11, uint64_t *r12,
->  uint64_t tdg_vp_vmcall_instruction_rdmsr(uint64_t index, uint64_t *ret_value);
->  uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value);
->  uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag);
-> +uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
-> +					uint64_t *data_out);
->  
->  #endif // SELFTEST_TDX_TDX_H
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> index 8a9b6a1bec3e..af412b764604 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> @@ -35,6 +35,29 @@
->  			(VCPU)->run->io.direction);			\
->  	} while (0)
->  
-> +
-> +/**
-> + * Assert that some MMIO operation involving TDG.VP.VMCALL <#VERequestMMIO> was
-> + * called in the guest.
-> + */
-> +#define TDX_TEST_ASSERT_MMIO(VCPU, ADDR, SIZE, DIR)			\
-> +	do {								\
-> +		TEST_ASSERT((VCPU)->run->exit_reason == KVM_EXIT_MMIO,	\
-> +			"Got exit_reason other than KVM_EXIT_MMIO: %u (%s)\n", \
-> +			(VCPU)->run->exit_reason,			\
-> +			exit_reason_str((VCPU)->run->exit_reason));	\
-> +									\
-> +		TEST_ASSERT(((VCPU)->run->exit_reason == KVM_EXIT_MMIO) && \
-> +			((VCPU)->run->mmio.phys_addr == (ADDR)) &&	\
-> +			((VCPU)->run->mmio.len == (SIZE)) &&		\
-> +			((VCPU)->run->mmio.is_write == (DIR)),		\
-> +			"Got an unexpected MMIO exit values: %u (%s) %llu %d %d\n", \
-> +			(VCPU)->run->exit_reason,			\
-> +			exit_reason_str((VCPU)->run->exit_reason),	\
-> +			(VCPU)->run->mmio.phys_addr, (VCPU)->run->mmio.len, \
-> +			(VCPU)->run->mmio.is_write);			\
-> +	} while (0)
-> +
->  /**
->   * Check and report if there was some failure in the guest, either an exception
->   * like a triple fault, or if a tdx_test_fatal() was hit.
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> index 9485bafedc38..b19f07ebc0e7 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> @@ -124,3 +124,22 @@ uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag)
->  
->  	return __tdx_hypercall(&args, 0);
->  }
-> +
-> +uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
-> +					uint64_t *data_out)
-> +{
-> +	uint64_t ret;
-> +	struct tdx_hypercall_args args = {
-> +		.r11 = TDG_VP_VMCALL_VE_REQUEST_MMIO,
-> +		.r12 = size,
-> +		.r13 = TDG_VP_VMCALL_VE_REQUEST_MMIO_READ,
-> +		.r14 = address,
-> +	};
-> +
-> +	ret = __tdx_hypercall(&args, TDX_HCALL_HAS_OUTPUT);
-> +
-> +	if (data_out)
-> +		*data_out = args.r11;
-> +
-> +	return ret;
-> +}
-> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> index 5fae4c6e5f95..48902b69d13e 100644
-> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> @@ -799,6 +799,92 @@ void verify_guest_hlt(void)
->  	_verify_guest_hlt(0);
->  }
->  
-> +/* Pick any address that was not mapped into the guest to test MMIO */
-> +#define TDX_MMIO_TEST_ADDR 0x200000000
-> +
-> +void guest_mmio_reads(void)
-> +{
-> +	uint64_t data;
-> +	uint64_t ret;
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 1, &data);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +	if (data != 0x12)
-> +		tdx_test_fatal(1);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 2, &data);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +	if (data != 0x1234)
-> +		tdx_test_fatal(2);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 4, &data);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +	if (data != 0x12345678)
-> +		tdx_test_fatal(4);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 8, &data);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +	if (data != 0x1234567890ABCDEF)
-> +		tdx_test_fatal(8);
-> +
-> +	// Read an invalid number of bytes.
-> +	ret = tdg_vp_vmcall_ve_request_mmio_read(TDX_MMIO_TEST_ADDR, 10, &data);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	tdx_test_success();
-> +}
-> +
-> +/*
-> + * Varifies guest MMIO reads.
+Really, we can use some more obvious string APIs to acomplish this,
+improving readability and security. Following the same control flow as
+before: if we don't know the namespace let's use scnprintf() to form our
+prefix + xattr_name pairing (while NUL-terminating too!). Otherwise, use
+strscpy() to return the number of bytes copied into our buffer.
 
-Nit: typo?  Varifies ==> Verifies
+Note that strscpy() _can_ return -E2BIG but this is already handled by
+all callsites:
 
-> + */
-> +void verify_mmio_reads(void)
-> +{
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +
-> +	vm = td_create();
-> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-> +	vcpu = td_vcpu_add(vm, 0, guest_mmio_reads);
-> +	td_finalize(vm);
-> +
-> +	printf("Verifying TD MMIO reads:\n");
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 1, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
-> +	*(uint8_t *)vcpu->run->mmio.data = 0x12;
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 2, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
-> +	*(uint16_t *)vcpu->run->mmio.data = 0x1234;
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 4, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
-> +	*(uint32_t *)vcpu->run->mmio.data = 0x12345678;
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 8, TDG_VP_VMCALL_VE_REQUEST_MMIO_READ);
-> +	*(uint64_t *)vcpu->run->mmio.data = 0x1234567890ABCDEF;
-> +
-> +	td_vcpu_run(vcpu);
-> +	TEST_ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[1], TDG_VP_VMCALL_INVALID_OPERAND);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +	printf("\t ... PASSED\n");
-> +}
-> +
->  int main(int argc, char **argv)
->  {
->  	setbuf(stdout, NULL);
-> @@ -818,6 +904,7 @@ int main(int argc, char **argv)
->  	run_in_new_process(&verify_guest_msr_writes);
->  	run_in_new_process(&verify_guest_msr_reads);
->  	run_in_new_process(&verify_guest_hlt);
-> +	run_in_new_process(&verify_mmio_reads);
->  
->  	return 0;
->  }
+In both hfsplus_listxattr_finder_info() and hfsplus_listxattr(), ret is
+already type ssize_t so we can change the return type of copy_name() to
+match (understanding that scnprintf()'s return type is different yet
+fully representable by ssize_t). Furthermore, listxattr() in fs/xattr.c
+is well-equipped to handle a potential -E2BIG return result from
+vfs_listxattr():
+|	ssize_t error;
+..
+|	error = vfs_listxattr(d, klist, size);
+|	if (error > 0) {
+|		if (size && copy_to_user(list, klist, error))
+|			error = -EFAULT;
+|	} else if (error == -ERANGE && size >= XATTR_LIST_MAX) {
+|		/* The file system tried to returned a list bigger
+|			than XATTR_LIST_MAX bytes. Not possible. */
+|		error = -E2BIG;
+|	}
+.. our error can potentially already be -E2BIG, skipping this else-if
+and ending up at the same state as other errors.
+
+This whole copy_name() function could really be a one-line with some
+ternary statements embedded into a scnprintf() arg-list but I've opted
+to maintain some semblance of readability.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+---
+ fs/hfsplus/xattr.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
+
+diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
+index 9c9ff6b8c6f7..00351f566e9f 100644
+--- a/fs/hfsplus/xattr.c
++++ b/fs/hfsplus/xattr.c
+@@ -400,22 +400,13 @@ static int name_len(const char *xattr_name, int xattr_name_len)
+ 	return len;
+ }
+ 
+-static int copy_name(char *buffer, const char *xattr_name, int name_len)
++static ssize_t copy_name(char *buffer, const char *xattr_name, int name_len)
+ {
+-	int len = name_len;
+-	int offset = 0;
+-
+-	if (!is_known_namespace(xattr_name)) {
+-		memcpy(buffer, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN);
+-		offset += XATTR_MAC_OSX_PREFIX_LEN;
+-		len += XATTR_MAC_OSX_PREFIX_LEN;
+-	}
+-
+-	strncpy(buffer + offset, xattr_name, name_len);
+-	memset(buffer + offset + name_len, 0, 1);
+-	len += 1;
++	if (!is_known_namespace(xattr_name))
++		return scnprintf(buffer, name_len + XATTR_MAC_OSX_PREFIX_LEN,
++				 "%s%s", XATTR_MAC_OSX_PREFIX, xattr_name);
+ 
+-	return len;
++	return strscpy(buffer, xattr_name, name_len + 1);
+ }
+ 
+ int hfsplus_setxattr(struct inode *inode, const char *name,
+
+---
+base-commit: 241590e5a1d1b6219c8d3045c167f2fbcc076cbb
+change-id: 20240321-strncpy-fs-hfsplus-xattr-c-4ebfe67f4c6d
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
