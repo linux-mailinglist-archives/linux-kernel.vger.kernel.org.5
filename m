@@ -1,91 +1,171 @@
-Return-Path: <linux-kernel+bounces-110153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64232885AE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:36:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A0A1885AE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95BD21C216A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:36:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A398B216E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E90785274;
-	Thu, 21 Mar 2024 14:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IfO9S2W+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E1784FA0;
+	Thu, 21 Mar 2024 14:38:00 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD2A1EB5B;
-	Thu, 21 Mar 2024 14:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D46C51EB3B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711031752; cv=none; b=MISEQyL1ojfywMjuYK6J3TivnMFAKU9uT78/ngkOvC7vsol/W51alHBsfQI/y/BGCQM5YRIA30mDoOHoiZfDfl5mgpwP02CxG//pB6jjHWwWDj2vbCWezCd3U6OWht7W+F2CGR1IUEeJDIsXnPZt1UrHfT6PnGSWrF77Sjag7CA=
+	t=1711031879; cv=none; b=Bax/xhBJqZCSpp4jvY4XOAM65KVlJRmHCuiByHiPgZzSF+Lh31q2jnrBy2P6Ac0h26Ozk6l6BkOf7auIpFCztAfzdImGnL+ARaaOcZMzA6QYjMMPvNhqzU0N5MLXZ/8IPJ9qKcOFB2v0/2mdi1pHAEOrrlQmtOCqpcaLgW4MV9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711031752; c=relaxed/simple;
-	bh=70vwzhgn79yogJCS87DlftU4oBSZhD43UWqQlGCtGrU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIqXgTd317SI7q5RhmVwKUt6hMVHpqWwh3ZFGz07g4amw4W+6VtOgfGHhgjwcwuONxdL80EotZDsR78kBcR31aHey9uUJyUCy5iNB6Ib53/07YvQG49r5BkMvAc/Hf4r8FiU60ZeZzYhxmPdSGyfM0D+ApLmmCWjCxJycQriiCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IfO9S2W+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 079B5C433F1;
-	Thu, 21 Mar 2024 14:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711031752;
-	bh=70vwzhgn79yogJCS87DlftU4oBSZhD43UWqQlGCtGrU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IfO9S2W+we9+5OhEducULSvn5FUTOeaJNq3guTfppTUv1WpX4j/hMWhAC3Gm1S4jT
-	 L45LPbzwRFpkZ2IfAlps/7oDBdJGBac4+KTB5kdleaEUqjx9RQPWueasnpO5j2ONFh
-	 4FjsLrk+0ZTToJraGxS1cOu/6pcAmEV5D4ZnXYuQAWci4nPsoBcbZnVffzTFakRk1D
-	 cUF6PT+LSrxFyymJvG1zYb50NJAtpEMrp9097oGWegoHDh5V2dI/V7N0IOrRsN9NCi
-	 GsT3lJn4x7pzQtaLutknHpx/ZSVhJQmqn1GUZaRIJZ2QHl6i263pZyK3jFh2v5EMvi
-	 +8lRtRPLeeLzQ==
-Date: Thu, 21 Mar 2024 09:35:49 -0500
-From: Rob Herring <robh@kernel.org>
-To: Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	mturquette@baylibre.com, sboyd@kernel.org, djakov@kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm IPQ9574
- support
-Message-ID: <20240321143549.GA1679970-robh@kernel.org>
-References: <20240321043149.2739204-1-quic_varada@quicinc.com>
- <20240321043149.2739204-2-quic_varada@quicinc.com>
+	s=arc-20240116; t=1711031879; c=relaxed/simple;
+	bh=LP3FeeZH4nKE2ePG3cz0fkEKsYcfyJbnepgga50dUlM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=tZqTjto6N0i5M3AltxsEnn2ebdJrmosJjDCwgP2vAq32vstjthfv9quO/7EMPuCcOCroAq0ggBzjwXANm+kQNI9HUsWT5FSdMj2cdHt/RJRvHdBlgvYYxn5X+1EMQFpUURPPdsj9MbCpXGCNTH8cHOYrewukWhV4YP3hUnSXENk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-187-6fRfpWVCPDm3cO9Kixse_g-1; Thu, 21 Mar 2024 14:37:54 +0000
+X-MC-Unique: 6fRfpWVCPDm3cO9Kixse_g-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Mar
+ 2024 14:37:28 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 21 Mar 2024 14:37:28 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Russell King' <linux@armlinux.org.uk>
+CC: Ard Biesheuvel <ardb@kernel.org>, 'Jiangfeng Xiao'
+	<xiaojiangfeng@huawei.com>, "arnd@arndb.de" <arnd@arndb.de>,
+	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
+	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
+	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
+	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
+	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
+	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
+	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
+	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHAgAAWtoCAAAVW8IAACy4AgAADrmCAAAjqAIAAC+ng
+Date: Thu, 21 Mar 2024 14:37:28 +0000
+Message-ID: <9d6057b110034c04b6b590522c8c69cc@AcuMS.aculab.com>
+References: <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+ <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+ <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+ <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
+ <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
+ <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
+ <0fd55e156195440bb1d815dd8300894b@AcuMS.aculab.com>
+ <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
+In-Reply-To: <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321043149.2739204-2-quic_varada@quicinc.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 10:01:48AM +0530, Varadarajan Narayanan wrote:
-> Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
-> interfaces. This will be used by the gcc-ipq9574 driver
-> that will for providing interconnect services using the
-> icc-clk framework.
-> 
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
->  .../dt-bindings/interconnect/qcom,ipq9574.h   | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
-> 
-> diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> new file mode 100644
-> index 000000000000..96f79a86e8d2
-> --- /dev/null
-> +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
-> @@ -0,0 +1,62 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+From: Russell King
+> Sent: 21 March 2024 13:08
+>=20
+> On Thu, Mar 21, 2024 at 12:57:07PM +0000, David Laight wrote:
+> > From: Russell King
+> > > Sent: 21 March 2024 12:23
+> > ...
+> > > > That might mean you can get the BL in the middle of a function
+> > > > but where the following instruction is for the 'no stack frame'
+> > > > side of the branch.
+> > > > That is very likely to break any stack offset calculations.
+> > >
+> > > No it can't. At any one point in the function, the stack has to be in
+> > > a well defined state, so that access to local variables can work, and
+> > > also the stack can be correctly unwound. If there exists a point in
+> > > the function body which can be reached where the stack could be in tw=
+o
+> > > different states, then the stack can't be restored to the parent
+> > > context.
+> >
+> > Actually you can get there with a function that has a lot of args.
+> > So you can have:
+> > =09if (...) {
+> > =09=09push x
+> > =09=09bl func
+> > =09=09add %sp, #8
+> > =09}
+> > =09code;
+> > which is fine.
+>=20
+> No you can't.... and that isn't even Arm code. Arm doesn't use %sp.
+> Moreover, that "bl" will stomp over the link register, meaning this
+> function can not return.
 
-Where did you come up with GPL-2.0+? Every other qcom interconnect 
-header is GPL-2.0-only. Is your employer okay with GPLv3 AND after?
+With 9+ arguments they spill to see https://godbolt.org/z/Yj3ovd8bY
 
-Rob
+Where the compiler generates:
+f9:
+        cmp     w0, 0
+        ble     .L2
+        sub     sp, sp, #32
+        mov     w7, w0
+        mov     w6, w0
+        mov     w5, w0
+        mov     w4, w0
+        mov     w3, w0
+        stp     x29, x30, [sp, 16]
+        add     x29, sp, 16
+        mov     w2, w0
+        mov     w1, w0
+        str     w0, [sp]
+        bl      f
+L2:
+        ret
+
+
+A traceback from inside f() definitely needs to use LR-4
+for the stack offset.
+
+(arm64 doesn't seem to support -mno-sched-prolog).
+
+I've failed to get different sized stack frames for the true/false
+sides of the branch.
+The compiler seems to pre-allocate the space for extra args rather
+than using 'push' type instructions.
+This was certainly better for some x86 cpu (p-pro?) but has now
+gone out of fashion.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
