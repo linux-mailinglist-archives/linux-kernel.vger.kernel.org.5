@@ -1,98 +1,224 @@
-Return-Path: <linux-kernel+bounces-109864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2AD58856D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:49:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B249C8856D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88CDF1F21A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:49:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00841C218AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF0754FA9;
-	Thu, 21 Mar 2024 09:49:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA60554F86;
+	Thu, 21 Mar 2024 09:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ZQPC+7IZ"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oTzrDoD/"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A055645B
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF9D51C2A
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711014552; cv=none; b=a6VurV5OsYp1IvKo/ZrEOPCoiGdecScu06gek5Ng1xwaqm4KwCP5wGDoW8n1vo0phfHrsxF8z7vwRBPahbAZbt2isuRBFeBGb/R/eI7J9rJTfiRZdHS3SNm5Dj6eEXTpk180pWTwibb5eHOgO+obFafcfdbmK2cTwpceLTyzDt0=
+	t=1711014633; cv=none; b=XdUJHpPifGtof2s3vbHyC07jJ+0YB9fGuf8hAV+CNL11xgPxNb/+ZDUUiIKwOmY+x87OG7tuk2NUoybJbT05PEx5r47X0ABDOdQX8Nb0ccoRtHYOhmZlvUJ4hiyDT5KRX7QSN+pBf9VPMnQ3lBzLpOBWCcFlQbiJr/tLxutQOCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711014552; c=relaxed/simple;
-	bh=l3ghcW6Wpc01USfRbBDFgdXMiPSFcEy9PO1CFvr9MzY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qvgl0eFDL3JyB2Xv1atX+oCO4hdx/aMf7Pb8elP5fSE5gznLjCoDIzvPm6baEG61n07zC9D0A7i4YqHO7PkXQxtNVSEg1/VOV4HLHaoIZ82fW6OG10rfZvqWqD4aUo0od11qWZOcznGVZ3EZB0EMls6UpFuAVJAFrUHD6Lkru3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ZQPC+7IZ; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-341950a6c9aso500159f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711014523; x=1711619323; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YQnaVRKvIjzKZu/W9svAkJqqB541GQ+AgFRgogKa+oc=;
-        b=ZQPC+7IZrh7UOTSELthV+dbIaYcZTg3R7VX+FsoP7NWz+jdgsQFaC70YCDHgcDozW/
-         tj+abfD+IYjUW/hZm7mADgwztUKyWBOgZMqL0W5uwY6WQf8PrIWy0vpZ/kr4exOulvi9
-         WlVDg75O3V9wZcGVmoGYtTqh+SjmdAuFyBwDd/TVHlpKUrJ40VRYS8O1WINEjoRqZAkP
-         yoMcNiCIVIgwVzUb4kfdWh1BBoqZvK4EyJk0WbecL/3gAD1mXmvJxB99rU74+MqVRCf4
-         fBhNAhzu+ZuR1QGdH19YRkcl+b0cK63HeJIWOVk5qf21BkisMiG7KwSDPGF474lO9c1l
-         p67A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711014523; x=1711619323;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YQnaVRKvIjzKZu/W9svAkJqqB541GQ+AgFRgogKa+oc=;
-        b=cn+5cmXoAJVzcpOtYEiK7pdTVsLPqQN3TxNSl6f7Zr7Tfv8gQf4IntEYsi59y0+bW5
-         7l/0ZrtjAKNtJ0SUDPQkZlOc2hS9VuERqI1a/Rtbvg6KvFFiPFSCyOMjhIOnZNRK6FOn
-         NKRL/prZQacYdHjjIIMj1TTsZGkhj0IJqNvkoot3/st5zrBjoJGM2CJR60ULzmiO8HlR
-         yOPm39V1lIdqClIO0eFrzo8ANT93I5358mgBrQcUipLobNe2cGt2NTlMU6pSREb0amBN
-         JNMcKYLdVq+40miAX/5uKZtE3kFQO7EyVvLoRGkqifn/4QWiF4sy+CBmoKonVG443yG/
-         ejCg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8oezLM7t85uOI4byNva/xKv+HAAvJqkhJQpu/wCCEmgxNop/9u9kg38icBmLybOOh5alKymaj8wQHnQF1mZ6VXsZIe4zDd+aTkBdO
-X-Gm-Message-State: AOJu0YwlstTA8NQNEXWaVtM8gwOKrmx/OX0pJqdILz35ZKTBglnUO+rC
-	DqGa5S/30UojPEFL1s/L0c0O25Yg/bzJ3yTAlZhx7rBv2FNEtLy2A8fsT3qHvaY=
-X-Google-Smtp-Source: AGHT+IGvSZEOt1oQ+NlJ1ttHSdpngsPBxO1aKwqD8k2tM3F3kCenyeLG4fsre/EN6wfoIDduTKE1xw==
-X-Received: by 2002:a5d:490d:0:b0:33e:bb67:9596 with SMTP id x13-20020a5d490d000000b0033ebb679596mr1273242wrq.64.1711014522487;
-        Thu, 21 Mar 2024 02:48:42 -0700 (PDT)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id p6-20020adfe606000000b0033e79eca6dfsm16682495wrm.50.2024.03.21.02.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 02:48:41 -0700 (PDT)
-Date: Thu, 21 Mar 2024 10:48:39 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: David Thompson <davthompson@nvidia.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, u.kleine-koenig@pengutronix.de, leon@kernel.org,
-	asmaa@nvidia.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v1] mlxbf_gige: stop PHY during open() error paths
-Message-ID: <ZfwCd_7RuyEJRpcq@nanopsycho>
-References: <20240320193117.3232-1-davthompson@nvidia.com>
+	s=arc-20240116; t=1711014633; c=relaxed/simple;
+	bh=zGGpvMe3eltmRKcpki98L+oWOLVlMnMsygSfjmN34nw=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=BIHH04+M3z6iSneqwWV8QHR+Qs0yzGrZfN/Y8H1rvdc3v42Lc5T8yY0Vssfi/dKR2yef/6dp8zyCP/U1d3K/aNeQSkcee1Z0rtoqydozR8hUD1TYeYsEL2EXiFPxJAXPntOEOQuzyPgvI0YnETAwZE/+ZL2X5OR7loIHaJcmeL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oTzrDoD/; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711014627;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ubvW1+2eGkzbPZ23NkqUHfCv3LLz8BWMOTyyBMul+E=;
+	b=oTzrDoD/CLpLAWLSYuvlshHt+JysOxT1VXNlXZzSanqg9Kk8UA+HF1l7gOeZUehfnn/oba
+	b0it+gSwHDMvhjdMJMLBZnAbjLbDrI913Ab4yvJ9GToT/LhRvBdGt/MUlXLHV9hu43CnDh
+	VhJQe9JhFeTTbvIaFvAr/T3A3o858wk=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320193117.3232-1-davthompson@nvidia.com>
+Mime-Version: 1.0
+Subject: Re: [syzbot] [mm?] kernel BUG in const_folio_flags
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <0000000000006cfe98061423cde7@google.com>
+Date: Thu, 21 Mar 2024 17:49:49 +0800
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Linux-MM <linux-mm@kvack.org>,
+ syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
+References: <0000000000006cfe98061423cde7@google.com>
+To: syzbot <syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com>,
+ Oscar Salvador <osalvador@suse.de>,
+ David Hildenbrand <david@redhat.com>,
+ Matthew Wilcox <willy@infradead.org>
+X-Migadu-Flow: FLOW_OUT
 
-Wed, Mar 20, 2024 at 08:31:17PM CET, davthompson@nvidia.com wrote:
->The mlxbf_gige_open() routine starts the PHY as part of normal
->initialization.  The mlxbf_gige_open() routine must stop the
->PHY during its error paths.
->
->Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
->Signed-off-by: David Thompson <davthompson@nvidia.com>
->Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+
+> On Mar 21, 2024, at 12:04, syzbot =
+<syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com> wrote:
+>=20
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    78c3925c048c Merge tag 'soc-late-6.9' of =
+git://git.kernel...
+> git tree:       upstream
+> console output: =
+https://syzkaller.appspot.com/x/log.txt?x=3D1267d879180000
+> kernel config:  =
+https://syzkaller.appspot.com/x/.config?x=3Df3c2635ded15fbc9
+> dashboard link: =
+https://syzkaller.appspot.com/bug?extid=3D3b9148f91b7869120e81
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils =
+for Debian) 2.40
+> userspace arch: i386
+>=20
+> Unfortunately, I don't have any reproducer for this issue yet.
+>=20
+> Downloadable assets:
+> disk image (non-bootable): =
+https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_dis=
+k-78c3925c.raw.xz
+> vmlinux: =
+https://storage.googleapis.com/syzbot-assets/cf2bceeccde3/vmlinux-78c3925c=
+xz
+> kernel image: =
+https://storage.googleapis.com/syzbot-assets/fc938dfaea6d/bzImage-78c3925c=
+xz
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> Reported-by: syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com
+>=20
+> veth_newlink+0x627/0xa10 drivers/net/veth.c:1895
+> rtnl_newlink_create net/core/rtnetlink.c:3494 [inline]
+> __rtnl_newlink+0x119c/0x1960 net/core/rtnetlink.c:3714
+> rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3727
+> rtnetlink_rcv_msg+0x3c7/0xe60 net/core/rtnetlink.c:6595
+> ------------[ cut here ]------------
+> kernel BUG at include/linux/page-flags.h:315!
+
+There are some more page dumping information from console:
+
+[ 61.367144][ T42] page: refcount:0 mapcount:0 mapping:0000000000000000 =
+index:0xffff888028132880 pfn:0x28130
+[ 61.371430][ T42] flags: =
+0xfff80000000000(node=3D0|zone=3D1|lastcpupid=3D0xfff)
+[ 61.374455][ T42] page_type: 0xffffffff()
+[ 61.376096][ T42] raw: 00fff80000000000 ffff888015ecd540 =
+dead000000000100 0000000000000000
+[ 61.379994][ T42] raw: ffff888028132880 0000000000190000 =
+00000000ffffffff 0000000000000000
+
+Alright, the page is freed (with a refcount of 0).
+
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 1 PID: 42 Comm: kcompactd0 Not tainted =
+6.8.0-syzkaller-11725-g78c3925c048c #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS =
+1.16.2-debian-1.16.2-1 04/01/2014
+> RIP: 0010:const_folio_flags+0x1bd/0x1f0 include/linux/page-flags.h:315
+
+The RIP is in const_folio_flags() (called from folio_test_hugetlb()):
+
+	VM_BUG_ON_PGFLAGS(n > 0 && !test_bit(PG_head, &page->flags), =
+page);
+
+It is reasonable to WARN because the page is freed (PG_head is not set
+in this case).
+
+The comments from folio_test_hugetlb() says "Caller should have a
+reference on the folio", so the caller of PageHuge() should grab
+a refcount before calling folio_test_hugetlb() since commit
+9c5ccf2db04b. But it does not mean that the @page must be a HugeTLB page
+even if PageHuge(@page) returns true when the user does not hold
+a extra refcount on the @page. Seems the WARN could be acceptable, so
+should we remove this WARN? I am not sure. Cc more experts.
+
+Thanks.
+
+> Code: 41 83 e4 01 44 89 e6 e8 b1 e6 a9 ff 45 84 e4 0f 85 c4 fe ff ff =
+e8 23 ec a9 ff 48 c7 c6 e0 07 1b 8b 48 89 ef e8 34 2e ed ff 90 <0f> 0b =
+e8 8c 6b 06 00 e9 66 fe ff ff 48 89 ef e8 7f 6b 06 00 eb b6
+> RSP: 0018:ffffc9000068f7f0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffc9000068f698
+> RDX: ffff88801744c880 RSI: ffffffff81e4265c RDI: ffffffff8b6f0060
+> RBP: ffffea0000a04c00 R08: 0000000000000000 R09: fffffbfff1f3deca
+> R10: ffffffff8f9ef657 R11: 0000000000000000 R12: 0000000000000000
+> R13: ffffea0000a04dc0 R14: 0000000000028137 R15: ffffc9000068fbe8
+> FS:  0000000000000000(0000) GS:ffff88802c300000(0000) =
+knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffe623b9138 CR3: 000000001c22c000 CR4: 0000000000350ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+> <TASK>
+> folio_test_hugetlb include/linux/page-flags.h:875 [inline]
+> PageHuge+0x219/0x2b0 mm/hugetlb.c:2174
+> isolate_migratepages_block+0x4a0/0x5110 mm/compaction.c:1004
+> isolate_migratepages mm/compaction.c:2182 [inline]
+> compact_zone+0x1a5c/0x4280 mm/compaction.c:2629
+> kcompactd_do_work+0x340/0x720 mm/compaction.c:3100
+> kcompactd+0x8d7/0xde0 mm/compaction.c:3199
+> kthread+0x2c1/0x3a0 kernel/kthread.c:388
+> ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+> ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+> </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:const_folio_flags+0x1bd/0x1f0 include/linux/page-flags.h:315
+> Code: 41 83 e4 01 44 89 e6 e8 b1 e6 a9 ff 45 84 e4 0f 85 c4 fe ff ff =
+e8 23 ec a9 ff 48 c7 c6 e0 07 1b 8b 48 89 ef e8 34 2e ed ff 90 <0f> 0b =
+e8 8c 6b 06 00 e9 66 fe ff ff 48 89 ef e8 7f 6b 06 00 eb b6
+> RSP: 0018:ffffc9000068f7f0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffc9000068f698
+> RDX: ffff88801744c880 RSI: ffffffff81e4265c RDI: ffffffff8b6f0060
+> RBP: ffffea0000a04c00 R08: 0000000000000000 R09: fffffbfff1f3deca
+> R10: ffffffff8f9ef657 R11: 0000000000000000 R12: 0000000000000000
+> R13: ffffea0000a04dc0 R14: 0000000000028137 R15: ffffc9000068fbe8
+> FS:  0000000000000000(0000) GS:ffff88802c300000(0000) =
+knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffe623b9138 CR3: 000000001c22c000 CR4: 0000000000350ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>=20
+>=20
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>=20
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>=20
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>=20
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>=20
+> If you want to undo deduplication, reply with:
+> #syz undup
+
 
