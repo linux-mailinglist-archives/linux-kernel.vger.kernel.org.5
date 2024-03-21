@@ -1,234 +1,207 @@
-Return-Path: <linux-kernel+bounces-109550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6404F881ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:50:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58B7A881ABC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:50:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50F61F216A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:50:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB28D281A90
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98573187F;
-	Thu, 21 Mar 2024 01:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1BB1C2E;
+	Thu, 21 Mar 2024 01:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DZtG1rk8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zqqwm7Hd"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC05979F0
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BA017D2
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710985833; cv=none; b=csb9NYrNAJrtqoNP44zyH2gi0db8vRMuCpwBRlXNDimR1qQ6pxOLqUyVjTyYbswmijYP+Tk9szUfejxMgBOXEr1+pzA6pq99hA6bgbgXwf/fLtYPOelpGfa2SknzM+IKY5NR3cmOnAaEnnrnexU4YmKjbtQHCSk6kCiw2uq7Ok4=
+	t=1710985814; cv=none; b=SqXUFI2J8gli7GlF3a9jT52oHU1bULXXVFeg1hHRDt0xRmaZQVaZnst/IQpftd0aI8uifgVk2aTf+trfhEswvWXs/mRUvwQ3ZZ3EDCJ/AZZzGJV8gfDr1Y1xQJQJNm5lfjYoz/dSrGtEyNCEKXpI+GdZsQz64Lz3XZJP1G3niJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710985833; c=relaxed/simple;
-	bh=Ify3JB9EiCvpobMYjGD+B4BJzZVL5gLo7wB87X7Vv6I=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=GWS8CE6UjHB5FgJ7OQ+8DrCC7MwHE6aYCx/cKTDzbwM1VRYvEUPJiup2R2dqfj+88udJ2Y+kaPCze9yMV3lx8Heyrms8SUZZIb76ylpg4+TS68LTUmJHv7QhIENNdJxrFBErDm+erPKXG8S0cBy+8uNXIX7ZH9or1XlUI0QzFnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DZtG1rk8; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710985831; x=1742521831;
-  h=date:from:to:cc:subject:message-id;
-  bh=Ify3JB9EiCvpobMYjGD+B4BJzZVL5gLo7wB87X7Vv6I=;
-  b=DZtG1rk8c/+BjaL+NBTmNAHlkTMGiFE2DY1MbcEbGKUjwLcWNpU+aJ9L
-   z2en4S0+F9JwWN1syn097SVmEp9IIYx38Rh1iANO8gitZl0jl0pcPifkC
-   ansNqD/+XCWqQxK/uTAMmZ/KpoFdGVrVUOqoz7I3O0YYhU7tUtsqCDroq
-   YQzXqqBMQ3k1tm+baQBkHu0N3tIHgxSHHxj1VZHK7ia+0RsRGXfQra5eR
-   jc2GKDhNTp1bbS35ZQy1mUqtniULNSppS1nTn3SNydAX4260BrNP2jDub
-   iEXKnjBEyOMveRv/vkh9PWnBErsWlkPpkSUKHGMpwcrUlV4LjFa12dxuB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="16589192"
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="16589192"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 18:50:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
-   d="scan'208";a="18917219"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 20 Mar 2024 18:50:29 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rn7Zb-000J59-2F;
-	Thu, 21 Mar 2024 01:50:27 +0000
-Date: Thu, 21 Mar 2024 09:49:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- e1826833c3a9abb9d1fe4b938eca0e25eeafb39f
-Message-ID: <202403210930.YW4BRuvF-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1710985814; c=relaxed/simple;
+	bh=dFeaB+r0vbLsU2+EG3R/0nxZko3Fmr0cPhFzpdmhuag=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oqrAxXuM4BbOMk6IbZuY/8FReKiktZvpvumVgi2IXiL6Hh5pnbATo9Ip99OSU1NI3NX7ziHXd3r9hh9OLfbPhJXq2iojuipo4a6bMFZ9BAM0jBUSwamMN9YqWole+hRS9Zb4TABq1PG/Tum0bPF/zAh6z9eAYiPHK6ZqzG7vsqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zqqwm7Hd; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-366a04fb186so84985ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710985812; x=1711590612; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8PFIZjS6IER8CpqkW4TdLpVgzOwvLIGX3nJMn6PTM30=;
+        b=Zqqwm7HdTlYMChSuuGDCH2h4FrdYrpujUvTUDP9dShCTlnDf1WVriu3f0mAMtpAYBn
+         7ZNXYZc51R1B7cTycFY/7dM7PIyFOpGPWAq9DIKm36sZ2J/0unhV7hwCqdXvWOhHA9hn
+         TczLT5xr5E1w6PUKYPwYhhu04VWQ4u3OHIT/8oiEiz1sTGSqAqvr+GdpptH/MpPGJmRj
+         4GEIIyirzbwjyreCS8X16l7pu4UYVhUnwWwnnhHnu/e3Ur6vpLt5a29sD8bY7BcpeJJE
+         79STWDvOwqcJiZDSRTRlqjC6RedoaDcItNdMun0rwTTpaC6skhw7oTSohOGEuJYCvYgP
+         mInQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710985812; x=1711590612;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8PFIZjS6IER8CpqkW4TdLpVgzOwvLIGX3nJMn6PTM30=;
+        b=gpfWlruHR+yrnQLfvTezJj6DliCKQ3U7wmhA6Q+jT26fHoV7O0P1od0TH6taB/5sLg
+         Oz0DSF4ZuktGk6Uj3JDfDgEmfy3MeqhyuIf6Klb+qRCVoBKoxsBaKH3ovxvnJwi0iC+m
+         +FdqIm3dv82jeleUouiYA03PZXrgbr6iUX0eaX0+MJz+x3Z45fBk74HWqpq+UbhrhlFx
+         25z+OrovBb07BAz7dIbuGevS8mmJQPHFFKjST4dqaehEMGa8F8bbuTOuxw9v/YV0iLIa
+         AKO8V6QNF/iQiDEA8AbUfQTHfR9wH/zAjsrA3xtLQCcQB8Zkpp9au8TFEc26INRVwxf0
+         7heg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbGZ/gM//SZZE734g1P0WiRbFWj4/L7IuBmOsv7IoLzpJ518QDyqNbELxIpCNQsPIso/7YzehcNzIt7jADXWu3iE3t1cCaMLLTAVG8
+X-Gm-Message-State: AOJu0YzykKrTig55RfNLuXqLIXmGTTSTEbfrSqvjAf+PoudwhmuYwvU7
+	NIxHdcc60RA4tMGg5LoPAP5zCbl4m+S+E3CQ9kITzjJ+y5utQcGKvZFocFF2f1WAv/JTMOzYtzu
+	w3IayJuc7t9uafGRKQu6DSzo45sxe/KDrZ5Zj
+X-Google-Smtp-Source: AGHT+IHrAEJPyYKYdkRV1E43qJTJK0+eTr67tJawKja6UsAthpTCUSaEfF8MACadxrvECk/zgWZcmuqPeKoSYjRtiHk=
+X-Received: by 2002:a05:6e02:148b:b0:366:3c86:a38e with SMTP id
+ n11-20020a056e02148b00b003663c86a38emr84468ilk.5.1710985812035; Wed, 20 Mar
+ 2024 18:50:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240320193115.811899-1-acme@kernel.org> <20240320193115.811899-4-acme@kernel.org>
+In-Reply-To: <20240320193115.811899-4-acme@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 20 Mar 2024 18:50:01 -0700
+Message-ID: <CAP-5=fU4vj-QHc1SbYOO7XFYfOLC2vpFn_X83LMjvts6_CNn5A@mail.gmail.com>
+Subject: Re: [PATCH 3/5] perf beauty: Introduce faccessat2 flags scnprintf routine
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: e1826833c3a9abb9d1fe4b938eca0e25eeafb39f  Merge branch into tip/master: 'x86/percpu'
+On Wed, Mar 20, 2024 at 12:31=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+>
+> The fsaccessat and fsaccessat2 now have beautifiers for its arguments.
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-elapsed time: 735m
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-configs tested: 146
-configs skipped: 3
+Thanks,
+Ian
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240320   gcc  
-arc                   randconfig-002-20240320   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   clang
-arm                       imx_v6_v7_defconfig   clang
-arm                         orion5x_defconfig   clang
-arm                          pxa3xx_defconfig   clang
-arm                   randconfig-001-20240320   gcc  
-arm                   randconfig-002-20240320   gcc  
-arm                   randconfig-003-20240320   gcc  
-arm                   randconfig-004-20240320   gcc  
-arm                           u8500_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240320   clang
-arm64                 randconfig-002-20240320   gcc  
-arm64                 randconfig-003-20240320   clang
-arm64                 randconfig-004-20240320   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240320   gcc  
-csky                  randconfig-002-20240320   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240320   clang
-hexagon               randconfig-002-20240320   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240320   clang
-i386         buildonly-randconfig-002-20240320   gcc  
-i386         buildonly-randconfig-003-20240320   gcc  
-i386         buildonly-randconfig-004-20240320   clang
-i386         buildonly-randconfig-005-20240320   gcc  
-i386         buildonly-randconfig-006-20240320   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240320   clang
-i386                  randconfig-002-20240320   clang
-i386                  randconfig-003-20240320   clang
-i386                  randconfig-005-20240320   clang
-i386                  randconfig-006-20240320   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240320   gcc  
-loongarch             randconfig-002-20240320   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ci20_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240320   gcc  
-nios2                 randconfig-002-20240320   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240320   gcc  
-parisc                randconfig-002-20240320   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                       eiger_defconfig   clang
-powerpc                          g5_defconfig   gcc  
-powerpc                     mpc5200_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc                     rainier_defconfig   gcc  
-powerpc               randconfig-001-20240320   gcc  
-powerpc               randconfig-002-20240320   clang
-powerpc               randconfig-003-20240320   gcc  
-powerpc64             randconfig-001-20240320   gcc  
-powerpc64             randconfig-002-20240320   gcc  
-powerpc64             randconfig-003-20240320   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240320   clang
-riscv                 randconfig-002-20240320   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240320   clang
-s390                  randconfig-002-20240320   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                    randconfig-001-20240320   gcc  
-sh                    randconfig-002-20240320   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240320   gcc  
-sparc64               randconfig-002-20240320   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240320   gcc  
-um                    randconfig-002-20240320   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                           alldefconfig   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                       common_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  tools/perf/builtin-trace.c            |  9 +++++++++
+>  tools/perf/trace/beauty/beauty.h      |  3 +++
+>  tools/perf/trace/beauty/fs_at_flags.c | 24 ++++++++++++++++++++++++
+>  3 files changed, 36 insertions(+)
+>
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 8417387aafa8295d..58546e8af9fcf481 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -947,6 +947,15 @@ static const struct syscall_fmt syscall_fmts[] =3D {
+>           .arg =3D { [1] =3D STRARRAY(op, epoll_ctl_ops), }, },
+>         { .name     =3D "eventfd2",
+>           .arg =3D { [1] =3D { .scnprintf =3D SCA_EFD_FLAGS, /* flags */ =
+}, }, },
+> +       { .name     =3D "faccessat",
+> +         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT,         /* dirfd =
+*/ },
+> +                  [1] =3D { .scnprintf =3D SCA_FILENAME,     /* pathname=
+ */ },
+> +                  [2] =3D { .scnprintf =3D SCA_ACCMODE,      /* mode */ =
+}, }, },
+> +       { .name     =3D "faccessat2",
+> +         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT,         /* dirfd =
+*/ },
+> +                  [1] =3D { .scnprintf =3D SCA_FILENAME,     /* pathname=
+ */ },
+> +                  [2] =3D { .scnprintf =3D SCA_ACCMODE,      /* mode */ =
+},
+> +                  [3] =3D { .scnprintf =3D SCA_FACCESSAT2_FLAGS, /* flag=
+s */ }, }, },
+>         { .name     =3D "fchmodat",
+>           .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT, /* fd */ }, }, },
+>         { .name     =3D "fchownat",
+> diff --git a/tools/perf/trace/beauty/beauty.h b/tools/perf/trace/beauty/b=
+eauty.h
+> index c94ae8701bc65a2f..78d10d92d351f8e2 100644
+> --- a/tools/perf/trace/beauty/beauty.h
+> +++ b/tools/perf/trace/beauty/beauty.h
+> @@ -237,6 +237,9 @@ size_t syscall_arg__scnprintf_socket_level(char *bf, =
+size_t size, struct syscall
+>  size_t syscall_arg__scnprintf_fs_at_flags(char *bf, size_t size, struct =
+syscall_arg *arg);
+>  #define SCA_FS_AT_FLAGS syscall_arg__scnprintf_fs_at_flags
+>
+> +size_t syscall_arg__scnprintf_faccessat2_flags(char *bf, size_t size, st=
+ruct syscall_arg *arg);
+> +#define SCA_FACCESSAT2_FLAGS syscall_arg__scnprintf_faccessat2_flags
+> +
+>  size_t syscall_arg__scnprintf_statx_mask(char *bf, size_t size, struct s=
+yscall_arg *arg);
+>  #define SCA_STATX_MASK syscall_arg__scnprintf_statx_mask
+>
+> diff --git a/tools/perf/trace/beauty/fs_at_flags.c b/tools/perf/trace/bea=
+uty/fs_at_flags.c
+> index 2a099953d9935782..c1365e8f0b96ef43 100644
+> --- a/tools/perf/trace/beauty/fs_at_flags.c
+> +++ b/tools/perf/trace/beauty/fs_at_flags.c
+> @@ -7,6 +7,7 @@
+>
+>  #include "trace/beauty/beauty.h"
+>  #include <sys/types.h>
+> +#include <linux/fcntl.h>
+>  #include <linux/log2.h>
+>
+>  #include "trace/beauty/generated/fs_at_flags_array.c"
+> @@ -24,3 +25,26 @@ size_t syscall_arg__scnprintf_fs_at_flags(char *bf, si=
+ze_t size, struct syscall_
+>
+>         return fs_at__scnprintf_flags(flags, bf, size, show_prefix);
+>  }
+> +
+> +static size_t faccessat2__scnprintf_flags(unsigned long flags, char *bf,=
+ size_t size, bool show_prefix)
+> +{
+> +       int printed =3D 0;
+> +
+> +       // AT_EACCESS is the same as AT_REMOVEDIR, that is in fs_at_flags=
+_array,
+> +       // special case it here.
+> +       if (flags & AT_EACCESS) {
+> +               flags &=3D ~AT_EACCESS;
+> +               printed +=3D scnprintf(bf + printed, size - printed, "%sE=
+ACCESS%s",
+> +                                    show_prefix ? strarray__fs_at_flags.=
+prefix : "", flags ? "|" : "");
+> +       }
+> +
+> +       return strarray__scnprintf_flags(&strarray__fs_at_flags, bf + pri=
+nted, size - printed, show_prefix, flags);
+> +}
+> +
+> +size_t syscall_arg__scnprintf_faccessat2_flags(char *bf, size_t size, st=
+ruct syscall_arg *arg)
+> +{
+> +       bool show_prefix =3D arg->show_string_prefix;
+> +       int flags =3D arg->val;
+> +
+> +       return faccessat2__scnprintf_flags(flags, bf, size, show_prefix);
+> +}
+> --
+> 2.44.0
+>
 
