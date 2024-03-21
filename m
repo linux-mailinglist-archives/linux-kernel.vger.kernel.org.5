@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-110456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58269885F29
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34020885F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB9428341C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:07:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E380028387F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62481332B1;
-	Thu, 21 Mar 2024 16:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8872479E0;
+	Thu, 21 Mar 2024 17:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxVMI/IV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fqvgQXKR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 181FE18AE8;
-	Thu, 21 Mar 2024 16:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC1E1353E8;
+	Thu, 21 Mar 2024 17:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711040330; cv=none; b=gG/CQAzH3AM2AMH/UY8vAIE5JpMbsxBVJybwDjmBR4Q/OnKKopF0gU+/pmM/H6Wg9EUoxmqYrc0FTnW8BZI9EbPXUiCKvi+HmN1OV2e8/A/Z9Eu6aNs1xkfZxj9Ru19S/TcEgazzlfsWLFl00B/4xFSEREtva3mgp8nMUd1fEXU=
+	t=1711040473; cv=none; b=V5DKk/u2M6OAyVofw3F9lLBLm5eVjGZ209RihSNnB/pp56kCTq3KxqWQek5woiXa6PnAHNAIEkdQO5R2uN8N7uXfe6Mwg0rhlsJ36IBgX+7bC4T1M/487NoIMVGp2bhHRaWaMJn9vD1ntCjcsDnNeYv2Cy42oyIL2tpA2PfmtfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711040330; c=relaxed/simple;
-	bh=WMfHoNOhghTVhWw9O8SXq+LgpuJpchmhoKsoJ8RY5FY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pB5zRrNqqu4hu54tNW5elW8tl/P+dX0obtfOKUPaM3SrMv7lTSuA0jyNXW450us/w8oiBJDH8U3TIoBkje/Ii8MbSBNYQ8qXBRURXm63n3JwTxOjm+l3PEX7WzNutx8ObZwARzOMa4hWTauRnucup4gFsMVUIIPwpNWmu6NDEY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxVMI/IV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1365CC433C7;
-	Thu, 21 Mar 2024 16:58:46 +0000 (UTC)
+	s=arc-20240116; t=1711040473; c=relaxed/simple;
+	bh=cQKiNExA0cMrOaMRBdkCkHV2+MZQz2AfhTZE1Ga4pMo=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=GNG10wNLIweQ0sESBVyXzf/cQqwMac8wD9eZMIKWpp0uVeDlaJcEf5gIntKotcDRNt+ud50wV/41Vf1uP5iSru2QJFGQ5Iirqf6s3lq0z0YLlSUtVL6X4R+5jMxzLdgYNU/NTP61KsJR46wMj0PWZZydA9NprFNXHLkcBFmfEW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fqvgQXKR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A55E4C433C7;
+	Thu, 21 Mar 2024 17:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711040329;
-	bh=WMfHoNOhghTVhWw9O8SXq+LgpuJpchmhoKsoJ8RY5FY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sxVMI/IVxQZ3x7AFp43PF4dgBna5a3mSwKzrd1u7mSNs4cVZrdSs8lGdG+uzN1byE
-	 wXHqg3DUHpwNPvbQMLVkHH70bCotFh10H7RzlRN2fXWf8+esbiFRqqmd0zvE33VdIV
-	 6KfVmiEhOblZFRiqcFGKSsK8HgEYOPeCZZCzH4FfZWH4E00rH0j/5uudtJ6PEj/3he
-	 BnvyZ5MOC4YnaIbsvBmYSyyBPWm1HVDXGqw1Qq31WDfb37cXBLTsVY6ow+lhtzkpGz
-	 1oWaf2v9241ms+Xn0/gluUbHeMbVEs6XZdxlIG9R+aTu3LZ85wSD832E3uWg18wpUt
-	 lkf222qowAqGQ==
-Date: Thu, 21 Mar 2024 16:58:44 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Karel Balej <balejk@matfyz.cz>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
-Message-ID: <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
-References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
- <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
- <20240321154211.GA13211@google.com>
- <CZZK759UU6G7.MFPYOI0HBB6I@matfyz.cz>
- <20240321162045.GC13211@google.com>
- <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
+	s=k20201202; t=1711040473;
+	bh=cQKiNExA0cMrOaMRBdkCkHV2+MZQz2AfhTZE1Ga4pMo=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=fqvgQXKRVQEAvqtNO6LmaZbdV++IEjv7Q3j3+mQcD1J9Ao43KYEbPxkdIsYmWif0F
+	 TxF1MUdV9jj7wrCjpJHSRhUHmSfN49wnpCFIkb5NxE9JvmXi01QUXLKcgSc8KThnpk
+	 nn9gfRcqc8iVgyKlhbmwniOvFMdb5ACth9hI9MIHpDLjtq0wBlxk9unfE3qqT5PCQc
+	 YzC3AHJm2/MBBhKsnz+RugTvk/h2Homw/vnm6+PDN/m1OYiQTxwbxsmP3WS564iMh6
+	 GmQMVFnKbjkr/1Ij8UmtZUJsk4J+nYO+o0GvN8I8XYegkC3WRBfak/6QH8ltrTQeuo
+	 Q394v0E8Mk29g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XkucS5hq8f1KJRxO"
-Content-Disposition: inline
-In-Reply-To: <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
-X-Cookie: MIT:
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 21 Mar 2024 19:01:09 +0200
+Message-Id: <CZZL841RSX3V.3SZOJNMC136O9@kernel.org>
+Cc: "Jonathan Corbet" <corbet@lwn.net>, "Daniel P . Smith"
+ <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
+ <peterhuewe@gmx.de>, "James Bottomley"
+ <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
+ <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Randy Dunlap"
+ <rdunlap@infradead.org>
+Subject: Re: [PATCH v3] Documentation: tpm_tis
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Jarkko Sakkinen" <jarkko@kernel.org>, <linux-integrity@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240321164314.14732-1-jarkko@kernel.org>
+ <CZZL2SXZSRV0.2MGG3O8JXBFC5@kernel.org>
+In-Reply-To: <CZZL2SXZSRV0.2MGG3O8JXBFC5@kernel.org>
 
+On Thu Mar 21, 2024 at 6:54 PM EET, Jarkko Sakkinen wrote:
+> On Thu Mar 21, 2024 at 6:43 PM EET, Jarkko Sakkinen wrote:
+> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
+ore
+> > dependent drivers. Includes only bare essentials but can be extended la=
+ter
+> > on case by case. This way some people may even want to read it later on=
+.
+>
+> $ pdftotext PC-Client-Specific-Platform-TPM-Profile-for-TPM-2p0-v1p05p_r1=
+4_pub.pdf
+> $ grep -ci 'FIFO interface' PC-Client-Specific-Platform-TPM-Profile-for-T=
+PM-2p0-v1p05p_r14_pub.txt=20
+> 55
+>
+> $ grep -ci 'TIS interface' PC-Client-Specific-Platform-TPM-Profile-for-TP=
+M-2p0-v1p05p_r14_pub.txt
+> 2
+>
+> 55 > 2 so that pretty much nails this terminology.
 
---XkucS5hq8f1KJRxO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To add, this documentation *clears* the confusion in "FIFO vs TIS" by
+documenting where TIS comes from (i.e. from the original TPM Interface
+Spefication).
 
-On Thu, Mar 21, 2024 at 05:55:17PM +0100, Karel Balej wrote:
-> Lee Jones, 2024-03-21T16:20:45+00:00:
-> > On Thu, 21 Mar 2024, Karel Balej wrote:
+If you read the current standards you bump quite often (55 times in the
+current spec) to FIFO interface, so it is good to clarify their relation
+in the kernel documentation.
 
-> > > > > +static const struct regmap_config pm886_i2c_regmap = {
-> > > > > +	.reg_bits = 8,
-> > > > > +	.val_bits = 8,
-> > > > > +	.max_register = PM886_REGMAP_CONF_MAX_REG,
-> > > > > +};
-
-> > > > Why is this in here?
-
-> > > Because since I moved the regulators regmap initialization into the
-> > > regulators driver, I need to access it from there.
-
-> > So move it into the regulators driver?
-
-> It is used in the MFD driver too for the base regmap.
-
-You shouldn't be creating two regmaps for the same set of registers,
-that just opens the potential for confusion.
-
---XkucS5hq8f1KJRxO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX8Z0MACgkQJNaLcl1U
-h9CAcwf/UU9whJTldKYf2Umup+pvhQQafpsIdaLAKZdVwH/4F27rS8pRMp1Cp4n6
-nfCNwWaCrnRt8iHni5jzqgtroLfbIjeC5t4MMjvElqtkNTQ2hmGCKFAkofIA/KWk
-BcKU+0N9riQ8OeUaf2VgxlaMKLP7DZUFV2ln6AeGRZUS5hzZENPn8RrLhIhhM+5m
-6VqIssfMZ+gTc4dyrRuVy9X1tn+xIGxEJQuNSSsPP/yTMKgtrufRGztUlBuAoHk2
-pzGryzuraqhgU++fHB652FuHhxfQ9MACAH8KXDEzHtgYcSb7eJ6FcjMCqvbPGAb6
-kBruh2gv2bEw/5pteRoKXtYkcu8pvA==
-=RfEQ
------END PGP SIGNATURE-----
-
---XkucS5hq8f1KJRxO--
+BR, Jarkko
 
