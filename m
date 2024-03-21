@@ -1,147 +1,113 @@
-Return-Path: <linux-kernel+bounces-110721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293B08862E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:06:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCD68862DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCE241F21925
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FB201C210C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0D2136669;
-	Thu, 21 Mar 2024 22:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FBC136660;
+	Thu, 21 Mar 2024 22:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="T5uniTGB"
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="ZKOJM8Vo"
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FC4133998;
-	Thu, 21 Mar 2024 22:06:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 838A4133998
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711058774; cv=none; b=anffCRPGdEg61SPxTy5QzrxTg364SsMg6YNBBjLnOkhfceBq67oOQZuLyt12uCJhX5M2TBKDJdGL/ulVUXJE470HH0L/0exVuq8kerZ4TfS5YrWhWUHPCQ63zi41EhzilHW8sp7bshCvQJH8m/bJun86ojqnqi+mOXaMdwDUmss=
+	t=1711058719; cv=none; b=qVU1nkyjXwvPhIzT9PB5IftO1+bjzoGc+d3NEuJ+ZZcMmEg6AMyWz0LBKNfi6/c2kDXfCujXEdxNK2bUUDzL6kS9f7RrYZQCgk51xexzGYvW4/1Th/NBKQIy3E4VQApuPMnLR1RrbplAOOxkn3rVAewZ2R8JDyrgOIoFPnWY/Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711058774; c=relaxed/simple;
-	bh=TIQnoZwJq4qDV5cDowLeR4WsNNtBuDa7FQIqcE3Y5wM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hpy65wh6h4MYyApgQeLOcQDZ8Ptz5sGUCStrxGHnSJaTdfkKuP4fOzJk4CpbvbjhxgU+taZjUMK08xpzdc8XQF0bPeXwNNvRnyL+oFeMzgMK3cFa5PEA/zbO6s/GDikucP2g5dB9WdqXJtRF8pM/E4y6NbqyxxKgv7IoeUqhGk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=T5uniTGB; arc=none smtp.client-ip=208.88.110.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 096639C5431;
-	Thu, 21 Mar 2024 18:06:11 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id MV2G5OsxunWi; Thu, 21 Mar 2024 18:06:10 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 5CB399C5485;
-	Thu, 21 Mar 2024 18:06:10 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 5CB399C5485
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1711058770; bh=//jzrul5/etI5HJYv4rf3hRGSryC23BhON2Tv1y72Hc=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=T5uniTGBmvD8LX14fBd2OlCRPvba5J3pH1vN0P9VlkNjSgE40kuovUZ27K0X9vPMn
-	 e1fAvNB24jTKTgskz7fQCj1PvqdO3DpfYG52PuFSMPUnux/r0JXWMg+SNXNSzdx0x5
-	 ePQScX9L8vlWCgNz891db+MEXYLlxN8Qt8B5GXz0GwK3UiDuzCQ8JedKJZVaqAYfv/
-	 0Cd+DtdmlG1BjeIiv9Mf6WbyDZ5eyypCB5RbENlG86Tkrclf6G9BHIShLosqrQgn8F
-	 nx/osgfLH91TFIo2HJ8OGCB9nloSWtSnN2Xuhb2TpKy7dPNvJ0KmRCgUrnGqgU5WXK
-	 iFAjlu1JFKPIw==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id Jg8QBSn7EGNf; Thu, 21 Mar 2024 18:06:10 -0400 (EDT)
-Received: from pcperry.mtl.sfl (unknown [192.168.51.254])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 33CD79C5431;
-	Thu, 21 Mar 2024 18:06:10 -0400 (EDT)
-From: Charles Perry <charles.perry@savoirfairelinux.com>
-To: mdf@kernel.org
-Cc: avandiver@markem-imaje.com,
-	bcody@markem-imaje.com,
-	Charles Perry <charles.perry@savoirfairelinux.com>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v6 4/4] fpga: xilinx-core: add new gpio names for prog and init
-Date: Thu, 21 Mar 2024 18:04:36 -0400
-Message-ID: <20240321220447.3260065-5-charles.perry@savoirfairelinux.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240321220447.3260065-1-charles.perry@savoirfairelinux.com>
-References: <20240321220447.3260065-1-charles.perry@savoirfairelinux.com>
+	s=arc-20240116; t=1711058719; c=relaxed/simple;
+	bh=DK5KA86UB/oaGC52Y62IJp9I9PrxMJ4ablIA5RYgtOQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=NMprSGDsvihwq6o1lKsHVftDwKaEwZaJJ41HJPsjaV/P4Bltb5sU8XrJ7yMHembYwd3KflGgpfWkCBi77ghN7Du67e4fYvNBDSbMUtppXW9Ia8MHl+jow01xds7Z9NaTVFg4upneMNNe6GBaxwO2gpSIIfguVQ27Y0hR8/0uvPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=ZKOJM8Vo; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+Date: Thu, 21 Mar 2024 15:05:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1711058715;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=DK5KA86UB/oaGC52Y62IJp9I9PrxMJ4ablIA5RYgtOQ=;
+	b=ZKOJM8VotpBbDYm8XuJtBYiwevAM2z2vrehhCqJgHxq5DmwUcXRCXjcSjF2IhqFeapTw2L
+	TGip9weeOCvnZPqeDnOEGYRhx6tK4rM8BgTbdUx28gohcqmLoaC3XCqHW9NpbKx25jWAOV
+	SmSm9kE10i3Bz1s2KbzkInDUzCXUb0LJN+gH8gHCQsO1LiIJvqEFxlDd6NDMC/38FMlIsG
+	jEqXALGRMamAFw4tpb4yWvOJ/jZwVX0x0wDKogaxFPL0kun/eaDhKGA3+5sF+w1JvokTQb
+	WG1RVxSXoXz/S1982vdUQgzOmMuvy9WXXBksIg/m8UUutAa6Kmxt3VNvwBlEKA==
+Message-ID: <20240321150510.GI8211@craftyguy.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Clayton Craft <clayton@craftyguy.net>
+To: x86@kernel.org, linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, regressions@lists.linux.dev
+Subject: x86_64 32-bit EFI mixed mode boot broken
+References:
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="UfT2btok9F8N949I"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Migadu-Flow: FLOW_OUT
 
-Old names (prog_b and init-b) are used as a fallback for hardware
-compatible with the "xlnx,fpga-slave-serial" string.
 
-Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
----
- drivers/fpga/xilinx-core.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+--UfT2btok9F8N949I
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: base64
 
-diff --git a/drivers/fpga/xilinx-core.c b/drivers/fpga/xilinx-core.c
-index a35c43382dd5f..39aeacf2e4f17 100644
---- a/drivers/fpga/xilinx-core.c
-+++ b/drivers/fpga/xilinx-core.c
-@@ -171,6 +171,20 @@ static int xilinx_core_write_complete(struct fpga_ma=
-nager *mgr,
- 	return -ETIMEDOUT;
- }
+SSd2ZSBiZWVuIGNoYXNpbmcgYSBwcm9ibGVtIHdpdGggMzItYml0IEVGSSBtaXhlZCBtb2RlIGJv
+b3Rpbmcgb24gdHdvIGRpZmZlcmVudAooeDg2XzY0KSBJbnRlbCBCYXkgVHJhaWwgcGxhdGZvcm1z
+LCB3aGVyZSB0aGUgc3lzdGVtIHJlYm9vdHMgb3IgaGFuZ3Mgc2VlbWluZ2x5CnZlcnkgZWFybHkg
+c29tZXdoZXJlIGJlZm9yZSBvciBhZnRlciBsb2FkaW5nIHRoZSBrZXJuZWwuIEkndmUgbm90IGJl
+ZW4gYWJsZSB0bwpnZXQgYW55IG91dHB1dCBmcm9tIHRoZSBrZXJuZWwgb3Igc3R1YiBvdmVyIGVm
+aWZiIHdoZW4gdGhlIGlzc3VlIGhhcHBlbnNbMF0sIGFuZApkbyBub3QgaGF2ZSBzZXJpYWwgY29u
+c29sZSBhY2Nlc3Mgb24gdGhlc2Ugc3lzdGVtcy4KCnY2LjggZmFpbHMgZm9yIG1lLCBhbmQgcHJl
+c3VtYWJseSBzbyBkb2VzIGV2ZXJ5dGhpbmcgYmFjayB0byB2Ni4yLiB2Ni4xIGlzIGFibGUKdG8g
+Ym9vdCBPSyBvbiB0aGVzZSBwbGF0Zm9ybXMgd2l0aCBtaXhlZCBtb2RlLCBhbmQgaXQgbG9va3Mg
+bGlrZSB0aGVyZSBhcmUgYSBsb3QKb2YgY2hhbmdlcyBmcm9tIDYuMS4uNi4yIGZvciBFRkkvbWl4
+ZWQgbW9kZSBib290aW5nLiBJIGRpZCBtYW5hZ2VkIHRvIGJpc2VjdCB0aGUKaXNzdWUgdG86Cgog
+ICAgICAgIGNvbW1pdCBlMmFiOWVhYjMyNGNkZjI0MGRlODk3NDFlNGExYWE3OTkxOWYwMTk2CiAg
+ICAgICAgQXV0aG9yOiBBcmQgQmllc2hldXZlbCA8YXJkYkBrZXJuZWwub3JnPgogICAgICAgIERh
+dGU6ICAgVHVlIE5vdiAyMiAxNzoxMDowMiAyMDIyICswMTAwCgogICAgICAgICAgICB4ODYvYm9v
+dC9jb21wcmVzc2VkOiBNb3ZlIDMyLWJpdCBlbnRyeXBvaW50IGNvZGUgaW50byAudGV4dCBzZWN0
+aW9uCgpIb3dldmVyIEknbSBub3Qgc3VyZSBob3cgdG8gcHJvY2VlZCBmcm9tIGhlcmUsIG9yIGlm
+IG15IGJpc2VjdCBpcyBhbGwgdGhhdAp1c2VmdWwgc2luY2UgdGhlIGNvbW1pdCBzZWVtcyB0byBi
+ZSBpbiB0aGUgbWlkZGxlIG9mIGEgYnVuY2ggb2YgY2hhbmdlcyBJIGRvIG5vdAp1bmRlcnN0YW5k
+LiBJJ3ZlIGJlZW4gdXNpbmcgc3lzdGVtZC1ib290IHRvIHRlc3QgdGhpcyAoYm90aCB0aGUgZnVs
+bCBib290bG9hZGVyCmFuZCBVS0kgdy8gdGhlIHNkLWJvb3Qgc3R1YikuIElzIDMyLWJpdCBtaXhl
+ZCBtb2RlIG9uIHg4Nl82NCB3b3JraW5nIGZvciBvdGhlcnM/CgpUaGFua3MsCkNsYXl0b24KCjAu
+IFVzaW5nICJkZWJ1ZyBpZ25vcmVfbG9nbGV2ZWwgZWFybHljb249ZWZpZmIgZWFybHlwcmludGs9
+ZWZpLGtlZXAgZWZpPWRlYnVnIgo=
 
-+static inline struct gpio_desc *
-+xilinx_core_devm_gpiod_get(struct device *dev, const char *con_id,
-+			   const char *legacy_con_id, enum gpiod_flags flags)
-+{
-+	struct gpio_desc *desc;
-+
-+	desc =3D devm_gpiod_get(dev, con_id, flags);
-+	if (IS_ERR(desc) && PTR_ERR(desc) =3D=3D -ENOENT &&
-+	    of_device_is_compatible(dev->of_node, "xlnx,fpga-slave-serial"))
-+		desc =3D devm_gpiod_get(dev, legacy_con_id, flags);
-+
-+	return desc;
-+}
-+
- static const struct fpga_manager_ops xilinx_core_ops =3D {
- 	.state =3D xilinx_core_state,
- 	.write_init =3D xilinx_core_write_init,
-@@ -186,12 +200,14 @@ int xilinx_core_probe(struct xilinx_fpga_core *core=
-)
- 		return -EINVAL;
+--UfT2btok9F8N949I
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 	/* PROGRAM_B is active low */
--	core->prog_b =3D devm_gpiod_get(core->dev, "prog_b", GPIOD_OUT_LOW);
-+	core->prog_b =3D xilinx_core_devm_gpiod_get(core->dev, "prog", "prog_b"=
-,
-+						  GPIOD_OUT_LOW);
- 	if (IS_ERR(core->prog_b))
- 		return dev_err_probe(core->dev, PTR_ERR(core->prog_b),
- 				     "Failed to get PROGRAM_B gpio\n");
+-----BEGIN PGP SIGNATURE-----
 
--	core->init_b =3D devm_gpiod_get_optional(core->dev, "init-b", GPIOD_IN)=
-;
-+	core->init_b =3D xilinx_core_devm_gpiod_get(core->dev, "init", "init-b"=
-,
-+						  GPIOD_IN);
- 	if (IS_ERR(core->init_b))
- 		return dev_err_probe(core->dev, PTR_ERR(core->init_b),
- 				     "Failed to get INIT_B gpio\n");
---
-2.43.0
+iQIzBAABCgAdFiEEkdOrrjmBP3eB7DeWSkztbX7flQoFAmX8rxYACgkQSkztbX7f
+lQoQ8BAAr4Pk42xwcH6V4pEKZsHd0uEeQXqyEbsHSAbSIJNXOR2jBnZ5Oh4B2PZx
+r64ayktYwquqX6n2hEaJcc34WvKTOBTIld135klKeLqh6KKlejmFMNuu6Bu6vet+
+efDp/M1CViR3oFKSkuxq6tWuoZV5lWsthRqPiUyrgbeuojWiDZdNUnMH83oCFuI9
+h/NCnfVjFNOznfv3Iz+lSV5W1MUV5kublapClziQTeN5Y47iFD/ZaHE6eoKuyKJt
+gpmB++bF8xwZcjsFbKC1VECN//tKNU6IWzh5KHGrKy36UP0h8SRh8S8YgzECpCZi
+LvzSzqCT7zHCZkjc+tys0vVm7g0vmvfM51rDWSh0PWoCeFbP/dwrtbe2l3shnopw
+0cK9fLDr6mK7csrgpkrWF2orjQL0shRg3wIhpiOVzJr2azAPKHKPpqMDWQtv2dqT
++XJLala1jhjluoKJPLNlBNWeZvlyKJohbF1qrnww6v4+oyoYwgrYI99Y+FUmWUEB
+9GIsWUmMJsahrHXbtPneDJJtKiRhkoaNN29d1xBX0Pos2otDVEaMK7+ecP/T7MEb
+zQMu+960dDTeE17Z+F/4TgQ+IT1JdEPwX3eGQIyu/FMuZt9vu23zdO7nugPTUKPH
+howBlrVfoizMq7YWbOq430nr1lPKg9iAqpxbpM+misJVd7h+jA4=
+=c7s7
+-----END PGP SIGNATURE-----
+
+--UfT2btok9F8N949I--
 
