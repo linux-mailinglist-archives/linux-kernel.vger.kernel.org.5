@@ -1,127 +1,163 @@
-Return-Path: <linux-kernel+bounces-109900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0944885783
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:35:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D22C885788
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C531F21716
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:35:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DAB41C2205A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3838C5730D;
-	Thu, 21 Mar 2024 10:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F+bdIDkG"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68CC1CA9A
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA6156B89;
+	Thu, 21 Mar 2024 10:36:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC11957867;
+	Thu, 21 Mar 2024 10:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711017297; cv=none; b=N/QxvoHZLBvlqeaOx+cS7Oq1HW3nHxi/cExrmUs/p/Lj/he7bEKqhO7bSUET5QLKOszvPs0CK3T2axxCgY1U3hptw9RnF5gW8e/XxYywTuCOGP6wLUJngx5fbxOTZFYMYlw/vzjdGKuCkrRtEYYNtIa8XYbwh74FBv5co1z3Kjg=
+	t=1711017406; cv=none; b=OwFjNawVe+4RDivv6I/+yMBRKaSSkPhu2VkjwQ2XDU/myj86AvAxxz/1GxT3Zg0dGYsoqBwwP/VF2boU6Ww02Jq6r6/IpZveS7ySvoonEse3iC9mlL9UetBG9T8hP/h3vpKWMmUOodz+Nw31UWhy4I3HwqOr3HzQ2ih6Vqrpxn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711017297; c=relaxed/simple;
-	bh=y4emFXGGAZffpUX9wn8XGyawcIby/7BxyXLMzGwuUlE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cvece5Gf+Or1C+6iMkJfqJBpD9v+z0B5XQNJz6CxaaGBgMUmCm8HleEsRHSETzW3bC2phlldrqa+WHey3gStrZmx1YYo2L5VCS6TqZyeAhpQLPnJYytM/8JAs3JRffB3WnGSugQzb/OAT7+9I8RlDZ7IkFQtJ67fmDE36tNJd/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F+bdIDkG; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513e89d0816so1052043e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 03:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711017294; x=1711622094; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XNkgAQnQ6LBfF2NFDRpA/pvI0NsrzPvIEpAHL8Ayt0=;
-        b=F+bdIDkGzDaBLrdVKjtUiTAA/Dz/rG/yZGAAhu9b6bZyDlDxnqHH/dnruulUpT+v9U
-         R3k8FXVXkP5Vq0vtxbabSaL+XA0fAnef5O1D9JX08rrjYnvo84uNaVDZBdQYIMM5jokC
-         YznDdInJHUrbrEbKHBeOXvKRF9lEfTLkRcGHaQaxi5egEiWqt7h89143Lvlujrqlh+dE
-         X+T/LB0p+6GND7LVAf3d1BkYxUAegyQs65YCKSP4815PMQefPb3OW/Rujv3nY4KGuNWy
-         OzTCtUB0OCifQdV4X5hnlscNLyoGHMwOluJ9eJzeI+AmbiQ3GHtiqogejqO2TjiZwhCB
-         0RzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711017294; x=1711622094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XNkgAQnQ6LBfF2NFDRpA/pvI0NsrzPvIEpAHL8Ayt0=;
-        b=rdiZ45au96RYFMUqzGlRq8Te/syYlA2IkKRY9jvLW4w2e9b3EK1Kcu3PSHBCFjERzi
-         PUr+JGmoe67JCPiIKkWxrBhg5TNxN+WJNoTmGhAfSom3K7//T/CA8alWbj6exzyN0PeN
-         dYfI84x2Z8a/hG+ZqqVggDEhgh8fHT+CEKabm1PHIOnVknWiw9db3vd9p05yzBOrhPwq
-         6No/lVYPz/jONv14HuDiAfrQ6/hcOuWfRqgf6sdlTD5jW4x37D0cna7WEpYpEDgDu+EL
-         NKaKzuuomDZGu22H/eF7rANAXkvdRUf5Z3gEFf7nhByVHqCrz7Iu9VZgbuWzrbunEGbz
-         2J8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUjL3cMh/5i84dhBbUHrdCxpdgeZWZaNjGf+RprnBk//YZnk+CrLX37QhkkT3OG6FHsQ02Iu2WQN8gJ2gJMHbgSWjdgxRMewQsd1a+O
-X-Gm-Message-State: AOJu0Yx4+si2BxAf+rcm5HbfXKh61j1CRLNn6+3EIBA2Erd3iCVJfJKL
-	FIo5f+3V0Bs6wvaljIb67vh4LXadhhVD0tgbR6pKcOQe5iiLNT++cMmu9uPzw24QCzsqIEHOY9W
-	9
-X-Google-Smtp-Source: AGHT+IHcrMw9qmrRmKJ+2QA1uL5wiYGSUSyvOjThedDZOBU+nrthRuPB8s9XAlNO95sJ+RIlSU9Jkw==
-X-Received: by 2002:ac2:5b8f:0:b0:513:ec32:aa8a with SMTP id o15-20020ac25b8f000000b00513ec32aa8amr5682658lfn.11.1711017293674;
-        Thu, 21 Mar 2024 03:34:53 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id iv20-20020a05600c549400b004146bce65f4sm5064318wmb.13.2024.03.21.03.34.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 03:34:53 -0700 (PDT)
-Date: Thu, 21 Mar 2024 13:34:48 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	David Laight <David.Laight@aculab.com>,
-	"Czapnik, Lukasz" <lukasz.czapnik@intel.com>
-Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
-Message-ID: <22ba28d7-e8ed-4b5a-9b6f-42d944d2f67d@moroto.mountain>
-References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
- <20240319124317.3c3f16cd@kernel.org>
- <facf5615-d7ac-4167-b23c-6bab7c123138@moroto.mountain>
- <20240320202916.2f2bda73@kernel.org>
- <6266c75a-c02a-431f-a4f2-43b51586ffb4@intel.com>
+	s=arc-20240116; t=1711017406; c=relaxed/simple;
+	bh=SyJMQIj0GXjFOk1fDTe5O7EqtWzLUjb2EUSythGeJxk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IEgp3vjuis4jlk81/ta4Bw0N7uDZ5cY/l20fWswtROtJVlrQBApAj7R1qMFu9cWezqt/wJ9/K+NYDLP0bkf/zsBuDyQbntzv+VQPBXBYtoWj/Qo6Ue1jeBWbwe9aZ8iOFkzYujZ+zMoeLbmy9f2Uwtr3JrX8KAXJhJwDpKqK4W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D3E81007;
+	Thu, 21 Mar 2024 03:37:17 -0700 (PDT)
+Received: from e116581.blr.arm.com (e116581.arm.com [10.162.41.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6F6A43F67D;
+	Thu, 21 Mar 2024 03:36:40 -0700 (PDT)
+From: Dev Jain <dev.jain@arm.com>
+To: akpm@linux-foundation.org,
+	shuah@kernel.org
+Cc: linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Anshuman.Khandual@arm.com,
+	Dev Jain <dev.jain@arm.com>
+Subject: [PATCH] selftests/mm: Confirm VA exhaustion without reliance on correctness of mmap()
+Date: Thu, 21 Mar 2024 16:05:22 +0530
+Message-Id: <20240321103522.516097-1-dev.jain@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6266c75a-c02a-431f-a4f2-43b51586ffb4@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 10:59:42AM +0100, Przemek Kitszel wrote:
-> Simplest solution would be to add a macro wrapper, especially that there
-> are only a few deallocation methods.
-> 
-> in cleanup.h:
-> +#define auto_kfree __free(kfree) = NULL
-> 
-> and similar macros for auto vfree(), etc.
-> 
-> then in the drivers:
-> -struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) = NULL,
-> 				  *othercaps __free(kfree) = NULL;
-> +struct ice_aqc_get_phy_caps_data *pcaps auto_kfree,
-> 				  *othercaps auto_kfree;
+Currently, VA exhaustion is being checked by passing a hint to mmap() and
+expecting it to fail. This patch makes a stricter test by successful write()
+calls from /proc/self/maps to a dump file, confirming that a free chunk is
+indeed not available.
 
-The auto_kfree looks like a variable to my eyes.  I'd prefer something
-like:
+Signed-off-by: Dev Jain <dev.jain@arm.com>
+---
+Merge dependency: https://lore.kernel.org/all/20240314122250.68534-1-dev.jain@arm.com/
 
-#define __FREE(p) p __free(kfree) = NULL
+ .../selftests/mm/virtual_address_range.c      | 69 +++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-	struct ice_aqc_get_phy_caps_data *__FREE(pcaps);
-
-regards,
-dan carpenter
+diff --git a/tools/testing/selftests/mm/virtual_address_range.c b/tools/testing/selftests/mm/virtual_address_range.c
+index 7bcf8d48256a..31063613dfd9 100644
+--- a/tools/testing/selftests/mm/virtual_address_range.c
++++ b/tools/testing/selftests/mm/virtual_address_range.c
+@@ -12,6 +12,8 @@
+ #include <errno.h>
+ #include <sys/mman.h>
+ #include <sys/time.h>
++#include <fcntl.h>
++
+ #include "../kselftest.h"
+ 
+ /*
+@@ -93,6 +95,69 @@ static int validate_lower_address_hint(void)
+ 	return 1;
+ }
+ 
++static int validate_complete_va_space(void)
++{
++	unsigned long start_addr, end_addr, prev_end_addr;
++	char line[400];
++	char prot[6];
++	FILE *file;
++	int fd;
++
++	fd = open("va_dump", O_CREAT | O_WRONLY, 0600);
++	unlink("va_dump");
++	if (fd < 0) {
++		ksft_test_result_skip("cannot create or open dump file\n");
++		ksft_finished();
++	}
++
++	file = fopen("/proc/self/maps", "r");
++	if (file == NULL)
++		ksft_exit_fail_msg("cannot open /proc/self/maps\n");
++
++	prev_end_addr = 0;
++	while (fgets(line, sizeof(line), file)) {
++		unsigned long hop;
++		int ret;
++
++		ret = sscanf(line, "%lx-%lx %s[rwxp-]",
++			     &start_addr, &end_addr, prot);
++		if (ret != 3)
++			ksft_exit_fail_msg("sscanf failed, cannot parse\n");
++
++		/* end of userspace mappings; ignore vsyscall mapping */
++		if (start_addr & (1UL << 63))
++			return 0;
++
++		/* /proc/self/maps must have gaps less than 1GB only */
++		if (start_addr - prev_end_addr >= SZ_1GB)
++			return 1;
++
++		prev_end_addr = end_addr;
++
++		if (prot[0] != 'r')
++			continue;
++
++		/*
++		 * Confirm whether MAP_CHUNK_SIZE chunk can be found or not.
++		 * If write succeeds, no need to check MAP_CHUNK_SIZE - 1
++		 * addresses after that. If the address was not held by this
++		 * process, write would fail with errno set to EFAULT.
++		 * Anyways, if write returns anything apart from 1, exit the
++		 * program since that would mean a bug in /proc/self/maps.
++		 */
++		hop = 0;
++		while (start_addr + hop < end_addr) {
++			if (write(fd, (void *)(start_addr + hop), 1) != 1)
++				return 1;
++			else
++				lseek(fd, 0, SEEK_SET);
++
++			hop += MAP_CHUNK_SIZE;
++		}
++	}
++	return 0;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	char *ptr[NR_CHUNKS_LOW];
+@@ -135,6 +200,10 @@ int main(int argc, char *argv[])
+ 		validate_addr(hptr[i], 1);
+ 	}
+ 	hchunks = i;
++	if (validate_complete_va_space()) {
++		ksft_test_result_fail("BUG in mmap() or /proc/self/maps\n");
++		ksft_finished();
++	}
+ 
+ 	for (i = 0; i < lchunks; i++)
+ 		munmap(ptr[i], MAP_CHUNK_SIZE);
+-- 
+2.34.1
 
 
