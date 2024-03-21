@@ -1,210 +1,146 @@
-Return-Path: <linux-kernel+bounces-110538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9008588604B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:06:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81367886038
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B418C1C2316F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:06:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0CC5B21923
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE091332AC;
-	Thu, 21 Mar 2024 18:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30ABD1332BB;
+	Thu, 21 Mar 2024 18:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KCBomulw"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LjblWkn4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35CEE133425;
-	Thu, 21 Mar 2024 18:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14C38613B;
+	Thu, 21 Mar 2024 18:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044397; cv=none; b=mqvmHZ39Mg4pVIgvoW2+sBh/yD4rbTXkCTC7RJT5Ngtdjk42sHEFuEyHhNvBxDW1zo+Tsky+B3+KNco3DlTG/mxGD5P6tRHK7ee7np7bgFwj16Mz9JBPXEFFjcb2QWFuACl0I8RiWLjI5dsU0ar+RE7I6JRHMOJYpzJYDYvUzHg=
+	t=1711044191; cv=none; b=L57npTFC1/kvL3zKJXmSIDc+tb8TA7PGUMQYZEYZs2gg9NealoUK8Jax71jYsFkNRgwhqU88zCudTnhSmeK2bJFOEhObgRVuf91a1QRjm322kWIeF/vrOvz6xrmeu0aE+NSN51zIy03q7+9wHbqMD+rK2/1mG6cGH0Xt9EPaIxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044397; c=relaxed/simple;
-	bh=hQM+nEBr+O+KT4m95MZF4EIGf62D1EFTUg7Imq+8K4M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tFOw/MOjHpzz8uUbw8wMVjdvqUQwcd4Q3/bMdFLCXOpftC+8evC/kcFeq7PdqazSPh+RNXS3c20gucy7vZu3FG2mdM7T2NIf5iXEwP6rNwxcy5OO/Mdg9vn7HpxJx/GoctYdFpqgnA3eCkyAr/jtkyM85vYK+7dNWzDzHpV05Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KCBomulw; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dddbe47ac1so15991155ad.1;
-        Thu, 21 Mar 2024 11:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711044395; x=1711649195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=G//XJEaui3S1uJSf5fZpwyOF3s2VA1vZvh2pajUHYgo=;
-        b=KCBomulwTZfx8oyQuz2P4LNbrLhT3dYVzh1yxYv1JKA7AY+1dviS6s1gF6uLXFCHTZ
-         MvZJCrUwg/H6utUme7PGUTYy57uaAYHRn3ys/JxFuEyGkBbSyK/IrW0QzlVppwgJQ0+i
-         qVeM/vGwGJz+8t1Sk0xEuAxBRHxmYf8L95SsigaVQEMsIF3VNVgFsHjWIA83R+eMKYgU
-         eY03zwBMm0ajc/Jfl1n8tesYpY3XStsHj30cMXrydDBeyjEQfpksGAXYwMoTsdXXd4Q3
-         B/Bg5bWv6VLG1ySaJCsSiby+SbaBAIRnLSFuEehGc5ddEwlVI03magzFun7gVXEJeDy/
-         KKKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711044395; x=1711649195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G//XJEaui3S1uJSf5fZpwyOF3s2VA1vZvh2pajUHYgo=;
-        b=W0wxNsOJsF62+QzwNtmgfq0C+CkGIxDtFzthB6ZykDvQks/9MoEHVOP9ymKZecc1Nk
-         ukBeDrgDZrJj9XXTB12zAsugR+CMMI46MGYxzkSUCedsk4UYEswGaaFoXa9F8JOL1GXp
-         dpqpbpV9i7n+S8TRe0IeeW6FCY3WtBa/gla9r7ogW1SIFI20DyI0SGHaOJAeUvmegkVw
-         QCUX7hG8zYM34yk7g1XpU2w7iEpeoo7S2oW29L3lradADNPMTjANVaWAZdiixQDv/F+5
-         E926OcW3C17g64wyU2BksmnWcdeMq3sk8odZ8EFHyqhCzg657kgEQNM9l5CmOt4fKPWi
-         CLvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWLO0n0h6AMjeOLM4gjauhzc10S3aeC88uvGCTs+aG23mmRIZbn3Zh64Aa++s12TMBpo3VSCJRJihANl7uD5hw0dkjXvIFsw72v
-X-Gm-Message-State: AOJu0Yy6xASRnwRLhY/AL1UcNvlEnBfgBoP6lL0Ou9LWtE2TEj2RGczR
-	3sHi1bk8HX0tgl0E2aGBjChLLXO7TTeRbuXs25vLiegoha06kiSvZlFs2E8zNQE=
-X-Google-Smtp-Source: AGHT+IFZn8qaLfdXSa3CE3FQVelBZA6AVVe4cZl7T1P9bIjqzR1zI0z8rzLd8E1+oaRXeYXWiPC+kQ==
-X-Received: by 2002:a17:903:1c5:b0:1e0:137e:cd66 with SMTP id e5-20020a17090301c500b001e0137ecd66mr305347plh.30.1711044394893;
-        Thu, 21 Mar 2024 11:06:34 -0700 (PDT)
-Received: from kousik.local ([2405:201:c006:31f8:c75d:3405:7d77:21ac])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170903230d00b001dd7de61656sm129033plh.37.2024.03.21.11.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 11:06:34 -0700 (PDT)
-From: Kousik Sanagavarapu <five231003@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: devicetree@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Kousik Sanagavarapu <five231003@gmail.com>
-Subject: [PATCH v2] spi: dt-bindings: jcore,spi: convert spi-jcore to dtschema
-Date: Thu, 21 Mar 2024 23:32:28 +0530
-Message-ID: <20240321180617.35390-1-five231003@gmail.com>
-X-Mailer: git-send-email 2.44.0.273.g4bc5b65358.dirty
+	s=arc-20240116; t=1711044191; c=relaxed/simple;
+	bh=cpK068KVvFXrGJJCmc7jXbXiOVvPQ+oU7A4+RLoU+Qw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=foUGVIkfuTXwfNxmBI+ipS6iM8H2Seev4DCEe8ToO6SPXMb9eUKWmG3rXARWEel2JLFO3KQxmeRtuSn1sUcfWhVkXNhZor7NyegkizecCY+iTRSlQwieSRclzUwsEUMdNxRyyRMLAwHn9EcEPu/qIjxFLicBWEbxvxrYb00rVR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LjblWkn4; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711044190; x=1742580190;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=cpK068KVvFXrGJJCmc7jXbXiOVvPQ+oU7A4+RLoU+Qw=;
+  b=LjblWkn46DoJ4D30T1Q4+Xd2HPvwa1M93IlbrFEIGc4mVKHokGBICI3L
+   k1DV7xeY8QPHGYUMy0tVVOBiZnxjfeftq4YU77n1MWAnsZ/BEAMIY9/M7
+   oaH4WY8SApKWwNspi8MOYAtUd9IKT4dY70kznKAf2nW1rZ7r8tAImk8ik
+   xwyoD0fAxtGAxRseivGItDo6DzvJ2ee3HGygKUfqQaF5KYv+fX1soZP5k
+   nyhCpxkMqF8PNDNd0LYoU3ljR1uGPC8/2x0idbHxZNPJ7G/ykfxpeVyNh
+   Bn02mls4QgT04iL1Cs6qIjrvVbGU323Or3xdjJBpT8/070h2lmqx61438
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6180634"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="6180634"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 11:03:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="914717075"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="914717075"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 11:03:04 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rnMkm-0000000ExcL-2Dkx;
+	Thu, 21 Mar 2024 20:03:00 +0200
+Date: Thu, 21 Mar 2024 20:03:00 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	David Laight <David.Laight@aculab.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Jiri Pirko <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
+	Julia Lawall <julia.lawall@inria.fr>,
+	Kees Cook <keescook@chromium.org>,
+	Lukasz Czapnik <lukasz.czapnik@intel.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
+Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
+Message-ID: <Zfx2VL7xnj4rQoV8@smile.fi.intel.com>
+References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
+ <d2b1f3bd-42f1-483b-916e-3735b39a30e1@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d2b1f3bd-42f1-483b-916e-3735b39a30e1@web.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Convert existing bindings of J-Core spi2 to dtschema.
+On Thu, Mar 21, 2024 at 06:59:00PM +0100, Markus Elfring wrote:
 
-No new properties are added.
+…
 
-Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
----
-Changes since v1:
-- changed the subject line to conform.
-- dropped desc for "clock" and "clock-names" properties.
-- cleaned up stuff.
+> > +++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> > @@ -941,11 +941,11 @@ static u64 ice_loopback_test(struct net_device *netdev)
+> >  	struct ice_netdev_priv *np = netdev_priv(netdev);
+> >  	struct ice_vsi *orig_vsi = np->vsi, *test_vsi;
+> >  	struct ice_pf *pf = orig_vsi->back;
+> > +	u8 *tx_frame __free(kfree) = NULL;
+> >  	u8 broadcast[ETH_ALEN], ret = 0;
+> >  	int num_frames, valid_frames;
+> >  	struct ice_tx_ring *tx_ring;
+> >  	struct ice_rx_ring *rx_ring;
+> > -	u8 *tx_frame __free(kfree);
+> >  	int i;
+> >
+> >  	netdev_info(netdev, "loopback test\n");
+> 
+> How do you think about to reduce the scope for the affected local variable instead
+> with the help of a small script (like the following) for the semantic patch language?
+> 
+> @movement@
+> attribute name __free;
+> @@
+> -u8 *tx_frame __free(kfree);
+>  int i;
+>  ... when any
+>  if (ice_fltr_add_mac(test_vsi, ...))
+>  { ... }
+> +
+> +{
+> +u8 *tx_frame __free(kfree) = NULL;
+>  if (ice_lbtest_create_frame(pf, &tx_frame, ...))
+>  { ... }
+>  ... when any
+> +}
+> +
+>  valid_frames = ice_lbtest_receive_frames(...);
 
-Thanks for the review Krzysztof.
+I believe you don't understand what the scope of the above can be.
 
- .../devicetree/bindings/spi/jcore,spi.txt     | 34 ------------
- .../devicetree/bindings/spi/jcore,spi.yaml    | 53 +++++++++++++++++++
- 2 files changed, 53 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/jcore,spi.txt
- create mode 100644 Documentation/devicetree/bindings/spi/jcore,spi.yaml
-
-diff --git a/Documentation/devicetree/bindings/spi/jcore,spi.txt b/Documentation/devicetree/bindings/spi/jcore,spi.txt
-deleted file mode 100644
-index 93936d16e139..000000000000
---- a/Documentation/devicetree/bindings/spi/jcore,spi.txt
-+++ /dev/null
-@@ -1,34 +0,0 @@
--J-Core SPI master
--
--Required properties:
--
--- compatible: Must be "jcore,spi2".
--
--- reg: Memory region for registers.
--
--- #address-cells: Must be 1.
--
--- #size-cells: Must be 0.
--
--Optional properties:
--
--- clocks: If a phandle named "ref_clk" is present, SPI clock speed
--  programming is relative to the frequency of the indicated clock.
--  Necessary only if the input clock rate is something other than a
--  fixed 50 MHz.
--
--- clock-names: Clock names, one for each phandle in clocks.
--
--See spi-bus.txt for additional properties not specific to this device.
--
--Example:
--
--spi@40 {
--	compatible = "jcore,spi2";
--	#address-cells = <1>;
--	#size-cells = <0>;
--	reg = <0x40 0x8>;
--	spi-max-frequency = <25000000>;
--	clocks = <&bus_clk>;
--	clock-names = "ref_clk";
--}
-diff --git a/Documentation/devicetree/bindings/spi/jcore,spi.yaml b/Documentation/devicetree/bindings/spi/jcore,spi.yaml
-new file mode 100644
-index 000000000000..b8ec3adaac8d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/jcore,spi.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+
-+$id: http://devicetree.org/schemas/spi/jcore,spi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: J-Core SPI controller
-+
-+description:
-+  The J-Core "spi2" device is a PIO-based SPI controller which used to
-+  perform byte-at-a-time transfers between the CPU and itself.
-+
-+maintainers:
-+  - Kousik Sanagavarapu <five231003@gmail.com>
-+
-+allOf:
-+  - $ref: spi-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: jcore,spi2
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: ref_clk
-+
-+  spi-max-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    spi@40 {
-+        compatible = "jcore,spi2";
-+        reg = <0x40 0x8>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        spi-max-frequency = <25000000>;
-+        clocks = <&bus_clk>;
-+        clock-names = "ref_clk";
-+    };
 -- 
-2.44.0.273.g4bc5b65358.dirty
+With Best Regards,
+Andy Shevchenko
+
 
 
