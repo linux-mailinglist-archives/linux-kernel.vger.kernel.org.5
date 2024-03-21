@@ -1,461 +1,334 @@
-Return-Path: <linux-kernel+bounces-110401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF67885EBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:54:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FBB885EC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04C7A1F217AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:54:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F482B24F33
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3370013442E;
-	Thu, 21 Mar 2024 16:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E6L9MUS3"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8148F18AE8;
-	Thu, 21 Mar 2024 16:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBFE356768;
+	Thu, 21 Mar 2024 16:42:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E85134733;
+	Thu, 21 Mar 2024 16:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039301; cv=none; b=n3IftFHfSvI8kUpdU+IrP1v6uOMRkRMaJHLzGcTIIpum64Kb+/EZycbuxOHlysvC4gVgaWJefQDdP2oPkkT9P4c7jUt8QaoXrkGWLc7Jfn0VlflQyMlbSH6hOTLVtglaP5+y/fenEqtjfo0/mUucWfWjWLpnc8oy0dWPd8Hz5jg=
+	t=1711039322; cv=none; b=ZG5KBQzloBYHYfPfl+TWt529/KdRdpzx0l1BrexMuIQeKDkEMuRGE1soBb7EqYva4h3ZwVRImEx4RIfDkja43SGSwhjxfx+jYIEmXRypb5/qt10JygS6z2NTrltt40chXkQUXO04l/W5JL8Xayh+wwBp9Nd3VcbFv6MRr4/23/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039301; c=relaxed/simple;
-	bh=Fy5RRSblj9JJG8xmeQobLC1vEdqR6ArBP+pEaJH45pQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYVQCPKSOctj663f7kicHQVziJqMovYoW/wYpNmcu0ZhrvqJHtSKsRlGwdfmeRjyH6os4Iy21Owek2ryQw+lIPT1s2RFaqF+7x1xyTgVm2innhPhcWMqceWQPB0Ndos34oR5Ttb0lWxkst+q+arXxyvPv3cnxL5UtzBikhJOgm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E6L9MUS3; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d476d7972aso20997421fa.1;
-        Thu, 21 Mar 2024 09:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711039298; x=1711644098; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZvR3EkXBYNnuqR8ShobNi9WlN5TclTQG4PhF93uu8ec=;
-        b=E6L9MUS3IyzYUD9N9cfhd6iGWbzFVk5+AUsz9maHoGxumYfQ0yxvWfVuEDSWXq9PN4
-         zm0rhtIUMDDiTqP7s/mXQczNBDH7tV9WGu8z6bB3bEpFBhcc+Bv7OsYrJJtcGGIbbCV+
-         Cq4SqKuIB1W7mXnBqkWL3sdfM26OEx7ZXA7j9b8a3ji7wDaHgQmVYdpZHuGqvETGLE7F
-         r12UyGnGeaogJ08TUard9jK7jW1awiM9ukS5UY+PIMkZ22T2YlbMXN86AgQ3wJmC8lOG
-         BobMnfBUxgBOy2Izf0FyhXqAVwnCQol4xySVEkonBHod5EouaQM9QXtOOpzJJtmArVuN
-         RQaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711039298; x=1711644098;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvR3EkXBYNnuqR8ShobNi9WlN5TclTQG4PhF93uu8ec=;
-        b=ihXzKMBhWFWVfISgX0ADN0P0cyh5kilAXn+aquM1vGkJ4yNtKNx9E9uzhD5dQdPCDt
-         9lXfqoydG1mRbfsmddZ0tLnaHCv5yMssT2uGVZxHlEZJRbV2hn6ZeM6CZCOLSYtY31E8
-         ah9ItMjsQVaF92mC7EoWQy4eEfL1hXMRCWFOsJ2BORFziIj7gI2Ogg1WA8HC3zmXZkzJ
-         YhzgL1FZnBuqyL/83ygxRQLmb1K5yBfYmvq6Sm0Hn7f5HikBIZerSnyrufvt5ZsL/w8G
-         dZK1sCgtO0xVZiLOZ77v0nXxz7YqngE67OXhIVYvY2Ngr3QKGYEUdeFAsGi8Yi+rGofk
-         7dJw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3sE/nAVVr+a6ID0E11TQGdVj/mcobnajIbVb1WngGIUBF8LIpNh2mq5YqlELu1RGZbs6EmCFd3KCRewL7pOA3nLWH/kXhk91we1m6LqiQkzbCPsh69b6TTFmS2xErgTxvGKhNc9kOpc1GjZ+qlVA+TxbOHGUEwlOtdXq1yRhleNKcRYET
-X-Gm-Message-State: AOJu0Yym4RaG7xpnh+xvpSqPrWpNFk+XK6edSN1pEH5JLS5h5YbLmOeM
-	/ZewuGuJnu5RCqd4fqhB74O11OWBz6lCgQ3bPcQQfSORa2c0joL5
-X-Google-Smtp-Source: AGHT+IHIDFiLuq44EHkONVOTA/sn26LNjbii8c+wHceLOlU24dMQpmrUgMaVyr+PKkfrehPxagK5qQ==
-X-Received: by 2002:a19:2d17:0:b0:513:353e:bcaa with SMTP id k23-20020a192d17000000b00513353ebcaamr7248411lfj.36.1711039297334;
-        Thu, 21 Mar 2024 09:41:37 -0700 (PDT)
-Received: from localhost.localdomain ([178.70.43.28])
-        by smtp.gmail.com with ESMTPSA id q3-20020a0565123a8300b00513d24f1d38sm1131lfu.172.2024.03.21.09.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 09:41:36 -0700 (PDT)
-Date: Thu, 21 Mar 2024 19:41:35 +0300
-From: Ivan Bornyakov <brnkv.i1@gmail.com>
-To: Brandon Brnich <b-brnich@ti.com>
-Cc: Nas Chung <nas.chung@chipsnmedia.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "jackson.lee" <jackson.lee@chipsnmedia.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: Re: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-Message-ID: <mhh25et5r36zr332iselgtmwuynl644zggw2h66ypjy5wyov5t@heve5x2z4njz>
-References: <20240318144225.30835-1-brnkv.i1@gmail.com>
- <20240318144225.30835-6-brnkv.i1@gmail.com>
- <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
- <20240319210106.awn33cm7ex33g65b@udba0500997>
- <SL2P216MB12468C7256CE2468EE088E7CFB322@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <tg32tsfnj3pmboaaeslvrmf7wtvznagio3vtqot42iflz5lvh7@25s5ykv3dfuz>
- <20240321161405.i3xnyuqnfwzyomex@udba0500997>
+	s=arc-20240116; t=1711039322; c=relaxed/simple;
+	bh=fznBggQcBCFiKQC6HZG44OJYau2TgxMOPGYgwwAiXuI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QgCRlSJHm/cfaqzwrPaiCc+HVsxJMPWpgI5GF1g+S6jsLpbmF3NO4+acL87UbS9Cg9jaziPfeSDxcGmiW4URCQ5+MkGgJWQwog6iTLWDpqDNWHxfAFy4G207XAm1BN9ND6ERj6Jx52sROn2o20JEWV0jUBc8B18I5XLSD0tvMRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F041B1007;
+	Thu, 21 Mar 2024 09:42:32 -0700 (PDT)
+Received: from [10.57.53.86] (unknown [10.57.53.86])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6C8D3F67D;
+	Thu, 21 Mar 2024 09:41:55 -0700 (PDT)
+Message-ID: <8d381e6e-9328-46ff-83fe-efbe5bb4363e@arm.com>
+Date: Thu, 21 Mar 2024 16:41:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321161405.i3xnyuqnfwzyomex@udba0500997>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] coresight: Add support for multiple output ports on
+ the funnel
+Content-Language: en-GB
+To: Tao Zhang <quic_taozha@quicinc.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Jinlong Mao <quic_jinlmao@quicinc.com>, Leo Yan <leo.yan@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
+ Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+ Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1711009927-17873-1-git-send-email-quic_taozha@quicinc.com>
+ <1711009927-17873-3-git-send-email-quic_taozha@quicinc.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1711009927-17873-3-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 11:14:05AM -0500, Brandon Brnich wrote:
-> Hi Ivan, 
+On 21/03/2024 08:32, Tao Zhang wrote:
+> Funnel devices are now capable of supporting multiple-inputs and
+> multiple-outputs configuration with in built hardware filtering
+> for TPDM devices. Add software support to this function. Output
+> port is selected according to the source in the trace path.
 > 
-> On 13:52-20240321, Ivan Bornyakov wrote:
-> > Hi!
-> > 
-> > On Thu, Mar 21, 2024 at 09:29:04AM +0000, Nas Chung wrote:
-> > > Hi, Ivan and Brandon.
-> > > 
-> > > >-----Original Message-----
-> > > >On 14:24-20240319, Ivan Bornyakov wrote:
-> > > >> Hello, Nas
-> > > >>
-> > > >> On Tue, Mar 19, 2024 at 10:56:22AM +0000, Nas Chung wrote:
-> > > >> > Hi, Ivan.
-> > > >> >
-> > > >> > >
-> > > >> > >Allocate SRAM memory on module probe, free on remove. There is no
-> > > >need
-> > > >> > >to allocate on device open, free on close, the memory is the same
-> > > >every
-> > > >> > >time.
-> > > >> >
-> > > >> > If there is no decoder/encoder instance, driver don't need to
-> > > >allocate SRAM memory.
-> > > >> > The main reason of allocating the memory in open() is to allow other
-> > > >modules to
-> > > >> > use more SRAM memory, if wave5 is not working.
-> > > >
-> > > >I have to agree with this statement. Moving allocation to probe results
-> > > >in wasting SRAM when VPU is not in use. VPU should only be allocating
-> > > >SRAM
-> > > >when a stream instance is running and free that back once all instances
-> > > >close.
-> > > >
-> > > >> > >
-> > > >> > >Also use gen_pool_size() to determine SRAM memory size to be
-> > > >allocated
-> > > >> > >instead of separate "sram-size" DT property to reduce duplication.
-> > > >> > >
-> > > >> > >Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
-> > > >> > >---
-> > > >> > > .../platform/chips-media/wave5/wave5-helper.c |  3 ---
-> > > >> > > .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++-------
-> > > >--
-> > > >> > > .../chips-media/wave5/wave5-vpu-dec.c         |  2 --
-> > > >> > > .../chips-media/wave5/wave5-vpu-enc.c         |  2 --
-> > > >> > > .../platform/chips-media/wave5/wave5-vpu.c    | 12 +++++------
-> > > >> > > .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
-> > > >> > > 6 files changed, 16 insertions(+), 25 deletions(-)
-> > > >> > >
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > > >> > >index 8433ecab230c..ec710b838dfe 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> > > >> > >@@ -29,9 +29,6 @@ void wave5_cleanup_instance(struct vpu_instance
-> > > >*inst)
-> > > >> > > {
-> > > >> > > 	int i;
-> > > >> > >
-> > > >> > >-	if (list_is_singular(&inst->list))
-> > > >> > >-		wave5_vdi_free_sram(inst->dev);
-> > > >> > >-
-> > > >> > > 	for (i = 0; i < inst->fbc_buf_count; i++)
-> > > >> > > 		wave5_vpu_dec_reset_framebuffer(inst, i);
-> > > >> > >
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > >> > >index 3809f70bc0b4..ee671f5a2f37 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > >> > >@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
-> > > >> > >*vpu_dev, struct vpu_buf *array,
-> > > >> > > void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
-> > > >> > > {
-> > > >> > > 	struct vpu_buf *vb = &vpu_dev->sram_buf;
-> > > >> > >+	dma_addr_t daddr;
-> > > >> > >+	void *vaddr;
-> > > >> > >+	size_t size;
-> > > >> > >
-> > > >> > >-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
-> > > >> > >+	if (!vpu_dev->sram_pool || vb->vaddr)
-> > > >> > > 		return;
-> > > >> > >
-> > > >> > >-	if (!vb->vaddr) {
-> > > >> > >-		vb->size = vpu_dev->sram_size;
-> > > >> > >-		vb->vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
-> > > >> > >-					       &vb->daddr);
-> > > >> > >-		if (!vb->vaddr)
-> > > >> > >-			vb->size = 0;
-> > > >> > >+	size = gen_pool_size(vpu_dev->sram_pool);
-> > > >> > >+	vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
-> > > >> > >+	if (vaddr) {
-> > > >> > >+		vb->vaddr = vaddr;
-> > > >> > >+		vb->daddr = daddr;
-> > > >> > >+		vb->size = size;
-> > > >> > > 	}
-> > > >> > >
-> > > >> > > 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
-> > > >> > >0x%p\n",
-> > > >> > >@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device
-> > > >*vpu_dev)
-> > > >> > > 	if (!vb->size || !vb->vaddr)
-> > > >> > > 		return;
-> > > >> > >
-> > > >> > >-	if (vb->vaddr)
-> > > >> > >-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
-> > > >> > >-			      vb->size);
-> > > >> > >+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
-> > > >> > >>size);
-> > > >> > >
-> > > >> > > 	memset(vb, 0, sizeof(*vb));
-> > > >> > > }
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
-> > > >dec.c
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> > > >> > >index aa0401f35d32..84dbe56216ad 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> > > >> > >@@ -1854,8 +1854,6 @@ static int wave5_vpu_open_dec(struct file
-> > > >*filp)
-> > > >> > > 		goto cleanup_inst;
-> > > >> > > 	}
-> > > >> > >
-> > > >> > >-	wave5_vdi_allocate_sram(inst->dev);
-> > > >> > >-
-> > > >> > > 	return 0;
-> > > >> > >
-> > > >> > > cleanup_inst:
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
-> > > >enc.c
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > >> > >index 8bbf9d10b467..86ddcb82443b 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > >> > >@@ -1727,8 +1727,6 @@ static int wave5_vpu_open_enc(struct file
-> > > >*filp)
-> > > >> > > 		goto cleanup_inst;
-> > > >> > > 	}
-> > > >> > >
-> > > >> > >-	wave5_vdi_allocate_sram(inst->dev);
-> > > >> > >-
-> > > >> > > 	return 0;
-> > > >> > >
-> > > >> > > cleanup_inst:
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > >> > >index f3ecadefd37a..2a0a70dd7062 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > >> > >@@ -178,16 +178,11 @@ static int wave5_vpu_probe(struct
-> > > >platform_device
-> > > >> > >*pdev)
-> > > >> > > 		return ret;
-> > > >> > > 	}
-> > > >> > >
-> > > >> > >-	ret = of_property_read_u32(pdev->dev.of_node, "sram-size",
-> > > >> > >-				   &dev->sram_size);
-> > > >> > >-	if (ret) {
-> > > >> > >-		dev_warn(&pdev->dev, "sram-size not found\n");
-> > > >> > >-		dev->sram_size = 0;
-> > > >> > >-	}
-> > > >> > >-
-> > > >> >
-> > > >> > Required SRAM size is different from each wave5 product.
-> > > >> > And, SoC vendor also can configure the different SRAM size
-> > > >> > depend on target SoC specification even they use the same wave5
-> > > >product.
-> > > >> >
-> > > >>
-> > > >> One can limit iomem address range in SRAM node. Here is the example of
-> > > >> how I setup Wave515 with SRAM:
-> > > >>
-> > > >> 	sram@2000000 {
-> > > >> 		compatible = "mmio-sram";
-> > > >> 		reg = <0x0 0x2000000 0x0 0x80000>;
-> > > >> 		#address-cells = <1>;
-> > > >> 		#size-cells = <1>;
-> > > >> 		ranges = <0x0 0x0 0x2000000 0x80000>;
-> > > >>
-> > > >> 		wave515_vpu_sram: wave515-vpu-sram@0 {
-> > > >> 			reg = <0x0 0x80000>;
-> > > >> 			pool;
-> > > >> 		};
-> > > >> 	};
-> > > >>
-> > > >> 	wave515@410000 {
-> > > >> 		compatible = "cnm,wave515";
-> > > >> 		reg = <0x0 0x410000 0x0 0x10000>;
-> > > >> 		clocks = <&clk_ref1>;
-> > > >> 		clock-names = "videc";
-> > > >> 		interrupt-parent = <&wave515_intc>;
-> > > >> 		interrupts = <16 IRQ_TYPE_LEVEL_HIGH>;
-> > > >> 		resets = <&wave515_reset 0>,
-> > > >> 			 <&wave515_reset 4>,
-> > > >> 			 <&wave515_reset 8>,
-> > > >> 			 <&wave515_reset 12>;
-> > > >> 		sram = <&wave515_vpu_sram>;
-> > > >> 	};
-> > > >>
-> > > >> gen_pool_size() returns size of wave515_vpu_sram, no need for extra
-> > > >> "sram-size" property.
-> > > 
-> > > Thanks for sharing the example.
-> > > I agree that the "sram-size" property is not needed.
-> > > 
-> > > >
-> > > >"sram-size" property does need to be removed, as this was the consensus
-> > > >gathered from my patch[0]. However, I think your method is still taking
-> > > 
-> > > I missed the previous consensus for the sram-size property.
-> > > Thanks for letting me know.
-> > > 
-> > > >a more static approach. One of the recommendations in my thread[1] was
-> > > >making a list of known SRAM sizes given typical resolutions and
-> > > >iterating through until a valid allocation is done. I don't think this
-> > > >is the correct approach either based on Nas's comment that each Wave5
-> > > >has different SRAM size requirement. It would clutter up the file too
-> > > >much if each wave5 product had its own SRAM size mapping.
-> > > >
-> > > >Could another approach be to change Wave5 dts node to have property set
-> > > >as "sram = <&sram>;" in your example, then driver calls
-> > > >gen_pool_availble to get size remaining? From there, a check could be
-> > > >put in place to make sure an unnecessary amount is not being allocated.
-> > > 
-> > > Ivan's approach looks good to me.
-> > > It is similar to your first patch, which adds the sram-size property
-> > > to configure different SRAM sizes for each device.
-> > > And, Driver won't know unnecessary amount is allocated before parsing
-> > > bitstream header.
+> The source of the input port on funnels will be marked in the
+> device tree.
+> e.g.
+> tpdm@xxxxxxx {
+>      ... ... ... ...
+> };
 > 
-> I am aware of this, I should have been more specific. By unnecessary
-> amount, I meant something greater than the max use case for device.
-> Could we populate some macros that have max SRAM required for 4K stream?
-> There's never a need to allocate more SRAM than that for a particular
-> instance. If the amount available is less than that, then fine. But it
-> should never be greater.
+> funnel_XXX: funnel@xxxxxxx {
+>      ... ... ... ...
+>      out-ports {
+>          ... ... ... ...
+>          port@x {
+>              ... ... ... ...
+>              label = "xxxxxxx.tpdm"; <-- To label the source
+>          };                           corresponding to the output
+>      ... ... ... ...                  connection "port@x". And this
+>      };                               is a hardware static connections.
+>      ... ... ... ...                  Here needs to refer to hardware
+> };                                   design.
 > 
-> > > 
-> > 
-> > To sum up, there is 2 favourable approaches:
-> > 
-> > 1) to have dedicated SRAM partition for Wave5 VPU as suggested in this
-> > patchset. In this approach SoC vendor can setup address range of said
-> > partition to their needs, but other devices won't be able to use SRAM
-> > memory reserved for Wave5 VPU, unless other device's SRAM memory needs
-> > don't exceed the size of reserved partition.
-> > 
-> > Therefore it is sensible to substitute alloc/free on open/close with
-> > alloc/free on open/close.
-> 
-> Not sure what you mean here. Were you trying to refer to your
-> substitution of alloc/free from open/close to probe/remove?
-> 
-> If that is what you mean, and the decision is a specific carveout for
-> SRAM, then I don't see a point in having allocation in open and close
-> either since Wave5 would be the only IP that could use the pool.
-> 
-> > 
-> > Advantages: driver code is simpler, no need for platform-specific defines
-> > or DT properties. Wave5 is guaranteed to get SRAM memory.
-> > 
-> > Disadvantage: waste of SRAM memory while VPU is not in use
-> > 
-> > 2) allocate all available SRAM memory on open (free on close) from the
-> > common SRAM pool, but limit maximum amount with SoC-specific define.
-> > 
-> 
-> Why does it have to be on SoC specific define?
+> Then driver will parse the source label marked in the device tree, and
+> save it to the coresight path. When the function needs to know the
+> source label, it could obtain it from coresight path parameter. Finally,
+> the output port knows which source it corresponds to, and it also knows
+> which input port it corresponds to.
 
-Well, if I understood correctly, in [1] Nas said that SRAM usage is
-SoC-specific even with same Wave5 IP.
+Why do we need labels ? We have connection information for all devices
+(both in and out), so, why do we need this label to find a device ?
 
-[1] https://lore.kernel.org/linux-media/SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM/
+And also, I thought TPDM is a source device, why does a funnel output
+port link to a source ?
 
-> Max size required for SRAM in a 4K case is known.
+Are these funnels programmable ? Or, are they static ? If they are
+static, do these need to be described in the DT ? If they are simply
+acting as a "LINK" (or HWFIFO ?)
 
-From docs I have for Wave515 it's _seems_ to be about 64K, but it's not
-too clear.
+Suzuki
 
-> A call can be made to get the size of the
-> pool and from there the driver can take a portion. Just make sure that
-> portion is less than known value for 4K. 
 > 
-
-Yeah, I did exactly that in v2, was about to send, until I got
-"Ivan's approach looks good to me" :)
-
-> > Advantage: less memory waste
-> > 
-> > Disadvantages: still need SoC-specific define or DT property, not much
-> > differ from current state. Wave5 is not guaranteed to get SRAM memory.
-> > 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-core.c  | 81 ++++++++++++++++---
+>   .../hwtracing/coresight/coresight-platform.c  |  5 ++
+>   include/linux/coresight.h                     |  2 +
+>   3 files changed, 75 insertions(+), 13 deletions(-)
 > 
-> Wave5 does not need SRAM to function properly so it doesn't have to be
-> guaranteed. 
-> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 5dde597403b3..b1b5e6d9ec7a 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -113,15 +113,63 @@ struct coresight_device *coresight_get_percpu_sink(int cpu)
+>   }
+>   EXPORT_SYMBOL_GPL(coresight_get_percpu_sink);
+>   
+> +static struct coresight_device *coresight_get_source(struct list_head *path)
+> +{
+> +	struct coresight_device *csdev;
+> +
+> +	if (!path)
+> +		return NULL;
+> +
+> +	csdev = list_first_entry(path, struct coresight_node, link)->csdev;
+> +	if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
+> +		return NULL;
+> +
+> +	return csdev;
+> +}
+> +
+> +/**
+> + * coresight_source_filter - checks whether the connection matches the source
+> + * of path if connection is binded to specific source.
+> + * @path:	The list of devices
+> + * @conn:	The connection of one outport
+> + *
+> + * Return zero if the connection doesn't have a source binded or source of the
+> + * path matches the source binds to connection.
+> + */
+> +static int coresight_source_filter(struct list_head *path,
+> +			struct coresight_connection *conn)
+> +{
+> +	int ret = 0;
+> +	struct coresight_device *source = NULL;
+> +
+> +	if (conn->source_label == NULL)
+> +		return ret;
+> +
+> +	source = coresight_get_source(path);
+> +	if (source == NULL)
+> +		return ret;
+> +
+> +	if (strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+> +			conn->source_label))
+> +		ret = 0;
+> +	else
+> +		ret = -1;
+> +
+> +	return ret;
+> +}
+> +
+>   static struct coresight_connection *
+>   coresight_find_out_connection(struct coresight_device *src_dev,
+> -			      struct coresight_device *dest_dev)
+> +			      struct coresight_device *dest_dev,
+> +			      struct list_head *path)
+>   {
+>   	int i;
+>   	struct coresight_connection *conn;
+>   
+>   	for (i = 0; i < src_dev->pdata->nr_outconns; i++) {
+>   		conn = src_dev->pdata->out_conns[i];
+> +		if (coresight_source_filter(path, conn))
+> +			continue;
+>   		if (conn->dest_dev == dest_dev)
+>   			return conn;
+>   	}
+> @@ -312,7 +360,8 @@ static void coresight_disable_sink(struct coresight_device *csdev)
+>   
+>   static int coresight_enable_link(struct coresight_device *csdev,
+>   				 struct coresight_device *parent,
+> -				 struct coresight_device *child)
+> +				 struct coresight_device *child,
+> +				 struct list_head *path)
+>   {
+>   	int ret = 0;
+>   	int link_subtype;
+> @@ -321,8 +370,8 @@ static int coresight_enable_link(struct coresight_device *csdev,
+>   	if (!parent || !child)
+>   		return -EINVAL;
+>   
+> -	inconn = coresight_find_out_connection(parent, csdev);
+> -	outconn = coresight_find_out_connection(csdev, child);
+> +	inconn = coresight_find_out_connection(parent, csdev, path);
+> +	outconn = coresight_find_out_connection(csdev, child, path);
+>   	link_subtype = csdev->subtype.link_subtype;
+>   
+>   	if (link_subtype == CORESIGHT_DEV_SUBTYPE_LINK_MERG && IS_ERR(inconn))
+> @@ -341,7 +390,8 @@ static int coresight_enable_link(struct coresight_device *csdev,
+>   
+>   static void coresight_disable_link(struct coresight_device *csdev,
+>   				   struct coresight_device *parent,
+> -				   struct coresight_device *child)
+> +				   struct coresight_device *child,
+> +				   struct list_head *path)
+>   {
+>   	int i;
+>   	int link_subtype;
+> @@ -350,8 +400,8 @@ static void coresight_disable_link(struct coresight_device *csdev,
+>   	if (!parent || !child)
+>   		return;
+>   
+> -	inconn = coresight_find_out_connection(parent, csdev);
+> -	outconn = coresight_find_out_connection(csdev, child);
+> +	inconn = coresight_find_out_connection(parent, csdev, path);
+> +	outconn = coresight_find_out_connection(csdev, child, path);
+>   	link_subtype = csdev->subtype.link_subtype;
+>   
+>   	if (link_ops(csdev)->disable) {
+> @@ -507,7 +557,7 @@ static void coresight_disable_path_from(struct list_head *path,
+>   		case CORESIGHT_DEV_TYPE_LINK:
+>   			parent = list_prev_entry(nd, link)->csdev;
+>   			child = list_next_entry(nd, link)->csdev;
+> -			coresight_disable_link(csdev, parent, child);
+> +			coresight_disable_link(csdev, parent, child, path);
+>   			break;
+>   		default:
+>   			break;
+> @@ -588,7 +638,7 @@ int coresight_enable_path(struct list_head *path, enum cs_mode mode,
+>   		case CORESIGHT_DEV_TYPE_LINK:
+>   			parent = list_prev_entry(nd, link)->csdev;
+>   			child = list_next_entry(nd, link)->csdev;
+> -			ret = coresight_enable_link(csdev, parent, child);
+> +			ret = coresight_enable_link(csdev, parent, child, path);
+>   			if (ret)
+>   				goto err;
+>   			break;
+> @@ -802,7 +852,8 @@ static void coresight_drop_device(struct coresight_device *csdev)
+>    */
+>   static int _coresight_build_path(struct coresight_device *csdev,
+>   				 struct coresight_device *sink,
+> -				 struct list_head *path)
+> +				 struct list_head *path,
+> +				 struct coresight_device *source)
+>   {
+>   	int i, ret;
+>   	bool found = false;
+> @@ -814,7 +865,7 @@ static int _coresight_build_path(struct coresight_device *csdev,
+>   
+>   	if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
+>   	    sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
+> -		if (_coresight_build_path(sink, sink, path) == 0) {
+> +		if (_coresight_build_path(sink, sink, path, source) == 0) {
+>   			found = true;
+>   			goto out;
+>   		}
+> @@ -825,8 +876,12 @@ static int _coresight_build_path(struct coresight_device *csdev,
+>   		struct coresight_device *child_dev;
+>   
+>   		child_dev = csdev->pdata->out_conns[i]->dest_dev;
+> +		if (csdev->pdata->out_conns[i]->source_label &&
+> +			!strstr(kobject_get_path(&source->dev.kobj, GFP_KERNEL),
+> +				csdev->pdata->out_conns[i]->source_label))
+> +			continue;
+>   		if (child_dev &&
+> -		    _coresight_build_path(child_dev, sink, path) == 0) {
+> +		    _coresight_build_path(child_dev, sink, path, source) == 0) {
+>   			found = true;
+>   			break;
+>   		}
+> @@ -871,7 +926,7 @@ struct list_head *coresight_build_path(struct coresight_device *source,
+>   
+>   	INIT_LIST_HEAD(path);
+>   
+> -	rc = _coresight_build_path(source, sink, path);
+> +	rc = _coresight_build_path(source, sink, path, source);
+>   	if (rc) {
+>   		kfree(path);
+>   		return ERR_PTR(rc);
+> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+> index 9d550f5697fa..f553fb20966d 100644
+> --- a/drivers/hwtracing/coresight/coresight-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+> @@ -205,6 +205,7 @@ static int of_coresight_parse_endpoint(struct device *dev,
+>   	struct fwnode_handle *rdev_fwnode;
+>   	struct coresight_connection conn = {};
+>   	struct coresight_connection *new_conn;
+> +	const char *label;
+>   
+>   	do {
+>   		/* Parse the local port details */
+> @@ -243,6 +244,10 @@ static int of_coresight_parse_endpoint(struct device *dev,
+>   		conn.dest_fwnode = fwnode_handle_get(rdev_fwnode);
+>   		conn.dest_port = rendpoint.port;
+>   
+> +		conn.source_label = NULL;
+> +		if (!of_property_read_string(ep, "label", &label))
+> +			conn.source_label = label;
+> +
+>   		new_conn = coresight_add_out_conn(dev, pdata, &conn);
+>   		if (IS_ERR_VALUE(new_conn)) {
+>   			fwnode_handle_put(conn.dest_fwnode);
+> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> index e8b6e388218c..a9c06ef9bbb2 100644
+> --- a/include/linux/coresight.h
+> +++ b/include/linux/coresight.h
+> @@ -167,6 +167,7 @@ struct coresight_desc {
+>    * struct coresight_connection - representation of a single connection
+>    * @src_port:	a connection's output port number.
+>    * @dest_port:	destination's input port number @src_port is connected to.
+> + * @source_label: source component's label.
+>    * @dest_fwnode: destination component's fwnode handle.
+>    * @dest_dev:	a @coresight_device representation of the component
+>   		connected to @src_port. NULL until the device is created
+> @@ -195,6 +196,7 @@ struct coresight_desc {
+>   struct coresight_connection {
+>   	int src_port;
+>   	int dest_port;
+> +	const char *source_label;
+>   	struct fwnode_handle *dest_fwnode;
+>   	struct coresight_device *dest_dev;
+>   	struct coresight_sysfs_link *link;
 
-True.
-
-> > Which of these approaches would be preferable?
-> > 
-> > > >
-> > > >
-> > > >[0]:
-> > > >https://lore.kernel.org/lkml/99bf4d6d988d426492fffc8de9015751c323bd8a.cam
-> > > >el@ndufresne.ca/
-> > > >[1]: https://lore.kernel.org/lkml/9c5b7b2c-8a66-4173-dfe9-
-> > > >5724ec5f733d@ti.com/
-> > > >
-> > > >Thanks,
-> > > >Brandon
-> > > >>
-> > > >> > Thanks.
-> > > >> > Nas.
-> > > >> >
-> > > >> > > 	dev->sram_pool = of_gen_pool_get(pdev->dev.of_node, "sram", 0);
-> > > >> > > 	if (!dev->sram_pool)
-> > > >> > > 		dev_warn(&pdev->dev, "sram node not found\n");
-> > > >> > >+	else
-> > > >> > >+		wave5_vdi_allocate_sram(dev);
-> > > >> > >
-> > > >> > > 	dev->product_code = wave5_vdi_read_register(dev,
-> > > >> > >VPU_PRODUCT_CODE_REGISTER);
-> > > >> > > 	ret = wave5_vdi_init(&pdev->dev);
-> > > >> > >@@ -259,6 +254,8 @@ static int wave5_vpu_probe(struct
-> > > >platform_device
-> > > >> > >*pdev)
-> > > >> > > err_clk_dis:
-> > > >> > > 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-> > > >> > >
-> > > >> > >+	wave5_vdi_free_sram(dev);
-> > > >> > >+
-> > > >> > > 	return ret;
-> > > >> > > }
-> > > >> > >
-> > > >> > >@@ -275,6 +272,7 @@ static void wave5_vpu_remove(struct
-> > > >platform_device
-> > > >> > >*pdev)
-> > > >> > > 	v4l2_device_unregister(&dev->v4l2_dev);
-> > > >> > > 	wave5_vdi_release(&pdev->dev);
-> > > >> > > 	ida_destroy(&dev->inst_ida);
-> > > >> > >+	wave5_vdi_free_sram(dev);
-> > > >> > > }
-> > > >> > >
-> > > >> > > static const struct wave5_match_data ti_wave521c_data = {
-> > > >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> > > >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> > > >> > >index fa62a85080b5..8d88381ac55e 100644
-> > > >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> > > >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> > > >> > >@@ -749,7 +749,6 @@ struct vpu_device {
-> > > >> > > 	struct vpu_attr attr;
-> > > >> > > 	struct vpu_buf common_mem;
-> > > >> > > 	u32 last_performance_cycles;
-> > > >> > >-	u32 sram_size;
-> > > >> > > 	struct gen_pool *sram_pool;
-> > > >> > > 	struct vpu_buf sram_buf;
-> > > >> > > 	void __iomem *vdb_register;
-> > > >> > >--
-> > > >> > >2.44.0
-> > > >> >
-> > > >>
 
