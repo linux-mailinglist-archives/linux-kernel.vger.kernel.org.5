@@ -1,60 +1,45 @@
-Return-Path: <linux-kernel+bounces-110132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1BC6885A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:16:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEFC885A70
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71895B20C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:16:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6E241C20FF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF59384FDC;
-	Thu, 21 Mar 2024 14:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9LSOP0f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC7784FD4;
+	Thu, 21 Mar 2024 14:13:22 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B794134CD;
-	Thu, 21 Mar 2024 14:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B641C84A5A;
+	Thu, 21 Mar 2024 14:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711030551; cv=none; b=sheSzR08NI57weeQ/QABcLosfTYH/VxoNZ/CDImjTBR3vEjoApYGj4x4SoZSQnIscXTL8roRlYUgcUDcDBFjcSz4ggIp/vmQzXAOdWfE/1Rpjynah5znijGuzqFJAS6I+5qZlYje2YadqmEd6C6DG6ITYr9msYMHCQJNpe2kxrQ=
+	t=1711030401; cv=none; b=L7F4efJwQvybyLQ1o+SrZr/4equKZXMmBzPFrAriG3f9Fc50/gCEKEov31lNjgQ2udI4HZqebkpPNcKoE8VtvBQoljliNb200rk5GLzZHsVpBvnBGfhEBes3RuMsw3NnbqeLCq5LhpULfWew2jvGUmF7ljtKO3VyIb93EyYtni4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711030551; c=relaxed/simple;
-	bh=L3lq+ETcf12qcpdKNu6RlHZekLNVMxMcPuLI5QDjXpY=;
+	s=arc-20240116; t=1711030401; c=relaxed/simple;
+	bh=5XWZpp84Md97q2RdzbDfViuKErGJMi5GiaAplCQD0Ac=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PtY3iZyeSl9sDyh1WHLFgdbC2WN+0H+nGqwAKakDEW+Cvfzk4VLJZypaYdQw+MgbMN7gb9TpOcbqBfYM0PwoKrdte06qV8uqQ0+7xn3IEfDn2j9prQdciEDbKaxf7U70io0hl/N34vQQe86o/bRLzo8rWcdGZYLEozASeqMh3ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9LSOP0f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A446C433F1;
-	Thu, 21 Mar 2024 14:15:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711030550;
-	bh=L3lq+ETcf12qcpdKNu6RlHZekLNVMxMcPuLI5QDjXpY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=W9LSOP0fxK6fVeoW1AQdVTEDyXQupwYUXQdlY6cKjI9o2JSNYNufTw67NgTY+W4vv
-	 riOZwrCUanyvg7+1DFFouMwu6RTtf5YBfjpzeK/zmOGJ/TZMxuk64iSWz1ELHkP7UA
-	 d2fpxTSCVLBJPzptWu5fA+9NF7BcLvaWBmJa0BVDRthC3juUMXXydhT8FRfBWwc1PA
-	 LjfNxatT0HLUo6g0vF4zJZPLZqi4vfwV0rqK+sdhFGGu1mnPsWrpdDOT6aB3tfXeyN
-	 wYB579kVGD1Pbe3cqr0miJrFl31Vf5Ju27GATEZsaIkOwvu7Sp9AaSpYiqQiyQKHKm
-	 slWQSNTho/0CQ==
-Date: Thu, 21 Mar 2024 15:15:45 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc: tfiga@chromium.org, m.szyprowski@samsung.com,
- ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
- hverkuil-cisco@xs4all.nl, nicolas@ndufresne.ca,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v21 8/9] media: v4l2: Add mem2mem helpers for
- REMOVE_BUFS ioctl
-Message-ID: <20240321151545.0e293d3e@coco.lan>
-In-Reply-To: <20240314153226.197445-9-benjamin.gaignard@collabora.com>
-References: <20240314153226.197445-1-benjamin.gaignard@collabora.com>
-	<20240314153226.197445-9-benjamin.gaignard@collabora.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	 MIME-Version:Content-Type; b=bt52+XgTUbDrSR8Zpep1RhePhKjgltUtwPGx1z/bAwoU6XTxfy4JoETA3sWfEloryxdKbYOGJ9MiOM22zPWqRKDArlZ4eO2813WoElrgUpvIJ1SsiC3yT69IjcdiRNPfYs1VoHrhccZNiu4tANxjdyd5l5DRY+vg4hpV+v3qJlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3547C433F1;
+	Thu, 21 Mar 2024 14:13:20 +0000 (UTC)
+Date: Thu, 21 Mar 2024 10:15:47 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ye Bin <yebin10@huawei.com>
+Cc: <mhiramat@kernel.org>, <mathieu.desnoyers@efficios.com>,
+ <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/5] tracing/probes: support '%pd' type for print
+ struct dentry's name
+Message-ID: <20240321101547.1f4e68ab@gandalf.local.home>
+In-Reply-To: <20240320132924.2802187-2-yebin10@huawei.com>
+References: <20240320132924.2802187-1-yebin10@huawei.com>
+	<20240320132924.2802187-2-yebin10@huawei.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,122 +49,93 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Em Thu, 14 Mar 2024 16:32:25 +0100
-Benjamin Gaignard <benjamin.gaignard@collabora.com> escreveu:
+On Wed, 20 Mar 2024 21:29:20 +0800
+Ye Bin <yebin10@huawei.com> wrote:
 
-> Create v4l2-mem2mem helpers for VIDIOC_REMOVE_BUFS ioctl and
-> make test drivers use it.
+> Support print type '%pd' for print dentry's  name.
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-LGTM.
+The above is not a very detailed change log. A change log should state not
+only what the change is doing, but also why.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Having examples of before and after would be useful in the change log.
 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
-> changes in version 21:
-> - In v4l2_m2m_ioctl_remove_bufs() check if the queue exists and
->   if it type macth request type.
-> - Do not set vidioc_remove_bufs for vim2m driver.
+>  kernel/trace/trace.c        |  2 +-
+>  kernel/trace/trace_fprobe.c |  6 +++++
+>  kernel/trace/trace_kprobe.c |  6 +++++
+>  kernel/trace/trace_probe.c  | 50 +++++++++++++++++++++++++++++++++++++
+>  kernel/trace/trace_probe.h  |  2 ++
+>  5 files changed, 65 insertions(+), 1 deletion(-)
 > 
->  drivers/media/test-drivers/vicodec/vicodec-core.c |  1 +
->  drivers/media/test-drivers/vimc/vimc-capture.c    |  1 +
->  drivers/media/test-drivers/visl/visl-video.c      |  1 +
->  drivers/media/test-drivers/vivid/vivid-core.c     |  1 +
->  drivers/media/v4l2-core/v4l2-mem2mem.c            | 15 +++++++++++++++
->  include/media/v4l2-mem2mem.h                      |  2 ++
->  6 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drivers/media/test-drivers/vicodec/vicodec-core.c
-> index e13f5452b927..3e011fe62ae1 100644
-> --- a/drivers/media/test-drivers/vicodec/vicodec-core.c
-> +++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
-> @@ -1345,6 +1345,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl_ops = {
->  	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
->  	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
->  	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
-> +	.vidioc_remove_bufs	= v4l2_m2m_ioctl_remove_bufs,
->  
->  	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
->  	.vidioc_streamoff	= v4l2_m2m_ioctl_streamoff,
-> diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-> index 97693561f1e4..ba7550b8ba7e 100644
-> --- a/drivers/media/test-drivers/vimc/vimc-capture.c
-> +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-> @@ -221,6 +221,7 @@ static const struct v4l2_ioctl_ops vimc_capture_ioctl_ops = {
->  	.vidioc_expbuf = vb2_ioctl_expbuf,
->  	.vidioc_streamon = vb2_ioctl_streamon,
->  	.vidioc_streamoff = vb2_ioctl_streamoff,
-> +	.vidioc_remove_bufs = vb2_ioctl_remove_bufs,
->  };
->  
->  static void vimc_capture_return_all_buffers(struct vimc_capture_device *vcapture,
-> diff --git a/drivers/media/test-drivers/visl/visl-video.c b/drivers/media/test-drivers/visl/visl-video.c
-> index b9a4b44bd0ed..f8d970319764 100644
-> --- a/drivers/media/test-drivers/visl/visl-video.c
-> +++ b/drivers/media/test-drivers/visl/visl-video.c
-> @@ -539,6 +539,7 @@ const struct v4l2_ioctl_ops visl_ioctl_ops = {
->  	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
->  	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
->  	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
-> +	.vidioc_remove_bufs		= v4l2_m2m_ioctl_remove_bufs,
->  
->  	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
->  	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-> index 11b8520d9f57..771392f67dda 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-core.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
-> @@ -769,6 +769,7 @@ static const struct v4l2_ioctl_ops vivid_ioctl_ops = {
->  	.vidioc_expbuf			= vb2_ioctl_expbuf,
->  	.vidioc_streamon		= vb2_ioctl_streamon,
->  	.vidioc_streamoff		= vb2_ioctl_streamoff,
-> +	.vidioc_remove_bufs		= vb2_ioctl_remove_bufs,
->  
->  	.vidioc_enum_input		= vivid_enum_input,
->  	.vidioc_g_input			= vivid_g_input,
-> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> index 75517134a5e9..eb22d6172462 100644
-> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> @@ -1386,6 +1386,21 @@ int v4l2_m2m_ioctl_create_bufs(struct file *file, void *priv,
->  }
->  EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_create_bufs);
->  
-> +int v4l2_m2m_ioctl_remove_bufs(struct file *file, void *priv,
-> +			       struct v4l2_remove_buffers *remove)
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index b12f8384a36a..ac26b8446337 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+
+
+> +/* @buf: *buf must be equal to NULL. Caller must to free *buf */
+> +int traceprobe_expand_dentry_args(int argc, const char *argv[], char **buf)
 > +{
-> +	struct v4l2_fh *fh = file->private_data;
-> +	struct vb2_queue *q = v4l2_m2m_get_vq(fh->m2m_ctx, remove->type);
+> +	int i, used, ret;
+> +	const int bufsize = MAX_DENTRY_ARGS_LEN;
+> +	char *tmpbuf = NULL;
 > +
-> +	if (!q)
-> +		return -EINVAL;
-> +	if (q->type != remove->type)
+> +	if (*buf)
 > +		return -EINVAL;
 > +
-> +	return vb2_core_remove_bufs(q, remove->index, remove->count);
+> +	used = 0;
+> +	for (i = 0; i < argc; i++) {
+> +		if (glob_match("*:%pd", argv[i])) {
+> +			char *tmp;
+> +			char *equal;
+> +
+> +			if (!tmpbuf) {
+> +				tmpbuf = kmalloc(bufsize, GFP_KERNEL);
+> +				if (!tmpbuf)
+> +					return -ENOMEM;
+> +			}
+> +
+> +			tmp = kstrdup(argv[i], GFP_KERNEL);
+> +			if (!tmp)
+> +				goto nomem;
+> +
+> +			equal = strchr(tmp, '=');
+> +			if (equal)
+> +				*equal = '\0';
+> +			tmp[strlen(argv[i]) - 4] = '\0';
+> +			ret = snprintf(tmpbuf + used, bufsize - used,
+> +				       "%s%s+0x0(+0x%zx(%s)):string",
+> +				       equal ? tmp : "", equal ? "=" : "",
+> +				       offsetof(struct dentry, d_name.name),
+> +				       equal ? equal + 1 : tmp);
+
+What would be really useful is if we had a way to expose BTF here. Something like:
+
+ "%pB:<struct>:<field>"
+
+The "%pB" would mean to look up the struct/field offsets and types via BTF,
+and create the appropriate command to find and print it.
+
+That would be much more flexible and useful as it would allow reading any
+field from any structure without having to use gdb.
+
+-- Steve
+
+
+> +			kfree(tmp);
+> +			if (ret >= bufsize - used)
+> +				goto nomem;
+> +			argv[i] = tmpbuf + used;
+> +			used += ret + 1;
+> +		}
+> +	}
+> +
+> +	*buf = tmpbuf;
+> +	return 0;
+> +nomem:
+> +	kfree(tmpbuf);
+> +	return -ENOMEM;
 > +}
-> +EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_remove_bufs);
-> +
->  int v4l2_m2m_ioctl_querybuf(struct file *file, void *priv,
->  				struct v4l2_buffer *buf)
->  {
-> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-> index 7f1af1f7f912..0af330cf91c3 100644
-> --- a/include/media/v4l2-mem2mem.h
-> +++ b/include/media/v4l2-mem2mem.h
-> @@ -867,6 +867,8 @@ int v4l2_m2m_ioctl_reqbufs(struct file *file, void *priv,
->  				struct v4l2_requestbuffers *rb);
->  int v4l2_m2m_ioctl_create_bufs(struct file *file, void *fh,
->  				struct v4l2_create_buffers *create);
-> +int v4l2_m2m_ioctl_remove_bufs(struct file *file, void *priv,
-> +			       struct v4l2_remove_buffers *d);
->  int v4l2_m2m_ioctl_querybuf(struct file *file, void *fh,
->  				struct v4l2_buffer *buf);
->  int v4l2_m2m_ioctl_expbuf(struct file *file, void *fh,
-
-
-
-Thanks,
-Mauro
 
