@@ -1,125 +1,186 @@
-Return-Path: <linux-kernel+bounces-109625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1EA1881B8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:31:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5774881B98
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC86283B5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C51C1F222F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348E379E1;
-	Thu, 21 Mar 2024 03:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE638F514;
+	Thu, 21 Mar 2024 03:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gdEMFpPo"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="JLbY4nIz"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CA828E7;
-	Thu, 21 Mar 2024 03:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D6EBA28
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 03:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710991866; cv=none; b=szIbJajE+phXnnaFgYWnsWN5m7vh6kNSWlIqN7Bq9CihCWVPjDmm1adTrbeBRxizg7PXnD/q7/StwHmSE5BSUZHofNepfHPyO55469kvL483mKNdCf+PQP1vkrgMLWJRbTF1ScZV/jET6J+1yK1Z5jVnVso8ugimID6UDS+ScGY=
+	t=1710992385; cv=none; b=da4MOEaOXmb9DxFqwme8TwM1ESeBAs0gDd8vEJdcF7OGz5Jn3iEtmSsQqWyGM6gbbc9rQ+uA0zGfjbY9mhFZTxuQ7wlC2KuwslLpSNBaHK1MRP2pp4tYT+9FA8Gs31saqX5KNQvXeBsP4D92Yl/G1xCYrOvGC4wEPuuQtfB6Zc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710991866; c=relaxed/simple;
-	bh=K7ACct98TIwxrqMdk+AxZSWhzr/d3sKhj06HGb1TgHw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AC+bCQptjklwOE/4URbifeo0xQiPe5y2Kkf8LBE2V3P79M+R4Ng7J0ghKarYeKSrIjZrErkUJsytMG6kFzeIpptoK6a44dC1y+aIwAcHbZIleEgGoLuWvmVnhNGnzH2ndQ4iTpEQ73GNpWWjJIY5aJT4nNt8TZSBrCgzq1Ko+/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gdEMFpPo; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3684bee9ddfso2693765ab.1;
-        Wed, 20 Mar 2024 20:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710991861; x=1711596661; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YkcCPZV2rPe2mAIICfSKEdznaBH5x94qD30ycxtS6yw=;
-        b=gdEMFpPoio8IpFnNTJuAKRgQlSsv00mDpXI+YctvbkxCgVdY4s+wKI2UErg7sta+rA
-         toocQPgtW6jqbLOTF0lX2DbX9jLvJNgZyLwmbEw2a93p05F26k0erMwqcTmI51RYR7yM
-         +UdMrwAB4S2lCFdZstSjMY9BWQqLxVLGTP7UQOZJiguG7Ou7YfeEtgJsz4WvJj4Pt/Xh
-         ABqWDFtxFgy0X9Ydy028N/raUGFwQtE9bcJJD8rDV8p2g6/DYw/+MdAXHRcYx0xAEm2e
-         DdqIjFE4duFS5BBVM0iQiHWlAVZUZB8MAdhpCohwu19In/7yj3WVF5LFPG1zpSTf/IEp
-         8Slw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710991861; x=1711596661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YkcCPZV2rPe2mAIICfSKEdznaBH5x94qD30ycxtS6yw=;
-        b=HHtoN/XBbKyO46G9MAal9KtxH6goVeX63biggcZz08DshYKxnWCf82lnPD0dSpdmQN
-         2Ft49xBnoxR8wSyBK3i4zkNZ1/72fEEpW8kWeKPCYYiQ435vKvdXknLw6u6r/MOny/2N
-         AzjLFYQZzKXQkg4KWRtkonTccC7dvrQUUvMqoweDi5efZw0Yx1NevdzO6ycCnUBSoZkO
-         TT8pJPfLIaYad2cyvbDqd5rRNS5hihgDz653YptU+4RUdv/a0suaecoFTeg4281t9rUY
-         pgQ2ytGaaB3b8pwEENBpNO+EYYPA5of8qH2jOyNltVxVuyZMU1Ow28BI5bYD8fTESUCT
-         rtwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVuYssO4djbUtUqDfDYY/AFcS3nPd+/P3MGb/euBvRn0yc+5NvM92ekoSa6V0MHPyWIUwVpYaiQqo244CMaT149Vr+6ixVaKUFOd88/6gSbprh0gxXZYJWm3O444oeIM9TZNa/oz+5iIWw=
-X-Gm-Message-State: AOJu0Yz1RO4qGs2ayJPaUY3sdG+fCISUgu7cFhH/L2iNwkGbaxR34pDZ
-	baIDRWN6CDS4Ein3BRgU5dVIle/sy6Ywo9LT70iKDNSwRs7yGhaeMCHDiMJ7eP2gBdoHA1BXXoC
-	FpVREV6PY4PndLT6pLnhJUQrV7jw=
-X-Google-Smtp-Source: AGHT+IFIZlapfD6kquVxMjP6vNIkczhJV1lbowblT0uRu6rB6UIdztD13JlWALUuzaKkGcAhpgwoNBsxh+aHMUBnGiE=
-X-Received: by 2002:a92:c90f:0:b0:366:9220:821f with SMTP id
- t15-20020a92c90f000000b003669220821fmr7596072ilp.7.1710991861315; Wed, 20 Mar
- 2024 20:31:01 -0700 (PDT)
+	s=arc-20240116; t=1710992385; c=relaxed/simple;
+	bh=e/oB7EHyTS+qrUZJuOHpe7f0RTBTpNdPueEV7DX+ZNY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EJnlTSlCKAXlsp6n50swsBHBe5rCO4807jKdeL6gm8Mp4/vBfAcsyCltt5hkDejJ4Rg0Oz7Ti4fBrpz0ML6+VsD/VQBpOII+bYRbF3zydqLEOcWRC8BLuzsfnBMgEQJdZw5M9cWxS2JhDvb6cyebsu4tM/AtbkcwC5fsx5e4GHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=JLbY4nIz; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
+	by cmsmtp with ESMTPS
+	id myjcrrLzXPM1hn9HFrobWx; Thu, 21 Mar 2024 03:39:37 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id n9HFrlLvNd4oen9HFrYnwi; Thu, 21 Mar 2024 03:39:37 +0000
+X-Authority-Analysis: v=2.4 cv=aYKqngot c=1 sm=1 tr=0 ts=65fbabf9
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=UtBFqMlDG83dypD0sxEoAQ==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10
+ a=pzMpKnHA-g9QxEOb-IoA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xx+crt5ANis/Uvu0cR7hGXRkyaHIWmqFF50ZDHk5Svo=; b=JLbY4nIzWuQCLgb5ICw49FDMKR
+	/gzQINzFzoX6F2pjGfaO9J9u2drVa6xUl1c6zzZXdkMIikDGwHM+aNybzI4h7mquctoZL0V6fpxFG
+	UNS0VuXi5ReVD1ibKpHXBlaaaLHyQ1O3mqrVxaiV4GZIyKz5gEdWQE/9+mF+OYuqBYeEq6EDQaeow
+	P4sFbE1/rYZdydtTB5L3q4LClbdRtLtr56zsxXiR9/amRYqtQqK0svhm0BNpcIqolP3e0mmcDnuIz
+	4V30tSlXG5ydaBoBibFWe/ub4uOi4RfU7C/5CK/8Y9+IGqBkSSSGQHME3VWCISZcbH2WfcK4qq13d
+	kfzvj7Xw==;
+Received: from [201.172.174.229] (port=41350 helo=[192.168.15.14])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rn9HD-00172A-03;
+	Wed, 20 Mar 2024 22:39:35 -0500
+Message-ID: <fe36683b-ec78-4f83-b4ad-8dca35e4fa09@embeddedor.com>
+Date: Wed, 20 Mar 2024 21:39:32 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
-In-Reply-To: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Thu, 21 Mar 2024 11:30:50 +0800
-Message-ID: <CAA+D8APwNH2wf4p9DzZCy3b6xC8K-FPpMGw2V4kRMsX7U3=3Jg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ASoC: fsl: fsl_ssi: Add dev_err_probe if PCM DMA init fails
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, 
-	Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] integrity: Avoid -Wflex-array-member-not-at-end
+ warnings
+Content-Language: en-US
+To: Mimi Zohar <zohar@linux.ibm.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Kees Cook <keescook@chromium.org>
+References: <ZeYKWrXvACBBrAP8@neat>
+ <bbae0060d6ed7a0b033dc07e8d26c9d68585080b.camel@linux.ibm.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <bbae0060d6ed7a0b033dc07e8d26c9d68585080b.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.174.229
+X-Source-L: No
+X-Exim-ID: 1rn9HD-00172A-03
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.14]) [201.172.174.229]:41350
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfB0v3YXf2n++sTB9C3DBU1YmvMupF6tg/kfEJJOrry+7ZzLphd1/xXOH6SybH2iGIo8ARMuCAuIgpUP9Uycl7T7D2kQyXdwWc4ZU0yDnZqElN+rc62OM
+ D6An8NrfMDmBWwvhtGUV1IOrSLz/o2FuewOCP9+iZ5vcNHO7v11GHPJVBMKExKyT/IWPNNE6c/AIWshnEYvvjQevE3yLmf5r0o+2OuMR/OKcSj0cmtmJFavL
 
-On Thu, Mar 14, 2024 at 10:16=E2=80=AFPM Alexander Stein
-<alexander.stein@ew.tq-group.com> wrote:
->
-> This happens especially if this driver is built-in, but SDMA driver
-> is configured as module.
->
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
-Best Regards
-Shengjiu Wang
-> ---
->  sound/soc/fsl/fsl_ssi.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index ab6ec1974807..4ca3a16f7ac0 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -1401,8 +1401,10 @@ static int fsl_ssi_imx_probe(struct platform_devic=
-e *pdev,
->                         goto error_pcm;
->         } else {
->                 ret =3D imx_pcm_dma_init(pdev);
-> -               if (ret)
-> +               if (ret) {
-> +                       dev_err_probe(dev, ret, "Failed to init PCM DMA\n=
-");
->                         goto error_pcm;
-> +               }
->         }
->
->         return 0;
-> --
-> 2.34.1
->
+On 20/03/24 19:19, Mimi Zohar wrote:
+> Hi Gustavo,
+> 
+> Sorry for the delay...
+
+No worries. :)
+
+> 
+> On Mon, 2024-03-04 at 11:52 -0600, Gustavo A. R. Silva wrote:
+>> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+>> ready to enable it globally.
+>>
+>> There is currently an object (`hdr)` in `struct ima_max_digest_data`
+>> that contains a flexible structure (`struct ima_digest_data`):
+>>
+>>   struct ima_max_digest_data {
+>> 	struct ima_digest_data hdr;
+>>          u8 digest[HASH_MAX_DIGESTSIZE];
+>>   } __packed;
+>>
+>> So, in order to avoid ending up with a flexible-array member in the
+>> middle of another struct, we use the `struct_group_tagged()` helper to
+>> separate the flexible array from the rest of the members in the flexible
+>> structure:
+>>
+>> struct ima_digest_data {
+>>          struct_group_tagged(ima_digest_data_hdr, hdr,
+>>
+>> 	... the rest of the members
+>>
+>>          );
+>>          u8 digest[];
+>> } __packed;
+>>
+>> With the change described above, we can now declare an object of the
+>> type of the tagged struct, without embedding the flexible array in the
+>> middle of another struct:
+>>
+>>   struct ima_max_digest_data {
+>>          struct ima_digest_data_hdr hdr;
+>>          u8 digest[HASH_MAX_DIGESTSIZE];
+>>   } __packed;
+>>
+>> We also use `container_of()` whenever we need to retrieve a pointer to
+>> the flexible structure.
+> 
+> Nice!
+> 
+>>
+>> So, with these changes, fix the following warnings:
+>>
+>> security/integrity/evm/evm.h:45:32: warning: structure containing a flexible
+>> array member is not at the end of another structure [-Wflex-array-member-not-
+>> at-end]
+>> security/integrity/evm/evm.h:45:32: warning: structure containing a flexible
+>> array member is not at the end of another structure [-Wflex-array-member-not-
+>> at-end]
+>> security/integrity/evm/evm.h:45:32: warning: structure containing a flexible
+>> array member is not at the end of another structure [-Wflex-array-member-not-
+>> at-end]
+> 
+> A similar change would need to be made to struct evm_digest:
+> 
+> struct evm_digest {
+>          struct ima_digest_data hdr;
+>          char digest[IMA_MAX_DIGEST_SIZE];
+> } __packed;
+> 
+> Is there are another patch?
+
+Oh, I missed that one. I'll include it and send v2, shortly.
+
+Thanks!
+--
+Gustavo
 
