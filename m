@@ -1,173 +1,99 @@
-Return-Path: <linux-kernel+bounces-110464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD141885F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 019FD885F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65AEE283697
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:09:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E61284F2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC68A131743;
-	Thu, 21 Mar 2024 17:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="L+ANQnyd"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E9C1332AC;
+	Thu, 21 Mar 2024 17:08:03 +0000 (UTC)
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 121AE24A11
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC63132C19;
+	Thu, 21 Mar 2024 17:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711040878; cv=none; b=XtoaBBqHWE5ZjoGY/9rqoggqER1pZE0AbruOdQBWhyylpUjmrKE4pxeLuqUrnESwkDLT6QpGPgm5joN4DOMon0c8VuxkGmh4VsZwzVBW8geK2ppuTW2KVROAbggREK9T4W/a1+3kHYVihUSimahhYcyp6ooOH95OTwHfwY861a8=
+	t=1711040882; cv=none; b=Dg9cCabYBODjTh2KDGU1Fs4OzcXs10bnjTtdBs8+NLcw17o+a6fmfjsFKAN7uo4K6iWLp3OctY8aC2wtaPRcIloDKNflElf0EnYyYu9aBG0yLA7l/3r3BeodOF9xLre/yzGiO3MPG0d79uNVvI+Q5W2kqXYAg4p8ILbyG2zwlNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711040878; c=relaxed/simple;
-	bh=3WBnor6WJgfPl3DPHdrh85aZZqZFmWdCne9/wH+6a4E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DCm85XFRvshsIjviw6NJU3ICSJlET+aIXPTH2agqMzORF/d/ItaMUANt9C/2H+4G64n11uHbxpqEXswWMsijFZaZvPaPtvYCxda3ZVT1Qql8r83R53+tQtDgLFCcfzyX2BHOpk1X11X3NXbcVZ+wWixMBTTLWX3McBFmX9yyNEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=L+ANQnyd; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3685ee47bb9so246615ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1711040874; x=1711645674; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N6T+oMJ0+P4cLh/OUo/3VM4bK5uTH8gupmfqcG+HjPc=;
-        b=L+ANQnydjYUFeURiLDvFWvaKxfUexrdrq1r+3PovSnbcJZbMllcg/57jx5dZ6u67y3
-         dmNNerAHpIo0/dpg9NSXFXHeB7kRhjiuvJmDlXTJ6XTbQV3d3wIcz7FdWJauG0zmdR+v
-         WWwz9zNMu2wPKjZqIto2h6RvxpunTmhJ0CqfPIZA8tSOZ+p98P0xUpkaQxuk3dwJjCXI
-         Lu7mT6DsGXjZ+4237ED+4UDfRGETSk9AQptUWq2on4Nuw0x6Q93zX4obuuyRws4F1O1R
-         vs6rCgg36bNQ0T4keUw8myJ2wWKzpSlH/WC1gle1fRhK1m/2bMyYWiHcojHhNIcOjLMh
-         NKQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711040874; x=1711645674;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N6T+oMJ0+P4cLh/OUo/3VM4bK5uTH8gupmfqcG+HjPc=;
-        b=WqF1/cbAJSuROQBjv40II65HDbaLBcfcNNrz636wRjnYVsw+nzVwLsm52JXLnXZ9r/
-         7VoJJ2XpbrpLiJTAmzRvYAYDyekDHsycJiX70s7BYTjGbX0Gp8uWEfmf9G7hm0ywC4nH
-         ++b1Tcv/rrpSLJ2+Pouk6YXN5x8preY83jYfooLai6jZbH7gIOGWaYFSaKR2OSWY/X2w
-         EcKMsAb/HZqs8EryGv2kDHqGIOnrzF0kfAmthMZ7nzZ2dmHlP2QUJCCJoLuMpKlDoXau
-         w5gWGCVwSOWxaxjRvT7SZvd3jnLpZKcz+k/i6csuz8POsOeocClKvnW0axBbEhfoQ1hl
-         emnA==
-X-Gm-Message-State: AOJu0Yy6o1XhA1m3MwHA9X8i8KSxx3BhlJEHVDGZWqVDNGpM23PjG9ua
-	KX0sztSgWncRiJE9oQBRWpgWww/VvhPb0IeWT+T8C9IVtbsJQy4JHgUW/uuGPXE=
-X-Google-Smtp-Source: AGHT+IGEj4mLeTaGQBLx3ZFAbk4pCOdJvwFEq0RASeoatbWso8RuxS2mXPKUJ+CEwLv1JmMT6FNvug==
-X-Received: by 2002:a5d:9ec7:0:b0:7cc:7327:5b40 with SMTP id a7-20020a5d9ec7000000b007cc73275b40mr32118ioe.2.1711040874168;
-        Thu, 21 Mar 2024 10:07:54 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id p20-20020a056602259400b007cc7c30e70esm41525ioo.46.2024.03.21.10.07.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 10:07:53 -0700 (PDT)
-Message-ID: <05c44354-1c48-409e-827f-910d1e3c2db9@kernel.dk>
-Date: Thu, 21 Mar 2024 11:07:52 -0600
+	s=arc-20240116; t=1711040882; c=relaxed/simple;
+	bh=3eTxWlyZ3yvKG7IqSaj3xnqURvyDX21tfOB8h+e0Gbg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Cc:Subject:To:
+	 References:In-Reply-To; b=Xjxa0JEGd8Wd1btRMOjBK7b0/PfbXMAL6MVWlPxQqXtIHg0sSbY87xkka8jLF+scgSLz45VFojCBbn6s9Vhv68qUCny6iPl3I9BEg4K1KckKWLlPl1ZTbPImFZOfigfyqzKdxxVxBr4XyS7UZuGLXbr5VHSQK4NaxVxLmRTPepU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+Received: from localhost (koleje-wifi-0015.koleje.cuni.cz [78.128.191.15])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42LH7hHN095693
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 18:07:44 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4] blk-mq: don't schedule block kworker on isolated CPUs
-Content-Language: en-US
-To: Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Tim Chen <tim.c.chen@linux.intel.com>,
- Juri Lelli <juri.lelli@redhat.com>, Andrew Theurer <atheurer@redhat.com>,
- Joe Mario <jmario@redhat.com>, Sebastian Jug <sejug@redhat.com>,
- Frederic Weisbecker <frederic@kernel.org>,
- Bart Van Assche <bvanassche@acm.org>, Tejun Heo <tj@kernel.org>
-References: <20240320023446.882006-1-ming.lei@redhat.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240320023446.882006-1-ming.lei@redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date: Thu, 21 Mar 2024 18:08:16 +0100
+Message-Id: <CZZLDK79D5VK.2VK3X59OHIY2Z@matfyz.cz>
+From: "Karel Balej" <balejk@matfyz.cz>
+Cc: "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley"
+ <conor+dt@kernel.org>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Liam
+ Girdwood" <lgirdwood@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
+To: "Mark Brown" <broonie@kernel.org>
+References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
+ <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
+ <20240321154211.GA13211@google.com> <CZZK759UU6G7.MFPYOI0HBB6I@matfyz.cz>
+ <20240321162045.GC13211@google.com> <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
+ <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
+In-Reply-To: <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
 
-On 3/19/24 8:34 PM, Ming Lei wrote:
-> Kernel parameter of `isolcpus=` or 'nohz_full=' are used to isolate CPUs
-> for specific task, and it isn't expected to let block IO disturb these CPUs.
-> blk-mq kworker shouldn't be scheduled on isolated CPUs. Also if isolated
-> CPUs is run for blk-mq kworker, long block IO latency can be caused.
-> 
-> Kernel workqueue only respects CPU isolation for WQ_UNBOUND, for bound
-> WQ, the responsibility is on user because CPU is specified as WQ API
-> parameter, such as mod_delayed_work_on(cpu), queue_delayed_work_on(cpu)
-> and queue_work_on(cpu).
-> 
-> So not run blk-mq kworker on isolated CPUs by removing isolated CPUs
-> from hctx->cpumask. Meantime use queue map to check if all CPUs in this
-> hw queue are offline instead of hctx->cpumask, this way can avoid any
-> cost in fast IO code path, and is safe since hctx->cpumask are only
-> used in the two cases.
+Mark Brown, 2024-03-21T16:58:44+00:00:
+> On Thu, Mar 21, 2024 at 05:55:17PM +0100, Karel Balej wrote:
+> > Lee Jones, 2024-03-21T16:20:45+00:00:
+> > > On Thu, 21 Mar 2024, Karel Balej wrote:
+>
+> > > > > > +static const struct regmap_config pm886_i2c_regmap =3D {
+> > > > > > +	.reg_bits =3D 8,
+> > > > > > +	.val_bits =3D 8,
+> > > > > > +	.max_register =3D PM886_REGMAP_CONF_MAX_REG,
+> > > > > > +};
+>
+> > > > > Why is this in here?
+>
+> > > > Because since I moved the regulators regmap initialization into the
+> > > > regulators driver, I need to access it from there.
+>
+> > > So move it into the regulators driver?
+>
+> > It is used in the MFD driver too for the base regmap.
+>
+> You shouldn't be creating two regmaps for the same set of registers,
+> that just opens the potential for confusion.
 
-In general, I think the fix is fine. Only thing that's a bit odd is:
+Just the regmap config is the same. Otherwise, each regmap lives at a
+different I2C address.
 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 555ada922cf0..187fbfacb397 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -28,6 +28,7 @@
->  #include <linux/prefetch.h>
->  #include <linux/blk-crypto.h>
->  #include <linux/part_stat.h>
-> +#include <linux/sched/isolation.h>
->  
->  #include <trace/events/block.h>
->  
-> @@ -2179,7 +2180,11 @@ static int blk_mq_hctx_next_cpu(struct blk_mq_hw_ctx *hctx)
->  	bool tried = false;
->  	int next_cpu = hctx->next_cpu;
->  
-> -	if (hctx->queue->nr_hw_queues == 1)
-> +	/*
-> +	 * Switch to unbound work if all CPUs in this hw queue fall
-> +	 * into isolated CPUs
-> +	 */
-> +	if (hctx->queue->nr_hw_queues == 1 || next_cpu >= nr_cpu_ids)
->  		return WORK_CPU_UNBOUND;
-
-This relies on find_next_foo() returning >= nr_cpu_ids if the set is
-empty, which is a lower level implementation detail that someone reading
-this code may not know.
-
->  	if (--hctx->next_cpu_batch <= 0) {
-> @@ -3488,14 +3493,30 @@ static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
->  	return data.has_rq;
->  }
->  
-> -static inline bool blk_mq_last_cpu_in_hctx(unsigned int cpu,
-> -		struct blk_mq_hw_ctx *hctx)
-> +static bool blk_mq_hctx_has_online_cpu(struct blk_mq_hw_ctx *hctx,
-> +		unsigned int this_cpu)
->  {
-> -	if (cpumask_first_and(hctx->cpumask, cpu_online_mask) != cpu)
-> -		return false;
-> -	if (cpumask_next_and(cpu, hctx->cpumask, cpu_online_mask) < nr_cpu_ids)
-> -		return false;
-> -	return true;
-> +	enum hctx_type type = hctx->type;
-> +	int cpu;
-> +
-> +	/*
-> +	 * hctx->cpumask has rule out isolated CPUs, but userspace still
-                            ^^
-
-has to
-
-> +	 * might submit IOs on these isolated CPUs, so use queue map to
-							  ^^
-
-use the queue map
-
-> +	 * check if all CPUs mapped to this hctx are offline
-> +	 */
-
--- 
-Jens Axboe
-
+Regards,
+K. B.
 
