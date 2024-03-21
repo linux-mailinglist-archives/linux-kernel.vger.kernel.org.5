@@ -1,473 +1,266 @@
-Return-Path: <linux-kernel+bounces-109798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFE908855D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB0A8855DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:38:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79404281F6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:37:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A6B282151
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8332A17561;
-	Thu, 21 Mar 2024 08:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC411D526;
+	Thu, 21 Mar 2024 08:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VHtHIZkk"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vQ7RQRSN";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="O+fqSBwm"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A0CF512
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711010248; cv=none; b=tTRlEUYC8uS+eCilkh0KC1w0F670QR/rxfruHTP1p8XgcAMdotH8mLGsp04HLDiYXiWVkSVv3eCucBcLk8nlhjVCmHr7AqV7BJFVcSw50xPIt3ldsKg/CMP9ul/0sIuP4Nq2s2ZB4HTxAd4C0d03MJEK5TQyjuO6D4bIaoaJc1c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711010248; c=relaxed/simple;
-	bh=PAw9lHqYDnapYYW64NJkyIltJxb0RSurl0mSUrSxLPM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q+SBkaIJXybSjzE88chmlLcZOYlYgZ50yUWZfyNF3xSYioB5+Zg5I0lKV/JOaeUUTyGiVOvTt0AEzDSDlDYttpeYkXe84+Cp3TJMIQX7rYS/onhkm9ygaKhWrgztZsVKdMR4FoXYU4Tp1GbLEVu8bdb+lA/ZsmVCjxfF+d5zJYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VHtHIZkk; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56bb22ff7baso707136a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711010244; x=1711615044; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1LJdX5HINEABbkAABFqbmX72U+4J6Fq5DjsUiL3/oFM=;
-        b=VHtHIZkkhdTTZ2S9U/5X+TbePY8bLO/rZ12zSf2VbHpJ7bVBExUFpiljsh4A/Q+V9g
-         LbtLpncBWzuvj7sGYk4L9sm/WHF9PGZI00oSKvC+tk+wAeE3VxSXSJvyKkRkfsD3ZOVL
-         rmY2rV49uVdW+kYSFRrqo3eTYGbdDgvP8QbXM1KXFKgB2I/bREh0Q+Tufvk5A1iqgAqL
-         nDA4/o9L1ts0mqbLqGVoyRxcHiypb27uZ7RDiLYEy80FXobj+1OipWsr2zF2b8CUhQpK
-         kPTh/WftpFUzAzikORwHDxlbi1ou/mUSJlpmJkU6TuFre86vFXsneck3pGWCM/GMpA+u
-         FfWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711010244; x=1711615044;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1LJdX5HINEABbkAABFqbmX72U+4J6Fq5DjsUiL3/oFM=;
-        b=XXolurQkFlvlCJwouqwrgMfTAuTX5htoIt7iYNXeyOPpvGsc3hQHc6NhexGye8+/hC
-         xqSw/6VARfwavOTNKM9rqVORzTnnhQs90Dgi7VRqC2quCr1c2+ptjkJe3pB3LEHc+zV/
-         EX6lSk6AGE8oSC2bDwKxiZUW8ZiDjbuBgHuo1/ffuhXV84lei6cjZH3LpK4DO0Wf/CJ0
-         fCcOeccnkq4ZzUQQQInrzeVh0vSB6kB5+1EYGaj2ze1HwmaaHV4NepkTLUJT9NCsWcBi
-         6Mr4/7I5rjZQxDemvEJonVUwF94iQRBKva8p5A9yjpVhogR8eXilYcpEW9nLi9jyUFm1
-         9TEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWO7zT9FHtOPw5Xi4ZpPXAUUPnnjjZu6Qgg9z5FKRbz7TeFImMpAUG2CPnRcS/fTWTLwc3vEk8XXVkSqi9tMXIPGSzAfqW0g4KuYQSB
-X-Gm-Message-State: AOJu0YxMeK8mj+Vjy7GphqFYPvnhJIxt+emyRXHOM+5DjMP3RxlUbgkb
-	PhPWzTfpSyXPDX5HFw+NgTew/0Xmsoai6mXYSP7XSmJh0kugXxYwDKmx5O5p9xU=
-X-Google-Smtp-Source: AGHT+IG6zJglxzpL3+82jfITASQmJOCWIwdnfUuLTIM2+eo2I1Az4z278xjCcrw8ML8UvOyNmRBQwA==
-X-Received: by 2002:a17:906:c411:b0:a46:635b:bb3e with SMTP id u17-20020a170906c41100b00a46635bbb3emr11536587ejz.52.1711010244441;
-        Thu, 21 Mar 2024 01:37:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id la10-20020a170906ad8a00b00a46ee3c31afsm1951096ejb.154.2024.03.21.01.37.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 01:37:23 -0700 (PDT)
-Message-ID: <2528ae13-a84e-484c-bcf1-278025394c49@linaro.org>
-Date: Thu, 21 Mar 2024 09:37:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717A6C8FF;
+	Thu, 21 Mar 2024 08:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711010319; cv=fail; b=sLGP2/BJeKZqhuhNtNkt7vZYiFvfkpKpAy9KUW1vgjMBqCZM/fnPD6067sUlpBJuhI9xor/lXSw9UvJ9yksgOAIyVaZ9mshGk3LY57U4UtLfmDaPqNZ4HVQWedywecXXDoYO3DyfceCp6F7MxdgUYDSVPg1MOYJqI67ZovF1QAE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711010319; c=relaxed/simple;
+	bh=NsUsESMmqzTVk5gSdS1i6JjnxRQpwovcITGOyIaIyfo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=UrsJNaeVoRrg/UI2cC6KETN19qHGLnOulWjk2TibzI8wvmoPvQz7G7zdhSLMKhV9QYPr0h2xRgOi8HHMc7X4BmqwpPS9hWu8v16uXTZKBrkN1N5WDVzSXvo0FnynrB681Szwx3VtKhD5fMYhL7W8XJ5xD33MfZXEqjRS0TQp6uc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vQ7RQRSN; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=O+fqSBwm; arc=fail smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1711010317; x=1742546317;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=NsUsESMmqzTVk5gSdS1i6JjnxRQpwovcITGOyIaIyfo=;
+  b=vQ7RQRSNxvvJWcRdjBvOVmMvxvKY2v6yCnF96f7iADw+fwVox6d2tm9b
+   ZMfeMXyOoro+VWT6uz5Ql31R4pKOManxF/ZR1TReNqEtol8rv9bTOoHgf
+   q1IA703M4DyQW9zukPAixmANunHrW++vMy5WPmraxJlf+367VL8zJHlPK
+   +aQ8oair8ojOzvOnAohh7fPUOxj1PWyQswpHsTE4BIQ3PyWGhtqCuTDIK
+   FcCTPEOnRTO4hstFcsce6L7AlzEBUlC8/fmMF1zx0K47OCGdUNPqHvSor
+   5tGJ0qPTsxjyOJ3XBtlxh/A3z2vgqePXL6UWNXSROQ0ZWSFNOIeR7PMxT
+   Q==;
+X-CSE-ConnectionGUID: n4Eu7LcJRL6Y5HoC8m/h8A==
+X-CSE-MsgGUID: 6d5HJiDwTR6712OBl5HwwA==
+X-IronPort-AV: E=Sophos;i="6.07,142,1708412400"; 
+   d="scan'208";a="17922992"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Mar 2024 01:38:29 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 01:38:14 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 01:38:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ROXfSen7x2oXXM/ejaJi/Tup3V6gNnzmqhdQhQT94yx3PdQ8eNzWIojxJNXGHzjdXYVATBL5iMnFNPmqXgJA1Toyv6ZN+mn6hGN1P/jw+FVap6n4MCW8+gKAuXlqmVbxScVqY26VLOhUdKx6UCLNUZAwlsLpQmom3uLCs+38hgIsGu8jXt2wX8OG5Ml96E+uvac8dq/Fe1734Qo8t6AYQiSh5LEEHDow64GIrh+/+n8Z9xJ4r5F7S+SgKut0c7RE+s+BcvH44mimLb+Lkb5N/wKauacTofzwSymZY7KphAfW3xEiyeo/EMQUA12H6t613KDDJc+i2A2oaTjQ0CnARg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NsUsESMmqzTVk5gSdS1i6JjnxRQpwovcITGOyIaIyfo=;
+ b=ODuzNruY1O4o3wOxBW9BIxbGWVEdBXSx2fsy9xS0E+0zf2tVeklK5RDX5zU1lED2FimOPW0W0Wytc5EQ0u6IrCHxeC0/Gbchc2iTOX1+eSfk97R739u1koMJOmSdZCzZJ8qcFXegkFgXGguZ6CGhIsGrqVVeEwrjp/Osv4rRaPlh510Pwsrk9g46157ohVQ3r6a0i8LWq50vPrCD+GKdBwgPjdYgYcTdmIhexXL0EMsryPFsTpTipEq0oL5YNgirew3tAFaOoet1e0WjGiVM/uI+zV7QQdyum+s+q5lP2l3ufHKtDqsuOXedZ9Yn7WzB0fFFiBDg0kfCbhL0s9nlug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NsUsESMmqzTVk5gSdS1i6JjnxRQpwovcITGOyIaIyfo=;
+ b=O+fqSBwmfYcWbk/ZvilVfMqf769Dc3vxDgJv/DzVXC7IQEBMj+bfDwSed0IVtPFLeRKug2htgOTOku2xhVuwXSQHlvNrpQDFB5WbIj5gG2inv9CDcaThOoXMmmg7ZGHTZmcNv72kqf89tJDvYdpHzk7g1MS3gviqRubx5phPResPl0u7CkGAGK1o27gTYtgtRNP3sp+fRxKHQX/xFvZ5ipgLgoADUKAY8OnTvecbBt+XcTOS8GCs+WRZKNolaF4l5VXZeAAEaiDLLtiCYAi7CecxpjSep7w0eknjgS7d3OGEFH3Jj1TxIiur2fUM12Tj4iF0wjoiHx7ExlduUatKBA==
+Received: from SA1PR11MB8278.namprd11.prod.outlook.com (2603:10b6:806:25b::19)
+ by PH7PR11MB8552.namprd11.prod.outlook.com (2603:10b6:510:2fe::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Thu, 21 Mar
+ 2024 08:38:11 +0000
+Received: from SA1PR11MB8278.namprd11.prod.outlook.com
+ ([fe80::f633:b9d4:f539:177d]) by SA1PR11MB8278.namprd11.prod.outlook.com
+ ([fe80::f633:b9d4:f539:177d%6]) with mapi id 15.20.7386.015; Thu, 21 Mar 2024
+ 08:38:11 +0000
+From: <Parthiban.Veerasooran@microchip.com>
+To: <krzysztof.kozlowski@linaro.org>, <conor@kernel.org>, <andrew@lunn.ch>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <horms@kernel.org>, <saeedm@nvidia.com>,
+	<anthony.l.nguyen@intel.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <corbet@lwn.net>,
+	<linux-doc@vger.kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, <Horatiu.Vultur@microchip.com>,
+	<ruanjinjie@huawei.com>, <Steen.Hegelund@microchip.com>,
+	<vladimir.oltean@nxp.com>, <UNGLinuxDriver@microchip.com>,
+	<Thorsten.Kummermehr@microchip.com>, <Pier.Beruto@onsemi.com>,
+	<Selvamani.Rajagopal@onsemi.com>, <Nicolas.Ferre@microchip.com>,
+	<benjamin.bigler@bernformulastudent.ch>
+Subject: Re: [PATCH net-next v3 12/12] dt-bindings: net: add Microchip's
+ LAN865X 10BASE-T1S MACPHY
+Thread-Topic: [PATCH net-next v3 12/12] dt-bindings: net: add Microchip's
+ LAN865X 10BASE-T1S MACPHY
+Thread-Index: AQHab6Ox6ghenOTJpkWNbGLTwd03cbErBYYAgAAJFoCAAANkgIAVU1wAgAAUTICAAX1RAA==
+Date: Thu, 21 Mar 2024 08:38:11 +0000
+Message-ID: <ba37c212-fb98-407d-9bee-6d14801754d9@microchip.com>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-13-Parthiban.Veerasooran@microchip.com>
+ <20240306-spree-islamist-957acf0ee368@spud>
+ <4c5968a3-c043-45fc-8fff-2a9eaa6de341@lunn.ch>
+ <20240306-ripeness-dimple-e360a031ccde@spud>
+ <05a9a7ee-e4f0-443e-9c8a-8ee649a11448@microchip.com>
+ <2f384a54-74a0-4a75-a325-8985257b5d66@linaro.org>
+In-Reply-To: <2f384a54-74a0-4a75-a325-8985257b5d66@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR11MB8278:EE_|PH7PR11MB8552:EE_
+x-ms-office365-filtering-correlation-id: 3879c0a1-c5b3-4857-12b8-08dc49823e3a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NthKGKdUrMJBHw8XL1uit664xwG8IvWWj6X54yoyAMVGvHe74d4Jx1FsnFiWjE5N6CQ1nXwugX0FbbC22izeOUeudSdGu6hmMClN+jcuapgbDEY/zQOACqFnq/XHUYdweytLkWv327mYjV703LEOG5f89CfBdE1s+SkIsWNLCNxfSJ33Vdxz3rT7L/g4bb0CnffP7WCKcRlivPlv/gEtZx6jsmx7QdM763uYBO2GUYEyS8kU79IWVorlA4nD95JOdKjD+P9ozceBeGWKidVTY3CgrktIXZTEkGqRjKlhNHT13cmGuRpkZpaGxOgTFZQScnWoR7hZJECCohQbNCT373CEuLTFDrz5Arp6R0j0IZdWhhyhMqPiOTNtZp5OqLivF/NnjNbr4IpWYQCGP1/7uwn04eUET/FFRaBmwmW/OQjB1fK3/wUgxdpGZB5htcn7S5ZTXL+9x7n2PKDYJ/ihZuvYKaH2opzfpzkyioPSHEtSo4kwLrWQMkMdqq09/ytQ0QNvM1x+CEZXPoP66il7Q9mD9GF0zkAFbsbICyx1uvSTWP7wv8ET92ENjO/6LXi/hcnSQvnQcTsCs2k4GBoWxhtrozdB8lbNknF+iJmAlVAvbfmUXBdHa2Ht95wH9uE4rDRcGI1Crf+jHAaj/TD8rKkiReAp0tRz2Qw6/i5IgITLYd8ijTGaBGS1srLvD6EM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8278.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UVBFMHVPOXZFRUNORHNiZlpvY1EyYUlrWDVBSkwrazRtcUp4aHhOV2tlSFA3?=
+ =?utf-8?B?K3B2MHdIYkNHc1BhcHhqZHZzTmJvS3pPeWdFUHUxVnhyTDlpSkZMNXBxK3dC?=
+ =?utf-8?B?NFVBVXVWRGdXMDdTV2p1c3JicUF5OFQzaDFxeDV5Z1JNMi9RdnFHWWIvdTRO?=
+ =?utf-8?B?QnFsVTN2alYzV3U3R1BKdWk0Y2x3UUt4MVNrTnUrbncxSzFBT0FUZTJwZ1l4?=
+ =?utf-8?B?enMvYXZBbFZLdC9iMGNwRVdOV2JJV2NSbFN5M0ZIbjdLM3VrRC9UV3M4M3B6?=
+ =?utf-8?B?b3RQSklvdUI2OVBZcjR4dGU2OHYyYTFNcTJNY0xBdmtHZVQ1ZEZSUzZRWUt6?=
+ =?utf-8?B?QklsNnVVWmhjU000NlRyNStiSnNpUEQxMjM2RGV6Y09pd1l5T09UWVQwc25T?=
+ =?utf-8?B?YjBZaG1qblJZWkJnalNacG1UZ0FIQzRqWDlpc1M2SkxBOUxNd0U5VlJyWTEv?=
+ =?utf-8?B?T2pxemthR2JLL1AzVmxWUVRvU3BPTGVNUVMrUHM3bDFxWm9hdFl1R2NDVm5y?=
+ =?utf-8?B?UGZTeENQVnNUOXUyYlpLZzIzbkl1WVY1Ny9ib3FLNW9EdWZyUVJkRmJCTjZM?=
+ =?utf-8?B?KzlKUEZZV1RGZEdJYWJtejlBYmJmNjBRcWtaU2VDVURTN3VMaURZMERaNWlY?=
+ =?utf-8?B?SU5lMUxaTVZuUkdXNGNoaFZibXljcEV2dVhEMEtXQUJqOXJVa2RqMGE2Qnp0?=
+ =?utf-8?B?TkRuV2I0Y2FDQk5rMWlKWHBOM2xSbVF6bThKMU1nc0ZOakhHRytKQXVuak10?=
+ =?utf-8?B?OGNNRXJCSFFFbjBidnd5d0hkRXF0bE1vSnVoeS9sQU5GL3hKWWFRY01yendU?=
+ =?utf-8?B?Qy9JdmNMYVF5RTUyVTA3Y0RBYnRWUkw1LzZlMU1lSGNhZjUvVklBQUltSEJv?=
+ =?utf-8?B?QndGRGJ2djdad00waG0xODhFUTBiUCswd2pONXNUdWZyRFdNdFhiaXVlUkJ1?=
+ =?utf-8?B?c0V2MUlUTTNOQWh5ZDRhR2VtTk5jN3RrZmxZY2o2MTVVSy83QXZTSVRUbjdW?=
+ =?utf-8?B?a0kzaURMOXh2alpMOXd2MitwL3BjNXBXN3dxOEd2dW9qWk41TUhmanV4UWZG?=
+ =?utf-8?B?M1prK0JqUENZZEVmdzdIQVd1YVB6Y2xLRnEyRUt6OUYxWFc4RmdHWkxPWmx4?=
+ =?utf-8?B?QVpQdU5yVWh5MEo0MmtHWXRuSkgyWEJrZ2RyTEJncHk4U0p1d3lYNmNnVWVL?=
+ =?utf-8?B?ZWQ1RW45YkJJS0FDTy9JalJIK091VkpWcEJRazVIRjJsYlFoU3pJZHBMSlZE?=
+ =?utf-8?B?YjNKaEtpUi9NSUw1WjVxdUxPNGtzbUdMdktmV1FKQUxFdEFSYW1MTE5GSGUx?=
+ =?utf-8?B?enArWXk4K2xvS2xmRGF6UUl2a0xxU2Q2V294eExtQzFzMWlQMENvaGdZeVVX?=
+ =?utf-8?B?bGU2dUl4dTV0M1dBcExDSEhkc0hmRUxLYnphR3c1YzRzL1cvVHM5YjE5elho?=
+ =?utf-8?B?SGZmQ1RodUpaZk8rZ3FsT0VEZzZGN2x6NVZnRXJlRmN3TXRrRWJreDBaU3hi?=
+ =?utf-8?B?TklDSDRvSDdCaTg1Yk9QZ1k0OVlSa0tacnZaU2xNVFF5M2VXSStBSlN5bkIv?=
+ =?utf-8?B?aE9naVBEL3ZrdStYbDZqY2VrT2s0MXZJL2hFUFNIZGNITEtaSGJTbFNDQmZK?=
+ =?utf-8?B?Q3hjVXpkV2xhMFJRVEw2Snl5MXZQL2tDeTV0WkhUZkJNdEtaQTdLRStrbThS?=
+ =?utf-8?B?bklrbC9WSm9PckhXeDdJVjNLVE5zKzNoSE93MndjZjdYN2RRU2wyZTYwYWdJ?=
+ =?utf-8?B?M2xoWHdkYm9yWjc2akFibHVKc2JEazlvOGNVRU1MYmNJa29ETGROT3dlQXhl?=
+ =?utf-8?B?VDZZeUlqRnM0V0QySS9uSFJQYXFZRGVxcE1JVXZDclhYQnZJZU9BaGZteFJu?=
+ =?utf-8?B?emM2UkEwYjdrK1MwdTNwRkFOVWEwVUc3L0tRQng2YTNKOW5tSU1NbW82TGs2?=
+ =?utf-8?B?R3FkZ2hhTGcxN09uc3dXbDNJaWxyRDRZYmhPajQ2b0lHcGVLcGdzU2pxQzcz?=
+ =?utf-8?B?VUV4S2xxd1IrcXlIN1gzQmxYdlhvREFkTTFMSFpTVWF3cSs5biswOUlVVW8v?=
+ =?utf-8?B?MXBJajhRS2psRUdpK0VNdGFFZXBOT1VBakt3ekNZN1BFNWRmMWpHMGZJUGRv?=
+ =?utf-8?B?am94YTBVenQ3b0Qrbm1DZWxlSlNHZXFBdFRITldSOXNidU9hTVFqU3hyTE8z?=
+ =?utf-8?B?aEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <006BF04DC22B0749BB0CC1AFC42CF8F7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dmaengine: ingenic: add Ingenic PDMA controller
- support.
-To: bin.yao@ingenic.com, vkoul@kernel.org
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, 1587636487@qq.com
-References: <20240321080228.24147-1-bin.yao@ingenic.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240321080228.24147-1-bin.yao@ingenic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8278.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3879c0a1-c5b3-4857-12b8-08dc49823e3a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 08:38:11.7918
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: k6EG3hN6pUqqgq5/w2dUf+8qudvRzAM+qk3Od8NXZj0U80SPOa+GC9uNPE7eqtC5P8Fs0fyV+wWUgZMxPtXtKjDw9Q0/31oWLK3/GNVwNXu1L40U2v0096nG4CEn9xYG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8552
 
-On 21/03/2024 09:02, bin.yao@ingenic.com wrote:
-> From: "bin.yao" <bin.yao@ingenic.com>
-> 
-> This module can be found on ingenic victory soc.
-> 
-> Signed-off-by: bin.yao <bin.yao@ingenic.com>
-> ---
->  drivers/dma/Kconfig        |    6 +
->  drivers/dma/Makefile       |    1 +
->  drivers/dma/ingenic-pdma.c | 1356 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 1363 insertions(+)
->  create mode 100644 drivers/dma/ingenic-pdma.c
-
-..
-
-> +static int ingenic_dma_chan_init(struct ingenic_dma_engine *dma, int id)
-> +{
-> +	struct ingenic_dma_chan *dmac = NULL;
-> +
-> +	if ((id < 0) || (id >= INGENIC_DMA_CHAN_CNT))
-> +		return -EINVAL;
-> +
-> +	dmac = devm_kzalloc(dma->dev, sizeof(*dmac), GFP_KERNEL);
-> +	if (!dmac)
-> +		return -ENOMEM;
-> +
-> +	dmac->id = id;
-> +	dmac->iomem = dma->iomem + dmac->id * DMACH_OFF;
-> +	dmac->engine = dma;
-> +
-> +	spin_lock_init(&dmac->hdesc_lock);
-> +	init_completion(&dmac->completion);
-> +
-> +	dmac->slave_id = pdma_maps[id] & INGENIC_DMA_TYPE_REQ_MSK;
-> +	dma->chan[id] = dmac;
-> +	INIT_LIST_HEAD(&dmac->ingenic_dma_sdesc_list_submitted);
-> +	INIT_LIST_HEAD(&dmac->ingenic_dma_sdesc_list_issued);
-> +
-> +	dma_cookie_init(&dmac->chan);
-> +	dmac->chan.device = &dma->dma_device;
-> +	dmac->working_sdesc = NULL;
-> +	list_add_tail(&dmac->chan.device_node, &dma->dma_device.channels);
-> +	tasklet_init(&dmac->task, ingenic_dma_complete, (unsigned long)dmac);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ingenic_dma_probe(struct platform_device *pdev)
-> +{
-> +	struct ingenic_dma_engine *ingenic_dma = NULL;
-> +	unsigned int reg_dmac = DMAC_DMAE;
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *iores;
-> +	int i, ret = 0;
-> +
-> +	if (!dev->of_node) {
-> +		dev_err(dev, "This driver must be probed from devicetree\n");
-
-This driver cannot be probed other way. Drop.
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	ingenic_dma = devm_kzalloc(&pdev->dev, sizeof(struct ingenic_dma_engine),
-
-ssizeof(*(
-
-> +				   GFP_KERNEL);
-> +	if (!ingenic_dma)
-> +		return -ENOMEM;
-> +
-> +	ingenic_dma->dma_data = (struct ingenic_dma_data *)device_get_match_data(dev);
-
-Why the cast?
-
-> +	if (!ingenic_dma->dma_data)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Obtaining parameters from the device tree.
-> +	 */
-
-Drop obvious comments.
-
-> +	ingenic_dma->dev = dev;
-> +	if (!of_property_read_u32(pdev->dev.of_node, "programed-chs",
-
-No, there is no such property. NAK.
-
-Upstream your DTS or I will be NAKing your patches. Because otherwise
-you try to sneak a lot of undocumented stuff here.
-
-> +				  &ingenic_dma->chan_programed))
-> +		ingenic_dma->chan_reserved |= ingenic_dma->chan_programed;
-> +
-> +	if (HWATTR_SPECIAL_CH01_SUP(ingenic_dma->dma_data->hwattr) &&
-> +	    of_property_read_bool(pdev->dev.of_node, "special-chs")) {
-> +		ingenic_dma->chan_reserved  |= DMA_SPECAIL_CHS;
-> +		ingenic_dma->chan_programed |= DMA_SPECAIL_CHS;
-> +		ingenic_dma->special_ch = true;
-> +	}
-> +
-> +	ingenic_dma->intc_ch = -1;
-> +	if (HWATTR_INTC_IRQ_SUP(ingenic_dma->dma_data->hwattr) &&
-> +	    !of_property_read_u32(pdev->dev.of_node, "intc-ch",
-> +				  &ingenic_dma->intc_ch)) {
-> +
-> +		if (BIT(ingenic_dma->intc_ch) & ingenic_dma->chan_reserved)
-> +			dev_warn(ingenic_dma->dev,
-> +				 "intc irq channel %d is already reserved\n",
-> +				 ingenic_dma->intc_ch);
-> +
-> +		ingenic_dma->chan_reserved |= BIT(ingenic_dma->intc_ch);
-> +	}
-> +
-> +	/*
-> +	 * obtaining the base address of the DMA peripheral.
-> +	 */
-
-Drop obvious comments.
-
-> +	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (iores) {
-> +		ingenic_dma->iomem = devm_ioremap_resource(&pdev->dev, iores);
-
-Combine these two, there's helper for this.
-
-> +		if (IS_ERR(ingenic_dma->iomem))
-> +			return PTR_ERR(ingenic_dma->iomem);
-> +	} else {
-> +		dev_err(dev, "Failed to get I/O memory\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Get PDMA interrupt.
-> +	 */
-
-Drop
-
-> +	ingenic_dma->irq_pdma = platform_get_irq_byname(pdev, "pdma");
-> +	if (ingenic_dma->irq_pdma < 0) {
-> +		dev_err(dev, "Unable to get pdma irq\n");
-> +		return ingenic_dma->irq_pdma;
-
-Syntax is return dev_err_probe().
-
-> +	}
-> +
-> +	ret = devm_request_irq(&pdev->dev, ingenic_dma->irq_pdma,
-> +			       pdma_int_handler, 0, "pdma", ingenic_dma);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to request pdma irq\n");
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * Get PDMA descriptor interrupt.
-> +	 */
-> +	if (HWATTR_DESC_INTER_SUP(ingenic_dma->dma_data->hwattr)) {
-> +		ingenic_dma->irq_pdmad = platform_get_irq_byname(pdev, "pdmad");
-
-NAK, you must be joking. You do not have second interrupt.
-
-You must clean your code before upstream from all downstream weirdness
-and incorrectness. You cannot send different binding than driver.
-
-What's more, I don't trust that you will send usable binding, judging by
-the driver, so I expect to see upstreamed DTS.
-
-> +		if (ingenic_dma->irq_pdmad < 0) {
-> +			dev_err(&pdev->dev, "Unable to get pdmad irq\n");
-> +			return ingenic_dma->irq_pdmad;
-> +		}
-> +		ret = devm_request_irq(&pdev->dev, ingenic_dma->irq_pdmad,
-> +				       pdmad_int_handler, 0, "pdmad", ingenic_dma);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to request pdmad irq\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Initialize dma channel.
-> +	 */
-> +	INIT_LIST_HEAD(&ingenic_dma->dma_device.channels);
-> +	for (i = 0; i < ingenic_dma->dma_data->nb_channels; i++) {
-> +		/*reserved one channel for intc interrupt*/
-> +		if (ingenic_dma->intc_ch == i)
-> +			continue;
-> +		ingenic_dma_chan_init(ingenic_dma, i);
-> +	}
-> +
-> +	dma_cap_set(DMA_MEMCPY, ingenic_dma->dma_device.cap_mask);
-> +	dma_cap_set(DMA_SLAVE, ingenic_dma->dma_device.cap_mask);
-> +	dma_cap_set(DMA_CYCLIC, ingenic_dma->dma_device.cap_mask);
-> +
-> +	ingenic_dma->dma_device.dev = &pdev->dev;
-> +	ingenic_dma->dma_device.device_alloc_chan_resources = ingenic_dma_alloc_chan_resources;
-> +	ingenic_dma->dma_device.device_free_chan_resources = ingenic_dma_free_chan_resources;
-> +	ingenic_dma->dma_device.device_tx_status = ingenic_dma_tx_status;
-> +	ingenic_dma->dma_device.device_prep_slave_sg = ingenic_dma_prep_slave_sg;
-> +	ingenic_dma->dma_device.device_prep_dma_cyclic = ingenic_dma_prep_dma_cyclic;
-> +	ingenic_dma->dma_device.device_prep_dma_memcpy = ingenic_dma_prep_dma_memcpy;
-> +	ingenic_dma->dma_device.device_config = ingenic_dma_config;
-> +	ingenic_dma->dma_device.device_terminate_all = ingenic_dma_terminate_all;
-> +	ingenic_dma->dma_device.device_issue_pending = ingenic_dma_issue_pending;
-> +	ingenic_dma->dma_device.copy_align = DMAENGINE_ALIGN_4_BYTES;
-> +	ingenic_dma->dma_device.src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
-> +						  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-> +						  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-> +	ingenic_dma->dma_device.dst_addr_widths = ingenic_dma->dma_device.src_addr_widths;
-> +	ingenic_dma->dma_device.directions = BIT(DMA_DEV_TO_MEM) |
-> +					     BIT(DMA_MEM_TO_DEV) |
-> +					     BIT(DMA_MEM_TO_MEM);
-> +	ingenic_dma->dma_device.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
-> +
-> +	dma_set_max_seg_size(ingenic_dma->dma_device.dev, DTC_TC_MSK);
-> +
-> +	ingenic_dma->gate_clk = devm_clk_get(&pdev->dev, "gate_pdma");
-> +	if (IS_ERR(ingenic_dma->gate_clk))
-> +		return PTR_ERR(ingenic_dma->gate_clk);
-> +
-> +	ret = dma_async_device_register(&ingenic_dma->dma_device);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Unable to register dma\n");
-> +		clk_disable(ingenic_dma->gate_clk);
-> +		return ret;
-> +	}
-> +
-> +	of_ingenic_dma_info.dma_cap = ingenic_dma->dma_device.cap_mask;
-> +	ret = of_dma_controller_register(pdev->dev.of_node,
-> +					 of_dma_simple_xlate,
-> +					 &of_ingenic_dma_info);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Unable to register dma to device tree\n");
-> +		dma_async_device_unregister(&ingenic_dma->dma_device);
-> +		clk_disable(ingenic_dma->gate_clk);
-> +		return ret;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, ingenic_dma);
-> +
-> +	clk_prepare_enable(ingenic_dma->gate_clk);
-> +
-> +	if (ingenic_dma->chan_programed)
-> +		writel(ingenic_dma->chan_programed, ingenic_dma->iomem + DMACP);
-> +	if (ingenic_dma->intc_ch >= 0)
-> +		reg_dmac |= DMAC_INTCE |
-> +			    ((ingenic_dma->intc_ch << DMAC_INTCC_SFT) & DMAC_INTCC_MSK);
-> +	if (ingenic_dma->special_ch)
-> +		reg_dmac |= DMAC_CH01;
-> +	writel(reg_dmac, ingenic_dma->iomem + DMAC);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused ingenic_dma_suspend(struct device *dev)
-> +{
-> +	struct ingenic_dma_engine *ingenic_dma = dev_get_drvdata(dev);
-> +	struct ingenic_dma_chan *dmac;
-> +	unsigned long flg;
-> +	int i;
-> +
-> +	for (i = 0; i < ingenic_dma->dma_data->nb_channels; i++) {
-> +		dmac = ingenic_dma->chan[i];
-> +		spin_lock_irqsave(&dmac->hdesc_lock, flg);
-> +		if (!list_empty(&dmac->ingenic_dma_sdesc_list_submitted)) {
-> +			spin_unlock_irqrestore(&dmac->hdesc_lock, flg);
-> +			return -EBUSY;
-> +		}
-> +		if (!list_empty(&dmac->ingenic_dma_sdesc_list_issued)) {
-> +			spin_unlock_irqrestore(&dmac->hdesc_lock, flg);
-> +			return -EBUSY;
-> +		}
-> +		spin_unlock_irqrestore(&dmac->hdesc_lock, flg);
-> +	}
-> +	clk_disable_unprepare(ingenic_dma->gate_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __maybe_unused ingenic_dma_resume(struct device *dev)
-> +{
-> +	struct ingenic_dma_engine *ingenic_dma = dev_get_drvdata(dev);
-> +
-> +	clk_prepare_enable(ingenic_dma->gate_clk);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops ingenic_dma_dev_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(ingenic_dma_suspend, ingenic_dma_resume)
-> +};
-> +
-> +static const struct ingenic_dma_data t33_soc_data = {
-> +	.nb_channels = 32,
-> +};
-> +
-> +static const struct of_device_id ingenic_dma_dt_match[] = {
-> +	{ .compatible = "ingenic,t33-pdma",   .data = &t33_soc_data },
-
-Don't merge lines. Open existing code and look how it is done there.
-
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, ingenic_dma_dt_match);
-> +
-> +static struct platform_driver ingenic_dma_driver = {
-> +	.probe			= ingenic_dma_probe,
-> +	.driver = {
-> +		.name		= "ingenic-dma",
-> +		.of_match_table = ingenic_dma_dt_match,
-> +		.pm		= &ingenic_dma_dev_pm_ops,
-> +	},
-> +};
-> +
-> +static int __init ingenic_dma_init(void)
-> +{
-> +	return platform_driver_register(&ingenic_dma_driver);
-> +}
-> +subsys_initcall(ingenic_dma_init);
-> +
-> +static void __exit ingenic_dma_exit(void)
-> +{
-> +	platform_driver_unregister(&ingenic_dma_driver);
-> +}
-> +module_exit(ingenic_dma_exit);
-> +
-> +MODULE_AUTHOR("bin.yao <bin.yao@ingenic.com>");
-> +MODULE_DESCRIPTION("Ingenic dma driver");
-
-Why do you add second Ingenic dma driver? That's duplication.
-
-Best regards,
-Krzysztof
-
+SGkgS3J6eXN6dG9mLA0KDQpPbiAyMC8wMy8yNCAzOjIzIHBtLCBLcnp5c3p0b2YgS296bG93c2tp
+IHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0
+YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDIw
+LzAzLzIwMjQgMDk6NDAsIFBhcnRoaWJhbi5WZWVyYXNvb3JhbkBtaWNyb2NoaXAuY29tIHdyb3Rl
+Og0KPj4gSGkgQ29ub3IgJiBBbmRyZXcsDQo+Pg0KPj4gUGxlYXNlIGZpbmQgbXkgcmVwbHkgYmVs
+b3cgYnkgY29uc29saWRhdGluZyBvdGhlciB0d28gZW1haWxzIGNvbW1lbnRzDQo+PiByZWxhdGVk
+IHRvIHRoaXMuDQo+Pg0KPj4gT24gMDcvMDMvMjQgMTI6MzEgYW0sIENvbm9yIERvb2xleSB3cm90
+ZToNCj4+PiBPbiBXZWQsIE1hciAwNiwgMjAyNCBhdCAwNzo0ODo1N1BNICswMTAwLCBBbmRyZXcg
+THVubiB3cm90ZToNCj4+Pj4+PiArZGVzY3JpcHRpb246DQo+Pj4+Pj4gKyAgVGhlIExBTjg2NTAv
+MSBjb21iaW5lcyBhIE1lZGlhIEFjY2VzcyBDb250cm9sbGVyIChNQUMpIGFuZCBhbiBFdGhlcm5l
+dA0KPj4+Pj4+ICsgIFBIWSB0byBlbmFibGUgMTBCQVNF4oCRVDFTIG5ldHdvcmtzLiBUaGUgRXRo
+ZXJuZXQgTWVkaWEgQWNjZXNzIENvbnRyb2xsZXINCj4+Pj4+PiArICAoTUFDKSBtb2R1bGUgaW1w
+bGVtZW50cyBhIDEwIE1icHMgaGFsZiBkdXBsZXggRXRoZXJuZXQgTUFDLCBjb21wYXRpYmxlDQo+
+Pj4+Pj4gKyAgd2l0aCB0aGUgSUVFRSA4MDIuMyBzdGFuZGFyZCBhbmQgYSAxMEJBU0UtVDFTIHBo
+eXNpY2FsIGxheWVyIHRyYW5zY2VpdmVyDQo+Pj4+Pj4gKyAgaW50ZWdyYXRlZCBpbnRvIHRoZSBM
+QU44NjUwLzEuIFRoZSBjb21tdW5pY2F0aW9uIGJldHdlZW4gdGhlIEhvc3QgYW5kDQo+Pj4+Pj4g
+KyAgdGhlIE1BQy1QSFkgaXMgc3BlY2lmaWVkIGluIHRoZSBPUEVOIEFsbGlhbmNlIDEwQkFTRS1U
+MXggTUFDUEhZIFNlcmlhbA0KPj4+Pj4+ICsgIEludGVyZmFjZSAoVEM2KS4NCj4+Pj4+PiArDQo+
+Pj4+Pj4gK2FsbE9mOg0KPj4+Pj4+ICsgIC0gJHJlZjogZXRoZXJuZXQtY29udHJvbGxlci55YW1s
+Iw0KPj4+Pj4+ICsNCj4+Pj4+PiArcHJvcGVydGllczoNCj4+Pj4+PiArICBjb21wYXRpYmxlOg0K
+Pj4+Pj4+ICsgICAgb25lT2Y6DQo+Pj4+Pj4gKyAgICAgIC0gaXRlbXM6DQo+Pj4+Pj4gKyAgICAg
+ICAgICAtIGNvbnN0OiBtaWNyb2NoaXAsbGFuODY1MA0KPj4+Pj4+ICsgICAgICAgICAgLSBjb25z
+dDogbWljcm9jaGlwLGxhbjg2NTENCj4+Pj4+IFRoZSBvcmRlciBoZXJlIGlzIHdyb25nLCBsYW44
+NTYxIG5lZWRzIHRvIGNvbWUgYmVmb3JlIHRoZSBmYWxsYmFjayBvZg0KPj4+Pj4gbGFuODY1MC4N
+Cj4+Pj4gSSBkb24ndCB0aGluayBpdCBpcyBhIGZhbGxiYWNrLiBUaGVyZSBhcmUgdHdvIGRldmlj
+ZXMsIGFuZCBoZW5jZSB0d28NCj4+Pj4gZGlmZmVyZW50IGNvbXBhdGlibGVzLiBTbyBpIHN1c3Bl
+Y3QgdGhlIC1pdGVtczogaXMgd3JvbmcgaGVyZT8NCj4+PiBJdCdkIGp1c3QgYmUgYSB0d28gZW50
+cnkgZW51bSB0aGVuLCBidXQgSSBkaWQgdGFrZSBhIHF1aWNrIGxvb2sgYXQgdGhlDQo+Pj4gZHJp
+dmVyIGVhcmxpZXIgYW5kIHNhdzoNCj4+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2Vf
+aWQgbGFuODY1eF9kdF9pZHNbXSA9IHsNCj4+PiArICAgIHsgLmNvbXBhdGlibGUgPSAibWljcm9j
+aGlwLGxhbjg2NTAiIH0sDQo+Pj4gKyAgICB7IC5jb21wYXRpYmxlID0gIm1pY3JvY2hpcCxsYW44
+NjUxIiB9LA0KPj4+ICsgICAgeyAvKiBTZW50aW5lbCAqLyB9DQo+Pj4gK307DQo+Pj4NCj4+PiBU
+aGF0LCBhbG9uZyB3aXRoIG5vIG90aGVyIG9mX2RldmljZV9pc19jb21wYXRpYmxlKCkgdHlwZSBv
+cGVyYXRpb25zDQo+Pj4gbWFkZSBtZSB0aGluayB0aGF0IGhhdmluZyBhIGZhbGxiYWNrIGFjdHVh
+bGx5IHdhcyBzdWl0YWJsZS4NCj4+Pg0KPj4+IFlvdSBjcm9wcGVkIGl0IG91dCwgYnV0IHRoZSBw
+YXRjaCBoYWQ6DQo+Pj4+ICsgIGNvbXBhdGlibGU6DQo+Pj4+ICsgICAgb25lT2Y6DQo+Pj4+ICsg
+ICAgICAtIGl0ZW1zOg0KPj4+PiArICAgICAgICAgIC0gY29uc3Q6IG1pY3JvY2hpcCxsYW44NjUw
+DQo+Pj4+ICsgICAgICAgICAgLSBjb25zdDogbWljcm9jaGlwLGxhbjg2NTENCj4+Pj4gKyAgICAg
+IC0gZW51bToNCj4+Pj4gKyAgICAgICAgICAtIG1pY3JvY2hpcCxsYW44NjUwDQo+Pj4gU28gaXQg
+ZG9lc24ndCBhcHBlYXIgdG8gYmUgYW4gYWNjaWRlbnRhbCBpdGVtcyBpbiBwbGFjZSBvZiBhbiBl
+bnVtLA0KPj4+IHNpbmNlIHRoZSBvdGhlciBjb21wYXRpYmxlIGlzIGluIGFub3RoZXIgZW51bS4N
+Cj4+IEFzIHBlciBBbmRyZXcncyBjb21tZW50IGluIGFub3RoZXIgZW1haWwsIGJvdGggTEFOODY1
+MCBhbmQgTEFOODY1MSBhcmUNCj4+IHR3byBkaWZmZXJlbnQgdmFyaWFudHMgYnV0IHRoZXkgYm90
+aCBzaGFyZSBhbG1vc3QgYWxsIGNoYXJhY3RlcmlzdGljcw0KPj4gZXhjZXB0IG9uZSB0aGluZyB0
+aGF0IGlzIExBTjg2NTEgaGFzICJTaW5nbGUgMy4zViBzdXBwbHkgd2l0aCBpbnRlZ3JhdGVkDQo+
+PiAxLjhWIHJlZ3VsYXRvciIgd2hpY2ggZG9lc24ndCBoYXZlIGFueXRoaW5nIHRvIGRvIHdpdGgg
+ZHJpdmVyLiBUaGF0J3MNCj4gDQo+IFNvIHdoeSB0aGlzIGlzIG5vdCByZWZsZWN0ZWQgaW4geW91
+ciBkcml2ZXI/IFdoeSBkaWRuJ3QgeW91IGFkZHJlc3MgdGhhdA0KPiBwYXJ0LCBidXQgaWdub3Jl
+ZD8NCk5vLCBpdCBpcyBub3QgaWdub3JlZC4gVGhpcyBkaWZmZXJlbmNlIGlzIHNwZWNpZmljIHRv
+IGhhcmR3YXJlIGFuZCB0aGVyZSANCmlzIG5vIGNvbmZpZ3VyYXRpb24vc2V0dGluZyB0byBiZSBk
+b25lIGZyb20gZHJpdmVyLg0KPiANCj4+IHdoeSBJIGhhdmUga2VwdCB0aGVtIGFzIGZhbGxiYWNr
+IGFzIENvbm9yIHNhaWQgaW4gdGhpcyBlbWFpbC4gSG9wZSB5b3UNCj4+IGFsbCBPSyB3aXRoIHRo
+aXMuDQo+IA0KPiBEaWQgeW91IHJlYWQgdGhlIGZlZWRiYWNrPyBZb3VyIHJlc3BvbnNlIGlzIG5v
+dCBzb2x2aW5nIGhlcmUgYW55dGhpbmcuDQo+IEhvdyA4NjUwIGNhbiBiZSB1c2VkIHR3aWNlPyBQ
+bGVhc2UgcG9pbnQgbWUgdG8gRFRTIHNob3dpbmcgYm90aCB1c2FnZXMuDQpNYXkgYmUgSSBoYXZl
+IGEgbWlzdW5kZXJzdGFuZGluZyBoZXJlLiBMZXQncyBjbGFyaWZ5IGl0Lg0KDQpMQU44NjUwIGFu
+ZCBMQU44NjUxIGJvdGggYXJlIHR3byBkaWZmZXJlbnQgdmFyaWFudHMgYnV0IGJvdGggaW1wbGVt
+ZW50cyANCnNhbWUgZnVuY3Rpb25hbGl0eS4gVGhlIG9ubHkgZGlmZmVyZW5jZSBpcyBMQU44NjUx
+IGhhcyAiU2luZ2xlIDMuM1YgDQpzdXBwbHkgd2l0aCBpbnRlZ3JhdGVkIiB3aGVyZSBMQU44NjUw
+IGRvZXNuJ3QgaGF2ZSB0aGlzLiBUaGlzIGlzIA0KaGFyZHdhcmUgc3BlY2lmaWMgZGlmZmVyZW5j
+ZSBhbmQgdGhlcmUgaXMgbm8gY29uZmlndXJhdGlvbi9zZXR0aW5nIHRvIGJlIA0KZG9uZSBpbiB0
+aGUgZHJpdmVyIHNwZWNpZmljIHRvIHRoaXMgZGlmZmVyZW5jZSBpbiB0aGUgTEFOODY1MS4gU28g
+DQpiYXNpY2FsbHkgdGhlIGRyaXZlciBjYW4gc3VwcG9ydCBmb3IgYm90aCB2YXJpYW50cyB3aXRo
+b3V0IGFueSANCmFkZGl0aW9uYWwgc2V0dGluZ3MuDQoNCkxBTjg2NTA6IGh0dHBzOi8vd3d3Lm1p
+Y3JvY2hpcC5jb20vZW4tdXMvcHJvZHVjdC9sYW44NjUwDQpMQU44NjUxOiBodHRwczovL3d3dy5t
+aWNyb2NoaXAuY29tL2VuLXVzL3Byb2R1Y3QvbGFuODY1MQ0KDQpUaGUgYmVsb3cgbGluayBzaG93
+cyB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIHRoZW0sDQpodHRwczovL3d3dy5taWNyb2NoaXAuY29t
+L2VuLXVzL3Byb2R1Y3QtY29tcGFyaXNvbi5sYW44NjUwLmxhbjg2NTENCg0KV2l0aCB0aGUgYWJv
+dmUgZGV0YWlscywgSSB3b3VsZCBjaGFuZ2UgdGhlIG1pY3JvY2hpcCxsYW44NjV4LnlhbWwgd2l0
+aCANCnRoZSBiZWxvdyBkZXRhaWxzLg0KDQpjb21wYXRpYmxlOg0KICAgZW51bToNCiAgICAgLSBt
+aWNyb2NoaXAsbGFuODY1MA0KICAgICAtIG1pY3JvY2hpcCxsYW44NjUxDQoNCkFuZCBpbiB0aGUg
+bGFuODY1eC5jLCBJIHdvdWxkIHJlbW92ZSB0aGUgYmVsb3cgbGluZSBiZWNhdXNlDQouY29tcGF0
+aWJsZSA9ICJtaWNyb2NoaXAsbGFuODY1MCIgYWxyZWFkeSBzdXBwb3J0cyBmb3IgTEFOODY1MSBh
+cyB3ZWxsLg0KDQouY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsbGFuODY1MSINCg0KTGV0IG1lIGtu
+b3cgeW91ciBvcGluaW9uIG9uIHRoaXMgcHJvcG9zYWw/IG9yIGRvIHlvdSBoYXZlIGFueSANCm1p
+c3VuZGVyc3RhbmRpbmcgaGVyZT8NCg0KQmVzdCByZWdhcmRzLA0KUGFydGhpYmFuIFYNCg0KPiAN
+Cj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCj4gDQo+IA0KDQo=
 
