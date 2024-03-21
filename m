@@ -1,136 +1,200 @@
-Return-Path: <linux-kernel+bounces-110492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9677A885FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:25:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B26885FB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3750EB2669A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:25:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CA391F2496C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBF312BF2E;
-	Thu, 21 Mar 2024 17:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CBE133404;
+	Thu, 21 Mar 2024 17:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uQevDAax"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Oekd1ls9"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3FD79E0;
-	Thu, 21 Mar 2024 17:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299BF13174F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041927; cv=none; b=MDqT6UoiLqk/wN1WQ1KdpMdhqihyZOGCtNURRbC83n2Q3vmmL6QofefPZPh+UFGJ2E+WeZmF/031n0ALV9+x7uLZSvQrxzkw7GcTlXSNGbN0XNCaOw8RBERjEbWcJ/Oa01qlvBdKpU+947CK04FYlvaS4f62VO/amVhSjM2hp4A=
+	t=1711041936; cv=none; b=BT6dBzZlQsobF8ZXO+Uu2vq6H4O7Rrj8w2gzAzXI3g8BIDUoGKa7BBncEIpkjNAhC3tPIXT0xqUnFfYTGlwhcTGdyM+hJ4ACNpiP7icN8pyijRQzeNI7bErT08qHk5bTZcUA5X2Ain7Dvs/RF+tYWHRwnX6/Txdy+VGo+vCAmvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041927; c=relaxed/simple;
-	bh=iNXaAGwm6iS6DNKISF6dlrJY5wNVKnpnm8REwy4rDho=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=ZlrxG4ckuZ8goLtQ3Em9Yp1/x2MZLfQKcZBNJJRM1Mb3vNory2jOJCXysSu0vJiZhxeJA0sblwHWyEal53rf1STgifO0GY5glb7rHOIhY0wEzcByhjLfmSBat936BVoHSNLC+bg6+vk5KVlv6Cm5OI7VSc+5oY2gGUDKiB9Amaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uQevDAax; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 073E2C433C7;
-	Thu, 21 Mar 2024 17:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711041927;
-	bh=iNXaAGwm6iS6DNKISF6dlrJY5wNVKnpnm8REwy4rDho=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=uQevDAaxSvs1weuPxAVtTq79oE8xNAAlm00KgUZtg+SF0ZCpdazoYqldu4ms40wTI
-	 KdBcq8uWAD47/rKzsT59SMSEtZvXIWGj+5CJdnbpCRBT7JEP/03D/qAdLGr6V1WR1O
-	 tKmQl20Xe9j84FJNztEGGULdS8/DLACS1ZZirVT9+YuBlMkeNH6yshOtZFYcoGOQ7c
-	 I87pEcsouNJ2soJeKDqyYmUarFAbdb9NjQvdlnXKq82l4NPh+I1KSlj5wGFMn4Ze0w
-	 1SfpgXrWpNJ2W3SvSXv2vZ0wLvpr77vGmkJjpJhw4mdXecJniydVNE2PwYSrO+l75f
-	 cX/eY3iu0uHhg==
+	s=arc-20240116; t=1711041936; c=relaxed/simple;
+	bh=kqWrP9BjoQft2qaEAfESsE/IUkIRywK3puvanGM/2s8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ayTk9UaeP9oRcBKEVMbd6iZAmV4zUE1WF/TTyruhSvi3Kst2WTTfs3B3Q1j1Hi1xiPahT6zIcpBjPQUpo2dI5mc96GpWH6cpxlA2N5n7GFCCmwwgmDBcCxSqbGq4KAO413whAvbmktT4m10zbXYHtvwGtpJfNI1Mayd23Hp7Z/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Oekd1ls9; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 92ECF7E4;
+	Thu, 21 Mar 2024 18:25:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711041904;
+	bh=kqWrP9BjoQft2qaEAfESsE/IUkIRywK3puvanGM/2s8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Oekd1ls9nlliwf0dqsO3Bk+ykCWPGSCb2Jz5wz+MZEg3qee3Oz7il3lyDplhhMhRR
+	 Vc667rL481i4q6VExr61iycjKpL8VWp7c8cdUi5zKGa8mdRkjSW5wN9ODPhmlOWZpw
+	 ktK6AlOMrcxOg4PE5emqD/9zAsiQj+ohIpOvSfNs=
+Message-ID: <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
+Date: Thu, 21 Mar 2024 19:25:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:25:21 +0200
-Message-Id: <CZZLQN9CUN2E.5PNZ0C2JHP42@kernel.org>
-To: "Fan Wu" <wufan@linux.microsoft.com>, "Paul Moore"
- <paul@paul-moore.com>, <corbet@lwn.net>, <zohar@linux.ibm.com>,
- <jmorris@namei.org>, <serge@hallyn.com>, <tytso@mit.edu>,
- <ebiggers@kernel.org>, <axboe@kernel.dk>, <agk@redhat.com>,
- <snitzer@kernel.org>, <eparis@redhat.com>
-Cc: <linux-doc@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-security-module@vger.kernel.org>, <fsverity@lists.linux.dev>,
- <linux-block@vger.kernel.org>, <dm-devel@lists.linux.dev>,
- <audit@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v15 12/21] security: add
- security_bdev_setintegrity() hook
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <1710560151-28904-13-git-send-email-wufan@linux.microsoft.com>
- <f5cf9d285bd5f09bbc3f79b0800d37fc@paul-moore.com>
- <CZYFP5S04YTK.23AJMKWQWVCR8@kernel.org>
- <CZYFR8LEEQB1.8C0J9KCTF8CB@kernel.org>
- <a69805c7-7b8a-44ee-9b32-f9314b5a9763@linux.microsoft.com>
-In-Reply-To: <a69805c7-7b8a-44ee-9b32-f9314b5a9763@linux.microsoft.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
+Content-Language: en-US
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-6-sean.anderson@linux.dev>
+ <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
+ <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed Mar 20, 2024 at 10:31 PM EET, Fan Wu wrote:
->
->
-> On 3/20/2024 1:31 AM, Jarkko Sakkinen wrote:
-> > On Wed Mar 20, 2024 at 10:28 AM EET, Jarkko Sakkinen wrote:
-> >> On Wed Mar 20, 2024 at 1:00 AM EET, Paul Moore wrote:
-> >>> On Mar 15, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
-> >>>>
-> >>>> This patch introduces a new hook to save block device's integrity
-> >>>> data. For example, for dm-verity, LSMs can use this hook to save
-> >>>> the roothash signature of a dm-verity into the security blob,
-> >>>> and LSMs can make access decisions based on the data inside
-> >>>> the signature, like the signer certificate.
-> >>>>
-> >>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> >>>>
-> >>>> --
-> >>>> v1-v14:
-> >>>>    + Not present
-> >>>>
-> >>>> v15:
-> >>>>    + Introduced
-> >>>>
-> >>>> ---
-> >>>>   include/linux/lsm_hook_defs.h |  2 ++
-> >>>>   include/linux/security.h      | 14 ++++++++++++++
-> >>>>   security/security.c           | 28 ++++++++++++++++++++++++++++
-> >>>>   3 files changed, 44 insertions(+)
-> >>>
-> >>> I'm not sure why you made this a separate patch, help?  If there is
-> >>> no significant reason why this is separate, please squash it together
-> >>> with patch 11/21.
-> >>
-> >> Off-topic: it is weird to have *RFC* patch set at v15.
-> >>
-> >> RFC by de-facto is something that can be safely ignored if you don't
-> >> have bandwidth. 15 versions of anything that can be safely ignored
-> >> is by definition spamming :-) I mean just conceptually.
-> >>
-> >> So does the RFC still hold or what the heck is going on with this one?
-> >>
-> >> Haven't followed for some time now...
-> >=20
-> > I mean if this RFC trend continues I'll just put auto-filter for this
-> > thread to put straight to the bin.  There's enough non-RFC patch sets
-> > to review.
-> >=20
-> > BR, Jarkko
->
-> Sorry about the confusion with the RFC tag =E2=80=93 I wasn't fully aware=
- of its=20
-> conventional meaning and how it's perceived in terms of importance and=20
-> urgency. Point taken, and I'll make sure to remove the RFC tag for=20
-> future submissions. Definitely not my intention to clog up the workflow=
-=20
-> or seem like I'm spamming.
+On 21/03/2024 17:52, Sean Anderson wrote:
+> On 3/20/24 02:53, Tomi Valkeinen wrote:
+>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>> Retraining the link can take a while, and might involve waiting for
+>>> DPCD reads/writes to complete. This is inappropriate for an IRQ handler.
+>>> Just schedule this work for later completion. This is racy, but will be
+>>> fixed in the next commit.
+>>
+>> You should add the locks first, and use them here, rather than first
+>> adding a buggy commit and fixing it in the next one.
+> 
+> I didn't think I could add the locks first since I only noticed the IRQ
+> was threaded right before sending out this series. So yeah, we could add
+> locking, add the workqueue, and then unthread the IRQ.
+> 
+>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>>> ---
+>>> Actually, on second look this IRQ is threaded. So why do we have a
+>>> workqueue for HPD events? Maybe we should make it unthreaded?
+>>
+>> Indeed, there's not much work being done in the IRQ handler. I don't know why it's threaded.
+>>
+>> We could move the queued work to be inside the threaded irq handler,
+>> but with a quick look, the HPD work has lines like "msleep(100)" (and
+>> that's inside a for loop...), which is probably not a good thing to do
+>> even in threaded irq handler.
+>>
+>> Although I'm not sure if that code is good to have anywhere. Why do we
+>> even have such code in the HPD work path... We already got the HPD
+>> interrupt. What does "It takes some delay (ex, 100 ~ 500 msec) to get
+>> the HPD signal with some monitors" even mean...
+> 
+> The documentation for this bit is
+> 
+> | HPD_STATE	0	ro	0x0	Contains the raw state of the HPD pin on the DisplayPort connector.
+> 
+> So I think the idea is to perform some debouncing.
 
-OK cool! Just wanted to point this out also because it already looks
-good enough not to be considered as RFC in my eyes :-) If you keep RFC
-it is by definition "look into if you have the bandwidth but please
-do not take this to mainline". No means to nitpick here...
+Hmm, it just looks a bit odd to me. It can sleep for a second. And the 
+wording "It takes some delay (ex, 100 ~ 500 msec) to get the HPD signal 
+with some monitors" makes it sound like some kind of a hack...
 
-BR, Jarkko
+The docs mention debounce once:
+
+https://docs.amd.com/r/en-US/pg299-v-dp-txss1/Hot-Plug-Detection
+
+But it's not immediately obvious what the SW must do and what's done by 
+the HW. Debounce is not mentioned later, e.g. in the HPD Event Handling. 
+But if debounce is needed, wouldn't it be perhaps in a few milliseconds, 
+instead of hundreds of milliseconds...
+
+zynqmp_dp_bridge_detect() is used for drm_bridge_funcs.detect(), and if 
+the cable is not connected, it'll sleep for 1 second (probably more) 
+until returning not connected. It just doesn't sound correct to me.
+
+Well, it's not part of this patch as such, but related to the amount of 
+time we spend in the interrupt handler (and also the detect()).
+
+>> Would it be possible to clean up the work funcs a bit (I haven't
+>> looked a the new work func yet), to remove the worst extra sleeps, and
+>> just do all that inside the threaded irq handler?
+> 
+> Probably not, since a HPD IRQ results in link retraining, which can take a while.
+
+But is it any different if you have a workqueue? Isn't a threaded 
+interrupt handler basically the same thing?
+
+Probably at least the zynqmp_dp_hpd_work_func() could be done in the 
+threaded irq just fine, if the insane 1s sleep can be dropped.
+
+>> Do we need to handle interrupts while either delayed work is being done?
+> 
+> Probably not.
+> 
+>> If we do need a delayed work, would just one work be enough which
+>> handles both HPD_EVENT and HPD_IRQ, instead of two?
+> 
+> Maybe, but then we need to determine which pending events we need to
+> handle. I think since we have only two events it will be easier to just
+> have separate workqueues.
+
+The less concurrency, the better...Which is why it would be nice to do 
+it all in the threaded irq.
+
+  Tomi
+
 
