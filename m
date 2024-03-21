@@ -1,186 +1,112 @@
-Return-Path: <linux-kernel+bounces-110542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4A5886058
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:10:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C062488605A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F8DB1C21E79
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:10:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E334A1C21C7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F411332BA;
-	Thu, 21 Mar 2024 18:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD351332BE;
+	Thu, 21 Mar 2024 18:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xGVPHQbV"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="O/ak81zL"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C08C85938
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A590D85938
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044612; cv=none; b=jbQ6yyyOJgYs6zI+1jJuiW7o6M7TSWTxYEldAFt8MTzMTYI52PvnG+A/0hxy7/9X3JD+1DIz9pHMcZuFpM+9JoQ6iMZZPv3vKjLcFiC8D29yarZhvCJ+QEfBmH9TOosu9LsIzr9vy+8T3k0V6aa6cQpRxTtjPJ+1LudEsmLTWEM=
+	t=1711044644; cv=none; b=Tt75/ojXNPk/gEAmeb8tB4hT6/f/olr0RmQk6AqxPrVAUpD3OGsY8A/SQ0RXdzRWwGZGjIddHNnTKYuOZXl+cRPYJQnzoEldb/xsGsnb6xsLjhQeKiwNZyGdJLSU3/8MMbU9r3IgEFQdT/rtSWbgZROFJoOvZJqBT1IRu5t756A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044612; c=relaxed/simple;
-	bh=J5T69WFQ9USHQjLVUN1osaWhJDJNI4GDdeUlvKQfx7M=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=feQ1pQPntagyQc5ECKgeZzpdnlzZFnB+Oh79K+euTfhcP/Rox06L7zcltrSuGR3PXrXdoxrh4sMHHS3y9mg929r2HHxkrOjV8qjvPnbdfRx2imOVskc11TvDJS3DmRvJseA0B5t7cCGUHYDtnQ0s1RKrSEW0ULnAR0jtjE4bXcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xGVPHQbV; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ea8084133aso37306b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:10:11 -0700 (PDT)
+	s=arc-20240116; t=1711044644; c=relaxed/simple;
+	bh=XgzMJ/XjredShNEfVbHnEUIphui6pHeLgNGgZLuPtKg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QdPKI+tTIBHV19lwt3s4TFe5ArT51jmnNNUUwlWeYRiQeOrhE03sXZ3iJNMJyec5swivEj0thnqiBVCHDXLl7jAp1o9iur7ldQ0cNu+hhNogbvoStoGY15yz3WVeyjdsa1E2JHC4E5HSL8KVNCtVJ8yctU01CeWhinwmjCHqatU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=O/ak81zL; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a471f86dcd3so50900966b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711044611; x=1711649411; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PbnhbS3nC1f/Uw+2QJySA42Qs2PFTt6bDMzEjk8k/Mc=;
-        b=xGVPHQbVVuZwyQMxHksHdcprJy3/Npu36CDbaK4ztx4gIy0oCxQKI7yeEXolCTn9sd
-         5c9/lkHiBYL77zMqpffFuy747oKDvTBQE3NTHFwvg0CTz4ZoG0j9/C3bU3DPVbOJhEM8
-         +4zY2sQJYI+Ma2+eqUcWfOWB9TAtVxwHs2/tXRcJtOcD6W3MEpvS0pMAoRe0962DZ6fT
-         i0QyiMXZqYZvBldXn2CFaXmKikV7iXzLM07xBE4yrVBOdEL7v+5/3rTF5ZHRxeOLuI6h
-         ZN8Apj32cpwQU4mVSjM8UUue0r4g2E0f1x2Kj6UwCY5M24YuQiPc3S5IKO2i+28z91b3
-         Cd4A==
+        d=linux-foundation.org; s=google; t=1711044641; x=1711649441; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4emHCf80OrxsdWiLJNpRLTTX2dJ/UHkZ+YLYB2p4Nto=;
+        b=O/ak81zL2heK3yoSvfT7KxWDThH/Xl35wfWuOjbWVosGi6dAfXr0lwjZ+L3BFoQ4zW
+         psebRHsxcjeMVILv9TY471etwFsyw4uTfG46P3gBDWLq0VQMQSSK9NKpliSOxiDWuCKH
+         h0lwXC2iDqlGsKG4UvIbtmQQ6iUBIv3jV2rrc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711044611; x=1711649411;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PbnhbS3nC1f/Uw+2QJySA42Qs2PFTt6bDMzEjk8k/Mc=;
-        b=QydVMivCQajRB7QUVbBioNNMghBHZYZvTP7RBV0+5oCJwISDNQN5sslB4e71rOjDqJ
-         SRizo4dM0LdfOF/GfDF36/69L6LmG99gjNMdGdrQScBf9WjzSSIKG/BNSHxi3Rds1vig
-         Ws8z1rVeW1uI2crAkVvE1pzeUVmt1pxdQxuRRC3BSiTO4AUM74GgNkXa5gXDTu079edE
-         gYQE9xSL5tjl0D1huUIHiutK82+Fo7BEkw6XoLy7rNQlzPBSUDpKTAq68fOY2zlhX2CC
-         Lkzw6X8mQFfvGt7s/0HaRnLc84nnaRkf+58zhIVNMukFOhScXxuGPC2e/yqFqLY41Ekm
-         G6+Q==
-X-Gm-Message-State: AOJu0YyjPOo7UHQeniScGg/GopID2pIu0vRH8kGfJZCYbuQ9sXLzTSsQ
-	fL1HV9ReUtISGm2+HZkImy8UEmt47jzvjsnmbdHqkkm2Gy7skeUUedl8BshEoEAZp2DvDQVTCd+
-	GyYZ6ABMtY7+UMMLiDMHCPsXqT7YjgJvoUIzrwg7shVLsHtqRBMj38PFqBLEh1t/NaiH1AD/rwv
-	uN06NnC3vzChCHbwcv3oFo5+vbI7KJqWZYVFLUH0pb
-X-Google-Smtp-Source: AGHT+IFYni3VvlWRaTmYz+82jv0WpYU31SYMq2cohi3G9fHRYPBqE7DFoZnmZbyg80iXWTMzj1CSpz2vwMs=
-X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a05:6a00:938b:b0:6e7:3fcb:38ba with SMTP id
- ka11-20020a056a00938b00b006e73fcb38bamr10155pfb.6.1711044610507; Thu, 21 Mar
- 2024 11:10:10 -0700 (PDT)
-Date: Thu, 21 Mar 2024 18:09:28 +0000
+        d=1e100.net; s=20230601; t=1711044641; x=1711649441;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4emHCf80OrxsdWiLJNpRLTTX2dJ/UHkZ+YLYB2p4Nto=;
+        b=bYuFlprOnoVlok+vtFsktuJh8rI1dHr/PF8K4HbsgxS841Bm+r9YS/uPyfPOyO9fsj
+         gu/3AlTPZj/2OERFteq+zhcPvEgaRS6T/FCFH9jengRkrcguTd5+P3/2cc9TfNSHhIqE
+         1V7zottJ9zCpAoWwWT5t4ypz1Y60XLz3DWOVtv+1bF98WNpt/WrA96ah66DzWI3n+oNP
+         oilxDAQQtOkyu3M5GtOuTUd2im5N6sDseAF39B/bsIJU10sYeuh9hIMbHax9fmC5jUJR
+         nPhOfFrJGKpp8jxm1cZ8ODTPdLz3wtF16EDc2XVhmXrZ3a0ydTGGvEi4GiRm51v/BbIA
+         LwaA==
+X-Forwarded-Encrypted: i=1; AJvYcCXrpdTyRC0Z+V3zy8ao81mxe45IDL+4bJhXjMUy1YVj31Xxc3XqcxQMpJCR8XTLK2uaCaQJOw37zYArM8Dp3wDVraEgZyPOEtC7SKP+
+X-Gm-Message-State: AOJu0YwTWtze6/j95+pQx6qjxJA8Nd9H5CDKfKwPdbaRBbU0DJ1Sz/K1
+	JslZnNYvv3l1Nr9OkxvEEEJOFhOLzj9DuB1oosqNlGzDVz0RyvAMtDHdUORdVN9dzOX6H6DRtRx
+	5xDP+vw==
+X-Google-Smtp-Source: AGHT+IFpjAWTi12YnJ+OxU2nawosJ0LbnHPnE4JFEN0BcgNu3SCkoqOCKGF/2FoJ/vXj/ysAvL7xfQ==
+X-Received: by 2002:a17:906:7fd0:b0:a46:22fc:74d3 with SMTP id r16-20020a1709067fd000b00a4622fc74d3mr114243ejs.72.1711044640687;
+        Thu, 21 Mar 2024 11:10:40 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id bg25-20020a170906a05900b00a46bdc6278csm172095ejb.71.2024.03.21.11.10.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 11:10:39 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a471f86dcd3so50898866b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:10:39 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUyJ/bdz6Zb88677/SrLujzhbdHKInNT4fORzTA7xasXzhK48YEqYtNnamfzTawZ9cUOuJIXQBw1ITW6AnnANkDYe547XVW5E44mNVZ
+X-Received: by 2002:a17:906:3509:b0:a46:aa67:ab12 with SMTP id
+ r9-20020a170906350900b00a46aa67ab12mr156355eja.9.1711044639518; Thu, 21 Mar
+ 2024 11:10:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Message-ID: <20240321180933.1029746-1-edliaw@google.com>
-Subject: [PATCH v1] uffd-unit-tests: Fix ARM related issue with fork after pthread_create
-From: Edward Liaw <edliaw@google.com>
-To: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	Edward Liaw <edliaw@google.com>, Lokesh Gidra <lokeshgidra@google.com>, linux-mm@kvack.org
+MIME-Version: 1.0
+References: <Zfwv2y7P7BneKqMZ@kroah.com> <20240321134831.GA2762840@dev-arch.thelio-3990X>
+In-Reply-To: <20240321134831.GA2762840@dev-arch.thelio-3990X>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 21 Mar 2024 11:10:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgGhgkEngBBureLRLKe7mQ-sRhYngUQNvxEUqR9mmc60w@mail.gmail.com>
+Message-ID: <CAHk-=wgGhgkEngBBureLRLKe7mQ-sRhYngUQNvxEUqR9mmc60w@mail.gmail.com>
+Subject: Re: [GIT PULL] Char/Misc driver changes for 6.9-rc1
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-Following issue was observed while running the uffd-unit-tests selftest
-on ARM devices. On x86_64 no issues were detected:
+On Thu, 21 Mar 2024 at 06:48, Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> That build warning actually happens with clang, not GCC as far as I am
+> aware, and it is actually a hard build error with older versions of
+> clang
 
-pthread_create followed by fork caused deadlock in certain cases
-wherein fork required some work to be completed by the created thread.
-Used synchronization to ensure that created thread's start function has
-started before invoking fork.
+So the "labels without a statement" thing is not only a long-time gcc
+behavior (admittedly due to a parsing bug), afaik it's becoming
+"standard C" in C23.
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-[edliaw: Refactored to use atomic_bool]
-Signed-off-by: Edward Liaw <edliaw@google.com>
----
- tools/testing/selftests/mm/uffd-common.c     |  4 +++-
- tools/testing/selftests/mm/uffd-common.h     |  2 ++
- tools/testing/selftests/mm/uffd-unit-tests.c | 10 ++++++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
+Does clang have a flag to allow this?
 
-diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
-index b0ac0ec2356d..14ed98c3a389 100644
---- a/tools/testing/selftests/mm/uffd-common.c
-+++ b/tools/testing/selftests/mm/uffd-common.c
-@@ -17,7 +17,7 @@ bool map_shared;
- bool test_uffdio_wp = true;
- unsigned long long *count_verify;
- uffd_test_ops_t *uffd_test_ops;
--uffd_test_case_ops_t *uffd_test_case_ops;
-+atomic_bool ready_for_fork;
- 
- static int uffd_mem_fd_create(off_t mem_size, bool hugetlb)
- {
-@@ -518,6 +518,8 @@ void *uffd_poll_thread(void *arg)
- 	pollfd[1].fd = pipefd[cpu*2];
- 	pollfd[1].events = POLLIN;
- 
-+	ready_for_fork = true;
-+
- 	for (;;) {
- 		ret = poll(pollfd, 2, -1);
- 		if (ret <= 0) {
-diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/selftests/mm/uffd-common.h
-index cb055282c89c..cc5629c3d2aa 100644
---- a/tools/testing/selftests/mm/uffd-common.h
-+++ b/tools/testing/selftests/mm/uffd-common.h
-@@ -32,6 +32,7 @@
- #include <inttypes.h>
- #include <stdint.h>
- #include <sys/random.h>
-+#include <stdatomic.h>
- 
- #include "../kselftest.h"
- #include "vm_util.h"
-@@ -103,6 +104,7 @@ extern bool map_shared;
- extern bool test_uffdio_wp;
- extern unsigned long long *count_verify;
- extern volatile bool test_uffdio_copy_eexist;
-+extern atomic_bool ready_for_fork;
- 
- extern uffd_test_ops_t anon_uffd_test_ops;
- extern uffd_test_ops_t shmem_uffd_test_ops;
-diff --git a/tools/testing/selftests/mm/uffd-unit-tests.c b/tools/testing/selftests/mm/uffd-unit-tests.c
-index 2b9f8cc52639..4a48dc617c6b 100644
---- a/tools/testing/selftests/mm/uffd-unit-tests.c
-+++ b/tools/testing/selftests/mm/uffd-unit-tests.c
-@@ -775,6 +775,8 @@ static void uffd_sigbus_test_common(bool wp)
- 	char c;
- 	struct uffd_args args = { 0 };
- 
-+	ready_for_fork = false;
-+
- 	fcntl(uffd, F_SETFL, uffd_flags | O_NONBLOCK);
- 
- 	if (uffd_register(uffd, area_dst, nr_pages * page_size,
-@@ -790,6 +792,9 @@ static void uffd_sigbus_test_common(bool wp)
- 	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
- 		err("uffd_poll_thread create");
- 
-+	while (!ready_for_fork)
-+		; /* Wait for the poll_thread to start executing before forking */
-+
- 	pid = fork();
- 	if (pid < 0)
- 		err("fork");
-@@ -829,6 +834,8 @@ static void uffd_events_test_common(bool wp)
- 	char c;
- 	struct uffd_args args = { 0 };
- 
-+	ready_for_fork = false;
-+
- 	fcntl(uffd, F_SETFL, uffd_flags | O_NONBLOCK);
- 	if (uffd_register(uffd, area_dst, nr_pages * page_size,
- 			  true, wp, false))
-@@ -838,6 +845,9 @@ static void uffd_events_test_common(bool wp)
- 	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
- 		err("uffd_poll_thread create");
- 
-+	while (!ready_for_fork)
-+		; /* Wait for the poll_thread to start executing before forking */
-+
- 	pid = fork();
- 	if (pid < 0)
- 		err("fork");
--- 
-2.44.0.396.g6e790dbe36-goog
+Considering that gcc doesn't warn for it, and that it will become
+official at some point anyway, I think this might be a thing that we
+might be better off just accepting, rather than be in the situation
+where people write code that compiles fine with gcc and don't notice
+that clang will error out.
 
+So yes, clang is being correct, but in this case it only causes problems.
+
+              Linus
 
