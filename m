@@ -1,84 +1,129 @@
-Return-Path: <linux-kernel+bounces-110088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A198859E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:19:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1B78859E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:19:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE522B22143
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:19:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06B71F22C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B881C84A55;
-	Thu, 21 Mar 2024 13:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9121A84A45;
+	Thu, 21 Mar 2024 13:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="US4NyYmO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MBoOE/Td"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C09134CD;
-	Thu, 21 Mar 2024 13:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 074DE83CC3;
+	Thu, 21 Mar 2024 13:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711027150; cv=none; b=OimOm5yrf5v5r2jw6UiNFvzYdT5X680hiBUJCqRghWILtniT/zeCCIz9Bj+Nh4vn+k91V6+nQeHJ0k0+zlHpJTtULnZIh5AQR2OrWsHOT0w+2okAxpjasbCj6IKPv0ovC2JKZV1UvMAQSV5n+HBZOytgCarnnjHVRLt3dX0ea6o=
+	t=1711027188; cv=none; b=KCyuCOHKAoi7oalLsk4A2RaQ5dGoeVE8E3F5iOyDHdMFPA1RY5fWLSQfvSI9W/0u59+NwUXi4lb8VOSZU26uW7PnMvEsfZ9tkjbWQT/AQtZ/g8Nq9q5vgsoHiqa1VazjAs1sM9YfrCvYoahL25iJF2bN5uyi5lgHI5MGppJh/Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711027150; c=relaxed/simple;
-	bh=AQiVU6QDBK9keYmpVAn9qAMVZHSVfZCCrd90QaWx1Yo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rrw+/QdVOng9GeKb1X57EdzhE+TlKb78uZY2d2LsLKEM/WngrohXn/VXT8WZS3QuWG3csKIXbJc6VVoJK1sPH0uXJ98+xPqvfvKMsfF4PkUsq4HyRm6Xsrjlhpyh2BbYvvLdZEkuYiwaYjT7ILKra8/WDfPKK/bqlGzyBOe2Ztc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=US4NyYmO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D109C433C7;
-	Thu, 21 Mar 2024 13:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711027149;
-	bh=AQiVU6QDBK9keYmpVAn9qAMVZHSVfZCCrd90QaWx1Yo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=US4NyYmO+vr/1M7HF2tzRimSFK18hbGocDhHbiUlo7G1pqn0qc0vhb7fW/4M0XYST
-	 eiCkPbe8OP8p3aWVMafV8hGp451QD4uRzoA+maDjioFTGjYZ3TBYjiaWYmC+HurTWY
-	 fy7JoENbFyfEIPqwC96GGEINpHULXLsUNh2tuf20=
-Date: Thu, 21 Mar 2024 09:19:02 -0400
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>, 
-	DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>, erkin.bozoglu@xeront.com, mithat.guner@xeront.com
-Subject: Re: [PATCH net v2 0/2] MT7530 DSA subdriver fix VLAN egress and
- handling of all link-local frames
-Message-ID: <20240321-tentacled-pearl-ferret-efd5be@lemur>
-References: <20240314-b4-for-net-mt7530-fix-link-local-vlan-v2-0-7dbcf6429ba0@arinc9.com>
- <f6f064b8-efb2-4ab0-94f1-468d5d273d6e@arinc9.com>
- <49d23df1340f342822702de0439674ddbc5bff6f.camel@redhat.com>
- <7a7e6c46-03a4-48eb-9f46-84a05259cf26@arinc9.com>
+	s=arc-20240116; t=1711027188; c=relaxed/simple;
+	bh=TmHxMArZKamM08j0KP5mHNczauqyyC7V7vfbm9mgaxQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YmL8FjzZ5Uki4pv8lYRYZkMHssiFsZg1xPm1O5ARKcyqfhPhRXaDCps7pg8HY3YBx5fRfTnhttTV+bYGVLITAvVNyUtTq5hwY4YbRZPuqCK3b8uT1iOog2SrGhK1TckQyMntzbcdH43upH4MBjPmVtOF0SppSgm7imgPDBk10Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MBoOE/Td; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4D9BBE0009;
+	Thu, 21 Mar 2024 13:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711027178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wux1s3DDeZBv3SAkVVcioL1ZXc29Eq5S/w6BTrDFtLI=;
+	b=MBoOE/TdPuhXe16Grsc3TzmXJ9oCsqgYShJpE3uG/edE5lbdMpxbLojckikoY/d/WP8DNa
+	SrBSEsgml8tVUa3xDMX8uPIAnW1UifW3PflqNxQonUdqeiCBlRE2ngn2SkewJ1BGLu5KLH
+	XNlVY14IOYZa7G0cwTECVqw99oilSgZPYGGTbMPKJ2Ay29sAWFRI07KWrGGGv965Q1CPN3
+	7qEOjzke+bqJXJex0ocr6QJlkhuR0gWH8a03utAsnnRydbcKQM4sMlxGmbPB0PzkND0DFr
+	jD30VPH0Ds5O6DRf14T+HxHfj4xIqNPvwAau7MaaSJxZM8WCVdmos+5HbNP6Hw==
+Date: Thu, 21 Mar 2024 14:19:35 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Message-ID: <20240321141935.1b9f6e71@xps-13>
+In-Reply-To: <65fc0d2b.050a0220.102ac.24f6@mx.google.com>
+References: <20240321095522.12755-1-ansuelsmth@gmail.com>
+	<20240321113256.7e66ac0f@xps-13>
+	<65fc0d2b.050a0220.102ac.24f6@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a7e6c46-03a4-48eb-9f46-84a05259cf26@arinc9.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Thu, Mar 21, 2024 at 02:29:19PM +0300, Arınç ÜNAL wrote:
-> > For future memory: I think the SoB in the cover letter is not required,
-> > and is, at least to me, a bit confusing.
-> > 
-> > No action needed here, I'll keep this unmodified, but I suggest to omit
-> > it in future submission.
-> 
-> b4 puts it on the cover letter so it's not my doing.
+Hi,
 
-This is done because many subsystems use the cover letter as the merge commit
-message. Those subsystems who don't follow this practice don't generally care
-if there's a Signed-Off-By in the cover letter anyway, so I don't see why this
-is a concern that it's there.
+ansuelsmth@gmail.com wrote on Thu, 21 Mar 2024 11:34:16 +0100:
 
--K
+> On Thu, Mar 21, 2024 at 11:32:56AM +0100, Miquel Raynal wrote:
+> > Hi Christian,
+> >=20
+> > ansuelsmth@gmail.com wrote on Thu, 21 Mar 2024 10:55:13 +0100:
+> >  =20
+> > > MTD OTP logic is very fragile and can be problematic with some specif=
+ic
+> > > kind of devices.
+> > >=20
+> > > NVMEM across the years had various iteration on how Cells could be
+> > > declared in DT and MTD OTP probably was left behind and
+> > > add_legacy_fixed_of_cells was enabled without thinking of the consequ=
+ences.
+> > >=20
+> > > That option enables NVMEM to scan the provided of_node and treat each
+> > > child as a NVMEM Cell, this was to support legacy NVMEM implementation
+> > > and don't cause regression.
+> > >=20
+> > > This is problematic if we have devices like Nand where the OTP is
+> > > triggered by setting a special mode in the flash. In this context real
+> > > partitions declared in the Nand node are registered as OTP Cells and
+> > > this cause probe fail with -EINVAL error.
+> > >=20
+> > > This was never notice due to the fact that till now, no Nand supported
+> > > the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: O=
+TP
+> > > access for MX30LFxG18AC") this changed and coincidentally this Nand is
+> > > used on an FritzBox 7530 supported on OpenWrt.
+> > >=20
+> > > Alternative and more robust way to declare OTP Cells are already
+> > > prossible by using the fixed-layout node or by declaring a child node
+> > > with the compatible set to "otp-user" or "otp-factory".
+> > >=20
+> > > To fix this and limit any regression with other MTD that makes use of
+> > > declaring OTP as direct child of the dev node, disable
+> > > add_legacy_fixed_of_cells if we have a node called nand since it's the
+> > > standard property name to identify Nand devices attached to a Nand
+> > > Controller. =20
+> >=20
+> > You forgot to update the commit log :-)
+> > =20
+>=20
+> Ugh... sorry. Ok to resend or I need to wait 24h similar to the rules on
+> net-next?
+>=20
+
+You can go ahead, but I'll only queue it after -rc1 is out.
+
+Thanks,
+Miqu=C3=A8l
 
