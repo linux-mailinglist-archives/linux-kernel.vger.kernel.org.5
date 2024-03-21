@@ -1,93 +1,253 @@
-Return-Path: <linux-kernel+bounces-110652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289C68861D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:42:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7898861E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:44:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE8BD282192
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:42:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52FDD282177
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF86A13664E;
-	Thu, 21 Mar 2024 20:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF3C13664E;
+	Thu, 21 Mar 2024 20:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JeH0qeRN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ttZcs6Hn"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2080.outbound.protection.outlook.com [40.107.243.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E824F135A73;
-	Thu, 21 Mar 2024 20:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711053724; cv=none; b=tjgtbDBk/pcsLAphpX8mZAp8q07RLbyQ2CyJPQNAjDwB7m50YT0AhBJ6rZ50Q2hGB4W0VIMZU67IVonIyOCl9qt0WgSbEEA/MCWq4U6JgNtiOtZ2OPaRh2ZhdGlJYoRdc7JLm3Yyr05/jwDB071OTj1EhKX01m6xwLM5s+Vtf28=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711053724; c=relaxed/simple;
-	bh=NmpziW9BRh/m71deL6UzzTXuJp7VGLzKgaq9xo9Yzbw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bp7gKLsiFmMnHpwTBxHAPsflcVQVDcyK1QY5U0PFgxKBNgtmnF3ALuF8VLT2qnKPQuVacwNddVR5pk1603gT3t1hIRfBZ5JOFT/goNBWp5lPjfp4ndBO7fyFDTsDhmI1C3qesw9hefk+V/El87usHuGtWeiY12mtNiUAZKhhe80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JeH0qeRN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1361BC43390;
-	Thu, 21 Mar 2024 20:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711053723;
-	bh=NmpziW9BRh/m71deL6UzzTXuJp7VGLzKgaq9xo9Yzbw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JeH0qeRNoMsQMC7cu3nTrqYjVsxi6LfXUoPiyFtb3XMkIhZt0a+TNbA/7CIWJiSN4
-	 8dvFUxuTLnwxK4sj491kzgSDs8qmu1UPEL964/t2z31Fd4IVJwmT++8cnvrFxZyoVv
-	 pLrTjMFKMqHrWvbiVKsvznaFkPyOv8KMSZhgIRtvFuTyVoSHts6GgI55w4g5Jsxk2y
-	 75bUMPxELRPdxLLIqikAqhOU+XrF923jyD3F+HA6k0aOY3I3VWiG1C6w2tB1SUvdZw
-	 0Bfnyy/aH6xMqhb2wONhyFwq5XobdIay+rTlBH0Po4Ml6Q6HN8sot8GyX70u1/+YG9
-	 bZrePSUV/K4Cg==
-Date: Thu, 21 Mar 2024 21:41:59 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] i2c: i801: Fix a refactoring that broke a touchpad on
- Lenovo P1
-Message-ID: <hanmsf4vklzy6u2a3bcqiqjwnjimwfxuk64vte6h5avjtowku4@wvcmu3ifb7bo>
-References: <20240321141919.26844-1-mlevitsk@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07DF613540B;
+	Thu, 21 Mar 2024 20:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711053844; cv=fail; b=FJBE34MffMXs05cqSfnrfmHH2qvsnuCK15eftRcwcqkfeaaxCH2g6b8b3lyouwvaD316t6Qkp8G4Sita+AaLGqmY/ACqdU5elsOHZUKfYrbOiCYkGrsUYEHnSYv/uowbV8hV31jz45OZYoNL+koJgnvvrih5O9shK8Qfx3kmqQk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711053844; c=relaxed/simple;
+	bh=GxH2hYokxC9hMdXYhXBvPLIe/yKn4vDy1ll/na3b1T4=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=KbgltH7GXApLrEsQuI+V4mwfb2AOMebFvvXnORmRvFzNlHB90APRjfLxFSoJ5NWdxXDnT+vPg+jInmhLUQX5pqQ5bkh9de4Oig2BAAasCsQ43nQEzrtM/kMNSbSa78yGPPsGD66lwZR0M8YXA04UzvSR9cc6S+z//5H3bgGdzo4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ttZcs6Hn; arc=fail smtp.client-ip=40.107.243.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aLVkF0jxL5ab1kkExkrutgp+nnZ5zoRWDhzNDQrE4fuy4bvtJ059MMG7VCg3WADqFIqHrV1r6mnYt+CpHgLfalftmjCGPapRuKcDlO10EbiOXhEj5lPt+4af0bm5lVccvPQimOCtNmr6cncm0TC4Ejr7NqwfE+HzhXGwVaSUZimWFpnREGuC7IHt+IUSeq0dafyEOy/3SV5nnJBWuzshqlLfrApNKYm1Z+zKjs0O4ZTEybMWiq/WBL27HjnSYDFJU92mpsZQ2ZEKC2c13QTPP412o5p/OPzGcavCQsdyZs88HltMTpCNE/3w9uuNBCLB4VEwVNHPNJsHZVjllwYnvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P7GmaPQc8cB3nmmi+u9VgQ5j9rUoOGbwUFhhTMAJynQ=;
+ b=bQbtOYJP/J3a6A5m5RlA/5EQfFPceX3Z9D/NRXEZD60FWk8mji7i15kEe4bbx6hyewLYhEEdf377/NUOoXR4RheNLcavsDAVpHxa4iaE5RjGFlH5wU4FHWjWWVgq2A77nvf5l/suQK5T5Zqf/i97d51cNknceyPDpfYWsBEs3DYHRXOABDkdHJaxCqPMVJypCAdvwUQtb9/GY7GKe5d5mZUBfANqh5QOcYnZqqDQelUAgL6Pq9KLzKm7S84ADzo54O2EWItWc05/vRwgAxlyDwkA/eYbI/UUVKJkANgJq9dNsw6mAeObzftJM5ZPQzvua15whUKaBTu0geMmFfoftA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P7GmaPQc8cB3nmmi+u9VgQ5j9rUoOGbwUFhhTMAJynQ=;
+ b=ttZcs6Hn5XPebLB80KsUrGspBi7+HYcMjDEqH95K1+mhDm9pZyZUfgA+OWd2yn+JE/7FwKDpEbcHAJwnZfACPZUI5YP91wsWhRqWwqp++vFaAC4d8pTvm+Qp3Rz3Q6q8v6uK1d5S8osdLDMVovHHNr+eoK1WWfgtStfaBo3m40c=
+Received: from BN9P220CA0014.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:13e::19)
+ by MW6PR12MB8999.namprd12.prod.outlook.com (2603:10b6:303:247::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.31; Thu, 21 Mar
+ 2024 20:43:58 +0000
+Received: from BN3PEPF0000B36E.namprd21.prod.outlook.com
+ (2603:10b6:408:13e:cafe::74) by BN9P220CA0014.outlook.office365.com
+ (2603:10b6:408:13e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
+ Transport; Thu, 21 Mar 2024 20:43:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN3PEPF0000B36E.mail.protection.outlook.com (10.167.243.165) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7430.0 via Frontend Transport; Thu, 21 Mar 2024 20:43:57 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
+ 2024 15:43:56 -0500
+Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 21 Mar 2024 15:43:55 -0500
+From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Subject: [PATCH v3 0/9] Setting live video input format for ZynqMP DPSUB
+Date: Thu, 21 Mar 2024 13:43:38 -0700
+Message-ID: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321141919.26844-1-mlevitsk@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPqb/GUC/23MSwrCMBSF4a1Ixl5Jbpq0deQ+xEF6k9qAfZCUo
+ JTu3bSTIjg8B75/YdEF7yK7nhYWXPLRj0Me8nxi1Jnh6cDbvBlyLDiiBjvByycHbT+DLoQqS9k
+ ooyuWxRRc69977f7Iu/NxHsNnjyexvf87SQCHpqxItrqm2lY309sLjT3bKgkPKQX+SszS1CSVJ
+ UWK20Ou6/oFMWEU994AAAA=
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>,
+	"Andrzej Hajda" <andrzej.hajda@intel.com>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas Karlman
+	<jonas@kwiboo.se>, "Jernej Skrabec" <jernej.skrabec@gmail.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	<dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-media@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+X-Mailer: b4 0.13.0
+Received-SPF: None (SATLEXMB03.amd.com: anatoliy.klymenko@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B36E:EE_|MW6PR12MB8999:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f52e4c1-26d7-4b40-e1cd-08dc49e7a1bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	IVzFjiTgSspAib4ThmmDTsFBYvRWoTkqz/2fUGOOUNyEx02ujAkoW1aFnHSO/bu37KAR6Zu0zpy6QyBu6D7/9rIuBVibW2ZMVs3ya90bNrRkydbWc5N6oOlDjH4gGidRRFjoUw1JuDg5FUU2bkkKqAPeXHXwa8wA6/7a1frpoAXe/+79CIvfrEFGwflB6wc8SGlShUqgnGQYDf6GNNrNoj22ZOE6qnBsf19h/jofG0539u6BEqVNJtKeg4+20Fjb6N4658dJsnq0xgFhEJ1rwArQ+DAzjWeNZ6INGe/rPfRX16o0oeuIiOYd6SHJ1gugaKWOaaEY98WxkXNnfYAoP6VLsokRJh0ndb2sqp0N8uBi+Duu3MrNwe+PF2NVcTLYoSyBqj6BqL/nAB5oHiX2KB2tIag7vAi72cucshzuVYCb6K/KvWbcaVuxrWGRE+W3Gi/yg3BcwpBwJFQWswHoomOMMhGp3cr5PdhhbTGUxYTzOkV7dCdIElNmHys1kei6CcM6/5IY9n9mNCjunh5GGt/ZjFjVV5g3G970bDirSjSKZFJKKkJchodnQ7jfUIMdp7oDOZADEVD9oR13GtMqD2qQDGv/If/cwWavrOReEFW0sLE2gHhbXSR0n2ixzIySddR+RveMoNSswaQIhuX+aAEVU/Df1jIhRBZkfm+/CYFcHLhgKHav2Pz+D/6Y13KeAFkIWYA1I1eQsajxkddE/PTY9y3BZBEwhAfdKb14zWw=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(7416005)(376005)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 20:43:57.7454
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f52e4c1-26d7-4b40-e1cd-08dc49e7a1bb
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN3PEPF0000B36E.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8999
 
-Hi Maxim,
+Implement live video input format setting for ZynqMP DPSUB.
 
-On Thu, Mar 21, 2024 at 10:19:19AM -0400, Maxim Levitsky wrote:
-> Commit 857cc04cdf50 ("i2c: i801: Add helper i801_get_block_len")
-> introduced a slight functional change: the status variable is now
-> overwritten with the length of an SMBUS tranasaction,
-> even in case of success.
-> 
-> This breaks the touchpad on at least my Lenovo P1:
-> 
-> rmi4_physical rmi4-00: Read PDT entry at 0x00e9 failed, code: -6.
-> rmi4_physical rmi4-00: RMI initial reset failed! Continuing in spite of this.
-> rmi4_physical rmi4-00: Read PDT entry at 0x00e9 failed, code: -6.
-> rmi4_physical rmi4-00: IRQ counting failed with code -6.
-> 
-> Fixes: 857cc04cdf50 ("i2c: i801: Add helper i801_get_block_len")
-> 
+ZynqMP DPSUB can operate in 2 modes: DMA-based and live.
 
-next time please drop this blank line here.
+In the live mode, DPSUB receives a live video signal from FPGA-based CRTC.
+DPSUB acts as a DRM encoder bridge in such a scenario. To properly tune
+into the incoming video signal, DPSUB should be programmed with the proper
+media bus format. This patch series addresses this task.
 
-Applied to i2c/i2c-host-fixes on
+Patch 1/9: Set the DPSUB layer mode of operation prior to enabling the
+layer. Allows to use layer operational mode before its enablement.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+Patch 2/9: Update some IP register defines.
 
-Thank you,
-Andi
+Patch 3/9: Factor out some code into a helper function.
 
-Patches applied
-===============
-[1/1] i2c: i801: Fix a refactoring that broke a touchpad on Lenovo P1
-      commit: a5894bc48f64caa86dbea1744d067c925303c5fc
+Patch 4/9: Announce supported input media bus formats via
+drm_bridge_funcs.atomic_get_input_bus_fmts callback.
+
+Patch 5/9: Minimize usage of a global flag. Minor improvement.
+
+Patch 6/9: Program DPSUB live video input format based on selected bus
+config in the new atomic bridge state.
+
+Patch 7/9: New optional CRTC atomic helper proposal that will allow CRTC
+to participate in DRM bridge chain format negotiation and impose format
+restrictions. Incorporate this callback into the DRM bridge format
+negotiation process.
+
+Patch 8/9: DT bindings documentation for Video Timing Controller and Test
+Pattern Generator IPs.
+
+Patch 9/9: Reference FPGA CRTC driver based on AMD/Xilinx Test Pattern
+Generator (TPG) IP. Add driver for the AMD/Xilinx Video Timing Controller
+(VTC), which supplements TPG.
+
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+To: Thomas Zimmermann <tzimmermann@suse.de>
+To: David Airlie <airlied@gmail.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Michal Simek <michal.simek@amd.com>
+To: Andrzej Hajda <andrzej.hajda@intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+To: Robert Foss <rfoss@kernel.org>
+To: Jonas Karlman <jonas@kwiboo.se>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+
+Changes in v3:
+- Add connected live layer helper
+- Include reference DRM format in zynqmp_disp_format for live layerss.
+- Add default bus format list for non-live case.
+- Explain removal of redundant checks in the commit message.
+- Minor fixes and improvements from review comments.
+
+Link to v2: https://lore.kernel.org/r/20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com
+
+Changes in v2:
+- Factor out register defines update into separate patch.
+- Add some improvements minimizing ithe usage of a global flag.
+- Reuse existing format setting API instead of introducing new versions.
+- Add warning around NULL check on new bridge state within atomic enable
+  callback.
+- Add drm_helper_crtc_select_output_bus_format() that wraps
+  drm_crtc_helper_funcs.select_output_bus_format().
+- Update API comments per review recommendations.
+- Address some minor review comments.
+- Add reference CRTC driver that demonstrates the usage of the proposed
+  drm_crtc_helper_funcs.select_output_bus_format() API.
+
+- Link to v1: https://lore.kernel.org/r/20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com
+
+---
+Anatoliy Klymenko (9):
+      drm: xlnx: zynqmp_dpsub: Set layer mode during creation
+      drm: xlnx: zynqmp_dpsub: Update live format defines
+      drm: xlnx: zynqmp_dpsub: Add connected live layer helper
+      drm: xlnx: zynqmp_dpsub: Anounce supported input formats
+      drm: xlnx: zynqmp_dpsub: Minimize usage of global flag
+      drm: xlnx: zynqmp_dpsub: Set input live format
+      drm/atomic-helper: Add select_output_bus_format callback
+      dt-bindings: xlnx: Add VTC and TPG bindings
+      drm: xlnx: Intoduce TPG CRTC driver
+
+ .../bindings/display/xlnx/xlnx,v-tpg.yaml          |  87 +++
+ .../devicetree/bindings/display/xlnx/xlnx,vtc.yaml |  65 ++
+ drivers/gpu/drm/drm_bridge.c                       |  14 +-
+ drivers/gpu/drm/drm_crtc_helper.c                  |  36 +
+ drivers/gpu/drm/xlnx/Kconfig                       |  21 +
+ drivers/gpu/drm/xlnx/Makefile                      |   4 +
+ drivers/gpu/drm/xlnx/xlnx_tpg.c                    | 846 +++++++++++++++++++++
+ drivers/gpu/drm/xlnx/xlnx_vtc.c                    | 452 +++++++++++
+ drivers/gpu/drm/xlnx/xlnx_vtc.h                    | 101 +++
+ drivers/gpu/drm/xlnx/xlnx_vtc_list.c               | 160 ++++
+ drivers/gpu/drm/xlnx/zynqmp_disp.c                 | 170 ++++-
+ drivers/gpu/drm/xlnx/zynqmp_disp.h                 |  19 +-
+ drivers/gpu/drm/xlnx/zynqmp_disp_regs.h            |   8 +-
+ drivers/gpu/drm/xlnx/zynqmp_dp.c                   |  81 +-
+ drivers/gpu/drm/xlnx/zynqmp_kms.c                  |   6 +-
+ include/drm/drm_crtc_helper.h                      |   5 +
+ include/drm/drm_modeset_helper_vtables.h           |  30 +
+ include/dt-bindings/media/media-bus-format.h       | 177 +++++
+ 18 files changed, 2198 insertions(+), 84 deletions(-)
+---
+base-commit: bfa4437fd3938ae2e186e7664b2db65bb8775670
+change-id: 20240226-dp-live-fmt-6415773b5a68
+
+Best regards,
+-- 
+Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+
 
