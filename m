@@ -1,162 +1,189 @@
-Return-Path: <linux-kernel+bounces-110196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B512F885B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:05:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17CC9885B67
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6973B1F2323F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:05:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7702DB23D75
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:08:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4328E86252;
-	Thu, 21 Mar 2024 15:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0018615A;
+	Thu, 21 Mar 2024 15:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="eNoMiKT6"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V45EFkmi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D7186628
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF0F785943;
+	Thu, 21 Mar 2024 15:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033471; cv=none; b=W57O/h8bOoCjvEpOv7/qmrf5rzpYZK+fewWhHju2txQtpQQv+NnPrZsEnA66kxsGXHN2rN3opGttGZ+je+7J6e0xNajgr6W8HNzXRjF+A+iAacow9OhdeMlCt+ebVs3OV+rAreQr/PzoO/cuWBuoDD9bbb7fofhCDENNMVxlHdQ=
+	t=1711033683; cv=none; b=di7mZM8oNIJshm0AGpaudQhl6X5ZaoPyHjCZAyRZjIe/nhvJ5F1zMRvj/goFy8YjCPUNcD4KrT7HoRFjUQBWK3BAS8/gp+jySBNdLRaQc7uytZY7iN/sNFUnzbzj3oM/nccS9dj+G1WumMIY5toR5Ix1V7oVd328Et2ffJ6RYno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711033471; c=relaxed/simple;
-	bh=Vq7IOpduPovhWTfIlq7OpToTmsK0spCNnOeA70VT+y0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OXKNaZ1oEjAofDECTYuo9REEnAoGHbQBbFaeChccvcWO4jhwY3wZsx/gIhzY1adr9hl4GZh5jvf8Ega0DwrsdPoTy6W3rW+WMS0IiHK144ALsKUAIulxWi0VJqvPn8zuLoTDQT+Wdminl2YvjdN2kmj4BAFaPqQIhnYlprTVG8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=eNoMiKT6; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a46dec5d00cso148445666b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711033466; x=1711638266; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C+M26qwP0oSliowXOMgjRNibYsMtGqN5dSYVPUjBSio=;
-        b=eNoMiKT6XYtKZHsskb7rdYNAAS4SQs7CfVWlA6ZJDSzJOfgeN4mxnY1uLWloSTH2cD
-         JKGgq48bc+g8P0+ZIQguxYIyArnmkBnNrhg9khh/bHov4A0OOs3hWfDdf5OTJJMW2QmG
-         kSqoqcq5XkhRheMWC5brD6HLMp6Jr1bI97JwdrEElrq9HeJOHHeUKatWEYemtpsIxduC
-         G7gUMJdW1IKrVsPPf0fuCQZMBhEVwfDSTYbOhWc9iLggqBWBGCOTM3RN9Lc+NixigToX
-         2s8NZ3KU/8mscLUK6QbPmx2wqaQrptc7xZk1Ag3oWl1X5duBDyiBuk83Ls16av4HfwT2
-         r7cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711033466; x=1711638266;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C+M26qwP0oSliowXOMgjRNibYsMtGqN5dSYVPUjBSio=;
-        b=KIgcTMIwBg1+Pu+ZoQsvlCoUWlR+HxmrIgmw337+fIeJxwOWCgmlnO6qV6JCqlaVWy
-         8wuxr1ps/e4hXcVIPdbmAaXe967G2aVlcBajiWdlnOLz/StR3/2WdKjI+PRmG5nKQjUt
-         AkH9ybimCAfw+mQKCpTIaOHpWwLX3nYMz6xceMtKmn6m1bU6sOUamnsQTzGPk92NzH6O
-         VFwfZ/bL9qB1x2OHc/Fh/R3acW5EgKmKP7rZMIbcMNJfvYzOwGEP+5rc+4w/VBsh2ZZg
-         +sw5Y0Inqs+zrehacU/nimKJbDp7WsDIgeCw28pF1hubic8oqULoTvwDh/lAX38q/FUs
-         /Bdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcpftAuAKRYu1Ka/QEWejYz/b42tnrQu8/yGYKjrrBess2Obo2ls6rfPQsgJNOxGFcqVwr0LUSZjg38taPzZhN6hxigjuxTtkG8wqs
-X-Gm-Message-State: AOJu0Ywp4eKo6URXrzDTmAoqZCeCDKwDUYxY6hfVmsivH98mP17BNHow
-	eNQaU7xBkRXivGppu26BnAZ1iUMt06huB7214yqzeJlhXR5J2YiQ+vbkaaxDtqs=
-X-Google-Smtp-Source: AGHT+IHEcr1Lc61NMyPIBSb8z115P5vSr6cXrLSqEMELys5uxp7RSzY4HAP3yVuJ9q6mhhIjpF5WHw==
-X-Received: by 2002:a17:906:1817:b0:a46:af3e:dedc with SMTP id v23-20020a170906181700b00a46af3ededcmr1426310eje.40.1711033466146;
-        Thu, 21 Mar 2024 08:04:26 -0700 (PDT)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id t21-20020a170906179500b00a46cffe6d06sm13598eje.42.2024.03.21.08.04.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 08:04:25 -0700 (PDT)
-Date: Thu, 21 Mar 2024 16:04:22 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Mikhail Malyshev <mike.malyshev@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: stmmac: Do not enable/disable runtime PM for PCI
- devices
-Message-ID: <ZfxMdihnVqSNJZG6@nanopsycho>
-References: <20240321-stmmac-fix-v1-1-3aef470494c6@gmail.com>
+	s=arc-20240116; t=1711033683; c=relaxed/simple;
+	bh=kczXDJweyGTIC8tzWtWD2AZb+o9Us2JG2kLARbHa5cQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Xl80bmu2UlcdAanNCdTyv0JuUfqdkuNwV6SRBWyKKqaMGWs/WtO+ihcimxHLkf4VX/NobgvrgWw5qsmBIkcwVA1f/QBsY+BZNI6fzgY0CJFbCPn1ohMt2QzRZuyCglbMswDdqKQJMUfYBEKP+fKutRvkJ8HF457fO/fROSKqoXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V45EFkmi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F182C433C7;
+	Thu, 21 Mar 2024 15:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711033683;
+	bh=kczXDJweyGTIC8tzWtWD2AZb+o9Us2JG2kLARbHa5cQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=V45EFkmiuP2VpKwzezCuW5lPt2r4tM7xH52efB91sQJKIZwTAjaPnR3kUelvFPhPW
+	 24NiVWe+Dy+ONOiL8OkYxlyPeXPglplFry7sJsWMnw5eycG0iMwvQ7BWL8O/tgafJd
+	 LcTL23WnTtAO8dsNH8pe3GZqav19DU8FNn8VZITXTQoM7B6XaeICBtq8HB0WoL1tjH
+	 +URtM/OuvbNNY3/DuBtIQ/GbGlAt85lfgbWuMaGM9h8eV+RJecWZwVPcZmGvGxkiNG
+	 k1HGzhYMmf1/GP2AwOiOQRjWRXxq7ldaUCcgiFL+oguNWKc442sxxgMGzX56Fn8vNt
+	 3HY3BPZeN8SUw==
+Date: Fri, 22 Mar 2024 00:07:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ye Bin <yebin10@huawei.com>, <mhiramat@kernel.org>,
+ <mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 1/5] tracing/probes: support '%pd' type for print
+ struct dentry's name
+Message-Id: <20240322000759.ec04bca3bb2afdfaef37a545@kernel.org>
+In-Reply-To: <20240321101547.1f4e68ab@gandalf.local.home>
+References: <20240320132924.2802187-1-yebin10@huawei.com>
+	<20240320132924.2802187-2-yebin10@huawei.com>
+	<20240321101547.1f4e68ab@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321-stmmac-fix-v1-1-3aef470494c6@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Thu, Mar 21, 2024 at 02:54:15PM CET, mike.malyshev@gmail.com wrote:
->Common function stmmac_dvr_probe is called for both PCI and non-PCI
->device. For PCI devices pm_runtime_enable/disable are called by framework
->and should not be called by the driver.
+On Thu, 21 Mar 2024 10:15:47 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I don't follow. The rest of the pm_runtime* functions are okay to call,
-but enable() is not. Why? You need to provide more reasoning.
-
-
->
->For PCI devices plat->pdev != NULL. Use this fact to detect PCI devices
-
-Sentence ends with "."
-
-I assume this is a bug fix. Do you have a trace or some other symptoms?
-Please add it to the patch description. You also need to add "Fixes"
-tag.
-
-Make sure you read:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html?highlight=network#tl-dr
-
-Thanks
-
-pw-bot: cr
-
-
->
->Signed-off-by: Mikhail Malyshev <mike.malyshev@gmail.com>
->---
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 9 +++++++--
-> 1 file changed, 7 insertions(+), 2 deletions(-)
->
->diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->index 24cd80490d19..db45d8dbc1eb 100644
->--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
->@@ -7743,7 +7743,9 @@ int stmmac_dvr_probe(struct device *device,
+> On Wed, 20 Mar 2024 21:29:20 +0800
+> Ye Bin <yebin10@huawei.com> wrote:
 > 
-> 	pm_runtime_get_noresume(device);
-> 	pm_runtime_set_active(device);
->-	if (!pm_runtime_enabled(device))
->+
->+	/* For PCI devices PM is disabled/enabled by the framework */
->+	if (!priv->plat->pdev)
-> 		pm_runtime_enable(device);
+> > Support print type '%pd' for print dentry's  name.
+> > 
 > 
-> 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
->@@ -7846,7 +7848,10 @@ void stmmac_dvr_remove(struct device *dev)
-> 	mutex_destroy(&priv->lock);
-> 	bitmap_free(priv->af_xdp_zc_qps);
+> The above is not a very detailed change log. A change log should state not
+> only what the change is doing, but also why.
 > 
->-	pm_runtime_disable(dev);
->+	/* For PCI devices PM is disabled/enabled by the framework */
->+	if (!priv->plat->pdev)
->+		pm_runtime_disable(dev);
->+
-> 	pm_runtime_put_noidle(dev);
-> }
-> EXPORT_SYMBOL_GPL(stmmac_dvr_remove);
->
->---
->base-commit: 23956900041d968f9ad0f30db6dede4daccd7aa9
->change-id: 20240321-stmmac-fix-f506d52882d2
->
->Best regards,
->-- 
->Mikhail Malyshev <mike.malyshev@gmail.com>
->
->
+> Having examples of before and after would be useful in the change log.
+
+Hm, OK. Ye, something like this.
+-----
+Support print type '%pd' for print dentry's name. For example "name=$arg1:%pd"
+casts the `$arg1` as (struct dentry *), dereferences the "d_name.name" field
+and stores it to "name" argument as a kernel string. Here is an example;
+
+echo 'p:testprobe dput name=$arg1:%pd' > kprobe_events 
+echo 1 > events/kprobes/testprobe/enable 
+cat trace
+..
+              sh-132     [004] .....   333.333051: testprobe: (dput+0x4/0x20) name="enable"
+
+
+Note that this expects the given argument (e.g. $arg1) is an address of struct
+dentry. User must ensure it.
+-----
+
+And add similar changelog on [2/5]. 
+
+Thank you,
+
+> 
+> > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > ---
+> >  kernel/trace/trace.c        |  2 +-
+> >  kernel/trace/trace_fprobe.c |  6 +++++
+> >  kernel/trace/trace_kprobe.c |  6 +++++
+> >  kernel/trace/trace_probe.c  | 50 +++++++++++++++++++++++++++++++++++++
+> >  kernel/trace/trace_probe.h  |  2 ++
+> >  5 files changed, 65 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index b12f8384a36a..ac26b8446337 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> 
+> 
+> > +/* @buf: *buf must be equal to NULL. Caller must to free *buf */
+> > +int traceprobe_expand_dentry_args(int argc, const char *argv[], char **buf)
+> > +{
+> > +	int i, used, ret;
+> > +	const int bufsize = MAX_DENTRY_ARGS_LEN;
+> > +	char *tmpbuf = NULL;
+> > +
+> > +	if (*buf)
+> > +		return -EINVAL;
+> > +
+> > +	used = 0;
+> > +	for (i = 0; i < argc; i++) {
+> > +		if (glob_match("*:%pd", argv[i])) {
+> > +			char *tmp;
+> > +			char *equal;
+> > +
+> > +			if (!tmpbuf) {
+> > +				tmpbuf = kmalloc(bufsize, GFP_KERNEL);
+> > +				if (!tmpbuf)
+> > +					return -ENOMEM;
+> > +			}
+> > +
+> > +			tmp = kstrdup(argv[i], GFP_KERNEL);
+> > +			if (!tmp)
+> > +				goto nomem;
+> > +
+> > +			equal = strchr(tmp, '=');
+> > +			if (equal)
+> > +				*equal = '\0';
+> > +			tmp[strlen(argv[i]) - 4] = '\0';
+> > +			ret = snprintf(tmpbuf + used, bufsize - used,
+> > +				       "%s%s+0x0(+0x%zx(%s)):string",
+> > +				       equal ? tmp : "", equal ? "=" : "",
+> > +				       offsetof(struct dentry, d_name.name),
+> > +				       equal ? equal + 1 : tmp);
+> 
+> What would be really useful is if we had a way to expose BTF here. Something like:
+> 
+>  "%pB:<struct>:<field>"
+> 
+> The "%pB" would mean to look up the struct/field offsets and types via BTF,
+> and create the appropriate command to find and print it.
+
+Would you mean casing the pointer to "<struct>"?
+
+
+> 
+> That would be much more flexible and useful as it would allow reading any
+> field from any structure without having to use gdb.
+> 
+> -- Steve
+> 
+> 
+> > +			kfree(tmp);
+> > +			if (ret >= bufsize - used)
+> > +				goto nomem;
+> > +			argv[i] = tmpbuf + used;
+> > +			used += ret + 1;
+> > +		}
+> > +	}
+> > +
+> > +	*buf = tmpbuf;
+> > +	return 0;
+> > +nomem:
+> > +	kfree(tmpbuf);
+> > +	return -ENOMEM;
+> > +}
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
