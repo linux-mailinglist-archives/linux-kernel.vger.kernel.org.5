@@ -1,197 +1,157 @@
-Return-Path: <linux-kernel+bounces-110269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF28885C58
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:44:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24E7885C5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 424131F24499
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 410D71F232F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6116D86279;
-	Thu, 21 Mar 2024 15:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6685886268;
+	Thu, 21 Mar 2024 15:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBzuVRhQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bAdJz/Hh"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82072A947;
-	Thu, 21 Mar 2024 15:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC048627F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035737; cv=none; b=tnfCkS4DpfFbgEjCmwtr1IoU8rEIcjuIrnEbwZ/PugxwvbH8bQ5SOd9anqE9zBw1uh3lSyb3qBstzPKnwp6nUaEMiKIszbQSxe/4TRWHSq9x9PJaQJGHqjm4sJoCJutxpOx+WArgXWKDol5BOCZudkAdIpFZZb+E5bpnaCHNDbk=
+	t=1711035823; cv=none; b=qgvfnDRGdg7pgJzEcb2L/Dj/EAPHR0uKjc/uEB4opO1orQfPzeUwzuHk8SyL9qI7d1Wp/yBuAM37MvsGlr8t+A6BlTAbV9qkRBbHUGcpMeLBSqgbA2PRC0VHYMU/zykKEkiyWS3AhHjXyzVs0Ti9qAuW7ChkQdwONKvJLmzEyx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035737; c=relaxed/simple;
-	bh=8wU+PN5cU0I4EEhB8JOIgJoIJA40lFgTVOanV0oEnWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bMyoDxn9VRJDwu+h3TyoJnBfRRyQQS2y0Yb6OcskNYKdSavX6pWHFzx7cj22iue2DhVC9m+Ql6MinweP6NtSc5bMA3H+d0d6pqUxQ785DBpHItioZXUwbTApJ1h2G34mqZskg/GwYHDzSBskz3CgmWnP7e8Buqv6z3iBQD+19t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBzuVRhQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC35C433F1;
-	Thu, 21 Mar 2024 15:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711035737;
-	bh=8wU+PN5cU0I4EEhB8JOIgJoIJA40lFgTVOanV0oEnWE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qBzuVRhQdTtsKEthMcxXaa+/N5b8Tyu59i7h39aFD4yYJUXRn7HIMGMKK/kK+pkWH
-	 vCBXYR9ouME4f1lXv9PWkqbVOCCX8gJeYX6SKeNgfrORtjKPQX8QrpIwTQ0FRpbUy4
-	 eKEc385FPBkVg2gv9dK/G7v0OKxtXWdF5OEOERyY+mzu3uFkKfW5/U5vEZAa/4CDqY
-	 Cdu5N1oL/wF8q3GULbCiDOqS4VVtiQBiwbJmR+fIygTZ26kfa2gO7KocjWdQvjRohO
-	 9nU8gJtEV6+E5HAyHxBLKLT04MTcgUf/NpP5mW/3nIv8yQC/HgmdmyUENApL8MK8T8
-	 wsIz+fBHCLn+Q==
-Date: Thu, 21 Mar 2024 15:42:11 +0000
-From: Lee Jones <lee@kernel.org>
-To: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
-Cc: Karel Balej <balejk@matfyz.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
-Message-ID: <20240321154211.GA13211@google.com>
-References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
- <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
+	s=arc-20240116; t=1711035823; c=relaxed/simple;
+	bh=3x0w5eYh24hpBQZAyEsp6m1w9k0+4zwudOuErkymjIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yxy4ql1gV8aruVVb9V4gozWTFDGM7JbF8DlwDXcH3J+mNXgdp/lxIZr3ek4xgVy7/yV+1toTtzBlcdZlaIsJ+wIAHKeSRJhurFT6+AIrcqsc/zFPxCzl+8MmRdXnpvLSfDCYU28LZ5J2bOCpbzeWryT4dYwirSK3TJfSxeL22AI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bAdJz/Hh; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8bd19526-58a3-440b-a6ba-4cd123cb55e6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711035819;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AAqr+Kh0pd5iVKk+9UAPP+8a88O2dFbNCftmA8HIzPY=;
+	b=bAdJz/HhBTSXa6vzDHoacsKsawlkppq5eHwxMv5aUEBYQpNImRC2AN72JF/BNsHQYkIfMt
+	al1NlPk//7C85L/GL9c12fCUvtt6/mrehLLfjRUHecgu/l/pjhUVmFPpUV53AUWAlEfUtE
+	0q32A/8bbe50YlgKQ+hhQUcsxSNc4Gs=
+Date: Thu, 21 Mar 2024 11:43:35 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
+Subject: Re: [PATCH v2 4/8] drm: zynqmp_dp: Rearrange zynqmp_dp for better
+ padding
+Content-Language: en-US
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-5-sean.anderson@linux.dev>
+ <0fdbb6e4-6be8-4a21-8cf3-2a419b4b44ed@ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <0fdbb6e4-6be8-4a21-8cf3-2a419b4b44ed@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, 11 Mar 2024, Karel Balej wrote:
-
-> From: Karel Balej <balejk@matfyz.cz>
+On 3/20/24 02:14, Tomi Valkeinen wrote:
+> On 20/03/2024 00:51, Sean Anderson wrote:
+>> Sort the members of struct zynqmp_dp to reduce padding necessary for
+>> alignment.
+>>
+>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>> ---
+>>
+>> Changes in v2:
+>> - New
+>>
+>>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 28 ++++++++++++++--------------
+>>   1 file changed, 14 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> index 8635b5673386..f1834c8e3c02 100644
+>> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> @@ -255,10 +255,10 @@ struct zynqmp_dp_link_config {
+>>    * @fmt: format identifier string
+>>    */
+>>   struct zynqmp_dp_mode {
+>> -    u8 bw_code;
+>> -    u8 lane_cnt;
+>> -    int pclock;
+>>       const char *fmt;
+>> +    int pclock;
+>> +    u8 bw_code;
+>> +    u8 lane_cnt;
+>>   };
+>>     /**
+>> @@ -295,27 +295,27 @@ struct zynqmp_dp_config {
+>>    * @train_set: set of training data
+>>    */
+>>   struct zynqmp_dp {
+>> +    struct drm_dp_aux aux;
+>> +    struct drm_bridge bridge;
+>> +    struct delayed_work hpd_work;
+>> +
+>> +    struct drm_bridge *next_bridge;
+>>       struct device *dev;
+>>       struct zynqmp_dpsub *dpsub;
+>>       void __iomem *iomem;
+>>       struct reset_control *reset;
+>> -    int irq;
+>> -
+>> -    struct drm_bridge bridge;
+>> -    struct drm_bridge *next_bridge;
+>> -
+>> -    struct zynqmp_dp_config config;
+>> -    struct drm_dp_aux aux;
+>>       struct phy *phy[ZYNQMP_DP_MAX_LANES];
+>> -    u8 num_lanes;
+>> -    struct delayed_work hpd_work;
+>> +
+>>       enum drm_connector_status status;
+>> +    int irq;
+>>       bool enabled;
+>>   -    u8 dpcd[DP_RECEIVER_CAP_SIZE];
+>> -    struct zynqmp_dp_link_config link_config;
+>>       struct zynqmp_dp_mode mode;
+>> +    struct zynqmp_dp_link_config link_config;
+>> +    struct zynqmp_dp_config config;
+>> +    u8 dpcd[DP_RECEIVER_CAP_SIZE];
+>>       u8 train_set[ZYNQMP_DP_MAX_LANES];
+>> +    u8 num_lanes;
+>>   };
+>>     static inline struct zynqmp_dp *bridge_to_dp(struct drm_bridge *bridge)
 > 
-> Marvell 88PM886 is a PMIC which provides various functions such as
-> onkey, battery, charger and regulators. It is found for instance in the
-> samsung,coreprimevelte smartphone with which this was tested. Implement
-> basic support to allow for the use of regulators and onkey.
+> If you change the order of the fields, you should change the order in the kernel doc accordingly.
+
+The kernel doc is documentation, so it should continue to group similar
+functionality together.
+
+> To be honest, I'm not sure if I like this patch. We have usually one instance of these structs allocated. How many bytes do we save?
+
+Actually, the main reason is to make it easy to determine where to
+insert new members. Stick the pointers with the pointers, u8s with u8s,
+etc.
+
+> I'm fine with getting easy savings by changing the field order in some cases, but I think the "human" side of the order is important too: usually the fields are grouped in some way, and ordered so that the more base or generic ones are first, and fields for some specific feature are later. And fields protected by a lock should be grouped together, with their lock being first/last in that group.
 > 
-> Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> ---
-> 
-> Notes:
->     RFC v4:
->     - Use MFD_CELL_* macros.
->     - Address Lee's feedback:
->       - Do not define regmap_config.val_bits and .reg_bits.
->       - Drop everything regulator related except mfd_cell (regmap
->         initialization, IDs enum etc.). Drop pm886_initialize_subregmaps.
->       - Do not store regmap pointers as an array as there is now only one
->         regmap. Also drop the corresponding enum.
->       - Move regmap_config to the header as it is needed in the regulators
->         driver.
->       - pm886_chip.whoami -> chip_id
->       - Reword chip ID mismatch error message and print the ID as
->         hexadecimal.
->       - Fix includes in include/linux/88pm886.h.
->       - Drop the pm886_irq_number enum and define the (for the moment) only
->         IRQ explicitly.
->     - Have only one MFD cell for all regulators as they are now registered
->       all at once in the regulators driver.
->     - Reword commit message.
->     - Make device table static and remove comma after the sentinel to signal
->       that nothing should come after it.
->     RFC v3:
->     - Drop onkey cell .of_compatible.
->     - Rename LDO page offset and regmap to REGULATORS.
->     RFC v2:
->     - Remove some abstraction.
->     - Sort includes alphabetically and add linux/of.h.
->     - Depend on OF, remove of_match_ptr and add MODULE_DEVICE_TABLE.
->     - Use more temporaries and break long lines.
->     - Do not initialize ret in probe.
->     - Use the wakeup-source DT property.
->     - Rename ret to err.
->     - Address Lee's comments:
->       - Drop patched in presets for base regmap and related defines.
->       - Use full sentences in comments.
->       - Remove IRQ comment.
->       - Define regmap_config member values.
->       - Rename data to sys_off_data.
->       - Add _PMIC suffix to Kconfig.
->       - Use dev_err_probe.
->       - Do not store irq_data.
->       - s/WHOAMI/CHIP_ID
->       - Drop LINUX part of include guard name.
->       - Merge in the regulator series modifications in order to have more
->         devices and modify the commit message accordingly. Changes with
->         respect to the original regulator series patches:
->         - ret -> err
->         - Add temporary for dev in pm88x_initialize_subregmaps.
->         - Drop of_compatible for the regulators.
->         - Do not duplicate LDO regmap for bucks.
->     - Rewrite commit message.
-> 
->  drivers/mfd/88pm886.c       | 149 ++++++++++++++++++++++++++++++++++++
->  drivers/mfd/Kconfig         |  12 +++
->  drivers/mfd/Makefile        |   1 +
->  include/linux/mfd/88pm886.h |  38 +++++++++
->  4 files changed, 200 insertions(+)
->  create mode 100644 drivers/mfd/88pm886.c
->  create mode 100644 include/linux/mfd/88pm886.h
+> Looking at the zynqmp_dp struct with this patch, I get an urge to start moving things around: dev, dpsub, iomem, etc first, hpd somewhere later. Base config fields like config, num_lanes, irq would be grouped together. Etc.
 
-Looks mostly okay.
-
-> diff --git a/include/linux/mfd/88pm886.h b/include/linux/mfd/88pm886.h
-> new file mode 100644
-> index 000000000000..a5e6524bb19d
-> --- /dev/null
-> +++ b/include/linux/mfd/88pm886.h
-> @@ -0,0 +1,38 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef __MFD_88PM886_H
-> +#define __MFD_88PM886_H
-> +
-> +#include <linux/i2c.h>
-> +#include <linux/regmap.h>
-> +
-> +#define PM886_A1_CHIP_ID		0xa1
-> +
-> +#define PM886_REGMAP_CONF_MAX_REG	0xfe
-> +
-> +#define PM886_REG_ID			0x00
-> +
-> +#define PM886_REG_STATUS1		0x01
-> +#define PM886_ONKEY_STS1		BIT(0)
-> +
-> +#define PM886_REG_MISC_CONFIG1		0x14
-> +#define PM886_SW_PDOWN			BIT(5)
-> +
-> +#define PM886_REG_MISC_CONFIG2		0x15
-> +#define PM886_INT_INV			BIT(0)
-> +#define PM886_INT_CLEAR			BIT(1)
-> +#define PM886_INT_RC			0x00
-> +#define PM886_INT_WC			BIT(1)
-> +#define PM886_INT_MASK_MODE		BIT(2)
-> +
-> +struct pm886_chip {
-> +	struct i2c_client *client;
-> +	unsigned int chip_id;
-> +	struct regmap *regmap;
-> +};
-> +
-> +static const struct regmap_config pm886_i2c_regmap = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = PM886_REGMAP_CONF_MAX_REG,
-> +};
-
-Why is this in here?
-
-> +#endif /* __MFD_88PM886_H */
-
-What would you like me to do with this RFC patch?
-
--- 
-Lee Jones [李琼斯]
+--Sean
 
