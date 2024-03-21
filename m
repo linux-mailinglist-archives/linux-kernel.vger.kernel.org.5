@@ -1,83 +1,90 @@
-Return-Path: <linux-kernel+bounces-110547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0558A886062
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:14:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365BC886065
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C43285CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:14:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67CD51C2209E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF8913340E;
-	Thu, 21 Mar 2024 18:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gXgctHp8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B792133404;
+	Thu, 21 Mar 2024 18:14:22 +0000 (UTC)
+Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEB31292CE;
-	Thu, 21 Mar 2024 18:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227E4131E3C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044842; cv=none; b=pU7AH/N9AiUmtsT8UvY6HX+KTtGzPe9CziZIrTcBkDA2m/MIz2c7B6ekzEkUSGe+Aq3wqpoj+bugtJU6+/bv2DWV5j1VKLoj1VA0H91/CtcXDKUTebngcDpA+yfDVg48VlR+sxkEwLL3MPP8oypoqsg9rbV3g3EzBWJZ5fbh6VA=
+	t=1711044861; cv=none; b=bJDn4YnKHBSuqMlUSh0cz7/gCBwY1aWDMa13KRmYM8ARJER3fGkPf6d+PpmOAFLN/jQBe+gtd4akrsMNTbunDjcanZ2WGo2MqSu3iTzmevvOuWNCGXD/nSWkVqp1UwjTJO2R6oXiJUBWHYLxs/D6HobaWPGSwAAkbDbjf0OaII4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044842; c=relaxed/simple;
-	bh=XUlN3uXoacGlQBJNEV343fyloPlUcDzqZL5AIHjXbco=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=QDv3oKJzJomyJf8O+9HGKc9McGLhuLZ4uecdejr5lg3Z8IY3c8cBtISAfTWQxYfOAb8MHvR0MgPpJsp0RSm6KI+h9aPQsjm86ZVik8f2Wt/Q8PbsTzKckby1O71+8AJI4R/cZOR3PsHE3ypz5g/rN/1LxzZjrATYSCaJUTSlYO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gXgctHp8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD4DC433F1;
-	Thu, 21 Mar 2024 18:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711044842;
-	bh=XUlN3uXoacGlQBJNEV343fyloPlUcDzqZL5AIHjXbco=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=gXgctHp8kphN9fq2pXjJI2fDGR1kFRn1bGLZ1eU/Rj7LyeHn7k4kQGIVaOZ2OoJ3S
-	 g18Xf5PB7CLUvvToJ8f8M8Xv7+dvp1hLwAngdLcDAGrGrWw0Bs5ZVTmqd1ufcgwBTh
-	 0kA+RCWGZrbkwEeRDyIkseVYk8WIOBJmjMvUmc9yDSJCpCTAetCbQ9IXORFnv+1xCf
-	 Z6NbUqy1IWQTJg+Uc1/ZlbbEzVEP4pLSsohohT+r/lDz9Tbzbkg2BZocbPY7WI1Fgh
-	 Nj5flbZND0cHPRKHr6KvIY2qzZSbqRkj9JDMqiYFu1/xvy8AhiAZpULnx78Lnj2Pa+
-	 omVb1Ic+a3FVQ==
-From: Lee Jones <lee@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Flavio Suligoi <f.suligoi@asem.it>, Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
- dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <74347f67-360d-4513-8939-595e3c4764fa@moroto.mountain>
-References: <74347f67-360d-4513-8939-595e3c4764fa@moroto.mountain>
-Subject: Re: (subset) [PATCH] backlight: mp3309c: fix signedness bug in
- mp3309c_parse_fwnode()
-Message-Id: <171104484009.147635.12745541732945934686.b4-ty@kernel.org>
-Date: Thu, 21 Mar 2024 18:14:00 +0000
+	s=arc-20240116; t=1711044861; c=relaxed/simple;
+	bh=InEqR0TlXCon75rDatUuS82amrpsj2Ydaomc8MJOdTo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A+KdWxrnOT/Dx3g6pL3tILal4Imq5uI0jTAdOtFbHv3PqBY08QgowDVpqb+KCwqa4UqiKDlo2FpOyaQ+/HgGDLYYvNMPzz7a1h8uri0qoEaa0G1bsCeSmusawbJMHVEqy8httJE70C6ocNYexUNL9gexhCULRB3ttbrqYaaUp/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
+Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42LIE6vg1365980;
+	Thu, 21 Mar 2024 23:44:06 +0530
+Received: (from sunil@localhost)
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42LIE6cd1365979;
+	Thu, 21 Mar 2024 23:44:06 +0530
+From: Sunil Khatri <sunil.khatri@amd.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>, Sunil Khatri <sunil.khatri@amd.com>
+Subject: [PATCH] drm/amdgpu: fix function implicit declaration error
+Date: Thu, 21 Mar 2024 23:44:03 +0530
+Message-Id: <20240321181403.1365947-1-sunil.khatri@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
 
-On Sat, 16 Mar 2024 12:45:27 +0300, Dan Carpenter wrote:
-> The "num_levels" variable is used to store error codes from
-> device_property_count_u32() so it needs to be signed.  This doesn't
-> cause an issue at runtime because devm_kcalloc() won't allocate negative
-> sizes.  However, it's still worth fixing.
-> 
-> 
+when CONFIG_DEV_COREDUMP is not defined in that case
+when amdgpu_coredump() is called it does not find it's
+definition and the build fails.
 
-Applied, thanks!
+This happens as the header is defined without the
+CONFIG_DEV_COREDUMP ifdef and due to which header isn't
+enabled.
 
-[1/1] backlight: mp3309c: fix signedness bug in mp3309c_parse_fwnode()
-      commit: 84a053e072c8aacff8074ac5d6f7a4e7ff745209
+Pulling the header out of such ifdef so in both the
+cases the build does not fail.
 
---
-Lee Jones [李琼斯]
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 95028f57cb56..f771b2042a43 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -74,10 +74,7 @@
+ #include "amdgpu_fru_eeprom.h"
+ #include "amdgpu_reset.h"
+ #include "amdgpu_virt.h"
+-
+-#ifdef CONFIG_DEV_COREDUMP
+ #include "amdgpu_dev_coredump.h"
+-#endif
+ 
+ #include <linux/suspend.h>
+ #include <drm/task_barrier.h>
+-- 
+2.34.1
 
 
