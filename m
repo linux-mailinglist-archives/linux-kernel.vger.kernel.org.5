@@ -1,76 +1,73 @@
-Return-Path: <linux-kernel+bounces-109921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEC968857CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:08:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B11BC8857D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C3161C2164B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:08:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C56D28264A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F87B58120;
-	Thu, 21 Mar 2024 11:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79DA5812F;
+	Thu, 21 Mar 2024 11:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQgnc9nP"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="mApNJrVB"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485631CA9A;
-	Thu, 21 Mar 2024 11:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24815732B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019275; cv=none; b=cPa7QE5juU3NtJhfaNlmSDj+6z8ecUswQKdxuMUrXC07opl4buvbySeBE52zZe0uRtunelvWaM32l/idNrVEiPXBqz3Eq/+TBbHXNeRFTL5/bX1qd5ob/hPXHCauN8AaKf4amSqIT5MfUylYupEO8Qa0ZryiQPBIjKLXBIGDMmQ=
+	t=1711019453; cv=none; b=X2v+om9Fh4zbR+klIE6Uv8mpQXxaWe/+6OTLpofy7KTEk18xvk2nkIkAH4XiYseshTS1BltXx3LPJQER2V9JSlKvsXYqliu1BcUXCuA66C3TaLJvyTzCFRiZQw3KCCLJhV/19g8x6/r+ATjBjPKucoEa7kyFScmucrD95Y3PZ5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019275; c=relaxed/simple;
-	bh=991r5jVPabzsSiBI/2AWFmPQe3N0Culave2SmDvtwig=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=q153jhm3EaJw46qKo/b44ulqCTLAJQIA+oZgo6+6WQTgi7D2D9bEAmCMg/3V9oAq8T556RH230X7lFfXI1rkqxdtZTrhSiBt+wIE3EkJV4tm3Q+hb9plNtUscx7fBmChoJ0xZy90vGjSPwnGBycY75BjKYIE1GOf4y88XdWXzjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQgnc9nP; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d094bc2244so11870011fa.1;
-        Thu, 21 Mar 2024 04:07:54 -0700 (PDT)
+	s=arc-20240116; t=1711019453; c=relaxed/simple;
+	bh=HiyzjWuZe4akURA2KrDOEK/6yEjz2zKACEidUJroprM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rHsJYdrOCHIf/bXVO/sN0MfzWKcJ0RjLFQD9qD5M9qGNtG1B0nplpM2Cw7nABh62XQo/OIoA3wFndaWZsiFhokf6Xt2iKVHI5/TETaGILiuyOy1NKkUulj7+FOyIrfRYtd0cyHIEGW9pG3REZA3sfmjpPZMVQEmvt8rw4sEgmVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=mApNJrVB; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513cfc93f4eso935345e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711019272; x=1711624072; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LBA/ZrsdEP2mJDzZKy68MDsPNZzNplR+dVmyq9Un4qk=;
-        b=IQgnc9nPvZVfyR95ZgpmAoguW5Kus9Rg1ze2NIGHaAwAAQ5Z1SrIzC9Bj/QRpAxjQJ
-         75CEwsRwdBJpVxVsUj18f6vVcpE1wwXK7oL3IOSG8VOl8DFbQDiGzuaGqbPFRUDcvlXo
-         9vtXcyk6KLD7RFImYSzT8eQFMjiGzvdGbKPw+mdxx5I6LoIhCfHHwM2OxgqgXfaM3UHL
-         yWy6n5wOJruhsIEhbWMBxpsS5RjvUiPgYAvC5MTdcp3lSuK2+DIYoiFzrWX3auzVuVWp
-         zlJXX5OUGA6GhlRIoHiVStKbVOR0rIAdAfz/nTCDObKz1NgAKOE1yzQaZRyarRYupLez
-         GPvg==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711019448; x=1711624248; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=42mZaGZ2xKNdpcKyZrDEjFTU384gr6H3b1H4sGa8VMM=;
+        b=mApNJrVBb8v8XSuK3Kxdo5ttrONIMN7nDfjTyU36ebishYaIzfVufZ+SDj+WJPlL9/
+         g/oofo5+/Z39wn7qAIQCvimHZZYoh+91oevXMfo/Qe1ew+QOtW0DSL5CYCNr+lS9mkWV
+         qmpVrjXcUD/Jxk7SRrCd01XX7dQSmWrFXH2TjHPnG2EZ+wxwYr9NaROkIkGtfijAoRyk
+         SSv0Iyz4s8RzPU/3BIj7MgpDb/Eoip2ZU8bkbbWMs8CEZsvSaA5v+LyZ/lbxelv7RybN
+         WsIHIJPRdnlbRK2MrJS4qo+5L+KAMQWLO9ivgLrXCoFDDgYCzJcKEOZZBI242UWUTW6E
+         Wp6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711019272; x=1711624072;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LBA/ZrsdEP2mJDzZKy68MDsPNZzNplR+dVmyq9Un4qk=;
-        b=A6C5ynnEyW+7dE4LjoC704hFNOe0dC2yN3H9/hNqj1WXVoBQgphua5Kjy320obqUWK
-         dzbhdyDHF4LwzyKbnGYkQdv1xRnsfpv0bXyZkemm0JlfBh0iqovXf2Nz+3IgQoQtDA0O
-         27YwpmN8dKi0/i9Kr9nrNk31eWD3np068orgAfiqY80GG+w1tqFnnY/HG1Xy/Zahft0P
-         65tNvivuSMqGRqAQckVIQ08edMxB+OX+F6XNZPmAY/K0g8TAEwP4lnUz/TSEaRHUfLmP
-         l+i+8T7vw/n+m0PXAcBF08iu3fv+FGCMVapVK4n76TX+B1MmFcc/AbrVT5w0NPXqpwCo
-         lhRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4Wk8Pq7ADK/4JF6YyQG2kmIAbx66dkcoapX9PaYA4otHmAeZP3nsgPQT0WV0YjWAya8NjXB1cnUSxn3XRLS3t01t6SbD8ZIcYySYa
-X-Gm-Message-State: AOJu0Yza3QwigmT36pUqKYwvp7Sm/ajnGgvDwnZ8l9F2SgfBY7T5HnOt
-	jeupy3qm1VUVi3OtVU78qoI09IpAnwzyu9KytCwJfn7/7HiraxCf
-X-Google-Smtp-Source: AGHT+IGX1IDugtt7aqvnV1u2P6JH4LDutUHs6obm/B1+3FHLV5PEVN89PYCsimtbkvZmRut8Tc1Rbw==
-X-Received: by 2002:ac2:54b5:0:b0:513:426e:625 with SMTP id w21-20020ac254b5000000b00513426e0625mr5007201lfk.22.1711019272230;
-        Thu, 21 Mar 2024 04:07:52 -0700 (PDT)
-Received: from [192.168.16.136] (54-240-197-226.amazon.com. [54.240.197.226])
-        by smtp.gmail.com with ESMTPSA id fl25-20020a05600c0b9900b00414778ca80fsm122464wmb.16.2024.03.21.04.07.51
+        d=1e100.net; s=20230601; t=1711019448; x=1711624248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=42mZaGZ2xKNdpcKyZrDEjFTU384gr6H3b1H4sGa8VMM=;
+        b=KupY+dtcJkRyJTwP6nnu/j3u3JLe4f23CoeN19EoEKxF7ibHuDbYrIgppyINMqIzkS
+         h6ocs3N4YuQTE3bFRSZBuWzTsl3arUGVm5tOG1XDSYqZyobiG7bYwv4+TMR5YrW/VMXF
+         /D9A7karhpPWmfu62HZQvfpllA8bgkZ95ekZJArsnLcdXhLnMlCtytEzit43PxYM1GFt
+         VLwu4XqPHDllKWfZ5bUNWRmhj2DHn63cAZ0HGm0VuDnjWX34zlbvI11E4ZQsUPy/MJ6J
+         UwctE43PphIGNl1nPkQOJjd96b3uhkymUWvBvfIJzrDAgr4GlsrHTd/i49/RZRngJP9Q
+         uDAw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2RfzAZkeaadSttnvbAQteuIJzrfxSW5iAVy3EnTc/9DYW3Js2428v+2IesAaljUIjWg9d4MNPAVxoRBgyNzhZFOJ1ad/WvRJC5+M9
+X-Gm-Message-State: AOJu0YwQ1yv1MG16IIqZ/7L8AIV/gl8JXxnGV9WAM+JB29KYT8LxU/X1
+	D1KBGuxUJrhmO8IkU754u1n+Yv1ZL9CyvPBkW3x9TyqGE8oP2CX+DQ3cJ86JLw0=
+X-Google-Smtp-Source: AGHT+IGvcTh7vN7pxLf6gj/1+af1/5TJBaNI7eIf4z/0IrIp5wE80J6I1g6vqN8ZvmZqy22AS4gfrQ==
+X-Received: by 2002:a05:6512:10d6:b0:515:9568:fb14 with SMTP id k22-20020a05651210d600b005159568fb14mr854610lfg.46.1711019447705;
+        Thu, 21 Mar 2024 04:10:47 -0700 (PDT)
+Received: from [10.3.5.130] (laubervilliers-657-1-248-155.w90-24.abo.wanadoo.fr. [90.24.137.155])
+        by smtp.gmail.com with ESMTPSA id p11-20020a05600c468b00b004133365bbc6sm5211020wmo.19.2024.03.21.04.10.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 04:07:51 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <a80b46a2-d07a-466e-b2b3-bed685292e47@xen.org>
-Date: Thu, 21 Mar 2024 11:07:50 +0000
+        Thu, 21 Mar 2024 04:10:47 -0700 (PDT)
+Message-ID: <775348fb-3227-4609-b4aa-c8a6eddb8953@baylibre.com>
+Date: Thu, 21 Mar 2024 12:10:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,48 +75,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 1/3] KVM: Add helpers to consolidate gfn_to_pfn_cache's
- page split check
+Subject: Re: [PATCH v4 10/11] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
+ pinctrl and GPIO
 Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com,
- David Woodhouse <dwmw2@infradead.org>
-References: <20240320001542.3203871-1-seanjc@google.com>
- <20240320001542.3203871-2-seanjc@google.com>
-Organization: Xen Project
-In-Reply-To: <20240320001542.3203871-2-seanjc@google.com>
+To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
+Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+ lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
+ vigneshr@ti.com, kristo@kernel.org, eblanc@baylibre.com
+References: <20240320102559.464981-1-bhargav.r@ltts.com>
+ <20240320102559.464981-11-bhargav.r@ltts.com>
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <20240320102559.464981-11-bhargav.r@ltts.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 20/03/2024 00:15, Sean Christopherson wrote:
-> Add a helper to check that the incoming length for a gfn_to_pfn_cache is
-> valid with respect to the cache's GPA and/or HVA.  To avoid activating a
-> cache with a bogus GPA, a future fix will fork the page split check in
-> the inner refresh path into activate() and the public rerfresh() APIs, at
+On 3/20/24 11:25, Bhargav Raviprakash wrote:
+> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+>
+> Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they have
+> significant functional overlap.
+> TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
+> dedicated device functions.
+>
+> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-nit: typo
+With this patch, an issue is observed on am62a:
 
-> which point KVM will check the length in three separate places.
-> 
-> Deliberately keep the "page offset" logic open coded, as the only other
-> path that consumes the offset, __kvm_gpc_refresh(), already needs to
-> differentiate between GPA-based and HVA-based caches, and it's not obvious
-> that using a helper is a net positive in overall code readability.
-> 
-> Note, for GPA-based caches, this has a subtle side effect of using the GPA
-> instead of the resolved HVA in the check() path, but that should be a nop
-> as the HVA offset is derived from the GPA, i.e. the two offsets are
-> identical, barring a KVM bug.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   virt/kvm/pfncache.c | 27 +++++++++++++++++++--------
->   1 file changed, 19 insertions(+), 8 deletions(-)
-> 
+root@am62axx-evm:~# dmesg | grep tps
+..
+[   12.122631] tps6594-pinctrl tps6594-pinctrl.2.auto: error -EINVAL: Couldn't register gpio_regmap 
+driver
+[   12.133216] tps6594-pinctrl: probe of tps6594-pinctrl.2.auto failed with error -22
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+Without this patch, the issue disappears. Do you observe
+the same result with your am62p ?
+
+Julien Panis
 
 
