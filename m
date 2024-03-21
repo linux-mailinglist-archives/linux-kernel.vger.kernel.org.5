@@ -1,163 +1,209 @@
-Return-Path: <linux-kernel+bounces-109902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D22C885788
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:36:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE431885789
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DAB41C2205A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:36:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5501D1F2212D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA6156B89;
-	Thu, 21 Mar 2024 10:36:46 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC11957867;
-	Thu, 21 Mar 2024 10:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785CB56B9C;
+	Thu, 21 Mar 2024 10:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BbPO6PGh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n26LMD+u";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QXQXMhSU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="T+Ezg7cD"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B630A56766
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711017406; cv=none; b=OwFjNawVe+4RDivv6I/+yMBRKaSSkPhu2VkjwQ2XDU/myj86AvAxxz/1GxT3Zg0dGYsoqBwwP/VF2boU6Ww02Jq6r6/IpZveS7ySvoonEse3iC9mlL9UetBG9T8hP/h3vpKWMmUOodz+Nw31UWhy4I3HwqOr3HzQ2ih6Vqrpxn4=
+	t=1711017422; cv=none; b=ZaBlgkSy6g/zJafFZWWb/0d12H2y2uH8islTfL4aO3/VJe3AsCATkBuMEay9NchX5ThiD5T85eELOGRxFLOp/3MWL1tNPEEcLMDds2xWTi+inWMeTFdFnDYS4AOLTNXT325gCp75KonsQ2xUF+4kHZesGSZkesYt/EBOASqlzfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711017406; c=relaxed/simple;
-	bh=SyJMQIj0GXjFOk1fDTe5O7EqtWzLUjb2EUSythGeJxk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IEgp3vjuis4jlk81/ta4Bw0N7uDZ5cY/l20fWswtROtJVlrQBApAj7R1qMFu9cWezqt/wJ9/K+NYDLP0bkf/zsBuDyQbntzv+VQPBXBYtoWj/Qo6Ue1jeBWbwe9aZ8iOFkzYujZ+zMoeLbmy9f2Uwtr3JrX8KAXJhJwDpKqK4W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D3E81007;
-	Thu, 21 Mar 2024 03:37:17 -0700 (PDT)
-Received: from e116581.blr.arm.com (e116581.arm.com [10.162.41.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6F6A43F67D;
-	Thu, 21 Mar 2024 03:36:40 -0700 (PDT)
-From: Dev Jain <dev.jain@arm.com>
-To: akpm@linux-foundation.org,
-	shuah@kernel.org
-Cc: linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Anshuman.Khandual@arm.com,
-	Dev Jain <dev.jain@arm.com>
-Subject: [PATCH] selftests/mm: Confirm VA exhaustion without reliance on correctness of mmap()
-Date: Thu, 21 Mar 2024 16:05:22 +0530
-Message-Id: <20240321103522.516097-1-dev.jain@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711017422; c=relaxed/simple;
+	bh=7i50QrITbUsGiZ+KpquvMbAgXC7O2jDc5g3kQXOAhkc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q/1mc5CjbhIYneIPGNWdKT1DdwA2SxFGbJpj00opwkCt6fL78+G2fSTPBH8r7p0sqJfdjb70V/k56XRRSS6jg1bJVNasxzN4ON+ZxSzU/dE/VjopElbtQLxRs448ewocdk1VBdF3kj0dDts5SIGHw8cXKRU+apWnfAndeXWAuwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BbPO6PGh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n26LMD+u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QXQXMhSU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=T+Ezg7cD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 01CD05CC60;
+	Thu, 21 Mar 2024 10:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711017419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUdzGmZxUrHcwBEsnHbHsFb6putT1o5r8sGWCVKxZE=;
+	b=BbPO6PGh3EgaMNUVfDcWNqgrBPxVoHeBGq+cDiTyeqGO7bpV4QkaMrHfxIwF37VLoa62AG
+	1kUUVX5uRiAtTDrAqsF8s0P/xQtuDrcNXVRwgkMbIkM+Xh2rqFygQnd4DeSj+tBJeBngVg
+	ruZjXMovT8N2pLmYJ1lSalnBWUA0GqI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711017419;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUdzGmZxUrHcwBEsnHbHsFb6putT1o5r8sGWCVKxZE=;
+	b=n26LMD+uKQ5LYmwOgYlz3/RzWELw/fdblv83H0njtvrAsU8h04OI4+26z/XnGZItZsjIwU
+	yadLNY+CtzmhdGAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711017418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUdzGmZxUrHcwBEsnHbHsFb6putT1o5r8sGWCVKxZE=;
+	b=QXQXMhSUoTyMOk6lCDl8D4amQh693Fkn/Qm1D4p1cwrRvavAmfzglSnbhPsMKLYtz7cGqK
+	RhxZIpBaAflapVNvPnUjVfRgb7+op4tUe5W2+srZPQxjXX5pcCYpwLhHZCaRbm4cdcqACu
+	lb7bOXMqfXyC/jLeqMbAdQlusxZfb28=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711017418;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUdzGmZxUrHcwBEsnHbHsFb6putT1o5r8sGWCVKxZE=;
+	b=T+Ezg7cDMAgwTycg3GetI6HynCAGs7mkbKj2I8iu0LgVsmeCZg5C8DAzmhw4ZGCQaG8cN0
+	zWX494RdbUryQuCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCA06136AD;
+	Thu, 21 Mar 2024 10:36:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id azc/NckN/GVtIQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 21 Mar 2024 10:36:57 +0000
+Message-ID: <71e4b82b-8f32-41f1-afd1-5238e88bf0e7@suse.cz>
+Date: Thu, 21 Mar 2024 11:36:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] mm,page_owner: Fix refcount imbalance
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+ syzbot+41bbfdb8d41003d12c0f@syzkaller.appspotmail.com
+References: <20240319183212.17156-1-osalvador@suse.de>
+ <20240319183212.17156-2-osalvador@suse.de>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240319183212.17156-2-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.79
+X-Spamd-Result: default: False [-2.79 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[41bbfdb8d41003d12c0f];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com,i-love.sakura.ne.jp,syzkaller.appspotmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-Currently, VA exhaustion is being checked by passing a hint to mmap() and
-expecting it to fail. This patch makes a stricter test by successful write()
-calls from /proc/self/maps to a dump file, confirming that a free chunk is
-indeed not available.
+On 3/19/24 19:32, Oscar Salvador wrote:
+> Current code does not contemplate scenarios were an allocation and
+> free operation on the same pages do not handle it in the same amount
+> at once.
+> To give an example, page_alloc_exact(), where we will allocate a page
+> of enough order to stafisfy the size request, but we will free the
+> remainings right away.
+> 
+> In the above example, we will increment the stack_record refcount
+> only once, but we will decrease it the same number of times as number
+> of unused pages we have to free.
+> This will lead to a warning because of refcount imbalance.
+> 
+> Fix this by recording the number of base pages in the refcount field.
+> 
+> Reported-by: syzbot+41bbfdb8d41003d12c0f@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/linux-mm/00000000000090e8ff0613eda0e5@google.com
+> Fixes: 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-Signed-off-by: Dev Jain <dev.jain@arm.com>
----
-Merge dependency: https://lore.kernel.org/all/20240314122250.68534-1-dev.jain@arm.com/
+With the fixup,
 
- .../selftests/mm/virtual_address_range.c      | 69 +++++++++++++++++++
- 1 file changed, 69 insertions(+)
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/tools/testing/selftests/mm/virtual_address_range.c b/tools/testing/selftests/mm/virtual_address_range.c
-index 7bcf8d48256a..31063613dfd9 100644
---- a/tools/testing/selftests/mm/virtual_address_range.c
-+++ b/tools/testing/selftests/mm/virtual_address_range.c
-@@ -12,6 +12,8 @@
- #include <errno.h>
- #include <sys/mman.h>
- #include <sys/time.h>
-+#include <fcntl.h>
-+
- #include "../kselftest.h"
- 
- /*
-@@ -93,6 +95,69 @@ static int validate_lower_address_hint(void)
- 	return 1;
- }
- 
-+static int validate_complete_va_space(void)
-+{
-+	unsigned long start_addr, end_addr, prev_end_addr;
-+	char line[400];
-+	char prot[6];
-+	FILE *file;
-+	int fd;
-+
-+	fd = open("va_dump", O_CREAT | O_WRONLY, 0600);
-+	unlink("va_dump");
-+	if (fd < 0) {
-+		ksft_test_result_skip("cannot create or open dump file\n");
-+		ksft_finished();
-+	}
-+
-+	file = fopen("/proc/self/maps", "r");
-+	if (file == NULL)
-+		ksft_exit_fail_msg("cannot open /proc/self/maps\n");
-+
-+	prev_end_addr = 0;
-+	while (fgets(line, sizeof(line), file)) {
-+		unsigned long hop;
-+		int ret;
-+
-+		ret = sscanf(line, "%lx-%lx %s[rwxp-]",
-+			     &start_addr, &end_addr, prot);
-+		if (ret != 3)
-+			ksft_exit_fail_msg("sscanf failed, cannot parse\n");
-+
-+		/* end of userspace mappings; ignore vsyscall mapping */
-+		if (start_addr & (1UL << 63))
-+			return 0;
-+
-+		/* /proc/self/maps must have gaps less than 1GB only */
-+		if (start_addr - prev_end_addr >= SZ_1GB)
-+			return 1;
-+
-+		prev_end_addr = end_addr;
-+
-+		if (prot[0] != 'r')
-+			continue;
-+
-+		/*
-+		 * Confirm whether MAP_CHUNK_SIZE chunk can be found or not.
-+		 * If write succeeds, no need to check MAP_CHUNK_SIZE - 1
-+		 * addresses after that. If the address was not held by this
-+		 * process, write would fail with errno set to EFAULT.
-+		 * Anyways, if write returns anything apart from 1, exit the
-+		 * program since that would mean a bug in /proc/self/maps.
-+		 */
-+		hop = 0;
-+		while (start_addr + hop < end_addr) {
-+			if (write(fd, (void *)(start_addr + hop), 1) != 1)
-+				return 1;
-+			else
-+				lseek(fd, 0, SEEK_SET);
-+
-+			hop += MAP_CHUNK_SIZE;
-+		}
-+	}
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
- 	char *ptr[NR_CHUNKS_LOW];
-@@ -135,6 +200,10 @@ int main(int argc, char *argv[])
- 		validate_addr(hptr[i], 1);
- 	}
- 	hchunks = i;
-+	if (validate_complete_va_space()) {
-+		ksft_test_result_fail("BUG in mmap() or /proc/self/maps\n");
-+		ksft_finished();
-+	}
- 
- 	for (i = 0; i < lchunks; i++)
- 		munmap(ptr[i], MAP_CHUNK_SIZE);
--- 
-2.34.1
+But I think you'll need to resend with the missing hunk already applied, it
+had broken whitespace in your email and IIUC this is was dropped from mm tree.
+
+Also I'd suggest a change:
+
+> +++ b/mm/page_owner.c
+> @@ -196,9 +196,11 @@ static void add_stack_record_to_list(struct stack_record *stack_record,
+>  	spin_unlock_irqrestore(&stack_list_lock, flags);
+>  }
+>  
+> -static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask)
+> +static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask,
+> +				   int nr_base_pages)
+>  {
+>  	struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
+> +	int old = REFCOUNT_SATURATED;
+>  
+>  	if (!stack_record)
+>  		return;
+> @@ -210,22 +212,18 @@ static void inc_stack_record_count(depot_stack_handle_t handle, gfp_t gfp_mask)
+>  	 * Since we do not use STACK_DEPOT_FLAG_GET API, let us
+>  	 * set a refcount of 1 ourselves.
+>  	 */
+> -	if (refcount_read(&stack_record->count) == REFCOUNT_SATURATED) {
+> -		int old = REFCOUNT_SATURATED;
+
+I think this was useful optimization in that most cases the count is not
+REFCOUNT_SATURATED so we don't have to go for the expensive cmpxchg all the
+time. Or do I miss a reason why this was changed?
+
+> -
+> -		if (atomic_try_cmpxchg_relaxed(&stack_record->count.refs, &old, 1))
+> -			/* Add the new stack_record to our list */
+> -			add_stack_record_to_list(stack_record, gfp_mask);
+> -	}
+> -	refcount_inc(&stack_record->count);
+> +	if (atomic_try_cmpxchg_relaxed(&stack_record->count.refs, &old, 1))
+> +		add_stack_record_to_list(stack_record, gfp_mask);
+> +	refcount_add(nr_base_pages, &stack_record->count);
+>  }
+>  
 
 
