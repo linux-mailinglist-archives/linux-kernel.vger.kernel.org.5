@@ -1,81 +1,57 @@
-Return-Path: <linux-kernel+bounces-109807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14ACF8855F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:45:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44D76885609
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9179CB2172D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:45:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E230B1F21C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7348200D9;
-	Thu, 21 Mar 2024 08:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AH/OJooV"
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A4326287;
+	Thu, 21 Mar 2024 08:50:08 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58711B274;
-	Thu, 21 Mar 2024 08:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505B7C2E6
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711010742; cv=none; b=OWFG/Kkkvn8+7VDV6enGynbqrksoApo8OL3PJleni3zmv18GzsUdNfulnz/+a/C4qwQ+Pd2w2ESuMd2YG4uxy7amgmVIsDK1f1c/roMZc8sXVPPiS1zrWDZeKBqoCKT6gx3OohlCy+5RrRVZZbFqm1noPAzYtUjd9vunBMdsRNI=
+	t=1711011008; cv=none; b=dWV0PCjS0zq+9LIvLfSj/ExrJURYDny/vu2CkcZ90p1J1fMcXmJQZWrrb1luT4qlkIzX3nA7gDtVNJv18irCMJ+jOpGvdpJA34A84IOnRZqCRe8pV0jkabD9ez2k29vK/iIcUTUxSd8mmTMzP1MkXfvY2BxOUYrYIimbTc6arAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711010742; c=relaxed/simple;
-	bh=g+LZfdeazFTGr+JGC7jK8BjXtn7+zTNcTqi19c48N1o=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=Ak1tiWueV4muZxeuQIlzvZAfg5GjoSPbtCqXWLKtmWxi7+r/a37hdVIwaXpDhE9StfUfc6giZby65tIA+7Ig9EumWM00z5pnSjAgTRVJvHsn8O84YaOvLmFcLYwyArWSZz3CEuxgprunTdGvXHfVMxuUrsmVFEt+C5B7VGV4z3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=AH/OJooV; arc=none smtp.client-ip=203.205.251.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711010738; bh=NcoVocOkWa2L4ddhVp5EYLo8ptljqh0gPzB6q2afhGc=;
-	h=From:To:Cc:Subject:Date;
-	b=AH/OJooVQpNPbnUDUhrwe+dtACwT+6nr8TUSA02GN1RTXJ7UCX7aZjCzEs9D7/4hn
-	 xuViZZ27dDGhHlQvWayT4Uxw3xmT5m2+mb71UaXexrTecqTZWoS/0nsbaDkuarq8kN
-	 1zgp1amJzhEqrxvSaCd1yPuRn12eB7FwFLv+EJIo=
-Received: from localhost.localdomain ([153.3.156.52])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id B1906E6A; Thu, 21 Mar 2024 16:44:25 +0800
-X-QQ-mid: xmsmtpt1711010665t9a31la8x
-Message-ID: <tencent_5A50BC27A519EBD14E1B0A8685E89405850A@qq.com>
-X-QQ-XMAILINFO: MGSlRwRrdVfIzOHlmzt7HFB38+yD/VxqpPe+ETTIPusgI7/sRwZyhCEntj8TCv
-	 X5nrteOiqlzuaKzuNo7oXLcEJSt4IAUqBBAx2b/xZxjebA/siv1UgrccT8WzXTpMNeom7pCPbvSi
-	 6opVthSXevqyHCrT1a4tB/ZxOdums61e0A973Zgk0eD7VgvBMnWP+6Fsg09DFx8ZXRnwo+FSSMav
-	 XFGw5KcStBVFkEsuRC4De0beRCE5Wsd/eVBhHIdwcV1FstpkoBYMx0j6W36JrXKMEVqmdvvRrCZL
-	 Xb/oRA71VfQtsJly1tiffZkLOSpBJMfOKxoPOGlOwCucX0jr9OA8XxTje3JEWoNI+cvkPTLv4DzB
-	 lI3LVTGH448iZP8E7wOwrPuIfRnoOkWSlDyTt08Hzo6TthlWn0x+eorH7/3KGnpnxj4G7W8Nfw7K
-	 vbgm+k7Hnan8brhBhr/VxFxo9uxzbxEugEUlsXoZnZYrBXZLpqw7YzoDHzZXUn9CPvi/rRxkHGCE
-	 RABmy+F0SYj4z2+t7vo1ApZQ0u4fxFQsKwcKNa22R8LjL998w6pWdxA26U4tVES4L40cdVtvBG6z
-	 CcRpowmM3UFGgO8hjeE8AeesXWxdH53GTHqa+83zJ/ZYd+q3X7PhPcwsjvI8xJSS+Usr5n/5LJuu
-	 ClC9ClYXkVXCtJzRwwajG6Ne51TJ2CLmQPySCq2pMx6BcXjOJcoZX8MBkT8MtBTfU1YlB8MzHG+G
-	 uZ+F4ivkylbGou6wl4Rhi1X+YIDsqw/w3lqYDnAVGVvA/s+KE7Nv7EjMLAzD8cf8OP0JtZsekiqb
-	 eoQonEO7lECL3RQTsbslUKsrXBB85dpgJxw4yzHMazIdzWgk19xj25VZbJLsaIoEYa1mrL2QcjeG
-	 nlQ09Aydy5/gYIlce7hmncofX0JYAl3Eg0PKiq3ZfqbExBNa7hvCRZVtneGVx0L3MnLKyaQHxHwe
-	 IhLOQooUjlUbsOjytJYpa9Y//0YZHYEBvHuokPaTa+fmWrgoAxg6A5SYZ3VWFQgP4JEDggcFGXcp
-	 dU3OTjNwSyRP1lVsYy/uvdiAbsgvc=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: linke li <lilinke99@qq.com>
-To: 
-Cc: xujianhao01@gmail.com,
-	linke li <lilinke99@qq.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	David Howells <dhowells@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: mark racy access on sk->sk_rcvbuf
-Date: Thu, 21 Mar 2024 16:44:10 +0800
-X-OQ-MSGID: <20240321084414.63519-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1711011008; c=relaxed/simple;
+	bh=fMjckmYYP6yV0RLO6xlSO3RUi89pYPoswTVP0dlylrc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VINcTlVwh87yzz8wDR3Ze20HVdwMrWtpG/RdiVglXcvQkbapejFWEVkoGA1zh1nCK2N7F7knc3KdrmcMQfoqcSKn3rAnoV/wt77of2rhET4m4gSMaeVblLE5i3IjUkUHpj5VUV/qLN/GRaRhecBOPTzznMcfYmktUsF2v4mupus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V0fKX5QwLz4f3mHg
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:49:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id B12C61A1153
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:50:00 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RG49Ptl_QV8Hg--.35067S4;
+	Thu, 21 Mar 2024 16:50:00 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: cl@linux.com,
+	penberg@kernel.org,
+	rientjes@google.com,
+	iamjoonsoo.kim@lge.com,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz,
+	roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	xiujianfeng@huawei.com
+Subject: [PATCH -next] mm/slub: remove dummy slabinfo functions
+Date: Thu, 21 Mar 2024 08:44:15 +0000
+Message-Id: <20240321084415.265643-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,43 +59,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RG49Ptl_QV8Hg--.35067S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tryxJw4fWw1kZw1rWF1xKrg_yoW8uF1xpF
+	4fGw1fJa48Kr10gr4DGF48ZrySv3ZIkFW5GrZ2qasavr1UJw1vgrn5t3ykZ398WF95u397
+	Xw4v9FyrX34DJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+	IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU189N3UUUUU==
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-sk->sk_rcvbuf in __sock_queue_rcv_skb() and __sk_receive_skb() can be
-changed by other threads. Mark this as benign using READ_ONCE(). 
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-This patch is aimed at reducing the number of benign races reported by
-KCSAN in order to focus future debugging effort on harmful races.
+Slab has been removed since 6.5, so there is no other versions of
+slabinfo_show_stats() and slabinfo_write(), then we can remove these
+two dummy functions.
 
-Signed-off-by: linke li <lilinke99@qq.com>
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 ---
-v1 -> v2: include sk->sk_rcvbuf in __sock_queue_rcv_skb()
+ mm/slab.h        |  3 ---
+ mm/slab_common.c |  2 --
+ mm/slub.c        | 10 ----------
+ 3 files changed, 15 deletions(-)
 
- net/core/sock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 5e78798456fd..61c14623a218 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -481,7 +481,7 @@ int __sock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 	unsigned long flags;
- 	struct sk_buff_head *list = &sk->sk_receive_queue;
+diff --git a/mm/slab.h b/mm/slab.h
+index d2bc9b191222..78e205b46e19 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -496,9 +496,6 @@ struct slabinfo {
+ };
  
--	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf) {
-+	if (atomic_read(&sk->sk_rmem_alloc) >= READ_ONCE(sk->sk_rcvbuf)) {
- 		atomic_inc(&sk->sk_drops);
- 		trace_sock_rcvqueue_full(sk, skb);
- 		return -ENOMEM;
-@@ -551,7 +551,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
+ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo);
+-void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s);
+-ssize_t slabinfo_write(struct file *file, const char __user *buffer,
+-		       size_t count, loff_t *ppos);
  
- 	skb->dev = NULL;
+ #ifdef CONFIG_SLUB_DEBUG
+ #ifdef CONFIG_SLUB_DEBUG_ON
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f5234672f03c..67c03d6bd26c 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1078,7 +1078,6 @@ static void cache_show(struct kmem_cache *s, struct seq_file *m)
+ 		   sinfo.limit, sinfo.batchcount, sinfo.shared);
+ 	seq_printf(m, " : slabdata %6lu %6lu %6lu",
+ 		   sinfo.active_slabs, sinfo.num_slabs, sinfo.shared_avail);
+-	slabinfo_show_stats(m, s);
+ 	seq_putc(m, '\n');
+ }
  
--	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
-+	if (sk_rcvqueues_full(sk, READ_ONCE(sk->sk_rcvbuf))) {
- 		atomic_inc(&sk->sk_drops);
- 		goto discard_and_relse;
- 	}
+@@ -1155,7 +1154,6 @@ static const struct proc_ops slabinfo_proc_ops = {
+ 	.proc_flags	= PROC_ENTRY_PERMANENT,
+ 	.proc_open	= slabinfo_open,
+ 	.proc_read	= seq_read,
+-	.proc_write	= slabinfo_write,
+ 	.proc_lseek	= seq_lseek,
+ 	.proc_release	= seq_release,
+ };
+diff --git a/mm/slub.c b/mm/slub.c
+index 1bb2a93cf7b6..cc7e68fbdbba 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -7099,14 +7099,4 @@ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo)
+ 	sinfo->objects_per_slab = oo_objects(s->oo);
+ 	sinfo->cache_order = oo_order(s->oo);
+ }
+-
+-void slabinfo_show_stats(struct seq_file *m, struct kmem_cache *s)
+-{
+-}
+-
+-ssize_t slabinfo_write(struct file *file, const char __user *buffer,
+-		       size_t count, loff_t *ppos)
+-{
+-	return -EIO;
+-}
+ #endif /* CONFIG_SLUB_DEBUG */
 -- 
-2.39.3 (Apple Git-146)
+2.34.1
 
 
