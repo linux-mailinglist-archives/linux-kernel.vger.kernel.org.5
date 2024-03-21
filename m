@@ -1,242 +1,150 @@
-Return-Path: <linux-kernel+bounces-110217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7FBA885B97
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:25:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0579885B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EDD028599C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:25:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB6B1285A21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1618664F;
-	Thu, 21 Mar 2024 15:24:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311DB86265
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB248625B;
+	Thu, 21 Mar 2024 15:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iV4b3JuV"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC918624E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711034680; cv=none; b=LSJx6QxBAsddo6Yj53YpOGpaJkiDQBJX6hzrJNbGGDSDWfOL/oP1/0+N2bVuG6Np6kii2fWyP1kwCr1g9Kg2r32hGqv8qhM9QtWAXbzACcITuLOLNiWmxz2/bbDSffPgMNRGR0NIZOKgFCFKSGlbUXuzP8w/ldAv1k+MwFkRMIs=
+	t=1711034728; cv=none; b=N+aVcYx2OVwIgcxWxazVGvtdj6Uy6iXgWvUH9lsg0v8TU/m+eJYw6y9DzwAVurD2r7QycSfzUtjFI6DWEQ/FhHkHuT0FPX5YMpQFFp8PpWNceH8tsdYEaVxy5pCCtpzu4KLGubhDF92z135NLxnsVAdKpOr7XFjjKhMNMVyxSkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711034680; c=relaxed/simple;
-	bh=3NKkuWB79YkKuLoJUAirLEYClaABoW8s3EVR+Opt7N4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IuQ58ByIoDafTntI6JWNq6oln2vrQiadAg8GnpfbNcoLzzAP5MkJOZ5Co7yVnP5OcKDadi54dSUbOnZ6Yzt8nhkslpw1LyxHDmPrNhyp8sa8CWV9iFIAn2tgf7jrlEVyJG7ij4eOeoOYvYauk74/RXcjJxZqMLQDNYI7/XLTNyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCFFE1007;
-	Thu, 21 Mar 2024 08:25:11 -0700 (PDT)
-Received: from [10.1.33.177] (XHFQ2J9959.cambridge.arm.com [10.1.33.177])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6428B3F67D;
-	Thu, 21 Mar 2024 08:24:35 -0700 (PDT)
-Message-ID: <9930c86a-c0c8-4112-9122-0e4faca475f5@arm.com>
-Date: Thu, 21 Mar 2024 15:24:33 +0000
+	s=arc-20240116; t=1711034728; c=relaxed/simple;
+	bh=keHTiEytawshQb8pgvqpSP5oSevhiW6x2JK067oi9nc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F9iS6dg5qVmto4qfKNQ3ScAKgavd3pZgG7rIzb0ARhGFj8CxuN+VkR7uQDmRUGVsyISytNh/fgo9m10OkRzwcB/c9gsiiG93syt3/OK6Uzcny6KkpiBWt0s5Z8QQpJO6RG9dCmLSRxVA+h9TeKhC9dVzbU9uLBxqnFMhxqqbIGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iV4b3JuV; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso834260b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711034726; x=1711639526; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=82OI8Gh7oQu/9StlFoR10DICm6BhP8N6L+l5Ik+ILaw=;
+        b=iV4b3JuVmqqxcc46GxoxvkIj+168yQojSblvVjG5JsICN6AEUjE9zAp7VrayNvlvXL
+         4iRFzvkFXJwBfCnqByJzVl3WSg/L/pV5iB+o1fhQ8X2vji+DlVE5ELAoxdVKTH/X2zud
+         qqLwgcheSoI8eM9hyHLW6YwgJuJB20mijs72FfYyx0tUC42ZAZZ0ACgakbhI1d3y43aF
+         paaVuFXs2UNznYRLe8wvm/0FDEQoCYyXfNJi4rLjzpDILZH/IM4kWiJ0j8YdDUHk6Zhw
+         eiwjPieAcyjtaicrNCPTtaZGtrPw9WLZqbM12ivdg/HUBNlnY8UXPR28JjWRbNn05tim
+         ndAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711034726; x=1711639526;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=82OI8Gh7oQu/9StlFoR10DICm6BhP8N6L+l5Ik+ILaw=;
+        b=H9tUUeuO1jxDgI61SRhmEYfnUMjM37ic1qjmiSnrQKLe8butv8/aQe26CpPwX+YF/v
+         aBOyHwib5cC/kxR/c/bceh5J2357mpiu2bhqzVCN1tW2ASv3gEopHbJUW7/sgL1mehBm
+         ynwDdW6WDzby6s8yxjAgWpPD2XCQN464USgMuLuFunwcQHOYoGzUEbcfmYaeQVK12Grw
+         kK7/FgnMqQsNkZfvkCq58JWWk1oLokXI96kOzCluaiJYcN37TeH6oBP8QqUxwP6DPJKN
+         sdjH87h4flkUMJdl5dGbNlc5QJRhU2wUjTHbRdlUnS16irrxJHWr805binTY7eZRraZj
+         gIPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXa9w1vOOws2u8FUDjM961tdtj/OFeX50OaKjAfCW29/XRVtGxkmukk49WFjfyqE4hhSEkbdLyyvonWCYvIvjBomD+Eef9pufJral/J
+X-Gm-Message-State: AOJu0Yz7Cqguhth/QLxwFh4ZUHnmvsUgGyzKQ4tM1fqW2iqNSimbKQcF
+	iRYZ7STPQfyEKp3gNNmwnHs91CQQpJukeKfpb+9QVxjbXVGA5uLkagGPe2Gxm2Y=
+X-Google-Smtp-Source: AGHT+IEmFIp+48D2B1hUzpIyAXGeGOM1HqTNVM5BMRBIcH3HZOKodw1pu3F3fpANojgpouNGrD0GsQ==
+X-Received: by 2002:a05:6a00:3d42:b0:6e6:a3b3:923c with SMTP id lp2-20020a056a003d4200b006e6a3b3923cmr2898786pfb.6.1711034726278;
+        Thu, 21 Mar 2024 08:25:26 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:d9a2:e52:d93:c759])
+        by smtp.gmail.com with ESMTPSA id fi37-20020a056a0039a500b006e69a142458sm13534453pfb.213.2024.03.21.08.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 08:25:25 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:25:23 -0600
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: andersson@kernel.org, matthias.bgg@gmail.com, tzungbi@kernel.org,
+	tinghan.shen@mediatek.com, linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, wenst@chromium.org,
+	kernel@collabora.com
+Subject: Re: [PATCH 1/2] remoteproc: mediatek: Make sure IPI buffer fits in
+ L2TCM
+Message-ID: <ZfxRY475SKaRYVTj@p14s>
+References: <20240321084614.45253-1-angelogioacchino.delregno@collabora.com>
+ <20240321084614.45253-2-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
- MADV_COLD
-Content-Language: en-GB
-To: Lance Yang <ioworker0@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, Andrew Morton
- <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-7-ryan.roberts@arm.com>
- <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
- <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
- <CAK1f24k1AuHDdrLFNLvwdoOy=xJTVkVdfY4+SN+KW5-EiMSa9Q@mail.gmail.com>
- <7ba06704-2090-4eb2-9534-c4d467cc085a@arm.com>
- <CAK1f24=yDVwOC31sNMaoZ6K2q1X8vA7p4CtS7nW5WXCm19iEdg@mail.gmail.com>
- <add3b9fc-f08a-4bd4-b01e-4409e81d5a2d@arm.com>
- <CAK1f24kRXZtKckRFxJfQCNSHJOHy4_nv67T+BfWeWyVtEggdNQ@mail.gmail.com>
- <269375a4-78a3-4c22-8e6e-570368a2c053@arm.com>
- <CAK1f24m+oQgBYdxUaTASMtJpnUEQvWh-t_kVw7CJzVM4Siddcg@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAK1f24m+oQgBYdxUaTASMtJpnUEQvWh-t_kVw7CJzVM4Siddcg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321084614.45253-2-angelogioacchino.delregno@collabora.com>
 
-On 21/03/2024 14:55, Lance Yang wrote:
-> On Thu, Mar 21, 2024 at 9:38 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->>>>>>>>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
->>>>>>>>>> -
->>>>>>>>>> -               if (!pageout && pte_young(ptent)) {
->>>>>>>>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>>>>>>>> -                                                       tlb->fullmm);
->>>>>>>>>> -                       ptent = pte_mkold(ptent);
->>>>>>>>>> -                       set_pte_at(mm, addr, pte, ptent);
->>>>>>>>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>>>>>>> +               if (!pageout) {
->>>>>>>>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
->>>>>>>>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
->>>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>>>>
->>>>>>> IIRC, some of the architecture(ex, PPC) don't update TLB with set_pte_at and
->>>>>>> tlb_remove_tlb_entry. So, didn't we consider remapping the PTE with old after
->>>>>>> pte clearing?
->>>>>>
->>>>>> Sorry Lance, I don't understand this question, can you rephrase? Are you saying
->>>>>> there is a good reason to do the original clear-mkold-set for some arches?
->>>>>
->>>>> IIRC, some of the architecture(ex, PPC)  don't update TLB with
->>>>> ptep_test_and_clear_young()
->>>>> and tlb_remove_tlb_entry().
->>
->> Afraid I'm still struggling with this comment. Do you mean to say that powerpc
->> invalidates the TLB entry as part of the call to ptep_test_and_clear_young()? So
->> tlb_remove_tlb_entry() would be redundant here, and likely cause performance
->> degradation on that architecture?
+Good day,
+
+On Thu, Mar 21, 2024 at 09:46:13AM +0100, AngeloGioacchino Del Regno wrote:
+> The IPI buffer location is read from the firmware that we load to the
+> System Companion Processor, and it's not granted that both the SRAM
+> (L2TCM) size that is defined in the devicetree node is large enough
+> for that, and while this is especially true for multi-core SCP, it's
+> still useful to check on single-core variants as well.
 > 
-> I just thought that using ptep_test_and_clear_young() instead of
-> ptep_get_and_clear_full() + pte_mkold() might not be correct.
-> However, it's most likely that I was mistaken :(
+> Failing to perform this check may make this driver perform R/W
+> oeprations out of the L2TCM boundary, resulting (at best) in a
 
-OK, I'm pretty confident that my usage is correct.
+s/oeprations/operations
 
+I will fix that when I apply the patch.
+
+> kernel panic.
 > 
-> I also have a question. Why aren't we using ptep_test_and_clear_young() in
-> madvise_cold_or_pageout_pte_range(), but instead
-> ptep_get_and_clear_full() + pte_mkold() as we did previously.
+> To fix that, check that the IPI buffer fits, otherwise return a
+> failure and refuse to boot the relevant SCP core (or the SCP at
+> all, if this is single core).
 > 
-> /*
-> * Some of architecture(ex, PPC) don't update TLB
-> * with set_pte_at and tlb_remove_tlb_entry so for
-> * the portability, remap the pte with old|clean
-> * after pte clearing.
-> */
-
-Ahh, I see; this is a comment from madvise_free_pte_range() I don't quite
-understand that comment. I suspect it might be out of date, or saying that doing
-set_pte_at(pte_mkold(ptep_get(ptent))) is not correct because it is not atomic
-and the HW could set the dirty bit between the get and the set. Doing the atomic
-ptep_get_and_clear_full() means you go via a pte_none() state, so if the TLB is
-racing it will see the entry isn't valid and fault.
-
-Note that madvise_free_pte_range() is trying to clear both the access and dirty
-bits, whereas madvise_cold_or_pageout_pte_range() is only trying to clear the
-access bit. There is a special helper to clear the access bit atomically -
-ptep_test_and_clear_young() - but there is no helper to clear the access *and*
-dirty bit, I don't believe. There is ptep_set_access_flags(), but that sets
-flags to a "more permissive setting" (i.e. allows setting the flags, not
-clearing them). Perhaps this constraint can be relaxed given we will follow up
-with an explicit TLBI - it would require auditing all the implementations.
-
+> Fixes: 3efa0ea743b7 ("remoteproc/mediatek: read IPI buffer offset from FW")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/remoteproc/mtk_scp.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> According to this comment from madvise_free_pte_range. IIUC, we need to
-> call ptep_get_and_clear_full() to clear the PTE, and then remap the
-> PTE with old|clean.
+> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+> index a35409eda0cf..67518291a8ad 100644
+> --- a/drivers/remoteproc/mtk_scp.c
+> +++ b/drivers/remoteproc/mtk_scp.c
+> @@ -132,7 +132,7 @@ static int scp_elf_read_ipi_buf_addr(struct mtk_scp *scp,
+>  static int scp_ipi_init(struct mtk_scp *scp, const struct firmware *fw)
+>  {
+>  	int ret;
+> -	size_t offset;
+> +	size_t buf_sz, offset;
+>  
+>  	/* read the ipi buf addr from FW itself first */
+>  	ret = scp_elf_read_ipi_buf_addr(scp, fw, &offset);
+> @@ -144,6 +144,14 @@ static int scp_ipi_init(struct mtk_scp *scp, const struct firmware *fw)
+>  	}
+>  	dev_info(scp->dev, "IPI buf addr %#010zx\n", offset);
+>  
+> +	/* Make sure IPI buffer fits in the L2TCM range assigned to this core */
+> +	buf_sz = sizeof(*scp->recv_buf) + sizeof(*scp->send_buf);
+> +
+> +	if (scp->sram_size < buf_sz + offset) {
+> +		dev_err(scp->dev, "IPI buffer does not fit in SRAM.\n");
+> +		return -EOVERFLOW;
+> +	}
+> +
+>  	scp->recv_buf = (struct mtk_share_obj __iomem *)
+>  			(scp->sram_base + offset);
+>  	scp->send_buf = (struct mtk_share_obj __iomem *)
+> -- 
+> 2.44.0
 > 
-> Thanks,
-> Lance
-> 
->>
->> IMHO, ptep_test_and_clear_young() really shouldn't be invalidating the TLB
->> entry, that's what ptep_clear_flush_young() is for.
->>
->> But I do see that for some cases of the 32-bit ppc, there appears to be a flush:
->>
->> #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
->> static inline int __ptep_test_and_clear_young(struct mm_struct *mm,
->>                                               unsigned long addr, pte_t *ptep)
->> {
->>         unsigned long old;
->>         old = pte_update(mm, addr, ptep, _PAGE_ACCESSED, 0, 0);
->>         if (old & _PAGE_HASHPTE)
->>                 flush_hash_entry(mm, ptep, addr);   <<<<<<<<
->>
->>         return (old & _PAGE_ACCESSED) != 0;
->> }
->> #define ptep_test_and_clear_young(__vma, __addr, __ptep) \
->>         __ptep_test_and_clear_young((__vma)->vm_mm, __addr, __ptep)
->>
->> Is that what you are describing? Does any anyone know why flush_hash_entry() is
->> called? I'd say that's a bug in ppc and not a reason not to use
->> ptep_test_and_clear_young() in the common code!
->>
->> Thanks,
->> Ryan
->>
->>
->>>>
->>>> Err, I assumed tlb_remove_tlb_entry() meant "invalidate the TLB entry for this
->>>> address please" - albeit its deferred and batched. I'll look into this.
->>>>
->>>>>
->>>>> In my new patch[1], I use refresh_full_ptes() and
->>>>> tlb_remove_tlb_entries() to batch-update the
->>>>> access and dirty bits.
->>>>
->>>> I want to avoid the per-pte clear-modify-set approach, because this doesn't
->>>> perform well on arm64 when using contpte mappings; it will cause the contpe
->>>> mapping to be unfolded by the first clear that touches the contpte block, then
->>>> refolded by the last set to touch the block. That's expensive.
->>>> ptep_test_and_clear_young() doesn't suffer that problem.
->>>
->>> Thanks for explaining. I got it.
->>>
->>> I think that other architectures will benefit from the per-pte clear-modify-set
->>> approach. IMO, refresh_full_ptes() can be overridden by arm64.
->>>
->>> Thanks,
->>> Lance
->>>>
->>>>>
->>>>> [1] https://lore.kernel.org/linux-mm/20240316102952.39233-1-ioworker0@gmail.com
->>>>>
->>>>> Thanks,
->>>>> Lance
->>>>>
->>>>>>
->>>>>>>
->>>>>>> Thanks,
->>>>>>> Lance
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>>>>> +                       }
->>>>>>>>>
->>>>>>>>> This looks so smart. if it is not pageout, we have increased pte
->>>>>>>>> and addr here; so nr is 0 and we don't need to increase again in
->>>>>>>>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
->>>>>>>>>
->>>>>>>>> otherwise, nr won't be 0. so we will increase addr and
->>>>>>>>> pte by nr.
->>>>>>>>
->>>>>>>> Indeed. I'm hoping that Lance is able to follow a similar pattern for
->>>>>>>> madvise_free_pte_range().
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>>
->>>>>>>>>>                 }
->>>>>>>>>>
->>>>>>>>>>                 /*
->>>>>>>>>> --
->>>>>>>>>> 2.25.1
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Overall, LGTM,
->>>>>>>>>
->>>>>>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->>>>>>>>
->>>>>>>> Thanks!
->>>>>>>>
->>>>>>>>
->>>>>>
->>>>
->>
-
 
