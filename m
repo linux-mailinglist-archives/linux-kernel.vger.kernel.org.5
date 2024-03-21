@@ -1,130 +1,144 @@
-Return-Path: <linux-kernel+bounces-110670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6F9A886218
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3026788621B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:54:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 246D51C21D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:52:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA1DA1F2179A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB62135A44;
-	Thu, 21 Mar 2024 20:52:42 +0000 (UTC)
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710BE134420;
-	Thu, 21 Mar 2024 20:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE47135A41;
+	Thu, 21 Mar 2024 20:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S62aIT41"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A012DF84;
+	Thu, 21 Mar 2024 20:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711054361; cv=none; b=dQYumnxS9263jc0N3cyn3UZc9UMQalUJotQ2nccMixqP7PZzTDjGt5ggPCjAbxAXChYfwg2N9TEA5gaE6UtrmgqcBNR3VLB/FgSJeabFuyW25DXWMXkcGTEDuZBWApfVwt5N/aaVHF1Gbvg5Y+36ES6Q4o5DWswoABC8Q9rhWpg=
+	t=1711054471; cv=none; b=dg353gR1nR222Tkc5KbhF5DJmDU/BwVUfEL7BOUkAGoQXWIJ/JoUbwkfyRuhpmgpKP7aRLj0MWaueD8DFL6tkH3mu6wiyth13ThX30ANsJtbIstCqeaLy9pLJx71rkk9HLVhEDXnfX0BSMFCxAwx7Q7kOPciCD+q8j0GQDOAVjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711054361; c=relaxed/simple;
-	bh=9zlC3L4tt8Mzkzt3jkTnHSaQIRdB72fowZOWPPC5Zko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yfu4ALOekNJrxhTu/C156bMlqNqD90qTGYqQ7DhJpPIrhDr0AQguFAdmKDdg7tYQMpqKOoPBIwFy70qAoJhD7knSdLkhuDDvG/F0vMHGTVl5l5wVuHuvvx+IyR2VxFK1Fe58rBTlchB/artoGfzUSpVp5hio6kqNhOjQKi3MfDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Thu, 21 Mar 2024 21:52:27 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Dietmar Maurer <dietmar@proxmox.com>,
-	Thomas Lamprecht <t.lamprecht@proxmox.com>,
-	Wolfgang Bumiller <w.bumiller@proxmox.com>,
-	Alexandre Derumier <aderumier@odiso.com>
-Subject: Re: [PATCH net] netfilter: conntrack: fix ct-state for ICMPv6
- Multicast Router Discovery
-Message-ID: <ZfyeC8mjLnGkqnVT@calendula>
-References: <20240306141805.17679-1-linus.luessing@c0d3.blue>
+	s=arc-20240116; t=1711054471; c=relaxed/simple;
+	bh=mjDg7wzzBQCmz5jgRMm1V55TPwPVl9hYFeFJAZQ5Fhw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PVgqGQtYv44fowJtikN7CYVCoZotDx+FzNcW0HFMb4Aru7VgEPQ0JH6RZsZGD0lvw5Rj7iAPMatPXecn4OkXhMsks9DZssoGLGaBUsWOkn6xCcglkppAZhPLvr/gPQW6TdiipzAi/uRwSgyuUlyW5A4DZa4eZiIJLbxRABxFDw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S62aIT41; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513e89d0816so1853446e87.0;
+        Thu, 21 Mar 2024 13:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711054468; x=1711659268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4dpqtSWJGyTeUnxqugJzMO94Z9iV/f5bgYjvchhbNxE=;
+        b=S62aIT41CKMejP4Jx1oxEyKBWGx6K88G0mabjcf/8nRtsOflE9Pv381ZO6LK2o6O2V
+         FtQP6HncXJjpIO4N6o4kUkYEtUH20ZhX+Q3n22b/m1kuZNouamMFBmetN6BigwJAWVVZ
+         pn3ez2uOBHmT5sOXeQUem43AgRVGfKQG8io9xkn16wFi43PPWdXd/G9cBOVChcsVIfT2
+         b6ZXhAnVv0+yhtnTEz0/1VQ6ozw5bDDQglQ1tSwF6VtNHq4Fc+JoS5B3W1Qokkk99SFQ
+         rOncIby5jc4P2htZboWDUsW4zT9SLw0MsWhyCKODK2NdEFGBMsFNV0ybfCaZNXbc5p81
+         qgfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711054468; x=1711659268;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4dpqtSWJGyTeUnxqugJzMO94Z9iV/f5bgYjvchhbNxE=;
+        b=jvWI6kfOXgWNFtP/+pL1WclsnhXebqAZohOtIiQGKUhv6a7T4R9v6SPUXzlSCJ1aCt
+         7cw22Md/wuZNwBkHaLms9D1VcewHklNlnPOKm7Seuj8UUpCD2Q810/D7J/72kLv/7ijJ
+         Kz0XjQEQJaJIZF9JSnttbJtujYileMzMHiwTwivBVtNeLiKGUBVW3A8yG8WLnU1wE8tJ
+         vJbQF0Y0KMWi6Qcl8t9R0Pw2+R1DaIHE5jheSMTxBN8pegw/PHL/o+nduHg4RFfzyLO2
+         8MZz818RWOptcpwaJ04I+qSx13vlutKc7KbUDJnMfN2XWc/kcKQ202jfL0etbtFzFKC5
+         9oCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWeI8ERfbTYvDQjrJEip/ogbCDY+OJAY5ajEUcncmvov5pbQGKJDw6IBKBZLMtzt6c/45nS7FLj+kl1e2WrYbvz6fiq80L6pMHa0N672PUOB5KqL/nMVnAFhko1ihShmdJxbV+RL36uMbT9h3sAW8oOe6Bhsy1ApPk6M/JltBl0jCuSMGOt
+X-Gm-Message-State: AOJu0Yz37n4k3D/RM2R6lb5Y+DgjGPaWSZPH8pRPeu+7kpCYpUnRTIQG
+	2P3Te+NvE18TO4vrvd4M7VYBJo0MqSH1zmC5dT5SmfDIRO2sEtLe
+X-Google-Smtp-Source: AGHT+IF00jvltcjrS4QawwDsCnX+RLKRo6CEUXlNmaAZkEy6czLuI6rU56WPSUMOFR9qHZGoD99mGg==
+X-Received: by 2002:a05:6512:3051:b0:513:9e13:6403 with SMTP id b17-20020a056512305100b005139e136403mr390726lfb.21.1711054467418;
+        Thu, 21 Mar 2024 13:54:27 -0700 (PDT)
+Received: from ?IPV6:2a02:8389:41cf:e200:9fd4:5a72:5943:9800? (2a02-8389-41cf-e200-9fd4-5a72-5943-9800.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:9fd4:5a72:5943:9800])
+        by smtp.gmail.com with ESMTPSA id gt32-20020a1709072da000b00a46ee5b9aa1sm302555ejc.90.2024.03.21.13.54.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 13:54:27 -0700 (PDT)
+Message-ID: <469068f9-b219-4d80-bab4-cbffaa04a67d@gmail.com>
+Date: Thu, 21 Mar 2024 21:54:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240306141805.17679-1-linus.luessing@c0d3.blue>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] dt-bindings: hwmon: ibmpowernv: convert to dtschema
+To: Rob Herring <robh@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-hwmon@vger.kernel.org, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Nicholas Piggin <npiggin@gmail.com>, Jean Delvare <jdelvare@suse.com>,
+ Conor Dooley <conor+dt@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ devicetree@vger.kernel.org, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, linux-kernel@vger.kernel.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <20240321-hwmon_dtschema-v1-0-96c3810c3930@gmail.com>
+ <20240321-hwmon_dtschema-v1-2-96c3810c3930@gmail.com>
+ <171105391076.2619280.17497439995032037227.robh@kernel.org>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <171105391076.2619280.17497439995032037227.robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 03:18:04PM +0100, Linus Lüssing wrote:
-> So far Multicast Router Advertisements and Multicast Router
-> Solicitations from the Multicast Router Discovery protocol (RFC4286)
-> would be marked as INVALID for IPv6, even if they are in fact intact
-> and adhering to RFC4286.
-
-There is also RFC4890 which specifies that also acts as multicast
-routers need to process these message on their interfaces.
-
-> This broke MRA reception and by that multicast reception on
-> IPv6 multicast routers in a Proxmox managed setup, where Proxmox
-> would install a rule like "-m conntrack --ctstate INVALID -j DROP"
-> at the top of the FORWARD chain with br-nf-call-ip6tables enabled
-> by default.
+On 3/21/24 21:45, Rob Herring wrote:
 > 
-> Similar to as it's done for MLDv1, MLDv2 and IPv6 Neighbor Discovery
-> already, fix this issue by excluding MRD from connection tracking
-> handling as MRD always uses predefined multicast destinations
-> for its messages, too. This changes the ct-state for ICMPv6 MRD messages
-> from INVALID to UNTRACKED.
-
-An explicit rule will be still needed to accept this traffic, assuming
-default policy to drop. I think that the issue is likely that this
-"drop invalid rules" is the at the very beginning of the ruleset.
-
-Anyway, turning this from invalid to untracked seems sensible to me.
-Users will still have to explicitly allow for this in their ruleset
-assuming default policy to drop.
-
-I am going to include your Fixes: tag and pass up this patch upstream.
-
-Thanks.
-
-> This issue was found and fixed with the help of the mrdisc tool
-> (https://github.com/troglobit/mrdisc).
+> On Thu, 21 Mar 2024 19:43:43 +0100, Javier Carrasco wrote:
+>> Convert existing binding to support validation.
+>>
+>> This is a straightforward conversion with now new properties.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> ---
+>>  .../devicetree/bindings/hwmon/ibm,powernv.yaml     | 37 ++++++++++++++++++++++
+>>  .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 --------------
+>>  2 files changed, 37 insertions(+), 23 deletions(-)
+>>
 > 
-> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-> ---
->  include/uapi/linux/icmpv6.h               | 1 +
->  net/netfilter/nf_conntrack_proto_icmpv6.c | 4 +++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
-> index ecaece3af38d..4eaab89e2856 100644
-> --- a/include/uapi/linux/icmpv6.h
-> +++ b/include/uapi/linux/icmpv6.h
-> @@ -112,6 +112,7 @@ struct icmp6hdr {
->  #define ICMPV6_MOBILE_PREFIX_ADV	147
->  
->  #define ICMPV6_MRDISC_ADV		151
-> +#define ICMPV6_MRDISC_SOL		152
->  
->  #define ICMPV6_MSG_MAX          255
->  
-> diff --git a/net/netfilter/nf_conntrack_proto_icmpv6.c b/net/netfilter/nf_conntrack_proto_icmpv6.c
-> index 1020d67600a9..327b8059025d 100644
-> --- a/net/netfilter/nf_conntrack_proto_icmpv6.c
-> +++ b/net/netfilter/nf_conntrack_proto_icmpv6.c
-> @@ -62,7 +62,9 @@ static const u_int8_t noct_valid_new[] = {
->  	[NDISC_ROUTER_ADVERTISEMENT - 130] = 1,
->  	[NDISC_NEIGHBOUR_SOLICITATION - 130] = 1,
->  	[NDISC_NEIGHBOUR_ADVERTISEMENT - 130] = 1,
-> -	[ICMPV6_MLD2_REPORT - 130] = 1
-> +	[ICMPV6_MLD2_REPORT - 130] = 1,
-> +	[ICMPV6_MRDISC_ADV - 130] = 1,
-> +	[ICMPV6_MRDISC_SOL - 130] = 1
->  };
->  
->  bool nf_conntrack_invert_icmpv6_tuple(struct nf_conntrack_tuple *tuple,
-> -- 
-> 2.43.0
+> yamllint warnings/errors:
 > 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/hwmon/ibm,powernv.example.dtb: /example-0/sensor: failed to match any schema with compatible: ['st,stts751']
+> 
+
+Obvious mistake, this compatible belongs to another patch of the series.
+
+Will be fixed for v2.
+
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240321-hwmon_dtschema-v1-2-96c3810c3930@gmail.com
+> 
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
+> 
+
+Best regards,
+Javier Carrasco
 
