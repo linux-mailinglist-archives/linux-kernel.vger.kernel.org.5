@@ -1,140 +1,131 @@
-Return-Path: <linux-kernel+bounces-110595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5084C886113
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:34:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A32886131
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830FD1C22210
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:34:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F6A1F21AFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC15A134CE8;
-	Thu, 21 Mar 2024 19:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B560F134420;
+	Thu, 21 Mar 2024 19:39:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="xwbGjCgW"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPOidhmQ"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0E713443A;
-	Thu, 21 Mar 2024 19:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F33B1E500
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 19:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711049665; cv=none; b=aSGKAlPguILxiZnaC+9LdpmXCSR8yu2mG/0MgT0RKVemlsPW94cKG4V53Yn4I9PuAJ6Xu2ueC0RKVbtBImuXcMU0jyTBq3LqafIWoKuQqORqkPt02SvQzmXFSvRKNMmAn3q7hlNmdkQ68dM8Skl/Rdr0zHTZuG3GUNLyveRS90I=
+	t=1711049950; cv=none; b=hQnwhuFYJWGP/0t9kLsV1R43r4TyxsPob26jgKnD2SO+qbo/zQ5ypXsNAu0xEfrzPeDIBIYiOsWHsKwpGvsTqqpzP/PgbQcsd211LWbUBXt2dxqki57Ugf2hgV9/vDXWTCTlxkeiA+5GZE3LZdik+0X+j26dq9ZnOcweQhb4Quk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711049665; c=relaxed/simple;
-	bh=l6YDlruBqXA8oEDE4wbX76JTpsadDA/nfSwXgD/rC4E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mkeqDiPcIWi3sAIsk7NjF1FwffYG2kqan9leJ2GT1b3hbrjltgNWyEVVw9z6d94/RPKNVvvE7ooNzV9vwGKF3BluUMDm8vIjMfp8Rt4mI7IRpzCC7r7EBF0p/DRHpRlc7nF/aGkUs1+yR8ymeLb/Py4tMsjKFDOGQhxgOF4Gma4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=xwbGjCgW reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id f7c8c0852ae75439; Thu, 21 Mar 2024 20:34:14 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 2024066B8D7;
-	Thu, 21 Mar 2024 20:34:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711049654;
-	bh=l6YDlruBqXA8oEDE4wbX76JTpsadDA/nfSwXgD/rC4E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=xwbGjCgWtStGSGXa2pWQwHeAgmPpL+j9fTpy2z0Y67PSJ7PJg/liA0tEmeZHf/AqK
-	 Hfv+zVcp4zh0iPbMKgkzZ078HaAey/pv0BEJyqpkC2HlVVSY2ak7w3LVF/WpsfPXtT
-	 NPYgzJXZsWXJkPuL+QSUzmodj7jHCji9R6ny7gV0plPsJnoFpKsjBuAd8qzC0Z7Bf2
-	 xGev1HRK2YbAGhXb5iz8mFIakHaO5uxd4DI5PO5YkYtcJOv7oJLDYYm697IhGwLWNZ
-	 eNIavXBTsAHxTNyiIEu2sDxPS8hjLHllJhpY7XOO5k/G+Ikcjpx4x9YdanmAalxeMh
-	 0vF6VgIATZI0A==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 4/5] cpufreq: intel_pstate: Get rid of unnecessary READ_ONCE()
- annotations
-Date: Thu, 21 Mar 2024 20:33:02 +0100
-Message-ID: <2184891.irdbgypaU6@kreacher>
-In-Reply-To: <12409658.O9o76ZdvQC@kreacher>
-References: <12409658.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1711049950; c=relaxed/simple;
+	bh=ZWs9MGmoEQmOULNBWO9zIf+jgNwwwIuWqfOo19Mn/X8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EmswVynJJLTt51q+52KsXpct8Ay2ya2d6N3NLWSExSTHeFSGr5QIMaDM/rplqYZ++Sl1kY0JNZDTxG2xgjcbEn31WI8lCoNepRpJ9QjDxurqp4kvHW/VfrLmMNeY81ooegxC3J7JBQvFJNBlZUCfSxVKFNfvbh4BSX2jEjbWFy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GPOidhmQ; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e73e8bdea2so1147744b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711049948; x=1711654748; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=GjN88eAgX+ChV3wXk8WomMcLdGGxDAjAjqUJdjdhg/I=;
+        b=GPOidhmQRnGjqMW9FsjiDzDExMqA5QZKh0JlYwLuJCr6//x31ijVqPbMPNeuU8dbEa
+         4mSo8o0y3pC22MB8pFsI3AS+KStDgW3mBBke0xuEYuzIlfHy9kMu/qaa+G5Tau8aX8o5
+         6LiQiBPPFQtqeWAvFUao8A/hR6oCdLLSoTQjasrIMYT4y5vdw8mMUw2xGXkb6GTPh7ZC
+         RFgJ5au8oTcVKeeuXdLEGreldLfUMSOjbOOcZE0AfB09JUrYLVbh8bGnJcJkjfXiLzSy
+         37pGkqG070L/bt5tAsu/e3KXfUVbzG45u0ZFfwxXdFD33Yv8E701nxaWJlH0nMOzWJIc
+         ZU7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711049948; x=1711654748;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GjN88eAgX+ChV3wXk8WomMcLdGGxDAjAjqUJdjdhg/I=;
+        b=hw97iTpWXdn1H1cyJdZsQ1SMbI9iQ/o+SiuYuzaP4RoU7LmC9IsEZJ233LVmBhl3h1
+         lZStjplfT5pvIBZgLjW5UzM5QeArzO7pFzU0/BgonCagsjzYdeiBbdTGUbU2orec9RgD
+         hN2HCTRoKLg2pUpDl16zoymOKCZWt4biGXzipPmuoOE2tBifTrcFmRfD0BbIcQrZ5MSX
+         MpfjBp9ZHBC5nFfF8Ekm9aoRowupjT3DoKQpECbGiU/hDTQikZxQCTH+5GokdcMfwO6S
+         Q8td70CdrqF4PCLHaUyJE/aQZGmojpYI6V6CFj9a82KuWnh1HlxirZLkIGSsMNHcTNFd
+         Vb/g==
+X-Gm-Message-State: AOJu0YxJhBh9/HolMpG0CpuMY+ZVuKqjVmsmDZkd0lGorjZzKVI4Sf7z
+	UHWby9AC/GzLSV89uyekSe4zGTtew7FuqrSuRch8Z1bfdsWthc6haAceuDzE
+X-Google-Smtp-Source: AGHT+IEwmW6Gi0aaz6kBihV8/J3sHQPsF5Lqp3kXyvg4jTlLatzJyJI84wwpfBKcP6OtdHhxPzWdZA==
+X-Received: by 2002:a05:6a21:1a5:b0:1a3:3cba:816 with SMTP id le37-20020a056a2101a500b001a33cba0816mr620360pzb.45.1711049619001;
+        Thu, 21 Mar 2024 12:33:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y15-20020aa7854f000000b006e681769ee0sm206280pfn.145.2024.03.21.12.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 12:33:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Dinh Nguyen <dinguyen@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH] nios2: Only use built-in devicetree blob if configured to do so
+Date: Thu, 21 Mar 2024 12:33:36 -0700
+Message-Id: <20240321193336.1708790-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrleejgdeihecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Transfer-Encoding: 8bit
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Starting with commit 7b937cc243e5 ("of: Create of_root if no dtb provided
+by firmware"), attempts to boot nios2 images with an external devicetree
+blob result in a crash.
 
-Drop a redundant check involving READ_ONCE() from notify_hwp_interrupt()
-and make it check hwp_active without READ_ONCE() which is not necessary,
-because that variable is only set once during the early initialization of
-the driver.
+Kernel panic - not syncing: early_init_dt_alloc_memory_arch:
+	Failed to allocate 72 bytes align=0x40
 
-In order to make that clear, annotate hwp_active with __ro_after_init.
+For nios2, a built-in devicetree blob always overrides devicetree blobs
+provided by ROMMON/BIOS. This includes the new dummy devicetree blob.
+Result is that the dummy devicetree blob is used even if an external
+devicetree blob is provided. Since the dummy devicetree blob does not
+include any memory information, memory allocations fail, resulting in
+the crash.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+To fix the problem, only use the built-in devicetree blob if
+CONFIG_NIOS2_DTB_SOURCE_BOOL is enabled.
+
+Fixes: 7b937cc243e5 ("of: Create of_root if no dtb provided by firmware")
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/cpufreq/intel_pstate.c |   14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ arch/nios2/kernel/prom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -292,7 +292,7 @@ struct pstate_funcs {
- 
- static struct pstate_funcs pstate_funcs __read_mostly;
- 
--static int hwp_active __read_mostly;
-+static bool hwp_active __ro_after_init;
- static int hwp_mode_bdw __read_mostly;
- static bool per_cpu_limits __read_mostly;
- static bool hwp_boost __read_mostly;
-@@ -1640,7 +1640,7 @@ void notify_hwp_interrupt(void)
- 	unsigned long flags;
- 	u64 value;
- 
--	if (!READ_ONCE(hwp_active) || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-+	if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+diff --git a/arch/nios2/kernel/prom.c b/arch/nios2/kernel/prom.c
+index 8d98af5c7201..a7cd76b322e3 100644
+--- a/arch/nios2/kernel/prom.c
++++ b/arch/nios2/kernel/prom.c
+@@ -30,8 +30,11 @@ void __init early_init_devtree(void *params)
  		return;
+ 	}
+ #endif
++
++#ifdef CONFIG_NIOS2_DTB_SOURCE_BOOL
+ 	if (be32_to_cpu((__be32) *dtb) == OF_DT_HEADER)
+ 		params = (void *)__dtb_start;
++#endif
  
- 	rdmsrl_safe(MSR_HWP_STATUS, &value);
-@@ -1653,14 +1653,6 @@ void notify_hwp_interrupt(void)
- 		goto ack_intr;
- 
- 	/*
--	 * Currently we never free all_cpu_data. And we can't reach here
--	 * without this allocated. But for safety for future changes, added
--	 * check.
--	 */
--	if (unlikely(!READ_ONCE(all_cpu_data)))
--		goto ack_intr;
--
--	/*
- 	 * The free is done during cleanup, when cpufreq registry is failed.
- 	 * We wouldn't be here if it fails on init or switch status. But for
- 	 * future changes, added check.
-@@ -3464,7 +3456,7 @@ static int __init intel_pstate_init(void
- 		 * deal with it.
- 		 */
- 		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) || hwp_forced) {
--			WRITE_ONCE(hwp_active, 1);
-+			hwp_active = true;
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
- 			intel_cpufreq.attr = hwp_cpufreq_attrs;
-
-
+ 	early_init_dt_scan(params);
+ }
+-- 
+2.39.2
 
 
