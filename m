@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-110437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C3E885F03
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:03:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 281B5885F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:03:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A11A1F20226
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:03:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D80C72837C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE24713F44C;
-	Thu, 21 Mar 2024 16:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ED4140369;
+	Thu, 21 Mar 2024 16:52:39 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2BD137C39
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0986213F428
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039956; cv=none; b=O75Boca9VNMNW3+K5YkmJa2Y/O+4TRyMEL4ud8KOSwiqdhfje9IfC8WZquYBSVCUqQEit4+SZKMlQgqNs+LijKBYFgoxlFIiI5ZOYE8QXJqzMEPwk/Gpgpnvwuqh167233NdZAru7B72Ro21TkUwzyQAjxp1MUwSaYavPg8FgqA=
+	t=1711039959; cv=none; b=lO058F8vDu6tloqe6socxXObcjiqVE5zvISkyKwJPLaxLgttkClJhOcY8rxSg+BrN+f4a6EUrNNirrpxw4BtXUmmQ752f2smHrfTpE6ceBqsMwAddZs1BfPC4mGtrHylgKSEVnWBz8Bk5hqvfJG/x9oDn5ZlRyF9HD9DoRizILE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039956; c=relaxed/simple;
-	bh=Vi1wfBepSAFFk31BdyR63HVgXnhz3xEF+GaTUUb38Pg=;
+	s=arc-20240116; t=1711039959; c=relaxed/simple;
+	bh=IwQaaf8zuJ4axtC21pDkJ4vGinVw+XU/Yp1+ON7Papw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WaCs918qH9frK6b3tJLVv+e4C+q3HQ9NnNFxSwbezOU68VJlyQLqydpn2q0m+GKhJM0L4aUWvsq/fhuMxiNTxPD7nogYRCO1Fy68QJvAXO5USQeR02yZLZwOlYmOqSpt3CZkDk0m24XPA/THDXkqsTGIR+e067nRKLpURt+DsYY=
+	 MIME-Version; b=mt9cTWvZM3CB8HXyDO0jLteyZJ61RZP7aMLLmM4WXBnkQbQbX4zjXS0nvqA0OgWj86IFbfIb4hjJw5bjLQfkf+zsIJiIJMFdJ3NL+gpmtEVvalfogr9WhdvDPyoQ2xdJq9I6sBetxYw9P9Kp5mgNJP9hrbgo84OcpSq9Od+jkOU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B45D11063;
-	Thu, 21 Mar 2024 09:53:08 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB366168F;
+	Thu, 21 Mar 2024 09:53:11 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75ABD3F67D;
-	Thu, 21 Mar 2024 09:52:31 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD6953F67D;
+	Thu, 21 Mar 2024 09:52:34 -0700 (PDT)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>,
 	Dave Martin <dave.martin@arm.com>
-Subject: [PATCH v1 20/31] x86/resctrl: Allow an architecture to disable pseudo lock
-Date: Thu, 21 Mar 2024 16:50:55 +0000
-Message-Id: <20240321165106.31602-21-james.morse@arm.com>
+Subject: [PATCH v1 21/31] x86/resctrl: Make prefetch_disable_bits belong to the arch code
+Date: Thu, 21 Mar 2024 16:50:56 +0000
+Message-Id: <20240321165106.31602-22-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240321165106.31602-1-james.morse@arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
@@ -72,142 +72,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Pseudo-lock relies on knowledge of the micro-architecture to disable
-prefetchers etc.
+prefetch_disable_bits is set by rdtgroup_locksetup_enter() from a
+value provided by the architecture, but is largely read by other
+architecture helpers.
 
-On arm64 these controls are typically secure only, meaning linux can't
-access them. Arm's cache-lockdown feature works in a very different
-way. Resctrl's pseudo-lock isn't going to be used on arm64 platforms.
-
-Add a Kconfig symbol that can be selected by the architecture. This
-enables or disables building of the psuedo_lock.c file, and replaces
-the functions with stubs. An additional IS_ENABLED() check is needed
-in rdtgroup_mode_write() so that attempting to enable pseudo-lock
-reports an "Unknown or unsupported mode" to user-space.
+Instead of exporting this value, make
+resctrl_arch_get_prefetch_disable_bits() set it so that the other
+arch-code helpers can use the cached-value.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/Kconfig                       |  7 ++++
- arch/x86/kernel/cpu/resctrl/Makefile   |  5 +--
- arch/x86/kernel/cpu/resctrl/internal.h | 48 +++++++++++++++++++++-----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c |  3 +-
- 4 files changed, 52 insertions(+), 11 deletions(-)
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7aed87cbf386..e071e564452e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -481,6 +481,7 @@ config X86_CPU_RESCTRL
- 	depends on X86 && (CPU_SUP_INTEL || CPU_SUP_AMD)
- 	select KERNFS
- 	select PROC_CPU_RESCTRL		if PROC_FS
-+	select RESCTRL_FS_PSEUDO_LOCK
- 	help
- 	  Enable x86 CPU resource control support.
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 856beb6f668b..5a66e3b2c2ea 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -85,6 +85,8 @@ static const struct class pseudo_lock_class = {
+  */
+ u64 resctrl_arch_get_prefetch_disable_bits(void)
+ {
++	prefetch_disable_bits = 0;
++
+ 	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL ||
+ 	    boot_cpu_data.x86 != 6)
+ 		return 0;
+@@ -100,7 +102,8 @@ u64 resctrl_arch_get_prefetch_disable_bits(void)
+ 		 * 3    DCU IP Prefetcher Disable (R/W)
+ 		 * 63:4 Reserved
+ 		 */
+-		return 0xF;
++		prefetch_disable_bits = 0xF;
++		break;
+ 	case INTEL_FAM6_ATOM_GOLDMONT:
+ 	case INTEL_FAM6_ATOM_GOLDMONT_PLUS:
+ 		/*
+@@ -111,10 +114,11 @@ u64 resctrl_arch_get_prefetch_disable_bits(void)
+ 		 * 2     DCU Hardware Prefetcher Disable (R/W)
+ 		 * 63:3  Reserved
+ 		 */
+-		return 0x5;
++		prefetch_disable_bits = 0x5;
++		break;
+ 	}
  
-@@ -506,6 +507,12 @@ config X86_FRED
- 	  ring transitions and exception/interrupt handling if the
- 	  system supports.
+-	return 0;
++	return prefetch_disable_bits;
+ }
  
-+config RESCTRL_FS_PSEUDO_LOCK
-+	bool
-+	help
-+	  Software mechanism to pin data in a cache portion using
-+	  micro-architecture specific knowledge.
-+
- if X86_32
- config X86_BIGSMP
- 	bool "Support for big SMP systems with more than 8 CPUs"
-diff --git a/arch/x86/kernel/cpu/resctrl/Makefile b/arch/x86/kernel/cpu/resctrl/Makefile
-index 4a06c37b9cf1..0c13b0befd8a 100644
---- a/arch/x86/kernel/cpu/resctrl/Makefile
-+++ b/arch/x86/kernel/cpu/resctrl/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_X86_CPU_RESCTRL)	+= core.o rdtgroup.o monitor.o
--obj-$(CONFIG_X86_CPU_RESCTRL)	+= ctrlmondata.o pseudo_lock.o
-+obj-$(CONFIG_X86_CPU_RESCTRL)		+= core.o rdtgroup.o monitor.o
-+obj-$(CONFIG_X86_CPU_RESCTRL)		+= ctrlmondata.o
-+obj-$(CONFIG_RESCTRL_FS_PSEUDO_LOCK)	+= pseudo_lock.o
- CFLAGS_pseudo_lock.o = -I$(src)
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 238b81d3f64a..d6db15839dc4 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -489,14 +489,6 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r, struct rdt_domain *d,
- 				  unsigned long cbm);
- enum rdtgrp_mode rdtgroup_mode_by_closid(int closid);
- int rdtgroup_tasks_assigned(struct rdtgroup *r);
--int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp);
--int rdtgroup_locksetup_exit(struct rdtgroup *rdtgrp);
--bool rdtgroup_cbm_overlaps_pseudo_locked(struct rdt_domain *d, unsigned long cbm);
--bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d);
--int rdt_pseudo_lock_init(void);
--void rdt_pseudo_lock_release(void);
--int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp);
--void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp);
- struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r);
- int closids_supported(void);
- void closid_free(int closid);
-@@ -529,4 +521,44 @@ void rdt_staged_configs_clear(void);
- bool closid_allocated(unsigned int closid);
- int resctrl_find_cleanest_closid(void);
- 
-+#ifdef CONFIG_RESCTRL_FS_PSEUDO_LOCK
-+int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp);
-+int rdtgroup_locksetup_exit(struct rdtgroup *rdtgrp);
-+bool rdtgroup_cbm_overlaps_pseudo_locked(struct rdt_domain *d, unsigned long cbm);
-+bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d);
-+int rdt_pseudo_lock_init(void);
-+void rdt_pseudo_lock_release(void);
-+int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp);
-+void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp);
-+#else
-+static inline int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int rdtgroup_locksetup_exit(struct rdtgroup *rdtgrp)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline bool rdtgroup_cbm_overlaps_pseudo_locked(struct rdt_domain *d, unsigned long cbm)
-+{
-+	return false;
-+}
-+
-+static inline bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
-+{
-+	return false;
-+}
-+
-+static inline int rdt_pseudo_lock_init(void) { return 0; }
-+static inline void rdt_pseudo_lock_release(void) { }
-+static inline int rdtgroup_pseudo_lock_create(struct rdtgroup *rdtgrp)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp) { }
-+#endif /* CONFIG_RESCTRL_FS_PSEUDO_LOCK */
-+
- #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 56a0bfdc11f7..9275d6f8a74e 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1452,7 +1452,8 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				goto out;
- 		}
- 		rdtgrp->mode = RDT_MODE_EXCLUSIVE;
--	} else if (!strcmp(buf, "pseudo-locksetup")) {
-+	} else if (IS_ENABLED(CONFIG_RESCTRL_FS_PSEUDO_LOCK) &&
-+		   !strcmp(buf, "pseudo-locksetup")) {
- 		ret = rdtgroup_locksetup_enter(rdtgrp);
- 		if (ret)
- 			goto out;
+ /**
+@@ -715,8 +719,7 @@ int rdtgroup_locksetup_enter(struct rdtgroup *rdtgrp)
+ 	 * Not knowing the bits to disable prefetching implies that this
+ 	 * platform does not support Cache Pseudo-Locking.
+ 	 */
+-	prefetch_disable_bits = resctrl_arch_get_prefetch_disable_bits();
+-	if (prefetch_disable_bits == 0) {
++	if (resctrl_arch_get_prefetch_disable_bits() == 0) {
+ 		rdt_last_cmd_puts("Pseudo-locking not supported\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.39.2
 
