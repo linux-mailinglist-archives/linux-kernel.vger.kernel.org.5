@@ -1,60 +1,56 @@
-Return-Path: <linux-kernel+bounces-110540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F5AB88604F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:07:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7466886051
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:07:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C988D28724F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DCE01F2139D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C8E1332A1;
-	Thu, 21 Mar 2024 18:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D361332B6;
+	Thu, 21 Mar 2024 18:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qkMJ/tdE"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A1B13342F;
-	Thu, 21 Mar 2024 18:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bZwHZa4D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5CC1332A6;
+	Thu, 21 Mar 2024 18:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044433; cv=none; b=uV9Kw71CVzPh8RaaTelLj0RMxa7ie4WSTSye2/1uYNsZcw7aEjMhRK1rPTWb9yJRHG287vTnvbUGfggbhEf6B9fv9KRaGqlT6Sac7KGQL6tG1Jv8dT45Hn262D8VpQTqSWD1vI9+OXHS/ExsaHFJmjeGJx+wvukZ9NCc3rd7AKA=
+	t=1711044454; cv=none; b=UNPWmesNqp+gpAmZ1LCVzNd8w9x/u/FaHuxhiArQtiejVzR63YdHuRWC3SNCqMZyJQXODgHXLI9frfLMhz2kBT6gO8E0C1s6q6YTQZNqB8Wj9q81HkbRgs/N/Rg3fDF2yWBfI55PV4yzv1M/MXmLYjdk0Er1cI3BH1BUKFONCWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044433; c=relaxed/simple;
-	bh=05ZEYDmt2+qqCLfDyEKQhHqR7TKdqX5zogWxaN4oz3Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YljOykEH5jIqlUg2yza4/aGaOBcKpKevceKk9u0rBcVfg6+4k9s6GM6zh7QCWIUL4NXDsrTbJatVeA3amybi6QKt0UZ05TJtPskaP0cbd51eKTA4ifdKx/8knMkuJ5TNjCpK//R9b/JjpGOWd7MpoEr6qS5UKWgXP7CFdWnlPwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qkMJ/tdE; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-	id 0ACEA20B74C0; Thu, 21 Mar 2024 11:07:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0ACEA20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711044426;
-	bh=3TunyeQrBBOJTdW13HcN0B0MpmXt0vTpUXifX+gGy4w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qkMJ/tdEq8BHkpDVPjwShASHaPP8LviJ26jsmrkSScJXHVFrcNPbw3eUPe+s/D2pF
-	 0XQ/NoJSs+t/bFtRbSK0MRz69VnlypivU2mMggm692qMqusppHUTg4bQ/KoGLy0dvz
-	 zG7rH5low6mZOVO7M3CNBN9+kNXA1VllhHfycMBc=
-Date: Thu, 21 Mar 2024 11:07:06 -0700
-From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To: Long Li <longli@microsoft.com>
-Cc: KY Srinivasan <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	Saurabh Singh Sengar <ssengar@microsoft.com>
-Subject: Re: [PATCH v2 5/7] tools: hv: Add new fcopy application based on uio
- driver
-Message-ID: <20240321180705.GA12387@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1710930584-31180-1-git-send-email-ssengar@linux.microsoft.com>
- <1710930584-31180-6-git-send-email-ssengar@linux.microsoft.com>
- <SJ1PR21MB3457E5B4D852A914CD691E53CE322@SJ1PR21MB3457.namprd21.prod.outlook.com>
+	s=arc-20240116; t=1711044454; c=relaxed/simple;
+	bh=Vre0bbpj/RHcM0b8xIt3T8ZHT/uKOL2/xho9jNKOy7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=qZ+yyuSn4m/hcoORSrvY7QiXwtfiZh+25PavHOxZN1Bc9BrjUHK7o51X2kKXx6oGg39MDly7lzUuiR1/x0S/J5Ed5EO4+F2NIpMx7k8U4sscbSqSjQAGds8Q6IF7fv/BbudPCM4KbxBwjkNIHAGkOlu83L0UZ0keKJJzB+xhQYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZwHZa4D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600ECC433F1;
+	Thu, 21 Mar 2024 18:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711044454;
+	bh=Vre0bbpj/RHcM0b8xIt3T8ZHT/uKOL2/xho9jNKOy7I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=bZwHZa4DGdc1+POLrg1fU5cxYlcVXhNYn2Q8g7wr0BHoyw7DlTGMU9Si9QxGJrezN
+	 0N1NXNbHW7h19po3hbpHk5A9b66DFGlyRzCh84lo/BLGpIO0AiwD2ETbAMvhV8pK2s
+	 T1ZSXNGLmLdKt9Qz+YsiI+yrgOogPxYs/L0wdJ8FZ4jFl4+9paHHZMFfgPyDjQqkqn
+	 D3LWXMWloKiEwsU8yx8OjQr6PEUI9XHHgkvLh3u3DrDg8GrMmu2u5innfjvE+3sDQQ
+	 MsqzEVTEN0gLMrQOW+jVKjOrfUkgfruSZLqK2WTwLnuLNTGbOcTtO54Hifq7eV0FJI
+	 9OFEWmR2jJXvw==
+Date: Thu, 21 Mar 2024 13:07:32 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>, niklas.cassel@wdc.com, bhelgaas@google.com,
+	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
+	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org
+Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
+ interpreted as a free ATU slot
+Message-ID: <20240321180732.GA1329092@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,58 +59,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SJ1PR21MB3457E5B4D852A914CD691E53CE322@SJ1PR21MB3457.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20240321171345.GA2385@thinkpad>
 
-On Thu, Mar 21, 2024 at 04:42:44PM +0000, Long Li wrote:
-> > Subject: [PATCH v2 5/7] tools: hv: Add new fcopy application based on uio driver
+On Thu, Mar 21, 2024 at 10:43:45PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
+> > dw_pcie_ep_inbound_atu()
+> > {
+> > 	...
+> > 	if (!ep->bar_to_atu[bar])
+> > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > 	else
+> > 		free_win = ep->bar_to_atu[bar];
+> > 	...
+> > }
 > > 
-> > New fcopy application using uio_hv_generic driver. This application copies file
-> > from Hyper-V host to guest VM.
+> > The atu index 0 is valid case for atu number. The find_first_zero_bit()
+> > will return 6 when second time call into this function if atu is 0. Suppose
+> > it should use branch 'free_win = ep->bar_to_atu[bar]'.
 > > 
-> > A big part of this code is copied from tools/hv/hv_fcopy_daemon.c which this new
-> > application is replacing.
-> > 
-> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> > ---
-> > [V2]
-> > - Improve commit message.
-> > - Change (4 * 4096) to 0x4000 for ring buffer size
-> > - Removed some unnecessary type casting.
-> > - Mentioned in file copy right header that this code is copied.
-> > - Changed the print from "Registration failed" to "Signal to host failed".
-> > - Fixed mask for rx buffer interrupt to 0 before waiting for interrupt.
-> > 
-> >  tools/hv/Build                 |   3 +-
-> >  tools/hv/Makefile              |  10 +-
-> >  tools/hv/hv_fcopy_uio_daemon.c | 490
-> > +++++++++++++++++++++++++++++++++
-> >  3 files changed, 497 insertions(+), 6 deletions(-)  create mode 100644
-> > tools/hv/hv_fcopy_uio_daemon.c
-> > 
-> > diff --git a/tools/hv/Build b/tools/hv/Build index 6cf51fa4b306..7d1f1698069b
-> > 100644
-> > --- a/tools/hv/Build
-> > +++ b/tools/hv/Build
-> > @@ -1,3 +1,4 @@
-> >  hv_kvp_daemon-y += hv_kvp_daemon.o
-> >  hv_vss_daemon-y += hv_vss_daemon.o
-> > -hv_fcopy_daemon-y += hv_fcopy_daemon.o
-> > +hv_fcopy_uio_daemon-y += hv_fcopy_uio_daemon.o hv_fcopy_uio_daemon-y
-> > +=
-> > +vmbus_bufring.o
-> > diff --git a/tools/hv/Makefile b/tools/hv/Makefile index
-> > fe770e679ae8..944180cf916e 100644
-> > --- a/tools/hv/Makefile
-> > +++ b/tools/hv/Makefile
+> > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
+> > it have not allocate atu to the bar.
 > 
-> I'm not sure if vmbus_bufring will compile on ARM.
-> If it's not supported, can use some flags in Makefile to not build this.
+> I'd rewrite the commit message as below:
+> 
+> "The mapping between PCI BAR and iATU inbound window are maintained in the
+> dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for a
+> BAR, dw_pcie_ep_inbound_atu() API will first check for the availability of the
+> existing mapping in the array and if it is not found (i.e., value in the array
+> indexed by the BAR is found to be 0), then it will allocate a new map value
+> using find_first_zero_bit().
+> 
+> The issue here is, the existing logic failed to consider the fact that the map
+> value '0' is a valid value for BAR0. Because, find_first_zero_bit() will return
+> '0' as the map value for BAR0 (note that it returns the first zero bit
+> position).
+> 
+> Due to this, when PERST# assert + deassert happens on the PERST# supported
+> platforms, the inbound window allocation restarts from BAR0 and the existing
+> logic to find the BAR mapping will return '6' for BAR0 instead of '0' due to the
+> fact that it considers '0' as an invalid map value.
+> 
+> So fix this issue by always incrementing the map value before assigning to
+> bar_to_atu[] array and then decrementing it while fetching. This will make sure
+> that the map value '0' always represents the invalid mapping."
 
-You are right, this is not supported on ARM64. I can query uname in Makefile
-and compile this only for arch != aarch64.
-I will add this info in commit message as well.
+This translates C code to English in great detail, but still doesn't
+tell me what's broken from a user's point of view, how urgent the fix
+is, or how it should be handled.
 
-- Saurabh
+DMA doesn't work because ATU setup is wrong?  Driver MMIO access to
+the device doesn't work?  OS crashes?  How?  Incorrectly routed access
+causes UR response?  Happens on every boot?  Only after a reboot or
+controller reset?  What platforms are affected?  "PERST# supported
+platforms" is not actionable without a lot of research or pre-existing
+knowledge.  Should this be backported to -stable?
 
+Bjorn
 
