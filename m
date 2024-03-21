@@ -1,115 +1,178 @@
-Return-Path: <linux-kernel+bounces-109716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89FD9881CC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC4D9881CC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:13:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 229E01F21F40
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:12:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7A01F21E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53DD5103E;
-	Thu, 21 Mar 2024 07:12:30 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E6B4DA10;
+	Thu, 21 Mar 2024 07:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xYGUUWPB"
+Received: from out199-15.us.a.mail.aliyun.com (out199-15.us.a.mail.aliyun.com [47.90.199.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6E7381AA;
-	Thu, 21 Mar 2024 07:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88289381AA
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711005150; cv=none; b=Rbqt2myq3igPvjiKmEM6PK3qETEyYJXWl7FZfn2bM1oB8Po1/bwDbLJOpz05IIVrCumxCfMx3Rdv1SScewH1NLcKb2J1UOZWpoo9Rn/SRvl2U6xaCRBYVrBZv8RrLytIoD6EYzoK7w8Llf11VTAKzpui0QoL8vkp5rPvsrni660=
+	t=1711005180; cv=none; b=dHj2R4MKCLiHVvyJsaxZsbJSL2+h1VumHvTscO+jO7dNYhIGXbyAlMZjFlmzt4YarTe/uO0ElySi18JMwrcKTigHKw2af6bcCHCCISliO4SMLciksQ/XS0eGG6SkBjyEZIl2oa5QXaiM610WPB81tCrvVP1SRen8GwpJmWNzrxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711005150; c=relaxed/simple;
-	bh=mzMLKiw5MQzxQS21Hp1Kb386ukYGSQSd0ad2KKmfIrg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=s5YXMa/P86qS9VFEY/u2tzasOABQDL1Jnd6uJeCBAFl02sbyJfaNpsJQQafKYNNIyProZGJXNQte1r8xN4MT0Ht0XaJmofaWNlezEE9xHdBpkT0QqIfazzcGeSY8VoXEi2UtLJHJW8WKc8ArmwXYX4vW/MmvHZzQXEqDx0YyQhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V0c8x3B9rz4f3jsn;
-	Thu, 21 Mar 2024 15:12:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 756BB1A016E;
-	Thu, 21 Mar 2024 15:12:23 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgAnRQ7V3ftldCd1Hg--.33160S2;
-	Thu, 21 Mar 2024 15:12:23 +0800 (CST)
-Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
-To: Tejun Heo <tj@kernel.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- willy@infradead.org, bfoster@redhat.com, jack@suse.cz, dsterba@suse.com,
- mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-7-shikemeng@huaweicloud.com>
- <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
-Date: Thu, 21 Mar 2024 15:12:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1711005180; c=relaxed/simple;
+	bh=v2D+Mb6HR3GIyVn6wZk/TJSbu5Z8XX46BLEwR8TLToI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pdl2Dw6xXf0jALp7Z4HC1A/fEw0P/etm4KG0TfUokWN0Kic4gVmi3E8ftgLM0oI4cHOi86m44Yz5CWasL3Rvg9JUKN5DNjuQF8N4KrcAXoNY683X+pjdXR/ny2qt/Ldqmyuub7vRNGlERrX+SuKJa6DEsNZ326EiIBIDPSh5bgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xYGUUWPB; arc=none smtp.client-ip=47.90.199.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711005166; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=LJLz95zB5IfCEFx0NOpBepvRP5+Xo9tzfNvsPiZl1EA=;
+	b=xYGUUWPBW+bw8KcGdBYNDq37rMWgrgpLJtqjHCPnKnZQJG4ts7XWbRY8p9qfze1oUbChHrHNkBe6r4AnrSVA8ngV458MUkJcJeHQD4O/KALrXFnVHQ/i2OQpphPghu7IhqxQ5GL2ZNBqP4tBKDKD5Ku8IWpnpdlAXWdtcnQRsms=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W2zxvbB_1711005164;
+Received: from 30.97.56.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W2zxvbB_1711005164)
+          by smtp.aliyun-inc.com;
+          Thu, 21 Mar 2024 15:12:45 +0800
+Message-ID: <dc8ecc32-54c8-4931-9a13-64a3c3b41d35@linux.alibaba.com>
+Date: Thu, 21 Mar 2024 15:12:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
-Content-Type: text/plain; charset=gbk
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] mm: support multi-size THP numa balancing
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, mgorman@techsingularity.net,
+ wangkefeng.wang@huawei.com, jhubbard@nvidia.com, 21cnbao@gmail.com,
+ ryan.roberts@arm.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <903bf13fc3e68b8dc1f256570d78b55b2dd9c96f.1710493587.git.baolin.wang@linux.alibaba.com>
+ <871q88vzc4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <f00316da-e45d-46c1-99b8-ee160303eaaa@linux.alibaba.com>
+ <87sf0mvg1c.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <87sf0mvg1c.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAnRQ7V3ftldCd1Hg--.33160S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrZr4rtw1fWrW3Zw1UZF1UJrb_yoW8JF1rpF
-	4fWa1UKFW5Ja9a9rnrCw4xXr90grZ7Ka9xJ3s8CwsxZa1fG3Z3Gr1qq3yFqF47Ar1fGr9x
-	Z3yIq3Z7AFWUCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUrR6zUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
+(sorry for late reply)
 
-
-on 3/20/2024 11:15 PM, Tejun Heo wrote:
-> Hello,
+On 2024/3/19 15:26, Huang, Ying wrote:
+> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 > 
-> On Wed, Mar 20, 2024 at 07:02:22PM +0800, Kemeng Shi wrote:
->> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
->> GDTC_INIT_NO_WB
+>> On 2024/3/18 14:16, Huang, Ying wrote:
+>>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>>>
+>>>> Now the anonymous page allocation already supports multi-size THP (mTHP),
+>>>> but the numa balancing still prohibits mTHP migration even though it is an
+>>>> exclusive mapping, which is unreasonable. Thus let's support the exclusive
+>>>> mTHP numa balancing firstly.
+>>>>
+>>>> Allow scanning mTHP:
+>>>> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
+>>>> pages") skips shared CoW pages' NUMA page migration to avoid shared data
+>>>> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
+>>>> NUMA-migrate COW pages that have other uses") change to use page_count()
+>>>> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
+>>>> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
+>>>> issue, although there is still a GUP race, the issue seems to have been
+>>>> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_estimated_sharers()
+>>>> to skip shared CoW pages though this is not a precise sharers count. To
+>>>> check if the folio is shared, ideally we want to make sure every page is
+>>>> mapped to the same process, but doing that seems expensive and using
+>>>> the estimated mapcount seems can work when running autonuma benchmark.
+>>>>
+>>>> Allow migrating mTHP:
+>>>> As mentioned in the previous thread[1], large folios are more susceptible
+>>>> to false sharing issues, leading to pages ping-pong back and forth during
+>>>> numa balancing, which is currently hard to resolve. Therefore, as a start to
+>>>> support mTHP numa balancing, only exclusive mappings are allowed to perform
+>>>> numa migration to avoid the false sharing issues with large folios. Similarly,
+>>>> use the estimated mapcount to skip shared mappings, which seems can work
+>>>> in most cases (?), and we've used folio_estimated_sharers() to skip shared
+>>>> mappings in migrate_misplaced_folio() for numa balancing, seems no real
+>>>> complaints.
+>>> IIUC, folio_estimated_sharers() cannot identify multi-thread
+>>> applications.  If some mTHP is shared by multiple threads in one
 >>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ...
->>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
->>  {
->> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
->> +	struct dirty_throttle_control gdtc = { };
+>> Right.
+>>
+>>> process, how to deal with that?
+>>
+>> IMHO, seems the should_numa_migrate_memory() already did something to help?
+>>
+>> ......
+>> 	if (!cpupid_pid_unset(last_cpupid) &&
+>> 				cpupid_to_nid(last_cpupid) != dst_nid)
+>> 		return false;
+>>
+>> 	/* Always allow migrate on private faults */
+>> 	if (cpupid_match_pid(p, last_cpupid))
+>> 		return true;
+>> ......
+>>
+>> If the node of the CPU that accessed the mTHP last time is different
+>> from this time, which means there is some contention for that mTHP
+>> among threads. So it will not allow migration.
 > 
-> Even if it's currently not referenced, wouldn't it still be better to always
-> guarantee that a dtc's dom is always initialized? I'm not sure what we get
-> by removing this.
-As we explicitly use GDTC_INIT_NO_WB to set global_wb_domain before
-calculating dirty limit with domain_dirty_limits, I intuitively think the dirty
-limit calculation in domain_dirty_limits is related to global_wb_domain when
-CONFIG_WRITEBACK_CGROUP is enabled while the truth is not. So this is a little
-confusing to me.
-Would it be acceptable to you that we keep useing GDTC_INIT_NO_WB but
-define GDTC_INIT_NO_WB to null fow now and redefine GDTC_INIT_NO_WB when some
-member of gdtc is really needed.
-Of couse I'm not insistent on this. Would like to hear you suggestion. Thanks!
+> Yes.  The two-stage filter in should_numa_migrate_memory() helps at some
+> degree.
+> 
+> But the situation is somewhat different after your change.  Previously,
+> in one round of NUMA balancing page table scanning, the number of the
+> hint page fault for one process and one folio is 1.  After your change,
+> the number may become folio_nr_pages().  So we need to evaluate the
+
+Yes, this follows the same strategy as THP.
+
+> original algorithm in the new situation and revise.  For example, use a
+> N-stage filter for mTHP.
+
+Yes, let me try if N-stage filter for mTHP can helpful.
 
 > 
-> Thanks.
+> Anyway, the NUMA balancing algorithm adjustment needs to be based on
+> test results.
 > 
+> Another possibility is to emulate the original behavior as much as
+> possible to try to reuse the original algorithm.  For example, we can
+> restore all PTE maps upon the first hint page fault of a folio.  Then,
+> the behavior is almost same as the original PMD mapped THP.  Personally,
+> I prefer to use this as the first step.  Then, try to adjust the
+> algorithm to take advantage of more information available.
 
+OK, sounds reasonable, I will try.
+
+>>
+>> If the contention for the mTHP among threads is light or the accessing
+>> is relatively stable, then we can allow migration?
+>>
+>>> For example, I think that we should avoid to migrate on the first fault
+>>> for mTHP in should_numa_migrate_memory().
+> 
+> I am referring to the following code in should_numa_migrate_memory().
+> 
+> 	/*
+> 	 * Allow first faults or private faults to migrate immediately early in
+> 	 * the lifetime of a task. The magic number 4 is based on waiting for
+> 	 * two full passes of the "multi-stage node selection" test that is
+> 	 * executed below.
+> 	 */
+> 	if ((p->numa_preferred_nid == NUMA_NO_NODE || p->numa_scan_seq <= 4) &&
+> 	    (cpupid_pid_unset(last_cpupid) || cpupid_match_pid(p, last_cpupid)))
+> 		return true;
+> 
+> But, after thought about this again, I realized that the original PMD
+> mapped THP may be migrated on the first fault sometimes.  So, this isn't
+> a new problem.  We may "optimize" it.  But it needn't to be part of this
+> series.
+
+Make sense. Thanks for your input.
 
