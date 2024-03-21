@@ -1,88 +1,87 @@
-Return-Path: <linux-kernel+bounces-109915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A56458857BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44EB58857BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B112283A2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:03:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F4F283F69
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CD457864;
-	Thu, 21 Mar 2024 11:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C117957877;
+	Thu, 21 Mar 2024 11:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PX3tBLGT"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qA42Oku4"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC5954FB7;
-	Thu, 21 Mar 2024 11:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA2617F7
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019007; cv=none; b=VJd7lO5zrdepwD+BimCyquN4NsGfZwM7Kp/KffiGAPbDHYvaO2UVUFYqWKLQcdnDh8QwvIC6Rkk+lAFL/3tyi49a8NCT4JbXoJ/lU1+qF0vCSE79kbx8eHnsoUSC8E1CiWFwJepTg7oxtRmyV8DRSCKZZQatP74ttUn1eq7fO1M=
+	t=1711019053; cv=none; b=XBRZhkp9qMYO2mGDnCDYN8/46qsCTGUc57t4QddJYmR4Y8huj/A4o4nI/pCMHnoRjQJiG/QpBFMrFFqsnNMQq5GfoFtxE2gCc0zTp6+fGmoF79mEpRYYQ6MlwJ3afMMONf7OhZgfSA8urcly9Qe4wY4SAYB9U6XDwU+Z/nu4u7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019007; c=relaxed/simple;
-	bh=9wK2K43cRuiqRx7FuDm4G45EzjSKz7jVZM0dDOD9C9M=;
+	s=arc-20240116; t=1711019053; c=relaxed/simple;
+	bh=byi2AR2z6WKqvWWijQ8qSi+D5IrNykDN7WeRnTWUSgk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xs9mmmxBeJTm1HRbjvRcK+MDlT/FZTpmhiRHKbKUcZ9IpkcWeX/y2S5FNjef0h7MXpJFUzbknyQWY9EdBrEDY4W7JkR7XQsquj4VTz8N0nHAcYH0mrvKBi3yogAteto/Nfl/rTU5ZRRPS6+YXRW+rX+sHLVGqR7yKJoIpCGPkFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PX3tBLGT; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso13599391fa.2;
-        Thu, 21 Mar 2024 04:03:25 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BCstI7TQrXWZSEpqm9IWfdJF10+EcsMhRpktMF+SKxlqoxBOffrkyDbkXqFE+H/4DaJIYkLZMM39NLewsxR0yvuvhGvTZSkLj5ZWy/BBhSFozYKovGANadyKyHF/f+n7ugb1++LvBybsVh6JRVOqhnQgmg/QouldVzwNFFhaI/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qA42Oku4; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512e39226efso719965e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:04:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711019004; x=1711623804; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711019049; x=1711623849; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZT0UhNpGDPoNyLRvJypE7r2h5AAoACQ2X91BMbmvyVM=;
-        b=PX3tBLGTTRpfQcxWnnLWbOw10v9aHKFjVGRcjeds9JEkFZG7/o2gHwczoQueYdxI5m
-         3h9EXhwJNZFW3D4TfvuXYqkLoYxf0DWGiOqZZn3lpO+ebikBdL1VsV3Ka2rSiq1ksozQ
-         M5lPOMWp4Cq1ozgixLMR1xnIrFU1zl0q5QfPjJX0TD5tcQlaK1tFMqtdSWxWj8+ObZuJ
-         jyIf9iC4viITucFbpSzo4wASuW2+eM2xUbN0an74XrSjwC9cLLNnJkGiuLW1UBOtoE1N
-         wY3i6bGLj3XmNCmvdsndY/nan10KEXF3/bJbchxkkuPcJO51tICQqAPPu/NHo3MLNDCE
-         x+lA==
+        bh=a0TlLN0BMwnJ+UpSK4jvuBdM2+J+Dj1/xcdLP2bxFwM=;
+        b=qA42Oku4iPuJAVXG2+RsUvXj2Qh/wGXKrMrYYHPzA5oKoOQ9Aw1qZzVsPikyE5ZsjA
+         FZzMeCf6pUR382eXD7Qd34VOQH2fUi/4sRxWQxFwl2ErjMB47OCM+rzhtGKv2YcfHF3m
+         EXT5aHxysNotwp3d+b3kBGDDrnG3aGa16jMfpkWFmcnTpjj9M2kozO25bmlBd8L2ngqw
+         oo7heyTunOsZAKOORmxsMKNTthzYg1Y2r4nxonoZHbi7cebcau/wPYu+uTg3eRVGH0FL
+         t5/n9v8EnpnbkU9R35xFS3cVFC3e/BNJkJlK0keKj6vF9EYPdMxqdUygCl3asVC8GoHp
+         54nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711019004; x=1711623804;
+        d=1e100.net; s=20230601; t=1711019049; x=1711623849;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZT0UhNpGDPoNyLRvJypE7r2h5AAoACQ2X91BMbmvyVM=;
-        b=AMA7G+k4tvBNeT24ls2ftR6T0+ykJlbhUTVaP664bDAZmb6BspOOMIkKPNWQ0sTFFu
-         SX0LpO/hwdH4xJxLhZkK1lI2UxdUkxE66mjXgWkiil6hkbcDsAdzE+RBlhyL9YqPUq82
-         ZRe3SqmZDzQm3QvMC6tg/0kZsGmq1QExNZGh3ZSk66hKV9rcfs9K4JJpU7JUpdy5pWzp
-         4BaWphh8oMZ/xgFPZGdScST4c+6Va1sSCSlLFNDY6P/lQgVHU5XOM8a030ZPP4PfIWvX
-         UvQIt9Nq3HSzqYffBCCAx0trM/PLWdVgHTkykc4ndZpTfGv2aLijgROzTqFjKvy7lh2h
-         672A==
-X-Forwarded-Encrypted: i=1; AJvYcCU1XjWBT8kZpulnXl804e6YDMT0WExWojuIYjaZmaeb5HiXIRW7ixJJeof19+Cigsc0n6Z0L4flgtUWv+Pd6OZikKqpZZgys1sLx8D2haK7Gh8mKqpnLApE2kuH4oeHtbIOOb5qL99qzCFqx/lsDeBa5j73foj5e/8cd+Lw8/UWVct8FBuH
-X-Gm-Message-State: AOJu0YwTNAPrOB/7B/0n6t0R2KXyGfDa+WrN7LAnuqQHUaK6K5TiZLwn
-	x+HK1FH9GTAu4Y2QuXo8XtwyAA/0IIcsZy2x6ku7RlIkWSEomNLC
-X-Google-Smtp-Source: AGHT+IFBAAv1s69tHA7UUCCGycmG2dMXcvO3vaRNPikbG0TYdCU7n7qeQNQs6HEN36YcV+g/bPFlCw==
-X-Received: by 2002:a2e:a274:0:b0:2d3:1bd0:6bcf with SMTP id k20-20020a2ea274000000b002d31bd06bcfmr2790438ljm.8.1711019003547;
-        Thu, 21 Mar 2024 04:03:23 -0700 (PDT)
-Received: from localhost.localdomain ([178.70.43.28])
-        by smtp.gmail.com with ESMTPSA id z7-20020a2e8e87000000b002d434d11402sm2390630ljk.15.2024.03.21.04.03.22
+        bh=a0TlLN0BMwnJ+UpSK4jvuBdM2+J+Dj1/xcdLP2bxFwM=;
+        b=AaXDnXoCe7BM0w69aH3N9fbHsqUChxYW+AcKriKIWP8f6PTI0Rew0Axkj1q43+OWZ7
+         NrcMhQbmdMgO4ysvXpNM8BrYPthMMfIC8HPhlwpjM3slahKYU09QZHFaodK87wF61rUY
+         Ij3RKykyCsLFIcdbbnIOacWToV2kUu/fmYOCxtelxZy65u9hlIdhDo8jeohcPxIUh4eg
+         LGZ4hV0bUCeRSkw9uV/eoZ1E/EOCP1YPV4BEQlM99bnyojigi9Z5UowVWjT+AYGyF4tU
+         z0agWPuds/Izu5o74W2qG3p8+3I/LeHZiU8n2tqO3uBhBqenD1MWk4KhnZh4/2bLlue5
+         6h8g==
+X-Forwarded-Encrypted: i=1; AJvYcCVkIFqffssxc8Z43NWoCSOH7DVd5cbUI7s8xBbnvsa6UahzefNDGMucNmQynYsAQ45yBqgmdzcBHfZB2C2gagA96u7X1aq+dVGBgjY9
+X-Gm-Message-State: AOJu0YzwlgIr3mXfG1SLAc9UnW2yCWWH+ueOF1yofhm8/lf6QWtC/BC7
+	HRHgF3hBkZakizJT0gWAEzO9IM62IlvvbQ3wGxXwIEnTMXZ4mj18gg0gbw6HS7I=
+X-Google-Smtp-Source: AGHT+IEqisjMLI8hi5BcvMJ9JSYdKJ4s9qTck9CnSoGjSt4euGRQ1UsKn6uxN86qyPFuWIy/k85Umg==
+X-Received: by 2002:ac2:5a0a:0:b0:513:cf73:d8d2 with SMTP id q10-20020ac25a0a000000b00513cf73d8d2mr11555976lfn.54.1711019049329;
+        Thu, 21 Mar 2024 04:04:09 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id g8-20020a05600c4ec800b0041408451874sm5225401wmq.17.2024.03.21.04.04.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 04:03:23 -0700 (PDT)
-Date: Thu, 21 Mar 2024 14:03:21 +0300
-From: Ivan Bornyakov <brnkv.i1@gmail.com>
-To: Nas Chung <nas.chung@chipsnmedia.com>
-Cc: Brandon Brnich <b-brnich@ti.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "jackson.lee" <jackson.lee@chipsnmedia.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: Re: RE: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-Message-ID: <i6m7svnr6zutg57leeamepj67ajgddwe2phs6rluyozeg3m37p@jfkrlqss26rz>
-References: <20240318144225.30835-1-brnkv.i1@gmail.com>
- <20240318144225.30835-6-brnkv.i1@gmail.com>
- <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
- <20240319210106.awn33cm7ex33g65b@udba0500997>
- <SL2P216MB12468C7256CE2468EE088E7CFB322@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <tg32tsfnj3pmboaaeslvrmf7wtvznagio3vtqot42iflz5lvh7@25s5ykv3dfuz>
+        Thu, 21 Mar 2024 04:04:08 -0700 (PDT)
+Date: Thu, 21 Mar 2024 11:04:07 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Liuye <liu.yeC@h3c.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	"dianders@chromium.org" <dianders@chromium.org>,
+	"jason.wessel@windriver.com" <jason.wessel@windriver.com>,
+	"jirislaby@kernel.org" <jirislaby@kernel.org>,
+	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSN?= =?utf-8?Q?=3A?= [PATCH V3] kdb: Fix the
+ deadlock issue in KDB debugging.
+Message-ID: <20240321110407.GB7342@aspen.lan>
+References: <20240320162802.GA22198@aspen.lan>
+ <20240321022604.4088438-1-liu.yec@h3c.com>
+ <2024032137-parrot-sandbank-ab29@gregkh>
+ <3cb0b32b8b4946efb93ce68729d4c321@h3c.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,39 +90,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tg32tsfnj3pmboaaeslvrmf7wtvznagio3vtqot42iflz5lvh7@25s5ykv3dfuz>
+In-Reply-To: <3cb0b32b8b4946efb93ce68729d4c321@h3c.com>
 
-On Thu, Mar 21, 2024 at 01:52:03PM +0300, Ivan Bornyakov wrote:
-> Hi!
-> 
-> To sum up, there is 2 favourable approaches:
-> 
-> 1) to have dedicated SRAM partition for Wave5 VPU as suggested in this
-> patchset. In this approach SoC vendor can setup address range of said
-> partition to their needs, but other devices won't be able to use SRAM
-> memory reserved for Wave5 VPU, unless other device's SRAM memory needs
-> don't exceed the size of reserved partition.
-> 
-> Therefore it is sensible to substitute alloc/free on open/close with
-> alloc/free on open/close.
-> 
-> Advantages: driver code is simpler, no need for platform-specific defines
-> or DT properties. Wave5 is guaranteed to get SRAM memory.
-> 
-> Disadvantage: waste of SRAM memory while VPU is not in use
-> 
-> 2) allocate all available SRAM memory on open (free on close) from the
-> common SRAM pool, but limit maximum amount with SoC-specific define.
-> 
-> Advantage: less memory waste
-> 
-> Disadvantages: still need SoC-specific define or DT property, not much
-> differ from current state. Wave5 is not guaranteed to get SRAM memory.
-> 
-> Which of these approaches would be preferable?
-> 
+On Thu, Mar 21, 2024 at 07:57:28AM +0000, Liuye wrote:
+>
+> > The stack trace below shows an example of the problem. In this case
+> > the master cpu is not running from NMI but it has parked the slave
+> > CPUs using an NMI and the parked CPUs is holding spinlocks needed by
+> > schedule_work().
+>
+> Add description information
+>
+> > Signed-off-by: LiuYe <liu.yeC@h3c.com>
+> > Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
+> > Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+>
+> Add
+> Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Personaly I would say, let's stick with simpler code while there are not
-too much mainline users. When someone runs into SRAM insufficiency
-because of Wave5 VPU driver, their patches will be welcomed :)
+I assume this reply is summarizing what changed between the previous
+version and v3?
+
+The best way to add the changelog requested by Greg's bot is to send
+a corrected v4 version. If you follow the example in
+https://docs.kernel.org/process/submitting-patches.html#the-canonical-patch-format
+then you'll see that what is expected.
+
+You can use git-notes to handle this. If you add a note containing
+something like the following:
+~~~
+Changes in v4:
+* Provide these changelogs.
+
+Changes in v3:
+* <please describe changes>
+
+Changes in v2:
+* <please describe changes>
+~~~
+
+Once you have the note than git-format-patch --notes will automatically
+included the changelog with the patch.
+
+
+Daniel.
+
+
+PS I know that v2 was circulated with an incorrect subject line but I
+   think it is probably OK to call it v2 anyway... it makes the
+   changelog clearer!
 
