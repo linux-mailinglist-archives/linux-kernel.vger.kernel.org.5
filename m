@@ -1,97 +1,122 @@
-Return-Path: <linux-kernel+bounces-110212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632A7885B8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:23:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE7B5885B92
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 949A81C21E3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:23:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4814128591C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7465D86252;
-	Thu, 21 Mar 2024 15:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63A286255;
+	Thu, 21 Mar 2024 15:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u/WxVTvC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PSFeJn+3"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95F5A947;
-	Thu, 21 Mar 2024 15:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43AC58624E;
+	Thu, 21 Mar 2024 15:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711034626; cv=none; b=DkLec4vSfKLoD3dYQ68dNDNVUW8r5v9qPHCsNDOWoQLe2GrO06nc8c0iESfJrpSccpH2kdKoUqTARivDfk3cRletSPyK1hM6om0YF2UAZibG8wR/CSo45VDyI4CtodwxCVkcmXHGPzfLI76RWTH4kIv9rA6kEgQyzN0LEtS6V08=
+	t=1711034663; cv=none; b=s8URNSulFUk3wW5qVjnu8LED7FjkFmiqKl9C9+kswnzHj+gfvM+vHqCenAdssj363Il8nZNxlpHudoNFvaKaNs2wgHO+MYezNtHEOkLY8J8BuG+0YGEpu83aPvyhDAa2aLv67lxhuug1ysHyW0XTp8A/Vhn3wJrBETgAK5izvfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711034626; c=relaxed/simple;
-	bh=+m9kWk3iS2HPFwiXLggGjYbe+7JtOa3E70CJ3D/8dAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ssMitwOKT6ne6cPovVK4/iNRXGdDFGSIQz/9A/sstoS1r2MbxjXeAK9qKRZ4L3agc9svD5jj0uW16/PQIuW9Mcbt/3rzoXQ+QDg0Vlam/ufaGHHjrJ9eDT8gXJogyJEcWR4dVtU/ySfKo2ELiAIpnv/25wayumFBrvF8q+fXv+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u/WxVTvC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E98C4C433C7;
-	Thu, 21 Mar 2024 15:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711034626;
-	bh=+m9kWk3iS2HPFwiXLggGjYbe+7JtOa3E70CJ3D/8dAM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u/WxVTvC2Xh2unxOwqNeieRonBCU2/RpcwsCg5RvX89aEfLHCpaS/WbVUojtRdMKs
-	 bK08zB4+vI3atQSuXzIvEMa3YlF2h9uu65OKHxp/yUBXI0qkI9PU/97xGi7lACelUv
-	 RuHRDr+qBM1mMesbxvUxKKKQuaL/q4l7hJNpfxwAOg7rX9mN7KR/Xs/qzlb86tzdID
-	 ch6WumuOxPnSXXtCLevcNT3qOpf+w8GJx8tOwJA6GFXq0k6rnwLCb8UatFxQm+4ziZ
-	 KVpmpPzoP8VJOOeLjAI9wdaygqj+YFwqJqjWZYEdYtqn99CODLmHp0arDJL/KnDluc
-	 bK71bq5rNX2ig==
-Date: Thu, 21 Mar 2024 12:23:43 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Perry Taylor <perry.taylor@intel.com>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Edward Baker <edward.baker@intel.com>
-Subject: Re: [PATCH v1 00/12] perf vendor events intel update
-Message-ID: <ZfxQ_68hcyag2itr@x1>
-References: <20240321060016.1464787-1-irogers@google.com>
- <ZfxDX--WFVDlGad5@x1>
- <c1ade566-111a-46b2-81b7-c165890c84ce@linux.intel.com>
+	s=arc-20240116; t=1711034663; c=relaxed/simple;
+	bh=cIwf5+ODApnp9dDmGy58vm92m0RCRPL1X+s9JLtUT3E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Tm9l32gnST3ueegvlf4cBhpe4vAP1MBtLqyzbZ9KZ0QLar9Ly+mi8Ngvu7Bymxs6Cqrp3YxCH8ARi9tlvn2iUQFK25GKIVrQjxDXbMvPcIQh86sJQ8lX8tv2hgF4R9A0/SYfTvmxugpaMyR2zqQ7fLP7Ywm4yqpze/iUyd/GbSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PSFeJn+3; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42LAdwbM029392;
+	Thu, 21 Mar 2024 15:24:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=cG0lVyb2TamI2l+l0k2oVPo2ORBpTsuCykTEHklUfxs=; b=PS
+	FeJn+3koptauJaocB6xCzn3xPmKJl4i+ocNFfDyrxqfir2hI5af1Wv/nHuA+U1cL
+	NcMe//eFgmq11DaNAezJ/8Z42Xupi9X57CrVEpYyTVHFy197rjMrV9iY9crpU/ZI
+	L1A1p6vSleQwU3Ncq7GdlTpBcv8TnHyOSQguMoY7Sw8qxrU7zGM/mZ4wCqqlIYfN
+	eZeG1VVs83cIP8zgb4KbMbmfr1j6uHKar5ZWzrvgwYT/eAUXa+pL1Al54e2jHcnq
+	u/H5oXPP1LHTNGlSvn7PA3GAGqbI3ot7M4D7tsu4eEYnVyx4c3SMt+sQPi4vdvaq
+	lq3d53P/+1vyrfEeOSug==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x0ka60r8k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 15:24:16 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42LFOFIa027598
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 15:24:15 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 21 Mar 2024 08:24:13 -0700
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Mukesh
+ Ojha" <quic_mojha@quicinc.com>
+Subject: [PATCH v2 1/4] firmware: qcom: scm: Remove log reporting memory allocation failure
+Date: Thu, 21 Mar 2024 20:53:59 +0530
+Message-ID: <1711034642-22860-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1ade566-111a-46b2-81b7-c165890c84ce@linux.intel.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ELKtj7zOupBOlmaCklLVrHxleRGZxuvw
+X-Proofpoint-GUID: ELKtj7zOupBOlmaCklLVrHxleRGZxuvw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0 impostorscore=0
+ clxscore=1015 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403140001 definitions=main-2403210110
 
-On Thu, Mar 21, 2024 at 11:14:35AM -0400, Liang, Kan wrote:
-> 
-> 
-> On 2024-03-21 10:25 a.m., Arnaldo Carvalho de Melo wrote:
-> > On Wed, Mar 20, 2024 at 11:00:04PM -0700, Ian Rogers wrote:
-> >> Update events to the latest on:
-> >> https://github.com/intel/perfmon
-> >>
-> >> Using the converter script:
-> >> https://github.com/intel/perfmon/blob/main/scripts/create_perf_json.py
-> > 
-> > Kan,
-> > 
-> > 	Can you please take a look and provide an Acked or Reviewed-by?
-> > 
-> 
-> 
-> Sure. The patch series look good to me. Thanks Ian!
-> 
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Remove redundant memory allocation failure.
 
-Thanks!
+WARNING: Possible unnecessary 'out of memory' message
++       if (!mdata_buf) {
++               dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
 
-- Arnaldo
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+---
+Changes in v2: https://lore.kernel.org/lkml/20240227155308.18395-7-quic_mojha@quicinc.com/
+ - Added R-by tag
+
+ drivers/firmware/qcom/qcom_scm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+index 49ddbcab0680..a11fb063cc67 100644
+--- a/drivers/firmware/qcom/qcom_scm.c
++++ b/drivers/firmware/qcom/qcom_scm.c
+@@ -554,10 +554,9 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+ 	 */
+ 	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
+ 				       GFP_KERNEL);
+-	if (!mdata_buf) {
+-		dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
++	if (!mdata_buf)
+ 		return -ENOMEM;
+-	}
++
+ 	memcpy(mdata_buf, metadata, size);
+ 
+ 	ret = qcom_scm_clk_enable();
+-- 
+2.7.4
+
 
