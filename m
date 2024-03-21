@@ -1,311 +1,203 @@
-Return-Path: <linux-kernel+bounces-110458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACCA885F36
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:08:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D14A885EF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:00:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D1121C23C9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:08:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB9D21F22F73
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:00:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE09136655;
-	Thu, 21 Mar 2024 17:01:22 +0000 (UTC)
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98455135A71;
-	Thu, 21 Mar 2024 17:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.229.23.120
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711040481; cv=none; b=Hd+pAqeGvvOAU0Wo//Cguil8DUhYWgLHD6KYePJuqRLOKoX6sA0TMk/KDZdJ1w1WcgUQ8jlEdfwpGlkuO303dLqJEjBXxS5zSMBsE5xM6gI37A1SenzIMWfHhgXVUQ2Kbls32SDDc9gbk9PdK81tw7KA+ZBGg+K1X+uCThSVkuA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711040481; c=relaxed/simple;
-	bh=NjdCYzjubCfhlMPFrxBNJk0QJ3KZcuke0jwiS/KMkFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=UUZLopL9xAvnxOGABQazUO6OBU30waf1d6ZRlzo8GbrRxkONkQRuEIB6GqscYWvDqFVtYS1F2fBiGde4e5prWNBN696/HnTl1J2n8F9grmD8WOp7d1gmykD/fk2m/dDo8mS3WVxpgA6EB6kbFtXdwo80hgDjdLMzPd899XCBGdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk; spf=pass smtp.mailfrom=dudau.co.uk; arc=none smtp.client-ip=80.229.23.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dudau.co.uk
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-	by smtp.dudau.co.uk (Postfix) with SMTP id B878B4172F42;
-	Thu, 21 Mar 2024 16:51:27 +0000 (GMT)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Thu, 21 Mar 2024 16:51:27 +0000
-Date: Thu, 21 Mar 2024 16:51:27 +0000
-From: Liviu Dudau <liviu@dudau.co.uk>
-To: Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-	Haijun Liu <haijun.liu@mediatek.com>
-Cc: Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-	M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-	Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-	Loic Poulain <loic.poulain@linaro.org>,
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	"David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: net: wwan: t7xx: BUG: Unaligned access when loading mtk_t7xx module
-Message-ID: <Zfxlj3pYUk4ys47T@bart.dudau.co.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3921813A276;
+	Thu, 21 Mar 2024 16:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N7Wx0OWS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5860213A256;
+	Thu, 21 Mar 2024 16:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711039917; cv=fail; b=ZeqyKM2CbzaZTWhaNdz40hRa6Mw3uX+7N1aoiQuKSEM8xhuYxsKvjzciEX3kADDSgWUEgd2s9vF0SY/fN4Qu9J+t0i4DypDqUana2lhhDzjhUUhAArja/f1Tz6paPZckDm0D1gKi/8VyHQ21t3JcG8nTt0QodG0qq7I2tHkk2zs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711039917; c=relaxed/simple;
+	bh=JkYQkDFyo3+XwZwUUmSSzUVMVbwMXnii5X2RHA8o1KA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mTUpjc+GTMzg09u6vtIX4blNpZ6f435/hWwtKlM9WpGXL+/Lg+6/jv7+9ceB5FDdWpCBU06xv9V3FtynjZyyQh6gzx057cjnkTZJ7P+gohEx4v6Dou13TWZzZK5B0m2zJrXvAfmcwtgQVoyJIVdm49Uk7ZTkZ4PCKNofR7xqmu4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N7Wx0OWS; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711039915; x=1742575915;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JkYQkDFyo3+XwZwUUmSSzUVMVbwMXnii5X2RHA8o1KA=;
+  b=N7Wx0OWSRUXpELaGaxVwN7cEUZ0Vb1kAUmwg/Nh4YIgO85E/fyXuj5MU
+   KskQjWBx1s1ousgdirc7aypZ1lK9qMuxiAaQrEgLfw92IQrT/UQiO0W0c
+   bfKsGn9hftCJcHtDo7I1GcqRLRBZiRz0t6BlPOJ0t8RT0Ga6lX3YOy51G
+   wexXQXSQvFUS86EGjYGxO2hrfixL3w8FlrdrWPJcqNeK9Zc8PTHcPgIh+
+   1RKau3N17yg2yowksY/e95zs9iQbQRbWsCksSXCyGQui/1Raa9BfFu+h4
+   0oT3tUWo7YZAkgzzeFdtPNrm+9aRhAZJ645UPLT/gKEFGO2i4LJOpVDUm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6165547"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="6165547"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 09:51:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="45574059"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 09:51:54 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 09:51:53 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 09:51:53 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 09:51:53 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 09:51:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lKtFsNL3PaHD4yqPqBHn9xWzTfGlKlN1NnU9ihnp8sksI5kbIbfJvUzP5jE1cl94V8l6sGLOc1H7ueZW23HKuNj+pBMCiVEklAR0zEXu+CkMj553dXqZh2g19iR2Q5b/JcLtkQV7JZUrIpdRyIt45iGH9Eb/fUdZx0hS9cFC5FCqQoEFH7nc8SDtx+3t8CiTbNVEtlOZTYDDNvKFFdRLP1VNZX0VBQZ9hJr5e4RfbxJDmu2gvWTxV2QbtV34OOJiMeocwdQD0m2LSJyeFIyd6H/d9y8N1oTT6huhMgUaJU1CT6NepGZL2a82TgHYlBT57Wh9BTpowC4vceqaSfXEOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JkYQkDFyo3+XwZwUUmSSzUVMVbwMXnii5X2RHA8o1KA=;
+ b=jXIjBROC7K/e3C6M5OzujudqCS/CvGU5BViTOFzojDXHCjI6Nd/mCa6NizLsxQoFHYW1kZw6Cgr4HZXBkayM976KKamdU7gvZnfoenxsOd8WM61KJOYDb6JkLjolqm03QcrKtRTbof29WofDW/vAYwWnYo1Eu0hjsbojT1fAoezYqxlxhe2fHW3EDJ/zOarmCOHhuIi0trGx+IRdCKJBSeGWjXmSFsVLVUyhaDtAz8PhHe2mdse1/cErUkdH+65shhQINIfNJBKr5+757PVgWkrkODJi5yOcnq6xl4rNNbVHp5lZ4khYnHeBKnu79sdmQVOrWWGKEf3e01niMq/vaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by SA2PR11MB4844.namprd11.prod.outlook.com (2603:10b6:806:f9::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Thu, 21 Mar
+ 2024 16:51:51 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::fca9:7c00:b6d0:1d62%5]) with mapi id 15.20.7409.010; Thu, 21 Mar 2024
+ 16:51:51 +0000
+From: "Luck, Tony" <tony.luck@intel.com>
+To: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+CC: "Yu, Fenghua" <fenghua.yu@intel.com>, "Chatre, Reinette"
+	<reinette.chatre@intel.com>, Peter Newman <peternewman@google.com>, "Jonathan
+ Corbet" <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+	"x86@kernel.org" <x86@kernel.org>, Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+	James Morse <james.morse@arm.com>, Jamie Iles <quic_jiles@quicinc.com>, "Babu
+ Moger" <babu.moger@amd.com>, Randy Dunlap <rdunlap@infradead.org>, "Drew
+ Fustini" <dfustini@baylibre.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "patches@lists.linux.dev"
+	<patches@lists.linux.dev>
+Subject: RE: [PATCH v16 0/9] Add support for Sub-NUMA cluster (SNC) systems
+Thread-Topic: [PATCH v16 0/9] Add support for Sub-NUMA cluster (SNC) systems
+Thread-Index: AQHadMZAfvOnE4EV7EqwgV4w9PIDb7FB36oAgACVVRA=
+Date: Thu, 21 Mar 2024 16:51:51 +0000
+Message-ID: <SJ1PR11MB6083C9DD405BF4CB986822F5FC322@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <20240312214247.91772-1-tony.luck@intel.com>
+ <bn4wtfyec4mfoztcr35rctgcbibypjh5gmxdr3fro72glh2y3n@vmqsuxgjlonw>
+In-Reply-To: <bn4wtfyec4mfoztcr35rctgcbibypjh5gmxdr3fro72glh2y3n@vmqsuxgjlonw>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SA2PR11MB4844:EE_
+x-ms-office365-filtering-correlation-id: ff5878e6-d45b-4757-acfd-08dc49c734d2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5w8UbaritdIDbBUVex/CV2O1/91LJxE29kD3B9Bv7pBFg6xSfMEb3rfxVYISNnAEJMQ4N9vB5PA9ChhOBTeMq51IilDmcOktiHavOr3tSMpTLMKnCO7Yt7b5zODP7wQv/Td8NLXkEIYdpM3eu+H8bDHU+nyvFVFii51gqiRV6u/Vz6yc4sr3klYVr2x+PzLYCdvzy9eJYnR5YXzHlWsTEFR7fwc6qO7aozUPxo1UK70HRHWZJztXJ8kubnzfWBaFwUvs1MM2BucNI8DbJqEXKkz2ru9saLtfUxQPtmWnDHXfQOkE/2UYIXBjJUcITh+5zKCwUgKLfIUkNVvmFbTEC211svq78uUaZwVOepu52S7zBsVvFyIQS7tYh6YfctP0vkYpP3ud1epxPwxTdhWKOrZN3ts6dwpoP1CUsbTVIVv/hdiA5pWzhj4F7tSgdlbY8DrH1WvpmF4ImzUzqmu5/s+SI29Dg1eLau4zAuBt1mYCt7YUY8eswv2tczdfBBuc7O+TFnAZEvyfIj8E1qpWFtTcZZJvHu7kr8YL90bglZlXOTK4jJ5yivtowQ7n02i+YitEOuDtL2Shger1G2T/4HEK8TW29uLeWCrqkIcRTlKbuzv/5CWIofqRpVqcWV4aMLmVKckzuUyA/hx7V41aH+lDhrRF5wYqHr7skr3ByzJnD+YeTsXiaCJ2POSUEusnfhJNcbr4QwPLjRg8stXgdSqUi8bujb2ky3CQZpb07Po=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(7416005)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ImQHT0AGYmlFtNDvwqZlLxYZdC+Fgu1A7z07d4nfXGjTwFpBDym/0R75qzHI?=
+ =?us-ascii?Q?fpbJaf4VWqtmucHmt9b6o6mZHCqb5tWUhF/Tvo133UPIxp7KhSuZYviqPP9G?=
+ =?us-ascii?Q?yHv42YpMybVwP/5BzQMtOIJ1bHN2NaKE3EYmIFqNHZpa+yip5oB74gLYsDcL?=
+ =?us-ascii?Q?dm4ZNCVwLAeIZcxM+exL3xg7MVYf7FWP0Tkivo9cu9vYr9EyEIeoyy65r18M?=
+ =?us-ascii?Q?kcC0zvmrIdNoWnfLMbdmQYIbjCO6/tJeNZrET1t81pAqlGif7yyuRTqKMMfo?=
+ =?us-ascii?Q?T3AY5TOQbPvTsR0Wk3Zp/WD1CUHNxoIiehIfLpwSdz3hgiBVxCapG4F06zn9?=
+ =?us-ascii?Q?0QoDY6QvNru2hA00020sonmwtn04QEdLp6AFHfeOx/OblcwqbVMMilqBTNxO?=
+ =?us-ascii?Q?IyPzXlJf37evgzByd3JVhI5yJ6P4ZOiYwHQMU6CViUbNM84zLuyiCAn2a2Ks?=
+ =?us-ascii?Q?hEFuM9VQLjhvEs6sJCu2FuRrb5JOCArWsvoFRLFmGCdTAQxSrCwDx+lT8tF7?=
+ =?us-ascii?Q?DV4+H4W9VlhOJdzJsuIXIqd6kHzP7cpKB8mDGb5/8XUipZNyVT0tBbS6CP3Z?=
+ =?us-ascii?Q?9X0M5eLphgC9y0/1mpU12du5DqDDbG/frWVjHO45+Bi5x9okaG16UHsOSPJK?=
+ =?us-ascii?Q?wq2Y1KDKha1YsdnMP4Wg9SlT0+KHKdU+hujINyXEuNcvFMLLfszFfIRBuS69?=
+ =?us-ascii?Q?QHdpE+qkaVbcmN3ASQINJRMTaTHthHIe+2iMVYzUug07114TvqP7Pw7RHp3B?=
+ =?us-ascii?Q?ygIhqXtLGNwTKyTAZG5l1noHsPIC3M+wbSx1KCxaD16XS6h6k1PXiD9AKBaP?=
+ =?us-ascii?Q?54meGI4QmfCK6tHpeKDqlZKEBHjS0xYs39Xh6mVSt6n0NLBzUY4ezIRyUSzL?=
+ =?us-ascii?Q?1ygZ+uqnUO8WBGPFi+yTyHSFIMpWw1crMODcBi2/G0MJfgGw+Bt02F4JcgSK?=
+ =?us-ascii?Q?WH8oJb/DGgA/8yAzg/RYJyxCCr+pxWilXRAnplMYQAHIhm/SQPJYpPFhPumx?=
+ =?us-ascii?Q?lgguxcaiIb5LPDn8Q3Hrb8XMCEGuDJA8kpP1jprV8ajrfEOBfAsgw/UjBNNe?=
+ =?us-ascii?Q?snscMy8fWeFXSTdwcFhPv8XAuY0NzxtPsx148rnh7UHtOelcbu7LqAxu7STj?=
+ =?us-ascii?Q?/NMHSJYKWq0LKaQHO4OChinLEd5vcJOM2rPQtPx3m7e7Q8f8UU7kfrrJ/g9k?=
+ =?us-ascii?Q?r1xub2z6HMo25JI+WIHsKZlPp+SN9dVEOv6syiuCQEJE56I2uu5zNKonagos?=
+ =?us-ascii?Q?gqGiNteJCBTo6yh9OVX2S1I36gFt2gFP2YTHSjQBHI6YcAZk66Mov75wtJs3?=
+ =?us-ascii?Q?I/nMQudYc33Hg4SOFuXsWlnLWWuXqw2sldc4n2fdeDJPM09QLLfWSCw4xCMG?=
+ =?us-ascii?Q?JVDwtQUj9tKO/dWAtljzWrp2tMNRngewQ4BfB3Lnu/WWZJbj+bkXq6WEoxRH?=
+ =?us-ascii?Q?KsZQj3+iSe8agS3G8lblhRCYXxLMvYu1tX/YXTDKG7X1lRNJj8rHaWUxwg22?=
+ =?us-ascii?Q?5N4Zt/ayh4eBSoQCToVYwCSKTAictgeLsz490uFf5c4VQ1CWSncNP6DQ3EIl?=
+ =?us-ascii?Q?lveEu7nr5uKbydzWtD57G6qnxoW8Drev2RMpZqn4?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff5878e6-d45b-4757-acfd-08dc49c734d2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 16:51:51.3023
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: erxjw712SdqkjMnYVNuJHypd+MEaulmPqYLAUQs0ZC9n3SvabjJE11QYN0TUhzMp+WwuMq2CNHO0/jkuiLBdaw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4844
+X-OriginatorOrg: intel.com
 
-Hello,
+> I wanted to find what causes the conflict so I can give more details but =
+three
+> way merging doesn't seem to work and git am doesn't leave any conflict ma=
+rkers,
+> just fails.
 
-I'm trying to use a Fibocom FM350-GL modem with a Quartzpro64 board based
-on RK3588 using Linus' tip of the tree and I'm getting a memory alignment
-fault when modprobe-ing the mtk_t7xx driver.
+Maybe there's something else touching resctrl in either TIP or now in upstr=
+eam?
 
-The exception happens in t7xx_cldma_hw_set_start_addr() as the virtual
-address is not a 64bit address (ffff800085a1f00*4*). The same issue
-seems to have been found by openwrt people a few days ago:
+In my local tree I built on upstream after Linus pulled TIP x86/cache (and =
+a bunch
+or other stuff). So my base commit is:
 
-https://forum.openwrt.org/t/fibocom-fm350-gl-support/142682/67
+b29f377119f6 Merge tag 'x86-boot-2024-03-12' of git://git.kernel.org/pub/sc=
+m/linux/kernel/git/tip/ti
 
+Then the two patch cleanup:
 
-Looking at the code I can see that the registers used for building the
-virtual address use the START_ADDRL (low) macro, which is wrong (that
-would be 32bit aligned, not 64bit). Except that ....
+b0eebe2ee45d x86/resctrl: Simplify call convention for MSR update functions
+edf14f3a6093 x86/resctrl: Pass domain to target CPU
 
-/* CLDMA TX */
-#define REG_CLDMA_UL_START_ADDRL_0	0x0004
-#define REG_CLDMA_UL_START_ADDRH_0	0x0008
-#define REG_CLDMA_UL_CURRENT_ADDRL_0	0x0044
-#define REG_CLDMA_UL_CURRENT_ADDRH_0	0x0048
-[....]
-#define REG_CLDMA_DL_START_ADDRL_0	0x0478
-#define REG_CLDMA_DL_START_ADDRH_0	0x047c
-#define REG_CLDMA_DL_CURRENT_ADDRL_0	0x04b8
-#define REG_CLDMA_DL_CURRENT_ADDRH_0	0x04bc
+Then this v16 SNC series.
 
-There seems to be an unholy mess of register offsets. UL_START_ADDRL_0 is
-at a 32bit offset, but DL_START_ADDRL_0 is at a 64bit offset.
-UL_START_ADDRH_0 is at a 64bit offset, but DL_START_ADDRH_0 is not.
+Reinette pointed out a couple of things to fix in v16, I'll handle those an=
+d post
+v17 next week (based on Linus v6.9-rc1). I'll fix up any additional merge i=
+ssues
+while rebasing.
 
-Given that all accesses to those registers are io{read,write}64(),
-I question the need to have an High and Low register definition, so one of
-these can be removed and offsets corrected by someone with access to the
-documentation that gives correct information for the registers. I had a
-go at guessing that UL registers are at 0x8 and 0x48 offsets and DL
-registers are at 0x0478 and 0x04b8, but while that fixes the alignment
-exception, I now get a "CLDMA{0,1} queue 0 is not empty" message.
-
-For anyone trying to reproduce this: you first need to modify the
-device tree to slightly reduce the 3rd MEM area so that BAR0 of the
-root complex does not fit in and allocates all the available memory:
-
---8<-------------------------------------------------
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-index 74e8ed4531f0d..75db20440a590 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-@@ -219,7 +219,7 @@ pcie3x4: pcie@fe150000 {
-                power-domains = <&power RK3588_PD_PCIE>;
-                ranges = <0x01000000 0x0 0xf0100000 0x0 0xf0100000 0x0 0x00100000>,
-                         <0x02000000 0x0 0xf0200000 0x0 0xf0200000 0x0 0x00e00000>,
--                        <0x03000000 0x0 0x40000000 0x9 0x00000000 0x0 0x40000000>;
-+                        <0x03000000 0x0 0x40000000 0x9 0x00000000 0x0 0x3fff0000>;
-                reg = <0xa 0x40000000 0x0 0x00400000>,
-                      <0x0 0xfe150000 0x0 0x00010000>,
-                      <0x0 0xf0000000 0x0 0x00100000>;
---8<-------------------------------------------------
-
-After reboot, "dmesg | grep -i pci" gives:
-
-[    0.000000] Kernel command line: earlycon=uart8250,mmio32,0xfeb50000 rootwait root=/dev/mmcblk0p2 rw pci=realloc=on
-[    0.011344] PCI/MSI: /interrupt-controller@fe600000/msi-controller@fe640000 domain created
-[    0.011388] PCI/MSI: /interrupt-controller@fe600000/msi-controller@fe660000 domain created
-[    0.119664] PCI: CLS 0 bytes, default 64
-[    0.169966] pciehp: pcie_port_service_register = 0
-[    0.488618] rockchip-dw-pcie a40000000.pcie: host bridge /pcie@fe150000 ranges:
-[    0.489346] rockchip-dw-pcie a40000000.pcie: Parsing ranges property...
-[    0.489368] rockchip-dw-pcie a40000000.pcie:       IO 0x00f0100000..0x00f01fffff -> 0x00f0100000
-[    0.490173] rockchip-dw-pcie a40000000.pcie:      MEM 0x00f0200000..0x00f0ffffff -> 0x00f0200000
-[    0.490970] rockchip-dw-pcie a40000000.pcie:      MEM 0x0900000000..0x093ffeffff -> 0x0040000000
-[    0.499585] rockchip-dw-pcie a40000000.pcie: iATU: unroll T, 8 ob, 8 ib, align 64K, limit 8G
-[    0.704878] rockchip-dw-pcie a40000000.pcie: PCIe Gen.3 x1 link up
-[    0.705811] rockchip-dw-pcie a40000000.pcie: PCI host bridge to bus 0000:00
-[    0.706451] pci_bus 0000:00: root bus resource [bus 00-0f]
-[    0.706957] pci_bus 0000:00: root bus resource [io  0x0000-0xfffff] (bus address [0xf0100000-0xf01fffff])
-[    0.707814] pci_bus 0000:00: root bus resource [mem 0xf0200000-0xf0ffffff]
-[    0.708437] pci_bus 0000:00: root bus resource [mem 0x900000000-0x93ffeffff] (bus address [0x40000000-0x7ffeffff])
-[    0.709401] pci_bus 0000:00: scanning bus
-[    0.709441] pci 0000:00:00.0: [1d87:3588] type 01 class 0x060400 PCIe Root Port
-[    0.710114] pci 0000:00:00.0: BAR 0 flags 00040200 [mem 0x00000000-0x3fffffff]
-[    0.710772] pci 0000:00:00.0: BAR 1 flags 00040200 [mem 0x00000000-0x3fffffff]
-[    0.711428] pci 0000:00:00.0: ROM flags 00046200 [mem 0x00000000-0x0000ffff pref]
-[    0.712105] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-[    0.712585] pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
-[    0.713157] pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff]
-[    0.713777] pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff 64bit pref]
-[    0.714529] pci 0000:00:00.0: supports D1 D2
-[    0.714923] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-[    0.715448] pci 0000:00:00.0: PME# disabled
-[    0.715717] pci 0000:00:00.0: vgaarb: pci_notify
-[    0.722215] pci_bus 0000:00: fixups for bus
-[    0.722231] pci 0000:00:00.0: scanning [bus 01-ff] behind bridge, pass 0
-[    0.722335] pci_bus 0000:01: busn_res: can not insert [bus 01-ff] under [bus 00-0f] (conflicts with (null) [bus 00-0f])
-[    0.723310] pci_bus 0000:01: scanning bus
-[    0.723398] pci 0000:01:00.0: [14c3:4d75] type 00 class 0x0d4000 PCIe Endpoint
-[    0.724134] pci 0000:01:00.0: BAR 0 flags 0014220c [mem 0x00000000-0x00007fff 64bit pref]
-[    0.724943] pci 0000:01:00.0: BAR 2 flags 00140204 [mem 0x00000000-0x007fffff 64bit]
-[    0.725691] pci 0000:01:00.0: BAR 4 flags 0014220c [mem 0x00000000-0x007fffff 64bit pref]
-[    0.726819] pci 0000:01:00.0: supports D1 D2
-[    0.727212] pci 0000:01:00.0: PME# supported from D0 D1 D2 D3hot D3cold
-[    0.727822] pci 0000:01:00.0: PME# disabled
-[    0.728145] pci 0000:01:00.0: 7.876 Gb/s available PCIe bandwidth, limited by 8.0 GT/s PCIe x1 link at 0000:00:00.0 (capable of 15.752 Gb/s with 8.0 GT/s PCIe x2 link)
-[    0.729852] pci 0000:01:00.0: vgaarb: pci_notify
-[    0.740863] pci_bus 0000:01: fixups for bus
-[    0.740877] pci_bus 0000:01: bus scan returning with max=01
-[    0.740893] pci 0000:00:00.0: scanning [bus 01-ff] behind bridge, pass 1
-[    0.740907] pci_bus 0000:00: bus scan returning with max=ff
-[    0.740934] pci 0000:00:00.0: BAR 0 [mem size 0x40000000]: can't assign; no space
-[    0.741617] pci 0000:00:00.0: BAR 0 [mem size 0x40000000]: failed to assign
-[    0.742248] pci 0000:00:00.0: BAR 1 [mem size 0x40000000]: can't assign; no space
-[    0.742923] pci 0000:00:00.0: BAR 1 [mem size 0x40000000]: failed to assign
-[    0.743554] pci 0000:00:00.0: bridge window [mem 0xf0800000-0xf0ffffff]: assigned
-[    0.744233] pci 0000:00:00.0: bridge window [mem 0x900000000-0x900bfffff 64bit pref]: assigned
-[    0.745030] pci 0000:00:00.0: ROM [mem 0xf0200000-0xf020ffff pref]: assigned
-[    0.745677] pci 0000:01:00.0: BAR 2 [mem 0xf0800000-0xf0ffffff 64bit]: assigned
-[    0.746377] pci 0000:01:00.0: BAR 4 [mem 0x900000000-0x9007fffff 64bit pref]: assigned
-[    0.747128] pci 0000:01:00.0: BAR 0 [mem 0x900800000-0x900807fff 64bit pref]: assigned
-[    0.747879] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-[    0.748358] pci 0000:00:00.0:   bridge window [mem 0xf0800000-0xf0ffffff]
-[    0.748990] pci 0000:00:00.0:   bridge window [mem 0x900000000-0x900bfffff 64bit pref]
-[    0.749781] pcieport 0000:00:00.0: vgaarb: pci_notify
-[    0.749936] pcieport 0000:00:00.0: assign IRQ: got 79
-[    0.753110] pcieport 0000:00:00.0: PME: Signaling with IRQ 88
-[    0.754465] pcieport 0000:00:00.0: AER: enabled with IRQ 89
-[    0.755023] pcieport 0000:00:00.0: save config 0x00: 0x35881d87
-[    0.755037] pcieport 0000:00:00.0: save config 0x04: 0x00100507
-[    0.755048] pcieport 0000:00:00.0: save config 0x08: 0x06040001
-[    0.755059] pcieport 0000:00:00.0: save config 0x0c: 0x00010000
-[    0.755071] pcieport 0000:00:00.0: save config 0x10: 0x00000000
-[    0.755081] pcieport 0000:00:00.0: save config 0x14: 0x00000000
-[    0.755092] pcieport 0000:00:00.0: save config 0x18: 0x00ff0100
-[    0.755103] pcieport 0000:00:00.0: save config 0x1c: 0x000000f0
-[    0.755113] pcieport 0000:00:00.0: save config 0x20: 0xf0f0f080
-[    0.755124] pcieport 0000:00:00.0: save config 0x24: 0x40b14001
-[    0.755135] pcieport 0000:00:00.0: save config 0x28: 0x00000000
-[    0.755145] pcieport 0000:00:00.0: save config 0x2c: 0x00000000
-[    0.755156] pcieport 0000:00:00.0: save config 0x30: 0x00000000
-[    0.755166] pcieport 0000:00:00.0: save config 0x34: 0x00000040
-[    0.755177] pcieport 0000:00:00.0: save config 0x38: 0x00000000
-[    0.755187] pcieport 0000:00:00.0: save config 0x3c: 0x0002014f
-[    0.755225] pcieport 0000:00:00.0: vgaarb: pci_notify
-
-
-Fibocom modem is on 0000:01:00.0
-
-Crash happens at insmod time:
-
-[root@quartzpro64 ~]# insmod ~dliviu/mtk_t7xx.ko
-[  520.509674] mtk_t7xx 0000:01:00.0: enabling device (0000 -> 0002)
-[  520.510272] mtk_t7xx 0000:01:00.0: requesting region 0 for 0000:01:00.0
-[  520.510899] mtk_t7xx 0000:01:00.0: requesting region 2 for 0000:01:00.0
-[  520.522717] (unnamed net_device) (dummy): netif_napi_add_weight() called with weight 128
-[  520.531037] wwan wwan0: port wwan0fastboot0 attached
-[  520.534022] wwan wwan0: port wwan0fastboot0 disconnected
-[root@quartzpro64 ~]# [  520.543305] Unable to handle kernel paging request at virtual address ffff800085a1f004
-[  520.544008] Mem abort info:
-[  520.544256]   ESR = 0x0000000096000061
-[  520.544587]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  520.545055]   SET = 0, FnV = 0
-[  520.545327]   EA = 0, S1PTW = 0
-[  520.545605]   FSC = 0x21: alignment fault
-[  520.545959] Data abort info:
-[  520.546214]   ISV = 0, ISS = 0x00000061, ISS2 = 0x00000000
-[  520.546695]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-[  520.547139]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[  520.547606] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000003ab5000
-[  520.548194] [ffff800085a1f004] pgd=1000000004921003, p4d=1000000004921003, pud=1000000004922003, pmd=00680000f0a00711
-[  520.549129] Internal error: Oops: 0000000096000061 [#1] PREEMPT SMP
-[  520.549680] Modules linked in: mtk_t7xx r8169 dwmac_rk hantro_vpu stmmac_platform stmmac v4l2_vp9 rockchip_saradc snd_soc_simple_card v4l2_h264 industrialio_triggered_buffer rfkill_gpio crct10dif_ce snd_soc_simple_card_utils tee rk805_pwrkey rtc_hym8563 pcs_xpcs kfifo_buf phy_rockchip_naneng_combphy rockchip_thermal ahci_dwc rockchip_dfi snd_soc_rockchip_i2s_tdm v4l2_mem2mem rockchipdrm videobuf2_dma_contig phy_rockchip_inno_usb2 analogix_dp videobuf2_memops dw_hdmi_qp videobuf2_v4l2 dw_mipi_dsi videodev dw_hdmi videobuf2_common drm_display_helper wwan mc cec drm_dma_helper drm_kms_helper snd_soc_simple_amplifier adc_keys cfg80211 rfkill uio_pdrv_genirq uio sch_fq_codel drm fuse drm_panel_orientation_quirks backlight dm_mod nfnetlink ip_tables x_tables ipv6 crc_ccitt
-[  520.555692] CPU: 4 PID: 94 Comm: kworker/u33:0 Not tainted 6.8.0-11808-g9f98dafcc47f-dirty #45
-[  520.556449] Hardware name: PINE64 QuartzPro64 (DT)
-[  520.556870] Workqueue: md_hk_wq t7xx_md_hk_wq [mtk_t7xx]
-[  520.557361] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  520.557974] pc : t7xx_cldma_hw_set_start_addr+0x1c/0x3c [mtk_t7xx]
-[  520.558533] lr : t7xx_cldma_start+0x88/0x11c [mtk_t7xx]
-[  520.559009] sp : ffff80008394bd40
-[  520.559301] x29: ffff80008394bd40 x28: 0000000000000000 x27: 0000000000000000
-[  520.559935] x26: ffff0001022e1828 x25: ffff0001012dae80 x24: ffff000102c048a0
-[  520.560567] x23: 0000000000000000 x22: ffff000102c04a38 x21: ffff000102c04080
-[  520.561199] x20: ffff000102c040b0 x19: 0000000000000000 x18: ffffffffffffffff
-[  520.561831] x17: 0000000000000000 x16: ffff0003fdee98b8 x15: 0000000000000002
-[  520.562461] x14: 0000000000000000 x13: 0000000000000009 x12: 0000000000000000
-[  520.563092] x11: 0000000000000000 x10: ffff0003fdee9920 x9 : 0000000000000000
-[  520.563723] x8 : ffff0001031a1088 x7 : ffff000102c04898 x6 : 0000000000000018
-[  520.564355] x5 : 00000000000008f0 x4 : 0000000000000001 x3 : 0000000000000000
-[  520.564986] x2 : 0000000105af7000 x1 : ffff800085a1f004 x0 : ffff800085a1f004
-[  520.565618] Call trace:
-[  520.565838]  t7xx_cldma_hw_set_start_addr+0x1c/0x3c [mtk_t7xx]
-[  520.566369]  t7xx_md_hk_wq+0x3c/0x7c [mtk_t7xx]
-[  520.566785]  process_one_work+0x148/0x29c
-[  520.567148]  worker_thread+0x2fc/0x40c
-[  520.567485]  kthread+0x110/0x114
-[  520.567775]  ret_from_fork+0x10/0x20
-[  520.568099] Code: f9400800 91001000 8b214001 d50332bf (f9000022)
-[  520.568637] ---[ end trace 0000000000000000 ]---
-[  520.569044] note: kworker/u33:0[94] exited with irqs disabled
-[  520.569578] note: kworker/u33:0[94] exited with preempt_count 1
-[  520.569970] Unable to handle kernel paging request at virtual address ffff800085a1d004
-[  520.570804] Mem abort info:
-[  520.571053]   ESR = 0x0000000096000061
-[  520.571385]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  520.571854]   SET = 0, FnV = 0
-[  520.572126]   EA = 0, S1PTW = 0
-[  520.572406]   FSC = 0x21: alignment fault
-[  520.572761] Data abort info:
-[  520.573017]   ISV = 0, ISS = 0x00000061, ISS2 = 0x00000000
-[  520.573501]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-[  520.573946]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[  520.574415] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000003ab5000
-[  520.575005] [ffff800085a1d004] pgd=1000000004921003, p4d=1000000004921003, pud=1000000004922003, pmd=00680000f0a00711
-[  520.575942] Internal error: Oops: 0000000096000061 [#2] PREEMPT SMP
-[  520.576494] Modules linked in: mtk_t7xx r8169 dwmac_rk hantro_vpu stmmac_platform stmmac v4l2_vp9 rockchip_saradc snd_soc_simple_card v4l2_h264 industrialio_triggered_buffer rfkill_gpio crct10dif_ce snd_soc_simple_card_utils tee rk805_pwrkey rtc_hym8563 pcs_xpcs kfifo_buf phy_rockchip_naneng_combphy rockchip_thermal ahci_dwc rockchip_dfi snd_soc_rockchip_i2s_tdm v4l2_mem2mem rockchipdrm videobuf2_dma_contig phy_rockchip_inno_usb2 analogix_dp videobuf2_memops dw_hdmi_qp videobuf2_v4l2 dw_mipi_dsi videodev dw_hdmi videobuf2_common drm_display_helper wwan mc cec drm_dma_helper drm_kms_helper snd_soc_simple_amplifier adc_keys cfg80211 rfkill uio_pdrv_genirq uio sch_fq_codel drm fuse drm_panel_orientation_quirks backlight dm_mod nfnetlink ip_tables x_tables ipv6 crc_ccitt
-[  520.582516] CPU: 7 PID: 412 Comm: kworker/u33:1 Tainted: G      D            6.8.0-11808-g9f98dafcc47f-dirty #45
-[  520.583410] Hardware name: PINE64 QuartzPro64 (DT)
-[  520.583833] Workqueue: md_hk_wq t7xx_ap_hk_wq [mtk_t7xx]
-[  520.584327] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[  520.584942] pc : t7xx_cldma_hw_set_start_addr+0x1c/0x3c [mtk_t7xx]
-[  520.585504] lr : t7xx_cldma_start+0x88/0x11c [mtk_t7xx]
-[  520.585981] sp : ffff80008400bd40
-[  520.586275] x29: ffff80008400bd40 x28: 0000000000000000 x27: 0000000000000000
-[  520.586907] x26: ffff0001022e1828 x25: ffff000100e081c0 x24: ffff000102c068a0
-[  520.587539] x23: 0000000000000000 x22: ffff000102c06a38 x21: ffff000102c06080
-[  520.588171] x20: ffff000102c060b0 x19: 0000000000000000 x18: ffffffffffffffff
-[  520.588803] x17: 000000040044ffff x16: ffff0003fdee98b8 x15: 0000000000000002
-[  520.589434] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
-[  520.590066] x11: 0000000000000000 x10: ffff0003fdee9940 x9 : 0000000000000000
-[  520.590697] x8 : ffff0001031a1088 x7 : ffff000102c06898 x6 : 0000000000000018
-[  520.591329] x5 : 00000000000008f0 x4 : 0000000000000001 x3 : 0000000000000000
-[  520.591960] x2 : 0000000105eb8000 x1 : ffff800085a1d004 x0 : ffff800085a1d004
-[  520.592592] Call trace:
-[  520.592812]  t7xx_cldma_hw_set_start_addr+0x1c/0x3c [mtk_t7xx]
-[  520.593341]  t7xx_ap_hk_wq+0x44/0x78 [mtk_t7xx]
-[  520.593758]  process_one_work+0x148/0x29c
-[  520.594121]  worker_thread+0x2fc/0x40c
-[  520.594457]  kthread+0x110/0x114
-[  520.594747]  ret_from_fork+0x10/0x20
-[  520.595071] Code: f9400800 91001000 8b214001 d50332bf (f9000022)
-[  520.595609] ---[ end trace 0000000000000000 ]---
-[  520.596017] note: kworker/u33:1[412] exited with irqs disabled
-[  520.596544] note: kworker/u33:1[412] exited with preempt_count 1
-
-[root@quartzpro64 ~]# [  580.895345] mtk_t7xx 0000:01:00.0: MD handshake timeout
-[  580.895821] mtk_t7xx 0000:01:00.0: Boot Handshake failure
-
-
-Best regards,
-Liviu
-
-
--- 
-Everyone who uses computers frequently has had, from time to time,
-a mad desire to attack the precocious abacus with an axe.
-       	   	      	     	  -- John D. Clark, Ignition!
+-Tony
 
