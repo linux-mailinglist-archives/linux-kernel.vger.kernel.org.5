@@ -1,142 +1,123 @@
-Return-Path: <linux-kernel+bounces-110634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBEF8886189
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19BC088618C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 681A31F2294C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:19:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C484A1F22D66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4B5134CC7;
-	Thu, 21 Mar 2024 20:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277FF134CEC;
+	Thu, 21 Mar 2024 20:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="khFV506D";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZUi/oE7I"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="b+iOeAwy"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615EAF4FA;
-	Thu, 21 Mar 2024 20:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B9713442F;
+	Thu, 21 Mar 2024 20:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711052369; cv=none; b=Htum4848FjNd8kTV3s7TT2tADV9GWoO5z6ibK2muVFQ43zkSKAxpZivbhaRG6xCeYt6QUPimsjnvJ3wIWc9yNaBw6N76BPhJY1Y+WQuR6GBhl+3nRTy/Fk/zVuoj/S5zV5Cu4zT8LGCV8SeezIxfUC3RTln6PIjC1BoFaVX08DU=
+	t=1711052428; cv=none; b=A0d2H9eMhfAb8eUHXEf7v0Z3aTndG+3QFrbF6QloFL63K6C6ctgzDO0VDxRHD+XjMTt730PBBLo8Qxcrb3hmRAJT7k8b9L3BVviMQ/vHPX9qFOKviRdLmxHt56GuTnTbHMhcljsJZUxHQ1ggsEMLWLfY18ujOny0+Y/VGd0SgpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711052369; c=relaxed/simple;
-	bh=0+7yLupFUJn3tZxnu2lqPHb28Vn9hA0mXxBfuZkl76Y=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=U4roXnPpNHqevaGXVV19yUTgHDiNy2s6SE20bEDfeCq52aiiSfCHGNr7upggiGxFIv0z0YBln8RcR6FJ5MKlsZDnObiSnRr/5nzKXQRngGwfyW9hM9zX/7zg/t7oiV/l1MLX9qEic8OTm8XLsZrMIBayHLJnAWA2avOsjui1Jfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=khFV506D; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZUi/oE7I; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 21 Mar 2024 20:19:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711052365;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=crUYMPOl/nFJOh+gZdNsIAU1wjH2L9wkVovg4jxZ6Tc=;
-	b=khFV506D8rWV3Eg9RuSurxyKn23YqfYihQFxyvVVkfDc2xHLF/4g5JnMtjEZvcRr8V1nFF
-	ppmUBkMJqXboGZA580p9dB8QjokvK9fNnXJq9idXzDdYX9PwtzoN3ZJK4t77BYg4OmPCYq
-	3QsCJ98zoVfGYO7NzA7wAnLBnRPGDlA+aFGGGpegMF9SoGnFaUQOm6sZTjfMNL/Vt5HcyA
-	TqbpTfWXOO54W9JLaPMg0eKETVEXWc1RJdSKabkAe1ySufByftDmwEr8w46MDi4ZKP/8zu
-	7uyBIbOh08rBqtmEy770b4shN82N2W7cSo1WiAm8ncUJUBIDXQzoYoHwWuok7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711052365;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=crUYMPOl/nFJOh+gZdNsIAU1wjH2L9wkVovg4jxZ6Tc=;
-	b=ZUi/oE7IS+ZyqsMIUoep38sKY73vBnGWvtnPDMAT0wSm0u0BZLMqgubMB6I/6FlRWsk9x6
-	c0aU8dHwXYCwUuBw==
-From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Get rid of an unnecessary local variable in
- get_cpu_address_sizes()
-Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240316120706.4352-1-bp@alien8.de>
-References: <20240316120706.4352-1-bp@alien8.de>
+	s=arc-20240116; t=1711052428; c=relaxed/simple;
+	bh=eFrHAh7BJNnqflbNawWUWzv1wOsF6n2g6fArJ0mZMlY=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=HBuwUnTrq3NSZ94qAPalJo5/CNSkP/oI/pKXuO/RYwWMz9qZJ+4xcaj/FjiEFWbcyun92kpixYHkX1raOVTB0G/7Ve3ieg/ArHWQZfTRT+aHMw0oPfyLjjuhI9o8wlPvZhedkJqbrI/h2gS/s8Ag9lil8LRxXMyFuqtU+Cg0cRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=b+iOeAwy; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=content-transfer-encoding:from:mime-version:subject:date:
+   message-id:references:cc:in-reply-to:to;
+  bh=eFrHAh7BJNnqflbNawWUWzv1wOsF6n2g6fArJ0mZMlY=;
+  b=b+iOeAwyum6sXPaLJdb+fWcvioaIay6A5QdvQAH59gWJUsmGC9jNdIvf
+   /ahM63HH30yJBWqhsW2vS2WPc5h/9lkl9FlcxgEizgMNTAwfqQZw4FHWI
+   d57CFM4Nc+XCYjiqBF+Y6RbCzR99H+QXO1yy2H4bghO54mhDp3Cik0xCj
+   0=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,143,1708383600"; 
+   d="scan'208";a="82803127"
+Received: from 184-074-243-067.biz.spectrum.com (HELO smtpclient.apple) ([184.74.243.67])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 21:20:12 +0100
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Julia Lawall <Julia.Lawall@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <171105236391.10875.2779822144402584041.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
+Date: Thu, 21 Mar 2024 16:20:09 -0400
+Message-Id: <F2FBADE8-EDF9-4987-A97B-CF4D2D1452E0@inria.fr>
+References: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>, kernel-janitors@vger.kernel.org,
+ netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ David Laight <David.Laight@aculab.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Jiri Pirko <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
+ Kees Cook <keescook@chromium.org>,
+ Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
+ Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
+In-Reply-To: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
+To: Markus Elfring <Markus.Elfring@web.de>
+X-Mailer: iPhone Mail (19H384)
 
-The following commit has been merged into the x86/cpu branch of tip:
+Does one prefer an initialization of null at the top of the function or an i=
+nitialization to a meaningful value in the middle of the function ?
 
-Commit-ID:     95bfb35269b2e85cff0dd2c957b2d42ebf95ae5f
-Gitweb:        https://git.kernel.org/tip/95bfb35269b2e85cff0dd2c957b2d42ebf95ae5f
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sat, 16 Mar 2024 13:07:06 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 21 Mar 2024 21:13:56 +01:00
+(Sorry for top posting)
 
-x86/cpu: Get rid of an unnecessary local variable in get_cpu_address_sizes()
 
-Drop 'vp_bits_from_cpuid' as it is not really needed.
+Sent from my iPhone
 
-No functional changes.
+> On 21 Mar 2024, at 14:14, Markus Elfring <Markus.Elfring@web.de> wrote:
+>=20
+> =EF=BB=BF
+>>=20
+>>> How do you think about to reduce the scope for the affected local variab=
+le instead
+>>> with the help of a small script (like the following) for the semantic pa=
+tch language?
+>>>=20
+>>> @movement@
+>>> attribute name __free;
+>>> @@
+>>> -u8 *tx_frame __free(kfree);
+>>> int i;
+>>> ... when any
+>>> if (ice_fltr_add_mac(test_vsi, ...))
+>>> { ... }
+>>> +
+>>> +{
+>>> +u8 *tx_frame __free(kfree) =3D NULL;
+>>> if (ice_lbtest_create_frame(pf, &tx_frame, ...))
+>>> { ... }
+>>> ... when any
+>>> +}
+>>> +
+>>> valid_frames =3D ice_lbtest_receive_frames(...);
+>>=20
+>> I believe you don't understand what the scope of the above can be.
+>=20
+> Will the understanding improve for the proposed source code transformation=
+?
+>=20
+> Regards,
+> Markus
 
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240316120706.4352-1-bp@alien8.de
----
- arch/x86/kernel/cpu/common.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ba8cf5e..9a34651 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1053,18 +1053,9 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
- void get_cpu_address_sizes(struct cpuinfo_x86 *c)
- {
- 	u32 eax, ebx, ecx, edx;
--	bool vp_bits_from_cpuid = true;
- 
- 	if (!cpu_has(c, X86_FEATURE_CPUID) ||
--	    (c->extended_cpuid_level < 0x80000008))
--		vp_bits_from_cpuid = false;
--
--	if (vp_bits_from_cpuid) {
--		cpuid(0x80000008, &eax, &ebx, &ecx, &edx);
--
--		c->x86_virt_bits = (eax >> 8) & 0xff;
--		c->x86_phys_bits = eax & 0xff;
--	} else {
-+	    (c->extended_cpuid_level < 0x80000008)) {
- 		if (IS_ENABLED(CONFIG_X86_64)) {
- 			c->x86_clflush_size = 64;
- 			c->x86_phys_bits = 36;
-@@ -1078,7 +1069,13 @@ void get_cpu_address_sizes(struct cpuinfo_x86 *c)
- 			    cpu_has(c, X86_FEATURE_PSE36))
- 				c->x86_phys_bits = 36;
- 		}
-+	} else {
-+		cpuid(0x80000008, &eax, &ebx, &ecx, &edx);
-+
-+		c->x86_virt_bits = (eax >> 8) & 0xff;
-+		c->x86_phys_bits = eax & 0xff;
- 	}
-+
- 	c->x86_cache_bits = c->x86_phys_bits;
- 	c->x86_cache_alignment = c->x86_clflush_size;
- }
 
