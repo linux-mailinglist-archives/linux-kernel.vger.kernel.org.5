@@ -1,108 +1,129 @@
-Return-Path: <linux-kernel+bounces-109887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28DB088575F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:22:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18BD0885760
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD4EA2839CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:22:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C04D2834A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F2A56763;
-	Thu, 21 Mar 2024 10:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="FLvH+Y2h"
-Received: from mail-m4921.qiye.163.com (mail-m4921.qiye.163.com [45.254.49.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC13456751;
+	Thu, 21 Mar 2024 10:23:06 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221C056448;
-	Thu, 21 Mar 2024 10:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A7A56448
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711016516; cv=none; b=KZXKV/spNQghW+qs13sZrOZlJjZu3RGSctsmEjZBpcxnl3/ZRb5M7HQn2ibiUQDG41INjEPdXcPzV72ANsNkZaFoBS9841swWEUV/j3CbMnIa/5s+KnYPMLyLcjfkZAauOPHN8j75gYy/Ja6F8TdDTkXF50RtbBy5NKJf7IETQk=
+	t=1711016586; cv=none; b=NfD2KYcdNRS53IJLCwNlOUA5qRQK3a96gFWqhhWN6kJNWTo1gO7JDuoOe1D5Z5Y1ceaE56hW9zEWPZG6VpXXwNE0nsLD07JPKsm/Bu3yCFnPpsb6Cynmy/YCHxEuhkoQE939suK9ep4p/k5JnZYMosn95l65hTRra0g0iK8KjCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711016516; c=relaxed/simple;
-	bh=i0+PV72/2dFaK31wvWPoX0d6bxJSY6XBCsINwakqKcM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=f0ry7c/86e4Lemt7VPRtMNdPte6bEg4liB80GjieBiBmx9dXCUh7AN9PDkvI7iwFpuxoW/olcEjC48N03RA0Xl3FG8ObVp4SQebXIJ9EUlGFIh80qZFnjrMrHdwfojlPv+niQI3rP+4XpB+ktXQfbWj8+iqKkB2ogFxCfA7wqfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=FLvH+Y2h; arc=none smtp.client-ip=45.254.49.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-DKIM-Signature: a=rsa-sha256;
-	b=FLvH+Y2h76AlDPjOD9msC4pT2xE4BWTFOguXgNsDgjOA9zfDgm9rtxIFllbE3G/ylIra5kBR+bVFpYUpYYimNX1hSCOjOYl4mF6F3mq7ysdonnY3l2mlGClPUuwb0PGatTcRH269fp6X1Bk6vXcYYht/S7zwiEvgbrxRFTn6APY=;
-	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-	bh=ktnsnF64wj/H5bwoeAclYjmtYjAzqxy2pnWppwBZrP8=;
-	h=date:mime-version:subject:message-id:from;
-Received: from rockchip.. (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id C897B7E033F;
-	Thu, 21 Mar 2024 18:21:02 +0800 (CST)
-From: Ye Zhang <ye.zhang@rock-chips.com>
-To: ye.zhang@rock-chips.com,
-	finley.xiao@rock-chips.com,
-	heiko@sntech.de,
-	daniel.lezcano@linaro.org,
-	rui.zhang@intel.com,
-	lukasz.luba@arm.com,
-	rafael@kernel.org
-Cc: tao.huang@rock-chips.com,
-	linux-rockchip@lists.infradead.org,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v2] thermal: devfreq_cooling: Fix perf state when calculate dfc res_util
-Date: Thu, 21 Mar 2024 18:21:00 +0800
-Message-Id: <20240321102100.2401340-1-ye.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711016586; c=relaxed/simple;
+	bh=5JPCZ+qBJS79Nz0MHkbWXC6seLKtP4tznYnQqpZf1HQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=O8EbWDAcX7/VoDPD3yoXJkTQ7ouE+3TQz2jdKzulknCAELsRISR7YEQBj/sWOYsPDNMkzXBR9gCA8H90fcpa1G8sY7P0YuUNZ+qbnTeMDlln6yEZEv3++aIbqLnoI6X0+SO1ienoWohIdUhFUlmNkGqgYZZTAfKcyQpatKjcDpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-212-p3JOoYAWPBWRUG8sgCg1aA-1; Thu, 21 Mar 2024 10:22:55 +0000
+X-MC-Unique: p3JOoYAWPBWRUG8sgCg1aA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Mar
+ 2024 10:22:30 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 21 Mar 2024 10:22:30 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Jiangfeng Xiao' <xiaojiangfeng@huawei.com>, "Russell King (Oracle)"
+	<linux@armlinux.org.uk>
+CC: "arnd@arndb.de" <arnd@arndb.de>, "keescook@chromium.org"
+	<keescook@chromium.org>, "haibo.li@mediatek.com" <haibo.li@mediatek.com>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
+	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
+	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
+	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
+	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
+	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
+	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
+	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHA
+Date: Thu, 21 Mar 2024 10:22:30 +0000
+Message-ID: <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+ <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+In-Reply-To: <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQh4fGlYZQkoeSkwZQ00aTUJVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5DTUtIVUpLS1VKQl
-	kG
-X-HM-Tid: 0a8e60874c5309cfkunmc897b7e033f
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PC46Fxw*ITMKEhVNMgIJITYd
-	NiJPCR9VSlVKTEpKS0pNT01IQ0xMVTMWGhIXVQIeVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSU9PSTcG
+Content-Transfer-Encoding: quoted-printable
 
-The issue occurs when the devfreq cooling device uses the EM power model
-and the get_real_power() callback is provided by the driver.
+How aggressively does the compiler optimise 'noreturn' functions?
+Consider:
+void f(...)
+{
+=09...
+=09if () {
+=09=09...
+=09=09noreturn(...);
+=09}
+}
 
-The EM power table is sorted ascending，can't index the table by cooling
-device state，so convert cooling state to performance state by
-dfc->max_state - dfc->capped_state.
+Without the noreturn() call it is a leaf function.
+So the compiler doesn't need to save 'lr' on stack
+(or the save could be deferred to inside the conditional).
+Since noreturn() doesn't return it can be jumped to.
+Additionally 'lr' can be used as a scratch register prior to
+the noreturn() call.
 
-Fixes: 615510fe13bd ("thermal: devfreq_cooling: remove old power model and use EM")
-Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
-Signed-off-by: Ye Zhang <ye.zhang@rock-chips.com>
----
-v1 -> v2:
-  - Update the commit message.
+So it is likely that inside noreturn() (and anything it
+might call) you don't have a valid 'lr' chain at all.
+No amount of picking between 'pc' and 'pc-1' is going to fix that.
+The only way you can find a return address is by searching the
+stack and hoping to find something that works.
 
- drivers/thermal/devfreq_cooling.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So you need the compiler to 'not believe' the 'noreturn' attribute.
+Setup a normal call frame and put a faulting instruction after the
+call in case it returns.
+That would give you half a chance of generating a backtrace.
 
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index 50dec24e967a..8fd7cf1932cd 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -214,7 +214,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 
- 		res = dfc->power_ops->get_real_power(df, power, freq, voltage);
- 		if (!res) {
--			state = dfc->capped_state;
-+			state = dfc->max_state - dfc->capped_state;
- 
- 			/* Convert EM power into milli-Watts first */
- 			rcu_read_lock();
--- 
-2.34.1
+Without that I suspect you are playing whack-a-mole.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
