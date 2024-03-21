@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-110427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA7F4885EF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:01:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5AD885EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:01:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C202814B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:01:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53A67B269B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5114213AA3F;
-	Thu, 21 Mar 2024 16:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F2413AA5E;
+	Thu, 21 Mar 2024 16:52:07 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6908113A871
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780A713AA57
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039923; cv=none; b=g+SxNHmNJCpWDMDIpUufmqpeQ7FQlT8JoSMlS1axLrMOKqlCv1CzGSOGiPFNhK4AjjTlO7p8OIwoOuh3HfhrdvRdQMzhM4M72Nw8F3ufBy5WbOXhd4dTEKHaZUC/avhBeAj+2Vqf541z/XEcjewJEPbvHSIalscU9lfRZfcFvB4=
+	t=1711039927; cv=none; b=jODTV0rgYdpKRYfwUYBGZnzHfK7u0veViExSut22sAeAub/g7HoLLvZOdePlSZ3jyOKED8kWD/aiZK1sN3l0TQWRW1eAziCvA+Bj8ZNafn3DCzcnWhj88iFwvlkh7c+xwwDh2+HqvzuQlmZeeyZpM7rh4F6SqQDvBZENd1/JvhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039923; c=relaxed/simple;
-	bh=6l0woSci/M9LuyNXUr+GtqcEVurpBvAOSknwrS4QAIQ=;
+	s=arc-20240116; t=1711039927; c=relaxed/simple;
+	bh=vqr+bVuNpDSSbUmXfd59bUzP2gdnvPTI51shrq+BsM0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UV87nsivUyr7/HmXNvHNtQ6wjeu+Ma9ZXDmBWwfQfy/QajeXkbH7lbJQ/qhX/hpgVgILdD0Fj7iJd2DeIGXyqaFdgWf+vic51AEWZaa9Jpcn5XI7MkKi4PD+bPXmgfqx12ggrqFogzeJfU81aq9DTImYUQVtTNIvbp3GB/WGK3Q=
+	 MIME-Version; b=FhIeS0P1yw0nXMjgAGDM617ikSpT3Y8rL90Tn/ux1kES9ph2Qjce/ygMOLbHqFkDIlNvdy7xUIPr5wLUb++GTjXzKj8SesUraazc1yGIet3Agf84/jbLBpbkP8RIVA1YH85a09mQ/Ub7XectAaVF75CsIs62aK8c+fKJViJ/Rvo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EB281007;
-	Thu, 21 Mar 2024 09:52:36 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5755B1063;
+	Thu, 21 Mar 2024 09:52:39 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D46373F67D;
-	Thu, 21 Mar 2024 09:51:58 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17CFF3F67D;
+	Thu, 21 Mar 2024 09:52:01 -0700 (PDT)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>,
 	Dave Martin <dave.martin@arm.com>
-Subject: [PATCH v1 10/31] x86/resctrl: Move monitor init work to a resctrl init call
-Date: Thu, 21 Mar 2024 16:50:45 +0000
-Message-Id: <20240321165106.31602-11-james.morse@arm.com>
+Subject: [PATCH v1 11/31] x86/resctrl: Move monitor exit work to a restrl exit call
+Date: Thu, 21 Mar 2024 16:50:46 +0000
+Message-Id: <20240321165106.31602-12-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240321165106.31602-1-james.morse@arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
@@ -72,106 +72,111 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-rdt_get_mon_l3_config() is called from the architecture's
-resctrl_arch_late_init(), and initialises both architecture specific
-fields, such as hw_res->mon_scale and resctrl filesystem fields
-by calling dom_data_init().
+rdt_put_mon_l3_config() is called via the architecture's
+resctrl_arch_exit() call, and appears to free the rmid_ptrs[]
+and closid_num_dirty_rmid[] arrays. In reality this code is marked
+__exit, and is removed by the linker as resctl can't be built
+as a module.
 
-To separate the filesystem and architecture parts of resctrl, this
-function needs splitting up.
+MPAM can make use of this code from its error interrupt handler,
+a later patch drops all the __init/__exit annotations.
 
-Add resctrl_mon_resource_init() to do the filesystem specific work,
-and call it from resctrl_init(). This runs later, but is still before
-the filesystem is mounted and the rmid_ptrs[] array can be used.
+To separate the filesystem and architecture parts of resctrl,
+this free()ing work needs to be triggered by the filesystem,
+as these structures belong to the filesystem code.
+
+Rename rdt_put_mon_l3_config() resctrl_mon_resource_exit()
+and call it from resctrl_exit(). The kfree() is currently
+dependent on r->mon_capable. resctrl_mon_resource_init()
+takes no arguments, so resctrl_mon_resource_exit() shouldn't
+take any either. Add the check to dom_data_exit(), making it
+take the resource as an argument. This makes it more symmetrical
+with dom_data_init().
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/kernel/cpu/resctrl/internal.h |  1 +
- arch/x86/kernel/cpu/resctrl/monitor.c  | 24 +++++++++++++++++-------
- arch/x86/kernel/cpu/resctrl/rdtgroup.c |  4 ++++
- 3 files changed, 22 insertions(+), 7 deletions(-)
+ arch/x86/kernel/cpu/resctrl/core.c     |  5 -----
+ arch/x86/kernel/cpu/resctrl/internal.h |  2 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 12 ++++++++----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  2 ++
+ 4 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 031948322eab..7a0c74779c53 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -540,6 +540,7 @@ int rdtgroup_mondata_show(struct seq_file *m, void *arg);
- void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
- 		    struct rdt_domain *d, struct rdtgroup *rdtgrp,
- 		    int evtid, int first);
-+int resctrl_mon_resource_init(void);
- void mbm_setup_overflow_handler(struct rdt_domain *dom,
- 				unsigned long delay_ms,
- 				int exclude_cpu);
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 06565153ceb2..929ec1430b45 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -1003,12 +1003,28 @@ static void l3_mon_evt_init(struct rdt_resource *r)
- 		list_add_tail(&mbm_local_event.list, &r->evt_list);
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 06dc12b08afc..9a09a64bbb7f 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -988,14 +988,9 @@ late_initcall(resctrl_arch_late_init);
+ 
+ static void __exit resctrl_arch_exit(void)
+ {
+-	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+-
+ 	cpuhp_remove_state(rdt_online);
+ 
+ 	resctrl_exit();
+-
+-	if (r->mon_capable)
+-		rdt_put_mon_l3_config();
  }
  
-+int resctrl_mon_resource_init(void)
-+{
-+	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
-+	int ret;
-+
-+	if (!r->mon_capable)
-+		return 0;
-+
-+	ret = dom_data_init(r);
-+	if (ret)
-+		return ret;
-+
-+	l3_mon_evt_init(r);
-+
-+	return 0;
-+}
-+
- int __init rdt_get_mon_l3_config(struct rdt_resource *r)
+ __exitcall(resctrl_arch_exit);
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 7a0c74779c53..01fcd4ef26ca 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -533,7 +533,7 @@ void closid_free(int closid);
+ int alloc_rmid(u32 closid);
+ void free_rmid(u32 closid, u32 rmid);
+ int rdt_get_mon_l3_config(struct rdt_resource *r);
+-void __exit rdt_put_mon_l3_config(void);
++void __exit resctrl_mon_resource_exit(void);
+ bool __init rdt_cpu_has(int flag);
+ void mon_event_count(void *info);
+ int rdtgroup_mondata_show(struct seq_file *m, void *arg);
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 929ec1430b45..2a1cbd4de6ee 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -954,10 +954,12 @@ static int dom_data_init(struct rdt_resource *r)
+ 	return err;
+ }
+ 
+-static void __exit dom_data_exit(void)
++static void __exit dom_data_exit(struct rdt_resource *r)
  {
- 	unsigned int mbm_offset = boot_cpu_data.x86_cache_mbm_width_offset;
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
- 	unsigned int threshold;
--	int ret;
+-	mutex_lock(&rdtgroup_mutex);
++	if (!r->mon_capable)
++		return;
  
- 	resctrl_rmid_realloc_limit = boot_cpu_data.x86_cache_size * 1024;
- 	hw_res->mon_scale = boot_cpu_data.x86_cache_occ_scale;
-@@ -1036,10 +1052,6 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 	 */
- 	resctrl_rmid_realloc_threshold = resctrl_arch_round_mon_val(threshold);
- 
--	ret = dom_data_init(r);
--	if (ret)
--		return ret;
--
- 	if (rdt_cpu_has(X86_FEATURE_BMEC)) {
- 		u32 eax, ebx, ecx, edx;
- 
-@@ -1057,8 +1069,6 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
- 		}
- 	}
- 
--	l3_mon_evt_init(r);
--
- 	r->mon_capable = true;
- 
++	mutex_lock(&rdtgroup_mutex);
+ 	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+ 		kfree(closid_num_dirty_rmid);
+ 		closid_num_dirty_rmid = NULL;
+@@ -1074,9 +1076,11 @@ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
  	return 0;
+ }
+ 
+-void __exit rdt_put_mon_l3_config(void)
++void __exit resctrl_mon_resource_exit(void)
+ {
+-	dom_data_exit();
++	struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
++
++	dom_data_exit(r);
+ }
+ 
+ void __init intel_rdt_mbm_apply_quirk(void)
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 13c24cb18d76..7a9696f53f2b 100644
+index 7a9696f53f2b..6cf4ebe9c058 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -4138,6 +4138,10 @@ int __init resctrl_init(void)
- 
- 	rdtgroup_setup_default();
- 
-+	ret = resctrl_mon_resource_init();
-+	if (ret)
-+		return ret;
+@@ -4186,4 +4186,6 @@ void __exit resctrl_exit(void)
+ 	debugfs_remove_recursive(debugfs_resctrl);
+ 	unregister_filesystem(&rdt_fs_type);
+ 	sysfs_remove_mount_point(fs_kobj, "resctrl");
 +
- 	ret = sysfs_create_mount_point(fs_kobj, "resctrl");
- 	if (ret)
- 		return ret;
++	resctrl_mon_resource_exit();
+ }
 -- 
 2.39.2
 
