@@ -1,112 +1,118 @@
-Return-Path: <linux-kernel+bounces-109862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D8BF8856AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:45:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2FA8856CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AE5E283220
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:45:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1896C1C21476
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2908D54FA9;
-	Thu, 21 Mar 2024 09:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A8A4597E;
+	Thu, 21 Mar 2024 09:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YZmR/82u"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="miYXrVXS"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FF15472A
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746BB53E1E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711014304; cv=none; b=u+CF2mwOm4BMn4SNR5+ZMFrGqHtjWWvgg4sYzpfAC0nQje573U73KUrs33/2D6MkZmvwJiow99Tp2zfLLLA4Pn6qvaBKxxmqcHMrc+owrNmlIxW06vOtD7TUV8THMX6iISVHDfcXT350ZNpmZNv3JwMIlSHnwlYKhE7Ce2oN4fQ=
+	t=1711014522; cv=none; b=BKmN3wbwq8nB14qaCyuI7RaFfBEJKzCvidupISL6nVenQEZDuwZw/Zpi38wn7mdjLX2pmMOzeUA8ufa+aBZq7s0PY+jtWiFKPotZ9IZMSsiXck710x1x/uObNSGOGl57BL/So53Og+RhwhwJ3BPTG6wJ0hgPPBN/+UhjicCX7Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711014304; c=relaxed/simple;
-	bh=USv2fOw88lYmsXLEAJsg9gUy2ptDgrHgVv9Sgni5eFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DDrEuXVIpEaR/nSKNNbFHnQC0y6K9smdYxqSsLMEhuJO2Z3a1C3Yg3qtx5wYTpGmfoe1F5oU3QFIJJbGVS1bMFjPM5UpiRhJe+THRhoNrdnqdsFUL050XsbygZ1sqsneAxxemUqNcY1cYos/6EkJIgocpEFEV4dmB18F3e/ILFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YZmR/82u; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60a15449303so8021587b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:45:02 -0700 (PDT)
+	s=arc-20240116; t=1711014522; c=relaxed/simple;
+	bh=9931IsrYWQDSu/eFeWuyYjb66xLzNhuPeYdZAtOIOoM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SpRDQekjFXpMP2YnmLIPMUDlp+wOMN0/J8BLNnQljjs0YO0UTSpqQJ5k0SFsZ5BsrDOIS59ViQNU/kJSMpODP6az3z5D3EeQbyi1BU/ieWzFJMtNzoAPd4EJw2OrvaDskTWvxiEimeo2llA/oZwR/gHIyvRKen42ljDNhpE8WgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=miYXrVXS; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-414701303f7so7336075e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 02:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711014302; x=1711619102; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsq6huHxMXFKmsQE0mL/RER+3c0d8PlFp7FnnyoJiEE=;
-        b=YZmR/82uRfmQtV/WX6IQlMczh7Ac9gJHx6eRJtpJOTf9ZojtwyKMwDw/BeZ9oPP7vD
-         5W8jCqW3Eca8b8HDksAOu+EdXs6gW9d5uCDiHNB37NdFiEscYGPPcVOvzBw30pX26CUF
-         KX2B9/1Du+riMrWgYPr0gkKkQxRzldc23Aoug8eOelaqtpaqTW65zljuakXEAoiS7RT9
-         Ybs5AyRUHiVBg/2uh6xvIsWomag3MlGkcQNjiJ2Aeh9nfCPknblfd7iSkfQao9BDe4D2
-         eZ42mV9udbjHycM5JoNfcX5Df8icELJy4hNVMX01T/hWvmKIvBziC2/hmFJxTvQdIJt0
-         eX9g==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711014485; x=1711619285; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9931IsrYWQDSu/eFeWuyYjb66xLzNhuPeYdZAtOIOoM=;
+        b=miYXrVXSlEfx5qibJ7Sc2sNWoY6AlFS0/eu4vqafFoZu/rI9Xq5wBsELMsrFhTFhbd
+         j0A5oWF9BJ0SALTXZEhadHvL2oJuuGC2oouvKy2/IKSO9cVqdnne6Ti0E6jh6n+gVHCK
+         W8QSLpoAh7bituULcgafsvCcoJjDOHiB9F86ivs0g89L6mFOv9mdbdTaFgkmpUQacxBE
+         Fch7MTg2sjck2sKCawohRDqODxnumgW0B9A761VOnmGWj3voIQSOFsrdHZ+alV6Ivl6m
+         AI/yugHz0DyEZuI/aOMrVTzvFrPfBE5j3pUt01mk6+y+SltmLTLaK485eWmVWp4cVf8D
+         TEhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711014302; x=1711619102;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wsq6huHxMXFKmsQE0mL/RER+3c0d8PlFp7FnnyoJiEE=;
-        b=O5oz8FwjGzo+SzrR8ByMGELSbXArjiv8Royw9M7BQ0AuqhZ073+wWTRzsz8MMgLioO
-         6X8b1YRKEDH2LNHgT2V5EWPbQ+94kJAa9d9U2VS59N7SNXdWE3r2iQRtAekgPztH2271
-         iDT9A5hAfhDHklkpjEXVhotfcRpCavyluniyLnCSU5CvuD4h6N1Y4knig4xGw3R8UKWD
-         +k2pgkP0qAhoxjYS3RU1hU7tAgxweO+Bv/sfb6e6rYkW0JarxaLzEoqBStKB84g/QiN7
-         ZYeXCua2z7UuBJ9JrrFcPPHtJ8zETeprg3+ZIlUe+Iii/cZzH4KS3OXxQPDiCweX7TVS
-         szew==
-X-Forwarded-Encrypted: i=1; AJvYcCWxUw4tNN55BNmS2XGj6If1MVNL8+N4UBTaYptZb/uKlgIwSvDZPU89OuoWDy0bF30p6PYzD9joQXrYmbW107I1Cs7iqP85tuhfIICG
-X-Gm-Message-State: AOJu0Ywmep3yAZsYOIBpBXbaK0IPlgNwT8prWl7S29wK2JPk9oVoqhhJ
-	qWcwL5XzolSjOYlS2mCXNqbCggXXTUi8LA+UGW/eqJqYYju11DEwCglppkhSJpmLma09V0M/4PO
-	+Sy1dfOdrhy8lbKNZbT1R4xiEhllKWXU6xNBHIw==
-X-Google-Smtp-Source: AGHT+IHYhhmTdh8jHR73tDxXGEyjQHJf8EIgdwjfMRiP3YSKMMj9MKe6GuvrydG88IgBd8VMu6yZcI70K5Z7Y418EUo=
-X-Received: by 2002:a25:ae84:0:b0:dcb:e82c:f7d with SMTP id
- b4-20020a25ae84000000b00dcbe82c0f7dmr1349884ybj.41.1711014301808; Thu, 21 Mar
- 2024 02:45:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711014485; x=1711619285;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9931IsrYWQDSu/eFeWuyYjb66xLzNhuPeYdZAtOIOoM=;
+        b=ee2tnIFXTsnmFi/l6izt68Ry6VeE1CTSIWZ7bv2goGZxufHOa7I/y4RtuObjABW1uw
+         31ZglBanbMzH2lmTBbVa33aaBtB/EpNRnLORO+QaQk3R9EBegU4KLUeItJ3sIgoKaHPx
+         KsbZtUuvHjgMsuK7yb/7z42oaf8n6cUadkog/2FypV2kcub4DLEztHANC1kxJTk/xv8K
+         /NgcEM1XIcjXdigIBRCsTotejAoiLAcS1YGXNQT51DYflGS/BkQ3Odk5HWvE/HY8XQtc
+         MvvjP8Jw+JsAc3O7GsUmIzNbjVWaYgAqkvtf38qLdQCCwFN9QIUrfY5VZ28Df1IOYlLo
+         oUHA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVjRBYxcOHPzM8gban88+n02oIDyGsKX+niFeBcRjsEiAddwBZlTlbdmwmnBWxJ7O33xO4CTINj+0fdhYojh110agXV4CuRPOcPFN8
+X-Gm-Message-State: AOJu0Yw1wa3LLjBJqeeYNH/r858ra1ev2ISzoQG2/QMFVGHHsoO9Fe4s
+	0ipmfk18Xl5EDH89PS9wliaV2GLVN3QHpDyS07shM5e0XYdJ5x29THS9kKcRc+M=
+X-Google-Smtp-Source: AGHT+IEn5hYdjsCtQC65m/BjBIh/ND0BhYzUdLoyJ6ghkDCvpjzUTuQBbg+fUfWtBghy6AQsDI/IEA==
+X-Received: by 2002:a05:600c:63d0:b0:412:d149:254c with SMTP id dx16-20020a05600c63d000b00412d149254cmr1189143wmb.17.1711014484620;
+        Thu, 21 Mar 2024 02:48:04 -0700 (PDT)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id t17-20020a05600c451100b004146dd6bfe2sm4276212wmo.47.2024.03.21.02.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 02:48:03 -0700 (PDT)
+Date: Thu, 21 Mar 2024 10:48:01 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Simon Horman <horms@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Alex Vesker <valex@nvidia.com>, Erez Shitrit <erezsh@nvidia.com>,
+	Hamdan Igbaria <hamdani@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v3] net/mlx5: fix possible stack overflows
+Message-ID: <ZfwCURACC48Injgk@nanopsycho>
+References: <20240320180831.185128-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321092529.13362-1-quic_jkona@quicinc.com> <20240321092529.13362-3-quic_jkona@quicinc.com>
-In-Reply-To: <20240321092529.13362-3-quic_jkona@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 21 Mar 2024 11:44:50 +0200
-Message-ID: <CAA8EJpqrJ1bh3hdS8Gm-QRe1iEYj34Wwz+=vOtONUgAF=hOZYw@mail.gmail.com>
-Subject: Re: [PATCH V2 RESEND 2/6] clk: qcom: videocc-sm8550: Add support for
- videocc XO clk ares
-To: Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
-	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320180831.185128-1-arnd@kernel.org>
 
-On Thu, 21 Mar 2024 at 11:26, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+Wed, Mar 20, 2024 at 07:08:09PM CET, arnd@kernel.org wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
 >
-> Add support for videocc XO clk ares for consumer drivers to be
-> able to request for this reset.
-
-Nit: s/for//
-
+>A couple of debug functions use a 512 byte temporary buffer and call another
+>function that has another buffer of the same size, which in turn exceeds the
+>usual warning limit for excessive stack usage:
 >
-> Fixes: f53153a37969 ("clk: qcom: videocc-sm8550: Add video clock controller driver for SM8550")
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
+>dr_dump_start(struct seq_file *file, loff_t *pos)
+>drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
+>dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
+>drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
+>dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
+>
+>Rework these so that each of the various code paths only ever has one of
+>these buffers in it, and exactly the functions that declare one have
+>the 'noinline_for_stack' annotation that prevents them from all being
+>inlined into the same caller.
+>
+>Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
+>Reviewed-by: Simon Horman <horms@kernel.org>
+>Link: https://lore.kernel.org/all/20240219100506.648089-1-arnd@kernel.org/
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-> ---
->  drivers/clk/qcom/videocc-sm8550.c | 1 +
->  1 file changed, 1 insertion(+)
-
-
--- 
-With best wishes
-Dmitry
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
