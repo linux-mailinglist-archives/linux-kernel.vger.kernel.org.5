@@ -1,96 +1,78 @@
-Return-Path: <linux-kernel+bounces-110752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0C288633B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B1D88633C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30FA22869CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEB42286D7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C911136676;
-	Thu, 21 Mar 2024 22:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DF013667C;
+	Thu, 21 Mar 2024 22:25:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oGVFovrj"
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7cKaOuO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17A2136980
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFDB135A7C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711059796; cv=none; b=V/B+o9nU+Z56X+uciGPklq1eQ9VZUusRrkhbOo6MTd2+LlmfdC91nMs7BSzchNhkPHUP1d4pK0EzcLRA7JA73UanZb4pNwUkpSBqJIOQI6RwOS6lAyF6cb/n5FpiVwTLNnfKS9Jog5NAa27LbYKqKgtVYz6JBvNSuC1YYv/YPdg=
+	t=1711059910; cv=none; b=AeRtUZCWH1CZvv7a0SDbfhv6ggFbKOFOe8nHh1xIyDXycDr8wXLE0KnH0LgyuhNb8GooiWn7obwTzc0P0WC/OJE79uO9e5kY2paZJfkKVdIUztYJ2TVObqBtjVqcRYq6sGuzPWrc44mBCcIplOhy3FF1p87+aCwRwhNY22+taYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711059796; c=relaxed/simple;
-	bh=NU20P7WmOfIGc97qZsPprgwsBgMXCuHAhTpBT4XCf18=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=vDXj1h9rcqwuQDRWQEsAMCQZovp6ZIseZ990o3EzrIUhmqvhCQFJ1QBX0McxGQ/Q9ex0Xrus9+1LcVrbJpMcdD8oUOPgdCZDSyqfHHDiVvvaUyWoNQBa+dFoSo39oNo0nBpEonbsUMs8806Ynxie4sNHl1GgIo5i/c6q76C2ObY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oGVFovrj; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711059792;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=BkC8XuIKTuUKOaDN8fSurixoB+8r13LjYNJaXfm1bVQ=;
-	b=oGVFovrjW70JeOCFG1ijeT2lvhnonEoyMXKz49pNekvyIe9GktpJ5ZiBFseGL7JC+u+0W1
-	NU+su6w0n3HaHmG2xtgkoO0+IKKi3nEAT7lmDyU4SaZyr449rPHZfRC0yjugVCGrKFV0DF
-	k1qTPjCKSDuE/Vmak7+9XVDIvGY/AbU=
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Douglas Anderson <dianders@chromium.org>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: [PATCH] drm/debugfs: Drop conditionals around of_node pointers
-Date: Fri, 22 Mar 2024 06:22:58 +0800
-Message-Id: <20240321222258.1440130-1-sui.jingfeng@linux.dev>
+	s=arc-20240116; t=1711059910; c=relaxed/simple;
+	bh=GEWNaHp0RBHe9+Ju50wlKLeG3lw9qy9FeS8LdAMnL6o=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=E2wCnpNZ4iqq3MzBxJssiP5khX68jfhlqNZpdx1wuwIdPYPd/LN/VY9Vmy+HYAUYZLJFBZZRRLKUpJxwylHIjeT3Xf0eLx0AvrK7WoO8YDcc5FMIS+K7tnSPyNjj2jhqhHJZF14WIcnJUo9/xx06pqctqio6rl/MoRWH17yH4hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7cKaOuO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 52002C433F1;
+	Thu, 21 Mar 2024 22:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711059910;
+	bh=GEWNaHp0RBHe9+Ju50wlKLeG3lw9qy9FeS8LdAMnL6o=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=L7cKaOuOe7YuZwMgY4grHuxf03E/JQWfZKvVUBxwIrC33kLJOcP/H5eSuJaeJK/QB
+	 HZp+Vqrn6JfNQW+qi9SSg4Sdu/TudO334Ur4JqlEdMlorVZybdMsFjriTEn+vUO33W
+	 YOL7j1r82gusFlYsa7a5f/CRkgoIRqv2lhazg+zhdPWvhuOi+Nv/wQ3jUXFn+yrgFJ
+	 1dZHNIiPSVlMBatNemWRDkC7cQJDkV1cwJjb+nyBLq/FC3FFkdwqiBQLXY3sHE/V0+
+	 iADHPt4seUN8jWIo7l6nI/MzgQqBQDhcO9pnq7TbqL0CibX+OG7w8ckwuOXSKwnbj5
+	 8UaVsiOvz08gg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 471B9D95060;
+	Thu, 21 Mar 2024 22:25:10 +0000 (UTC)
+Subject: Re: [GIT PULL] UBI and UBIFS updates for v6.9-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1722992374.86554.1711052004278.JavaMail.zimbra@nod.at>
+References: <1722992374.86554.1711052004278.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <1722992374.86554.1711052004278.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.9-rc1
+X-PR-Tracked-Commit-Id: b8a77b9a5f9c2ba313f2beef8440b6f9f69768e7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 85a79128c4f5723f812ab8d5ee465ec660e223f1
+Message-Id: <171105991028.29795.7624151013270733326.pr-tracker-bot@kernel.org>
+Date: Thu, 21 Mar 2024 22:25:10 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Having conditional around the of_node pointer of the drm_bridge structure
-turns out to make driver code use ugly #ifdef blocks. Drop the conditionals
-to simplify debugfs.
+The pull request you sent on Thu, 21 Mar 2024 21:13:24 +0100 (CET):
 
-Fixes: d8dfccde2709 ("drm/bridge: Drop conditionals around of_node pointers")
-Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
----
- drivers/gpu/drm/drm_debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.9-rc1
 
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index 08fcefd804bc..28a471fe4bc8 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -597,10 +597,10 @@ static int bridges_show(struct seq_file *m, void *data)
- 		drm_printf(&p, "\ttype: [%d] %s\n",
- 			   bridge->type,
- 			   drm_get_connector_type_name(bridge->type));
--#ifdef CONFIG_OF
-+
- 		if (bridge->of_node)
- 			drm_printf(&p, "\tOF: %pOFfc\n", bridge->of_node);
--#endif
-+
- 		drm_printf(&p, "\tops: [0x%x]", bridge->ops);
- 		if (bridge->ops & DRM_BRIDGE_OP_DETECT)
- 			drm_puts(&p, " detect");
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/85a79128c4f5723f812ab8d5ee465ec660e223f1
+
+Thank you!
+
 -- 
-2.34.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
