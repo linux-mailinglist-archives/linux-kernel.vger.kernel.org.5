@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-110601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E9A886124
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:36:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6704F886128
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14491C21D66
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:36:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAAC1B21F77
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9DC136997;
-	Thu, 21 Mar 2024 19:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A5D13443C;
+	Thu, 21 Mar 2024 19:35:42 +0000 (UTC)
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BBC13442F;
-	Thu, 21 Mar 2024 19:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555DC134416;
+	Thu, 21 Mar 2024 19:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711049676; cv=none; b=RwoT3qAEvNIb3QwNFag/1V7ldnD3ExeiyNfhZf90OWF7dBsA8jVwoNGuoO7jLcjmIX7TJ90Z3Nv8lEwX+qHaBoY36hJ3sdDBZisn2qaZSe4KXjSS3wo1k89spNfBALAyYao0P94eERbVUI6DcqKxqn6qPt0ByB/d9mBKg3v+c6E=
+	t=1711049741; cv=none; b=I1cuQgA895M58oL8fmUejqSULD6qoz3uS01YK1s85QqonVcOmGBqOb0sLzvkvIfQarJFzH4MNnGn0SoPqHMKVrP/WuWUVGdw0hAeFbRJo+1Xxp57QGexg9RvWZnebxkXHzXcIEAAhE+gwb3Y7DFfTobH39WCBdZHbALvLo48Ccg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711049676; c=relaxed/simple;
-	bh=VQOLGE5b1WT05ny2MJKIquB+OOdiTR6lMQ9qYMzFM0I=;
+	s=arc-20240116; t=1711049741; c=relaxed/simple;
+	bh=MrUm4sok0/sW2mdOlQzqjBZTUNsycS8FdxaU87EdmU4=;
 	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ksk7hU5+OvOHWxYpvmhJB050C/rZ0cQ7uXIclYqJuOcKv20rSHSF9NL8VlZYJBqs0WguzDpzMgGSW7TgQgPlYEF2xlqJ9vPqhbVysqeq1LDZyn2+16+7nF4Lo47YpufwxvGZlCC3XHZM3OC+uIa1nNDmtW8T8RV0oumFwjCsLvI=
+	 Content-Type:Content-Disposition:In-Reply-To; b=gL3O9m2Ciwu+eBHuYnnPNWSrerPMAYY3r5vf+DE2FshupBpBt+FNIL28PaAX4s3jWfFq0r+VrpR/ZID9C5Lwtnhaf1t7g9nLibnSfjFiPl9zkwP8435CDH5hTqxE79/qPGZ08uTVUXEJQMQzB9vaY+XvLxLNFnAlwYu4azsdn/4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
@@ -32,9 +32,9 @@ Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rnOB5-0000GQ-0D;
-	Thu, 21 Mar 2024 19:34:15 +0000
-Date: Thu, 21 Mar 2024 19:34:11 +0000
+	id 1rnOC7-0000JE-25;
+	Thu, 21 Mar 2024 19:35:19 +0000
+Date: Thu, 21 Mar 2024 19:35:15 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -58,8 +58,8 @@ To: Rob Herring <robh@kernel.org>,
 	"Ricardo B. Marliere" <ricardo@marliere.net>,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH 5/8] dt-bindings: mmc: mmc-card: add block device nodes
-Message-ID: <8d837b883de9f9d745819c5304cfb8aed9a6085c.1711048433.git.daniel@makrotopia.org>
+Subject: [PATCH 6/8] mmc: core: set card fwnode_handle
+Message-ID: <3e086100bfae725f74e4f8a51bb4477a182395e1.1711048433.git.daniel@makrotopia.org>
 References: <cover.1711048433.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,76 +71,25 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1711048433.git.daniel@makrotopia.org>
 
-Add nodes representing the block devices exposed by an MMC device
-including an example involving nvmem-cells.
+Set fwnode in case it isn't set yet and of_node is present.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- .../devicetree/bindings/mmc/mmc-card.yaml     | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ drivers/mmc/core/bus.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mmc/mmc-card.yaml b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-index fd347126449ac..95ccbda871d24 100644
---- a/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-+++ b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
-@@ -26,6 +26,18 @@ properties:
-       Use this to indicate that the mmc-card has a broken hpi
-       implementation, and that hpi should not be used.
+diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+index 0ddaee0eae54f..e1c5fc1b3ce4b 100644
+--- a/drivers/mmc/core/bus.c
++++ b/drivers/mmc/core/bus.c
+@@ -364,6 +364,8 @@ int mmc_add_card(struct mmc_card *card)
  
-+  block:
-+    $ref: /schemas/block/block-device.yaml#
-+    description:
-+      Represents the block storage provided by an SD card or the
-+      main hardware partition of an eMMC.
-+
-+patternProperties:
-+  '^boot[0-9]+':
-+    $ref: /schemas/block/block-device.yaml#
-+    description:
-+      Represents a boot hardware partition on an eMMC.
-+
- required:
-   - compatible
-   - reg
-@@ -42,6 +54,39 @@ examples:
-             compatible = "mmc-card";
-             reg = <0>;
-             broken-hpi;
-+
-+            block {
-+                partitions {
-+                    cal_data: block-partition-rf {
-+                        partnum = <3>;
-+                        partname = "rf";
-+
-+                        nvmem-layout {
-+                            compatible = "fixed-layout";
-+                            #address-cells = <1>;
-+                            #size-cells = <1>;
-+
-+                            eeprom@0 {
-+                                reg = <0x0 0x1000>;
-+                            };
-+                        };
-+                    };
-+                };
-+            };
-+
-+            boot1 {
-+                nvmem-layout {
-+                    compatible = "fixed-layout";
-+                    #address-cells = <1>;
-+                    #size-cells = <1>;
-+
-+                    macaddr: macaddr@a {
-+                        compatible = "mac-base";
-+                        reg = <0xa 0x6>;
-+                        #nvmem-cell-cells = <1>;
-+                    };
-+                };
-+            };
-         };
-     };
+ 	mmc_add_card_debugfs(card);
+ 	card->dev.of_node = mmc_of_find_child_device(card->host, 0);
++	if (card->dev.of_node && !card->dev.fwnode)
++		card->dev.fwnode = &card->dev.of_node->fwnode;
+ 
+ 	device_enable_async_suspend(&card->dev);
  
 -- 
 2.44.0
