@@ -1,94 +1,76 @@
-Return-Path: <linux-kernel+bounces-110292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBD0B885CD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:02:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66877885CD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2947F1C22BC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:02:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19EC51F21E24
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED70012BF2C;
-	Thu, 21 Mar 2024 16:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56F912BF24;
+	Thu, 21 Mar 2024 16:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z5KcVdIb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXQuAqmG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D61E12BF1C;
-	Thu, 21 Mar 2024 16:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04EB912BF1A
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711036922; cv=none; b=T2L4+JV9863mdriwJX4D/o5AW8ocOciqnbEZvWTcIz5RDsf7/F5XISuUPp/XifLoJcLxLQugpCdYnzPLkNnl0DLNUSr4er8Xk6Xl7S8dZr4l8m0Bv8GcONmIJqzELSk6WQQwr8mCsyY6KbghKszImkr1knaLtiWh+HNfnNS5tz4=
+	t=1711036949; cv=none; b=jBsDcg3kyHtTr2t5G7K2MGvU9ckmqzm9N4ZbZHB/lXFX9KqpxUVQ/hkFKu6O2+gbUpxUFhx3jhixh3mTs6tIgk1JGVAlQy8uDmvryybR91BkMUhs4BU8HB3IYwltYdobhArr2X27Y2Pu9UFft1Qd8NzqYFKMclempj31RvRA5og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711036922; c=relaxed/simple;
-	bh=zw11YjpMl3FoiTr/2sFaVVMvcMLI7sst8F38+AzzMmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LTeX1UJ3J3VWC+SPLjEVz/2fMh8zs4Y/QPd0L4bFjhWKYTt8ZxQvecoMoBxCrr2UL+C3kSPXTjQPI78LJO/wyTK+zxYPcYItQ+TEoEiLSbIGA6fWcZJzEuwXH6U3zf1HENlK2hqpINiQYHWS4ztzgYGK+zziUdryBGUwZNzaugU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z5KcVdIb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CDAC433C7;
-	Thu, 21 Mar 2024 16:02:01 +0000 (UTC)
+	s=arc-20240116; t=1711036949; c=relaxed/simple;
+	bh=HrtgmLIfIWUBhGKPEXt+g86h6IDJNxP3q50KUyu2qMk=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Kj8BG2/ifluYoEuq7OJIWqMkoS26oYLTpxTOKPS222c+DqxgubxS9478ftOzLRj034fimF8uOslEA2uVWnYYbqOAYWRjCZnZ9KRWCMmeBgj7G6qNQ0lCFNIhxFqV4KG8vqrcgi0yL7dmAcZU7P8Ibrepf6zFZP6uNLytoAUyVAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXQuAqmG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8C4CC433F1;
+	Thu, 21 Mar 2024 16:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711036922;
-	bh=zw11YjpMl3FoiTr/2sFaVVMvcMLI7sst8F38+AzzMmg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Z5KcVdIb2aD4AR5R8XnG1HAFcm60tL4tdGJz7G0+V7OlqX8VdLVpnJMKkg8Qz5Sp5
-	 agbUUp5mZfM/ngmwEIQY0/SqjeuVmtoT7hX9SqlygYgNTYRtwU9xRKLsQx6CNcFyOX
-	 r5djo+RCIO02U70rI4B2ILVI/n2TGUublGv2Eilm1D64aiOkOXfpNvS8EZmteKyuVA
-	 wI6RN8v61GWE3e59yk2VjOhDvfL+S8vPl5T0k7gR+8gCcWlHDJCydGn3NxhF9tsR/f
-	 Gx4C7KYyUC6AFE2dzdaWtAz5hb+LYnC9lX/MaujNVtIP56dVu1M+r4v5LSNiId2biC
-	 v10cXgp4svtZw==
-Date: Thu, 21 Mar 2024 13:01:58 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH 1/1] libbpf: Define MFD_CLOEXEC if not available
-Message-ID: <ZfxZ9nCyKvwmpKkE@x1>
+	s=k20201202; t=1711036948;
+	bh=HrtgmLIfIWUBhGKPEXt+g86h6IDJNxP3q50KUyu2qMk=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=OXQuAqmGkxuIdOpJmrmNi6swYcdCLKNFFfznFmtVkwTrlcVWn4crvzX1zvq2NLCBK
+	 mS8KBrKPANfnLmPj6Dh0tc5HdEEJMNX6G/YoZkq0CFgekx6oG/YHcK5jKaVUta0D1Z
+	 nIPS8611cpYtwjjZMoVd/P1qFPN+Kfhw89X6+wzT2U5eUh2/C+AHC3lX//IpkRx8p1
+	 ctyoYF4w7gfYPeyc4V/0HiNGx+/qktTYt9IfAwEnO9fFoORNFy4lGl5bA1MqVSS7qP
+	 pFmSFHlkrUpb22knScC18W21/05Q1cb61o77Cu1dKronSkCySp3ksqZQZ6rSfVFNAc
+	 SolIgX4OomqEw==
+From: Lee Jones <lee@kernel.org>
+To: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+References: <20240312165905.1764507-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: (subset) [PATCH v1 1/1] mfd: intel-lpss: Switch over to MSI
+ interrupts
+Message-Id: <171103694768.83664.9898972271035200143.b4-ty@kernel.org>
+Date: Thu, 21 Mar 2024 16:02:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-Since its going directly to the syscall to avoid not having
-memfd_create() available in some systems, do the same for its
-MFD_CLOEXEC flags, defining it if not available.
+On Tue, 12 Mar 2024 18:59:05 +0200, Andy Shevchenko wrote:
+> Some devices support MSI interrupts. Let's at least try to use them in
+> platforms that provide MSI capability.
+> 
+> 
 
-This fixes the build in those systems, noticed while building perf on a
-set of build containers.
+Applied, thanks!
 
-Fixes: 9fa5e1a180aa639f ("libbpf: Call memfd_create() syscall directly")
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/lib/bpf/libbpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
+[1/1] mfd: intel-lpss: Switch over to MSI interrupts
+      commit: c3bb2ec530c7dd358222838c3fdc04c178237db3
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index efab29b8935bd9f7..635a38c6f947a34d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1650,6 +1650,10 @@ static int sys_memfd_create(const char *name, unsigned flags)
- 	return syscall(__NR_memfd_create, name, flags);
- }
- 
-+#ifndef MFD_CLOEXEC
-+#define MFD_CLOEXEC 0x0001U
-+#endif
-+
- static int create_placeholder_fd(void)
- {
- 	int fd;
--- 
-2.44.0
+--
+Lee Jones [李琼斯]
 
 
