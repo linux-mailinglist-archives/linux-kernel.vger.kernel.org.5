@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-110230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53050885BDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A930E885BDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:32:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC48CB25C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:31:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1012AB25E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E1D127B78;
-	Thu, 21 Mar 2024 15:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D5B127B61;
+	Thu, 21 Mar 2024 15:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tuA9ZmBS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LoGJc29m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5BD127B61;
-	Thu, 21 Mar 2024 15:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C73E127B4A;
+	Thu, 21 Mar 2024 15:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711034990; cv=none; b=g3uTDcXbibcf3Nk5riqLzZ8rg2PmnJMf/48FzrEkpJRLeVagTBd3s7ZmAwli8TAgtJCnb5HQ+YlcEeAEN7cbinUlsGX9VuuD1BTC8H+NGIx2sf0/MUBmb+k3iLSEWfksMRzJqBBhdB0Z1jhRFdQxrGS0PjCwG1AoFoJ09ghTXXY=
+	t=1711034993; cv=none; b=liD9seHH+hjRwBr8tzTvYdmqK2aXbwSuAoZtlOSXxlH6yDS4vu4769TOsRIqS3NWliftSUkJDZ9cvO1VCceDgV4+ZZ+hRANswSH47iRrTanjmd6m7I8qoRm/XHHN3dx4BEjvg1xvyBNV96IUbOiS3HxiRtexnb76TUFpuA3J/NM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711034990; c=relaxed/simple;
-	bh=40V1c6sh0AzNOoe+RgxIYvt5itFWoJXmRfRtznKgslw=;
+	s=arc-20240116; t=1711034993; c=relaxed/simple;
+	bh=dk2dgR+2fMoY0ZjfVr/KsfJQ2GzlyIH+RqugLdTBlqk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mIgCSaD9v+1oZfaGwGr0e7Hm/7alotJVPgBv7wsmwR0AUKewm0e7PhCmUeXIf29LucH0HrI3Gz3E0aPICy8qxX057ZSvBSZHvJPiPmuq+DopjJdKhfn959i795AQ0cCiGVXfjKLKFHXXNimWxsB/5eAT2nGJLm5+6CRkxJIzaT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tuA9ZmBS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F6EC433A6;
-	Thu, 21 Mar 2024 15:29:49 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=uQKL/gCqPiIUUN+752TNN/TYG8WwS2QQGXsYgNmuuPqxOt0KgVZzjTH7SI2YPtff6cVtgRayUAjdOv8Xx7+Cvu8mXGltPPYRhSquy1pCM/zW1FtnkCBn2r28tQTfOlmKx/YO1jeeghsJRaSGEEBV/UWAhp6CD/nK8l8x1NdWEMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LoGJc29m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5614FC433C7;
+	Thu, 21 Mar 2024 15:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711034989;
-	bh=40V1c6sh0AzNOoe+RgxIYvt5itFWoJXmRfRtznKgslw=;
+	s=k20201202; t=1711034992;
+	bh=dk2dgR+2fMoY0ZjfVr/KsfJQ2GzlyIH+RqugLdTBlqk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=tuA9ZmBSQl/UdULf5hHPsXRODhyOxP+ttlqDsGihU/vCFazZtNDUyyTR5GnDANuHx
-	 7M/J3hkXDDhdoQEDa+mkgDf5J0Qoa5AQ5ZWhIOzsj0POrS0kXQiN+NY5GA8PfmMNI6
-	 V/6NKC8zA3BXpN1BtZ2wRxLxcO1zqM4n8Mc+ZFJ8zDsEr+5FtDRKAtnqlQ48KV+4G/
-	 7A8hQH70tgbiP19MlSyG2c7EvYOeNHWNXqVGfGGqaV/h4G2vsLVqr9IKwel8d6egF5
-	 Chh0h+YtlE60oEUYcQZq6xIsTDn49kQMrmy45vNZ8Wz7AzUGx/f5YQMyELe3hFaFFp
-	 2kBZ4+ImClyqA==
+	b=LoGJc29mP4fuwPNDTpSkpn1GZs6xWAkvlMRSYceyzbQ8m6RGY7lBizgic/fjmeJKt
+	 YUUDcv1H3om2+19ut4/RoWHnAgrfC0iQsfmx44uTOeMG7WByYKfjNPUojFAKfAhwSm
+	 jNnCXRTCIGnbqhV1GUThqjTaFsNKyz/xrgxAnjxxTov8gTJnCCahRyslj9h7m1VuEa
+	 +ZHExZ0DPPuuRgKWtEQoDXz+Uxe6svn0kvuUmcO28sMxqe5gcwoCw9G0kgK2Oha0Hd
+	 pPzpr2kiPR3+gz1GOkycP0LboUg81gW1hjiAv55pHw3lruB9tFJ7iOjmxAb9hXuaLf
+	 DtsCkkINx2EFA==
 From: Maxime Ripard <mripard@kernel.org>
-Date: Thu, 21 Mar 2024 16:29:04 +0100
-Subject: [PATCH v10 08/27] drm/connector: hdmi: Add HDMI compute clock
- helper
+Date: Thu, 21 Mar 2024 16:29:05 +0100
+Subject: [PATCH v10 09/27] drm/tests: Add HDMI TDMS character rate tests
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240321-kms-hdmi-connector-state-v10-8-e6c178361898@kernel.org>
+Message-Id: <20240321-kms-hdmi-connector-state-v10-9-e6c178361898@kernel.org>
 References: <20240321-kms-hdmi-connector-state-v10-0-e6c178361898@kernel.org>
 In-Reply-To: <20240321-kms-hdmi-connector-state-v10-0-e6c178361898@kernel.org>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
@@ -71,146 +70,378 @@ Cc: Hans Verkuil <hverkuil@xs4all.nl>,
  linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>, 
  Dave Stevenson <dave.stevenson@raspberrypi.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4451; i=mripard@kernel.org;
- h=from:subject:message-id; bh=40V1c6sh0AzNOoe+RgxIYvt5itFWoJXmRfRtznKgslw=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKl/gtz4X206vodHWv6ejJhc86cD29dLbBbetucjQ8Spp
- 9GybsHzOkpYGMS4GGTFFFlihM2XxJ2a9bqTjW8ezBxWJpAhDFycAjCRWZMYvnA6XjAyZV5ylynj
- WFeQv3THD83r0zYG30t7x1hw1OySIsP/xNeFIeer91rbfy+Zfy/Gr3NHzy9Hxxll/2WZ52+1CZj
- LCAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=13448; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=dk2dgR+2fMoY0ZjfVr/KsfJQ2GzlyIH+RqugLdTBlqk=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKl/gtw3PO3xify1ZN2FXW1cGz+7BagsLzhcr3zscO7zH
+ 4uMerbs7ShlYRDjYpAVU2SJETZfEndq1utONr55MHNYmUCGMHBxCsBEJh9m+M2e1cI7aaKIeZX+
+ l0c96zZYXFJYeHnxi6LlDTtaffMXe9YxMrR4Bbccexu2V3a7vod3Rerm1d8rdcN3PLp1rkiOs3j
+ BNA4A
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
-A lot of HDMI drivers have some variation of the formula to calculate
-the TMDS character rate from a mode, but few of them actually take all
-parameters into account.
-
-Let's create a helper to provide that rate taking all parameters into
-account.
+The previous patch added an helper to compute the TMDS character rate on
+an HDMI connector. Let's add a few tests to make sure it works as
+expected.
 
 Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/drm_connector.c | 71 +++++++++++++++++++++++++++++++++++++++++
- include/drm/drm_connector.h     |  5 +++
- 2 files changed, 76 insertions(+)
+ drivers/gpu/drm/tests/drm_connector_test.c | 323 +++++++++++++++++++++++++++++
+ 1 file changed, 323 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-index b629c8e990f4..8cc1332f11c2 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -2895,10 +2895,81 @@ void drm_connector_update_privacy_screen(const struct drm_connector_state *conne
- 	/* The hw_state property value may have changed, update it. */
- 	drm_connector_update_privacy_screen_properties(connector, false);
- }
- EXPORT_SYMBOL(drm_connector_update_privacy_screen);
+diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
+index 72f22ec951d6..4d1ac744a844 100644
+--- a/drivers/gpu/drm/tests/drm_connector_test.c
++++ b/drivers/gpu/drm/tests/drm_connector_test.c
+@@ -6,11 +6,13 @@
+ #include <linux/i2c.h>
  
-+/**
-+ * drm_connector_hdmi_compute_mode_clock() - Computes the TMDS Character Rate
-+ * @mode: Display mode to compute the clock for
-+ * @bpc: Bits per character
-+ * @fmt: Output Pixel Format used
-+ *
-+ * Returns the TMDS Character Rate for a given mode, bpc count and output format.
-+ *
-+ * RETURNS:
-+ * The TMDS Character Rate, in Hertz, or 0 on error.
+ #include <drm/drm_atomic_state_helper.h>
+ #include <drm/drm_connector.h>
+ #include <drm/drm_drv.h>
++#include <drm/drm_edid.h>
+ #include <drm/drm_kunit_helpers.h>
++#include <drm/drm_modes.h>
+ 
+ #include <kunit/test.h>
+ 
+ #include "../drm_crtc_internal.h"
+ 
+@@ -604,13 +606,334 @@ static struct kunit_case drm_hdmi_connector_get_output_format_name_tests[] = {
+ static struct kunit_suite drm_hdmi_connector_get_output_format_name_test_suite = {
+ 	.name = "drm_hdmi_connector_get_output_format_name",
+ 	.test_cases = drm_hdmi_connector_get_output_format_name_tests,
+ };
+ 
++/*
++ * Test that for a given mode, with 8bpc and an RGB output the TMDS
++ * character rate is equal to the mode pixel clock.
 + */
-+unsigned long long
-+drm_connector_hdmi_compute_mode_clock(const struct drm_display_mode *mode,
-+				      unsigned int bpc,
-+				      enum hdmi_colorspace fmt)
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb(struct kunit *test)
 +{
-+	unsigned long long clock = mode->clock * 1000ULL;
-+	unsigned int vic = drm_match_cea_mode(mode);
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
 +
-+	/*
-+	 * CTA-861-G Spec, section 5.4 - Color Coding and Quantization
-+	 * mandates that VIC 1 always uses 8 bpc.
-+	 */
-+	if (vic == 1 && bpc != 8)
-+		return 0;
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
 +
-+	/*
-+	 * HDMI 2.0 Spec, section 7.1 - YCbCr 4:2:0 Pixel Encoding
-+	 * specifies that YUV420 encoding is only available for those
-+	 * VICs.
-+	 */
-+	if (fmt == HDMI_COLORSPACE_YUV420 &&
-+	    !(vic == 96 || vic == 97 || vic == 101 ||
-+	      vic == 102 || vic == 106 || vic == 107))
-+		return 0;
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
 +
-+	if (fmt == HDMI_COLORSPACE_YUV422) {
-+		/*
-+		 * HDMI 1.4b Spec, section 6.2.3 - Pixel Encoding Requirements
-+		 * specifies that YUV422 is 36-bit only.
-+		 */
-+		if (bpc != 12)
-+			return 0;
-+
-+		/*
-+		 * HDMI 1.0 Spec, section 6.5 - Pixel Encoding
-+		 * specifies that YUV422 requires two 12-bits components per
-+		 * pixel clock, which is equivalent in our calculation to three
-+		 * 8-bits components
-+		 */
-+		bpc = 8;
-+	}
-+
-+	/*
-+	 * HDMI 2.0 Spec, Section 7.1 - YCbCr 4:2:0 Pixel Encoding
-+	 * specifies that YUV420 encoding is carried at a TMDS Character Rate
-+	 * equal to half the pixel clock rate.
-+	 */
-+	if (fmt == HDMI_COLORSPACE_YUV420)
-+		clock = clock / 2;
-+
-+	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
-+		clock = clock * 2;
-+
-+	clock = clock * bpc;
-+	do_div(clock, 8);
-+
-+	return clock;
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 8, HDMI_COLORSPACE_RGB);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, mode->clock * 1000ULL, rate);
 +}
-+EXPORT_SYMBOL(drm_connector_hdmi_compute_mode_clock);
 +
- int drm_connector_set_obj_prop(struct drm_mode_object *obj,
- 				    struct drm_property *property,
- 				    uint64_t value)
- {
- 	int ret = -EINVAL;
-diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-index 29883e6f8e50..a859ad7ee04b 100644
---- a/include/drm/drm_connector.h
-+++ b/include/drm/drm_connector.h
-@@ -36,10 +36,11 @@
++/*
++ * Test that for a given mode, with 10bpc and an RGB output the TMDS
++ * character rate is equal to 1.25 times the mode pixel clock.
++ */
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb_10bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
++
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 10, HDMI_COLORSPACE_RGB);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, mode->clock * 1250, rate);
++}
++
++/*
++ * Test that for the VIC-1 mode, with 10bpc and an RGB output the TMDS
++ * character rate computation fails.
++ */
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb_10bpc_vic_1(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
++
++	mode = drm_display_mode_from_cea_vic(drm, 1);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 10, HDMI_COLORSPACE_RGB);
++	KUNIT_EXPECT_EQ(test, rate, 0);
++}
++
++/*
++ * Test that for a given mode, with 12bpc and an RGB output the TMDS
++ * character rate is equal to 1.5 times the mode pixel clock.
++ */
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb_12bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
++
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 12, HDMI_COLORSPACE_RGB);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, mode->clock * 1500, rate);
++}
++
++/*
++ * Test that for the VIC-1 mode, with 12bpc and an RGB output the TMDS
++ * character rate computation fails.
++ */
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb_12bpc_vic_1(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
++
++	mode = drm_display_mode_from_cea_vic(drm, 1);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 12, HDMI_COLORSPACE_RGB);
++	KUNIT_EXPECT_EQ(test, rate, 0);
++}
++
++/*
++ * Test that for a mode with the pixel repetition flag, the TMDS
++ * character rate is indeed double the mode pixel clock.
++ */
++static void drm_test_drm_connector_hdmi_compute_mode_clock_rgb_double(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	unsigned long long rate;
++	struct drm_device *drm = &priv->drm;
++
++	mode = drm_display_mode_from_cea_vic(drm, 6);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_TRUE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 8, HDMI_COLORSPACE_RGB);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, (mode->clock * 1000ULL) * 2, rate);
++}
++
++/*
++ * Test that the TMDS character rate computation for the VIC modes
++ * explicitly listed in the spec as supporting YUV420 succeed and return
++ * half the mode pixel clock.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv420_valid(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned long long rate;
++	unsigned int vic = *(unsigned int *)test->param_value;
++
++	mode = drm_display_mode_from_cea_vic(drm, vic);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 8, HDMI_COLORSPACE_YUV420);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, (mode->clock * 1000ULL) / 2, rate);
++}
++
++static const unsigned int drm_connector_hdmi_compute_mode_clock_yuv420_vic_valid_tests[] = {
++	96, 97, 101, 102, 106, 107,
++};
++
++static void drm_connector_hdmi_compute_mode_clock_yuv420_vic_desc(const unsigned int *vic, char *desc)
++{
++	sprintf(desc, "VIC %u", *vic);
++}
++
++KUNIT_ARRAY_PARAM(drm_connector_hdmi_compute_mode_clock_yuv420_valid,
++		  drm_connector_hdmi_compute_mode_clock_yuv420_vic_valid_tests,
++		  drm_connector_hdmi_compute_mode_clock_yuv420_vic_desc);
++
++/*
++ * Test that trying to compute the TMDS char rate with the YUV420 format
++ * for a mode that doesn't support the YUV420 encoding returns an error.
++ *
++ * TODO: We should probably test this with all the VIC but the
++ * explicitly supported ones. Since the list of VIC is quite long and
++ * not linear, the best way to support it at the moment would be to
++ * create a custom gen_params function that would only return valid
++ * VICs. At the moment, that function expects to get a pointer back
++ * however, and compilers don't really like casting between integer and
++ * pointers.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv420_invalid(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, 42);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 8, HDMI_COLORSPACE_YUV420);
++	KUNIT_EXPECT_EQ(test, rate, 0);
++}
++
++/*
++ * Test that for a given mode listed supporting it and an YUV420 output
++ * with 10bpc, the TMDS character rate is equal to 0.625 times the mode
++ * pixel clock.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv420_10_bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned int vic =
++		drm_connector_hdmi_compute_mode_clock_yuv420_vic_valid_tests[0];
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, vic);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 10, HDMI_COLORSPACE_YUV420);
++	KUNIT_ASSERT_GT(test, rate, 0);
++
++	KUNIT_EXPECT_EQ(test, mode->clock * 625, rate);
++}
++
++/*
++ * Test that for a given mode listed supporting it and an YUV420 output
++ * with 12bpc, the TMDS character rate is equal to 0.75 times the mode
++ * pixel clock.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv420_12_bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned int vic =
++		drm_connector_hdmi_compute_mode_clock_yuv420_vic_valid_tests[0];
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, vic);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 12, HDMI_COLORSPACE_YUV420);
++	KUNIT_ASSERT_GT(test, rate, 0);
++
++	KUNIT_EXPECT_EQ(test, mode->clock * 750, rate);
++}
++
++/*
++ * Test that for a given mode, the computation of the TMDS character
++ * rate with 8bpc and a YUV422 output fails.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv422_8_bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 8, HDMI_COLORSPACE_YUV422);
++	KUNIT_EXPECT_EQ(test, rate, 0);
++}
++
++/*
++ * Test that for a given mode, the computation of the TMDS character
++ * rate with 10bpc and a YUV422 output fails.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv422_10_bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 10, HDMI_COLORSPACE_YUV422);
++	KUNIT_EXPECT_EQ(test, rate, 0);
++}
++
++/*
++ * Test that for a given mode, the computation of the TMDS character
++ * rate with 12bpc and a YUV422 output succeeds and returns a rate equal
++ * to the mode pixel clock.
++ */
++static void drm_test_connector_hdmi_compute_mode_clock_yuv422_12_bpc(struct kunit *test)
++{
++	struct drm_connector_init_priv *priv = test->priv;
++	const struct drm_display_mode *mode;
++	struct drm_device *drm = &priv->drm;
++	unsigned long long rate;
++
++	mode = drm_display_mode_from_cea_vic(drm, 16);
++	KUNIT_ASSERT_NOT_NULL(test, mode);
++
++	KUNIT_ASSERT_FALSE(test, mode->flags & DRM_MODE_FLAG_DBLCLK);
++
++	rate = drm_connector_hdmi_compute_mode_clock(mode, 12, HDMI_COLORSPACE_YUV422);
++	KUNIT_ASSERT_GT(test, rate, 0);
++	KUNIT_EXPECT_EQ(test, mode->clock * 1000, rate);
++}
++
++static struct kunit_case drm_connector_hdmi_compute_mode_clock_tests[] = {
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb),
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb_10bpc),
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb_10bpc_vic_1),
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb_12bpc),
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb_12bpc_vic_1),
++	KUNIT_CASE(drm_test_drm_connector_hdmi_compute_mode_clock_rgb_double),
++	KUNIT_CASE_PARAM(drm_test_connector_hdmi_compute_mode_clock_yuv420_valid,
++			 drm_connector_hdmi_compute_mode_clock_yuv420_valid_gen_params),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv420_invalid),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv420_10_bpc),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv420_12_bpc),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv422_8_bpc),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv422_10_bpc),
++	KUNIT_CASE(drm_test_connector_hdmi_compute_mode_clock_yuv422_12_bpc),
++	{ }
++};
++
++static struct kunit_suite drm_connector_hdmi_compute_mode_clock_test_suite = {
++	.name = "drm_test_connector_hdmi_compute_mode_clock",
++	.init = drm_test_connector_init,
++	.test_cases = drm_connector_hdmi_compute_mode_clock_tests,
++};
++
+ kunit_test_suites(
+ 	&drmm_connector_hdmi_init_test_suite,
+ 	&drmm_connector_init_test_suite,
++	&drm_connector_hdmi_compute_mode_clock_test_suite,
+ 	&drm_get_tv_mode_from_name_test_suite,
+ 	&drm_hdmi_connector_get_output_format_name_test_suite
+ );
  
- struct drm_connector_helper_funcs;
- struct drm_modeset_acquire_ctx;
- struct drm_device;
- struct drm_crtc;
-+struct drm_display_mode;
- struct drm_encoder;
- struct drm_panel;
- struct drm_property;
- struct drm_property_blob;
- struct drm_printer;
-@@ -2092,10 +2093,14 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
- void drm_connector_create_privacy_screen_properties(struct drm_connector *conn);
- void drm_connector_attach_privacy_screen_properties(struct drm_connector *conn);
- void drm_connector_attach_privacy_screen_provider(
- 	struct drm_connector *connector, struct drm_privacy_screen *priv);
- void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
-+unsigned long long
-+drm_connector_hdmi_compute_mode_clock(const struct drm_display_mode *mode,
-+				      unsigned int bpc,
-+				      enum hdmi_colorspace fmt);
- 
- /**
-  * struct drm_tile_group - Tile group metadata
-  * @refcount: reference count
-  * @dev: DRM device
+ MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
 
 -- 
 2.44.0
