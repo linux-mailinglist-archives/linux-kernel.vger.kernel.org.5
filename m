@@ -1,129 +1,149 @@
-Return-Path: <linux-kernel+bounces-109724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3725881CD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:16:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D8E1881CD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 119B21C20380
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:16:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A902B217AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4D95645E;
-	Thu, 21 Mar 2024 07:16:23 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1166751C2C;
+	Thu, 21 Mar 2024 07:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HGvn1b/G"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD83E4D9E7;
-	Thu, 21 Mar 2024 07:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E563A1DE;
+	Thu, 21 Mar 2024 07:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711005382; cv=none; b=qqN+o1wFtqvGLsiqLk34vRvGPQcJ5FBM6aaSb7MDJ4OsvHctiKHKeMs14bofXSI1ZcnEzqSjPGSRsypsCEpxDxgnKRIxaTRGxpSE9JvsK6pd/C88gV82lheGHR/gpVPPDgckTmCHyEYhDCQnFo1PnsZQqF+Ppf5NgBXA5W60hRs=
+	t=1711005432; cv=none; b=HkYzq/eMAKlN+azORVpTkyhmkavwV56qjE2HzBMsadHolQ1Aq9rKJfquqdfJguAkXYZDWUJ+VzqjrCBe3YzODL5Zle0ZV6f7vUno4MS1y667bbxkPPBw4xrAYoB0NlHTsNpsGb++Oh8Ut1cw8RZdw+ZdZU9HBFOQXdKqeeSbaQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711005382; c=relaxed/simple;
-	bh=daXV8oIKyjxwzug3KO844ksjd487mVSX4uDRO7d9I08=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=YcXpDns6y0hCnpREv/te0sCIX/TTXy3+cuqoD1S0CbghczvveSxvTVqOLIk0b75daDtCFi9cMbs2ArEmTCTJF5pZvqOugI56iUDHxdpoSn8JknEit2seaBpW6uABqD/CBA4iEHaKDATzsH30+ojZ2dfJV60vihZrU7Y6HEaon68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V0cFP4JB1z4f3mHb;
-	Thu, 21 Mar 2024 15:16:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8A8A61A019F;
-	Thu, 21 Mar 2024 15:16:17 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgBHYgvB3vtlZG91Hg--.64482S2;
-	Thu, 21 Mar 2024 15:16:17 +0800 (CST)
-Subject: Re: [PATCH v2 2/5] ext4: Add unit test of ext4_mb_generate_buddy
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
- <20240103104900.464789-3-shikemeng@huaweicloud.com>
- <30a8ce01-84d1-48ef-a93d-d14cc61723e3@roeck-us.net>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <6e062fdd-c2b8-d28f-2b0c-a130855d65ce@huaweicloud.com>
-Date: Thu, 21 Mar 2024 15:16:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1711005432; c=relaxed/simple;
+	bh=GzzWbNc0mT8vlM+yDeqE8rS78bXyatgD86F8aqGRPMI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qAAZ0jdsjDpDXWFfRfzJnK14dAhsimMUnH6aO5kdHBsqTdo/2FqxJfWKbPjSj/GCL3IHZU+AhYfQeahK3PUv56dxLSeHTi9J1EXcKshV9ax1hHRqI+VWB6QYZrQdfaDUo0FaIqJBfGvKz1wblW3eMnUgbvqBke8fCdzqx5pihGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HGvn1b/G; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C3FAD1C0004;
+	Thu, 21 Mar 2024 07:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1711005427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nnjl8NwZzgPwQjCkcjCjQ+FVN05+Q4op74BaS+FN5Yc=;
+	b=HGvn1b/GVl4fpnbQxgNZ/Prs0NyYO5wc1PCRytrdhvGE2nXdpuQI3dkSeqmnisYBExgCTS
+	csRHt58eh5FldcAX/GCpFttN4qAyIQlm406ZbwqkD2l/M7KVVTx7dEMo4cyjZAVkleNr3g
+	41dkjnWhhz/Nx43/lC9sXuXoK8X5dKRALxgynzk1jYW48aQLc8M8J9/43S4q/0Gyl9p09U
+	hJ1GkDbFTxj7wDjjFR8OYHn5DRCl8GUDRGmm9Diwh+iN5bK9fyg/AS0G7YEYel7516m8x0
+	XoMw8qBq3BXhsreHvxtxXZKFDp6V2k2Vfi76eaHeuihaY7+tRPxWDaDlwZa4lg==
+Date: Thu, 21 Mar 2024 08:17:05 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Jernej Skrabec <jernej.skrabec@gmail.com>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Message-ID: <20240321081705.597f72bf@xps-13>
+In-Reply-To: <20240320162927.5015-1-ansuelsmth@gmail.com>
+References: <20240320162927.5015-1-ansuelsmth@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <30a8ce01-84d1-48ef-a93d-d14cc61723e3@roeck-us.net>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHYgvB3vtlZG91Hg--.64482S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF18GFWfXw43Aw4UWFWxZwb_yoW8Kryrpr
-	98Cr97Kr1DJry7JF18Aw1UXryIyw4UJa15JryrJr1UJrnxWw1UJr17XryUCr1DKr1UZr12
-	yF1Uury7uw1DtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1wL05UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
+Hi Christian,
 
+ansuelsmth@gmail.com wrote on Wed, 20 Mar 2024 17:29:25 +0100:
 
-on 3/21/2024 12:23 AM, Guenter Roeck wrote:
-> Hi,
-> 
-> On Wed, Jan 03, 2024 at 06:48:57PM +0800, Kemeng Shi wrote:
->> Add unit test of ext4_mb_generate_buddy
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> 
-> With this and other new ext4 tests test in the tree, I see a variety
-> of backtraces in the upstream kernel if debug options are enabled.
-> An example is
-> 
-> [    6.821447]         KTAP version 1
-> [    6.821769]         # Subtest: test_mb_generate_buddy
-> [    6.824787] =============================================================================
-> [    6.825568] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
-> ...
-> [    6.894341] ok 7 ext4_inode_test
-> [    6.895411] =============================================================================
-> [    6.895777] BUG inode_cache (Tainted: G    B            N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
-> 
-> Another example, from another test run, is
-> 
-> [    3.938551]         # Subtest: test_new_blocks_simple
-> [    3.947171]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-> [    3.952988]         ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-> [    3.958403]         ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-> [    3.958890] =============================================================================
-> [    3.959159] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xffff8de881adbf68-0xffff8de881adbf6f @offset=16232
-> 
-> Another one:
-> 
-> [   18.730473]         # Subtest: test_new_blocks_simple
-> [   18.760547]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-> [   18.778477] ==================================================================
-> [   18.778950] BUG: KFENCE: out-of-bounds write in ext4_mb_init+0x5d7/0xa60
-> 
-> This is just a sample, taken from a quick look at test results.
-> 
-> Are those backtraces expected ? If so, would it be possible to execute the
-> tests without generating such backtraces ? The backtraces, if intentional,
-> hide real problems in the noise.
-Thanks for the report. The backtrace is not expected, I will look into this. Thansk!
-> 
-> Thanks,
-> Guenter
-> 
+> MTD OTP logic is very fragile and can be problematic with some specific
+> kind of devices.
+>=20
+> NVMEM across the years had various iteration on how Cells could be
+> declared in DT and MTD OTP probably was left behind and
+> add_legacy_fixed_of_cells was enabled without thinking of the consequence=
+s.
+>=20
+> That option enables NVMEM to scan the provided of_node and treat each
+> child as a NVMEM Cell, this was to support legacy NVMEM implementation
+> and don't cause regression.
+>=20
+> This is problematic if we have devices like Nand where the OTP is
+> triggered by setting a special mode in the flash. In this context real
+> partitions declared in the Nand node are registered as OTP Cells and
+> this cause probe fail with -EINVAL error.
+>=20
+> This was never notice due to the fact that till now, no Nand supported
+> the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
+> access for MX30LFxG18AC") this changed and coincidentally this Nand is
+> used on an FritzBox 7530 supported on OpenWrt.
+>=20
+> Alternative and more robust way to declare OTP Cells are already
+> prossible by using the fixed-layout node or by declaring a child node
+> with the compatible set to "otp-user" or "otp-factory".
+>=20
+> To fix this and limit any regression with other MTD that makes use of
+> declaring OTP as direct child of the dev node, disable
 
+The beauty of backward compatibility...
+
+> add_legacy_fixed_of_cells if we have a node called nand since it's the
+> standard property name to identify Nand devices attached to a Nand
+> Controller.
+>=20
+> With the following logic, the OTP NVMEM entry is correctly created with
+> no Cells and the MTD Nand is correctly probed and partitions are
+> correctly exposed.
+
+Thanks for the investigation and the fix. An implementation detail
+below.
+
+>=20
+> Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old synta=
+x fixed OF cells")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 5887feb347a4..6872477a5129 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(st=
+ruct mtd_info *mtd,
+>  	config.name =3D compatible;
+>  	config.id =3D NVMEM_DEVID_AUTO;
+>  	config.owner =3D THIS_MODULE;
+> -	config.add_legacy_fixed_of_cells =3D true;
+> +	config.add_legacy_fixed_of_cells =3D !of_node_name_eq(mtd->dev.of_node,=
+ "nand");
+
+Could we use mtd_type_is_nand() instead?
+
+>  	config.type =3D NVMEM_TYPE_OTP;
+>  	config.root_only =3D true;
+>  	config.ignore_wp =3D true;
+
+Thanks,
+Miqu=C3=A8l
 
