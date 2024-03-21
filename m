@@ -1,120 +1,125 @@
-Return-Path: <linux-kernel+bounces-109919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACCA08857C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:05:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC968857CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68F66283FD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:05:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C3161C2164B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083E157880;
-	Thu, 21 Mar 2024 11:05:46 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F87B58120;
+	Thu, 21 Mar 2024 11:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQgnc9nP"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D16B57311
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485631CA9A;
+	Thu, 21 Mar 2024 11:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019145; cv=none; b=AWZj8gkNGXyT63Ua7f1JLCKzB+1oG838qEJQUMdN8SpO/VoK1H1nE0G4EBl0PsIZUD+6gHKj7eqtTLhFx5yRPcE3fc0FpLD9/toh+Jrtr/mh/xPawCd6F6Gh/NxaFPQpQigwBAikFW/EY/2TODE685wvg8l/jDI/tjeGVrchHl8=
+	t=1711019275; cv=none; b=cPa7QE5juU3NtJhfaNlmSDj+6z8ecUswQKdxuMUrXC07opl4buvbySeBE52zZe0uRtunelvWaM32l/idNrVEiPXBqz3Eq/+TBbHXNeRFTL5/bX1qd5ob/hPXHCauN8AaKf4amSqIT5MfUylYupEO8Qa0ZryiQPBIjKLXBIGDMmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019145; c=relaxed/simple;
-	bh=slbxlN2nSei3VCKDGLMiugztkO4zWq96JKaboOhSAAU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f0/CeZEFBLLoyVHuMhJkyM7J+oTEWVgMLIctGyx28MRu4Gujpg1rSBP/3DU/yJiUDXdFZFQge5FOENqFzTYIkHjH7HClDBAkYqAzp8uQ5jYwutaWDp/lGbKB+KoYPDbcQTnT4oicDcKprAsEB2e5aKCz9H71tCH8gdCys7jHGiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6973B37268;
-	Thu, 21 Mar 2024 11:05:37 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D1123136AD;
-	Thu, 21 Mar 2024 11:05:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8LM4MIAU/GUXKwAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Thu, 21 Mar 2024 11:05:36 +0000
-Date: Thu, 21 Mar 2024 12:07:02 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: [PATCH v2 2/2] mm,page_owner: Fix accounting of pages when
- migrating
-Message-ID: <ZfwU1mGQKejNaKIk@localhost.localdomain>
-References: <20240319183212.17156-1-osalvador@suse.de>
- <20240319183212.17156-3-osalvador@suse.de>
- <Zfnd_w0ZLOVhgACt@casper.infradead.org>
- <ZfptWDsfdxBltN6T@localhost.localdomain>
- <ed41d5cf-d068-412d-b7bb-5468df2fefb7@suse.cz>
+	s=arc-20240116; t=1711019275; c=relaxed/simple;
+	bh=991r5jVPabzsSiBI/2AWFmPQe3N0Culave2SmDvtwig=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=q153jhm3EaJw46qKo/b44ulqCTLAJQIA+oZgo6+6WQTgi7D2D9bEAmCMg/3V9oAq8T556RH230X7lFfXI1rkqxdtZTrhSiBt+wIE3EkJV4tm3Q+hb9plNtUscx7fBmChoJ0xZy90vGjSPwnGBycY75BjKYIE1GOf4y88XdWXzjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IQgnc9nP; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d094bc2244so11870011fa.1;
+        Thu, 21 Mar 2024 04:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711019272; x=1711624072; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LBA/ZrsdEP2mJDzZKy68MDsPNZzNplR+dVmyq9Un4qk=;
+        b=IQgnc9nPvZVfyR95ZgpmAoguW5Kus9Rg1ze2NIGHaAwAAQ5Z1SrIzC9Bj/QRpAxjQJ
+         75CEwsRwdBJpVxVsUj18f6vVcpE1wwXK7oL3IOSG8VOl8DFbQDiGzuaGqbPFRUDcvlXo
+         9vtXcyk6KLD7RFImYSzT8eQFMjiGzvdGbKPw+mdxx5I6LoIhCfHHwM2OxgqgXfaM3UHL
+         yWy6n5wOJruhsIEhbWMBxpsS5RjvUiPgYAvC5MTdcp3lSuK2+DIYoiFzrWX3auzVuVWp
+         zlJXX5OUGA6GhlRIoHiVStKbVOR0rIAdAfz/nTCDObKz1NgAKOE1yzQaZRyarRYupLez
+         GPvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711019272; x=1711624072;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LBA/ZrsdEP2mJDzZKy68MDsPNZzNplR+dVmyq9Un4qk=;
+        b=A6C5ynnEyW+7dE4LjoC704hFNOe0dC2yN3H9/hNqj1WXVoBQgphua5Kjy320obqUWK
+         dzbhdyDHF4LwzyKbnGYkQdv1xRnsfpv0bXyZkemm0JlfBh0iqovXf2Nz+3IgQoQtDA0O
+         27YwpmN8dKi0/i9Kr9nrNk31eWD3np068orgAfiqY80GG+w1tqFnnY/HG1Xy/Zahft0P
+         65tNvivuSMqGRqAQckVIQ08edMxB+OX+F6XNZPmAY/K0g8TAEwP4lnUz/TSEaRHUfLmP
+         l+i+8T7vw/n+m0PXAcBF08iu3fv+FGCMVapVK4n76TX+B1MmFcc/AbrVT5w0NPXqpwCo
+         lhRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4Wk8Pq7ADK/4JF6YyQG2kmIAbx66dkcoapX9PaYA4otHmAeZP3nsgPQT0WV0YjWAya8NjXB1cnUSxn3XRLS3t01t6SbD8ZIcYySYa
+X-Gm-Message-State: AOJu0Yza3QwigmT36pUqKYwvp7Sm/ajnGgvDwnZ8l9F2SgfBY7T5HnOt
+	jeupy3qm1VUVi3OtVU78qoI09IpAnwzyu9KytCwJfn7/7HiraxCf
+X-Google-Smtp-Source: AGHT+IGX1IDugtt7aqvnV1u2P6JH4LDutUHs6obm/B1+3FHLV5PEVN89PYCsimtbkvZmRut8Tc1Rbw==
+X-Received: by 2002:ac2:54b5:0:b0:513:426e:625 with SMTP id w21-20020ac254b5000000b00513426e0625mr5007201lfk.22.1711019272230;
+        Thu, 21 Mar 2024 04:07:52 -0700 (PDT)
+Received: from [192.168.16.136] (54-240-197-226.amazon.com. [54.240.197.226])
+        by smtp.gmail.com with ESMTPSA id fl25-20020a05600c0b9900b00414778ca80fsm122464wmb.16.2024.03.21.04.07.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 04:07:51 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <a80b46a2-d07a-466e-b2b3-bed685292e47@xen.org>
+Date: Thu, 21 Mar 2024 11:07:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed41d5cf-d068-412d-b7bb-5468df2fefb7@suse.cz>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 6973B37268
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 1/3] KVM: Add helpers to consolidate gfn_to_pfn_cache's
+ page split check
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20240320001542.3203871-1-seanjc@google.com>
+ <20240320001542.3203871-2-seanjc@google.com>
+Organization: Xen Project
+In-Reply-To: <20240320001542.3203871-2-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 11:50:36AM +0100, Vlastimil Babka wrote:
-> Yeah I think we could keep that logic.
+On 20/03/2024 00:15, Sean Christopherson wrote:
+> Add a helper to check that the incoming length for a gfn_to_pfn_cache is
+> valid with respect to the cache's GPA and/or HVA.  To avoid activating a
+> cache with a bogus GPA, a future fix will fork the page split check in
+> the inner refresh path into activate() and the public rerfresh() APIs, at
 
-I am all for keeping it.
+nit: typo
 
-> But we could also simply subtract the refcount of the old handle (the
-> "allocated for migration") in __folio_copy_owner() no? Then we wouldn't need
-> the extra migrate_handle.
+> which point KVM will check the length in three separate places.
+> 
+> Deliberately keep the "page offset" logic open coded, as the only other
+> path that consumes the offset, __kvm_gpc_refresh(), already needs to
+> differentiate between GPA-based and HVA-based caches, and it's not obvious
+> that using a helper is a net positive in overall code readability.
+> 
+> Note, for GPA-based caches, this has a subtle side effect of using the GPA
+> instead of the resolved HVA in the check() path, but that should be a nop
+> as the HVA offset is derived from the GPA, i.e. the two offsets are
+> identical, barring a KVM bug.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   virt/kvm/pfncache.c | 27 +++++++++++++++++++--------
+>   1 file changed, 19 insertions(+), 8 deletions(-)
+> 
 
-Since new_page will have the old handle pointing to the old stack after
-the call, we
-could uncharge the old_page to the migrate_stack, which new_page->_handle holds
-before it gets changed.
+Reviewed-by: Paul Durrant <paul@xen.org>
 
-So we basically swap it.
-
-It could work, but I kinda have a bittersweet feeling here.
-I am trying to work towards to reduce the number of lookups in the
-hlist, but for the approach described above I would need to lookup
-the stack for new_page->handle in order to substract the page.
-
-OTHO, I understand that adding migrate_handle kinda wasted memory.
-16MB for 16GB of memory.
-
-> Also we might have more issues here. Most page owner code takes care to set
-> everything for all pages within a folio, but __folio_copy_owner() and
-> __set_page_owner_migrate_reason() don't.
-
-I did not check deeply but do not we split the folio upon migration
-in case it is large?
-Which means we should reach split_page_owner() before the copy takes
-place. Do I get it right?
-
--- 
-Oscar Salvador
-SUSE Labs
 
