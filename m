@@ -1,89 +1,156 @@
-Return-Path: <linux-kernel+bounces-109806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C098855EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:45:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0238855F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30E18284D16
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:45:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2895D1F21B8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E15200D9;
-	Thu, 21 Mar 2024 08:45:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D13A1CD1E;
-	Thu, 21 Mar 2024 08:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931112A1C6;
+	Thu, 21 Mar 2024 08:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WLHgw0Oc"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7961CD1E;
+	Thu, 21 Mar 2024 08:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711010700; cv=none; b=dPJWc3HhFK/Kch14ebJVvrj3kQt7FnXdwGsRPWg1ngrqY/UbVcFBm8tOxy1zCZiS/dbxUpuUF/JPe/hX2HVjKCMh+OnZRREuxMxh6OEM69d4saBwXwR7aujkY8Y70PoVZo+3NrtcwjZbBY9x04/3CVwG9pZsUFwJfU8sEoykdA0=
+	t=1711010761; cv=none; b=XvpEklfknJgyVsVgUFpbgaPizJ+9JKhHUUt25/gYfubdccjaukBq4PP4YbNsF2L+wLUquOivw+uY6jPPmcGmZgcbJBYnT1X1Bw/SInGcAPw3EwfkvWBkiCNXk9H1PMpVmnYdTMleyoE6XV+FOQFwGS5oeiZ+Uw6dMq9dPwRWEEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711010700; c=relaxed/simple;
-	bh=5PL0FOqgSLRcQLeMbWOwS8bEyOSQwYf2t/O+B+Vwrb8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X3NdJqKINmdY5g7zIA0a2qMfkJ6a7YLNawa8kVb2oCJWl0C9EMEmGXyxOhBL5DNI/0LvrXRz0zt4d6VeD9I+8VHvTsQE5qXMc9KJPz/a3CWGrCLzan6gYg9hxiC4it/0T85ORoKf4ros4YuItT5xiAowsxZ/3fxl2IaC9K7EI70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 284091007;
-	Thu, 21 Mar 2024 01:45:26 -0700 (PDT)
-Received: from [10.57.72.138] (unknown [10.57.72.138])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BC9F3F67D;
-	Thu, 21 Mar 2024 01:44:49 -0700 (PDT)
-Message-ID: <3afdba54-2a85-46a6-a0f1-a61b4d0d8930@arm.com>
-Date: Thu, 21 Mar 2024 08:44:46 +0000
+	s=arc-20240116; t=1711010761; c=relaxed/simple;
+	bh=vY+pgNxP5agnZS3lZvczA7j/a5myVK7NY475boIDNL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A96jZQQiHesxXknOxe/AuYdl5++CRcb4t2TxR6Fjb86YhUMmPi7sO/SDXxzdw5nPR87/x5NmZ2IrHS40rjHMHN/BQXKC6fN6JNO9qasR02LmCp8swipjLf6we3y7AUsNCU7+LcIVJsXBspKMI/6CaBKQkNYD88eTqxpfBxxH/xU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WLHgw0Oc; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42L8VgFu006435;
+	Thu, 21 Mar 2024 08:45:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=eON5wf8vXjUbhAWLa3fsuk9PyIi46INytgA4dC5vzVQ=;
+ b=WLHgw0Ocq6Z0manE5cztoT1WoD+LXEfUa0QtTLvNJNv0/1KqRSXpRkxV1CojFnbUbI1k
+ Z6D1JjqJWTHI0Yt/TEKujnfD0LG3YP17BOS4dKY/E4Arm0kthsQqhivq3Y0zZqEY87q2
+ 7w11pnYRlUTmM9Wf2lqETVpshSnxBS47iv2KNAhlxo3UmxXvXSf7t+xOynGSePuRzYPg
+ 5PobxeUVyxOrJ5LayeIPRFeg3YVqUA3Z4t3leqaWaAL7+T/mfEbA6CY3e3b2w6274sQw
+ xgaLvzamiZiCjhWvLWGZkmga/xfukuYdNBoSAVE0R+zUeVQujoflpCWEX8Lp0I1zz/Kb zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0hfb80vb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 08:45:14 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42L8jDBD028522;
+	Thu, 21 Mar 2024 08:45:13 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0hfb80v4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 08:45:13 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42L7FR6h019872;
+	Thu, 21 Mar 2024 08:45:12 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykum6x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 08:45:12 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42L8j8RQ30999282
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 08:45:10 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9324520040;
+	Thu, 21 Mar 2024 08:45:08 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 531A32004B;
+	Thu, 21 Mar 2024 08:45:07 +0000 (GMT)
+Received: from heavy (unknown [9.171.8.38])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 21 Mar 2024 08:45:07 +0000 (GMT)
+Date: Thu, 21 Mar 2024 09:45:05 +0100
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpf: verifier: prevent userspace memory access
+Message-ID: <ed5cozsc7mduzmgbwrlw3lou4tlb6zpivhs2xrqwgpq2rhvkue@l7aifknll4tb>
+References: <20240320105436.4781-1-puranjay12@gmail.com>
+ <CAADnVQJ3o6DsURi=N_KXx+mbW9r7__3LrwYLyYwuoMOsqFHPkw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] thermal: devfreq_cooling: Fix perf state when
- calculate dfc res_util
-Content-Language: en-US
-To: =?UTF-8?B?5byg54Oo?= <ye.zhang@rock-chips.com>
-Cc: "tao.huang" <tao.huang@rock-chips.com>, heiko <heiko@sntech.de>,
- "rui.zhang" <rui.zhang@intel.com>, "finley.xiao"
- <finley.xiao@rock-chips.com>,
- linux-rockchip <linux-rockchip@lists.infradead.org>,
- linux-pm <linux-pm@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- "daniel.lezcano" <daniel.lezcano@linaro.org>, rafael <rafael@kernel.org>
-References: <fb9b21f6-4c73-4a85-93cc-56e7c44359cb@arm.com>
- <ANIAEAAdHuSn9iPJ6HkLiaq2.3.1711010230402.Hmail.ye.zhang@rock-chips.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <ANIAEAAdHuSn9iPJ6HkLiaq2.3.1711010230402.Hmail.ye.zhang@rock-chips.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJ3o6DsURi=N_KXx+mbW9r7__3LrwYLyYwuoMOsqFHPkw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TYjvFxQwEBdE5__OC1dzjMlHjdsm_YEY
+X-Proofpoint-GUID: Op4zlibBI5OweaTnIoIg1COwJwRAnpk3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_06,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=798 priorityscore=1501
+ mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403210059
 
-
-
-On 3/21/24 08:37, 张烨 wrote:
+On Wed, Mar 20, 2024 at 11:08:00PM -0700, Alexei Starovoitov wrote:
+> On Wed, Mar 20, 2024 at 3:55 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >
+> > The JITs need to implement bpf_arch_uaddress_limit() to define where
+> > the userspace addresses end for that architecture or TASK_SIZE is taken
+> > as default.
+> >
+> > The implementation is as follows:
+> >
+> > REG_AX =  SRC_REG
+> > if(offset)
+> >         REG_AX += offset;
+> > REG_AX >>= 32;
+> > if (REG_AX <= (uaddress_limit >> 32))
+> >         DST_REG = 0;
+> > else
+> >         DST_REG = *(size *)(SRC_REG + offset);
 > 
-> Hi Lukasz,
+> The patch looks good, but it seems to be causing s390 CI failures.
 > 
-> Regarding your question about how I triggered the issue andifI have a 
-> driver that provides the get_real_power() callback:
-> 
-> I encountered thisissue whilecalculating the GPU power consumption onthe 
-> Rockchip RK3399 platform. The GPU model isMali T860, which isan ARM 
-> Midgard GPU. The driver version isr18p0-01rel0, andit provides the 
-> get_real_power() callback.Best regards, Ye Zhang
+> Ilya,
+> could you help us understand is this check needed on s390
+> and if so, what should be the uaddress_limit ?
 
-Yes that would trigger the issue. Thank you Ye for
-sharing that.
-
-BTW, I also use RK3399 for my mainline kernel development.
-I use the Rock Pi 4SE with the mainline GPU driver
-'panfrost'. That GPU driver doesn't support the get_real_power()
-callback, but maybe it would be worth to add it...
-
-Please send the v2 and I will add my reviewed-by tag for it.
-
-Regards,
-Lukasz
-
+s390x does not define ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
+Userspace and kernel run in completely different and isolated address
+spaces, so it's not possible to determine from a pointer value whether
+it's a user or a kernel pointer.
+But the good news is that whatever you deference without using
+special instruction sequences will refer to the kernel address space.
+So I wonder if we could somehow disable this check on s390x altogether?
+And if we are not sure whether it's a valid pointer, use BPF_PROBE_MEM
+as always.
 
