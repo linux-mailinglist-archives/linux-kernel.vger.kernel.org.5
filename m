@@ -1,149 +1,155 @@
-Return-Path: <linux-kernel+bounces-109725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8E1881CD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:17:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8494B881CD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A902B217AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:17:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5B7A1C2127A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1166751C2C;
-	Thu, 21 Mar 2024 07:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31BA5103E;
+	Thu, 21 Mar 2024 07:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HGvn1b/G"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ncafNp/r"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E563A1DE;
-	Thu, 21 Mar 2024 07:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C253A1DE
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711005432; cv=none; b=HkYzq/eMAKlN+azORVpTkyhmkavwV56qjE2HzBMsadHolQ1Aq9rKJfquqdfJguAkXYZDWUJ+VzqjrCBe3YzODL5Zle0ZV6f7vUno4MS1y667bbxkPPBw4xrAYoB0NlHTsNpsGb++Oh8Ut1cw8RZdw+ZdZU9HBFOQXdKqeeSbaQE=
+	t=1711005522; cv=none; b=dF3os0nVNKvtgliVJQcuVnPlCv8m4DZBOYw9ziGrBrgUmhJwhc8kofpGDHtr6aNXV17GUGoh/2TWq9km3rlu6bVQJXyjUdca30MlEx+r+nbEveBQvkQkV5efY6g9yH9oTMDghv9kEVXTQzcS+X1sgslTDANOaB26pz6xRSa5CXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711005432; c=relaxed/simple;
-	bh=GzzWbNc0mT8vlM+yDeqE8rS78bXyatgD86F8aqGRPMI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qAAZ0jdsjDpDXWFfRfzJnK14dAhsimMUnH6aO5kdHBsqTdo/2FqxJfWKbPjSj/GCL3IHZU+AhYfQeahK3PUv56dxLSeHTi9J1EXcKshV9ax1hHRqI+VWB6QYZrQdfaDUo0FaIqJBfGvKz1wblW3eMnUgbvqBke8fCdzqx5pihGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HGvn1b/G; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C3FAD1C0004;
-	Thu, 21 Mar 2024 07:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711005427;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nnjl8NwZzgPwQjCkcjCjQ+FVN05+Q4op74BaS+FN5Yc=;
-	b=HGvn1b/GVl4fpnbQxgNZ/Prs0NyYO5wc1PCRytrdhvGE2nXdpuQI3dkSeqmnisYBExgCTS
-	csRHt58eh5FldcAX/GCpFttN4qAyIQlm406ZbwqkD2l/M7KVVTx7dEMo4cyjZAVkleNr3g
-	41dkjnWhhz/Nx43/lC9sXuXoK8X5dKRALxgynzk1jYW48aQLc8M8J9/43S4q/0Gyl9p09U
-	hJ1GkDbFTxj7wDjjFR8OYHn5DRCl8GUDRGmm9Diwh+iN5bK9fyg/AS0G7YEYel7516m8x0
-	XoMw8qBq3BXhsreHvxtxXZKFDp6V2k2Vfi76eaHeuihaY7+tRPxWDaDlwZa4lg==
-Date: Thu, 21 Mar 2024 08:17:05 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Jernej Skrabec <jernej.skrabec@gmail.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: limit OTP NVMEM Cell parse to non Nand devices
-Message-ID: <20240321081705.597f72bf@xps-13>
-In-Reply-To: <20240320162927.5015-1-ansuelsmth@gmail.com>
-References: <20240320162927.5015-1-ansuelsmth@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711005522; c=relaxed/simple;
+	bh=1ague1U2mCN70HfjssMUu5eUMmcNH7R01LQCzPfoZ60=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p7gHVxAku2mwnVuNpoLLpQsoxWqbjIvzQVCpwPOFNvhVLzAfIUexUqWj0jmMY5NSaex5jwMNSRbIog23byb5+PSWP9RyYPVv8KckVgEtq2Kk3i4uEAb41Yc3VqFl2Wewc46O7BjHtoNNERgbBcJVyOh4WG1eTfakCGKnL9ntyq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ncafNp/r; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bc7b07df7so550853a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711005518; x=1711610318; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dt8V+WfthBso77AcF0LgpovSLtj2INJubeq4ho3W+FM=;
+        b=ncafNp/rDgAUOMGQuU/Nr8AuS+mPcBh1C/Qah8WAJmAQJn3Y+ijdEBDQ2CCSt2kTYA
+         whn6bnd07X1mluAp9Gasfh5LkPpebB47ohpFeg+6M/zZtbd7WJ3Yy0B4sTV2N97uRLgY
+         ht7lZPEoHz1QmXU7yoF9lPD1JDG+bO49K0Xka4Gb5FM4bxZsaf5NwalU+594phfDEI6n
+         5BUufvkyi9vQ+/5P7XfmZATX9Ywy5t8Z8+ClsCdfecwQIK0oXc3vbd26L1f2ArtkL4u8
+         MFNEfMGTdzUZQ8u/zeS6sZ5WX/3E5F8LM+PSbqrRaoRdWFZhTkydRM3oD3L4TfVfTg5c
+         8BrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711005518; x=1711610318;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dt8V+WfthBso77AcF0LgpovSLtj2INJubeq4ho3W+FM=;
+        b=gZmmevv6b7ZhiM+5ky+wb/iow3PVIurgH1Czs+n94ew1qsw8Q/gi/4nbzyidpYTALW
+         D1tKVmfwzcaRbvWDoRzNIkqbUIjk9VDwu1663bEwgitVC2KkLokyVuzdycah+wCCpaN6
+         pv4gdJnmU+CMxFQHMpqwGiu4XTK1ZWOo6TV721oOG5b+YT1B7+n71nVP6DyenPVhaSP7
+         eV9KeXMzJaf7vr1o3ryIkOfJ0DiXCcK7AQ2EvrE3OIMnM/K2+q8LXdIgjB4jv2DFyGxs
+         KPpi0k7D4h3ytYWtuVMAviuGwe9fg+kAtqELyKwk7TltAGzRXFfv0IMnbZwYZ7xVZ3vo
+         m7uQ==
+X-Gm-Message-State: AOJu0Yz5fibl9rL+J1CGdSAlNXBZTY87l61SLZOBTlW1Z6l4ZzSEjY2p
+	A99I3mffvouPPvdqbg0tib8x7N0vRAyvUMC+RGIfBQfm6LR6nzrZx0rxFx4dkSA=
+X-Google-Smtp-Source: AGHT+IEFbAXELSpgnfv4OSIfYDAkJ85jXliTDWI9oB1R5tk68u/yAOKYPWpp13aMaHs6GYNnEot/uw==
+X-Received: by 2002:a17:907:b9cf:b0:a46:f563:a642 with SMTP id xa15-20020a170907b9cf00b00a46f563a642mr1676295ejc.7.1711005518437;
+        Thu, 21 Mar 2024 00:18:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id sa37-20020a1709076d2500b00a4635a21ff0sm8081298ejc.38.2024.03.21.00.18.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 00:18:37 -0700 (PDT)
+Message-ID: <3c5efec9-cb29-4226-8701-2917ce3c2876@linaro.org>
+Date: Thu, 21 Mar 2024 08:18:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] reset: gpio: Fix missing gpiolib dependency for GPIO
+ reset controller
+To: Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: linux-kernel@vger.kernel.org
+References: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-Hi Christian,
+On 20/03/2024 20:59, Mark Brown wrote:
+> The GPIO reset controller uses gpiolib but there is no Kconfig
+> dependency reflecting this fact, add one.
+> 
+> With the addition of the controller to the arm64 defconfig this is
+> causing build breaks for arm64 virtconfig in -next:
+> 
+> aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_reset_gpio_lookup':
+> /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined reference to `gpio_device_find_by_fwnode'
+> 
 
-ansuelsmth@gmail.com wrote on Wed, 20 Mar 2024 17:29:25 +0100:
+Lack of dependency was intentional: because there is no dependency.
+GPIOLIB is optional. Because of that I added few stubs for missing
+GPIOLIB functions, but I missed this stub here.
 
-> MTD OTP logic is very fragile and can be problematic with some specific
-> kind of devices.
->=20
-> NVMEM across the years had various iteration on how Cells could be
-> declared in DT and MTD OTP probably was left behind and
-> add_legacy_fixed_of_cells was enabled without thinking of the consequence=
-s.
->=20
-> That option enables NVMEM to scan the provided of_node and treat each
-> child as a NVMEM Cell, this was to support legacy NVMEM implementation
-> and don't cause regression.
->=20
-> This is problematic if we have devices like Nand where the OTP is
-> triggered by setting a special mode in the flash. In this context real
-> partitions declared in the Nand node are registered as OTP Cells and
-> this cause probe fail with -EINVAL error.
->=20
-> This was never notice due to the fact that till now, no Nand supported
-> the OTP feature. With commit e87161321a40 ("mtd: rawnand: macronix: OTP
-> access for MX30LFxG18AC") this changed and coincidentally this Nand is
-> used on an FritzBox 7530 supported on OpenWrt.
->=20
-> Alternative and more robust way to declare OTP Cells are already
-> prossible by using the fixed-layout node or by declaring a child node
-> with the compatible set to "otp-user" or "otp-factory".
->=20
-> To fix this and limit any regression with other MTD that makes use of
-> declaring OTP as direct child of the dev node, disable
+I propose to add gpio_device_find_by_fwnode() stub for !GPIOLIB case,
+instead of adding dependency.
 
-The beauty of backward compatibility...
+Best regards,
+Krzysztof
 
-> add_legacy_fixed_of_cells if we have a node called nand since it's the
-> standard property name to identify Nand devices attached to a Nand
-> Controller.
->=20
-> With the following logic, the OTP NVMEM entry is correctly created with
-> no Cells and the MTD Nand is correctly probed and partitions are
-> correctly exposed.
-
-Thanks for the investigation and the fix. An implementation detail
-below.
-
->=20
-> Fixes: 2cc3b37f5b6d ("nvmem: add explicit config option to read old synta=
-x fixed OF cells")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->  drivers/mtd/mtdcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 5887feb347a4..6872477a5129 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(st=
-ruct mtd_info *mtd,
->  	config.name =3D compatible;
->  	config.id =3D NVMEM_DEVID_AUTO;
->  	config.owner =3D THIS_MODULE;
-> -	config.add_legacy_fixed_of_cells =3D true;
-> +	config.add_legacy_fixed_of_cells =3D !of_node_name_eq(mtd->dev.of_node,=
- "nand");
-
-Could we use mtd_type_is_nand() instead?
-
->  	config.type =3D NVMEM_TYPE_OTP;
->  	config.root_only =3D true;
->  	config.ignore_wp =3D true;
-
-Thanks,
-Miqu=C3=A8l
 
