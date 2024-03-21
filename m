@@ -1,170 +1,183 @@
-Return-Path: <linux-kernel+bounces-110529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BF2288602D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:59:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57805886034
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:02:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE931C21C69
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:59:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D772C2817EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908C0133297;
-	Thu, 21 Mar 2024 17:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D66C132C37;
+	Thu, 21 Mar 2024 18:02:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c9eSV7qR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DnkRB0aQ"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6A510782;
-	Thu, 21 Mar 2024 17:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9898132494
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711043977; cv=none; b=Y3oipLcYJNiN4r3UXVIdFQK+ilZWHm7yrBn4ENMMJbgexIAcXvRiLPbwvfflv+47/elUBqtEAL9VHB60mtK1pa+4/5v1qCgRS6vHjiR5oxTJDon8QL77gwbdCOjOIQ6YhMM4cXpF9TkviJj0yqhZ13VDCFxLDGaNkJJShi+EQ9U=
+	t=1711044121; cv=none; b=cQ060moUm0miHk01NsJx4/hWb7fLvEa5cl3HVbFp+OCIzqhqO+VoH6XbUCRckXOAZAQ1yxEGHqqQqwBb4gypN4tL/s+IVThd0mPULNtHQpXe5O2sYWK/wjuzGQkTABs1ZhekfBLRdrzq+R4zdRYLEv/fXJJWvMKRo9dfw7ptUoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711043977; c=relaxed/simple;
-	bh=5p1vu+H+Qi9PzEOaI6stcVG4CjMDc4QRwynUOBT6pZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RauAJgIA/JJsw2WCgtz1NxwiBOh0aclepa2ufQRGSzu/4Oo0jCoEcrxS8TAzd8onsS6Jx8lJFWyGWm5WjL/a4K9yEgf15hefxXEoUXxLAqNc+X6L8CLxJeFxLhYJKSV0N6knN1q875F5+NhlUTpM0i5Oa1X4Yjcv+HZciIEvvhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c9eSV7qR; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711043976; x=1742579976;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5p1vu+H+Qi9PzEOaI6stcVG4CjMDc4QRwynUOBT6pZU=;
-  b=c9eSV7qRS+14cTIE6GELWtQoqqKZord42RIPc3SfkHtFThn4zTzEA7Wy
-   VRFaMhZAg41ugZUB1haXpAXxxVqyJofT35PoSt5K4rfeHM5IHii0VGurZ
-   R4OY23/zjvLd2x+/DxRmI32akQG2SeyFA/h8gozYZLxwkRFhx/nDdW1A0
-   XnFSzdz+s7J9H7fmbs7Smpy9+QffjXIV6ZwAX8hk8qOIzQbVPeTAc7Vxp
-   jGqryq1gSWuYX9jjfENRDXACIxc4ncdelRZ0un+LeYq/9Ga8AOfzAmYvE
-   Gsaz0MKlZfo1QOkQRjjUcE/M68+LVQlE89Y5ttfczvlygwc0IEs2M7zzi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="31492966"
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="31492966"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:59:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="19167559"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:59:35 -0700
-Date: Thu, 21 Mar 2024 10:59:34 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 041/130] KVM: TDX: Refuse to unplug the last cpu on
- the package
-Message-ID: <20240321175934.GO1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <15d4d08cf1fe16777f8f8d84ee940e41afbad406.1708933498.git.isaku.yamahata@intel.com>
- <ZfuIJpHzp4sEjCi/@chao-email>
+	s=arc-20240116; t=1711044121; c=relaxed/simple;
+	bh=m1MjhtWa4UWUwb9sG7uRiAQZpvAYE3Vza3Fdhtf29gQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cq8Qb44o8Ca44uA1ZYD/vq+vReKzRWueOvFdtwK95yCgVkapPiDgYD0SfXsu5hNohlrUu0DBKY4GwBUq+vv4vE9L4wOvRyzbAlWNLKKnlCjTC/FSB5rr5DVYVmUEIre7vJ5gTlvnXh8+AQ94Qo5tv+6E2JlrDeyxkn88blBtAvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DnkRB0aQ; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711044116;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3jCNE51iIDU7D8f4vJ8vC3wJ5igSMaQyRWOs6SDcoc4=;
+	b=DnkRB0aQO1YjTp7DlSavLOZxGJXRzWuU8HJ42U3HPopVHMQ9zrMXGIYX7e+glDubg9JRzS
+	qJZ+IUKyH3mwMSrhtObV1SeUA8P7BN3be7BtJddsA5wuZ4WkN1/+T/XiBkVeIrpYZJKFdb
+	Im6loUb5p/Hl88rmdvY7nw/cIkhg4/o=
+Date: Thu, 21 Mar 2024 14:01:52 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZfuIJpHzp4sEjCi/@chao-email>
+Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
+Content-Language: en-US
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-6-sean.anderson@linux.dev>
+ <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
+ <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
+ <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 21, 2024 at 09:06:46AM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
-
-> >diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> >index 437c6d5e802e..d69dd474775b 100644
-> >--- a/arch/x86/kvm/vmx/main.c
-> >+++ b/arch/x86/kvm/vmx/main.c
-> >@@ -110,6 +110,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
-> > 	.check_processor_compatibility = vmx_check_processor_compat,
-> > 
-> > 	.hardware_unsetup = vt_hardware_unsetup,
-> >+	.offline_cpu = tdx_offline_cpu,
-> > 
-> > 	/* TDX cpu enablement is done by tdx_hardware_setup(). */
-> > 	.hardware_enable = vmx_hardware_enable,
-> >diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> >index b11f105db3cd..f2ee5abac14e 100644
-> >--- a/arch/x86/kvm/vmx/tdx.c
-> >+++ b/arch/x86/kvm/vmx/tdx.c
-> >@@ -97,6 +97,7 @@ int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> >  */
-> > static DEFINE_MUTEX(tdx_lock);
-> > static struct mutex *tdx_mng_key_config_lock;
-> >+static atomic_t nr_configured_hkid;
-> > 
-> > static __always_inline hpa_t set_hkid_to_hpa(hpa_t pa, u16 hkid)
-> > {
-> >@@ -112,6 +113,7 @@ static inline void tdx_hkid_free(struct kvm_tdx *kvm_tdx)
-> > {
-> > 	tdx_guest_keyid_free(kvm_tdx->hkid);
-> > 	kvm_tdx->hkid = -1;
-> >+	atomic_dec(&nr_configured_hkid);
+On 3/21/24 13:25, Tomi Valkeinen wrote:
+> On 21/03/2024 17:52, Sean Anderson wrote:
+>> On 3/20/24 02:53, Tomi Valkeinen wrote:
+>>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>>> Retraining the link can take a while, and might involve waiting for
+>>>> DPCD reads/writes to complete. This is inappropriate for an IRQ handler.
+>>>> Just schedule this work for later completion. This is racy, but will be
+>>>> fixed in the next commit.
+>>>
+>>> You should add the locks first, and use them here, rather than first
+>>> adding a buggy commit and fixing it in the next one.
+>>
+>> I didn't think I could add the locks first since I only noticed the IRQ
+>> was threaded right before sending out this series. So yeah, we could add
+>> locking, add the workqueue, and then unthread the IRQ.
+>>
+>>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>>>> ---
+>>>> Actually, on second look this IRQ is threaded. So why do we have a
+>>>> workqueue for HPD events? Maybe we should make it unthreaded?
+>>>
+>>> Indeed, there's not much work being done in the IRQ handler. I don't know why it's threaded.
+>>>
+>>> We could move the queued work to be inside the threaded irq handler,
+>>> but with a quick look, the HPD work has lines like "msleep(100)" (and
+>>> that's inside a for loop...), which is probably not a good thing to do
+>>> even in threaded irq handler.
+>>>
+>>> Although I'm not sure if that code is good to have anywhere. Why do we
+>>> even have such code in the HPD work path... We already got the HPD
+>>> interrupt. What does "It takes some delay (ex, 100 ~ 500 msec) to get
+>>> the HPD signal with some monitors" even mean...
+>>
+>> The documentation for this bit is
+>>
+>> | HPD_STATE    0    ro    0x0    Contains the raw state of the HPD pin on the DisplayPort connector.
+>>
+>> So I think the idea is to perform some debouncing.
 > 
-> I may think it is better to extend IDA infrastructure e.g., add an API to check if
-> any ID is allocated for a given range. No strong opinion on this.
-
-Will use ida_is_empyt().
-
-
-
-> > }
-> > 
-> > static inline bool is_hkid_assigned(struct kvm_tdx *kvm_tdx)
-> >@@ -586,6 +588,7 @@ static int __tdx_td_init(struct kvm *kvm, struct td_params *td_params,
-> > 	if (ret < 0)
-> > 		return ret;
-> > 	kvm_tdx->hkid = ret;
-> >+	atomic_inc(&nr_configured_hkid);
-> > 
-> > 	va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> > 	if (!va)
-> >@@ -1071,3 +1074,41 @@ void tdx_hardware_unsetup(void)
-> > 	kfree(tdx_info);
-> > 	kfree(tdx_mng_key_config_lock);
-> > }
-> >+
-> >+int tdx_offline_cpu(void)
-> >+{
-> >+	int curr_cpu = smp_processor_id();
-> >+	cpumask_var_t packages;
-> >+	int ret = 0;
-> >+	int i;
-> >+
-> >+	/* No TD is running.  Allow any cpu to be offline. */
-> >+	if (!atomic_read(&nr_configured_hkid))
-> >+		return 0;
-> >+
-> >+	/*
-> >+	 * In order to reclaim TDX HKID, (i.e. when deleting guest TD), need to
-> >+	 * call TDH.PHYMEM.PAGE.WBINVD on all packages to program all memory
-> >+	 * controller with pconfig.  If we have active TDX HKID, refuse to
-> >+	 * offline the last online cpu.
-> >+	 */
-> >+	if (!zalloc_cpumask_var(&packages, GFP_KERNEL))
-> >+		return -ENOMEM;
-> >+	for_each_online_cpu(i) {
-> >+		if (i != curr_cpu)
-> >+			cpumask_set_cpu(topology_physical_package_id(i), packages);
-> >+	}
+> Hmm, it just looks a bit odd to me. It can sleep for a second. And the wording "It takes some delay (ex, 100 ~ 500 msec) to get the HPD signal with some monitors" makes it sound like some kind of a hack...
 > 
-> Just check if any other CPU is in the same package of the one about to go
-> offline. This would obviate the need for the cpumask and allow us to break once
-> one cpu in the same package is found.
+> The docs mention debounce once:
+> 
+> https://docs.amd.com/r/en-US/pg299-v-dp-txss1/Hot-Plug-Detection
 
-Good idea. Will rewrite it so.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Are you sure this is the right document? This seems to be documentation for [1]. Is that instantiated as a hard block on the ZynqMP?
+
+[1] https://www.xilinx.com/products/intellectual-property/ef-di-displayport.html
+
+> But it's not immediately obvious what the SW must do and what's done by the HW. Debounce is not mentioned later, e.g. in the HPD Event Handling. But if debounce is needed, wouldn't it be perhaps in a few milliseconds, instead of hundreds of milliseconds...
+
+Well, the DP spec says
+
+| If the HPD is the result of a new device being connected, either
+| directly to the Source device (signaled by a long HPD), –or– downstream
+| of a Branch device (indicated by incrementing the DFP_COUNT field value
+| in the DOWN_STREAM_PORT_COUNT register (DPCD 00007h[3:0]) and signaled
+| by an IRQ_HPD pulse), the Source device shall read the new DisplayID or
+| legacy EDID that has been made available to it to ensure that content
+| being transmitted over the link is able to be properly received and
+| rendered.
+|
+| Informative Note: If the HPD signal toggling (or bouncing) is the
+|                   result of the Hot Unplug followed by Hot Plug of a
+|                   cable-connector assembly, the HPD signal is likely
+|                   to remain unstable during the de-bouncing period,
+|                   which is in the order of tens of milliseconds. The
+|                   Source device may either check the HPD signal’s
+|                   stability before initiating an AUX read transaction,
+|                   –or– immediately initiate the AUX read transaction
+|                   after each HPD rising edge.
+
+So a 100 ms delay seems plausible for some monitors.
+
+That said, maybe we can just skip this and always read the DPCD.
+
+> zynqmp_dp_bridge_detect() is used for drm_bridge_funcs.detect(), and if the cable is not connected, it'll sleep for 1 second (probably more) until returning not connected. It just doesn't sound correct to me.
+> 
+> Well, it's not part of this patch as such, but related to the amount of time we spend in the interrupt handler (and also the detect()).
+> 
+>>> Would it be possible to clean up the work funcs a bit (I haven't
+>>> looked a the new work func yet), to remove the worst extra sleeps, and
+>>> just do all that inside the threaded irq handler?
+>>
+>> Probably not, since a HPD IRQ results in link retraining, which can take a while.
+> 
+> But is it any different if you have a workqueue? Isn't a threaded interrupt handler basically the same thing?
+> 
+> Probably at least the zynqmp_dp_hpd_work_func() could be done in the threaded irq just fine, if the insane 1s sleep can be dropped.
+
+Anything involving AUX shouldn't been in an IRQ, since
+zynqmp_dp_aux_transfer will retry for up to 50ms by default.
+
+>>> Do we need to handle interrupts while either delayed work is being done?
+>>
+>> Probably not.
+>>
+>>> If we do need a delayed work, would just one work be enough which
+>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
+>>
+>> Maybe, but then we need to determine which pending events we need to
+>> handle. I think since we have only two events it will be easier to just
+>> have separate workqueues.
+> 
+> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
+
+Yeah, but we can use a mutex for this which means there is not too much
+interesting going on.
+
+--Sean
 
