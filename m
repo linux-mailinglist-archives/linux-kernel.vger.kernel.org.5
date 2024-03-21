@@ -1,223 +1,252 @@
-Return-Path: <linux-kernel+bounces-109699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B5D881C8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:40:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488BD881C90
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:40:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78B021C20BE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:40:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B740D1F225C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DBE850249;
-	Thu, 21 Mar 2024 06:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D91C52F70;
+	Thu, 21 Mar 2024 06:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pyEQneVA"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2054.outbound.protection.outlook.com [40.107.93.54])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P0qS/0ZT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03244D5B0;
-	Thu, 21 Mar 2024 06:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711003213; cv=fail; b=WBDoPMFSwEzXCb8AU8MBnVDFuoJtAlRLIiB+Sr543beLHS+3UrZLkOGY2nABchgv0E7QytxCz3qJcqjEAWIGe6gqW3pmStBBMx8KmWNJskLb3qr9JELQl9GLU1yr45kwb4I5GVmMCO9tE4hDUFsbRpR9TlwSDkW+dU5qYIZMCqA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711003213; c=relaxed/simple;
-	bh=8ssqXe7/jUEMP3eJpTvqTb9uBoifA1wvz/Kim5TJqtg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YVTvN+CC17GlTAOfYm2NaK3HO9ZjAgtmKBzR45BWysHF/lbqRbXRCAcm0xoZqcA4LLkeGbv6qXDAph5I5PVd0hhsii+0kEIePyMYGU36GtvqQOaGJD+rbUdC2PZDlkRTTq3psbo2tzlNUMsX25EUUUFxSxGyef8PwRuf3GVdsMg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pyEQneVA; arc=fail smtp.client-ip=40.107.93.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ENITnfIVMeJjDf7/Fm6ZAUIK35XfYJvkuAKB1EBeK8ItjinEx/B/gYlvHuTeNHUenS+9lp1oCYVzLJ4LBq+P3fcCoCutUVNTwLBkPMk64AMlnbxmTXS4uGoe07aMZbjuW0iIMPYHDaidhNfDW+uP7VcFk9C0Ss7q+eym6I4zXUKVsBxyq4t4ervyzYBT5bsbAPzuHlSirZjeW3x5mQSDyxQypn7G81HSMOpD6aPybrg4LWlSC0zN/jA0WXfaz2fFCj1iF6CJ8ZB4FCvqCOfOR8Utgi/BXnyU2+6yNKyt6+jUsE2cAjBwlaDHaj4NI3ejfflfki/EFJMsnQchMw7yoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OhFrfR5HruaKH12AfRpYgs7Ch6unS5iggFGuNLcDgQA=;
- b=iR6w2kjiyd39Z/3il0UsEDDALpSK1fG7oVOK7VL20ec0qtcxCFeARsnFl6H625s5y4os3b3pPQ3YHKeSevkrxsOvshefTCrY3TaqlTOnwVHTOwWJA7Wb09Wd0UAPBZ+PkeDxmZrcQHNgttrC+94RKZNeRFFWr6Jn4jbJdXi5HXvsc8MWngZ4oASpJh/wHpjhkiBAkIHiNOdCejST1xXlahL1fYAWXdyGb3CI1FmwF9yUJvLtuGwcSpjq5ISQ37oYdN7abwzjJSxYTjrRZZSdnNAWs0HPVmjkM/SukJl+oD/QqKWPV95jTIU4p3FxrDeG0nM7joGQbFL4HBbcXxc8Ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OhFrfR5HruaKH12AfRpYgs7Ch6unS5iggFGuNLcDgQA=;
- b=pyEQneVAsqimp98eDLLjite0cIIdD8RvHn9aw8nCy3MVf2TqrPHCAfNIZADRxP7Fflpf77LY86uM60Wa+kZ6Lv9txEz7+ja+8qyyffArn19+GgX2D6nHHKQf6Qv+5CrDSeqLN9NPKqN6oST+yR3+PqmIQWebHIlCppiaapW/cnw=
-Received: from BYAPR21CA0013.namprd21.prod.outlook.com (2603:10b6:a03:114::23)
- by CY5PR12MB6323.namprd12.prod.outlook.com (2603:10b6:930:20::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Thu, 21 Mar
- 2024 06:40:08 +0000
-Received: from CO1PEPF000042A8.namprd03.prod.outlook.com
- (2603:10b6:a03:114:cafe::ae) by BYAPR21CA0013.outlook.office365.com
- (2603:10b6:a03:114::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.9 via Frontend
- Transport; Thu, 21 Mar 2024 06:40:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000042A8.mail.protection.outlook.com (10.167.243.37) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Thu, 21 Mar 2024 06:40:07 +0000
-Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
- 2024 01:40:05 -0500
-From: Brett Creeley <brett.creeley@amd.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH net] pds_core: Fix pdsc_check_pci_health function to print warning
-Date: Wed, 20 Mar 2024 23:39:54 -0700
-Message-ID: <20240321063954.18711-1-brett.creeley@amd.com>
-X-Mailer: git-send-email 2.17.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3A64DA10;
+	Thu, 21 Mar 2024 06:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711003216; cv=none; b=i+wuGhYsRJsDHlBYi6IVpSauQwZNyo4m3VJA5YN21ygw+1vJmqddS6la7NKlKCbBLMayXH3VMV4waNVykqlQHD5fG97PPPrxKuZyD1LXNvJaerSznO0cshc9lxmAW21h/uZMn0jk6yPh9RXR5+Xx9lTzvkt/qzkRaHkLd9BZ5hw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711003216; c=relaxed/simple;
+	bh=CHxCCG3lNujh8NKNGLSpylXtQrM9drveE37uO6wOlvQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RcMBu0NL70HH4UfgIoE0VMpG3feqCyna5Te9UYIzg9fitxwaypHTqy1bPOLK3qSEj/Qw42NIDRPx5jFlHarCmwXYIkghhvCPigT/A4drW98OOS0/9m2l9WKLB7VsJ3whOYMggnaFbtx9jzWm0DXQ7BIURGqDhniarAUR+zo31kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P0qS/0ZT; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711003213; x=1742539213;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CHxCCG3lNujh8NKNGLSpylXtQrM9drveE37uO6wOlvQ=;
+  b=P0qS/0ZTuVZ/D3qxoaBappd1orLvgs3fB3BPmjRpF9s9NIjL/DFBhLc6
+   tvSj2aAzFXRsEGd1CGkyF1DF3T1tF7Mhw3TOU14wIaOGC6JQCnkkOUaow
+   PB0+oE8qZExuniiUnCmMwQbUujSEj87Z+bTnIqbTOzZqMPzmJzgKyMLid
+   Pi2wfYdgIsXRV/VPIy7at1pHmLNne4K6WfofK6Qy4M5xvTq8uFxjMkr3G
+   Ht1YQ//P8SEMne2oRhIuD0MtA8lWjF/t0b6HZN6K4qdesWXOMDSIFPFWb
+   NQEcydsQxqyfPq4erYJDEHaR5kq74YEEEspa8Vsm4ZNxnCeV6sJwX0/Bv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="16705046"
+X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
+   d="scan'208";a="16705046"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 23:40:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
+   d="scan'208";a="19127605"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.210.179])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 23:40:11 -0700
+Message-ID: <6e67269f-88a4-466a-ac34-430b82fac4ff@intel.com>
+Date: Thu, 21 Mar 2024 08:40:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042A8:EE_|CY5PR12MB6323:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d3c2490-fe3d-4070-3174-08dc4971bfeb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	luWdq5D2mQawkmwKtkoEWon1vncI8MrMIW5Ff9njOPni5q+jH2Oq0B+DsyAhReVzOSEa0kLrHJeBf3v+VgOVe1G8FklEBV6SKZ7lj/d1yIlZOYeN8kVGp+s6ua0s7XBq3F2l04iu9kKCg2bAKM/UOetkfd2AxbZjNYGb0q17aePLyzXVQAcILexJEbNek9+Ophq6+nOocu0oJIofrIgjHukllDzcn8jr41fTthB4xv6jkog5yPgOOrsIQKMm57moi3zOHMCz517vX49qSG40I3MnrBR48ullAr1s6KFuIwQjWW8VxE3ZFF6BMERla7LOUDEmrSPQDQWAQPSRN5rq/2ZbzpIwYdlhu8COv5AgWOFOnsVo8E4Lbx3GDulHwJ+xWBc3Ry9XUMibfcK8BDp9wLG1wWCUbIzFu9N037VBM0GBXpk0xqgvRZOYzQd2/K5GMLUAzop+s0xcVbyfZWOsuQyC8iXYHXYmu2s2VSzIfGyOJCnm0xnOfHpVLK27eE9ev0KucqLBlNSbUe0cOPUEoLjP0mBE05Ojv7LKQyWfYoczYi5aSOmIFD0+W4mOheKJNTKXpGyI+29yrWOHfRfXZgJDtowkUQfKYJMXWkeltuc/+WofSYgLvMofUAqiEG1H51OnQoMipKW/kmlngNoL+6zqepk8ESTCvQJt/FVx4ny1SJF3V016qd4Tp5JST8ZHDnBLIijV58DZWXS+DPEu2vKQ7uySRWezcekCbNsvAHPgSPjii9hXtGBGqVuUljP/
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(82310400014)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 06:40:07.8355
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d3c2490-fe3d-4070-3174-08dc4971bfeb
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000042A8.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6323
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
+To: Maxim Kiselev <bigunclemax@gmail.com>, serghox@gmail.com
+Cc: jyanchou@realtek.com, open list <linux-kernel@vger.kernel.org>,
+ linux-mmc@vger.kernel.org, quic_asutoshd@quicinc.com, ritesh.list@gmail.com,
+ shawn.lin@rock-chips.com, Ulf Hansson <ulf.hansson@linaro.org>
+References: <CALHCpMiUfa0j46HcorZGPDPV5Zg5ZFdWukT+5jTediuKJuoB5w@mail.gmail.com>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CALHCpMiUfa0j46HcorZGPDPV5Zg5ZFdWukT+5jTediuKJuoB5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When the driver notices fw_status == 0xff it tries to perform a PCI
-reset on itself via pci_reset_function() in the context of the driver's
-health thread. However, pdsc_reset_prepare calls
-pdsc_stop_health_thread(), which attempts to stop/flush the health
-thread. This results in a deadlock because the stop/flush will never
-complete since the driver called pci_reset_function() from the health
-thread context. Fix this by changing the pdsc_check_pci_health_function()
-to print a dev_warn() once every fw_down/fw_up cycle and requiring the
-user to perform a reset on the device via sysfs's reset interface,
-reloading the driver, rebinding the device, etc.
+On 20/03/24 12:36, Maxim Kiselev wrote:
+> Subject: [PATCH v7 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
+> 
+> Hi Sergey, Adrian!
+> 
+> First of all I want to thank Sergey for supporting the CQE feature
+> on the DWC MSHC controller.
+> 
+> I tested this series on the LicheePi 4A board (TH1520 SoC).
+> It has the DWC MSHC IP too and according to the T-Head datasheet
+> it also supports the CQE feature.
+> 
+>> Supports Command Queuing Engine (CQE) and compliant with eMMC CQ HCI.
+> 
+> So, to enable CQE on LicheePi 4A need to set a prop in DT
+> and add a IRQ handler to th1520_ops:
+>> .irq = dwcmshc_cqe_irq_handler,
+> 
+> And the CQE will work for th1520 SoC too.
+> 
+> But, when I enabled the CQE, I was faced with a strange effect.
+> 
+> The fio benchmark shows that emmc works ~2.5 slower with enabled CQE.
+> 219MB/s w/o CQE vs 87.4MB/s w/ CQE. I'll put logs below.
+> 
+> I would be very appreciative if you could point me where to look for
+> the bottleneck.
 
-Unloading the driver in the fw_down/dead state uncovered another issue,
-which can be seen in the following trace:
+Some things you could try:
 
-WARNING: CPU: 51 PID: 6914 at kernel/workqueue.c:1450 __queue_work+0x358/0x440
-[...]
-RIP: 0010:__queue_work+0x358/0x440
-[...]
-Call Trace:
- <TASK>
- ? __warn+0x85/0x140
- ? __queue_work+0x358/0x440
- ? report_bug+0xfc/0x1e0
- ? handle_bug+0x3f/0x70
- ? exc_invalid_op+0x17/0x70
- ? asm_exc_invalid_op+0x1a/0x20
- ? __queue_work+0x358/0x440
- queue_work_on+0x28/0x30
- pdsc_devcmd_locked+0x96/0xe0 [pds_core]
- pdsc_devcmd_reset+0x71/0xb0 [pds_core]
- pdsc_teardown+0x51/0xe0 [pds_core]
- pdsc_remove+0x106/0x200 [pds_core]
- pci_device_remove+0x37/0xc0
- device_release_driver_internal+0xae/0x140
- driver_detach+0x48/0x90
- bus_remove_driver+0x6d/0xf0
- pci_unregister_driver+0x2e/0xa0
- pdsc_cleanup_module+0x10/0x780 [pds_core]
- __x64_sys_delete_module+0x142/0x2b0
- ? syscall_trace_enter.isra.18+0x126/0x1a0
- do_syscall_64+0x3b/0x90
- entry_SYSCALL_64_after_hwframe+0x72/0xdc
-RIP: 0033:0x7fbd9d03a14b
-[...]
+ Check for any related kernel messages.
 
-Fix this by preventing the devcmd reset if the FW is not running.
+ Have a look at /sys/kernel/debug/mmc*/err_stats
 
-Fixes: d9407ff11809 ("pds_core: Prevent health thread from running during reset/remove")
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-Signed-off-by: Brett Creeley <brett.creeley@amd.com>
----
- drivers/net/ethernet/amd/pds_core/core.c | 9 ++++++++-
- drivers/net/ethernet/amd/pds_core/core.h | 1 +
- drivers/net/ethernet/amd/pds_core/dev.c  | 3 +++
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ See if disabling runtime PM for the host controller has any effect.
 
-diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
-index 9662ee72814c..8e5e3797cf0c 100644
---- a/drivers/net/ethernet/amd/pds_core/core.c
-+++ b/drivers/net/ethernet/amd/pds_core/core.c
-@@ -587,6 +587,9 @@ void pdsc_fw_up(struct pdsc *pdsc)
- 						     DEVLINK_HEALTH_REPORTER_STATE_HEALTHY);
- 	pdsc_notify(PDS_EVENT_RESET, &reset_event);
- 
-+	/* Allow for fw_status == 0xff to print another warning */
-+	pdsc->bad_pci_warned = false;
-+
- 	return;
- 
- err_out:
-@@ -607,7 +610,11 @@ static void pdsc_check_pci_health(struct pdsc *pdsc)
- 	if (fw_status != PDS_RC_BAD_PCI)
- 		return;
- 
--	pci_reset_function(pdsc->pdev);
-+	if (!pdsc->bad_pci_warned) {
-+		dev_warn(pdsc->dev, "fw not reachable due to failed PCI connection, fw_status = 0x%x\n",
-+			 fw_status);
-+		pdsc->bad_pci_warned = true;
-+	}
- }
- 
- void pdsc_health_thread(struct work_struct *work)
-diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
-index 92d7657dd614..10979118be00 100644
---- a/drivers/net/ethernet/amd/pds_core/core.h
-+++ b/drivers/net/ethernet/amd/pds_core/core.h
-@@ -165,6 +165,7 @@ struct pdsc {
- 	unsigned long state;
- 	u8 fw_status;
- 	u8 fw_generation;
-+	bool bad_pci_warned;
- 	unsigned long last_fw_time;
- 	u32 last_hb;
- 	struct timer_list wdtimer;
-diff --git a/drivers/net/ethernet/amd/pds_core/dev.c b/drivers/net/ethernet/amd/pds_core/dev.c
-index e494e1298dc9..495ef4ef8c10 100644
---- a/drivers/net/ethernet/amd/pds_core/dev.c
-+++ b/drivers/net/ethernet/amd/pds_core/dev.c
-@@ -229,6 +229,9 @@ int pdsc_devcmd_reset(struct pdsc *pdsc)
- 		.reset.opcode = PDS_CORE_CMD_RESET,
- 	};
- 
-+	if (!pdsc_is_fw_running(pdsc))
-+		return 0;
-+
- 	return pdsc_devcmd(pdsc, &cmd, &comp, pdsc->devcmd_timeout);
- }
- 
--- 
-2.17.1
+ Enable mmc dynamic debug messages and see if anything looks different.
+
+> 
+> Without CQE:
+> 
+> # cat /sys/kernel/debug/mmc0/ios
+> clock:          198000000 Hz
+> actual clock:   198000000 Hz
+> vdd:            21 (3.3 ~ 3.4 V)
+> bus mode:       2 (push-pull)
+> chip select:    0 (don't care)
+> power mode:     2 (on)
+> bus width:      3 (8 bits)
+> timing spec:    10 (mmc HS400 enhanced strobe)
+> signal voltage: 1 (1.80 V)
+> driver type:    0 (driver type B)
+> 
+> # fio --filename=/dev/mmcblk0 --direct=1 --rw=randread --bs=1M
+> --ioengine=sync --iodepth=256 --size=4G --numjobs=1 --group_reporting
+> --name=iops-test-job --eta-newline=1 --readonly
+> iops-test-job: (g=0): rw=randread, bs=(R) 1024KiB-1024KiB, (W)
+> 1024KiB-1024KiB, (T) 1024KiB-1024KiB, ioengine=sync, iodepth=256
+> fio-3.34
+> Starting 1 process
+> note: both iodepth >= 1 and synchronous I/O engine are selected, queue
+> depth will be capped at 1
+> Jobs: 1 (f=1): [r(1)][15.0%][r=209MiB/s][r=209 IOPS][eta 00m:17s]
+> Jobs: 1 (f=1): [r(1)][25.0%][r=208MiB/s][r=208 IOPS][eta 00m:15s]
+> Jobs: 1 (f=1): [r(1)][35.0%][r=207MiB/s][r=207 IOPS][eta 00m:13s]
+> Jobs: 1 (f=1): [r(1)][47.4%][r=208MiB/s][r=208 IOPS][eta 00m:10s]
+> Jobs: 1 (f=1): [r(1)][52.6%][r=209MiB/s][r=208 IOPS][eta 00m:09s]
+> Jobs: 1 (f=1): [r(1)][63.2%][r=208MiB/s][r=208 IOPS][eta 00m:07s]
+> Jobs: 1 (f=1): [r(1)][68.4%][r=208MiB/s][r=207 IOPS][eta 00m:06s]
+> Jobs: 1 (f=1): [r(1)][78.9%][r=207MiB/s][r=207 IOPS][eta 00m:04s]
+> Jobs: 1 (f=1): [r(1)][89.5%][r=209MiB/s][r=209 IOPS][eta 00m:02s]
+> Jobs: 1 (f=1): [r(1)][100.0%][r=209MiB/s][r=209 IOPS][eta 00m:00s]
+> iops-test-job: (groupid=0, jobs=1): err= 0: pid=132: Thu Jan  1 00:03:44 1970
+>   read: IOPS=208, BW=208MiB/s (219MB/s)(4096MiB/19652msec)
+>     clat (usec): min=3882, max=11557, avg=4778.37, stdev=238.26
+>      lat (usec): min=3883, max=11559, avg=4779.93, stdev=238.26
+>     clat percentiles (usec):
+>      |  1.00th=[ 4359],  5.00th=[ 4555], 10.00th=[ 4555], 20.00th=[ 4621],
+>      | 30.00th=[ 4621], 40.00th=[ 4686], 50.00th=[ 4752], 60.00th=[ 4817],
+>      | 70.00th=[ 4883], 80.00th=[ 4948], 90.00th=[ 5014], 95.00th=[ 5145],
+>      | 99.00th=[ 5473], 99.50th=[ 5538], 99.90th=[ 5932], 99.95th=[ 6915],
+>      | 99.99th=[11600]
+>    bw (  KiB/s): min=208896, max=219136, per=100.00%, avg=213630.77,
+> stdev=1577.33, samples=39
+>    iops        : min=  204, max=  214, avg=208.56, stdev= 1.55, samples=39
+>   lat (msec)   : 4=0.39%, 10=99.58%, 20=0.02%
+>   cpu          : usr=0.38%, sys=13.04%, ctx=4132, majf=0, minf=275
+>   IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+>      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      issued rwts: total=4096,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+>      latency   : target=0, window=0, percentile=100.00%, depth=256
+> 
+> Run status group 0 (all jobs):
+>    READ: bw=208MiB/s (219MB/s), 208MiB/s-208MiB/s (219MB/s-219MB/s),
+> io=4096MiB (4295MB), run=19652-19652msec
+> 
+> Disk stats (read/write):
+>   mmcblk0: ios=8181/0, merge=0/0, ticks=25682/0, in_queue=25682, util=99.66%
+> 
+> 
+> With CQE:
+
+Was output from "cat /sys/kernel/debug/mmc0/ios" the same?
+
+> 
+> fio --filename=/dev/mmcblk1 --direct=1 --rw=randread --bs=1M --ioengine=sync -
+> -iodepth=256 --size=4G --numjobs=1 --group_reporting --name=iops-test-job --eta-
+> newline=1 --readonly
+> iops-test-job: (g=0): rw=randread, bs=(R) 1024KiB-1024KiB, (W)
+> 1024KiB-1024KiB, (T) 1024KiB-1024KiB, ioeng
+> ine=sync, iodepth=256
+> fio-3.34
+> Starting 1 process
+> note: both iodepth >= 1 and synchronous I/O engine are selected, queue
+> depth will be capped at 1
+> Jobs: 1 (f=1): [r(1)][5.8%][r=83.1MiB/s][r=83 IOPS][eta 00m:49s]
+> Jobs: 1 (f=1): [r(1)][10.0%][r=84.0MiB/s][r=84 IOPS][eta 00m:45s]
+> Jobs: 1 (f=1): [r(1)][14.0%][r=83.1MiB/s][r=83 IOPS][eta 00m:43s]
+> Jobs: 1 (f=1): [r(1)][18.0%][r=83.1MiB/s][r=83 IOPS][eta 00m:41s]
+> Jobs: 1 (f=1): [r(1)][22.4%][r=84.1MiB/s][r=84 IOPS][eta 00m:38s]
+> Jobs: 1 (f=1): [r(1)][26.5%][r=83.1MiB/s][r=83 IOPS][eta 00m:36s]
+> Jobs: 1 (f=1): [r(1)][30.6%][r=83.1MiB/s][r=83 IOPS][eta 00m:34s]
+> Jobs: 1 (f=1): [r(1)][34.7%][r=84.1MiB/s][r=84 IOPS][eta 00m:32s]
+> Jobs: 1 (f=1): [r(1)][38.8%][r=83.1MiB/s][r=83 IOPS][eta 00m:30s]
+> Jobs: 1 (f=1): [r(1)][42.9%][r=83.1MiB/s][r=83 IOPS][eta 00m:28s]
+> Jobs: 1 (f=1): [r(1)][46.9%][r=84.1MiB/s][r=84 IOPS][eta 00m:26s]
+> Jobs: 1 (f=1): [r(1)][51.0%][r=83.0MiB/s][r=83 IOPS][eta 00m:24s]
+> Jobs: 1 (f=1): [r(1)][55.1%][r=83.0MiB/s][r=83 IOPS][eta 00m:22s]
+> Jobs: 1 (f=1): [r(1)][59.2%][r=84.1MiB/s][r=84 IOPS][eta 00m:20s]
+> Jobs: 1 (f=1): [r(1)][63.3%][r=83.0MiB/s][r=83 IOPS][eta 00m:18s]
+> Jobs: 1 (f=1): [r(1)][67.3%][r=83.1MiB/s][r=83 IOPS][eta 00m:16s]
+> Jobs: 1 (f=1): [r(1)][71.4%][r=84.1MiB/s][r=84 IOPS][eta 00m:14s]
+> Jobs: 1 (f=1): [r(1)][75.5%][r=83.0MiB/s][r=83 IOPS][eta 00m:12s]
+> Jobs: 1 (f=1): [r(1)][79.6%][r=83.0MiB/s][r=83 IOPS][eta 00m:10s]
+> Jobs: 1 (f=1): [r(1)][83.7%][r=84.0MiB/s][r=84 IOPS][eta 00m:08s]
+> Jobs: 1 (f=1): [r(1)][87.8%][r=83.1MiB/s][r=83 IOPS][eta 00m:06s]
+> Jobs: 1 (f=1): [r(1)][91.8%][r=83.0MiB/s][r=83 IOPS][eta 00m:04s]
+> Jobs: 1 (f=1): [r(1)][95.9%][r=84.0MiB/s][r=84 IOPS][eta 00m:02s]
+> Jobs: 1 (f=1): [r(1)][100.0%][r=83.0MiB/s][r=83 IOPS][eta 00m:00s]
+> iops-test-job: (groupid=0, jobs=1): err= 0: pid=134: Thu Jan  1 00:02:19 1970
+>   read: IOPS=83, BW=83.3MiB/s (87.4MB/s)(4096MiB/49154msec)
+>     clat (usec): min=11885, max=14840, avg=11981.37, stdev=61.89
+>      lat (usec): min=11887, max=14843, avg=11983.00, stdev=61.92
+>     clat percentiles (usec):
+>      |  1.00th=[11863],  5.00th=[11994], 10.00th=[11994], 20.00th=[11994],
+>      | 30.00th=[11994], 40.00th=[11994], 50.00th=[11994], 60.00th=[11994],
+>      | 70.00th=[11994], 80.00th=[11994], 90.00th=[11994], 95.00th=[11994],
+>      | 99.00th=[12125], 99.50th=[12256], 99.90th=[12387], 99.95th=[12387],
+>      | 99.99th=[14877]
+>    bw (  KiB/s): min=83800, max=86016, per=100.00%, avg=85430.61,
+> stdev=894.16, samples=98
+>    iops        : min=   81, max=   84, avg=83.22, stdev= 0.89, samples=98
+>   lat (msec)   : 20=100.00%
+>   cpu          : usr=0.00%, sys=5.44%, ctx=4097, majf=0, minf=274
+>   IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+>      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+>      issued rwts: total=4096,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+>      latency   : target=0, window=0, percentile=100.00%, depth=256
+> 
+> Run status group 0 (all jobs):
+>    READ: bw=83.3MiB/s (87.4MB/s), 83.3MiB/s-83.3MiB/s
+> (87.4MB/s-87.4MB/s), io=4096MiB (4295MB), run=49154-
+> 49154msec
+> 
+> Disk stats (read/write):
+>   mmcblk1: ios=8181/0, merge=0/0, ticks=69682/0, in_queue=69682, util=99.96%
+> 
+> 
+> Best regards,
+> Maksim
 
 
