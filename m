@@ -1,240 +1,85 @@
-Return-Path: <linux-kernel+bounces-110797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806F6886413
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:47:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B37886419
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:49:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35CCA284476
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:47:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 050C51C21A82
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E441E534;
-	Thu, 21 Mar 2024 23:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD6E31A8F;
+	Thu, 21 Mar 2024 23:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mTRD+iss"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YAM/R0Et"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDAAF516;
-	Thu, 21 Mar 2024 23:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB821DFCF;
+	Thu, 21 Mar 2024 23:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711064803; cv=none; b=pIj7hwB2+avjxVcNON2Lxz7F70t7WRj0VjaoTEGqR7RquGM8QKnhHsCNM6D564gHJIx4OMfzvm6gVx6x42gNEVR5qJe/i5D1qRf1A+wSIGRfpTERyHYdVPQIQx1rG+6lvVpSl0RdhYyEwLCc9X4Dx/m3CVii8t/PDEGIK+zsiNw=
+	t=1711064939; cv=none; b=esT9O4LSD4EABO6ejXMDl3f8SoekjfEy+Et+xUNH/geBTgJOVBe8OQbxbMmTFLFeyjfOtsEYwXFQT063MBQ2//bZwNIyYFNjyokxcDDj3gpxhstXQIW2jGeRzSxMvbifdRFCQXQpy4FZSolGUOEs5fbAxSzGN7DJjzOUibWwQPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711064803; c=relaxed/simple;
-	bh=Rf0D+K+jXTiwLuIvY9ASPK++sStp3YNUIenDwHbEEGc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HbZnHa2XLULXBSqeuNEVO/Cv2f5vXW7Pd1jH4774Wruhhpc3d3RFVZ8nwRC3LMETfyp+ReIDzbSaaZ+hedSV6ixVutMsQUvJCTrTctaY1lFjYEEyIrUdGmbzPMvuE1VOYHDtHDcX3CU3fRSgtT3vx+GBDx9Dp4IRRY/+IsqHfC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mTRD+iss; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711064802; x=1742600802;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Rf0D+K+jXTiwLuIvY9ASPK++sStp3YNUIenDwHbEEGc=;
-  b=mTRD+issoPwPt62huIs+jmt09WPGAJ1SqJZyQ9mJfH57D1df0ps4LzaM
-   iouJRINmqh/TsLWtvmcUYifID4AfsOWwcsTy4uVE7is0uZ9sEv8m4zSYb
-   uCm3va9/fbutRq1zQ8v856Vh5eSTkRwUZWiPiVgEpSC07JLq0FJV2BfwJ
-   wqG7U3LemYbCPrNthnMVtk0JotoaAKjBT+gZ5O6oNABTQpC60TOBVWie9
-   TEjM9U4sHmYl1fXuklGMpsk4hbaeeMeja0xEwbfE7NpoNovahC2v87ve4
-   muD2o2PX1GFSm+U8GrayiFyhVeW6G8iHTkts7uAn1cLJVzBbzAtoQY6jf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="17246134"
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="17246134"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:46:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="15107183"
-Received: from dongshen-mobl1.amr.corp.intel.com (HELO [10.212.116.150]) ([10.212.116.150])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:46:40 -0700
-Message-ID: <4e93f167-8a90-4046-9f43-2366556b1e89@intel.com>
-Date: Thu, 21 Mar 2024 16:46:39 -0700
+	s=arc-20240116; t=1711064939; c=relaxed/simple;
+	bh=seeqnGTcDLz4a/rppsPc92YSU07db1oeeNuwzgP8j1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ghxgagp75YO/riFwt2dvb6I17gd2SlWRmpISi2OLSInoDxGq9ABNIHtH7Vos/uochbqz5n+PaMNjv95S3+vp2FUVBADMKkNFhReYZ4LxIqLWHE1yZKBZSAWyHbwyIVWpvZuWPzYXgICDwfRCD2fx2zW+4e2SuIJVH8sJtV6ihpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YAM/R0Et; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 547A5C433C7;
+	Thu, 21 Mar 2024 23:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711064938;
+	bh=seeqnGTcDLz4a/rppsPc92YSU07db1oeeNuwzgP8j1A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YAM/R0EtWOxziSlUjp9h0jUxc+Z0ON16vuV1pEuheS9ugJyJ8oYr2r0CFEE33Z7Yf
+	 TMts9heNV+RsLG3lPOZy0Q0jUoNMffCFLdOjmD/CK6NtHknvO9Q0aF+1NWJzxdMgPR
+	 cRnQh8kVsjVKivjUsBNczuJVnyeEoQhWHcDLyY/y+qr6K2eFz9laqj8klWbzdWkCnK
+	 g/67InuVea3h0Q4Jr4LUPPuKLZbmEJviKpCTH5xU7WrEZDN56OJV5gP3hHn+VUzvJG
+	 nqM39/lgISTR5hcgp0lUzrtzYIVUgCbBLqyUnR4d/LpKfphYJyZqQthkSx7E48yqTl
+	 uOvLLA2TResiA==
+Date: Thu, 21 Mar 2024 20:48:55 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Namhyung Kim <namhyung@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the perf tree
+Message-ID: <ZfzHZzk524biyKKv@x1>
+References: <20240322084131.2316eb8f@canb.auug.org.au>
+ <ZfzAKMlYY7IkWXUg@x1>
+ <20240322103636.020aa9d2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 18/29] KVM: selftests: TDX: Add TDX MMIO writes
- test
-To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
- Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
- Erdem Aktas <erdemaktas@google.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
- Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-19-sagis@google.com>
-Content-Language: en-US
-From: "Zhang, Dongsheng X" <dongsheng.x.zhang@intel.com>
-In-Reply-To: <20231212204647.2170650-19-sagis@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322103636.020aa9d2@canb.auug.org.au>
 
-
-
-On 12/12/2023 12:46 PM, Sagi Shahar wrote:
-> The test verifies MMIO writes of various sizes from the guest to the host.
+On Fri, Mar 22, 2024 at 10:36:36AM +1100, Stephen Rothwell wrote:
+> Hi Arnaldo,
 > 
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ryan Afranji <afranji@google.com>
-> ---
->  .../selftests/kvm/include/x86_64/tdx/tdx.h    |  2 +
->  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 14 +++
->  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 85 +++++++++++++++++++
->  3 files changed, 101 insertions(+)
+> On Thu, 21 Mar 2024 20:18:00 -0300 Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > Ok, maybe I opened perf-tools-next for the next merge window too early?
 > 
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> index 13ce60df5684..502b670ea699 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> @@ -25,5 +25,7 @@ uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value);
->  uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag);
->  uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
->  					uint64_t *data_out);
-> +uint64_t tdg_vp_vmcall_ve_request_mmio_write(uint64_t address, uint64_t size,
-> +					uint64_t data_in);
->  
->  #endif // SELFTEST_TDX_TDX_H
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> index b19f07ebc0e7..f4afa09f7e3d 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> @@ -143,3 +143,17 @@ uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
->  
->  	return ret;
->  }
-> +
-> +uint64_t tdg_vp_vmcall_ve_request_mmio_write(uint64_t address, uint64_t size,
-> +					uint64_t data_in)
-> +{
-> +	struct tdx_hypercall_args args = {
-> +		.r11 = TDG_VP_VMCALL_VE_REQUEST_MMIO,
-> +		.r12 = size,
-> +		.r13 = TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE,
-> +		.r14 = address,
-> +		.r15 = data_in,
-> +	};
-> +
-> +	return __tdx_hypercall(&args, 0);
-> +}
-> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> index 48902b69d13e..5e28ba828a92 100644
-> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> @@ -885,6 +885,90 @@ void verify_mmio_reads(void)
->  	printf("\t ... PASSED\n");
->  }
->  
-> +void guest_mmio_writes(void)
-> +{
-> +	uint64_t ret;
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 1, 0x12);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 2, 0x1234);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 4, 0x12345678);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 8, 0x1234567890ABCDEF);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	// Write across page boundary.
-> +	ret = tdg_vp_vmcall_ve_request_mmio_write(PAGE_SIZE - 1, 8, 0);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	tdx_test_success();
-> +}
-> +
-> +/*
-> + * Varifies guest MMIO writes.
-> + */
+> Yeah.
 
-Nit: typo?  Varifies ==> Verifies
+Ok, I got it back to:
 
-> +void verify_mmio_writes(void)
-> +{
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +
-> +	uint8_t byte_1;
-> +	uint16_t byte_2;
-> +	uint32_t byte_4;
-> +	uint64_t byte_8;
-> +
-> +	vm = td_create();
-> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-> +	vcpu = td_vcpu_add(vm, 0, guest_mmio_writes);
-> +	td_finalize(vm);
-> +
-> +	printf("Verifying TD MMIO writes:\n");
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 1, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
-> +	byte_1 = *(uint8_t *)(vcpu->run->mmio.data);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 2, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
-> +	byte_2 = *(uint16_t *)(vcpu->run->mmio.data);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 4, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
-> +	byte_4 = *(uint32_t *)(vcpu->run->mmio.data);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 8, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
-> +	byte_8 = *(uint64_t *)(vcpu->run->mmio.data);
-> +
-> +	TEST_ASSERT_EQ(byte_1, 0x12);
-> +	TEST_ASSERT_EQ(byte_2, 0x1234);
-> +	TEST_ASSERT_EQ(byte_4, 0x12345678);
-> +	TEST_ASSERT_EQ(byte_8, 0x1234567890ABCDEF);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TEST_ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
-> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[1], TDG_VP_VMCALL_INVALID_OPERAND);
-> +
-> +	td_vcpu_run(vcpu);
-> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +	printf("\t ... PASSED\n");
-> +}
-> +
->  int main(int argc, char **argv)
->  {
->  	setbuf(stdout, NULL);
-> @@ -905,6 +989,7 @@ int main(int argc, char **argv)
->  	run_in_new_process(&verify_guest_msr_reads);
->  	run_in_new_process(&verify_guest_hlt);
->  	run_in_new_process(&verify_mmio_reads);
-> +	run_in_new_process(&verify_mmio_writes);
->  
->  	return 0;
->  }
+acme@x1:~/git/perf-tools-next$ git log --oneline -3 perf-tools-next/perf-tools-next
+1bbeaf83dd7b5e36 (perf-tools-next/perf-tools-next) Merge tag 'perf-tools-for-v6.9-2024-03-13' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools
+63bd30f249dcf0a7 Merge tag 'trace-ring-buffer-v6.8-rc7-2' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace
+01732755ee30f086 Merge tag 'probes-v6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace
+acme@x1:~/git/perf-tools-next$
+ 
+Sorry for the noise, I'll move to perf-tools-next when -rc1 gets
+released, I'm acumulating new stuff on a different branch.
+
+- Arnaldo
 
