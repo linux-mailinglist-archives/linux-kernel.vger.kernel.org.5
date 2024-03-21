@@ -1,183 +1,210 @@
-Return-Path: <linux-kernel+bounces-110531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57805886034
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:02:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9008588604B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:06:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D772C2817EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:02:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B418C1C2316F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D66C132C37;
-	Thu, 21 Mar 2024 18:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE091332AC;
+	Thu, 21 Mar 2024 18:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DnkRB0aQ"
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KCBomulw"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9898132494
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35CEE133425;
+	Thu, 21 Mar 2024 18:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044121; cv=none; b=cQ060moUm0miHk01NsJx4/hWb7fLvEa5cl3HVbFp+OCIzqhqO+VoH6XbUCRckXOAZAQ1yxEGHqqQqwBb4gypN4tL/s+IVThd0mPULNtHQpXe5O2sYWK/wjuzGQkTABs1ZhekfBLRdrzq+R4zdRYLEv/fXJJWvMKRo9dfw7ptUoI=
+	t=1711044397; cv=none; b=mqvmHZ39Mg4pVIgvoW2+sBh/yD4rbTXkCTC7RJT5Ngtdjk42sHEFuEyHhNvBxDW1zo+Tsky+B3+KNco3DlTG/mxGD5P6tRHK7ee7np7bgFwj16Mz9JBPXEFFjcb2QWFuACl0I8RiWLjI5dsU0ar+RE7I6JRHMOJYpzJYDYvUzHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044121; c=relaxed/simple;
-	bh=m1MjhtWa4UWUwb9sG7uRiAQZpvAYE3Vza3Fdhtf29gQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cq8Qb44o8Ca44uA1ZYD/vq+vReKzRWueOvFdtwK95yCgVkapPiDgYD0SfXsu5hNohlrUu0DBKY4GwBUq+vv4vE9L4wOvRyzbAlWNLKKnlCjTC/FSB5rr5DVYVmUEIre7vJ5gTlvnXh8+AQ94Qo5tv+6E2JlrDeyxkn88blBtAvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DnkRB0aQ; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711044116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3jCNE51iIDU7D8f4vJ8vC3wJ5igSMaQyRWOs6SDcoc4=;
-	b=DnkRB0aQO1YjTp7DlSavLOZxGJXRzWuU8HJ42U3HPopVHMQ9zrMXGIYX7e+glDubg9JRzS
-	qJZ+IUKyH3mwMSrhtObV1SeUA8P7BN3be7BtJddsA5wuZ4WkN1/+T/XiBkVeIrpYZJKFdb
-	Im6loUb5p/Hl88rmdvY7nw/cIkhg4/o=
-Date: Thu, 21 Mar 2024 14:01:52 -0400
+	s=arc-20240116; t=1711044397; c=relaxed/simple;
+	bh=hQM+nEBr+O+KT4m95MZF4EIGf62D1EFTUg7Imq+8K4M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tFOw/MOjHpzz8uUbw8wMVjdvqUQwcd4Q3/bMdFLCXOpftC+8evC/kcFeq7PdqazSPh+RNXS3c20gucy7vZu3FG2mdM7T2NIf5iXEwP6rNwxcy5OO/Mdg9vn7HpxJx/GoctYdFpqgnA3eCkyAr/jtkyM85vYK+7dNWzDzHpV05Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KCBomulw; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dddbe47ac1so15991155ad.1;
+        Thu, 21 Mar 2024 11:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711044395; x=1711649195; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=G//XJEaui3S1uJSf5fZpwyOF3s2VA1vZvh2pajUHYgo=;
+        b=KCBomulwTZfx8oyQuz2P4LNbrLhT3dYVzh1yxYv1JKA7AY+1dviS6s1gF6uLXFCHTZ
+         MvZJCrUwg/H6utUme7PGUTYy57uaAYHRn3ys/JxFuEyGkBbSyK/IrW0QzlVppwgJQ0+i
+         qVeM/vGwGJz+8t1Sk0xEuAxBRHxmYf8L95SsigaVQEMsIF3VNVgFsHjWIA83R+eMKYgU
+         eY03zwBMm0ajc/Jfl1n8tesYpY3XStsHj30cMXrydDBeyjEQfpksGAXYwMoTsdXXd4Q3
+         B/Bg5bWv6VLG1ySaJCsSiby+SbaBAIRnLSFuEehGc5ddEwlVI03magzFun7gVXEJeDy/
+         KKKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711044395; x=1711649195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G//XJEaui3S1uJSf5fZpwyOF3s2VA1vZvh2pajUHYgo=;
+        b=W0wxNsOJsF62+QzwNtmgfq0C+CkGIxDtFzthB6ZykDvQks/9MoEHVOP9ymKZecc1Nk
+         ukBeDrgDZrJj9XXTB12zAsugR+CMMI46MGYxzkSUCedsk4UYEswGaaFoXa9F8JOL1GXp
+         dpqpbpV9i7n+S8TRe0IeeW6FCY3WtBa/gla9r7ogW1SIFI20DyI0SGHaOJAeUvmegkVw
+         QCUX7hG8zYM34yk7g1XpU2w7iEpeoo7S2oW29L3lradADNPMTjANVaWAZdiixQDv/F+5
+         E926OcW3C17g64wyU2BksmnWcdeMq3sk8odZ8EFHyqhCzg657kgEQNM9l5CmOt4fKPWi
+         CLvw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLO0n0h6AMjeOLM4gjauhzc10S3aeC88uvGCTs+aG23mmRIZbn3Zh64Aa++s12TMBpo3VSCJRJihANl7uD5hw0dkjXvIFsw72v
+X-Gm-Message-State: AOJu0Yy6xASRnwRLhY/AL1UcNvlEnBfgBoP6lL0Ou9LWtE2TEj2RGczR
+	3sHi1bk8HX0tgl0E2aGBjChLLXO7TTeRbuXs25vLiegoha06kiSvZlFs2E8zNQE=
+X-Google-Smtp-Source: AGHT+IFZn8qaLfdXSa3CE3FQVelBZA6AVVe4cZl7T1P9bIjqzR1zI0z8rzLd8E1+oaRXeYXWiPC+kQ==
+X-Received: by 2002:a17:903:1c5:b0:1e0:137e:cd66 with SMTP id e5-20020a17090301c500b001e0137ecd66mr305347plh.30.1711044394893;
+        Thu, 21 Mar 2024 11:06:34 -0700 (PDT)
+Received: from kousik.local ([2405:201:c006:31f8:c75d:3405:7d77:21ac])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170903230d00b001dd7de61656sm129033plh.37.2024.03.21.11.06.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 11:06:34 -0700 (PDT)
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Kousik Sanagavarapu <five231003@gmail.com>
+Subject: [PATCH v2] spi: dt-bindings: jcore,spi: convert spi-jcore to dtschema
+Date: Thu, 21 Mar 2024 23:32:28 +0530
+Message-ID: <20240321180617.35390-1-five231003@gmail.com>
+X-Mailer: git-send-email 2.44.0.273.g4bc5b65358.dirty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-Content-Language: en-US
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 3/21/24 13:25, Tomi Valkeinen wrote:
-> On 21/03/2024 17:52, Sean Anderson wrote:
->> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>> Retraining the link can take a while, and might involve waiting for
->>>> DPCD reads/writes to complete. This is inappropriate for an IRQ handler.
->>>> Just schedule this work for later completion. This is racy, but will be
->>>> fixed in the next commit.
->>>
->>> You should add the locks first, and use them here, rather than first
->>> adding a buggy commit and fixing it in the next one.
->>
->> I didn't think I could add the locks first since I only noticed the IRQ
->> was threaded right before sending out this series. So yeah, we could add
->> locking, add the workqueue, and then unthread the IRQ.
->>
->>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
->>>> ---
->>>> Actually, on second look this IRQ is threaded. So why do we have a
->>>> workqueue for HPD events? Maybe we should make it unthreaded?
->>>
->>> Indeed, there's not much work being done in the IRQ handler. I don't know why it's threaded.
->>>
->>> We could move the queued work to be inside the threaded irq handler,
->>> but with a quick look, the HPD work has lines like "msleep(100)" (and
->>> that's inside a for loop...), which is probably not a good thing to do
->>> even in threaded irq handler.
->>>
->>> Although I'm not sure if that code is good to have anywhere. Why do we
->>> even have such code in the HPD work path... We already got the HPD
->>> interrupt. What does "It takes some delay (ex, 100 ~ 500 msec) to get
->>> the HPD signal with some monitors" even mean...
->>
->> The documentation for this bit is
->>
->> | HPD_STATE    0    ro    0x0    Contains the raw state of the HPD pin on the DisplayPort connector.
->>
->> So I think the idea is to perform some debouncing.
-> 
-> Hmm, it just looks a bit odd to me. It can sleep for a second. And the wording "It takes some delay (ex, 100 ~ 500 msec) to get the HPD signal with some monitors" makes it sound like some kind of a hack...
-> 
-> The docs mention debounce once:
-> 
-> https://docs.amd.com/r/en-US/pg299-v-dp-txss1/Hot-Plug-Detection
+Convert existing bindings of J-Core spi2 to dtschema.
 
-Are you sure this is the right document? This seems to be documentation for [1]. Is that instantiated as a hard block on the ZynqMP?
+No new properties are added.
 
-[1] https://www.xilinx.com/products/intellectual-property/ef-di-displayport.html
+Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+---
+Changes since v1:
+- changed the subject line to conform.
+- dropped desc for "clock" and "clock-names" properties.
+- cleaned up stuff.
 
-> But it's not immediately obvious what the SW must do and what's done by the HW. Debounce is not mentioned later, e.g. in the HPD Event Handling. But if debounce is needed, wouldn't it be perhaps in a few milliseconds, instead of hundreds of milliseconds...
+Thanks for the review Krzysztof.
 
-Well, the DP spec says
+ .../devicetree/bindings/spi/jcore,spi.txt     | 34 ------------
+ .../devicetree/bindings/spi/jcore,spi.yaml    | 53 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/jcore,spi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/jcore,spi.yaml
 
-| If the HPD is the result of a new device being connected, either
-| directly to the Source device (signaled by a long HPD), –or– downstream
-| of a Branch device (indicated by incrementing the DFP_COUNT field value
-| in the DOWN_STREAM_PORT_COUNT register (DPCD 00007h[3:0]) and signaled
-| by an IRQ_HPD pulse), the Source device shall read the new DisplayID or
-| legacy EDID that has been made available to it to ensure that content
-| being transmitted over the link is able to be properly received and
-| rendered.
-|
-| Informative Note: If the HPD signal toggling (or bouncing) is the
-|                   result of the Hot Unplug followed by Hot Plug of a
-|                   cable-connector assembly, the HPD signal is likely
-|                   to remain unstable during the de-bouncing period,
-|                   which is in the order of tens of milliseconds. The
-|                   Source device may either check the HPD signal’s
-|                   stability before initiating an AUX read transaction,
-|                   –or– immediately initiate the AUX read transaction
-|                   after each HPD rising edge.
+diff --git a/Documentation/devicetree/bindings/spi/jcore,spi.txt b/Documentation/devicetree/bindings/spi/jcore,spi.txt
+deleted file mode 100644
+index 93936d16e139..000000000000
+--- a/Documentation/devicetree/bindings/spi/jcore,spi.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-J-Core SPI master
+-
+-Required properties:
+-
+-- compatible: Must be "jcore,spi2".
+-
+-- reg: Memory region for registers.
+-
+-- #address-cells: Must be 1.
+-
+-- #size-cells: Must be 0.
+-
+-Optional properties:
+-
+-- clocks: If a phandle named "ref_clk" is present, SPI clock speed
+-  programming is relative to the frequency of the indicated clock.
+-  Necessary only if the input clock rate is something other than a
+-  fixed 50 MHz.
+-
+-- clock-names: Clock names, one for each phandle in clocks.
+-
+-See spi-bus.txt for additional properties not specific to this device.
+-
+-Example:
+-
+-spi@40 {
+-	compatible = "jcore,spi2";
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	reg = <0x40 0x8>;
+-	spi-max-frequency = <25000000>;
+-	clocks = <&bus_clk>;
+-	clock-names = "ref_clk";
+-}
+diff --git a/Documentation/devicetree/bindings/spi/jcore,spi.yaml b/Documentation/devicetree/bindings/spi/jcore,spi.yaml
+new file mode 100644
+index 000000000000..b8ec3adaac8d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/jcore,spi.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/spi/jcore,spi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: J-Core SPI controller
++
++description:
++  The J-Core "spi2" device is a PIO-based SPI controller which used to
++  perform byte-at-a-time transfers between the CPU and itself.
++
++maintainers:
++  - Kousik Sanagavarapu <five231003@gmail.com>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    const: jcore,spi2
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: ref_clk
++
++  spi-max-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@40 {
++        compatible = "jcore,spi2";
++        reg = <0x40 0x8>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++        spi-max-frequency = <25000000>;
++        clocks = <&bus_clk>;
++        clock-names = "ref_clk";
++    };
+-- 
+2.44.0.273.g4bc5b65358.dirty
 
-So a 100 ms delay seems plausible for some monitors.
-
-That said, maybe we can just skip this and always read the DPCD.
-
-> zynqmp_dp_bridge_detect() is used for drm_bridge_funcs.detect(), and if the cable is not connected, it'll sleep for 1 second (probably more) until returning not connected. It just doesn't sound correct to me.
-> 
-> Well, it's not part of this patch as such, but related to the amount of time we spend in the interrupt handler (and also the detect()).
-> 
->>> Would it be possible to clean up the work funcs a bit (I haven't
->>> looked a the new work func yet), to remove the worst extra sleeps, and
->>> just do all that inside the threaded irq handler?
->>
->> Probably not, since a HPD IRQ results in link retraining, which can take a while.
-> 
-> But is it any different if you have a workqueue? Isn't a threaded interrupt handler basically the same thing?
-> 
-> Probably at least the zynqmp_dp_hpd_work_func() could be done in the threaded irq just fine, if the insane 1s sleep can be dropped.
-
-Anything involving AUX shouldn't been in an IRQ, since
-zynqmp_dp_aux_transfer will retry for up to 50ms by default.
-
->>> Do we need to handle interrupts while either delayed work is being done?
->>
->> Probably not.
->>
->>> If we do need a delayed work, would just one work be enough which
->>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>
->> Maybe, but then we need to determine which pending events we need to
->> handle. I think since we have only two events it will be easier to just
->> have separate workqueues.
-> 
-> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
-
-Yeah, but we can use a mutex for this which means there is not too much
-interesting going on.
-
---Sean
 
