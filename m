@@ -1,280 +1,495 @@
-Return-Path: <linux-kernel+bounces-110653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 417548861D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:44:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 143CC8861FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7AB282319
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:44:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 376D01C21914
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48760135415;
-	Thu, 21 Mar 2024 20:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D06137C4F;
+	Thu, 21 Mar 2024 20:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="REzcuhgs"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UDyWapnP"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2043.outbound.protection.outlook.com [40.107.220.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7857D12CD89;
-	Thu, 21 Mar 2024 20:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711053828; cv=none; b=S4qpzLEsJ1+XsraLPLzVUPgT6g36SYZHZktXWT3omEwLS/aUtNjsJvTa9ml05LDDb/lwEBoiX+LquJx0QAdcokGuH3gWdUcbefMYGTUR8k3S/GRXAEXe09x8rMVEWoCK1Yx1faT7k1N0nYiKe+g6wSEMQQp2zZMWFUEKEqzdG68=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711053828; c=relaxed/simple;
-	bh=FDLJrtlyM9+tF+ndIBWA6li6OsU/NkF+XdC3UObSUQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eBvkVN+eCAx42Vg1MWuBqZrwwD/r24XSAMYa8ehU/V8ew+hMtc5YiZWxFerSO+2u+4bn5vFmQLZoIJPC57Yk7ho/3/olC0T0KF34ZWis8qnuESt1s600Wn6mdFaYk7EZEsuTKeNA6rI8fnGE37BB0ytC5szfGUPmHth0ApdYnHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=REzcuhgs; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711053827; x=1742589827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FDLJrtlyM9+tF+ndIBWA6li6OsU/NkF+XdC3UObSUQE=;
-  b=REzcuhgs4ppgq5guUewn1Nmmll6wtJL8Cfk6Eyq+ZeBefXxtnkgYY7gl
-   aQgXFFXXC6AwgTWOi83ygd6gaggMxcH6gVtCv8o4UDLLadham3KEaenbi
-   OudfEYjPcDS+9tFUW7KRAP7h05BDJLttWND9EKIzbRtMey2pu1XNFneWV
-   GNZsOXdSEyN4z2Xv8DD0jDvr9eufxtBYtwUE0vqsnrBaufm8SNoX7Fvdn
-   BmSzKLAvHLLSGkzgUkXNCDVkAgKRJvu2CjE3pFym2Rr4xukMEsjmQRPf3
-   c7ZN3tsuUMO7HR5tscK8lFbcey4sHQrK5RxXsoznDjRVYKY6CiV0e4tgJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6203257"
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="6203257"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:43:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="14619224"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:43:45 -0700
-Date: Thu, 21 Mar 2024 13:43:45 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 044/130] KVM: TDX: Do TDX specific vcpu initialization
-Message-ID: <20240321204345.GQ1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <d6a21fe6ea9eb53c24b6527ef8e5a07f0c2e8806.1708933498.git.isaku.yamahata@intel.com>
- <ZfvI8t7SlfIsxbmT@chao-email>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332AC137914;
+	Thu, 21 Mar 2024 20:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711053857; cv=fail; b=Ve0NNK3iTrD88a4RRkr7ksDEQLjWOLT54C/luHgpaEtLLtpepOVVsrLezs2fvWLkiUdYFFXaMzJajsv74qHQzCQ+3vqEj8RTeVpTxkRruMXnS97NHSVjMn4l3niZ5bvD5+QQ9Ied6s0/0GfyRcdc7mRtM+dtnzmPS2cGTxqU41s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711053857; c=relaxed/simple;
+	bh=/T6URJg5jGCTlkx00bLi08PPGhYhcpd13Pki09uKG7U=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=Q6sHmIJ28NVxAFEuCCKTvh5gbCU+0mZwEUCYedSWDh20A8mDBF2N2159Hkq5x3n+PgZSqbEpuuEE7QMHrQyak9Rtt6aC64ydwWutuH/8kHNd4RTNDVqERCuqH7fInj6fz/NoIiAOBdFe1xC8uUfWHmVa74Gph28rA9KotOlDSd0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UDyWapnP; arc=fail smtp.client-ip=40.107.220.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecsCNoiwLkVtJ/LjF85sRiHYnZF80MsioqL1JYw9i5JCa3jYYRDnLaxLMG+1+iZhje7ry67VzemEd6GrctYfxDRGgPY03eakTwndmhzO/YRnqHpiiLJJPBrnGNwy6cH9gbTXu+mgaET+vFQ4fdfRNpF1/L6BSK/uq5b8YgbnOis1aPL9Sq2u2tWIDAvaC3KRfuVpFoguFFNj4VDQjW9W+2P45F13BYwHi93lJNCbgMQezd3FGkYC/IQtJrCHjS1tEjpy0pO14RUjDO7w9N8HIuH0hUyuR9PJt/U20LIDiqcsWKIjSNFSw6PTytNTAEN7kBGRcsE2nrrwLG6O+tAMqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gzFR8JuzwQFAHUgF/Kyf1Su9JFwzSXxWGVcOG23T+yk=;
+ b=Wp8zTbCJqzElVEWv8JP4XfTgntdgHwAmxGSO58k3xMEFMbQI7Vh8tq4l9egQSupP5ZomXLA2xkgOXC0raxUsC77MsiaLPRpbKHSZVr1EGsjpjHItKfTaJ1N9PepRBRZCidxAP1V7x5cpq3oiLwVgKP2mlgXHgXt6u7BKCZRCmdTt5hI+KVQgFj1D3D8QBZkpWtkdvMNH4rhb+PmzrEeHK+0wowONcyrjAQwRMTWHC3Ob2O1IU2NAZwufrtbu93C9uJh9gy3IdBW9E4Q0z2c8PJEi4ELP7qM2j1HlNWv6KYUGFrdIgo06LN/Ky4hHJLJ8t3dtLNt4a63ixr6WsnvAEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gzFR8JuzwQFAHUgF/Kyf1Su9JFwzSXxWGVcOG23T+yk=;
+ b=UDyWapnPaaRh/l1QIBnUQb8fvAfwT7aOojUhqJd1UKgMGU42uKhXL8LzcRIi82REVNm3qB7z5i3lHR9/j9RGsYMaXTVbQ5k2EeHWeuK6J0EumztB0WzKK0hu2uz8xz1HFbPP4a4WMxB1Nv8PIeVtg9hhfxcAcc7xPbjDg25ey04=
+Received: from BN9P220CA0026.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:13e::31)
+ by SN7PR12MB8602.namprd12.prod.outlook.com (2603:10b6:806:26d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Thu, 21 Mar
+ 2024 20:44:11 +0000
+Received: from BN3PEPF0000B36E.namprd21.prod.outlook.com
+ (2603:10b6:408:13e:cafe::12) by BN9P220CA0026.outlook.office365.com
+ (2603:10b6:408:13e::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26 via Frontend
+ Transport; Thu, 21 Mar 2024 20:44:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN3PEPF0000B36E.mail.protection.outlook.com (10.167.243.165) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7430.0 via Frontend Transport; Thu, 21 Mar 2024 20:44:10 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
+ 2024 15:44:10 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
+ 2024 15:44:09 -0500
+Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 21 Mar 2024 15:44:08 -0500
+From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Date: Thu, 21 Mar 2024 13:43:46 -0700
+Subject: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZfvI8t7SlfIsxbmT@chao-email>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
+References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
+In-Reply-To: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>, Andrzej
+ Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, Jernej
+ Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
+CC: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+	<dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-media@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+X-Mailer: b4 0.13.0
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B36E:EE_|SN7PR12MB8602:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06a396c9-9a27-4147-6dce-08dc49e7a9a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PTAo4ZlofqVwJER+4jVpBqI7HFSvoNajV8qC525V/tLMbYGA/C4uYpiWNWx5xxylnju6j0UZQcT81xSGmwVHO6BCvgv0LvLnXUYW4q3Ml7+knNjSjyrkK5QNIaEXTvUtQCsPYJ95dQzIbg6V3bjsNw8ZV84HTu+DwyyP91fjYuDvJ/Ln6biP0DAaOXDp0N6vk8+sXOKOhCb6UQw0Xfeu4QQv4hVVFgw0V7vpTMTgMa2wdkNvLiobIeoVvm67Owr2SeI6sa/zK+Y45OItVU9+jTj6mlNtwI0WeU+8zPQhm8uu/YA8YLrKjpxbL40Slkq6ue5mQsH2XLHHi1sIWIyP1uTFdh1kSqjxAYlq/tt1uhN/7bbfmECaYuBdkgCnz6JReF0TUS4POkKb/u6aiOuMIJG0BvHbSnsthF6fKbg3UnyR/kx9oGlJrfRNE4q+PZNIfP5bK3eudLmdQCLZWoRdcE8Jci/KB+egb+fk38gy2/2q7w4udvrZu2DQg4Ek3oCr60c3QJrGakA06/Wh2DZPm0krMDK851EqPwODrbPA0iqjHnFpHBjD0o3Pq2BUMzXTOBveUwbxJfns79k7Sk04KzCzlYLbiV/bRUnxh9a/nSOhY4fbuheARnlGUAzjeKoXwjk5mvramwB2Ux4eRlaGDO9q78mH8V8OHiBDOQzJfn8/94LaGG3Y5gauexXYA+Iy8Hk7ltO0LCG2XKw/tQu1zSuqKAqKn5T6hvM9YOzkkNQ=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(36860700004)(7416005)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 20:44:10.9953
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06a396c9-9a27-4147-6dce-08dc49e7a9a6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN3PEPF0000B36E.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8602
 
-On Thu, Mar 21, 2024 at 01:43:14PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+DO NOT MERGE. REFERENCE ONLY.
 
-> >+/* VMM can pass one 64bit auxiliary data to vcpu via RCX for guest BIOS. */
-> >+static int tdx_td_vcpu_init(struct kvm_vcpu *vcpu, u64 vcpu_rcx)
-> >+{
-> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> >+	struct vcpu_tdx *tdx = to_tdx(vcpu);
-> >+	unsigned long *tdvpx_pa = NULL;
-> >+	unsigned long tdvpr_pa;
-> >+	unsigned long va;
-> >+	int ret, i;
-> >+	u64 err;
-> >+
-> >+	if (is_td_vcpu_created(tdx))
-> >+		return -EINVAL;
-> >+
-> >+	/*
-> >+	 * vcpu_free method frees allocated pages.  Avoid partial setup so
-> >+	 * that the method can't handle it.
-> >+	 */
-> >+	va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> >+	if (!va)
-> >+		return -ENOMEM;
-> >+	tdvpr_pa = __pa(va);
-> >+
-> >+	tdvpx_pa = kcalloc(tdx_info->nr_tdvpx_pages, sizeof(*tdx->tdvpx_pa),
-> >+			   GFP_KERNEL_ACCOUNT);
-> >+	if (!tdvpx_pa) {
-> >+		ret = -ENOMEM;
-> >+		goto free_tdvpr;
-> >+	}
-> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
-> >+		va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> >+		if (!va) {
-> >+			ret = -ENOMEM;
-> >+			goto free_tdvpx;
-> >+		}
-> >+		tdvpx_pa[i] = __pa(va);
-> >+	}
-> >+
-> >+	err = tdh_vp_create(kvm_tdx->tdr_pa, tdvpr_pa);
-> >+	if (KVM_BUG_ON(err, vcpu->kvm)) {
-> >+		ret = -EIO;
-> >+		pr_tdx_error(TDH_VP_CREATE, err, NULL);
-> >+		goto free_tdvpx;
-> >+	}
-> >+	tdx->tdvpr_pa = tdvpr_pa;
-> >+
-> >+	tdx->tdvpx_pa = tdvpx_pa;
-> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
-> 
-> Can you merge the for-loop above into this one? then ...
-> 
-> >+		err = tdh_vp_addcx(tdx->tdvpr_pa, tdvpx_pa[i]);
-> >+		if (KVM_BUG_ON(err, vcpu->kvm)) {
-> >+			pr_tdx_error(TDH_VP_ADDCX, err, NULL);
-> 
-> >+			for (; i < tdx_info->nr_tdvpx_pages; i++) {
-> >+				free_page((unsigned long)__va(tdvpx_pa[i]));
-> >+				tdvpx_pa[i] = 0;
-> >+			}
-> 
-> ... no need to free remaining pages.
+Add binding for AMD/Xilinx Video Timing Controller and Test Pattern
+Generator.
 
-Makes sense. Let me clean up this.
+Copy media-bus-formats.h into dt-bindings/media to suplement TPG DT node.
 
+Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+---
+ .../bindings/display/xlnx/xlnx,v-tpg.yaml          |  87 ++++++++++
+ .../devicetree/bindings/display/xlnx/xlnx,vtc.yaml |  65 ++++++++
+ include/dt-bindings/media/media-bus-format.h       | 177 +++++++++++++++++++++
+ 3 files changed, 329 insertions(+)
 
-> >+			/* vcpu_free method frees TDVPX and TDR donated to TDX */
-> >+			return -EIO;
-> >+		}
-> >+	}
-> >+
-> >+	err = tdh_vp_init(tdx->tdvpr_pa, vcpu_rcx);
-> >+	if (KVM_BUG_ON(err, vcpu->kvm)) {
-> >+		pr_tdx_error(TDH_VP_INIT, err, NULL);
-> >+		return -EIO;
-> >+	}
-> >+
-> >+	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> >+	tdx->td_vcpu_created = true;
-> >+	return 0;
-> >+
-> >+free_tdvpx:
-> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
-> >+		if (tdvpx_pa[i])
-> >+			free_page((unsigned long)__va(tdvpx_pa[i]));
-> >+		tdvpx_pa[i] = 0;
-> >+	}
-> >+	kfree(tdvpx_pa);
-> >+	tdx->tdvpx_pa = NULL;
-> >+free_tdvpr:
-> >+	if (tdvpr_pa)
-> >+		free_page((unsigned long)__va(tdvpr_pa));
-> >+	tdx->tdvpr_pa = 0;
-> >+
-> >+	return ret;
-> >+}
-> >+
-> >+int tdx_vcpu_ioctl(struct kvm_vcpu *vcpu, void __user *argp)
-> >+{
-> >+	struct msr_data apic_base_msr;
-> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> >+	struct vcpu_tdx *tdx = to_tdx(vcpu);
-> >+	struct kvm_tdx_cmd cmd;
-> >+	int ret;
-> >+
-> >+	if (tdx->initialized)
-> >+		return -EINVAL;
-> >+
-> >+	if (!is_hkid_assigned(kvm_tdx) || is_td_finalized(kvm_tdx))
-> 
-> These checks look random e.g., I am not sure why is_td_created() isn't check here.
-> 
-> A few helper functions and boolean variables are added to track which stage the
-> TD or TD vCPU is in. e.g.,
-> 
-> is_hkid_assigned()
-> is_td_finalized()
-> is_td_created()
-> tdx->initialized
-> td_vcpu_created
-> 
-> Insteading of doing this, I am wondering if adding two state machines for
-> TD and TD vCPU would make the implementation clear and easy to extend.
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml
+new file mode 100644
+index 000000000000..df5ee5b547cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,v-tpg.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/xlnx/xlnx,v-tpg.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx Video Test Pattern Generator (TPG)
++
++description:
++  AMD/Xilinx Video Test Pattern Generator IP is a soft IP designed to
++  generate test video signal in AXI4-Stream Video format.
++  https://docs.xilinx.com/r/en-US/pg103-v-tpg
++
++maintainers:
++  - Anatoliy Klymenko <anatoliy.klymenko@amd.com>
++
++properties:
++  compatible:
++    description:
++      TPG versions backward-compatible with previous versions should list all
++      compatible versions in the newer to older order.
++    enum: ["xlnx,v-tpg-8.0", "xlnx,v-tpg-8.2"]
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  bus-format:
++    description: Output media bus format, one of MEDIA_BUS_FMT_*
++    maxItems: 1
++
++  xlnx,bridge:
++   description: Reference to Video Timing Controller
++   maxItems: 1
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    description:
++      Connections from and to external components in the video pipeline.
++
++    properties:
++      port@0:
++       $ref: /schemas/graph.yaml#/properties/port
++       description: Sink port connected to downstream video IP.
++
++      port@1:
++       $ref: /schemas/graph.yaml#/properties/port
++       description: Source port to connect to optional video signal source.
++
++    required:
++      - port@0
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - bus-format
++  - xlnx,bridge
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/media/media-bus-format.h>
++
++    tpg_0: tpg@40050000 {
++      compatible = "xlnx,v-tpg-8.0";
++      reg = <0x40050000 0x10000>;
++      interrupts = <0 89 4>;
++      xlnx,bridge = <&vtc_3>;
++      bus-format = <MEDIA_BUS_FMT_UYVY8_1X16>;
++      ports {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        port@0 {
++          reg = <0>;
++          tpg_out: endpoint {
++            remote-endpoint = <&dp_encoder>;
++          };
++        };
++      };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.yaml
+new file mode 100644
+index 000000000000..51eb12cdcfdc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/xlnx/xlnx,vtc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Device-Tree for Xilinx Video Timing Controller(VTC)
++
++description:
++  Xilinx VTC is a general purpose video timing generator and detector.
++  The input side of this core automatically detects horizontal and
++  vertical synchronization, pulses, polarity, blanking timing and active pixels.
++  While on the output, it generates the horizontal and vertical blanking and
++  synchronization pulses used with a standard video system including support
++  for programmable pulse polarity.
++
++  The core is commonly used with Video in to AXI4-Stream core to detect the
++  format and timing of incoming video data or with AXI4-Stream to Video out core
++  to generate outgoing video timing for downstream sinks like a video monitor.
++
++  For details please refer to
++  https://docs.xilinx.com/r/en-US/pg016_v_tc
++
++maintainers:
++  - Sagar Vishal <sagar.vishal.com>
++
++properties:
++  compatible:
++    const: "xlnx,bridge-v-tc-6.1"
++
++  reg:
++    maxItems: 1
++
++  xlnx,pixels-per-clock:
++    description: Pixels per clock of the stream.
++    enum: [1, 2, 4]
++
++  clocks:
++    minItems: 2
++
++  clock-names:
++    items:
++      - const: clk
++      - const: s_axi_aclk
++
++required:
++  - compatible
++  - reg
++  - xlnx,pixels-per-clock
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    v_tc_0: v_tc@80010000 {
++      clock-names = "clk", "s_axi_aclk";
++      clocks = <&clk_wiz_0>, <&misc_clk_0>;
++      compatible = "xlnx,bridge-v-tc-6.1";
++      xlnx,pixels-per-clock = <1>;
++      reg = <0x80010000 0x10000>;
++    };
++
++...
+diff --git a/include/dt-bindings/media/media-bus-format.h b/include/dt-bindings/media/media-bus-format.h
+new file mode 100644
+index 000000000000..60fc6e11dabc
+--- /dev/null
++++ b/include/dt-bindings/media/media-bus-format.h
+@@ -0,0 +1,177 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
++/*
++ * Media Bus API header
++ *
++ * Copyright (C) 2009, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_MEDIA_BUS_FORMAT_H
++#define __LINUX_MEDIA_BUS_FORMAT_H
++
++/*
++ * These bus formats uniquely identify data formats on the data bus. Format 0
++ * is reserved, MEDIA_BUS_FMT_FIXED shall be used by host-client pairs, where
++ * the data format is fixed. Additionally, "2X8" means that one pixel is
++ * transferred in two 8-bit samples, "BE" or "LE" specify in which order those
++ * samples are transferred over the bus: "LE" means that the least significant
++ * bits are transferred first, "BE" means that the most significant bits are
++ * transferred first, and "PADHI" and "PADLO" define which bits - low or high,
++ * in the incomplete high byte, are filled with padding bits.
++ *
++ * The bus formats are grouped by type, bus_width, bits per component, samples
++ * per pixel and order of subsamples. Numerical values are sorted using generic
++ * numerical sort order (8 thus comes before 10).
++ *
++ * As their value can't change when a new bus format is inserted in the
++ * enumeration, the bus formats are explicitly given a numerical value. The next
++ * free values for each category are listed below, update them when inserting
++ * new pixel codes.
++ */
++
++#define MEDIA_BUS_FMT_FIXED			0x0001
++
++/* RGB - next is	0x1026 */
++#define MEDIA_BUS_FMT_RGB444_1X12		0x1016
++#define MEDIA_BUS_FMT_RGB444_2X8_PADHI_BE	0x1001
++#define MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE	0x1002
++#define MEDIA_BUS_FMT_RGB555_2X8_PADHI_BE	0x1003
++#define MEDIA_BUS_FMT_RGB555_2X8_PADHI_LE	0x1004
++#define MEDIA_BUS_FMT_RGB565_1X16		0x1017
++#define MEDIA_BUS_FMT_BGR565_2X8_BE		0x1005
++#define MEDIA_BUS_FMT_BGR565_2X8_LE		0x1006
++#define MEDIA_BUS_FMT_RGB565_2X8_BE		0x1007
++#define MEDIA_BUS_FMT_RGB565_2X8_LE		0x1008
++#define MEDIA_BUS_FMT_RGB666_1X18		0x1009
++#define MEDIA_BUS_FMT_RGB666_2X9_BE		0x1025
++#define MEDIA_BUS_FMT_BGR666_1X18		0x1023
++#define MEDIA_BUS_FMT_RBG888_1X24		0x100e
++#define MEDIA_BUS_FMT_RGB666_1X24_CPADHI	0x1015
++#define MEDIA_BUS_FMT_BGR666_1X24_CPADHI	0x1024
++#define MEDIA_BUS_FMT_RGB565_1X24_CPADHI	0x1022
++#define MEDIA_BUS_FMT_RGB666_1X7X3_SPWG		0x1010
++#define MEDIA_BUS_FMT_BGR888_1X24		0x1013
++#define MEDIA_BUS_FMT_BGR888_3X8		0x101b
++#define MEDIA_BUS_FMT_GBR888_1X24		0x1014
++#define MEDIA_BUS_FMT_RGB888_1X24		0x100a
++#define MEDIA_BUS_FMT_RGB888_2X12_BE		0x100b
++#define MEDIA_BUS_FMT_RGB888_2X12_LE		0x100c
++#define MEDIA_BUS_FMT_RGB888_3X8		0x101c
++#define MEDIA_BUS_FMT_RGB888_3X8_DELTA		0x101d
++#define MEDIA_BUS_FMT_RGB888_1X7X4_SPWG		0x1011
++#define MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA	0x1012
++#define MEDIA_BUS_FMT_RGB666_1X30_CPADLO	0x101e
++#define MEDIA_BUS_FMT_RGB888_1X30_CPADLO	0x101f
++#define MEDIA_BUS_FMT_ARGB8888_1X32		0x100d
++#define MEDIA_BUS_FMT_RGB888_1X32_PADHI		0x100f
++#define MEDIA_BUS_FMT_RGB101010_1X30		0x1018
++#define MEDIA_BUS_FMT_RGB666_1X36_CPADLO	0x1020
++#define MEDIA_BUS_FMT_RGB888_1X36_CPADLO	0x1021
++#define MEDIA_BUS_FMT_RGB121212_1X36		0x1019
++#define MEDIA_BUS_FMT_RGB161616_1X48		0x101a
++
++/* YUV (including grey) - next is	0x202f */
++#define MEDIA_BUS_FMT_Y8_1X8			0x2001
++#define MEDIA_BUS_FMT_UV8_1X8			0x2015
++#define MEDIA_BUS_FMT_UYVY8_1_5X8		0x2002
++#define MEDIA_BUS_FMT_VYUY8_1_5X8		0x2003
++#define MEDIA_BUS_FMT_YUYV8_1_5X8		0x2004
++#define MEDIA_BUS_FMT_YVYU8_1_5X8		0x2005
++#define MEDIA_BUS_FMT_UYVY8_2X8			0x2006
++#define MEDIA_BUS_FMT_VYUY8_2X8			0x2007
++#define MEDIA_BUS_FMT_YUYV8_2X8			0x2008
++#define MEDIA_BUS_FMT_YVYU8_2X8			0x2009
++#define MEDIA_BUS_FMT_Y10_1X10			0x200a
++#define MEDIA_BUS_FMT_Y10_2X8_PADHI_LE		0x202c
++#define MEDIA_BUS_FMT_UYVY10_2X10		0x2018
++#define MEDIA_BUS_FMT_VYUY10_2X10		0x2019
++#define MEDIA_BUS_FMT_YUYV10_2X10		0x200b
++#define MEDIA_BUS_FMT_YVYU10_2X10		0x200c
++#define MEDIA_BUS_FMT_Y12_1X12			0x2013
++#define MEDIA_BUS_FMT_UYVY12_2X12		0x201c
++#define MEDIA_BUS_FMT_VYUY12_2X12		0x201d
++#define MEDIA_BUS_FMT_YUYV12_2X12		0x201e
++#define MEDIA_BUS_FMT_YVYU12_2X12		0x201f
++#define MEDIA_BUS_FMT_Y14_1X14			0x202d
++#define MEDIA_BUS_FMT_Y16_1X16			0x202e
++#define MEDIA_BUS_FMT_UYVY8_1X16		0x200f
++#define MEDIA_BUS_FMT_VYUY8_1X16		0x2010
++#define MEDIA_BUS_FMT_YUYV8_1X16		0x2011
++#define MEDIA_BUS_FMT_YVYU8_1X16		0x2012
++#define MEDIA_BUS_FMT_YDYUYDYV8_1X16		0x2014
++#define MEDIA_BUS_FMT_UYVY10_1X20		0x201a
++#define MEDIA_BUS_FMT_VYUY10_1X20		0x201b
++#define MEDIA_BUS_FMT_YUYV10_1X20		0x200d
++#define MEDIA_BUS_FMT_YVYU10_1X20		0x200e
++#define MEDIA_BUS_FMT_VUY8_1X24			0x2024
++#define MEDIA_BUS_FMT_YUV8_1X24			0x2025
++#define MEDIA_BUS_FMT_UYYVYY8_0_5X24		0x2026
++#define MEDIA_BUS_FMT_UYVY12_1X24		0x2020
++#define MEDIA_BUS_FMT_VYUY12_1X24		0x2021
++#define MEDIA_BUS_FMT_YUYV12_1X24		0x2022
++#define MEDIA_BUS_FMT_YVYU12_1X24		0x2023
++#define MEDIA_BUS_FMT_YUV10_1X30		0x2016
++#define MEDIA_BUS_FMT_UYYVYY10_0_5X30		0x2027
++#define MEDIA_BUS_FMT_AYUV8_1X32		0x2017
++#define MEDIA_BUS_FMT_UYYVYY12_0_5X36		0x2028
++#define MEDIA_BUS_FMT_YUV12_1X36		0x2029
++#define MEDIA_BUS_FMT_YUV16_1X48		0x202a
++#define MEDIA_BUS_FMT_UYYVYY16_0_5X48		0x202b
++
++/* Bayer - next is	0x3021 */
++#define MEDIA_BUS_FMT_SBGGR8_1X8		0x3001
++#define MEDIA_BUS_FMT_SGBRG8_1X8		0x3013
++#define MEDIA_BUS_FMT_SGRBG8_1X8		0x3002
++#define MEDIA_BUS_FMT_SRGGB8_1X8		0x3014
++#define MEDIA_BUS_FMT_SBGGR10_ALAW8_1X8		0x3015
++#define MEDIA_BUS_FMT_SGBRG10_ALAW8_1X8		0x3016
++#define MEDIA_BUS_FMT_SGRBG10_ALAW8_1X8		0x3017
++#define MEDIA_BUS_FMT_SRGGB10_ALAW8_1X8		0x3018
++#define MEDIA_BUS_FMT_SBGGR10_DPCM8_1X8		0x300b
++#define MEDIA_BUS_FMT_SGBRG10_DPCM8_1X8		0x300c
++#define MEDIA_BUS_FMT_SGRBG10_DPCM8_1X8		0x3009
++#define MEDIA_BUS_FMT_SRGGB10_DPCM8_1X8		0x300d
++#define MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_BE	0x3003
++#define MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE	0x3004
++#define MEDIA_BUS_FMT_SBGGR10_2X8_PADLO_BE	0x3005
++#define MEDIA_BUS_FMT_SBGGR10_2X8_PADLO_LE	0x3006
++#define MEDIA_BUS_FMT_SBGGR10_1X10		0x3007
++#define MEDIA_BUS_FMT_SGBRG10_1X10		0x300e
++#define MEDIA_BUS_FMT_SGRBG10_1X10		0x300a
++#define MEDIA_BUS_FMT_SRGGB10_1X10		0x300f
++#define MEDIA_BUS_FMT_SBGGR12_1X12		0x3008
++#define MEDIA_BUS_FMT_SGBRG12_1X12		0x3010
++#define MEDIA_BUS_FMT_SGRBG12_1X12		0x3011
++#define MEDIA_BUS_FMT_SRGGB12_1X12		0x3012
++#define MEDIA_BUS_FMT_SBGGR14_1X14		0x3019
++#define MEDIA_BUS_FMT_SGBRG14_1X14		0x301a
++#define MEDIA_BUS_FMT_SGRBG14_1X14		0x301b
++#define MEDIA_BUS_FMT_SRGGB14_1X14		0x301c
++#define MEDIA_BUS_FMT_SBGGR16_1X16		0x301d
++#define MEDIA_BUS_FMT_SGBRG16_1X16		0x301e
++#define MEDIA_BUS_FMT_SGRBG16_1X16		0x301f
++#define MEDIA_BUS_FMT_SRGGB16_1X16		0x3020
++
++/* JPEG compressed formats - next is	0x4002 */
++#define MEDIA_BUS_FMT_JPEG_1X8			0x4001
++
++/* Vendor specific formats - next is	0x5002 */
++
++/* S5C73M3 sensor specific interleaved UYVY and JPEG */
++#define MEDIA_BUS_FMT_S5C_UYVY_JPEG_1X8		0x5001
++
++/* HSV - next is	0x6002 */
++#define MEDIA_BUS_FMT_AHSV8888_1X32		0x6001
++
++/*
++ * This format should be used when the same driver handles
++ * both sides of the link and the bus format is a fixed
++ * metadata format that is not configurable from userspace.
++ * Width and height will be set to 0 for this format.
++ */
++#define MEDIA_BUS_FMT_METADATA_FIXED		0x7001
++
++#endif /* __LINUX_MEDIA_BUS_FORMAT_H */
 
-Let me look into the state machine. Originally I hoped we don't need it, but
-it seems to deserve the state machine..
-
-
-> >+		return -EINVAL;
-> >+
-> >+	if (copy_from_user(&cmd, argp, sizeof(cmd)))
-> >+		return -EFAULT;
-> >+
-> >+	if (cmd.error)
-> >+		return -EINVAL;
-> >+
-> >+	/* Currently only KVM_TDX_INTI_VCPU is defined for vcpu operation. */
-> >+	if (cmd.flags || cmd.id != KVM_TDX_INIT_VCPU)
-> >+		return -EINVAL;
-> 
-> Even though KVM_TD_INIT_VCPU is the only supported command, it is worthwhile to
-> use a switch-case statement. New commands can be added easily without the need
-> to refactor this function first.
-
-Yes. For KVM_MAP_MEMORY, I will make KVM_TDX_INIT_MEM_REGION vcpu ioctl instead
-of vm ioctl because it is consistent and scalable.  We'll have switch statement
-in the next respin.
-
-> >+
-> >+	/*
-> >+	 * As TDX requires X2APIC, set local apic mode to X2APIC.  User space
-> >+	 * VMM, e.g. qemu, is required to set CPUID[0x1].ecx.X2APIC=1 by
-> >+	 * KVM_SET_CPUID2.  Otherwise kvm_set_apic_base() will fail.
-> >+	 */
-> >+	apic_base_msr = (struct msr_data) {
-> >+		.host_initiated = true,
-> >+		.data = APIC_DEFAULT_PHYS_BASE | LAPIC_MODE_X2APIC |
-> >+		(kvm_vcpu_is_reset_bsp(vcpu) ? MSR_IA32_APICBASE_BSP : 0),
-> >+	};
-> >+	if (kvm_set_apic_base(vcpu, &apic_base_msr))
-> >+		return -EINVAL;
-> 
-> Exporting kvm_vcpu_is_reset_bsp() and kvm_set_apic_base() should be done
-> here (rather than in a previous patch).
-
-Sure.
-
-
-> >+
-> >+	ret = tdx_td_vcpu_init(vcpu, (u64)cmd.data);
-> >+	if (ret)
-> >+		return ret;
-> >+
-> >+	tdx->initialized = true;
-> >+	return 0;
-> >+}
-> >+
-> 
-> >diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> >index c002761bb662..2bd4b7c8fa51 100644
-> >--- a/arch/x86/kvm/x86.c
-> >+++ b/arch/x86/kvm/x86.c
-> >@@ -6274,6 +6274,12 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
-> > 	case KVM_SET_DEVICE_ATTR:
-> > 		r = kvm_vcpu_ioctl_device_attr(vcpu, ioctl, argp);
-> > 		break;
-> >+	case KVM_MEMORY_ENCRYPT_OP:
-> >+		r = -ENOTTY;
-> 
-> Maybe -EINVAL is better. Because previously trying to call this on vCPU fd
-> failed with -EINVAL given ...
-
-Oh, ok. Will change it.  I followed VM ioctl case as default value. But vcpu
-ioctl seems to have -EINVAL as default value.
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+2.25.1
+
 
