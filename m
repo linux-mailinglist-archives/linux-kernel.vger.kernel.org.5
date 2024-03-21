@@ -1,96 +1,94 @@
-Return-Path: <linux-kernel+bounces-109521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52B0B881A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB471881A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF1E51F21F9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30872282BD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 00:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B11D51C3D;
-	Thu, 21 Mar 2024 00:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B785A23;
+	Thu, 21 Mar 2024 00:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cyls+3xI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="vTAFwLAO"
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4D27EC;
-	Thu, 21 Mar 2024 00:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFAA1851
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710981562; cv=none; b=MXBSlQvOP0qV4FnyXKfrh5PDlCoh4Ah/oNg7Yz+X9w2uwbPQxahFd9oREi8g+DV/HQEO8ZX/sx0/P6tf6J9H66xgyk2Iv6pTels7iiML08LB2kZ4sKKdDQYMgZPdqnAwUYGb+XZOTUVzzT//KSLzKVpWxNHeHxf7gE58kOklWpA=
+	t=1710981699; cv=none; b=dftTNg6I3S3Tfah1X1Eqaedeiwq4pI4gB/ad6ZiSLrHLkV08gcKXvOqlBorU9bNzaaAB820pnbagMEVjrp4AeNg2izf0+i/LAvnHOz43a/dEirilFUR7zOLYBNG40XrOVKIhLqjF+R7eWsUXsfPKN/ehZzVZy//TrkXb5z38uzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710981562; c=relaxed/simple;
-	bh=B9vDLy7yEeTbbU0rhNGSNgi3ni7eKud/B6ia/JvcvuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mumjp/QIf6VLjVwLY0TUi/H/Kbquyzgvy4EN5GXylwsSracSF2XirKhx7/8Ffti8W5gK8u3u1XR67U4FXSe+YuHWfTLlXksitLfESSNrqc6a+/oMA3wzQkXMuURQwePsGjAhoi78pLtSjogOL0F2Ov+x4ql58ktEdAnELmawOtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cyls+3xI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A4AAC433F1;
-	Thu, 21 Mar 2024 00:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710981561;
-	bh=B9vDLy7yEeTbbU0rhNGSNgi3ni7eKud/B6ia/JvcvuA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Cyls+3xIk+XVddmLij8xROR64ciD+HYnwez6cCJMxnxCudsXktj+/iknYYM9WzpFj
-	 ReX5yBF7w250xJmVyts9didaV7fQTSCg4omMV8FWaLN9rZtq0Zo63mG5fj9ylG3od+
-	 mqypuXCyNyr84Mr/ubhqct6QzmiMauHG7cPK6rPnJMemBqh2Wfzr9FF6WdidprQgRD
-	 OCC91LX3tSJOXtUtIEb95rxG910+YD24qnj7u6oihLEPnq7tTDc6SDRx4PLMaMtgH5
-	 /hB28aaNOB1Vuz6XswPsr/RtkmxEC6NVoL77iw0IDRwmTGoV9/sDH95B3OSZ5sXnOq
-	 apL9qICtER9nQ==
-Date: Wed, 20 Mar 2024 17:39:19 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Light Hsieh =?utf-8?B?KOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
-Cc: Ed Tsai =?utf-8?B?KOiUoeWul+i7kik=?= <Ed.Tsai@mediatek.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	Chun-Hung Wu =?utf-8?B?KOW3q+mnv+Wujyk=?= <Chun-hung.Wu@mediatek.com>
-Subject: Re: =?utf-8?B?5Zue6KaG?= =?utf-8?Q?=3A?= f2fs F2FS_IOC_SHUTDOWN hang
- issue
-Message-ID: <ZfuBt1QbfFfJ-IKz@google.com>
-References: <0000000000000b4e27060ef8694c@google.com>
- <20240115120535.850-1-hdanton@sina.com>
- <4bbab168407600a07e1a0921a1569c96e4a1df31.camel@mediatek.com>
- <SI2PR03MB52600BD4AFAD1E324FD0430584332@SI2PR03MB5260.apcprd03.prod.outlook.com>
- <ZftBxmBFmGCFg35I@google.com>
- <SI2PR03MB526094D44AB0A536BD0D1F5B84332@SI2PR03MB5260.apcprd03.prod.outlook.com>
+	s=arc-20240116; t=1710981699; c=relaxed/simple;
+	bh=t2Judo73G7ONIv2W5IvAKGPpkOBjuUXVcc3XP+sOXWA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=se2cuCFPmG1O1TdtzBp+mLynDfwwpGvbbtwPoobKY+4RXfIY/y4wVVJBGN0shxP015VQ7ZxCuIVn1yXPpOCwz2WhoLjrj+sLOWX/NR4m0a5CinrDpa3+i8xgaVcpbnL2yCWFE9qGfoFXBfPgdY5VYY34rvKD1M3tG2WWs/yJ0F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=vTAFwLAO; arc=none smtp.client-ip=203.205.221.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710981695; bh=JRowUOv4bGjxwTVDBC2Eby8hssB+O6+EDSOmbRZwsGw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=vTAFwLAOynFD1I0K8JUghev/LfyNI6vDh+jIpAFlGilnFSANfxIKPn8Vm4ZeBByZr
+	 BxSNSoto32NR9WNhX8A4FvQLndYBMgN6n/uIoqoFw7tJSWjT76DZJ3EvinCjvBOFkO
+	 V6fIhsJGt6IDWkz9pee3HklIi5f+FDJ+KT+A6WO0=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id A1837407; Thu, 21 Mar 2024 08:40:24 +0800
+X-QQ-mid: xmsmtpt1710981624trua0qs0y
+Message-ID: <tencent_628EA5EC0D8212135DADDD9699154FD18D07@qq.com>
+X-QQ-XMAILINFO: OMa626R84mNhFqJPo5nGEDXXPlRP2P9iBJ0xntHuZnBJQoBxpcVeX0xg/oDosJ
+	 E+9MTJVzN/i1CVt/1BsGtVicWEcH1oSeQVSLKVweQX6dnhROdoI0C/ay2BePlxMw2QHkxg9RSCnS
+	 EqRSeVBEBg9VVIIlGS15wA/+mxWYenfZ4NMpvZBfSnT/9A9xy4wwZd3/MwQhle4RA/TlavbTyRhK
+	 CXROXcwBSy84gcxcmlc6tD6f0OvmMJPNC5diJB1io/EXDpA2gJvstOhZjmSf7KqtPQJ1wQNBE9BZ
+	 HJmv8TO+Pook6XMXWl9FsZcp9OahfGN34ltscKJA1IPEAAbyUmDFl4AMbyjlaamZVtbHJHByN8Kg
+	 tzzrqhHnH6Y2PsALTFu94yN6n+0MQ4b9dyYSoPOGk7XZ6lxDp2rLMg0/A9vwUgkkZv+q6PN7ixiW
+	 VKBcHveNK8MfT0FAYIrvbhBvEPGmqepckSOzDi+LnQDF2Mr4SOQbyCC92jziX02+BphZxB2s1qrY
+	 Il4MEiGU5PH0di4gthalUsWK4df8pzdkgLdoXDKVIYEMB3pHMukLiTYGpoxEO8LTcGbdQ3E4BGf0
+	 8Woa5VTNIxhgzn3PasIBed2jOZFK00r7UMcxkPgJynXQ2/QZOo6vGQ+K9B3ZpsmWb1P3AF9s/DCX
+	 183BMooE4cVnkbBuW8ltC1y2FjszPUiSj7LrVAgCh/NKfQ/iomj3IMb5iY4pXZvnt2NhiiWYbint
+	 t0Bf6lHhg+3W3vtknDobsgST/shSyDtWLvq/kaXU73MDXZRsh46b1bS4RFKbTz5EtxSGLENSqcXv
+	 +OUtfEZTkocc8FAYemSE+vMnkuep6jTEKn3TtjjoiqrTfF1vQewDuI9XLpJ0lgbLTm4Pf5RLOK0y
+	 RgNgNc0/2L69We+K/lIExFL2hHtoaPbvKaTsuE15+iDRNvRS/si9XAzbKAkP6mk7mrctQDH50m
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+18840ef96e57b83b7fea@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [sound?] possible deadlock in _snd_pcm_stream_lock_irqsave (4)
+Date: Thu, 21 Mar 2024 08:40:24 +0800
+X-OQ-MSGID: <20240321004023.1726689-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000096e5980613f4cb96@google.com>
+References: <00000000000096e5980613f4cb96@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <SI2PR03MB526094D44AB0A536BD0D1F5B84332@SI2PR03MB5260.apcprd03.prod.outlook.com>
 
-On 03/20, Light Hsieh (謝明燈) wrote:
-> On 2024/3/20 8:14, Jaegeuk Kim wrote:
-> > f2fs_ioc_shutdown(F2FS_GOING_DOWN_NOSYNC)  issue_discard_thread
-> >   - mnt_want_write_file()
-> >     - sb_start_write(SB_FREEZE_WRITE)
-> >                                               - sb_start_intwrite(SB_FREEZE_FS);
-> >   - f2fs_stop_checkpoint(sbi, false,            : waiting
-> >      STOP_CP_REASON_SHUTDOWN);
-> >   - f2fs_stop_discard_thread(sbi);
-> >     - kthread_stop()
-> >       : waiting
-> > 
-> >   - mnt_drop_write_file(filp);
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> 
-> The case I encounter is f2fs_ic_shutdown with arg  F2FS_GOING_DOWN_FULLSYNC, not  F2FS_GOING_DOWN_NOSYNC.
-> 
-> Or you are meaning that: besides the kernel patch, I need to change the invoked F2FS_IOC_SHUTDOWN to use arg F2FS_GOING_DOWN_NOSYNC?
+please test dl in _snd_pcm_stream_lock_irqsave
 
-I think this patch also addresses your case by using trylock.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-> 
-> 
-> 
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 15b07d09c4b7..c501faa30040 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -409,7 +409,7 @@ static void snd_timer_close_locked(struct snd_timer_instance *timeri,
+ 	struct snd_timer *timer = timeri->timer;
+ 
+ 	if (timer) {
+-		guard(spinlock)(&timer->lock);
++		guard(spinlock_irqsave)(&timer->lock);
+ 		timeri->flags |= SNDRV_TIMER_IFLG_DEAD;
+ 	}
+ 
+
 
