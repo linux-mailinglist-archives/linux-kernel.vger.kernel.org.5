@@ -1,176 +1,217 @@
-Return-Path: <linux-kernel+bounces-109693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93400881C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:33:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 992CE881C85
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74D51C2104C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:33:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C293F1C20FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C68E3FBBE;
-	Thu, 21 Mar 2024 06:33:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC393C484;
+	Thu, 21 Mar 2024 06:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BVmAlxDy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xJ+wJFu5";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BVmAlxDy";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xJ+wJFu5"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=equiv.tech header.i=@equiv.tech header.b="KVmdIL5p"
+Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF853BB4F;
-	Thu, 21 Mar 2024 06:33:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D913C489
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.61.254.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711002790; cv=none; b=XOibNK8h67pOOP9+/KzTtp2jyhLtIzxgkd6O03yo3sJMyE7nUqoAZ9o/2hy8W8fFbiGZY8/w5txZjYYfVQR441BTosqSJteMqKLsh+4zI3G6fU+XNaFJjUfbNwQ8GwYEzVZdezsNnqSHBbTjdNkHwvDfdQtZ/n4yXI3ZpF5sgrY=
+	t=1711002828; cv=none; b=lbwLeUFul6LQ1hOSle5wDDz/uMJYWcunJ8Q8h69CTs6rf5pzN8A/3GRj+VZc6wP5KvhBcs4ATpBFW3Lq40i/FlymWWwwiE9tcSfPeq2Ta1J1hOqcY814TxwowMrvun4JNLw266FEPIjEcB4SIJQEvOMEywGvYPy0uVu5JqJVF9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711002790; c=relaxed/simple;
-	bh=WwAGFrjD+oCIhEvw9WxEO4A1B0E7yDaH3fcLR5SunEY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BTvNj6i1HzcMjDM8s1wq6N2EYZuoeHzP0Vmx03TdC90ar2lKuqb741rTRiZ5QNz7xHp0NibX0QYHYu0mAaDgd4Lu/nBlJHzVvlDlCfsQfAjZvmFc2ukpuwxt8gixEyqVCqYwPMWgKK2WDSSwhbFxu9IwmfRBir+1sGEXCfJ0aUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BVmAlxDy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xJ+wJFu5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BVmAlxDy; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xJ+wJFu5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3E1945C986;
-	Thu, 21 Mar 2024 06:33:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711002784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HrVBJ0KMskz94C4NAej7qaBmjKzm3A9HzZyOV0QawhY=;
-	b=BVmAlxDy8I/IulSNNcOSJG/cttbGXGHqlk/VQCLb+dHNbTlBh1tglr3xPlcSfvnO/2UOtE
-	QpJ/+zFxEEjPGvJdldDQ8zY2IX+q0Zui8FrWXtvlslvw5uvDR0Rg7VZWT+bgeJ5729iK4x
-	vb8txFv19JTItTzDFxIP8Xoe9boMQMM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711002784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HrVBJ0KMskz94C4NAej7qaBmjKzm3A9HzZyOV0QawhY=;
-	b=xJ+wJFu5HetTZfM8aJGWcXd1GAmal+RCAI9xAgt4KsUAlZNRy3gitxEH/6wXe+kOpfi3N9
-	JFtYP4Cq5+AON3Dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711002784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HrVBJ0KMskz94C4NAej7qaBmjKzm3A9HzZyOV0QawhY=;
-	b=BVmAlxDy8I/IulSNNcOSJG/cttbGXGHqlk/VQCLb+dHNbTlBh1tglr3xPlcSfvnO/2UOtE
-	QpJ/+zFxEEjPGvJdldDQ8zY2IX+q0Zui8FrWXtvlslvw5uvDR0Rg7VZWT+bgeJ5729iK4x
-	vb8txFv19JTItTzDFxIP8Xoe9boMQMM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711002784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HrVBJ0KMskz94C4NAej7qaBmjKzm3A9HzZyOV0QawhY=;
-	b=xJ+wJFu5HetTZfM8aJGWcXd1GAmal+RCAI9xAgt4KsUAlZNRy3gitxEH/6wXe+kOpfi3N9
-	JFtYP4Cq5+AON3Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01CC5136AD;
-	Thu, 21 Mar 2024 06:33:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cc1JOp/U+2VFTwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 21 Mar 2024 06:33:03 +0000
-Date: Thu, 21 Mar 2024 07:33:03 +0100
-Message-ID: <87y1acrt5s.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+18840ef96e57b83b7fea@syzkaller.appspotmail.com,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	perex@perex.cz,
-	syzkaller-bugs@googlegroups.com,
-	tiwai@suse.com
-Subject: Re: [PATCH] ALSA: timer: fix deadlock in _snd_pcm_stream_lock_irqsave
-In-Reply-To: <tencent_AC7946DBB367A364897F43B2045A37625705@qq.com>
-References: <00000000000096e5980613f4cb96@google.com>
-	<tencent_AC7946DBB367A364897F43B2045A37625705@qq.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711002828; c=relaxed/simple;
+	bh=l5NvXmfoEJ9hjdegYNGhUeH1uu2R1/Gv2ibCgljUJfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lDffmhH+KKeUYmX6dSY9USWFnWhAJeT7h9H3ARQHpBIzgjUmW+8/F2CSNl7Lb7nkxUieQoVscSaRlwqf4gBBWbYUb46CoLzqRx4FApGbc7Jo04pqlESNv6ZFv/nJ1QwkvKJtHqICom2a8uRFiVEt+79cPQuHId06pUr9jONPNWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equiv.tech; spf=pass smtp.mailfrom=equiv.tech; dkim=pass (2048-bit key) header.d=equiv.tech header.i=@equiv.tech header.b=KVmdIL5p; arc=none smtp.client-ip=198.61.254.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equiv.tech
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=equiv.tech
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt; s=mx; t=1711002825; x=1711010025;
+ h=In-Reply-To: Content-Type: MIME-Version: References: Message-ID: Subject: Subject: Cc: To: To: From: From: Date: Sender: Sender;
+ bh=XzJ+t9Fh61T5jzkGqNJg0KuBJtVxebS2abQAq5EktDU=;
+ b=KVmdIL5pMeHjXdkeLITGrFx4R41bl83fx+75AqZ/p07ueSl7ROZbraNCHO+/AOWSp6mPqpZCezwjYFoy7026xjvB13/WvtAo2nNhkkKU8sPUjIpK2VrjnjxrtYrnK0+PyVZE5bEcjxTAGJhLfoaucFfLE2HC/ITCqR9bZTWZNH37Y0dDN20zaYRWoXA0x911QFmXXwKKlCIaHBo4wP+g45dVfH/h1beH8ZD9CXWF5UnpB89kcFgjdfw87LlCJkZHX76dH09OF55rUBSJP1q3LbnEPrH316fIUZMMHzwEkv2/HH5gEd/KB2ljlmn+nNBTEZr752HZLVgdMN5wdoaRHw==
+X-Mailgun-Sending-Ip: 198.61.254.32
+X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
+Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 4733713dca97 with SMTP id
+ 65fbd4c9548c1b722d673e72 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Mar 2024 06:33:45 GMT
+Sender: james@equiv.tech
+Date: Wed, 20 Mar 2024 23:33:44 -0700
+From: James Seo <james@equiv.tech>
+To: Armin Wolf <W_Armin@gmx.de>
+Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
+Message-ID: <ZfvUyPVAuLv3KNUm@equiv.tech>
+References: <20240318215732.322798-1-W_Armin@gmx.de>
+ <Zfkm71dmnRsdmYJz@equiv.tech>
+ <a2c2ef97-3830-4277-8560-b97cfb8eb78e@gmx.de>
+ <ZfowhGaCWffQ2N1K@equiv.tech>
+ <600844b1-0d62-4b74-89b7-f185a793038b@gmx.de>
+ <ZftC9ojx42l1VAUe@equiv.tech>
+ <3e069b7a-fa22-453b-a507-dccc48eb60a3@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.90
-X-Spamd-Result: default: False [-0.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-2.10)[95.62%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[qq.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[18840ef96e57b83b7fea];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email];
-	 FREEMAIL_TO(0.00)[qq.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3e069b7a-fa22-453b-a507-dccc48eb60a3@gmx.de>
 
-On Thu, 21 Mar 2024 03:22:24 +0100,
-Edward Adam Davis wrote:
+>>> Could it be that using 95F24279-4D7B-4334-9387-ACCDC67EF61C is a mistake?
+>>> Or do you know of a machine which indeed uses this GUID to deliver sensor events?
+>>> Because it not, then we can just avoid this GUID conflict entirely by using the
+>>> other GUID.
+>>> 
+>> No, it's not a mistake, it's HP reusing GUIDs. Both my test machines use
+>> 95F24279-4D7B-4334-9387-ACCDC67EF61C for \\.\root\WMI\HPBIOS_BIOSEvent.
+>> 
+>> Previously I examined a sample of ACPI dumps from machines with both
+>> hpqBEvnt and HPBIOS_BIOSEvent, and concluded:
+>> 
+>>    - hpqBEvnt is for various events on both business and non-business
+>>      machines that are of no interest to hp-wmi-sensors (e.g. hotkeys)
+>> 
+>>    - some machines with hpqBEvnt also have HPBIOS_BIOSEvent at GUID
+>>      2B814318-4BE8-4707-9D84-A190A859B5D0
+>> 
+>>    - no machines with both hpqBEvnt and HPBIOS_BIOSEvent actually surface
+>>      relevant sensor events (e.g. fan speed too high) via HPBIOS_BIOSEvent;
+>>      they only surface non-sensor events (e.g. BIOS setting was changed)
+>>      that are of no interest to hp-wmi-sensors
+>> 
+>>    - therefore, 2B814318-4BE8-4707-9D84-A190A859B5D0 does not need to be
+>>      handled in hp-wmi-sensors
+>> 
+>> But this time I have done an exhaustive examination and concluded that a
+>> few machines with both events do surface sensor events via HPBIOS_BIOSEvent.
 > 
-> [Syzbot reported]
-> swapper/2/0 just changed the state of lock:
-> ffff88802a304110 (&group->lock#2){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0xa0/0xd0 sound/core/pcm_native.c:170
-> but this lock took another, SOFTIRQ-unsafe lock in the past:
->  (&timer->lock){+.+.}-{2:2}
-> 
-> 
-> and interrupts could create inverse lock ordering between them.
-> 
-> 
-> other info that might help us debug this:
->  Possible interrupt unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&timer->lock);
->                                local_irq_disable();
->                                lock(&group->lock#2);
->                                lock(&timer->lock);
->   <Interrupt>
->     lock(&group->lock#2);
-> 
->  *** DEADLOCK ***
-> [Fix]
-> Ensure that the context interrupt state is the same before and after using the
-> timer->lock.
-> 
-> Fixes: beb45974dd49 ("ALSA: timer: Use guard() for locking")
-> Reported-and-tested-by: syzbot+18840ef96e57b83b7fea@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> This would have interesting implications for the WMI subsystem. Can you send me
+> the output of "acpidump" on those test machines?
+>
+> It also seems that there are machines which do use the other GUID, see here:
+> https://github.com/lm-sensors/lm-sensors/issues/471 (acpidump at the bottom)
 
-This was already fixed in Linus tree commit
-587d67fd929ad89801bcc429675bda90d53f6592.
+Here are examples of machines in the Linux Hardware Database with
+HPBIOS_BIOSEvent at 95F24279-4D7B-4334-9387-ACCDC67EF61C:
 
+Compaq 8100 Elite SFF PC
+EliteDesk 800 G1 SFF
+Z400 Workstation
 
-thanks,
+https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/Compaq/Compaq%208100%20Elite%20SFF%20PC/AB6EADEE22B9
+https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/EliteDesk/EliteDesk%20800%20G1%20SFF/F13506CA489E
+https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/Z400/Z400%20Workstation/FF7C21B8CB39
 
-Takashi
+Here are examples of machines that have hpqBEvnt and HPBIOS_BIOSEvent at
+95F24279-4D7B-4334-9387-ACCDC67EF61C and 2B814318-4BE8-4707-9D84-A190A859B5D0
+but do not surface sensor events via HPBIOS_BIOSEvent. See PEVT and how it
+dereferences into CBWE, which is HPBIOS_PlatformEvents giving information
+about the types of _WED/HPBIOS_BIOSEvent that may occur:
+
+ZBook 2015 G4
+ZBook Studio G5
+
+https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZBook/ZBook%2015%20G4/89F9520CDC60
+https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZBook/ZBook%20Studio%20G5/39AAE603D78B
+
+An example of a machine that has hpqBEvnt and HPBIOS_BIOSEvent at
+95F24279-4D7B-4334-9387-ACCDC67EF61C and 2B814318-4BE8-4707-9D84-A190A859B5D0
+and does surface sensor events via HPBIOS_BIOSEvent is the ProDesk 405 G6
+from https://github.com/lm-sensors/lm-sensors/issues/471 in your previous
+message. I found a reason to reply to the GitHub issue with the decompiled
+ASL for easy reference. See PEVT and how it dereferences into EVNT, which
+is HPBIOS_PlatformEvents giving information about the types of
+_WED/HPBIOS_BIOSEvent that may occur. Currently hp-wmi-sensors would not
+recognize that this BIOS supports reporting alarm and intrusion events.
+
+And finally, a machine that embodies "weird behavior from a HP BIOS". It has
+hpqBEvnt and HPBIOS_BIOSEvent at 95F24279-4D7B-4334-9387-ACCDC67EF61C and
+2B814318-4BE8-4707-9D84-A190A859B5D0, and has HPBIOS_BIOSNumericSensor at
+8F1F6435-9F42-42C8-BADC-0E9424F20C9A. However, it looks like it just
+defines these in BMOF without providing any instances during runtime, or
+maybe it generates them in some convoluted non-obvious way:
+
+ZHAN 99 Mobile Workstation G1
+
+https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZHAN/ZHAN%2099%20Mobile%20Workstation%20G1/CB1EEAC36F91
+
+>>>>> I thing it would be best to create a separate WMI driver for the event and
+>>>>> use a notifier chain (see include/linux/notifier.h) to distribute the event data.
+>>>>> 
+>>>>> In case of event GUID 95F24279-4D7B-4334-9387-ACCDC67EF61C, both hp-wmi and
+>>>>> hp-wmi-sensors can subscribe on this notifier and receive event data without
+>>>>> stepping on each other's toes.
+>>>>> 
+>>>>> The same can be done for the event GUID 2B814318-4BE8-4707-9D84-A190A859B5D0,
+>>>>> with a separate notifier chain.
+>>>>> 
+>>>>> This would decouple the event handling from the event data consumers, allowing
+>>>>> both hp-wmi and hp-wmi-sensors to coexist.
+>>>> No objections from me for this specific use case to work around the GUID conflict.
+>>>> hp-wmi-sensors should indeed subscribe on 2B814318-4BE8-4707-9D84-A190A859B5D0
+>>>> for some of those machines.
+>>>> 
+>>>> Any ideas for getting rid of wmi_query_block() for fetching
+>>>> \\.\root\HP\InstrumentedBIOS\HPBIOS_PlatformEvents? I know other drivers are
+>>>> also using it for getting blocks other than their "main" GUID.
+>>> Good question, it seems that HPBIOS_PlatformEvents is optional, so using the component
+>>> framework will not work.
+>>> 
+>> Yes, HPBIOS_PlatformEvents is optional, but it's pretty much necessary for
+>> alarm and intrusion events. Without it, it's not possible to know whether a
+>> machine even reports such events until after they occur (rare). We'd have
+>> to assume that all machines always support such events.
+>> 
+>>> If those WMI data blocks are always associated with the same ACPI device used by the
+>>> sensors GUID, then maybe i could create some sort of API for checking if a given GUID
+>>> exists the ACPI device associated with a WMI device.
+>> For all HP machines in the Linux Hardware Database, all machines with
+>> HPBIOS_PlatformEvents also have HPBIOS_BIOSNumericSensor. The reverse is
+>> not true. Neither WMI object appears under multiple GUIDs.
+>> 
+>>> However i thing the event GUID issue is more important right now.
+>> Sure. I also wonder if your idea could be expanded into a generic driver
+>> for publishing simple WMI events. This would be usable in other drivers
+>> that are currently using legacy handlers for receiving event data.
+> 
+> You are completely right, this driver could allow clients to register a
+> notifier block for a event identified by a GUID, and this notifier block
+> is then called every time this event is received.
+> 
+>> More broadly, if hp-wmi-drivers is any indication, aggregate WMI devices
+>> could be a pain. Primary WMI object, associated WMI objects (optional or
+>> mandatory), multiple aggregate devices allowed to bind to the same
+>> objects. And if using GUIDs for identification, multiple allowable GUIDs.
+> 
+> I agree, part of it stems from many OEMs designing their interfaces in such
+> a way that it is impossible to discover if some optional features are present.
+> 
+> I suspect this happens because under Windows, the OEMs just check all GUIDs
+> once the system has "finished booting" (aka reached the login screen), and
+> this is afaik not possible with device drivers.
+> 
+> However we cannot export WMI method/events/etc to userspace, as this would
+> be a security nightmare (random RPC with buggy ACPI firmware, yay!).
+
+Interesting info here. I assumed they just worked with string names for
+objects and properties and didn't care about GUIDs.
+
+> In the future we might need an API for at least discovering and interacting
+> with WMI devices backed by the same ACPI device, however this might take some
+> time.
+>
+> I will focus on this WMI event driver for now.
+
+Looking forward to it. Maybe tell platform-driver-x86 about it too.
+
+Thanks,
+
+James
 
