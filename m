@@ -1,188 +1,154 @@
-Return-Path: <linux-kernel+bounces-109983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0AD885891
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:49:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9E7D885893
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 503FF283253
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:49:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76C62B217EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298965B693;
-	Thu, 21 Mar 2024 11:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0715A0FA;
+	Thu, 21 Mar 2024 11:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUI3aR36"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OuDJSjIn"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FC558AD1;
-	Thu, 21 Mar 2024 11:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9280156B9C;
+	Thu, 21 Mar 2024 11:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711021738; cv=none; b=ZvsWviEVhDZFdSvaFIxgZ/I2IAWfnPyZJwwn3AtOU1gK7Tic0zKthcPsuDslnksB1x97Pi7VuAz+sGxQhsLhqj6JaaS7Cp0CtsNL8qBD7o1iDQxfFf6U6NzDMmM1zlGw86CaMwNBdtNNWJViqj5NACsrzt2p605vPf094C81rX0=
+	t=1711021765; cv=none; b=IhKDlLaKYOFctUA8CCaBkG5tBACrFizhLfOqFXq/z1tql5Mh2FWODm1tPp4Iyz5JzDlZrin1VzFx4psxSE2hQFzWPtkRMaQ8RC+VRYHbITBAtkdF0XRNrhVN/zLLt0v59DVnbFbixlagtUJR0epRXPNhR2Oha4PbsHxrC2K0wGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711021738; c=relaxed/simple;
-	bh=oyaxk/plSkXwNqfy8BRBwP+1IHu4SESNTkIjkLiy/fs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uYBf3YRiKIUXVLv18i+RnWPaphvnggIHb7T6Uaocx7J8OkRULSvzAmapJEHhMvWCa7eIQt9KKi1HLa2Ic+nloxzYsBmsXF6ddH5VG8IIZ6mtR+OrNOEBQL2Pak86t+uKzU2kJum1O+JTuuPYWiZxVRMoBkLo79RZjH0px+nt/Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUI3aR36; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1711021765; c=relaxed/simple;
+	bh=HcfpeOvJqco8I2k5lgqVxuAfX4+uF9kqChgarxiASdg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uWGkXLFomEi5aZIczehHcsSbwzWDlONHJy2UQlb3CKfOnVT1hZQnbRQjHJD9b80q512QpYJNd6PBhCcYjCF+9xTrnCrHFiAKvkoIy/7xfS6YEurH0r2EWfgP0Wy4THAlxwArxowV/f4hz1CqQKmMtUTQp/+sy/MNLeLPsgjBe24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OuDJSjIn; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41476ddf668so1623805e9.3;
-        Thu, 21 Mar 2024 04:48:56 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a465ddc2c09so49516666b.2;
+        Thu, 21 Mar 2024 04:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711021735; x=1711626535; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SBXuSoXBGzyYnzCyTr2t1+PEE5aIYSRJOIe9GFH+E6Y=;
-        b=AUI3aR36uNe8KLc3VQPVmQ4m/N78hhQMRjy5sUrVHgBWX3rLhWIXj/XkTxnyDv3JOT
-         rCNjrMBQ0KCmFU/g6T+Eieyr9fwv2BhFxsY9YpaFFK89NgoQZV74Bu1m5+s0PfJeeaMJ
-         AyRQAMgGECCfYUHvPmcQ0eOQKXAwhZK+Kh5Cj/TTzwgOHzmhyZzjOv7+rRNjrBsbgn4X
-         8r//ciIRmdIyQ4M6akOzZV7g9eLutrGjlCu4vQhlDNdtWfpvC2gqU34ye95ZM2U95kI+
-         i/kQof9ysRhsikNBDZlqGL8Mtd56AmIhjdPL32IqZN0FwjmsSJD8usHWmnVaMef4oac6
-         l/lw==
+        d=gmail.com; s=20230601; t=1711021762; x=1711626562; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=YUHpheO9nRaUReKbxqlCuhbZr+EZarmSUPdERAI3mmE=;
+        b=OuDJSjInxbwExLcdpxBe9POl0BhJiFbYZxnbr1cy3Nja4IZheCvDmS7AJIFvS7l79a
+         DCL1B/CRITnShvmTSUFWIoqnTNiNe6Hdy5rcXjAn8SW0CLFunAkAXE/MGhuqa9FAK924
+         Kk14l7sPx/CpjJTuQ5X9N3tqaWWy+e8FMVTlPho+0ApKSZtE9cmD9RqASywXZV4Z4eu8
+         30oN7VcvHPtW60kPKbBfXdBYjgg6vY7iNnHO88PnjbDYyD926gytPs8g+JaLj7yyLtck
+         kFH7yLqOYVaMySl2D+j6WMRy2B7zSnsIOim1Y6ZtKcuZ6bfW857WgPDFg+b5q/ObOGjH
+         uqvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711021735; x=1711626535;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBXuSoXBGzyYnzCyTr2t1+PEE5aIYSRJOIe9GFH+E6Y=;
-        b=WzS8IkSTcixZ81pVMhe9YX4Kg/Eot6InLauFy32V0x4eXVYNBCt73HGPoQZ22KpAOt
-         5aXswGiBEw6PrZ+OnUKJxF+zOY0KqzuLKUtRpUEBp4rUSzO3qmMa9vlzlZtHRtcZQgxY
-         8+mJVvMrD7STVjKEPtjEiGPEkm62x6KTmi4yZRKwx23e9mAyRvM22m06OZ9Fw94T5aF8
-         31NCQUYyHS861qIi1QqFzHM0ApS6zKbNHPDmUDCIuar+9K2Nzjzlr9ihF71lVntnNWJU
-         qnjlviA080Dx1AB+/kVygX68wY+V1lrVS5eOfg4/eI6kn38mhYqW4DDa6+VnFM2E8Cqr
-         tMMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXmqAZ6j8v2Du8JAdO9iNyIxunbHyjRAANhgIypEdeA6FAdiEvcsPT90h1UnijS3UZYBC3cUZH+7lyUXLemIIkjofQZuZw0scXi0uQqBk2tyVi0PSX8RA6ugB9wVZUXVY4xl32wKxGRuPymB2pE0zCdMvuFGEtaYyx6
-X-Gm-Message-State: AOJu0Yz0s6H9pweHgAOnJutA2btLisxD1x+AbOHAuX8Of6zTvqpUyjCP
-	I99UxNjC0foJveoqoSThNcbVBXV6Jv8d80+EuP7wyYtDHhFhryF1
-X-Google-Smtp-Source: AGHT+IHgvLDMn+HkPdYkZPwv15NBsccTvbOlqisMgSHZldgyQSO7CfPZdAwWDR8KqP6FTQIBVCRBDQ==
-X-Received: by 2002:a05:600c:19cf:b0:414:7751:c55e with SMTP id u15-20020a05600c19cf00b004147751c55emr355510wmq.0.1711021734847;
-        Thu, 21 Mar 2024 04:48:54 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id bj25-20020a0560001e1900b0033e68338fbasm9338930wrb.81.2024.03.21.04.48.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Mar 2024 04:48:54 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Ilya Leoshkevich
- <iii@linux.ibm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin"
- <hpa@zytor.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, Network
- Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf v2] bpf: verifier: prevent userspace memory access
-In-Reply-To: <CAADnVQLHrmkJ5p2gEUJkf_CRxq9gv8rcSuBm5GeZ_nUJxQOE0Q@mail.gmail.com>
-References: <20240321101058.68530-1-puranjay12@gmail.com>
- <CAADnVQLhwLgq=QuXD-Ls=t9Scr_4Zn9JwdkXfZQfZkT=ysx64Q@mail.gmail.com>
- <CAADnVQLHrmkJ5p2gEUJkf_CRxq9gv8rcSuBm5GeZ_nUJxQOE0Q@mail.gmail.com>
-Date: Thu, 21 Mar 2024 11:48:52 +0000
-Message-ID: <mb61pwmpvst3v.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1711021762; x=1711626562;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YUHpheO9nRaUReKbxqlCuhbZr+EZarmSUPdERAI3mmE=;
+        b=NXCa3GblKVSOCuqPvDUVAe7tLm1r52veoRhjjXYkuIyfVtCwWErxRaYKSsm5atGCfP
+         ARMsD5XFuwsZI9L8kaKmUUGQurnIIuBEukidZl7p4kmF5kAt/0cD0Ytnka0aY4Zt7dqM
+         /Fr/DXXNpubZS+F2witk3GqBhYmtFXrsCrz5z28pY5njSqyEYdcsnEiSf/fuOcG8VJcV
+         2z5XipCapMTY+wGKqydTjb6phukg1gMXLX7SMWY/i2lIEtXekQABV9GSm6KS8k/iZCiP
+         07EUS/lgyglnGzqO2VgOr3V5Fqx47OAeXjLTXYGIdkeryv4Yzn0kJGrpJg/j6VXUV/Q0
+         7AlA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9RSmsrL4YAyNbvAbMpQ7J5DwYeIRNXFTgpzNueNrQFtiHJES64Tha+xe0bOD0eTy7SkdHcA1p8qtqa4OFS+v7+UsMZfU4AXlSWLvnOIf5oUfGl8ey5eCHXmHtyYwJRhoJO4qaCHW4
+X-Gm-Message-State: AOJu0Yy/svbesKf6uN99Ee+LuKUYiIa8W5M+4jCffa/FfOTCjXOdgYEk
+	OcdQEahaKdys2VkBzdskwYv8DVOcsY3BCNXJFTas+4qxEzF9f6As
+X-Google-Smtp-Source: AGHT+IEutykJ0cvDh5lsKfacRvXDwihNJK9vqKSdtI2cpCyvoGtJxdiEMwnNJBDLR1dc5rcpXybj7g==
+X-Received: by 2002:a05:6402:5202:b0:56b:d1e8:60f2 with SMTP id s2-20020a056402520200b0056bd1e860f2mr399015edd.5.1711021761606;
+        Thu, 21 Mar 2024 04:49:21 -0700 (PDT)
+Received: from ?IPV6:2a01:c22:7b76:3a00:94ba:c61a:20e:b0e5? (dynamic-2a01-0c22-7b76-3a00-94ba-c61a-020e-b0e5.c22.pool.telefonica.de. [2a01:c22:7b76:3a00:94ba:c61a:20e:b0e5])
+        by smtp.googlemail.com with ESMTPSA id n18-20020a05640205d200b00568b6d731e1sm6659769edx.4.2024.03.21.04.49.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 04:49:21 -0700 (PDT)
+Message-ID: <5bf33366-c376-4b9e-a280-071b98fbdad5@gmail.com>
+Date: Thu, 21 Mar 2024 12:49:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] idma64: Don't try to serve interrupts when device
+ is powered off
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Vinod Koul <vkoul@kernel.org>
+References: <20240320163210.1153679-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <20240320163210.1153679-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On 20.03.2024 17:32, Andy Shevchenko wrote:
+> diff --git a/drivers/dma/idma64.c b/drivers/dma/idma64.c
+> index 78a938969d7d..1b60e73d9322 100644
+> --- a/drivers/dma/idma64.c
+> +++ b/drivers/dma/idma64.c
+> @@ -173,6 +173,10 @@ static irqreturn_t idma64_irq(int irq, void *dev)
+>  
+>  	dev_vdbg(idma64->dma.dev, "%s: status=%#x\n", __func__, status);
+>  
+> +	/* Since IRQ may be shared, check if DMA controller is powered on */
+> +	if (status == GENMASK(31, 0))
+> +		return IRQ_NONE;
+> +
+>  	/* Check if we have any interrupt from the DMA controller */
+>  	if (!status)
+>  		return IRQ_NONE;
+> -- 2.43.0.rc1.1.gbec44491f096
 
-> On Thu, Mar 21, 2024 at 4:05=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Thu, Mar 21, 2024 at 3:11=E2=80=AFAM Puranjay Mohan <puranjay12@gmail=
-com> wrote:
->> >
->> > diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp=
-c
->> > index e613eebfd349..e61a51a5b4be 100644
->> > --- a/arch/s390/net/bpf_jit_comp.c
->> > +++ b/arch/s390/net/bpf_jit_comp.c
->> > @@ -2691,3 +2691,8 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->> >  {
->> >         return true;
->> >  }
->> > +
->> > +u64 bpf_arch_uaddress_limit(void)
->> > +{
->> > +       return -ENOTSUPP;
->> > +}
->>
->> Looks good and should work, but s390 CI is still not happy.
->> Ideas?
->> sock tests were not failing before. So something is going on.
->
-> I think I have an explanation.
-> -ENOTSUPP and u64... and later:
-> u64 uaddress_limit =3D bpf_arch_uaddress_limit()
-> if (uaddress_limit < 0)
->
-> I bet the compiler simply removes this check since unsigned cannot
-> be negative.
-> Odd that there is no compiler warning.
->
-> pw-bot: cr
->
-
-Yes, I verified that the compiler is removing this:
-
-
-                if (BPF_CLASS(insn->code) =3D=3D BPF_LDX &&
-    a944:       7100047f        cmp     w3, #0x1
-    a948:       540013e1        b.ne    abc4 <do_misc_fixups+0x66c>  // b.a=
-ny
-    a94c:       721a041f        tst     w0, #0xc0
-    a950:       54fff4e1        b.ne    a7ec <do_misc_fixups+0x294>  // b.a=
-ny
-                        u64 uaddress_limit =3D bpf_arch_uaddress_limit();
-    a954:       b90003e6        str     w6, [sp]
-    a958:       94000000        bl      0 <bpf_arch_uaddress_limit>
-                        *patch++ =3D BPF_MOV64_REG(BPF_REG_AX, insn->src_re=
-g);
-
-
-We should do:
-   if (!uaddress_limit)
-        goto next_insn;
-
-and in the disabled case return 0 in place of -ENOSUPP.
-
-Doing this adds the check:
-
-
-             if (BPF_CLASS(insn->code) =3D=3D BPF_LDX &&
-    a944:       7100047f        cmp     w3, #0x1
-    a948:       54001401        b.ne    abc8 <do_misc_fixups+0x670>  // b.a=
-ny
-    a94c:       721a041f        tst     w0, #0xc0
-    a950:       54fff4e1        b.ne    a7ec <do_misc_fixups+0x294>  // b.a=
-ny
-                        u64 uaddress_limit =3D bpf_arch_uaddress_limit();
-    a954:       b90003e6        str     w6, [sp]
-    a958:       94000000        bl      0 <bpf_arch_uaddress_limit>
-                        if (!uaddress_limit)
-    a95c:       b4fff020        cbz     x0, a760 <do_misc_fixups+0x208>
-                        *patch++ =3D BPF_MOV64_REG(BPF_REG_AX, insn->src_re=
-g);
-
-
-
-I will send v3 with this approach.
-
-
-Thanks,
-Puranjay
+Tested-by: Heiner Kallweit <hkallweit1@gmail.com>
 
