@@ -1,498 +1,383 @@
-Return-Path: <linux-kernel+bounces-110012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB46F8858E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 925348858E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:16:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A3E283FBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D0C0281B81
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8319576038;
-	Thu, 21 Mar 2024 12:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BB07603F;
+	Thu, 21 Mar 2024 12:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mE8rWLos"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mi8ABpcM"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFFB58AAF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E6175811;
+	Thu, 21 Mar 2024 12:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711023184; cv=none; b=O7DzTdFvyMwXjyg9vhKzJuZlfDemStEiL0PQcWLid7mfbgVRnYvEkcbWu3UC02c64+RvtPES/0VAwc8ntdrUnxTMDh2+F8bWhUwrX5lXsS55YLC/y4U2HGGHF1VCsVtFWls9MMbhanVNlAjhlHO1nqXfKWtNgWCuBjOTfXPcSeI=
+	t=1711023362; cv=none; b=NqOR7+aHQfxHoGOc4V3UF0ZS48P0ZJQPSLXFrGDXYtioA65Xmigw5F94nel6YdPxHYh8uhxpsSjfbKCGOt7v/QESg1w7Ecu9Yp4vHBYDUyDdtC28J1ryn0UxmedY4bopfSsh7AtXjXlXPDrVfdRsJbPEHU5f4Xur8B2orrMWieQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711023184; c=relaxed/simple;
-	bh=4Igbt/oi4WxkJRaoy6eHX4cTgTkeBFORb6mCsFIAH7c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZUXkh08BYfEOWV4dZPwGoGrvH9onhUt2+Sn5uekYvlO0d7hcaD9sfZnPhRGSHTUAZMXmeN5BZ11K7X/+iaQVE56c2hgkA0TQwNN2uI84y1EFr1Fb3+dJB8yg7uy0rs4IoESpbjxIqQBMcD8k+vF4mRv5G+JKPEXsjFRVP1jMwOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mE8rWLos; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1711023362; c=relaxed/simple;
+	bh=MGjBl4eBhTSd8Paha2GeDlwEMKE6kz0ozt1vhH5bYPg=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=k4mYcwroGYkcQVotWAoXmp0GKzYlEYz3NAkmAD8taR75Dm1BvAepLIuCsddez8o43o33rqQ/REJ/DVUZxWouo4Yx0mGgfPspiD5QDvheE2nfA6s5q7miRCcmMB1NEZDNhVOJ+6G+A2uLFG+bNpTB/Ir76IJ2NTXzK42rcLyHnuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mi8ABpcM; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LBUT5F020926;
-	Thu, 21 Mar 2024 12:12:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ojpW2Gzz1CfdzsktsbrIUMF/M1oCTQ95Q3z5RXQZ8+I=;
- b=mE8rWLoszLmLUBqnl6Wwqnz3mGW1ksOLtmXAHgwh/+jxDTOqPhs4lcRu8HEtM5hTwHC6
- nm7f7lbd/Xw0fBGT70+Hg66LZFVrfb7i1YSsmv93RvzC51DMVt1Rv+3CLcW2rGKkNwvd
- Kv4kwIE+CGPhoWpq1s6Y+Y8eb2dIu4z17bjAbOGslCgEGFZaBAtd3m4pJ00zj0TijYQC
- YNSuK1w+fKaYQPcfSere/ruB/lo8JA6XC8f9fmeqoyLPPo6fUNJiSp/JyfMAKwdgo2wm
- R5TFALScIerzFYLtzVLDI0I+YF5eliwtZsnDKGGUNHwO8Jwyhe8cK06X5brn76UTywZ1 VA== 
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LBqsIr016640;
+	Thu, 21 Mar 2024 12:15:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=MGjBl4eBhTSd8Paha2GeDlwEMKE6kz0ozt1vhH5bYPg=;
+ b=mi8ABpcMWtf8BLR8m4W0u249rDNA/lHCCBt0DdXX8XzwJ5RbsxSxT+68wZAouZ5aHRa+
+ GNwfbi3EGQ5Y1xdU3MuTGmkGLbAcTxluW++/Syx6YUredAuFLEy56TecAv7/R2LCJXg4
+ L3Q2n7KnTML8I6LnmD9Oby246J2BdBn/qINRe72yjL2hK44UpRX5zId5PZXF/rr0lguz
+ J0iIIPvPtmF2iXL1uXIDNboK0AwLpLmk7hTUABjdmVSPcNPdgNVsBKy4GsKkBbUeoiCT
+ 8vnH1NmN3FUwg8f+zL3LKmRoKCjsoCDOdftC05Bsz2ROqbXd6nmtYWYIC2Ci2TTbxfcZ jQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0m2u83h1-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0md6r24p-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 12:12:42 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LCCfS8023130;
-	Thu, 21 Mar 2024 12:12:41 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0m2u83gw-1
+	Thu, 21 Mar 2024 12:15:31 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LCFVWF023368;
+	Thu, 21 Mar 2024 12:15:31 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0md6r24m-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 12:12:41 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LBB3Mf002765;
-	Thu, 21 Mar 2024 12:12:40 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2vfbb-1
+	Thu, 21 Mar 2024 12:15:31 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LAw6pq019843;
+	Thu, 21 Mar 2024 12:15:30 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykvn5x-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 12:12:40 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LCCcZD13763306
+	Thu, 21 Mar 2024 12:15:29 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LCFQZd33620296
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 12:12:40 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1AE5F58053;
-	Thu, 21 Mar 2024 12:12:38 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3224058061;
-	Thu, 21 Mar 2024 12:12:33 +0000 (GMT)
-Received: from [9.79.184.193] (unknown [9.79.184.193])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Mar 2024 12:12:32 +0000 (GMT)
-Message-ID: <1e43e783-55e7-417f-a1a7-503229eb163a@linux.ibm.com>
-Date: Thu, 21 Mar 2024 17:42:31 +0530
+	Thu, 21 Mar 2024 12:15:28 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3E72B2004E;
+	Thu, 21 Mar 2024 12:15:26 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 714652004D;
+	Thu, 21 Mar 2024 12:15:25 +0000 (GMT)
+Received: from [9.155.200.166] (unknown [9.155.200.166])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 21 Mar 2024 12:15:25 +0000 (GMT)
+Message-ID: <2ef29d6b7ed800631f228ea41f27c0242e96f941.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf v3] bpf: verifier: prevent userspace memory access
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Puranjay Mohan <puranjay12@gmail.com>,
+        "David S. Miller"
+ <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+ <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song
+ <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov
+ <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jean-Philippe Brucker
+ <jean-philippe@linaro.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date: Thu, 21 Mar 2024 13:15:25 +0100
+In-Reply-To: <20240321120842.78983-1-puranjay12@gmail.com>
+References: <20240321120842.78983-1-puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uSTPcbKstI2BdEv61JzcC51v6zmceJ3H
+X-Proofpoint-ORIG-GUID: VMdZq--xvr7OJJ4R7qbMDPioGySlM8vn
+Content-Transfer-Encoding: base64
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] sched/balancing: Switch the
- 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
- sched_balance_running' flag
-To: Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Dietmar Eggemann
- <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Valentin Schneider <vschneid@redhat.com>
-References: <20240304094831.3639338-1-mingo@kernel.org>
- <20240304094831.3639338-2-mingo@kernel.org>
- <bf612672-f7c3-4585-ac31-e02a1ebf614c@linux.ibm.com>
- <Zer1Hkxh/UMxs3xs@gmail.com>
- <41e11090-a100-48a7-a0dd-c989772822d7@linux.ibm.com>
- <ZfA1LRq1d2ueoSRm@gmail.com>
-Content-Language: en-US
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <ZfA1LRq1d2ueoSRm@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cnqtfVuvZu-XaVhY1TC5QnX986hHVv_b
-X-Proofpoint-GUID: 9X6pSaHM2WpmGl5IIYsJiL-8ZQHQa6VY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-21_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 suspectscore=0 clxscore=1015 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=508 spamscore=0 clxscore=1015
+ impostorscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2403140000 definitions=main-2403210086
 
-
-
-On 3/12/24 4:27 PM, Ingo Molnar wrote:
-> 
-> * Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
-> 
->> I have been thinking would it be right to move this balancing 
->> trylock/atomic after should_we_balance(swb). This does reduce the number 
->> of times this checked/updated significantly. Contention is still present. 
->> That's possible at higher utilization when there are multiple NUMA 
->> domains. one CPU in each NUMA domain can contend if their invocation is 
->> aligned.
-> 
-> Note that it's not true contention: it simply means there's overlapping 
-> requests for the highest domains to be balanced, for which we only have a 
-> single thread of execution at a time, system-wide.
-> 
-
-Hi Ingo, Vincent, Peter,
-
-I did some more experiments and collected quite a bit of data. 
-Some interesting observations.
-
-tl;dr
-
-1. For BUSY and IDLE type load balancing, contention arises since multiple CPU's
-are trying to set the flag at the same time. Only one succeeds and tries to do 
-load balance. Whether it can do load balance or not is decided later in should_we_balance(swb). 
-contention increases with system utilization. Why contention happens is simpler for BUSY, if their 
-SOFTIRQ's are aligned. If the busy is invoked(but may prefer idle) while an IDLE CPU is trying is 
-scenario when utilization is low. 
-
-2. NEWIDLE does not even check for sched_balance_running and it does not honor 
-continue_balancing flag either. should_we_balance for NEWIDLE is mostly return true anyway. 
-So NEWIDLE balance doesn't honor the SD_SERIALIZE flag. It does go through all the rq even at the 
-highest NUMA Domains often, and pulls task opportunistically. cost of balancing at NUMA is costly 
-as it would need to fetch all rq.
-
->> That makes sense since, Right now a CPU takes lock, checks if it can 
->>  balance, do balance if yes and then releases the lock. If the lock is 
->>  taken after swb then also, CPU checks if it can balance,
->> tries to take the lock and releases the lock if it did. If lock is 
->> contended, it bails out of load_balance. That is the current behaviour as 
->> well, or I am completely wrong.
->>
->> Perf probes at spin_trylock and spin_unlock codepoints on the same 224CPU, 6 NUMA node system. 
->> 6.8-rc6                                                                         
->> -----------------------------------------                                       
->> idle system:                                                                    
->> 449 probe:rebalance_domains_L37                                                 
->> 377 probe:rebalance_domains_L55                                                 
->> stress-ng --cpu=$(nproc) -l 51     << 51% load                                               
->> 88K probe:rebalance_domains_L37                                                 
->> 77K probe:rebalance_domains_L55                                                 
->> stress-ng --cpu=$(nproc) -l 100    << 100% load                                             
->> 41K probe:rebalance_domains_L37                                                 
->> 10K probe:rebalance_domains_L55                                                 
->>                                                                                 
->> +below patch                                                                          
->> ----------------------------------------                                        
->> idle system:                                                                    
->> 462 probe:load_balance_L35                                                      
->> 394 probe:load_balance_L274                                                     
->> stress-ng --cpu=$(nproc) -l 51      << 51% load                                            
->> 5K probe:load_balance_L35                       	<<-- almost 15x less                                
->> 4K probe:load_balance_L274                                                      
->> stress-ng --cpu=$(nproc) -l 100     << 100% load                                            
->> 8K probe:load_balance_L35                                                       
->> 3K probe:load_balance_L274 				<<-- almost 4x less
-> 
-> That's nice.
-> 
-
-These numbers completely go crazy for schbench or hackbench if we move the sched_balance_running 
-after should_we_balance due to NEWIDLE. we could add a idle type check before doing operations on
-sched_balance_running.   
-
-
->> +static DEFINE_SPINLOCK(balancing);
->>  /*
->>   * Check this_cpu to ensure it is balanced within domain. Attempt to move
->>   * tasks if there is an imbalance.
->> @@ -11286,6 +11287,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->>  	struct rq *busiest;
->>  	struct rq_flags rf;
->>  	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
->> +	int need_serialize;
->>  	struct lb_env env = {
->>  		.sd		= sd,
->>  		.dst_cpu	= this_cpu,
->> @@ -11308,6 +11310,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->>  		goto out_balanced;
->>  	}
->>
->> +	need_serialize = sd->flags & SD_SERIALIZE;
->> +	if (need_serialize) {
->> +		if (!spin_trylock(&balancing))
->> +			goto lockout;
->> +	}
->> +
->>  	group = find_busiest_group(&env);
-> 
-> So if I'm reading your patch right, the main difference appears to be that 
-> it allows the should_we_balance() check to be executed in parallel, and 
-> will only try to take the NUMA-balancing flag if that function indicates an 
-> imbalance.
-
-Yes for BUSY and IDLE balancing. 
-
-> 
-> Since should_we_balance() isn't taking any locks AFAICS, this might be a 
-> valid approach. What might make sense is to instrument the percentage of 
-> NUMA-balancing flag-taking 'failures' vs. successful attempts - not 
-> necessarily the 'contention percentage'.
-
-So i put a bunch of trace_printk and added a hacky check similar to swb if taking flag fails. 
-I will put the numbers for schebench, hackbench and stress-ng -l 100 for initial reference. 
-
-I ran these a slightly larger system this time.  I have two NUMA levels. domain 3 has two groups 0-159, 160-319.
-Sorry in case the data isnt easy to read. I couldnt find a better way. some rounding errors are there, but mostly 
-sum where applicable is close. trace is collected for 5 seconds.
-
-  NUMA node(s):           4
-  NUMA node0 CPU(s):      0-79
-  NUMA node1 CPU(s):      80-159
-  NUMA node6 CPU(s):      160-239
-  NUMA node7 CPU(s):      240-319
-
-more domain*/flags | cat
-::::::::::::::
-domain0/flags
-::::::::::::::
-SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_CPUCAPACITY SD_SHARE_LLC SD_PREFER_SIBLING 
-::::::::::::::
-domain1/flags
-::::::::::::::
-SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_PREFER_SIBLING 
-::::::::::::::
-domain2/flags
-::::::::::::::
-SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_PREFER_SIBLING 
-::::::::::::::
-domain3/flags
-::::::::::::::
-SD_BALANCE_NEWIDLE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-::::::::::::::
-domain4/flags
-::::::::::::::
-SD_BALANCE_NEWIDLE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-
-================================================================= BUSY balancing ===============================================
-		   tried_access_to	|	  	failed			|		aquired(number of sched_balance_rq)  <<-- aquired need not call sched_balance_rq due to time check.
-		sched_balance_running	|		to_aquire 		|
-					|     swb true?		swb_false?    	|      swb_true?    swb_false?
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					|    					|	
-hackbench   	       254727		|		236268			|		18508(170)		
-10 groups 				|	38     <--|-->	236230		| 	0	<--|-->	170      
-					|					|
-schbench	       217794		|		207117			|		10683(659)
-320 groups				| 	1059   <--|-->  206058 		|	1	<--|-->  658
-					|					|
-stress-ng 		31646		|		 27430			|		4216(523)	
--l100					|	272	<--|-->	 27158		|	6	<--|-->	517
-					|					|
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Observations: 
-  * When the flag was not aquired it was mostly that CPU wouldnt have done the balancing. Good.
-  * When the flag was aquired, mostly that CPU didn't do load balancing. It bailed out since swb was false. Bad. 
-
-
-=============================================================== IDLE Balancing ==================================================
-		   tried_access_to	|	  	failed			|		aquired(number of sched_balance_rq)  <<-- aquired need not call sched_balance_rq due to time check.
-		sched_balance_running	|		to_aquire 		|
-					|     swb true?		swb_false?    	|      swb_true?    swb_false?
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-hackbench		11022		| 		7309			|		 3664(2635)
-10 groups				|	1322   <--|-->  5987		| 	753	<--|-->	1882 
-					|					|
-schbench		 3018		|		2305			|		  707(632)
-320 groups				|	1036   <--|-->	1269		|	268     <--|--> 364
-					|					|
-stress-ng 		    0		|		   0			|		    0
--l 100					|					|
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Observations: 
- * When the flag was not aquired, it was good chance that CPU would have done the balance.  bad
- * When the flag is taken, many times it didnt do balance since swb was false.  bad. 
-
-> 
-> But another question is, why do we get here so frequently, so that the 
-> cumulative execution time of these SD_SERIAL rebalance passes exceeds that 
-> of 100% of single CPU time? Ie. a single CPU is basically continuously 
-> scanning the scheduler data structures for imbalances, right? That doesn't 
-> seem natural even with just ~224 CPUs.
-> 
-
-SD_SERIALIZE passes are costly. Doing a pass through 0-319 takes 20-30us and Doing 
-a pass through 0-159 takes around 10-20us.  NEWIDLE can be called very often and it 
-doesnt serialize and loops through all domains aggressively.  NEWIDLE balancing 
-successfully pull a task around 3-5% of the time. 
-
-
-For reference, the running the same hackbench, Combined it would take 12 seconds on 320 CPU system 
-where trace is collected for 5 seconds. Thats approx 0.7% cycles. 
-domain_cost avg: 33031.77 times: 172991  
-domain_cost avg: 15615.21 times: 211783
-domain_cost avg: 15359.40 times: 208164
-
-Similarly while running schbench, it takes approx 0.12% of total time. 
-
-> Alternatively, is perhaps the execution time of the SD_SERIAL pass so large 
-> that we exceed 100% CPU time?
-> 
-
-So Main questions i have are: 
-1. Should NEWIDLE honor SD_SERIALIZE ? This would make SD_SERIALIZE defined correctly, 
-all three types honor it. Currenly on BUSY,IDLE honors it.
-2. Should we move taking sched_balance_running after swb atleast for BUSY, IDLE? 
-
-================================================================================================
-
-
-debug patch used: 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c8e50fbac345..cb824c327ab6 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11172,6 +11172,56 @@ static int need_active_balance(struct lb_env *env)
- 
- static int active_load_balance_cpu_stop(void *data);
- 
-+static int hack_check_if_i_can_balance(struct sched_domain *sd, int this_cpu) {
-+	struct cpumask *swb_cpus = this_cpu_cpumask_var_ptr(should_we_balance_tmpmask);
-+	struct sched_group *sg = sd->groups;
-+	int cpu, idle_smt = -1;
-+	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
-+
-+	cpumask_and(cpus, sched_domain_span(sd), cpu_active_mask);
-+	if (!cpumask_test_cpu(this_cpu, cpus))
-+		return 0;
-+
-+	cpumask_copy(swb_cpus, group_balance_mask(sg));
-+	for_each_cpu_and(cpu, swb_cpus, cpus) {
-+		if (!idle_cpu(cpu))
-+			continue;
-+
-+		/*
-+		 * Don't balance to idle SMT in busy core right away when
-+		 * balancing cores, but remember the first idle SMT CPU for
-+		 * later consideration.  Find CPU on an idle core first.
-+		 */
-+		if (!(sd->flags & SD_SHARE_CPUCAPACITY) && !is_core_idle(cpu)) {
-+			if (idle_smt == -1)
-+				idle_smt = cpu;
-+			/*
-+			 * If the core is not idle, and first SMT sibling which is
-+			 * idle has been found, then its not needed to check other
-+			 * SMT siblings for idleness:
-+			 */
-+#ifdef CONFIG_SCHED_SMT
-+			cpumask_andnot(swb_cpus, swb_cpus, cpu_smt_mask(cpu));
-+#endif
-+			continue;
-+		}
-+
-+		/*
-+		 * Are we the first idle core in a non-SMT domain or higher,
-+		 * or the first idle CPU in a SMT domain?
-+		 */
-+		return cpu == this_cpu;
-+	}
-+
-+	/* Are we the first idle CPU with busy siblings? */
-+	if (idle_smt != -1)
-+		return idle_smt == this_cpu;
-+
-+	/* Are we the first CPU of this group ? */
-+	return group_balance_cpu(sg) == this_cpu;
-+}
-+
-+
- static int should_we_balance(struct lb_env *env)
- {
- 	struct cpumask *swb_cpus = this_cpu_cpumask_var_ptr(should_we_balance_tmpmask);
-@@ -11267,13 +11317,22 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
- 	cpumask_and(cpus, sched_domain_span(sd), cpu_active_mask);
- 
- 	schedstat_inc(sd->lb_count[idle]);
-+	if (sd->flags & SD_SERIALIZE)
-+		trace_printk("Trying load_balance_rq for idle: %d span: %*pbl\n", idle,cpumask_pr_args(sched_domain_span(sd)));
- 
- redo:
- 	if (!should_we_balance(&env)) {
- 		*continue_balancing = 0;
-+		if (sd->flags & SD_SERIALIZE) {
-+			trace_printk("swb says this cpu doesnt need to balance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
-+		}
- 		goto out_balanced;
- 	}
- 
-+	if (sd->flags & SD_SERIALIZE) {
-+		trace_printk("This cpu would try balance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
-+	}
-+
- 	group = sched_balance_find_src_group(&env);
- 	if (!group) {
- 		schedstat_inc(sd->lb_nobusyg[idle]);
-@@ -11288,6 +11347,9 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
- 
- 	WARN_ON_ONCE(busiest == env.dst_rq);
- 
-+	if (sd->flags & SD_SERIALIZE) {
-+		trace_printk("There is some imbalance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
-+	}
- 	schedstat_add(sd->lb_imbalance[idle], env.imbalance);
- 
- 	env.src_cpu = busiest->cpu;
-@@ -11507,6 +11569,8 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
- 	    sd->balance_interval < sd->max_interval)
- 		sd->balance_interval *= 2;
- out:
-+	if ((sd->flags & SD_SERIALIZE) && ld_moved)
-+		trace_printk("load balance was successful idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
- 	return ld_moved;
- }
- 
-@@ -11722,8 +11786,13 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
- 
- 		need_serialize = sd->flags & SD_SERIALIZE;
- 		if (need_serialize) {
--			if (atomic_cmpxchg_acquire(&sched_balance_running, 0, 1))
-+			int result;
-+			trace_printk("try to set sched_balance_running idle: %d\n", idle);
-+			if (atomic_cmpxchg_acquire(&sched_balance_running, 0, 1)) {
-+				result = hack_check_if_i_can_balance(sd, cpu);
-+				trace_printk("sched_balance_running  was not aquird idle: %d was_swb: %d\n", idle, result);
- 				goto out;
-+			}
- 		}
- 
- 		if (time_after_eq(jiffies, sd->last_balance + interval)) {
-@@ -11739,8 +11808,10 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
- 			sd->last_balance = jiffies;
- 			interval = get_sd_balance_interval(sd, busy);
- 		}
--		if (need_serialize)
-+		if (need_serialize) {
-+			trace_printk("Release sched_balance_running idle: %d\n", idle);
- 			atomic_set_release(&sched_balance_running, 0);
-+		}
- out:
- 		if (time_after(next_balance, sd->last_balance + interval)) {
- 			next_balance = sd->last_balance + interval;
-@@ -12347,6 +12418,10 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- 		u64 domain_cost;
- 
- 		update_next_balance(sd, &next_balance);
-+		if (sd->flags & SD_SERIALIZE) {
-+			trace_printk("newidle balance called span: %*pbl,  rq_avg: %llu, curr_cost: %llu, max_idle_cost: %llu\n",
-+					cpumask_pr_args(sched_domain_span(sd)), this_rq->avg_idle, curr_cost, sd->max_newidle_lb_cost);
-+		}
- 
- 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
- 			break;
-@@ -12360,6 +12435,9 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
- 			t1 = sched_clock_cpu(this_cpu);
- 			domain_cost = t1 - t0;
- 			update_newidle_cost(sd, domain_cost);
-+			if (sd->flags & SD_SERIALIZE)
-+				trace_printk("cost of load balance,span: %*pbl,  pulled_task: %d, domain_cost: %llu\n",
-+						cpumask_pr_args(sched_domain_span(sd)), pulled_task, domain_cost);
- 
- 			curr_cost += domain_cost;
- 			t0 = t1;
-
-
-
+T24gVGh1LCAyMDI0LTAzLTIxIGF0IDEyOjA4ICswMDAwLCBQdXJhbmpheSBNb2hhbiB3cm90ZToK
+PiBXaXRoIEJQRl9QUk9CRV9NRU0sIEJQRiBhbGxvd3MgZGUtcmVmZXJlbmNpbmcgYW4gdW50cnVz
+dGVkIHBvaW50ZXIuCj4gVG8KPiB0aHdhcnQgaW52YWxpZCBtZW1vcnkgYWNjZXNzZXMsIHRoZSBK
+SVRzIGFkZCBhbiBleGNlcHRpb24gdGFibGUgZW50cnkKPiBmb3IgYWxsIHN1Y2ggYWNjZXNzZXMu
+IEJ1dCBpbiBjYXNlIHRoZSBzcmNfcmVnICsgb2Zmc2V0IG92ZXJmbG93cyBhbmQKPiB0dXJucyBp
+bnRvIGEgdXNlcnNwYWNlIGFkZHJlc3MsIHRoZSBCUEYgcHJvZ3JhbSBtaWdodCByZWFkIHRoYXQK
+PiBtZW1vcnkgaWYKPiB0aGUgdXNlciBoYXMgbWFwcGVkIGl0Lgo+IAo+IFRoZXJlIGFyZSBhcmNo
+aXRlY3R1cmFsIGZlYXR1cmVzIHRoYXQgcHJldmVudCB0aGUga2VybmVsIGZyb20KPiBhY2Nlc3Np
+bmcKPiB1c2Vyc3BhY2UgbWVtb3J5LCBsaWtlIFByaXZpbGVnZWQgQWNjZXNzIE5ldmVyIChQQU4p
+IG9uIEFSTTY0LAo+IFN1cGVydmlzb3IgTW9kZSBBY2Nlc3MgUHJldmVudGlvbiAoU01BUCkgb24g
+eDg2LTY0LCBTdXBlcnZpc29yIFVzZXIKPiBNZW1vcnkgYWNjZXNzIChTVU0pIG9uIFJJU0MtViwg
+ZXRjLiBCdXQgQlBGIHNob3VsZCBub3QgcmVseSBvbiB0aGUKPiBleGlzdGVuY2Ugb2YgdGhlc2Ug
+ZmVhdHVyZXMuCj4gCj4gTWFrZSB0aGUgdmVyaWZpZXIgYWRkIGd1YXJkIGluc3RydWN0aW9ucyBh
+cm91bmQgc3VjaCBtZW1vcnkgYWNjZXNzZXMKPiBhbmQKPiBza2lwIHRoZSBsb2FkIGlmIHRoZSBh
+ZGRyZXNzIGZhbGxzIGludG8gdGhlIHVzZXJzcGFjZSByZWdpb24uCj4gCj4gVGhlIEpJVHMgbmVl
+ZCB0byBpbXBsZW1lbnQgYnBmX2FyY2hfdWFkZHJlc3NfbGltaXQoKSB0byBkZWZpbmUgd2hlcmUK
+PiB0aGUgdXNlcnNwYWNlIGFkZHJlc3NlcyBlbmQgZm9yIHRoYXQgYXJjaGl0ZWN0dXJlIG9yIFRB
+U0tfU0laRSBpcwo+IHRha2VuCj4gYXMgZGVmYXVsdC4KPiAKPiBUaGUgaW1wbGVtZW50YXRpb24g
+aXMgYXMgZm9sbG93czoKPiAKPiBSRUdfQVggPcKgIFNSQ19SRUcKPiBpZihvZmZzZXQpCj4gCVJF
+R19BWCArPSBvZmZzZXQ7Cj4gUkVHX0FYID4+PSAzMjsKPiBpZiAoUkVHX0FYIDw9ICh1YWRkcmVz
+c19saW1pdCA+PiAzMikpCj4gCURTVF9SRUcgPSAwOwo+IGVsc2UKPiAJRFNUX1JFRyA9ICooc2l6
+ZSAqKShTUkNfUkVHICsgb2Zmc2V0KTsKPiAKPiBDb21wYXJpbmcganVzdCB0aGUgdXBwZXIgMzIg
+Yml0cyBvZiB0aGUgbG9hZCBhZGRyZXNzIHdpdGggdGhlIHVwcGVyCj4gMzIgYml0cyBvZiB1YWRk
+cmVzc19saW1pdCBpbXBsaWVzIHRoYXQgdGhlIHZhbHVlcyBhcmUgYmVpbmcgYWxpZ25lZAo+IGRv
+d24KPiB0byBhIDRHQiBib3VuZGFyeSBiZWZvcmUgY29tcGFyaXNvbi4KPiAKPiBUaGUgYWJvdmUg
+bWVhbnMgdGhhdCBhbGwgbG9hZHMgd2l0aCBhZGRyZXNzIDw9IHVhZGRyZXNzX2xpbWl0ICsgNEdC
+Cj4gYXJlCj4gc2tpcHBlZC4gVGhpcyBpcyBhY2NlcHRhYmxlIGJlY2F1c2UgdGhlcmUgaXMgYSBs
+YXJnZSBob2xlIChtdWNoCj4gbGFyZ2VyCj4gdGhhbiA0R0IpIGJldHdlZW4gdXNlcnNwYWNlIGFu
+ZCBrZXJuZWwgc3BhY2UgbWVtb3J5LCB0aGVyZWZvcmUgYQo+IGNvcnJlY3RseSBmdW5jdGlvbmlu
+ZyBCUEYgcHJvZ3JhbSBzaG91bGQgbm90IGFjY2VzcyB0aGlzIDRHQiBtZW1vcnkKPiBhYm92ZSB0
+aGUgdXNlcnNwYWNlLgo+IAo+IExldCdzIGFuYWx5emUgd2hhdCB0aGlzIHBhdGNoIGRvZXMgdG8g
+dGhlIGZvbGxvd2luZyBmZW50cnkgcHJvZ3JhbQo+IGRlcmVmZXJlbmNpbmcgYW4gdW50cnVzdGVk
+IHBvaW50ZXI6Cj4gCj4gwqAgU0VDKCJmZW50cnkvdGNwX3Y0X2Nvbm5lY3QiKQo+IMKgIGludCBC
+UEZfUFJPRyhmZW50cnlfdGNwX3Y0X2Nvbm5lY3QsIHN0cnVjdCBzb2NrICpzaykKPiDCoCB7Cj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICoodm9sYXRpbGUgbG9uZyAqKXNrOwo+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gMDsKPiDCoCB9Cj4gCj4gwqDCoMKg
+IEJQRiBQcm9ncmFtIGJlZm9yZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBCUEYgUHJvZ3JhbSBhZnRlcgo+IMKgwqDCoCAtLS0tLS0tLS0tLS0tLS0tLS3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqAgLS0tLS0tLS0t
+LS0tLS0tLS0KPiAKPiDCoCAwOiAoNzkpIHIxID0gKih1NjQgKikocjEgKzApwqDCoMKgwqDCoMKg
+wqDCoMKgIDA6ICg3OSkgcjEgPSAqKHU2NCAqKShyMSArMCkKPiDCoCAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0t
+LQo+IMKgIDE6ICg3OSkgcjEgPSAqKHU2NCAqKShyMSArMCkgLS1cwqDCoMKgwqDCoCAxOiAoYmYp
+IHIxMSA9IHIxCj4gwqAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVzCoMKgIFzCoMKgwqDC
+oCAyOiAoNzcpIHIxMSA+Pj0gMzIKPiDCoCAyOiAoYjcpIHIwID0gMMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgXMKgwqAgXMKgwqDCoCAzOiAoYjUpIGlmIHIxMSA8PSAweDgwMDAgZ290bwo+
+IHBjKzIKPiDCoCAzOiAoOTUpIGV4aXTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IFzCoMKgIFwtPiA0OiAoNzkpIHIxID0gKih1NjQgKikocjEgKzApCj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcwqDCoMKg
+wqDCoCA1OiAoMDUpIGdvdG8gcGMrMQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcwqDCoMKgwqAgNjogKGI3KSByMSA9
+IDAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBcLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0t
+LS0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNzogKGI3KSByMCA9IDAKPiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgODogKDk1KSBleGl0Cj4gCj4gQXMgeW91IGNhbiBzZWUgZnJvbSBhYm92ZSwgaW4g
+dGhlIGJlc3QgY2FzZSAob2ZmPTApLCA1IGV4dHJhCj4gaW5zdHJ1Y3Rpb25zCj4gYXJlIGVtaXR0
+ZWQuCj4gCj4gTm93LCB3ZSBhbmFseXNlIHRoZSBzYW1lIHByb2dyYW0gYWZ0ZXIgaXQgaGFzIGdv
+bmUgdGhyb3VnaCB0aGUgSklUcwo+IG9mCj4gWDg2LTY0LCBBUk02NCwgYW5kIFJJU0MtViBhcmNo
+aXRlY3R1cmVzLiBXZSBmb2xsb3cgdGhlIHNpbmdsZSBsb2FkCj4gaW5zdHJ1Y3Rpb24gdGhhdCBo
+YXMgdGhlIHVudHJ1c3RlZCBwb2ludGVyIGFuZCBzZWUgd2hhdAo+IGluc3RydW1lbnRhdGlvbgo+
+IGhhcyBiZWVuIGFkZGVkIGFyb3VuZCBpdC4KPiAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB4ODYtNjQgSklUCj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+PT09PT09PT09PQo+IMKgwqDCoMKgIEpJVCdzIEluc3RydW1lbnRhdGlvbsKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgVmVyaWZpZXIncwo+IEluc3RydW1lbnRhdGlvbgo+IMKgwqDC
+oMKgwqDCoMKgwqDCoCAodXBzdHJlYW0pwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIChUaGlzIHBhdGNoKQo+IMKgwqDCoMKgIC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQo+IC0KPiAKPiDCoMKgIDA6wqDCoCBub3BswqDCoCAweDAoJXJh
+eCwlcmF4LDEpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDA6wqDCoCBub3BswqDCoAo+IDB4MCgl
+cmF4LCVyYXgsMSkKPiDCoMKgIDU6wqDCoCB4Y2hnwqDCoCAlYXgsJWF4wqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDU6wqDCoCB4Y2hnwqDCoCAlYXgsJWF4Cj4gwqDC
+oCA3OsKgwqAgcHVzaMKgwqAgJXJicMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCA3OsKgwqAgcHVzaMKgwqAgJXJicAo+IMKgwqAgODrCoMKgIG1vdsKgwqDC
+oCAlcnNwLCVyYnDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA4OsKgwqAg
+bW92wqDCoMKgICVyc3AsJXJicAo+IMKgwqAgYjrCoMKgIG1vdsKgwqDCoCAweDAoJXJkaSksJXJk
+acKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYjrCoMKgIG1vdsKgwqDCoAo+IDB4MCglcmRp
+KSwlcmRpCj4gwqAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IC0tLS0tCj4gwqDCoCBmOsKgwqAgbW92YWJzICQweDgw
+MDAwMDAwMDAwMCwlcjExwqDCoMKgwqDCoMKgwqDCoCBmOsKgwqAgbW92wqDCoMKgICVyZGksJXIx
+MAo+IMKgIDE5OsKgwqAgY21wwqDCoMKgICVyMTEsJXJkacKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAxMjrCoMKgIHNocsKgwqDCoCAkMHgyMCwlcjEwCj4gwqAgMWM6wqDCoCBq
+YsKgwqDCoMKgIDB4MDAwMDAwMDAwMDAwMDAyYcKgwqDCoMKgwqDCoMKgwqDCoCAxNjrCoMKgIGNt
+cMKgwqDCoCAkMHg4MDAwLCVyMTAKPiDCoCAxZTrCoMKgIG1vdsKgwqDCoCAlcmRpLCVyMTHCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMWQ6wqDCoCBqYmXCoMKgwqAKPiAweDAw
+MDAwMDAwMDAwMDAwMjUKPiDCoCAyMTrCoMKgIGFkZMKgwqDCoCAkMHgwLCVyMTHCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAvLS0+IDFmOsKgwqAgbW92wqDCoMKgCj4gMHgwKCVyZGkpLCVyZGkK
+PiDCoCAyODrCoMKgIGphZcKgwqDCoCAweDAwMDAwMDAwMDAwMDAwMmXCoMKgwqAgL8KgwqDCoMKg
+IDIzOsKgwqAgam1wwqDCoMKgCj4gMHgwMDAwMDAwMDAwMDAwMDI3Cj4gwqAgMmE6wqDCoCB4b3LC
+oMKgwqAgJWVkaSwlZWRpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvwqDCoMKgwqDCoCAyNTrCoMKg
+IHhvcsKgwqDCoCAlZWRpLCVlZGkKPiDCoCAyYzrCoMKgIGptcMKgwqDCoCAweDAwMDAwMDAwMDAw
+MDAwMzLCoCAvIC8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0tLS0KPiDCoCAy
+ZTrCoMKgIG1vdsKgwqDCoCAweDAoJXJkaSksJXJkacKgIC0tLS8gL8KgwqDCoMKgwqAgMjc6wqDC
+oCB4b3LCoMKgwqAgJWVheCwlZWF4Cj4gwqAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tL8KgwqDCoMKgwqDCoCAyOTrCoMKgIGxlYXZlCj4gwqAgMzI6wqDCoCB4b3LCoMKgwqAgJWVh
+eCwlZWF4wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDJhOsKgwqAgcmV0Cj4g
+wqAgMzQ6wqDCoCBsZWF2ZQo+IMKgIDM1OsKgwqAgcmV0Cj4gCj4gVGhlIHg4Ni02NCBKSVQgYWxy
+ZWFkeSBlbWl0cyBzb21lIGluc3RydWN0aW9ucyB0byBwcm90ZWN0IGFnYWluc3QKPiB1c2VyCj4g
+bWVtb3J5IGFjY2Vzcy4gVGhlIGltcGxlbWVudGF0aW9uIGluIHRoaXMgcGF0Y2ggbGVhZHMgdG8g
+YSBzbWFsbGVyCj4gbnVtYmVyIG9mIGluc3RydWN0aW9ucyBiZWluZyBlbWl0dGVkLiBJbiB0aGUg
+d29yc3QgY2FzZSB0aGUgSklUIHdpbGwKPiBlbWl0IDkgZXh0cmEgaW5zdHJ1Y3Rpb25zIGFuZCB0
+aGlzIHBhdGNoIGRlY3JlYXNlcyBpdCB0byA3Lgo+IAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBBUk02NCBKSVQKPiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgPT09PT09PT09Cj4gCj4gwqDCoMKgwqDCoMKgwqAgTm8gSW50cnVtZW50YXRpb27C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBWZXJpZmllcidzCj4g
+SW5zdHJ1bWVudGF0aW9uCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAgKHVwc3RyZWFtKcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAoVGhpcyBwYXRjaCkKPiDCoMKgwqDCoMKgwqDCoCAtLS0tLS0tLS0tLS0tLS0tLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQo+IC0tLS0tCj4gCj4gwqDCoCAwOsKgwqAgYWRkwqDCoMKgwqAgeDksIHgzMCwgIzB4MMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwOsKgwqAgYWRkwqDCoMKgwqAgeDksIHgzMCwKPiAj
+MHgwCj4gwqDCoCA0OsKgwqAgbm9wwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQ6wqDCoCBub3AKPiDCoMKgIDg6wqDCoCBw
+YWNpYXNwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCA4OsKgwqAgcGFjaWFzcAo+IMKgwqAgYzrCoMKgIHN0cMKgwqDCoMKgIHgyOSwgeDMw
+LCBbc3AsICMtMTZdIcKgwqDCoMKgwqDCoMKgIGM6wqDCoCBzdHDCoMKgwqDCoCB4MjksIHgzMCwK
+PiBbc3AsICMtMTZdIQo+IMKgIDEwOsKgwqAgbW92wqDCoMKgwqAgeDI5LCBzcMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMTA6wqDCoCBtb3bCoMKgwqDCoCB4MjksIHNw
+Cj4gwqAgMTQ6wqDCoCBzdHDCoMKgwqDCoCB4MTksIHgyMCwgW3NwLCAjLTE2XSHCoMKgwqDCoMKg
+wqAgMTQ6wqDCoCBzdHDCoMKgwqDCoCB4MTksIHgyMCwKPiBbc3AsICMtMTZdIQo+IMKgIDE4OsKg
+wqAgc3RwwqDCoMKgwqAgeDIxLCB4MjIsIFtzcCwgIy0xNl0hwqDCoMKgwqDCoMKgIDE4OsKgwqAg
+c3RwwqDCoMKgwqAgeDIxLCB4MjIsCj4gW3NwLCAjLTE2XSEKPiDCoCAxYzrCoMKgIHN0cMKgwqDC
+oMKgIHgyNSwgeDI2LCBbc3AsICMtMTZdIcKgwqDCoMKgwqDCoCAxYzrCoMKgIHN0cMKgwqDCoMKg
+IHgyNSwgeDI2LAo+IFtzcCwgIy0xNl0hCj4gwqAgMjA6wqDCoCBzdHDCoMKgwqDCoCB4MjcsIHgy
+OCwgW3NwLCAjLTE2XSHCoMKgwqDCoMKgwqAgMjA6wqDCoCBzdHDCoMKgwqDCoCB4MjcsIHgyOCwK
+PiBbc3AsICMtMTZdIQo+IMKgIDI0OsKgwqAgbW92wqDCoMKgwqAgeDI1LCBzcMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMjQ6wqDCoCBtb3bCoMKgwqDCoCB4MjUsIHNw
+Cj4gwqAgMjg6wqDCoCBtb3bCoMKgwqDCoCB4MjYsICMweDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgMjg6wqDCoCBtb3bCoMKgwqDCoCB4MjYsICMweDAKPiDCoCAyYzrCoMKg
+IHN1YsKgwqDCoMKgIHgyNywgeDI1LCAjMHgwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMmM6
+wqDCoCBzdWLCoMKgwqDCoCB4MjcsIHgyNSwKPiAjMHgwCj4gwqAgMzA6wqDCoCBzdWLCoMKgwqDC
+oCBzcCwgc3AsICMweDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMzA6wqDCoCBzdWLC
+oMKgwqDCoCBzcCwgc3AsCj4gIzB4MAo+IMKgIDM0OsKgwqAgbGRywqDCoMKgwqAgeDAsIFt4MF3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAzNDrCoMKgIGxkcsKgwqDCoMKg
+IHgwLCBbeDBdCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0tLS0tLS0tLS0KPiDCoCAzODrCoMKgIGxkcsKg
+wqDCoMKgIHgwLCBbeDBdIC0tLS0tLS0tLS1cwqDCoMKgwqDCoMKgwqAgMzg6wqDCoCBhZGTCoMKg
+wqDCoCB4OSwgeDAsCj4gIzB4MAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+XFzCoMKgwqDCoMKgwqAgM2M6wqDCoCBsc3LCoMKgwqDCoCB4OSwgeDksICMzMgo+IMKgIDNjOsKg
+wqAgbW92wqDCoMKgwqAgeDcsICMweDDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFxcwqDCoMKgwqDC
+oCA0MDrCoMKgIGNtcMKgwqDCoMKgIHg5LCAjMHgxMCwKPiBsc2wgIzEyCj4gwqAgNDA6wqDCoCBt
+b3bCoMKgwqDCoCBzcCwgc3DCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFxcwqDCoMKgwqAg
+NDQ6wqDCoCBiLmxzwqDCoMKgCj4gMHgwMDAwMDAwMDAwMDAwMDUwCj4gwqAgNDQ6wqDCoCBsZHDC
+oMKgwqDCoCB4MjcsIHgyOCwgW3NwXSwgIzE2wqDCoCBcXC0tPiA0ODrCoMKgIGxkcsKgwqDCoMKg
+IHgwLCBbeDBdCj4gwqAgNDg6wqDCoCBsZHDCoMKgwqDCoCB4MjUsIHgyNiwgW3NwXSwgIzE2wqDC
+oMKgIFzCoMKgwqAgNGM6wqDCoCBiwqDCoMKgwqDCoMKgCj4gMHgwMDAwMDAwMDAwMDAwMDU0Cj4g
+wqAgNGM6wqDCoCBsZHDCoMKgwqDCoCB4MjEsIHgyMiwgW3NwXSwgIzE2wqDCoMKgwqAgXMKgwqAg
+NTA6wqDCoCBtb3bCoMKgwqDCoCB4MCwgIzB4MAo+IMKgIDUwOsKgwqAgbGRwwqDCoMKgwqAgeDE5
+LCB4MjAsIFtzcF0sICMxNsKgwqDCoMKgwqAgXC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
+IC0tLS0tLS0tLS0tLQo+IMKgIDU0OsKgwqAgbGRwwqDCoMKgwqAgeDI5LCB4MzAsIFtzcF0sICMx
+NsKgwqDCoMKgwqDCoMKgwqAgNTQ6wqDCoCBtb3bCoMKgwqDCoCB4NywgIzB4MAo+IMKgIDU4OsKg
+wqAgYWRkwqDCoMKgwqAgeDAsIHg3LCAjMHgwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IDU4OsKgwqAgbW92wqDCoMKgwqAgc3AsIHNwCj4gwqAgNWM6wqDCoCBhdXRpYXNwwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNWM6wqDCoCBs
+ZHDCoMKgwqDCoCB4MjcsIHgyOCwKPiBbc3BdLCAjMTYKPiDCoCA2MDrCoMKgIHJldMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+NjA6wqDCoCBsZHDCoMKgwqDCoCB4MjUsIHgyNiwKPiBbc3BdLCAjMTYKPiDCoCA2NDrCoMKgIG5v
+cMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgNjQ6wqDCoCBsZHDCoMKgwqDCoCB4MjEsIHgyMiwKPiBbc3BdLCAjMTYKPiDCoCA2
+ODrCoMKgIGxkcsKgwqDCoMKgIHgxMCwgMHgwMDAwMDAwMDAwMDAwMDcwwqDCoMKgwqAgNjg6wqDC
+oCBsZHDCoMKgwqDCoCB4MTksIHgyMCwKPiBbc3BdLCAjMTYKPiDCoCA2YzrCoMKgIGJywqDCoMKg
+wqDCoCB4MTDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+NmM6wqDCoCBsZHDCoMKgwqDCoCB4MjksIHgzMCwKPiBbc3BdLCAjMTYKPiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCA3MDrCoMKgIGFkZMKgwqDCoMKgIHgwLCB4NywKPiAjMHgwCj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNzQ6wqDCoCBhdXRpYXNwCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgNzg6wqDCoCByZXQKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCA3YzrCoMKgIG5vcAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDgwOsKgwqAg
+bGRywqDCoMKgwqAgeDEwLAo+IDB4MDAwMDAwMDAwMDAwMDA4OAo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIDg0OsKgwqAgYnLCoMKgwqDCoMKgIHgxMAo+IAo+IFRoZXJlIGFyZSA2IGV4
+dHJhIGluc3RydWN0aW9ucyBhZGRlZCBpbiBBUk02NCBpbiB0aGUgYmVzdCBjYXNlLiBUaGlzCj4g
+d2lsbAo+IGJlY29tZSA3IGluIHRoZSB3b3JzdCBjYXNlIChvZmYgIT0gMCkuCj4gCj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBSSVNDLVYgSklU
+IChSSVNDVl9JU0FfQyBEaXNhYmxlZCkKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgID09PT09PT09PT0KPiAKPiDCoMKgwqDCoMKgwqDCoCBObyBJ
+bnRydW1lbnRhdGlvbsKgwqDCoMKgwqDCoMKgwqDCoMKgIFZlcmlmaWVyJ3MgSW5zdHJ1bWVudGF0
+aW9uCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAgKHVwc3RyZWFtKcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoVGhpcyBwYXRjaCkKPiDCoMKgwqDCoMKgwqDCoCAtLS0t
+LS0tLS0tLS0tLS0tLcKgwqDCoMKgwqDCoMKgwqDCoMKgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCj4gCj4gwqDCoCAwOsKgwqAgbm9wwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDA6wqDCoCBub3AKPiDCoMKgIDQ6wqDCoCBub3DCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNDrCoMKgIG5v
+cAo+IMKgwqAgODrCoMKgIGxpwqDCoMKgwqDCoCBhNiwgMzPCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCA4OsKgwqAgbGnCoMKgwqDCoMKgIGE2LCAzMwo+IMKgwqAgYzrCoMKgIGFkZGnC
+oMKgwqAgc3AsIHNwLCAtMTbCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGM6wqDCoCBhZGRpwqDCoMKg
+IHNwLCBzcCwgLTE2Cj4gwqAgMTA6wqDCoCBzZMKgwqDCoMKgwqAgczAsIDgoc3ApwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDEwOsKgwqAgc2TCoMKgwqDCoMKgIHMwLCA4KHNwKQo+IMKgIDE0OsKg
+wqAgYWRkacKgwqDCoCBzMCwgc3AsIDE2wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNDrCoMKgIGFk
+ZGnCoMKgwqAgczAsIHNwLCAxNgo+IMKgIDE4OsKgwqAgbGTCoMKgwqDCoMKgIGEwLCAwKGEwKcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxODrCoMKgIGxkwqDCoMKgwqDCoCBhMCwgMChhMCkKPiAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KPiDCoCAxYzrCoMKgIGxkwqDCoMKgwqDCoCBhMCwgMChhMCkgLS1cwqDCoMKgwqDCoMKg
+wqDCoCAxYzrCoMKgIG12wqDCoMKgwqDCoCB0MCwgYTAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLVzCoCBcwqDCoMKgwqDCoMKgwqAgMjA6wqDCoCBzcmxpwqDCoMKgIHQwLCB0MCwgMzIKPiDC
+oCAyMDrCoMKgIGxpwqDCoMKgwqDCoCBhNSwgMMKgwqDCoMKgwqAgXMKgIFzCoMKgwqDCoMKgwqAg
+MjQ6wqDCoCBsdWnCoMKgwqDCoCB0MSwgNDA5Ngo+IMKgIDI0OsKgwqAgbGTCoMKgwqDCoMKgIHMw
+LCA4KHNwKcKgwqAgXMKgIFzCoMKgwqDCoMKgIDI4OsKgwqAgc2V4dC53wqAgdDEsIHQxCj4gwqAg
+Mjg6wqDCoCBhZGRpwqDCoMKgIHNwLCBzcCwgMTbCoMKgIFzCoCBcwqDCoMKgwqAgMmM6wqDCoCBi
+Z2V1wqDCoMKgIHQxLCB0MCwgMTIKPiDCoCAyYzrCoMKgIHNleHQud8KgIGEwLCBhNcKgwqDCoMKg
+wqDCoMKgIFzCoCBcLS0+IDMwOsKgwqAgbGTCoMKgwqDCoMKgIGEwLCAwKGEwKQo+IMKgIDMwOsKg
+wqAgcmV0wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXMKgwqDCoMKgwqAg
+MzQ6wqDCoCBqwqDCoMKgwqDCoMKgIDgKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcwqDCoMKgwqAgMzg6wqDCoCBsacKgwqDC
+oMKgwqAgYTAsIDAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCAzYzrCoMKgIGxpwqDCoMKgwqDCoCBhNSwgMAo+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIDQwOsKgwqAgbGTCoMKgwqDCoMKgIHMwLCA4KHNwKQo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IDQ0OsKgwqAgYWRkacKgwqDCoCBzcCwgc3AsIDE2Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNDg6wqDC
+oCBzZXh0LnfCoCBhMCwgYTUKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA0YzrCoMKgIHJldAo+IAo+IFRo
+ZXJlIGFyZSA3IGV4dHJhIGluc3RydWN0aW9ucyBhZGRlZCBpbiBSSVNDLVYuCj4gCj4gRml4ZXM6
+IDgwMDgzNDI4NTM2MSAoImJwZiwgYXJtNjQ6IEFkZCBCUEYgZXhjZXB0aW9uIHRhYmxlcyIpCj4g
+UmVwb3J0ZWQtYnk6IEJyZW5vIExlaXRhbyA8bGVpdGFvQGRlYmlhbi5vcmc+Cj4gU3VnZ2VzdGVk
+LWJ5OiBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFzdEBrZXJuZWwub3JnPgo+IFNpZ25lZC1vZmYtYnk6
+IFB1cmFuamF5IE1vaGFuIDxwdXJhbmpheTEyQGdtYWlsLmNvbT4KPiAtLS0KPiBWMjoKPiBodHRw
+czovL2xvcmUua2VybmVsLm9yZy9icGYvMjAyNDAzMjExMDEwNTguNjg1MzAtMS1wdXJhbmpheTEy
+QGdtYWlsLmNvbS8KPiBDaGFuZ2VzIGluIFYzOgo+IC0gUmV0dXJuIDAgZnJvbSBicGZfYXJjaF91
+YWRkcmVzc19saW1pdCgpIGluIGRpc2FibGVkIGNhc2UgYmVjYXVzZSBpdAo+IMKgIHJldHVybnMg
+dTY0Lgo+IC0gTW9kaWZ5IHRoZSBjaGVjayBpbiB2ZXJpZmllciB0byBubyBkbyBpbnN0cnVtZW50
+YXRpb24gd2hlbgo+IHVhZGRyZXNzX2xpbWl0Cj4gwqAgaXMgMC4KPiAKPiBWMToKPiBodHRwczov
+L2xvcmUua2VybmVsLm9yZy9icGYvMjAyNDAzMjAxMDU0MzYuNDc4MS0xLXB1cmFuamF5MTJAZ21h
+aWwuY29tLwo+IENoYW5nZXMgaW4gVjI6Cj4gLSBEaXNhYmxlIHRoaXMgZmVhdHVyZSBvbiBzMzkw
+eC4KPiAtLS0KPiDCoGFyY2gvczM5MC9uZXQvYnBmX2ppdF9jb21wLmMgfMKgIDUgKysrCj4gwqBh
+cmNoL3g4Ni9uZXQvYnBmX2ppdF9jb21wLmPCoCB8IDcyICsrKystLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiAtLQo+IMKgaW5jbHVkZS9saW51eC9maWx0ZXIuaMKgwqDCoMKgwqDCoCB8
+wqAgMSArCj4gwqBrZXJuZWwvYnBmL2NvcmUuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDkg
+KysrKysKPiDCoGtlcm5lbC9icGYvdmVyaWZpZXIuY8KgwqDCoMKgwqDCoMKgIHwgMzAgKysrKysr
+KysrKysrKysrCj4gwqA1IGZpbGVzIGNoYW5nZWQsIDUzIGluc2VydGlvbnMoKyksIDY0IGRlbGV0
+aW9ucygtKQoKWy4uLl0KwqAKPiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9jb3JlLmMgYi9rZXJu
+ZWwvYnBmL2NvcmUuYwo+IGluZGV4IDVhYWNiMWQzYzRjYy4uYzEzMWJlZTMzYWMzIDEwMDY0NAo+
+IC0tLSBhL2tlcm5lbC9icGYvY29yZS5jCj4gKysrIGIva2VybmVsL2JwZi9jb3JlLmMKPiBAQCAt
+Mjk1OCw2ICsyOTU4LDE1IEBAIGJvb2wgX193ZWFrIGJwZl9qaXRfc3VwcG9ydHNfYXJlbmEodm9p
+ZCkKPiDCoAlyZXR1cm4gZmFsc2U7Cj4gwqB9Cj4gwqAKPiArdTY0IF9fd2VhayBicGZfYXJjaF91
+YWRkcmVzc19saW1pdCh2b2lkKQo+ICt7Cj4gKyNpZmRlZiBDT05GSUdfNjRCSVQKPiArCXJldHVy
+biBUQVNLX1NJWkU7Cj4gKyNlbHNlCj4gKwlyZXR1cm4gMDsKPiArI2VuZGlmCj4gK30KPiArCgpI
+b3cgYWJvdXQgdGhlIGZvbGxvd2luZz8KCiNpZiBkZWZpbmVkKENPTkZJR182NEJJVCkgJibCoFwK
+ICAgIGRlZmluZWQoQ09ORklHX0FSQ0hfSEFTX05PTl9PVkVSTEFQUElOR19BRERSRVNTX1NQQUNF
+KQoKVGhlbiB3ZSB3b24ndCBuZWVkIHRvIGRvIGFueXRoaW5nIGZvciBzMzkweCBleHBsaWNpdGx5
+LmAKClsuLi5dCgoK
 
