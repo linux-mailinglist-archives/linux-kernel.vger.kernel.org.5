@@ -1,86 +1,135 @@
-Return-Path: <linux-kernel+bounces-110058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9E3885971
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5C388597A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:58:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BF3FB21BB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5595D281D5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D35D83CD2;
-	Thu, 21 Mar 2024 12:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD5683CD1;
+	Thu, 21 Mar 2024 12:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QSkxeRJ5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eDRIT9VY";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eDRIT9VY"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911898062A;
-	Thu, 21 Mar 2024 12:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F541CA83;
+	Thu, 21 Mar 2024 12:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025557; cv=none; b=KsdUeuVChLwUVqdV4rb8NRSnxxrSzEEBjpGQo55qH9j+uPfbzgxT6Np4yS94ibLDfrSo3Gav6+CR8LdcD4s3BipcjffqVBCYKKtfPO1sZoBMp4EO0y025JBEOHHHD/8KuerdvE3LBbRDHIguifalDdD6rYzN275pAGv3B83criw=
+	t=1711025911; cv=none; b=CBVV5KFt6/DmEiO71CvG4owc3W3pOFvmC/fI8xi/FEKyfTaeOYekYzHSlFb/4t3wHzOb00Q1priwyTN/4a2pX9U/SKFUumhXOD0vCGAPVpwxSmGUy8T7cQJdzkLHcB8BVo1baHQ8pZ00Z/Py2hAZ7XB8Njpu5B6o9ods1cI+300=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025557; c=relaxed/simple;
-	bh=+1MLeFvybcEalYGQKL++8f/M5U9YN7gmE4KskSqtg2E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PysxAHW63ZhvMYvrYPuC2HVCdOh0H4T5EKFw3Jp+WkhAb1NPz/KqcBbXqQ8caz/7WaieeV7aems+XQAEieqffYRQSajzAH4KgCvDOe3NjJMfA6FbEJdVS1fE52PRgKlshN05wv45t6GljN78N58aWpU/QTxa+GztPInHnX302Vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QSkxeRJ5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF5FC433C7;
-	Thu, 21 Mar 2024 12:52:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711025557;
-	bh=+1MLeFvybcEalYGQKL++8f/M5U9YN7gmE4KskSqtg2E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QSkxeRJ5kKk16+tgclhMuYgOAU+Gn2Y/V/1f1I3oTlYFgGDDXMgBmdPGEh/gdSWjV
-	 BhWR/88VmsnDlXEx2txoVNWASVcj/NDczzVhH0Nb+YzLg8oDrC4LBm4ob1h/NTcqtk
-	 CDVdlwe2ylwO9f70wPfnQBMZ8kLjNpLN3OstoxsPV3Zescf9Wig3UI/hBbYF6FJLJr
-	 sS0JUuun8FoMFFeEMJ5P2B+l8HxTK5WnFW61djd1YUWzEvyne5fH4GynILz3yzo63M
-	 IbZl76crkPg0/26LZx4SUmW5AibNTT6N7LmgeISWDLq8HMXFpY3VUx/6vU7xvzTP4F
-	 Rb+1yBB0AFckg==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-remoteproc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Davis <afd@ti.com>
-Subject: [GIT PULL] hwspinlock updates for v6.9
-Date: Thu, 21 Mar 2024 05:57:28 -0700
-Message-ID: <20240321125730.1676568-1-andersson@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711025911; c=relaxed/simple;
+	bh=yHzWlgMvexL/4zkbF158Iee8weCY8LouKs27+QuNRnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LGnbDQCo9mjQwfd8zjuZvcDfxvsie2OTG+BjHA2zscbDN2AtInH9rVw17vhK9snoQsAgxbNnlo6EyvC0v7vc2v0UMk4M3s76D+rHgnvDKQwq3LW5S8GvNu875dLxnruH4RwoCFgrgELw/pmPPyIaHEFwjewp4Ad4a44QTfTc+Q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eDRIT9VY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eDRIT9VY; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6A6445CE7F;
+	Thu, 21 Mar 2024 12:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711025907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=93QxAQP5ZM16jg+U1fz+z2aWxXn55c/xIhJmz7m/Bz8=;
+	b=eDRIT9VYSu02snUagXPwSm/gDgHeLUNXI+Hv85SU8wBDFoKf2XkUDe0aHfpCLsVKPaqVrn
+	ELj9Xx5Yxk9fpIvLd0r8tuTMLBR/iXfi5H+xDWoeGOd/y69j0xJ+6rkIU4ZLgN0D/w14FU
+	4MD7z65xI0Nq9zaDbaBzGCuWOWvt46w=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711025907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=93QxAQP5ZM16jg+U1fz+z2aWxXn55c/xIhJmz7m/Bz8=;
+	b=eDRIT9VYSu02snUagXPwSm/gDgHeLUNXI+Hv85SU8wBDFoKf2XkUDe0aHfpCLsVKPaqVrn
+	ELj9Xx5Yxk9fpIvLd0r8tuTMLBR/iXfi5H+xDWoeGOd/y69j0xJ+6rkIU4ZLgN0D/w14FU
+	4MD7z65xI0Nq9zaDbaBzGCuWOWvt46w=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C460136AD;
+	Thu, 21 Mar 2024 12:58:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id DZvkD/Mu/GXhUAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 21 Mar 2024 12:58:27 +0000
+Date: Thu, 21 Mar 2024 13:58:18 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove CONFIG_MEMCG_KMEM
+Message-ID: <Zfwu6oquhe7CSkOz@tiehlicka>
+References: <20240320202745.740843-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320202745.740843-1-hannes@cmpxchg.org>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.84
+X-Spamd-Result: default: False [-0.84 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.04)[57.51%]
+X-Spam-Flag: NO
 
+On Wed 20-03-24 16:27:45, Johannes Weiner wrote:
+> CONFIG_MEMCG_KMEM used to be a user-visible option for whether slab
+> tracking is enabled. It has been default-enabled and equivalent to
+> CONFIG_MEMCG for almost a decade. We've only grown more kernel memory
+> accounting sites since, and there is no imaginable cgroup usecase
+> going forward that wants to track user pages but not the multitude of
+> user-drivable kernel allocations.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+But this
+> @@ -422,7 +422,7 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
+>  #define KMALLOC_NOT_NORMAL_BITS					\
+>  	(__GFP_RECLAIMABLE |					\
+>  	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
+> -	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
+> +	(IS_ENABLED(CONFIG_KMEM) ? __GFP_ACCOUNT : 0))
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/hwlock-v6.9
-
-for you to fetch changes up to cebaa386d5ee1a44a58c12f1d220f62cc567fdb0:
-
-  hwspinlock: omap: Use index to get hwspinlock pointer (2024-03-05 20:01:14 -0800)
-
-----------------------------------------------------------------
-hwspinlock updates for v6.9
-
-This provides some code cleanup for the OMAP hwspinlock driver.
-
-----------------------------------------------------------------
-Andrew Davis (4):
-      hwspinlock: omap: Remove unneeded check for OF node
-      hwspinlock: omap: Use devm_pm_runtime_enable() helper
-      hwspinlock: omap: Use devm_hwspin_lock_register() helper
-      hwspinlock: omap: Use index to get hwspinlock pointer
-
- drivers/hwspinlock/omap_hwspinlock.c | 57 +++++++-----------------------------
- 1 file changed, 10 insertions(+), 47 deletions(-)
+seems like a typo and should be CONFIG_MEMCG, right?
+-- 
+Michal Hocko
+SUSE Labs
 
