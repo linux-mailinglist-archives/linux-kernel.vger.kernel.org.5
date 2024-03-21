@@ -1,140 +1,96 @@
-Return-Path: <linux-kernel+bounces-110498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683D2885FC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:31:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2907885FCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:31:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99BFF1C22058
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:31:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D04283A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9212985646;
-	Thu, 21 Mar 2024 17:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WBeCzKEC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5F285938;
+	Thu, 21 Mar 2024 17:31:50 +0000 (UTC)
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C3BC2E9;
-	Thu, 21 Mar 2024 17:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949D117590;
+	Thu, 21 Mar 2024 17:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711042252; cv=none; b=CQuQ1eRbz+l41I9y8l6urzI3AlAi33ocf0rLIhpwWA+cNStJ96KGe6kt0BGvmlCWBa5MU2nUWxdSzrTsYLMtwqtDEqPMnNx47AdLHraY0x/zMrN/x7W4LUuaXKVIRv8kO0+z+LAwsKyvbqfCQNZwkZK9i31vQ1+qKWDhDz/iBRA=
+	t=1711042310; cv=none; b=XYK8f4SU2IyL3kVNjWSBSKn/nEunFw+uFu8gGOpzRrM01Dil9RGnHnohXW0np6JffG0nOJHXA8lZENKo2BPRLg3nQu4utGj3LHido0Ho36fDrNzDhB3Ar0VwFVtfYgS5HRpXfEm1M+cg0g7tzFjtG5ft3OXb5kzl6PtLQP/OvCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711042252; c=relaxed/simple;
-	bh=JBLJEKTf/KkuhDCxb+brKIpIFlLuBd/PKeVfqKF77IM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UOBYSnCydJGD9eMwvc/AwGqo1/vCx0AlSs9AYzMpTIbupsD/En27vnvX2XefviGY6E7UjaOM7QVmtIfWXFLseW/nJYRNSCGccxQM5lxKNFK/M6xNwUsDG2jKkg99n4pwtOwpMHtbf+Xtjiq+8MMwGzsNgLJAedaRsbFB43wAfeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WBeCzKEC; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711042250; x=1742578250;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JBLJEKTf/KkuhDCxb+brKIpIFlLuBd/PKeVfqKF77IM=;
-  b=WBeCzKEC5yY0DLvSmCADAbZnDgHFtzQo9MHvc1wIidB4biheFPZL+L43
-   fK9xByi5NZgjHWlXBu7YONhNmIif9rnhrNsxKZSVxRd6nBIeiOIf9aVMI
-   8ezuMjN3P9DLQIjCEesoecjQuVCOq1h1ePwj3grJT44xqjc4w/KlDg3/2
-   Ut4rq6h+r7PxtlKp9YPDd+Fay0LfwbaFrmJbgTqsGNmq9UWMPVWkLX2lq
-   YzW2XX5afuzBBDADuZSh1U1e2h8LBxw/wpYr9xbyaiXh1mSsrR1VdMYQH
-   vUbDIZi8+f2Ri3m7v9HtA+yyp3yy4WuxaSmrVtNnWFqYdMS7QoFiekEqd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6236039"
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="6236039"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:30:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="19157301"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:30:24 -0700
-Date: Thu, 21 Mar 2024 10:30:24 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
- parameters
-Message-ID: <20240321173024.GM1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
- <5702443b-510e-4ce5-823f-999582a6aced@intel.com>
+	s=arc-20240116; t=1711042310; c=relaxed/simple;
+	bh=lRZvAs6e51QxA2WQumhhbAA6NHprYtIDHJic0YkCZfA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:From:Cc:Subject:
+	 References:In-Reply-To; b=IjL58E79/RQRbMuAnGEN3pSohS6solQmWUQEc0DDFa6+F/OeFv1vFyE6Grqqq/NnTyWnEfbMPOhMjgjqa6TXobQEJpCEsgmsAlSp2/WZE894mWNl8/wYtfxEwQ1db7NLaWS3nkDdkvsejehCzrSBlupecYfGatYfN6Fl0tE+p0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+Received: from localhost (koleje-wifi-0015.koleje.cuni.cz [78.128.191.15])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 42LHVUUq096433
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 18:31:32 +0100 (CET)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5702443b-510e-4ce5-823f-999582a6aced@intel.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 21 Mar 2024 18:32:03 +0100
+Message-Id: <CZZLVS3T3QIS.223XHI5OZ7UBG@matfyz.cz>
+To: "Mark Brown" <broonie@kernel.org>
+From: "Karel Balej" <balejk@matfyz.cz>
+Cc: "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley"
+ <conor+dt@kernel.org>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Liam
+ Girdwood" <lgirdwood@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+Subject: Re: [RFC PATCH v4 2/5] mfd: add driver for Marvell 88PM886 PMIC
+References: <20240311160110.32185-1-karelb@gimli.ms.mff.cuni.cz>
+ <20240311160110.32185-3-karelb@gimli.ms.mff.cuni.cz>
+ <20240321154211.GA13211@google.com> <CZZK759UU6G7.MFPYOI0HBB6I@matfyz.cz>
+ <20240321162045.GC13211@google.com> <CZZL3MNOT0QG.2WDSNX9XD2RET@matfyz.cz>
+ <879296b4-5186-4170-af3f-971787d28514@sirena.org.uk>
+ <CZZLDK79D5VK.2VK3X59OHIY2Z@matfyz.cz>
+ <45079e37-dde9-4310-a112-7af49f35ac77@sirena.org.uk>
+In-Reply-To: <45079e37-dde9-4310-a112-7af49f35ac77@sirena.org.uk>
 
-On Wed, Mar 20, 2024 at 04:15:23PM +0800,
-Xiaoyao Li <xiaoyao.li@intel.com> wrote:
-
-> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
-> 
+Mark Brown, 2024-03-21T17:17:40+00:00:
+> On Thu, Mar 21, 2024 at 06:08:16PM +0100, Karel Balej wrote:
+> > Mark Brown, 2024-03-21T16:58:44+00:00:
+>
+> > > > > > > > +static const struct regmap_config pm886_i2c_regmap =3D {
+> > > > > > > > +	.reg_bits =3D 8,
+> > > > > > > > +	.val_bits =3D 8,
+> > > > > > > > +	.max_register =3D PM886_REGMAP_CONF_MAX_REG,
+> > > > > > > > +};
+>
 > ...
-> 
-> > +static int setup_tdparams_xfam(struct kvm_cpuid2 *cpuid, struct td_params *td_params)
-> > +{
-> > +	const struct kvm_cpuid_entry2 *entry;
-> > +	u64 guest_supported_xcr0;
-> > +	u64 guest_supported_xss;
-> > +
-> > +	/* Setup td_params.xfam */
-> > +	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0xd, 0);
-> > +	if (entry)
-> > +		guest_supported_xcr0 = (entry->eax | ((u64)entry->edx << 32));
-> > +	else
-> > +		guest_supported_xcr0 = 0;
-> > +	guest_supported_xcr0 &= kvm_caps.supported_xcr0;
-> > +
-> > +	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0xd, 1);
-> > +	if (entry)
-> > +		guest_supported_xss = (entry->ecx | ((u64)entry->edx << 32));
-> > +	else
-> > +		guest_supported_xss = 0;
-> > +
-> > +	/*
-> > +	 * PT and CET can be exposed to TD guest regardless of KVM's XSS, PT
-> > +	 * and, CET support.
-> > +	 */
-> > +	guest_supported_xss &=
-> > +		(kvm_caps.supported_xss | XFEATURE_MASK_PT | TDX_TD_XFAM_CET);
-> > +
-> > +	td_params->xfam = guest_supported_xcr0 | guest_supported_xss;
-> > +	if (td_params->xfam & XFEATURE_MASK_LBR) {
-> > +		/*
-> > +		 * TODO: once KVM supports LBR(save/restore LBR related
-> > +		 * registers around TDENTER), remove this guard.
-> > +		 */
-> > +#define MSG_LBR	"TD doesn't support LBR yet. KVM needs to save/restore IA32_LBR_DEPTH properly.\n"
-> > +		pr_warn(MSG_LBR);
-> > +		return -EOPNOTSUPP;
-> 
-> This unsupported behavior is totally decided by KVM even if TDX module
-> supports it. I think we need to reflect it in tdx_info->xfam_fixed0, which
-> gets reported to userspace via KVM_TDX_CAPABILITIES. So userspace will aware
-> that LBR is not supported for TDs.
+>
+> > > You shouldn't be creating two regmaps for the same set of registers,
+> > > that just opens the potential for confusion.
+>
+> > Just the regmap config is the same. Otherwise, each regmap lives at a
+> > different I2C address.
+>
+> Do they both genuinely have the same maximum register?
 
-Yes, we can suppress KVM unpported features. I replied at
-https://lore.kernel.org/kvm/20240321155513.GL1994522@ls.amr.corp.intel.com/
-
-So far we used KVM_TDX_CAPABILITIES for feature enumeration. I'm wondering about
-KVM_GET_DEVICE_ATTR [1].  It's future extensible. It's also consistent with SEV.
-
-[1] https://lore.kernel.org/r/20240226190344.787149-7-pbonzini@redhat.com
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+They do according to the downstream driver which is my only reference.
+In fact, there the driver defines the configs separately for each regmap
+but with the same values.
 
