@@ -1,140 +1,174 @@
-Return-Path: <linux-kernel+bounces-110119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633A4885A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:01:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7050885A42
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948761C2158A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:01:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23F141F2225C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE7584FAB;
-	Thu, 21 Mar 2024 14:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09C84FB3;
+	Thu, 21 Mar 2024 14:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQcY/XZx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mj1mMVIB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04AD58AA8;
-	Thu, 21 Mar 2024 14:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208B358AA8;
+	Thu, 21 Mar 2024 14:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711029685; cv=none; b=KdR1IZeJwn04oRPW0dgALi7ShX96ZjAvxK5L63f0T+iWvwD+1GAd8sbzUgA2OXyIPaYdHje/e4xv3t+ajPkdgDt+Hyk8F/Z06dsLq82RFoynPR2TcgBkjCj2pTrwMDiexr0/cw3fPYvl6bLh4bt71UGJbvJS3mbxVsABdOQ/FDA=
+	t=1711029819; cv=none; b=puZIKZ7yqr6YN/wV/3W4is9POsHcELGgfiBtrzfkRR7hDur9dg07CLP6ZtN86hxtaxw6kbKtDMqb8jm1HvZXnKD1GuU7aUPv9PlcGQBv4Znty3hUSRhz+SiMflboFG7iWkZoJHGlDnZCwwCRG4sDz6pRfCWBrCuzJhN77ThGrXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711029685; c=relaxed/simple;
-	bh=mjkgvhCWGrB27Mwgl5C+Sb3MVYeWBRHoVzoOU2G3hu0=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=X07KAi9iv2NBe5qZgMRKRZZ5CRFM+zv1oJHazcZ2v53JW46y4lAoLcuaYKm1oTbMlrHoMzs7b2JfY3gtyjtvRB9i9QPPe8016XcC2sYUQljv+Bx0CdFGMzv2GM97FCkYnlQGlFVD3Sp3f70FeeelQBNxf6wY0UI/zANvAHXKnpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qQcY/XZx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2EE4C43390;
-	Thu, 21 Mar 2024 14:01:23 +0000 (UTC)
+	s=arc-20240116; t=1711029819; c=relaxed/simple;
+	bh=EDTfNG01mNck7oovqk3rbelnkIsr/GyWywA2AJy9N/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZLX8w+acB+WTUFuXhdJxByDMnHLAjHDMdm42tPG3EPlNN9+8VEnnBRuZyrzp5J7fOy40bcQVIU2CefFTMUx+31kAN1luhIFCw8JA/neqHtI+JPDUhXJp2od1QaOZpKKnSw/AmtEOPKayYD/lljelUDW3uIMARvylifZMHxJiatY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mj1mMVIB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18F5C433F1;
+	Thu, 21 Mar 2024 14:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711029685;
-	bh=mjkgvhCWGrB27Mwgl5C+Sb3MVYeWBRHoVzoOU2G3hu0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qQcY/XZxsoR9t7KTYXuEYyF1qmYP/r7oZlL0IKIwtkky1i/275hXClvYekEWSnlwH
-	 Q3fPaSOCxj8mqSMxm+IcD3S6f4EpIa56HOMqPob2x8+2zyrra6U9riEe/y6s7SG9V5
-	 zYmucCW7Lg0TNliZOASiGPTd6nwRcs2SkKYb01+N1Gbw9fCLNIL2txLe/G/Uhet6cj
-	 pQjWp1ORoTWBj9AWiWTsmgZlthRskqkrHTybq2VLghYQ4xdUOMJk2Kp/a2UZzQNa/P
-	 6OFaeSdq0gWXq9SCjP6ZaeW7L1QRTCz1tyAH12crYH2FMotozdYyRCZCSIdIGaAPgk
-	 ltMLFrnOMZkZg==
-Date: Thu, 21 Mar 2024 23:01:21 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Ye Bin <yebin10@huawei.com>
-Cc: <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
- <linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 0/5] support '%pd' and '%pD' for print file name
-Message-Id: <20240321230121.074b5058ff4cd97dd59a30ad@kernel.org>
-In-Reply-To: <20240320132924.2802187-1-yebin10@huawei.com>
-References: <20240320132924.2802187-1-yebin10@huawei.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1711029818;
+	bh=EDTfNG01mNck7oovqk3rbelnkIsr/GyWywA2AJy9N/o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mj1mMVIB5r4PTJkPy0n1SkwglSpgL+22sXDwmi9LAfniig4nTO04AgnY3ykhGyQw3
+	 9MS3Q3UQuO7MZXcMlBo0KvUljxleFvxWcSOTZFO5xZyOCj/YjfDVOwHolqESwN08TB
+	 GAjesDKvvZ8ixHOiJ9+9c8AS7fQquIcNvPRygTEAjHUrKy6tA1x9oijKhsPhgcUHjM
+	 ZvnwNLPyiM6NzJ1aBQ64iDmws7GaekVGsQ0rjVbqtDQSJ49ph/wkDd7XaoaOPgCi5E
+	 GbRzQA2DyQ8s+fLfjpaH3zjerD5/xRhLcgtNNE5SkyLDPddUtRnwdzO9nf+7S14iAz
+	 amrCSnkvI+Y4g==
+Date: Thu, 21 Mar 2024 09:03:36 -0500
+From: Rob Herring <robh@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, peiyu li <579lpy@gmail.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: hwmon: max6650: convert to dtschema
+Message-ID: <20240321140336.GA1648289-robh@kernel.org>
+References: <20240320-hwmon_yaml-v1-0-a349ca21ccab@gmail.com>
+ <20240320-hwmon_yaml-v1-2-a349ca21ccab@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320-hwmon_yaml-v1-2-a349ca21ccab@gmail.com>
 
-Hi Ye,
+On Wed, Mar 20, 2024 at 06:04:58PM +0100, Javier Carrasco wrote:
+>  Convert existing bindings to dtschema to support validation.
+> 
+>  This is a straightforward conversion with no new properties.
 
-On Wed, 20 Mar 2024 21:29:19 +0800
-Ye Bin <yebin10@huawei.com> wrote:
-
-> During fault locating, the file name needs to be printed based on the
-> dentry/file address. The offset needs to be calculated each time, which
-> is troublesome. Similar to printk, kprobe supports printing file names
-> for dentry/file addresses.
-
-Thanks for update! This series looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Let me pick this and test. 
-
-Thank you!
+Why the indentation?
 
 > 
-> Diff v7 vs v6:
-> 1. Squash [1/8] to [3/8] patches into 1 patch;
-> 2. Split readme_msg[] into each patch;
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+>  .../devicetree/bindings/hwmon/max6650.txt          | 28 ---------
+>  .../devicetree/bindings/hwmon/maxim,max6650.yaml   | 68 ++++++++++++++++++++++
+>  2 files changed, 68 insertions(+), 28 deletions(-)
 > 
-> Diff v6 vs v5:
-> 1. Add const for 'bufsize' in PATCH [1];
-> 2. Move PATCH 'tracing/probes: support '%pd/%pD' type for fprobe' after
-> PATCH "tracing/probes: support '%pd' type for print struct dentry's name".
-> 3. Add requires '"%pd/%pD":README' for testcase.
-> 
-> Diff v5 vs v4:
-> 1. Use glob_match() instead of str_has_suffix(), so remove the first patch;
-> 2. Allocate buffer from heap for expand dentry;
-> 3. Support "%pd/%pD" print type for fprobe;
-> 4. Use $arg1 instead of origin register in test case;
-> 5. Add test case for fprobe;
-> 
-> Diff v4 vs v3:
-> 1. Use "argv[i][idx + 3] == 'd'" instead of "argv[i][strlen(argv[i]) - 1] == 'd'"
-> to judge print format in PATCH[4/7];
-> 
-> Diff v3 vs v2:
-> 1. Return the index of where the suffix was found in str_has_suffix();
-> 
-> Diff v2 vs v1:
-> 1. Use "%pd/%pD" print format instead of "pd/pD" print format;
-> 2. Add "%pd/%pD" in README;
-> 3. Expand "%pd/%pD" argument before parameter parsing;
-> 4. Add more detail information in ftrace documentation;
-> 5. Add test cases for new print format in selftests/ftrace;
-> 
-> 
-> Ye Bin (5):
->   tracing/probes: support '%pd' type for print struct dentry's name
->   tracing/probes: support '%pD' type for print struct file's name
->   Documentation: tracing: add new type '%pd' and '%pD' for kprobe
->   selftests/ftrace: add kprobe test cases for VFS type "%pd" and "%pD"
->   selftests/ftrace: add fprobe test cases for VFS type "%pd" and "%pD"
-> 
->  Documentation/trace/kprobetrace.rst           |  8 ++-
->  kernel/trace/trace.c                          |  2 +-
->  kernel/trace/trace_fprobe.c                   |  6 ++
->  kernel/trace/trace_kprobe.c                   |  6 ++
->  kernel/trace/trace_probe.c                    | 63 +++++++++++++++++++
->  kernel/trace/trace_probe.h                    |  2 +
->  .../ftrace/test.d/dynevent/fprobe_args_vfs.tc | 40 ++++++++++++
->  .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 40 ++++++++++++
->  8 files changed, 164 insertions(+), 3 deletions(-)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
->  create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
-> 
-> -- 
-> 2.31.1
-> 
-> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/max6650.txt b/Documentation/devicetree/bindings/hwmon/max6650.txt
+> deleted file mode 100644
+> index f6bd87d8e284..000000000000
+> --- a/Documentation/devicetree/bindings/hwmon/max6650.txt
+> +++ /dev/null
+> @@ -1,28 +0,0 @@
+> -Bindings for MAX6651 and MAX6650 I2C fan controllers
+> -
+> -Reference:
+> -[1]	https://datasheets.maximintegrated.com/en/ds/MAX6650-MAX6651.pdf
+> -
+> -Required properties:
+> -- compatible : One of "maxim,max6650" or "maxim,max6651"
+> -- reg        : I2C address, one of 0x1b, 0x1f, 0x4b, 0x48.
+> -
+> -Optional properties, default is to retain the chip's current setting:
+> -- maxim,fan-microvolt : The supply voltage of the fan, either 5000000 uV or
+> -			12000000 uV.
+> -- maxim,fan-prescale  : Pre-scaling value, as per datasheet [1]. Lower values
+> -			allow more fine-grained control of slower fans.
+> -			Valid: 1, 2, 4, 8, 16.
+> -- maxim,fan-target-rpm: Initial requested fan rotation speed. If specified, the
+> -			driver selects closed-loop mode and the requested speed.
+> -			This ensures the fan is already running before userspace
+> -			takes over.
+> -
+> -Example:
+> -	fan-max6650: max6650@1b {
+> -		reg = <0x1b>;
+> -		compatible = "maxim,max6650";
+> -		maxim,fan-microvolt = <12000000>;
+> -		maxim,fan-prescale = <4>;
+> -		maxim,fan-target-rpm = <1200>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml
+> new file mode 100644
+> index 000000000000..1b33b5fb606d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max6650.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/maxim,max6650.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim MAX6650 and MAX6651 I2C Fan Controllers
+> +
+> +maintainers:
+> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> +
+> +description: |
+> +  The MAX6650 and MAX6651 regulate and monitor the speed
+> +  of 5VDC/12VDC burshless fans with built-in tachometers.
+> +
+> +  Datasheets:
+> +    https://datasheets.maximintegrated.com/en/ds/MAX6650-MAX6651.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - maxim,max6650
+> +      - maxim,max6651
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  maxim,fan-microvolt:
+> +    description:
+> +      The supply voltage of the fan, either 5000000 uV or
+> +      12000000 uV.
 
+Looks like constraints. Please add them.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> +
+> +  maxim,fan-prescale:
+> +    description:
+> +      Pre-scaling value, as per datasheet. Lower values
+> +      allow more fine-grained control of slower fans.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 4, 8, 16]
+> +
+> +  maxim,fan-target-rpm:
+> +    description:
+> +      Initial requested fan rotation speed. If specified, the
+> +      driver selects closed-loop mode and the requested speed.
+> +      This ensures the fan is already running before userspace
+> +      takes over.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+Constraints? I'm sure no fan RPM is higher than 10000 and probably much 
+less than that.
+
+Rob
 
