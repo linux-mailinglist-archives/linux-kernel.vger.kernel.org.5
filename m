@@ -1,304 +1,280 @@
-Return-Path: <linux-kernel+bounces-110662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 301C8886200
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:47:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 417548861D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D321F21224
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7AB282319
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7321350FD;
-	Thu, 21 Mar 2024 20:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48760135415;
+	Thu, 21 Mar 2024 20:43:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="oqX+HZ1C"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2057.outbound.protection.outlook.com [40.107.223.57])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="REzcuhgs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE02C137C56;
-	Thu, 21 Mar 2024 20:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711053861; cv=fail; b=XtOlXj4ImjmVssFujSs4+bnBYarM1uEh78JPta635YwBjUk8gcV4js+yL631FSSWuLqFvZ1Eq1gqaeUNnw3kqnuNyNePNG2VKtXyhybwBWnFkG58eBA/4xgF2GBY2+6AT2J25oie7LMqbMjFPJ6K5eRkjcSSThdcFq0/XlYoClo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711053861; c=relaxed/simple;
-	bh=5m868SgbO98WJo0uoTag07Mi2NZgIGMoQcjX1iuW1t0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=ozESdaAkqmtkj3pmUIG2QUvWGvR2XPLy5O3DzQjW6B6j1u2T8JsC+TFQoyJu0pgC3ebRAXNaL1ZhkCFle5Ak7pQ6KmFayH1G2I7X1tz769bbHHoK7DNOEDNQdLHhl836+MD19eU5JpkaLdp2ZhhVNSGpcF5CiVHo2lWwxGEg2ts=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=oqX+HZ1C; arc=fail smtp.client-ip=40.107.223.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m01G96dn54T6cIbAY4bMM1qXsrGt6LUs0mj6+++0Mi+Y8IKhN5quEItTKKP77ApiBOY/bcwIQXj+5pPrWuG9g6C8tuukZktIbbPXAfOope3KmoFPedehV4dAuF5lhoU2Q91AiYPC3mC73aiVpTU2HL4HmgIbcZT/bFFsDf/VBZ/klOAXGtR5dCTgpsqw7CNOcv+Be/B5DbmTTDcRgLCNxF9ilTpm+vI5ScBCNywdqbHygoX9M/OzElm1lD/c4yRf+Zt+JE1K0/AXFogsWSfo0C6Pet0j2cBiVAO3VRJNlTQdPOJRZ3kDotym599BJroJmSGyW6ZSnq0g2YgbX0DTAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UR7l+OkffQKba4rEVoAcNglywMyVbJo8gFYVAmFw0hI=;
- b=Q69NQKaLKkStQyVLLyJMcs2wY7gFLxjUb1H/inoo59Bn/Q/ReOsrzjE5gBygzNqKhtZIWJ4HAl6AIaSIRyB53oT1k7uQOk/2C7gtAda/BhXfJnL17ogSzv7acTrZIRabZv3nmcEl9cfe8XGDvN+9yS+QPqEEV6Xdl6FSO//Ry8VmBzV+9KUKbyZkcOHjpuAV4wZEcBFIZClxA0dLz0N1YI12fNPwPr3iqAcq9FcYPsZsGZcJ63VQ9ruX2dIWKlFFcmhuKaJUekzF9B8TxtPq5CBovNJHeovBeXJnT3vbjNlvNfUOQRYYxKqGj+Mtl0VRFFanS/xmkBgPZiJlc3L2kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UR7l+OkffQKba4rEVoAcNglywMyVbJo8gFYVAmFw0hI=;
- b=oqX+HZ1Cl3PRBjP18CqbMtaK15U7qPokuT0ujvfW68Bs9sXrvK7szzOHFNElwf7YO/mdG3pIP6yLwCUvQD3lOlhMmNkZy/MfV86ydrNVvWwy69se26g7V/dMfX+T6ZpfxYPD+p+w+IepKAOp9K33VydylSFplhdDiI+x28S3ke4=
-Received: from BN9PR03CA0157.namprd03.prod.outlook.com (2603:10b6:408:f4::12)
- by BY5PR12MB4131.namprd12.prod.outlook.com (2603:10b6:a03:212::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Thu, 21 Mar
- 2024 20:44:17 +0000
-Received: from BN3PEPF0000B077.namprd04.prod.outlook.com
- (2603:10b6:408:f4:cafe::f6) by BN9PR03CA0157.outlook.office365.com
- (2603:10b6:408:f4::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
- Transport; Thu, 21 Mar 2024 20:44:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN3PEPF0000B077.mail.protection.outlook.com (10.167.243.122) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Thu, 21 Mar 2024 20:44:16 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
- 2024 15:44:08 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Mar
- 2024 15:44:08 -0500
-Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 21 Mar 2024 15:44:06 -0500
-From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7857D12CD89;
+	Thu, 21 Mar 2024 20:43:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711053828; cv=none; b=S4qpzLEsJ1+XsraLPLzVUPgT6g36SYZHZktXWT3omEwLS/aUtNjsJvTa9ml05LDDb/lwEBoiX+LquJx0QAdcokGuH3gWdUcbefMYGTUR8k3S/GRXAEXe09x8rMVEWoCK1Yx1faT7k1N0nYiKe+g6wSEMQQp2zZMWFUEKEqzdG68=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711053828; c=relaxed/simple;
+	bh=FDLJrtlyM9+tF+ndIBWA6li6OsU/NkF+XdC3UObSUQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBvkVN+eCAx42Vg1MWuBqZrwwD/r24XSAMYa8ehU/V8ew+hMtc5YiZWxFerSO+2u+4bn5vFmQLZoIJPC57Yk7ho/3/olC0T0KF34ZWis8qnuESt1s600Wn6mdFaYk7EZEsuTKeNA6rI8fnGE37BB0ytC5szfGUPmHth0ApdYnHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=REzcuhgs; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711053827; x=1742589827;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FDLJrtlyM9+tF+ndIBWA6li6OsU/NkF+XdC3UObSUQE=;
+  b=REzcuhgs4ppgq5guUewn1Nmmll6wtJL8Cfk6Eyq+ZeBefXxtnkgYY7gl
+   aQgXFFXXC6AwgTWOi83ygd6gaggMxcH6gVtCv8o4UDLLadham3KEaenbi
+   OudfEYjPcDS+9tFUW7KRAP7h05BDJLttWND9EKIzbRtMey2pu1XNFneWV
+   GNZsOXdSEyN4z2Xv8DD0jDvr9eufxtBYtwUE0vqsnrBaufm8SNoX7Fvdn
+   BmSzKLAvHLLSGkzgUkXNCDVkAgKRJvu2CjE3pFym2Rr4xukMEsjmQRPf3
+   c7ZN3tsuUMO7HR5tscK8lFbcey4sHQrK5RxXsoznDjRVYKY6CiV0e4tgJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6203257"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="6203257"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:43:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="14619224"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:43:45 -0700
 Date: Thu, 21 Mar 2024 13:43:45 -0700
-Subject: [PATCH v3 7/9] drm/atomic-helper: Add select_output_bus_format
- callback
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 044/130] KVM: TDX: Do TDX specific vcpu initialization
+Message-ID: <20240321204345.GQ1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <d6a21fe6ea9eb53c24b6527ef8e5a07f0c2e8806.1708933498.git.isaku.yamahata@intel.com>
+ <ZfvI8t7SlfIsxbmT@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240321-dp-live-fmt-v3-7-d5090d796b7e@amd.com>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
-In-Reply-To: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>, Andrzej
- Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, Jernej
- Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
-CC: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	<dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-X-Mailer: b4 0.13.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B077:EE_|BY5PR12MB4131:EE_
-X-MS-Office365-Filtering-Correlation-Id: 72523a37-23a2-4f8e-e5db-08dc49e7acff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	v2CgC+34DcYChLjnOoeZvazvHZE5CqhHHhLi36JPV8nAb9+EEi1HS11n9Mh1UbxytyLT6SX5WC5xm1AltODdqqq+TinLa7S2lKkWj50hNqwM5I3twZaHX2HMIAT+W+xsVqwZE1EACO5TKd9G/XH84p6bjlbZLXvuwv5tgb283pH6NC47dRHu7tA63BG9YxVKPXrXza6CxuDa1+tZ90lYIlfe4xsb1Savglv0A1ALDBuQtcbHutj6TGxQMRJmCln6MFoK39CAZYyZilnrzzvsK6fc9y00SsnOynr9XsK7rhOKBoxfpl9Mz2XuwyYt0WUPWscOKW6m+7d58fnH9GSVIlCnvukmAf6cLP/4ttyx2r7MwJlQcIF+ouUZDbUi6A8A9UAN71A+UynExl+ogYQutKtOlYv0cEftUXmzhBzv9krOuyrR2eAAA70ryO6l2phHk/Y0kZb/N+c2s3Cc7WwyuZWJG9nIPG/BNKt5YO7F+mC8hBUJTrybatyPJ6qYnRRc7joSijc5HR/Y7/rlDDFV7ZSLnvPnqqvMXClivFGbMZD2KUkOmD9naRQgrYqerzxsgoO+SzIRSZqTjJXbQz7WqzWLPWXohtcWnr/EBWRAEWp5SiIzhY3GB0KT+qVdiCK/SxtDrO6vbz+zplMyzf1RrtV7QVz57Tn5JnP7JyEDCzzaRdnFtmn0uUPvZ8P19eRoYTlFO3mRwm17x+sZxkl+4kHnTdXh7Vk1/RTI2rL3vMLTbknukXO2H4Vn67M/SIXKVN9fPFg55Y4bsrBIr3YviA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(7416005)(82310400014)(36860700004)(1800799015)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 20:44:16.6461
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72523a37-23a2-4f8e-e5db-08dc49e7acff
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B077.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4131
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfvI8t7SlfIsxbmT@chao-email>
 
-Add optional drm_crtc_helper_funcs.select_output_bus_format callback. This
-callback allows to negotiate compatible media bus format on the link
-between CRTC and connected DRM encoder or DRM bridge chain. A good usage
-example is the CRTC implemented as FPGA soft IP. This kind of CRTC will
-most certainly support a single output media bus format, as supporting
-multiple runtime options consumes extra FPGA resources. A variety of
-options for the FPGA designs are usually achieved by synthesizing IP with
-different parameters.
+On Thu, Mar 21, 2024 at 01:43:14PM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-Add drm_helper_crtc_select_output_bus_format that wraps
-drm_crtc_helper_funcs.select_output_bus_format.
+> >+/* VMM can pass one 64bit auxiliary data to vcpu via RCX for guest BIOS. */
+> >+static int tdx_td_vcpu_init(struct kvm_vcpu *vcpu, u64 vcpu_rcx)
+> >+{
+> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
+> >+	struct vcpu_tdx *tdx = to_tdx(vcpu);
+> >+	unsigned long *tdvpx_pa = NULL;
+> >+	unsigned long tdvpr_pa;
+> >+	unsigned long va;
+> >+	int ret, i;
+> >+	u64 err;
+> >+
+> >+	if (is_td_vcpu_created(tdx))
+> >+		return -EINVAL;
+> >+
+> >+	/*
+> >+	 * vcpu_free method frees allocated pages.  Avoid partial setup so
+> >+	 * that the method can't handle it.
+> >+	 */
+> >+	va = __get_free_page(GFP_KERNEL_ACCOUNT);
+> >+	if (!va)
+> >+		return -ENOMEM;
+> >+	tdvpr_pa = __pa(va);
+> >+
+> >+	tdvpx_pa = kcalloc(tdx_info->nr_tdvpx_pages, sizeof(*tdx->tdvpx_pa),
+> >+			   GFP_KERNEL_ACCOUNT);
+> >+	if (!tdvpx_pa) {
+> >+		ret = -ENOMEM;
+> >+		goto free_tdvpr;
+> >+	}
+> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
+> >+		va = __get_free_page(GFP_KERNEL_ACCOUNT);
+> >+		if (!va) {
+> >+			ret = -ENOMEM;
+> >+			goto free_tdvpx;
+> >+		}
+> >+		tdvpx_pa[i] = __pa(va);
+> >+	}
+> >+
+> >+	err = tdh_vp_create(kvm_tdx->tdr_pa, tdvpr_pa);
+> >+	if (KVM_BUG_ON(err, vcpu->kvm)) {
+> >+		ret = -EIO;
+> >+		pr_tdx_error(TDH_VP_CREATE, err, NULL);
+> >+		goto free_tdvpx;
+> >+	}
+> >+	tdx->tdvpr_pa = tdvpr_pa;
+> >+
+> >+	tdx->tdvpx_pa = tdvpx_pa;
+> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
+> 
+> Can you merge the for-loop above into this one? then ...
+> 
+> >+		err = tdh_vp_addcx(tdx->tdvpr_pa, tdvpx_pa[i]);
+> >+		if (KVM_BUG_ON(err, vcpu->kvm)) {
+> >+			pr_tdx_error(TDH_VP_ADDCX, err, NULL);
+> 
+> >+			for (; i < tdx_info->nr_tdvpx_pages; i++) {
+> >+				free_page((unsigned long)__va(tdvpx_pa[i]));
+> >+				tdvpx_pa[i] = 0;
+> >+			}
+> 
+> ... no need to free remaining pages.
 
-Incorporate select_output_bus_format callback into the format negotiation
-stage to fix the input bus format of the first DRM bridge in the chain.
+Makes sense. Let me clean up this.
 
-Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
----
- drivers/gpu/drm/drm_bridge.c             | 14 +++++++++++--
- drivers/gpu/drm/drm_crtc_helper.c        | 36 ++++++++++++++++++++++++++++++++
- include/drm/drm_crtc_helper.h            |  5 +++++
- include/drm/drm_modeset_helper_vtables.h | 30 ++++++++++++++++++++++++++
- 4 files changed, 83 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 521a71c61b16..955ca108cd4b 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -28,6 +28,7 @@
- 
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_crtc_helper.h>
- #include <drm/drm_debugfs.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_encoder.h>
-@@ -879,7 +880,8 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 	unsigned int i, num_in_bus_fmts = 0;
- 	struct drm_bridge_state *cur_state;
- 	struct drm_bridge *prev_bridge;
--	u32 *in_bus_fmts;
-+	struct drm_crtc *crtc = crtc_state->crtc;
-+	u32 *in_bus_fmts, in_fmt;
- 	int ret;
- 
- 	prev_bridge = drm_bridge_get_prev_bridge(cur_bridge);
-@@ -933,7 +935,15 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 		return -ENOMEM;
- 
- 	if (first_bridge == cur_bridge) {
--		cur_state->input_bus_cfg.format = in_bus_fmts[0];
-+		in_fmt = drm_helper_crtc_select_output_bus_format(crtc,
-+							crtc_state,
-+							in_bus_fmts,
-+							num_in_bus_fmts);
-+		if (!in_fmt) {
-+			kfree(in_bus_fmts);
-+			return -ENOTSUPP;
-+		}
-+		cur_state->input_bus_cfg.format = in_fmt;
- 		cur_state->output_bus_cfg.format = out_bus_fmt;
- 		kfree(in_bus_fmts);
- 		return 0;
-diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
-index 2dafc39a27cb..f2e12a3c4e5f 100644
---- a/drivers/gpu/drm/drm_crtc_helper.c
-+++ b/drivers/gpu/drm/drm_crtc_helper.c
-@@ -1055,3 +1055,39 @@ int drm_helper_force_disable_all(struct drm_device *dev)
- 	return ret;
- }
- EXPORT_SYMBOL(drm_helper_force_disable_all);
-+
-+/**
-+ * drm_helper_crtc_select_output_bus_format - Select output media bus format
-+ * @crtc: The CRTC to query
-+ * @crtc_state: The new CRTC state
-+ * @supported_fmts: List of media bus format options to pick from
-+ * @num_supported_fmts: Number of media bus formats in @supported_fmts list
-+ *
-+ * Encoder drivers may call this helper to give the connected CRTC a chance to
-+ * select compatible or preffered media bus format to use over the CRTC encoder
-+ * link. Encoders should provide list of supported input MEDIA_BUS_FMT_* for
-+ * CRTC to pick from. CRTC driver is expected to select preferred media bus
-+ * format from the list and, once enabled, generate the signal accordingly.
-+ *
-+ * Returns:
-+ * Selected preferred media bus format or 0 if CRTC does not support any from
-+ * @supported_fmts list.
-+ */
-+u32 drm_helper_crtc_select_output_bus_format(struct drm_crtc *crtc,
-+					     struct drm_crtc_state *crtc_state,
-+					     const u32 *supported_fmts,
-+					     unsigned int num_supported_fmts)
-+{
-+	if (!crtc || !supported_fmts || !num_supported_fmts)
-+		return 0;
-+
-+	if (!crtc->helper_private ||
-+	    !crtc->helper_private->select_output_bus_format)
-+		return supported_fmts[0];
-+
-+	return crtc->helper_private->select_output_bus_format(crtc,
-+							crtc_state,
-+							supported_fmts,
-+							num_supported_fmts);
-+}
-+EXPORT_SYMBOL(drm_helper_crtc_select_output_bus_format);
-diff --git a/include/drm/drm_crtc_helper.h b/include/drm/drm_crtc_helper.h
-index 8c886fc46ef2..b7eb52f3ce41 100644
---- a/include/drm/drm_crtc_helper.h
-+++ b/include/drm/drm_crtc_helper.h
-@@ -38,6 +38,7 @@
- struct drm_atomic_state;
- struct drm_connector;
- struct drm_crtc;
-+struct drm_crtc_state;
- struct drm_device;
- struct drm_display_mode;
- struct drm_encoder;
-@@ -61,5 +62,9 @@ int drm_helper_connector_dpms(struct drm_connector *connector, int mode);
- 
- void drm_helper_resume_force_mode(struct drm_device *dev);
- int drm_helper_force_disable_all(struct drm_device *dev);
-+u32 drm_helper_crtc_select_output_bus_format(struct drm_crtc *crtc,
-+					     struct drm_crtc_state *crtc_state,
-+					     const u32 *supported_fmts,
-+					     unsigned int num_supported_fmts);
- 
- #endif
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index 881b03e4dc28..6d5a081e21a4 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -489,6 +489,36 @@ struct drm_crtc_helper_funcs {
- 				     bool in_vblank_irq, int *vpos, int *hpos,
- 				     ktime_t *stime, ktime_t *etime,
- 				     const struct drm_display_mode *mode);
-+
-+	/**
-+	 * @select_output_bus_format
-+	 *
-+	 * Called by the connected DRM encoder to negotiate input media bus
-+	 * format. CRTC is expected to pick preferable media formats from the
-+	 * list provided by the DRM encoder.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Parameters:
-+	 *
-+	 * crtc:
-+	 *     The CRTC.
-+	 * crcs_state:
-+	 *     New CRTC state.
-+	 * supported_fmts:
-+	 *     List of input bus formats supported by the encoder.
-+	 * num_supported_fmts:
-+	 *     Number of formats in the list.
-+	 *
-+	 * Returns:
-+	 *
-+	 * Preferred bus format from the list or 0 if CRTC doesn't support any
-+	 * from the provided list.
-+	 */
-+	u32 (*select_output_bus_format)(struct drm_crtc *crtc,
-+					struct drm_crtc_state *crtc_state,
-+					const u32 *supported_fmts,
-+					unsigned int num_supported_fmts);
- };
- 
- /**
+> >+			/* vcpu_free method frees TDVPX and TDR donated to TDX */
+> >+			return -EIO;
+> >+		}
+> >+	}
+> >+
+> >+	err = tdh_vp_init(tdx->tdvpr_pa, vcpu_rcx);
+> >+	if (KVM_BUG_ON(err, vcpu->kvm)) {
+> >+		pr_tdx_error(TDH_VP_INIT, err, NULL);
+> >+		return -EIO;
+> >+	}
+> >+
+> >+	vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+> >+	tdx->td_vcpu_created = true;
+> >+	return 0;
+> >+
+> >+free_tdvpx:
+> >+	for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
+> >+		if (tdvpx_pa[i])
+> >+			free_page((unsigned long)__va(tdvpx_pa[i]));
+> >+		tdvpx_pa[i] = 0;
+> >+	}
+> >+	kfree(tdvpx_pa);
+> >+	tdx->tdvpx_pa = NULL;
+> >+free_tdvpr:
+> >+	if (tdvpr_pa)
+> >+		free_page((unsigned long)__va(tdvpr_pa));
+> >+	tdx->tdvpr_pa = 0;
+> >+
+> >+	return ret;
+> >+}
+> >+
+> >+int tdx_vcpu_ioctl(struct kvm_vcpu *vcpu, void __user *argp)
+> >+{
+> >+	struct msr_data apic_base_msr;
+> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
+> >+	struct vcpu_tdx *tdx = to_tdx(vcpu);
+> >+	struct kvm_tdx_cmd cmd;
+> >+	int ret;
+> >+
+> >+	if (tdx->initialized)
+> >+		return -EINVAL;
+> >+
+> >+	if (!is_hkid_assigned(kvm_tdx) || is_td_finalized(kvm_tdx))
+> 
+> These checks look random e.g., I am not sure why is_td_created() isn't check here.
+> 
+> A few helper functions and boolean variables are added to track which stage the
+> TD or TD vCPU is in. e.g.,
+> 
+> is_hkid_assigned()
+> is_td_finalized()
+> is_td_created()
+> tdx->initialized
+> td_vcpu_created
+> 
+> Insteading of doing this, I am wondering if adding two state machines for
+> TD and TD vCPU would make the implementation clear and easy to extend.
 
+Let me look into the state machine. Originally I hoped we don't need it, but
+it seems to deserve the state machine..
+
+
+> >+		return -EINVAL;
+> >+
+> >+	if (copy_from_user(&cmd, argp, sizeof(cmd)))
+> >+		return -EFAULT;
+> >+
+> >+	if (cmd.error)
+> >+		return -EINVAL;
+> >+
+> >+	/* Currently only KVM_TDX_INTI_VCPU is defined for vcpu operation. */
+> >+	if (cmd.flags || cmd.id != KVM_TDX_INIT_VCPU)
+> >+		return -EINVAL;
+> 
+> Even though KVM_TD_INIT_VCPU is the only supported command, it is worthwhile to
+> use a switch-case statement. New commands can be added easily without the need
+> to refactor this function first.
+
+Yes. For KVM_MAP_MEMORY, I will make KVM_TDX_INIT_MEM_REGION vcpu ioctl instead
+of vm ioctl because it is consistent and scalable.  We'll have switch statement
+in the next respin.
+
+> >+
+> >+	/*
+> >+	 * As TDX requires X2APIC, set local apic mode to X2APIC.  User space
+> >+	 * VMM, e.g. qemu, is required to set CPUID[0x1].ecx.X2APIC=1 by
+> >+	 * KVM_SET_CPUID2.  Otherwise kvm_set_apic_base() will fail.
+> >+	 */
+> >+	apic_base_msr = (struct msr_data) {
+> >+		.host_initiated = true,
+> >+		.data = APIC_DEFAULT_PHYS_BASE | LAPIC_MODE_X2APIC |
+> >+		(kvm_vcpu_is_reset_bsp(vcpu) ? MSR_IA32_APICBASE_BSP : 0),
+> >+	};
+> >+	if (kvm_set_apic_base(vcpu, &apic_base_msr))
+> >+		return -EINVAL;
+> 
+> Exporting kvm_vcpu_is_reset_bsp() and kvm_set_apic_base() should be done
+> here (rather than in a previous patch).
+
+Sure.
+
+
+> >+
+> >+	ret = tdx_td_vcpu_init(vcpu, (u64)cmd.data);
+> >+	if (ret)
+> >+		return ret;
+> >+
+> >+	tdx->initialized = true;
+> >+	return 0;
+> >+}
+> >+
+> 
+> >diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> >index c002761bb662..2bd4b7c8fa51 100644
+> >--- a/arch/x86/kvm/x86.c
+> >+++ b/arch/x86/kvm/x86.c
+> >@@ -6274,6 +6274,12 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+> > 	case KVM_SET_DEVICE_ATTR:
+> > 		r = kvm_vcpu_ioctl_device_attr(vcpu, ioctl, argp);
+> > 		break;
+> >+	case KVM_MEMORY_ENCRYPT_OP:
+> >+		r = -ENOTTY;
+> 
+> Maybe -EINVAL is better. Because previously trying to call this on vCPU fd
+> failed with -EINVAL given ...
+
+Oh, ok. Will change it.  I followed VM ioctl case as default value. But vcpu
+ioctl seems to have -EINVAL as default value.
 -- 
-2.25.1
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
