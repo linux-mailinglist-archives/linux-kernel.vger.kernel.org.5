@@ -1,107 +1,254 @@
-Return-Path: <linux-kernel+bounces-110536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43A89886046
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:05:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B93FB886047
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:06:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84B81F2369E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA39284430
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5A71332B6;
-	Thu, 21 Mar 2024 18:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2441332BC;
+	Thu, 21 Mar 2024 18:06:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UjXTY4ym"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w7lT68Oz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MYtuAGMa";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w7lT68Oz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MYtuAGMa"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6141212BF3E
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2763485938;
+	Thu, 21 Mar 2024 18:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044348; cv=none; b=hO+2JTXI+TYZ/Jtlo2P8ooqZQCjqkEIJwMMWnGUNK/MUFl4mBj2RaEEOa+Hcmbf4nLk8XQoTI6cQoBfk34YFV6cF9tgjjFeWbsau2ClvNwnvowe0ssRZNqIIU8GNg3stxsfkJYrYHNQJbj29ULf40BssFz9pQebwwKkjOzFj5Zc=
+	t=1711044392; cv=none; b=N2YA6iLanCiKco8XQPbT3E8IB30aGeCWUppjWhwzUWu/zQ/LcIP/Yv+l+1A4SBRPublPuotPBMFDaaZp10YGrz0vPUuZfaP3r8YzJ033tlAM9XokvZGygPV2uNdWBnoPAlQ7qMH+ctMgpIRBaO+oYou4KZZrmek2/cJeMYARpds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044348; c=relaxed/simple;
-	bh=i30qiLYfNUY72DfrE1cT/dPxNGz6ipB+9wUBiDjUtho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BW879J2wZgK5U0glpKVec9DPiPDEpPiXSHGHqPiNevcMlPfvt9KSwMsxmOwd/Bdb3S1SHQ1NXTneJrjha6cM+Y1gUem+VB3SlsSPJRAjIG7XlWvrfdiGeneJZ5ViIS1642GQ3/Sc31M97sabTsA6gOUXJQGCQ90+zdaRL8RzcN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UjXTY4ym; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d4a901e284so28027501fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711044344; x=1711649144; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dh+H36p7va+V4Lc6HuD7WLMtjuJ+MxeQtzJ/2W8wqJg=;
-        b=UjXTY4ymnQ8pHfFiOg5LFlLTK4gx2hjlhdNQij2MVaLfLQV9Km1vxSSo1DOnidt2O8
-         zck2cn/UH4mP/IMHI49wp0iwK7b62cQMD9Fdx1fXigDzw0jGTQULqjjtfy+G4m9qh5ON
-         vUDAZP3ZfuP61LH3fbfFrz1bsa5uEiAndJURc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711044344; x=1711649144;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dh+H36p7va+V4Lc6HuD7WLMtjuJ+MxeQtzJ/2W8wqJg=;
-        b=e7L6fNH2PTixsVzO7nZugndBYxVDE4MJDtsTKf1I8K9M0vAUBa+o4MmpmZ0w0+DXkL
-         +Q38A/4P9EoenLG6oVNdBv4mTHcZLGRsY1BOC/GYJxniPmbsK4Q5QjYyVy+y9gXNUBw8
-         KBmSyZ618pWp3fR32rXYf8ItSb3admq6lWnbhnuFgcZ7ygkn+SOB/bjtW76LVgHwS9Zd
-         mwmkwNh+Hn7w5nGarfnkLrzSDIVOyABTU0pHDgYkBiZniy4Orw23SBGAxY4VLsUdzIZU
-         CDJJCA+j7GHr43B4SSd95HuU0iYC9lyKhPCl3SsCcBKXBqka+7qU9t5V8+MdiC5Dhj8l
-         Zi2A==
-X-Forwarded-Encrypted: i=1; AJvYcCUjS1Wc3e2wdoMI2mzYN3rCgT7VWz/0Qv42Nx64hAz4gfwJG0hy/eo9Ko7jX3b+6RD2cscO07gRRvtsA1VS7tkZcwMD9qga/pSqIzT1
-X-Gm-Message-State: AOJu0YzV2zufiwtquL0Ly3jWbRLaFtWAjrE/W8SZ5XDyO0svO2IRAqC7
-	nD/AmCOa5Cuz8aH5yEK6qkL4swxhUvir9r8aFx7Yn2EoPMOH3rGVmMEt5JB1EtSq455531RuyTi
-	56iKWJg==
-X-Google-Smtp-Source: AGHT+IELEf6XXnJnRhtiNovE/mXgElVa4eH7oAkiagbd6t8YZrz8NRKWXECq/TBTULX37MKI/TsKPw==
-X-Received: by 2002:a2e:2e0f:0:b0:2d4:22b6:eee6 with SMTP id u15-20020a2e2e0f000000b002d422b6eee6mr230108lju.8.1711044344379;
-        Thu, 21 Mar 2024 11:05:44 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id p7-20020a2e9a87000000b002d2191e20e1sm33710lji.92.2024.03.21.11.05.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 11:05:43 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d28051376eso26534821fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX8QURUdOdhoyvtHq9cuUkyBE3tAKzm/51P/DTHjh2QXrHZuUs5/2yqqi0hTTIb7c3GlZuxMhMNtBvlaVn2/S0EVk2vtMFx+6JZ4B8D
-X-Received: by 2002:a05:6512:46a:b0:513:bed1:5069 with SMTP id
- x10-20020a056512046a00b00513bed15069mr120672lfd.13.1711044343093; Thu, 21 Mar
- 2024 11:05:43 -0700 (PDT)
+	s=arc-20240116; t=1711044392; c=relaxed/simple;
+	bh=kJrZ3FrkwvsIEAdYklwK2BTz9nTXtGc86+l16KyBOEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yim4OGkhf1pLAW9LHVdSQYCsqm1CE6O9SMgwgHiliX0NXUAYMdMaXzxbYPAn4DwSIKUivyWRhprVvilnbqmVE+3q786eUo71GUob5TDFgigNp2PFCt81J0RftaN6JkMOyYhai8ReNMMd8dNQ3g/330IXYCdIHtDooD+fhaLcSew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w7lT68Oz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MYtuAGMa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w7lT68Oz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MYtuAGMa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9059421E83;
+	Thu, 21 Mar 2024 18:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711044385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CGVHmTaTp8V9BZmoFhStOl7fyzif6q6m2j5KQberDvI=;
+	b=w7lT68OzRPoxfG/hfxpofqN8QxlCEI72WnQVD/otuPit/xsQS3kknF0DZcO31LBzqy4B5l
+	ZKCw+9zyq50FVn2Y9QxS2C0mBmUNUyz1TJF1aFzethOvkk9y7tmxVS4Tju4Qtdb3SGUiga
+	9U31koKDRrrb07uPZW4g5wnW4MpM62Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711044385;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CGVHmTaTp8V9BZmoFhStOl7fyzif6q6m2j5KQberDvI=;
+	b=MYtuAGMaNl8DwPSPn6WffLO7cvdpC1k+t9LxlY0JUkXnuc53PR8ZW9ZbehMg9bgaQigS2y
+	ZuRsp7pPd7CwpDDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711044385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CGVHmTaTp8V9BZmoFhStOl7fyzif6q6m2j5KQberDvI=;
+	b=w7lT68OzRPoxfG/hfxpofqN8QxlCEI72WnQVD/otuPit/xsQS3kknF0DZcO31LBzqy4B5l
+	ZKCw+9zyq50FVn2Y9QxS2C0mBmUNUyz1TJF1aFzethOvkk9y7tmxVS4Tju4Qtdb3SGUiga
+	9U31koKDRrrb07uPZW4g5wnW4MpM62Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711044385;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CGVHmTaTp8V9BZmoFhStOl7fyzif6q6m2j5KQberDvI=;
+	b=MYtuAGMaNl8DwPSPn6WffLO7cvdpC1k+t9LxlY0JUkXnuc53PR8ZW9ZbehMg9bgaQigS2y
+	ZuRsp7pPd7CwpDDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7B675138A1;
+	Thu, 21 Mar 2024 18:06:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id eV3cHSF3/GWVOQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Mar 2024 18:06:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id DA2D0A0806; Thu, 21 Mar 2024 19:06:20 +0100 (CET)
+Date: Thu, 21 Mar 2024 19:06:20 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	willy@infradead.org, bfoster@redhat.com, jack@suse.cz,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	peterz@infradead.org
+Subject: Re: [PATCH 1/6] writeback: collect stats of all wb of bdi in
+ bdi_debug_stats_show
+Message-ID: <20240321180620.mbint45pbyc74vpg@quack3>
+References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
+ <20240320110222.6564-2-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321125518.1675903-1-andersson@kernel.org> <yniwjzjynmyndzqglfmwpy2th3vtadmms6ifxqs2ojo7wr66ne@ydnr3rltaddn>
-In-Reply-To: <yniwjzjynmyndzqglfmwpy2th3vtadmms6ifxqs2ojo7wr66ne@ydnr3rltaddn>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 21 Mar 2024 11:05:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgQA+Cj-_LtVuw-1n9jwrQ9pO8kVYBNNkA7OHHCDbFR0Q@mail.gmail.com>
-Message-ID: <CAHk-=wgQA+Cj-_LtVuw-1n9jwrQ9pO8kVYBNNkA7OHHCDbFR0Q@mail.gmail.com>
-Subject: Re: [GIT PULL] remoteproc updates for v6.9
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Davis <afd@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
-	Abel Vesa <abel.vesa@linaro.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Joakim Zhang <joakim.zhang@cixtech.com>, Mathieu Poirier <mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240320110222.6564-2-shikemeng@huaweicloud.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.cz,suse.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Thu, 21 Mar 2024 at 11:03, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> I was further notified that this conflicts with your tree, Linus. Below
-> is the resolution for this conflict.
+On Wed 20-03-24 19:02:17, Kemeng Shi wrote:
+> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
+> of whole bdi, but only writeback information of bdi in root cgroup is
+> collected. So writeback information in non-root cgroup are missing now.
+> To be more specific, considering following case:
+> 
+> /* create writeback cgroup */
+> cd /sys/fs/cgroup
+> echo "+memory +io" > cgroup.subtree_control
+> mkdir group1
+> cd group1
+> echo $$ > cgroup.procs
+> /* do writeback in cgroup */
+> fio -name test -filename=/dev/vdb ...
+> /* get writeback info of bdi */
+> cat /sys/kernel/debug/bdi/xxx/stats
+> The cat result unexpectedly implies that there is no writeback on target
+> bdi.
+> 
+> Fix this by collecting stats of all wb in bdi instead of only wb in
+> root cgroup.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Heh. This email came in after the pr-tracker-bot email notifying you
-that it's already done..
+Looks mostly good, one comment below:
 
-I think I got it all right, it didn't seem at all controversial, but
-maybe you should double-check.
+> ---
+>  mm/backing-dev.c | 93 ++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 70 insertions(+), 23 deletions(-)
+> 
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 5f2be8c8df11..788702b6c5dd 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -39,6 +39,19 @@ struct workqueue_struct *bdi_wq;
+>  #include <linux/debugfs.h>
+>  #include <linux/seq_file.h>
+>  
+> +struct wb_stats {
+> +	unsigned long nr_dirty;
+> +	unsigned long nr_io;
+> +	unsigned long nr_more_io;
+> +	unsigned long nr_dirty_time;
+> +	unsigned long nr_writeback;
+> +	unsigned long nr_reclaimable;
+> +	unsigned long nr_dirtied;
+> +	unsigned long nr_written;
+> +	unsigned long dirty_thresh;
+> +	unsigned long wb_thresh;
+> +};
+> +
+>  static struct dentry *bdi_debug_root;
+>  
+>  static void bdi_debug_init(void)
+> @@ -46,31 +59,65 @@ static void bdi_debug_init(void)
+>  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
+>  }
+>  
+> -static int bdi_debug_stats_show(struct seq_file *m, void *v)
+> +static void collect_wb_stats(struct wb_stats *stats,
+> +			     struct bdi_writeback *wb)
+>  {
+> -	struct backing_dev_info *bdi = m->private;
+> -	struct bdi_writeback *wb = &bdi->wb;
+> -	unsigned long background_thresh;
+> -	unsigned long dirty_thresh;
+> -	unsigned long wb_thresh;
+> -	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time;
+>  	struct inode *inode;
+>  
+> -	nr_dirty = nr_io = nr_more_io = nr_dirty_time = 0;
+>  	spin_lock(&wb->list_lock);
+>  	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
+> -		nr_dirty++;
+> +		stats->nr_dirty++;
+>  	list_for_each_entry(inode, &wb->b_io, i_io_list)
+> -		nr_io++;
+> +		stats->nr_io++;
+>  	list_for_each_entry(inode, &wb->b_more_io, i_io_list)
+> -		nr_more_io++;
+> +		stats->nr_more_io++;
+>  	list_for_each_entry(inode, &wb->b_dirty_time, i_io_list)
+>  		if (inode->i_state & I_DIRTY_TIME)
+> -			nr_dirty_time++;
+> +			stats->nr_dirty_time++;
+>  	spin_unlock(&wb->list_lock);
+>  
+> +	stats->nr_writeback += wb_stat(wb, WB_WRITEBACK);
+> +	stats->nr_reclaimable += wb_stat(wb, WB_RECLAIMABLE);
+> +	stats->nr_dirtied += wb_stat(wb, WB_DIRTIED);
+> +	stats->nr_written += wb_stat(wb, WB_WRITTEN);
+> +	stats->wb_thresh += wb_calc_thresh(wb, stats->dirty_thresh);
+> +}
+> +
+> +#ifdef CONFIG_CGROUP_WRITEBACK
+> +static void bdi_collect_stats(struct backing_dev_info *bdi,
+> +			      struct wb_stats *stats)
+> +{
+> +	struct bdi_writeback *wb;
+> +
+> +	/* protect wb from release */
+> +	mutex_lock(&bdi->cgwb_release_mutex);
+> +	list_for_each_entry(wb, &bdi->wb_list, bdi_node)
+> +		collect_wb_stats(stats, wb);
+> +	mutex_unlock(&bdi->cgwb_release_mutex);
+> +}
 
-          Linus
+So AFAICT this function can race against
+  bdi_unregister() -> wb_shutdown(&bdi->wb)
+
+because that doesn't take the cgwb_release_mutex. So we either need the RCU
+protection as Brian suggested or cgwb_lock or something. But given
+collect_wb_stats() can take a significant amount of time (traversing all
+the lists etc.) I think we'll need something more clever.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
