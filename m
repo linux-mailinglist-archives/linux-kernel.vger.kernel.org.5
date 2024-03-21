@@ -1,222 +1,155 @@
-Return-Path: <linux-kernel+bounces-110313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76AEA885D0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15464885D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99E301C2186D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:10:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACE61C218EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C5112BF26;
-	Thu, 21 Mar 2024 16:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2425A12BF37;
+	Thu, 21 Mar 2024 16:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dAhpKMau"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zoo3Siob"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F4F12BF23;
-	Thu, 21 Mar 2024 16:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB83812BF1A
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711037399; cv=none; b=IzxLOt6Cmt9cj13kPkD5e8o19B/xbb5IT+p5Syby8KtyNTJcddGq1WxAJFWjoSwIM6I8wydipSWYn9zQReiFVOD9F6tnHDH7O8n5eh1FpvCMk1Beaf9I2sc7VGaBQywaVB+9Kj6ipq3f5h6EMRs4b8VZhEpr4oFHgLmuEj+pJyA=
+	t=1711037391; cv=none; b=ralrvxS2jrB8SRTSEgs96aDQ0imcN4b/GVjgIasUFBQRpHMtKAEaEyfYJ/zGhzhGwE45eBUHHWqQbaPj/ZroAZ+K+RpUz6huFlhegwzoz3gBVhsq3sGMX32a7ZPB4o0vXIxGEm0cQjlOxvYpUl42cBtxmGLSI4Lh5qJYeYV2yGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711037399; c=relaxed/simple;
-	bh=st0jyZD6fF0/ceWO3qsXCDcdlU28KeOqhR8RwZFHnqw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Tj9HB7t84/+fsEn5jWsbB9kg1ie8k+4L+ANse0KduwwYVCEjVlw6m/anNuIIKs0HBx1rOj8XBwSjB9fiE/5GWVZoXDIMW/x14siIn3eFpwbPilP25SSmnhIrMn4HsSPjNkPJoQ4NYqQmq9b26mi4ZfHrciNFFfyZ/K5h8WW33p8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dAhpKMau; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LFph7b011971;
-	Thu, 21 Mar 2024 16:09:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=vTNZJe0IJWDIMN1SbdzAB6ehGYLIFRs8Ff9IeHLNYtA=;
- b=dAhpKMaumPYzgeaXGcRz3+01DkOtPhvksdFiVh8TGtkFRAb/IqpxXB4MsrV9uToy1kOV
- UquqfsPRYvqL/saQ5GJBfVTKNMDbRpCS7HdTBPJrZwB0t1gq0h86r93GRYBqf0mM3HdZ
- yXYvl6Lukh2RoXLoq09vqDfaMvj3WZGpD8jsNyzFba3WYGJzGJ+8tE+i7butysP6F/5o
- 0TVkN2IclH4HPIEh7GewCcGlzAJHMZZurAVqccyypqe/J6wsNrSK5ZLO0jBGl5JHLlY/
- kUWBYffiPTco3lA0qOwsrN7gCJOwCQNZECWihURnsJp6CGNEA85Tre9hsXmKS1sXx/bi pA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0nq48epm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 16:09:36 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LG9asD009100;
-	Thu, 21 Mar 2024 16:09:36 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0nq48epg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 16:09:36 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LDwf7R002773;
-	Thu, 21 Mar 2024 16:09:35 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2wtqu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 16:09:35 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LG9Wpk58851816
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 16:09:34 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7963458055;
-	Thu, 21 Mar 2024 16:09:32 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 62BF85804B;
-	Thu, 21 Mar 2024 16:09:31 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Mar 2024 16:09:31 +0000 (GMT)
-Message-ID: <d957dbd3-4975-48d7-abc5-1a01c0959ea3@linux.ibm.com>
-Date: Thu, 21 Mar 2024 12:09:30 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Documentation: tpm_tis
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, linux-integrity@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>,
-        "Daniel P . Smith" <dpsmith@apertussolutions.com>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Alexander Steffen <Alexander.Steffen@infineon.com>,
-        keyrings@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-References: <20240320085601.40450-1-jarkko@kernel.org>
- <afc9471c-1c28-4384-82c1-29464ca1fb1f@linux.ibm.com>
- <CZZJQR121P7H.3QS68A6320S32@kernel.org>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CZZJQR121P7H.3QS68A6320S32@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SD3MVmc3-Va9D44QCOqk-nRPCX-gp5VX
-X-Proofpoint-GUID: k7P-IGXBL7-en4PS3OqwZqkLuLHcI3iB
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1711037391; c=relaxed/simple;
+	bh=Efa9pooFtZFexc8t2FHAlDSOT6+OQH2tDlvcl4EcU6s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s1h25r17iK47SGGHSoDiRrKin6j9dSadjUneAqSdi5Ev3Dweu02SH1a3jlNhg0zCFHQfoI3PNBvEGZLzozyH3rKMQu4LGSwPjZM0kw8gNLQ0k98z2a7f9IxuCSNA3fwIqst47PYv2vohuo0RAIjDVzrMhLd/Gn3bglsDQapkX6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zoo3Siob; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711037388;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4cR8GpDLO+4FVgHiOEVtV5NgNDutqCmPeOvWuL5WwZo=;
+	b=Zoo3Sioby/zzX/878P7HZKdxDD+j4mIoD+9EIxeWxYvtR/dKD5BjX3ok8d+iZOHChTSyUH
+	fz6xu5F0Os8/xK5EeQTaRZHEui7wi6YCU3AD/pjR03Q6ClsadrbQ9pCtH6b0rMkPofWc+r
+	LBcnaMwmKbixhlRnFsbiV5ErE58DR/I=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-16-2VBo6QdyOTG6Bbg179lG2g-1; Thu, 21 Mar 2024 12:09:46 -0400
+X-MC-Unique: 2VBo6QdyOTG6Bbg179lG2g-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-568728e521bso1060678a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:09:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711037385; x=1711642185;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4cR8GpDLO+4FVgHiOEVtV5NgNDutqCmPeOvWuL5WwZo=;
+        b=WitsCJJ52EiSvGsrRgcoPD2uE25sxdnJqoLPG4I5WlOqA4OLX077bJUwpD7LYhPn2p
+         hbns5QfEGxOBv/SjQ6GhZ35gvAxQ4Kt9ikcq7NjMIQPvwaVkfbOFV/5x0xIWFF7QOhce
+         y5dneNOwb6Qj03PSjePI985IwqyecpzjvPL/3sfvHlNfjssk5bEegtrbDBpwNmt+MBRY
+         VeRnsXd6OKK4YKOjsltgVorYjpXcwEr1OfB2Bd/QcRiiirS73vCLSuf6dQIaiPBUm289
+         Tsvb2uK+DPuDDKn/Z4PYbGPeTD3j1002YsmbNPtfXJ6g/cYkvbUjaDHOVndbhH6VWzSV
+         SN6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXlBHyt+1dqmvkW1x5D3hg2qDFaz7bUTBuCe7MNKEEybKnNS6kNZ7C/fxz6JuWzNAuZIKerbkKGh2tXBTV8j1CINlGyyES83tLbbWO8
+X-Gm-Message-State: AOJu0YycLiuC6ku9wd0E3cpg+hjZUlFnAD0GoDExDiAhWNFkYjwkvJ4Q
+	GyfQ718z6W0zvlnVZcD68vkPmqqQHRAh3vCjPb7D/QrYufKjMk1GsuE8mFesf6JiUoasy9zurKP
+	zdNsEHxXP/fuVgJOP6pIJXuniBDYD5FWdRvYqR5L3Z9j4mXUbNOTsZjPna2z6R+ffK4+SE5+KP3
+	fYLQ1HvmXpUATZVJfwFt5aV7xMgizhx1B1StjL
+X-Received: by 2002:a05:6402:2421:b0:566:f5d6:4b4 with SMTP id t33-20020a056402242100b00566f5d604b4mr6854709eda.12.1711037385197;
+        Thu, 21 Mar 2024 09:09:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFJczUOKWHiXnEN5u0YPmmuAnhgkpGir9OOZXAH68RtsDs3o/mdfwXGaEp7tIlIBwPP814Hb6KspJCMPCXLbDI=
+X-Received: by 2002:a05:6402:2421:b0:566:f5d6:4b4 with SMTP id
+ t33-20020a056402242100b00566f5d604b4mr6854684eda.12.1711037384888; Thu, 21
+ Mar 2024 09:09:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 mlxlogscore=995 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403210117
+References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
+ <20240315-hid-bpf-sleepable-v4-4-5658f2540564@kernel.org> <bee98dce6c5bf59fb1ad06855f0a1740b8195d45.camel@gmail.com>
+In-Reply-To: <bee98dce6c5bf59fb1ad06855f0a1740b8195d45.camel@gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Thu, 21 Mar 2024 17:09:32 +0100
+Message-ID: <CAO-hwJLh00--9AbS=7z4+W7FgA+hLA8hViMmaMMfz2mERcMwhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/6] bpf/helpers: mark the callback of
+ bpf_timer_set_sleepable_cb() as sleepable
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 19, 2024 at 12:54=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Fri, 2024-03-15 at 15:29 +0100, Benjamin Tissoires wrote:
+> [...]
+>
+> > @@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifie=
+r_env *env,
+> >
+> >  static bool in_sleepable(struct bpf_verifier_env *env)
+> >  {
+> > -     return env->prog->sleepable;
+> > +     return env->prog->sleepable ||
+> > +            (env->cur_state && env->cur_state->in_sleepable);
+> >  }
+>
+> I was curious why 'env->cur_state &&' check was needed and found that
+> removing it caused an error in the following fragment:
+>
+> static int do_misc_fixups(struct bpf_verifier_env *env)
+> {
+>                 ...
+>                 if (is_storage_get_function(insn->imm)) {
+>                         if (!in_sleepable(env) ||
+>                             env->insn_aux_data[i + delta].storage_get_fun=
+c_atomic)
+>                                 insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, =
+(__force __s32)GFP_ATOMIC);
+>                         else
+>                                 insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, =
+(__force __s32)GFP_KERNEL);
+>                         ...
+>                 }
+>                 ...
+> }
+>
+> When do_misc_fixups() is done env->cur_state is NULL.
+> Current implementation would use GFP_ATOMIC allocation even for
+> sleepable callbacks, where GFP_KERNEL is sufficient.
+> Is this is something we want to address?
 
+I honestly have no idea of the impact there.
 
-On 3/21/24 11:51, Jarkko Sakkinen wrote:
-> On Wed Mar 20, 2024 at 6:15 PM EET, Stefan Berger wrote:
->>
->>
->> On 3/20/24 04:56, Jarkko Sakkinen wrote:
->>> Based recent discussions on LKML, provide preliminary bits of tpm_tis_core
->>> dependent drivers. Includes only bare essentials but can be extended later
->>> on case by case. This way some people may even want to read it later on.
->>>
->>> Cc: Jonathan Corbet <corbet@lwn.net>
->>> CC: Daniel P. Smith <dpsmith@apertussolutions.com>
->>> Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->>> Cc: Peter Huewe <peterhuewe@gmx.de>
->>> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
->>> Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
->>> Cc: keyrings@vger.kernel.org
->>> Cc: linux-doc@vger.kernel.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: linux-integrity@vger.kernel.org
->>> Cc: Randy Dunlap <rdunlap@infradead.org>
->>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
->>> ---
->>> v2:
->>> - Fixed errors reported by Randy:
->>>     https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@infradead.org/
->>> - Improved the text a bit to have a better presentation.
->>> ---
->>>    Documentation/security/tpm/index.rst   |  1 +
->>>    Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
->>>    2 files changed, 31 insertions(+)
->>>    create mode 100644 Documentation/security/tpm/tpm_tis.rst
->>>
->>> diff --git a/Documentation/security/tpm/index.rst b/Documentation/security/tpm/index.rst
->>> index fc40e9f23c85..f27a17f60a96 100644
->>> --- a/Documentation/security/tpm/index.rst
->>> +++ b/Documentation/security/tpm/index.rst
->>> @@ -5,6 +5,7 @@ Trusted Platform Module documentation
->>>    .. toctree::
->>>    
->>>       tpm_event_log
->>> +   tpm_tis
->>>       tpm_vtpm_proxy
->>>       xen-tpmfront
->>>       tpm_ftpm_tee
->>> diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/security/tpm/tpm_tis.rst
->>> new file mode 100644
->>> index 000000000000..b331813b3c45
->>> --- /dev/null
->>> +++ b/Documentation/security/tpm/tpm_tis.rst
->>> @@ -0,0 +1,30 @@
->>> +.. SPDX-License-Identifier: GPL-2.0
->>> +
->>> +=========================
->>> +TPM FIFO interface Driver
->>> +=========================
->>> +
->>> +FIFO (First-In-First-Out) is the name of the hardware interface used by the
->>
->> FIFO is the type. I am surprised you call it a 'name'. I would say TIS
->> is the 'name'.
-> 
-> It's what the official specification calls it [1].
-> 
-> 
->>
->>> +tpm_tis_core dependent drivers. The prefix "tis" comes from the TPM Interface
->>
->> tis is a tla -- a three letter *acronym*. You aren't using it as a 'prefix'.
-> 
-> I don't know what "tla" means.
-> 
->>
->>> +Specification, which is the hardware interface specification for TPM 1.x chips.
->>
->> It's also available for TPM2.
->   
-> Yes, but TIS is the name used by the legacy specification.
+AFAICT, if env->cur_state is not set, we don't even know if the
+callback will be sleepable or not, so if there is a small penalty,
+then it's the safest option, no?
 
+Cheers,
+Benjamin
 
-The point is that TIS is not just a TPM 1.x interface but also used for 
-TPM 2.
-> 
->>
->>> +
->>> +Communication is based on a 5 KiB buffer shared by the TPM chip through a
->>
->> I thought it was typically 4 KiB.
-> 
-> You are basing this on table 9 in [1]?
+>
+> >
+> >  /* The non-sleepable programs and sleepable programs with explicit bpf=
+_rcu_read_lock()
+>
 
-Yes. See below.
-
-> 
->>
->>> +hardware bus or memory map, depending on the physical wiring. The buffer is
->>> +further split into five equal-size buffers, which provide equivalent sets of
-
-If you are referring to the MMIO region between 0xfed4 0000 and 0xfed4 
-4fff as a buffer then you are talking about a **20kb** MMIO region 
-(0x5000) that is **split** into equal-sized MMIO regions, each having 
-4kb (0x1000). Yes, that's the 4kb then but there that one is no 5kb 
-'further split into five equal-sized buffers' of presumably 1kb each. 
-Each locality has a 0x1000 sized MMIO region.
 
