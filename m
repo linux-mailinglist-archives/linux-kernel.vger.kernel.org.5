@@ -1,205 +1,145 @@
-Return-Path: <linux-kernel+bounces-109737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7344C885511
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:43:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAAC4885513
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE314B21696
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:43:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F099281F57
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 336A65812D;
-	Thu, 21 Mar 2024 07:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7721D57894;
+	Thu, 21 Mar 2024 07:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AaehkjXK"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TCDYZoQg"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1353339B1;
-	Thu, 21 Mar 2024 07:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287B9339B1
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711006972; cv=none; b=LD45JYhnrv8+boHUMWQ866WWARRyUKhdHqlTNI6eUe/4xvyGeNwgjaXjKqFN8gOvL7i3/BI2aOHqsLi6AphYJ+2FVg5Qs5tXtqNFF5FJQEz++8wcO5xqjjdojRisWYNNghTcbYUMxR0M9asbiNv6iEVyA9jYpwh2hLfqmBBS56Y=
+	t=1711007104; cv=none; b=Ht6zQepz2fEvMHkWGcLcSWJLCJGlYmbLAlENki1TM+YNC9Ub6wjFgyviuuNRbhGmCQF3EHDEdc5ogZTfDXDo6fABnEKtytafkdRFY524apKrP+t428FPc7RM3WmpjY/aBu5/0CMQfXvSIyptDBX4C5prHU8Mp25ASM52UU/41S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711006972; c=relaxed/simple;
-	bh=Becs+F28N9K1U02o0AkBnbKa+etvYaDo1+6e9Py9BYY=;
+	s=arc-20240116; t=1711007104; c=relaxed/simple;
+	bh=n8mYR3pta6zA293sNqKbCFaXX/BYE15HF+gwHIKFsUU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F32hxcKQHoTMWmNUFhYeeq/lNhiWNjxYnLCA55Qst6/t935XrsFVw6VEImNGHRxx9MUDQS9/DlELx7ki0WwrVfGp02SpZlWRXx2dDl+yCHGkJpPlVv0JCg/LRTbbR5O7O24pf4o9s2mHegMb9/i41vlGyv9dl4Fv3pN8egVeHiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AaehkjXK; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7e0abfea517so316470241.0;
-        Thu, 21 Mar 2024 00:42:50 -0700 (PDT)
+	 To:Cc:Content-Type; b=mK5hw+gCvzrz6uB9n0KT9c2iF/kQKTxGP/ElpNwGqWv3LX8YYA36Ph1AOfUlU+10oK47mcXIXWWV2ipCg/Ty0wF/beAv+nvg2FeUM0+w4eP4F1hfFAT0T1PHbdX1NIFROHS3vtfJ3hoNbo9KEIXLxkByhpHIviUkaPQtm50nORI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TCDYZoQg; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5d3907ff128so499562a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711006970; x=1711611770; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8l/Bpgj/CMp2wahdMVwgC92LJlZFUWdlP+70wN3/HqI=;
-        b=AaehkjXKHmf5C+laXophkKuJjGsK9I82gjgSPU/r/nHJMZ6Fv6v/IzyxQHZUZAJTc0
-         juM6dhRX+lZ5Bo1AfKSGjyXfD4u4y6i0e221JfwnyRkFjKfPQrxqF5QsiCCQJ6vaupGd
-         MSlEhHI0F/+dVg1CzTaUw4aXqcendsUYrQdhGas1taDfkMtdAgPfnIbqJIMkKMHu2hk4
-         y3XTl+psnsaXvCJREefxthgzxD8+S4We7nU28dKC8sFZJE4sL2Hy+stE07eao8tXpr4l
-         +uaM3iZCVLuAs4T2aEsHathu7SfY79e35WNzR7GW46u9LyO9miZZcT2XvwHfeqGNev1U
-         wQRg==
+        d=linaro.org; s=google; t=1711007102; x=1711611902; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q7hSEzNRzZ851Uhhtifz0JYUcGL34CYdaLX6j7n3oFA=;
+        b=TCDYZoQgk6a1AT0wRtdffZXMYnrX1sZ9aQn450/4aAwX8wVLomiYXiA/TmgSt+eRKP
+         4xPhGdvt6boIkEo+l/3XfdtHy5l2EiBo24vc7TApo0iB5K9SYwpOYNMvEtScbUR5XQmo
+         vkoxfK+BhjCN/x1Cy6AYxSUHyb+VJ+yDyq9wH4Vrn5tJ+NXUpwX2KMXQeoBXRyr7Wp6M
+         OJbsofIYTtnahpAQjFtEIgG8gk3s4vEi+GRv5qYCCO4uusDGUA9xcpeeIlIDanWfN0IB
+         D9ysK5ANkB+ywoqx/C2R12/LVjzIW1ZNXTZ/a/QVEFHIEhsd1dSbR/WFup58/wtpVRhR
+         suMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711006970; x=1711611770;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8l/Bpgj/CMp2wahdMVwgC92LJlZFUWdlP+70wN3/HqI=;
-        b=tYZ5o/OvwA1UloCt5RuaZ2ptqQMUdSCc/tbWaTyx7eVJSmybFP1p8HouwtZppgN0XM
-         ty6U7ePlTWB1TVSQqrsqP6KVnZoym4wT0jNtapp2eVagGmd2zrhteB7mK95CVVccXA7+
-         Rg009Goy9jet/ucCdouEIqETEjaWvX7gFXB80gQ50U+H0ES4CU5kz/2dcw6G5exda8W5
-         uF3C+0v2i7pWQ9N41xHnbfYJeVlDk8acdmRZJvA0WN2aboq/PdBkXC/ZE8WI/hqLvOEV
-         6wugR1sCl4oIIaQgtTKb79v/0xsDyC7GSEiaMivdeLw/twqgZGDpSHXVZIArFElcw8/L
-         NP+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXeZUy2dpeqaIlpio5DQgv6ttWjfTdsqaWo5kgZdAQL2IbT4oS/IGP8Frzn6lEixNe52QW/+V9uqD2P523Asr3AmaAzgN35P+deB3cq2ZFV2UQl5idSH9CW6qnJX7NI6GUMsb9xrwx9fwuIE5NEvndRG7ClzkCcBn6fIehW6M0jlLRP
-X-Gm-Message-State: AOJu0YxmT49llTG9qw5g+Ny5tatw/8+4rSwMW5zj1Wsibk+7nNgrFj4A
-	VJKodkLyxmbR0wfoNJ09N7cS4etSK4k73msWqR+ihKSEgFACkqyTq2e58nwCjPyGiYCYMyyPCmZ
-	2Q2UlIwEhg9utj/svwYRpmENkoNDKhJLxiSM=
-X-Google-Smtp-Source: AGHT+IF6/6RWVQEbOqVGOn7GuNnKEwIS1gGwu6xBV4nlHLTca7pBKeCHHYG2sGcb/QSNzL77CHBnZ3Zu+cXBfPfC6JU=
-X-Received: by 2002:a05:6122:a1c:b0:4d4:25f2:3ca6 with SMTP id
- 28-20020a0561220a1c00b004d425f23ca6mr20336369vkn.3.1711006969698; Thu, 21 Mar
- 2024 00:42:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711007102; x=1711611902;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q7hSEzNRzZ851Uhhtifz0JYUcGL34CYdaLX6j7n3oFA=;
+        b=LRKkUXqpQENbtRpSsV+SR3GrPdMLxtTFLa+ACF8Bb14E3uGbOrUB0mvB57pv9V2ZEx
+         DUI4zvDQcOQungVgaMlxCVsAeEI77O7vftT3JCp3V6Cspbx6DFJJcykTys26S+HpMuId
+         ynKnW3q1E3He2Bht42OGkNDXRSvrE7H7l6DeZCwCX5Qb43t486AZpSBpJC/ipTx/19om
+         fHHGQBq38FrllEXvd7vaL7MNI8CMNwL+WotRMyEoWgIq3jgIFVNWIROSeE5ngIYRsQ4f
+         SJasStNsVFpMJ5mZlxvuOjfI6h8Lddq3w6dzufYKmy3ZuWdnBiXbi+ANNZkYJDkiIH+v
+         VxLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaikcOk8vfthF7/8LfS6QR8/Vsjxxq+AwhWKYdvE8y+mWe+bkv2bdEHq1+pNit/zJJ0iTpP7FXpQyFBlqRV/OoAPF12spogy4ZQiZE
+X-Gm-Message-State: AOJu0Yyhca01AafNGBRe5M3s7u2zoYIO3iwmjdzFRb60jDNCiuJhOX0f
+	r63JDVax3S9QsPLgf/yfdM2819IXCb7cplPSB0NCgJYm4YYcZ1YkXfgu4zX8D9IVQaA4gsra9Eu
+	v6fFbNoIHeCO063uStq3087G+zyKVVtIesaPuKw==
+X-Google-Smtp-Source: AGHT+IHgam8NQRs6BCAYVH0uOovl0Io/T7Sha0lKrrrkcNdLRUyAAN8eQMuvfT6SqnVtaWwPh0I2wQ1JkAj5X3QHXQ0=
+X-Received: by 2002:a17:90b:30ce:b0:29f:e772:61c3 with SMTP id
+ hi14-20020a17090b30ce00b0029fe77261c3mr5492177pjb.27.1711007102322; Thu, 21
+ Mar 2024 00:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320001656.10075-1-21cnbao@gmail.com> <EFB48F08-F0B5-47C0-8C47-00A542344AC9@126.com>
- <CAGsJ_4xJsqOO-NXs3OWVA47vcK-zUpcrMxCbnY7x5khRH0dnxA@mail.gmail.com> <7bdc4d24-adfd-4a8c-b824-6833149f5636@126.com>
-In-Reply-To: <7bdc4d24-adfd-4a8c-b824-6833149f5636@126.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Thu, 21 Mar 2024 20:42:38 +1300
-Message-ID: <CAGsJ_4yoYjt__kvQd6snZeOYLxz9=N2S929+amZYiZvSNLgs+g@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: coding-style: ask function-like macros to
- evaluate parameters
-To: Meiyong Yu <meiyong.yu@126.com>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Chris Zankel <chris@zankel.net>, 
-	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Guenter Roeck <linux@roeck-us.net>, Max Filippov <jcmvbkbc@gmail.com>
+References: <20240313150133.1182298-1-sshegde@linux.ibm.com> <20240313150133.1182298-2-sshegde@linux.ibm.com>
+In-Reply-To: <20240313150133.1182298-2-sshegde@linux.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 21 Mar 2024 08:44:50 +0100
+Message-ID: <CAKfTPtBYAibCdsPumTAPDKBwNfLP9nr5577MSNKffV_VDmHDgA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sched/fair: Check rd->overload value before update
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, dietmar.eggemann@arm.com, 
+	qyousef@layalina.io, linux-kernel@vger.kernel.org, vschneid@redhat.com, 
+	qperret@google.com, yu.c.chen@intel.com, srikar@linux.ibm.com, 
+	pierre.gondois@arm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 5:40=E2=80=AFPM Meiyong Yu <meiyong.yu@126.com> wro=
-te:
+On Wed, 13 Mar 2024 at 16:02, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
 >
+> Overload is an indicator used to inform if there is any rq in the root
+> domain has 2 or more running tasks. Root domain is a global structure per
+> cpuset island.
 >
-> =E5=9C=A8 2024/3/21 8:11, Barry Song =E5=86=99=E9=81=93:
-> > On Thu, Mar 21, 2024 at 12:39=E2=80=AFPM Meiyong Yu <meiyong.yu@126.com=
-> wrote:
-> >>
-> >>> On Mar 20, 2024, at 08:17, Barry Song <21cnbao@gmail.com> wrote:
-> >>>
-> >>> =EF=BB=BFFrom: Barry Song <v-songbaohua@oppo.com>
-> >>>
-> >>> Recent commit 77292bb8ca69c80 ("crypto: scomp - remove memcpy if
-> >>> sg_nents is 1 and pages are lowmem") leads to warnings on xtensa
-> >>> and loongarch,
-> >>>    In file included from crypto/scompress.c:12:
-> >>>    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
-> >>>    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set b=
-ut not used [-Wunused-but-set-variable]
-> >>>       76 |                 struct page *page;
-> >>>          |                              ^~~~
-> >>>    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
-> >>>>> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wu=
-nused-variable]
-> >>>      174 |                         struct page *dst_page =3D sg_page(=
-req->dst);
-> >>>          |
-> >>>
-> >>> The reason is that flush_dcache_page() is implemented as a noop
-> >>> macro on these platforms as below,
-> >>>
-> >>> #define flush_dcache_page(page) do { } while (0)
-> >>>
-> >>> The driver code, for itself, seems be quite innocent and placing
-> >>> maybe_unused seems pointless,
-> >>>
-> >>> struct page *dst_page =3D sg_page(req->dst);
-> >>>
-> >>> for (i =3D 0; i < nr_pages; i++)
-> >>>     flush_dcache_page(dst_page + i);
-> >>>
-> >>> And it should be independent of architectural implementation
-> >>> differences.
-> >>>
-> >>> Let's have a guidance in codingstyle to ask for the evaluation
-> >>> of parameters.
-> >>>
-> >>> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >>> Cc: Chris Zankel <chris@zankel.net>
-> >>> Cc: Huacai Chen <chenhuacai@loongson.cn>
-> >>> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> >>> Cc: Guenter Roeck <linux@roeck-us.net>
-> >>> Suggested-by: Max Filippov <jcmvbkbc@gmail.com>
-> >>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> >>> ---
-> >>> Documentation/process/coding-style.rst | 7 +++++++
-> >>> 1 file changed, 7 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/process/coding-style.rst b/Documentation/p=
-rocess/coding-style.rst
-> >>> index 9c7cf7347394..8065747fddff 100644
-> >>> --- a/Documentation/process/coding-style.rst
-> >>> +++ b/Documentation/process/coding-style.rst
-> >>> @@ -827,6 +827,13 @@ Macros with multiple statements should be enclos=
-ed in a do - while block:
-> >>>                 do_this(b, c);        \
-> >>>         } while (0)
-> >>>
-> >>
-> >>> +Function-like macros should evaluate their parameters, for unused pa=
-rameters,
-> >> I do not support this point, if the parameter is unused, why not to re=
-move it.
-> >>
-> > Linux boasts support for numerous architectures, striving for
-> > independence in its
-> > drivers and core code implementation across these architectures. Conseq=
-uently,
-> > certain architectures may utilize parameters for the same APIs, while o=
-thers may
-> > not.
+> Overload status is updated when adding a task to the runqueue.
+> It is cleared in update_sd_lb_stats during load balance, if none of the
+> rq has 2 or more running task. It is used during to newidle
+> balance to see if its worth doing load balance. If it is set, then
+> newidle balance will try aggressively to pull a task.
 >
-> So the probem is  designed api is not reasonable,  it use not essential
-> paramter,
+> Since commit 630246a06ae2 ("sched/fair: Clean-up update_sg_lb_stats
+> parameters"), overload is being updated unconditionally. The change in
+> value of this depends on the workload. On typical workloads, it is
+> likely that this value doesn't change often. Write causes the
+> cacheline to be invalidated. This would cause true sharing when the same
+> variable is accessed in newidle_balance. On large systems this would
+> cause more CPU bus traffic.
 >
-> you can change the api, but not avoid it.
->
+> Perf probes prove that actual change in value is less often. So it would
+> be better to check the value before updating it. Detailed perf probes
+> and annotation can be found in the cover letter. CPU bus traffic reduces
 
-Incorrect again. As an API, it must take into account various consideration=
-s.
-Just because architecture A doesn't require flushing dcache doesn't imply
-that architecture B doesn't need it.
+the cover letter will not be merged. It's better to put the figures
+here if you want to mention them
 
-> Anthor question, why you do not use the parameter, if not use it,  will
-> trigger function/feature dismiss problem ?
+> with the patch.
 >
-> >> about the warning,  is  tool misreport,  the tool must make better
-> >>
-> > no. This is not the case.
-> >
-> >>> +cast them to void:
-> >>> +
-> >>> +.. code-block:: c
-> >>> +
-> >>> +    #define macrofun(a) do { (void) (a); } while (0)
-> >>> +
-> >>> Things to avoid when using macros:
-> >>>
-> >>> 1) macros that affect control flow:
-> >>> --
-> >>> 2.34.1
-> >>>
-> >>
+> Fixes: 630246a06ae2 ("sched/fair: Clean-up update_sg_lb_stats parameters")
+
+I don't think it's worth a Fixes tag. This is an improvement more than
+a fix as the current code works fine but generates more bus traffic
+
+With these minor changes in the commit message:
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+> ---
+>  kernel/sched/fair.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 02d4d224b436..eeebadd7d9ae 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10621,7 +10621,8 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>
+>         if (!env->sd->parent) {
+>                 /* update overload indicator if we are at root domain */
+> -               WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
+> +               if (READ_ONCE(env->dst_rq->rd->overload) != (sg_status & SG_OVERLOAD))
+> +                       WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
+>
+>                 /* Update over-utilization (tipping point, U >= 0) indicator */
+>                 set_rd_overutilized_status(env->dst_rq->rd,
+> --
+> 2.39.3
 >
 
