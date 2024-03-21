@@ -1,1394 +1,441 @@
-Return-Path: <linux-kernel+bounces-109852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC334885684
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:30:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6580885682
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90654B2116C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:30:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A60A2282442
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D151482C4;
-	Thu, 21 Mar 2024 09:29:54 +0000 (UTC)
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108FA5336F;
+	Thu, 21 Mar 2024 09:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="VdziMD1s"
+Received: from SLXP216CU001.outbound.protection.outlook.com (mail-koreacentralazon11020003.outbound.protection.outlook.com [52.101.154.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B98A883C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711013392; cv=none; b=ax82NLWzoEOfj18QwJ1VLgKPHMedTEMy0s5T4Z1azBzndcfIS0pU3AC3isGJP6x/Nxf+TpbSsu/kJ4zU29vo9RY7nt12szOLeju0nGMsSr29kkL9j4uz5Ezb6rNaIr5AXsWyw69dK1G9KnqSbUiZMZRUIs7lONYYkQ9cYh8th1o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711013392; c=relaxed/simple;
-	bh=z7x2qIJFZJs9DSG593ixoCvCV+rnLYjg5AHnPLI/sXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N/Spk2ZTUzSo7NCuQuzDfLgN2afIb9L1uIEUISATO3KHNUDxbsbHDMINJzGxgqWQP713EsyJl2yjVXLoth7hder5DlKCi1Dn159kjjfYoHdproL387gv4OX/SI8meMp8vuqRWTEI6Qy6KiUm2PFHYaKm2hXLLjEC/ZpMJyoAPC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=18.169.211.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp77t1711013322tmfbkoo1
-X-QQ-Originating-IP: 1wGBdlAexlbxYqrVpGhNHQPihu0P/5CVxJGQdVwhRL4=
-Received: from [127.0.0.1] ( [223.112.234.130])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 21 Mar 2024 17:28:40 +0800 (CST)
-X-QQ-SSF: 00400000000000B0B000000A0000000
-X-QQ-FEAT: cvpDInk2tjXUYNkVl2lr+Av8d2Ol1cACOLM5YIST5XmpYZZROIYbXZh7F/uOx
-	zgEwTqW/UB6he5NE0pKNtH+S7BxAe6hFwOU6B07fEN/5TQIfMvi/bjtm0UZoLz0Cu0QUuIr
-	x0Svgk8N8KuPJT7un5sXESXxGV166moDis2RHlbBj7BpBbaisXa25yz617n0ZqX4SlgeYBa
-	V+eHEE628FZN40VYaYHw7Yq/ie6H1kMYFnSY25XtuGmStON8Tg0DLJa0TSOQjfiAC1/P5e2
-	CU8n4wZUVlEQkjppJtAu9FaUv8FZmoOPLRspanIwKvEjSk6I/SMXzfYnIIv7KWOOmLpg1Eo
-	n1Ig2F7Kjte9igEYDFt/QImVTHec8jnyoFDlIbVBI5Jhygs87AiB7J9aj81jPz+B4z2ApgG
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 6734755965155329066
-Message-ID: <386E6B0683F40126+f45a0ca1-1b4d-475a-9fef-b72729126b9d@shingroup.cn>
-Date: Thu, 21 Mar 2024 17:28:40 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B341A125CB;
+	Thu, 21 Mar 2024 09:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.154.3
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711013350; cv=fail; b=ZHSkP9RHP1Hn16jDqjZciZn2dfbskCEjU2T3oe05pykELrGmzTVa0zP0pTb+bH9r6osbJKd8RVZug9R8ToTFciT8tcsKEBotf6jjQaem0lyzPvpaeraEIyqR5oR0b45jKbPO/6jpt0lKynEGrJXjdteWnmq/mZMkDzGcD3OihxU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711013350; c=relaxed/simple;
+	bh=8QGCPa4wBcvvZJegQSNewRXHMwUGdjuHjvv8zFMu4j8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=uVsw6cwhP3xdRwbqnUjk0FueCM0M5hH910cK3raFPZUNiY3vYd+DH1HF+CudV4ByWAtFDRBHNBLoXB8z3aTzFlPg1WRDoaM5xhRhydRCVDAebP/pI4/Xjm3pHwMJGaOcJkmmPP3xwYJNNvgdTbjNo1rtPqpdxeOKh00X+ox/3Ig=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=VdziMD1s; arc=fail smtp.client-ip=52.101.154.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chipsnmedia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QrcjaLbE+ybw/Hf3NadsSLPR00JgKb9vfK1xYpjC8Ayu4xeASQwZDU6fHg9W7TmygiDjrTHIuIz8DLzBP7hCXEWbCOTyp1AtjPnCQsvgsWFVyXhfNqZRdHiHD/Ybu4+pndRQjYfwC4oKTqCy+qgbUY4DMtpBtjVPUdf/pHC+gAHxIW7qyXZ0YZnOkojYOfCzKx5k2YkIpxk9/vkVDsSFVwdHB7d375EKIcw/nfddvbNAT5HYhksNrpCoploioBrHvVSAT62hquFwl5s4YTTmQChaBaEWMRhIlrRie8x6rxObhT0WHpSI95OtJXNVm1ASxY7zsXW4o2rp8O6yvkFhKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lhvfsOP65CjnZhLBcCbVQj8euo8EH7P+Qwk2ZDOoNbo=;
+ b=Gfm2lMaVMKJAxCC2FUZWIpjEw9FA2O14L0XZAV7ifwIOyowmPMhoWsKt4+xuEtqH2IQ+6xKl9aB2gJW8mYNq+wvn+ZwyrjZBZnivKZSbTOHSDDcKzgEwgpYaoL4E81cnc/0OLZGb01diABQYRyReNWJARoLb2sWdgxoVJ9xEeXxDDLKWe9EVHnC9YhUh303mB2Y4hLwyR+JjQySKgzWCbJtVRGMjy/30LlXjJHRbsOp4W88QZH03I4ly8e7U8YmRfQgk3t0pSLwxen93ZyAa9NjYS5oThGYzaWP4FPj8NyTzoa+LXyNpb0uUznWkofUPeCAHxudexnGZEQSCwZV9sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=chipsnmedia.com; dmarc=pass action=none
+ header.from=chipsnmedia.com; dkim=pass header.d=chipsnmedia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chipsnmedia.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lhvfsOP65CjnZhLBcCbVQj8euo8EH7P+Qwk2ZDOoNbo=;
+ b=VdziMD1sOdjXk6Yq7d2jfjIFJhanMPOAVj6Rexu34GXkrSns54Y7nIl3CDgYgSetTqEEFWJJsdFgwMxCDNJxQkx4A8JWwMfQR4K+eis/Znug7AAykbHr7QQCtZ1qcHcuC38mCZiFQOW1hhkvfj6a5XyOV+1jPbc+ifk6Z5kaT5M=
+Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM (2603:1096:101:a::9) by
+ SE1P216MB1244.KORP216.PROD.OUTLOOK.COM (2603:1096:101:14::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.18; Thu, 21 Mar 2024 09:29:04 +0000
+Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
+ ([fe80::5b8:35f1:821f:4f57]) by SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
+ ([fe80::5b8:35f1:821f:4f57%2]) with mapi id 15.20.7386.025; Thu, 21 Mar 2024
+ 09:29:04 +0000
+From: Nas Chung <nas.chung@chipsnmedia.com>
+To: Brandon Brnich <b-brnich@ti.com>, Ivan Bornyakov <brnkv.i1@gmail.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, jackson.lee <jackson.lee@chipsnmedia.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: RE: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
+Thread-Topic: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
+Thread-Index: AQHaekCTjJVqcNFgQEW+NkXMf3eCS7FB2LZg
+Date: Thu, 21 Mar 2024 09:29:04 +0000
+Message-ID:
+ <SL2P216MB12468C7256CE2468EE088E7CFB322@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+References: <20240318144225.30835-1-brnkv.i1@gmail.com>
+ <20240318144225.30835-6-brnkv.i1@gmail.com>
+ <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+ <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
+ <20240319210106.awn33cm7ex33g65b@udba0500997>
+In-Reply-To: <20240319210106.awn33cm7ex33g65b@udba0500997>
+Accept-Language: ko-KR, en-US
+Content-Language: ko-KR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=chipsnmedia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SL2P216MB1246:EE_|SE1P216MB1244:EE_
+x-ms-office365-filtering-correlation-id: 3920f9e6-c509-4d9b-871c-08dc4989598d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ wBwAeizXsgTZ/I/GPUkV20kSlJyozIU5ZSPMHQkuyP+V0x/pHi53FBUXdBZB4WQTTGDuGr8yfnP13gyb6APDD7Zxykg5lhNjjAbGBUmUE+de2W85p7ZHYPuSQU4EfoP08NZ1va++vrd4JaVcPx3O59zji+VVD7zXYHn1XQmqBGMpaiv9ALhaGE1K1rbkoMSTs+bTUkF6cRB3rMguvh1SNkLRNTUe2OZDPOHSOY4LOsmkrXn7yvh6lXw60VwCkOsjtWogNlkeCDmq3dGOrbGqUb+w9Hr2niHgO8ZdlNAqJhp+/nsGaszleku6YbcRF8heT0xYz/vZ9rIomw4e1rQaFMsESJy8K0gGdcROJ4HLkg2SZTYv9/7waSHWWvQyRRX0LENtgQUpq3cEIUi3LKUtWE+hrrPAPTxHDLkOYwjXV2oRMEVxiTQ1oGH8ODdyevjpIVESUEpcnWKoOEtIzFa5n4CpgDgTHedwjJpVGwO61bDHKZ+cKNZjNiY8q6SkHTubXfsn5oqBhsNQmlbDWkNcjSkuN1zcUKZXSOMtF8XJxEnBdk6l5+rojv+v/91/25emrk2va2exH0PZIHJ35Ngtix6LDvxyRWKqJqIMcrogk3DdFn8NT7k9zipu4+MUL31uNJTiiheKcuZeccvr8ySwkgxFXxMz8jbtYWHjZuO4rvM=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2P216MB1246.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?LNaMyYXKpGnW6hWrDiEEDflpkIWliw+iEdKNI4RVHBqsen1t9YW5qYBu/04t?=
+ =?us-ascii?Q?WAxafYhL+Cw74uhOXepQ8+1ARcZkSvcGP/INzk7CpH7BpcphBN7hkkaT4ZoI?=
+ =?us-ascii?Q?yERQGUgwGFIM4nhZBrHImogtXzH/7oTUdkpXB17uEHsuC1Hijc3k0bclg7jW?=
+ =?us-ascii?Q?ibQy82PosidfgKDW1u/iC32+D4/kxCsLOaosY0FaG/amOO0AXmGPhOmC4nYw?=
+ =?us-ascii?Q?qOBgiBoZ/ZcolvVl2sP9KvdUt6edh2RlksDIwgtFiSVq0PryMgAiS+KRyQNw?=
+ =?us-ascii?Q?U7bI3aXzSuIvO69lUIdIBSdKwMCx8Q906A+iCPPZvVr0F9QnElbuGVaC3KXE?=
+ =?us-ascii?Q?NO3dAfeBr8HWojONHRwvwnw71UIjOk9slb0RtZ7JaxykWv6CugTt2TdAWQ2t?=
+ =?us-ascii?Q?aY0r6gh5JKc0bPV1prWc+E2Fz96jyRDHjDKSHPYGWnWR/xBHtLlHH5wwMTrV?=
+ =?us-ascii?Q?RTk5lZMBjA4LlkUmmYTqgbFr1+6AyXPsoX3lCzAkaGGcdrEs9CKvfe4U9GKq?=
+ =?us-ascii?Q?w2oMVi/l1oo2cW/Ipp6HSE2UniZ0PblweXZGDYKj6csjtFBsoJc0DLxAldHZ?=
+ =?us-ascii?Q?diB41p3gd2/vbHGvUD041Pm8Dhtw8gZMVr0LS195PUe1Evxk/5sR/BzMtjYL?=
+ =?us-ascii?Q?cqZGeSAdN8ERtARmXPS5LzzoaPxdLq/17FtzCiiDaNT7k3vGiNdnUUyiWrr9?=
+ =?us-ascii?Q?GrQ6nli2nsLYsfdfVyrt7msPXM0au5hLKZA7jUoFno+y8c6mluKz4S7rC9Vw?=
+ =?us-ascii?Q?0+osmZHsTb6xHZjuBXgHOo7Q54DPC9q6TUh38VAuUNUkNiVz0jHiTq8lbNqE?=
+ =?us-ascii?Q?f0unZTThh14GlB1IujQWurI3DlslcOzHYt9GgMbwhj4C0ZIuYwsz0KOv0BGi?=
+ =?us-ascii?Q?k4z0eEyaaZazqWK231OL2UDu5kQCFEKvlsFFEjMybrpH4eGTYgD5/YVJlFDC?=
+ =?us-ascii?Q?CRyq2WSazFsACPNGmUZzJyrlTBzhq+OdjpZo8o+kklV7t9s9K20Vc9n2yXGz?=
+ =?us-ascii?Q?j+OqAxecJXJM6yI4EJmOeacEio5Ei1owo8FheNQP11KWOumsX0WR9ahWpwM0?=
+ =?us-ascii?Q?bgcvYoO7sr10lQ7RnUX7I5MSvaRTtiEkAb2MLSy7sOm2L1Oz87DHawX85CZl?=
+ =?us-ascii?Q?eCxxMWxK3g3CnfEZ6E5ereo91sQuxu1EqnmjVbql/ayGDODCnPDQnbaPBTCH?=
+ =?us-ascii?Q?wbLyW7jx42KsCKa7MlUEeTP/vdTpESD5ukQ+PANS7a8RnTKRyNBEUp5xvg0z?=
+ =?us-ascii?Q?PzyKnmtUMi60LHFAfizyWY+tfitDBou6DDV96XtJuVkcM7/oS4RSgLuqRaXi?=
+ =?us-ascii?Q?bs3jMJ3QO7LWfovA7MlsxJ51g/dxl8r3LTcyy+V5Scpom3GW7j0Kwk2xwXRu?=
+ =?us-ascii?Q?OJwM43wadM170CiJbwVfMph6aqtI07HRELHu6lM5E+P/CZYl22aATmZ2zanP?=
+ =?us-ascii?Q?q04TKMdsD9bMs6cHuWmSS4EQhIVpRjiuUElQdXZ2e4iZBkfcF6XNds9z0eso?=
+ =?us-ascii?Q?We68A2/1eG2eNWMlhO2ikCc+nAq3EUTiZ6SjZKw+ud0FkNYEk4e+KYSYXoXQ?=
+ =?us-ascii?Q?uHHvEgFjPPfb/bAk/6iH5JrrIEtDa+UwgACzuex5?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] perf/hx_arm_ni: Support uncore NI-700 PMU
-Content-Language: en-US
-To: Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: shenghui.qu@shingroup.cn, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <cover.1709694173.git.jialong.yang@shingroup.cn>
- <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
- <6869702989ee61281e574d0c3de913d1d5dbb602.1709694173.git.jialong.yang@shingroup.cn>
-From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
-In-Reply-To: <6869702989ee61281e574d0c3de913d1d5dbb602.1709694173.git.jialong.yang@shingroup.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-OriginatorOrg: chipsnmedia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3920f9e6-c509-4d9b-871c-08dc4989598d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 09:29:04.1399
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4d70c8e9-142b-4389-b7f2-fa8a3c68c467
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YRLal1GgKHRWXTSBnEWFXCni34TBOZWWaQvkA7HyJBR6daX5HKG5KhQWvirltk7Ixmvwri2UZCNeSYsO2Ohsm0MfmYR8hq0sULD6ouERRxc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE1P216MB1244
 
-Gentle remainder
+Hi, Ivan and Brandon.
 
-在 2024/3/6 14:16, JiaLong.Yang 写道:
-> This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
-> One ni-700 can have many clock domains. Each of them has only one PMU.
-> Here one PMU corresponds to one 'struct ni_pmu' instance.
-> PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
-> different PMU in one NI-700. If only one NI-700 found in NI-700, name will
-> be ni_pmu_N.
-> Node interface event name will be xxni_N_eventname, such as
-> asni_0_rdreq_any. There are many kinds of type of nodes in one clock
-> domain. Also means that there are many kinds of that in one PMU. So we
-> distinguish them by xxni string. Besides, maybe there are many nodes
-> have same type. So we have number N in event name.
-> By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
-> Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
-> EXample2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
-> 
-> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
-> ---
-> v1 --> v2:
-> 1. Submit MAINTANER Documentation/ files seperately.
-> 2. Delete some useless info printing.
-> 3. Change print from pr_xxx to dev_xxx.
-> 4. Fix more than 75 length log info.
-> 5. Fix dts attribute pccs-id.
-> 6. Fix generic name according to DT specification.
-> 7. Some indentation.
-> 8. Del of_match_ptr macro.
-> 
-> v2 --> v3:
-> 1. Delete not existed arch macro PPC_HX_C2000.
-> 2. Support 32bit and 64bit.
-> 3. Add help content in Kconfig.
-> 4. Use lo_hi_writeq/lo_hi_readq instead of writel and readl.
-> 5. Place declarations to the top the file.
-> 6. Clear redundant blank lines.
-> 7. Use DEFINE_FREE() macro instead of kmalloc solely.
-> 8. return dev_err_probe directly.
-> 9. Use __ffs64 instead of ffs and fls64 instead of fls.
-> 10. Delete BUILD_BUG_ON() macro function to support multiple platforms.
-> 11. Use alias-id instead of customized property to index NIs.
-> 
->   drivers/perf/Kconfig     |   11 +
->   drivers/perf/Makefile    |    1 +
->   drivers/perf/hx_arm_ni.c | 1241 ++++++++++++++++++++++++++++++++++++++
->   3 files changed, 1253 insertions(+)
->   create mode 100644 drivers/perf/hx_arm_ni.c
-> 
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index ec6e0d9194a1..0c50edc4172c 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -241,4 +241,15 @@ config CXL_PMU
->   
->   	  If unsure say 'm'.
->   
-> +source "drivers/perf/hisilicon/Kconfig"
-> +
-> +config HX_ARM_NI_PMU
-> +        tristate "Enable HX NI-700 Performance Monitoring Unit"
-> +        help
-> +          Support for NI-700(Network-on-chip Interconnect) PMUs, which
-> +          provide monitoring of transactions passing through between
-> +          CMN and other buses or periapherals.
-> +
-> +	  Say 'y/m' to enable this.
-> +
->   endmenu
-> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-> index a06338e3401c..ec8b9c08577d 100644
-> --- a/drivers/perf/Makefile
-> +++ b/drivers/perf/Makefile
-> @@ -27,3 +27,4 @@ obj-$(CONFIG_DWC_PCIE_PMU) += dwc_pcie_pmu.o
->   obj-$(CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU) += arm_cspmu/
->   obj-$(CONFIG_MESON_DDR_PMU) += amlogic/
->   obj-$(CONFIG_CXL_PMU) += cxl_pmu.o
-> +obj-$(CONFIG_HX_ARM_NI_PMU) += hx_arm_ni.o
-> diff --git a/drivers/perf/hx_arm_ni.c b/drivers/perf/hx_arm_ni.c
-> new file mode 100644
-> index 000000000000..a7a4fade1281
-> --- /dev/null
-> +++ b/drivers/perf/hx_arm_ni.c
-> @@ -0,0 +1,1241 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * HX ARM-NI-700 uncore PMU support
-> + *
-> + * This code is based on uncore PMUs arm_smmuv3_pmu and arm-cmn.
-> + *
-> + * One ni-700 can have many clock domains. Each of them has only one PMU.
-> + * Here one PMU corresponds to one 'struct ni_pmu' instance.
-> + *
-> + * PMU name will be ni_pmu_N_M, which N means different NI-700s and M means
-> + * different PMU in one NI-700. If only one NI-700 found in NI-700, name
-> + * will be ni_pmu_N.
-> + *
-> + * Node interface event name will be xxni_N_eventname, such as
-> + * asni_0_rdreq_any. There are many kinds of type of nodes in one clock
-> + * domain. Also means that there are many kinds of that in one PMU. So we
-> + * distinguish them by xxni string. Besides, maybe there are many nodes
-> + * have same type. So we have number N in event name.
-> + * By ni_pmu_0_0/asni_0_rdreq_any/, we can pinpoint accurate bus traffic.
-> + *
-> + * Example1: perf stat -a -e ni_pmu_0_0/asni_0_rdreq_any/,ni_pmu_0_0/cycles/
-> + * Example2: perf stat -a -e ni_pmu_0_0/asni,id=0,event=0x0/
-> + *
-> + * TODO: Secure or non-secure attribute in all event omitted now.
-> + *
-> + */
-> +
-> +#define dev_fmt(fmt) "hx-ni-700 pmu: " fmt
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/cpumask.h>
-> +#include <linux/device.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/kernel.h>
-> +#include <linux/of.h>
-> +#include <linux/perf_event.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/smp.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/types.h>
-> +#include <linux/build_bug.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
-> +
-> +/* number of counters in one ni pmu */
-> +#define NI_PMU_COUNTER_NUM 8
-> +
-> +/* node type values */
-> +enum ni_node_type {
-> +	NI_BASE = 0x0,
-> +	NI_VD,
-> +	NI_PD,
-> +	NI_CD,
-> +	NI_ASNI = 0x4,
-> +	NI_AMNI,
-> +	NI_PMU,
-> +	NI_HSNI,
-> +	NI_HMNI,
-> +	NI_PMNI = 0x9,
-> +};
-> +
-> +/*
-> + * config:
-> + * 0-5    31      32-47      48-63
-> + * event  cycles  node_type  node_id
-> + *
-> + */
-> +#define NI_EVENT_FORMAT_EVENT    GENMASK_ULL(5, 0)
-> +#define NI_EVENT_FORMAT_CYCLES   BIT(31)
-> +#define NI_EVENT_FORMAT_NODETYPE GENMASK_ULL(32 + NI_PMNI, 32)
-> +#define NI_EVENT_FORMAT_ASNI     BIT(32 + NI_ASNI)
-> +#define NI_EVENT_FORMAT_AMNI     BIT(32 + NI_AMNI)
-> +#define NI_EVENT_FORMAT_HSNI     BIT(32 + NI_HSNI)
-> +#define NI_EVENT_FORMAT_HMNI     BIT(32 + NI_HMNI)
-> +#define NI_EVENT_FORMAT_PMNI     BIT(32 + NI_PMNI)
-> +#define NI_EVENT_FORMAT_NODEID   GENMASK_ULL(63, 48)
-> +
-> +#define NI_EVENT_FORMAT_NODE_TYPE GENMASK_ULL(63, 32)
-> +
-> +#define ni_event_config_eventid(_config)   FIELD_GET(NI_EVENT_FORMAT_EVENT,       _config)
-> +#define ni_event_config_cc(_config)        FIELD_GET(NI_EVENT_FORMAT_CYCLES,      _config)
-> +#define _ni_event_config_nodetype(_config) FIELD_GET(NI_EVENT_FORMAT_NODETYPE,    _config)
-> +#define ni_event_config_nodeid(_config)    FIELD_GET(NI_EVENT_FORMAT_NODEID,      _config)
-> +
-> +#define NI_NODE_TYPE_MASK GENMASK(15, 0)
-> +#define NI_NODE_ID_MASK   GENMASK(31, 16)
-> +
-> +#define NI_PMU_PMCR_RST_CYC_CNTR BIT(2)
-> +#define NI_PMU_PMCR_RST_EV_CNTR  BIT(1)
-> +#define NI_PMU_PMCR_ENABLE       BIT(0)
-> +
-> +static enum cpuhp_state hp_state;
-> +
-> +static const char *const ni_node_name[] = {
-> +	[NI_ASNI] = "asni",
-> +	[NI_AMNI] = "amni",
-> +	[NI_PMU]  = "pmu",
-> +	[NI_HSNI] = "hsni",
-> +	[NI_HMNI] = "hmni",
-> +	[NI_PMNI] = "pmni",
-> +};
-> +
-> +/* one instance for one node */
-> +struct ni_node {
-> +	void __iomem *base;
-> +	union {
-> +		struct {
-> +			u32 type:16;
-> +			u32 id:16;
-> +		};
-> +		u32 node_type;
-> +	};
-> +};
-> +
-> +/* xxx_reg_map only used to provide offset by using offsetof(). */
-> +struct ni_node_reg_map {
-> +	union {
-> +		struct {
-> +			u32 type:16;
-> +			u32 id:16;
-> +		};
-> +		u32 node_type;
-> +	};
-> +
-> +	union {
-> +		u32 child_num;
-> +		u32 node_info;
-> +	};
-> +
-> +	union {
-> +		struct {
-> +			u32 secr_acc;
-> +			u32 pmusela;
-> +			u32 pmuselb;
-> +		};
-> +		DECLARE_FLEX_ARRAY(u32, child_offset);
-> +	};
-> +};
-> +
-> +#define ni_node_offsetof(member)			\
-> +	offsetof(struct ni_node_reg_map, member)
-> +
-> +#define ni_node_pmuevsel(node, config)					\
-> +	lo_hi_writeq(config, node->base + ni_node_offsetof(pmusela))
-> +
-> +#define ni_node_read(base, member, readx)			\
-> +	readx((void __iomem *)base + ni_node_offsetof(member))
-> +
-> +#define ni_node_type(base)						\
-> +	FIELD_GET(NI_NODE_TYPE_MASK, ni_node_read(base, node_type, readl_relaxed))
-> +
-> +#define ni_node_id(base)						\
-> +	FIELD_GET(NI_NODE_ID_MASK, ni_node_read(base, node_type, readl_relaxed))
-> +
-> +#define ni_node_node_type(base)				\
-> +	ni_node_read(base, node_type, readl_relaxed)
-> +
-> +#define ni_child_number(base)						\
-> +	(ni_node_type(base) < NI_ASNI ? ni_node_read(base, child_num, readl_relaxed) : 0)
-> +
-> +#define ni_child_pointer(periphbase, base, idx)				\
-> +	((void __iomem *)periphbase + ni_node_read(base, child_offset[idx], readl_relaxed))
-> +
-> +struct ni_pmu;
-> +struct ni_pmu_reg_map {
-> +	u32 node_type;                   /* offset: 0x000 */
-> +	u32 secr_acc;                    /* offset: 0x004 */
-> +	struct {
-> +		u32 counter;
-> +		u32 reserved;
-> +	} pmevcntr[8];                   /* offset: 0x008 */
-> +	u8  reserved_1[0xF8 - 0x48];     /* offset: 0x048 */
-> +	u32 pmccntr_lower;               /* offset: 0x0F8 */
-> +	u32 pmccntr_upper;               /* offset: 0x0FC */
-> +	u8  reserved_2[0x400 - 0x100];   /* offset: 0x100 */
-> +	u32 pmevtyper[8];                /* offset: 0x400 */
-> +	u8  reserved_3[0x610 - 0x420];   /* offset: 0x420 */
-> +	u32 pmssr;                       /* offset: 0x610 */
-> +	u32 pmovssr;                     /* offset: 0x614 */
-> +	u32 pmccntsr_lower;              /* offset: 0x618 */
-> +	u32 pmccntsr_upper;              /* offset: 0x61C */
-> +	u32 pmevcntsr[8];                /* offset: 0x620 */
-> +	u8  reserved_4[0x6F0 - 0x640];   /* offset: 0x640 */
-> +	u32 pmsscr;                      /* offset: 0x6F0 */
-> +	u8  reserved_5[0xC00 - 0x6F4];   /* offset: 0x6F4 */
-> +	u32 pmcntenset;                  /* offset: 0xC00 */
-> +	u8  reserved_6[0xC20 - 0xC04];   /* offset: 0xC04 */
-> +	u32 pmcntenclr;                  /* offset: 0xC20 */
-> +	u8  reserved_7[0xC40 - 0xC24];   /* offset: 0xC24 */
-> +	u32 pmintenset;                  /* offset: 0xC40 */
-> +	u8  reserved_8[0xC60 - 0xC44];   /* offset: 0xC44 */
-> +	u32 pmintenclr;                  /* offset: 0xC60 */
-> +	u8  reserved_9[0xC80 - 0xC64];   /* offset: 0xC64 */
-> +	u32 pmovsclr;                    /* offset: 0xC80 */
-> +	u8  reserved_10[0xCC0 - 0xC84];  /* offset: 0xC84 */
-> +	u32 pmovsset;                    /* offset: 0xCC0 */
-> +	u8  reserved_11[0xD80 - 0xCC4];  /* offset: 0xCC4 */
-> +	u32 pmcccgr;                     /* offset: 0xD80 */
-> +	u8  reserved_12[0xE00 - 0xD84];  /* offset: 0xD84 */
-> +	u32 pmcfgr;                      /* offset: 0xE00 */
-> +	u32 pmcr;                        /* offset: 0xE04 */
-> +};
-> +
-> +/* Not read or write registers directly. */
-> +#define ni_pmu_offset(ni_pmu, member)					\
-> +	((void __iomem *)ni_pmu->pmu_node.base + offsetof(struct ni_pmu_reg_map, member))
-> +
-> +#define ni_pmu_interrupt_enable(ni_pmu, en_bit)		\
-> +	writel(en_bit, ni_pmu_offset(ni_pmu, pmintenset))
-> +
-> +#define ni_pmu_interrupt_disable(ni_pmu, en_bit)		\
-> +	writel(en_bit, ni_pmu_offset(ni_pmu, pmintenclr))
-> +
-> +#define ni_pmu_counter_enable(ni_pmu, en_bit)		\
-> +	writel(en_bit, ni_pmu_offset(ni_pmu, pmcntenset))
-> +
-> +#define ni_pmu_counter_disable(ni_pmu, en_bit)		\
-> +	writel(en_bit, ni_pmu_offset(ni_pmu, pmcntenclr))
-> +
-> +#define ni_pmu_pmevtyper_sel_node(ni_pmu, ev_typer, cnt_idx)		\
-> +	writel(ev_typer, ni_pmu_offset(ni_pmu, pmevtyper[cnt_idx]))
-> +
-> +struct global_ni {
-> +	void __iomem *base;
-> +	struct hlist_node node;
-> +	struct device *dev;
-> +	union {
-> +		unsigned int pmu_num;
-> +		unsigned int cd_num;
-> +	};
-> +	unsigned int on_cpu;
-> +	int irq_num;
-> +	struct ni_pmu *ni_pmus[];
-> +};
-> +
-> +struct ni_pmu {
-> +	struct ni_node pmu_node;
-> +	struct perf_event *events[NI_PMU_COUNTER_NUM + 1];
-> +	struct pmu pmu;
-> +	struct device *dev;
-> +	unsigned int irq;
-> +	struct global_ni *ni;
-> +	int ev_src_num;
-> +	struct ni_node ev_src_nodes[];
-> +};
-> +
-> +#define to_ni_pmu(_pmu) container_of(_pmu, struct ni_pmu, pmu)
-> +
-> +#define NI_PMU_CC_EN_BIT 31
-> +#define is_cc_event(hwc) (!(hwc->config))
-> +#define cnt_init_val(hwc) (is_cc_event(hwc) ? (0x1ULL << 63) : (0x1ULL << 31))
-> +#define cnt_en_bit(hwc) (is_cc_event(hwc) ? BIT(NI_PMU_CC_EN_BIT) : BIT(hwc->idx))
-> +
-> +struct ni_event_desc {
-> +	u64 eventid;
-> +	const char *name;
-> +};
-> +
-> +struct ni_event_attr {
-> +	struct device_attribute attr;
-> +	struct ni_event_desc *ev_desc;
-> +	struct ni_node *node;
-> +};
-> +
-> +#define to_ni_event_attr(p) \
-> +	container_of(p, struct ni_event_attr, attr)
-> +
-> +#define NI_EVENT_DESC(_eventid, _name)			\
-> +	(&((struct ni_event_desc[]) {			\
-> +			{ .name = __stringify(_name),	\
-> +			  .eventid = _eventid,}		\
-> +		})[0])
-> +
-> +struct ni_format_attr {
-> +	struct device_attribute attr;
-> +	u64 field;
-> +};
-> +
-> +static struct ni_event_desc *ni_asni_event_descs[] = {
-> +	NI_EVENT_DESC(0x00, rdreq_any),
-> +	NI_EVENT_DESC(0x01, rdreq_dev_arcache),
-> +	NI_EVENT_DESC(0x02, rdreq_rns),
-> +	NI_EVENT_DESC(0x03, rdreq_ro),
-> +	NI_EVENT_DESC(0x04, req_cache_clr),
-> +	NI_EVENT_DESC(0x05, rdreq_beat_any),
-> +	NI_EVENT_DESC(0x06, rdreq_handshake_rlast),
-> +	NI_EVENT_DESC(0x07, wtreq_any),
-> +	NI_EVENT_DESC(0x08, wtreq_dev),
-> +	NI_EVENT_DESC(0x09, wtreq_wns),
-> +	NI_EVENT_DESC(0x0a, wtreq_wlu),
-> +	NI_EVENT_DESC(0x0b, wtreq_wu),
-> +	NI_EVENT_DESC(0x0c, wtreq_atomic),
-> +	NI_EVENT_DESC(0x0d, wtreq_beat_any),
-> +	NI_EVENT_DESC(0x0e, rdreq_stall),
-> +	NI_EVENT_DESC(0x0f, rddata_stall),
-> +	NI_EVENT_DESC(0x10, wtreq_stall),
-> +	NI_EVENT_DESC(0x11, wtdata_stall),
-> +	NI_EVENT_DESC(0x12, wtresp_stall),
-> +	NI_EVENT_DESC(0x13, wtreq_cst),
-> +	NI_EVENT_DESC(0x14, wtchann_nopersist),
-> +	NI_EVENT_DESC(0x15, wtchann_persist),
-> +	NI_EVENT_DESC(0x16, rdreq_nzero_mem_ops),
-> +	NI_EVENT_DESC(0x17, wtreq_nzero_mem_ops),
-> +	NI_EVENT_DESC(0x20, req_stall_cc_ot_limit),
-> +	NI_EVENT_DESC(0x21, req_stall_cc_tspec_limit),
-> +	NI_EVENT_DESC(0x22, req_stall_arbit),
-> +	NI_EVENT_DESC(0x23, req_stall_rd_tracker),
-> +	NI_EVENT_DESC(0x24, req_stall_wt_tracker),
-> +	NI_EVENT_DESC(0x25, aw_stall_wdatafifo_full),
-> +	NI_EVENT_DESC(0x26, ar_stall_reorderbuf_full),
-> +	NI_EVENT_DESC(0x27, aw_cdas_stall),
-> +	NI_EVENT_DESC(0x28, ar_cdas_stall),
-> +	NI_EVENT_DESC(0x29, atomic_rd_stall),
-> +	NI_EVENT_DESC(0x2a, wtchann_wtreq_stall),
-> +	NI_EVENT_DESC(0x2b, rdchann_rdreq_stall),
-> +	NI_EVENT_DESC(0x2c, aw_stall_ot),
-> +	NI_EVENT_DESC(0x2d, ar_stall_ot),
-> +	NI_EVENT_DESC(0x2e, aw_stall_tspec),
-> +	NI_EVENT_DESC(0x2f, ar_stall_tspec),
-> +	NI_EVENT_DESC(0x30, lwmd_arbit_stall_wchann),
-> +	NI_EVENT_DESC(0x31, lwmd_arbit_stall_rchann),
-> +};
-> +
-> +static struct ni_event_desc *ni_amni_event_descs[] = {
-> +	NI_EVENT_DESC(0x00, rdreq_any),
-> +	NI_EVENT_DESC(0x01, rdreq_dev_arcache),
-> +	NI_EVENT_DESC(0x02, rdreq_rns),
-> +	NI_EVENT_DESC(0x03, rdreq_ro),
-> +	NI_EVENT_DESC(0x04, req_cache_clr),
-> +	NI_EVENT_DESC(0x05, rdreq_beat_any),
-> +	NI_EVENT_DESC(0x06, rdreq_handshake_rlast),
-> +	NI_EVENT_DESC(0x07, wtreq_any),
-> +	NI_EVENT_DESC(0x08, wtreq_dev),
-> +	NI_EVENT_DESC(0x09, wtreq_wns),
-> +	NI_EVENT_DESC(0x0a, wtreq_wlu),
-> +	NI_EVENT_DESC(0x0b, wtreq_wu),
-> +	NI_EVENT_DESC(0x0c, wtreq_atomic),
-> +	NI_EVENT_DESC(0x0d, wtreq_beat_any),
-> +	NI_EVENT_DESC(0x0e, rdreq_stall),
-> +	NI_EVENT_DESC(0x0f, rddata_stall),
-> +	NI_EVENT_DESC(0x10, wtreq_stall),
-> +	NI_EVENT_DESC(0x11, wtdata_stall),
-> +	NI_EVENT_DESC(0x12, wtresp_stall),
-> +	NI_EVENT_DESC(0x13, wtreq_cst),
-> +	NI_EVENT_DESC(0x14, wtchann_nopersist),
-> +	NI_EVENT_DESC(0x15, wtchann_persist),
-> +	NI_EVENT_DESC(0x16, rdreq_nzero_mem_ops),
-> +	NI_EVENT_DESC(0x17, wtreq_nzero_mem_ops),
-> +	NI_EVENT_DESC(0x20, req_stall_rd_tracker),
-> +	NI_EVENT_DESC(0x21, req_stall_wt_tracker),
-> +	NI_EVENT_DESC(0x22, wtchann_b_resp),
-> +	NI_EVENT_DESC(0x23, rdchann_rd_resp),
-> +	NI_EVENT_DESC(0x24, lwmd_arbit_stall_wchann),
-> +	NI_EVENT_DESC(0x25, lwmd_arbit_stall_rchann),
-> +};
-> +
-> +static struct ni_event_desc *ni_hsni_event_descs[] = {
-> +	NI_EVENT_DESC(0x00, rdreq_any),
-> +	NI_EVENT_DESC(0x01, rdreq_dev),
-> +	NI_EVENT_DESC(0x02, rdreq_noshare),
-> +	NI_EVENT_DESC(0x03, rdreq_share),
-> +	NI_EVENT_DESC(0x04, rdreq_share_nonormal),
-> +	NI_EVENT_DESC(0x05, rdreq_beat_any),
-> +	NI_EVENT_DESC(0x07, wtreq_any),
-> +	NI_EVENT_DESC(0x08, wtreq_dev),
-> +	NI_EVENT_DESC(0x09, wtreq_noshare),
-> +	NI_EVENT_DESC(0x0a, wtreq_all),
-> +	NI_EVENT_DESC(0x0b, wtreq_share),
-> +	NI_EVENT_DESC(0x0c, wtreq_share_nonormal),
-> +	NI_EVENT_DESC(0x0d, wtreq_beat_any),
-> +	NI_EVENT_DESC(0x0f, rddata_stall),
-> +	NI_EVENT_DESC(0x11, wtdata_stall),
-> +	NI_EVENT_DESC(0x20, req_stall_cc_ot_limit),
-> +	NI_EVENT_DESC(0x21, req_stall_cc_tspec_limit),
-> +	NI_EVENT_DESC(0x22, rdreq_stall_cc_ely_wtresp),
-> +	NI_EVENT_DESC(0x24, req_stall_nzero_wtcnt),
-> +	NI_EVENT_DESC(0x25, w_stall_wdatafifo_full),
-> +	NI_EVENT_DESC(0x2a, wtreq_stall_lack_gt),
-> +	NI_EVENT_DESC(0x2b, rdreq_stall_lack_gt),
-> +};
-> +
-> +static struct ni_event_desc *ni_hmni_event_descs[] = {
-> +	NI_EVENT_DESC(0x00, rdreq_any),
-> +	NI_EVENT_DESC(0x01, rdreq_dev),
-> +	NI_EVENT_DESC(0x02, rdreq_noshare),
-> +	NI_EVENT_DESC(0x03, rdreq_share),
-> +	NI_EVENT_DESC(0x04, rdreq_share_nonormal),
-> +	NI_EVENT_DESC(0x05, rdreq_beat_any),
-> +	NI_EVENT_DESC(0x07, wtreq_any),
-> +	NI_EVENT_DESC(0x08, wtreq_dev),
-> +	NI_EVENT_DESC(0x09, wtreq_noshare),
-> +	NI_EVENT_DESC(0x0a, wtreq_all),
-> +	NI_EVENT_DESC(0x0b, wtreq_share),
-> +	NI_EVENT_DESC(0x0c, wtreq_share_nonormal),
-> +	NI_EVENT_DESC(0x0d, wtreq_beat_any),
-> +	NI_EVENT_DESC(0x0e, rd_addr_phase_stall),
-> +	NI_EVENT_DESC(0x0f, rd_data_phase_stall),
-> +	NI_EVENT_DESC(0x10, wt_addr_phase_stall),
-> +	NI_EVENT_DESC(0x11, wt_data_phase_stall),
-> +	NI_EVENT_DESC(0x22, wtresp_stall_lack_gt),
-> +	NI_EVENT_DESC(0x23, rdresp_stall_lack_gt),
-> +};
-> +
-> +static struct ni_event_desc *ni_pmni_event_descs[] = {
-> +	NI_EVENT_DESC(0x00, rdreq_any),
-> +	NI_EVENT_DESC(0x01, rdreq_dev_arcache),
-> +	NI_EVENT_DESC(0x02, rdreq_noshared),
-> +	NI_EVENT_DESC(0x05, rd_prdata_any),
-> +	NI_EVENT_DESC(0x07, wtreq_any),
-> +	NI_EVENT_DESC(0x08, wtreq_dev),
-> +	NI_EVENT_DESC(0x09, wtreq_noshared),
-> +	NI_EVENT_DESC(0x0d, wtdata_beat_any),
-> +	NI_EVENT_DESC(0x0e, rdreq_stall),
-> +	NI_EVENT_DESC(0x0f, rddata_stall),
-> +	NI_EVENT_DESC(0x10, wtreq_stall),
-> +	NI_EVENT_DESC(0x11, wtdata_stall),
-> +	NI_EVENT_DESC(0x22, wtresp_stall_lack_gt),
-> +	NI_EVENT_DESC(0x23, rdresp_stall_lack_gt),
-> +};
-> +
-> +static int ni_ev_desc_array_size(enum ni_node_type type,
-> +				 struct ni_event_desc ***descs)
-> +{
-> +	switch (type) {
-> +	case NI_ASNI:
-> +		if (descs)
-> +			*descs = ni_asni_event_descs;
-> +		return ARRAY_SIZE(ni_asni_event_descs);
-> +	case NI_AMNI:
-> +		if (descs)
-> +			*descs = ni_amni_event_descs;
-> +		return ARRAY_SIZE(ni_amni_event_descs);
-> +	case NI_HSNI:
-> +		if (descs)
-> +			*descs = ni_hsni_event_descs;
-> +		return ARRAY_SIZE(ni_hsni_event_descs);
-> +	case NI_HMNI:
-> +		if (descs)
-> +			*descs = ni_hmni_event_descs;
-> +		return ARRAY_SIZE(ni_hmni_event_descs);
-> +	case NI_PMNI:
-> +		if (descs)
-> +			*descs = ni_pmni_event_descs;
-> +		return ARRAY_SIZE(ni_pmni_event_descs);
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static ssize_t ni_event_show(struct device *dev,
-> +				   struct device_attribute *attr, char *buf)
-> +{
-> +	struct ni_event_attr *eattr;
-> +
-> +	eattr = to_ni_event_attr(attr);
-> +
-> +	if (eattr->ev_desc)
-> +		return sysfs_emit(buf,
-> +				  "%s,id=0x%x,event=0x%llx\n",
-> +				  ni_node_name[eattr->node->type],
-> +				  eattr->node->id,
-> +				  eattr->ev_desc->eventid);
-> +
-> +	return sysfs_emit(buf, "cycles\n");
-> +}
-> +
-> +static ssize_t ni_format_show(struct device *dev,
-> +				   struct device_attribute *attr, char *buf)
-> +{
-> +	struct ni_format_attr *fmt = container_of(attr, struct ni_format_attr, attr);
-> +	int lo = __ffs64(fmt->field), hi = fls64(fmt->field);
-> +
-> +	if (lo == hi)
-> +		return sysfs_emit(buf, "config:%d\n", lo);
-> +
-> +	return sysfs_emit(buf, "config:%d-%d\n", lo, hi);
-> +}
-> +
-> +
-> +#define NI_FORMAT_ATTR(_name, _fld)					\
-> +	(&((struct ni_format_attr[]) {{					\
-> +				.attr = __ATTR(_name, 0444, ni_format_show, NULL), \
-> +				.field = _fld,				\
-> +			}})[0].attr.attr)
-> +
-> +static struct attribute *ni_format_attrs[] = {
-> +	NI_FORMAT_ATTR(event, NI_EVENT_FORMAT_EVENT),
-> +	NI_FORMAT_ATTR(cycles, NI_EVENT_FORMAT_CYCLES),
-> +	NI_FORMAT_ATTR(asni, NI_EVENT_FORMAT_ASNI),
-> +	NI_FORMAT_ATTR(amni, NI_EVENT_FORMAT_AMNI),
-> +	NI_FORMAT_ATTR(hsni, NI_EVENT_FORMAT_HSNI),
-> +	NI_FORMAT_ATTR(hmni, NI_EVENT_FORMAT_HMNI),
-> +	NI_FORMAT_ATTR(pmni, NI_EVENT_FORMAT_PMNI),
-> +	NI_FORMAT_ATTR(id, NI_EVENT_FORMAT_NODEID),
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group ni_format_attrs_group = {
-> +	.name = "format",
-> +	.attrs = ni_format_attrs,
-> +};
-> +
-> +static ssize_t ni_cpumask_show(struct device *dev,
-> +				    struct device_attribute *attr, char *buf)
-> +{
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(dev_get_drvdata(dev));
-> +
-> +	return cpumap_print_to_pagebuf(true, buf, cpumask_of(ni_pmu->ni->on_cpu));
-> +}
-> +
-> +static struct device_attribute ni_cpumask_attr =
-> +		__ATTR(cpumask, 0444, ni_cpumask_show, NULL);
-> +
-> +static struct attribute *ni_addition_attrs[] = {
-> +	&ni_cpumask_attr.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group ni_addition_attrs_group = {
-> +	.attrs = ni_addition_attrs,
-> +};
-> +
-> +static u64 ni_cntr_get_and_init_optionally(struct perf_event *event, bool init)
-> +{
-> +	u64 old_val, new_val;
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	if (!is_cc_event(hwc))
-> +		old_val = readl(ni_pmu_offset(ni_pmu, pmevcntr[hwc->idx].counter));
-> +	else
-> +		old_val = lo_hi_readq(ni_pmu_offset(ni_pmu, pmccntr_lower));
-> +
-> +	if (!init)
-> +		return old_val;
-> +
-> +	new_val = cnt_init_val(hwc);
-> +	if (!is_cc_event(hwc))
-> +		writel(new_val, ni_pmu_offset(ni_pmu, pmevcntr[hwc->idx].counter));
-> +	else
-> +		lo_hi_writeq(new_val, ni_pmu_offset(ni_pmu, pmccntr_lower));
-> +
-> +	return old_val;
-> +}
-> +
-> +static void ni_pmu_event_update(struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u64 delta, prev, now;
-> +
-> +	do {
-> +		prev = local64_read(&event->hw.prev_count);
-> +		now = ni_cntr_get_and_init_optionally(event, false);
-> +	} while (local64_cmpxchg(&event->hw.prev_count, prev, now) != prev);
-> +
-> +	delta = now - prev;
-> +
-> +	if (!is_cc_event(hwc))
-> +		delta &= 0xFFFFFFFFULL;
-> +
-> +	local64_add(delta, &event->count);
-> +}
-> +
-> +static void ni_pmu_set_period(struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	ni_cntr_get_and_init_optionally(event, true);
-> +
-> +	local64_set(&event->hw.prev_count, cnt_init_val(hwc));
-> +}
-> +
-> +static void ni_pmu_enable(struct pmu *pmu)
-> +{
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(pmu);
-> +
-> +	writel(NI_PMU_PMCR_ENABLE, ni_pmu_offset(ni_pmu, pmcr));
-> +}
-> +
-> +static inline void ni_pmu_disable(struct pmu *pmu)
-> +{
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(pmu);
-> +
-> +	writel(0, ni_pmu_offset(ni_pmu, pmcr));
-> +}
-> +
-> +static struct ni_node *ni_pmu_find_ev_src(struct ni_pmu *ni_pmu, u32 node_type)
-> +{
-> +	int idx;
-> +
-> +	for (idx = 0; idx < ni_pmu->ev_src_num; idx++)
-> +		if (ni_pmu->ev_src_nodes[idx].node_type == node_type)
-> +			return &ni_pmu->ev_src_nodes[idx];
-> +
-> +	return NULL;
-> +}
-> +
-> +static bool is_event_supported(u64 eventid, enum ni_node_type type)
-> +{
-> +	int num;
-> +	int idx;
-> +	struct ni_event_desc **descs;
-> +
-> +	num = ni_ev_desc_array_size(type, &descs);
-> +
-> +	for (idx = 0; idx < num; idx++)
-> +		if (eventid == descs[idx]->eventid)
-> +			break;
-> +
-> +	return idx == num ? false : true;
-> +}
-> +
-> +static enum ni_node_type ni_event_config_nodetype(u64 config)
-> +{
-> +	unsigned long nodetype = _ni_event_config_nodetype(config);
-> +	unsigned long lo = __ffs(nodetype), hi = __fls(nodetype);
-> +
-> +	if (!nodetype || lo != hi)
-> +		return 0;
-> +
-> +	return lo;
-> +}
-> +
-> +static int ni_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +	u64 config;
-> +	u32 id, type, node_type;
-> +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
-> +
-> +	if (is_sampling_event(event))
-> +		return -EINVAL;
-> +
-> +	event->cpu = ni_pmu->ni->on_cpu;
-> +
-> +	config = event->attr.config;
-> +
-> +	hwc->config_base = config;
-> +	hwc->config = ni_event_config_eventid(config);
-> +
-> +	if (ni_event_config_cc(config)) {
-> +		if (hwc->config)
-> +			return -EINVAL;
-> +		else
-> +			return 0; /* cycle event */
-> +	}
-> +
-> +	type = ni_event_config_nodetype(config);
-> +	if (!type)
-> +		return -EINVAL;
-> +
-> +	id = ni_event_config_nodeid(config);
-> +	node_type = type << 16 | id;
-> +
-> +	if (!ni_pmu_find_ev_src(ni_pmu, node_type))
-> +		return -EINVAL;
-> +
-> +	if (!is_event_supported(hwc->config, type))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ni_pmu_event_start(struct perf_event *event, int flags)
-> +{
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u32 id, type, node_type, ev_typer;
-> +
-> +	hwc->state = 0;
-> +
-> +	ni_pmu_set_period(event);
-> +
-> +	type = ni_event_config_nodetype(hwc->config_base);
-> +	id = ni_event_config_nodeid(hwc->config_base);
-> +
-> +	node_type = type << 16 | id;
-> +	ev_typer = type << 8 | id;
-> +
-> +	if (!is_cc_event(hwc)) {
-> +		ni_node_pmuevsel(ni_pmu_find_ev_src(ni_pmu, node_type), hwc->config);
-> +		ni_pmu_pmevtyper_sel_node(ni_pmu, ev_typer, hwc->idx);
-> +	}
-> +
-> +	ni_pmu_counter_enable(ni_pmu, cnt_en_bit(hwc));
-> +}
-> +
-> +static void ni_pmu_event_stop(struct perf_event *event, int flags)
-> +{
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	if (hwc->state & PERF_HES_STOPPED)
-> +		return;
-> +
-> +	ni_pmu_counter_disable(ni_pmu, cnt_en_bit(hwc));
-> +
-> +	ni_pmu_event_update(event);
-> +
-> +	hwc->state |= PERF_HES_STOPPED | PERF_HES_UPTODATE;
-> +}
-> +
-> +static void ni_pmu_event_read(struct perf_event *event)
-> +{
-> +	ni_pmu_event_update(event);
-> +}
-> +
-> +static int ni_pmu_event_add(struct perf_event *event, int flags)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +	int idx;
-> +
-> +	idx = 0;
-> +	if (is_cc_event(hwc) && ni_pmu->events[NI_PMU_COUNTER_NUM])
-> +		return -EAGAIN; /* The cycle counter is in use. */
-> +
-> +	idx = 0;
-> +	if (is_cc_event(hwc))
-> +		idx = NI_PMU_COUNTER_NUM;
-> +	else
-> +		while ((idx < NI_PMU_COUNTER_NUM) && ni_pmu->events[idx])
-> +			idx++;
-> +
-> +	if (!is_cc_event(hwc) && idx == NI_PMU_COUNTER_NUM)
-> +		return -EAGAIN; /* All general counter is in use. */
-> +
-> +	hwc->idx = idx;
-> +
-> +	hwc->config = hwc->config << idx * 8; /* including is_cc */
-> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-> +
-> +	local64_set(&event->hw.prev_count, 0);
-> +
-> +	ni_pmu->events[idx] = event;
-> +
-> +	ni_pmu_interrupt_enable(ni_pmu, cnt_en_bit(hwc));
-> +
-> +	if (flags & PERF_EF_START)
-> +		ni_pmu_event_start(event, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void ni_pmu_event_del(struct perf_event *event, int flags)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	struct ni_pmu *ni_pmu = to_ni_pmu(event->pmu);
-> +
-> +	ni_pmu_event_stop(event, flags);
-> +	ni_pmu_interrupt_disable(ni_pmu, cnt_en_bit(hwc));
-> +	ni_pmu->events[hwc->idx] = NULL;
-> +}
-> +
-> +static irqreturn_t _ni_pmu_handle_irq(struct ni_pmu *ni_pmu)
-> +{
-> +	unsigned long ovsr;
-> +	int idx;
-> +	struct perf_event *event;
-> +
-> +	ovsr = readl(ni_pmu_offset(ni_pmu, pmovsclr));
-> +	if (!ovsr)
-> +		return IRQ_NONE;
-> +
-> +	writel(ovsr, ni_pmu_offset(ni_pmu, pmovsclr));
-> +
-> +	for_each_set_bit(idx, (unsigned long *)&ovsr, 32) {
-> +		if (idx >= NI_PMU_COUNTER_NUM)
-> +			idx = NI_PMU_COUNTER_NUM;
-> +
-> +		event = ni_pmu->events[idx];
-> +		if (WARN_ON_ONCE(!event))
-> +			continue;
-> +
-> +		ni_pmu_event_update(event);
-> +		ni_pmu_set_period(event);
-> +		if (idx == NI_PMU_COUNTER_NUM)
-> +			break;
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t ni_pmu_handle_irq(int irq_num, void *data)
-> +{
-> +	struct ni_pmu *ni_pmu = data;
-> +	int idx, ret = IRQ_NONE;
-> +
-> +	if (ni_pmu->ni->irq_num != 1)
-> +		return _ni_pmu_handle_irq(ni_pmu);
-> +
-> +	for (idx = 0; idx < ni_pmu->ni->pmu_num; idx++)
-> +		ret |= _ni_pmu_handle_irq(ni_pmu->ni->ni_pmus[idx]);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ni_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct global_ni *ni;
-> +	unsigned int target;
-> +	int idx;
-> +
-> +
-> +	ni = hlist_entry_safe(node, struct global_ni, node);
-> +	if (cpu != ni->on_cpu)
-> +		return 0;
-> +
-> +
-> +	target = cpumask_any_but(cpu_online_mask, cpu);
-> +	if (target >= nr_cpu_ids)
-> +		return 0;
-> +
-> +
-> +	for (idx = 0; idx < ni->pmu_num; idx++) {
-> +		perf_pmu_migrate_context(&ni->ni_pmus[idx]->pmu, cpu, target);
-> +		WARN_ON(irq_set_affinity(ni->ni_pmus[idx]->irq, cpumask_of(target)));
-> +	}
-> +
-> +	ni->on_cpu = target;
-> +
-> +	return 0;
-> +}
-> +
-> +static u32 ni_child_number_total(void __iomem *periphbase,
-> +				 void __iomem *from, enum ni_node_type type)
-> +{
-> +	enum ni_node_type node_type;
-> +	int total, idx;
-> +	void __iomem *child_base;
-> +
-> +	node_type = ni_node_type(from);
-> +
-> +	if (node_type == type)
-> +		return 1;
-> +
-> +	if (node_type >= NI_ASNI)
-> +		return 0;
-> +
-> +	total = 0;
-> +	for (idx = 0; idx < ni_child_number(from); idx++) {
-> +		child_base = ni_child_pointer(periphbase, from, idx);
-> +		total += ni_child_number_total(periphbase, child_base, type);
-> +	}
-> +
-> +	return total;
-> +}
-> +
-> +static void ni_pmu_reset(struct ni_pmu *ni_pmu)
-> +{
-> +	ni_pmu_disable(&ni_pmu->pmu);
-> +
-> +#define clear_reg(name) \
-> +	writel(readl(ni_pmu_offset(ni_pmu, name)), ni_pmu_offset(ni_pmu, name))
-> +
-> +	clear_reg(pmcntenclr);
-> +	clear_reg(pmintenclr);
-> +	clear_reg(pmovsclr);
-> +
-> +	writel_relaxed(NI_PMU_PMCR_RST_CYC_CNTR & NI_PMU_PMCR_RST_EV_CNTR,
-> +		       ni_pmu_offset(ni_pmu, pmcr));
-> +}
-> +
-> +static int ni_pmu_irq_setup(struct ni_pmu *ni_pmu, int irq_idx)
-> +{
-> +	int err;
-> +	unsigned long flags = IRQF_NOBALANCING | IRQF_SHARED | IRQF_NO_THREAD;
-> +
-> +	ni_pmu->irq = platform_get_irq(to_platform_device(ni_pmu->dev), irq_idx);
-> +	if (ni_pmu->irq < 0)
-> +		return ni_pmu->irq;
-> +
-> +	err = devm_request_irq(ni_pmu->dev, ni_pmu->irq, ni_pmu_handle_irq,
-> +			       flags, dev_name(ni_pmu->dev), ni_pmu);
-> +	if (err)
-> +		return err;
-> +
-> +	err = irq_set_affinity(ni_pmu->irq, cpumask_of(ni_pmu->ni->on_cpu));
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ni_event_attr_init(struct device *dev,
-> +			      struct ni_event_attr *eattr,
-> +			       struct ni_node *node,
-> +			       struct ni_event_desc *desc)
-> +{
-> +	const char *name;
-> +
-> +	sysfs_attr_init(&eattr->attr.attr);
-> +
-> +	eattr->ev_desc = desc;
-> +	eattr->node = node;
-> +
-> +	if (desc && node)
-> +		name = devm_kasprintf(dev,
-> +			      GFP_KERNEL,
-> +			      "%s_%d_%s",
-> +			      ni_node_name[node->type],
-> +			      node->id,
-> +			      desc->name);
-> +	else if (!desc && !node)
-> +		name = "cycles";
-> +	else {
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!name)
-> +		return -ENOMEM;
-> +
-> +	eattr->attr = (struct device_attribute){
-> +		.attr = {
-> +			.name = name,
-> +			.mode = VERIFY_OCTAL_PERMISSIONS(0444)
-> +		},
-> +		.show	= ni_event_show,
-> +		.store	= NULL,
-> +	};
-> +
-> +	return 0;
-> +}
-> +
-> +static int ni_pmu_init_attr_groups(struct ni_pmu *ni_pmu)
-> +{
-> +	int idx, ev_idx, ev_num, ret, ev_num_tmp;
-> +	struct ni_node *node;
-> +	struct ni_event_desc **descs;
-> +	struct attribute **eattrs;
-> +	struct ni_event_attr *ni_eattrs;
-> +	struct device *dev;
-> +	struct attribute_group *eattr_group;
-> +	const struct attribute_group **attr_groups;
-> +	const struct attribute_group *ni_attr_groups_template[4];
-> +
-> +	dev = ni_pmu->dev;
-> +
-> +	eattr_group = devm_kzalloc(dev, sizeof(*eattr_group), GFP_KERNEL);
-> +
-> +	ev_num = 0;
-> +	for (idx = 0; idx < ni_pmu->ev_src_num; idx++) {
-> +		node = &ni_pmu->ev_src_nodes[idx];
-> +
-> +		ev_num += ni_ev_desc_array_size(node->type, NULL);
-> +	}
-> +
-> +	ev_num++;
-> +
-> +	eattrs = devm_kmalloc(dev, sizeof(eattrs[0]) * (ev_num + 1), GFP_KERNEL);
-> +	if (!eattrs)
-> +		return -ENOMEM;
-> +
-> +	ni_eattrs = devm_kzalloc(dev, sizeof(ni_eattrs[0]) * ev_num, GFP_KERNEL);
-> +	if (!ni_eattrs)
-> +		return -ENOMEM;
-> +
-> +	ev_num = 0;
-> +	ret = ni_event_attr_init(dev, &ni_eattrs[ev_num++], NULL, NULL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (idx = 0; idx < ni_pmu->ev_src_num; idx++) {
-> +		node = &ni_pmu->ev_src_nodes[idx];
-> +
-> +		ev_num_tmp = ni_ev_desc_array_size(node->type, &descs);
-> +		for (ev_idx = 0; ev_idx < ev_num_tmp; ev_idx++) {
-> +			struct ni_event_desc *desc;
-> +
-> +			desc = descs[ev_idx];
-> +
-> +			ret = ni_event_attr_init(dev, &ni_eattrs[ev_num++], node, desc);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +
-> +	for (idx = 0; idx < ev_num; idx++)
-> +		eattrs[idx] = &ni_eattrs[idx].attr.attr;
-> +
-> +	eattrs[idx] = NULL;
-> +
-> +	eattr_group->name = "events";
-> +	eattr_group->attrs = eattrs;
-> +
-> +	ni_attr_groups_template[0] = eattr_group;
-> +	ni_attr_groups_template[1] = &ni_format_attrs_group;
-> +	ni_attr_groups_template[2] = &ni_addition_attrs_group;
-> +	ni_attr_groups_template[3] = NULL;
-> +
-> +	attr_groups = devm_kmemdup(dev,
-> +				   ni_attr_groups_template,
-> +				   sizeof(ni_attr_groups_template),
-> +				   GFP_KERNEL);
-> +	if (!attr_groups)
-> +		return -ENOMEM;
-> +
-> +	ni_pmu->pmu.attr_groups = attr_groups;
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_FREE(cd_arrays, void __iomem **, if (_T) kfree(_T))
-> +
-> +static int ni_discovery(struct global_ni *ni)
-> +{
-> +	u32 vd_idx, pd_idx, cd_idx, nd_idx, num_idx = 0;
-> +	void __iomem *vd, *pd, *cd, *nd;
-> +	int num;
-> +	struct ni_pmu *ni_pmu;
-> +	struct ni_node node;
-> +	void __iomem *pbase;
-> +	struct device *dev = ni->dev;
-> +
-> +	void  __iomem **cd_arrays __free(cd_arrays) = NULL;
-> +
-> +	pbase = ni->base;
-> +
-> +	cd_arrays = kmalloc_array(ni->cd_num, sizeof(typeof(cd)), GFP_KERNEL);
-> +
-> +	/* Step1: Get all clock domains. */
-> +	for (vd_idx = 0; vd_idx < ni_child_number(ni->base); vd_idx++) {
-> +		vd = ni_child_pointer(pbase, ni->base, vd_idx);
-> +
-> +		for (pd_idx = 0; pd_idx < ni_child_number(vd); pd_idx++) {
-> +			pd = ni_child_pointer(pbase, vd, pd_idx);
-> +
-> +			dev_dbg(dev, "The %dth power domain has %d clock domain",
-> +				pd_idx,
-> +				ni_child_number(pd));
-> +
-> +			for (cd_idx = 0; cd_idx < ni_child_number(pd); cd_idx++) {
-> +				cd_arrays[num_idx++] =
-> +					ni_child_pointer(pbase, pd, cd_idx);
-> +			}
-> +		}
-> +	}
-> +
-> +	/* Step2: Traverse all clock domains. */
-> +	for (cd_idx = 0; cd_idx < ni->cd_num; cd_idx++) {
-> +		cd = cd_arrays[cd_idx];
-> +
-> +		num = ni_child_number(cd);
-> +		dev_dbg(dev, "The %dth clock domain has %d child nodes:", cd_idx, num);
-> +
-> +		/* Omit pmu node */
-> +		ni_pmu = devm_kzalloc(dev, struct_size(ni_pmu, ev_src_nodes, num - 1),
-> +				      GFP_KERNEL);
-> +		ni_pmu->ev_src_num = num - 1;
-> +
-> +		if (!ni_pmu)
-> +			return -ENOMEM;
-> +
-> +		num_idx = 0;
-> +		for (nd_idx = 0; nd_idx < num; nd_idx++) {
-> +			nd = ni_child_pointer(pbase, cd, nd_idx);
-> +
-> +			node.base = nd;
-> +			node.node_type = ni_node_node_type(nd);
-> +
-> +			if (unlikely(ni_node_type(nd) == NI_PMU))
-> +				ni_pmu->pmu_node = node;
-> +			else
-> +				ni_pmu->ev_src_nodes[num_idx++] = node;
-> +			dev_dbg(dev, "  name: %s   id: %d", ni_node_name[node.type], node.id);
-> +		}
-> +
-> +		ni_pmu->dev = dev;
-> +		ni_pmu->ni = ni;
-> +		ni->ni_pmus[cd_idx] = ni_pmu;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ni_pmu_probe(struct platform_device *pdev)
-> +{
-> +	int ret, cd_num, idx, irq_num, irq_idx;
-> +	void __iomem *periphbase;
-> +	struct global_ni *ni;
-> +	struct device *dev = &pdev->dev;
-> +	char *name;
-> +	static int id;
-> +	struct ni_pmu *ni_pmu;
-> +
-> +	periphbase = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(periphbase))
-> +		return dev_err_probe(dev, PTR_ERR(periphbase), "Couldn't get ioremap\n");
-> +
-> +	cd_num = ni_child_number_total(periphbase, periphbase, NI_CD);
-> +
-> +	/* Each clock domain contains one PMU. So cd_num == pmu_num. */
-> +	ni = devm_kzalloc(dev,
-> +			  struct_size(ni, ni_pmus, cd_num),
-> +			  GFP_KERNEL);
-> +	if (!ni)
-> +		return -ENOMEM;
-> +
-> +	ni->cd_num = cd_num;
-> +	ni->base = periphbase;
-> +	ni->dev = dev;
-> +	ni->on_cpu = raw_smp_processor_id();
-> +	platform_set_drvdata(pdev, ni);
-> +
-> +	ret = ni_discovery(ni);
-> +	if (ret)
-> +		return ret;
-> +
-> +	irq_num = platform_irq_count(pdev);
-> +	/* Support that one NI with one irq or one clock domain with one irq. */
-> +	if (irq_num < 0 || (irq_num != 1 && irq_num != ni->cd_num)) {
-> +		dev_err(dev, "Error in irq number: %d.", irq_num);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (irq_num != cd_num) {
-> +		dev_warn(dev, "Only one IRQ found for all PMU.");
-> +		ret = ni_pmu_irq_setup(ni->ni_pmus[0], 0);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ni->irq_num = irq_num;
-> +
-> +	for (idx = 0, irq_idx = 0; idx < ni->pmu_num; idx++) {
-> +		ni_pmu = ni->ni_pmus[idx];
-> +		ret = ni_pmu_init_attr_groups(ni_pmu);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (irq_num == cd_num) {
-> +			ret = ni_pmu_irq_setup(ni_pmu, irq_idx++);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		ni_pmu_reset(ni_pmu);
-> +
-> +		ni_pmu->pmu = (struct pmu) {
-> +			.module		= THIS_MODULE,
-> +			.task_ctx_nr    = perf_invalid_context,
-> +			.pmu_enable	= ni_pmu_enable,
-> +			.pmu_disable	= ni_pmu_disable,
-> +			.event_init	= ni_pmu_event_init,
-> +			.add		= ni_pmu_event_add,
-> +			.del		= ni_pmu_event_del,
-> +			.start		= ni_pmu_event_start,
-> +			.stop		= ni_pmu_event_stop,
-> +			.read		= ni_pmu_event_read,
-> +			.attr_groups    = ni_pmu->pmu.attr_groups,
-> +			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-> +		};
-> +
-> +		ret = of_alias_get_id(pdev->dev.of_node, "ni-pmu");
-> +		if (ret >= 0)
-> +			id = ret;
-> +
-> +		if (cd_num > 1)
-> +			name = devm_kasprintf(dev, GFP_KERNEL, "ni_pmu_%d_%d", id++, idx);
-> +		else
-> +			name = devm_kasprintf(dev, GFP_KERNEL, "ni_pmu_%d", id++);
-> +
-> +		ret = perf_pmu_register(&ni_pmu->pmu, name, -1);
-> +		if (ret) {
-> +			dev_err(dev, "Error %d_%d registering PMU", id - 1, idx);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	ret = cpuhp_state_add_instance_nocalls(hp_state,
-> +					       &ni->node);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ni_pmu_remove(struct platform_device *pdev)
-> +{
-> +	struct global_ni *ni = platform_get_drvdata(pdev);
-> +	int idx;
-> +
-> +	for (idx = 0; idx < ni->pmu_num; idx++)
-> +		perf_pmu_unregister(&ni->ni_pmus[idx]->pmu);
-> +
-> +	cpuhp_remove_multi_state(hp_state);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id ni_pmu_of_match[] = {
-> +	{ .compatible = "hexin,c2000-arm-ni" },
-> +	{},
-> +};
-> +
-> +static struct platform_driver ni_pmu_driver = {
-> +	.driver = {
-> +		.name = "ni-pmu",
-> +		.of_match_table = ni_pmu_of_match,
-> +	},
-> +	.remove = ni_pmu_remove,
-> +	.probe = ni_pmu_probe,
-> +};
-> +
-> +static int __init ni_pmu_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
-> +				      "perf/arm/ni:online",
-> +				      NULL,
-> +				      ni_pmu_offline_cpu);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	hp_state = ret;
-> +
-> +	ret = platform_driver_register(&ni_pmu_driver);
-> +	if (ret)
-> +		cpuhp_remove_multi_state(hp_state);
-> +
-> +	return ret;
-> +}
-> +
-> +static void __exit ni_pmu_exit(void)
-> +{
-> +	cpuhp_remove_multi_state(hp_state);
-> +	platform_driver_unregister(&ni_pmu_driver);
-> +}
-> +
-> +module_init(ni_pmu_init);
-> +module_exit(ni_pmu_exit);
-> +
-> +MODULE_AUTHOR("Jialong Yang <jialong.yang@shingroup.cn>");
-> +MODULE_DESCRIPTION("PMU driver for ARM NI-700 Performance Monitors Unit");
-> +MODULE_LICENSE("GPL");
+>-----Original Message-----
+>From: Brandon Brnich <b-brnich@ti.com>
+>Sent: Wednesday, March 20, 2024 6:01 AM
+>To: Ivan Bornyakov <brnkv.i1@gmail.com>
+>Cc: Nas Chung <nas.chung@chipsnmedia.com>; Philipp Zabel
+><p.zabel@pengutronix.de>; Rob Herring <robh@kernel.org>; Krzysztof
+>Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+><conor+dt@kernel.org>; linux-media@vger.kernel.org; linux-
+>kernel@vger.kernel.org; devicetree@vger.kernel.org; jackson.lee
+><jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab <mchehab@kernel.org>
+>Subject: Re: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
+>
+>Hi Ivan,
+>
+>On 14:24-20240319, Ivan Bornyakov wrote:
+>> Hello, Nas
+>>
+>> On Tue, Mar 19, 2024 at 10:56:22AM +0000, Nas Chung wrote:
+>> > Hi, Ivan.
+>> >
+>> > >
+>> > >Allocate SRAM memory on module probe, free on remove. There is no
+>need
+>> > >to allocate on device open, free on close, the memory is the same
+>every
+>> > >time.
+>> >
+>> > If there is no decoder/encoder instance, driver don't need to
+>allocate SRAM memory.
+>> > The main reason of allocating the memory in open() is to allow other
+>modules to
+>> > use more SRAM memory, if wave5 is not working.
+>
+>I have to agree with this statement. Moving allocation to probe results
+>in wasting SRAM when VPU is not in use. VPU should only be allocating
+>SRAM
+>when a stream instance is running and free that back once all instances
+>close.
+>
+>> > >
+>> > >Also use gen_pool_size() to determine SRAM memory size to be
+>allocated
+>> > >instead of separate "sram-size" DT property to reduce duplication.
+>> > >
+>> > >Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
+>> > >---
+>> > > .../platform/chips-media/wave5/wave5-helper.c |  3 ---
+>> > > .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++-------
+>--
+>> > > .../chips-media/wave5/wave5-vpu-dec.c         |  2 --
+>> > > .../chips-media/wave5/wave5-vpu-enc.c         |  2 --
+>> > > .../platform/chips-media/wave5/wave5-vpu.c    | 12 +++++------
+>> > > .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
+>> > > 6 files changed, 16 insertions(+), 25 deletions(-)
+>> > >
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>> > >index 8433ecab230c..ec710b838dfe 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+>> > >@@ -29,9 +29,6 @@ void wave5_cleanup_instance(struct vpu_instance
+>*inst)
+>> > > {
+>> > > 	int i;
+>> > >
+>> > >-	if (list_is_singular(&inst->list))
+>> > >-		wave5_vdi_free_sram(inst->dev);
+>> > >-
+>> > > 	for (i =3D 0; i < inst->fbc_buf_count; i++)
+>> > > 		wave5_vpu_dec_reset_framebuffer(inst, i);
+>> > >
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+>> > >index 3809f70bc0b4..ee671f5a2f37 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+>> > >@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
+>> > >*vpu_dev, struct vpu_buf *array,
+>> > > void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
+>> > > {
+>> > > 	struct vpu_buf *vb =3D &vpu_dev->sram_buf;
+>> > >+	dma_addr_t daddr;
+>> > >+	void *vaddr;
+>> > >+	size_t size;
+>> > >
+>> > >-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
+>> > >+	if (!vpu_dev->sram_pool || vb->vaddr)
+>> > > 		return;
+>> > >
+>> > >-	if (!vb->vaddr) {
+>> > >-		vb->size =3D vpu_dev->sram_size;
+>> > >-		vb->vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
+>> > >-					       &vb->daddr);
+>> > >-		if (!vb->vaddr)
+>> > >-			vb->size =3D 0;
+>> > >+	size =3D gen_pool_size(vpu_dev->sram_pool);
+>> > >+	vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
+>> > >+	if (vaddr) {
+>> > >+		vb->vaddr =3D vaddr;
+>> > >+		vb->daddr =3D daddr;
+>> > >+		vb->size =3D size;
+>> > > 	}
+>> > >
+>> > > 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
+>> > >0x%p\n",
+>> > >@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device
+>*vpu_dev)
+>> > > 	if (!vb->size || !vb->vaddr)
+>> > > 		return;
+>> > >
+>> > >-	if (vb->vaddr)
+>> > >-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
+>> > >-			      vb->size);
+>> > >+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
+>> > >>size);
+>> > >
+>> > > 	memset(vb, 0, sizeof(*vb));
+>> > > }
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
+>dec.c
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>> > >index aa0401f35d32..84dbe56216ad 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+>> > >@@ -1854,8 +1854,6 @@ static int wave5_vpu_open_dec(struct file
+>*filp)
+>> > > 		goto cleanup_inst;
+>> > > 	}
+>> > >
+>> > >-	wave5_vdi_allocate_sram(inst->dev);
+>> > >-
+>> > > 	return 0;
+>> > >
+>> > > cleanup_inst:
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
+>enc.c
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> > >index 8bbf9d10b467..86ddcb82443b 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+>> > >@@ -1727,8 +1727,6 @@ static int wave5_vpu_open_enc(struct file
+>*filp)
+>> > > 		goto cleanup_inst;
+>> > > 	}
+>> > >
+>> > >-	wave5_vdi_allocate_sram(inst->dev);
+>> > >-
+>> > > 	return 0;
+>> > >
+>> > > cleanup_inst:
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>> > >index f3ecadefd37a..2a0a70dd7062 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+>> > >@@ -178,16 +178,11 @@ static int wave5_vpu_probe(struct
+>platform_device
+>> > >*pdev)
+>> > > 		return ret;
+>> > > 	}
+>> > >
+>> > >-	ret =3D of_property_read_u32(pdev->dev.of_node, "sram-size",
+>> > >-				   &dev->sram_size);
+>> > >-	if (ret) {
+>> > >-		dev_warn(&pdev->dev, "sram-size not found\n");
+>> > >-		dev->sram_size =3D 0;
+>> > >-	}
+>> > >-
+>> >
+>> > Required SRAM size is different from each wave5 product.
+>> > And, SoC vendor also can configure the different SRAM size
+>> > depend on target SoC specification even they use the same wave5
+>product.
+>> >
+>>
+>> One can limit iomem address range in SRAM node. Here is the example of
+>> how I setup Wave515 with SRAM:
+>>
+>> 	sram@2000000 {
+>> 		compatible =3D "mmio-sram";
+>> 		reg =3D <0x0 0x2000000 0x0 0x80000>;
+>> 		#address-cells =3D <1>;
+>> 		#size-cells =3D <1>;
+>> 		ranges =3D <0x0 0x0 0x2000000 0x80000>;
+>>
+>> 		wave515_vpu_sram: wave515-vpu-sram@0 {
+>> 			reg =3D <0x0 0x80000>;
+>> 			pool;
+>> 		};
+>> 	};
+>>
+>> 	wave515@410000 {
+>> 		compatible =3D "cnm,wave515";
+>> 		reg =3D <0x0 0x410000 0x0 0x10000>;
+>> 		clocks =3D <&clk_ref1>;
+>> 		clock-names =3D "videc";
+>> 		interrupt-parent =3D <&wave515_intc>;
+>> 		interrupts =3D <16 IRQ_TYPE_LEVEL_HIGH>;
+>> 		resets =3D <&wave515_reset 0>,
+>> 			 <&wave515_reset 4>,
+>> 			 <&wave515_reset 8>,
+>> 			 <&wave515_reset 12>;
+>> 		sram =3D <&wave515_vpu_sram>;
+>> 	};
+>>
+>> gen_pool_size() returns size of wave515_vpu_sram, no need for extra
+>> "sram-size" property.
+
+Thanks for sharing the example.
+I agree that the "sram-size" property is not needed.
+
+>
+>"sram-size" property does need to be removed, as this was the consensus
+>gathered from my patch[0]. However, I think your method is still taking
+
+I missed the previous consensus for the sram-size property.
+Thanks for letting me know.
+
+>a more static approach. One of the recommendations in my thread[1] was
+>making a list of known SRAM sizes given typical resolutions and
+>iterating through until a valid allocation is done. I don't think this
+>is the correct approach either based on Nas's comment that each Wave5
+>has different SRAM size requirement. It would clutter up the file too
+>much if each wave5 product had its own SRAM size mapping.
+>
+>Could another approach be to change Wave5 dts node to have property set
+>as "sram =3D <&sram>;" in your example, then driver calls
+>gen_pool_availble to get size remaining? From there, a check could be
+>put in place to make sure an unnecessary amount is not being allocated.
+
+Ivan's approach looks good to me.
+It is similar to your first patch, which adds the sram-size property
+to configure different SRAM sizes for each device.
+And, Driver won't know unnecessary amount is allocated before parsing
+bitstream header.
+
+>
+>
+>[0]:
+>https://lore.kernel.org/lkml/99bf4d6d988d426492fffc8de9015751c323bd8a.cam
+>el@ndufresne.ca/
+>[1]: https://lore.kernel.org/lkml/9c5b7b2c-8a66-4173-dfe9-
+>5724ec5f733d@ti.com/
+>
+>Thanks,
+>Brandon
+>>
+>> > Thanks.
+>> > Nas.
+>> >
+>> > > 	dev->sram_pool =3D of_gen_pool_get(pdev->dev.of_node, "sram", 0);
+>> > > 	if (!dev->sram_pool)
+>> > > 		dev_warn(&pdev->dev, "sram node not found\n");
+>> > >+	else
+>> > >+		wave5_vdi_allocate_sram(dev);
+>> > >
+>> > > 	dev->product_code =3D wave5_vdi_read_register(dev,
+>> > >VPU_PRODUCT_CODE_REGISTER);
+>> > > 	ret =3D wave5_vdi_init(&pdev->dev);
+>> > >@@ -259,6 +254,8 @@ static int wave5_vpu_probe(struct
+>platform_device
+>> > >*pdev)
+>> > > err_clk_dis:
+>> > > 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
+>> > >
+>> > >+	wave5_vdi_free_sram(dev);
+>> > >+
+>> > > 	return ret;
+>> > > }
+>> > >
+>> > >@@ -275,6 +272,7 @@ static void wave5_vpu_remove(struct
+>platform_device
+>> > >*pdev)
+>> > > 	v4l2_device_unregister(&dev->v4l2_dev);
+>> > > 	wave5_vdi_release(&pdev->dev);
+>> > > 	ida_destroy(&dev->inst_ida);
+>> > >+	wave5_vdi_free_sram(dev);
+>> > > }
+>> > >
+>> > > static const struct wave5_match_data ti_wave521c_data =3D {
+>> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>> > >b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>> > >index fa62a85080b5..8d88381ac55e 100644
+>> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+>> > >@@ -749,7 +749,6 @@ struct vpu_device {
+>> > > 	struct vpu_attr attr;
+>> > > 	struct vpu_buf common_mem;
+>> > > 	u32 last_performance_cycles;
+>> > >-	u32 sram_size;
+>> > > 	struct gen_pool *sram_pool;
+>> > > 	struct vpu_buf sram_buf;
+>> > > 	void __iomem *vdb_register;
+>> > >--
+>> > >2.44.0
+>> >
+>>
 
