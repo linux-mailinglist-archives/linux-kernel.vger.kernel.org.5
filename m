@@ -1,264 +1,194 @@
-Return-Path: <linux-kernel+bounces-110050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7BC0885960
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:48:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D19D88595B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:48:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E00B2823CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:48:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70E601F211A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE63484A27;
-	Thu, 21 Mar 2024 12:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NMYbxKjV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="B8z9YuAR"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB083CC6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6045A83CC3;
 	Thu, 21 Mar 2024 12:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H81E0HtB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCCB83CB4
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025286; cv=none; b=uG96Zqy1Yy8bNb2T1Xt3uvoObB7gRQyeJHovIsGRZ+QB8QJdm0IBnqcvvoAKz+7YZE0GCAEa7eHnEuhFJwiN89TupCCNRs9L+sejUblNzLpAopomp09THvlz7GGgRanE7ZIQ2lRF+8t1a3JmyOPo9iA4RZp19+UFNy1rjv9Vxj8=
+	t=1711025282; cv=none; b=eVaR/ohywn6fP/NH9DZX6ShBnhbEWfrLYbr2G5ftbFrq+KRYTZj8Aii0Ka18wArj1Ad9/0zpKQgs7mgomJJsLn9WMxEJwAooAyI6zkNoIYbjt25i/iHLbP/SsUibfg0MiWjJsgWQ9hdK3v6GbmxE6Db2jQMxJB0iP0ueqOjNCzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025286; c=relaxed/simple;
-	bh=4pwkuVPASujLtvUAcOeumSFvUYsF5sf+M00LrdtdnmY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RXtXJoSnSduzo4epT1DPxftCzmeQV27meVCXzop/H2xNr5eWTXZ1c7bVfxxR6GSuA6g8AUzLCp82UIJVevHGdzDNU+qMM9clr3MzwC/7A++I0Zvw58X8C1Jx8rHYrh6h3SNAy5iimh+ud0F05T48+PSOD7WJ6HVtdTOhSElU2io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NMYbxKjV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=B8z9YuAR; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EAE551FC83;
-	Thu, 21 Mar 2024 12:48:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711025282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=gVje2G/MWNXU76aPP5C7g31t/cKVQY55RCzo6eErdoU=;
-	b=NMYbxKjVzVQqSddBaVOYu7ujpvbBArz5B1aY6U+HuybMK/O4wdmPrFCt+mDs3yudNjpFKh
-	qZiuF+I1UgZoxm2cDDmV5So1PsipAfVQJCMej9iuhMRRoINGYrcMo9KM1nc7i92dUGwxTD
-	DHsVciLld0fAjcd2fnhmFtKkMqwedKM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711025281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=gVje2G/MWNXU76aPP5C7g31t/cKVQY55RCzo6eErdoU=;
-	b=B8z9YuARPR1yqmPrxgg9bQI98U1yx3nTKtFsfVmMplhd2KJK/3hs+/NRGTCFQm4VXcHe4g
-	zyXjgI4EzvJ8SafYlgtDSBHNOpfBrmtzPe08zePc26C5LTvouJU5adEPQRtPjqSCwXnYNm
-	4PbLJm/Az1UUZ2zsjYhW2lg612QQ1+U=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D666136AD;
-	Thu, 21 Mar 2024 12:48:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id y0NXHIEs/GVCTQAAD6G6ig
-	(envelope-from <oneukum@suse.com>); Thu, 21 Mar 2024 12:48:01 +0000
-From: Oliver Neukum <oneukum@suse.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Oliver Neukum <oneukum@suse.com>,
-	syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
-Subject: [PATCH net-next] usbnet: fix cyclical race on disconnect with work queue
-Date: Thu, 21 Mar 2024 13:46:41 +0100
-Message-ID: <20240321124758.6302-1-oneukum@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711025282; c=relaxed/simple;
+	bh=JsZYot1fWnRjbpWGZrt4rlGYKJXjiK3HdEc1worcLYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mkmY107gsUpMs/YPzfdYiWDUU42mrLmpjVNFPmZ3ia7MH29yJK6gOGcOASzBd9gn1arzZ32N3Cd6LgH26oW2OmYd5r4KzsHIdZpwVh1tP46C9YK3/CcQiHkQt0k87y1lum8sScSvmvR+ehSlHyavdSvva88g2myLywK2jIKg5QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H81E0HtB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A402C433F1;
+	Thu, 21 Mar 2024 12:48:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711025282;
+	bh=JsZYot1fWnRjbpWGZrt4rlGYKJXjiK3HdEc1worcLYc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=H81E0HtBaSA/Dxa6l0afpEgLCumcSC0+6ondIvpXdPiMCrg7QZAs2TI/cfzCnWtzg
+	 ERda5Eov/heg4l415Sdp9Vfawatm5OdEQ9jNFGQn71X00MQVHuZYTnLQAu/kg5gY4i
+	 Qgfvmt/6Dh29gvuKOIK5ZPxrccaeeEMz3Nj0O4tWUmMbw7Ef5FxzMidLwXBW2tZf8h
+	 G+xOGG76RM85cjk6sZoSXsrK1zwTg8RA4jHoiT3CqlHJNbpk4ckwdNkyamVFZilRFi
+	 +hLQgrhO/RH/zIkCVg+G44LY50JzOWxeQvT2on/H9ZqsqoKl9BoSfB08rbZTgZrirs
+	 7od7OTlgX3IFg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 1A721CE0F1D; Thu, 21 Mar 2024 05:47:59 -0700 (PDT)
+Date: Thu, 21 Mar 2024 05:47:59 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
+ enqueue in nohz_full
+Message-ID: <bf8689c2-0749-47cb-9535-53cf66e34f5e@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240318230729.15497-1-frederic@kernel.org>
+ <20240318230729.15497-3-frederic@kernel.org>
+ <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
+ <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
+ <ZfsLtMijRrNZfqh6@localhost.localdomain>
+ <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
+ <ZfwdEROGFFmIbkCM@lothringen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: 2.20
-X-Spamd-Result: default: False [2.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[9665bf55b1c828bbcd8a];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: **
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+In-Reply-To: <ZfwdEROGFFmIbkCM@lothringen>
 
-The work can submit URBs and the URBs can schedule the work.
-This cycle needs to be broken, when a device is to be stopped.
-Use a flag to do so.
+On Thu, Mar 21, 2024 at 12:42:09PM +0100, Frederic Weisbecker wrote:
+> On Wed, Mar 20, 2024 at 03:55:17PM -0700, Paul E. McKenney wrote:
+> > On Wed, Mar 20, 2024 at 05:15:48PM +0100, Frederic Weisbecker wrote:
+> > > Le Wed, Mar 20, 2024 at 04:14:24AM -0700, Paul E. McKenney a écrit :
+> > > > On Tue, Mar 19, 2024 at 02:18:00AM -0700, Paul E. McKenney wrote:
+> > > > > On Tue, Mar 19, 2024 at 12:07:29AM +0100, Frederic Weisbecker wrote:
+> > > > > > While running in nohz_full mode, a task may enqueue a timer while the
+> > > > > > tick is stopped. However the only places where the timer wheel,
+> > > > > > alongside the timer migration machinery's decision, may reprogram the
+> > > > > > next event accordingly with that new timer's expiry are the idle loop or
+> > > > > > any IRQ tail.
+> > > > > > 
+> > > > > > However neither the idle task nor an interrupt may run on the CPU if it
+> > > > > > resumes busy work in userspace for a long while in full dynticks mode.
+> > > > > > 
+> > > > > > To solve this, the timer enqueue path raises a self-IPI that will
+> > > > > > re-evaluate the timer wheel on its IRQ tail. This asynchronous solution
+> > > > > > avoids potential locking inversion.
+> > > > > > 
+> > > > > > This is supposed to happen both for local and global timers but commit:
+> > > > > > 
+> > > > > > 	b2cf7507e186 ("timers: Always queue timers on the local CPU")
+> > > > > > 
+> > > > > > broke the global timers case with removing the ->is_idle field handling
+> > > > > > for the global base. As a result, global timers enqueue may go unnoticed
+> > > > > > in nohz_full.
+> > > > > > 
+> > > > > > Fix this with restoring the idle tracking of the global timer's base,
+> > > > > > allowing self-IPIs again on enqueue time.
+> > > > > 
+> > > > > Testing with the previous patch (1/2 in this series) reduced the number of
+> > > > > problems by about an order of magnitude, down to two sched_tick_remote()
+> > > > > instances and one enqueue_hrtimer() instance, very good!
+> > > > > 
+> > > > > I have kicked off a test including this patch.  Here is hoping!  ;-)
+> > > > 
+> > > > And 22*100 hours of TREE07 got me one run with a sched_tick_remote()
+> > 
+> > Sigh.  s/22/12/
+> > 
+> > > > complaint and another run with a starved RCU grace-period kthread.
+> > > > So this is definitely getting more reliable, but still a little ways
+> > > > to go.
+> > 
+> > An additional eight hours got anohtre sched_tick_remote().
+> > 
+> > > Right, there is clearly something else. Investigation continues...
+> > 
+> > Please let me know if there is a debug patch that I could apply.
+> 
+> So there are three things:
+> 
+> _ The sched_tick_remote() warning. I can easily trigger this one and while
+>   trying a bisection, I realize it actually also triggers on v6.8
+>   I'm not really tempted to investigate further because the warning doesn't make
+>   much sense to me. This computes the delta between the time the kworker got
+>   scheduled and the time it reaches the middle of the work. It happens to be
+>   ~3s but isn't it something to be expected with jitter and all involved into
+>   rcutorture?
+> 
+>   We should probably just remove this warning. This remote tick is my most horrible
+>   hackery anyway.
 
-Fixes: f29fc259976e9 ("[PATCH] USB: usbnet (1/9) clean up framing")
-Reported-by: syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
----
- drivers/net/usb/usbnet.c   | 37 ++++++++++++++++++++++++++++---------
- include/linux/usb/usbnet.h | 18 ++++++++++++++++++
- 2 files changed, 46 insertions(+), 9 deletions(-)
+Would it make sense to increase it to somewhere around the timeout for
+RCU CPU stall warnings, softlockup, and so on?
 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index e84efa661589..422d91635045 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -467,10 +467,12 @@ static enum skb_state defer_bh(struct usbnet *dev, struct sk_buff *skb,
- void usbnet_defer_kevent (struct usbnet *dev, int work)
- {
- 	set_bit (work, &dev->flags);
--	if (!schedule_work (&dev->kevent))
--		netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
--	else
--		netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
-+	if (!usbnet_going_away(dev)) {
-+		if (!schedule_work (&dev->kevent))
-+			netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
-+		else
-+			netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
-+	}
- }
- EXPORT_SYMBOL_GPL(usbnet_defer_kevent);
- 
-@@ -538,7 +540,8 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
- 			tasklet_schedule (&dev->bh);
- 			break;
- 		case 0:
--			__usbnet_queue_skb(&dev->rxq, skb, rx_start);
-+			if (!usbnet_going_away(dev))
-+				__usbnet_queue_skb(&dev->rxq, skb, rx_start);
- 		}
- 	} else {
- 		netif_dbg(dev, ifdown, dev->net, "rx: stopped\n");
-@@ -849,6 +852,16 @@ int usbnet_stop (struct net_device *net)
- 	del_timer_sync (&dev->delay);
- 	tasklet_kill (&dev->bh);
- 	cancel_work_sync(&dev->kevent);
-+
-+	/*
-+	 * we have cyclic dependencies. Those calls are needed
-+	 * to break a cycle. We cannot fall into the gaps because
-+	 * we have a flag
-+	 */
-+	tasklet_kill (&dev->bh);
-+	del_timer_sync (&dev->delay);
-+	cancel_work_sync(&dev->kevent);
-+
- 	if (!pm)
- 		usb_autopm_put_interface(dev->intf);
- 
-@@ -1174,7 +1187,8 @@ usbnet_deferred_kevent (struct work_struct *work)
- 					   status);
- 		} else {
- 			clear_bit (EVENT_RX_HALT, &dev->flags);
--			tasklet_schedule (&dev->bh);
-+			if (!usbnet_going_away(dev))
-+				tasklet_schedule (&dev->bh);
- 		}
- 	}
- 
-@@ -1196,10 +1210,13 @@ usbnet_deferred_kevent (struct work_struct *work)
- 			}
- 			if (rx_submit (dev, urb, GFP_KERNEL) == -ENOLINK)
- 				resched = 0;
--			usb_autopm_put_interface(dev->intf);
- fail_lowmem:
--			if (resched)
-+			usb_autopm_put_interface(dev->intf);
-+			if (resched) {
-+				set_bit (EVENT_RX_MEMORY, &dev->flags);
-+
- 				tasklet_schedule (&dev->bh);
-+			}
- 		}
- 	}
- 
-@@ -1212,13 +1229,13 @@ usbnet_deferred_kevent (struct work_struct *work)
- 		if (status < 0)
- 			goto skip_reset;
- 		if(info->link_reset && (retval = info->link_reset(dev)) < 0) {
--			usb_autopm_put_interface(dev->intf);
- skip_reset:
- 			netdev_info(dev->net, "link reset failed (%d) usbnet usb-%s-%s, %s\n",
- 				    retval,
- 				    dev->udev->bus->bus_name,
- 				    dev->udev->devpath,
- 				    info->description);
-+			usb_autopm_put_interface(dev->intf);
- 		} else {
- 			usb_autopm_put_interface(dev->intf);
- 		}
-@@ -1562,6 +1579,7 @@ static void usbnet_bh (struct timer_list *t)
- 	} else if (netif_running (dev->net) &&
- 		   netif_device_present (dev->net) &&
- 		   netif_carrier_ok(dev->net) &&
-+		   !usbnet_going_away(dev) &&
- 		   !timer_pending(&dev->delay) &&
- 		   !test_bit(EVENT_RX_PAUSED, &dev->flags) &&
- 		   !test_bit(EVENT_RX_HALT, &dev->flags)) {
-@@ -1609,6 +1627,7 @@ void usbnet_disconnect (struct usb_interface *intf)
- 	usb_set_intfdata(intf, NULL);
- 	if (!dev)
- 		return;
-+	usbnet_mark_going_away(dev);
- 
- 	xdev = interface_to_usbdev (intf);
- 
-diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
-index 9f08a584d707..d26599faab33 100644
---- a/include/linux/usb/usbnet.h
-+++ b/include/linux/usb/usbnet.h
-@@ -76,8 +76,26 @@ struct usbnet {
- #		define EVENT_LINK_CHANGE	11
- #		define EVENT_SET_RX_MODE	12
- #		define EVENT_NO_IP_ALIGN	13
-+/*
-+ * this one is special, as it indicates that the device is going away
-+ * there are cyclic dependencies between tasklet, timer and bh
-+ * that must be broken
-+ */
-+#		define EVENT_UNPLUG		31
- };
- 
-+static inline bool usbnet_going_away(struct usbnet *ubn)
-+{
-+	smp_mb__before_atomic();
-+	return test_bit(EVENT_UNPLUG, &ubn->flags);
-+}
-+
-+static inline void usbnet_mark_going_away(struct usbnet *ubn)
-+{
-+	set_bit(EVENT_UNPLUG, &ubn->flags);
-+	smp_mb__after_atomic();
-+}
-+
- static inline struct usb_driver *driver_of(struct usb_interface *intf)
- {
- 	return to_usb_driver(intf->dev.driver);
--- 
-2.44.0
+> _ The hrtimer enqueue to an offline CPU warning:
+> 
+> 	[ 1054.265335] WARNING: CPU: 8 PID: 150 at kernel/time/hrtimer.c:1091 enqueue_hrtimer+0x6f/0x80
+> 	[ 1054.269166] Modules linked in:
+> 	[ 1054.270077] CPU: 8 PID: 150 Comm: rcu_torture_rea Not tainted 6.8.0-11407-ge990136580ab-dirty #21
+> 	[ 1054.272768] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
+> 	[ 1054.275893] RIP: 0010:enqueue_hrtimer+0x6f/0x80
+> 	[ 1054.277252] Code: a3 05 b5 ff b7 01 73 bd 48 8b 05 44 c5 b5 01 48 85 c0 74 0c 48 8b 78 08 48 89 ee e8 7b b5 ff ff 48 8b 03 f6 40 10 10 75 a5 90 <0f> 0b 90 eb 9f 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90
+> 	[ 1054.282448] RSP: 0000:ffffb1480056fd70 EFLAGS: 00010046
+> 	[ 1054.283931] RAX: ffff95b7df2616c0 RBX: ffff95b7df261700 RCX: ffff95b7df2616c0
+> 	[ 1054.286091] RDX: 0000000000000001 RSI: ffff95b7df261700 RDI: ffffb1480056fde0
+> 	[ 1054.288095] RBP: ffffb1480056fde0 R08: 0000000000000001 R09: 000000000000fc03
+> 	[ 1054.290189] R10: 0000000000000001 R11: ffff95b7c1271c80 R12: 0000000000000040
+> 	[ 1054.292592] R13: ffff95b7df261700 R14: ffff95b7df261700 R15: ffff95b7df2616c0
+> 	[ 1054.294622] FS:  0000000000000000(0000) GS:ffff95b7df400000(0000) knlGS:0000000000000000
+> 	[ 1054.296884] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	[ 1054.298497] CR2: 0000000000000000 CR3: 000000001822c000 CR4: 00000000000006f0
+> 	[ 1054.300475] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> 	[ 1054.302516] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 	[ 1054.304580] Call Trace:
+> 	[ 1054.305354]  <TASK>
+> 	[ 1054.306009]  ? __warn+0x77/0x120
+> 	[ 1054.306973]  ? enqueue_hrtimer+0x6f/0x80
+> 	[ 1054.308177]  ? report_bug+0xf1/0x1d0
+> 	[ 1054.310200]  ? handle_bug+0x40/0x70
+> 	[ 1054.311252]  ? exc_invalid_op+0x13/0x70
+> 	[ 1054.312437]  ? asm_exc_invalid_op+0x16/0x20
+> 	[ 1054.313738]  ? enqueue_hrtimer+0x6f/0x80
+> 	[ 1054.314994]  hrtimer_start_range_ns+0x258/0x2f0
+> 	[ 1054.316531]  ? __pfx_rcu_torture_reader+0x10/0x10
+> 	[ 1054.317983]  schedule_hrtimeout_range_clock+0x95/0x120
+> 	[ 1054.319604]  ? __pfx_hrtimer_wakeup+0x10/0x10
+> 	[ 1054.320957]  torture_hrtimeout_ns+0x50/0x70
+> 	[ 1054.322211]  rcu_torture_reader+0x1be/0x280
+> 	[ 1054.323455]  ? __pfx_rcu_torture_timer+0x10/0x10
+> 	[ 1054.329888]  ? kthread+0xc4/0xf0
+> 	[ 1054.330880]  ? __pfx_rcu_torture_reader+0x10/0x10
+> 	[ 1054.332334]  kthread+0xc4/0xf0
+> 	[ 1054.333305]  ? __pfx_kthread+0x10/0x10
+> 	[ 1054.334466]  ret_from_fork+0x2b/0x40
+> 	[ 1054.335551]  ? __pfx_kthread+0x10/0x10
+> 	[ 1054.336690]  ret_from_fork_asm+0x1a/0x30
+> 	[ 1054.337878]  </TASK>
+> 
+>   I don't know how it happened. This is where I'm investigating now.
 
+It seems that rcutorture is the gift that keeps on giving?  ;-)
+
+> _ The RCU CPU Stall report. I strongly suspect the cause is the hrtimer
+>   enqueue to an offline CPU. Let's solve that and we'll see if it still
+>   triggers.
+
+Sounds like a plan!
+
+							Thanx, Paul
 
