@@ -1,148 +1,113 @@
-Return-Path: <linux-kernel+bounces-110479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CFFF885F80
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8416B885F86
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 990321F2438B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:18:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23D9B1F21281
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F1E762EB;
-	Thu, 21 Mar 2024 17:18:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I+MJN64d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2068224D7;
+	Thu, 21 Mar 2024 17:19:36 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B6E79E0;
-	Thu, 21 Mar 2024 17:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF350E57B
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:19:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041526; cv=none; b=lhg9vvUul/JQjxe3M1JO7Nn2H1K1wfPj6GtXSvDm4F5Qe8EXS77+l029HJZLQVfQR88xrm7M5GaMz4j41p6rBDuIzdE/pd7ewVDYW6Ia/KMRhB0l3adwfcULruC8l68F2j8OCPcQAPcHHqD/XIV+SNcu/8Ql9r7qjt+Bxqy4fec=
+	t=1711041576; cv=none; b=Blo+KKcNSVYw2IkYFrqfEi7MHVmp+smLa3hTVNEFj6W+7mFuoM6ii9jFlJVHZTDsml9MO6FHAqBAyv1nM70xCpLzZLtAzrTpRgusL8u9rtFZvE3nM9dipSVVl5MJkBYsHeO/qlt29iAyJJfgAWAkwSdZ1r1ci3u1j/Kp+C93B8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041526; c=relaxed/simple;
-	bh=MYnh+31E98SgBIrjhR594cbuy75Zbq1Yl+5mK+4i7kM=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=CAqx1rxc+UMEfhaq2Y/96eFVipCKVardAeAgxuYEPZuldfLlPHGsYaAqqQ2y+GERpkNVjBD9146JegmEbH5HmaS9AwHK7DM/eOpvV99r/81M0wItJxpYE660uPpWIfwz104N2grhDjd6ZU8T2rZmjczKHcHbDMyo2KVtWuhjlbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I+MJN64d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5844DC43390;
-	Thu, 21 Mar 2024 17:18:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711041526;
-	bh=MYnh+31E98SgBIrjhR594cbuy75Zbq1Yl+5mK+4i7kM=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=I+MJN64dUWgymtd+VwDW15uSGG84tvCmNMtawhrQ+mHDB97VER0hOwQq/VH+qxl3e
-	 +v4SJ/H/cLVsi3GgqlnW5MtSquSYSb82gl41UDrd/z19swG8Y018SBFoSmUoWZYZAh
-	 q0fEkZRbcopWLqTbCXhMUnVkmjgqMkpiYhex5pFGZ0vrcLU+C1RTuLdcXGdKwMDarQ
-	 M2WV/4N8miAqHehPWNiivnHv5a8kJPc0mFzxOEIU7KXrXFxX5C2el+3bk+g6Cu5ufG
-	 Ru89/OfML0T708Vm11t9EINIYvQEITETskcdVSTg7CqwUKOP5SVMNaMNXqxMSh+8f0
-	 OYFMIUuhh6+1w==
+	s=arc-20240116; t=1711041576; c=relaxed/simple;
+	bh=tT7Pu2AbBqZlCMFsrLV5KGeueELYK6ealvMjWZht8/I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kbBZ8l0PIlvECFm1fOPUQomOVThtYoFFPIV3mdG3UANiAseoz2xYo+Wp0btOzomckoLx9tMRaV1EqWRltqWH3i2SfkOFt/TkhG0gAaHEQrRx86/DolfD9PHNENUf8S0TcT007hNX8C5QgXBcIs26rQsVMEDwkGHObuzHCPydPRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4V0sBC2j1Lz9xGWb
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 00:59:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 3020914040F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:19:20 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.81.213.73])
+	by APP1 (Coremail) with SMTP id LxC2BwAH_BQNbPxlII6+BA--.51964S2;
+	Thu, 21 Mar 2024 18:19:19 +0100 (CET)
+From: Petr Tesarik <petrtesarik@huaweicloud.com>
+To: Christoph Hellwig <hch@lst.de>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+	Michael Kelley <mhklinux@outlook.com>,
+	Will Deacon <will@kernel.org>,
+	linux-kernel@vger.kernel.org (open list),
+	iommu@lists.linux.dev (open list:DMA MAPPING HELPERS)
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	Petr Tesarik <petr@tesarici.cz>
+Subject: [PATCH v3 0/2] swiotlb: allocate padding slots if necessary
+Date: Thu, 21 Mar 2024 18:19:00 +0100
+Message-Id: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:18:42 +0200
-Message-Id: <CZZLLJZZ65UD.1KGYIWJ2KJT1X@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>
-Subject: Re: [PATCH v7 06/13] crypto: ecc - Implement vli_mmod_fast_521 for
- NIST p521
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
- <20240320114725.1644921-7-stefanb@linux.ibm.com>
-In-Reply-To: <20240320114725.1644921-7-stefanb@linux.ibm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:LxC2BwAH_BQNbPxlII6+BA--.51964S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr45JFWkJr4DZr18GrW7Jwb_yoWkuFg_AF
+	W8Ja45Ar4DZF1vyas2gFsrArWUtr42yr1xAa98Xr43JF13Aw13Z3ZrtFW8Xr1UWan8CFn2
+	yr93WryxCr17KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUj0JPtUUUUU==
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
-On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
-> Implement vli_mmod_fast_521 following the description for how to calculat=
-e
-> the modulus for NIST P521 in the NIST publication "Recommendations for
-> Discrete Logarithm-Based Cryptography: Elliptic Curve Domain Parameters"
-> section G.1.4.
->
-> NIST p521 requires 9 64bit digits, so increase the ECC_MAX_DIGITS so that
-> the vli digit array provides enough elements to fit the larger integers
-> required by this curve.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
-> ---
->  crypto/ecc.c                  | 25 +++++++++++++++++++++++++
->  include/crypto/internal/ecc.h |  3 ++-
->  2 files changed, 27 insertions(+), 1 deletion(-)
->
-> diff --git a/crypto/ecc.c b/crypto/ecc.c
-> index 415a2f4e7291..99d41887c005 100644
-> --- a/crypto/ecc.c
-> +++ b/crypto/ecc.c
-> @@ -902,6 +902,28 @@ static void vli_mmod_fast_384(u64 *result, const u64=
- *product,
->  #undef AND64H
->  #undef AND64L
-> =20
-> +/*
-> + * Computes result =3D product % curve_prime
-> + * from "Recommendations for Discrete Logarithm-Based Cryptography:
-> + *       Elliptic Curve Domain Parameters" section G.1.4
-> + */
-> +static void vli_mmod_fast_521(u64 *result, const u64 *product,
-> +			      const u64 *curve_prime, u64 *tmp)
-> +{
-> +	const unsigned int ndigits =3D ECC_CURVE_NIST_P521_DIGITS;
-> +	size_t i;
-> +
-> +	/* Initialize result with lowest 521 bits from product */
-> +	vli_set(result, product, ndigits);
-> +	result[8] &=3D 0x1ff;
-> +
-> +	for (i =3D 0; i < ndigits; i++)
-> +		tmp[i] =3D (product[8 + i] >> 9) | (product[9 + i] << 55);
-> +	tmp[8] &=3D 0x1ff;
-> +
-> +	vli_mod_add(result, result, tmp, curve_prime, ndigits);
-> +}
-> +
->  /* Computes result =3D product % curve_prime for different curve_primes.
->   *
->   * Note that curve_primes are distinguished just by heuristic check and
-> @@ -941,6 +963,9 @@ static bool vli_mmod_fast(u64 *result, u64 *product,
->  	case ECC_CURVE_NIST_P384_DIGITS:
->  		vli_mmod_fast_384(result, product, curve_prime, tmp);
->  		break;
-> +	case ECC_CURVE_NIST_P521_DIGITS:
-> +		vli_mmod_fast_521(result, product, curve_prime, tmp);
-> +		break;
->  	default:
->  		pr_err_ratelimited("ecc: unsupported digits size!\n");
->  		return false;
-> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.=
-h
-> index ab722a8986b7..4e2f5f938e91 100644
-> --- a/include/crypto/internal/ecc.h
-> +++ b/include/crypto/internal/ecc.h
-> @@ -33,7 +33,8 @@
->  #define ECC_CURVE_NIST_P192_DIGITS  3
->  #define ECC_CURVE_NIST_P256_DIGITS  4
->  #define ECC_CURVE_NIST_P384_DIGITS  6
-> -#define ECC_MAX_DIGITS              (512 / 64) /* due to ecrdsa */
-> +#define ECC_CURVE_NIST_P521_DIGITS  9
-> +#define ECC_MAX_DIGITS              DIV_ROUND_UP(521, 64) /* NIST P521 *=
-/
-> =20
->  #define ECC_DIGITS_TO_BYTES_SHIFT 3
-> =20
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+If the allocation alignment is bigger than IO_TLB_SIZE and min_align_mask
+covers some bits in the original address between IO_TLB_SIZE and
+alloc_align_mask, preserve these bits by allocating additional padding
+slots before the actual swiotlb buffer.
 
-BR, Jarkko
+Changes from v2
+---------------
+* Fix assignment of an uninitialized variable to pad_slots.
+* Improve commit message wrt INVALID_PHYS_ADDR.
+
+Changes from v1
+---------------
+* Rename padding to pad_slots.
+* Set pad_slots only for the first allocated non-padding slot.
+* Do not bother initializing orig_addr to INVALID_PHYS_ADDR.
+* Change list and pad_slots to unsigned short to avoid growing
+  struct io_tlb_slot on 32-bit targets.
+* Add build-time check that list and pad_slots can hold the maximum
+  allowed value of IO_TLB_SEGSIZE.
+
+Petr Tesarik (2):
+  swiotlb: extend buffer pre-padding to alloc_align_mask if necessary
+  bug: introduce ASSERT_VAR_CAN_HOLD()
+
+ include/linux/build_bug.h | 10 ++++++++++
+ kernel/dma/swiotlb.c      | 37 +++++++++++++++++++++++++++++++------
+ 2 files changed, 41 insertions(+), 6 deletions(-)
+
+-- 
+2.34.1
+
 
