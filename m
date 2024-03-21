@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-109548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B7A881ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67068881ABF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:51:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB28D281A90
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DF3A28301F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 01:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1BB1C2E;
-	Thu, 21 Mar 2024 01:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C547494;
+	Thu, 21 Mar 2024 01:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zqqwm7Hd"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ScjHQM8l"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BA017D2
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC6877470
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710985814; cv=none; b=SqXUFI2J8gli7GlF3a9jT52oHU1bULXXVFeg1hHRDt0xRmaZQVaZnst/IQpftd0aI8uifgVk2aTf+trfhEswvWXs/mRUvwQ3ZZ3EDCJ/AZZzGJV8gfDr1Y1xQJQJNm5lfjYoz/dSrGtEyNCEKXpI+GdZsQz64Lz3XZJP1G3niJY=
+	t=1710985841; cv=none; b=vBU6x+kHhyUx88rX1gLOUdExRL0pXtwsUpSkNl+OXtudA2uyy2+6f+yB3BUzJS+ALGk0x2B3ofToXrrmsH5wXygbb8kNPWrm1DWJKVgv4inZ0ashUUbmYwZ5Vr/hscPrlBBY5OnwKj+cnoUnTGurn/uhSZJUrAj1CRwUbueytVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710985814; c=relaxed/simple;
-	bh=dFeaB+r0vbLsU2+EG3R/0nxZko3Fmr0cPhFzpdmhuag=;
+	s=arc-20240116; t=1710985841; c=relaxed/simple;
+	bh=R7zrijesuvQqmNNwfNJ1OzbmHqLbGTLOtVIZOBj5Gfc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oqrAxXuM4BbOMk6IbZuY/8FReKiktZvpvumVgi2IXiL6Hh5pnbATo9Ip99OSU1NI3NX7ziHXd3r9hh9OLfbPhJXq2iojuipo4a6bMFZ9BAM0jBUSwamMN9YqWole+hRS9Zb4TABq1PG/Tum0bPF/zAh6z9eAYiPHK6ZqzG7vsqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zqqwm7Hd; arc=none smtp.client-ip=209.85.166.180
+	 To:Cc:Content-Type; b=nLfno88Zb06ARzffvwGDuIoy3N0ZTH0UWMmxL/B5sjFOZi/RQniCHz+vDacv1oYaD4fuRXaJEyFjBoWsyHjVWLnGoX/E53oSut9Q66jEo08/Ab7xSFrYSoUJ8TCf5ksLQu0pguo6tQSv6Or0r5v7jvClXJ8/ZHgBZCGpUPsZK1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ScjHQM8l; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-366a04fb186so84985ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:50:12 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e058b9e479so88935ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:50:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710985812; x=1711590612; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710985839; x=1711590639; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8PFIZjS6IER8CpqkW4TdLpVgzOwvLIGX3nJMn6PTM30=;
-        b=Zqqwm7HdTlYMChSuuGDCH2h4FrdYrpujUvTUDP9dShCTlnDf1WVriu3f0mAMtpAYBn
-         7ZNXYZc51R1B7cTycFY/7dM7PIyFOpGPWAq9DIKm36sZ2J/0unhV7hwCqdXvWOhHA9hn
-         TczLT5xr5E1w6PUKYPwYhhu04VWQ4u3OHIT/8oiEiz1sTGSqAqvr+GdpptH/MpPGJmRj
-         4GEIIyirzbwjyreCS8X16l7pu4UYVhUnwWwnnhHnu/e3Ur6vpLt5a29sD8bY7BcpeJJE
-         79STWDvOwqcJiZDSRTRlqjC6RedoaDcItNdMun0rwTTpaC6skhw7oTSohOGEuJYCvYgP
-         mInQ==
+        bh=Mc+skKU4QeCkSwTpMdOslAlbmrHBOUhgUxYcHE46Yps=;
+        b=ScjHQM8lyKUaWh055DRHoKyD90T0MkdPGeAwNkpwRIb8lNze3SXdfOK7lyWipZ5Ahx
+         WDQ6bE9EXjaPzCcAz+iDAUUSggBA7LwzGo04QvMEXVRXnqS4ufJ1+GFANgRqPBiEDVhy
+         Vf107gT3BoQ7Sg9HuoVbE84RmnT+Sa+RKxbpMKgQihU94R/Sz3MmVll5bXpcM3Vi9lUQ
+         tCs2VMUf7LfKYbej4KW6xFET3bwqyIVaTEjJr21Oeb+UuMNrpylthS5BJAYvwRE+yWMA
+         Rh4gKUmuZx9m5eh6C0UjSJ+coQ6EvJMy8ZxT2DvzGZNFlucHSvTwhSx86q+SHRFhtBRY
+         /hUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710985812; x=1711590612;
+        d=1e100.net; s=20230601; t=1710985839; x=1711590639;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8PFIZjS6IER8CpqkW4TdLpVgzOwvLIGX3nJMn6PTM30=;
-        b=gpfWlruHR+yrnQLfvTezJj6DliCKQ3U7wmhA6Q+jT26fHoV7O0P1od0TH6taB/5sLg
-         Oz0DSF4ZuktGk6Uj3JDfDgEmfy3MeqhyuIf6Klb+qRCVoBKoxsBaKH3ovxvnJwi0iC+m
-         +FdqIm3dv82jeleUouiYA03PZXrgbr6iUX0eaX0+MJz+x3Z45fBk74HWqpq+UbhrhlFx
-         25z+OrovBb07BAz7dIbuGevS8mmJQPHFFKjST4dqaehEMGa8F8bbuTOuxw9v/YV0iLIa
-         AKO8V6QNF/iQiDEA8AbUfQTHfR9wH/zAjsrA3xtLQCcQB8Zkpp9au8TFEc26INRVwxf0
-         7heg==
-X-Forwarded-Encrypted: i=1; AJvYcCUbGZ/gM//SZZE734g1P0WiRbFWj4/L7IuBmOsv7IoLzpJ518QDyqNbELxIpCNQsPIso/7YzehcNzIt7jADXWu3iE3t1cCaMLLTAVG8
-X-Gm-Message-State: AOJu0YzykKrTig55RfNLuXqLIXmGTTSTEbfrSqvjAf+PoudwhmuYwvU7
-	NIxHdcc60RA4tMGg5LoPAP5zCbl4m+S+E3CQ9kITzjJ+y5utQcGKvZFocFF2f1WAv/JTMOzYtzu
-	w3IayJuc7t9uafGRKQu6DSzo45sxe/KDrZ5Zj
-X-Google-Smtp-Source: AGHT+IHrAEJPyYKYdkRV1E43qJTJK0+eTr67tJawKja6UsAthpTCUSaEfF8MACadxrvECk/zgWZcmuqPeKoSYjRtiHk=
-X-Received: by 2002:a05:6e02:148b:b0:366:3c86:a38e with SMTP id
- n11-20020a056e02148b00b003663c86a38emr84468ilk.5.1710985812035; Wed, 20 Mar
- 2024 18:50:12 -0700 (PDT)
+        bh=Mc+skKU4QeCkSwTpMdOslAlbmrHBOUhgUxYcHE46Yps=;
+        b=mBLzpkVJ2UhUJEucsUUMLNZK/L/hqBDDkVaHlVv2b9RkpRTW4DdxjrbyjcL4CFOXmT
+         k1XBqif5ZspZo+c/5Rb++/kwf7mJkBQ9IJAIhos+MD7riYbYzePT2mvrgnx6i+gE6fT1
+         D/k93/tjL4igI4lkpuG7v5vZxO5f2fH7a0/miw1BDmurngCDWRwTw12hH6F1jgp/wWUl
+         HwhceAKg0Rg0yo7qSLYApYd6XdYJH1wB/A924H3NaE6JB0sOtgWKnwnYYBMFxiEf63+n
+         wV3gMNo3riexqnPyMwBY480q7hibTZP7RZK4j4TAwQSP1CpdwfckVdyWKZCFlHZiuz/8
+         f26g==
+X-Forwarded-Encrypted: i=1; AJvYcCU9vPIbpzHkn7/6/lnHe/zzOqKpgWcbRncw/zzh9wz0BvqhWiJ6DoEvT53ILu8L9xZr5BEHCtnpEVUqBm6+CxiIZU2R1V5xN95m8kMu
+X-Gm-Message-State: AOJu0YwLQXjU/FHMwq0YEjk09/eqYXi5tg6K+nl21crmoZ6g/U5/kehl
+	mw2X0ELrwQZ3K3VhrNpgC4DYMq+H+ppu+uHoPc+H7jtcPCUrhKVUw+J1jKbJ734GKGtJrFBovA2
+	1REKTWhHDjnI5G48T4lbdPuj1+/khiK/dRb/1
+X-Google-Smtp-Source: AGHT+IEsoCQPqVzJEWJkUcjD/b+B37rNwRY73AmQVN2jEMdyV1hGWH6jIVGKzGtm6hPF7a4AdUxbzQStyWbvN1VfYPs=
+X-Received: by 2002:a17:903:2282:b0:1dd:6e0b:75fb with SMTP id
+ b2-20020a170903228200b001dd6e0b75fbmr74752plh.9.1710985838761; Wed, 20 Mar
+ 2024 18:50:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320193115.811899-1-acme@kernel.org> <20240320193115.811899-4-acme@kernel.org>
-In-Reply-To: <20240320193115.811899-4-acme@kernel.org>
+References: <20240320193115.811899-1-acme@kernel.org> <20240320193115.811899-5-acme@kernel.org>
+In-Reply-To: <20240320193115.811899-5-acme@kernel.org>
 From: Ian Rogers <irogers@google.com>
-Date: Wed, 20 Mar 2024 18:50:01 -0700
-Message-ID: <CAP-5=fU4vj-QHc1SbYOO7XFYfOLC2vpFn_X83LMjvts6_CNn5A@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf beauty: Introduce faccessat2 flags scnprintf routine
+Date: Wed, 20 Mar 2024 18:50:27 -0700
+Message-ID: <CAP-5=fVmB=E-MMyhA2WBQV8OLcPH20tw+11XjCeecMU6hce5jQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] perf trace: Beautify the 'flags' arg of unlinkat
 To: Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org, 
@@ -88,7 +88,7 @@ On Wed, Mar 20, 2024 at 12:31=E2=80=AFPM Arnaldo Carvalho de Melo
 >
 > From: Arnaldo Carvalho de Melo <acme@redhat.com>
 >
-> The fsaccessat and fsaccessat2 now have beautifiers for its arguments.
+> Reusing the fs_at_flags array done for the 'stat' syscall.
 >
 > Cc: Adrian Hunter <adrian.hunter@intel.com>
 > Cc: Ian Rogers <irogers@google.com>
@@ -102,105 +102,31 @@ Thanks,
 Ian
 
 > ---
->  tools/perf/builtin-trace.c            |  9 +++++++++
->  tools/perf/trace/beauty/beauty.h      |  3 +++
->  tools/perf/trace/beauty/fs_at_flags.c | 24 ++++++++++++++++++++++++
->  3 files changed, 36 insertions(+)
+>  tools/perf/builtin-trace.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
 > diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 8417387aafa8295d..58546e8af9fcf481 100644
+> index 58546e8af9fcf481..ef0dfffd99fdf3cc 100644
 > --- a/tools/perf/builtin-trace.c
 > +++ b/tools/perf/builtin-trace.c
-> @@ -947,6 +947,15 @@ static const struct syscall_fmt syscall_fmts[] =3D {
->           .arg =3D { [1] =3D STRARRAY(op, epoll_ctl_ops), }, },
->         { .name     =3D "eventfd2",
->           .arg =3D { [1] =3D { .scnprintf =3D SCA_EFD_FLAGS, /* flags */ =
-}, }, },
-> +       { .name     =3D "faccessat",
-> +         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT,         /* dirfd =
-*/ },
+> @@ -1171,7 +1171,9 @@ static const struct syscall_fmt syscall_fmts[] =3D =
+{
+>           .arg =3D { [0] =3D { .scnprintf =3D SCA_FILENAME, /* name */ },=
+ }, },
+>         { .name     =3D "uname", .alias =3D "newuname", },
+>         { .name     =3D "unlinkat",
+> -         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT, /* dfd */ }, }, }=
+,
+> +         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT,         /* dfd */=
+ },
 > +                  [1] =3D { .scnprintf =3D SCA_FILENAME,     /* pathname=
  */ },
-> +                  [2] =3D { .scnprintf =3D SCA_ACCMODE,      /* mode */ =
-}, }, },
-> +       { .name     =3D "faccessat2",
-> +         .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT,         /* dirfd =
-*/ },
-> +                  [1] =3D { .scnprintf =3D SCA_FILENAME,     /* pathname=
- */ },
-> +                  [2] =3D { .scnprintf =3D SCA_ACCMODE,      /* mode */ =
-},
-> +                  [3] =3D { .scnprintf =3D SCA_FACCESSAT2_FLAGS, /* flag=
-s */ }, }, },
->         { .name     =3D "fchmodat",
->           .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT, /* fd */ }, }, },
->         { .name     =3D "fchownat",
-> diff --git a/tools/perf/trace/beauty/beauty.h b/tools/perf/trace/beauty/b=
-eauty.h
-> index c94ae8701bc65a2f..78d10d92d351f8e2 100644
-> --- a/tools/perf/trace/beauty/beauty.h
-> +++ b/tools/perf/trace/beauty/beauty.h
-> @@ -237,6 +237,9 @@ size_t syscall_arg__scnprintf_socket_level(char *bf, =
-size_t size, struct syscall
->  size_t syscall_arg__scnprintf_fs_at_flags(char *bf, size_t size, struct =
-syscall_arg *arg);
->  #define SCA_FS_AT_FLAGS syscall_arg__scnprintf_fs_at_flags
->
-> +size_t syscall_arg__scnprintf_faccessat2_flags(char *bf, size_t size, st=
-ruct syscall_arg *arg);
-> +#define SCA_FACCESSAT2_FLAGS syscall_arg__scnprintf_faccessat2_flags
-> +
->  size_t syscall_arg__scnprintf_statx_mask(char *bf, size_t size, struct s=
-yscall_arg *arg);
->  #define SCA_STATX_MASK syscall_arg__scnprintf_statx_mask
->
-> diff --git a/tools/perf/trace/beauty/fs_at_flags.c b/tools/perf/trace/bea=
-uty/fs_at_flags.c
-> index 2a099953d9935782..c1365e8f0b96ef43 100644
-> --- a/tools/perf/trace/beauty/fs_at_flags.c
-> +++ b/tools/perf/trace/beauty/fs_at_flags.c
-> @@ -7,6 +7,7 @@
->
->  #include "trace/beauty/beauty.h"
->  #include <sys/types.h>
-> +#include <linux/fcntl.h>
->  #include <linux/log2.h>
->
->  #include "trace/beauty/generated/fs_at_flags_array.c"
-> @@ -24,3 +25,26 @@ size_t syscall_arg__scnprintf_fs_at_flags(char *bf, si=
-ze_t size, struct syscall_
->
->         return fs_at__scnprintf_flags(flags, bf, size, show_prefix);
->  }
-> +
-> +static size_t faccessat2__scnprintf_flags(unsigned long flags, char *bf,=
- size_t size, bool show_prefix)
-> +{
-> +       int printed =3D 0;
-> +
-> +       // AT_EACCESS is the same as AT_REMOVEDIR, that is in fs_at_flags=
-_array,
-> +       // special case it here.
-> +       if (flags & AT_EACCESS) {
-> +               flags &=3D ~AT_EACCESS;
-> +               printed +=3D scnprintf(bf + printed, size - printed, "%sE=
-ACCESS%s",
-> +                                    show_prefix ? strarray__fs_at_flags.=
-prefix : "", flags ? "|" : "");
-> +       }
-> +
-> +       return strarray__scnprintf_flags(&strarray__fs_at_flags, bf + pri=
-nted, size - printed, show_prefix, flags);
-> +}
-> +
-> +size_t syscall_arg__scnprintf_faccessat2_flags(char *bf, size_t size, st=
-ruct syscall_arg *arg)
-> +{
-> +       bool show_prefix =3D arg->show_string_prefix;
-> +       int flags =3D arg->val;
-> +
-> +       return faccessat2__scnprintf_flags(flags, bf, size, show_prefix);
-> +}
+> +                  [2] =3D { .scnprintf =3D SCA_FS_AT_FLAGS,  /* flags */=
+ }, }, },
+>         { .name     =3D "utimensat",
+>           .arg =3D { [0] =3D { .scnprintf =3D SCA_FDAT, /* dirfd */ }, },=
+ },
+>         { .name     =3D "wait4",      .errpid =3D true,
 > --
 > 2.44.0
 >
