@@ -1,150 +1,170 @@
-Return-Path: <linux-kernel+bounces-110530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E20D886031
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF2288602D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:59:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FB5C1C21CC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:00:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE931C21C69
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:59:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8871332B3;
-	Thu, 21 Mar 2024 17:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908C0133297;
+	Thu, 21 Mar 2024 17:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="eMpurxo4"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c9eSV7qR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFF510782;
-	Thu, 21 Mar 2024 17:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6A510782;
+	Thu, 21 Mar 2024 17:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711043995; cv=none; b=JbFKlpU0A1Fz4u5dGG1XlJdCdBA0fZiiQ4AcqFkGNKmULcdILWBZZ/Ge+Mjtcl9R4ty6dzW0lTGig8/VDp7w5DL5Q/x6eeTiADTaTRQBTGPq/IqQorcNCOgIrdyEHOj8zw99/oM+Dqe3b9HsEbZP7tIAOuUvZj6Dqekpckc5LuE=
+	t=1711043977; cv=none; b=Y3oipLcYJNiN4r3UXVIdFQK+ilZWHm7yrBn4ENMMJbgexIAcXvRiLPbwvfflv+47/elUBqtEAL9VHB60mtK1pa+4/5v1qCgRS6vHjiR5oxTJDon8QL77gwbdCOjOIQ6YhMM4cXpF9TkviJj0yqhZ13VDCFxLDGaNkJJShi+EQ9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711043995; c=relaxed/simple;
-	bh=SPQqvu7gSj1oVEVwxnTx7k/xiflKqOqTa+gR+LZK+/0=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=RlasqtOLdtUaeuS3DQSgZI3Z24rneQuwqVyl0GbfJsALCt06qS31t+DECV5zdPOVNlpX3Ij7V0PXOQ8Oa3nJcG5JoSJF+EXAO3wRyGSwIQqiC3l5G8faSWrMa2i7L93xQFtcOPeyUumJQhCVdiBKYJDz0IBTukXRXT/1Tht0Qzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=eMpurxo4; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1711043959; x=1711648759; i=markus.elfring@web.de;
-	bh=XR5rc0S/5gMcNC+NgBpFr5aoRAVSFdliYHhVZzy6GVk=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=eMpurxo4WYsPqzxQpHNncXlDFu5GnyxgrWNW5gvC5pCDx6hMeIIFiYzRct+v1j3U
-	 TPMf0o6c5ASgvnvcEdQT6fgrb7DH/bvwv9nEXL6/rUv2dK63GqbC133HkQcHyj2Ie
-	 LsACVgMLv++/t5cEjL2t8TCovvYVQsWzdhO4b5gykAWxJHlHl5xydXZFIIzMOiWX+
-	 qPvdNEhjUVBceNxRAyhsESXZsSRr2OcQhOt7P+EK0WlC7+rIxzOs43eAfd031QzYQ
-	 YeZAAORJxTQ7T7jSWms1J4NCsaKc669uh8s9rP69Oi854WZSkG7zo+x2adkjz0hmx
-	 lFrjk9mt5bI9ln6PGA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MRW6L-1rQRxD46UP-00ScjT; Thu, 21
- Mar 2024 18:59:19 +0100
-Message-ID: <d2b1f3bd-42f1-483b-916e-3735b39a30e1@web.de>
-Date: Thu, 21 Mar 2024 18:59:00 +0100
+	s=arc-20240116; t=1711043977; c=relaxed/simple;
+	bh=5p1vu+H+Qi9PzEOaI6stcVG4CjMDc4QRwynUOBT6pZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RauAJgIA/JJsw2WCgtz1NxwiBOh0aclepa2ufQRGSzu/4Oo0jCoEcrxS8TAzd8onsS6Jx8lJFWyGWm5WjL/a4K9yEgf15hefxXEoUXxLAqNc+X6L8CLxJeFxLhYJKSV0N6knN1q875F5+NhlUTpM0i5Oa1X4Yjcv+HZciIEvvhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c9eSV7qR; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711043976; x=1742579976;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5p1vu+H+Qi9PzEOaI6stcVG4CjMDc4QRwynUOBT6pZU=;
+  b=c9eSV7qRS+14cTIE6GELWtQoqqKZord42RIPc3SfkHtFThn4zTzEA7Wy
+   VRFaMhZAg41ugZUB1haXpAXxxVqyJofT35PoSt5K4rfeHM5IHii0VGurZ
+   R4OY23/zjvLd2x+/DxRmI32akQG2SeyFA/h8gozYZLxwkRFhx/nDdW1A0
+   XnFSzdz+s7J9H7fmbs7Smpy9+QffjXIV6ZwAX8hk8qOIzQbVPeTAc7Vxp
+   jGqryq1gSWuYX9jjfENRDXACIxc4ncdelRZ0un+LeYq/9Ga8AOfzAmYvE
+   Gsaz0MKlZfo1QOkQRjjUcE/M68+LVQlE89Y5ttfczvlygwc0IEs2M7zzi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="31492966"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="31492966"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:59:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="19167559"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:59:35 -0700
+Date: Thu, 21 Mar 2024 10:59:34 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Binbin Wu <binbin.wu@linux.intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 041/130] KVM: TDX: Refuse to unplug the last cpu on
+ the package
+Message-ID: <20240321175934.GO1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <15d4d08cf1fe16777f8f8d84ee940e41afbad406.1708933498.git.isaku.yamahata@intel.com>
+ <ZfuIJpHzp4sEjCi/@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- David Laight <David.Laight@aculab.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
- Julia Lawall <julia.lawall@inria.fr>, Kees Cook <keescook@chromium.org>,
- Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
- Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
-References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
-Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V0HP89HbmD0ouUhnwO91mCsXsGnWuF9Bmjam4+ePUedUat+hJTu
- peduW2zPMrbVMSOjYTSiZ9VUQRXVQD/OSjGIoSvIlqQw5j6p9os+Yh5e+zu8dkF8+Qn52US
- wibyD2ex+TpHUo/dpIttenN+pa+cRpaXIzQhG/5xgbncTdLxzQMDwtu4r0MpCxmBOil9lgk
- WDO6m4DWr7vtaR/w62YGA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ef4Cgvrsg1o=;4P9FsdrJsJxQT1ku7Gz2lLdcq61
- EZkI2lWIdGsgSZ5MbhAqZBOL+EnWharMoVZ+xPbsvQIc6CVDwzgcW39n480XB1cKkRQi6Gq1U
- W1wHZ05htUX9ZAK3DaMtnYojjhvJGvCJ6qDas5E5dxbLdxICJd03hH1zVHXI5dS8YUwOYIhC3
- efCvKQv3Hk7QyplKJo6Cz1P011HyucsHPvxUQYnUgwi0CLsL/HkqN/sQvIb9haa+DjSlEbKmL
- HytjTgyCXLOwv1SjE0Xs3mpHJP7pfSn65b4c9fimokmb3B6cOaI/t13VRD527ksXt8JF2NlLQ
- 6Pz8QPV6pZkV+9aY2Ii7WB6L3qqIY40F69HATCbtrQCGsawB2/6FhpnVZzGWdfu6hMXytTOeg
- Xy2LgQg/K1cGZjtiPbhUwQlEew6k6v6Hbegirs95O3zK7YWlLCG4G5XrP9DA6N9K/sT0bdrz5
- 3krBz2eR6MGIbuHLUf2QHqZRVLg9SJOiiU1kP91iZTqC193r+cL1FraKo1Pg5m4ca9XZzVXOU
- 70d1y703E2j44iRRr9kBiFj6VoCZc4cpejG7jL6MSOe1Hpz0CT9tT+kvDV3oFq2OfFba/J/cx
- OhcwxSVFz74HgXSC+74RU+dqLhxTIiFTdyK7EYtlDJF48PQ7ByTLrPWSNRbq9C3dxONhzIjsu
- qDy31Gu4SFl5jsWmQ2fq34Mo3pkoOSRk01BX5xMjsoxxd5gucXCC0K0NuP1LA10mq6NnsnACE
- +m3PiSZXlfn8h8DH5AXYUSJC8XTz0RMWeqHZZNEeoopAL6y2w2SsoUzt18hMNzYn6x2Ibr1hU
- VuEjrbmTiSjoudiKLgEL7n8j5TjHsF1Z8WyqwiEwO+PTw=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfuIJpHzp4sEjCi/@chao-email>
 
-> Automatically cleaned up pointers need to be initialized before exiting
-> their scope.  In this case, they need to be initialized to NULL before
-> any return statement.
+On Thu, Mar 21, 2024 at 09:06:46AM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-How will development interests evolve further for such design aspects?
+> >diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> >index 437c6d5e802e..d69dd474775b 100644
+> >--- a/arch/x86/kvm/vmx/main.c
+> >+++ b/arch/x86/kvm/vmx/main.c
+> >@@ -110,6 +110,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> > 	.check_processor_compatibility = vmx_check_processor_compat,
+> > 
+> > 	.hardware_unsetup = vt_hardware_unsetup,
+> >+	.offline_cpu = tdx_offline_cpu,
+> > 
+> > 	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+> > 	.hardware_enable = vmx_hardware_enable,
+> >diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> >index b11f105db3cd..f2ee5abac14e 100644
+> >--- a/arch/x86/kvm/vmx/tdx.c
+> >+++ b/arch/x86/kvm/vmx/tdx.c
+> >@@ -97,6 +97,7 @@ int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+> >  */
+> > static DEFINE_MUTEX(tdx_lock);
+> > static struct mutex *tdx_mng_key_config_lock;
+> >+static atomic_t nr_configured_hkid;
+> > 
+> > static __always_inline hpa_t set_hkid_to_hpa(hpa_t pa, u16 hkid)
+> > {
+> >@@ -112,6 +113,7 @@ static inline void tdx_hkid_free(struct kvm_tdx *kvm_tdx)
+> > {
+> > 	tdx_guest_keyid_free(kvm_tdx->hkid);
+> > 	kvm_tdx->hkid = -1;
+> >+	atomic_dec(&nr_configured_hkid);
+> 
+> I may think it is better to extend IDA infrastructure e.g., add an API to check if
+> any ID is allocated for a given range. No strong opinion on this.
+
+Will use ida_is_empyt().
 
 
-=E2=80=A6
-> +++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-> @@ -941,11 +941,11 @@ static u64 ice_loopback_test(struct net_device *ne=
-tdev)
->  	struct ice_netdev_priv *np =3D netdev_priv(netdev);
->  	struct ice_vsi *orig_vsi =3D np->vsi, *test_vsi;
->  	struct ice_pf *pf =3D orig_vsi->back;
-> +	u8 *tx_frame __free(kfree) =3D NULL;
->  	u8 broadcast[ETH_ALEN], ret =3D 0;
->  	int num_frames, valid_frames;
->  	struct ice_tx_ring *tx_ring;
->  	struct ice_rx_ring *rx_ring;
-> -	u8 *tx_frame __free(kfree);
->  	int i;
->
->  	netdev_info(netdev, "loopback test\n");
 
-How do you think about to reduce the scope for the affected local variable=
- instead
-with the help of a small script (like the following) for the semantic patc=
-h language?
+> > }
+> > 
+> > static inline bool is_hkid_assigned(struct kvm_tdx *kvm_tdx)
+> >@@ -586,6 +588,7 @@ static int __tdx_td_init(struct kvm *kvm, struct td_params *td_params,
+> > 	if (ret < 0)
+> > 		return ret;
+> > 	kvm_tdx->hkid = ret;
+> >+	atomic_inc(&nr_configured_hkid);
+> > 
+> > 	va = __get_free_page(GFP_KERNEL_ACCOUNT);
+> > 	if (!va)
+> >@@ -1071,3 +1074,41 @@ void tdx_hardware_unsetup(void)
+> > 	kfree(tdx_info);
+> > 	kfree(tdx_mng_key_config_lock);
+> > }
+> >+
+> >+int tdx_offline_cpu(void)
+> >+{
+> >+	int curr_cpu = smp_processor_id();
+> >+	cpumask_var_t packages;
+> >+	int ret = 0;
+> >+	int i;
+> >+
+> >+	/* No TD is running.  Allow any cpu to be offline. */
+> >+	if (!atomic_read(&nr_configured_hkid))
+> >+		return 0;
+> >+
+> >+	/*
+> >+	 * In order to reclaim TDX HKID, (i.e. when deleting guest TD), need to
+> >+	 * call TDH.PHYMEM.PAGE.WBINVD on all packages to program all memory
+> >+	 * controller with pconfig.  If we have active TDX HKID, refuse to
+> >+	 * offline the last online cpu.
+> >+	 */
+> >+	if (!zalloc_cpumask_var(&packages, GFP_KERNEL))
+> >+		return -ENOMEM;
+> >+	for_each_online_cpu(i) {
+> >+		if (i != curr_cpu)
+> >+			cpumask_set_cpu(topology_physical_package_id(i), packages);
+> >+	}
+> 
+> Just check if any other CPU is in the same package of the one about to go
+> offline. This would obviate the need for the cpumask and allow us to break once
+> one cpu in the same package is found.
 
-@movement@
-attribute name __free;
-@@
--u8 *tx_frame __free(kfree);
- int i;
- ... when any
- if (ice_fltr_add_mac(test_vsi, ...))
- { ... }
-+
-+{
-+u8 *tx_frame __free(kfree) =3D NULL;
- if (ice_lbtest_create_frame(pf, &tx_frame, ...))
- { ... }
- ... when any
-+}
-+
- valid_frames =3D ice_lbtest_receive_frames(...);
-
-
-Regards,
-Markus
+Good idea. Will rewrite it so.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
