@@ -1,138 +1,178 @@
-Return-Path: <linux-kernel+bounces-110077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0F38859B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:11:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D20818859C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:12:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6171C2261C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:11:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8146F284867
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC89084A23;
-	Thu, 21 Mar 2024 13:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEB684A32;
+	Thu, 21 Mar 2024 13:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="XM3VkmE0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XmyzlpzY"
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dEe6/ge9"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333857C6DF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8610783CB4
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711026670; cv=none; b=n+gKO87jd/1OcsTKGRwUttLxL4GtwMGA+1lRqMOpM3NN9TpjXPaVEty6aeS+5ARuScf53H/72+VasAnDvuSSgLe4Olv3Tj0c7rM0m9BxV3p/KLNYy/WDu+3DcZzHdhENC+Xnd8oYvkLFNHG4KxR/0VhVjBMWziTToT84WPZsc0w=
+	t=1711026745; cv=none; b=LtUrvBDpl/+MZOLz3NO51Wf4JnOEJd/UeTalFhlaHYJd8EV9m3Rjk2QBtU0SIXmtWOXV1r44WT/TXUsnOnW+aYFMGeuk2sVdFXRN0ICFrbjZk3Nu4qDpmv/7HN5IPKoZvW/HzUCra0KnNaZCPQxWFPsiXAgclGOVpUZOLEtUVs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711026670; c=relaxed/simple;
-	bh=9GWWrSSLXS31DSzydsHUoZZEnrWx+msnEIlV0vTZd5c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RbwBEHvWJTkiq8cli3y/Hk9+IV9n1NOE3A5sbQy0mJ+V4EScZEicpJUVSgmgDV8guklGPw8LR4Isi3CKpgcfy3QboMintxsO+i+lWMNnVC5HOmqGKEGTh4zaBfqst5ykXvGPvlf0WcuOEl2djnp15QAA+iWmzCc1HCA+Ja0V3Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=XM3VkmE0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XmyzlpzY; arc=none smtp.client-ip=66.111.4.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id ECCDE5C006E;
-	Thu, 21 Mar 2024 09:11:05 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Thu, 21 Mar 2024 09:11:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1711026665; x=1711113065; bh=TgJVd/c7muVzOn3fIP/35
-	wUjaktaAsm+YLuMMYxME5A=; b=XM3VkmE0xPZkXDR8H/hwBnQ7IvMN3mAsgVykC
-	pvP+1JXicGkSmfJNXqL+WuFp0jZ2iCpFId+5EYasmV4YdE99hl0TcNWcaKNWQzCK
-	8YABxhS/IbQlMxNUH8zJ9ErIUmQuOrgBrEJRqgmV27V/tihRGZWrldFvkW9DYgti
-	C9FcAUIAaXOeaWoCEnSoTwLcTWgIXou0YKj7el8ANo6yENmgkktLVYoUaHJq0JYW
-	1avqMRHQVIlYh3eQZkiCmCnw8Usl/4EDU0QdEKbsClEC6vzeVEpoOzOYN2sMPdo6
-	DVkHAzd40t90AT7BbdtdClKZldDIoz8WSHTYnq4y1XUUODv4Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1711026665; x=1711113065; bh=TgJVd/c7muVzOn3fIP/35wUjaktaAsm+YLu
-	MMYxME5A=; b=XmyzlpzYt6oo32TzeZ0gbxKIQ2OP90vMm4pbk85uUL/VP+5LE85
-	iKympIeOTQ+Qyfh1QTpEUOyxlnN0nwN0594OhwP27+W0iHstarQScOMcIaje/U27
-	GN8dbTkzcxJPqcEH/3PTpbtnGktl6LzjU5LuqLSMmadQkutyocGa5a7sJXiTMLg2
-	qGDljVDO0I8Usy5pOgVUoZk7KW+jDI+neBPKRKNg3cGtSIs5izov7a92kie5Oq0U
-	ij5lchGXV8JWkRndp9zp+J9UzSUg/MeHxG/DmeTeJM/uvirGKmPJHcEHhaRAuK8I
-	5qvtNFPoaMX3OKFsxzPfws6w+sAbogi2VKQ==
-X-ME-Sender: <xms:6TH8Zb9T9FbkPZrtjToxUEGdTKxONbwzQpQk-vdi4dwmguGCilejfw>
-    <xme:6TH8ZXteT6dx7-7c-Awkrc14PhAjCLXNG_6k3oR9tOdOJ4YaPQgxGPBmG3jG6phYZ
-    xN0VJbGG879QJAPgNs>
-X-ME-Received: <xmr:6TH8ZZAUckZI_BnJqQ8vnyS87XC9RmHJh5lcqIRHcpwBrJNfKCESxz6wNzv6U6gJHgZjMY2GEYO7MnJ98L-AqGiP1Ezk7MwPc_o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleeigdeglecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkgggtugesthdtredttd
-    dtvdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
-    ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepteefieetfeevge
-    dvgfegffehteeljeekkeelueegfffftdfgtdetteekvedvvdfgnecuffhomhgrihhnpehk
-    vghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:6TH8ZXeNr5bQYhe_9S4UGLgcvxtop72FXmdX0UZDGNWuwsv1IFXPKQ>
-    <xmx:6TH8ZQPqz7kZnETY7CsUPlfpuqhcYQFBYR1n2rswWo-LhGlWdoiBNw>
-    <xmx:6TH8ZZnxb799fosTY4Abe9u_LV0ofH3ZXOpraZxU05LDDdk_lWCUag>
-    <xmx:6TH8ZavlYu9MsxQGH6gEabwXfPw8XVBb1NFMeDig0BzvOk5CDSfWjA>
-    <xmx:6TH8ZZYUX4LxE4hyMwwLOU5YyzpVTUYVzDbd2HSWFACs17m1rTTOfg>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Mar 2024 09:11:04 -0400 (EDT)
-Date: Thu, 21 Mar 2024 22:11:00 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [GIT PULL] firewire fixes for v6.9-rc1
-Message-ID: <20240321131100.GA755005@workstation.local>
-Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1711026745; c=relaxed/simple;
+	bh=mKeiFDXt9LRB76MJgqp+7P/igmpVB0Jy2uhLKbD3CS8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OOM3WERalVWjkg0QFfej/+AaJ4advkjAnjy3IiDeO3wLeoqU1AMvVcsaVQ9KGNflOQ+m7VOA/xbRr11HpFCREU4X3rRFl0rjZxbwnbyqm5TpptGb6xFu7uPV7Jthi8Xd1jUrFpfDa21uydMaboM7ahbuXCq2qYVRGeK8R+KKrKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dEe6/ge9; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1453412276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711026742; x=1711631542; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v29bXK4pon5YnV6KRZLX8F0U2y6Zetkx5jYmH3BrOY0=;
+        b=dEe6/ge9JPzLWzV4bvURypaKw597tAwUqF5rBIsw4RllXrI0WLjLW7i5NyiR7T1xfz
+         1dNjh+MY4bFIChKJD9ItnzDe6x7Ink6NLwCal3qV5tLFh8CY0Glg8iyp3/8YEM/SIFbo
+         1ufdKqxxD5Z9zLRJYPvLpYa7xEeaMcBRq9Nnm7OGfWKHBhH5pzNAJaVxUnlqPytyAD6J
+         7ifJfJwqH7eLbFH8dFQUYAQI6a3YRsq7ahORuLAhZGgul5Of/dFXBqQNGVOGj9hCPriY
+         qL5Pu+BN0HCFpfh6t50pQDEQFCrlAFrn7JKOM1XqxLtBdgJKfp1tIx5P1UAvzkAw/uZR
+         6KSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711026742; x=1711631542;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v29bXK4pon5YnV6KRZLX8F0U2y6Zetkx5jYmH3BrOY0=;
+        b=jQ1UyBt2nBsoNTK0ao+kAsM1gtczir9mpvIZUiIt26y4dfzrzU7dZy8QbwSXsXDrbj
+         7dvDz96enXv4R4+j90wz+SCkNowyLjei23+GVKUOCJ3j1qjzGYxJX5YaRZxPKqUQxUV2
+         OGwRF/eMDMB/fjYao1xOKWAUdJtBloOApxPt+M3GNIO+Ot0wpidARHvoUJSHo1xxcAj9
+         hDvYEHE+e6q3DJg+NbdoRl4dpo/yXraWNbEg4yFCnse7nFfJEQuM/kYNmbw5IX8xQndZ
+         IcNjGMTuwNcc8n2j4wDWGQBQm5AyBNDMbtPVQvuE+ULFa1IIrim3R27HmI15Re3wdnrm
+         4pog==
+X-Forwarded-Encrypted: i=1; AJvYcCVj5jkfR5qsWHbvNVj+A3zhXslE+AnTbHpIAbH7LIjxcBU94COZ9dd2AaEALYmBEB2QAX60fTPL9q48LpfVm3fX5xqICY8ylzmfNQ9N
+X-Gm-Message-State: AOJu0Yyrw8cwrINkxjKH9itEcFIBe8H4LCcHXcEAeDn3ZC3ZzrA+EUAA
+	aF6EUD9pc3DWmsn4ZuQ5EjZcS6GMuM2hNEThpLz4UA/3QJSV2SZY3jV/F/5Ddmgw/YxNITh0V0J
+	6Wqp+P1vK2gXMV6vaYJ3Si3Uwss+OqrkwlX6pYA==
+X-Google-Smtp-Source: AGHT+IH+79l00As5HtUNzNAucLrJsiVMPHzZAF208Ssz1n44w+Gj7ocncPxl9w+5GgdeGwgRilpNfTshVBdm1cWjbFs=
+X-Received: by 2002:a25:7208:0:b0:dc6:e7f6:254a with SMTP id
+ n8-20020a257208000000b00dc6e7f6254amr1809732ybc.8.1711026742585; Thu, 21 Mar
+ 2024 06:12:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240321092529.13362-1-quic_jkona@quicinc.com> <20240321092529.13362-2-quic_jkona@quicinc.com>
+In-Reply-To: <20240321092529.13362-2-quic_jkona@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 21 Mar 2024 15:12:11 +0200
+Message-ID: <CAA8EJppsMchthssctEgUf9q45j84cSLQ78Ur+vaA0Z7GEQi8+g@mail.gmail.com>
+Subject: Re: [PATCH V2 RESEND 1/6] dt-bindings: clock: qcom: Add SM8650 video
+ clock controller
+To: Jagadeesh Kona <quic_jkona@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
+	Imran Shaik <quic_imrashai@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Linus,
+On Thu, 21 Mar 2024 at 11:26, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+>
+> Extend device tree bindings of SM8450 videocc to add support
+> for SM8650 videocc. While it at, fix the incorrect header
+> include in sm8450 videocc yaml documentation.
+>
+> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/clock/qcom,sm8450-videocc.yaml    | 4 +++-
+>  include/dt-bindings/clock/qcom,sm8450-videocc.h           | 8 +++++++-
+>  2 files changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+> index bad8f019a8d3..79f55620eb70 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
+> @@ -8,18 +8,20 @@ title: Qualcomm Video Clock & Reset Controller on SM8450
+>
+>  maintainers:
+>    - Taniya Das <quic_tdas@quicinc.com>
+> +  - Jagadeesh Kona <quic_jkona@quicinc.com>
+>
+>  description: |
+>    Qualcomm video clock control module provides the clocks, resets and power
+>    domains on SM8450.
+>
+> -  See also:: include/dt-bindings/clock/qcom,videocc-sm8450.h
+> +  See also:: include/dt-bindings/clock/qcom,sm8450-videocc.h
 
-After merging the previous PR, we realized that it brings some regressions
-to the device attributes in sysfs. We should have had enough tests before
-requesting... Let us fix them in this additional PR.
+This almost pleads to go to a separate patch. Fixes generally should
+be separated from the rest of the changes.
+
+>
+>  properties:
+>    compatible:
+>      enum:
+>        - qcom,sm8450-videocc
+>        - qcom,sm8550-videocc
+> +      - qcom,sm8650-videocc
+>
+>    reg:
+>      maxItems: 1
+> diff --git a/include/dt-bindings/clock/qcom,sm8450-videocc.h b/include/dt-bindings/clock/qcom,sm8450-videocc.h
+> index 9d795adfe4eb..ecfebe52e4bb 100644
+> --- a/include/dt-bindings/clock/qcom,sm8450-videocc.h
+> +++ b/include/dt-bindings/clock/qcom,sm8450-videocc.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+>  /*
+> - * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All rights reserved.
+>   */
+>
+>  #ifndef _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8450_H
+> @@ -19,6 +19,11 @@
+>  #define VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC                                9
+>  #define VIDEO_CC_PLL0                                          10
+>  #define VIDEO_CC_PLL1                                          11
+> +#define VIDEO_CC_MVS0_SHIFT_CLK                                        12
+> +#define VIDEO_CC_MVS0C_SHIFT_CLK                               13
+> +#define VIDEO_CC_MVS1_SHIFT_CLK                                        14
+> +#define VIDEO_CC_MVS1C_SHIFT_CLK                               15
+> +#define VIDEO_CC_XO_CLK_SRC                                    16
+
+Are these values applicable to sm8450?
+
+>
+>  /* VIDEO_CC power domains */
+>  #define VIDEO_CC_MVS0C_GDSC                                    0
+> @@ -34,5 +39,6 @@
+>  #define CVP_VIDEO_CC_MVS1C_BCR                                 4
+>  #define VIDEO_CC_MVS0C_CLK_ARES                                        5
+>  #define VIDEO_CC_MVS1C_CLK_ARES                                        6
+> +#define VIDEO_CC_XO_CLK_ARES                                   7
+>
+>  #endif
+> --
+> 2.43.0
+>
+>
 
 
-The following changes since commit 4438a810f3962a65d1d7259ee4195853a4d21a00:
-
-  Merge tag 'firewire-updates-6.9' of git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394 (2024-03-16 10:17:53 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.9-rc1
-
-for you to fetch changes up to bfb1ad3c6aab2341ace13222ac0a78e5b4c239c8:
-
-  firewire: core: add memo about the caller of show functions for device attributes (2024-03-21 21:20:18 +0900)
-
-----------------------------------------------------------------
-firewire fixes for 6.9-rc1
-
-The previous PR includes some regressions in some device attributes exposed to
-sysfs. They are fixed now.
-
-----------------------------------------------------------------
-Li Zhijian (1):
-      Revert "firewire: Kill unnecessary buf check in device_attribute.show"
-
-Takashi Sakamoto (1):
-      firewire: core: add memo about the caller of show functions for device attributes
-
- drivers/firewire/core-device.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-
-
-Regards
-
-Takashi Sakamoto
+-- 
+With best wishes
+Dmitry
 
