@@ -1,86 +1,142 @@
-Return-Path: <linux-kernel+bounces-110148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9A4885AB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:28:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31351885AC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC6DF28136C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:28:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F5D1F22A9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1740086151;
-	Thu, 21 Mar 2024 14:28:06 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C756A86649;
+	Thu, 21 Mar 2024 14:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CPm2ZRNE"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0B185957
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E7586271;
+	Thu, 21 Mar 2024 14:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711031285; cv=none; b=OqfZ5lxSOdvRhzo/18EAvoUgdMTgKjmVN7E34YpIGsUFHsJdy3OYZwaDwFypNJ5HrK2zFibhLRlf3V4eXJg1/L8/Eg4vjhm3gX1LyrEFsrya/q5vjbYUapkqXnuRmTt1l2QCwu/Y0SGGcOoWESevln9lJiMq8/39GtaOPH0XQds=
+	t=1711031305; cv=none; b=VmOENcByQMeACbjwHR+8jJtee0xryeTZjoEy4lxjR79iEk9fI5a51fn8IvvNHQk0y6lrDWGWx9blgbJUyZTwLKXdrKbKr9k7J6fr/iFVBczlXtLroN/mjF4pteyhxeahpUUolMZe7w5+JddYm2LnCfnDvyAPlO++NWRQCIEp1ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711031285; c=relaxed/simple;
-	bh=IhCIjYcsJTcTh0Ne4siMGs1KObTKCrtAyzR1ZUHgjyc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=lz8sJNUIEBAxREbT56a3S/s9gH9TLpiOnIho1Wy4bduqUpr3ye1NTThECgMFF2l5jDzxSz/aI+C3YVjnu15SjX2i5WCX3xWA3bTYZ5BXalEp9tVy31QsSEuq8DK3aJa7YLieA8plURTXwCGPC7DdVvjJJ59i4Q7p2H/nMDt98Gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cbf1aea97fso106591439f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:28:03 -0700 (PDT)
+	s=arc-20240116; t=1711031305; c=relaxed/simple;
+	bh=5VyWOKfJHQTAoUhC9rpC9wpC7eFj1iKEu+Ew4sWv8oU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jN0sUnD1DHSgl83MTbjfPap+l82yLdKfs4Ni6O1DL75g71i7qL8tnXEUOD/b6ICDvM9REuoAlpsUV4QC+WeOV8ec8AsWSEB/MIEBzI+zgqus7E8INLhEqaKCvpctyFsiVTso+YI0fNvS1Yd85/d3CiTPO2VxYTKnY6WoiytieuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CPm2ZRNE; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dee27acf7aso7012615ad.2;
+        Thu, 21 Mar 2024 07:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711031303; x=1711636103; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tOVIBrP7Nnxh24kd1RxWEpJ2f4kYqrQ9QS83PJ/qVZI=;
+        b=CPm2ZRNEj+N7sq3wWnFdo7Ny+t5owq+LViy+BI3OreDDGDFqa2jF4cqisQi6Lcadhn
+         ej7ltNbBIvgdwAuL55+0rPQAxqfQiMcrypIhYXdpAcye1c8cyCTBVB13JHwx28TGF5xP
+         SPmwBCdgLUl1+kXSe3z/ky1XO+fDU5MMsoNe34iMsG12zo7drYbJr9Xwxi0ZqFCaJHrx
+         YXfbKjF6VVhBveg4uerNkfTHWTTjdMT7nRwfekPOHmAMYxXcqVgc2kCPlVakNfV9nRSZ
+         HocLuoOcd46P6cCBdl1IYMjpvSf3EsVesPcZMvMxBJcSNsyWEGkES1vl4MatbBVgXqY4
+         yq7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711031283; x=1711636083;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1711031303; x=1711636103;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3etRVZh4JDKSafG4jfomctqFkBB0y78hVizxABw8bTI=;
-        b=trwZH8aNSNXs/y+5lGlD99cR2XryeHmq52SF8rMAHSwEJ7DlO2/7QD0IzdQvfmyr/z
-         7mPpsxKhh7/RD+jV1I35JVrfxisQpz3XAQVFnTKjtx+coHtlUYNNq5d28+w15xYfBq0n
-         +x8zXOo9EyHmVSvELmL291MJrfPEfFxpAZSYhuNx0bu3Au4Kau6mbNuzEM5IjCRzwAqg
-         Xw1/8yB03z546bHu23M1oOvnqaHBATY+ks37X8kFkICvu1lcHv2dbpoeh2Aqp1im9hAb
-         9Lav/Jzhtr6wA9imFtajSRNLhOXEZLdjBE2anj1gN3sS+HDrcMqNdoOWQfW+X3HRzNAu
-         AbUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcpBvkawEoXVBwqXQMrS4yaR1vcAEEF0k+7nTg2Q3T5mAicHR1hq22suU0+9ii1Uaml/YrgYBwBSSWR1YeaVDFBhrvkaMcmvrxllcC
-X-Gm-Message-State: AOJu0YwhrNsCGwiPnx94VZ19e1XbEQbsPWU+MIyqYAxZJmP5oJjt4NOv
-	cCC2aDE9Gi29QyMt7gC1JHEfXEf66PW7cDbFMlkLdMbVF/Yw7yF0jFy4Z2gE+RDl+EfSBvYoKrH
-	LKdoEkBmubxAvDnpQpLs+ZyfpbqEFo4X7RBXeP42vjF7MEL6nD7r8O6M=
-X-Google-Smtp-Source: AGHT+IGjnT/ykheEohkY17kLn82StHEuryxdXnlHp3LmGPXKn8nPbea+jua/twjPJIiNBmJsEJ6vKj74KpacS8zuXOmIYNL+WxTL
+        bh=tOVIBrP7Nnxh24kd1RxWEpJ2f4kYqrQ9QS83PJ/qVZI=;
+        b=wklVn4xzpI4uEGi5s1cpBSU6Y6jq0IbQV8j5TtYCBfrBqikeO/q1cWPbSTAE5jrswQ
+         SDETHhYLAn54+8n0A3i68v497fZkkpxp0Fz8hLc+zcCH67W/HQAb/VRxdjAtudFYccxI
+         1Y+OcsSeCkbxFewRXcbMV0Ukwp8dGKX2LakBAtcjTtn4SO49PIVd4+lXeua7jZSAX5Jo
+         80UXfxIV5sAIQGIYTZOU7R8Jv/4pI+YsxghqrOEIMUaRlJ8iNzfT+JXkHNrpsO39JSHK
+         FuPNVq0UyIJFxbi0pOfV3M6HxPiWBNeEFqWlufmClKkuSr8bhDNd6JEs4XZmUlQcHHZp
+         NyjA==
+X-Forwarded-Encrypted: i=1; AJvYcCVSVF5xlvjGXYHIcwysT9uS6Po3+p7mq19wprvDAeQcwDSNcK4pM144+v4EI6fz+JJ9Yl5uK14Z16viDpX76qLR00VbeofzJFFMdSvEH7KsFvBOV3ibCTfupTbFWsn8yR08JQXkgbGCT0DzXXzV5X/eINVZgM+ZGuGTJg2/mzJWUneTXKM=
+X-Gm-Message-State: AOJu0Yxn4ltgAXayary1x67RP6BU2ndLJ7CWfqSn8Mbm90u0C4TcllmM
+	5+6lHlxiBI7xPliEwLhq08Ty8dt1Y43aTf56/WWnGVvk4QE3MZ+Z
+X-Google-Smtp-Source: AGHT+IE3aRl7Ql8sashV4+BVUVpj5etL4QZu6RNYH+g19G/nmvwlGBqgxPJcdddb/P20lL11Oo+ARw==
+X-Received: by 2002:a17:902:e5c6:b0:1e0:2a5f:5e21 with SMTP id u6-20020a170902e5c600b001e02a5f5e21mr6694303plf.26.1711031302716;
+        Thu, 21 Mar 2024 07:28:22 -0700 (PDT)
+Received: from [192.168.50.232] (FL1-125-193-23-126.chb.mesh.ad.jp. [125.193.23.126])
+        by smtp.gmail.com with ESMTPSA id s3-20020a170902b18300b001e06cc3c3e9sm2214417plr.234.2024.03.21.07.28.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 07:28:22 -0700 (PDT)
+Message-ID: <067fd40e-e3f2-4929-ab74-36d8e863d23a@gmail.com>
+Date: Thu, 21 Mar 2024 23:28:18 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:349f:b0:477:2ff3:4a76 with SMTP id
- t31-20020a056638349f00b004772ff34a76mr905173jal.6.1711031283388; Thu, 21 Mar
- 2024 07:28:03 -0700 (PDT)
-Date: Thu, 21 Mar 2024 07:28:03 -0700
-In-Reply-To: <20240320235126.2407-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8aa6806142c8347@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in scheduler_tick (3)
-From: syzbot <syzbot+628f63ef3b071e16463e@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: leds: add LED_FUNCTION_MOBILE for mobile
+ network
+To: Rob Herring <robh@kernel.org>
+Cc: pavel@ucw.cz, lee@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>
+References: <20240320124431.221-1-musashino.open@gmail.com>
+ <20240320124431.221-2-musashino.open@gmail.com>
+ <20240321135502.GA1637678-robh@kernel.org>
+Content-Language: en-US
+From: INAGAKI Hiroshi <musashino.open@gmail.com>
+In-Reply-To: <20240321135502.GA1637678-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hello Rob Herring,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+thank you for your review.
 
-Reported-and-tested-by: syzbot+628f63ef3b071e16463e@syzkaller.appspotmail.com
+On 2024/03/21 22:55, Rob Herring wrote:
+> On Wed, Mar 20, 2024 at 09:43:16PM +0900, INAGAKI Hiroshi wrote:
+>> Add LED_FUNCTION_MOBILE for LEDs that indicate status of mobile network
+>> connection.
+>> As an example, "Mobile" LEDs on IIJ SA-W2 indicate status (no signal,
+>> too low, low, good) of mobile network connection via dongle connected
+>> to USB port.
+>>
+>> Suggested-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> Signed-off-by: INAGAKI Hiroshi <musashino.open@gmail.com>
+>> ---
+>>   include/dt-bindings/leds/common.h | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
+>> index ecea167930d9..d4b8498bde7f 100644
+>> --- a/include/dt-bindings/leds/common.h
+>> +++ b/include/dt-bindings/leds/common.h
+>> @@ -91,6 +91,7 @@
+>>   #define LED_FUNCTION_LAN "lan"
+>>   #define LED_FUNCTION_MAIL "mail"
+>>   #define LED_FUNCTION_MTD "mtd"
+>> +#define LED_FUNCTION_MOBILE "mobile"
+> Why doesn't "wan" work?
 
-Tested on:
+To distinguish the LEDs of mobile connection from the LEDs of wired 
+wan connection.
+For example, IIJ SA-W2 also supports wan connection via the ethernet 
+port "GE0" (WAN) in addition to mobile network. If "wan" is used, it 
+may confuse users as to which connection the LED is for.
 
-commit:         ea80e3ed net: ethernet: mtk_eth_soc: fix PPE hanging i..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=151dd185180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=628f63ef3b071e16463e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=164f17a5180000
+BTW: _MOBILE should be placed before _MTD for alphabetical order, I'll 
+fix it and send v2 patch series...
 
-Note: testing is done by a robot and is best-effort only.
+>
+>>   #define LED_FUNCTION_PANIC "panic"
+>>   #define LED_FUNCTION_PROGRAMMING "programming"
+>>   #define LED_FUNCTION_RX "rx"
+>> -- 
+>> 2.25.1
+>>
+
+Thanks,
+Hiroshi
+
 
