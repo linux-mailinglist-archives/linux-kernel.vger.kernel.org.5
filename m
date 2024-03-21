@@ -1,61 +1,51 @@
-Return-Path: <linux-kernel+bounces-109857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C708885698
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B5188569F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D5FA1C21466
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:33:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5F1A1C21374
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8619454BE8;
-	Thu, 21 Mar 2024 09:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6809454BDB;
+	Thu, 21 Mar 2024 09:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ql67lD25"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="kbh53oNI"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636074E1D5
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2FC2E6;
+	Thu, 21 Mar 2024 09:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711013613; cv=none; b=dK9Zihm4s594iY2oI1ohHfxc/oQNZejd6OIjv6cnNjW42hDInUySHFcMsQYUKz0BHfpimv5c4hd5B5mqaDIZZWP/hA24d99VqzC/nbEf7v/r0DjLfFNbv7dwVnKdvjzep6hnw3fzmMU6GMfkRjdeGjw1Y0SSB0GWr+VPFTKjLNc=
+	t=1711013749; cv=none; b=eSjRpkewsOQy9JgVQokuE86OmVd6KZgokKkzLDJFzxv6rIO5FGM7WzFRQ1yD2PfC2tfvu/oi9zBMbDf166z42s9QS9vUG6t3PlUe9OONkcr3CIwr0a0vi7np64P3Twd4TH2WtfUFD1Ccg1+jSqr8dUmUe9az8l5ORGAekUVpqP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711013613; c=relaxed/simple;
-	bh=yqdjQVNbcauOFxaogP8b3/2502Vi0LT+CvmPhASCPlU=;
+	s=arc-20240116; t=1711013749; c=relaxed/simple;
+	bh=yC8T7DEpTLZYJHID9PjAHySKLfNAf2ftqvmmAA3S9dM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rph0E65QltD/5O2tbzUigeyt4BEunQgtqOQ3qwBj0Q0AtNRqkiyNDR8yCj5+ozMmItl6DU9p3p9qKdfsRXWIxXidKMx2t06+FICXVdLEVL2wB9TwKuTH9qEICDxJPasVaysClIPBQzXSPWqMuT1tbuHsDu4Sw/d3RQSK333/hLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ql67lD25; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711013611;
+	 In-Reply-To:Content-Type; b=bzWw7e5unBuO913vnYZY2GRVWNpSlyRR9iy+hQ7v6nodZVCkbXPi7MtJXfawM3KVtJmpCk7ZItBy/YwXzKgnP0uiMqBLkN/LaV4d6xWYirBQ+ZSjtyo2Wkk1S4D2XV2e8CG3t1IPOcSAkCj/bYNPZiMSR4DVJcLd+qVYdb/eoJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=kbh53oNI; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 52CC7FF803;
+	Thu, 21 Mar 2024 09:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1711013739;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Rs6XYbBWQxRBg0YMTrNuobAVa9pvsnukIpqnddxJZbc=;
-	b=Ql67lD25mjYGPiGx5fcGug7MFFT+p1AXSGgULTZASu5MgCtecDhpjJOf8J921qasdEaD1B
-	AW+ccmGe5gKX9/gTTjnGeN/zKro309MoENq3S9ooVDg3tzDBWJK47jilbeP+NXGzmy9/LC
-	Xt87SXMuykEml3suAWs6JeoSb7nvVlY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-173-Dob_UXorNx2b4J-k8THHIg-1; Thu, 21 Mar 2024 05:33:27 -0400
-X-MC-Unique: Dob_UXorNx2b4J-k8THHIg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4759D89C661;
-	Thu, 21 Mar 2024 09:33:27 +0000 (UTC)
-Received: from [10.45.225.240] (unknown [10.45.225.240])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0B6331D091;
-	Thu, 21 Mar 2024 09:33:25 +0000 (UTC)
-Message-ID: <3540c6da-edbd-48e8-8bcb-effe64470ca0@redhat.com>
-Date: Thu, 21 Mar 2024 10:33:21 +0100
+	bh=y+rBfIRgdxEs51rdHUYVQ/1yd5TKf+EWpb7ciHqkYBQ=;
+	b=kbh53oNIAEdV5keF04s/uI5E0To0uvj8OoQ68AdJvnq0A+7IKcBHmCFDbi8kr75Craa13D
+	T9iT6zbTzks/LC1LT950Y5LFXg10GlbSbi1M0LNWxR4dQI6nzxKXSN2wsvPZ+pRMJx+bHX
+	i3wP/ii9tp8ZA5FKFur5sZ5eKPNzDXbOr7+KS8lTHPE5qWervRh7rlp2G5YVLPhUFGZUy6
+	WpdmYLhITI7h3V+L5cB9/vBeams9gkdqEQnI8Mm6OZea3mAnuWVZgcu+7K5leO583caOA6
+	d0jXU5sVLwRS6k4CDn+iHidyJfFeh/x2WcK5UFDCW4pcK2RFs1bbo3xFS52Hqg==
+Message-ID: <68b7908d-1756-4a0f-b0fc-7c0fb806ff9f@arinc9.com>
+Date: Thu, 21 Mar 2024 12:35:11 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,65 +53,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 5/7] i40e: Consolidate checks whether given VSI
- is main
-To: Paolo Abeni <pabeni@redhat.com>, intel-wired-lan@lists.osuosl.org
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240318143058.287014-1-ivecera@redhat.com>
- <20240318143058.287014-6-ivecera@redhat.com>
- <557e819bc6acdfc2311fe2254b1f382bad8368fc.camel@redhat.com>
+Subject: Re: [PATCH net v2 0/2] MT7530 DSA subdriver fix VLAN egress and
+ handling of all link-local frames
+To: Paolo Abeni <pabeni@redhat.com>, Daniel Golle <daniel@makrotopia.org>,
+ DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Frank Wunderlich <frank-w@public-files.de>,
+ Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240314-b4-for-net-mt7530-fix-link-local-vlan-v2-0-7dbcf6429ba0@arinc9.com>
+ <f6f064b8-efb2-4ab0-94f1-468d5d273d6e@arinc9.com>
+ <9762d71f1b3858c6b362696277702409e885fa1d.camel@redhat.com>
 Content-Language: en-US
-From: Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <557e819bc6acdfc2311fe2254b1f382bad8368fc.camel@redhat.com>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <9762d71f1b3858c6b362696277702409e885fa1d.camel@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-
-
-On 19. 03. 24 11:17, Paolo Abeni wrote:
-> On Mon, 2024-03-18 at 15:30 +0100, Ivan Vecera wrote:
->> In the driver code there are 3 types of checks whether given
->> VSI is main or not:
->> 1. vsi->type ==/!= I40E_VSI_MAIN
->> 2. vsi ==/!= pf->vsi[pf->lan_vsi]
->> 3. vsi->seid ==/!= pf->vsi[pf->lan_vsi]->seid
+On 21.03.2024 12:29, Paolo Abeni wrote:
+> On Wed, 2024-03-20 at 19:41 +0300, Arınç ÜNAL wrote:
+>> On 14.03.2024 12:33, Arınç ÜNAL via B4 Relay wrote:
+>>> Hi.
+>>>
+>>> This patch series fixes the VLAN tag egress procedure for link-local
+>>> frames, and fixes handling of all link-local frames.
+>>>
+>>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>>> ---
+>>> Changes in v2:
+>>> - Add Fixes: tag to both patches.
+>>> - Link to v1: https://lore.kernel.org/r/20240311-b4-for-net-mt7530-fix-link-local-vlan-v1-0-d67e6cc31af2@arinc9.com
+>>>
+>>> ---
+>>> Arınç ÜNAL (2):
+>>>         net: dsa: mt7530: fix link-local frames that ingress vlan filtering ports
+>>>         net: dsa: mt7530: fix handling of all link-local frames
+>>>
+>>>    drivers/net/dsa/mt7530.c | 52 ++++++++++++++++++++++++++++++++++++++++--------
+>>>    drivers/net/dsa/mt7530.h | 22 +++++++++++++++++++-
+>>>    2 files changed, 65 insertions(+), 9 deletions(-)
+>>> ---
+>>> base-commit: d7d75124965aee23e5e4421d78376545cf070b0a
+>>> change-id: 20240208-b4-for-net-mt7530-fix-link-local-vlan-af6e9928ad8d
+>>>
+>>> Best regards,
 >>
->> All of them are equivalent and can be consolidated. Convert cases
->> 2 and 3 to case 1.
+>> Reminder this patch series is waiting to be applied.
 > 
-> Minor nit: while at it, what about introducing an helper for such
-> check?
-> Reordering the patches you could use it also in i40e_pf_get_main_vsi()
+> I hoped to get some feedback from the DSA crew, so it waited a bit in
+> patchwork. Anyway it looks like it staged long enough and I'll go
+> through it soon.
 
-No, I couldn't, that helper does not check vsi->type value:
+Vladimir used to help me a lot. I hope everything's okay on their end.
 
-/**
-  * i40e_pf_get_main_vsi - get pointer to main VSI
-  * @pf: pointer to a PF
-  *
-  * Return pointer to main VSI or NULL if it does not exist
-  **/
-static inline struct i40e_vsi *i40e_pf_get_main_vsi(struct i40e_pf *pf)
-{
-	return (pf->lan_vsi != I40E_NO_VSI) ? pf->vsi[pf->lan_vsi] : NULL;
-}
-
-I had an idea with helper like:
-static inline bool i40e_is_main_vsi(struct i40e_vsi *vsi)
-{
-	struct i40e_pf *pf = vsi->back;
-	return (pf->vsi[pf->lan_vsi] == vsi);
-}
-
-but I think that `vsi->type == I40E_VSI_MAIN` is simple enough.
-
-Thanks,
-Ivan
-
+Arınç
 
