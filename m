@@ -1,93 +1,193 @@
-Return-Path: <linux-kernel+bounces-110100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A3BA885A06
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:36:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3EDC885A0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC113B22663
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:35:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70AE02827AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BA584A54;
-	Thu, 21 Mar 2024 13:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aWL3OMvA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E925810B;
-	Thu, 21 Mar 2024 13:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53C684A51;
+	Thu, 21 Mar 2024 13:38:19 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43E9483CD3
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711028151; cv=none; b=o0jYGmLChB8zhsFlUKvFMN4It2Y7gGVQss0r6rTAMilPZYucKBM7zJej64O+mc4nJ4F1EEhDEJm7xaL0U6Yl5Kw4pebhLvnrWZFR8Rj0UdlV7e3k7NaSSKVgLB6/eMkl7hX2Ifhw7B0scdTZsaT9lUq9qH4nEk7YTEHMkcdSLRQ=
+	t=1711028299; cv=none; b=gYPl/ac7oOGhucb+hKThUKokcLxZlNgxywEgilVtrDwBqlp//ZSEVC3+JFNfG2sKylGBORKjGORFH//e6ZKE7lL5aihlFCZsq8Kf0T8iD4PCqNgvzWw3+T6sQxoWybIQ8vTknJFQMhT2ukEaEpNmk/L3ql1KcTrIEm46233j3qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711028151; c=relaxed/simple;
-	bh=fYG4E4wFakwbj3fhrxbqt2XkujIXeIIfV+EnH3hriVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B6Qydh7+v7Fx5AH1lT/R45qHTAZ65btKYUILK2yV6YRjNUV37FAcCWE7HaVuPdzXAPbea+XhwNLVGjxTA53x7vpZAlscP9KZtzQTsT1lpRlFagXkWCbcDCcMDtzaTSqMHOgESq/cVeOD0zC+Ip56vZp7cWie8GLErKVyxeN8c7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aWL3OMvA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33725C433F1;
-	Thu, 21 Mar 2024 13:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711028148;
-	bh=fYG4E4wFakwbj3fhrxbqt2XkujIXeIIfV+EnH3hriVw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aWL3OMvAh+ElF/VUhZ0KMxI0c3OGNrXWdU89Qndzm30HdLttjDBbytGBGm+ZKGGxr
-	 /ZDjPlJ2b3WgNPNl2kNDpOPl7sYsFHqjBL4EeH+4QG0BTxmH99DhLwtoE8XeDYxD5H
-	 Xje8VqXOhHjlI+o1tODEpGtBtJM2lQ5ydgHn1BRur3eDQgd3fEEvw4hDdiK6FNu042
-	 E4PoAN6lcZoSfw4Zmre3F+ovsfU/pRAlbP8lW4l2Y0UggQthuxlFUkPBrK6rum6PfG
-	 uebbkN6Db7OL2XKiFa8sSqWpMd+/vsixn5BsyzJD+kb56iazj2t6GvQ/WzqeOiAU0R
-	 DuuqNKMOb7dXw==
-Date: Thu, 21 Mar 2024 10:35:45 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 1/5] perf beauty: Introduce scrape script for various fs
- syscalls 'flags' arguments
-Message-ID: <Zfw3sRGespUx-qQ4@x1>
-References: <20240320193115.811899-1-acme@kernel.org>
- <20240320193115.811899-2-acme@kernel.org>
- <CAP-5=fWXCL0AAdp4bSQHPo_XR1iiF8KY4=Bo4756XC1tE0PDUw@mail.gmail.com>
+	s=arc-20240116; t=1711028299; c=relaxed/simple;
+	bh=TWJQxY+j2mAIaRDlwSC5ezu/pA9voP7ZHB2o2Cs0mxM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nf/WYIW5DjeWDDQSUAkqzAoyt+Bb+9KsNIW/nMLfuEAbLsbejY4F7QNqik4BmxtFKKX1KNvw6Z/LW8o1Mx6EgTIsaEexBaP+E7UJxJzBfit7GoeqIsx81QLVC8EwcUmegQ9tD04WTKRYDH1BNOV0Im00CcYOAIQAo8ZcbOHPryQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A66FD1007;
+	Thu, 21 Mar 2024 06:38:49 -0700 (PDT)
+Received: from [10.1.33.177] (XHFQ2J9959.cambridge.arm.com [10.1.33.177])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 464183F762;
+	Thu, 21 Mar 2024 06:38:13 -0700 (PDT)
+Message-ID: <269375a4-78a3-4c22-8e6e-570368a2c053@arm.com>
+Date: Thu, 21 Mar 2024 13:38:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWXCL0AAdp4bSQHPo_XR1iiF8KY4=Bo4756XC1tE0PDUw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and
+ MADV_COLD
+Content-Language: en-GB
+To: Lance Yang <ioworker0@gmail.com>
+Cc: Barry Song <21cnbao@gmail.com>, Andrew Morton
+ <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-7-ryan.roberts@arm.com>
+ <CAGsJ_4wpjqRsn7ouO=Ut9oMBLSh803=XuSPX6gJ5nQ3jyqh3hQ@mail.gmail.com>
+ <a75ec640-d025-45ee-b74d-305aaa3cc1ce@arm.com>
+ <CAK1f24k1AuHDdrLFNLvwdoOy=xJTVkVdfY4+SN+KW5-EiMSa9Q@mail.gmail.com>
+ <7ba06704-2090-4eb2-9534-c4d467cc085a@arm.com>
+ <CAK1f24=yDVwOC31sNMaoZ6K2q1X8vA7p4CtS7nW5WXCm19iEdg@mail.gmail.com>
+ <add3b9fc-f08a-4bd4-b01e-4409e81d5a2d@arm.com>
+ <CAK1f24kRXZtKckRFxJfQCNSHJOHy4_nv67T+BfWeWyVtEggdNQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAK1f24kRXZtKckRFxJfQCNSHJOHy4_nv67T+BfWeWyVtEggdNQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 20, 2024 at 06:47:28PM -0700, Ian Rogers wrote:
-> On Wed, Mar 20, 2024 at 12:31 PM Arnaldo Carvalho de Melo
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -489,6 +489,12 @@ beauty_ioctl_outdir := $(beauty_outdir)/ioctl
-> >  # Create output directory if not already present
-> >  $(shell [ -d '$(beauty_ioctl_outdir)' ] || mkdir -p '$(beauty_ioctl_outdir)')
-> >
-> > +fs_at_flags_array := $(beauty_outdir)/fs_at_flags_array.c
-> > +fs_at_flags_tbl := $(srctree)/tools/perf/trace/beauty/fs_at_flags.sh
-> > +
-> > +$(fs_at_flags_array): $(beauty_uapi_linux_dir)/fcntl.h $(fs_at_flags_tbl)
-> > +       $(Q)$(SHELL) '$(fs_at_flags_tbl)' $(beauty_uapi_linux_dir) > $@
-> > +
+>>>>>>>> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+>>>>>>>> -
+>>>>>>>> -               if (!pageout && pte_young(ptent)) {
+>>>>>>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
+>>>>>>>> -                                                       tlb->fullmm);
+>>>>>>>> -                       ptent = pte_mkold(ptent);
+>>>>>>>> -                       set_pte_at(mm, addr, pte, ptent);
+>>>>>>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>>>>>> +               if (!pageout) {
+>>>>>>>> +                       for (; nr != 0; nr--, pte++, addr += PAGE_SIZE) {
+>>>>>>>> +                               if (ptep_test_and_clear_young(vma, addr, pte))
+>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>>>
+>>>>> IIRC, some of the architecture(ex, PPC) don't update TLB with set_pte_at and
+>>>>> tlb_remove_tlb_entry. So, didn't we consider remapping the PTE with old after
+>>>>> pte clearing?
+>>>>
+>>>> Sorry Lance, I don't understand this question, can you rephrase? Are you saying
+>>>> there is a good reason to do the original clear-mkold-set for some arches?
+>>>
+>>> IIRC, some of the architecture(ex, PPC)  don't update TLB with
+>>> ptep_test_and_clear_young()
+>>> and tlb_remove_tlb_entry().
+
+Afraid I'm still struggling with this comment. Do you mean to say that powerpc
+invalidates the TLB entry as part of the call to ptep_test_and_clear_young()? So
+tlb_remove_tlb_entry() would be redundant here, and likely cause performance
+degradation on that architecture?
+
+IMHO, ptep_test_and_clear_young() really shouldn't be invalidating the TLB
+entry, that's what ptep_clear_flush_young() is for.
+
+But I do see that for some cases of the 32-bit ppc, there appears to be a flush:
+
+#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+static inline int __ptep_test_and_clear_young(struct mm_struct *mm,
+					      unsigned long addr, pte_t *ptep)
+{
+	unsigned long old;
+	old = pte_update(mm, addr, ptep, _PAGE_ACCESSED, 0, 0);
+	if (old & _PAGE_HASHPTE)
+		flush_hash_entry(mm, ptep, addr);   <<<<<<<<
+
+	return (old & _PAGE_ACCESSED) != 0;
+}
+#define ptep_test_and_clear_young(__vma, __addr, __ptep) \
+	__ptep_test_and_clear_young((__vma)->vm_mm, __addr, __ptep)
+
+Is that what you are describing? Does any anyone know why flush_hash_entry() is
+called? I'd say that's a bug in ppc and not a reason not to use
+ptep_test_and_clear_young() in the common code!
+
+Thanks,
+Ryan
+
+
+>>
+>> Err, I assumed tlb_remove_tlb_entry() meant "invalidate the TLB entry for this
+>> address please" - albeit its deferred and batched. I'll look into this.
+>>
+>>>
+>>> In my new patch[1], I use refresh_full_ptes() and
+>>> tlb_remove_tlb_entries() to batch-update the
+>>> access and dirty bits.
+>>
+>> I want to avoid the per-pte clear-modify-set approach, because this doesn't
+>> perform well on arm64 when using contpte mappings; it will cause the contpe
+>> mapping to be unfolded by the first clear that touches the contpte block, then
+>> refolded by the last set to touch the block. That's expensive.
+>> ptep_test_and_clear_young() doesn't suffer that problem.
 > 
-> I wonder if rather than update Makefile.perf, we could push more of
-> the logic into tools/perf/trace/beauty/Build. It would also be nice to
-> add there the shellcheck logic:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/Build?h=perf-tools-next#n81
+> Thanks for explaining. I got it.
+> 
+> I think that other architectures will benefit from the per-pte clear-modify-set
+> approach. IMO, refresh_full_ptes() can be overridden by arm64.
+> 
+> Thanks,
+> Lance
+>>
+>>>
+>>> [1] https://lore.kernel.org/linux-mm/20240316102952.39233-1-ioworker0@gmail.com
+>>>
+>>> Thanks,
+>>> Lance
+>>>
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Lance
+>>>>>
+>>>>>
+>>>>>
+>>>>>>>> +                       }
+>>>>>>>
+>>>>>>> This looks so smart. if it is not pageout, we have increased pte
+>>>>>>> and addr here; so nr is 0 and we don't need to increase again in
+>>>>>>> for (; addr < end; pte += nr, addr += nr * PAGE_SIZE)
+>>>>>>>
+>>>>>>> otherwise, nr won't be 0. so we will increase addr and
+>>>>>>> pte by nr.
+>>>>>>
+>>>>>> Indeed. I'm hoping that Lance is able to follow a similar pattern for
+>>>>>> madvise_free_pte_range().
+>>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>>                 }
+>>>>>>>>
+>>>>>>>>                 /*
+>>>>>>>> --
+>>>>>>>> 2.25.1
+>>>>>>>>
+>>>>>>>
+>>>>>>> Overall, LGTM,
+>>>>>>>
+>>>>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+>>>>>>
+>>>>>> Thanks!
+>>>>>>
+>>>>>>
+>>>>
+>>
 
-Sure, I thought about consolidating lots of boilerplate there and also
-to move it to tools/perf/trace/beauty/Build. Will see if I can do it in
-this series at some point.
-
-Thanks for reviewing the patches,
-
-- Arnaldo
 
