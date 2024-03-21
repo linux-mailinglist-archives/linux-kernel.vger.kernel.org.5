@@ -1,84 +1,57 @@
-Return-Path: <linux-kernel+bounces-110411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390DF885EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:57:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19897885ED7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B0AA1C2333C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:57:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9AB82816D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CC71369BC;
-	Thu, 21 Mar 2024 16:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4112F13667F;
+	Thu, 21 Mar 2024 16:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gGi8xJlV"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nULhEJkA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF69A18AE8;
-	Thu, 21 Mar 2024 16:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8162C18AE8;
+	Thu, 21 Mar 2024 16:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039767; cv=none; b=bhpLsmamGzj3K5uLsPmqq4c2oAj8/6kOjwdKBGIXrGZUnkyl81L3EOM9KjSVifbmokUcvo4lo45pz7G0uFUlXMGAZhZlf7JZbue/szYF0LOQDGuugZ0ZBFbMCn4haJOO3srV+Vr+h45kbLz3Ocpt0Z/J24CNT6e8kew7X9x7DMQ=
+	t=1711039742; cv=none; b=rkh+WYrkucBkDftiarySg61Qw2SWvUloH2oMuU8u9CYtJAbgB/VTuAIe4IzIF/vbzU+aeBeNu40whTAZC5MTTl6LraEmmo8O5/bNz6VuhjzcJ4MYnVvyzoRsUOppZF6S3lJfz3pGJKZ4FPjXh2FG/hnLRK/FpqvQYjayX62U6oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039767; c=relaxed/simple;
-	bh=+nZPFZSgmWagI1A3CCJDLhLURWtV5kOkFvKlclMvVCQ=;
+	s=arc-20240116; t=1711039742; c=relaxed/simple;
+	bh=g9UN7Rio7nv92BBowv6hN57VwZQYyjCoB6anDBSAi6U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SUfBtNQiUvTYACv5CLU4kYvC9Raad4qR0XaClQIVKcfG1ZfCRSEVcdd0s+RfBo2d+p9J9h9mVvI4NmB3SAhk6wpJWnHxMHw8+7pj3oLfEMYcqdn2HwbRgwgtyS6zZ6rFKPEyOuE8dUZv7b3LOog5SsOHqK5BR8v7yOAKOPauLxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gGi8xJlV; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=V9mrRuAn6P0CI166dm0Zpc+lSpGuhBwRxOMqznP0Qc8=; b=gGi8xJlVLOIZ3mUkkfMoCqE6+p
-	GYatoWTGuIQd5mIJqoYod0ls6FiejI1yWosjlReTKpX/4QcfgRsdMndn7H2he5AtOEWNIEMdv6DPj
-	ZRkrHCddWZIHbCcvrE7/i9TnUatU/rJkC1W5mkzmB2GMm50FbmFnSbKcERrsBngy84FyJ5zDJA3ue
-	b28mrMSpQRD3X9KSoKdZo5dJvgVF7WsSod91+d2J7u195+hFp7vmMB1eLvYgh26B8RIToR3Z1idYQ
-	7DqIqZWDxe4h3KOCq8qN6htm+cvV2ALDrz/yfvX53nfhNfOQ9l3tfg2VOFzpq0RrFF/sMMqgsASJ6
-	2EI1+HZQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnLb3-0000000793s-1qG7;
-	Thu, 21 Mar 2024 16:48:53 +0000
-Date: Thu, 21 Mar 2024 16:48:53 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-	paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
-	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 20/37] mm: fix non-compound multi-order memory
- accounting in __free_pages
-Message-ID: <Zfxk9aFhF7O_-T3c@casper.infradead.org>
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-21-surenb@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tnTRnvKvN0YHbFr97Nykv2AKPR2GZIoxRs/2PbivwuoE39OQoCVJHg7ex5a+Lz21kt55k9uZGcKDuhmMT1KBdn3S7674qU43xZ6MQpsdqWgnhprpo77ECJfjlfOdyveuLx957Mm83NlftoETPQQIdeYdyXQ4zoTsVvoyaf9F3M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nULhEJkA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D09DCC433F1;
+	Thu, 21 Mar 2024 16:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711039742;
+	bh=g9UN7Rio7nv92BBowv6hN57VwZQYyjCoB6anDBSAi6U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nULhEJkAn/C4DVanxi36af3Ykh1XxD7NqJg3wTWR6lt1mq9UcUfOo5vffu63I2Itl
+	 ooKPRAsDdPEMD44wHFLN9eKMsbJXUwbMd6q/WogSDYz++/IytULSb7IJk72aprExWx
+	 67wyngUgwzymK0VgUrC4kn6bTln7NHuwiOaShqKa0ZiDveVPHs4hukTzYwqe3+VOUh
+	 j1w6KL0icOFQe4nI3xWF146mjzFdLp/PUoBSFFS0sCQtHAO6FjgC69+vGrNKdIgVvC
+	 OUkP/wEI4ZdGm0h+ijcfbmNoDveF7ePV+3RCjNrfm2qVpX/f1M+T+jIeeFJX6gBLRz
+	 4OcRHTBeFki5w==
+Date: Thu, 21 Mar 2024 11:48:59 -0500
+From: Rob Herring <robh@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, peiyu li <579lpy@gmail.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] dt-bindings: hwmon: convert lm87 and max6650 to
+ dtschema
+Message-ID: <20240321164859.GA2085432-robh@kernel.org>
+References: <20240321-hwmon_yaml-v2-0-74fa8eb60ec9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,42 +60,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321163705.3067592-21-surenb@google.com>
+In-Reply-To: <20240321-hwmon_yaml-v2-0-74fa8eb60ec9@gmail.com>
 
-On Thu, Mar 21, 2024 at 09:36:42AM -0700, Suren Baghdasaryan wrote:
->  static inline void pgalloc_tag_add(struct page *page, struct task_struct *task,
->  				   unsigned int nr) {}
->  static inline void pgalloc_tag_sub(struct page *page, unsigned int nr) {}
->  static inline void pgalloc_tag_split(struct page *page, unsigned int nr) {}
-> +static inline struct alloc_tag *pgalloc_tag_get(struct page *page) { return NULL; }
-> +static inline void pgalloc_tag_sub_pages(struct alloc_tag *tag, unsigned int nr) {}
->  
->  #endif /* CONFIG_MEM_ALLOC_PROFILING */
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fd1cc5b80a56..00e0ae4cbf2d 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4700,12 +4700,15 @@ void __free_pages(struct page *page, unsigned int order)
->  {
->  	/* get PageHead before we drop reference */
->  	int head = PageHead(page);
-> +	struct alloc_tag *tag = pgalloc_tag_get(page);
->  
->  	if (put_page_testzero(page))
->  		free_the_page(page, order);
-> -	else if (!head)
-> +	else if (!head) {
-> +		pgalloc_tag_sub_pages(tag, (1 << order) - 1);
->  		while (order-- > 0)
->  			free_the_page(page + (1 << order), order);
-> +	}
+On Thu, Mar 21, 2024 at 05:33:16PM +0100, Javier Carrasco wrote:
+> This series converts the existing lm87.txt and max6650.txt bindings to
+> dtschema. Both are direct conversions with no additional properties.
+> 
+> There has been an attempt to convert the bindings of the lm87 before
+> [1], but the author (added to recipients) has confirmed that no further
+> versions will be submitted, and no acknowledgment is desired.
+> 
+> Link: https://lore.kernel.org/linux-hwmon/20231030125221.12974-1-579lpy@gmail.com [1]
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+> Changes in v2:
+> - max6650: add property constraints and commit message indentation.
+> - lm87: No changes, already applied to hwmon-next.
 
-Why do you need these new functions instead of just:
+Then you should not have sent it again. And you forgot Conor's 
+Reviewed-by.
 
-+	else if (!head) {
-+		pgalloc_tag_sub(page, (1 << order) - 1);
-		while (order-- > 0)
-			free_the_page(page + (1 << order), order);
-+	}
+Rob
 
