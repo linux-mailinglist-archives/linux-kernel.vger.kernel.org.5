@@ -1,95 +1,165 @@
-Return-Path: <linux-kernel+bounces-110480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A6A885F84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:19:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD500885F8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5E091C233E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42A871F2132E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A6956768;
-	Thu, 21 Mar 2024 17:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70B256768;
+	Thu, 21 Mar 2024 17:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOv9vGLj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wQGswcMD"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07CB79E0;
-	Thu, 21 Mar 2024 17:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40FB132C37
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041563; cv=none; b=MfrdG3sYGnQ889QkONiuwD79wwt3pl/OhZwgQ2EgzgjEmKu5l1cupXlm3752IXfrDzwdvI2JmU7KKy3jonBgZyx4sVbhZ0JKfHUW4/Fr3pzKTo/gDM97IhE7XN/s/ulV5hcDwixIP4ycuNDvIeBljmd3tQbcWnvB+XRDXlF74VI=
+	t=1711041583; cv=none; b=Of8Nvz30L/vdNNfCNr56bfoGOAwrA50eGLLOLJDfyWkfaqbj7Pb1tIgWz2onX1I7uu/vtA3/hl+FH6DKkljKE9zFboQpeEFMayAhhEq1bzKNHfqdHX23WQwMvDZJiQtnTx+yQYrsf+S+w01aYcPueURK76dbMnSTjyCjZV3Z3bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041563; c=relaxed/simple;
-	bh=e9QuUBFXFc8Wyy/GNM5FNS29OFCC+SFfSjmFYLP2fno=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ja+ftCZrqcwycM5LI5yz+PyZw+CtorD0Ilqv+OV35zycWK45sHB2zCeoTyVS2Dq/Mbs4KL0hQaBAJKO42Hbqso6fiBYPxVeBeUKHJxWUjPBdkLdJuC3U6VrdYQP5o1R4v81h9EDyKrZ37k6A0kdgwmfh2ab2JC0t6O9Sno3XUIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IOv9vGLj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB0F0C433F1;
-	Thu, 21 Mar 2024 17:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711041563;
-	bh=e9QuUBFXFc8Wyy/GNM5FNS29OFCC+SFfSjmFYLP2fno=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=IOv9vGLjMeR3MvY8Vzj+ClFKnODJDn5UeWSa1KBet3xlZjuno6nHcjjUrFh+H8zWw
-	 7u6RXZoZ+WaoPGhIYpJYvEoEQSY4Dqcl3uvX/0a1VC2kLcnx0cWPOeF5VzGhMQuURC
-	 Iu0RzdP3Sm1PdLJblarYt01eS7GoyZ4LZVcdT6yXvN1W7pXO369OvKhr8uE5TmnyEX
-	 //fMstz3YdK1LddLowxS7HyuVQHwn8gLc+BGpHoJUnt9pF0hORKJDaYG/B1Bz2CmKW
-	 zsNb8ybdYzk3SyOXmMzw705og+oDk7mJNpJvNAttV3T9WZuVnrl0oRd2YIb9HyO+jb
-	 9s3Z7Vi5Uvwqw==
+	s=arc-20240116; t=1711041583; c=relaxed/simple;
+	bh=H+LJEeBQNsEayEy62NES0fpvH5c8qtUySXf9WjZsL7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OU6bpo8bkQYYIV90womA7wHCGo5zYPOtAPPTLQFtk2a9VnRxT+OssaNlxPS0xSfG0LoJTN+/p9vj7iPBtrF7AukrUnTlKz1kV64OgQuDINy4igli5nDKVPs2qKx9BReUqQoo5J7PQNLum8nRJhj+CJh/5iCnQzwBVeajPG4sVh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wQGswcMD; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc73148611so1351008276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711041581; x=1711646381; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tqvfQSGh+Xzm8qjoxKwBWCT5Q1J0hViT+VZ+PA5jO/g=;
+        b=wQGswcMDuplyRs8fUGwaOmGwqP4mg/LWEXFC8ArimCNwJDM+AN5v9S0xWnckBn0jk8
+         UxqKp7QvM/RCvybCB0nL8IghAOSh6pPPc5flnZHOxIi3oS0qIFM/vX/GhEOZmV0vKSqf
+         mIgHHK4zqQdRHGVqjgW7FF2HNkdsg8yHHp50lmbqURSFPylRlmaCEvgqJNAWffpiiJbU
+         8X52om8QSE2Sm1Q3lQD0PE3FHALTwhYilwJ0SK6BLYDJrwvFestuWd7Un0QefYLohj2j
+         PXDnP/+iBba3Y7kqD0gRUqnetLQaKGYWxaCyZsYmmazdgsNKXt5CQVg2pgOCfz5lWphV
+         r/LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711041581; x=1711646381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tqvfQSGh+Xzm8qjoxKwBWCT5Q1J0hViT+VZ+PA5jO/g=;
+        b=pWisxHtWf0mKxR26StVsIZBrX0k4UV8M58m8RfM/FAawDjIYb+nFs4kn5narmBhnLI
+         P7Su0OlyfEQAIeixg+XLouzH/OCrcXQJLgGp1HIqyMpK7KrPmlgvS+eMtzQR7uWMIIwY
+         8TFQsYdp5iV+6Ippv/0f//QzD3MqRm8V62Mo7ozE3rQBS1y8HVnZapiotOhiI42s0HnX
+         5Bd7Po9/nW+mLIh3APvujX2WCxeR4rSLmY+XHMqVMl9Nbod4HkqJH+/4DomS9K4W63WN
+         SIUbuYa7m/RsrhQQnzOnbhxj6lVn8vOWvA9M602KHHOz/dnsMkpUd+pGYsAjRBJspkat
+         tsTw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVexj7mtVgghmQzVGuWKphfSKQLoF74QJ2PN2P/UFp8xJBmeMQW4YnPY4q5jYaTjg4F6hM+Vo/gjfWfVutBEXE/QWp186sF5pZjmhz
+X-Gm-Message-State: AOJu0YxjQKsplShsNQnSSbT935KAw/heNbCtzZM6uBwhO/gZTZFR+WND
+	ncoZdRJ3/fcZbufMIBGK8vXiLRElduVkmwGMGAZo6EYaPLiwzL0bQph+PZTeO8J+R2Y9ilDJQp/
+	2oUnqnZP0n9SpXioCRG0pPGj+4xPjXAPK1xJK
+X-Google-Smtp-Source: AGHT+IFQSVcpwYKqTi4u5vLJp+bH/Ul0qxjQJHN69s16T75E6/ejSMbPrhKw6oCEZl5ggVcRzfP6qAeH1y6UeIwfGAA=
+X-Received: by 2002:a25:dc4a:0:b0:dcd:4e54:9420 with SMTP id
+ y71-20020a25dc4a000000b00dcd4e549420mr19795790ybe.5.1711041580565; Thu, 21
+ Mar 2024 10:19:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-21-surenb@google.com>
+ <Zfxk9aFhF7O_-T3c@casper.infradead.org> <ZfxohXDDCx-_cJYa@casper.infradead.org>
+In-Reply-To: <ZfxohXDDCx-_cJYa@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 21 Mar 2024 10:19:28 -0700
+Message-ID: <CAJuCfpHjfKYNyGeALZzwJ1k_AKOm_qcgKkx5zR+X6eyWmsZTLw@mail.gmail.com>
+Subject: Re: [PATCH v6 20/37] mm: fix non-compound multi-order memory
+ accounting in __free_pages
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:19:20 +0200
-Message-Id: <CZZLM1BW7UAS.2K5EI7YU6TI3L@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>
-Subject: Re: [PATCH v7 09/13] crypto: ecdsa - Replace ndigits with nbits
- where precision is needed
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
- <20240320114725.1644921-10-stefanb@linux.ibm.com>
-In-Reply-To: <20240320114725.1644921-10-stefanb@linux.ibm.com>
 
-On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
-> Replace the usage of ndigits with nbits where precise space calculations
-> are needed, such as in ecdsa_max_size where the length of a coordinate is
-> determined.
+On Thu, Mar 21, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
 >
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
-> ---
->  crypto/ecdsa.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Thu, Mar 21, 2024 at 04:48:53PM +0000, Matthew Wilcox wrote:
+> > On Thu, Mar 21, 2024 at 09:36:42AM -0700, Suren Baghdasaryan wrote:
+> > > +++ b/mm/page_alloc.c
+> > > @@ -4700,12 +4700,15 @@ void __free_pages(struct page *page, unsigned=
+ int order)
+> > >  {
+> > >     /* get PageHead before we drop reference */
+> > >     int head =3D PageHead(page);
+> > > +   struct alloc_tag *tag =3D pgalloc_tag_get(page);
+> > >
+> > >     if (put_page_testzero(page))
+> > >             free_the_page(page, order);
+> > > -   else if (!head)
+> > > +   else if (!head) {
+> > > +           pgalloc_tag_sub_pages(tag, (1 << order) - 1);
+> > >             while (order-- > 0)
+> > >                     free_the_page(page + (1 << order), order);
+> > > +   }
+> >
+> > Why do you need these new functions instead of just:
+> >
+> > +     else if (!head) {
+> > +             pgalloc_tag_sub(page, (1 << order) - 1);
+> >               while (order-- > 0)
+> >                       free_the_page(page + (1 << order), order);
+> > +     }
 >
-> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-> index 1814f009f971..4daefb40c37a 100644
-> --- a/crypto/ecdsa.c
-> +++ b/crypto/ecdsa.c
-> @@ -266,7 +266,7 @@ static unsigned int ecdsa_max_size(struct crypto_akci=
-pher *tfm)
->  {
->  	struct ecc_ctx *ctx =3D akcipher_tfm_ctx(tfm);
-> =20
-> -	return ctx->pub_key.ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
-> +	return DIV_ROUND_UP(ctx->curve->nbits, 8);
->  }
-> =20
->  static int ecdsa_nist_p384_init_tfm(struct crypto_akcipher *tfm)
+> Actually, I'm not sure this is safe (I don't fully understand codetags,
+> so it may be safe).  What can happen is that the put_page() can come in
+> before the pgalloc_tag_sub(), and then that page can be allocated again.
+> Will that cause confusion?
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+So, there are two reasons I unfortunately can't reuse pgalloc_tag_sub():
 
-BR, Jarkko
+1. We need to subtract `bytes` counter from the codetag but not the
+`calls` counter, otherwise the final accounting will be incorrect.
+This is because we effectively allocated multiple pages with one call
+but freeing them with separate calls here. pgalloc_tag_sub_pages()
+subtracts bytes but keeps calls counter the same. I mentioned this in
+here: https://lore.kernel.org/all/CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct=
+3=3DWHzAv+kg@mail.gmail.com/
+2. The codetag object itself is stable, it's created at build time.
+The exception is when we unload modules and the codetag section gets
+freed but during module unloading we check that all module codetags
+are not referenced anymore and we prevent unloading this section if
+any of them are still referenced (should not normally happen). That
+said, the reference to the codetag (in this case from the page_ext)
+might change from under us and we have to make sure it's valid. We
+ensure that here by getting the codetag itself with pgalloc_tag_get()
+*before* calling put_page_testzero(), which ensures its stability.
+
+>
 
