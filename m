@@ -1,113 +1,137 @@
-Return-Path: <linux-kernel+bounces-110474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED74D885F6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBFDD885F71
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:16:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2852B1C2351D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:15:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0AB1C23204
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556FB25742;
-	Thu, 21 Mar 2024 17:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6393056B76;
+	Thu, 21 Mar 2024 17:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kWaS4xme"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rOctEU41"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5641755F;
-	Thu, 21 Mar 2024 17:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C0E1755F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041336; cv=none; b=CuU5+F3pJugNjrwLa2eJhe3w/pLvL8DRSAx0SdvzwcgcHp0vi0X3gEfMX8y2CTLj53A7+R2zXrnpyTaBvRafFVW7t4VNp+BlINLt2ldG4fI/qmI8oOIkiWjmjd6AhpGfoY5xr7oZIOfWIRwvf5X7/cMWEuJEI08DCxkTKmW9ZLw=
+	t=1711041375; cv=none; b=oCEODN8VbQjTLec3zroyt3MtvpfVBfj0v69Ug99JJm9O0tYROQmPTbNcNtsop18H2Y50N1dH6SzD1VqhRxj6oCGxhdDmUMMZTq5CF6dbgNaJXoLR93c+kr9hUV/z8ISXZ7Qi7qqfzdcrrN6MqOHpHDFBnAKgysg0HyMrEVbOw1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041336; c=relaxed/simple;
-	bh=QeNwrq+mwtViA0vOP3SP2m1uTYWVzbpAfcrZaJi9mBw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=VQkDWtErq2SW+yTDL69lY/EClJ8H36c4wbn04wllDTsmabRGWT3zQ2asADC1Cd9sUKcRsAQUBt4gXlfeptO7/MUxJb+Bf1H5w5GeYK++Qc95sqAzPsFlYYWLW/R8g2OJGXkgkT86fRMuzrkz1JSQJwq+8mR+f1dhTw1/XEcGDiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kWaS4xme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40548C433F1;
-	Thu, 21 Mar 2024 17:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711041336;
-	bh=QeNwrq+mwtViA0vOP3SP2m1uTYWVzbpAfcrZaJi9mBw=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=kWaS4xme5Jf+W4F79nTj3B52sQHJlSaAJ5Ab7RSIXj+n9Hfm5+RT60sVWni67EoCZ
-	 ND0LLXRruVCb7QwXzkDsg7BvDR99DPxDaZ7nsjSC0bG3BwADiszDpPE1OaA0MDyAZh
-	 GKT38JaD4Gex8GhTI5X6hG5F3lxqE+pwe4WpCl9ceOPDrT/AsBk3fkxGhM5dpg/+Ts
-	 VBGtNURaUwL5EB9MwR4d90r4SuxTJFeFtftamTE9EEGBzdqkqMTLfwoTlJg7CM8mqS
-	 H7OEMbKSNF4zA+8170D0D/Wc8NOyWlXqqwdtXOin7sSHZThKWjunKrejYtves9pBaV
-	 Kg9xtJYvLUrNg==
+	s=arc-20240116; t=1711041375; c=relaxed/simple;
+	bh=RUsWaSGEGyzJkXmAa/BIHP71etV0BQXLfjmPcNLZps8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R4aZPSqX9/B9GfT4+k1suelCTjdzMo0ur5QqJA90pgws9Ns6XwTKrLCrniHunwcpJPw4rGC2tgpSynq0OdvS3ymwUbivfbbwFqwxuFVg9sgi4ew+j/gTzCXx0EH567+TMTD03kbnwjxy+ojs+3xK6nBrLcHZpG/CtxfPPI8syMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rOctEU41; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d094bc2244so17398461fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711041372; x=1711646172; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FBA7Y36AMw0KTupRrw+PnBU6PO+JQCp7HzJLhSmsbvQ=;
+        b=rOctEU41ksX2XVMCUcrsRmWO6kNfoqXJ4z/t+hVWJdVVyfW/5+FtCxa9Quxc6kiPE2
+         /lSXGM4JmHy0L3diLkWAzU5z5DN+asJTr9ZJkrZSjcyMsaWpCrezd4OckMDrblSMyuYF
+         jMfw3XuxMShzCLypHQrpyY2j0ZG4Mho8ypSph5EnIO6A+S7kIFfDnFhuum3ovuXlt1AC
+         UM6z9zfPKlh2xWF0g/yIVntihzDjTJJW7vZN8fQ8y9heEeoAnqZ8r4IT7vlNpiOTtKsT
+         L7C4neCUETKTZKn+lTRpetRmp+0v32H10w12aEYjyGilCd4+ieJDUEb71fNK88DEWA1L
+         7D8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711041372; x=1711646172;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FBA7Y36AMw0KTupRrw+PnBU6PO+JQCp7HzJLhSmsbvQ=;
+        b=aGFm/aOiZx9cGLFz+1XYWx14gmPLpb4BlYEAIwdt0lLNwIv8uxOeJNlVUEcwxsGoF0
+         OnZYD9gY/TZBh81F+ejZZzOlUGcA2dh8iFaK5mJwh+8RTrqCSfalxZ9hKXemr6yNUUrF
+         roQUgpuC9v2YVDOC1XEMt8OiPDb5NstRSjmgwLF4iDNZaBxf/XkuNrqix7ZcSHgCPfhU
+         UFO+C2w0QQYOBcq37HknI+gpAO+rKcMx/v2sI+x3xgZ2qC+KQSpA2v6hOpcUuo/L0sdr
+         ujE5jXOr/sm7FirmW6SCvPAQPRV+W+U0ZtPsy88sE7rEELnv4IcC9tEf4dfR1GbcHy8b
+         EAaw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2K/xaXAE7o67sS99U8f9WbrrLIntFbfJ2jVaH6G3vJt9/10clof3rqpupBjuOi8P4CtJisyBjHa+C8LKPglVsYDyPfSTnoQGh9Lfi
+X-Gm-Message-State: AOJu0Ywxf4UInVseDXU0+O4awMPys1SvF7ZD52nR27BradsJT/20syy0
+	aNswV+9Je6N6uD/21j/wPtD9/lNxZ5CQSi18QrukiLWKQmXFZFFN03Vi2IgzSu4=
+X-Google-Smtp-Source: AGHT+IGkJlWYDvk6fZNaztZrSC12byEOQoxXY+/V0L13JjfECs9/v6X2OntqmmM+6UAK1rUT7dwbiA==
+X-Received: by 2002:a2e:a415:0:b0:2d4:a6aa:39b3 with SMTP id p21-20020a2ea415000000b002d4a6aa39b3mr97037ljn.31.1711041372139;
+        Thu, 21 Mar 2024 10:16:12 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id v9-20020a05600c470900b0041409db0349sm333276wmo.48.2024.03.21.10.16.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 10:16:11 -0700 (PDT)
+Message-ID: <6df3c39e-5a03-46d7-921b-d53d75447aaf@linaro.org>
+Date: Thu, 21 Mar 2024 18:16:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:15:32 +0200
-Message-Id: <CZZLJ4ND05DX.27IUNFT505Z9R@kernel.org>
-Subject: Re: [PATCH v7 04/13] crypto: ecdsa - Extend res.x mod n calculation
- for NIST P521
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>
-X-Mailer: aerc 0.17.0
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
- <20240320114725.1644921-5-stefanb@linux.ibm.com>
-In-Reply-To: <20240320114725.1644921-5-stefanb@linux.ibm.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: thermal: convert st,stih407-thermal
+ to DT schema
+Content-Language: en-US
+To: Raphael Gallais-Pou <rgallaispou@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Patrice Chotard <patrice.chotard@foss.st.com>, Lee Jones <lee@kernel.org>
+Cc: linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240320-thermal-v3-0-700296694c4a@gmail.com>
+ <20240320-thermal-v3-1-700296694c4a@gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240320-thermal-v3-1-700296694c4a@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
-> res.x has been calculated by ecc_point_mult_shamir, which uses
-> 'mod curve_prime' on res.x and therefore p > res.x with 'p' being the
-> curve_prime. Further, it is true that for the NIST curves p > n with 'n'
-> being the 'curve_order' and therefore the following may be true as well:
-> p > res.x >=3D n.
->
-> If res.x >=3D n then res.x mod n can be calculated by iteratively sub-
-> tracting n from res.x until res.x < n. For NIST P192/256/384 this can be
-> done in a single subtraction. This can also be done in a single
-> subtraction for NIST P521.
->
-> The mathematical reason why a single subtraction is sufficient is due to
-> the values of 'p' and 'n' of the NIST curves where the following holds
-> true:
->
->    note: max(res.x) =3D p - 1
->
->    max(res.x) - n < n
->        p - 1  - n < n
->        p - 1      < 2n  =3D> holds true for the NIST curves
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
+On 20/03/2024 22:33, Raphael Gallais-Pou wrote:
+> 'st,passive_colling_temp' does not appear in the device-tree, 'reg' and
+> '#thermal-sensor-cells' are also missing in the device description.
+> 
+> Convert st,stih407-thermal binding to DT schema format in order to clean
+> unused 'st,passive_cooling_temp' and add missing properties.
+> 
+> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
 > ---
->  crypto/ecdsa.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-> index 64e1e69d53ba..1814f009f971 100644
-> --- a/crypto/ecdsa.c
-> +++ b/crypto/ecdsa.c
-> @@ -122,7 +122,7 @@ static int _ecdsa_verify(struct ecc_ctx *ctx, const u=
-64 *hash, const u64 *r, con
-> =20
->  	/* res.x =3D res.x mod n (if res.x > order) */
->  	if (unlikely(vli_cmp(res.x, curve->n, ndigits) =3D=3D 1))
-> -		/* faster alternative for NIST p384, p256 & p192 */
-> +		/* faster alternative for NIST p521, p384, p256 & p192 */
->  		vli_sub(res.x, res.x, curve->n, ndigits);
-> =20
->  	if (!vli_cmp(res.x, r, ndigits))
+> Changes in v3:
+>    - Specify const value for '#thermal-sensor-cells'
+>    - Add 'maxItems' for 'interrupts' property
+>    - Change commit log accordingly
+> 
+> Changes in v2:
+>    - Change commit log to use imperative
+>    - Drop description
+>    - Drop 'clocks' description
+>    - Add 'reg' property
+>    - Add '#thermal-sensor-cells'
+>    - Make node name generic in example
+>    - Fix YAML style
+> ---
+>   .../bindings/thermal/st,stih407-thermal.yaml       | 58 ++++++++++++++++++++++
+>   .../devicetree/bindings/thermal/st-thermal.txt     | 32 ------------
+>   2 files changed, 58 insertions(+), 32 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml b/Documentation/devicetree/bindings/thermal/st,stih407-thermal.yaml
+> new file mode 100644
+> index 000000000000..9f6fc5c95c55
+> --- /dev/null
 
+Applied, thanks
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-BR, Jarkko
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
