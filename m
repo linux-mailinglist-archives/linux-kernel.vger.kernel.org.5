@@ -1,317 +1,417 @@
-Return-Path: <linux-kernel+bounces-109637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713E3881BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:55:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C2E881BB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFE90284D68
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:55:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DDBC1F21AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66389BE7D;
-	Thu, 21 Mar 2024 03:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C133BE47;
+	Thu, 21 Mar 2024 03:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pxD759W6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VGDQWshl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C24B672;
-	Thu, 21 Mar 2024 03:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FFDBB672
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 03:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710993316; cv=none; b=KBQcExiGUXs97+tNZS22rbFgW/Sk7C/nJx4bhJAgUxEG/r0ZX+DVujlJlXdH9Vnb3/FzvKazO2a864qOxSD6cnbrc674fmm4plbPplt2yDL7wy6VWVXB8T9mM3wDv7zJiDmkduvaWfMqphy8P2JMXBhugPBqlxhMRS78H0VGIwA=
+	t=1710993362; cv=none; b=fU4zO93oNiArNmMzEPgU3cYVDMnwhqtHGjr5QgY/YO24iPhgvuDLOyEIS4LFlCy5jTyXwGJe8S65V4aFCQI15LSTvj4Q8AXolPP/uGCenHWa/xQjnqSV0H/LnapAo3ldoIOdxaOuNJ2pOw+/8fi+gpNEGdho7cGBgwWGsCF2Ac0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710993316; c=relaxed/simple;
-	bh=behkTW4UbUbVkOiZEW/kHWHwH6KT5XzXJGZlENDwKdw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nR+wBGfX8nPZiRDTfE9VFxeqWrkMfPrGwL0MR1J2hP6uNLfLm+8wXRX9vMEFucVqjvDS3n5cVjtFaDCtB0lQxYoi1aCGeBhqxq3aRGcwgsaJAFtjBh4JkXy/qhkzBODt3GZb0cqd3EXUIR39GDFc5dh1d88iVdlIBliL0gdwDzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pxD759W6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDF8BC433C7;
-	Thu, 21 Mar 2024 03:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710993316;
-	bh=behkTW4UbUbVkOiZEW/kHWHwH6KT5XzXJGZlENDwKdw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=pxD759W6OhVW5JTs6GHkfzj4kiiqO3Ugy5D+zOOiKn2o5lSuW5LBsITXrZ/R+utbS
-	 dxGN9IMnw/N5Ln1KC+kwVO+4kfqeLL+/9zqAiqNQpiKcUPPfmMOD9IN0DXMyWRH7Lu
-	 vTSbfB+7cKfOL+/SO3EugKYxGXkpW1SZc7Y+lxoCz17ACm7RdvHA++dSZGzVqZ4gN3
-	 leuS5gS0mgSa1FVUdmRQ9OZ8JXcglindWgAPhS+v/mM1cSsDJdknCRbBeZs3jq72FW
-	 9rhnSbyN6eHVYriu51vcpgigVnq1M7cs6wOUKCBAXrQ1UIWCUbi+a6H2R785bkasKS
-	 qP9RoWJwmStqw==
-Date: Wed, 20 Mar 2024 21:55:12 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] integrity: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <ZfuvoIj+AJHjCdTs@neat>
+	s=arc-20240116; t=1710993362; c=relaxed/simple;
+	bh=r0fBW5aye32LjaWlKa2QSwnu95nVcNDYV/wru0cmp3w=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=D4LaKpJ21VtPTtEVx2belVkdk1ufmws0UIK4U15+4QeYw5T4XQVK//xjy7hnlmgd9Ml4Pr0J9dR5XWcmzPUeK2eMz6l/LYVGX1pcNq+/kJd+ZYlrjQ6MnDQVGSSBIVi1OknO2lcDwrsImZuRxiyYbwR0haY5F6fXuQXWw/1odEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VGDQWshl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710993358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WLDaXjS944vu5ps0Y9+6g4qp34PG74kRIMEPH2hmsvc=;
+	b=VGDQWshl3m68zn+d7O198pn0zgI4K9jzj7s+XOCOk/jUvmq9TM/xApUPu9b1pkPdbB5Hi2
+	AZSiZ2LTtP6+2GMJXNZBYVPW1IOTO4x8XifXzJqpNwbiNqIsgiELdgC2G9zZv8dUvni/Jb
+	Le+vKX5gLEZIAPh8TUviGONb/kuRol8=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-57-U2_u_gAfOBa0WLeV-s595g-1; Wed, 20 Mar 2024 23:55:57 -0400
+X-MC-Unique: U2_u_gAfOBa0WLeV-s595g-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3c38f7e7c46so493130b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 20:55:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710993356; x=1711598156;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WLDaXjS944vu5ps0Y9+6g4qp34PG74kRIMEPH2hmsvc=;
+        b=uy1/x+W58kapRKoDZxT1BWX1dztpgNzvousJ+eaH3JQATXiF8CoSTo/GN81hG8bOV/
+         CrE0hkgQuDfX2ZNyfP7V7hagBaQKXb7ccR0k6ljjp5HKe8sbqPa0LWxAPikbpVWoogu7
+         ZHP8swS7qfyQSmfsye2G1g/WAKpJkFsAjiyLD7Y9rL90pim99ABDA4Ej65IcC/KJiRsA
+         3kzHG5mupmEiT6opz0xKTORf02mMPfjzKaLzmwAWIDlaQbg1SjWG+89a4vunvy4sovPh
+         WR3DXz6PbdHdTcXCyZcwFH4VUzYJW2p8fsbps7+r4UJe0WYuH2N/YeslCk7A43hhpuLC
+         Vh4w==
+X-Gm-Message-State: AOJu0Yyo81Meplw+fN1Q+yE9PW2AXCIunnw7KcYj5MvMB05qejy9A4fq
+	dW4T+Zsb0iLMdbBGOCFFO+JnkBd5wcXI3g4kGk0ApRcXvfmpR2VBMS+zUOUTJ1QHsd2TUSr01nX
+	wRbap1r/LPKCtIVN/OGr0ZRhWsc63pQ0MpLFStv7dtGtHvkJFk1fClUO6FXPjsA==
+X-Received: by 2002:a05:6808:3207:b0:3c3:adaf:fd8f with SMTP id cb7-20020a056808320700b003c3adaffd8fmr482727oib.18.1710993356429;
+        Wed, 20 Mar 2024 20:55:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGXQ5LAAXEuTVh8EWAD92Jj9ZaaLnpn7U999yqqsWwSe9kHKkpKo+TREKJdI6hKBjcH1RwL/w==
+X-Received: by 2002:a05:6808:3207:b0:3c3:adaf:fd8f with SMTP id cb7-20020a056808320700b003c3adaffd8fmr482712oib.18.1710993356050;
+        Wed, 20 Mar 2024 20:55:56 -0700 (PDT)
+Received: from smtpclient.apple ([115.96.142.122])
+        by smtp.gmail.com with ESMTPSA id a26-20020a62e21a000000b006e6ae26625asm12353684pfi.68.2024.03.20.20.55.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Mar 2024 20:55:55 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v4] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
+ keyfile format
+From: Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <1710933451-6312-1-git-send-email-shradhagupta@linux.microsoft.com>
+Date: Thu, 21 Mar 2024 09:25:40 +0530
+Cc: linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ Long Li <longli@microsoft.com>,
+ Olaf Hering <olaf@aepfle.de>,
+ Shradha Gupta <shradhagupta@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <9879EB6C-FEC4-42AD-8B40-90457455F0DD@redhat.com>
+References: <1710933451-6312-1-git-send-email-shradhagupta@linux.microsoft.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
 
-There is currently an object (`hdr)` in `struct ima_max_digest_data`
-that contains a flexible structure (`struct ima_digest_data`):
 
- struct ima_max_digest_data {
-	struct ima_digest_data hdr;
-        u8 digest[HASH_MAX_DIGESTSIZE];
- } __packed;
+> On 20 Mar 2024, at 16:47, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>=20
+> If the network configuration strings are passed as a combination of =
+IPv4
+> and IPv6 addresses, the current KVP daemon does not handle processing =
+for
+> the keyfile configuration format.
+> With these changes, the keyfile config generation logic scans through =
+the
+> list twice to generate IPv4 and IPv6 sections for the configuration =
+files
+> to handle this support.
+>=20
+> Testcases ran:Rhel 9, Hyper-V VMs
+>              (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+> Changes in v4
+> * Removed the unnecessary memset for addr in the start
+> * Added a comment to describe how we erase the last comma character
+> * Fixed some typos in the commit description
+> * While using strncat, skip copying the '\0' character.
+> ---
+> tools/hv/hv_kvp_daemon.c | 181 ++++++++++++++++++++++++++++++---------
+> 1 file changed, 140 insertions(+), 41 deletions(-)
+>=20
+> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> index 318e2dad27e0..d64d548a802f 100644
+> --- a/tools/hv/hv_kvp_daemon.c
+> +++ b/tools/hv/hv_kvp_daemon.c
+> @@ -76,6 +76,12 @@ enum {
+> DNS
+> };
+>=20
+> +enum {
+> + IPV4 =3D 1,
+> + IPV6,
+> + IP_TYPE_MAX
+> +};
+> +
+> static int in_hand_shake;
+>=20
+> static char *os_name =3D "";
+> @@ -102,6 +108,11 @@ static struct utsname uts_buf;
+>=20
+> #define MAX_FILE_NAME 100
+> #define ENTRIES_PER_BLOCK 50
+> +/*
+> + * Change this entry if the number of addresses increases in future
+> + */
+> +#define MAX_IP_ENTRIES 64
+> +#define OUTSTR_BUF_SIZE ((INET6_ADDRSTRLEN + 1) * MAX_IP_ENTRIES)
+>=20
+> struct kvp_record {
+> char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
+> @@ -1171,6 +1182,18 @@ static int process_ip_string(FILE *f, char =
+*ip_string, int type)
+> return 0;
+> }
+>=20
+> +int ip_version_check(const char *input_addr)
+> +{
+> + struct in6_addr addr;
+> +
+> + if (inet_pton(AF_INET, input_addr, &addr))
+> + return IPV4;
+> + else if (inet_pton(AF_INET6, input_addr, &addr))
+> + return IPV6;
+> +
+> + return -EINVAL;
+> +}
+> +
+> /*
+>  * Only IPv4 subnet strings needs to be converted to plen
+>  * For IPv6 the subnet is already privided in plen format
+> @@ -1197,14 +1220,75 @@ static int kvp_subnet_to_plen(char =
+*subnet_addr_str)
+> return plen;
+> }
+>=20
+> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+> +  int ip_sec)
+> +{
+> + char addr[INET6_ADDRSTRLEN], *output_str;
+> + int ip_offset =3D 0, error =3D 0, ip_ver;
+> + char *param_name;
+> +
+> + if (type =3D=3D DNS)
+> + param_name =3D "dns";
+> + else if (type =3D=3D GATEWAY)
+> + param_name =3D "gateway";
+> + else
+> + return -EINVAL;
+> +
+> + output_str =3D (char *)calloc(OUTSTR_BUF_SIZE, sizeof(char));
+> + if (!output_str)
+> + return -ENOMEM;
+> +
+> + while (1) {
+> + memset(addr, 0, sizeof(addr));
+> +
+> + if (!parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> + (MAX_IP_ADDR_SIZE * 2)))
+> + break;
+> +
+> + ip_ver =3D ip_version_check(addr);
+> + if (ip_ver < 0)
+> + continue;
+> +
+> + if ((ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4) ||
+> +    (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)) {
+> + /*
+> + * do a bound check to avoid out-of bound writes
+> + */
+> + if ((OUTSTR_BUF_SIZE - strlen(output_str)) >
+> +    (strlen(addr) + 1)) {
+> + strncat(output_str, addr,
+> + OUTSTR_BUF_SIZE -
+> + strlen(output_str) - 1);
+> + strncat(output_str, ",",
+> + OUTSTR_BUF_SIZE -
+> + strlen(output_str) - 1);
+> + }
+> + } else {
+> + continue;
+> + }
+> + }
+> +
+> + if (strlen(output_str)) {
+> + /*
+> + * This is to get rid of that extra comma character
+> + * in the end of the string
+> + */
+> + output_str[strlen(output_str) - 1] =3D '\0';
+> + error =3D fprintf(f, "%s=3D%s\n", param_name, output_str);
+> + }
+> +
+> + free(output_str);
+> + return error;
+> +}
+> +
+> static int process_ip_string_nm(FILE *f, char *ip_string, char =
+*subnet,
+> - int is_ipv6)
+> + int ip_sec)
+> {
+> char addr[INET6_ADDRSTRLEN];
+> char subnet_addr[INET6_ADDRSTRLEN];
+> int error, i =3D 0;
+> int ip_offset =3D 0, subnet_offset =3D 0;
+> - int plen;
+> + int plen, ip_ver;
+>=20
+> memset(addr, 0, sizeof(addr));
+> memset(subnet_addr, 0, sizeof(subnet_addr));
+> @@ -1216,10 +1300,16 @@ static int process_ip_string_nm(FILE *f, char =
+*ip_string, char *subnet,
+>       subnet_addr,
+>       (MAX_IP_ADDR_SIZE *
+> 2))) {
+> - if (!is_ipv6)
+> + ip_ver =3D ip_version_check(addr);
+> + if (ip_ver < 0)
+> + continue;
+> +
+> + if (ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4)
+> plen =3D kvp_subnet_to_plen((char *)subnet_addr);
+> - else
+> + else if (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)
+> plen =3D atoi(subnet_addr);
+> + else
+> + continue;
+>=20
+> if (plen < 0)
+> return plen;
+> @@ -1238,12 +1328,11 @@ static int process_ip_string_nm(FILE *f, char =
+*ip_string, char *subnet,
+>=20
+> static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value =
+*new_val)
+> {
+> - int error =3D 0;
+> + int error =3D 0, ip_ver;
+> char if_filename[PATH_MAX];
+> char nm_filename[PATH_MAX];
+> FILE *ifcfg_file, *nmfile;
+> char cmd[PATH_MAX];
+> - int is_ipv6 =3D 0;
+> char *mac_addr;
+> int str_len;
+>=20
+> @@ -1421,52 +1510,62 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> if (error)
+> goto setval_error;
+>=20
+> - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+> - error =3D fprintf(nmfile, "\n[ipv6]\n");
+> - if (error < 0)
+> - goto setval_error;
+> - is_ipv6 =3D 1;
+> - } else {
+> - error =3D fprintf(nmfile, "\n[ipv4]\n");
+> - if (error < 0)
+> - goto setval_error;
+> - }
+> -
+> /*
+> - * Now we populate the keyfile format
+> + * The keyfile format expects the IPv6 and IPv4 configuration in
+> + * different sections. Therefore we iterate through the list twice,
+> + * once to populate the IPv4 section and the next time for IPv6
+> */
+> + ip_ver =3D IPV4;
+> + do {
+> + if (ip_ver =3D=3D IPV4) {
+> + error =3D fprintf(nmfile, "\n[ipv4]\n");
+> + if (error < 0)
+> + goto setval_error;
+> + } else {
+> + error =3D fprintf(nmfile, "\n[ipv6]\n");
+> + if (error < 0)
+> + goto setval_error;
+> + }
+>=20
+> - if (new_val->dhcp_enabled) {
+> - error =3D kvp_write_file(nmfile, "method", "", "auto");
+> - if (error < 0)
+> - goto setval_error;
+> - } else {
+> - error =3D kvp_write_file(nmfile, "method", "", "manual");
+> + /*
+> + * Now we populate the keyfile format
+> + */
+> +
+> + if (new_val->dhcp_enabled) {
+> + error =3D kvp_write_file(nmfile, "method", "", "auto");
+> + if (error < 0)
+> + goto setval_error;
+> + } else {
+> + error =3D kvp_write_file(nmfile, "method", "", "manual");
+> + if (error < 0)
+> + goto setval_error;
 
-So, in order to avoid ending up with a flexible-array member in the
-middle of a struct, we use the `struct_group_tagged()` helper to
-separate the flexible array from the rest of the members in the flexible
-structure:
+There is a problem with this code. dhcp_enabled is only valid for ipv4. =
+=46rom looking at ifcfg files that were generated before, I do not see =
+IPV6_AUTOCONF related settings. So maybe we should set method only for =
+ipv4 and not for ipv6.
 
-struct ima_digest_data {
-        struct_group_tagged(ima_digest_data_hdr, hdr,
+If the user configures only ipv6, then we do not want to have a section =
+with
+method =3D manual for ipv4. method =3D manual without an IP address does =
+not work. So I suggest that we set method =3D manual only after checking =
+that ipv4 addresses were added. So maybe move this section a little =
+below after call to process_ip_string_nm(). This function can return a =
+specific value to indicate that address were indeed written to the if =
+cfg/kefile. I am not sure what happens when dhcp_enabled is True and the =
+user provides specific IP addresses.
 
-	... the rest of the members
 
-        );
-        u8 digest[];
-} __packed;
-
-With the change described above, we can now declare an object of the
-type of the tagged struct, without embedding the flexible array in the
-middle of another struct:
-
- struct ima_max_digest_data {
-        struct ima_digest_data_hdr hdr;
-        u8 digest[HASH_MAX_DIGESTSIZE];
- } __packed;
-
-We also use `container_of()` whenever we need to retrieve a pointer to
-the flexible structure.
-
-So, with these changes, fix the following warnings:
-
-security/integrity/evm/evm.h:45:32: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-security/integrity/evm/evm.h:45:32: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-security/integrity/evm/evm.h:45:32: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Include changes for `struct evm_digest` (Mimi Zohar)
-
- security/integrity/evm/evm.h              |  2 +-
- security/integrity/ima/ima_api.c          |  6 ++++--
- security/integrity/ima/ima_appraise.c     |  4 +++-
- security/integrity/ima/ima_init.c         |  6 ++++--
- security/integrity/ima/ima_main.c         |  6 ++++--
- security/integrity/ima/ima_template_lib.c | 10 ++++++----
- security/integrity/integrity.h            |  4 +++-
- 7 files changed, 25 insertions(+), 13 deletions(-)
-
-diff --git a/security/integrity/evm/evm.h b/security/integrity/evm/evm.h
-index eb1a2c343bd7..72e3341ae6f7 100644
---- a/security/integrity/evm/evm.h
-+++ b/security/integrity/evm/evm.h
-@@ -61,7 +61,7 @@ extern int evm_hmac_attrs;
- extern struct list_head evm_config_xattrnames;
- 
- struct evm_digest {
--	struct ima_digest_data hdr;
-+	struct ima_digest_data_hdr hdr;
- 	char digest[IMA_MAX_DIGEST_SIZE];
- } __packed;
- 
-diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index b37d043d5748..c7c8d1bffb17 100644
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@ -247,6 +247,8 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
- 	struct inode *real_inode = d_real_inode(file_dentry(file));
- 	const char *filename = file->f_path.dentry->d_name.name;
- 	struct ima_max_digest_data hash;
-+	struct ima_digest_data *hash_hdr = container_of(&hash.hdr,
-+						struct ima_digest_data, hdr);
- 	struct kstat stat;
- 	int result = 0;
- 	int length;
-@@ -286,9 +288,9 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
- 			result = -ENODATA;
- 		}
- 	} else if (buf) {
--		result = ima_calc_buffer_hash(buf, size, &hash.hdr);
-+		result = ima_calc_buffer_hash(buf, size, hash_hdr);
- 	} else {
--		result = ima_calc_file_hash(file, &hash.hdr);
-+		result = ima_calc_file_hash(file, hash_hdr);
- 	}
- 
- 	if (result && result != -EBADF && result != -EINVAL)
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 3497741caea9..656c709b974f 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -378,7 +378,9 @@ static int xattr_verify(enum ima_hooks func, struct ima_iint_cache *iint,
- 		}
- 
- 		rc = calc_file_id_hash(IMA_VERITY_DIGSIG, iint->ima_hash->algo,
--				       iint->ima_hash->digest, &hash.hdr);
-+				       iint->ima_hash->digest,
-+				       container_of(&hash.hdr,
-+					       struct ima_digest_data, hdr));
- 		if (rc) {
- 			*cause = "sigv3-hashing-error";
- 			*status = INTEGRITY_FAIL;
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 393f5c7912d5..4e208239a40e 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -48,12 +48,14 @@ static int __init ima_add_boot_aggregate(void)
- 	struct ima_event_data event_data = { .iint = iint,
- 					     .filename = boot_aggregate_name };
- 	struct ima_max_digest_data hash;
-+	struct ima_digest_data *hash_hdr = container_of(&hash.hdr,
-+						struct ima_digest_data, hdr);
- 	int result = -ENOMEM;
- 	int violation = 0;
- 
- 	memset(iint, 0, sizeof(*iint));
- 	memset(&hash, 0, sizeof(hash));
--	iint->ima_hash = &hash.hdr;
-+	iint->ima_hash = hash_hdr;
- 	iint->ima_hash->algo = ima_hash_algo;
- 	iint->ima_hash->length = hash_digest_size[ima_hash_algo];
- 
-@@ -70,7 +72,7 @@ static int __init ima_add_boot_aggregate(void)
- 	 * is not found.
- 	 */
- 	if (ima_tpm_chip) {
--		result = ima_calc_boot_aggregate(&hash.hdr);
-+		result = ima_calc_boot_aggregate(hash_hdr);
- 		if (result < 0) {
- 			audit_cause = "hashing_error";
- 			goto err_out;
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index c84e8c55333d..0d3a7c864fd4 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -941,6 +941,8 @@ int process_buffer_measurement(struct mnt_idmap *idmap,
- 					    .buf_len = size};
- 	struct ima_template_desc *template;
- 	struct ima_max_digest_data hash;
-+	struct ima_digest_data *hash_hdr = container_of(&hash.hdr,
-+						struct ima_digest_data, hdr);
- 	char digest_hash[IMA_MAX_DIGEST_SIZE];
- 	int digest_hash_len = hash_digest_size[ima_hash_algo];
- 	int violation = 0;
-@@ -979,7 +981,7 @@ int process_buffer_measurement(struct mnt_idmap *idmap,
- 	if (!pcr)
- 		pcr = CONFIG_IMA_MEASURE_PCR_IDX;
- 
--	iint.ima_hash = &hash.hdr;
-+	iint.ima_hash = hash_hdr;
- 	iint.ima_hash->algo = ima_hash_algo;
- 	iint.ima_hash->length = hash_digest_size[ima_hash_algo];
- 
-@@ -990,7 +992,7 @@ int process_buffer_measurement(struct mnt_idmap *idmap,
- 	}
- 
- 	if (buf_hash) {
--		memcpy(digest_hash, hash.hdr.digest, digest_hash_len);
-+		memcpy(digest_hash, hash_hdr->digest, digest_hash_len);
- 
- 		ret = ima_calc_buffer_hash(digest_hash, digest_hash_len,
- 					   iint.ima_hash);
-diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
-index 6cd0add524cd..74198d7619da 100644
---- a/security/integrity/ima/ima_template_lib.c
-+++ b/security/integrity/ima/ima_template_lib.c
-@@ -339,6 +339,8 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
- 			 struct ima_field_data *field_data)
- {
- 	struct ima_max_digest_data hash;
-+	struct ima_digest_data *hash_hdr = container_of(&hash.hdr,
-+						struct ima_digest_data, hdr);
- 	u8 *cur_digest = NULL;
- 	u32 cur_digestsize = 0;
- 	struct inode *inode;
-@@ -358,7 +360,7 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
- 	if ((const char *)event_data->filename == boot_aggregate_name) {
- 		if (ima_tpm_chip) {
- 			hash.hdr.algo = HASH_ALGO_SHA1;
--			result = ima_calc_boot_aggregate(&hash.hdr);
-+			result = ima_calc_boot_aggregate(hash_hdr);
- 
- 			/* algo can change depending on available PCR banks */
- 			if (!result && hash.hdr.algo != HASH_ALGO_SHA1)
-@@ -368,7 +370,7 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
- 				memset(&hash, 0, sizeof(hash));
- 		}
- 
--		cur_digest = hash.hdr.digest;
-+		cur_digest = hash_hdr->digest;
- 		cur_digestsize = hash_digest_size[HASH_ALGO_SHA1];
- 		goto out;
- 	}
-@@ -379,14 +381,14 @@ int ima_eventdigest_init(struct ima_event_data *event_data,
- 	inode = file_inode(event_data->file);
- 	hash.hdr.algo = ima_template_hash_algo_allowed(ima_hash_algo) ?
- 	    ima_hash_algo : HASH_ALGO_SHA1;
--	result = ima_calc_file_hash(event_data->file, &hash.hdr);
-+	result = ima_calc_file_hash(event_data->file, hash_hdr);
- 	if (result) {
- 		integrity_audit_msg(AUDIT_INTEGRITY_DATA, inode,
- 				    event_data->filename, "collect_data",
- 				    "failed", result, 0);
- 		return result;
- 	}
--	cur_digest = hash.hdr.digest;
-+	cur_digest = hash_hdr->digest;
- 	cur_digestsize = hash.hdr.length;
- out:
- 	return ima_eventdigest_init_common(cur_digest, cur_digestsize,
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index 50d6f798e613..fc1952da02ea 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -44,6 +44,7 @@ struct evm_xattr {
- #define IMA_MAX_DIGEST_SIZE	HASH_MAX_DIGESTSIZE
- 
- struct ima_digest_data {
-+	struct_group_tagged(ima_digest_data_hdr, hdr,
- 	u8 algo;
- 	u8 length;
- 	union {
-@@ -57,6 +58,7 @@ struct ima_digest_data {
- 		} ng;
- 		u8 data[2];
- 	} xattr;
-+	);
- 	u8 digest[];
- } __packed;
- 
-@@ -65,7 +67,7 @@ struct ima_digest_data {
-  * with the maximum hash size, define ima_max_digest_data struct.
-  */
- struct ima_max_digest_data {
--	struct ima_digest_data hdr;
-+	struct ima_digest_data_hdr hdr;
- 	u8 digest[HASH_MAX_DIGESTSIZE];
- } __packed;
- 
--- 
-2.34.1
+> + }
+> +
+> + /*
+> + * Write the configuration for ipaddress, netmask, gateway and
+> + * name services
+> + */
+> + error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> +     (char *)new_val->sub_net,
+> +     ip_ver);
+> if (error < 0)
+> goto setval_error;
+> - }
+>=20
+> - /*
+> - * Write the configuration for ipaddress, netmask, gateway and
+> - * name services
+> - */
+> - error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> -     (char *)new_val->sub_net, is_ipv6);
+> - if (error < 0)
+> - goto setval_error;
+> -
+> - /* we do not want ipv4 addresses in ipv6 section and vice versa */
+> - if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
+> - error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
+*)new_val->gate_way);
+> + error =3D process_dns_gateway_nm(nmfile,
+> +       (char *)new_val->gate_way,
+> +       GATEWAY, ip_ver);
+> if (error < 0)
+> goto setval_error;
+> - }
+>=20
+> - if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
+> - error =3D fprintf(nmfile, "dns=3D%s\n", (char *)new_val->dns_addr);
+> + error =3D process_dns_gateway_nm(nmfile,
+> +       (char *)new_val->dns_addr, DNS,
+> +       ip_ver);
+> if (error < 0)
+> goto setval_error;
+> - }
+> +
+> + ip_ver++;
+> + } while (ip_ver < IP_TYPE_MAX);
+> +
+> fclose(nmfile);
+> fclose(ifcfg_file);
+>=20
+> --=20
+> 2.34.1
+>=20
 
 
