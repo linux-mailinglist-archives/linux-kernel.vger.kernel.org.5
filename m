@@ -1,193 +1,343 @@
-Return-Path: <linux-kernel+bounces-109734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23DDF885503
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:38:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91539885507
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F221D1C21072
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:38:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE9D41F21440
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E8558107;
-	Thu, 21 Mar 2024 07:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F132D5812A;
+	Thu, 21 Mar 2024 07:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jAV3qku2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eJ6h/vNI"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19948F5D;
-	Thu, 21 Mar 2024 07:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39EA4D9F4
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711006685; cv=none; b=k8g3WgyEmCgOd4WyCQguZPvbqjyZ2lrWbIknLLqTbufg9f3nVA18ZBW6eQ8xE1sw5iuq0eDI3ibpVV0/YXurbBSVd5fT6YAjoexOiSi9DZD80Aq4OefmsHIRK9m/7gXinzPe6fpCWFz+2tqhjOfJSzf5E+C/sp97XWSKeNtn7U4=
+	t=1711006785; cv=none; b=Ck5oHVnozbOhBOTI5893EVQYtCBOm3Jsj3sGU/dQPfrTAQVFFOOoJxqHVUKC0YewIwSt5FXGGdvNQ4FGWPHts0mdKEqDZ8D7UtcoC2UZnmykUpJOAkXKUr7LEIgQoZxNhRSpUENvFkyTD2vwoXZKkzO13lOqkGK1vnI71GSmQrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711006685; c=relaxed/simple;
-	bh=r5tQxRIoGQ31YekqFLxmrVDnCnZskKiy+nmyBJ0P9Mc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QXwBhLZUxwSROALCbI/YLf2qBJDd3FpW9gkSINYE64wcJqyek63I+xSa8eI/B3c7hfmV5soPXtPktanxmZdHwY598s7gOcXcpNCkNjX2AWejtxaqdTZgyVSn161TLM4jbI8SbIPB03ANvmDC6KTuJYEtjJgYLQaJ8m+JplqrEPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jAV3qku2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4FB7C433F1;
-	Thu, 21 Mar 2024 07:38:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711006684;
-	bh=r5tQxRIoGQ31YekqFLxmrVDnCnZskKiy+nmyBJ0P9Mc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jAV3qku2vdq7slWqkOit85k4p8LiqknT2EUeqJ36paO2XEvzH/+gTyg46bTnLNN6G
-	 cTvjqqEB8fBHJ2HLdS+//Yl/FJEzhYoJdjoZUhIWw/WeWkytytkJEZOYpBJd2pk98p
-	 +mTLBUJf0x9PHmMZKU7xnYfNf8oLThBOAktYSbo8=
-Date: Thu, 21 Mar 2024 08:38:00 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: liu.yec@h3c.com
-Cc: daniel.thompson@linaro.org, dianders@chromium.org,
-	jason.wessel@windriver.com, jirislaby@kernel.org,
-	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH V3] kdb: Fix the deadlock issue in KDB debugging.
-Message-ID: <2024032137-parrot-sandbank-ab29@gregkh>
-References: <20240320162802.GA22198@aspen.lan>
- <20240321022604.4088438-1-liu.yec@h3c.com>
+	s=arc-20240116; t=1711006785; c=relaxed/simple;
+	bh=jGrgRXkWdeJNvY//aolXhQXi3wQUUZRKRYNs477JePs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M8EdYFPhWqPi3Hroce9pD5ZQpJUv3e+cxGQwz8Y5IG0z4c0zusD1QJW+AY+efnWkyMoGLjdpb4V1caMVBdrAQHGXzZqTsQeC9iR7L5w9j2RTQM93dHiaByN+0PxZiLh/M1Oqg0i5W1hzQ2cqMRJ9Y8wpNtd7BNBqqKJgURr52+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eJ6h/vNI; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a46a7208eedso89031066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 00:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711006781; x=1711611581; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cx4dbdFXGzbw+VmmoopIV/mkoBJ1s93EyoOcIqTcLxg=;
+        b=eJ6h/vNIhn+qOoVKz9caHLOX8t1sbTbff+JRjJx2U4U9bNXrcV/ufYbHcwcFzfdc27
+         DwKru2BWV68lqvpTn1dCqjzkOg4FFPywZ5s9Ee9jUlpuURhcjQ9/KtnJmStetfVlSHhO
+         vDucetOD9hRuISQc2ApJBZAjRcPdaLUbc5yW6+SaroCbAnqVzukKMSZCyRF50pxZJC4t
+         yNPR45b4Ar0/qq2bULMmuu8ysxEIJWGSpj5AI2zkbqiwAIyeIO4BGzjtBVI6DBxURSLb
+         Hs3Pwubi3jwQcck7CN7/hT9cTP+01LB9qlQt/+gNuh9cifk9oHgXO7iTKyhUw4EGIVUc
+         yxhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711006781; x=1711611581;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cx4dbdFXGzbw+VmmoopIV/mkoBJ1s93EyoOcIqTcLxg=;
+        b=gzQrYmNL6XK7ksz/bQJTWl3MKQ8djz6Gm9her3oeHX3OAUdYTNwCtgI8Vd6oxLD/iU
+         wHdKRW73Mtl58xjkGiSeluRVsof2RcyfhmYi0EUe+3Rzg8QIgEHwbSYSTH78zeIh5Jxq
+         bJaACDNoF0wXeoRgtMYwTEQcYOTV2Wm9xCPJJaqdxpT3HbkFUhPgHt0FoobJV5mCwfC7
+         7nBIqIhW7w2X4hO/Bu1n86L7fIJO3TbIblQv3oO70GIuoEnfeKsmfusjUPJd8tdoKfhZ
+         pdtccgOXr0JuZxIeB1u1g90NmGKicWnIzThFrHsCXOiORO/h+4EUW064NLYSJmv9dqhO
+         CALw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVVhaonyoa+/Cf2a/Wa17Sjl0rbeDXYwon8LucMDkDMy2Y2m1bvQlNz6caBdQELH/xBndd8HmNoEm4pEIgRHz5JJphh6B7BCbM26D1
+X-Gm-Message-State: AOJu0YzNxDFj2YXOuUNe/h0zWN24sCl6j+40VzpmQurSAeHPZaL75B4P
+	yl89GTDoxM4CbfGwJd4xJ2NXPH6LEEWh7TGwVMaRVblgtQY+6c5sAEVhsOw9YvE=
+X-Google-Smtp-Source: AGHT+IGHu/G5Qk51zWyoMBjz9kKekePy5aJqvDt0Jq5xj4S0g5wOEMLeawZzM4+brSDMhIbF0qcP+Q==
+X-Received: by 2002:a17:906:564b:b0:a46:61b1:96cf with SMTP id v11-20020a170906564b00b00a4661b196cfmr12646976ejr.56.1711006780894;
+        Thu, 21 Mar 2024 00:39:40 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id q21-20020a1709066b1500b00a46524d06afsm8047173ejr.8.2024.03.21.00.39.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 00:39:40 -0700 (PDT)
+Message-ID: <5025fb10-3bcc-43b1-ae85-b556f1c0415f@linaro.org>
+Date: Thu, 21 Mar 2024 08:39:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321022604.4088438-1-liu.yec@h3c.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: add Versal-NET platform
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+ <20240315211533.1996543-3-tanmay.shah@amd.com>
+ <3ca1c419-d185-4318-92ed-3c4e40dcf5bb@linaro.org>
+ <14be0aa6-49b7-4342-9ca6-750c30c8e1e9@amd.com>
+ <b1320ddf-bacb-41e3-9709-e90df18cc1e3@linaro.org>
+ <d112481b-4331-4c0c-9775-407ac4a601fb@amd.com>
+ <6f2ebe09-8ce5-4388-a01a-84ebc271472e@linaro.org>
+ <72f3caa2-30ec-4191-9477-2d2a5e7f2f4b@amd.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <72f3caa2-30ec-4191-9477-2d2a5e7f2f4b@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 10:26:04AM +0800, liu.yec@h3c.com wrote:
-> From: LiuYe <liu.yeC@h3c.com>
-> 
-> Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
-> attempt to use schedule_work() to provoke a keyboard reset when
-> transitioning out of the debugger and back to normal operation.
-> This can cause deadlock because schedule_work() is not NMI-safe.
-> 
-> The stack trace below shows an example of the problem. In this
-> case the master cpu is not running from NMI but it has parked
-> the slave CPUs using an NMI and the parked CPUs is holding
-> spinlocks needed by schedule_work().
-> 
-> example:
->  BUG: spinlock lockup suspected on CPU#0, namex/10450
->  lock: 0xffff881ffe823980, .magic: dead4ead, .owner: namexx/21888, .owner_cpu: 1
->  ffff881741d00000 ffff881741c01000 0000000000000000 0000000000000000
->  ffff881740f58e78 ffff881741cffdd0 ffffffff8147a7fc ffff881740f58f20
-> Call Trace:
->  [<ffffffff81479e6d>] ? __schedule+0x16d/0xac0
->  [<ffffffff8147a7fc>] ? schedule+0x3c/0x90
->  [<ffffffff8147e71a>] ? schedule_hrtimeout_range_clock+0x10a/0x120
->  [<ffffffff8147d22e>] ? mutex_unlock+0xe/0x10
->  [<ffffffff811c839b>] ? ep_scan_ready_list+0x1db/0x1e0
->  [<ffffffff8147e743>] ? schedule_hrtimeout_range+0x13/0x20
->  [<ffffffff811c864a>] ? ep_poll+0x27a/0x3b0
->  [<ffffffff8108c540>] ? wake_up_q+0x70/0x70
->  [<ffffffff811c99a8>] ? SyS_epoll_wait+0xb8/0xd0
->  [<ffffffff8147f296>] ? entry_SYSCALL_64_fastpath+0x12/0x75
->  CPU: 0 PID: 10450 Comm: namex Tainted: G           O    4.4.65 #1
->  Hardware name: Insyde Purley/Type2 - Board Product Name1, BIOS 05.21.51.0036 07/19/2019
->   0000000000000000 ffff881ffe813c10 ffffffff8124e883 ffff881741c01000
->   ffff881ffe823980 ffff881ffe813c38 ffffffff810a7f7f ffff881ffe823980
->   000000007d2b7cd0 0000000000000001 ffff881ffe813c68 ffffffff810a80e0
->   Call Trace:
->   <#DB>  [<ffffffff8124e883>] dump_stack+0x85/0xc2
->   [<ffffffff810a7f7f>] spin_dump+0x7f/0x100
->   [<ffffffff810a80e0>] do_raw_spin_lock+0xa0/0x150
->   [<ffffffff8147eb55>] _raw_spin_lock+0x15/0x20
->   [<ffffffff8108c256>] try_to_wake_up+0x176/0x3d0
->   [<ffffffff8108c4c5>] wake_up_process+0x15/0x20
->   [<ffffffff8107b371>] insert_work+0x81/0xc0
->   [<ffffffff8107b4e5>] __queue_work+0x135/0x390
->   [<ffffffff8107b786>] queue_work_on+0x46/0x90
->   [<ffffffff81313d28>] kgdboc_post_exp_handler+0x48/0x70
->   [<ffffffff810ed488>] kgdb_cpu_enter+0x598/0x610
->   [<ffffffff810ed6e2>] kgdb_handle_exception+0xf2/0x1f0
->   [<ffffffff81054e21>] __kgdb_notify+0x71/0xd0
->   [<ffffffff81054eb5>] kgdb_notify+0x35/0x70
->   [<ffffffff81082e6a>] notifier_call_chain+0x4a/0x70
->   [<ffffffff8108304d>] notify_die+0x3d/0x50
->   [<ffffffff81017219>] do_int3+0x89/0x120
->   [<ffffffff81480fb4>] int3+0x44/0x80
-> 
-> Signed-off-by: LiuYe <liu.yeC@h3c.com>
-> Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->  drivers/tty/serial/kgdboc.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 7ce7bb164..161b25ecc 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/serial_core.h>
-> +#include <linux/irq_work.h>
->  
->  #define MAX_CONFIG_LEN		40
->  
-> @@ -99,10 +100,17 @@ static void kgdboc_restore_input_helper(struct work_struct *dummy)
->  
->  static DECLARE_WORK(kgdboc_restore_input_work, kgdboc_restore_input_helper);
->  
-> +static void kgdboc_queue_restore_input_helper(struct irq_work *unused)
-> +{
-> +	schedule_work(&kgdboc_restore_input_work);
-> +}
-> +
-> +static DEFINE_IRQ_WORK(kgdboc_restore_input_irq_work, kgdboc_queue_restore_input_helper);
-> +
->  static void kgdboc_restore_input(void)
->  {
->  	if (likely(system_state == SYSTEM_RUNNING))
-> -		schedule_work(&kgdboc_restore_input_work);
-> +		irq_work_queue(&kgdboc_restore_input_irq_work);
->  }
->  
->  static int kgdboc_register_kbd(char **cptr)
-> @@ -133,6 +141,7 @@ static void kgdboc_unregister_kbd(void)
->  			i--;
->  		}
->  	}
-> +	irq_work_sync(&kgdboc_restore_input_irq_work);
->  	flush_work(&kgdboc_restore_input_work);
->  }
->  #else /* ! CONFIG_KDB_KEYBOARD */
-> -- 
-> 2.25.1
+On 20/03/2024 16:14, Tanmay Shah wrote:
 > 
 > 
+> On 3/20/24 2:40 AM, Krzysztof Kozlowski wrote:
+>> On 19/03/2024 15:42, Tanmay Shah wrote:
+>>>
+>>>
+>>> On 3/19/24 12:30 AM, Krzysztof Kozlowski wrote:
+>>>> On 19/03/2024 01:51, Tanmay Shah wrote:
+>>>>> Hello Krzysztof,
+>>>>>
+>>>>> Thanks for reviews. Please find my comments below.
+>>>>>
+>>>>> On 3/17/24 1:53 PM, Krzysztof Kozlowski wrote:
+>>>>>> On 15/03/2024 22:15, Tanmay Shah wrote:
+>>>>>>> AMD-Xilinx Versal-NET platform is successor of Versal platform. It
+>>>>>>> contains multiple clusters of cortex-R52 real-time processing units.
+>>>>>>> Each cluster contains two cores of cortex-R52 processors. Each cluster
+>>>>>>> can be configured in lockstep mode or split mode.
+>>>>>>>
+>>>>>>> Each R52 core is assigned 128KB of TCM memory. ATCM memory is 64KB, BTCM
+>>>>>>> and CTCM memoreis are 32KB each. Each TCM memory has its own dedicated
+>>>>>>> power-domain that needs to be requested before using it.
+>>>>>>>
+>>>>>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+>>>>>>> ---
+>>>>>>>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 220 +++++++++++++++---
+>>>>>>>  1 file changed, 184 insertions(+), 36 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>> index 711da0272250..55654ee02eef 100644
+>>>>>>> --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>> @@ -18,7 +18,9 @@ description: |
+>>>>>>>  
+>>>>>>>  properties:
+>>>>>>>    compatible:
+>>>>>>> -    const: xlnx,zynqmp-r5fss
+>>>>>>> +    enum:
+>>>>>>> +      - xlnx,zynqmp-r5fss
+>>>>>>> +      - xlnx,versal-net-r52fss
+>>>>>>>  
+>>>>>>>    "#address-cells":
+>>>>>>>      const: 2
+>>>>>>> @@ -64,7 +66,9 @@ patternProperties:
+>>>>>>>  
+>>>>>>>      properties:
+>>>>>>>        compatible:
+>>>>>>> -        const: xlnx,zynqmp-r5f
+>>>>>>> +        enum:
+>>>>>>> +          - xlnx,zynqmp-r5f
+>>>>>>> +          - xlnx,versal-net-r52f
+>>>>>>>  
+>>>>>>>        reg:
+>>>>>>>          minItems: 1
+>>>>>>> @@ -135,9 +139,11 @@ required:
+>>>>>>>  allOf:
+>>>>>>>    - if:
+>>>>>>>        properties:
+>>>>>>> -        xlnx,cluster-mode:
+>>>>>>> -          enum:
+>>>>>>> -            - 1
+>>>>>>> +        compatible:
+>>>>>>> +          contains:
+>>>>>>> +            enum:
+>>>>>>> +              - xlnx,versal-net-r52fss
+>>>>>>
+>>>>>> Why do you touch these lines?
+>>>>>>
+>>>>>>> +
+>>>>>>>      then:
+>>>>>>>        patternProperties:
+>>>>>>>          "^r5f@[0-9a-f]+$":
+>>>>>>> @@ -149,16 +155,14 @@ allOf:
+>>>>>>>                items:
+>>>>>>>                  - description: ATCM internal memory
+>>>>>>>                  - description: BTCM internal memory
+>>>>>>> -                - description: extra ATCM memory in lockstep mode
+>>>>>>> -                - description: extra BTCM memory in lockstep mode
+>>>>>>> +                - description: CTCM internal memory
+>>>>>>>  
+>>>>>>>              reg-names:
+>>>>>>>                minItems: 1
+>>>>>>>                items:
+>>>>>>> -                - const: atcm0
+>>>>>>> -                - const: btcm0
+>>>>>>> -                - const: atcm1
+>>>>>>> -                - const: btcm1
+>>>>>>> +                - const: atcm
+>>>>>>> +                - const: btcm
+>>>>>>> +                - const: ctcm
+>>>>>>>  
+>>>>>>>              power-domains:
+>>>>>>>                minItems: 2
+>>>>>>> @@ -166,33 +170,70 @@ allOf:
+>>>>>>>                  - description: RPU core power domain
+>>>>>>>                  - description: ATCM power domain
+>>>>>>>                  - description: BTCM power domain
+>>>>>>> -                - description: second ATCM power domain
+>>>>>>> -                - description: second BTCM power domain
+>>>>>>> +                - description: CTCM power domain
+>>>>>>>  
+>>>>>>>      else:
+>>>>>>> -      patternProperties:
+>>>>>>> -        "^r5f@[0-9a-f]+$":
+>>>>>>> -          type: object
+>>>>>>> -
+>>>>>>> -          properties:
+>>>>>>> -            reg:
+>>>>>>> -              minItems: 1
+>>>>>>> -              items:
+>>>>>>> -                - description: ATCM internal memory
+>>>>>>> -                - description: BTCM internal memory
+>>>>>>> -
+>>>>>>> -            reg-names:
+>>>>>>> -              minItems: 1
+>>>>>>> -              items:
+>>>>>>> -                - const: atcm0
+>>>>>>> -                - const: btcm0
+>>>>>>> -
+>>>>>>> -            power-domains:
+>>>>>>> -              minItems: 2
+>>>>>>> -              items:
+>>>>>>> -                - description: RPU core power domain
+>>>>>>> -                - description: ATCM power domain
+>>>>>>> -                - description: BTCM power domain
+>>>>>>> +      allOf:
+>>>>>>> +        - if:
+>>>>>>> +            properties:
+>>>>>>> +              xlnx,cluster-mode:
+>>>>>>> +                enum:
+>>>>>>> +                  - 1
+>>>>>>
+>>>>>> Whatever you did here, is not really readable. You have now multiple
+>>>>>> if:then:if:then embedded.
+>>>>>
+>>>>> For ZynqMP platform, TCM can be configured differently in lockstep mode
+>>>>> and split mode.
+>>>>>
+>>>>> For Versal-NET no such configuration is available, but new CTCM memory
+>>>>> is added.
+>>>>>
+>>>>> So, I am trying to achieve following representation of TCM for both:
+>>>>>
+>>>>> if: versal-net compatible
+>>>>> then:
+>>>>>   ATCM - 64KB
+>>>>>   BTCM - 32KB
+>>>>>   CTCM - 32KB
+>>>>>
+>>>>> else: (ZynqMP compatible)
+>>>>>   if:
+>>>>>     xlnx,cluster-mode (lockstep mode)
+>>>>>   then:
+>>>>>     ATCM0 - 64KB
+>>>>>     BTCM0 - 64KB
+>>>>>     ATCM1 - 64KB
+>>>>>     BTCM1 - 64KB
+>>>>>   else: (split mode)
+>>>>>     ATCM0 - 64KB
+>>>>>     BTCM0 - 64KB
+>>>>>
+>>>>>
+>>>>> If bindings are getting complicated, does it make sense to introduce
+>>>>> new file for Versal-NET bindings? Let me know how you would like me
+>>>>> to proceed.
+>>>>
+>>>> All this is broken in your previous patchset, but now we nicely see.
+>>>>
+>>>> No, this does not work like this. You do not have entirely different
+>>>> programming models in one device, don't you?
+>>>>
+>>>
+>>> I don't understand what do you mean? Programming model is same. Only number
+>>> of TCMs are changing based on configuration and platform. I can certainly
+>>> list different compatible for different platforms as requested. But other than
+>>> that not sure what needs to be fixed.
+>>
+>> You cannot have same programming model with different memory mappings.
+>> Anyway, please follow writing bindings rules: all of your different
+>> devices must have dedicated compatible. I really though we talked about
+>> two IPs on same SoC...
+> 
+> I agree that Versal compatible should be added, I will do that in next revision.
+> 
+> For ZynqMP case, it is two IPs on same SOC. In lockstep mode and split mode,
+> same SOC is configuring TCM differently.
+> 
+> How this should be resolved for Versal-NET ? Driver avoids such TCM configuration
+> for Versal-NET.
 
-Hi,
+Binding should describe the hardware, not what driver is doing
+currently, so the question is: does your device have such properties or
+not? Anyway, you need compatible per each variant and each SoC
+implementation.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Best regards,
+Krzysztof
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
