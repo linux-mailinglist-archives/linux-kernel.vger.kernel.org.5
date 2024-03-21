@@ -1,218 +1,222 @@
-Return-Path: <linux-kernel+bounces-110314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47C89885D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76AEA885D0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 677251C20821
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99E301C2186D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B3312C558;
-	Thu, 21 Mar 2024 16:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C5112BF26;
+	Thu, 21 Mar 2024 16:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="UIyozjzi"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dAhpKMau"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C278662F;
-	Thu, 21 Mar 2024 16:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F4F12BF23;
+	Thu, 21 Mar 2024 16:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711037401; cv=none; b=AUhy8u0T7IfhwrJ1h0goVFHqEuydb/WzxIbInmEhXYwdKdkBzHqyDQ6XlN6vokPY78cqABgZ0MCLMIzMIKZgvwXG3vc4DI7xv3OOOFJaX4leN9uN9HNvhIqUrixIi5pVX2v1iZpxWBg7rhDkv1dMioE38Nv3vSCCj07rGxdDy4g=
+	t=1711037399; cv=none; b=IzxLOt6Cmt9cj13kPkD5e8o19B/xbb5IT+p5Syby8KtyNTJcddGq1WxAJFWjoSwIM6I8wydipSWYn9zQReiFVOD9F6tnHDH7O8n5eh1FpvCMk1Beaf9I2sc7VGaBQywaVB+9Kj6ipq3f5h6EMRs4b8VZhEpr4oFHgLmuEj+pJyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711037401; c=relaxed/simple;
-	bh=/COouxoyd/nzT49ztSHw7buRXFW3G2DZYDfUjusNGhQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qsgUONZqueW/o7Sw88YWo4DU9PsIIMJf2EzTToM7cSRBNmhG94EQqQEMHj0BpY5UjkmZHD0fhKd+2/pe58IyIzYUyNxEWnGDZ8x6pO+QaMyqdx7le+gZ3rdN+s3Rl61VVdielCEzQZZhJPiz2dbfYd09n9PBpAENmqXXxIFgjPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=UIyozjzi; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 458D240008;
-	Thu, 21 Mar 2024 16:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1711037391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZrChM2bMyOZ06ublb4gFN2AgR2OzWBbSVut/5tc1iQ8=;
-	b=UIyozjziieWmwYdBiKJK/bXdSKQEvgtMNVegmQmAe4mwYJCgXOAcMxQvzG/DPZ+XWLySwG
-	pNYm2J+wW5gZocJM+aMbHexmQsarqcic1FreLWeSQcv/adAf1+zEBm9morWBlpBTtjmzaM
-	jEyUrtNPdC/7tmq/ZMpdzYUbmUVhrVIHvtYvbl0OQTMlEf/BCKEymvLVx74RI3wAp7kzPW
-	HamM2GmpYUIWzXrZHsiovGBhJ0C/Qa3osDjZwLWmXEx0n81f1ncu5iW/T9W+Zif/uoHtAG
-	8HcSm9MGLTbFzIa88JkwITb5Ur/PiTQ5p1VUbReXCsxWNOxvua0UyZY8/IR9qQ==
-Message-ID: <0fbe7ba2-6529-4118-b050-8ea76d28b712@arinc9.com>
-Date: Thu, 21 Mar 2024 19:09:25 +0300
+	s=arc-20240116; t=1711037399; c=relaxed/simple;
+	bh=st0jyZD6fF0/ceWO3qsXCDcdlU28KeOqhR8RwZFHnqw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tj9HB7t84/+fsEn5jWsbB9kg1ie8k+4L+ANse0KduwwYVCEjVlw6m/anNuIIKs0HBx1rOj8XBwSjB9fiE/5GWVZoXDIMW/x14siIn3eFpwbPilP25SSmnhIrMn4HsSPjNkPJoQ4NYqQmq9b26mi4ZfHrciNFFfyZ/K5h8WW33p8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dAhpKMau; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LFph7b011971;
+	Thu, 21 Mar 2024 16:09:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=vTNZJe0IJWDIMN1SbdzAB6ehGYLIFRs8Ff9IeHLNYtA=;
+ b=dAhpKMaumPYzgeaXGcRz3+01DkOtPhvksdFiVh8TGtkFRAb/IqpxXB4MsrV9uToy1kOV
+ UquqfsPRYvqL/saQ5GJBfVTKNMDbRpCS7HdTBPJrZwB0t1gq0h86r93GRYBqf0mM3HdZ
+ yXYvl6Lukh2RoXLoq09vqDfaMvj3WZGpD8jsNyzFba3WYGJzGJ+8tE+i7butysP6F/5o
+ 0TVkN2IclH4HPIEh7GewCcGlzAJHMZZurAVqccyypqe/J6wsNrSK5ZLO0jBGl5JHLlY/
+ kUWBYffiPTco3lA0qOwsrN7gCJOwCQNZECWihURnsJp6CGNEA85Tre9hsXmKS1sXx/bi pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0nq48epm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 16:09:36 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LG9asD009100;
+	Thu, 21 Mar 2024 16:09:36 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0nq48epg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 16:09:36 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LDwf7R002773;
+	Thu, 21 Mar 2024 16:09:35 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2wtqu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 16:09:35 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LG9Wpk58851816
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 16:09:34 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7963458055;
+	Thu, 21 Mar 2024 16:09:32 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 62BF85804B;
+	Thu, 21 Mar 2024 16:09:31 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 21 Mar 2024 16:09:31 +0000 (GMT)
+Message-ID: <d957dbd3-4975-48d7-abc5-1a01c0959ea3@linux.ibm.com>
+Date: Thu, 21 Mar 2024 12:09:30 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] Documentation: tpm_tis
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>, linux-integrity@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>,
+        "Daniel P . Smith" <dpsmith@apertussolutions.com>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Peter Huewe <peterhuewe@gmx.de>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Alexander Steffen <Alexander.Steffen@infineon.com>,
+        keyrings@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+References: <20240320085601.40450-1-jarkko@kernel.org>
+ <afc9471c-1c28-4384-82c1-29464ca1fb1f@linux.ibm.com>
+ <CZZJQR121P7H.3QS68A6320S32@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZZJQR121P7H.3QS68A6320S32@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SD3MVmc3-Va9D44QCOqk-nRPCX-gp5VX
+X-Proofpoint-GUID: k7P-IGXBL7-en4PS3OqwZqkLuLHcI3iB
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
-To: Florian Fainelli <f.fainelli@gmail.com>,
- Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
- Russell King <linux@armlinux.org.uk>,
- SkyLake Huang <SkyLake.Huang@mediatek.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v>
- <ZfnYkuzuvwLepIfC@makrotopia.org>
- <00ec9779-19ce-4005-83f0-f4abf37350fc@arinc9.com>
- <6cb585f6-6da8-45a2-a28b-2fb556f95672@lunn.ch>
- <Zfn1DxkEa3u-f7l2@makrotopia.org>
- <38798882-c033-4949-9446-4c6f15c25ebe@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <38798882-c033-4949-9446-4c6f15c25ebe@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 mlxlogscore=995 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403210117
 
-On 20.03.2024 00:31, Florian Fainelli wrote:
-> On 3/19/24 13:26, Daniel Golle wrote:
->> On Tue, Mar 19, 2024 at 08:38:03PM +0100, Andrew Lunn wrote:
->>>> I would argue that EEE advertisement on the PHY should be enabled by
->>>> default.
+
+
+On 3/21/24 11:51, Jarkko Sakkinen wrote:
+> On Wed Mar 20, 2024 at 6:15 PM EET, Stefan Berger wrote:
+>>
+>>
+>> On 3/20/24 04:56, Jarkko Sakkinen wrote:
+>>> Based recent discussions on LKML, provide preliminary bits of tpm_tis_core
+>>> dependent drivers. Includes only bare essentials but can be extended later
+>>> on case by case. This way some people may even want to read it later on.
 >>>
->>> That is an open question at the moment. For some use cases, it can add
->>> extra delay and jitter which can cause problems. I've heard people
->>> doing PTP don't like EEE for example.
+>>> Cc: Jonathan Corbet <corbet@lwn.net>
+>>> CC: Daniel P. Smith <dpsmith@apertussolutions.com>
+>>> Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>>> Cc: Peter Huewe <peterhuewe@gmx.de>
+>>> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+>>> Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
+>>> Cc: keyrings@vger.kernel.org
+>>> Cc: linux-doc@vger.kernel.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: linux-integrity@vger.kernel.org
+>>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+>>> ---
+>>> v2:
+>>> - Fixed errors reported by Randy:
+>>>     https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@infradead.org/
+>>> - Improved the text a bit to have a better presentation.
+>>> ---
+>>>    Documentation/security/tpm/index.rst   |  1 +
+>>>    Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
+>>>    2 files changed, 31 insertions(+)
+>>>    create mode 100644 Documentation/security/tpm/tpm_tis.rst
+>>>
+>>> diff --git a/Documentation/security/tpm/index.rst b/Documentation/security/tpm/index.rst
+>>> index fc40e9f23c85..f27a17f60a96 100644
+>>> --- a/Documentation/security/tpm/index.rst
+>>> +++ b/Documentation/security/tpm/index.rst
+>>> @@ -5,6 +5,7 @@ Trusted Platform Module documentation
+>>>    .. toctree::
+>>>    
+>>>       tpm_event_log
+>>> +   tpm_tis
+>>>       tpm_vtpm_proxy
+>>>       xen-tpmfront
+>>>       tpm_ftpm_tee
+>>> diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/security/tpm/tpm_tis.rst
+>>> new file mode 100644
+>>> index 000000000000..b331813b3c45
+>>> --- /dev/null
+>>> +++ b/Documentation/security/tpm/tpm_tis.rst
+>>> @@ -0,0 +1,30 @@
+>>> +.. SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +=========================
+>>> +TPM FIFO interface Driver
+>>> +=========================
+>>> +
+>>> +FIFO (First-In-First-Out) is the name of the hardware interface used by the
 >>
->> MediaTek consumer-grade hardware doesn't support PTP and hence that
->> quite certainly won't ever be an issue with all switch ICs supported
->> by the mt7530 driver.
->>
->> I'd rather first change the (configuration) default in OpenWrt (which
->> is arguable the way most people are using this hardware), also because
->> that will be more visible/obvious for users. Or even just make EEE
->> configurable in the LuCI web-UI as a first step so users start playing
->> with it.
->>
->> After all, I also have a hard time imagining that MediaTek disabled
->> EEE in their downstream driver for no reason:
->>
->> https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/24091177a18ba7f2dd8d928a8f5b27b14df46b16
+>> FIFO is the type. I am surprised you call it a 'name'. I would say TIS
+>> is the 'name'.
 > 
-> EEE tends to be an interoperability trap and typically results in unexplained link drops with different link partners which are difficult to debug and root cause. It would be great to have more context as to why it was disabled in the downstream tree to know what we are up against, though I would not be surprised if there had been a number of issues reported.
+> It's what the official specification calls it [1].
+> 
+> 
+>>
+>>> +tpm_tis_core dependent drivers. The prefix "tis" comes from the TPM Interface
+>>
+>> tis is a tla -- a three letter *acronym*. You aren't using it as a 'prefix'.
+> 
+> I don't know what "tla" means.
+> 
+>>
+>>> +Specification, which is the hardware interface specification for TPM 1.x chips.
+>>
+>> It's also available for TPM2.
+>   
+> Yes, but TIS is the name used by the legacy specification.
 
-I have started testing MT7531 with EEE enabled and immediately experienced
-frames that wouldn't egress the switch or improperly received on the link
-partner.
 
-SoC MAC       <-EEE off-> MT7531 P6 MAC (acting as PHY)
-MT7531 P0 MAC <-EEE on -> MT7531 P0 PHY
-MT7531 P0 PHY <-EEE on -> Computer connected with twisted pair
+The point is that TIS is not just a TPM 1.x interface but also used for 
+TPM 2.
+> 
+>>
+>>> +
+>>> +Communication is based on a 5 KiB buffer shared by the TPM chip through a
+>>
+>> I thought it was typically 4 KiB.
+> 
+> You are basing this on table 9 in [1]?
 
-I've tested pinging from the SoC's CPU. Packet capturing on the twisted
-pair computer showed very few frames were being received.
-
-# ping 192.168.2.2
-PING 192.168.2.2 (192.168.2.2): 56 data bytes
-64 bytes from 192.168.2.2: seq=36 ttl=64 time=0.486 ms
-^C
---- 192.168.2.2 ping statistics ---
-64 packets transmitted, 1 packets received, 98% packet loss
-round-trip min/avg/max = 0.486/0.486/0.486 ms
-
-It seems there's less loss when frames are passed more frequently.
-
-# ping 192.168.2.2 -i 0.06
-PING 192.168.2.2 (192.168.2.2): 56 data bytes
-64 bytes from 192.168.2.2: seq=5 ttl=64 time=0.285 ms
-64 bytes from 192.168.2.2: seq=6 ttl=64 time=0.155 ms
-64 bytes from 192.168.2.2: seq=7 ttl=64 time=0.243 ms
-64 bytes from 192.168.2.2: seq=8 ttl=64 time=0.139 ms
-64 bytes from 192.168.2.2: seq=9 ttl=64 time=0.224 ms
-64 bytes from 192.168.2.2: seq=68 ttl=64 time=0.350 ms
-64 bytes from 192.168.2.2: seq=69 ttl=64 time=0.242 ms
-64 bytes from 192.168.2.2: seq=70 ttl=64 time=0.230 ms
-64 bytes from 192.168.2.2: seq=71 ttl=64 time=0.242 ms
-64 bytes from 192.168.2.2: seq=72 ttl=64 time=0.276 ms
-64 bytes from 192.168.2.2: seq=101 ttl=64 time=0.224 ms
-64 bytes from 192.168.2.2: seq=102 ttl=64 time=0.238 ms
-64 bytes from 192.168.2.2: seq=103 ttl=64 time=0.240 ms
-..
---- 192.168.2.2 ping statistics ---
-214 packets transmitted, 32 packets received, 85% packet loss
-round-trip min/avg/max = 0.099/0.225/0.350 ms
-
-# ping 192.168.2.2 -i 0.05
-PING 192.168.2.2 (192.168.2.2): 56 data bytes
-64 bytes from 192.168.2.2: seq=1 ttl=64 time=0.277 ms
-64 bytes from 192.168.2.2: seq=2 ttl=64 time=0.240 ms
-64 bytes from 192.168.2.2: seq=3 ttl=64 time=0.133 ms
-64 bytes from 192.168.2.2: seq=4 ttl=64 time=0.233 ms
-64 bytes from 192.168.2.2: seq=5 ttl=64 time=0.223 ms
-64 bytes from 192.168.2.2: seq=6 ttl=64 time=0.228 ms
-64 bytes from 192.168.2.2: seq=7 ttl=64 time=0.236 ms
-64 bytes from 192.168.2.2: seq=8 ttl=64 time=0.150 ms
-..
---- 192.168.2.2 ping statistics ---
-41 packets transmitted, 40 packets received, 2% packet loss
-round-trip min/avg/max = 0.112/0.206/0.277 ms
+Yes. See below.
 
 > 
-> That said as an user, if someone has a well controlled environment, they should absolutely be able to turn on EEE and see how stable it holds in their environment.
+>>
+>>> +hardware bus or memory map, depending on the physical wiring. The buffer is
+>>> +further split into five equal-size buffers, which provide equivalent sets of
 
-Looks like this is the way to go. I'm planning to submit v2 with patch 1
-as:
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 678b51f9cea6..6aa99b590329 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2458,6 +2458,20 @@ mt7531_setup(struct dsa_switch *ds)
-  	/* Reset the switch through internal reset */
-  	mt7530_write(priv, MT7530_SYS_CTRL, SYS_CTRL_SW_RST | SYS_CTRL_REG_RST);
-  
-+	/* Allow modifying the trap and enable Energy-Efficient Ethernet (EEE).
-+	 */
-+	val = mt7530_read(priv, MT7531_HWTRAP);
-+	val |= CHG_STRAP;
-+	val &= ~EEE_DIS;
-+	mt7530_write(priv, MT7530_MHWTRAP, val);
-+
-+	/* Disable EEE advertisement on the switch PHYs. */
-+	for (i = MT753X_CTRL_PHY_ADDR;
-+	     i < MT753X_CTRL_PHY_ADDR + MT7530_NUM_PHYS; i++) {
-+		mt7531_ind_c45_phy_write(priv, i, MDIO_MMD_AN, MDIO_AN_EEE_ADV,
-+					 0);
-+	}
-+
-  	if (!priv->p5_sgmii) {
-  		mt7531_pll_setup(priv);
-  	} else {
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index a71166e0a7fc..509ed5362236 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -457,6 +457,7 @@ enum mt7531_clk_skew {
-  #define  XTAL_FSEL_M			BIT(7)
-  #define  PHY_EN				BIT(6)
-  #define  CHG_STRAP			BIT(8)
-+#define  EEE_DIS			BIT(4)
-  
-  /* Register for hw trap modification */
-  #define MT7530_MHWTRAP			0x7804
-
-Arınç
+If you are referring to the MMIO region between 0xfed4 0000 and 0xfed4 
+4fff as a buffer then you are talking about a **20kb** MMIO region 
+(0x5000) that is **split** into equal-sized MMIO regions, each having 
+4kb (0x1000). Yes, that's the 4kb then but there that one is no 5kb 
+'further split into five equal-sized buffers' of presumably 1kb each. 
+Each locality has a 0x1000 sized MMIO region.
 
