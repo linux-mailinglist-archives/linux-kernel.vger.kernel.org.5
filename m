@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-110443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 669E0885F0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:04:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2668885F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37E5AB2708E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:04:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5126B1F231BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4084142635;
-	Thu, 21 Mar 2024 16:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA06E1428F0;
+	Thu, 21 Mar 2024 16:52:59 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB2B142621
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45A11428E0
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039975; cv=none; b=Gn/p4kHmXlBU+tfdeq+zEXMn7a+bk9higeRga/X2K9Ks1tu7045IfxjAKJogqVm09Q9nspy8kWgOwIDlDmlx2mKDvttHZ3tZmTWE1nxHLfjppzTFGDXGyKxEx/0nXTiasLuKSN1pd2FbRwJfIgQvcIYLAzldEnN4n15iE+PtufA=
+	t=1711039979; cv=none; b=n4mMAQ4QeVvMgAU5+hdouVetJz37/OXSg9A2RagEQRhDOhqsAPLaGMlvWoJIpDpx1DcZljxjPrRLqH52tTbhGD2XQglFGDijq0bAipL35uDGqZ46/YipqWIWTm2yWwK5wpgPLrTcvy7fOMk0PM9Y7HLFAz1gQYStCtUKVwHgwoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039975; c=relaxed/simple;
-	bh=vE8ObtSbNXXuQbtQiG9u6MeSrab/F7HqkgTUdTMXcBI=;
+	s=arc-20240116; t=1711039979; c=relaxed/simple;
+	bh=k8jKQVqR+zKJGU+pxA21CtfTD1PgxUut3UIgZbSWYxg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GbsXkv46qpnBuhSC5pCnDjTD/NwPTlM8OLJLWlQ0CLonFUCtNfgak1IPqn0ihx1rUgNjB28ESFJjzJ4tA8iz/icHhBIXAMh3qieNNHLbOU2t77VQGSmrAvCuh9EsfdcecTaKkYSaIQEB7hlLpyZ7cXN604kIFzfPLG/MuzbPOFE=
+	 MIME-Version; b=PFlzVNL6M3U8a69u/glJG9+0OiWWm8aBkvCgy6BQKVj5f0S8BmfPREiVugBYLH8J1Wz/OZOB0hRpqooiSpwQrvJ4/aAbhH84+x7TcExQ4qpxen3nNBSlgFe3/jxcSwStmVdSqxMB9LXZAi9QXgomMOE/AOl6seti1SBDDh81ifA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18508168F;
-	Thu, 21 Mar 2024 09:53:28 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 519471063;
+	Thu, 21 Mar 2024 09:53:31 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CEF593F67D;
-	Thu, 21 Mar 2024 09:52:50 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 139F13F67D;
+	Thu, 21 Mar 2024 09:52:53 -0700 (PDT)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>,
 	Dave Martin <dave.martin@arm.com>
-Subject: [PATCH v1 26/31] x86/resctrl: Describe resctrl's bitmap size assumptions
-Date: Thu, 21 Mar 2024 16:51:01 +0000
-Message-Id: <20240321165106.31602-27-james.morse@arm.com>
+Subject: [PATCH v1 27/31] x86/resctrl: Rename resctrl_sched_in() to begin resctrl_arch_
+Date: Thu, 21 Mar 2024 16:51:02 +0000
+Message-Id: <20240321165106.31602-28-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240321165106.31602-1-james.morse@arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
@@ -72,43 +72,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-resctrl operates on configuration bitmaps and a bitmap of allocated
-CLOSID, both are stored in a u32.
+resctrl_sched_in() loads the architecture specific CPU MSRs with the
+CLOSID and RMID values. This function was named before resctrl was
+split to have architecture specific code, and generic filesystem code.
 
-MPAM supports configuration/portion bitmaps and PARTIDs larger
-than will fit in a u32.
+This function is obviously architecture specific, but does not begin
+with 'resctrl_arch_', making it the odd one out in the functions an
+architecture needs to support to enable resctrl.
 
-Add some preprocessor values that make it clear why MPAM clamps
-some of these values. This will make it easier to find code related
-to these values if this resctrl behaviour ever changes.
+Rename it for concistency. This is purely cosmetic.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- include/linux/resctrl.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/include/asm/resctrl.h         |  4 ++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 12 ++++++------
+ arch/x86/kernel/process_32.c           |  2 +-
+ arch/x86/kernel/process_64.c           |  2 +-
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 84420253dc05..f463fb949677 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -26,6 +26,17 @@ int proc_resctrl_show(struct seq_file *m,
- /* max value for struct rdt_domain's mbps_val */
- #define MBA_MAX_MBPS   U32_MAX
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 9940398e367e..491342f56811 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -177,7 +177,7 @@ static inline bool resctrl_arch_match_rmid(struct task_struct *tsk, u32 ignored,
+ 	return READ_ONCE(tsk->rmid) == rmid;
+ }
  
-+/*
-+ * Resctrl uses a u32 as a closid bitmap. The maximum closid is 32.
-+ */
-+#define RESCTRL_MAX_CLOSID		32
-+
-+/*
-+ * Resctrl uses u32 to hold the user-space config. The maximum bitmap size is
-+ * 32.
-+ */
-+#define RESCTRL_MAX_CBM			32
-+
- /**
-  * struct pseudo_lock_region - pseudo-lock region information
-  * @s:			Resctrl schema for the resource to which this
+-static inline void resctrl_sched_in(struct task_struct *tsk)
++static inline void resctrl_arch_sched_in(struct task_struct *tsk)
+ {
+ 	if (static_branch_likely(&rdt_enable_key))
+ 		__resctrl_sched_in(tsk);
+@@ -220,7 +220,7 @@ void resctrl_cpu_detect(struct cpuinfo_x86 *c);
+ 
+ #else
+ 
+-static inline void resctrl_sched_in(struct task_struct *tsk) {}
++static inline void resctrl_arch_sched_in(struct task_struct *tsk) {}
+ static inline void resctrl_cpu_detect(struct cpuinfo_x86 *c) {}
+ 
+ #endif /* CONFIG_X86_CPU_RESCTRL */
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 085fb9c2333a..218aebd6387f 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -359,7 +359,7 @@ static int rdtgroup_cpus_show(struct kernfs_open_file *of,
+ }
+ 
+ /*
+- * This is safe against resctrl_sched_in() called from __switch_to()
++ * This is safe against resctrl_arch_sched_in() called from __switch_to()
+  * because __switch_to() is executed with interrupts disabled. A local call
+  * from update_closid_rmid() is protected against __switch_to() because
+  * preemption is disabled.
+@@ -378,7 +378,7 @@ void resctrl_arch_sync_cpu_defaults(void *info)
+ 	 * executing task might have its own closid selected. Just reuse
+ 	 * the context switch code.
+ 	 */
+-	resctrl_sched_in(current);
++	resctrl_arch_sched_in(current);
+ }
+ 
+ /*
+@@ -605,7 +605,7 @@ static void _update_task_closid_rmid(void *task)
+ 	 * Otherwise, the MSR is updated when the task is scheduled in.
+ 	 */
+ 	if (task == current)
+-		resctrl_sched_in(task);
++		resctrl_arch_sched_in(task);
+ }
+ 
+ static void update_task_closid_rmid(struct task_struct *t)
+@@ -663,7 +663,7 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 	 * Ensure the task's closid and rmid are written before determining if
+ 	 * the task is current that will decide if it will be interrupted.
+ 	 * This pairs with the full barrier between the rq->curr update and
+-	 * resctrl_sched_in() during context switch.
++	 * resctrl_arch_sched_in() during context switch.
+ 	 */
+ 	smp_mb();
+ 
+@@ -2946,8 +2946,8 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
+ 			/*
+ 			 * Order the closid/rmid stores above before the loads
+ 			 * in task_curr(). This pairs with the full barrier
+-			 * between the rq->curr update and resctrl_sched_in()
+-			 * during context switch.
++			 * between the rq->curr update and
++			 * resctrl_arch_sched_in() during context switch.
+ 			 */
+ 			smp_mb();
+ 
+diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
+index 0917c7f25720..8697b02dabf1 100644
+--- a/arch/x86/kernel/process_32.c
++++ b/arch/x86/kernel/process_32.c
+@@ -211,7 +211,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+ 	switch_fpu_finish(next_p);
+ 
+ 	/* Load the Intel cache allocation PQR MSR. */
+-	resctrl_sched_in(next_p);
++	resctrl_arch_sched_in(next_p);
+ 
+ 	return prev_p;
+ }
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 7062b84dd467..d1cf885e8930 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -707,7 +707,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+ 	}
+ 
+ 	/* Load the Intel cache allocation PQR MSR. */
+-	resctrl_sched_in(next_p);
++	resctrl_arch_sched_in(next_p);
+ 
+ 	return prev_p;
+ }
 -- 
 2.39.2
 
