@@ -1,107 +1,147 @@
-Return-Path: <linux-kernel+bounces-110594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A5A886112
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:34:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E9A886124
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FC4E2843C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:34:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14491C21D66
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 462BD134CC0;
-	Thu, 21 Mar 2024 19:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="htCm/ieb"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9DC136997;
+	Thu, 21 Mar 2024 19:34:36 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0A513442F;
-	Thu, 21 Mar 2024 19:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BBC13442F;
+	Thu, 21 Mar 2024 19:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711049664; cv=none; b=pjyYd4xvsZKFxRnA3+jbIaMzlmdh8XQ55zv66wzJwx42UgNOrH77XhLM7UrmT4CIreU1F3qkjlYV0PqkGyefREZTaiPO+U3jNy/d9X2Dr9hFL3vFYcngbR/VCZ6b+lzCnJEITrrLqozkqPq7CkBPMkg+bINRZlpY4VWEdpOrgKo=
+	t=1711049676; cv=none; b=RwoT3qAEvNIb3QwNFag/1V7ldnD3ExeiyNfhZf90OWF7dBsA8jVwoNGuoO7jLcjmIX7TJ90Z3Nv8lEwX+qHaBoY36hJ3sdDBZisn2qaZSe4KXjSS3wo1k89spNfBALAyYao0P94eERbVUI6DcqKxqn6qPt0ByB/d9mBKg3v+c6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711049664; c=relaxed/simple;
-	bh=HdVPAGPeWYrzxVmTi5wEQzoohLlmdDTL9D8CQkDRM7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D8gzRz0Y/XNug7q3oWmytUOaGuYVkI6usIe/FAhkM81JXcWvKqcFMxtNFWKTcn5fqCzsJp1QrRV47O19TZoPap3Fx6rh1/Qfki6tQnHproLDJV+r2g3hCSm2keD0167Nl360sXu8bfWk+Y2lZV7RjQw0nTlRSMTw0A2A8fRcx7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=htCm/ieb reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id b53c8d51296cc07e; Thu, 21 Mar 2024 20:34:13 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 3ABDC66B8D7;
-	Thu, 21 Mar 2024 20:34:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1711049653;
-	bh=HdVPAGPeWYrzxVmTi5wEQzoohLlmdDTL9D8CQkDRM7E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=htCm/iebY6c7itmQkuu390V9w8w59432s5iVHp6krlEAT/0lyEro8X3TiM5pu8tvV
-	 Ofcoo8At1dQzYdcYgTK13kD4J4TuGpCz8nZkxc/4PVDPeFGt6Eg3kg5Qgp4ihrFTyo
-	 fmVKe8S2P9jt9EQQiL+qXfsg64ROKSwmagJTipp2SWckQ0assnWlonqcfbCna14rMh
-	 ZzrnfpIJqEEl8DRZu7bqpexJL6FWOh2mGxX2hQWuxN3uTuXL58XqPW7uGouGcD5vbh
-	 CIiLrHMaAcrB7Od3FPe1GxZDYaJK4y/r8fFBM+ILpFFP7TONBxsV4WzBqIW28GPbzb
-	 hO6QzOhh7uosg==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 5/5] cpufreq: intel_pstate: Use __ro_after_init for three variables
-Date: Thu, 21 Mar 2024 20:34:06 +0100
-Message-ID: <2935621.e9J7NaK4W3@kreacher>
-In-Reply-To: <12409658.O9o76ZdvQC@kreacher>
-References: <12409658.O9o76ZdvQC@kreacher>
+	s=arc-20240116; t=1711049676; c=relaxed/simple;
+	bh=VQOLGE5b1WT05ny2MJKIquB+OOdiTR6lMQ9qYMzFM0I=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ksk7hU5+OvOHWxYpvmhJB050C/rZ0cQ7uXIclYqJuOcKv20rSHSF9NL8VlZYJBqs0WguzDpzMgGSW7TgQgPlYEF2xlqJ9vPqhbVysqeq1LDZyn2+16+7nF4Lo47YpufwxvGZlCC3XHZM3OC+uIa1nNDmtW8T8RV0oumFwjCsLvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rnOB5-0000GQ-0D;
+	Thu, 21 Mar 2024 19:34:15 +0000
+Date: Thu, 21 Mar 2024 19:34:11 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Li Lingfeng <lilingfeng3@huawei.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Christian Heusel <christian@heusel.eu>,
+	Min Li <min15.li@samsung.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
+Subject: [PATCH 5/8] dt-bindings: mmc: mmc-card: add block device nodes
+Message-ID: <8d837b883de9f9d745819c5304cfb8aed9a6085c.1711048433.git.daniel@makrotopia.org>
+References: <cover.1711048433.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrleejgdeihecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1711048433.git.daniel@makrotopia.org>
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Add nodes representing the block devices exposed by an MMC device
+including an example involving nvmem-cells.
 
-There are at least 3 variables in intel_pstate that do not get updated
-after they have been initialized, so annotate them with __ro_after_init.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/cpufreq/intel_pstate.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/mmc/mmc-card.yaml     | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -293,10 +293,10 @@ struct pstate_funcs {
- static struct pstate_funcs pstate_funcs __read_mostly;
+diff --git a/Documentation/devicetree/bindings/mmc/mmc-card.yaml b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
+index fd347126449ac..95ccbda871d24 100644
+--- a/Documentation/devicetree/bindings/mmc/mmc-card.yaml
++++ b/Documentation/devicetree/bindings/mmc/mmc-card.yaml
+@@ -26,6 +26,18 @@ properties:
+       Use this to indicate that the mmc-card has a broken hpi
+       implementation, and that hpi should not be used.
  
- static bool hwp_active __ro_after_init;
--static int hwp_mode_bdw __read_mostly;
--static bool per_cpu_limits __read_mostly;
-+static int hwp_mode_bdw __ro_after_init;
-+static bool per_cpu_limits __ro_after_init;
-+static bool hwp_forced __ro_after_init;
- static bool hwp_boost __read_mostly;
--static bool hwp_forced __read_mostly;
++  block:
++    $ref: /schemas/block/block-device.yaml#
++    description:
++      Represents the block storage provided by an SD card or the
++      main hardware partition of an eMMC.
++
++patternProperties:
++  '^boot[0-9]+':
++    $ref: /schemas/block/block-device.yaml#
++    description:
++      Represents a boot hardware partition on an eMMC.
++
+ required:
+   - compatible
+   - reg
+@@ -42,6 +54,39 @@ examples:
+             compatible = "mmc-card";
+             reg = <0>;
+             broken-hpi;
++
++            block {
++                partitions {
++                    cal_data: block-partition-rf {
++                        partnum = <3>;
++                        partname = "rf";
++
++                        nvmem-layout {
++                            compatible = "fixed-layout";
++                            #address-cells = <1>;
++                            #size-cells = <1>;
++
++                            eeprom@0 {
++                                reg = <0x0 0x1000>;
++                            };
++                        };
++                    };
++                };
++            };
++
++            boot1 {
++                nvmem-layout {
++                    compatible = "fixed-layout";
++                    #address-cells = <1>;
++                    #size-cells = <1>;
++
++                    macaddr: macaddr@a {
++                        compatible = "mac-base";
++                        reg = <0xa 0x6>;
++                        #nvmem-cell-cells = <1>;
++                    };
++                };
++            };
+         };
+     };
  
- static struct cpufreq_driver *intel_pstate_driver __read_mostly;
- 
-
-
-
+-- 
+2.44.0
 
