@@ -1,90 +1,131 @@
-Return-Path: <linux-kernel+bounces-110548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365BC886065
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6204886073
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67CD51C2209E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:14:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E58C11C220DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B792133404;
-	Thu, 21 Mar 2024 18:14:22 +0000 (UTC)
-Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9F4133420;
+	Thu, 21 Mar 2024 18:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="imqIXKmB"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227E4131E3C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4DF79C8;
+	Thu, 21 Mar 2024 18:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044861; cv=none; b=bJDn4YnKHBSuqMlUSh0cz7/gCBwY1aWDMa13KRmYM8ARJER3fGkPf6d+PpmOAFLN/jQBe+gtd4akrsMNTbunDjcanZ2WGo2MqSu3iTzmevvOuWNCGXD/nSWkVqp1UwjTJO2R6oXiJUBWHYLxs/D6HobaWPGSwAAkbDbjf0OaII4=
+	t=1711045206; cv=none; b=E/HIZsC9Z0TcysghIKeQLNSYFKGFLzGB9CPJHvcbisdRIvKk1ei9ZN8ewQzGWXpaNuOUNqcU3iFOClzG2OHTt46dd+izVbU0sVQLGU+uMUVWSpHjU+6We9pk5DyuiTIhhY8k6bC5i2+m8PhQGAlnbrSuSdDU8JBqCOjqIjEpEe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044861; c=relaxed/simple;
-	bh=InEqR0TlXCon75rDatUuS82amrpsj2Ydaomc8MJOdTo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A+KdWxrnOT/Dx3g6pL3tILal4Imq5uI0jTAdOtFbHv3PqBY08QgowDVpqb+KCwqa4UqiKDlo2FpOyaQ+/HgGDLYYvNMPzz7a1h8uri0qoEaa0G1bsCeSmusawbJMHVEqy8httJE70C6ocNYexUNL9gexhCULRB3ttbrqYaaUp/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
-Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42LIE6vg1365980;
-	Thu, 21 Mar 2024 23:44:06 +0530
-Received: (from sunil@localhost)
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42LIE6cd1365979;
-	Thu, 21 Mar 2024 23:44:06 +0530
-From: Sunil Khatri <sunil.khatri@amd.com>
-To: Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>, Sunil Khatri <sunil.khatri@amd.com>
-Subject: [PATCH] drm/amdgpu: fix function implicit declaration error
-Date: Thu, 21 Mar 2024 23:44:03 +0530
-Message-Id: <20240321181403.1365947-1-sunil.khatri@amd.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711045206; c=relaxed/simple;
+	bh=8fW3dhh9hYG5Y1ZObjvWtGoPkBZ9p9ImMfwLnxDrke0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EHz3w6RixgA1Zm1WKlAEuO89YpPI1mEqTVcDUhMxlKfJdIJmtVno+LGEFSmo6txAUFta/xK9R6+Xks1nipUipPbP45z4bZIR6skbc6VKLYlMLLfXd/CW6fUpUqz5W+4CWMOeaaFik1QQpdKeXohBxnYyc5XgbyZrJaBTv6kZ6wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=imqIXKmB; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1711045201; x=1711650001; i=markus.elfring@web.de;
+	bh=HgrbIRE7VEvNM/7O+kRv8lnP7tFYK9W1rOWWA2jQum4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=imqIXKmB46uAN+rH9XXuN6v+H6/1USJchXf21JZZfoDez/vI50B/Krg5G8vJlTRB
+	 rqLlISWCkSHkVJ+PtHNFiZqXOLZ+edi2sYwDSr0aH580tKVhR/z/3d0G6EtpztHPI
+	 yzmQktctnT6Z2/wceX+H0y7/ILWYKs5t6cHsKQPkb5EA7fwKwbUkYdhWu7SmjslT+
+	 fYFNe1tSNIBH9vLBgiBVV7UAvTG+gVhBhCG7SpPHsUXrNxiIPw/TWz9Z1hfXk7XV2
+	 tujXbiQ3hIGJpoZlDQsyIM3CyOYHKwL78y5jBZEEhXnxL1nx49uH49vfphKQdqo09
+	 IX8NweSGATuKTL8m0A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N5lnT-1qi0cQ3Muh-00sdt1; Thu, 21
+ Mar 2024 19:14:13 +0100
+Message-ID: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
+Date: Thu, 21 Mar 2024 19:14:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
+Content-Language: en-GB
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>, kernel-janitors@vger.kernel.org,
+ netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ David Laight <David.Laight@aculab.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, Jiri Pirko
+ <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
+ Julia Lawall <julia.lawall@inria.fr>, Kees Cook <keescook@chromium.org>,
+ Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
+ Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
+References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
+ <d2b1f3bd-42f1-483b-916e-3735b39a30e1@web.de>
+ <Zfx2VL7xnj4rQoV8@smile.fi.intel.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <Zfx2VL7xnj4rQoV8@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sgi560zt2vi0QRILaOf8Dno1paTZMF0JEueGv8qFTmpY2UfKHsL
+ 7YAth+4h13SGVefnGT3MdnvQlXK2uzciuQAvypP075NmJwH+S1f5f2BOQ79WNEYzGNYW9gQ
+ yz0royLM51YEA7NL75PeQ8OuPHo/abXi7N/DUbBLsSMqyhUaUrXgvBCO1neaNLoBXEkxfq2
+ wtnF/rBwxxzKrMKDBHRhg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vB8mFuwR+dI=;qdq3to6uVb96t9XCtTO/xTNQNBA
+ 3vFin/ZvWWkItGHHjrW/mWM2bguPoLo5sndULVGKvZiQEensFDzpaHrh/upGXHGqoXRC1g3aR
+ N4rqgZWS5CCS8eh1/O4esq+ktaet89gS7lvDZ9mwy5416tk/sredsdR59l0TmmRjoPOEurYAv
+ CdFX2mNx4VZNFTXlS32DFH4sl2xib4YB7IF52pavgztyhC3dvKrB+PE156FP5LwIZth7Ufv4m
+ X0/6RAQiKdW8GYN1XrhBtQ8Zi0Gv0IJAQvyiHkOQHo8Z7h4txtQfLQ78ZUbErNEXPK7t9IVb2
+ 125/sOLjtTnnqWxhFkRuusB/yaWba8cehhn/qJgM3gGoks1JpOWoR4oRZsufZNk/V0hKvKiJ6
+ T8gKk9BYpmZ2rdD6RL0F2roH/TWpC/d06Hp/juOqx5GQ1RvxIdXdokbRcOmbE1J0lUsPS8e+o
+ 9nexNQ9gvw1kMZfZI2Dl68cus4HkwwnKagrCljYSP1c2wOgbaa2WEf9X6OU6J7ofvwwb9yKgn
+ Xgcdk4twUBx8m5t72T/0CX1Ud0RRYPUwlrT7zg2mjwycLBVx8O5F1bq15hVX0O2HvwovrhDzM
+ jcozV9lFf6WRf2VPsgwXMCgIrNQwAVAgQs4UzeH9MIQrZ6pW2L+f31pWYFnZdHn5ebltufL1C
+ yqF6N3uDqQx0PcBayqL5F4aaGZe6O7m5yDuvBLFeSWz83ObmaYwJ7gxZn+bSc+PqwHXQoKwEH
+ q3NwV6Lgxw8EpowwLl0qPGOZZ4KJFQypcMWNs8F7IyTq0DWlZsXI5RfNFpv9nyoi3sIsEpygf
+ brnjCROtc9T7cwDCoGZcrfM9SRIswXVGWeVjOrFTRGZNM=
 
-when CONFIG_DEV_COREDUMP is not defined in that case
-when amdgpu_coredump() is called it does not find it's
-definition and the build fails.
+>> How do you think about to reduce the scope for the affected local varia=
+ble instead
+>> with the help of a small script (like the following) for the semantic p=
+atch language?
+>>
+>> @movement@
+>> attribute name __free;
+>> @@
+>> -u8 *tx_frame __free(kfree);
+>>  int i;
+>>  ... when any
+>>  if (ice_fltr_add_mac(test_vsi, ...))
+>>  { ... }
+>> +
+>> +{
+>> +u8 *tx_frame __free(kfree) =3D NULL;
+>>  if (ice_lbtest_create_frame(pf, &tx_frame, ...))
+>>  { ... }
+>>  ... when any
+>> +}
+>> +
+>>  valid_frames =3D ice_lbtest_receive_frames(...);
+>
+> I believe you don't understand what the scope of the above can be.
 
-This happens as the header is defined without the
-CONFIG_DEV_COREDUMP ifdef and due to which header isn't
-enabled.
+Will the understanding improve for the proposed source code transformation=
+?
 
-Pulling the header out of such ifdef so in both the
-cases the build does not fail.
-
-Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 95028f57cb56..f771b2042a43 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -74,10 +74,7 @@
- #include "amdgpu_fru_eeprom.h"
- #include "amdgpu_reset.h"
- #include "amdgpu_virt.h"
--
--#ifdef CONFIG_DEV_COREDUMP
- #include "amdgpu_dev_coredump.h"
--#endif
- 
- #include <linux/suspend.h>
- #include <drm/task_barrier.h>
--- 
-2.34.1
-
+Regards,
+Markus
 
