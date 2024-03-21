@@ -1,123 +1,115 @@
-Return-Path: <linux-kernel+bounces-110635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19BC088618C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1969D88618E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:22:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C484A1F22D66
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:20:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81FA1F22B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:22:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277FF134CEC;
-	Thu, 21 Mar 2024 20:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D91A1134CD3;
+	Thu, 21 Mar 2024 20:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="b+iOeAwy"
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PAOtddWz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B9713442F;
-	Thu, 21 Mar 2024 20:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5B71332B8;
+	Thu, 21 Mar 2024 20:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711052428; cv=none; b=A0d2H9eMhfAb8eUHXEf7v0Z3aTndG+3QFrbF6QloFL63K6C6ctgzDO0VDxRHD+XjMTt730PBBLo8Qxcrb3hmRAJT7k8b9L3BVviMQ/vHPX9qFOKviRdLmxHt56GuTnTbHMhcljsJZUxHQ1ggsEMLWLfY18ujOny0+Y/VGd0SgpQ=
+	t=1711052513; cv=none; b=KQhtEnmMj+rlfN8Y1KKeyGQVHcE4fp+2tbT7ZUXkqTodu/Y15DRFIeuOzqRKawvKoyJEWh1jfDBwnGl2Tk+U/PtAMg7wnJhdb17FUaOZNSGeZo+GmeQBRC0sp78nFrNCEkwoU3oQYIV7J5gyBaEr622eap+QG5bMPdOoUO0kC2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711052428; c=relaxed/simple;
-	bh=eFrHAh7BJNnqflbNawWUWzv1wOsF6n2g6fArJ0mZMlY=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=HBuwUnTrq3NSZ94qAPalJo5/CNSkP/oI/pKXuO/RYwWMz9qZJ+4xcaj/FjiEFWbcyun92kpixYHkX1raOVTB0G/7Ve3ieg/ArHWQZfTRT+aHMw0oPfyLjjuhI9o8wlPvZhedkJqbrI/h2gS/s8Ag9lil8LRxXMyFuqtU+Cg0cRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=b+iOeAwy; arc=none smtp.client-ip=192.134.164.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=content-transfer-encoding:from:mime-version:subject:date:
-   message-id:references:cc:in-reply-to:to;
-  bh=eFrHAh7BJNnqflbNawWUWzv1wOsF6n2g6fArJ0mZMlY=;
-  b=b+iOeAwyum6sXPaLJdb+fWcvioaIay6A5QdvQAH59gWJUsmGC9jNdIvf
-   /ahM63HH30yJBWqhsW2vS2WPc5h/9lkl9FlcxgEizgMNTAwfqQZw4FHWI
-   d57CFM4Nc+XCYjiqBF+Y6RbCzR99H+QXO1yy2H4bghO54mhDp3Cik0xCj
-   0=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.07,143,1708383600"; 
-   d="scan'208";a="82803127"
-Received: from 184-074-243-067.biz.spectrum.com (HELO smtpclient.apple) ([184.74.243.67])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 21:20:12 +0100
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Julia Lawall <Julia.Lawall@inria.fr>
+	s=arc-20240116; t=1711052513; c=relaxed/simple;
+	bh=YNdCec0+EXbFaWJzFkVG+4FcFLin1OKD7Jn+VdAoNPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JL65fi8FuHz1PcpUj3oPgnTeCq2EiOnx1bicr4YBl5CVmXZGP+YRGhXcPNpsF2yxjhBpMqZ6NaL6lHZs7T0rf0d8PxnnIrMijdPNJ5a24YONHkXafZb9BY40F2kS0KbMKVi9IFEIXS0lfVFvgqbGW1CgR72r+QI/LBX3T+tO7Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PAOtddWz; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711052511; x=1742588511;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YNdCec0+EXbFaWJzFkVG+4FcFLin1OKD7Jn+VdAoNPw=;
+  b=PAOtddWzEvRLH1NzoPRinogWbUv+RLBYfh47Ixk/DsMYocTMlnIl4JQF
+   hjOfC9uC1arKAhf3vwF0MYtiQyyPW+qoUrSDiET7c+z0++NNo6b0wchuS
+   vrj7aQKcXpv/D/BA/OkM/7S1rH1BzbfyLlOL9rBUia7L94n+ygaZ3WRrh
+   GMcw2qRU5BoD6OWWy65TqbTYq84Uukg5uA9HwIPVlA5B7EopWPHNUWAT2
+   VXWoHnHXQIVApg00Sp8dpZ0XP/BtNzzstz88DDsGTi4tUVeLedNmmGMxa
+   9xGW49Q0FdpjwJoquokiHztvtLQyqHb33nGxOkSzq6jHuG+XZ/Ipmp7nr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6686108"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="6686108"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:21:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="37768692"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 13:21:50 -0700
+Date: Thu, 21 Mar 2024 13:21:50 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 043/130] KVM: TDX: create/free TDX vcpu structure
+Message-ID: <20240321202150.GP1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <51c4203e844159451f5a78fb18cc5bebcc38a76e.1708933498.git.isaku.yamahata@intel.com>
+ <ZfuNpI1fiUr4h27+@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
-Date: Thu, 21 Mar 2024 16:20:09 -0400
-Message-Id: <F2FBADE8-EDF9-4987-A97B-CF4D2D1452E0@inria.fr>
-References: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Dan Carpenter <dan.carpenter@linaro.org>, kernel-janitors@vger.kernel.org,
- netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- David Laight <David.Laight@aculab.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Jiri Pirko <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
- Kees Cook <keescook@chromium.org>,
- Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
- Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
-In-Reply-To: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
-To: Markus Elfring <Markus.Elfring@web.de>
-X-Mailer: iPhone Mail (19H384)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfuNpI1fiUr4h27+@chao-email>
 
-Does one prefer an initialization of null at the top of the function or an i=
-nitialization to a meaningful value in the middle of the function ?
+On Thu, Mar 21, 2024 at 09:30:12AM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-(Sorry for top posting)
+> >+int tdx_vcpu_create(struct kvm_vcpu *vcpu)
+> >+{
+> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
+> >+
+> >+	WARN_ON_ONCE(vcpu->arch.cpuid_entries);
+> >+	WARN_ON_ONCE(vcpu->arch.cpuid_nent);
+> >+
+> >+	/* TDX only supports x2APIC, which requires an in-kernel local APIC. */
+> 
+> Cannot QEMU emulate x2APIC? In my understanding, the reason is TDX module always
+> enables APICv for TDs. So, KVM cannot intercept every access to APIC and forward
+> them to QEMU for emulation.
+
+You're right. Let me update it as follows.
+
+  /*
+   * TDX module always enables APICv for TDs. So, KVM cannot intercept every
+   * access to APIC and forward them to user space VMM.
+   */
 
 
-Sent from my iPhone
 
-> On 21 Mar 2024, at 14:14, Markus Elfring <Markus.Elfring@web.de> wrote:
->=20
-> =EF=BB=BF
->>=20
->>> How do you think about to reduce the scope for the affected local variab=
-le instead
->>> with the help of a small script (like the following) for the semantic pa=
-tch language?
->>>=20
->>> @movement@
->>> attribute name __free;
->>> @@
->>> -u8 *tx_frame __free(kfree);
->>> int i;
->>> ... when any
->>> if (ice_fltr_add_mac(test_vsi, ...))
->>> { ... }
->>> +
->>> +{
->>> +u8 *tx_frame __free(kfree) =3D NULL;
->>> if (ice_lbtest_create_frame(pf, &tx_frame, ...))
->>> { ... }
->>> ... when any
->>> +}
->>> +
->>> valid_frames =3D ice_lbtest_receive_frames(...);
->>=20
->> I believe you don't understand what the scope of the above can be.
->=20
-> Will the understanding improve for the proposed source code transformation=
-?
->=20
-> Regards,
-> Markus
+> >+	if (!vcpu->arch.apic)
+> 
+> will "if (!irqchip_in_kernel(vcpu->kvm))" work? looks this is the custome for such
+> a check.
 
+
+It should work because kvm_arch_vcpu_create().  Will update it.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
