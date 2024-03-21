@@ -1,141 +1,128 @@
-Return-Path: <linux-kernel+bounces-109833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70768885640
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:13:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DCD8885646
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DE4282983
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:13:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0E2282509
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BE4482C4;
-	Thu, 21 Mar 2024 09:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="VlavWTCC"
-Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB683FBAD;
+	Thu, 21 Mar 2024 09:15:33 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F2A208C8;
-	Thu, 21 Mar 2024 09:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F756883C;
+	Thu, 21 Mar 2024 09:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711012384; cv=none; b=J3NBAn31D2HtOQJbFqUBkH3YUpDM38iVmijXOk1+ZjT1agsMlsveV48FhkUF9Q3C2/sxDIwPN2BbcanW6XRzViWF+m4KIDx3PkWtQVGTe6zGZsf8Y1lAG1GKnSZQ7qGZn3QrjM/o/TF7NHKFUJgDgwZxYy1lFv1/WDF8LsV00Vo=
+	t=1711012532; cv=none; b=asKNnE2SuoxLd8RmREd4luL3KqUjputuAz7YjKrfR01m+SgS5tqOVcm9N4Ia91TmzqD7Ss08xtTdlXAWOcMQxGspI4KMcszVsaJVISiyfxpZ2p6SAlmkp6h2m9LvTsxzwgSWOSnYbP0qiKLQ/2qCoTd5GLu0IBWlHrUasCUOYfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711012384; c=relaxed/simple;
-	bh=2wY+bMrhSAAxlCEVaRSYx2ODKkeCgDYZXns76CRJxZE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=RNUPNWVrN+UMRfx99iZl4t9rZDiP9T2IWGQZjr1N77HFFQfYuSrS0LwbuzYi/A00x3MvfL5EzbhK3RXuyxRhc/hZTVNfqhPDFn1dMfkbYQlpKMdCw4gHnKuhDfycaOZwovHbutg2IIz6gTWOoCya9ENwa/MtN/XHRr80mv3x9uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=VlavWTCC; arc=none smtp.client-ip=91.244.183.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
-Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-	by mx0.infotecs.ru (Postfix) with ESMTP id C09DC10762CC;
-	Thu, 21 Mar 2024 12:12:57 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru C09DC10762CC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-	t=1711012378; bh=2wY+bMrhSAAxlCEVaRSYx2ODKkeCgDYZXns76CRJxZE=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=VlavWTCCJlCA3IZHSKNP4/ya2hCWQ3DrPA4CdKngZMbfBY90VyQEBEAfwuGM6HddN
-	 ePFVbTJJCPIXrfQ118qDdWCFXGtkv72+b/1N7KQ56XYgvXbprtYMuJTOYwbMbVnQdO
-	 pFjWMwBTU+lqy0qEn72UP4JwsvkxJcl85/ilJ+84=
-Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
-	by mx0.infotecs-nt (Postfix) with ESMTP id BCDA53196647;
-	Thu, 21 Mar 2024 12:12:57 +0300 (MSK)
-From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-To: "stable@vger.kernel.org" <stable@vger.kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-CC: Michal Ostrowski <mostrows@earthlink.net>, Guillaume Nault
-	<gnault@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-	"syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com"
-	<syzbot+6bdfd184eac7709e5cc9@syzkaller.appspotmail.com>
-Subject: [PATCH 5.15/5.10/5.4/4.19 1/1] pppoe: Fix memory leak in
- pppoe_sendmsg()
-Thread-Topic: [PATCH 5.15/5.10/5.4/4.19 1/1] pppoe: Fix memory leak in
- pppoe_sendmsg()
-Thread-Index: AQHae2/2R+13FIKrokmi6T+8fsvlew==
-Date: Thu, 21 Mar 2024 09:12:57 +0000
-Message-ID: <20240321091256.467553-2-Ilia.Gavrilov@infotecs.ru>
-References: <20240321091256.467553-1-Ilia.Gavrilov@infotecs.ru>
-In-Reply-To: <20240321091256.467553-1-Ilia.Gavrilov@infotecs.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1711012532; c=relaxed/simple;
+	bh=7mZ+Ap7YfWnxtKv8WqQRdUUF6tDAryF5ikk9T8xbk1E=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=n/A+F1PirkPd1+Mq1A5hFTJgd1Wd1rv8aqA+73776Yju7pTa8bPvCiuQBH4q8CWx0GbGQqeyUXhnLYQ5NBxShl4yBm6tdwFJ9CB1vbhLeB0/Nuo5Zmm0XsrsK5gI0qmzEF0sFsHT+AWXuLjuiU+A+kutRjslR24FwzdyFBgDafk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.31.7] (theinternet.molgen.mpg.de [141.14.31.7])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: buczek)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7E94061E5FE0A;
+	Thu, 21 Mar 2024 10:15:05 +0100 (CET)
+Message-ID: <6e010dbb-f125-4f44-9b1a-9e6ac9bb66ff@molgen.mpg.de>
+Date: Thu, 21 Mar 2024 10:15:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KLMS-Rule-ID: 5
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2024/03/21 07:23:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/03/21 04:23:00 #24331522
-X-KLMS-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, it+linux@molgen.mpg.de
+From: Donald Buczek <buczek@molgen.mpg.de>
+Subject: possible 6.6 regression: Deadlock involving super_lock()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-DQpGcm9tOiBHYXZyaWxvdiBJbGlhIDxJbGlhLkdhdnJpbG92QGluZm90ZWNzLnJ1Pg0KDQpjb21t
-aXQgZGMzNGViZDVjMDE4YjBlZGY0N2YzOWQxMTA4M2FkODMxMjczMzAzNCB1cHN0cmVhbS4NCg0K
-c3l6Ym90IHJlcG9ydHMgYSBtZW1vcnkgbGVhayBpbiBwcHBvZV9zZW5kbXNnIFsxXS4NCg0KVGhl
-IHByb2JsZW0gaXMgaW4gdGhlIHBwcG9lX3JlY3Ztc2coKSBmdW5jdGlvbiB0aGF0IGhhbmRsZXMg
-ZXJyb3JzDQppbiB0aGUgd3Jvbmcgb3JkZXIuIEZvciB0aGUgc2tiX3JlY3ZfZGF0YWdyYW0oKSBm
-dW5jdGlvbiwgY2hlY2sNCnRoZSBwb2ludGVyIHRvIHNrYiBmb3IgTlVMTCBmaXJzdCwgYW5kIHRo
-ZW4gY2hlY2sgdGhlICdlcnJvcicgdmFyaWFibGUsDQpiZWNhdXNlIHRoZSBza2JfcmVjdl9kYXRh
-Z3JhbSgpIGZ1bmN0aW9uIGNhbiBzZXQgJ2Vycm9yJw0KdG8gLUVBR0FJTiBpbiBhIGxvb3AgYnV0
-IHJldHVybiBhIGNvcnJlY3QgcG9pbnRlciB0byBzb2NrZXQgYnVmZmVyDQphZnRlciBhIG51bWJl
-ciBvZiBhdHRlbXB0cywgdGhvdWdoICdlcnJvcicgcmVtYWlucyBzZXQgdG8gLUVBR0FJTi4NCg0K
-c2tiX3JlY3ZfZGF0YWdyYW0NCiAgICAgIF9fc2tiX3JlY3ZfZGF0YWdyYW0gICAgICAgICAgLy8g
-TG9vcC4gaWYgKGVyciA9PSAtRUFHQUlOKSB0aGVuDQogICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIC8vIGdvIHRvIHRoZSBuZXh0IGxvb3AgaXRlcmF0aW9uDQogICAgICAgICAgX19z
-a2JfdHJ5X3JlY3ZfZGF0YWdyYW0gIC8vIGlmIChza2IgIT0gTlVMTCkgdGhlbiByZXR1cm4gJ3Nr
-YicNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gZWxzZSBpZiBhIHNpZ25h
-bCBpcyByZWNlaXZlZCB0aGVuDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8v
-IHJldHVybiAtRUFHQUlODQoNCkZvdW5kIGJ5IEluZm9UZUNTIG9uIGJlaGFsZiBvZiBMaW51eCBW
-ZXJpZmljYXRpb24gQ2VudGVyDQoobGludXh0ZXN0aW5nLm9yZykgd2l0aCBTeXprYWxsZXIuDQoN
-Ckxpbms6IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9leHRpZD02YmRmZDE4NGVh
-Yzc3MDllNWNjOSBbMV0NCg0KRml4ZXM6IDFkYTE3N2U0YzNmNCAoIkxpbnV4LTIuNi4xMi1yYzIi
-KQ0KUmVwb3J0ZWQtYnk6IHN5emJvdCs2YmRmZDE4NGVhYzc3MDllNWNjOUBzeXprYWxsZXIuYXBw
-c3BvdG1haWwuY29tDQpDbG9zZXM6IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9l
-eHRpZD02YmRmZDE4NGVhYzc3MDllNWNjOQ0KU2lnbmVkLW9mZi1ieTogR2F2cmlsb3YgSWxpYSA8
-SWxpYS5HYXZyaWxvdkBpbmZvdGVjcy5ydT4NClJldmlld2VkLWJ5OiBHdWlsbGF1bWUgTmF1bHQg
-PGduYXVsdEByZWRoYXQuY29tPg0KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI0
-MDIxNDA4NTgxNC4zODk0OTE3LTEtSWxpYS5HYXZyaWxvdkBpbmZvdGVjcy5ydQ0KU2lnbmVkLW9m
-Zi1ieTogSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4NCi0tLQ0KIGRyaXZlcnMvbmV0
-L3BwcC9wcHBvZS5jIHwgMjMgKysrKysrKysrLS0tLS0tLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdl
-ZCwgOSBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbmV0L3BwcC9wcHBvZS5jIGIvZHJpdmVycy9uZXQvcHBwL3BwcG9lLmMNCmluZGV4IGQ3ZjUw
-YjgzNTA1MC4uNzBlMjllMWFjNGM4IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9uZXQvcHBwL3BwcG9l
-LmMNCisrKyBiL2RyaXZlcnMvbmV0L3BwcC9wcHBvZS5jDQpAQCAtOTgzLDI3ICs5ODMsMjIgQEAg
-c3RhdGljIGludCBwcHBvZV9yZWN2bXNnKHN0cnVjdCBzb2NrZXQgKnNvY2ssIHN0cnVjdCBtc2do
-ZHIgKm0sDQogc3RydWN0IHNrX2J1ZmYgKnNrYjsNCiBpbnQgZXJyb3IgPSAwOw0KDQotaWYgKHNr
-LT5za19zdGF0ZSAmIFBQUE9YX0JPVU5EKSB7DQotZXJyb3IgPSAtRUlPOw0KLWdvdG8gZW5kOw0K
-LX0NCitpZiAoc2stPnNrX3N0YXRlICYgUFBQT1hfQk9VTkQpDQorcmV0dXJuIC1FSU87DQoNCiBz
-a2IgPSBza2JfcmVjdl9kYXRhZ3JhbShzaywgZmxhZ3MgJiB+TVNHX0RPTlRXQUlULA0KIGZsYWdz
-ICYgTVNHX0RPTlRXQUlULCAmZXJyb3IpOw0KLWlmIChlcnJvciA8IDApDQotZ290byBlbmQ7DQor
-aWYgKCFza2IpDQorcmV0dXJuIGVycm9yOw0KDQotaWYgKHNrYikgew0KLXRvdGFsX2xlbiA9IG1p
-bl90KHNpemVfdCwgdG90YWxfbGVuLCBza2ItPmxlbik7DQotZXJyb3IgPSBza2JfY29weV9kYXRh
-Z3JhbV9tc2coc2tiLCAwLCBtLCB0b3RhbF9sZW4pOw0KLWlmIChlcnJvciA9PSAwKSB7DQotY29u
-c3VtZV9za2Ioc2tiKTsNCi1yZXR1cm4gdG90YWxfbGVuOw0KLX0NCit0b3RhbF9sZW4gPSBtaW5f
-dChzaXplX3QsIHRvdGFsX2xlbiwgc2tiLT5sZW4pOw0KK2Vycm9yID0gc2tiX2NvcHlfZGF0YWdy
-YW1fbXNnKHNrYiwgMCwgbSwgdG90YWxfbGVuKTsNCitpZiAoZXJyb3IgPT0gMCkgew0KK2NvbnN1
-bWVfc2tiKHNrYik7DQorcmV0dXJuIHRvdGFsX2xlbjsNCiB9DQoNCiBrZnJlZV9za2Ioc2tiKTsN
-Ci1lbmQ6DQogcmV0dXJuIGVycm9yOw0KIH0NCg0KLS0NCjIuMzkuMg0KDQoNCtChINGD0LLQsNC2
-0LXQvdC40LXQvCwNCtCY0LvRjNGPINCT0LDQstGA0LjQu9C+0LINCtCS0LXQtNGD0YnQuNC5INC/
-0YDQvtCz0YDQsNC80LzQuNGB0YINCtCe0YLQtNC10Lsg0YDQsNC30YDQsNCx0L7RgtC60LgNCtCQ
-0J4gItCY0L3RhNC+0KLQtdCa0KEiINCyINCzLiDQodCw0L3QutGCLdCf0LXRgtC10YDQsdGD0YDQ
-sw0KMTI3Mjg3LCDQsy4g0JzQvtGB0LrQstCwLCDQodGC0LDRgNGL0Lkg0J/QtdGC0YDQvtCy0YHQ
-utC+LdCg0LDQt9GD0LzQvtCy0YHQutC40Lkg0L/RgNC+0LXQt9C0LCDQtNC+0LwgMS8yMywg0YHR
-gtGALiAxDQpUOiArNyA0OTUgNzM3LTYxLTkyICgg0LTQvtCxLiA0OTIxKQ0K0KQ6ICs3IDQ5NSA3
-MzctNzItNzgNCg0KDQpJbGlhLkdhdnJpbG92QGluZm90ZWNzLnJ1DQp3d3cuaW5mb3RlY3MucnUN
-Cg0KDQo=
+Hi,
+
+we have a set of 6 systems with similar usage patterns which ran on 5.15 kernels for over a year.  Only two weeks after we've switched one of the systems from a 5.15 kernel to a 6.6 kernel, it went into a deadlock. I'm aware that I don't have enough information that this could be analyzed, but I though I drop it here anyway, because the deadlock seems to involve the locking of a superblock and I've seen that some changes in that area went into 6.6. Maybe someone has an idea or suggestions for further inspection if this happens the next time.
+
+These systems
+
+- use automounter a lot (many mount/umount events)
+- use nfs a lot (most data is on remote filesystems over nfs)
+- are used interactively (users occasionally overload any resource like memory, cores or network)
+
+When we've noticed the problem, several processes were blocked, including the automounter which waited for a mount that didn't complete:
+
+# # /proc/73777/task/73777: mount.nfs : /sbin/mount.nfs rabies:/amd/rabies/M/MG009/project/avitidata /project/avitidata -s -o rw,nosuid,sec=mariux
+# cat /proc/73777/task/73777/stack
+
+[<0>] super_lock+0x40/0x140
+[<0>] grab_super+0x29/0xc0
+[<0>] grab_super_dead+0x2e/0x140
+[<0>] sget_fc+0x1e1/0x2d0
+[<0>] nfs_get_tree_common+0x86/0x520 [nfs]
+[<0>] vfs_get_tree+0x21/0xb0
+[<0>] nfs_do_submount+0x128/0x180 [nfs]
+[<0>] nfs4_submount+0x566/0x6d0 [nfsv4]
+[<0>] nfs_d_automount+0x16b/0x230 [nfs]
+[<0>] __traverse_mounts+0x8f/0x210
+[<0>] step_into+0x32a/0x740
+[<0>] link_path_walk.part.0.constprop.0+0x246/0x380
+[<0>] path_lookupat+0x3e/0x190
+[<0>] filename_lookup+0xe8/0x1f0
+[<0>] vfs_path_lookup+0x52/0x80
+[<0>] mount_subtree+0xa0/0x150
+[<0>] do_nfs4_mount+0x269/0x360 [nfsv4]
+[<0>] nfs4_try_get_tree+0x48/0xd0 [nfsv4]
+[<0>] vfs_get_tree+0x21/0xb0
+[<0>] path_mount+0x79e/0xa50
+[<0>] __x64_sys_mount+0x11a/0x150
+[<0>] do_syscall_64+0x46/0x90
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+
+Also, one writeback thread was blocked. I mention that, because I don't get how these these two threads could depend on each other:
+
+# # /proc/39359/task/39359: kworker/u268:5+flush-0:58 : 
+# cat /proc/39359/task/39359/stack
+
+[<0>] folio_wait_bit_common+0x135/0x350
+[<0>] write_cache_pages+0x1a0/0x3a0
+[<0>] nfs_writepages+0x12a/0x1e0 [nfs]
+[<0>] do_writepages+0xcf/0x1e0
+[<0>] __writeback_single_inode+0x46/0x3a0
+[<0>] writeback_sb_inodes+0x1f5/0x4d0
+[<0>] __writeback_inodes_wb+0x4c/0xf0
+[<0>] wb_writeback+0x1f5/0x320
+[<0>] wb_workfn+0x350/0x4f0
+[<0>] process_one_work+0x142/0x300
+[<0>] worker_thread+0x2f5/0x410
+[<0>] kthread+0xe8/0x120
+[<0>] ret_from_fork+0x34/0x50
+[<0>] ret_from_fork_asm+0x1b/0x30
+
+As a result, of course, more and more processes were blocked. A full list of all stack traces and some more info from the system in the blocked state is at https://owww.molgen.mpg.de/~buczek/2024-03-18_mount/info.log
+
+dmesg not included in that file, but I've reviewed it and there was nothing unusual in it.
+
+
+Thanks
+
+  Donald
+
+-- 
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 14  
 
