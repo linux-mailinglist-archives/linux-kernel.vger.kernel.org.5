@@ -1,145 +1,140 @@
-Return-Path: <linux-kernel+bounces-110497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A85C3885FC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:30:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 683D2885FC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 502242838E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99BFF1C22058
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2E283CB2;
-	Thu, 21 Mar 2024 17:30:24 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9212985646;
+	Thu, 21 Mar 2024 17:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WBeCzKEC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F549C2E9
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C3BC2E9;
+	Thu, 21 Mar 2024 17:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711042223; cv=none; b=D+ksezhFbu5cy0y5WajXTFbfC7mcepj0vlTE5g9D1BiijeGte/e0yygrzrtbbdk15+edsS1YzQUcw+W6B21G9t8tP4aMEt49429TO24pcPiNrL2mjMsDtp7R/w2Gr6OJJ48l64HB1je9NyqfN8nBcTwolK+RScCBVtaieQ2Gv0M=
+	t=1711042252; cv=none; b=CQuQ1eRbz+l41I9y8l6urzI3AlAi33ocf0rLIhpwWA+cNStJ96KGe6kt0BGvmlCWBa5MU2nUWxdSzrTsYLMtwqtDEqPMnNx47AdLHraY0x/zMrN/x7W4LUuaXKVIRv8kO0+z+LAwsKyvbqfCQNZwkZK9i31vQ1+qKWDhDz/iBRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711042223; c=relaxed/simple;
-	bh=aCeT919OkCma1l6oDXXOSV7I7yWmK6bpOsYwA40kB1Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=T8kyeLVeKrLvnHFJiz9MjvINAzL6Q356KgcJudKT0Pi09qFaVpWmsme7k1rSQcCPtXGaI5dGaH5PbuaQjdxn7W7V2NT5qUK8NAF/rdXv0DDD7LZbpBdXZFZt95TkPRi4b+Adx60fTYrQerEl1t06vChvv8OhW9EnNPupKRH55/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V0smv46GNz6K9C6;
-	Fri, 22 Mar 2024 01:25:51 +0800 (CST)
-Received: from frapeml500002.china.huawei.com (unknown [7.182.85.205])
-	by mail.maildlp.com (Postfix) with ESMTPS id 120DC140A9C;
-	Fri, 22 Mar 2024 01:30:11 +0800 (CST)
-Received: from [10.81.213.73] (10.81.213.73) by frapeml500002.china.huawei.com
- (7.182.85.205) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 21 Mar
- 2024 18:30:10 +0100
-Message-ID: <9cfb4aa7-d927-4015-8ef8-1cd081250cdc@huawei-partners.com>
-Date: Thu, 21 Mar 2024 18:30:09 +0100
+	s=arc-20240116; t=1711042252; c=relaxed/simple;
+	bh=JBLJEKTf/KkuhDCxb+brKIpIFlLuBd/PKeVfqKF77IM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UOBYSnCydJGD9eMwvc/AwGqo1/vCx0AlSs9AYzMpTIbupsD/En27vnvX2XefviGY6E7UjaOM7QVmtIfWXFLseW/nJYRNSCGccxQM5lxKNFK/M6xNwUsDG2jKkg99n4pwtOwpMHtbf+Xtjiq+8MMwGzsNgLJAedaRsbFB43wAfeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WBeCzKEC; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711042250; x=1742578250;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JBLJEKTf/KkuhDCxb+brKIpIFlLuBd/PKeVfqKF77IM=;
+  b=WBeCzKEC5yY0DLvSmCADAbZnDgHFtzQo9MHvc1wIidB4biheFPZL+L43
+   fK9xByi5NZgjHWlXBu7YONhNmIif9rnhrNsxKZSVxRd6nBIeiOIf9aVMI
+   8ezuMjN3P9DLQIjCEesoecjQuVCOq1h1ePwj3grJT44xqjc4w/KlDg3/2
+   Ut4rq6h+r7PxtlKp9YPDd+Fay0LfwbaFrmJbgTqsGNmq9UWMPVWkLX2lq
+   YzW2XX5afuzBBDADuZSh1U1e2h8LBxw/wpYr9xbyaiXh1mSsrR1VdMYQH
+   vUbDIZi8+f2Ri3m7v9HtA+yyp3yy4WuxaSmrVtNnWFqYdMS7QoFiekEqd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6236039"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="6236039"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:30:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="19157301"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 10:30:24 -0700
+Date: Thu, 21 Mar 2024 10:30:24 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
+ parameters
+Message-ID: <20240321173024.GM1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
+ <5702443b-510e-4ce5-823f-999582a6aced@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
- the vmalloc area
-To: David Gow <davidgow@google.com>, Petr Tesarik
-	<petrtesarik@huaweicloud.com>
-CC: Richard Weinberger <richard@nod.at>, Anton Ivanov
-	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>,
-	"open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>, open list
-	<linux-kernel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>
-References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
- <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
-Content-Language: en-US
-From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-In-Reply-To: <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: frapeml500001.china.huawei.com (7.182.85.94) To
- frapeml500002.china.huawei.com (7.182.85.205)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5702443b-510e-4ce5-823f-999582a6aced@intel.com>
 
-On 3/21/2024 5:44 AM, David Gow wrote:
-> On Fri, 23 Feb 2024 at 22:07, Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
->>
->> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
->>
->> If a segmentation fault is caused by accessing an address in the vmalloc
->> area, check that the target page is present.
->>
->> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
->> assumes that the fault is caused by a stale mapping and will be fixed by
->> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
->> a guard page, no mapping is created, and when the faulting instruction is
->> restarted, it will cause exactly the same fault again, effectively creating
->> an infinite loop.
->>
->> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
->> ---
->>  arch/um/kernel/trap.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
->> index 6d8ae86ae978..d5b85f1bfe33 100644
->> --- a/arch/um/kernel/trap.c
->> +++ b/arch/um/kernel/trap.c
->> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
->>         int err;
->>         int is_write = FAULT_WRITE(fi);
->>         unsigned long address = FAULT_ADDRESS(fi);
->> +       pte_t *pte;
->>
->>         if (!is_user && regs)
->>                 current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
->>
->>         if (!is_user && (address >= start_vm) && (address < end_vm)) {
->> +               pte = virt_to_pte(&init_mm, address);
->> +               if (!pte_present(*pte))
->> +                       page_fault_oops(regs, address, ip);
+On Wed, Mar 20, 2024 at 04:15:23PM +0800,
+Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+
+> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
 > 
-> page_fault_oops() appears to be private to arch/x86/mm/fault.c, so
-> can't be used here?
-> Also, it accepts struct pt_regs*, not struct uml_pt_regs*, so would
-> need to at least handle the type difference here.
-
-Argh, you're right. This was originally a two-patch series, but Richard
-wanted improvements in the implementation which would require more
-effort, see here:
-
-http://lists.infradead.org/pipermail/linux-um/2024-January/006406.html
-
-So I wanted to fix only the infinite loop, but in the mean time I forgot
-about the dependency on the first patch:
-
-http://lists.infradead.org/pipermail/linux-um/2023-December/006380.html
-
-That's because a quick git grep page_fault_oops found the function. It
-was my mistake that I did not notice the other page_fault_oops() earlier.
-
-OK, please forget about this patch for now; I must rework it.
-
-> Could we equally avoid the infinite loop here by putting the
-> 'flush_tlb_kernel_vm();goto out;' behind a if (pte_present(...))
-> check, and let the rest of the UML checks panic or oops if required.
-> (Actually OOPSing where we can under UML would be nice to do at some
-> point anyway, but is a bigger issue than just fixing a bug, IMO.)
-
-Yes, that would be the best quick fix until I get to implementing all
-the blows and whistles (oops_* helpers, notification chains, tainting,
-etc.).
-
-Petr T
-
-> Or am I lacking a prerequisite patch or applying this to the wrong
-> version (or otherwise missing something), as it definitely doesn't
-> build here.
+> ...
 > 
-> Cheers,
-> -- David
+> > +static int setup_tdparams_xfam(struct kvm_cpuid2 *cpuid, struct td_params *td_params)
+> > +{
+> > +	const struct kvm_cpuid_entry2 *entry;
+> > +	u64 guest_supported_xcr0;
+> > +	u64 guest_supported_xss;
+> > +
+> > +	/* Setup td_params.xfam */
+> > +	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0xd, 0);
+> > +	if (entry)
+> > +		guest_supported_xcr0 = (entry->eax | ((u64)entry->edx << 32));
+> > +	else
+> > +		guest_supported_xcr0 = 0;
+> > +	guest_supported_xcr0 &= kvm_caps.supported_xcr0;
+> > +
+> > +	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0xd, 1);
+> > +	if (entry)
+> > +		guest_supported_xss = (entry->ecx | ((u64)entry->edx << 32));
+> > +	else
+> > +		guest_supported_xss = 0;
+> > +
+> > +	/*
+> > +	 * PT and CET can be exposed to TD guest regardless of KVM's XSS, PT
+> > +	 * and, CET support.
+> > +	 */
+> > +	guest_supported_xss &=
+> > +		(kvm_caps.supported_xss | XFEATURE_MASK_PT | TDX_TD_XFAM_CET);
+> > +
+> > +	td_params->xfam = guest_supported_xcr0 | guest_supported_xss;
+> > +	if (td_params->xfam & XFEATURE_MASK_LBR) {
+> > +		/*
+> > +		 * TODO: once KVM supports LBR(save/restore LBR related
+> > +		 * registers around TDENTER), remove this guard.
+> > +		 */
+> > +#define MSG_LBR	"TD doesn't support LBR yet. KVM needs to save/restore IA32_LBR_DEPTH properly.\n"
+> > +		pr_warn(MSG_LBR);
+> > +		return -EOPNOTSUPP;
+> 
+> This unsupported behavior is totally decided by KVM even if TDX module
+> supports it. I think we need to reflect it in tdx_info->xfam_fixed0, which
+> gets reported to userspace via KVM_TDX_CAPABILITIES. So userspace will aware
+> that LBR is not supported for TDs.
+
+Yes, we can suppress KVM unpported features. I replied at
+https://lore.kernel.org/kvm/20240321155513.GL1994522@ls.amr.corp.intel.com/
+
+So far we used KVM_TDX_CAPABILITIES for feature enumeration. I'm wondering about
+KVM_GET_DEVICE_ATTR [1].  It's future extensible. It's also consistent with SEV.
+
+[1] https://lore.kernel.org/r/20240226190344.787149-7-pbonzini@redhat.com
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
