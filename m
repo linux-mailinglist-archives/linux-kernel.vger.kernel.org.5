@@ -1,199 +1,251 @@
-Return-Path: <linux-kernel+bounces-109730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03848854F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:33:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCD58854F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C4C12835A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:33:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFF181F22313
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E3D58107;
-	Thu, 21 Mar 2024 07:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB03057318;
+	Thu, 21 Mar 2024 07:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5iu9dpJ"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TziBhDd+"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D4D50249;
-	Thu, 21 Mar 2024 07:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C548C153;
+	Thu, 21 Mar 2024 07:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711006396; cv=none; b=G58VLFwVswb3bAr8bfX6O2ktQiLgDaKKFlcdnyVeNdQRXUGGDueyeiVBt8a3cGicIWuy1xt5o0E/gysuRlMfDcvQXLQWcp2k1rX7CtNv/1W4tjhSLhYSi8iswlEuBipG57QRmksjeSAwXcaSAQpYPDP7AaAu+7UpDd1DIva71Ys=
+	t=1711006552; cv=none; b=IkboqDqFLB3d5F9YiSnuXRPMv9YZ/Mm1l5DfYwL4UpGHw3Gv0YpiZtjO5WxAPzqjhtOQTO460EBBaAEwQfpmrezoHkklChgQerxFUKNorVgM2UoVfNZOUfCpM/q9PIaR3Banyxb1dRzUmpg5gO4PQDvukgWaF94gFlu0U3Ba9lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711006396; c=relaxed/simple;
-	bh=lfzYv1h/czzT9o64k4FnzumtWG84f3GYHXjhGITWGuk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ULDBPT+9SIu7dxDAZqehQCWtjNrrpYqHM3o4CKG0lVWRKJs6HynHxYleugqQPGTWugpf0X3eoEgPiJxqg6DIfb+ItsMcOppad2/tpurSjeMVTbfOeAinu1S/hlAA9uwMD4PFJgRryRLjO6R1BJR7BybVBO87/ETuHJpVhg1etn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5iu9dpJ; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-512e39226efso556020e87.0;
-        Thu, 21 Mar 2024 00:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711006392; x=1711611192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tG8H4iDFAc1t3qHbj1kNsgeA823fPcekBzV63RYaF6Y=;
-        b=H5iu9dpJIKM4W0dQ1UDl4PQiT+epi4Pv9u8lY/B7zQg/2tMabFqNaYvM7aVktEcz0q
-         4EkPppBs3G0wN5AH12LqoXbvpRaQIf6JHW1+w3uBCJJ5D2gLJ+sLRKIHYoFaVm8qPC6Q
-         dH6jipdhjTUP+EPDcFGJpvW+uJQ3jY8n7x3BgkEXPsCo43OLgSXxXT8+HAkvLjXR5u2Y
-         va7XeaBY83ZT1UhJvYCy7AMyeUtIw2uM/rINP1bFwfS/nQ07Knb9MdSJiyhKpeTE4MDA
-         C/K4KZmkyBxIKHCQPKZbdpQoxHwJxNiDp66QthCCzNxP826wuE2ypcAXSXiogPOafd3c
-         a7RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711006392; x=1711611192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tG8H4iDFAc1t3qHbj1kNsgeA823fPcekBzV63RYaF6Y=;
-        b=LpMSPJKCT3LdLqKWpQevQng6nJeqNnDDrJxlPRu41cAHA0oWEZuqnJkKa3YOjg9p8R
-         SOezB00xo9eBm3d+xXJn1Whe+nsZwQCIwYn3KdGE7ffseAcoC6Z0RN5IrnECDYty+dmP
-         KxOcn7IcgkoxobDwaNf1kmRpYGYHJf4YaD0m1eO65pliEbAGMzgN2PaV3WlpLUmsXsg8
-         eqLZ0aWrNMbsCi4w6LXTTi7zOh26npaiMx+fLZrZR3622nUFbkTipUTWiojsh9JQzxVl
-         31wYisfOt2g1fRjkqUyL9rR1NHqPwY37//JE1eeA2GgW3sxl2YZk1MFLsGwCwhTdEDf9
-         5ZNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYy8feWioiBS2lv49ptXT8y0kZsE3ETHWzZatG7s+jVEjgLv3c5yBERrnt3Bi7agOMLb1PHV/9FbCZuQlc25CID+hKtJjB/cLfevFpbhowMyKwei8v70QyfagE5G3YVv4SGINe164K7v/BfCgQk1QuOvUK2AQpl+WS
-X-Gm-Message-State: AOJu0Yx/U1x1YQiL178qfjUoV8guYLeJAlmaTG0nfwCNpxIUzcOud5NC
-	b8QWvma73FTdusNBgouvV3MeYkK2MCWfAvno5ScZDoub00mhAx7m6RS+vydS7FtrmZ0JU2R+qzV
-	ivWUtfj1qaVgHRMPxo/aTBxPgNds=
-X-Google-Smtp-Source: AGHT+IEApP00m/eNqfI3dQObKbZkEHXNDVuDCg5UQNMFtE5SgkvyNvn3H5REA2w2PUA2mgku3Cb75eMAOS/VazJuZLQ=
-X-Received: by 2002:a19:8c5d:0:b0:513:a1eb:c084 with SMTP id
- i29-20020a198c5d000000b00513a1ebc084mr2105258lfj.7.1711006391935; Thu, 21 Mar
- 2024 00:33:11 -0700 (PDT)
+	s=arc-20240116; t=1711006552; c=relaxed/simple;
+	bh=l3XHxGpUD80HFnlqU/qXkkV/AbISSLG1O1P8bH0VDto=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KGKrPPPTGS3tR50K3x1TGp2mVNVAH0pB1b7xwWbURgZoRCnhVAB8I8/YCqQQmCfn3jGWRQHPWSknHOaajg2e+AN8qsxCDBIWoiVskp6pRDepxyDG+Nat+cdMPXVkwATeNcJY5mFyty7df5q2K0mysM3bj8Bm5S+HTy1nk4ee78Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TziBhDd+; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42L7ZNbo075909;
+	Thu, 21 Mar 2024 02:35:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711006523;
+	bh=KwkoU2lZ2JJrHgYrLkBhgW9349Ie/raH4I2wZXm5JMg=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=TziBhDd+1T3XNQLxwtjzovjhnP5ZpmM4lDDTU/rRLJfwdv9pfMJcoydM01QQj/TR+
+	 82qgkKqAjEDBTEbQRD4gyrcO93UioSTe2xx6VAxWRyN4QUoJGhO5YSEM2grkg5pjnW
+	 B2tII4pDMVk0LI343dXLgxReSaPwXoRnfmr6Ll44=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42L7ZN4f017132
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 21 Mar 2024 02:35:23 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 21
+ Mar 2024 02:35:22 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 21 Mar 2024 02:35:22 -0500
+Received: from [10.24.69.142] ([10.24.69.142])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42L7ZFxT004743;
+	Thu, 21 Mar 2024 02:35:16 -0500
+Message-ID: <9ea69bd3-977d-442e-aacc-3c819b1a5630@ti.com>
+Date: Thu, 21 Mar 2024 13:05:14 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000003dc8e00614076ab6@google.com>
-In-Reply-To: <0000000000003dc8e00614076ab6@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Mar 2024 00:33:00 -0700
-Message-ID: <CAADnVQLORV5PT0iTAhRER+iLBTkByCYNBYyvBSgjN1T31K+gOw@mail.gmail.com>
-Subject: stack access issue. Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds
- in check_stack_range_initialized
-To: Andrei Matei <andreimatei1@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Network Development <netdev@vger.kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>, 
-	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>, Ayush Singh <ayushdevel1325@gmail.com>
+CC: Michael Walle <mwalle@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>, <jkridner@beagleboard.org>,
+        <robertcnelson@beagleboard.org>, <lorforlinux@beagleboard.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Derek Kiernan
+	<derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
+	<arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown
+	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder
+	<elder@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ BINDINGS" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/TEXAS INSTRUMENTS
+ K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SPI
+ SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM"
+	<greybus-dev@lists.linaro.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>
+References: <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
+ <CZXMK3W52AFO.1APK080GVJESK@kernel.org>
+ <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
+ <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
+ <81ec4156-8758-406e-876b-5acf13951d09@gmail.com>
+ <CZXSKOLK6S1S.N86E2AZG2V90@kernel.org>
+ <2eec6437-dd11-408d-9bcb-92ba2bee4487@ti.com>
+ <28c995cb-1660-435f-9ee4-1195439231f0@gmail.com>
+ <f53cd006-5eb0-47f2-8f84-e7915154f12d@lunn.ch>
+ <c3223f90-6e7c-4fdc-905a-770c474445e2@gmail.com>
+ <c368ee3b-1b80-46b1-9aa7-b7fc0094e3a1@lunn.ch>
+From: Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <c368ee3b-1b80-46b1-9aa7-b7fc0094e3a1@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Andrei,
+Hi Andrew,
 
-looks like the refactoring of stack access introduced a bug.
-See the reproducer below.
-positive offsets are not caught by check_stack_access_within_bounds().
-So both slot and spi become negative and access
-stack[spi].slot_type[slot % BPF_REG_SIZE]
-returns garbage.
+On 21/03/24 00:14, Andrew Lunn wrote:
+> On Wed, Mar 20, 2024 at 10:09:05PM +0530, Ayush Singh wrote:
+>> On 3/20/24 01:02, Andrew Lunn wrote:
+>>
+>>>> Yes, after discussion with Vaishnav and trying to brainstorm some way to do
+>>>> the same thing with dt overlays, it seems that trying to use dt overlays
+>>>> will mean need to have completely separate implementation of mikroBUS for
+>>>> local ports and mikroBUS over greybus.
+>>> Could you explain why please?
+>>>
+>>> Are greybus I2C bus masters different from physical I2C bus masters?
+>>> Are greybus SPI bus masters different from physical SPI bus masters?
+>>
+>> Well, they are virtual, so they are not declared in the device tree. I have
+>> linked the greybus i2c implementation. It basically allocates an i2c_adpater
+>> and then adds it using `i2c_add_adapter` method. This adapter can then be
+>> passed to say mikroBUS driver where it can be used as a normal i2c_adapter,
+>> and we can register the device to it.
+> 
+> Being virtual does not really stop it being added to the DT.
+> 
+> I'm making this all up, but i assume it will look something like this:
+> 
+> greybus@42 {
+>          compatible = "acme,greybus";
+>          reg = <0x42 0x100>;
+> 
+> This would represent the greybus host controller.
+> 
+> 	module@0 {
+> 		 reg = <0>;
+> 
+> This would represent a module discovered on the bus. I assume there is
+> some sort of addressing? The greybus core code dynamically creates the
+> node in DT to describe the modules it has discovered. This is not too
+> different to USB. You can already describe USB devices in DT, but the
+> assumption is you know they exists, e.g. because they are hard wired,
+> not hot-plugable. The USB core will associate the USB device with the
+> node in DT. But actually creating a node in DT is not too big a jump.
+> 
+> 		interface@0 {
+>       			compatible = "greybus,i2c";
+> 			reg = <0>;
+> 		}
+> 		interface@1 {
+>       			compatible = "greybus,spi";
+> 			reg = <1>;
+> 		}
+> 		interface@10 {
+>       			compatible = "greybus,gpio";
+> 			reg = <10>;
+> 		}
+> 
+> It can then enumerate the interfaces on the module, and create the I2C
+> node, SPI bus node, the gpio controller etc. Again, the greybus core
+> can add nodes to DT to described the discovered hardware, and
+> associate them to the linux devices which are created.
+> 
 
-On Tue, Mar 19, 2024 at 11:12=E2=80=AFAM syzbot
-<syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    0740b6427e90 Merge branch 'bpf-arena-followups'
-> git tree:       bpf
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D12fed76918000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fb1be60a193d=
-440
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D33f4297b5f92764=
-8741a
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1763a479180=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15c3871118000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/c9e6e9f97566/dis=
-k-0740b642.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/78476a588b62/vmlinu=
-x-0740b642.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/50cd6fab9ead/b=
-zImage-0740b642.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> UBSAN: array-index-out-of-bounds in kernel/bpf/verifier.c:7190:12
-> index -1 is out of range for type 'u8[8]' (aka 'unsigned char[8]')
-> CPU: 0 PID: 5071 Comm: syz-executor474 Not tainted 6.8.0-syzkaller-05226-=
-g0740b6427e90 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 02/29/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
->  ubsan_epilogue lib/ubsan.c:217 [inline]
->  __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:415
->  check_stack_range_initialized+0x1668/0x19a0 kernel/bpf/verifier.c:7190
->  check_helper_mem_access+0x2eb/0xfa0 kernel/bpf/verifier.c:7294
->  check_helper_call+0x263c/0x7220 kernel/bpf/verifier.c:10252
->  do_check+0x9e29/0x10530 kernel/bpf/verifier.c:17801
->  do_check_common+0x14bd/0x1dd0 kernel/bpf/verifier.c:20500
->  do_check_main kernel/bpf/verifier.c:20591 [inline]
->  bpf_check+0x136ab/0x19010 kernel/bpf/verifier.c:21261
->  bpf_prog_load+0x1667/0x20f0 kernel/bpf/syscall.c:2895
->  __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5631
->  __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
->  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> RIP: 0033:0x7f8416194629
-> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffdc6f0fdb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007ffdc6f0ff88 RCX: 00007f8416194629
-> RDX: 0000000000000090 RSI: 00000000200000c0 RDI: 0000000000000005
-> RBP: 00007f8416207610 R08: 0000000000000000 R09: 00007ffdc6f0ff88
-> R10: 00000000fffffff8 R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007ffdc6f0ff78 R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
-> ---[ end trace ]---
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+This proposal looks great and would be the ideal solution, but we met 
+with few challenges when initially trying to implement something like 
+this and had to drop and take the route with minimal development effort 
+to just instantiate mikroBUS devices.
+
+ From what we understand, you are recommending to change the manifest 
+description format used by greybus to device tree and also add of_bus 
+support for greybus - now this will not only solve instantiating 
+mikrobus devices on greybus but even complex devices on greybus making 
+it a robust solution and using standard tools and support DT offers.
+
+However we have a few doubts:
+* For USB or PCIe, to add OF device tree support the parent devices are 
+physically present, for example USB device is a child node of USB 
+controller (physically description available in a SoC DT) and USB 
+interfaces are child of USB devices, how would that hierarchy look for 
+greybus devices?
+Would it be
+USB/UART/transport controller -> AP Bridge host controller -> Module -> 
+interface -> bundle -> CPort ?
+
+When this mikrobus driver was initially implemented we could not think 
+of such an approach as the SVC and Control functionality were 
+implemented in userspace with gbridge ( 
+https://github.com/anobli/gbridge ) with a netlink interface to kernel 
+greybus, but today there are references to do it completely in kernel ( 
+drivers/greybus/gb-beagleplay.c) and your proposal is implementable.
+
+Also with this the manifesto tool which is not very well maintained is 
+not necessary : https://github.com/projectara/manifesto
+
+> That gives you what you need to load a DT overlay to make use of these
+> devices. That overlay would contain one of your virtual mikroBUS
+> controllers. This virtual controller is basically a phandle-proxy. The
+> virtual mikroBUS controllers is a consumer of phandles to an I2C bus,
+> an SPI bus, GPIO bus which makes up the pins routed to the mikroBUS
+> connector. The virtual mikroBUS controllers is also a provider of an
+> I2C bus, an SPI bus, GPIO controller. The mikroBUS device consumes
+> these I2C bus, SPI bus etc. The virtual mikroBUS controllers makes it
+> simpler for the device to find the resources it needs, since they are
+> all in one place. For a physical mikroBUS you have a DT node with
+> phandles to the physical devices. For greybus you create a virtual
+> device with phandles to the virtual devices added to the DT bus.
+> 
+> You then have everything you need to describe the mikroBUS
+> devices. For very simple devices you convert the manifest to a DT
+> overlay and load it. For complex devices you directly use a DT
+> overlay.
+> 
+> I also don't see any need to do the manifest to DT overlay conversion
+> on the fly. You have a database of manifests. They could be converted
+> to DT and then added to the linux-firmware repo, for example. If
+> device with an unknown manifest is found,
+
+  How do we know if we found a device with unknown manifest if we don't 
+read the EEPROM?
+
+  it should be possible to
+> read the manifest in userspace via its eeprom in /sys/class/. An tool
+> could create DT blob and add it to /lib/firmware to get it working
+> locally, and provide suggestions how to contribute it to the linux
+> firmware project?
+
+Agreed, but on what basis will you load the particular manifest for a 
+add-on board if you are not reading the DT overlay (or manifest blob) 
+from the EEPROM?
+
+Thanks and Regards,
+Vaishnav
+
+> 
+>     Andrew
 
