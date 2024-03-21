@@ -1,240 +1,214 @@
-Return-Path: <linux-kernel+bounces-110397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFAB885EB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:53:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F111885E19
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04291C22CED
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 359D02808E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0441474CF;
-	Thu, 21 Mar 2024 16:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F01137912;
+	Thu, 21 Mar 2024 16:37:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J87yunjO"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="qt+nxLUX"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09C3145FFF
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059381369A4
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039113; cv=none; b=BigTQQS5RUdMoippHbhQI4H2SNQIyiSTNWjiwfUILrMTclCAIwkWfibiwd3LZW2XZIGw2Hxzqr1xjksRKP8GJ/sZPxrpZyvFYcX0DuuIY0dz+O0hV9/0UsAKex+bJQavItDAHzOzAf8+9qGwhJHKTyeoVKO+pFSN3V8Ho8vmGSM=
+	t=1711039063; cv=none; b=ENQOAPrWngFZVmM7bvrBzKlK9wAexwEUUZRQH0MbW/FxfMoaPc5bIwKT7oIsFd7JeUy8immtf2hch5SgPJtqHKaSZ2T5sEx8amWT1/KjxV0hVbPttFHfcBE+lgTHMWu/UkZJdFPdZA1rMHy2FemhoIbCJa9B9RSAzukCwZ+ERlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039113; c=relaxed/simple;
-	bh=BFhSOgRWZw49w/nNVhmrLSuZba9C6QEOmpxWTod6ib8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Zu5JwR1dTuECXMaLSL9ab5hGsd2fvm//T66ANz3BxZHhp34bWQMnABJolxS/iiYm2g0Kn/7u7TSL/Nu//f+DdSHVq0ljxnfAbWvsr6Ls1ZRS0NTG0i6uJ3hC93vSLqvtSj9u76QI3bEI6ElswRENC+OjIvfEiJrELcZO9W1lu08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J87yunjO; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dced704f17cso1820839276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 09:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711039110; x=1711643910; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zMtv/wiplx2DxF9seTFx3IcU+R2+PFSDAr6m0+A1ntI=;
-        b=J87yunjO28kD8sQDWsH2+886fzZILIU6T5/WoqTovyLEOlsl/gl2THxMnwuCLHdv1E
-         QA9Cjcqi5LSZ1ErCecNbw5YzCKY+clXvW5d7zB8W4PKow2AifOIVrsMUOaAlrdvddNTy
-         4kw+FmmiirxK33a8sFrtidXj9Y9fPn1IMmBGPAtNSOnHjFKU3mFmx+QBuUfSbfq/CDUq
-         Li5TtuVAadBbejEqH8GZlOJjFBJPC/ah4nBW5Fh1B4H9xQ7/D5KKGl3IhZObpsm5m8Vf
-         +I5d0SZ76DKFU024pWR9MUhAZWaHLqglyad/yl3sIDGhPFPUeKhUssBY2PlCaekUYQ3V
-         AJtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711039110; x=1711643910;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zMtv/wiplx2DxF9seTFx3IcU+R2+PFSDAr6m0+A1ntI=;
-        b=fchwVwjN7weoLsdn0vdeo6VsatoLvLPmK0uFLJUm9GHT2K2s9UMdMGYlMbdzDcjdRh
-         UTD4CShQB/dHOmo5U5abLo21dptql2DtttNguchHUR8/Rfh2RnylvQEpivE+cGnNMbS+
-         wgBUaFSBB4HyFPmyTY/z9Ns/WGg6ZLnyOLXuUAubB+I0NCqcVYaf1q9kvgC53u1CSb0O
-         tNvv/oTkwmh6a4OydW86J4M+r1QyejB6GxZda3u/kf5ofU+w7DbIJlpAYnZyAZvbuXPL
-         UWCPjmkvHueXyiS/c86brPXof8KTZaX+nCAvER+C1EyAUF05+/Q3Ho0iVCLRxtkQc1Ct
-         6HKA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7Bp8IUvO7gThqX5/PoTxxoy8cPYl9YgSSVPWk14pN+HE/BjL31070eY7zDzpzgsMd5xU5JZjgASkvNvSQRtjObWHrRe5WApEHBDLT
-X-Gm-Message-State: AOJu0YyJrKw9P2tE04/bWphDLgA01cCG1e9KWPhePnZ3iyORLgqJAVrC
-	MoTXsJcRtpzxMPKR291L66f0o0SkWSOzn0PfgNOwMqxFILNpisQ4Pw/Gk5QbFFA4v2eVazDHx6M
-	BXA==
-X-Google-Smtp-Source: AGHT+IHubMkzttSDdMzbBJ1mYbEtkJMz1sywK2vk2BxZuZG66cHkzs6E2Eyy/Ht6uVFkEMl2Xl2C/1q/RI8=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
- (user=surenb job=sendgmr) by 2002:a05:6902:240e:b0:dc2:5273:53f9 with SMTP id
- dr14-20020a056902240e00b00dc2527353f9mr1211362ybb.1.1711039110014; Thu, 21
- Mar 2024 09:38:30 -0700 (PDT)
-Date: Thu, 21 Mar 2024 09:36:59 -0700
-In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
+	s=arc-20240116; t=1711039063; c=relaxed/simple;
+	bh=9NxPKnKTxYxP1AVJuK9e+tWEb/zjIESfPEwUEc+PvsY=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=dlqekfDj3SsQH9pdKuVkEiW+RLAXSEEd98wWUtzpnIbsDIw9z2Irwer+JhQIuAUsvNfGsWAj+G+QoKZ+hh+78CWn5C/U3400y5tV+w++bsJi6bPkdmQUagDg75tVkYH915G+mT08FQZux1oeRmswUURhA0xaPowxxAsh4/sRWFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=qt+nxLUX; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240321163736euoutp027f62b04001acb1ef6b7bcb4211c49283~_1PTbNlEG2901029010euoutp02N;
+	Thu, 21 Mar 2024 16:37:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240321163736euoutp027f62b04001acb1ef6b7bcb4211c49283~_1PTbNlEG2901029010euoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1711039056;
+	bh=P0PL+YV51lBoPPLBXlNYhO3sylePQdWWfpLD5cv1T0w=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=qt+nxLUXHotpfCcsSwJDTPzpkGY4bnNMl+zn7Xe5iWzxwe+SCSBSKjr9lZzurvr37
+	 SaYp1Vt/VY0u7pbHpzHkSdeMAG0Eqfje0rX6gN/JTpPqstTgXUmvGdbIDKU9q1yBCG
+	 mx8Cm/sPK0DY+IaQUqQYF7jb26AqYo0dVAWZ6qt0=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240321163736eucas1p2d7f86e689b06be4649dfc6b7e6fbec2c~_1PTGvAOB1319013190eucas1p2Y;
+	Thu, 21 Mar 2024 16:37:36 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id EF.70.09814.0526CF56; Thu, 21
+	Mar 2024 16:37:36 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240321163735eucas1p2b477eca3ea69e9f20da66f2d16531518~_1PSmJFi62784827848eucas1p2E;
+	Thu, 21 Mar 2024 16:37:35 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240321163735eusmtrp25a471119de88e29a2bc1e915f9d66389~_1PSlZDlI2146221462eusmtrp2q;
+	Thu, 21 Mar 2024 16:37:35 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-01-65fc6250e76e
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id ED.B5.10702.F426CF56; Thu, 21
+	Mar 2024 16:37:35 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240321163735eusmtip1ab812bf977436a303030c3cbca5f70a8~_1PSbX6wf2626326263eusmtip1k;
+	Thu, 21 Mar 2024 16:37:35 +0000 (GMT)
+Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Thu, 21 Mar 2024 16:37:34 +0000
+Date: Thu, 21 Mar 2024 17:37:33 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Jan Kara <jack@suse.cz>
+CC: <wenyang.linux@foxmail.com>, "Eric W . Biederman"
+	<ebiederm@xmission.com>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
+	<keescook@chromium.org>, Christian Brauner <brauner@kernel.org>, Dave Young
+	<dyoung@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH v2 8/9] fs: inotify: delete these unnecessary
+ static variables it_zero and it_int_max
+Message-ID: <20240321163733.h2qdb4j4ojr537ao@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240321163705.3067592-38-surenb@google.com>
-Subject: [PATCH v6 37/37] memprofiling: Documentation
-From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	surenb@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="tgfd42bnlx4rycoi"
+Content-Disposition: inline
+In-Reply-To: <20240321113849.hfzmnz6p3cjbmmwt@quack3>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPKsWRmVeSWpSXmKPExsWy7djP87oBSX9SDU5cZbN4ffgTo8XlJ3wW
+	DRMbWCz+b2tht5g9vZnJ4kx3rsXlXXPYLG5MeMpo0bJ6F6sDp8fshossHgt6zjN7bFrVyebx
+	ft9VNo8zC46we3zeJOcx5VA7SwB7FJdNSmpOZllqkb5dAlfGtsX8BYvFKs5sn8DcwPhMqIuR
+	k0NCwERib/dtti5GLg4hgRWMEt92H2MESQgJfGGUuH0iAiLxmVFiY8tadpiOG9uPM0IkljNK
+	bJ0+kQWuqnfWDyhnK6PE6Y8r2UBaWARUJV6fOM0EYrMJ6Eicf3OHGcQWEZCWmHVsJVgDs8Ba
+	Jom21w9YQBLCAkUScz4sZQWxeQUcJPZvPMQOYQtKnJz5BKyGWaBC4s7mV0BxDiBbWmL5Pw6Q
+	MKeAqcSzZVvZIE5Vlri+bzGUXStxasstJpBdEgLrOSVu/rvLBtIrIeAi8Xu7MUSNsMSr41ug
+	3pSR+L9zPlT9ZEaJ/f8+sEM4qxklljV+ZYKospZoufIEqsNRYv7/5+wQQ/kkbrwVhLiTT2LS
+	tunMEGFeiY42aMCrSay+94ZlAqPyLCSfzULy2SyEzyDCOhILdn9iwxDWlli28DUzhG0rsW7d
+	e5YFjOyrGMVTS4tz01OLjfJSy/WKE3OLS/PS9ZLzczcxAtPd6X/Hv+xgXP7qo94hRiYOxkOM
+	KkDNjzasvsAoxZKXn5eqJMLLzv0zVYg3JbGyKrUoP76oNCe1+BCjNAeLkjivaop8qpBAemJJ
+	anZqakFqEUyWiYNTqoFJrWo9m5RYfJmlpab+kZBe5t0ylSltRhJv/le2JU/h3sm9Yv7EE3uX
+	3jM8Hcm9323FxqmpHb/uaFslTlzx5mx55d3Vk+sLXrEV/X/FsLfvwh2VF1Usa3hn6/A2z+2O
+	9avtNeFTiur3jlBj21bzPZp/8aMv87rcTKXnWPJvldyb6eHWU2o1TzV84yeXzKTQn7c/FDKf
+	sbAXsJ1k2fLdf4F+oemnmBSrbys2zDF61NyQXHBxifbDtu/bSp1qfY8tqii7uTnvZ3/RjWkz
+	TCa+lJ//WfLf/f/OqfHclabzeh57L5i58POu21salMP1F89b7zaps2h/oOx8HhbTR0btHNsr
+	uSM/H0697SSx6bX9fxMlluKMREMt5qLiRADjJEbR8gMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDIsWRmVeSWpSXmKPExsVy+t/xu7r+SX9SDVoOq1i8PvyJ0eLyEz6L
+	hokNLBb/t7WwW8ye3sxkcaY71+LyrjlsFjcmPGW0aFm9i9WB02N2w0UWjwU955k9Nq3qZPN4
+	v+8qm8eZBUfYPT5vkvOYcqidJYA9Ss+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbK
+	yFRJ384mJTUnsyy1SN8uQS+jcfY+toKFYhVnpv1ja2B8ItTFyMkhIWAicWP7ccYuRi4OIYGl
+	jBKzfjQyQyRkJDZ+ucoKYQtL/LnWxQZR9JFR4nv/d3YIZyujxJZl15hAqlgEVCVenzgNZrMJ
+	6Eicf3MHbJKIgLTErGMrWUAamAVWM0nc/XsQrEhYoEhizoelYCt4BRwk9m88BDX1B5PE7mu3
+	mSASghInZz4B6uYA6i6TeL/OFcKUllj+jwOkglPAVOLZsq1sEJcqS1zftxjKrpX4/PcZ4wRG
+	4VlIBs1CGDQLYRBIBbOAlsSNfy+ZMIS1JZYtfM0MYdtKrFv3nmUBI/sqRpHU0uLc9NxiI73i
+	xNzi0rx0veT83E2MwKjfduznlh2MK1991DvEyMTBeIhRBajz0YbVFxilWPLy81KVRHjZuX+m
+	CvGmJFZWpRblxxeV5qQWH2I0BQbiRGYp0eR8YDrKK4k3NDMwNTQxszQwtTQzVhLn9SzoSBQS
+	SE8sSc1OTS1ILYLpY+LglGpgmjV9mtFcPfFXGyu8+9daXv2nwufd2ewf2nL/1RUfYVOHnWm/
+	4jXWJdqbqDpYXbp1M83f54ruO9UVfK+Xrvxw1/aSP4vAjMUcyz3mLpvDE/4z+deEtBWye076
+	vs1w/X1EQrJEtn2mvuKKe+26JdMsJxtXHPpp+3Ee66XIBetSeHwVllkenCD3kyuvOPsM8/ov
+	8izbNFYE9kbmis547LjcJz/6zba59SuPX9nm8Hq9trRC78/el6WVzFE2fxQKpZ8GsXR+OWwb
+	nfUsnuNDWjDf1s3/GI5e9m2ZN/2ItT73nrXT1l6avOWS3TorXq27k2QmRgR/mKZeadp9iv/U
+	QlPZgrKsTR4TWWck82RZc0/iUmIpzkg01GIuKk4EAJrhqjSPAwAA
+X-CMS-MailID: 20240321163735eucas1p2b477eca3ea69e9f20da66f2d16531518
+X-Msg-Generator: CA
+X-RootMTR: 20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6
+References: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+	<tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
+	<CGME20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6@eucas1p2.samsung.com>
+	<20240320103603.u6uqhk6viu4qkaht@quack3>
+	<20240321105555.f4qg5g3wbe57mzzx@joelS2.panther.com>
+	<20240321113849.hfzmnz6p3cjbmmwt@quack3>
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+--tgfd42bnlx4rycoi
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Provide documentation for memory allocation profiling.
+On Thu, Mar 21, 2024 at 12:38:49PM +0100, Jan Kara wrote:
+> On Thu 21-03-24 11:55:55, Joel Granados wrote:
+> > On Wed, Mar 20, 2024 at 11:36:03AM +0100, Jan Kara wrote:
+> > > On Tue 19-03-24 23:57:49, wenyang.linux@foxmail.com wrote:
+> > > > From: Wen Yang <wenyang.linux@foxmail.com>
+> > > >=20
+> > > > Delete unnecessary static variables (it_zero and it_int_max)
+> > > > and encode them directly in the table entry.
+> > > >=20
+> > > > Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+> > > > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> > > > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > Cc: Joel Granados <j.granados@samsung.com>
+> > > > Cc: Christian Brauner <brauner@kernel.org>
+> > > > Cc: Jan Kara <jack@suse.cz>
+> > > > Cc: "Darrick J. Wong" <djwong@kernel.org>
+> > > > Cc: linux-kernel@vger.kernel.org
+> > >=20
+> > > This looks as a sensible cleanup but I don't see the first patch in t=
+he
+> > > series (and neither it is archived at lore.kernel.org) so I cannot re=
+ally
+> > > verify whether your conversion is correct...
+> > This was my original comment. If you want to see the cover letter
+> > look for this mail ID tencent_06797E65CFC655DCD4F0414B9380E95ECC08@qq.c=
+om
+> >=20
+> > Not sure why it separates the cover letter from the rest of the patches.
+>=20
+> No, that is actually a different email :) Based on lore the message ID
+Indeed. I have no idea where I got that ID from. I went back and found
+the one I wanted: https://lore.kernel.org/all/tencent_C5E6023F97E7CC2A046AA=
+EA09BC9ACF43907@qq.com/
+that one is the original V2. This one is just a resend AFAIK.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- Documentation/mm/allocation-profiling.rst | 100 ++++++++++++++++++++++
- Documentation/mm/index.rst                |   1 +
- 2 files changed, 101 insertions(+)
- create mode 100644 Documentation/mm/allocation-profiling.rst
+> should be:
+> 26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@fox=
+mail.com
+>=20
+> but the email is not in the archive...
+>=20
+> 								Honza
+> --=20
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
-diff --git a/Documentation/mm/allocation-profiling.rst b/Documentation/mm/allocation-profiling.rst
-new file mode 100644
-index 000000000000..d3b733b41ae6
---- /dev/null
-+++ b/Documentation/mm/allocation-profiling.rst
-@@ -0,0 +1,100 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===========================
-+MEMORY ALLOCATION PROFILING
-+===========================
-+
-+Low overhead (suitable for production) accounting of all memory allocations,
-+tracked by file and line number.
-+
-+Usage:
-+kconfig options:
-+- CONFIG_MEM_ALLOC_PROFILING
-+
-+- CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-+
-+- CONFIG_MEM_ALLOC_PROFILING_DEBUG
-+  adds warnings for allocations that weren't accounted because of a
-+  missing annotation
-+
-+Boot parameter:
-+  sysctl.vm.mem_profiling=0|1|never
-+
-+  When set to "never", memory allocation profiling overhead is minimized and it
-+  cannot be enabled at runtime (sysctl becomes read-only).
-+  When CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y, default value is "1".
-+  When CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=n, default value is "never".
-+
-+sysctl:
-+  /proc/sys/vm/mem_profiling
-+
-+Runtime info:
-+  /proc/allocinfo
-+
-+Example output::
-+
-+  root@moria-kvm:~# sort -g /proc/allocinfo|tail|numfmt --to=iec
-+        2.8M    22648 fs/kernfs/dir.c:615 func:__kernfs_new_node
-+        3.8M      953 mm/memory.c:4214 func:alloc_anon_folio
-+        4.0M     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] func:ctagmod_start
-+        4.1M        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct_alloc_hashtable
-+        6.0M     1532 mm/filemap.c:1919 func:__filemap_get_folio
-+        8.8M     2785 kernel/fork.c:307 func:alloc_thread_stack_node
-+         13M      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
-+         14M     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
-+         15M     3656 mm/readahead.c:247 func:page_cache_ra_unbounded
-+         55M     4887 mm/slub.c:2259 func:alloc_slab_page
-+        122M    31168 mm/page_ext.c:270 func:alloc_page_ext
-+
-+===================
-+Theory of operation
-+===================
-+
-+Memory allocation profiling builds off of code tagging, which is a library for
-+declaring static structs (that typically describe a file and line number in
-+some way, hence code tagging) and then finding and operating on them at runtime,
-+- i.e. iterating over them to print them in debugfs/procfs.
-+
-+To add accounting for an allocation call, we replace it with a macro
-+invocation, alloc_hooks(), that
-+- declares a code tag
-+- stashes a pointer to it in task_struct
-+- calls the real allocation function
-+- and finally, restores the task_struct alloc tag pointer to its previous value.
-+
-+This allows for alloc_hooks() calls to be nested, with the most recent one
-+taking effect. This is important for allocations internal to the mm/ code that
-+do not properly belong to the outer allocation context and should be counted
-+separately: for example, slab object extension vectors, or when the slab
-+allocates pages from the page allocator.
-+
-+Thus, proper usage requires determining which function in an allocation call
-+stack should be tagged. There are many helper functions that essentially wrap
-+e.g. kmalloc() and do a little more work, then are called in multiple places;
-+we'll generally want the accounting to happen in the callers of these helpers,
-+not in the helpers themselves.
-+
-+To fix up a given helper, for example foo(), do the following:
-+- switch its allocation call to the _noprof() version, e.g. kmalloc_noprof()
-+
-+- rename it to foo_noprof()
-+
-+- define a macro version of foo() like so:
-+
-+  #define foo(...) alloc_hooks(foo_noprof(__VA_ARGS__))
-+
-+It's also possible to stash a pointer to an alloc tag in your own data structures.
-+
-+Do this when you're implementing a generic data structure that does allocations
-+"on behalf of" some other code - for example, the rhashtable code. This way,
-+instead of seeing a large line in /proc/allocinfo for rhashtable.c, we can
-+break it out by rhashtable type.
-+
-+To do so:
-+- Hook your data structure's init function, like any other allocation function.
-+
-+- Within your init function, use the convenience macro alloc_tag_record() to
-+  record alloc tag in your data structure.
-+
-+- Then, use the following form for your allocations:
-+  alloc_hooks_tag(ht->your_saved_tag, kmalloc_noprof(...))
-diff --git a/Documentation/mm/index.rst b/Documentation/mm/index.rst
-index 31d2ac306438..48b9b559ca7b 100644
---- a/Documentation/mm/index.rst
-+++ b/Documentation/mm/index.rst
-@@ -26,6 +26,7 @@ see the :doc:`admin guide <../admin-guide/mm/index>`.
-    page_cache
-    shmfs
-    oom
-+   allocation-profiling
- 
- Legacy Documentation
- ====================
--- 
-2.44.0.291.gc1ea87d7ee-goog
+--=20
 
+Joel Granados
+
+--tgfd42bnlx4rycoi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX8YkwACgkQupfNUreW
+QU/04wwAiSkGtJtr/aohdlb6yhJVf3rJlBoxnmwUEnuKhucDGf9NFgO1mo660rir
+c6NxtH9bkjYoI4utJwt1im6wR553h/Sa4ajeAY+SbO2ACoDw8HCZ0aYtg8o+eDoE
+ikpT5nGTsAKIUNxTHGjosrSI5fX2aOcngr1Jx7uHg+i9lPFo3s+g7ginQ85i42uT
+t83VEY1fR3OMTeXDIMhAMz/vqXYiCuGPUN8IKakzeWiyUwxVfzp3vB6xGhhgDAlK
+kLCU4AsHZM3JmotSCqKhdicrDSqYoYYhiu1J6q7RP/9V0pdVup8xQZKoGuaFfiiQ
+OEbzIOjgKkypPSSSMbnzAZ7NNlLTQrD7BgkLD9j8guHPRdu1F0jHZw3Faw/BhHGp
+bYlefo3sEpf5vUmot+XSRDSMl7jbq3UbynAhDB+63zdsLCEPNrUN0TbJ5xn4yLy5
+YhwR+EMrv1DGOwzkQyaEU9XOLfonYxBjBeOl+6ngiZ+TQm10RIAmVeR5NO/38M46
+qqwVpN3E
+=MYda
+-----END PGP SIGNATURE-----
+
+--tgfd42bnlx4rycoi--
 
