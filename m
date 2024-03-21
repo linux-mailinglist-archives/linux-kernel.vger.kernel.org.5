@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-109675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D4D881C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:02:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62186881C46
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:02:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 305D71F215BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:02:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48C51F2237D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A515812D;
-	Thu, 21 Mar 2024 06:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9F269959;
+	Thu, 21 Mar 2024 06:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="JpULHlga"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3ymIyrUo"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C85D3A8F0
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD1A57873
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711000844; cv=none; b=FmpupBiBDu8bB46clyf+e+l84h8Egup7BxZfIHXi9XfBs9aY8teh+Q7aXET+dILkRBSW6qykEMKbNsuCoIwt/o624CiriSPPadUhLodaBkjU8z3qWEiDqPX6vsL+EdfLcAlwOl3xAXXGy2mSbZPlo5aI2cM8FSOijCKAaBoEYmY=
+	t=1711000847; cv=none; b=rCBb7Vg2rCkOuKs2cAcj2bpIie84C1mgCAB0HNIlGY1PJKGEZeBTyMRs0B26oN+N/Dv2stblyQ67nUVTwdmI0N9yM672hwVE07kF818SuxRiLxCDt9cYa57ykyG2efVKjbVgETEl1iDVXJ8ViSnVRypzqL9I0aN1CpWLcWXB+sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711000844; c=relaxed/simple;
-	bh=4aiYnfklGUdNA5v0rvMjTuhlmz0jerht5D8xp54iK74=;
+	s=arc-20240116; t=1711000847; c=relaxed/simple;
+	bh=6m0KZRRJflU5tJ8OGjhibHJSv5U59NbYKp/Jo7HCkXA=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=Q5ULyfCPIX31SxuJgVbii79AFopBwhC54c1qq+btLzNQJtOhBMuh3XT9ZA3hBP9XdCehHUFDCD84qU96ptMo0yYgLTTYA0GaT6fP00y5j/aYjU3e0fxFKjfN50XGFCpeyrmapwVGfF5yRefX4+2oJ5zQFAk/sE8sjU3DFW8xnI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JpULHlga; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=fJ9jsMfweoNR/+6yyfeGjOzTcL2xtbyJxrkgDhPUHSYJjSbMfnRFa9AAllk/iWJpM/Ho8li0Uz0D5LZ3U7lv0WwzAsZozSjkzuahOo+gxe1srPc7YQhgMB6KcbScsTgjquyYStdUcBi0YwFYxAyrRg6lD9YpBoALiGIyjIHXZAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3ymIyrUo; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609fb151752so10939897b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:00:43 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso825811276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 23:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711000842; x=1711605642; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711000845; x=1711605645; darn=vger.kernel.org;
         h=content-transfer-encoding:to:from:subject:references:mime-version
          :message-id:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vojHkqbNtpD3GTjYNny3Rj7xmglPy9DzyUNuef2MBMo=;
-        b=JpULHlgaoyKyWz2UZxjjiBLm73G70HNsoVzil42aVAfgGT2roYGY4zk1RpNQ6Ajv/t
-         tqNysysqTmomUPVrcS5lMdunpXu9u8Mi43GQwKGapwr2U1r1glS13T/ohr5CaoOm4e9u
-         ktSHiqNRr9u0kB9WIV3KyFMLJm0OssZTTL/bnG4vNkmO5m3ECdSoBB/xlcQcb4YvLj/Q
-         IyySgzXvlH26UqLEHzmTO5sJWpCHN3911K4e69NZfrtHOBJa/19VYH74ofZ4XE/ZeHih
-         atZ2TYuYp8arfVx5TBqXoYIzt5QbwJWIne4hunwJlqP8MzYyKtX1Xn8TxgQjiX4usU17
-         MVLw==
+        bh=zRnFA9pfHXZ9RNQTcmi2ijnTiZS/iti8+cu2PF/551A=;
+        b=3ymIyrUo2uKiiLvknycpL37ZKsczHYUdVJgMpp6G7QXODBdw4M80ZIoSqEcZK7IzTh
+         1za8V7JgKwyQ7+LJzOpssWdXKAjvXxyxdQd8W576pNL7kLoMaCTy4di3XEJdiKJYIODZ
+         mKugSmxuC02RtQ1TetxiX25Yw4/iqd8PTpYVvD8CqAIcLY18Y5phVNy+MsMLzBvLyBDy
+         1/QwXr32itnfaTrZWQouWViVsOr6ryN1xHrWigcRTjCMSSZu/19qKOCoyYki2qNOmyaQ
+         sLanOKeowoByClk64DmAQcrMwQ6dFo8iJNUKJo1OX9xumMSpyFzuDxzqIC7yN9jHiyyM
+         5duQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711000842; x=1711605642;
+        d=1e100.net; s=20230601; t=1711000845; x=1711605645;
         h=content-transfer-encoding:to:from:subject:references:mime-version
          :message-id:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=vojHkqbNtpD3GTjYNny3Rj7xmglPy9DzyUNuef2MBMo=;
-        b=IO7sCBiw/DFtQdA5OGbXQHydcYmVefCnlDEH3elMbiIaX0KHdU2PkEg4G7q3wKhKiB
-         pFUv8IDPMMQMNh8TijCT6bQWLKqSVHOpCrLkNAaU2UjoKsDC6MisNYVuLecyoLjybAk5
-         NAmu3gr0azHU+sFji5AtiKvuSHXivAaUK5ofk1NLbllqgAwkLkFECJB+XCTRR5sJ1X4G
-         95//XX31j4b99M3RJW6uD2iVgQMfvPr4uiThzLRljuxpvlpMg6cQLodWoNhiK+5FoFLR
-         6UynFp8NbOS1pvqE+UUKBJstx0JtyjOEr5J9tDyqDPQ/erduREebxtXLysLKYL2OkixD
-         CoNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWCH+EGhhxAlAbYZA3F7wlK9D7T/qhcKw8ZM/koJj0dINW64xHr9MBHUi0+v7yZgtb5zvSBkgaOn3WutXDORQL2tfoMwJVSpk5t+6om
-X-Gm-Message-State: AOJu0YzlWB77gWovOcQicalTnhK9MH6932jcoDlRpoLr6cW68SXHIjuO
-	fZqCPVq0V1FqN8BAFqCAj78oZ0JBLAVViL39poVvS4FE5hv4ivgSc/O8JiwLlPhHJ9rTgA7v3yA
-	Noa9oOw==
-X-Google-Smtp-Source: AGHT+IE4D5iCRIsPgcBFRPm4cKy2hSTJaELL1ZSlzKDbfWv5T9/W2JEov6kaL/JLLzMD6UVTwim6GRrl0GKU
+        bh=zRnFA9pfHXZ9RNQTcmi2ijnTiZS/iti8+cu2PF/551A=;
+        b=W6aQ76WI7i9F/z6OTCtw9oIKXrqCzL1LEUfEJCAeu+qdyuJnhFELppz7GMMv/Lq7vw
+         cR689mr/3VZ5b5vM0PmkdHLjr0T2WYQVdDKwhUcDKi6aYiGyDZ5J6LJEL3+x7ucZXPYO
+         IQwMujpXtZ9UYzze1vXF7yaKKhyeCTVJo3BbcXXcjk3g2opgfizUPoaTdk+bSNNmxNB/
+         o4JODrlSVrEE5S7H9EGUsmGN8wLKT63nhGG3H8pyia7xiiBVyOeGAJ0Zax8Co4LMCbme
+         PcjsTIPjhzYfq0mRBnIjzY5Rsdsb3PDCeikS7LXawvRethrc55f1eE2uBKvKSWUtTL/r
+         P9kw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgQpTnYZ/QkI2XDavaROg8fy/fpwq8uIih2/XPuR0DIRj5ziDVsaLLcr7OZ6w0A4OA8lIOLZN526fRjsKN5Twxeq45wDmMQzu3x3h9
+X-Gm-Message-State: AOJu0YzCJOGwR2DmwA8w8xrSfyFJ1+89WZWSWL0OfunEKRVQaGU5ac6L
+	xTUu6zRf/uFtXkaVnEsDc/qMK8oK7GTSrBchO3ldDFJsNJyyaOxY7GXUuVMVGZm7SF+p8fQe5lv
+	OltQLKg==
+X-Google-Smtp-Source: AGHT+IH7dLwVAgKevoQ4rNxLbtZHJaCXA6L6vZg0WcTg8hlz2pjhVnbpYqXUMudcz+f+HPRyPvXAO94ks4CC
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7f3:cf74:42c4:c0a])
- (user=irogers job=sendgmr) by 2002:a81:a184:0:b0:60b:b968:a28e with SMTP id
- y126-20020a81a184000000b0060bb968a28emr2118606ywg.7.1711000842294; Wed, 20
- Mar 2024 23:00:42 -0700 (PDT)
-Date: Wed, 20 Mar 2024 23:00:12 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:1b85:b0:dbe:30cd:8fcb with SMTP
+ id ei5-20020a0569021b8500b00dbe30cd8fcbmr1126034ybb.0.1711000844811; Wed, 20
+ Mar 2024 23:00:44 -0700 (PDT)
+Date: Wed, 20 Mar 2024 23:00:13 -0700
 In-Reply-To: <20240321060016.1464787-1-irogers@google.com>
-Message-Id: <20240321060016.1464787-9-irogers@google.com>
+Message-Id: <20240321060016.1464787-10-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240321060016.1464787-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
-Subject: [PATCH v1 08/12] perf vendor events intel: Update sierraforest to 1.02
+Subject: [PATCH v1 09/12] perf vendor events intel: Update skylakex to 1.33
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -90,175 +90,307 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Update events from 1.01 to 1.02 as released in:
-https://github.com/intel/perfmon/commit/451dd41ae627b56433ad4065bf3632789eb=
-70834
+Update events from 1.32 to 1.33 as released in:
+https://github.com/intel/perfmon/commit/3fe7390dd18496c35ec3a9cf17de0473fd5=
+485cb
 
-Various description updates. Adds topdown events
-TOPDOWN_BAD_SPECULATION.ALL_P, TOPDOWN_BE_BOUND.ALL_P,
-TOPDOWN_FE_BOUND.ALL_P and TOPDOWN_RETIRING.ALL_P.
+Various description updates. Adds the event
+OFFCORE_RESPONSE.ALL_READS.L3_HIT.HIT_OTHER_CORE_FWD.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/arch/x86/mapfile.csv    |  2 +-
- .../arch/x86/sierraforest/pipeline.json       | 36 ++++++++++++++++---
- 2 files changed, 32 insertions(+), 6 deletions(-)
+ tools/perf/pmu-events/arch/x86/mapfile.csv         |  2 +-
+ tools/perf/pmu-events/arch/x86/skylakex/cache.json |  9 +++++++++
+ .../pmu-events/arch/x86/skylakex/frontend.json     | 10 +++++-----
+ .../perf/pmu-events/arch/x86/skylakex/memory.json  |  2 +-
+ tools/perf/pmu-events/arch/x86/skylakex/other.json |  2 +-
+ .../pmu-events/arch/x86/skylakex/pipeline.json     |  2 +-
+ .../arch/x86/skylakex/uncore-interconnect.json     | 14 +++++++-------
+ .../pmu-events/arch/x86/skylakex/uncore-io.json    |  2 +-
+ .../arch/x86/skylakex/virtual-memory.json          |  2 +-
+ 9 files changed, 27 insertions(+), 18 deletions(-)
 
 diff --git a/tools/perf/pmu-events/arch/x86/mapfile.csv b/tools/perf/pmu-ev=
 ents/arch/x86/mapfile.csv
-index e5de35c96358..ac32377ab01a 100644
+index ac32377ab01a..e67e7906b2cf 100644
 --- a/tools/perf/pmu-events/arch/x86/mapfile.csv
 +++ b/tools/perf/pmu-events/arch/x86/mapfile.csv
-@@ -27,7 +27,7 @@ GenuineIntel-6-2E,v4,nehalemex,core
- GenuineIntel-6-A7,v1.02,rocketlake,core
- GenuineIntel-6-2A,v19,sandybridge,core
- GenuineIntel-6-8F,v1.20,sapphirerapids,core
--GenuineIntel-6-AF,v1.01,sierraforest,core
-+GenuineIntel-6-AF,v1.02,sierraforest,core
+@@ -30,7 +30,7 @@ GenuineIntel-6-8F,v1.20,sapphirerapids,core
+ GenuineIntel-6-AF,v1.02,sierraforest,core
  GenuineIntel-6-(37|4A|4C|4D|5A),v15,silvermont,core
  GenuineIntel-6-(4E|5E|8E|9E|A5|A6),v58,skylake,core
- GenuineIntel-6-55-[01234],v1.32,skylakex,core
-diff --git a/tools/perf/pmu-events/arch/x86/sierraforest/pipeline.json b/to=
-ols/perf/pmu-events/arch/x86/sierraforest/pipeline.json
-index ba9843110f07..90292dc03d33 100644
---- a/tools/perf/pmu-events/arch/x86/sierraforest/pipeline.json
-+++ b/tools/perf/pmu-events/arch/x86/sierraforest/pipeline.json
-@@ -249,10 +249,17 @@
+-GenuineIntel-6-55-[01234],v1.32,skylakex,core
++GenuineIntel-6-55-[01234],v1.33,skylakex,core
+ GenuineIntel-6-86,v1.21,snowridgex,core
+ GenuineIntel-6-8[CD],v1.15,tigerlake,core
+ GenuineIntel-6-2C,v5,westmereep-dp,core
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/cache.json b/tools/per=
+f/pmu-events/arch/x86/skylakex/cache.json
+index d28d8822a51a..14229f4b29d8 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/cache.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/cache.json
+@@ -763,6 +763,15 @@
+         "SampleAfterValue": "100003",
          "UMask": "0x1"
      },
-     {
--        "BriefDescription": "Counts the number of issue slots that were no=
-t consumed by the backend because allocation is stalled due to a mispredict=
-ed jump or a machine clear.",
-+        "BriefDescription": "Counts the number of issue slots that were no=
-t consumed by the backend because allocation is stalled due to a mispredict=
-ed jump or a machine clear. [This event is alias to TOPDOWN_BAD_SPECULATION=
-ALL_P]",
-         "EventCode": "0x73",
-         "EventName": "TOPDOWN_BAD_SPECULATION.ALL",
--        "PublicDescription": "Counts the total number of issue slots that =
-were not consumed by the backend because allocation is stalled due to a mis=
-predicted jump or a machine clear. Only issue slots wasted due to fast nuke=
-s such as memory ordering nukes are counted. Other nukes are not accounted =
-for. Counts all issue slots blocked during this recovery window, including =
-relevant microcode flows, and while uops are not yet available in the instr=
-uction queue (IQ) or until an FE_BOUND event occurs besides OTHER and CISC.=
- Also includes the issue slots that were consumed by the backend but were t=
-hrown away because they were younger than the mispredict or machine clear."=
-,
-+        "PublicDescription": "Counts the total number of issue slots that =
-were not consumed by the backend because allocation is stalled due to a mis=
-predicted jump or a machine clear. Only issue slots wasted due to fast nuke=
-s such as memory ordering nukes are counted. Other nukes are not accounted =
-for. Counts all issue slots blocked during this recovery window, including =
-relevant microcode flows, and while uops are not yet available in the instr=
-uction queue (IQ) or until an FE_BOUND event occurs besides OTHER and CISC.=
- Also includes the issue slots that were consumed by the backend but were t=
-hrown away because they were younger than the mispredict or machine clear. =
-[This event is alias to TOPDOWN_BAD_SPECULATION.ALL_P]",
-+        "SampleAfterValue": "1000003"
-+    },
 +    {
-+        "BriefDescription": "Counts the number of issue slots that were no=
-t consumed by the backend because allocation is stalled due to a mispredict=
-ed jump or a machine clear. [This event is alias to TOPDOWN_BAD_SPECULATION=
-ALL]",
-+        "EventCode": "0x73",
-+        "EventName": "TOPDOWN_BAD_SPECULATION.ALL_P",
-+        "PublicDescription": "Counts the total number of issue slots that =
-were not consumed by the backend because allocation is stalled due to a mis=
-predicted jump or a machine clear. Only issue slots wasted due to fast nuke=
-s such as memory ordering nukes are counted. Other nukes are not accounted =
-for. Counts all issue slots blocked during this recovery window, including =
-relevant microcode flows, and while uops are not yet available in the instr=
-uction queue (IQ) or until an FE_BOUND event occurs besides OTHER and CISC.=
- Also includes the issue slots that were consumed by the backend but were t=
-hrown away because they were younger than the mispredict or machine clear. =
-[This event is alias to TOPDOWN_BAD_SPECULATION.ALL]",
-         "SampleAfterValue": "1000003"
-     },
-     {
-@@ -284,7 +291,7 @@
-         "UMask": "0x1"
-     },
-     {
--        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to backend stalls",
-+        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to backend stalls [This event is alias to TOPDOWN_BE_BOUND.ALL_P]=
++        "BriefDescription": "OFFCORE_RESPONSE.ALL_READS.L3_HIT.HIT_OTHER_C=
+ORE_FWD hit in the L3 and the snoop to one of the sibling cores hits the li=
+ne in E/S/F state and the line is forwarded.",
++        "EventCode": "0xB7, 0xBB",
++        "EventName": "OFFCORE_RESPONSE.ALL_READS.L3_HIT.HIT_OTHER_CORE_FWD=
 ",
-         "EventCode": "0x74",
-         "EventName": "TOPDOWN_BE_BOUND.ALL",
-         "SampleAfterValue": "1000003"
-@@ -296,6 +303,12 @@
-         "SampleAfterValue": "1000003",
++        "MSRIndex": "0x1a6,0x1a7",
++        "MSRValue": "0x8003C07F7",
++        "SampleAfterValue": "100003",
++        "UMask": "0x1"
++    },
+     {
+         "BriefDescription": "Counts all demand & prefetch RFOs that have a=
+ny response type.",
+         "EventCode": "0xB7, 0xBB",
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/frontend.json b/tools/=
+perf/pmu-events/arch/x86/skylakex/frontend.json
+index 095904c77001..d6f543471b24 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/frontend.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/frontend.json
+@@ -19,7 +19,7 @@
+         "BriefDescription": "Decode Stream Buffer (DSB)-to-MITE switches",
+         "EventCode": "0xAB",
+         "EventName": "DSB2MITE_SWITCHES.COUNT",
+-        "PublicDescription": "This event counts the number of the Decode S=
+tream Buffer (DSB)-to-MITE switches including all misses because of missing=
+ Decode Stream Buffer (DSB) cache and u-arch forced misses.\nNote: Invoking=
+ MITE requires two or three cycles delay.",
++        "PublicDescription": "This event counts the number of the Decode S=
+tream Buffer (DSB)-to-MITE switches including all misses because of missing=
+ Decode Stream Buffer (DSB) cache and u-arch forced misses. Note: Invoking =
+MITE requires two or three cycles delay.",
+         "SampleAfterValue": "2000003",
          "UMask": "0x1"
      },
-+    {
-+        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to backend stalls [This event is alias to TOPDOWN_BE_BOUND.ALL]",
-+        "EventCode": "0x74",
-+        "EventName": "TOPDOWN_BE_BOUND.ALL_P",
-+        "SampleAfterValue": "1000003"
-+    },
-     {
-         "BriefDescription": "Counts the number of issue slots every cycle =
-that were not consumed by the backend due to memory reservation stall (sche=
-duler not being able to accept another uop).  This could be caused by RSV f=
-ull or load/store buffer block.",
-         "EventCode": "0x74",
-@@ -332,11 +345,17 @@
-         "UMask": "0x10"
-     },
-     {
--        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to front end stalls",
-+        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to front end stalls [This event is alias to TOPDOWN_FE_BOUND.ALL_=
-P]",
-         "EventCode": "0x71",
-         "EventName": "TOPDOWN_FE_BOUND.ALL",
-         "SampleAfterValue": "1000003"
-     },
-+    {
-+        "BriefDescription": "Counts the number of retirement slots not con=
-sumed due to front end stalls [This event is alias to TOPDOWN_FE_BOUND.ALL]=
-",
-+        "EventCode": "0x71",
-+        "EventName": "TOPDOWN_FE_BOUND.ALL_P",
-+        "SampleAfterValue": "1000003"
-+    },
-     {
-         "BriefDescription": "Counts the number of issue slots every cycle =
-that were not delivered by the frontend due to BAClear",
-         "EventCode": "0x71",
-@@ -409,12 +428,19 @@
+@@ -267,11 +267,11 @@
          "UMask": "0x4"
      },
      {
--        "BriefDescription": "Counts the number of consumed retirement slot=
-s.  Similar to UOPS_RETIRED.ALL",
-+        "BriefDescription": "Counts the number of consumed retirement slot=
-s.  Similar to UOPS_RETIRED.ALL [This event is alias to TOPDOWN_RETIRING.AL=
-L_P]",
-         "EventCode": "0x72",
-         "EventName": "TOPDOWN_RETIRING.ALL",
-         "PEBS": "1",
-         "SampleAfterValue": "1000003"
+-        "BriefDescription": "Cycles Decode Stream Buffer (DSB) is deliveri=
+ng 4 Uops [This event is alias to IDQ.DSB_CYCLES_OK]",
++        "BriefDescription": "Cycles Decode Stream Buffer (DSB) is deliveri=
+ng 4 or more Uops [This event is alias to IDQ.DSB_CYCLES_OK]",
+         "CounterMask": "4",
+         "EventCode": "0x79",
+         "EventName": "IDQ.ALL_DSB_CYCLES_4_UOPS",
+-        "PublicDescription": "Counts the number of cycles 4 uops were deli=
+vered to Instruction Decode Queue (IDQ) from the Decode Stream Buffer (DSB)=
+ path. Count includes uops that may 'bypass' the IDQ. [This event is alias =
+to IDQ.DSB_CYCLES_OK]",
++        "PublicDescription": "Counts the number of cycles 4 or more uops w=
+ere delivered to Instruction Decode Queue (IDQ) from the Decode Stream Buff=
+er (DSB) path. Count includes uops that may 'bypass' the IDQ. [This event i=
+s alias to IDQ.DSB_CYCLES_OK]",
+         "SampleAfterValue": "2000003",
+         "UMask": "0x18"
      },
-+    {
-+        "BriefDescription": "Counts the number of consumed retirement slot=
-s.  Similar to UOPS_RETIRED.ALL [This event is alias to TOPDOWN_RETIRING.AL=
-L]",
-+        "EventCode": "0x72",
-+        "EventName": "TOPDOWN_RETIRING.ALL_P",
-+        "PEBS": "1",
-+        "SampleAfterValue": "1000003"
-+    },
+@@ -321,11 +321,11 @@
+         "UMask": "0x18"
+     },
      {
-         "BriefDescription": "Counts the number of uops issued by the front=
- end every cycle.",
-         "EventCode": "0x0e",
+-        "BriefDescription": "Cycles Decode Stream Buffer (DSB) is deliveri=
+ng 4 Uops [This event is alias to IDQ.ALL_DSB_CYCLES_4_UOPS]",
++        "BriefDescription": "Cycles Decode Stream Buffer (DSB) is deliveri=
+ng 4 or more Uops [This event is alias to IDQ.ALL_DSB_CYCLES_4_UOPS]",
+         "CounterMask": "4",
+         "EventCode": "0x79",
+         "EventName": "IDQ.DSB_CYCLES_OK",
+-        "PublicDescription": "Counts the number of cycles 4 uops were deli=
+vered to Instruction Decode Queue (IDQ) from the Decode Stream Buffer (DSB)=
+ path. Count includes uops that may 'bypass' the IDQ. [This event is alias =
+to IDQ.ALL_DSB_CYCLES_4_UOPS]",
++        "PublicDescription": "Counts the number of cycles 4 or more uops w=
+ere delivered to Instruction Decode Queue (IDQ) from the Decode Stream Buff=
+er (DSB) path. Count includes uops that may 'bypass' the IDQ. [This event i=
+s alias to IDQ.ALL_DSB_CYCLES_4_UOPS]",
+         "SampleAfterValue": "2000003",
+         "UMask": "0x18"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/memory.json b/tools/pe=
+rf/pmu-events/arch/x86/skylakex/memory.json
+index 2b797dbc75fe..dba3cd6b3690 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/memory.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/memory.json
+@@ -864,7 +864,7 @@
+         "BriefDescription": "Number of times an RTM execution aborted due =
+to any reasons (multiple categories may count as one).",
+         "EventCode": "0xC9",
+         "EventName": "RTM_RETIRED.ABORTED",
+-        "PEBS": "1",
++        "PEBS": "2",
+         "PublicDescription": "Number of times RTM abort was triggered.",
+         "SampleAfterValue": "2000003",
+         "UMask": "0x4"
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/other.json b/tools/per=
+f/pmu-events/arch/x86/skylakex/other.json
+index cda8a7a45f0c..2511d722327a 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/other.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/other.json
+@@ -19,7 +19,7 @@
+         "BriefDescription": "Core cycles where the core was running in a m=
+anner where Turbo may be clipped to the AVX512 turbo schedule.",
+         "EventCode": "0x28",
+         "EventName": "CORE_POWER.LVL2_TURBO_LICENSE",
+-        "PublicDescription": "Core cycles where the core was running with =
+power-delivery for license level 2 (introduced in Skylake Server michroarch=
+tecture).  This includes high current AVX 512-bit instructions.",
++        "PublicDescription": "Core cycles where the core was running with =
+power-delivery for license level 2 (introduced in Skylake Server microarchi=
+tecture).  This includes high current AVX 512-bit instructions.",
+         "SampleAfterValue": "200003",
+         "UMask": "0x20"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/pipeline.json b/tools/=
+perf/pmu-events/arch/x86/skylakex/pipeline.json
+index 66d686cc933e..c50ddf5b40dd 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/pipeline.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/pipeline.json
+@@ -396,7 +396,7 @@
+         "Errata": "SKL091, SKL044",
+         "EventCode": "0xC0",
+         "EventName": "INST_RETIRED.NOP",
+-        "PEBS": "1",
++        "PEBS": "2",
+         "SampleAfterValue": "2000003",
+         "UMask": "0x2"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/uncore-interconnect.js=
+on b/tools/perf/pmu-events/arch/x86/skylakex/uncore-interconnect.json
+index 3eece8a728b5..f32d4d9d283a 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/uncore-interconnect.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/uncore-interconnect.json
+@@ -38,7 +38,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.CLFLUSH",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x80",
+         "Unit": "IRP"
+     },
+@@ -47,7 +47,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.CRD",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x2",
+         "Unit": "IRP"
+     },
+@@ -56,7 +56,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.DRD",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x4",
+         "Unit": "IRP"
+     },
+@@ -65,7 +65,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.PCIDCAHINT",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x20",
+         "Unit": "IRP"
+     },
+@@ -74,7 +74,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.PCIRDCUR",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x1",
+         "Unit": "IRP"
+     },
+@@ -101,7 +101,7 @@
+         "EventCode": "0x10",
+         "EventName": "UNC_I_COHERENT_OPS.WBMTOI",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of coherency related opera=
+tions servied by the IRP",
++        "PublicDescription": "Counts the number of coherency related opera=
+tions serviced by the IRP",
+         "UMask": "0x40",
+         "Unit": "IRP"
+     },
+@@ -500,7 +500,7 @@
+         "EventCode": "0x11",
+         "EventName": "UNC_I_TRANSACTIONS.WRITES",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts the number of Inbound transactions fr=
+om the IRP to the Uncore.  This can be filtered based on request type in ad=
+dition to the source queue.  Note the special filtering equation.  We do OR=
+-reduction on the request type.  If the SOURCE bit is set, then we also do =
+AND qualification based on the source portID.; Trackes only write requests.=
+  Each write request should have a prefetch, so there is no need to explici=
+tly track these requests.  For writes that are tickled and have to retry, t=
+he counter will be incremented for each retry.",
++        "PublicDescription": "Counts the number of Inbound transactions fr=
+om the IRP to the Uncore.  This can be filtered based on request type in ad=
+dition to the source queue.  Note the special filtering equation.  We do OR=
+-reduction on the request type.  If the SOURCE bit is set, then we also do =
+AND qualification based on the source portID.; Tracks only write requests. =
+ Each write request should have a prefetch, so there is no need to explicit=
+ly track these requests.  For writes that are tickled and have to retry, th=
+e counter will be incremented for each retry.",
+         "UMask": "0x2",
+         "Unit": "IRP"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/uncore-io.json b/tools=
+/perf/pmu-events/arch/x86/skylakex/uncore-io.json
+index 2a3a709018bb..743c91f3d2f0 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/uncore-io.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/uncore-io.json
+@@ -34,7 +34,7 @@
+         "EventCode": "0x1",
+         "EventName": "UNC_IIO_CLOCKTICKS",
+         "PerPkg": "1",
+-        "PublicDescription": "Counts clockticks of the 1GHz trafiic contro=
+ller clock in the IIO unit.",
++        "PublicDescription": "Counts clockticks of the 1GHz traffic contro=
+ller clock in the IIO unit.",
+         "Unit": "IIO"
+     },
+     {
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/virtual-memory.json b/=
+tools/perf/pmu-events/arch/x86/skylakex/virtual-memory.json
+index f59405877ae8..73feadaf7674 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/virtual-memory.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/virtual-memory.json
+@@ -205,7 +205,7 @@
+         "BriefDescription": "Counts 1 per cycle for each PMH that is busy =
+with a page walk for an instruction fetch request. EPT page walk duration a=
+re excluded in Skylake.",
+         "EventCode": "0x85",
+         "EventName": "ITLB_MISSES.WALK_PENDING",
+-        "PublicDescription": "Counts 1 per cycle for each PMH (Page Miss H=
+andler) that is busy with a page walk for an instruction fetch request. EPT=
+ page walk duration are excluded in Skylake michroarchitecture.",
++        "PublicDescription": "Counts 1 per cycle for each PMH (Page Miss H=
+andler) that is busy with a page walk for an instruction fetch request. EPT=
+ page walk duration are excluded in Skylake microarchitecture.",
+         "SampleAfterValue": "100003",
+         "UMask": "0x10"
+     },
 --=20
 2.44.0.396.g6e790dbe36-goog
 
