@@ -1,136 +1,179 @@
-Return-Path: <linux-kernel+bounces-110573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B91478860C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:52:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 306CE8860D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 666751F232D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:52:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813C5B22806
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D19D134404;
-	Thu, 21 Mar 2024 18:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B68134406;
+	Thu, 21 Mar 2024 19:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="X/53hI3D"
-Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kWoEaLmI"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11DBA8BE7;
-	Thu, 21 Mar 2024 18:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DBCE57B;
+	Thu, 21 Mar 2024 19:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711047139; cv=none; b=LjaVKUy/hi+/8MhqDvkcfYE7w1kXnigLTYi1p71/+gqqg+PerG+MrKmPTaVyhjFZNKTinKW+ZXlD8Dgd02v6vTHa2Tx1PBgJvzAm3bwsZoK9plk2S6eShjX5wyrAfh5jhd2vqujmN9/SF/oRr4QqdgdxL4qPP+uaCZyxC6qyVVI=
+	t=1711047665; cv=none; b=CQmbEkUK7f66tm6URqvpbyd4UdJDUNVn9HMXhoo+R8LVibrU30xCosVlr0s63YaKNeBMzBu/gpAgFJ9KGR0Z+4CWYw4OUGiIftgbWTXky8yUdhVwm84pcyH9TTTrzHEDkntbx+HiztBwagh26IbC2/jfm8qQXtgIV2qe6+M2Hp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711047139; c=relaxed/simple;
-	bh=QtbUvtXiAXkDkzVt6KWS9DcJFxTw7uEEyc5dWQXE38E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RdZCg9x31+DxdHv64vDxCOgOXs7hb2FvX6GRErVwrxu5zcvT4QsGg+VcfLunFM0iPlzgrFe/va/bQ3mw0Ri6W/CNaQQNuZDPCVBk5RBDVwQvRsmC77/ud/vAmJRElMwQoYMCajuvqKP8GCPKrjDn464Gnnn05rz8GnC0zDpnnQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=X/53hI3D; arc=none smtp.client-ip=45.145.95.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
-	t=1711047135; bh=QtbUvtXiAXkDkzVt6KWS9DcJFxTw7uEEyc5dWQXE38E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=X/53hI3DyMr/wdMm7LgaD4MnXHFKR94gOgDZx6I8LsYSn1f+oLIDbpJM+5HiBTMqV
-	 jYc1vGBqp4dobMqhoTCnWvaulidCUK8uUDyp0A/t4VPrFlcwJr6xP5JmB9WQPQ1jNn
-	 hkWZpKbpVT+Y8iX8aRurqW49yriY3x28wfoEcTAn0wGDOCpo9z5cD8/Fc+hmYQWZiv
-	 snzZ7uR6ezqg511BKuCb3VUQzv3Ihz45V1C9kBq2IOBzSel6NqK1vS30Cw9GnFhKUD
-	 6THY2Fwl9BarMSVjS6N3o1RjFdsPPrXfKTTcc3frlkhK5QYXYJsRGzI9jFcH2Hq4WL
-	 3D5RBuIX7Bbbg==
-To: Edward Adam Davis <eadavis@qq.com>,
- syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com
-Cc: kvalo@kernel.org, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH usb] wifi: ath9k: fix oob in htc_issue_send
-In-Reply-To: <tencent_7225DC0D859205DD8BDDAE191CCFBF0D8907@qq.com>
-References: <0000000000004e41110614187d35@google.com>
- <tencent_7225DC0D859205DD8BDDAE191CCFBF0D8907@qq.com>
-Date: Thu, 21 Mar 2024 19:52:15 +0100
-X-Clacks-Overhead: GNU Terry Pratchett
-Message-ID: <87wmpvfme8.fsf@toke.dk>
+	s=arc-20240116; t=1711047665; c=relaxed/simple;
+	bh=YUX9RxKkWXgLUlg1ZO2OrjKycS8zeiDnhjRiRetu/Zo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EaFJQw+diSTe2Bm6Rnm3H2EtsxrxEa8b95YckPik4RlBXgdYIpc6WwLNvbaiqjNbgTmH/V5UEvijMuap4mVe/fLkY8lkOGRt8ebtTPJBOkDKxqVD9TpkOCGUdCv0jT5AB/xjhLxLEXkiSbfScoqxTfMYFDqfTskbwYp37HcG3jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kWoEaLmI; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd72353d9fso788428b6e.3;
+        Thu, 21 Mar 2024 12:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711047662; x=1711652462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9LMHhAil+e1DwoMOsUUxTokSN39rbYNgoUrrRrbF2I=;
+        b=kWoEaLmIXiGjmFQK3GsB6EU58NUz7N61bcM7ctc2naO3BuqiY0v6tGpWyA9qDeoN6O
+         Nvg3PAIkYenyqiqjsc0wKzABFuJnmGEsRekO/Qek0+jErRSDpovz1u/603R06890f1iq
+         o8ffRb0/C/FRxj/fOaMMC4KUYIqr5GwP8lc9oQocycJZTE0ZthcfxV+Y7Toj0GQ3L9jY
+         wDYwGyHPzjiYbXRCJVL0IlGgnygxqT4m3ruYSHnHsTqc55GME8yS9/Xz1NWBMNyLZ+v4
+         qJI29ieRxV87EVg3pw79OEDjBubg7kBPb4NfP002gGpGt7mSeetm6kvRofNw28CxbIdL
+         k5ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711047662; x=1711652462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m9LMHhAil+e1DwoMOsUUxTokSN39rbYNgoUrrRrbF2I=;
+        b=cWmqU/J07Gq90aTr8tMVcgZ1BFmBzvFWLCQQO2p8Mhd2X8IhK5/pVt0Yk/A41vcM5X
+         F+b+KGGTlKsddcmZ5+W7L2AMmD1KzzGlvCGO2uhYjTfeIXmXBMnsMyQokp7Omadzc7i/
+         Tt7XDASVHCGQt1uDL5MXk9hX0PNB6hDpxTA54hDC46QWhIWMCMC1qsaNLe/aS28u0eXk
+         MjPfz4v6oeOzS2VUzLH2KFsbGxnzXkdat7tV3lSO1ExPsns8o2t/W3MHeZtraUyiluSA
+         4F3DTx4W0cSoacUhxmcBjYN/aBhl4bkNf42JwtgCP2t50j52wBsfhecO8yeBZhx2YZJX
+         hZjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyaCAIsdhtFZ5sXkXod7nZByg0RYl1mxT+gmh8s2BdWYHeDzU0+uPmjdvtZcgtSxAVpd+XpykCYMeepx0YbalYRWsDS8cZuMlFIWM/YJf5+I55tSbzpwepn9rZN1y1nCEh
+X-Gm-Message-State: AOJu0YyKHSgNrfUrMxhpY7eGBNV8LRNa12fkKuTV6ooKAi7h6F3PEBBi
+	+SsXwtOl6uuy4YndyhOVWcKyLLDaLCNVv+JKMS2B95jQEAQScncgGkw29GesP0IjjyecVnvPAmu
+	oMt1oNCAE6oUAw2//+uhsGg+NFXhH5W6zcXA=
+X-Google-Smtp-Source: AGHT+IFgzxgAPRHvuLr0wrtOjzi8zMJYI0ETlh7IR0JuYFGwPrOAo/6WwU9MifXa5daKL6je4JiBoOkXEMF3UnHuLRQ=
+X-Received: by 2002:a05:6a20:4394:b0:1a3:6e5c:46f4 with SMTP id
+ i20-20020a056a20439400b001a36e5c46f4mr625119pzl.7.1711047166738; Thu, 21 Mar
+ 2024 11:52:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240321170444.388225-1-chen.dylane@gmail.com>
+In-Reply-To: <20240321170444.388225-1-chen.dylane@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 21 Mar 2024 11:52:34 -0700
+Message-ID: <CAEf4BzYJeEViQaRJb6u06GJSLa6uBmykRZa4JnWJ9VXw+WoX2g@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add specific btf name info when do core
+To: Tao Chen <chen.dylane@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Edward Adam Davis <eadavis@qq.com> writes:
-
-> [syzbot reported]
-> usb 1-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
-> ath9k_htc 1-1:1.0: ath9k_htc: HTC initialized with 33 credits
-> ------------[ cut here ]------------
-> UBSAN: array-index-out-of-bounds in drivers/net/wireless/ath/ath9k/htc_hst.c:26:51
-> index 255 is out of range for type 'htc_endpoint [22]'
-> CPU: 1 PID: 2494 Comm: kworker/1:2 Not tainted 6.8.0-rc6-syzkaller-00190-ga788e53c05ae #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> Workqueue: events request_firmware_work_func
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
->  ubsan_epilogue lib/ubsan.c:217 [inline]
->  __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:347
->  htc_issue_send.constprop.0+0x209/0x230 drivers/net/wireless/ath/ath9k/htc_hst.c:26
->  ath9k_wmi_cmd_issue drivers/net/wireless/ath/ath9k/wmi.c:305 [inline]
->  ath9k_wmi_cmd+0x424/0x630 drivers/net/wireless/ath/ath9k/wmi.c:342
->  ath9k_regread+0xdb/0x160 drivers/net/wireless/ath/ath9k/htc_drv_init.c:242
->  ath9k_hw_read_revisions drivers/net/wireless/ath/ath9k/hw.c:287 [inline]
->  __ath9k_hw_init drivers/net/wireless/ath/ath9k/hw.c:572 [inline]
->  ath9k_hw_init+0xf02/0x2b30 drivers/net/wireless/ath/ath9k/hw.c:700
->  ath9k_init_priv drivers/net/wireless/ath/ath9k/htc_drv_init.c:662 [inline]
->  ath9k_init_device drivers/net/wireless/ath/ath9k/htc_drv_init.c:839 [inline]
->  ath9k_htc_probe_device+0xb37/0x25f0 drivers/net/wireless/ath/ath9k/htc_drv_init.c:963
->  ath9k_htc_hw_init+0x33/0x70 drivers/net/wireless/ath/ath9k/htc_hst.c:529
->  ath9k_hif_usb_firmware_cb+0x272/0x620 drivers/net/wireless/ath/ath9k/hif_usb.c:1273
->  request_firmware_work_func+0x13a/0x240 drivers/base/firmware_loader/main.c:1163
->  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
->  process_scheduled_works kernel/workqueue.c:2706 [inline]
->  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
->  kthread+0x2c6/0x3a0 kernel/kthread.c:388
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:243
->  </TASK>
-> ---[ end trace ]---
-> [Fix]
-> If the target does not return a valid end point id during the device connection
-> process, returns a failure.
+On Thu, Mar 21, 2024 at 10:04=E2=80=AFAM Tao Chen <chen.dylane@gmail.com> w=
+rote:
 >
-> Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
-> Reported-and-tested-by: syzbot+93cbd5fbb85814306ba1@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> No logic changed, just add specific btf name when core info
+> print, maybe it seems more understandable.
+>
+> Signed-off-by: Tao Chen <chen.dylane@gmail.com>
 > ---
->  drivers/net/wireless/ath/ath9k/htc_hst.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  tools/lib/bpf/libbpf.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
-> index eb631fd3336d..0d1115d1cc29 100644
-> --- a/drivers/net/wireless/ath/ath9k/htc_hst.c
-> +++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
-> @@ -295,6 +295,9 @@ int htc_connect_service(struct htc_target *target,
->  	}
->  
->  	*conn_rsp_epid = target->conn_rsp_epid;
-> +	if (*conn_rsp_epid < 0 || *conn_rsp_epid > ENDPOINT_MAX)
-> +		return -EINVAL;
-> +
 
-Hmm, there's an off-by-one error here: the arrays in question are
-defined as var[ENDPOINT_MAX], so a value of ENDPOINT_MAX is going to
-overflow.
+Can you elaborate on what problem you are trying to solve?
+Conceptually libbpf does look for types in vmlinux (meaning main
+kernel BTF), even if user overrides BTF location (presumably because
+of old kernel). So even when we emit "vmlinux" in logs, it seems
+correct.
 
-IOW, this should be:
-
- +	if (*conn_rsp_epid < 0 || *conn_rsp_epid >= ENDPOINT_MAX)
- +		return -EINVAL;
- +
+pw-bot: cr
 
 
--Toke
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index afd09571c482..b32154288b4a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5653,7 +5653,8 @@ static int load_module_btfs(struct bpf_object *obj)
+>  }
+>
+>  static struct bpf_core_cand_list *
+> -bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf,=
+ __u32 local_type_id)
+> +bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf,=
+ __u32 local_type_id,
+> +                   const char *targ_btf_path)
+>  {
+>         struct bpf_core_cand local_cand =3D {};
+>         struct bpf_core_cand_list *cands;
+> @@ -5680,7 +5681,8 @@ bpf_core_find_cands(struct bpf_object *obj, const s=
+truct btf *local_btf, __u32 l
+>
+>         /* Attempt to find target candidates in vmlinux BTF first */
+>         main_btf =3D obj->btf_vmlinux_override ?: obj->btf_vmlinux;
+> -       err =3D bpf_core_add_cands(&local_cand, local_essent_len, main_bt=
+f, "vmlinux", 1, cands);
+> +       err =3D bpf_core_add_cands(&local_cand, local_essent_len, main_bt=
+f,
+> +                                targ_btf_path ?: "vmlinux", 1, cands);
+>         if (err)
+>                 goto err_out;
+>
+> @@ -5793,7 +5795,8 @@ static int bpf_core_resolve_relo(struct bpf_program=
+ *prog,
+>                                  int relo_idx,
+>                                  const struct btf *local_btf,
+>                                  struct hashmap *cand_cache,
+> -                                struct bpf_core_relo_res *targ_res)
+> +                                struct bpf_core_relo_res *targ_res,
+> +                                const char *targ_btf_path)
+>  {
+>         struct bpf_core_spec specs_scratch[3] =3D {};
+>         struct bpf_core_cand_list *cands =3D NULL;
+> @@ -5813,7 +5816,7 @@ static int bpf_core_resolve_relo(struct bpf_program=
+ *prog,
+>
+>         if (relo->kind !=3D BPF_CORE_TYPE_ID_LOCAL &&
+>             !hashmap__find(cand_cache, local_id, &cands)) {
+> -               cands =3D bpf_core_find_cands(prog->obj, local_btf, local=
+_id);
+> +               cands =3D bpf_core_find_cands(prog->obj, local_btf, local=
+_id, targ_btf_path);
+>                 if (IS_ERR(cands)) {
+>                         pr_warn("prog '%s': relo #%d: target candidate se=
+arch failed for [%d] %s %s: %ld\n",
+>                                 prog_name, relo_idx, local_id, btf_kind_s=
+tr(local_type),
+> @@ -5920,7 +5923,8 @@ bpf_object__relocate_core(struct bpf_object *obj, c=
+onst char *targ_btf_path)
+>                         if (prog->obj->gen_loader)
+>                                 continue;
+>
+> -                       err =3D bpf_core_resolve_relo(prog, rec, i, obj->=
+btf, cand_cache, &targ_res);
+> +                       err =3D bpf_core_resolve_relo(prog, rec, i, obj->=
+btf, cand_cache, &targ_res,
+> +                                                   targ_btf_path);
+>                         if (err) {
+>                                 pr_warn("prog '%s': relo #%d: failed to r=
+elocate: %d\n",
+>                                         prog->name, i, err);
+> --
+> 2.34.1
+>
 
