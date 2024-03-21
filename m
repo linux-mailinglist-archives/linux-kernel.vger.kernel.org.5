@@ -1,197 +1,143 @@
-Return-Path: <linux-kernel+bounces-110714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543B98862CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:00:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89718862D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E867E1F22F2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:00:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A407A285E24
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA1F136668;
-	Thu, 21 Mar 2024 22:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A616A13667B;
+	Thu, 21 Mar 2024 22:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="52n0zck7"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=turingpi.com header.i=@turingpi.com header.b="fjbZNqCR"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3BF133998;
-	Thu, 21 Mar 2024 22:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583BD136664
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711058408; cv=none; b=RNMu42gWBotNoudOr5+rEC8TyirXP6uZkeMSFJHMKP57VZ3Pm173Rx9+na7bUvBMcoLtancc+m6Z9d99LEnwrs1oI0JZXUl499DWkk5HQSZCw2AgkCPG/ODVw/dtb7Izu6VLBxTN7xIPy3JrYm3v4dfnDUhOU0WGqX+OXMQLl/w=
+	t=1711058456; cv=none; b=FaVXeDjZ90Hr3ogrcJ/SQleTXPBcbckXuyjwFMhGD4gXDFijinDFFEnw9cmJhAmi1pCoHTGeCkPnATnKMh5VjjtYvRfDq1KOvaFrep6vtmq215igzqjaBjVhyBVT908/t40+A6QOmhmBAr7FlgVFImaWQmPe9LMMBGy7PUB2+IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711058408; c=relaxed/simple;
-	bh=t2QmslawEats+EV93HQG0+kSPQ49sMzPwqUo61078Cg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J9rqWtWJ1iP9efXgS5M/u7NpeyvAy4msQMQQcgbGzb9KtmXNd7Z9C9DLuyO8pvyraMORxt9XtBEMoVsQs2LT46MjrNJWDqQWW7idjiyeHGULbX/steEfDNB+ndL0ApHwi80Diejq8zjueRktO7JMpbqBmrlJJbMFEoMHddSkAlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=52n0zck7; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=TT+5vkWHgG4JG2zDFc0DxT6DP+1/xW6JuSns2VThGEI=; b=52n0zck7k+vUeE+nu8Ctrwc7Ne
-	5YWLCUzmuP0BHiG99a9vi2uVwJ4NWyg/aPKrEljnQ54IUg0ZJ/Lf9LhPlyEljuPv8pKm4JKCQ/L+O
-	PtapZuCttFCEENUi8xBRZdV8MQYb1gPLG0kdlZWzdewh5F5tGaY3fNcCH/apvSUvFAaI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rnQS5-00AuVW-Eo; Thu, 21 Mar 2024 22:59:57 +0100
-Date: Thu, 21 Mar 2024 22:59:57 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yazan Shhady <yazan.shhady@solid-run.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: add description for solidrun cn9130 som
- and clearfog boards
-Message-ID: <e24e78a6-852c-4458-987c-3601908a71f0@lunn.ch>
-References: <20240321-cn9130-som-v1-0-711127a409ae@solid-run.com>
- <20240321-cn9130-som-v1-2-711127a409ae@solid-run.com>
+	s=arc-20240116; t=1711058456; c=relaxed/simple;
+	bh=XjhRN1+WliKb2nvUCXcCau0ZReNDce3iYf1kyUq3i3w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JCLddIA4bw0dH7MPwXbvZupalry92hVn41di0oNObn5p1O/3XATqZU2wG7LgLaPvipt2RBKKkeMSN28XPVxuVv246pzX/PyGI1wruMJf4fMgf5OxYydvymxvixBmbeaLnZn7uZsZvw/9XkWCCPOoNbsthQ5SaVq1jYZDcsWllQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=turingpi.com; spf=pass smtp.mailfrom=turingpi.com; dkim=pass (2048-bit key) header.d=turingpi.com header.i=@turingpi.com header.b=fjbZNqCR; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=turingpi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=turingpi.com
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c8d2e0e9cfso46866039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=turingpi.com; s=google; t=1711058454; x=1711663254; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RDnR0b5/BmLqe7zAvxDaQSE6Q7NTU8rgOYXFYBY8gfs=;
+        b=fjbZNqCRxHgQZImxUQkjRzQ1rznmLz44q27VcG0EMd1bSvvJ1A+0p1nM2kwh5jeu6e
+         1x/1B6RgH9XLVKIfWvx9QYf/sCp0mry8QjeHdrZmCyw3devuXB1/YcrcFdNP60T+fsVY
+         1bvX4BF+SZvvBN3rC45rW1SelsWF+RYQCMadbJF4J+/WbBoi/LU4/be2Dmx2ftgv0uqZ
+         Tdk58DZ13RcyOvwvfNLDzjVIYoYwBcRrKmcUkWZo1dy4WbcavB2Nwi4ZduuAbKynTTtK
+         j+82nkJ76/NqryWYVdlRbxXn4Ppu0prddtcFubvmuNVxMwV9FoaE2fW03zfGYw7T/kLC
+         XFug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711058454; x=1711663254;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDnR0b5/BmLqe7zAvxDaQSE6Q7NTU8rgOYXFYBY8gfs=;
+        b=m2U6zQpGWRmGufOmYgOortrTRdpCneiuuySKJK9lmP/Lg8SBrk+bzc8aO7vepVdl/W
+         pMD3St1OtbxICvqwEmxstf5IejtbeSrja2yFujkl7+m+bUnqSAq4qr4bybasPd5qG+tV
+         ntY+6Q7Hltdb5pr3D05yJWDp1SkbjZcNAlpaVHW6ZYPTf3ZW0S8tiyfVomJhl7teeAb2
+         46PO4sGfj6O0L+6q8ffDWCz3byuUsucuL8CxXb8DLNXr2zfwnfKT0UesDaSdrUl5djl7
+         9cmmnlYahdfLoOMsqSp0ZrpWSXn7jV7qX2sSkqFxCf8pGqiKZS25ZxDHxdJAI0FQ8iik
+         XH1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUOlQu/rviGdNJKc2tbEWSE357HY7Zx7BtRrgjycV3YZQPAfBh/+SDh7VlVQjbCoDqHn0ncL6uM6buLSZbbxSxm75hGjLyYTxe/4zhT
+X-Gm-Message-State: AOJu0YzQAYWzwvfqLw/9PEwOsGE1x4B8+M/50aNowjk2LPGdoaBsh5ME
+	1TgpQLOArE8BswsDuJ+gASyDt4yLGfy+9OtpevobqD/Jy1gnPboismAeIB8Wz00=
+X-Google-Smtp-Source: AGHT+IFZmr8k83heK3kERn+YqBvzq+IWT5js+OQoZpX6PhjnSxOryVi8zm4Z1y68gxiLg2m/CRXmfg==
+X-Received: by 2002:a6b:6e1a:0:b0:7cb:ffd4:6784 with SMTP id d26-20020a6b6e1a000000b007cbffd46784mr782605ioh.21.1711058454357;
+        Thu, 21 Mar 2024 15:00:54 -0700 (PDT)
+Received: from ?IPV6:2001:470:42c4:101:5977:3c90:314a:e5da? ([2001:470:42c4:101:5977:3c90:314a:e5da])
+        by smtp.gmail.com with ESMTPSA id l24-20020a056638221800b00476e6c429e5sm140358jas.121.2024.03.21.15.00.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 15:00:53 -0700 (PDT)
+Message-ID: <7f7866f8-514b-4659-920a-30b566ad157d@turingpi.com>
+Date: Thu, 21 Mar 2024 16:00:53 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321-cn9130-som-v1-2-711127a409ae@solid-run.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND RFC PATCH 0/5] Enhancements for mv64xxx I2C driver
+Content-Language: en-US
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <CAF8uH3tYaUwhkkeFuY+PdsnSPqeTtWtOsB_hy9oOjF=f-2Hdaw@mail.gmail.com>
+ <p37qqpplxgmfzlq6wz7fvmvnrsumy6ra5nivzi4hd2gbvlbezx@dlh6ygyjbk24>
+ <4a043be8-8e88-4b92-913c-abd8f138b90d@turingpi.com>
+ <wdpnjnuahedvbakhfavoobukdkocjfpfrgsu374sgjhkyy7exz@er4lyeadftyz>
+From: Sam Edwards <sam@turingpi.com>
+In-Reply-To: <wdpnjnuahedvbakhfavoobukdkocjfpfrgsu374sgjhkyy7exz@er4lyeadftyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 10:47:12PM +0100, Josua Mayer wrote:
-> Add description for the SolidRun CN9130 SoM, and Clearfog Base / Pro
-> reference boards.
-> 
-> The SoM has been designed as a pin-compatible replacement for the older
-> Armada 388 based SoM. Therefore it supports the same boards and a
-> similar feature set.
-> 
-> Most notable upgrades:
-> - 4x Cortex-A72
-> - 10Gbps SFP
-> - Both eMMC and SD supported at the same time
-> 
-> The developer first supporting this product at SolidRun decided to use
-> different filenames for the DTBs: Armada 388 uses the full
-> "clearfog" string while cn9130 uses the abbreviation "cf".
-> This name is already hard-coded in pre-installed vendor u-boot and can
-> not be changed easily.
-> 
-> NOTICE IN CASE ANYBODY WANTS TO SELF-UPGRADE:
-> CN9130 SoM has a different footprint from Armada 388 SoM.
-> Components on the carrier board below the SoM may collide causing
-> damage, such as on Clearfog Base.
-> 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
->  arch/arm64/boot/dts/marvell/Makefile           |   2 +
->  arch/arm64/boot/dts/marvell/cn9130-cf-base.dts | 138 ++++++++++++++
->  arch/arm64/boot/dts/marvell/cn9130-cf-pro.dts  | 249 +++++++++++++++++++++++++
->  arch/arm64/boot/dts/marvell/cn9130-cf.dtsi     | 198 ++++++++++++++++++++
->  arch/arm64/boot/dts/marvell/cn9130-sr-som.dtsi | 160 ++++++++++++++++
->  5 files changed, 747 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-> index 99b8cb3c49e1..019f2251d696 100644
-> --- a/arch/arm64/boot/dts/marvell/Makefile
-> +++ b/arch/arm64/boot/dts/marvell/Makefile
-> @@ -28,3 +28,5 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += ac5x-rd-carrier-cn9131.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
-> +dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-base.dtb
-> +dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-pro.dtb
-> diff --git a/arch/arm64/boot/dts/marvell/cn9130-cf-base.dts b/arch/arm64/boot/dts/marvell/cn9130-cf-base.dts
-> new file mode 100644
-> index 000000000000..b0067940d5e4
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/marvell/cn9130-cf-base.dts
-> @@ -0,0 +1,138 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2024 Josua Mayer <josua@solid-run.com>
-> + *
-> + * DTS for SolidRun CN9130 Clearfog Base.
-> + *
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/input/input.h>
-> +
-> +#include "cn9130.dtsi"
-> +#include "cn9130-sr-som.dtsi"
-> +#include "cn9130-cf.dtsi"
-> +
-> +/ {
-> +	model = "SolidRun CN9130 Clearfog Base";
-> +	compatible = "solidrun,clearfog-base-a1", "solidrun,clearfog-a1",
-> +		     "solidrun,cn9130-sr-som","marvell,cn9130",
-> +		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +		pinctrl-0 = <&rear_button_pins>;
-> +		pinctrl-names = "default";
-> +
-> +		button-0 {
-> +			/* The rear SW3 button */
-> +			label = "Rear Button";
-> +			gpios = <&cp0_gpio1 31 GPIO_ACTIVE_LOW>;
-> +			linux,can-disable;
-> +			linux,code = <BTN_0>;
-> +		};
-> +	};
-> +
-> +	rfkill-m2-gnss {
-> +		compatible = "rfkill-gpio";
-> +		label = "m.2 GNSS";
-> +		radio-type = "gps";
-> +		/* rfkill-gpio inverts internally */
-> +		shutdown-gpios = <&expander0 9 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	/* M.2 is B-keyed, so w-disable is for WWAN */
-> +	rfkill-m2-wwan {
-> +		compatible = "rfkill-gpio";
-> +		label = "m.2 WWAN";
-> +		radio-type = "wwan";
-> +		/* rfkill-gpio inverts internally */
-> +		shutdown-gpios = <&expander0 8 GPIO_ACTIVE_HIGH>;
-> +	};
-> +};
-> +
-> +/* SRDS #3 - SGMII 1GE */
-> +&cp0_eth1 {
-> +	phy = <&phy1>;
-> +	phys = <&cp0_comphy3 1>;
-> +	phy-mode = "sgmii";
-> +	status = "okay";
-> +};
-> +
+Hi Andi,
 
-> +&cp0_eth2_phy {
-> +	/*
-> +	 * Configure LEDs:
-> +	 * - LED[0]: link/activity: On/blink (green)
-> +	 * - LED[1]: link is 100/1000Mbps: On (yellow)
-> +	 * - LED[2]: high impedance (floating)
-> +	 */
-> +	marvell,reg-init = <3 16 0xf000 0x0a61>;
+On 3/21/24 14:54, Andi Shyti wrote:
+> so that it's the [RFC v2 ...] the right series... are you sure?
 
-Sorry, but no. List the LEDs in the PHY node, and they can then be
-controlled via /sys/class/leds.
+[RESEND v2 RFC ...] -- it's the second resend (thus third send), not the 
+second RFC (in retrospect I definitely should have used # instead of v)
 
-arch/arm/boot/dts/marvell/armada-370-rd.dts is an example.
+> 
+> The order of arrival is:
+> 
+>   1. Date: Tue, 19 Mar 2024 16:51:51 -0600
+>   2. Date: Tue, 19 Mar 2024 19:40:51 -0600
+>   3. Date: Tue, 19 Mar 2024 22:19:53 -0600
+> 
+> Anyway, I will take "1" as the good one, being a v2. I will
+> discard "2" and "3".
+> 
+> Then, please, do not forget next time the patch 0 and the
+> changelog.
 
-	Andrew
+Patch 0 was probably separated by the lack of threading but can be found 
+here: https://www.spinics.net/lists/linux-i2c/msg68235.html
+
+There is no changelog as there were no changes to the patch content vs. 
+either of the first two sending attempts; I was only trying a different 
+way of navigating the minefield of mail agents that make whitespace 
+changes without my consent. :)
+
+> 
+> ...
+> 
+>>> Can you please make sure, next time (unless someone asks to
+>>> resend them again), that the patches are threaded? You can send
+>>> them to yourself first and see if they are really threaded.
+>>
+>> Yes, definitely. I take it from your phrasing that you're willing to collect
+>> the scattered mails yourself this one time only? If so, thank you for
+>> cleaning up after my mess. :)
+>>
+>> If not (and/or if someone else doesn't like the mess), I can always resend.
+>> I have already made one cleanup (removing the useless `default:` at the end
+>> of the FSM) so I guess it would technically be an "RFC v2" at this point.
+> 
+> For now no need to resend (unless someone complains). Let's give
+> it some time for review.
+> 
+> Andi
+
+Thanks again,
+Sam
 
