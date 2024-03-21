@@ -1,393 +1,270 @@
-Return-Path: <linux-kernel+bounces-110135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BC1C885A7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:17:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFD0885A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F8AF1C20B35
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:17:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AFCCB20F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0C28526E;
-	Thu, 21 Mar 2024 14:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 578EE85279;
+	Thu, 21 Mar 2024 14:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T5l5yva/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="YOlQBiRK"
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBAD84FCC;
-	Thu, 21 Mar 2024 14:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711030633; cv=none; b=LzUy+RNAqhaj2WbarG1YF8DSq3HIvHgtBuVcI+A5ZnrTr0/nbL2d85aMbMVoA4f2s8nkQxHXSRzW3O4+1on9o7sEy/yKTEk8YYIJTc4pIA31xYqvMeXsF3IhCji0C9X4ar+J81jUk7D82JHOarwi+txRZdKnk8HApnUuA1wRrtQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711030633; c=relaxed/simple;
-	bh=9XQwFo1aUQ9b/EM6QySTpjS4eXrihk6w1KvM2UgC27A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c/EL/EaARJ8+rqNn0PByzue+D6N1hRImideJpde31OlfMLBLm8KNIyGO8RttXF/Z/8j1XC2bY+s/K4olfcxIQGdjCXabcemGcY3pdpTsScGpDUpNGHzglqn+BWNFmbvq3svqyJ0AEPGMUsv4Kzkdp1Vy1Dj9e2czNylBBWZW/pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T5l5yva/; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711030631; x=1742566631;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9XQwFo1aUQ9b/EM6QySTpjS4eXrihk6w1KvM2UgC27A=;
-  b=T5l5yva/PfSpyDNiX9ACAL8I156wzo9Yp0oij8eqhfMpEr0lEsqCXvMv
-   Y0zQ1FmXm8/sgKM4XqtevcAxuRv/JDcSM3pFgPvqtTuVt8KwTefLyVG/w
-   icKkPdbyX4O1LaQyXqk9gCCcwcQfJhYRYOGL2o58dazJXHMJq29GHcjWJ
-   0/POkXGxXHyquK4COCoMO/qOcmSBKFjgYy+vxN6YWR5CRuMcCn289sFKp
-   ENQAVLxjD8H/ROC+fv0AbYXdfIWE4XlQlg6fdd1IMmcd8JBshBPlUEH96
-   VxnGR341I6Jyz4je6/iydyL/dMrOwn0jeaZFV3GDLWY+upV6aF36mvAqk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="5963243"
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="5963243"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 07:17:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
-   d="scan'208";a="15164123"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 07:17:10 -0700
-Date: Thu, 21 Mar 2024 07:17:09 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
-Message-ID: <20240321141709.GK1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
- <ZfpwIespKy8qxWWE@chao-email>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CDE84A50;
+	Thu, 21 Mar 2024 14:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.135.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711030693; cv=fail; b=LLMJlc05+ABBRgyZcJrC024Y1p87tpaI2Q6rsgMKKbr76xNL0woIIrnxo7ICmHYI/dPtZSNP82IE/k7phvEOGcsMyOnrR7+WK2vtDkQkwHIBJpu37+SQnhqgQdXaVGId+s/XipY2XzPkL787KcLwAc6PNSt/iLYkb5iAO3jJ7vE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711030693; c=relaxed/simple;
+	bh=lEMF2KYWoysD1rT/Hq/e6avj6X1hRgqzH61tISoTp7w=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CHWgm9X2TzDtzSov4uEOl8F7ZRxssFd9H0gU0hWw4t5y2WhaQ98+DOvSl8lARGQZSiE682/XgqlHWhtjjNVnOtOWXKqIvTscy6GeVHV9gUniXR0dUsCWtAgFNAS75uTtXKI+kaRXAhGBPVYzuQ1JyiCzWZxGCWjtY683Mzvc2ao=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=YOlQBiRK; arc=fail smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42LDIgiI012502;
+	Thu, 21 Mar 2024 10:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=DKIM;
+	 bh=CVe4YtBIm4QZ7uqcs19/XZpRyVMUGyMUa1lsXuoIEVI=; b=YOlQBiRKTdvP
+	QCfugiyemI9g7MqaKsFkW3MTDQt5Sewt2tJQc1jbLtvpXNeNRTx1Y1I3izWzI5AK
+	4Yq3Gv7I19ppVtOT2Oe1ZGfD7gd8HtwnHKSjm2WVlY3uG4tzmAptER4JRlCI3VSv
+	8/trSa2KWS7g4byBol+AJeLC1O1lLx1RtuTQ4fy+Za6bcfIg8BvBP81xjCH8Y9TQ
+	f3o7NZgUkdh1BfUzTj1HZCAb10BQ/w57Ybn2mPqqDF+8aQ3tuKzPPMEZp0EooOH4
+	bAIILP3PMnvqerwFtC7cjRdvRIueqFhPMwj+yyEjOczolrccfV3eULhhbgc5fKbf
+	eGEK93TjkQ==
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3wwr8njw6v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 10:17:42 -0400 (EDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F6uLtxO8rXRuXf0PVu18zDamAd27ro9RhND7KbhCCbUqyhyn73l4KYY7pVfzy56yHSJOpeNDJHvh4uqf9vCGpCSUnPkGtS7eM3lvhFWM622dmi9Hw+8LWahkybXqbgzLISdkRd6pXU5sB8shp1nr3uLbzIgVjEU9ku8s0tf/UrxbX/rsVT8K29H+P6OkmHNcDFXdYeODWa5mcsZJ95KhA8n2cj1voS3+rqZGb/0z34kgcL4vUKx4/igGWXHuOvMbeolUwLFJWD2rjPdWwcqWC84OmvgOtiglzwAxSzm8QQRVJNvXxORrldU+wbN4rYBp2zkPr3TZwGC2WLEJq2YMnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CVe4YtBIm4QZ7uqcs19/XZpRyVMUGyMUa1lsXuoIEVI=;
+ b=mUZgKEZ0wFmkP/9DGym2jHf8WwvP0DxIuYIP/kDrTw2kHdtMp4DTqAuoQLt+haP9C/PA8cjXSzjxL7nH97TqU4vmQ4XQGpDsb2l8i5TXqh1tuKfrE/kSGQybxioGw98zVm6NU/77NBR3Nke6S2bfOwQfVL4JJL6wTHs8gXvXhq26nOhmuN3tAQNmVV0CnukOOJdGadT6oMiIfRt14eeZ1rnbaSXcUwadrus5OCnv0qYvq6AwxR4poqna9+bsUpaOobL2W3sCl1rIo1uRBeIn6hDU9vyO6EFON5/+2vpWsMllO265J4Ay4B+FVrNhWyuV5MuBXlBNFegqp9R4UDQblA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+Received: from SA1PR03MB6499.namprd03.prod.outlook.com (2603:10b6:806:1c6::8)
+ by PH0PR03MB6979.namprd03.prod.outlook.com (2603:10b6:510:169::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Thu, 21 Mar
+ 2024 14:17:21 +0000
+Received: from SA1PR03MB6499.namprd03.prod.outlook.com
+ ([fe80::44:7752:4ad:9382]) by SA1PR03MB6499.namprd03.prod.outlook.com
+ ([fe80::44:7752:4ad:9382%4]) with mapi id 15.20.7386.031; Thu, 21 Mar 2024
+ 14:17:21 +0000
+From: "Sabau, Radu bogdan" <Radu.Sabau@analog.com>
+To: Rob Herring <robh@kernel.org>
+CC: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Delphine CC Chiu
+	<Delphine_CC_Chiu@wiwynn.com>,
+        "linux-hwmon@vger.kernel.org"
+	<linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org"
+	<linux-i2c@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
+Thread-Topic: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
+Thread-Index: AQHaesZY8/L4JyPv/0i6z0YwzuVy6rFCOqiAgAAC9VA=
+Date: Thu, 21 Mar 2024 14:17:21 +0000
+Message-ID: 
+ <SA1PR03MB6499E2601776F43AA42BFB72F7322@SA1PR03MB6499.namprd03.prod.outlook.com>
+References: <20240320125727.5615-1-radu.sabau@analog.com>
+ <20240321140017.GA1644231-robh@kernel.org>
+In-Reply-To: <20240321140017.GA1644231-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: 
+ =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccnNhYnUyXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctYjdhNTAwMWQtZTc4ZC0xMWVlLWE1YTItOGMwNGJh?=
+ =?us-ascii?Q?ODVkZjE2XGFtZS10ZXN0XGI3YTUwMDFmLWU3OGQtMTFlZS1hNWEyLThjMDRi?=
+ =?us-ascii?Q?YTg1ZGYxNmJvZHkudHh0IiBzej0iNTk4NCIgdD0iMTMzNTU1MDQyMzYyNzE4?=
+ =?us-ascii?Q?ODczIiBoPSJKRWF1eFRRK2x0cHUvU3VBNk9oM1BxeDJVVWM9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFFb0NBQUNa?=
+ =?us-ascii?Q?K3YxNW1udmFBUU9uV1JwNnpCVDVBNmRaR25yTUZQa0RBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFEYUFRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUFCQUFBQWxHVEdWZ0FBQUFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBYVFC?=
+ =?us-ascii?Q?ZkFITUFaUUJqQUhVQWNnQmxBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQnpBRjhB?=
+ =?us-ascii?Q?WmdCaEFHd0Fjd0JsQUY4QVpnQnZBSE1BYVFCMEFHa0FkZ0JsQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdFQVpBQnBBRjhBY3dCbEFHTUFkUUJ5?=
+ =?us-ascii?Q?QUdVQVh3QndBSElBYndCcUFHVUFZd0IwQUhNQVh3QjBBR2tBWlFCeUFERUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFZUUJrQUdrQVh3QnpBR1VBWXdCMUFISUFaUUJmQUhBQWNnQnZB?=
+ =?us-ascii?Q?R29BWlFCakFIUUFjd0JmQUhRQWFRQmxBSElBTWdBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBQT09Ii8+PC9tZXRh?=
+ =?us-ascii?Q?Pg=3D=3D?=
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR03MB6499:EE_|PH0PR03MB6979:EE_
+x-ms-office365-filtering-correlation-id: 0403c825-a018-4646-af35-08dc49b19f6b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ BkDl0OH39cVO62Dd3sNek7rFMhfylNxTzGl4pIFK0QwIiKx2hH7Rn+eHsn/FCLXE6+QbmSgZri576V8udD52LynStbDe8fzaL6A+zEgEf/pj4xSR+/JqPXNO8FNIR0xMVvotnse8EKZveQG1HNfMgeqpP5rQPz1rPAWPzYhaJnSfWOXvba9EZqHRYfq0ey1krsmIz2avrcCrxP8bWJ0DgR48ZgZOPreQYrH7LxY2bC5s6dmrmdqrP3lyrHUBEkblh2Jd4R7HjWsn4pzgVCrUmjeZ9o5/VGTD1xMb+9NeMwgpqOS/TknY12Y0syk/gTTN1Bwkhg2w4zTxZfIHk6UTglqVztqvUWSBGMkMB6h68F4+WiftO/tvWsgDl8/z8h7B2MMM6T/+9Ib10hXDdpNCFWCsZ4xl11n5brIMhUC+0HQS9GAEbsgEra3//gEOhcG38gTN79WDKGknAhK0++hleDYV3Mx4PA/gfHMgbUtaCCvxUYopo7GRur3QyzZKzd/Ss/aHBUvnNYP/Vx+Rl9t7sOMtN2oWovgmne/JZTlAL7GeuaqaX4C8I0R3eCsc07jkV62pjpX+5uy+OFywtX1N8zq6pZ7B8VBMmLRiIbObAkrcZMaCPQgSFaQ7I6UCL2v6llG7JecjE74pBIME6yWA7T1JpX3c/nxzlbOJaFuKsPs=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR03MB6499.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?WX5nLTDPuDUiNfRLDt/7ycIkpAMbWOm19B/vQNjR2rEls/LSeTeWZM1zvchu?=
+ =?us-ascii?Q?X4N57z86GzqMV4qEdCSxGD7jH0PlCfrJlDJdM4KoigFx4oU50EGVkkpwgyMs?=
+ =?us-ascii?Q?s9Eg36AWUeDocClUu9uBLsAMrItfw7J3K0nDJTkvTXk69p4nB/tdbDYK7ALd?=
+ =?us-ascii?Q?ZU853qC6epDB7+fVXex8EvkKenzjdCReEi7rU2A0LjA0SyWPUzyeIB/fa98t?=
+ =?us-ascii?Q?7GTwHn+1n7iwr8wa7vq7aD1gZtx7QzzKUJsoi9NzPy8XNQd9QNjQrvpR/9pz?=
+ =?us-ascii?Q?+MsdzJVMsq5gQUQ9P35ZjM15UmVlTPj4c7EnkYoATocaBtcuSitpZFcspsXj?=
+ =?us-ascii?Q?Y1OqHgmOKEz+wZeEwTo3i+CCZuajareWzn7CoyYV/yE6VuwldWi5Ok6/WkX1?=
+ =?us-ascii?Q?7N7WeYJ/Q9fLZ78dfMWbZ1DUWGq+qwGbpjpf/99kJ2TGHtWLwZOgpl76J8Mn?=
+ =?us-ascii?Q?t10LO6x7Ph2IOuNXe5hMfnTz5XUhuU4gslYLBQZn+fKZgWpsFkLhW7kLsHs1?=
+ =?us-ascii?Q?o8KP3HfIqqJ2PTTcP51XUtxcBnzweXx+SPbakH75Pa1UodvV9y9GiZzCxcbT?=
+ =?us-ascii?Q?EJw8KZt6z8BAV2BypqpRxZxhtb2+QB7wbv2KcoaCAK4zmNARi1EIgGrdSln2?=
+ =?us-ascii?Q?XPpvhHvW46GbnVzmQbMX7Mi0+KC49oK8Gss3OIAx+KyYkw8/hpp6JObFz7+E?=
+ =?us-ascii?Q?pnhKZ0TAAUlUt5H4vBINPRiiB/YH1ctnYdxvR80Ue3NnNrIOJUpP31Gs5jE+?=
+ =?us-ascii?Q?96vZqzKmAyTqB7So2nhamD/udkN3U4GMA5Rll/DCNMDj/IYF+Z7vDAmupEZw?=
+ =?us-ascii?Q?dvZl2AeNFM6lD+rVqlcDsVEOnuR2fdNearlkkc0v7npkuCHj8cMTc5YBQ8Pw?=
+ =?us-ascii?Q?mWMUvyhUKCE1AGQSxFspCvIxEiA/0zg6tmOkUP/7RBjU1bEVaZm5FAACuNnq?=
+ =?us-ascii?Q?yoiBuglDFgLGFJAykvCeDPpvhwUATTDRMLfgHuySPy5rQGZEZDKBP67T/heb?=
+ =?us-ascii?Q?DqNfuILkSUCR/X8LlfcHWAvmOY7m7he9zmMjg1O6N7xl0YWZFFfJ6jYkJJ2K?=
+ =?us-ascii?Q?g5qa8BFp7RPg5+7lGe0bPz7atso6eZU9R5mjY/oD5VBRCEGRpg1fVZmbBhMn?=
+ =?us-ascii?Q?/eHllSSpW3yxStzx9MRK9sCwmS6aE6BAf3HRU1IKY9Vpr3KpMLQObUUBdDdH?=
+ =?us-ascii?Q?IAJxGRJa86DHsDGcb+rO/uMOsGE5Qf19337wIXX83HVqQ4Jdk2kkWURq9x3D?=
+ =?us-ascii?Q?C7MrhRj24RtK/A3EXdn+mnQ5u0sy0fVbcBqQOeQx2ce1xKfbPAbcZ5+gsu7U?=
+ =?us-ascii?Q?LShGeg/KGRX2QaME+gJmcyF42EueHu22kVaxbYIerfqqOjTdUR2IjuFvmZA+?=
+ =?us-ascii?Q?eMv5RmRKg8lKBRLxo/9kXYtQ4yRUSqTwFbSBOhAyWq113WrUrVMkx3sfmBqy?=
+ =?us-ascii?Q?ntuoczI1wNxUb+wqQCigy0Dx+Zr8Z/g8yqQ6l1SoxIvMgqgWi2xP6gYI0MUy?=
+ =?us-ascii?Q?HaG4DDPVxBjCykRdaGIBcIAMlih9rs73pqWxf3xdD3DFfvQVIO3uZ2sVKFv8?=
+ =?us-ascii?Q?+zKaMnlGN6OpdlXbG7G34xjWXiZGTj3N+F9+j2j0?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZfpwIespKy8qxWWE@chao-email>
-
-On Wed, Mar 20, 2024 at 01:12:01PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
-
-> > config KVM_SW_PROTECTED_VM
-> > 	bool "Enable support for KVM software-protected VMs"
-> >-	depends on EXPERT
-> > 	depends on KVM && X86_64
-> > 	select KVM_GENERIC_PRIVATE_MEM
-> > 	help
-> >@@ -89,6 +88,8 @@ config KVM_SW_PROTECTED_VM
-> > config KVM_INTEL
-> > 	tristate "KVM for Intel (and compatible) processors support"
-> > 	depends on KVM && IA32_FEAT_CTL
-> >+	select KVM_SW_PROTECTED_VM if INTEL_TDX_HOST
-> 
-> why does INTEL_TDX_HOST select KVM_SW_PROTECTED_VM?
-
-I wanted KVM_GENERIC_PRIVATE_MEM.  Ah, we should do
-
-        select KKVM_GENERIC_PRIVATE_MEM if INTEL_TDX_HOST
-
-
-> >+	select KVM_GENERIC_MEMORY_ATTRIBUTES if INTEL_TDX_HOST
-> > 	help
-> > 	.vcpu_precreate = vmx_vcpu_precreate,
-> > 	.vcpu_create = vmx_vcpu_create,
-> 
-> >--- a/arch/x86/kvm/vmx/tdx.c
-> >+++ b/arch/x86/kvm/vmx/tdx.c
-> >@@ -5,10 +5,11 @@
-> > 
-> > #include "capabilities.h"
-> > #include "x86_ops.h"
-> >-#include "x86.h"
-> > #include "mmu.h"
-> > #include "tdx_arch.h"
-> > #include "tdx.h"
-> >+#include "tdx_ops.h"
-> >+#include "x86.h"
-> 
-> any reason to reorder x86.h?
-
-No, I think it's accidental during rebase.
-Will fix.
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR03MB6499.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0403c825-a018-4646-af35-08dc49b19f6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Mar 2024 14:17:21.2331
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LP6ceoAI+1EyuCZQdY5lbLZfsIQ6LBc3nx94UfYwddj5Tjn55ia6Y2CCfqgFYq3dccRCe5jEZ1MtpPo6+fq4dQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR03MB6979
+X-Proofpoint-ORIG-GUID: 1bm_rZQAyEtlc9qnDOSKiryVQesvH-lv
+X-Proofpoint-GUID: 1bm_rZQAyEtlc9qnDOSKiryVQesvH-lv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_10,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403210102
 
 
 
-> >+static void tdx_do_tdh_phymem_cache_wb(void *unused)
-> >+{
-> >+	u64 err = 0;
-> >+
-> >+	do {
-> >+		err = tdh_phymem_cache_wb(!!err);
-> >+	} while (err == TDX_INTERRUPTED_RESUMABLE);
-> >+
-> >+	/* Other thread may have done for us. */
-> >+	if (err == TDX_NO_HKID_READY_TO_WBCACHE)
-> >+		err = TDX_SUCCESS;
-> >+	if (WARN_ON_ONCE(err))
-> >+		pr_tdx_error(TDH_PHYMEM_CACHE_WB, err, NULL);
-> >+}
-> >+
-> >+void tdx_mmu_release_hkid(struct kvm *kvm)
-> >+{
-> >+	bool packages_allocated, targets_allocated;
-> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> >+	cpumask_var_t packages, targets;
-> >+	u64 err;
-> >+	int i;
-> >+
-> >+	if (!is_hkid_assigned(kvm_tdx))
-> >+		return;
-> >+
-> >+	if (!is_td_created(kvm_tdx)) {
-> >+		tdx_hkid_free(kvm_tdx);
-> >+		return;
-> >+	}
-> >+
-> >+	packages_allocated = zalloc_cpumask_var(&packages, GFP_KERNEL);
-> >+	targets_allocated = zalloc_cpumask_var(&targets, GFP_KERNEL);
-> >+	cpus_read_lock();
-> >+
-> >+	/*
-> >+	 * We can destroy multiple guest TDs simultaneously.  Prevent
-> >+	 * tdh_phymem_cache_wb from returning TDX_BUSY by serialization.
-> >+	 */
-> >+	mutex_lock(&tdx_lock);
-> >+
-> >+	/*
-> >+	 * Go through multiple TDX HKID state transitions with three SEAMCALLs
-> >+	 * to make TDH.PHYMEM.PAGE.RECLAIM() usable.  Make the transition atomic
-> >+	 * to other functions to operate private pages and Secure-EPT pages.
-> >+	 *
-> >+	 * Avoid race for kvm_gmem_release() to call kvm_mmu_unmap_gfn_range().
-> >+	 * This function is called via mmu notifier, mmu_release().
-> >+	 * kvm_gmem_release() is called via fput() on process exit.
-> >+	 */
-> >+	write_lock(&kvm->mmu_lock);
-> >+
-> >+	for_each_online_cpu(i) {
-> >+		if (packages_allocated &&
-> >+		    cpumask_test_and_set_cpu(topology_physical_package_id(i),
-> >+					     packages))
-> >+			continue;
-> >+		if (targets_allocated)
-> >+			cpumask_set_cpu(i, targets);
-> >+	}
-> >+	if (targets_allocated)
-> >+		on_each_cpu_mask(targets, tdx_do_tdh_phymem_cache_wb, NULL, true);
-> >+	else
-> >+		on_each_cpu(tdx_do_tdh_phymem_cache_wb, NULL, true);
-> 
-> This tries flush cache on all CPUs when we run out of memory. I am not sure if
-> it is the best solution. A simple solution is just use two global bitmaps.
-> 
-> And current logic isn't optimal. e.g., if packages_allocated is true while
-> targets_allocated is false, then we will fill in the packages bitmap but don't
-> use it at all.
-> 
-> That said, I prefer to optimize the rare case in a separate patch. We can just use
-> two global bitmaps or let the flush fail here just as you are doing below on
-> seamcall failure.
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Thursday, March 21, 2024 4:00 PM
+> To: Sabau, Radu bogdan <Radu.Sabau@analog.com>
+> Cc: Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck-us.net>;=
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>;
+> Conor Dooley <conor+dt@kernel.org>; Jonathan Corbet <corbet@lwn.net>; Del=
+phine CC Chiu <Delphine_CC_Chiu@wiwynn.com>; linux-
+> hwmon@vger.kernel.org; devicetree@vger.kernel.org; linux-kernel@vger.kern=
+el.org; linux-doc@vger.kernel.org; linux-
+> i2c@vger.kernel.org
+> Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindi=
+ngs
+>=20
+> [External]
+>=20
+> On Wed, Mar 20, 2024 at 02:57:11PM +0200, Radu Sabau wrote:
+> > Add dt-bindings for adp1050 digital controller for isolated power suppl=
+y
+> > with pmbus interface voltage, current and temperature monitor.
+> >
+> > Signed-off-by: Radu Sabau <radu.sabau@analog.com>
+> > ---
+> > v3:
+> >  *Remove extra line before '$id'.
+> >  *Remove 'address-cells' and 'size-cells' from adp1050 node.
+> >  *Rename adp1050 node to generic name.
+> >  *Fix typo from 'adress-cells' to 'address-cells' causing errors in the
+> >   dt-bindings build.
+> > v2:
+> >  *Fix identation for example.
+> >  *Remove 'adi,vin-scale-monitor' and 'iin-scale-monitor' since they are=
+ not used
+> >   anymore.
+> >  *Fix typo for 'compatbile' to 'compatible'.
+> >  *Add blank line under datasheet link.
+> > ---
+> >  .../bindings/hwmon/pmbus/adi,adp1050.yaml     | 49 +++++++++++++++++++
+> >  MAINTAINERS                                   |  7 +++
+> >  2 files changed, 56 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/adi,a=
+dp1050.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.=
+yaml
+> b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+> > new file mode 100644
+> > index 000000000000..42cafd8fec25
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+> > @@ -0,0 +1,49 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: https://urldefense.com/v3/__https://devicetree.org/schemas/hwmon/=
+pmbus/adi,adp1050.yaml*__;Iw!!A3Ni8CS0y2Y!-
+> 8d2ef4ArhRTDUHLiMXbulDz4xJmONqhQqWKLN35O7oIBsTYAjH2h1LFAT8T03nuAi97Q_kk4D=
+5m$
+> > +$schema: https://urldefense.com/v3/__https://devicetree.org/meta-schem=
+es/core.yaml*__;Iw!!A3Ni8CS0y2Y!-
+> 8d2ef4ArhRTDUHLiMXbulDz4xJmONqhQqWKLN35O7oIBsTYAjH2h1LFAT8T03nuAi97Qy7d7H=
+ZZ$
+>=20
+> Your issues are here. It's "http" and "meta-schemas". This is mostly
+> copy-n-paste, so how did you get it wrong I wonder...
+>=20
 
-Makes sense. We can allocate cpumasks on hardware_setup/unsetup() and update them
-on hardware_enable/disable().
+I ran the build one more time yesterday and noticed that there were typos
+in the links, I guess it's because I decided for some reason to write them
+by hand (don't know why because it doesn't make any sense).
 
-..
-
-> >+static int __tdx_td_init(struct kvm *kvm)
-> >+{
-> >+	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> >+	cpumask_var_t packages;
-> >+	unsigned long *tdcs_pa = NULL;
-> >+	unsigned long tdr_pa = 0;
-> >+	unsigned long va;
-> >+	int ret, i;
-> >+	u64 err;
-> >+
-> >+	ret = tdx_guest_keyid_alloc();
-> >+	if (ret < 0)
-> >+		return ret;
-> >+	kvm_tdx->hkid = ret;
-> >+
-> >+	va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> >+	if (!va)
-> >+		goto free_hkid;
-> >+	tdr_pa = __pa(va);
-> >+
-> >+	tdcs_pa = kcalloc(tdx_info->nr_tdcs_pages, sizeof(*kvm_tdx->tdcs_pa),
-> >+			  GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> >+	if (!tdcs_pa)
-> >+		goto free_tdr;
-> >+	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> >+		va = __get_free_page(GFP_KERNEL_ACCOUNT);
-> >+		if (!va)
-> >+			goto free_tdcs;
-> >+		tdcs_pa[i] = __pa(va);
-> >+	}
-> >+
-> >+	if (!zalloc_cpumask_var(&packages, GFP_KERNEL)) {
-> >+		ret = -ENOMEM;
-> >+		goto free_tdcs;
-> >+	}
-> >+	cpus_read_lock();
-> >+	/*
-> >+	 * Need at least one CPU of the package to be online in order to
-> >+	 * program all packages for host key id.  Check it.
-> >+	 */
-> >+	for_each_present_cpu(i)
-> >+		cpumask_set_cpu(topology_physical_package_id(i), packages);
-> >+	for_each_online_cpu(i)
-> >+		cpumask_clear_cpu(topology_physical_package_id(i), packages);
-> >+	if (!cpumask_empty(packages)) {
-> >+		ret = -EIO;
-> >+		/*
-> >+		 * Because it's hard for human operator to figure out the
-> >+		 * reason, warn it.
-> >+		 */
-> >+#define MSG_ALLPKG	"All packages need to have online CPU to create TD. Online CPU and retry.\n"
-> >+		pr_warn_ratelimited(MSG_ALLPKG);
-> >+		goto free_packages;
-> >+	}
-> >+
-> >+	/*
-> >+	 * Acquire global lock to avoid TDX_OPERAND_BUSY:
-> >+	 * TDH.MNG.CREATE and other APIs try to lock the global Key Owner
-> >+	 * Table (KOT) to track the assigned TDX private HKID.  It doesn't spin
-> >+	 * to acquire the lock, returns TDX_OPERAND_BUSY instead, and let the
-> >+	 * caller to handle the contention.  This is because of time limitation
-> >+	 * usable inside the TDX module and OS/VMM knows better about process
-> >+	 * scheduling.
-> >+	 *
-> >+	 * APIs to acquire the lock of KOT:
-> >+	 * TDH.MNG.CREATE, TDH.MNG.KEY.FREEID, TDH.MNG.VPFLUSHDONE, and
-> >+	 * TDH.PHYMEM.CACHE.WB.
-> >+	 */
-> >+	mutex_lock(&tdx_lock);
-> >+	err = tdh_mng_create(tdr_pa, kvm_tdx->hkid);
-> >+	mutex_unlock(&tdx_lock);
-> >+	if (err == TDX_RND_NO_ENTROPY) {
-> >+		ret = -EAGAIN;
-> >+		goto free_packages;
-> >+	}
-> >+	if (WARN_ON_ONCE(err)) {
-> >+		pr_tdx_error(TDH_MNG_CREATE, err, NULL);
-> >+		ret = -EIO;
-> >+		goto free_packages;
-> >+	}
-> >+	kvm_tdx->tdr_pa = tdr_pa;
-> >+
-> >+	for_each_online_cpu(i) {
-> >+		int pkg = topology_physical_package_id(i);
-> >+
-> >+		if (cpumask_test_and_set_cpu(pkg, packages))
-> >+			continue;
-> >+
-> >+		/*
-> >+		 * Program the memory controller in the package with an
-> >+		 * encryption key associated to a TDX private host key id
-> >+		 * assigned to this TDR.  Concurrent operations on same memory
-> >+		 * controller results in TDX_OPERAND_BUSY.  Avoid this race by
-> >+		 * mutex.
-> >+		 */
-> >+		mutex_lock(&tdx_mng_key_config_lock[pkg]);
-> 
-> the lock is superfluous to me. with cpu lock held, even if multiple CPUs try to
-> create TDs, the same set of CPUs (the first online CPU of each package) will be
-> selected to configure the key because of the cpumask_test_and_set_cpu() above.
-> it means, we never have two CPUs in the same socket trying to program the key,
-> i.e., no concurrent calls.
-
-Makes sense. Will drop the lock.
-
-
-> >+		ret = smp_call_on_cpu(i, tdx_do_tdh_mng_key_config,
-> >+				      &kvm_tdx->tdr_pa, true);
-> >+		mutex_unlock(&tdx_mng_key_config_lock[pkg]);
-> >+		if (ret)
-> >+			break;
-> >+	}
-> >+	cpus_read_unlock();
-> >+	free_cpumask_var(packages);
-> >+	if (ret) {
-> >+		i = 0;
-> >+		goto teardown;
-> >+	}
-> >+
-> >+	kvm_tdx->tdcs_pa = tdcs_pa;
-> >+	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> >+		err = tdh_mng_addcx(kvm_tdx->tdr_pa, tdcs_pa[i]);
-> >+		if (err == TDX_RND_NO_ENTROPY) {
-> >+			/* Here it's hard to allow userspace to retry. */
-> >+			ret = -EBUSY;
-> >+			goto teardown;
-> >+		}
-> >+		if (WARN_ON_ONCE(err)) {
-> >+			pr_tdx_error(TDH_MNG_ADDCX, err, NULL);
-> >+			ret = -EIO;
-> >+			goto teardown;
-> >+		}
-> >+	}
-> >+
-> >+	/*
-> >+	 * Note, TDH_MNG_INIT cannot be invoked here.  TDH_MNG_INIT requires a dedicated
-> >+	 * ioctl() to define the configure CPUID values for the TD.
-> >+	 */
-> >+	return 0;
-> >+
-> >+	/*
-> >+	 * The sequence for freeing resources from a partially initialized TD
-> >+	 * varies based on where in the initialization flow failure occurred.
-> >+	 * Simply use the full teardown and destroy, which naturally play nice
-> >+	 * with partial initialization.
-> >+	 */
-> >+teardown:
-> >+	for (; i < tdx_info->nr_tdcs_pages; i++) {
-> >+		if (tdcs_pa[i]) {
-> >+			free_page((unsigned long)__va(tdcs_pa[i]));
-> >+			tdcs_pa[i] = 0;
-> >+		}
-> >+	}
-> >+	if (!kvm_tdx->tdcs_pa)
-> >+		kfree(tdcs_pa);
-> >+	tdx_mmu_release_hkid(kvm);
-> >+	tdx_vm_free(kvm);
-> >+	return ret;
-> >+
-> >+free_packages:
-> >+	cpus_read_unlock();
-> >+	free_cpumask_var(packages);
-> >+free_tdcs:
-> >+	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> >+		if (tdcs_pa[i])
-> >+			free_page((unsigned long)__va(tdcs_pa[i]));
-> >+	}
-> >+	kfree(tdcs_pa);
-> >+	kvm_tdx->tdcs_pa = NULL;
-> >+
-> >+free_tdr:
-> >+	if (tdr_pa)
-> >+		free_page((unsigned long)__va(tdr_pa));
-> >+	kvm_tdx->tdr_pa = 0;
-> >+free_hkid:
-> >+	if (is_hkid_assigned(kvm_tdx))
-> 
-> IIUC, this is always true because you just return if keyid
-> allocation fails.
-
-You're right. Will fix
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+> Rob
 
