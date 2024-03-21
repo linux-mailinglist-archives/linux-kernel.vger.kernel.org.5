@@ -1,100 +1,79 @@
-Return-Path: <linux-kernel+bounces-110048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D79885958
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:47:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BC0885960
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CA18282348
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:47:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E00B2823CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A760883CD3;
-	Thu, 21 Mar 2024 12:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE63484A27;
+	Thu, 21 Mar 2024 12:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h3HpHfdL"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NMYbxKjV";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="B8z9YuAR"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3401183CAA;
-	Thu, 21 Mar 2024 12:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB083CC6;
+	Thu, 21 Mar 2024 12:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025211; cv=none; b=NWQtZMYjuK/Uob5hx4F1ZfQwiCFqAIMARMsJ6DLG8lnQN3ow09ttRFlTIOsQGxHmGFNYPz6G+ev1lSN7o2l+NnrCaCrSErKeOLBQtvN7/+QSvjwISZq1gqBjLxVYS0e6L1Vi9gvtZTIsv1q9A+c4uIwC7vSpiVyZcaxTuGzaF0k=
+	t=1711025286; cv=none; b=uG96Zqy1Yy8bNb2T1Xt3uvoObB7gRQyeJHovIsGRZ+QB8QJdm0IBnqcvvoAKz+7YZE0GCAEa7eHnEuhFJwiN89TupCCNRs9L+sejUblNzLpAopomp09THvlz7GGgRanE7ZIQ2lRF+8t1a3JmyOPo9iA4RZp19+UFNy1rjv9Vxj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025211; c=relaxed/simple;
-	bh=H1MMAdCPhar9gXNz90u/PAuWzVl6CuM3vhnqd/TkPuw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FJ3O8GXAXv2O8c27zgRnMlfDPDJRF1S2BUW/BalvUtwdKRrIH1pVYdcVIjIJGCyAe2stu3Lf1KehBdtiAUJGHxXYPGUnod9HZrx0CWsvq/i+/zI5OCg5oTpdyM8p7e4WHH3bcLp/YNbBUhcxSQSCvjToFWmF1o8B0CN9xBEvrNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h3HpHfdL; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so12148131fa.3;
-        Thu, 21 Mar 2024 05:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711025207; x=1711630007; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I/SgFGO2MqdHqwExgwk8KY7oTptbTpFN7suTzX47MqE=;
-        b=h3HpHfdLhr1wvmEsLKdYvWd0ReXWJozr9pZNniNoTKwFyCELOiU2OZCXMWB+Y2/+iO
-         m7TObTAdA7MOeR0lVIZBucyvCJ9yMsMjz+s4yTZknenxW6wIaQibh7aDw6Tk2T5rYwai
-         3spqknmqB9p+DehdJ9VbqlI1yf3V5gzOnZ3ADMm8Ls5DzbbNL2iMpZ4LdNU+GiiYX6pc
-         R6IJnCGSM+MjK+ILOeFoULIuLnjzB1XJEV+FiTvnXbhUEcROM5nx19bOxeDZJMAgOQRa
-         66c33N7Tb1Dzf6+5H7B81h2bsqzd9ijbmApjZ5ZEWgS1JK4Hht9otfmARv2A/8duXgrO
-         28AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711025207; x=1711630007;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I/SgFGO2MqdHqwExgwk8KY7oTptbTpFN7suTzX47MqE=;
-        b=foIESnIKb5vbUnO3YNhLDemHXH6B3qL9HGl9euekLQgW8TDNmVvY2glL7lXoV/7k0/
-         xIGVqzp3YUr8QpEfE6G3WcqWP3h0lIAB5evpOeW0b9GrB65tlPNjaLfd4iFvAFXR7cmF
-         5YHEELuivKJgP3oLrp0uVzKSz+uqXaxTyDFPk+oHjWpWNjsn+6h2l6sUZUmOKS1h14Gz
-         PhPMEyPBD5B+4Z04saBNSG0Jmd7tMXV9QnHG5U/kahRVr/T9VIIaDIzzbhAZKjXEjMuI
-         9OABKdyoi7oc4D+sJhNvKrPrVU1M4MYER38UdQr/tpeYdzqP+LfJL4Ef3jT6h2zAWXuX
-         f5ow==
-X-Forwarded-Encrypted: i=1; AJvYcCWTztZ5V6LvcLRun7u9wnRNT6H89XBapp65vulVPIdhaPNEm9sk8LrMbzKZbeddRK/Y8aUMUXAieU99sMu4sFuNuEYfHTOvFQSUOtqap44njkfLbFtd8ANFnuwrSwKnKJirvDMIJQ2GFJFPf58+I/+PIZl0DtVXKYZC
-X-Gm-Message-State: AOJu0Yy9Om4uBn7OzRUL8eYgR5/BJJuPq7E1ixwn0zRlPB2/bV2mdFLV
-	tnYlAMcFMNZ909oonecpYDKBBGke70Yub4sGIFAMwZ3Y9wyrRJKz
-X-Google-Smtp-Source: AGHT+IGLBCGUqDCmTWPGXRDUKebS7w81yY1QauACQh/eo7G5MW+JDI714tqjCv2YdsXFqiBBvptplw==
-X-Received: by 2002:a05:651c:1049:b0:2d4:aae0:1d71 with SMTP id x9-20020a05651c104900b002d4aae01d71mr6010167ljm.43.1711025207052;
-        Thu, 21 Mar 2024 05:46:47 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id m2-20020a05600c3b0200b0041463c2c6ccsm5567314wms.4.2024.03.21.05.46.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Mar 2024 05:46:46 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	s=arc-20240116; t=1711025286; c=relaxed/simple;
+	bh=4pwkuVPASujLtvUAcOeumSFvUYsF5sf+M00LrdtdnmY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RXtXJoSnSduzo4epT1DPxftCzmeQV27meVCXzop/H2xNr5eWTXZ1c7bVfxxR6GSuA6g8AUzLCp82UIJVevHGdzDNU+qMM9clr3MzwC/7A++I0Zvw58X8C1Jx8rHYrh6h3SNAy5iimh+ud0F05T48+PSOD7WJ6HVtdTOhSElU2io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NMYbxKjV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=B8z9YuAR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EAE551FC83;
+	Thu, 21 Mar 2024 12:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711025282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gVje2G/MWNXU76aPP5C7g31t/cKVQY55RCzo6eErdoU=;
+	b=NMYbxKjVzVQqSddBaVOYu7ujpvbBArz5B1aY6U+HuybMK/O4wdmPrFCt+mDs3yudNjpFKh
+	qZiuF+I1UgZoxm2cDDmV5So1PsipAfVQJCMej9iuhMRRoINGYrcMo9KM1nc7i92dUGwxTD
+	DHsVciLld0fAjcd2fnhmFtKkMqwedKM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711025281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gVje2G/MWNXU76aPP5C7g31t/cKVQY55RCzo6eErdoU=;
+	b=B8z9YuARPR1yqmPrxgg9bQI98U1yx3nTKtFsfVmMplhd2KJK/3hs+/NRGTCFQm4VXcHe4g
+	zyXjgI4EzvJ8SafYlgtDSBHNOpfBrmtzPe08zePc26C5LTvouJU5adEPQRtPjqSCwXnYNm
+	4PbLJm/Az1UUZ2zsjYhW2lg612QQ1+U=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D666136AD;
+	Thu, 21 Mar 2024 12:48:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id y0NXHIEs/GVCTQAAD6G6ig
+	(envelope-from <oneukum@suse.com>); Thu, 21 Mar 2024 12:48:01 +0000
+From: Oliver Neukum <oneukum@suse.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
 	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf v4] bpf: verifier: prevent userspace memory access
-Date: Thu, 21 Mar 2024 12:46:40 +0000
-Message-Id: <20240321124640.8870-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Oliver Neukum <oneukum@suse.com>,
+	syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
+Subject: [PATCH net-next] usbnet: fix cyclical race on disconnect with work queue
+Date: Thu, 21 Mar 2024 13:46:41 +0100
+Message-ID: <20240321124758.6302-1-oneukum@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,395 +81,184 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: 2.20
+X-Spamd-Result: default: False [2.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[9665bf55b1c828bbcd8a];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: **
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-With BPF_PROBE_MEM, BPF allows de-referencing an untrusted pointer. To
-thwart invalid memory accesses, the JITs add an exception table entry
-for all such accesses. But in case the src_reg + offset overflows and
-turns into a userspace address, the BPF program might read that memory if
-the user has mapped it.
+The work can submit URBs and the URBs can schedule the work.
+This cycle needs to be broken, when a device is to be stopped.
+Use a flag to do so.
 
-There are architectural features that prevent the kernel from accessing
-userspace memory, like Privileged Access Never (PAN) on ARM64,
-Supervisor Mode Access Prevention (SMAP) on x86-64, Supervisor User
-Memory access (SUM) on RISC-V, etc. But BPF should not rely on the
-existence of these features.
-
-Make the verifier add guard instructions around such memory accesses and
-skip the load if the address falls into the userspace region.
-
-The JITs need to implement bpf_arch_uaddress_limit() to define where
-the userspace addresses end for that architecture or TASK_SIZE is taken
-as default.
-
-The implementation is as follows:
-
-REG_AX =  SRC_REG
-if(offset)
-	REG_AX += offset;
-REG_AX >>= 32;
-if (REG_AX <= (uaddress_limit >> 32))
-	DST_REG = 0;
-else
-	DST_REG = *(size *)(SRC_REG + offset);
-
-Comparing just the upper 32 bits of the load address with the upper
-32 bits of uaddress_limit implies that the values are being aligned down
-to a 4GB boundary before comparison.
-
-The above means that all loads with address <= uaddress_limit + 4GB are
-skipped. This is acceptable because there is a large hole (much larger
-than 4GB) between userspace and kernel space memory, therefore a
-correctly functioning BPF program should not access this 4GB memory
-above the userspace.
-
-Let's analyze what this patch does to the following fentry program
-dereferencing an untrusted pointer:
-
-  SEC("fentry/tcp_v4_connect")
-  int BPF_PROG(fentry_tcp_v4_connect, struct sock *sk)
-  {
-                *(volatile long *)sk;
-                return 0;
-  }
-
-    BPF Program before              |           BPF Program after
-    ------------------              |           -----------------
-
-  0: (79) r1 = *(u64 *)(r1 +0)          0: (79) r1 = *(u64 *)(r1 +0)
-  -----------------------------------------------------------------------
-  1: (79) r1 = *(u64 *)(r1 +0) --\      1: (bf) r11 = r1
-  ----------------------------\   \     2: (77) r11 >>= 32
-  2: (b7) r0 = 0               \   \    3: (b5) if r11 <= 0x8000 goto pc+2
-  3: (95) exit                  \   \-> 4: (79) r1 = *(u64 *)(r1 +0)
-                                 \      5: (05) goto pc+1
-                                  \     6: (b7) r1 = 0
-                                   \--------------------------------------
-                                        7: (b7) r0 = 0
-                                        8: (95) exit
-
-As you can see from above, in the best case (off=0), 5 extra instructions
-are emitted.
-
-Now, we analyse the same program after it has gone through the JITs of
-X86-64, ARM64, and RISC-V architectures. We follow the single load
-instruction that has the untrusted pointer and see what instrumentation
-has been added around it.
-
-                                x86-64 JIT
-                                ==========
-     JIT's Instrumentation                  Verifier's Instrumentation
-          (upstream)                               (This patch)
-     ---------------------                  --------------------------
-
-   0:   nopl   0x0(%rax,%rax,1)             0:   nopl   0x0(%rax,%rax,1)
-   5:   xchg   %ax,%ax                      5:   xchg   %ax,%ax
-   7:   push   %rbp                         7:   push   %rbp
-   8:   mov    %rsp,%rbp                    8:   mov    %rsp,%rbp
-   b:   mov    0x0(%rdi),%rdi               b:   mov    0x0(%rdi),%rdi
-  ------------------------------------------------------------------------
-   f:   movabs $0x800000000000,%r11         f:   mov    %rdi,%r10
-  19:   cmp    %r11,%rdi                   12:   shr    $0x20,%r10
-  1c:   jb     0x000000000000002a          16:   cmp    $0x8000,%r10
-  1e:   mov    %rdi,%r11                   1d:   jbe    0x0000000000000025
-  21:   add    $0x0,%r11              /--> 1f:   mov    0x0(%rdi),%rdi
-  28:   jae    0x000000000000002e    /     23:   jmp    0x0000000000000027
-  2a:   xor    %edi,%edi            /      25:   xor    %edi,%edi
-  2c:   jmp    0x0000000000000032  / /------------------------------------
-  2e:   mov    0x0(%rdi),%rdi  ---/ /      27:   xor    %eax,%eax
-  ---------------------------------/       29:   leave
-  32:   xor    %eax,%eax                   2a:   ret
-  34:   leave
-  35:   ret
-
-The x86-64 JIT already emits some instructions to protect against user
-memory access. The implementation in this patch leads to a smaller
-number of instructions being emitted. In the worst case the JIT will
-emit 9 extra instructions and this patch decreases it to 7.
-
-                                  ARM64 JIT
-                                  =========
-
-        No Intrumentation                       Verifier's Instrumentation
-           (upstream)                                  (This patch)
-        -----------------                       --------------------------
-
-   0:   add     x9, x30, #0x0                0:   add     x9, x30, #0x0
-   4:   nop                                  4:   nop
-   8:   paciasp                              8:   paciasp
-   c:   stp     x29, x30, [sp, #-16]!        c:   stp     x29, x30, [sp, #-16]!
-  10:   mov     x29, sp                     10:   mov     x29, sp
-  14:   stp     x19, x20, [sp, #-16]!       14:   stp     x19, x20, [sp, #-16]!
-  18:   stp     x21, x22, [sp, #-16]!       18:   stp     x21, x22, [sp, #-16]!
-  1c:   stp     x25, x26, [sp, #-16]!       1c:   stp     x25, x26, [sp, #-16]!
-  20:   stp     x27, x28, [sp, #-16]!       20:   stp     x27, x28, [sp, #-16]!
-  24:   mov     x25, sp                     24:   mov     x25, sp
-  28:   mov     x26, #0x0                   28:   mov     x26, #0x0
-  2c:   sub     x27, x25, #0x0              2c:   sub     x27, x25, #0x0
-  30:   sub     sp, sp, #0x0                30:   sub     sp, sp, #0x0
-  34:   ldr     x0, [x0]                    34:   ldr     x0, [x0]
---------------------------------------------------------------------------------
-  38:   ldr     x0, [x0] ----------\        38:   add     x9, x0, #0x0
------------------------------------\\       3c:   lsr     x9, x9, #32
-  3c:   mov     x7, #0x0            \\      40:   cmp     x9, #0x10, lsl #12
-  40:   mov     sp, sp               \\     44:   b.ls    0x0000000000000050
-  44:   ldp     x27, x28, [sp], #16   \\--> 48:   ldr     x0, [x0]
-  48:   ldp     x25, x26, [sp], #16    \    4c:   b       0x0000000000000054
-  4c:   ldp     x21, x22, [sp], #16     \   50:   mov     x0, #0x0
-  50:   ldp     x19, x20, [sp], #16      \---------------------------------------
-  54:   ldp     x29, x30, [sp], #16         54:   mov     x7, #0x0
-  58:   add     x0, x7, #0x0                58:   mov     sp, sp
-  5c:   autiasp                             5c:   ldp     x27, x28, [sp], #16
-  60:   ret                                 60:   ldp     x25, x26, [sp], #16
-  64:   nop                                 64:   ldp     x21, x22, [sp], #16
-  68:   ldr     x10, 0x0000000000000070     68:   ldp     x19, x20, [sp], #16
-  6c:   br      x10                         6c:   ldp     x29, x30, [sp], #16
-                                            70:   add     x0, x7, #0x0
-                                            74:   autiasp
-                                            78:   ret
-                                            7c:   nop
-                                            80:   ldr     x10, 0x0000000000000088
-                                            84:   br      x10
-
-There are 6 extra instructions added in ARM64 in the best case. This will
-become 7 in the worst case (off != 0).
-
-                           RISC-V JIT (RISCV_ISA_C Disabled)
-                           ==========
-
-        No Intrumentation           Verifier's Instrumentation
-           (upstream)                      (This patch)
-        -----------------           --------------------------
-
-   0:   nop                            0:   nop
-   4:   nop                            4:   nop
-   8:   li      a6, 33                 8:   li      a6, 33
-   c:   addi    sp, sp, -16            c:   addi    sp, sp, -16
-  10:   sd      s0, 8(sp)             10:   sd      s0, 8(sp)
-  14:   addi    s0, sp, 16            14:   addi    s0, sp, 16
-  18:   ld      a0, 0(a0)             18:   ld      a0, 0(a0)
----------------------------------------------------------------
-  1c:   ld      a0, 0(a0) --\         1c:   mv      t0, a0
---------------------------\  \        20:   srli    t0, t0, 32
-  20:   li      a5, 0      \  \       24:   lui     t1, 4096
-  24:   ld      s0, 8(sp)   \  \      28:   sext.w  t1, t1
-  28:   addi    sp, sp, 16   \  \     2c:   bgeu    t1, t0, 12
-  2c:   sext.w  a0, a5        \  \--> 30:   ld      a0, 0(a0)
-  30:   ret                    \      34:   j       8
-                                \     38:   li      a0, 0
-                                 \------------------------------
-                                      3c:   li      a5, 0
-                                      40:   ld      s0, 8(sp)
-                                      44:   addi    sp, sp, 16
-                                      48:   sext.w  a0, a5
-                                      4c:   ret
-
-There are 7 extra instructions added in RISC-V.
-
-Fixes: 800834285361 ("bpf, arm64: Add BPF exception tables")
-Reported-by: Breno Leitao <leitao@debian.org>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Fixes: f29fc259976e9 ("[PATCH] USB: usbnet (1/9) clean up framing")
+Reported-by: syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
 ---
-V3: https://lore.kernel.org/bpf/20240321120842.78983-1-puranjay12@gmail.com/
-Changes in V4:
-- Disable this feature on architectures that don't define
-  CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE.
-- By doing the above, we don't need anything explicitly for s390x.
+ drivers/net/usb/usbnet.c   | 37 ++++++++++++++++++++++++++++---------
+ include/linux/usb/usbnet.h | 18 ++++++++++++++++++
+ 2 files changed, 46 insertions(+), 9 deletions(-)
 
-V2: https://lore.kernel.org/bpf/20240321101058.68530-1-puranjay12@gmail.com/
-Changes in V3:
-- Return 0 from bpf_arch_uaddress_limit() in disabled case because it
-  returns u64.
-- Modify the check in verifier to no do instrumentation when uaddress_limit
-  is 0.
-
-V1: https://lore.kernel.org/bpf/20240320105436.4781-1-puranjay12@gmail.com/
-Changes in V2:
-- Disable this feature on s390x.
----
- arch/x86/net/bpf_jit_comp.c | 72 +++++--------------------------------
- include/linux/filter.h      |  1 +
- kernel/bpf/core.c           |  9 +++++
- kernel/bpf/verifier.c       | 30 ++++++++++++++++
- 4 files changed, 48 insertions(+), 64 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 4900b1ee019f..9b3136187938 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1327,7 +1327,6 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
- 		u8 b2 = 0, b3 = 0;
- 		u8 *start_of_ldx;
- 		s64 jmp_offset;
--		s16 insn_off;
- 		u8 jmp_cond;
- 		u8 *func;
- 		int nops;
-@@ -1802,78 +1801,18 @@ st:			if (is_imm8(insn->off))
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_B:
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_H:
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
--			insn_off = insn->off;
--
--			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
--			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
--				/* Conservatively check that src_reg + insn->off is a kernel address:
--				 *   src_reg + insn->off >= TASK_SIZE_MAX + PAGE_SIZE
--				 * src_reg is used as scratch for src_reg += insn->off and restored
--				 * after emit_ldx if necessary
--				 */
--
--				u64 limit = TASK_SIZE_MAX + PAGE_SIZE;
--				u8 *end_of_jmp;
--
--				/* At end of these emitted checks, insn->off will have been added
--				 * to src_reg, so no need to do relative load with insn->off offset
--				 */
--				insn_off = 0;
--
--				/* movabsq r11, limit */
--				EMIT2(add_1mod(0x48, AUX_REG), add_1reg(0xB8, AUX_REG));
--				EMIT((u32)limit, 4);
--				EMIT(limit >> 32, 4);
--
--				if (insn->off) {
--					/* add src_reg, insn->off */
--					maybe_emit_1mod(&prog, src_reg, true);
--					EMIT2_off32(0x81, add_1reg(0xC0, src_reg), insn->off);
--				}
--
--				/* cmp src_reg, r11 */
--				maybe_emit_mod(&prog, src_reg, AUX_REG, true);
--				EMIT2(0x39, add_2reg(0xC0, src_reg, AUX_REG));
--
--				/* if unsigned '>=', goto load */
--				EMIT2(X86_JAE, 0);
--				end_of_jmp = prog;
--
--				/* xor dst_reg, dst_reg */
--				emit_mov_imm32(&prog, false, dst_reg, 0);
--				/* jmp byte_after_ldx */
--				EMIT2(0xEB, 0);
--
--				/* populate jmp_offset for JAE above to jump to start_of_ldx */
--				start_of_ldx = prog;
--				end_of_jmp[-1] = start_of_ldx - end_of_jmp;
--			}
-+			start_of_ldx = prog;
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
- 			    BPF_MODE(insn->code) == BPF_MEMSX)
--				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
-+				emit_ldsx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			else
--				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn_off);
-+				emit_ldx(&prog, BPF_SIZE(insn->code), dst_reg, src_reg, insn->off);
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
- 			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
- 				struct exception_table_entry *ex;
- 				u8 *_insn = image + proglen + (start_of_ldx - temp);
- 				s64 delta;
- 
--				/* populate jmp_offset for JMP above */
--				start_of_ldx[-1] = prog - start_of_ldx;
--
--				if (insn->off && src_reg != dst_reg) {
--					/* sub src_reg, insn->off
--					 * Restore src_reg after "add src_reg, insn->off" in prev
--					 * if statement. But if src_reg == dst_reg, emit_ldx
--					 * above already clobbered src_reg, so no need to restore.
--					 * If add src_reg, insn->off was unnecessary, no need to
--					 * restore either.
--					 */
--					maybe_emit_1mod(&prog, src_reg, true);
--					EMIT2_off32(0x81, add_1reg(0xE8, src_reg), insn->off);
--				}
--
- 				if (!bpf_prog->aux->extable)
- 					break;
- 
-@@ -3473,3 +3412,8 @@ bool bpf_jit_supports_ptr_xchg(void)
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index e84efa661589..422d91635045 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -467,10 +467,12 @@ static enum skb_state defer_bh(struct usbnet *dev, struct sk_buff *skb,
+ void usbnet_defer_kevent (struct usbnet *dev, int work)
  {
- 	return true;
+ 	set_bit (work, &dev->flags);
+-	if (!schedule_work (&dev->kevent))
+-		netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
+-	else
+-		netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
++	if (!usbnet_going_away(dev)) {
++		if (!schedule_work (&dev->kevent))
++			netdev_dbg(dev->net, "kevent %s may have been dropped\n", usbnet_event_names[work]);
++		else
++			netdev_dbg(dev->net, "kevent %s scheduled\n", usbnet_event_names[work]);
++	}
  }
-+
-+u64 bpf_arch_uaddress_limit(void)
-+{
-+	return TASK_SIZE_MAX + PAGE_SIZE;
-+}
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index c0d51bff8f96..cf12bfa2a78c 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -965,6 +965,7 @@ bool bpf_jit_supports_far_kfunc_call(void);
- bool bpf_jit_supports_exceptions(void);
- bool bpf_jit_supports_ptr_xchg(void);
- bool bpf_jit_supports_arena(void);
-+u64 bpf_arch_uaddress_limit(void);
- void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
- bool bpf_helper_changes_pkt_data(void *func);
+ EXPORT_SYMBOL_GPL(usbnet_defer_kevent);
  
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 5aacb1d3c4cc..a04695ca82b9 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2958,6 +2958,15 @@ bool __weak bpf_jit_supports_arena(void)
- 	return false;
- }
- 
-+u64 __weak bpf_arch_uaddress_limit(void)
-+{
-+#if defined(CONFIG_64BIT) && defined(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE)
-+	return TASK_SIZE;
-+#else
-+	return 0;
-+#endif
-+}
-+
- /* Return TRUE if the JIT backend satisfies the following two conditions:
-  * 1) JIT backend supports atomic_xchg() on pointer-sized words.
-  * 2) Under the specific arch, the implementation of xchg() is the same
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index de7813947981..7ce56da6cfa4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -19657,6 +19657,36 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			goto next_insn;
+@@ -538,7 +540,8 @@ static int rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
+ 			tasklet_schedule (&dev->bh);
+ 			break;
+ 		case 0:
+-			__usbnet_queue_skb(&dev->rxq, skb, rx_start);
++			if (!usbnet_going_away(dev))
++				__usbnet_queue_skb(&dev->rxq, skb, rx_start);
  		}
+ 	} else {
+ 		netif_dbg(dev, ifdown, dev->net, "rx: stopped\n");
+@@ -849,6 +852,16 @@ int usbnet_stop (struct net_device *net)
+ 	del_timer_sync (&dev->delay);
+ 	tasklet_kill (&dev->bh);
+ 	cancel_work_sync(&dev->kevent);
++
++	/*
++	 * we have cyclic dependencies. Those calls are needed
++	 * to break a cycle. We cannot fall into the gaps because
++	 * we have a flag
++	 */
++	tasklet_kill (&dev->bh);
++	del_timer_sync (&dev->delay);
++	cancel_work_sync(&dev->kevent);
++
+ 	if (!pm)
+ 		usb_autopm_put_interface(dev->intf);
  
-+		/* Make it impossible to de-reference a userspace address */
-+		if (BPF_CLASS(insn->code) == BPF_LDX &&
-+		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
-+		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
-+			struct bpf_insn *patch = &insn_buf[0];
-+			u64 uaddress_limit = bpf_arch_uaddress_limit();
+@@ -1174,7 +1187,8 @@ usbnet_deferred_kevent (struct work_struct *work)
+ 					   status);
+ 		} else {
+ 			clear_bit (EVENT_RX_HALT, &dev->flags);
+-			tasklet_schedule (&dev->bh);
++			if (!usbnet_going_away(dev))
++				tasklet_schedule (&dev->bh);
+ 		}
+ 	}
+ 
+@@ -1196,10 +1210,13 @@ usbnet_deferred_kevent (struct work_struct *work)
+ 			}
+ 			if (rx_submit (dev, urb, GFP_KERNEL) == -ENOLINK)
+ 				resched = 0;
+-			usb_autopm_put_interface(dev->intf);
+ fail_lowmem:
+-			if (resched)
++			usb_autopm_put_interface(dev->intf);
++			if (resched) {
++				set_bit (EVENT_RX_MEMORY, &dev->flags);
 +
-+			if (!uaddress_limit)
-+				goto next_insn;
+ 				tasklet_schedule (&dev->bh);
++			}
+ 		}
+ 	}
+ 
+@@ -1212,13 +1229,13 @@ usbnet_deferred_kevent (struct work_struct *work)
+ 		if (status < 0)
+ 			goto skip_reset;
+ 		if(info->link_reset && (retval = info->link_reset(dev)) < 0) {
+-			usb_autopm_put_interface(dev->intf);
+ skip_reset:
+ 			netdev_info(dev->net, "link reset failed (%d) usbnet usb-%s-%s, %s\n",
+ 				    retval,
+ 				    dev->udev->bus->bus_name,
+ 				    dev->udev->devpath,
+ 				    info->description);
++			usb_autopm_put_interface(dev->intf);
+ 		} else {
+ 			usb_autopm_put_interface(dev->intf);
+ 		}
+@@ -1562,6 +1579,7 @@ static void usbnet_bh (struct timer_list *t)
+ 	} else if (netif_running (dev->net) &&
+ 		   netif_device_present (dev->net) &&
+ 		   netif_carrier_ok(dev->net) &&
++		   !usbnet_going_away(dev) &&
+ 		   !timer_pending(&dev->delay) &&
+ 		   !test_bit(EVENT_RX_PAUSED, &dev->flags) &&
+ 		   !test_bit(EVENT_RX_HALT, &dev->flags)) {
+@@ -1609,6 +1627,7 @@ void usbnet_disconnect (struct usb_interface *intf)
+ 	usb_set_intfdata(intf, NULL);
+ 	if (!dev)
+ 		return;
++	usbnet_mark_going_away(dev);
+ 
+ 	xdev = interface_to_usbdev (intf);
+ 
+diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
+index 9f08a584d707..d26599faab33 100644
+--- a/include/linux/usb/usbnet.h
++++ b/include/linux/usb/usbnet.h
+@@ -76,8 +76,26 @@ struct usbnet {
+ #		define EVENT_LINK_CHANGE	11
+ #		define EVENT_SET_RX_MODE	12
+ #		define EVENT_NO_IP_ALIGN	13
++/*
++ * this one is special, as it indicates that the device is going away
++ * there are cyclic dependencies between tasklet, timer and bh
++ * that must be broken
++ */
++#		define EVENT_UNPLUG		31
+ };
+ 
++static inline bool usbnet_going_away(struct usbnet *ubn)
++{
++	smp_mb__before_atomic();
++	return test_bit(EVENT_UNPLUG, &ubn->flags);
++}
 +
-+			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
-+			if (insn->off)
-+				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
-+			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
-+			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
-+			*patch++ = *insn;
-+			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
-+			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
++static inline void usbnet_mark_going_away(struct usbnet *ubn)
++{
++	set_bit(EVENT_UNPLUG, &ubn->flags);
++	smp_mb__after_atomic();
++}
 +
-+			cnt = patch - insn_buf;
-+			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta    += cnt - 1;
-+			env->prog = prog = new_prog;
-+			insn      = new_prog->insnsi + i + delta;
-+			goto next_insn;
-+		}
-+
- 		/* Implement LD_ABS and LD_IND with a rewrite, if supported by the program type. */
- 		if (BPF_CLASS(insn->code) == BPF_LD &&
- 		    (BPF_MODE(insn->code) == BPF_ABS ||
+ static inline struct usb_driver *driver_of(struct usb_interface *intf)
+ {
+ 	return to_usb_driver(intf->dev.driver);
 -- 
-2.40.1
+2.44.0
 
 
