@@ -1,56 +1,55 @@
-Return-Path: <linux-kernel+bounces-109925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89E308857D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F8538857DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FF7283FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:13:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFBCAB21BA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7597358ABB;
-	Thu, 21 Mar 2024 11:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE2F59147;
+	Thu, 21 Mar 2024 11:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="jtintMTF"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="skWcKhL5"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212E05822B;
-	Thu, 21 Mar 2024 11:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF1158AD6;
+	Thu, 21 Mar 2024 11:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711019580; cv=none; b=c1cGOUfZKDlIYExPDTVIhFFQRdOaAG1Rdh61bIhyCTVniEypKVAejTXDAQoTG58DALwh4YT3oJurJ5FfGAiOe2JCKBwfFVMkZslqQO4vKTebiIkqF6BCZdf6Rsja0C6x2i7qLglv8ZSAopKtr3Xfr7sA4SZK/ePzy7goETAET+c=
+	t=1711019584; cv=none; b=FWEwBAc/bDtBPMFC4iL1yy4EfDbpMpy9SgUIckC6A7SHe3kuZTkx1ZOKeeIugIoJx8HoDjgp7FUfAUi/mnTwPGkQtk6JC681FxLeJXxHPv6BQWfxzhfw6cJDYjCY0Y1NGpKdOxpqCG7nDytsY6vw8fst+v2T8mxwdnNj8oVgBRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711019580; c=relaxed/simple;
-	bh=CKkaIB1VMOnmqCrBsV70ZTXEjY9urL8LUoJA5O5CNOA=;
+	s=arc-20240116; t=1711019584; c=relaxed/simple;
+	bh=QiWGhNyPclP30U/OSfPGoQv0ru4Y4LDzmV4Byhyje2A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sB6CRLCp6OomHfudJdxVzimS2jVaUVc8APuEkeEmpv22W0h62dtkQiI+YCTQN1JVRhK2zAVkIjmM41JpQLk6gR3Hdj1ci4yKJrhPa/A4tebuixvPDp4zv8SmJhmu8MTFVzCadQxHRCly9OiApqgiY6rs/Cxr5/rhAnW/34SO3OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=jtintMTF; arc=none smtp.client-ip=213.167.242.64
+	 MIME-Version; b=sTWowwU+3dZIbewT/VsfudLFkYYKGtNjeIb3VFCMhk7cdM6IFw+S00+tPG589oC4/AiI3Wi0aa84aBHi+PMsBYaNiaqLjD5TIBK1Wlg8f7D6XSjKT+tDY75u7nVB90AYQmd3Puh4MACc5CFrtNhzr9niemr6boX4Pbd8Pbt98mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=skWcKhL5; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from umang.jain (unknown [103.86.18.138])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id F358A8CC;
-	Thu, 21 Mar 2024 12:12:25 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 970B2CC8;
+	Thu, 21 Mar 2024 12:12:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711019549;
-	bh=CKkaIB1VMOnmqCrBsV70ZTXEjY9urL8LUoJA5O5CNOA=;
+	s=mail; t=1711019553;
+	bh=QiWGhNyPclP30U/OSfPGoQv0ru4Y4LDzmV4Byhyje2A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jtintMTF/W31s6QjQeqr7YkpLAgc2ItlIh8C/tcIODu0wII/61o0dAMBD2Obu8S1e
-	 p339pJrvffGGGCqf1Qd4zu28o3Z1gLao6W3jGkSSU4XzvUOknSkmsUh35/GAlmHB/3
-	 nKTLclbz9O9Wni+p6IoH3jXDsrPOGCXmpuH34QfA=
+	b=skWcKhL5FTO72n4hV63ONM76CjUEByftfx7+VOHrXZUuI5FtIfIdSTbYoxcHCh3qs
+	 iN5jNge8jQFT42HrKZ2JREiYDVNNH2RniTrrjUfNjqTIp3uMny/2e8W84KJyIeosm9
+	 wcX6tQqkAH/jXiQdctBiJBHsE+UU1BQTfCPGN1Bo=
 From: Umang Jain <umang.jain@ideasonboard.com>
 To: linux-media@vger.kernel.org
 Cc: Alexander Shiyan <eagle.alexander923@gmail.com>,
 	Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Kieran Bingham <kieran.bingham@ideasonboard.com>,
 	open list <linux-kernel@vger.kernel.org>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	Tommaso Merciai <tomm.merciai@gmail.com>
-Subject: [PATCH v3 1/6] media: imx335: Support 2 or 4 lane operation modes
-Date: Thu, 21 Mar 2024 16:42:34 +0530
-Message-ID: <20240321111239.808735-2-umang.jain@ideasonboard.com>
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v3 2/6] media: imx335: Parse fwnode properties
+Date: Thu, 21 Mar 2024 16:42:35 +0530
+Message-ID: <20240321111239.808735-3-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240321111239.808735-1-umang.jain@ideasonboard.com>
 References: <20240321111239.808735-1-umang.jain@ideasonboard.com>
@@ -64,77 +63,65 @@ Content-Transfer-Encoding: 8bit
 
 From: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-The IMX335 can support both 2 and 4 lane configurations.
-Extend the driver to configure the lane mode accordingly.
-Update the pixel rate depending on the number of lanes in use.
+Call the V4L2 fwnode device parser to handle controls that are
+standardised by the framework.
 
 Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
 ---
- drivers/media/i2c/imx335.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/media/i2c/imx335.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index dab6d080bc4c..c633ea1380e7 100644
+index c633ea1380e7..b8cf85984127 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -21,6 +21,11 @@
- #define IMX335_MODE_STANDBY	0x01
- #define IMX335_MODE_STREAMING	0x00
+@@ -1227,10 +1227,12 @@ static int imx335_init_controls(struct imx335 *imx335)
+ {
+ 	struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
+ 	const struct imx335_mode *mode = imx335->cur_mode;
++	struct v4l2_fwnode_device_properties props;
+ 	u32 lpfr;
+ 	int ret;
  
-+/* Data Lanes */
-+#define IMX335_LANEMODE		0x3a01
-+#define IMX335_2LANE		1
-+#define IMX335_4LANE		3
-+
- /* Lines per frame */
- #define IMX335_REG_LPFR		0x3030
- 
-@@ -147,6 +152,7 @@ struct imx335_mode {
-  * @exp_ctrl: Pointer to exposure control
-  * @again_ctrl: Pointer to analog gain control
-  * @vblank: Vertical blanking in lines
-+ * @lane_mode Mode for number of connected data lanes
-  * @cur_mode: Pointer to current selected sensor mode
-  * @mutex: Mutex for serializing sensor controls
-  * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
-@@ -171,6 +177,7 @@ struct imx335 {
- 		struct v4l2_ctrl *again_ctrl;
- 	};
- 	u32 vblank;
-+	u32 lane_mode;
- 	const struct imx335_mode *cur_mode;
- 	struct mutex mutex;
- 	unsigned long link_freq_bitmap;
-@@ -936,6 +943,11 @@ static int imx335_start_streaming(struct imx335 *imx335)
- 		return ret;
- 	}
- 
-+	/* Configure lanes */
-+	ret = imx335_write_reg(imx335, IMX335_LANEMODE, 1, imx335->lane_mode);
-+	if (ret)
-+		return ret;
-+
- 	/* Setup handler will write actual exposure and gain */
- 	ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
- 	if (ret) {
-@@ -1096,7 +1108,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+-	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
++	/* v4l2_fwnode_device_properties can add two more controls */
++	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 9);
  	if (ret)
  		return ret;
  
--	if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
-+	switch (bus_cfg.bus.mipi_csi2.num_data_lanes) {
-+	case 2:
-+		imx335->lane_mode = IMX335_2LANE;
-+		break;
-+	case 4:
-+		imx335->lane_mode = IMX335_4LANE;
-+		break;
-+	default:
- 		dev_err(imx335->dev,
- 			"number of CSI2 data lanes %d is not supported\n",
- 			bus_cfg.bus.mipi_csi2.num_data_lanes);
+@@ -1296,15 +1298,27 @@ static int imx335_init_controls(struct imx335 *imx335)
+ 		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+ 
+ 	if (ctrl_hdlr->error) {
+-		dev_err(imx335->dev, "control init failed: %d\n",
+-			ctrl_hdlr->error);
+-		v4l2_ctrl_handler_free(ctrl_hdlr);
+-		return ctrl_hdlr->error;
++		ret = ctrl_hdlr->error;
++		dev_err(imx335->dev, "control init failed: %d\n", ret);
++		goto free_ctrl_hdlr;
+ 	}
+ 
++	ret = v4l2_fwnode_device_parse(imx335->dev, &props);
++	if (ret)
++		goto free_ctrl_hdlr;
++
++	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx335_ctrl_ops,
++					      &props);
++	if (ret)
++		goto free_ctrl_hdlr;
++
+ 	imx335->sd.ctrl_handler = ctrl_hdlr;
+ 
+ 	return 0;
++
++free_ctrl_hdlr:
++	v4l2_ctrl_handler_free(ctrl_hdlr);
++	return ret;
+ }
+ 
+ /**
 -- 
 2.43.0
 
