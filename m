@@ -1,314 +1,171 @@
-Return-Path: <linux-kernel+bounces-110562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187CF88609D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:36:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBFF88609F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C32E02869AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:36:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5B241F2268A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D765112BE80;
-	Thu, 21 Mar 2024 18:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302B58AC0;
+	Thu, 21 Mar 2024 18:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwz6LVy5"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gcjUmpdt"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D903356B98
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5267D12BE80
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711046173; cv=none; b=mFsIQ45yBNRVZZzdGkvrgnTws+iD349j+HIyPff6icTMSQ56Ycc6DDDHC2ap9rTAO+OhidcYmfo6r9yDQAKa7BYAoDu/Y0qYb9VI1Zh45bdYkKaACSarSkX1igh7dG2Sib1Oanj4rsX8EbNz/DHugGjwI7tbr4m3EjRAEJg6oD8=
+	t=1711046218; cv=none; b=oeVBtrDLLT/jRQsjOWKwB92eg1ZWl2QvWRn5ErlLgKydqa8YR0VfREP4RT4cuoGxjm04gtHaIZcqu2bY6L0rWfREOOfpr2TsW2ekMUYMVH0LAXAtcoXUAPcxMJZMPy7kzOzCfIX0kFjYMq9qE3D0Wm0feoymfbCZPV+elRrfViw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711046173; c=relaxed/simple;
-	bh=/in2eceAS8fZ6+yLyTWURuQbDPrMwEB5PcqFBq70qRg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=atsXxpw3ChgdFB1WtiyOLXIdu0swBHfcVM3yXSGwNkCYL1ratd+BKRwHjfldvijYLjZyQktWS0yRE1FfXOMhBzt5VlhdDoz+X0srybuDKN6J2PVBMj4Ypp4ECVO6Hv9NR4tlA76O0NYVoXsdTC4jmNCXelshvbMw4ceFhxt7zUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fwz6LVy5; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso22617501fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:36:11 -0700 (PDT)
+	s=arc-20240116; t=1711046218; c=relaxed/simple;
+	bh=eUEa4rrGYlyZhAfRF+ds5sMG/T25zrE7GnOSK5h9F6Q=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=bApBStGQ2wGK33W8V6/EjVFuuqMJ96MgWriwjl/yQkaNX5JcUbLzn1ebbwu/YsbdgQCkxXOOSA+QMcEEf/R6+dkmLY0ydQz6qaZgMw1NqSkHgWevi5s2mPhtIFDXDCoklRUjCXQ3lfZVwEsK8j9EI42gQKiphSxbQ0zNoKse2BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gcjUmpdt; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd169dd4183so1509821276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:36:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711046170; x=1711650970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OYHW2im/7U2eInaWrdKWsru+Lb393o8hz20jHiFRKek=;
-        b=Fwz6LVy5wCjLNJrNyvnWmT9KwXeoqFQa25++XBLESDZUKhjEb2wsYql+i80Gxjkf5z
-         ox8SPT/7B6f8SxBxtSMUHIzR7XflnFbUfottaeE4Jyx+f2J5pAewALYE4GuZ6kJyQ2Ve
-         N3GBsAIIGCcWEBiKeucLwPeRDAzpbPnWsSEVwnrMX4BH1kPf9wfwOpxSiHTIPqRpWdnY
-         Ygby3M99/nqWG3mGkUqrvdQvf/F39/rNE1JrhAoHlQ6Ckuc9qLHQHClR4UUNzduZlRu9
-         kzCE1kUs3PmSkvSik33t2aEYYUq+BHbo+CTnBxbmpHHVAwqcGjl56m9fTN+M/vwkoM6O
-         nGWg==
+        d=google.com; s=20230601; t=1711046216; x=1711651016; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbCcL6OE4hGPljo6KgMnWz9lsSx4HXWFLCLqK+CpD5w=;
+        b=gcjUmpdtt60sNeEEaUoO5jbxgfIyxKfnljDZEtqqVrjJ9ef+ictz9pmqTbfbWAKZ72
+         qNfKAVkDDeODcF5U1FUJ2ukO3K2046VnGEN/3gGa0qWo5ylKaIj4UNU8WOv+KEwW0T1A
+         Z5uT+HLbmK/vpH+bStv9lCTAgi4c0EyGjQ1qhvIPm1gJjp8gWQ/7TBbUNZneAoO6wW76
+         B3TZdaIAWjnYyWltQcsDfFbIgpOO4NGPfcCAvlNjCgBEUBdVrPdTY2QWE/FjZtdWngbn
+         kwZtS8ZXVTBzNsdwsDeyFojB0wNA+48SC+zrZnDAzrJ8IfQyfFgkhS2DmlB2F/ksHhHK
+         vYJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711046170; x=1711650970;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OYHW2im/7U2eInaWrdKWsru+Lb393o8hz20jHiFRKek=;
-        b=UUby+75GFlOFyO/Y3A1dMHn95Hv+4ACb2ubfbPWGUeuWj6kcynpL+5DQxOMflwWWRU
-         UjCjGLGIuRDqiW4XdrPmpUQ8KYjS2fsDuobhZOMKO6Cb88/N3fatxGdQzUg0ItfO8qX9
-         t92iHjnmxMT0IZAX4P2e0jdyqp9UAaB3nE5JXAftOhmNBCNqY2mGANYacozfY0RE0LWK
-         MeWDc+Ee9GxzygczOlHEX25zVuewRf7DIQhZg/0QnSPBR5jOYcucbbgbLjF98DEcI+eE
-         74lskDY0l5qlpZDH/Qn2XIiOZJYimbOkHf3oclRq5Emv+Onc86Td/BOmqLnGMKd41QoM
-         leng==
-X-Forwarded-Encrypted: i=1; AJvYcCWmJZjBSXDjGrV71yRoO1uZluvdGz/GeBqQ+G1jrLJsuhI76DcjgEG/vGGcdPLj3TWOLkg2w6VIMYlVH3yx9F6TyLrtlGOQ7APL16Vs
-X-Gm-Message-State: AOJu0YxwrWFUo4RC6OZvEDG+ojvvcfLhyyiL7sDCJITlTp8Rljo8TyRr
-	7vn6QPoRjVrWMLmYd+82KoyNZOtDbQsOjpoIsQkRkpZxpUKfuxGne4AlH8TN2iixFmbOgPo6azy
-	f6JZuXpq07drMkM1iBAwMVbI7Tm0=
-X-Google-Smtp-Source: AGHT+IH5zSN7HMRx94vNa7NxxF1rY4ak+DSJW/1cvfXlwrhalqT1PKrc39Y7uWo4N6iLqV05t9okNOcU7hhYB2pG3CY=
-X-Received: by 2002:a2e:9784:0:b0:2d4:ad34:85a7 with SMTP id
- y4-20020a2e9784000000b002d4ad3485a7mr245084lji.29.1711046169621; Thu, 21 Mar
- 2024 11:36:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711046216; x=1711651016;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bbCcL6OE4hGPljo6KgMnWz9lsSx4HXWFLCLqK+CpD5w=;
+        b=sgreHyhlYAALIU/vTj3vPZ83N3b4jZ5Az9Uz+FuIHbGCx1cNwUQnfH9UvganjRCea7
+         Spngasr6tptCJKa0Cae3jQ2AJeL2irKaz2K3ttQ/WmY5kIjkx14Wk5xEul1TSs+cvvxE
+         GZ0CRrnMrgPSGB6L63lBWJ70cUd17GjwNSq5EtPQmqUR7W7ISXofWErMktq8SATQjxg3
+         OVpa4SPIu2V0PnN/iR0zlm07KDw8lBek5vR82V0l8FnGSG2Cw0KKTM51tiD+JHDNhSHx
+         02h/x3/Ly051fFzhECtsGSZmAtmwA5jo5hV/8U90bgvIEYRq0TZaoy2SiEq3qRKzhZ/n
+         uv6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVx8ViYTRgfiGP91RYiZSMP/5cChbfUAiQALTQblP+JRjluMoRb0HylEUPgfc3WvtBhfXIP7aC1P0eS144FbWSH26y0Cp2Ccf+lKFnP
+X-Gm-Message-State: AOJu0YzebUfP7LK071roI8zxAtyfznSmG0BLD9zx+eBvmI4/evIxECsa
+	B4m3KiXsfCGVy+4nsSBzR+yhGTUdM77rBglIyJtH+4bgUI7vL3UAxHOfEN++kUUNYz3SLsx5Q6G
+	8Ajmactod89a6QLCl1g==
+X-Google-Smtp-Source: AGHT+IGVKM74DX/eJBUX2BxRcTwydQ0lZph+eL4O9Qy//R+b2lvRLwx760LaFZnBPco9gucSiCyzr9XwrWOfpihG
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2301:b0:dc7:865b:22c6 with
+ SMTP id do1-20020a056902230100b00dc7865b22c6mr1248392ybb.8.1711046216453;
+ Thu, 21 Mar 2024 11:36:56 -0700 (PDT)
+Date: Thu, 21 Mar 2024 18:36:54 +0000
+In-Reply-To: <20240321182532.60000-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240319092733.4501-1-ryncsn@gmail.com> <20240319092733.4501-5-ryncsn@gmail.com>
- <ZfoPjUyPiXpFSxA4@casper.infradead.org> <CAMgjq7BGN9SknnXF+doO-3p18OOYRzB0D5PMdwwstpCXtxj47g@mail.gmail.com>
-In-Reply-To: <CAMgjq7BGN9SknnXF+doO-3p18OOYRzB0D5PMdwwstpCXtxj47g@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Fri, 22 Mar 2024 02:35:52 +0800
-Message-ID: <CAMgjq7DGUmE3VEKNrX0oxZsHN-3vkFtDPjQ41yc1_po=GdDaEw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mm/filemap: optimize filemap folio adding
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240321182532.60000-1-hannes@cmpxchg.org>
+Message-ID: <Zfx-RjViLUMwWRmi@google.com>
+Subject: Re: [PATCH] mm: zswap: fix writeback shinker GFP_NOIO/GFP_NOFS recursion
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Mar 20, 2024 at 5:06=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrot=
-e:
->
-> On Wed, Mar 20, 2024 at 6:20=E2=80=AFAM Matthew Wilcox <willy@infradead.o=
-rg> wrote:
-> >
-> > On Tue, Mar 19, 2024 at 05:27:33PM +0800, Kairui Song wrote:
-> > > From: Kairui Song <kasong@tencent.com>
-> > >
-> > > Instead of doing multiple tree walks, do one optimism range check
-> > > with lock hold, and exit if raced with another insertion. If a shadow
-> > > exists, check it with a new xas_get_order helper before releasing the
-> > > lock to avoid redundant tree walks for getting its order.
-> > >
-> > > Drop the lock and do the allocation only if a split is needed.
-> > >
-> > > In the best case, it only need to walk the tree once. If it needs
-> > > to alloc and split, 3 walks are issued (One for first ranced
-> > > conflict check and order retrieving, one for the second check after
-> > > allocation, one for the insert after split).
-> > >
-> > > Testing with 4k pages, in an 8G cgroup, with 20G brd as block device:
-> > >
-> > > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> > >   --buffered=3D1 --ioengine=3Dmmap --rw=3Drandread --time_based \
-> > >   --ramp_time=3D30s --runtime=3D5m --group_reporting
-> > >
-> > > Before:
-> > > bw (  MiB/s): min=3D  790, max=3D 3665, per=3D100.00%, avg=3D2499.17,=
- stdev=3D20.64, samples=3D8698
-> > > iops        : min=3D202295, max=3D938417, avg=3D639785.81, stdev=3D52=
-84.08, samples=3D8698
-> > >
-> > > After (+4%):
-> > > bw (  MiB/s): min=3D  451, max=3D 3868, per=3D100.00%, avg=3D2599.83,=
- stdev=3D23.39, samples=3D8653
-> > > iops        : min=3D115596, max=3D990364, avg=3D665556.34, stdev=3D59=
-88.20, samples=3D8653
-> > >
-> > > Test result with THP (do a THP randread then switch to 4K page in hop=
-e it
-> > > issues a lot of splitting):
-> > >
-> > > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> > >   --buffered=3D1 --ioengine mmap -thp=3D1 --readonly \
-> > >   --rw=3Drandread --random_distribution=3Drandom \
-> > >   --time_based --runtime=3D5m --group_reporting
-> > >
-> > > fio -name=3Dcached --numjobs=3D16 --filename=3D/mnt/test.img \
-> > >   --buffered=3D1 --ioengine mmap --readonly \
-> > >   --rw=3Drandread --random_distribution=3Drandom \
-> > >   --time_based --runtime=3D5s --group_reporting
-> > >
-> > > Before:
-> > > bw (  KiB/s): min=3D28071, max=3D62359, per=3D100.00%, avg=3D53542.44=
-, stdev=3D179.77, samples=3D9520
-> > > iops        : min=3D 7012, max=3D15586, avg=3D13379.39, stdev=3D44.94=
-, samples=3D9520
-> > > bw (  MiB/s): min=3D 2457, max=3D 6193, per=3D100.00%, avg=3D3923.21,=
- stdev=3D82.48, samples=3D144
-> > > iops        : min=3D629220, max=3D1585642, avg=3D1004340.78, stdev=3D=
-21116.07, samples=3D144
-> > >
-> > > After (+-0.0%):
-> > > bw (  KiB/s): min=3D30561, max=3D63064, per=3D100.00%, avg=3D53635.82=
-, stdev=3D177.21, samples=3D9520
-> > > iops        : min=3D 7636, max=3D15762, avg=3D13402.82, stdev=3D44.29=
-, samples=3D9520
-> > > bw (  MiB/s): min=3D 2449, max=3D 6145, per=3D100.00%, avg=3D3914.68,=
- stdev=3D81.15, samples=3D144
-> > > iops        : min=3D627106, max=3D1573156, avg=3D1002158.11, stdev=3D=
-20774.77, samples=3D144
-> > >
-> > > The performance is better (+4%) for 4K cached read and unchanged for =
-THP.
-> > >
-> > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > > ---
-> > >  mm/filemap.c | 127 ++++++++++++++++++++++++++++++-------------------=
---
-> > >  1 file changed, 76 insertions(+), 51 deletions(-)
-> > >
-> > > diff --git a/mm/filemap.c b/mm/filemap.c
-> > > index 6bbec8783793..c1484bcdbddb 100644
-> > > --- a/mm/filemap.c
-> > > +++ b/mm/filemap.c
-> > > @@ -848,12 +848,77 @@ void replace_page_cache_folio(struct folio *old=
-, struct folio *new)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(replace_page_cache_folio);
-> > >
-> > > +static int __split_add_folio_locked(struct xa_state *xas, struct fol=
-io *folio,
-> > > +                                 pgoff_t index, gfp_t gfp, void **sh=
-adowp)
-> >
->
-> Thanks for the very helpful review!
->
-> > I don't love the name of this function.  Splitting is a rare thing that
-> > it does.  I'd suggest it's more filemap_store().
->
-> Yes, the function name is a bit misleading indeed, I can rename it as
-> you suggested, eg. __filemap_store_locked ?
->
-> >
-> > > +{
-> > > +     void *entry, *shadow, *alloced_shadow =3D NULL;
-> > > +     int order, alloced_order =3D 0;
-> > > +
-> > > +     gfp &=3D GFP_RECLAIM_MASK;
-> > > +     for (;;) {
-> > > +             shadow =3D NULL;
-> > > +             order =3D 0;
-> > > +
-> > > +             xas_for_each_conflict(xas, entry) {
-> > > +                     if (!xa_is_value(entry))
-> > > +                             return -EEXIST;
-> > > +                     shadow =3D entry;
-> > > +             }
-> > > +
-> > > +             if (shadow) {
-> > > +                     if (shadow =3D=3D xas_reload(xas)) {
-> >
-> > Why do you need the xas_reload here?
->
-> This part of code works based on the guarantee that If there is a
-> larger entry, it will be the first and only entry iterated by
-> xas_for_each_conflict/xas_find_conflict. I added an xas_reload is here
-> to ensure that. But on second thought, this seems not needed indeed.
->
-> Will it be better if I write this part this way?
->
-> + shadow =3D NULL;
-> + order =3D -1;
-> + xas_for_each_conflict(xas, entry) {
-> +           if (!xa_is_value(entry))
-> +                    return -EEXIST;
+On Thu, Mar 21, 2024 at 02:25:32PM -0400, Johannes Weiner wrote:
+> Kent forwards this bug report of zswap re-entering the block layer
+> from an IO request allocation and locking up:
+> 
+> [10264.128242] sysrq: Show Blocked State
+> [10264.128268] task:kworker/20:0H   state:D stack:0     pid:143   tgid:143   ppid:2      flags:0x00004000
+> [10264.128271] Workqueue: bcachefs_io btree_write_submit [bcachefs]
+> [10264.128295] Call Trace:
+> [10264.128295]  <TASK>
+> [10264.128297]  __schedule+0x3e6/0x1520
+> [10264.128303]  schedule+0x32/0xd0
+> [10264.128304]  schedule_timeout+0x98/0x160
+> [10264.128308]  io_schedule_timeout+0x50/0x80
+> [10264.128309]  wait_for_completion_io_timeout+0x7f/0x180
+> [10264.128310]  submit_bio_wait+0x78/0xb0
+> [10264.128313]  swap_writepage_bdev_sync+0xf6/0x150
+> [10264.128317]  zswap_writeback_entry+0xf2/0x180
+> [10264.128319]  shrink_memcg_cb+0xe7/0x2f0
+> [10264.128322]  __list_lru_walk_one+0xb9/0x1d0
+> [10264.128325]  list_lru_walk_one+0x5d/0x90
+> [10264.128326]  zswap_shrinker_scan+0xc4/0x130
+> [10264.128327]  do_shrink_slab+0x13f/0x360
+> [10264.128328]  shrink_slab+0x28e/0x3c0
+> [10264.128329]  shrink_one+0x123/0x1b0
+> [10264.128331]  shrink_node+0x97e/0xbc0
+> [10264.128332]  do_try_to_free_pages+0xe7/0x5b0
+> [10264.128333]  try_to_free_pages+0xe1/0x200
+> [10264.128334]  __alloc_pages_slowpath.constprop.0+0x343/0xde0
+> [10264.128337]  __alloc_pages+0x32d/0x350
+> [10264.128338]  allocate_slab+0x400/0x460
+> [10264.128339]  ___slab_alloc+0x40d/0xa40
+> [10264.128345]  kmem_cache_alloc+0x2e7/0x330
+> [10264.128348]  mempool_alloc+0x86/0x1b0
+> [10264.128349]  bio_alloc_bioset+0x200/0x4f0
+> [10264.128352]  bio_alloc_clone+0x23/0x60
+> [10264.128354]  alloc_io+0x26/0xf0 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
+> [10264.128361]  dm_submit_bio+0xb8/0x580 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
+> [10264.128366]  __submit_bio+0xb0/0x170
+> [10264.128367]  submit_bio_noacct_nocheck+0x159/0x370
+> [10264.128368]  bch2_submit_wbio_replicas+0x21c/0x3a0 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
+> [10264.128391]  btree_write_submit+0x1cf/0x220 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
+> [10264.128406]  process_one_work+0x178/0x350
+> [10264.128408]  worker_thread+0x30f/0x450
+> [10264.128409]  kthread+0xe5/0x120
+> 
+> The zswap shrinker resumes the swap_writepage()s that were intercepted
+> by the zswap store. This will enter the block layer, and may even
+> enter the filesystem depending on the swap backing file.
+> 
+> Make it respect GFP_NOIO and GFP_NOFS.
+> 
+> Link: https://lore.kernel.org/linux-mm/rc4pk2r42oyvjo4dc62z6sovquyllq56i5cdgcaqbd7wy3hfzr@n4nbxido3fme/
+> Reported-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+> Cc: stable@vger.kernel.org	[v6.8]
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I noticed this should release potential alloced xas data, will fix this in =
-v2.
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
-> +          /*
-> +          * If there is a larger entry, it will be the first
-> +          * and only entry iterated.
-> +          */
-> +         if (order =3D=3D -1)
-> +                  order =3D xas_get_order(xas);
-> +         shadow =3D entry;
-> + }
+Thanks for the quick fix.
+
+> ---
+>  mm/zswap.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index b31c977f53e9..535c907345e0 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1303,6 +1303,14 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+>  	if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
+>  		return 0;
+>  
+> +	/*
+> +	 * The shrinker resumes swap writeback, which will enter block
+> +	 * and may enter fs. XXX: Harmonize with vmscan.c __GFP_FS
+> +	 * rules (may_enter_fs()), which apply on a per-folio basis.
+> +	 */
+> +	if (!gfp_has_io_fs(sc->gfp_mask))
+> +		return 0;
 > +
-> + if (shadow) {
-> +          /* check if alloc & split need, or if previous alloc is
-> still valid */
-> +         if (order > 0 && order > folio_order(folio)) {
-> +                   if (shadow !=3D alloced_shadow || order !=3D alloced_=
-order)
-> +                            goto unlock;
-> +                   xas_split(xas, shadow, order);
-> +                   xas_reset(xas);
-> +          }
-> +          order =3D -1;
-> +          if (shadowp)
-> +                   *shadowp =3D shadow;
-> + }
->
-
-Besides this, this should be OK? I think I can add more tests for
-xas_for_each_conflict and xas_get_order to ensure this works, need to
-export xas_get_order as GPL symbol for that.
-
->
-> If there is a larger slot, xas_for_each_conflict and check above
-> should catch that?
->
-> >
-> > > +                     if (shadowp)
-> > > +                             *shadowp =3D shadow;
-> > > +             }
-> > > +
-> > > +             xas_store(xas, folio);
-> > > +             /* Success, return with mapping locked */
-> > > +             if (!xas_error(xas))
-> > > +                     return 0;
-> > > +unlock:
-> > > +             /*
-> > > +              * Unlock path, if errored, return unlocked.
-> > > +              * If allocation needed, alloc and retry.
-> > > +              */
-> > > +             xas_unlock_irq(xas);
-> > > +             if (order) {
-> > > +                     if (unlikely(alloced_order))
-> > > +                             xas_destroy(xas);
-> > > +                     xas_split_alloc(xas, shadow, order, gfp);
-> > > +                     if (!xas_error(xas)) {
-> > > +                             alloced_shadow =3D shadow;
-> > > +                             alloced_order =3D order;
-> > > +                     }
-> > > +                     goto next;
-> > > +             }
-> > > +             /* xas_nomem result checked by xas_error below */
-> > > +             xas_nomem(xas, gfp);
-> > > +next:
-> > > +             xas_lock_irq(xas);
-> > > +             if (xas_error(xas))
-> > > +                     return xas_error(xas);
-> > > +
-> > > +             xas_reset(xas);
-> > > +     }
-> > > +}
-> >
-> > Splitting this out into a different function while changing the logic
-> > really makes this hard to review ;-(
->
-> Sorry about this :(
->
-> This patch basically rewrites the logic of __filemap_add_folio and the
-> function is getting long, so I thought it would be easier to
-> understand if we split it out.
-> I initially updated the code in place but that change diff seems more
-> messy to me.
->
-> >
-> > I don't object to splitting the function, but maybe two patches; one
-> > to move the logic and a second to change it?
-> >
->
-> I can keep it in place in V2.
+>  #ifdef CONFIG_MEMCG_KMEM
+>  	mem_cgroup_flush_stats(memcg);
+>  	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+> -- 
+> 2.44.0
+> 
 
