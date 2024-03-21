@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-109584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02022881B20
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:17:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94180881B23
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2606C1C2142C
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:17:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E5611F23B77
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 02:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8761A78271;
-	Thu, 21 Mar 2024 02:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDCC78670;
+	Thu, 21 Mar 2024 02:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="reMOh67s"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2040.outbound.protection.outlook.com [40.107.255.40])
+	dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b="0VRPZXN8"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2045.outbound.protection.outlook.com [40.107.255.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA4977F19;
-	Thu, 21 Mar 2024 02:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F7378298;
+	Thu, 21 Mar 2024 02:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710987223; cv=fail; b=CYLbRrO9jp6zYaAHHHiEyldmsVP1QuMaEdswFqMY1IkBb6r9bQR8QXxcKMDbwXjxrgWJtTQ+d5iYvrPNWpK+cgUo/jgz3h0xvkvs0BRZZXxZBO3P2EsuFt9px3R+NPJeonxWGstkafKzk7nkojDLMRH/NqPs/FMticZvOz1vXxA=
+	t=1710987228; cv=fail; b=dbIXuq9NTDdL13XpyPSVXpyF5LhmUhyjroeugAwmhvpZ94xFT/MBlcxq6e1X1Ocy+qO8pN+0WHhf84hyFLbIDnmUd6DfzBvPqT/jiml4rYp6561RQ0Sk/CwZwNQPZexYp2C30hFON4ZWVdtJlPNe9d8s3M1oAjkLSbg6dC62iqg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710987223; c=relaxed/simple;
-	bh=3+JFyl2mRyT5FuJ4utNhcc+hvSdYRoTBK+dCkAx9Zoo=;
+	s=arc-20240116; t=1710987228; c=relaxed/simple;
+	bh=ObAQFO3QuLRccdkdAJg/gfAHcjqdXIeUXAeGBIcJhpU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L6l3hV+RzA4BZFINarSOGJSBi+UqfZmDzRoteZIIk2zNLfZCsYSewPYrte3UoaobkoBiLWSjhQNi2/d8ew+UsW+YdfqiAxlQy+56s8WfBJJJto7W5QFiJjiHHlFdSpSLTSm9i7RqmwUbl/W153KmBRFBsi0SDtZA8WqfUPCL/gw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=reMOh67s; arc=fail smtp.client-ip=40.107.255.40
+	 MIME-Version:Content-Type; b=m28+uE2Gah6wwMyrUNWhPnHhsDzQ3zsQRc7U7XY/aV9cA868RoMFt/XUh1Rn4HMRqhm1ZnufpKDbNeYYJSgU1WbHHIotnzdnjEBZ5N/AA640NYbylDYoEdGFozFdrn1fIXIeol4fXuFtm62KnSRtt6TDkqLpHWZJ9gyGaw/Ka2g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com; spf=pass smtp.mailfrom=wiwynn.com; dkim=pass (2048-bit key) header.d=wiwynn.com header.i=@wiwynn.com header.b=0VRPZXN8; arc=fail smtp.client-ip=40.107.255.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wiwynn.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiwynn.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RYW56SrzVonPwBgAXGdK47sgOzESNUk6XGJJrzFQMLJhtxnxsoa8v7gEt473rD4r3/u+raZxdif9F+l4BtXg5VioFC5adNInjz5p6J9HhKMWjGV5KxZV2ajTZh/bmUZH8pdlK+rH+RRkV4+YWDMe7DaODkfOqlttqztmWJCp5xCyIBa6OL9UW8FnKsn3gGJMSWJOmQ1TBqqHBh1gCErS8SN/hjZkzosQZTtreT8789Ri1fmSyMWTjrfLvoZfE6HYwLAPQh7mrQ6iwsocmVFfueTpycRWQKTUUDSzgVDACd4EHnNYYLvP79INq490u5zoS86yUPRHq9ibPKdxTPy0XQ==
+ b=GCjwuB/K8JUtvs4xvHODN17ysU9mz6CepCvF+xQLwV2f08eRUeysCP8aK3QV1k8gPTVeNf18/iphmC0EQS2qp25yRipW0ywecIC0siFQXcdwVfuNoLsnShz/l8T9+xchsyEWnFIZbVB09zUzI4sU7No9hxdzbh6Yfm3Hfk7az1UFQ2VGRKY/yparMBBDfQkwHGDG7hCEF7svxEcndErkGwjMd+7NpPb9n8nWm/y9XBxRJtNVIm1B9sBRag9bV1vpmV47wtXss2FpLqpXYLBWywDhlIa7jF7Fo5KZSDvO+vXm6/5ucjE/XUzsKYsHbzpHLzVewm2VOWQd+hCYsCnRxQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mt72pmhgjJYk/fEfDyefjhvaYE3FLnKIVE5WwkrqElg=;
- b=KLKJvM15gPFeelDBwrOD+Yh3bXAuN2jGW+hTMr7UXiGNFJ5FpVanUbOPu9i7vdOkPum23Vy54YCjHjzVda9NSKj0zaQW1bukgU+no1EhaYGw2Ql5KUiAbckKuhfjiGWDdVUvSQLv4G8fJ46r8LGO4oDTg4ImUP4tC3pVsKle7jee+aDtGFn1RPJ74J0IFa4yImWBbJGsyNk6q7mMX8lshnMXRcXwouU81Ri798+9NYaz2461zseXEO3lo/9qpfl7UJXNhZ1S3T+2+AirCshvWAh0G5gRXgz0lbVeZVMBCOzIrsGSE4Sg3RTwZ4tNuRUhRXE+NmW77pj6/cCJ9hTvrQ==
+ bh=G6nf06x5xWOlcO2bdyMJICgWSfEMSlRC7fbpMNNkPn0=;
+ b=A/Xzzl1cuCMc45T5NYPj8HvOwqL+UcH1lD5BLDBdncvKvuCOHMY4df2rWwSxNTYR3WTXb4AQHbJZCpaJiuJNdD5740HLi9Zn6HbIWCFEAx/bgc0DMYC9uJRhslsg4HOuYr8bncKKLD1x6f7yMwaFvYKiyVm5qb9s+blrrIxa0c7a21yQ8b5BZjHzR1esYvMVAveGWAc28IMiulQpEiMossp7001Lu3sQjifDNvSsXax+0VKKzv75wc6Ihpq72SNwMGdHLrf/rlETxyOVabsDDVO31iTB46LXP6coETf0h0ykM/1c9lZ9042fJq42EmytsjdEarYTKEP6LNWxJMtdZg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
  211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
  (p=quarantine sp=quarantine pct=100) action=quarantine
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mt72pmhgjJYk/fEfDyefjhvaYE3FLnKIVE5WwkrqElg=;
- b=reMOh67spv7OeJD8v1l4rBmVvrkoh97XeEmbZdPej2Kr6bBnNkHZJAllvgR5fW23eROK0aLmLgGt4IyrlE8hptNse/rTtc+GB60LPRxdLgXYE4oNnyS89dcaR0oImhEOoPCJoG6jQX1Nc3dryZzJmJ9KLsIDvQGbMU14+t7L9Oyq/SQaAG+atFlFGepzc6qxaVoZzWhmv5VOiT/2wr28BTVHGhGOqDW/Khq4G3tHl8+mnSSZ34t/UCWzyupkpeNZbYRXR49nVXhvPcxN0quzAyUDFroiBkWttqSwlcSAhsuX5NC6smcOyFNUlndyvju818c3XCVNEWiONzKZ5Bo3Zw==
-Received: from PU1PR01CA0011.apcprd01.prod.exchangelabs.com
- (2603:1096:803:15::23) by KL1PR04MB7556.apcprd04.prod.outlook.com
- (2603:1096:820:124::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Thu, 21 Mar
- 2024 02:13:39 +0000
+ bh=G6nf06x5xWOlcO2bdyMJICgWSfEMSlRC7fbpMNNkPn0=;
+ b=0VRPZXN8kV/lnuBaAOE2Slt8/EVJj+tYOhSnbSY4wxY2zP2gMHfxO2q6R1JqJSYU61lN5d5+PJsgicTebBDgL+kizSu+y1Iol0ee11YUx+jDkM6zW0vepvT4BzLmBXhZ1yINeSgKwR5CABY2MuP71AoicPqKpLayhOuOKwd8al6wQx1sOD8DXtSugJnP7WnsCq53uCMDSOPdbkzfJdwNnmc6TbtBt2jlnTx7MevIMOYo+PLZ9krYGdDyaKcsKx086ECy983AO8KbZS7XuNjbW37zrvDkcTw4/UaWHyyuE2BISjFCrl8fAMzAn+X1+xmCRYHgrU6DxdKMFVy79gT9lw==
+Received: from PU1PR01CA0008.apcprd01.prod.exchangelabs.com
+ (2603:1096:803:15::20) by TYUPR04MB6672.apcprd04.prod.outlook.com
+ (2603:1096:400:35d::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Thu, 21 Mar
+ 2024 02:13:42 +0000
 Received: from HK3PEPF0000021F.apcprd03.prod.outlook.com
- (2603:1096:803:15:cafe::e8) by PU1PR01CA0011.outlook.office365.com
- (2603:1096:803:15::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
- Transport; Thu, 21 Mar 2024 02:13:38 +0000
+ (2603:1096:803:15:cafe::b2) by PU1PR01CA0008.outlook.office365.com
+ (2603:1096:803:15::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28 via Frontend
+ Transport; Thu, 21 Mar 2024 02:13:41 +0000
 X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
  smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
  header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
@@ -64,7 +64,7 @@ Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
  client-ip=211.20.1.79; helo=localhost.localdomain;
 Received: from localhost.localdomain (211.20.1.79) by
  HK3PEPF0000021F.mail.protection.outlook.com (10.167.8.41) with Microsoft SMTP
- Server id 15.20.7409.10 via Frontend Transport; Thu, 21 Mar 2024 02:13:38
+ Server id 15.20.7409.10 via Frontend Transport; Thu, 21 Mar 2024 02:13:41
  +0000
 From: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 To: patrick@stwcx.xyz,
@@ -78,9 +78,9 @@ Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-aspeed@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 20/22] ARM: dts: aspeed: yosemite4: support medusa board adc sensors
-Date: Thu, 21 Mar 2024 10:12:32 +0800
-Message-Id: <20240321021236.1823693-21-Delphine_CC_Chiu@wiwynn.com>
+Subject: [PATCH v7 21/22] ARM: dts: aspeed: yosemite4: support NIC eeprom
+Date: Thu, 21 Mar 2024 10:12:33 +0800
+Message-Id: <20240321021236.1823693-22-Delphine_CC_Chiu@wiwynn.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240321021236.1823693-1-Delphine_CC_Chiu@wiwynn.com>
 References: <20240321021236.1823693-1-Delphine_CC_Chiu@wiwynn.com>
@@ -93,59 +93,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021F:EE_|KL1PR04MB7556:EE_
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021F:EE_|TYUPR04MB6672:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: a2e1b297-3105-4f77-d1f6-08dc494c85a8
+X-MS-Office365-Filtering-Correlation-Id: a7f94e1b-c64f-445c-47ef-08dc494c8764
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	A4nVvSFDCfoKhwpc7XR9nkEZGYOtOOzaYUOEXKBPEBZnqOsJV0MukV/IV65TuzEa/FU+bqmQWCn0CQINdEPzp5P0bPSF/anBuZBNdm85yaemVygKpqP0H5QLfBX58+oaFC6Z+w/7tppwDrB6yG0LOBmeLGh1v7Wu3seUvUFNJAdSr5D87w6OOpg3aFNgDpuIUT5XT3KW9l1hg1uDzD6CbqWfRsXiNfxn2XtXwu+gTqBVUmBIEQa2be/NwdkhnUSNju1E7zMWDnQngnvIBkn2gsgzg+tLAaJ0Eolpt8L5Eg4Aj3Yg3qa9q3xVbbeGKoI16sKo/LSm3GDNqKCfapC+K75OUwvfGgdsH7dbIKVfzdURuy6HSVn2WbE5gg9hC5DlFORr7ykk3rVnKB1ExvIUPFe6yoNoyyZra1nLxzJK681s7t6ZwLM05TfMc3fE+mYp2Hlk23E8jCKojNmy9dfCzvlI9VGeQiqwFQ1Qcjj6gm2V2Glx/p5+673lqaFiyfb7TdDqBF6A8aAMYbsTDSPSs+AlHRZNK3Fjjl/HDhcqZhvJiGFSJYKbCfg/zYqrxHuVZM0/ndnAtvWaEH9HY4hRXFXwvckTbz7j3LIajmmHfZNIfPRIIEP5RqX8s/zBror/JXihNYuOVNHNfrilgLg63yXFdEaag9LvA0aALpPcL7ohS6O/VrfBMv5MEiN9cXJbN/HHebKSlfQdUmB/iEQGCAWLbBOqeCY98TryrpySPQ1TycbBHwXjuFN17JjdX561
+	5FCCJxuD6rGiky76xUc4vDTpLAB5Jh1z4KAi3OOzqI0Bt5UcHGoDdUq9S9KHPsyDB/p5eWO3T6zGViC2Mhju1qKXg5f/ioqfK4khr+XJafrE9IxpkOrCYmdbodHLjw84PvkfOpICgkdWom8dRrcMkarkNLzECaCxZp1dKt1Ggmq79TkkUN7aPhsWbf6UD5TVJpo5bkQNNrT6DuUH/8+MFzUfrOtGwisn9Mz2gSoft7Xi/FejPwWTFX39W+c7XNMXHqQFEagzNT+9FXxGpm3YqkV2t9VIAHHGl2WJCHk+dOqSp0fDG64YuzhmzF7sFX3o3FXjaM7nmB82Wy8YHnnJx5Jx4kd7ot7bY18etyhn47QAcPsUekKHA5XuEIPETo+NQbzcNafjwD+jW6BAwld7xiZoA4PsbQXIPYRVVV5CaJZ1QjrrdSq6X2NHFbqzzgL1C4oeQRqU6Fluo+yZi/ONYQNdOzUmjFfhkOFAAvTpIOHF4QGV4DW+uK2mbyR0P6GhGh3zvz41G/ojaypooJaLINqmqpgYZigdfT5HtCOM5UdZaDzQdG38+jm+aVxC79O1G//yST0GBY4dSYRh7V0VscOB3nvftAFlAswL7la5hEeDHNoguFkfVCmR56O8V6qTy+VnGvDMijnV2DY1W7Y3RsVIhi4YpEy+8qohu8YY/8knQ4CDs/F9TizYH+5egQIA7H3LHrNkkjARGUVV8RGUSIIHCwaul+nJjkceGkuiee9L/RAFu9dar3C2bE9AsDLG
 X-Forefront-Antispam-Report:
-	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(82310400014)(1800799015)(376005);DIR:OUT;SFP:1101;
+	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(7416005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 02:13:38.5730
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 02:13:41.5574
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2e1b297-3105-4f77-d1f6-08dc494c85a8
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7f94e1b-c64f-445c-47ef-08dc494c8764
 X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
 	HK3PEPF0000021F.apcprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR04MB7556
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYUPR04MB6672
 
-Add ina233/ina28 support for medusa board adc sensors
+Add NIC eeprom devicetree config
 
 Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 ---
- .../dts/aspeed/aspeed-bmc-facebook-yosemite4.dts    | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index 373eacd3186e..d2ad6c8ea165 100644
+index d2ad6c8ea165..c7bba7d68ce1 100644
 --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
 +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -915,6 +915,19 @@ power-sensor@40 {
- 		reg = <0x40>;
- 	};
+@@ -1330,6 +1330,11 @@ temperature-sensor@3c {
+ 				compatible = "smsc,emc1403";
+ 				reg = <0x3c>;
+ 			};
++
++			eeprom@50 {
++				compatible = "atmel,24c64";
++				reg = <0x50>;
++			};
+ 		};
  
-+	power-sensor@41 {
-+			compatible = "ti,ina233";
-+			resistor-calibration = /bits/ 16 <0x0a00>;
-+			current-lsb= /bits/ 16 <0x0001>;
-+			reg = <0x41>;
-+	};
+ 		imux25: i2c@1 {
+@@ -1346,6 +1351,11 @@ temperature-sensor@3c {
+ 				compatible = "smsc,emc1403";
+ 				reg = <0x3c>;
+ 			};
 +
-+	power-sensor@44 {
-+			compatible = "ti,ina238";
-+			shunt-resistor = <1000>;
-+			reg = <0x44>;
-+	};
++			eeprom@50 {
++				compatible = "atmel,24c64";
++				reg = <0x50>;
++			};
+ 		};
+ 
+ 		imux26: i2c@2 {
+@@ -1362,6 +1372,11 @@ temperature-sensor@3c {
+ 				compatible = "smsc,emc1403";
+ 				reg = <0x3c>;
+ 			};
 +
- 	temperature-sensor@48 {
- 		compatible = "ti,tmp75";
- 		reg = <0x48>;
++			eeprom@50 {
++				compatible = "atmel,24c64";
++				reg = <0x50>;
++			};
+ 		};
+ 
+ 		imux27: i2c@3 {
+@@ -1378,6 +1393,11 @@ temperature-sensor@3c {
+ 				compatible = "smsc,emc1403";
+ 				reg = <0x3c>;
+ 			};
++
++			eeprom@50 {
++				compatible = "atmel,24c64";
++				reg = <0x50>;
++			};
+ 		};
+ 	};
+ };
 -- 
 2.25.1
 
