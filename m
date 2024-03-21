@@ -1,424 +1,195 @@
-Return-Path: <linux-kernel+bounces-109908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15AC38857A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:52:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4388857AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:56:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 800A51F22949
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:52:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DDBA1F230E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CADE57323;
-	Thu, 21 Mar 2024 10:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244A358226;
+	Thu, 21 Mar 2024 10:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FcZKBnRV"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="rQOfHUrt"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B2741A91;
-	Thu, 21 Mar 2024 10:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C400C5730C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711018330; cv=none; b=ozQ0POezDNfPL4WqtXbbT7iafsFTJz0EbckXPyIsOjW2ZK8hyvIz5ZgVVDR4evMZSP9oh42YUHfSdRruFaZsWUi9AVBslJLotOZMzHCocIzizprIWTrZFj1U9Bx52YUq2FwRQUuQjQZvuDN6yilVzZP5wr70H4XPOumg7NJXMEY=
+	t=1711018570; cv=none; b=ZHCFFs+9JPZ8nLUr6URMQoYjGSl4pr6xtrqfPBlwD7lvEvrlYMQPh1kC9x4gUNqI7D2KOq3mL/RfhWFq5JZ3xyaDeLFnXxNUQ4a1v9KjBfKjY4O4JhbuhyxhTUL0UdMmskST4NPB/bqfLEkZRWsTwu01bl+sM2d7XUCECECoUtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711018330; c=relaxed/simple;
-	bh=J7qo+0sdXTmMkR47uNMgU/tE+pZlQVsJlmWUqzXgKsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UPMWaR/uPTld63RwwlYDDczfNtN4ekcOPsiXhVJKD9MItL/4P8F9qxwghaOnDdJGbyuGEZIBgXAqiyyV+oV8JvKp7mhoZaEqpvkjbKyffF62Z9IJTMBSQabHLK+pMefXgO+PEhtGrf1b8bxmhrqnskpH0FObMByfOwbkAkhChR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FcZKBnRV; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512f892500cso953323e87.3;
-        Thu, 21 Mar 2024 03:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711018326; x=1711623126; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NtE8DhP4hGBF+/6PHU0enNa+mit7p71WmHR0SCZe11c=;
-        b=FcZKBnRVbdE9kB0jyKOGHCW/br1i5xmUT6nHBKgPlyeJLjBFMOmw/q8oL50DDno/8X
-         dAJb5IN4w65TjhRWwaEaHe+GUxB4kODmo5tY+Q1ZIhuuYERRWzsLBJNNspJjaVSsXWso
-         xS2vuwPW4oVarNJy89D3M2NtlQwlrDq65DBU3SI+Fha8Rqv3ywUjeB7KzT+ypNCMg5pZ
-         5l7fDMpOpwqGwmcxJkR6MQsLO3zKF6U1eZj6EMPCcrGCFjNWm+91TKr3jKDQ0waVKREe
-         Fzhd9ISP7qIP4hBePJqSmuYTjlxdi3J0wjBKFbTuV2r9pknPJ3ulH+AL/SogOA5AaIEU
-         75bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711018326; x=1711623126;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NtE8DhP4hGBF+/6PHU0enNa+mit7p71WmHR0SCZe11c=;
-        b=Rstuk6osGnWHF72EUezR0wFPBJCBGyHjgZidGAFJ1DNX8t7NPY9EhlFdzX+7wY8uBx
-         8C9hCmhIQLUBWl7IJf9RO81dfvHFAjZziwxNLh1M7eVBZOXrf8KGVGhzM0yb9eI/S5tE
-         1LDPgyBQ745ucTRun5JqRuSsTh1PgnCrI0PfWIlwIOh0yU6Scv/BQsGA3MJyqfZzxWrx
-         fwmvQHx40qf7FKXB7kqAP90f9BdRdIgoqcXhXxBs0R+ZGQixPPgiQJcuuGFtLWHODqR4
-         XnMWY0xgpESAO84HlioQ7LYfwfTqZQdpyt2g4TUpdqUjHliPlxowIwSUeIXznD0lGDQR
-         MGBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVsGU2CVtiXL2ejgAdT2vmmP4MWl65MDVm3BAUNTdvKn+9VHt7GjukKxSjAOKWKN1xcSzPvjnVmzci3MATZB+wicvfCAzjCfTwAvVXUIAcEBACxiowmyWHReAhhq7xmO/Xp0CEaOFnBKtO3rNjHwpZkUmUE5T3nCHAsfAPfuKfEvA5x07LI
-X-Gm-Message-State: AOJu0Yyz++657li2BMighyszcuuVeAW4Rwm7NF5s3owkaeXnMjP4qm5C
-	nNhvbDg339N09XP0WUmiSlg3GB+mofLJ3Btb4rxtopzerxWjAloy
-X-Google-Smtp-Source: AGHT+IHMVq5EcxMs3De+XX6IOf4T1JD/B3VgakI0+SS3/WpluY1jdpheGYwXppW+vxPF5UEBius2qw==
-X-Received: by 2002:ac2:4db1:0:b0:513:dc47:4408 with SMTP id h17-20020ac24db1000000b00513dc474408mr1566792lfe.36.1711018325157;
-        Thu, 21 Mar 2024 03:52:05 -0700 (PDT)
-Received: from localhost.localdomain ([178.70.43.28])
-        by smtp.gmail.com with ESMTPSA id i1-20020a0565123e0100b005159626af49sm48874lfv.244.2024.03.21.03.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 03:52:04 -0700 (PDT)
-Date: Thu, 21 Mar 2024 13:52:03 +0300
-From: Ivan Bornyakov <brnkv.i1@gmail.com>
-To: Nas Chung <nas.chung@chipsnmedia.com>
-Cc: Brandon Brnich <b-brnich@ti.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "jackson.lee" <jackson.lee@chipsnmedia.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: RE: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-Message-ID: <tg32tsfnj3pmboaaeslvrmf7wtvznagio3vtqot42iflz5lvh7@25s5ykv3dfuz>
-References: <20240318144225.30835-1-brnkv.i1@gmail.com>
- <20240318144225.30835-6-brnkv.i1@gmail.com>
- <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
- <20240319210106.awn33cm7ex33g65b@udba0500997>
- <SL2P216MB12468C7256CE2468EE088E7CFB322@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1711018570; c=relaxed/simple;
+	bh=heQ08UWxLn7tbd8RbsbtafB7s9ZEhlTjhT6cfeft4ls=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=uu9YS7G2NoXL49MMzemYzQlXmZOixtiluasABOK90AfD9oOohl7G3gr7YRzLI10a+uBi99znvp7cUb6tiyiRnTGNdHLz5u0NL5OdZsB016hWNuj4M5aid8q9Oq9NkOHOcuHQaUfMQstNhqImsiAY+vlAFTKAH70+NBo/TjPwmV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=rQOfHUrt; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240321105558euoutp02f530cfef7a9bfd6ba58008133e2488f6~_wlBkCGds0883208832euoutp02e;
+	Thu, 21 Mar 2024 10:55:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240321105558euoutp02f530cfef7a9bfd6ba58008133e2488f6~_wlBkCGds0883208832euoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1711018559;
+	bh=lPu7o6NgNa/JoRTHUUXMfqT5XPevVmyBQ/14nNN4xH4=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=rQOfHUrtJNPHRsdCQiyAvroOJXeJUJYCwJeW6VXqeOaFkhgNqcHX4ZcMBkwNv8tLn
+	 F6LuvQbAM2jEd5ScgRn4TKXYYoJyi4CLTJi9TO/HIrmv7WvE6+7aIWvCmbxpJF6tlw
+	 svdTo4S8eKXZnfOclQeWYS/NcQ0xVbAau80RUi+4=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240321105558eucas1p27ffbf6cd2a4b140a9def9ec06c88cdfe~_wlBWbHKX2298322983eucas1p2-;
+	Thu, 21 Mar 2024 10:55:58 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 8D.18.09814.E321CF56; Thu, 21
+	Mar 2024 10:55:58 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240321105558eucas1p1e0b9b37d2aae8805529af0edad479fb6~_wlA2fFCX1481714817eucas1p1c;
+	Thu, 21 Mar 2024 10:55:58 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240321105558eusmtrp1393c3bebf80bc069b408eef183f4e1b8~_wlA12oKn2741527415eusmtrp1J;
+	Thu, 21 Mar 2024 10:55:58 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-2b-65fc123eca3f
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 0A.FE.10702.E321CF56; Thu, 21
+	Mar 2024 10:55:58 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240321105557eusmtip2ac74146a0617c6e7f296cd7fbb35b260~_wlAocJ-J1323213232eusmtip2i;
+	Thu, 21 Mar 2024 10:55:57 +0000 (GMT)
+Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Thu, 21 Mar 2024 10:55:57 +0000
+Date: Thu, 21 Mar 2024 11:55:55 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Jan Kara <jack@suse.cz>
+CC: <wenyang.linux@foxmail.com>, "Eric W . Biederman"
+	<ebiederm@xmission.com>, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook
+	<keescook@chromium.org>, Christian Brauner <brauner@kernel.org>, Dave Young
+	<dyoung@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH v2 8/9] fs: inotify: delete these unnecessary
+ static variables it_zero and it_int_max
+Message-ID: <20240321105555.f4qg5g3wbe57mzzx@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="fxwvznmjean77k53"
 Content-Disposition: inline
-In-Reply-To: <SL2P216MB12468C7256CE2468EE088E7CFB322@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+In-Reply-To: <20240320103603.u6uqhk6viu4qkaht@quack3>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPKsWRmVeSWpSXmKPExsWy7djP87p2Qn9SDeZc1bR4ffgTo8XlJ3wW
+	DRMbWCz+b2tht5g9vZnJ4kx3rsXlXXPYLG5MeMpo0bJ6F6sDp8fshossHgt6zjN7bFrVyebx
+	ft9VNo8zC46we3zeJOcx5VA7SwB7FJdNSmpOZllqkb5dAlfG8Q/GBWcFKv49+MzSwLiRr4uR
+	k0NCwESifeMali5GLg4hgRWMEo9nnmMDSQgJfGGUWNcvCpH4zCixaOZEVpiO/XsnsUEkljNK
+	XDpwgBGiA6hq5bxUiMRWRom3Dw+CdbAIqEpMOL6LGcRmE9CROP/mDpgtIiAtMevYSrDdzAJr
+	mSTaXj9gAUkICxRJzPmwFKyZV8BBYt3ZdjYIW1Di5MwnYDXMAhUSJ+c/AIpzANnSEsv/cYCE
+	OQVMJf5df8oOcamyxPV9i9kg7FqJU1tuMYHskhBYzSkx+24/E0TCRaK3vwOqSFji1fEtUM0y
+	Eqcn97BANExmlNj/7wM7VDejxLLGr1Dd1hItV55AdThKzP//nB3kIgkBPokbbwUhDuWTmLRt
+	OjNEmFeio00IolpNYvW9NywTGJVnIXltFpLXZiG8BhHWkViw+xOmsLbEsoWvmSFsW4l1696z
+	LGBkX8UonlpanJueWmyUl1quV5yYW1yal66XnJ+7iRGY7k7/O/5lB+PyVx/1DjEycTAeYlQB
+	an60YfUFRimWvPy8VCURXnbun6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVVT5FOFBNITS1Kz
+	U1MLUotgskwcnFINTGI3Z5i6PF5vsJadKcZ/3ad13mUz97d6cDkJKF0zruN0dI/2NDpUfbFA
+	VeZ41GntN+mxbyaF79tUXmipbmc8L6ju4KJXNV6xkbENOjGp9UIu0wy5Ns5gXVR+ImKmxkOW
+	OvZz/hvmiagtmJx4SmJa8AFTmbYHVvvdjnnHb9n2ZeGJtM/angsclrZ9ruJ6r9GovPPyr8N5
+	U+N3LvMvY0i3PhnzgMNLZsYa7oSaackfnuhemPitMKa3cpvtyeC3s564KO/bt+ahUfHTxA0N
+	5U0XfifprhUxfXWA5e8Ov7oZs7/9jVA1+LbUU2CVcOnnNGdu1T8BZSqLubsV31bu/XnLbN6s
+	ybONnojpeNRXrI//pMRSnJFoqMVcVJwIANSNDRLyAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsVy+t/xe7p2Qn9SDXoaWS1eH/7EaHH5CZ9F
+	w8QGFov/21rYLWZPb2ayONOda3F51xw2ixsTnjJatKzexerA6TG74SKLx4Ke88wem1Z1snm8
+	33eVzePMgiPsHp83yXlMOdTOEsAepWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtl
+	ZKqkb2eTkpqTWZZapG+XoJfx4vgCloLTAhWH2trZGhjX83UxcnJICJhI7N87ia2LkYtDSGAp
+	o8SEj88ZIRIyEhu/XGWFsIUl/lzrgir6yCjxf/4nKGcrkDN1GjNIFYuAqsSE47vAbDYBHYnz
+	b+6A2SIC0hKzjq1kAWlgFljNJHH370EmkISwQJHEnA9LwVbwCjhIrDvbDjV1GpPE/i0z2CAS
+	ghInZz5hAbGZBcok2rf/BIpzANnSEsv/cYCEOQVMJf5df8oOcaqyxPV9i9kg7FqJz3+fMU5g
+	FJ6FZNIsJJNmIUyCCGtJ3Pj3kglDWFti2cLXzBC2rcS6de9ZFjCyr2IUSS0tzk3PLTbSK07M
+	LS7NS9dLzs/dxAiM/G3Hfm7Zwbjy1Ue9Q4xMHIyHGFWAOh9tWH2BUYolLz8vVUmEl537Z6oQ
+	b0piZVVqUX58UWlOavEhRlNgME5klhJNzgempLySeEMzA1NDEzNLA1NLM2MlcV7Pgo5EIYH0
+	xJLU7NTUgtQimD4mDk6pBiaF8PrWjaGeRZdk/ZuKs16F+2lPnrFVQ1SUh6Wutbx080T50tB9
+	Uh+XZwp1Xf9/aU9rUsPe/fM/rj2Z8mXPZ0XxazM5GF/mCKlfDtpfsG7F5HfnV3UI3FNflf1S
+	6hrjrx699oVvU8rXpDCzhU9ru575X4bpVpio1U2JNzO4DMIm2/W0qFWGla6WYO78yLyLM11h
+	1syALV9LIvgfuMoozMs+dMgqeidrau4/NQZ365gDjKtfMfUbvJh8z5jdK9JlNlOOcMwy24K+
+	7ucuSvOV/2T9qIpmVpK0muvyyUt+ytHowpblpyaem6TCUMJ3LnHtTtv9akvyNpTffpJRLl4q
+	P1vJmdnywDn51rnrWlazKLEUZyQaajEXFScCANuD6ciRAwAA
+X-CMS-MailID: 20240321105558eucas1p1e0b9b37d2aae8805529af0edad479fb6
+X-Msg-Generator: CA
+X-RootMTR: 20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6
+References: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+	<tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
+	<CGME20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6@eucas1p2.samsung.com>
+	<20240320103603.u6uqhk6viu4qkaht@quack3>
 
-Hi!
+--fxwvznmjean77k53
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 09:29:04AM +0000, Nas Chung wrote:
-> Hi, Ivan and Brandon.
-> 
-> >-----Original Message-----
-> >From: Brandon Brnich <b-brnich@ti.com>
-> >Sent: Wednesday, March 20, 2024 6:01 AM
-> >To: Ivan Bornyakov <brnkv.i1@gmail.com>
-> >Cc: Nas Chung <nas.chung@chipsnmedia.com>; Philipp Zabel
-> ><p.zabel@pengutronix.de>; Rob Herring <robh@kernel.org>; Krzysztof
-> >Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> ><conor+dt@kernel.org>; linux-media@vger.kernel.org; linux-
-> >kernel@vger.kernel.org; devicetree@vger.kernel.org; jackson.lee
-> ><jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab <mchehab@kernel.org>
-> >Subject: Re: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-> >
-> >Hi Ivan,
-> >
-> >On 14:24-20240319, Ivan Bornyakov wrote:
-> >> Hello, Nas
-> >>
-> >> On Tue, Mar 19, 2024 at 10:56:22AM +0000, Nas Chung wrote:
-> >> > Hi, Ivan.
-> >> >
-> >> > >
-> >> > >Allocate SRAM memory on module probe, free on remove. There is no
-> >need
-> >> > >to allocate on device open, free on close, the memory is the same
-> >every
-> >> > >time.
-> >> >
-> >> > If there is no decoder/encoder instance, driver don't need to
-> >allocate SRAM memory.
-> >> > The main reason of allocating the memory in open() is to allow other
-> >modules to
-> >> > use more SRAM memory, if wave5 is not working.
-> >
-> >I have to agree with this statement. Moving allocation to probe results
-> >in wasting SRAM when VPU is not in use. VPU should only be allocating
-> >SRAM
-> >when a stream instance is running and free that back once all instances
-> >close.
-> >
-> >> > >
-> >> > >Also use gen_pool_size() to determine SRAM memory size to be
-> >allocated
-> >> > >instead of separate "sram-size" DT property to reduce duplication.
-> >> > >
-> >> > >Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
-> >> > >---
-> >> > > .../platform/chips-media/wave5/wave5-helper.c |  3 ---
-> >> > > .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++-------
-> >--
-> >> > > .../chips-media/wave5/wave5-vpu-dec.c         |  2 --
-> >> > > .../chips-media/wave5/wave5-vpu-enc.c         |  2 --
-> >> > > .../platform/chips-media/wave5/wave5-vpu.c    | 12 +++++------
-> >> > > .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
-> >> > > 6 files changed, 16 insertions(+), 25 deletions(-)
-> >> > >
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> >> > >index 8433ecab230c..ec710b838dfe 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
-> >> > >@@ -29,9 +29,6 @@ void wave5_cleanup_instance(struct vpu_instance
-> >*inst)
-> >> > > {
-> >> > > 	int i;
-> >> > >
-> >> > >-	if (list_is_singular(&inst->list))
-> >> > >-		wave5_vdi_free_sram(inst->dev);
-> >> > >-
-> >> > > 	for (i = 0; i < inst->fbc_buf_count; i++)
-> >> > > 		wave5_vpu_dec_reset_framebuffer(inst, i);
-> >> > >
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> >> > >index 3809f70bc0b4..ee671f5a2f37 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> >> > >@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
-> >> > >*vpu_dev, struct vpu_buf *array,
-> >> > > void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
-> >> > > {
-> >> > > 	struct vpu_buf *vb = &vpu_dev->sram_buf;
-> >> > >+	dma_addr_t daddr;
-> >> > >+	void *vaddr;
-> >> > >+	size_t size;
-> >> > >
-> >> > >-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
-> >> > >+	if (!vpu_dev->sram_pool || vb->vaddr)
-> >> > > 		return;
-> >> > >
-> >> > >-	if (!vb->vaddr) {
-> >> > >-		vb->size = vpu_dev->sram_size;
-> >> > >-		vb->vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
-> >> > >-					       &vb->daddr);
-> >> > >-		if (!vb->vaddr)
-> >> > >-			vb->size = 0;
-> >> > >+	size = gen_pool_size(vpu_dev->sram_pool);
-> >> > >+	vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
-> >> > >+	if (vaddr) {
-> >> > >+		vb->vaddr = vaddr;
-> >> > >+		vb->daddr = daddr;
-> >> > >+		vb->size = size;
-> >> > > 	}
-> >> > >
-> >> > > 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
-> >> > >0x%p\n",
-> >> > >@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device
-> >*vpu_dev)
-> >> > > 	if (!vb->size || !vb->vaddr)
-> >> > > 		return;
-> >> > >
-> >> > >-	if (vb->vaddr)
-> >> > >-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
-> >> > >-			      vb->size);
-> >> > >+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
-> >> > >>size);
-> >> > >
-> >> > > 	memset(vb, 0, sizeof(*vb));
-> >> > > }
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
-> >dec.c
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> >> > >index aa0401f35d32..84dbe56216ad 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> >> > >@@ -1854,8 +1854,6 @@ static int wave5_vpu_open_dec(struct file
-> >*filp)
-> >> > > 		goto cleanup_inst;
-> >> > > 	}
-> >> > >
-> >> > >-	wave5_vdi_allocate_sram(inst->dev);
-> >> > >-
-> >> > > 	return 0;
-> >> > >
-> >> > > cleanup_inst:
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-
-> >enc.c
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> >> > >index 8bbf9d10b467..86ddcb82443b 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> >> > >@@ -1727,8 +1727,6 @@ static int wave5_vpu_open_enc(struct file
-> >*filp)
-> >> > > 		goto cleanup_inst;
-> >> > > 	}
-> >> > >
-> >> > >-	wave5_vdi_allocate_sram(inst->dev);
-> >> > >-
-> >> > > 	return 0;
-> >> > >
-> >> > > cleanup_inst:
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> >> > >index f3ecadefd37a..2a0a70dd7062 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> >> > >@@ -178,16 +178,11 @@ static int wave5_vpu_probe(struct
-> >platform_device
-> >> > >*pdev)
-> >> > > 		return ret;
-> >> > > 	}
-> >> > >
-> >> > >-	ret = of_property_read_u32(pdev->dev.of_node, "sram-size",
-> >> > >-				   &dev->sram_size);
-> >> > >-	if (ret) {
-> >> > >-		dev_warn(&pdev->dev, "sram-size not found\n");
-> >> > >-		dev->sram_size = 0;
-> >> > >-	}
-> >> > >-
-> >> >
-> >> > Required SRAM size is different from each wave5 product.
-> >> > And, SoC vendor also can configure the different SRAM size
-> >> > depend on target SoC specification even they use the same wave5
-> >product.
-> >> >
-> >>
-> >> One can limit iomem address range in SRAM node. Here is the example of
-> >> how I setup Wave515 with SRAM:
-> >>
-> >> 	sram@2000000 {
-> >> 		compatible = "mmio-sram";
-> >> 		reg = <0x0 0x2000000 0x0 0x80000>;
-> >> 		#address-cells = <1>;
-> >> 		#size-cells = <1>;
-> >> 		ranges = <0x0 0x0 0x2000000 0x80000>;
-> >>
-> >> 		wave515_vpu_sram: wave515-vpu-sram@0 {
-> >> 			reg = <0x0 0x80000>;
-> >> 			pool;
-> >> 		};
-> >> 	};
-> >>
-> >> 	wave515@410000 {
-> >> 		compatible = "cnm,wave515";
-> >> 		reg = <0x0 0x410000 0x0 0x10000>;
-> >> 		clocks = <&clk_ref1>;
-> >> 		clock-names = "videc";
-> >> 		interrupt-parent = <&wave515_intc>;
-> >> 		interrupts = <16 IRQ_TYPE_LEVEL_HIGH>;
-> >> 		resets = <&wave515_reset 0>,
-> >> 			 <&wave515_reset 4>,
-> >> 			 <&wave515_reset 8>,
-> >> 			 <&wave515_reset 12>;
-> >> 		sram = <&wave515_vpu_sram>;
-> >> 	};
-> >>
-> >> gen_pool_size() returns size of wave515_vpu_sram, no need for extra
-> >> "sram-size" property.
-> 
-> Thanks for sharing the example.
-> I agree that the "sram-size" property is not needed.
-> 
-> >
-> >"sram-size" property does need to be removed, as this was the consensus
-> >gathered from my patch[0]. However, I think your method is still taking
-> 
-> I missed the previous consensus for the sram-size property.
-> Thanks for letting me know.
-> 
-> >a more static approach. One of the recommendations in my thread[1] was
-> >making a list of known SRAM sizes given typical resolutions and
-> >iterating through until a valid allocation is done. I don't think this
-> >is the correct approach either based on Nas's comment that each Wave5
-> >has different SRAM size requirement. It would clutter up the file too
-> >much if each wave5 product had its own SRAM size mapping.
-> >
-> >Could another approach be to change Wave5 dts node to have property set
-> >as "sram = <&sram>;" in your example, then driver calls
-> >gen_pool_availble to get size remaining? From there, a check could be
-> >put in place to make sure an unnecessary amount is not being allocated.
-> 
-> Ivan's approach looks good to me.
-> It is similar to your first patch, which adds the sram-size property
-> to configure different SRAM sizes for each device.
-> And, Driver won't know unnecessary amount is allocated before parsing
-> bitstream header.
-> 
+On Wed, Mar 20, 2024 at 11:36:03AM +0100, Jan Kara wrote:
+> On Tue 19-03-24 23:57:49, wenyang.linux@foxmail.com wrote:
+> > From: Wen Yang <wenyang.linux@foxmail.com>
+> >=20
+> > Delete unnecessary static variables (it_zero and it_int_max)
+> > and encode them directly in the table entry.
+> >=20
+> > Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+> > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> > Cc: Luis Chamberlain <mcgrof@kernel.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Joel Granados <j.granados@samsung.com>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: "Darrick J. Wong" <djwong@kernel.org>
+> > Cc: linux-kernel@vger.kernel.org
+>=20
+> This looks as a sensible cleanup but I don't see the first patch in the
+> series (and neither it is archived at lore.kernel.org) so I cannot really
+> verify whether your conversion is correct...
+This was my original comment. If you want to see the cover letter
+look for this mail ID tencent_06797E65CFC655DCD4F0414B9380E95ECC08@qq.com
 
-To sum up, there is 2 favourable approaches:
+Not sure why it separates the cover letter from the rest of the patches.
 
-1) to have dedicated SRAM partition for Wave5 VPU as suggested in this
-patchset. In this approach SoC vendor can setup address range of said
-partition to their needs, but other devices won't be able to use SRAM
-memory reserved for Wave5 VPU, unless other device's SRAM memory needs
-don't exceed the size of reserved partition.
+Best
+>=20
+> 								Honza
+>=20
 
-Therefore it is sensible to substitute alloc/free on open/close with
-alloc/free on open/close.
+--=20
 
-Advantages: driver code is simpler, no need for platform-specific defines
-or DT properties. Wave5 is guaranteed to get SRAM memory.
+Joel Granados
 
-Disadvantage: waste of SRAM memory while VPU is not in use
+--fxwvznmjean77k53
+Content-Type: application/pgp-signature; name="signature.asc"
 
-2) allocate all available SRAM memory on open (free on close) from the
-common SRAM pool, but limit maximum amount with SoC-specific define.
+-----BEGIN PGP SIGNATURE-----
 
-Advantage: less memory waste
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX8EjoACgkQupfNUreW
+QU/v+wv/ekDoDEuZcS5oVjLYGPtvESSFVw4WsAgqOUz3g4FD776q0TW0f3UVWfp5
+/hgeE+usbvT9QIjcb53qGfhOAaYeRnZR0peUGyNqg5UtYU7S84WRNd/kHoFjEQsN
+NhqC+Q8jBOMBhQ05/PpkF4rqKQ0Wqn1VTPyFU7qNpc0WPYcq2q+nEh+vOV0BdphF
+Fe2cMqyH6X6TcFMgD5vYwWBWckAv3MvanBJ/R+LnX3hylZpbT1DL0L9lndYWCTLe
+87gUrKCNmfqTPzQOMdYGca6sRBsQ+o5ckAYSRuwTXL2pomN0zS40sh6Vc+EE6FGi
+OHdcYprQGuQRCJfTeDZ+PkUvozXhDazwaNg9aepHL37LD3U0dKqa2rzKBj66XQI0
+V4lLrLECrGrupu9jd/X8iH9loaQEdpFAdJKXYvNdeiqRS/aTj7nEjTd+5vUNIqU+
+04hdAChKLDIggOtqtvElZlRkGCWhiCOVTYh0GhwO5KjEdYTRSJeyzDzpiVUc07uG
+QybbYv+o
+=vd8Y
+-----END PGP SIGNATURE-----
 
-Disadvantages: still need SoC-specific define or DT property, not much
-differ from current state. Wave5 is not guaranteed to get SRAM memory.
-
-Which of these approaches would be preferable?
-
-> >
-> >
-> >[0]:
-> >https://lore.kernel.org/lkml/99bf4d6d988d426492fffc8de9015751c323bd8a.cam
-> >el@ndufresne.ca/
-> >[1]: https://lore.kernel.org/lkml/9c5b7b2c-8a66-4173-dfe9-
-> >5724ec5f733d@ti.com/
-> >
-> >Thanks,
-> >Brandon
-> >>
-> >> > Thanks.
-> >> > Nas.
-> >> >
-> >> > > 	dev->sram_pool = of_gen_pool_get(pdev->dev.of_node, "sram", 0);
-> >> > > 	if (!dev->sram_pool)
-> >> > > 		dev_warn(&pdev->dev, "sram node not found\n");
-> >> > >+	else
-> >> > >+		wave5_vdi_allocate_sram(dev);
-> >> > >
-> >> > > 	dev->product_code = wave5_vdi_read_register(dev,
-> >> > >VPU_PRODUCT_CODE_REGISTER);
-> >> > > 	ret = wave5_vdi_init(&pdev->dev);
-> >> > >@@ -259,6 +254,8 @@ static int wave5_vpu_probe(struct
-> >platform_device
-> >> > >*pdev)
-> >> > > err_clk_dis:
-> >> > > 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-> >> > >
-> >> > >+	wave5_vdi_free_sram(dev);
-> >> > >+
-> >> > > 	return ret;
-> >> > > }
-> >> > >
-> >> > >@@ -275,6 +272,7 @@ static void wave5_vpu_remove(struct
-> >platform_device
-> >> > >*pdev)
-> >> > > 	v4l2_device_unregister(&dev->v4l2_dev);
-> >> > > 	wave5_vdi_release(&pdev->dev);
-> >> > > 	ida_destroy(&dev->inst_ida);
-> >> > >+	wave5_vdi_free_sram(dev);
-> >> > > }
-> >> > >
-> >> > > static const struct wave5_match_data ti_wave521c_data = {
-> >> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> >> > >b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> >> > >index fa62a85080b5..8d88381ac55e 100644
-> >> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> >> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-> >> > >@@ -749,7 +749,6 @@ struct vpu_device {
-> >> > > 	struct vpu_attr attr;
-> >> > > 	struct vpu_buf common_mem;
-> >> > > 	u32 last_performance_cycles;
-> >> > >-	u32 sram_size;
-> >> > > 	struct gen_pool *sram_pool;
-> >> > > 	struct vpu_buf sram_buf;
-> >> > > 	void __iomem *vdb_register;
-> >> > >--
-> >> > >2.44.0
-> >> >
-> >>
+--fxwvznmjean77k53--
 
