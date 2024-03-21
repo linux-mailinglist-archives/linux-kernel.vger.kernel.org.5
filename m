@@ -1,85 +1,84 @@
-Return-Path: <linux-kernel+bounces-110256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51911885C2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:40:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A77885C2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:40:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7570D1C21E3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:40:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08B2E1F26B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C252B12836A;
-	Thu, 21 Mar 2024 15:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC91F128398;
+	Thu, 21 Mar 2024 15:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="rBJFnCZ8"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="zCyF18DF"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F703127B75
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A304386ADB
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035286; cv=none; b=gy2YOJZWX+U0a2CoOKR/dqqEO+XhxViqX1T3GWMT9ASnKqXNOvJNC+QCpnA776ojohvfSOH8Bip1Xmlo5nLfbxDQ18VAKT8T2YAwVIl3ihDNVf97n1whggfU9KkkJi0+9z2x8cFZUZLfvumnR7/V4gMKlA7cMo9boe2itl/xdqI=
+	t=1711035320; cv=none; b=o/9Wo+a+eEmmW410atbQPeCAM6pTP+t1pmkXoBhIJbgdgxTlgROUsSDFwLOoo68xpZxLfHyPifJeZOOz9ptPZdIKum8STQb/Y+yzB37mex/+84h99k7zTyhXFBczoVb5WRWZAhYDoIcLSqMbMBoBf7MRe3+PFPB3SnCkb/+ODKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035286; c=relaxed/simple;
-	bh=0zc0ujxsUZDSCIMa8DgsBxEKHxlROrz8eSt1YZrNcQ4=;
+	s=arc-20240116; t=1711035320; c=relaxed/simple;
+	bh=7/Vr7UGZFgfY5hiZbZVagMHjl3VeIKITw0zb4mGRSdw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hk0mvwWSJxsyZMgiGuP4KUM93fmAoG6c73lXIWQl4AF0zFOQxzlZI1TezxCmldDWcdZDl/SpEzkgUyRH+T6DolgtaVfYMnzpay+FA5lJZ4JTvr+SaQRqbcXgaaa2awTkh3uflb8ngtPb/AbAF7lss+uVVPpsfXa7wQlEv03Oz7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=rBJFnCZ8; arc=none smtp.client-ip=209.85.218.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=oKFEPgVuSZsJPPEyiIciNedfdMcTSNRj5ArZB5CTSrPM+8MvYIWBKPCSBja1ZR7iEKsZ3z5L5d1s07GWLDdX+rSQAO1IxhYB8prl3ClZNWqy/SvYiMHUXY4F6VsT4LN7ALSDzoLNlWwiw3MGl1+w/ebguOJ9XcLbVyelWscjNJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=zCyF18DF; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a468004667aso163225266b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:34:42 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a470c79ef7cso155533366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:35:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711035280; x=1711640080; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711035317; x=1711640117; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jJZsBHwcwq2EKhTfcmV2KDI1h+H2DDxIsRSU6ooknBA=;
-        b=rBJFnCZ8c3RnzjxFqOxzxWJgQxe7jDYkFCqIH/I+fB+EkHpRmALmBcSvc3iZuvZzpS
-         c1FgWMQ97WBNK5QcioH/mp7nJdfZk62SZbHxQMBc3o9a+KEwOdDWM4kLQj43RWvEbpIq
-         CSiqr72MaK2JeaSuZNIhqY17FnnOacF1o4Cet+NLrV/bAcWuEpVeBcQLByR9el/ESeAh
-         5rXJrIMtwBIIW7tMCcIyszaR5Lt0CoAY0hdyQVFG3y0sO/Xm5QytDbkoNLP7wqMLUktT
-         4cG3UYMwpAg6HShIi7aClPYV2rMipYC5FZ5Y0Mi88qQHF59MltgMvJXQI4bsNXMoa+wF
-         VcTw==
+        bh=7/Vr7UGZFgfY5hiZbZVagMHjl3VeIKITw0zb4mGRSdw=;
+        b=zCyF18DFXr31m/24zPy4vHD0iVUXK/iO3DFdA+PsRBeOnabwqpwQZrSrqXFNLntlWj
+         YdpGS2H4cq0aZtqGlfu0Dwqn0Be7UQ6OfvOAWkYHJqLFGpMfZLiiwtN7oNdOFV52hnxO
+         v22ae/TBDNPTQ2Z9nq+MDnhRZxKkKLpSTr5HB4tgq9vmtJ11+Wku1Sn53OjHYtYWmtsD
+         D6DFom5lcCNMTPSHD84mhxpVJWDElwzv8nSpNujgS0nt2eDW7BxA+9aTGrYHUQT/kz+e
+         qzrAkupnUu/IRQIshLWaZN/nY+4yDnPw2W+oiPPnku4+VrX9Ma673TspLhmb31dKUO+M
+         ZTSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711035280; x=1711640080;
+        d=1e100.net; s=20230601; t=1711035317; x=1711640117;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jJZsBHwcwq2EKhTfcmV2KDI1h+H2DDxIsRSU6ooknBA=;
-        b=r5AXOG2cUDflqCUmhhRLkxzStIu/bxssBnFLsBIy0vT3LJa51OagFQaxkKISlCP82T
-         0FmUElc6pSW4UX8I24gZ7dQRbzuJqiwX1+cYwWB0WZRiMbMdaNO8Oax/SrAEO0fQtPdk
-         2m8zYMUTGUPCjowXtHL2Sj4ubaloQf0XRXO0mySODLAoz+vQxCtFTMDiZeA+46Im5zk9
-         n2gqOXbtPenzvuYOnxshxzt202sBHTPH4l4g0KW0xi+yqo7tcosQRF6LKthSM16/FDBw
-         6HORBDNQoBheF72Q67sa9Og/K+adi0PuYfUgn6Fv7twKgPSUfssiNlw3qlEHTsPcWlC6
-         e75w==
-X-Forwarded-Encrypted: i=1; AJvYcCVVWCDHhA7uYs4HAnjkdcX2Gd/gevOgLX0yojeYRElU6dpPKWGXYmLGrQZfQg5dlXPn0jHZVPLYDPX0H4TDeWH+qGuXA5y2Mo/UyHJr
-X-Gm-Message-State: AOJu0YyoWJFfgk7lInYLDfPEFt84XrHWmtwOdHoJV65rhc3VXJJD0x04
-	Q5pD/oKoE3e/8j1VtBJotFyO1Uvphc6Zpg2GLIPz3IMepA27j+MsA1QyfGFN3Xw=
-X-Google-Smtp-Source: AGHT+IGBqgVfVrdiQ/+9M8CkXnHsQmBgBd+MDFecT1hmDvu9F6AyiYmNOC25nNXzC5ijEZZ+4GiHwQ==
-X-Received: by 2002:a17:906:ee89:b0:a46:be83:36e2 with SMTP id wt9-20020a170906ee8900b00a46be8336e2mr10664449ejb.24.1711035280409;
-        Thu, 21 Mar 2024 08:34:40 -0700 (PDT)
+        bh=7/Vr7UGZFgfY5hiZbZVagMHjl3VeIKITw0zb4mGRSdw=;
+        b=G8yRBojNOJMZ1avxiGqQDx+biH4kWDr2UaL8C/h9SToDRtSl6EipkWs2ozVpVr2DN9
+         knHuDHIniBAyFW8v4jzP3crhIf9ndC+wQQB2Db0BicYRH5T0hQAqj6XRgOHozcpZ7ZSh
+         u91jZl89JBq67cEtgyp14S5JDC1kBCtuRxOVerUxmdkVjaa0FD9BvW5UNMBG8WrcdEI0
+         kFT0/ry52Xcq1AILPGk+05pWvsoXg5Y5bQjBE7jjji5eZ1/GohW/CcabJp9EhtLEwLm4
+         UrqWLlk+2IbAFLKsxvM0sTLZF+d6gIX2Sxldua1tuzPcbGXwvrfAsXrdS49Clj0u7pnt
+         tQCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzYeESj2hxjD0aQPtRmEMFpDVOpdZqAIElfe5UasKsxs/sMuRHQ2FQNH0HjJpLcX8rMsf+TpGvoFczsiaKCrX0bW1ngJnv5JhuA0xe
+X-Gm-Message-State: AOJu0YwEjm8+PRQ1SwqMR5il0eiwOkC5vpwlkPGMJIa/kwnwvsctW5L7
+	9VaPTEEsZVG/RK2K1jo8xJ3qxSvbnfIYDZmBqztgW3mrvoV3azHun7d19sa+smQ=
+X-Google-Smtp-Source: AGHT+IFzD7bSzwoych8HcblWm59fVdm+D+wuiZhdHvhn9H6Gbm7/4alQeCSXNlk1PpFwllpAsWO2gw==
+X-Received: by 2002:a17:906:590c:b0:a46:a85d:de81 with SMTP id h12-20020a170906590c00b00a46a85dde81mr2754941ejq.12.1711035316755;
+        Thu, 21 Mar 2024 08:35:16 -0700 (PDT)
 Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id n19-20020a170906725300b00a46a9c38a64sm39732ejk.65.2024.03.21.08.34.39
+        by smtp.gmail.com with ESMTPSA id w1-20020a1709067c8100b00a46a04d7dc4sm40922ejo.61.2024.03.21.08.35.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 08:34:39 -0700 (PDT)
-Date: Thu, 21 Mar 2024 16:34:37 +0100
+        Thu, 21 Mar 2024 08:35:16 -0700 (PDT)
+Date: Thu, 21 Mar 2024 16:35:13 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
+Cc: Ido Schimmel <idosch@nvidia.com>, David Ahern <dsahern@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2 net] ice: Fix freeing uninitialized pointers
-Message-ID: <ZfxTjYUPAFz_LRlk@nanopsycho>
-References: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
+	Petr Machata <petrm@nvidia.com>, Kees Cook <keescook@chromium.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2 net] nexthop: fix uninitialized variable in
+ nla_put_nh_group_stats()
+Message-ID: <ZfxTsVPwYbruXJfY@nanopsycho>
+References: <f08ac289-d57f-4a1a-830f-cf9a0563cb9c@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,104 +87,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
+In-Reply-To: <f08ac289-d57f-4a1a-830f-cf9a0563cb9c@moroto.mountain>
 
-Thu, Mar 21, 2024 at 03:42:12PM CET, dan.carpenter@linaro.org wrote:
->Automatically cleaned up pointers need to be initialized before exiting
->their scope.  In this case, they need to be initialized to NULL before
->any return statement.
+Thu, Mar 21, 2024 at 03:42:18PM CET, dan.carpenter@linaro.org wrote:
+>The "*hw_stats_used" value needs to be set on the success paths to prevent
+>an uninitialized variable bug in the caller, nla_put_nh_group_stats().
 >
->Fixes: 90f821d72e11 ("ice: avoid unnecessary devm_ usage")
+>Fixes: 5072ae00aea4 ("net: nexthop: Expose nexthop group HW stats to user space")
 >Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-
-
->---
->v2: I missed a couple pointers in v1.
->
->The change to ice_update_link_info() isn't required because it's
->assigned on the very next line...  But I did that because it's harmless
->and makes __free() stuff easier to verify.  I felt like moving the
->declarations into the code would be controversial and it also ends up
->making the lines really long.
->
->		goto goto err_unroll_sched;
->
->	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) =
->		kzalloc(sizeof(*pcaps), GFP_KERNEL);
-
-Yeah, that is why I'm proposing KZALLOC_FREE helper:
-https://lore.kernel.org/all/20240315132249.2515468-1-jiri@resnulli.us/
-
-
->
-> drivers/net/ethernet/intel/ice/ice_common.c | 10 +++++-----
-> drivers/net/ethernet/intel/ice/ice_ethtool.c | 2 +-
-> 2 file changed, 6 insertion(+), 6 deletion(-)
->
->diff --git a/drivers/net/ethernet/intel/ice/ice_common.c b/drivers/net/ethernet/intel/ice/ice_common.c
->index 4d8111aeb0ff..6f2db603b36e 100644
->--- a/drivers/net/ethernet/intel/ice/ice_common.c
->+++ b/drivers/net/ethernet/intel/ice/ice_common.c
->@@ -1002,8 +1002,8 @@ static void ice_get_itr_intrl_gran(struct ice_hw *hw)
->  */
-> int ice_init_hw(struct ice_hw *hw)
-> {
->-	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
->-	void *mac_buf __free(kfree);
->+	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) = NULL;
->+	void *mac_buf __free(kfree) = NULL;
-> 	u16 mac_buf_len;
-> 	int status;
-> 
->@@ -3272,7 +3272,7 @@ int ice_update_link_info(struct ice_port_info *pi)
-> 		return status;
-> 
-> 	if (li->link_info & ICE_AQ_MEDIA_AVAILABLE) {
->-		struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
->+		struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) = NULL;
-> 
-> 		pcaps = kzalloc(sizeof(*pcaps), GFP_KERNEL);
-> 		if (!pcaps)
->@@ -3420,7 +3420,7 @@ ice_cfg_phy_fc(struct ice_port_info *pi, struct ice_aqc_set_phy_cfg_data *cfg,
-> int
-> ice_set_fc(struct ice_port_info *pi, u8 *aq_failures, bool ena_auto_link_update)
-> {
->-	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
->+	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) = NULL;
-> 	struct ice_aqc_set_phy_cfg_data cfg = { 0 };
-> 	struct ice_hw *hw;
-> 	int status;
->@@ -3561,7 +3561,7 @@ int
-> ice_cfg_phy_fec(struct ice_port_info *pi, struct ice_aqc_set_phy_cfg_data *cfg,
-> 		enum ice_fec_mode fec)
-> {
->-	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
->+	struct ice_aqc_get_phy_caps_data *pcaps __free(kfree) = NULL;
-> 	struct ice_hw *hw;
-> 	int status;
-> 
->diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
->index 255a9c8151b4..78b833b3e1d7 100644
->--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
->+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
->@@ -941,11 +941,11 @@ static u64 ice_loopback_test(struct net_device *netdev)
-> 	struct ice_netdev_priv *np = netdev_priv(netdev);
-> 	struct ice_vsi *orig_vsi = np->vsi, *test_vsi;
-> 	struct ice_pf *pf = orig_vsi->back;
->+	u8 *tx_frame __free(kfree) = NULL;
-> 	u8 broadcast[ETH_ALEN], ret = 0;
-> 	int num_frames, valid_frames;
-> 	struct ice_tx_ring *tx_ring;
-> 	struct ice_rx_ring *rx_ring;
->-	u8 *tx_frame __free(kfree);
-> 	int i;
-> 
-> 	netdev_info(netdev, "loopback test\n");
->-- 
->2.43.0
->
->
->
 
