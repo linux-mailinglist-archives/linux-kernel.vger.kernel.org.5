@@ -1,99 +1,124 @@
-Return-Path: <linux-kernel+bounces-110457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34020885F31
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:07:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98511885F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:08:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E380028387F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:07:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A77BBB22E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8872479E0;
-	Thu, 21 Mar 2024 17:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269C31369A3;
+	Thu, 21 Mar 2024 17:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fqvgQXKR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KvEPlgWf"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEC1E1353E8;
-	Thu, 21 Mar 2024 17:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66344136987;
+	Thu, 21 Mar 2024 17:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711040473; cv=none; b=V5DKk/u2M6OAyVofw3F9lLBLm5eVjGZ209RihSNnB/pp56kCTq3KxqWQek5woiXa6PnAHNAIEkdQO5R2uN8N7uXfe6Mwg0rhlsJ36IBgX+7bC4T1M/487NoIMVGp2bhHRaWaMJn9vD1ntCjcsDnNeYv2Cy42oyIL2tpA2PfmtfA=
+	t=1711040676; cv=none; b=qt9bviJcKKW3Up84bm87z6LegY4SJWV3r/CSDIP4vieK8ldMajdKpAKYFYQQM+zB3EanUgvRsFKlhajWlbMaBeRo6Nr4LyjR0VwEzeLJPA7LH7xRKfrGBv9BPYOz+8k8+a1Qz2r/F1soKqc01otNm/0y3r2CPlLcdbS3kf5ypVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711040473; c=relaxed/simple;
-	bh=cQKiNExA0cMrOaMRBdkCkHV2+MZQz2AfhTZE1Ga4pMo=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=GNG10wNLIweQ0sESBVyXzf/cQqwMac8wD9eZMIKWpp0uVeDlaJcEf5gIntKotcDRNt+ud50wV/41Vf1uP5iSru2QJFGQ5Iirqf6s3lq0z0YLlSUtVL6X4R+5jMxzLdgYNU/NTP61KsJR46wMj0PWZZydA9NprFNXHLkcBFmfEW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fqvgQXKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A55E4C433C7;
-	Thu, 21 Mar 2024 17:01:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711040473;
-	bh=cQKiNExA0cMrOaMRBdkCkHV2+MZQz2AfhTZE1Ga4pMo=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=fqvgQXKRVQEAvqtNO6LmaZbdV++IEjv7Q3j3+mQcD1J9Ao43KYEbPxkdIsYmWif0F
-	 TxF1MUdV9jj7wrCjpJHSRhUHmSfN49wnpCFIkb5NxE9JvmXi01QUXLKcgSc8KThnpk
-	 nn9gfRcqc8iVgyKlhbmwniOvFMdb5ACth9hI9MIHpDLjtq0wBlxk9unfE3qqT5PCQc
-	 YzC3AHJm2/MBBhKsnz+RugTvk/h2Homw/vnm6+PDN/m1OYiQTxwbxsmP3WS564iMh6
-	 GmQMVFnKbjkr/1Ij8UmtZUJsk4J+nYO+o0GvN8I8XYegkC3WRBfak/6QH8ltrTQeuo
-	 Q394v0E8Mk29g==
+	s=arc-20240116; t=1711040676; c=relaxed/simple;
+	bh=3a9JT906FSpCQ7vJqxUgfHklkTuG5j6K5wk2J4O7OhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qyKmGMjcA+RUQm0P5E49w5sHuuqsffLNm6tfh2eeYS7d8RayIKC1l5fXtv2SFnUJDiNNv2C+is0VeFWhLQ50gQPp4xD13/ovoyOe8sajAWRgbwBZCu91BIc7VY4jjYLdE3jVErp4P2KRD3IOWmwO+E6AqXvQOjVuUkDbZeX2Uzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KvEPlgWf; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=grrtrTSALnjlmhusaSmHuxgXHvy0PaqBERbW2XOksq0=; b=KvEPlgWfmkZUIIq92E2QZaaPjt
+	VZnhAGfpOn0TI3GH3pJGkjjDKFGgCnRVoZXS0BnLBMeD1ysCOzMVESTZFH2ZdWFKAFjnnJlrR5uI5
+	zf/WrZhxkWHn8GwTIdG1zh3HdqNwj7dYkA4xHqWXF2ODLbgR0RW1k0j0tjtwj8yFbkmKVhWzVS3Y6
+	TOQjkHw4Zx3NY/0ztZG4Etw6zBRqBCBnusj92jv7s9yw0pEcoFBeAfAg1WXXNifPuRvLrVhXYEOSk
+	xN0Lo7fv/rEgNH7tG5XAA+oXF4lQKAZALSzMZaggWOEPJTF9gdOPdlAxh7rTpUSFkYhhy2AZFvZTI
+	zY4tyT5A==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnLpl-00000007AzI-40SJ;
+	Thu, 21 Mar 2024 17:04:06 +0000
+Date: Thu, 21 Mar 2024 17:04:05 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 20/37] mm: fix non-compound multi-order memory
+ accounting in __free_pages
+Message-ID: <ZfxohXDDCx-_cJYa@casper.infradead.org>
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-21-surenb@google.com>
+ <Zfxk9aFhF7O_-T3c@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Mar 2024 19:01:09 +0200
-Message-Id: <CZZL841RSX3V.3SZOJNMC136O9@kernel.org>
-Cc: "Jonathan Corbet" <corbet@lwn.net>, "Daniel P . Smith"
- <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
- <peterhuewe@gmx.de>, "James Bottomley"
- <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Randy Dunlap"
- <rdunlap@infradead.org>
-Subject: Re: [PATCH v3] Documentation: tpm_tis
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240321164314.14732-1-jarkko@kernel.org>
- <CZZL2SXZSRV0.2MGG3O8JXBFC5@kernel.org>
-In-Reply-To: <CZZL2SXZSRV0.2MGG3O8JXBFC5@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zfxk9aFhF7O_-T3c@casper.infradead.org>
 
-On Thu Mar 21, 2024 at 6:54 PM EET, Jarkko Sakkinen wrote:
-> On Thu Mar 21, 2024 at 6:43 PM EET, Jarkko Sakkinen wrote:
-> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
-ore
-> > dependent drivers. Includes only bare essentials but can be extended la=
-ter
-> > on case by case. This way some people may even want to read it later on=
-.
->
-> $ pdftotext PC-Client-Specific-Platform-TPM-Profile-for-TPM-2p0-v1p05p_r1=
-4_pub.pdf
-> $ grep -ci 'FIFO interface' PC-Client-Specific-Platform-TPM-Profile-for-T=
-PM-2p0-v1p05p_r14_pub.txt=20
-> 55
->
-> $ grep -ci 'TIS interface' PC-Client-Specific-Platform-TPM-Profile-for-TP=
-M-2p0-v1p05p_r14_pub.txt
-> 2
->
-> 55 > 2 so that pretty much nails this terminology.
+On Thu, Mar 21, 2024 at 04:48:53PM +0000, Matthew Wilcox wrote:
+> On Thu, Mar 21, 2024 at 09:36:42AM -0700, Suren Baghdasaryan wrote:
+> > +++ b/mm/page_alloc.c
+> > @@ -4700,12 +4700,15 @@ void __free_pages(struct page *page, unsigned int order)
+> >  {
+> >  	/* get PageHead before we drop reference */
+> >  	int head = PageHead(page);
+> > +	struct alloc_tag *tag = pgalloc_tag_get(page);
+> >  
+> >  	if (put_page_testzero(page))
+> >  		free_the_page(page, order);
+> > -	else if (!head)
+> > +	else if (!head) {
+> > +		pgalloc_tag_sub_pages(tag, (1 << order) - 1);
+> >  		while (order-- > 0)
+> >  			free_the_page(page + (1 << order), order);
+> > +	}
+> 
+> Why do you need these new functions instead of just:
+> 
+> +	else if (!head) {
+> +		pgalloc_tag_sub(page, (1 << order) - 1);
+> 		while (order-- > 0)
+> 			free_the_page(page + (1 << order), order);
+> +	}
 
-To add, this documentation *clears* the confusion in "FIFO vs TIS" by
-documenting where TIS comes from (i.e. from the original TPM Interface
-Spefication).
+Actually, I'm not sure this is safe (I don't fully understand codetags,
+so it may be safe).  What can happen is that the put_page() can come in
+before the pgalloc_tag_sub(), and then that page can be allocated again.  
+Will that cause confusion?
 
-If you read the current standards you bump quite often (55 times in the
-current spec) to FIFO interface, so it is good to clarify their relation
-in the kernel documentation.
-
-BR, Jarkko
 
