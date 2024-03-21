@@ -1,73 +1,45 @@
-Return-Path: <linux-kernel+bounces-110495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC35885FB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:26:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85C3885FC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B03661F2484F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:26:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 502242838E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6CD133406;
-	Thu, 21 Mar 2024 17:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q5fmhoDq"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D2E283CB2;
+	Thu, 21 Mar 2024 17:30:24 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D77913175D
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F549C2E9
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711041936; cv=none; b=cHyWKyGc9aG5DpcsUwwKeh9GKezue6FMOgvUBiQY5y9qV0TqQuTtfpjnve5AS0cC/uKKC+oBPPWtlUaUPuPCr0bfTBfWlnrHbwcllnzyt0bSdsPwMq2isfwtH4CI4Y1cfQtJBILaxwoNjRq7rIHRsJ8TbC1WstR4CQWF6UR0FzI=
+	t=1711042223; cv=none; b=D+ksezhFbu5cy0y5WajXTFbfC7mcepj0vlTE5g9D1BiijeGte/e0yygrzrtbbdk15+edsS1YzQUcw+W6B21G9t8tP4aMEt49429TO24pcPiNrL2mjMsDtp7R/w2Gr6OJJ48l64HB1je9NyqfN8nBcTwolK+RScCBVtaieQ2Gv0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711041936; c=relaxed/simple;
-	bh=tzLyvs7HcITvZy2SLeDlzKPKDAvxzPz3QeAl0srd2kM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GO9tzB2omqDH6TbG7xrDtcPKJm+zxVkHsbkDXAb+XI3ytmky7qKbv6MBRf7Jh8HZPHCmOEv4OFf4frfy7fA71FkXqJNNVqElcBY/VsFwnoDHHiZwBxFvc+oFfZff2KGmzuCSmGWgrBdAA5fXanM6Ak5SH2pfpwHJg955zjnaDGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q5fmhoDq; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d46c2e8dd7so15020771fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 10:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711041932; x=1711646732; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tRBkydo4iL6GNIo9VuK+sRcHXGRAdy7FiD0d40q49mA=;
-        b=Q5fmhoDq1p7ZKB4byx+fxOQBu64C4ohyu5MfzDHeytchUE8sGzOIkWaTDhLt+oIXCu
-         vzjve0oFRgvKiaGHlxcIFmrmSaERKHNHnNLJjzChH0lR5d65c/lkFQbPuxCh6CeV8G2r
-         avbvhd2sn1YZxLJsFxtO1uYr9HYPYq9xseJy09QMMwo1suE/iNZzXZgCHjfBCKa/QeUA
-         KspEPUY1quCgYq5JXAMv5Uvsu1AMhZ0d285QADx6TcSVe377nPwhq1QvG3NGNx3yWePd
-         pB/PAWMA4zS0cE8u8pFs8WmTIr2DB7WNjYpe77AwPKDqzppcihw2XW9jB5EnzZm3Bcmd
-         U1+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711041932; x=1711646732;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tRBkydo4iL6GNIo9VuK+sRcHXGRAdy7FiD0d40q49mA=;
-        b=DT/kETg0Hd1jvU7W4RnQRubg5fs33r/OKxcLrtBT2/b6rq+n4BDI2e/PG2lyRvdZCe
-         NC1sgArkc7auTqBiQr6g/UtfgmKHbCc5WN2XGkn1ZKHKmMZwRf4Cdiv0iSeemalRWE22
-         WvS4ItV/Xf+DCdKE6cr/eBSTHtCIgmepXNqvlzpWMRqK21cdKqnACDxGMEkip7cVMkJk
-         kgi5hLrZY+IW5w6bk6gPRyRzS17HOP81XQNtoa1xVejexwC8wftH8Dfa41CkSvaOxpqF
-         92UqvTys2x2NNh5uhsRO4QVtweHdzEBE4cf/o82VvpV7AdduD1Ti5aXIKrnw7EcWEXWf
-         Ktpg==
-X-Forwarded-Encrypted: i=1; AJvYcCWtW1tczDxOyNKfVCgxHrjY9C17PufkndKgwSiRmrIO+ztgcicAbvnbBlsxPiSHDlL41Z4dTqMIolR7OQ8F9cGr8UQAcAUruTPcNM/L
-X-Gm-Message-State: AOJu0YymsYJaS2WnJ8/OgmjY8Oqi5GhDyAeHqWHeHybt7b8rGoBy7LrQ
-	LsH3ipaxxBb7idg/dO3T0o7r7K9DAKFYe8YfrX8yVLbY/l+oCdoGNjuMvM13Kk4=
-X-Google-Smtp-Source: AGHT+IHrN9hd+5miWuYAgdozoiw3KTFiep55MuLkXG8T+NijirFPCwjWqLRb4mVSGYXrrzSiJ5bWMw==
-X-Received: by 2002:a05:651c:2ca:b0:2d4:6d12:71f7 with SMTP id f10-20020a05651c02ca00b002d46d1271f7mr117412ljo.15.1711041932431;
-        Thu, 21 Mar 2024 10:25:32 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id i2-20020a05600c354200b0041464451c81sm385263wmq.20.2024.03.21.10.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 10:25:31 -0700 (PDT)
-Message-ID: <ebdeceae-62b6-4674-ab19-a3252d52f296@linaro.org>
-Date: Thu, 21 Mar 2024 18:25:30 +0100
+	s=arc-20240116; t=1711042223; c=relaxed/simple;
+	bh=aCeT919OkCma1l6oDXXOSV7I7yWmK6bpOsYwA40kB1Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=T8kyeLVeKrLvnHFJiz9MjvINAzL6Q356KgcJudKT0Pi09qFaVpWmsme7k1rSQcCPtXGaI5dGaH5PbuaQjdxn7W7V2NT5qUK8NAF/rdXv0DDD7LZbpBdXZFZt95TkPRi4b+Adx60fTYrQerEl1t06vChvv8OhW9EnNPupKRH55/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V0smv46GNz6K9C6;
+	Fri, 22 Mar 2024 01:25:51 +0800 (CST)
+Received: from frapeml500002.china.huawei.com (unknown [7.182.85.205])
+	by mail.maildlp.com (Postfix) with ESMTPS id 120DC140A9C;
+	Fri, 22 Mar 2024 01:30:11 +0800 (CST)
+Received: from [10.81.213.73] (10.81.213.73) by frapeml500002.china.huawei.com
+ (7.182.85.205) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 21 Mar
+ 2024 18:30:10 +0100
+Message-ID: <9cfb4aa7-d927-4015-8ef8-1cd081250cdc@huawei-partners.com>
+Date: Thu, 21 Mar 2024 18:30:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,54 +47,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/31] Clean up thermal zone polling-delay
+Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
+ the vmalloc area
+To: David Gow <davidgow@google.com>, Petr Tesarik
+	<petrtesarik@huaweicloud.com>
+CC: Richard Weinberger <richard@nod.at>, Anton Ivanov
+	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>,
+	"open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>, open list
+	<linux-kernel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huaweicloud.com>
+References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+ <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
 Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240319-topic-msm-polling-cleanup-v1-0-e0aee1dbcd78@linaro.org>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240319-topic-msm-polling-cleanup-v1-0-e0aee1dbcd78@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+In-Reply-To: <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: frapeml500001.china.huawei.com (7.182.85.94) To
+ frapeml500002.china.huawei.com (7.182.85.205)
 
-On 19/03/2024 17:13, Konrad Dybcio wrote:
-> A trivial follow-up on the changes introduced in Commit 488164006a28
-> ("thermal/of: Assume polling-delay(-passive) 0 when absent").
+On 3/21/2024 5:44 AM, David Gow wrote:
+> On Fri, 23 Feb 2024 at 22:07, Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
+>>
+>> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+>>
+>> If a segmentation fault is caused by accessing an address in the vmalloc
+>> area, check that the target page is present.
+>>
+>> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
+>> assumes that the fault is caused by a stale mapping and will be fixed by
+>> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
+>> a guard page, no mapping is created, and when the faulting instruction is
+>> restarted, it will cause exactly the same fault again, effectively creating
+>> an infinite loop.
+>>
+>> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+>> ---
+>>  arch/um/kernel/trap.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+>> index 6d8ae86ae978..d5b85f1bfe33 100644
+>> --- a/arch/um/kernel/trap.c
+>> +++ b/arch/um/kernel/trap.c
+>> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+>>         int err;
+>>         int is_write = FAULT_WRITE(fi);
+>>         unsigned long address = FAULT_ADDRESS(fi);
+>> +       pte_t *pte;
+>>
+>>         if (!is_user && regs)
+>>                 current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+>>
+>>         if (!is_user && (address >= start_vm) && (address < end_vm)) {
+>> +               pte = virt_to_pte(&init_mm, address);
+>> +               if (!pte_present(*pte))
+>> +                       page_fault_oops(regs, address, ip);
 > 
-> Should probably wait until v6.9-rc1 so that the patch in question is
-> in the base tree, otherwise TZs will fail to register.
+> page_fault_oops() appears to be private to arch/x86/mm/fault.c, so
+> can't be used here?
+> Also, it accepts struct pt_regs*, not struct uml_pt_regs*, so would
+> need to at least handle the type difference here.
+
+Argh, you're right. This was originally a two-patch series, but Richard
+wanted improvements in the implementation which would require more
+effort, see here:
+
+http://lists.infradead.org/pipermail/linux-um/2024-January/006406.html
+
+So I wanted to fix only the infinite loop, but in the mean time I forgot
+about the dependency on the first patch:
+
+http://lists.infradead.org/pipermail/linux-um/2023-December/006380.html
+
+That's because a quick git grep page_fault_oops found the function. It
+was my mistake that I did not notice the other page_fault_oops() earlier.
+
+OK, please forget about this patch for now; I must rework it.
+
+> Could we equally avoid the infinite loop here by putting the
+> 'flush_tlb_kernel_vm();goto out;' behind a if (pte_present(...))
+> check, and let the rest of the UML checks panic or oops if required.
+> (Actually OOPSing where we can under UML would be nice to do at some
+> point anyway, but is a bigger issue than just fixing a bug, IMO.)
+
+Yes, that would be the best quick fix until I get to implementing all
+the blows and whistles (oops_* helpers, notification chains, tainting,
+etc.).
+
+Petr T
+
+> Or am I lacking a prerequisite patch or applying this to the wrong
+> version (or otherwise missing something), as it definitely doesn't
+> build here.
 > 
-> FWIW, Compile-tested only (except 8280).
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
-
-Are you sure these changes are correct. They are not related to commit 
-488164006a28.
-
-If the sensor has interrupt support, then it can specify:
-
-	polling-delay = <0>;
-
-As a zero polling value can be omitted in the DT then it can be removed.
-
-
-Then when a trip point is crossed, the interrupt fires but then it must 
-sample the temperature of the thermal zone to do the mitigation.
-
-I doubt polling-delay-passive must be removed. The changes you 
-introduced just disable the mitigation and that will lead to board wild 
-reboots.
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+> Cheers,
+> -- David
 
