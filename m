@@ -1,93 +1,125 @@
-Return-Path: <linux-kernel+bounces-109624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 060FD881B89
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:29:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1EA1881B8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3CC9B21D55
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:29:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC86283B5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D24B66F;
-	Thu, 21 Mar 2024 03:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348E379E1;
+	Thu, 21 Mar 2024 03:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OyeHGcVW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gdEMFpPo"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2739455;
-	Thu, 21 Mar 2024 03:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CA828E7;
+	Thu, 21 Mar 2024 03:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710991758; cv=none; b=fbZL4G4SBP0GQbkFihXcp9nkc8+rZt2NIn5tQNtnyFdin0WunSciK7pqvKFzLe7zC72osGflsdAc+SQnWxVOIyf7Tgm4GCIJb8RieQyU5GIxVVN4SyEjfqBCo7qBvMP49Xo77gZZsl4/7A51aRN8boqf1QngPnCkuiG8zlf3VRk=
+	t=1710991866; cv=none; b=szIbJajE+phXnnaFgYWnsWN5m7vh6kNSWlIqN7Bq9CihCWVPjDmm1adTrbeBRxizg7PXnD/q7/StwHmSE5BSUZHofNepfHPyO55469kvL483mKNdCf+PQP1vkrgMLWJRbTF1ScZV/jET6J+1yK1Z5jVnVso8ugimID6UDS+ScGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710991758; c=relaxed/simple;
-	bh=AndrSsRlqw/W3pe2hOtcA+x3b9aKANapvXbBK9oocR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pXOY3lxNBmCdR77XfV1shtr6SDQxI/URKUHgHzEfe8ctpbJrKnS0ZYdPgKLfkMgtUSRO50BX7a3Cd3EowGSDlAmAh922AX3AXajMqn4xnHSX3gpp3N+9CFdp0Z5nNoL57aEFrF4O0RuVjfxMevDu676Yu7i4tksLpWjm2Jku88A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OyeHGcVW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79A8CC433F1;
-	Thu, 21 Mar 2024 03:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710991758;
-	bh=AndrSsRlqw/W3pe2hOtcA+x3b9aKANapvXbBK9oocR0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OyeHGcVWPFs5jA4jqo37nPwn0hPr4JaN3Tk9M97jdrF1Ew6O1kaC8D7ZDTAE5Z403
-	 GDPKM4sMWJUrachr1ZouLRAwbI1VUoef22cCmIzAJNN2bDXSg3VJI2lSqN6f8b3GdY
-	 iuvnuhitVAge5QJNdD46qatqfWY+7FQeyb+JiFT6fBfqatpoB+k2MKrmbGNP7PeN3y
-	 QnEea0YPBxvhRQUUy4Yqf2XCOFbXwo0NV/NGGf6uZ4JBDlgpmaunLjgXLCaF0bF1ba
-	 azYkWxrcD9eL9ImsxJT7eHcQwHE4Bvk1STDgkTmilGmDnFULbc4mZaMXW2pPP2Dn4z
-	 76vwdGIAeT86w==
-Date: Wed, 20 Mar 2024 20:29:16 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, intel-wired-lan@lists.osuosl.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
-Message-ID: <20240320202916.2f2bda73@kernel.org>
-In-Reply-To: <facf5615-d7ac-4167-b23c-6bab7c123138@moroto.mountain>
-References: <77145930-e3df-4e77-a22d-04851cf3a426@moroto.mountain>
-	<20240319124317.3c3f16cd@kernel.org>
-	<facf5615-d7ac-4167-b23c-6bab7c123138@moroto.mountain>
+	s=arc-20240116; t=1710991866; c=relaxed/simple;
+	bh=K7ACct98TIwxrqMdk+AxZSWhzr/d3sKhj06HGb1TgHw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AC+bCQptjklwOE/4URbifeo0xQiPe5y2Kkf8LBE2V3P79M+R4Ng7J0ghKarYeKSrIjZrErkUJsytMG6kFzeIpptoK6a44dC1y+aIwAcHbZIleEgGoLuWvmVnhNGnzH2ndQ4iTpEQ73GNpWWjJIY5aJT4nNt8TZSBrCgzq1Ko+/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gdEMFpPo; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3684bee9ddfso2693765ab.1;
+        Wed, 20 Mar 2024 20:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710991861; x=1711596661; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YkcCPZV2rPe2mAIICfSKEdznaBH5x94qD30ycxtS6yw=;
+        b=gdEMFpPoio8IpFnNTJuAKRgQlSsv00mDpXI+YctvbkxCgVdY4s+wKI2UErg7sta+rA
+         toocQPgtW6jqbLOTF0lX2DbX9jLvJNgZyLwmbEw2a93p05F26k0erMwqcTmI51RYR7yM
+         +UdMrwAB4S2lCFdZstSjMY9BWQqLxVLGTP7UQOZJiguG7Ou7YfeEtgJsz4WvJj4Pt/Xh
+         ABqWDFtxFgy0X9Ydy028N/raUGFwQtE9bcJJD8rDV8p2g6/DYw/+MdAXHRcYx0xAEm2e
+         DdqIjFE4duFS5BBVM0iQiHWlAVZUZB8MAdhpCohwu19In/7yj3WVF5LFPG1zpSTf/IEp
+         8Slw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710991861; x=1711596661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YkcCPZV2rPe2mAIICfSKEdznaBH5x94qD30ycxtS6yw=;
+        b=HHtoN/XBbKyO46G9MAal9KtxH6goVeX63biggcZz08DshYKxnWCf82lnPD0dSpdmQN
+         2Ft49xBnoxR8wSyBK3i4zkNZ1/72fEEpW8kWeKPCYYiQ435vKvdXknLw6u6r/MOny/2N
+         AzjLFYQZzKXQkg4KWRtkonTccC7dvrQUUvMqoweDi5efZw0Yx1NevdzO6ycCnUBSoZkO
+         TT8pJPfLIaYad2cyvbDqd5rRNS5hihgDz653YptU+4RUdv/a0suaecoFTeg4281t9rUY
+         pgQ2ytGaaB3b8pwEENBpNO+EYYPA5of8qH2jOyNltVxVuyZMU1Ow28BI5bYD8fTESUCT
+         rtwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVuYssO4djbUtUqDfDYY/AFcS3nPd+/P3MGb/euBvRn0yc+5NvM92ekoSa6V0MHPyWIUwVpYaiQqo244CMaT149Vr+6ixVaKUFOd88/6gSbprh0gxXZYJWm3O444oeIM9TZNa/oz+5iIWw=
+X-Gm-Message-State: AOJu0Yz1RO4qGs2ayJPaUY3sdG+fCISUgu7cFhH/L2iNwkGbaxR34pDZ
+	baIDRWN6CDS4Ein3BRgU5dVIle/sy6Ywo9LT70iKDNSwRs7yGhaeMCHDiMJ7eP2gBdoHA1BXXoC
+	FpVREV6PY4PndLT6pLnhJUQrV7jw=
+X-Google-Smtp-Source: AGHT+IFIZlapfD6kquVxMjP6vNIkczhJV1lbowblT0uRu6rB6UIdztD13JlWALUuzaKkGcAhpgwoNBsxh+aHMUBnGiE=
+X-Received: by 2002:a92:c90f:0:b0:366:9220:821f with SMTP id
+ t15-20020a92c90f000000b003669220821fmr7596072ilp.7.1710991861315; Wed, 20 Mar
+ 2024 20:31:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
+In-Reply-To: <20240314141642.2943605-1-alexander.stein@ew.tq-group.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 21 Mar 2024 11:30:50 +0800
+Message-ID: <CAA+D8APwNH2wf4p9DzZCy3b6xC8K-FPpMGw2V4kRMsX7U3=3Jg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ASoC: fsl: fsl_ssi: Add dev_err_probe if PCM DMA init fails
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, 
+	Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 20 Mar 2024 08:01:49 +0300 Dan Carpenter wrote:
-> > This is just trading one kind of bug for another, and the __free()
-> > magic is at a cost of readability.
-> > 
-> > I think we should ban the use of __free() in all of networking,
-> > until / unless it cleanly handles the NULL init case.  
-> 
-> Free handles the NULL init case, it doesn't handle the uninitialized
-> case.  I had previously argued that checkpatch should complain about
-> every __free() pointer if the declaration doesn't have an assignment.
-> 
-> The = NULL assignment is unnecessary if the pointer is assigned to
-> something else before the first return, so this might cause "unused
-> assignment" warnings?  I don't know if there are any tools which
-> complain about that in that situation.  I think probably we should just
-> make that an exception and do the checkpatch thing because it's such a
-> simple rule to implement.
+On Thu, Mar 14, 2024 at 10:16=E2=80=AFPM Alexander Stein
+<alexander.stein@ew.tq-group.com> wrote:
+>
+> This happens especially if this driver is built-in, but SDMA driver
+> is configured as module.
+>
+> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-What I was trying to say is that the __free() thing is supposed to
-prevent bugs, and it's not. Even if it was easy to write the matcher
-rule, if __free() needs a rule to double check its use - it's failing 
-at making it easier to write correct code.
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
-In any case. This is a patch for Intel wired, I'll let Intel folks
-decide.
+Best Regards
+Shengjiu Wang
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index ab6ec1974807..4ca3a16f7ac0 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -1401,8 +1401,10 @@ static int fsl_ssi_imx_probe(struct platform_devic=
+e *pdev,
+>                         goto error_pcm;
+>         } else {
+>                 ret =3D imx_pcm_dma_init(pdev);
+> -               if (ret)
+> +               if (ret) {
+> +                       dev_err_probe(dev, ret, "Failed to init PCM DMA\n=
+");
+>                         goto error_pcm;
+> +               }
+>         }
+>
+>         return 0;
+> --
+> 2.34.1
+>
 
