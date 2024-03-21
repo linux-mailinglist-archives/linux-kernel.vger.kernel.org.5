@@ -1,263 +1,129 @@
-Return-Path: <linux-kernel+bounces-109723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5693B881CCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:16:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3725881CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:16:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79A911C20E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:16:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 119B21C20380
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DBF58121;
-	Thu, 21 Mar 2024 07:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WOeQ9hLt"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4D95645E;
+	Thu, 21 Mar 2024 07:16:23 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F63657A7;
-	Thu, 21 Mar 2024 07:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD83E4D9E7;
+	Thu, 21 Mar 2024 07:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711005346; cv=none; b=G6q3QQTu2Mu1jKUiL2FLAyw28nnNdlIlWhFhDrD0RkM4YUF7rxg51ynUI1jU1cG5sz8V9CH7GlpjP1wQVdfuhbo5XFYBN1dv8h+WlJM0Of94tETBaHkvSutBBaQ2z4nxUhz+KaHeFSx+Ghd4hlQjcqNsdMLYSOVCJY3n8zf05CY=
+	t=1711005382; cv=none; b=qqN+o1wFtqvGLsiqLk34vRvGPQcJ5FBM6aaSb7MDJ4OsvHctiKHKeMs14bofXSI1ZcnEzqSjPGSRsypsCEpxDxgnKRIxaTRGxpSE9JvsK6pd/C88gV82lheGHR/gpVPPDgckTmCHyEYhDCQnFo1PnsZQqF+Ppf5NgBXA5W60hRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711005346; c=relaxed/simple;
-	bh=TRkJGI0hv8TrkMGFv6jLPf+s1F30upzpU3XnhTComi4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nuuwkHIrWC+7v2fHESqoHnVI/evmtBEKeRUhibu0FJz19APrk1HHOVW0SYlIJAHt9WKzOHvUzCc9+/Ovrdzrptf/UDtrzy1S19N6gxMAe02ixnKfkeCTa3j8vTEKNPdQrdmX6OlWaVk8ou5AtTVRizxJo0e4cHyaUgFJmOj0Gt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WOeQ9hLt; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42L6VfSX022490;
-	Thu, 21 Mar 2024 07:15:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=5cn/JRUFHaMKhBzNGy1zK3i7Q1rAiuEpTjkjz8jGURA=;
- b=WOeQ9hLtBGQcghBkGUb2+exEyI9qzzYKIId47tKdj4HkXMbhLGXH/XfhBl6nKTbwPjBi
- KYCMAPXq7R+iukIQcT0WKjPlIXWykkFZBiS8V20VqnQ6tdCFjq+RAs67Javme1KESFMv
- L8bv11NFZVuG66yE2Vx8VAQ4swItGEcluTgzGYy22KQREYSAR/FGR8+CNoER0zlVuDYL
- eY44mcY4RGdvHKT8P4Re9+xgzzkh8p7jF1dHbQ6mHpj/oIQR+gEodIaj5cFgR9gb35oR
- 5xGfXclgExtLmkLAJ1l9e5EoWccMOvnNi+Cvm/h9Ryt0BSUzPvMk1zrWHxwrfdVh47ia Eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0e5ug8ny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 07:15:40 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42L7Feik025629;
-	Thu, 21 Mar 2024 07:15:40 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0e5ug8nw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 07:15:40 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42L5S0Rl015759;
-	Thu, 21 Mar 2024 07:15:39 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wwp50bnkr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 07:15:39 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42L7FX6D46334278
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 07:15:35 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 596492004D;
-	Thu, 21 Mar 2024 07:15:33 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1FA1120049;
-	Thu, 21 Mar 2024 07:15:33 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Mar 2024 07:15:33 +0000 (GMT)
-From: Thomas Richter <tmricht@linux.ibm.com>
-To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, irogers@google.com
-Cc: svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH 2/2 v2] perf stat: do not fail on metrics on s390 zvm systems
-Date: Thu, 21 Mar 2024 08:15:12 +0100
-Message-Id: <20240321071512.2916952-2-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240321071512.2916952-1-tmricht@linux.ibm.com>
-References: <20240321071512.2916952-1-tmricht@linux.ibm.com>
+	s=arc-20240116; t=1711005382; c=relaxed/simple;
+	bh=daXV8oIKyjxwzug3KO844ksjd487mVSX4uDRO7d9I08=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YcXpDns6y0hCnpREv/te0sCIX/TTXy3+cuqoD1S0CbghczvveSxvTVqOLIk0b75daDtCFi9cMbs2ArEmTCTJF5pZvqOugI56iUDHxdpoSn8JknEit2seaBpW6uABqD/CBA4iEHaKDATzsH30+ojZ2dfJV60vihZrU7Y6HEaon68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V0cFP4JB1z4f3mHb;
+	Thu, 21 Mar 2024 15:16:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8A8A61A019F;
+	Thu, 21 Mar 2024 15:16:17 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgBHYgvB3vtlZG91Hg--.64482S2;
+	Thu, 21 Mar 2024 15:16:17 +0800 (CST)
+Subject: Re: [PATCH v2 2/5] ext4: Add unit test of ext4_mb_generate_buddy
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+ <20240103104900.464789-3-shikemeng@huaweicloud.com>
+ <30a8ce01-84d1-48ef-a93d-d14cc61723e3@roeck-us.net>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <6e062fdd-c2b8-d28f-2b0c-a130855d65ce@huaweicloud.com>
+Date: Thu, 21 Mar 2024 15:16:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QT07S10e_ng4fl8OJ94hpWvQEZIozaHh
-X-Proofpoint-GUID: j76Q-qLuU4mgbT3CdGVbX0moNoZByAjl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_04,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403210047
+In-Reply-To: <30a8ce01-84d1-48ef-a93d-d14cc61723e3@roeck-us.net>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgBHYgvB3vtlZG91Hg--.64482S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF18GFWfXw43Aw4UWFWxZwb_yoW8Kryrpr
+	98Cr97Kr1DJry7JF18Aw1UXryIyw4UJa15JryrJr1UJrnxWw1UJr17XryUCr1DKr1UZr12
+	yF1Uury7uw1DtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1wL05UUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On s390 z/VM virtual machines command perf list also displays metrics:
 
- # ./perf list | grep -A 20 'Metric Groups:'
- Metric Groups:
 
- No_group:
-  cpi
-       [Cycles per Instruction]
-  est_cpi
-       [Estimated Instruction Complexity CPI infinite Level 1]
-  finite_cpi
-       [Cycles per Instructions from Finite cache/memory]
-  l1mp
-       [Level One Miss per 100 Instructions]
-  l2p
-       [Percentage sourced from Level 2 cache]
-  l3p
-       [Percentage sourced from Level 3 on same chip cache]
-  l4lp
-       [Percentage sourced from Level 4 Local cache on same book]
-  l4rp
-       [Percentage sourced from Level 4 Remote cache on different book]
-  memp
-       [Percentage sourced from memory]
-  ....
- #
-
-The command
-
- # ./perf stat -M cpi -- true
- event syntax error: '{CPU_CYCLES/metric-id=CPU_CYCLES/.....'
-                       \___ Bad event or PMU
-
- Unable to find PMU or event on a PMU of 'CPU_CYCLES'
-
- event syntax error: '{CPU_CYCLES/metric-id=CPU_CYCLES/...'
-                       \___ Cannot find PMU `CPU_CYCLES'.
-			    Missing kernel support?
- #
-
-fails. Perf stat should not fail on metrics when the referenced
-CPU Counter Measurement PMU is not available.
-
-Output after:
- # ./perf stat -M est_cpi -- sleep 1
-
- Performance counter stats for 'sleep 1':
-
-     1,000,887,494 ns   duration_time   #     0.00 est_cpi
-
-       1.000887494 seconds time elapsed
-
-       0.000143000 seconds user
-       0.000662000 seconds sys
-
- #
-
-Fixes: 7f76b3113068 ("perf list: Add IBM z16 event description for s390")
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Suggested-by: Ian Rogers <irogers@google.com>
----
- .../arch/s390/cf_z16/transaction.json         | 28 +++++++++----------
- 1 file changed, 14 insertions(+), 14 deletions(-)
-
-diff --git a/tools/perf/pmu-events/arch/s390/cf_z16/transaction.json b/tools/perf/pmu-events/arch/s390/cf_z16/transaction.json
-index ec2ff78e2b5f..3ab1d3a6638c 100644
---- a/tools/perf/pmu-events/arch/s390/cf_z16/transaction.json
-+++ b/tools/perf/pmu-events/arch/s390/cf_z16/transaction.json
-@@ -2,71 +2,71 @@
-   {
-     "BriefDescription": "Transaction count",
-     "MetricName": "transaction",
--    "MetricExpr": "TX_C_TEND + TX_NC_TEND + TX_NC_TABORT + TX_C_TABORT_SPECIAL + TX_C_TABORT_NO_SPECIAL"
-+    "MetricExpr": "TX_C_TEND + TX_NC_TEND + TX_NC_TABORT + TX_C_TABORT_SPECIAL + TX_C_TABORT_NO_SPECIAL if has_event(TX_C_TEND) else 0"
-   },
-   {
-     "BriefDescription": "Cycles per Instruction",
-     "MetricName": "cpi",
--    "MetricExpr": "CPU_CYCLES / INSTRUCTIONS"
-+    "MetricExpr": "CPU_CYCLES / INSTRUCTIONS if has_event(INSTRUCTIONS) else 0"
-   },
-   {
-     "BriefDescription": "Problem State Instruction Ratio",
-     "MetricName": "prbstate",
--    "MetricExpr": "(PROBLEM_STATE_INSTRUCTIONS / INSTRUCTIONS) * 100"
-+    "MetricExpr": "(PROBLEM_STATE_INSTRUCTIONS / INSTRUCTIONS) * 100 if has_event(INSTRUCTIONS) else 0"
-   },
-   {
-     "BriefDescription": "Level One Miss per 100 Instructions",
-     "MetricName": "l1mp",
--    "MetricExpr": "((L1I_DIR_WRITES + L1D_DIR_WRITES) / INSTRUCTIONS) * 100"
-+    "MetricExpr": "((L1I_DIR_WRITES + L1D_DIR_WRITES) / INSTRUCTIONS) * 100 if has_event(INSTRUCTIONS) else 0"
-   },
-   {
-     "BriefDescription": "Percentage sourced from Level 2 cache",
-     "MetricName": "l2p",
--    "MetricExpr": "((DCW_REQ + DCW_REQ_IV + ICW_REQ + ICW_REQ_IV) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100"
-+    "MetricExpr": "((DCW_REQ + DCW_REQ_IV + ICW_REQ + ICW_REQ_IV) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100 if has_event(DCW_REQ) else 0"
-   },
-   {
-     "BriefDescription": "Percentage sourced from Level 3 on same chip cache",
-     "MetricName": "l3p",
--    "MetricExpr": "((DCW_REQ_CHIP_HIT + DCW_ON_CHIP + DCW_ON_CHIP_IV + DCW_ON_CHIP_CHIP_HIT + ICW_REQ_CHIP_HIT + ICW_ON_CHIP + ICW_ON_CHIP_IV + ICW_ON_CHIP_CHIP_HIT) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100"
-+    "MetricExpr": "((DCW_REQ_CHIP_HIT + DCW_ON_CHIP + DCW_ON_CHIP_IV + DCW_ON_CHIP_CHIP_HIT + ICW_REQ_CHIP_HIT + ICW_ON_CHIP + ICW_ON_CHIP_IV + ICW_ON_CHIP_CHIP_HIT) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100 if has_event(DCW_REQ_CHIP_HIT) else 0"
-   },
-   {
-     "BriefDescription": "Percentage sourced from Level 4 Local cache on same book",
-     "MetricName": "l4lp",
--    "MetricExpr": "((DCW_REQ_DRAWER_HIT + DCW_ON_CHIP_DRAWER_HIT + DCW_ON_MODULE + DCW_ON_DRAWER + IDCW_ON_MODULE_IV + IDCW_ON_MODULE_CHIP_HIT + IDCW_ON_MODULE_DRAWER_HIT + IDCW_ON_DRAWER_IV + IDCW_ON_DRAWER_CHIP_HIT + IDCW_ON_DRAWER_DRAWER_HIT + ICW_REQ_DRAWER_HIT + ICW_ON_CHIP_DRAWER_HIT + ICW_ON_MODULE + ICW_ON_DRAWER) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100"
-+    "MetricExpr": "((DCW_REQ_DRAWER_HIT + DCW_ON_CHIP_DRAWER_HIT + DCW_ON_MODULE + DCW_ON_DRAWER + IDCW_ON_MODULE_IV + IDCW_ON_MODULE_CHIP_HIT + IDCW_ON_MODULE_DRAWER_HIT + IDCW_ON_DRAWER_IV + IDCW_ON_DRAWER_CHIP_HIT + IDCW_ON_DRAWER_DRAWER_HIT + ICW_REQ_DRAWER_HIT + ICW_ON_CHIP_DRAWER_HIT + ICW_ON_MODULE + ICW_ON_DRAWER) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100 if has_event(DCW_REQ_DRAWER_HIT) else 0"
-   },
-   {
-     "BriefDescription": "Percentage sourced from Level 4 Remote cache on different book",
-     "MetricName": "l4rp",
--    "MetricExpr": "((DCW_OFF_DRAWER + IDCW_OFF_DRAWER_IV + IDCW_OFF_DRAWER_CHIP_HIT + IDCW_OFF_DRAWER_DRAWER_HIT + ICW_OFF_DRAWER) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100"
-+    "MetricExpr": "((DCW_OFF_DRAWER + IDCW_OFF_DRAWER_IV + IDCW_OFF_DRAWER_CHIP_HIT + IDCW_OFF_DRAWER_DRAWER_HIT + ICW_OFF_DRAWER) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100 if has_event(DCW_OFF_DRAWER) else 0"
-   },
-   {
-     "BriefDescription": "Percentage sourced from memory",
-     "MetricName": "memp",
--    "MetricExpr": "((DCW_ON_CHIP_MEMORY + DCW_ON_MODULE_MEMORY + DCW_ON_DRAWER_MEMORY + DCW_OFF_DRAWER_MEMORY + ICW_ON_CHIP_MEMORY + ICW_ON_MODULE_MEMORY + ICW_ON_DRAWER_MEMORY + ICW_OFF_DRAWER_MEMORY) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100"
-+    "MetricExpr": "((DCW_ON_CHIP_MEMORY + DCW_ON_MODULE_MEMORY + DCW_ON_DRAWER_MEMORY + DCW_OFF_DRAWER_MEMORY + ICW_ON_CHIP_MEMORY + ICW_ON_MODULE_MEMORY + ICW_ON_DRAWER_MEMORY + ICW_OFF_DRAWER_MEMORY) / (L1I_DIR_WRITES + L1D_DIR_WRITES)) * 100 if has_event(DCW_ON_CHIP_MEMORY) else 0"
-   },
-   {
-     "BriefDescription": "Cycles per Instructions from Finite cache/memory",
-     "MetricName": "finite_cpi",
--    "MetricExpr": "L1C_TLB2_MISSES / INSTRUCTIONS"
-+    "MetricExpr": "L1C_TLB2_MISSES / INSTRUCTIONS if has_event(L1C_TLB2_MISSES) else 0"
-   },
-   {
-     "BriefDescription": "Estimated Instruction Complexity CPI infinite Level 1",
-     "MetricName": "est_cpi",
--    "MetricExpr": "(CPU_CYCLES / INSTRUCTIONS) - (L1C_TLB2_MISSES / INSTRUCTIONS)"
-+    "MetricExpr": "(CPU_CYCLES / INSTRUCTIONS) - (L1C_TLB2_MISSES / INSTRUCTIONS) if has_event(INSTRUCTIONS) else 0"
-   },
-   {
-     "BriefDescription": "Estimated Sourcing Cycles per Level 1 Miss",
-     "MetricName": "scpl1m",
--    "MetricExpr": "L1C_TLB2_MISSES / (L1I_DIR_WRITES + L1D_DIR_WRITES)"
-+    "MetricExpr": "L1C_TLB2_MISSES / (L1I_DIR_WRITES + L1D_DIR_WRITES) if has_event(L1C_TLB2_MISSES) else 0"
-   },
-   {
-     "BriefDescription": "Estimated TLB CPU percentage of Total CPU",
-     "MetricName": "tlb_percent",
--    "MetricExpr": "((DTLB2_MISSES + ITLB2_MISSES) / CPU_CYCLES) * (L1C_TLB2_MISSES / (L1I_PENALTY_CYCLES + L1D_PENALTY_CYCLES)) * 100"
-+    "MetricExpr": "((DTLB2_MISSES + ITLB2_MISSES) / CPU_CYCLES) * (L1C_TLB2_MISSES / (L1I_PENALTY_CYCLES + L1D_PENALTY_CYCLES)) * 100 if has_event(CPU_CYCLES) else 0"
-   },
-   {
-     "BriefDescription": "Estimated Cycles per TLB Miss",
-     "MetricName": "tlb_miss",
--    "MetricExpr": "((DTLB2_MISSES + ITLB2_MISSES) / (DTLB2_WRITES + ITLB2_WRITES)) * (L1C_TLB2_MISSES / (L1I_PENALTY_CYCLES + L1D_PENALTY_CYCLES))"
-+    "MetricExpr": "((DTLB2_MISSES + ITLB2_MISSES) / (DTLB2_WRITES + ITLB2_WRITES)) * (L1C_TLB2_MISSES / (L1I_PENALTY_CYCLES + L1D_PENALTY_CYCLES)) if has_event(DTLB2_MISSES) else 0"
-   }
- ]
--- 
-2.44.0
+on 3/21/2024 12:23 AM, Guenter Roeck wrote:
+> Hi,
+> 
+> On Wed, Jan 03, 2024 at 06:48:57PM +0800, Kemeng Shi wrote:
+>> Add unit test of ext4_mb_generate_buddy
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+> With this and other new ext4 tests test in the tree, I see a variety
+> of backtraces in the upstream kernel if debug options are enabled.
+> An example is
+> 
+> [    6.821447]         KTAP version 1
+> [    6.821769]         # Subtest: test_mb_generate_buddy
+> [    6.824787] =============================================================================
+> [    6.825568] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
+> ...
+> [    6.894341] ok 7 ext4_inode_test
+> [    6.895411] =============================================================================
+> [    6.895777] BUG inode_cache (Tainted: G    B            N): Padding overwritten. 0xfffff80006223f68-0xfffff80006223f6f @offset=16232
+> 
+> Another example, from another test run, is
+> 
+> [    3.938551]         # Subtest: test_new_blocks_simple
+> [    3.947171]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+> [    3.952988]         ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+> [    3.958403]         ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+> [    3.958890] =============================================================================
+> [    3.959159] BUG inode_cache (Tainted: G                 N): Padding overwritten. 0xffff8de881adbf68-0xffff8de881adbf6f @offset=16232
+> 
+> Another one:
+> 
+> [   18.730473]         # Subtest: test_new_blocks_simple
+> [   18.760547]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+> [   18.778477] ==================================================================
+> [   18.778950] BUG: KFENCE: out-of-bounds write in ext4_mb_init+0x5d7/0xa60
+> 
+> This is just a sample, taken from a quick look at test results.
+> 
+> Are those backtraces expected ? If so, would it be possible to execute the
+> tests without generating such backtraces ? The backtraces, if intentional,
+> hide real problems in the noise.
+Thanks for the report. The backtrace is not expected, I will look into this. Thansk!
+> 
+> Thanks,
+> Guenter
+> 
 
 
