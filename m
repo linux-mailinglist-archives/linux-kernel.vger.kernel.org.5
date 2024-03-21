@@ -1,139 +1,157 @@
-Return-Path: <linux-kernel+bounces-110511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC9ED885FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:39:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DB8885FF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98C7E284185
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 454BE1C214E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 17:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255C612BF3E;
-	Thu, 21 Mar 2024 17:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D43131720;
+	Thu, 21 Mar 2024 17:42:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="twhwCJ4M"
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dTsJzx+B"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB068624C;
-	Thu, 21 Mar 2024 17:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91F58592D;
+	Thu, 21 Mar 2024 17:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711042788; cv=none; b=TsvahzagSWlq49EmIFRCgl4lx1NXI09ibktw/xc9diET+n4qSNwVsEzr1yCQ68MLHuc6FS0aLw27vLTdew12M8JRkU/BzlpknZAziYxoXS4TkFoEkCMzSRY5NLH4lrcaF6kjpc8pgqe1zbiZF4zfBmMEbidHRsXpPHimDrHzMQI=
+	t=1711042940; cv=none; b=A0UUVWJw+at5txe8SZjmR2QdToFPKC8IA93xn7kPnTOAyqWgGlpDhHa1sxkbBIOJOMzjVVZKM61lT0nMlRe76Xpv9k0n/7qluPfAH+L5fw0CCsZJtxMzOs7idQtthrRGhjLKeJVASbZS/W3xRB4oHbFpfTX0Qp3k2phsSILi7ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711042788; c=relaxed/simple;
-	bh=tmVyl3CnV/a8ywSLGoP9rsnHV/1ICdCewlLv8W7cRX4=;
-	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=L4MYEzDeo+oWLsluX6bSgd7z1vX6RhraXBOLY0M9+IJVwNHhrD2a7Ut4c6kp3iMrVF2S3rTVoe7oGh25Y/FyOQ8S+sE+KRH06IJUXeCOptAENHbFu1eQ5oERoQu30mg247DOiIw2ObdG/MmPtOleuc53mbN2NkPtl4ci/ctKklc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=twhwCJ4M; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1711042786; x=1742578786;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=Y2m0HUIoPsV3lCWkx5c13P3hII6BgfumgnVO7r8vV/0=;
-  b=twhwCJ4MOi1AdIEx/qlHJTs6nIanHZjex7NMfjF8GgPe8U6mWCflP6IM
-   Z2YBiThp43iy4TsqUp+fFQlcxSOPKhq/XSS2ELeYw1m6DacFPVF12ImqT
-   g28Ucu6vvGRIzOoYAGYk5iY1LwMYCheDk/LXF1lVwtF1vRxkr25KcjlXl
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.07,143,1708387200"; 
-   d="scan'208";a="405714813"
-Subject: Re: [PATCH v1 0/4] virt: vmgenid: Add devicetree bindings support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 17:39:39 +0000
-Received: from EX19MTAEUB001.ant.amazon.com [10.0.10.100:51553]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.24.234:2525] with esmtp (Farcaster)
- id 07620b8e-e807-42d8-ae98-352d02494533; Thu, 21 Mar 2024 17:39:38 +0000 (UTC)
-X-Farcaster-Flow-ID: 07620b8e-e807-42d8-ae98-352d02494533
-Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
- EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 21 Mar 2024 17:39:38 +0000
-Received: from [192.168.15.25] (10.106.82.17) by EX19D036EUC002.ant.amazon.com
- (10.252.61.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 21 Mar
- 2024 17:39:32 +0000
-Message-ID: <db5a1027-93b7-4630-b679-8a654905dc48@amazon.co.uk>
-Date: Thu, 21 Mar 2024 17:39:28 +0000
+	s=arc-20240116; t=1711042940; c=relaxed/simple;
+	bh=zUsdN2xY7WFI0ldGIoaj3nYw5KiJOwah2BFh8jfJbWA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=TCbl2hUeMaz7d/flJ+cWnKTtZgqRxv/q7iGoMizdMg6R3KQh+HWkaI/5FAEhYFt/n7I8ppuPL3ZsbD+MfyyKOXVt1IFB1ZwtEjBbyrxLs6oEpwChIyBcZxxn27ne6ng5GzhDfRhSydzsijW1z/ty316zTbldsgVKdPJN17rOPpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dTsJzx+B; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LFLR9b002621;
+	Thu, 21 Mar 2024 17:42:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=1z65S9k0Db8C2HtC5YlaiiEHPGe/DFIEq6HAdOFQG3Q=;
+ b=dTsJzx+BYtt4GaboqvCB+doGtR1W4wJxWeXXiX4zXyGS/xPm5rKG9F5oGtrv1WfPRKBs
+ SV9ZhHD7OW846oecVL09XzuRL1X4zSaNOJL18vV4jk4jlN+s+GWF1eRDjnfFG+RN9WKh
+ sBPIOGF7djJxBAbYEm9s62zOtMnccxeiSTcAJP4QR45ITTu5LgfiF2VKhmns47HI5Bdg
+ KpaxiXMyUbSSp0EmN05/ASXHB96xRPRScYqZr4SNqFil3Saro4HrWRpNAl/FuqRYuXaZ
+ EzBvUZbYdWGO0UC6oTFP0or08BRPEOarR+Hl1gv1/7M448rgT4EBPNe1p4UkY0fcS11a Gg== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0pfe8g0x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 17:42:07 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LGGBxC002779;
+	Thu, 21 Mar 2024 17:42:06 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2xb1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 17:42:06 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LHg3nG23986910
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 17:42:05 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9648058063;
+	Thu, 21 Mar 2024 17:42:03 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C0C005804B;
+	Thu, 21 Mar 2024 17:42:02 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 21 Mar 2024 17:42:02 +0000 (GMT)
+Message-ID: <58166047-b339-4234-832b-a1aad6bf49de@linux.ibm.com>
+Date: Thu, 21 Mar 2024 13:42:02 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 05/13] crypto: ecc - Add nbits field to ecc_curve
+ structure
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
+        bbhushan2@marvell.com
+References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
+ <20240320114725.1644921-6-stefanb@linux.ibm.com>
+ <CZZLKGMM0B9E.7J1CGE8EIGQX@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZZLKGMM0B9E.7J1CGE8EIGQX@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: o0rOtGRc9n4rerL2c0bm26eVtOn7SsIA
+X-Proofpoint-GUID: o0rOtGRc9n4rerL2c0bm26eVtOn7SsIA
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, David Woodhouse <dwmw2@infradead.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sudan Landge
-	<sudanl@amazon.com>, <tytso@mit.edu>, <Jason@zx2c4.com>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <thomas.lendacky@amd.com>,
-	<dan.j.williams@intel.com>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <graf@amazon.de>, <bchalios@amazon.es>,
-	<xmarcalx@amazon.co.uk>, <ardb@kernel.org>, benh <benh@kernel.crashing.org>
-References: <20240319143253.22317-1-sudanl@amazon.com>
- <23692c07-98bd-477d-b244-bba14c50352c@linaro.org>
- <38aad6c0e698c8e804694276d1762d61f2068ce8.camel@infradead.org>
- <20240320161531.GA1810860-robh@kernel.org>
- <60404403932a984d1f75d111ff53b9053af03579.camel@infradead.org>
- <20240321133250.GA1600070-robh@kernel.org>
-From: "Landge, Sudan" <sudanl@amazon.co.uk>
-In-Reply-To: <20240321133250.GA1600070-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
- EX19D036EUC002.ant.amazon.com (10.252.61.191)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_10,2024-03-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403210129
 
 
 
-On 21/03/2024 13:32, Rob Herring wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> On Wed, Mar 20, 2024 at 04:55:45PM +0000, David Woodhouse wrote:
->> On Wed, 2024-03-20 at 11:15 -0500, Rob Herring wrote:
->>> On Wed, Mar 20, 2024 at 01:50:43PM +0000, David Woodhouse wrote:
->>>> On Tue, 2024-03-19 at 16:24 +0100, Krzysztof Kozlowski wrote:
->>>>> On 19/03/2024 15:32, Sudan Landge wrote:
->>>>>> This small series of patches aims to add devicetree bindings support for
->>>>>> the Virtual Machine Generation ID (vmgenid) driver.
->>>>>>
->>>>>> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
->>>>>> ("virt: vmgenid: notify RNG of VM fork and supply generation ID") as an
->>>>>> ACPI only device.
->>>>>> We would like to extend vmgenid to support devicetree bindings because:
->>>>>> 1. A device should not be defined as an ACPI or DT only device.
->>>
->>> This (and the binding patch) tells me nothing about what "Virtual
->>> Machine Generation ID driver" is and isn't really justification for
->>> "why".
+On 3/21/24 13:17, Jarkko Sakkinen wrote:
+> On Wed Mar 20, 2024 at 1:47 PM EET, Stefan Berger wrote:
+>> Add the number of bits a curve has to the ecc_curve definition to be able
+>> to derive the number of bytes a curve requires for its coordinates from it.
+>> It also allows one to identify a curve by its particular size. Set the
+>> number of bits on all curve definitions.
 >>
->> It's a reference to a memory area which the OS can use to tell whether
->> it's been snapshotted and restored (or 'forked'). A future submission
->> should have a reference to something like
->> https://www.qemu.org/docs/master/specs/vmgenid.html or the Microsoft
->> doc which is linked from there.
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Tested-by: Lukas Wunner <lukas@wunner.de>
+>> ---
+
+>>   		.y = tc512b_g_y,
+>> diff --git a/include/crypto/ecc_curve.h b/include/crypto/ecc_curve.h
+>> index 70964781eb68..63d5754e7614 100644
+>> --- a/include/crypto/ecc_curve.h
+>> +++ b/include/crypto/ecc_curve.h
+>> @@ -23,6 +23,7 @@ struct ecc_point {
+>>    * struct ecc_curve - definition of elliptic curve
+>>    *
+>>    * @name:	Short name of the curve.
+>> + * @nbits:	The number of bits of a curve.
+>>    * @g:		Generator point of the curve.
+>>    * @p:		Prime number, if Barrett's reduction is used for this curve
+>>    *		pre-calculated value 'mu' is appended to the @p after ndigits.
+>> @@ -34,6 +35,7 @@ struct ecc_point {
+>>    */
+>>   struct ecc_curve {
+>>   	char *name;
+>> +	unsigned int nbits;
 > 
-> That doc mentions fw_cfg for which we already have a binding. Why can't
-> it be used/extended here?
-QEMU has support for vmgenid but even they do not pass vmgenid directly 
-to the guest kernel using fw_cfg. QEMU passes the vmgenid/UUID via 
-fw_cfg to an intermediate UEFI firmware. This UEFI firmware, running as 
-a guest in QEMU, reads the UUID from fw_cfg and creates ACPI tables for 
-it. The UEFI firmware then passes the UUID information to the guest 
-kernel via ACPI.
-This approach requires yet another intermediary which is UEFI firmware 
-and adds more complexity than ACPI for minimalist hypervisors that do 
-not have an intermediate bootloader today.
+> Nit:
+> 
+> Hmm not strongly opionated here but wouldn't it be more consistent to
+> use u32 here as the types below are also exact bitsize types?
+
+I will change this for v8. I will probably delay v8 until this patch 
+here has been queued for upstreaming because 11/13 will need a similar 
+module alias.
+
+https://lore.kernel.org/linux-crypto/20240321144433.1671394-1-stefanb@linux.ibm.com/T/#u
+
 
 > 
-> Rob
+>>   	struct ecc_point g;
+>>   	u64 *p;
+>>   	u64 *n;
 > 
-> [1] https://www.kernel.org/doc/Documentation/devicetree/bindings/firmware/qemu%2Cfw-cfg-mmio.yaml
-
+> BR, Jarkko
+> 
 
