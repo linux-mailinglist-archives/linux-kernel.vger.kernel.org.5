@@ -1,180 +1,240 @@
-Return-Path: <linux-kernel+bounces-110796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAE3886410
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:46:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 806F6886413
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:47:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EDF1C2179A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:46:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35CCA284476
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6DF3BB29;
-	Thu, 21 Mar 2024 23:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E441E534;
+	Thu, 21 Mar 2024 23:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="VsCJse60"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mTRD+iss"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3B91B263
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDAAF516;
+	Thu, 21 Mar 2024 23:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711064794; cv=none; b=W6bnKdUdVKu5G3VHX658/araEkTECLbymRk8NEqM2OaqXBCgYaxCdJ2aPni4T7WCxFCntSCzIg9EjEHL3SlUUcQOVma394G4CX2xNJiTR+wum2X8jNgH+XkBBNFCuQbKLtsCY7yCWeG5pE1wILGV2txRsPIP1yQ2etVxZlqq0K4=
+	t=1711064803; cv=none; b=pIj7hwB2+avjxVcNON2Lxz7F70t7WRj0VjaoTEGqR7RquGM8QKnhHsCNM6D564gHJIx4OMfzvm6gVx6x42gNEVR5qJe/i5D1qRf1A+wSIGRfpTERyHYdVPQIQx1rG+6lvVpSl0RdhYyEwLCc9X4Dx/m3CVii8t/PDEGIK+zsiNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711064794; c=relaxed/simple;
-	bh=GBp117Rw9ou09bC9vlczg3WmwjqjNQ4BV42hmHgOAGM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Eud1qnJRLCPs4pUJvtotLk1FjWQBLe0coattIhbf9nYbHnXddd3bqOpTA7TLo1hJ/fdKYQRv6PpOaALmk3ZR1YUT84d1bg0x3orZUS9kkRbbHKw6Pi9B1YmeGe4NuHHOnudBM6o/P630FnWV6eIY6AVeNmJuBetsE7qKiVgqap4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VsCJse60; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso2997864276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 16:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711064791; x=1711669591; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TKcHHCSWCqgul2AOMbuKphpbCV9drtQafSH0+0DTZms=;
-        b=VsCJse60j86WLf2PNMFujVaQX/q9AyhsHXmv/C09+wPlP+I0eZpkWyVD2nuHIr3e2w
-         NsGGQJV5cM/vpLFlHwltfelhumVPrZR13P5ANwKcFg82SeZY9ULvH/FytwRXQTwCrYOI
-         q8sitGGwDRXrgrziLBI6tJGwsJe3E13S4xFCW1BPRfOrawWEkh95DkZ1fmFUelM0zJj9
-         g9fjDuAjILXtG7hGSbDt0wodKzHspkM/8kb3Ic/wV0fvs4U5UozufWb/ndF9eyK0GbY8
-         gckRVGUM09dqaPOSPeL9t1MJZ+Nu093QYtukD/aDnHaX+VfZjnKRwbzFKF3n5ZHfoj7d
-         CxNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711064791; x=1711669591;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TKcHHCSWCqgul2AOMbuKphpbCV9drtQafSH0+0DTZms=;
-        b=i04DscAoWKQ8Rd/Z0I870NHGyX5U1ipsHrxMCwCxptk2XClFcja8jA3IRmHoglW4Tr
-         x0qRQDfofYVjvi4KjxS070C+HCK7gxj9DqpwGEJd4Z2XSW3eg3sHR/+9sipbf94aGMHc
-         M5BI9E0KBD98o+5CyCsK+i0d0brL65EPcOilvLlbd7hQyD2eO0YAiSLNNQ3gv7Imof5f
-         qqQgSsTWWTt/xgjEuDgCylJGfE7GWxyEnMul4mwHg/EwgQpggmoAFC4JK/hdb7JJzAmd
-         YHyb1Cnsyw/LIiwgtNiCfmjxKnkzW7T9pRvhz0kIyOBBK5b3DuSuYr4h6ReyJ7j6MM5S
-         vC9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWRteGKE397Fqnf5TfHPnLbuLPndZ8tl7kwvCjrB4iEahbhaW+dbMxfDSpNv8EXWClAxbmIQjQdqVxiBhmpHXroAxUExXUFqw8PpMoz
-X-Gm-Message-State: AOJu0Ywu8u969qnCRmA9WeT2njTCPSZHomjkAisw5YVcIlwh0nRZskR2
-	eoAI9yxsbSIUpR0CpqoqZqhX4snkidUGP9123HiErKmASlrEeUlLzafIcCQvAbL/QbSwgIYOg3H
-	T+44vEIZCfjy0NnE3MrxSQw==
-X-Google-Smtp-Source: AGHT+IGslFJ7I58NprLlYtxvFu8RungPyoqKiB8iuMyQ7S0Xf45CcMjYFnGLqEJkvq/9SAAdc0Ta5veeJ5B3mcEUmw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:100a:b0:dc6:ff2b:7e1b with
- SMTP id w10-20020a056902100a00b00dc6ff2b7e1bmr196400ybt.4.1711064791522; Thu,
- 21 Mar 2024 16:46:31 -0700 (PDT)
-Date: Thu, 21 Mar 2024 23:46:27 +0000
+	s=arc-20240116; t=1711064803; c=relaxed/simple;
+	bh=Rf0D+K+jXTiwLuIvY9ASPK++sStp3YNUIenDwHbEEGc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HbZnHa2XLULXBSqeuNEVO/Cv2f5vXW7Pd1jH4774Wruhhpc3d3RFVZ8nwRC3LMETfyp+ReIDzbSaaZ+hedSV6ixVutMsQUvJCTrTctaY1lFjYEEyIrUdGmbzPMvuE1VOYHDtHDcX3CU3fRSgtT3vx+GBDx9Dp4IRRY/+IsqHfC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mTRD+iss; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711064802; x=1742600802;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Rf0D+K+jXTiwLuIvY9ASPK++sStp3YNUIenDwHbEEGc=;
+  b=mTRD+issoPwPt62huIs+jmt09WPGAJ1SqJZyQ9mJfH57D1df0ps4LzaM
+   iouJRINmqh/TsLWtvmcUYifID4AfsOWwcsTy4uVE7is0uZ9sEv8m4zSYb
+   uCm3va9/fbutRq1zQ8v856Vh5eSTkRwUZWiPiVgEpSC07JLq0FJV2BfwJ
+   wqG7U3LemYbCPrNthnMVtk0JotoaAKjBT+gZ5O6oNABTQpC60TOBVWie9
+   TEjM9U4sHmYl1fXuklGMpsk4hbaeeMeja0xEwbfE7NpoNovahC2v87ve4
+   muD2o2PX1GFSm+U8GrayiFyhVeW6G8iHTkts7uAn1cLJVzBbzAtoQY6jf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="17246134"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="17246134"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:46:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="15107183"
+Received: from dongshen-mobl1.amr.corp.intel.com (HELO [10.212.116.150]) ([10.212.116.150])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 16:46:40 -0700
+Message-ID: <4e93f167-8a90-4046-9f43-2366556b1e89@intel.com>
+Date: Thu, 21 Mar 2024 16:46:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANLG/GUC/x3MwQqDMAwA0F+RnA1oLQr+ytjB1WQGpJakikP8d
- 8uO7/IuMFIhg7G6QOkQky0WtHUFYZnil1DmYnCN803nWrSsMaQfsuHCltbd8JxyVgzo6cPUD+x DP0MJkhLL+c9f7/t+AA3Ex21sAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711064790; l=3560;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=GBp117Rw9ou09bC9vlczg3WmwjqjNQ4BV42hmHgOAGM=; b=7eliCTZlOhrbirCoWB7C+nw7yQJFi+JZPUgfpGG0LQzr9Zvxig7qUqczMOmzK471p6Oo4nxWE
- EZp5nx2evR3AhFnqMtbF8E/P5IbKnWIgUu8C3qx4/qaT1i9Z166dvrZ
-X-Mailer: b4 0.12.3
-Message-ID: <20240321-strncpy-fs-hfsplus-xattr-c-v1-1-0c6385a10251@google.com>
-Subject: [PATCH] hfsplus: refactor copy_name to not use strncpy
-From: Justin Stitt <justinstitt@google.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 18/29] KVM: selftests: TDX: Add TDX MMIO writes
+ test
+To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
+ Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
+ Erdem Aktas <erdemaktas@google.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
+ Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-19-sagis@google.com>
+Content-Language: en-US
+From: "Zhang, Dongsheng X" <dongsheng.x.zhang@intel.com>
+In-Reply-To: <20231212204647.2170650-19-sagis@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-strncpy() is deprecated with NUL-terminated destination strings [1].
 
-The copy_name() method does a lot of manual buffer manipulation to
-eventually arrive with its desired string. If we don't know the
-namespace this attr has or belongs to we want to prepend "osx." to our
-final string. Following this, we're copying xattr_name and doing a
-bizarre manual NUL-byte assignment with a memset where n=1.
 
-Really, we can use some more obvious string APIs to acomplish this,
-improving readability and security. Following the same control flow as
-before: if we don't know the namespace let's use scnprintf() to form our
-prefix + xattr_name pairing (while NUL-terminating too!). Otherwise, use
-strscpy() to return the number of bytes copied into our buffer.
+On 12/12/2023 12:46 PM, Sagi Shahar wrote:
+> The test verifies MMIO writes of various sizes from the guest to the host.
+> 
+> Signed-off-by: Sagi Shahar <sagis@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ryan Afranji <afranji@google.com>
+> ---
+>  .../selftests/kvm/include/x86_64/tdx/tdx.h    |  2 +
+>  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 14 +++
+>  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 85 +++++++++++++++++++
+>  3 files changed, 101 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> index 13ce60df5684..502b670ea699 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> @@ -25,5 +25,7 @@ uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value);
+>  uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag);
+>  uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
+>  					uint64_t *data_out);
+> +uint64_t tdg_vp_vmcall_ve_request_mmio_write(uint64_t address, uint64_t size,
+> +					uint64_t data_in);
+>  
+>  #endif // SELFTEST_TDX_TDX_H
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> index b19f07ebc0e7..f4afa09f7e3d 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> @@ -143,3 +143,17 @@ uint64_t tdg_vp_vmcall_ve_request_mmio_read(uint64_t address, uint64_t size,
+>  
+>  	return ret;
+>  }
+> +
+> +uint64_t tdg_vp_vmcall_ve_request_mmio_write(uint64_t address, uint64_t size,
+> +					uint64_t data_in)
+> +{
+> +	struct tdx_hypercall_args args = {
+> +		.r11 = TDG_VP_VMCALL_VE_REQUEST_MMIO,
+> +		.r12 = size,
+> +		.r13 = TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE,
+> +		.r14 = address,
+> +		.r15 = data_in,
+> +	};
+> +
+> +	return __tdx_hypercall(&args, 0);
+> +}
+> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> index 48902b69d13e..5e28ba828a92 100644
+> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> @@ -885,6 +885,90 @@ void verify_mmio_reads(void)
+>  	printf("\t ... PASSED\n");
+>  }
+>  
+> +void guest_mmio_writes(void)
+> +{
+> +	uint64_t ret;
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 1, 0x12);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 2, 0x1234);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 4, 0x12345678);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	ret = tdg_vp_vmcall_ve_request_mmio_write(TDX_MMIO_TEST_ADDR, 8, 0x1234567890ABCDEF);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	// Write across page boundary.
+> +	ret = tdg_vp_vmcall_ve_request_mmio_write(PAGE_SIZE - 1, 8, 0);
+> +	if (ret)
+> +		tdx_test_fatal(ret);
+> +
+> +	tdx_test_success();
+> +}
+> +
+> +/*
+> + * Varifies guest MMIO writes.
+> + */
 
-Note that strscpy() _can_ return -E2BIG but this is already handled by
-all callsites:
+Nit: typo?  Varifies ==> Verifies
 
-In both hfsplus_listxattr_finder_info() and hfsplus_listxattr(), ret is
-already type ssize_t so we can change the return type of copy_name() to
-match (understanding that scnprintf()'s return type is different yet
-fully representable by ssize_t). Furthermore, listxattr() in fs/xattr.c
-is well-equipped to handle a potential -E2BIG return result from
-vfs_listxattr():
-|	ssize_t error;
-..
-|	error = vfs_listxattr(d, klist, size);
-|	if (error > 0) {
-|		if (size && copy_to_user(list, klist, error))
-|			error = -EFAULT;
-|	} else if (error == -ERANGE && size >= XATTR_LIST_MAX) {
-|		/* The file system tried to returned a list bigger
-|			than XATTR_LIST_MAX bytes. Not possible. */
-|		error = -E2BIG;
-|	}
-.. our error can potentially already be -E2BIG, skipping this else-if
-and ending up at the same state as other errors.
-
-This whole copy_name() function could really be a one-line with some
-ternary statements embedded into a scnprintf() arg-list but I've opted
-to maintain some semblance of readability.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
----
- fs/hfsplus/xattr.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
-
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 9c9ff6b8c6f7..00351f566e9f 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -400,22 +400,13 @@ static int name_len(const char *xattr_name, int xattr_name_len)
- 	return len;
- }
- 
--static int copy_name(char *buffer, const char *xattr_name, int name_len)
-+static ssize_t copy_name(char *buffer, const char *xattr_name, int name_len)
- {
--	int len = name_len;
--	int offset = 0;
--
--	if (!is_known_namespace(xattr_name)) {
--		memcpy(buffer, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN);
--		offset += XATTR_MAC_OSX_PREFIX_LEN;
--		len += XATTR_MAC_OSX_PREFIX_LEN;
--	}
--
--	strncpy(buffer + offset, xattr_name, name_len);
--	memset(buffer + offset + name_len, 0, 1);
--	len += 1;
-+	if (!is_known_namespace(xattr_name))
-+		return scnprintf(buffer, name_len + XATTR_MAC_OSX_PREFIX_LEN,
-+				 "%s%s", XATTR_MAC_OSX_PREFIX, xattr_name);
- 
--	return len;
-+	return strscpy(buffer, xattr_name, name_len + 1);
- }
- 
- int hfsplus_setxattr(struct inode *inode, const char *name,
-
----
-base-commit: 241590e5a1d1b6219c8d3045c167f2fbcc076cbb
-change-id: 20240321-strncpy-fs-hfsplus-xattr-c-4ebfe67f4c6d
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> +void verify_mmio_writes(void)
+> +{
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	uint8_t byte_1;
+> +	uint16_t byte_2;
+> +	uint32_t byte_4;
+> +	uint64_t byte_8;
+> +
+> +	vm = td_create();
+> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
+> +	vcpu = td_vcpu_add(vm, 0, guest_mmio_writes);
+> +	td_finalize(vm);
+> +
+> +	printf("Verifying TD MMIO writes:\n");
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 1, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
+> +	byte_1 = *(uint8_t *)(vcpu->run->mmio.data);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 2, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
+> +	byte_2 = *(uint16_t *)(vcpu->run->mmio.data);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 4, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
+> +	byte_4 = *(uint32_t *)(vcpu->run->mmio.data);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +	TDX_TEST_ASSERT_MMIO(vcpu, TDX_MMIO_TEST_ADDR, 8, TDG_VP_VMCALL_VE_REQUEST_MMIO_WRITE);
+> +	byte_8 = *(uint64_t *)(vcpu->run->mmio.data);
+> +
+> +	TEST_ASSERT_EQ(byte_1, 0x12);
+> +	TEST_ASSERT_EQ(byte_2, 0x1234);
+> +	TEST_ASSERT_EQ(byte_4, 0x12345678);
+> +	TEST_ASSERT_EQ(byte_8, 0x1234567890ABCDEF);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TEST_ASSERT_EQ(vcpu->run->exit_reason, KVM_EXIT_SYSTEM_EVENT);
+> +	TEST_ASSERT_EQ(vcpu->run->system_event.data[1], TDG_VP_VMCALL_INVALID_OPERAND);
+> +
+> +	td_vcpu_run(vcpu);
+> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
+> +
+> +	kvm_vm_free(vm);
+> +	printf("\t ... PASSED\n");
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	setbuf(stdout, NULL);
+> @@ -905,6 +989,7 @@ int main(int argc, char **argv)
+>  	run_in_new_process(&verify_guest_msr_reads);
+>  	run_in_new_process(&verify_guest_hlt);
+>  	run_in_new_process(&verify_mmio_reads);
+> +	run_in_new_process(&verify_mmio_writes);
+>  
+>  	return 0;
+>  }
 
