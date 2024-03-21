@@ -1,203 +1,350 @@
-Return-Path: <linux-kernel+bounces-110770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2354388636D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45921886376
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 23:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2EDC281A5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:46:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E065B284625
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A544F1860;
-	Thu, 21 Mar 2024 22:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B53668F77;
+	Thu, 21 Mar 2024 22:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dnT/TDYG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d72K/5/g"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3786E15CB
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BA01860
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711061205; cv=none; b=SHjxE+U8dBpGSmGXV1kL0EsL3COmHXwuO0CXh7JmcBFzpT4BcYg2VZ1ejLHHYa0uVJfnIJpBYhvIA3Hm9RXS0oXuF6V6ot1JpTkMlNctGRI1HkAeYIheAuHYk02jT/RBvXi6e5oxWLQsEBoXiot2CO1oVuXyk1kCPzz+ULpmf8w=
+	t=1711061281; cv=none; b=qUGWAc+RyAfgn+iXaqYeM9BeuGR9btW7iRaeTYiUJQkNKvFLqosPOy+R6acPdFQbHNIv6LusG/9VFjFmlRn3mysQZgkiKNlqQXHmnpKyXjCihYkk5Bv5vFoGHQGggdOBv2lKBThM6OZAmaCkehgwLmF/AwDPiIaC4sbvzssKiXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711061205; c=relaxed/simple;
-	bh=vNGqhhjcjfvIkP3k/1YJ9OCzOqm/zrEoLPEYsL0lby0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eAXedGX1xvehBAFFDGHOp8Ijg8AzbeHHfyrr1oNC9gs3OVuDKNjddqvnPQ940fytQDdB6LBJ/RnoqgbPmzEaWVWUZeD0MGElBlDzQKKzEaMw6VQ5VVGo/tK90qj7ZvTQQyk0xwszdktQ8f9LeSLIyIOw/zSJ9b4vNIiOxjx9S5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dnT/TDYG; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711061203;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X+ogJgpF1gr7B2+yDkmrhnOgUU+a3QN7Ii9aLHiqC4o=;
-	b=dnT/TDYGrEHrHHi23ffETfkIaG+ujf6hQ9L/CFTc4YtnsTMe7lus+pq7ruyutVaCvU045U
-	8RKD9I66xRQJiq75OatHAv0e6FEgQz0mvcQD9otj+3MugY8DK7uDwGqAqb5UwCuZud1BA3
-	KxkyEI3i4mdR6C9QX/LwKTKS2ZLd5nk=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-145-tyjAlesWNEasPefrwRqZ2Q-1; Thu, 21 Mar 2024 18:46:42 -0400
-X-MC-Unique: tyjAlesWNEasPefrwRqZ2Q-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6961a54234cso2725516d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:46:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711061201; x=1711666001;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1711061281; c=relaxed/simple;
+	bh=EwwVucOL3SWalyTW56zmelV6w60sbsIsKcfCIBixIWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MDWT+AL4THzpljyiIJmLVI1iiU5iM6PhdnUOcAmcSydUxH1DI3gzgxCEQsJUxnABYOb7wu+zAgGxM9V2F1isROukvPVI3x+6SWcEnE1kaPjicXMZ9h4Y7u33uYOjYDBhriOlnXLvp6lintsbft5u4VkGQmfbxIq+SMZ3byOAVAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d72K/5/g; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609f3ca61e0so15831897b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711061278; x=1711666078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X+ogJgpF1gr7B2+yDkmrhnOgUU+a3QN7Ii9aLHiqC4o=;
-        b=sTHdg2A6HxRtU0QPU+CUursS/SGhfl70v0J5aBlOwr2WD/QuTUfWdQtf0V53gkDeLU
-         nhCpYda738Krw/Ce9a1TBX4W21Yxs+DDVRoKjEmXZd55qnVqXiz253c0HA1au+2NXDKM
-         Vq5quWMhfCkQamhmGwQjovetyK7cZJu8yGIj8haRNYgKJXEQnx45b5pVmvOHRpYsNY27
-         yF1jyOJD0cGPSH7J89C+PVCSqDZ6bDJzhNkVUgV+Y9PJHGXuiEoKAMJftkzYMRHa3Nvy
-         EYl1IAzDAhxWd/RT5RT4Ytc5M7pCSc9z6UNhy8qWGUFRe2hjmA3zKkqSu1EO6OMnkcg1
-         F/VQ==
-X-Gm-Message-State: AOJu0YxsChzrF7xPjbLtPl61oarEHar0xL26K+Ft2LeGXDHi+q8PcYgt
-	4MdIhUZKDXWiv97+bWnvfDRdmoEn0BPFmLD+4X6z1idRUmqeQAe+c+JCAZRwP8bGtM+lrUq5931
-	tdGE06y7pSX8vk3C+DKc4c2SPLR+N5BN4HN4L8/zJfGk55XcsRqpSNEHBqznrZA==
-X-Received: by 2002:a05:6214:5984:b0:68f:dc8d:8ad3 with SMTP id qp4-20020a056214598400b0068fdc8d8ad3mr341926qvb.0.1711061201393;
-        Thu, 21 Mar 2024 15:46:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGD/qtGTqYjBzfPurMsA4o89HBOzVGzjAKR5TaLhk1CCqmmBcLG97jKPtGk7lOvUP2Rb2c/CQ==
-X-Received: by 2002:a05:6214:5984:b0:68f:dc8d:8ad3 with SMTP id qp4-20020a056214598400b0068fdc8d8ad3mr341902qvb.0.1711061200836;
-        Thu, 21 Mar 2024 15:46:40 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id gw8-20020a0562140f0800b0068f6e1c3582sm380456qvb.146.2024.03.21.15.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 15:46:40 -0700 (PDT)
-Date: Thu, 21 Mar 2024 18:46:38 -0400
-From: Peter Xu <peterx@redhat.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] mm/userfaultfd: don't place zeropages when
- zeropages are disallowed
-Message-ID: <Zfy4zhzWtyrHenlp@x1n>
-References: <20240321215954.177730-1-david@redhat.com>
- <20240321215954.177730-2-david@redhat.com>
- <ZfyyodKYWtGki7MO@x1n>
- <48d1282c-e4db-4b55-ab3f-3344af2440c4@redhat.com>
+        bh=pZUn+CabKddPK7NEf/S7R2Utterh/ASXmWz24mderPg=;
+        b=d72K/5/gg02ekOTLdcmZXuILhD4E+SE8cHOLcn4Rej9wDqOU+FQqtvl6YVkbvHnZ29
+         w/kj3gr+fWjh50hW7Tkpq+V7NpHv3XyKQp87vVkzJeh4w5EZ3Knm8QVyS1/5ypQARR9w
+         1KJb7gOszrUBmBsOc7eCRlNBDdL8rM/dnx57+35g2q+dd8yoL40qloe6EYxOH9fcaz4I
+         ARqgtSuNyVxVdHKNYrm+3ON8iTZ1qss0xkRshyoQFvuRwHUs22LGBuwdb4jTlLSj9GPN
+         QEBGWnLJQ+57swQ+kqY8L250sIVW1Qcl9AKcXM/xzmx8Vo43q0p0dWT4ka1FSaIwnTmm
+         xOqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711061278; x=1711666078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pZUn+CabKddPK7NEf/S7R2Utterh/ASXmWz24mderPg=;
+        b=kE45H/+6FUWmExhdPkc9uBRbnToSIj2+w1etJARar+iVn8qKZEihZFhMyz83ViZwWR
+         Fu9a4fDGxc71fGjv7xXZE+NwD5qT4MUHdLfrDvRm/F2774rtOdza1STUsl8/4t6BkD9t
+         BypzlSDdo6jjOn+YesoDGFGd6hQeyBPvvURjK/jujeKeeBelrHNEJxBG75U45YpurK2M
+         A8N2KaH5WJU3voUvjCDuBv67FjaCgNaKI7Gl1cUPV+9sGvEKtup29KIok24HPIGo6O/p
+         s10gx3WeEiz6Zt+dPFYcbIsUYFigN4ceRJPxrYtcfFVvOV57MyeSYiry3jPHKuTiqklg
+         uwWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVexu1MDkkT0i+4PC1+IiN/zbjmfWRyhG9QAilZDVvX1P/GnalhJBhZMJBbl80Vg8esYxWPAz2Kcx/S9opBgs/CU5WFkoT73d/jtAUx
+X-Gm-Message-State: AOJu0YzH6SL6m9zx+7y1xh9aKoYoaxchz4wjwyEoOljgxmNZm1kzrANc
+	Sz+k+c+ImOK6jKvw5t7CIy6sosHmVfY0u5N2SYPgiMkLMEhvyjvujmm/8n1rhHjMPhoSuFMC7xA
+	La4XRZson3bOVvQogHGSYzz0wsH8mbmc7sKtm
+X-Google-Smtp-Source: AGHT+IGTw1XuAorKpNX3Gh3/aZ4ugL4PM6jVqN6SCRojDxfSlrpu19ifc/cFi9jRyUBtPtqG+w5x/ZJTfS8KJ2Dmf6E=
+X-Received: by 2002:a25:8047:0:b0:dda:aace:9665 with SMTP id
+ a7-20020a258047000000b00ddaaace9665mr551844ybn.60.1711061278005; Thu, 21 Mar
+ 2024 15:47:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <48d1282c-e4db-4b55-ab3f-3344af2440c4@redhat.com>
+References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-6-surenb@google.com>
+ <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
+ <gnqztvimdnvz2hcepdh3o3dpg4cmvlkug4sl7ns5vd4lm7hmao@dpstjnacdubq>
+ <20240321150908.48283ba55a6c786dee273ec3@linux-foundation.org> <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75>
+In-Reply-To: <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 21 Mar 2024 15:47:44 -0700
+Message-ID: <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
+Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 11:29:45PM +0100, David Hildenbrand wrote:
-> On 21.03.24 23:20, Peter Xu wrote:
-> > On Thu, Mar 21, 2024 at 10:59:53PM +0100, David Hildenbrand wrote:
-> > > s390x must disable shared zeropages for processes running VMs, because
-> > > the VMs could end up making use of "storage keys" or protected
-> > > virtualization, which are incompatible with shared zeropages.
-> > > 
-> > > Yet, with userfaultfd it is possible to insert shared zeropages into
-> > > such processes. Let's fallback to simply allocating a fresh zeroed
-> > > anonymous folio and insert that instead.
-> > > 
-> > > mm_forbids_zeropage() was introduced in commit 593befa6ab74 ("mm: introduce
-> > > mm_forbids_zeropage function"), briefly before userfaultfd went
-> > > upstream.
-> > > 
-> > > Note that we don't want to fail the UFFDIO_ZEROPAGE request like we do
-> > > for hugetlb, it would be rather unexpected. Further, we also
-> > > cannot really indicated "not supported" to user space ahead of time: it
-> > > could be that the MM disallows zeropages after userfaultfd was already
-> > > registered.
-> > > 
-> > > Fixes: c1a4de99fada ("userfaultfd: mcopy_atomic|mfill_zeropage: UFFDIO_COPY|UFFDIO_ZEROPAGE preparation")
-> > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > 
-> > Reviewed-by: Peter Xu <peterx@redhat.com>
-> > 
-> > Still, a few comments below.
-> > 
-> > > ---
-> > >   mm/userfaultfd.c | 35 +++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 35 insertions(+)
-> > > 
-> > > diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> > > index 712160cd41eca..1d1061ccd1dea 100644
-> > > --- a/mm/userfaultfd.c
-> > > +++ b/mm/userfaultfd.c
-> > > @@ -316,6 +316,38 @@ static int mfill_atomic_pte_copy(pmd_t *dst_pmd,
-> > >   	goto out;
-> > >   }
-> > > +static int mfill_atomic_pte_zeroed_folio(pmd_t *dst_pmd,
-> > > +		 struct vm_area_struct *dst_vma, unsigned long dst_addr)
-> > > +{
-> > > +	struct folio *folio;
-> > > +	int ret;
-> > 
-> > nitpick: we can set -ENOMEM here, then
-> > 
-> > > +
-> > > +	folio = vma_alloc_zeroed_movable_folio(dst_vma, dst_addr);
-> > > +	if (!folio)
-> > > +		return -ENOMEM;
-> > 
-> > return ret;
-> > 
-> > > +
-> > > +	ret = -ENOMEM;
-> > 
-> > drop.
-> 
-> Sure!
-> 
-> > 
-> > > +	if (mem_cgroup_charge(folio, dst_vma->vm_mm, GFP_KERNEL))
-> > > +		goto out_put;
-> > > +
-> > > +	/*
-> > > +	 * The memory barrier inside __folio_mark_uptodate makes sure that
-> > > +	 * preceding stores to the page contents become visible before
-> > > +	 * the set_pte_at() write.
-> > > +	 */
-> > 
-> > This comment doesn't apply.  We can drop it.
-> > 
-> 
-> I thought the same until I spotted that comment (where uffd originally
-> copied this from I strongly assume) in do_anonymous_page().
-> 
-> "Preceding stores" here are: zeroing out the memory.
+On Thu, Mar 21, 2024 at 3:17=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Thu, Mar 21, 2024 at 03:09:08PM -0700, Andrew Morton wrote:
+> > On Thu, 21 Mar 2024 17:15:39 -0400 Kent Overstreet <kent.overstreet@lin=
+ux.dev> wrote:
+> >
+> > > On Thu, Mar 21, 2024 at 01:31:47PM -0700, Andrew Morton wrote:
+> > > > On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@googl=
+e.com> wrote:
+> > > >
+> > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > >
+> > > > > We're introducing alloc tagging, which tracks memory allocations =
+by
+> > > > > callsite. Converting alloc_inode_sb() to a macro means allocation=
+s will
+> > > > > be tracked by its caller, which is a bit more useful.
+> > > >
+> > > > I'd have thought that there would be many similar
+> > > > inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inode(=
+).
+> > > > Do we have to go converting things to macros as people report
+> > > > misleading or less useful results, or is there some more general
+> > > > solution to this?
+> > >
+> > > No, this is just what we have to do.
+> >
+> > Well, this is something we strike in other contexts - kallsyms gives us
+> > an inlined function and it's rarely what we wanted.
+> >
+> > I think kallsyms has all the data which is needed to fix this - how
+> > hard can it be to figure out that a particular function address lies
+> > within an outer function?  I haven't looked...
+>
+> This is different, though - even if a function is inlined in multiple
+> places there's only going to be one instance of a static var defined
+> within that function.
 
-Ah.. that's okay then.
+I guess one simple way to detect the majority of these helpers would
+be to filter all entries from /proc/allocinfo which originate from
+header files.
 
-Considering that userfault used to be pretty cautious on such ordering, as
-its specialty to involve many user updates on the page, would you mind we
-mention those details out?
+~# grep ".*\.h:." /proc/allocinfo
+      933888      228 include/linux/mm.h:2863 func:pagetable_alloc
+         848       53 include/linux/mm_types.h:1175 func:mm_alloc_cid
+           0        0 include/linux/bpfptr.h:70 func:kvmemdup_bpfptr
+           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+           0        0 include/linux/bpf.h:2249 func:bpf_map_kvcalloc
+           0        0 include/linux/bpf.h:2243 func:bpf_map_kzalloc
+           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+           0        0 include/linux/ptr_ring.h:471
+func:__ptr_ring_init_queue_alloc
+           0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+           0        0 include/net/tcx.h:80 func:tcx_entry_create
+           0        0 arch/x86/include/asm/pgalloc.h:156 func:p4d_alloc_one
+      487424      119 include/linux/mm.h:2863 func:pagetable_alloc
+           0        0 include/linux/mm.h:2863 func:pagetable_alloc
+         832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
+           0        0 include/linux/jbd2.h:1591 func:jbd2_alloc_handle
+           0        0 fs/nfs/iostat.h:51 func:nfs_alloc_iostats
+           0        0 include/net/netlabel.h:281 func:netlbl_secattr_cache_=
+alloc
+           0        0 include/net/netlabel.h:381 func:netlbl_secattr_alloc
+           0        0 include/crypto/internal/acompress.h:76
+func:__acomp_request_alloc
+        8064       84 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+        1016       74 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+         384        4 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+         704        3 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+          32        1 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+          64        1 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+          40        2 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+          32        1 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+       30000      625 include/acpi/platform/aclinuxex.h:67
+func:acpi_os_acquire_object
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:67
+func:acpi_os_acquire_object
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+         512        1 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+         192        6 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+         192        3 include/acpi/platform/aclinuxex.h:52 func:acpi_os_all=
+ocate
+       61992      861 include/acpi/platform/aclinuxex.h:67
+func:acpi_os_acquire_object
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 include/acpi/platform/aclinuxex.h:67
+func:acpi_os_acquire_object
+           0        0 include/acpi/platform/aclinuxex.h:57
+func:acpi_os_allocate_zeroed
+           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
+page
+           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
+page
+           0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtable_=
+page
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/hid_bpf.h:154 func:call_hid_bpf_rdesc_f=
+ixup
+           0        0 include/linux/skbuff.h:3392 func:__dev_alloc_pages
+      114688       56 include/linux/ptr_ring.h:471
+func:__ptr_ring_init_queue_alloc
+           0        0 include/linux/skmsg.h:415 func:sk_psock_init_link
+           0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+           0        0 include/linux/ptr_ring.h:628 func:ptr_ring_resize_mul=
+tiple
+       24576        3 include/linux/ptr_ring.h:471
+func:__ptr_ring_init_queue_alloc
+           0        0 include/net/netlink.h:1896 func:nla_memdup
+           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+           0        0 include/net/request_sock.h:131 func:reqsk_alloc
+           0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
+           0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
+           0        0 include/crypto/hash.h:586 func:ahash_request_alloc
+           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+           0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+           0        0 net/sunrpc/auth_gss/auth_gss_internal.h:38
+func:simple_get_netobj
+           0        0 include/crypto/hash.h:586 func:ahash_request_alloc
+           0        0 include/net/netlink.h:1896 func:nla_memdup
+           0        0 include/crypto/skcipher.h:869 func:skcipher_request_a=
+lloc
+           0        0 include/net/fq_impl.h:361 func:fq_init
+           0        0 include/net/netlabel.h:316 func:netlbl_catmap_alloc
 
-	/*
-	 * __folio_mark_uptodate contains the memory barrier to make sure 
-         * the page updates to the zero page will be visible before
-	 * installing the pgtable entries.  See do_anonymous_page().
-	 */
+and it finds our example:
 
-Or anything better than my wordings.
+         832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
 
-Thanks!
+Interestingly the inlined functions which are called from multiple
+places will have multiple entries with the same file+line:
 
--- 
-Peter Xu
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
+           0        0 include/linux/dma-fence-chain.h:91
+func:dma_fence_chain_alloc
 
+So, duplicate entries can be also used as an indication of an inlined alloc=
+ator.
+I'll go chase these down and will post a separate patch converting them.
 
