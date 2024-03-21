@@ -1,247 +1,498 @@
-Return-Path: <linux-kernel+bounces-110008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD2FD8858D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:08:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB46F8858E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:13:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0ABA1C21CA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:08:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37A3E283FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB21558AC6;
-	Thu, 21 Mar 2024 12:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8319576038;
+	Thu, 21 Mar 2024 12:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CS1aaWaD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="mE8rWLos"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27FFE6E602
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFFB58AAF
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711022904; cv=none; b=ALmwwvSwe2i7b3eG/rzRNYE8qeD2QuV4q8tOWB5cHa+inbBAfLev3OgmLo9ZqwlKsk33luO689TFM/AF/KFpG/oD/uUnsuqSIjim0L/JsNqSgpqQ78+7S1zZ2glvnxlmxbZ93tOl0PrOgZL2llw0gv1B3m6jgduOzJepNmua/uI=
+	t=1711023184; cv=none; b=O7DzTdFvyMwXjyg9vhKzJuZlfDemStEiL0PQcWLid7mfbgVRnYvEkcbWu3UC02c64+RvtPES/0VAwc8ntdrUnxTMDh2+F8bWhUwrX5lXsS55YLC/y4U2HGGHF1VCsVtFWls9MMbhanVNlAjhlHO1nqXfKWtNgWCuBjOTfXPcSeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711022904; c=relaxed/simple;
-	bh=ICgmSwq62FV99FLN/Bgv1O4hgSkfe7+nnwVC1W6Ggt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZkFiutZs5VCSLeV+PmJ8qRaBAQ0uc0Ux7BeELY4t+Ns48FwdMPElFkzxJcISMw4/EqnXC3tKVooGVOrqSmfROb41dHROgOZmnGM8Ag47k18B6EGycl1KPwofC8wWZiCoNcoRSz+5pitcYwcIVQCRRT3npKKoiWAoNPs0XMXKP6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CS1aaWaD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711022902;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZmCkXKKBMdn7q3ZGi77a1ZwDnFVVsMns2EKsafaBcTk=;
-	b=CS1aaWaD6bQ2y31l3ZhM16VgjyiUPf48NAZVlEM0baAsEpGbf8CGiATpAYSXoxk2jOaPa9
-	tNpnrKv8QfpYwaabsYP2P7XRD8uPBNLY2sW312UfLv7YJt5ZoO/5PrTPdkC29UT8FzH+80
-	58cNBAzf4UNydjQiDpbqtiXs+dG8a50=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-467-XYKpxY26OWGyZ1_q7N7kEA-1; Thu,
- 21 Mar 2024 08:08:18 -0400
-X-MC-Unique: XYKpxY26OWGyZ1_q7N7kEA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7D2F3C0E44C;
-	Thu, 21 Mar 2024 12:08:17 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4E71E492BCA;
-	Thu, 21 Mar 2024 12:08:17 +0000 (UTC)
-Date: Thu, 21 Mar 2024 08:10:11 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, jack@suse.cz, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH 1/6] writeback: collect stats of all wb of bdi in
- bdi_debug_stats_show
-Message-ID: <Zfwjo_ZQH_LFZ1Rc@bfoster>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-2-shikemeng@huaweicloud.com>
- <Zfriwb03HCRWJ24q@bfoster>
- <3d08c249-1b12-f82b-2662-a6fa2b888011@huaweicloud.com>
+	s=arc-20240116; t=1711023184; c=relaxed/simple;
+	bh=4Igbt/oi4WxkJRaoy6eHX4cTgTkeBFORb6mCsFIAH7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZUXkh08BYfEOWV4dZPwGoGrvH9onhUt2+Sn5uekYvlO0d7hcaD9sfZnPhRGSHTUAZMXmeN5BZ11K7X/+iaQVE56c2hgkA0TQwNN2uI84y1EFr1Fb3+dJB8yg7uy0rs4IoESpbjxIqQBMcD8k+vF4mRv5G+JKPEXsjFRVP1jMwOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=mE8rWLos; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LBUT5F020926;
+	Thu, 21 Mar 2024 12:12:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ojpW2Gzz1CfdzsktsbrIUMF/M1oCTQ95Q3z5RXQZ8+I=;
+ b=mE8rWLoszLmLUBqnl6Wwqnz3mGW1ksOLtmXAHgwh/+jxDTOqPhs4lcRu8HEtM5hTwHC6
+ nm7f7lbd/Xw0fBGT70+Hg66LZFVrfb7i1YSsmv93RvzC51DMVt1Rv+3CLcW2rGKkNwvd
+ Kv4kwIE+CGPhoWpq1s6Y+Y8eb2dIu4z17bjAbOGslCgEGFZaBAtd3m4pJ00zj0TijYQC
+ YNSuK1w+fKaYQPcfSere/ruB/lo8JA6XC8f9fmeqoyLPPo6fUNJiSp/JyfMAKwdgo2wm
+ R5TFALScIerzFYLtzVLDI0I+YF5eliwtZsnDKGGUNHwO8Jwyhe8cK06X5brn76UTywZ1 VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0m2u83h1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 12:12:42 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LCCfS8023130;
+	Thu, 21 Mar 2024 12:12:41 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x0m2u83gw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 12:12:41 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42LBB3Mf002765;
+	Thu, 21 Mar 2024 12:12:40 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2vfbb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 12:12:40 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42LCCcZD13763306
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Mar 2024 12:12:40 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1AE5F58053;
+	Thu, 21 Mar 2024 12:12:38 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3224058061;
+	Thu, 21 Mar 2024 12:12:33 +0000 (GMT)
+Received: from [9.79.184.193] (unknown [9.79.184.193])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 21 Mar 2024 12:12:32 +0000 (GMT)
+Message-ID: <1e43e783-55e7-417f-a1a7-503229eb163a@linux.ibm.com>
+Date: Thu, 21 Mar 2024 17:42:31 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d08c249-1b12-f82b-2662-a6fa2b888011@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] sched/balancing: Switch the
+ 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
+ sched_balance_running' flag
+To: Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Valentin Schneider <vschneid@redhat.com>
+References: <20240304094831.3639338-1-mingo@kernel.org>
+ <20240304094831.3639338-2-mingo@kernel.org>
+ <bf612672-f7c3-4585-ac31-e02a1ebf614c@linux.ibm.com>
+ <Zer1Hkxh/UMxs3xs@gmail.com>
+ <41e11090-a100-48a7-a0dd-c989772822d7@linux.ibm.com>
+ <ZfA1LRq1d2ueoSRm@gmail.com>
+Content-Language: en-US
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <ZfA1LRq1d2ueoSRm@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cnqtfVuvZu-XaVhY1TC5QnX986hHVv_b
+X-Proofpoint-GUID: 9X6pSaHM2WpmGl5IIYsJiL-8ZQHQa6VY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 clxscore=1015 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403210086
 
-On Thu, Mar 21, 2024 at 11:44:40AM +0800, Kemeng Shi wrote:
+
+
+On 3/12/24 4:27 PM, Ingo Molnar wrote:
 > 
+> * Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
 > 
-> on 3/20/2024 9:21 PM, Brian Foster wrote:
-> > On Wed, Mar 20, 2024 at 07:02:17PM +0800, Kemeng Shi wrote:
-> >> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
-> >> of whole bdi, but only writeback information of bdi in root cgroup is
-> >> collected. So writeback information in non-root cgroup are missing now.
-> >> To be more specific, considering following case:
-> >>
-> >> /* create writeback cgroup */
-> >> cd /sys/fs/cgroup
-> >> echo "+memory +io" > cgroup.subtree_control
-> >> mkdir group1
-> >> cd group1
-> >> echo $$ > cgroup.procs
-> >> /* do writeback in cgroup */
-> >> fio -name test -filename=/dev/vdb ...
-> >> /* get writeback info of bdi */
-> >> cat /sys/kernel/debug/bdi/xxx/stats
-> >> The cat result unexpectedly implies that there is no writeback on target
-> >> bdi.
-> >>
-> >> Fix this by collecting stats of all wb in bdi instead of only wb in
-> >> root cgroup.
-> >>
-> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> >> ---
-> >>  mm/backing-dev.c | 93 ++++++++++++++++++++++++++++++++++++------------
-> >>  1 file changed, 70 insertions(+), 23 deletions(-)
-> >>
-> >> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> >> index 5f2be8c8df11..788702b6c5dd 100644
-> >> --- a/mm/backing-dev.c
-> >> +++ b/mm/backing-dev.c
-> > ...
-> >> @@ -46,31 +59,65 @@ static void bdi_debug_init(void)
-> >>  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
-> >>  }
-> >>  
-> > ...
-> >> +#ifdef CONFIG_CGROUP_WRITEBACK
-> >> +static void bdi_collect_stats(struct backing_dev_info *bdi,
-> >> +			      struct wb_stats *stats)
-> >> +{
-> >> +	struct bdi_writeback *wb;
-> >> +
-> >> +	/* protect wb from release */
-> >> +	mutex_lock(&bdi->cgwb_release_mutex);
-> >> +	list_for_each_entry(wb, &bdi->wb_list, bdi_node)
-> >> +		collect_wb_stats(stats, wb);
-> >> +	mutex_unlock(&bdi->cgwb_release_mutex);
-> >> +}
-> >> +#else
-> >> +static void bdi_collect_stats(struct backing_dev_info *bdi,
-> >> +			      struct wb_stats *stats)
-> >> +{
-> >> +	collect_wb_stats(stats, &bdi->wb);
-> >> +}
-> >> +#endif
-> >> +
-> > 
-> > I'm not familiar enough with the cgwb code to say for sure (and I'd
-> > probably wait for more high level feedback before worrying too much
-> > about this), but do we need the ifdef here just to iterate ->wb_list?
-> >>From looking at the code, it appears bdi->wb ends up on the list while
-> > the bdi is registered for both cases, so that distinction seems
-> > unnecessary. WRT to wb release protection, I wonder if this could use a
-> Currently, we have ifdef trying to remove unnecessary cost when
-> CONFIG_CGROUP_WRITEBACK is not enabled, see defination of cgwb_bdi_register
-> and cgwb_remove_from_bdi_list for example. So I try to define bdi_collect_stats
-> in similar way.
-> > combination of rcu_read_lock()/list_for_each_safe() and wb_tryget() on
-> > each wb before collecting its stats..? See how bdi_split_work_to_wbs()
-> > works, for example.
-> The combination of rcu_read_lock()/list_for_each_safe() and wb_tryget()
-> should work fine.
-> With ifdef, bdi_collect_stats takes no extra cost when CONFIG_CGROUP_WRITEBACK
-> is not enabled and is consistent with existing code style, so I still prefer
-> this way. Yes, The extra cost is not a big deal as it only exists in debug mode,
-> so it's acceptable to use the suggested combination in next version if you are
-> still strongly aganst this.
+>> I have been thinking would it be right to move this balancing 
+>> trylock/atomic after should_we_balance(swb). This does reduce the number 
+>> of times this checked/updated significantly. Contention is still present. 
+>> That's possible at higher utilization when there are multiple NUMA 
+>> domains. one CPU in each NUMA domain can contend if their invocation is 
+>> aligned.
+> 
+> Note that it's not true contention: it simply means there's overlapping 
+> requests for the highest domains to be balanced, for which we only have a 
+> single thread of execution at a time, system-wide.
 > 
 
-Ok. I also previously missed that there are two implementations of
-bdi_split_work_to_wbs() based on CGROUP_WRITEBACK. It seems reasonable
-enough to me to follow that precedent for the !CGROUP_WRITEBACK case.
+Hi Ingo, Vincent, Peter,
 
-It still seems to make more sense to me to walk the list similar to how
-bdi_split_work_to_wbs() does for the CGROUP_WRITEBACK enabled case. Do
-you agree?
+I did some more experiments and collected quite a bit of data. 
+Some interesting observations.
 
-Brian
+tl;dr
 
-> > 
-> > Also I see a patch conflict/compile error on patch 2 due to
-> > __wb_calc_thresh() only taking one parameter in my tree. What's the
-> > baseline commit for this series?
-> > 
-> Sorry for missing this, this seris is based on another patchset [1] which is still
-> under review.
-> Look forward to your reply!
+1. For BUSY and IDLE type load balancing, contention arises since multiple CPU's
+are trying to set the flag at the same time. Only one succeeds and tries to do 
+load balance. Whether it can do load balance or not is decided later in should_we_balance(swb). 
+contention increases with system utilization. Why contention happens is simpler for BUSY, if their 
+SOFTIRQ's are aligned. If the busy is invoked(but may prefer idle) while an IDLE CPU is trying is 
+scenario when utilization is low. 
+
+2. NEWIDLE does not even check for sched_balance_running and it does not honor 
+continue_balancing flag either. should_we_balance for NEWIDLE is mostly return true anyway. 
+So NEWIDLE balance doesn't honor the SD_SERIALIZE flag. It does go through all the rq even at the 
+highest NUMA Domains often, and pulls task opportunistically. cost of balancing at NUMA is costly 
+as it would need to fetch all rq.
+
+>> That makes sense since, Right now a CPU takes lock, checks if it can 
+>>  balance, do balance if yes and then releases the lock. If the lock is 
+>>  taken after swb then also, CPU checks if it can balance,
+>> tries to take the lock and releases the lock if it did. If lock is 
+>> contended, it bails out of load_balance. That is the current behaviour as 
+>> well, or I am completely wrong.
+>>
+>> Perf probes at spin_trylock and spin_unlock codepoints on the same 224CPU, 6 NUMA node system. 
+>> 6.8-rc6                                                                         
+>> -----------------------------------------                                       
+>> idle system:                                                                    
+>> 449 probe:rebalance_domains_L37                                                 
+>> 377 probe:rebalance_domains_L55                                                 
+>> stress-ng --cpu=$(nproc) -l 51     << 51% load                                               
+>> 88K probe:rebalance_domains_L37                                                 
+>> 77K probe:rebalance_domains_L55                                                 
+>> stress-ng --cpu=$(nproc) -l 100    << 100% load                                             
+>> 41K probe:rebalance_domains_L37                                                 
+>> 10K probe:rebalance_domains_L55                                                 
+>>                                                                                 
+>> +below patch                                                                          
+>> ----------------------------------------                                        
+>> idle system:                                                                    
+>> 462 probe:load_balance_L35                                                      
+>> 394 probe:load_balance_L274                                                     
+>> stress-ng --cpu=$(nproc) -l 51      << 51% load                                            
+>> 5K probe:load_balance_L35                       	<<-- almost 15x less                                
+>> 4K probe:load_balance_L274                                                      
+>> stress-ng --cpu=$(nproc) -l 100     << 100% load                                            
+>> 8K probe:load_balance_L35                                                       
+>> 3K probe:load_balance_L274 				<<-- almost 4x less
 > 
-> Thansk
-> Kemeng
+> That's nice.
 > 
-> [1] https://lore.kernel.org/lkml/20240123183332.876854-1-shikemeng@huaweicloud.com/T/#mc6455784a63d0f8aa1a2f5aff325abcdf9336b76
+
+These numbers completely go crazy for schbench or hackbench if we move the sched_balance_running 
+after should_we_balance due to NEWIDLE. we could add a idle type check before doing operations on
+sched_balance_running.   
+
+
+>> +static DEFINE_SPINLOCK(balancing);
+>>  /*
+>>   * Check this_cpu to ensure it is balanced within domain. Attempt to move
+>>   * tasks if there is an imbalance.
+>> @@ -11286,6 +11287,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>>  	struct rq *busiest;
+>>  	struct rq_flags rf;
+>>  	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
+>> +	int need_serialize;
+>>  	struct lb_env env = {
+>>  		.sd		= sd,
+>>  		.dst_cpu	= this_cpu,
+>> @@ -11308,6 +11310,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
+>>  		goto out_balanced;
+>>  	}
+>>
+>> +	need_serialize = sd->flags & SD_SERIALIZE;
+>> +	if (need_serialize) {
+>> +		if (!spin_trylock(&balancing))
+>> +			goto lockout;
+>> +	}
+>> +
+>>  	group = find_busiest_group(&env);
 > 
-> > Brian
-> > 
-> >> +static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> >> +{
-> >> +	struct backing_dev_info *bdi = m->private;
-> >> +	unsigned long background_thresh;
-> >> +	unsigned long dirty_thresh;
-> >> +	struct wb_stats stats;
-> >> +	unsigned long tot_bw;
-> >> +
-> >>  	global_dirty_limits(&background_thresh, &dirty_thresh);
-> >> -	wb_thresh = wb_calc_thresh(wb, dirty_thresh);
-> >> +
-> >> +	memset(&stats, 0, sizeof(stats));
-> >> +	stats.dirty_thresh = dirty_thresh;
-> >> +	bdi_collect_stats(bdi, &stats);
-> >> +
-> >> +	tot_bw = atomic_long_read(&bdi->tot_write_bandwidth);
-> >>  
-> >>  	seq_printf(m,
-> >>  		   "BdiWriteback:       %10lu kB\n"
-> >> @@ -87,18 +134,18 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> >>  		   "b_dirty_time:       %10lu\n"
-> >>  		   "bdi_list:           %10u\n"
-> >>  		   "state:              %10lx\n",
-> >> -		   (unsigned long) K(wb_stat(wb, WB_WRITEBACK)),
-> >> -		   (unsigned long) K(wb_stat(wb, WB_RECLAIMABLE)),
-> >> -		   K(wb_thresh),
-> >> +		   K(stats.nr_writeback),
-> >> +		   K(stats.nr_reclaimable),
-> >> +		   K(stats.wb_thresh),
-> >>  		   K(dirty_thresh),
-> >>  		   K(background_thresh),
-> >> -		   (unsigned long) K(wb_stat(wb, WB_DIRTIED)),
-> >> -		   (unsigned long) K(wb_stat(wb, WB_WRITTEN)),
-> >> -		   (unsigned long) K(wb->write_bandwidth),
-> >> -		   nr_dirty,
-> >> -		   nr_io,
-> >> -		   nr_more_io,
-> >> -		   nr_dirty_time,
-> >> +		   K(stats.nr_dirtied),
-> >> +		   K(stats.nr_written),
-> >> +		   K(tot_bw),
-> >> +		   stats.nr_dirty,
-> >> +		   stats.nr_io,
-> >> +		   stats.nr_more_io,
-> >> +		   stats.nr_dirty_time,
-> >>  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
-> >>  
-> >>  	return 0;
-> >> -- 
-> >> 2.30.0
-> >>
-> >>
-> > 
-> > 
+> So if I'm reading your patch right, the main difference appears to be that 
+> it allows the should_we_balance() check to be executed in parallel, and 
+> will only try to take the NUMA-balancing flag if that function indicates an 
+> imbalance.
+
+Yes for BUSY and IDLE balancing. 
+
 > 
+> Since should_we_balance() isn't taking any locks AFAICS, this might be a 
+> valid approach. What might make sense is to instrument the percentage of 
+> NUMA-balancing flag-taking 'failures' vs. successful attempts - not 
+> necessarily the 'contention percentage'.
+
+So i put a bunch of trace_printk and added a hacky check similar to swb if taking flag fails. 
+I will put the numbers for schebench, hackbench and stress-ng -l 100 for initial reference. 
+
+I ran these a slightly larger system this time.  I have two NUMA levels. domain 3 has two groups 0-159, 160-319.
+Sorry in case the data isnt easy to read. I couldnt find a better way. some rounding errors are there, but mostly 
+sum where applicable is close. trace is collected for 5 seconds.
+
+  NUMA node(s):           4
+  NUMA node0 CPU(s):      0-79
+  NUMA node1 CPU(s):      80-159
+  NUMA node6 CPU(s):      160-239
+  NUMA node7 CPU(s):      240-319
+
+more domain*/flags | cat
+::::::::::::::
+domain0/flags
+::::::::::::::
+SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_CPUCAPACITY SD_SHARE_LLC SD_PREFER_SIBLING 
+::::::::::::::
+domain1/flags
+::::::::::::::
+SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_PREFER_SIBLING 
+::::::::::::::
+domain2/flags
+::::::::::::::
+SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_PREFER_SIBLING 
+::::::::::::::
+domain3/flags
+::::::::::::::
+SD_BALANCE_NEWIDLE SD_SERIALIZE SD_OVERLAP SD_NUMA 
+::::::::::::::
+domain4/flags
+::::::::::::::
+SD_BALANCE_NEWIDLE SD_SERIALIZE SD_OVERLAP SD_NUMA 
+
+================================================================= BUSY balancing ===============================================
+		   tried_access_to	|	  	failed			|		aquired(number of sched_balance_rq)  <<-- aquired need not call sched_balance_rq due to time check.
+		sched_balance_running	|		to_aquire 		|
+					|     swb true?		swb_false?    	|      swb_true?    swb_false?
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					|    					|	
+hackbench   	       254727		|		236268			|		18508(170)		
+10 groups 				|	38     <--|-->	236230		| 	0	<--|-->	170      
+					|					|
+schbench	       217794		|		207117			|		10683(659)
+320 groups				| 	1059   <--|-->  206058 		|	1	<--|-->  658
+					|					|
+stress-ng 		31646		|		 27430			|		4216(523)	
+-l100					|	272	<--|-->	 27158		|	6	<--|-->	517
+					|					|
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Observations: 
+  * When the flag was not aquired it was mostly that CPU wouldnt have done the balancing. Good.
+  * When the flag was aquired, mostly that CPU didn't do load balancing. It bailed out since swb was false. Bad. 
+
+
+=============================================================== IDLE Balancing ==================================================
+		   tried_access_to	|	  	failed			|		aquired(number of sched_balance_rq)  <<-- aquired need not call sched_balance_rq due to time check.
+		sched_balance_running	|		to_aquire 		|
+					|     swb true?		swb_false?    	|      swb_true?    swb_false?
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+hackbench		11022		| 		7309			|		 3664(2635)
+10 groups				|	1322   <--|-->  5987		| 	753	<--|-->	1882 
+					|					|
+schbench		 3018		|		2305			|		  707(632)
+320 groups				|	1036   <--|-->	1269		|	268     <--|--> 364
+					|					|
+stress-ng 		    0		|		   0			|		    0
+-l 100					|					|
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Observations: 
+ * When the flag was not aquired, it was good chance that CPU would have done the balance.  bad
+ * When the flag is taken, many times it didnt do balance since swb was false.  bad. 
+
+> 
+> But another question is, why do we get here so frequently, so that the 
+> cumulative execution time of these SD_SERIAL rebalance passes exceeds that 
+> of 100% of single CPU time? Ie. a single CPU is basically continuously 
+> scanning the scheduler data structures for imbalances, right? That doesn't 
+> seem natural even with just ~224 CPUs.
+> 
+
+SD_SERIALIZE passes are costly. Doing a pass through 0-319 takes 20-30us and Doing 
+a pass through 0-159 takes around 10-20us.  NEWIDLE can be called very often and it 
+doesnt serialize and loops through all domains aggressively.  NEWIDLE balancing 
+successfully pull a task around 3-5% of the time. 
+
+
+For reference, the running the same hackbench, Combined it would take 12 seconds on 320 CPU system 
+where trace is collected for 5 seconds. Thats approx 0.7% cycles. 
+domain_cost avg: 33031.77 times: 172991  
+domain_cost avg: 15615.21 times: 211783
+domain_cost avg: 15359.40 times: 208164
+
+Similarly while running schbench, it takes approx 0.12% of total time. 
+
+> Alternatively, is perhaps the execution time of the SD_SERIAL pass so large 
+> that we exceed 100% CPU time?
+> 
+
+So Main questions i have are: 
+1. Should NEWIDLE honor SD_SERIALIZE ? This would make SD_SERIALIZE defined correctly, 
+all three types honor it. Currenly on BUSY,IDLE honors it.
+2. Should we move taking sched_balance_running after swb atleast for BUSY, IDLE? 
+
+================================================================================================
+
+
+debug patch used: 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c8e50fbac345..cb824c327ab6 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11172,6 +11172,56 @@ static int need_active_balance(struct lb_env *env)
+ 
+ static int active_load_balance_cpu_stop(void *data);
+ 
++static int hack_check_if_i_can_balance(struct sched_domain *sd, int this_cpu) {
++	struct cpumask *swb_cpus = this_cpu_cpumask_var_ptr(should_we_balance_tmpmask);
++	struct sched_group *sg = sd->groups;
++	int cpu, idle_smt = -1;
++	struct cpumask *cpus = this_cpu_cpumask_var_ptr(load_balance_mask);
++
++	cpumask_and(cpus, sched_domain_span(sd), cpu_active_mask);
++	if (!cpumask_test_cpu(this_cpu, cpus))
++		return 0;
++
++	cpumask_copy(swb_cpus, group_balance_mask(sg));
++	for_each_cpu_and(cpu, swb_cpus, cpus) {
++		if (!idle_cpu(cpu))
++			continue;
++
++		/*
++		 * Don't balance to idle SMT in busy core right away when
++		 * balancing cores, but remember the first idle SMT CPU for
++		 * later consideration.  Find CPU on an idle core first.
++		 */
++		if (!(sd->flags & SD_SHARE_CPUCAPACITY) && !is_core_idle(cpu)) {
++			if (idle_smt == -1)
++				idle_smt = cpu;
++			/*
++			 * If the core is not idle, and first SMT sibling which is
++			 * idle has been found, then its not needed to check other
++			 * SMT siblings for idleness:
++			 */
++#ifdef CONFIG_SCHED_SMT
++			cpumask_andnot(swb_cpus, swb_cpus, cpu_smt_mask(cpu));
++#endif
++			continue;
++		}
++
++		/*
++		 * Are we the first idle core in a non-SMT domain or higher,
++		 * or the first idle CPU in a SMT domain?
++		 */
++		return cpu == this_cpu;
++	}
++
++	/* Are we the first idle CPU with busy siblings? */
++	if (idle_smt != -1)
++		return idle_smt == this_cpu;
++
++	/* Are we the first CPU of this group ? */
++	return group_balance_cpu(sg) == this_cpu;
++}
++
++
+ static int should_we_balance(struct lb_env *env)
+ {
+ 	struct cpumask *swb_cpus = this_cpu_cpumask_var_ptr(should_we_balance_tmpmask);
+@@ -11267,13 +11317,22 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
+ 	cpumask_and(cpus, sched_domain_span(sd), cpu_active_mask);
+ 
+ 	schedstat_inc(sd->lb_count[idle]);
++	if (sd->flags & SD_SERIALIZE)
++		trace_printk("Trying load_balance_rq for idle: %d span: %*pbl\n", idle,cpumask_pr_args(sched_domain_span(sd)));
+ 
+ redo:
+ 	if (!should_we_balance(&env)) {
+ 		*continue_balancing = 0;
++		if (sd->flags & SD_SERIALIZE) {
++			trace_printk("swb says this cpu doesnt need to balance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
++		}
+ 		goto out_balanced;
+ 	}
+ 
++	if (sd->flags & SD_SERIALIZE) {
++		trace_printk("This cpu would try balance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
++	}
++
+ 	group = sched_balance_find_src_group(&env);
+ 	if (!group) {
+ 		schedstat_inc(sd->lb_nobusyg[idle]);
+@@ -11288,6 +11347,9 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
+ 
+ 	WARN_ON_ONCE(busiest == env.dst_rq);
+ 
++	if (sd->flags & SD_SERIALIZE) {
++		trace_printk("There is some imbalance idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
++	}
+ 	schedstat_add(sd->lb_imbalance[idle], env.imbalance);
+ 
+ 	env.src_cpu = busiest->cpu;
+@@ -11507,6 +11569,8 @@ static int sched_balance_rq(int this_cpu, struct rq *this_rq,
+ 	    sd->balance_interval < sd->max_interval)
+ 		sd->balance_interval *= 2;
+ out:
++	if ((sd->flags & SD_SERIALIZE) && ld_moved)
++		trace_printk("load balance was successful idle: %d span: %*pbl\n", idle, cpumask_pr_args(sched_domain_span(sd)));
+ 	return ld_moved;
+ }
+ 
+@@ -11722,8 +11786,13 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
+ 
+ 		need_serialize = sd->flags & SD_SERIALIZE;
+ 		if (need_serialize) {
+-			if (atomic_cmpxchg_acquire(&sched_balance_running, 0, 1))
++			int result;
++			trace_printk("try to set sched_balance_running idle: %d\n", idle);
++			if (atomic_cmpxchg_acquire(&sched_balance_running, 0, 1)) {
++				result = hack_check_if_i_can_balance(sd, cpu);
++				trace_printk("sched_balance_running  was not aquird idle: %d was_swb: %d\n", idle, result);
+ 				goto out;
++			}
+ 		}
+ 
+ 		if (time_after_eq(jiffies, sd->last_balance + interval)) {
+@@ -11739,8 +11808,10 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
+ 			sd->last_balance = jiffies;
+ 			interval = get_sd_balance_interval(sd, busy);
+ 		}
+-		if (need_serialize)
++		if (need_serialize) {
++			trace_printk("Release sched_balance_running idle: %d\n", idle);
+ 			atomic_set_release(&sched_balance_running, 0);
++		}
+ out:
+ 		if (time_after(next_balance, sd->last_balance + interval)) {
+ 			next_balance = sd->last_balance + interval;
+@@ -12347,6 +12418,10 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+ 		u64 domain_cost;
+ 
+ 		update_next_balance(sd, &next_balance);
++		if (sd->flags & SD_SERIALIZE) {
++			trace_printk("newidle balance called span: %*pbl,  rq_avg: %llu, curr_cost: %llu, max_idle_cost: %llu\n",
++					cpumask_pr_args(sched_domain_span(sd)), this_rq->avg_idle, curr_cost, sd->max_newidle_lb_cost);
++		}
+ 
+ 		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
+ 			break;
+@@ -12360,6 +12435,9 @@ static int sched_balance_newidle(struct rq *this_rq, struct rq_flags *rf)
+ 			t1 = sched_clock_cpu(this_cpu);
+ 			domain_cost = t1 - t0;
+ 			update_newidle_cost(sd, domain_cost);
++			if (sd->flags & SD_SERIALIZE)
++				trace_printk("cost of load balance,span: %*pbl,  pulled_task: %d, domain_cost: %llu\n",
++						cpumask_pr_args(sched_domain_span(sd)), pulled_task, domain_cost);
+ 
+ 			curr_cost += domain_cost;
+ 			t0 = t1;
+
+
 
 
