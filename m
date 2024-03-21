@@ -1,317 +1,171 @@
-Return-Path: <linux-kernel+bounces-110143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71DCD885A99
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:23:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E5D3885A9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:24:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 261A6282DA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:23:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 157991C20E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39B38528B;
-	Thu, 21 Mar 2024 14:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F98E85279;
+	Thu, 21 Mar 2024 14:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="NEfu+0nD"
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="c3R/RtTs"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333A584A5A;
-	Thu, 21 Mar 2024 14:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0033D84A5A
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711031018; cv=none; b=Wsu16IL+7jMSM/myokwDGpWTG0WKX0dfmZm4EG8iSuWCjtaUETU6vjAl2KdLE2AKobD80fhSALSz5lfq4+X2DppoMfvkoP0sPhRrOHlR7+O0znn/ufV7tzHk/QxFwmBSwSG9AXZHX4rPRhZPsG2cRd6dgzQUlq75OSu5EM1XcZ8=
+	t=1711031081; cv=none; b=s+bUG8wxAnRNYnpXAQ7yhhI3mERXWpVceHDX+6gyMA6C2Uw2ySIWz4pCFV2bC+aA2zkE4UGGZ1KSyxQylVDtZ7StJ0xak72qwGM8RugLBRaCJp+7bYhSEJHjtw/u5hw0qiBYuZfR6NveMB5ZDlOdvsXXg/1sQeh0+WQfM0yeXQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711031018; c=relaxed/simple;
-	bh=nGkGs5ryBM471WTCb43oATbjR2IaxOijUgYBT9ZzCcU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JCeTLYeRi1PFBSDd2y3CnIAI8rI9pfOS1cMJ7yMSQZmww0gqDYpIq0XnRLhCG0fWn9kLaU3nPmTy9kTMBCo6P2/Vt5uQN0DXwG6yMd+5L9//hlNFbyne2Elil+JrJv0sRPVxn8Gum3AhdP7dqIfPVQ3znvO/ivhs42Qnxt2D5oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=NEfu+0nD; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42LE0GWw026366;
-	Thu, 21 Mar 2024 10:23:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=DKIM;
-	 bh=mUogf9dJImYn0s/zY5hOmCaBu9Xosz5HP/VfaOzKGiA=; b=NEfu+0nDKE46
-	GzLBuhCq91tQ53qsM1RsaKrb/FmJTMB9jxnXZ9GjWTg8O5Z1+6pfZ2taIx6TEFJZ
-	d2IiIejBd9YztfbxeZ26hUxWg/ZaGBn40fxF3+fyKZDlksgojvD/xmwuBWJ9IotS
-	rJnM3stSNNlizcRJhzR60+8dkZ27nAF+RNMdA9ODnp5Hies7AJTpMVOB6Sjf4fBP
-	yHXA5vqpz7UHEqh4rpeX00r7CXi59qDt0iIkoIxdfCUlk3fZHD3CCFPaeNnYxT6h
-	YID16a1etPMO/+oBOv8J8Z/mRAxTlzF+YfilpMGKQxcIhk2mwe+AJlb123yN2dPP
-	/6GNKR9ZnQ==
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3wwragu0p2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Mar 2024 10:23:20 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 42LENJQV034192
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 21 Mar 2024 10:23:19 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 21 Mar
- 2024 10:23:18 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 21 Mar 2024 10:23:18 -0400
-Received: from radu.ad.analog.com ([10.48.65.243])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42LEMqp9014288;
-	Thu, 21 Mar 2024 10:23:11 -0400
-From: Radu Sabau <radu.sabau@analog.com>
-To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
-        Rob
- Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Delphine CC Chiu
-	<Delphine_CC_Chiu@Wiwynn.com>,
-        Radu Sabau <radu.sabau@analog.com>, <linux-hwmon@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-Subject: [PATCH v4 2/2] hwmon: pmbus: adp1050: Add driver support
-Date: Thu, 21 Mar 2024 16:21:43 +0200
-Message-ID: <20240321142201.10330-2-radu.sabau@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240321142201.10330-1-radu.sabau@analog.com>
-References: <20240321142201.10330-1-radu.sabau@analog.com>
+	s=arc-20240116; t=1711031081; c=relaxed/simple;
+	bh=IGmZ72nnCoCD5q22ThDUsDJdidoptCJfZ2WGQFwMMoQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TmpfW9kfqmQov42ckDe3pBiOBCsYOI7Dvx1S3vZt/cmbViutEHhbNUm7NhkYmUjQ4/DBA02G7XhkwalsDS5kNdYY5kGfHJ878VNIZtWFj590pD68TcjUpyCEzR/fCgFW+ri4+hzIu52GpP5aU/EWQdlcjd8H3zuOps+K/UshFF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=c3R/RtTs; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-222a9eae9a7so466713fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 07:24:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711031078; x=1711635878; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uMwHK5SLtdqChoTJnZ8oDxJRYwecYOvB8jcFY9CBgVk=;
+        b=c3R/RtTsf9/D6hahGrL5bR4TCe86GBe7vokXYAurwPNAQvtwB0UKMiqwWilTo4PNbV
+         XEYiGIk8EHKekx7rz0raSdjkAG65zZEZVLj7FXKljpi8YbKpOONeATZDALTkgw7FYTKw
+         9iy77zj7WJ0zKSNwFPSfVvQcJkOrxu5kvcTJHoyEuTCYT/Uy9p+DuFoAEBZjz90XpKMa
+         BU3ukatPztrfSTKToeidGcXsXOt80ZDY7C2tGf1UgTDo+fmObd0CITEzUj5Lg1koef9R
+         +tWuVqhywuir+83UgZX/sEn5fS77pCSy7hUYXi+eDGccqpTiujVRkbgb4ZcH49jd4vQk
+         A5Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711031078; x=1711635878;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uMwHK5SLtdqChoTJnZ8oDxJRYwecYOvB8jcFY9CBgVk=;
+        b=Z48nhelPYqZiBB1oKC4jqpKw+ScS61TMWh/c9Phm58tiPjW1CbvsyoSBP9VIP/AUgA
+         7Xn4W24rlO3Z+cC5jAKDYmdTk4QVN3AyytVmG9xzfMNq1GbBsuJSnhLccIRkHwQghJoJ
+         uC1HCvc/JmXJ2LSS8CboR0Ea822BPDpC3UvqdtBeB7vRRc0gKVfpbtNbZaoxkhGK7jl+
+         EbKlmD8mw2gct3vL5KvNhgzTPbRBKzo7Cp+65AF+9DTonwprRvsIY6BIK8x38RENkJhp
+         hkLlWdygw9WGGEIrHeP1xX58kmtUlHdUsJcSwAjDt4tRur/JidWDtDToya94RhLpBM3d
+         9KMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWszrC5uWEGfnPwi+nCQhJKiQKMhWuvDu+ywb2WmCLYn2ij+6fLOBqHP5uScrRxb5B5TIGC83MmZvm58e4Q33PbhUlh2+yRtx1TuKdt
+X-Gm-Message-State: AOJu0Yz8SGxTOoIOexLxi2Y43ERhtoSHPZt8VfLkuAGoLnamTU7qftf6
+	HnM+4JwW6JA8L0fqRDW1hG8wlcfQKbg/vGash0wnHt6VfJ6Y9MOKJDTHbvQh0Qs=
+X-Google-Smtp-Source: AGHT+IFov2e+/kQxGWoYd6pon9dB6ic+JHmJrCaJt3wZ16SD0JwIMpyHn3WTmkRdA23DHfA9eY8cKg==
+X-Received: by 2002:a05:6870:f10c:b0:222:6495:642a with SMTP id k12-20020a056870f10c00b002226495642amr5490576oac.46.1711031077907;
+        Thu, 21 Mar 2024 07:24:37 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id s14-20020a0562140cae00b0069124066c2fsm8956146qvs.140.2024.03.21.07.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 07:24:37 -0700 (PDT)
+Date: Thu, 21 Mar 2024 10:24:26 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: kernel test robot <lkp@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Mel Gorman <mgorman@suse.de>,
+	Zi Yan <ziy@nvidia.com>, "Huang, Ying" <ying.huang@intel.com>,
+	David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] mm: page_isolation: prepare for hygienic freelists
+Message-ID: <20240321142426.GB777580@cmpxchg.org>
+References: <20240320180429.678181-10-hannes@cmpxchg.org>
+ <202403212118.ye7lcKjD-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: 0p4IBYcAxUj-x9bIzEZJDGVjemGPvAzM
-X-Proofpoint-ORIG-GUID: 0p4IBYcAxUj-x9bIzEZJDGVjemGPvAzM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_10,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0
- suspectscore=0 spamscore=0 adultscore=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403210102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202403212118.ye7lcKjD-lkp@intel.com>
 
-Add support for ADP1050 Digital Controller for Isolated Power Supplies
-with PMBus interface Voltage, Current and Temperature Monitor.
+On Thu, Mar 21, 2024 at 09:13:57PM +0800, kernel test robot wrote:
+> Hi Johannes,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on akpm-mm/mm-everything]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Weiner/mm-page_alloc-remove-pcppage-migratetype-caching/20240321-020814
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+> patch link:    https://lore.kernel.org/r/20240320180429.678181-10-hannes%40cmpxchg.org
+> patch subject: [PATCH 09/10] mm: page_isolation: prepare for hygienic freelists
+> config: i386-randconfig-003-20240321 (https://download.01.org/0day-ci/archive/20240321/202403212118.ye7lcKjD-lkp@intel.com/config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240321/202403212118.ye7lcKjD-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403212118.ye7lcKjD-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    mm/page_alloc.c: In function 'move_freepages_block_isolate':
+> >> mm/page_alloc.c:688:17: warning: array subscript 11 is above array bounds of 'struct free_area[11]' [-Warray-bounds]
+>      688 |  zone->free_area[order].nr_free--;
+>          |  ~~~~~~~~~~~~~~~^~~~~~~
+> >> mm/page_alloc.c:688:17: warning: array subscript 11 is above array bounds of 'struct free_area[11]' [-Warray-bounds]
 
-The ADP1050 implements several features to enable a robust
-system of parallel and redundant operation for customers who
-require high availability. The device can measure voltage,
-current and temperature that can be used in different
-techniques to identify and safely shut down an erroneous
-power supply in parallel operation mode.
+I think this is a bug in the old gcc.
 
-Signed-off-by: Radu Sabau <radu.sabau@analog.com>
----
-v4:
- *No change.
-v3:
- *No change.
-v2:
- *Remove mandatory chip unlocking from the probe function, as it is
-  a bit extreme.
- *Remove iin_scale and vin_scale set in the probe function since it makes no
-  sense to force-override it (the user may use the chip's default or even
-  change it himself after the probe).
----
- Documentation/hwmon/adp1050.rst | 65 +++++++++++++++++++++++++++++++++
- Documentation/hwmon/index.rst   |  1 +
- drivers/hwmon/pmbus/Kconfig     | 10 +++++
- drivers/hwmon/pmbus/Makefile    |  1 +
- drivers/hwmon/pmbus/adp1050.c   | 58 +++++++++++++++++++++++++++++
- 5 files changed, 135 insertions(+)
- create mode 100644 Documentation/hwmon/adp1050.rst
- create mode 100644 drivers/hwmon/pmbus/adp1050.c
+We have this in move_freepages_block_isolate():
 
-diff --git a/Documentation/hwmon/adp1050.rst b/Documentation/hwmon/adp1050.rst
-new file mode 100644
-index 000000000000..3281b096a53c
---- /dev/null
-+++ b/Documentation/hwmon/adp1050.rst
-@@ -0,0 +1,65 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver adp1050
-+=====================
-+
-+Supported chips:
-+
-+  * Analog Devices ADP1050
-+
-+    Prefix: 'adp1050'
-+
-+    Addresses scanned: I2C 0x70 - 0x77
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-
-+sheets/ADP1050.pdf
-+
-+Authors:
-+
-+  - Radu Sabau <radu.sabau@analog.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supprts hardware monitoring for Analog Devices ADP1050 Digital
-+Controller for Isolated Power Supply with PMBus interface.
-+
-+The ADP1050 is an advanced digital controller with a PMBus™
-+interface targeting high density, high efficiency dc-to-dc power
-+conversion used to monitor system temperatures, voltages and currents.
-+Through the PMBus interface, the device can monitor input/output voltages,
-+input current and temperature.
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate
-+the devices explicitly.
-+Please see Documentation/i2c/instantiating-devices.rst for details.
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data.
-+
-+Sysfs Attributes
-+----------------
-+
-+================= ========================================
-+in1_label         "vin"
-+in1_input         Measured input voltage
-+in1_alarm	  Input voltage alarm
-+in2_label	  "vout1"
-+in2_input	  Measured output voltage
-+in2_crit	  Critical maximum output voltage
-+in2_crit_alarm    Output voltage high alarm
-+in2_lcrit	  Critical minimum output voltage
-+in2_lcrit_alarm	  Output voltage critical low alarm
-+curr1_label	  "iin"
-+curr1_input	  Measured input current.
-+curr1_alarm	  Input current alarm
-+temp1_input       Measured temperature
-+temp1_crit	  Critical high temperature
-+temp1_crit_alarm  Chip temperature critical high alarm
-+================= ========================================
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 1ca7a4fe1f8f..9a4fd576e6f6 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -33,6 +33,7 @@ Hardware Monitoring Kernel Drivers
-    adm1266
-    adm1275
-    adm9240
-+   adp1050
-    ads7828
-    adt7410
-    adt7411
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 557ae0c414b0..38e794d83cc3 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -57,6 +57,16 @@ config SENSORS_ADM1275
- 	  This driver can also be built as a module. If so, the module will
- 	  be called adm1275.
+	/* We're the starting block of a larger buddy */
+	if (PageBuddy(page) && buddy_order(page) > pageblock_order) {
+		int mt = get_pfnblock_migratetype(page, pfn);
+		int order = buddy_order(page);
+
+		if (!is_migrate_isolate(mt))
+			__mod_zone_freepage_state(zone, -(1UL << order), mt);
+		del_page_from_free_list(page, zone, order);
+
+And this config doesn't have hugetlb enabled, so:
+
+/* If huge pages are not used, group by MAX_ORDER_NR_PAGES */
+#define pageblock_order         MAX_PAGE_ORDER
+
+If buddies were indeed >MAX_PAGE_ORDER, this would be an out-of-bounds
+access when delete updates the freelist count. Of course, buddies per
+definition cannot be larger than MAX_PAGE_ORDER. But the older gcc
+doesn't seem to realize this branch in this configuration is dead.
+
+Maybe we can help it out and make the impossible scenario a bit more
+explicit? Does this fixlet silence the warning?
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index efb2581ac142..4cdc356e73f6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1698,6 +1698,10 @@ bool move_freepages_block_isolate(struct zone *zone, struct page *page,
+ 				       NULL, NULL))
+ 		return false;
  
-+config SENSORS_ADP1050
-+	tristate "Analog Devices ADP1050 digital controller for Power Supplies"
-+	help
-+	  If you say yes here you get hardware monitoring support for Analog
-+	  Devices ADP1050 digital controller for isolated power supply with
-+	  PMBus interface.
++	/* No splits needed if buddies can't span multiple blocks */
++	if (pageblock_order == MAX_PAGE_ORDER)
++		goto move;
 +
-+	  This driver can also be built as a module. If so, the module will
-+	  be called adp1050.
-+
- config SENSORS_BEL_PFE
- 	tristate "Bel PFE Compatible Power Supplies"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index f14ecf03ad77..95a8dea5e5ed 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
- obj-$(CONFIG_SENSORS_ACBEL_FSG032) += acbel-fsg032.o
- obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
- obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
-+obj-$(CONFIG_SENSORS_ADP1050)	+= adp1050.o
- obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
- obj-$(CONFIG_SENSORS_BPA_RS600)	+= bpa-rs600.o
- obj-$(CONFIG_SENSORS_DELTA_AHE50DC_FAN) += delta-ahe50dc-fan.o
-diff --git a/drivers/hwmon/pmbus/adp1050.c b/drivers/hwmon/pmbus/adp1050.c
-new file mode 100644
-index 000000000000..0a49bea8e13b
---- /dev/null
-+++ b/drivers/hwmon/pmbus/adp1050.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Hardware monitoring driver for Analog Devices ADP1050
-+ *
-+ * Copyright (C) 2024 Analog Devices, Inc.
-+ */
-+#include <linux/bits.h>
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include "pmbus.h"
-+
-+static struct pmbus_driver_info adp1050_info = {
-+	.pages = 1,
-+	.format[PSC_VOLTAGE_IN] = linear,
-+	.format[PSC_VOLTAGE_OUT] = linear,
-+	.format[PSC_CURRENT_IN] = linear,
-+	.format[PSC_TEMPERATURE] = linear,
-+	.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-+		| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
-+		| PMBUS_HAVE_IIN | PMBUS_HAVE_TEMP
-+		| PMBUS_HAVE_STATUS_TEMP,
-+};
-+
-+static int adp1050_probe(struct i2c_client *client)
-+{
-+	return pmbus_do_probe(client, &adp1050_info);
-+}
-+
-+static const struct i2c_device_id adp1050_id[] = {
-+	{"adp1050", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, adp1050_id);
-+
-+static const struct of_device_id adp1050_of_match[] = {
-+	{ .compatible = "adi,adp1050"},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, adp1050_of_match);
-+
-+static struct i2c_driver adp1050_driver = {
-+	.driver = {
-+		.name = "adp1050",
-+		.of_match_table = adp1050_of_match,
-+	},
-+	.probe = adp1050_probe,
-+	.id_table = adp1050_id,
-+};
-+module_i2c_driver(adp1050_driver);
-+
-+MODULE_AUTHOR("Radu Sabau <radu.sabau@analog.com>");
-+MODULE_DESCRIPTION("Analog Devices ADP1050 HWMON PMBus Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(PMBUS);
--- 
-2.34.1
+ 	/* We're a tail block in a larger buddy */
+ 	pfn = find_large_buddy(start_pfn);
+ 	if (pfn != start_pfn) {
+@@ -1725,7 +1729,7 @@ bool move_freepages_block_isolate(struct zone *zone, struct page *page,
+ 		split_large_buddy(zone, page, pfn, order);
+ 		return true;
+ 	}
+-
++move:
+ 	mt = get_pfnblock_migratetype(page, start_pfn);
+ 	nr_moved = move_freepages(zone, start_pfn, end_pfn, migratetype);
+ 	if (!is_migrate_isolate(mt))
 
+Zi Yan, does this look sane to you as well?
 
