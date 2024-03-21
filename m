@@ -1,166 +1,146 @@
-Return-Path: <linux-kernel+bounces-110163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D26B885AFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:41:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50536885B1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 212F11F2274D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:41:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 094F62847C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9153C85278;
-	Thu, 21 Mar 2024 14:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5355985287;
+	Thu, 21 Mar 2024 14:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="TsGSE+hZ"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2100.outbound.protection.outlook.com [40.107.104.100])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="U+wC312y"
+Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FB6A947
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711032081; cv=fail; b=HSebwqKKLTHrgQ2sWNyyIIZWQd/4jNlzOyn3kXM8ioBnzihB9D/kG/bOWK5qA2u4vJiob3rmnW3IQrJW0KMMAbI3ACkHI4YcTdVRIyzTJ4RW3DbxF1xGAKnLP124UtpfkWuc4SIqocJWDPamAYW77QAZWvp6VBFkLX8zPOlf7Sg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711032081; c=relaxed/simple;
-	bh=S1p4fkfpZMEBGx9QTVYJ1RWPlGXznTk+NcRftXrqhRQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Dg+/ZTgXNcxjEBsrxIYym6HofpPigrR2bKz/56xEKShz/zSudNagDUSvAQTxmP7hiLSIHuMh0s6GneA5PguibkIsSp2ll/6ZU0knoB3q+Z2Iu0mfR02pdbwjKoRoSLHx2J83kCJJ+OcxXZI0mAs6pOMd7Rl6ZW0pYFsznHbBEm8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=theobroma-systems.com; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=TsGSE+hZ; arc=fail smtp.client-ip=40.107.104.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theobroma-systems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LaUWcymaPgvSBrZw54H2+CO0QjVha6jiMtyJrC52IHpVBqGU0kKp6fEkN2xmPmt9LmeHIcCbz23D10G4hHAAJmVUhhYipEJC5jYZ0DG6rgp/6Ds3JRgz1fj7QByd+/w09CnsEFrS0hcyukQNaoshBiWoIHa+5jYNPD8Faz74jJ9TJYSAnBWArF2EjCxsxW9pJVMD3EHzy79/lCsqwSuSJX6CgAoyJx3AVVO4Ey0juR2AcftSqf7XrxzXUC/azZgosov54zjWL2tHxxSbMriZAkJPGq4/o9efL62jD0ibUfR1BOGebxwJ6IDYjrqQp2+dTIUArQW25PWbqSOfwbxDKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9XMqoIj56jSj2i0ioqWVbMSBEZD4mRgyJuzHCEjLU/0=;
- b=VaxC3WTkPdMo+Grb3l/fqZfmCYckXqwzAbybnsK/SAp8Ex5vxF6SMgLFpZajtVutTPVZGSz7aaq7LSN/uoZyhTkk1uke64LV3wJ3sJ+OoPdMzFs0g/L7Nn+bl9VdtqucrEgW1S0q/SPg++fBoOJu9iD0TPP2LoXEVek+RFTVjH0PPk0cQ5n1rebmex5aS8ew5RvkitT/Bt0jpwnhsawgiUM9N/IZDkUwp0ghfcOMyY+yeocjwV6Rbgl6LH2YGcTDIZFyrpQOcEEb2+XpAOozHIbXEuz67xyi4rWrB2M/Glj6Wa1t4NWmoF7yWrxiLr/QW7isbGxQ/+PwsAPZ3A4/AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9XMqoIj56jSj2i0ioqWVbMSBEZD4mRgyJuzHCEjLU/0=;
- b=TsGSE+hZ3COQ54bsJ6PIpu+hhT7rxY55338StjVygayfHwS77aCOgBvkgMi3jM61vjPbHAb553053gf3+kaL0LOMAo2dxP0Vv7pGLoqaFuf6C0JW4N88Ig/4/kvao/unvR8HKMAsE8ZlXqWIhgRgM2yU0cj/bdtMwkFLveFr3iWSFcyjXuThZx/e48xyJFv76teZ3NWmdsYrdzGHlI5PnLEGzklCEDfrOIw7YWChtTzThg79ozx7K5f/Ev40gxSBe1db81jlQ+ZrKl7+fohemCrvHmGPnRqwXpFh4wlMlw8b+5zl1ktQVmC7tYkXzQYYVHiJJVup6Fpf9XTEQLquJQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com (2603:10a6:10:2d7::10)
- by VI2PR04MB10219.eurprd04.prod.outlook.com (2603:10a6:800:22c::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Thu, 21 Mar
- 2024 14:41:15 +0000
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::23:4118:ae4a:8dda]) by DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::23:4118:ae4a:8dda%5]) with mapi id 15.20.7386.025; Thu, 21 Mar 2024
- 14:41:15 +0000
-Message-ID: <5ac99bda-930d-4f7b-850a-560b76c39bc6@theobroma-systems.com>
-Date: Thu, 21 Mar 2024 15:41:07 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] drm/panel: ltk050h3146w: add MIPI_DSI_MODE_VIDEO to
- LTK050H3148W flags
-Content-Language: en-US
-To: Heiko Stuebner <heiko@sntech.de>, neil.armstrong@linaro.org,
- quic_jesszhan@quicinc.com, sam@ravnborg.org
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, klaus.goger@theobroma-systems.com,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20240320131232.327196-1-heiko@sntech.de>
-From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-In-Reply-To: <20240320131232.327196-1-heiko@sntech.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0157.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::12) To DU2PR04MB8536.eurprd04.prod.outlook.com
- (2603:10a6:10:2d7::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE4A1E53F
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.192
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711032406; cv=none; b=ONPvw5l50gGR6+RyxyVB2qbvWtt9o9XY1gWmwC+hEtGQvxZbkfmsy6DEc4xYtc3y4vWwk3UvNtgJoxJTqNu1eJ2JKbD5YJEIOkdK4pTxM8Q74OqhiDFBC0gN0i4pDVr7tqCCt+215ek9ecTNAWp5XdAjY1mX92lBzFxOi0OAq4Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711032406; c=relaxed/simple;
+	bh=zxhRwOsFyhVRegkN33+YoEjELQmIBtiaTY2brmh+8B8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j1WyKe0GzzppSQ4R3rPkSt6IIwiZKfgmFwnKsi9FFI2D/d+9VqHxOkq4vZ0RNXCS5LPCQpgsacPIxe686k/llEfVVkhmXtKUHMegitszzrv/a88GJE92s4+Z4OFMiHrOPIn1t9UfOP1z38keXAR/vMET9a5MxtuOTjECKUjCIoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=U+wC312y; arc=none smtp.client-ip=203.205.221.192
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1711032091;
+	bh=vTWFz+Pw5yojbV5cXwUOynQbY7P0Q2w1AOEzaUfmi8Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=U+wC312yV1bY1vcDpjuQ/Q00ABWcsVAtIef/eZQAzUWPTagUtJwkpubNvmeXjFwOr
+	 Ape42FyHLqleUB5Da2OPCQu1IYcEMx9UUZ1qFaQzC5nt2kTABPFTAj7K5lIErMPIJJ
+	 /0v0TAvRF8jqT3oGzfxpl6X54o5VNPpCZN0fyicE=
+Received: from [IPV6:2409:8961:2b17:549c:98ce:49d:c167:4134] ([2409:8961:2b17:549c:98ce:49d:c167:4134])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id A5B91E86; Thu, 21 Mar 2024 22:41:27 +0800
+X-QQ-mid: xmsmtpt1711032087tw819upuw
+Message-ID: <tencent_5C3A21886D522B5D9DF9CAAFF499AB6A9805@qq.com>
+X-QQ-XMAILINFO: MIOa0ndEC0Bb5qTuuc2aknIKy4bUopvlJvEGPl3FLQhh+gjZDoBz/giuHq6feo
+	 8aHsrCVwfjESp5ZjDonDzpFWBudu5KCBdIl5s6wOTS9Zq8E4s0wJnVn6JUOly6QbFA3Y5uQAnYzj
+	 9Uh4AotqTzWSIScJD4DQQBxOXHdgEVnTt7lleiOzq9FW74QmvWXuBZPJS8lBXB9W1jYrCTw+YnBT
+	 2xB0+vhlX3lhObu+7sYWamOCzMzkUJr5ilI7ISGg3ddsjTh764teJaZfEfDcGk6db0f2k4cxOdFh
+	 B2mj9YG4eAlzOp4YUL2k4StxA9Y3fwvb0MsKRvy242kO1gxn0GCTQdLn7L5u+1kAfYjUzzabff0A
+	 WgRrSLH8Fwpn4+ByJfj9jy3UAp6t28XxA3SW2YLbOsiLGbEB7bpiDCSLRTZeyMkllyi1LFM8lJvA
+	 cEf7d2vV83iKQJs18SBRCBNuQMaBRs1nMVOnULtf/HtHJozUPvbA+cGS93v4HnjFeYBMI1l3Mixt
+	 ks92K4g3UU2ZzaQ/rKEu9ZoNo19Hlk2wRNEKQEFWkzTn2RQZG9ckB3U7Igs6loTEoa2ymh73RJH7
+	 0PR/Vxsb2/afN2hDLhK9PBAG1p+VvNF0ckk1gGS4na7INLQQRlHpCcephKHTbo+rf78Izj5mByYB
+	 mRa6MZqrzLLgogdBSvsQeJbRAI9W7nXEW+Q+yavHy5bfRru/bzObWnBMIUeumlt2ajTH9g+xu17T
+	 pb5qhhq1Nzu8kkmBlSZqz/L6wqI3GRYoy2T1UgHXQrF3NYJbLQPtqKK3L/0KAtiMxzvZl8JgqP3B
+	 s956vHvbOutb4YB5UKBZgNj8htif2A1ynjwODKKhWwPkwOwL+eOqATpiWkMaRX498ZvBWgmto7+m
+	 f7EfZQjG5qDfRjn4NxjvvjmiLQEifg9rUkPwkwGjgz5JhQF8x44uoc56H3ngOxPGX8lx4B6HU4KT
+	 CL87+1LGydJ+Qd+IGSBBk8AIkvGv37oQMbvZircHqB1gO7upilWFS/giydX6kgNIW+16PYF+p8m6
+	 sag3FF42xfmeGV2MHzovL7jK9vC10=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+X-OQ-MSGID: <2b1414b1-b5ac-58cc-185f-19bb4f47d76a@foxmail.com>
+Date: Thu, 21 Mar 2024 22:41:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8536:EE_|VI2PR04MB10219:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b15f27e-c638-4af0-71b8-08dc49b4f5d5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ERTakDI5hMcHN5Pb/ZLbjH6XB+iIKdgUY2JrJwpAbstREej/wBI4nzyuPmrnz0Tt7aUyUAo07IbeLqJszu9weX7gTcvWv5ZbphgsdaUTtxylB74P5rVjszg6fe6ClIXNLFObAfkjOI9peHJkaF4l3pEtH3+l3Ulspgqms6YLGVkQlT6MS5v/+5rJjox+yTKH8SaJNdlGR1pq+rSvG/pOHzffKjAuUq0Yb9EAH161+m+buu4NIw6cjbWmPHFWUeHX9Kx93HJTOVl1Sat1C+24EYKv+bGWZm0eIqMaJcjE13eSNbgVRQDHWnIZxqCe+jbG7oYyp+r0acEshfZI8vxY59DTN6wa2qI2bH0efscWiM9a55v+N7lTXDaM79RpcxeI1/HsoY4miY6gDPbIUbaBMM6stX7Pn+RJcDuTPfgP5SVbUYkRj1FBlhAlWF8xj4QbHFpTmWW+J81/GvWlYIokGxb7yLUDlTxDLFO80zOizG7Yw2AT1r0f4JOJHVoR9JzB1b8k3+cEyoCpTCNloXnE3DfYH8z5Mk+ZcAwh8nv/Am1Bp2IjSiMD3nhMjB/RvoqqzCN2IcByw04czoaX0OEri1Uo5RSt0Ouy0Z5OYHbGxVKC8BARM9+b+YC00blriyj5+w6Vu3Ni8/M4haYUTrXLf3bMUrKm9RQhqgwICfARsYY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8536.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a3p5MCsveVVBTGlsV1RZTlpWMGJDZmFRdmpJeThDdTJDRjd3cFJqSDZKNEZP?=
- =?utf-8?B?L25hRURCZnhLTDcrdnkxYXBoSWdDZ0s1aWp5TzExYXlsRVVCS01iYzNySTFh?=
- =?utf-8?B?alZuUjJBR29uS3NYYmdNUS81aHV6R2UrYkNpWnZuRlBXQm56Z1YwRE93NjJC?=
- =?utf-8?B?T050TDlicWIzRGVnZS9QU0ZBQmg5N3VXMGtHT3lvanhGbEp3QUhlNVhQRUMz?=
- =?utf-8?B?K09jbEo1OTgzMWFkZE1NWmRTRDVzVjFVQWk3VlBIb1dpd2ZLUkpsbG41dXZX?=
- =?utf-8?B?UEpsZVREUC9PSjdQZzA0WWNuWXZmVnFUNndvZUlDL1lDUUkwWjQxSlJhOVhw?=
- =?utf-8?B?c1BFTnp4Yk53ZTNBRVFJZmowZmIvbXRQem1VcGVHU1FzcnFSd0hnWWpaMXUx?=
- =?utf-8?B?QXFPc2dqWnVzWHYvaGtobUI3TTNLTnFoRUxWR2R3UFpyOFhNNnZHUE9WL3Qz?=
- =?utf-8?B?RnhtT3IvbHpjUmU4NmhpQjZKNWNzeHlsUmhBa09TVG9xWHY4RHgvMlBsajBy?=
- =?utf-8?B?ZnVBVFcya1p5VjNmWnphRVFWMHZQZGpDNThtU055TDJVdGF6WS9GQXgvTSt3?=
- =?utf-8?B?S0hFZlNBd3NteHMyK3VSdDlxL1QzRTMxdjhBVlM4NjkweVNTNExkL2hRa0RR?=
- =?utf-8?B?RjZsQmcxckJrcWtRVGw4UGlQVDZ1VktVSzNnaU9HWlR1QnhManp1WVdjbFdk?=
- =?utf-8?B?dmRjazJ0L0p0c1BqQmN2RkV5aXA2YjVQMTVnM283UFZOSmUvekI3U1dGN2pX?=
- =?utf-8?B?YUZ4a1NDTDRjQ3cvTkZLMTE1aG9PNU5QcVVVYmhTVW1RZ25oSmx3alk1UmFR?=
- =?utf-8?B?dklGdGl5MXVnYis3WU40MW5QdjdaTTQ1Y01QNVhNUXFkR3JkbFRhU3BQaTg2?=
- =?utf-8?B?WDVhaWxMUk9XSDZyTkRRUmlIMkEySERoRk84VE1tU1lDUmFUdjhZWlFtWDJK?=
- =?utf-8?B?dHg5QkRTaUFPN1VIVXQybjRmeWQrRlZHNWltRXFWM21TTVR2aXlkc0E5a2h3?=
- =?utf-8?B?Qk1PRkYvbHNNS203anJ1QzFsVXFOWDgzMVFobDVEZkVZaFF5RzI0UGd2MXFQ?=
- =?utf-8?B?UTgzOFRLYjdwOWxBQXJ5ejhTUEYxWStLQzJZcC9jZnROK2Q0YWoyZERKUU05?=
- =?utf-8?B?NGx5K0tFNi90azBJUjFCd29KR2NrSFlScjNwNFFNcVczUStNbElzTWZmQjFN?=
- =?utf-8?B?NExLYlhNSkxYODlQS1BCVW1EenRyL2FxeDg3RFA3cjRIUzZmcFI0Q0ptMkd3?=
- =?utf-8?B?Z05OWEhEazh0c1dpV3dwR3dJYWNMT0hKc1VaU2U2T0htU3FrQkl5R2tGYVAw?=
- =?utf-8?B?aGxwTTVtTkZDVTMwOUllNUdHcDk2eDJDZUYyTXZiSjQxVEhBSmVUU21JNE1m?=
- =?utf-8?B?Q05ONDdyV3RmandPS3RZZFNWS2p0VEJQeXhzaWRTVVJaZ3ROd252OFpUWWxv?=
- =?utf-8?B?YkZLRGt4ZlhtN1FXWExvRDZGL0dvUU9ORkhiNEFwZTgrTFo1RFZpdzZDb2hU?=
- =?utf-8?B?MXVQbTdSdS8vcVNEbUI1bUdpdllqTTlBcmJtM3BPVWFKZTVGRkdDd2pGc0N6?=
- =?utf-8?B?VTQ5azArTERsS3htYkg0ZVNVS09OdVJoYU1ka0xZTWNpNW15WlMyVWpqSnJx?=
- =?utf-8?B?cXRwNXdKNW5GamlhdFA3TUpnRHBEODF2T0VBK2Vwc2ZRenltb0pKZDY2ajli?=
- =?utf-8?B?Q1E5c3RIQkpYV2N1WXhmZnovdEdFd2NmVzJRaUZjNjlOcFhKSjBJZk50azcz?=
- =?utf-8?B?SFlUWmMrU2ZnNjlicmVFM3MrVUsxQnhUUkhXeXpXR1F4ZnZpd1JUSzIxZlk5?=
- =?utf-8?B?Zm1LRHBpK1hwcFJoV3NHRldOQWRBb2RUQUZPSWwvd2xOSzJiTlpZQU8zNGor?=
- =?utf-8?B?VFJueUx5VEN0TmM2aGlHVzkxUkNSeGorTExGK2VNN2RpTTdpUCsyc0dpYXRS?=
- =?utf-8?B?Z0RmWHpYbEVyTXVOVjk2MUdHTXRyUWM3NFA2QWlWNU0yem50eTVDOFo2d3hq?=
- =?utf-8?B?WU1MTlNzOFFNM2N3Z1U4c3RVdWx4NlVzeHpLa05vcXJCd3JGdFZMaklzc3Jz?=
- =?utf-8?B?d0FzdVN0Q3czNUVXV1dWN0JnSkJJU05ZMEJuRy9pZldIVmlYR05qbXZDZEN6?=
- =?utf-8?B?UnphOHVrcTJLNXQ4ZVBMWVo2VU5ud2c1YzRiakVUL25rbDBST2F4YThsYWt6?=
- =?utf-8?Q?+J4uZrTNPStZZztXN/eh/iY=3D?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b15f27e-c638-4af0-71b8-08dc49b4f5d5
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8536.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 14:41:14.9619
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9y6JZ3x3STRZ2Mp0RgqV5LQvSxWTbfbiNCiVUzizon3yWkVxxnDQ7K9f4klGUc5fk+4dFZmfk/a2G9qrQo18JHpjq6cWIc96ksTQBpFKSeLCUFqR//foxOC0zDhlX6lz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI2PR04MB10219
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RESEND PATCH v2 8/9] fs: inotify: delete these unnecessary
+ static variables it_zero and it_int_max
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>, Joel Granados <j.granados@samsung.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Christian Brauner <brauner@kernel.org>, Dave Young <dyoung@redhat.com>,
+ "Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org
+References: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+ <tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
+ <CGME20240320103608eucas1p235f843330beda0c826ab3cc1709c65e6@eucas1p2.samsung.com>
+ <20240320103603.u6uqhk6viu4qkaht@quack3>
+ <20240321105555.f4qg5g3wbe57mzzx@joelS2.panther.com>
+ <20240321113849.hfzmnz6p3cjbmmwt@quack3>
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <20240321113849.hfzmnz6p3cjbmmwt@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Heiko,
 
-On 3/20/24 14:12, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@cherry.de>
+
+On 2024/3/21 19:38, Jan Kara wrote:
+> On Thu 21-03-24 11:55:55, Joel Granados wrote:
+>> On Wed, Mar 20, 2024 at 11:36:03AM +0100, Jan Kara wrote:
+>>> On Tue 19-03-24 23:57:49, wenyang.linux@foxmail.com wrote:
+>>>> From: Wen Yang <wenyang.linux@foxmail.com>
+>>>>
+>>>> Delete unnecessary static variables (it_zero and it_int_max)
+>>>> and encode them directly in the table entry.
+>>>>
+>>>> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+>>>> Cc: Eric W. Biederman <ebiederm@xmission.com>
+>>>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>>>> Cc: Kees Cook <keescook@chromium.org>
+>>>> Cc: Joel Granados <j.granados@samsung.com>
+>>>> Cc: Christian Brauner <brauner@kernel.org>
+>>>> Cc: Jan Kara <jack@suse.cz>
+>>>> Cc: "Darrick J. Wong" <djwong@kernel.org>
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>
+>>> This looks as a sensible cleanup but I don't see the first patch in the
+>>> series (and neither it is archived at lore.kernel.org) so I cannot really
+>>> verify whether your conversion is correct...
+>> This was my original comment. If you want to see the cover letter
+>> look for this mail ID tencent_06797E65CFC655DCD4F0414B9380E95ECC08@qq.com
+>>
+>> Not sure why it separates the cover letter from the rest of the patches.
 > 
-> Similar to other variants, the LTK050H3148W wants to run in video mode
-> when displaying data. So far only the Synopsis DSI driver was using this
-> panel and it is always switching to video mode, independent of this flag
-> being set.
+> No, that is actually a different email :) Based on lore the message ID
+> should be:
+> 26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com
 > 
-> Other DSI drivers might handle this differently, so add the flag.
+> but the email is not in the archive...
 > 
-> Fixes: e5f9d543419c ("drm/panel: ltk050h3146w: add support for Leadtek LTK050H3148W-CTA6 variant")
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> 								Honza
 
-Reviewed-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Sorry, my email box changed the message ID when sending, but it can be 
+found in lcore:
 
-Thanks!
-Quentin
+
+or
+https://lore.kernel.org/all/tencent_0D6ABA209A4980742DE6003FBFE7FE2A3207@qq.com/
+
+
+If it causes any inconvenience to you, I can resend it. After some 
+experiments, I have finally found a way to send them in a thread.
+
+--
+Best wishes,
+Wen
+
+
+
+
+
 
