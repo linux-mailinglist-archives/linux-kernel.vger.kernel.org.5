@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-109626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860CB881B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:39:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E487881B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 419ED283BE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 403741C216B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 03:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D336B674;
-	Thu, 21 Mar 2024 03:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419E2BA28;
+	Thu, 21 Mar 2024 03:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WO0sjH0V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jWY6btUx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFE26D39;
-	Thu, 21 Mar 2024 03:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DFC6FC5;
+	Thu, 21 Mar 2024 03:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710992382; cv=none; b=U3OYtAYfOM107XsGUQeHlLUBiBgkGaSIGMg3+jKnaBXbO6CEFhq5Cz8+PDzzof2kQu4i5nuE9RkY1akdSR+l8rTA26YrMhq5vI3liFjAXTBEwAib1UDEvys/48sGhqbf+MkIT/hCbs7D9U10pFpS8CG+ThsVG6fSItCvCk9Vl0w=
+	t=1710992666; cv=none; b=RXnY+nY+j0Vlz+e0v8KJVWJ+J7ZGzgCJoUbT0Djw5zI24KptMeUAIToDYTU3Dp1pbNBeFxI3AHwlAy1rVFYlXr7AweZi2Um5sI017n+Wqj+U2rtJWK8iRdAPAw6GE9Jx4xl007mYl+yGLTTQEcrup2O1tW3fq3PGoJo/i6Bx7vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710992382; c=relaxed/simple;
-	bh=NgxJz8/GSPa4b2iJMDM324FgVNSenq+WPseRkTzNdB4=;
+	s=arc-20240116; t=1710992666; c=relaxed/simple;
+	bh=+l6G01eCUl5Gixax34NKHd4Ib4Zzzbyh1A0DAfjMr/E=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cqQaSneZkvgQFkMsZbHVZumiosHNf+1WMsIDXNnu9XZgs7Bynsba7jUMujmxqaUVnMALEYEvRfKy487vbwmLjDlEgA7BsViPRQnAChfSpIv7ZgdEBBjCdwht3QcAa/1+oAK5/iVjK4QBbcsXZvbO7ZVLa4H9g5CFUiSy+9mqLaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WO0sjH0V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11CF7C433C7;
-	Thu, 21 Mar 2024 03:39:42 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ItXXYMW9j6SqIQd7UbCO90WPmR/GbFzBO9mV2vttKlvhbfgizw8CUOVR+7yqaPGVECHshjqk0i9cSB3Z7PNbix1QgKgKI7Wv7arcCCN7y2fy984kPKV9XtPsJJ+W3PUnZiw1p7C0Wa70FXfTb835vGSfEt3coxWaT69bGURB3uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jWY6btUx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7796DC433C7;
+	Thu, 21 Mar 2024 03:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710992382;
-	bh=NgxJz8/GSPa4b2iJMDM324FgVNSenq+WPseRkTzNdB4=;
+	s=k20201202; t=1710992665;
+	bh=+l6G01eCUl5Gixax34NKHd4Ib4Zzzbyh1A0DAfjMr/E=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WO0sjH0Vx1fxUpvANddcEPbuwbR5R7WVdXvtLu7J4iz/mOoOWiC+YTwZuwFessUx4
-	 PMJvmYtGnczzaTFdpvkxHDBxAwKVVZvBHhRF75zU6HRytv27TUFrnCqCXy7dcAGsDf
-	 pNzE5k4bfBlJHk2U750GvZTwKOi1QR2YmU5m6XEb7wBjZE4MsEWaNC+pVQYQwjZWnA
-	 vcpeFizWoXOYHQpBFVeyhFHHIV30/KpJ/r1cCzQlKT5PxFf2KQ1Ol7bscPk9vX6Omi
-	 K6ifnJuMeqx0ICSc42T4L2tymHMIOFvi0t7iR/Pv94N9wqNh/JqdtPQMvpnqGxF/7+
-	 lzhe549sbEefA==
-Date: Wed, 20 Mar 2024 20:39:41 -0700
+	b=jWY6btUxJH6gi6gBIF3xu62qAwvuRi6n1aBwzEN5pAQ2zH5mGOjZm60e51J6VDzTy
+	 P8FHmG7bfUmzig9uL2BICMtgdFjqZtv9ap/N3wVjMg95LJ8YvrI9Hp0qeemyFiqQIW
+	 8AZyGYfD/MMmJxCUZSKK3p0ABWnPCETbwMVaQlgMkELJr/4Ezmp5KcY8lCOI9Juax3
+	 90KC50omagrdLUs2g9PUL19ATYpTY+cm90Hdf9GzgUZr44yD+31e0crCp1XajeNdqE
+	 cB/jMFe1qLT1Tp4l/QZ08ckCPTcCAs8VMQ3eGilXkWc3KK3h9J7FgVo6n2Hv0QElQR
+	 qFhSRKy36eVQg==
+Date: Wed, 20 Mar 2024 20:44:23 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern
- <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipv6: delay procfs initialization after the ipv6
- structs are ready
-Message-ID: <20240320203941.70facba3@kernel.org>
-In-Reply-To: <20240320171858.2671-1-nicolas.cavallari@green-communications.fr>
-References: <20240320171858.2671-1-nicolas.cavallari@green-communications.fr>
+To: <xu.xin16@zte.com.cn>
+Cc: <edumazet@google.com>, <davem@davemloft.net>, <rostedt@goodmis.org>,
+ <mhiramat@kernel.org>, <dsahern@kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <yang.yang29@zte.com.cn>, <he.peilin@zte.com.cn>,
+ <liu.chun2@zte.com.cn>, <jiang.xuexin@zte.com.cn>,
+ <zhang.yunkai@zte.com.cn>
+Subject: Re: [PATCH v3 resend] net/ipv4: add tracepoint for icmp_send
+Message-ID: <20240320204423.270570c2@kernel.org>
+In-Reply-To: <202403211109183894466@zte.com.cn>
+References: <202403211109183894466@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,18 +62,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 20 Mar 2024 18:17:36 +0100 Nicolas Cavallari wrote:
-> procfs files are created before the structure they reference are
-> initialized.  For example, if6_proc_init() creates procfs files that
-> access structures initialized by addrconf_init().
-> 
-> If ipv6 is compiled as a module and a program manages to open an ipv6
-> procfs file during the loading of the module, it can oops the kernel.
-> 
-> It appears that we were unlucky enough to reproduce this problem
-> multiple times already, out of maybe 100 boots:
+On Thu, 21 Mar 2024 11:09:18 +0800 (CST) xu.xin16@zte.com.cn wrote:
+> +/* This part must be outside protection */
+> +#include <trace/define_trace.h>
+> \ No newline at end of file
 
-I haven't investigated too closely but looks like this breaks
-all selftests. Please run all net/forwarding selftests before
-posting v2?
+In addition to Jason's comments please make sure there is a new line at
+the end of the file.
+
+And please post v4 on Monday, net-next is currently closed.
+
+While you wait have a read of:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+
+:)
 
