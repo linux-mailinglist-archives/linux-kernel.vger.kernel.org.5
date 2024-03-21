@@ -1,158 +1,166 @@
-Return-Path: <linux-kernel+bounces-109957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB78885838
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 978BC885842
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:25:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDE9528245E
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:24:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5386C282F79
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB85D58AB2;
-	Thu, 21 Mar 2024 11:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C52B58AC4;
+	Thu, 21 Mar 2024 11:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nZFp7utj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gKqs2UKr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0IediqO2"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651F658AA6;
-	Thu, 21 Mar 2024 11:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1F958129;
+	Thu, 21 Mar 2024 11:24:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711020247; cv=none; b=ESgjal+5VbUUwE0D/0Ok8Zl6eeDutoH+K48uWb6TVyr81EfDzznaCdukeF8sxAgej34JB6B4pwWLzDWaqziaWQe/QOgn0XP6qLdT6QbRMATQdC2uPWPJY8XlKgKRDQFyxKmeT4oYoz8TJxeNrQ6u5EC8ojyAF0e1mqFqxFvMYYw=
+	t=1711020297; cv=none; b=Q3z9pOzGdUa08lCdMDRao0WvyqPvTtNz+3hmqxeDpD4n8RsaWy0JWE2NyLqChO8US0xlLYhtGyC+xBn7XXCRGDBsTZktlvTXZwSE8yPeGWBboOlq9pAx3kCOrA91TpQmT/1y4D2YYeABqn/gBywYXkFAgmkpWHYTaN8jqFg78fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711020247; c=relaxed/simple;
-	bh=KygQcTYzy0e/Wu1RvdlKwFFGHESw3IH6K2dNI06TR0s=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tr5oRew1m0PM5Bwxb+pnsCXegHCLip2/w8fBclHf3FEAv1gac9SnBo3g+F+Fu4ifh0MxGU9MlSfEdmphLiifrTz6AKgv0bB58yBS+YSgk4AGUmhNeFMRZaWSA8XEhkg82gRLXV3Jd3OLGgK8iB5aKJtAUlzU3oB4yfI0crHntLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nZFp7utj; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711020246; x=1742556246;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=KygQcTYzy0e/Wu1RvdlKwFFGHESw3IH6K2dNI06TR0s=;
-  b=nZFp7utjaKmMLZdrisq5h1YZNmq68nJJfm5UHVXPphwMFXu9dv36Rf3R
-   LNJFbxgqVtZnEQQ5jnBNTLf4ACSEif9AOQsQlWyqPdwxMdN7lsoBiQrt0
-   dlwg4mR+xzGB16Oh3LYuXrbbRVwKWMQoJnsENO8DNniKdB22p6L5Vto80
-   nD7y4jeqOHDOTF/jUd/FI1s2H7FR+KiDUh4rp6ffMGYzTF0iWLl8h9U4T
-   nW/g9g/p/hB6bqeSXz4QwR6VO4vpv2G5aL/3Ol2J+BqJvkh0K/1xKPh6I
-   eB6NvlS/6Y8gP+MxXPlac5LrjyOabZ2d9VeI+PSiwVetxYcsUeO73zwUW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="17449097"
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="17449097"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 04:24:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,142,1708416000"; 
-   d="scan'208";a="18955599"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.17])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 04:24:03 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 21 Mar 2024 13:23:59 +0200 (EET)
-To: Luke Jones <luke@ljones.dev>
-cc: platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: asus-wmi: store a min default for ppt
- options
-In-Reply-To: <1006a1d3-86f2-4770-9cf2-4f7e3e12a787@app.fastmail.com>
-Message-ID: <954e6e5c-dfeb-68b7-6e02-af26ef92c572@linux.intel.com>
-References: <20240310233722.30884-1-luke@ljones.dev> <ebe48668-dfca-775c-880e-dfa333b7e562@linux.intel.com> <1006a1d3-86f2-4770-9cf2-4f7e3e12a787@app.fastmail.com>
+	s=arc-20240116; t=1711020297; c=relaxed/simple;
+	bh=3ILvGA3dlGIwDdBbVnww9/UjWTQFT0UfP6FD0k71DxY=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=AHPGtsiqumqt4iJhUwCvcV+DsZNaK1V485oNyTnpCfKmi8X/hvFwE2/ciLed1Q/7l0QBESrBn8KzU9HM914mVdC3av6BryUWSvqxJthXUOaaf3uOrBUBj841Z4RbT+j3xcpqTX4PK1XoBsue7gtrvqX9SzgRpOnQkrHZ5ovP+5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gKqs2UKr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0IediqO2; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 21 Mar 2024 11:24:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711020294;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DB3NZ8/yiTaLUxCgKAXvKDAwe8/HCjA6a2zA8+1znnM=;
+	b=gKqs2UKrCIylI+dIm1SULPrulvoxlsBckxEzczWPpmyt/gYqLz1WTAwIkO7XRCPWgOwg17
+	U3ztddeKcRx4BMubgNZ637zcBvNAxEf9xo/h3aPY62nbbydAppv2rV60Dbm6ndTeY0E55R
+	xyPdjTxKljU34JWqMlwJHELKYF812cC+fMXvp/RWNzhfMa65VHVHvlnUsTE7lXZxeE1NN6
+	QCccgJ8ktwz3YSsSt3Zg7H/kSvHMqds7xvwby6Di4roAImi4Y4pzkxLWIVj6o8ZRQLdJ7p
+	AVMhabEXsobzAUV5ZYPD18ZDfftkZ3H10LCc7yRhJgRsRopGQvxJrxtjvATx3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711020294;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DB3NZ8/yiTaLUxCgKAXvKDAwe8/HCjA6a2zA8+1znnM=;
+	b=0IediqO2vzc8U9VHATBsHFn4Ut+0XpvBNsLzp+sNPkIhnmSIY51Q+jfzgV/QI2iNypxpDO
+	jYfbpWCguTJ6gaCg==
+From: "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] timers: Fix removed self-IPI on global timer's
+ enqueue in nohz_full
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240318230729.15497-3-frederic@kernel.org>
+References: <20240318230729.15497-3-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-648248580-1711020239=:1077"
+Message-ID: <171102029326.10875.6622636119030507753.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The following commit has been merged into the timers/urgent branch of tip:
 
---8323328-648248580-1711020239=:1077
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Commit-ID:     03877039863be021a19fda307136657bb6d61f75
+Gitweb:        https://git.kernel.org/tip/03877039863be021a19fda307136657bb6d61f75
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Tue, 19 Mar 2024 00:07:29 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 19 Mar 2024 10:14:55 +01:00
 
-On Thu, 21 Mar 2024, Luke Jones wrote:
+timers: Fix removed self-IPI on global timer's enqueue in nohz_full
 
->=20
->=20
-> On Thu, 21 Mar 2024, at 2:13 AM, Ilpo J=C3=A4rvinen wrote:
-> > On Mon, 11 Mar 2024, Luke D. Jones wrote:
-> >=20
-> > > Laptops with any of the ppt or nv tunables default to the minimum set=
-ting
-> > > on boot so we can safely assume a stored value is correct.
-> > >=20
-> > > This patch adds storing of those values in the local struct, and enab=
-les
-> > > reading of those values back.
-> > >=20
-> > > Secondary to the above it renames some internal variables to be more
-> > > consistent (which makes code grepping show all related parts)
-> > >=20
-> > > Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> > > ---
-> > >  drivers/platform/x86/asus-wmi.c | 141 +++++++++++++++++++++++++-----=
---
-> > >  1 file changed, 111 insertions(+), 30 deletions(-)
-> > >=20
-> > > diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/a=
-sus-wmi.c
-> > > index e4341abb71e0..482e23b55e1e 100644
-> > > --- a/drivers/platform/x86/asus-wmi.c
-> > > +++ b/drivers/platform/x86/asus-wmi.c
-> > > @@ -272,12 +272,19 @@ struct asus_wmi {
-> > > =20
-> > >  /* Tunables provided by ASUS for gaming laptops */
-> > >  bool ppt_pl2_sppt_available;
-> > > + u32 ppt_pl2_sppt;
-> > >  bool ppt_pl1_spl_available;
-> > > + u32 ppt_pl1_spl;
-> > >  bool ppt_apu_sppt_available;
-> > > - bool ppt_plat_sppt_available;
-> > > + u32 ppt_apu_sppt;
-> > > + bool ppt_platform_sppt_available;
-> > > + u32 ppt_platform_sppt;
-> > >  bool ppt_fppt_available;
-> > > - bool nv_dyn_boost_available;
-> > > - bool nv_temp_tgt_available;
-> > > + u32 ppt_fppt;
-> > > + bool nv_dynamic_boost_available;
-> > > + u32 nv_dynamic_boost;
-> > > + bool nv_temp_target_available;
-> > > + u32 nv_temp_target;
-> > > =20
-> > >  bool kbd_rgb_mode_available;
-> > >  u32 kbd_rgb_dev;
-> >=20
-> > Can you check with pahole if this structure is now full of 31-bit holes=
-?
-> >=20
-> > The benefit of keeping bool & u32 doesn't seem that big to begin with=
-=20
-> > (in visual sense because of the 1 char variation in column).
->=20
-> I don't really understand what you mean here. I do most of this stuff=20
-> when I have time, so because my time is limited I usually don't have=20
-> opportunity to learn much more than the minimum.
+While running in nohz_full mode, a task may enqueue a timer while the
+tick is stopped. However the only places where the timer wheel,
+alongside the timer migration machinery's decision, may reprogram the
+next event accordingly with that new timer's expiry are the idle loop or
+any IRQ tail.
 
-pahole is a tool with which you can look into struct layout. Compile the=20
-driver with debug info on, and run pahole on the object file, then check=20
-the layout of the members of that struct (mainly holes in this case).
+However neither the idle task nor an interrupt may run on the CPU if it
+resumes busy work in userspace for a long while in full dynticks mode.
 
-So enable the debug info in .config if not yet enabled and then run:
+To solve this, the timer enqueue path raises a self-IPI that will
+re-evaluate the timer wheel on its IRQ tail. This asynchronous solution
+avoids potential locking inversion.
 
-$ make drivers/platform/x86/asus-wmi.o
-$ pahole -C asus_wmi drivers/platform/x86/asus-wmi.o
+This is supposed to happen both for local and global timers but commit:
 
---=20
- i.
+	b2cf7507e186 ("timers: Always queue timers on the local CPU")
 
---8323328-648248580-1711020239=:1077--
+broke the global timers case with removing the ->is_idle field handling
+for the global base. As a result, global timers enqueue may go unnoticed
+in nohz_full.
+
+Fix this with restoring the idle tracking of the global timer's base,
+allowing self-IPIs again on enqueue time.
+
+Fixes: b2cf7507e186 ("timers: Always queue timers on the local CPU")
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240318230729.15497-3-frederic@kernel.org
+
+---
+ kernel/time/timer.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index e69e75d..dee29f1 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -642,7 +642,8 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+ 	 * the base lock:
+ 	 */
+ 	if (base->is_idle) {
+-		WARN_ON_ONCE(!(timer->flags & TIMER_PINNED));
++		WARN_ON_ONCE(!(timer->flags & TIMER_PINNED ||
++			       tick_nohz_full_cpu(base->cpu)));
+ 		wake_up_nohz_cpu(base->cpu);
+ 	}
+ }
+@@ -2292,6 +2293,13 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+ 		 */
+ 		if (!base_local->is_idle && time_after(nextevt, basej + 1)) {
+ 			base_local->is_idle = true;
++			/*
++			 * Global timers queued locally while running in a task
++			 * in nohz_full mode need a self-IPI to kick reprogramming
++			 * in IRQ tail.
++			 */
++			if (tick_nohz_full_cpu(base_local->cpu))
++				base_global->is_idle = true;
+ 			trace_timer_base_idle(true, base_local->cpu);
+ 		}
+ 		*idle = base_local->is_idle;
+@@ -2364,6 +2372,8 @@ void timer_clear_idle(void)
+ 	 * path. Required for BASE_LOCAL only.
+ 	 */
+ 	__this_cpu_write(timer_bases[BASE_LOCAL].is_idle, false);
++	if (tick_nohz_full_cpu(smp_processor_id()))
++		__this_cpu_write(timer_bases[BASE_GLOBAL].is_idle, false);
+ 	trace_timer_base_idle(false, smp_processor_id());
+ 
+ 	/* Activate without holding the timer_base->lock */
 
