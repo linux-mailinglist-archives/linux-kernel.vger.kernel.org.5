@@ -1,171 +1,225 @@
-Return-Path: <linux-kernel+bounces-110563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBFF88609F
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:37:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26D568860A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5B241F2268A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:37:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2470286F6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302B58AC0;
-	Thu, 21 Mar 2024 18:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3F5133422;
+	Thu, 21 Mar 2024 18:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gcjUmpdt"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FWMwEaDy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5267D12BE80
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3685CB5;
+	Thu, 21 Mar 2024 18:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711046218; cv=none; b=oeVBtrDLLT/jRQsjOWKwB92eg1ZWl2QvWRn5ErlLgKydqa8YR0VfREP4RT4cuoGxjm04gtHaIZcqu2bY6L0rWfREOOfpr2TsW2ekMUYMVH0LAXAtcoXUAPcxMJZMPy7kzOzCfIX0kFjYMq9qE3D0Wm0feoymfbCZPV+elRrfViw=
+	t=1711046372; cv=none; b=RMhTB5+piAfXx1RxBPZSXw03KPvN6cG4HTE74cFlRgWyVk0hfiLx5D5H2PqyHgoxQ3FQuFOukUnCDnoVnQkP6rVFwEGFdBT9L7G9XOFlsOUSriT6e8ucMP+73NiDSnMZ650PVtKNcodh1Ml0P3ZwYCAGkpURcGwZPdUNlXAEHuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711046218; c=relaxed/simple;
-	bh=eUEa4rrGYlyZhAfRF+ds5sMG/T25zrE7GnOSK5h9F6Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bApBStGQ2wGK33W8V6/EjVFuuqMJ96MgWriwjl/yQkaNX5JcUbLzn1ebbwu/YsbdgQCkxXOOSA+QMcEEf/R6+dkmLY0ydQz6qaZgMw1NqSkHgWevi5s2mPhtIFDXDCoklRUjCXQ3lfZVwEsK8j9EI42gQKiphSxbQ0zNoKse2BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gcjUmpdt; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd169dd4183so1509821276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711046216; x=1711651016; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbCcL6OE4hGPljo6KgMnWz9lsSx4HXWFLCLqK+CpD5w=;
-        b=gcjUmpdtt60sNeEEaUoO5jbxgfIyxKfnljDZEtqqVrjJ9ef+ictz9pmqTbfbWAKZ72
-         qNfKAVkDDeODcF5U1FUJ2ukO3K2046VnGEN/3gGa0qWo5ylKaIj4UNU8WOv+KEwW0T1A
-         Z5uT+HLbmK/vpH+bStv9lCTAgi4c0EyGjQ1qhvIPm1gJjp8gWQ/7TBbUNZneAoO6wW76
-         B3TZdaIAWjnYyWltQcsDfFbIgpOO4NGPfcCAvlNjCgBEUBdVrPdTY2QWE/FjZtdWngbn
-         kwZtS8ZXVTBzNsdwsDeyFojB0wNA+48SC+zrZnDAzrJ8IfQyfFgkhS2DmlB2F/ksHhHK
-         vYJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711046216; x=1711651016;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbCcL6OE4hGPljo6KgMnWz9lsSx4HXWFLCLqK+CpD5w=;
-        b=sgreHyhlYAALIU/vTj3vPZ83N3b4jZ5Az9Uz+FuIHbGCx1cNwUQnfH9UvganjRCea7
-         Spngasr6tptCJKa0Cae3jQ2AJeL2irKaz2K3ttQ/WmY5kIjkx14Wk5xEul1TSs+cvvxE
-         GZ0CRrnMrgPSGB6L63lBWJ70cUd17GjwNSq5EtPQmqUR7W7ISXofWErMktq8SATQjxg3
-         OVpa4SPIu2V0PnN/iR0zlm07KDw8lBek5vR82V0l8FnGSG2Cw0KKTM51tiD+JHDNhSHx
-         02h/x3/Ly051fFzhECtsGSZmAtmwA5jo5hV/8U90bgvIEYRq0TZaoy2SiEq3qRKzhZ/n
-         uv6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVx8ViYTRgfiGP91RYiZSMP/5cChbfUAiQALTQblP+JRjluMoRb0HylEUPgfc3WvtBhfXIP7aC1P0eS144FbWSH26y0Cp2Ccf+lKFnP
-X-Gm-Message-State: AOJu0YzebUfP7LK071roI8zxAtyfznSmG0BLD9zx+eBvmI4/evIxECsa
-	B4m3KiXsfCGVy+4nsSBzR+yhGTUdM77rBglIyJtH+4bgUI7vL3UAxHOfEN++kUUNYz3SLsx5Q6G
-	8Ajmactod89a6QLCl1g==
-X-Google-Smtp-Source: AGHT+IGVKM74DX/eJBUX2BxRcTwydQ0lZph+eL4O9Qy//R+b2lvRLwx760LaFZnBPco9gucSiCyzr9XwrWOfpihG
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2301:b0:dc7:865b:22c6 with
- SMTP id do1-20020a056902230100b00dc7865b22c6mr1248392ybb.8.1711046216453;
- Thu, 21 Mar 2024 11:36:56 -0700 (PDT)
-Date: Thu, 21 Mar 2024 18:36:54 +0000
-In-Reply-To: <20240321182532.60000-1-hannes@cmpxchg.org>
+	s=arc-20240116; t=1711046372; c=relaxed/simple;
+	bh=MyBfF+y10WG9LmGoiSjakD9H78XK+Zvj33y8tL3TICk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=avllwYKmiwiz1YCd6SHjZqFlujMjCdxJBkEidEm/MknNID++rs9sQssuYcB19ikyocscgcwc9c20kbzuYdoTu8grFzTK68TJA5X+8zCegnWLThiyX6e4p9S/6LaOUcr8RyV+osWsGb9qjrSJct6M8BmQayjh4G5YiQva7f9Ms44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FWMwEaDy; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711046368; x=1742582368;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MyBfF+y10WG9LmGoiSjakD9H78XK+Zvj33y8tL3TICk=;
+  b=FWMwEaDyP0EdmYxx1eub9+UClqv/uTz6T8nEqFCSl1Yq4OCLo4SxM+y5
+   Z2s4NlxIz0z7zO0tX+4lB148lmwiFx2aCR6pGjH302NcdkIIiTfonkh5a
+   SDKtogcoKQg3VDj+nQLprn9QA2NRPyeE4ALTuUWvta0yaofxuCoQs+zoI
+   6I4rnOK4nIjsh473MLmpf1Q4cEBEerPmlEQVrdg6brZVM/v1pyPabqRDf
+   WO+S3Onz5TqCKU4ue6WMlPPK5fUpOLDTd3K1pFVJicJaXs6Yd6hVYgVMI
+   Pdka1OhVtBWJnk7Uva6wbZTZcnwaGJVILdZSx5EqY3FI6vejt3H9VCcpe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5957714"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="5957714"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 11:39:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="14521346"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.53.135])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 11:39:19 -0700
+Date: Thu, 21 Mar 2024 11:39:17 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, Dan Williams <dan.j.williams@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, Derick Marks <derick.w.marks@intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 1/3] x86/numa: Fix SRAT lookup of CFMWS ranges with
+ numa_fill_memblks()
+Message-ID: <Zfx+1c6RVO6r176O@aschofie-mobl2>
+References: <20240319120026.2246389-1-rrichter@amd.com>
+ <20240319120026.2246389-2-rrichter@amd.com>
+ <Zfsg3wZpSFVT+Zv2@aschofie-mobl2>
+ <Zfxmnfj1K0OTk89U@rric.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240321182532.60000-1-hannes@cmpxchg.org>
-Message-ID: <Zfx-RjViLUMwWRmi@google.com>
-Subject: Re: [PATCH] mm: zswap: fix writeback shinker GFP_NOIO/GFP_NOFS recursion
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zfxmnfj1K0OTk89U@rric.localdomain>
 
-On Thu, Mar 21, 2024 at 02:25:32PM -0400, Johannes Weiner wrote:
-> Kent forwards this bug report of zswap re-entering the block layer
-> from an IO request allocation and locking up:
+On Thu, Mar 21, 2024 at 05:55:57PM +0100, Robert Richter wrote:
+> Alison,
 > 
-> [10264.128242] sysrq: Show Blocked State
-> [10264.128268] task:kworker/20:0H   state:D stack:0     pid:143   tgid:143   ppid:2      flags:0x00004000
-> [10264.128271] Workqueue: bcachefs_io btree_write_submit [bcachefs]
-> [10264.128295] Call Trace:
-> [10264.128295]  <TASK>
-> [10264.128297]  __schedule+0x3e6/0x1520
-> [10264.128303]  schedule+0x32/0xd0
-> [10264.128304]  schedule_timeout+0x98/0x160
-> [10264.128308]  io_schedule_timeout+0x50/0x80
-> [10264.128309]  wait_for_completion_io_timeout+0x7f/0x180
-> [10264.128310]  submit_bio_wait+0x78/0xb0
-> [10264.128313]  swap_writepage_bdev_sync+0xf6/0x150
-> [10264.128317]  zswap_writeback_entry+0xf2/0x180
-> [10264.128319]  shrink_memcg_cb+0xe7/0x2f0
-> [10264.128322]  __list_lru_walk_one+0xb9/0x1d0
-> [10264.128325]  list_lru_walk_one+0x5d/0x90
-> [10264.128326]  zswap_shrinker_scan+0xc4/0x130
-> [10264.128327]  do_shrink_slab+0x13f/0x360
-> [10264.128328]  shrink_slab+0x28e/0x3c0
-> [10264.128329]  shrink_one+0x123/0x1b0
-> [10264.128331]  shrink_node+0x97e/0xbc0
-> [10264.128332]  do_try_to_free_pages+0xe7/0x5b0
-> [10264.128333]  try_to_free_pages+0xe1/0x200
-> [10264.128334]  __alloc_pages_slowpath.constprop.0+0x343/0xde0
-> [10264.128337]  __alloc_pages+0x32d/0x350
-> [10264.128338]  allocate_slab+0x400/0x460
-> [10264.128339]  ___slab_alloc+0x40d/0xa40
-> [10264.128345]  kmem_cache_alloc+0x2e7/0x330
-> [10264.128348]  mempool_alloc+0x86/0x1b0
-> [10264.128349]  bio_alloc_bioset+0x200/0x4f0
-> [10264.128352]  bio_alloc_clone+0x23/0x60
-> [10264.128354]  alloc_io+0x26/0xf0 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
-> [10264.128361]  dm_submit_bio+0xb8/0x580 [dm_mod 7e9e6b44df4927f93fb3e4b5c782767396f58382]
-> [10264.128366]  __submit_bio+0xb0/0x170
-> [10264.128367]  submit_bio_noacct_nocheck+0x159/0x370
-> [10264.128368]  bch2_submit_wbio_replicas+0x21c/0x3a0 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
-> [10264.128391]  btree_write_submit+0x1cf/0x220 [bcachefs 85f1b9a7a824f272eff794653a06dde1a94439f2]
-> [10264.128406]  process_one_work+0x178/0x350
-> [10264.128408]  worker_thread+0x30f/0x450
-> [10264.128409]  kthread+0xe5/0x120
+> On 20.03.24 10:46:07, Alison Schofield wrote:
+> > On Tue, Mar 19, 2024 at 01:00:23PM +0100, Robert Richter wrote:
+> > > For configurations that have the kconfig option NUMA_KEEP_MEMINFO
+> > > disabled, the SRAT lookup done with numa_fill_memblks() fails
+> > > returning NUMA_NO_MEMBLK (-1). An existing SRAT memory range cannot be
+> > > found for a CFMWS address range. This causes the addition of a
+> > > duplicate numa_memblk with a different node id and a subsequent page
+> > > fault and kernel crash during boot.
+> > > 
+> > > numa_fill_memblks() is implemented and used in the init section only.
+> > > The option NUMA_KEEP_MEMINFO is only for the case when NUMA data will
+> > > be used outside of init. So fix the SRAT lookup by moving
+> > > numa_fill_memblks() out of the NUMA_KEEP_MEMINFO block to make it
+> > > always available in the init section.
+> > > 
+> > > Note that the issue was initially introduced with [1]. But since
+> > > phys_to_target_node() was originally used that returned the valid node
+> > > 0, an additional numa_memblk was not added. Though, the node id was
+> > > wrong too.
+> > 
+> > Hi Richard,
+> > 
+> > I recall a bit of wrangling w #defines to make ARM64 and LOONGARCH build.
+> > I'm seeing an x86 build error today:
+> > 
+> > >> arch/x86/mm/numa.c:957:12: error: redefinition of 'numa_fill_memblks'
+> >      957 | int __init numa_fill_memblks(u64 start, u64 end)
+> > 
+> > include/linux/numa.h:40:26: note: previous definition of 'numa_fill_memblks' with type
+> > +'int(u64,  u64)' {aka 'int(long long unsigned int,  long long unsigned int)'}
+> >       40 | static inline int __init numa_fill_memblks(u64 start, u64 end)
+> >          |                          ^~~~~~~~~~~~~~~~~
+> > 
+> > In addition to what you suggest, would something like this diff below be
+> > a useful safety measure to distinguish num_fill_memblks() success (rc:0)
+> > and possible non-existence (rc:-1). I don't think it hurts to take a
+> > second look using phys_to_target_node() (totall untested)
+> > 
+> > diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> > index 070a52e4daa8..0c48fe32ced4 100644
+> > --- a/drivers/acpi/numa/srat.c
+> > +++ b/drivers/acpi/numa/srat.c
+> > @@ -437,9 +437,16 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> >          * found for any portion of the window to cover the entire
+> >          * window.
+> >          */
+> > -       if (!numa_fill_memblks(start, end))
+> > +       rc = numa_fill_memblks(start, end);
+> > +       if (!rc)
+> >                 return 0;
+> >  
+> > +       if (rc == NUMA_NO_MEMBLK) {
+> > +               node = phys_to_target_node(start);
+> > +               if (node != NUMA_NO_NODE)
+> > +                       return 0;
+> > +       }
+> > +
 > 
-> The zswap shrinker resumes the swap_writepage()s that were intercepted
-> by the zswap store. This will enter the block layer, and may even
-> enter the filesystem depending on the swap backing file.
+> for non-x86 the numa_add_memblk() function looks good in a way that it
+> is able to handle presumable overlapping regions. numa_fill_memblks()
+> would just fail then and numa_add_memblk() being called. For x86 we
+> need numa_fill_memblks() since x86 specific numa_add_memblk() cannot
+> handle the overlapping case.
 > 
-> Make it respect GFP_NOIO and GFP_NOFS.
+> That said, we do not need the 2nd check. It looks to me that it
+> actually breaks non-x86 as the whole block may not be registered (if
+> it is larger than anything existing).
 > 
-> Link: https://lore.kernel.org/linux-mm/rc4pk2r42oyvjo4dc62z6sovquyllq56i5cdgcaqbd7wy3hfzr@n4nbxido3fme/
-> Reported-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
-> Cc: stable@vger.kernel.org	[v6.8]
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> For x86 the 2nd check may never happen if numa_fill_memblks() is
+> always enabled (which is this patch for).
 
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Hi Robert, (<-- got it right this time ;))
 
-Thanks for the quick fix.
+I wasn't thinking of x86, but rather archs that may not support
+numa_fill_memblks() and return NUMA_NO_MEMBLK (-1) per the 
+#ifndef numa_fill_memblks in include/linux/numa.h
 
-> ---
->  mm/zswap.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+In those cases, take a second look at phys_to_targe_node() before
+blindly adding another memblk. Is that the failure signature you
+reported here?
+
+I can wait and see your final patch and how the different archs
+will handle it. I'm worried that NUMA_NO_MEMBLK is overloaded and
+we need to diffentiate between archs that don't even look for a 
+node, versus archs that look but don't find a node.
+
+--Alison
+
+
+
+
 > 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index b31c977f53e9..535c907345e0 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1303,6 +1303,14 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
->  	if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
->  		return 0;
->  
-> +	/*
-> +	 * The shrinker resumes swap writeback, which will enter block
-> +	 * and may enter fs. XXX: Harmonize with vmscan.c __GFP_FS
-> +	 * rules (may_enter_fs()), which apply on a per-folio basis.
-> +	 */
-> +	if (!gfp_has_io_fs(sc->gfp_mask))
-> +		return 0;
-> +
->  #ifdef CONFIG_MEMCG_KMEM
->  	mem_cgroup_flush_stats(memcg);
->  	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-> -- 
-> 2.44.0
+> So we should be good without your change.
 > 
+> Thanks,
+> 
+> -Robert
+> 
+> >         /* No SRAT description. Create a new node. */
+> > 
+> > --Alison
+> > 
+> > > 
+> > > [1] fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
+> > > 
+> > > Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
+> > > Cc: Derick Marks <derick.w.marks@intel.com>
+> > > Cc: Dan Williams <dan.j.williams@intel.com>
+> > > Cc: Alison Schofield <alison.schofield@intel.com>
+> > > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > > ---
+> > >  arch/x86/mm/numa.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+> > > index 65e9a6e391c0..ce84ba86e69e 100644
+> > > --- a/arch/x86/mm/numa.c
+> > > +++ b/arch/x86/mm/numa.c
+> > > @@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
+> > >  
+> > > +#endif
+> > > +
+> > >  static int __init cmp_memblk(const void *a, const void *b)
+> > >  {
+> > >  	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
+> > > @@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
+> > >  	}
+> > >  	return 0;
+> > >  }
+> > > -
+> > > -#endif
+> > > -- 
+> > > 2.39.2
+> > > 
 
