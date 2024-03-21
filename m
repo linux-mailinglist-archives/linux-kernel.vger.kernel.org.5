@@ -1,100 +1,224 @@
-Return-Path: <linux-kernel+bounces-109652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4517B881BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 05:40:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD73881C02
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 05:45:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0149283509
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:40:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 376EFB20A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C5F9374D9;
-	Thu, 21 Mar 2024 04:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5B52BAFC;
+	Thu, 21 Mar 2024 04:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+zbZA2p"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FVs6b1XZ"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E046FBF;
-	Thu, 21 Mar 2024 04:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8598883C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710996028; cv=none; b=Rnu8GrJcvaS8M+KuapW45OW3yHwIlvvydVFnbQsXad60/84DnLFFLdZ1b3K+IrVnV23no39+EiwGHJmWdPH12l+qzKcoRfW4ZTdfRhaI/kwhA9PbF3ipZNJA7QnPBLXc3UhdfB4Jw5dxDZCRFdmMIpkUSFsOIEv2Z9eTsGks7ow=
+	t=1710996299; cv=none; b=f2zW4R96KUdr/Za+MLGmxc0cnYh2x02yD6O/UOgZt7Iqjd8sGuLXLH1A7a4KONqwuB9q6cdbmmxoO5eSVZwpHRl0u6XzujNggaOpAeE4p9/zh5ku7pF86UOph6v9xzc0uJPmWhfZY6jFsOl/CwcXmg0LQMI/d5ylApIsB4JMSuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710996028; c=relaxed/simple;
-	bh=Stz/LtxZ0oNUWGPAkL2Gm2OiNn6QXW8wUeEfkZyKsoU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=nZPFDJnWVY65/wDXyFkQTCQmIEw2jlxOCflq2EiRewrclWCkNls8fBgpmsB0mcr1qDPCNXyID4+HQQBZ47Mwi82wTPAiJwb8vY/sIUh8J2gja5FPEsZhN3SJstJHKolAom8lIU51k3CxNkq2plVeBllDdZ1OTejjWGUH7anp7Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O+zbZA2p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 032DBC433F1;
-	Thu, 21 Mar 2024 04:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710996028;
-	bh=Stz/LtxZ0oNUWGPAkL2Gm2OiNn6QXW8wUeEfkZyKsoU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=O+zbZA2pqkmYFD/+/+lpoOlvB35mFNlw9t+ZWFMewtPpQMLzIXXtiMjV77SIowIQJ
-	 52zBlYz3bQbRL2I0vYZbVkDofZ477Pzs/ymzi2XUB/UKMrXA+dxoM+DINL/ZefSwSF
-	 sIT4pHnAIV6csAHBZEYfWIhpXhBTGe1SpFMuD1uoSWheIxSK/oKUxtYAduNylxNiDK
-	 VNWH6cUQfZCMTF2lZrxO5goILCMy14m4Q4DFy4D22LCQdzpjerGYwSTg5bHff8SzfY
-	 HZWbPCDmZWrfV49pEn06fnBOaPcdTCPozuSbw6tXeQtMJB7jio9FmRTFYPuYY+0TUM
-	 poAoYMWUGqFMg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E5818D982E3;
-	Thu, 21 Mar 2024 04:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710996299; c=relaxed/simple;
+	bh=QN5rVYeJQgkCYln+XGEHIWkMGDsj4aShLtoFlAn/Xz0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qOzNOM5h7c3puh5r1LC7q3hWCs6s499lBKaiKJIfyHP37EwHyEWm5xmtI3nc/oye88grHhX/JZnC7fRqAF9GMnV1gyc8abnJVk+fl4Y4kp8KMo9qKJd2fYAakQJu9IxNaiOTGG69BGJQZQSNDI6rfp+eBbCenPSY9CZM6HQijbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FVs6b1XZ; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56b98e59018so8715a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710996296; x=1711601096; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rp/x+gEdRoeXoR76EHtjtTfIyYIjYWzVuUsIkiDyEH4=;
+        b=FVs6b1XZrKabSWIY9nTLJxi0e7kJSrrcluBPRRlj1iWEHHADPiM3W5jQ2w9s37owi3
+         gCvQBFZv/+5O8WwXEaiSxALjLvk3AV1J0IB/s7czRs/66hNVb+SqlrtYj/RaowlcJPQu
+         bk8Dn8G2CFWap+F9yCS0sG2YBhqh2SrXFe25fVjGUMIwY6m785xJFwtT1Y1Q/ta+rGMR
+         fevA12d/ZO/GTeqPUKjxH1rYlmkaY5g0MB4wv3uzXwcbYURZBTB5BNNj7kaa6R2KPjEZ
+         4Mgh6V05glsuzI9uSX/mtkcNCIU66k+4UeEPVp0+R1b4rV2dla+1vVvCMTeBDkRLfuMz
+         mPow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710996296; x=1711601096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rp/x+gEdRoeXoR76EHtjtTfIyYIjYWzVuUsIkiDyEH4=;
+        b=apqQbEIPvKade1jKDKxlVuyw8yUk/MNf71CM1x47jzXpxkMECzXV9MPZFkZMgKuGI4
+         XAAn0UbREvzTu5cZxBcgbIJlvJzR55OXg7WhB5BtGnPkpfGlXCEoZ2TSwaBmG1023MTL
+         r8tVXnSY4yQXSmN9B42nPKBGDf8NBqNMrRtSdYlfXcEhuPPKeonA0yKX6pSKQ3PJopeS
+         Hefk1esggS80S7ohX3HP2ZMe1+BQCko1kJWYb+RG2AqAiSzh4QAIu5YJqn37WqlVdVhA
+         k9UYWAsm9YZTgYZFzHS1SiQrt6NjUG3U80cvGPdAZblGAKcQhqKvfkTnwY2NaVRjmHge
+         53gA==
+X-Forwarded-Encrypted: i=1; AJvYcCWbC62O4w0p42FuLsYIpxEKLtgkFc/W7I5H92xxIK1tJi0nwEZbJAicVpoP2hOX8Tc4oDfsFp6NQ0/6c+4//3RJcDj1WOQCoztJ2JRm
+X-Gm-Message-State: AOJu0Yx7Z03IQSaPCQSf74cFYJtlKmhJrSgQuP7NRPFkC5LLjSMvn4FV
+	SeWPGF6hsAh1UqYngZqp55NZXOcZ+SJjGAaWB7+ezqfNHxuFpNCGVMELPoxTzReR8d6Kie20+zR
+	pwXI9ABY7/jfyCyBFBnIeILiMOG0f4dfoVo4v
+X-Google-Smtp-Source: AGHT+IHesn7qSfEB7TXcVlmCgNUBgETncAdDFxHKgSDImUR+X1aXP2XSU1L5thiOrete5cF9u50Ggl9wStXEybQCbqA=
+X-Received: by 2002:aa7:d487:0:b0:56b:b472:205a with SMTP id
+ b7-20020aa7d487000000b0056bb472205amr97185edr.6.1710996295878; Wed, 20 Mar
+ 2024 21:44:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171099602793.26207.3374009714899466289.git-patchwork-notify@kernel.org>
-Date: Thu, 21 Mar 2024 04:40:27 +0000
-References: <cover.1710877680.git.yan@cloudflare.com>
-In-Reply-To: <cover.1710877680.git.yan@cloudflare.com>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, jiri@resnulli.us, horms@kernel.org,
- daniel@iogearbox.net, lorenzo@kernel.org, lixiaoyan@google.com,
- weiwan@google.com, alexanderduyck@fb.com, linux-kernel@vger.kernel.org,
- rcu@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com,
- joel@joelfernandes.org, paulmck@kernel.org, toke@redhat.com,
- alexei.starovoitov@gmail.com, rostedt@goodmis.org, mark.rutland@arm.com,
- hawk@kernel.org, bigeasy@linutronix.de
+References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+In-Reply-To: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+From: David Gow <davidgow@google.com>
+Date: Thu, 21 Mar 2024 12:44:42 +0800
+Message-ID: <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
+Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
+ the vmalloc area
+To: Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	"open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, 
+	Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="00000000000076daf80614245ea6"
 
-Hello:
+--00000000000076daf80614245ea6
+Content-Type: text/plain; charset="UTF-8"
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+On Fri, 23 Feb 2024 at 22:07, Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
+>
+> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+>
+> If a segmentation fault is caused by accessing an address in the vmalloc
+> area, check that the target page is present.
+>
+> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
+> assumes that the fault is caused by a stale mapping and will be fixed by
+> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
+> a guard page, no mapping is created, and when the faulting instruction is
+> restarted, it will cause exactly the same fault again, effectively creating
+> an infinite loop.
+>
+> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> ---
+>  arch/um/kernel/trap.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+> index 6d8ae86ae978..d5b85f1bfe33 100644
+> --- a/arch/um/kernel/trap.c
+> +++ b/arch/um/kernel/trap.c
+> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+>         int err;
+>         int is_write = FAULT_WRITE(fi);
+>         unsigned long address = FAULT_ADDRESS(fi);
+> +       pte_t *pte;
+>
+>         if (!is_user && regs)
+>                 current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+>
+>         if (!is_user && (address >= start_vm) && (address < end_vm)) {
+> +               pte = virt_to_pte(&init_mm, address);
+> +               if (!pte_present(*pte))
+> +                       page_fault_oops(regs, address, ip);
 
-On Tue, 19 Mar 2024 13:44:30 -0700 you wrote:
-> This changeset fixes a common problem for busy networking kthreads.
-> These threads, e.g. NAPI threads, typically will do:
-> 
-> * polling a batch of packets
-> * if there are more work, call cond_resched() to allow scheduling
-> * continue to poll more packets when rx queue is not empty
-> 
-> [...]
+page_fault_oops() appears to be private to arch/x86/mm/fault.c, so
+can't be used here?
+Also, it accepts struct pt_regs*, not struct uml_pt_regs*, so would
+need to at least handle the type difference here.
 
-Here is the summary with links:
-  - [v5,net,1/3] rcu: add a helper to report consolidated flavor QS
-    https://git.kernel.org/netdev/net/c/1a77557d48cf
-  - [v5,net,2/3] net: report RCU QS on threaded NAPI repolling
-    https://git.kernel.org/netdev/net/c/d6dbbb11247c
-  - [v5,net,3/3] bpf: report RCU QS in cpumap kthread
-    https://git.kernel.org/netdev/net/c/00bf63122459
+Could we equally avoid the infinite loop here by putting the
+'flush_tlb_kernel_vm();goto out;' behind a if (pte_present(...))
+check, and let the rest of the UML checks panic or oops if required.
+(Actually OOPSing where we can under UML would be nice to do at some
+point anyway, but is a bigger issue than just fixing a bug, IMO.)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Or am I lacking a prerequisite patch or applying this to the wrong
+version (or otherwise missing something), as it definitely doesn't
+build here.
 
+Cheers,
+-- David
 
+--00000000000076daf80614245ea6
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIEPCKOZW5Q0pn0dDn8fB0Mo26dbP0mF3LzF/XY4ibw27MBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMyMTA0NDQ1NlowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDOJz1t
+ydgg1WFpIzPw4lczlVQVyAvSV9QHBIbrDAfEMHdti5+O1BFy1V3O0L1lYzewkWa83cbA0gCZbcrs
+AdUjpQzIACd1Tx90x0cxSoB45VpdBIh9neKTFgDZz0px6U2nsIsBZ+ltdTgHYZkd6r7yG8Yj/BWY
+wmf0UaAIGhmkPJY+8l0IZW+i9eHGxwImi1G9sLnjWpgXShl1F7Fp8Hy7jtaPLf5jXPLehPnAyGJn
+us31cwXRaQaSwF+3YEVOdCalcbvD2NGf6U7bf+YeJDYu2K+SGHC/SFa7/WbI0mgPMTwt804bK7gp
+WhOnDDDrC9bW8LG0mKuIJoYsK9E8EVul
+--00000000000076daf80614245ea6--
 
