@@ -1,217 +1,167 @@
-Return-Path: <linux-kernel+bounces-109694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992CE881C85
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:33:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3620881C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 07:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C293F1C20FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:33:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A03C31F22371
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 06:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC393C484;
-	Thu, 21 Mar 2024 06:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58DF3FE35;
+	Thu, 21 Mar 2024 06:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=equiv.tech header.i=@equiv.tech header.b="KVmdIL5p"
-Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rVq3RGYO"
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D913C489
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.61.254.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A840C3FB9A
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 06:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711002828; cv=none; b=lbwLeUFul6LQ1hOSle5wDDz/uMJYWcunJ8Q8h69CTs6rf5pzN8A/3GRj+VZc6wP5KvhBcs4ATpBFW3Lq40i/FlymWWwwiE9tcSfPeq2Ta1J1hOqcY814TxwowMrvun4JNLw266FEPIjEcB4SIJQEvOMEywGvYPy0uVu5JqJVF9s=
+	t=1711003079; cv=none; b=gqf1QJLnqYF5h4RE5LHkDEz9e5D6vMhDTtdHWOWNzMn91mHcf2FyEsL9rd4ZBqFHhhPnFhIlPT35kBjxTLnVL3mQF5LLp7glMonI4Sxjor3gAqF3DYRldEBv/3V13hDVXvxuldJQtSW3v8ydWiMlem5UnZbkOKKnIRCF9lJ71kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711002828; c=relaxed/simple;
-	bh=l5NvXmfoEJ9hjdegYNGhUeH1uu2R1/Gv2ibCgljUJfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lDffmhH+KKeUYmX6dSY9USWFnWhAJeT7h9H3ARQHpBIzgjUmW+8/F2CSNl7Lb7nkxUieQoVscSaRlwqf4gBBWbYUb46CoLzqRx4FApGbc7Jo04pqlESNv6ZFv/nJ1QwkvKJtHqICom2a8uRFiVEt+79cPQuHId06pUr9jONPNWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equiv.tech; spf=pass smtp.mailfrom=equiv.tech; dkim=pass (2048-bit key) header.d=equiv.tech header.i=@equiv.tech header.b=KVmdIL5p; arc=none smtp.client-ip=198.61.254.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=equiv.tech
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=equiv.tech
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt; s=mx; t=1711002825; x=1711010025;
- h=In-Reply-To: Content-Type: MIME-Version: References: Message-ID: Subject: Subject: Cc: To: To: From: From: Date: Sender: Sender;
- bh=XzJ+t9Fh61T5jzkGqNJg0KuBJtVxebS2abQAq5EktDU=;
- b=KVmdIL5pMeHjXdkeLITGrFx4R41bl83fx+75AqZ/p07ueSl7ROZbraNCHO+/AOWSp6mPqpZCezwjYFoy7026xjvB13/WvtAo2nNhkkKU8sPUjIpK2VrjnjxrtYrnK0+PyVZE5bEcjxTAGJhLfoaucFfLE2HC/ITCqR9bZTWZNH37Y0dDN20zaYRWoXA0x911QFmXXwKKlCIaHBo4wP+g45dVfH/h1beH8ZD9CXWF5UnpB89kcFgjdfw87LlCJkZHX76dH09OF55rUBSJP1q3LbnEPrH316fIUZMMHzwEkv2/HH5gEd/KB2ljlmn+nNBTEZr752HZLVgdMN5wdoaRHw==
-X-Mailgun-Sending-Ip: 198.61.254.32
-X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
-Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 4733713dca97 with SMTP id
- 65fbd4c9548c1b722d673e72 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 21 Mar 2024 06:33:45 GMT
-Sender: james@equiv.tech
-Date: Wed, 20 Mar 2024 23:33:44 -0700
-From: James Seo <james@equiv.tech>
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
-Message-ID: <ZfvUyPVAuLv3KNUm@equiv.tech>
-References: <20240318215732.322798-1-W_Armin@gmx.de>
- <Zfkm71dmnRsdmYJz@equiv.tech>
- <a2c2ef97-3830-4277-8560-b97cfb8eb78e@gmx.de>
- <ZfowhGaCWffQ2N1K@equiv.tech>
- <600844b1-0d62-4b74-89b7-f185a793038b@gmx.de>
- <ZftC9ojx42l1VAUe@equiv.tech>
- <3e069b7a-fa22-453b-a507-dccc48eb60a3@gmx.de>
+	s=arc-20240116; t=1711003079; c=relaxed/simple;
+	bh=+6OX9AAFD/A2shwhkbexJL9wxEW4EZcX6kD05LvwinA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WQoNk7PxWDv5L75yRA54wfCObgGgErAcRv7Jf80YX2JoOMvFQr5q3W7Yuw3Qmj1ezpiyXiX+ZHA+PX4sQsJye95rhTpfzZZKVnm+TdlnDdfSCLVbnyapucjKARCr0+8nMlZi4zxua/b4ex+sgRhHrJYpeqQXjob/B+6Kdgx1HrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rVq3RGYO; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d5d9a8a5-5929-4a06-afef-95f35a1fcefc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711003074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OIf1hdM5OpPSavxQGmay0F2nG/wud8USfVO0Ik8WoYs=;
+	b=rVq3RGYOWIVY0l14+uwhPsKWVOBbRMfjwxBEOG+jXzTKm8XvM47sWMhP3PaJhuYDN5Y9a9
+	bR4zVedx1B81N36Y2NsnoahoJe6OJ3qVMzd01vH51MYczAWcYhmAsNW/qGZRzlLY4K0/Hb
+	ctPjCCnmrb93PxNANGL4GTFutfssftk=
+Date: Thu, 21 Mar 2024 07:37:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3e069b7a-fa22-453b-a507-dccc48eb60a3@gmx.de>
+Subject: Re: [PATCH rdma-next v2 1/4] RDMA/mana_ib: Introduce helpers to
+ create and destroy mana queues
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+ kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1710867613-4798-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1710867613-4798-2-git-send-email-kotaranov@linux.microsoft.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1710867613-4798-2-git-send-email-kotaranov@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
->>> Could it be that using 95F24279-4D7B-4334-9387-ACCDC67EF61C is a mistake?
->>> Or do you know of a machine which indeed uses this GUID to deliver sensor events?
->>> Because it not, then we can just avoid this GUID conflict entirely by using the
->>> other GUID.
->>> 
->> No, it's not a mistake, it's HP reusing GUIDs. Both my test machines use
->> 95F24279-4D7B-4334-9387-ACCDC67EF61C for \\.\root\WMI\HPBIOS_BIOSEvent.
->> 
->> Previously I examined a sample of ACPI dumps from machines with both
->> hpqBEvnt and HPBIOS_BIOSEvent, and concluded:
->> 
->>    - hpqBEvnt is for various events on both business and non-business
->>      machines that are of no interest to hp-wmi-sensors (e.g. hotkeys)
->> 
->>    - some machines with hpqBEvnt also have HPBIOS_BIOSEvent at GUID
->>      2B814318-4BE8-4707-9D84-A190A859B5D0
->> 
->>    - no machines with both hpqBEvnt and HPBIOS_BIOSEvent actually surface
->>      relevant sensor events (e.g. fan speed too high) via HPBIOS_BIOSEvent;
->>      they only surface non-sensor events (e.g. BIOS setting was changed)
->>      that are of no interest to hp-wmi-sensors
->> 
->>    - therefore, 2B814318-4BE8-4707-9D84-A190A859B5D0 does not need to be
->>      handled in hp-wmi-sensors
->> 
->> But this time I have done an exhaustive examination and concluded that a
->> few machines with both events do surface sensor events via HPBIOS_BIOSEvent.
+在 2024/3/19 18:00, Konstantin Taranov 写道:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> This would have interesting implications for the WMI subsystem. Can you send me
-> the output of "acpidump" on those test machines?
->
-> It also seems that there are machines which do use the other GUID, see here:
-> https://github.com/lm-sensors/lm-sensors/issues/471 (acpidump at the bottom)
-
-Here are examples of machines in the Linux Hardware Database with
-HPBIOS_BIOSEvent at 95F24279-4D7B-4334-9387-ACCDC67EF61C:
-
-Compaq 8100 Elite SFF PC
-EliteDesk 800 G1 SFF
-Z400 Workstation
-
-https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/Compaq/Compaq%208100%20Elite%20SFF%20PC/AB6EADEE22B9
-https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/EliteDesk/EliteDesk%20800%20G1%20SFF/F13506CA489E
-https://github.com/linuxhw/ACPI/blob/master/Desktop/Hewlett-Packard/Z400/Z400%20Workstation/FF7C21B8CB39
-
-Here are examples of machines that have hpqBEvnt and HPBIOS_BIOSEvent at
-95F24279-4D7B-4334-9387-ACCDC67EF61C and 2B814318-4BE8-4707-9D84-A190A859B5D0
-but do not surface sensor events via HPBIOS_BIOSEvent. See PEVT and how it
-dereferences into CBWE, which is HPBIOS_PlatformEvents giving information
-about the types of _WED/HPBIOS_BIOSEvent that may occur:
-
-ZBook 2015 G4
-ZBook Studio G5
-
-https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZBook/ZBook%2015%20G4/89F9520CDC60
-https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZBook/ZBook%20Studio%20G5/39AAE603D78B
-
-An example of a machine that has hpqBEvnt and HPBIOS_BIOSEvent at
-95F24279-4D7B-4334-9387-ACCDC67EF61C and 2B814318-4BE8-4707-9D84-A190A859B5D0
-and does surface sensor events via HPBIOS_BIOSEvent is the ProDesk 405 G6
-from https://github.com/lm-sensors/lm-sensors/issues/471 in your previous
-message. I found a reason to reply to the GitHub issue with the decompiled
-ASL for easy reference. See PEVT and how it dereferences into EVNT, which
-is HPBIOS_PlatformEvents giving information about the types of
-_WED/HPBIOS_BIOSEvent that may occur. Currently hp-wmi-sensors would not
-recognize that this BIOS supports reporting alarm and intrusion events.
-
-And finally, a machine that embodies "weird behavior from a HP BIOS". It has
-hpqBEvnt and HPBIOS_BIOSEvent at 95F24279-4D7B-4334-9387-ACCDC67EF61C and
-2B814318-4BE8-4707-9D84-A190A859B5D0, and has HPBIOS_BIOSNumericSensor at
-8F1F6435-9F42-42C8-BADC-0E9424F20C9A. However, it looks like it just
-defines these in BMOF without providing any instances during runtime, or
-maybe it generates them in some convoluted non-obvious way:
-
-ZHAN 99 Mobile Workstation G1
-
-https://github.com/linuxhw/ACPI/blob/master/Notebook/Hewlett-Packard/ZHAN/ZHAN%2099%20Mobile%20Workstation%20G1/CB1EEAC36F91
-
->>>>> I thing it would be best to create a separate WMI driver for the event and
->>>>> use a notifier chain (see include/linux/notifier.h) to distribute the event data.
->>>>> 
->>>>> In case of event GUID 95F24279-4D7B-4334-9387-ACCDC67EF61C, both hp-wmi and
->>>>> hp-wmi-sensors can subscribe on this notifier and receive event data without
->>>>> stepping on each other's toes.
->>>>> 
->>>>> The same can be done for the event GUID 2B814318-4BE8-4707-9D84-A190A859B5D0,
->>>>> with a separate notifier chain.
->>>>> 
->>>>> This would decouple the event handling from the event data consumers, allowing
->>>>> both hp-wmi and hp-wmi-sensors to coexist.
->>>> No objections from me for this specific use case to work around the GUID conflict.
->>>> hp-wmi-sensors should indeed subscribe on 2B814318-4BE8-4707-9D84-A190A859B5D0
->>>> for some of those machines.
->>>> 
->>>> Any ideas for getting rid of wmi_query_block() for fetching
->>>> \\.\root\HP\InstrumentedBIOS\HPBIOS_PlatformEvents? I know other drivers are
->>>> also using it for getting blocks other than their "main" GUID.
->>> Good question, it seems that HPBIOS_PlatformEvents is optional, so using the component
->>> framework will not work.
->>> 
->> Yes, HPBIOS_PlatformEvents is optional, but it's pretty much necessary for
->> alarm and intrusion events. Without it, it's not possible to know whether a
->> machine even reports such events until after they occur (rare). We'd have
->> to assume that all machines always support such events.
->> 
->>> If those WMI data blocks are always associated with the same ACPI device used by the
->>> sensors GUID, then maybe i could create some sort of API for checking if a given GUID
->>> exists the ACPI device associated with a WMI device.
->> For all HP machines in the Linux Hardware Database, all machines with
->> HPBIOS_PlatformEvents also have HPBIOS_BIOSNumericSensor. The reverse is
->> not true. Neither WMI object appears under multiple GUIDs.
->> 
->>> However i thing the event GUID issue is more important right now.
->> Sure. I also wonder if your idea could be expanded into a generic driver
->> for publishing simple WMI events. This would be usable in other drivers
->> that are currently using legacy handlers for receiving event data.
+> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
+> A queue always consists of umem, gdma_region, and id.
+> A queue can become a WQ or a CQ.
 > 
-> You are completely right, this driver could allow clients to register a
-> notifier block for a event identified by a GUID, and this notifier block
-> is then called every time this event is received.
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>   drivers/infiniband/hw/mana/main.c    | 43 ++++++++++++++++++++++++++++
+>   drivers/infiniband/hw/mana/mana_ib.h | 10 +++++++
+>   2 files changed, 53 insertions(+)
 > 
->> More broadly, if hp-wmi-drivers is any indication, aggregate WMI devices
->> could be a pain. Primary WMI object, associated WMI objects (optional or
->> mandatory), multiple aggregate devices allowed to bind to the same
->> objects. And if using GUIDs for identification, multiple allowable GUIDs.
-> 
-> I agree, part of it stems from many OEMs designing their interfaces in such
-> a way that it is impossible to discover if some optional features are present.
-> 
-> I suspect this happens because under Windows, the OEMs just check all GUIDs
-> once the system has "finished booting" (aka reached the login screen), and
-> this is afaik not possible with device drivers.
-> 
-> However we cannot export WMI method/events/etc to userspace, as this would
-> be a security nightmare (random RPC with buggy ACPI firmware, yay!).
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> index 71e33feee..4524c6b80 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -237,6 +237,49 @@ void mana_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
+>   		ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
+>   }
+>   
+> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+> +			 struct mana_ib_queue *queue)
+> +{
+> +	struct ib_umem *umem;
+> +	int err;
+> +
+> +	queue->umem = NULL;
+> +	queue->id = INVALID_QUEUE_ID;
+> +	queue->gdma_region = GDMA_INVALID_DMA_REGION;
+> +
+> +	umem = ib_umem_get(&mdev->ib_dev, addr, size, IB_ACCESS_LOCAL_WRITE);
+> +	if (IS_ERR(umem)) {
+> +		err = PTR_ERR(umem);
+> +		ibdev_dbg(&mdev->ib_dev, "Failed to get umem, %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = mana_ib_create_zero_offset_dma_region(mdev, umem, &queue->gdma_region);
+> +	if (err) {
+> +		ibdev_dbg(&mdev->ib_dev, "Failed to create dma region, %d\n", err);
+> +		goto free_umem;
+> +	}
+> +	queue->umem = umem;
+> +
+> +	ibdev_dbg(&mdev->ib_dev,
+> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
+> +		  err, queue->gdma_region);
+> +
+> +	return 0;
+> +free_umem:
+> +	ib_umem_release(umem);
+> +	return err;
+> +}
+> +
+> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct mana_ib_queue *queue)
+> +{
+> +	/* Ignore return code as there is not much we can do about it.
+> +	 * The error message is printed inside.
+> +	 */
+> +	mana_ib_gd_destroy_dma_region(mdev, queue->gdma_region);
 
-Interesting info here. I assumed they just worked with string names for
-objects and properties and didn't care about GUIDs.
+Thanks a lot. I am fine with it.
 
-> In the future we might need an API for at least discovering and interacting
-> with WMI devices backed by the same ACPI device, however this might take some
-> time.
->
-> I will focus on this WMI event driver for now.
+Zhu Yanjun
 
-Looking forward to it. Maybe tell platform-driver-x86 about it too.
+> +	ib_umem_release(queue->umem);
+> +}
+> +
+>   static int
+>   mana_ib_gd_first_dma_region(struct mana_ib_dev *dev,
+>   			    struct gdma_context *gc,
+> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+> index f83390eeb..859fd3bfc 100644
+> --- a/drivers/infiniband/hw/mana/mana_ib.h
+> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> @@ -45,6 +45,12 @@ struct mana_ib_adapter_caps {
+>   	u32 max_inline_data_size;
+>   };
+>   
+> +struct mana_ib_queue {
+> +	struct ib_umem *umem;
+> +	u64 gdma_region;
+> +	u64 id;
+> +};
+> +
+>   struct mana_ib_dev {
+>   	struct ib_device ib_dev;
+>   	struct gdma_dev *gdma_dev;
+> @@ -169,6 +175,10 @@ int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+>   int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+>   				  mana_handle_t gdma_region);
+>   
+> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+> +			 struct mana_ib_queue *queue);
+> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct mana_ib_queue *queue);
+> +
+>   struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+>   				struct ib_wq_init_attr *init_attr,
+>   				struct ib_udata *udata);
 
-Thanks,
-
-James
 
