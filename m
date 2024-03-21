@@ -1,263 +1,426 @@
-Return-Path: <linux-kernel+bounces-110645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF82A8861B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:30:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 854AE8861A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 562E1B21A84
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:30:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 125BC1F222A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81EA13664B;
-	Thu, 21 Mar 2024 20:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A34134CF2;
+	Thu, 21 Mar 2024 20:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="ta915xDV";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="CEqLLd8X"
-Received: from fallback22.i.mail.ru (fallback22.i.mail.ru [79.137.243.74])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EPpBJteL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FF5135A72;
-	Thu, 21 Mar 2024 20:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C9A133402;
+	Thu, 21 Mar 2024 20:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711052965; cv=none; b=T/RwyAvDoDmnD1wRkprD7R4p7WAp653Dx/l/JHFsUKm+iGstn7nVqguHpw30pvjaGvXMQtLPGmVfMfvg81vt/1LSn1qYVWwa5PMsWjcXcpTkpVjpInWhNPBntukBhn6ozhaNSM2NsaJcOTFFJSBtCaAN/1NmViwjUwZxEBR0UNE=
+	t=1711052893; cv=none; b=eaNTBU4yLmAxfcb+9JizW3HfIN4cyynFgPr4gvlnTYvgs4LIfrzWbp7/0ERdKuHJuHUQR1AEhjqKWoHGglTYrlIY63axnhlst4Tovrsiw49obZOtkXj+NMOQgl1G/ytd9UjJsRMH56Z2Fzkv4qrIXRqh3KUSNJrm7Y1xOKa0uZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711052965; c=relaxed/simple;
-	bh=UCAnAAtSuPVWQEsZqwrA6E+E+a+w9YR1nZK0vA5uF7c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YKVnVEojhl/lUsLXxiGXEfXZ+TyMP1kwWOzXm2jtEDj7T//cip8vijo74MeLGn9SF5ZsC9C3DvFmJyls4+jUXlSFLNGcKrysIFGxIRAhwpSif83AGvtu0EVo9+5VSt66xp4XqOHm54rNRXVHgSCVhsry9gFdL/11GilKAPIDHs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com; spf=pass smtp.mailfrom=jiaxyga.com; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=ta915xDV; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=CEqLLd8X; arc=none smtp.client-ip=79.137.243.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jiaxyga.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
-	h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=Sq1hRxPihYAm9AttFJqQInvc9/J+1ZCvq0CMmPYhARw=;
-	t=1711052963;x=1711142963; 
-	b=ta915xDVccSwdLnwqi7jxkU3bgQR3LcY2PfoMMLPXROSXf83Dh+hgvVfa5rd+GuuFAV28VeBXXKPmdm9wvoBMP3RfXb7EVx23aglqSaiaB068RHeXxPtNDD1yPTfRDmRY1dW6jjvt4WGyQhIzsPMv1ZBf31CF6RImI3V0LhOzH0=;
-Received: from [10.12.4.2] (port=51846 helo=smtp29.i.mail.ru)
-	by fallback22.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
-	id 1rnP2J-00DkXb-Kp; Thu, 21 Mar 2024 23:29:15 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-	; s=mailru; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-	X-Cloud-Ids:Disposition-Notification-To;
-	bh=Sq1hRxPihYAm9AttFJqQInvc9/J+1ZCvq0CMmPYhARw=; t=1711052955; x=1711142955; 
-	b=CEqLLd8XMV2QhePLZYHMyRlW3SY0n+UG/FBEdGbjW+Z+TVhzny0r2hyRdpfpEY3yb074RHaXryt
-	t+MNbOf9l26PXw2EABp7NQZisI/62QRorqirMWaIlj/pOBEVZd3HPbFXtq/NISsllU/WG2WTCUX8q
-	jAPlyofFRZ8br1Y1+V8=;
-Received: by smtp29.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-	id 1rnP24-00000005qz4-3IYt; Thu, 21 Mar 2024 23:29:01 +0300
-From: Danila Tikhonov <danila@jiaxyga.com>
-To: andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	david@mainlining.org,
-	adrian@travitia.xyz
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Danila Tikhonov <danila@jiaxyga.com>
-Subject: [PATCH v2 2/7] dt-bindings: clock: qcom: Add SM7150 DISPCC clocks
-Date: Thu, 21 Mar 2024 23:28:09 +0300
-Message-ID: <20240321202814.59835-3-danila@jiaxyga.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240321202814.59835-1-danila@jiaxyga.com>
-References: <20240321202814.59835-1-danila@jiaxyga.com>
+	s=arc-20240116; t=1711052893; c=relaxed/simple;
+	bh=fv29jsGkpY39loNkVFVRiRflO64Iy3xyWL+d6AJ6Bek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BbwvZCpKAr4fL979veHzzYT2og/HXAkH8H0n2TmO1bOAF2yYg6V7Wn/A94M0+WLl/H0qwiwv8atdVVyVwLR69SWn8Xl09t1MDLmbTx/x2bz5wPFgQmxMj3pGGWCbnhPgkIO5IejndncJ853q/5MRlaMcvMjz+Z1eFGDwXGOAPfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EPpBJteL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49E48C433F1;
+	Thu, 21 Mar 2024 20:28:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711052892;
+	bh=fv29jsGkpY39loNkVFVRiRflO64Iy3xyWL+d6AJ6Bek=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EPpBJteL3VBDttaosg/kR7CL735OSUtwgtdk6Z4hD4f7zPgPd8FqCtg1ZyVRJKiJg
+	 A7c13uYeD+uNt/wRiULZBkruy4GR9dU9c2VSwVE/ZV2qSTFRcsZPXgXTlyjhDno8t/
+	 wX5p5hTbFNJTB6zV/y8u30VuVyLl31lzYII+RzYUeZTBNwaZT0Y5UhGw/aQWVCwOh5
+	 e+a3lg8ckRKT1u8KvUgd38lpvKMbyCjQynRF/2anB7xmiWluwzr9WWCC8G6jxV0a8v
+	 QwJQmIiUPuOcLqED5syJ5SAR91vxKGHN9slK43A+sztpD2fE+cvEL0BNNe0buFgvhm
+	 X1HoLgzhAIpnQ==
+Date: Thu, 21 Mar 2024 17:28:09 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@arm.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
+	Leo Yan <leo.yan@linux.dev>, Song Liu <song@kernel.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Liam Howlett <liam.howlett@oracle.com>,
+	Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+	Ben Gainey <ben.gainey@arm.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Sun Haiyong <sunhaiyong@loongson.cn>,
+	Changbin Du <changbin.du@huawei.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
+	Paran Lee <p4ranlee@gmail.com>, Li Dong <lidong@vivo.com>,
+	elfring@users.sourceforge.net, Andi Kleen <ak@linux.intel.com>,
+	Markus Elfring <Markus.Elfring@web.de>,
+	Chengen Du <chengen.du@canonical.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] perf dso: Reorder variables to save space in
+ struct dso
+Message-ID: <ZfyYWcu0E-Pcn6Rf@x1>
+References: <20240321160300.1635121-1-irogers@google.com>
+ <20240321160300.1635121-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-4EC0790: 10
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD92CB91DAA594FB6BF71C75EE959EE1452C6A7FC4172EA4E06182A05F53808504017E14CB40AD01A4BD27678DDAA8063141FA0925F93B6C68CDF7EF9FDA0AB3C107CBF1C18CED4D92F
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7D96557C5EC1D5BA4EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006377845AD97F799C6E88638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8942956B234B440AFB82A659056168E43CC4E6D586A026F63CC7F00164DA146DAFE8445B8C89999728AA50765F7900637FD2911E685725BF8389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC80CABCCA60F52D7EBF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947CB355ED1E20F5346AC0837EA9F3D197644AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C345DE7C2FFE6F0182BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CFED8438A78DFE0A9E1DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C300D476B8B50F5EBD35872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C1DE0DAB: 0D63561A33F958A50D55FE74290F1C885002B1117B3ED696832F311C8EC727D719AC5B239BAD4335823CB91A9FED034534781492E4B8EEADF1165EFABA1780A6C79554A2A72441328621D336A7BC284946AD531847A6065A535571D14F44ED41
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF3FED46C3ACD6F73ED3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF1C9DFCA7A9F93B4AF8C72C6C9FD115B0B449D7D7687BC38B68149F144258457BD9E67331CBA3B6E4A5E652D4FCD6795A56DBC3CC9D26ED0807F407391B6C10D8CFE9BC3599BF4691146D90F64BF3396102C26D483E81D6BE72B480F99247062FEE42F474E8A1C6FD34D382445848F2F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt33F1wIes272kSmbAhPK2g==
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C739498123F80C9C64FBB36E1356DD24693B53BC3F09FA5D26EF7C3B8ED3E8F5D8AFB91F2C62728BC403A049225EC17F3711B6CF1A6F2E8989E84EC137BFB0221605B344978139F6FA5A77F05FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: B8F34718100C35BD
-X-77F55803: 6242723A09DB00B4A873E06F0BBE0AC598D6090D1BBB74CFF8AFBFA1F544574268F3CF0E9FE49B6993595096ACAD5B569E7C7848CBABB1B253D7A9D56C70A0D868007C99212A9577
-X-7FA49CB5: 0D63561A33F958A599A767676139B63AAE0945276848E927E39289C7DD464A8E8941B15DA834481FA18204E546F3947C712411567E54C8E9F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637473B9BD420DAE8D3389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C369A9B21EF3CACE7135872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-87b9d050: 1
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojt33F1wIes26NDhdSSlNHZw==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321160300.1635121-2-irogers@google.com>
 
-Add device tree bindings for the display clock controller on Qualcomm
-SM7150 platform.
+On Thu, Mar 21, 2024 at 09:02:48AM -0700, Ian Rogers wrote:
+> Save 40 bytes and move from 8 to 7 cache lines. Make variable dwfl
+> dependent on being a powerpc build. Squeeze bits of int/enum types
+> when appropriate. Remove holes/padding by reordering variables.
 
-Co-developed-by: David Wronek <david@mainlining.org>
-Signed-off-by: David Wronek <david@mainlining.org>
-Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/clock/qcom,sm7150-dispcc.yaml    | 75 +++++++++++++++++++
- .../dt-bindings/clock/qcom,sm7150-dispcc.h    | 59 +++++++++++++++
- 2 files changed, 134 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm7150-dispcc.yaml
- create mode 100644 include/dt-bindings/clock/qcom,sm7150-dispcc.h
+Thanks, applied.
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,sm7150-dispcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm7150-dispcc.yaml
-new file mode 100644
-index 000000000000..b8d6e1d05ce2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/qcom,sm7150-dispcc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/qcom,sm7150-dispcc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Display Clock & Reset Controller for SM7150
-+
-+maintainers:
-+  - Danila Tikhonov <danila@jiaxyga.com>
-+  - David Wronek <david@mainlining.org>
-+  - Jens Reidel <adrian@travitia.xyz>
-+
-+description: |
-+  Qualcomm display clock control module provides the clocks, resets and power
-+  domains on SM7150.
-+
-+  See also:: include/dt-bindings/clock/qcom,sm7150-dispcc.h
-+
-+properties:
-+  compatible:
-+    const: qcom,sm7150-dispcc
-+
-+  clocks:
-+    items:
-+      - description: Board XO source
-+      - description: Board Always On XO source
-+      - description: GPLL0 source from GCC
-+      - description: Sleep clock source
-+      - description: Byte clock from MDSS DSI PHY0
-+      - description: Pixel clock from MDSS DSI PHY0
-+      - description: Byte clock from MDSS DSI PHY1
-+      - description: Pixel clock from MDSS DSI PHY1
-+      - description: Link clock from DP PHY
-+      - description: VCO DIV clock from DP PHY
-+
-+  power-domains:
-+    maxItems: 1
-+    description:
-+      CX power domain.
-+
-+required:
-+  - compatible
-+  - clocks
-+  - power-domains
-+
-+allOf:
-+  - $ref: qcom,gcc.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,sm7150-gcc.h>
-+    #include <dt-bindings/clock/qcom,rpmh.h>
-+    #include <dt-bindings/power/qcom,rpmhpd.h>
-+    clock-controller@af00000 {
-+      compatible = "qcom,sm7150-dispcc";
-+      reg = <0x0af00000 0x200000>;
-+      clocks = <&rpmhcc RPMH_CXO_CLK>,
-+               <&rpmhcc RPMH_CXO_CLK_A>,
-+               <&gcc GCC_DISP_GPLL0_CLK_SRC>,
-+               <&sleep_clk>,
-+               <&mdss_dsi0_phy 0>,
-+               <&mdss_dsi0_phy 1>,
-+               <&mdss_dsi1_phy 0>,
-+               <&mdss_dsi1_phy 1>,
-+               <&dp_phy 0>,
-+               <&dp_phy 1>;
-+      power-domains = <&rpmhpd RPMHPD_CX>;
-+      #clock-cells = <1>;
-+      #reset-cells = <1>;
-+      #power-domain-cells = <1>;
-+    };
-+...
-diff --git a/include/dt-bindings/clock/qcom,sm7150-dispcc.h b/include/dt-bindings/clock/qcom,sm7150-dispcc.h
-new file mode 100644
-index 000000000000..fc1fefe8fd72
---- /dev/null
-+++ b/include/dt-bindings/clock/qcom,sm7150-dispcc.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2024, Danila Tikhonov <danila@jiaxyga.com>
-+ * Copyright (c) 2024, David Wronek <david@mainlining.org>
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_QCOM_DISPCC_SM7150_H
-+#define _DT_BINDINGS_CLK_QCOM_DISPCC_SM7150_H
-+
-+/* DISPCC clock registers */
-+#define DISPCC_PLL0				0
-+#define DISPCC_MDSS_AHB_CLK			1
-+#define DISPCC_MDSS_AHB_CLK_SRC			2
-+#define DISPCC_MDSS_BYTE0_CLK			3
-+#define DISPCC_MDSS_BYTE0_CLK_SRC		4
-+#define DISPCC_MDSS_BYTE0_DIV_CLK_SRC		5
-+#define DISPCC_MDSS_BYTE0_INTF_CLK		6
-+#define DISPCC_MDSS_BYTE1_CLK			7
-+#define DISPCC_MDSS_BYTE1_CLK_SRC		8
-+#define DISPCC_MDSS_BYTE1_DIV_CLK_SRC		9
-+#define DISPCC_MDSS_BYTE1_INTF_CLK		10
-+#define DISPCC_MDSS_DP_AUX_CLK			11
-+#define DISPCC_MDSS_DP_AUX_CLK_SRC		12
-+#define DISPCC_MDSS_DP_CRYPTO_CLK		13
-+#define DISPCC_MDSS_DP_CRYPTO_CLK_SRC		14
-+#define DISPCC_MDSS_DP_LINK_CLK			15
-+#define DISPCC_MDSS_DP_LINK_CLK_SRC		16
-+#define DISPCC_MDSS_DP_LINK_INTF_CLK		17
-+#define DISPCC_MDSS_DP_PIXEL1_CLK		18
-+#define DISPCC_MDSS_DP_PIXEL1_CLK_SRC		19
-+#define DISPCC_MDSS_DP_PIXEL_CLK		20
-+#define DISPCC_MDSS_DP_PIXEL_CLK_SRC		21
-+#define DISPCC_MDSS_ESC0_CLK			22
-+#define DISPCC_MDSS_ESC0_CLK_SRC		23
-+#define DISPCC_MDSS_ESC1_CLK			24
-+#define DISPCC_MDSS_ESC1_CLK_SRC		25
-+#define DISPCC_MDSS_MDP_CLK			26
-+#define DISPCC_MDSS_MDP_CLK_SRC			27
-+#define DISPCC_MDSS_MDP_LUT_CLK			28
-+#define DISPCC_MDSS_NON_GDSC_AHB_CLK		29
-+#define DISPCC_MDSS_PCLK0_CLK			30
-+#define DISPCC_MDSS_PCLK0_CLK_SRC		31
-+#define DISPCC_MDSS_PCLK1_CLK			32
-+#define DISPCC_MDSS_PCLK1_CLK_SRC		33
-+#define DISPCC_MDSS_ROT_CLK			34
-+#define DISPCC_MDSS_ROT_CLK_SRC			35
-+#define DISPCC_MDSS_RSCC_AHB_CLK		36
-+#define DISPCC_MDSS_RSCC_VSYNC_CLK		37
-+#define DISPCC_MDSS_VSYNC_CLK			38
-+#define DISPCC_MDSS_VSYNC_CLK_SRC		39
-+#define DISPCC_XO_CLK_SRC			40
-+#define DISPCC_SLEEP_CLK			41
-+#define DISPCC_SLEEP_CLK_SRC			42
-+
-+/* DISPCC GDSCR */
-+#define MDSS_GDSC				0
-+
-+#endif
--- 
-2.44.0
-
+- Arnaldo
+ 
+> Before:
+> ```
+> struct dso {
+>         struct mutex               lock;                 /*     0    40 */
+>         struct list_head           node;                 /*    40    16 */
+>         struct rb_node             rb_node __attribute__((__aligned__(8))); /*    56    24 */
+>         /* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
+>         struct rb_root *           root;                 /*    80     8 */
+>         struct rb_root_cached      symbols;              /*    88    16 */
+>         struct symbol * *          symbol_names;         /*   104     8 */
+>         size_t                     symbol_names_len;     /*   112     8 */
+>         struct rb_root_cached      inlined_nodes;        /*   120    16 */
+>         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+>         struct rb_root_cached      srclines;             /*   136    16 */
+>         struct {
+>                 u64                addr;                 /*   152     8 */
+>                 struct symbol *    symbol;               /*   160     8 */
+>         } last_find_result;                              /*   152    16 */
+>         void *                     a2l;                  /*   168     8 */
+>         char *                     symsrc_filename;      /*   176     8 */
+>         unsigned int               a2l_fails;            /*   184     4 */
+>         enum dso_space_type        kernel;               /*   188     4 */
+>         /* --- cacheline 3 boundary (192 bytes) --- */
+>         _Bool                      is_kmod;              /*   192     1 */
+> 
+>         /* XXX 3 bytes hole, try to pack */
+> 
+>         enum dso_swap_type         needs_swap;           /*   196     4 */
+>         enum dso_binary_type       symtab_type;          /*   200     4 */
+>         enum dso_binary_type       binary_type;          /*   204     4 */
+>         enum dso_load_errno        load_errno;           /*   208     4 */
+>         u8                         adjust_symbols:1;     /*   212: 0  1 */
+>         u8                         has_build_id:1;       /*   212: 1  1 */
+>         u8                         header_build_id:1;    /*   212: 2  1 */
+>         u8                         has_srcline:1;        /*   212: 3  1 */
+>         u8                         hit:1;                /*   212: 4  1 */
+>         u8                         annotate_warned:1;    /*   212: 5  1 */
+>         u8                         auxtrace_warned:1;    /*   212: 6  1 */
+>         u8                         short_name_allocated:1; /*   212: 7  1 */
+>         u8                         long_name_allocated:1; /*   213: 0  1 */
+>         u8                         is_64_bit:1;          /*   213: 1  1 */
+> 
+>         /* XXX 6 bits hole, try to pack */
+> 
+>         _Bool                      sorted_by_name;       /*   214     1 */
+>         _Bool                      loaded;               /*   215     1 */
+>         u8                         rel;                  /*   216     1 */
+> 
+>         /* XXX 7 bytes hole, try to pack */
+> 
+>         struct build_id            bid;                  /*   224    32 */
+>         /* --- cacheline 4 boundary (256 bytes) --- */
+>         u64                        text_offset;          /*   256     8 */
+>         u64                        text_end;             /*   264     8 */
+>         const char  *              short_name;           /*   272     8 */
+>         const char  *              long_name;            /*   280     8 */
+>         u16                        long_name_len;        /*   288     2 */
+>         u16                        short_name_len;       /*   290     2 */
+> 
+>         /* XXX 4 bytes hole, try to pack */
+> 
+>         void *                     dwfl;                 /*   296     8 */
+>         struct auxtrace_cache *    auxtrace_cache;       /*   304     8 */
+>         int                        comp;                 /*   312     4 */
+> 
+>         /* XXX 4 bytes hole, try to pack */
+> 
+>         /* --- cacheline 5 boundary (320 bytes) --- */
+>         struct {
+>                 struct rb_root     cache;                /*   320     8 */
+>                 int                fd;                   /*   328     4 */
+>                 int                status;               /*   332     4 */
+>                 u32                status_seen;          /*   336     4 */
+> 
+>                 /* XXX 4 bytes hole, try to pack */
+> 
+>                 u64                file_size;            /*   344     8 */
+>                 struct list_head   open_entry;           /*   352    16 */
+>                 u64                elf_base_addr;        /*   368     8 */
+>                 u64                debug_frame_offset;   /*   376     8 */
+>                 /* --- cacheline 6 boundary (384 bytes) --- */
+>                 u64                eh_frame_hdr_addr;    /*   384     8 */
+>                 u64                eh_frame_hdr_offset;  /*   392     8 */
+>         } data;                                          /*   320    80 */
+>         struct {
+>                 u32                id;                   /*   400     4 */
+>                 u32                sub_id;               /*   404     4 */
+>                 struct perf_env *  env;                  /*   408     8 */
+>         } bpf_prog;                                      /*   400    16 */
+>         union {
+>                 void *             priv;                 /*   416     8 */
+>                 u64                db_id;                /*   416     8 */
+>         };                                               /*   416     8 */
+>         struct nsinfo *            nsinfo;               /*   424     8 */
+>         struct dso_id              id;                   /*   432    24 */
+>         /* --- cacheline 7 boundary (448 bytes) was 8 bytes ago --- */
+>         refcount_t                 refcnt;               /*   456     4 */
+>         char                       name[];               /*   460     0 */
+> 
+>         /* size: 464, cachelines: 8, members: 49 */
+>         /* sum members: 440, holes: 4, sum holes: 18 */
+>         /* sum bitfield members: 10 bits, bit holes: 1, sum bit holes: 6 bits */
+>         /* padding: 4 */
+>         /* forced alignments: 1 */
+>         /* last cacheline: 16 bytes */
+> } __attribute__((__aligned__(8)));
+> ```
+> 
+> After:
+> ```
+> struct dso {
+>         struct mutex               lock;                 /*     0    40 */
+>         struct list_head           node;                 /*    40    16 */
+>         struct rb_node             rb_node __attribute__((__aligned__(8))); /*    56    24 */
+>         /* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
+>         struct rb_root *           root;                 /*    80     8 */
+>         struct rb_root_cached      symbols;              /*    88    16 */
+>         struct symbol * *          symbol_names;         /*   104     8 */
+>         size_t                     symbol_names_len;     /*   112     8 */
+>         struct rb_root_cached      inlined_nodes;        /*   120    16 */
+>         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+>         struct rb_root_cached      srclines;             /*   136    16 */
+>         struct {
+>                 u64                addr;                 /*   152     8 */
+>                 struct symbol *    symbol;               /*   160     8 */
+>         } last_find_result;                              /*   152    16 */
+>         struct build_id            bid;                  /*   168    32 */
+>         /* --- cacheline 3 boundary (192 bytes) was 8 bytes ago --- */
+>         u64                        text_offset;          /*   200     8 */
+>         u64                        text_end;             /*   208     8 */
+>         const char  *              short_name;           /*   216     8 */
+>         const char  *              long_name;            /*   224     8 */
+>         void *                     a2l;                  /*   232     8 */
+>         char *                     symsrc_filename;      /*   240     8 */
+>         struct nsinfo *            nsinfo;               /*   248     8 */
+>         /* --- cacheline 4 boundary (256 bytes) --- */
+>         struct auxtrace_cache *    auxtrace_cache;       /*   256     8 */
+>         union {
+>                 void *             priv;                 /*   264     8 */
+>                 u64                db_id;                /*   264     8 */
+>         };                                               /*   264     8 */
+>         struct {
+>                 struct perf_env *  env;                  /*   272     8 */
+>                 u32                id;                   /*   280     4 */
+>                 u32                sub_id;               /*   284     4 */
+>         } bpf_prog;                                      /*   272    16 */
+>         struct {
+>                 struct rb_root     cache;                /*   288     8 */
+>                 struct list_head   open_entry;           /*   296    16 */
+>                 u64                file_size;            /*   312     8 */
+>                 /* --- cacheline 5 boundary (320 bytes) --- */
+>                 u64                elf_base_addr;        /*   320     8 */
+>                 u64                debug_frame_offset;   /*   328     8 */
+>                 u64                eh_frame_hdr_addr;    /*   336     8 */
+>                 u64                eh_frame_hdr_offset;  /*   344     8 */
+>                 int                fd;                   /*   352     4 */
+>                 int                status;               /*   356     4 */
+>                 u32                status_seen;          /*   360     4 */
+>         } data;                                          /*   288    80 */
+> 
+>         /* XXX last struct has 4 bytes of padding */
+> 
+>         struct dso_id              id;                   /*   368    24 */
+>         /* --- cacheline 6 boundary (384 bytes) was 8 bytes ago --- */
+>         unsigned int               a2l_fails;            /*   392     4 */
+>         int                        comp;                 /*   396     4 */
+>         refcount_t                 refcnt;               /*   400     4 */
+>         enum dso_load_errno        load_errno;           /*   404     4 */
+>         u16                        long_name_len;        /*   408     2 */
+>         u16                        short_name_len;       /*   410     2 */
+>         enum dso_binary_type       symtab_type:8;        /*   412: 0  4 */
+>         enum dso_binary_type       binary_type:8;        /*   412: 8  4 */
+>         enum dso_space_type        kernel:2;             /*   412:16  4 */
+>         enum dso_swap_type         needs_swap:2;         /*   412:18  4 */
+> 
+>         /* Bitfield combined with next fields */
+> 
+>         _Bool                      is_kmod:1;            /*   414: 4  1 */
+>         u8                         adjust_symbols:1;     /*   414: 5  1 */
+>         u8                         has_build_id:1;       /*   414: 6  1 */
+>         u8                         header_build_id:1;    /*   414: 7  1 */
+>         u8                         has_srcline:1;        /*   415: 0  1 */
+>         u8                         hit:1;                /*   415: 1  1 */
+>         u8                         annotate_warned:1;    /*   415: 2  1 */
+>         u8                         auxtrace_warned:1;    /*   415: 3  1 */
+>         u8                         short_name_allocated:1; /*   415: 4  1 */
+>         u8                         long_name_allocated:1; /*   415: 5  1 */
+>         u8                         is_64_bit:1;          /*   415: 6  1 */
+> 
+>         /* XXX 1 bit hole, try to pack */
+> 
+>         _Bool                      sorted_by_name;       /*   416     1 */
+>         _Bool                      loaded;               /*   417     1 */
+>         u8                         rel;                  /*   418     1 */
+>         char                       name[];               /*   419     0 */
+> 
+>         /* size: 424, cachelines: 7, members: 48 */
+>         /* sum members: 415 */
+>         /* sum bitfield members: 31 bits, bit holes: 1, sum bit holes: 1 bits */
+>         /* padding: 5 */
+>         /* paddings: 1, sum paddings: 4 */
+>         /* forced alignments: 1 */
+>         /* last cacheline: 40 bytes */
+> } __attribute__((__aligned__(8)));
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/dso.h | 84 +++++++++++++++++++++----------------------
+>  1 file changed, 42 insertions(+), 42 deletions(-)
+> 
+> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
+> index 2cdcd1e2ef8b..17dab230a2ca 100644
+> --- a/tools/perf/util/dso.h
+> +++ b/tools/perf/util/dso.h
+> @@ -161,66 +161,66 @@ struct dso {
+>  		u64		addr;
+>  		struct symbol	*symbol;
+>  	} last_find_result;
+> -	void		 *a2l;
+> -	char		 *symsrc_filename;
+> -	unsigned int	 a2l_fails;
+> -	enum dso_space_type	kernel;
+> -	bool			is_kmod;
+> -	enum dso_swap_type	needs_swap;
+> -	enum dso_binary_type	symtab_type;
+> -	enum dso_binary_type	binary_type;
+> -	enum dso_load_errno	load_errno;
+> -	u8		 adjust_symbols:1;
+> -	u8		 has_build_id:1;
+> -	u8		 header_build_id:1;
+> -	u8		 has_srcline:1;
+> -	u8		 hit:1;
+> -	u8		 annotate_warned:1;
+> -	u8		 auxtrace_warned:1;
+> -	u8		 short_name_allocated:1;
+> -	u8		 long_name_allocated:1;
+> -	u8		 is_64_bit:1;
+> -	bool		 sorted_by_name;
+> -	bool		 loaded;
+> -	u8		 rel;
+>  	struct build_id	 bid;
+>  	u64		 text_offset;
+>  	u64		 text_end;
+>  	const char	 *short_name;
+>  	const char	 *long_name;
+> -	u16		 long_name_len;
+> -	u16		 short_name_len;
+> +	void		 *a2l;
+> +	char		 *symsrc_filename;
+> +#if defined(__powerpc__)
+>  	void		*dwfl;			/* DWARF debug info */
+> +#endif
+> +	struct nsinfo	*nsinfo;
+>  	struct auxtrace_cache *auxtrace_cache;
+> -	int		 comp;
+> -
+> +	union { /* Tool specific area */
+> +		void	 *priv;
+> +		u64	 db_id;
+> +	};
+> +	/* bpf prog information */
+> +	struct {
+> +		struct perf_env	*env;
+> +		u32		id;
+> +		u32		sub_id;
+> +	} bpf_prog;
+>  	/* dso data file */
+>  	struct {
+>  		struct rb_root	 cache;
+> -		int		 fd;
+> -		int		 status;
+> -		u32		 status_seen;
+> -		u64		 file_size;
+>  		struct list_head open_entry;
+> +		u64		 file_size;
+>  		u64		 elf_base_addr;
+>  		u64		 debug_frame_offset;
+>  		u64		 eh_frame_hdr_addr;
+>  		u64		 eh_frame_hdr_offset;
+> +		int		 fd;
+> +		int		 status;
+> +		u32		 status_seen;
+>  	} data;
+> -	/* bpf prog information */
+> -	struct {
+> -		u32		id;
+> -		u32		sub_id;
+> -		struct perf_env	*env;
+> -	} bpf_prog;
+> -
+> -	union { /* Tool specific area */
+> -		void	 *priv;
+> -		u64	 db_id;
+> -	};
+> -	struct nsinfo	*nsinfo;
+>  	struct dso_id	 id;
+> +	unsigned int	 a2l_fails;
+> +	int		 comp;
+>  	refcount_t	 refcnt;
+> +	enum dso_load_errno	load_errno;
+> +	u16		 long_name_len;
+> +	u16		 short_name_len;
+> +	enum dso_binary_type	symtab_type:8;
+> +	enum dso_binary_type	binary_type:8;
+> +	enum dso_space_type	kernel:2;
+> +	enum dso_swap_type	needs_swap:2;
+> +	bool			is_kmod:1;
+> +	u8		 adjust_symbols:1;
+> +	u8		 has_build_id:1;
+> +	u8		 header_build_id:1;
+> +	u8		 has_srcline:1;
+> +	u8		 hit:1;
+> +	u8		 annotate_warned:1;
+> +	u8		 auxtrace_warned:1;
+> +	u8		 short_name_allocated:1;
+> +	u8		 long_name_allocated:1;
+> +	u8		 is_64_bit:1;
+> +	bool		 sorted_by_name;
+> +	bool		 loaded;
+> +	u8		 rel;
+>  	char		 name[];
+>  };
+>  
+> -- 
+> 2.44.0.396.g6e790dbe36-goog
+> 
 
