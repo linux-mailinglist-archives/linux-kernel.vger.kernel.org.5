@@ -1,140 +1,108 @@
-Return-Path: <linux-kernel+bounces-109814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6451D885607
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E82E88560A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 948FA1C20D06
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:48:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99AC91C2119B
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 08:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B43226AFC;
-	Thu, 21 Mar 2024 08:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58BE62C6BB;
+	Thu, 21 Mar 2024 08:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gmijaw2Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="erGSs0tJ"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB56C2E6;
-	Thu, 21 Mar 2024 08:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316F91B274
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 08:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711010911; cv=none; b=POkeegujKDJefQwtBXXOKE92IFqx8jXe3BcdF1rksGqYf/BrZ2LA00T4v61GETlSo9/7DhDn3C9xnUTuX4u+lYBdXxEI41Artw8siklMNr3RBxCtTPersmXEeEXSdqVJ/bOtKwfMzib29hcuNtj3ZrIK1Wffk6NnrYjyvILvjhk=
+	t=1711011057; cv=none; b=M48Up6wJkYsrQnrIMXKefInOgDVoei5ObNdRiQ2lmgK/tHRhGMKSeapgLGUWsaCsoXUAFLURcZM4dagjG3Nk8tZZ11FqPGH6c4TyjXRRC2omr7Q8tGcinnMT2jMufPQHkdWkIshk8cOCku0dLRMWOBFYcf4s0h8pRQ5GrKk2VHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711010911; c=relaxed/simple;
-	bh=15ZtzjY1fNYkJ0k0FnRr+bctv3Yg6O2wYPUdrRw1jU4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=M2vQxA5NaM9Nx2pQQmOpN9211CHDnpr2XPDzo8FBU19OLBLSj7bfRbAH5HmEzi2w4eG+rrafw7KVVyCMGQdj5d2UaARLdGMDhRV6SsDfMegTCPbySHnRrLdMl0TlY71j7xmlW0glVNhB3XxAOS4dkROYizMpldLc/cxQggdoipE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gmijaw2Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DD6C433C7;
-	Thu, 21 Mar 2024 08:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711010911;
-	bh=15ZtzjY1fNYkJ0k0FnRr+bctv3Yg6O2wYPUdrRw1jU4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Gmijaw2QPhHATpi68Owc0NGfwiqqzkpz2elHJSZbXKXUtlFJaiMVN25OSGx/pyYsx
-	 CZ3kVp43itxG2hgscjbik/tkL8uZt3tSxsi+IPsN7Ba2XGwFTfC5uohzxBijORayQ9
-	 n7Pgt7AeV1UUBPYTjeKHvYoOxeaTy6llr4/LY+l1nrprWsOPmriJOk+3172fXQ/Ju6
-	 7OPpeamnaOUlwa8S0taZC5fBwzPqk9tv/NEb+TNeCZUUsms2jmV871Vo1WF4ExCJbK
-	 H7RV8eaovOIrHEuRjj9rLqqA3jpYLvK3ND9HQwNKifeA7kF+8TmQmFrTtg1E/urVUR
-	 obBYTsqsWcF7g==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Andy Chiu <andy.chiu@sifive.com>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Mark Rutland
- <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Sami Tolvanen <samitolvanen@google.com>, Guo Ren <guoren@kernel.org>, Ley
- Foon Tan <leyfoon.tan@starfivetech.com>, Deepak Gupta
- <debug@rivosinc.com>, Sia Jee Heng <jeeheng.sia@starfivetech.com>, Bjorn
- Topel <bjorn@rivosinc.com>, Song Shuai <suagrfillet@gmail.com>, Cl'ement
- L'eger <cleger@rivosinc.com>, Al Viro <viro@zeniv.linux.org.uk>, Jisheng
- Zhang <jszhang@kernel.org>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Robbin
- Ehn <rehn@rivosinc.com>, Brendan Sweeney <brs@rivosinc.com>
-Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
-In-Reply-To: <CABgGipWPuvwi43v1+60-=0_MN_q_CD0ZGasxHHVWJ37cig5MmA@mail.gmail.com>
-References: <20240306165904.108141-1-puranjay12@gmail.com>
- <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
- <ZfBbxPDd0rz6FN2T@FVFF77S0Q05N>
- <8734suqsth.fsf@all.your.base.are.belong.to.us>
- <mb61pplvw6grf.fsf@gmail.com>
- <87zfv0onre.fsf@all.your.base.are.belong.to.us>
- <87il1oedx8.fsf@all.your.base.are.belong.to.us>
- <CABgGipWPuvwi43v1+60-=0_MN_q_CD0ZGasxHHVWJ37cig5MmA@mail.gmail.com>
-Date: Thu, 21 Mar 2024 09:48:27 +0100
-Message-ID: <87msqsotr8.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1711011057; c=relaxed/simple;
+	bh=T9tH2WkqXIqAB3/EZYidnvaVwq80SxS0zPzjIGHGoVg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=fl46pIg1s0lKN8O98glcbJRf31UD1z50uMWiibUEy9kG4YLRuFXEHMUCqmDrUZqlVWz0pRYvPy2eszLj50bOKAGTmHT0Nw+8AXmCfw1tOIMxdNO5I0A4ojV4K62SDzdOXjIANmYq/AxsikHev3d54wvds41/zo82K6dJsKe0ebQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=erGSs0tJ; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c390030af2so524004b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 01:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1711011055; x=1711615855; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cPjyd+yjOktFr1xsuYU5FVU17C6f3y//ZruUY/LClBQ=;
+        b=erGSs0tJtIB4NsS/lHDe7kUu3PS4rU3nRiW774UpuNFH6IGIcg6xQd/s90abKDVCCb
+         xrxvmb7ME5IOC80b99A6Mzuelp9TyKK5lRYSLjZ/1e7RUvOX4w/OAkNGWuWKbJOWW/eq
+         9OsC+Q5MIegQRUg5oLbWbGSH2Z5ZE0fNtTuMxyoL3hDmJVgsL7rCEZpEEkn30sEKka14
+         tE6nPma/Vd5gVmyMOo2WEf+YhuZHm4U94F8CgnXYbgVuBxOF2zjRrbsLDYWCWLa1Ge2y
+         Ey4PjwAGN9NlgdfJ8JujBqAFRtzfm3BZxlOryC8zrFx2jldjXkUgqWk68FgtRIyycBXZ
+         acQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711011055; x=1711615855;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cPjyd+yjOktFr1xsuYU5FVU17C6f3y//ZruUY/LClBQ=;
+        b=roQWVNPHpuC33xFnrfOl+fK8oGKQa8x2fsXjmpbPU06wupiNY14a4kpPNXez2ZTjFt
+         W/Jx4Ur0T0dJgTQrVBr6/pYvrjPRHqnglodaWh899D3y8JxAdIkgFDh57JxBMPFlyI7w
+         rPxuZhWUp6Ut8MqKSpEaiaMMpcdwMjd13YEeC5Z0L54kLnTu4ShJq9fTXlp7hrQKAAYG
+         xq2bFPfZIo2LULAqXcMid1VM9O7GvWQ3fas/n9zzIGWJKRsTU+H5TzGwEzoCbSgOGcpw
+         mewrK+BROpwKlSDh5A18vRt1Ay5gcxpaRVhivGDtoYkyKUAch+iTdprhCHytvX8jSKIh
+         bMCw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDx+r/9I2aSRbuKRuZma9OBhiVPnpkK4lAi0lK3MRZLTPKvun1OMwIbczFPV248Sc203ycB2mrk5dgiNaxov6FsDKEf+jnuxzDhKt8
+X-Gm-Message-State: AOJu0Yw9FN/mmqwKup6zTjO8/afXhhAlynXPi0lYQvr5o+kOn9jLCxrr
+	H9lTs9nH+uOiTWRI2VXFoA+cz+90Kwmo3r+NR9itQd37Aor2/tTjd1wmNyFGDRo=
+X-Google-Smtp-Source: AGHT+IEvqwLm9D/zQrn6jO0supoJFFZJFv0l42kjY6Gp2Frdf15Yh9kjKVuHL7HqdWGlqp+r164FJg==
+X-Received: by 2002:a05:6808:1a28:b0:3c3:896f:8817 with SMTP id bk40-20020a0568081a2800b003c3896f8817mr5503819oib.2.1711011055018;
+        Thu, 21 Mar 2024 01:50:55 -0700 (PDT)
+Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
+        by smtp.gmail.com with ESMTPSA id x3-20020a544003000000b003c3753dd869sm2275409oie.58.2024.03.21.01.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 01:50:54 -0700 (PDT)
+From: Anup Patel <apatel@ventanamicro.com>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Atish Patra <atishp@atishpatra.org>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH 0/2] KVM RISC-V APLIC fixes
+Date: Thu, 21 Mar 2024 14:20:39 +0530
+Message-Id: <20240321085041.1955293-1-apatel@ventanamicro.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Andy,
+Few fixes for KVM RISC-V in-kernel APLIC emulation which were discovered
+during Linux AIA driver patch reviews.
 
-Pulling out the A option:
+These patches can also be found in the riscv_kvm_aplic_fixes_v1
+branch at: https://github.com/avpatel/linux.git
 
->> > A) Use auipc/jalr, only patch jalr to take us to a common
->> >    dispatcher/trampoline
->> >
->> >  | <func_trace_target_data_8B> # probably on a data cache-line !=3D fu=
-nc .text to avoid ping-pong
->> >  | ...
->> >  | func:
->> >  |   ...make sure ra isn't messed up...
->> >  |   aupic
->> >  |   nop <=3D> jalr # Text patch point -> common_dispatch
->> >  |   ACTUAL_FUNC
->> >  |
->> >  | common_dispatch:
->> >  |   load <func_trace_target_data_8B> based on ra
->> >  |   jalr
->> >  |   ...
->> >
->> > The auipc is never touched, and will be overhead. Also, we need a mv to
->> > store ra in a scratch register as well -- like Arm. We'll have two insn
->> > per-caller overhead for a disabled caller.
->
-> My patch series takes a similar "in-function dispatch" approach. A
-> difference is that the <func_trace_target_data_8B_per_function> is
-> embedded within each function entry. I'd like to have it moved to a
-> run-time allocated array to reduce total text size.
+Anup Patel (2):
+  RISC-V: KVM: Fix APLIC setipnum_le/be write emulation
+  RISC-V: KVM: Fix APLIC in_clrip[x] read emulation
 
-This is what arm64 has as well. It's a 8B + 1-2 dirt cheap movish like
-instructions (save ra, prepare jump with auipc). I think that's a
-reasonable overhead.
+ arch/riscv/kvm/aia_aplic.c | 37 +++++++++++++++++++++++++++++++------
+ 1 file changed, 31 insertions(+), 6 deletions(-)
 
-> Another difference is that my series changes the first instruction to
-> "j ACTUAL_FUNC" for the "ftrace disable" case. As long as the
-> architecture guarantees the atomicity of the first instruction, then
-> we are safe. For example, we are safe if the first instruction could
-> only be "mv tmp, ra" or "j ACTUAL_FUNC". And since the loaded address is
-> always valid, we can fix "mv + jalr" down so we don't have to
-> play with the exception handler trick. The guarantee from arch would
-> require ziccif (in RVA22) though, but I think it is the same for us
-> (unless with stop_machine). For ziccif, I would rather call that out
-> during boot than blindly assume.
+-- 
+2.34.1
 
-I'm maybe biased, but I'd prefer the A) over your version with the
-unconditional jump. A) has the overhead of two, I'd say, free
-instructions (again "Meten is Weten!" ;-)).
-
-> However, one thing I am not very sure is: do we need a destination
-> address in a "per-function" manner? It seems like most of the time the
-> destination address can only be ftrace_call, or ftrace_regs_call. If
-> the number of destination addresses is very few, then we could
-> potentially reduce the size of
-> <func_trace_target_data_8B_per_function>.
-
-Yes, we do need a per-function manner. BPF, e.g., uses
-dynamically/JIT:ed trampolines/targets.
-
-
-
-Bj=C3=B6rn
 
