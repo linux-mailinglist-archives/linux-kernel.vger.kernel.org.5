@@ -1,194 +1,152 @@
-Return-Path: <linux-kernel+bounces-110254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CA8C885C25
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:39:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBE6885C22
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:39:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B1E81C2097D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:39:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A96FD1C2198D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:39:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB5786659;
-	Thu, 21 Mar 2024 15:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD82C86628;
+	Thu, 21 Mar 2024 15:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="AbMqESPh"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E3s41Xaa"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE9F86637;
-	Thu, 21 Mar 2024 15:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29D88624C
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 15:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035255; cv=none; b=hEo2X3U2WioF42DfSu225zSo8DIveUctMrZWVtKDHOkZ45HIbnb+5bc0ivkmkgKAsy4fS5LEVZI32ULOGUCellO5LaiehGwVCt3w1KSrPv5bBC9g7CJKSahbyP7PZAk2FTorYeZ8jMSP0rVHMqhLxGLde7+CKxEnVglypjzMUgI=
+	t=1711035242; cv=none; b=cyMCl8rCn753rAP/ux7+UMPBEFLG98XTzWbvdrlrMSxDGoiLMZ7QcYG4nk1Xli7PsjyCkppqSMcoFrKJ8F0lDGF7OeN4EYvwCEc6WQqYTWpRd0yYuWxzGHDd3ke11jAYXMS0UWaAUL5cghe6aadHLQhdvO4knVcChyrlG2NJXzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035255; c=relaxed/simple;
-	bh=OWuvRH9fuu5zd9LuMHig+jsEvrq1+LfyVPway8EBt5A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=senoUH3+PgI2i+Q4tTPOdVgkeZ8l7pGGzvIJmFOZkehuhdLsBxYcg869VPkushzMBwfvKSfnOMaLCHxoie0XrTiuIapmS3f3lMmdrDynFpzSn8ZpfFFkU/GWlvZVONquajHN3YjafKxAqYPNkQuRvuR1UQTUbKjzm/7ySY8adx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=AbMqESPh; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=r1uLotYzh1w/n8/XorCAtCsehwC+SrTBTj1aIYvDkuM=; b=AbMqESPhaZA5tNhCyI7jjEkxpE
-	FeIj9N+ro0VrWw1AqrnnUp5d9kp9B9DlByKZtXjubJVvXfJObRAjbh7/d8Y/n4luVRGXPDKpYSggg
-	0b1HJWKgB2XYEH5w8KYZ4QJPu02bTWJrgmlZEHLM/nda8XX4j9+yWDds5NCLErOdgKJU8uQHQ2/fI
-	wqW4slom2JbhPRaiWscJF91dDj/KRrIIau9qlhpZi88wd49v8NpDzk1gfaHn4Qgwo5vGvFYOnyiQ+
-	IMja0Psx9uGTa1C0o73vihKq2WXq1nMjrNMW6ujAvTPmzgYyI9RXjSCE590drglebMzVHu33WNCqM
-	u75Ro8WA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57550)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rnKQP-0007jl-0f;
-	Thu, 21 Mar 2024 15:33:49 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rnKQJ-0003kc-MI; Thu, 21 Mar 2024 15:33:43 +0000
-Date: Thu, 21 Mar 2024 15:33:43 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: David Laight <David.Laight@aculab.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	'Jiangfeng Xiao' <xiaojiangfeng@huawei.com>,
-	"arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"haibo.li@mediatek.com" <haibo.li@mediatek.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
-	"amergnat@baylibre.com" <amergnat@baylibre.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
-	"gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>,
-	"kepler.chenxin@huawei.com" <kepler.chenxin@huawei.com>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"nixiaoming@huawei.com" <nixiaoming@huawei.com>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>,
-	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
-	"jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Message-ID: <ZfxTV+u4UWoRdGpJ@shell.armlinux.org.uk>
-References: <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
- <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
- <0fd55e156195440bb1d815dd8300894b@AcuMS.aculab.com>
- <ZfwxMuPflqlVyCDd@shell.armlinux.org.uk>
- <9d6057b110034c04b6b590522c8c69cc@AcuMS.aculab.com>
- <ZfxKiQuNM/zruxSd@shell.armlinux.org.uk>
- <401453a216644af98d577f51c12d292b@AcuMS.aculab.com>
+	s=arc-20240116; t=1711035242; c=relaxed/simple;
+	bh=11R+SzgEQ+nRo4cF+wHX4BeHS/CSRZ/WfDarIFy1ZWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H5LTnTXgu4hlQewBjBRoOZSdPYP9aNxRSLWj3y9M/BIelOtoZTH8an1LKecgiLOSagrqBHctIfA+DXUtqpRXX27mE3TEfZdDfqaTsp+NAeBQH7hW+gbKBCh8AU3W5JlH/bhJhwDFgII8uSV4Hq6VRL7VMtDT3YgiOuuMJ9U0nT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=E3s41Xaa; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2c38ac1c-cc0e-43b3-86d3-5b6a2f00f9e7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711035238;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XcnhGHIAXVuRsv4I7TSZ/EDA+Yw6Y/dChRxdQ571Ims=;
+	b=E3s41Xaaumg9Q3b3HHjrJAk+X6nZFsmGTFFJijUT4my3g35hQDUK4Dy6V6Uv+DSeQJ2nlM
+	g/Fe36s3KsD2tF4r2fe/ROT2RF/Y0xqsdijJZo6Wm/ozQKbzJK8+yrCmC0EJI/4Y00gWGa
+	/NUb+IB+brWq0eM+xTZqXw5VovE6+kI=
+Date: Thu, 21 Mar 2024 11:33:52 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <401453a216644af98d577f51c12d292b@AcuMS.aculab.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Subject: Re: [PATCH v2 1/8] drm: xlnx: Fix kerneldoc
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-2-sean.anderson@linux.dev>
+ <e2eba421-cba1-4dd5-837c-6be5f07ed402@ideasonboard.com>
+ <d4072aa1-47e4-45d3-9e04-2cd9d782b593@infradead.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <d4072aa1-47e4-45d3-9e04-2cd9d782b593@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 21, 2024 at 03:20:57PM +0000, David Laight wrote:
-> From: Russell King
-> > Sent: 21 March 2024 14:56
-> > 
-> > On Thu, Mar 21, 2024 at 02:37:28PM +0000, David Laight wrote:
-> > > From: Russell King
-> > > > Sent: 21 March 2024 13:08
-> > > >
-> > > > On Thu, Mar 21, 2024 at 12:57:07PM +0000, David Laight wrote:
-> > > > > From: Russell King
-> > > > > > Sent: 21 March 2024 12:23
-> > > > > ...
-> > > > > > > That might mean you can get the BL in the middle of a function
-> > > > > > > but where the following instruction is for the 'no stack frame'
-> > > > > > > side of the branch.
-> > > > > > > That is very likely to break any stack offset calculations.
-> > > > > >
-> > > > > > No it can't. At any one point in the function, the stack has to be in
-> > > > > > a well defined state, so that access to local variables can work, and
-> > > > > > also the stack can be correctly unwound. If there exists a point in
-> > > > > > the function body which can be reached where the stack could be in two
-> > > > > > different states, then the stack can't be restored to the parent
-> > > > > > context.
-> > > > >
-> > > > > Actually you can get there with a function that has a lot of args.
-> > > > > So you can have:
-> > > > > 	if (...) {
-> > > > > 		push x
-> > > > > 		bl func
-> > > > > 		add %sp, #8
-> > > > > 	}
-> > > > > 	code;
-> > > > > which is fine.
-> > > >
-> > > > No you can't.... and that isn't even Arm code. Arm doesn't use %sp.
-> > > > Moreover, that "bl" will stomp over the link register, meaning this
-> > > > function can not return.
-> > >
-> ...
-> > 
-> > Don't show me Arm64 assembly when we're discussing Arm32.
+On 3/20/24 02:05, Randy Dunlap wrote:
 > 
-> Oops - I'd assumed no one did 32bit :-)
-> In any case it is much the same, see https://godbolt.org/z/7dcbKrs76
 > 
-> f4:
->         push    {r3, lr}
->         subs    r3, r0, #0
->         ble     .L2
->         mov     r2, r3
->         mov     r1, r3
->         bl      f
-> .L2:
->         pop     {r3, pc}
+> On 3/19/24 22:42, Tomi Valkeinen wrote:
+>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>> Fix a few errors in the kerneldoc. Mostly this addresses missing/renamed
+>>> members.
+>>>
+>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>>> ---
+>>>
+>>> Changes in v2:
+>>> - New
+>>>
+>>>   drivers/gpu/drm/xlnx/zynqmp_disp.c  | 6 +++---
+>>>   drivers/gpu/drm/xlnx/zynqmp_dpsub.h | 1 +
+>>>   drivers/gpu/drm/xlnx/zynqmp_kms.h   | 4 ++--
+>>>   3 files changed, 6 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> index 407bc07cec69..f79bf3fb8110 100644
+>>> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> @@ -128,9 +128,9 @@ struct zynqmp_disp_layer {
+>>>    * struct zynqmp_disp - Display controller
+>>>    * @dev: Device structure
+>>>    * @dpsub: Display subsystem
+>>> - * @blend.base: Register I/O base address for the blender
+>>> - * @avbuf.base: Register I/O base address for the audio/video buffer manager
+>>> - * @audio.base: Registers I/O base address for the audio mixer
+>>> + * @blend: Register I/O base address for the blender
+>>> + * @avbuf: Register I/O base address for the audio/video buffer manager
+>>> + * @audio: Registers I/O base address for the audio mixer
+>> 
+>> Afaics, the kernel doc guide:
+>> 
+>> https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
+>> 
+>> says that the current version is correct. Or is the issue that while, say, 'base' is documented, 'blend' was not?
 > 
-> f5:
->         subs    r3, r0, #0
->         ble     .L6
->         push    {lr}
->         sub     sp, sp, #12
->         mov     r2, r3
->         mov     r1, r3
->         str     r3, [sp]
->         bl      f
-> .L6:
->         bx      lr
+> Hi,
 > 
-> That is with -mno-sched-prolog but with 5+ args they spill to stack
-> and the %sp change is pulled into the conditional.
+> I would do it more like so:
 > 
-> It does look like %lr is being saved (and for arm64 I think).
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff -- a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -128,8 +128,11 @@ struct zynqmp_disp_layer {
+>   * struct zynqmp_disp - Display controller
+>   * @dev: Device structure
+>   * @dpsub: Display subsystem
+> + * @blend: blender iomem info
+>   * @blend.base: Register I/O base address for the blender
+> + * @avbuf: audio/video buffer iomem info
+>   * @avbuf.base: Register I/O base address for the audio/video buffer manager
+> + * @audio: audio mixer iomem info
+>   * @audio.base: Registers I/O base address for the audio mixer
+>   * @layers: Layers (planes)
+>   */
+> 
+> 
+> but in my testing, Sean's way or my way result in no warning/errors.
+> 
 
-I see nothing that contradicts anything I've said in your example
-output.
+The specific errors are:
 
-You have been previously refering to a "bl" in the prologue, which is
-what I thought you were going to give an example of. There is no "bl"
-in the prologue of f5, the "ble" instruction is a normal branch for
-less-than-or-equal. It's b + le not bl + e.
+./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'blend' not described in 'zynqmp_disp'
+./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'avbuf' not described in 'zynqmp_disp'
+./drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'audio' not described in 'zynqmp_disp'
 
-At .L6, there will be a difference in stack, but as f() is declared
-as no-return, anything that comes after it is utterly irrelevant as
-control is not expected to reach any following instruction via that
-path. If it _were_ to, then in the example you give above, because
-"lr" points at the bx lr instruction, the result would be to endlessly
-spin executing bx lr instructions.
+I don't see the need to document a single-member struct twice. Actually,
+maybe it would be better to just lift the .base member to live in
+zynqmp_disp. But I think that would be better in another series.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+--Sean
 
