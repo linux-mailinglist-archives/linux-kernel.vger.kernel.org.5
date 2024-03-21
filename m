@@ -1,192 +1,107 @@
-Return-Path: <linux-kernel+bounces-110535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DD0886042
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A89886046
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D48C81F237A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84B81F2369E
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B061332BC;
-	Thu, 21 Mar 2024 18:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5A71332B6;
+	Thu, 21 Mar 2024 18:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C1ootWPo"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UjXTY4ym"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DAA12BF3E
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6141212BF3E
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711044317; cv=none; b=JE4ive5VRcybrSgGxvFZn+9hoUyNjEdbzKfsbsZHWrNLlNxkDfKVZCcxjfaZDq6y12GxepqOmkDn+QN/ltttPsIH8lIsOiAfLo+pP8bQUpDZyEgqeysxsILmsMgQGx1jZe6pEqjsmcmYSlCNSfxymj2tZXfsczdmBIK1AQkIgBo=
+	t=1711044348; cv=none; b=hO+2JTXI+TYZ/Jtlo2P8ooqZQCjqkEIJwMMWnGUNK/MUFl4mBj2RaEEOa+Hcmbf4nLk8XQoTI6cQoBfk34YFV6cF9tgjjFeWbsau2ClvNwnvowe0ssRZNqIIU8GNg3stxsfkJYrYHNQJbj29ULf40BssFz9pQebwwKkjOzFj5Zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711044317; c=relaxed/simple;
-	bh=myd+T4PBZXp07XIO4tJL5oUA6KnHWpDz8EFXE8AcQyY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jGA3UfGfeRBsvbIXRPzzHITRCbeaXqlg9b1afAvorldn5UzPDbZY+xum+pNzTBeoxAtBRf+g/Z4wphdclYHFmi2XGKymWSZGXg7OeFzGRu7z4xq7cnReYLn+hi1Z7tOE8qysQWqFYC3E+hXrQVzo76k8IOu/HoaA9TL19JRKgn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C1ootWPo; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78a2093cd44so102596785a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:15 -0700 (PDT)
+	s=arc-20240116; t=1711044348; c=relaxed/simple;
+	bh=i30qiLYfNUY72DfrE1cT/dPxNGz6ipB+9wUBiDjUtho=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BW879J2wZgK5U0glpKVec9DPiPDEpPiXSHGHqPiNevcMlPfvt9KSwMsxmOwd/Bdb3S1SHQ1NXTneJrjha6cM+Y1gUem+VB3SlsSPJRAjIG7XlWvrfdiGeneJZ5ViIS1642GQ3/Sc31M97sabTsA6gOUXJQGCQ90+zdaRL8RzcN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UjXTY4ym; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d4a901e284so28027501fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711044314; x=1711649114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gu+yUvi3wnUdJSvvoa69Ja3av8KViaUgpe4ObwfOcEU=;
-        b=C1ootWPoe4XBXriqw/p0chbMtbkMDluolb1lZ4wORJQrr3U/TxkN1eTRBdA3xuE7hO
-         lMVUZvuIM8VzDHgYD4lPoi8jTgYh9lyV5O+ymkvq756CFSfJ9ZwBP4bpAPWXtOimTuZH
-         tsb0z1xHYOTGz67tAvaLuExWu5IWCcdwD4FqaGujCQKBNTUPW6wufzVlAtrD5bXys6DM
-         wRhTAHBRZFpCncrwQusVaJrmaQtl8730gLm/5jfoXAdy2KEjXLDzK9d+ESZRA2UEehxK
-         aL08OLcym5TmYhHum2i0LrxQK6qN19yu+bzoyZaF9xUhvXFIobR5M4NzejDCcWNZewof
-         9lsA==
+        d=linux-foundation.org; s=google; t=1711044344; x=1711649144; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dh+H36p7va+V4Lc6HuD7WLMtjuJ+MxeQtzJ/2W8wqJg=;
+        b=UjXTY4ymnQ8pHfFiOg5LFlLTK4gx2hjlhdNQij2MVaLfLQV9Km1vxSSo1DOnidt2O8
+         zck2cn/UH4mP/IMHI49wp0iwK7b62cQMD9Fdx1fXigDzw0jGTQULqjjtfy+G4m9qh5ON
+         vUDAZP3ZfuP61LH3fbfFrz1bsa5uEiAndJURc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711044314; x=1711649114;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711044344; x=1711649144;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gu+yUvi3wnUdJSvvoa69Ja3av8KViaUgpe4ObwfOcEU=;
-        b=LBCpzHRtRLIHDJ62awdfcu+AtW7AStjaD/fCoquhrr9K0TuV11Kjt9f/56B7FqZVS+
-         b88SgU10p0VoU0B16IaZVTBoDwKkZCrLdjZ92iDL7nqskZlJwgB3aZlFG30gR4dWqJ2D
-         CQYdq35lvVBRMzirkbbNKfCaE0tC7YfaoUwKXokCBGJ2WWONvl5H0YuMb+piJAAGU8IH
-         Na473NEPUaoPk0Bu3J2V40z/eJDwO6UHe5gPlS4GS8D7+oY/CbiV81MVejOMrBtsltLv
-         +Qp5GIBZ3mjfl8BEVl4Xu8fjHyKA4LzQhuOKQo2QvdhUc4jdYDvh9tK3GdvSY39l4Zda
-         +0gQ==
-X-Gm-Message-State: AOJu0YxUko3ubHUxrVDEFUCERNcjJgfoVRKzZnFY+egPvadeYdFymKI0
-	ExfTXIWrbE6TuzKPvL9Q5C3E1lDbovHyzyXNVNr38yJpp6AJwO1JJhHcNu8=
-X-Google-Smtp-Source: AGHT+IEoNuvykuGWhHmm4VUPPxY4plON2DyZ4Ujdpe83xSdn6HQWK/6a9hLWwpBhEQWB1j5oUp16/Q==
-X-Received: by 2002:a05:620a:561c:b0:787:8ebc:6cb2 with SMTP id vu28-20020a05620a561c00b007878ebc6cb2mr2495539qkn.46.1711044313667;
-        Thu, 21 Mar 2024 11:05:13 -0700 (PDT)
-Received: from citadel.lan (2600-6c4a-4d3f-6d5c-0000-0000-0000-1019.inf6.spectrum.com. [2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id b1-20020a05620a04e100b0078874565b40sm102629qkh.30.2024.03.21.11.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 11:05:13 -0700 (PDT)
-From: Brian Gerst <brgerst@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Xin Li <xin@zytor.com>,
-	Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH] x86/boot: Simplify boot stack setup
-Date: Thu, 21 Mar 2024 14:05:06 -0400
-Message-ID: <20240321180506.89030-1-brgerst@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        bh=Dh+H36p7va+V4Lc6HuD7WLMtjuJ+MxeQtzJ/2W8wqJg=;
+        b=e7L6fNH2PTixsVzO7nZugndBYxVDE4MJDtsTKf1I8K9M0vAUBa+o4MmpmZ0w0+DXkL
+         +Q38A/4P9EoenLG6oVNdBv4mTHcZLGRsY1BOC/GYJxniPmbsK4Q5QjYyVy+y9gXNUBw8
+         KBmSyZ618pWp3fR32rXYf8ItSb3admq6lWnbhnuFgcZ7ygkn+SOB/bjtW76LVgHwS9Zd
+         mwmkwNh+Hn7w5nGarfnkLrzSDIVOyABTU0pHDgYkBiZniy4Orw23SBGAxY4VLsUdzIZU
+         CDJJCA+j7GHr43B4SSd95HuU0iYC9lyKhPCl3SsCcBKXBqka+7qU9t5V8+MdiC5Dhj8l
+         Zi2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUjS1Wc3e2wdoMI2mzYN3rCgT7VWz/0Qv42Nx64hAz4gfwJG0hy/eo9Ko7jX3b+6RD2cscO07gRRvtsA1VS7tkZcwMD9qga/pSqIzT1
+X-Gm-Message-State: AOJu0YzV2zufiwtquL0Ly3jWbRLaFtWAjrE/W8SZ5XDyO0svO2IRAqC7
+	nD/AmCOa5Cuz8aH5yEK6qkL4swxhUvir9r8aFx7Yn2EoPMOH3rGVmMEt5JB1EtSq455531RuyTi
+	56iKWJg==
+X-Google-Smtp-Source: AGHT+IELEf6XXnJnRhtiNovE/mXgElVa4eH7oAkiagbd6t8YZrz8NRKWXECq/TBTULX37MKI/TsKPw==
+X-Received: by 2002:a2e:2e0f:0:b0:2d4:22b6:eee6 with SMTP id u15-20020a2e2e0f000000b002d422b6eee6mr230108lju.8.1711044344379;
+        Thu, 21 Mar 2024 11:05:44 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id p7-20020a2e9a87000000b002d2191e20e1sm33710lji.92.2024.03.21.11.05.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 11:05:43 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d28051376eso26534821fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 11:05:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX8QURUdOdhoyvtHq9cuUkyBE3tAKzm/51P/DTHjh2QXrHZuUs5/2yqqi0hTTIb7c3GlZuxMhMNtBvlaVn2/S0EVk2vtMFx+6JZ4B8D
+X-Received: by 2002:a05:6512:46a:b0:513:bed1:5069 with SMTP id
+ x10-20020a056512046a00b00513bed15069mr120672lfd.13.1711044343093; Thu, 21 Mar
+ 2024 11:05:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240321125518.1675903-1-andersson@kernel.org> <yniwjzjynmyndzqglfmwpy2th3vtadmms6ifxqs2ojo7wr66ne@ydnr3rltaddn>
+In-Reply-To: <yniwjzjynmyndzqglfmwpy2th3vtadmms6ifxqs2ojo7wr66ne@ydnr3rltaddn>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 21 Mar 2024 11:05:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgQA+Cj-_LtVuw-1n9jwrQ9pO8kVYBNNkA7OHHCDbFR0Q@mail.gmail.com>
+Message-ID: <CAHk-=wgQA+Cj-_LtVuw-1n9jwrQ9pO8kVYBNNkA7OHHCDbFR0Q@mail.gmail.com>
+Subject: Re: [GIT PULL] remoteproc updates for v6.9
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Davis <afd@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
+	Abel Vesa <abel.vesa@linaro.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Joakim Zhang <joakim.zhang@cixtech.com>, Mathieu Poirier <mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Define the symbol __top_init_kernel_stack instead of duplicating
-the offset from __end_init_task in multiple places.
+On Thu, 21 Mar 2024 at 11:03, Bjorn Andersson <andersson@kernel.org> wrote:
+>
+> I was further notified that this conflicts with your tree, Linus. Below
+> is the resolution for this conflict.
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/include/asm/processor.h |  6 ++----
- arch/x86/kernel/head_32.S        | 11 +----------
- arch/x86/kernel/head_64.S        |  2 +-
- arch/x86/kernel/vmlinux.lds.S    |  3 +++
- arch/x86/xen/xen-head.S          |  2 +-
- 5 files changed, 8 insertions(+), 16 deletions(-)
+Heh. This email came in after the pr-tracker-bot email notifying you
+that it's already done..
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 438c0c8f596a..89ed5237e79f 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -636,12 +636,10 @@ static __always_inline void prefetchw(const void *x)
- #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
- 
- #else
--extern unsigned long __end_init_task[];
-+extern unsigned long __top_init_kernel_stack[];
- 
- #define INIT_THREAD {							\
--	.sp	= (unsigned long)&__end_init_task -			\
--		  TOP_OF_KERNEL_STACK_PADDING -				\
--		  sizeof(struct pt_regs),				\
-+	.sp	= (unsigned long)&__top_init_kernel_stack,		\
- }
- 
- extern unsigned long KSTK_ESP(struct task_struct *task);
-diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-index b50f3641c4d6..a9de527ba5c4 100644
---- a/arch/x86/kernel/head_32.S
-+++ b/arch/x86/kernel/head_32.S
-@@ -44,9 +44,6 @@
- #define X86_CAPABILITY	new_cpu_data+CPUINFO_x86_capability
- #define X86_VENDOR_ID	new_cpu_data+CPUINFO_x86_vendor_id
- 
--
--#define SIZEOF_PTREGS 17*4
--
- /*
-  * Worst-case size of the kernel mapping we need to make:
-  * a relocatable kernel can live anywhere in lowmem, so we need to be able
-@@ -488,13 +485,7 @@ SYM_DATA_END(initial_page_table)
- 
- .data
- .balign 4
--/*
-- * The SIZEOF_PTREGS gap is a convention which helps the in-kernel unwinder
-- * reliably detect the end of the stack.
-- */
--SYM_DATA(initial_stack,
--		.long init_thread_union + THREAD_SIZE -
--		SIZEOF_PTREGS - TOP_OF_KERNEL_STACK_PADDING)
-+SYM_DATA(initial_stack, .long __top_init_kernel_stack)
- 
- __INITRODATA
- int_msg:
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index d8198fbd70e5..b11526869a40 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -66,7 +66,7 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	mov	%rsi, %r15
- 
- 	/* Set up the stack for verify_cpu() */
--	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
-+	leaq	__top_init_kernel_stack(%rip), %rsp
- 
- 	/* Setup GSBASE to allow stack canary access for C code */
- 	movl	$MSR_GS_BASE, %ecx
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index a20409b0a3f2..d430880175f2 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -167,6 +167,9 @@ SECTIONS
- 		/* init_task */
- 		INIT_TASK_DATA(THREAD_SIZE)
- 
-+		/* equivalent to task_pt_regs(&init_task) */
-+		__top_init_kernel_stack = __end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE;
-+
- #ifdef CONFIG_X86_32
- 		/* 32 bit has nosave before _edata */
- 		NOSAVE_DATA
-diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-index 04101b984f24..758bcd47b72d 100644
---- a/arch/x86/xen/xen-head.S
-+++ b/arch/x86/xen/xen-head.S
-@@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
- 	ANNOTATE_NOENDBR
- 	cld
- 
--	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
-+	leaq	__top_init_kernel_stack(%rip), %rsp
- 
- 	/* Set up %gs.
- 	 *
+I think I got it all right, it didn't seem at all controversial, but
+maybe you should double-check.
 
-base-commit: e1826833c3a9abb9d1fe4b938eca0e25eeafb39f
--- 
-2.44.0
-
+          Linus
 
