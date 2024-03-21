@@ -1,259 +1,153 @@
-Return-Path: <linux-kernel+bounces-109875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547898856F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:57:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43588856F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 10:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B5E3B2232D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:57:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75D821F221FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 09:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F29DB55E73;
-	Thu, 21 Mar 2024 09:57:06 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489D154BF7;
-	Thu, 21 Mar 2024 09:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744FC56B6A;
+	Thu, 21 Mar 2024 09:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GerhZQyR"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBE056751;
+	Thu, 21 Mar 2024 09:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711015026; cv=none; b=JsLJBDPV0wXBH888BD99ws9jvXlnF240Fph6ZghZYwblX0r1QFbG+hUkD61KSPfxFz45iiuw4XGbO4OPVWglPOu1ksvM1C/tWTZxX9jzTMXpDd4FtpqJ+RGnIc91uqiJh2Eb33jcxZ4611fH9FJDFhnnkAWUi/myYvtcVSR7tyM=
+	t=1711015030; cv=none; b=jEdBvjx3PGIVHUUdoJnFTRWUDR7EgqXjWShWCqDpWMKOFg06STfjuaRZ9gvOjrqJlr7BIZytvNWgwmhF73TqzzBrLkdjk0euzk5P/xR/525zuHiWUYgTUifkmCDcCoSg9fRZwH8zDtXb4b7046oOQFbHKoFdJuyHz9SPp12yJPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711015026; c=relaxed/simple;
-	bh=8V+u0ZXoS5pUQ8DQfToMJGOVtu0WfVvN6kZ0PQShLJ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T+dzwyeCrDpHrKfmYxlSPcxJNdnhg8zYib59H/w7TbBJ2DVf4rgl3qgPAq1jih5sxeW4B+gBokhe5lpGo79Wfut5PhKvlZuCUdQXuVNijFhvwtes9uMpU6YDwgaLqdbp2XWmzQWFjAzXKJdc1g2jZAYgETJdkJbajhs01zWKgf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27CC7C433F1;
-	Thu, 21 Mar 2024 09:57:03 +0000 (UTC)
-Message-ID: <d741106e-5bff-441a-beb3-5ef1c81d912a@xs4all.nl>
-Date: Thu, 21 Mar 2024 10:57:02 +0100
+	s=arc-20240116; t=1711015030; c=relaxed/simple;
+	bh=pr4bu4hrum6QzMyB5aq8RzvHZL2lVn3VJToFXS9K5Co=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=arOTiO7yM2CqJbsMHcy04NonAk2ZhnQWm4o2DScyTsF3sMRJ57jw4Y0HU8T+nAhnSftcgOz4qa23KgIoPNzMIuIzHN68dPBh/E7RdwK00pgq+mdb8dGOE4Ygq5b6+kERIlYpd5c98xN0B3KppGS4zmip5lIeT/s/xo0I/uOYlnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GerhZQyR; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id C046820B74C1; Thu, 21 Mar 2024 02:57:08 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C046820B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1711015028;
+	bh=+WDM6PdXkiphjTLhxt0w3wHZT5FGTdefYnnu6riCUJY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GerhZQyRjAYddxCqS09I5RFx62L/Tvx/ooLGmqSrQYuERI9HnU71UgwsNmH9c6wFD
+	 9v+jQgMUwAZq2DWMSi+JtaRUJHrZSxjIy1TqPxu/18r4JahMyRItgsXVm4BMFyGm1r
+	 L7gLruWZdXwJWIoUSLrby1BwxAKJJwSpe6+2DFLI=
+Date: Thu, 21 Mar 2024 02:57:08 -0700
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+	x86@kernel.org, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ernis@microsoft.com
+Subject: Re: [PATCH] x86/hyperv: Cosmetic changes for hv_apic.c
+Message-ID: <20240321095708.GA7962@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1711009325-21894-1-git-send-email-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v1] staging: media: starfive: Renamed capture_raw to
- capture_dump
-Content-Language: en-US, nl
-To: Changhuang Liang <changhuang.liang@starfivetech.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Jack Zhu <jack.zhu@starfivetech.com>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-References: <20240301070025.11144-1-changhuang.liang@starfivetech.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240301070025.11144-1-changhuang.liang@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1711009325-21894-1-git-send-email-ernis@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Hi Changhuang,
-
-On 01/03/2024 8:00 am, Changhuang Liang wrote:
-> The pixel formats captured by the capture_raw video device depends on
-> what pixel formats come from the source device. It is actually dump
-> the source device data. So renamed it to capture_dump.
-
-I don't think 'dump' is a great name. I think what you really want to
-say is 'unprocessed'. And usually that is indeed called 'raw capture'.
-
+On Thu, Mar 21, 2024 at 01:22:05AM -0700, Erni Sri Satya Vennela wrote:
+> Fix issues reported by checkpatch.pl script for hv_apic.c file
+> - Alignment should match open parenthesis
+> - Remove unnecessary parenthesis
 > 
-> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+> No functional changes intended.
+> 
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
 > ---
->  .../admin-guide/media/starfive_camss.rst      |  2 +-
->  .../media/starfive_camss_graph.dot            |  2 +-
->  .../staging/media/starfive/camss/stf-camss.c  |  6 ++---
->  .../media/starfive/camss/stf-capture.c        | 26 +++++++++----------
->  .../staging/media/starfive/camss/stf-video.h  |  2 +-
->  5 files changed, 19 insertions(+), 19 deletions(-)
+> I'm resending this patch because I have missed some email aliases in my
+> previous mail.
 > 
-> diff --git a/Documentation/admin-guide/media/starfive_camss.rst b/Documentation/admin-guide/media/starfive_camss.rst
-> index ca42e9447c47..c224e6123042 100644
-> --- a/Documentation/admin-guide/media/starfive_camss.rst
-> +++ b/Documentation/admin-guide/media/starfive_camss.rst
-> @@ -60,7 +60,7 @@ The media controller pipeline graph is as follows:
+>  arch/x86/hyperv/hv_apic.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
->  The driver has 2 video devices:
-> 
-> -- capture_raw: The capture device, capturing image data directly from a sensor.
-> +- capture_dump: The capture device, capturing image data directly from a sensor.
-
-So perhaps rather than renaming everything, it would be better to explain it
-better here:
-
-- capture_raw: The capture device, capturing image data directly from a sensor, bypassing
-  the ISP module.
-
-Regards,
-
-	Hans
-
->  - capture_yuv: The capture device, capturing YUV frame data processed by the
->    ISP module
-> 
-> diff --git a/Documentation/admin-guide/media/starfive_camss_graph.dot b/Documentation/admin-guide/media/starfive_camss_graph.dot
-> index 8eff1f161ac7..5e8731e27701 100644
-> --- a/Documentation/admin-guide/media/starfive_camss_graph.dot
-> +++ b/Documentation/admin-guide/media/starfive_camss_graph.dot
-> @@ -2,7 +2,7 @@ digraph board {
->  	rankdir=TB
->  	n00000001 [label="{{<port0> 0} | stf_isp\n/dev/v4l-subdev0 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
->  	n00000001:port1 -> n00000008 [style=dashed]
-> -	n00000004 [label="capture_raw\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
-> +	n00000004 [label="capture_dump\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
->  	n00000008 [label="capture_yuv\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
->  	n0000000e [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
->  	n0000000e:port1 -> n00000001:port0 [style=dashed]
-> diff --git a/drivers/staging/media/starfive/camss/stf-camss.c b/drivers/staging/media/starfive/camss/stf-camss.c
-> index a587f860101a..81fc39f20615 100644
-> --- a/drivers/staging/media/starfive/camss/stf-camss.c
-> +++ b/drivers/staging/media/starfive/camss/stf-camss.c
-> @@ -176,7 +176,7 @@ static int stfcamss_subdev_notifier_bound(struct v4l2_async_notifier *async,
->  		container_of(asc, struct stfcamss_async_subdev, asd);
->  	enum stf_port_num port = csd->port;
->  	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
-> -	struct stf_capture *cap_raw = &stfcamss->captures[STF_CAPTURE_RAW];
-> +	struct stf_capture *cap_dump = &stfcamss->captures[STF_CAPTURE_DUMP];
->  	struct media_pad *pad;
->  	int ret;
-> 
-> @@ -192,12 +192,12 @@ static int stfcamss_subdev_notifier_bound(struct v4l2_async_notifier *async,
->  		return ret;
-> 
->  	ret = media_create_pad_link(&subdev->entity, 1,
-> -				    &cap_raw->video.vdev.entity, 0, 0);
-> +				    &cap_dump->video.vdev.entity, 0, 0);
->  	if (ret)
->  		return ret;
-> 
->  	isp_dev->source_subdev = subdev;
-> -	cap_raw->video.source_subdev = subdev;
-> +	cap_dump->video.source_subdev = subdev;
-> 
->  	return 0;
->  }
-> diff --git a/drivers/staging/media/starfive/camss/stf-capture.c b/drivers/staging/media/starfive/camss/stf-capture.c
-> index ec5169e7b391..5c91126d5132 100644
-> --- a/drivers/staging/media/starfive/camss/stf-capture.c
-> +++ b/drivers/staging/media/starfive/camss/stf-capture.c
-> @@ -10,7 +10,7 @@
->  #include "stf-camss.h"
-> 
->  static const char * const stf_cap_names[] = {
-> -	"capture_raw",
-> +	"capture_dump",
->  	"capture_yuv",
->  };
-> 
-> @@ -60,7 +60,7 @@ static inline struct stf_capture *to_stf_capture(struct stfcamss_video *video)
->  	return container_of(video, struct stf_capture, video);
->  }
-> 
-> -static void stf_set_raw_addr(struct stfcamss *stfcamss, dma_addr_t addr)
-> +static void stf_set_dump_addr(struct stfcamss *stfcamss, dma_addr_t addr)
+> diff --git a/arch/x86/hyperv/hv_apic.c b/arch/x86/hyperv/hv_apic.c
+> index 5fc45543e955..0569f579338b 100644
+> --- a/arch/x86/hyperv/hv_apic.c
+> +++ b/arch/x86/hyperv/hv_apic.c
+> @@ -105,7 +105,7 @@ static bool cpu_is_self(int cpu)
+>   * IPI implementation on Hyper-V.
+>   */
+>  static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+> -		bool exclude_self)
+> +			       bool exclude_self)
 >  {
->  	stf_syscon_reg_write(stfcamss, VIN_START_ADDR_O, (long)addr);
->  	stf_syscon_reg_write(stfcamss, VIN_START_ADDR_N, (long)addr);
-> @@ -87,8 +87,8 @@ static void stf_init_addrs(struct stfcamss_video *video)
->  	addr0 = output->buf[0]->addr[0];
->  	addr1 = output->buf[0]->addr[1];
-> 
-> -	if (cap->type == STF_CAPTURE_RAW)
-> -		stf_set_raw_addr(video->stfcamss, addr0);
-> +	if (cap->type == STF_CAPTURE_DUMP)
-> +		stf_set_dump_addr(video->stfcamss, addr0);
->  	else if (cap->type == STF_CAPTURE_YUV)
->  		stf_set_yuv_addr(video->stfcamss, addr0, addr1);
->  }
-> @@ -179,7 +179,7 @@ static void stf_channel_set(struct stfcamss_video *video)
->  	struct stfcamss *stfcamss = cap->video.stfcamss;
->  	u32 val;
-> 
-> -	if (cap->type == STF_CAPTURE_RAW) {
-> +	if (cap->type == STF_CAPTURE_DUMP) {
->  		val = stf_syscon_reg_read(stfcamss, VIN_CHANNEL_SEL_EN);
->  		val &= ~U0_VIN_CHANNEL_SEL_MASK;
->  		val |= CHANNEL(0);
-> @@ -219,7 +219,7 @@ static void stf_capture_start(struct stfcamss_video *video)
->  	struct stf_capture *cap = to_stf_capture(video);
-> 
->  	stf_channel_set(video);
-> -	if (cap->type == STF_CAPTURE_RAW) {
-> +	if (cap->type == STF_CAPTURE_DUMP) {
->  		stf_wr_irq_enable(video);
->  		stf_wr_data_en(video);
+>  	struct hv_send_ipi_ex *ipi_arg;
+>  	unsigned long flags;
+> @@ -132,8 +132,8 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
+>  	if (!cpumask_equal(mask, cpu_present_mask) || exclude_self) {
+>  		ipi_arg->vp_set.format = HV_GENERIC_SET_SPARSE_4K;
+>  
+> -		nr_bank = cpumask_to_vpset_skip(&(ipi_arg->vp_set), mask,
+> -				exclude_self ? cpu_is_self : NULL);
+> +		nr_bank = cpumask_to_vpset_skip(&ipi_arg->vp_set, mask,
+> +						exclude_self ? cpu_is_self : NULL);
+>  
+>  		/*
+>  		 * 'nr_bank <= 0' means some CPUs in cpumask can't be
+> @@ -147,7 +147,7 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
 >  	}
-> @@ -231,7 +231,7 @@ static void stf_capture_stop(struct stfcamss_video *video)
->  {
->  	struct stf_capture *cap = to_stf_capture(video);
-> 
-> -	if (cap->type == STF_CAPTURE_RAW)
-> +	if (cap->type == STF_CAPTURE_DUMP)
->  		stf_wr_irq_disable(video);
-> 
->  	stf_cap_s_cleanup(video);
-> @@ -252,7 +252,7 @@ static void stf_capture_init(struct stfcamss *stfcamss, struct stf_capture *cap)
->  	cap->video.stfcamss = stfcamss;
->  	cap->video.bpl_alignment = 16 * 8;
-> 
-> -	if (cap->type == STF_CAPTURE_RAW) {
-> +	if (cap->type == STF_CAPTURE_DUMP) {
->  		cap->video.formats = stf_wr_fmts;
->  		cap->video.nformats = ARRAY_SIZE(stf_wr_fmts);
->  		cap->video.bpl_alignment = 8;
-> @@ -437,8 +437,8 @@ static void stf_change_buffer(struct stf_v_buf *output)
->  	if (output->state == STF_OUTPUT_STOPPING) {
->  		output->last_buffer = ready_buf;
->  	} else {
-> -		if (cap->type == STF_CAPTURE_RAW)
-> -			stf_set_raw_addr(stfcamss, new_addr[0]);
-> +		if (cap->type == STF_CAPTURE_DUMP)
-> +			stf_set_dump_addr(stfcamss, new_addr[0]);
->  		else if (cap->type == STF_CAPTURE_YUV)
->  			stf_set_yuv_addr(stfcamss, new_addr[0], new_addr[1]);
-> 
-> @@ -452,7 +452,7 @@ static void stf_change_buffer(struct stf_v_buf *output)
->  irqreturn_t stf_wr_irq_handler(int irq, void *priv)
->  {
->  	struct stfcamss *stfcamss = priv;
-> -	struct stf_capture *cap = &stfcamss->captures[STF_CAPTURE_RAW];
-> +	struct stf_capture *cap = &stfcamss->captures[STF_CAPTURE_DUMP];
-> 
->  	if (atomic_dec_if_positive(&cap->buffers.frame_skip) < 0) {
->  		stf_change_buffer(&cap->buffers);
-> @@ -569,10 +569,10 @@ static void stf_capture_unregister_one(struct stf_capture *cap)
-> 
->  void stf_capture_unregister(struct stfcamss *stfcamss)
->  {
-> -	struct stf_capture *cap_raw = &stfcamss->captures[STF_CAPTURE_RAW];
-> +	struct stf_capture *cap_dump = &stfcamss->captures[STF_CAPTURE_DUMP];
->  	struct stf_capture *cap_yuv = &stfcamss->captures[STF_CAPTURE_YUV];
-> 
-> -	stf_capture_unregister_one(cap_raw);
-> +	stf_capture_unregister_one(cap_dump);
->  	stf_capture_unregister_one(cap_yuv);
+>  
+>  	status = hv_do_rep_hypercall(HVCALL_SEND_IPI_EX, 0, nr_bank,
+> -			      ipi_arg, NULL);
+> +				     ipi_arg, NULL);
+>  
+>  ipi_mask_ex_done:
+>  	local_irq_restore(flags);
+> @@ -155,7 +155,7 @@ static bool __send_ipi_mask_ex(const struct cpumask *mask, int vector,
 >  }
-> 
-> diff --git a/drivers/staging/media/starfive/camss/stf-video.h b/drivers/staging/media/starfive/camss/stf-video.h
-> index 8052b77e3ad8..90c73c0dee89 100644
-> --- a/drivers/staging/media/starfive/camss/stf-video.h
-> +++ b/drivers/staging/media/starfive/camss/stf-video.h
-> @@ -35,7 +35,7 @@ enum stf_v_line_id {
->  };
-> 
->  enum stf_capture_type {
-> -	STF_CAPTURE_RAW = 0,
-> +	STF_CAPTURE_DUMP = 0,
->  	STF_CAPTURE_YUV,
->  	STF_CAPTURE_NUM,
->  };
-> --
-> 2.25.1
+>  
+>  static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+> -		bool exclude_self)
+> +			    bool exclude_self)
+>  {
+>  	int cur_cpu, vcpu, this_cpu = smp_processor_id();
+>  	struct hv_send_ipi ipi_arg;
+> @@ -181,7 +181,7 @@ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+>  			return false;
+>  	}
+>  
+> -	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
+> +	if (vector < HV_IPI_LOW_VECTOR || vector > HV_IPI_HIGH_VECTOR)
+>  		return false;
+>  
+>  	/*
+> @@ -218,7 +218,7 @@ static bool __send_ipi_mask(const struct cpumask *mask, int vector,
+>  	}
+>  
+>  	status = hv_do_fast_hypercall16(HVCALL_SEND_IPI, ipi_arg.vector,
+> -				     ipi_arg.cpu_mask);
+> +					ipi_arg.cpu_mask);
+>  	return hv_result_success(status);
+>  
+>  do_ex_hypercall:
+> @@ -241,7 +241,7 @@ static bool __send_ipi_one(int cpu, int vector)
+>  			return false;
+>  	}
+>  
+> -	if ((vector < HV_IPI_LOW_VECTOR) || (vector > HV_IPI_HIGH_VECTOR))
+> +	if (vector < HV_IPI_LOW_VECTOR || vector > HV_IPI_HIGH_VECTOR)
+>  		return false;
+>  
+>  	if (vp >= 64)
+> -- 
+> 2.34.1
 > 
 
+Thanks for cleaning it up,
+Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 
