@@ -1,152 +1,129 @@
-Return-Path: <linux-kernel+bounces-110555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB43886087
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:29:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE82E886093
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 19:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2E661F23089
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:29:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 461CCB21AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 18:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FA213341E;
-	Thu, 21 Mar 2024 18:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F2D13340E;
+	Thu, 21 Mar 2024 18:34:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dk50kXp0"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hjHi87A9"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1116E79C3;
-	Thu, 21 Mar 2024 18:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A162A8BE7;
+	Thu, 21 Mar 2024 18:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711045746; cv=none; b=Kw2arp/VyeTwT4+WqxfYKi50mIWg1kOekGwSXV8+oxZ5fEtkFCMFVIgtZQVVCBAoHR5WAEwKuxdGIvA7ZKdU1nNO32AoE6+7Q3Vo4B0cQsomJezNKz1KzR6lBIiHdZRXoXPU8hBE+2AyfYdrxZTRQq7PEfjm5stXJzHTm4Do1Wg=
+	t=1711046040; cv=none; b=cFdg2722nswRbZ/K5PXQjc4t1DDGnJpyMO0WwUsglbWvQH8lSAVWvjqmnHUc8d/I8fkzUfmHE0N8UKqz5UCA2rmSBBL3XbNkoZxMyXibA4oU93rangZJivc2hAwyTsIG4JpmOJiGARsuL3uF/EWDmBWoCx2Q2YTSBdeXA5he6Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711045746; c=relaxed/simple;
-	bh=zAYATeMtAMSyXywpEjHIrjoVSN0gBr394TEV8OH5uaM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U/6bYQ2PwU4V//c6WLBYighlX3h2z1NXA3o1+qs6oBj/3cscUzRusXNiVLY3ppreDlWlIBCH7GPRJCj80nXnt/ROznYV3x/7u0dzgweA2M4ut99ntD1ZczmWWbIPCEWX5KPGbYEInJ3zRvNs9BI8KUeFTw5e2/m/+IAyCV4AesY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dk50kXp0; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1711046040; c=relaxed/simple;
+	bh=MHUsF0ZKVLnzFmCGMZqccyR1UoMJMh5ccZxGxTuquBI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=YAixor5OmCR+xzhSEY9bt55qS4/vAYOz/67QxqPgdFRGtrZ3tw8EQMf7MISIPiW8Efa27loWckcMyQk8HAos65UTL4NTCI5U1AUc58W/9ZTm36co3njRshGfgaVCR/jt4D1PRid5YhqDmFFwDaoWJxAsxmKFbfCxHdF35afglaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hjHi87A9; arc=none smtp.client-ip=209.85.208.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d4a901e284so28531781fa.1;
-        Thu, 21 Mar 2024 11:29:04 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d28051376eso27110331fa.0;
+        Thu, 21 Mar 2024 11:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711045743; x=1711650543; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vs5BZUwaXWyx9DjsP3hmBPa0Q/mMIBukAIBdGCnvVlg=;
-        b=dk50kXp00FStVEFHbmgDVFXONESk+IqBY23Mkyxa8P/WJHVSsZ+K4kAKeWter0TanJ
-         jPd6/UOqvBafj8WJJatfx3nGAA+2Y0+uF2ZdAgtnYwQcNQ8B9/Up+Ami0uw4Eu76+3ML
-         N67CpQxmxqaxZCiQl5TLlcM7h06EtLyqcB47XPFjM6HURZubyC9ei5cqJ2YiwiDFQttz
-         FsMEpgRKp2DLFdejwr0ikDB6Wtz6NSzXamYqdz4hYFZDxp29gLF4zCY3Ug6rE9vr8VgK
-         1Ss/kCmnIwOChwNgcDM5eEAMiMrY7hYV8UJRBi6X9u+WQlmJRt9js0Oe57Drzo6orzPx
-         A49Q==
+        d=gmail.com; s=20230601; t=1711046037; x=1711650837; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bVfOGEA+RApKepYpAKa+5/4nX+aQTqN+tciKHufCDCk=;
+        b=hjHi87A9X1BC/2NAVfZxpLj1DFQEpcn4SROQyFajo4nu5fEPGHqz3Sfd67df1ddUp3
+         DkAkmNYwz8mJsztc6lyPRNIXzsREQ/Jn5W70KYMUR/PgniKkrs3x6YpG57FU0OsLSqov
+         zWX72hWAm3HcGAV8/aQ4K1pJCyQVDHJ9Q9+kRnS9gtJwRlXOSIHgxnZQc0jkhy8o4EHg
+         OiZg+qt+/G5geB/47pkk3QCc6NDIes+9A77MrM/yi3b+t8UGjo4GkeS+mJZ8bTnNI4cX
+         4IBTFxkxBGhFbi9L/4wKwqhZOIkm0GILgvUnCs4PTg+cujSnnRM1RWDRUa59kGkG3XX8
+         gl7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711045743; x=1711650543;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vs5BZUwaXWyx9DjsP3hmBPa0Q/mMIBukAIBdGCnvVlg=;
-        b=SP3XxRY5L4F9VxOXNNyOJ9E1in9zGGlD7RxjQsKbz3LcP3HeJBx89FhLsQx0dV3U3/
-         AcrjL4bqaogswOeHfYGu6ur8227fKAH5nT1vzVQ5IPw3nyJi2czK5FXL8tix01yYJ9sN
-         vD1/e0ajUFL6QJuxLgU1Y+Q0TySwG2TVV2FNtlwz7OKiZa8X4MJCdibX0rkv1lStgPcp
-         KQ3FUN2azTfWnUEw7JRjRosW3Z9A1f7Q92rKa/HQwrowlk3OAseDbsLoaqvn360T2W8J
-         IxdhZhhPVY6nvL7JrGIL5Tll/uC/ZANgYoe/4YtrC57tj0XJAdOATQaLsV+WIGnPRi1x
-         9fCw==
-X-Forwarded-Encrypted: i=1; AJvYcCWGQktJbh9d0cstj7lgpw2y1S5hcP4I8ZqS8Z8ed3ctCb5dUQWhXW/1+oHhDCpUXgDBCMi5YuMhBd+I4aZzxObXpwT1Wpjm29g85pqmpDx3k8IQsuLuRkzg4HqRK9wnVkIAmNJcB5UkBw==
-X-Gm-Message-State: AOJu0Yy9TjDpDCTBp3jJ7U3NJ/eSU7Va8JsnI9BxzOv3ca+sLV1U7AwU
-	sBcPXw0eX64BKxctvXqJBFe0UJqSTk4U4YvLl76iQ8i5JIzPyYrW
-X-Google-Smtp-Source: AGHT+IHlLxV084PNF9KvdinqIY/5RnBQjRLaYTLjnsTeGxJShM01hzRIKLza1dnWvqk3W23qcD2dAA==
-X-Received: by 2002:a2e:9556:0:b0:2d4:7004:ba8a with SMTP id t22-20020a2e9556000000b002d47004ba8amr259463ljh.53.1711045742805;
-        Thu, 21 Mar 2024 11:29:02 -0700 (PDT)
-Received: from [10.0.0.42] (host-85-29-76-118.kaisa-laajakaista.fi. [85.29.76.118])
-        by smtp.gmail.com with ESMTPSA id p22-20020a2e9a96000000b002d45dd6004esm40852lji.121.2024.03.21.11.29.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 11:29:02 -0700 (PDT)
-Message-ID: <e6994ff1-6c32-4dac-846a-5f4f18b2f996@gmail.com>
-Date: Thu, 21 Mar 2024 20:31:33 +0200
+        d=1e100.net; s=20230601; t=1711046037; x=1711650837;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bVfOGEA+RApKepYpAKa+5/4nX+aQTqN+tciKHufCDCk=;
+        b=VSeUXoNPo8iZ4Q5f+p819WJvFm4r2z41/qSA2saVD+SMzTwNiUZScC4A0cvWsRH8js
+         /d8I3ARejEG+gtbdbr2k/gCbjVRX+k+0jr9t8xoR2um5dN/ocv+34RKcziBY7TswhIWz
+         C0KTvi3StWwcv/TGoybN5dcNGpq+wOlhlDBJnMrMfLRcy4GdCugocvugbFrLclO+mWxy
+         1o0sVdLtiB3OfO646Ytj3HUvsNjEAqYGysiwQpowb769ah4crxF2ZFljdgSywVcGoG6B
+         iIYfMQE6iOIAR0bRReMVYvnUa/vHCiobIgJG8CXYWNXLuIskJghV71NLpHw9tHoJmpo2
+         YCIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXrswLBS8/UK1FVdZCuh/mcOUuVS0ghCJ/GVBIT+qaBMVa9HyxO/89mAvu6BZZM3w7j2+itVWqbrhjVmRlll1RgHfMLZsqaYKaC4H/+qFwVKbQBJ7paRM8p+KvapL9bb4abFz1u+DNpdQ==
+X-Gm-Message-State: AOJu0YwKcbkBvoFQxzUQMiL1ztSfE15iFK2D2X7UqwZtHGJG1F4+WBWz
+	mylxdafqpcjWQ/ZJ5e+E9jtARr1YZnlG3xKvVS0SNJ8CAvRjaNiDxAse1RmPRdoHDA==
+X-Google-Smtp-Source: AGHT+IHN5lmPfqqqsRFWTswZDZDtxZlUJsXrDi3w+38qfrL2vMfShkVJs/ekHHk0JmKBf8Hp2pvAMw==
+X-Received: by 2002:a2e:a374:0:b0:2d3:5ddc:b949 with SMTP id i20-20020a2ea374000000b002d35ddcb949mr275854ljn.2.1711046036525;
+        Thu, 21 Mar 2024 11:33:56 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-7db2-5855-2c59-b89b.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:7db2:5855:2c59:b89b])
+        by smtp.gmail.com with ESMTPSA id hg18-20020a1709072cd200b00a4661caeed7sm191511ejc.48.2024.03.21.11.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 11:33:55 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH 0/2] iio: health: max30102: add support for max30101
+Date: Thu, 21 Mar 2024 19:33:47 +0100
+Message-Id: <20240321-max30101-v1-0-00b83e966824@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] ASoC: ti: davinci-i2s: Opitonally drive DX pin
- during capture streams
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-14-bastien.curutchet@bootlin.com>
- <00182d1d-ef29-457f-9e3e-6e9b57592118@gmail.com>
- <0bb26153-8bcb-475f-8892-5eb925fec538@bootlin.com>
- <7925bbe5-17e8-42cb-a5f0-4f3e06810a90@gmail.com>
- <d20dc37c-13fa-43d1-af52-dce8d8dcdd75@gmail.com>
- <5467add6-0099-4e54-a4f7-12aa149d03c7@bootlin.com>
-Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <5467add6-0099-4e54-a4f7-12aa149d03c7@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIt9/GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDY0Nz3dzECmMDQwND3dSUpFQzU4skMzNjYyWg8oKi1LTMCrBR0bG1tQD
+ 5kwVZWgAAAA==
+To: Jonathan Cameron <jic23@kernel.org>, 
+ Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Matt Ranostay <matt@ranostay.sg>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711046035; l=1214;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=MHUsF0ZKVLnzFmCGMZqccyR1UoMJMh5ccZxGxTuquBI=;
+ b=+dmG+162RbLrlLYBaqEBW5NHK0woMSPQ9gQWK26yueDQ3Zh3nuQSiRqrbINqptKlTNSx1ffxQ
+ bdzANgQg9Q6CF5vrKZ7HYJZAyp+iPGKAenCQL4c50StNPPaZgNY0NLk
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-Hi Bastien,
+The Maxim max30101 is the replacement for the max30105, which is no
+longer recommended for new designs [1].
 
-On 3/21/24 17:14, Bastien Curutchet wrote:
->>> I think the definition of the 'ti,drive-dx' is somehow odd. It allows
->>> you to set it to 0x1234 and the DX pin will show 0x1234 when you capture
->>> 32bit. If you capture 16bit then it will transmit 0x12 (or 0x34?), no?
->>> If you have 4 channel capture then I won't speculate what will be on the
->>> DX pin ;)
->>>
->>> Would not be better to say that the DX pin will be driven low or high
->>> during capture _and_ disable the playback support?
->>
->> After some thinking, it might be still better to use the DX pin as GPIO
->> and either have a custom machine driver which would handle it (set low
->> when a capture trigger happens) or connect it in DAPM as a supply, bias
->> or something and ASoC would handle it automagically.
->>
->> I think that would be cleaner in many ways. What do you think?
->>
-> I agree, that would be cleaner. I ran a few tests to see if that would
-> work on my hardware. It doesn't ... So I looked back to the schematics
-> and found two reasons :
->  * the DX pin needs to be in sync with the clock.
+The max30101 is described as a pulse oximeter and heart-rate sensor,
+as opposed to the max30105, which is described as an optical sensor for
+smoke detection applications. In the end, the internal structure is
+identical, as well as the register map, voltages and sensitivity. Only
+the pinout has changed, which is not relevant for the driver.
 
-I'm not sure what this means, sync with which clock?
+A new compatible has been added, but the logic used for the max30105 can
+be re-used for the new part.
 
->  * the DX pin needs to be in a high-impedance state between two frames
->    so a pull-up can drive it back up. Actually, the DX pin is also
->    linked to the FSR pin so it provides the frame clock to the capture
->    stream.
+Link: https://www.analog.com/en/products/max30105.html [1]
 
-Hrm, you are using the DX pin as FSR for the capture? Why not McBSP.FSR pin?
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Javier Carrasco (2):
+      dt-bindings: iio: health: maxim,max30102: add max30101
+      iio: health: max30102: add support for max30101
 
-Looking back to the patch, one thing stood out: you are setting the
-XDATDLY to 2.
-You have some sort of T1 framing on the bus? The pullup will make the DX
-line high in for the framing bit, right?
-Or you simulate another FSR line with T1 framing DX?
+ Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml | 3 ++-
+ drivers/iio/health/max30102.c                                    | 2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+---
+base-commit: ebc9bee8814d12ec247de117aa2f7fd39ff11127
+change-id: 20240317-max30101-edbe658b6633
 
-The 'ti,drive-dx' sounds like a bad property for sure, you have T1
-framing and driving the DX to certain level.
-It is like DSP_A (1 bit delay) playing constant 0x2 ?
-
-Can you use aplay /dev/zero and a DT property to select T1 framing for
-the playback? Or that would be too coarse for timing the start of
-playback and capture?
-
+Best regards,
 -- 
-Péter
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
