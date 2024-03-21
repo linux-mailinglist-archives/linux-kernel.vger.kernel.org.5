@@ -1,151 +1,86 @@
-Return-Path: <linux-kernel+bounces-110060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF985885978
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:57:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9E3885971
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 13:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA4C9282419
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:57:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BF3FB21BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BEA83CCD;
-	Thu, 21 Mar 2024 12:57:38 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D35D83CD2;
+	Thu, 21 Mar 2024 12:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QSkxeRJ5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEFB1CA83
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 12:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911898062A;
+	Thu, 21 Mar 2024 12:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711025858; cv=none; b=bN8C1N+Rm4Ly9Xio2mbGoc6fH2Ze4j8uCz2W0PfN9JB61pONW9sA2oZS7rCQoSpFIa9sPE2BtZi32Ah/4ehz/8pKxAOkzi2I7IAL89yyZZ0cgLwzcguiEWanX6wRKs2M6JVTU8K+Rp9shelpn0HW8tQm78oBpHjudIusbSl4GOk=
+	t=1711025557; cv=none; b=KsdUeuVChLwUVqdV4rb8NRSnxxrSzEEBjpGQo55qH9j+uPfbzgxT6Np4yS94ibLDfrSo3Gav6+CR8LdcD4s3BipcjffqVBCYKKtfPO1sZoBMp4EO0y025JBEOHHHD/8KuerdvE3LBbRDHIguifalDdD6rYzN275pAGv3B83criw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711025858; c=relaxed/simple;
-	bh=Ugs/LBHQ17TVRz8+/1tX85sJb3QOcQv7xVKlpf6dBWE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=C3B7dG+HB/hriZy8KBv8bL05YEA5IB+LDbhB9jx/lkyRy8ND9m/mVLZ2bCBfPvv7Ac9rxdgBXTG2Y9ZJvlDCJwO3z1/8PNIWDfB7TI44vcsGe1IT+/7CumZBlQ9RMLz+LHAWVQ0ZECONWj88+f7wkOhqvnCHb2JaZRki4+7LNPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-199-xgFlFvyBPmuyMshxla-1pg-1; Thu, 21 Mar 2024 12:57:33 +0000
-X-MC-Unique: xgFlFvyBPmuyMshxla-1pg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 21 Mar
- 2024 12:57:07 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 21 Mar 2024 12:57:07 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Russell King' <linux@armlinux.org.uk>
-CC: Ard Biesheuvel <ardb@kernel.org>, 'Jiangfeng Xiao'
-	<xiaojiangfeng@huawei.com>, "arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
-	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
-	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
-	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
-	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
-	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
-	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHAgAAWtoCAAAVW8IAACy4AgAADrmA=
-Date: Thu, 21 Mar 2024 12:57:07 +0000
-Message-ID: <0fd55e156195440bb1d815dd8300894b@AcuMS.aculab.com>
-References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
- <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
- <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
- <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
- <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
- <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <db930076c837456f999daee5cb76735f@AcuMS.aculab.com>
- <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
-In-Reply-To: <ZfwmomjUwQdCefzh@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1711025557; c=relaxed/simple;
+	bh=+1MLeFvybcEalYGQKL++8f/M5U9YN7gmE4KskSqtg2E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PysxAHW63ZhvMYvrYPuC2HVCdOh0H4T5EKFw3Jp+WkhAb1NPz/KqcBbXqQ8caz/7WaieeV7aems+XQAEieqffYRQSajzAH4KgCvDOe3NjJMfA6FbEJdVS1fE52PRgKlshN05wv45t6GljN78N58aWpU/QTxa+GztPInHnX302Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QSkxeRJ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF5FC433C7;
+	Thu, 21 Mar 2024 12:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711025557;
+	bh=+1MLeFvybcEalYGQKL++8f/M5U9YN7gmE4KskSqtg2E=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QSkxeRJ5kKk16+tgclhMuYgOAU+Gn2Y/V/1f1I3oTlYFgGDDXMgBmdPGEh/gdSWjV
+	 BhWR/88VmsnDlXEx2txoVNWASVcj/NDczzVhH0Nb+YzLg8oDrC4LBm4ob1h/NTcqtk
+	 CDVdlwe2ylwO9f70wPfnQBMZ8kLjNpLN3OstoxsPV3Zescf9Wig3UI/hBbYF6FJLJr
+	 sS0JUuun8FoMFFeEMJ5P2B+l8HxTK5WnFW61djd1YUWzEvyne5fH4GynILz3yzo63M
+	 IbZl76crkPg0/26LZx4SUmW5AibNTT6N7LmgeISWDLq8HMXFpY3VUx/6vU7xvzTP4F
+	 Rb+1yBB0AFckg==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Davis <afd@ti.com>
+Subject: [GIT PULL] hwspinlock updates for v6.9
+Date: Thu, 21 Mar 2024 05:57:28 -0700
+Message-ID: <20240321125730.1676568-1-andersson@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-From: Russell King
-> Sent: 21 March 2024 12:23
-..
-> > That might mean you can get the BL in the middle of a function
-> > but where the following instruction is for the 'no stack frame'
-> > side of the branch.
-> > That is very likely to break any stack offset calculations.
->=20
-> No it can't. At any one point in the function, the stack has to be in
-> a well defined state, so that access to local variables can work, and
-> also the stack can be correctly unwound. If there exists a point in
-> the function body which can be reached where the stack could be in two
-> different states, then the stack can't be restored to the parent
-> context.
 
-Actually you can get there with a function that has a lot of args.
-So you can have:
-=09if (...) {
-=09=09push x
-=09=09bl func
-=09=09add %sp, #8
-=09}
-=09code;
-which is fine.
-But if 'func' is 'noreturn' then the 'add %sp, #8' can be discarded
-and then the saved LR is that of 'code' - but the stack offset is wrong.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-> > > This is where the problem lies - because the link register value
-> > > created by the BL instruction will point to the instruction after the
-> > > BL which will _not_ part of the function that invoked the BL. That
-> > > will probably cause issues for the ELF unwinder, which means this
-> > > issue probably goes beyond _just_ printing the function name.
-> >
-> > Isn't this already in the unwinder?
-> > A BL itself isn't going to fault with PC =3D next-instruction.
->=20
-> You are missing the fact that the PC can be the saved LR, and thus
-> can very well be the next instruction.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-A PC from LR will always be the next instruction.
-It is only the PC from a fault frame that is the current one.
-The unwinder probably need to be told which one it has.
-(Or add 4 the fault frame PC so that the unwinder can subtract
-4 from it.)
+are available in the Git repository at:
 
-At least (I don't think) there are any functions where the
-called code is responsible for removing arguments.
-That is a whole different bag of worms.
+  https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/hwlock-v6.9
 
-=09David
+for you to fetch changes up to cebaa386d5ee1a44a58c12f1d220f62cc567fdb0:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+  hwspinlock: omap: Use index to get hwspinlock pointer (2024-03-05 20:01:14 -0800)
 
+----------------------------------------------------------------
+hwspinlock updates for v6.9
+
+This provides some code cleanup for the OMAP hwspinlock driver.
+
+----------------------------------------------------------------
+Andrew Davis (4):
+      hwspinlock: omap: Remove unneeded check for OF node
+      hwspinlock: omap: Use devm_pm_runtime_enable() helper
+      hwspinlock: omap: Use devm_hwspin_lock_register() helper
+      hwspinlock: omap: Use index to get hwspinlock pointer
+
+ drivers/hwspinlock/omap_hwspinlock.c | 57 +++++++-----------------------------
+ 1 file changed, 10 insertions(+), 47 deletions(-)
 
