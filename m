@@ -1,475 +1,308 @@
-Return-Path: <linux-kernel+bounces-110711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673628862C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:57:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 836538862C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 22:58:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25DC02831C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:57:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08E801F21966
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4384136980;
-	Thu, 21 Mar 2024 21:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5047B136669;
+	Thu, 21 Mar 2024 21:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ew0zOPv3"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MLtTu6r/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966A713664F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711058211; cv=none; b=k1IBcF/06D43T+zA/+xRx01+sL6jVBsaZLikIc0Wo4hJsPIf4mup+yTcQ+7jeWMN5FlrBoAsh/BfzmhPBghVOBRDpy8rbHDmSgaHQLWCE9rC+WLWAYrTiRWHnuZgHD3NMjrN+wA6gmd6FMATvMdJMghmL4TzhXoT2fDWEx1uop4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711058211; c=relaxed/simple;
-	bh=9dV/2VnrfFZf8SrYKWVgJZIDNLKyUpVLM0EYAntlz/M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=B84btnSk419le+Eu/MX1ERV8pfhbr/DalNLPbKyaG7xH/RNimrbQJL7c5ICejm7HNn/7zv9GnFve1dy+f3qbVettkOsKLg3Bw6o7niy+Bv01kPE3zW1GfimSw16vAPNWOWT8ElPbdcQWw8vCL2gtKecJptuA3TKKVdrBkdb+HWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ew0zOPv3; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42LKYbSh015365;
-	Thu, 21 Mar 2024 21:56:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=+dpK94TgpscLQ1q9mkoSacMojrhp9OYqAy5i/VykGQA=;
- b=ew0zOPv3kFoRIePZSlGf0fFgeb58QO0zpIFzlJghi3DroDjuh+Viev1ZrzC6RbBui0g9
- LbiiaVmsvbKuS0ly0WqRaCZG69s04rSRdDS6bAVPZ96ue5lPZjwtitRKFwS21Uq6Outi
- oYDwCwO0q8Ato1gAHqMSpM3ioXPI7pREluskbEJd+gbjherbAUcAgNA/2BhZYihwmx8A
- yGFSntY/NLguw1rP9nCQQ1vnMaSio8YK9tWkXIuGgvUU2X+1LyoapV2DXlBy/pDOIwXc
- LaErjLrhcjrd3N8gfBMtpnUo/AGwTfZhthHqLJWFlyxgw0uvmDUFwl5nYabwanxSGvNl 7Q== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww3aakeer-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 21:56:26 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42LKxTuq007556;
-	Thu, 21 Mar 2024 21:56:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1vahekd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Mar 2024 21:56:25 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42LLt1fk038093;
-	Thu, 21 Mar 2024 21:56:25 GMT
-Received: from aruramak-dev.osdevelopmeniad.oraclevcn.com (aruramak-dev.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.253.155])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ww1vahej4-2;
-	Thu, 21 Mar 2024 21:56:25 +0000
-From: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, dave.hansen@linux.intel.com, tglx@linutronix.de,
-        matthias.neugschwandtner@oracle.com, andrew.brownsword@oracle.com
-Subject: [RFC PATCH v2 1/1] x86/pkeys: update PKRU to enable pkey 0 before XSAVE
-Date: Thu, 21 Mar 2024 21:56:22 +0000
-Message-Id: <20240321215622.3396410-2-aruna.ramakrishna@oracle.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240321215622.3396410-1-aruna.ramakrishna@oracle.com>
-References: <20240321215622.3396410-1-aruna.ramakrishna@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836CA133998;
+	Thu, 21 Mar 2024 21:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711058292; cv=fail; b=SB9q9gs1m/QdzAV/BlcfjPh9P+DiNqN7i+cwh/jDSlh7HN3vyW+PSouPUtIRXIx8eDYkGInaEVwk6liV6ZdWnQdn3RushMU5UHhNKXpzX1qB+EbytFozB9PQmqhvkFZyknzirfWqzqpwxwuSNi72mfNvoG79B79DlPY1oSd6lG8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711058292; c=relaxed/simple;
+	bh=Lz3EL/EiVh/kKzAPRXDecYszUFsMyXW4vcxNrP+Uo8g=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=KnzPm09ecGH0heBn5rbo5JQkMwPoHm3DnULlugoAbbwjWn32I13o7FV5q4AHLToPHvrBfM2gXPt1oWvC3zIdlG+T2TAZq5DJ2ne2S7wov/locTFyWvarPJE/hLfC6DwWMWRf9g7OeEocm1Yq0Tc60d0+0BeoN4Rhtn1+v9Y4vDE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MLtTu6r/; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711058290; x=1742594290;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Lz3EL/EiVh/kKzAPRXDecYszUFsMyXW4vcxNrP+Uo8g=;
+  b=MLtTu6r/2APc0pSDcFx8H84cuJ/5uxFzL4G+6MhJDOUDjfB7lA+hOy9P
+   rBRQIQLlrBWoI1phSg5eHHQS7Mxwc9oNniJ96UlqLUmN8nNfUqvh3jP3k
+   AEc7UnP/0S4Ok69SEBNRu2gZBM0Nv51nmeVtL05gKn+cPx0NqAwfeoOjk
+   GGfpRBKF43GydDdEcrWaIKORJka4PYrK3oJ4gDbQuUoj7vfqhPbEQz5vE
+   qKSi88IDgg8lYX9YbAX2FSQi4G1S9mLI5mMl4sdJ9dDCsTEzWRdYrk5Tk
+   yRcirtCbLm9EcuovSx8Jd6RRfcqIV/VJw9mxSKMMkzoKxN1/z/8RS6r3G
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="23537856"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="23537856"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 14:58:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="14638479"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 14:58:09 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 14:58:07 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 14:58:07 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 14:58:07 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 14:58:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mfvQA7uTjEbK0kW3cXTeV5FR6HHhtkFjmDhKCIVis4TV8Me6PIRwxQ83tEWy+P+v7W/1DG0q9GUPDEaWsFpOabWo2ZJrkB8XJdVnXffvpnpl/tHpgD13xWpblhYxwIzaanotEodgz4QpOeaxa+mbz+O6Yi6fzHSBEuG7vefqNtWsMGJ5OFZHvq+aEJaoh9pc7SUJbw5UdhHRkhbXy6muJ8/bDU5UiMfIveznPP2C8csK8dR/9w1Il5uX+kBo2AVgaSYt/3rAiRExRNzz2JLyd8Edm9yGuCclljcrMfmcheEM5rzgln08FyC3vu4NS2UmjSBG6RegnxO/rEdyBodnAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bDN4783ooIeJWxbdI7YJF0x3OrBHauAFmoco861NWRU=;
+ b=NdySKqqRF6jP+yiboYhuYajIVOIx7pYW88JPtUnswRP7k5/Yy8XDAhphQm29GR0VO+F+lTGaVHoFSvv47jDUPtXPwyb0bs0XIBFaVRez7T7OeJ89diCNXsA8zcrnY/3+SNuzZ9EIioxzCBMoNctqPxdWLv8EfCXNbGWtz8jPDrUXtAA7Maw4o5Cz0MxkWLWbM7Id4ane2TUY4bJFhEQvIQEH1K4sP5wYoU9SSDFHdI33PeB3fPhvB1dn/oDQCEq1uaf1aTlJ597hZViqShCvSGE9dwZZF/RTQqGNzdRGLnRQwuYtp1t09YGnUZlMjKcygcUF7ZeCpa4hYhP0t/wf0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by PH8PR11MB6683.namprd11.prod.outlook.com (2603:10b6:510:1c6::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Thu, 21 Mar
+ 2024 21:58:04 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.010; Thu, 21 Mar 2024
+ 21:58:03 +0000
+Message-ID: <b7b919eb-81fd-4f27-86c1-6e160754608e@intel.com>
+Date: Fri, 22 Mar 2024 10:57:53 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 027/130] KVM: TDX: Define TDX architectural
+ definitions
+To: "Yamahata, Isaku" <isaku.yamahata@intel.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Paolo Bonzini
+	<pbonzini@redhat.com>, "Aktas, Erdem" <erdemaktas@google.com>, "Sean
+ Christopherson" <seanjc@google.com>, Sagi Shahar <sagis@google.com>, "Chen,
+ Bo2" <chen.bo@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Zhang, Tina"
+	<tina.zhang@intel.com>, Sean Christopherson
+	<sean.j.christopherson@intel.com>, "Li, Xiaoyao" <Xiaoyao.Li@intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW2PR16CA0008.namprd16.prod.outlook.com (2603:10b6:907::21)
+ To BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-21_12,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403210165
-X-Proofpoint-ORIG-GUID: kzlr5BCTyNxnDpgWGwLR_TesKbRDNFV8
-X-Proofpoint-GUID: kzlr5BCTyNxnDpgWGwLR_TesKbRDNFV8
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|PH8PR11MB6683:EE_
+X-MS-Office365-Filtering-Correlation-Id: b23fcd5f-3f9c-4ef0-c6ef-08dc49f1fbae
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qSbCLxk5JU7K/W3hmN0CPYnI7q4aBI/RbXPywdIm8MY7LpqvdUQl1h44JU13SUudKa9e/TE2m+XU30qRLTIqDmnpuZCFExz47e02D1NtL3gv71UgyKd9bC2qU75txrnUbsZduTX+AhNcWMneyduO5ni22uSedbzjveVkhq+pvMT77m/f09PvOGHwyC5SNjVSPnBOtXMlODHTNODptc37gtXdj7GVidBNFw+izdwDiOnT81AZKNAtwF9vP4ezJUffd8oliGdXfEfIi5TM3xMiz72xH2GfDVO6T5VHEUFCY2g/tNR84PJdjecbMox7JE5vEuXrYkagnJRjPw07HCNnJXyj3rp1qNCMc6I60CVPLysZwDjXfWq/pkdGbXhbeET6MyqYjeCjcuHR5ri3saFj/2SzQbeGUZ3oCA/tmhJKWuOBdMiWkm40mp1RPsq2Os3HDIT/CHUZA5ngqYxRnRtxihHNPYyrGE/WCYtn1In+MEtoIaKqJbbV+U6YMBkSVpiS0o3HnguOB+ka2jzLf8k5yjLimkBgk3Z+vuswm4+ZRP14RzxgHDtJxJMLTW4AOPARmNnTG+MLMhIgDU/w2ZrVsrGZyaTTn7NM6Tl3gAq7bEDIVL59h7/5WgFy6vyZxtsvRsdxhn7D1/DEv89FWr3LfvVtwVOalTQKOdfJZ6t6WeQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UGVId25mQTc1Nzg1K284WDByZjdBYXBHMVdLblRwTVIxeXJnRUxDT2J6L3hJ?=
+ =?utf-8?B?MTdYQzJ2K1FOUHo3T3QwaEU1RzdGaXRDYU5xWG83akVjYWI5MzFxUmZpaWF2?=
+ =?utf-8?B?K0VHdnl6U2Z1TFY5WXJ5UVg2NVdTejQ0OFcxcFd6bHdFQzlrVXU5OC9RcDZ0?=
+ =?utf-8?B?Q1N5YWVlckdla1NuREpGTUpxdEU3emx2RXAya0lqb3ZCQlI0dXNkTkpWaURF?=
+ =?utf-8?B?TDg5Vm1KUFU4SmpuUUxnOG5TZHlRNUJGcWxzOUQ4TDhvbjVTeUh5QjF6NUZl?=
+ =?utf-8?B?aUwvZmcwakpRdWZzZm1vT3plN1dZMUR3Y0pLbmx1SVhzdU5rS25paVlKbW50?=
+ =?utf-8?B?OGMvY0ViWUs0dmxJS1JodWtMQkZzNnJ5a2d1c1ZmcGdXOU5vV0pkWnN0ZjFI?=
+ =?utf-8?B?dnh0dU1xeWNMRmhhT25ZTkJ0WkNMTjhXZWZiaWtlcHd1ejYzK0xOWHB2QW0y?=
+ =?utf-8?B?eGQxOFFZOERBb1BzNzFPRElTaktQaWdHQ3FKVDZhT2hXNHVCL2h3Z0J3MXB1?=
+ =?utf-8?B?WG9KSEs5dnR2amt5cnhqUWJ3T0hQT3VEV1BTcTVMVThlNXZsU0xDSnpXRXFN?=
+ =?utf-8?B?NWd6ZDl6M0hML05oZzdEZDVDZEJOYkRJMjZhcWk1Zm1iNWQ4UmR6Y0FVaFBJ?=
+ =?utf-8?B?TkVJNk9TRWdvZE8wNW84WGRXZUsrSVZnZXFaRk5LUUFIMC9NeTZnRFZTYTQ2?=
+ =?utf-8?B?TkthenpxTXByaG1peGd5UUtSbC9iRFJETGpWSy8xbjVDY21MNUExNGMrdnZh?=
+ =?utf-8?B?Sjd2R2VWUDZRRXhxcDFpWklxYld0bVA2S2pLNzFBRWFObU50Vk54KzJXaUxl?=
+ =?utf-8?B?WWN0SWQ0OEJFNDk3SlZ5bVFhUm5FaG5EamJmbmdHU25MWGlQT3lHSlR3MUpH?=
+ =?utf-8?B?Y0FYVnhvZ0VCYlF1czZ2WXVKRnZKLzRsSWNuZlBLa1VGV09NVU8rQU01Zk1G?=
+ =?utf-8?B?YVpjYnI3QXNLak5PT3NCdDhDaGY4KzJVcFVoZmR2TGtkT0hiL2pYeTVjY0Zm?=
+ =?utf-8?B?WmhQQThKaUNJejBoK2dNanZGZHRmYVJ1Tk1nNEdqUGt6KzRudzRNMWxPajBE?=
+ =?utf-8?B?ZHl6NjlzdHNMYkk1aGtUUWg2Z0dRc29PcXpYYnZ3VW1wVUNJbzVPa1Q2RTNY?=
+ =?utf-8?B?WHAyMVcySUI1Qk94ZXBra0s3eks3UU94dURTbU5vVjZUbGRBMFNLRVRuU2NZ?=
+ =?utf-8?B?Vm5oSUtVWENqUHRPSkUzajhsb21KakE5Z0o4VE9CcGxWRjNhTXN0MEVCZWgy?=
+ =?utf-8?B?WW1TMVB3Vmg3a09pLzU0ZkVteG1sVGxTa1ZySFlNMElmREpkNnZJYk9vTUNN?=
+ =?utf-8?B?N3lYVDdDVFI5RzZ1L3JFdEtPblEwRERGODQ0RUpvS2NvVDBJeVgxVXpDL0dW?=
+ =?utf-8?B?bHhjVlNMM3E3dG5TaWV5N09SMFEvcHJOWXl4ZUxLZmp6T2N3c1V0b1pldytE?=
+ =?utf-8?B?WGNDMjNkc3gzdmo3R2NFRW9UaWVlc1pvMUY3cmxqdEdQbWFobGtkUTljY3k2?=
+ =?utf-8?B?Zmc1MXJpYzZJczRzamtvUnZScjRUQVNLc0F4akVyeG91cEJHUUdVNFdrSUFD?=
+ =?utf-8?B?bWtwUVNVRW9JbTFpc3N4NHdISU1oYXpheVFMaDhGcUpaOXRLMUFUSXVGUFU4?=
+ =?utf-8?B?M001ajBINE1SVEVjcTBtRHFseFR4NFdJY0RlS1lIYWZQRmorVUJuNWwxSVdp?=
+ =?utf-8?B?bnhibGZXQkMwM0ZPWXdyZTJQRWh4cjRYZmJMcmh2Z0I0Mm9RcTdQT2tWS2Fp?=
+ =?utf-8?B?bi8zS0tYQ0xYSDBuU3dnQkNNOEplQWJNRUg0UjdKdEs3M3hwa2FSTW1NWXls?=
+ =?utf-8?B?L0hYR0IrZGxxZEJuKzVINDNXdEpNMkJkRnIzK3Z4Z0YxQUFPQUlyQTJadHEx?=
+ =?utf-8?B?ZVRZaG9GSE92NElKbXppQzgvNGhIS0JlT3djaTlqK0Z0bnNocHVHRGtDSzMw?=
+ =?utf-8?B?MmpPMmZGMmt2U3ZLYzZrelNJMUZwdEQ1a3VyMkNhNmtpcGxRUFFqOEREbUF2?=
+ =?utf-8?B?QTZYMUw2RWhtUklWcGFmUW5RWFBQMXIzS2kvU3k4TnJsdXBOREhmZW1wK1hh?=
+ =?utf-8?B?R2VJUlVqb25zdWxSMHZZUmY2MnU4M1dyNm1NK1RMTjA2NUdSVXFzL1RzN2NV?=
+ =?utf-8?Q?OsPZIAzKrZv9dfV9Vq1sRTg2Q?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b23fcd5f-3f9c-4ef0-c6ef-08dc49f1fbae
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2024 21:58:03.9260
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s0B6KdvLtEMpFr7mynVvnU74LXrfeMzoMW77ujhkKWmm3B0TjroC/YZgAvrv4q1wKWK4I7CfmTyAA5xYCGzKbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6683
+X-OriginatorOrg: intel.com
 
-This patch is a workaround for a bug where the PKRU value is not
-restored to the init value before the signal handler is invoked.
 
-Problem description:
-Let's assume there's a multithreaded application that runs untrusted
-user code. Each thread has its stack/code protected by a non-zero pkey,
-and the PKRU register is set up such that only that particular non-zero
-pkey is enabled. Each thread also sets up an alternate signal stack to
-handle signals, which is protected by pkey zero. The pkeys man page
-documents that the PKRU will be reset to init_pkru when the signal
-handler is invoked, which means that pkey zero access will be enabled.
-But this reset happens after the kernel attempts to push fpu state
-to the alternate stack, which is not (yet) accessible by the kernel,
-which leads to a new SIGSEGV being sent to the application, terminating
-it.
+> +/*
+> + * TDX SEAMCALL API function leaves
+> + */
+> +#define TDH_VP_ENTER			0
+> +#define TDH_MNG_ADDCX			1
+> +#define TDH_MEM_PAGE_ADD		2
+> +#define TDH_MEM_SEPT_ADD		3
+> +#define TDH_VP_ADDCX			4
+> +#define TDH_MEM_PAGE_RELOCATE		5
 
-Enabling both the non-zero pkey (for the thread) and pkey zero (in
-userspace) will not work for us. We cannot have the alt stack writeable
-by all - the rationale here is that the code running in that thread
-(using a non-zero pkey) is untrusted and should not have access to the
-alternate signal stack (that uses pkey zero), to prevent the return
-address of a function from being changed. The expectation is that kernel
-should be able to set up the alternate signal stack and deliver the
-signal to the application even if pkey zero is explicitly disabled by
-the application. The signal handler accessibility should not be dictated
-by the PKRU value that the thread sets up.
+I don't think the "RELOCATE" is needed in this patchset?
 
-Solution:
-The PKRU register is managed by XSAVE, which means the sigframe contents
-must match the register contents - which is not the case here. We want
-the sigframe to contain the user-defined PKRU value (so that it is
-restored correctly from sigcontext) but the actual register must be
-reset to init_pkru so that the alt stack is accessible and the signal
-can be delivered to the application. It seems that the proper fix here
-would be to remove PKRU from the XSAVE framework and manage it
-separately, which is quite complicated. As a workaround, this patch does
-something like this:
+> +#define TDH_MEM_PAGE_AUG		6
+> +#define TDH_MEM_RANGE_BLOCK		7
+> +#define TDH_MNG_KEY_CONFIG		8
+> +#define TDH_MNG_CREATE			9
+> +#define TDH_VP_CREATE			10
+> +#define TDH_MNG_RD			11
+> +#define TDH_MR_EXTEND			16
+> +#define TDH_MR_FINALIZE			17
+> +#define TDH_VP_FLUSH			18
+> +#define TDH_MNG_VPFLUSHDONE		19
+> +#define TDH_MNG_KEY_FREEID		20
+> +#define TDH_MNG_INIT			21
+> +#define TDH_VP_INIT			22
+> +#define TDH_MEM_SEPT_RD			25
+> +#define TDH_VP_RD			26
+> +#define TDH_MNG_KEY_RECLAIMID		27
+> +#define TDH_PHYMEM_PAGE_RECLAIM		28
+> +#define TDH_MEM_PAGE_REMOVE		29
+> +#define TDH_MEM_SEPT_REMOVE		30
+> +#define TDH_SYS_RD			34
+> +#define TDH_MEM_TRACK			38
+> +#define TDH_MEM_RANGE_UNBLOCK		39
+> +#define TDH_PHYMEM_CACHE_WB		40
+> +#define TDH_PHYMEM_PAGE_WBINVD		41
+> +#define TDH_VP_WR			43
+> +#define TDH_SYS_LP_SHUTDOWN		44
 
-        orig_pkru = rdpkru();
-        wrpkru(init_pkru & orig_pkru);
-        xsave_to_user_sigframe();
-        put_user(pkru_sigframe_addr, orig_pkru)
+And LP_SHUTDOWN is certainly not needed.
 
-Signed-off-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Helped-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Helped-by: Prakash Sangappa <prakash.sangappa@oracle.com>
----
- arch/x86/include/asm/fpu/signal.h  |  3 +-
- arch/x86/include/asm/sighandling.h | 10 +++----
- arch/x86/kernel/fpu/signal.c       | 44 ++++++++++++++++++++++++++----
- arch/x86/kernel/fpu/xstate.c       | 13 +++++++++
- arch/x86/kernel/fpu/xstate.h       |  1 +
- arch/x86/kernel/signal.c           | 40 +++++++++++++++++++++------
- arch/x86/kernel/signal_32.c        |  8 +++---
- arch/x86/kernel/signal_64.c        |  9 +++---
- 8 files changed, 101 insertions(+), 27 deletions(-)
+Could you check whether there are others that are not needed?
 
-diff --git a/arch/x86/include/asm/fpu/signal.h b/arch/x86/include/asm/fpu/signal.h
-index 611fa41711af..deaa81f44c2a 100644
---- a/arch/x86/include/asm/fpu/signal.h
-+++ b/arch/x86/include/asm/fpu/signal.h
-@@ -29,7 +29,8 @@ fpu__alloc_mathframe(unsigned long sp, int ia32_frame,
- 
- unsigned long fpu__get_fpstate_size(void);
- 
--extern bool copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
-+extern bool copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size,
-+				     u32 pkru);
- extern void fpu__clear_user_states(struct fpu *fpu);
- extern bool fpu__restore_sig(void __user *buf, int ia32_frame);
- 
-diff --git a/arch/x86/include/asm/sighandling.h b/arch/x86/include/asm/sighandling.h
-index e770c4fc47f4..de458354a3ea 100644
---- a/arch/x86/include/asm/sighandling.h
-+++ b/arch/x86/include/asm/sighandling.h
-@@ -17,11 +17,11 @@ void signal_fault(struct pt_regs *regs, void __user *frame, char *where);
- 
- void __user *
- get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size,
--	     void __user **fpstate);
-+	     void __user **fpstate, u32 pkru);
- 
--int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs);
--int ia32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs);
--int x64_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs);
--int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs);
-+int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru);
-+int ia32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru);
-+int x64_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru);
-+int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru);
- 
- #endif /* _ASM_X86_SIGHANDLING_H */
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 247f2225aa9f..1abbb6551992 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -63,6 +63,32 @@ static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
- 	return true;
- }
- 
-+/*
-+ * Update the value of PKRU register that was already pushed
-+ * onto the signal frame.
-+ */
-+static inline int
-+__update_pkru_in_sigframe(struct xregs_state __user *buf, u32 pkru)
-+{
-+	int err = -EFAULT;
-+	struct _fpx_sw_bytes fx_sw;
-+	struct pkru_state *pk = NULL;
-+
-+	if (unlikely(!check_xstate_in_sigframe((void __user *) buf, &fx_sw)))
-+		goto out;
-+
-+	pk = get_xsave_addr_user(buf, XFEATURE_PKRU);
-+	if (!pk || !user_write_access_begin(buf, sizeof(struct xregs_state)))
-+		goto out;
-+	unsafe_put_user(pkru, (unsigned int __user *) pk, uaccess_end);
-+
-+	err = 0;
-+uaccess_end:
-+	user_access_end();
-+out:
-+	return err;
-+}
-+
- /*
-  * Signal frame handlers.
-  */
-@@ -156,10 +182,17 @@ static inline bool save_xstate_epilog(void __user *buf, int ia32_frame,
- 	return !err;
- }
- 
--static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
-+static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf,
-+					  u32 pkru)
- {
--	if (use_xsave())
--		return xsave_to_user_sigframe(buf);
-+	int err = 0;
-+
-+	if (use_xsave()) {
-+		err = xsave_to_user_sigframe(buf);
-+		if (!err && cpu_feature_enabled(X86_FEATURE_OSPKE))
-+			err = __update_pkru_in_sigframe(buf, pkru);
-+		return err;
-+	}
- 	if (use_fxsr())
- 		return fxsave_to_user_sigframe((struct fxregs_state __user *) buf);
- 	else
-@@ -185,7 +218,8 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
-  * For [f]xsave state, update the SW reserved fields in the [f]xsave frame
-  * indicating the absence/presence of the extended state to the user.
-  */
--bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
-+bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size,
-+			      u32 pkru)
- {
- 	struct task_struct *tsk = current;
- 	struct fpstate *fpstate = tsk->thread.fpu.fpstate;
-@@ -228,7 +262,7 @@ bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
- 		fpregs_restore_userregs();
- 
- 	pagefault_disable();
--	ret = copy_fpregs_to_sigframe(buf_fx);
-+	ret = copy_fpregs_to_sigframe(buf_fx, pkru);
- 	pagefault_enable();
- 	fpregs_unlock();
- 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 117e74c44e75..22623abf32b6 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -991,6 +991,19 @@ void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
- 	return __raw_xsave_addr(xsave, xfeature_nr);
- }
- 
-+/*
-+ * Given an xstate feature nr, calculate where in the xsave
-+ * buffer the state is. The xsave buffer should be in standard
-+ * format, not compacted (e.g. user mode signal frames).
-+ */
-+void *get_xsave_addr_user(struct xregs_state *xsave, int xfeature_nr)
-+{
-+	if (WARN_ON_ONCE(!xfeature_enabled(xfeature_nr)))
-+		return NULL;
-+
-+	return (void *)xsave + xstate_offsets[xfeature_nr];
-+}
-+
- #ifdef CONFIG_ARCH_HAS_PKEYS
- 
- /*
-diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
-index 3518fb26d06b..ade07e78fd26 100644
---- a/arch/x86/kernel/fpu/xstate.h
-+++ b/arch/x86/kernel/fpu/xstate.h
-@@ -55,6 +55,7 @@ extern void fpu__init_cpu_xstate(void);
- extern void fpu__init_system_xstate(unsigned int legacy_size);
- 
- extern void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
-+extern void *get_xsave_addr_user(struct xregs_state *xsave, int xfeature_nr);
- 
- static inline u64 xfeatures_mask_supervisor(void)
- {
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 31b6f5dddfc2..36134931df68 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -74,7 +74,7 @@ static inline int is_x32_frame(struct ksignal *ksig)
-  */
- void __user *
- get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size,
--	     void __user **fpstate)
-+	     void __user **fpstate, u32 pkru)
- {
- 	struct k_sigaction *ka = &ksig->ka;
- 	int ia32_frame = is_ia32_frame(ksig);
-@@ -139,7 +139,8 @@ get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size,
- 	}
- 
- 	/* save i387 and extended state */
--	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size))
-+	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx,
-+				      math_size, pkru))
- 		return (void __user *)-1L;
- 
- 	return (void __user *)sp;
-@@ -206,7 +207,7 @@ unsigned long get_sigframe_size(void)
- }
- 
- static int
--setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
-+setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru)
- {
- 	/* Perform fixup for the pre-signal frame. */
- 	rseq_signal_deliver(ksig, regs);
-@@ -214,21 +215,41 @@ setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 	/* Set up the stack frame */
- 	if (is_ia32_frame(ksig)) {
- 		if (ksig->ka.sa.sa_flags & SA_SIGINFO)
--			return ia32_setup_rt_frame(ksig, regs);
-+			return ia32_setup_rt_frame(ksig, regs, pkru);
- 		else
--			return ia32_setup_frame(ksig, regs);
-+			return ia32_setup_frame(ksig, regs, pkru);
- 	} else if (is_x32_frame(ksig)) {
--		return x32_setup_rt_frame(ksig, regs);
-+		return x32_setup_rt_frame(ksig, regs, pkru);
- 	} else {
--		return x64_setup_rt_frame(ksig, regs);
-+		return x64_setup_rt_frame(ksig, regs, pkru);
- 	}
- }
- 
-+/*
-+ * Ensure that the both the current stack and the alternate signal
-+ * stack is writeable. The alternate stack must be accessible by the
-+ * init PKRU value.
-+ */
-+static inline u32 sig_prepare_pkru(void)
-+{
-+	u32 current_pkru = read_pkru();
-+	u32 init_pkru_snapshot = pkru_get_init_value();
-+
-+	write_pkru(current_pkru & init_pkru_snapshot);
-+	return current_pkru;
-+}
-+
-+static inline void sig_restore_pkru(u32 pkru)
-+{
-+	write_pkru(pkru);
-+}
-+
- static void
- handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- {
- 	bool stepping, failed;
- 	struct fpu *fpu = &current->thread.fpu;
-+	u32 pkru;
- 
- 	if (v8086_mode(regs))
- 		save_v86_state((struct kernel_vm86_regs *) regs, VM86_SIGNAL);
-@@ -264,7 +285,8 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 	if (stepping)
- 		user_disable_single_step(current);
- 
--	failed = (setup_rt_frame(ksig, regs) < 0);
-+	pkru = sig_prepare_pkru();
-+	failed = (setup_rt_frame(ksig, regs, pkru) < 0);
- 	if (!failed) {
- 		/*
- 		 * Clear the direction flag as per the ABI for function entry.
-@@ -281,6 +303,8 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 		 * Ensure the signal handler starts with the new fpu state.
- 		 */
- 		fpu__clear_user_states(fpu);
-+	} else {
-+		sig_restore_pkru(pkru);
- 	}
- 	signal_setup_done(failed, ksig, stepping);
- }
-diff --git a/arch/x86/kernel/signal_32.c b/arch/x86/kernel/signal_32.c
-index c12624bc82a3..68f2bfd7d6e7 100644
---- a/arch/x86/kernel/signal_32.c
-+++ b/arch/x86/kernel/signal_32.c
-@@ -228,7 +228,7 @@ do {									\
- 		goto label;						\
- } while(0)
- 
--int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs)
-+int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru)
- {
- 	sigset32_t *set = (sigset32_t *) sigmask_to_save();
- 	struct sigframe_ia32 __user *frame;
-@@ -246,7 +246,7 @@ int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs)
- 		0x80cd,		/* int $0x80 */
- 	};
- 
--	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp);
-+	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp, pkru);
- 
- 	if (ksig->ka.sa.sa_flags & SA_RESTORER) {
- 		restorer = ksig->ka.sa.sa_restorer;
-@@ -299,7 +299,7 @@ int ia32_setup_frame(struct ksignal *ksig, struct pt_regs *regs)
- 	return -EFAULT;
- }
- 
--int ia32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
-+int ia32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru)
- {
- 	sigset32_t *set = (sigset32_t *) sigmask_to_save();
- 	struct rt_sigframe_ia32 __user *frame;
-@@ -319,7 +319,7 @@ int ia32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 		0,
- 	};
- 
--	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp);
-+	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp, pkru);
- 
- 	if (!user_access_begin(frame, sizeof(*frame)))
- 		return -EFAULT;
-diff --git a/arch/x86/kernel/signal_64.c b/arch/x86/kernel/signal_64.c
-index 23d8aaf8d9fd..b5c9535ff08b 100644
---- a/arch/x86/kernel/signal_64.c
-+++ b/arch/x86/kernel/signal_64.c
-@@ -161,7 +161,7 @@ static unsigned long frame_uc_flags(struct pt_regs *regs)
- 	return flags;
- }
- 
--int x64_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
-+int x64_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru)
- {
- 	sigset_t *set = sigmask_to_save();
- 	struct rt_sigframe __user *frame;
-@@ -172,7 +172,8 @@ int x64_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 	if (!(ksig->ka.sa.sa_flags & SA_RESTORER))
- 		return -EFAULT;
- 
--	frame = get_sigframe(ksig, regs, sizeof(struct rt_sigframe), &fp);
-+	frame = get_sigframe(ksig, regs, sizeof(struct rt_sigframe), &fp,
-+			     pkru);
- 	uc_flags = frame_uc_flags(regs);
- 
- 	if (!user_access_begin(frame, sizeof(*frame)))
-@@ -300,7 +301,7 @@ int copy_siginfo_to_user32(struct compat_siginfo __user *to,
- 	return __copy_siginfo_to_user32(to, from);
- }
- 
--int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
-+int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs, u32 pkru)
- {
- 	compat_sigset_t *set = (compat_sigset_t *) sigmask_to_save();
- 	struct rt_sigframe_x32 __user *frame;
-@@ -311,7 +312,7 @@ int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 	if (!(ksig->ka.sa.sa_flags & SA_RESTORER))
- 		return -EFAULT;
- 
--	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp);
-+	frame = get_sigframe(ksig, regs, sizeof(*frame), &fp, pkru);
- 
- 	uc_flags = frame_uc_flags(regs);
- 
--- 
-2.39.3
+Perhaps we should just include macros that got used, but anyway.
 
+[...]
+
+> +
+> +/*
+> + * TD_PARAMS is provided as an input to TDH_MNG_INIT, the size of which is 1024B.
+> + */
+
+Why is this comment applied to TDX_MAX_VCPUS?
+
+> +#define TDX_MAX_VCPUS	(~(u16)0)
+
+And is (~(16)0) an architectural value defined by TDX spec, or just SW 
+value that you just put here for convenience?
+
+I mean, is it possible that different version of TDX module have 
+different implementation of MAX_CPU, e.g., module 1.0 only supports X 
+but module 1.5 increases to Y where Y > X?
+
+Anyway, looks you can safely move this to the patch to enable CAP_MAX_CPU?
+
+> +
+> +struct td_params {
+> +	u64 attributes;
+> +	u64 xfam;
+> +	u16 max_vcpus;
+> +	u8 reserved0[6];
+> +
+> +	u64 eptp_controls;
+> +	u64 exec_controls;
+> +	u16 tsc_frequency;
+> +	u8  reserved1[38];
+> +
+> +	u64 mrconfigid[6];
+> +	u64 mrowner[6];
+> +	u64 mrownerconfig[6];
+> +	u64 reserved2[4];
+> +
+> +	union {
+> +		DECLARE_FLEX_ARRAY(struct tdx_cpuid_value, cpuid_values);
+> +		u8 reserved3[768];
+
+I am not sure you need the 'reseved3[768]', unless you need to make 
+sieof(struct td_params) return 1024?
+
+> +	};
+> +} __packed __aligned(1024); > +
+
+[...]
+
+> +
+> +#define TDX_MD_ELEMENT_SIZE_8BITS      0
+> +#define TDX_MD_ELEMENT_SIZE_16BITS     1
+> +#define TDX_MD_ELEMENT_SIZE_32BITS     2
+> +#define TDX_MD_ELEMENT_SIZE_64BITS     3
+> +
+> +union tdx_md_field_id {
+> +	struct {
+> +		u64 field                       : 24;
+> +		u64 reserved0                   : 8;
+> +		u64 element_size_code           : 2;
+> +		u64 last_element_in_field       : 4;
+> +		u64 reserved1                   : 3;
+> +		u64 inc_size                    : 1;
+> +		u64 write_mask_valid            : 1;
+> +		u64 context                     : 3;
+> +		u64 reserved2                   : 1;
+> +		u64 class                       : 6;
+> +		u64 reserved3                   : 1;
+> +		u64 non_arch                    : 1;
+> +	};
+> +	u64 raw;
+> +};
+
+Could you clarify why we need such detailed definition?  For metadata 
+element size you can use simple '&' and '<<' to get the result.
+
+> +
+> +#define TDX_MD_ELEMENT_SIZE_CODE(_field_id)			\
+> +	({ union tdx_md_field_id _fid = { .raw = (_field_id)};  \
+> +		_fid.element_size_code; })
+> +
+> +#endif /* __KVM_X86_TDX_ARCH_H */
 
