@@ -1,137 +1,156 @@
-Return-Path: <linux-kernel+bounces-110626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C7FA88616D
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:04:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3D4988617F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 21:11:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7499E1C21EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:04:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B57B284983
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 20:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A871C134735;
-	Thu, 21 Mar 2024 20:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C58134CC8;
+	Thu, 21 Mar 2024 20:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="t9UBmgHd"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Ohj113M2"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3968413441F
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712A156B98;
+	Thu, 21 Mar 2024 20:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711051453; cv=none; b=TkDhmEtxsM1p5NdlxOlcwJDMcQN6sE/kGHITqv7jyGdCsq6BP5Why5SpQveBuUlefqqcmutQk1yNzWoLhpUkdIYHt3+VO4+jahHmhqLm1eDaPpXdWXbks24tfBEjQQZvQTLulUzj40FTEYkX5mPwoaR2430Rojvr6NgeFgHWMX4=
+	t=1711051905; cv=none; b=OMeC+fpjwAN0DtJvflQnKjYQkXZvQ3RDU526dBw4g9SekL+ksvjD2UwRKMmg3bfGYLBQ1ooMpfYp21u53TfO2blYd4v63cteyhsrgONBL5cHvGpyFyZ2qc4yThjH8qp8IvS5gmvzauKucd/rY7crjEFbevjrTbaJSutHpeA8ZD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711051453; c=relaxed/simple;
-	bh=S6RP6uWmLdlEXkKQny/wqkGVsqJcl1gAUGPqZ6bCYiM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ndf7hhnGoOPE3FJqSYoF04gy5hBtAu68sUbt6QdoSH1W2zgahkQ+gF5ksOJXdyzjLUghvjAsFNo55nXbsLV8ZwtyIBuAgtq/ztIc1wcnZSTzK8CEEX2Lwd7YQJXEIo5JQrXDOpoKo1UkOTEtoT8SLqYBMl43QaeO20sRVSNh6pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=t9UBmgHd; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso1905828276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 13:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711051449; x=1711656249; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TCBKqThFKtYqhjiY4RMqU+IuZ1w6cv8EE0k+cJlDNnk=;
-        b=t9UBmgHd/q5utv6qWZdP7eKjHmnVZeNPsHJMDwPYc4VzSykPCFSN7CTgGuWTVhHh+a
-         aKYy3oo4FCmLVj+XEkYF67gVoWr+EGVpoDy9KDhU+KV1z8h0vybFigUzJVjuqcBcQVDi
-         9UmqlsMy2iJRkUHNR8I9EdPTQxdvTqqtsFqsliQ7cuFrF7hYiNguxgHqbnR4oDDOHWj+
-         FPJxBjH6zXp5rlwhy0fpxHw6jCbrbESsqvo5Ky7MZSvoDJz7FjZyvxMnyPP53mO65s3h
-         AWBYcWP74+R9YGP7LJSclVyEpCt5zYHP+H8lumtOK1/34k4CFGACNJ5Ja89dzoaPxFV4
-         U8lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711051449; x=1711656249;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TCBKqThFKtYqhjiY4RMqU+IuZ1w6cv8EE0k+cJlDNnk=;
-        b=MKWa+X4znWJ63lqhXmWrMaQoIR73Z0RqWOkT+dd8d9CEPzfu/qAtL8UCnbCghTl8Hm
-         B+DNVVfJvryXKB85VGRUUl+9cOK709dWs1zO0ifCveFbd6/YSGe6KF76GNrbluH8+z7i
-         umeKKQadPwNToCnipQvqI28oe8/3NTR7x12IUeDvKFlJAsL8B7ZyXNkDKgvhS7RYfcOy
-         rGIpz3doSJaEFj5vdWTxlZwVfnbtc0rB8RqPZ6U/fzXJLyz8NKKh7jvBXH1rhvMXGKnc
-         k66YsgUJQUzkp7KnyXgCuPXLCnPjREreX5cIoO9JyvL9nBTIflsi5zuvHmvPIZHgwSzh
-         lqzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMYUj5dpK5+Vy0bqbhukZVuxu8D3IzTSSvOl/8GyrYDDpifOmIU7KMGCkUWdhOLZJ/Sz6hPMKBFu6uwZlsLQsZs8dznMYG8dWfd8gA
-X-Gm-Message-State: AOJu0YymG0P1Kkz3+JiePTkhVkAUrCyJNN0W63C0RP8nVpxndIwBj9eW
-	zNWWExtXejMwU67UtBF5Ses5phpYIH2rchBa5Xxjpiv5PHwbw6KGsu1uP2DIMhScm6WRXWz6auu
-	umi06loLiW0oxfqd4XZ293w==
-X-Google-Smtp-Source: AGHT+IE5VBN/+0LV/WPi06J13PSBodS0OdOu9MsbtLw0uhdLxrW4h4oP0M2VfdY/eM1a/8qsQNDCacEmRg4kGkc2ng==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:2484:b0:dbd:b165:441 with
- SMTP id ds4-20020a056902248400b00dbdb1650441mr74857ybb.0.1711051449209; Thu,
- 21 Mar 2024 13:04:09 -0700 (PDT)
-Date: Thu, 21 Mar 2024 20:04:08 +0000
+	s=arc-20240116; t=1711051905; c=relaxed/simple;
+	bh=/2XDIlMNYS8/iY2ARJ5Fld7/GNYjUZk7UV6XTc7Kqsk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=eq8tuzO7t1c+wAwKD99wDP6dImS7hpEux7D+5MMcdxxUPEa2hTNCf6B6KFOn7Qg/Pi2r63H+AnNKAdyv/W8uXdq4i4n5ucxFJGFrZFyxx6tGVA8nmgHGVFDi7R8p3r4G6UdHdR4JZD3QDlJobTvIOhum/dYrtkbepxS4EiscCwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Ohj113M2; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1711051895; x=1711656695; i=markus.elfring@web.de;
+	bh=HP94er+kV3GasVjf02u3F9ZYkvcXZGx9D3xC+m1al/k=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=Ohj113M2xWNnZpo7zw6o3IRAbBcp6R/t4iips3r3U920IM3MjiGXBn15VjlXyh2b
+	 iszYGr5qT9m6SsC5r3viqzQ9GkIs8+AXPkRcTvMgiH75mFEhvOEDNx0ezD/Vb0Fdv
+	 hP3Qm3UHC+pZCytnyRUinD7w+2QmtfOhHzykHXmw1X/8N17Pnsgd3V9J27LDUjWiL
+	 K7GmKt2QTfjYy3uQJlDFW9AyGDsa3WUt2izVju3+IIdqmBEuwN+PHfVKl/UkUEOLW
+	 TsDlKXLFuIgcSXUqRZv0v9Ps+OQctuJnMr5MSwlYBUNzXWuN3q45rrlW5ZIkXDFfL
+	 L+RW7rMXRujdp9jmXg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M8C07-1rjnlJ0KNn-00CkW1; Thu, 21
+ Mar 2024 21:05:38 +0100
+Message-ID: <0d7062e1-995b-42bc-8a62-d57c8cb588ee@web.de>
+Date: Thu, 21 Mar 2024 21:05:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIALeS/GUC/4XNQQqDMBCF4avIrDslicVqV71HEWmTiQ5oEhKRi
- nj3pkLXZVb/LL63QaLIlOBWbBBp4cTe5VCnAvTwdD0hm9yghLqIUglMc3Q6rGgTvtjZae5otJ0
- 1gTVqrFW+ylyrUgrIRohk+X34jzb3wGn2cT3mFvn9/mT5R14kSrTGkKp03dQN3Xvv+5HO2k/Q7 vv+AbD0yg3LAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711051448; l=1634;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=S6RP6uWmLdlEXkKQny/wqkGVsqJcl1gAUGPqZ6bCYiM=; b=ltUxZ2cpj94pnvyIBEzmfBEHQXiRRLeDTlLyWbffUabFpLWPDEAtsiKsRij39k9phe/VyFBxJ
- 50r/4jHF4KlATUMzXLzQG9U+LPWH6633/Y5LV4uwnne1EeG7KX+npD1
-X-Mailer: b4 0.12.3
-Message-ID: <20240321-strncpy-fs-binfmt_elf_fdpic-c-v2-1-0b6daec6cc56@google.com>
-Subject: [PATCH v2] binfmt: replace deprecated strncpy
-From: Justin Stitt <justinstitt@google.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ David Laight <David.Laight@aculab.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, Jiri Pirko
+ <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
+ Julia Lawall <julia.lawall@inria.fr>, Kees Cook <keescook@chromium.org>,
+ Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
+ Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
+References: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
+Subject: Re: [PATCH v2 net] ice: Fix freeing uninitialized pointers
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <0efe132b-b343-4438-bb00-5a4b82722ed3@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:f30MnlCTiWPDt1zm7PlXXn3w8Vl/ZOlATngou/8kstVjQ3Vtjmc
+ NwEr7iAZYqjF/kCilniZdpv/ZLPs3A65OoLDtTMhNEIpAf2F3c8X9j/zin2Z/6rxkVK/bL3
+ Wd7ZA7beckUcLMwzclkVVdoZI80PLUcb7qXLoHdtCIh0JsPV3Ctj3JBF/3V2PoYrWqycho0
+ 7onxYACnS19+yZ9c1V4Ag==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:X2SR5Bg9eus=;EsgC33vWFTVn58hHEBNEPF38Rrl
+ CULKBP/GMFGAZzCkl/I+QKpv2zx/UmKeEXzWhzA8tkpmH4pA05yI58gXd8aPMlQRo+vXZ0g9e
+ 3vdZ9gUpf1OvJ5ENRAHCnG+NQZabvdjqV/6JwkdcO06hQYZqEUL6w1svA2UmD8fTX3L7eDuSy
+ GthD2D2GbGCQN3t4gIypBIGb1bD0ATnGsIL1qSaVEr34JZtp2H8QZYootESVtgminvoM5ZIHz
+ CrETzHiOnDA9HSVpijq0dh7Gk29iyNk4CjyKBx2nnC9Oa6+HuhEiE8VKNKOkQLKscw5S+rz0r
+ n+IRXcV95zmeKDKKr7ICaj6oRIXfJ+SuIf6YBEZhjK16xQ3bhXUKRpvl6WFKxw1ibBrrg4r7N
+ JOdj2N9961SHi9BJsH0gKdka+QsUM93IbN1Mjy1d/mv4lKZmx83TDciQVgF71Dq6lFkwWPye6
+ YHPXzvmcQmPRvgCyNmGBhyKcMlw9E4Pf9b1ABrq8Trf2psGZHrDUtWCN5pcMP+NoSkVJwqTGm
+ kRAYADbhG6fDuduIZWi3kYTWSMmF2E+HnN6xHjox+VRGFx+0Mrg8APJrVR55AnRpmaIwK6fPF
+ /I891Y3iTsB+qN2zup5tfSw072LFbBWBYq/BNwxDYuSOH17vkWLoEhpG6bKy5vvoXGMNl9qY+
+ IDt5KkknnGPMuSGwxczBT4PZeQIYsQHf7tuaPt24XxSofTBQNJ87zdG4pp2OUNzAC2xDjAoqf
+ Cx/ojIX9EGvYib8qjgKvy8asvEyUZ9e9uzCh7kkNekla2o60ns7KRvW17qUhZZl9DFw0jvI0Q
+ oUSTbhHJflD2aEv7pc2aOHIYjEEoYQLDzH960/3o/GttE=
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+> Automatically cleaned up pointers need to be initialized before exiting
+> their scope.  In this case, they need to be initialized to NULL before
+> any return statement.
 
-There is a _nearly_ identical implementation of fill_psinfo present in
-binfmt_elf.c -- except that one uses get_task_comm over strncpy(). Let's
-mirror that in binfmt_elf_fdpic.c
+Will any adjustments become relevant also for this change description
+if scope reductions would become more appealing for affected local variables?
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use get_task_comm (thanks Eric)
-- Link to v1: https://lore.kernel.org/r/20240321-strncpy-fs-binfmt_elf_fdpic-c-v1-1-fdde26c8989e@google.com
----
-Note: build-tested only.
+How much can a small script (like the following) for the semantic patch language
+(Coccinelle software) help to achieve a better common understanding for
+possible source code transformations?
 
-Found with: $ rg "strncpy\("
----
- fs/binfmt_elf_fdpic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+// See also:
+// drivers/net/ethernet/intel/ice/ice_common.c
+@movement1@
+attribute name __free;
+@@
+-struct ice_aqc_get_phy_caps_data *pcaps __free(kfree);
+ ... when any
++struct ice_aqc_get_phy_caps_data *
+ pcaps
++__free(kfree)
+ = kzalloc(sizeof(*pcaps), ...);
 
-diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
-index 1920ed69279b..3314249e8674 100644
---- a/fs/binfmt_elf_fdpic.c
-+++ b/fs/binfmt_elf_fdpic.c
-@@ -1359,7 +1359,7 @@ static int fill_psinfo(struct elf_prpsinfo *psinfo, struct task_struct *p,
- 	SET_UID(psinfo->pr_uid, from_kuid_munged(cred->user_ns, cred->uid));
- 	SET_GID(psinfo->pr_gid, from_kgid_munged(cred->user_ns, cred->gid));
- 	rcu_read_unlock();
--	strncpy(psinfo->pr_fname, p->comm, sizeof(psinfo->pr_fname));
-+	get_task_comm(psinfo->pr_fname, p);
- 
- 	return 0;
- }
+@movement2@
+attribute name __free;
+@@
+-void *mac_buf __free(kfree);
+ ... when any
++void *
+ mac_buf
++__free(kfree)
+ = kcalloc(2, sizeof(struct ice_aqc_manage_mac_read_resp), ...);
 
----
-base-commit: a4145ce1e7bc247fd6f2846e8699473448717b37
-change-id: 20240320-strncpy-fs-binfmt_elf_fdpic-c-828286d76310
+// See also:
+// drivers/net/ethernet/intel/ice/ice_ethtool.c
+@movement3@
+attribute name __free;
+@@
+-u8 *tx_frame __free(kfree);
+ int i;
+ ... when any
+ if (ice_fltr_add_mac(test_vsi, ...))
+ { ... }
++
++{
++u8 *tx_frame __free(kfree) = NULL;
+ if (ice_lbtest_create_frame(pf, &tx_frame, ...))
+ { ... }
+ ... when any
++}
++
+ valid_frames = ice_lbtest_receive_frames(...);
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
 
+Regards,
+Markus
 
