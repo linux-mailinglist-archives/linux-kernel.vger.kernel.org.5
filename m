@@ -1,224 +1,173 @@
-Return-Path: <linux-kernel+bounces-109654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCD73881C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 05:45:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00726881C0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 05:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 376EFB20A6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:45:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31D211C2161F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 04:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5B52BAFC;
-	Thu, 21 Mar 2024 04:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171E131A8F;
+	Thu, 21 Mar 2024 04:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FVs6b1XZ"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="WYBAEEao"
+Received: from mr85p00im-ztdg06021701.me.com (mr85p00im-ztdg06021701.me.com [17.58.23.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8598883C
-	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671262AE97
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 04:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710996299; cv=none; b=f2zW4R96KUdr/Za+MLGmxc0cnYh2x02yD6O/UOgZt7Iqjd8sGuLXLH1A7a4KONqwuB9q6cdbmmxoO5eSVZwpHRl0u6XzujNggaOpAeE4p9/zh5ku7pF86UOph6v9xzc0uJPmWhfZY6jFsOl/CwcXmg0LQMI/d5ylApIsB4JMSuM=
+	t=1710996839; cv=none; b=fQwu/lKCJxLTNZcuJDzBGAI7hyWiVHzMD1dM4t3cY+dpYup7iMTMirHhOz9rvkstljWEW0IAanoHV5W2lk4Y5j7HZniMsYgwOGT/VZhjstkM2tRIjTBCm+MLaMsglR4Zc5t+h2YA01Wra5C+YW4LxoAwMdYEFWNZjZYovhX/4NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710996299; c=relaxed/simple;
-	bh=QN5rVYeJQgkCYln+XGEHIWkMGDsj4aShLtoFlAn/Xz0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qOzNOM5h7c3puh5r1LC7q3hWCs6s499lBKaiKJIfyHP37EwHyEWm5xmtI3nc/oye88grHhX/JZnC7fRqAF9GMnV1gyc8abnJVk+fl4Y4kp8KMo9qKJd2fYAakQJu9IxNaiOTGG69BGJQZQSNDI6rfp+eBbCenPSY9CZM6HQijbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FVs6b1XZ; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56b98e59018so8715a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710996296; x=1711601096; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rp/x+gEdRoeXoR76EHtjtTfIyYIjYWzVuUsIkiDyEH4=;
-        b=FVs6b1XZrKabSWIY9nTLJxi0e7kJSrrcluBPRRlj1iWEHHADPiM3W5jQ2w9s37owi3
-         gCvQBFZv/+5O8WwXEaiSxALjLvk3AV1J0IB/s7czRs/66hNVb+SqlrtYj/RaowlcJPQu
-         bk8Dn8G2CFWap+F9yCS0sG2YBhqh2SrXFe25fVjGUMIwY6m785xJFwtT1Y1Q/ta+rGMR
-         fevA12d/ZO/GTeqPUKjxH1rYlmkaY5g0MB4wv3uzXwcbYURZBTB5BNNj7kaa6R2KPjEZ
-         4Mgh6V05glsuzI9uSX/mtkcNCIU66k+4UeEPVp0+R1b4rV2dla+1vVvCMTeBDkRLfuMz
-         mPow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710996296; x=1711601096;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rp/x+gEdRoeXoR76EHtjtTfIyYIjYWzVuUsIkiDyEH4=;
-        b=apqQbEIPvKade1jKDKxlVuyw8yUk/MNf71CM1x47jzXpxkMECzXV9MPZFkZMgKuGI4
-         XAAn0UbREvzTu5cZxBcgbIJlvJzR55OXg7WhB5BtGnPkpfGlXCEoZ2TSwaBmG1023MTL
-         r8tVXnSY4yQXSmN9B42nPKBGDf8NBqNMrRtSdYlfXcEhuPPKeonA0yKX6pSKQ3PJopeS
-         Hefk1esggS80S7ohX3HP2ZMe1+BQCko1kJWYb+RG2AqAiSzh4QAIu5YJqn37WqlVdVhA
-         k9UYWAsm9YZTgYZFzHS1SiQrt6NjUG3U80cvGPdAZblGAKcQhqKvfkTnwY2NaVRjmHge
-         53gA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbC62O4w0p42FuLsYIpxEKLtgkFc/W7I5H92xxIK1tJi0nwEZbJAicVpoP2hOX8Tc4oDfsFp6NQ0/6c+4//3RJcDj1WOQCoztJ2JRm
-X-Gm-Message-State: AOJu0Yx7Z03IQSaPCQSf74cFYJtlKmhJrSgQuP7NRPFkC5LLjSMvn4FV
-	SeWPGF6hsAh1UqYngZqp55NZXOcZ+SJjGAaWB7+ezqfNHxuFpNCGVMELPoxTzReR8d6Kie20+zR
-	pwXI9ABY7/jfyCyBFBnIeILiMOG0f4dfoVo4v
-X-Google-Smtp-Source: AGHT+IHesn7qSfEB7TXcVlmCgNUBgETncAdDFxHKgSDImUR+X1aXP2XSU1L5thiOrete5cF9u50Ggl9wStXEybQCbqA=
-X-Received: by 2002:aa7:d487:0:b0:56b:b472:205a with SMTP id
- b7-20020aa7d487000000b0056bb472205amr97185edr.6.1710996295878; Wed, 20 Mar
- 2024 21:44:55 -0700 (PDT)
+	s=arc-20240116; t=1710996839; c=relaxed/simple;
+	bh=kmIKewn0OS9jBtK0VejszCjBQ3tt+jG0o6bU6vJqHAY=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=finbtyl+sltFYR7MH9xi00A/oUkBA6xNveSMi/C3QrXP6UysJqCAi9LvePjDzzFKyAFoznC+WfyfaxLI4H+X1dv6EMRO8zv9mM7oyvhuUoI6Kv6ZqPsHW/bBnz3aTm2oS6tO3kbYZX1015zH0IF92aUXWrxTMPEGB2lGS8Kzneg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=WYBAEEao; arc=none smtp.client-ip=17.58.23.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	t=1710996836; bh=+3hJM/vrryWqnRrbEBildsXcg7SPWAKSHMy2nbEpucI=;
+	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+	b=WYBAEEao7veau/h+dkj5VkV+mLzEJu8UybYGkwgD5TSoAKhp7sPAkR5QvtLMl2wv7
+	 45UIQZLM0/N2zfO5xBMX7gbZlT+g1EGm02IaGW7Hte6z5KH39+VlgiGse+P+HkSxTb
+	 2F2XUFRJEyCT19/u+3Q9tCGGxLCBhq9sKLhk3+E/eQ4PQOmplKFxRtw/RN2tBIzMlw
+	 Zao7gbEEnHisQC8jSL7+7DWRWjM09yvapJP+EtH0kZSUysrRT4tHgVfwxCTmtS+Bpc
+	 nOBPCxD1SwaScoJWWq5XUFLYJsig5Cnb7VjnwfVKLyMlPbE57gdb5vvdHo9BooaRBN
+	 6NQSM8bdiURbw==
+Received: from smtpclient.apple (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+	by mr85p00im-ztdg06021701.me.com (Postfix) with ESMTPSA id A1F652633222;
+	Thu, 21 Mar 2024 04:53:54 +0000 (UTC)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
-In-Reply-To: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
-From: David Gow <davidgow@google.com>
-Date: Thu, 21 Mar 2024 12:44:42 +0800
-Message-ID: <CABVgOSmNbBzR=QV4RDSdBPzBU=8mP5r0gVf5wqADm_9e9htM2g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
- the vmalloc area
-To: Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	"open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>, 
-	Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000076daf80614245ea6"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] rust: init: remove impl Zeroable for Infallible
+From: Laine Taffin Altman <alexanderaltman@me.com>
+In-Reply-To: <6857bb37-c4ee-4817-9b6a-e40e549b6402@proton.me>
+Date: Wed, 20 Mar 2024 21:53:42 -0700
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+ Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>,
+ Gary Guo <gary@garyguo.net>,
+ =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+ stable@vger.kernel.org,
+ rust-for-linux@vger.kernel.org,
+ lkml <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F1F3C985-9CAE-4286-B236-4AF6C0918DB5@me.com>
+References: <20240313230713.987124-1-benno.lossin@proton.me>
+ <Zfh5DYkxNAm-mY_9@boqun-archlinux>
+ <93FD9491-7E2D-4324-8443-0884B7CFC6EF@me.com>
+ <ZfkW8rwpdRc_hJBU@Boquns-Mac-mini.home>
+ <3FBC841A-968E-4AC5-83F0-E906C7EE85C3@me.com>
+ <6857bb37-c4ee-4817-9b6a-e40e549b6402@proton.me>
+To: Benno Lossin <benno.lossin@proton.me>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
+X-Proofpoint-ORIG-GUID: 8t8BjbHkZ_z8T1oGI4ChJjWvYynAMZf7
+X-Proofpoint-GUID: 8t8BjbHkZ_z8T1oGI4ChJjWvYynAMZf7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_02,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2403210031
 
---00000000000076daf80614245ea6
-Content-Type: text/plain; charset="UTF-8"
+On Mar 19, 2024, at 3:34=E2=80=AFAM, Benno Lossin =
+<benno.lossin@proton.me> wrote:
+> On 3/19/24 06:28, Laine Taffin Altman wrote:
+>> On Mar 18, 2024, at 9:39=E2=80=AFPM, Boqun Feng =
+<boqun.feng@gmail.com> wrote:
+>>> On Mon, Mar 18, 2024 at 08:17:07PM -0700, Laine Taffin Altman wrote:
+>>>> On Mar 18, 2024, at 10:25=E2=80=AFAM, Boqun Feng =
+<boqun.feng@gmail.com> wrote:
+>>>>> On Wed, Mar 13, 2024 at 11:09:37PM +0000, Benno Lossin wrote:
+>>>>>> From: Laine Taffin Altman <alexanderaltman@me.com>
+>>>>>>=20
+>>>>>> It is not enough for a type to be a ZST to guarantee that zeroed =
+memory
+>>>>>> is a valid value for it; it must also be inhabited. Creating a =
+value of
+>>>>>> an uninhabited type, ZST or no, is immediate UB.
+>>>>>> Thus remove the implementation of `Zeroable` for `Infallible`, =
+since
+>>>>>> that type is not inhabited.
+>>>>>>=20
+>>>>>> Cc: stable@vger.kernel.org
+>>>>>> Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and =
+`init::zeroed` function")
+>>>>>> Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
+>>>>>> Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
+>>>>>> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+>>>>>=20
+>>>>> I think either in the commit log or in the code comment, there =
+better be
+>>>>> a link or explanation on "(un)inhabited type". The rest looks good =
+to
+>>>>> me.
+>>>>=20
+>>>> Would the following be okay for that purpose?
+>>>>=20
+>>>> A type is inhabited if at least one valid value of that type =
+exists; a
+>>>> type is uninhabited if no valid values of that type exist.  The =
+terms
+>>>> "inhabited" and "uninhabited" in this sense originate in type =
+theory,
+>>>> a branch of mathematics.
+>>>>=20
+>>>> In Rust, producing an invalid value of any type is immediate =
+undefined
+>>>> behavior (UB); this includes via zeroing memory.  Therefore, since =
+an
+>>>> uninhabited type has no valid values, producing any values at all =
+for
+>>>> it is UB.
+>>>>=20
+>>>> The Rust standard library type `core::convert::Infallible` is
+>>>> uninhabited, by virtue of having been declared as an enum with no
+>>>> cases, which always produces uninhabited types in Rust.  Thus, =
+remove
+>>>> the implementation of `Zeroable` for `Infallible`, thereby avoiding
+>>>> the UB.
+>>>>=20
+>>>=20
+>>> Yeah, this works for me. Thanks!
+>>=20
+>> Great!  Should it be re-sent or can the new wording be incorporated =
+upon merge?
+>=20
+> I can re-send it for you again, or do you want to send it yourself?
+> I think it is also a good idea to add a link to [1] in the code, since
+> the above explanation is rather long and fits better in the commit
+> message.
+>=20
 
-On Fri, 23 Feb 2024 at 22:07, Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
->
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
->
-> If a segmentation fault is caused by accessing an address in the vmalloc
-> area, check that the target page is present.
->
-> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
-> assumes that the fault is caused by a stale mapping and will be fixed by
-> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
-> a guard page, no mapping is created, and when the faulting instruction is
-> restarted, it will cause exactly the same fault again, effectively creating
-> an infinite loop.
->
-> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> ---
->  arch/um/kernel/trap.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-> index 6d8ae86ae978..d5b85f1bfe33 100644
-> --- a/arch/um/kernel/trap.c
-> +++ b/arch/um/kernel/trap.c
-> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
->         int err;
->         int is_write = FAULT_WRITE(fi);
->         unsigned long address = FAULT_ADDRESS(fi);
-> +       pte_t *pte;
->
->         if (!is_user && regs)
->                 current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
->
->         if (!is_user && (address >= start_vm) && (address < end_vm)) {
-> +               pte = virt_to_pte(&init_mm, address);
-> +               if (!pte_present(*pte))
-> +                       page_fault_oops(regs, address, ip);
+I=E2=80=99ll try and do it myself; thank you for sending the first round =
+for me and illustrating procedures!  What =
+Reviewed-By=E2=80=99s/Signed-Off-By's should I retain?
 
-page_fault_oops() appears to be private to arch/x86/mm/fault.c, so
-can't be used here?
-Also, it accepts struct pt_regs*, not struct uml_pt_regs*, so would
-need to at least handle the type difference here.
+Thanks,
+Laine
 
-Could we equally avoid the infinite loop here by putting the
-'flush_tlb_kernel_vm();goto out;' behind a if (pte_present(...))
-check, and let the rest of the UML checks panic or oops if required.
-(Actually OOPSing where we can under UML would be nice to do at some
-point anyway, but is a bigger issue than just fixing a bug, IMO.)
+> --=20
+> Cheers,
+> Benno
+>=20
+> [1]: https://doc.rust-lang.org/nomicon/exotic-sizes.html#empty-types
 
-Or am I lacking a prerequisite patch or applying this to the wrong
-version (or otherwise missing something), as it definitely doesn't
-build here.
 
-Cheers,
--- David
-
---00000000000076daf80614245ea6
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIEPCKOZW5Q0pn0dDn8fB0Mo26dbP0mF3LzF/XY4ibw27MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMyMTA0NDQ1NlowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDOJz1t
-ydgg1WFpIzPw4lczlVQVyAvSV9QHBIbrDAfEMHdti5+O1BFy1V3O0L1lYzewkWa83cbA0gCZbcrs
-AdUjpQzIACd1Tx90x0cxSoB45VpdBIh9neKTFgDZz0px6U2nsIsBZ+ltdTgHYZkd6r7yG8Yj/BWY
-wmf0UaAIGhmkPJY+8l0IZW+i9eHGxwImi1G9sLnjWpgXShl1F7Fp8Hy7jtaPLf5jXPLehPnAyGJn
-us31cwXRaQaSwF+3YEVOdCalcbvD2NGf6U7bf+YeJDYu2K+SGHC/SFa7/WbI0mgPMTwt804bK7gp
-WhOnDDDrC9bW8LG0mKuIJoYsK9E8EVul
---00000000000076daf80614245ea6--
 
