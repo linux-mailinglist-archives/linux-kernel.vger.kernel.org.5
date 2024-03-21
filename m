@@ -1,204 +1,112 @@
-Return-Path: <linux-kernel+bounces-110184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E83885B3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:57:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99927885B3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B4D2B24A09
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:57:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DBDE1F21411
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 14:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1ABB85C76;
-	Thu, 21 Mar 2024 14:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD6285C7B;
+	Thu, 21 Mar 2024 14:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWLffW4Y"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="diMiwbZP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC0E84A5A;
-	Thu, 21 Mar 2024 14:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E85185959
+	for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 14:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033061; cv=none; b=L/fHaGI0uH4J3K7MZFHIK2ass6/GAlGDZEqSG+fudVGFRGyHpKjzwHgDk5yjifOXWGAFWchgPyrVjawkCU/X5ea4BTEirIb4TvoFqr5IvvdQXM6OzvNOo9Ki3D+yLFr2bAXAcIBuhHfmQZgjp1H2RUwEx1n/Br8Lqz583eg4frE=
+	t=1711033142; cv=none; b=JoVUgTeP5V31C4/bbMV25nDxcn6jO/aW/n9TS5Pp8tqRmul6K/pun3TB8+WFSTekvagsi9Grb2fcNUIqWcJrvZXy02RPRFOK90MYrH/Yn+W8+zxyQRoGxJfvFiHK5ly3IlnVP+r+Yub29dHPw7psZH3DA/hmhegs5oEl33fYkog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711033061; c=relaxed/simple;
-	bh=OP5rImtzJo8ufuiNRhbyyhSsEnw8dl1VEzRpPhWVrTY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mOikl5PJxRoqeRTTLEU8PVCGcDdOa2wLmA9EzNakwsDUKGJ6Vrn7mCQlnjOculhXXN+FJ3rJZhSPlUnz/HghfyeHcwWrOapE+qW3z5Sb9VQCs4o7PYI4UzVkNJJ/xpZLPYY+FB1QEpXQn5rowBWxPfzf/cCW8EhqmNs4mjZXcRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KWLffW4Y; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so149327866b.0;
-        Thu, 21 Mar 2024 07:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711033057; x=1711637857; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vPAsjljvq9spN9J6oarTkPbOp/uQy9Vt5YZP8TNCUI4=;
-        b=KWLffW4Y0k8TAYZLhfd3ckpCmSf4dq6adWwlGES2BIvnsVHp/rP+Yrl+jEJvv0wgv/
-         s0zpqPbTTYlo8oWvmEHeUdNcDqDKfJ0E2xk1oKhrcISTK8O3MKCIneilfpvcWUxNnP8W
-         fUUZ05aUWGehnbWVuKVbYgwZpzL/YzrIsehqYhAz447LFtQ9qNXgBg/O5bPqmWHdUUkI
-         tgXMLs3Bf+IBZASrihwPp3bHpawhhqRcaRXbyEEItAqGBbb3xVIUPWGJsmNsiE0bbrCG
-         aQOWO897OzhxL2JiKRcIiYasQhbaZFOYKELzscLWLLnSOlXPITNbKKjNjfpm+hNYANhk
-         e7iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711033057; x=1711637857;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vPAsjljvq9spN9J6oarTkPbOp/uQy9Vt5YZP8TNCUI4=;
-        b=r7FA0CFQ5bzO9twkeUTwwHwwdMh8RpgyV0p8yjuCgVykQrAM9unuJtrIQD2tjGAf+I
-         9lWf2qCwCkzkwAcmeYWSseau2uTomTMBtEEdFpEtjJ8kEjEtlx695ZgSLufnSkEjnmwt
-         tA2W7EBShXJa9pALZWUFGKNlkHVyDiQZF3QB1he6pw/5q+4mzJwt7tc2GCRdZ73Kr/Nd
-         US57+iRJconO3WiroJMfQ8RR9q7gqrIrR15Kb+X46af4SalV2ianHbSMjGMdB6vpwigN
-         ZdaSpdebInlSjvDzTRAyofsj+iP3VDNKjFooDOfktx2jpW1mk0PdrcNGKC8Q38hwgymS
-         VFbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWlsZM2+8foCDQf5msT5KgjwNdoTEVK6ZAJ7CIg35jvOwBcHMt0AD3ZE7y7FjxMEoqBevahE0sCemHG4p6Ht0X5uzuM/AbQR+F44KeLMPbFHhD0H38Qi2fE0BwHe5F5dIBIx8y6SilW9fcKcb6FwENiF5pTX0hkv6XwfsI8gSDRM77kYA==
-X-Gm-Message-State: AOJu0YxgwN3ZqXfd3D/zO5rKiqh1SGNciZ2xGYLN6QsIXSK6/07fK54w
-	zs+cuc4Uls3iDN0IuT7Z/1Ew6ZfY4bKX6BNu9J8Aeij8u42J5Ae0l0i6+0ewbNGyEw==
-X-Google-Smtp-Source: AGHT+IFSqXkh2+8koR7VIEtj/qcJxmLHIngN30f6gr+BZ7rBiR3MmUYzBMVJ2N8B2BhwCtIBXUJa3w==
-X-Received: by 2002:a17:907:86a4:b0:a47:1d3f:b321 with SMTP id qa36-20020a17090786a400b00a471d3fb321mr650778ejc.8.1711033057333;
-        Thu, 21 Mar 2024 07:57:37 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id bm19-20020a170906c05300b00a44180ab871sm5831ejb.50.2024.03.21.07.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 07:57:36 -0700 (PDT)
-From: Jonathan Haslam <jonathan.haslam@gmail.com>
-To: linux-trace-kernel@vger.kernel.org
-Cc: jonathan.haslam@gmail.com,
-	andrii@kernel.org,
-	bpf@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] uprobes: reduce contention on uprobes_tree access
-Date: Thu, 21 Mar 2024 07:57:35 -0700
-Message-ID: <20240321145736.2373846-1-jonathan.haslam@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711033142; c=relaxed/simple;
+	bh=7eBq8ekEO6vw2vSin9bneMav1VFWO6ZkBD957BgambQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TwHM1CcJFQ4L5Qlo2Y2pRYez8EaFWNuAfJma1/T3xTN6cmEYfr9ZcX8QKnUj1AUK6hnuO/G/tm+ayZpktEmemyRUG9julB76NqscHzoWtj4IbUnfmonhpq7Z48CmjcJxSgHnxuivz0AmekOPEgRx9uZaHQx6eYxH4V1RYA0r0NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=diMiwbZP; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711033140; x=1742569140;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7eBq8ekEO6vw2vSin9bneMav1VFWO6ZkBD957BgambQ=;
+  b=diMiwbZPNkNHXOLhSHX/rJBLgXAXEpwmZsJ6uIejc2U9bSLINJ9wtzyi
+   HqRnVhl7MNfdjpHsLNF1VUMrJqHIOb3Rum1Z1xvVZCmUO+MaYim3+5aCx
+   V5x3S7tDeKH3SLruhel8F2UTv5IDDoK+HEvdCl1y3lmy8hIWeOt/nEFgH
+   8JaJ8rnn2dPn593YNZjzll4MVatUmefohR1d9i1G/PuVNgHJzhSog5Jse
+   LMJdkXteFxPhM4R2Zjt6hQiLEZzt8RwZRLigQ0eSdPXt0K+Oqb2byYdVO
+   XBcrpDfmxq822Tj4pW/Yl6B1IDLJBfksk85QSFP8+2IMsAWgbC7mqy1oJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5879070"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="5879070"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 07:58:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="937065372"
+X-IronPort-AV: E=Sophos;i="6.07,143,1708416000"; 
+   d="scan'208";a="937065372"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Mar 2024 07:58:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 7C090791; Thu, 21 Mar 2024 16:58:52 +0200 (EET)
+Date: Thu, 21 Mar 2024 16:58:52 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Ashish Kalra <Ashish.Kalra@amd.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, 
+	rafael@kernel.org, peterz@infradead.org, adrian.hunter@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, elena.reshetova@intel.com, jun.nakajima@intel.com, 
+	rick.p.edgecombe@intel.com, thomas.lendacky@amd.com, seanjc@google.com, michael.roth@amd.com, 
+	kai.huang@intel.com, bhe@redhat.com, kexec@lists.infradead.org, 
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, bdas@redhat.com, 
+	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com, jroedel@suse.de
+Subject: Re: [PATCH v2 2/3] x86/mm: Do not zap page table entries mapping
+ unaccepted memory table during kdump.
+Message-ID: <opa56dnwlyllrrnlfrhtbavnwmhxxatiuzifvx3bquv5qksidn@v2qxrvvw53jl>
+References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
+ <cover.1710744412.git.ashish.kalra@amd.com>
+ <8e11825bb3e4a7472bf0cb30c72ae013c25ac8c9.1710744412.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e11825bb3e4a7472bf0cb30c72ae013c25ac8c9.1710744412.git.ashish.kalra@amd.com>
 
-Active uprobes are stored in an RB tree and accesses to this tree are
-dominated by read operations. Currently these accesses are serialized by
-a spinlock but this leads to enormous contention when large numbers of
-threads are executing active probes.
+On Mon, Mar 18, 2024 at 07:02:45AM +0000, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> During crashkernel boot only pre-allocated crash memory is presented as
+> E820_TYPE_RAM. This can cause page table entries mapping unaccepted memory
+> table to be zapped during phys_pte_init(), phys_pmd_init(), phys_pud_init()
+> and phys_p4d_init() as SNP/TDX guest use E820_TYPE_ACPI to store the
+> unaccepted memory table and pass it between the kernels on
+> kexec/kdump.
+> 
+> E820_TYPE_ACPI covers not only ACPI data, but also EFI tables and might
+> be required by kernel to function properly.
+> 
+> The problem was discovered during debugging kdump for SNP guest. The
+> unaccepted memory table stored with E820_TYPE_ACPI and passed between
+> the kernels on kdump was getting zapped as the PMD entry mapping this
+> is above the E820_TYPE_RAM range for the reserved crashkernel memory.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 
-This patch converts the spinlock used to serialize access to the
-uprobes_tree RB tree into a reader-writer spinlock. This lock type
-aligns naturally with the overwhelmingly read-only nature of the tree
-usage here. Although the addition of reader-writer spinlocks are
-discouraged [0], this fix is proposed as an interim solution while an
-RCU based approach is implemented (that work is in a nascent form). This
-fix also has the benefit of being trivial, self contained and therefore
-simple to backport.
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-This change has been tested against production workloads that exhibit
-significant contention on the spinlock and an almost order of magnitude
-reduction for mean uprobe execution time is observed (28 -> 3.5 microsecs).
+I guess it would be better if I take this patch into my kexec patchset. I
+guess I just got lucky not to step onto the issue.
 
-[0] https://docs.kernel.org/locking/spinlocks.html
-
-Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
----
- kernel/events/uprobes.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 929e98c62965..42bf9b6e8bc0 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-  */
- #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
- 
--static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
-+static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- 
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
-@@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
- {
- 	struct uprobe *uprobe;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	uprobe = __find_uprobe(inode, offset);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return uprobe;
- }
-@@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
- {
- 	struct uprobe *u;
- 
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	u = __insert_uprobe(uprobe);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 
- 	return u;
- }
-@@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
- 	if (WARN_ON(!uprobe_is_active(uprobe)))
- 		return;
- 
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	rb_erase(&uprobe->rb_node, &uprobes_tree);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
- 	put_uprobe(uprobe);
- }
-@@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
- 	if (n) {
- 		for (t = n; t; t = rb_prev(t)) {
-@@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
- 			get_uprobe(u);
- 		}
- 	}
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- }
- 
- /* @vma contains reference counter, not the probed instruction. */
-@@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return !!n;
- }
 -- 
-2.43.0
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
