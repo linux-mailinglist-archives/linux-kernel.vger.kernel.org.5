@@ -1,283 +1,143 @@
-Return-Path: <linux-kernel+bounces-110249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B10885C1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:38:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2527885C1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 16:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 548291F26462
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:38:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8966B240B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 15:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EFAD12C556;
-	Thu, 21 Mar 2024 15:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ADB126F23;
+	Thu, 21 Mar 2024 15:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmG7GGX2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D2V8AnPH"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DEC12C540;
-	Thu, 21 Mar 2024 15:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B35C8624E;
+	Thu, 21 Mar 2024 15:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711035044; cv=none; b=IlIQrbip5Kq9PkT7xOyRz+X49MOCf3v6Oo1yNHZbfqKDhmxS0RyfSYIPwfdnj+61OXjJXf8nuy4rBBQN2ro/oug/xfYbrnAfsuq89Ep7e8+BaHdO909JVzfnuejiZj3UyfDrHNR5fV+c9B33FoLrR37oBCwK4cJ2pSaFKiv3mHY=
+	t=1711035071; cv=none; b=RTshH72FHk3Nvq0FfnF3ZFAVlFjXvrQnKDcbjYVY62pSFouq5y6SnggiwRzC5IfZtdmBAbqxSw2xfO1wrOVpBCV5SbXZhbIAq29C/ExWwvsIPKYtrBmanHI7hIu1sE1GltOXVCYttwNNCLoG5AGf+iK8TvMT8FZ+mEUTK8QjiMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711035044; c=relaxed/simple;
-	bh=0BOJwsJkmVC7ISwyuAdKqvHspV8sorXf1ygF6kiUUOo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=K0bXJNsX6DKnfef2Jj/LefgAOCcUbCllsDSP0crUlG38AuzaZ9i5wGCc1Qs0tqaSYPjmOmYaPsA4JMHi0xsiI3T7eKvPackerOgdMMjJUuzFdhm+kI4SzBmq9OhetDuBZdkHG2GC6g42wtE+cmDLVJHSRzOAoApdZ9aHd91IH6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmG7GGX2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65A2DC43141;
-	Thu, 21 Mar 2024 15:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711035043;
-	bh=0BOJwsJkmVC7ISwyuAdKqvHspV8sorXf1ygF6kiUUOo=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ZmG7GGX2U5IClgnL/614IHFa4Vc+uz40X9fqO/LOgBkIIDzXCtOZPc3SGQkv3pGYr
-	 32hTqDhkefM6wwsVBvoHdK0XRsik2dhamU/YP2lnDxZlVW4AndYmKFrEi9/kH7TQIi
-	 JuGA2EbnZApQ5z7MGEXJ1wZ2MKC+A/TjkVh6zpFrMB8gVxlDdeqRom4V9Rk3/TgH0J
-	 TfdlCKt9+S30ZAii2qBuvhicwe1ddL8+PwcxvJ9lFrOpJYnzSN1PLjTcMytI93ZRh7
-	 xkWYJA62MK7CUCyqjyRvKsyrAz5oLN6RK4yyFxgG/X1+7qK6tDAndCsEAZ/GUKlFMt
-	 UVgpK3nKwxxSA==
-From: Maxime Ripard <mripard@kernel.org>
-Date: Thu, 21 Mar 2024 16:29:23 +0100
-Subject: [PATCH v10 27/27] drm/sun4i: hdmi: Switch to HDMI connector
+	s=arc-20240116; t=1711035071; c=relaxed/simple;
+	bh=zuZVbsZ2MqalPAwdY7Ruzi14ilWt8q0p1FkWTz7Nn9g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PmEDyIQo6Y8n27pwv+ZJbd5+HwIhw/CCe88z67r3nOuvPJx0xYfKWAEt2Do6SrdRPwQpcAdyyBvZicJJd8owcIzM7zwijOxP88gSFGpFjmjzwvDPb8biagx33U1hSCY3EZ/R9+6whQEjlTZajP2jbMxcoIR9rssLqzeAcpM6gsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D2V8AnPH; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41477211086so4042115e9.1;
+        Thu, 21 Mar 2024 08:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711035068; x=1711639868; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZtMkxhYHr3cmoF6PxywbCBZ7mb57k0gnbHTqu/snDY=;
+        b=D2V8AnPHSSMeGCl7yDAc9u9kmoanicfn2h6YxMhkSf+1a+4KbLlKuB3vJT8sVblW8k
+         Y5hqqeobpNRVLj6JcDi+eyjHHcSSfm492t4yqE9yPc163QtW+5qM8+sQb/t8aYRE5NRY
+         3EGRkhqVQnLhFguV+b8J/zup3OM1T7j61EYvvYxMN0A9kR0Tvxam18I0YP1VKXDIjnWo
+         OBelRKZh0pfyDfiQAEKeXwaBT38jwVF3uPgD8V4CBfS0Scoav+8mGPuAR/lKBpaxF7qS
+         xU30r4E/iReY4ge+MmmGMNOEogc3+kGFpzPZRw8eM1Oa1M3XHBvqpGs6tUWR+DTlaFEU
+         wI4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711035068; x=1711639868;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/ZtMkxhYHr3cmoF6PxywbCBZ7mb57k0gnbHTqu/snDY=;
+        b=llRCNPl73X7uLPnhlinnumaO0o1qMP6yQgWQF6RwUozkoacluYET2ugNrNNtSJBw3F
+         jhGGO34T5DOi4dDFujlCt5qJ3/eLaLPujoHnLC8dVEOHULTUoBbezP28AFHv0+xynPZl
+         itA961fkdn88MjoGrfxEGHn80bcGmhHCTXgPCT5/f4lOzOODCKkeBgLRlZenPPmYWvL0
+         AfviOBws2KRUR1gxvWouUKWR3Io1E+KHgj/ybrWWjYOyOP2XbIpsZvqt29hQ1FnnIvBf
+         //9N8I+qzpTP4AEPSEoJBbdW0kKUbtjTz6EkQ7J6k3Q1vZrJL/1tHViYVjETdogsvWXv
+         mP0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWtwGjMKbyS3kF6IAigY/V8jf6DpjAO03ikOwR+30gYG1Fw88cNjXH2tWb5w3ytyPVL4Uky/Zb6Czb3L04soVQqzXL6q1JOnyMHIN17TIuOvrCCz0mDzlYiVz/Y66JztCut
+X-Gm-Message-State: AOJu0Yw/PyO/cOTzEW0EqfKVy76rSlhl/RBDhOyIagS1i/XtMk/WI9iU
+	bQYHumG6+/+gIQrh8IrtWcVYholEuHQxMOa/bcKxy+cXtl2NlekG
+X-Google-Smtp-Source: AGHT+IGrc7VKuS/BUOxLA3tpAXsZ/63wxeFTnUP9ocXnK6AAEqKML+y1MoYiyLuBvSDeAuDe/5PNdQ==
+X-Received: by 2002:a05:600c:a49:b0:414:6773:d13b with SMTP id c9-20020a05600c0a4900b004146773d13bmr2202794wmq.12.1711035067543;
+        Thu, 21 Mar 2024 08:31:07 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id iv13-20020a05600c548d00b0041463334822sm88000wmb.26.2024.03.21.08.31.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Mar 2024 08:31:07 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Xu Kuohai <xukuohai@huawei.com>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v2 0/2] bpf,arm64: Add support for BPF Arena
+Date: Thu, 21 Mar 2024 15:31:00 +0000
+Message-Id: <20240321153102.103832-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240321-kms-hdmi-connector-state-v10-27-e6c178361898@kernel.org>
-References: <20240321-kms-hdmi-connector-state-v10-0-e6c178361898@kernel.org>
-In-Reply-To: <20240321-kms-hdmi-connector-state-v10-0-e6c178361898@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
- Sandy Huang <hjc@rock-chips.com>, 
- =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, 
- Sebastian Wick <sebastian.wick@redhat.com>, 
- =?utf-8?q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, 
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
- linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>, 
- Sui Jingfeng <sui.jingfeng@linux.dev>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7059; i=mripard@kernel.org;
- h=from:subject:message-id; bh=0BOJwsJkmVC7ISwyuAdKqvHspV8sorXf1ygF6kiUUOo=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKl/goJzX3svWJo/8XR2u0Hx5N+9nxX3+wlslBLJuTrft
- 9Xt9vfijlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAEyEyZORYevuFzX/U0uP3tk/
- uXfORqbE1/FLjBNvVyp+K+z3XWnTmcbI8E2fsaGlz+eydXGbLk/cPLk1c1Mkbu+7e/PW1MSqS+H
- OvAA=
-X-Developer-Key: i=mripard@kernel.org; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+Content-Transfer-Encoding: 8bit
 
-The new HDMI connector infrastructure allows to remove some boilerplate,
-especially to generate infoframes. Let's switch to it.
+Changes in V2
+V1: https://lore.kernel.org/bpf/20240314150003.123020-1-puranjay12@gmail.com/
+- Fix build warnings by using 5 in place of 32 as DONT_CLEAR marker.
+  R5 is not mapped to any BPF register so it can safely be used here.
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-Acked-by: Sui Jingfeng <sui.jingfeng@linux.dev>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
----
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 80 ++++++++++++++++++++++------------
- 1 file changed, 51 insertions(+), 29 deletions(-)
+This series adds the support for PROBE_MEM32 and bpf_addr_space_cast
+instructions to the ARM64 BPF JIT. These two instructions allow the
+enablement of BPF Arena.
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index 2d1880c61b50..7ac085aa0a35 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -35,34 +35,28 @@
- 	container_of_const(e, struct sun4i_hdmi, encoder)
- 
- #define drm_connector_to_sun4i_hdmi(c)		\
- 	container_of_const(c, struct sun4i_hdmi, connector)
- 
--static int sun4i_hdmi_setup_avi_infoframes(struct sun4i_hdmi *hdmi,
--					   struct drm_display_mode *mode)
-+static int sun4i_hdmi_write_infoframe(struct drm_connector *connector,
-+				      enum hdmi_infoframe_type type,
-+				      const u8 *buffer, size_t len)
- {
--	struct hdmi_avi_infoframe frame;
--	u8 buffer[17];
--	int i, ret;
-+	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
-+	int i;
- 
--	ret = drm_hdmi_avi_infoframe_from_display_mode(&frame,
--						       &hdmi->connector, mode);
--	if (ret < 0) {
--		DRM_ERROR("Failed to get infoframes from mode\n");
--		return ret;
-+	if (type != HDMI_INFOFRAME_TYPE_AVI) {
-+		drm_err(connector->dev,
-+			"Unsupported infoframe type: %u\n", type);
-+		return 0;
- 	}
- 
--	ret = hdmi_avi_infoframe_pack(&frame, buffer, sizeof(buffer));
--	if (ret < 0) {
--		DRM_ERROR("Failed to pack infoframes\n");
--		return ret;
--	}
--
--	for (i = 0; i < sizeof(buffer); i++)
-+	for (i = 0; i < len; i++)
- 		writeb(buffer[i], hdmi->base + SUN4I_HDMI_AVI_INFOFRAME_REG(i));
- 
- 	return 0;
-+
- }
- 
- static void sun4i_hdmi_disable(struct drm_encoder *encoder,
- 			       struct drm_atomic_state *state)
- {
-@@ -81,18 +75,22 @@ static void sun4i_hdmi_disable(struct drm_encoder *encoder,
- static void sun4i_hdmi_enable(struct drm_encoder *encoder,
- 			      struct drm_atomic_state *state)
- {
- 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
- 	struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
--	struct drm_display_info *display = &hdmi->connector.display_info;
-+	struct drm_connector *connector = &hdmi->connector;
-+	struct drm_display_info *display = &connector->display_info;
-+	struct drm_connector_state *conn_state =
-+		drm_atomic_get_new_connector_state(state, connector);
-+	unsigned long long tmds_rate = conn_state->hdmi.tmds_char_rate;
- 	unsigned int x, y;
- 	u32 val = 0;
- 
- 	DRM_DEBUG_DRIVER("Enabling the HDMI Output\n");
- 
--	clk_set_rate(hdmi->mod_clk, mode->crtc_clock * 1000);
--	clk_set_rate(hdmi->tmds_clk, mode->crtc_clock * 1000);
-+	clk_set_rate(hdmi->mod_clk, tmds_rate);
-+	clk_set_rate(hdmi->tmds_clk, tmds_rate);
- 
- 	/* Set input sync enable */
- 	writel(SUN4I_HDMI_UNKNOWN_INPUT_SYNC,
- 	       hdmi->base + SUN4I_HDMI_UNKNOWN_REG);
- 
-@@ -141,11 +139,12 @@ static void sun4i_hdmi_enable(struct drm_encoder *encoder,
- 
- 	writel(val, hdmi->base + SUN4I_HDMI_VID_TIMING_POL_REG);
- 
- 	clk_prepare_enable(hdmi->tmds_clk);
- 
--	sun4i_hdmi_setup_avi_infoframes(hdmi, mode);
-+	drm_atomic_helper_connector_hdmi_update_infoframes(connector, state);
-+
- 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(0, SUN4I_HDMI_PKT_AVI);
- 	val |= SUN4I_HDMI_PKT_CTRL_TYPE(1, SUN4I_HDMI_PKT_END);
- 	writel(val, hdmi->base + SUN4I_HDMI_PKT_CTRL_REG(0));
- 
- 	val = SUN4I_HDMI_VID_CTRL_ENABLE;
-@@ -194,23 +193,26 @@ static int sun4i_hdmi_connector_atomic_check(struct drm_connector *connector,
- 	struct drm_crtc_state *crtc_state = crtc->state;
- 	struct drm_display_mode *mode = &crtc_state->adjusted_mode;
- 	enum drm_mode_status status;
- 
- 	status = sun4i_hdmi_connector_clock_valid(connector, mode,
--						  mode->clock * 1000);
-+						  conn_state->hdmi.tmds_char_rate);
- 	if (status != MODE_OK)
- 		return -EINVAL;
- 
- 	return 0;
- }
- 
- static enum drm_mode_status
- sun4i_hdmi_connector_mode_valid(struct drm_connector *connector,
- 				struct drm_display_mode *mode)
- {
--	return sun4i_hdmi_connector_clock_valid(connector, mode,
--						mode->clock * 1000);
-+	unsigned long long rate =
-+		drm_connector_hdmi_compute_mode_clock(mode, 8,
-+						      HDMI_COLORSPACE_RGB);
-+
-+	return sun4i_hdmi_connector_clock_valid(connector, mode, rate);
- }
- 
- static int sun4i_hdmi_get_modes(struct drm_connector *connector)
- {
- 	struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
-@@ -252,10 +254,15 @@ static struct i2c_adapter *sun4i_hdmi_get_ddc(struct device *dev)
- 		return ERR_PTR(-EPROBE_DEFER);
- 
- 	return ddc;
- }
- 
-+static const struct drm_connector_hdmi_funcs sun4i_hdmi_hdmi_connector_funcs = {
-+	.tmds_char_rate_valid	= sun4i_hdmi_connector_clock_valid,
-+	.write_infoframe	= sun4i_hdmi_write_infoframe,
-+};
-+
- static const struct drm_connector_helper_funcs sun4i_hdmi_connector_helper_funcs = {
- 	.atomic_check	= sun4i_hdmi_connector_atomic_check,
- 	.mode_valid	= sun4i_hdmi_connector_mode_valid,
- 	.get_modes	= sun4i_hdmi_get_modes,
- };
-@@ -273,15 +280,21 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	}
- 
- 	return connector_status_connected;
- }
- 
-+static void sun4i_hdmi_connector_reset(struct drm_connector *connector)
-+{
-+	drm_atomic_helper_connector_reset(connector);
-+	__drm_atomic_helper_connector_hdmi_reset(connector, connector->state);
-+}
-+
- static const struct drm_connector_funcs sun4i_hdmi_connector_funcs = {
- 	.detect			= sun4i_hdmi_connector_detect,
- 	.fill_modes		= drm_helper_probe_single_connector_modes,
- 	.destroy		= drm_connector_cleanup,
--	.reset			= drm_atomic_helper_connector_reset,
-+	.reset			= sun4i_hdmi_connector_reset,
- 	.atomic_duplicate_state	= drm_atomic_helper_connector_duplicate_state,
- 	.atomic_destroy_state	= drm_atomic_helper_connector_destroy_state,
- };
- 
- #ifdef CONFIG_DRM_SUN4I_HDMI_CEC
-@@ -636,14 +649,23 @@ static int sun4i_hdmi_bind(struct device *dev, struct device *master,
- 	       hdmi->base + SUN4I_HDMI_CEC);
- #endif
- 
- 	drm_connector_helper_add(&hdmi->connector,
- 				 &sun4i_hdmi_connector_helper_funcs);
--	ret = drm_connector_init_with_ddc(drm, &hdmi->connector,
--					  &sun4i_hdmi_connector_funcs,
--					  DRM_MODE_CONNECTOR_HDMIA,
--					  hdmi->ddc_i2c);
-+	ret = drmm_connector_hdmi_init(drm, &hdmi->connector,
-+				       /*
-+					* NOTE: Those are likely to be
-+					* wrong, but I couldn't find the
-+					* actual ones in the BSP.
-+					*/
-+				       "AW", "HDMI",
-+				       &sun4i_hdmi_connector_funcs,
-+				       &sun4i_hdmi_hdmi_connector_funcs,
-+				       DRM_MODE_CONNECTOR_HDMIA,
-+				       hdmi->ddc_i2c,
-+				       BIT(HDMI_COLORSPACE_RGB),
-+				       8);
- 	if (ret) {
- 		dev_err(dev,
- 			"Couldn't initialise the HDMI connector\n");
- 		goto err_cleanup_connector;
- 	}
+All arena related selftests are passing.
+
+  [root@ip-172-31-6-62 bpf]# ./test_progs -a "*arena*"
+  #3/1     arena_htab/arena_htab_llvm:OK
+  #3/2     arena_htab/arena_htab_asm:OK
+  #3       arena_htab:OK
+  #4/1     arena_list/arena_list_1:OK
+  #4/2     arena_list/arena_list_1000:OK
+  #4       arena_list:OK
+  #434/1   verifier_arena/basic_alloc1:OK
+  #434/2   verifier_arena/basic_alloc2:OK
+  #434/3   verifier_arena/basic_alloc3:OK
+  #434/4   verifier_arena/iter_maps1:OK
+  #434/5   verifier_arena/iter_maps2:OK
+  #434/6   verifier_arena/iter_maps3:OK
+  #434     verifier_arena:OK
+  Summary: 3/10 PASSED, 0 SKIPPED, 0 FAILED
+
+The implementation of bpf_addr_space_cast can be optimised by using ROR
+(immediate) and CSEL instructions. Currently, lib/insn.c doesn't have APIs
+to generate these intructions. I will send subsequent patches to implement
+the APIs and then use these instructions in the JIT.
+
+Puranjay Mohan (2):
+  bpf: Add arm64 JIT support for PROBE_MEM32 pseudo instructions.
+  bpf: Add arm64 JIT support for bpf_addr_space_cast instruction.
+
+ arch/arm64/net/bpf_jit.h                     |   1 +
+ arch/arm64/net/bpf_jit_comp.c                | 105 +++++++++++++++++--
+ tools/testing/selftests/bpf/DENYLIST.aarch64 |   2 -
+ 3 files changed, 96 insertions(+), 12 deletions(-)
 
 -- 
-2.44.0
+2.40.1
 
 
