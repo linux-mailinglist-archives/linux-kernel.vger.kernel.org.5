@@ -1,129 +1,181 @@
-Return-Path: <linux-kernel+bounces-109970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516A1885860
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:32:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA58885867
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 12:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE311B222CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:32:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4123A1C217C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 21 Mar 2024 11:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35BB5A4D5;
-	Thu, 21 Mar 2024 11:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DCA59162;
+	Thu, 21 Mar 2024 11:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIa9ZBj0"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SE/W/CyZ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C60A58210;
-	Thu, 21 Mar 2024 11:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7923417F7;
+	Thu, 21 Mar 2024 11:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711020704; cv=none; b=jDILXFJ763BX0kz6jjIWe4durwt2e69Il6udAJZN6YufzvXHLlIHH8wfY7O2nHiGnXm5KsuNGo7+cXPK5NWtOIsK2vO4XrT0jrCZjgyYRik3wdPlBYATiVhJXgqV8FUx4ZVIM6nhrbxrbOXA94fc0sixrwVdZxDXPm9vgety87g=
+	t=1711020853; cv=none; b=KHELsrI6trOsJt5HI19uxFkmHANa5cKZucVaOaYvN3FP/r10nVaq1DIBvJxwSd/7FnYhBnDEXMjwzBFogyq4Zeb5fPZWkhPcsFp+69oQEUYrAQTcSUmH06X9Q6Lw4SXo/cvtKMbBxdRIH5yCJV1XIpG6MnILllYwU842SHGw4+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711020704; c=relaxed/simple;
-	bh=DJO28aVkOmnoGoHQnSfeSZEZa0r4jTvfugf4tMA0Cmg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d3FLrjS/dS+5PB9RUW+YKqgqJ5tEbnpTZYDwYGFnOr8Oya6dPDoJOB4+pwox9jb7dp8JoDfNkAd1H6J5ycIxxRfZfWmdv9MkH/LbUz74pBNzJdjJsIGqGUGAQtMaoy5/wD/yQwcGcPAi5ql2iHSJoUYa0qQ1WyGKe7tVdbEKq1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIa9ZBj0; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4146e5c719bso6539585e9.2;
-        Thu, 21 Mar 2024 04:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711020701; x=1711625501; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tm9RUXritdc1cmBd9a/YU9HuV2GGTJD40+SLLBPKFHk=;
-        b=cIa9ZBj0rzk28pfg4tvUCyCKUYnZNrHRyFAe+TIkyo9yXHZVRHw0z+DOI6GgTxgNzj
-         9AoT4+ZbkYq3JRNF201b6FJ7PUzKSjvK6bRZJP6+o4DqAXmvi/nBsNT2/bsEzWK8oqjl
-         5GRGyQ0N+wHf5UAl+v4Ho0zPy8fMTN6sZjtSjGyVNVvGa1Bdg7kaHk1Ih6sFtqUW8OXQ
-         FkbtgVBP//Z4ng6MgTFHyIAfMrjMPVqSnBJGM4iCg0/7E1OnKzouH3yTq+yv2QUXWm6N
-         jrgcz+aPTk1AieTm9aOtUKHhVZTorhfOrmUlXQwtXPKysDis6js8/LKVvVJTzgUhyweB
-         llRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711020701; x=1711625501;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tm9RUXritdc1cmBd9a/YU9HuV2GGTJD40+SLLBPKFHk=;
-        b=JjYrSsmXo7k5YlQkn5oVJYKAnluQXv5LrPVbCLNKsFJ6Gs/CuNZ1fQ4CBmvrpIzG2E
-         vGknOkXv/1kNP7YJL1Mqg3RJHXOWTuuPMl5nG6uhY1tUxGH7gBLn7otNrrwExpbFjYK/
-         tMoahybDXSbL9lQE1cNon7f8UpbZ/Un+Sha03vjlstOmNaW5kBLR3BBE5gYT4ArfOAgq
-         bnVMvOohH7GFm+OSkzRFYJ1ADU6WKNkamreEkeNRFIksNmahYNPl8NrgdEgzmQC5H43M
-         TNccENtTwoxjtoGvP22V6j9wRbVGQYPwOX0GLkaSKsrQp+Xxi87DWQv21WZHIAb1vzoe
-         TpCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUx5can+MN3BXs8UH5XoVKEOCJRrIZWsiDjilN0ZPG4TQ48cGuBIAOcJdFb0bsb1+ZHwARJ1EmuoIBbIAh/STmxznfMDfWalgzqUIhf1wt62lETDIK4Vxe/opMaid2HWn/Y6Gu4MQXgmtgkE38lKvF1b2B5aEnbIrjs
-X-Gm-Message-State: AOJu0YzTcJeN7e5Lu9sFHnLASdOOBIZKKDFDWib0jO0GaDBRxOwbZ1oF
-	eO4oIaUwiudVxCgsmvDapNOWcJ0+Sa+yvR7uRAtCT+uHwY2UYIKjSi+UEAnqyWFsSt59Nl8sGGC
-	b/Y+vTqUKo2YY8V2uMydcYtHSH50=
-X-Google-Smtp-Source: AGHT+IEGBweFJd+BeGA1qee4nfD63A/jOmAnFJCswQxI8IsENzoWjQqN3QQEBc36ULLJ0pzbxlzmG5i1Hh5X0pNdZio=
-X-Received: by 2002:a5d:668e:0:b0:341:80fc:4913 with SMTP id
- l14-20020a5d668e000000b0034180fc4913mr2936875wru.67.1711020700630; Thu, 21
- Mar 2024 04:31:40 -0700 (PDT)
+	s=arc-20240116; t=1711020853; c=relaxed/simple;
+	bh=W2/gJ2MKgRnlesgFeDrOa3uQwI+oiLcvFiZTpWgi4aQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VcGDZUKVms1Kw+8lQ7PQYF5hcvmuS7S6CbAZIBaq1PVv5qNwIYqiIW9ZyQs1IFDi6z6LBCV+Z1GIpQacwaNtoZ6B67zWHL3yGD7tGvMXJipX/TO1smpR88/rkQQ4eLfBYJdqGCLES/daz/s4loBAqDouNJRc82I5int2S/PuM4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SE/W/CyZ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42L6XrNa026123;
+	Thu, 21 Mar 2024 11:33:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=rvpAHaDptSDGHjItmcX8AIeewGwgxzt24c489x1bS8Y=; b=SE
+	/W/CyZPrZylMX3TIsP705qgx+VoC9l+fJPnGSgqBUuYHUOsC2s4DScZ4MDM2N4xT
+	m4sPvmF/y8dVFBPTBrbTfJPXr3UiwZO7hGbPxp258YWfcmvniGO6bka4tso90Hqo
+	QJiz0KEhMy/rsX3cQobAaOhcAEaSP82esmDGrcaV2RFbhKHKGcYWvxiiHcgLt7bT
+	XsJZpbYFgHJjdysDIGCguWDjZxnWyiStXx/w8UFR2buj+Sm+EFAGd0cjkexQvP0s
+	If7wZizQHpeMGRnGJdaO5wOmaef/Kcf52nE0cZ1LZdIOCoA1JxBbnq8U8qDAQojF
+	eICxPgeNoJyK0R2Tc9YA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x0fqxgm0h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 11:33:55 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42LBXsYG018083
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Mar 2024 11:33:54 GMT
+Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 21 Mar
+ 2024 04:33:48 -0700
+Message-ID: <37942292-fb99-4d3b-9933-50d338e87661@quicinc.com>
+Date: Thu, 21 Mar 2024 17:03:45 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321101058.68530-1-puranjay12@gmail.com> <CAADnVQLhwLgq=QuXD-Ls=t9Scr_4Zn9JwdkXfZQfZkT=ysx64Q@mail.gmail.com>
-In-Reply-To: <CAADnVQLhwLgq=QuXD-Ls=t9Scr_4Zn9JwdkXfZQfZkT=ysx64Q@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Mar 2024 04:31:29 -0700
-Message-ID: <CAADnVQLHrmkJ5p2gEUJkf_CRxq9gv8rcSuBm5GeZ_nUJxQOE0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] bpf: verifier: prevent userspace memory access
-To: Puranjay Mohan <puranjay12@gmail.com>, Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 RESEND 3/6] clk: qcom: videocc-sm8550: Add SM8650 video
+ clock controller
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Taniya Das
+	<quic_tdas@quicinc.com>,
+        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-4-quic_jkona@quicinc.com>
+ <CAA8EJpq11ZeYrMqdKWrcs3=cx_Pr7wc1Y87SHMqP6B_9XtusVg@mail.gmail.com>
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <CAA8EJpq11ZeYrMqdKWrcs3=cx_Pr7wc1Y87SHMqP6B_9XtusVg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: bt3LftOV1EX1LBcHb8MIbxP5q2D-YnDu
+X-Proofpoint-GUID: bt3LftOV1EX1LBcHb8MIbxP5q2D-YnDu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-21_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ clxscore=1015 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 spamscore=0 priorityscore=1501 malwarescore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403210081
 
-On Thu, Mar 21, 2024 at 4:05=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 21, 2024 at 3:11=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.=
-com> wrote:
-> >
-> > diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.=
-c
-> > index e613eebfd349..e61a51a5b4be 100644
-> > --- a/arch/s390/net/bpf_jit_comp.c
-> > +++ b/arch/s390/net/bpf_jit_comp.c
-> > @@ -2691,3 +2691,8 @@ bool bpf_jit_supports_subprog_tailcalls(void)
-> >  {
-> >         return true;
-> >  }
-> > +
-> > +u64 bpf_arch_uaddress_limit(void)
-> > +{
-> > +       return -ENOTSUPP;
-> > +}
->
-> Looks good and should work, but s390 CI is still not happy.
-> Ideas?
-> sock tests were not failing before. So something is going on.
 
-I think I have an explanation.
--ENOTSUPP and u64... and later:
-u64 uaddress_limit =3D bpf_arch_uaddress_limit()
-if (uaddress_limit < 0)
 
-I bet the compiler simply removes this check since unsigned cannot
-be negative.
-Odd that there is no compiler warning.
+On 3/21/2024 3:33 PM, Dmitry Baryshkov wrote:
+> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+>>
+>> Add support to the SM8650 video clock controller by extending
+>> the SM8550 video clock controller, which is mostly identical
+>> but SM8650 has few additional clocks and minor differences.
+>>
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> 
+> 
+>> @@ -411,6 +540,7 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
+>>   {
+>>          struct regmap *regmap;
+>>          int ret;
+>> +       u32 offset = 0x8140;
+> 
+> Nit: this variable seems misnamed. Please rename to something like
+> sleep_clk_offset;
+> 
 
-pw-bot: cr
+Thanks Dmitry for your review.
+
+Yes, will rename this in the next series.
+
+Thanks,
+Jagadeesh
+
+>>
+>>          ret = devm_pm_runtime_enable(&pdev->dev);
+>>          if (ret)
+>> @@ -426,12 +556,27 @@ static int video_cc_sm8550_probe(struct platform_device *pdev)
+>>                  return PTR_ERR(regmap);
+>>          }
+>>
+>> +       if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8650-videocc")) {
+>> +               offset = 0x8150;
+>> +               video_cc_pll0_config.l = 0x1e;
+>> +               video_cc_pll0_config.alpha = 0xa000;
+>> +               video_cc_pll1_config.l = 0x2b;
+>> +               video_cc_pll1_config.alpha = 0xc000;
+>> +               video_cc_mvs0_clk_src.freq_tbl = ftbl_video_cc_mvs0_clk_src_sm8650;
+>> +               video_cc_mvs1_clk_src.freq_tbl = ftbl_video_cc_mvs1_clk_src_sm8650;
+>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS0_SHIFT_CLK] = &video_cc_mvs0_shift_clk.clkr;
+>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS0C_SHIFT_CLK] = &video_cc_mvs0c_shift_clk.clkr;
+>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS1_SHIFT_CLK] = &video_cc_mvs1_shift_clk.clkr;
+>> +               video_cc_sm8550_clocks[VIDEO_CC_MVS1C_SHIFT_CLK] = &video_cc_mvs1c_shift_clk.clkr;
+>> +               video_cc_sm8550_clocks[VIDEO_CC_XO_CLK_SRC] = &video_cc_xo_clk_src.clkr;
+>> +       }
+>> +
+>>          clk_lucid_ole_pll_configure(&video_cc_pll0, regmap, &video_cc_pll0_config);
+>>          clk_lucid_ole_pll_configure(&video_cc_pll1, regmap, &video_cc_pll1_config);
+>>
+>>          /* Keep some clocks always-on */
+>>          qcom_branch_set_clk_en(regmap, 0x80f4); /* VIDEO_CC_AHB_CLK */
+>> -       qcom_branch_set_clk_en(regmap, 0x8140); /* VIDEO_CC_SLEEP_CLK */
+>> +       qcom_branch_set_clk_en(regmap, offset); /* VIDEO_CC_SLEEP_CLK */
+>>          qcom_branch_set_clk_en(regmap, 0x8124); /* VIDEO_CC_XO_CLK */
+>>
+>>          ret = qcom_cc_really_probe(pdev, &video_cc_sm8550_desc, regmap);
+>> --
+>> 2.43.0
+>>
+>>
+> 
+> 
 
