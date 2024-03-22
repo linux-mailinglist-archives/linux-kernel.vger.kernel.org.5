@@ -1,141 +1,194 @@
-Return-Path: <linux-kernel+bounces-112059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD2A8874B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:08:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DFA78874BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3F12283BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:08:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99694B2166F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B84D8174F;
-	Fri, 22 Mar 2024 22:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED8481AAD;
+	Fri, 22 Mar 2024 22:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="borZRU/G"
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="mlWXzpqS";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BB6nITdG";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="mlWXzpqS";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BB6nITdG"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA23680629;
-	Fri, 22 Mar 2024 22:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773C643AB5;
+	Fri, 22 Mar 2024 22:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711145277; cv=none; b=WNcD/eH7wEXoU1Jv95hBdJzohyn5tXIFG9No/jJXYmbfh5VGxzW5sQTHlfBLT9xi6b8d2qoC+JyJWVs54+tcRQHvJ5hlPy9Vrr3TcxygIj46eyM5wmS6aS+k1Vl18A4SLSenPrEeDDdJy3WB22vb+Qeej5DRxfT3dwxVZto9P9w=
+	t=1711145487; cv=none; b=QlTLfAcLq0oNP7rKmNJHt2KialtG9C8MrLAVgCWnGXnUhHZDRTRTNezbaXnhNxacsfYIoe75anVa1CZz7n9FjX8dv9/FEonl+RjlonxMAfKHXNGnLtxY91t++cQcVzcsv70yjlw8OkV1RNHcHOu+s6IB8DfJBtyoETtNuasy2yI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711145277; c=relaxed/simple;
-	bh=6hrbMTOU1EYyulynZyTwGilqoefgMexug9LPZylnaWg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BMKyV54M8MmPBLvxgN8mkjmo87J49qrD2hlWT+4V3kXCEVf7+z1tFycHIIQDtUzPnHhKTJJLoEvB9PrwmVG5WxfGE1t5rDWFh7MzGISM3bbk3dmjoT8NgADqQ6dLSlJ/G7p07gPfS2mQqPSYuGvl6RwtA9HGlaGLyw6HUN0WFD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=borZRU/G; arc=none smtp.client-ip=99.78.197.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1711145272; x=1742681272;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=h/WOCoJGg/LvM9qqN1EvQhSNHgEtToPxH0fvwMToOoI=;
-  b=borZRU/GF7TZu7uxHo6uS6nBDZG1DkpLAK6YnfAgNHENLrSABMOSCIBn
-   waPvSrn1+sOxT6FjK9ax2NgZzAFrIngAqhrakzwy+ofgbxgLVFz3nH7vc
-   uX4r6wdtOhai/WUTNBhR9uX4BlmXofZdiQt3DoWwQb40GtmMvYZ7A7X8c
-   0=;
-X-IronPort-AV: E=Sophos;i="6.07,147,1708387200"; 
-   d="scan'208";a="75530079"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 22:07:50 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:49113]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.15.55:2525] with esmtp (Farcaster)
- id d4817f84-8b84-4d23-be95-419932aa795a; Fri, 22 Mar 2024 22:07:50 +0000 (UTC)
-X-Farcaster-Flow-ID: d4817f84-8b84-4d23-be95-419932aa795a
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 22 Mar 2024 22:07:49 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.48) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 22 Mar 2024 22:07:46 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <linux@weissschuh.net>
-CC: <davem@davemloft.net>, <dmitry.torokhov@gmail.com>,
-	<ebiederm@xmission.com>, <edumazet@google.com>, <j.granados@samsung.com>,
-	<kuba@kernel.org>, <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-	<mcgrof@kernel.org>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-	<stable@vger.kernel.org>
-Subject: Re: [PATCH v2] fs/proc/proc_sysctl.c: always initialize i_uid/i_gid
-Date: Fri, 22 Mar 2024 15:07:36 -0700
-Message-ID: <20240322220736.77465-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240322-sysctl-net-ownership-v2-1-a8b4a3306542@weissschuh.net>
-References: <20240322-sysctl-net-ownership-v2-1-a8b4a3306542@weissschuh.net>
+	s=arc-20240116; t=1711145487; c=relaxed/simple;
+	bh=cYEneCopJ0HyP2zaMTqZo4XpTAozfLYZRkf/OvnV79M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NcyRo4+H0XXXxT6qxDGk+v3OrZAuNyfnSOcMWFIgWI8yHmgV5k3i3Y88zs+ij5nvP3IbEWC/W67vWKqTQoH7JKQEh7tax1NA5mjXQ299csOBVgLGlbaGTltUSJ310d6CGOySGv4ppZZRVyP/8a18k9FyR7WrNJGHoE6P0B6sWM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=mlWXzpqS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BB6nITdG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=mlWXzpqS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BB6nITdG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B51738A8F;
+	Fri, 22 Mar 2024 22:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711145483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XTUdfRCQAps7aKrlDcH+625uZVzNEW70NMJGlSkqA9c=;
+	b=mlWXzpqSp56PPijFJe6COkSKNB8a6IvOHhByz+nqzSZG5h2PFv+YYk8P1rVIJmGK3VZcrX
+	YuvsbNrF3cbGhZRVLcyWV1y3NLOV62uIt8HYNLZDj940SiikmZ6fuVR4rErAofmi8IJ+Yq
+	cSkoBC/3NqQMmwBH5SPgDa7BYUVpbFc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711145483;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XTUdfRCQAps7aKrlDcH+625uZVzNEW70NMJGlSkqA9c=;
+	b=BB6nITdGi/cLdIrnCnqtyuO9mnPFUZSVQksBaCdjk476VJtLYKazhreI6eyv4N4WYhvKO4
+	MjYL0yxXVozUZ7Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711145483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XTUdfRCQAps7aKrlDcH+625uZVzNEW70NMJGlSkqA9c=;
+	b=mlWXzpqSp56PPijFJe6COkSKNB8a6IvOHhByz+nqzSZG5h2PFv+YYk8P1rVIJmGK3VZcrX
+	YuvsbNrF3cbGhZRVLcyWV1y3NLOV62uIt8HYNLZDj940SiikmZ6fuVR4rErAofmi8IJ+Yq
+	cSkoBC/3NqQMmwBH5SPgDa7BYUVpbFc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711145483;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XTUdfRCQAps7aKrlDcH+625uZVzNEW70NMJGlSkqA9c=;
+	b=BB6nITdGi/cLdIrnCnqtyuO9mnPFUZSVQksBaCdjk476VJtLYKazhreI6eyv4N4WYhvKO4
+	MjYL0yxXVozUZ7Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28DE0132FF;
+	Fri, 22 Mar 2024 22:11:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /ubiAwsC/mXxHQAAD6G6ig
+	(envelope-from <krisman@suse.de>); Fri, 22 Mar 2024 22:11:23 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.com,
+  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz
+Subject: Re: [PATCH v14 7/9] f2fs: Log error when lookup of encoded dentry
+ fails
+In-Reply-To: <20240320084622.46643-8-eugen.hristev@collabora.com> (Eugen
+	Hristev's message of "Wed, 20 Mar 2024 10:46:20 +0200")
+Organization: SUSE
+References: <20240320084622.46643-1-eugen.hristev@collabora.com>
+	<20240320084622.46643-8-eugen.hristev@collabora.com>
+Date: Fri, 22 Mar 2024 18:11:21 -0400
+Message-ID: <87v85d9at2.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D046UWA003.ant.amazon.com (10.13.139.18) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain
+X-Spam-Score: -3.76
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.76 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.25)[73.35%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=mlWXzpqS;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BB6nITdG
+X-Rspamd-Queue-Id: 6B51738A8F
 
-From: "Thomas Weißschuh" <linux@weissschuh.net>
-Date: Fri, 22 Mar 2024 20:51:11 +0100
-> Commit e79c6a4fc923 ("net: make net namespace sysctls belong to container's owner")
-> added default values for i_uid/i_gid.
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-The commit that added the default is 5ec27ec735ba ("fs/proc/proc_sysctl.c:
-fix the default values of i_uid/i_gid on /proc/sys inodes.")
-
-
-> These however are only used when ctl_table_root->set_ownership is not
-> implemented.
-> But the callbacks themselves could fail to compute i_uid/i_gid and they
-> all need to have the same fallback logic for this case.
-> 
-> This is unnecessary code duplication and prone to errors.
-> For example net_ctl_set_ownership() missed the fallback.
-> 
-> Instead always initialize i_uid/i_gid inside the sysfs core so
-> set_ownership() can safely skip setting them.
-> 
-> Fixes: e79c6a4fc923 ("net: make net namespace sysctls belong to container's owner")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> If the volume is in strict mode, generi c_ci_compare can report a broken
+> encoding name.  This will not trigger on a bad lookup, which is caught
+> earlier, only if the actual disk name is bad.
+>
+> Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
 > ---
-> Changes in v2:
-> - Move the fallback logic to the sysctl core
-> - Link to v1: https://lore.kernel.org/r/20240315-sysctl-net-ownership-v1-1-2b465555a292@weissschuh.net
-> ---
->  fs/proc/proc_sysctl.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index 37cde0efee57..9e34ab9c21e4 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -479,12 +479,10 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
->  			make_empty_dir_inode(inode);
->  	}
+>  fs/f2fs/dir.c | 21 ++++++++++++++++-----
+>  1 file changed, 16 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+> index 88b0045d0c4f..3b0003e8767a 100644
+> --- a/fs/f2fs/dir.c
+> +++ b/fs/f2fs/dir.c
+> @@ -192,11 +192,22 @@ static inline int f2fs_match_name(const struct inode *dir,
+>  	struct fscrypt_name f;
 >  
-> +	inode->i_uid = GLOBAL_ROOT_UID;
-> +	inode->i_gid = GLOBAL_ROOT_GID;
->  	if (root->set_ownership)
->  		root->set_ownership(head, table, &inode->i_uid, &inode->i_gid);
-> -	else {
-> -		inode->i_uid = GLOBAL_ROOT_UID;
-> -		inode->i_gid = GLOBAL_ROOT_GID;
-> -	}
->  
->  	return inode;
->  }
-> 
-> ---
-> base-commit: ff9c18e435b042596c9d48badac7488e3fa76a55
-> change-id: 20240315-sysctl-net-ownership-bc4e17eaeea6
-> 
-> Best regards,
-> -- 
-> Thomas Weißschuh <linux@weissschuh.net>
+>  #if IS_ENABLED(CONFIG_UNICODE)
+> -	if (fname->cf_name.name)
+> -		return generic_ci_match(dir, fname->usr_fname,
+> -					&fname->cf_name,
+> -					de_name, de_name_len);
+> -
+> +	if (fname->cf_name.name) {
+> +		int ret = generic_ci_match(dir, fname->usr_fname,
+> +					   &fname->cf_name,
+> +					   de_name, de_name_len);
+> +		if (ret < 0) {
+> +			/*
+> +			 * Treat comparison errors as not a match.  The
+> +			 * only case where it happens is on a disk
+> +			 * corruption or ENOMEM.
+> +			 */
+> +			if (ret == -EINVAL)
+> +				f2fs_warn(F2FS_SB(dir->i_sb),
+> +					"Directory contains filename that is invalid UTF-8");
+> +		}
+> +		return ret;
+
+No point in checking ret < 0 and then ret == -EINVAL. just check for
+-EINVAL.  That was ok in ext4 because we actually need to change ret to
+false.
+
+> +	}
+>  #endif
+>  	f.usr_fname = fname->usr_fname;
+>  	f.disk_name = fname->disk_name;
+
+-- 
+Gabriel Krisman Bertazi
 
