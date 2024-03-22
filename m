@@ -1,378 +1,270 @@
-Return-Path: <linux-kernel+bounces-110964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 906AF88665C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:44:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B9A88665F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E36283294
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:44:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4ADF1C23650
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3493D8C11;
-	Fri, 22 Mar 2024 05:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C12FB663;
+	Fri, 22 Mar 2024 05:45:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SDTtaTL3"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J0R5xp09"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107551A38FD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477EFBA3F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711086272; cv=none; b=RvGHQHeAPcYpEAy0NrkBuMwgC2o6fwomdJXMBRz8IqoJD0QZX/k1EPlodDik+vpYdOUCw2i44qI9Hk/lnm87bU8vSc6kECWX6t+QxasqKeM7dBRy214WLARMsPx3cG7nQady/tjQ8ZN2MnMKELyiBxdrvr4WvevCR5vkpF0qwJs=
+	t=1711086314; cv=none; b=M9Kd8jkKbdaST9rm+bkqGUcfDLcvo9u/EFfyna+ludPoIizc8gw9WtOagpE0SjZN5GcgD/PcLHOaJtIFnEPG2crFmfwycdH16Y9S4o5ZfOYkFMlPvePeX6Ou5SF3w+qRqfenIA9ZG6KHRXZrQCnj0Zwv8T0zEu4L0U7jW1GIxHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711086272; c=relaxed/simple;
-	bh=uOq5p/Eb5ykqUHQZyziKCXEGEMNI+vTHrhDo5R41vFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IH5Z/Nj9GnxS1BJAf1IN6a6qyqeH2Y3QkJERrdp7RLboha8ZLwzCrrpli0KP6UFyjycJrh3bhdf47CWiGBjNOg/ArwMlHhOFD76NWr7FvEEmLBykE7RlJnNmujVR0yi0ZjgSrJc4OBh7rQY1SqpzUeOmWeiNkZnCw5y6pl2RSFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SDTtaTL3; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a471f86dcd3so103541266b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711086268; x=1711691068; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nm9xbL6fdbmkA2PfY/NtYXaykwPAjIVdTVbULwbVVtw=;
-        b=SDTtaTL31u3UBWBfI8TyNu3x4qX2FQlcXlt6a6NM+pPVfMmYd8MQFjWqpZrTBBh3GO
-         4lyngn2xIeWu3oLxwJi+qNpvHuV0r7ZxhsXIwX3WF8nDhPoaHl8ATHjogKgc9tFOY3/f
-         r+HKDkpu8SxE2zty+C+SXlGlGVc4hsuoO4Q4kkTuMOzfMySOywI8LZD0+EsxSYdTmJn5
-         bLJTbrrU8aNA6A+BWfs/4v9vRFb6ouO5Nm6kMLHTPuPLdLQkh3vB/ZKsRLDsovc0JT83
-         vK/+iYjgnheV+3rJpC5geqqBT4PUtPN8486sBfYVZpFz/EDOBc7A8eyg1+sg/szPp4Tz
-         mEBg==
+	s=arc-20240116; t=1711086314; c=relaxed/simple;
+	bh=b4UeU92r62bIY8HhL/ow3jMfrvwN8JSL7OEhfPL5vDo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ofEcBRitEH7L/Hw/pGn1dyOANEk7SMBQY6Sl0y0pfDKGzB9HxJqhptA0yEAIQmSnI4D2jvSAe1DcbArUObp+ZXdTbIjzlzp/nbkpsNf5pYynAH5tPOLqAaZtdptjvZr6rNqNZwBDsler89MqSbyDhk6iQwSn+g0fa1DgZzcVKkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J0R5xp09; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711086312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2v9+xfia68QeoWpLPgvZTLinBR+rs9FvXTVbndoolI0=;
+	b=J0R5xp090oweD5Y/nxjkq9OBeYkAUxo7ZhVbefmID/Jp6I+Oq5r07QIS+1gESq4Q1Ax8Zk
+	t6jqa1DzQ+MKNX9v/a2PysEgFlf/YKMkEgUGdjNdRg1nqTtGUp3Hh6iwDrGHkGDmVrKss0
+	g56+HM69EyFHkI6s0D5jV+zs4et1I/0=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-ghOdygkuO3OpXStypkHlmw-1; Fri, 22 Mar 2024 01:45:07 -0400
+X-MC-Unique: ghOdygkuO3OpXStypkHlmw-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c37ea11ef3so1712066b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:45:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711086268; x=1711691068;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nm9xbL6fdbmkA2PfY/NtYXaykwPAjIVdTVbULwbVVtw=;
-        b=UwvqeSOk4jzdOwMcsz76sbOWjzanWgDF7N29vEKmn4tN0qVqe/HfcA3syQ0Jjw71Lz
-         v2r0/8Ol1z/0ll8cLl8YLtKFaWiAN0NHEzGtiJRJJhloUS4siuwpNsNUFPfIfWu6yu3d
-         daoWTQ42fx+S1lC2HqfmwuvmojUHlv/CWfeI5QcYOnWWsrXxdEbdB1j1Et6qDHjJ6/AF
-         b1DmxlM3q8IEHHIGw5M3DNz9GEV3yE7gqIgGbT/ya0MSqyhASTqltHsR1zLfeaukYxlU
-         UVhGx4h13iMVpwzlAZl8dQYn07fFmvO2l5jgjTEd11KIjcDhL8GbAqPAAKLQ+f1Cphak
-         at2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWR6Z9IlIp8I/qiUtCHtAdvTM6WL+JFmYn49OYWG5W2WeCO/rbU4H0RxUcCPI3itQhhuzDe4UZApVQTeMvzdq86NdSZ3+MwelvpW6kh
-X-Gm-Message-State: AOJu0Yxctj0an9Qhm/5eE0wh+p1Q0S569Hkdg2D5dC5Pfvkc5uq+t/xU
-	uMuwgxOQF0yIONwMxdpHd/jq9jBmWVX6+UJ3aubsl0iwHLxG6HGdElQjP4I7Nqs=
-X-Google-Smtp-Source: AGHT+IHz4eOI/1BdG4Cjom5CZIaMivnSB7vOCtXEwzNWSV9lnXnDQx4VJBWJSOgUsbGlUSSKC4zkWg==
-X-Received: by 2002:a17:907:7e8e:b0:a46:5e1b:58a3 with SMTP id qb14-20020a1709077e8e00b00a465e1b58a3mr1110987ejc.35.1711086266344;
-        Thu, 21 Mar 2024 22:44:26 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id h8-20020a1709060f4800b00a471b5b25b9sm633096ejj.127.2024.03.21.22.44.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 22:44:25 -0700 (PDT)
-Message-ID: <b224cd7e-ebd0-41ef-b1e2-64f76d246307@linaro.org>
-Date: Fri, 22 Mar 2024 06:44:23 +0100
+        d=1e100.net; s=20230601; t=1711086306; x=1711691106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2v9+xfia68QeoWpLPgvZTLinBR+rs9FvXTVbndoolI0=;
+        b=Niy5MCwevKTDgjmu7eLuFPkJnLWsH16ZOF/hB/sXd7F8MIcFaT3eVesJ/ptoPBk0j6
+         a3MmBX61Ya4Q+cSZRhzb12TSzxpjVcHbm6qWJujBW/WlwyIw0Q//wg1ttvfLU7rMnHHp
+         P9eu7V9v7P3hd3UKDrtVpLxo0HAtDxn1v8t7HIt/Do3k9xbqOOFXrNhClcoLNmFYaKsG
+         UbxVf8SiSpZBuMIN0lsG2AoHkBQA4DO5fsDBlgc4yIrEk1qRR0XEqszLsp12VWWO4rre
+         kUkz95SozLAfX1VeJxIbUPpVtNjeaPRIUg4e1W2W3j33QqaL6Z4xFRgcd7h0bOPhMWLo
+         l4SQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHqwWeoDS62QuRi+IW/bHlO7JgRYJGaTG188hlwTIdruBwqHoboQ8jT5Uem5Yio4kecGjrrKss5fJJni3LDcfD7wN46Ppf//z6NLVd
+X-Gm-Message-State: AOJu0Yys57PtOFGr/t7kyr6HNzL/S7dL1ckuH2EWQ8omcOSJPS5oA+KX
+	tAFGzspBQcP6CBXR5BKtdkkT54NP7m0N9eQK/NTFn4ozT8723xh7VN1I6kKw+Uk4+bbOQEEs8Og
+	Mz9/Xe+nmYoe9NY2lVTL1yrs1jmOWU9Jdu0ud/RcSuxLWr5KPmMNAN+cSeTkL3CVxTNcFSnuWfb
+	iKkkUaUi+LVpc2WmajbmnWYJ4rOa0zJtEsyLtS
+X-Received: by 2002:a05:6808:16a2:b0:3c1:7eac:a8a8 with SMTP id bb34-20020a05680816a200b003c17eaca8a8mr1460927oib.26.1711086306431;
+        Thu, 21 Mar 2024 22:45:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGjP042aRQsdUdB9ehHITlv37xk5alHFWxpQm2MqNv8pk9MTzqxxtDhf60Pr2uz0kgKfHbuG+XxWZGNk/DWcmk=
+X-Received: by 2002:a05:6808:16a2:b0:3c1:7eac:a8a8 with SMTP id
+ bb34-20020a05680816a200b003c17eaca8a8mr1460912oib.26.1711086306145; Thu, 21
+ Mar 2024 22:45:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: add Versal-NET platform
-To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
- mathieu.poirier@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- michal.simek@amd.com, ben.levinsky@amd.com
-Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240315211533.1996543-1-tanmay.shah@amd.com>
- <20240315211533.1996543-3-tanmay.shah@amd.com>
- <3ca1c419-d185-4318-92ed-3c4e40dcf5bb@linaro.org>
- <14be0aa6-49b7-4342-9ca6-750c30c8e1e9@amd.com>
- <b1320ddf-bacb-41e3-9709-e90df18cc1e3@linaro.org>
- <d112481b-4331-4c0c-9775-407ac4a601fb@amd.com>
- <6f2ebe09-8ce5-4388-a01a-84ebc271472e@linaro.org>
- <72f3caa2-30ec-4191-9477-2d2a5e7f2f4b@amd.com>
- <5025fb10-3bcc-43b1-ae85-b556f1c0415f@linaro.org>
- <091c5ff9-dce9-4c63-a2ca-39d570e2f0a5@amd.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <091c5ff9-dce9-4c63-a2ca-39d570e2f0a5@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240306025801.8814-1-hpa@redhat.com> <20240306025801.8814-3-hpa@redhat.com>
+ <Ze-N_y5Tbjc93aRp@surfacebook.localdomain>
+In-Reply-To: <Ze-N_y5Tbjc93aRp@surfacebook.localdomain>
+From: Kate Hsuan <hpa@redhat.com>
+Date: Fri, 22 Mar 2024 13:44:54 +0800
+Message-ID: <CAEth8oEdzomdn5avXf44HXpoMFDfGpOjjxPFtaGkh0EhfZsPMQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] leds: rgb: leds-ktd202x: Get device properties
+ through fwnode to support ACPI
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 21/03/2024 16:13, Tanmay Shah wrote:
-> 
-> 
-> On 3/21/24 2:39 AM, Krzysztof Kozlowski wrote:
->> On 20/03/2024 16:14, Tanmay Shah wrote:
->>>
->>>
->>> On 3/20/24 2:40 AM, Krzysztof Kozlowski wrote:
->>>> On 19/03/2024 15:42, Tanmay Shah wrote:
->>>>>
->>>>>
->>>>> On 3/19/24 12:30 AM, Krzysztof Kozlowski wrote:
->>>>>> On 19/03/2024 01:51, Tanmay Shah wrote:
->>>>>>> Hello Krzysztof,
->>>>>>>
->>>>>>> Thanks for reviews. Please find my comments below.
->>>>>>>
->>>>>>> On 3/17/24 1:53 PM, Krzysztof Kozlowski wrote:
->>>>>>>> On 15/03/2024 22:15, Tanmay Shah wrote:
->>>>>>>>> AMD-Xilinx Versal-NET platform is successor of Versal platform. It
->>>>>>>>> contains multiple clusters of cortex-R52 real-time processing units.
->>>>>>>>> Each cluster contains two cores of cortex-R52 processors. Each cluster
->>>>>>>>> can be configured in lockstep mode or split mode.
->>>>>>>>>
->>>>>>>>> Each R52 core is assigned 128KB of TCM memory. ATCM memory is 64KB, BTCM
->>>>>>>>> and CTCM memoreis are 32KB each. Each TCM memory has its own dedicated
->>>>>>>>> power-domain that needs to be requested before using it.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
->>>>>>>>> ---
->>>>>>>>>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 220 +++++++++++++++---
->>>>>>>>>  1 file changed, 184 insertions(+), 36 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
->>>>>>>>> index 711da0272250..55654ee02eef 100644
->>>>>>>>> --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
->>>>>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
->>>>>>>>> @@ -18,7 +18,9 @@ description: |
->>>>>>>>>  
->>>>>>>>>  properties:
->>>>>>>>>    compatible:
->>>>>>>>> -    const: xlnx,zynqmp-r5fss
->>>>>>>>> +    enum:
->>>>>>>>> +      - xlnx,zynqmp-r5fss
->>>>>>>>> +      - xlnx,versal-net-r52fss
->>>>>>>>>  
->>>>>>>>>    "#address-cells":
->>>>>>>>>      const: 2
->>>>>>>>> @@ -64,7 +66,9 @@ patternProperties:
->>>>>>>>>  
->>>>>>>>>      properties:
->>>>>>>>>        compatible:
->>>>>>>>> -        const: xlnx,zynqmp-r5f
->>>>>>>>> +        enum:
->>>>>>>>> +          - xlnx,zynqmp-r5f
->>>>>>>>> +          - xlnx,versal-net-r52f
->>>>>>>>>  
->>>>>>>>>        reg:
->>>>>>>>>          minItems: 1
->>>>>>>>> @@ -135,9 +139,11 @@ required:
->>>>>>>>>  allOf:
->>>>>>>>>    - if:
->>>>>>>>>        properties:
->>>>>>>>> -        xlnx,cluster-mode:
->>>>>>>>> -          enum:
->>>>>>>>> -            - 1
->>>>>>>>> +        compatible:
->>>>>>>>> +          contains:
->>>>>>>>> +            enum:
->>>>>>>>> +              - xlnx,versal-net-r52fss
->>>>>>>>
->>>>>>>> Why do you touch these lines?
->>>>>>>>
->>>>>>>>> +
->>>>>>>>>      then:
->>>>>>>>>        patternProperties:
->>>>>>>>>          "^r5f@[0-9a-f]+$":
->>>>>>>>> @@ -149,16 +155,14 @@ allOf:
->>>>>>>>>                items:
->>>>>>>>>                  - description: ATCM internal memory
->>>>>>>>>                  - description: BTCM internal memory
->>>>>>>>> -                - description: extra ATCM memory in lockstep mode
->>>>>>>>> -                - description: extra BTCM memory in lockstep mode
->>>>>>>>> +                - description: CTCM internal memory
->>>>>>>>>  
->>>>>>>>>              reg-names:
->>>>>>>>>                minItems: 1
->>>>>>>>>                items:
->>>>>>>>> -                - const: atcm0
->>>>>>>>> -                - const: btcm0
->>>>>>>>> -                - const: atcm1
->>>>>>>>> -                - const: btcm1
->>>>>>>>> +                - const: atcm
->>>>>>>>> +                - const: btcm
->>>>>>>>> +                - const: ctcm
->>>>>>>>>  
->>>>>>>>>              power-domains:
->>>>>>>>>                minItems: 2
->>>>>>>>> @@ -166,33 +170,70 @@ allOf:
->>>>>>>>>                  - description: RPU core power domain
->>>>>>>>>                  - description: ATCM power domain
->>>>>>>>>                  - description: BTCM power domain
->>>>>>>>> -                - description: second ATCM power domain
->>>>>>>>> -                - description: second BTCM power domain
->>>>>>>>> +                - description: CTCM power domain
->>>>>>>>>  
->>>>>>>>>      else:
->>>>>>>>> -      patternProperties:
->>>>>>>>> -        "^r5f@[0-9a-f]+$":
->>>>>>>>> -          type: object
->>>>>>>>> -
->>>>>>>>> -          properties:
->>>>>>>>> -            reg:
->>>>>>>>> -              minItems: 1
->>>>>>>>> -              items:
->>>>>>>>> -                - description: ATCM internal memory
->>>>>>>>> -                - description: BTCM internal memory
->>>>>>>>> -
->>>>>>>>> -            reg-names:
->>>>>>>>> -              minItems: 1
->>>>>>>>> -              items:
->>>>>>>>> -                - const: atcm0
->>>>>>>>> -                - const: btcm0
->>>>>>>>> -
->>>>>>>>> -            power-domains:
->>>>>>>>> -              minItems: 2
->>>>>>>>> -              items:
->>>>>>>>> -                - description: RPU core power domain
->>>>>>>>> -                - description: ATCM power domain
->>>>>>>>> -                - description: BTCM power domain
->>>>>>>>> +      allOf:
->>>>>>>>> +        - if:
->>>>>>>>> +            properties:
->>>>>>>>> +              xlnx,cluster-mode:
->>>>>>>>> +                enum:
->>>>>>>>> +                  - 1
->>>>>>>>
->>>>>>>> Whatever you did here, is not really readable. You have now multiple
->>>>>>>> if:then:if:then embedded.
->>>>>>>
->>>>>>> For ZynqMP platform, TCM can be configured differently in lockstep mode
->>>>>>> and split mode.
->>>>>>>
->>>>>>> For Versal-NET no such configuration is available, but new CTCM memory
->>>>>>> is added.
->>>>>>>
->>>>>>> So, I am trying to achieve following representation of TCM for both:
->>>>>>>
->>>>>>> if: versal-net compatible
->>>>>>> then:
->>>>>>>   ATCM - 64KB
->>>>>>>   BTCM - 32KB
->>>>>>>   CTCM - 32KB
->>>>>>>
->>>>>>> else: (ZynqMP compatible)
->>>>>>>   if:
->>>>>>>     xlnx,cluster-mode (lockstep mode)
->>>>>>>   then:
->>>>>>>     ATCM0 - 64KB
->>>>>>>     BTCM0 - 64KB
->>>>>>>     ATCM1 - 64KB
->>>>>>>     BTCM1 - 64KB
->>>>>>>   else: (split mode)
->>>>>>>     ATCM0 - 64KB
->>>>>>>     BTCM0 - 64KB
->>>>>>>
->>>>>>>
->>>>>>> If bindings are getting complicated, does it make sense to introduce
->>>>>>> new file for Versal-NET bindings? Let me know how you would like me
->>>>>>> to proceed.
->>>>>>
->>>>>> All this is broken in your previous patchset, but now we nicely see.
->>>>>>
->>>>>> No, this does not work like this. You do not have entirely different
->>>>>> programming models in one device, don't you?
->>>>>>
->>>>>
->>>>> I don't understand what do you mean? Programming model is same. Only number
->>>>> of TCMs are changing based on configuration and platform. I can certainly
->>>>> list different compatible for different platforms as requested. But other than
->>>>> that not sure what needs to be fixed.
->>>>
->>>> You cannot have same programming model with different memory mappings.
->>>> Anyway, please follow writing bindings rules: all of your different
->>>> devices must have dedicated compatible. I really though we talked about
->>>> two IPs on same SoC...
->>>
->>> I agree that Versal compatible should be added, I will do that in next revision.
->>>
->>> For ZynqMP case, it is two IPs on same SOC. In lockstep mode and split mode,
->>> same SOC is configuring TCM differently.
->>>
->>> How this should be resolved for Versal-NET ? Driver avoids such TCM configuration
->>> for Versal-NET.
->>
->> Binding should describe the hardware, not what driver is doing
->> currently, so the question is: does your device have such properties or
->> not? Anyway, you need compatible per each variant and each SoC
->> implementation.
-> 
-> Thanks for reviews.
-> 
-> Okay in that case I believe I should add one more property to current bindings for TCM
-> configuration.
-> 
+Hi
 
-I am not sure if you understand how IRC works... You sent me message on
-IRC about this topic and shortly after you quit. So how am I supposed to
-send reply? IRC does not work like that...
+Thank you for reviewing.
 
-> From our discussion I conclude to following next steps:
-> 
-> 1) I will send Versal and Versal-NET support as part of previous series (v14) so we get
-> bigger picture in the first place.
-> 
-> 2) Add separate compatible for versal platform.
-> Use device compatible string to maintain
-> backward compatibility and not machine (root node) compatible string.
-> 
-> 3) Add tcm,mode property in bindings and each device must configure TCM based on that
-> property only and not based on compatible string.
-> 
-> 4) Versal-NET will disallow tcm,mode property in bindings as no such configuration is
-> possible for that platform.
+On Tue, Mar 12, 2024 at 7:04=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> Wed, Mar 06, 2024 at 10:58:01AM +0800, Kate Hsuan kirjoitti:
+> > This LED controller also installed on a Xiaomi pad2 and it is a x86
+> > platform. The original driver is based on device tree and can't be
+> > used for this ACPI based system. This patch migrated the driver to
+> > use fwnode to access the properties. Moreover, the fwnode API
+> > supports device tree so this work won't effect the original
+> > implementations.
+>
+> ...
+>
+> > +     fwnode_for_each_available_child_node(np, child) {
+>
+> Please, rename np to fwnode to avoid confusion.
+>
+> > +             num_channels++;
+> > +     }
+>
+> ...
+>
+> > -     for_each_available_child_of_node(np, child) {
+> > +     fwnode_for_each_available_child_node(np, child) {
+> >               u32 mono_color;
+> >               u32 reg;
+> >               int ret;
+> >
+> > -             ret =3D of_property_read_u32(child, "reg", &reg);
+> > +             ret =3D fwnode_property_read_u32(child, "reg", &reg);
+> >               if (ret !=3D 0 || reg >=3D chip->num_leds) {
+> >                       dev_err(chip->dev, "invalid 'reg' of %pOFn\n", ch=
+ild);
+>
+> Must be %pfw now.
+>
+> > -                     of_node_put(child);
+> > +                     fwnode_handle_put(child);
+>
+> >                       return -EINVAL;
+>
+> Side note: This shouldn't shadow error code when ret !=3D 0.
+>
+> >               }
+>
+> ...
+>
+> > -             ret =3D of_property_read_u32(child, "color", &mono_color)=
+;
+> > +             ret =3D fwnode_property_read_u32(child, "color", &mono_co=
+lor);
+> >               if (ret < 0 && ret !=3D -EINVAL) {
+> >                       dev_err(chip->dev, "failed to parse 'color' of %p=
+OF\n", child);
+>
+> Must be %pfw now.
+>
+> > -                     of_node_put(child);
+> > +                     fwnode_handle_put(child);
+> >                       return ret;
+> >               }
+>
+> ...
+>
+> > -     ret =3D of_property_read_u32(np, "reg", &reg);
+> > +     ret =3D fwnode_property_read_u32(np, "reg", &reg);
+> >       if (ret !=3D 0 || reg >=3D chip->num_leds) {
+> >               dev_err(chip->dev, "invalid 'reg' of %pOFn\n", np);
+>
+> Must be %pfw now.
+>
+> >               return -EINVAL;
+>
+> >       /* Color property is optional in single color case */
+> > -     ret =3D of_property_read_u32(np, "color", &color);
+> > +     ret =3D fwnode_property_read_u32(np, "color", &color);
+> >       if (ret < 0 && ret !=3D -EINVAL) {
+> >               dev_err(chip->dev, "failed to parse 'color' of %pOF\n", n=
+p);
+>
+> Must be %pfw now.
+>
+> >               return ret;
+> >       }
+>
+> ...
+>
+> > +     struct fwnode_handle *child, *np;
+>
+> Do not use np for sturct fwnode_handle. It will be quite confusing.
+>
+> ...
+>
+> > -     chip->num_leds =3D (int)(unsigned long)of_device_get_match_data(c=
+hip->dev);
+> > +     count =3D device_get_child_node_count(dev);
+>
+> >
+>
+> Redundant blank line.
+>
+> > -     count =3D of_get_available_child_count(np);
+> >       if (!count || count > chip->num_leds)
+> >               return -EINVAL;
+>
+> ...
+>
+> > +     chip->num_leds =3D (unsigned long)i2c_get_match_data(client);
+>
+> No warnings during compilation?
+Yes, the compiler doesn't complain about it.
 
-I really don't know your SoCs. What about Zynq? You keep using here
-names all over the place, but I am not Xilinx maintainer.
+>
+> ...
+>
+> > +static const struct i2c_device_id ktd202x_id[] =3D {
+> > +     {"ktd2026", KTD2026_NUM_LEDS},
+> > +     {"ktd2027", KTD2027_NUM_LEDS},
+> > +     {},
+>
+> N ocomma for the terminator entry.
+>
+> > +};
+> > +MODULE_DEVICE_TABLE(i2c, ktd202x_id);
+>
+> ...
+>
+> > +#ifndef CONFIG_ACPI
+>
+> Please, no. Drop them.
+Okay, I've dropped them in v5 patch.
+
+>
+> >  static const struct of_device_id ktd202x_match_table[] =3D {
+> >       { .compatible =3D "kinetic,ktd2026", .data =3D (void *)KTD2026_NU=
+M_LEDS },
+> >       { .compatible =3D "kinetic,ktd2027", .data =3D (void *)KTD2027_NU=
+M_LEDS },
+> >       {},
+> >  };
+> >  MODULE_DEVICE_TABLE(of, ktd202x_match_table);
+> > +#endif
+> >
+> >  static struct i2c_driver ktd202x_driver =3D {
+> >       .driver =3D {
+> >               .name =3D "leds-ktd202x",
+> > +#ifndef CONFIG_ACPI
+> >               .of_match_table =3D ktd202x_match_table,
+> > +#endif
+>
+> This is quite unusual besides being ugly.
+>
+> >       },
+> >       .probe =3D ktd202x_probe,
+> >       .remove =3D ktd202x_remove,
+> >       .shutdown =3D ktd202x_shutdown,
+> > +     .id_table =3D ktd202x_id,
+> >  };
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
 
-Best regards,
-Krzysztof
+--=20
+BR,
+Kate
 
 
