@@ -1,135 +1,199 @@
-Return-Path: <linux-kernel+bounces-111100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDDF8867E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:06:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57FA88867EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 110B6B22CDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:06:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAE2A282612
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93F015AF9;
-	Fri, 22 Mar 2024 08:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618DB168A4;
+	Fri, 22 Mar 2024 08:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="CBrUF++O"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="SGtpKYOQ"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2083.outbound.protection.outlook.com [40.107.20.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C003171CE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711094780; cv=none; b=ARdrZEb1arUNtGEcYbeZKHm7AKmEtvJezloPyrXYuCuWTBwJumwdpc4+eCslA13ctKkWNJu4hnadDV/VK3kPEu5pWiXGRGXNlmu01XLVOIm2mgGIRpxcdWw5nUxELevHmLHc7a5TdsYull9tw/IclWZLoNUz/ipEMdPQ/2YZ6g0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711094780; c=relaxed/simple;
-	bh=yuz1DDYwwZ+Wu+hp6fEC6IuIktiCN/2dn12Wf0kXYLk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tyMcdLXxviSiZ3aCC75Qoem9iHcWBac94oWH7fMtXPPvksZ6swfxC2d5irQwdf+F5Mnl5HmApm0DzsY2vCtbW/7+Mn5u50C+Ipp2SxUklGTfVH4CEehpR6LCrJ1tjtyc8416WNfON0RpsLei7MxXIvylnmmZGKR5ffJi8lOPQFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=CBrUF++O; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso2077376a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711094776; x=1711699576; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XsZLSAJEXmeZxbFin0CImKOsNm3aXacrTABAdgCK260=;
-        b=CBrUF++OF+YmwdF6X7cykeYwFFB9S4gKX91/zNupGnSducv/hPcy1m4P6tCruNlZ7S
-         xas4y+D/4SCEZFHVgSY2G4pNqZUN6GPz9NfUhkb85MzcScr4YLE4FsN0PuDuwF4Iynj8
-         ObSYvEe8YoMS0IjJRdo2KIYRIhK8XroE5ez5ergYLk6pqiU1G4pPriGhEHmwp7f5eF8E
-         v1QKwafh/VkVEL23GO8IljWpuG2qr3GAe17GOSYuEiqDIgdO8u4TNdpS+AbLUO3uRdu/
-         bOk7whClpIa/DtkJ2Vfp8s2pSM93Tk9DL/6OH+FM4VmrHSu+IyuCL5xtxkJU+tff5e8f
-         LAxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711094776; x=1711699576;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XsZLSAJEXmeZxbFin0CImKOsNm3aXacrTABAdgCK260=;
-        b=Jtx0L3/MTyfIbBA0S75RiAboPtJtRhH/FP/yLoQgyP/6vDrlZcXjIrPEI7ra/CcZpb
-         A5nak5iXdkpS2kqHsv5j/699SPGZ67YH6mTMO5Xl/E54QJ6FOp7ujY1+zVQ0TFyHX9fW
-         FE39b42AbpcHtrjEc6rAme53yQbV9wVJ2AcWcGZwfgn+o8QNWqFSlY6NjYzEK+xZ8WyD
-         J6Kq17NoxDTjQ/aQRrFreEsigQR+x4L2MfS6Hmg5p4f4wgdE0FUYOYpNCZAHhi1pz8uA
-         kqm6v/BRL+80+Ecl2BhgdKWehJLrBm902mLEcrnx3HkAG865t30JmSVsej8HoMViUQVY
-         ouNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWfxoCdAzI/fwFeQGyr0hXObxwJwxER/ttlD11iBNPAb7UnxbiB/qcJqWzOlqvR6kgZb45VW+mBNYfL7rIy2Z97zpfQvPSy0AgqciRW
-X-Gm-Message-State: AOJu0YxD4QYh3i0u0zZmW7zQ9sJ1ZapPXiRlt5UNOk2uUUQG8Vf9HEsT
-	WK93XZCe6h7hiTvmm96FR5bfk1AdionFTwRIf159QGhdPv76GZJfWUEPS+hl8B0=
-X-Google-Smtp-Source: AGHT+IF6hLTM5QsWFB8daZv5l4Na45H7PPkkgF62jW5LxW0NpIpFh38gMORfD2MF7w/c7B8DVIGztA==
-X-Received: by 2002:a50:9b44:0:b0:56b:b7f1:8094 with SMTP id a4-20020a509b44000000b0056bb7f18094mr977606edj.35.1711094775863;
-        Fri, 22 Mar 2024 01:06:15 -0700 (PDT)
-Received: from [192.168.1.70] ([84.102.31.156])
-        by smtp.gmail.com with ESMTPSA id fe8-20020a056402390800b0056bd1e71310sm743729edb.85.2024.03.22.01.06.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 01:06:15 -0700 (PDT)
-Message-ID: <b473d940-0301-472d-90f0-297da6815377@baylibre.com>
-Date: Fri, 22 Mar 2024 09:06:13 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932FC101C1;
+	Fri, 22 Mar 2024 08:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711094866; cv=fail; b=sldM38upt2Qg1XC2Sk0TBahaE15uAoPkcIsPF86GBMDiGrIAzgeWZycd+ynHDZQvJnfdLUgPDvWElT5+3XziSF+5Da1cOzT5ViDBaRzArkoF4eK2LWA5Ug7cDXznXPYeEew+/AeCX60lrGRHhT4cpCOhh7/0RPl4DuVRVFd7NlI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711094866; c=relaxed/simple;
+	bh=1W3IeR4vpCQE79wK/+NeGQJaUi6l8sxunyIhglHqsW0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YBsqwZxTAwDcC9vEdlWngXweQyZF8vPzZtwH20R/ARv1wzFWhiIVzSGa0Urjo3gx0QtyoCpn1d3BpSdqKeTWzA3uMqlz0l1k25mKRYK4EKxBYnhzgHG3yISxae2viAVzZ0Cb90B1i2Iy8UF5+EmieBSzizDIC6ITURFZBR4RI8g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=SGtpKYOQ; arc=fail smtp.client-ip=40.107.20.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ALVpBLK0eVibgMde4pdAJqE8GN+sR4192yzrPHQvRR4TvvJbAu2mrSi7DfbrTwL6HD4gCWmtlOe8Lnat5JVGyadTFYMveFR/4Tlf7FJiV4KY5VFSWbKe3oTWPGrEZ9zXe22hVNZrT2WpvtCNESDnwjlf2L2+PY1d0BGKG3wXgL/RWK8Ed2DlBJ24pREDa9KEbaewUbHw8/6j0cOu3MXl63G0fB0ghFPy6KAerf8zSTNCu+1NL82w3POyCU5zSnNYfsc44jhakZtVnsK9yXacUBcfuyrE3pCL01YF7xEMoSKA6VHADMOMqfl8zz+nDOQSQtK2itfbFpPtH+AHSPD//Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1W3IeR4vpCQE79wK/+NeGQJaUi6l8sxunyIhglHqsW0=;
+ b=ZR5dOkNBMDQNkvcAxmL567fUaxMRrNBo2panqqMZZaCjOoCSqfA+Ti6xOkw1cQ1TKM0NRux32NvdyGL0IkrYSOd8+uGHULML1Eo24NSnsgGK+7GYNdh8J9ij2Ww8f0FZpAFSi7VhxLSIBPZWsuOSB/UwJ5RJozsqaPGaqz1EDno5LcuibJtF4y64t7pd39loihM8o0kG7gAZihEtaLm7LQlSr0ThxqhQkfuMEfa0Oy9HtKTGbwBG9ORANwzlu4rUJmnPmoSctym/JmAvJbhzkF0eKLw58qf6onSwe860r2/XzYchVsfNNVQC/yU7xmsIPV+ej5XCBM4bFzkCndIAHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
+ header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1W3IeR4vpCQE79wK/+NeGQJaUi6l8sxunyIhglHqsW0=;
+ b=SGtpKYOQmEKxyT3PwlAqznjytgL1gcC4c4vZVnV+qrg2+IpcWdFE5btRD3MrK0KaLwoAKzVco/HUXezQ6nnOpnZMFOa+GDZWDueaYX0vP625rlB3pG8Z81DxHe7mrPw+IHlE8JRyqk/MhM92q398MN/1R2CDjqz+uP+m1eawXv8=
+Received: from PR3PR06MB6908.eurprd06.prod.outlook.com (2603:10a6:102:8b::13)
+ by AM0PR06MB6450.eurprd06.prod.outlook.com (2603:10a6:208:198::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
+ 2024 08:07:41 +0000
+Received: from PR3PR06MB6908.eurprd06.prod.outlook.com
+ ([fe80::4f16:579f:7380:5341]) by PR3PR06MB6908.eurprd06.prod.outlook.com
+ ([fe80::4f16:579f:7380:5341%7]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
+ 08:07:41 +0000
+From: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: "hkallweit1@gmail.com" <hkallweit1@gmail.com>, "linux@armlinux.org.uk"
+	<linux@armlinux.org.uk>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+	"m.felsch@pengutronix.de" <m.felsch@pengutronix.de>
+Subject: Re: [PATCH net-next] net: phy: dp8382x: keep WOL setting across
+ suspends
+Thread-Topic: [PATCH net-next] net: phy: dp8382x: keep WOL setting across
+ suspends
+Thread-Index: AQHab+nNNjxI3+NV+Uir0lLTLIYJU7ErVY4AgACd/ICAAh4MgIAVbpyA
+Date: Fri, 22 Mar 2024 08:07:41 +0000
+Message-ID: <e9b85f71-f494-4fa6-acce-13ee8e147c21@leica-geosystems.com>
+References: <20240306171446.859750-1-catalin.popescu@leica-geosystems.com>
+ <8de1d4e3-6d80-45a5-a638-48451d9b5c15@lunn.ch>
+ <b53818a7-66a4-4c7a-b687-efaea6cb9e4e@leica-geosystems.com>
+ <f8bfbe80-f308-4b8d-b8f0-5a5f6ca5fa0e@leica-geosystems.com>
+In-Reply-To: <f8bfbe80-f308-4b8d-b8f0-5a5f6ca5fa0e@leica-geosystems.com>
+Accept-Language: en-CH, en-US
+Content-Language: aa
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PR3PR06MB6908:EE_|AM0PR06MB6450:EE_
+x-ms-office365-filtering-correlation-id: 3ed7eec3-d6d1-424e-5f85-08dc4a472586
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 7Q/MN342MwiMZrv/j6nNeq8vmdYldJAWxkLtN8tv2RVUXvhsQaFAsdcqNemiMzzqibXkIE8kQXSr1OlvbI++aqjx4Shu5VMKOrUys3uHC1XnArMO7+w5ui4uCYngZbBwiU94C/fkDvBULztkc2os75Yy9f2GWm00+FZHqZxZolAGvTgFhSqzmHvuiyCaVRReGW6JErs3Mmi2TU30fOyzNBYCNNeQUjHFMHLkFRbmvuWF/6VRuzI5dFk64dS3GsnjQVJvuAOP1wPkvqiwoIJyM+PuHstwv3FO0Il1ea7z+k2aeK0MNQD37E7vticsb09Yavy4wcX8rqKyjlhe7hVcuNU4FszSr2DdyfErikpE7N/fEOwL3iyElxjXOOaVbYlXtXcsk9OgdniXlgDEu7tk/CcjHgYsJUF5pXCddzTA3Oh7QzrEhguCAB0UVqDx0/thAjWXSf8gxXv4K6crcziSLNGYzNoO1hkHvWzTKw8GiVXveFgjHPsUKO/1NMzo8I9QUS40c8vuwIlO9E3/qpM4hQVihkIW3ZQWhtCayWCtbC4NEPJlKJDJzgvLE32001yEuCbXoWbcFXox5RNrTKZ80ba6rsj77yZpwNRxQONxdX+EL5nnR71oyIcfl+rJMOfneeHwmIpbA2i6oYkkT1ak2/f9Ncj8rzcB70WBU40pKlP8WEHqdpkwNoRnjah85wtZa8BIWm4d832ybZydAGfxY076c0MJGfR/vJtJ/u3Dw2w=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR06MB6908.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?cFp3WHVBcVl2S084ZjI4aXhHbTF4Z3U3VDYvSTlxcHI5UFp6dDlRd1JTL0RO?=
+ =?utf-8?B?MjRZejJwZkVjMjhteXV2UXpJVFg2SCt0b0xwS3RBeUZwUUVENytXMXByOG8v?=
+ =?utf-8?B?NnQ0YnZ6amtzRU9YNUdmYVhUalFEUjgzSTdCMzBQOEN5a1ZYc2FIQUhjYW03?=
+ =?utf-8?B?V2V2MENyM2pzMlNvRmg4TmFZN3YrQXNVNVdHOGRaS25pd2JJWmVmQ2Z3enNs?=
+ =?utf-8?B?dFVXcnJUQTc2WlJIZElPQ0xuSkx1dGhmM3I3cGFoRUpaQjMvRTYyOExRMjl3?=
+ =?utf-8?B?dnhCT3E2aGF6eXVGd3VWUDc4cjZpdGZVZjhSQk1sVjgrS2JST0FvckkxMHZW?=
+ =?utf-8?B?K1YzS0JuQkdBUnRRNFNEUTkyTXR3SHhkZ1pJN3ovK2VadlhFT01EV3BIOXh0?=
+ =?utf-8?B?MFRQWUdCQUhLbmx0ak5NS0JLc0p6K1J3VlFDc2RwT2k3WTdYRkQ2S3p0US85?=
+ =?utf-8?B?a2RhWExoV0JlSFVidTNvNG9qTndseDRWVFpxZTg5Y2dOd2ZvSUUycVROdHRV?=
+ =?utf-8?B?Y0FsUjVlYSt4VzA4ZjFPM1djc2daeERxWnAzNThhcVFoN1FrMjhuOWplbFdx?=
+ =?utf-8?B?cStWMlJuV3k2UmQ4ZkRzSGNDeXQyWTFKNHZWT0dINEFLTnNGR3NTdEs5eTJG?=
+ =?utf-8?B?MkIrWE9sV25vRnZMN2lRQjJrTFZYajlxYXhSOTdyVXhrMVBiMnlwZkV0QXJi?=
+ =?utf-8?B?dC84d29vM0ZHSldWSkdnbElvUHNvenhOMGM1RVV4VHlzYzBsUTg2ZDBQQVNO?=
+ =?utf-8?B?em9vNzVLVWFQMk1TL0RCai8zcEVyUnBIN0U4NGc4OHVsTGlCVG5NRmNucXFB?=
+ =?utf-8?B?L2FjSS9HMUtCTWVycG1sRXhLTlpVeGtZNHRlOHZ5YlpyZDdvU1orYVdIVzZq?=
+ =?utf-8?B?bWtldm5TeTd3aDdUZlBZK29oVEVnbEZBUW9aL0tiZ1lFNmtHUVVoQndnOWUz?=
+ =?utf-8?B?TUNHay9ud2lKZ2k2SmVlVW9PY3EzZWViSkJaZ1d2T3M0UUw0dlpIaHZZNFdN?=
+ =?utf-8?B?U21BYURwaHpiYkRPTDVZODYzQnI2U3lzcUFUWHIvQkg0aTN0ZUMzeHo3ZXJZ?=
+ =?utf-8?B?bzdONms0RGVHYkxoY2w2SThSQnlWTGJmN0lUVkhyRXh5UGFVTGNmUEpKZkQ3?=
+ =?utf-8?B?ZFNyTDFJcFlQV1AxMy8xazVvZjUrVC9vdDhDQ1A4OXdZVmVWUFlwQ1BOMzU5?=
+ =?utf-8?B?eERSZVJrbDVUc0ZLQ0xQcm1nMUxsNjI5NWxmM2ZzdjR5T0V1R3FIY21nNmtV?=
+ =?utf-8?B?TkxTbllERmtCdGcvcWw4V3liSVJQRmpZMlF4QktUK3dIUlFBbElFcGJXblda?=
+ =?utf-8?B?Q05oZkRwd3BNNDByVU5KT0VZREd1cE5qUWlzN014bWhOME5jU0loVUFFbWdD?=
+ =?utf-8?B?THloL0dmeGJNR2UzUTNxa3pwdmxPTnJxeXV1QTFucFl1azBKZXhTYXhRTEh3?=
+ =?utf-8?B?TmY1a1ZCbGg0Z1dTMHlta05LNFE1OVV0Z0UwSkJ1VnNiay9SRWpFc3NwcTQ1?=
+ =?utf-8?B?OGNYZ3dHY0tmOFZpZUs5WEYxR010VW1pdnUxYkhBTDV2TEdINWtBbzlSWEVy?=
+ =?utf-8?B?Ym1MVTRTRFVZbzlodlgwZVAwQUwvOS95TzA0SFk1TktOcDlFNW81d0xUa05J?=
+ =?utf-8?B?TnRvTGw2d0QrUkZqTktjZmptRC92V1dsM0Urd3RCREZjcm1GaDJzVmJyaXRv?=
+ =?utf-8?B?Z0M5d1V1UjdSYVFwUmQzQlFTVE1NU0cvdUJ1bVZzTm1vc0RYNURGRU85NzY5?=
+ =?utf-8?B?NDFHV2hLUGFUSDVxZmVDSVdwUkpIZVJrQTh2Q25QamNMeXAwSnhDZVFnVzJB?=
+ =?utf-8?B?L2RhdjdBYmI0MUtNb21zZzlRWWdRUTZocU1TcHhqQkVyTmg3MXNHaW1tR3Jm?=
+ =?utf-8?B?RnBWMDFjdGdQME1WV0tBcURGSWdCYjJ6ZnVzNm1JSnkydGIyNGVSWk9YVmlk?=
+ =?utf-8?B?bFZjREMySEErNU1neEQzZVNPRG5IQWM3b3dlZ2pVOHkxZUFrNEdoLzFrb2Js?=
+ =?utf-8?B?UGhUVWduaUYxRXVIRmVpY2hIVDZQOWpOMm5oTThsMlluT3FCT1BDZEJUbUZY?=
+ =?utf-8?B?akVsbDV1cGVvTUlKS3lOZEduK1I1d1RWWjRXU3VyMCtVazFwWVVteDcvU2Fo?=
+ =?utf-8?B?eDkrVDgzRmVlWjIvRnpwMTFBMGRrVlo4SjNhN1hpT0tsNmpPRkZnV0hQdDFk?=
+ =?utf-8?B?MlE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <19411C5F4BF14B4EAF3D0CDB2721F2EF@eurprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/11] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
- pinctrl and GPIO
-From: Julien Panis <jpanis@baylibre.com>
-To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
- vigneshr@ti.com, kristo@kernel.org, eblanc@baylibre.com
-References: <20240320102559.464981-1-bhargav.r@ltts.com>
- <20240320102559.464981-11-bhargav.r@ltts.com>
- <775348fb-3227-4609-b4aa-c8a6eddb8953@baylibre.com>
-Content-Language: en-US
-In-Reply-To: <775348fb-3227-4609-b4aa-c8a6eddb8953@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR06MB6908.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ed7eec3-d6d1-424e-5f85-08dc4a472586
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 08:07:41.2288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LK6rgkdY/0Qyeu87pq8Fz0TbiGwXDyo2wTXzRD/pjqcFNoc9jvNdPSdWpbxPpyeJwu7G18bTFYw8/f9F+R2HaX38WfeT6NlaEZuFSBgvk+rFjOs91NXI8hb2IMGq4N/t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR06MB6450
 
-On 3/21/24 12:10, Julien Panis wrote:
-> On 3/20/24 11:25, Bhargav Raviprakash wrote:
->> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
->>
->> Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they have
->> significant functional overlap.
->> TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
->> dedicated device functions.
->>
->> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
->> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
->> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> With this patch, an issue is observed on am62a:
->
-> root@am62axx-evm:~# dmesg | grep tps
-> ...
-> [   12.122631] tps6594-pinctrl tps6594-pinctrl.2.auto: error -EINVAL: Couldn't register 
-> gpio_regmap driver
-> [   12.133216] tps6594-pinctrl: probe of tps6594-pinctrl.2.auto failed with error -22
->
-> Without this patch, the issue disappears. Do you observe
-> the same result with your am62p ?
->
-> Julien Panis
->
-
-Hi Barghav.
-
-I found the issue in your patch.
-
-In probe function you handle TPS652254 and TPS6594 'switch' cases,
-but you do not handle TPS6593 and LP8764 cases.
-Since AM62A uses a TPS6593, it currently falls in the default case,
-and as a result probe fails.
-
-Please fix it for v5.
-
-Julien Panis
+SGksDQoNCk9uIDA4LzAzLzIwMjQgMTc6NTAsIFBPUEVTQ1UgQ2F0YWxpbiB3cm90ZToNCj4gT24g
+MDcuMDMuMjQgMDk6MzAsIFBPUEVTQ1UgQ2F0YWxpbiB3cm90ZToNCj4+IE9uIDA3LjAzLjI0IDAw
+OjA0LCBBbmRyZXcgTHVubiB3cm90ZToNCj4+PiBUaGlzIGVtYWlsIGlzIG5vdCBmcm9tIEhleGFn
+b27igJlzIE9mZmljZSAzNjUgaW5zdGFuY2UuIFBsZWFzZSBiZSBjYXJlZnVsIHdoaWxlIGNsaWNr
+aW5nIGxpbmtzLCBvcGVuaW5nIGF0dGFjaG1lbnRzLCBvciByZXBseWluZyB0byB0aGlzIGVtYWls
+Lg0KPj4+DQo+Pj4NCj4+PiBPbiBXZWQsIE1hciAwNiwgMjAyNCBhdCAwNjoxNDo0NlBNICswMTAw
+LCBDYXRhbGluIFBvcGVzY3Ugd3JvdGU6DQo+Pj4+IFVubGlrZSBvdGhlciBldGhlcm5ldCBQSFlz
+IGZyb20gVEksIFBIWSBkcDgzODIyeCBoYXMgV09MIGVuYWJsZWQNCj4+Pj4gYXQgcmVzZXQuDQo+
+Pj4gVGhpcyBpcyByYXRoZXIgb2RkIGJlaGF2aW91ci4gSXMgdGhpcyBzdGF0ZWQgaW4gdGhlIGRh
+dGFzaGVldD8NCj4+IFllcy4gSSd2ZSBjaGVja2VkIGFsbCBUSSBldGhlcm5ldCBQSFlzIGRhdGFz
+aGVldHMgdGhhdCBhcmUgc3VwcG9ydGVkIGJ5DQo+PiBsaW51eCBhbmQgdGhleSBhbGwsIGJ1dCBk
+cDgzODJ4LCBoYXZlIFdPTCBkaXNhYmxlZCBieSBkZWZhdWx0LiBIZW5jZSwNCj4+IGRwODM4MjIu
+YyBpcyB0aGUgb25seSBkcml2ZXIgdGhhdCBmb3JjZWZ1bGx5IGRpc2FibGUgV09MIGF0IGluaXQu
+DQo+Pj4+IEBAIC01NzIsMTEgKzU4NCwxNyBAQCBzdGF0aWMgaW50IGRwODM4MjZfY29uZmlnX2lu
+aXQoc3RydWN0IHBoeV9kZXZpY2UgKnBoeWRldikNCj4+Pj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgIHJldHVybiByZXQ7DQo+Pj4+ICAgICAgICAgIH0NCj4+Pj4NCj4+Pj4gKyAgICAgaWYgKGRw
+ODM4MjItPndvbF9lbmFibGVkKQ0KPj4+PiArICAgICAgICAgICAgIHJldHVybiAwOw0KPj4+PiAg
+ICAgICAgICByZXR1cm4gZHA4MzgyeF9kaXNhYmxlX3dvbChwaHlkZXYpOw0KPj4+PiAgICAgfQ0K
+Pj4+Pg0KPj4+PiAgICAgc3RhdGljIGludCBkcDgzODJ4X2NvbmZpZ19pbml0KHN0cnVjdCBwaHlf
+ZGV2aWNlICpwaHlkZXYpDQo+Pj4+ICAgICB7DQo+Pj4+ICsgICAgIHN0cnVjdCBkcDgzODIyX3By
+aXZhdGUgKmRwODM4MjIgPSBwaHlkZXYtPnByaXY7DQo+Pj4+ICsNCj4+Pj4gKyAgICAgaWYgKGRw
+ODM4MjItPndvbF9lbmFibGVkKQ0KPj4+PiArICAgICAgICAgICAgIHJldHVybiAwOw0KPj4+PiAg
+ICAgICAgICByZXR1cm4gZHA4MzgyeF9kaXNhYmxlX3dvbChwaHlkZXYpOw0KPj4+IFNpbmNlIGl0
+IGlzIHJhdGhlciBvZGQgYmVoYXZpb3VyLCB0aGVyZSBtaWdodCBiZSBzb21lIEJJT1NlcyB3aGlj
+aA0KPj4+IGRpc2FibGUgV29MLiBTbyBpIHdvdWxkIG5vdCByZWx5IG9uIGl0IGJlaW5nIGVuYWJs
+ZWQgYnkNCj4+PiBkZWZhdWx0LiBFeHBsaWNpdGx5IGVuYWJsZSBpdC4NCj4+IEkgc2VlLCBJJ2xs
+IG1ha2UgdGhlIGNoYW5nZS4NCj4gSXQgbG9va3MgbGlrZSB0aGUgaXNzdWUgSSdtIHRyeWluZyB0
+byBhZGRyZXNzIGluIHRoaXMgcGF0Y2ggaXMgbm90DQo+IHNwZWNpZmljIHRvIGRwODM4MnguIFJp
+Z2h0IG5vdywgZGVwZW5kaW5nIG9uIGlmIHRoZSBQSFkgaXMgcmVzZXQgb3Igbm90DQo+IGR1cmlu
+ZyByZXN1bWUgKGVpdGhlciB0aHJvdWdoIG1kaW9fZGV2aWNlIHJlc2V0X2dwaW8vcmVzZXRfY3Ry
+bCBvcg0KPiBwaHlfZHJpdmVyIHNvZnRfcmVzZXQgY2FsbGJhY2spLCB0aGUgV09MIGNvbmZpZ3Vy
+YXRpb24gaXMgZWl0aGVyIHRoZSBQSFkNCj4gcmVzZXQgdmFsdWUgb3IgdGhlIEJJT1MgdmFsdWUu
+IEkgY291bGQgc3RpbGwgbWFrZSB0aGUgcGF0Y2ggYnV0IGl0DQo+IGRvZXNuJ3QgcmVhbGx5IG1h
+a2Ugc2Vuc2UgdG8gYWRkcmVzcyBvbmx5IGRwODM4MnguDQo+DQo+IEFsc28sIEknbSBhIGJpdCBj
+b25mdXNlZCBhcyBJJ20gbm90IHN1cmUgaWYgdGhpcyBpc3N1ZSBpcyBhbHJlYWR5DQo+IGFkZHJl
+c3NlZCBieSB1c2Vyc3BhY2Ugb3Igbm90IChlLmcuIHVkZXZkIHRoYXQgd291bGQgcmVhcHBseSBX
+T0wNCj4gY29uZmlndXJhdGlvbiBhZnRlciBzdXNwZW5kKS4NCj4NCj4gSWYgaXNzdWUgc2hvdWxk
+IGJlIGRlZmluaXRlbHkgYWRkcmVzc2VkIGluIHRoZSBrZXJuZWwgaW5zdGVhZCBvZg0KPiB1c2Vy
+c3BhY2UsIHRoZW4gUEFMIHNob3VsZCBlbmZvcmNlIFdPTCBjb25maWd1cmF0aW9uIGZvciBhbnkg
+UEhZIGJ5DQo+IGNhbGxpbmcgc2V0X3dvbCBjYWxsYmFjayBhZnRlciBzb2Z0X3Jlc2V0IChwcm9i
+YWJseSwgYXQgdGhlIGVuZCBvZg0KPiBwaHlfaW5pdF9odyBvciBhZnRlciBwaHlfcmVzdW1lKS4N
+CkRvZXMgaXQgbWFrZSBzZW5zZSB0byBhZGRyZXNzIGl0IGluIHRoZSBrZXJuZWwgPw0KPg0KPj4+
+ICAgICAgICBBbmRyZXcNCj4+Pg0KPj4+IC0tLQ0KPj4+IHB3LWJvdDogY3INCg0KDQo=
 
