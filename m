@@ -1,114 +1,84 @@
-Return-Path: <linux-kernel+bounces-110876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC3088651C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD50388651F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B811B2119D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:13:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A03DB220FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AD64409;
-	Fri, 22 Mar 2024 02:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C983D3FEF;
+	Fri, 22 Mar 2024 02:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="qVfIFa9z"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YHXg9XZk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92FB17FD;
-	Fri, 22 Mar 2024 02:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194151396;
+	Fri, 22 Mar 2024 02:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711073626; cv=none; b=qKLl+mecaiWn2BsZkdJnd3dSXGJEI26+3DYnhyf1GZGhtohNNYZAyGyMK2hXhcVYGSIem4k0eJviR9JtmSN8XsZdUI4Yjmh1i6nsq1ioMrqDTHhvOvjfEBYWzsfOcYk37FhknAZ/VZwN/dElt5TLg0SUvh4oXE43Jay9loRn3SU=
+	t=1711073772; cv=none; b=uUYoA5qgfng+Jok3cabaqfRd0Zcy6ik36hT7E7Bf5YdvD5GzD9tvUXxyy12R+k4vVgsLHPGFcNWHuUhgLmrOuKWRBOFUt5jnbi9g2yx9JMybNet6JNO8UaJM2u0xigD9UZhBmBTHM9G6/b6fEHCGwXHyBrVJlNhMMK/K4B+BZMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711073626; c=relaxed/simple;
-	bh=KJfPSTtP5VnPiVOBTywlSV6Niya9qDRX9b9ELlLv20k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dZq9UJFJdv3t6/IRERf7bfdLfAm32Jod4aTV/xoHjdsYuQHIJta09DEANIbxvlNqFnjALFKsexvRMttwAJ13Ciyeg1KzAkmQq/0bmuw8lJmM6IrVEtrpVZJPWBD+mzI62wa3FegZ68kcKiNazV3YL9hx2L7WmEqFreSC6aVc7nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=qVfIFa9z; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1711073619;
-	bh=fC4rWjyRs6bC5yBlygw9VwcDtTx+EXZPCLfDorKu1uE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qVfIFa9z2PlChpKGebRYKpdBPdEHbliHLtEjwCOGS54o8EgsW1i8Y497tdkvD8dgN
-	 0pVwCtC43/lGFb67a0faaOpoos+J5yTr5N4pAwklydl8iC5P1XXZT7g+JH4N7PKXco
-	 wc9W7QYrp/6EfS6WwmFzlKr252QqrKmiF41qiCC0z8FtuH5vV3NObGZ1irv3sy4ysc
-	 mxLQ3CtJSCK05AQ+EVthoY78OZEphJchHrXM1X9WrwQAqUiOBqwxsfUkyAo4dQ/Nxk
-	 VEn1nMPPJteACAMd8iVNCmjlYY+OdjNzBN2Zjhm5ARylVkhAa+0vVW3Jly+mA6Kr/F
-	 XSAt/WwSRsn9Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V15Tv2k9Hz4wcv;
-	Fri, 22 Mar 2024 13:13:39 +1100 (AEDT)
-Date: Fri, 22 Mar 2024 13:13:38 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>, Namhyung Kim
- <namhyung@kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the perf tree
-Message-ID: <20240322131338.4ef08fe1@canb.auug.org.au>
-In-Reply-To: <20240322103229.28d823b8@canb.auug.org.au>
-References: <20240322084131.2316eb8f@canb.auug.org.au>
-	<ZfzAKMlYY7IkWXUg@x1>
-	<ZfzAZJmrBwVi5e28@x1>
-	<20240322103229.28d823b8@canb.auug.org.au>
+	s=arc-20240116; t=1711073772; c=relaxed/simple;
+	bh=K/8Y6IptA1fL79TfA4npH3+SXlRYXFqAUiqkofQiLCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lUrippoosS0ZkdpVkKfWEHB9t03cLtsf6Q9SdMeYp8exWBkuye4QE1Eh+LhagPeBZkhfBhAVEzjPjhGKJALwJzx4Dy1n1GjTky9FtKGEH8Yi1xqvjVoj1GaMJWntQ9uUXETapqMrpYdGJwlgfNi6DOsy4qZYJHaJhQOyTyQEwnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YHXg9XZk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51826C433C7;
+	Fri, 22 Mar 2024 02:16:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711073771;
+	bh=K/8Y6IptA1fL79TfA4npH3+SXlRYXFqAUiqkofQiLCA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YHXg9XZkBS++OJhttPNAmI5qUUjVQx3Ogs+b0y4Vrg8UwYbcrYL1rOIJO1NpGVjrU
+	 LLou69/J5u/VyzhmcItFGSWD1nfq1CUnRys46Vb+aWw19hb39E+XtEkHSFTWyS41s1
+	 fhVvngsepVZ5oZG3jUfXj/IaU0Wsp2vR0GmedgVW4zkAYT+kAWchHo45PRYBgSOWC0
+	 eyf34Lk6iSAmxIHmv2j92kextw2DhFsuxll42dCyXBamHXw5bHxIe4kFbgD4vs27py
+	 72laSIUaStcySOqoOK++zDj5HhP5t+gfg/owWd3m3AyL3U4jZYLzFLQwudOQyHQGW1
+	 p5CUcaHL65ilw==
+Date: Thu, 21 Mar 2024 21:16:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Josua Mayer <josua@solid-run.com>
+Cc: Yazan Shhady <yazan.shhady@solid-run.com>, linux-kernel@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: marvell: add solidrun cn9130
+ clearfog boards
+Message-ID: <171107376685.3418327.3613926203249839043.robh@kernel.org>
+References: <20240321-cn9130-som-v1-0-711127a409ae@solid-run.com>
+ <20240321-cn9130-som-v1-1-711127a409ae@solid-run.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GGeghdCZ_dtNZdayAV2LM6Y";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321-cn9130-som-v1-1-711127a409ae@solid-run.com>
 
---Sig_/GGeghdCZ_dtNZdayAV2LM6Y
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Arnaldo,
+On Thu, 21 Mar 2024 22:47:11 +0100, Josua Mayer wrote:
+> Add bindings for SolidRun Clearfog boards, using a new SoM based on
+> CN9130 SoC.
+> The carrier boards are identical to the older Armada 388 based Clearfog
+> boards. For consistency the carrier part of compatible strings are
+> copied, including the established "-a1" suffix.
+> 
+> Signed-off-by: Josua Mayer <josua@solid-run.com>
+> ---
+>  .../devicetree/bindings/arm/marvell/armada-7k-8k.yaml        | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
 
-On Fri, 22 Mar 2024 10:32:29 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Thu, 21 Mar 2024 20:19:00 -0300 Arnaldo Carvalho de Melo <acme@kernel.=
-org> wrote:
- >=20
-> > About this specific problem, was this done on over a previous build? Can
-> > you try after a 'make -C tools/perf clean' ? =20
->=20
-> It was done over a previous build.  I can try a clean build later
-> today.  We have had this problem before with different include files
-> and I think it came down to a missing dependency.
+Acked-by: Rob Herring <robh@kernel.org>
 
-It builds OK if I do the clean first.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GGeghdCZ_dtNZdayAV2LM6Y
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX86VIACgkQAVBC80lX
-0GzqtAf9ESpVcsbVTjC2t8oVZLUKHp6tzm34fW+/T66u3JK1AxTzKexh6oY8JFR3
-+qP6Ov3I1VHcLkU6KtbsPRLR/5yqVUYfg573kIDgYdbAunsg2MmyklKNo1RDC0Fk
-p9s2SNQVvfh4Atl+bM93n18DjZIbnvc6rHZeYDzFye2/2kz9NPmb0hH5GPnyKrAh
-20/SatR5q80WvKMWjnE/TjUur5N2XHCNkKZGRYDiI9YoT2QwnbBSiU1puNwGVB/r
-whyRqxNKE16gFRDxP0AtASUnlQ3QbsSxF935p+AxmlOIfFTcM9wNf6moonELF3dx
-qPlL4Pos1dolAd1PCPuyMIt7aI0OKQ==
-=P15u
------END PGP SIGNATURE-----
-
---Sig_/GGeghdCZ_dtNZdayAV2LM6Y--
 
