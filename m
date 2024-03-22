@@ -1,107 +1,100 @@
-Return-Path: <linux-kernel+bounces-111848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC048871A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:08:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F4B8871A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DFEAB22738
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:08:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C11C1C22035
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8955FBA9;
-	Fri, 22 Mar 2024 17:08:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428D857875;
-	Fri, 22 Mar 2024 17:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E6E5F84F;
+	Fri, 22 Mar 2024 17:09:09 +0000 (UTC)
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7465D8F0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711127320; cv=none; b=ftHfNboG47kg00f89smO0E7uUA+Zn8fbC/2EOGOwNBMzhXjmSPI4K7LDOsAZMta1LpOZ1bUI8fO5M/goKCYrGoztVx/ku92N2RwuX6yYPRnTCBSmR92NvSuQth2GxzlvL81iVSjO3dD1oIM7lPVxOBf98AL3bCZ1bur0d6jb2tc=
+	t=1711127349; cv=none; b=f+Du17/Mw81ElUdE4GTwko9SSajwQLlLLLAs0CPMSqZ8rV5asHlS5mlkXx9KcCD1FKYKTcvQ1GL3djIn/DFo5pYSOrO/yLiBmJHj+2Wdgo2h604YqdctXjxZQQ7UxVGrT26B2DuYgUvIYSLtGqUMnCH1S5834R0fSRrECz/fZwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711127320; c=relaxed/simple;
-	bh=rUMg9wwIpGTFQYHeRWFvoWGZrl4+3gIHbAdaODaQlcc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WiUEvTyvYR+nSUNToUsdapfl6NOBVJ6TgG9UFuC88kRbJF+sOXJ38LwFgDBQ9Hhcn32+IfYjN+ml50L7gR8XdKR+9yBAE3fMfn2BEQDzpwWCchXcwcRjWRuJcIvABrbSX5cuEQ5DVaIPnVxNxzDDk8LFrS3oSc4E2vrwjNsukz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D7CD7FEC;
-	Fri, 22 Mar 2024 10:09:12 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C69BE3F67D;
-	Fri, 22 Mar 2024 10:08:35 -0700 (PDT)
-Date: Fri, 22 Mar 2024 17:08:33 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Marc Zyngier <maz@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v3 5/5] arm64: Use SYSTEM_OFF2 PSCI call to power off
- for hibernate
-Message-ID: <Zf27EW6x5GvKYGjM@bogus>
-References: <20240319130957.1050637-1-dwmw2@infradead.org>
- <20240319130957.1050637-6-dwmw2@infradead.org>
- <86jzluz24b.wl-maz@kernel.org>
- <9efb39597fa7b36b6c4202ab73fae6610194e45e.camel@infradead.org>
- <86edc2z0hs.wl-maz@kernel.org>
- <12bc0c787fc20e1a3f5dc2588a2712d996ac6d38.camel@infradead.org>
+	s=arc-20240116; t=1711127349; c=relaxed/simple;
+	bh=e6nWyD6TjJq8QDK1Xb2Y39EeCBOjqWyjA8FxmeUfZ3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EoLxPnOyvZNkHbc4h2uv/SRV2FmAm9SQEKAKo9WCQHk1ml6B3+P4F5ODw0/IQ6rvNSIx5bZv5WaBX15Vg05VJ92cotsVXLWBhQu1HhRdkpN2Cflu5wgF3uj5TOYDGDaIMQG1NaBPXnz6e+9oMe9ge64yxefZk9gJJ9lSZG2QwiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7849F40007;
+	Fri, 22 Mar 2024 17:08:55 +0000 (UTC)
+Message-ID: <0a1e9afc-e999-451f-8d4f-670f7c15e609@ghiti.fr>
+Date: Fri, 22 Mar 2024 18:08:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12bc0c787fc20e1a3f5dc2588a2712d996ac6d38.camel@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] irqchip/sifive-plic: Fix error handling of
+ of_property_read_u32
+Content-Language: en-US
+To: Qingfang Deng <dqfext@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Atish Patra <atishp@atishpatra.org>, linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org
+Cc: Christoph Hellwig <hch@lst.de>,
+ Qingfang Deng <qingfang.deng@siflower.com.cn>
+References: <20240322090002.311645-1-dqfext@gmail.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240322090002.311645-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-On Fri, Mar 22, 2024 at 04:55:04PM +0000, David Woodhouse wrote:
-> On Fri, 2024-03-22 at 16:37 +0000, Marc Zyngier wrote:
-> > 
-> > I agree that nothing really breaks, but I also hold the view that
-> > broken firmware implementations should be given the finger, specially
-> > given that you have done this work *ahead* of the spec. I would really
-> > like this to fail immediately on these and not even try to suspend.
-> > 
-> > With that in mind, if doesn't really matter whether HIBERNATE_OFF is
-> > mandatory or not. We really should check for it and pretend it doesn't
-> > exist if the correct flag isn't set.
-> 
-> Ack.
-> 
-> I'll rename that variable to 'psci_system_off2_hibernate_supported' then.
-> 
-> static void __init psci_init_system_off2(void)
-> {
-> 	int ret;
-> 
-> 	ret = psci_features(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2));
-> 	if (ret < 0)
-> 		return;
+Hi Qingfang,
+
+On 22/03/2024 10:00, Qingfang Deng wrote:
+> From: Qingfang Deng <qingfang.deng@siflower.com.cn>
 >
-> 	if (ret & (1 << PSCI_1_3_HIBERNATE_TYPE_OFF))
-> 		psci_system_off2_hibernate_supported = true;
+> nr_irqs will not be initialized if of_property_read_u32 returns an
+> error. Check the error first.
 >
+> Fixes: 8237f8bc4f6e ("irqchip: add a SiFive PLIC driver")
+> Signed-off-by: Qingfang Deng <qingfang.deng@siflower.com.cn>
+> ---
+>   drivers/irqchip/irq-sifive-plic.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> index 5b7bc4fd9517..f436b61d74b0 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -428,8 +428,11 @@ static int __init __plic_init(struct device_node *node,
+>   		goto out_free_priv;
+>   	}
+>   
+> +	error = of_property_read_u32(node, "riscv,ndev", &nr_irqs);
+> +	if (error)
+> +		goto out_iounmap;
+> +
+>   	error = -EINVAL;
+> -	of_property_read_u32(node, "riscv,ndev", &nr_irqs);
+>   	if (WARN_ON(!nr_irqs))
+>   		goto out_iounmap;
+>   
 
-Ah OK, you have already agreed to do this, please ignore my response then.
 
---
-Regards,
-Sudeep
+You can add:
+
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+Thanks,
+
+Alex
+
 
