@@ -1,213 +1,187 @@
-Return-Path: <linux-kernel+bounces-110921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E3008865BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:12:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C22F8865BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D597F28626B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:12:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A90D1C225B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F066FD5;
-	Fri, 22 Mar 2024 04:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A68BAD5D;
+	Fri, 22 Mar 2024 04:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KC73NRoT"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="oC2SLE63"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39226FA7
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79B26FCC
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711080747; cv=none; b=O0XOcpp9K5g2ci5OX/ppfYLJBuHMt1Ai7ZTG1Fr204G09himyMgLsyDqotPJ9Bjd1N1A/UI1yVH0JzQL8I/6C3rMZ4ky5LPoRWcCglnmxYPYf7iAqnNzw7Tc8/DWGSSTFjnAgtKqe6YdbFTQmhH56aiw9fJrQf1EbQTgfI9MfEU=
+	t=1711081015; cv=none; b=PPIahxPQRXAUDN4NbIhtv6slDoEMDpNJhy1xL9Jad4T4hvyRNB40LJO2vShztLKqh5Ps1puxU4ddR0i1HNjIK16mt8W7vNraUgZnc+c+5UabmFrMb3vhMRqxfjq04NjbaQMX0iYB5QeXu1nwllJScp7Gs8/OCkKgGNMhfW3zzYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711080747; c=relaxed/simple;
-	bh=aCgpQ/5AZOJYJm87g1KkgimsRJNnXwx4IAHdihsBfow=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=shF7Y99Uf/Dd/PMl5chi7Bif1wdB/gIJVdrjP5PI/l8lmqKQ5+uVZ3zIwIwVHomGheSUeU2XVyqWFoCSJDNAyAguYSeS5pbVCLLHG/HFwkThkW6tThg4BzhJEsRvCimA0tuvPXBGfoiOT5JD9wxUOlf11zGEMWIFsc3otvTp/0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KC73NRoT; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-568c3888ad7so7936a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 21:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711080743; x=1711685543; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wjlq5GlSHJ881vQ1InVKUCnOCBQMy+ID/MFMwwR7tsY=;
-        b=KC73NRoT/ysRwkz/Cv/qYvn0W4bV6zcTzB7Xfs31mK+rSR9FSAdjxiqF9dYmiRpREG
-         2UHy6xwH0l4naoYArJS3a1qxcF4WbTWlwRrWRh82ioiD9p9maGwPpsp1vk7zfIu0qSv5
-         FQmPEFHdIA+LAqKVqjSCiF1xAqYZjShCntuf8ENdNiLcdD9zu2/Y+tud1bjgtDSLkmwL
-         QOWiN4RYK/Nc+SpKkvZmWBybYv89JXJW2t/xClVgveI3oacBnl8YGWqAeBmXZWDkuB27
-         SGa0rkwZ/vgTMOumDf7rlR0oQLQSml7lZWAyhVRdA18rDD8vUSkiaOkcyOtWPTLlgTmS
-         7nIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711080743; x=1711685543;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wjlq5GlSHJ881vQ1InVKUCnOCBQMy+ID/MFMwwR7tsY=;
-        b=nERe2KUt6kbhUnskpU2noQFNurfMq/zobAldovnXLPELGQCSOwsQzBQ/+A0jf7stgg
-         hYJjK2AGVNvZIbVWJLQGrqgG+/T9COHqPBRCq8GujMJNUrdmt8AvVPx+ST773hQZETRQ
-         mmlTf0dICpeCEZfW6igwCEWsTScA34UQNqHh8bb4hCLUr7JNLugrKIuRwnuK7n2Huug+
-         s/i5vNUYjesHdwpoEQ3hZx/UVEm2fkEghTia4v4ygBX+eXe/r+kx5N/wdRL/KlGwMFfB
-         D2sI2lrBBY4bap1p65UkO34LLdE4K0OiYWPVxFCgcwLr10prw/JAf412yJc0cO2ALocJ
-         v6Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCXe1SSpgGpmv66NSweiYovlU53GEXvr3VrQKDGf8l402QZ5qfsO/0/gjdRYfWbY5Fv5W6BVSL01Esu7dIE4PFnMwlSYhtLWLSJ8PdRG
-X-Gm-Message-State: AOJu0YwYUi6oRnS52Ylz2Kv/09LOqdM+fwwZVPRJMB1874eplHWzC0vh
-	YOvYQua1Cz+vH6LIfqwFYHwRaywQHfEwTq/8JFi+T9Cr4uVja6zUe6quri3dqNwomRKXcoKEZgN
-	PV8w0MwNGGipvnbmD4CcWWzcIE9ZV8bXWHgfp
-X-Google-Smtp-Source: AGHT+IGxanXjgGcOapF59tHbF2WoOg7zW4/uF2onBPnCibCnAINNFzUr1hhboYKE0sEYEJzwOnupeijArSEBuUy3IHQ=
-X-Received: by 2002:aa7:cd12:0:b0:56b:b464:d529 with SMTP id
- b18-20020aa7cd12000000b0056bb464d529mr329111edw.2.1711080743058; Thu, 21 Mar
- 2024 21:12:23 -0700 (PDT)
+	s=arc-20240116; t=1711081015; c=relaxed/simple;
+	bh=VUwqvk2FdXQpXJAHRVmr/OcDsmt98HWmWBozNopBJ1o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=tL7nDynVu7L7eOzC45a+4X8zSpa3C9rbWVKgWbpStMi9KDzi0UJHuS1ekAAmBEDHplU1lqgPx+rmPyfS/g4aclQnGI4D+PLcEGvbpywRRchFhHxfvAHg9kkgvQrxZj4ZayINpLX9y7N/Ohjnm44EMWTH1yHpoWCZgEpvNV82J5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=oC2SLE63; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240322041644epoutp0193a06766ded21b4eb6cc36b0170a809e~__xuKC0GA0515905159epoutp01m
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:16:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240322041644epoutp0193a06766ded21b4eb6cc36b0170a809e~__xuKC0GA0515905159epoutp01m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1711081004;
+	bh=9kKW01SYW8n00To8GRW9yLV87wsWhL7l6j407SYCACs=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=oC2SLE63rc3+JVAjHaRmS/k6RiKMSwlSe4UWLaQcK/hQAx6CMG4GIfMocRgaOcBfT
+	 DEQSmmZ4XpsgYzuVeDZBubFYbX7C6GhmcoC0yguRQsjhfheqLcHjCAbwWgtG+8ijRi
+	 juv+1yKRImQdNtciU6TPKwNzV7wVPn7zsBouDHQM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240322041643epcas1p1464767200570836c3b1620309fdaed41~__xtk2OWr2700527005epcas1p1V;
+	Fri, 22 Mar 2024 04:16:43 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.36.223]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4V18Cv35KXz4x9QB; Fri, 22 Mar
+	2024 04:16:43 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+	D4.7A.10076.B260DF56; Fri, 22 Mar 2024 13:16:43 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240322041642epcas1p45a26c5b2bde5f8b006c900c235b14e01~__xsNOTHM0085600856epcas1p4L;
+	Fri, 22 Mar 2024 04:16:42 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240322041642epsmtrp17ad1515bafec0a84df466f4bb5b2ecdb~__xsMlr-e0540705407epsmtrp1i;
+	Fri, 22 Mar 2024 04:16:42 +0000 (GMT)
+X-AuditID: b6c32a39-7edf87000000275c-34-65fd062b5566
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	36.76.19234.9260DF56; Fri, 22 Mar 2024 13:16:41 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.41]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240322041641epsmtip10228577e205e65746e88a1b6b76dc651~__xsAUbUW2836928369epsmtip1S;
+	Fri, 22 Mar 2024 04:16:41 +0000 (GMT)
+From: Yeongjin Gil <youngjin.gil@samsung.com>
+To: jaegeuk@kernel.org, chao@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	Yeongjin Gil <youngjin.gil@samsung.com>, Sungjong Seo
+	<sj1557.seo@samsung.com>, Sunmin Jeong <s_min.jeong@samsung.com>
+Subject: [PATCH] f2fs: Prevent s_writer rw_sem count mismatch in
+ f2fs_evict_inode
+Date: Fri, 22 Mar 2024 13:16:39 +0900
+Message-Id: <20240322041639.23144-1-youngjin.gil@samsung.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320171424.6536-1-shikemeng@huaweicloud.com>
-In-Reply-To: <20240320171424.6536-1-shikemeng@huaweicloud.com>
-From: David Gow <davidgow@google.com>
-Date: Fri, 22 Mar 2024 12:12:10 +0800
-Message-ID: <CABVgOSkJz5ZRePqQR3naK__MxoRLsE3VV0TJOhfjOYxmRayA8A@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: correct KUNIT_VERY_SLOW to KUNIT_SPEED_VERY_SLOW
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: brendan.higgins@linux.dev, rmoar@google.com, corbet@lwn.net, 
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000e8c2a90614380775"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLJsWRmVeSWpSXmKPExsWy7bCmrq42299Ug7MzhCxOTz3LZPFk/Sxm
+	i0uL3C0u75rDZrGg9TeLxZZ/R1gtZux/yu7A7rFpVSebx+4Fn5k8+rasYvT4vEkugCWqgdEm
+	sSg5I7MsVSE1Lzk/JTMv3VYpNMRN10JJISO/uMRWKdrQ0EjP0MBcz8jISM/UKNbKyFRJIS8x
+	N9VWqUIXqldJoSi5AKg2t7IYaEBOqh5UXK84NS/FISu/FORqveLE3OLSvHS95PxcJYWyxJxS
+	oBFK+gnfGDNOdggVfOGrePFhBnMD40fuLkZODgkBE4kNn/YxgdhCAjsYJTZ1BHUxcgHZnxgl
+	Fi78xgiRAHLmrU2Eabj25CwbRNFORomb91+ywBXd3eAAYrMJ6EpMffmUFcQWEVCXODVpKQtI
+	A7PAEUaJ37u2g00VFgiWuNs9mx3EZhFQlbjeeY4ZxOYVsJV4v3USI8Q2eYmbXfuh4oISJ2c+
+	AVvGDBRv3jqbGWSohMAhdonWL0tZIBpcJGasOcMOYQtLvDq+BcqWknjZ38YO0dDOKLHi4RxG
+	CGcGo8Tf9/dZIarsJZpbm4Ge4wBaoSmxfpc+xDY+iXdfe6BKBCVOX+tmBimREOCV6GgTggir
+	SVyZ9AuqREai78EsqL0eEp032xlByoUEYiXa1jBNYJSfheSdWUjemYWwdwEj8ypGsdSC4tz0
+	1GLDAlPkaN3ECE6ZWpY7GKe//aB3iJGJg/EQowQHs5II747/f1KFeFMSK6tSi/Lji0pzUosP
+	MSYDA3gis5Rocj4waeeVxBuamVlaWBqZGBqbGRoSFjaxNDAxMzKxMLY0NlMS5z1zpSxVSCA9
+	sSQ1OzW1ILUIZgsTB6dUA9Pq43c8ev9ohDH5iv9/dSZGS+50u8O8e7J7l3jN8XPMTPlX/UVE
+	wElgwsQJE7qWvw/zCVdRD+E+M2dr+8XDt5N7QzgXvvz5+Epq2XUfE+fzhSa9uyVX7T3u+kNg
+	x9ISIe8vPdrcHUqnmSV4oh6+2L2Ee4kJ+0qzB0pqjT6z1yftnlojd/TsiiLujClaMw8Ifz7z
+	7fqb9vhtNS8Etm20aTvZVBN/tk3VuvK5RrBRnJ5orKmh2LH7wZ5vPaQ9N7oUslZHyBhdOHxL
+	Kf9DY1uI7QGt+6nRZ15obGe8xW9kmbtpz7+jnnt2Sr2aOo93Mn+/WCK7d2G98pbaS2G7jJh3
+	LH3o0jNZzEFhsdvH+glhe5VYijMSDbWYi4oTAWCuBFtQBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCLMWRmVeSWpSXmKPExsWy7bCSnK4m299Ug3/XLC1OTz3LZPFk/Sxm
+	i0uL3C0u75rDZrGg9TeLxZZ/R1gtZux/yu7A7rFpVSebx+4Fn5k8+rasYvT4vEkugCWKyyYl
+	NSezLLVI3y6BK+Nkh1DBF76KFx9mMDcwfuTuYuTkkBAwkbj25CxbFyMXh5DAdkaJh/c+s0Mk
+	ZCT+THwPlOAAsoUlDh8uhqj5wCgx+dUlFpAaNgFdiakvn7KC2CICmhJHOmeygxQxC5xglPi6
+	+CsTSEJYIFCid+pMZhCbRUBV4nrnOTCbV8BW4v3WSYwQy+Qlbnbth4oLSpyc+QRsATNQvHnr
+	bOYJjHyzkKRmIUktYGRaxSiaWlCcm56bXGCoV5yYW1yal66XnJ+7iREckFpBOxiXrf+rd4iR
+	iYPxEKMEB7OSCO+O/39ShXhTEiurUovy44tKc1KLDzFKc7AoifMq53SmCAmkJ5akZqemFqQW
+	wWSZODilGpjM/V9sfGR/4Jlbhf9hpqvKYS6Xa889m/okg6utT0A5tHrpgklRu2dOlc/Psdjn
+	3ri8+vg02cTitwfktLdP8+Gy11tqOunFZA2d1SK7JL++3+lR9mBVo8pfl8iNBdPuGQp0ys5/
+	sH3Jf+YnvL9v7f7+67Sd5JbYz61mG2ck7PDMiOdYdrvq9ecuh+8vzYzvOE8T4pzHva9obnIS
+	w9aT8g1dL3eZ/P7GLW85+/xTFTvuUxJWHvlnztwzuPVAcJ5yudlt+0tZHs+sP968J6d6sfLA
+	PRvx2bPrXjiF+nlsyPyX0lB+3vKTR9mKmoRVKrt0P5xIe28cvXT5/LYjWsfbTRvPzrxsc3Op
+	2uWJipb/zke5K7EUZyQaajEXFScCAPmc9Ke3AgAA
+X-CMS-MailID: 20240322041642epcas1p45a26c5b2bde5f8b006c900c235b14e01
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+X-ArchiveUser: EV
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240322041642epcas1p45a26c5b2bde5f8b006c900c235b14e01
+References: <CGME20240322041642epcas1p45a26c5b2bde5f8b006c900c235b14e01@epcas1p4.samsung.com>
 
---000000000000e8c2a90614380775
-Content-Type: text/plain; charset="UTF-8"
+If f2fs_evict_inode is called between freeze_super and thaw_super, the
+s_writer rwsem count may become negative, resulting in hang.
 
-On Wed, 20 Mar 2024 at 16:18, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
->
-> There is no KUNIT_VERY_SLOW, I guess we mean KUNIT_SPEED_VERY_SLOW.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
+CPU1                       CPU2
 
-Nice catch, thanks!
+f2fs_resize_fs()           f2fs_evict_inode()
+  f2fs_freeze
+    set SBI_IS_FREEZING
+                             skip sb_start_intwrite
+  f2fs_unfreeze
+    clear SBI_IS_FREEZING
+                             sb_end_intwrite
 
-Reviewed-by: David Gow <davidgow@google.com>
+To solve this problem, the call to sb_end_write is determined by whether
+sb_start_intwrite is called, rather than the current freezing status.
 
-Cheers,
--- David
+Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Reviewed-by: Sunmin Jeong <s_min.jeong@samsung.com>
+Signed-off-by: Yeongjin Gil <youngjin.gil@samsung.com>
+---
+ fs/f2fs/inode.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
->  Documentation/dev-tools/kunit/running_tips.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-> index bd689db6fdd2..482f598d141c 100644
-> --- a/Documentation/dev-tools/kunit/running_tips.rst
-> +++ b/Documentation/dev-tools/kunit/running_tips.rst
-> @@ -294,7 +294,7 @@ macro to define the test case instead of ``KUNIT_CASE(test_name)``.
->  .. code-block:: c
->
->         static const struct kunit_attributes example_attr = {
-> -               .speed = KUNIT_VERY_SLOW,
-> +               .speed = KUNIT_SPEED_VERY_SLOW,
->         };
->
->         static struct kunit_case example_test_cases[] = {
-> @@ -311,7 +311,7 @@ suite definition.
->  .. code-block:: c
->
->         static const struct kunit_attributes example_attr = {
-> -               .speed = KUNIT_VERY_SLOW,
-> +               .speed = KUNIT_SPEED_VERY_SLOW,
->         };
->
->         static struct kunit_suite example_test_suite = {
-> --
-> 2.30.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20240320171424.6536-1-shikemeng%40huaweicloud.com.
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index c26effdce9aa..12b1fef31f43 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -804,6 +804,7 @@ void f2fs_evict_inode(struct inode *inode)
+ 	struct f2fs_inode_info *fi = F2FS_I(inode);
+ 	nid_t xnid = fi->i_xattr_nid;
+ 	int err = 0;
++	bool freeze_protected = false;
+ 
+ 	f2fs_abort_atomic_write(inode, true);
+ 
+@@ -843,8 +844,10 @@ void f2fs_evict_inode(struct inode *inode)
+ 	f2fs_remove_ino_entry(sbi, inode->i_ino, UPDATE_INO);
+ 	f2fs_remove_ino_entry(sbi, inode->i_ino, FLUSH_INO);
+ 
+-	if (!is_sbi_flag_set(sbi, SBI_IS_FREEZING))
++	if (!is_sbi_flag_set(sbi, SBI_IS_FREEZING)) {
+ 		sb_start_intwrite(inode->i_sb);
++		freeze_protected = true;
++	}
+ 	set_inode_flag(inode, FI_NO_ALLOC);
+ 	i_size_write(inode, 0);
+ retry:
+@@ -887,7 +890,7 @@ void f2fs_evict_inode(struct inode *inode)
+ 		if (dquot_initialize_needed(inode))
+ 			set_sbi_flag(sbi, SBI_QUOTA_NEED_REPAIR);
+ 	}
+-	if (!is_sbi_flag_set(sbi, SBI_IS_FREEZING))
++	if (freeze_protected)
+ 		sb_end_intwrite(inode->i_sb);
+ no_delete:
+ 	dquot_drop(inode);
+-- 
+2.40.1
 
---000000000000e8c2a90614380775
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIL1LdKj94T/2R0cL4Yidkga41orJF2jK/ZbbD9dlZSrhMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMyMjA0MTIyM1owaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDLI9nR
-4dXnqqk9dYWfoXVlGGPRRH9uNhuwXsMKXEtdTamGK0p05eOZS8TrxB4jE4kSPYUHv15QYew3OuxJ
-z+1zVT32RMeIvIFYM6zEc4zqU+fLeSU29IzOwPwIjQsoNF1h1GuSlJaRwfrikQ5NncMSjGOHY9Rj
-5j6TRplumPMIqG1ed+0ZMYNtThvRyQERzPlMeTLuIm/lihwu8k/upEDBfa8zlc3Xr9ldcPkg+j9j
-JkCTTJl7mG7IIrqCPL+2VKCIbzwh0lIEu0EnAB90eG7YUAA5X2p9Lgs6MKbo9BkyvBQ1XBr9DXhF
-va9pYk9sgfI0kkLEqQyK7NkYvnkVzV15
---000000000000e8c2a90614380775--
 
