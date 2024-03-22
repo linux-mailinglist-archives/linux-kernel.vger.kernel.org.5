@@ -1,142 +1,186 @@
-Return-Path: <linux-kernel+bounces-111191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A50FD8868F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:14:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04B0388690B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:17:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66821C240D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:14:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 803A5283F21
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C043D3BC;
-	Fri, 22 Mar 2024 09:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="G6VuMXor"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0BF1F93F;
+	Fri, 22 Mar 2024 09:14:07 +0000 (UTC)
+Received: from smtpbg156.qq.com (smtpbg156.qq.com [15.184.82.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EC420B3D;
-	Fri, 22 Mar 2024 09:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658EB1B7F3;
+	Fri, 22 Mar 2024 09:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.82.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711098765; cv=none; b=FiC8lyk7b/z0z80EF1LW4hgoo2VlZePlRnL3AGkuFrsMPG6osGU7xyiDJoVD9mqgh4iGAiBF8dxN7msD+rCQWdnLpDiNLkpxNm6Nt8/P4IIb3XJwZrlziQk+FCX0qJUrunqXJhKinQXIIAg0qq6Lg4tMZzapJGgCEgeVnU3ua1Y=
+	t=1711098846; cv=none; b=qZe59SjwAIZKyhPyOkVybbONXqBRFFpbFHE8sDOC4G/2IhXiU97OkyH6sjH0y5ZU960S/RXCK4HFx9HIvYrqGT3igWy0Yt2WwDqjxhDA4q8Zw206u4Ooe04WFm5y12QM8DH/egne8CjHoFsq7zKM8fnkGeG9Hlz4l47VeJjUoBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711098765; c=relaxed/simple;
-	bh=cOmpPG/8ARnymfPCcuDFoTNXuXoPbNNtt5jS/D26kAo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NyA/d5nPxkGUG+vyNy5b0607bFShyYouhFD4n6XpDeikzoSQi/6VFPY0jJTvzLPl1T11NIN7WBmZ1Vmj9i/92Eczc+JAwuNE4c54sLsB75Pim4vCYw4RogOKdiDaEMxy+eiuY4VB/CvIGBaKYeIu/Dz1PmfFOQsomOQufGan+B4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=G6VuMXor; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 524781bce82c11eeb8927bc1f75efef4-20240322
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=wXqKQKWwyy2kjacofcUps73BI2ErEGxymwzA0r1X5iU=;
-	b=G6VuMXorf/gYEBwSxflWrGIazqZndcA1Ee7PeFcJB7/ZsxJYEiRPzp92FfT9Nhp2/wGEvLa0Pe+aAL2KYlgRNLXxihKjSjg3ffZ9oWRGJyItNR+tlGt14tfd0k78uNKLQ8FctFahW+fpiZxysSaw24xDABi5vgH+S7ZZbYCi0q4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:8d6bbe73-a5df-476a-b5db-bda968e707eb,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:111bcf81-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: 524781bce82c11eeb8927bc1f75efef4-20240322
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 401848834; Fri, 22 Mar 2024 17:12:35 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Mar 2024 17:12:33 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Mar 2024 17:12:33 +0800
-From: Shawn Sung <shawn.sung@mediatek.com>
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
-	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
-	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
-	<shawn.sung@mediatek.corp-partner.google.com>
-Subject: [PATCH v5 03/14] drm/mediatek: Rename "mtk_drm_plane" to "mtk_plane"
-Date: Fri, 22 Mar 2024 17:12:21 +0800
-Message-ID: <20240322091232.26387-4-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240322091232.26387-1-shawn.sung@mediatek.com>
-References: <20240322091232.26387-1-shawn.sung@mediatek.com>
+	s=arc-20240116; t=1711098846; c=relaxed/simple;
+	bh=aTE6zAKVV5uqZysPm/I63UdVchbAgigUe18rr48Hj7Y=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=huZKAbln+vX42ufja1po6hVLoBhGjSQcRDQ421TNE/Z2htUojlmjsmx9x2y7XQzB4roytn3ptpUqIIKanf7rvrDuumFS6kM/QGeacAiYAhBkjBLNNWmYJvXUSs7mjJHoh7NrXPeYxdSFtQxvHsW2ZMvN1Q8j+9FYkaDni+vMBwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com; spf=pass smtp.mailfrom=net-swift.com; arc=none smtp.client-ip=15.184.82.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=net-swift.com
+X-QQ-mid:Yeas8t1711098743t325t20718
+Received: from 73E00E8BC808433CB9DB281092DFBE6B (duanqiangwen@net-swift.com [183.159.169.46])
+X-QQ-SSF:00400000000000F0FH4000000000000
+From: duanqiangwen@net-swift.com
+X-BIZMAIL-ID: 1856326279137474112
+To: "'Jiri Pirko'" <jiri@resnulli.us>
+Cc: "'netdev'" <netdev@vger.kernel.org>,
+	"'jiawenwu'" <jiawenwu@trustnetic.com>,
+	"'mengyuanlou'" <mengyuanlou@net-swift.com>,
+	"'davem'" <davem@davemloft.net>,
+	"'edumazet'" <edumazet@google.com>,
+	"'kuba'" <kuba@kernel.org>,
+	"'pabeni'" <pabeni@redhat.com>,
+	"'maciej.fijalkowski'" <maciej.fijalkowski@intel.com>,
+	"'andrew'" <andrew@lunn.ch>,
+	"'wangxiongfeng2'" <wangxiongfeng2@huawei.com>,
+	"'linux-kernel'" <linux-kernel@vger.kernel.org>,
+	"'michal.kubiak'" <michal.kubiak@intel.com>
+References: <20240322080416.470517-1-duanqiangwen@net-swift.com> <Zf09VnR2YI_WOchd@nanopsycho> <000001da7c31$be2330f0$3a6992d0$@net-swift.com> <Zf1JEfIq1E1SHiBD@nanopsycho>
+In-Reply-To: <Zf1JEfIq1E1SHiBD@nanopsycho>
+Subject: RE: [PATCH net v5] net: txgbe: fix i2c dev name cannot match clkdev
+Date: Fri, 22 Mar 2024 17:12:22 +0800
+Message-ID: <000001da7c39$0c8eb4b0$25ac1e10$@net-swift.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFwLs5rgYGClTpBePjvbYMXpqMxXgKXsSFcAjPmTUsCO1Kfl7Hf3JRw
+Content-Language: zh-cn
+X-QQ-SENDSIZE: 520
+Feedback-ID: Yeas:net-swift.com:qybglogicsvrsz:qybglogicsvrsz3a-1
 
-From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Rename all "mtk_drm_plane" to "mtk_plane":
-- To align the naming rule
-- To reduce the code size
+> -----Original Message-----
+> From: Jiri Pirko <jiri@resnulli.us>
+> Sent: 2024=E5=B9=B43=E6=9C=8822=E6=97=A5 17:02
+> To: duanqiangwen@net-swift.com
+> Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
+> mengyuanlou@net-swift.com; davem@davemloft.net;
+> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+> maciej.fijalkowski@intel.com; andrew@lunn.ch;
+> wangxiongfeng2@huawei.com; linux-kernel@vger.kernel.org;
+> michal.kubiak@intel.com
+> Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match =
+clkdev
+>=20
+> Fri, Mar 22, 2024 at 09:20:04AM CET, duanqiangwen@net-swift.com wrote:
+> >
+> >-----Original Message-----
+> >From: Jiri Pirko <jiri@resnulli.us>
+> >Sent: 2024=E5=B9=B43=E6=9C=8822=E6=97=A5 16:12
+> >To: Duanqiang Wen <duanqiangwen@net-swift.com>
+> >Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
+> >mengyuanlou@net-swift.com; davem@davemloft.net;
+> edumazet@google.com;
+> >kuba@kernel.org; pabeni@redhat.com; maciej.fijalkowski@intel.com;
+> >andrew@lunn.ch; wangxiongfeng2@huawei.com;
+> >linux-kernel@vger.kernel.org; michal.kubiak@intel.com
+> >Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match
+> >clkdev
+> >
+> >Fri, Mar 22, 2024 at 09:04:16AM CET, duanqiangwen@net-swift.com =
+wrote:
+> >>txgbe clkdev shortened clk_name, so i2c_dev info_name also need to
+> >>shorten. Otherwise, i2c_dev cannot initialize clock.
+> >>
+> >>Change log:
+> >>v4-v5: address comments:
+> >>	Jiri Pirko:
+> >>	Well, since it is used in txgbe_phy.c, it should be probably
+> >>	rather defined locally in txgbe_phy.c.
+> >
+> >Did you read Florian's comment? Please do.
+> >
+> >pw-bot: cr
+> >--------
+> >I replied to Florian:
+> >" I want to shorten "i2c_desginware" to "i2c_dw" in txgbe driver, so
+> >other drivers which use "i2c_designware" need another patch to use a
+> >define. "
+> >
+> >Sorry, this email forgot to cc the mailing list.
+>=20
+> Could you please use some sane email client that properly prefixes the
+> original text by ">"?
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
----
- drivers/gpu/drm/mediatek/mtk_drm_plane.c | 6 +++---
- drivers/gpu/drm/mediatek/mtk_drm_plane.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+I'm sorry, and I have  set up the right email client settings now.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index cbdb70677d305..43137c46fc148 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -93,8 +93,8 @@ static bool mtk_plane_format_mod_supported(struct drm_plane *plane,
- 	return true;
- }
- 
--static void mtk_drm_plane_destroy_state(struct drm_plane *plane,
--					struct drm_plane_state *state)
-+static void mtk_plane_destroy_state(struct drm_plane *plane,
-+				    struct drm_plane_state *state)
- {
- 	__drm_atomic_helper_plane_destroy_state(state);
- 	kfree(to_mtk_plane_state(state));
-@@ -241,7 +241,7 @@ static const struct drm_plane_funcs mtk_plane_funcs = {
- 	.destroy = drm_plane_cleanup,
- 	.reset = mtk_plane_reset,
- 	.atomic_duplicate_state = mtk_plane_duplicate_state,
--	.atomic_destroy_state = mtk_drm_plane_destroy_state,
-+	.atomic_destroy_state = mtk_plane_destroy_state,
- 	.format_mod_supported = mtk_plane_format_mod_supported,
- };
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-index 99aff7da0831d..231bb7aac9473 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
-@@ -4,8 +4,8 @@
-  * Author: CK Hu <ck.hu@mediatek.com>
-  */
- 
--#ifndef _MTK_DRM_PLANE_H_
--#define _MTK_DRM_PLANE_H_
-+#ifndef _MTK_PLANE_H_
-+#define _MTK_PLANE_H_
- 
- #include <drm/drm_crtc.h>
- #include <linux/types.h>
--- 
-2.18.0
+> >
+> >>v3->v4: address comments:
+> >>	Jakub Kicinski:
+> >>	No empty lines between Fixes and Signed-off... please.
+> >>v2->v3: address comments:
+> >>	Jiawen Wu:
+> >>	Please add the define in txgbe_type.h
+> >>
+> >>Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID
+> >>limits")
+> >>Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
+> >>---
+> >> drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c | 8 +++++---
+> >> 1 file changed, 5 insertions(+), 3 deletions(-)
+> >>
+> >>diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >>b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >>index 5b5d5e4310d1..2fa511227eac 100644
+> >>--- a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >>+++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
+> >>@@ -20,6 +20,8 @@
+> >> #include "txgbe_phy.h"
+> >> #include "txgbe_hw.h"
+> >>
+> >>+#define TXGBE_I2C_CLK_DEV_NAME "i2c_dw"
+> >>+
+> >> static int txgbe_swnodes_register(struct txgbe *txgbe)  {
+> >> 	struct txgbe_nodes *nodes =3D &txgbe->nodes; @@ -571,8 +573,8
+> @@
+> >static
+> >>int txgbe_clock_register(struct txgbe *txgbe)
+> >> 	char clk_name[32];
+> >> 	struct clk *clk;
+> >>
+> >>-	snprintf(clk_name, sizeof(clk_name), "i2c_dw.%d",
+> >>-		 pci_dev_id(pdev));
+> >>+	snprintf(clk_name, sizeof(clk_name), "%s.%d",
+> >>+		 TXGBE_I2C_CLK_DEV_NAME, pci_dev_id(pdev));
+> >>
+> >> 	clk =3D clk_register_fixed_rate(NULL, clk_name, NULL, 0, =
+156250000);
+> >> 	if (IS_ERR(clk))
+> >>@@ -634,7 +636,7 @@ static int txgbe_i2c_register(struct txgbe =
+*txgbe)
+> >>
+> >> 	info.parent =3D &pdev->dev;
+> >> 	info.fwnode =3D software_node_fwnode(txgbe-
+> >nodes.group[SWNODE_I2C]);
+> >>-	info.name =3D "i2c_designware";
+> >>+	info.name =3D TXGBE_I2C_CLK_DEV_NAME;
+> >> 	info.id =3D pci_dev_id(pdev);
+> >>
+> >> 	info.res =3D &DEFINE_RES_IRQ(pdev->irq);
+> >>--
+> >>2.27.0
+> >>
+> >>
+> >
+> >
+>=20
 
 
