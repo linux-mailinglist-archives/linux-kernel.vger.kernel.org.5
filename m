@@ -1,160 +1,441 @@
-Return-Path: <linux-kernel+bounces-112034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A56D887469
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 506F888746B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B2B3283406
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:23:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07206283315
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996D97FBBD;
-	Fri, 22 Mar 2024 21:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892ED7FBD9;
+	Fri, 22 Mar 2024 21:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EYgHCIod"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HfcGhKp+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A206753361
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 21:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102F67FBBD;
+	Fri, 22 Mar 2024 21:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711142582; cv=none; b=WeeIKHgkOqgL9pWTuZHxOL4pfNcQXF0QZz5vos9ewGZZkbx98DvG+LWnHDzRVKMZuBMUN7JNqrzVLlcaQNH6MpeDjD/h9aRjyM0Qpr3xpDLd+/rVBChxLvxhZLhxOyx5bXraQn4yeJfbQdKDWzC5Iq5dB21KpLMOli06q8Rz6qY=
+	t=1711142605; cv=none; b=hpw3y/lE5XSust11gom9GGDYI4LWvYbGQITGenmKpgXPpMMxzKcDhoVp109FBZLQQP7TY9LHEaP3Rru2HAnxKMtDngDDbdqbtLNjtArZgkoDCXzTetwoV5AAYqyi8l3dZlhGDO7HQUsg6j4fkgsUUueaXNNGn7ysK9Ce525nwcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711142582; c=relaxed/simple;
-	bh=GVGq8gIwxjkrBu9nOLgq1KZZJT77R8jEbBlOrRh91qM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kjHIRKXqj2tDraWM69LyF2StU/scWFzjZ+aStHxZtSdquGTbof+jxbmnORfE+48Rhenn+FrVF/vMnKdLmJzMuhrUHoXtf68Im8DfefRHetMxNTGIzTd7WxfozzYWz4SXwGE36hEpwMei6TRJHdyOeItCKPs0RH03udeMzKBy2QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EYgHCIod; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7a4c332b-a044-4c82-a5b2-cb4b318f5110@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711142577;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n4WPHqLerzC8ab0n7LldeLvSy2z0lzhG43YXJDO+5do=;
-	b=EYgHCIodIKnO0p2+qooONaEquVNo90Iqoglv8JTq73y3Zt9MEG2QLtmTS3rDCsxdz+zpZv
-	1TPNQASdDZw7PksAKghkzmF9ZiT4ebwNdw0nBaW//DAmN9Vukgwe1cNaKz11C/iXZqmwnT
-	5WjhDD3qLvT9CCXEuvbjisjEe5hvNgI=
-Date: Fri, 22 Mar 2024 17:22:46 -0400
+	s=arc-20240116; t=1711142605; c=relaxed/simple;
+	bh=aNXR6cp4GNyqYOIZ5rINxHxXA0qK9zVACqy7F5CseQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mf9PIUH2T8Nm1kjrvlisnr+/vo2S5Y4inPptPSWgAB1TzKdxwPeIzBTViSRw2igmGiCrFVhE/dc+06dWFvrYoBpqPmjxEivwryD41iUKJj8ERcMoKThKqJrUG8JZo6tvWkFuGe1BMFTW0nceZAV2GlL0CiRsKPJAY7rKrIg+NMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HfcGhKp+; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711142603; x=1742678603;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=aNXR6cp4GNyqYOIZ5rINxHxXA0qK9zVACqy7F5CseQ0=;
+  b=HfcGhKp+6aKkgcI1vM9/fV0A6nfz0GN5vFWp0g55u4UVQ3PvmDKCG034
+   w7DZ9i7CyImjrOOPdXV8Qe1lL+N8MVo4DxmRrmnt9BaK30vdn+sIQGo8x
+   RUh8oCaKa3QkMU/p/ht486XZ6aoeRtKasp9e4w0BzIY1p5GSyJPx7Vpmq
+   DEHBJoYxDirqAeWIbL3GydS3EihDrpu61Vds2ho6AntjQxJerWufA1Gox
+   fZJHG4Kkzjnxdt1aO97jRGkQbOhdCbbVHqGa11vFXumFyHaFewdnvuabr
+   XVqsftI+tdBm9oRpHJEIMhSaVGY2NBrFroVDbE+3N8R3Dj8axn3VOf1Bf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6066222"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6066222"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:23:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15132322"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:23:22 -0700
+Date: Fri, 22 Mar 2024 14:23:21 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+Message-ID: <20240322212321.GA1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
+ <d45bb93fb5fc18e7cda97d587dad4a1c987496a1.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-Content-Language: en-US
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
- <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
- <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
- <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
- <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
- <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
- <305a8e43-4d65-490c-9f83-afce6490bc83@ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <305a8e43-4d65-490c-9f83-afce6490bc83@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d45bb93fb5fc18e7cda97d587dad4a1c987496a1.camel@intel.com>
 
-On 3/22/24 14:09, Tomi Valkeinen wrote:
-> On 22/03/2024 18:18, Sean Anderson wrote:
->> On 3/22/24 01:32, Tomi Valkeinen wrote:
->>> On 21/03/2024 21:17, Sean Anderson wrote:
->>>> On 3/21/24 15:08, Tomi Valkeinen wrote:
->>>>> On 21/03/2024 20:01, Sean Anderson wrote:
->>>>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
->>>>>>> On 21/03/2024 17:52, Sean Anderson wrote:
->>>>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>>>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>>>>>>> Do we need to handle interrupts while either delayed work is being done?
->>>>>>>>
->>>>>>>> Probably not.
->>>>>>>>
->>>>>>>>> If we do need a delayed work, would just one work be enough which
->>>>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>>>>>>>
->>>>>>>> Maybe, but then we need to determine which pending events we need to
->>>>>>>> handle. I think since we have only two events it will be easier to just
->>>>>>>> have separate workqueues.
->>>>>>>
->>>>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
->>>>>>
->>>>>> Yeah, but we can use a mutex for this which means there is not too much
->>>>>> interesting going on.
->>>>>
->>>>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
->>>>>
->>>>> I'd still prefer just one workqueue, though...
->>>>
->>>> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
->>>
->>> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
->>
->> How about something like
->>
->> zynqmp_dp_irq_handler(...)
->> {
->>     /* Read status and handle underflow/overflow/vblank */
->>
->>     status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
->>     if (status) {
->>         atomic_or(status, &dp->status);
->>         return IRQ_WAKE_THREAD;
->>     }
->>
->>     return IRQ_HANDLED;
->> }
->>
->> zynqmp_dp_thread_handler(...)
->> {
->>     status = atomic_xchg(&dp->status, 0);
->>     /* process HPD stuff */
->> }
->>
->> which gets rid of the workqueue too.
+On Thu, Mar 21, 2024 at 01:07:27PM +0000,
+"Huang, Kai" <kai.huang@intel.com> wrote:
+
+> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > TDX requires several initialization steps for KVM to create guest TDs.
+> > Detect CPU feature, enable VMX (TDX is based on VMX) on all online CPUs,
+> > detect the TDX module availability, initialize it and disable VMX.
 > 
-> I like it. We can't use IRQF_ONESHOT, as that would keep the irq masked while the threaded handler is being ran. I don't think that's a problem, but just something to keep in mind that both handlers can run concurrently.
+> Before KVM can use TDX to create and run TDX guests, the kernel needs to
+> initialize TDX from two perspectives:
+> 
+> 1) Initialize the TDX module.
+> 1) Do the "per-cpu initialization" on any logical cpu before running any TDX   
+> code on that cpu.
+> 
+> The host kernel provides two functions to do them respectively: tdx_cpu_enable()
+> and tdx_enable().  
+> 
+> Currently, tdx_enable() requires all online cpus being in VMX operation with CPU
+> hotplug disabled, and tdx_cpu_enable() needs to be called on local cpu with that
+> cpu being in VMX operation and IRQ disabled.
+> 
+> > 
+> > To enable/disable VMX on all online CPUs, utilize
+> > vmx_hardware_enable/disable().  The method also initializes each CPU for
+> > TDX.  
+> > 
+> 
+> I don't understand what you are saying here.
+> 
+> Did you mean you put tdx_cpu_enable() inside vmx_hardware_enable()?
 
-Actually, I'm not sure we can do it like this. Imagine we have something
-like
+Now the section doesn't make sense. Will remove it.
 
-CPU 0                      CPU 1
-zynqmp_dp_thread_handler()
-  atomic_xchg()                      
-			   __handle_irq_event_percpu 
-                             zynqmp_dp_irq_handler()
-                               atomic_or()
-                               return IRQ_WAIT_THREAD
-                             __irq_wake_thread()
-                               test_and_set_bit(IRQTF_RUNTHREAD, ...)
-                               return
-  return IRQ_HANDLED
 
-and whoops we now have bits set in dp->status but the thread isn't
-running. I don't think there's a way to fix this without locking (or two
-works). TBH I am leaning towards just having two works; it is a clean
-implementation. We can also convert to use work_struct instead of
-delayed_work, since we never set a delay.
+> > TDX requires calling a TDX initialization function per logical
+> > processor (LP) before the LP uses TDX.  
+> > 
+> 
+> [...]
+> 
+> > When the CPU is becoming online,
+> > call the TDX LP initialization API.  If it fails to initialize TDX, refuse
+> > CPU online for simplicity instead of TDX avoiding the failed LP.
+> 
+> Unless I am missing something, I don't see this has been done in the code.
 
---Sean
+You're right. Somehow the code was lost.  Let me revive it with the next
+version.
+
+
+> > There are several options on when to initialize the TDX module.  A.) kernel
+> > module loading time, B.) the first guest TD creation time.  A.) was chosen.
+> 
+> A.) was chosen -> Choose A).
+> 
+> Describe your change in "imperative mood".
+> 
+> > With B.), a user may hit an error of the TDX initialization when trying to
+> > create the first guest TD.  The machine that fails to initialize the TDX
+> > module can't boot any guest TD further.  Such failure is undesirable and a
+> > surprise because the user expects that the machine can accommodate guest
+> > TD, but not.  So A.) is better than B.).
+> > 
+> > Introduce a module parameter, kvm_intel.tdx, to explicitly enable TDX KVM
+> 
+> You don't have to say the name of the new parameter.  It's shown in the code.
+> 
+> > support.  It's off by default to keep the same behavior for those who don't
+> > use TDX.  
+> > 
+> 
+> [...]
+> 
+> 
+> > Implement hardware_setup method to detect TDX feature of CPU and
+> > initialize TDX module.
+> 
+> You are not detecting TDX feature anymore.
+> 
+> And put this in a separate paragraph (at a better place), as I don't see how
+> this is connected to "introduce a module parameter".
+
+Let me update those sentences.
+
+
+> > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> > v19:
+> > - fixed vt_hardware_enable() to use vmx_hardware_enable()
+> > - renamed vmx_tdx_enabled => tdx_enabled
+> > - renamed vmx_tdx_on() => tdx_on()
+> > 
+> > v18:
+> > - Added comment in vt_hardware_enable() by Binbin.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >  arch/x86/kvm/Makefile      |  1 +
+> >  arch/x86/kvm/vmx/main.c    | 19 ++++++++-
+> >  arch/x86/kvm/vmx/tdx.c     | 84 ++++++++++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/vmx/x86_ops.h |  6 +++
+> >  4 files changed, 109 insertions(+), 1 deletion(-)
+> >  create mode 100644 arch/x86/kvm/vmx/tdx.c
+> > 
+> > diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> > index 274df24b647f..5b85ef84b2e9 100644
+> > --- a/arch/x86/kvm/Makefile
+> > +++ b/arch/x86/kvm/Makefile
+> > @@ -24,6 +24,7 @@ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+> >  
+> >  kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+> >  kvm-intel-$(CONFIG_KVM_HYPERV)	+= vmx/hyperv.o vmx/hyperv_evmcs.o
+> > +kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
+> >  
+> >  kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+> >  			   svm/sev.o
+> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> > index 18cecf12c7c8..18aef6e23aab 100644
+> > --- a/arch/x86/kvm/vmx/main.c
+> > +++ b/arch/x86/kvm/vmx/main.c
+> > @@ -6,6 +6,22 @@
+> >  #include "nested.h"
+> >  #include "pmu.h"
+> >  
+> > +static bool enable_tdx __ro_after_init;
+> > +module_param_named(tdx, enable_tdx, bool, 0444);
+> > +
+> > +static __init int vt_hardware_setup(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = vmx_hardware_setup();
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  #define VMX_REQUIRED_APICV_INHIBITS				\
+> >  	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
+> >  	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
+> > @@ -22,6 +38,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> >  
+> >  	.hardware_unsetup = vmx_hardware_unsetup,
+> >  
+> > +	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+> 
+> What's the point of this comment?  I don't understand it either.
+
+Will delete the comment.
+
+
+> >  	.hardware_enable = vmx_hardware_enable,
+> >  	.hardware_disable = vmx_hardware_disable,
+> 
+> Shouldn't you also implement vt_hardware_enable(), which also does
+> tdx_cpu_enable()? 
+> 
+> Because I don't see vmx_hardware_enable() is changed to call tdx_cpu_enable() to
+> make CPU hotplug work with TDX.
+
+hardware_enable() doesn't help for cpu hot plug support. See below.
+
+
+> >  	.has_emulated_msr = vmx_has_emulated_msr,
+> > @@ -161,7 +178,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> >  };
+> >  
+> >  struct kvm_x86_init_ops vt_init_ops __initdata = {
+> > -	.hardware_setup = vmx_hardware_setup,
+> > +	.hardware_setup = vt_hardware_setup,
+> >  	.handle_intel_pt_intr = NULL,
+> >  
+> >  	.runtime_ops = &vt_x86_ops,
+> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> > new file mode 100644
+> > index 000000000000..43c504fb4fed
+> > --- /dev/null
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+> > @@ -0,0 +1,84 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/cpu.h>
+> > +
+> > +#include <asm/tdx.h>
+> > +
+> > +#include "capabilities.h"
+> > +#include "x86_ops.h"
+> > +#include "x86.h"
+> > +
+> > +#undef pr_fmt
+> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > +
+> > +static int __init tdx_module_setup(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = tdx_enable();
+> > +	if (ret) {
+> > +		pr_info("Failed to initialize TDX module.\n");
+> 
+> As I commented before, tdx_enable() itself will print similar message when it
+> fails, so no need to print again.
+> 
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> 
+> That being said, I don't think tdx_module_setup() is necessary.  Just call
+> tdx_enable() directly.
+
+Ok, Will move this funciton to the patch that uses it first.
+
+
+> > +
+> > +struct tdx_enabled {
+> > +	cpumask_var_t enabled;
+> > +	atomic_t err;
+> > +};
+> 
+> struct cpu_tdx_init_ctx {
+> 	cpumask_var_t vmx_enabled_cpumask;
+> 	atomic_t err;
+> };
+> 
+> ?
+> 
+> > +
+> > +static void __init tdx_on(void *_enable)
+> 
+> tdx_on() -> cpu_tdx_init(), or cpu_tdx_on()?
+> 
+> > +{
+> > +	struct tdx_enabled *enable = _enable;
+> > +	int r;
+> > +
+> > +	r = vmx_hardware_enable();
+> > +	if (!r) {
+> > +		cpumask_set_cpu(smp_processor_id(), enable->enabled);
+> > +		r = tdx_cpu_enable();
+> > +	}
+> > +	if (r)
+> > +		atomic_set(&enable->err, r);
+> > +}
+> > +
+> > +static void __init vmx_off(void *_enabled)
+> 
+> cpu_vmx_off() ?
+
+Ok, let's add cpu_ prefix.
+
+
+> > +{
+> > +	cpumask_var_t *enabled = (cpumask_var_t *)_enabled;
+> > +
+> > +	if (cpumask_test_cpu(smp_processor_id(), *enabled))
+> > +		vmx_hardware_disable();
+> > +}
+> > +
+> > +int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
+> 
+> Why do you need the 'x86_ops' function argument?  I don't see it is used?
+
+Will move it to the patch that uses it first.
+
+
+> > +{
+> > +	struct tdx_enabled enable = {
+> > +		.err = ATOMIC_INIT(0),
+> > +	};
+> > +	int r = 0;
+> > +
+> > +	if (!enable_ept) {
+> > +		pr_warn("Cannot enable TDX with EPT disabled\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!zalloc_cpumask_var(&enable.enabled, GFP_KERNEL)) {
+> > +		r = -ENOMEM;
+> > +		goto out;
+> > +	}
+> > +
+> > +	/* tdx_enable() in tdx_module_setup() requires cpus lock. */
+> 
+> 	/* tdx_enable() must be called with CPU hotplug disabled */
+> 
+> > +	cpus_read_lock();
+> > +	on_each_cpu(tdx_on, &enable, true); /* TDX requires vmxon. */
+> 
+> I don't think you need this comment _here_.
+> 
+> If you want keep it, move to the tdx_on() where the code does what this comment
+> say.
+
+Will move the comment into cpu_tdx_on().
+
+
+> > +	r = atomic_read(&enable.err);
+> > +	if (!r)
+> > +		r = tdx_module_setup();
+> > +	else
+> > +		r = -EIO;
+> > +	on_each_cpu(vmx_off, &enable.enabled, true);
+> > +	cpus_read_unlock();
+> > +	free_cpumask_var(enable.enabled);
+> > +
+> > +out:
+> > +	return r;
+> > +}
+> 
+> At last, I think there's one problem here:
+> 
+> KVM actually only registers CPU hotplug callback in kvm_init(), which happens
+> way after tdx_hardware_setup().
+> 
+> What happens if any CPU goes online *BETWEEN* tdx_hardware_setup() and
+> kvm_init()?
+> 
+> Looks we have two options:
+> 
+> 1) move registering CPU hotplug callback before tdx_hardware_setup(), or
+> 2) we need to disable CPU hotplug until callbacks have been registered.
+> 
+> Perhaps the second one is easier, because for the first one we need to make sure
+> the kvm_cpu_online() is ready to be called right after tdx_hardware_setup().
+> 
+> And no one cares if CPU hotplug is disabled during KVM module loading.
+> 
+> That being said, we can even just disable CPU hotplug during the entire
+> vt_init(), if in this way the code change is simple?
+> 
+> But anyway, to make this patch complete, I think you need to replace
+> vmx_hardware_enable() to vt_hardware_enable() and do tdx_cpu_enable() to handle
+> TDX vs CPU hotplug in _this_ patch.
+
+The option 2 sounds easier. But hardware_enable() doesn't help because it's
+called when the first guest is created. It's risky to change it's semantics
+because it's arch-independent callback.
+
+- Disable CPU hot plug during TDX module initialization.
+- During hardware_setup(), enable VMX, tdx_cpu_enable(), disable VMX
+  on online cpu. Don't rely on KVM hooks.
+- Add a new arch-independent hook, int kvm_arch_online_cpu(). It's called always
+  on cpu onlining. It eventually calls tdx_cpu_enabel(). If it fails, refuse
+  onlining.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
