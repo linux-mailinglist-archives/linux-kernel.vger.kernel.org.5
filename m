@@ -1,134 +1,131 @@
-Return-Path: <linux-kernel+bounces-111934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296398872F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:23:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873A58872FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:24:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA76E1F24738
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9A811C23196
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0F2651BE;
-	Fri, 22 Mar 2024 18:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BFB65BB4;
+	Fri, 22 Mar 2024 18:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gdRSYolz"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rn45MCTu"
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976BE62801
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2F565BB2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711131775; cv=none; b=fQKbu6VgC3wLmjC8HyQqZ5QuJm0INrNVsXtryy4qhQ5JY04Nz8BTbm7IpxgFV9vUpJSfmhL+iliV/gGMFY2IohRdOCtguKxGHN7AdgB5Qb02YHThB6IrYskjP/VVPewPYN1LsSQdZqNlevHQ0tWQq2i0OkWdgC/hk4t3jEDVM94=
+	t=1711131814; cv=none; b=Gopq4WmWvow8TH3dU+1I/1YoE7l3rmrloUjhEy2l05XWDT50ivi/iYl/dSb+S3Yf4ZjvLMwXxAxyGL/AHZJ6JtU9et7sbxevOAtRkS563Z5R1FlyGr6Sr7MVb5+77YOR4J2tsM4G59PWBILT2RRshGfXXXqNNV4MFuKAw0Rz4II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711131775; c=relaxed/simple;
-	bh=qkQte3r0ijCtO/RXb6KA6OLOuQLxORYyhLd8+PxHMCs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U2/owN55ZCH3iL2grCX6dra4pDr9EoKDMwl8wja+3HP5s7bbUif2LGYONkeWlmta6ozOpXKNph3WT7ubZWm8rkMrbcEdg37P6+x4Sm7b621/EJbmq5XoJDZlw/bao8iUPARQKmxNTn4vlvHbD3Ca8NviPouSDEmtJnyltHw48YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gdRSYolz; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46cc947929so342479466b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711131772; x=1711736572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MveXzUtHIxiGC+UvZrjMJW/3zlt1prAejsyF3p/A0e4=;
-        b=gdRSYolzpYBhiTeiMEiuqdEKDPYutLhi/yoalMGgrSsNh9O3aV1zk8g1wtZFX406oz
-         zbPbLKI7CPIKmACv0SFyz26x2ftxqUsEfijypwRlTLyohTI7tYXkGNgWL/zue+WKC14E
-         EroeMLHIhzZ7KLchW5EfkKMXx7zAaoxtQAzQig+hzc1KIoNIwXwAe9hvkuhU3JSU2lPD
-         x4n7luzZLpXGb3ZKdt2z2hle6LKvHw1xClCHYfXzQ0LiSdcrNxVTKFw5Aw4CUXJYiCPz
-         LYzYZYKCC2mYEVDjdL/X4z+hRbFMrPTFr01txO/RHdk0RmDChtKF5HPCxDXgjC/HJGSE
-         Lahw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711131772; x=1711736572;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MveXzUtHIxiGC+UvZrjMJW/3zlt1prAejsyF3p/A0e4=;
-        b=Wr0Guwl0onAUkKVNbsR1JO6I/k27MJ7LD3t/x116HvJz2NAYkuLy3XzLJ6iKQktc3Q
-         gWIQloLS3LHpUt5neUl0ZMwa8QvPc4RaGNSIzNNBjWLs5jQgoztj3IDA6yaTt9qptHbv
-         DDQ7L3gipiigmuYuZqIEGYYtLmvECIy85Aj1SOk2y7rSmPadon/Ab0xNdv6RX4SdxdnN
-         O+u8jmfy61mNLBl+f2Vsj5f7mWam8jNqXbtfSuhx6o28ocs1kWKLWjt9TysqEaYGwl1U
-         UkoKGjGqlNyTZfQZbA0r6Bw8BRkbDem+2PlfoQHJBGlMehvvqbp0iOt40CAGZPWNTp94
-         z2iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1THHS0anlTfH9Sczua/X1WcRP6kVfEBTrYubSGt/RCRALO+V/PkE7QEoAYhakH9p3NWQOww9o+FPufRXAfBtVgvQu/oUDf2/YXtOW
-X-Gm-Message-State: AOJu0YwJmKxUBFb1pGb2sxoYWKP1XEvostekHRVcapounO2k9ttznBdF
-	cj9ZxlvG6SdyxA584eHvWqWTJHUU3cfi5o/LD5OAWlQfjf7QEEgQDa1WubAkn6c=
-X-Google-Smtp-Source: AGHT+IHR/N1B5eWWzUpqIvN7EWkP0veGaqivyFrZDe/pkqJaeePtFEmggg6ApO1eMFdLjsorAkHZ1w==
-X-Received: by 2002:a17:906:c00f:b0:a47:20a1:5a4a with SMTP id e15-20020a170906c00f00b00a4720a15a4amr360290ejz.23.1711131771926;
-        Fri, 22 Mar 2024 11:22:51 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id w24-20020a170906131800b00a46b10861acsm77304ejb.208.2024.03.22.11.22.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 11:22:51 -0700 (PDT)
-Message-ID: <728bb2bf-c5a9-4e7e-8592-0fd7901837ec@linaro.org>
-Date: Fri, 22 Mar 2024 19:22:50 +0100
+	s=arc-20240116; t=1711131814; c=relaxed/simple;
+	bh=40VVfM6/809+pYJgj2wzfEjVNEU0Bg0sahyBYokr3rE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GkcaZAXHJywHx8R+FZlYT4ll0xK2G4QThGoxPhgDHKQhrQUrTdPC8Fzbr/qPg0CcAkVKVSWQJvMjT8Krtb6skBz6vczgkDxbm3iXkrCDikdwSPUeklsoESvAw0Vw3yYF/MfS7J5fgik0Mcwu8ZO7QpqO7QAGDUIpQGNPYMlpbtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rn45MCTu; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 22 Mar 2024 14:23:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711131811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HGAD06oDDixz/25yvLztOQXn8pWPlf8SP7amw2+5Ywg=;
+	b=rn45MCTud1uEVpZzz9hgmmrzdwnqyZPa0nupO4gg+Qbf2//Ozo+YE4rOBPIR+OrlOyb4J9
+	KKQxqH4RWXeS5pOhyk+/FblibwpYDe/DPpMOxRIax59Wu2wtT2bu7C9YHjW2fWxCE7M2wA
+	x/Wd5P9nsmTnXr8zB9yZHQDt+9+I0A8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, msakai@redhat.com, peterz@infradead.org, 
+	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, akpm@linux-foundation.org, 
+	bfoster@redhat.com, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, 
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 04/15] lib min_heap: Add type safe interface
+Message-ID: <gx3skkrp6pfp7ch3dmludzmqrsyncsptzhlvuwqt2abdhcli5m@xsny7x4nkxv3>
+References: <20240320145417.336208-1-visitorckw@gmail.com>
+ <20240320145417.336208-5-visitorckw@gmail.com>
+ <iz6wl3twuc72txd4ifxy73bbbfijo3ecy7izw3drsmcb2payeu@b2dusfoqobgu>
+ <Zfwgu8+IeH/YqWYR@visitorckw-System-Product-Name>
+ <mi3uq4gqvseubfiylslxfrnwupfzopz753md5f53v6brlgiamv@l5bxmctqnz6g>
+ <Zf25pSI4p0d5pFXX@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] firmware: scm: Remove redundant scm argument from
- qcom_scm_waitq_wakeup()
-Content-Language: en-US
-To: Mukesh Ojha <quic_mojha@quicinc.com>, andersson@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1711034642-22860-1-git-send-email-quic_mojha@quicinc.com>
- <1711034642-22860-2-git-send-email-quic_mojha@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1711034642-22860-2-git-send-email-quic_mojha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zf25pSI4p0d5pFXX@visitorckw-System-Product-Name>
+X-Migadu-Flow: FLOW_OUT
 
-On 21.03.2024 16:24, Mukesh Ojha wrote:
-> Remove redundant scm argument from qcom_scm_waitq_wakeup().
+On Sat, Mar 23, 2024 at 01:02:29AM +0800, Kuan-Wei Chiu wrote:
+> On Thu, Mar 21, 2024 at 05:22:14PM -0400, Kent Overstreet wrote:
+> > On Thu, Mar 21, 2024 at 07:57:47PM +0800, Kuan-Wei Chiu wrote:
+> > > On Wed, Mar 20, 2024 at 04:56:57PM -0400, Kent Overstreet wrote:
+> > > > On Wed, Mar 20, 2024 at 10:54:06PM +0800, Kuan-Wei Chiu wrote:
+> > > > > Introduce a type-safe interface for min_heap by adding small macro
+> > > > > wrappers around functions and using a 0-size array to store type
+> > > > > information. This enables the use of __minheap_cast and
+> > > > > __minheap_obj_size macros for type casting and obtaining element size.
+> > > > > The implementation draws inspiration from generic-radix-tree.h,
+> > > > > eliminating the need to pass element size in min_heap_callbacks.
+> > > > 
+> > > > let's avoid the heap->heap.nr - darray (fs/bcachefs/darray.h) has a
+> > > > trick for that. All heaps have the same memory layout, so we can just
+> > > > cast to a void pointer heap to get something the C code can use.
+> > > >
+> > > If I understand correctly, you're suggesting adding APIs similar to
+> > > darray_top(), darray_first(), and darray_last() within min_heap and
+> > > having them return a pointer. However, some users are using heap.nr in
+> > > conditional statements instead of utilizing heap.nr for memory
+> > > operations, so returning pointers may not be as convenient. What about
+> > > adding get and set functions for nr instead?
+> > 
+> > No, I mean not having separate inner and outer types. Want me to sketch
+> > something out?
 > 
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> ---
+> Based on your suggestion, I've come up with the following code snippet:
+> 
+> #define MIN_HEAP_PREALLOCATED(_type, _name, _nr) \
+> struct _name {  \
+>     int nr; \
+>     int size;   \
+>     _type *data;    \
+>     _type preallocated[_nr];    \
+> };
+> 
+> #define MIN_HEAP(_type, _name) MIN_HEAP_PREALLOCATED(_type, _name, 0)
+> 
+> typdef MIN_HEAP(char, _) min_heap_char;
+> 
+> static __always_inline
+> void min_heap_init(min_heap_char *heap, void *data, int size)
+> {
+> 	heap->nr = 0;
+> 	heap->size = size;
+>     heap->data = size <= ARRAY_SIZE(heap->preallocated) ? heap->preallocated : data;
+> }
+> 
+> But I'm not sure how to implement other inline functions like
+> min_heap_push or min_heap_pop if I do that, unless they are rewritten
+> using macros. Also, I'm not sure how to make the less and swp functions
+> in the min_heap_callbacks not use void * type parameters. Or perhaps I
+> misunderstood your meaning again. If you could sketch out your idea or
+> have a better approach, it would be a great help to me. Any guidance
+> would be greatly appreciated.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+No, you're on the right track. To call C functions on different types of
+heaps you have to cast them all to a common type, say HEAP(char), also
+pass the element size as a paremeter (which you had to do previously
+anyways).
 
