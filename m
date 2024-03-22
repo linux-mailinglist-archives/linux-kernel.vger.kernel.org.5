@@ -1,160 +1,121 @@
-Return-Path: <linux-kernel+bounces-111154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9949886872
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:48:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F13788687A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:49:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 074C61C211E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:48:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B8AD283CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D333118AE8;
-	Fri, 22 Mar 2024 08:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90841AAD9;
+	Fri, 22 Mar 2024 08:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VMEW8yuT";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D/qXDw2X"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Sz+QOfoT"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B507BCA4A;
-	Fri, 22 Mar 2024 08:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F031756B;
+	Fri, 22 Mar 2024 08:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711097293; cv=none; b=kT5VFbS3hckoI5V0qGjyrb+j7yZX1azc7g6B7uI8QOHF6DtDjtsDRSF1+VPP7kNfR0VEM7BhW4fq6kx9PQrmNVK+0bu4vW4g+MVUP2dFgY7GO/I2DPCkryBtCgmnbLM6AeHbHdjnVwa7gMOjeTmCUBiF1i8RBDH2rgpGsRwi4IU=
+	t=1711097351; cv=none; b=Rbi9vgl4ELQ6rm0eoNINUTzRHbKRekWKMjB99xnOdKc1hpjzbYG2CuAO/XnJb8nNE3AP4Y8KZWGHYoGerdxe2y2ifkkwzYsvHv7YBUIcV4p5rsOLMg4XwJu4vP5ejgmSZPVkfuhgvmYGe7Ko0TV3PWs5cqN0JMIB6TM6zScrQ0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711097293; c=relaxed/simple;
-	bh=DPKjby22JnaFexYMsDx96M66Y+Nar1d3BS8Vx65NNYw=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ejxS4tKZqHLF+me8f5UYHVc9QPzxhXU3XD65uA+x9yRRuoy1Vafx0N1e1ztfR5jv0o1pf0lZwQQvdU793RasgdYXjsR30BjwIfvOpruKsGpKbLOeuLejNmiPtdlKKJmDycZTzOfblRgSlmQdFHG4dFcE/4gv+/VbU/0vZtqIx10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VMEW8yuT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D/qXDw2X; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Mar 2024 08:48:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711097290;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nQSAvH2YmDFljsNTX6p1/+901AO8rlvj48Oxo2l+mlY=;
-	b=VMEW8yuTxrBt8DTvMzCyffxbeoYFgh3EPOQ9WUVkFW9VC1saeAOI8pcciILJfdfF2Yc8TX
-	6U1oCVY4UDqmOoQTcFje+H0S5/cUGgdJ1fof20MXbFpG1ZhUploktgntKM/I5Mi//fvKaH
-	zPpRF6FV6H6mFqiT8udSP4yALkjWL/jowVaqu+6w8vnu6lQOpLTYTTLgkcGw+R4IfbXPaE
-	CNLmQk1LqBOTiqut4r1iSqp8iXM9pb7H876efE/9WLkjCaKSJHm3UptjOmdeb7xcBlRZ+j
-	A59wosEuQ8iT1/vvTV9YH0eWUzTRYAMIR0ac5khMAhNPOredc1m8JVOGd7Lxbg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711097290;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nQSAvH2YmDFljsNTX6p1/+901AO8rlvj48Oxo2l+mlY=;
-	b=D/qXDw2Xs7feqJtvu9j4ozzVcJI8XoKGTL/31oBU6FHxx6M7yvSSk6MpJTIH+2IwJYsK+z
-	mNZmUR6LK/qcvUCw==
-From: "tip-bot2 for Brian Gerst" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/syscall/compat: Remove ia32_unistd.h
-Cc: Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240321211847.132473-3-brgerst@gmail.com>
-References: <20240321211847.132473-3-brgerst@gmail.com>
+	s=arc-20240116; t=1711097351; c=relaxed/simple;
+	bh=dTYtO0jE8wKYKJFcNaD+LqthVoE8a2KnRw+uYik6gTg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FCoFbH4RQarIfBIRs95EMzpE1Pb+d3ZXCnKT321acnKeyQwCjoRxP5jvJcrbIqGQMzThpo9ror8EIVz5fagzD1LZ0IRTwES61crD1msRUxkZwFRjXqZfCoV8tpNdxZdxHJyZ7yZxLekg/EtPz9hiSgdU2H8wNSNsywd+jms7GvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Sz+QOfoT; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1711097319; x=1711702119; i=markus.elfring@web.de;
+	bh=dTYtO0jE8wKYKJFcNaD+LqthVoE8a2KnRw+uYik6gTg=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Sz+QOfoTD5Bpl9wGXJrzR7Ksj2hc9ZMWXKuPOVVkcJIo/2955grVbFz9Zkdlqq+1
+	 a3yjXRxAtaAEZlRun5zFoV8E2k03VmQPOlM03BzQjQtK9rLmwAkzBIL+4TJ+DVE9j
+	 QvpLEA95pWcJy/f4HblymlKI7wdYytyGtbqaES/4877+2ehtdioJb6hbQp31cVpQ0
+	 9y2WPLi1zLfG7tcLRHJn1HktVcNvXnbp5ygTFaIys19EBO9fuvRwOcs5vX0jpEGrG
+	 J1eeCBie4ftMdtGE5YLi4Dft6t+yCP4q0/peaFSiHsLazxJqgDdvIfDanQblKCuq3
+	 9H6qvkbL/dy7u9Wbcg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MECGX-1rdRYY2bZd-006i6z; Fri, 22
+ Mar 2024 09:48:39 +0100
+Message-ID: <5412e9e1-2470-497a-a879-d28e6039be15@web.de>
+Date: Fri, 22 Mar 2024 09:48:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171109728900.10875.7251932408476939147.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: ice: Fix freeing uninitialized pointers
+To: Julia Lawall <Julia.Lawall@inria.fr>, kernel-janitors@vger.kernel.org,
+ netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ David Laight <David.Laight@aculab.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, Jiri Pirko
+ <jiri@resnulli.us>, Jonathan Cameron <jic23@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Lukasz Czapnik
+ <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>,
+ Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>
+References: <e5172afb-427b-423e-877a-10352cf4a007@web.de>
+ <F2FBADE8-EDF9-4987-A97B-CF4D2D1452E0@inria.fr>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <F2FBADE8-EDF9-4987-A97B-CF4D2D1452E0@inria.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:9YXkvZdYpqeXj5WB8AcK0LWQYNWMZbgwO0vYGnbOxScaxdApu0A
+ /wGrtYc+l2huJpHcvNNT/1tZcW/e7ub95xlO4cy1Zi2g5iveCJACnZEZAxlbdwyQfqkN5ee
+ 3JfFsFxlVMK775YZ8vqtGLBwf74q6UBIBZyWpm0F3PNzdPiKJdcSuT1zLtKuEqGCdgRbVOy
+ 9HIZtqoXS2nyv+XOb1+1g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:eGYjQvfGa2w=;8aqjLC4e8Qn3i8gHlnKYxMR90PI
+ otP3Ewl1/O20JuaFJwwDQibzoecYfetjeu9HAkew3SG+utku+ttOzFmVK5+nnJOF39MPo1dZJ
+ Ht3GGhh5IUrvv82ADmD1A0w+f6++0BVbJcUX30PKHKz2ZRc5tNneT0vTREp+W5elGnouMV+x2
+ TXjV/R0A7RVgJ9+hvPqMsUgEqvKa6GXbaH16ERyx/gLpirXkdFAsn4phqqWcY3AuiLgvp/z6D
+ 4pG3dYpEE3o0ZpXFtob3KUEJuzDQSmlxz0Ok2ANTBt43rLnNICwi8SPvYVOZYM4nqgXl2Fmu8
+ xvFoytyWjrHCzbIONmIpHyT6uCG6fwfDc4s2U0n+/BIC+ebPdv4nLUHT248MsQleGKxpGZ7xe
+ 9wfA6QD6IA5nA70QnMYr4RDvI9oLKihilwDGw8rExQtkixGtDrsEBFRk6GjSqW6v0exz76oSy
+ F74K6nFt/WkVHW5Kbuj4vWwegMapIwxDLAdA3Jn5U1NdSo3Y+tmpctsQCB7TmULsqQ1af3bOc
+ L4uGN4ZaqKEuPVXX80aCa97ibUCSStQCzQWgvas7st7w4fhGwNgDGGlXbFFKBEfej2RU/rKZ4
+ 1nSYTE3/tRvFu6BUnPV7jmtWKW0lkuU/s688IhVHYgah6V/wyLP9+p+Xu9ZEGHSmkBUG1Qh3b
+ 6G8PI/cwldbw2t5R/4ZpUMYltcaTAKy7gQ3Nv4Z235ovhlOyRjPXtYHSASEPKcv6WU6TfoaUw
+ Joe7kDDizCqbYkGbK2fbxZJG7Y5/zYA1rAVsSA2SZtLuZt+gcuhfQ2unsbbYd1odhctZE5Avd
+ y+KFWCW0whvRwvg7LZgy8bzOrLOA+d1k2pKeNPb+oHRRM=
 
-The following commit has been merged into the x86/cleanups branch of tip:
+> Does one prefer an initialization of null at the top of the function
 
-Commit-ID:     e2d168328e3bdd21efa2ba34392f620ce58d2914
-Gitweb:        https://git.kernel.org/tip/e2d168328e3bdd21efa2ba34392f620ce58d2914
-Author:        Brian Gerst <brgerst@gmail.com>
-AuthorDate:    Thu, 21 Mar 2024 17:18:47 -04:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Mar 2024 09:37:09 +01:00
+Several developers got used to such a programming approach.
 
-x86/syscall/compat: Remove ia32_unistd.h
 
-This header is now just a wrapper for unistd_32_ia32.h.
+> or an initialization to a meaningful value in the middle of the function ?
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240321211847.132473-3-brgerst@gmail.com
----
- arch/x86/entry/entry_64_compat.S   |  1 -
- arch/x86/include/asm/ia32_unistd.h | 11 -----------
- arch/x86/include/asm/seccomp.h     |  2 +-
- arch/x86/kernel/signal_32.c        |  2 +-
- 4 files changed, 2 insertions(+), 14 deletions(-)
- delete mode 100644 arch/x86/include/asm/ia32_unistd.h
+Coding style preferences are evolving more with the growing support for
+the discussed scope-based resource management (cleanup functions and guards),
+aren't they?
 
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index eabf48c..49cc4b8 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -7,7 +7,6 @@
- #include <asm/asm-offsets.h>
- #include <asm/current.h>
- #include <asm/errno.h>
--#include <asm/ia32_unistd.h>
- #include <asm/thread_info.h>
- #include <asm/segment.h>
- #include <asm/irqflags.h>
-diff --git a/arch/x86/include/asm/ia32_unistd.h b/arch/x86/include/asm/ia32_unistd.h
-deleted file mode 100644
-index 7bcb829..0000000
---- a/arch/x86/include/asm/ia32_unistd.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_X86_IA32_UNISTD_H
--#define _ASM_X86_IA32_UNISTD_H
--
--/*
-- * This file contains the system call numbers of the ia32 compat ABI,
-- * this is for the kernel only.
-- */
--#include <asm/unistd_32_ia32.h>
--
--#endif /* _ASM_X86_IA32_UNISTD_H */
-diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-index fef16e3..42bcd42 100644
---- a/arch/x86/include/asm/seccomp.h
-+++ b/arch/x86/include/asm/seccomp.h
-@@ -9,7 +9,7 @@
- #endif
- 
- #ifdef CONFIG_COMPAT
--#include <asm/ia32_unistd.h>
-+#include <asm/unistd_32_ia32.h>
- #define __NR_seccomp_read_32		__NR_ia32_read
- #define __NR_seccomp_write_32		__NR_ia32_write
- #define __NR_seccomp_exit_32		__NR_ia32_exit
-diff --git a/arch/x86/kernel/signal_32.c b/arch/x86/kernel/signal_32.c
-index c12624b..ef65453 100644
---- a/arch/x86/kernel/signal_32.c
-+++ b/arch/x86/kernel/signal_32.c
-@@ -34,7 +34,7 @@
- #include <asm/gsseg.h>
- 
- #ifdef CONFIG_IA32_EMULATION
--#include <asm/ia32_unistd.h>
-+#include <asm/unistd_32_ia32.h>
- 
- static inline void reload_segments(struct sigcontext_32 *sc)
- {
+Further developers can handle variable definitions at the beginning of
+a compound statement (a code block) at least.
+Corresponding clarifications will influence the change acceptance for such definitions
+without adding extra curly brackets.
+Would you like to consider design possibilities with scope reductions?
+
+Regards,
+Markus
 
