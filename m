@@ -1,130 +1,116 @@
-Return-Path: <linux-kernel+bounces-111601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8442B886E64
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A6D886E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 386761F22485
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:22:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76EBB1F227B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6834947F41;
-	Fri, 22 Mar 2024 14:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D63C47A57;
+	Fri, 22 Mar 2024 14:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YahQzIVQ"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BFRATKRa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E68B3EA69;
-	Fri, 22 Mar 2024 14:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770F0481DA;
+	Fri, 22 Mar 2024 14:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711117360; cv=none; b=J9R+mNwep1S3rlYk04HWB4UqJ8Xci2CitcTz+Slj9zOGq+KMNBiweedDGuVx3NX2rOWQdzvDPiJ0WT3njprJu8oIEYN9e5BSp91TymmbtQmiTPdElOzOOSjcWdnUulJY81PFwqBivqdwZqd7Sosc32wa3hQk+2yI35YeIB7xKcA=
+	t=1711117367; cv=none; b=XNNDRG8clDinZbqOK161TYPOK9mo18Xxyfln/gpl0p3VQvbCQIc0Dx5afokiwKlpkeN2Se8GevS0P9n8t/EW0T/n8V26bw3ExhRmkXNf5IzwaeTe8bt+eypopBosaSZxSr+vPnwJlhuKZx0RmYR63oxeiuuLfzXK+Y1NYeNPNk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711117360; c=relaxed/simple;
-	bh=BR0WlKret8eILef1rpRsE7FbijXE68ZU4YU5Orzxgn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HQJdsga4Zb/5E3+ZY9ch1XNSXLdyhoajkbwR4z7Nl2VKhWuvFtTC+wQZkJrcE88/xhuLGM8u0COkE2pUhN2gTu0R1mIl5jHtf38fbyI/21URXsyfwfolyINZJTfovGD5tyfAK4oiq4dI3lOYbyf6CnCLRVjIM2gpds5E4vDCZjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YahQzIVQ; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2B31AE0004;
-	Fri, 22 Mar 2024 14:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711117349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SH1XRhULQIs8JPRuZsRMbAGpvto0OH+vLr70bNJGEho=;
-	b=YahQzIVQq0jJ1ScOJhQ/K+EwS4rg6H7JA024lGZUDBFPIlgbkqTCFwDO5ePCgG+fjLWptk
-	Es6WkS2daYPgFJsTy9CiAkveBWPlcPHZApIlp6nlAepa1ykZHJWcsb6GE9jRaEMcj4A6bE
-	2xNxzOT6ZuruAE8/uWn/8MuIHYlhHUDq9gWgVKBZb2tjg9nJnULQdy/nJnGFz+ULMhcyiD
-	C5wdMigkNMVqYqwwHGK6KUsrwnq6HtYYzLhIwt2HQw0xH+TbTmm+tZng3Q6FY6+TpHOLmt
-	b+gsW6jyAQhDTC9Mi6bP4ureTAOgB3GiqQpiXRVNptdmT02lrzTQ1RlB/DoTuQ==
-Date: Fri, 22 Mar 2024 15:22:26 +0100
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v5 13/17] net: pse-pd: Use regulator framework
- within PSE framework
-Message-ID: <20240322152226.7de347a6@kmaincent-XPS-13-7390>
-In-Reply-To: <Zf2QsfsxcPoCq_SC@pengutronix.de>
-References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
-	<20240227-feature_poe-v5-13-28f0aa48246d@bootlin.com>
-	<ZeObuKHkPN3tiWz_@pengutronix.de>
-	<20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
-	<ZeWi90H-B4XeSkFs@pengutronix.de>
-	<20240321171524.0b04bfcc@kmaincent-XPS-13-7390>
-	<ZfxjosqPMo0ECBmx@pengutronix.de>
-	<20240322113950.27d35376@kmaincent-XPS-13-7390>
-	<Zf2QsfsxcPoCq_SC@pengutronix.de>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711117367; c=relaxed/simple;
+	bh=01ClvOef7pl8q6vj3Abu8siOW4aLSir0hSmFQ18dsPI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hSxFbZefj4aItbFZJvrrAZQfBLxrpRC1zhh8uJp0jMsALHbYTXo4MCRYi6XWHj0qpN9ZoWQ4VMQgM3f6gXYfofcNhHVSBTsAYskt1T/si90595og/K5S5VK3rjdfR5N9fGv/3tT5kdp4NMIqPp9Jn5yStuIRg6rHSpziSBpybc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BFRATKRa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 437DCC43390;
+	Fri, 22 Mar 2024 14:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711117367;
+	bh=01ClvOef7pl8q6vj3Abu8siOW4aLSir0hSmFQ18dsPI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BFRATKRa8zQIBIFByQzXl7mn7+cFk9SEvLmiWgmEgbo/uSWGLXNnS/PUv0mgp7NUy
+	 kgZAb2thNHf9pi7RKuknYCxUbEHFYvipPX4tyca7rRymWBbrp9VWP1a/ERT2IZHi0F
+	 fLgxFARf/Kq4B4ZTyfhS5yL3HRdRCFfXPrdsFWw7/6nhXOKTL4K4EEjC4p60Uz+Avi
+	 1TQj4LUNZAIduy0nPaLj6FRTcVGfKp4CdJubctg7qL7wHQmPiM1SEa/G1qrw17n+qJ
+	 0+cYtRTJ0l4zKQbnKMYjc/LvmIcBrup7k+KG4inuBV97l7yBqmxcTjX9UUrg4/f/Wu
+	 Hh6Ncv46JN8mg==
+Date: Fri, 22 Mar 2024 15:22:41 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Luis Henriques <lhenriques@suse.de>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>
+Cc: Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
+ parameters
+Message-ID: <20240322-ortseinfahrt-gespeichert-9fc21a98aa39@brauner>
+References: <20240307160225.23841-1-lhenriques@suse.de>
+ <20240307160225.23841-4-lhenriques@suse.de>
+ <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+ <87le6p6oqe.fsf@suse.de>
+ <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+ <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
+ <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
+ <20240312-orten-erbsen-2105c134762e@brauner>
+ <87h6hbhhcj.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87h6hbhhcj.fsf@brahms.olymp>
 
-On Fri, 22 Mar 2024 15:07:45 +0100
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+On Tue, Mar 12, 2024 at 10:31:08AM +0000, Luis Henriques wrote:
+> Christian Brauner <brauner@kernel.org> writes:
+> 
+> > On Mon, Mar 11, 2024 at 03:39:39PM +0100, Miklos Szeredi wrote:
+> >> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
+> >> 
+> >> > Yeah, so with that I do agree. But have you read my reply to the other
+> >> > thread? I'd like to hear your thoughs on that. The problem is that
+> >> > mount(8) currently does:
+> >> >
+> >> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
+> >> >
+> >> > for both -o usrjquota and -o usrjquota=
+> >> 
+> >> For "-o usrjquota" this seems right.
+> >> 
+> >> For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
+> >> this seems buggy in more than one ways.
+> >> 
+> >> > So we need a clear contract with userspace or the in-kernel solution
+> >> > proposed here. I see the following options:
+> >> >
+> >> > (1) Userspace must know that mount options such as "usrjquota" that can
+> >> >     have no value must be specified as "usrjquota=" when passed to
+> >> >     mount(8). This in turn means we need to tell Karel to update
+> >> >     mount(8) to recognize this and infer from "usrjquota=" that it must
+> >> >     be passed as FSCONFIG_SET_STRING.
+> >> 
+> >> Yes, this is what I'm thinking.  Of course this only works if there
+> >> are no backward compatibility issues, if "-o usrjquota" worked in the
+> >> past and some systems out there relied on this, then this is not
+> >> sufficient.
+> >
+> > Ok, I spoke to Karel and filed:
+> >
+> > https://github.com/util-linux/util-linux/issues/2837
 
-> Hay Kory,
->=20
-> On Fri, Mar 22, 2024 at 11:39:50AM +0100, Kory Maincent wrote:
-> > Hello Oleksij,
-> >=20
-> > On Thu, 21 Mar 2024 17:43:14 +0100
-> > Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> >  =20
-> > > On Thu, Mar 21, 2024 at 05:15:24PM +0100, Kory Maincent wrote: =20
-> > > > Hello Oleksij,
-> > > > Sorry, I forgot to reply about this.
-> > > > This is specific to pse_regulator driver. Could we tackle this chan=
-ge in
-> > > > another patch series when the current patch series got applied?
-> > > > Also I don't have the hardware to test it.   =20
-> > >=20
-> > > ACK, no problem. =20
-> >=20
-> > I have a question unrelated to this.
-> > Why do you add refcount on the pse_control struct?
-> > The pse control is related to the RJ45 port. Each port is exclusively
-> > related to one pse control.
-> > Shouldn't we return an error in case of two get of the same pse control
-> > index? Do you see use cases where a pse control could be get two times?=
- =20
->=20
-> I assume, any instance which need coordinate PSE behavior with own action=
-s.
-> For example - PHY will probably need to coordinate PHY state with PSE PD
-> classification process.
+This is now merged as of today and backported to at least util-linux
+2.40 which is the current release.
+https://github.com/util-linux/util-linux/pull/2849
 
-Indeed, I was focused on devicetree and didn't thought of coordination
-between PHY and PSE. Thanks for your reply.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+If your distros ship 2.39 and won't upgrade to 2.40 for a while it might
+be worth cherry-picking that fix.
 
