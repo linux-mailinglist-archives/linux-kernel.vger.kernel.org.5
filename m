@@ -1,319 +1,231 @@
-Return-Path: <linux-kernel+bounces-111436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4B8886C56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:45:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8AAC886C58
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD761F22662
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:45:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704511F21AE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474913FE3F;
-	Fri, 22 Mar 2024 12:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402B9405EC;
+	Fri, 22 Mar 2024 12:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="ica1Oo0M"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clfNNh2U"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D99B3FE28;
-	Fri, 22 Mar 2024 12:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91763FE3F;
+	Fri, 22 Mar 2024 12:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711111541; cv=none; b=jOqquJU2MQ1AD2ji1AqKjbGVLvX73PJJNM8CRHLdD5hfeUbX6HX+pOuvgMxhlBuOePW9gqt1MMh6OvL3t7DhMEeoHyGQ70D7NtwsQ9KypoQZeYS5H4oZHLcGQ5CjJL4i7rjbncZjDQf+rVZr9vFS9q78w31dKjuq//PJQeuUpKk=
+	t=1711111617; cv=none; b=bznbqhXpm3kSn9PChFrMOmFKpaI5eAp8okEMwhcvkOmfk483XAvJy9DuzHM0NLEGyYNdZSTBI98IktLe/I6xlZKit0KtLcmQd9Ndco/KG1cjHw04b7RnDtTQhgENbsXMeXXqr6R6HfXE8qP6SD9oVRBSJh5Qm31qww1Oe4viAOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711111541; c=relaxed/simple;
-	bh=WRlQ5r4aUpj8Z+ex8QWCjyzTNRh/i/zc222wQC5NU28=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=ZGAlKI0mOUcEhbpw4OwrlkVsmfyrAlTb6dOwUo5EF/U8PF3037vrnnpoLU3+U0lSBWWr1WQhrccfo571L6q7lvb6M3ro7JYkYXy5Wv7urvtliXRcDeHRFnoFFSqTczpEIzYDiEzRrMFXxpEBKUABYGv0NKfjXnZ6XWAUyP51IaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=ica1Oo0M; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240322124536euoutp01ea75a0d90882f62ae16c881d4c19cab0~-FuBQ7Ehx2357423574euoutp01e;
-	Fri, 22 Mar 2024 12:45:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240322124536euoutp01ea75a0d90882f62ae16c881d4c19cab0~-FuBQ7Ehx2357423574euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1711111536;
-	bh=DzUZJ0qqgrBRzdAUPIuslFQNY05ag29FcLY9RL07qGU=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=ica1Oo0MOvfYpOJde3WLej3Qh9PIQWalOglas81a11N38lEiIHUAfqzYTez23bZg5
-	 eR3kLmDWNO/S6jiOlUIcTEwWsPo8H8TfdGLBa+0mnpyG6D+IVhYQsRApqooo4wCQAK
-	 +VnP5Iht5eUCBFYYVQxw78YZlNsihNO3Ktk+PEcU=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240322124535eucas1p13f306eb0af2e632d9d2ac6e3b93ecff1~-FuBB_6CS1574415744eucas1p1j;
-	Fri, 22 Mar 2024 12:45:35 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id 53.61.09552.F6D7DF56; Fri, 22
-	Mar 2024 12:45:35 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240322124535eucas1p2765570a7687da9deb740e27a8f8949b8~-FuAmKsUb0598605986eucas1p2O;
-	Fri, 22 Mar 2024 12:45:35 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240322124535eusmtrp1bc1e2a695e7edb2c5fe18bb967fcc922~-FuAlfWQT2174421744eusmtrp17;
-	Fri, 22 Mar 2024 12:45:35 +0000 (GMT)
-X-AuditID: cbfec7f5-853ff70000002550-f9-65fd7d6fe70c
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id BA.85.10702.F6D7DF56; Fri, 22
-	Mar 2024 12:45:35 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240322124535eusmtip252bd8472d4bebe917728e8c67c7fb829~-FuAWovEy3252232522eusmtip2B;
-	Fri, 22 Mar 2024 12:45:35 +0000 (GMT)
-Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Fri, 22 Mar 2024 12:45:34 +0000
-Date: Fri, 22 Mar 2024 13:45:32 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] sysctl: treewide: drop unused argument
- ctl_table_root::set_ownership(table)
-Message-ID: <20240322124532.6ouo5cgwrp3zb3fv@joelS2.panther.com>
+	s=arc-20240116; t=1711111617; c=relaxed/simple;
+	bh=Mc+nWMMEosm4ccbDGJPAs1X/IhkrsXvc6bhBeMV+Uuk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L4etYaS8KDY3x6u1TEXVQhHKuV3hqySohno6o3pLUR1YWZvqpGf3jb0fOOD0D9cfSETYFWmZAGBqSSI1aCYZm74aMYJ2yeIdyjfUnrNp3GLqQrqqxv+X1fTtVAID86qXi/5cax8eC5nAlP6kxzn021cTe3APu2HEdAjvI522rjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clfNNh2U; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4147c8e27a8so4284665e9.3;
+        Fri, 22 Mar 2024 05:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711111614; x=1711716414; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RB3xFwev27cGWj/kr3xX//Yti9pwXGl2cOzo4+2MzaA=;
+        b=clfNNh2UflSptwX1xbyj5W+0GRuUdeysRjBWFGfhOj/pDedCU+MZDIxaki7xHdtTHk
+         s1Urj8wjjlaXAC51en8jsVXiHRWE9uFDcHNTx9H8C6Rv45ytmZ8aqBo9o1yOJ0XsIuAW
+         9lyf1H/sAMOAkq9cmdeTVB7pGb4pwUVCpur/TXdiuYXa6UeVK0qet7bkf4Nm4+zc11LJ
+         C897+IXOYudUKFcjEK3l0OWkEi/JO3Ojcxe/90NLIQZG32VQmdyyGJ1JHIFD5NnKqoLZ
+         M+pIkbyDYwcEZBOepEEsO0c/l4GgjyB1k/xeTdCNyQ3oJjnn4WT4XoLZ2YV30uezqx02
+         edPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711111614; x=1711716414;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RB3xFwev27cGWj/kr3xX//Yti9pwXGl2cOzo4+2MzaA=;
+        b=kSbtoF/p2HU25ZWZKy7IZNCJqwCRoQx1U9jFAzmfj5gL344Xz0nFFIj5H9xB5aON7v
+         Gr0CIqDRXw8s67m/BSMDSPIH+DRNOR/Knxmqh8ums+Ap4BCNODtJg5yfOKGwSrzdMnZ3
+         fq8640anChg01jd2E3GbctHadDQ98TMfi2b62iz3zChl7gQOAZqyxAE9heWIHPaZoGTb
+         rS14EdYcxDruObZqmKxL8mi1YSpqdl99Kg/e/Ae5P1GYCoT4aYfnUOG2BwRWe7Snn9Fg
+         zthX5Gbj1+X1BYSXXL9rdJmpCepFXiPYth+HiwuPwyYZGswNluvAWagcunMPnNp7I3AY
+         Ymag==
+X-Forwarded-Encrypted: i=1; AJvYcCVxjDdv3qz1fnrDyFqZITz8inUmQAFZa1dg6I9P/ui1fP3wIzGRZ/pAWzGx0n58EV6AAyGV31S2fw1h1GXwrTD0AxCYcrpg6eKNHilovl1alSZ074pImrmU6djB0IbCjbXEZbclSV7xOQ==
+X-Gm-Message-State: AOJu0YwHi4aaJh+I6J3aCMDSKVmYxmWWuZxTFhYLkahTDFgLHKfE/6rv
+	PhGxyQl6mqxDjzZZzJHtnfCwFHXFIBLqCfL4ftK04Y4Ck+mSK2TC
+X-Google-Smtp-Source: AGHT+IF1qkzrv8qD8jTN7ZbrlS28HPptaqDOjy8Lg9y2eBBFT2JZD+2cG6aY3z0Wj3QZyyLsLSv+AA==
+X-Received: by 2002:a05:600c:4506:b0:412:d149:254c with SMTP id t6-20020a05600c450600b00412d149254cmr1823332wmo.17.1711111613810;
+        Fri, 22 Mar 2024 05:46:53 -0700 (PDT)
+Received: from vitor-nb.. ([2001:8a0:e622:f700:7937:89a:a375:7ff2])
+        by smtp.gmail.com with ESMTPSA id p42-20020a05600c1daa00b004146f93a9d1sm6747201wms.25.2024.03.22.05.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 05:46:53 -0700 (PDT)
+From: Vitor Soares <ivitro@gmail.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>
+Cc: Vitor Soares <vitor.soares@toradex.com>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] arm64: dts: freescale: verdin-imx8mp: enable Verdin I2C_3_HDMI interface
+Date: Fri, 22 Mar 2024 12:46:20 +0000
+Message-Id: <20240322124620.40250-1-ivitro@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="ocm5o5kuc2yzovjr"
-Content-Disposition: inline
-In-Reply-To: <20240315-sysctl-const-ownership-v3-1-b86680eae02e@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKKsWRmVeSWpSXmKPExsWy7djP87r5tX9TDT6v07WYc76FxeLpsUfs
-	Fme6cy0ubOtjtdiz9ySLxeVdc9gsfv94xmRxY8JTRotjC8Qsvp1+w+jA5TG74SKLx5aVN5k8
-	Fmwq9di0qpPN4/2+q2wenzfJefR3H2MPYI/isklJzcksSy3St0vgyth0by1LwR+9ijNN+xkb
-	GPepdTFyckgImEjc2NjD0sXIxSEksIJRYvKZ+WwQzhdGiX97lkI5nxklPmy+zAzTMnHlVKiW
-	5YwSe191I1QdOn4aytnKKPH6QBMTSAuLgKrE0zNfGUFsNgEdifNv7oCNEhGwkVj57TM7SAOz
-	wD4miY8X29hBEsICmRInL/4EmsTBwSvgILGoQR4kzCsgKHFy5hMWEJtZoEKi981BVpASZgFp
-	ieX/OEDCnAL+EhvvTIG6VFni+r7FbBB2rcSpLbeYQFZJCOznlFg36SFUkYvEntvTWSBsYYlX
-	x7ewQ9gyEqcnQ0JGQmAyo8T+fx/YIZzVjBLLGr8yQVRZS7RceQLV4SixunUKI8hFEgJ8Ejfe
-	CkIcyicxadt0Zogwr0RHmxBEtZrE6ntvWCYwKs9C8tosJK/NQngNIqwncWPqFDYMYW2JZQtf
-	M0PYthLr1r1nWcDIvopRPLW0ODc9tdg4L7Vcrzgxt7g0L10vOT93EyMw9Z3+d/zrDsYVrz7q
-	HWJk4mA8xKgC1Pxow+oLjFIsefl5qUoivDv+/0kV4k1JrKxKLcqPLyrNSS0+xCjNwaIkzqua
-	Ip8qJJCeWJKanZpakFoEk2Xi4JRqYGI6dfg5n7JobfCGOsb7hcdrlx8w8IzSmbJP9L4Qy0nj
-	9Kquyj0f1HitMnrnzX2q2xY9f+m5Vs95599J1Z3+N+HRoZ+Ca3XffV/SJmWVlO+/Jmqfz1Jj
-	ge6s89KNVfcK4o7c479rMG2+wBWR5ykfXkddXK1083ilakZoluv5lnlxO2VVZ2p0nL6UN712
-	2eMr2WWtv297Mku8u1vK6+Ms9XZrTO0uu5ymEAbNroJJRqeDvlcu5A+wYerXf1jwbbfqQudj
-	Xz9dWM3xzFu5IuzvbVWHWAe9DT0vj7d57I6T37XM9st7VQe+z63uGYY3pV8cVuz1TzDl4V1u
-	sK8sr656YeajB5cMLpec1bvJkvboixJLcUaioRZzUXEiAJ4Y8xD4AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4Pd382r+pBpMb+C3mnG9hsXh67BG7
-	xZnuXIsL2/pYLfbsPclicXnXHDaL3z+eMVncmPCU0eLYAjGLb6ffMDpwecxuuMjisWXlTSaP
-	BZtKPTat6mTzeL/vKpvH501yHv3dx9gD2KP0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUM
-	jc1jrYxMlfTtbFJSczLLUov07RL0Mla39jMV/NKrePs9tYFxj1oXIyeHhICJxMSVU1m6GLk4
-	hASWMkqcnDqdFSIhI7Hxy1UoW1jiz7UuNoiij4wS5/qWMEE4WxklXt7azAhSxSKgKvH0zFcw
-	m01AR+L8mzvMILaIgI3Eym+f2UEamAX2MUl8vNjGDpIQFsiUOHnxJ9BYDg5eAQeJRQ3yEEOf
-	M0p82bWJCaSGV0BQ4uTMJywgNrNAmcTNL41MIPXMAtISy/9xgIQ5BfwlNt6ZwgxxqbLE9X2L
-	2SDsWonPf58xTmAUnoVk0iwkk2YhTIII60js3HqHDUNYW2LZwtfMELatxLp171kWMLKvYhRJ
-	LS3OTc8tNtIrTswtLs1L10vOz93ECIz+bcd+btnBuPLVR71DjEwcjIcYVYA6H21YfYFRiiUv
-	Py9VSYR3x/8/qUK8KYmVValF+fFFpTmpxYcYTYGhOJFZSjQ5H5iW8kriDc0MTA1NzCwNTC3N
-	jJXEeT0LOhKFBNITS1KzU1MLUotg+pg4OKUamOTKPWc9CtV69MXG8NDm6Zd3fJMMYS06WD/x
-	h+eyEM+zz9XP1u+43uwZo/J691kee+3b67+dYsl+GrjF6vqTeS4ncixjWFPYPdrmPDerX+C6
-	s1l9b9LKDR9u+fK4nPnzzCun7lRfNPdJjtSjH1+5CbVq+l1Ya81/4viRhMR/B9j8pGNUp5k9
-	WrF+c/CvLUXH44L+Nkv+773dnGP2j0fFds3d3lU9quxr/srL9TcLrLy/2O294peiqyemr+/x
-	9dHw7dFRDfnjvIl/q9GpS+ZTvBLvSlzbNrX88MzzC2Z/mHK/+OQ+83Vpjh9L04IMz6wxfhFV
-	p9YTfiM49JqG4bT19uIf/rqZ7eTnOWMxxeNDcqwSS3FGoqEWc1FxIgCSYB2rkwMAAA==
-X-CMS-MailID: 20240322124535eucas1p2765570a7687da9deb740e27a8f8949b8
-X-Msg-Generator: CA
-X-RootMTR: 20240315181141eucas1p29251cc3cb34abb7ff3cb33ef860a39c9
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240315181141eucas1p29251cc3cb34abb7ff3cb33ef860a39c9
-References: <20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
-	<CGME20240315181141eucas1p29251cc3cb34abb7ff3cb33ef860a39c9@eucas1p2.samsung.com>
-	<20240315-sysctl-const-ownership-v3-1-b86680eae02e@weissschuh.net>
+Content-Transfer-Encoding: 8bit
 
---ocm5o5kuc2yzovjr
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Vitor Soares <vitor.soares@toradex.com>
 
-On Fri, Mar 15, 2024 at 07:11:30PM +0100, Thomas Wei=DFschuh wrote:
-> The argument is never used and can be removed.
->=20
-> In a future commit the sysctl core will only use
-> "const struct ctl_table". Removing it here is a preparation for this
-> consitifcation.
->=20
-> The patch was created with the following coccinelle script:
->=20
->   @@
->   identifier func, head, table, uid, gid;
->   @@
->=20
->   void func(
->     struct ctl_table_header *head,
->   - struct ctl_table *table,
->     kuid_t *uid, kgid_t *gid)
->   { ... }
->=20
-> The single changed location was validate through manual inspection and
-> compilation.
-Will drop this from the commit message when I add it to constfy branch.
-For the same reasons as before.
+Enable Verdin I2C_3_HDMI interface on iMX8MP Toradex Verdin boards.
 
-here is the commit message that I'll use
-"""
-sysctl: treewide: drop unused argument ctl_table_root::set_ownership(table)
+Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+---
+ .../dts/freescale/imx8mp-verdin-dahlia.dtsi   |  5 ++++
+ .../boot/dts/freescale/imx8mp-verdin-dev.dtsi |  5 ++++
+ .../dts/freescale/imx8mp-verdin-mallow.dtsi   |  5 ++++
+ .../dts/freescale/imx8mp-verdin-yavia.dtsi    |  5 ++++
+ .../boot/dts/freescale/imx8mp-verdin.dtsi     | 27 ++++++++++++++++---
+ 5 files changed, 43 insertions(+), 4 deletions(-)
 
-Remove the 'table' argument from set_ownership as it is never used. This
-change is a step towards putting "struct ctl_table" into .rodata and
-eventually having sysctl core only use "const struct ctl_table".
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
+index 7e9e4b13b5c5..8d954259085f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
+@@ -110,6 +110,11 @@ wm8904_1a: audio-codec@1a {
+ 	};
+ };
+ 
++/* Verdin I2C_3_HDMI */
++&i2c5 {
++	status = "okay";
++};
++
+ /* Verdin PCIE_1 */
+ &pcie {
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
+index a509b2b7fa85..e5400140e5c6 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
+@@ -131,6 +131,11 @@ nau8822_1a: audio-codec@1a {
+ 	};
+ };
+ 
++/* Verdin I2C_3_HDMI */
++&i2c5 {
++	status = "okay";
++};
++
+ /* Verdin PCIE_1 */
+ &pcie {
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
+index 8482393f3cac..1d15f7449c58 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
+@@ -112,6 +112,11 @@ &i2c4 {
+ 	status = "okay";
+ };
+ 
++/* Verdin I2C_3_HDMI */
++&i2c5 {
++	status = "okay";
++};
++
+ /* Verdin PCIE_1 */
+ &pcie {
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
+index db1722f0d80e..3a8542266d85 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
+@@ -117,6 +117,11 @@ &i2c4 {
+ 	status = "okay";
+ };
+ 
++/* Verdin I2C_3_HDMI */
++&i2c5 {
++	status = "okay";
++};
++
+ /* Verdin PCIE_1 */
+ &pcie {
+ 	status = "okay";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
+index faa17cbbe2fd..f033d4310305 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
+@@ -664,8 +664,6 @@ atmel_mxt_ts_mezzanine: touch-mezzanine@4a {
+ 	};
+ };
+ 
+-/* TODO: Verdin I2C_3_HDMI */
+-
+ /* Verdin I2C_4_CSI */
+ &i2c3 {
+ 	clock-frequency = <400000>;
+@@ -764,6 +762,16 @@ eeprom_carrier_board: eeprom@57 {
+ 	};
+ };
+ 
++/* Verdin I2C_3_HDMI */
++&i2c5 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c5>;
++	pinctrl-1 = <&pinctrl_i2c5_gpio>;
++	scl-gpios = <&gpio3 26 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio3 27 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++};
++
+ /* Verdin PCIE_1 */
+ &pcie {
+ 	pinctrl-names = "default";
+@@ -1106,8 +1114,6 @@ pinctrl_gpio_keys: gpiokeysgrp {
+ 	pinctrl_hdmi_hog: hdmihoggrp {
+ 		fsl,pins =
+ 			<MX8MP_IOMUXC_HDMI_CEC__HDMIMIX_HDMI_CEC	0x40000019>,	/* SODIMM 63 */
+-			<MX8MP_IOMUXC_HDMI_DDC_SCL__HDMIMIX_HDMI_SCL	0x400001c3>,	/* SODIMM 59 */
+-			<MX8MP_IOMUXC_HDMI_DDC_SDA__HDMIMIX_HDMI_SDA	0x400001c3>,	/* SODIMM 57 */
+ 			<MX8MP_IOMUXC_HDMI_HPD__HDMIMIX_HDMI_HPD	0x40000019>;	/* SODIMM 61 */
+ 	};
+ 
+@@ -1163,6 +1169,19 @@ pinctrl_i2c4_gpio: i2c4gpiogrp {
+ 			<MX8MP_IOMUXC_I2C4_SDA__GPIO5_IO21		0x400001c6>;	/* SODIMM 12 */
+ 	};
+ 
++	/* Verdin I2C_3_HDMI */
++	pinctrl_i2c5: i2c5grp {
++		fsl,pins =
++			<MX8MP_IOMUXC_HDMI_DDC_SCL__I2C5_SCL		0x400001c6>,	/* SODIMM 59 */
++			<MX8MP_IOMUXC_HDMI_DDC_SDA__I2C5_SDA		0x400001c6>;	/* SODIMM 57 */
++	};
++
++	pinctrl_i2c5_gpio: i2c5gpiogrp {
++		fsl,pins =
++			<MX8MP_IOMUXC_HDMI_DDC_SCL__GPIO3_IO26		0x400001c6>,	/* SODIMM 59 */
++			<MX8MP_IOMUXC_HDMI_DDC_SDA__GPIO3_IO27		0x400001c6>;	/* SODIMM 57 */
++	};
++
+ 	/* Verdin I2S_2_BCLK (TOUCH_RESET#) */
+ 	pinctrl_i2s_2_bclk_touch_reset: i2s2bclktouchresetgrp {
+ 		fsl,pins =
+-- 
+2.34.1
 
-The patch was created with the following coccinelle script:
-
-  @@
-  identifier func, head, table, uid, gid;
-  @@
-
-  void func(
-    struct ctl_table_header *head,
-  - struct ctl_table *table,
-    kuid_t *uid, kgid_t *gid)
-  { ... }
-
-No additional occurrences of 'set_ownership' were found after doing a
-tree-wide search.
-
-"""
-
-Reviewed-by: Joel Granados <j.granados@samsung.com>
-
-thx.
->=20
-> In addition, a search for 'set_ownership' was done over the full tree to
-> look for places that were missed by coccinelle.
-> None were found.
->=20
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
-> ---
->  fs/proc/proc_sysctl.c  | 2 +-
->  include/linux/sysctl.h | 1 -
->  ipc/ipc_sysctl.c       | 3 +--
->  ipc/mq_sysctl.c        | 3 +--
->  net/sysctl_net.c       | 1 -
->  5 files changed, 3 insertions(+), 7 deletions(-)
->=20
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index 37cde0efee57..ed3a41ed9705 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -480,7 +480,7 @@ static struct inode *proc_sys_make_inode(struct super=
-_block *sb,
->  	}
-> =20
->  	if (root->set_ownership)
-> -		root->set_ownership(head, table, &inode->i_uid, &inode->i_gid);
-> +		root->set_ownership(head, &inode->i_uid, &inode->i_gid);
->  	else {
->  		inode->i_uid =3D GLOBAL_ROOT_UID;
->  		inode->i_gid =3D GLOBAL_ROOT_GID;
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index ee7d33b89e9e..60333a6b9370 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -205,7 +205,6 @@ struct ctl_table_root {
->  	struct ctl_table_set default_set;
->  	struct ctl_table_set *(*lookup)(struct ctl_table_root *root);
->  	void (*set_ownership)(struct ctl_table_header *head,
-> -			      struct ctl_table *table,
->  			      kuid_t *uid, kgid_t *gid);
->  	int (*permissions)(struct ctl_table_header *head, struct ctl_table *tab=
-le);
->  };
-> diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
-> index 45cb1dabce29..1a5085e5b178 100644
-> --- a/ipc/ipc_sysctl.c
-> +++ b/ipc/ipc_sysctl.c
-> @@ -192,7 +192,6 @@ static int set_is_seen(struct ctl_table_set *set)
->  }
-> =20
->  static void ipc_set_ownership(struct ctl_table_header *head,
-> -			      struct ctl_table *table,
->  			      kuid_t *uid, kgid_t *gid)
->  {
->  	struct ipc_namespace *ns =3D
-> @@ -224,7 +223,7 @@ static int ipc_permissions(struct ctl_table_header *h=
-ead, struct ctl_table *tabl
->  		kuid_t ns_root_uid;
->  		kgid_t ns_root_gid;
-> =20
-> -		ipc_set_ownership(head, table, &ns_root_uid, &ns_root_gid);
-> +		ipc_set_ownership(head, &ns_root_uid, &ns_root_gid);
-> =20
->  		if (uid_eq(current_euid(), ns_root_uid))
->  			mode >>=3D 6;
-> diff --git a/ipc/mq_sysctl.c b/ipc/mq_sysctl.c
-> index 21fba3a6edaf..6bb1c5397c69 100644
-> --- a/ipc/mq_sysctl.c
-> +++ b/ipc/mq_sysctl.c
-> @@ -78,7 +78,6 @@ static int set_is_seen(struct ctl_table_set *set)
->  }
-> =20
->  static void mq_set_ownership(struct ctl_table_header *head,
-> -			     struct ctl_table *table,
->  			     kuid_t *uid, kgid_t *gid)
->  {
->  	struct ipc_namespace *ns =3D
-> @@ -97,7 +96,7 @@ static int mq_permissions(struct ctl_table_header *head=
-, struct ctl_table *table
->  	kuid_t ns_root_uid;
->  	kgid_t ns_root_gid;
-> =20
-> -	mq_set_ownership(head, table, &ns_root_uid, &ns_root_gid);
-> +	mq_set_ownership(head, &ns_root_uid, &ns_root_gid);
-> =20
->  	if (uid_eq(current_euid(), ns_root_uid))
->  		mode >>=3D 6;
-> diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-> index 051ed5f6fc93..a0a7a79991f9 100644
-> --- a/net/sysctl_net.c
-> +++ b/net/sysctl_net.c
-> @@ -54,7 +54,6 @@ static int net_ctl_permissions(struct ctl_table_header =
-*head,
->  }
-> =20
->  static void net_ctl_set_ownership(struct ctl_table_header *head,
-> -				  struct ctl_table *table,
->  				  kuid_t *uid, kgid_t *gid)
->  {
->  	struct net *net =3D container_of(head->set, struct net, sysctls);
->=20
-> --=20
-> 2.44.0
->=20
-
---=20
-
-Joel Granados
-
---ocm5o5kuc2yzovjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX9fWwACgkQupfNUreW
-QU+9nwv/VPfUKwe96f/1IjtYBOEYJC4KSZS0jlPNLEY7jI3pzcwn4R0iRR0FuuoN
-xjvMo0hm5RknZnijWVbEjYDyfhco1De9zS/2WokOHofnGZz3YknXbXCzPWbH5p0l
-4BpznOSut113gLJ8ClTQRnnNbhsQLHrzpYPvKpT7AhmNwJAP4YcBuw9+hnUTqNaa
-cow6+ueb0FzwjxJTXb9n4sF92SPqiiPL/HniKNb3j5gZZbGKRgm+9YO5kZ/18Yhd
-lj1QgMZXPCxzlvgpdygAt5zI9KsjvzZ2F2O3M7Iz0o1Kmep1OSqGll2FEa5tc7JW
-J1x7GY6zzBNF3zp1wWToE1MMHLTWRMioDJd3dHyvh+9MXDE7n7hXy+ZaByiHCKDT
-pcVujl1UykkC1n4nbfLyxgXeBbMmr+l0wARHROPC8BCFWpVHIbkymtoIENLmZbLZ
-pyu6p3zQynkf3ZklvRp4Sh2PKr+AbgVDz8RtDEEtLytYByliXBSL1gioehAZxNor
-1qLLvEoj
-=2GYL
------END PGP SIGNATURE-----
-
---ocm5o5kuc2yzovjr--
 
