@@ -1,60 +1,80 @@
-Return-Path: <linux-kernel+bounces-112037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C324887477
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:33:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA41887479
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77DD91C21C83
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:33:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B1A91F22747
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C3E80021;
-	Fri, 22 Mar 2024 21:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C6880611;
+	Fri, 22 Mar 2024 21:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TzeAuge8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Af4gOK8W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007DD5820D;
-	Fri, 22 Mar 2024 21:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E6C7FBBF
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 21:33:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711143225; cv=none; b=Nm6ZNitkathyte7qCe/5esgAsslf5Q5ahY744Qk8r5lLtXmqK/FxnsBOpFkDSYgMdPObhc/oWk66aKHe7gAIcV9GbxLTp0CCMgAgOGa4tpyk9kIUEqPla1G00JEYzGq0tGQDPqYx5MX6VcZqeWSsVYIrlhl4i5/ZDpYwWeICfKY=
+	t=1711143233; cv=none; b=fRsj1o2BkH2CmYQE3jZ/eQoL/NuGSiQ2hs5TUPF42Xgukni6X2ZVGXYHVxTO9savxnTREoL12iT+u0EgGgIenMPLWwEpZh/KGfTK2Zjiie23JYGb8s8CIlav1K/eG+hRK+QRycppLp1XQnzIOieKFy/qJ0JdOSa0ZkXBzSyAFCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711143225; c=relaxed/simple;
-	bh=DQpdJFbAd4o7WYYdFBMyE4qP9VwUyYnmmHM4TImOg9Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iJU5qFVRKqQPEZoNFUL46CIcCIahhwwCuyRYAl9X52yjbj9iTFhE/SPURlSG5kc6kGVU5LSKByPxgUzTPQcnhJTGDpwhtswpGq5z2bn/u/d7o5Py5mUlfGzR1lvgX7rLJ3T93IkOj5M1IOixEltenOFOpagBkCPDFrRmhthPPbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TzeAuge8; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711143223; x=1742679223;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=DQpdJFbAd4o7WYYdFBMyE4qP9VwUyYnmmHM4TImOg9Q=;
-  b=TzeAuge88sqPNiVENA0pper9Xo1l+uo680kshBu3tj4Ud7Bh43xFW77w
-   afFDc62wu9YZUn9Sc8FfLatcu96/FZolBm31sDRJaOHlMrX9rNxAZdUDr
-   fGEKKwtTNh1mld5XXCJimcLqcOEAY9YdUqjybLTfopzSFb3wFwfRr3U0e
-   LMxEjgBuKf3/FAV+XmsKVwOIJDC/fzkEhDKxtf2BeBWYC3TR/CzRAL4or
-   nZsfdVvTIVot3ic61iV1uCF4yABONap7WzJSp83TsgOJxmLMiiZPXQL3l
-   SLPaJjX9eTpotybaEN7BoWxKjXNsR2YsvBJyzwda79ngph9Oe9CKYBh8s
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6418650"
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="6418650"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:33:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="15097420"
-Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.41]) ([10.24.10.41])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:33:41 -0700
-Message-ID: <0b34990b-8a3f-487e-891e-64d3d4d68613@intel.com>
-Date: Fri, 22 Mar 2024 14:33:41 -0700
+	s=arc-20240116; t=1711143233; c=relaxed/simple;
+	bh=PqzwJRGeA0m4c/OUT2r2CD8DOxmQIwZ0ypehS4LmR30=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Zrn3F09l4Vn2IvXXZsUDG/JqOu+FJdt/MQgaN+Bq2xn2/rOVQc7ILRKT8NBhyM521gVgQnJY71WBJrMJtxB9tvVd99G211Kg8YKI0be9ENIlQccx6Qa/W4fWkARvd2D0tFAmCJElzP1xUQClWV9SKJRgn0EBsq+4GKvyU8B7k5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Af4gOK8W; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711143229;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=N0U+z4zSBh2A2zjh96RNC4QUW0B+ry8dBKnISC/lxOM=;
+	b=Af4gOK8Wl6DhTF3i7GWpRdkHW8gUVWkwxMlivx9IY9SuRUA6q4ynGXcJvGz0fL3qAQ2u4a
+	ksARwJFCClsCUGqeFmqyABLHZAKc7uaRd1bfINei3CCPH85VMAlVHcWb0uZscl+j8m98SS
+	5QNucTF4ChcFuoVMB9QU+LxPBXhSPOQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-597-41uTkuJxPB-qWy2wIBsS3w-1; Fri, 22 Mar 2024 17:33:48 -0400
+X-MC-Unique: 41uTkuJxPB-qWy2wIBsS3w-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40e53200380so12297985e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:33:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711143227; x=1711748027;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N0U+z4zSBh2A2zjh96RNC4QUW0B+ry8dBKnISC/lxOM=;
+        b=uRCCFEo7Eh+Xmntm/hggewVoMypJg72G5FyEEktx/lKA6HYIHGy5T+oJHDaFYqWEn5
+         YBiwDrPGNq3BhMd9rGfRh18Qn0TzuIWmiZjml8qP6npBTURXXH15s6jVfpZ3CgPzmjEv
+         lvcYtxbMf/bO3QNd837NSccBsH+wR3j44QfLdEHzvP0AvLsb2riqHYfV3o9PgnZsJWSg
+         dujo+oZn9u+Lkx57vv2aJaYCuAqStU5q/d2pGWo66aY5lpOXpiCdk0/6tK85WLAaXLTn
+         S9CvDo2OWFNDZQMrPn4ZXCty3Fe6IoStQxW6Jn6wMuKkWCo55JZCMokQBYXFhh6bmWDB
+         /iFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJskgk77f1mF2LMlB3GNAtipmOu9WJwdCXSk3PnHDkWK9cAjBYg7gLZZ9o8ZX6B9Iqrel8NYjz4eBCq2FEYszqGnNrl0IBmYpcVuKm
+X-Gm-Message-State: AOJu0YxlnyG7gaiTxZ5Udi76O5p9R0W6Zkpt4tuHq2HeNC7/OcYCs6Lw
+	Qr+an4Y72nFLu7Pvhil1N7QoAEvngpX0VQnZivy5y1dEMziBrlnGLCkA6N8C5Gvo1Bgwfocod8D
+	p3J0XzBhaySr9Zt/xa9ISvA0D+jLia4upH3VP4pMl1PDAYQujLtz9O5HbM2zZdA==
+X-Received: by 2002:a05:600c:364a:b0:413:f4d0:c233 with SMTP id y10-20020a05600c364a00b00413f4d0c233mr387740wmq.35.1711143227183;
+        Fri, 22 Mar 2024 14:33:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE8o03NYFlUyKSvgiFG7FIlhqUJeGho6F16MyvDU0RetUKhLAowP2mrdM2c8abvBrdDtYjOTg==
+X-Received: by 2002:a05:600c:364a:b0:413:f4d0:c233 with SMTP id y10-20020a05600c364a00b00413f4d0c233mr387727wmq.35.1711143226775;
+        Fri, 22 Mar 2024 14:33:46 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71b:7e00:9339:4017:7111:82d0? (p200300cbc71b7e0093394017711182d0.dip0.t-ipconnect.de. [2003:cb:c71b:7e00:9339:4017:7111:82d0])
+        by smtp.gmail.com with ESMTPSA id f10-20020a05600c4e8a00b00412e5f32591sm622002wmq.28.2024.03.22.14.33.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 14:33:46 -0700 (PDT)
+Message-ID: <a6632384-c186-4640-8b48-f40d6c4f7d1d@redhat.com>
+Date: Fri, 22 Mar 2024 22:33:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,349 +82,169 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 08/29] KVM: selftests: TDX: Add TDX lifecycle test
-To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
- Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
- Erdem Aktas <erdemaktas@google.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
- Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-9-sagis@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
 Content-Language: en-US
-From: "Chen, Zide" <zide.chen@intel.com>
-In-Reply-To: <20231212204647.2170650-9-sagis@google.com>
-Content-Type: text/plain; charset=UTF-8
+From: David Hildenbrand <david@redhat.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: xingwei lee <xrivendell7@gmail.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, samsun1006219@gmail.com,
+ syzkaller-bugs@googlegroups.com, linux-mm <linux-mm@kvack.org>,
+ Mike Rapoport <rppt@kernel.org>
+References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
+ <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+ <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
+ <CAJfpegt3UCsMmxd0taOY11Uaw5U=eS1fE5dn0wZX3HF0oy8-oQ@mail.gmail.com>
+ <620f68b0-4fe0-4e3e-856a-dedb4bcdf3a7@redhat.com>
+ <CAJfpegub5Ny9kyX+dDbRwx7kd6ZdxtOeQ9RTK8n=LGGSzA9iOQ@mail.gmail.com>
+ <463612f2-5590-4fb3-8273-0d64c3fd3684@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <463612f2-5590-4fb3-8273-0d64c3fd3684@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 12/12/2023 12:46 PM, Sagi Shahar wrote:
-> From: Erdem Aktas <erdemaktas@google.com>
+On 22.03.24 22:18, David Hildenbrand wrote:
+> On 22.03.24 22:13, Miklos Szeredi wrote:
+>> On Fri, 22 Mar 2024 at 22:08, David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 22.03.24 20:46, Miklos Szeredi wrote:
+>>>> On Fri, 22 Mar 2024 at 16:41, David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>>> But at least the vmsplice() just seems to work. Which is weird, because
+>>>>> GUP-fast should not apply (page not faulted in?)
+>>>>
+>>>> But it is faulted in, and that indeed seems to be the root cause.
+>>>
+>>> secretmem mmap() won't populate the page tables. So it's not faulted in yet.
+>>>
+>>> When we GUP via vmsplice, GUP-fast should not find it in the page tables
+>>> and fallback to slow GUP.
+>>>
+>>> There, we seem to pass check_vma_flags(), trigger faultin_page() to
+>>> fault it in, and then find it via follow_page_mask().
+>>>
+>>> ... and I wonder how we manage to skip check_vma_flags(), or otherwise
+>>> managed to GUP it.
+>>>
+>>> vmsplice() should, in theory, never succeed here.
+>>>
+>>> Weird :/
+>>>
+>>>> Improved repro:
+>>>>
+>>>> #define _GNU_SOURCE
+>>>>
+>>>> #include <fcntl.h>
+>>>> #include <unistd.h>
+>>>> #include <stdio.h>
+>>>> #include <errno.h>
+>>>> #include <sys/mman.h>
+>>>> #include <sys/syscall.h>
+>>>>
+>>>> int main(void)
+>>>> {
+>>>>            int fd1, fd2;
+>>>>            int pip[2];
+>>>>            struct iovec iov;
+>>>>            char *addr;
+>>>>            int ret;
+>>>>
+>>>>            fd1 = syscall(__NR_memfd_secret, 0);
+>>>>            addr = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, fd1, 0);
+>>>>            ftruncate(fd1, 7);
+>>>>            addr[0] = 1; /* fault in page */
+>>
+>> Here the page is faulted in and GUP-fast will find it.  It's not in
+>> the kernel page table, but it is in the user page table, which is what
+>> matter for GUP.
 > 
-> Adding a test to verify TDX lifecycle by creating a TD and running a
-> dummy TDG.VP.VMCALL <Instruction.IO> inside it.
+> Trust me, I know the GUP code very well :P
 > 
-> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
-> Signed-off-by: Ryan Afranji <afranji@google.com>
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |  4 +
->  .../selftests/kvm/include/x86_64/tdx/tdcall.h | 35 ++++++++
->  .../selftests/kvm/include/x86_64/tdx/tdx.h    | 12 +++
->  .../kvm/include/x86_64/tdx/test_util.h        | 52 +++++++++++
->  .../selftests/kvm/lib/x86_64/tdx/tdcall.S     | 90 +++++++++++++++++++
->  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 27 ++++++
->  .../selftests/kvm/lib/x86_64/tdx/tdx_util.c   |  1 +
->  .../selftests/kvm/lib/x86_64/tdx/test_util.c  | 34 +++++++
->  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 45 ++++++++++
->  9 files changed, 300 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
->  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
->  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
->  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
->  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
->  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
->  create mode 100644 tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+> gup_pte_range -- GUP fast -- contains:
 > 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index a35150ab855f..80d4a50eeb9f 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -52,6 +52,9 @@ LIBKVM_x86_64 += lib/x86_64/vmx.c
->  LIBKVM_x86_64 += lib/x86_64/sev.c
->  LIBKVM_x86_64 += lib/x86_64/tdx/tdx_util.c
->  LIBKVM_x86_64 += lib/x86_64/tdx/td_boot.S
-> +LIBKVM_x86_64 += lib/x86_64/tdx/tdcall.S
-> +LIBKVM_x86_64 += lib/x86_64/tdx/tdx.c
-> +LIBKVM_x86_64 += lib/x86_64/tdx/test_util.c
->  
->  LIBKVM_aarch64 += lib/aarch64/gic.c
->  LIBKVM_aarch64 += lib/aarch64/gic_v3.c
-> @@ -152,6 +155,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
->  TEST_GEN_PROGS_x86_64 += steal_time
->  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
->  TEST_GEN_PROGS_x86_64 += system_counter_offset_test
-> +TEST_GEN_PROGS_x86_64 += x86_64/tdx_vm_tests
->  
->  # Compiled outputs used by test targets
->  TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
-> new file mode 100644
-> index 000000000000..78001bfec9c8
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Adapted from arch/x86/include/asm/shared/tdx.h */
-> +
-> +#ifndef SELFTESTS_TDX_TDCALL_H
-> +#define SELFTESTS_TDX_TDCALL_H
-> +
-> +#include <linux/bits.h>
-> +#include <linux/types.h>
-> +
-> +#define TDG_VP_VMCALL_INSTRUCTION_IO_READ 0
-> +#define TDG_VP_VMCALL_INSTRUCTION_IO_WRITE 1
-> +
-> +#define TDX_HCALL_HAS_OUTPUT BIT(0)
-> +
-> +#define TDX_HYPERCALL_STANDARD 0
-> +
-> +/*
-> + * Used in __tdx_hypercall() to pass down and get back registers' values of
-> + * the TDCALL instruction when requesting services from the VMM.
-> + *
-> + * This is a software only structure and not part of the TDX module/VMM ABI.
-> + */
-> +struct tdx_hypercall_args {
-> +	u64 r10;
-> +	u64 r11;
-> +	u64 r12;
-> +	u64 r13;
-> +	u64 r14;
-> +	u64 r15;
-> +};
-> +
-> +/* Used to request services from the VMM */
-> +u64 __tdx_hypercall(struct tdx_hypercall_args *args, unsigned long flags);
-> +
-> +#endif // SELFTESTS_TDX_TDCALL_H
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> new file mode 100644
-> index 000000000000..a7161efe4ee2
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef SELFTEST_TDX_TDX_H
-> +#define SELFTEST_TDX_TDX_H
-> +
-> +#include <stdint.h>
-> +
-> +#define TDG_VP_VMCALL_INSTRUCTION_IO 30
-> +
-> +uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
-> +				      uint64_t write, uint64_t *data);
-> +
-> +#endif // SELFTEST_TDX_TDX_H
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> new file mode 100644
-> index 000000000000..b570b6d978ff
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> @@ -0,0 +1,52 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef SELFTEST_TDX_TEST_UTIL_H
-> +#define SELFTEST_TDX_TEST_UTIL_H
-> +
-> +#include <stdbool.h>
-> +
-> +#include "tdcall.h"
-> +
-> +#define TDX_TEST_SUCCESS_PORT 0x30
-> +#define TDX_TEST_SUCCESS_SIZE 4
-> +
-> +/**
-> + * Assert that tdx_test_success() was called in the guest.
-> + */
-> +#define TDX_TEST_ASSERT_SUCCESS(VCPU)					\
-> +	(TEST_ASSERT(							\
-> +		((VCPU)->run->exit_reason == KVM_EXIT_IO) &&		\
-> +		((VCPU)->run->io.port == TDX_TEST_SUCCESS_PORT) &&	\
-> +		((VCPU)->run->io.size == TDX_TEST_SUCCESS_SIZE) &&	\
-> +		((VCPU)->run->io.direction ==				\
-> +			TDG_VP_VMCALL_INSTRUCTION_IO_WRITE),		\
-> +		"Unexpected exit values while waiting for test completion: %u (%s) %d %d %d\n", \
-> +		(VCPU)->run->exit_reason,				\
-> +		exit_reason_str((VCPU)->run->exit_reason),		\
-> +		(VCPU)->run->io.port, (VCPU)->run->io.size,		\
-> +		(VCPU)->run->io.direction))
-> +
-> +/**
-> + * Run a test in a new process.
-> + *
-> + * There might be multiple tests we are running and if one test fails, it will
-> + * prevent the subsequent tests to run due to how tests are failing with
-> + * TEST_ASSERT function. The run_in_new_process function will run a test in a
-> + * new process context and wait for it to finish or fail to prevent TEST_ASSERT
-> + * to kill the main testing process.
-> + */
-> +void run_in_new_process(void (*func)(void));
-> +
-> +/**
-> + * Verify that the TDX is supported by KVM.
-> + */
-> +bool is_tdx_enabled(void);
-> +
-> +/**
-> + * Report test success to userspace.
-> + *
-> + * Use TDX_TEST_ASSERT_SUCCESS() to assert that this function was called in the
-> + * guest.
-> + */
-> +void tdx_test_success(void);
-> +
-> +#endif // SELFTEST_TDX_TEST_UTIL_H
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
-> new file mode 100644
-> index 000000000000..df9c1ed4bb2d
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
-> @@ -0,0 +1,90 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Adapted from arch/x86/coco/tdx/tdcall.S */
-> +
-> +#define TDX_HYPERCALL_r10 0 /* offsetof(struct tdx_hypercall_args, r10) */
-> +#define TDX_HYPERCALL_r11 8 /* offsetof(struct tdx_hypercall_args, r11) */
-> +#define TDX_HYPERCALL_r12 16 /* offsetof(struct tdx_hypercall_args, r12) */
-> +#define TDX_HYPERCALL_r13 24 /* offsetof(struct tdx_hypercall_args, r13) */
-> +#define TDX_HYPERCALL_r14 32 /* offsetof(struct tdx_hypercall_args, r14) */
-> +#define TDX_HYPERCALL_r15 40 /* offsetof(struct tdx_hypercall_args, r15) */
-> +
-> +/*
-> + * Bitmasks of exposed registers (with VMM).
-> + */
-> +#define TDX_R10 0x400
-> +#define TDX_R11 0x800
-> +#define TDX_R12 0x1000
-> +#define TDX_R13 0x2000
-> +#define TDX_R14 0x4000
-> +#define TDX_R15 0x8000
-> +
-> +#define TDX_HCALL_HAS_OUTPUT 0x1
-> +
-> +/*
-> + * These registers are clobbered to hold arguments for each
-> + * TDVMCALL. They are safe to expose to the VMM.
-> + * Each bit in this mask represents a register ID. Bit field
-> + * details can be found in TDX GHCI specification, section
-> + * titled "TDCALL [TDG.VP.VMCALL] leaf".
-> + */
-> +#define TDVMCALL_EXPOSE_REGS_MASK	( TDX_R10 | TDX_R11 | \
-> +					  TDX_R12 | TDX_R13 | \
-> +					  TDX_R14 | TDX_R15 )
-> +
-> +.code64
-> +.section .text
-> +
-> +.globl __tdx_hypercall
-> +.type __tdx_hypercall, @function
-> +__tdx_hypercall:
-> +	/* Set up stack frame */
-> +	push %rbp
-> +	movq %rsp, %rbp
-> +
-> +	/* Save callee-saved GPRs as mandated by the x86_64 ABI */
-> +	push %r15
-> +	push %r14
-> +	push %r13
-> +	push %r12
-> +
-> +	/* Mangle function call ABI into TDCALL ABI: */
-> +	/* Set TDCALL leaf ID (TDVMCALL (0)) in RAX */
-> +	xor %eax, %eax
-> +
-> +	/* Copy hypercall registers from arg struct: */
-> +	movq TDX_HYPERCALL_r10(%rdi), %r10
-> +	movq TDX_HYPERCALL_r11(%rdi), %r11
-> +	movq TDX_HYPERCALL_r12(%rdi), %r12
-> +	movq TDX_HYPERCALL_r13(%rdi), %r13
-> +	movq TDX_HYPERCALL_r14(%rdi), %r14
-> +	movq TDX_HYPERCALL_r15(%rdi), %r15
-> +
-> +	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
-> +
-> +	tdcall
-> +
-> +	/* TDVMCALL leaf return code is in R10 */
-> +	movq %r10, %rax
-> +
-> +	/* Copy hypercall result registers to arg struct if needed */
-> +	testq $TDX_HCALL_HAS_OUTPUT, %rsi
-> +	jz .Lout
-> +
-> +	movq %r10, TDX_HYPERCALL_r10(%rdi)
-> +	movq %r11, TDX_HYPERCALL_r11(%rdi)
-> +	movq %r12, TDX_HYPERCALL_r12(%rdi)
-> +	movq %r13, TDX_HYPERCALL_r13(%rdi)
-> +	movq %r14, TDX_HYPERCALL_r14(%rdi)
-> +	movq %r15, TDX_HYPERCALL_r15(%rdi)
-> +.Lout:
-> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
-> +	pop %r12
-> +	pop %r13
-> +	pop %r14
-> +	pop %r15
-> +
-> +	pop %rbp
-> +	ret
-> +
-> +/* Disable executable stack */
-> +.section .note.GNU-stack,"",%progbits
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> new file mode 100644
-> index 000000000000..c2414523487a
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include "tdx/tdcall.h"
-> +#include "tdx/tdx.h"
-> +
-> +uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
-> +				      uint64_t write, uint64_t *data)
-> +{
-> +	uint64_t ret;
-> +	struct tdx_hypercall_args args = {
-> +		.r10 = TDX_HYPERCALL_STANDARD,
-> +		.r11 = TDG_VP_VMCALL_INSTRUCTION_IO,
-> +		.r12 = size,
-> +		.r13 = write,
-> +		.r14 = port,
-> +	};
-> +
-> +	if (write)
-> +		args.r15 = *data;
-> +
-> +	ret = __tdx_hypercall(&args, write ? 0 : TDX_HCALL_HAS_OUTPUT);
-> +
-> +	if (!write)
-> +		*data = args.r11;
-> +
-> +	return ret;
-> +}
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> index 063ff486fb86..b302060049d5 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
-> @@ -224,6 +224,7 @@ static void tdx_enable_capabilities(struct kvm_vm *vm)
->  		      KVM_X2APIC_API_USE_32BIT_IDS |
->  			      KVM_X2APIC_API_DISABLE_BROADCAST_QUIRK);
->  	vm_enable_cap(vm, KVM_CAP_SPLIT_IRQCHIP, 24);
-> +	vm_enable_cap(vm, KVM_CAP_MAX_VCPUS, 512);
+> if (unlikely(folio_is_secretmem(folio))) {
+> 	gup_put_folio(folio, 1, flags);
+> 	goto pte_unmap;
+> }
+> 
+> So we "should" be rejecting any secretmem folios and fallback to GUP slow.
+> 
+> 
+> ... we don't check the same in gup_huge_pmd(), but we shouldn't ever see
+> THP in secretmem code.
+> 
 
-Since TDX spec doesn't define max vCPUs, is it a good idea to fix it to
-512 in this common code?
+Ehm:
 
-How about to move this line to the specific test case where you are
-actually verifying this capability?
+[   29.441405] Secretmem fault: PFN: 1096177
+[   29.442092] GUP-fast: PFN: 1096177
 
-For example, move it to PATCH v5 21/29] KVM: selftests: TDX: Add
-TDG.VP.INFO test
 
-+ vm_enable_cap(vm, KVM_CAP_MAX_VCPUS, 512);
-..
+.. is folio_is_secretmem() broken?
 
-TEST_ASSERT_EQ(ret_max_vcpus, 512);
+.. is it something "obvious" like:
 
+diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+index 35f3a4a8ceb1e..6996f1f53f147 100644
+--- a/include/linux/secretmem.h
++++ b/include/linux/secretmem.h
+@@ -16,7 +16,7 @@ static inline bool folio_is_secretmem(struct folio *folio)
+          * We know that secretmem pages are not compound and LRU so we can
+          * save a couple of cycles here.
+          */
+-       if (folio_test_large(folio) || !folio_test_lru(folio))
++       if (folio_test_large(folio) || folio_test_lru(folio))
+                 return false;
+  
+         mapping = (struct address_space *)
+
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
