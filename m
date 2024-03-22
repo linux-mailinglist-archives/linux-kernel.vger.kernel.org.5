@@ -1,164 +1,98 @@
-Return-Path: <linux-kernel+bounces-111441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B75B4886C67
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:54:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 454E2886C6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4790FB212C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C85842847FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191B245022;
-	Fri, 22 Mar 2024 12:54:28 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B9245022;
+	Fri, 22 Mar 2024 12:56:22 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0EF44C84;
-	Fri, 22 Mar 2024 12:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93914438E
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711112067; cv=none; b=dIpliw/5mBHmRmToFPP/sy4GctEuMAN9LBVXP2Y1ohs/20r4PxsHUjPYAeg6QNLiBWEN7535gBo4U4OG0dUCzhCP+RfFLpe+A+TKPpClWWAPKjkJ/P5JV/KRCwOsWa4ryAdLn3G42AjVlB3rC9cF+wxz6hi7A0ZIpPTx0UDW/H4=
+	t=1711112182; cv=none; b=bFXtvS2y4fyZHLNoOn5azbHw+V1cRwQqJ0bj4TYoqYWMztTlQDyINPSGrT5rTz2aQ5ujtcMJ9GHk5s6BrI/gkUq8sflBXCpQgfjNsts13OlK5xFtfqzSpwTUz0dtTWuVfrPof1BRK76UPzg4AwlRuG6tFhVCy0LMP4THWUy8sYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711112067; c=relaxed/simple;
-	bh=w4OncPFEVgHt/sZMulU9LuHwZDWetxuOFd+FfSV5f1Q=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=o/Rh/tb/stQ07Fqwv5oGpZvmVlGQ0wJlxK8kiubsE0R5cATe21XVRjhUJ+xryf+NK644vdeLFm98WzUto5IMpEEh6QuWlGzP4K5D7YMMSjByd04TkusM0kgzts1FXjJ+ej9R0v2F33pjjWvgzhxJJN9GN8TWzXKAcjbxpVZmeB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4V1Mf408bbz1R7yR;
-	Fri, 22 Mar 2024 20:51:40 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 93F6118005F;
-	Fri, 22 Mar 2024 20:54:15 +0800 (CST)
-Received: from [10.67.111.82] (10.67.111.82) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 22 Mar
- 2024 20:54:15 +0800
-Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>, David Laight
-	<David.Laight@aculab.com>
-References: <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
- <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
- <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
- <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
- <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <CAMj1kXG2EGvgGuV-K7h5qDVJeLMd5hkq8GzigzCRzh9Z8cgyWw@mail.gmail.com>
- <ZfzMFv3zmYY36l9u@shell.armlinux.org.uk>
- <2b2993fb215c4a5abd7d77ff1c984113@AcuMS.aculab.com>
- <Zf1UyxlDf/oCjXxr@shell.armlinux.org.uk>
-CC: Ard Biesheuvel <ardb@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
-	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
-	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
-	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
-	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
-	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
-	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
-Message-ID: <18f5c5fd-4a5d-0c33-9d73-7e94c1e42f3f@huawei.com>
-Date: Fri, 22 Mar 2024 20:54:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+	s=arc-20240116; t=1711112182; c=relaxed/simple;
+	bh=AKxsIZe47m3HwkKzZpHYJnNtFzfNN0OZqc8+pBilnfo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GSW97jFmBYv6yT/cseasoEB4s3GLNubCqUDDLmRS3qAfTPvglaR9epvW4g3Av6HmMUUxhZ2KGlRX5KD/7FU4VVzQLLzb3p1ZXBde8xtXKW858xu7to91YN4yyulq9CLtvqpM2bHEPsI+08MaafZ5RPY4SexnT/cWbSPtLu3tUyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc764c885bso230393539f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:56:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711112180; x=1711716980;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=as3kHiPIe02alo97ccAAheYCyCVs1t+AreIadrBewbU=;
+        b=vgin3pMx0Z2DkF95gkrDKesPQmAug5laveQrC7gUtOGiE9i+G354bmE2EYJJKRVbuu
+         OmIhz44OfQi/91t7lHNqOAj8x+tjlwJ1ItII09fKGq3iORLW3ayJ4c+Bnyvlc1w8X0zd
+         yQH+h2PFMT0A0K/Bj5znFcIrAaAWUxA/Rb8KjhTwvsVrtk09DteByQSJ8c0mtVGJB0Bo
+         qRk4T6mrp+IMSl4sPgndqNjEh9Gtr4KwZ7O11bENwJZiBwp3znuWwdlPiyh8xMycEL1m
+         PBcZGWo2sRhgwhZnyez6cD1GIbwa2+P/hRNDA4JDwE2mJkfg29+SecoswmaK5FJVWsoq
+         OnJg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8gPDBwXnTIQhiaMHuhsmoA8LoBPlY8sOiuVxA8eiyK8eWXeSz8oViNAxI8LiUkyPmnjOc1HrDGk6Ty1nYG1mBVb05M4uknp19vwm7
+X-Gm-Message-State: AOJu0Yy1jWosg4C8q1j8oc3k0TBZT6tXDJyP+CSNzHDkLAVIO5yPz3gO
+	WTa64ZIvdATHEN2bb3CnWkWvHpDhuuBGQ/oyrPtHIuQzEMNLyJvcn9vjDAQBktE85NiRe3WMOG/
+	SuLuE4ZewmrYOZ4Py/eNQHSY6cPJ4oJpw8kI8k10jJi4J/rCnjU+2Akg=
+X-Google-Smtp-Source: AGHT+IG86pGwdCn0JEExxN2xo64ljJuewF8hAjPl93yXSVAUqGKIY+C7rCnNwzMBrtKUuEATBsFMxnyobTw3G0++DGZZWolC4u6/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zf1UyxlDf/oCjXxr@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
+X-Received: by 2002:a05:6602:3411:b0:7cc:1019:a69d with SMTP id
+ n17-20020a056602341100b007cc1019a69dmr138660ioz.0.1711112179969; Fri, 22 Mar
+ 2024 05:56:19 -0700 (PDT)
+Date: Fri, 22 Mar 2024 05:56:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8810606143f5948@google.com>
+Subject: [syzbot] Monthly hams report (Mar 2024)
+From: syzbot <syzbot+list8065faf9059b8f933690@syzkaller.appspotmail.com>
+To: linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello hams maintainers/developers,
 
+This is a 31-day syzbot report for the hams subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/hams
 
-On 2024/3/22 17:52, Russell King (Oracle) wrote:
-> On Fri, Mar 22, 2024 at 09:24:20AM +0000, David Laight wrote:
->> From: Russell King
->>> Sent: 22 March 2024 00:09
->>>
->>> On Thu, Mar 21, 2024 at 11:43:41PM +0100, Ard Biesheuvel wrote:
->>>> Given that this particular issue would just disappear if the compiler
->>>> would just insert a BRK after the BL, I'd prefer to explore first
->>>> whether we can get this fixed on the compiler side.
->>>
->>> Arm32 doesn't have a BRK instruction. What would be appropriate after
->>> the no-return BL would be OS specific.
->>
->> It would need to depend on what was being compiled.
-> 
-> Yes, but as for the rest...
-> 
->> For the kernel it could be much the same as BUG().
->> (Probably without any extra data.)
->> I suspect that arm32 could use 'swi' in kernel space,
->> but you wouldn't want to use that in userspace.
->>
->> Looks like armv5 has a bkpt instruction - could that be used?
->> Or does the kernel need to support armv4?
->>
->> The last arm I wrote anything for was a strongarm.
-> 
-> Thank you David, but remember - I have programmed 32-bit Arm since 1992,
-> and wrote the majority of the 32-bit Arm kernel support. I think I know
-> what I'm walking about by now.
-> 
-> The compiler can't do the same as BUG() - that is a kernel specific
-> construct and not an architecture one. It is an undefined instruction
-> specifically chosen to be undefined on both 32-bit and 16-bit Arm ISAs.
-> 
-> As for your idea of using "swi" in kernel space, no that's never going
-> to happen - to shoe-horn that into the SWI exception path for the sake
-> of the compiler would be totally idiotic - it would cause userspace
-> performance regressions for something that never happens. Moreover,
-> with EABI the "comment" field in the "swi" instruction is ignored so
-> all SWIs under EABI are treated the same. So no, that's not going to
-> work without causing inefficiencies - again - for a case that will
-> likely never happen.
-> 
-> Whereas we already provide an abort() function because iirc the
-> compiler used to emit branches to that due to noreturn functions. If
-> correct, there's previous convention for doing this - and abort() is
-> still exists in the kernel and in userspace since it's part of ANSI
-> C. This would be a more reliable and portable solution, but probably
-> not for embedded platforms - and that's probably why it got removed.
-> 
-> There isn't going to be a single solution to this which satisfies
-> everyone, and I don't blame the compiler people for deciding to
-> basically give up with putting any instruction after a call to a
-> no-return function - because there isn't an instruction defined in
-> the architecture that _could_ be put there that would work everywhere.
-> 
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 5 issues are still open and 32 have been fixed so far.
 
+Some of the still happening issues:
 
-If the compiler inserts (a branch to 'abort') behind (no-return BL)
-that does not apply to ARM32 embedded platforms, do you think the
- "[PATCH v3] ARM: unwind: improve unwinders for noreturn case"
-submitted the day before yesterday can be used as a
-complementary solution?
+Ref Crashes Repro Title
+<1> 27      No    general protection fault in rose_transmit_link (3)
+                  https://syzkaller.appspot.com/bug?extid=677921bcd8c3a67a3df3
+<2> 13      Yes   KMSAN: uninit-value in ax25cmp (3)
+                  https://syzkaller.appspot.com/bug?extid=74161d266475935e9c5d
+<3> 6       Yes   KMSAN: uninit-value in nr_route_frame
+                  https://syzkaller.appspot.com/bug?extid=f770ce3566e60e5573ac
 
-2) we're unwinding a frame that has been created because of a branch,
-   where the PC points at the next instruction _after_ that callsite.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-When we hit the second type of frame, "pc-1" is closer to callsite,
-and no problem is introduced. In addition, the issue of the 'noreturn'
-can be solved.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
