@@ -1,103 +1,85 @@
-Return-Path: <linux-kernel+bounces-111948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8436488731F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:30:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4D6688731D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5E9A1C22AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:30:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432EB2854EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A15067A10;
-	Fri, 22 Mar 2024 18:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D1C171A6;
+	Fri, 22 Mar 2024 18:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p3kx2f52"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IqMVwH0X"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21A84174F
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3324C3EA6F;
+	Fri, 22 Mar 2024 18:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711132221; cv=none; b=uS3egmqIbZg5kjUN1vLh10cgz03IhK4u/KfD5zEInnneaLZ8hyYDfs5mlAVsMr1ddpMdmJrN2hym+4O5gLr/J9iJdVlv4ZpP8zVedR+rkhxHn5/J9BwUcxLwJ0MVI8+/YjT1X5xOjfBgvehrbgYhgwjWkY6pEct90wjaCxj3YIw=
+	t=1711132212; cv=none; b=HXrpnKA3PkHiNjY7cBF/wb52sb0JtOP+LtA+n8NAVme9lsMKFtPYOL4wIwysxZgud0Hi225CmuZwf8NlwVMI2FgnBRELxa5qLuoD9kNs3MH3MrKKnHwWBW86RxLMEnmTYegMk1jBxtTlzbZ+fEiojSVTW4R/D2BEWThBsA5OLXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711132221; c=relaxed/simple;
-	bh=fbvUdHjQMr9QM8LbKobKsg5CEzA3UsAcRecYH4GoWFY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ojU0JZGe3GLTaPfB62YeQy1+vWA66AqJmN7SgXVpJggRwhBXMHU2fOt6quuemZflI5okmL2CuLCRPBbvKSLzA9jF4YLABBihPfM/9CrpiBS4VfALL7XUIdRmlPesaJkAHOm1mpVR9ga6EE4NJefiwNaQIxJaqjHrlZIYBKoxyFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p3kx2f52; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <839a7448-b958-402e-862a-fc3f7d86e797@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711132217;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nbmcNXR4M4wRC+ClOsomWLe4oemdmZUUssvEnkGlvp0=;
-	b=p3kx2f52xDB3YwKuEFEml3CfCh9PqKqt8ttYlH7lbRq8hf+yWMWgo1bhVAK/ydG1IivSS1
-	k+M/YOj2D9rGh0WABb6zWje1+UiyCuC+GCsresFqLllU5YcQcq9JLu1LeuBbYZL/O/mOiD
-	nDArjQ46uG6nqO+xEfdhs0nfEqAtj04=
-Date: Sat, 23 Mar 2024 02:30:08 +0800
+	s=arc-20240116; t=1711132212; c=relaxed/simple;
+	bh=8FL31bqszZm9IGAOvPx565fgUKDVGSLzANi1NhRoWec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nCYzigbXm/TZZAlWNzX8Mhoa1yhvAzTivkyIK3ezXoqdzHIRsM0e8bRXwFoqfN1x3FPe0IeStsnsy7ObYMziGCUyQurC9QpJf3gUZzqGlCF7HZEzdD3nSB8NaB4T3lRlNIvLd0MCJrPnsoMB7/1LzhGf6MnK+8e7kP5b8bBZRkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IqMVwH0X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91A14C433C7;
+	Fri, 22 Mar 2024 18:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711132211;
+	bh=8FL31bqszZm9IGAOvPx565fgUKDVGSLzANi1NhRoWec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IqMVwH0XViHF1WJUTiXQzFdYNBaiMDrDQgnShb0QIPQK21eZidBDmpwlcvGqHIASW
+	 kQ5z0TFtFvqkJ5Kwa3gnO30jcHg3KbgKmi829VX4hIxN6/esgiEKcH+Poojk+kbWFD
+	 s9MLPMpXo1avCNel56dQSo3JalV3RYDW2r9/uy6+LYxMg7r25oH1Q9wCRNKP60BJF7
+	 u9iz++otSe3f5hVI5K9NRP6otpeSwDiLLbf8480u5LooXsuu1qCiUM6YfWZqK2+Bjz
+	 2GLjaYKtd1tlPoR+Xcp5/bW1FMNmv1u6fo3+FCk38REVs6A7d61rPtrsMrtkfsMomy
+	 v5C3s0O1FRqyw==
+Date: Fri, 22 Mar 2024 13:30:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Allen_Lin <allencl_lin@hotmail.com>, dmitry.torokhov@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jikos@kernel.org, benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
+Message-ID: <20240322183009.GA1227164-robh@kernel.org>
+References: <20240322085606.993896-1-allencl_lin@hotmail.com>
+ <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <20240322-mammary-boil-f9a4c347fba1@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] software node: Implement device_get_match_data fwnode
- callback
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Scally <djrscally@gmail.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-acpi@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20240318234222.1278882-1-sui.jingfeng@linux.dev>
- <Zfq85f-Dp1S3CKuG@smile.fi.intel.com>
- <9ced20e0-dfbd-4337-b5df-223b7baffd9e@linux.dev>
- <ZftG6Q5AaG71dhWq@smile.fi.intel.com>
- <9644da91-f367-4083-a3e4-4d0677c8cbca@linux.dev>
- <Zf2uUwcMgIpo6rVh@smile.fi.intel.com>
- <6bf102a4-6419-4083-8918-4f7c76cfa9a1@linux.dev>
- <Zf3IWyrW8IZLTg4x@smile.fi.intel.com>
- <8afe3f27-fc8e-4c20-ba28-74a0a2937e55@linux.dev>
- <Zf3LBvJEJF9xr2fv@smile.fi.intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <Zf3LBvJEJF9xr2fv@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322-mammary-boil-f9a4c347fba1@spud>
 
-Hi,
+On Fri, Mar 22, 2024 at 05:54:08PM +0000, Conor Dooley wrote:
+> On Fri, Mar 22, 2024 at 04:56:03PM +0800, Allen_Lin wrote:
+> > Add the HX83102j touchscreen device tree bindings documents.
+> > HX83102j is a Himax TDDI touchscreen controller.
+> > It's power sequence should be bound with a lcm driver, thus it
+> > needs to be a panel follower. Others are the same as normal SPI
+> > touchscreen controller.
+> > 
+> > Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+> 
+> note to self/Krzysztof/Rob:
+> There was a previous attempt at this kind of device. This version looks
+> better but might be incomplete given there's a bunch more properties in
+> that patchset:
+> https://lore.kernel.org/all/20231017091900.801989-1-tylor_yang@himax.corp-partner.google.com/
 
+Those don't look like properties we want coming back.
 
-On 2024/3/23 02:16, Andy Shevchenko wrote:
-> On Sat, Mar 23, 2024 at 02:12:14AM +0800, Sui Jingfeng wrote:
->> On 2024/3/23 02:05, Andy Shevchenko wrote:
->>>    Besides that, the kernel project rule is "we do not add
->>> the dead (unused) code".
->> This rule is good an correct and I admit.
->>
->> But the problem is that it is chicken-and-egg problem,
->> it probably have at least two user now.
-> Then show them! Convert in the same series and show that.
-
-I believe that Vladimir has show enough to you. I have read that thread,
-I think Vladimit have explained very well.
-
-
-
-
--- 
-Best regards,
-Sui
-
+Rob
 
