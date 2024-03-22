@@ -1,175 +1,117 @@
-Return-Path: <linux-kernel+bounces-111636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B5B886ED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:44:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3537F886EDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9ABC7B23195
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:44:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 595721C22319
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4689E481DA;
-	Fri, 22 Mar 2024 14:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9A24C3C3;
+	Fri, 22 Mar 2024 14:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RLl8Xabd"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="upJPI5bG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D570843ACB;
-	Fri, 22 Mar 2024 14:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF0C4AEF0;
+	Fri, 22 Mar 2024 14:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711118674; cv=none; b=Ggy9WwGPWtVG/AqrFaMtvZTG19sODIQQ2UcTQb9/wMeCmX7UpeA2Qbzv41kG6el0go3+1C1uMw2dVHhoitJhfh4/cwlkVPG9e8CUCyF3ynJSxTFpGIMgtbwR/P2qc3IOsHrtwOx63yJPwnB1sz1JXUB2IGSKroyt/Z8zE9rfWqw=
+	t=1711118681; cv=none; b=ZqbUxhpGV5Ktou4tIzIVS/UoWsqvAyVowuSpJz6Jt0EE6GBatkxwJ9YBs6oyJ9hfV9MulfoD+UGIphdgj3ExDdI12Sz9RP++Ay9Baci0BfmWDX4e5tYMHsbiypoJuEpu9fr6pMWId8Ht3dykEY9UpqGCRB6Wrjg9eC8v002Tk0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711118674; c=relaxed/simple;
-	bh=fLvLAoxK4AgIfQuMHjJKO2hy8PqWwldmk3SToV5xSGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kn4q4Pf7iWA+BmMbYytPGPhMATA3CUpnQsOolE+peGP1xhtUwJ0FLiwtb3ick23hdscao6zYQqvIKyMuuj9NA9GxXDqodDFFHNUPh8/OlxC4A8Erp1gmru0IbZZ/vyqeeqFk+u5gqNxGJI1yuVzPjP1MvWbGrDnCH+B/1Lo99Pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RLl8Xabd; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513dc9d6938so2913413e87.2;
-        Fri, 22 Mar 2024 07:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711118671; x=1711723471; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ydPjZIhrdpBAx+xTo9vWQVbHzQe3rJLAV5yOy6IIdbM=;
-        b=RLl8XabdAZxIQSmkIp4JskFxZ7VbWXjYU1ZMm21JSmyUlMIPzsKsMW4scMRsVK/Tgm
-         wYSSq2uB8KkXCeMXm7eGcIWS+JQ8ZNM+5Nr2OOnlWLFE4AMIibl+Kx0Fyz0wtVgJS1IR
-         moFRNNMNO00a20DVr8CZQbfNeVA9WJ90cdS7rArso9ODGTTRtyccJlh6QHdpFMu2ozkf
-         3SueP0VAU2ThBWp3yFN14dHVDpf3MGSwWeruKipdHVzYUAknasv31YKFjtAfQC6Bwb2C
-         KxKe6LteVXo86dCSon285BRbI9DZGmgwvXfr6qmHTl0vsEZRvsKd7KhOU85tl38wiqBw
-         eRBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711118671; x=1711723471;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ydPjZIhrdpBAx+xTo9vWQVbHzQe3rJLAV5yOy6IIdbM=;
-        b=ZQrEtviifuBpMJzr5rIIQ42hDWncUdxyCkF72XMs2uYOPUGxHs1YZz4Gr2dRnjAvUZ
-         LcPnJERxIC4s0W10+ASypCkzIT9gu2DBKXx1ucOEry2814r34ZvXz5eKoThIqqPxbvL/
-         jVms0ZODN1AcgF1+bGjOqlSr7tXf4vaM/YCgIMUgxit1wVXOsuU+pP1rnx45b8UuDpD7
-         +prfP6xW7sN1IU764yOPjWiChMQVJTSNY+Gi67A2np2r731M0m2rJl5HGHj26REZa6eK
-         lxspCRsGPl3HLDhpypH7+Eb9U2+d5SkITxMil/tu2M5+fOr1SqXkHYsAO7sSgCw8p/Wi
-         Qomg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIbEq7MGhh1SG9FGzzvxZFRIkhJ4MIsn3LO7pfiZCQ8hM35wyYY0nUjvHkR/0Lbvx7wN3EP6aiqWyvrD+YTHpu3yg1c0rFcDV4rdy7
-X-Gm-Message-State: AOJu0YyHjcxfWoYO1ZSjWdQ6BEmGj3NSx7VNcQxeXBYd2fm+8ElAipMu
-	qGlhlqwS9uViir8EjOWmH0KSZPVNYGGgVsSLycY79Qsnilws7CBEFA9X2xm+
-X-Google-Smtp-Source: AGHT+IEuuUGLVdqwKWOu7gZSFXVyRXmkiOxN7iaPO+pplXKWT/UMBkwDue6rk2yl6Rc0l/aWKolPLQ==
-X-Received: by 2002:a19:7714:0:b0:513:a39e:ae45 with SMTP id s20-20020a197714000000b00513a39eae45mr1736686lfc.62.1711118670520;
-        Fri, 22 Mar 2024 07:44:30 -0700 (PDT)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-49-82.cust.vodafonedsl.it. [188.217.49.82])
-        by smtp.gmail.com with ESMTPSA id k37-20020a05600c1ca500b004140a3d34fasm3256054wms.41.2024.03.22.07.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 07:44:29 -0700 (PDT)
-Date: Fri, 22 Mar 2024 15:44:28 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/6] media: imx335: Parse fwnode properties
-Message-ID: <Zf2ZTFxKjPHgN9eU@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20240321111239.808735-1-umang.jain@ideasonboard.com>
- <20240321111239.808735-3-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1711118681; c=relaxed/simple;
+	bh=d/mXWGYiLtO14dGJkbwMhR4twccpqxt0u2zwj59+NWQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=LLbbOLEYVVTP58dQIck0TpHILy68Ge6nJ/gH5S711eGL7Ka9queqhYzp+ORTys5hXeAIZxJE510XbQHUOMqwiXzyG0I0nOx6TYu5+7QJFZYvRvOFfR48oE0WB5NvdD2tiIVZAdjVlHdX0q4DwZGQO8BnGK3x138uUyREg29N9AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=upJPI5bG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711118677;
+	bh=d/mXWGYiLtO14dGJkbwMhR4twccpqxt0u2zwj59+NWQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=upJPI5bGROmmXiAXpthmdPbRZ4S+kVbUPm0QYJQM05MHVBL7JlNqsWyZb3XipcWtr
+	 bYSUa7d9U3wqt2EBNt4B+5YeG39TiALXo0Bg2kRa7BzKDYsmX10e7ObYO3SJjbzAud
+	 6ibb2+AWuyMEeBLlwtH4LfnLFELo64n2p5gSZku0RGeNpd+CIbCNTl9JU9oj+2oTPN
+	 tixwhdpbWUXyH/Er+g/vYgTPMJ5+DIcdqH6xxXuuVtyXThFdNrwZSlhwhR6UbJvRHT
+	 kD19olU1XFG9fHt4tnbaS9sVcuaA5FdbY9T5zCS9a3gTXDVqT0NI4bnkY13JFaUiPQ
+	 viEj16/Vc2Qrw==
+Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nicolas)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A496F3781116;
+	Fri, 22 Mar 2024 14:44:35 +0000 (UTC)
+Message-ID: <6420a5c39e0a6f85d4fd5a85643d601bd1e2fb05.camel@collabora.com>
+Subject: Re: [PATCH] media: mediatek: vcodec: Handle invalid decoder vsi
+From: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To: Irui Wang <irui.wang@mediatek.com>, Hans Verkuil
+ <hverkuil-cisco@xs4all.nl>,  Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Yunfei Dong
+ <yunfei.dong@mediatek.com>, angelogioacchino.delregno@collabora.com, 
+ sebastian.fricke@collabora.com
+Cc: Longfei Wang <longfei.wang@mediatek.com>, Maoguang Meng
+ <maoguang.meng@mediatek.com>, 
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-media@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,  linux-mediatek@lists.infradead.org
+Date: Fri, 22 Mar 2024 10:44:31 -0400
+In-Reply-To: <20240320061336.2615-1-irui.wang@mediatek.com>
+References: <20240320061336.2615-1-irui.wang@mediatek.com>
+Autocrypt: addr=nicolas.dufresne@collabora.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321111239.808735-3-umang.jain@ideasonboard.com>
 
-Hi Umang,
+Hi,
 
-On Thu, Mar 21, 2024 at 04:42:35PM +0530, Umang Jain wrote:
-> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> Call the V4L2 fwnode device parser to handle controls that are
-> standardised by the framework.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+Le mercredi 20 mars 2024 =C3=A0 14:13 +0800, Irui Wang a =C3=A9crit=C2=A0:
+> Handle invalid decoder vsi in vpu_dec_init to ensure the decoder vsi is
+> valid for future use.
+>=20
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 > ---
->  drivers/media/i2c/imx335.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index c633ea1380e7..b8cf85984127 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -1227,10 +1227,12 @@ static int imx335_init_controls(struct imx335 *imx335)
->  {
->  	struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
->  	const struct imx335_mode *mode = imx335->cur_mode;
-> +	struct v4l2_fwnode_device_properties props;
->  	u32 lpfr;
->  	int ret;
->  
-> -	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
-> +	/* v4l2_fwnode_device_properties can add two more controls */
-> +	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 9);
->  	if (ret)
->  		return ret;
->  
-> @@ -1296,15 +1298,27 @@ static int imx335_init_controls(struct imx335 *imx335)
->  		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
->  
->  	if (ctrl_hdlr->error) {
-> -		dev_err(imx335->dev, "control init failed: %d\n",
-> -			ctrl_hdlr->error);
-> -		v4l2_ctrl_handler_free(ctrl_hdlr);
-> -		return ctrl_hdlr->error;
-> +		ret = ctrl_hdlr->error;
-> +		dev_err(imx335->dev, "control init failed: %d\n", ret);
-
-Don't know if we need this dev_err print here.
-If I'm not wrong this is already printed into the imx335_probe:
-
-ret = imx335_init_controls(imx335);
-if (ret) {
-	dev_err(imx335->dev, "failed to init controls: %d\n", ret);
-	goto error_power_off;
-}
-
-Apart of that looks good to me. :)
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
-
-> +		goto free_ctrl_hdlr;
->  	}
->  
-> +	ret = v4l2_fwnode_device_parse(imx335->dev, &props);
-> +	if (ret)
-> +		goto free_ctrl_hdlr;
+>  .../media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c    | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c=
+ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> index 82e57ae983d5..17770993fe5a 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_vpu_if.c
+> @@ -231,6 +231,12 @@ int vpu_dec_init(struct vdec_vpu_inst *vpu)
+>  	mtk_vdec_debug(vpu->ctx, "vdec_inst=3D%p", vpu);
+> =20
+>  	err =3D vcodec_vpu_send_msg(vpu, (void *)&msg, sizeof(msg));
 > +
-> +	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx335_ctrl_ops,
-> +					      &props);
-> +	if (ret)
-> +		goto free_ctrl_hdlr;
+> +	if (IS_ERR_OR_NULL(vpu->vsi)) {
+> +		mtk_vdec_err(vpu->ctx, "invalid vdec vsi, status=3D%d", err);
+> +		return -EINVAL;
+> +	}
 > +
->  	imx335->sd.ctrl_handler = ctrl_hdlr;
->  
->  	return 0;
-> +
-> +free_ctrl_hdlr:
-> +	v4l2_ctrl_handler_free(ctrl_hdlr);
-> +	return ret;
+
+Make sense, though on the cosmetic side, were is the err value from if the =
+vsi
+pointer is NULL ?
+
+Nicolas
+
+>  	mtk_vdec_debug(vpu->ctx, "- ret=3D%d", err);
+>  	return err;
 >  }
->  
->  /**
-> -- 
-> 2.43.0
 
-Thanks & Regards,
-Tommaso
-
-> 
-> 
 
