@@ -1,86 +1,108 @@
-Return-Path: <linux-kernel+bounces-111309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5FE0886A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:38:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7878D886A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 562EB1F21761
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:38:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25CD41F23AF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4883D0B9;
-	Fri, 22 Mar 2024 10:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3B43C684;
+	Fri, 22 Mar 2024 10:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ch7RzTxi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JiihL1+/"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C293B2A4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D063B798
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711103890; cv=none; b=QJ8bNRDA9hMjx1vAzmEQGF1x7AI+SU2oNkJSrhbSz8tsTlREP8B1ViDI+laSaeWOXAieRtdWH/ABaS7pUMJgAT5abPx4z1D3wzx+L5uCoJ48G3AS6/sNk5bEPkHuj1iWtLjKdKNw4MobeJOMLC7bbTXDzESAABulO6R4yke6/KU=
+	t=1711103927; cv=none; b=EYHUwZmbEdBa9UWfW/okh7oaSWNONvWamK6e94aD6IQR33JJNaqYtJHVMYGltDT4LiEL2VGc0bDFigR98TfBe0gtgPfo7AqgziK43Zs738RLn1jSpzqwnVvimU1FXhCIEA/fe6e6CeGTCVFYzI19+leaxDdnQWouUFVJtCaTap0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711103890; c=relaxed/simple;
-	bh=l4BqPVM87gJjFNn3Odmy/BJLvrQJMrIynptnhPUZvsk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WeSoUjr1IFIcsMVQSUFRgymhv6jNwpyrP2LXD0rN7wTJG2VqB6ZhjHMyaq+WU/wSByuyNmaMDBEGMiprdyZUstnzJmuFEOFOIiITiWIc0jJWjdR0DH6dO5mLG+fYiQ/WNHvbeiEIf8UW4wbEpGec1RK1TtCyRDUlutB7KIjQUJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ch7RzTxi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711103887;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l4BqPVM87gJjFNn3Odmy/BJLvrQJMrIynptnhPUZvsk=;
-	b=Ch7RzTxicEWJ2lXr9EFC0QlDP++k6J6RwgWr5ZKR9g1htp0K1isaJZp6OI/DSa2SipzYzj
-	E53HJCh5pm1TwCQpEQuIh5YlkEQa5YPGzRWDhZFAS7lCtlNkai3jqoeP99CQrmTfEwot3t
-	TJ3VaSuKdJOYnGyoBPzp8sYbX1GEoVU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-643-WDxoLs2MOnOpqy38yxNsMA-1; Fri,
- 22 Mar 2024 06:38:04 -0400
-X-MC-Unique: WDxoLs2MOnOpqy38yxNsMA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7FDC53C025D9;
-	Fri, 22 Mar 2024 10:38:03 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.83])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8D2D9C041EF;
-	Fri, 22 Mar 2024 10:38:01 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: quic_bqiang@quicinc.com
-Cc: ath11k@lists.infradead.org,
-	jjohnson@kernel.org,
-	jtornosm@redhat.com,
-	kvalo@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] wifi: ath11k: workaround to use VMs
-Date: Fri, 22 Mar 2024 11:37:53 +0100
-Message-ID: <20240322103756.94296-1-jtornosm@redhat.com>
-In-Reply-To: <87f0c6c9-43e5-4ea3-8f4c-9425e6a74b10@quicinc.com>
-References: <87f0c6c9-43e5-4ea3-8f4c-9425e6a74b10@quicinc.com>
+	s=arc-20240116; t=1711103927; c=relaxed/simple;
+	bh=Hq2/eEOuWhpmKCsuwoD25OCbkTU9eHjsACQjFbIL5J4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZD2RSogTzaNDoriK0p4BFnmNWeD4ohv6ux8Tr0Ky0VaWVLX5TejPu+naV69E1QYK992d8hgEDlh9wp/9dLrvuPeo36fSlZs8IEkU8EldpOrZ5Od8MOCR/9DJPqo4MTTn3wwZ5+hUPzQsuGgJfeq78vIrLFW5NJgUPexR16VJHN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JiihL1+/; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso1874136276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711103925; x=1711708725; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EW5QX/PBiLajaatZ/82NErGaCFABadkL02aA8JURVjA=;
+        b=JiihL1+/6U2Cx7eJN6b4Oe67iNFFFwpMCixX/BSNlEZziujtNC4bsDiR9/+lxJy7AU
+         rhESgenhwWlEL6pwXxuSKhrD88LMs5SO/ztC1aZ8D7V3oLww0qjE4XWA2kZgjc6mbsas
+         ytdavUNjY1u2pDaiNesQGnGiJDq532WBuZudF1qkTElflgRSWQgZf67M7ej3kqhao0jx
+         jDwxeTLj3YRuG7SwuntosDcRg+U1OCkZEhKRvuU2AGYktjqC347VbPZu1wzginm7/8L6
+         qRDUy6AH8GmHh6qUOakmNrWj6QcY9HXDADUt+gWDIpZOpzJw0tQTO0+gamIKnhygF4rY
+         +5tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711103925; x=1711708725;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EW5QX/PBiLajaatZ/82NErGaCFABadkL02aA8JURVjA=;
+        b=XOc2Bdak623wlU6EYkftMilvpw3qlVF58u1xshCIqXnJvy+ncmbP1XWOt6TaLMAjFR
+         +u43Z2hxI6OYS1f6KwW5GPI0UldPqPz20AE8DXwpnq8xladl6MCIDWvGZW+hO6+bpMRc
+         SUcTumtjSYe+uPQvSZBzYHB4fpBAi4cAtSzXDR7LVUqR3qUQxfm0RCSbQhu+LQuyq/cG
+         2WDBEXABkMYNrJwxlXQ2Hx/T3556y6TaK0dxr4G8dFLxZ/e2vGwQtOAwRuUwb+o7rCBC
+         an6w0+8nW9wIZWbBdVpYOkTUzP09ReAE6GW4G5BC0b5NZAFhhrIeaAmyZpY/wNbUTUrM
+         lAmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZfwrE/IsuIelb6Fxbyun537lWtyX9jCSSkxCb1wNPjwXPPAwymQYWSsji/+pvbFTiZzvQd+SFyvC6Cjp0hyHEjsTQA7J8OTZxiArj
+X-Gm-Message-State: AOJu0Yw5Qpg0nd29FhB+akcpANFGdIDP9D1SlmIe1dnPE4yC3rZqAZZt
+	55dGnkP8BildOT/s/nJ+L1LxeynCLw6K13mN6oGI43+AmnsUluXk2kUlIlK/NsGbWMdPCW46IpT
+	UTGOuKP60pvmG+C+dtiTgNRgBBnCvaOtpQnQjkQ==
+X-Google-Smtp-Source: AGHT+IHSKsoTSx1uARV4yY9pfYF30+iJm9yZmLK1Rm0y026834WCXCVGtwW6NoGV0aiUmgbWwwTt9TMD1a0SiQcBybI=
+X-Received: by 2002:a5b:651:0:b0:dc6:2e29:4262 with SMTP id
+ o17-20020a5b0651000000b00dc62e294262mr1579006ybq.58.1711103925350; Fri, 22
+ Mar 2024 03:38:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
+ <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-2-3ec0a966d52f@linaro.org>
+In-Reply-To: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-2-3ec0a966d52f@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 22 Mar 2024 12:38:34 +0200
+Message-ID: <CAA8EJpq1JSLdzpkbjSPjfFWvMEKgFBifjkOjAMQJUO40-bFnSw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] phy: qcom: qmp-pcie: refactor clock register code
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your comments.
-I don't have seen any change in MSI vector data but if it can be different from zero I will complete it.
+On Fri, 22 Mar 2024 at 11:43, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
+> in order to expose it, split the current clock registering in two parts:
+> - CCF clock registering
+> - DT clock registering
+>
+> Keep the of_clk_add_hw_provider/devm_add_action_or_reset to keep
+> compatibility with the legacy subnode bindings.
+>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 
-Best regards
-José Ignacio
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
+
+-- 
+With best wishes
+Dmitry
 
