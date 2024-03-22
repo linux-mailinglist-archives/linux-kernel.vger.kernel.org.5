@@ -1,195 +1,166 @@
-Return-Path: <linux-kernel+bounces-111855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EDC8871C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:12:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CABB8871C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0B35282BC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:12:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B09D1C22035
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B655FBAE;
-	Fri, 22 Mar 2024 17:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6789C5D752;
+	Fri, 22 Mar 2024 17:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ywb2pSrF"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="DJnokTum"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48285FB81
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EEF47796
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711127525; cv=none; b=ij0Dix7A40wTr7SQpy+q21IcydB39t9UmclEfwd6jdFZp3pRUH6RHeVL9aQrDLlydXIwLbvJ3qhHgMO2o0HgvSPGNG8jEsIEPoojL7QJUGufB0znFA7bpA117Oa8bb7tBpnempN5eOhHeb8DvJtOC0UEhTBbw9wkgmGL0fVL9IE=
+	t=1711127640; cv=none; b=cgytUPsSp4NCYW1o50o165H6CFT03T2lioII/fWSLs6Ub9m5QgiXIXxFZzdNmvHf+D14+q/GETJSfkndP8mjW4hLoSRETX+bA8P44yXc2n96DAR4ltmYw67JIOFc1zTpMZTx341lveT0J3yz8HCvnU+zSQYuyaNp1Y/hUAB8OuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711127525; c=relaxed/simple;
-	bh=+ct2h7/fDBnMFZPkg8VIxn6Af6gVcsnE8gTLZhsQvpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HyuOXJCh2/VmknQuUSgDwNT5DTn98IKpKGRIT0nyWq+myj6DfhQ2q5QHsNhGCjVFVr58Q5WxGRn0Nggwyw8+QOegv9DlgUeczOw3R3WikVLeDLrXSW8KgBV4pQRzN33C1HbWb3uWLRJlG9cqLfMUEJG2JekaQFZ/3TYE13y/5+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ywb2pSrF; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-789e209544eso140236985a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:12:02 -0700 (PDT)
+	s=arc-20240116; t=1711127640; c=relaxed/simple;
+	bh=eupBAERlpi60lBkl1wmr+KLhDG+teWj2Aum1Gw416Bw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j5bgg2ZvJDlkQRHuVAwNNiBNERsMuXgVUczMJGflLfMW+tgVFhmkK2+C2GhoBmP9XTwaPnFBtA7I9erru6FaIKarJ3QUMqvqZgPe+s7QcIen8hrh9Ab3r6UL+Tnteug1/nN+EMiLyapSN1CKWp9+V+N103WFGVMBSwsAHsHXDdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=DJnokTum; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-609f3ca61e0so25620907b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711127521; x=1711732321; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AhgKXUbVNsRIrFdcvhPW/fXvU30n5049WUO63MYWMHk=;
-        b=ywb2pSrFYD4czLKrHc8PgpVUcwkP7AMEG4B/+0effaAQ8H90Bv+87Aqm/jbKJOSlmi
-         WRZrfGd5OT/gkLbhi+2aRBAFoAOL8NWQo/ZnggSCUPgnXEQno0FHYthCdqg3ksRKDcJa
-         cAo6C1Ml5Mx0IZdEeomjCsolDAybsLCkH8AW4DEw4EKQe78Pb6+sSUrCKUDaXd6JV0Op
-         4Ppcl4JG67SjJOF06yYSxXrlhxK4aqIt9OqckZxRtwq2Bh7DO7QldCHmlzJBeY4zfHMa
-         qzuZ87UhRUMO8YM9if4h9DnmgM60fROHTgNNCa67hQlu1SBt3TK0E8B3mTy2h5zig0ef
-         t8dg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711127638; x=1711732438; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JrCZcezSHtMHgCYV9eTeglWhzn7+4jU5szarE8AAqMc=;
+        b=DJnokTumywRquMuBU3I+SKpJAvoVvHRxbv1CggjzeSnqHjwlZ+y3+6K6KtnmnFRh21
+         RhfPoP2UiTZMQmMX6GaVcwG7w3uiEIbst2L1nXk4bopLucJUUB3M++uIrAsPh/tvxKTp
+         HBb0T2dtE5pivRGTE1+l0x79WBC7I6oSpjMizWSbDk2cDknhIEuBHwcTbQQ+ebwvCybf
+         oSAaVJzNojSrzKG2hysRYVpkAHKRqHZmZVW2oQ5zt96Jhhr4sDx8Nu5uCxcU4/9gWzEq
+         L1aICic+22+csRBHjrCaiqWoCOLNJo2KaHwwbsp0iRQwfpokgk5WEznrfmnu1xNa+uQZ
+         A0ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711127521; x=1711732321;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AhgKXUbVNsRIrFdcvhPW/fXvU30n5049WUO63MYWMHk=;
-        b=KraQkJugEfLQGElTw5qvGwIS3Snkt2nuhkOKuLZSOzbXJ7QvpxTsy2aYXf0HUAwbCV
-         MNNfSAq2YF6w5EnQulNfWXX9AYs/0CExRJcFW3svPU9UTu2YB2/FmYzMVbHD9ZTTJB3p
-         eAPWSZTuf09KjTJH5RM6g6BKdtDhpUEHG1sPnH7MTOrdOvQPJy7LQPRUa95RUyPPR3DM
-         nmDeC9xfDEID6he/IqmdR2ZwWlEkHbfECqhJP//6fbzZbJLoQqlxnnkAtoep8EDa/fiv
-         SAHOt3LtPIY1d0FjVA0PEKjmTN7nKI9OUFoGUFFQQBbxtv++YTJwCbBAUFNre7QCSdPu
-         CtVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXPlhJqeL/3wooWvgoUhGRbRgVTU+ORupN/MMKZrb+5xWQKo0APgE+cW5NWXhSavZLCv3VdAfEYN91LMFBGHed91jkbLO02MZv/lIv5
-X-Gm-Message-State: AOJu0Yz9mZdrH9jGvSiiGRHKEOmky1w1OnsOMcRjOJf4jRZNcgG99Ahr
-	Qz98mVk7sra02mNFJvbrJhrmUi31TWmsVvq3PKERFx5GvI0qfqxRDbEHAds4yCI=
-X-Google-Smtp-Source: AGHT+IGagVLORI8RsabPqhy5Z9tIk+Bm9PW30xqfpOL0RjEQw3cGOQSh2YuEBEt6E2gvn2JnlObyng==
-X-Received: by 2002:a05:6214:2525:b0:68f:e779:716c with SMTP id gg5-20020a056214252500b0068fe779716cmr3486339qvb.63.1711127521539;
-        Fri, 22 Mar 2024 10:12:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:16be])
-        by smtp.gmail.com with ESMTPSA id g15-20020a0562140acf00b0068fdb03a3a3sm1250906qvi.95.2024.03.22.10.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 10:12:01 -0700 (PDT)
-Date: Fri, 22 Mar 2024 13:11:56 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chris Li <chrisl@kernel.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] zswap: initialize entry->pool on same filled entry
-Message-ID: <20240322171156.GC237176@cmpxchg.org>
-References: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
- <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com>
- <20240322031907.GA237176@cmpxchg.org>
- <CAF8kJuNe5xXVp00Ogk2AL_zXFK6pN0u7=0avjyPPkagB3FWy8Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1711127638; x=1711732438;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JrCZcezSHtMHgCYV9eTeglWhzn7+4jU5szarE8AAqMc=;
+        b=B5fZM+536hq5XPP8AYhwj09CHvGU9LZCB4cMlzwQG6mLEsgKM+6go8zoKjH/EeVW0U
+         eaIe/cdGsXu0LuxYlozUB0muEZ9ljlrDq/5AOd9LjAxWeiaxA8pvEJnE3pWFjCsQtPRE
+         dgAbhdHRcH1PAXXQMUwgyQCTd+ct+91uFRhqye3FP5qRDaq/THjirFIw/vFFSvAksYZk
+         qn6lhnGHtDny1xE+Fdtop1e+dAQPp4Ev0RZzO/oQ1ywDvINgDO4ebbULiH9McvkxhEiS
+         NwLxw9aZOpyimlrJNDJRQ9cmD4mPNE1a8SEl8mARtrFYSbs1GjJFlNIcIxqHQL39Vw56
+         FdkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWpFbVzWWVG6yPb7AMOpjL+fVMZggazxbLxFRK9prdsW/JS0zwCb66FBt4NiDXfJomD0JWyR+7VWX4pnmTSBCN/DhXrT2YbRkoFFMs7
+X-Gm-Message-State: AOJu0YynLGP3s4ai45XraCoqo5OHMT5ehAV8WOgrymfk767SC26cvXhO
+	4cKnVqzgoEFJeL1vPhl7zP+uAed8rBtnz1ILbCAW5ySdLEbwbEIMaLqzTaVJFh/0BMl09T2Ykk1
+	VjvjsEyu1zQK13L+uX2bV7xwfZC+eXx/1NOQPgyrHDVzfjf/qCA8=
+X-Google-Smtp-Source: AGHT+IE+dsR/xonqkKbxamX8f+YQ5K1V1B8ZXMDiZAfjLGnUm36k6juYRhEDctP2PuCEMODRsbZ2Htfibx0XdOXU0Jg=
+X-Received: by 2002:a25:b121:0:b0:dc6:d2d3:a57c with SMTP id
+ g33-20020a25b121000000b00dc6d2d3a57cmr2856379ybj.59.1711127638274; Fri, 22
+ Mar 2024 10:13:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF8kJuNe5xXVp00Ogk2AL_zXFK6pN0u7=0avjyPPkagB3FWy8Q@mail.gmail.com>
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
+ <20240319215915.832127-6-samuel.holland@sifive.com> <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
+ <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com> <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+ <d9452ab4-a783-4bcf-ac25-40baa4f31fac@sifive.com>
+In-Reply-To: <d9452ab4-a783-4bcf-ac25-40baa4f31fac@sifive.com>
+From: Deepak Gupta <debug@rivosinc.com>
+Date: Fri, 22 Mar 2024 10:13:48 -0700
+Message-ID: <CAKC1njRBbzM+gWowg1LOjq5GzVn4q+vJP9JUswVYfWmEw+yHSg@mail.gmail.com>
+Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
+ per-thread envcfg bits
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org, 
+	tech-j-ext@lists.risc-v.org, kasan-dev@googlegroups.com, 
+	Evgenii Stepanov <eugenis@google.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Andrew Jones <ajones@ventanamicro.com>, Guo Ren <guoren@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 06:35:43AM -0700, Chris Li wrote:
-> On Thu, Mar 21, 2024 at 8:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, Mar 21, 2024 at 5:13=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> On 2024-03-19 11:39 PM, Deepak Gupta wrote:
+> >>>> --- a/arch/riscv/include/asm/switch_to.h
+> >>>> +++ b/arch/riscv/include/asm/switch_to.h
+> >>>> @@ -69,6 +69,17 @@ static __always_inline bool has_fpu(void) { retur=
+n false; }
+> >>>>  #define __switch_to_fpu(__prev, __next) do { } while (0)
+> >>>>  #endif
+> >>>>
+> >>>> +static inline void sync_envcfg(struct task_struct *task)
+> >>>> +{
+> >>>> +       csr_write(CSR_ENVCFG, this_cpu_read(riscv_cpu_envcfg) | task=
+->thread.envcfg);
+> >>>> +}
+> >>>> +
+> >>>> +static inline void __switch_to_envcfg(struct task_struct *next)
+> >>>> +{
+> >>>> +       if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RIS=
+CV_ISA_EXT_XLINUXENVCFG))
+> >>>
+> >>> I've seen `riscv_cpu_has_extension_unlikely` generating branchy code
+> >>> even if ALTERNATIVES was turned on.
+> >>> Can you check disasm on your end as well.  IMHO, `entry.S` is a bette=
+r
+> >>> place to pick up *envcfg.
+> >>
+> >> The branchiness is sort of expected, since that function is implemente=
+d by
+> >> switching on/off a branch instruction, so the alternate code is necess=
+arily a
+> >> separate basic block. It's a tradeoff so we don't have to write assemb=
+ly code
+> >> for every bit of code that depends on an extension. However, the cost =
+should be
+> >> somewhat lowered since the branch is unconditional and so entirely pre=
+dictable.
+> >>
+> >> If the branch turns out to be problematic for performance, then we cou=
+ld use
+> >> ALTERNATIVE directly in sync_envcfg() to NOP out the CSR write.
 > >
-> > On Thu, Mar 21, 2024 at 04:56:05PM -0700, Yosry Ahmed wrote:
-> > > On Thu, Mar 21, 2024 at 4:53 PM Chris Li <chrisl@kernel.org> wrote:
-> > > >
-> > > > Current zswap will leave the entry->pool uninitialized if
-> > > > the page is same  filled. The entry->pool pointer can
-> > > > contain data written by previous usage.
-> > > >
-> > > > Initialize entry->pool to zero for the same filled zswap entry.
-> > > >
-> > > > Signed-off-by: Chris Li <chrisl@kernel.org>
-> > > > ---
-> > > > Per Yosry's suggestion to split out this clean up
-> > > > from the zxwap rb tree to xarray patch.
-> > > >
-> > > > https://lore.kernel.org/all/ZemDuW25YxjqAjm-@google.com/
-> > > > ---
-> > > >  mm/zswap.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > > > index b31c977f53e9..f04a75a36236 100644
-> > > > --- a/mm/zswap.c
-> > > > +++ b/mm/zswap.c
-> > > > @@ -1527,6 +1527,7 @@ bool zswap_store(struct folio *folio)
-> > > >                         kunmap_local(src);
-> > > >                         entry->length = 0;
-> > > >                         entry->value = value;
-> > > > +                       entry->pool = 0;
-> > >
-> > > This should be NULL.
-> > >
-> > > That being said, I am working on a series that should make non-filled
-> > > entries not use a zswap_entry at all. So I think this cleanup is
-> > > unnecessary, especially that it is documented in the definition of
-> > > struct zswap_entry that entry->pool is invalid for same-filled
-> > > entries.
-> >
-> > Yeah I don't think it's necessary to initialize. The field isn't valid
-> > when it's a same-filled entry, just like `handle` would contain
-> > nonsense as it's unionized with value.
-> >
-> > What would actually be safer is to make the two subtypes explicit, and
-> > not have unused/ambiguous/overloaded members at all:
-> >
-> > struct zswap_entry {
-> >         unsigned int length;
-> >         struct obj_cgroup *objcg;
-> > };
-> >
-> > struct zswap_compressed_entry {
-> >         struct zswap_entry entry;
-> >         struct zswap_pool *pool;
-> >         unsigned long handle;
-> >         struct list_head lru;
-> >         swp_entry_t swpentry;
-> > };
-> >
-> > struct zswap_samefilled_entry {
-> >         struct zswap_entry entry;
-> >         unsigned long value;
-> > };
-> 
-> I think the 3 struct with embedded and container of is a bit complex,
-> because the state breaks into different struct members
+> > Yeah I lean towards using alternatives directly.
+>
+> One thing to note here: we can't use alternatives directly if the behavio=
+r needs
+> to be different on different harts (i.e. a subset of harts implement the =
+envcfg
+> CSR). I think we need some policy about which ISA extensions are allowed =
+to be
+> asymmetric across harts, or else we add too much complexity.
 
-That's kind of the point. They're different types that have their own
-rules and code paths. The code as it is right now makes it seem like
-they're almost the same. From the above you can see that they have
-actually almost nothing in common (the bits in struct zswap_entry).
+As I've responded on the same thread . We are adding too much
+complexity by assuming
+that heterogeneous ISA exists (which it doesn't today). And even if it
+exists, it wouldn't work.
+Nobody wants to spend a lot of time figuring out which harts have
+which ISA and which
+packages are compiled with which ISA. Most of the end users do `sudo
+apt get install blah blah`
+And then expect it to just work. It doesn't work for other
+architectures and even when someone
+tried, they had to disable certain ISA features to make sure that all
+cores have the same ISA feature
+(search AVX12 Intel Alder Lake Disable).
 
-This would force the code to show the difference as well.
-
-Depending on how Yosry's patches work out, this may or may not be
-worth doing. It's just an idea that could help make it easier.
-
-> How about:
-> 
-> struct zswap_entry {
->         unsigned int length;
->         struct obj_cgroup *objcg;
->         union {
->                 struct /* compressed */ {
->                          struct zswap_pool *pool;
->                          unsigned long handle;
->                          swp_entry_t swpentry;
->                          struct list_head lru;
->                 };
->                struct /* same filled */ {
->                        unsigned long value;
->                 };
->         };
-> };
-> 
-> That should have the same effect of the above three structures. Easier
-> to visualize the containing structure.
-
-I suppose it makes the struct a bit clearer when you directly look at
-it, but I don't see how it would help with code clarity.
+>
+> Regards,
+> Samuel
+>
 
