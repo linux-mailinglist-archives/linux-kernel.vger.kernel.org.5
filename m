@@ -1,1397 +1,1070 @@
-Return-Path: <linux-kernel+bounces-110894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1408F88654F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:54:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38429886552
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5D941C216D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:54:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AB311F22DF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F364BE4C;
-	Fri, 22 Mar 2024 02:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB674A3E;
+	Fri, 22 Mar 2024 02:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="Fcl9qUQR"
-Received: from SINPR02CU002.outbound.protection.outlook.com (mail-southeastasiaazhn15011002.outbound.protection.outlook.com [52.102.193.2])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JLfgMu8w"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3D84A3C;
-	Fri, 22 Mar 2024 02:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.102.193.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BA929A5;
+	Fri, 22 Mar 2024 02:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711076061; cv=fail; b=c2k6Il6vbMv4v4dd6EYomWbkuvc+nMhyuojXehNEdBMwuUt3eEF/DB7LGkKDnaDASCiwE6vE+xlozfe449tcRrOD/acuLLvrFRcKbGHR2Qse4u2osVYrH4+DvC/g2QQ/pEE0y3B09I51ypEtQ4uQoJ97/EblKLEwVgdB9VvRbFE=
+	t=1711076288; cv=fail; b=suMSVOx/5++JNDsydUbZMRm/nTHFcFdh+9sOxbxSjncNmw3wJ9ySGMpQSlbfSF4FDtAuLx1dXSZfnWrEp35w2C4TzZ2P+1T3uS46NkrfngoxpooP7Lcs1zoK7otCHyNAX8XfKhvZ9MPGp+/w8bFztinQ8avCJvI9GkTm/t35omE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711076061; c=relaxed/simple;
-	bh=a5OdHlYTJBkmgHOD1z5KW9VVX79H0Hn4Cq3kk7uSXFU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SqjgrTApbhBTlUKKXhO/W/4+xMSdIwXzc73+h7JoZVgEtP8Pk/syPPSOYWOQpqc3n5cBptlmWQVgpOA725gT/HobQvlHJ1oGEyCbbcSIj1EpMK/vO9uJrFYGL3+0bhjI/DQAAPm+vU67TbACrm3qxcJ6eJ3cU23zl8uRw2ARgM8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=Fcl9qUQR; arc=fail smtp.client-ip=52.102.193.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+	s=arc-20240116; t=1711076288; c=relaxed/simple;
+	bh=4Jmuxcio6IC1WJI/kjA+xGaxo+awt/f7UgTxTm90Isg=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=WpOAwGBfWykQJwSxrubCIoXk/DFEkCwSwhCGR9dOlJ+HM2mPGBEkCKRrblsgDDw3nH29+wn3NWI3FifUSxvV+vMGp331vAU45IlevJdeuXloBLW03HqhMqW5c5L+CCOqMr7/9Q8ooEKp8JhT5OFyl0YZwVXClRfj9+I1ugJf9Y4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JLfgMu8w; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711076283; x=1742612283;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=4Jmuxcio6IC1WJI/kjA+xGaxo+awt/f7UgTxTm90Isg=;
+  b=JLfgMu8wOCBOY6f+Ch3Ta0jM8akPbg0TqVzeOKD3tlFQFRtFXq0dHsvY
+   ie3SREwNE6bB0xtDKf6v5rNxNxc/KVlxfowdEBzl6JG0WfLWTHGeUD3bF
+   xW9xcWp/IZpfMAKNHJ+mNWyeTO5loDwL1DpRu1s8sV0rNymxeabCDhkcU
+   Dp6kq5a1/IJ3QIKYYFt/1d8PmIkK646CkxUYm9HZB8ev+DcbbTPSrMfoV
+   jyzzNadF4jmUoS1CGJRcX92SMpXzrTPupgAXV2vZgDOyKQvJa/g0luh0B
+   G2rDp1VqroM5F6+RkCl7I1CimUkGzGvzkP+jxLmXBYMqIEtLKTPQ0u/qH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="9912717"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="9912717"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 19:58:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="14825437"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 19:58:01 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 19:58:00 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 19:57:59 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 19:57:59 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 19:57:59 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kEA7R9yZ5SFWkecS1n0/GLB73pypZBi5AJDliJBVwVMiUtmMOTlfwTsz1d7e2BOYB6JZFEUM9w/Fxos+r9ttN6oly/WXVYvZRjLAizFfj154btqCtPeiakJF3mdfMh1j7ulKc1heVlMH1gJU6HVQ9PTMJA3YMehMgOG8KjHpO/1JuOFKo9o30zBOOyb6WTJaRzXjqFj8u0C5u6oAtwZkt6Q4FCzhWOpl7YRJxoJEd8rSZjLu7eWMSnvgMN5PJPSdDuWSH9R4ODJgLzzXyYmtv8zn/PeOKkAOs1xBb1SdYNqL51XxJ4z0qhnG8qQkTtWqVOA31t4gQa2kXo8i+iwXzQ==
+ b=RZPx6SXlexMd6saRSXGjAJbIfZas8h/JflRPFAgX0ONAaZbPCY02nTNEkPPOSQ6kZHZ3pAI1QTu569u7R01ghH8MyTrx7jsCLul8E5Q0yHlSC2HHq1pcraz039qSdl7hVb5WEYLwlEbILR+gF9hAghIeA3Bb3t3iLfH2LrdVoopLmY9g/+LikUSxsm5GPk0hwYJPD05yLTmmNYFI25bVCjTXnL0W5zMVN0MZdG4LBfWi8mccZi8HRyxR4nXYkVIl1GUKAXi/i6DpPpHKOCpVzbyuwWSPVPpml04xH6Ig152KVN/cg51wnmoom81t4aQz2gQKlIPYwkFj1LHQHdQf0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V818Dl3e7O1cfKJvsDaaFaYWwD4FuwmD/MJUdlx3gGs=;
- b=h8gdR6dS3WbSNH1NyvggYWZcixr/mNSL3791jiQX7nqj3uFbLX+1JbjBfAukwJgDeZWvmP566mVa7DYAM/ybPps7/BLYLpvIUHvpGGkPVltU0xBj/Fyx7QKov/YVt0wI52MmQEUi1rR38OaMFRkW1gmPmpWKfY1WkdYRjlULmjYKskuNJxipYc04wxwOyLxM/S2WhDamYG2iFizKHdMBuFB37HqF8GHDX/TuLGER04qowsjPVYK3TX0b1pVKJS+fjqkyhrhJTv7c5XqfuXih4YF41KFTgsQa3k2fEA3SJBUTlxrQ7rUisYF9HWzB74nLnkekl/EKhVywSnDZkPtTrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V818Dl3e7O1cfKJvsDaaFaYWwD4FuwmD/MJUdlx3gGs=;
- b=Fcl9qUQRq/znJjTuwcYhIeAGJR91on0Fl7fhkhzWV9ZAgJL+jVS2luUWLG77b5drot6FocNpslCTOIDZoi68+GO0uv8Qd44SEjM4tP0DLD5Fd8d6IPr7Tt52D0PQ6gTQD92ZVClUzee6m2qYAY0bOYwqMabC/A8woqHh5NfVFxM=
-Received: from PS2PR01CA0058.apcprd01.prod.exchangelabs.com
- (2603:1096:300:57::22) by TYSPR03MB8850.apcprd03.prod.outlook.com
- (2603:1096:405:9b::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Fri, 22 Mar
- 2024 02:54:12 +0000
-Received: from HK3PEPF00000220.apcprd03.prod.outlook.com
- (2603:1096:300:57:cafe::34) by PS2PR01CA0058.outlook.office365.com
- (2603:1096:300:57::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Fri, 22 Mar 2024 02:54:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nuvoton.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
-Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
- HK3PEPF00000220.mail.protection.outlook.com (10.167.8.42) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 02:54:11 +0000
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 22 Mar
- 2024 10:54:09 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 22 Mar 2024 10:54:09 +0800
-From: Seven Lee <wtli@nuvoton.com>
-To: <broonie@kernel.org>
-CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <YHCHuang@nuvoton.com>,
-	<KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>,
-	<wtli@nuvoton.com>, <scott6986@gmail.com>, <supercraig0719@gmail.com>,
-	<dardar923@gmail.com>
-Subject: [PATCH v4 2/2] ASoC: nau8325: new driver
-Date: Fri, 22 Mar 2024 10:54:05 +0800
-Message-ID: <20240322025405.3340064-3-wtli@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240322025405.3340064-1-wtli@nuvoton.com>
-References: <20240322025405.3340064-1-wtli@nuvoton.com>
+ bh=DXLSEc+3A/xw8PlAPHfnNZG6wO3sllSb291cyjZNAQE=;
+ b=arQ+xh7V0YJZiM9ZgsjcaNJ4Nf9QveaENpE+ZRwZwgFnBxryq/eb4004rv27RBEfs1DrXYBOX3zl4vC46awRXVP5o5ojMyHmVKyHroegLb0JQ8nQlkMqsdv6jLmZxxKtmrOO2yk7OTVjHrwdcKW+Z6uIvob9pSqPtHPT/6r+1WzcOTB2eq/32Q5c2mQPvO8XLXQRgpX6Iz1MpVMNjwpOkE1jM1mpZug1mL5d5g6EFoUCDTpx7XUxKBP2Kj0FnByQs5RSG8P0pLvrc63kqKUd75SGE8IbJy/dqMFLEFrIelc1obEuOpPwP3oQbLe/+BYRoa+6yo45atP/hKt8l0X4kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by IA1PR11MB6194.namprd11.prod.outlook.com (2603:10b6:208:3ea::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
+ 2024 02:57:56 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7409.010; Fri, 22 Mar 2024
+ 02:57:56 +0000
+Date: Fri, 22 Mar 2024 10:57:41 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Ian Rogers <irogers@google.com>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Peter
+ Zijlstra" <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, "Arnaldo
+ Carvalho de Melo" <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, "Ian
+ Rogers" <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, "John
+ Garry" <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, Jing
+ Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>,
+	James Clark <james.clark@arm.com>, Andi Kleen <ak@linux.intel.com>, Kajol
+ Jain <kjain@linux.ibm.com>, Sandipan Das <sandipan.das@amd.com>, Ravi
+ Bangoria <ravi.bangoria@amd.com>, Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>, "Caleb Biggers"
+	<caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, Edward Baker
+	<edward.baker@intel.com>, Stephane Eranian <eranian@google.com>,
+	<oliver.sang@intel.com>
+Subject: Re: [PATCH v3 12/12] perf jevents: Add load event json to verify and
+ allow fallbacks
+Message-ID: <202403221000.c4617e93-oliver.sang@intel.com>
+Content-Type: multipart/mixed; boundary="TiJHmnqND8oovjPL"
+Content-Disposition: inline
+In-Reply-To: <20240314055051.1960527-13-irogers@google.com>
+X-ClientProxiedBy: SG2PR03CA0086.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::14) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotSetDelaration: True
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF00000220:EE_|TYSPR03MB8850:EE_
-X-MS-Office365-Filtering-Correlation-Id: f55d5971-7bd2-47ec-0204-08dc4a1b5a4d
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|IA1PR11MB6194:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4b04556-3c1a-45d9-4397-08dc4a1bdfcd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ix14YJi1cvjJoDcKddim2bMSx96g/I/u356+NW84RSjvjr5pIBibCclibk1AtT/+6EoNo9tCCWhV3t4IHn+rgjkvsFOUhwqEegtJwCDO8KXpHYslWQV4v5Cn+1QsD0GUIj3vzcrYPjME+VEQXdhwt3lHyDIQFTx2MPcKt5D3ScpfjG4FtBlw+hgEP/TyCMEJtMdvkHIxsFu5bN6ePrv8QxyVj6Ee59E79lKnRXByj0jvKPUXc8hP4gRU3EK5uxNz7tFHg3GKNFBXnXKLdRBwpk1egR892zuB4bqRb9iM/BhPzpME6L0AfbcEt2Ftb4rtfDFLhdKJ9yi9WRDUJU36XyIRb7zANDK0fAdoex+LBmNPGeqRs+5agdqmr1kS1daotKFkyAtLE7laGb6fHQ3kC97vSIrQdV2KeL+QO6FJFN07f5hgwY+CiktacePzcFXHJpJvOLdEPgwGIoiRKcMmGrHdqWU2uDjrwwYNyqhQapRlufwB/tj4f99M5g6NT09AioT7ek3XwrAlmDfDve3wOmFYQkMR6XgXBKN1W/YP2BeH5X/0F7OJV2U8aE88l96jeZk/VG9vFhl3t4i2Gsw1/lOjld6IhbAEIjNXyVqwvXgSv4otbLdK8KnF1em3KLqNUgLkwGnxOTw3dneHOF0C0lYvYTk4mNQ8GXwuoVTcu1ftzBkzxZizETUvqdfzPhWGkVP4OGTCSLVjueKUyf1QA46ifMlKI8TdvJWh3aouGu3lQf77X+azXhm/eVdN4l/l
-X-Forefront-Antispam-Report:
-	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(34020700007)(82310400014)(36860700004)(12100799054);DIR:OUT;SFP:1501;
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 02:54:11.9023
+X-Microsoft-Antispam-Message-Info: WrPGRWL8XPKGaFjmQY8uUwDvKoxIKXw0nKTbTvfmCR2ICvPzd9mj5b9NrUzrpuksFiqtxn6tcH+IcXO6b2G4MLhk/2SIUtnqlaKYXZGa3GjkG/e79FqOWdku4dKlhnA9hU/cmM5M9fgRrAi3001JCZUprU74zyIhRAt+VULELE5UUohZFOcH8kjLiXIlO1eHUnslwSSltxN3HP2FNANtW6snFpHsiM+Mz5EkYgxTmEYIGEtI5sM/YQ37JcS6Me5HcDblgD+Ec04h3yhAPNi4k5b5z/Hg7fBvd1daISslclUOgLoFFMD+eUcg+ltPd9caSfFWGeacB7in7ABPG0rHGsyVUOgxoRp+rAVQZXbimX0tWJDWJ9qmqwwyqfAnBhxNYZSmOwaZIdP1tB9EE96g7DnxbNnzaKckePqLOypoe1Z0ckvACH9ux47i0HSs7zIu2QcyG06hVkppv5n3lTiO/f78aseTdwLutFbHm89r9kypv7S/Ftk+h1bPaB7NJaIA9O5ohwz+LwqJWHsR2+kiiEqrLsOdqbhdaFJCDb1nVk10+SIkPauy5vZPLU/6xGTXlmLyv341s+k2sLf+0G9WmKzMdoRlvOA58ASE/tjwkwh4YTmFn+ZqX13rfY+wJ379
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DbEmCddXSzTYhhN122ejd5toGLAf+5qdV20Um25gdCGGXwt8nKQM7E5yM4aO?=
+ =?us-ascii?Q?rG60px/JV3H0C3ZDPsskReqcHARkmj/f2YVt1Pox+OwibtWJAW2wIaU7UhLk?=
+ =?us-ascii?Q?4w+i+Q03qYsJ3W44lrhOEb52o7E2B69CJqjSACVq4dyI8+6LeCSIX1YZqhNG?=
+ =?us-ascii?Q?B1OAwiiBssoXURrzvfssADlcGPghNOxgGQ9L6Uiv8hg6R8zxymKQPlwPbD43?=
+ =?us-ascii?Q?j2iPZR761ZGX3o8F2yETB0Y0NRGHw+B/c+rt/BxjQjnY2cLqxmmSgcCLDYTY?=
+ =?us-ascii?Q?SaSE5S/nog3yrzMZw/qWChIK7hOPEVRRhLTExzpirqqh2orss6D+GnEps/Cu?=
+ =?us-ascii?Q?04EPYD6FGeoNvNvcW05Xx4814iRB5w18XWH/ku9fGGUWZT9EDiB7bT/t4pjw?=
+ =?us-ascii?Q?isCMJ59fFpBQ4BkTHu7zoUErVTBLrdCS5sVZUiKz7hNRCL55maKuDy1gPbtw?=
+ =?us-ascii?Q?GaDxsveN5/PqUWwRlH7Uf+/ktFrluzA0+LDG2LuLC+sVpJRsHKCxu5H5xQ5j?=
+ =?us-ascii?Q?OvIQ2G2CXIiCNmCMeZAkXgC74tBVWYTPFnthYG6kN8ouVQ+xEqYmLTkswM8P?=
+ =?us-ascii?Q?ljKydQinU31/hLQZCFd02MtimwsCVlagd3khhW2hMV29tzA556+VcWgkkANw?=
+ =?us-ascii?Q?ySCam1tBTRoB25Cvo0XkyrjCCRkn/q/qPQxfUWXd0yUVZ2jP+7fk2jPwuA+G?=
+ =?us-ascii?Q?DFHr+bCzOXyNECl999hm9mse1ruPeO3bRCmkU5xL6r9EVO7Js3eatzWATml6?=
+ =?us-ascii?Q?aTL3cOaP3+t1QVz7Xe3cK+2LkxhT6n4WnGeXnbNfXemD64cko0et9rA0ZiWH?=
+ =?us-ascii?Q?D4rgnZsy/wUcpQ6ZRd/disby15WhfEcMtCAu70GMB+CdFKvIMZnxwDh9NckA?=
+ =?us-ascii?Q?+4RDoR1pDx8qw+gFa8ZYcIKNgcEa+wjPXxNIKnaT8Vvu7w38Y00e9F4AmOeJ?=
+ =?us-ascii?Q?doCsUGdTmnxGjRWbl4rABF36OdpX5AXefZ2+pXOr9NBgT5g8wjJ/Wd9P3KVf?=
+ =?us-ascii?Q?cf910GNhP/bf5XAJvZl/xz4OODxNiznkTrBYz5U5UX8QCWncZ3vyc9c451Us?=
+ =?us-ascii?Q?yqkV8rTd2kTUvjBILYvVnuOEvjEyYtMQTNPSfTR5dmoo73WsyDfVFYlx75H7?=
+ =?us-ascii?Q?1tf/Fw+47pEsXQxZcY6TfxbNaNRK2NVIySNBXU2QxIa8h3H/ZjJdYGcCDaM2?=
+ =?us-ascii?Q?7JZHeqpVIu0dTc9xjozrdpYQ0upd+5OOM3II2PL8a4D8pgq8iE7tKGz+vxOd?=
+ =?us-ascii?Q?Wbea0SOmNSF5mgdxq/d7i7KoSe34HTquVXssbeu1LZUMYt809o+zrzFNtr6s?=
+ =?us-ascii?Q?nO4iqi7Jfu+Y/anngYkOwli8d7yNVQxRx0yAqofZr3Lnu6wO62hYIPJGr6lw?=
+ =?us-ascii?Q?9CIWcXi3ab6SMUENpw7v5IyVNB+vzPjWFWvU/xRVrghB4ozCwv01R/eLJRCS?=
+ =?us-ascii?Q?7wMYGPb3ypo1lanwYMTjijnvUMjCIwlTDckLHiVVTwpILD8JmSIi9c8VxGgW?=
+ =?us-ascii?Q?wDuj1RGev0BQA5Q4dTK18xU8AyVQHMLkqNfIrC5t4BDyQfXOgIPtEWhkEkoP?=
+ =?us-ascii?Q?8dUFfgmQrGd85X4fhKI6AkriQ58a4fTkbop7OSZru5rvOrnpFdZx3ADkbmMz?=
+ =?us-ascii?Q?ZA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4b04556-3c1a-45d9-4397-08dc4a1bdfcd
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 02:57:56.5719
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f55d5971-7bd2-47ec-0204-08dc4a1b5a4d
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	HK3PEPF00000220.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB8850
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GV7Sb6yIUJ1XIxUE5JN1Q88x4/kNGKQOJQ2mWEM2vldnS0TSqkUebYN+FXgzqgE2w4+RMa+T5svfMcBIce5j7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6194
+X-OriginatorOrg: intel.com
 
-The driver is for amplifiers NAU8325 of Nuvoton Technology Corporation.
-The NAU8325 is a stereo high efficiency filter-free Class-D audio
-amplifier, which is capable of driving a 4ohm load with up to 3W output
-power.
+--TiJHmnqND8oovjPL
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-Signed-off-by: Seven Lee <wtli@nuvoton.com>
----
- sound/soc/codecs/nau8325.c | 856 +++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/nau8325.h | 391 +++++++++++++++++
- 2 files changed, 1247 insertions(+)
- create mode 100644 sound/soc/codecs/nau8325.c
- create mode 100644 sound/soc/codecs/nau8325.h
 
-diff --git a/sound/soc/codecs/nau8325.c b/sound/soc/codecs/nau8325.c
-new file mode 100644
-index 000000000000..93dee6dc1ee4
---- /dev/null
-+++ b/sound/soc/codecs/nau8325.c
-@@ -0,0 +1,856 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// nau8325.c -- Nuvoton NAU8325 audio codec driver
-+//
-+// Copyright 2023 Nuvoton Technology Crop.
-+// Author: Seven Lee <WTLI@nuvoton.com>
-+//	   David Lin <CTLIN0@nuvoton.com>
-+//
-+
-+#include <linux/clk.h>
-+#include <sound/core.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/i2c.h>
-+#include <sound/initval.h>
-+#include <linux/module.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include "nau8325.h"
-+
-+/* Range of Master Clock MCLK (Hz) */
-+#define MASTER_CLK_MAX 49152000
-+#define MASTER_CLK_MIN 2048000
-+
-+/* scaling for MCLK source */
-+#define CLK_PROC_BYPASS (-1)
-+
-+/* the maximum CLK_DAC */
-+#define CLK_DA_AD_MAX 6144000
-+
-+/* from MCLK input */
-+#define MCLK_SRC 4
-+
-+static const struct nau8325_src_attr mclk_n1_div[] = {
-+	{ 1, 0x0 },
-+	{ 2, 0x1 },
-+	{ 3, 0x2 },
-+};
-+
-+/* over sampling rate */
-+static const struct nau8325_osr_attr osr_dac_sel[] = {
-+	{ 64, 2 },	/* OSR 64, SRC 1/4 */
-+	{ 256, 0 },	/* OSR 256, SRC 1 */
-+	{ 128, 1 },	/* OSR 128, SRC 1/2 */
-+	{ 0, 0 },
-+	{ 32, 3 },	/* OSR 32, SRC 1/8 */
-+};
-+
-+static const struct nau8325_src_attr mclk_n2_div[] = {
-+	{ 0, 0x0 },
-+	{ 1, 0x1 },
-+	{ 2, 0x2 },
-+	{ 3, 0x3 },
-+	{ 4, 0x4 },
-+};
-+
-+static const struct nau8325_src_attr mclk_n3_mult[] = {
-+	{ 0, 0x1 },
-+	{ 1, 0x2 },
-+	{ 2, 0x3 },
-+	{ 3, 0x4 },
-+};
-+
-+/* Sample Rate and MCLK_SRC selections */
-+static const struct nau8325_srate_attr target_srate_table[] = {
-+	/* { FS, range, max, { MCLK source }} */
-+	{ 48000, 2, true, { 12288000, 19200000, 24000000 } },
-+	{ 16000, 1, false, { 4096000, 6400000, 8000000 } },
-+	{ 8000, 0, false, { 2048000, 3200000, 4000000 }},
-+	{ 44100, 2, true, { 11289600, 17640000, 22050000 }},
-+	{ 64000, 3, false, { 16384000, 25600000, 32000000 } },
-+	{ 96000, 3, true, { 24576000, 38400000, 48000000 } },
-+	{ 12000, 0, true, { 3072000, 4800000, 6000000 } },
-+	{ 24000, 1, true, { 6144000, 9600000, 12000000 } },
-+	{ 32000, 2, false, { 8192000, 12800000, 16000000 } },
-+};
-+
-+static const struct reg_default nau8325_reg_defaults[] = {
-+	{ NAU8325_R00_HARDWARE_RST, 0x0000 },
-+	{ NAU8325_R01_SOFTWARE_RST, 0x0000 },
-+	{ NAU8325_R03_CLK_CTRL, 0x0000 },
-+	{ NAU8325_R04_ENA_CTRL, 0x0000 },
-+	{ NAU8325_R05_INTERRUPT_CTRL, 0x007f },
-+	{ NAU8325_R09_IRQOUT, 0x0000 },
-+	{ NAU8325_R0A_IO_CTRL, 0x0000 },
-+	{ NAU8325_R0B_PDM_CTRL, 0x0000 },
-+	{ NAU8325_R0C_TDM_CTRL, 0x0000 },
-+	{ NAU8325_R0D_I2S_PCM_CTRL1, 0x000a },
-+	{ NAU8325_R0E_I2S_PCM_CTRL2, 0x0000 },
-+	{ NAU8325_R0F_L_TIME_SLOT, 0x0000 },
-+	{ NAU8325_R10_R_TIME_SLOT, 0x0000 },
-+	{ NAU8325_R11_HPF_CTRL, 0x0000 },
-+	{ NAU8325_R12_MUTE_CTRL, 0x0000 },
-+	{ NAU8325_R13_DAC_VOLUME, 0xf3f3 },
-+	{ NAU8325_R29_DAC_CTRL1, 0x0081 },
-+	{ NAU8325_R2A_DAC_CTRL2, 0x0000 },
-+	{ NAU8325_R2C_ALC_CTRL1, 0x000e },
-+	{ NAU8325_R2D_ALC_CTRL2, 0x8400 },
-+	{ NAU8325_R2E_ALC_CTRL3, 0x0000 },
-+	{ NAU8325_R2F_ALC_CTRL4, 0x003f },
-+	{ NAU8325_R40_CLK_DET_CTRL, 0xa801 },
-+	{ NAU8325_R50_MIXER_CTRL, 0x0000 },
-+	{ NAU8325_R55_MISC_CTRL, 0x0000 },
-+	{ NAU8325_R60_BIAS_ADJ, 0x0000 },
-+	{ NAU8325_R61_ANALOG_CONTROL_1, 0x0000 },
-+	{ NAU8325_R62_ANALOG_CONTROL_2, 0x0000 },
-+	{ NAU8325_R63_ANALOG_CONTROL_3, 0x0000 },
-+	{ NAU8325_R64_ANALOG_CONTROL_4, 0x0000 },
-+	{ NAU8325_R65_ANALOG_CONTROL_5, 0x0000 },
-+	{ NAU8325_R66_ANALOG_CONTROL_6, 0x0000 },
-+	{ NAU8325_R69_CLIP_CTRL, 0x0000 },
-+	{ NAU8325_R73_RDAC, 0x0008 },
-+};
-+
-+static bool nau8325_readable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case NAU8325_R02_DEVICE_ID ... NAU8325_R06_INT_CLR_STATUS:
-+	case NAU8325_R09_IRQOUT ... NAU8325_R13_DAC_VOLUME:
-+	case NAU8325_R1D_DEBUG_READ1:
-+	case NAU8325_R1F_DEBUG_READ2:
-+	case NAU8325_R22_DEBUG_READ3:
-+	case NAU8325_R29_DAC_CTRL1 ... NAU8325_R2A_DAC_CTRL2:
-+	case NAU8325_R2C_ALC_CTRL1 ... NAU8325_R2F_ALC_CTRL4:
-+	case NAU8325_R40_CLK_DET_CTRL:
-+	case NAU8325_R49_TEST_STATUS ... NAU8325_R4A_ANALOG_READ:
-+	case NAU8325_R50_MIXER_CTRL:
-+	case NAU8325_R55_MISC_CTRL:
-+	case NAU8325_R60_BIAS_ADJ ... NAU8325_R66_ANALOG_CONTROL_6:
-+	case NAU8325_R69_CLIP_CTRL:
-+	case NAU8325_R73_RDAC:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool nau8325_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case NAU8325_R00_HARDWARE_RST:
-+	case NAU8325_R03_CLK_CTRL ... NAU8325_R06_INT_CLR_STATUS:
-+	case NAU8325_R09_IRQOUT ... NAU8325_R13_DAC_VOLUME:
-+	case NAU8325_R29_DAC_CTRL1 ... NAU8325_R2A_DAC_CTRL2:
-+	case NAU8325_R2C_ALC_CTRL1 ... NAU8325_R2F_ALC_CTRL4:
-+	case NAU8325_R40_CLK_DET_CTRL:
-+	case NAU8325_R50_MIXER_CTRL:
-+	case NAU8325_R55_MISC_CTRL:
-+	case NAU8325_R60_BIAS_ADJ ... NAU8325_R66_ANALOG_CONTROL_6:
-+	case NAU8325_R69_CLIP_CTRL:
-+	case NAU8325_R73_RDAC:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool nau8325_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case NAU8325_R00_HARDWARE_RST ... NAU8325_R02_DEVICE_ID:
-+	case NAU8325_R06_INT_CLR_STATUS:
-+	case NAU8325_R1D_DEBUG_READ1:
-+	case NAU8325_R1F_DEBUG_READ2:
-+	case NAU8325_R22_DEBUG_READ3:
-+	case NAU8325_R4A_ANALOG_READ:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const char * const nau8325_dac_oversampl[] = {
-+	"64", "256", "128", "", "32" };
-+
-+static const struct soc_enum nau8325_dac_oversampl_enum =
-+	SOC_ENUM_SINGLE(NAU8325_R29_DAC_CTRL1, NAU8325_DAC_OVERSAMPLE_SFT,
-+			ARRAY_SIZE(nau8325_dac_oversampl),
-+			nau8325_dac_oversampl);
-+
-+static const DECLARE_TLV_DB_MINMAX_MUTE(dac_vol_tlv, -8000, 600);
-+
-+static const struct snd_kcontrol_new nau8325_snd_controls[] = {
-+	SOC_ENUM("DAC Oversampling Rate", nau8325_dac_oversampl_enum),
-+	SOC_DOUBLE_TLV("Speaker Volume", NAU8325_R13_DAC_VOLUME,
-+		       NAU8325_DAC_VOLUME_L_SFT, NAU8325_DAC_VOLUME_R_SFT,
-+		       NAU8325_DAC_VOLUME_R_EN, 0, dac_vol_tlv),
-+	SOC_SINGLE("ALC Max Gain", NAU8325_R2C_ALC_CTRL1,
-+		   NAU8325_ALC_MAXGAIN_SFT, NAU8325_ALC_MAXGAIN_MAX, 0),
-+	SOC_SINGLE("ALC Min Gain", NAU8325_R2C_ALC_CTRL1,
-+		   NAU8325_ALC_MINGAIN_SFT, NAU8325_ALC_MINGAIN_MAX, 0),
-+	SOC_SINGLE("ALC Decay Timer", NAU8325_R2D_ALC_CTRL2,
-+		   NAU8325_ALC_DCY_SFT, NAU8325_ALC_DCY_MAX, 0),
-+	SOC_SINGLE("ALC Attack Timer", NAU8325_R2D_ALC_CTRL2,
-+		   NAU8325_ALC_ATK_SFT, NAU8325_ALC_ATK_MAX, 0),
-+	SOC_SINGLE("ALC Hold Time", NAU8325_R2D_ALC_CTRL2,
-+		   NAU8325_ALC_HLD_SFT, NAU8325_ALC_HLD_MAX, 0),
-+	SOC_SINGLE("ALC Target Level", NAU8325_R2D_ALC_CTRL2,
-+		   NAU8325_ALC_LVL_SFT, NAU8325_ALC_LVL_MAX, 0),
-+	SOC_SINGLE("ALC Enable Switch", NAU8325_R2E_ALC_CTRL3,
-+		   NAU8325_ALC_EN_SFT, 1, 0),
-+};
-+
-+static int nau8325_dac_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R12_MUTE_CTRL,
-+				   NAU8325_SOFT_MUTE, 0);
-+		msleep(30);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		/* Soft mute the output to prevent the pop noise. */
-+		regmap_update_bits(nau8325->regmap, NAU8325_R12_MUTE_CTRL,
-+				   NAU8325_SOFT_MUTE, NAU8325_SOFT_MUTE);
-+		msleep(30);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nau8325_powerup_event(struct snd_soc_dapm_widget *w,
-+				 struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+
-+	if (nau8325->clock_detection)
-+		return 0;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_PWRUP_DFT, NAU8325_PWRUP_DFT);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_PWRUP_DFT, 0);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget nau8325_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("Power Up", SND_SOC_NOPM, 0, 0,
-+			    nau8325_powerup_event, SND_SOC_DAPM_POST_PMU |
-+			    SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_DAC_E("DACL", NULL, NAU8325_R04_ENA_CTRL,
-+			   NAU8325_DAC_LEFT_CH_EN_SFT, 0, nau8325_dac_event,
-+			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_DAC_E("DACR", NULL, NAU8325_R04_ENA_CTRL,
-+			   NAU8325_DAC_RIGHT_CH_EN_SFT, 0, nau8325_dac_event,
-+			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_AIF_IN("AIFRX", "Playback", 0, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_OUTPUT("SPKL"),
-+	SND_SOC_DAPM_OUTPUT("SPKR"),
-+};
-+
-+static const struct snd_soc_dapm_route nau8325_dapm_routes[] = {
-+	{ "DACL", NULL, "Power Up" },
-+	{ "DACR", NULL, "Power Up" },
-+
-+	{ "DACL", NULL, "AIFRX" },
-+	{ "DACR", NULL, "AIFRX" },
-+	{ "SPKL", NULL, "DACL" },
-+	{ "SPKR", NULL, "DACR" },
-+};
-+
-+static int nau8325_srate_clk_apply(struct nau8325 *nau8325,
-+				   const struct nau8325_srate_attr *srate_table,
-+				   int n1_sel, int mclk_mult_sel, int n2_sel)
-+{
-+	if (!srate_table || n2_sel < 0 || n2_sel >= ARRAY_SIZE(mclk_n2_div) ||
-+	    n1_sel < 0 || n1_sel >= ARRAY_SIZE(mclk_n1_div)) {
-+		dev_dbg(nau8325->dev, "The CLK isn't supported.");
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-+			   NAU8325_REG_SRATE_MASK | NAU8325_REG_DIV_MAX,
-+			   (srate_table->range << NAU8325_REG_SRATE_SFT) |
-+			   (srate_table->max ? NAU8325_REG_DIV_MAX : 0));
-+	regmap_update_bits(nau8325->regmap, NAU8325_R03_CLK_CTRL,
-+			   NAU8325_MCLK_SRC_MASK, mclk_n2_div[n2_sel].val);
-+	regmap_update_bits(nau8325->regmap, NAU8325_R03_CLK_CTRL,
-+			   NAU8325_CLK_MUL_SRC_MASK,
-+			   mclk_n1_div[n1_sel].val << NAU8325_CLK_MUL_SRC_SFT);
-+
-+	if (mclk_mult_sel != CLK_PROC_BYPASS) {
-+		regmap_update_bits(nau8325->regmap, NAU8325_R03_CLK_CTRL,
-+				   NAU8325_MCLK_SEL_MASK,
-+				   mclk_n3_mult[mclk_mult_sel].val <<
-+				   NAU8325_MCLK_SEL_SFT);
-+	} else {
-+		regmap_update_bits(nau8325->regmap, NAU8325_R03_CLK_CTRL,
-+				   NAU8325_MCLK_SEL_MASK, 0);
-+	}
-+
-+	switch (mclk_mult_sel) {
-+	case 2:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R65_ANALOG_CONTROL_5,
-+				   NAU8325_MCLK4XEN_EN, NAU8325_MCLK4XEN_EN);
-+		break;
-+	case 3:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R65_ANALOG_CONTROL_5,
-+				   NAU8325_MCLK4XEN_EN | NAU8325_MCLK8XEN_EN,
-+				   NAU8325_MCLK4XEN_EN | NAU8325_MCLK8XEN_EN);
-+		break;
-+	default:
-+		regmap_update_bits(nau8325->regmap, NAU8325_R65_ANALOG_CONTROL_5,
-+				   NAU8325_MCLK4XEN_EN | NAU8325_MCLK8XEN_EN, 0);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int nau8325_clksrc_n2(struct nau8325 *nau8325,
-+			     const struct nau8325_srate_attr *srate_table,
-+			     int mclk, int *n2_sel)
-+{
-+	int i, mclk_src, ratio;
-+
-+	ratio = NAU8325_MCLK_FS_RATIO_NUM;
-+	for (i = 0; i < ARRAY_SIZE(mclk_n2_div); i++) {
-+		mclk_src = mclk >> mclk_n2_div[i].param;
-+		if (srate_table->mclk_src[NAU8325_MCLK_FS_RATIO_256] == mclk_src) {
-+			ratio = NAU8325_MCLK_FS_RATIO_256;
-+			break;
-+		} else if (srate_table->mclk_src[NAU8325_MCLK_FS_RATIO_400] == mclk_src) {
-+			ratio = NAU8325_MCLK_FS_RATIO_400;
-+			break;
-+		} else if (srate_table->mclk_src[NAU8325_MCLK_FS_RATIO_500] == mclk_src) {
-+			ratio = NAU8325_MCLK_FS_RATIO_500;
-+			break;
-+		}
-+	}
-+	if (ratio != NAU8325_MCLK_FS_RATIO_NUM)
-+		*n2_sel = i;
-+
-+	return ratio;
-+}
-+
-+static const struct nau8325_srate_attr *target_srate_attribute(int srate)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(target_srate_table); i++)
-+		if (target_srate_table[i].fs == srate)
-+			break;
-+
-+	if (i == ARRAY_SIZE(target_srate_table))
-+		goto proc_err;
-+
-+	return &target_srate_table[i];
-+
-+proc_err:
-+	return NULL;
-+}
-+
-+static int nau8325_clksrc_choose(struct nau8325 *nau8325,
-+				 const struct nau8325_srate_attr **srate_table,
-+				 int *n1_sel, int *mult_sel, int *n2_sel)
-+{
-+	int i, j, mclk, mclk_max, ratio, ratio_sel, n2_max;
-+
-+	if (!nau8325->mclk || !nau8325->fs)
-+		goto proc_err;
-+
-+	/* select sampling rate and MCLK_SRC */
-+	*srate_table = target_srate_attribute(nau8325->fs);
-+	if (!*srate_table)
-+		goto proc_err;
-+
-+	/* First check clock from MCLK directly, decide N2 for MCLK_SRC.
-+	 * If not good, consider 1/N1 and Multiplier.
-+	 */
-+	ratio = nau8325_clksrc_n2(nau8325, *srate_table, nau8325->mclk, n2_sel);
-+	if (ratio != NAU8325_MCLK_FS_RATIO_NUM) {
-+		*n1_sel = 0;
-+		*mult_sel = CLK_PROC_BYPASS;
-+		*n2_sel = MCLK_SRC;
-+		goto proc_done;
-+	}
-+
-+	/* Get MCLK_SRC through 1/N, Multiplier, and then 1/N2. */
-+	mclk_max = 0;
-+	for (i = 0; i < ARRAY_SIZE(mclk_n1_div); i++) {
-+		for (j = 0; j < ARRAY_SIZE(mclk_n3_mult); j++) {
-+			mclk = nau8325->mclk << mclk_n3_mult[j].param;
-+			mclk = mclk / mclk_n1_div[i].param;
-+			ratio = nau8325_clksrc_n2(nau8325,
-+						  *srate_table, mclk, n2_sel);
-+			if (ratio != NAU8325_MCLK_FS_RATIO_NUM &&
-+			    (mclk_max < mclk || i > *n1_sel)) {
-+				mclk_max = mclk;
-+				n2_max = *n2_sel;
-+				*n1_sel = i;
-+				*mult_sel = j;
-+				ratio_sel = ratio;
-+					goto proc_done;
-+			}
-+		}
-+	}
-+	if (mclk_max) {
-+		*n2_sel = n2_max;
-+		ratio = ratio_sel;
-+		goto proc_done;
-+	}
-+
-+proc_err:
-+	dev_dbg(nau8325->dev, "The MCLK %d is invalid. It can't get MCLK_SRC of 256/400/500 FS (%d)",
-+		nau8325->mclk, nau8325->fs);
-+	return -EINVAL;
-+proc_done:
-+	dev_dbg(nau8325->dev, "nau8325->fs=%d,range=0x%x, %s, (n1,mu,n2,dmu):(%d,%d,%d), MCLK_SRC=%uHz (%d)",
-+		nau8325->fs, (*srate_table)->range,
-+		(*srate_table)->max ? "MAX" : "MIN",
-+		*n1_sel == CLK_PROC_BYPASS ?
-+		CLK_PROC_BYPASS : mclk_n1_div[*n1_sel].param,
-+		*mult_sel == CLK_PROC_BYPASS ?
-+		CLK_PROC_BYPASS : 1 << mclk_n3_mult[*mult_sel].param,
-+		1 << mclk_n2_div[*n2_sel].param,
-+		(*srate_table)->mclk_src[ratio],
-+		(*srate_table)->mclk_src[ratio] / nau8325->fs);
-+
-+	return 0;
-+}
-+
-+static int nau8325_clock_config(struct nau8325 *nau8325)
-+{
-+	const struct nau8325_srate_attr *srate_table;
-+	int ret, n1_sel, mult_sel, n2_sel;
-+
-+	ret = nau8325_clksrc_choose(nau8325, &srate_table,
-+				    &n1_sel, &mult_sel, &n2_sel);
-+	if (ret)
-+		goto err;
-+
-+	ret = nau8325_srate_clk_apply(nau8325, srate_table,
-+				      n1_sel, mult_sel, n2_sel);
-+	if (ret)
-+		goto err;
-+
-+	return 0;
-+err:
-+	return ret;
-+}
-+
-+static const struct nau8325_osr_attr *nau8325_get_osr(struct nau8325 *nau8325)
-+{
-+	unsigned int osr;
-+
-+	regmap_read(nau8325->regmap, NAU8325_R29_DAC_CTRL1, &osr);
-+	osr &= NAU8325_DAC_OVERSAMPLE_MASK;
-+	if (osr >= ARRAY_SIZE(osr_dac_sel))
-+		return NULL;
-+
-+	return &osr_dac_sel[osr];
-+}
-+
-+static int nau8325_dai_startup(struct snd_pcm_substream *substream,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+	const struct nau8325_osr_attr *osr;
-+
-+	osr = nau8325_get_osr(nau8325);
-+	if (!osr || !osr->osr)
-+		return -EINVAL;
-+
-+	return snd_pcm_hw_constraint_minmax(substream->runtime,
-+					    SNDRV_PCM_HW_PARAM_RATE,
-+					    0, CLK_DA_AD_MAX / osr->osr);
-+}
-+
-+static int nau8325_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+	unsigned int val_len = 0;
-+	const struct nau8325_osr_attr *osr;
-+	int ret;
-+
-+	nau8325->fs = params_rate(params);
-+	osr = nau8325_get_osr(nau8325);
-+	if (!osr || !osr->osr || nau8325->fs * osr->osr > CLK_DA_AD_MAX) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+	regmap_update_bits(nau8325->regmap, NAU8325_R03_CLK_CTRL,
-+			   NAU8325_CLK_DAC_SRC_MASK,
-+			   osr->clk_src << NAU8325_CLK_DAC_SRC_SFT);
-+
-+	ret = nau8325_clock_config(nau8325);
-+	if (ret)
-+		goto err;
-+
-+	switch (params_width(params)) {
-+	case 16:
-+		val_len |= NAU8325_I2S_DL_16;
-+		break;
-+	case 20:
-+		val_len |= NAU8325_I2S_DL_20;
-+		break;
-+	case 24:
-+		val_len |= NAU8325_I2S_DL_24;
-+		break;
-+	case 32:
-+		val_len |= NAU8325_I2S_DL_32;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	regmap_update_bits(nau8325->regmap, NAU8325_R0D_I2S_PCM_CTRL1,
-+			   NAU8325_I2S_DL_MASK, val_len);
-+
-+	return 0;
-+
-+err:
-+	return ret;
-+}
-+
-+static int nau8325_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+	unsigned int ctrl1_val = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		ctrl1_val |= NAU8325_I2S_BP_INV;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		ctrl1_val |= NAU8325_I2S_DF_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		ctrl1_val |= NAU8325_I2S_DF_LEFT;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		ctrl1_val |= NAU8325_I2S_DF_RIGTH;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		ctrl1_val |= NAU8325_I2S_DF_PCM_AB;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		ctrl1_val |= NAU8325_I2S_DF_PCM_AB;
-+		ctrl1_val |= NAU8325_I2S_PCMB_EN;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(nau8325->regmap, NAU8325_R0D_I2S_PCM_CTRL1,
-+			   NAU8325_I2S_DF_MASK | NAU8325_I2S_BP_MASK |
-+			   NAU8325_I2S_PCMB_EN, ctrl1_val);
-+
-+	return 0;
-+}
-+
-+static int nau8325_set_sysclk(struct snd_soc_component *component, int clk_id,
-+			      int source, unsigned int freq, int dir)
-+{
-+	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-+
-+	if (freq < MASTER_CLK_MIN || freq > MASTER_CLK_MAX) {
-+		dev_dbg(nau8325->dev, "MCLK exceeds the range, MCLK:%d", freq);
-+		return -EINVAL;
-+	}
-+
-+	nau8325->mclk = freq;
-+	dev_dbg(nau8325->dev, "MCLK %dHz", nau8325->mclk);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver nau8325_component_driver = {
-+	.set_sysclk = nau8325_set_sysclk,
-+	.suspend_bias_off = true,
-+	.controls = nau8325_snd_controls,
-+	.num_controls = ARRAY_SIZE(nau8325_snd_controls),
-+	.dapm_widgets = nau8325_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(nau8325_dapm_widgets),
-+	.dapm_routes = nau8325_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(nau8325_dapm_routes),
-+};
-+
-+static const struct snd_soc_dai_ops nau8325_dai_ops = {
-+	.startup = nau8325_dai_startup,
-+	.hw_params = nau8325_hw_params,
-+	.set_fmt = nau8325_set_fmt,
-+};
-+
-+#define NAU8325_RATES SNDRV_PCM_RATE_8000_96000
-+#define NAU8325_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE \
-+	 | SNDRV_PCM_FMTBIT_S24_3LE)
-+
-+static struct snd_soc_dai_driver nau8325_dai = {
-+	.name = NAU8325_CODEC_DAI,
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = NAU8325_RATES,
-+		.formats = NAU8325_FORMATS,
-+	},
-+	.ops = &nau8325_dai_ops,
-+};
-+
-+static const struct regmap_config nau8325_regmap_config = {
-+	.reg_bits = NAU8325_REG_ADDR_LEN,
-+	.val_bits = NAU8325_REG_DATA_LEN,
-+
-+	.max_register = NAU8325_REG_MAX,
-+	.readable_reg = nau8325_readable_reg,
-+	.writeable_reg = nau8325_writeable_reg,
-+	.volatile_reg = nau8325_volatile_reg,
-+
-+	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = nau8325_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(nau8325_reg_defaults),
-+};
-+
-+static void nau8325_reset_chip(struct regmap *regmap)
-+{
-+	regmap_write(regmap, NAU8325_R00_HARDWARE_RST, 0x0001);
-+	regmap_write(regmap, NAU8325_R00_HARDWARE_RST, 0x0000);
-+}
-+
-+static void nau8325_init_regs(struct nau8325 *nau8325)
-+{
-+	struct regmap *regmap = nau8325->regmap;
-+
-+	/* set ALC parameters */
-+	regmap_update_bits(regmap, NAU8325_R2C_ALC_CTRL1,
-+			   NAU8325_ALC_MAXGAIN_MASK,
-+			   0x7 << NAU8325_ALC_MAXGAIN_SFT);
-+	regmap_update_bits(regmap, NAU8325_R2D_ALC_CTRL2,
-+			   NAU8325_ALC_DCY_MASK | NAU8325_ALC_ATK_MASK |
-+			   NAU8325_ALC_HLD_MASK, (0x5 << NAU8325_ALC_DCY_SFT) |
-+			   (0x3 << NAU8325_ALC_ATK_SFT) |
-+			   (0x5 << NAU8325_ALC_HLD_SFT));
-+	/* Enable ALC to avoid signal distortion when battery low. */
-+	if (nau8325->alc_enable)
-+		regmap_update_bits(regmap, NAU8325_R2E_ALC_CTRL3,
-+				   NAU8325_ALC_EN, NAU8325_ALC_EN);
-+	if (nau8325->clock_detection)
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_CLKPWRUP_DIS |
-+				   NAU8325_PWRUP_DFT, 0);
-+	else
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_CLKPWRUP_DIS | NAU8325_PWRUP_DFT,
-+				   NAU8325_CLKPWRUP_DIS);
-+	if (nau8325->clock_det_data)
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_APWRUP_EN, NAU8325_APWRUP_EN);
-+	else
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_APWRUP_EN, 0);
-+
-+	/* DAC Reference Voltage Setting */
-+	regmap_update_bits(regmap, NAU8325_R73_RDAC,
-+			   NAU8325_DACVREFSEL_MASK,
-+			   nau8325->dac_vref << NAU8325_DACVREFSEL_SFT);
-+	/* DAC Reference Voltage Decoupling Capacitors. */
-+	regmap_update_bits(regmap, NAU8325_R63_ANALOG_CONTROL_3,
-+			   NAU8325_CLASSD_COARSE_GAIN_MASK, 0x4);
-+	/* Auto-Att Min Gain 0dB, Class-D N Driver Slew Rate -25%. */
-+	regmap_update_bits(regmap, NAU8325_R64_ANALOG_CONTROL_4,
-+			   NAU8325_CLASSD_SLEWN_MASK, 0x7);
-+
-+	/* VMID Tieoff (VMID Resistor Selection) */
-+	regmap_update_bits(regmap, NAU8325_R60_BIAS_ADJ,
-+			   NAU8325_BIAS_VMID_SEL_MASK,
-+			   nau8325->vref_impedance <<
-+			   NAU8325_BIAS_VMID_SEL_SFT);
-+
-+	/* enable VMID, BIAS, DAC, DCA CLOCK, Voltage/Current Amps
-+	 */
-+	regmap_update_bits(regmap, NAU8325_R61_ANALOG_CONTROL_1,
-+			   NAU8325_DACEN_MASK | NAU8325_DACCLKEN_MASK |
-+			   NAU8325_DACEN_R_MASK | NAU8325_DACCLKEN_R_MASK |
-+			   NAU8325_CLASSDEN_MASK | NAU8325_VMDFSTENB_MASK |
-+			   NAU8325_BIASEN_MASK | NAU8325_VMIDEN_MASK,
-+			   (0x1 << NAU8325_DACEN_SFT) |
-+			   (0x1 << NAU8325_DACCLKEN_SFT) |
-+			   (0x1 << NAU8325_DACEN_R_SFT) |
-+			   (0x1 << NAU8325_DACCLKEN_R_SFT) |
-+			   (0x1 << NAU8325_CLASSDEN_SFT) |
-+			   (0x1 << NAU8325_VMDFSTENB_SFT) |
-+			   (0x1 << NAU8325_BIASEN_SFT) | 0x3);
-+
-+	/* Enable ALC to avoid signal distortion when battery low. */
-+	if (nau8325->alc_enable)
-+		regmap_update_bits(regmap, NAU8325_R2E_ALC_CTRL3,
-+				   NAU8325_ALC_EN, NAU8325_ALC_EN);
-+	if (nau8325->clock_det_data)
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_APWRUP_EN, NAU8325_APWRUP_EN);
-+	else
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_APWRUP_EN, 0);
-+	if (nau8325->clock_detection)
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_CLKPWRUP_DIS |
-+				   NAU8325_PWRUP_DFT, 0);
-+	else
-+		regmap_update_bits(regmap, NAU8325_R40_CLK_DET_CTRL,
-+				   NAU8325_CLKPWRUP_DIS | NAU8325_PWRUP_DFT,
-+				   NAU8325_CLKPWRUP_DIS);
-+	regmap_update_bits(regmap, NAU8325_R29_DAC_CTRL1,
-+			   NAU8325_DAC_OVERSAMPLE_MASK,
-+			   NAU8325_DAC_OVERSAMPLE_128);
-+}
-+
-+static void nau8325_print_device_properties(struct nau8325 *nau8325)
-+{
-+	struct device *dev = nau8325->dev;
-+
-+	dev_dbg(dev, "vref-impedance:          %d", nau8325->vref_impedance);
-+	dev_dbg(dev, "dac-vref:                %d", nau8325->dac_vref);
-+	dev_dbg(dev, "alc-enable:              %d", nau8325->alc_enable);
-+	dev_dbg(dev, "clock-det-data:          %d", nau8325->clock_det_data);
-+	dev_dbg(dev, "clock-detection-disable: %d", nau8325->clock_detection);
-+}
-+
-+static int nau8325_read_device_properties(struct device *dev,
-+					  struct nau8325 *nau8325)
-+{
-+	int ret;
-+
-+	nau8325->alc_enable =
-+		device_property_read_bool(dev, "nuvoton,alc-enable");
-+	nau8325->clock_det_data =
-+		device_property_read_bool(dev, "nuvoton,clock-det-dataEnable VMID, BIAS");
-+	nau8325->clock_detection =
-+		!device_property_read_bool(dev,	"nuvoton,clock-detection-disable");
-+
-+	ret = device_property_read_u32(dev, "nuvoton,vref-impedance",
-+				       &nau8325->vref_impedance);
-+	if (ret)
-+		nau8325->vref_impedance = 2;
-+	ret = device_property_read_u32(dev, "nuvoton,dac-vref",
-+				       &nau8325->dac_vref);
-+	if (ret)
-+		nau8325->dac_vref = 2;
-+
-+	return 0;
-+}
-+
-+static int nau8325_i2c_probe(struct i2c_client *i2c,
-+			     const struct i2c_device_id *id)
-+{
-+	struct device *dev = &i2c->dev;
-+	struct nau8325 *nau8325 = dev_get_platdata(dev);
-+	int ret, value;
-+
-+	if (!nau8325) {
-+		nau8325 = devm_kzalloc(dev, sizeof(*nau8325), GFP_KERNEL);
-+		if (!nau8325) {
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+		ret = nau8325_read_device_properties(dev, nau8325);
-+		if (ret)
-+			goto err;
-+	}
-+	i2c_set_clientdata(i2c, nau8325);
-+
-+	nau8325->regmap = devm_regmap_init_i2c(i2c, &nau8325_regmap_config);
-+	if (IS_ERR(nau8325->regmap)) {
-+		ret = PTR_ERR(nau8325->regmap);
-+		goto err;
-+	}
-+	nau8325->dev = dev;
-+	nau8325_print_device_properties(nau8325);
-+
-+	nau8325_reset_chip(nau8325->regmap);
-+	ret = regmap_read(nau8325->regmap, NAU8325_R02_DEVICE_ID, &value);
-+	if (ret) {
-+		dev_dbg(dev, "Failed to read device id (%d)", ret);
-+		goto err;
-+	}
-+	nau8325_init_regs(nau8325);
-+
-+	ret = devm_snd_soc_register_component(dev, &nau8325_component_driver,
-+					      &nau8325_dai, 1);
-+err:
-+	return ret;
-+}
-+
-+static const struct i2c_device_id nau8325_i2c_ids[] = {
-+	{ "nau8325", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, nau8325_i2c_ids);
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id nau8325_of_ids[] = {
-+	{ .compatible = "nuvoton,nau8325", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, nau8325_of_ids);
-+#endif
-+
-+static struct i2c_driver nau8325_i2c_driver = {
-+	.driver = {
-+		.name = "nau8325",
-+		.of_match_table = of_match_ptr(nau8325_of_ids),
-+	},
-+	.probe = nau8325_i2c_probe,
-+	.id_table = nau8325_i2c_ids,
-+};
-+module_i2c_driver(nau8325_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC NAU8325 driver");
-+MODULE_AUTHOR("Seven Lee <WTLI@nuvoton.com>");
-+MODULE_AUTHOR("David Lin <CTLIN0@nuvoton.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/nau8325.h b/sound/soc/codecs/nau8325.h
-new file mode 100644
-index 000000000000..30b637fa7b3a
---- /dev/null
-+++ b/sound/soc/codecs/nau8325.h
-@@ -0,0 +1,391 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * nau8325.h -- Nuvoton NAU8325 audio codec driver
-+ *
-+ * Copyright 2023 Nuvoton Technology Crop.
-+ * Author: Seven Lee <WTLI@nuvoton.com>
-+ *	   David Lin <CTLIN0@nuvoton.com>
-+ */
-+
-+#ifndef __NAU8325_H__
-+#define __NAU8325_H__
-+
-+#define NAU8325_R00_HARDWARE_RST		0x00
-+#define NAU8325_R01_SOFTWARE_RST		0x01
-+#define NAU8325_R02_DEVICE_ID			0x02
-+#define NAU8325_R03_CLK_CTRL			0x03
-+#define NAU8325_R04_ENA_CTRL			0x04
-+#define NAU8325_R05_INTERRUPT_CTRL		0x05
-+#define NAU8325_R06_INT_CLR_STATUS		0x06
-+#define NAU8325_R09_IRQOUT			0x09
-+#define NAU8325_R0A_IO_CTRL			0x0a
-+#define NAU8325_R0B_PDM_CTRL			0x0b
-+#define NAU8325_R0C_TDM_CTRL			0x0c
-+#define NAU8325_R0D_I2S_PCM_CTRL1		0x0d
-+#define NAU8325_R0E_I2S_PCM_CTRL2		0x0e
-+#define NAU8325_R0F_L_TIME_SLOT			0x0f
-+#define NAU8325_R10_R_TIME_SLOT			0x10
-+#define NAU8325_R11_HPF_CTRL			0x11
-+#define NAU8325_R12_MUTE_CTRL			0x12
-+#define NAU8325_R13_DAC_VOLUME			0x13
-+#define NAU8325_R1D_DEBUG_READ1			0x1d
-+#define NAU8325_R1F_DEBUG_READ2			0x1f
-+#define NAU8325_R22_DEBUG_READ3			0x22
-+#define NAU8325_R29_DAC_CTRL1			0x29
-+#define NAU8325_R2A_DAC_CTRL2			0x2a
-+#define NAU8325_R2C_ALC_CTRL1			0x2c
-+#define NAU8325_R2D_ALC_CTRL2			0x2d
-+#define NAU8325_R2E_ALC_CTRL3			0x2e
-+#define NAU8325_R2F_ALC_CTRL4			0x2f
-+#define NAU8325_R40_CLK_DET_CTRL		0x40
-+#define NAU8325_R49_TEST_STATUS			0x49
-+#define NAU8325_R4A_ANALOG_READ			0x4a
-+#define NAU8325_R50_MIXER_CTRL			0x50
-+#define NAU8325_R55_MISC_CTRL			0x55
-+#define NAU8325_R60_BIAS_ADJ			0x60
-+#define NAU8325_R61_ANALOG_CONTROL_1		0x61
-+#define NAU8325_R62_ANALOG_CONTROL_2		0x62
-+#define NAU8325_R63_ANALOG_CONTROL_3		0x63
-+#define NAU8325_R64_ANALOG_CONTROL_4		0x64
-+#define NAU8325_R65_ANALOG_CONTROL_5		0x65
-+#define NAU8325_R66_ANALOG_CONTROL_6		0x66
-+#define NAU8325_R69_CLIP_CTRL			0x69
-+#define NAU8325_R73_RDAC			0x73
-+#define NAU8325_REG_MAX				NAU8325_R73_RDAC
-+
-+/* 16-bit control register address, and 16-bits control register data */
-+#define NAU8325_REG_ADDR_LEN		16
-+#define NAU8325_REG_DATA_LEN		16
-+
-+/* CLK_CTRL (0x03) */
-+#define NAU8325_CLK_DAC_SRC_SFT		12
-+#define NAU8325_CLK_DAC_SRC_MASK	(0x3 << NAU8325_CLK_DAC_SRC_SFT)
-+#define NAU8325_CLK_MUL_SRC_SFT		6
-+#define NAU8325_CLK_MUL_SRC_MASK	(0x3 << NAU8325_CLK_MUL_SRC_SFT)
-+#define NAU8325_MCLK_SEL_SFT		3
-+#define NAU8325_MCLK_SEL_MASK		(0x7 << NAU8325_MCLK_SEL_SFT)
-+#define NAU8325_MCLK_SRC_MASK		0x7
-+
-+/* ENA_CTRL (0x04) */
-+#define NAU8325_DAC_LEFT_CH_EN_SFT	3
-+#define NAU8325_DAC_LEFT_CH_EN		(0x1 << NAU8325_DAC_LEFT_CH_EN_SFT)
-+#define NAU8325_DAC_RIGHT_CH_EN_SFT	2
-+#define NAU8325_DAC_RIGHT_CH_EN		(0x1 << NAU8325_DAC_RIGHT_CH_EN_SFT)
-+
-+/* INTERRUPT_CTRL (0x05) */
-+#define NAU8325_ARP_DWN_INT_SFT		12
-+#define NAU8325_ARP_DWN_INT_MASK	(0x1 << NAU8325_ARP_DWN_INT_SFT)
-+#define NAU8325_CLIP_INT_SFT		11
-+#define NAU8325_CLIP_INT_MASK		(0x1 << NAU8325_CLIP_INT_SFT)
-+#define NAU8325_LVD_INT_SFT		10
-+#define NAU8325_LVD_INT_MASK		(0x1 << NAU8325_LVD_INT_SFT)
-+#define NAU8325_PWR_INT_DIS_SFT		8
-+#define NAU8325_PWR_INT_DIS		(0x1 << NAU8325_PWR_INT_DIS_SFT)
-+#define NAU8325_OCP_OTP_SHTDWN_INT_SFT	4
-+#define NAU8325_OCP_OTP_SHTDWN_INT_MASK (0x1 << NAU8325_OCP_OTP_SHTDWN_INT_SFT)
-+#define NAU8325_CLIP_INT_DIS_SFT	3
-+#define NAU8325_CLIP_INT_DIS		(0x1 << NAU8325_CLIP_INT_DIS_SFT)
-+#define NAU8325_LVD_INT_DIS_SFT		2
-+#define NAU8325_LVD_INT_DIS		(0x1 << NAU8325_LVD_INT_DIS_SFT)
-+#define NAU8325_PWR_INT_MASK		0x1
-+
-+/* INT_CLR_STATUS (0x06) */
-+#define NAU8325_INT_STATUS_MASK		0x7f
-+
-+/* IRQOUT (0x9) */
-+#define NAU8325_IRQOUT_SEL_SEF		12
-+#define NAU8325_IRQOUT_SEL_MASK		(0xf << NAU8325_IRQOUT_SEL_SEF)
-+#define NAU8325_DEM_DITH_SFT		7
-+#define NAU8325_DEM_DITH_EN		(0x1 << NAU8325_DEM_DITH_SFT)
-+#define NAU8325_GAINZI3_SFT		5
-+#define NAU8325_GAINZI3_MASK		(0x1 << NAU8325_GAINZI3_SFT)
-+#define NAU8325_GAINZI2_MASK		0x1f
-+
-+/* IO_CTRL (0x0a) */
-+#define NAU8325_IRQ_PL_SFT		15
-+#define NAU8325_IRQ_PL_ACT_HIGH		(0x1 << NAU8325_IRQ_PL_SFT)
-+#define NAU8325_IRQ_PS_SFT		14
-+#define NAU8325_IRQ_PS_UP		(0x1 << NAU8325_IRQ_PS_SFT)
-+#define NAU8325_IRQ_PE_SFT		13
-+#define NAU8325_IRQ_PE_EN		(0x1 << NAU8325_IRQ_PE_SFT)
-+#define NAU8325_IRQ_DS_SFT		12
-+#define NAU8325_IRQ_DS_HIGH		(0x1 << NAU8325_IRQ_DS_SFT)
-+#define NAU8325_IRQ_OUTPUT_SFT		11
-+#define NAU8325_IRQ_OUTPUT_EN		(0x1 << NAU8325_IRQ_OUTPUT_SFT)
-+#define NAU8325_IRQ_PIN_DEBUG_SFT	10
-+#define NAU8325_IRQ_PIN_DEBUG_EN	(0x1 << NAU8325_IRQ_PIN_DEBUG_SFT)
-+
-+/* PDM_CTRL (0x0b) */
-+#define NAU8325_PDM_LCH_EDGE_SFT	1
-+#define NAU8325_PDM_LCH_EDGE__MASK	(0x1 << NAU8325_PDM_LCH_EDGE_SFT)
-+#define NAU8325_PDM_MODE_EN		0x1
-+
-+/* TDM_CTRL (0x0c) */
-+#define NAU8325_TDM_SFT			15
-+#define NAU8325_TDM_EN			(0x1 << NAU8325_TDM_SFT)
-+#define NAU8325_PCM_OFFSET_CTRL_SFT	14
-+#define NAU8325_PCM_OFFSET_CTRL_EN	(0x1 << NAU8325_PCM_OFFSET_CTRL_SFT)
-+#define NAU8325_DAC_LEFT_SFT		6
-+#define NAU8325_NAU8325_DAC_LEFT_MASK	(0x7 << NAU8325_DAC_LEFT_SFT)
-+#define NAU8325_DAC_RIGHT_SFT		3
-+#define NAU8325_DAC_RIGHT_MASK		(0x7 << NAU8325_DAC_RIGHT_SFT)
-+
-+/* I2S_PCM_CTRL1 (0x0d) */
-+#define NAU8325_DACCM_CTL_SFT		14
-+#define NAU8325_DACCM_CTL_MASK		(0x3 << NAU8325_DACCM_CTL_SFT)
-+#define NAU8325_CMB8_0_SFT		10
-+#define NAU8325_CMB8_0_MASK		(0x1 << NAU8325_CMB8_0_SFT)
-+#define NAU8325_UA_OFFSET_SFT		9
-+#define NAU8325_UA_OFFSET_MASK		(0x1 << NAU8325_UA_OFFSET_SFT)
-+#define NAU8325_I2S_BP_SFT		7
-+#define NAU8325_I2S_BP_MASK		(0x1 << NAU8325_I2S_BP_SFT)
-+#define NAU8325_I2S_BP_INV		(0x1 << NAU8325_I2S_BP_SFT)
-+#define NAU8325_I2S_PCMB_SFT		6
-+#define NAU8325_I2S_PCMB_EN		(0x1 << NAU8325_I2S_PCMB_SFT)
-+#define NAU8325_I2S_DACPSHS0_SFT	5
-+#define NAU8325_I2S_DACPSHS0_MASK	(0x1 << NAU8325_I2S_DACPSHS0_SFT)
-+#define NAU8325_I2S_DL_SFT		2
-+#define NAU8325_I2S_DL_MASK		(0x3 << NAU8325_I2S_DL_SFT)
-+#define NAU8325_I2S_DL_32		(0x3 << NAU8325_I2S_DL_SFT)
-+#define NAU8325_I2S_DL_24		(0x2 << NAU8325_I2S_DL_SFT)
-+#define NAU8325_I2S_DL_20		(0x1 << NAU8325_I2S_DL_SFT)
-+#define NAU8325_I2S_DL_16		(0x0 << NAU8325_I2S_DL_SFT)
-+#define NAU8325_I2S_DF_MASK		0x3
-+#define NAU8325_I2S_DF_RIGTH		0x0
-+#define NAU8325_I2S_DF_LEFT		0x1
-+#define NAU8325_I2S_DF_I2S		0x2
-+#define NAU8325_I2S_DF_PCM_AB		0x3
-+
-+/* I2S_PCM_CTRL2 (0x0e) */
-+#define NAU8325_PCM_TS_SFT		10
-+#define NAU8325_PCM_TS_EN		(0x1 << NAU8325_PCM_TS_SFT)
-+#define NAU8325_PCM8BIT0_SFT		8
-+#define NAU8325_PCM8BIT0_MASK		(0x1 << NAU8325_PCM8BIT0_SFT)
-+
-+/* L_TIME_SLOT (0x0f)*/
-+#define NAU8325_SHORT_FS_DET_SFT	13
-+#define NAU8325_SHORT_FS_DET_DIS	(0x1 << NAU8325_SHORT_FS_DET_SFT)
-+#define NAU8325_TSLOT_L0_MASK		0x3ff
-+
-+/* R_TIME_SLOT (0x10)*/
-+#define NAU8325_TSLOT_R0_MASK		0x3ff
-+
-+/* HPF_CTRL (0x11)*/
-+#define NAU8325_DAC_HPF_SFT		15
-+#define NAU8325_DAC_HPF_EN		(0x1 << NAU8325_DAC_HPF_SFT)
-+#define NAU8325_DAC_HPF_APP_SFT		14
-+#define NAU8325_DAC_HPF_APP_MASK	(0x1 << NAU8325_DAC_HPF_APP_SFT)
-+#define NAU8325_DAC_HPF_FCUT_SFT	11
-+#define NAU8325_DAC_HPF_FCUT_MASK	(0x7 << NAU8325_DAC_HPF_FCUT_SFT)
-+
-+/* MUTE_CTRL (0x12)*/
-+#define NAU8325_SOFT_MUTE_SFT		15
-+#define NAU8325_SOFT_MUTE		(0x1 << NAU8325_SOFT_MUTE_SFT)
-+#define NAU8325_DAC_ZC_SFT		8
-+#define NAU8325_DAC_ZC_EN		(0x1 << NAU8325_DAC_ZC_SFT)
-+#define NAU8325_UNMUTE_CTL_SFT		6
-+#define NAU8325_UNMUTE_CTL_MASK		(0x3 << NAU8325_UNMUTE_CTL_SFT)
-+#define NAU8325_ANA_MUTE_SFT		4
-+#define NAU8325_ANA_MUTE_MASK		(0x3 << NAU8325_ANA_MUTE_SFT)
-+#define NAU8325_AUTO_MUTE_SFT		3
-+#define NAU8325_AUTO_MUTE_DIS		(0x1 << NAU8325_AUTO_MUTE_SFT)
-+
-+/* DAC_VOLUME (0x13) */
-+#define NAU8325_DAC_VOLUME_L_SFT	8
-+#define NAU8325_DAC_VOLUME_L_EN		(0xff << NAU8325_DAC_VOLUME_L_SFT)
-+#define NAU8325_DAC_VOLUME_R_SFT	0
-+#define NAU8325_DAC_VOLUME_R_EN		(0xff << NAU8325_DAC_VOLUME_R_SFT)
-+#define NAU8325_DAC_VOL_MAX		0xff
-+
-+/* DEBUG_READ1 (0x1d)*/
-+#define NAU8325_OSR100_MASK		(0x1 << 6)
-+#define NAU8325_MIPS500_MASK		(0x1 << 5)
-+#define NAU8325_SHUTDWNDRVR_R_MASK	(0x1 << 4)
-+#define NAU8325_SHUTDWNDRVR_L_MASK	(0x1 << 3)
-+#define NAU8325_MUTEB_MASK		(0x1 << 2)
-+#define NAU8325_PDOSCB_MASK		(0x1 << 1)
-+#define NAU8325_POWERDOWN1B_D_MASK	0x1
-+
-+/* DEBUG_READ2 (0x1f)*/
-+#define NAU8325_R_CHANNEL_Vol_SFT	8
-+#define NAU8325_R_CHANNEL_Vol_MASK	(0xff << NAU8325_R_CHANNEL_Vol_SFT)
-+#define NAU8325_L_CHANNEL_Vol_MASK	0xff
-+
-+/* DEBUG_READ3(0x22)*/
-+#define NAU8325_PGAL_GAIN_MASK		(0x3f << 7)
-+#define NAU8325_CLIP_MASK		(0x1 << 6)
-+#define NAU8325_SCAN_MODE_MASK		(0x1 << 5)
-+#define NAU8325_SDB_MASK		(0x1 << 4)
-+#define NAU8325_TALARM_MASK		(0x1 << 3)
-+#define NAU8325_SHORTR_MASK		(0x1 << 2)
-+#define NAU8325_SHORTL_MASK		(0x1 << 1)
-+#define NAU8325_TMDET_MASK		0x1
-+
-+/* DAC_CTRL1 (0x29) */
-+#define NAU8325_DAC_OVERSAMPLE_SFT	0
-+#define NAU8325_DAC_OVERSAMPLE_MASK	0x7
-+#define NAU8325_DAC_OVERSAMPLE_256	1
-+#define NAU8325_DAC_OVERSAMPLE_128	2
-+#define NAU8325_DAC_OVERSAMPLE_64	0
-+#define NAU8325_DAC_OVERSAMPLE_32	4
-+
-+/* ALC_CTRL1 (0x2c) */
-+#define NAU8325_ALC_MAXGAIN_SFT		5
-+#define NAU8325_ALC_MAXGAIN_MAX		0x7
-+#define NAU8325_ALC_MAXGAIN_MASK	(0x7 << NAU8325_ALC_MAXGAIN_SFT)
-+#define NAU8325_ALC_MINGAIN_MAX		4
-+#define NAU8325_ALC_MINGAIN_SFT		1
-+#define NAU8325_ALC_MINGAIN_MASK	(0x7 << NAU8325_ALC_MINGAIN_SFT)
-+
-+/* ALC_CTRL2 (0x2d) */
-+#define NAU8325_ALC_DCY_SFT		12
-+#define NAU8325_ALC_DCY_MAX		0xb
-+#define NAU8325_ALC_DCY_MASK		(0xf << NAU8325_ALC_DCY_SFT)
-+#define NAU8325_ALC_ATK_SFT		8
-+#define NAU8325_ALC_ATK_MAX		0xb
-+#define NAU8325_ALC_ATK_MASK		(0xf << NAU8325_ALC_ATK_SFT)
-+#define NAU8325_ALC_HLD_SFT		4
-+#define NAU8325_ALC_HLD_MAX		0xa
-+#define NAU8325_ALC_HLD_MASK		(0xf << NAU8325_ALC_HLD_SFT)
-+#define NAU8325_ALC_LVL_SFT		0
-+#define NAU8325_ALC_LVL_MAX		0xf
-+#define NAU8325_ALC_LVL_MASK		0xf
-+
-+/* ALC_CTRL3 (0x2e) */
-+#define NAU8325_ALC_EN_SFT		15
-+#define NAU8325_ALC_EN			(0x1 << NAU8325_ALC_EN_SFT)
-+
-+/* TEMP_COMP_CTRL (0x30) */
-+#define NAU8325_TEMP_COMP_ACT2_MASK	0xff
-+
-+/* LPF_CTRL (0x33) */
-+#define NAU8325_LPF_IN1_EN_SFT		15
-+#define NAU8325_LPF_IN1_EN		(0x1 << NAU8325_LPF_IN1_EN_SFT)
-+#define NAU8325_LPF_IN1_TC_SFT		11
-+#define NAU8325_LPF_IN1_TC_MASK		(0xf << NAU8325_LPF_IN1_TC_SFT)
-+#define NAU8325_LPF_IN2_EN_SFT		10
-+#define NAU8325_LPF_IN2_EN		(0x1 << NAU8325_LPF_IN2_EN_SFT)
-+#define NAU8325_LPF_IN2_TC_SFT		6
-+#define NAU8325_LPF_IN2_TC_MASK		(0xf << NAU8325_LPF_IN2_TC_SFT)
-+
-+/* CLK_DET_CTRL (0x40) */
-+#define NAU8325_APWRUP_SFT		15
-+#define NAU8325_APWRUP_EN		(0x1 << NAU8325_APWRUP_SFT)
-+#define NAU8325_CLKPWRUP_SFT		14
-+#define NAU8325_CLKPWRUP_DIS		(0x1 << NAU8325_CLKPWRUP_SFT)
-+#define NAU8325_PWRUP_DFT_SFT		13
-+#define NAU8325_PWRUP_DFT		(0x1 << NAU8325_PWRUP_DFT_SFT)
-+#define NAU8325_REG_SRATE_SFT		10
-+#define NAU8325_REG_SRATE_MASK		(0x7 << NAU8325_REG_SRATE_SFT)
-+#define NAU8325_REG_ALT_SRATE_SFT	9
-+#define NAU8325_REG_ALT_SRATE_EN	(0x1 << NAU8325_REG_ALT_SRATE_SFT)
-+#define NAU8325_REG_DIV_MAX		0x1
-+
-+/* BIAS_ADJ (0x60) */
-+#define NAU8325_BIAS_VMID_SEL_SFT	4
-+#define NAU8325_BIAS_VMID_SEL_MASK	(0x3 << NAU8325_BIAS_VMID_SEL_SFT)
-+
-+/* ANALOG_CONTROL_1 (0x61) */
-+#define NAU8325_VMDFSTENB_SFT		14
-+#define NAU8325_VMDFSTENB_MASK		(0x3 << NAU8325_VMDFSTENB_SFT)
-+#define NAU8325_CLASSDEN_SFT		12
-+#define NAU8325_CLASSDEN_MASK		(0x3 << NAU8325_CLASSDEN_SFT)
-+#define NAU8325_DACCLKEN_R_SFT		10
-+#define NAU8325_DACCLKEN_R_MASK		(0x3 << NAU8325_DACCLKEN_R_SFT)
-+#define NAU8325_DACEN_R_SFT		8
-+#define NAU8325_DACEN_R_MASK		(0x3 << NAU8325_DACEN_R_SFT)
-+#define NAU8325_DACCLKEN_SFT		6
-+#define NAU8325_DACCLKEN_MASK		(0x3 << NAU8325_DACCLKEN_SFT)
-+#define NAU8325_DACEN_SFT		4
-+#define NAU8325_DACEN_MASK		(0x3 << NAU8325_DACEN_SFT)
-+#define NAU8325_BIASEN_SFT		2
-+#define NAU8325_BIASEN_MASK		(0x3 << NAU8325_BIASEN_SFT)
-+#define NAU8325_VMIDEN_MASK		0x3
-+
-+/* ANALOG_CONTROL_2 (0x62) */
-+#define NAU8325_PWMMOD_SFT		14
-+#define NAU8325_PWMMOD_MASK		(0x1 << NAU8325_PWMMOD_SFT)
-+#define NAU8325_DACTEST_SFT		6
-+#define NAU8325_DACTEST_MASK		(0x3 << NAU8325_DACTEST_SFT)
-+#define NAU8325_DACREFCAP_SFT		4
-+#define NAU8325_DACREFCAP_MASK		(0x3 << NAU8325_DACREFCAP_SFT)
-+
-+/* ANALOG_CONTROL_3 (0x63) */
-+#define NAU8325_POWER_DOWN_L_SFT	12
-+#define NAU8325_POWER_DOWN_L_MASK	(0x3 << NAU8325_POWER_DOWN_L_SFT)
-+#define NAU8325_POWER_DOWN_R_SFT	11
-+#define NAU8325_POWER_DOWN_R_MASK	(0x3 << NAU8325_DACREFCAP_SFT)
-+#define NAU8325_CLASSD_FINE_SFT		5
-+#define NAU8325_CLASSD_FINE_MASK	(0x3 << NAU8325_CLASSD_FINE_SFT)
-+#define NAU8325_CLASSD_COARSE_GAIN_MASK	0xf
-+
-+/* ANALOG_CONTROL_4 (0x64) */
-+#define NAU8325_CLASSD_OCPN_SFT		12
-+#define NAU8325_CLASSD_OCPN_MASK	(0xf << NAU8325_CLASSD_OCPN_SFT)
-+#define NAU8325_CLASSD_OCPP_SFT		8
-+#define NAU8325_CLASSD_OCPP_MASK	(0xf << NAU8325_CLASSD_OCPP_SFT)
-+#define NAU8325_CLASSD_SLEWN_MASK	0xff
-+
-+/* ANALOG_CONTROL_5 (0x65) */
-+#define NAU8325_MCLK_RANGE_SFT		2
-+#define NAU8325_MCLK_RANGE_EN		(0x1 << NAU8325_MCLK_RANGE_SFT)
-+#define NAU8325_MCLK8XEN_SFT		1
-+#define NAU8325_MCLK8XEN_EN		(0x1 << NAU8325_MCLK8XEN_SFT)
-+#define NAU8325_MCLK4XEN_EN		0x1
-+
-+/* ANALOG_CONTROL_6 (0x66) */
-+#define NAU8325_VBATLOW_SFT		4
-+#define NAU8325_VBATLOW_MASK		(0x1 << NAU8325_VBATLOW_SFT)
-+#define NAU8325_VDDSPK_LIM_SFT		3
-+#define NAU8325_VDDSPK_LIM_EN		(0x1 << NAU8325_VDDSPK_LIM_SFT)
-+#define NAU8325_VDDSPK_LIM_MASK		0x7
-+
-+/* CLIP_CTRL (0x69)*/
-+#define NAU8325_ANTI_CLIP_SFT		4
-+#define NAU8325_ANTI_CLIP_EN		(0x1 << NAU8325_ANTI_CLIP_SFT)
-+
-+/* RDAC (0x73) */
-+#define NAU8325_CLK_DAC_DELAY_SFT	4
-+#define NAU8325_CLK_DAC_DELAY_EN	(0x7 << NAU8325_CLK_DAC_DELAY_SFT)
-+#define NAU8325_DACVREFSEL_SFT		2
-+#define NAU8325_DACVREFSEL_MASK		(0x3 << NAU8325_DACVREFSEL_SFT)
-+
-+#define NAU8325_CODEC_DAI "nau8325-hifi"
-+
-+struct nau8325 {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	int mclk;
-+	int fs;
-+	int vref_impedance;
-+	int dac_vref;
-+	int clock_detection;
-+	int clock_det_data;
-+	int alc_enable;
-+};
-+
-+struct nau8325_src_attr {
-+	int param;
-+	unsigned int val;
-+};
-+
-+enum {
-+	NAU8325_MCLK_FS_RATIO_256,
-+	NAU8325_MCLK_FS_RATIO_400,
-+	NAU8325_MCLK_FS_RATIO_500,
-+	NAU8325_MCLK_FS_RATIO_NUM,
-+};
-+
-+struct nau8325_srate_attr {
-+	int fs;
-+	int range;
-+	bool max;
-+	unsigned int mclk_src[NAU8325_MCLK_FS_RATIO_NUM];
-+};
-+
-+struct nau8325_osr_attr {
-+	unsigned int osr;
-+	unsigned int clk_src;
-+};
-+
-+#endif /* __NAU8325_H__ */
+
+Hello,
+
+kernel test robot noticed "perf-test.perf.make.fail" on:
+
+commit: d3ed44a7bee70b097709fe06f339c468489f16c9 ("[PATCH v3 12/12] perf jevents: Add load event json to verify and allow fallbacks")
+url: https://github.com/intel-lab-lkp/linux/commits/Ian-Rogers/perf-jevents-Allow-multiple-metricgroups-json-files/20240314-135507
+base: v6.8
+patch link: https://lore.kernel.org/all/20240314055051.1960527-13-irogers@google.com/
+patch subject: [PATCH v3 12/12] perf jevents: Add load event json to verify and allow fallbacks
+
+in testcase: perf-test
+version: perf-test-x86_64-git-1_20240223
+with following parameters:
+
+	type: lkp
+	group: group-01
+
+
+
+compiler: gcc-12
+test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480+ (Sapphire Rapids) with 256G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202403221000.c4617e93-oliver.sang@intel.com
+
+
+please check attached stderr, more materials are in link [1]
+
+
+Traceback (most recent call last):
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 42, in <module>
+    main()
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 32, in main
+    LoadEvents(directory)
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/metric.py", line 26, in LoadEvents
+    for x in json.load(open(f"{directory}/{filename}")):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+make[3]: *** [pmu-events/Build:45: pmu-events/arch/x86/amdzen1/extra-metrics.json] Error 1
+make[3]: *** Deleting file 'pmu-events/arch/x86/amdzen1/extra-metrics.json'
+make[3]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 42, in <module>
+    main()
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 32, in main
+    LoadEvents(directory)
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/metric.py", line 26, in LoadEvents
+    for x in json.load(open(f"{directory}/{filename}")):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+make[3]: *** [pmu-events/Build:45: pmu-events/arch/x86/amdzen2/extra-metrics.json] Error 1
+make[3]: *** Deleting file 'pmu-events/arch/x86/amdzen2/extra-metrics.json'
+make[2]: *** [Makefile.perf:706: pmu-events/pmu-events-in.o] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [Makefile.perf:261: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+
+
+
+[1]
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240322/202403221000.c4617e93-oliver.sang@intel.com
+
+
+
 -- 
-2.25.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
+
+--TiJHmnqND8oovjPL
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: attachment; filename="stderr"
+
+  diff -u tools/include/uapi/sound/asound.h include/uapi/sound/asound.h
+  diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+Makefile.config:698: Warning: Disabled BPF skeletons as clang (clang) is missing
+  PERF_VERSION = 6.8.0
+make[3]: Circular pmu-events/arch/x86/jaketown/uncore-io.json <- pmu-events/arch/x86/jaketown/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/uncore-power.json <- pmu-events/arch/x86/jaketown/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/uncore-cache.json <- pmu-events/arch/x86/jaketown/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/memory.json <- pmu-events/arch/x86/jaketown/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/uncore-interconnect.json <- pmu-events/arch/x86/jaketown/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/cache.json <- pmu-events/arch/x86/jaketown/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/floating-point.json <- pmu-events/arch/x86/jaketown/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/frontend.json <- pmu-events/arch/x86/jaketown/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/virtual-memory.json <- pmu-events/arch/x86/jaketown/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/uncore-memory.json <- pmu-events/arch/x86/jaketown/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/jkt-metrics.json <- pmu-events/arch/x86/jaketown/jkt-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/metricgroups.json <- pmu-events/arch/x86/jaketown/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/other.json <- pmu-events/arch/x86/jaketown/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/jaketown/pipeline.json <- pmu-events/arch/x86/jaketown/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/memory.json <- pmu-events/arch/x86/westmereep-sp/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/cache.json <- pmu-events/arch/x86/westmereep-sp/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/floating-point.json <- pmu-events/arch/x86/westmereep-sp/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/frontend.json <- pmu-events/arch/x86/westmereep-sp/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/virtual-memory.json <- pmu-events/arch/x86/westmereep-sp/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/other.json <- pmu-events/arch/x86/westmereep-sp/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-sp/pipeline.json <- pmu-events/arch/x86/westmereep-sp/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/uncore-io.json <- pmu-events/arch/x86/knightslanding/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/uncore-cache.json <- pmu-events/arch/x86/knightslanding/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/memory.json <- pmu-events/arch/x86/knightslanding/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/cache.json <- pmu-events/arch/x86/knightslanding/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/floating-point.json <- pmu-events/arch/x86/knightslanding/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/frontend.json <- pmu-events/arch/x86/knightslanding/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/virtual-memory.json <- pmu-events/arch/x86/knightslanding/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/uncore-memory.json <- pmu-events/arch/x86/knightslanding/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/knightslanding/pipeline.json <- pmu-events/arch/x86/knightslanding/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/uncore-cache.json <- pmu-events/arch/x86/meteorlake/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/memory.json <- pmu-events/arch/x86/meteorlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/uncore-interconnect.json <- pmu-events/arch/x86/meteorlake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/cache.json <- pmu-events/arch/x86/meteorlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/floating-point.json <- pmu-events/arch/x86/meteorlake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/frontend.json <- pmu-events/arch/x86/meteorlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/virtual-memory.json <- pmu-events/arch/x86/meteorlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/uncore-memory.json <- pmu-events/arch/x86/meteorlake/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/other.json <- pmu-events/arch/x86/meteorlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/pipeline.json <- pmu-events/arch/x86/meteorlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/meteorlake/uncore-other.json <- pmu-events/arch/x86/meteorlake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/core.json <- pmu-events/arch/x86/amdzen2/core.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/memory.json <- pmu-events/arch/x86/amdzen2/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/cache.json <- pmu-events/arch/x86/amdzen2/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/floating-point.json <- pmu-events/arch/x86/amdzen2/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/data-fabric.json <- pmu-events/arch/x86/amdzen2/data-fabric.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/other.json <- pmu-events/arch/x86/amdzen2/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/branch.json <- pmu-events/arch/x86/amdzen2/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen2/recommended.json <- pmu-events/arch/x86/amdzen2/recommended.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/memory.json <- pmu-events/arch/x86/graniterapids/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/cache.json <- pmu-events/arch/x86/graniterapids/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/frontend.json <- pmu-events/arch/x86/graniterapids/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/virtual-memory.json <- pmu-events/arch/x86/graniterapids/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/other.json <- pmu-events/arch/x86/graniterapids/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/graniterapids/pipeline.json <- pmu-events/arch/x86/graniterapids/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/uncore-cache.json <- pmu-events/arch/x86/sandybridge/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/memory.json <- pmu-events/arch/x86/sandybridge/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/uncore-interconnect.json <- pmu-events/arch/x86/sandybridge/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/cache.json <- pmu-events/arch/x86/sandybridge/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/floating-point.json <- pmu-events/arch/x86/sandybridge/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/frontend.json <- pmu-events/arch/x86/sandybridge/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/virtual-memory.json <- pmu-events/arch/x86/sandybridge/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/metricgroups.json <- pmu-events/arch/x86/sandybridge/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/other.json <- pmu-events/arch/x86/sandybridge/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/snb-metrics.json <- pmu-events/arch/x86/sandybridge/snb-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sandybridge/pipeline.json <- pmu-events/arch/x86/sandybridge/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/ehl-metrics.json <- pmu-events/arch/x86/elkhartlake/ehl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/memory.json <- pmu-events/arch/x86/elkhartlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/cache.json <- pmu-events/arch/x86/elkhartlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/floating-point.json <- pmu-events/arch/x86/elkhartlake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/frontend.json <- pmu-events/arch/x86/elkhartlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/virtual-memory.json <- pmu-events/arch/x86/elkhartlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/other.json <- pmu-events/arch/x86/elkhartlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/elkhartlake/pipeline.json <- pmu-events/arch/x86/elkhartlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/uncore-io.json <- pmu-events/arch/x86/skylakex/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/uncore-power.json <- pmu-events/arch/x86/skylakex/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/skx-metrics.json <- pmu-events/arch/x86/skylakex/skx-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/uncore-cache.json <- pmu-events/arch/x86/skylakex/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/memory.json <- pmu-events/arch/x86/skylakex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/uncore-interconnect.json <- pmu-events/arch/x86/skylakex/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/cache.json <- pmu-events/arch/x86/skylakex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/floating-point.json <- pmu-events/arch/x86/skylakex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/frontend.json <- pmu-events/arch/x86/skylakex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/virtual-memory.json <- pmu-events/arch/x86/skylakex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/uncore-memory.json <- pmu-events/arch/x86/skylakex/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/metricgroups.json <- pmu-events/arch/x86/skylakex/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/other.json <- pmu-events/arch/x86/skylakex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylakex/pipeline.json <- pmu-events/arch/x86/skylakex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/uncore-io.json <- pmu-events/arch/x86/broadwellde/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/uncore-power.json <- pmu-events/arch/x86/broadwellde/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/uncore-cache.json <- pmu-events/arch/x86/broadwellde/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/bdwde-metrics.json <- pmu-events/arch/x86/broadwellde/bdwde-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/memory.json <- pmu-events/arch/x86/broadwellde/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/uncore-interconnect.json <- pmu-events/arch/x86/broadwellde/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/cache.json <- pmu-events/arch/x86/broadwellde/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/floating-point.json <- pmu-events/arch/x86/broadwellde/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/frontend.json <- pmu-events/arch/x86/broadwellde/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/virtual-memory.json <- pmu-events/arch/x86/broadwellde/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/uncore-memory.json <- pmu-events/arch/x86/broadwellde/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/metricgroups.json <- pmu-events/arch/x86/broadwellde/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/other.json <- pmu-events/arch/x86/broadwellde/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellde/pipeline.json <- pmu-events/arch/x86/broadwellde/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/uncore-io.json <- pmu-events/arch/x86/ivytown/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/uncore-power.json <- pmu-events/arch/x86/ivytown/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/ivt-metrics.json <- pmu-events/arch/x86/ivytown/ivt-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/uncore-cache.json <- pmu-events/arch/x86/ivytown/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/memory.json <- pmu-events/arch/x86/ivytown/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/uncore-interconnect.json <- pmu-events/arch/x86/ivytown/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/cache.json <- pmu-events/arch/x86/ivytown/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/floating-point.json <- pmu-events/arch/x86/ivytown/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/frontend.json <- pmu-events/arch/x86/ivytown/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/virtual-memory.json <- pmu-events/arch/x86/ivytown/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/uncore-memory.json <- pmu-events/arch/x86/ivytown/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/metricgroups.json <- pmu-events/arch/x86/ivytown/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/other.json <- pmu-events/arch/x86/ivytown/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivytown/pipeline.json <- pmu-events/arch/x86/ivytown/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/memory.json <- pmu-events/arch/x86/westmereex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/cache.json <- pmu-events/arch/x86/westmereex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/floating-point.json <- pmu-events/arch/x86/westmereex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/frontend.json <- pmu-events/arch/x86/westmereex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/virtual-memory.json <- pmu-events/arch/x86/westmereex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/other.json <- pmu-events/arch/x86/westmereex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereex/pipeline.json <- pmu-events/arch/x86/westmereex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/mapfile.csv <- pmu-events/arch/x86/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/memory.json <- pmu-events/arch/x86/bonnell/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/cache.json <- pmu-events/arch/x86/bonnell/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/floating-point.json <- pmu-events/arch/x86/bonnell/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/frontend.json <- pmu-events/arch/x86/bonnell/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/virtual-memory.json <- pmu-events/arch/x86/bonnell/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/other.json <- pmu-events/arch/x86/bonnell/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/bonnell/pipeline.json <- pmu-events/arch/x86/bonnell/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/uncore-io.json <- pmu-events/arch/x86/snowridgex/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/uncore-power.json <- pmu-events/arch/x86/snowridgex/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/uncore-cache.json <- pmu-events/arch/x86/snowridgex/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/memory.json <- pmu-events/arch/x86/snowridgex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/uncore-interconnect.json <- pmu-events/arch/x86/snowridgex/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/cache.json <- pmu-events/arch/x86/snowridgex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/floating-point.json <- pmu-events/arch/x86/snowridgex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/frontend.json <- pmu-events/arch/x86/snowridgex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/virtual-memory.json <- pmu-events/arch/x86/snowridgex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/uncore-memory.json <- pmu-events/arch/x86/snowridgex/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/other.json <- pmu-events/arch/x86/snowridgex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/snowridgex/pipeline.json <- pmu-events/arch/x86/snowridgex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/uncore-cache.json <- pmu-events/arch/x86/skylake/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/memory.json <- pmu-events/arch/x86/skylake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/uncore-interconnect.json <- pmu-events/arch/x86/skylake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/cache.json <- pmu-events/arch/x86/skylake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/floating-point.json <- pmu-events/arch/x86/skylake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/frontend.json <- pmu-events/arch/x86/skylake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/virtual-memory.json <- pmu-events/arch/x86/skylake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/metricgroups.json <- pmu-events/arch/x86/skylake/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/other.json <- pmu-events/arch/x86/skylake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/pipeline.json <- pmu-events/arch/x86/skylake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/skl-metrics.json <- pmu-events/arch/x86/skylake/skl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/skylake/uncore-other.json <- pmu-events/arch/x86/skylake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/memory.json <- pmu-events/arch/x86/grandridge/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/cache.json <- pmu-events/arch/x86/grandridge/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/frontend.json <- pmu-events/arch/x86/grandridge/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/virtual-memory.json <- pmu-events/arch/x86/grandridge/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/other.json <- pmu-events/arch/x86/grandridge/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/grandridge/pipeline.json <- pmu-events/arch/x86/grandridge/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-io.json <- pmu-events/arch/x86/emeraldrapids/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-power.json <- pmu-events/arch/x86/emeraldrapids/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-cache.json <- pmu-events/arch/x86/emeraldrapids/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/memory.json <- pmu-events/arch/x86/emeraldrapids/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-interconnect.json <- pmu-events/arch/x86/emeraldrapids/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/cache.json <- pmu-events/arch/x86/emeraldrapids/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/floating-point.json <- pmu-events/arch/x86/emeraldrapids/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-cxl.json <- pmu-events/arch/x86/emeraldrapids/uncore-cxl.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/frontend.json <- pmu-events/arch/x86/emeraldrapids/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/virtual-memory.json <- pmu-events/arch/x86/emeraldrapids/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/uncore-memory.json <- pmu-events/arch/x86/emeraldrapids/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/other.json <- pmu-events/arch/x86/emeraldrapids/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/emeraldrapids/pipeline.json <- pmu-events/arch/x86/emeraldrapids/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/hsw-metrics.json <- pmu-events/arch/x86/haswell/hsw-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/uncore-cache.json <- pmu-events/arch/x86/haswell/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/memory.json <- pmu-events/arch/x86/haswell/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/uncore-interconnect.json <- pmu-events/arch/x86/haswell/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/cache.json <- pmu-events/arch/x86/haswell/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/floating-point.json <- pmu-events/arch/x86/haswell/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/frontend.json <- pmu-events/arch/x86/haswell/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/virtual-memory.json <- pmu-events/arch/x86/haswell/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/metricgroups.json <- pmu-events/arch/x86/haswell/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/other.json <- pmu-events/arch/x86/haswell/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/pipeline.json <- pmu-events/arch/x86/haswell/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswell/uncore-other.json <- pmu-events/arch/x86/haswell/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/core.json <- pmu-events/arch/x86/amdzen3/core.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/memory.json <- pmu-events/arch/x86/amdzen3/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/cache.json <- pmu-events/arch/x86/amdzen3/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/floating-point.json <- pmu-events/arch/x86/amdzen3/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/data-fabric.json <- pmu-events/arch/x86/amdzen3/data-fabric.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/other.json <- pmu-events/arch/x86/amdzen3/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/branch.json <- pmu-events/arch/x86/amdzen3/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen3/recommended.json <- pmu-events/arch/x86/amdzen3/recommended.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/memory.json <- pmu-events/arch/x86/goldmont/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/cache.json <- pmu-events/arch/x86/goldmont/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/floating-point.json <- pmu-events/arch/x86/goldmont/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/frontend.json <- pmu-events/arch/x86/goldmont/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/virtual-memory.json <- pmu-events/arch/x86/goldmont/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/other.json <- pmu-events/arch/x86/goldmont/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmont/pipeline.json <- pmu-events/arch/x86/goldmont/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/uncore-io.json <- pmu-events/arch/x86/broadwellx/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/uncore-power.json <- pmu-events/arch/x86/broadwellx/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/uncore-cache.json <- pmu-events/arch/x86/broadwellx/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/memory.json <- pmu-events/arch/x86/broadwellx/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/uncore-interconnect.json <- pmu-events/arch/x86/broadwellx/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/cache.json <- pmu-events/arch/x86/broadwellx/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/floating-point.json <- pmu-events/arch/x86/broadwellx/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/frontend.json <- pmu-events/arch/x86/broadwellx/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/virtual-memory.json <- pmu-events/arch/x86/broadwellx/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/uncore-memory.json <- pmu-events/arch/x86/broadwellx/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/metricgroups.json <- pmu-events/arch/x86/broadwellx/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/other.json <- pmu-events/arch/x86/broadwellx/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/pipeline.json <- pmu-events/arch/x86/broadwellx/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwellx/bdx-metrics.json <- pmu-events/arch/x86/broadwellx/bdx-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/uncore-io.json <- pmu-events/arch/x86/haswellx/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/uncore-power.json <- pmu-events/arch/x86/haswellx/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/hsx-metrics.json <- pmu-events/arch/x86/haswellx/hsx-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/uncore-cache.json <- pmu-events/arch/x86/haswellx/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/memory.json <- pmu-events/arch/x86/haswellx/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/uncore-interconnect.json <- pmu-events/arch/x86/haswellx/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/cache.json <- pmu-events/arch/x86/haswellx/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/floating-point.json <- pmu-events/arch/x86/haswellx/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/frontend.json <- pmu-events/arch/x86/haswellx/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/virtual-memory.json <- pmu-events/arch/x86/haswellx/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/uncore-memory.json <- pmu-events/arch/x86/haswellx/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/metricgroups.json <- pmu-events/arch/x86/haswellx/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/other.json <- pmu-events/arch/x86/haswellx/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/haswellx/pipeline.json <- pmu-events/arch/x86/haswellx/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/memory.json <- pmu-events/arch/x86/nehalemex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/cache.json <- pmu-events/arch/x86/nehalemex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/floating-point.json <- pmu-events/arch/x86/nehalemex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/frontend.json <- pmu-events/arch/x86/nehalemex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/virtual-memory.json <- pmu-events/arch/x86/nehalemex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/other.json <- pmu-events/arch/x86/nehalemex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemex/pipeline.json <- pmu-events/arch/x86/nehalemex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/uncore-io.json <- pmu-events/arch/x86/icelakex/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/uncore-power.json <- pmu-events/arch/x86/icelakex/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/uncore-cache.json <- pmu-events/arch/x86/icelakex/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/memory.json <- pmu-events/arch/x86/icelakex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/uncore-interconnect.json <- pmu-events/arch/x86/icelakex/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/cache.json <- pmu-events/arch/x86/icelakex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/floating-point.json <- pmu-events/arch/x86/icelakex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/frontend.json <- pmu-events/arch/x86/icelakex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/virtual-memory.json <- pmu-events/arch/x86/icelakex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/uncore-memory.json <- pmu-events/arch/x86/icelakex/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/icx-metrics.json <- pmu-events/arch/x86/icelakex/icx-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/metricgroups.json <- pmu-events/arch/x86/icelakex/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/other.json <- pmu-events/arch/x86/icelakex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelakex/pipeline.json <- pmu-events/arch/x86/icelakex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/memory.json <- pmu-events/arch/x86/lunarlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/cache.json <- pmu-events/arch/x86/lunarlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/frontend.json <- pmu-events/arch/x86/lunarlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/virtual-memory.json <- pmu-events/arch/x86/lunarlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/other.json <- pmu-events/arch/x86/lunarlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/lunarlake/pipeline.json <- pmu-events/arch/x86/lunarlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/core.json <- pmu-events/arch/x86/amdzen1/core.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/memory.json <- pmu-events/arch/x86/amdzen1/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/cache.json <- pmu-events/arch/x86/amdzen1/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/floating-point.json <- pmu-events/arch/x86/amdzen1/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/data-fabric.json <- pmu-events/arch/x86/amdzen1/data-fabric.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/other.json <- pmu-events/arch/x86/amdzen1/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/branch.json <- pmu-events/arch/x86/amdzen1/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen1/recommended.json <- pmu-events/arch/x86/amdzen1/recommended.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/memory.json <- pmu-events/arch/x86/alderlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/uncore-interconnect.json <- pmu-events/arch/x86/alderlake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/cache.json <- pmu-events/arch/x86/alderlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/floating-point.json <- pmu-events/arch/x86/alderlake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/frontend.json <- pmu-events/arch/x86/alderlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/virtual-memory.json <- pmu-events/arch/x86/alderlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/uncore-memory.json <- pmu-events/arch/x86/alderlake/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/metricgroups.json <- pmu-events/arch/x86/alderlake/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/other.json <- pmu-events/arch/x86/alderlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/pipeline.json <- pmu-events/arch/x86/alderlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/adl-metrics.json <- pmu-events/arch/x86/alderlake/adl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlake/uncore-other.json <- pmu-events/arch/x86/alderlake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/adln-metrics.json <- pmu-events/arch/x86/alderlaken/adln-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/memory.json <- pmu-events/arch/x86/alderlaken/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/uncore-interconnect.json <- pmu-events/arch/x86/alderlaken/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/cache.json <- pmu-events/arch/x86/alderlaken/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/floating-point.json <- pmu-events/arch/x86/alderlaken/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/frontend.json <- pmu-events/arch/x86/alderlaken/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/virtual-memory.json <- pmu-events/arch/x86/alderlaken/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/uncore-memory.json <- pmu-events/arch/x86/alderlaken/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/metricgroups.json <- pmu-events/arch/x86/alderlaken/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/other.json <- pmu-events/arch/x86/alderlaken/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/pipeline.json <- pmu-events/arch/x86/alderlaken/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/alderlaken/uncore-other.json <- pmu-events/arch/x86/alderlaken/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/clx-metrics.json <- pmu-events/arch/x86/cascadelakex/clx-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/uncore-io.json <- pmu-events/arch/x86/cascadelakex/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/uncore-power.json <- pmu-events/arch/x86/cascadelakex/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/uncore-cache.json <- pmu-events/arch/x86/cascadelakex/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/memory.json <- pmu-events/arch/x86/cascadelakex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/uncore-interconnect.json <- pmu-events/arch/x86/cascadelakex/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/cache.json <- pmu-events/arch/x86/cascadelakex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/floating-point.json <- pmu-events/arch/x86/cascadelakex/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/frontend.json <- pmu-events/arch/x86/cascadelakex/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/virtual-memory.json <- pmu-events/arch/x86/cascadelakex/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/uncore-memory.json <- pmu-events/arch/x86/cascadelakex/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/metricgroups.json <- pmu-events/arch/x86/cascadelakex/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/other.json <- pmu-events/arch/x86/cascadelakex/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/cascadelakex/pipeline.json <- pmu-events/arch/x86/cascadelakex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/memory.json <- pmu-events/arch/x86/silvermont/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/cache.json <- pmu-events/arch/x86/silvermont/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/floating-point.json <- pmu-events/arch/x86/silvermont/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/frontend.json <- pmu-events/arch/x86/silvermont/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/virtual-memory.json <- pmu-events/arch/x86/silvermont/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/other.json <- pmu-events/arch/x86/silvermont/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/silvermont/pipeline.json <- pmu-events/arch/x86/silvermont/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/memory.json <- pmu-events/arch/x86/tigerlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/tgl-metrics.json <- pmu-events/arch/x86/tigerlake/tgl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/uncore-interconnect.json <- pmu-events/arch/x86/tigerlake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/cache.json <- pmu-events/arch/x86/tigerlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/floating-point.json <- pmu-events/arch/x86/tigerlake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/frontend.json <- pmu-events/arch/x86/tigerlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/virtual-memory.json <- pmu-events/arch/x86/tigerlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/uncore-memory.json <- pmu-events/arch/x86/tigerlake/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/metricgroups.json <- pmu-events/arch/x86/tigerlake/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/other.json <- pmu-events/arch/x86/tigerlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/pipeline.json <- pmu-events/arch/x86/tigerlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/tigerlake/uncore-other.json <- pmu-events/arch/x86/tigerlake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/memory.json <- pmu-events/arch/x86/sierraforest/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/cache.json <- pmu-events/arch/x86/sierraforest/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/frontend.json <- pmu-events/arch/x86/sierraforest/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/virtual-memory.json <- pmu-events/arch/x86/sierraforest/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/other.json <- pmu-events/arch/x86/sierraforest/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sierraforest/pipeline.json <- pmu-events/arch/x86/sierraforest/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/memory.json <- pmu-events/arch/x86/goldmontplus/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/cache.json <- pmu-events/arch/x86/goldmontplus/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/floating-point.json <- pmu-events/arch/x86/goldmontplus/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/frontend.json <- pmu-events/arch/x86/goldmontplus/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/virtual-memory.json <- pmu-events/arch/x86/goldmontplus/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/other.json <- pmu-events/arch/x86/goldmontplus/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/goldmontplus/pipeline.json <- pmu-events/arch/x86/goldmontplus/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/core.json <- pmu-events/arch/x86/amdzen4/core.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/memory.json <- pmu-events/arch/x86/amdzen4/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/cache.json <- pmu-events/arch/x86/amdzen4/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/floating-point.json <- pmu-events/arch/x86/amdzen4/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/data-fabric.json <- pmu-events/arch/x86/amdzen4/data-fabric.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/other.json <- pmu-events/arch/x86/amdzen4/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/branch.json <- pmu-events/arch/x86/amdzen4/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/recommended.json <- pmu-events/arch/x86/amdzen4/recommended.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/pipeline.json <- pmu-events/arch/x86/amdzen4/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/amdzen4/memory-controller.json <- pmu-events/arch/x86/amdzen4/memory-controller.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/uncore-cache.json <- pmu-events/arch/x86/ivybridge/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/memory.json <- pmu-events/arch/x86/ivybridge/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/uncore-interconnect.json <- pmu-events/arch/x86/ivybridge/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/cache.json <- pmu-events/arch/x86/ivybridge/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/floating-point.json <- pmu-events/arch/x86/ivybridge/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/frontend.json <- pmu-events/arch/x86/ivybridge/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/virtual-memory.json <- pmu-events/arch/x86/ivybridge/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/metricgroups.json <- pmu-events/arch/x86/ivybridge/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/other.json <- pmu-events/arch/x86/ivybridge/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/pipeline.json <- pmu-events/arch/x86/ivybridge/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/ivybridge/ivb-metrics.json <- pmu-events/arch/x86/ivybridge/ivb-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/memory.json <- pmu-events/arch/x86/rocketlake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/uncore-interconnect.json <- pmu-events/arch/x86/rocketlake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/cache.json <- pmu-events/arch/x86/rocketlake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/floating-point.json <- pmu-events/arch/x86/rocketlake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/frontend.json <- pmu-events/arch/x86/rocketlake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/virtual-memory.json <- pmu-events/arch/x86/rocketlake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/rkl-metrics.json <- pmu-events/arch/x86/rocketlake/rkl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/metricgroups.json <- pmu-events/arch/x86/rocketlake/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/other.json <- pmu-events/arch/x86/rocketlake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/pipeline.json <- pmu-events/arch/x86/rocketlake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/rocketlake/uncore-other.json <- pmu-events/arch/x86/rocketlake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/memory.json <- pmu-events/arch/x86/nehalemep/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/cache.json <- pmu-events/arch/x86/nehalemep/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/floating-point.json <- pmu-events/arch/x86/nehalemep/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/frontend.json <- pmu-events/arch/x86/nehalemep/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/virtual-memory.json <- pmu-events/arch/x86/nehalemep/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/other.json <- pmu-events/arch/x86/nehalemep/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/nehalemep/pipeline.json <- pmu-events/arch/x86/nehalemep/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/uncore-cache.json <- pmu-events/arch/x86/broadwell/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/memory.json <- pmu-events/arch/x86/broadwell/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/uncore-interconnect.json <- pmu-events/arch/x86/broadwell/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/cache.json <- pmu-events/arch/x86/broadwell/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/floating-point.json <- pmu-events/arch/x86/broadwell/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/frontend.json <- pmu-events/arch/x86/broadwell/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/bdw-metrics.json <- pmu-events/arch/x86/broadwell/bdw-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/virtual-memory.json <- pmu-events/arch/x86/broadwell/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/metricgroups.json <- pmu-events/arch/x86/broadwell/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/other.json <- pmu-events/arch/x86/broadwell/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/pipeline.json <- pmu-events/arch/x86/broadwell/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/broadwell/uncore-other.json <- pmu-events/arch/x86/broadwell/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/memory.json <- pmu-events/arch/x86/westmereep-dp/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/cache.json <- pmu-events/arch/x86/westmereep-dp/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/floating-point.json <- pmu-events/arch/x86/westmereep-dp/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/frontend.json <- pmu-events/arch/x86/westmereep-dp/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/virtual-memory.json <- pmu-events/arch/x86/westmereep-dp/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/other.json <- pmu-events/arch/x86/westmereep-dp/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/westmereep-dp/pipeline.json <- pmu-events/arch/x86/westmereep-dp/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/icl-metrics.json <- pmu-events/arch/x86/icelake/icl-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/memory.json <- pmu-events/arch/x86/icelake/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/uncore-interconnect.json <- pmu-events/arch/x86/icelake/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/cache.json <- pmu-events/arch/x86/icelake/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/floating-point.json <- pmu-events/arch/x86/icelake/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/frontend.json <- pmu-events/arch/x86/icelake/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/virtual-memory.json <- pmu-events/arch/x86/icelake/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/metricgroups.json <- pmu-events/arch/x86/icelake/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/other.json <- pmu-events/arch/x86/icelake/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/pipeline.json <- pmu-events/arch/x86/icelake/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/icelake/uncore-other.json <- pmu-events/arch/x86/icelake/uncore-other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-io.json <- pmu-events/arch/x86/sapphirerapids/uncore-io.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-power.json <- pmu-events/arch/x86/sapphirerapids/uncore-power.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-cache.json <- pmu-events/arch/x86/sapphirerapids/uncore-cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/memory.json <- pmu-events/arch/x86/sapphirerapids/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-interconnect.json <- pmu-events/arch/x86/sapphirerapids/uncore-interconnect.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/cache.json <- pmu-events/arch/x86/sapphirerapids/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/floating-point.json <- pmu-events/arch/x86/sapphirerapids/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-cxl.json <- pmu-events/arch/x86/sapphirerapids/uncore-cxl.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/frontend.json <- pmu-events/arch/x86/sapphirerapids/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/virtual-memory.json <- pmu-events/arch/x86/sapphirerapids/virtual-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/uncore-memory.json <- pmu-events/arch/x86/sapphirerapids/uncore-memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/spr-metrics.json <- pmu-events/arch/x86/sapphirerapids/spr-metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/metricgroups.json <- pmu-events/arch/x86/sapphirerapids/metricgroups.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/other.json <- pmu-events/arch/x86/sapphirerapids/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/x86/sapphirerapids/pipeline.json <- pmu-events/arch/x86/sapphirerapids/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/mapfile.csv <- pmu-events/arch/s390/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_zec12/extended.json <- pmu-events/arch/s390/cf_zec12/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_zec12/basic.json <- pmu-events/arch/s390/cf_zec12/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_zec12/crypto.json <- pmu-events/arch/s390/cf_zec12/crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_zec12/transaction.json <- pmu-events/arch/s390/cf_zec12/transaction.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z13/extended.json <- pmu-events/arch/s390/cf_z13/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z13/basic.json <- pmu-events/arch/s390/cf_z13/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z13/crypto.json <- pmu-events/arch/s390/cf_z13/crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z13/transaction.json <- pmu-events/arch/s390/cf_z13/transaction.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z196/extended.json <- pmu-events/arch/s390/cf_z196/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z196/basic.json <- pmu-events/arch/s390/cf_z196/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z196/crypto.json <- pmu-events/arch/s390/cf_z196/crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z10/extended.json <- pmu-events/arch/s390/cf_z10/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z10/basic.json <- pmu-events/arch/s390/cf_z10/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z10/crypto.json <- pmu-events/arch/s390/cf_z10/crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z14/extended.json <- pmu-events/arch/s390/cf_z14/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z14/basic.json <- pmu-events/arch/s390/cf_z14/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z14/crypto.json <- pmu-events/arch/s390/cf_z14/crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z14/transaction.json <- pmu-events/arch/s390/cf_z14/transaction.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z15/extended.json <- pmu-events/arch/s390/cf_z15/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z15/basic.json <- pmu-events/arch/s390/cf_z15/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z15/crypto6.json <- pmu-events/arch/s390/cf_z15/crypto6.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z15/transaction.json <- pmu-events/arch/s390/cf_z15/transaction.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/extended.json <- pmu-events/arch/s390/cf_z16/extended.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/pai_ext.json <- pmu-events/arch/s390/cf_z16/pai_ext.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/basic.json <- pmu-events/arch/s390/cf_z16/basic.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/crypto6.json <- pmu-events/arch/s390/cf_z16/crypto6.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/transaction.json <- pmu-events/arch/s390/cf_z16/transaction.json dependency dropped.
+make[3]: Circular pmu-events/arch/s390/cf_z16/pai_crypto.json <- pmu-events/arch/s390/cf_z16/pai_crypto.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/memory.json <- pmu-events/arch/arm64/arm/cortex-a34/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/instruction.json <- pmu-events/arch/arm64/arm/cortex-a34/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/cache.json <- pmu-events/arch/arm64/arm/cortex-a34/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/bus.json <- pmu-events/arch/arm64/arm/cortex-a34/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/exception.json <- pmu-events/arch/arm64/arm/cortex-a34/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a34/branch.json <- pmu-events/arch/arm64/arm/cortex-a34/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/l2_cache.json <- pmu-events/arch/arm64/arm/neoverse-v1/l2_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/ll_cache.json <- pmu-events/arch/arm64/arm/neoverse-v1/ll_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/spe.json <- pmu-events/arch/arm64/arm/neoverse-v1/spe.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/tlb.json <- pmu-events/arch/arm64/arm/neoverse-v1/tlb.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/memory.json <- pmu-events/arch/arm64/arm/neoverse-v1/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/retired.json <- pmu-events/arch/arm64/arm/neoverse-v1/retired.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/metrics.json <- pmu-events/arch/arm64/arm/neoverse-v1/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/stall.json <- pmu-events/arch/arm64/arm/neoverse-v1/stall.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/spec_operation.json <- pmu-events/arch/arm64/arm/neoverse-v1/spec_operation.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/l1i_cache.json <- pmu-events/arch/arm64/arm/neoverse-v1/l1i_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/bus.json <- pmu-events/arch/arm64/arm/neoverse-v1/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/exception.json <- pmu-events/arch/arm64/arm/neoverse-v1/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/sve.json <- pmu-events/arch/arm64/arm/neoverse-v1/sve.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/general.json <- pmu-events/arch/arm64/arm/neoverse-v1/general.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/l3_cache.json <- pmu-events/arch/arm64/arm/neoverse-v1/l3_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/fp_operation.json <- pmu-events/arch/arm64/arm/neoverse-v1/fp_operation.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-v1/l1d_cache.json <- pmu-events/arch/arm64/arm/neoverse-v1/l1d_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/etm.json <- pmu-events/arch/arm64/arm/cortex-a73/etm.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/memory.json <- pmu-events/arch/arm64/arm/cortex-a73/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/instruction.json <- pmu-events/arch/arm64/arm/cortex-a73/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/cache.json <- pmu-events/arch/arm64/arm/cortex-a73/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/bus.json <- pmu-events/arch/arm64/arm/cortex-a73/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/exception.json <- pmu-events/arch/arm64/arm/cortex-a73/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/branch.json <- pmu-events/arch/arm64/arm/cortex-a73/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a73/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a73/mmu.json <- pmu-events/arch/arm64/arm/cortex-a73/mmu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/ifu.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/ifu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/memory.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/instruction.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/cache.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/bus.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/exception.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/dpu.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/dpu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/branch.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a65-e1/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a65-e1/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/memory.json <- pmu-events/arch/arm64/arm/cortex-a510/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/instruction.json <- pmu-events/arch/arm64/arm/cortex-a510/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/cache.json <- pmu-events/arch/arm64/arm/cortex-a510/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/pmu.json <- pmu-events/arch/arm64/arm/cortex-a510/pmu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/bus.json <- pmu-events/arch/arm64/arm/cortex-a510/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/exception.json <- pmu-events/arch/arm64/arm/cortex-a510/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/trace.json <- pmu-events/arch/arm64/arm/cortex-a510/trace.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/branch.json <- pmu-events/arch/arm64/arm/cortex-a510/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a510/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a510/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/memory.json <- pmu-events/arch/arm64/arm/cortex-x2/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/instruction.json <- pmu-events/arch/arm64/arm/cortex-x2/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/cache.json <- pmu-events/arch/arm64/arm/cortex-x2/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/bus.json <- pmu-events/arch/arm64/arm/cortex-x2/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/exception.json <- pmu-events/arch/arm64/arm/cortex-x2/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/trace.json <- pmu-events/arch/arm64/arm/cortex-x2/trace.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/branch.json <- pmu-events/arch/arm64/arm/cortex-x2/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x2/pipeline.json <- pmu-events/arch/arm64/arm/cortex-x2/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/memory.json <- pmu-events/arch/arm64/arm/cortex-a35/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/instruction.json <- pmu-events/arch/arm64/arm/cortex-a35/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/cache.json <- pmu-events/arch/arm64/arm/cortex-a35/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/bus.json <- pmu-events/arch/arm64/arm/cortex-a35/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/exception.json <- pmu-events/arch/arm64/arm/cortex-a35/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a35/branch.json <- pmu-events/arch/arm64/arm/cortex-a35/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/etm.json <- pmu-events/arch/arm64/arm/cortex-a75/etm.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/memory.json <- pmu-events/arch/arm64/arm/cortex-a75/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/instruction.json <- pmu-events/arch/arm64/arm/cortex-a75/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/cache.json <- pmu-events/arch/arm64/arm/cortex-a75/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/bus.json <- pmu-events/arch/arm64/arm/cortex-a75/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/exception.json <- pmu-events/arch/arm64/arm/cortex-a75/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/branch.json <- pmu-events/arch/arm64/arm/cortex-a75/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a75/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a75/mmu.json <- pmu-events/arch/arm64/arm/cortex-a75/mmu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cmn/sys/cmn.json <- pmu-events/arch/arm64/arm/cmn/sys/cmn.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cmn/sys/metric.json <- pmu-events/arch/arm64/arm/cmn/sys/metric.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/memory.json <- pmu-events/arch/arm64/arm/cortex-x1/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/instruction.json <- pmu-events/arch/arm64/arm/cortex-x1/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/cache.json <- pmu-events/arch/arm64/arm/cortex-x1/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/bus.json <- pmu-events/arch/arm64/arm/cortex-x1/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/exception.json <- pmu-events/arch/arm64/arm/cortex-x1/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/branch.json <- pmu-events/arch/arm64/arm/cortex-x1/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-x1/pipeline.json <- pmu-events/arch/arm64/arm/cortex-x1/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/l2_cache.json <- pmu-events/arch/arm64/arm/neoverse-n1/l2_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/ll_cache.json <- pmu-events/arch/arm64/arm/neoverse-n1/ll_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/spe.json <- pmu-events/arch/arm64/arm/neoverse-n1/spe.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/tlb.json <- pmu-events/arch/arm64/arm/neoverse-n1/tlb.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/memory.json <- pmu-events/arch/arm64/arm/neoverse-n1/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/retired.json <- pmu-events/arch/arm64/arm/neoverse-n1/retired.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/metrics.json <- pmu-events/arch/arm64/arm/neoverse-n1/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/stall.json <- pmu-events/arch/arm64/arm/neoverse-n1/stall.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/spec_operation.json <- pmu-events/arch/arm64/arm/neoverse-n1/spec_operation.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/l1i_cache.json <- pmu-events/arch/arm64/arm/neoverse-n1/l1i_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/bus.json <- pmu-events/arch/arm64/arm/neoverse-n1/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/exception.json <- pmu-events/arch/arm64/arm/neoverse-n1/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/general.json <- pmu-events/arch/arm64/arm/neoverse-n1/general.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/l3_cache.json <- pmu-events/arch/arm64/arm/neoverse-n1/l3_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n1/l1d_cache.json <- pmu-events/arch/arm64/arm/neoverse-n1/l1d_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/memory.json <- pmu-events/arch/arm64/arm/cortex-a76/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/instruction.json <- pmu-events/arch/arm64/arm/cortex-a76/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/cache.json <- pmu-events/arch/arm64/arm/cortex-a76/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/bus.json <- pmu-events/arch/arm64/arm/cortex-a76/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/exception.json <- pmu-events/arch/arm64/arm/cortex-a76/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/branch.json <- pmu-events/arch/arm64/arm/cortex-a76/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a76/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a76/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/memory.json <- pmu-events/arch/arm64/arm/cortex-a53/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/cache.json <- pmu-events/arch/arm64/arm/cortex-a53/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/bus.json <- pmu-events/arch/arm64/arm/cortex-a53/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/other.json <- pmu-events/arch/arm64/arm/cortex-a53/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/branch.json <- pmu-events/arch/arm64/arm/cortex-a53/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a53/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a53/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/memory.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/instruction.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/cache.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/bus.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/exception.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a57-a72/branch.json <- pmu-events/arch/arm64/arm/cortex-a57-a72/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/memory.json <- pmu-events/arch/arm64/arm/cortex-a710/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/instruction.json <- pmu-events/arch/arm64/arm/cortex-a710/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/cache.json <- pmu-events/arch/arm64/arm/cortex-a710/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/bus.json <- pmu-events/arch/arm64/arm/cortex-a710/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/exception.json <- pmu-events/arch/arm64/arm/cortex-a710/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/trace.json <- pmu-events/arch/arm64/arm/cortex-a710/trace.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/branch.json <- pmu-events/arch/arm64/arm/cortex-a710/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a710/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a710/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/memory.json <- pmu-events/arch/arm64/arm/cortex-a77/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/instruction.json <- pmu-events/arch/arm64/arm/cortex-a77/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/cache.json <- pmu-events/arch/arm64/arm/cortex-a77/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/bus.json <- pmu-events/arch/arm64/arm/cortex-a77/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/exception.json <- pmu-events/arch/arm64/arm/cortex-a77/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/branch.json <- pmu-events/arch/arm64/arm/cortex-a77/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a77/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a77/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/memory.json <- pmu-events/arch/arm64/arm/cortex-a78/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/instruction.json <- pmu-events/arch/arm64/arm/cortex-a78/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/cache.json <- pmu-events/arch/arm64/arm/cortex-a78/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/bus.json <- pmu-events/arch/arm64/arm/cortex-a78/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/exception.json <- pmu-events/arch/arm64/arm/cortex-a78/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/branch.json <- pmu-events/arch/arm64/arm/cortex-a78/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a78/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a78/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/l2_cache.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/l2_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/ll_cache.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/ll_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/spe.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/spe.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/tlb.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/tlb.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/memory.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/retired.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/retired.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/metrics.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/stall.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/stall.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/spec_operation.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/spec_operation.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/l1i_cache.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/l1i_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/bus.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/exception.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/trace.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/trace.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/sve.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/sve.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/general.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/general.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/l3_cache.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/l3_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/fp_operation.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/fp_operation.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/neoverse-n2-v2/l1d_cache.json <- pmu-events/arch/arm64/arm/neoverse-n2-v2/l1d_cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/memory.json <- pmu-events/arch/arm64/arm/cortex-a55/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/instruction.json <- pmu-events/arch/arm64/arm/cortex-a55/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/cache.json <- pmu-events/arch/arm64/arm/cortex-a55/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/bus.json <- pmu-events/arch/arm64/arm/cortex-a55/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/exception.json <- pmu-events/arch/arm64/arm/cortex-a55/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/branch.json <- pmu-events/arch/arm64/arm/cortex-a55/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/arm/cortex-a55/pipeline.json <- pmu-events/arch/arm64/arm/cortex-a55/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/cavium/thunderx2/core-imp-def.json <- pmu-events/arch/arm64/cavium/thunderx2/core-imp-def.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json <- pmu-events/arch/arm64/freescale/imx8mm/sys/ddrc.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json <- pmu-events/arch/arm64/freescale/imx8mm/sys/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json <- pmu-events/arch/arm64/freescale/imx8mp/sys/ddrc.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json <- pmu-events/arch/arm64/freescale/imx8mp/sys/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mq/sys/ddrc.json <- pmu-events/arch/arm64/freescale/imx8mq/sys/ddrc.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mq/sys/metrics.json <- pmu-events/arch/arm64/freescale/imx8mq/sys/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/yitian710/sys/metrics.json <- pmu-events/arch/arm64/freescale/yitian710/sys/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/yitian710/sys/ali_drw.json <- pmu-events/arch/arm64/freescale/yitian710/sys/ali_drw.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mn/sys/ddrc.json <- pmu-events/arch/arm64/freescale/imx8mn/sys/ddrc.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/freescale/imx8mn/sys/metrics.json <- pmu-events/arch/arm64/freescale/imx8mn/sys/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/mapfile.csv <- pmu-events/arch/arm64/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/sbsa.json <- pmu-events/arch/arm64/sbsa.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-cpa.json <- pmu-events/arch/arm64/hisilicon/hip09/sys/uncore-cpa.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip08/core-imp-def.json <- pmu-events/arch/arm64/hisilicon/hip08/core-imp-def.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip08/metrics.json <- pmu-events/arch/arm64/hisilicon/hip08/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json <- pmu-events/arch/arm64/hisilicon/hip08/uncore-hha.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json <- pmu-events/arch/arm64/hisilicon/hip08/uncore-l3c.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json <- pmu-events/arch/arm64/hisilicon/hip08/uncore-ddrc.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/memory.json <- pmu-events/arch/arm64/ampere/emag/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/instruction.json <- pmu-events/arch/arm64/ampere/emag/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/cache.json <- pmu-events/arch/arm64/ampere/emag/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/bus.json <- pmu-events/arch/arm64/ampere/emag/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/exception.json <- pmu-events/arch/arm64/ampere/emag/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/intrinsic.json <- pmu-events/arch/arm64/ampere/emag/intrinsic.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/branch.json <- pmu-events/arch/arm64/ampere/emag/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/clock.json <- pmu-events/arch/arm64/ampere/emag/clock.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/emag/pipeline.json <- pmu-events/arch/arm64/ampere/emag/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/spe.json <- pmu-events/arch/arm64/ampere/ampereone/spe.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/core-imp-def.json <- pmu-events/arch/arm64/ampere/ampereone/core-imp-def.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/memory.json <- pmu-events/arch/arm64/ampere/ampereone/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/metrics.json <- pmu-events/arch/arm64/ampere/ampereone/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/instruction.json <- pmu-events/arch/arm64/ampere/ampereone/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/cache.json <- pmu-events/arch/arm64/ampere/ampereone/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/bus.json <- pmu-events/arch/arm64/ampere/ampereone/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/exception.json <- pmu-events/arch/arm64/ampere/ampereone/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/intrinsic.json <- pmu-events/arch/arm64/ampere/ampereone/intrinsic.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/branch.json <- pmu-events/arch/arm64/ampere/ampereone/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereone/pipeline.json <- pmu-events/arch/arm64/ampere/ampereone/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/spe.json <- pmu-events/arch/arm64/ampere/ampereonex/spe.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/core-imp-def.json <- pmu-events/arch/arm64/ampere/ampereonex/core-imp-def.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/memory.json <- pmu-events/arch/arm64/ampere/ampereonex/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/metrics.json <- pmu-events/arch/arm64/ampere/ampereonex/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/instruction.json <- pmu-events/arch/arm64/ampere/ampereonex/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/cache.json <- pmu-events/arch/arm64/ampere/ampereonex/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/bus.json <- pmu-events/arch/arm64/ampere/ampereonex/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/exception.json <- pmu-events/arch/arm64/ampere/ampereonex/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/intrinsic.json <- pmu-events/arch/arm64/ampere/ampereonex/intrinsic.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/branch.json <- pmu-events/arch/arm64/ampere/ampereonex/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/pipeline.json <- pmu-events/arch/arm64/ampere/ampereonex/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/ampere/ampereonex/mmu.json <- pmu-events/arch/arm64/ampere/ampereonex/mmu.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/recommended.json <- pmu-events/arch/arm64/recommended.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/common-and-microarch.json <- pmu-events/arch/arm64/common-and-microarch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/cycle.json <- pmu-events/arch/arm64/fujitsu/a64fx/cycle.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/memory.json <- pmu-events/arch/arm64/fujitsu/a64fx/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/instruction.json <- pmu-events/arch/arm64/fujitsu/a64fx/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/cache.json <- pmu-events/arch/arm64/fujitsu/a64fx/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/bus.json <- pmu-events/arch/arm64/fujitsu/a64fx/bus.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/exception.json <- pmu-events/arch/arm64/fujitsu/a64fx/exception.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/sve.json <- pmu-events/arch/arm64/fujitsu/a64fx/sve.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/other.json <- pmu-events/arch/arm64/fujitsu/a64fx/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/branch.json <- pmu-events/arch/arm64/fujitsu/a64fx/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json <- pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/nds32/n13/atcpmu.json <- pmu-events/arch/nds32/n13/atcpmu.json dependency dropped.
+make[3]: Circular pmu-events/arch/nds32/mapfile.csv <- pmu-events/arch/nds32/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/mapfile.csv <- pmu-events/arch/powerpc/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/memory.json <- pmu-events/arch/powerpc/power8/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/metrics.json <- pmu-events/arch/powerpc/power8/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/pmc.json <- pmu-events/arch/powerpc/power8/pmc.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/cache.json <- pmu-events/arch/powerpc/power8/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/floating-point.json <- pmu-events/arch/powerpc/power8/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/frontend.json <- pmu-events/arch/powerpc/power8/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/other.json <- pmu-events/arch/powerpc/power8/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/translation.json <- pmu-events/arch/powerpc/power8/translation.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/marked.json <- pmu-events/arch/powerpc/power8/marked.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power8/pipeline.json <- pmu-events/arch/powerpc/power8/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/memory.json <- pmu-events/arch/powerpc/power10/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/nest_metrics.json <- pmu-events/arch/powerpc/power10/nest_metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/datasource.json <- pmu-events/arch/powerpc/power10/datasource.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/metrics.json <- pmu-events/arch/powerpc/power10/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/pmc.json <- pmu-events/arch/powerpc/power10/pmc.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/floating_point.json <- pmu-events/arch/powerpc/power10/floating_point.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/cache.json <- pmu-events/arch/powerpc/power10/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/frontend.json <- pmu-events/arch/powerpc/power10/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/others.json <- pmu-events/arch/powerpc/power10/others.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/locks.json <- pmu-events/arch/powerpc/power10/locks.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/translation.json <- pmu-events/arch/powerpc/power10/translation.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/marked.json <- pmu-events/arch/powerpc/power10/marked.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power10/pipeline.json <- pmu-events/arch/powerpc/power10/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/memory.json <- pmu-events/arch/powerpc/power9/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/nest_metrics.json <- pmu-events/arch/powerpc/power9/nest_metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/metrics.json <- pmu-events/arch/powerpc/power9/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/pmc.json <- pmu-events/arch/powerpc/power9/pmc.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/cache.json <- pmu-events/arch/powerpc/power9/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/floating-point.json <- pmu-events/arch/powerpc/power9/floating-point.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/frontend.json <- pmu-events/arch/powerpc/power9/frontend.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/other.json <- pmu-events/arch/powerpc/power9/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/translation.json <- pmu-events/arch/powerpc/power9/translation.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/marked.json <- pmu-events/arch/powerpc/power9/marked.json dependency dropped.
+make[3]: Circular pmu-events/arch/powerpc/power9/pipeline.json <- pmu-events/arch/powerpc/power9/pipeline.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/arch-std-events.json <- pmu-events/arch/test/arch-std-events.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/cpu/uncore.json <- pmu-events/arch/test/test_soc/cpu/uncore.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/cpu/metrics.json <- pmu-events/arch/test/test_soc/cpu/metrics.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/cpu/cache.json <- pmu-events/arch/test/test_soc/cpu/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/cpu/other.json <- pmu-events/arch/test/test_soc/cpu/other.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/cpu/branch.json <- pmu-events/arch/test/test_soc/cpu/branch.json dependency dropped.
+make[3]: Circular pmu-events/arch/test/test_soc/sys/uncore.json <- pmu-events/arch/test/test_soc/sys/uncore.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/sifive/u74/memory.json <- pmu-events/arch/riscv/sifive/u74/memory.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/sifive/u74/instructions.json <- pmu-events/arch/riscv/sifive/u74/instructions.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/sifive/u74/firmware.json <- pmu-events/arch/riscv/sifive/u74/firmware.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/sifive/u74/microarch.json <- pmu-events/arch/riscv/sifive/u74/microarch.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/mapfile.csv <- pmu-events/arch/riscv/mapfile.csv dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/riscv-sbi-firmware.json <- pmu-events/arch/riscv/riscv-sbi-firmware.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/thead/c900-legacy/instruction.json <- pmu-events/arch/riscv/thead/c900-legacy/instruction.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/thead/c900-legacy/firmware.json <- pmu-events/arch/riscv/thead/c900-legacy/firmware.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/thead/c900-legacy/cache.json <- pmu-events/arch/riscv/thead/c900-legacy/cache.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/thead/c900-legacy/microarch.json <- pmu-events/arch/riscv/thead/c900-legacy/microarch.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/starfive/dubhe-80/firmware.json <- pmu-events/arch/riscv/starfive/dubhe-80/firmware.json dependency dropped.
+make[3]: Circular pmu-events/arch/riscv/starfive/dubhe-80/common.json <- pmu-events/arch/riscv/starfive/dubhe-80/common.json dependency dropped.
+Traceback (most recent call last):
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 42, in <module>
+    main()
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 32, in main
+    LoadEvents(directory)
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/metric.py", line 26, in LoadEvents
+    for x in json.load(open(f"{directory}/{filename}")):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+make[3]: *** [pmu-events/Build:45: pmu-events/arch/x86/amdzen1/extra-metrics.json] Error 1
+make[3]: *** Deleting file 'pmu-events/arch/x86/amdzen1/extra-metrics.json'
+make[3]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 42, in <module>
+    main()
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/amd_metrics.py", line 32, in main
+    LoadEvents(directory)
+  File "/usr/src/perf_selftests-x86_64-rhel-8.3-bpf-d3ed44a7bee70b097709fe06f339c468489f16c9/tools/perf/pmu-events/metric.py", line 26, in LoadEvents
+    for x in json.load(open(f"{directory}/{filename}")):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+make[3]: *** [pmu-events/Build:45: pmu-events/arch/x86/amdzen2/extra-metrics.json] Error 1
+make[3]: *** Deleting file 'pmu-events/arch/x86/amdzen2/extra-metrics.json'
+make[2]: *** [Makefile.perf:706: pmu-events/pmu-events-in.o] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [Makefile.perf:261: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+
+--TiJHmnqND8oovjPL--
 
