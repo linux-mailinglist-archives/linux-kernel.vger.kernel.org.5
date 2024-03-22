@@ -1,136 +1,129 @@
-Return-Path: <linux-kernel+bounces-111295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FE1886A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7992B886A5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:31:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 190B91F23D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D8881F23B56
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C0C3C699;
-	Fri, 22 Mar 2024 10:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223843C684;
+	Fri, 22 Mar 2024 10:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pebyrOqZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EDd8JIZ/"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5A51E522;
-	Fri, 22 Mar 2024 10:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1FE33D968
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711103470; cv=none; b=JlTr2e6DKeC+eTwvbrted2zrQNNfXHo/JanpyYyguCFnm+PvGrDcm12X5ngRcml2XaPUcUMH9H8tBaBHzNvLXKCPBuHU2pK0garDWCsIL6iUyLuZk2Ah70A1L8gyQqQmOUM/2GIYoNakmAr14OhF/+LNFXhFFo3NwGNWEBB9+XY=
+	t=1711103484; cv=none; b=bkcHrd0Vi2R50eyAH+bPgmuIQjvxgM4ayf4sftUJXgj1JpII2kFd1oyNgw2nCYWb38vEXEMCXSGi1adjnwS/b5tBClYv6YIEHM/0l4IXgyPP7p6vzHAcZvs5ilFr4GA2d1BLTUTTbWf07tZw3U3uBAQvypWr2wYN29/uw0pPmUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711103470; c=relaxed/simple;
-	bh=UUEqLZY926OzvcyM4AzY60Au8Cf9w6FnpcBoTROOC0k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W/Agb8BPv83M8grVRxbe8XYNFkxzqZxpdgedYyyTOpTw67COn57ZNwH5kURZQiCxezxpZhwQVAbKREQi/qHheTjGeew9aeWgKZLuoxoUAz44NvaFrzpT8tVx2xi+aSEDnOWssSyuNtNtgwM+iZy8aTt1WAreQVxzY2k515/gHhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pebyrOqZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D14AC433F1;
-	Fri, 22 Mar 2024 10:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711103469;
-	bh=UUEqLZY926OzvcyM4AzY60Au8Cf9w6FnpcBoTROOC0k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pebyrOqZ/kkpqhT9lPzfQtwwYMJZXvaiMu1gMatvg2tgMHJx9IioiiVWvx6uypQmY
-	 G/+r7pU9Jgs3J0a7YPe+2veMpKADZtPs21Zw/oM9KFcS6Dcsgs/7ttzl3fMUxNa8Pr
-	 dO8CrMuq+3EZ8rX1bSbqZlMQJwziz0ZsoPM8awtnIUckF0VzJVI9/BgUGId1UxPm88
-	 gZ+Y9bPzhqklJGCKQ+I+JqI1RTFiwE9WRYQvFkqi6h7gaSgzxPQG2JqiPslpfJvebj
-	 DF69NSp5qjQsF1r5o0lmY15dZuZGOCb8c5XIrewVUOfZA+1A5oWDhfnhAuYEYw1DOL
-	 u81rcgOIJaHGg==
-Date: Fri, 22 Mar 2024 11:31:06 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
-	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>, 
-	Sebastian Wick <sebastian.wick@redhat.com>, Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
-	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev
-Subject: Re: [v10,20/27] drm/connector: hdmi: Add Infoframes generation
-Message-ID: <20240322-loose-resourceful-bullmastiff-92cfaf@houat>
-References: <20240321-kms-hdmi-connector-state-v10-20-e6c178361898@kernel.org>
- <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
+	s=arc-20240116; t=1711103484; c=relaxed/simple;
+	bh=1yqsyEAyrbQEKMO+oY3gj7fVZXoAvDp07LGSjGWG+cs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=af4Vj6m2VsseRJle6y4kUZsakGRqNVXDcYdooxsjAr+YbYuVsNI/iKZ643B8xBe1+Xr+IJFhJsuzV9c2QUIkCZyXXIGcNai9BAq1IEmIuyuR74W4H0dRPlq1uojI7lQMQh1eipqD3iMyea2m0RSteJmhDZtj6cI0F5KfStGXR1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EDd8JIZ/; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33e17342ea7so884920f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711103480; x=1711708280; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sEcFM3t3rGGDrrs+wuw2zDXHWzgkXtTmhLNSeATLAvk=;
+        b=EDd8JIZ/ZjhQC1y97lTkWBOymL7GIFTHdQdCowTzSjDziNHFjpuecRQt3TOIwjNbKa
+         fKEYrgHIHo+oqu46ecu+2CyvyI6PI8YFk5HogBYbwJyNjSBzjtb3z5xgf8kydq4Wfy5r
+         99CsjaoR8OHuFbUjf4AKmkPpqTH+7DEQOIug23jIhClHAP0wgSUZhOCat2psXOpPTXCH
+         9RyrPO8m62h+toTEU0JCUGJPkl7va47cbBNiauiQ36sigFCAgIWRNwB52xjAeKNjOlby
+         wuFHZ0TGbuXnJPdWAplkg8Bk7Utc+Kn3LxIy3Y7qi3oHGBxhe6VUOiQkk5NHe7qq7QYX
+         aKRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711103480; x=1711708280;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sEcFM3t3rGGDrrs+wuw2zDXHWzgkXtTmhLNSeATLAvk=;
+        b=UKnAId64KkyxY1JEipAdsBhsaC+FPNSdmZR0HHlQvm3pY87QbUkkAf/VWy5czlcN1H
+         84Jqckqaa1rDFi9k1ZeW6npzJEtQRA4mS6AKoljohd9ZKaGov3n1SPAXGeCf1iMFidMT
+         o7QAtDen3lBAm71J3Oa72ElOnAYagAtJlufLzBW1zY+a1P4JwHkkNjHtjj22F0kPj1o9
+         u5lHkLkH83kTxm/nmpQIkV4CQXZoF+MzaUcgnC3XFMY6mhy/H0UmNpovC+XL71YkgbWR
+         OwUcXK+fbOGOZwyI4ekZ7lUXCnEeJIPrZAKpQRORc+tBpxjhS0Wf111k1TJvsE2P0QyN
+         1wow==
+X-Forwarded-Encrypted: i=1; AJvYcCVwoOgQXdEZ15tHvbZ5eW/j1cvnzdG5CIiu3/UNgtJ4Oeg2LN7sShHkvWwdO5wux29Z4iYEy8qB0YOBaNCcU/VIPHCb/PhrCJXz/ZEE
+X-Gm-Message-State: AOJu0Yyqydwg0obKeJu1JDougmlpA+DQSBoB1obEXPQW139p377JuAVA
+	WnSHt7AvkVDYj/M53VTwzFbheZbl6bONj3Xl6LxOEk3suiJD1fd1CBAW9gaXlxE=
+X-Google-Smtp-Source: AGHT+IFLWeyHAKmJFDuY1LyMfeP1uoswUUuBKiCoUA5Ty/5Z3a1YZV4wAVHf2fG9BBV8WWxxQGLgrw==
+X-Received: by 2002:adf:e2cc:0:b0:33e:cf33:bb1a with SMTP id d12-20020adfe2cc000000b0033ecf33bb1amr1518380wrj.12.1711103480298;
+        Fri, 22 Mar 2024 03:31:20 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id x15-20020a5d60cf000000b0033cf4e47496sm1759496wrt.51.2024.03.22.03.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 03:31:20 -0700 (PDT)
+Message-ID: <72b68358-6621-46d0-a0f5-b48fdbc54678@linaro.org>
+Date: Fri, 22 Mar 2024 10:31:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5rd3vuyyvq3awglq"
-Content-Disposition: inline
-In-Reply-To: <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] arm64: dts: qcom: pm7250b: Add node for PMIC VBUS
+ booster
+Content-Language: en-US
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
+ <20240322-fp4-tcpm-v1-3-c5644099d57b@fairphone.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240322-fp4-tcpm-v1-3-c5644099d57b@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 22/03/2024 08:01, Luca Weiss wrote:
+> Add the required DTS node for the USB VBUS output regulator, which is
+> available on PM7250B. This will provide the VBUS source to connected
+> peripherals.
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>   arch/arm64/boot/dts/qcom/pm7250b.dtsi | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> index 3bf7cf5d1700..91a046b3529c 100644
+> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> @@ -45,6 +45,12 @@ pmic@PM7250B_SID {
+>   		#address-cells = <1>;
+>   		#size-cells = <0>;
+>   
+> +		pm7250b_vbus: usb-vbus-regulator@1100 {
+> +			compatible = "qcom,pm7250b-vbus-reg", "qcom,pm8150b-vbus-reg";
+> +			status = "disabled";
+> +			reg = <0x1100>;
+> +		};
+> +
+>   		pm7250b_temp: temp-alarm@2400 {
+>   			compatible = "qcom,spmi-temp-alarm";
+>   			reg = <0x2400>;
+> 
 
---5rd3vuyyvq3awglq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Mar 22, 2024 at 05:53:07AM +0800, Sui Jingfeng wrote:
-> Hi,
->=20
->=20
-> On 2024/3/21 23:29, Maxime Ripard wrote:
-> > Infoframes in KMS is usually handled by a bunch of low-level helpers
-> > that require quite some boilerplate for drivers. This leads to
-> > discrepancies with how drivers generate them, and which are actually
-> > sent.
-> >=20
-> > Now that we have everything needed to generate them in the HDMI
-> > connector state, we can generate them in our common logic so that
-> > drivers can simply reuse what we precomputed.
-> >=20
-> > Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> > ---
-> >   drivers/gpu/drm/Kconfig                            |   1 +
-> >   drivers/gpu/drm/drm_atomic_state_helper.c          | 338 ++++++++++++=
-+++++++++
-> >   drivers/gpu/drm/drm_connector.c                    |  14 +
-> >   .../gpu/drm/tests/drm_atomic_state_helper_test.c   |   1 +
-> >   drivers/gpu/drm/tests/drm_connector_test.c         |  12 +
-> >   include/drm/drm_atomic_state_helper.h              |   8 +
-> >   include/drm/drm_connector.h                        | 109 +++++++
-> >   7 files changed, 483 insertions(+)
-> >=20
-> > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> > index 16029435b750..3d3193c7aa5f 100644
-> > --- a/drivers/gpu/drm/Kconfig
-> > +++ b/drivers/gpu/drm/Kconfig
-> > @@ -97,10 +97,11 @@ config DRM_KUNIT_TEST
-> >   	  If in doubt, say "N".
-> >   config DRM_KMS_HELPER
-> >   	tristate
-> >   	depends on DRM
-> > +	select DRM_DISPLAY_HDMI_HELPER
->=20
-> Should we select DRM_DISPLAY_HELPER here? Otherwise there will have
-> some compile error emerged with default config.
-
-Which default config are you talking about? This compiles fine with all
-drm-misc defconfig, x86 defconfig and allmodconfig.
-
-Maxime
-
---5rd3vuyyvq3awglq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZf1d6QAKCRDj7w1vZxhR
-xfhQAQCu0NBIAdBH+cxZxEu6wIBjCqIn1oD+nTHDxOSsluuItwEA9Oy60mNpP4Om
-Xu9L4CIP02hqE9XIyC9VujJM0cW/LQA=
-=XSYZ
------END PGP SIGNATURE-----
-
---5rd3vuyyvq3awglq--
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
