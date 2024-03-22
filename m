@@ -1,120 +1,137 @@
-Return-Path: <linux-kernel+bounces-111669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4D6E886F4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:00:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58BC886F53
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B4711F2442E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:00:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6ED2B248A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373984D595;
-	Fri, 22 Mar 2024 15:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06297482D1;
+	Fri, 22 Mar 2024 15:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cyou0njs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KEoVVAJb"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7539E4C601
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F67482C1
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711119602; cv=none; b=Uq9/yJVk4jT/Lrlugv1RoIPcmVKowxwxq+G0TZgeiagt+tlKR/FlOTvgARdwJIeeTHgEVnOhWcF57m0KVXSlJqGZtc6dJaUNIoVGthm0Rk/lR8ZCM2bnL1RLnWYJgGQk+RIE4Tyzg64d0QKgy4J/Jl26yVHPr1II/yJPLJ8vGHg=
+	t=1711119631; cv=none; b=S35Il4n9iKqNfz/jc4hbZEZKYgT+DSGXzMR99MvmVFtfDHAXR1jbfNRy6ULRU7HNo7sPjzJPcTikBZ8CezOjKebwZNmtZ5wYeYgj5MfwjqWjIgoYErMEwy5WBwk9vypAet2YpUOUBNmhT6kGVGYrbiBsQTeBuimFdzPP/zYaVKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711119602; c=relaxed/simple;
-	bh=n0MJ4YjaOKX2Bd1ABkqsW07WnDRYW7ulWQqb4AqpGVc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ETCPuxfZF5Vy64aRsII2ixrYUPf9KeElLrJEvKfT+r0aNiPtH5ohohBDquNkPdE3qMTIEfewgH6PB/Pytek8L0bXnUdzflxnaf/QAXpPHAJ3/S2pB5nbpWgZj3BhBSocP+Mw2m2z566r05qrLCNmErJ0qMux0+nqx3uzY1VDdAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cyou0njs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75ED1C433F1;
-	Fri, 22 Mar 2024 15:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711119602;
-	bh=n0MJ4YjaOKX2Bd1ABkqsW07WnDRYW7ulWQqb4AqpGVc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cyou0njs8x7Vs9rk8sEBi7YG32eFPaf4JbVqDon8/i8hPEwTr+tI7PX1NjNRI6FGV
-	 qKcHs9Oa+MvockmwtqL7C4bNeiI/TTt5BS0p4zIAJYTou+MuQ7bj1mrOfJSCcXFCzZ
-	 HSJMHxqDXd2vO8I953ErmC3IGPHvr30u0S3LnBCBtTYkTrPHNZGvBD9/iAQLj2gDfp
-	 E+EmuzrmCG60FpTljylD3mFQra33ZOu4xqlrdCT7TeaPaFPh+n82CJaKa47azNE0H3
-	 wpLNM0wA64oiRcRtbpssPCWZouRATPEngnQsm1jypdWmsgN5IgsFisq3F8IjXxGDp6
-	 +LZ/MkMzy1a2w==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>,
-	Roman Smirnov <r.smirnov@omp.ru>
-Subject: [PATCH] f2fs: fix to detect inconsistent nat entry during truncation
-Date: Fri, 22 Mar 2024 22:59:55 +0800
-Message-Id: <20240322145955.2959257-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1711119631; c=relaxed/simple;
+	bh=qXdtNxvPpsbpNODgvKjpT5XrGKp9Pc9HMJY7AIX1h3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ltrO6E1IXoZuJl33QjDdvGzJFg41j3QtOzADJB73yq4KinLU7DG+gIQ+xubKGzicptR/25o+8K5wFVWFTGUEY8XSvDv5sckrC2WUxCagGjxFBGCzD50bCe+8jeln0IblZ2jQj4YXJMQTGFrqHU7QEYBzuSsTUw1E4L2Pm+MMdgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KEoVVAJb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711119628;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ot97iwVakR2lkEIdq7JcwHUhieIrzYpSO8j17uVWGlI=;
+	b=KEoVVAJbe3uloCRgO6WKszqfyRRwrILRmHy5t0/7apQ1T97xLgn9v4Kw1/eu0MXilJQNzd
+	lP2HXWQ2gZZ60z/xwkDv2dm3cWnJI79o3AkpYuWwujbe7GRU8bS9jxQoGR9CWO+H/o8/rl
+	KzZ+VpFONk/v+mCiEEwI8J7qDdcb6O4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-1_tS1aqYOcy8k7HF8HPslg-1; Fri, 22 Mar 2024 11:00:26 -0400
+X-MC-Unique: 1_tS1aqYOcy8k7HF8HPslg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d496045cf1so20641161fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:00:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711119624; x=1711724424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ot97iwVakR2lkEIdq7JcwHUhieIrzYpSO8j17uVWGlI=;
+        b=uE8PpnmhWd8rS/Yjw4RIE91pLRQtX3AUpXrN08e4GLXgV4SmYI/wgaNKHfsGKpFaq3
+         OhOZLTMnRE4iK+cDqfdQ6qt0NY8FTLumARf4LtlTldjdtvylwBo7FRSNHM2Eq0SQ/04N
+         xeWbUxvhzNHLzXRpXM6Jh5B96ccJ/TnbU2Ljuzlt8OIMKnGS0mQT+4XrTzQ4ZpCE6bTO
+         B7VpfYydcme353x8N5W7fMDgXcnTFY8KWGMisxwybauYxSSL6smmeeETRskLYRVU2rGr
+         d3YjcM6j+NbtsVP7gzA1PHXmkwscAFu61bqQK/GienSQt9zmW1NVdCzujM4Cr8zfi6FW
+         GSNw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDWpJ//8Y9DpAaJc6pEu02M7p/KI+SBltqbzDb0Bjv7kOesR8GFKPZcrSUb3U58tuoBCvkRPbSJHY7hPh77jaqNEritoyEGXWAKPDj
+X-Gm-Message-State: AOJu0YwkFeNcwbKxSxrjPKo/g4a1gyzv+8uFZ7adQfZqMBdxPBAKR9DM
+	t6hJnDGhh2TvTfTZAZmxclqa9f8JxXcUetyZsqVSKkIxth5S6z9HnsNYvLlYAPGSAwOOr589lgG
+	F5yjFetr/e2zljxipJAZcBbL71FJ1aHsNT+aI1ooSA4BAaAtQpr2Fe2ZPvrPb/j3vtwkvIDYpmZ
+	ptXt3bbgI4RTM6WocnSoZ8+MGjXq4VCNX3Mnaf
+X-Received: by 2002:a05:6512:612:b0:515:9ae2:93b0 with SMTP id b18-20020a056512061200b005159ae293b0mr1451127lfe.19.1711119624758;
+        Fri, 22 Mar 2024 08:00:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFoRqFuVFSCcYFtb/4CXLayeI15qnsRqHHZP3UDWQYikqtlTHVTRgMB97SI5tl1UUWqtCQprd6t9b/Lw0uFLEw=
+X-Received: by 2002:a05:6512:612:b0:515:9ae2:93b0 with SMTP id
+ b18-20020a056512061200b005159ae293b0mr1451109lfe.19.1711119624396; Fri, 22
+ Mar 2024 08:00:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240315-b4-hid-bpf-new-funcs-v4-0-079c282469d3@kernel.org>
+ <20240315-b4-hid-bpf-new-funcs-v4-2-079c282469d3@kernel.org> <1c1ea8cc-22ba-40c4-a26a-5339c3050678@infradead.org>
+In-Reply-To: <1c1ea8cc-22ba-40c4-a26a-5339c3050678@infradead.org>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Fri, 22 Mar 2024 16:00:12 +0100
+Message-ID: <CAO-hwJLgx=vndgMRW=f-Gy_36CJLqwAzOoELbckvBn8NvCJB6g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] HID: bpf: export hid_hw_output_report as a BPF kfunc
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-input@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As Roman Smirnov reported as below:
+On Fri, Mar 15, 2024 at 5:06=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+>
+>
+> On 3/15/24 07:44, Benjamin Tissoires wrote:
+> > +/**
+> > + * hid_bpf_hw_output_report - Send an output report to a HID device
+> > + *
+> > + * @ctx: the HID-BPF context previously allocated in hid_bpf_allocate_=
+context()
+> > + * @buf: a %PTR_TO_MEM buffer
+> > + * @buf__sz: the size of the data to transfer
+> > + *
+> > + * @returns the number of bytes transferred on success, a negative err=
+or code otherwise.
+> > + */
+>
+> Minimum change:
+>
+>       @returns:
+>
+> Preferred change:
+>
+>       Returns:
+>
+> "@returns" is not documented.
 
-"
-There is a possible bug in f2fs_truncate_inode_blocks():
+Thanks for the doc review (and in 5/7).
 
-    if (err < 0 && err != -ENOENT)
-    			goto fail;
-        ...
-        offset[1] = 0;
-        offset[0]++;
-        nofs += err;
+FWIW, I'm still waiting for other reviews if any, and if there are
+none, I'll just amend the commit before pushing.
 
-If err = -ENOENT then nofs will sum with an error code,
-which is strange behaviour. Also if nofs < ENOENT this will
-cause an overflow. err will be equal to -ENOENT with the
-following call stack:
+Cheers,
+Benjamin
 
-truncate_nodes()
-  f2fs_get_node_page()
-     __get_node_page()
-        read_node_page()
-"
-
-If nat is corrupted, truncate_nodes() may return -ENOENT, and
-f2fs_truncate_inode_blocks() doesn't handle such error correctly,
-fix it.
-
-Reported-by: Roman Smirnov <r.smirnov@omp.ru>
-Closes: https://lore.kernel.org/linux-f2fs-devel/085b27fd2b364a3c8c3a9ca77363e246@omp.ru
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/node.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index b3de6d6cdb02..bb57bbaff7b4 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1187,7 +1187,17 @@ int f2fs_truncate_inode_blocks(struct inode *inode, pgoff_t from)
- 		default:
- 			BUG();
- 		}
--		if (err < 0 && err != -ENOENT)
-+		if (err == -ENOENT) {
-+			set_sbi_flag(F2FS_P_SB(page), SBI_NEED_FSCK);
-+			f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-+			f2fs_err_ratelimited(sbi,
-+				"truncate node fail, ino:%lu, nid:%u, "
-+				"offset[0]:%d, offset[1]:%d, nofs:%d",
-+				inode->i_ino, dn.nid, offset[0],
-+				offset[1], nofs);
-+			err = 0;
-+		}
-+		if (err < 0)
- 			goto fail;
- 		if (offset[1] == 0 &&
- 				ri->i_nid[offset[0] - NODE_DIR1_BLOCK]) {
--- 
-2.40.1
+>
+>
+> Thanks.
+> --
+> #Randy
+>
 
 
