@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-111090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99F28867C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:01:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9288867C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 078A41C23C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:01:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C492A1F2151D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3DE14ABA;
-	Fri, 22 Mar 2024 08:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CE717BDF;
+	Fri, 22 Mar 2024 08:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YoD5veMT"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="M2NDnUwS"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC2D14A93;
-	Fri, 22 Mar 2024 08:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8DF1756D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711094491; cv=none; b=tURZPSKg7l3wxJY+LqfL0baiCBVC8sly4jM2SErDKTT1k5v7DyuDoPtpdhcI6RkXKNZqKG8mm+jWm3duEb6LV9k9mrggB43JHZtQPmg1RIPhgidhL2NETYuCKYnTe/FcrmsTPLOHzoPKmOaCNxu6P7h/0eFFG/m23rWkGl88O7M=
+	t=1711094510; cv=none; b=R5RXdI+oJEWZAzA44FFxWRE/9d6rQB/qk8RhWKYux4GD9oG/GwzlsT1wImiENIuwGsHx3u4+Wt79ye4zU77oJVe9GFf4Bm8zB6d0KXuch8+EREw32F/lSQG/bLfeOtaBj4g9ugvoomRPo/2acKcRp+EuARPX9AmDkebmmMPi8cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711094491; c=relaxed/simple;
-	bh=vEgSCRk9M8yaBIAvf6yfuXyNYcAHetrVsnO27cdC9TY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FoY60i485Ve1vzy1LuHFmwAOO7pix4P5XayV6c/AM3Y4zYpoehJ60o2NX0PMziKAUQvXpCNQl+Qkfn3eV1lMTkhyXxHSpQeqcI/MquyKgOfCmEoHeCk9mY9R7H6W2FJmbhIrs66oFYX0AouQOgxtdwn/xkNH4OyJR5mF1EU1Gsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YoD5veMT; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42M811wl115639;
-	Fri, 22 Mar 2024 03:01:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711094461;
-	bh=aonmxCcT8p6x3oL13Kq+gj+L0Jfrg/DuVw41r9ecWIM=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=YoD5veMTKY7G6a3rf/H2MQGgD8D3cugDZ6ScvIPSAFEDvTrDy8ljtbcUms1dLvORg
-	 Yy8O74xrSihtKkhd9Yxc7l8VyITrV+mYldQmyDZ9X87t7YgptoB3vMVxqNXIMw8XE4
-	 N2eOkbmxTeHUn/+hY1C34wKVu+U6KzrH1rxMrKPg=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42M811Xu013055
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 22 Mar 2024 03:01:01 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
- Mar 2024 03:01:00 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 22 Mar 2024 03:01:00 -0500
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42M80xA8070119;
-	Fri, 22 Mar 2024 03:01:00 -0500
-Date: Fri, 22 Mar 2024 13:30:59 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Ye Zhang <ye.zhang@rock-chips.com>
-CC: <finley.xiao@rock-chips.com>, <heiko@sntech.de>,
-        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
-        <lukasz.luba@arm.com>, <rafael@kernel.org>, <tao.huang@rock-chips.com>,
-        <linux-rockchip@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] thermal: devfreq_cooling: Fix perf state when
- calculate dfc res_util
-Message-ID: <20240322080059.xopjb2yr766sk5ob@dhruva>
-References: <20240321102100.2401340-1-ye.zhang@rock-chips.com>
+	s=arc-20240116; t=1711094510; c=relaxed/simple;
+	bh=OcCTfSnKi/6290AehwO9HrZ6nco3Bexct5Xndhm7ZeA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=pk9LFHhcn6TpYzXYwNW9FSLxWSl2Z3Q+n47uUHyqz4SDpP7VgBNT2Wyk5l/C6YBSCbu+tDNEQXBjaVQTWLGEMR18/1BXB9Qy7Q5zfdqDE2E3rMUeMIm2VpzxnRnQmEctOD8aya1S1H5EhDsBbVtfAu8u0dB8wEpk70BMM5wkEUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=M2NDnUwS; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56ba6c83805so2187943a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1711094507; x=1711699307; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nw51Hyw1DS3v/omudVbOcyBSsqWjCMOpfA2RADZ1/mI=;
+        b=M2NDnUwSPkyR9bkG/CCnZ77cvLXk4Jk2vN0vVkzxolYAvB5j9hFd3CH6EwtcxnI2F+
+         4HKRFYsduxMCJ3jyyXZRfjyQlnZOPoMtXYvG4I4RZPPs4l2doQ4IQrjKveFARbtSeD8d
+         fws6+qE90ryS/z4Plrch3GyhEaag8SPXBnBKHE+gbSsTKPQEh6f+2xC5LmKcONbWcF/E
+         410hw+Vh0pTbPBnJugrrmEMFjn9iDMOWu2K2VdUnprVxrkj5jaSmEvm+CE7BqS12cRhq
+         YZr+o2a438QtBWEi+nLXhXWTwansYS/+kCNLhpUdmSBeL5uc3pHJEw1btLlMLT1+M7Ak
+         UeyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711094507; x=1711699307;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nw51Hyw1DS3v/omudVbOcyBSsqWjCMOpfA2RADZ1/mI=;
+        b=J0TCiJSr3Z+V1q52kqVc1P8blSyTlH19fe2jRWdt7X/l7PKeHwuChBsjFp7lrgWLMR
+         RdRxg081dOiVv8bg1AYU/f74jtveDgE3KKLGyGhoy1CeK4RzPNyMgA/ld4UhH/owO5uc
+         nj+nN2bKj/ij1Cu2J/xXxAyGvZmTqeRXGm2oYTHG5q6PGpnvFKIEav9iGTOSckiasuwH
+         OCOcMqho9J2ARDH/vbyOEVUNZ1eSZcgc87+E5RNjPhnMB1O35GQAjZ/f0jNfRKMK12q1
+         o5a5sAxS2onWBFQ768GKWXqPSGHi1relMSkVeuOZ6urZiIBuukFf2iwcPoF2cLTPeFOm
+         a7MA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfJpuK9LsDJG+xRdhV2NVuIngzGnkJSpGlZAjryQS8ulWPpQqr6DArJzO0fygumXUlKey6p1D2K7nyWAuJdKEUk3QoH2rN4+bxrJ2l
+X-Gm-Message-State: AOJu0YyhE+j9vtyKTtOA4VBkai8zwAvdwoWwKZBjRxlwwj1oJqiHCo9V
+	TCVtPCxMq7VxOJq3D6YXUfZjupKFbqU2HT7S24DoxqxZ7jsHX44QPkn+qpFJ6eY=
+X-Google-Smtp-Source: AGHT+IGAZ3waKKPaYy2xxvyD7WhqjmG11BTbAkT6qM9SrttDMCln6Si+o3oo7ZhzrW9z0K1FdtPldw==
+X-Received: by 2002:a50:d598:0:b0:567:4694:159 with SMTP id v24-20020a50d598000000b0056746940159mr899375edi.26.1711094507002;
+        Fri, 22 Mar 2024 01:01:47 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (046125249120.public.t-mobile.at. [46.125.249.120])
+        by smtp.gmail.com with ESMTPSA id p29-20020a056402501d00b00568c613570dsm739889eda.79.2024.03.22.01.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 01:01:46 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/5] Add TCPM support for PM7250B and Fairphone 4
+Date: Fri, 22 Mar 2024 09:01:31 +0100
+Message-Id: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,49 +75,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240321102100.2401340-1-ye.zhang@rock-chips.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANs6/WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYyMj3bQCE92S5IJcXaPEFDOL1DRTU2MTMyWg8oKi1LTMCrBR0bG1tQD
+ FEownWgAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org, 
+ Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
 
-Hi,
+This series adds support for Type-C Port Management on the Fairphone 4
+which enables USB role switching and orientation switching.
 
-On Mar 21, 2024 at 18:21:00 +0800, Ye Zhang wrote:
-> The issue occurs when the devfreq cooling device uses the EM power model
-> and the get_real_power() callback is provided by the driver.
-> 
-> The EM power table is sorted ascending，can't index the table by cooling
-> device state，so convert cooling state to performance state by
-> dfc->max_state - dfc->capped_state.
+This enables a user for example to plug in a USB stick or a USB keyboard
+to the Type-C port.
 
-Thanks for the updated explanation!
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Luca Weiss (5):
+      dt-bindings: regulator: qcom,usb-vbus-regulator: Add PM7250B compatible
+      dt-bindings: usb: qcom,pmic-typec: Add support for the PM7250B PMIC
+      arm64: dts: qcom: pm7250b: Add node for PMIC VBUS booster
+      arm64: dts: qcom: pm7250b: Add a TCPM description
+      arm64: dts: qcom: sm7225-fairphone-fp4: Enable USB role switching
 
-> 
-> Fixes: 615510fe13bd ("thermal: devfreq_cooling: remove old power model and use EM")
-> Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
-> Signed-off-by: Ye Zhang <ye.zhang@rock-chips.com>
-> ---
-> v1 -> v2:
->   - Update the commit message.
-> 
->  drivers/thermal/devfreq_cooling.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-> index 50dec24e967a..8fd7cf1932cd 100644
-> --- a/drivers/thermal/devfreq_cooling.c
-> +++ b/drivers/thermal/devfreq_cooling.c
-> @@ -214,7 +214,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
->  
->  		res = dfc->power_ops->get_real_power(df, power, freq, voltage);
->  		if (!res) {
-> -			state = dfc->capped_state;
-> +			state = dfc->max_state - dfc->capped_state;
+ .../regulator/qcom,usb-vbus-regulator.yaml         |  1 +
+ .../devicetree/bindings/usb/qcom,pmic-typec.yaml   |  1 +
+ arch/arm64/boot/dts/qcom/pm7250b.dtsi              | 45 +++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm6350.dtsi               | 25 ++++++++++
+ arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts  | 57 +++++++++++++++++++++-
+ 5 files changed, 128 insertions(+), 1 deletion(-)
+---
+base-commit: fa564eb0e6faf40ceea92b2e5ba7a08d0a79594c
+change-id: 20240322-fp4-tcpm-2ad68ef55346
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
-
--- 
 Best regards,
-Dhruva
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
+
 
