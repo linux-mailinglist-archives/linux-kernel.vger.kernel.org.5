@@ -1,162 +1,166 @@
-Return-Path: <linux-kernel+bounces-111022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAA9388670A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:46:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0953F88671A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F3BA1F24AC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C53EB21BC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110FA19475;
-	Fri, 22 Mar 2024 06:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E3A10A17;
+	Fri, 22 Mar 2024 06:49:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kjkHHFTT"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="CdYCw9ST"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C982171C1;
-	Fri, 22 Mar 2024 06:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943A41170D;
+	Fri, 22 Mar 2024 06:49:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711089949; cv=none; b=fFIavbxMEbq1h3TjzjQbAQxgKBDlRmHdZklCoSqkZKGW6Rf5IBXhPYb4EVMnJq3gQMS1TyTqqyPBs6+2/MLk055C4wrAogvnWBfEuPLJ9pvmgtgsif648hYMzOu3wvVQmpfPp2GUshQ1fEtMBbfkBYFrL98UVQSdPhcp5w8YQnE=
+	t=1711090151; cv=none; b=eRpQtqd6g0+EOjwtBhveQpjzCjTXoJ7W5fJFtU3A4V8+hIz9cts3PQLGAL9cNAUNDX74t0P2qaOlJk4SifDH8UDRpd/btsXSl5fpqoEcLg5zyV8/ifHe/WAHstLMt4nh2uFA3wdR9o1dGhc/skKQ0FzBoFmXhtUuTxmjpMOTXf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711089949; c=relaxed/simple;
-	bh=4rUBSyPV6ao55dHemnHVuLdadgQFFoAi54Gb6HBKVTY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WTsbVJXKar/wHmmopI4cT0G7p2NdHgmatIomEL0WQYSYzulKh5LrnrawtsoFf4g9Nu2Tgv42lrIVLc0KHbowHlFfTeN1QerX+WyHbQv3weoFyHWx6AjAR4uY+wlBzMOKHPcD70UDxkpjKiotx9bQQegYIi7xwjPbTTH6TABJdIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kjkHHFTT; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a44ad785a44so209611566b.3;
-        Thu, 21 Mar 2024 23:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711089946; x=1711694746; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k0ZX0mSNtR84zaDW6QrVcacYADFhCeQmdayKmvm0d6c=;
-        b=kjkHHFTTdjABgPaMb3QPIMWLfVZGR1031sE8cGw1Nlzk/Ffr/vMEYRb95mq3QPr7+k
-         wbcv6ZxfyLR41mv+hxJ4Jt/xSzB3aQVl6ioa3d0XdIJz53I0m2w+QX1MeRTh/cHfwx8s
-         n7sRlcAyA/9rnjkYXznIwCv/5zhkaq5nPJ07EBcwQP7AjzNG7o4ko4nhvL/BeMBK5xfy
-         iKn40tjWnEeMu7AzXcSGTK0XbrVwf3MkavEUbNs3VtmHYk0rdBxY3mbZxRBjfrZ2AdcZ
-         q9vzJEFVuGE8/ykHKlw3M3eMn4k5wjS+kP7RRC73Xzq/gOK6cCYzZLCnulA5CFBJK/+e
-         QIxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711089946; x=1711694746;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k0ZX0mSNtR84zaDW6QrVcacYADFhCeQmdayKmvm0d6c=;
-        b=egI5H9cWcRBjDUiPklxLL8D5hmj4m2hpe3WCeJ+rLINS2qsxmfcVwRn8s41ieDok2r
-         btqEPfyEInmB+8TUzNy0YKet97dvkoSjV40vYeeOLQiPlWWJ1ODFVBBiZq8AcLnQd2K5
-         IhHwUhu3V2aavc4CeKJWvHXXdLef6swoxdIcM7BQeBncLgZtdzOWxFbhHGibZsyiSTk7
-         93WNo7ACr0NRq1CWqn9mDf1QGpoN0rHr8Jewzze+OsjtnYxKDH8c6DWzLFy49C5r6vZO
-         6tnclcrtJjiZpZD4mvvOxWIDJssW98e5zk2LlWPIPWmgmMjC6/lgMYciolJTF4VEDiG/
-         MEnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVd1P7S5u3c42MgtsSdYjyB29UNL9XdD3dgm5tI46DCtP82OSHLAfBEbVFKEvv8GM/BD+MSlgfNC27XRE7UJluB3L66tZny8A4EHF3vUfjfcQ/G5Svb6Dz44zk3R8c6HuPUT6kzQVJHPw==
-X-Gm-Message-State: AOJu0Yw8wfQ0tuCA5sXw0GcatSDCe9DpclbeX5Z8dhf+upUhZGHpWkI7
-	8ZhRVVzpbvGNzHtoqWTIlRRtjwMHfSJjD2ZWt3T1CI1sB6DOWEKx
-X-Google-Smtp-Source: AGHT+IHWTwuW8UIUUoXFTdiYrzTtIrzPGEkZkGQ8lAESE+yEAIlcPzGhuzwEM7g3eVOt5C0rx4FIKQ==
-X-Received: by 2002:a17:906:38d7:b0:a46:1d4b:d81 with SMTP id r23-20020a17090638d700b00a461d4b0d81mr1014632ejd.62.1711089945564;
-        Thu, 21 Mar 2024 23:45:45 -0700 (PDT)
-Received: from [127.0.1.1] ([213.208.157.67])
-        by smtp.gmail.com with ESMTPSA id e19-20020a170906375300b00a46bb8a44cdsm679694ejc.198.2024.03.21.23.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 23:45:45 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Fri, 22 Mar 2024 07:45:30 +0100
-Subject: [PATCH v2 5/5] dt-bindings: hwmon: ibm,p8-occ-hwmon: move to
- trivial devices
+	s=arc-20240116; t=1711090151; c=relaxed/simple;
+	bh=USL1xcuNN0CqkFKJyTznKkqpa3nTARskndZPzGjynP8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZJ2UCkh3/isNOOVVeVWuTY40hvUKk1sZvtYsizK+Ow2Qn9VZGJwR2yEatYYUSRe/40zdSCeQvexMqD/MVnB+qFDjEux3NNIDp+kQYTvi8AhUakURsGbWZ6M+f0pAQUvqvmKQAHj9QeL0S11TjjRJSRLINHU4D6GbGRML4YvGls8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=CdYCw9ST; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1711090150; x=1742626150;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=USL1xcuNN0CqkFKJyTznKkqpa3nTARskndZPzGjynP8=;
+  b=CdYCw9STBLUWBWYsEFfM8ME8F+pRyRQ0NewosswRxyvTevWer+hJRKLw
+   DlnfudsGIOh0bilHfTHhw6i8kjuQ6LrxZ5UnCxDrczr6BmAEHCGjp3i38
+   QFra8gqrR18g+VA2rA9oVtt+yd7kt2N1YnpOptEGjPKT4gGT1D2t62LLx
+   YTkPPXeWDuJdGIQ+6omfc/5YPLpbGB0u3nWoHnJH/IVGmIRdzOR5lig7Y
+   nS8yAYct4svGIX8gxN0i7MHcBBIxyTkf1Jl4rn4Uq+LTbBuraP8XdZg2n
+   uGYAdZ2XIISDPC0RvDJrBrEgtwwRV3auDPj7e2YG68D36MmWvpzjvb3Ru
+   Q==;
+X-CSE-ConnectionGUID: UAlAVOoNRT618011ioRO6A==
+X-CSE-MsgGUID: pdvODhrORvuDfgE/Tynp1g==
+X-IronPort-AV: E=Sophos;i="6.07,145,1708412400"; 
+   d="scan'208";a="18011764"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Mar 2024 23:49:03 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 23:48:55 -0700
+Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 23:48:52 -0700
+From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To: <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<edumazet@google.com>, <linux-kernel@vger.kernel.org>, <horms@kernel.org>,
+	<bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net V1] net: lan743x: Add set RFE read fifo threshold for PCI1x1x chips
+Date: Fri, 22 Mar 2024 12:16:50 +0530
+Message-ID: <20240322064650.275174-1-Raju.Lakkaraju@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240322-hwmon_dtschema-v2-5-570bee1acecb@gmail.com>
-References: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
-In-Reply-To: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
-To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, 
- Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711089934; l=2051;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=4rUBSyPV6ao55dHemnHVuLdadgQFFoAi54Gb6HBKVTY=;
- b=q70/gdmXCi4RvGIZ+Icn9EMX+Srdt6GnUw1wapHGSfBb5rKgsJsBrfeEQjXEbzRQpC0yBmLNL
- yBJQ7F88FHLBJrbYbGpP85x5g38ot1Fi6LVn2jSQHMJlPTSEvepiCto
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-This binding meets the requirements to be converted to dtschema
-via trivial-devices.yaml.
+PCI11x1x Rev B0 devices might drop packets when receiving back to back frames
+at 2.5G link speed. Change the B0 Rev device's Receive filtering Engine FIFO
+threshold parameter from its hardware default of 4 to 3 dwords to prevent the
+problem. Rev C0 and later hardware already defaults to 3 dwords.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Fixes: bb4f6bffe33c ("net: lan743x: Add PCI11010 / PCI11414 device IDs")
+Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
 ---
- .../devicetree/bindings/hwmon/ibm,p8-occ-hwmon.txt | 25 ----------------------
- .../devicetree/bindings/trivial-devices.yaml       |  2 ++
- 2 files changed, 2 insertions(+), 25 deletions(-)
+Change List:
+------------
+V0 -> V1:
+  - misc_ctl change from int to unsigned int
+  - Use FIELD_PREP macro instead of logical shift operator
+  - Change 0x3 to macro RFE_RD_FIFO_TH_3_DWORDS
 
-diff --git a/Documentation/devicetree/bindings/hwmon/ibm,p8-occ-hwmon.txt b/Documentation/devicetree/bindings/hwmon/ibm,p8-occ-hwmon.txt
-deleted file mode 100644
-index 5dc5d2e2573d..000000000000
---- a/Documentation/devicetree/bindings/hwmon/ibm,p8-occ-hwmon.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--Device-tree bindings for I2C-based On-Chip Controller hwmon device
--------------------------------------------------------------------
--
--Required properties:
-- - compatible = "ibm,p8-occ-hwmon";
-- - reg = <I2C address>;			: I2C bus address
--
--Examples:
--
--    i2c-bus@100 {
--        #address-cells = <1>;
--        #size-cells = <0>;
--        clock-frequency = <100000>;
--        < more properties >
--
--        occ-hwmon@1 {
--            compatible = "ibm,p8-occ-hwmon";
--            reg = <0x50>;
--        };
--
--        occ-hwmon@2 {
--            compatible = "ibm,p8-occ-hwmon";
--            reg = <0x51>;
--        };
--    };
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index e07be7bf8395..87b0dd9b0734 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -126,6 +126,8 @@ properties:
-           - ibm,cffps1
-             # IBM Common Form Factor Power Supply Versions 2
-           - ibm,cffps2
-+            # IBM On-Chip Controller hwmon device
-+          - ibm,p8-occ-hwmon
-             # Infineon barometric pressure and temperature sensor
-           - infineon,dps310
-             # Infineon IR36021 digital POL buck controller
+ drivers/net/ethernet/microchip/lan743x_main.c | 20 +++++++++++++++++++
+ drivers/net/ethernet/microchip/lan743x_main.h |  4 ++++
+ 2 files changed, 24 insertions(+)
 
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index bd8aa83b47e5..dca26a0734ec 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -25,6 +25,8 @@
+ #define PCS_POWER_STATE_DOWN	0x6
+ #define PCS_POWER_STATE_UP	0x4
+ 
++#define RFE_RD_FIFO_TH_3_DWORDS	0x3
++
+ static void pci11x1x_strap_get_status(struct lan743x_adapter *adapter)
+ {
+ 	u32 chip_rev;
+@@ -3272,6 +3274,23 @@ static void lan743x_full_cleanup(struct lan743x_adapter *adapter)
+ 	lan743x_pci_cleanup(adapter);
+ }
+ 
++static int pci11x1x_set_rfe_rd_fifo_threshold(struct lan743x_adapter *adapter)
++{
++	u16 rev = adapter->csr.id_rev & ID_REV_CHIP_REV_MASK_;
++
++	if (rev == ID_REV_CHIP_REV_PCI11X1X_B0_) {
++		u32 misc_ctl;
++
++		misc_ctl = lan743x_csr_read(adapter, MISC_CTL_0);
++		misc_ctl &= ~MISC_CTL_0_RFE_READ_FIFO_MASK_;
++		misc_ctl |= FIELD_PREP(MISC_CTL_0_RFE_READ_FIFO_MASK_,
++				       RFE_RD_FIFO_TH_3_DWORDS);
++		lan743x_csr_write(adapter, MISC_CTL_0, misc_ctl);
++	}
++
++	return 0;
++}
++
+ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
+ 				 struct pci_dev *pdev)
+ {
+@@ -3287,6 +3306,7 @@ static int lan743x_hardware_init(struct lan743x_adapter *adapter,
+ 		pci11x1x_strap_get_status(adapter);
+ 		spin_lock_init(&adapter->eth_syslock_spinlock);
+ 		mutex_init(&adapter->sgmii_rw_lock);
++		pci11x1x_set_rfe_rd_fifo_threshold(adapter);
+ 	} else {
+ 		adapter->max_tx_channels = LAN743X_MAX_TX_CHANNELS;
+ 		adapter->used_tx_channels = LAN743X_USED_TX_CHANNELS;
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.h b/drivers/net/ethernet/microchip/lan743x_main.h
+index be79cb0ae5af..645bc048e52e 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.h
++++ b/drivers/net/ethernet/microchip/lan743x_main.h
+@@ -26,6 +26,7 @@
+ #define ID_REV_CHIP_REV_MASK_		(0x0000FFFF)
+ #define ID_REV_CHIP_REV_A0_		(0x00000000)
+ #define ID_REV_CHIP_REV_B0_		(0x00000010)
++#define ID_REV_CHIP_REV_PCI11X1X_B0_	(0x000000B0)
+ 
+ #define FPGA_REV			(0x04)
+ #define FPGA_REV_GET_MINOR_(fpga_rev)	(((fpga_rev) >> 8) & 0x000000FF)
+@@ -311,6 +312,9 @@
+ #define SGMII_CTL_LINK_STATUS_SOURCE_	BIT(8)
+ #define SGMII_CTL_SGMII_POWER_DN_	BIT(1)
+ 
++#define MISC_CTL_0			(0x920)
++#define MISC_CTL_0_RFE_READ_FIFO_MASK_	GENMASK(6, 4)
++
+ /* Vendor Specific SGMII MMD details */
+ #define SR_VSMMD_PCS_ID1		0x0004
+ #define SR_VSMMD_PCS_ID2		0x0005
 -- 
-2.40.1
+2.34.1
 
 
