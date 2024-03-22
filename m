@@ -1,225 +1,308 @@
-Return-Path: <linux-kernel+bounces-111419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A85C3886C12
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:29:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FFA5886C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:30:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11B2CB24DD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:29:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F8971F24563
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6680441232;
-	Fri, 22 Mar 2024 12:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581E8446A2;
+	Fri, 22 Mar 2024 12:30:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XX34NDzS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kJorp9nC"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="U/0v5Z3Y"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F05405DF;
-	Fri, 22 Mar 2024 12:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001329475;
+	Fri, 22 Mar 2024 12:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711110576; cv=none; b=h2grvNn4so4h2cAaP9hOPuDzTaC8iKdN18Tpn2m30Kt1uEIoADcYeIu1cymDZBS3TkmQX7vgL4LMGfj8x5DeVAiSUPv9En8jiW7m54DqsqSTR8TujV1vN/SQhGLGYRg6+X+nzs+YqUHd3zV+hx6SFEe9k8cSXDfmQIlrCeC4Gig=
+	t=1711110618; cv=none; b=aCDfTkG7iO7myefkwvDqoN1heTyqUyvHEUdp89JKoEm1pQ9/L+lUpO3zJyW0k9COW3Zoo9ItL/JTxAMMWGMMVskdd5kgkHm4NeRYw2jFf5CQYDoXnxdouzsINEBYxc/Lel2ZrXa0M7H51dZNO5Z7SGob6WNJJtTBF5WNKnLG7iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711110576; c=relaxed/simple;
-	bh=foIK+9f73HNeNks9IMM4f7cYpYcW1Ipegzfx9UD+DpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s70ebONEOV8NW9WX9SP0CylbespbuHImTn5yRtVQAA6vdLCQ/25kt4z44c3oQk5wKuvtog3rWGaHPnyZy7nv3O+4+1K/Z3k32MN5skEx6DOCt4cN9O1D1xXmVPsykl2S/OnkfolpPki7/GO5KGmKf6q838j6I42lbPKjDOItgw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XX34NDzS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kJorp9nC; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Mar 2024 13:29:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711110572;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kw6jKfgYseBviEK7ThWkCBO+I75JNZXgwEbS3NadGUA=;
-	b=XX34NDzSpJY5/auKw8m3bAZVQPXLyurLUHyus62eyaS2WihtYaCEGn2x5v6cx8IYwIYl0Z
-	FdhOyNgmsV5KROmqopCVIlwSLC8efd9Ep0K7NBcTIbFQqryrbvB1wBt6Cb4RABIj/XBkU6
-	t1xM2w63JndgZP/t5oa+W/R3Lfox9lneCo2EMtdtkpzsNXL0y88Ud0OeWMjMc/wuS++vje
-	l/SUfNj8v1kGnH/J8yj+YR3w7gH8qWIgCcL51AnDBo14Auz1X9h7Hae9gWkD+ZCy+4TyH+
-	PigUl7xDiMLCOtH+s4qUxBXGQ3A/OJ3GYMgzR8cDbavecI1+KX1GxJFJoiulZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711110572;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kw6jKfgYseBviEK7ThWkCBO+I75JNZXgwEbS3NadGUA=;
-	b=kJorp9nC1dajl14Wt4UPgHrt5NzDwscK2Snh1wYkxF4PxWwuKAwcAsfgO1NtdUzoOJSqGR
-	CsN45VmUAYGfniAw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "John B. Wyatt IV" <jwyatt@redhat.com>
-Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
-	Clark Williams <williams@redhat.com>,
-	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
-	Bruno Goncalves <bgoncalv@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: NMIs reported by console_blast.sh with 6.6.20-rt25
-Message-ID: <20240322122921.U3WRsO4X@linutronix.de>
-References: <ZfSfrzak9WS0ZFv7@thinkpad2021>
+	s=arc-20240116; t=1711110618; c=relaxed/simple;
+	bh=fEfFlBr4ugsPaCueHsYIH4SSAkF3+xAFPa2Sh0wjXT4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r5TUimGUqJ0PCsAWiIxw1tN266nS3CrFE9THIEpq2aRVK4Rvq4m6WDiit4/fAcahDFYDtac2i0djL2RZo25Y4pGBS4uxjLf/Gf8FTpfU75dT7WnfVtOvV+Oq7cK4tfGcsdB5qR9Id7TadGUgkWvoh5ejW45d+erX0UwHw643ccw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=U/0v5Z3Y; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711110605; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=mYTbCPy1WTTUyflrWQMEy9SpU9P1T1WTxZVaPvhJG5M=;
+	b=U/0v5Z3YUpYg90VVjyeDI0m/O9FhprTbR+H6CTCfqWeIqASq4CSuFV/tNA1386u2ONQAErYd3tjCCKlv38BGgFEfBJjbcJunQtA8nAw+nriL5ei9G505pqJFIlMj9P9uFHlcwCdyYwWlIcm+b52rvCtCOjAgRNj7ME3mz0vCRXE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W329hih_1711110603;
+Received: from 30.221.130.60(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W329hih_1711110603)
+          by smtp.aliyun-inc.com;
+          Fri, 22 Mar 2024 20:30:05 +0800
+Message-ID: <a5566d49-db9e-48ca-801b-37bfa1134748@linux.alibaba.com>
+Date: Fri, 22 Mar 2024 20:30:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZfSfrzak9WS0ZFv7@thinkpad2021>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v4 05/11] net/smc: implement DMB-related
+ operations of loopback-ism
+To: Jan Karcher <jaka@linux.ibm.com>, wintera@linux.ibm.com,
+ twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240317100545.96663-1-guwen@linux.alibaba.com>
+ <20240317100545.96663-6-guwen@linux.alibaba.com>
+ <da8a60f1-dadf-4ab4-89b3-77e1ee45be03@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <da8a60f1-dadf-4ab4-89b3-77e1ee45be03@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-15 15:21:19 [-0400], John B. Wyatt IV wrote:
-> Hello John,
-Hi John B.,
 
-> The real-time team at Red Hat is discussing backporting the rt patchset i=
-n 6.6
-> to RHEL 9/Stream 9. I decided to test v6.6.20-rt25 from stable-rt with
-> console_blast.sh. It reported similar NMIs from my testing of 6.7.0-rt6 w=
-ith
-> that high cpu count server over uart 8250; which is expected since the pa=
-tchset
-> is similar.
->=20
-> One interesting thing is that 6.7.0-rt6 fully preemptive + realtime tuned=
- profile
-> did not return any NMIs while 6.6 did with that same configuration.
 
-The thing is that console_blast.sh does this "show a backtrace on all
-CPUs, please" which triggers NMIs on all CPUs for backtrace. I can't
-imagine how you did obtain the backtraces without an NMI. Unless the
-tuned profile disables this somehow.
+On 2024/3/21 16:12, Jan Karcher wrote:
+> 
+> 
+> On 17/03/2024 11:05, Wen Gu wrote:
+>> This implements DMB (un)registration and data move operations of
+>> loopback-ism device.
+>>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+>>   net/smc/smc_loopback.c | 131 ++++++++++++++++++++++++++++++++++++++++-
+>>   net/smc/smc_loopback.h |  13 ++++
+>>   2 files changed, 141 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
+>> index 253128c77208..7335acb03920 100644
+>> --- a/net/smc/smc_loopback.c
+>> +++ b/net/smc/smc_loopback.c
+>> @@ -15,11 +15,13 @@
+>>   #include <linux/types.h>
+>>   #include <net/smc.h>
+>> +#include "smc_cdc.h"
+>>   #include "smc_ism.h"
+>>   #include "smc_loopback.h"
+>>   #if IS_ENABLED(CONFIG_SMC_LO)
+>>   #define SMC_LO_V2_CAPABLE    0x1 /* loopback-ism acts as ISMv2 */
+>> +#define SMC_DMA_ADDR_INVALID    (~(dma_addr_t)0)
+>>   static const char smc_lo_dev_name[] = "loopback-ism";
+>>   static struct smc_lo_dev *lo_dev;
+>> @@ -49,6 +51,93 @@ static int smc_lo_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
+>>       return 0;
+>>   }
+>> +static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+>> +                   void *client_priv)
+>> +{
+>> +    struct smc_lo_dmb_node *dmb_node, *tmp_node;
+>> +    struct smc_lo_dev *ldev = smcd->priv;
+>> +    int sba_idx, rc;
+>> +
+>> +    /* check space for new dmb */
+>> +    for_each_clear_bit(sba_idx, ldev->sba_idx_mask, SMC_LO_MAX_DMBS) {
+>> +        if (!test_and_set_bit(sba_idx, ldev->sba_idx_mask))
+>> +            break;
+>> +    }
+>> +    if (sba_idx == SMC_LO_MAX_DMBS)
+>> +        return -ENOSPC;
+>> +
+>> +    dmb_node = kzalloc(sizeof(*dmb_node), GFP_KERNEL);
+>> +    if (!dmb_node) {
+>> +        rc = -ENOMEM;
+>> +        goto err_bit;
+>> +    }
+>> +
+>> +    dmb_node->sba_idx = sba_idx;
+>> +    dmb_node->len = dmb->dmb_len;
+>> +    dmb_node->cpu_addr = kzalloc(dmb_node->len, GFP_KERNEL |
+>> +                     __GFP_NOWARN | __GFP_NORETRY |
+>> +                     __GFP_NOMEMALLOC);
+>> +    if (!dmb_node->cpu_addr) {
+>> +        rc = -ENOMEM;
+>> +        goto err_node;
+>> +    }
+>> +    dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
+>> +
+>> +again:
+>> +    /* add new dmb into hash table */
+>> +    get_random_bytes(&dmb_node->token, sizeof(dmb_node->token));
+>> +    write_lock_bh(&ldev->dmb_ht_lock);
+>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_node->token) {
+>> +        if (tmp_node->token == dmb_node->token) {
+>> +            write_unlock_bh(&ldev->dmb_ht_lock);
+>> +            goto again;
+>> +        }
+>> +    }
+>> +    hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
+>> +    write_unlock_bh(&ldev->dmb_ht_lock);
+>> +
+>> +    dmb->sba_idx = dmb_node->sba_idx;
+>> +    dmb->dmb_tok = dmb_node->token;
+>> +    dmb->cpu_addr = dmb_node->cpu_addr;
+>> +    dmb->dma_addr = dmb_node->dma_addr;
+>> +    dmb->dmb_len = dmb_node->len;
+>> +
+>> +    return 0;
+>> +
+>> +err_node:
+>> +    kfree(dmb_node);
+>> +err_bit:
+>> +    clear_bit(sba_idx, ldev->sba_idx_mask);
+>> +    return rc;
+>> +}
+>> +
+>> +static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+>> +{
+>> +    struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
+>> +    struct smc_lo_dev *ldev = smcd->priv;
+>> +
+>> +    /* remove dmb from hash table */
+>> +    write_lock_bh(&ldev->dmb_ht_lock);
+>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
+>> +        if (tmp_node->token == dmb->dmb_tok) {
+>> +            dmb_node = tmp_node;
+>> +            break;
+>> +        }
+>> +    }
+>> +    if (!dmb_node) {
+>> +        write_unlock_bh(&ldev->dmb_ht_lock);
+>> +        return -EINVAL;
+>> +    }
+>> +    hash_del(&dmb_node->list);
+>> +    write_unlock_bh(&ldev->dmb_ht_lock);
+>> +
+>> +    clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
+>> +    kfree(dmb_node->cpu_addr);
+>> +    kfree(dmb_node);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
+>>   {
+>>       return -EOPNOTSUPP;
+>> @@ -75,6 +164,40 @@ static int smc_lo_signal_event(struct smcd_dev *dev, struct smcd_gid *rgid,
+>>       return 0;
+>>   }
+>> +static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
+>> +                unsigned int idx, bool sf, unsigned int offset,
+>> +                void *data, unsigned int size)
+>> +{
+>> +    struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
+>> +    struct smc_lo_dev *ldev = smcd->priv;
+>> +
+>> +    read_lock_bh(&ldev->dmb_ht_lock);
+>> +    hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
+>> +        if (tmp_node->token == dmb_tok) {
+>> +            rmb_node = tmp_node;
+>> +            break;
+>> +        }
+>> +    }
+>> +    if (!rmb_node) {
+>> +        read_unlock_bh(&ldev->dmb_ht_lock);
+>> +        return -EINVAL;
+>> +    }
+>> +    read_unlock_bh(&ldev->dmb_ht_lock);
+>> +
+>> +    memcpy((char *)rmb_node->cpu_addr + offset, data, size);
+> 
+> Hi Wen Gu,
+> 
+> Could we get into use after free trouble here if the dmb gets unregistered between the read_unlock and memcpy?
+> 
 
-> Another aspect I noticed during my testing. I did not set grub to
-> start with the realtime profile at boot for this machine. When I did set
-> it the second (and latter) NMI did not show for fully preemptive (the
-> 3rd set at the bottom of this email).=20
->=20
-> Caller info was enabled. No modifications to the source code were made.
->=20
-> I have not tested previous versions before 6.7.0-rt6 or 6.6.20-rt25;
-> with the exception of accidently testing 6.6.10-rt19. 6.6.10 also
-> reported NMIs during this test. If you wish to see these reports please
-> let me know.
+rmb_node won't be unregistered until smc_lgr_free_bufs() in __smc_lgr_free(). At
+that time, the connections on this lgr should be all freed (smc_conn_free() and
+then lgr->refcnt == 0), so I think there will be no move data operation at that
+point. But in case there is something unforeseen, I will put memcpy between dmb_ht_lock.
 
-This NMI part has nothing todo with printk. If you need this clarified,
-I would need a reproducer.
+Thanks!
 
-=E2=80=A6
-> -----------------------------
-> NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned realtime pr=
-ofile
-> -----------------------------
->=20
-> [ T2614] Kernel panic - not syncing: sysrq triggered crash
-> [   C56] NMI backtrace for cpu 56
-> [   C56] Hardware name: Intel Corporation D50DNP1SBB/D50DNP1SBB, BIOS SE5=
-C7411.86B.9409.D04.2212261349 12/26/2022
-> [ C56] RIP: 0010:io_serial_out (arch/x86/kernel/early_printk.c:105)=20
-> [ C56] Code: 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f =
-1f 44 00 00 0f b6 8f c1 00 00 00 89 d0 0f b7 57 08 d3 e6 01 f2 ee <c3> cc c=
-c cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90
-> All code
-> =3D=3D=3D=3D=3D=3D=3D
-=E2=80=A6
->   12:	90                   	nop
->   13:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
->   18:	0f b6 8f c1 00 00 00 	movzbl 0xc1(%rdi),%ecx
->   1f:	89 d0                	mov    %edx,%eax
->   21:	0f b7 57 08          	movzwl 0x8(%rdi),%edx
->   25:	d3 e6                	shl    %cl,%esi
->   27:	01 f2                	add    %esi,%edx
->   29:	ee                   	out    %al,(%dx)
->   2a:*	c3                   	ret		<-- trapping instruction
+> 
+>> +
+>> +    if (sf) {
+>> +        struct smc_connection *conn =
+>> +            smcd->conn[rmb_node->sba_idx];
+> 
+> Please put the `struct smc_connection *conn = NULL` at the top of the function and assign the value here.
+> 
 
-where is this output from? The `ret' opcode usually does not cause a
-trap. My guess is that the machine has been interrupted by an external
-user at this position.
-Side note: This is using early_printk, correct?
-=E2=80=A6
+OK, I will put it at the top. Thanks!
 
-> [   C56] Call Trace:
-> [   C56]  <NMI>
-> [ C56] ? nmi_cpu_backtrace (lib/nmi_backtrace.c:115)=20
-> [ C56] ? nmi_cpu_backtrace_handler (arch/x86/kernel/apic/hw_nmi.c:47 (dis=
-criminator 1))=20
-> [ C56] ? nmi_handle (arch/x86/kernel/nmi.c:149)=20
-> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
-> [ C56] ? default_do_nmi (arch/x86/kernel/nmi.c:347)=20
-> [ C56] ? exc_nmi (arch/x86/kernel/nmi.c:538)=20
-> [ C56] ? end_repeat_nmi (arch/x86/entry/entry_64.S:1458)=20
-> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
-> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
-> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
-> [   C56]  </NMI>
-
-This looks okay. The NMI did the backtrace as expected.
-
-> [   C56]  <TASK>
-> [ C56] serial8250_console_putchar (./include/linux/serial_core.h:704 driv=
-ers/tty/serial/8250/8250_port.c:3347)=20
-> [ C56] ? __pfx_serial8250_console_putchar (drivers/tty/serial/8250/8250_p=
-ort.c:3343)=20
-> [ C56] uart_console_write (drivers/tty/serial/serial_core.c:2134)=20
-> [ C56] serial8250_console_write_atomic (drivers/tty/serial/8250/8250_port=
-=2Ec:3628)=20
-> [ C56] nbcon_emit_next_record (kernel/printk/nbcon.c:940)=20
-> [ C56] __nbcon_atomic_flush_all (kernel/printk/nbcon.c:1192 (discriminato=
-r 1) kernel/printk/nbcon.c:1326 (discriminator 1))=20
-> [ C56] vprintk_emit (kernel/printk/printk.c:2414)=20
-> [ C56] _printk (kernel/printk/printk.c:2474)=20
-> [ C56] panic (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/=
-bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ker=
-nel/panic.c:528 kernel/panic.c:339)=20
-> [ C56] ? _printk (kernel/printk/printk.c:2474)=20
-> [ C56] sysrq_handle_crash (drivers/tty/sysrq.c:154)=20
-> [ C56] __handle_sysrq (drivers/tty/sysrq.c:601)=20
-> [ C56] write_sysrq_trigger (drivers/tty/sysrq.c:1165)=20
-> [ C56] proc_reg_write (fs/proc/inode.c:340 fs/proc/inode.c:352)=20
-> [ C56] ? preempt_count_add (./include/linux/ftrace.h:974 (discriminator 1=
-) kernel/sched/core.c:5847 (discriminator 1) kernel/sched/core.c:5844 (disc=
-riminator 1) kernel/sched/core.c:5872 (discriminator 1))=20
-> [ C56] vfs_write (fs/read_write.c:582)=20
-> [ C56] ksys_write (fs/read_write.c:637)=20
-> [ C56] do_syscall_64 (arch/x86/entry/common.c:51 arch/x86/entry/common.c:=
-81)=20
-> [ C56] ? do_dup2 (fs/file.c:1142)=20
-> [ C56] ? syscall_exit_to_user_mode (kernel/entry/common.c:299)=20
-> [ C56] ? do_syscall_64 (arch/x86/entry/common.c:88)=20
-> [ C56] ? exc_page_fault (./arch/x86/include/asm/irqflags.h:37 ./arch/x86/=
-include/asm/irqflags.h:72 arch/x86/mm/fault.c:1513 arch/x86/mm/fault.c:1561=
-)=20
-> [ C56] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)=20
-
-According to this, someone issued a `crash' via sysrq. Why?
-
-=E2=80=A6
-> [ T2614] ---[ end Kernel panic - not syncing: sysrq triggered crash ]---
-yes exactly.
-=E2=80=A6
-> NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned throughput-=
-performance profile
-> -----------------------------
-
-This and the following backtrace shows the same picture: The CPU is
-crashing due to proc/sysrq request and does CPU-backtraces via NMI and
-polls in early_printk, waiting for the UART to become idle (probably).
-
-I don't see an issue here so far.
-
-=E2=80=A6
-> --=20
-> Sincerly,
-> John Wyatt
-> Software Engineer, Core Kernel
-
-Sebastian
+> Thanks
+> - Jan
+> 
+>> +
+>> +        if (conn && !conn->killed)
+>> +            tasklet_schedule(&conn->rx_tsklet);
+>> +        else
+>> +            return -EPIPE;
+>> +    }
+>> +    return 0;
+>> +}
+>> +
+>>   static int smc_lo_supports_v2(void)
+>>   {
+>>       return SMC_LO_V2_CAPABLE;
+>> @@ -101,14 +224,14 @@ static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
+>>   static const struct smcd_ops lo_ops = {
+>>       .query_remote_gid = smc_lo_query_rgid,
+>> -    .register_dmb        = NULL,
+>> -    .unregister_dmb        = NULL,
+>> +    .register_dmb = smc_lo_register_dmb,
+>> +    .unregister_dmb = smc_lo_unregister_dmb,
+>>       .add_vlan_id = smc_lo_add_vlan_id,
+>>       .del_vlan_id = smc_lo_del_vlan_id,
+>>       .set_vlan_required = smc_lo_set_vlan_required,
+>>       .reset_vlan_required = smc_lo_reset_vlan_required,
+>>       .signal_event = smc_lo_signal_event,
+>> -    .move_data        = NULL,
+>> +    .move_data = smc_lo_move_data,
+>>       .supports_v2 = smc_lo_supports_v2,
+>>       .get_local_gid = smc_lo_get_local_gid,
+>>       .get_chid = smc_lo_get_chid,
+>> @@ -173,6 +296,8 @@ static void smcd_lo_unregister_dev(struct smc_lo_dev *ldev)
+>>   static int smc_lo_dev_init(struct smc_lo_dev *ldev)
+>>   {
+>>       smc_lo_generate_id(ldev);
+>> +    rwlock_init(&ldev->dmb_ht_lock);
+>> +    hash_init(ldev->dmb_ht);
+>>       return smcd_lo_register_dev(ldev);
+>>   }
+>> diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
+>> index 55b41133a97f..24ab9d747613 100644
+>> --- a/net/smc/smc_loopback.h
+>> +++ b/net/smc/smc_loopback.h
+>> @@ -20,13 +20,26 @@
+>>   #if IS_ENABLED(CONFIG_SMC_LO)
+>>   #define SMC_LO_MAX_DMBS        5000
+>> +#define SMC_LO_DMBS_HASH_BITS    12
+>>   #define SMC_LO_CHID        0xFFFF
+>> +struct smc_lo_dmb_node {
+>> +    struct hlist_node list;
+>> +    u64 token;
+>> +    u32 len;
+>> +    u32 sba_idx;
+>> +    void *cpu_addr;
+>> +    dma_addr_t dma_addr;
+>> +};
+>> +
+>>   struct smc_lo_dev {
+>>       struct smcd_dev *smcd;
+>>       struct device dev;
+>>       u16 chid;
+>>       struct smcd_gid local_gid;
+>> +    rwlock_t dmb_ht_lock;
+>> +    DECLARE_BITMAP(sba_idx_mask, SMC_LO_MAX_DMBS);
+>> +    DECLARE_HASHTABLE(dmb_ht, SMC_LO_DMBS_HASH_BITS);
+>>   };
+>>   #endif
 
