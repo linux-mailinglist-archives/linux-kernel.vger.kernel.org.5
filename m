@@ -1,175 +1,217 @@
-Return-Path: <linux-kernel+bounces-111713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3C5F886FE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:42:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 280DF886FE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22C981C21410
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C552842CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B5259163;
-	Fri, 22 Mar 2024 15:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98DA56770;
+	Fri, 22 Mar 2024 15:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WLEeZmBY"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UBhhn5JS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC9D51C4F
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711122098; cv=fail; b=StMU3S8bQl3TSjfeipUd5+WaoXzZesdm9OGiHSGd/6fgM4Q+oi86jAPH2EA3QDWDjjkNQD2jkDP3ISmD/y9jgKQWRgnDTsv6hLnsWwYH6X0t4l4bNUp3rK42ljKR+NhCCmJlwsFKS3/l6lqB8J0zj4enxZoTF9dl18CR9KngeA0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711122098; c=relaxed/simple;
-	bh=XRXfYIXbwXzmrxNfXceyQu7U+ciRafNDDH+LQveK7+Y=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J0ty8NHeM1ybrOQ0BaHvzPXCa5XIvUlgDieKsse/mCTCRtuqbVPfOhNv8VZG6bvzCf0tnP3oqczrZjnGgWfTqikjExe13Nevwj/bSOTPA2vWIUXGQlpuPNEtZQ3Sc/K1/LI0mZixAnObf6Jhvm45be4HV9TVgO42YfYi8MRgAe8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WLEeZmBY; arc=fail smtp.client-ip=40.107.220.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RdUvML0wFX8Cj5Q2wD2IThTYEmDzg+IEPqi+hO0IBZ2UcUVTKUgtMvzHmgbQXO955RgFbEO6HlRmPOezfb60/oTBtIBJTmadr4YfUDFfyx5QWBBdXSekGCtckcgYrO6kYqZdF5A1VwYCm/XC4TBX5BN0wUuH7dRtLtyEccTJhDlL3Ivj50nVxUTNeatVWjdL6LFhFnWd8t0FWP9PJaOHSoFum7yvIGFwwC4jYkvDxIDli6SqterzlgZyMUEItdC3RRYfEqe9yMO4xooraR6wkLjLY5UZFiNwXHPyryU3QnujVn4ncEXk9fnZ47BNt04bqTglM3wXGGrqndsfoIUouA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mtcjS1VQtiJxrk4l4KSRlA2mRCeadkUHFf4lhpDtMIw=;
- b=mRHh/O02vOn3Qisy81N0yCfgciegTv869NJ9LBHDXrC35fv01dR9h9EKeO+DziRaIsx1//I3CoFivaRPOxwpxKjNy8/dwT8EMhHfDtjLi2DkWnIbIWr4QLyEl2aj83UgreRn3cPq2gvconrZpVvt/UrliGuU9l0zu4NqW/rYoAEwacRjrPPYRc7J+aDZ/CJpQSLYLGymnan4Z9IOis+pisPbyRHEMAtbxFrXLTIAsFrmQN9hGYgDNRU11aVqahX5bWqksnXoSxtr5JWk1yRIi1r/VRtEX/s2T14NyRyKp6dnPmBzNUK6j+epqWwc1YRFlu9Y1o6KP4mCgpbjGyRMAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mtcjS1VQtiJxrk4l4KSRlA2mRCeadkUHFf4lhpDtMIw=;
- b=WLEeZmBYd8TQh/6ar0SQwlywk7BvX9Caa0d8nC53SAXcL9X8bT5Pt1eART0fd4HtPEBT3kHWSbNSQWo4aXfUYSWKusMqvolYMJU/ccA8y6MtUSYwSzOeEhwM3vAXVzazC+N6mACam27yZwfwIH1PrZqCmGgEm33sJkoSwRgEuZE=
-Received: from BYAPR11CA0060.namprd11.prod.outlook.com (2603:10b6:a03:80::37)
- by PH7PR12MB7426.namprd12.prod.outlook.com (2603:10b6:510:201::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.36; Fri, 22 Mar
- 2024 15:41:33 +0000
-Received: from CO1PEPF000044F2.namprd05.prod.outlook.com
- (2603:10b6:a03:80:cafe::15) by BYAPR11CA0060.outlook.office365.com
- (2603:10b6:a03:80::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Fri, 22 Mar 2024 15:41:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F2.mail.protection.outlook.com (10.167.241.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 15:41:33 +0000
-Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 22 Mar 2024 10:41:31 -0500
-From: Tom Lendacky <thomas.lendacky@amd.com>
-To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>
-CC: Borislav Petkov <bp@alien8.de>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, Ard
- Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 2/2] x86/boot/64: Move 5-level paging global variable assignments back
-Date: Fri, 22 Mar 2024 10:41:07 -0500
-Message-ID: <2ca419f4d0de719926fd82353f6751f717590a86.1711122067.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1711122067.git.thomas.lendacky@amd.com>
-References: <cover.1711122067.git.thomas.lendacky@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030AE54789
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711122085; cv=none; b=MoWKc4t3Auvd0CYGiile4KiMizU2YMC+O0rH2Gv27dQwLqIPLomBBHt6flZ0K6gfgoomdwogPL8tI4Q0z29M9wKAPHy6TIVZ4mnzkFCV2U2Lx5lVjvr4FH48m4Z4Ec3qmlhaN/5CRKn7SSGLmdZTdvqmjxnNW1bjGrlsA7HbLjg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711122085; c=relaxed/simple;
+	bh=y13MM1K4OSGBVcRaem6p++srNkOtksqVqY0eJhSarzE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bd9dRh2epIU0nsDJc0+1JMj0mBialv6dJqOeYOZCVqQ5bnJJ2EeDQ5aDnSh150GRIZiMBSv/RjClmzWIbL1Wabhh1+5AjhqnwGFiY2pu4V3iSxi3ZXUHXrsgoxTGS4EZzh16gABPPdWahTF7D6vxyhr3EnQTSKoQbj83RSrKvEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UBhhn5JS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711122082;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lzS+64/Z+z0FZAVLEztU47CybRWXv4MUKpFPGMTiPTs=;
+	b=UBhhn5JS/+CmozHhFYP73PLdVMsHDMl6vW9SPxGbrvLt1KqH/WzYE+dFho8KAMGGPtdAXU
+	PS6hvMDFVLuK/f0m5IbIayJxspJEOvwY7a6RKsbnS0q91/F0TVb/rrlfxJ4yVLNv9PfRBC
+	5+riDcgquX1CMPRd70iomBOdaK9NRc4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-328-hnnf_d1GMhulwHdok01ehg-1; Fri, 22 Mar 2024 11:41:21 -0400
+X-MC-Unique: hnnf_d1GMhulwHdok01ehg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e7ef510aaso1354364f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:41:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711122079; x=1711726879;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lzS+64/Z+z0FZAVLEztU47CybRWXv4MUKpFPGMTiPTs=;
+        b=co8rdYxQH8e/kHfTYZu0zhA9maQiHsLKSbKNERm/gD6l8F3XUzXIio3grN9JXKKlCC
+         09N9nXoT22Qk7FY1pFcUg5ImHLL/91xo87GoNBlANRMaXJaT/TZhWwt1Rh7gAjLDm3Bx
+         AZirFwmjsdrVe5e24MXKGQc3dGV5rC6EfdRtydW75dTMP97ZvUyp/SCDkgn0YffdZXBo
+         bv1raBGVolvQ5XraVoundkDMyzqy8hxtCLQvEbvdYHcHkhPIWGELeARmPJYOnSWo5gHS
+         gGzl9dYB5QYmgptx1QLrHB3a7K5TOajg3RuTpUpR/AC+tTr+GXiWoh/CCZzucUHsdWfF
+         ZCpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmmKUYACBFzj0XkbIWRIa6liJ0iQNBkG7z+MQguEMICCAKoZQI1Gbk7n4oVol/sv6S+5OcDzOVI+/OSgPFdMs1NCjy4J9gfzCmzUaG
+X-Gm-Message-State: AOJu0YyR+idmRWw1qrAFU0uNnXlZFpJYTzNAb5jipdQg714KXs9o4j9+
+	XxGA880n8QpbjvroKlpbXuOgWQyJx/VBcmw7wtQH895eWeGvJ5g/oU+Y43N8jkXxykBl8enkV7L
+	RfNPU3AJyaSaq55zBpHBmhWc9a3tLIUFmcYvz+ohXioLHgDbaTJzy3kSX7SPoNw==
+X-Received: by 2002:a05:600c:458e:b0:414:e72:63b1 with SMTP id r14-20020a05600c458e00b004140e7263b1mr2379791wmo.3.1711122079486;
+        Fri, 22 Mar 2024 08:41:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEXOLZtKDEsBtChWDKIGyOSkyUFxGexBUunkAhaBF4wHd60YlS7SUyfnMOUyNbAZMW6SJYoYg==
+X-Received: by 2002:a05:600c:458e:b0:414:e72:63b1 with SMTP id r14-20020a05600c458e00b004140e7263b1mr2379773wmo.3.1711122079081;
+        Fri, 22 Mar 2024 08:41:19 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71b:7e00:9339:4017:7111:82d0? (p200300cbc71b7e0093394017711182d0.dip0.t-ipconnect.de. [2003:cb:c71b:7e00:9339:4017:7111:82d0])
+        by smtp.gmail.com with ESMTPSA id c20-20020a05600c0a5400b004147db8a91asm1563396wmq.40.2024.03.22.08.41.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 08:41:18 -0700 (PDT)
+Message-ID: <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
+Date: Fri, 22 Mar 2024 16:41:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
+Content-Language: en-US
+To: Miklos Szeredi <miklos@szeredi.hu>, xingwei lee <xrivendell7@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com,
+ linux-mm <linux-mm@kvack.org>, Mike Rapoport <rppt@kernel.org>
+References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
+ <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F2:EE_|PH7PR12MB7426:EE_
-X-MS-Office365-Filtering-Correlation-Id: 16a0c210-021c-4c02-a997-08dc4a868d1a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	7VGiCtCtz0ldwGALbaQ9l6DU8llYTFUeeXNBej6V4ZF9JM2Rj8OvGFj0fbD/mbsVfJ6nlyl446Thm3/daL+PchpBTP12D2DFsl5hfs5/tIQsK5LSdvwMLu8mARw9+7f5Gvsb0ep6IbB4P6alnk18mcw6CsOiUvcjuNEXQ07CA3IGyVVKOfV8aYbwCl2vI3R9ZZeF7fO6I6W6tOHlHVA9Z55rbruUnsE7ph+sQk/8pDymKVwJoSG1nGM9hm17e4cy08aeFI7Rp0qu4V+FCpyk/Q8HPHD/5Oy0yaJyDI9Jlk4ifIcIGsGhPWRrjIliWAmG5JBAMaxXSHuD669zqZ08Yx0JWL4kKAg28TIx+btYbEuq+wtOPi6Mvd134VlXyZpZTq3v/6xGiYGJ5OuIZ+8O/Ii52XZ77P1dv14i6mDxK70KgybRlvm/ZA2lwFHbF68y+Kd+iIZPo12qKktJ8kP+QW6/kHJhh0hxUVhje+wrvBSS1NBa1RFX0VWiYd/q5UJvGnAdKltJbfinczd+EKif17r73ehtWge3lE321tu/7VibCTrIx8fck1tGfCZtzHWD40tWxDKPOZ+s3XNiU0MTfhTcXqFhrddW007FkK62y1rUnG1EUfDUnW3cfoxjpMlSm2cYVUk2jLLXfR2pzspEBPHNLHRIA/3p4NR02o/wtMHw+Ry/gQQKwQqHy4nUrxZHW/fuJBh6QKHnUAzBOAPE3L00hp8zctH5+HWZo3HI+vC1wiPqUB3s/ad2NoM624Vf
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(36860700004)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 15:41:33.0050
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16a0c210-021c-4c02-a997-08dc4a868d1a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F2.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7426
 
-Commit 63bed9660420 ("x86/startup_64: Defer assignment of 5-level paging
-global variables") moved assignment of 5-level global variables to later
-in the boot in order to avoid having to use RIP relative addressing in
-order to set them. However, when running with 5-level paging and SME
-active (mem_encrypt=on), the variables are needed as part of the page
-table setup needed to encrypt the kernel (using pgd_none(), p4d_offset(),
-etc.). Since the variables haven't been set, the page table manipulation
-is done as if 4-level paging is active, causing the system to crash on
-boot.
+On 22.03.24 14:50, Miklos Szeredi wrote:
+> [MM list + secretmem author CC-d]
+> 
+> On Thu, 21 Mar 2024 at 08:52, xingwei lee <xrivendell7@gmail.com> wrote:
+>>
+>> Hello I found a bug titled "BUG: unable to handle kernel paging
+>> request in fuse_copy_do” with modified syzkaller, and maybe it is
+>> related to fs/fuse.
+>> I also confirmed in the latest upstream.
+>>
+>> If you fix this issue, please add the following tag to the commit:
+>> Reported-by: xingwei lee <xrivendell7@gmail.com>
+>> Reported-by: yue sun <samsun1006219@gmail.com>
+> 
+> Thanks for the report.   This looks like a secretmem vs get_user_pages issue.
+> 
+> I reduced the syz reproducer to a minimal one that isn't dependent on fuse:
+> 
+> === repro.c ===
+> #define _GNU_SOURCE
+> 
+> #include <fcntl.h>
+> #include <unistd.h>
+> #include <sys/mman.h>
+> #include <sys/syscall.h>
+> #include <sys/socket.h>
+> 
+> int main(void)
+> {
+>          int fd1, fd2, fd3;
+>          int pip[2];
+>          struct iovec iov;
+>          void *addr;
+> 
+>          fd1 = syscall(__NR_memfd_secret, 0);
+>          addr = mmap(NULL, 4096, PROT_READ, MAP_SHARED, fd1, 0);
+>          ftruncate(fd1, 7);
+>          fd2 = socket(AF_INET, SOCK_DGRAM, 0);
+>          getsockopt(fd2, 0, 0, NULL, addr);
+> 
+>          pipe(pip);
+>          iov.iov_base = addr;
+>          iov.iov_len = 0x50;
+>          vmsplice(pip[1], &iov, 1, 0);
 
-While only a subset of the assignments that were moved need to be set
-early, move all of the assignments back into check_la57_support() so that
-these assignments aren't spread between two locations. Instead of just
-reverting the fix, this uses the new RIP_REL_REF() macro when assigning
-the variables.
+pip[1] should be the write end. So it will be used as the source.
 
-Fixes: 63bed9660420 ("x86/startup_64: Defer assignment of 5-level paging global variables")
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/kernel/head64.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+I assume we go the ITER_SOURCE path in vmsplice, and call 
+vmsplice_to_pipe(). Then we call iter_to_pipe().
 
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 7d2eb035b6a3..a817ed0724d1 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -81,6 +81,13 @@ static inline bool check_la57_support(void)
- 	if (!(native_read_cr4() & X86_CR4_LA57))
- 		return false;
- 
-+	RIP_REL_REF(__pgtable_l5_enabled)	= 1;
-+	RIP_REL_REF(pgdir_shift)		= 48;
-+	RIP_REL_REF(ptrs_per_p4d)		= 512;
-+	RIP_REL_REF(page_offset_base)		= __PAGE_OFFSET_BASE_L5;
-+	RIP_REL_REF(vmalloc_base)		= __VMALLOC_BASE_L5;
-+	RIP_REL_REF(vmemmap_base)		= __VMEMMAP_BASE_L5;
-+
- 	return true;
- }
- 
-@@ -431,15 +438,6 @@ asmlinkage __visible void __init __noreturn x86_64_start_kernel(char * real_mode
- 				(__START_KERNEL & PGDIR_MASK)));
- 	BUILD_BUG_ON(__fix_to_virt(__end_of_fixed_addresses) <= MODULES_END);
- 
--	if (check_la57_support()) {
--		__pgtable_l5_enabled	= 1;
--		pgdir_shift		= 48;
--		ptrs_per_p4d		= 512;
--		page_offset_base	= __PAGE_OFFSET_BASE_L5;
--		vmalloc_base		= __VMALLOC_BASE_L5;
--		vmemmap_base		= __VMEMMAP_BASE_L5;
--	}
--
- 	cr4_init_shadow();
- 
- 	/* Kill off the identity-map trampoline */
+I would expect iov_iter_get_pages2() -> get_user_pages_fast() to fail on 
+secretmem pages?
+
+But at least the vmsplice() just seems to work. Which is weird, because 
+GUP-fast should not apply (page not faulted in?) and check_vma_flags() 
+bails out early on vma_is_secretmem(vma).
+
+So something is not quite right.
+
+> 
+>          fd3 = open("/tmp/repro-secretmem.test", O_RDWR | O_CREAT, 0x600);
+>          splice(pip[0], NULL, fd3, NULL, 0x50, 0);
+> 
+>          return 0;
+> }
+
+
+
+
 -- 
-2.43.2
+Cheers,
+
+David / dhildenb
 
 
