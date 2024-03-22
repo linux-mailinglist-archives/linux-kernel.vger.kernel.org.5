@@ -1,138 +1,94 @@
-Return-Path: <linux-kernel+bounces-111796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82FB887115
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:44:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B82887116
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2873BB219D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:44:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A76FB1C2147C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA775D75F;
-	Fri, 22 Mar 2024 16:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04B5604AC;
+	Fri, 22 Mar 2024 16:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPA1yJx4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QVkQMTs3"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330655674C;
-	Fri, 22 Mar 2024 16:43:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F64604A6
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125794; cv=none; b=Kgas2Cm9THhMG8S4d2p5Uy54u+aP88ZVzLrUBfghxI273oouLJbEFcDecsQPrKZOLPN46DjQpzsSxPIE9WGYGK++x5vtx72EFBnfga4XBEVUavdK5CunaIX29XNd6XVTNK5UxwJw6GPjbxf36j+m9xRnSnldPft5RPL2sKNNdyA=
+	t=1711125825; cv=none; b=Mbdg1yqgjoP7ITW2Wk6puT2JadfYnImTIrJlBhYrHCug6U0IjpsvgexGIUpauUq7EqcIYeyuX31DPV0u53oI0BZZuGU1JXel7u/9msjmjyP2jbjHCwPU5aSu8mOhTpf6y0IDV00mjNk9YyNSNL2WfMstOYdVAQEoeKEFlJ+p0QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125794; c=relaxed/simple;
-	bh=VuocNDwkIO/NqUPaVerRx9GiFh5vSB4EkmPbTc3m5P8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=UHLj5CcnMntYzCI2XPD2ZrkKK6d8Cml7pWj68Ghra+1s45PWA0wMjM5INpuKISZ9EGUfVTClS5yHU8xTXCDM/W+gCbEE3N9nEosQeV39VTKF/lntQJlvIKEDHdsX9bLbziFuVlUUCSVopDqC7LtBTbBy7Q50AfRQAo0ZbQ3fuA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPA1yJx4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FCCEC43390;
-	Fri, 22 Mar 2024 16:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711125793;
-	bh=VuocNDwkIO/NqUPaVerRx9GiFh5vSB4EkmPbTc3m5P8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=oPA1yJx4tt7uBYrLaNo2kW7jdVdhUCJH2XoywWZL4ShvqfpfpJOEm/TmkND1Edwdm
-	 OGG/Q8wXCOdBEW8Y2YpaakstbBrYAWFoX0uiltj1yRqD1qDausjseyvfWd8AJDdOIa
-	 O9BlXNp1isnLtYWZ2d6fUWwEHg2wxpMyCgMhv/Jnmh2rpC0yCjZTnFj5Q3C9CmYign
-	 YvD5U5lBpc4bUk2AkZd48qjsUvBZsX5v1xk8UihB+QeWg5pczBEGlQ2XqJCPKpBkVG
-	 AxaUSymYuH1e2JgcvHstK0+WA7SzbrojQELz7/btdi9yVgduS0uE589Zdkp088mZAx
-	 Zl+GTEMCDr3TQ==
-Date: Fri, 22 Mar 2024 11:43:11 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
- timer timeout during suspend
-Message-ID: <20240322164311.GA1367151@bhelgaas>
+	s=arc-20240116; t=1711125825; c=relaxed/simple;
+	bh=wsY+ApQDghOaF+qH6PoDRxl/mXk2ysfojy9BeWkg2KU=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=IgcltP92OjkY7+LSxZjbpWrzNNfzxpclMYUuY89ul8MnZ9OIxuWi/LB0M4Gn42zzuQJgqQ5DHt2lm9c+CiYTJbTHug0IBjo9vzvn+Jn7H3QlFV3+36TZYEnIfpN//sdmrOph0y7i4nB/daKmyjwZPzsJPDuB+0mhjfchZ7+Aglo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QVkQMTs3; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41412411672so18475945e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711125822; x=1711730622; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:to:from:content-language
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wsY+ApQDghOaF+qH6PoDRxl/mXk2ysfojy9BeWkg2KU=;
+        b=QVkQMTs3bLQ+6FL4wGFWwSQB3uE82PCcy5QUGy5RCazec5J2f/S/qFDKj9G0CK951X
+         QVWu64TUzN1dUXsdqjOqNLsmVwvoI91r4//Km7AdExF4pe84Np6k5yIRDaEdLwTo4AmP
+         FRxB8Wu1pMIiZCKzX1FFG5ZKTrf6IvFlCSLgEEIt/GkXVl9FvyQOFF6UbSeGQlYTTCzw
+         su4UWH+MT+ZhyJWWM+XF/IK0lMnpjLd/mxkjUV34p++GclV5F9lw9i+MHnZ5HiYOfPym
+         whv5ZDvs4vceZUJHZVc5k0cKh+d1wbXYIh7Oss7egs56I3mvlOG/Jqay09x/eCOkUMB6
+         iHWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711125822; x=1711730622;
+        h=content-transfer-encoding:subject:to:from:content-language
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wsY+ApQDghOaF+qH6PoDRxl/mXk2ysfojy9BeWkg2KU=;
+        b=W1sqru9Ep3ZDWQmCcRIh/OJ/h6NgpAPql6AEkmWCtnvRMuKHKEffo5I92wwfSugtXN
+         VsdALtgTI5WOaFZNBCWB9VKz7ivrLOfz11HuES3S3Zsqy1QctpyKW73ZVrpHeK0/8YW+
+         f+S/9B88M9FQ4YNwPAyU1v00DyN5PR/YvHReZYi+XnKHPZtWfgg8Li8sODJjFALTOD7j
+         Y0bFTYJKQ6Co0tSNIyDXMfoa/LnPNbsAuHj3/LXVkY1VlwT4Fw3q7he32agpZ5yGIaIr
+         vvCNtopHGLcr/BnFgfrgmNisLaWa3msWzJkNOt/xB2Sha/dRMyE6WGFvX73da/me64rM
+         pOqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXB2qMSqbxra2T8hdPdG8bD9EZlBnUeJ1Pk9V1fDJ8L7LifXRP1+6KXq0A0iNECphAICQFQwG6/bKHyTMIJXviz07vuJykm3+NfZcRe
+X-Gm-Message-State: AOJu0YyNhba/LCSnzmtsxCzuwcbTPf54WMitsExZDa7SdJtJeqCzBTtv
+	zznelIkp6akL1RKkNM2M7A6Rtnq/RxIOi5gRAduZykeqI0FeqgE=
+X-Google-Smtp-Source: AGHT+IHSns2Vx6LicO8ebh39yDGn8/BztrvFn5zUcULS7EGXnhhSxi4KNjaTfICapBg8pv8cZ7FY7Q==
+X-Received: by 2002:a7b:c042:0:b0:414:c48:a90 with SMTP id u2-20020a7bc042000000b004140c480a90mr1820705wmc.24.1711125821730;
+        Fri, 22 Mar 2024 09:43:41 -0700 (PDT)
+Received: from localhost (191.red-88-28-8.dynamicip.rima-tde.net. [88.28.8.191])
+        by smtp.gmail.com with ESMTPSA id v7-20020a05600c444700b0041469869d11sm9398234wmn.47.2024.03.22.09.43.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 09:43:41 -0700 (PDT)
+Message-ID: <c0aa8322-f034-4488-8e17-49b211e372a5@gmail.com>
+Date: Fri, 22 Mar 2024 17:43:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p52fi_wr3Js9Rqct+i1D3rjrnVZ6tBN=uHqThM7UvzXQA@mail.gmail.com>
+Content-Language: en-US
+From: Xose Vazquez Perez <xose.vazquez@gmail.com>
+To: Josh Poimboeuf <jpoimboe@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, maintainers X86 <x86@kernel.org>,
+ KERNEL ML <linux-kernel@vger.kernel.org>
+Subject: [ arch/x86/kernel/unwind_orc.c ] WARNING: stack going in the wrong
+ direction?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 06:05:33PM +0800, Kai-Heng Feng wrote:
-> On Sat, Jan 20, 2024 at 6:41 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Jan 18, 2024 at 02:40:50PM +0800, Kai-Heng Feng wrote:
-> > > On Sat, Jan 13, 2024 at 1:37 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote:
-> > > > > On Sat, Jan 6, 2024 at 5:19 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
-> > > > > > > Spamming `lspci -vv` can still observe the replay timer timeout error
-> > > > > > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
-> > > > > > > replay timer timeout of AER"), albeit with a lower reproduce rate.
-> > > > > >
-> > > > > > I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
-> > > > > > you mean that if you run lspci continually, you still see Replay Timer
-> > > > > > Timeout logged, e.g.,
-> > > > > >
-> > > > > >   CESta:        ... Timeout+
-> > > > >
-> > > > > Yes it's logged and the AER IRQ is raised.
-> > > >
-> > > > IIUC the AER IRQ is the important thing.
-> > > >
-> > > > Neither 015c9cbcf0ad nor this patch affects logging in
-> > > > PCI_ERR_COR_STATUS, so the lspci output won't change and mentioning it
-> > > > here doesn't add useful information.
-> > >
-> > > You are right. That's just a way to access config space to reproduce
-> > > the issue.
-> >
-> > Oh, I think I completely misunderstood you!  I thought you were saying
-> > that suspending the device caused the PCI_ERR_COR_REP_TIMER error, and
-> > you happened to see that it was logged when you ran lspci.
-> 
-> Both running lspci and suspending the device can observe the error,
-> because both are accessing the config space.
-> 
-> > But I guess you mean that running lspci actually *causes* the error?
-> > I.e., lspci does a config access while we're suspending the device
-> > causes the error, and the config access itself causes the error, which
-> > causes the ERR_COR message and ultimately the AER interrupt, and that
-> > interrupt prevents the system suspend.
-> 
-> My point was that any kind of PCI config access can cause the error.
-> Using lspci is just make the error more easier to reproduce.
-> 
-> > If that's the case, I wonder if this is a generic problem that could
-> > happen with *any* device, not just GL975x.
-> 
-> For now, it's just GL975x.
-> 
-> > What power state do we put the GL975x in during system suspend?
-> > D3hot?  D3cold?  Is there anything that prevents config access while
-> > we suspend it?
-> 
-> The target device state is D3hot.
-> However, the issue happens when the devices is in D0, when the PCI
-> core is saving the device's config space.
-> 
-> So I think the issue isn't related to the device state.
-> 
-> > We do have dev->block_cfg_access, and there's a comment that says
-> > "we're required to prevent config accesses during D-state
-> > transitions," but I don't see it being used during D-state
-> > transitions.
-> 
-> Yes, there isn't any D-state change happens here.
+Hi,
 
-So the timeout happens sometimes on any config accesses to the device,
-no matter what the power state is?  If that's the case, why do the
-masking in the suspend/resume callbacks?
+In Fedora kernel 6.8.1-300.fc40.x86_64, dmesg shows:
 
-If it's not related to a power state change, it sounds like something
-that should be a quirk or done at probe time.
+[18179.599501] WARNING: stack going in the wrong direction? at do_syscall_64+0x86/0x170
 
-Bjorn
+
+Thanks.
 
