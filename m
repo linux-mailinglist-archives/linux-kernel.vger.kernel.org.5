@@ -1,200 +1,238 @@
-Return-Path: <linux-kernel+bounces-111127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295EC88683E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:34:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCE3886851
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D226A282F80
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:33:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0A791C208BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8241756D;
-	Fri, 22 Mar 2024 08:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B003FBAC;
+	Fri, 22 Mar 2024 08:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k0rBfayv";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2grr9aKX";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="k0rBfayv";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2grr9aKX"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JHtyBQH6"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2216CA4A;
-	Fri, 22 Mar 2024 08:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0B83FB87;
+	Fri, 22 Mar 2024 08:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711096432; cv=none; b=UcYYcJAchv/43LfMpzdA+igXSVGjv5wkrpbgK2W56FRiouVJWihGf2bK6jffV2AE1OFE1PFkDLX+W5CjzeHZyMY82pDltXWNNmR5xSFn5pqAeBWhciBS23aqkVllnQxjPhToT81x9vJUKTZXq9caYiEuonQeaJlB2xHf02imyKI=
+	t=1711096518; cv=none; b=eRyvRm3Lycb7ApnXtvnIBjdesZVe7Opnefl2cWkj4NUEEdU7QIVpEgOM3Ur5C44um9ErReKVMzRQf9dVd4Jw/CtGMKrsi3K6kNJ0likACK3j3KuS8pSkreyT23GdLihKoH+kJ6TFoQ7P1pq5d6bXAfdrobhbBSXeXDFn7P/f0hQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711096432; c=relaxed/simple;
-	bh=S1fSKPGfqTSlj0nruv3EJJSWjVO2uwXlISmnmX73GrU=;
-	h=Date:Message-ID:From:To:Cc:Subject:MIME-Version:Content-Type; b=AWFe+1scJJQcaxwbbARHSAyOwi3Q2ZAgfKslJrIfbFyb7Sw3OfwtwZCgFII6RjacjvW4MZbqFmxxtRCYNRU+xHyy82/RA8g2oKG0i+ppmY0MDnUQZupfLGdB8w2C5edODGKHBMp3Q4GDTHbsmLpAa1Xl6kSpak37dxiKurnoL2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k0rBfayv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2grr9aKX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=k0rBfayv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2grr9aKX; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2A258339CF;
-	Fri, 22 Mar 2024 08:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711096429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=v8/qdVkgphyenrjVkkJ3P3ooDkxe09gRUQgzequ/ZsA=;
-	b=k0rBfayv+RLD8c3gBoeejWTrwnxHQvBbHsxLAgijQUvjZ1qE7GYbcs/e5lXLaPOn/KZEBH
-	2iZ1yzQuQxY6CC9gA5Fbb9mOny41Oyi2iVRJDHvVLjF1Mh5JeasUnRzy5hiZMS4BdrSkwQ
-	lpJNqkO318Jj7ZZ8Ts9l55V0Jd2tjKM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711096429;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=v8/qdVkgphyenrjVkkJ3P3ooDkxe09gRUQgzequ/ZsA=;
-	b=2grr9aKX2AygMpJfIlIXMgUxy3P6APw+43hz2vwRdKbG6vSbu9KmMLTd7OADSK8SRFPpv6
-	sJCCy7p1+nJGp4DA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711096429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=v8/qdVkgphyenrjVkkJ3P3ooDkxe09gRUQgzequ/ZsA=;
-	b=k0rBfayv+RLD8c3gBoeejWTrwnxHQvBbHsxLAgijQUvjZ1qE7GYbcs/e5lXLaPOn/KZEBH
-	2iZ1yzQuQxY6CC9gA5Fbb9mOny41Oyi2iVRJDHvVLjF1Mh5JeasUnRzy5hiZMS4BdrSkwQ
-	lpJNqkO318Jj7ZZ8Ts9l55V0Jd2tjKM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711096429;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=v8/qdVkgphyenrjVkkJ3P3ooDkxe09gRUQgzequ/ZsA=;
-	b=2grr9aKX2AygMpJfIlIXMgUxy3P6APw+43hz2vwRdKbG6vSbu9KmMLTd7OADSK8SRFPpv6
-	sJCCy7p1+nJGp4DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0C9A132FF;
-	Fri, 22 Mar 2024 08:33:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sGKTNWxC/WXOMwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 22 Mar 2024 08:33:48 +0000
-Date: Fri, 22 Mar 2024 09:33:48 +0100
-Message-ID: <87a5mqzmvn.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sound fixes #2 for 6.9-rc1
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711096518; c=relaxed/simple;
+	bh=ubt8vwuXHMoPvm2FKiDUEHRj3q7PZZktUm1LKe+DoxQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lvc1Lv4sF1vhyT5ijFDp1g1LX+3ydRGLLNpIW/oC/DgERrxxWSgim50IQFi44oDCqCSUEC5JeHJbGA+ZipO3s7Adr/U36F5xH1NzT2VDSGb/D+WmH3H+JQ9bhTA1RILUqcK0YBWHbXnmKAvcifrPd3es64PGIMXTHJYKe/gJU4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JHtyBQH6; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=B+eEe2rJKYVCOSpsUyFR0aFEgGcdrU57l8z/qph+tmM=; b=JHtyBQH6EX7GceqkO4taJJgxTp
+	MHSM6Uqnw3YFlkvvhAiy3qbAR0vYz3MGRdxZmGg5/mdAUNTul1mWj09WvLulV1q1v69YEuYQIuXhn
+	P+4q733Age1NYD6hfFWEFc0t+KuF9HA90D8+TcIfO/d9koXu4navByN+ZmWwMcqPO/i01Opbj0EBy
+	WTuTwTFJ/dZm7bPQd8J/FD43zJbO6Y047A+sffZnE54IZNoZV5n9cCRmuC+yxOzAZwfnlJQq4pCoy
+	ym665tUf6yqhhjtVMcCNHOKjEijyCNM6tDQWevVoSRf1chQmYyScxbzC4JT3i+oeKd+PzlolBJwMN
+	7ds5xwDA==;
+Received: from fpd2fa7e2a.ap.nuro.jp ([210.250.126.42] helo=[192.168.1.8])
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rnaMZ-0000000EhCD-3xGY;
+	Fri, 22 Mar 2024 08:34:56 +0000
+Message-ID: <87f6365f-a40e-4606-baff-170cb8fc48f3@infradead.org>
+Date: Fri, 22 Mar 2024 17:34:45 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -0.18
-X-Spamd-Result: default: False [-0.18 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_SPAM_SHORT(2.91)[0.970];
-	 NEURAL_HAM_LONG(-0.99)[-0.994];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,gmail.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Flag: NO
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] powerpc: ps3: mark ps3_notification_device static for
+ stack usage
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+ Nathan Chancellor <nathan@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
+ Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Kevin Hao <haokexin@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20240320180333.151043-1-arnd@kernel.org>
+ <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
+Content-Language: en-US
+From: Geoff Levand <geoff@infradead.org>
+In-Reply-To: <CAMuHMdW41e+DSBKBgugTkjoLy6bXfji-KWmB_d9EstEv01eC6w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Linus,
+On 3/21/24 17:32, Geert Uytterhoeven wrote:
+> --- a/arch/powerpc/platforms/ps3/device-init.c
+>> +++ b/arch/powerpc/platforms/ps3/device-init.c
+>> @@ -770,7 +770,7 @@ static struct task_struct *probe_task;
+>>
+>>  static int ps3_probe_thread(void *data)
+>>  {
+>> -       struct ps3_notification_device dev;
+>> +       static struct ps3_notification_device dev;
+>>         int res;
+>>         unsigned int irq;
+>>         u64 lpar;
+> 
+> Making it static increases kernel size for everyone.  So I'd rather
+> allocate it dynamically. The thread already allocates a buffer, which
+> can be replaced at no cost by allocating a structure containing both
+> the ps3_notification_device and the buffer.
 
-please pull sound fixes #2 for v6.9-rc1 from:
+Here's what I came up with.  It builds for me without warnings.
+I haven't tested it yet.  A review would be appreciated.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix2-6.9-rc1
+diff --git a/arch/powerpc/platforms/ps3/device-init.c b/arch/powerpc/platforms/ps3/device-init.c
+index 878bc160246e..9bb44a6ccdaf 100644
+--- a/arch/powerpc/platforms/ps3/device-init.c
++++ b/arch/powerpc/platforms/ps3/device-init.c
+@@ -770,37 +770,48 @@ static struct task_struct *probe_task;
+ 
+ static int ps3_probe_thread(void *data)
+ {
+-	struct ps3_notification_device dev;
++	struct ps3_probe_thread_local {
++		struct ps3_notification_device dev;
++		union {
++			char buf[512];
++			struct ps3_notify_cmd notify_cmd;
++			struct ps3_notify_event notify_event;
++		};
++	};
++	struct ps3_probe_thread_local *local;
++	struct ps3_notification_device *dev;
++	struct ps3_notify_cmd *notify_cmd;
++	struct ps3_notify_event *notify_event;
+ 	int res;
+ 	unsigned int irq;
+ 	u64 lpar;
+-	void *buf;
+-	struct ps3_notify_cmd *notify_cmd;
+-	struct ps3_notify_event *notify_event;
+ 
+ 	pr_debug(" -> %s:%u: kthread started\n", __func__, __LINE__);
+ 
+-	buf = kzalloc(512, GFP_KERNEL);
+-	if (!buf)
++	local = kzalloc(sizeof(local), GFP_KERNEL);
++
++	if (!local)
+ 		return -ENOMEM;
+ 
+-	lpar = ps3_mm_phys_to_lpar(__pa(buf));
+-	notify_cmd = buf;
+-	notify_event = buf;
++	dev = &local->dev;
++	notify_cmd = &local->notify_cmd;
++	notify_event = &local->notify_event;
++
++	lpar = ps3_mm_phys_to_lpar(__pa(&local->notify_cmd));
+ 
+ 	/* dummy system bus device */
+-	dev.sbd.bus_id = (u64)data;
+-	dev.sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
+-	dev.sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
++	dev->sbd.bus_id = (u64)data;
++	dev->sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
++	dev->sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
+ 
+-	res = lv1_open_device(dev.sbd.bus_id, dev.sbd.dev_id, 0);
++	res = lv1_open_device(dev->sbd.bus_id, dev->sbd.dev_id, 0);
+ 	if (res) {
+ 		pr_err("%s:%u: lv1_open_device failed %s\n", __func__,
+ 		       __LINE__, ps3_result(res));
+ 		goto fail_free;
+ 	}
+ 
+-	res = ps3_sb_event_receive_port_setup(&dev.sbd, PS3_BINDING_CPU_ANY,
++	res = ps3_sb_event_receive_port_setup(&dev->sbd, PS3_BINDING_CPU_ANY,
+ 					      &irq);
+ 	if (res) {
+ 		pr_err("%s:%u: ps3_sb_event_receive_port_setup failed %d\n",
+@@ -808,11 +819,11 @@ static int ps3_probe_thread(void *data)
+ 	       goto fail_close_device;
+ 	}
+ 
+-	spin_lock_init(&dev.lock);
+-	rcuwait_init(&dev.wait);
++	spin_lock_init(&dev->lock);
++	rcuwait_init(&dev->wait);
+ 
+ 	res = request_irq(irq, ps3_notification_interrupt, 0,
+-			  "ps3_notification", &dev);
++			  "ps3_notification", &local->dev);
+ 	if (res) {
+ 		pr_err("%s:%u: request_irq failed %d\n", __func__, __LINE__,
+ 		       res);
+@@ -823,7 +834,7 @@ static int ps3_probe_thread(void *data)
+ 	notify_cmd->operation_code = 0; /* must be zero */
+ 	notify_cmd->event_mask = 1UL << notify_region_probe;
+ 
+-	res = ps3_notification_read_write(&dev, lpar, 1);
++	res = ps3_notification_read_write(&local->dev, lpar, 1);
+ 	if (res)
+ 		goto fail_free_irq;
+ 
+@@ -834,36 +845,36 @@ static int ps3_probe_thread(void *data)
+ 
+ 		memset(notify_event, 0, sizeof(*notify_event));
+ 
+-		res = ps3_notification_read_write(&dev, lpar, 0);
++		res = ps3_notification_read_write(&local->dev, lpar, 0);
+ 		if (res)
+ 			break;
+ 
+ 		pr_debug("%s:%u: notify event type 0x%llx bus id %llu dev id %llu"
+ 			 " type %llu port %llu\n", __func__, __LINE__,
+-			 notify_event->event_type, notify_event->bus_id,
+-			 notify_event->dev_id, notify_event->dev_type,
+-			 notify_event->dev_port);
++			notify_event->event_type, notify_event->bus_id,
++			notify_event->dev_id, notify_event->dev_type,
++			notify_event->dev_port);
+ 
+ 		if (notify_event->event_type != notify_region_probe ||
+-		    notify_event->bus_id != dev.sbd.bus_id) {
++			notify_event->bus_id != dev->sbd.bus_id) {
+ 			pr_warn("%s:%u: bad notify_event: event %llu, dev_id %llu, dev_type %llu\n",
+ 				__func__, __LINE__, notify_event->event_type,
+ 				notify_event->dev_id, notify_event->dev_type);
+ 			continue;
+ 		}
+ 
+-		ps3_find_and_add_device(dev.sbd.bus_id, notify_event->dev_id);
++		ps3_find_and_add_device(dev->sbd.bus_id, notify_event->dev_id);
+ 
+ 	} while (!kthread_should_stop());
+ 
+ fail_free_irq:
+-	free_irq(irq, &dev);
++	free_irq(irq, &local->dev);
+ fail_sb_event_receive_port_destroy:
+-	ps3_sb_event_receive_port_destroy(&dev.sbd, irq);
++	ps3_sb_event_receive_port_destroy(&dev->sbd, irq);
+ fail_close_device:
+-	lv1_close_device(dev.sbd.bus_id, dev.sbd.dev_id);
++	lv1_close_device(dev->sbd.bus_id, dev->sbd.dev_id);
+ fail_free:
+-	kfree(buf);
++	kfree(local);
+ 
+ 	probe_task = NULL;
+ 
 
-The topmost commit is 9f2347842b526cbc2655068591fb0166362d2999
-
-----------------------------------------------------------------
-
-sound fixes #2 for 6.9-rc2
-
-The remaining fixes for 6.9-rc1 that have been gathered in this week.
-More about ASoC at this time (one long-standing fix for compress
-offload, SOF, AMD ACP, Rockchip, Cirrus and tlv320 stuff) while
-another regression fix in ALSA core and a couple of HD-audio quirks as
-usual are included.
-
-----------------------------------------------------------------
-
-Anthony I Gilea (1):
-      ALSA: hda/realtek: Add quirk for HP Spectre x360 14 eu0000
-
-Chancel Liu (1):
-      ASoC: soc-core.c: Skip dummy codec when adding platforms
-
-Cristian Ciocaltea (2):
-      ASoC: SOF: amd: Move signed_fw_image to struct acp_quirk_entry
-      ASoC: SOF: amd: Skip IRAM/DRAM size modification for Steam Deck OLED
-
-Hui Wang (1):
-      ALSA: hda/realtek: fix the hp playback volume issue for LG machines
-
-Jiawei Wang (2):
-      ASoC: amd: yc: Revert "Fix non-functional mic on Lenovo 21J2"
-      ASoC: amd: yc: Revert "add new YC platform variant (0x63) support"
-
-Luca Ceresoli (1):
-      ASoC: rockchip: i2s-tdm: Fix inaccurate sampling rates
-
-M Cooley (1):
-      ASoC: amd: yc: Fix non-functional mic on ASUS M7600RE
-
-Rob Herring (1):
-      ASoC: dt-bindings: cirrus,cs42l43: Fix 'gpio-ranges' schema
-
-Shalini Manjunatha (1):
-      ASoC: soc-compress: Fix and add DPCM locking
-
-Takashi Iwai (1):
-      ALSA: control: Fix unannotated kfree() cleanup
-
-Tim Crawford (1):
-      ALSA: hda/realtek: Add quirks for some Clevo laptops
-
-Uwe Kleine-König (1):
-      ASoC: tlv320adc3xxx: Don't strip remove function when driver is builtin
-
----
- .../devicetree/bindings/sound/cirrus,cs42l43.yaml  |  11 +-
- sound/core/control.c                               |   4 +-
- sound/pci/hda/patch_realtek.c                      |  68 +++-
- sound/soc/amd/yc/acp6x-mach.c                      |  14 +-
- sound/soc/amd/yc/pci-acp6x.c                       |   1 -
- sound/soc/codecs/tlv320adc3xxx.c                   |   4 +-
- sound/soc/rockchip/rockchip_i2s_tdm.c              | 352 +--------------------
- sound/soc/soc-compress.c                           |   4 +
- sound/soc/soc-core.c                               |   3 +
- sound/soc/sof/amd/acp-loader.c                     |   2 +-
- sound/soc/sof/amd/acp.c                            |  48 +--
- sound/soc/sof/amd/acp.h                            |   7 +-
- sound/soc/sof/amd/vangogh.c                        |   9 +-
- 13 files changed, 137 insertions(+), 390 deletions(-)
 
 
