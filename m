@@ -1,126 +1,111 @@
-Return-Path: <linux-kernel+bounces-111959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AB1F887344
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:36:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC267887348
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F39611F277D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:36:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEB6E1C20938
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536EF69D04;
-	Fri, 22 Mar 2024 18:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28966A033;
+	Fri, 22 Mar 2024 18:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BV/BUCmx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sxwmK++Y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D93A69941;
-	Fri, 22 Mar 2024 18:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DF669D29;
+	Fri, 22 Mar 2024 18:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711132576; cv=none; b=kI16ypPqMh7AlzGsF5ri7rrJ8myfHzWj1ec4GY8jDyhlHGX7Mt4W3rejUCC9CpKFp6h23EB/km7RgQMX9Z4QzbQbjcSP5fHQeMZUGRU6z5Pn1df4z4EvQMxXN0Fh7jb/wql01RYOeT/vwK0k4ZGX3WMcjves+q2peHaC2vtiXRk=
+	t=1711132712; cv=none; b=fd85bWIW6ZzItBXCuALTajCzbMqcmqfKC7PryseRV/4VKgQPoTthLZTms1TBRXxCCWvAs2ZW2ZyqrtP8zgwTyg7Y8hVaTokxGcmkCsmlI0HvgPkdTE7xp5SKNn7WXymSSqxt+1wXrG4GpBdH4MPeTVU738x+7XdBhh2HHtQ7v9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711132576; c=relaxed/simple;
-	bh=0y+MfSq9AjFTDKn0zQYT/v6yPp3l+ObYynFLWm8K1Zs=;
+	s=arc-20240116; t=1711132712; c=relaxed/simple;
+	bh=dGXvkLMPPQVAOLkprdbj8xiYHcO7h+HauIpMdGVUH9g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GgJkR15v4mnl5Hd1ku4NVjKGwM3dD//Gst22NLaNdo2r5cdi4gpviPgSzGa4kI+mmuOz6eGc5KZmoil+RfvQwbir/TFgeJl+b7NUd8hugCKCR4z8KVt/bqMUhyqfOJRSihvAszMuMzDO4AylWuZUpL8yHqfgj7HtydM6DLWK0sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BV/BUCmx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44210C433C7;
-	Fri, 22 Mar 2024 18:36:16 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=N1+2wbFUzZ6PFEOxaYXG7mHrW8sAd/jAivIRwTtBeqWSFPwFsflsRsyEhEARAKDKPqxHP2D7vWoQkQ22B6UzEU+SZe3dPPk7UvH8mwuJJ0eSrs1lG8Fw8DzWEnm6NZ++bZvMtfdpq9KWxc26t8OshpKYM/XxUeJvWxbJpQV08D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sxwmK++Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 380B7C433F1;
+	Fri, 22 Mar 2024 18:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711132576;
-	bh=0y+MfSq9AjFTDKn0zQYT/v6yPp3l+ObYynFLWm8K1Zs=;
+	s=k20201202; t=1711132712;
+	bh=dGXvkLMPPQVAOLkprdbj8xiYHcO7h+HauIpMdGVUH9g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BV/BUCmxtRxdyZxMgdjLHny9/yv6eMrzAecMuroNJXACO9zdPogvOZLlBF5QBcJOw
-	 3S/jS7Evwa7ZZJS52jOXy1+fP9drg+E+VSyyqOoRoURr3RxvJKbIly3Ol6bEMfQkD9
-	 Okfos52Z3dNH+bSc0yAHLKMNSuPKiFU6DcYkRoaszhPuew6o9n+6N5shuY9ymV+6jW
-	 6YbsecN4ppKV+8HARWrPJbMzLrLQv2cwN5l9WtHI4JkawFdsuQn6kyy5RT6obWgJ57
-	 14AteTI8fyVgZqrLA5j/JkFwcfGzJbTmD5/kjNAMEmbKMmODfb2TmuqldQyVLWYjKV
-	 Dhew0Q6ret/7w==
-Date: Fri, 22 Mar 2024 13:36:14 -0500
-From: Rob Herring <robh@kernel.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	neil.armstrong@linaro.org, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	b=sxwmK++Y/vUd8E2N4UhgdjHikoIgWFpKuIbYWXOqHMl70z3ZkxaOl0gZ4W0IKtEhW
+	 +Ip96pnq5p5rIcAztiA2cCGGPpZ9ztHWsS/XH6ybLlVNPYPUwnTxTifuEcDHZHsDMX
+	 8KP8ZVA8CE6LYaCHvutLVDh6pzTqrCQXzNj9EcXjjlrQtPGtaWq6N9FqzKRP7nZwq+
+	 vf307QHyWmdNxuJr+iao/5DcSfOrtmUHAU2h0Mu900gHytZKzVDFxI21GgGnXiMhRm
+	 gUG9aMOj4PxcasHyCBXkgZ5byakqjismGFyOLjCOL0yXxZebMSFccZ75XYbUb84AN5
+	 6XnKQhGdzs0OQ==
+Date: Fri, 22 Mar 2024 18:38:27 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,pmic-typec: drop port
- description
-Message-ID: <20240322183614.GA1233803-robh@kernel.org>
-References: <20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org>
- <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org>
- <230eab52-9751-43fd-8e47-fbfe12410e44@linaro.org>
- <CAA8EJprD3fM966pLV4QXPUu=bFTn24fvPMKOaGqtqkAbdz7sOQ@mail.gmail.com>
- <5ea4a187-1971-4970-a289-826d96c0351a@linaro.org>
- <c0f1e898-7638-4b7b-a938-9e31e5b57e57@linaro.org>
- <0b091595-1587-421d-bb00-c00ef729d143@linaro.org>
- <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v4 2/5] dt-bindings: serial: renesas,scif: Validate
+ 'interrupts' and 'interrupt-names'
+Message-ID: <20240322-stand-crewman-f10696eba901@spud>
+References: <20240322144355.878930-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240322144355.878930-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bcPcRlrsONNXRmNQ"
+Content-Disposition: inline
+In-Reply-To: <20240322144355.878930-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+
+--bcPcRlrsONNXRmNQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 05:49:00PM +0200, Dmitry Baryshkov wrote:
-> On Fri, 22 Mar 2024 at 17:23, Bryan O'Donoghue
-> <bryan.odonoghue@linaro.org> wrote:
-> >
-> > On 22/03/2024 15:09, neil.armstrong@linaro.org wrote:
-> > >> TBH I think we should drop this HS, SS stuff from the connector
-> > >> definition - there's nothing to say in a h/w definition anywhere HS
-> > >> must be a port or indeed SS - not all hardware knows or cares about
-> > >> different HS/SS signalling.
-> > >
-> > > It matches the USB-C connector electrical characteristics, which by spec
-> > > has, at least:
-> > > - High-Speed USB Line
-> > > - up to 4 differential high-speed lanes that can be switched to DP, USB2
-> > > or PCIe
-> > > - SideBand line (SBU)
-> > >
-> > > And those 3 components can be handled by 3 different HW in the SoC, so
-> > > each one has a dedicated port.
-> > >
-> > > Remember DT describes the HW, not the SW implementation.
-> > >
-> > > Neil
-> >
-> > Yes, you're right about that.
-> >
-> > I suppose
-> >
-> > 1. Orientation switches should be defined as coming from a port on the
-> >     connector associated with the CC pins.
-> >     port@3:
-> >     orientation-switch port name goes here
-> >
-> > 2. Data-role switches...
-> >     Again the CC pins
-> >
-> > https://community.silabs.com/s/article/what-s-the-role-of-cc-pin-in-type-c-solution?language=en_US
-> >
-> > Maybe the right-thing-to-do is to add another port for the CC pins -
-> > which would still describe the hardware characteristics but would
-> > _accurately_ name the thing which does the data-role/orientation switching
-> 
-> It's true that we don't describe CC lines. However In most of the
-> cases CC lines are handled by the Type-C port manager directly. So
-> there will be a connection from usb-c-connector to the pmic-typec
-> itself (which looks pretty redundant).
+On Fri, Mar 22, 2024 at 02:43:52PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> This commit adds support to validate the 'interrupts' and 'interrupt-name=
+s'
+> properties for every supported SoC. This ensures proper handling and
+> configuration of interrupt-related properties across supported platforms.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v3->v4
+> - Reverted back to v2 version of the patch.
+> - Used suggestion from Krzysztof for interrupts
 
-The thought at the time this was designed was that would be the parent 
-node of the connector. That's perhaps too simple.
+It seems fine to me, but maybe Krzysztof wants to take another look.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Rob
+Cheers,
+Conor.
+
+--bcPcRlrsONNXRmNQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3QIwAKCRB4tDGHoIJi
+0uLPAQD6pthjYegxkBuqJGFZzvToACvAKxjZhEbLIXP4mWNezgEA5/iZqaufvtZW
+xBaxpbrjNRS7X6onI8a84vYjH2gbiws=
+=Pc1V
+-----END PGP SIGNATURE-----
+
+--bcPcRlrsONNXRmNQ--
 
