@@ -1,138 +1,124 @@
-Return-Path: <linux-kernel+bounces-111778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD668870DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:29:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2B88870DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C054B22429
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:29:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B558F1F230C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AC459B5F;
-	Fri, 22 Mar 2024 16:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D05957864;
+	Fri, 22 Mar 2024 16:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="EWBrLKgq"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7Ihghk4"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1152B57876;
-	Fri, 22 Mar 2024 16:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AC156B98
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711124933; cv=none; b=qrA+MsD2Oplsxos9p7TT5RCyNJ/mZZRTZLJy1oJEsXA6OgIIsm8x3ujAS5UxW4+TgEZR4h8+9aQ3jsrqigmEqyV9A3bLlPllKisPmBHr6SQUX+aIM8jt8Yoz6nXyjmtc92uT+vWyfThIJtRnGmV8pEoPryXHddhThPbM9q83zP0=
+	t=1711124960; cv=none; b=CX5McPpyw4J3WryvGPTkF3sneaK1/aHdLkJXqe9ImdetL+InWy407AKBQyOug6tS2aVU60td3Zl8y598GZxoK2bQx24FMbfCmELnnhLc3xWAQf9lJmPTqRXdD9L7g7w4C61gBcMJ15kDEFbD7AMr9QCtyMWf5boFuboDNDw7ID4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711124933; c=relaxed/simple;
-	bh=HCHPduluDxyIyH+NvikE4NsWGI6bZ5WsJcGstMkaba8=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=LAggexJTMmkMOKqgPMmOVUByzRcohbVw4v71ILzq8UgAxII/jK0b1xZsw6iDVUojsCCmDEaxEjY+sUu/UwfufoMpwny3uqBQiIFKKT7y0OY82IuqSU/7Ast/n9+6xMKIkYNFWd6vxUY0mHJd1TxY0/OxZC9m+DBmKQyKcWk3V9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=EWBrLKgq; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=hixCqn+Oc2muuJ+PQhMb4XfVD5sY/7+CWBK1O86fCP8=; b=EWBrLKgqN4m8l3O6+O94qP2ODo
-	URMp6tGn683BPwRb8Fpew2vnz3OQ5WBxW29yWsVTp4ehqWT/HbD247K0L1F1lqRMaHZexptq5uaLg
-	x/rWMQysn22z28qRpDQaOBNykOb7EYHGrlrEoihYdaHLXUY5bXE+OkuSuafWrJ/phSNR8xCmM3wVj
-	OEkGRc6cuEz6RpKsXPLA3segwnrc+WKTj08v26v02VUkjw4JJtqUpcyYidyqRTcRBKEy4l82bDbh2
-	k5wOf5tBTYOPLzFyF+4FqK+CG3zivP2hhwVYJbvxPwDrIFVBNc+mSndvNs0JTMhu8XJoEeF2CtMWZ
-	atWNIHvw==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rnhks-000Ook-0x; Fri, 22 Mar 2024 17:28:30 +0100
-Received: from [178.197.248.30] (helo=linux.home)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rnhkq-000BhN-1s;
-	Fri, 22 Mar 2024 17:28:28 +0100
-Subject: Re: [PATCH bpf v4] bpf: verifier: prevent userspace memory access
-To: Puranjay Mohan <puranjay12@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ilya Leoshkevich <iii@linux.ibm.com>
-References: <20240321124640.8870-1-puranjay12@gmail.com>
- <9f2b63b5-569c-1e00-a635-93d9cd695517@iogearbox.net>
- <mb61p4jcyxq5m.fsf@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <15ba79e3-14b2-d92e-3f94-e4f5f963e15d@iogearbox.net>
-Date: Fri, 22 Mar 2024 17:28:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1711124960; c=relaxed/simple;
+	bh=NeAqeTVeviIxXnXomn14RmAblPjhwq1FWPD7pUA+ghI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TIObE0sXueyxFZb8JmwhsP3Zci4IDyCc3CZfy2+gZzAGUxU2W7rhqpfFR1zySwwlXDNmCFrt19YT87G1S/v3YGP93d1P4I+Fn3BmAYmeisojZ8FWspYiX52q/i1jtxv5SFAN7YVUDovDR/kqBF0ETLwQvNjPBnWKJwcO5ZI+p3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7Ihghk4; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cdbc42f5efso23035a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711124958; x=1711729758; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NeAqeTVeviIxXnXomn14RmAblPjhwq1FWPD7pUA+ghI=;
+        b=c7Ihghk4HSJ4mxv/GG3WY85ZmR8JajFHW+yj+ySd/gyV+3kEweEAB2KIM/YtfDwmAw
+         W+DwuQE1Nh/u3ZiUK1q6o2EZmyocSHKaful6blkVyog45Wy/SP1bv3hlOmrxQMfY8kU0
+         EqfkyYxdAXuvZPBQX5+S0895Vm4ppLHQiKhEPAH25IHe3wH/4VqX8P3V7z7AM89XbE93
+         /oZXgJvXRLZwjdxxi3eyIrtleiAaHdWKFPX/eFT7XBS8oEMQT4+AE78aYPFPiGLAlOw5
+         mkpx3PvSHx9Yi/hW5B6Nw8/3jlmJEcdzJ4czC6glaf+uxO+P+WvEL3iOY47YRswK05Ig
+         s0CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711124958; x=1711729758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NeAqeTVeviIxXnXomn14RmAblPjhwq1FWPD7pUA+ghI=;
+        b=qGXE5Qif0LUKRlspW+bBU11ZImaXHe1W96/POjaqOftWNw8hlKJkD+iC3SEGP6hKdA
+         fFjsb3g5LeP0pmJDdkNiwSMx7bMF0QOq9/TMlJGvNQYIHfimkKAG+vyaVTJSPfbpbq/y
+         /qXp5tKb+zXLFwpDKJj77OmOrkiIkVqV+DtzHWBQulWudGzKrXRPhMOAdUFUlaLy8xiv
+         3WjxjE8y103tlwR30hwXJjVXp1kas3dL1bjEEif0i9a5J5bgPEGTpgeVAHrXtT3VIJ5I
+         gH+ECQuHyfrmucETUZejP/dFUsIaalQ9x/wEDf3Mh53DBff9TCVqyZsM54G53nsd1VHC
+         w8Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCXbkWnosz7RmycRqq3StO7NxIYguxZVqQrV70g0/0TWx6xgf5VNXdtd7YEo0/MI7+PJpi6erDjzWFzvd4QGBzxbgUcYW1Jy9mv3b98e
+X-Gm-Message-State: AOJu0YwkndnlNhfDg2GTHTTgVOHlhR3FCbRKEYDlYNPd5I/N4jHqcUHN
+	jUzmOw8/FsslqduKmgc7x2RZymnS2G5soFbdok8T3i8bAWP943JuyN9hgk0k1oiy2p9vEWQ6mYM
+	B4FcsD80n64W2eq/n57v4QjFuvWI=
+X-Google-Smtp-Source: AGHT+IFjaOeAw9XGYO7zNRizWZ0C8XANLVydJhzwF7Py8oqF8bVQ/2sMI4hkhGm8mTPw1JtDipQd8lCaIGqro0z4hnM=
+X-Received: by 2002:a17:90a:b395:b0:2a0:350a:a7a8 with SMTP id
+ e21-20020a17090ab39500b002a0350aa7a8mr123918pjr.2.1711124958335; Fri, 22 Mar
+ 2024 09:29:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <mb61p4jcyxq5m.fsf@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27222/Fri Mar 22 09:30:59 2024)
+References: <20240322130646.1016630-1-marcel@ziswiler.com>
+In-Reply-To: <20240322130646.1016630-1-marcel@ziswiler.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Fri, 22 Mar 2024 13:29:05 -0300
+Message-ID: <CAOMZO5ANM-ze3=ZG33ZgO+=4V_z5QJhqherB_d7WSe33sVB21w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/1] phy: freescale: imx8m-pcie: facing pcie link-up instability
+To: Marcel Ziswiler <marcel@ziswiler.com>
+Cc: linux-phy@lists.infradead.org, linux-imx@nxp.com, 
+	Lucas Stach <l.stach@pengutronix.de>, linux-arm-kernel@lists.infradead.org, 
+	kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>, linux-kernel@vger.kernel.org, 
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>, Heiko Stuebner <heiko@sntech.de>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Tim Harvey <tharvey@gateworks.com>, Vinod Koul <vkoul@kernel.org>, 
+	Yang Li <yang.lee@linux.alibaba.com>, imx@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/22/24 4:05 PM, Puranjay Mohan wrote:
-[...]
->>> +		/* Make it impossible to de-reference a userspace address */
->>> +		if (BPF_CLASS(insn->code) == BPF_LDX &&
->>> +		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
->>> +		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
->>> +			struct bpf_insn *patch = &insn_buf[0];
->>> +			u64 uaddress_limit = bpf_arch_uaddress_limit();
->>> +
->>> +			if (!uaddress_limit)
->>> +				goto next_insn;
->>> +
->>> +			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
->>> +			if (insn->off)
->>> +				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
->>> +			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
->>> +			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
->>> +			*patch++ = *insn;
->>> +			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
->>> +			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
->>
->> But how does this address other cases where we could fault e.g. non-canonical,
->> vsyscall page, etc? Technically, we would have to call to copy_from_kernel_nofault_allowed()
->> to really address all the cases aside from the overflow (good catch btw!) where kernel
->> turns into user address.
-> 
-> So, we are trying to ~simulate a call to
-> copy_from_kernel_nofault_allowed() here. If the address under
-> consideration is below TASK_SIZE (TASK_SIZE + 4GB to be precise) then we
-> skip that load because that address could be mapped by the user.
-> 
-> If the address is above TASK_SIZE + 4GB, we allow the load and it could
-> cause a fault if the address is invalid, non-canonical etc. Taking the
-> fault is fine because JIT will add an exception table entry for
-> for that load with BPF_PBOBE_MEM.
+Hi Marcel,
 
-Are you sure? I don't think the kernel handles non-canonical fixup.
+On Fri, Mar 22, 2024 at 10:07=E2=80=AFAM Marcel Ziswiler <marcel@ziswiler.c=
+om> wrote:
+>
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+>
+>
+> In our automated testing setup, we use Delock Mini-PCIe SATA cards [1].
+> While this setup has proven very stable overall we noticed upstream on
+> the i.MX8M Mini fails quite regularly (about 50/50) to bring up the PCIe
+> link while with NXP's downstream BSP 5.15.71_2.2.2 it always works. As
+> that old downstream stuff was quite different, I first also tried NXP's
+> latest downstream BSP 6.1.55_2.2.0 which from a PCIe point of view is
+> fairly vanilla, however, also there the PCIe link-up was not stable.
+> Comparing and debugging I noticed that upstream explicitly configures
+> the AUX_PLL_REFCLK_SEL to I_PLL_REFCLK_FROM_SYSPLL while working
+> downstream [2] leaving it at reset defaults of AUX_IN (PLL clock).
+> Unfortunately, the TRM does not mention any further details about this
+> register (both for the i.MX 8M Mini as well as the Plus). Maybe somebody
+> from NXP could further comment on this?
+>
+> BTW: On the i.MX 8M Plus we have not seen any issues with PCIe with the
+> exact same setup which is why I left it unchanged.
+>
+> [1] https://www.delock.com/produkt/95233/merkmale.html
+> [2] https://github.com/nxp-imx/linux-imx/blob/lf-5.15.71-2.2.0/drivers/pc=
+i/controller/dwc/pci-imx6.c#L1548
 
-> The vsyscall page is special, this approach skips all loads from this
-> page. I am not sure if that is acceptable.
+The detailed information above is important. It should be in the
+commit log of the patch IMHO.
 
-The bpf_probe_read_kernel() does handle it fine via copy_from_kernel_nofault().
-
-So there is tail risk that BPF_PROBE_* could trigger a crash. Other archs might
-have other quirks, e.g. in case of loongarch it says highest bit set means kernel
-space.
+Thanks for the fix.
 
