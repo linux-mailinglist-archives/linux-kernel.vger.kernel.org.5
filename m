@@ -1,95 +1,103 @@
-Return-Path: <linux-kernel+bounces-110917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5533C8865A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:51:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2AB48865B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5E01C22C39
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307431C22B1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5A479DD;
-	Fri, 22 Mar 2024 03:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D0F79CB;
+	Fri, 22 Mar 2024 04:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c6OnnSu7"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dkh5JKt4"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8906FD5
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D03539A;
+	Fri, 22 Mar 2024 04:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711079495; cv=none; b=foFNHLaDUK3Brkeg/hojUSKK/e+oNoQJ75p+eL72K4OM+RtJSmV+B4GkP7yPJ682/3h+nH/MSupGBtS3QArAIuMqt/czR0rqkIE3tHaLMvES/5yx/3/zGEq6fPfW3ECz2FJoOYbXd5RvREp7KQoAG0aY0AfQgT4LqC/QOpWqkPE=
+	t=1711080252; cv=none; b=Q3qLxq+dmR0YSCFFfAPapQuG5Qqz5Kcam4Up2mFhn93FulubYWF62dd0OBxAu5D5+Ndp2bpnSwJgfsv5GLfGG/CB038Y8ZAITs0QvAf0yOTUJiKTBeG42QxxjrRHJPvWREVZrTYfdXhGhPyyGh2gRlvcOt2l2VKkRMlPgBPZTaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711079495; c=relaxed/simple;
-	bh=LS0IXVsPleK1aMN/6K6ybl1byGi+r7pZ03/ee8W/hBo=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=r93sWvJMdsxy4QC43bQzGcjRxrhTM4WEXVSMRp1wz58q974FalXmNbETw/IAnd+Dq0MaPYIjTXZKg9ETsYEaw+/04/6YZRzJJgixQp+2mh3L4wD9VzNtWuP2fDS0kqLGo4WWqgEYGNjRkU0fcvnK2RdJOsoTI12NOgC29hI1ZHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c6OnnSu7; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711079489;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UaIF2+8hQSieEX6d0uKpNA4HUIsEN1EiLTbb/fL8ZFE=;
-	b=c6OnnSu7jEaq5y4PVZMLdPPPivACLp51RaEGGzzyElG8w60NAeJDf+ySg9Jz5dzZfTRFUb
-	SZBgaRD8q9t7ZbJV6wlRMxk9kYqyC1ODoFB15GzxIlSpt0egR0tL0r56Pp/FdTruOfdu2m
-	SLvKKRA0y+1czF54k4L5/tU+CucaKXY=
+	s=arc-20240116; t=1711080252; c=relaxed/simple;
+	bh=8XsoOjRj04Rlf282vwPuGGrkCEPpbrEB6ypq7mgToQE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rrsNmf3GTR8aiJ+L5yhNetPfPlL3x1SadppcqaQMJwU8+DCoNn8BmguKKygsVTqHipwu/RsdtMX0LDEwUMP48l4+F3Qj0EzmI58HOyVb40xYn7BUQtcFM8ODh+HYGF3e4rkxwoODrTG64/noOo9fpvrsPfa4d7rgAvqTEXDe3Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dkh5JKt4; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2220a389390so822582fac.0;
+        Thu, 21 Mar 2024 21:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711080249; x=1711685049; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YQ/izzScI1fREIZGekkyhtJcOgE3fms7DYKYprBPlpU=;
+        b=dkh5JKt4z9IlmRUXsSl+4b0bPn9EwVLEO7HYzzptxJUUdof+NKVaJ772cVzV2KuUFz
+         ZvKP2d2v7z8uwxko7HPGOEMXOg2flgCi2w6H4iUATwz+eyNusox0Dh/T+vdxP87OQ3qr
+         vZ1n148T8YoeIYOk/B+ItHuW7B2t36vxE6ikaMnTVJSm5BapAEDtmb91We/j8JIpT6hm
+         C5UkY1LY+lZRQjfQ6UasAPj6+5OeJPFQ4o+CDl7n/B3YpaQsixSSVHcNAPb6+RKMSoq/
+         nNsBwkMA4dsymyzFKuIPDebZQLlmoobYYxaipBcOgfNdEcKuZgh3QqcMIzcyyKfldJzV
+         oaIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711080249; x=1711685049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YQ/izzScI1fREIZGekkyhtJcOgE3fms7DYKYprBPlpU=;
+        b=EEqeC9Q2mY+aBBYPa+jrlVoYlGvB5XGwa9XwRsRs8xEsGpb2ZFQMuaMbrW8e+CpvUr
+         wjim63uK68xEcC3tI70NXj1+yCqeLrhZZX1f0aTD1n1Rkj3nZGy6HrVWWlNl3zaXluZy
+         aqKcfBG6ydqZfqJSGn3FPZiX+AmwZUxh/BvriL6EK0b/EPjSpCuXAx5gUSMPCD1bBt8v
+         bvPCQE41B/SGlAnxxGtSbkcu907TvnaM8SP1PPiLR0p6heuZsWeh07p+704rYBKQhqPH
+         fjErGb42XOk/ijtkVCSm8nyE5SG1GrXO0dLqt7Uih/2ZF5lFHcFZLtTowY/LEl9k+Jzc
+         ocfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1wPEHhD7KQYjPxlvyFUniQOPrGCCYBdrT1TLoRpzf/XXyxQwKQ2SRhipS9dDxOz3WdrmUGlZ7uJ0wqdfQ/jFzokXqnqPQyqHQnHp+7haOY8uwEtx2z/vrM8AGF5+Y5aTVqcQlsxI76aLgZojv7ZjXvOW/2yE6DibJYsUVvTZn4VkE/w==
+X-Gm-Message-State: AOJu0YxnKPMzR2J563/0s25JOCZetoP3gaXYFSnU3zE7SWTDarZ0AWSy
+	gqXquuzovnY2BJST/t5zPEukbcNsM7qvqiqwd0zb/OXwXRuKCabXxxC7G0gS2aq2qd/hZASoQCm
+	csfmic4mHcKFtu9IZsJvehga7J+I=
+X-Google-Smtp-Source: AGHT+IFXFqLQdxziVcpdTOgFwwmG4wRSlRUOhdZgESPBUD/lxXD1BNATgwjB0DZTlJ3m/o+6cAMejaY09lC4yiHjP/E=
+X-Received: by 2002:a05:6870:310:b0:222:4d2d:c3ba with SMTP id
+ m16-20020a056870031000b002224d2dc3bamr441722oaf.5.1711080249604; Thu, 21 Mar
+ 2024 21:04:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: Fix hugetlb mem size
- calculation
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240321215047.678172-1-peterx@redhat.com>
-Date: Fri, 22 Mar 2024 11:50:50 +0800
-Cc: Linux-MM <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>,
- David Hildenbrand <david@redhat.com>,
- Nico Pache <npache@redhat.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <56CA06CD-3F37-4268-B1B1-9C376AF9B136@linux.dev>
-References: <20240321215047.678172-1-peterx@redhat.com>
-To: Peter Xu <peterx@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+References: <20240320084623.82248-1-animeshagarwal28@gmail.com> <171105547918.707638.11304000819202245225.b4-ty@kernel.org>
+In-Reply-To: <171105547918.707638.11304000819202245225.b4-ty@kernel.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Fri, 22 Mar 2024 09:33:58 +0530
+Message-ID: <CAE3Oz805_eNoVSfxTq4Zy_kQEfsXWhcYZpvLnrcu-VCyDoBzWQ@mail.gmail.com>
+Subject: Re: [PATCH v3] dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschema
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>, Vladimir Zapolskiy <vz@mleia.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Mar 22, 2024 at 2:41=E2=80=AFAM Andi Shyti <andi.shyti@kernel.org> =
+wrote:
+> Applied to i2c/i2c-host on
+>
+> git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+>
+> Thank you,
+> Andi
+>
+> Patches applied
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [1/1] dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschema
+>       commit: e73b7060deb7da42f4e887cb726d0c7019a84cd0
 
-
-> On Mar 22, 2024, at 05:50, peterx@redhat.com wrote:
-> 
-> From: Peter Xu <peterx@redhat.com>
-> 
-> The script calculates a mininum required size of hugetlb memories, but
-> it'll stop working with <1MB huge page sizes, reporting all zeros even if
-> huge pages are available.
-> 
-> In reality, the calculation doesn't really need to be as comlicated either.
-
-                                                               ^
-                                                           complicated?
-
-> Make it simpler and work for KB-level hugepages too.
-> 
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Nico Pache <npache@redhat.com>
-> Cc: Muchun Song <muchun.song@linux.dev>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-Thanks.
+Thanks Andi.
 
