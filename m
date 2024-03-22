@@ -1,178 +1,129 @@
-Return-Path: <linux-kernel+bounces-111551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D965B886D96
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:43:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7FB886D9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169B11C233D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:43:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F97DB25E3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921075C5F4;
-	Fri, 22 Mar 2024 13:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CA95F575;
+	Fri, 22 Mar 2024 13:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ptLKrBtb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnSRT1mu"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE97045BFF
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078C645BFF;
+	Fri, 22 Mar 2024 13:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114556; cv=none; b=biZ9daJDc0LBqCR5GoldGL8wiBdygLExsF1IhBcJs3iF9f7sCYOD2Esag51FI/cH0Z/6u3yOz3fbwOG/s89UWesbpiH34PSrpBLpNQINo2+3klasyVWkQ8byx176HEc4PtNuJrbOciRUfr2I+VqXheA2vfindHaSVwhYkAkVkeQ=
+	t=1711114570; cv=none; b=dBHOJGUjMz1M6UeG4KNhYe2pybZ2h25C23vTh7oEaBZgpL8JgYZvddF95VFrFUPzYPZHl1KkWRycVxhfxLsorHJ+DYHc+no016wsWYv0n6MENhNOMySswa1fF7pewqkLO2+gFeG8Z/uFwvkV8HtXmD3SwnHIG9lFgYIs8JX1XIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114556; c=relaxed/simple;
-	bh=u0PRJPH4zZcFF3xqQA9fGoW/XmvWMaMyEmDCCXX09wU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NgzrrTMR3v7g9Ky/JABZFpHKrOweaIM+OTY27YOnCt1A6CnDpWDrMVOS64BbVq8fwRSrYGJRYx3g2MWBvf6B/hpSZ9Z7B/MwJ2OLuRRWtyRbL6mix4fb0Ln/LN29lLFE8eDGAFfmgk8CODhh68q1v2RPVkGDTH4qx9j5wgLADPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ptLKrBtb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50DDAC433C7
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711114556;
-	bh=u0PRJPH4zZcFF3xqQA9fGoW/XmvWMaMyEmDCCXX09wU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ptLKrBtbhchtawol//pqO8ctqLfceMYNRVf2k8KlxloAAyepmU2L5ys4vO73YQbth
-	 WX6VqEXu4YaLfFdofK5Clz3eaiC3S59dYFD18zYRbY2YKxoepuxeHIDcfVN3jNrfxE
-	 Ae6ibCWeE92J4cwYF/95AjR00uM5RNqyQ5+UehyZG42j3IRMfV1wKOKvF5WD9pP5Gu
-	 q4qirbN834oFjj8uzQFJO3Yb+uwzYrtTGwKfNqPu3TxOJ+ea6aYOQXpGcBHqx7QyGA
-	 KCWsFT4caDHVxwMtKPT5/pXCJlmw3wzuqIsYBgrRwlse1dbF17d8YIzFsOgsqYijcF
-	 8/zqAkWiQS54g==
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-366bed3a440so9101115ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:35:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWHOPuuFpdIMC6AhSdmL5iqDBKB7cF82K5GChhO89tw2pZoDRi68mZFJP2VeL8+TJZTwWrwoFgE2RF9heH9AfywiPbDWJKa35DAqyh7
-X-Gm-Message-State: AOJu0YwADSAZyK6VTICnJeeWpnCfa3EysEeAfxX7P8J13Vnbnqkv1pho
-	oqejwymf2l36j56666Z6D7t2oRpk7tJSGhkIiKDfhwLaoDUgngre6Zb1j0pEBFm+buKUYDhgEUc
-	wi/EzdNnuN203O4BwdE1xMjvLSBNIaT65oG/K
-X-Google-Smtp-Source: AGHT+IHqG3BNO/6Gg345YJ6k829I7v6On+D2mOXMOpo54HKOVzrfbcNkKWNSvPjTFGCJmCjixRNTr8OgiPkFHD85TJA=
-X-Received: by 2002:a05:6e02:1252:b0:368:727e:ec71 with SMTP id
- j18-20020a056e02125200b00368727eec71mr1486400ilq.21.1711114555719; Fri, 22
- Mar 2024 06:35:55 -0700 (PDT)
+	s=arc-20240116; t=1711114570; c=relaxed/simple;
+	bh=NfRx8CDuW51pFCmmfqak9U6I8Vq3ncrRG8KMibzqtyk=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=J8lwKG3HCwS0l349Sf/3h6dQWGwWDc68ZogM6w43CKfFdXIOfArd7uHqgN5Oown2ushxrX8d9yyxK5KzAgVcjBBRaN82Zb+NEOYFQXjiyJy00e7ldlEFwC9e+EaPYXD+Sg+PSzRipMj0F0fUv2qtHRq9MhIMSQo3TcaTtwOLGPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnSRT1mu; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4141156f245so15375785e9.2;
+        Fri, 22 Mar 2024 06:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711114567; x=1711719367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=89J9FNeshMeUYJqlt0RIBQEumND/jE9mTsgfiNGVfzM=;
+        b=ZnSRT1muO+CTD9/5Se1uZb5k3rGliPlTpSFD5G0CptFPtyLlaLhCMXBpOkqEGy84UI
+         foySl81Hy2icfMcvZ2VnN9dhreYgtjGXbleqsOx3ZZrEtNgHTkCIIlG01BKggvxYpSKH
+         0yti8l6QKeGA6/H4gXyEP31PU+/9PJj/KtMNpW6Zm7ZTN9zkqsqwmRsL1vggspqq/WRp
+         TZk2S0EmU4TirgbfOfSJ3rg4WtgIGnsTFGr/ieho5dKuyMiSjleHwAwriyl6XDuyCJxs
+         aPAIKUrRAwDYqXLj1DIJDZyblhpjorUrdjjp/RKAG2HFGJTe0od8JZUAWAM34p5vMj5Z
+         ARKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711114567; x=1711719367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=89J9FNeshMeUYJqlt0RIBQEumND/jE9mTsgfiNGVfzM=;
+        b=b873NG56EVhxRt8rBebRicaPxLI2o3ckvrjPhTEpr4q5lzETetDP3KkYglAhYaxS5q
+         xW7WJHWwWkbJuAnhL/TNiFX7slcLS00SGliG5D8r4lTlBD+wXm+8+zajy4PoCukVioMk
+         a/G5Z3APc+OLp/55ZWKp/hg5uf0khNnjUA9HNfuj8Stan4HBi2pHF+9ubHHdArtur7GW
+         vNrCGYzWYNHT0+teIi7/InoA+XY7dYo3wi91xSUjvYyj9xx76GTkOKtOSmJqnrHMYi0U
+         vcWFhUrgaw91ky4bLHUM9yr3dE5Jzq7pM5paynQ3y4zklH3psrTrIMpXT9hF1DPeSAZJ
+         N6Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTHEMymT0ttaVaazqLLD+QBwNbZ3Qr5Aqye5KJg4yWmU2d4g6ajrrClZPYOGKxyNVPh9NuXE9mP08vMX+xfGV/L8AuaAZFQOgNRPffNLot7PhGHqlLr8HNUociiD+tB1GXk619P77gPbbTlI01AY1whHLL4pPDp+PYR0A93U3dd54s
+X-Gm-Message-State: AOJu0Yxe7OU7O5HfuxawmJ00aDoT7m1ZBkwrZQ2CxAUjPGk0U/nJt0+5
+	+U1L6bdcvpotpHu287W2h1e2DsAQvQmjYxKS6fhMS6E/OB7PFpsw
+X-Google-Smtp-Source: AGHT+IFHWWCIm2FvVfLXD8MAk1Gtxae0467JGCEEHu7Yt9gcY27h73Rs8Nqg9TSXbZJchh4+SyahcQ==
+X-Received: by 2002:a05:600c:35d4:b0:414:7db3:5757 with SMTP id r20-20020a05600c35d400b004147db35757mr956306wmq.30.1711114567008;
+        Fri, 22 Mar 2024 06:36:07 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b004146d736fcdsm8397220wmo.36.2024.03.22.06.36.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Mar 2024 06:36:06 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] selftests/bpf: verifier_arena: fix mmap address for arm64
+Date: Fri, 22 Mar 2024 13:35:52 +0000
+Message-Id: <20240322133552.70681-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
- <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com> <20240322031907.GA237176@cmpxchg.org>
-In-Reply-To: <20240322031907.GA237176@cmpxchg.org>
-From: Chris Li <chrisl@kernel.org>
-Date: Fri, 22 Mar 2024 06:35:43 -0700
-X-Gmail-Original-Message-ID: <CAF8kJuNe5xXVp00Ogk2AL_zXFK6pN0u7=0avjyPPkagB3FWy8Q@mail.gmail.com>
-Message-ID: <CAF8kJuNe5xXVp00Ogk2AL_zXFK6pN0u7=0avjyPPkagB3FWy8Q@mail.gmail.com>
-Subject: Re: [PATCH] zswap: initialize entry->pool on same filled entry
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 8:19=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Thu, Mar 21, 2024 at 04:56:05PM -0700, Yosry Ahmed wrote:
-> > On Thu, Mar 21, 2024 at 4:53=E2=80=AFPM Chris Li <chrisl@kernel.org> wr=
-ote:
-> > >
-> > > Current zswap will leave the entry->pool uninitialized if
-> > > the page is same  filled. The entry->pool pointer can
-> > > contain data written by previous usage.
-> > >
-> > > Initialize entry->pool to zero for the same filled zswap entry.
-> > >
-> > > Signed-off-by: Chris Li <chrisl@kernel.org>
-> > > ---
-> > > Per Yosry's suggestion to split out this clean up
-> > > from the zxwap rb tree to xarray patch.
-> > >
-> > > https://lore.kernel.org/all/ZemDuW25YxjqAjm-@google.com/
-> > > ---
-> > >  mm/zswap.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > > index b31c977f53e9..f04a75a36236 100644
-> > > --- a/mm/zswap.c
-> > > +++ b/mm/zswap.c
-> > > @@ -1527,6 +1527,7 @@ bool zswap_store(struct folio *folio)
-> > >                         kunmap_local(src);
-> > >                         entry->length =3D 0;
-> > >                         entry->value =3D value;
-> > > +                       entry->pool =3D 0;
-> >
-> > This should be NULL.
-> >
-> > That being said, I am working on a series that should make non-filled
-> > entries not use a zswap_entry at all. So I think this cleanup is
-> > unnecessary, especially that it is documented in the definition of
-> > struct zswap_entry that entry->pool is invalid for same-filled
-> > entries.
->
-> Yeah I don't think it's necessary to initialize. The field isn't valid
-> when it's a same-filled entry, just like `handle` would contain
-> nonsense as it's unionized with value.
->
-> What would actually be safer is to make the two subtypes explicit, and
-> not have unused/ambiguous/overloaded members at all:
->
-> struct zswap_entry {
->         unsigned int length;
->         struct obj_cgroup *objcg;
-> };
->
-> struct zswap_compressed_entry {
->         struct zswap_entry entry;
->         struct zswap_pool *pool;
->         unsigned long handle;
->         struct list_head lru;
->         swp_entry_t swpentry;
-> };
->
-> struct zswap_samefilled_entry {
->         struct zswap_entry entry;
->         unsigned long value;
-> };
+The arena_list selftest uses (1ull << 32) in the mmap address
+computation for arm64. Use the same in the verifier_arena selftest.
 
-I think the 3 struct with embedded and container of is a bit complex,
-because the state breaks into different struct members
+This makes the selftest pass for arm64 on the CI[1].
 
-How about:
+[1] https://github.com/kernel-patches/bpf/pull/6622
 
-struct zswap_entry {
-        unsigned int length;
-        struct obj_cgroup *objcg;
-        union {
-                struct /* compressed */ {
-                         struct zswap_pool *pool;
-                         unsigned long handle;
-                         swp_entry_t swpentry;
-                         struct list_head lru;
-                };
-               struct /* same filled */ {
-                       unsigned long value;
-                };
-        };
-};
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/verifier_arena.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-That should have the same effect of the above three structures. Easier
-to visualize the containing structure.
+diff --git a/tools/testing/selftests/bpf/progs/verifier_arena.c b/tools/testing/selftests/bpf/progs/verifier_arena.c
+index 5540b05ff9ee..91818a84e86d 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_arena.c
++++ b/tools/testing/selftests/bpf/progs/verifier_arena.c
+@@ -12,7 +12,11 @@ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARENA);
+ 	__uint(map_flags, BPF_F_MMAPABLE);
+ 	__uint(max_entries, 2); /* arena of two pages close to 32-bit boundary*/
+-	__ulong(map_extra, (1ull << 44) | (~0u - __PAGE_SIZE * 2 + 1)); /* start of mmap() region */
++#ifdef __TARGET_ARCH_arm64
++        __ulong(map_extra, (1ull << 32) | (~0u - __PAGE_SIZE * 2 + 1)); /* start of mmap() region */
++#else
++        __ulong(map_extra, (1ull << 44) | (~0u - __PAGE_SIZE * 2 + 1)); /* start of mmap() region */
++#endif
+ } arena SEC(".maps");
+ 
+ SEC("syscall")
+-- 
+2.40.1
 
-What do you say?
-
-Chris
-
->
-> Then put zswap_entry pointers in the tree and use the appropriate
-> container_of() calls in just a handful of central places. This would
-> limit the the points where mistakes can be made, and suggests how the
-> code paths to handle them should split naturally.
->
-> Might be useful even with your series, since it disambiguates things
-> first, and separates the cleanup bits from any functional changes,
-> instead of having to do kind of everything at once...
->
 
