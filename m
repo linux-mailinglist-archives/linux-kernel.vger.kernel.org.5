@@ -1,189 +1,222 @@
-Return-Path: <linux-kernel+bounces-112087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54F6A8875A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:14:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BFD98875A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:15:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 112A9283947
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:14:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EB131C22E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C961B82899;
-	Fri, 22 Mar 2024 23:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1D882C60;
+	Fri, 22 Mar 2024 23:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NV+lYgoL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SPSZZWTS"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045DA80629
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D0482895;
+	Fri, 22 Mar 2024 23:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711149285; cv=none; b=T0RDdRsB5C3gAJzQjQJi1yX3Oy1jO94sabUUADuDpWlecpLW+7lTVKpPjq0Ge75xENqofS7PnBdRWWBVriUy6yIF5+IFdqGt4hOFRVmIKpgNaDeJXlADr4wTOTZQ29A/+ae1Ksvk72RFYFgvjGYu1c7iE1X0mMsqkwynEBmj4yU=
+	t=1711149311; cv=none; b=GxvmegLjPSuYxyuxmM0eiTpuf6JeIFsAGuND/TTF3qqRoBVQZH7HNaH/92zSqFJxdSkJJeQCJVoBGOEFsiChlVKzh2L9BX00h3EWzMBFWu3Uhy63tj8+xDihmErmi9qbAkQSypw5tiZtVFRM03k3wzRMrLFIqFKxumf+nGYpxGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711149285; c=relaxed/simple;
-	bh=mFt9sTai3iFEvINDiRR7vT0SJxMtiNAwZ8okJHN4jjs=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=mlGrEyqkW65ncQdk2gU1Fe6Dykbl+XhkWIQaUG1pYZJEIPUbJG0Ny6+jkOO25dE7ThHaXJ5bG+pl8UXELkrf0ER5aoB5W9B8jQCGbV1ajg9WVhTJn0M5UVo5rjjNQ44o8vHPP3i15VthrHhY58Av5nX+6PzWV4NEUHdkqHeDdm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NV+lYgoL; arc=none smtp.client-ip=198.175.65.15
+	s=arc-20240116; t=1711149311; c=relaxed/simple;
+	bh=8uUPqKEXFYILQlYlay9jYtVkLU/5jJhtNXyxet3+C4c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oevuPDhKhsOZvKii9TMq62+Evi6V98KV+g2OWHowqoi1Bjy/KxszQr6nK4FXZMKdI4cGiXFdfPe8BUN/ozqwtkjJmvteBI1sRIzevPz807XuJi377Am7lwLxQvH9QdsGJBJRwOLdMBSU7zd7bzQNkFUwFjTC8tkpOospINVO0O0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SPSZZWTS; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711149283; x=1742685283;
-  h=date:from:to:cc:subject:message-id;
-  bh=mFt9sTai3iFEvINDiRR7vT0SJxMtiNAwZ8okJHN4jjs=;
-  b=NV+lYgoLDqzaEVoQLXQ3zUEgnWN2av6JzKb59VKhRbHuUNOrkp1vc0XG
-   GTUybl9lGHGybojrBqJberB6Mg6rg61e47KrdEzsss/q0IUisleRaPtpx
-   ADGA4+GnBI4wnKVhJlENv6/wTUSCufZHzQzNz1J5ykTA6v/jhZKBDq4t8
-   m7QS0MB/Kdfux69i9XR+JYWUEDzW0tgjK9O3dI/qITe1Xi4HV872lOqSj
-   TpZbebPa3oXpI3u8UAa28E9h4U9+pw6gF/PPt9tdRbSg5ZxZFcyLJ9A7/
-   8bBO1sU85qGXIiJY7XNFj5AV48imnRSiFaNtXsQtlJiblmr+4HTkeiIMU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="10005115"
+  t=1711149311; x=1742685311;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8uUPqKEXFYILQlYlay9jYtVkLU/5jJhtNXyxet3+C4c=;
+  b=SPSZZWTSQPrd3OnSJLfgVgAOKoQ80lEe01fF7BQID1o7e4iYOQDIKVuR
+   g8Km/ZlpAiC4j7hHCv6iMPxigfuyk34Yj6nk75mWwlvUzBjJQpo0rDQWZ
+   VjBJKIywn7UQoviii1metN5oZKLqCN4em5K3dVgVFiir4wKc7RlYvAUsr
+   4vNvVPT+webFwyOVdjQpyL1qmWsDuV72EDA6VFJYjr6/KCk638gfHRQxe
+   V2WUC0pB2kNOU0vFiVL/mqNNUJkKx8eeA0QDsG9T+sSPRzf9RXG5L/KR5
+   UtG4EKnlkmO4CkEV3uaNXBXjkZH147EfmmnYKoxt7WdmxIJDWwNVoaDi0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="10005170"
 X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="10005115"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:14:43 -0700
+   d="scan'208";a="10005170"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:15:10 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="15156789"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 22 Mar 2024 16:14:41 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rno5u-000Kgp-3B;
-	Fri, 22 Mar 2024 23:14:38 +0000
-Date: Sat, 23 Mar 2024 07:14:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/asm] BUILD SUCCESS
- 4c9a93800121e90484cd07c8e5bde70e31cdb996
-Message-ID: <202403230727.Jct62s6Z-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+   d="scan'208";a="15038953"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:15:09 -0700
+Date: Fri, 22 Mar 2024 16:15:09 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	"Li, Xiaoyao" <Xiaoyao.Li@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 027/130] KVM: TDX: Define TDX architectural
+ definitions
+Message-ID: <20240322231509.GD1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+ <b7b919eb-81fd-4f27-86c1-6e160754608e@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b7b919eb-81fd-4f27-86c1-6e160754608e@intel.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/asm
-branch HEAD: 4c9a93800121e90484cd07c8e5bde70e31cdb996  x86/asm/64: Clean up memset16(), memset32(), memset64() assembly constraints in <asm/string_64.h>
+On Fri, Mar 22, 2024 at 10:57:53AM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-elapsed time: 734m
+> 
+> > +/*
+> > + * TDX SEAMCALL API function leaves
+> > + */
+> > +#define TDH_VP_ENTER			0
+> > +#define TDH_MNG_ADDCX			1
+> > +#define TDH_MEM_PAGE_ADD		2
+> > +#define TDH_MEM_SEPT_ADD		3
+> > +#define TDH_VP_ADDCX			4
+> > +#define TDH_MEM_PAGE_RELOCATE		5
+> 
+> I don't think the "RELOCATE" is needed in this patchset?
+> 
+> > +#define TDH_MEM_PAGE_AUG		6
+> > +#define TDH_MEM_RANGE_BLOCK		7
+> > +#define TDH_MNG_KEY_CONFIG		8
+> > +#define TDH_MNG_CREATE			9
+> > +#define TDH_VP_CREATE			10
+> > +#define TDH_MNG_RD			11
+> > +#define TDH_MR_EXTEND			16
+> > +#define TDH_MR_FINALIZE			17
+> > +#define TDH_VP_FLUSH			18
+> > +#define TDH_MNG_VPFLUSHDONE		19
+> > +#define TDH_MNG_KEY_FREEID		20
+> > +#define TDH_MNG_INIT			21
+> > +#define TDH_VP_INIT			22
+> > +#define TDH_MEM_SEPT_RD			25
+> > +#define TDH_VP_RD			26
+> > +#define TDH_MNG_KEY_RECLAIMID		27
+> > +#define TDH_PHYMEM_PAGE_RECLAIM		28
+> > +#define TDH_MEM_PAGE_REMOVE		29
+> > +#define TDH_MEM_SEPT_REMOVE		30
+> > +#define TDH_SYS_RD			34
+> > +#define TDH_MEM_TRACK			38
+> > +#define TDH_MEM_RANGE_UNBLOCK		39
+> > +#define TDH_PHYMEM_CACHE_WB		40
+> > +#define TDH_PHYMEM_PAGE_WBINVD		41
+> > +#define TDH_VP_WR			43
+> > +#define TDH_SYS_LP_SHUTDOWN		44
+> 
+> And LP_SHUTDOWN is certainly not needed.
+> 
+> Could you check whether there are others that are not needed?
+> 
+> Perhaps we should just include macros that got used, but anyway.
 
-configs tested: 101
-configs skipped: 135
+Ok, let's break this patch into other patches that uses the constants first.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arm                          ixp4xx_defconfig   gcc  
-arm                         socfpga_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240322   gcc  
-i386         buildonly-randconfig-001-20240323   gcc  
-i386         buildonly-randconfig-002-20240322   gcc  
-i386         buildonly-randconfig-003-20240322   clang
-i386         buildonly-randconfig-004-20240322   clang
-i386         buildonly-randconfig-004-20240323   gcc  
-i386         buildonly-randconfig-005-20240322   gcc  
-i386         buildonly-randconfig-005-20240323   gcc  
-i386                                defconfig   clang
-i386                  randconfig-003-20240323   gcc  
-i386                  randconfig-004-20240323   gcc  
-i386                  randconfig-005-20240323   gcc  
-i386                  randconfig-006-20240323   gcc  
-i386                  randconfig-011-20240323   gcc  
-i386                  randconfig-012-20240323   gcc  
-i386                  randconfig-014-20240323   gcc  
-i386                  randconfig-015-20240323   gcc  
-i386                  randconfig-016-20240323   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          amiga_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5208evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          malta_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                        icon_defconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sparc                            alldefconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240323   clang
-x86_64       buildonly-randconfig-002-20240323   clang
-x86_64       buildonly-randconfig-003-20240323   clang
-x86_64       buildonly-randconfig-005-20240323   clang
-x86_64       buildonly-randconfig-006-20240323   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240323   clang
-x86_64                randconfig-003-20240323   clang
-x86_64                randconfig-004-20240323   clang
-x86_64                randconfig-011-20240323   clang
-x86_64                randconfig-013-20240323   clang
-x86_64                randconfig-014-20240323   clang
-x86_64                randconfig-015-20240323   clang
-x86_64                randconfig-016-20240323   clang
-x86_64                randconfig-071-20240323   clang
-x86_64                randconfig-072-20240323   clang
-x86_64                randconfig-073-20240323   clang
-x86_64                randconfig-074-20240323   clang
-x86_64                randconfig-076-20240323   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+> > +/*
+> > + * TD_PARAMS is provided as an input to TDH_MNG_INIT, the size of which is 1024B.
+> > + */
+> 
+> Why is this comment applied to TDX_MAX_VCPUS?
+> 
+> > +#define TDX_MAX_VCPUS	(~(u16)0)
+> 
+> And is (~(16)0) an architectural value defined by TDX spec, or just SW value
+> that you just put here for convenience?
+> 
+> I mean, is it possible that different version of TDX module have different
+> implementation of MAX_CPU, e.g., module 1.0 only supports X but module 1.5
+> increases to Y where Y > X?
 
+This is architectural because it the field width is 16 bits.  Each version
+of TDX module may have their own limitation with metadata, MAX_VCPUS_PER_TD.
+
+
+> Anyway, looks you can safely move this to the patch to enable CAP_MAX_CPU?
+
+Yes.
+
+
+> > +
+> > +struct td_params {
+> > +	u64 attributes;
+> > +	u64 xfam;
+> > +	u16 max_vcpus;
+> > +	u8 reserved0[6];
+> > +
+> > +	u64 eptp_controls;
+> > +	u64 exec_controls;
+> > +	u16 tsc_frequency;
+> > +	u8  reserved1[38];
+> > +
+> > +	u64 mrconfigid[6];
+> > +	u64 mrowner[6];
+> > +	u64 mrownerconfig[6];
+> > +	u64 reserved2[4];
+> > +
+> > +	union {
+> > +		DECLARE_FLEX_ARRAY(struct tdx_cpuid_value, cpuid_values);
+> > +		u8 reserved3[768];
+> 
+> I am not sure you need the 'reseved3[768]', unless you need to make
+> sieof(struct td_params) return 1024?
+
+I'm trying to make it 1024 because the spec defines the struct size is 1024.
+Maybe I can add BUILD_BUG_ON(sizeof(struct td_params) != 1024);
+
+
+> > +#define TDX_MD_ELEMENT_SIZE_8BITS      0
+> > +#define TDX_MD_ELEMENT_SIZE_16BITS     1
+> > +#define TDX_MD_ELEMENT_SIZE_32BITS     2
+> > +#define TDX_MD_ELEMENT_SIZE_64BITS     3
+> > +
+> > +union tdx_md_field_id {
+> > +	struct {
+> > +		u64 field                       : 24;
+> > +		u64 reserved0                   : 8;
+> > +		u64 element_size_code           : 2;
+> > +		u64 last_element_in_field       : 4;
+> > +		u64 reserved1                   : 3;
+> > +		u64 inc_size                    : 1;
+> > +		u64 write_mask_valid            : 1;
+> > +		u64 context                     : 3;
+> > +		u64 reserved2                   : 1;
+> > +		u64 class                       : 6;
+> > +		u64 reserved3                   : 1;
+> > +		u64 non_arch                    : 1;
+> > +	};
+> > +	u64 raw;
+> > +};
+> 
+> Could you clarify why we need such detailed definition?  For metadata
+> element size you can use simple '&' and '<<' to get the result.
+
+Now your TDX host patch has the definition in arch/x86/include/asm/tdx.h,
+I'll eliminate this one here and use your definition.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Isaku Yamahata <isaku.yamahata@intel.com>
 
