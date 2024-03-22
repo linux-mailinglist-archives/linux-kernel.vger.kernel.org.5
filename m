@@ -1,160 +1,265 @@
-Return-Path: <linux-kernel+bounces-111325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9970886AB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:49:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30E8886ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 319E1B21202
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:49:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50B981F2298C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1943D3A4;
-	Fri, 22 Mar 2024 10:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32ED13E487;
+	Fri, 22 Mar 2024 10:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NboM/IlE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lrCUysCT"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A2D7E6
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B1F3D38F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711104576; cv=none; b=uzyBmB283xNg/Rf1rPh6agbKg0L19yod1+hldcPfWe1LI+wSVO7ToHEYVSwBpjSjVc0qVnCvsbGvKqnc8FLFQHWBXEKU6eH6AJi+rObVMLtv47Htbg2rJ13HrFYIS6NawFQkUjFFE+arc08eoJ+XEuYZqdoefII9CTBVWN6gvJw=
+	t=1711104894; cv=none; b=b4jfSdT04kVApZHauPtlROAWqdJlIVEemL9MbQ+ck7Kb/BXSKEmoopDIIdG3S+DxnzJJwjebhZFw+2Lfv1KWrWbBph7nRuJktP94Wc0bMu1uEtvVDHuObG8PRHM7QusV+T3LG40sP9J27ACSlH5jgEMftnRF0SQRW0A39DTBSBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711104576; c=relaxed/simple;
-	bh=RdSS02s72D4eY2/gXrflggceGXsqtbDf/oNhoeFM0oc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tVszmZW5spMIL/vslkInc6pSIGZ5wGzA+fRBLkmlcZAhTumRILXclIsbux6CSO1XyRT9qOELIUoyPHsd7wg36MmTn4G1oAlsp0JfWk1XfTWEgbr87IxUf1xeObWTtrxWcH+cclVeTHlCR9s1JAaKiVTQJbkYBJwZqSC4kwQ2+ZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NboM/IlE; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711104573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7QdoXDPkirjhYNpXA2MhOMT7OeLESzKe1cciF8iSzK0=;
-	b=NboM/IlEfErFfT31R6yHf03Z7AuFTE6fvjUM6aVNPfmQXqz3ddIbYNzkAbEHIInMxW60Ib
-	ETcnHfPcwzRq79ryNGwhVkUhHSfLiSVeqqV0IXncXyucKN7Ym3pnc9Df02ew1LnXPdCa0h
-	fvpAfqy1hKhG3UAt4LwgiXCYeBA9WZk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-459-CRPaDkl7NPSo9yKN7u25hg-1; Fri, 22 Mar 2024 06:49:31 -0400
-X-MC-Unique: CRPaDkl7NPSo9yKN7u25hg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC43385A58B;
-	Fri, 22 Mar 2024 10:49:30 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.83])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CB34B2022C1D;
-	Fri, 22 Mar 2024 10:49:28 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: quic_bqiang@quicinc.com
-Cc: ath11k@lists.infradead.org,
-	jjohnson@kernel.org,
-	jtornosm@redhat.com,
-	kvalo@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH V2] wifi: ath11k: workaround to use VMs
-Date: Fri, 22 Mar 2024 11:49:12 +0100
-Message-ID: <20240322104912.94811-1-jtornosm@redhat.com>
-In-Reply-To: <87f0c6c9-43e5-4ea3-8f4c-9425e6a74b10@quicinc.com>
-References: <87f0c6c9-43e5-4ea3-8f4c-9425e6a74b10@quicinc.com>
+	s=arc-20240116; t=1711104894; c=relaxed/simple;
+	bh=lqlF6LC2lHEkheQ1iOMwalBqlnrXpZNihZvbCgN/AP8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jhTFQA9IEQ9jpVhRu1Xq+Ap3kG2Ie5Aers6Jh3AYzH08EQEWYCUuJSgylnGODkI+bOMc7vebsM5yUOp8sM815ZfaJbXnlQBuXxT4y2rgLx53ZoV+Yc7zXszMHQMtNsszfsgx4OZWeCM9GnJDIa+6VgiXsBzWpppV8VUBOJGWtLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lrCUysCT; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso2000786276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:54:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711104891; x=1711709691; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3yLTyJy7JcrovLWujJX3AA6N2qSzZlAvcXrRMfhN/Lk=;
+        b=lrCUysCTxiIcVxILMqEGFBATl4JZBjmnrzIBw7gjsu2YpkQ17dRvE+4uutEjSSHeFZ
+         9+4C/C93lLUqqc4LPij+Vmj80Vz76PeZJJimWMHK69W7jc78Lgz8UVRkiUtWF8Xw5zeN
+         WXg/A8/hEakxKIhTwf2z63n0205mPT/aFt985myrah9K1+eKs9qPbl5T5Da5MZIYNPxN
+         Cys+313sqGiXPASl2SdsF7mz2ViGA5HmqRCHCxATr17enjX36TxvV+2rYOcSocjOtBWx
+         0I4evCeOWeWBXhnVEQb4hXERXmdD+1IH85q1G7BoBXhjmUS1X9YtgBoO5x7+aJCrT08R
+         ztxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711104891; x=1711709691;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3yLTyJy7JcrovLWujJX3AA6N2qSzZlAvcXrRMfhN/Lk=;
+        b=ZADxHmoLU0ptjTqS59RHSC8fbILDoU+E/jVEj5flxbPOrM8XCcJa1/GMOyyYN0cYTb
+         Gn8XiN2HtJnkzu2znFLanyQnkWIhGRhtVR3L97abTnUIxzFvh4+TXe3C6Ro0f0gZkrGe
+         xI7mIVwSbl1EfSx4mPoO4eezf1r5hsCsKLqRgpCugaRyZntkPQJuOYPRrJFM1gfd3yZh
+         6cvu8hvE6h6QvZ/uP30oKpWe0kmbkwuUnHlmBwObx6izPqnP3+NpDJ1upHLZI0UJ1YvC
+         av8CbAObWKp++c0bE+bJ5dyZYL7GgU8y5d7sjT18JxrCpIjwu4JgnBPsIdyU5bcfgJ0A
+         6/+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXab5tS1rUuSHD3W1ajVHtT6LGb5C9b0cfF41U4iBDgLjtwc4E6l4AL2OT3GpNi2MG8X7KhRAY+mE/Qi9nPO9GWyYpdsLdVPn17LUN3
+X-Gm-Message-State: AOJu0YwtTg+m4Z+2e60CpOySo3gyFGC4wC3Xb+ynAku8QpggkAaAxT+I
+	rHtDqPO7r4cuy6EcCkpxPFxz/1ds3GzY8/Dn1dTc/O/H+60JSe2HrrhP4r56nNAi75gcDQfQLNz
+	Ap2tKK8x4KR1EpKPIkzCxeqXJcrlMJaIZU+l/rw==
+X-Google-Smtp-Source: AGHT+IGz+x7tVfFIboyUBVIztTiYvPl61n17Jr2i8etPqEnpA+dZPRoFyPRs7c3I1/knQbb/932ar1JaVW/dsRUSqng=
+X-Received: by 2002:a25:dbd0:0:b0:dc2:1f53:3a4f with SMTP id
+ g199-20020a25dbd0000000b00dc21f533a4fmr1686940ybf.5.1711104890696; Fri, 22
+ Mar 2024 03:54:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com> <20240322-fp4-tcpm-v1-5-c5644099d57b@fairphone.com>
+In-Reply-To: <20240322-fp4-tcpm-v1-5-c5644099d57b@fairphone.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 22 Mar 2024 12:54:39 +0200
+Message-ID: <CAA8EJpq3eKFYhBbnggzRy2acE6uSyWGqCMcLxfkqx1Hot50gRw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: sm7225-fairphone-fp4: Enable USB
+ role switching
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Wesley Cheng <quic_wcheng@quicinc.com>, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+	phone-devel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Currently, this driver is not working when the device is handled in a
-Virtual Machine (PCI pass-through), as it was already reported here:
-https://lore.kernel.org/all/fc6bd06f-d52b-4dee-ab1b-4bb845cc0b95@quicinc.com/T/
-Baochen Qiang focused the problem and described how to have it working
-for a specific real MSI vector from host that needs to be used in VM too.
-And this value, as it was commented, can change.
+On Fri, 22 Mar 2024 at 10:03, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>
+> Configure the Type-C and VBUS regulator on PM7250B and wire it up to the
+> USB PHY, so that USB role and orientation switching works.
+>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+> With this patch I'm not quite sure if the 'ports' are connected
+> correctly, though functionally everything appears to work fine.
+>
+> On some other SoCs port@1 in qmpphy and a second port in dwc3 are
+> connected together also - one port of USB 2.0 HS, one for USB 3.0 SS.
+>
+> Here I'm following sm8250's solution. Also checking the binding doc
+> doesn't reveal anything useful.
 
-The problem seems complex to me and I don't know if there is any easy way
-to solve it (with no more information, not hardware/firmware related help
-or VMM action).
-Meanwhile and using the information from Baochen Qiang, since the use of
-VMs is very interesting for testing procedures, I would like to include
-this workaround that consists on adding two parameters to pass the real MSI
-vector address and data from host to the VM.
-In that way, checking the 'lscpi' command output from host, it could be
-handled manually or with some user tool in order to have the VM with the
-driver working.
-Of course, if the workaround is not used, that is if MSI vector address
-parameter is not configured (zero value and default), we will have the same
-behavior as always.
+Thanks for pointing it out. The SM8250 / RB5 predated final DP
+bindings / graphs. As such it didn't fully describe the signal chain
+(the signals go from DWC3 and from DP controllers to the QMP PHY,
+where they are muxed to the 4 output lanes).
+I'll post an update for sm8250 / bindings doc.
 
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
-V1 -> V2:
-- Add parameter for msi vector data as Baochen Qiang suggests.
+I'd kindly ask to connect qmp / port@1 and dwc / port@1
 
- drivers/net/wireless/ath/ath11k/pci.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+> ---
+>  arch/arm64/boot/dts/qcom/sm6350.dtsi              | 25 ++++++++++
+>  arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts | 57 ++++++++++++++++++++++-
+>  2 files changed, 81 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> index 24bcec3366ef..b267500467f0 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> @@ -1686,6 +1686,27 @@ usb_1_qmpphy: phy@88e8000 {
+>                         #phy-cells = <1>;
+>
+>                         status = "disabled";
+> +
+> +                       ports {
+> +                               #address-cells = <1>;
+> +                               #size-cells = <0>;
+> +
+> +                               port@0 {
+> +                                       reg = <0>;
+> +
+> +                                       usb_1_qmpphy_out: endpoint {};
+> +                               };
+> +
+> +                               port@1 {
+> +                                       reg = <1>;
+> +                               };
+> +
+> +                               port@2 {
+> +                                       reg = <2>;
+> +
+> +                                       usb_1_qmpphy_dp_in: endpoint {};
+> +                               };
+> +                       };
+>                 };
+>
+>                 dc_noc: interconnect@9160000 {
+> @@ -1861,6 +1882,10 @@ usb_1_dwc3: usb@a600000 {
+>                                 snps,hird-threshold = /bits/ 8 <0x10>;
+>                                 phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
+>                                 phy-names = "usb2-phy", "usb3-phy";
+> +
+> +                               port {
+> +                                       usb_1_role_switch_out: endpoint {};
+> +                               };
+>                         };
+>                 };
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
+> index bc67e8c1fe4d..104f23ec322d 100644
+> --- a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
+> @@ -19,6 +19,7 @@
+>  #include <dt-bindings/leds/common.h>
+>  #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> +#include <dt-bindings/usb/pd.h>
+>  #include "sm7225.dtsi"
+>  #include "pm6150l.dtsi"
+>  #include "pm6350.dtsi"
+> @@ -543,6 +544,50 @@ conn-therm@1 {
+>         };
+>  };
+>
+> +&pm7250b_typec {
+> +       vdd-pdphy-supply = <&vreg_l3a>;
+> +
+> +       status = "okay";
+> +
+> +       connector {
+> +               compatible = "usb-c-connector";
+> +
+> +               power-role = "source";
+> +               data-role = "dual";
+> +               self-powered;
+> +
+> +               source-pdos = <PDO_FIXED(5000, 1500,
+> +                                        PDO_FIXED_DUAL_ROLE |
+> +                                        PDO_FIXED_USB_COMM |
+> +                                        PDO_FIXED_DATA_SWAP)>;
+> +
+> +               ports {
+> +                       #address-cells = <1>;
+> +                       #size-cells = <0>;
+> +
+> +                       port@0 {
+> +                               reg = <0>;
+> +                               pm7250b_role_switch_in: endpoint {
+> +                                       remote-endpoint = <&usb_1_role_switch_out>;
+> +                               };
+> +                       };
+> +
+> +                       port@1 {
+> +                               reg = <1>;
+> +                               pm7250b_typec_mux_in: endpoint {
+> +                                       remote-endpoint = <&usb_1_qmpphy_out>;
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&pm7250b_vbus {
+> +       regulator-min-microamp = <500000>;
+> +       regulator-max-microamp = <1500000>;
+> +       status = "okay";
+> +};
+> +
+>  &pmk8350_rtc {
+>         status = "okay";
+>  };
+> @@ -726,7 +771,12 @@ &usb_1 {
+>
+>  &usb_1_dwc3 {
+>         maximum-speed = "super-speed";
+> -       dr_mode = "peripheral";
+> +       dr_mode = "otg";
+> +       usb-role-switch;
+> +};
+> +
+> +&usb_1_role_switch_out {
+> +       remote-endpoint = <&pm7250b_role_switch_in>;
+>  };
+>
+>  &usb_1_hsphy {
+> @@ -740,10 +790,15 @@ &usb_1_hsphy {
+>  &usb_1_qmpphy {
+>         vdda-phy-supply = <&vreg_l22a>;
+>         vdda-pll-supply = <&vreg_l16a>;
+> +       orientation-switch;
+>
+>         status = "okay";
+>  };
+>
+> +&usb_1_qmpphy_out {
+> +       remote-endpoint = <&pm7250b_typec_mux_in>;
+> +};
+> +
+>  &wifi {
+>         vdd-0.8-cx-mx-supply = <&vreg_l4a>;
+>         vdd-1.8-xo-supply = <&vreg_l7a>;
+>
+> --
+> 2.44.0
+>
+>
 
-diff --git a/drivers/net/wireless/ath/ath11k/pci.c b/drivers/net/wireless/ath/ath11k/pci.c
-index be9d2c69cc41..4c84208dcf5d 100644
---- a/drivers/net/wireless/ath/ath11k/pci.c
-+++ b/drivers/net/wireless/ath/ath11k/pci.c
-@@ -31,6 +31,15 @@
- 
- #define TCSR_SOC_HW_SUB_VER	0x1910010
- 
-+static ulong ath11k_host_msi_vector_addr = 0;
-+module_param_named(host_msi_vector_addr, ath11k_host_msi_vector_addr, ulong, 0644);
-+MODULE_PARM_DESC(host_msi_vector_addr,
-+		 "Workaround to configure the MSI vector address that is used from host in order to be used in VM");
-+static uint ath11k_host_msi_vector_data = 0;
-+module_param_named(host_msi_vector_data, ath11k_host_msi_vector_data, uint, 0644);
-+MODULE_PARM_DESC(host_msi_vector_data,
-+		 "Workaround to configure the MSI vector data that is used from host in order to be used in VM");
-+
- static const struct pci_device_id ath11k_pci_id_table[] = {
- 	{ PCI_VDEVICE(QCOM, QCA6390_DEVICE_ID) },
- 	{ PCI_VDEVICE(QCOM, WCN6855_DEVICE_ID) },
-@@ -443,6 +452,18 @@ static int ath11k_pci_alloc_msi(struct ath11k_pci *ab_pci)
- 
- 	ath11k_pci_msi_disable(ab_pci);
- 
-+	if (ath11k_host_msi_vector_addr) {
-+		ab_pci->ab->pci.msi.ep_base_data = ath11k_host_msi_vector_data;
-+		ab->pci.msi.addr_hi = (u32)(ath11k_host_msi_vector_addr >> 32);
-+		ab->pci.msi.addr_lo = (u32)(ath11k_host_msi_vector_addr & 0xffffffff);
-+
-+		ath11k_dbg(ab, ATH11K_DBG_PCI, "msi addr hi 0x%x lo 0x%x base data is %d\n",
-+			   ab->pci.msi.addr_hi,
-+			   ab->pci.msi.addr_lo,
-+			   ab->pci.msi.ep_base_data);
-+		return 0;
-+	}
-+
- 	msi_desc = irq_get_msi_desc(ab_pci->pdev->irq);
- 	if (!msi_desc) {
- 		ath11k_err(ab, "msi_desc is NULL!\n");
-@@ -482,6 +503,9 @@ static int ath11k_pci_config_msi_data(struct ath11k_pci *ab_pci)
- {
- 	struct msi_desc *msi_desc;
- 
-+	if (ath11k_host_msi_vector_addr)
-+		return 0;
-+
- 	msi_desc = irq_get_msi_desc(ab_pci->pdev->irq);
- 	if (!msi_desc) {
- 		ath11k_err(ab_pci->ab, "msi_desc is NULL!\n");
+
 -- 
-2.44.0
-
+With best wishes
+Dmitry
 
