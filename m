@@ -1,154 +1,147 @@
-Return-Path: <linux-kernel+bounces-111460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F031886CAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEC23886CB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92BFD1C215FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:20:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C6931C2148B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A530F45BFC;
-	Fri, 22 Mar 2024 13:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB95E46542;
+	Fri, 22 Mar 2024 13:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ksAuSmKp"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A1YrjZ6q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538EE446DB
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0020C46521
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711113599; cv=none; b=pb7IvtXvXgifoZ9jpfQbbSZzCRRTaswy9lJ9S8WxB5aUcptXo0GN2bReGKCGgW/XFmxF+20Rx0Q4LHwyYpO9zHL+iBg0qcHlIfmSuWxVmdWNRmRtQ+Dc22QdS5/0/QxKJFBFdJWY/GFJ5jsPNnYvTmUOIRb+sBHNVjNkhbB3MCE=
+	t=1711113607; cv=none; b=IQAm9Kn/IIYRTQm7QK5UFEfBBF8sMwIHZHWAdvf0E6rm3Du6jcbcL924u1DR8Br1EP9k5Nlg457GwGjo73KbdEXoMQTtXEpHe7+wKCFMCeuGroYBwR7D7GaSgQTwngVzv/1hXj9cxs9TPBTtz3yVuGBXz0IZX+AyX9yeMPZNN64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711113599; c=relaxed/simple;
-	bh=YAAwhajDAShwntv7VTSrLoQpHcAhajmE3DG47Tw9EbQ=;
+	s=arc-20240116; t=1711113607; c=relaxed/simple;
+	bh=prvrAvxH2CImXFxyQ5e6hd6neKkkvJjK1A/VThwiIyE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O8h5HAAQ9uaPDFbJLY9HEzcFfUA2QDejcJU5UcjWNKDqnJcLGY2RloRs25HqwcTp7C5fHzoezKMEbPsytRz3DQJIOFoWLFcmJqmbMzEFMlZTwMKeTvu32FjIgTgEN3wiYDMpb33rsHHzMtCc5XT0BLwPmwe/TD5YDJ5nI4Ag4Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ksAuSmKp; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609ff069a40so24016997b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711113597; x=1711718397; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T78z1nOSwZno9foTloy4dRS2ODcsdxPFmoFq7VTiovc=;
-        b=ksAuSmKphs3bQQ8uTYv7xuU56fGhh9+8pHhCrSCz7Sqp9S/goGvzf0I/ACui2Pc0oI
-         3XwMy3rw2TIqREYT9tYf1IVjEvcJ4DQ1B+KdjkkCslfTqq9rCDhuQo4ZZRoVoPR4+zGT
-         ysEwZiX6Txp7+8/XLPg6u8b5CKtrdpXP07V7CbQ+QTqJvCnYvQknjbKWBPcBSSem+86b
-         jpU+uNL0TRXHXI7nKh6FRscRnEeN6vnL6hOy70M3V5/iRe5CX6KoHlmBIUhr6A60/B4k
-         02PIE3JY3jEvCuN6Vj91nAv6TTs/GTFXfLwoFTrspw0jrXilP50ETzIh7PxR2GL+kZZF
-         QjNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711113597; x=1711718397;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T78z1nOSwZno9foTloy4dRS2ODcsdxPFmoFq7VTiovc=;
-        b=oPk/YmmQ3sYA1kLQiRvA0lfqp8EybVeYjAoMujQEZpUi/YIlfHw8lcqSq4aGPDOQxL
-         11bBQCHe+TJBxB0T6RFUPTlJcyds1Qu7EhcVCv5G+EMrOEj3H5i/eCpd6wyr+hsunPsm
-         FFeMH5t/aaIeG+ViUjvZSWJvW5b1oHZHrlhdIDgV3oNTAq8KXJiB3paaeyOrjLEHZcuT
-         uz3IGwChYiIWZj7lShgCAPYUMVFvZdSSnOXjb2fyvLplPOcVS9j14/Kuvs1/1zqDzU7k
-         IdaCvYJYkYkz0RB/6lEztJU2C84eyuzwbnBdvYy3mxp95lEheV8GbkHAEJtQzMO9C8Ss
-         Wt9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUweaLB2ax9fX80OZTpXRUTKdzMmYe06xuFSrYrF9VxTld6St2WQJHsEMmwTyqPsTN5OfGHDUNRnTOTdgqnOQYBUtmfF/ZTHpNRrXIn
-X-Gm-Message-State: AOJu0Yx3/LF/zyCS5vJoFcBV1qA1MZgUu8z2u3mLo5amdxG/2C3H7JqA
-	cm7k4YYqCeGDDjtCuhu6fK/xzCeHcVLU2EoBDqCXpqjztrGHTAPNsVyyWqLndSi+tipmigJEalM
-	3QBmHj3LteztzBp6xWo1qN6cx8F9ZnVHf7pMp/w==
-X-Google-Smtp-Source: AGHT+IG+SZfQK1DL1hghh4bEZkeXinAkbG2OAt0nX5blt+D+l9hJLR0PHCZqRRAPCLeNeeuIOd4XZSMRS4sju+TapJc=
-X-Received: by 2002:a25:b227:0:b0:dcc:f0a:e495 with SMTP id
- i39-20020a25b227000000b00dcc0f0ae495mr1995183ybj.3.1711113597315; Fri, 22 Mar
- 2024 06:19:57 -0700 (PDT)
+	 To:Cc:Content-Type; b=Zmo7GCGxfABFP+0REFyvFJBAUs/Cov8tCCqqxedAFLLScVgQz0qVY/rMUjXzbhf4mURA1Y1kkPPwCmTw7hLvqDrcZ7wNKhF0kN2QKD/VdvydQWGzFlXyb2MP8g0lK5D8TqJK/3KoVxz94nfHGgNgJEoDcRtX0e+C1p+BuiotRpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1YrjZ6q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8E5EC433B2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711113606;
+	bh=prvrAvxH2CImXFxyQ5e6hd6neKkkvJjK1A/VThwiIyE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=A1YrjZ6quDkuYk2hBCU6LJgd4xlX3NeLB45WRL3HJAC88Xd63GtkIjU5lhmIifjyQ
+	 ys2MYtHvDInEOuHVRnNedSGnvof/BtYbX1We9nkadEOkRDSUop93Z7r4BvVrEnlFb9
+	 wlt7B4kuitxwkWXQNE7VmRmtpkDDuxy5EOwez5tb+XXjbVR3Co7qx8TShH2A7WFgnZ
+	 slwceEenxxaVqmQB1Jj2LvrFtDJ0LxqABg0HQ6DzXe7SQ5MbLy2u+w9l2+7SE5fZMU
+	 GZayiLo8pXr5mJUeCpTY57GHAKPca/4RovQuQrbrcQdP9roiRhQZaQlNx72wzrlIUW
+	 kYGaC6FFSLWdQ==
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-366bc265e58so7764645ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:20:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXtxze9GI72C5/tQ/6ZZb9sbbsntxzkKsWk/iLGDjwZyf9yaYzD0sqOhfW+ekh2OCPPCH0As3bRluzAhKtori6w2Ds76sDFSj9PlpMx
+X-Gm-Message-State: AOJu0YxfjqQQTrPLNzpzELPUppZ0UDTz5pWWSe3PxwWcNbBjKO27ey2J
+	GUqRCop4AGWOhII9rZ+9VzC0OkS/32ya1bOISY573DzpSGetTdIOeAX7llv2frt2jRZoA/xycde
+	07G1r7JcsSWMf9EWbw3fmvfHrIVyqMABwF75P
+X-Google-Smtp-Source: AGHT+IGB2R6wow2zgHKtqMYRQUOZXQD3hm7dQSeNn7YINb3EJhIs4lc91U2CA2bP5HCcYQXPXPtxXwEtC2bpxLD6fkY=
+X-Received: by 2002:a92:4a0e:0:b0:366:bcbd:ed84 with SMTP id
+ m14-20020a924a0e000000b00366bcbded84mr2669991ilf.15.1711113605975; Fri, 22
+ Mar 2024 06:20:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-typec-fix-sm8250-v1-0-1ac22b333ea9@linaro.org>
- <20240322-typec-fix-sm8250-v1-2-1ac22b333ea9@linaro.org> <635f7501-82cf-4df1-9194-27f24eb40a53@linaro.org>
-In-Reply-To: <635f7501-82cf-4df1-9194-27f24eb40a53@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Mar 2024 15:19:46 +0200
-Message-ID: <CAA8EJpoYBsB8kx8P9w9M3pd6E7iUfqWk4XYwMr2oLoZV_nuYpg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8250: add a link between DWC3 and
- QMP PHY
-To: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Luca Weiss <luca.weiss@fairphone.com>
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-5-ryan.roberts@arm.com> <87jzm751n3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <d6ac1097-2ca3-4e6d-902d-1b942cacf0fb@arm.com> <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <b22a222b-7fd8-4648-84a7-21d35f529f27@arm.com> <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 22 Mar 2024 06:19:52 -0700
+X-Gmail-Original-Message-ID: <CAF8kJuOLUnEuQjOnHiEeN3a__60Op=eBRHu9pzKHe60iLKi-KA@mail.gmail.com>
+Message-ID: <CAF8kJuOLUnEuQjOnHiEeN3a__60Op=eBRHu9pzKHe60iLKi-KA@mail.gmail.com>
+Subject: Re: Can you help us on memory barrier usage? (was Re: [PATCH v4 4/6]
+ mm: swap: Allow storage of all mTHP orders)
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>, 
+	Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 22 Mar 2024 at 14:11, Bryan O'Donoghue
-<bryan.odonoghue@linaro.org> wrote:
+Hi Ying,
+
+Very interesting question.
+
+On Thu, Mar 21, 2024 at 7:40=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
 >
-> On 22/03/2024 11:58, Dmitry Baryshkov wrote:
-> > The SuperSpeed signals originate from the DWC3 host controller and then
-> > are routed through the Combo QMP PHY, where they are multiplexed with
-> > the DisplayPort signals. Add corresponding OF graph link.
-> >
-> > Reported-by: Luca Weiss <luca.weiss@fairphone.com>
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >   arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++++++++++++++++++++--
-> >   1 file changed, 22 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> > index d57039a4c3aa..e551e733ab94 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> > @@ -3917,6 +3917,10 @@ port@0 {
-> >
-> >                               port@1 {
-> >                                       reg = <1>;
-> > +
-> > +                                     usb_1_qmpphy_usb_ss_in: endpoint {
-> > +                                             remote-endpoint = <&usb_1_dwc3_ss_out>;
-> > +                                     };
-> >                               };
-> >
-> >                               port@2 {
-> > @@ -4195,8 +4199,24 @@ usb_1_dwc3: usb@a600000 {
-> >                               phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
-> >                               phy-names = "usb2-phy", "usb3-phy";
-> >
-> > -                             port {
-> > -                                     usb_1_dwc3_hs_out: endpoint {};
-> > +                             ports {
-> > +                                     #address-cells = <1>;
-> > +                                     #size-cells = <0>;
-> > +
-> > +                                     port@0 {
-> > +                                             reg = <0>;
-> > +
-> > +                                             usb_1_dwc3_hs_out: endpoint {
-> > +                                             };
-> > +                                     };
-> > +
-> > +                                     port@1 {
-> > +                                             reg = <1>;
-> > +
-> > +                                             usb_1_dwc3_ss_out: endpoint {
-> > +                                                     remote-endpoint = <&usb_1_qmpphy_usb_ss_in>;
-> > +                                             };
-> > +                                     };
-> >                               };
-> >                       };
-> >               };
-> >
+> Hi, Paul,
 >
-> I think these should go into platform definitions, there's nothing at
-> the SoC level that imposes the port constraint.
+> Can you help us on WRITE_ONCE()/READ_ONCE()/barrier() usage as follows?
+> For some example kernel code as follows,
+>
+> "
+> unsigned char x[16];
+>
+> void writer(void)
+> {
+>         memset(x, 1, sizeof(x));
+>         /* To make memset() take effect ASAP */
+>         barrier();
+> }
+>
+> unsigned char reader(int n)
+> {
+>         return READ_ONCE(x[n]);
+> }
+> "
+>
+> where, writer() and reader() may be called on 2 CPUs without any lock.
+> It's acceptable for reader() to read the written value a little later.
 
-The link between DWC3 and QMP PHY is fixed in the SoC, if I remember correctly.
+I am trying to see if your program can convert into a litmus test so
+the linux memory model tools can answer it for you.
+Because you allow reader() to read written value a little later, there
+is nothing the test can verify against. The reader can see both before
+or after the writer's update, both are valid observations.
 
--- 
-With best wishes
-Dmitry
+To make your test example more complete, you need the reader/writer to
+do more actions to expose the race. For example, " if (READ_ONCE(x[n])
+y =3D 1;"  Then you can ask the question whether it is possible to
+observe x[n] =3D=3D 0 and y=3D=3D 1. That might not be the test condition y=
+ou
+have in mind, you can get the idea.
+
+We want to have a test example that shows the result observable state
+to indicate the bad things did happen(or not possible).
+
+> Our questions are,
+>
+> 1. because it's impossible for accessing "unsigned char" to cause
+> tearing.  So, WRITE_ONCE()/READ_ONCE()/barrier() isn't necessary for
+> correctness, right?
+
+We need to define what is the expected behavior outcome to be
+"correct", possibly including the before and after barrier actions.
+
+Chris
+
+>
+> 2. we use barrier() and READ_ONCE() in writer() and reader(), because we
+> want to make writing take effect ASAP.  Is it a good practice?  Or it's
+> a micro-optimization that should be avoided?
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
 
