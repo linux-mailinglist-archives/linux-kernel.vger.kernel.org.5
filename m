@@ -1,144 +1,118 @@
-Return-Path: <linux-kernel+bounces-111365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750F6886B47
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:28:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DA9886B4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D8B285C17
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:28:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5515BB215A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3E33EA98;
-	Fri, 22 Mar 2024 11:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DB03F8F1;
+	Fri, 22 Mar 2024 11:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IIB1jlFb"
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zh0PAJB2";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RwXlVast"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFAA3EA66
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B1F3EA91;
+	Fri, 22 Mar 2024 11:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711106910; cv=none; b=OGuBIpa5wImwwI+aViV76eqelfCZ78ctvcs9G5q1EadofQ0n5FeLAiqPR82hSmx71hkTKWN7jxa96zVv2YnLkgUg8z2ibdhns5BNRzlFaCVuV6lFc1mWgOyPQwAnmUpvOeVi56aUy7Se2sONIUET2yjEfu6Mw4RvoSaOYrohx3w=
+	t=1711107145; cv=none; b=BPQxy5NDb4uo1+rnJ7JtwFZTAwETGhcaXls15xSfrF6Qgw5pr9eVYcT7vdSeGBr1lMs5aAUSNJGSaD8n66VYjHxces6vVYJiQRGH3SquMx/W60/GaD8NLkVrMiPyZbgmePFDSDrazVpW10lPczU6BEt6JngYNdy6LrVYekbqP5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711106910; c=relaxed/simple;
-	bh=CknH/9xSPoJ1WEhhL4MAsXBaxhXJfc/14SdBokj/AFE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N8FQSM9YOYanlxxmvDIGvMQS2WprTpPpQ99WDbSiB2AXnvKsE9yTAA+BlmW65eWg4D+FKJpPNh3mCBUsQB0XBkxmAbEjaHS1v5E9UIkZQi/3IzYLopv0URIwSPZQOVK+NMjc7kqlfpM0g6lY8AEcok+mqR+uxJ7L4HRewjdOMlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IIB1jlFb; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6ea523f5-2628-4269-9194-dfb6bf07f4db@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711106904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1711107145; c=relaxed/simple;
+	bh=90coaIbKQw4ZkhaaF0j7Q5qW8B/dorCNCimYbGkskmw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=gwZbmo3w2DOx9shaQEu24q5HCthHgITYyu/XcOa6G1Z6akF4bPEy2aPiavuyEcTiSx9ePJMvhJd4uESp+q0ioabuVGnuvmIATqsYyV7YDEp39ATZ0mSvtrMbqKhF9ISEWgAzAXJDcPC3qUNdZGZkgLsfGF3gAfzzpL28TMB1hfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zh0PAJB2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RwXlVast; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 22 Mar 2024 11:32:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711107142;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uNC0CCmpYhCcH8TuokVlW8ASQZ45O/eH5PrkVa66tCA=;
-	b=IIB1jlFbZEqqghgVkJSf3iJOkGODQW2yz0EtVMKFmrmwi5YI2/k1T2ZNs9yLzICh1yGzfQ
-	b1OTU/sKMALlLoLwIIS9N1aYn9LrVET8//z8YRlHr6aB6o3zKvgaSyCkjkTc47+pKf+/tF
-	FzT2awU6tMmBerhJCJI7vciw4oeFL34=
-Date: Fri, 22 Mar 2024 19:28:08 +0800
+	bh=XutA24CimGtRMlVcPHZI5MoxhxADAvKQO5+U9ScpjW4=;
+	b=zh0PAJB2SQVW1hiZIypfNi3o7QjV6HeZ9he1P5qSw2R8bQ3/Z9D6XkzP6QBIoDiGZL+pIo
+	jBuWPSDCAQeZyv/e5UTvA6kH8HZ907SAewBJGZ1YLErZIvsTIxmw++w4cShPg+3TwlbpmG
+	fY9bE8BPtVB0pMWLOJrhRbAvV99v+SPiYRpKhmJk+Byxa9CZiw5thpC7w0C/G+SEkEf2VB
+	fzOxSQ3OV3EY54TWuu+6zXflaATc+xdEOe8Z51k/mwbgNCUD9GFQ3rQMRl1ZBmWbaQ/4YE
+	0tyAxfE3BVUyNhEKrNDKPUL4Wi+ilgIEiv+0BQ+fmBybw+lMtDHpqj9Oq7A69w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711107142;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XutA24CimGtRMlVcPHZI5MoxhxADAvKQO5+U9ScpjW4=;
+	b=RwXlVastRpctiMkNS6telkjWu1X8oPxbPj0wuRu3dHtvGJ5ujDYSXTM7GRc9Sb8HwcTDix
+	2Qt7F/ROUBojC6BA==
+From: "tip-bot2 for Paul Menzel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/fred: Fix typo in Kconfig description
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Ingo Molnar <mingo@kernel.org>,
+ "H. Peter Anvin (Intel)" <hpa@zytor.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240312161958.102927-2-pmenzel@molgen.mpg.de>
+References: <20240312161958.102927-2-pmenzel@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [v10,20/27] drm/connector: hdmi: Add Infoframes generation
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240321-kms-hdmi-connector-state-v10-20-e6c178361898@kernel.org>
- <07125064-2a78-4515-bb48-655f2aec140f@linux.dev> <87sf0iliyh.fsf@intel.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <87sf0iliyh.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <171110714175.10875.9793594920655903876.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-Hi,
+The following commit has been merged into the x86/cleanups branch of tip:
 
+Commit-ID:     3c41786cab885f9c542e89f624bcdb71187dbb75
+Gitweb:        https://git.kernel.org/tip/3c41786cab885f9c542e89f624bcdb71187dbb75
+Author:        Paul Menzel <pmenzel@molgen.mpg.de>
+AuthorDate:    Tue, 12 Mar 2024 17:19:58 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 22 Mar 2024 12:27:31 +01:00
 
-On 2024/3/22 17:22, Jani Nikula wrote:
-> On Fri, 22 Mar 2024, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->> Hi,
->>
->>
->> On 2024/3/21 23:29, Maxime Ripard wrote:
->>> Infoframes in KMS is usually handled by a bunch of low-level helpers
->>> that require quite some boilerplate for drivers. This leads to
->>> discrepancies with how drivers generate them, and which are actually
->>> sent.
->>>
->>> Now that we have everything needed to generate them in the HDMI
->>> connector state, we can generate them in our common logic so that
->>> drivers can simply reuse what we precomputed.
->>>
->>> Signed-off-by: Maxime Ripard <mripard@kernel.org>
->>> ---
->>>    drivers/gpu/drm/Kconfig                            |   1 +
->>>    drivers/gpu/drm/drm_atomic_state_helper.c          | 338 +++++++++++++++++++++
->>>    drivers/gpu/drm/drm_connector.c                    |  14 +
->>>    .../gpu/drm/tests/drm_atomic_state_helper_test.c   |   1 +
->>>    drivers/gpu/drm/tests/drm_connector_test.c         |  12 +
->>>    include/drm/drm_atomic_state_helper.h              |   8 +
->>>    include/drm/drm_connector.h                        | 109 +++++++
->>>    7 files changed, 483 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
->>> index 16029435b750..3d3193c7aa5f 100644
->>> --- a/drivers/gpu/drm/Kconfig
->>> +++ b/drivers/gpu/drm/Kconfig
->>> @@ -97,10 +97,11 @@ config DRM_KUNIT_TEST
->>>    	  If in doubt, say "N".
->>>    
->>>    config DRM_KMS_HELPER
->>>    	tristate
->>>    	depends on DRM
->>> +	select DRM_DISPLAY_HDMI_HELPER
->> Should we select DRM_DISPLAY_HELPER here? Otherwise there will have some compile error
->> emerged with default config.
-> Can we stop abusing select instead of adding more selects to paper over
-> the issues?
->
-> Use select only for non-visible symbols (no prompts anywhere) and for
-> symbols with no dependencies.
+x86/fred: Fix typo in Kconfig description
 
+Fixes: 2cce95918d63 ("x86/fred: Add Kconfig option for FRED (CONFIG_X86_FRED)")
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Link: https://lore.kernel.org/r/20240312161958.102927-2-pmenzel@molgen.mpg.de
 
-OK, fine.
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You probably want to tell us a concrete method, then we will follow.
-But I guess that is up to Maxime will adopt it or not. Probably need
-some discussion then.
-
-
->
-> BR,
-> Jani.
->
-
-
--- 
-Best regards,
-Sui
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7aed87c..bf2b2cb 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -504,7 +504,7 @@ config X86_FRED
+ 	  When enabled, try to use Flexible Return and Event Delivery
+ 	  instead of the legacy SYSCALL/SYSENTER/IDT architecture for
+ 	  ring transitions and exception/interrupt handling if the
+-	  system supports.
++	  system supports it.
+ 
+ if X86_32
+ config X86_BIGSMP
 
