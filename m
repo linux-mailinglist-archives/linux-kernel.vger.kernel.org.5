@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-111141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D14288684E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:37:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D5E88684F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:37:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F6161C21710
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:37:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44BAB283446
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D8D1CA8F;
-	Fri, 22 Mar 2024 08:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947D73F8C2;
+	Fri, 22 Mar 2024 08:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fj4/oAXX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAcwg2U9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD171BC3B
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAAE3E49C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711096506; cv=none; b=oGowsEH6U8IjvEFwmCOOQKNfHQyA3yc4HdrLCm1y1OzY+0FjUNrupngYdIHruvsc0STVf7qNHzY/+O3ENYFNkTITNDthqr/jtwAn7jU15/TFTm8UReyOaJZPDvpewhqa5VqLkFpQIzMen3qBiCQ9pJfPrlcykmsvJ0rnBpSn8bk=
+	t=1711096509; cv=none; b=HGCPXePCAJswK4qKRViNfuvavfP/YQym/T7+nAPSKG0TNqCx5vj3XEtswfmGr6HURzilqSaPkMl+LHmsYIxGZa3C5uNxy0dr51Y1Paw1NhqkpZSLnJ3/WlEV7k6078b1/6SsY/cMED58kWkFooGjo4W1XsM3EiQ2i+o9jtjMK2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711096506; c=relaxed/simple;
-	bh=58CYkIGbUXi9LAju+yb3HIaI5P0/xOPsOLCuC4bYl0I=;
+	s=arc-20240116; t=1711096509; c=relaxed/simple;
+	bh=ZriKAGE58KVGgk3LtHqsYBhdOJzv7LI/X6J606D1xxw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d7CaGpKyMaq0RFpYTzaIIMPY6LZztw5F7hFVY+32qHGK+DXNlKVmwzBwoErlBpfKk2kFz12Q4kcHr/uXeLbtI8mNMJMGVb9FxyRw5PFYixxexKNVligSxenCE+vMLmLxZKqOONUd+UYq7GkHNMSUgwEJXndaXvv99xEnESlVvUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fj4/oAXX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45DA2C43390;
-	Fri, 22 Mar 2024 08:35:04 +0000 (UTC)
+	 MIME-Version; b=amGCau8IYuNXm1CpHCENjGYtzl99bQISG8uFCNZwe+7aTxBXWoSPpL1AUKSzoGc6DXSWyWTTbHJ0s5BIZoNnmibr3vE/QxpgLjoNoZDjs6I6bV10dc0Cku22h2KPhlO1UTsZ2x94nVEa2ziSIC5xLDTNX7aPsLv6K3dTmxQ6z9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAcwg2U9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 484F1C43399;
+	Fri, 22 Mar 2024 08:35:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711096506;
-	bh=58CYkIGbUXi9LAju+yb3HIaI5P0/xOPsOLCuC4bYl0I=;
+	s=k20201202; t=1711096509;
+	bh=ZriKAGE58KVGgk3LtHqsYBhdOJzv7LI/X6J606D1xxw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fj4/oAXXwJyK+lHuDuYpq+4X/X/wDs8aqMGx/io2Y3zhIpzKnZ2W8eoxDqdGLWBQh
-	 HwOg4I/Ld12Y6pOsSFTvCvXolR8RtLGSxIn4SsrsivuZhZg2LXyp979uG+TYpMIO08
-	 Zmam5au1soDjXTNv/A6/P1VgSggAI7xIzJ3UxNmqGdXRLrVNqpj0YYKIDl2Oq33eyw
-	 FyEneaJRsoSxoubL3WMyaCjxt/SetSyb5la5KpXDdNHkbmk2W1A3g2ojs8q+F1+80Z
-	 Z+Z9kFNFmk980SrvTfKIhObMlUuK4Z+77hkFoOHgVGZUOzOnsHGQ3f4zX536gcsn7n
-	 sANRg6w7jqrIg==
+	b=iAcwg2U9TA5i2WgtDkxRMvKzkar2T0ss4NV9QTixbCGq/vdCNstF1KB7VAtunrssD
+	 roMaD4WVS54iqRVPCPq+8eu/D56fmO+XQtn/NRSeXhJuc2PfZCkA/BLwhnS5EZdZy7
+	 y1acuH42/rzI5sikMvS+UcpS+RP522841XB3DOjkzB+uGxSBmrjUq+InQ67lNY75c2
+	 v2AOGRLtDpSo45fcsKX+d5T7ViAUoXym1Jh4dNGUDI51D7Y9GcF3fNZvf/bPUPFI5K
+	 sS9y+mlzPqzI3051GE6T8aiyK68i5He/zcTKNaQfSGI9ORdzAnckSHwGeYYok2i8Fr
+	 X08VhSxlTW+Sg==
 From: alexs@kernel.org
 To: Matthew Wilcox <willy@infradead.org>,
 	Andrea Arcangeli <aarcange@redhat.com>,
@@ -51,9 +51,9 @@ To: Matthew Wilcox <willy@infradead.org>,
 Cc: "Alex Shi (tencent)" <alexs@kernel.org>,
 	Hugh Dickins <hughd@google.com>,
 	Chris Wright <chrisw@sous-sol.org>
-Subject: [PATCH v2 12/14] mm/ksm: return folio for chain series funcs
-Date: Fri, 22 Mar 2024 16:36:59 +0800
-Message-ID: <20240322083703.232364-13-alexs@kernel.org>
+Subject: [PATCH v2 13/14] mm/ksm: use folio_set_stable_node in try_to_merge_one_page
+Date: Fri, 22 Mar 2024 16:37:00 +0800
+Message-ID: <20240322083703.232364-14-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322083703.232364-1-alexs@kernel.org>
 References: <20240322083703.232364-1-alexs@kernel.org>
@@ -67,8 +67,8 @@ Content-Transfer-Encoding: 8bit
 
 From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-Since all caller changed to folios, change their return type to folio
-too.
+Only single page could be reached where we set stable node after write
+protect, so use folio converted func to replace page's.
 
 Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
 Cc: Izik Eidus <izik.eidus@ravellosystems.com>
@@ -77,66 +77,22 @@ Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Chris Wright <chrisw@sous-sol.org>
 ---
- mm/ksm.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ mm/ksm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/ksm.c b/mm/ksm.c
-index afcf26510669..15a78a9bab59 100644
+index 15a78a9bab59..d7c4cc4a0cc1 100644
 --- a/mm/ksm.c
 +++ b/mm/ksm.c
-@@ -1623,10 +1623,10 @@ bool is_page_sharing_candidate(struct ksm_stable_node *stable_node)
- 	return __is_page_sharing_candidate(stable_node, 0);
- }
- 
--static void *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
--			     struct ksm_stable_node **_stable_node,
--			     struct rb_root *root,
--			     bool prune_stale_stable_nodes)
-+static struct folio *stable_node_dup(struct ksm_stable_node **_stable_node_dup,
-+				     struct ksm_stable_node **_stable_node,
-+				     struct rb_root *root,
-+				     bool prune_stale_stable_nodes)
- {
- 	struct ksm_stable_node *dup, *found = NULL, *stable_node = *_stable_node;
- 	struct hlist_node *hlist_safe;
-@@ -1769,10 +1769,10 @@ static struct ksm_stable_node *stable_node_dup_any(struct ksm_stable_node *stabl
-  * function and will be overwritten in all cases, the caller doesn't
-  * need to initialize it.
-  */
--static void *__stable_node_chain(struct ksm_stable_node **_stable_node_dup,
--					struct ksm_stable_node **_stable_node,
--					struct rb_root *root,
--					bool prune_stale_stable_nodes)
-+static struct folio *__stable_node_chain(struct ksm_stable_node **_stable_node_dup,
-+					 struct ksm_stable_node **_stable_node,
-+					 struct rb_root *root,
-+					 bool prune_stale_stable_nodes)
- {
- 	struct ksm_stable_node *stable_node = *_stable_node;
- 	if (!is_stable_node_chain(stable_node)) {
-@@ -1791,16 +1791,16 @@ static void *__stable_node_chain(struct ksm_stable_node **_stable_node_dup,
- 			       prune_stale_stable_nodes);
- }
- 
--static __always_inline void *chain_prune(struct ksm_stable_node **s_n_d,
--						struct ksm_stable_node **s_n,
--						struct rb_root *root)
-+static __always_inline struct folio *chain_prune(struct ksm_stable_node **s_n_d,
-+						 struct ksm_stable_node **s_n,
-+						 struct rb_root *root)
- {
- 	return __stable_node_chain(s_n_d, s_n, root, true);
- }
- 
--static __always_inline void *chain(struct ksm_stable_node **s_n_d,
--					  struct ksm_stable_node *s_n,
--					  struct rb_root *root)
-+static __always_inline struct folio *chain(struct ksm_stable_node **s_n_d,
-+					   struct ksm_stable_node *s_n,
-+					   struct rb_root *root)
- {
- 	struct ksm_stable_node *old_stable_node = s_n;
- 	struct folio *tree_folio;
+@@ -1518,7 +1518,7 @@ static int try_to_merge_one_page(struct vm_area_struct *vma,
+ 			 * PageAnon+anon_vma to PageKsm+NULL stable_node:
+ 			 * stable_tree_insert() will update stable_node.
+ 			 */
+-			set_page_stable_node(page, NULL);
++			folio_set_stable_node(page_folio(page), NULL);
+ 			mark_page_accessed(page);
+ 			/*
+ 			 * Page reclaim just frees a clean page with no dirty
 -- 
 2.43.0
 
