@@ -1,170 +1,138 @@
-Return-Path: <linux-kernel+bounces-112021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2E6887442
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:53:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DFE887444
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40BB92841F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C1D1C21C1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952527F7ED;
-	Fri, 22 Mar 2024 20:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eAU+Yiox"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CE37FBAE;
+	Fri, 22 Mar 2024 20:54:19 +0000 (UTC)
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3345356B78
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 20:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE95B56B78;
+	Fri, 22 Mar 2024 20:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711140796; cv=none; b=ghGojgDWMuCs/8+touPC5Lv8CLXoIv80JXU4wmqbKISoeIIdzpspMNDo3AxFwz2zgoO/8B9i5ICDkJzkWbd3rq3dMnZa8PU5dztNf7DNXkrtlYUd6ZLV5NT64Oqt3XUyV/kkSzBgZyuWh5DtWWi6Huu0XQfSxdqOvF+jQmvHYaY=
+	t=1711140859; cv=none; b=RkJfMRHl1w/xA6Ogx4GpfP7aLtRQZRQ0DngbXQNiee9pFXDRaCTjjA8uNisJqoCPsnsvDWWfWukYDi8NHbNpE0jaelSDqM2+mTs2td1EeRJZbS0Sk89K5dQvRsDzmLEIw8jPUZeK7XjQgI0KnOKBNlimBNYLRRaBiz9bYSHEZUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711140796; c=relaxed/simple;
-	bh=yD4GxiI8BItI/TqD/6wjK/ShBvThgA8NijIdOlE+Xkk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FiVWmYQB28PWWSdqbH1+nw145DjucV2IlRz1nx6moQZZVbigD5gS+DQP+utgjVmReP7zaWNRnngjtZ3LQPPkYKRZw6PmBbLp/UgxpavU93zqW4s+mNVYQOO73qhTNzo0gSwRL9wafWwMuU9PeLJWgSYuRrsHiIeMlclGIyF8TVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eAU+Yiox; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1711140859; c=relaxed/simple;
+	bh=qJ5FgNKO8igPyIl3IbFJ2DLkLzL3Nfy3AtmFj3UX4GQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uU3gVB/7OWprbiQpHGUqN73xWAECkKULWbnPuXAyLnHeOs6Kbwh9s2mnzOzznaP5GAetF0dlaIkREA9jFVNE6nOBPZoX1qmjaf8oQVd7rrH6+y8RTOo4u/o/fmvdWWWNJ+3vI57ns9JdUNZLAz4XRtrB9X4vKyOibHSxhM23cN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6ee9e3cffso1646004b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:53:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711140794; x=1711745594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ci1T0W7hck2YDPEEoQkTjQlEo6sqEjsMAhRmZZatUaA=;
-        b=eAU+YioxdTJPgZU5Vsq+EVSGvhcjwTQYIzfpdW/uTquqwNFz556sQLmFG5xq7ZFoHK
-         UQPwUM4Isv97wXjilR1Q+TwXf3Nz/TGtfcFTWYyEtTuJhASWMWikr7R6JJlz+1PuqSgz
-         HGeUP2bfUNRK3EzxL/tCdsLBtg5kuDp+DCHVny431J1e5/raGWSJ4gM/H8v97z08Ngsj
-         9kvwjOQ9xLnR1dwx0GYyTByfdpfTkcHm3K1yGtpVPyfgVCZPrVd4OvJkzSMF/DzjDSCc
-         5aHXN622vgQsjJNnSM/K+Jh/WuacRvzUGv327Qgj8UiJ2oIFnCHnXXsoZYjxHoPseRWr
-         sFqw==
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29ddfada0d0so1520615a91.3;
+        Fri, 22 Mar 2024 13:54:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711140794; x=1711745594;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ci1T0W7hck2YDPEEoQkTjQlEo6sqEjsMAhRmZZatUaA=;
-        b=jD85ciYaWFN+ruPQyBIjaeZn7TSXp180mszBWLLm5iJRAKVhoX2kn9NPCDS/8bsjze
-         HcvK+8dV8KBxw0HUz0IlmuZ1Ie5Vtl5oZMpN8vNanxvMe6boOf21Z4BhePzeOT0eqE9Q
-         7fwpgpkKGb2SQnIAS4CZuLZrIbWFPIUShCFa3h9O7oHwJYmS7RgSK1IQ9ZsimBta+1Af
-         YDnBJFOBE/9NbHjeQksMwa8WVse/KIoSLyT3PsApTbhCzZRnpnYvS7M1iplg8pjwCwjw
-         BVNWVPL//OvuVZprnSRN8i+NiuvdwQqNNfk29AdGqWPLi2vxoxb3Pp5H650tSw45qceW
-         lWXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXMIqKOCr23VFQWahxFIGMg/e1944fk8UhC6W0Vs3G3L1Ml6ZW1O0FxcmWSmj2+7X5AXQr3pWnpYeb+wiEpOATRA7vnzTUz6VmIzoos
-X-Gm-Message-State: AOJu0YzVtx5Fpd+8sZmwTOGLY0RSmBGqQ3DKt6xMO92+SNk893I7OPhP
-	PYr4PRvbDXjIaWqrLwjyX/loQj9RLX8uGES6/il7lh6/0Dr86RL2
-X-Google-Smtp-Source: AGHT+IGzbb6BRlw+sy6n6iVQGjf4HspvTMOXed5T9+PIxurbwnlMY4FuWkEujFZh8WI/7vMrZjvdqA==
-X-Received: by 2002:a05:6a00:2d04:b0:6e7:6bc4:ef8c with SMTP id fa4-20020a056a002d0400b006e76bc4ef8cmr147113pfb.3.1711140794414;
-        Fri, 22 Mar 2024 13:53:14 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a19-20020a056a0011d300b006e740d23674sm194098pfu.140.2024.03.22.13.53.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 13:53:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <8d0b5818-b3dc-4211-8cdf-92e7b76e0fe5@roeck-us.net>
-Date: Fri, 22 Mar 2024 13:53:11 -0700
+        d=1e100.net; s=20230601; t=1711140857; x=1711745657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JUvde+vJOWlMCi43uwRr3KT9dfStRwrN3Ih9yU0tQWg=;
+        b=NA/Kko/KKb+aFSYpsdiSiQ5Zgaap+NWSbOslY5rkqTFV6tUM9iNrf1+1OOOUTdMGTS
+         1pbilpuUK4fW8krpUrm/eYbyPr7lCF1yAYtP+72f0oN5wZwA2vFo6UGnbtyfbLPuUnvr
+         PJNWN5yVDj7aad0Pl1+L3/Q7OcqspYfO8osTNuyOmsyIAFQwiMPRGMVQChUTuNwjIwMb
+         zoCuwPNOA7ZZdyMPSWlHeXCL1dF3FbxFpIuGy49dpZ508LtxEAU+nJ76nmAEasAFiij3
+         RCsmxRCZj01//PMZ22wSpgEZ9QkuUyiXa1YMvvNoj/bhMtlJJ4vOaGYX7gxodAMk1MKm
+         1IPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUoP9Dj02RAIDN4f9w+bsrTDphvCCazjDyv5UxIefEtK/K7uHCS4eMMDM1UZUmPCneh0crdfF6mTUpfzxyKB8h1f3ThKSIgHIb6dBcHmey+1VKx3pkBNwvyR/LuLbpqWNfZ5AWtfbVcITaxE8qxzzKqk88nMiT2yHq/pg2VoKmCm5mZ4Q==
+X-Gm-Message-State: AOJu0YzWKIsejpOrYtYEMP6Bcr3JLs3EvLnjwHbpaKrIJ22cqcFdl4XJ
+	PrgdSO+wYrHEd5q9ccECKD95u6FZua/Jq/WT9OwDsJgxqtVdo4+Cgfaplub7Wj8NZXWGH6AvbRH
+	8XqCHP+aPCb49a4jP3ezS6z6Gou4=
+X-Google-Smtp-Source: AGHT+IELzPsVTYhLERrUtvP2iXqcjJxKY8QJnJyziAecrquP5sGkNIup/XnAa6SfQVg0FUDwqRnOjitipt83gZfy7jM=
+X-Received: by 2002:a17:90a:dc02:b0:29f:6a6f:c42 with SMTP id
+ i2-20020a17090adc0200b0029f6a6f0c42mr741135pjv.13.1711140857003; Fri, 22 Mar
+ 2024 13:54:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
- Lorenzo Stoakes <lstoakes@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Matthew Wilcox <willy@infradead.org>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>,
- Dave Chinner <david@fromorbit.com>, "Paul E . McKenney"
- <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <20240102184633.748113-8-urezki@gmail.com>
- <bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net> <Zf3V6B9f5o0H1LnE@pc636>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <Zf3V6B9f5o0H1LnE@pc636>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240321160300.1635121-1-irogers@google.com> <20240321160300.1635121-5-irogers@google.com>
+ <CAM9d7ciUwKrHsk3GencSDCRDEP0oUX6H99-uRmL=zf4gCgtdHQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ciUwKrHsk3GencSDCRDEP0oUX6H99-uRmL=zf4gCgtdHQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 22 Mar 2024 13:54:06 -0700
+Message-ID: <CAM9d7chjyg9TyPLO68Tx3dWO1itT8bfMCuu4ATV_hV-47MjZUA@mail.gmail.com>
+Subject: Re: [PATCH v2 04/13] perf dsos: Add dsos__for_each_dso
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Colin Ian King <colin.i.king@gmail.com>, 
+	=?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>, 
+	Leo Yan <leo.yan@linux.dev>, Song Liu <song@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, 
+	Liam Howlett <liam.howlett@oracle.com>, Ilkka Koskinen <ilkka@os.amperecomputing.com>, 
+	Ben Gainey <ben.gainey@arm.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Yanteng Si <siyanteng@loongson.cn>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Sun Haiyong <sunhaiyong@loongson.cn>, 
+	Changbin Du <changbin.du@huawei.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	zhaimingbing <zhaimingbing@cmss.chinamobile.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Li Dong <lidong@vivo.com>, elfring@users.sourceforge.net, 
+	Andi Kleen <ak@linux.intel.com>, Markus Elfring <Markus.Elfring@web.de>, 
+	Chengen Du <chengen.du@canonical.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/22/24 12:03, Uladzislau Rezki wrote:
-[ ... ]
+On Fri, Mar 22, 2024 at 1:43=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Hi Ian,
+>
+> On Thu, Mar 21, 2024 at 9:03=E2=80=AFAM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > To better abstract the dsos internals, add dsos__for_each_dso that
+> > does a callback on each dso. This also means the read lock can be
+> > correctly held.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+[SNIP]
+> > diff --git a/tools/perf/util/dsos.c b/tools/perf/util/dsos.c
+> > index d269e09005a7..d43f64939b12 100644
+> > --- a/tools/perf/util/dsos.c
+> > +++ b/tools/perf/util/dsos.c
+> > @@ -433,3 +433,19 @@ struct dso *dsos__find_kernel_dso(struct dsos *dso=
+s)
+> >         up_read(&dsos->lock);
+> >         return res;
+> >  }
+> > +
+> > +int dsos__for_each_dso(struct dsos *dsos, int (*cb)(struct dso *dso, v=
+oid *data), void *data)
+> > +{
+> > +       struct dso *dso;
+> > +
+> > +       down_read(&dsos->lock);
+> > +       list_for_each_entry(dso, &dsos->head, node) {
+> > +               int err;
+> > +
+> > +               err =3D cb(dso, data);
+> > +               if (err)
+> > +                       return err;
+>
+> Please break and return the error to release the lock.
 
-> <snip>
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 22aa63f4ef63..0d77d171b5d9 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2343,6 +2343,9 @@ struct vmap_area *find_vmap_area(unsigned long addr)
->          struct vmap_area *va;
->          int i, j;
-> 
-> +       if (unlikely(!vmap_initialized))
-> +               return NULL;
-> +
->          /*
->           * An addr_to_node_id(addr) converts an address to a node index
->           * where a VA is located. If VA spans several zones and passed
-> <snip>
-> 
-> Could you please test it?
-> 
-
-That fixes the problem.
+Hmm.. I saw this code was replaced by the next patch.
+Then probably it'd be ok to leave it.
 
 Thanks,
-Guenter
+Namhyung
 
+>
+> > +       }
+> > +       up_read(&dsos->lock);
+> > +       return 0;
+> > +}
 
