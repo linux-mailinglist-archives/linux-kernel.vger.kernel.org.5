@@ -1,134 +1,138 @@
-Return-Path: <linux-kernel+bounces-111777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 160BD8870D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:28:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD668870DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:29:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3F062869A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:28:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C054B22429
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B8C59172;
-	Fri, 22 Mar 2024 16:28:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB6C5674E;
-	Fri, 22 Mar 2024 16:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AC459B5F;
+	Fri, 22 Mar 2024 16:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="EWBrLKgq"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1152B57876;
+	Fri, 22 Mar 2024 16:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711124905; cv=none; b=L+h1BtTih1G3mWydMe0dtg0HFDuRiDTpZPEbyIftFGRf+btUWNqYam4hfDQhKrkhBH6wU26nQKQh5Yzn5DjtrnnNUhJZrDIBIPnfoCRldbHQXiHNSYC4pZA3sKTskEYZTJHJSCFk8CZ8gtRQ+/EWXHQF4/tv6Nf9ZDg27hDghQo=
+	t=1711124933; cv=none; b=qrA+MsD2Oplsxos9p7TT5RCyNJ/mZZRTZLJy1oJEsXA6OgIIsm8x3ujAS5UxW4+TgEZR4h8+9aQ3jsrqigmEqyV9A3bLlPllKisPmBHr6SQUX+aIM8jt8Yoz6nXyjmtc92uT+vWyfThIJtRnGmV8pEoPryXHddhThPbM9q83zP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711124905; c=relaxed/simple;
-	bh=lRVx4ECF5hJdd5NdS5SDeG9HLw77wx4Jl92htBH1/iY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rn7WxdXTvYhM9a3Yai+9cSfKKYRrPxt0BKWxraInIPsIPEARhxVHA4N5SHHEJmz1a0EAe+Yu9j3Lv2SrZvKve1jlE7+3KDASSkky65YuufqeAt7brAM2ub24qwS2vkMsq94XljrT83IBIf6wJc/lGNf5xvbzNO7xtvJstBaSnhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DC7EFEC;
-	Fri, 22 Mar 2024 09:28:56 -0700 (PDT)
-Received: from PF4Q20KV.arm.com (PF4Q20KV.arm.com [10.1.26.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A2D2B3F762;
-	Fri, 22 Mar 2024 09:28:19 -0700 (PDT)
-From: Leo Yan <leo.yan@arm.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: Leo Yan <leo.yan@arm.com>,
-	Al Grant <al.grant@arm.com>,
-	James Clark <james.clark@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH] exec: Don't disable perf events for setuid root executables
-Date: Fri, 22 Mar 2024 16:27:59 +0000
-Message-Id: <20240322162759.714141-1-leo.yan@arm.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1711124933; c=relaxed/simple;
+	bh=HCHPduluDxyIyH+NvikE4NsWGI6bZ5WsJcGstMkaba8=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=LAggexJTMmkMOKqgPMmOVUByzRcohbVw4v71ILzq8UgAxII/jK0b1xZsw6iDVUojsCCmDEaxEjY+sUu/UwfufoMpwny3uqBQiIFKKT7y0OY82IuqSU/7Ast/n9+6xMKIkYNFWd6vxUY0mHJd1TxY0/OxZC9m+DBmKQyKcWk3V9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=EWBrLKgq; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=hixCqn+Oc2muuJ+PQhMb4XfVD5sY/7+CWBK1O86fCP8=; b=EWBrLKgqN4m8l3O6+O94qP2ODo
+	URMp6tGn683BPwRb8Fpew2vnz3OQ5WBxW29yWsVTp4ehqWT/HbD247K0L1F1lqRMaHZexptq5uaLg
+	x/rWMQysn22z28qRpDQaOBNykOb7EYHGrlrEoihYdaHLXUY5bXE+OkuSuafWrJ/phSNR8xCmM3wVj
+	OEkGRc6cuEz6RpKsXPLA3segwnrc+WKTj08v26v02VUkjw4JJtqUpcyYidyqRTcRBKEy4l82bDbh2
+	k5wOf5tBTYOPLzFyF+4FqK+CG3zivP2hhwVYJbvxPwDrIFVBNc+mSndvNs0JTMhu8XJoEeF2CtMWZ
+	atWNIHvw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rnhks-000Ook-0x; Fri, 22 Mar 2024 17:28:30 +0100
+Received: from [178.197.248.30] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rnhkq-000BhN-1s;
+	Fri, 22 Mar 2024 17:28:28 +0100
+Subject: Re: [PATCH bpf v4] bpf: verifier: prevent userspace memory access
+To: Puranjay Mohan <puranjay12@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ilya Leoshkevich <iii@linux.ibm.com>
+References: <20240321124640.8870-1-puranjay12@gmail.com>
+ <9f2b63b5-569c-1e00-a635-93d9cd695517@iogearbox.net>
+ <mb61p4jcyxq5m.fsf@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <15ba79e3-14b2-d92e-3f94-e4f5f963e15d@iogearbox.net>
+Date: Fri, 22 Mar 2024 17:28:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <mb61p4jcyxq5m.fsf@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27222/Fri Mar 22 09:30:59 2024)
 
-Al Grant reported that the 'perf record' command terminates abnormally
-after setting the setuid bit for the executable. To reproduce this
-issue, an additional condition is the binary file is owned by the root
-user but is running under a non-privileged user. The logs below provide
-details:
+On 3/22/24 4:05 PM, Puranjay Mohan wrote:
+[...]
+>>> +		/* Make it impossible to de-reference a userspace address */
+>>> +		if (BPF_CLASS(insn->code) == BPF_LDX &&
+>>> +		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+>>> +		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
+>>> +			struct bpf_insn *patch = &insn_buf[0];
+>>> +			u64 uaddress_limit = bpf_arch_uaddress_limit();
+>>> +
+>>> +			if (!uaddress_limit)
+>>> +				goto next_insn;
+>>> +
+>>> +			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
+>>> +			if (insn->off)
+>>> +				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
+>>> +			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
+>>> +			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
+>>> +			*patch++ = *insn;
+>>> +			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
+>>> +			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
+>>
+>> But how does this address other cases where we could fault e.g. non-canonical,
+>> vsyscall page, etc? Technically, we would have to call to copy_from_kernel_nofault_allowed()
+>> to really address all the cases aside from the overflow (good catch btw!) where kernel
+>> turns into user address.
+> 
+> So, we are trying to ~simulate a call to
+> copy_from_kernel_nofault_allowed() here. If the address under
+> consideration is below TASK_SIZE (TASK_SIZE + 4GB to be precise) then we
+> skip that load because that address could be mapped by the user.
+> 
+> If the address is above TASK_SIZE + 4GB, we allow the load and it could
+> cause a fault if the address is invalid, non-canonical etc. Taking the
+> fault is fine because JIT will add an exception table entry for
+> for that load with BPF_PBOBE_MEM.
 
-    $ sudo chmod u+s perf
-    $ ls -l perf
-    -rwsr-xr-x 1 root root 13147600 Mar 17 14:56 perf
-    $ ./perf record -e cycles -- uname
-    [ perf record: Woken up 1 times to write data ]
-    [ perf record: Captured and wrote 0.003 MB perf.data (7 samples) ]
-    Terminated
+Are you sure? I don't think the kernel handles non-canonical fixup.
 
-Comparatively, the same command can succeed if the setuid bit is cleared
-for the perf executable:
+> The vsyscall page is special, this approach skips all loads from this
+> page. I am not sure if that is acceptable.
 
-    $ sudo chmod u-s perf
-    $ ls -l perf
-    -rwxr-xr-x 1 root root 13147600 Mar 17 14:56 perf
-    $ ./perf record -e cycles -- uname
-    Linux
-    [ perf record: Woken up 1 times to write data ]
-    [ perf record: Captured and wrote 0.003 MB perf.data (13 samples) ]
+The bpf_probe_read_kernel() does handle it fine via copy_from_kernel_nofault().
 
-After setting the setuid bit, the problem arises when begin_new_exec()
-disables the perf events upon detecting that a regular user is executing
-a setuid binary, which notifies the perf process. Consequently, the perf
-tool in user space exits from polling and sends a SIGTERM signal to kill
-child processes and itself. This explains why we observe the tool being
-'Terminated'.
-
-With the setuid bit a non-privileged user can obtain the same
-permissions as the executable's owner. If the owner has the privileged
-permission for accessing perf events, the kernel should keep enabling
-perf events. For this reason, this patch adds a condition checking for
-perfmon_capable() to not disabling perf events when the user has
-privileged permission yet.
-
-Note the begin_new_exec() function only checks permission for the
-per-thread mode in a perf session. This is why we don't need to add any
-extra checking for the global knob 'perf_event_paranoid', as it always
-grants permission for per-thread performance monitoring for unprivileged
-users (see Documentation/admin-guide/perf-security.rst).
-
-Signed-off-by: Leo Yan <leo.yan@arm.com>
-Cc: Al Grant <al.grant@arm.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
----
- fs/exec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index ff6f26671cfc..5ded01190278 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1401,7 +1401,8 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	 * wait until new credentials are committed
- 	 * by commit_creds() above
- 	 */
--	if (get_dumpable(me->mm) != SUID_DUMP_USER)
-+	if ((get_dumpable(me->mm) != SUID_DUMP_USER) &&
-+	    !perfmon_capable())
- 		perf_event_exit_task(me);
- 	/*
- 	 * cred_guard_mutex must be held at least to this point to prevent
--- 
-2.39.2
-
+So there is tail risk that BPF_PROBE_* could trigger a crash. Other archs might
+have other quirks, e.g. in case of loongarch it says highest bit set means kernel
+space.
 
