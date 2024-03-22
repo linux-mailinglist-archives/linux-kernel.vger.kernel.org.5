@@ -1,90 +1,77 @@
-Return-Path: <linux-kernel+bounces-111802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A0C788712C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:48:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376BC88713A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14E3E281EE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:48:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 694651C21D91
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FEA5D733;
-	Fri, 22 Mar 2024 16:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651575FB86;
+	Fri, 22 Mar 2024 16:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m+SenR8z"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cz2tiAY6"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1795CDFA;
-	Fri, 22 Mar 2024 16:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482E95D479;
+	Fri, 22 Mar 2024 16:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126100; cv=none; b=ZzGYx3JuSwy1iluezK7Wy/7FQVk14G79qIcqW8KLQpmlP0x7+QJxhhF7XLE6TbbWOk6aozQ4DWJfh+qY9RCwqnDrFjUweypT9BD5q0Z/1CHVb3VOODkdP8mZoz3X14UhxU1AQL6ZXE+1heb3JSTt8Grb+9k/s/ZrUo+lkt0QCHU=
+	t=1711126184; cv=none; b=vGIzZw/0nmCrrngpyGiTHKAE8nCeFeyRIWoQh3TdiyLmg8iSccLUsTrXnv8oo0KXW42nn8slWYG7+PqjYvDrw+G+VjC3y+8QrG2S5MVoYW08Sv9YGe70jXjsIZ5A247H6UstuNmoe0BvXh+W0D7s1IMZAXV1NihUHLZyp095wVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126100; c=relaxed/simple;
-	bh=AIxpdyQlT/B7BYVjFoMD8/QUyW+1uhLFqyaeq6EgDW4=;
+	s=arc-20240116; t=1711126184; c=relaxed/simple;
+	bh=ofr4IJKDtc++5mO73WvnwKV12KcYZaZurnkDZn0wcGw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZWC7/4T6D+CBUUfx5A8gTgh9/1q7ajCldM6otX8jiAyo3tFeps3E3ZLWTIB2t4OI/UnuH4jOW415uprB5w9RBHRsK0KyPGJDO9xUeWak71wHSmxAWlrw7LlTrftbVIZ3uOxyKZh+dTvy8YN0TDUHPL5bMYArKhueO+S5zeryD5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m+SenR8z; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so1467200a12.1;
-        Fri, 22 Mar 2024 09:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711126098; x=1711730898; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iLWuYvxt8cJho/qyhrDkNvS5uRVsAloQRBQojo7kkCY=;
-        b=m+SenR8znrNZmLAg7GWJCqvlUSpT/0BvOYuM8PMFsjm5eBQtFooZHeGFQwa+n7awHC
-         Z1rjJ/UtR9KYlHsApMkUHIGtWtGXQGzxu/83+amxOHUqWNgQzjY4YfSaDJUODmeYFBl8
-         wdSk7rOLSnCdX2YMeUxsVgNRe5jQlpzgqwAl86k0wxF9aF0vyMODxYjWeXPhBm0d3V4D
-         xo6wIpxAYCUedsLnRu36hH9hPseoq6S9ln9hmjYQem8kjMnPt+Y6zPDa6JiDp597Wuxa
-         gskeyhMZW1cc7gZ8D8Mda5uwgqVZCyokbgd6FWyMkzQYcpUeXDxf500kBNiYxHfWurTd
-         0eLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126098; x=1711730898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iLWuYvxt8cJho/qyhrDkNvS5uRVsAloQRBQojo7kkCY=;
-        b=hgxaMMLBpSwkzNE1X8lVYLq/Qere1lbcfLXeWbeRDKzNl1J65pnu8O3A1j88SsCS2l
-         Pfx0xXb9WMKq3g7KKEedcosCR8bZkTvWa8P/RPrxa7s/iauYuF1+QrPu1a6UNAWkNcO6
-         EXSHMT65YQO2BR6IWVNsyFQiLmqvV+ZaMEZSaekmswNMDm8NEWH0XXJdl2XlBjBx7Uyy
-         tfFJyf+/N85okUyRJXGbQ92p0Jd0Kjeb61x7yXcUCDYQzKxiCHOVNi1EL9yz45AW5jT9
-         5owVUdrzkkql8fSSFDFgo/y5FRjx0LLp0euoN8pTiU9XEkCpvUnXTx6JbU1xDKIKzf44
-         8n1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVb37bTfdj0dMD014I+0Q+yFGeVC3CVh/l7BAjwBWwJbJphV/BnA+CCGFx68TRhjhArWMLtmUmOGb9yw1+8mBPWPOrpqR88Gwya/+o7/mL791zK04CLQ/c4l+jfURkza3N8PTjwt6cDfHxuVXhHH0dLDvPVhmpQmLoOC7WEztkdgSIdcA==
-X-Gm-Message-State: AOJu0Yw1DbxLGxverbXzmAYhUBBsAoc7K22SJesQlGdwvDBwgTtvT1SB
-	7hKmsb9jn5jpuraV+yGzCM+YLU3jlbf8AZYUtdD/55ds7hJjpovV
-X-Google-Smtp-Source: AGHT+IF7ZJb9s4Yx5/oto0bsQjpkkyHcU/EVUMjRlMUGYu/PgXMG5bI/6u+KSo3WZ0/VTzE6OQtw6A==
-X-Received: by 2002:a17:90b:1c01:b0:29f:cd96:5952 with SMTP id oc1-20020a17090b1c0100b0029fcd965952mr187833pjb.22.1711126098455;
-        Fri, 22 Mar 2024 09:48:18 -0700 (PDT)
-Received: from five231003 ([2405:201:c006:31f8:d95b:eb72:e032:7eef])
-        by smtp.gmail.com with ESMTPSA id si15-20020a17090b528f00b0029e05ec1cb3sm2124620pjb.52.2024.03.22.09.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 09:48:18 -0700 (PDT)
-Date: Fri, 22 Mar 2024 22:18:12 +0530
-From: Kousik Sanagavarapu <five231003@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH v2] spi: dt-bindings: jcore,spi: convert spi-jcore to
- dtschema
-Message-ID: <Zf22TLko8tFEYMDI@five231003>
-References: <20240321180617.35390-1-five231003@gmail.com>
- <affc1b03-7a23-4fd8-bf85-4155bcd41df1@linaro.org>
- <CAN19-EfCOWFqFCrF0iCaxhfZuteWawQoH0d6pTN3cgQ7p-CK6w@mail.gmail.com>
- <5dd3237f-e0a2-4214-a63f-233e89a26b8d@linaro.org>
- <6552bcb8-e046-4882-91da-1094fff3d239@linaro.org>
- <20240322150524.GA895852-robh@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EcCkFlhTox+t7DLij7IyLGe+TLXI27Fup/VIl8eypoM3QsdHqqtwCM7bvyR1LMlNZHpRVIv3PQlu/OjATmzsQ8zkPkaIGYhWKpMGC/LM8DcxuncFARPHE5vvbn8UTgU2gmyyKYdWXsVnH7zdRIMxF+kSH/kxq6Bz4HBRMj0h0Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cz2tiAY6; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9D1F340E0140;
+	Fri, 22 Mar 2024 16:49:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id u9kkTKGtkJhN; Fri, 22 Mar 2024 16:49:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711126167; bh=zmgmuyyu04qQDDakR1Zt6nICyLhZvl92PNFJ6jYHiqs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cz2tiAY66U7fVC3nUBO5DuS8PIl8L4w0wz0PXUiFgot9znI4XTczaCmkzRj20IbXu
+	 H+fQ8Vc101mEukRzjo9t4uQKnlkN0dgn0gYWqZUc5MO1qXgrW4rXhp4HPuTAdhgcNa
+	 by0l1ZT8teq3Ibf8LeAwT0A8ZdpvfYZztd6b+k32U64coFMkf9Mnd58uCPWa2zro4O
+	 eczmAcswk65Ex4bWdfbx/o8FADM4PIMFxHfHxEpvq6YPXfU/ZF7xONWBVC1wpb4PdM
+	 XGRgQQbAFp3U1iEWfxjQLv1oQL4g6paR2/iMG/alp4l/QKGe9Lp7kjCEoQxn7uXKG7
+	 iOk8w4Gv5AnLUvN1wPxu5aPmKdq6pEbD6majeOPhuqFGmW548f/VTjkHTfr6cNAcUJ
+	 i5aK3NeQCLBwPeuReyuQYF/MAs7EXqqbcm27F+Hz/U17e66qWZegeJeyuKgGjqgE1k
+	 O3nem+NimSvS89HggVYwS04SgM7pDrf0ITYXNbqM5uugIyU6vEGtc8ofi9+iJgyDNu
+	 DIg8I3dgOjp4UjEZyCWJ2QHiZuKc8K2J0E6auUcEMU+J+poXapMN00UUUy2iKPU9LZ
+	 AIfdBxShVWztuIPTxr5TTekj8U4HyVNhTyqxNdQ6FnUfo9Xm/+gqCA7xC8RkC/Bytv
+	 1PFXb6Xn09jhAm2hvEGDRico=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92D2940E00B2;
+	Fri, 22 Mar 2024 16:49:18 +0000 (UTC)
+Date: Fri, 22 Mar 2024 17:49:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: linux-kernel@vger.kernel.org
+Cc: linux-tip-commits@vger.kernel.org, "H.J. Lu" <hjl.tools@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Subject: Re: [tip: x86/shstk] x86/shstk: Enable shadow stacks for x32
+Message-ID: <20240322164912.GAZf22iBdqdkIFcrsl@fat_crate.local>
+References: <20240315140433.1966543-1-hjl.tools@gmail.com>
+ <171110519880.10875.7663158781394877164.tip-bot2@tip-bot2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,28 +80,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240322150524.GA895852-robh@kernel.org>
+In-Reply-To: <171110519880.10875.7663158781394877164.tip-bot2@tip-bot2>
 
-On Fri, Mar 22, 2024 at 10:05:24AM -0500, Rob Herring wrote:
-> On Fri, Mar 22, 2024 at 07:49:57AM +0100, Krzysztof Kozlowski wrote:
-> > This applies to all GSoC or some Linux Mentorship programs: I suggest to
-> > choose for conversion bindings with more users and bigger possible
-> > impact. So first I would look at ARM64 and ARMv7 platforms. We still
-> > have around 1000 and 3500 unique warnings about undocumented compatibles
-> > for ARM64 defconfig and ARM multi_v7! That's the platforms you should
-> > choose.
-> > 
-> > Not SuperH, ARC, or whatever with only one DTS which is difficult to
-> > build for regular developer.
+On Fri, Mar 22, 2024 at 10:59:58AM -0000, tip-bot2 for H.J. Lu wrote:
+> The following commit has been merged into the x86/shstk branch of tip:
 > 
-> To add to this, either ask DT maintainers what would be useful to work 
-> on or you can look here[1][2] to see what are the top occurring 
-> undocumented (by schema) compatibles.
+> Commit-ID:     2883f01ec37dd8668e7222dfdb5980c86fdfe277
+> Gitweb:        https://git.kernel.org/tip/2883f01ec37dd8668e7222dfdb5980c86fdfe277
+> Author:        H.J. Lu <hjl.tools@gmail.com>
+> AuthorDate:    Fri, 15 Mar 2024 07:04:33 -07:00
+> Committer:     Ingo Molnar <mingo@kernel.org>
+> CommitterDate: Fri, 22 Mar 2024 10:17:11 +01:00
 > 
-> Rob
+> x86/shstk: Enable shadow stacks for x32
 > 
-> [1] https://gitlab.com/robherring/linux-dt/-/jobs/6453674734
-> [2] https://gitlab.com/robherring/linux-dt/-/jobs/6453674732
+> 1. Add shadow stack support to x32 signal.
+> 2. Use the 64-bit map_shadow_stack syscall for x32.
+> 3. Set up shadow stack for x32.
 
-Thank you for the valuable pieces of advice and links Krzysztof and Rob.
+Why are we still diddling with x32 and not patching it out instead?
+
+https://lore.kernel.org/all/CALCETrXoRAibsbWa9nfbDrt0iEuebMnCMhSFg-d9W-J2g8mDjw@mail.gmail.com/
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
