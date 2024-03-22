@@ -1,64 +1,52 @@
-Return-Path: <linux-kernel+bounces-111756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D56EE887080
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B11B7887083
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:10:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75BCB1F21C52
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:10:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51DD61F24362
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3654F5D47B;
-	Fri, 22 Mar 2024 16:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234A15C8F8;
+	Fri, 22 Mar 2024 16:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fv4NMX+s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEa+617z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2D359B56;
-	Fri, 22 Mar 2024 16:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4485A106;
+	Fri, 22 Mar 2024 16:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123812; cv=none; b=PZl1X34APawZHGJyLZavMfdjTWZsYzmZ2OwOrBsLfT7NofoDX+JHSHW1K6vpo9Wq/Z2RtLGit+aSwAP/sTLQVQ8nDcQTjZTVGi0oWC9PMAfOx/75r0vHR6/XP2L7NlzeaoGvl3EkeKQSjKihJhwLlpt0hZLD42VR4OzPnM0EFok=
+	t=1711123818; cv=none; b=Zg0yFqEqrID+cVPscoyMmYmToLyJXsDAK7NspnAIh5cpD/AzIpVlKjjzAb77gY0FNInAuwTrvouFDHNNPJHwbKxX5cjJEMIES/+mrfz4iV2oikyyD3X2pgsNwqyxoRT3DbGX6P8ooDZtwEeeE1+6kbvw2NytSBZ+n6iLQP++QTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123812; c=relaxed/simple;
-	bh=ZykpEH6/3il0JVUrcIN6n7VW8Xp7HVRqAuW1Y9G4IwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dsd6g6HSfBE5c/0L/RUizqHk+M5hoSrV33xK0YwItXtjinxYKkPMoOxdvFU52/GtPM+Wsb/miOZ04mWt9GvWvqjlbwGUKtOKilrhoMWyRDJFB446nb42XQL3c6hJW7xmcHwwkGuxlanEdEd5kgb/Hr8hHo+kyENKxIo+rgiGUis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fv4NMX+s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C15DDC43390;
-	Fri, 22 Mar 2024 16:10:08 +0000 (UTC)
+	s=arc-20240116; t=1711123818; c=relaxed/simple;
+	bh=Qjtq2wXAU324eUdNx1w4/HYyFHq77oZw5qpk2Noef4c=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ujTRjrAyAeO0rpWv86soQsP4uEeTmrTy70Zu04biSpZRUFQybvej/hThOYDYjlBPowPFMs2HSa6aneU70xiBGaKfcmOErDW7MDh6avdqgzB+Q/8d6sqB5ewCfHUMU3Flqjo0LB1N/cnP3cUVqcqDKJi5DycGQ7nfZD+fJlRSOAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEa+617z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8369DC433C7;
+	Fri, 22 Mar 2024 16:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711123812;
-	bh=ZykpEH6/3il0JVUrcIN6n7VW8Xp7HVRqAuW1Y9G4IwU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fv4NMX+sgC+mQPWkGfBrrzy2n/vnEphOycFPs3DCe8wc7cmDHUKT+wb/znKPBhLQZ
-	 CTpkqSkgjF6NUw9PFYPMD+PQIVXPcmnBq44/t0fOMFwC3jJxrLjhmmIb/vNbGIQqD8
-	 a+i/iBM0svSzaMFWHoC/2y7YnRVd/OqVeEQukRGhz8Du3S31DsjxxN20G1EFDAw65l
-	 s2nXVMWwnillwbmi1BNnfZY/SetAeVN38COJ6YvqQ7V3qo83WbpQ8JKH5MNKIoZS2X
-	 FeRk/afy7HnGUDLUuUsXk4PK+7kh1ysXIqQmR7PivYKyu+CBu7G0gMj2UTo4PpxN4S
-	 10y0jvjn3rTog==
-Date: Fri, 22 Mar 2024 17:10:06 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 05/11] PCI: epf-{mhi/test}: Move DMA initialization to
- EPC init callback
-Message-ID: <Zf2tXgKo-gc3qy1D@ryzen>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-5-6134e6c1d491@linaro.org>
+	s=k20201202; t=1711123817;
+	bh=Qjtq2wXAU324eUdNx1w4/HYyFHq77oZw5qpk2Noef4c=;
+	h=Date:From:To:Subject:From;
+	b=NEa+617zEcJHGxnmY6gCZqYL2SUxo3byK5uzGBirzzdmRUJjHjb3ZeZ9nM81YbTVr
+	 l6DhzWMMUYoRZ+LiMG3OUArLCtqMLdE3r5lug6wdPYflty7Rmhwzc5Zlb80SXngBK3
+	 4DeJaO9DiF/VO0rquE/4uFsfqH/LHSxUlKhnilIqA/EQwKErEuBMhgHfEouYj5S5G8
+	 l7gaDuUZ2OAnwYLI/au7QaUKWkHKBbDAcRUy6HDiz68t8zjnMlswqUOn4PQ8eDssOQ
+	 aLnf7n/jdJpg7IyvO4uJAHH/poexRbAIeMShJRlLKCUI+w1tIOgMMBLDIZvk31TxvQ
+	 273DabFMr7b0Q==
+Date: Fri, 22 Mar 2024 17:10:13 +0100
+From: Helge Deller <deller@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [GIT PULL] fbdev fixes and cleanups for v6.9-rc1 (v2)
+Message-ID: <Zf2tZcWuMMQGFGgb@carbonx1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,123 +55,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314-pci-epf-rework-v1-5-6134e6c1d491@linaro.org>
 
-On Thu, Mar 14, 2024 at 08:53:44PM +0530, Manivannan Sadhasivam wrote:
-> To maintain uniformity across EPF drivers, let's move the DMA
-> initialization to EPC init callback. This will also allow us to deinit DMA
-> during PERST# assert in the further commits.
-> 
-> For EPC drivers without PERST#, DMA deinit will only happen during driver
-> unbind.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+Hi Linus,
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+Yesterday's fbdev tree showed one small compiler warning which has been fixed
+in this pull request.
 
+So, please pull the latest fixes and cleanups for the fbdev drivers for kernel 6.9-rc1.
 
-For the record, I was debugging a problem related to EPF DMA recently
-and was dumping the DMA mask for the struct device of the epf driver.
-I was a bit confused to see it as 32-bits, even though the EPC driver
-has it set to 64-bits.
+Beside the typical bunch of smaller fixes, the Linux console now allows fonts
+up to a size of 64 x 128 pixels.
 
-The current code works, because e.g., pci_epf_test_write(), etc,
-does:
-struct device *dma_dev = epf->epc->dev.parent;
-dma_map_single(dma_dev, ...);
+Thanks!
+Helge
 
-but it also means that all EPF drivers will do this uglyness.
+----------------------------------------------------------------
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
+are available in the Git repository at:
 
-However, if a EPF driver does e.g.
-dma_alloc_coherent(), and sends in the struct *device for the EPF,
-which is the most logical thing to do IMO, it will use the wrong DMA
-mask.
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.9-rc1
 
-Perhaps EPF or EPC code should make sure that the struct *device
-for the EPF will get the same DMA mask as epf->epc->dev.parent,
-so that EPF driver developer can use the struct *epf when calling
-e.g. dma_alloc_coherent().
+for you to fetch changes up to 0688d3b1d882dd1dcf73305306e71ebf1653f595:
 
-(This is however not strictly related to this patch, but I thought
-that I should mention it.)
+  fbdev: panel-tpo-td043mtea1: Convert sprintf() to sysfs_emit() (2024-03-20 09:02:32 +0100)
 
+----------------------------------------------------------------
+fbdev fixes and cleanups for 6.9-rc1:
 
-Kind regards,
-Niklas
+- Allow console fonts up to 64x128 pixels (Samuel Thibault)
+- Prevent division-by-zero in fb monitor code (Roman Smirnov)
+- Drop Renesas ARM platforms from Mobile LCDC framebuffer driver
+  (Geert Uytterhoeven)
+- Various code cleanups in viafb, uveafb and mb862xxfb drivers by
+  Aleksandr Burakov, Li Zhijian and Michael Ellerman
 
->  drivers/pci/endpoint/functions/pci-epf-mhi.c  | 16 ++++++++--------
->  drivers/pci/endpoint/functions/pci-epf-test.c | 12 ++++++------
->  2 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> index da894a9a447e..4e4300efd9d7 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> @@ -737,6 +737,14 @@ static int pci_epf_mhi_epc_init(struct pci_epf *epf)
->  	if (!epf_mhi->epc_features)
->  		return -ENODATA;
->  
-> +	if (info->flags & MHI_EPF_USE_DMA) {
-> +		ret = pci_epf_mhi_dma_init(epf_mhi);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to initialize DMA: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -749,14 +757,6 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
->  	struct device *dev = &epf->dev;
->  	int ret;
->  
-> -	if (info->flags & MHI_EPF_USE_DMA) {
-> -		ret = pci_epf_mhi_dma_init(epf_mhi);
-> -		if (ret) {
-> -			dev_err(dev, "Failed to initialize DMA: %d\n", ret);
-> -			return ret;
-> -		}
-> -	}
-> -
->  	mhi_cntrl->mmio = epf_mhi->mmio;
->  	mhi_cntrl->irq = epf_mhi->irq;
->  	mhi_cntrl->mru = info->mru;
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index 2fac36553633..8f1e0cb08814 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -753,6 +753,12 @@ static int pci_epf_test_epc_init(struct pci_epf *epf)
->  	bool msi_capable = true;
->  	int ret;
->  
-> +	epf_test->dma_supported = true;
-> +
-> +	ret = pci_epf_test_init_dma_chan(epf_test);
-> +	if (ret)
-> +		epf_test->dma_supported = false;
-> +
->  	epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
->  	if (epc_features) {
->  		msix_capable = epc_features->msix_capable;
-> @@ -942,12 +948,6 @@ static int pci_epf_test_bind(struct pci_epf *epf)
->  	if (ret)
->  		return ret;
->  
-> -	epf_test->dma_supported = true;
-> -
-> -	ret = pci_epf_test_init_dma_chan(epf_test);
-> -	if (ret)
-> -		epf_test->dma_supported = false;
-> -
->  	return 0;
->  }
->  
-> 
-> -- 
-> 2.25.1
-> 
+----------------------------------------------------------------
+Aleksandr Burakov (1):
+      fbdev: viafb: fix typo in hw_bitblt_1 and hw_bitblt_2
+
+Geert Uytterhoeven (1):
+      fbdev: Restrict FB_SH_MOBILE_LCDC to SuperH
+
+Li Zhijian (2):
+      fbdev: uvesafb: Convert sprintf/snprintf to sysfs_emit
+      fbdev: panel-tpo-td043mtea1: Convert sprintf() to sysfs_emit()
+
+Michael Ellerman (1):
+      fbdev: mb862xxfb: Fix defined but not used error
+
+Roman Smirnov (1):
+      fbmon: prevent division by zero in fb_videomode_from_videomode()
+
+Samuel Thibault (1):
+      fbcon: Increase maximum font width x height to 64 x 128
+
+ drivers/firmware/efi/earlycon.c                        |  2 +-
+ drivers/video/fbdev/Kconfig                            |  2 +-
+ drivers/video/fbdev/arkfb.c                            | 15 +++++++++++----
+ drivers/video/fbdev/core/fbcon.c                       | 16 +++++++++-------
+ drivers/video/fbdev/core/fbmem.c                       | 12 ++++++------
+ drivers/video/fbdev/core/fbmon.c                       |  7 ++++---
+ drivers/video/fbdev/core/svgalib.c                     | 15 +++++++++++----
+ drivers/video/fbdev/mb862xx/mb862xxfbdrv.c             | 18 +++++++++---------
+ .../fbdev/omap2/omapfb/displays/panel-tpo-td043mtea1.c | 12 ++++--------
+ drivers/video/fbdev/s3fb.c                             | 15 +++++++++++----
+ drivers/video/fbdev/uvesafb.c                          |  2 +-
+ drivers/video/fbdev/vga16fb.c                          |  6 +++++-
+ drivers/video/fbdev/via/accel.c                        |  4 ++--
+ drivers/video/fbdev/vt8623fb.c                         | 15 +++++++++++----
+ drivers/video/sticore.c                                |  2 +-
+ include/linux/fb.h                                     | 18 ++++++++++++------
+ include/linux/font.h                                   |  3 ++-
+ lib/fonts/fonts.c                                      | 15 +++++++++------
+ 18 files changed, 110 insertions(+), 69 deletions(-)
 
