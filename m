@@ -1,131 +1,101 @@
-Return-Path: <linux-kernel+bounces-112042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8131887481
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:42:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2E6887494
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:48:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB9B1C212FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:42:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B73301F223DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484EC80059;
-	Fri, 22 Mar 2024 21:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8FD81750;
+	Fri, 22 Mar 2024 21:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJyq42aI"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PA8n1xsC"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2136F81205
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 21:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCF160B91
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 21:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711143711; cv=none; b=Jx+Kc/cWu30G6Y7uX2JP0NLZgSEOQZIBeCmjqvPOP5NZ0cwUCsHY2id2QWAcWKM+6CYr92+ZcYpu58oXxj31zH0753o8sqtRUBZDNWA8E4SM9vPakkHtsnp9dEbHQZi0innKI6F3B6ZNQjpu6os5JvT6fRwkZDVt9ujHiYdbdrQ=
+	t=1711144102; cv=none; b=Hff6p0OMZ/4s4T+liIWcRC3d6wEEj8fDzpFutHD+TtCG+OLDV6uQl9kfl4zxhDB1FJJJqECO8sM1zv79HBqoxWt7k2MYjcgYsrE6SOa7rraCkAcTpHfMD302XHL6VGXU7bcfd4U+f05iBsDn+deMwsGT9BEkymNzXxPUhaUyzUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711143711; c=relaxed/simple;
-	bh=RQll5QYZhzufGj+S1fYXa+jgiDZDq7VQ1QzparuV7Ek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DOkFER/scrGPrFu5PnVXr4061Rk3fm2bHI0h9mL+lpmlvn7VYx3UQxiNUFeZ4EJbBmZF9DzIsOIlnhSBep0WVoJedwv7XlNkDfYlNtqzFq8l0x9cD9ISlIVxSPa24aXLowE4nLnH9//45tGQ9uUC9e7Bz0sOBeQSNaMqu0ATGlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZJyq42aI; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711144102; c=relaxed/simple;
+	bh=l3OY0t5HrjFFYgbxfL2wYmHwCTOY3qj2409bRuGg/PU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OTAJdx+o+qK16RNox0dVcznHqzU7wa0OtM9lmbQJoKn1VS/gd722RXf+sA+35BTAhD+85UeOYtwGDfU+xXkPOxfBgsq/G1sY4sfDkfqZzw8BNfxxLoWNYyMDsE8bf/j+Aakwu2p9s5TMmapA/aNpet/yu1npIqau9f77TNogbvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PA8n1xsC; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7e08498aa43so1094916241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:41:49 -0700 (PDT)
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-221ce6cac3aso1360653fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711143709; x=1711748509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RQll5QYZhzufGj+S1fYXa+jgiDZDq7VQ1QzparuV7Ek=;
-        b=ZJyq42aI3gZcW2/lT6byH3r/SIXhrwPHi5NoWFtuzSGzjHwQ4CNsoWY4aVst6lFiAh
-         Tbvv1uObWy+KfOFV67E/g4tGWuLPfYDL7vvYvrS34JYyrF+cljMxrzLLknR3FaJZ8mZx
-         bBiTOmQfwkFCWdIutvPZJHfzGA6QqarQ7thee032fHHZ8fF9XGbQFurwhZLUN9MIP2zM
-         /VOavZelr/X9sCUkh+I6ZTc/tKE4U74oZzltbEuxAJ9KrXamhJjDzGHyHikHBGkDDWwf
-         D0NJ3ycpkhFDB/mhtrnk4+246Vz7nCZVCCG5YKpuYB/UhPWR9BaKR37QNUVbyBmam7z4
-         JNiA==
+        d=gmail.com; s=20230601; t=1711144100; x=1711748900; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=On9llTVYskkD2vg9HqNwrK4CiExajRFrB31BlGuPc2w=;
+        b=PA8n1xsC8G0tjTKzA7EOkDUbWTJ2WnzBYP3zDN5SWE6p4/AoJDt5TUapL1OriDiMgX
+         UW8UU2JWn87Mx5syO+xqID/BcgXg5DKeAZV6TjksPvxceDSzu+ZU/H5fVxqK9O40KjyZ
+         H+Sj0qqAruDMxipfbtOY7sKvM8Iz3dK8IAGELQ3A2AG347aJegvGJ1syL7W+JZoQsZ8k
+         DrEN/pAW6u3TzE7L5xAdY03/KZkH57vvMO+I4ZdJLbhzs4fP7Whp7k35JKNhK1iIrCyg
+         U/Fys3UPt9X8Yxgfoij2X/GamzFzpqdmChWRg+NB5iA+hnAa7/VmdXX0Sy6Fgq+ZRChm
+         TUSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711143709; x=1711748509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711144100; x=1711748900;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RQll5QYZhzufGj+S1fYXa+jgiDZDq7VQ1QzparuV7Ek=;
-        b=WsKmusJjPdz9FlfFiod9QB1VQvGc3vf7QGR3t4PXlHimSWgbLX1MDvniogDsrUy2lf
-         F7Oy972CvbqyrRlW+eri7R8Ga6RewBo2HDnxUJD9MhA8aT6Dsdu3mcRYx9y5qrEHyinC
-         4ZYJuS/JbhmL0QpdoWLkj+15yZ5T31nPHd/kIth8yld5vvn4wSRds6kL5CeERN8lNiac
-         XEzAc1XUD/l2UghG46hkpMKzGvSKlIX7eo7BNYTRGoN8/eJb/OHaEzJCAPr46Xoo2Q0v
-         gQjPl/dbyksG978eGPHCRJwHRV103Xhi2BoSJ/QM/6cB50ACim5eIlbZfdVf9oLWpfqV
-         A9zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWp/+UtTYVUBY7SYS4v0HUf29R8aeWL6FK5CjKywW3+a2aZ9WqjX6+xurVesglMRfphXvvIgn/bi2OoI5E7c2zjKsD5en67ULER7iK1
-X-Gm-Message-State: AOJu0YxZleg50bhJvjMnjFYm16edjOwctj047MBFn9oaUm3mPjNboCbY
-	KfXxKq0rd5qw9xOYlKR+qrGWbJdeRcHf7Mwcy9M/OHWhKDDhYiF6PHovKCug/5B02rs1CStXJpj
-	RL0OFu44m5iI8yQr70+18l59P9vc=
-X-Google-Smtp-Source: AGHT+IEv9fJIOeOrs93WlB1QNmSJh28TuaydQyrjMI4d8y02To3CTcqsbR+SmmiDpNQBw6ucVRiADjzXkF8yR9BNSCo=
-X-Received: by 2002:a05:6102:f0d:b0:473:2d91:c4d5 with SMTP id
- v13-20020a0561020f0d00b004732d91c4d5mr988952vss.25.1711143704130; Fri, 22 Mar
- 2024 14:41:44 -0700 (PDT)
+        bh=On9llTVYskkD2vg9HqNwrK4CiExajRFrB31BlGuPc2w=;
+        b=R7E65rQZ9tgOwgfcvpyrbwPsYzDe+gxHhtpmUaz5/Xlmk73LPeti6ckj5iALBb2m66
+         rteiN9NE27ZtOuoFvLCrvQp65ejzQkHNgTMC+xBt9pE/gnC84jN33Z5fjd1KnFAboX3p
+         tqp7lUvMUHoTWaHs4KqyUgdCCKrW4mygtgmB7Ivp1iyWk14OGJVCFuF1sDdurW4AGRui
+         b+P2BuVF2VQfIl6VKw9HlYy2EQFeTtR5rHLhzanELDY6O/bImLhJ3CLFDr3FVv6bU/e1
+         w4GYr1GizghZhTgSH/M8oNJf9DekXXuCskZhYIe1GY6Hw1/EMVooCDBSvnzmc3VGqqfs
+         a1dQ==
+X-Gm-Message-State: AOJu0YxVm3l5WCyYQzXIKrKlNzAc9pnCJChUbCO4XZ0x3q+KRljwGLMH
+	2vc/dqgfIGjuxEJxLNC4H1AT4SMzGEhbjtZJPNF65DKi2O77j1rnRxbehwFW
+X-Google-Smtp-Source: AGHT+IEmft39BYboziHPWalrb+Y10VsY/AedtggVadeU+vIflwxrTk5G0hW+MF+yXUcGj46f+dJx/w==
+X-Received: by 2002:a05:6358:2618:b0:17f:1d34:6253 with SMTP id l24-20020a056358261800b0017f1d346253mr802842rwc.15.1711143706147;
+        Fri, 22 Mar 2024 14:41:46 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r16-20020a63d910000000b005dc5129ba9dsm2050333pgg.72.2024.03.22.14.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 14:41:45 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 22 Mar 2024 14:41:44 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [patch 4/4] x86/mpparse: Register APIC address only once
+Message-ID: <349fbc82-162f-4905-bbd0-4101e1e7a6a2@roeck-us.net>
+References: <20240322184944.141421692@linutronix.de>
+ <20240322185305.297774848@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322163939.17846-1-chengming.zhou@linux.dev> <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
-In-Reply-To: <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 23 Mar 2024 10:41:32 +1300
-Message-ID: <CAGsJ_4yc-XB3+FkcZTy1aZ0n6ZKEkfWVYk_TjqqrdcROa5VYtA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: chengming.zhou@linux.dev, hannes@cmpxchg.org, nphamcs@gmail.com, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322185305.297774848@linutronix.de>
 
-On Sat, Mar 23, 2024 at 8:38=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Fri, Mar 22, 2024 at 9:40=E2=80=AFAM <chengming.zhou@linux.dev> wrote:
-> >
-> > From: Chengming Zhou <chengming.zhou@linux.dev>
-> >
-> > There is a report of data corruption caused by double swapin, which is
-> > only possible in the skip swapcache path on SWP_SYNCHRONOUS_IO backends=
-.
-> >
-> > The root cause is that zswap is not like other "normal" swap backends,
-> > it won't keep the copy of data after the first time of swapin. So if
+On Fri, Mar 22, 2024 at 07:56:39PM +0100, Thomas Gleixner wrote:
+> The APIC address is registered twice. First during the early detection and
+> afterwards when actually scanning the table for APIC IDs. The APIC and
+> topology core warn about the second attempt.
+> 
+> Restrict it to the early detection call.
+> 
+> Fixes: 81287ad65da5 ("x86/apic: Sanitize APIC address setup")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-I don't quite understand this, so once we load a page from zswap, zswap
-will free it even though do_swap_page might not set it to PTE?
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-shouldn't zswap free the memory after notify_free just like zram?
-
-> > the folio in the first time of swapin can't be installed in the pagetab=
-le
-> > successfully and we just free it directly. Then in the second time of
-> > swapin, we can't find anything in zswap and read wrong data from swapfi=
-le,
-> > so this data corruption problem happened.
-> >
-> > We can fix it by always adding the folio into swapcache if we know the
-> > pinned swap entry can be found in zswap, so it won't get freed even tho=
-ugh
-> > it can't be installed successfully in the first time of swapin.
->
-> A concurrent faulting thread could have already checked the swapcache
-> before we add the folio to it, right? In this case, that thread will
-> go ahead and call swap_read_folio() anyway.
->
-> Also, I suspect the zswap lookup might hurt performance. Would it be
-> better to add the folio back to zswap upon failure? This should be
-> detectable by checking if the folio is dirty as I mentioned in the bug
-> report thread.
-
-I don't like the idea either as sync-io is the fast path for zram etc.
-or, can we use
-the way of zram to free compressed data?
-
->
+Guenter
 
