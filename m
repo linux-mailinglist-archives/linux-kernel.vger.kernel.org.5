@@ -1,239 +1,154 @@
-Return-Path: <linux-kernel+bounces-111975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9B788738E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:03:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC936887390
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D821C2222F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:03:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33026B22657
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8731376EF2;
-	Fri, 22 Mar 2024 19:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C48276F1A;
+	Fri, 22 Mar 2024 19:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ip6mCrAP"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cKqi9Wug"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925D576EE9
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661893EA6F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711134191; cv=none; b=gmy5DdE7DS55bXRByI9P6QFWrdWLg3eGtyPklSxa28PpcSzoGRVwSsN1L2v/bUOgV3kybqljjfuH01VbjSFx4kmjSROy8CYF6Ex25cCEcVPWSMlI7obsXQc1c5h0G9WJSCxD3eMzCFnd0jX7YeBl0HzD6l82CiLhBUUFgsbU6Jc=
+	t=1711134377; cv=none; b=cmo1+lBp1VZCNK3LnQQvikx47dWRscNSYj/p2/7RiBP9XawYjXdmokJzGPfeymEeHntG+CBirqigXeDpz8o+FtdqqC/i5zETpmUZu1AvuqEhk/4yZzk9ndDl/0rT/B09lueW+Uv7rJhwGOSD6Pm/n53mu5tOfnXHq1y22nOfuBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711134191; c=relaxed/simple;
-	bh=B3u5FvJPNZibWYG5A5u+cfYZkC1oFUVjV09d4t1RmTs=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qj4pH+rY4DBI/CNAbcG69EMZ1NjukwsGovVv6z0U7k6nR28P+/KFuNxefrWuL2rRKEAoUDstuYgN5AossqaRWXmiMe4PdTobAM57c1mokwWr94mEczeTxuQDXRPOvbFO281VZWCj3MtjuiVR7rGOhtXyrM9QXFQ8hebJ3fP2etc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ip6mCrAP; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so36609451fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711134188; x=1711738988; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jiOEI1u/n39JDbCsmzZGRMVeyG9x02q5oeFVqSaOL9U=;
-        b=Ip6mCrAPZbf+t+9gUtsSoRi/mK4wQ8OdCnEQYhC1Ru1elagKtemELyJ2NE5neRRXI5
-         XVRkWvuOX7l4zX3QJHzED/01fhdnntuGrxbd0VOpauZnoOa6LEBWsmL/dWLWOfKgoV8c
-         AJJOFvY5s+bS7QJu9+u+qesJuFWM/qTSb0HlNCjysF2hMyF2PayTFDf59v1weNm+879i
-         UosiD1jq/NTUfoKz1Lu6/gcNsq8o9OoVRKqO1+iqvJN3KUgY9RJG4/1nzToy/9hH8WZ6
-         iQxO5zjnvyQQRdXujvBoWVcGnpIXBdQn7myAYio8xs0l+j++R06cTiHExruS6G8/v+1B
-         7BsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711134188; x=1711738988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jiOEI1u/n39JDbCsmzZGRMVeyG9x02q5oeFVqSaOL9U=;
-        b=Vx1TBsHAtQYynw80GNhqMxbb2LvCkw4TJhlI9rGd2UnAhJLpzHTnGbQSbh+bfe+204
-         7me7HPlqsDQDMhI20sCzrwxFxo90CAcxTkcWA4JS7gB0y1ArQqm5xWNkevGzFiRPpYF9
-         kz0c7sdbL7lATkIcC1KVU0ieiwVNCs3na8OcrVFKgqk1O/CFqUD9mOSwrz4uSfQyaHAu
-         EKEG4jNo+PntKbRu+eoCs9roKgJ2pMrdivS8ZVO51JBQ4PP2EypRwSRfSxB9hV0TiIBC
-         fHdwXqM2b8b6tnPEN2Gjn9j/EIEiwJHZDyKwQnVEcPT3dktOhO4iH8Hf6Z5sqVOu+B12
-         VxqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXSBmJZyz2sVvupGNytlF30oSVlkOU7V15+PGqipVr5cuC57S6MLy6FHmgejEMqROOjWz3ik0lNmMWYtwkytSjvEs+qFqC/8CVGCTx
-X-Gm-Message-State: AOJu0YzMzOqEnl4HTjMi7nu6fC3dLeRTozM+Y2p2QS1TeMA+9qpH6a4n
-	6YRyzR8Kxx91s5hDBLuWQLzkSbDu8Hi5LCYgm5DHpRUyLdAeNmyR
-X-Google-Smtp-Source: AGHT+IF7g+XE2LFCeky3tKyYVvoigiOqtzZ7ycIK7Nwa6aTRCRmD7Z7+zSyR3QnEiNbdOr7eKNHLIw==
-X-Received: by 2002:a19:e056:0:b0:513:5951:61a4 with SMTP id g22-20020a19e056000000b00513595161a4mr232407lfj.6.1711134187309;
-        Fri, 22 Mar 2024 12:03:07 -0700 (PDT)
-Received: from pc636 (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id j15-20020a056512344f00b00513b1dec266sm14013lfr.245.2024.03.22.12.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 12:03:06 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 22 Mar 2024 20:03:04 +0100
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Dave Chinner <david@fromorbit.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
-Message-ID: <Zf3V6B9f5o0H1LnE@pc636>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <20240102184633.748113-8-urezki@gmail.com>
- <bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net>
+	s=arc-20240116; t=1711134377; c=relaxed/simple;
+	bh=G8IGxwSbCA7VtBX8XkVa1ambOdnemi9fnCfUORqa5dI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XU0Uw3P22rUiUgohrZF6s9lnaP3KSbZiMlCbecFmm15DXCaeuedYOAmxut5+RVyYO261h0eyo3ULy5B3AlfM1GWTAwLnZscnyZcgKYboDEj+FMhtnF1RIeeWHQjx4DV20EuT8PPKRjRLGma1eynwGhLa3igZb/6zDh45D2IMITM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cKqi9Wug; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711134374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=bYv+g1I7ptnV6etPECbKRE2B/hEhZ4xk0E1ZHt/7Sok=;
+	b=cKqi9WugA5z+pTC1coQeI24eWnC7pjnpFAL/CMDqn2poK7/ZyPAm2skDZH6T/roxCn2dXC
+	KXl9ZUOtmzbthDrHrlM/3Yxmn7IAKajJuVExUgwN9Yriyj0BGJYYveA+1LaMs+YXPssonF
+	BjpbSSgsyeqizdQKY8+k30JI5h8G9xQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-gBjFs-OwO1uIF-FNgKwg-Q-1; Fri,
+ 22 Mar 2024 15:06:12 -0400
+X-MC-Unique: gBjFs-OwO1uIF-FNgKwg-Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 214A7280480F;
+	Fri, 22 Mar 2024 19:06:12 +0000 (UTC)
+Received: from RHTPC1VM0NT.redhat.com (unknown [10.22.33.162])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 55FDA492BC6;
+	Fri, 22 Mar 2024 19:06:11 +0000 (UTC)
+From: Aaron Conole <aconole@redhat.com>
+To: netdev@vger.kernel.org
+Cc: Pravin B Shelar <pshelar@ovn.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	dev@openvswitch.org,
+	linux-kernel@vger.kernel.org,
+	Numan Siddique <nusiddiq@redhat.com>
+Subject: [PATCH net] openvswitch: Set the skbuff pkt_type for proper pmtud support.
+Date: Fri, 22 Mar 2024 15:06:03 -0400
+Message-ID: <20240322190603.251831-1-aconole@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Fri, Mar 22, 2024 at 11:21:02AM -0700, Guenter Roeck wrote:
-> Hi,
-> 
-> On Tue, Jan 02, 2024 at 07:46:29PM +0100, Uladzislau Rezki (Sony) wrote:
-> > Concurrent access to a global vmap space is a bottle-neck.
-> > We can simulate a high contention by running a vmalloc test
-> > suite.
-> > 
-> > To address it, introduce an effective vmap node logic. Each
-> > node behaves as independent entity. When a node is accessed
-> > it serves a request directly(if possible) from its pool.
-> > 
-> > This model has a size based pool for requests, i.e. pools are
-> > serialized and populated based on object size and real demand.
-> > A maximum object size that pool can handle is set to 256 pages.
-> > 
-> > This technique reduces a pressure on the global vmap lock.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> 
-> This patch results in a persistent "spinlock bad magic" message
-> when booting s390 images with spinlock debugging enabled.
-> 
-> [    0.465445] BUG: spinlock bad magic on CPU#0, swapper/0
-> [    0.465490]  lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-> [    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
-> [    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
-> [    0.466270] Call Trace:
-> [    0.466470]  [<00000000011f26c8>] dump_stack_lvl+0x98/0xd8
-> [    0.466516]  [<00000000001dcc6a>] do_raw_spin_lock+0x8a/0x108
-> [    0.466545]  [<000000000042146c>] find_vmap_area+0x6c/0x108
-> [    0.466572]  [<000000000042175a>] find_vm_area+0x22/0x40
-> [    0.466597]  [<000000000012f152>] __set_memory+0x132/0x150
-> [    0.466624]  [<0000000001cc0398>] vmem_map_init+0x40/0x118
-> [    0.466651]  [<0000000001cc0092>] paging_init+0x22/0x68
-> [    0.466677]  [<0000000001cbbed2>] setup_arch+0x52a/0x708
-> [    0.466702]  [<0000000001cb6140>] start_kernel+0x80/0x5c8
-> [    0.466727]  [<0000000000100036>] startup_continue+0x36/0x40
-> 
-> Bisect results and decoded stacktrace below.
-> 
-> The uninitialized spinlock is &vn->busy.lock.
-> Debugging shows that this lock is actually never initialized.
-> 
-It is. Once the vmalloc_init() "main entry" function is called from the:
+Open vSwitch is originally intended to switch at layer 2, only dealing with
+Ethernet frames.  With the introduction of l3 tunnels support, it crossed
+into the realm of needing to care a bit about some routing details when
+making forwarding decisions.  If an oversized packet would need to be
+fragmented during this forwarding decision, there is a chance for pmtu
+to get involved and generate a routing exception.  This is gated by the
+skbuff->pkt_type field.
 
-<snip>
-start_kernel()
-  mm_core_init()
-    vmalloc_init()
-<snip>
+When a flow is already loaded into the openvswitch module this field is
+set up and transitioned properly as a packet moves from one port to
+another.  In the case that a packet execute is invoked after a flow is
+newly installed this field is not properly initialized.  This causes the
+pmtud mechanism to omit sending the required exception messages across
+the tunnel boundary and a second attempt needs to be made to make sure
+that the routing exception is properly setup.  To fix this, we set the
+outgoing packet's pkt_type to PACKET_OUTGOING, since it can only get
+to the openvswitch module via a port device or packet command.
 
-> [    0.464684] ####### locking 0000000002280fb8
-> [    0.464862] BUG: spinlock bad magic on CPU#0, swapper/0
-> ...
-> [    0.464684] ####### locking 0000000002280fb8
-> [    0.477479] ####### locking 0000000002280fb8
-> [    0.478166] ####### locking 0000000002280fb8
-> [    0.478218] ####### locking 0000000002280fb8
-> ...
-> [    0.718250] #### busy lock init 0000000002871860
-> [    0.718328] #### busy lock init 00000000028731b8
-> 
-> Only the initialized locks are used after the call to vmap_init_nodes().
-> 
-Right, when the vmap space and vmalloc is initialized.
+This issue is periodically encountered in complex setups, such as large
+openshift deployments, where multiple sets of tunnel traversal occurs.
+A way to recreate this is with the ovn-heater project that can setup
+a networking environment which mimics such large deployments.  In that
+environment, without this patch, we can see:
 
-> Guenter
-> 
-> ---
-> # bad: [8e938e39866920ddc266898e6ae1fffc5c8f51aa] Merge tag '6.9-rc-smb3-client-fixes-part2' of git://git.samba.org/sfrench/cifs-2.6
-> # good: [e8f897f4afef0031fe618a8e94127a0934896aba] Linux 6.8
-> git bisect start 'HEAD' 'v6.8'
-> # good: [e56bc745fa1de77abc2ad8debc4b1b83e0426c49] smb311: additional compression flag defined in updated protocol spec
-> git bisect good e56bc745fa1de77abc2ad8debc4b1b83e0426c49
-> # bad: [902861e34c401696ed9ad17a54c8790e7e8e3069] Merge tag 'mm-stable-2024-03-13-20-04' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> git bisect bad 902861e34c401696ed9ad17a54c8790e7e8e3069
-> # good: [480e035fc4c714fb5536e64ab9db04fedc89e910] Merge tag 'drm-next-2024-03-13' of https://gitlab.freedesktop.org/drm/kernel
-> git bisect good 480e035fc4c714fb5536e64ab9db04fedc89e910
-> # good: [fe46a7dd189e25604716c03576d05ac8a5209743] Merge tag 'sound-6.9-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-> git bisect good fe46a7dd189e25604716c03576d05ac8a5209743
-> # bad: [435a75548109f19e5b5b14ae35b9acb063c084e9] mm: use folio more widely in __split_huge_page
-> git bisect bad 435a75548109f19e5b5b14ae35b9acb063c084e9
-> # good: [4d5bf0b6183f79ea361dd506365d2a471270735c] mm/mmu_gather: add tlb_remove_tlb_entries()
-> git bisect good 4d5bf0b6183f79ea361dd506365d2a471270735c
-> # bad: [4daacfe8f99f4b4cef562649d56c48642981f46e] mm/damon/sysfs-schemes: support PSI-based quota auto-tune
-> git bisect bad 4daacfe8f99f4b4cef562649d56c48642981f46e
-> # good: [217b2119b9e260609958db413876f211038f00ee] mm,page_owner: implement the tracking of the stacks count
-> git bisect good 217b2119b9e260609958db413876f211038f00ee
-> # bad: [40254101d87870b2e5ac3ddc28af40aa04c48486] arm64, crash: wrap crash dumping code into crash related ifdefs
-> git bisect bad 40254101d87870b2e5ac3ddc28af40aa04c48486
-> # bad: [53becf32aec1c8049b854f0c31a11df5ed75df6f] mm: vmalloc: support multiple nodes in vread_iter
-> git bisect bad 53becf32aec1c8049b854f0c31a11df5ed75df6f
-> # good: [7fa8cee003166ef6db0bba70d610dbf173543811] mm: vmalloc: move vmap_init_free_space() down in vmalloc.c
-> git bisect good 7fa8cee003166ef6db0bba70d610dbf173543811
-> # good: [282631cb2447318e2a55b41a665dbe8571c46d70] mm: vmalloc: remove global purge_vmap_area_root rb-tree
-> git bisect good 282631cb2447318e2a55b41a665dbe8571c46d70
-> # bad: [96aa8437d169b8e030a98e2b74fd9a8ee9d3be7e] mm: vmalloc: add a scan area of VA only once
-> git bisect bad 96aa8437d169b8e030a98e2b74fd9a8ee9d3be7e
-> # bad: [72210662c5a2b6005f6daea7fe293a0dc573e1a5] mm: vmalloc: offload free_vmap_area_lock lock
-> git bisect bad 72210662c5a2b6005f6daea7fe293a0dc573e1a5
-> # first bad commit: [72210662c5a2b6005f6daea7fe293a0dc573e1a5] mm: vmalloc: offload free_vmap_area_lock lock
-> 
-> ---
-> [    0.465490] lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-> [    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
-> [    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
-> [    0.466270] Call Trace:
-> [    0.466470] dump_stack_lvl (lib/dump_stack.c:117)
-> [    0.466516] do_raw_spin_lock (kernel/locking/spinlock_debug.c:87 kernel/locking/spinlock_debug.c:115)
-> [    0.466545] find_vmap_area (mm/vmalloc.c:1059 mm/vmalloc.c:2364)
-> [    0.466572] find_vm_area (mm/vmalloc.c:3150)
-> [    0.466597] __set_memory (arch/s390/mm/pageattr.c:360 arch/s390/mm/pageattr.c:393)
-> [    0.466624] vmem_map_init (./arch/s390/include/asm/set_memory.h:55 arch/s390/mm/vmem.c:660)
-> [    0.466651] paging_init (arch/s390/mm/init.c:97)
-> [    0.466677] setup_arch (arch/s390/kernel/setup.c:972)
-> [    0.466702] start_kernel (init/main.c:899)
-> [    0.466727] startup_continue (arch/s390/kernel/head64.S:35)
-> [    0.466811] INFO: lockdep is turned off.
-> 
-<snip>
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 22aa63f4ef63..0d77d171b5d9 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2343,6 +2343,9 @@ struct vmap_area *find_vmap_area(unsigned long addr)
-        struct vmap_area *va;
-        int i, j;
+  ./ovn_cluster.sh start
+  podman exec ovn-chassis-1 ip r a 170.168.0.5/32 dev eth1 mtu 1200
+  podman exec ovn-chassis-1 ip netns exec sw01p1  ip r flush cache
+  podman exec ovn-chassis-1 ip netns exec sw01p1 ping 21.0.0.3 -M do -s 1300 -c2
+  PING 21.0.0.3 (21.0.0.3) 1300(1328) bytes of data.
+  From 21.0.0.3 icmp_seq=2 Frag needed and DF set (mtu = 1142)
 
-+       if (unlikely(!vmap_initialized))
-+               return NULL;
+  --- 21.0.0.3 ping statistics ---
+  2 packets transmitted, 0 received, +1 errors, 100% packet loss, time 1017ms
+
+Using tcpdump, we can also see the expected ICMP FRAG_NEEDED message is not
+sent into the server.
+
+With this patch, setting the pkt_type, we see the following:
+
+  podman exec ovn-chassis-1 ip netns exec sw01p1 ping 21.0.0.3 -M do -s 1300 -c2
+  PING 21.0.0.3 (21.0.0.3) 1300(1328) bytes of data.
+  From 21.0.0.3 icmp_seq=1 Frag needed and DF set (mtu = 1222)
+  ping: local error: message too long, mtu=1222
+
+  --- 21.0.0.3 ping statistics ---
+  2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1061ms
+
+In this case, the first ping request receives the FRAG_NEEDED message and
+a local routing exception is created.
+
+Reported-at: https://issues.redhat.com/browse/FDP-164
+Fixes: 58264848a5a7 ("openvswitch: Add vxlan tunneling support.")
+Signed-off-by: Aaron Conole <aconole@redhat.com>
+---
+NOTE: An alternate approach would be to add a netlink attribute to preserve
+      pkt_type across the kernel->user boundary, but that does require some
+      userspace cooperation.
+
+ net/openvswitch/actions.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index 6fcd7e2ca81fe..952c6292100d0 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -936,6 +936,8 @@ static void do_output(struct datapath *dp, struct sk_buff *skb, int out_port,
+ 				pskb_trim(skb, ovs_mac_header_len(key));
+ 		}
+ 
++		skb->pkt_type = PACKET_OUTGOING;
 +
-        /*
-         * An addr_to_node_id(addr) converts an address to a node index
-         * where a VA is located. If VA spans several zones and passed
-<snip>
+ 		if (likely(!mru ||
+ 		           (skb->len <= mru + vport->dev->hard_header_len))) {
+ 			ovs_vport_send(vport, skb, ovs_key_mac_proto(key));
+-- 
+2.41.0
 
-Could you please test it?
-
---
-Uladzislau Rezki
 
