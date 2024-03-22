@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-111793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43A0887110
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:43:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4153887111
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CC49B22063
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12D221C21738
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E932F5FBB3;
-	Fri, 22 Mar 2024 16:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F16F5FDCC;
+	Fri, 22 Mar 2024 16:42:56 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057E25D903;
-	Fri, 22 Mar 2024 16:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EDC5FBB0;
+	Fri, 22 Mar 2024 16:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125773; cv=none; b=bQVg8LuzHoI63PC9Q5u8WoyfS8tiJTzsZSFnP/HrZ/AOnlC3QunnLbozTnOCma2H0zDz+wO7zkps/EcWeVBZ5ei38/w9zHdNXNIf4nlbuic2yLY5x7f6bb+3oQ91qKoMs4N3DGuZJwUnxuDC2bryd3u9vLJBk9crYk8LtLF+O6U=
+	t=1711125775; cv=none; b=fl293E7AnDY1FHl/xQShnIXwLZ2Uk+nVeaFmoOBjCBjsZYFV+WO+UR8ebJgwsHAdCRNtafiij3Il0uVkHC0paQWqiNMiaSDNus4eXfQH5InroAjICO4dy4pgTwPKRXo5q69gNWrRZAwah25LB+2za3bzM4F6wZMfZkcXiITvC8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125773; c=relaxed/simple;
-	bh=XQSKmN1TVfytkq7r8tlE3KspdUqFU8nJv4BPKNrYrio=;
+	s=arc-20240116; t=1711125775; c=relaxed/simple;
+	bh=rjk+7yJWEv75ESje2BFHgdnRf0K1EM8kb9E9nOpxEm8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ciy6A/TvsquqN/XOefkRZXJIQqM4K721zFtyWFtKOY9jQ0G2dMzaqhBUtuOy5VllF14L+9OZTUlB4KD4KMg5FHmQ/smjAeIrkM1+x1iH3kElH0k/5qf9kz+Auazu2d7tjxTjLOSB9H+jhh2af4mOfAZUgR0uKOlIUHgGbbdRiZE=
+	 MIME-Version; b=kH7vsiN2dNgrB5djVVj0pUsPMNifqVH2ZmLhcEZdcZJjhIlGsu/dL2OCTmOLF8TBY6OYNk/CakNRdiTmk3AV+ZVW71pXo2Oeq6PMMAdA+pBrubFnLHJiJJsPa1+0nOlaPe4Jgz/hJVnssKJS9uiru7rpOucfZ3rNTmIchnv/sjE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BA611042;
-	Fri, 22 Mar 2024 09:43:25 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8784AFEC;
+	Fri, 22 Mar 2024 09:43:27 -0700 (PDT)
 Received: from e126817.cambridge.arm.com (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AC52C3F762;
-	Fri, 22 Mar 2024 09:42:49 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 988993F762;
+	Fri, 22 Mar 2024 09:42:51 -0700 (PDT)
 From: Ben Gainey <ben.gainey@arm.com>
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -46,9 +46,9 @@ Cc: james.clark@arm.com,
 	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Ben Gainey <ben.gainey@arm.com>
-Subject: [PATCH v4 2/4] tools/perf: Track where perf_sample_ids need per-thread periods
-Date: Fri, 22 Mar 2024 16:42:35 +0000
-Message-ID: <20240322164237.203358-3-ben.gainey@arm.com>
+Subject: [PATCH v4 3/4] tools/perf: Correctly calculate sample period for inherited SAMPLE_READ values
+Date: Fri, 22 Mar 2024 16:42:36 +0000
+Message-ID: <20240322164237.203358-4-ben.gainey@arm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240322164237.203358-1-ben.gainey@arm.com>
 References: <20240322164237.203358-1-ben.gainey@arm.com>
@@ -60,75 +60,211 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-perf_sample_ids and related evlist/evsel code are modified to track
-which events combine inherit+inherit_stat+PERF_SAMPLE_READ.
+Sample period calculation is updated to take into account the fact that
+the stream-id for events with inherit+inherit_stat+PERF_SAMPLE_READ
+is now unique per thread, rather than globally unique.
 
-Events with this combination of properties must be handled differently
-when tracking each streams sample period, as their stream-id is now only
-unique per thread, rather than globally unique.
+perf_sample_id is modified to support tracking per-stream+per-thread
+values, along with the existing global per-stream values. In the
+per-thread case, values are stored in a hash by tid.
+
+deliver_sample_value is modified to correctly locate the previous
+sample storage based on the attribute, stream id and thread id.
 
 Signed-off-by: Ben Gainey <ben.gainey@arm.com>
 ---
- tools/lib/perf/evlist.c                 | 1 +
- tools/lib/perf/evsel.c                  | 7 +++++++
- tools/lib/perf/include/internal/evsel.h | 9 +++++++++
- 3 files changed, 17 insertions(+)
+ tools/lib/perf/evsel.c                  | 41 ++++++++++++++++++++++
+ tools/lib/perf/include/internal/evsel.h | 46 +++++++++++++++++++++++--
+ tools/perf/util/session.c               | 11 ++++--
+ 3 files changed, 93 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 058e3ff10f9b..c585c49491a5 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -255,6 +255,7 @@ static void perf_evlist__id_hash(struct perf_evlist *evlist,
- 
- 	sid->id = id;
- 	sid->evsel = evsel;
-+	sid->period_per_thread = perf_evsel__attr_has_per_thread_sample_period(evsel);
- 	hash = hash_64(sid->id, PERF_EVLIST__HLIST_BITS);
- 	hlist_add_head(&sid->node, &evlist->heads[hash]);
- }
 diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-index c07160953224..dd60ee0557d8 100644
+index dd60ee0557d8..2bdba78cc43e 100644
 --- a/tools/lib/perf/evsel.c
 +++ b/tools/lib/perf/evsel.c
-@@ -537,6 +537,13 @@ void perf_evsel__free_id(struct perf_evsel *evsel)
+@@ -5,6 +5,7 @@
+ #include <perf/evsel.h>
+ #include <perf/cpumap.h>
+ #include <perf/threadmap.h>
++#include <linux/hash.h>
+ #include <linux/list.h>
+ #include <internal/evsel.h>
+ #include <linux/zalloc.h>
+@@ -23,6 +24,7 @@ void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr,
+ 		      int idx)
+ {
+ 	INIT_LIST_HEAD(&evsel->node);
++	INIT_LIST_HEAD(&evsel->period_per_thread_periods);
+ 	evsel->attr = *attr;
+ 	evsel->idx  = idx;
+ 	evsel->leader = evsel;
+@@ -531,10 +533,17 @@ int perf_evsel__alloc_id(struct perf_evsel *evsel, int ncpus, int nthreads)
+ 
+ void perf_evsel__free_id(struct perf_evsel *evsel)
+ {
++	struct perf_sample_id_period *pos, *n;
++
+ 	xyarray__delete(evsel->sample_id);
+ 	evsel->sample_id = NULL;
+ 	zfree(&evsel->id);
  	evsel->ids = 0;
++
++	perf_evsel_for_each_per_thread_period_safe(evsel, n, pos) {
++		list_del_init(&pos->node);
++		zfree(pos);
++	}
  }
  
-+bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel)
+ bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel)
+@@ -544,6 +553,38 @@ bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel)
+ 		&& evsel->attr.inherit_stat;
+ }
+ 
++u64 *perf_sample_id__get_period_storage(struct perf_sample_id *sid, u32 tid)
 +{
-+	return (evsel->attr.sample_type & PERF_SAMPLE_READ)
-+		&& evsel->attr.inherit
-+		&& evsel->attr.inherit_stat;
++	struct hlist_head *head;
++	struct perf_sample_id_period *res;
++	int hash;
++
++	if (!sid->period_per_thread)
++		return &sid->period;
++
++	hash = hash_32(tid, PERF_SAMPLE_ID__HLIST_BITS);
++	head = &sid->periods[hash];
++
++	hlist_for_each_entry(res, head, hnode)
++		if (res->tid == tid)
++			return &res->period;
++
++	if (sid->evsel == NULL)
++		return NULL;
++
++	res = zalloc(sizeof(struct perf_sample_id_period));
++	if (res == NULL)
++		return NULL;
++
++	INIT_LIST_HEAD(&res->node);
++	res->tid = tid;
++
++	list_add_tail(&res->node, &sid->evsel->period_per_thread_periods);
++	hlist_add_head(&res->hnode, &sid->periods[hash]);
++
++	return &res->period;
 +}
 +
  void perf_counts_values__scale(struct perf_counts_values *count,
  			       bool scale, __s8 *pscaled)
  {
 diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
-index 5cd220a61962..8dd58149986c 100644
+index 8dd58149986c..52ec2edf628b 100644
 --- a/tools/lib/perf/include/internal/evsel.h
 +++ b/tools/lib/perf/include/internal/evsel.h
-@@ -36,6 +36,13 @@ struct perf_sample_id {
+@@ -11,6 +11,32 @@
+ struct perf_thread_map;
+ struct xyarray;
  
- 	/* Holds total ID period value for PERF_SAMPLE_READ processing. */
- 	u64			 period;
++/**
++ * The per-thread accumulated period storage node.
++ */
++struct perf_sample_id_period {
++	struct list_head	node;
++	struct hlist_node	hnode;
++	/* The thread that the values belongs to */
++	u32			tid;
++	/* Holds total ID period value for PERF_SAMPLE_READ processing. */
++	u64			period;
++};
 +
-+	/*
-+	 * When inherit+inherit_stat is combined with PERF_SAMPLE_READ, the
-+	 * period value is per (sample_id, thread) tuple, rather than per
-+	 * sample_id.
-+	 */
-+	bool			 period_per_thread;
- };
++/**
++ * perf_evsel_for_each_per_thread_period_safe - safely iterate thru all the
++ * period_per_thread_periods
++ * @evlist:perf_evsel instance to iterate
++ * @item: struct perf_sample_id_period iterator
++ * @tmp: struct perf_sample_id_period temp iterator
++ */
++#define perf_evsel_for_each_per_thread_period_safe(evsel, tmp, item) \
++	list_for_each_entry_safe(item, tmp, &(evsel)->period_per_thread_periods, node)
++
++
++#define PERF_SAMPLE_ID__HLIST_BITS 4
++#define PERF_SAMPLE_ID__HLIST_SIZE (1 << PERF_SAMPLE_ID__HLIST_BITS)
++
+ /*
+  * Per fd, to map back from PERF_SAMPLE_ID to evsel, only used when there are
+  * more than one entry in the evlist.
+@@ -19,6 +45,7 @@ struct perf_sample_id {
+ 	struct hlist_node	 node;
+ 	u64			 id;
+ 	struct perf_evsel	*evsel;
++
+        /*
+ 	* 'idx' will be used for AUX area sampling. A sample will have AUX area
+ 	* data that will be queued for decoding, where there are separate
+@@ -34,8 +61,18 @@ struct perf_sample_id {
+ 	pid_t			 machine_pid;
+ 	struct perf_cpu		 vcpu;
  
- struct perf_evsel {
-@@ -88,4 +95,6 @@ int perf_evsel__apply_filter(struct perf_evsel *evsel, const char *filter);
- int perf_evsel__alloc_id(struct perf_evsel *evsel, int ncpus, int nthreads);
- void perf_evsel__free_id(struct perf_evsel *evsel);
+-	/* Holds total ID period value for PERF_SAMPLE_READ processing. */
+-	u64			 period;
++	union {
++		/*
++		 * Holds total ID period value for PERF_SAMPLE_READ processing
++		 * (when period is not per-thread).
++		 */
++		u64			period;
++		/*
++		 * Holds total ID period value for PERF_SAMPLE_READ processing
++		 * (when period is per-thread).
++		 */
++		struct hlist_head	periods[PERF_SAMPLE_ID__HLIST_SIZE];
++	};
  
-+bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel);
+ 	/*
+ 	 * When inherit+inherit_stat is combined with PERF_SAMPLE_READ, the
+@@ -65,6 +102,9 @@ struct perf_evsel {
+ 	u32			 ids;
+ 	struct perf_evsel	*leader;
+ 
++	/* Where period_per_thread is true, stores the per-thread values */
++	struct list_head	period_per_thread_periods;
++
+ 	/* parse modifier helper */
+ 	int			 nr_members;
+ 	/*
+@@ -97,4 +137,6 @@ void perf_evsel__free_id(struct perf_evsel *evsel);
+ 
+ bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel);
+ 
++u64 *perf_sample_id__get_period_storage(struct perf_sample_id *sid, u32 tid);
 +
  #endif /* __LIBPERF_INTERNAL_EVSEL_H */
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index 199d3e8df315..2d6a92374847 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -1478,14 +1478,19 @@ static int deliver_sample_value(struct evlist *evlist,
+ {
+ 	struct perf_sample_id *sid = evlist__id2sid(evlist, v->id);
+ 	struct evsel *evsel;
++	u64 *storage = NULL;
+ 
+ 	if (sid) {
++		storage  = perf_sample_id__get_period_storage(sid, sample->tid);
++	}
++
++	if (storage) {
+ 		sample->id     = v->id;
+-		sample->period = v->value - sid->period;
+-		sid->period    = v->value;
++		sample->period = v->value - *storage;
++		*storage       = v->value;
+ 	}
+ 
+-	if (!sid || sid->evsel == NULL) {
++	if (!storage || sid->evsel == NULL) {
+ 		++evlist->stats.nr_unknown_id;
+ 		return 0;
+ 	}
 -- 
 2.44.0
 
