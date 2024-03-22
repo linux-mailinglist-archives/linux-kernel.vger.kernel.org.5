@@ -1,238 +1,243 @@
-Return-Path: <linux-kernel+bounces-112029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5ED88745C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:10:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2D188745D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEA51C220D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:10:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0169281E90
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F7B7FBBD;
-	Fri, 22 Mar 2024 21:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694747FBB6;
+	Fri, 22 Mar 2024 21:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="M0oRjUwK"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95ADC1E53A;
-	Fri, 22 Mar 2024 21:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b7hFHG9z"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41701E53A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 21:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711141839; cv=none; b=n3nbQpZ1AOiM7JBf2n2cOZMSCQrDFL7bO3I1w1k4GhMoT7P/tyXArKasIokE4YbMJHrgHeGHYJHz2weqtrLwYSszkmaXyXy/8MfPkU0ophdRD8jNOsvZkUvDeYofMGg8WoLBpcdvjdScJT8WJe3OrYYf/6RUNAXyRo/uKiHYmbg=
+	t=1711141965; cv=none; b=QkE9ALttvQdCGlURaUdp8lp2Rd6mk/TdbFv7uuQpi1WNcT+39yRLyT1zZphqeLe+G62cHryXAwWJ1xozMnRTTotYnRNjrwFrZpRbt35gej6sAgQyzYnycicJlks84bSdwRV1XweSjjkpQPFN/o/afwpErbrdmUkP/rS33+ZN46g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711141839; c=relaxed/simple;
-	bh=XaH0KEv1nb9xus3VBqOrQLMz+j2srUYaIlBhhpkcHuE=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=hG81dneviLkxLa3ZRBp+kQiwyoK4JQs0DqJjvfqdY27k9awu5fa+XouPoa3ZWKQ6eFzCIg4lslHDxgZoEICHL2AaNKFMVIjkuRDHYNJDpdQsT9znJMBA/EWfeMjxH0M7H/iGDMLO7cPjBTv5TiuTXWEd6b0W/6xrXPbOIEkRzsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=M0oRjUwK; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id E06B620B74C0;
-	Fri, 22 Mar 2024 14:10:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E06B620B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1711141830;
-	bh=Dgr5CP67sBUTg6Kr6ZXZRiRfX3GkWa3/d4YTRSxG8UY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=M0oRjUwKht9JnvFcToP5N8QM1YmMRXHYePKI7iZ7eWLT5TjRU/vhTuTbAs15P5USF
-	 BDfPbxbxPyH/rB3xuzivDY+PaKAjLku7uhbBIOOeVQ4CQRVY3NtKpVoZduLT9zNTTy
-	 lmcV5+Uw09WQdJH+T/1SiGxJS8jGl3AWDAGoSmq8=
-From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: mhkelley58@gmail.com,
-	mhklinux@outlook.com,
-	kys@microsoft.com,
-	wei.liu@kernel.org,
-	haiyangz@microsoft.com,
-	decui@microsoft.com,
-	tglx@linutronix.de,
-	dave.hansen@linux.intel.com,
-	arnd@arndb.de
-Subject: [PATCH v3] mshyperv: Introduce hv_numa_node_to_pxm_info()
-Date: Fri, 22 Mar 2024 14:10:26 -0700
-Message-Id: <1711141826-9458-1-git-send-email-nunodasneves@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1711141965; c=relaxed/simple;
+	bh=A2UNXrdSd93crpAa4gL3kieS0IiXihuM8igbEXhzXpo=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=eRTBh0S51naZiF7yn5pUGshg1H4XeMTHaCvgnKlKZtAkXctGuzncZ+TyOX3dHPC/7tCpUq7LtLG4Epj+5OD44WlcHuPAq6pamN2iLQFXg9XibGLUmVb/pxkM4sHN89++bKe2DrVk1JhYgbjlqgBw+ESrc5nhivpaFuNMJkE3BLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b7hFHG9z; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711141963; x=1742677963;
+  h=date:from:to:cc:subject:message-id;
+  bh=A2UNXrdSd93crpAa4gL3kieS0IiXihuM8igbEXhzXpo=;
+  b=b7hFHG9zyVNGQVa4UqOlajknZXf0SVa5yAK6QtLeiAAGbYGzWHSFpb3u
+   6bWOEEz7dLOAGqGjkaiR/dQfaeYDVEhKAM5HLyHfaCx1XP48yvlfTkuZ/
+   vBY5Wa7c8XcaETXeXMD8q/MGpeoPP/GivuCWc0uzxTkRcVxs0TiOfZYIc
+   xP2PMLXJqHeUT0Lcq3goql/mJbQdVluknluu+q/6JEv2CUxevzJlf2XET
+   6hpq6ZGifR+Uehwwz9Qlm/G5uPwBG1PX1aypxnzky8wp6H/cKi2LEs+pP
+   sml7poMQ7EfLNQeNHVDCJKx+iZtKTQvox9Wkv7+JI8A6t0hJE+3MxvsL9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6063505"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6063505"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:12:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="19511547"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 22 Mar 2024 14:12:37 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rnmBm-000KcL-20;
+	Fri, 22 Mar 2024 21:12:34 +0000
+Date: Sat, 23 Mar 2024 05:11:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ 76e9762d66373354b45c33b60e9a53ef2a3c5ff2
+Message-ID: <202403230546.HtoJc3Fx-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Factor out logic for converting numa node to hv_proximity_domain_info
-into a helper function.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: 76e9762d66373354b45c33b60e9a53ef2a3c5ff2  x86/boot: Ignore relocations in .notes sections in walk_relocs() too
 
-Change hv_proximity_domain_info to a struct to improve readability.
+elapsed time: 736m
 
-While at it, rename hv_add_logical_processor_* structs to the correct
-hv_input_/hv_output_ prefix, and remove the flags field which is not
-present in the ABI.
+configs tested: 155
+configs skipped: 3
 
-Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
----
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240323   gcc  
+arc                   randconfig-002-20240323   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                     am200epdkit_defconfig   gcc  
+arm                                 defconfig   clang
+arm                         lpc18xx_defconfig   clang
+arm                   randconfig-001-20240323   clang
+arm                   randconfig-002-20240323   clang
+arm                   randconfig-003-20240323   clang
+arm                   randconfig-004-20240323   gcc  
+arm                        vexpress_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240323   gcc  
+arm64                 randconfig-002-20240323   gcc  
+arm64                 randconfig-003-20240323   clang
+arm64                 randconfig-004-20240323   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240323   gcc  
+csky                  randconfig-002-20240323   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240323   clang
+hexagon               randconfig-002-20240323   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240322   gcc  
+i386         buildonly-randconfig-002-20240322   gcc  
+i386         buildonly-randconfig-003-20240322   clang
+i386         buildonly-randconfig-004-20240322   clang
+i386         buildonly-randconfig-005-20240322   gcc  
+i386         buildonly-randconfig-006-20240322   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240322   clang
+i386                  randconfig-002-20240322   clang
+i386                  randconfig-003-20240322   gcc  
+i386                  randconfig-004-20240322   gcc  
+i386                  randconfig-005-20240322   clang
+i386                  randconfig-006-20240322   clang
+i386                  randconfig-011-20240322   gcc  
+i386                  randconfig-012-20240322   clang
+i386                  randconfig-013-20240322   clang
+i386                  randconfig-014-20240322   clang
+i386                  randconfig-015-20240322   gcc  
+i386                  randconfig-016-20240322   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240323   gcc  
+loongarch             randconfig-002-20240323   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                           rs90_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240323   gcc  
+nios2                 randconfig-002-20240323   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240323   gcc  
+parisc                randconfig-002-20240323   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     ep8248e_defconfig   gcc  
+powerpc                       maple_defconfig   clang
+powerpc                      ppc44x_defconfig   clang
+powerpc               randconfig-001-20240323   gcc  
+powerpc               randconfig-002-20240323   gcc  
+powerpc               randconfig-003-20240323   clang
+powerpc                     stx_gp3_defconfig   clang
+powerpc64                        alldefconfig   clang
+powerpc64             randconfig-001-20240323   clang
+powerpc64             randconfig-002-20240323   clang
+powerpc64             randconfig-003-20240323   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240323   clang
+riscv                 randconfig-002-20240323   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240323   clang
+s390                  randconfig-002-20240323   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        dreamcast_defconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                    randconfig-001-20240323   gcc  
+sh                    randconfig-002-20240323   gcc  
+sh                             sh03_defconfig   gcc  
+sh                     sh7710voipgw_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240323   gcc  
+sparc64               randconfig-002-20240323   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240323   gcc  
+um                    randconfig-002-20240323   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
+xtensa                randconfig-001-20240323   gcc  
+xtensa                randconfig-002-20240323   gcc  
 
-Changes in v3:
-* Shorten function name to hv_numa_node_to_pxm_info()
-* Correct hv_add_logical_processor_* naming, and remove flags
-
-Changes in v2:
-* Change hv_proximity_domain_info from union to struct to improve
-  readability [Dave Hanson]
-
----
- arch/x86/hyperv/hv_proc.c         | 22 ++++------------------
- include/asm-generic/hyperv-tlfs.h | 19 +++++++------------
- include/asm-generic/mshyperv.h    | 14 ++++++++++++++
- 3 files changed, 25 insertions(+), 30 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_proc.c b/arch/x86/hyperv/hv_proc.c
-index 68a0843d4750..3fa1f2ee7b0d 100644
---- a/arch/x86/hyperv/hv_proc.c
-+++ b/arch/x86/hyperv/hv_proc.c
-@@ -3,7 +3,6 @@
- #include <linux/vmalloc.h>
- #include <linux/mm.h>
- #include <linux/clockchips.h>
--#include <linux/acpi.h>
- #include <linux/hyperv.h>
- #include <linux/slab.h>
- #include <linux/cpuhotplug.h>
-@@ -116,12 +115,11 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
- 
- int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
- {
--	struct hv_add_logical_processor_in *input;
--	struct hv_add_logical_processor_out *output;
-+	struct hv_input_add_logical_processor *input;
-+	struct hv_output_add_logical_processor *output;
- 	u64 status;
- 	unsigned long flags;
- 	int ret = HV_STATUS_SUCCESS;
--	int pxm = node_to_pxm(node);
- 
- 	/*
- 	 * When adding a logical processor, the hypervisor may return
-@@ -137,11 +135,7 @@ int hv_call_add_logical_proc(int node, u32 lp_index, u32 apic_id)
- 
- 		input->lp_index = lp_index;
- 		input->apic_id = apic_id;
--		input->flags = 0;
--		input->proximity_domain_info.domain_id = pxm;
--		input->proximity_domain_info.flags.reserved = 0;
--		input->proximity_domain_info.flags.proximity_info_valid = 1;
--		input->proximity_domain_info.flags.proximity_preferred = 1;
-+		input->proximity_domain_info = hv_numa_node_to_pxm_info(node);
- 		status = hv_do_hypercall(HVCALL_ADD_LOGICAL_PROCESSOR,
- 					 input, output);
- 		local_irq_restore(flags);
-@@ -166,7 +160,6 @@ int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
- 	u64 status;
- 	unsigned long irq_flags;
- 	int ret = HV_STATUS_SUCCESS;
--	int pxm = node_to_pxm(node);
- 
- 	/* Root VPs don't seem to need pages deposited */
- 	if (partition_id != hv_current_partition_id) {
-@@ -185,14 +178,7 @@ int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
- 		input->vp_index = vp_index;
- 		input->flags = flags;
- 		input->subnode_type = HvSubnodeAny;
--		if (node != NUMA_NO_NODE) {
--			input->proximity_domain_info.domain_id = pxm;
--			input->proximity_domain_info.flags.reserved = 0;
--			input->proximity_domain_info.flags.proximity_info_valid = 1;
--			input->proximity_domain_info.flags.proximity_preferred = 1;
--		} else {
--			input->proximity_domain_info.as_uint64 = 0;
--		}
-+		input->proximity_domain_info = hv_numa_node_to_pxm_info(node);
- 		status = hv_do_hypercall(HVCALL_CREATE_VP, input, NULL);
- 		local_irq_restore(irq_flags);
- 
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index 87e3d49a4e29..814207e7c37f 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -512,13 +512,9 @@ struct hv_proximity_domain_flags {
- 	u32 proximity_info_valid : 1;
- } __packed;
- 
--/* Not a union in windows but useful for zeroing */
--union hv_proximity_domain_info {
--	struct {
--		u32 domain_id;
--		struct hv_proximity_domain_flags flags;
--	};
--	u64 as_uint64;
-+struct hv_proximity_domain_info {
-+	u32 domain_id;
-+	struct hv_proximity_domain_flags flags;
- } __packed;
- 
- struct hv_lp_startup_status {
-@@ -532,14 +528,13 @@ struct hv_lp_startup_status {
- } __packed;
- 
- /* HvAddLogicalProcessor hypercall */
--struct hv_add_logical_processor_in {
-+struct hv_input_add_logical_processor {
- 	u32 lp_index;
- 	u32 apic_id;
--	union hv_proximity_domain_info proximity_domain_info;
--	u64 flags;
-+	struct hv_proximity_domain_info proximity_domain_info;
- } __packed;
- 
--struct hv_add_logical_processor_out {
-+struct hv_output_add_logical_processor {
- 	struct hv_lp_startup_status startup_status;
- } __packed;
- 
-@@ -560,7 +555,7 @@ struct hv_create_vp {
- 	u8 padding[3];
- 	u8 subnode_type;
- 	u64 subnode_id;
--	union hv_proximity_domain_info proximity_domain_info;
-+	struct hv_proximity_domain_info proximity_domain_info;
- 	u64 flags;
- } __packed;
- 
-diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
-index 99935779682d..8fe7aaab2599 100644
---- a/include/asm-generic/mshyperv.h
-+++ b/include/asm-generic/mshyperv.h
-@@ -21,6 +21,7 @@
- #include <linux/types.h>
- #include <linux/atomic.h>
- #include <linux/bitops.h>
-+#include <acpi/acpi_numa.h>
- #include <linux/cpumask.h>
- #include <linux/nmi.h>
- #include <asm/ptrace.h>
-@@ -67,6 +68,19 @@ extern u64 hv_do_fast_hypercall8(u16 control, u64 input8);
- bool hv_isolation_type_snp(void);
- bool hv_isolation_type_tdx(void);
- 
-+static inline struct hv_proximity_domain_info hv_numa_node_to_pxm_info(int node)
-+{
-+	struct hv_proximity_domain_info pxm_info = {};
-+
-+	if (node != NUMA_NO_NODE) {
-+		pxm_info.domain_id = node_to_pxm(node);
-+		pxm_info.flags.proximity_info_valid = 1;
-+		pxm_info.flags.proximity_preferred = 1;
-+	}
-+
-+	return pxm_info;
-+}
-+
- /* Helper functions that provide a consistent pattern for checking Hyper-V hypercall status. */
- static inline int hv_result(u64 status)
- {
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
