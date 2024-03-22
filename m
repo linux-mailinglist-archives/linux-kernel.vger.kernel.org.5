@@ -1,122 +1,172 @@
-Return-Path: <linux-kernel+bounces-111425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E31D7886C2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:35:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D952886C34
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:36:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209DA1C210DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:35:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E343B24D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A153C4438E;
-	Fri, 22 Mar 2024 12:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29CB444C97;
+	Fri, 22 Mar 2024 12:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pb/Z/h0q"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u/P+vTaH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518FE3FB96
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590322F844;
+	Fri, 22 Mar 2024 12:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711110939; cv=none; b=KBdp/Xpxx7hruoqfH5tOnhxl9LD1JThxBBdThLXuhekIrvm/4aRMHnuNB7jjovIlvKp4Kqk7HNl75m6gDGx/+PEaNkLexgSmRafw1J7IR9zI+yuazOqUtqyiIz8HoVhlsWiTGA5n1DGHj64gg+BIIZw99E5bfppCtA5OD0eQDmM=
+	t=1711110950; cv=none; b=GBP633D0mUZBXJU15Rmcqqhx/W2pjsmbXvAv0HZGaztR27kFnDhBXzmDfrIuCNFIuhWoSk/5ZT+Cq5wiroukp3q6gmcAf7gX3xWXHWPeb5tiVpd+gid3H8FAAc7RyjSFkFNwdDXQeDcll6lkW9kILu2xjkaSbLihLVSFoN1tDUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711110939; c=relaxed/simple;
-	bh=vXf4oistVLvkPyc/6m9dpyTFXPudu0cONm6C5paqSz4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WGfoiyDhIzCIadOs8ao6HQZAkJs6Jap7RSdvkAcDKmDbZvUHBI1uPK7qLNOOMVPRRrm9uh2u+x5lhRN5MLbAklk0ozZ76Kq/I2P1IxapB7bQzHnN6pvGTtSDKI+/yaUK5KlnKXHT5bclaEhOBDw+KVgNfa7v6G/0Y0X7AeD2wNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pb/Z/h0q; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33ed4dd8659so1967357f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711110935; x=1711715735; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qaiT7un8HqnHgeFe5iogGWeHvRb9rIMP24UTadK+jiA=;
-        b=pb/Z/h0qbxsL08FeZn/dHpkP2eO3kIiZ4v7XGgsx9dQIaXq+J6KoZHf53Wd9GCJcLH
-         0EVyh3vSEg0Vps9ZpG+NdwSGjU/VohyBnZ2ejq+kk9TyJYBoxr9zZ8/Z7r7dU1PNi72j
-         2aq4jEoNSqqhX2QaMSIB383rK6rUqURS1CMkoxPODaZDYVyLJ1uD6wTwoS9DQDxWJE4e
-         NXQQPqcSjUHAjeKE8RwIugFZPvluwkZP84XGC6759yO/szKpk2Fq+f0FsciJYlBRCQUV
-         bB3egH3zMBBhO3oxtBOiylX/exPqXShiiztiYNwIHtHW4gth0OgeqY/owVn/OMRIt0WO
-         OuNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711110935; x=1711715735;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qaiT7un8HqnHgeFe5iogGWeHvRb9rIMP24UTadK+jiA=;
-        b=cMvyVdYXW1xJKk/lxri0O2FItOoNYy/ai8xf7SuLT3SY5GnnpZl93mCGFdanW6IV23
-         ajCSQAY09BrIDNFVumiH1EjQOlWOr0WgkbxElbja6fIzBcJlkbETg8NsWU2par6+3rRz
-         8diRN0uzQnqM1GO3YxX9IMca1ppPGg4TU/6tVNfLNUDO+hFsXyofNcO+/xVKEkPQYBnP
-         HOWco8hOUh75OLyiVYAI2nxHol2Z2irbPZ/z/Xr88FotSww/pgLe7gM8ASb7VaTDafUF
-         ECZLVn8r6gM4y/uFqPnyvi2qQfEdzpxWiQf9NtJswqGSooTIqW/Sez+CGKcmSBGjzCZ3
-         A/KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVj1FqdBYnrnu+73wtUSY3KMxY/Mp3rVbszP7lbJ9IARju/qItDBO2eAUTUJyikmUm0trCCJbizU7naJHsyYP68GKWJfvV60oETXdlg
-X-Gm-Message-State: AOJu0YyuqtUwCuq7mrX8f+UjyAi6px7jm8K2JJeyaTlZeC4QPwP1ukO3
-	9HcPXTgQ3kibI0ydHJnDLahFRcov+d3iCqouTGAGU7rfGNCwztpzNagPhem002Q=
-X-Google-Smtp-Source: AGHT+IEr23lPjPBzHfm4e4fwAdjKbh+mxb36ENN4fFzUMtd+xvx1PD26UevBeCxTwHiEfO+ScZYTkA==
-X-Received: by 2002:a5d:4047:0:b0:33e:5970:e045 with SMTP id w7-20020a5d4047000000b0033e5970e045mr1909894wrp.21.1711110935515;
-        Fri, 22 Mar 2024 05:35:35 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id az27-20020adfe19b000000b0033ed84facdbsm1986781wrb.82.2024.03.22.05.35.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 05:35:35 -0700 (PDT)
-Message-ID: <230eab52-9751-43fd-8e47-fbfe12410e44@linaro.org>
-Date: Fri, 22 Mar 2024 12:35:34 +0000
+	s=arc-20240116; t=1711110950; c=relaxed/simple;
+	bh=DIU/riHW7d/Q828EtRoJMXqE8kp8ZnSjYwedK5XPRbA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W7C3pUp6GAb9CYmMtAcJX3YTiXoXZGay86lpN+DotnckeUPvFCOobBi56peNtzZK6xovrxfd8sK07z+M5KyI8cGQAsXSr6RF4gCm7DJ/pVAd9tncs98ynRovyFLyM6hx368SXdS7trCr1RZ4oN5BJ/ltgZjGmngm0evi5df0cCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u/P+vTaH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF17C433F1;
+	Fri, 22 Mar 2024 12:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711110949;
+	bh=DIU/riHW7d/Q828EtRoJMXqE8kp8ZnSjYwedK5XPRbA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=u/P+vTaHBL1Qwg9rMUybG08tJuaCL6vcumDRR7PHiRZWZa0Ku+VsguA6Jz/oYwY/Y
+	 qNNIoY2JogVZ1Ih34hgni6rT+X0sJF9I3IoX44804pCZ7LbSe3umt2A5+eqqmmLAiM
+	 AUmjdLAmJGbLoBKHalDymv2gFjrcc/2aEUdPpgJpY2wEqv2Rq7FOxNtzSv0t8bS7cC
+	 AncIoFdtkl1HZmLT46qeG+GrUD80IwC58ceIku1ALmyCFxfPw6P6JRGyzbAMvlCjWC
+	 97XsAbbG1AQeTTAN6L4XZNUyXSmtZnEbDSZ33HwDvGBjmNtvCJ428TANpIUMF1rXwd
+	 Z9ItmEWNNiCQQ==
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: linux-integrity@vger.kernel.org
+Cc: Jarkko Sakkinen <jarkko@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Daniel P . Smith" <dpsmith@apertussolutions.com>,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Peter Huewe <peterhuewe@gmx.de>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Alexander Steffen <Alexander.Steffen@infineon.com>,
+	keyrings@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	netdev@vger.kernel.org (open list:PTP HARDWARE CLOCK SUPPORT:Keyword:(?:\b|_)ptp(?:\b|_))
+Subject: [PATCH v4] Documentation: tpm_tis
+Date: Fri, 22 Mar 2024 14:35:36 +0200
+Message-ID: <20240322123542.24158-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,pmic-typec: drop port
- description
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org>
- <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22/03/2024 11:52, Dmitry Baryshkov wrote:
-> The PMIC Type-C controller doesn't have separate role-switching signal.
-> Instead it has an HS signal connection between embedded USB-C connector
-> node and the HS port of the USB controller.
+Based recent discussions on LKML, provide preliminary bits of tpm_tis_core
+dependent drivers. Includes only bare essentials but can be extended later
+on case by case. This way some people may even want to read it later on.
 
-I take your point on port as a signal but the way type-c determines 
-data-role is via the DR_Swap message.
-
-https://www.embedded.com/usb-type-c-and-power-delivery-101-power-delivery-protocol/
-
-We receive an IRQ which is a packet containing DR_Swap - TCPM consumes 
-that data and does a data-role switch.
-
-The port then establishes the link between typec-port and redriver or PHY.
-
-So, I think HS should be dropped from the commit logs and names in both 
-series.
-
-BTW for the GLINK devices I think the adsp firmware just notifies the 
-APSS of the data-role switch so, these types of devices probably should 
-have an epdoint with "usb_role_switch" in the name.
-
+Cc: Jonathan Corbet <corbet@lwn.net>
+CC: Daniel P. Smith <dpsmith@apertussolutions.com>
+Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Peter Huewe <peterhuewe@gmx.de>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
+Cc: keyrings@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
-bod
+v4:
+- Extended the text to address some of Stefan's concerns with v2.
+- Had to unfortunately remove Randy's reviewed-by because of this, given
+  the amount of text added.
+v3:
+- Fixed incorrect buffer size:
+  https://lore.kernel.org/linux-integrity/d957dbd3-4975-48d7-abc5-1a01c0959ea3@linux.ibm.com/
+v2:
+- Fixed errors reported by Randy:
+  https://lore.kernel.org/all/aed28265-d677-491a-a045-24b351854b24@infradead.org/
+- Improved the text a bit to have a better presentation.
+---
+ Documentation/security/tpm/index.rst   |  1 +
+ Documentation/security/tpm/tpm_tis.rst | 46 ++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+ create mode 100644 Documentation/security/tpm/tpm_tis.rst
+
+diff --git a/Documentation/security/tpm/index.rst b/Documentation/security/tpm/index.rst
+index fc40e9f23c85..f27a17f60a96 100644
+--- a/Documentation/security/tpm/index.rst
++++ b/Documentation/security/tpm/index.rst
+@@ -5,6 +5,7 @@ Trusted Platform Module documentation
+ .. toctree::
+ 
+    tpm_event_log
++   tpm_tis
+    tpm_vtpm_proxy
+    xen-tpmfront
+    tpm_ftpm_tee
+diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/security/tpm/tpm_tis.rst
+new file mode 100644
+index 000000000000..b448ea3db71d
+--- /dev/null
++++ b/Documentation/security/tpm/tpm_tis.rst
+@@ -0,0 +1,46 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=========================
++TPM FIFO interface driver
++=========================
++
++TCG PTP Specification defines two interface types: FIFO and CRB. The former is
++based on sequenced read and write operations,  and the latter is based on a
++buffer containing the full command or response.
++
++FIFO (First-In-First-Out) interface is used by the tpm_tis_core dependent
++drivers. Originally Linux had only a driver called tpm_tis, which covered
++memory mapped (aka MMIO) interface but it was later on extended to cover other
++physical interfaces supported by the TCG standard.
++
++For legacy compliance the original MMIO driver is called tpm_tis and the
++framework for FIFO drivers is named as tpm_tis_core. The postfix "tis" in
++tpm_tis comes from the TPM Interface Specification, which is the hardware
++interface specification for TPM 1.x chips.
++
++Communication is based on a 20 KiB buffer shared by the TPM chip through a
++hardware bus or memory map, depending on the physical wiring. The buffer is
++further split into five equal-size 4 KiB buffers, which provide equivalent
++sets of registers for communication between the CPU and TPM. These
++communication endpoints are called localities in the TCG terminology.
++
++When the kernel wants to send commands to the TPM chip, it first reserves
++locality 0 by setting the requestUse bit in the TPM_ACCESS register. The bit is
++cleared by the chip when the access is granted. Once it completes its
++communication, the kernel writes the TPM_ACCESS.activeLocality bit. This
++informs the chip that the locality has been relinquished.
++
++Pending localities are served in order by the chip in descending order, one at
++a time:
++
++- Locality 0 has the lowest priority.
++- Locality 5 has the highest priority.
++
++Further information on the purpose and meaning of the localities can be found
++in section 3.2 of the TCG PC Client Platform TPM Profile Specification.
++
++References
++==========
++
++TCG PC Client Platform TPM Profile (PTP) Specification
++https://trustedcomputinggroup.org/resource/pc-client-platform-tpm-profile-ptp-specification/
+-- 
+2.43.0
 
 
