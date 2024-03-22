@@ -1,185 +1,438 @@
-Return-Path: <linux-kernel+bounces-111570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCCAA886DE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5080B886DED
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C6FC2814BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7445E1C21517
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47FDF46435;
-	Fri, 22 Mar 2024 13:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FBBE46449;
+	Fri, 22 Mar 2024 13:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mPCXHgW1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F5320DDB;
-	Fri, 22 Mar 2024 13:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1BF45BFC;
+	Fri, 22 Mar 2024 13:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711115797; cv=none; b=VZ7HfOtrfpZZyExDsV5u8dIBAs7RAixa1kdSqOesGUbTD8FWY1mM9KOtlettH9nX5VIJZa6DfmWirhpHXAq6Xggorude4tJOiRo4mPBMZevPK5+wb5bSQXzy9kIAsTUzMykFuCp0PkpipYbpUu37xk2J17W59zCHwdwaOPNCTkw=
+	t=1711115883; cv=none; b=P2IMFvYXsAOWmZVLh1ZfkQL8bNu7mSd/oaUNFUdAp0HTlj2q7jD7b2zs8FBbuAXLZRXw0OwlNgcBKbfUg+4Hk9mC21ufkEZPnV66npiTTX/VrmvmuQPLKuOe1BRRUGQUwAULJeWXhWI+IQHEipbd5CsKSgH7sE5ierXRf4oG208=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711115797; c=relaxed/simple;
-	bh=Ejq6XsWxRwejHf2Ip37awA8RsMAYWh0XyVNSy+WBD60=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d9r9kDgka+I5AilzmCrBel/cheQJgMDHlHbi2xSeC2G/h7+R79g3ZfcGR8nO6VzjqKJWAUyMV2DU9AbmhvACtO+TMU4i9Mj9y/YUwIeZ5d7LkP1wDfhXJsnT3aa8B/jhbDujSq+GN/kKnfPwiRdoQHrRpRRhTtqGJu6RytlI6+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC550C433C7;
-	Fri, 22 Mar 2024 13:56:34 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [GIT PULL] LoongArch changes for v6.9
-Date: Fri, 22 Mar 2024 21:56:19 +0800
-Message-ID: <20240322135619.1423490-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1711115883; c=relaxed/simple;
+	bh=5nLcUidKgB5r+f5iPuyJSAw+a/z19rQjH3i+N+5NLRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PLJvfnIsbMENillpc9boM21MUumsTYXhWUWh5w0NS97B6ADWMggvBxS9jPNL1BkqxxadM2apiV07EEuV41ivDF4eu9VSvfEKxSBjHQYfcjmGxPBhi6IMfE4BxdFrXKZFLgQJwOXxHwaQWSIpbCy9cMCIgMn3dk3GMrCKcNWASAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mPCXHgW1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2916C433C7;
+	Fri, 22 Mar 2024 13:58:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711115882;
+	bh=5nLcUidKgB5r+f5iPuyJSAw+a/z19rQjH3i+N+5NLRQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mPCXHgW1IBzKaRUZPDWCykrnbXv43wXL7J6eM7RgiJ7FOAg+unkiSiXgkoNDZCR0s
+	 1nWXtMW8Sgwlzry9/Vgn8jvX4HZ+fm3gYLfjXlKF5OA0BiTPZo9ik9Kw07HhYwnTUD
+	 czzmn0tBqc3otfzGUCqszU3mFmL5rzRrM+/cAcfipejrtLAtQ7rPsYepJGQawNlwOx
+	 s8B2+WkK7N+KpmDz9UYRKrqLP/vAJZLVzOdT2h1q2Vddh67n4V2yPMHvjF8GlpA5AY
+	 NDBsBzlgZSX5ShiwasgCNsp9Lasfue6Cn0bs6+XinuqqOUBXMqWIAhqybOzHMdeMYk
+	 WnpdAzFDKULyA==
+Date: Fri, 22 Mar 2024 08:58:00 -0500
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl-asoc-card: convert to YAML
+Message-ID: <20240322135800.GA811908-robh@kernel.org>
+References: <1711102406-8399-1-git-send-email-shengjiu.wang@nxp.com>
+ <1711102406-8399-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1711102406-8399-2-git-send-email-shengjiu.wang@nxp.com>
 
-The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+On Fri, Mar 22, 2024 at 06:13:25PM +0800, Shengjiu Wang wrote:
+> Convert the fsl-asoc-card binding to YAML.
+> 
+> In order to pass the checking, add some used compatible
+> string from devicetree.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../bindings/sound/fsl-asoc-card.txt          | 117 -----------
+>  .../bindings/sound/fsl-asoc-card.yaml         | 196 ++++++++++++++++++
+>  2 files changed, 196 insertions(+), 117 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+> deleted file mode 100644
+> index 4e8dbc5abfd1..000000000000
+> --- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+> +++ /dev/null
+> @@ -1,117 +0,0 @@
+> -Freescale Generic ASoC Sound Card with ASRC support
+> -
+> -The Freescale Generic ASoC Sound Card can be used, ideally, for all Freescale
+> -SoCs connecting with external CODECs.
+> -
+> -The idea of this generic sound card is a bit like ASoC Simple Card. However,
+> -for Freescale SoCs (especially those released in recent years), most of them
+> -have ASRC (Documentation/devicetree/bindings/sound/fsl,asrc.txt) inside. And
+> -this is a specific feature that might be painstakingly controlled and merged
+> -into the Simple Card.
+> -
+> -So having this generic sound card allows all Freescale SoC users to benefit
+> -from the simplification of a new card support and the capability of the wide
+> -sample rates support through ASRC.
+> -
+> -Note: The card is initially designed for those sound cards who use AC'97, I2S
+> -      and PCM DAI formats. However, it'll be also possible to support those non
+> -      AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
+> -      long as the driver has been properly upgraded.
+> -
+> -
+> -The compatible list for this generic sound card currently:
+> - "fsl,imx-audio-ac97"
+> -
+> - "fsl,imx-audio-cs42888"
+> -
+> - "fsl,imx-audio-cs427x"
+> - (compatible with CS4271 and CS4272)
+> -
+> - "fsl,imx-audio-wm8962"
+> -
+> - "fsl,imx-audio-sgtl5000"
+> - (compatible with Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt)
+> -
+> - "fsl,imx-audio-wm8960"
+> -
+> - "fsl,imx-audio-mqs"
+> -
+> - "fsl,imx-audio-wm8524"
+> -
+> - "fsl,imx-audio-tlv320aic32x4"
+> -
+> - "fsl,imx-audio-tlv320aic31xx"
+> -
+> - "fsl,imx-audio-si476x"
+> -
+> - "fsl,imx-audio-wm8958"
+> -
+> - "fsl,imx-audio-nau8822"
+> -
+> -Required properties:
+> -
+> -  - compatible		: Contains one of entries in the compatible list.
+> -
+> -  - model		: The user-visible name of this sound complex
+> -
+> -  - audio-cpu		: The phandle of an CPU DAI controller
+> -
+> -  - audio-codec		: The phandle of an audio codec
+> -
+> -Optional properties:
+> -
+> -  - audio-asrc		: The phandle of ASRC. It can be absent if there's no
+> -			  need to add ASRC support via DPCM.
+> -
+> -  - audio-routing	: A list of the connections between audio components.
+> -			  Each entry is a pair of strings, the first being the
+> -			  connection's sink, the second being the connection's
+> -			  source. There're a few pre-designed board connectors:
+> -			   * Line Out Jack
+> -			   * Line In Jack
+> -			   * Headphone Jack
+> -			   * Mic Jack
+> -			   * Ext Spk
+> -			   * AMIC (stands for Analog Microphone Jack)
+> -			   * DMIC (stands for Digital Microphone Jack)
+> -
+> -			  Note: The "Mic Jack" and "AMIC" are redundant while
+> -			        coexisting in order to support the old bindings
+> -				of wm8962 and sgtl5000.
+> -
+> -  - hp-det-gpio		: The GPIO that detect headphones are plugged in
+> -  - mic-det-gpio	: The GPIO that detect microphones are plugged in
+> -  - bitclock-master	: Indicates dai-link bit clock master; for details see simple-card.yaml.
+> -  - frame-master	: Indicates dai-link frame master; for details see simple-card.yaml.
+> -  - dai-format		: audio format, for details see simple-card.yaml.
+> -  - frame-inversion	: dai-link uses frame clock inversion, for details see simple-card.yaml.
+> -  - bitclock-inversion	: dai-link uses bit clock inversion, for details see simple-card.yaml.
+> -  - mclk-id		: main clock id, specific for each card configuration.
+> -
+> -Optional unless SSI is selected as a CPU DAI:
+> -
+> -  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
+> -
+> -  - mux-ext-port	: The external port of the i.MX audio muxer
+> -
+> -Example:
+> -sound-cs42888 {
+> -	compatible = "fsl,imx-audio-cs42888";
+> -	model = "cs42888-audio";
+> -	audio-cpu = <&esai>;
+> -	audio-asrc = <&asrc>;
+> -	audio-codec = <&cs42888>;
+> -	audio-routing =
+> -		"Line Out Jack", "AOUT1L",
+> -		"Line Out Jack", "AOUT1R",
+> -		"Line Out Jack", "AOUT2L",
+> -		"Line Out Jack", "AOUT2R",
+> -		"Line Out Jack", "AOUT3L",
+> -		"Line Out Jack", "AOUT3R",
+> -		"Line Out Jack", "AOUT4L",
+> -		"Line Out Jack", "AOUT4R",
+> -		"AIN1L", "Line In Jack",
+> -		"AIN1R", "Line In Jack",
+> -		"AIN2L", "Line In Jack",
+> -		"AIN2R", "Line In Jack";
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml b/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
+> new file mode 100644
+> index 000000000000..48051655230d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
+> @@ -0,0 +1,196 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/fsl-asoc-card.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale Generic ASoC Sound Card with ASRC support
+> +
+> +description:
+> +  The Freescale Generic ASoC Sound Card can be used, ideally,
+> +  for all Freescale SoCs connecting with external CODECs.
+> +
+> +  The idea of this generic sound card is a bit like ASoC Simple Card.
+> +  However, for Freescale SoCs (especially those released in recent years),
+> +  most of them have ASRC
+> +  (Documentation/devicetree/bindings/sound/fsl,imx-asrc.yaml) inside. And
+> +  this is a specific feature that might be painstakingly controlled and
+> +  merged into the Simple Card.
+> +
+> +  So having this generic sound card allows all Freescale SoC users to
+> +  benefit from the simplification of a new card support and the capability
+> +  of the wide sample rates support through ASRC.
+> +
+> +  Note, The card is initially designed for those sound cards who use AC'97, I2S
+> +  and PCM DAI formats. However, it'll be also possible to support those non
+> +  AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
+> +  long as the driver has been properly upgraded.
+> +
+> +maintainers:
+> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,imx-sgtl5000
+> +              - fsl,imx53-cpuvo-sgtl5000
+> +              - fsl,imx51-babbage-sgtl5000
+> +              - fsl,imx53-m53evk-sgtl5000
+> +              - fsl,imx53-qsb-sgtl5000
+> +              - fsl,imx53-voipac-sgtl5000
+> +              - fsl,imx6-armadeus-sgtl5000
+> +              - fsl,imx6-rex-sgtl5000
+> +              - fsl,imx6-sabreauto-cs42888
+> +              - fsl,imx6-wandboard-sgtl5000
+> +              - fsl,imx6dl-nit6xlite-sgtl5000
+> +              - fsl,imx6q-ba16-sgtl5000
+> +              - fsl,imx6q-nitrogen6_max-sgtl5000
+> +              - fsl,imx6q-nitrogen6_som2-sgtl5000
+> +              - fsl,imx6q-nitrogen6x-sgtl5000
+> +              - fsl,imx6q-sabrelite-sgtl5000
+> +              - fsl,imx6q-sabresd-wm8962
+> +              - fsl,imx6q-udoo-ac97
+> +              - fsl,imx6q-ventana-sgtl5000
+> +              - fsl,imx6sl-evk-wm8962
+> +              - fsl,imx6sx-sdb-mqs
+> +              - fsl,imx6sx-sdb-wm8962
+> +              - fsl,imx7d-evk-wm8960
+> +              - karo,tx53-audio-sgtl5000
+> +              - tq,imx53-mba53-sgtl5000
 
-  Linux 6.8 (2024-03-10 13:38:09 -0700)
+None of these were documented before. It's fine to add all these in this 
+patch, but please state in the commit message what missing or incorrect 
+things you added in the schema.
 
-are available in the Git repository at:
+> +          - enum:
+> +              - fsl,imx-audio-ac97
+> +              - fsl,imx-audio-cs42888
+> +              - fsl,imx-audio-mqs
+> +              - fsl,imx-audio-sgtl5000
+> +              - fsl,imx-audio-wm8960
+> +              - fsl,imx-audio-wm8962
+> +      - items:
+> +          - enum:
+> +              - fsl,imx-audio-ac97
+> +              - fsl,imx-audio-cs42888
+> +              - fsl,imx-audio-cs427x
+> +              - fsl,imx-audio-mqs
+> +              - fsl,imx-audio-nau8822
+> +              - fsl,imx-audio-sgtl5000
+> +              - fsl,imx-audio-si476x
+> +              - fsl,imx-audio-tlv320aic31xx
+> +              - fsl,imx-audio-tlv320aic32x4
+> +              - fsl,imx-audio-wm8524
+> +              - fsl,imx-audio-wm8960
+> +              - fsl,imx-audio-wm8962
+> +              - fsl,imx-audio-wm8958
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: The user-visible name of this sound complex
+> +
+> +  audio-asrc:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      The phandle of ASRC. It can be absent if there's no
+> +      need to add ASRC support via DPCM.
+> +
+> +  audio-codec:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of an audio codec
+> +
+> +  audio-cpu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of an CPU DAI controller
+> +
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source. There're a few pre-designed board
+> +      connectors.
+> +        * Line Out Jack
+> +        * Line In Jack
+> +        * Headphone Jack
+> +        * Mic Jack
+> +        * Ext Spk
+> +        * AMIC (stands for Analog Microphone Jack)
+> +        * DMIC (stands for Digital Microphone Jack)
+> +      Note, The "Mic Jack" and "AMIC" are redundant while coexisting in
+> +      order to support the old bindings of wm8962 and sgtl5000.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-6.9
+Please list the strings out as schema:
 
-for you to fetch changes up to fea1c949f6ca5059e12de00d0483645debc5b206:
+minItems: 2
+items:
+  enum:
+    - "Line Out Jack"
+    ...
 
-  LoongArch/crypto: Clean up useless assignment operations (2024-03-19 15:50:34 +0800)
+> +
+> +  hp-det-gpio:
+> +    maxItems: 1
+> +    description: The GPIO that detect headphones are plugged in
 
-----------------------------------------------------------------
-LoongArch changes for v6.9
+       deprecated: true
 
-1, Add objtool support for LoongArch;
-2, Add ORC stack unwinder support for LoongArch;
-3, Add kernel livepatching support for LoongArch;
-4, Select ARCH_HAS_CURRENT_STACK_POINTER in Kconfig;
-5, Select HAVE_ARCH_USERFAULTFD_MINOR in Kconfig;
-6, Some bug fixes and other small changes.
+> +
+> +  hp-det-gpios:
+> +    maxItems: 1
+> +    description: The GPIO that detect headphones are plugged in
+> +
+> +  mic-det-gpio:
+> +    maxItems: 1
+> +    description: The GPIO that detect microphones are plugged in
 
-Note: There are conflicts in arch/loongarch/Kconfig and arch/loongarch/
-Makefile but can be simply fixed by adjusting context.
+       deprecated: true
 
-----------------------------------------------------------------
-Huacai Chen (5):
-      LoongArch: Select ARCH_HAS_CURRENT_STACK_POINTER in Kconfig
-      LoongArch: Select HAVE_ARCH_USERFAULTFD_MINOR in Kconfig
-      LoongArch: Change __my_cpu_offset definition to avoid mis-optimization
-      LoongArch: Remove superfluous flush_dcache_page() definition
-      LoongArch: Define the __io_aw() hook as mmiowb()
+> +
+> +  mic-det-gpios:
+> +    maxItems: 1
+> +    description: The GPIO that detect microphones are plugged in
+> +
+> +  bitclock-master:
+> +    description: Indicates dai-link bit clock master; for details see simple-card.yaml.
 
-Jinyang He (1):
-      LoongArch: Add kernel livepatching support
+Drop the prose reference and add:
 
-Max Kellermann (1):
-      LoongArch: Move {dmw,tlb}_virt_to_page() definition to page.h
+       $ref: simple-card.yaml#/definitions/bitclock-master
 
-Tiezhu Yang (7):
-      objtool/LoongArch: Enable objtool to be built
-      objtool/LoongArch: Implement instruction decoder
-      objtool/x86: Separate arch-specific and generic parts
-      objtool/LoongArch: Enable orc to be built
-      objtool: Check local label in add_dead_ends()
-      objtool: Check local label in read_unwind_hints()
-      LoongArch: Add ORC stack unwinder support
+Otherwise, bitclock-master could be anything. 
 
-Yuli Wang (1):
-      LoongArch/crypto: Clean up useless assignment operations
+And similar for the rest.
 
- arch/loongarch/Kconfig                             |   8 +
- arch/loongarch/Kconfig.debug                       |  11 +
- arch/loongarch/Makefile                            |  23 +-
- arch/loongarch/crypto/crc32-loongarch.c            |   2 -
- arch/loongarch/include/asm/Kbuild                  |   3 +
- arch/loongarch/include/asm/bug.h                   |   1 +
- arch/loongarch/include/asm/cacheflush.h            |   3 -
- arch/loongarch/include/asm/exception.h             |   2 +
- arch/loongarch/include/asm/io.h                    |   2 +
- arch/loongarch/include/asm/module.h                |   7 +
- arch/loongarch/include/asm/orc_header.h            |  18 +
- arch/loongarch/include/asm/orc_lookup.h            |  31 ++
- arch/loongarch/include/asm/orc_types.h             |  58 +++
- arch/loongarch/include/asm/page.h                  |   3 +
- arch/loongarch/include/asm/percpu.h                |   7 +-
- arch/loongarch/include/asm/pgtable.h               |   3 -
- arch/loongarch/include/asm/qspinlock.h             |  18 -
- arch/loongarch/include/asm/stackframe.h            |   3 +
- arch/loongarch/include/asm/thread_info.h           |   2 +
- arch/loongarch/include/asm/unwind.h                |  20 +-
- arch/loongarch/include/asm/unwind_hints.h          |  28 ++
- arch/loongarch/kernel/Makefile                     |   4 +
- arch/loongarch/kernel/entry.S                      |   5 +
- arch/loongarch/kernel/fpu.S                        |   7 +
- arch/loongarch/kernel/genex.S                      |   6 +
- arch/loongarch/kernel/lbt.S                        |   3 +
- arch/loongarch/kernel/mcount_dyn.S                 |   6 +
- arch/loongarch/kernel/module.c                     |  22 +-
- arch/loongarch/kernel/relocate_kernel.S            |   7 +-
- arch/loongarch/kernel/rethook_trampoline.S         |   1 +
- arch/loongarch/kernel/setup.c                      |   2 +
- arch/loongarch/kernel/stacktrace.c                 |  41 ++
- arch/loongarch/kernel/traps.c                      |  42 +-
- arch/loongarch/kernel/unwind_orc.c                 | 528 +++++++++++++++++++++
- arch/loongarch/kernel/vmlinux.lds.S                |   3 +
- arch/loongarch/kvm/switch.S                        |   9 +-
- arch/loongarch/lib/clear_user.S                    |   3 +
- arch/loongarch/lib/copy_user.S                     |   3 +
- arch/loongarch/lib/memcpy.S                        |   3 +
- arch/loongarch/lib/memset.S                        |   3 +
- arch/loongarch/mm/tlb.c                            |  27 +-
- arch/loongarch/mm/tlbex.S                          |   9 +
- arch/loongarch/vdso/Makefile                       |   1 +
- include/linux/compiler.h                           |   9 +
- scripts/Makefile                                   |   7 +-
- tools/arch/loongarch/include/asm/inst.h            | 161 +++++++
- tools/arch/loongarch/include/asm/orc_types.h       |  58 +++
- tools/include/linux/bitops.h                       |  11 +
- tools/objtool/Makefile                             |   4 +
- tools/objtool/arch/loongarch/Build                 |   3 +
- tools/objtool/arch/loongarch/decode.c              | 356 ++++++++++++++
- .../objtool/arch/loongarch/include/arch/cfi_regs.h |  22 +
- tools/objtool/arch/loongarch/include/arch/elf.h    |  30 ++
- .../objtool/arch/loongarch/include/arch/special.h  |  33 ++
- tools/objtool/arch/loongarch/orc.c                 | 171 +++++++
- tools/objtool/arch/loongarch/special.c             |  15 +
- tools/objtool/arch/x86/Build                       |   1 +
- tools/objtool/arch/x86/orc.c                       | 188 ++++++++
- tools/objtool/check.c                              |  52 +-
- tools/objtool/include/objtool/elf.h                |   1 +
- tools/objtool/include/objtool/orc.h                |  14 +
- tools/objtool/orc_dump.c                           |  69 +--
- tools/objtool/orc_gen.c                            | 113 +----
- 63 files changed, 2040 insertions(+), 266 deletions(-)
- create mode 100644 arch/loongarch/include/asm/orc_header.h
- create mode 100644 arch/loongarch/include/asm/orc_lookup.h
- create mode 100644 arch/loongarch/include/asm/orc_types.h
- delete mode 100644 arch/loongarch/include/asm/qspinlock.h
- create mode 100644 arch/loongarch/include/asm/unwind_hints.h
- create mode 100644 arch/loongarch/kernel/unwind_orc.c
- create mode 100644 tools/arch/loongarch/include/asm/inst.h
- create mode 100644 tools/arch/loongarch/include/asm/orc_types.h
- create mode 100644 tools/objtool/arch/loongarch/Build
- create mode 100644 tools/objtool/arch/loongarch/decode.c
- create mode 100644 tools/objtool/arch/loongarch/include/arch/cfi_regs.h
- create mode 100644 tools/objtool/arch/loongarch/include/arch/elf.h
- create mode 100644 tools/objtool/arch/loongarch/include/arch/special.h
- create mode 100644 tools/objtool/arch/loongarch/orc.c
- create mode 100644 tools/objtool/arch/loongarch/special.c
- create mode 100644 tools/objtool/arch/x86/orc.c
- create mode 100644 tools/objtool/include/objtool/orc.h
+> +
+> +  frame-master:
+> +    description: Indicates dai-link frame master; for details see simple-card.yaml.
+> +
+> +  dai-format:
+> +    description: audio format, for details see simple-card.yaml.
+> +
+> +  frame-inversion:
+> +    description: dai-link uses frame clock inversion, for details see simple-card.yaml.
+> +
+> +  bitclock-inversion:
+> +    description: dai-link uses bit clock inversion, for details see simple-card.yaml.
+> +
+> +  mclk-id:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: main clock id, specific for each card configuration.
+> +
+> +  mux-int-port:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 7]
+> +    description: The internal port of the i.MX audio muxer (AUDMUX)
+> +
+> +  mux-ext-port:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [3, 4, 5, 6]
+> +    description: The external port of the i.MX audio muxer
+> +
+> +  ssi-controller:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of an CPU DAI controller
+> +
+> +required:
+> +  - compatible
+> +  - model
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    sound-cs42888 {
+> +        compatible = "fsl,imx-audio-cs42888";
+> +        model = "cs42888-audio";
+> +        audio-cpu = <&esai>;
+> +        audio-asrc = <&asrc>;
+> +        audio-codec = <&cs42888>;
+> +        audio-routing =
+> +             "Line Out Jack", "AOUT1L",
+> +             "Line Out Jack", "AOUT1R",
+> +             "Line Out Jack", "AOUT2L",
+> +             "Line Out Jack", "AOUT2R",
+> +             "Line Out Jack", "AOUT3L",
+> +             "Line Out Jack", "AOUT3R",
+> +             "Line Out Jack", "AOUT4L",
+> +             "Line Out Jack", "AOUT4R",
+> +             "AIN1L", "Line In Jack",
+> +             "AIN1R", "Line In Jack",
+> +             "AIN2L", "Line In Jack",
+> +             "AIN2R", "Line In Jack";
+> +    };
+> -- 
+> 2.34.1
+> 
 
