@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-110811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88F8D88643C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:06:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 336E088643F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20EAC1F22FCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:06:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9861B22210
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9147E6;
-	Fri, 22 Mar 2024 00:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E89A59;
+	Fri, 22 Mar 2024 00:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="QZLbi5YU"
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="aXkMMI0j"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9379382;
-	Fri, 22 Mar 2024 00:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35735382;
+	Fri, 22 Mar 2024 00:09:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711066011; cv=none; b=jLuxqdy0QwmcftLC1Akl+VymmgRPWTZ8+SgzURhgf25nAh5JbmJNxV8Yahz5wEPrwQM58YI7GsRsBlDpLPiscXFWKs4m1tJKUA0kLKTuP4K3kkPHJhlPhMiHdDUbkXtDfIfku88dLZD6llWNXJK5G3FGKb51wkApSU2hxzwBHQQ=
+	t=1711066179; cv=none; b=sLddYT33m/bE7xt6l01tdQ6c902zlQXa9IKCDB+n7y/FrBmF/TwFG4ybRiQCFzZjzh9b9CGDxEcxUrZOkPx8SUSAFByGa+blUPVCnwhGc3ppdr615kIvWa2AYDc3StsbT8k3r6qT5x/8uE6PwCI74E5vT6oSU+RXdyyV54LfMrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711066011; c=relaxed/simple;
-	bh=sJNuvfV/Rre/UoxjQHPPLLAdGqsUE6wJx6GszC4ZmZA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mdHFd4krOdBIaTmecdz7Cgo8sLM8wWn0LnF0RNUbFAbJSiccAR+289rD/Sprk6B+jvZ8XVTVKLFRemup+V6VFCDkfwWpXGOgnKPXdRaBqaT70kr0aDT4mrxrizF+4vCrYlc17n5CcLLOKVrxOv9NH75SemKt1MJ5qIWiL8zVChE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=QZLbi5YU; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
-Date: Thu, 21 Mar 2024 17:06:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711066006;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sJNuvfV/Rre/UoxjQHPPLLAdGqsUE6wJx6GszC4ZmZA=;
-	b=QZLbi5YUc4TG37Pz56OmLR1DDAJWJlCstn9sWQ2Eq7+MEXdBpQuKfrAQLrU1O9REwFQolK
-	OLww4pVhrwIq10k9/7pr+CIlBnuPLIKgXerVIilSujBvCxhGanoYqu6N6pogg1Slf0Io8A
-	rJ/8JPIlZJMz9UrcLfqyi61B/eVEWvCWf1cOkmB28IlM8VSFLt/2AEnOzWpZu/q3j7YqRb
-	Ct8g6zZxXFYShObMd+JmWD7Q47m4b0I6sF+751gW4Wqiy8ztONWJLVeSlAl0tcl1UIaTTB
-	fWVN7DuZrz4W10DxWW1McCZpT3LIEJAsBDUGaSaycQYvOTnnQW/w9vOme0Tsmw==
-Message-ID: <20240321170641.GK8211@craftyguy.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Clayton Craft <clayton@craftyguy.net>
+	s=arc-20240116; t=1711066179; c=relaxed/simple;
+	bh=SgBVhDiLkqvj5heInVCpMQ/vA9DTmHwhTXsUN08CHaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sXrMb0Mb2Wc1Q3FO6QO0Fz2jxfmOPYxnT5YSX/4hMmMHmSjN4GTnB834sPHr/TyT1yS82ehSnxF2jh4s1+YDG+Zf6I2o6Dtg7L/3nU3247kwg2WGePzC4NdvxVUogjrEgEmqPpkZsPk6esHdZFSY5PHUO7RkXMjxmA7+Lvoo8sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=aXkMMI0j; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=2moEpAismjcawN+PGW1bmLh6TrJn1P653kp5rgnCLkg=; b=aXkMMI0ja+5UEUhZLzxrAJrkpo
+	OggZC2nCb+f2Fc6/hgyq/dQ94GWFA01LJDDP2/qY/PfR0cOEEIRO7rDEZOR4X/evTYWr484x/xhO3
+	47CbPRUUvktN9l7IXCMsnWhcklfjWOYuw0E9d92IWt5TWXUCJkQDKh03JS9U77CcNYcMHVghXmFFu
+	2t4mOBimVFjY+Dib9ePoRuVpnTqqQ61NKl5z1snJ7I9je9VFA/RF6dHv7EuRNfac5ZN52xWm/ySPu
+	Nb6YpH4MMb2hjDYG5OrQtutMpquZ7gmQOTxdeOUBXqEoAoqtZcYcCC66Uvr72DpXZJUlgnF69G1wf
+	Ybls5MUA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44658)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rnST0-0008AS-2e;
+	Fri, 22 Mar 2024 00:09:02 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rnSSs-00049Z-Vr; Fri, 22 Mar 2024 00:08:55 +0000
+Date: Fri, 22 Mar 2024 00:08:54 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- regressions@lists.linux.dev
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-In-Reply-To: <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
-References: <20240321150510.GI8211@craftyguy.net>
- <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+Cc: David Laight <David.Laight@aculab.com>,
+	Jiangfeng Xiao <xiaojiangfeng@huawei.com>,
+	"arnd@arndb.de" <arnd@arndb.de>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"haibo.li@mediatek.com" <haibo.li@mediatek.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>,
+	"amergnat@baylibre.com" <amergnat@baylibre.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"douzhaolei@huawei.com" <douzhaolei@huawei.com>,
+	"gustavoars@kernel.org" <gustavoars@kernel.org>,
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>,
+	"kepler.chenxin@huawei.com" <kepler.chenxin@huawei.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"nixiaoming@huawei.com" <nixiaoming@huawei.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"wangbing6@huawei.com" <wangbing6@huawei.com>,
+	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>,
+	"jannh@google.com" <jannh@google.com>,
+	"willy@infradead.org" <willy@infradead.org>
+Subject: Re: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
+Message-ID: <ZfzMFv3zmYY36l9u@shell.armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
+ <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
+ <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
+ <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
+ <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
+ <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
+ <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
+ <CAMj1kXG2EGvgGuV-K7h5qDVJeLMd5hkq8GzigzCRzh9Z8cgyWw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="N3XsRCzAXOHRROpi"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-X-Migadu-Flow: FLOW_OUT
-
-
---N3XsRCzAXOHRROpi
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAMj1kXG2EGvgGuV-K7h5qDVJeLMd5hkq8GzigzCRzh9Z8cgyWw@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-T24gVGh1LCAyMSBNYXIgMjAyNCAyMzo0ODowOSArMDEwMCBBcmQgQmllc2hldXZlbCA8YXJkYkBr
-ZXJuZWwub3JnPiB3cm90ZToKPiA+IHY2LjggZmFpbHMgZm9yIG1lLCBhbmQgcHJlc3VtYWJseSBz
-byBkb2VzIGV2ZXJ5dGhpbmcgYmFjayB0byB2Ni4yLiB2Ni4xIGlzIGFibGUKPiA+IHRvIGJvb3Qg
-T0sgb24gdGhlc2UgcGxhdGZvcm1zIHdpdGggbWl4ZWQgbW9kZSwgYW5kIGl0IGxvb2tzIGxpa2Ug
-dGhlcmUgYXJlIGEgbG90Cj4gPiBvZiBjaGFuZ2VzIGZyb20gNi4xLi42LjIgZm9yIEVGSS9taXhl
-ZCBtb2RlIGJvb3RpbmcuCj4gCj4gdjYuMSBqdXN0IHJlY2VpdmVkIHNvbWUgRUZJIHJlbGF0ZWQg
-YmFja3BvcnRzLCBzbyBwbGVhc2UgY2hlY2sgdGhlCj4gbGF0ZXN0IHY2LjEueSBhcyB3ZWxsLgoK
-SSBqdXN0IGdhdmUgdjYuMS44MiBhIHRyeSwgYW5kIGl0IGZhaWxzIHRvIGJvb3QgZm9yIG1lLiBU
-aGF0IHNlZW1zIHRvIGJlIGEKcmVncmVzc2lvbiBmcm9tIHRoZSA2LjEuMCB0aGF0IEkgdGVzdGVk
-IHByZXZpb3VzbHkuCgo+IEkgdXN1YWxseSB0ZXN0IG9uIDMyLWJpdCBPVk1GIGJ1aWx0IHdpdGgg
-TE9BRF9YNjRfT05fSUEzMl9FTkFCTEUsCj4gd2hpY2ggYWxsb3dzIHRoZSB1c2Ugb2YgdGhlIGNv
-bXBhdCBlbnRyeSBwb2ludC4gVGhpcyBpcyBkaWZmZXJlbnQgZnJvbQo+IHRoZSBFRkkgaGFuZG92
-ZXIgcHJvdG9jb2wsIGFuZCBJIGFtIG5vdCBzdXJlIHdoaWNoIG9uZSB5b3UgYXJlIHVzaW5nLgoK
-SSBzaG91bGQgaGF2ZSBtZW50aW9uZWQgdGhpcyBwcmV2aW91c2x5LCBoZXJlJ3MgdGhlIEVGSS1y
-ZWxhdGVkIGtjb25maWcgdGhhdCBJCmFtIHVzaW5nLiBJZiB0aGVyZSdzIGFueXRoaW5nIG1pc3Np
-bmcgdGhlbiBwbGVhc2UgbGV0IG1lIGtub3c6CgogICAgICAgIENPTkZJR19FRkk9eQogICAgICAg
-IENPTkZJR19FRklfRUFSTFlDT049eQogICAgICAgIENPTkZJR19FRklfRVNSVD15CiAgICAgICAg
-IyBDT05GSUdfRUZJX0hBTkRPVkVSX1BST1RPQ09MIGlzIG5vdCBzZXQKICAgICAgICBDT05GSUdf
-RUZJX01JWEVEPXkKICAgICAgICBDT05GSUdfRUZJX1JVTlRJTUVfV1JBUFBFUlM9eQogICAgICAg
-IENPTkZJR19FRklfU1RVQj15CiAgICAgICAgQ09ORklHX0VGSV9WQVJTX1BTVE9SRT1tCiAgICAg
-ICAgQ09ORklHX0VGSV9WQVJTX1BTVE9SRV9ERUZBVUxUX0RJU0FCTEU9eQoKTm90ZSB0aGF0IHRo
-ZSBFRkkgaGFuZG92ZXIgcHJvdG9jb2wgc3VwcG9ydCBpcyBkaXNhYmxlZCwgSSB3YXMgdW5kZXIg
-dGhlCmltcHJlc3Npb24gdGhhdCBpdCdzIG5vdCByZXF1aXJlZCBmb3IgbWl4ZWQgbW9kZS4KClBs
-ZWFzZSBsZXQgbWUga25vdyBpZiB0aGVyZSdzIGFueSBtb3JlIGluZm9ybWF0aW9uIEkgY2FuIHBy
-b3ZpZGUgYWJvdXQgbXkKdGVzdGluZyAvIHNldHVwLgoKLUNsYXl0b24K
+On Thu, Mar 21, 2024 at 11:43:41PM +0100, Ard Biesheuvel wrote:
+> Given that this particular issue would just disappear if the compiler
+> would just insert a BRK after the BL, I'd prefer to explore first
+> whether we can get this fixed on the compiler side.
 
---N3XsRCzAXOHRROpi
-Content-Type: application/pgp-signature; name="signature.asc"
+Arm32 doesn't have a BRK instruction. What would be appropriate after
+the no-return BL would be OS specific.
 
------BEGIN PGP SIGNATURE-----
+Maybe a branch to "abort" would be a good idea though.
 
-iQIzBAABCgAdFiEEkdOrrjmBP3eB7DeWSkztbX7flQoFAmX8y5EACgkQSkztbX7f
-lQqPbA//WPktNG9F+YujYiC1/7VIPC8mPvbRNdwMZA5LYSGgKDP8vRjuU+zoX8Aa
-o20GByQ7LxvByv7XhzdMv7oLFRI5sFwcYJraleO+fUvJT9YluN3eN7rZNeZyUOzc
-f14xiC4uXniYxnJq6L3aAf24FACKmg1ub+NPXTZtswLp06sq2oyVoN5La8K9h/4Y
-pjg6lbxwM5vqoCovDDF3C9WqvmEWcyYsGFPs3ptFxTqMSYQAMjtXUl0jTjFM8ncj
-VY1dK/P3Lt2AUVtaUDyAWGBXnmx5CICgkx7LjWCu9pPto0B89y2DUjQhsJ2litnB
-UFQq5A2oL3GF2uv/w34LrGh97HQT+C8L6BD9D7HJrBlzz7X1bjBmeDlN9bL9iYId
-JSGVGMc3UwAgeLV/mjrdB7vL6UHjMdXUlOPHz8W2OMIKC3p6iJmo5+tyRWYCSB21
-DMjqA4Oy/IOTSOC6t9oxaBDJwJvjGbWVXB4AFiHIbKZ428UHkvKxPVBVMhu1TUV4
-heHw/WhRpv3HDVVFwM1YRveB7Ec1ewjwRJdrydGmLWX19c6cNNFec6jsh5FavLPk
-FiydB3Neubs/61cT9d4lS7ibdhyrTEkxX2cyeJEwC1CLlQDM03AwiyraUvG/323Z
-+rBImKoZgRBnj+q2juHFSzYcj1UVi8i1uibWnfamUxTPoN458J8=
-=HxZ7
------END PGP SIGNATURE-----
-
---N3XsRCzAXOHRROpi--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
