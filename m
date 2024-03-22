@@ -1,146 +1,185 @@
-Return-Path: <linux-kernel+bounces-111363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56083886B41
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:24:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1DB7886B42
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6441B20FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:24:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58C77286180
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0533D3F9C3;
-	Fri, 22 Mar 2024 11:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23CC33EA9F;
+	Fri, 22 Mar 2024 11:26:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OkJ+CH5o";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DHoG41s+"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="uAM/RFbB"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F113EA66;
-	Fri, 22 Mar 2024 11:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E44224F2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711106659; cv=none; b=rwNPRLjT8h16KSrxKmtfwZX7WmiPXfOmiA/vbPiR70VFd1R0+aZNpXQxruK6LjhPU/dHQ7C5zCjje/5bnWnQrUp7s48Jkl71SC5dvObI6SEbsgYAGARdZVA6KvUnzdTtvfTOhqAqdStkd5xESP+Wl0rBRHDp9JWYBzLGTy9vxkU=
+	t=1711106796; cv=none; b=Rl+6zBpk9MNmH/oe7YpR5ZBFGPHo+4NnAr8WWbnjsuxfXwp0FYL1OYfyZVncvXnNt7/zRV30T34k1dRGg1TrvIbCI2/FsuGPaEQ/h/zh9nM4wYjenVnd2gGcnacodMeRFsql/EKzOe6mbCYQpVWxTiJ/J4+2iI5hUFDLU8C10cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711106659; c=relaxed/simple;
-	bh=+oC+fGntP89wG2FVGQS+dTS5BaJOhf8efmrV699I1qk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkVpKEK8fgISfKezubyqpC5iF9rNOOwRL8Vr9IPgPkz5xmMXCohB3e93TDdOjEVKN57aIEBEIOhso/JU50aW37a3cIxVs+LeFaSsI2UYTwxhXaenWN7zMHAeBtRS6RqpzMHLThJ7QOlS2C+8lpQL+aA/CR8U7O4AbdglXM7IYYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OkJ+CH5o; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DHoG41s+; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Mar 2024 12:24:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711106655;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tTCYSECJaDRw2zJqZDfA9T1Nb/hL8dmz0bj0oyPmoJQ=;
-	b=OkJ+CH5okK8fKJ/tI2f6lw1iTxPpCit4ZBOGCrIaFom8TLfSRZXfbSAFLSr832IeMuuVaj
-	ao8pSQrhkDXHYZDa6v/5oZhflyY5wGvOzTp+dTTyLo2oU12knLaXEycRRDAbAysizOsqu2
-	y/i3B0dafLaGNXlWlB6Fqriosd3RLrcgo0S4LfPf3mYWEgIrHkQ7mJuv1v99NDRXeeoKvd
-	bT8WndvXS0SV2LsBl6RMsg6yAGqwxwa87tPlUk9Ud2950u/22c5EV5K3vxvcKyvZYqcBva
-	gchOFhx1wCw3MVIaH/HwU2Gw4YB/My58WUdxmleko3WwgUPtFtYq98VNIGJD9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711106655;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tTCYSECJaDRw2zJqZDfA9T1Nb/hL8dmz0bj0oyPmoJQ=;
-	b=DHoG41s+SLo2p1pHPoZSvaJTTSbmWZY8A1bvlCemaX2bXGzdq6MwSWnoBzDcj+v+dPV+gS
-	rTid4OVkqYuAGUDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <20240322112413.1UZFdBq5@linutronix.de>
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
+	s=arc-20240116; t=1711106796; c=relaxed/simple;
+	bh=IlHTDSMEWpoOg/OvTtf8nCD2S7XZ5hN8s2L8Abe+sXY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NrkJ6BanUFpjGqMoXoj/T+p6rCmGeupEF1GbgkmHoG/p7rm2jszmPdUnguSLXV7oGgnuQFCxELnFbc1i+1nu9Gkp6APt24t2dQNQne0v7FQ9jhzM0rygY8t6fs9gW178jSN61XYRMceycNDjV8VS1WFJ1yxUPjeRKT41WGDg7bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=uAM/RFbB; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513e14b2bd9so2413233e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711106792; x=1711711592; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XNHkQfXINaqTHPg7WbnoP37edMIj0CzWXuWpl1CeMi4=;
+        b=uAM/RFbBeE9jP6iuUnDYK37fr0kd+2e5B0B3CZVI2gC+k4zErPjF7TfMxw4kBRbD6F
+         6tbI2dGP8nFfwbI3smIoU9l7yS9tlHTLu8VZky/AAylUy8YajRM8/Lp9uR6ZFzSNm88Q
+         AbBUUpOPHNk6Ob2z6GS8kjUgjijMxoo4FLIaF6ITNEqLXbL52T5W6pfvOmq7bpg6L5pB
+         yu4mVzDOGu7zFNGbNtK/uwtXZQ1f1ebcWwZgOiQq1U9GPCIfDoYTVEyKztSShdOgBCyu
+         vdPhsmxEcxeZ8q5j7nT03ISMTSfAGcpA7tS+bTCrB4+3pws5CAymyHEWNelAojOB6jD2
+         hiNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711106792; x=1711711592;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XNHkQfXINaqTHPg7WbnoP37edMIj0CzWXuWpl1CeMi4=;
+        b=JOgfpbtUxfVbZJUCy5Lf5VI/ENyIeO+w8iLYU55oRKilQSGzDZJ50gHo+da2V0ff6Z
+         x4U1OJuAFqYMZnFbahpE5dCxfeRK85LTMUU+qmSEFpsu7E387VCVujERCHdHqSl0mP3v
+         U3gtj/NIzQA4EhNZT5mcFcj87UiLhROhMp6qcziZi+ye+KITjFulxP5Ah8BRAN6L1iRG
+         fBgDtSXnbMgWZ9EyGRT4nPlBr/quJ3v+MAGQ4a9DS6buQwUTPYZx7ANM8j2ydXbgtkzT
+         OZT7RfAfiyslVIjEKbCWm4htOIsSnyME+lw+AMSPQ2pPw08JMmyvEKKNtoe5N0geKEhg
+         n8rA==
+X-Forwarded-Encrypted: i=1; AJvYcCX6HObFMnQG3sIwp95c5lMCylVq5tRWFG/HvOSwnoC7ah/y49MrW3m/aeh3NeI1vj3X9HJpVrcezpMPquoovZBVqcbb8rEh5WlRP5FL
+X-Gm-Message-State: AOJu0YzG3rIUfM1OxdXiwTyhykSwudSgdhDPfy0pMoD1R3pXswnICs4v
+	MYUNshVQuJHTeCZ2+Lskel9N6zw7LeyXc/TQJL7EoTnq6W7ay1tr2zPAMSmYwvk=
+X-Google-Smtp-Source: AGHT+IEGMU4YT59y0B8pwbmoCMSuhVbnY4eGqGuqjNiZTutlx+9D16LHoVml25LKrooAH5BVoBianA==
+X-Received: by 2002:a19:6910:0:b0:513:2992:bd92 with SMTP id e16-20020a196910000000b005132992bd92mr1311861lfc.11.1711106791828;
+        Fri, 22 Mar 2024 04:26:31 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id q12-20020a19430c000000b00513d82a8003sm317965lfa.160.2024.03.22.04.26.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 04:26:31 -0700 (PDT)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH] riscv: Improve sbi_ecall() code generation by reordering arguments
+Date: Fri, 22 Mar 2024 12:26:29 +0100
+Message-Id: <20240322112629.68170-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> index 16f519914415..17d7ed5f3ae6 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -247,6 +247,37 @@ do { \
->  	cond_resched(); \
->  } while (0)
->  
-> +/**
-> + * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
-> + * @old_ts: jiffies at start of processing.
-> + *
-> + * This helper is for long-running softirq handlers, such as NAPI threads in
-> + * networking. The caller should initialize the variable passed in as @old_ts
-> + * at the beginning of the softirq handler. When invoked frequently, this macro
-> + * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
-> + * provide both RCU and RCU-Tasks quiescent states. Note that this macro
-> + * modifies its old_ts argument.
-> + *
-> + * Because regions of code that have disabled softirq act as RCU read-side
-> + * critical sections, this macro should be invoked with softirq (and
-> + * preemption) enabled.
-> + *
-> + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-> + * have more chance to invoke schedule() calls and provide necessary quiescent
-> + * states. As a contrast, calling cond_resched() only won't achieve the same
-> + * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-> + */
+The sbi_ecall() function arguments are not in the same order as the
+ecall arguments, so we end up re-ordering the registers before the
+ecall which is useless and costly.
 
-Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-Why does RT have more scheduling points?
-The RCU-Tasks thread is starving and yet there is no wake-up, correct?
-Shouldn't cond_resched() take care of RCU-Tasks's needs, too?
-This function is used by napi_threaded_poll() which is not invoked in
-softirq it is a simple thread which does disable BH but this is it. Any
-pending softirqs are served before the cond_resched().
+So simply reorder the arguments in the same way as expected by ecall.
+Instead of reordering directly the arguments of sbi_ecall(), use a proxy
+macro since the current ordering is more natural.
 
-This napi_threaded_poll() case _basically_ a busy thread doing a lot of
-work and delaying RCU-Tasks as far as I understand. The same may happen
-to other busy-worker which have cond_resched() between works, such as
-the kworker. Therefore I would expect to have some kind of timeout at
-which point NEED_RESCHED is set so that cond_resched() can do its work.
+Before:
 
-> +#define rcu_softirq_qs_periodic(old_ts) \
-> +do { \
-> +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-> +	    time_after(jiffies, (old_ts) + HZ / 10)) { \
-> +		preempt_disable(); \
-> +		rcu_softirq_qs(); \
-> +		preempt_enable(); \
-> +		(old_ts) = jiffies; \
-> +	} \
-> +} while (0)
-> +
->  /*
->   * Infrastructure to implement the synchronize_() primitives in
->   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
+Dump of assembler code for function sbi_ecall:
+   0xffffffff800085e0 <+0>: add sp,sp,-32
+   0xffffffff800085e2 <+2>: sd s0,24(sp)
+   0xffffffff800085e4 <+4>: mv t1,a0
+   0xffffffff800085e6 <+6>: add s0,sp,32
+   0xffffffff800085e8 <+8>: mv t3,a1
+   0xffffffff800085ea <+10>: mv a0,a2
+   0xffffffff800085ec <+12>: mv a1,a3
+   0xffffffff800085ee <+14>: mv a2,a4
+   0xffffffff800085f0 <+16>: mv a3,a5
+   0xffffffff800085f2 <+18>: mv a4,a6
+   0xffffffff800085f4 <+20>: mv a5,a7
+   0xffffffff800085f6 <+22>: mv a6,t3
+   0xffffffff800085f8 <+24>: mv a7,t1
+   0xffffffff800085fa <+26>: ecall
+   0xffffffff800085fe <+30>: ld s0,24(sp)
+   0xffffffff80008600 <+32>: add sp,sp,32
+   0xffffffff80008602 <+34>: ret
 
-Sebastian
+After:
+
+Dump of assembler code for function __sbi_ecall:
+   0xffffffff8000b6b2 <+0>:	add	sp,sp,-32
+   0xffffffff8000b6b4 <+2>:	sd	s0,24(sp)
+   0xffffffff8000b6b6 <+4>:	add	s0,sp,32
+   0xffffffff8000b6b8 <+6>:	ecall
+   0xffffffff8000b6bc <+10>:	ld	s0,24(sp)
+   0xffffffff8000b6be <+12>:	add	sp,sp,32
+   0xffffffff8000b6c0 <+14>:	ret
+
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/riscv/include/asm/sbi.h | 10 ++++++----
+ arch/riscv/kernel/sbi.c      | 10 +++++-----
+ 2 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+index 6e68f8dff76b..9041b009d3b5 100644
+--- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -292,10 +292,12 @@ struct sbiret {
+ };
+ 
+ void sbi_init(void);
+-struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+-			unsigned long arg1, unsigned long arg2,
+-			unsigned long arg3, unsigned long arg4,
+-			unsigned long arg5);
++struct sbiret __sbi_ecall(unsigned long arg0, unsigned long arg1,
++			  unsigned long arg2, unsigned long arg3,
++			  unsigned long arg4, unsigned long arg5,
++			  int fid, int ext);
++#define sbi_ecall(e, f, a0, a1, a2, a3, a4, a5)	\
++		__sbi_ecall(a0, a1, a2, a3, a4, a5, f, e)
+ 
+ #ifdef CONFIG_RISCV_SBI_V01
+ void sbi_console_putchar(int ch);
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index e66e0999a800..5719fa03c3d1 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -24,10 +24,10 @@ static int (*__sbi_rfence)(int fid, const struct cpumask *cpu_mask,
+ 			   unsigned long start, unsigned long size,
+ 			   unsigned long arg4, unsigned long arg5) __ro_after_init;
+ 
+-struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+-			unsigned long arg1, unsigned long arg2,
+-			unsigned long arg3, unsigned long arg4,
+-			unsigned long arg5)
++struct sbiret __sbi_ecall(unsigned long arg0, unsigned long arg1,
++			  unsigned long arg2, unsigned long arg3,
++			  unsigned long arg4, unsigned long arg5,
++			  int fid, int ext)
+ {
+ 	struct sbiret ret;
+ 
+@@ -48,7 +48,7 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(sbi_ecall);
++EXPORT_SYMBOL(__sbi_ecall);
+ 
+ int sbi_err_map_linux_errno(int err)
+ {
+-- 
+2.39.2
+
 
