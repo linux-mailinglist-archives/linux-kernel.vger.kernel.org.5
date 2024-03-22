@@ -1,140 +1,92 @@
-Return-Path: <linux-kernel+bounces-111898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3996D887254
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:57:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF43E887257
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95AF285C3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:57:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D1EE1C23890
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C92360ECA;
-	Fri, 22 Mar 2024 17:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B43A60DD5;
+	Fri, 22 Mar 2024 17:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TfXJ7utq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="YefMcjDu"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D3F60DC4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C8260BB7
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130197; cv=none; b=G/VPTbUj1WxnyuLq4mNIZ57koKTYWSWoePHInWxjHRK5GDTCM+/NxXx3REkvlSKcYcMZnAE7QjjHDy0iwUKMF7w+92OpJ1IHnU4oCnuGBhrp3RW1/Xy+0aPlmiyIJ7YKdrXkso3HS7MC1EqdnxFt1qTKBvZsT3+zseITrqc+plk=
+	t=1711130228; cv=none; b=aQ5NSfRr79kxRVBNzRU865x5l+w3mZ+rLMIpVIyB1RAX7IPzZfcsoJQoORP8CjystCFQxYpmbcGLMWSNJt04ZeKyWUVGjkOQEvptGana5A+FCFqAhWUKzHPC6dgmL/mUHWFSis8eLMsqOGMp7p3Yi2I7B2sAbA7rGlrhwakahVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130197; c=relaxed/simple;
-	bh=51E44xibqm2XCqxvXeVFkvEQyB4taeFDCUjpIpBBY3U=;
-	h=Subject:To:Cc:From:Date:References:In-Reply-To:Message-Id; b=EEbb71WsOoAoQ7hXfNMl/hS9sR6r4cCN4BIxjw6dZZmWaihFWDqGFW40gdKVDgCbBWERtmCYtSH6EvdaH+pA/NjKqAIaHP/vo9rHho/o02LIs8e5dKs5C4/kbUeAHhtVcwC7LTN13lGkvDbij+oHlbkiqNq6/sUW4VnQf/PNKxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TfXJ7utq; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711130196; x=1742666196;
-  h=subject:to:cc:from:date:references:in-reply-to:
-   message-id;
-  bh=51E44xibqm2XCqxvXeVFkvEQyB4taeFDCUjpIpBBY3U=;
-  b=TfXJ7utqN6MegT8sc6NT7U6ma56/oLMUFri5jRmFIQg5X/as5a55xcJE
-   Aajs0cM4VraXviqW3VjkZ3EAc6P1qZI3WufRZK+aLkJfSoojQPupL7tQN
-   aAXqpzu3RG6aYKuzOrrAtMdU/7rT4PqlNEgIU8LJzXk1k3E82L9DJUiyN
-   bqFGWJEooq76wBFMGAB+Fm53PLCcmujUqpdG5+vRfL7gniLx4Pqrnd93V
-   35HKvjuptE+E4UUtgtCuALa37PBfmuB53lvgMv7mmSV17Hyw/NJ5IOylp
-   cX4sFUEvhLHfiWvIqdh+QI0ZtrcWmBetMl7s/hT469mkqErux81PN2Jhv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="28669710"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="28669710"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 10:56:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="15425579"
-Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
-  by orviesa006.jf.intel.com with ESMTP; 22 Mar 2024 10:56:35 -0700
-Subject: [PATCH 4/4] x86/xen: Enumerate NX from CPUID directly
-To: linux-kernel@vger.kernel.org
-Cc: jgross@suse.com,tglx@linutronix.de,x86@kernel.org,bp@alien8.de,Dave Hansen <dave.hansen@linux.intel.com>
-From: Dave Hansen <dave.hansen@linux.intel.com>
-Date: Fri, 22 Mar 2024 10:56:34 -0700
-References: <20240322175629.01E8B39D@davehans-spike.ostc.intel.com>
-In-Reply-To: <20240322175629.01E8B39D@davehans-spike.ostc.intel.com>
-Message-Id: <20240322175634.80024377@davehans-spike.ostc.intel.com>
+	s=arc-20240116; t=1711130228; c=relaxed/simple;
+	bh=GOaDAfKIwYJMXMttYU5xrZYRWFH8Axb85aDlLZ/MHUc=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=hbfbAqPfzN2RdYCCudSGJOWavCiiOYlOtdD7lcSHN+F/iklw4dM/YQuXQxJ7FifX2ueeX4a+O7SFkYAFUBDt0DrxR8FfzAdgbUzgSUmE3xfH5RDhExD8a1WJvmCqTd7v/s8Hd/pqDrfJocuUgNPkSQVJ98GnFsvRfHCUGcd0BIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=YefMcjDu; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1711130224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YudYEjU2aj1tRkCPMZdhkWAFRPscPYsfidHJdnSxDNw=;
+	b=YefMcjDuxr17W58utUapTKOhMNE6r3wYwzNwUUFLzsTTppRfAOiUMgzDMQDt3H6qE7GjHu
+	FHOVv6Lr2OSizsS5+GkHu6pnEJV6+XAoeqvON4HCOLfr2oqXxMdiWIYa0+5CMXPPbK/1Am
+	20Dg0TGKZwsTAxWBR2vCWuyIMXPUObu6iaZlbd1hVXu+Mfn0Sar9nMHL0JmwFYJyJXW1GA
+	LgmXpB9cwG2IOevOXNdKYU+IfQhsLEqp8XMZlbmGl/PDOP7tNqP2OJ6tcKhskoNJ0KluGg
+	4BqM+40Gl4QTKsFwA+C1lDFDH5aIXQvhVgobWvqyxtPfz3FDAIiACtuTN1kRKw==
+Date: Fri, 22 Mar 2024 17:57:01 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Clayton Craft" <clayton@craftyguy.net>
+Message-ID: <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net>
+TLS-Required: No
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: "Ard Biesheuvel" <ardb@kernel.org>
+Cc: "Hans de Goede" <hdegoede@redhat.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Thomas
+ Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
+ <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+In-Reply-To: <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+References: <20240321150510.GI8211@craftyguy.net>
+ <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net>
+ <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+ <20240322091857.GM8211@craftyguy.net>
+ <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+
+March 22, 2024 at 9:51 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
 
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+> > As I mentioned initially, I bisected my failure to e2ab9eab32. Does t=
+hat give
+> >=20
+>=20>  any hint about what might be the problem?
+> >=20
+>=20
+> Not at all, unfortunately. What we might try is to back out the
+>=20
+>=20changes step by step. I can prepare a branch for you if you like.
 
-xen_start_kernel() is some of the first C code run "Xen PV" systems.
-It precedes things like setup_arch() or processor initialization code
-that would be thought of as "very early".
 
-That means that 'boot_cpu_data' is garbage.  It has not even
-established the utter basics like if the CPU supports the CPUID
-instruction.  Unfortunately get_cpu_cap() requires this exact
-information.
+Yeah sure, if you don't mind! I'd be happy to test changes in a branch to=
+ try and figure out what is causing this.
 
-Nevertheless, xen_start_kernel() calls get_cpu_cap().  But it
-works out in practice because it's looking for the NX bit which
-comes from an extended CPUID leaf that doesn't depend on
-c->cpuid_level being set.
-
-Stop calling get_cpu_cap().  Use CPUID directly.  Add a little
-helper to avoid cluttering up the xen_start_kernel() flow.
-
-This removes the risky, barely-working call to get_cpu_cap().
-
-Note: The '& 31' strips the "capability" word off of an
-      X86_FEATURE_* value.  It's a magic number, but there are
-      a few of them sparsely scattered around and it's way
-      shorter than any helper.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Juergen Gross <jgross@suse.com>
----
-
- b/arch/x86/xen/enlighten_pv.c |   19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff -puN arch/x86/xen/enlighten_pv.c~xen-explain1 arch/x86/xen/enlighten_pv.c
---- a/arch/x86/xen/enlighten_pv.c~xen-explain1	2024-03-22 09:30:25.499892614 -0700
-+++ b/arch/x86/xen/enlighten_pv.c	2024-03-22 09:30:25.503892742 -0700
-@@ -1306,6 +1306,21 @@ static void __init xen_domu_set_legacy_f
- 
- extern void early_xen_iret_patch(void);
- 
-+/*
-+ * It is too early for boot_cpu_has() and friends to work.
-+ * Use CPUID to directly enumerate NX support.
-+ */
-+static inline void xen_configure_nx(void)
-+{
-+	bool nx_supported;
-+	u32 eax = 0;
-+
-+	get_cpuid_region_leaf(0x80000001, CPUID_EDX, &eax);
-+
-+	nx_supported = eax & (X86_FEATURE_NX & 31);
-+	x86_configure_nx(nx_supported);
-+}
-+
- /* First C function to be called on Xen boot */
- asmlinkage __visible void __init xen_start_kernel(struct start_info *si)
- {
-@@ -1369,9 +1384,7 @@ asmlinkage __visible void __init xen_sta
- 	/* Get mfn list */
- 	xen_build_dynamic_phys_to_machine();
- 
--	/* Work out if we support NX */
--	get_cpu_cap(&boot_cpu_data);
--	x86_configure_nx(boot_cpu_has(X86_FEATURE_NX));
-+	xen_configure_nx();
- 
- 	/*
- 	 * Set up kernel GDT and segment registers, mainly so that
-_
+-Clayton
 
