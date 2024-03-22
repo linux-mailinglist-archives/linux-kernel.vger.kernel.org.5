@@ -1,215 +1,262 @@
-Return-Path: <linux-kernel+bounces-110989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC258866B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:29:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6D38866BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 937BA2840DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:29:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43FA91C21D58
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9E1D51A;
-	Fri, 22 Mar 2024 06:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39DFDA947;
+	Fri, 22 Mar 2024 06:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hhrlZRZR"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2082.outbound.protection.outlook.com [40.107.93.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="stf+/S8z"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408DFC147;
-	Fri, 22 Mar 2024 06:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711088940; cv=fail; b=iZoSxr1aErFU08wKU7O6MqsnGmhrWI+9CiuhKLWJ+yNny/rrDuV2TyDQ2X6H89guBXy+/Zy1AGGe7XPSsCN8ibeqhcYwALdlInK21VtBVjJGcSkwDbO6/YYz0XeqZ72tCATWgT7ZrRp6REZuACxuovxevabLQehtskjTjUXvrds=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711088940; c=relaxed/simple;
-	bh=4HG6MXzx0ezIkoj4R4GlQGvXYRRyqGNEWUJlxK1tALo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HPWYvkSYitId6T7sjFx8NFBST+RBKhAWAs+O0c0WHMDyjD6qpoU3dDT9zCx8lGtOPc/mu8LRkOTcEyEPlsqlp+T3mGq4s3qB2XeNMYbFfd7xnTCSSRCZ0Qt/aMXVAsssFJSxSJ3wlKjPRI93UuqT9vtir/lzoaH9BqsQ8qqe8dw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hhrlZRZR; arc=fail smtp.client-ip=40.107.93.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UCmK3z+7GWb/kZFzlaSPKpMuI0XandkAqBeVc2fZvC+rAkt5b7njX6e1u9MEbRJwxgaCAJwmS4DsnJP/qgzrwNRCer49hj447WdidPZ78DzAwtqiNnNnmI7pKJEFh6nOw08ykKUHDyG3Hc8fiPzKU5h5wpPTiR777XFpLYQV4VAOCkoSgg/5S04Rv2I0nZlB/7uOkUQ6ksGmcN0V5s2cPOMISPYeO8DxjGuHBtW0QpKW8yDNzACQPw6caxiwVjDMt+kfr4oTr4dkobkzhYOtAvLgQSA8yQBsx/RIC2f1+QOL9CCPrqK90V6s9u+qn7wIyRKUnx/lQYp2S7MqJRQ3xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jG7+ZZR/Mq9emOtFtpGDtcf7aFQlGFEDLVUKb7pkBPs=;
- b=nsyq6CYRwkHvAdGfzxFfnyaoBMYLV3jQjbXVTk197ZecjAMGV/xGIFOhaOU0zZdc/8sI9Jqpdt8pFCxdK8JqHvKuhoi0wrQ87NYbDUCPkEqNGC/AVAa5H58hxm9q4kHgb6w1V1HUloyDNiR0SfyqNd6yPgFMwvdS5WmkObj3hp7J4mxQNBdxh1kGdheKm8eXZCZwb0QXXTg8DgsW9VbVuuo8IX1dNe/yDCO3hKJwt1ejTLZU1DvBEPxrIhSmNdSoT/RKCOpETtSERboQJPdubL6L6BnmR3gtlxNk7iAVMkRey4K6i3JUVasjWoh51B+H2jBNEQkSJCJvwW7m914xbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jG7+ZZR/Mq9emOtFtpGDtcf7aFQlGFEDLVUKb7pkBPs=;
- b=hhrlZRZR7SNOedam9N/xhO8Y2Y4YVIlGgiP9Owhjgu4tkYzaXY1l7KhJey8cPH8/qdRtCKs+QApS0M08CyUSHoKyGWD1zg9/YZLEaDpp62u+nqpC6ihfiGhh4QLjNg3cqT1Mi8tBiNa3VNqlFsMawtxrvhwZFkbGxKC6xd2RRyA=
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6) by
- DM4PR12MB6061.namprd12.prod.outlook.com (2603:10b6:8:b3::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.34; Fri, 22 Mar 2024 06:28:55 +0000
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::3c13:5719:7068:2510]) by DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::3c13:5719:7068:2510%3]) with mapi id 15.20.7386.030; Fri, 22 Mar 2024
- 06:28:55 +0000
-From: "Meng, Li (Jassmine)" <Li.Meng@amd.com>
-To: "Yuan, Perry" <Perry.Yuan@amd.com>, "rafael.j.wysocki@intel.com"
-	<rafael.j.wysocki@intel.com>, "Limonciello, Mario"
-	<Mario.Limonciello@amd.com>, "viresh.kumar@linaro.org"
-	<viresh.kumar@linaro.org>, "Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
-	"Petkov, Borislav" <Borislav.Petkov@amd.com>, "Huang, Ray"
-	<Ray.Huang@amd.com>
-CC: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "Huang, Shimmer"
-	<Shimmer.Huang@amd.com>, "oleksandr@natalenko.name"
-	<oleksandr@natalenko.name>, "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v9 2/8] cpufreq: amd-pstate: Document the units for freq
- variables in amd_cpudata
-Thread-Topic: [PATCH v9 2/8] cpufreq: amd-pstate: Document the units for freq
- variables in amd_cpudata
-Thread-Index: AQHaedeKaX3JaSZoFEGf7rETmpahVLFDUKyA
-Date: Fri, 22 Mar 2024 06:28:55 +0000
-Message-ID:
- <DM4PR12MB63512B4DC68397182391669EF7312@DM4PR12MB6351.namprd12.prod.outlook.com>
-References: <cover.1710836407.git.perry.yuan@amd.com>
- <0ee190df1d882d826faeeee28a000b06eacf6034.1710836407.git.perry.yuan@amd.com>
-In-Reply-To:
- <0ee190df1d882d826faeeee28a000b06eacf6034.1710836407.git.perry.yuan@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=5e9b33b2-136f-4568-a275-18e64abb86cd;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-22T06:28:39Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB6351:EE_|DM4PR12MB6061:EE_
-x-ms-office365-filtering-correlation-id: 6d8b9679-780c-42db-4339-08dc4a395954
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- IH+clfSEd9r66P15V03aE1oFouucmYAsr4yJTYd4EgJi2YsKosU7rMgkTWGXTTbp+tZI6SfkpTSG5ZQbEUqCv3PQgUBHriesqkI2sPZAqTJZ1xYctyLEA4+Q02CGBMUXJL0MSCGnYUbJVTuStU8PXdL+iz+WZ4cAVk3xpWIX0EQsUBRufJgmG52M7IW3mRysWyadW/lbIkh0ZHbj9Ju32CSgvP7/BW4io6azEyU3+lrrt5O03WXDVAOgGnITfpXA6xnhHSdSQmJ2xkMFv8ZEKlpeTALOoMNACDW67pfhChlM44jVxNDXaOFZlTxiSmJBvpB6Knd40OKYg3QGnLY76Y/u0+hyUiz1itO1J/I+sRWF8zq6Fq5SyjKwtNPXQkLolAfe+IgW0hodgCMp3acNT9WdfQlaPwp/EPDUcQP+ZKdYK5H9Or14J2cMt2FRUsMwrRL/MJY7dM+NXlO/hYIUi5DS/L6rjkTJue7ymRJywgS1ZhOudwcLVpdzhu+f7kjUeaIQMqwX0gXTNDlw5MkhMtG5UMR1FElMd28eUSMmsomjpXenv/czDrklJMpomKwNESHXvx8g6sVWFhj6tzG8Kpa8VVduBJ6srCJBUotkrbRE0lNOTLwehjOBVKqxFUL4LoZfC+7nAZZlu8M84guHDIybWIcdpDdpiImS1LchnBhvKrsdluUXfIXwoHvbhK2W9hJ2XH+okwROvyXUMdhV8RJfdqpNauGde3MWUQbFNJg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6351.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009)(921011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?HWZQiXLHkh/hJQAKPMhcjgV45KSpQQxc6HMG+Q8Ps0FodwC8Erjr13PfC42N?=
- =?us-ascii?Q?C8Wz5rVvx35TkWj/nbTL4vtiGkpawkio4XHFXj4iQ+JAsTE5RPDXufAzIz7f?=
- =?us-ascii?Q?o4YwBbxHigI14oJ9lGJPOGwnvR/n2psIfrdTu8tRkDcVD9ddG3LnPwaZkx+y?=
- =?us-ascii?Q?AvNUVpMDaywyzqB7eCaOzN9hLBffFqisaqJlnwPdf92RFvVloAzxKz4EAvwP?=
- =?us-ascii?Q?PEcYdCCriv3ATwnA17A6nJdIB6ysGjI7JAFza7o53S1KOi7Qavgqc3m0kebC?=
- =?us-ascii?Q?rqv8DmNfIY3pUQel8LZj1kPlaFcWVPzbxn03drdcA6A2HsTZcxeyDiKchsgN?=
- =?us-ascii?Q?DN8j0bX4ywx1bRr11GLgZHEr5gK1yP9ZkVz7QrPtnuRhvFfpn4z5Gyh2MeXx?=
- =?us-ascii?Q?hcFrDnG8FWRQuY5/o/5AHv/3JIYfKA4URsQxQnjtgf1EnbLyvGtcTDfqt+Q1?=
- =?us-ascii?Q?/MZ1Hlyt6F0chh7AB8odoMwXdnTjP3b1aJvLxjGLVD6yXPh7SgUSrsgAN3dJ?=
- =?us-ascii?Q?wFtNRaULrFQJH7c3zFf8vruAl7J2lUruC45CDMCkZq7WuSWG/B54/ihhjZOU?=
- =?us-ascii?Q?ztQbk3RIJYNCFx0Yp8vATc/eGNJzlEOsYFYACvNSWHFxAwDvF4IJlds8wJsr?=
- =?us-ascii?Q?2hVUmA2S0HIRZh9RUAXNHe4uYlvjosIjYaSiitxEjg5DZHPMWuh2g8elyrgW?=
- =?us-ascii?Q?OVxaJPKB5Ak9509jd4L3zLhoXi4dNzAmpYRHrvGZFvqO/cUtJZpMxyIrsb3b?=
- =?us-ascii?Q?dba9yseicsjJeh4ClpNBDG98VvEvTMZBKRb63MkXCG4FkBD7DBiA31TegKlF?=
- =?us-ascii?Q?LBhPJZE4UoH0NOUl12koIcc5wiJd+2J1z0CnPRm+2Y4TMzmeTxPSK7bXli+u?=
- =?us-ascii?Q?VPI8dFgeNxMQTvBpXKFffNJbXYoiwQsrcMbLG7EwMrOf/Q6kkNnT3npPiGgR?=
- =?us-ascii?Q?hXjXWmiLAqpeecpoZt7oLZb/tL0GL7dXQLjZuB+jB0CpIWyijqnvWAOd2z6z?=
- =?us-ascii?Q?qqLA5tw+ZPQPDyEma4O0S3CDClE1dIoZ+tMB8D9xhKDfZyy593LAXM7eIeDN?=
- =?us-ascii?Q?jOUDGd+Ak06y75Z9mw5kG9oWfmBpdipLFLjNJ0Kapti3ElY+zdxSWPag8qFm?=
- =?us-ascii?Q?3GHpiniAzVNGCk6EkKA7fxbtKR5BgBPuqUOinv5qquGZMRMuGp4OP1gPQOeW?=
- =?us-ascii?Q?Mqn8H7G7yRLBGa+62kRmu8ZnPnZx3tBq8sw92hQs5jCy1RQtnjNM/br4O90R?=
- =?us-ascii?Q?HgfzU6sBnn6H+8hOAglkUaAsQPOzTQ+VTuqjZeQo7L5dN4sj/cr+xwKtSzT6?=
- =?us-ascii?Q?FbEVjz0VZbiv04u9us1+bwmPfofky0S5xZKi3Da9j53ohEbCTkFjw4E3CCgC?=
- =?us-ascii?Q?YnoX2YA+ifS5iFulzuIkeZkkV+0sL67MpePRQav3T6COV9fCayulY6s/yn3w?=
- =?us-ascii?Q?ZGgnaWBiFMkJIrhld94+h+OwsseL+A6n/IZQiKdow4PziXLgmfodbJRAWurs?=
- =?us-ascii?Q?GHERcHm3S6aDYy8+5wVoYmf3PhJIyLOEVTmTZbkJIUbniwH5T1SaEGgYhjlD?=
- =?us-ascii?Q?IuohEplV8AuUZZMBYHA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512E2FBFD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711089009; cv=none; b=sTnKSKGSaEUwuFnPUaVHGHEyZsRp4N9jErkxHs+Db9jfAloTZMNLWs6yQM7IyYm32wyILnx6Y+K8eT+iuwNmK5TkGSuUVgNuVccA6mSildz3FPNkC28vJczz3Wol8Xu7v0Supanqm77+SrQffJ9ho1VLzwAf56LCsipwAKwBQfE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711089009; c=relaxed/simple;
+	bh=RaLGXV3wkG8D6RtEzkqlYsPr48/oVFW/MpPxaPCCmkk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iblmLk9f2n2YOlnpsCGC9cOSvrM54Nwncq1TOc6YRb5uo1UgGwDuB8O48Cow01n72e5R3pdmPVCK/QSnwwlIl/HhvvHwRWbjQC8EyIIS1okgqVPBlCKTCJEOBdK/XWXDG/YwBT+nxnMMV3/dPK7RCDhc4vat4+K1v2O+Z+L/q5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=stf+/S8z; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7e083af7ceaso663084241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711089006; x=1711693806; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=friF4mqOpL+RBrI/R2ofg6E/u5m4j7bkXfIK/7gVkkA=;
+        b=stf+/S8zs96LGMGDQqSboY1KerMZnnbVepOJjCFdryUDNZKrPAWnIcDXDyMcG04vWR
+         BW0TXkqyPNppDR+tTTQPOwbmLIW05GDQbZzz0CaPndrDGvh7tDaErrh0edIzK63qQOOb
+         qMfEpLDkd8SR7ncBNG6bN8TkEtRERzd4j/vRLJq8XLKzXZQt8z9E5uecpMABp9/Z1CMJ
+         jLXY37c2Si9KOOOdbnyRV/Z5Cyw+larnRWo/wHZ7R5MssApdakTHS1DakhuSRUmGkD6h
+         cun+EylIqK9ajPe8SWc+8u30p8xszVPJmMhSUa+80yqJ+dX54WgPrHnWLbMhLOSHyHcs
+         8GkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711089006; x=1711693806;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=friF4mqOpL+RBrI/R2ofg6E/u5m4j7bkXfIK/7gVkkA=;
+        b=El59UsRUXmia5994eiC5m5BRBNse4KAy3lFBUXhTWxRMk5sA0l5X6xRbQ/VCY0hB9V
+         Rj06dH3vdAud97VsGPWbJ3DHnm64xOBjONJa2cis/SEgUcZvueV0Dmg6ojn9KOZg/s9f
+         1L6IIocsS/t4Llbx1DpNK+YsTV+jP3LOfKL9kG2epP/0cdA8l5qBtfK1W07REnPGcQUW
+         altYZfRw0VL1dlZ8D9uVWdHj2JwXMoKSo7G8rNZhNfQdXknQZ/jqvTUG+0bQZ2A91vKc
+         v1ZjxLPxdIVEyuMyH98ViuhOqChjElfDXsk/wzHIYqpo8bbzI3o7nC6RyYQMkP5r9EWF
+         DOSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWS0YsbNROsE2forFq4j8OC3l2EVyCUc17uWZl6gbP9FsUT3E/SjfBkv+gi0+9sqKcbzScZyDJWNbFYANRjTWjz7w1eDdRmumrWgadD
+X-Gm-Message-State: AOJu0Ywix70cYk73ZX9te/UmtSPvA1cgfSEC6djOxwxZYP3G5nEPuIvS
+	fuuEoi7FAp4FcewOxf6yHpcOCaLQkYrhe/h20LKQI2KrMfBCSjggHcwylhSOtnuHLpCitdE2qNT
+	4Oxgzwd9bUoOtD0i2P0mC8+IypIty1g8dlxLOWw==
+X-Google-Smtp-Source: AGHT+IFQbB1B4AoNXkHKSgOqNqZlxMtMbvTbOTZhu1rm2Mw16zgjYGcqyrLEXEkNf5ApfjNO9O5cs8chrkwQfUwFz8E=
+X-Received: by 2002:a67:f2c1:0:b0:476:b180:5cf0 with SMTP id
+ a1-20020a67f2c1000000b00476b1805cf0mr1601671vsn.34.1711089006234; Thu, 21 Mar
+ 2024 23:30:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6351.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d8b9679-780c-42db-4339-08dc4a395954
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 06:28:55.1580
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YdeCYTLg+mXf7JCrJMs+1KxqeUfDeFFC2CLV/eXFTa8wHJ8oauMCUPtAl4D469/OTK9rw5RGjj7vKpHV8moJSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6061
+References: <20240315060707.471248-1-sumit.garg@linaro.org>
+ <20240315060707.471248-4-sumit.garg@linaro.org> <ZfRlYnEQUKvwGQ65@gerhold.net>
+ <CAFA6WYMucNzLNm+oHNd-Jb65oigpNphU=mFGM1cD8A-mK-BFDw@mail.gmail.com>
+ <ZfmdWtoiP4ZF7JRk@gerhold.net> <CAFA6WYPzdSHEMmeb_J6LPje8MUkSSq93oN3+O1PMahtZN7hWnA@mail.gmail.com>
+ <ZfwM3ZrjTWR_QANd@gerhold.net>
+In-Reply-To: <ZfwM3ZrjTWR_QANd@gerhold.net>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri, 22 Mar 2024 11:59:54 +0530
+Message-ID: <CAFA6WYN+Y8qyv9yEMoU1wqpqDN7rwNO5xfHkSUe+H2DdSiBqyA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+To: Stephan Gerhold <stephan@gerhold.net>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
+	dmitry.baryshkov@linaro.org, laetitia.mariottini@se.com, 
+	pascal.eberhard@se.com, abdou.saker@se.com, jimmy.lalande@se.com, 
+	benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
+	linux-kernel@vger.kernel.org, Jagdish Gediya <jagdish.gediya@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-[AMD Official Use Only - General]
+On Thu, 21 Mar 2024 at 16:03, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> On Wed, Mar 20, 2024 at 12:10:32PM +0530, Sumit Garg wrote:
+> > On Tue, 19 Mar 2024 at 19:43, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > On Mon, Mar 18, 2024 at 03:20:46PM +0530, Sumit Garg wrote:
+> > > > On Fri, 15 Mar 2024 at 20:43, Stephan Gerhold <stephan@gerhold.net> wrote:
+> > > > > On Fri, Mar 15, 2024 at 11:37:07AM +0530, Sumit Garg wrote:
+> > > > > > Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+> > > > > > Box Core board based on the Qualcomm APQ8016E SoC.
+> > > > > >
+> > > > > > Support for Schneider Electric HMIBSC. Features:
+> > > > > > - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+> > > > > > - 1GiB RAM
+> > > > > > - 8GiB eMMC, SD slot
+> > > > > > - WiFi and Bluetooth
+> > > > > > - 2x Host, 1x Device USB port
+> > > > > > - HDMI
+> > > > > > - Discrete TPM2 chip over SPI
+> > > > > > - USB ethernet adaptors (soldered)
+> > > > > >
+> > > > > > Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+> > > > > > Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
+> > > > > > Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
+> > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > ---
+> > > > > >  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+> > > > > >  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 510 ++++++++++++++++++
+> > > > > >  2 files changed, 511 insertions(+)
+> > > > > >  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > > > >
+> > > > > > diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> > > > > > index 39889d5f8e12..ad55e52e950b 100644
+> > > > > > --- a/arch/arm64/boot/dts/qcom/Makefile
+> > > > > > +++ b/arch/arm64/boot/dts/qcom/Makefile
+> > > > > > @@ -5,6 +5,7 @@ apq8016-sbc-usb-host-dtbs     := apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
+> > > > > >
+> > > > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-usb-host.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-d3-camera-mezzanine.dtb
+> > > > > > +dtb-$(CONFIG_ARCH_QCOM)      += apq8016-schneider-hmibsc.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8039-t2.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8094-sony-xperia-kitakami-karin_windy.dtb
+> > > > > >  dtb-$(CONFIG_ARCH_QCOM)      += apq8096-db820c.dtb
+> > > > > > diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..9c79a31a04db
+> > > > > > --- /dev/null
+> > > > > > +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
+> > > > > > @@ -0,0 +1,510 @@
+> > > > > > [...]
+> > > > > > +
+> > > > > > +&pm8916_resin {
+> > > > > > +     interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_FALLING>;
+> > > > > > +     linux,code = <KEY_POWER>;
+> > > > > > +     status = "okay";
+> > > > > > +};
+> > > > >
+> > > > > What is the goal of overriding the interrupt here? It looks like you are
+> > > > > changing the interrupt type from IRQ_TYPE_EDGE_BOTH to FALLING. This
+> > > > > sounds a bit like you want the driver to receive just button release
+> > > > > events (or just press events, not sure about the polarity). I'm not sure
+> > > > > if the driver will handle this correctly.
+> > > >
+> > > > The use-case here is to just act upon button release events and the
+> > > > driver handles this appropriately. Final use-case of the reset button:
+> > > >
+> > > > - Short press and release leads to normal Linux reboot.
+> > > > - Long press for more than 10 sec or so leads to a hard reset.
+> > > >
+> > > > With IRQ_TYPE_EDGE_BOTH, that's not achievable because just a simple
+> > > > press leads to Linux reboot.
+> > > >
+> > >
+> > > Thanks for explaining your use case. Is the DT really the right place to
+> > > describe this? In the hardware, this is just a button that provides both
+> > > press and release events. Linux typically forwards these events to user
+> > > space, without interpreting them in any way. This means you likely have
+> > > some user space component that listens to the events (e.g. systemd
+> > > logind). Ideally that component should be reconfigured to trigger the
+> > > reboot on release instead of press.
+> >
+> > I am not sure if that's really the case. I only see power key value to
+> > be reported as follows:
+> >
+> > input_report_key(pwrkey->input, pwrkey->code, 1);
+> >                     or
+> > input_report_key(pwrkey->input, pwrkey->code, 0);
+> >
+> > It's not like a press event being a rising edge (0->1) or a release
+> > event being a falling edge (1->0) reported. AFAICS, a reboot is issued
+> > whenever the value of power key is reported as "1".
+> >
+>
+> If you look inside the input_report_key() function you can see that the
+> input subsystem internally tracks the key state. input_get_disposition()
+> returns INPUT_IGNORE_EVENT if the key bit already has the same value.
+> Only when the key changes its state, an event is sent to user space.
+> This means that all events reported to user space are effectively
+> rising/falling edges (an event with value "1" is a rising edge 0->1, an
+> event with value "0" is a falling edge 1->0).
+>
+> The only reason why setting IRQ_TYPE_EDGE_FALLING works here is because
+> of the workaround added in commit be8fc023ef64 ("Input: pm8941-pwrkey -
+> simulate missed key press events") [1]. No event is reported when you
+> start pressing the key. When you release the key, you get a key press
+> event (rising edge) immediately followed by a key release (falling
+> edge). But the workaround was added to handle potentially missed
+> interrupts, not to inhibit reporting key press events.
 
-> -----Original Message-----
-> From: Yuan, Perry <Perry.Yuan@amd.com>
-> Sent: Tuesday, March 19, 2024 4:29 PM
-> To: rafael.j.wysocki@intel.com; Limonciello, Mario
-> <Mario.Limonciello@amd.com>; viresh.kumar@linaro.org; Shenoy, Gautham
-> Ranjal <gautham.shenoy@amd.com>; Petkov, Borislav
-> <Borislav.Petkov@amd.com>; Huang, Ray <Ray.Huang@amd.com>
-> Cc: Deucher, Alexander <Alexander.Deucher@amd.com>; Huang, Shimmer
-> <Shimmer.Huang@amd.com>; oleksandr@natalenko.name; Du, Xiaojian
-> <Xiaojian.Du@amd.com>; Meng, Li (Jassmine) <Li.Meng@amd.com>; linux-
-> pm@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH v9 2/8] cpufreq: amd-pstate: Document the units for freq
-> variables in amd_cpudata
->
-> From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
->
-> The min_limit_freq, max_limit_freq, min_freq, max_freq, nominal_freq and
-> the lowest_nominal_freq members of struct cpudata store the frequency
-> value in khz to be consistent with the cpufreq core. Update the comment t=
-o
-> document this.
->
-> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-> ---
->  include/linux/amd-pstate.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h inde=
-x
-> 212f377d615b..ab7e82533718 100644
-> --- a/include/linux/amd-pstate.h
-> +++ b/include/linux/amd-pstate.h
-> @@ -51,15 +51,15 @@ struct amd_aperf_mperf {
->   *             priority.
->   * @min_limit_perf: Cached value of the perf corresponding to policy->mi=
-n
->   * @max_limit_perf: Cached value of the perf corresponding to policy->ma=
-x
-> - * @min_limit_freq: Cached value of policy->min
-> - * @max_limit_freq: Cached value of policy->max
-> - * @max_freq: the frequency that mapped to highest_perf
-> - * @min_freq: the frequency that mapped to lowest_perf
-> - * @nominal_freq: the frequency that mapped to nominal_perf
-> - * @lowest_nonlinear_freq: the frequency that mapped to
-> lowest_nonlinear_perf
-> + * @min_limit_freq: Cached value of policy->min (in khz)
-> + * @max_limit_freq: Cached value of policy->max (in khz)
-> + * @max_freq: the frequency (in khz) that mapped to highest_perf
-> + * @min_freq: the frequency (in khz) that mapped to lowest_perf
-> + * @nominal_freq: the frequency (in khz) that mapped to nominal_perf
-> + * @lowest_nonlinear_freq: the frequency (in khz) that mapped to
-> + lowest_nonlinear_perf
->   * @cur: Difference of Aperf/Mperf/tsc count between last and current
-> sample
->   * @prev: Last Aperf/Mperf/tsc count value read from register
-> - * @freq: current cpu frequency value
-> + * @freq: current cpu frequency value (in khz)
->   * @boost_supported: check whether the Processor or SBIOS supports
-> boost mode
->   * @hw_prefcore: check whether HW supports preferred core featue.
->   *             Only when hw_prefcore and early prefcore param are true,
-> --
-> 2.34.1
-[Meng, Li (Jassmine)]
-Reviewed-by: Li Meng < li.meng@amd.com>
+I rather see it differently being actually allowing the current
+use-case to support only the IRQ_TYPE_EDGE_FALLING. As per your
+description above, a falling edge can only be an event for user-space
+if we have:
 
+input_report_key(pwrkey->input, pwrkey->code, 1);
+input_report_key(pwrkey->input, pwrkey->code, 0);
+
+rather than only
+
+input_report_key(pwrkey->input, pwrkey->code, 0);
+
+which won't trigger any event for user-space, right?
+
+>
+> In my opinion, if you want to perform an action on key release rather
+> than key press then you should adjust the user space program to do so.
+> From the point of view of the hardware DT (and even the kernel), the key
+> press happens when you actually start pressing the key, and not later
+> when you release it.
+
+The reason why we are discussing it back and forth looks like due to
+lack of clarity as to how HMIBSC board supports this button. The
+common implementation as per db410c DTS is to have two buttons:
+
+- One button is representing pwrkey(KEY_POWER) which is solely
+consumed by the operating system to cleanly power off/restart the
+db410c.
+- Another button is representing pm8916_resin(KEY_VOLUMEDOWN) which
+apart from normal volume down is also consumed by PMIC hardware to
+perform a hard reset on a long press (if more than 10 sec.).
+
+However, on HMIBSC board we only have a single power/reset button
+which has to support the dual role of above two buttons on db410c:
+
+Only one button as pm8916_resin(KEY_POWER), behaviour required:
+- The rising edge (or button press) has to be only consumed by PMIC to
+perform a hard reset of the HMIBSC board if pressed for more than 10
+secs.
+- The falling edge has to be consumed by the operating system to
+cleanly reboot the HMIBSC board.
+
+So what you are asking here is that the operating system has to be
+notified of the rising edge of the button even if it has to just
+ignore that without any action. Do you really think that would be
+acceptable as a generic solution for systemd logind?
+
+Also, why DT isn't the right place for correctly describing the
+intended hardware behaviour? Or am I missing any DT policy which says
+hardware has to be described the exact way it is rather than the
+expected way for hardware to behave? BTW, If you want the hardware
+behaviour to be properly commented then I can do that too.
+
+-Sumit
+
+>
+> Thanks,
+> Stephan
+>
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=be8fc023ef64dcb11042aaa4bb0f29f7e0335d85
 
