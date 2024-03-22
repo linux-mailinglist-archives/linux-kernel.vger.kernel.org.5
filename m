@@ -1,173 +1,164 @@
-Return-Path: <linux-kernel+bounces-111231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142E788696D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:39:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B0F88697E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:43:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E9A1C216D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:39:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CBE32828B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D264B2230F;
-	Fri, 22 Mar 2024 09:39:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2108A224F1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A421A2869A;
+	Fri, 22 Mar 2024 09:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s2ZbBBL9"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8AE20B27
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711100377; cv=none; b=rQSlI3DuJFrr9cLthY3fI2iv5vHquV0dL47aV1RitR2+uO9D/AZBrUSUlL07xf6tmAwncq9+NZ0KT2+UM+YqeDRZcCMvGQ3pTRerod/g2fEWBwzqxtVLG2ZlasEp83BkQ9hQktUm18Ct4isr7sx/4fuypwipOwtHSKnJk18cEK4=
+	t=1711100569; cv=none; b=H42BYuSIEMRM1Fdhb+EUZtJ1PoS5CLaYId4PaA55/hQNjvAy+GKn2UWGQ65eviGEJNYyzecW7YfvyQJwfhODWtd31XgE4AcVq8Ey78N5AEhhUSZvJd+6dy6IlDPEO+iF6H1ekmhXmRJMw5WL54yR081YvjpMsSZRRCkauH3wDQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711100377; c=relaxed/simple;
-	bh=OJoEnYOjFTP4CHdGTPSIyur2cVGQFbj8igAcc8O+R/0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TRyM5G9p8i6qAdQ0P8xDrb4gEw0jgQYVy9G28ZHCKURIybGmL+ci4OdQBitvM14rPpbSejedsKk5M4chsk9cO6TIiyn5IsMyrixqiJ2fB7OkJ9wQAUyG3wu501EwVREPKNF5wPANMX3O9InEa15MmHopx4OdCHUJpFR5ja7+m/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71DC51007;
-	Fri, 22 Mar 2024 02:40:08 -0700 (PDT)
-Received: from [10.57.72.175] (unknown [10.57.72.175])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1DD13F64C;
-	Fri, 22 Mar 2024 02:39:31 -0700 (PDT)
-Message-ID: <32ca7e47-4a85-4170-a34a-d007494cc262@arm.com>
-Date: Fri, 22 Mar 2024 09:39:30 +0000
+	s=arc-20240116; t=1711100569; c=relaxed/simple;
+	bh=G8pd+NuPs5MqnbmyhqPPxvHeK1Ch8m4ANkNZoIRgcfs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=o7e+ih7BGww63FqZuDoZt09/C6tD1N+rD5SNbAhHppbwPo8sd5G80LgQ2BYon2wKGfpxW2P526eP6vlv7jsBcIypFM3ZMVQrU0B7TJ/XqFmYapHWWrz/PnokzsU/vgHTu9JVkXTRdeOWduj/kf+8inKsLjMkTd7YzGtQzMDfKyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s2ZbBBL9; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4147d09eb8aso1670605e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711100565; x=1711705365; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4RXUamy+6CkwKat2pJqrkrmGSUlooaGAioyYCp0zXP4=;
+        b=s2ZbBBL9SIn4ONIZnoOHtuj6cgUMjN1Ao8cP6ETe4GFeIbYxKp2673XmwerYU8UMo5
+         JUXLxKZ35zIvO6ezwsCoPhZg909Unf4F++7eiNcGpG5Pel327IzR1nl6BCRofV3ac/9c
+         t8G6mkEPpjsdh21V6Qr0fJJtvBE3Yf7tb9N1sPwfHY/VgAm7rsZELOwn7duyli2QbxaT
+         Hc04hHJ8jsbkfoOSSqfEr3Q+7X8Iroh13AlDLdcy8LB9jjaFtvRuunuKUoxMtSuBaib9
+         xz+qqeQrs0TkEctd7AC0h57yxRKpyJo2FynYJ+RSh++pOaON7p6M8ZoIx/mjMUBKebIZ
+         0ltQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711100565; x=1711705365;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4RXUamy+6CkwKat2pJqrkrmGSUlooaGAioyYCp0zXP4=;
+        b=LNzGDbHafZt8ZH09/KZFfq3dAbHJl6w6H2uEowecgQgEA2jRqs/ZAIwhkKxHiiWSNB
+         Gxocvkm5nZJtiwTvJ/N7L0TndxtxTQffvkWr/IsK9WLjHCwrAoAJ3toRD7WeUbv9QllD
+         MOdFaoUabnRtZI5TL/lhVEcVPFPtDfjKAs3q4dg+yd+KnpRsgHnWIizSiUEn/Ncfp2kq
+         MaO4fU53rlnHB5HfjP+1MWTSO01u1j1bI1EdjBda9SFyP4a0xix2DC+xImmRfmfF/HWj
+         D2eFvY4EpMIaxcF32JD8IPZfLb4wOru2zRNx7fDy39PiIvreHSFWklL7891XFGaaCvcV
+         Reqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXeNQ6uZd1XSASZ5zxCXZyfDXh500848dBLY5QeKBAX8q/IDGTT3TqU95eUqs8pV/krBZpkyQ8BlX+AbXfWG40aTCCTd2102Mz4qart
+X-Gm-Message-State: AOJu0Yy992judtmuc5A9OaULSD9mflifgx5ht4k+pOTRXbPBDcBE9UfB
+	DKvvDI84ClsRlACL461WdN16P63/dgLYW8QNCnb0KQj+DhiCfDz+gMuW25jJtU4=
+X-Google-Smtp-Source: AGHT+IFvFez6XpEdmElSBdTd28NiEtgQWa0kTLpjpyGjYG+2mzUaQ/ueca7v5bEWNR5vKrFD70r4zg==
+X-Received: by 2002:a05:600c:511c:b0:414:5ee1:76f0 with SMTP id o28-20020a05600c511c00b004145ee176f0mr1056656wms.25.1711100564758;
+        Fri, 22 Mar 2024 02:42:44 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id j9-20020a05600c190900b0041461a922c2sm2547845wmq.5.2024.03.22.02.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 02:42:44 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v2 0/7] arm64: qcom-sm8[456]50: properly describe the PCIe
+ Gen4x2 PHY AUX clock
+Date: Fri, 22 Mar 2024 10:42:37 +0100
+Message-Id: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/6] mm: swap: Allow storage of all mTHP orders
-Content-Language: en-GB
-To: "Huang, Ying" <ying.huang@intel.com>,
- "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
- Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240311150058.1122862-1-ryan.roberts@arm.com>
- <20240311150058.1122862-5-ryan.roberts@arm.com>
- <87jzm751n3.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <d6ac1097-2ca3-4e6d-902d-1b942cacf0fb@arm.com>
- <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <b22a222b-7fd8-4648-84a7-21d35f529f27@arm.com>
- <87plvnq9ap.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87plvnq9ap.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAI1S/WUC/53NSw6DIBSF4a2YO+5tAN+Ouo/GAQWqN1UhoEZj3
+ HupS+jwP4PzHRCMJxOgSQ7wZqVAdoohbgmoXk6dQdKxQTCRsZTXOFtHCsNYbTnDxYXZGzmiU2S
+ Qo+t3lMuGavhg9kpzXtQlK7WGeOe8edN2Uc82dk9htn6/5JX/1j+QlSPDWhS6lJlSumKPgSbp7
+ d36DtrzPL8srLCR4QAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2765;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=G8pd+NuPs5MqnbmyhqPPxvHeK1Ch8m4ANkNZoIRgcfs=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl/VKQY3StH+jEwpw0M1pXqo7GMpn11tZX0YBLeImy
+ +tEzA+WJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZf1SkAAKCRB33NvayMhJ0cmfD/
+ 43RVVhmBkKNKtrJqcw01/Ex2PuZ1/tEfhcU6tMva8RiVUTErXCkXoIh1vzmbewfzljQiwalOyS642/
+ 0U+uL2p4Lnd+rsEA6kAnUzo3poTCgpXSlw9GPpkYhS2zRisbv/iyp02K/xsommpzxhMWV7dcXRZyd/
+ fdEl2BG2/na5UtKk1dUfnpbdD7fVTZCBykaDWw9swjEktvqmc/OEE6sx3YFQ2f9huFabPk4VxVqNOk
+ UcD4QA/apXJmJxQ+8YJk+FYDyWODWWNNfAz5o6MXVLN7lKmbSUvH7IE0frTj+m26lXCx2URRtQCXPt
+ y4R6stZiWkbP+vwUGbBJsGhya7P3Y3jZvIf5Eb6kttaEq9VjiVwD4gtxDI7c9DCKLCDhmOm3pB6TfG
+ 2fhBdvRkrxi/AE1TlcIPIMKZPhmqhfdVdRdDd7D79za/cGZyliJuXeKQEAefeFNTsmbCnoQa+E/vV9
+ Zhdt8WxUbS8K2Q3zP0IT5c1TEffm6xLMXyKBregitQAs9osNyKHQcKFUbvHOl+Z8Yyv4LpYKn7SeQ1
+ w6Hx02dAZe/spQT+zeuevepNGv8IgFpBC2FxZUr+QyV99/T4DGR9tS/eYxoUnAlsj+WINequ5j+/ud
+ kFIVpkhTR6YIT4KgDItN9UugWUOdSwY284uccjQx/TpcEsqiX2P2RmPOlkwg==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-On 22/03/2024 02:39, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->> On 21/03/2024 04:39, Huang, Ying wrote:
->>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>
->>>> Hi Huang, Ying,
->>>>
->>>>
->>>> On 12/03/2024 07:51, Huang, Ying wrote:
->>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>> [...]
->>>>
->>>>>> @@ -905,17 +961,18 @@ static int scan_swap_map_slots(struct swap_info_struct *si,
->>>>>>  	}
->>>>>>  
->>>>>>  	if (si->swap_map[offset]) {
->>>>>> +		VM_WARN_ON(order > 0);
->>>>>>  		unlock_cluster(ci);
->>>>>>  		if (!n_ret)
->>>>>>  			goto scan;
->>>>>>  		else
->>>>>>  			goto done;
->>>>>>  	}
->>>>>> -	WRITE_ONCE(si->swap_map[offset], usage);
->>>>>> -	inc_cluster_info_page(si, si->cluster_info, offset);
->>>>>> +	memset(si->swap_map + offset, usage, nr_pages);
->>>>>
->>>>> Add barrier() here corresponds to original WRITE_ONCE()?
->>>>> unlock_cluster(ci) may be NOP for some swap devices.
->>>>
->>>> Looking at this a bit more closely, I'm not sure this is needed. Even if there
->>>> is no cluster, the swap_info is still locked, so unlocking that will act as a
->>>> barrier. There are a number of other callsites that memset(si->swap_map) without
->>>> an explicit barrier and with the swap_info locked.
->>>>
->>>> Looking at the original commit that added the WRITE_ONCE() it was worried about
->>>> a race with reading swap_map in _swap_info_get(). But that site is now annotated
->>>> with a data_race(), which will suppress the warning. And I don't believe there
->>>> are any places that read swap_map locklessly and depend upon observing ordering
->>>> between it and other state? So I think the si unlock is sufficient?
->>>>
->>>> I'm not planning to add barrier() here. Let me know if you disagree.
->>>
->>> swap_map[] may be read locklessly in swap_offset_available_and_locked()
->>> in parallel.  IIUC, WRITE_ONCE() here is to make the writing take effect
->>> as early as possible there.
->>
->> Afraid I'm not convinced by that argument; if it's racing, it's racing - the
-> 
-> It's not a race.
-> 
->> lockless side needs to be robust (it is). Adding the compiler barrier limits the
->> compiler's options which could lead to slower code in this path. If your
->> argument is that you want to reduce the window where
->> swap_offset_available_and_locked() could observe a free swap slot but then see
->> that its taken after it gets the si lock, that seems like a micro-optimization
->> to me, which we should avoid if we can.
-> 
-> Yes.  I think that it is a micro-optimization too.  I had thought that
-> it is a common practice to use WRITE_ONCE()/READ_ONCE() or barrier() in
-> intentional racy data accessing to make the change available as soon as
-> possible.  But I may be wrong here.
+The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock named
+"PHY_AUX_CLK" which is an input of the Global Clock Controller (GCC) which
+is muxed & gated then returned to the PHY as an input.
 
-My understanding is that WRITE_ONCE() forces the compiler to emit a store at
-that point in the program; it can't just rely on knowing that it has previously
-written the same value to that location, it can't reorder the load to later in
-the program and it must store the whole word atomically so that no tearing can
-be observed. But given that swap_map is only ever written with the si lock held,
-I don't believe we require the first two of those semantics. It should be enough
-to know that the compiler has emitted all the stores (if it determines they are
-required) prior to the spin_unlock(). I'm not sure about the anti-tearing
-guarrantee.
+Document the clock IDs to select the PIPE clock or the AUX clock,
+also enforce a second clock-output-names and a #clock-cells value of 1
+for the PCIe Gen4x2 PHY found in the SM8[456]50 SoCs.
 
-Happy to be told I'm wrong here!
+The PHY driver needs a light refactoring to support a second clock,
+and finally the DT is changed to connect the PHY second clock to the
+corresponding GCC input then drop the dummy fixed rate clock.
 
-> 
->> By remnoving the WRITE_ONCE() and using memset, the lockless reader could
->> observe tearing though. I don't think that should cause a problem (because
->> everything is rechecked with under the lock), but if we want to avoid it, then
->> perhaps we just need to loop over WRITE_ONCE() here instead of using memset?
-> 
-> IIUC, in practice that isn't necessary, because type of si->swap_map[]
-> is "unsigned char".  It isn't possible to tear "unsigned char".  
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Changes in v2:
+- Collected review tags
+- Switched back to of_clk_add_hw_provider/devm_add_action_or_reset to maintain compatibility
+- Tried to use generic of_clk_hw_onecell_get() but it requires to much boilerplate code
+  and would still need a local qmp_pcie_clk_hw_get() to support the current #clock-cells=0
+  when exposing 2 clocks, so it's simpler to just return the clocks in qmp_pcie_clk_hw_get()
+- Link to v1: https://lore.kernel.org/r/20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-0-926d7a4ccd80@linaro.org
 
-In practice, perhaps. But I guess the compiler is free to update the char
-bit-by-bit if it wants to, if the store is not marked WRITE_ONCE()?
+---
+Neil Armstrong (7):
+      dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: document PHY AUX clock on SM8[456]50 SoCs
+      phy: qcom: qmp-pcie: refactor clock register code
+      phy: qcom: qmp-pcie: register second optional PHY AUX clock
+      phy: qcom: qmp-pcie: register PHY AUX clock for SM8[456]50 4x2 PCIe PHY
+      arm64: dts: qcom: sm8450: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
+      arm64: dts: qcom: sm8550: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
+      arm64: dts: qcom: sm8650: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
 
-> In
-> theory, it may be better to use WRITE_ONCE() because we may change the
-> type of si->swap_map[] at some time (who knows).  I don't have a strong
-> opinion here.
+ .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   | 27 +++++-
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               |  8 +-
+ arch/arm64/boot/dts/qcom/sm8550-hdk.dts            |  4 -
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts            |  4 -
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  8 --
+ arch/arm64/boot/dts/qcom/sm8550.dtsi               | 13 +--
+ arch/arm64/boot/dts/qcom/sm8650-mtp.dts            |  4 -
+ arch/arm64/boot/dts/qcom/sm8650-qrd.dts            |  4 -
+ arch/arm64/boot/dts/qcom/sm8650.dtsi               | 13 +--
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 98 ++++++++++++++++++++--
+ include/dt-bindings/phy/phy-qcom-qmp.h             |  4 +
+ 11 files changed, 133 insertions(+), 54 deletions(-)
+---
+base-commit: 2e93f143ca010a5013528e1cfdc895f024fe8c21
+change-id: 20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-4b35169707dd
 
-The way I see it, the precedent is already set; there are a number of places
-that already use memset to update swap_map. They are all under the si lock, and
-none use barrier(). If its wrong here, then its wrong in those places too, I
-believe.
-
-> 
->>>>>> +	add_cluster_info_page(si, si->cluster_info, offset, nr_pages);
->>>>>>  	unlock_cluster(ci);
-> 
-> --
-> Best Regards,
-> Huang, Ying
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
 
