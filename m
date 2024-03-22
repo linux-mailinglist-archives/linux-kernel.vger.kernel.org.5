@@ -1,205 +1,259 @@
-Return-Path: <linux-kernel+bounces-111118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA149886823
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:22:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1A9886827
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6521C23A91
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:22:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2271E1F2387C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4561B267;
-	Fri, 22 Mar 2024 08:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2CA171C9;
+	Fri, 22 Mar 2024 08:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N3aWu1ou";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fWVBscP/";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="N3aWu1ou";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fWVBscP/"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RPyDmw9G"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F561199A1;
-	Fri, 22 Mar 2024 08:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17CA3171CD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711095721; cv=none; b=YoKlRA0dX2FS/hz0JAlw7qKnJXj/5u25Ce4z+SL0w84KXkqNtzE0o4w8xcKy8w0x7fh8IL2wL36J+vU0jVFRWYgSWJLqojT51URPNfBFjs71MSvLH+ap/KNmIn9clI4J+N5u5hbkc6677Zl2o0Lih+jvzdaVxeNpWEvBqARlvZY=
+	t=1711095780; cv=none; b=WMHHYXQmHZlbJ2+9ovHvog0x1+qpRnzWbYXUi9bhhN7KKwZuPw32Z7ldtTGG1YD3zJlxTihftIa5XEmKbv52LcdJXEHDaSMQx43b17oH7pKGaCEwV9+ZEJkedgmcbedYZ5/WIgLmsjvhUbkrveyNH74pRcwk0oq7lBovUjUdvhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711095721; c=relaxed/simple;
-	bh=W+tSzgZPY2VD8BxwHG9VS8fFQkYGiSQRCDwPzLR/euk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=M5XWFvfRoRmDKPe//RO6KteKSTn+pm4u9nEUnUI+UsK0U4Jb5f//1vH9BvnDHRkmAuqCqDcgyYjUfPl0eIqoVZMwWBULt40gPxbJvLM2WQhFcM8uibPiExhXpPz1wkoifowbql7p7S7flS/Jxwf3nv+Mk2uoJ0Nns80a7TBidlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N3aWu1ou; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fWVBscP/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=N3aWu1ou; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fWVBscP/; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D15D338271;
-	Fri, 22 Mar 2024 08:21:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711095717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=d4CAmRTbTo7VtEDRy859Wyk1/Hjt7vQUOUoTpI6/ix8=;
-	b=N3aWu1ouL5JNgsgPAMFSZTy7QWoi/+M4zG0nY+VGfHrBC+P8XJvqUkkDsGc7uOhO7oYBo5
-	busLq5aRS2iWuBLy89JRjHau/ZvFYAs+0w9/GlxhJtKPRJTIGL33Fv5DNq203Js6brpbqe
-	TMygON6aUzbbK+9SHY7oXaG1czL7xKc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711095717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=d4CAmRTbTo7VtEDRy859Wyk1/Hjt7vQUOUoTpI6/ix8=;
-	b=fWVBscP/We1+c3lLM8k8pPYi5OaD5O/WxMShF+7Lf6V6dX22BIDC3ZkzpHEn1FeH8PbwEb
-	v0diVLy9PLD4dVDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711095717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=d4CAmRTbTo7VtEDRy859Wyk1/Hjt7vQUOUoTpI6/ix8=;
-	b=N3aWu1ouL5JNgsgPAMFSZTy7QWoi/+M4zG0nY+VGfHrBC+P8XJvqUkkDsGc7uOhO7oYBo5
-	busLq5aRS2iWuBLy89JRjHau/ZvFYAs+0w9/GlxhJtKPRJTIGL33Fv5DNq203Js6brpbqe
-	TMygON6aUzbbK+9SHY7oXaG1czL7xKc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711095717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=d4CAmRTbTo7VtEDRy859Wyk1/Hjt7vQUOUoTpI6/ix8=;
-	b=fWVBscP/We1+c3lLM8k8pPYi5OaD5O/WxMShF+7Lf6V6dX22BIDC3ZkzpHEn1FeH8PbwEb
-	v0diVLy9PLD4dVDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A828B132FF;
-	Fri, 22 Mar 2024 08:21:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WB6uJ6U//WWgLwAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Fri, 22 Mar 2024 08:21:57 +0000
-Message-ID: <4ed32e4f-d794-42ab-9292-cb6f11b31348@suse.de>
-Date: Fri, 22 Mar 2024 09:21:57 +0100
+	s=arc-20240116; t=1711095780; c=relaxed/simple;
+	bh=fpCoiLmXxI9qiJhzsLseFGJE1mlYGa6QJuto7FOwQ7s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xgqge1wy2IEaqg/c1RAb2Ey2pgtZ6fNhof9V9GkYsAU+9SCx2U7/my4J0AEIZ9Ty/1vfk0cUGLkNUEYJvu+dEm/C3sunikIViqp6NmWPSGhn474kidKbk2QryN15l3eecjklvnUeBia3WMHnAkDOcr9ZdfIOHO97zvTjV1SY0kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RPyDmw9G; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6963cf14771so17181216d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711095777; x=1711700577; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0ob+YyW8fixoBQX9n6g1bpmXJDOp1r9Uolwp6GpqIv4=;
+        b=RPyDmw9Gp88AANEc270UUeILYJKls/v1L3/wOvgB+hTwN/Pqh6AhV2ZZO1fLSh8ZCF
+         xxPZIRT5Qa9kbKoZAYCHuPVNF98MYEpXpqegQy/P69lOrTplguamzhbecI+8DPrjHJZM
+         bJ1YVlZzN+i4KjVQJEt9tf/udg2IT/mzOlu/c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711095777; x=1711700577;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0ob+YyW8fixoBQX9n6g1bpmXJDOp1r9Uolwp6GpqIv4=;
+        b=uVmA3I15vECtrpZpwql/H++E+QuXqCg2IWBaBFJcwEasxlW7kRa7+dE8eWC5VJEeMv
+         OgChVW43OyS82naQSQiFar5Sd8Gqqu5vbFEyrkDO/VN1jCDwqeRf7neSKG5QQXNYmr8V
+         9/JmInzahxeVaemLZvzrpGNxacjgLs25utBXASwsRxLrF4gFXTBk75qE8c3dITYReKkO
+         qBT+1GxRA9BwS6R5PBDWrS8tCqALc68K3Rx/fcNP4ntiKikD17RSgVf4x570LJzhfE8Q
+         /sdUKIaYBFGA8mKtpFihq09K03FB6jb4VjYkkLN7iFaDKXex1O2QIDaA5XWjnBmKaIG1
+         NoVA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFeHxxJzUvbqKEZ/+MJEUOJOwWD0udzltUcwbBi5aKucPAWTOWBYYK+NOzDR4TxgMhisMoamylFj2Wyvj5Tm8hYAfki4dVu1sZFx0T
+X-Gm-Message-State: AOJu0Yyhg6PflOJiHmuAjvpRQkG9bhxrXIiLEjZ7Igc3QNMKr0Kd/aT6
+	5vgb7Bg5DlPZIO1b4pVEW6QxvELbADcjffRjbTdz3vQTFPvBQfrwQn6Ld1QRVTHKzWMY6lRUOUI
+	=
+X-Google-Smtp-Source: AGHT+IHJ9eJyIyRs6S0bWP2J56Sr46KtFgcLpGL1FpiyNVxTT6XdELFfmaKMTOi0ItVZmbAigx87xw==
+X-Received: by 2002:a05:6214:d4c:b0:690:e036:fcf1 with SMTP id 12-20020a0562140d4c00b00690e036fcf1mr1878456qvr.25.1711095777412;
+        Fri, 22 Mar 2024 01:22:57 -0700 (PDT)
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com. [209.85.219.43])
+        by smtp.gmail.com with ESMTPSA id f12-20020a056214076c00b00690d3bf9ea0sm841806qvz.141.2024.03.22.01.22.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 01:22:56 -0700 (PDT)
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6962e6fbf60so18830036d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:22:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV7wcJ59d8G+JvUH/epAorWG4CMWebioSHYfdpGjA8/ICoIyZVA+LT+xlSTASDeVKWXaLIEzy46svYvOMpj0pUhnk9yo6jUebN8CTK6
+X-Received: by 2002:a05:6214:1c0c:b0:691:873a:7753 with SMTP id
+ u12-20020a0562141c0c00b00691873a7753mr1427986qvc.38.1711095776052; Fri, 22
+ Mar 2024 01:22:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PROBLEM: Linux 6.8 build failure in sun ffb driver (regression)
-Content-Language: en-US
-To: Nick Bowler <nbowler@draconx.ca>, linux-kernel@vger.kernel.org,
- sparclinux@vger.kernel.org, regressions@lists.linux.dev
-References: <5bc21364-41da-a339-676e-5bb0f4faebfb@draconx.ca>
- <7c9b4c27-e179-c136-e327-4c467ece81a2@draconx.ca>
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <7c9b4c27-e179-c136-e327-4c467ece81a2@draconx.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: 0.90
-X-Spamd-Result: default: False [0.90 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.00)[40.19%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_SPAM_SHORT(2.00)[0.665];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Flag: NO
+References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
+ <20220920-resend-hwtimestamp-v9-2-55a89f46f6be@chromium.org> <20240321232602.GB20938@pendragon.ideasonboard.com>
+In-Reply-To: <20240321232602.GB20938@pendragon.ideasonboard.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Fri, 22 Mar 2024 09:22:39 +0100
+X-Gmail-Original-Message-ID: <CANiDSCt7Y4v3MUCoVyuzwLg6rq1=4MTUGtJ1+HkMMRY7sfjYjA@mail.gmail.com>
+Message-ID: <CANiDSCt7Y4v3MUCoVyuzwLg6rq1=4MTUGtJ1+HkMMRY7sfjYjA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/6] media: uvcvideo: Ignore empty TS packets
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi
+Hi Laurent
 
-Am 22.03.24 um 03:18 schrieb Nick Bowler:
-> I bisected this build failure to the following commit:
+Hi, I added some minor modifications, hope that it is fine with you.
+
+Thanks!!
+
+On Fri, 22 Mar 2024 at 00:26, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
->    commit 8813e86f6d82a7931446c3cbc5d596f77d0f1ba6
->    Author: Thomas Zimmermann <tzimmermann@suse.de>
->    Date:   Mon Nov 27 14:16:01 2023 +0100
+> Hi Ricardo,
 >
->        fbdev: Remove default file-I/O implementations
+> Thank you for the patch.
 >
-> If I revert this commit on top of 6.8, the build is successful.
-
-Thanks for reporting. It looks like a trivial Kconfig problem. I'll send 
-a patch.
-
-Best regards
-Thomas
-
+> On Wed, Mar 15, 2023 at 02:30:13PM +0100, Ricardo Ribalda wrote:
+> > Some SunplusIT cameras took a borderline interpretation of the UVC 1.5
+> > standard, and fill the PTS and SCR fields with invalid data if the
+> > package does not contain data.
+> >
+> > "STC must be captured when the first video data of a video frame is put
+> > on the USB bus."
+> >
+> > Eg:
 >
-> On 2024-03-21 21:00, Nick Bowler wrote:
->> Hi,
->>
->> Linux 6.8 (and 6.8.1) are failing to build for me:
->>
->>    LD      .tmp_vmlinux.kallsyms1
->> sparc64-unknown-linux-gnu-ld: drivers/video/fbdev/ffb.o:(.rodata+0x270): undefined reference to `fb_io_read'
->> sparc64-unknown-linux-gnu-ld: drivers/video/fbdev/ffb.o:(.rodata+0x278): undefined reference to `fb_io_write'
->> make[3]: *** [/home/nbowler/misc/linux/scripts/Makefile.vmlinux:37: vmlinux] Error 1
->>
->> This problem does not occur when building Linux 6.7 which builds successfully.
->>
->> Kernel .config attached (gzipped).
->>
->> Please let me know if you need any more info.
->>
->> Thanks,
->>    Nick
+> "Some SunplusIT devices send, e.g.,"
+>
+> >
+> > buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
+> > buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
+> > buffer: 0xa7755c00 len 000668 header:0x8c stc 73779dba sof 070c pts 7376d37a
+>
+> "while the UVC specification meant that the first two packets shouldn't
+> have had the SCR bit set in the header."
+>
+> >
+> > This borderline/buggy interpretation has been implemented in a variety
+> > of devices, from directly SunplusIT and from other OEMs that rebrand
+> > SunplusIT products. So quirking based on VID:PID will be problematic.
+> >
+> > All the affected modules have the following extension unit:
+> > VideoControl Interface Descriptor:
+> >   guidExtensionCode         {82066163-7050-ab49-b8cc-b3855e8d221d}
+> >
+> > But the vendor plans to use that GUID in the future and fix the bug,
+> > this means that we should use heuristic to figure out the broken
+> > packets.
+>
+> Because it would have been too easy otherwise of course :-)
+>
+> >
+> > This patch takes care of this.
+> >
+> > lsusb of one of the affected cameras:
+> >
+> > Bus 001 Device 003: ID 1bcf:2a01 Sunplus Innovation Technology Inc.
+> > Device Descriptor:
+> >   bLength                18
+> >   bDescriptorType         1
+> >   bcdUSB               2.01
+> >   bDeviceClass          239 Miscellaneous Device
+> >   bDeviceSubClass         2 ?
+> >   bDeviceProtocol         1 Interface Association
+> >   bMaxPacketSize0        64
+> >   idVendor           0x1bcf Sunplus Innovation Technology Inc.
+> >   idProduct          0x2a01
+> >   bcdDevice            0.02
+> >   iManufacturer           1 SunplusIT Inc
+> >   iProduct                2 HanChen Wise Camera
+> >   iSerial                 3 01.00.00
+> >   bNumConfigurations      1
+> >
+> > Tested-by: HungNien Chen <hn.chen@sunplusit.com>
+> > Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_video.c | 20 +++++++++++++++++++-
+> >  1 file changed, 19 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > index 4ff4ab4471fe..1f416c494acc 100644
+> > --- a/drivers/media/usb/uvc/uvc_video.c
+> > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > @@ -478,6 +478,7 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> >       ktime_t time;
+> >       u16 host_sof;
+> >       u16 dev_sof;
+> > +     u32 dev_stc;
+> >
+> >       switch (data[1] & (UVC_STREAM_PTS | UVC_STREAM_SCR)) {
+> >       case UVC_STREAM_PTS | UVC_STREAM_SCR:
+> > @@ -526,6 +527,23 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> >       if (dev_sof == stream->clock.last_sof)
+> >               return;
+> >
+> > +     dev_stc = get_unaligned_le32(&data[header_size - 6]);
+> > +
+> > +     /*
+> > +      * STC (Source Time Clock) is the clock used by the camera. The UVC 1.5
+> > +      * standard states that it "must be captured when the first video data
+> > +      * of a video frame is put on the USB bus".
+> > +      * Most of the vendors, clear the `UVC_STREAM_SCR` bit when the data is
+> > +      * not valid, other vendors always set the `UVC_STREAM_SCR` bit and
+> > +      * expect that the driver only samples the stc if there is data on the
+> > +      * packet.
+> > +      * Ignore all the hardware timestamp information if there is no data
+> > +      * and stc and sof are zero.
+> > +      */
+>
+> I'd like to expand this a bit (partly to make sure I understand the
+> issue correctly):
+>
+>         /*
+>          * STC (Source Time Clock) is the clock used by the camera. The UVC 1.5
+>          * standard states that it "must be captured when the first video data
+>          * of a video frame is put on the USB bus". This is generally understood
+>          * as requiring devices to clear the payload header's SCR bit before
+>          * the first packet containing video data.
+>          *
+>          * Most vendors follow that interpretation, but some (namely SunplusIT)
+namely SunplusIT on some devices
+>          * always set the `UVC_STREAM_SCR` bit, fill the SCR field with 0's,
+>          * and expect that the driver only processes the SCR if there is data in
+>          * the packet.
+>          *
+>          * Ignore all the hardware timestamp information if we haven't received
+>          * any data for this frame yet, the packet contains no data, and both
+>          * STC and SOF are zero. This heuristics should be safe on compliant
+>          * devices. This should be safe with compliant devices, as in the very
+>          * unlikely case where a UVC 1.1 device would send timing information
+>          * only before the first packet containing data, and both STC and SOF
+>          * happen to be zero for a particular frame, we would only miss one
+>          * clock sample and the clock recovery algorithm wouldn't suffer from
+one clock sample from many
+>          * this condition.
+>          */
+>
+> Is this correct (and fine with you) ? If so,
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > +     if (buf && buf->bytesused == 0 && len == header_size &&
+> > +         dev_stc == 0 && dev_sof == 0)
+> > +             return;
+> > +
+> >       stream->clock.last_sof = dev_sof;
+> >
+> >       host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > @@ -564,7 +582,7 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> >       spin_lock_irqsave(&stream->clock.lock, flags);
+> >
+> >       sample = &stream->clock.samples[stream->clock.head];
+> > -     sample->dev_stc = get_unaligned_le32(&data[header_size - 6]);
+> > +     sample->dev_stc = dev_stc;
+> >       sample->dev_sof = dev_sof;
+> >       sample->host_sof = host_sof;
+> >       sample->host_time = time;
+> >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
+Ricardo Ribalda
 
