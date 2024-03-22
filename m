@@ -1,410 +1,247 @@
-Return-Path: <linux-kernel+bounces-111051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2ED5886760
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:16:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DBB1886769
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B405DB23E06
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:16:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9962C1F24C9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0515125AB;
-	Fri, 22 Mar 2024 07:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADC015EB0;
+	Fri, 22 Mar 2024 07:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxfFVxUt"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XyPsGQrJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5291119E;
-	Fri, 22 Mar 2024 07:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711091785; cv=none; b=l2g8r2EzUdxZEZW3a5d1td8YQTbcQJUdQucIa3TDIAOiMgNJfChMkFhqzfUGL2QLJhyOjwq7WlruF5cUAu/V7q9CfDIny3P8epGQm82iUr1Gf2Sec55jHgMGNaQgLp+yC3esuF2DpgEEtYNo6vmpw7ZiVGJh+La2rNyczBqNnZw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711091785; c=relaxed/simple;
-	bh=cr/gq9Hz7MjDp3VpYL4qLkDVuVmAvk584ocPGpL8vrM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ETDewkIADQ8Jezhv572Ont0ABE/ZoK26ftA/cDqf9U0zfQSYHS79wFEB2j7LW7w0N1+7b7s30vGMpJIuCergEgt1GVAWiwt5pzDiyDknRD83q7NGZ6/5eNS9o8uUE+nlqRyHvkRHomZQpKesY39QHhSmb62ae2yz00KZtZ5CDBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxfFVxUt; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso978113f8f.0;
-        Fri, 22 Mar 2024 00:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711091782; x=1711696582; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Iznl4WZmLsguPyAc9eH8R5PJlabuCZnbo+2mKeF1vzE=;
-        b=QxfFVxUtM0tS3AsT0sq7r0kHVAGNOyuh8iM+GtPYGugRgXYUGWf7n6N6McjsKA407f
-         CNBq2UnlTig/VG6sbQXi01lceXBB8TdDZbzhvwVfFZLM6frzlRwItXwr2LxYjETzzHio
-         NnmDm1xnCQzO0UaiyYTk3NYe0oj864Zrtvpp0KJy12g/MpBw41/sSTaFJPX8UjWHMq/D
-         dgonkPGnGsk2yJ/h6u2+N2MucxTV1fA0GgxGPcitBmlWI81cVbwgrq1T7QkvSkGL129z
-         b91MMoDcPfmAzQV+vRJPjTVZI0j95l5Y3grFOepiJZLuZOyvLu/whjNOnpprw19EYm+8
-         b6gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711091782; x=1711696582;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Iznl4WZmLsguPyAc9eH8R5PJlabuCZnbo+2mKeF1vzE=;
-        b=JN62tJwqpma98QRdz0NiRcDD6auVADwTzOLUsEmZK64p1CZpRYwL2r+PLEKjCOvwxl
-         uWRYU9fuaJ3w49Q1ZoYKCVOTRpU6ddkkHPKxvri6V/zdMCQ/UfdTr6UsxXyJGkRgOTp/
-         wUxy89RWfpr9P77mW+A8p7lgynt3uMRXJWlzQFsX71Tk0xfaztfyd2Lfpe955STHosg5
-         hbjsTDqv2nhY+nQ75xoHt3CwFehEhXIaLbQLzJokcdwAgPmSFzRn8dlM8w5UJx7Auk3w
-         UBOqMssWdsn1sKNEHXDYmqEKgGha9vUMs9+VTCxUELrQp5weRZK5NGlWhGAo4VPd0tMO
-         Uu2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWvuPbea5K9vpOXjUJXJpldDDvIdXIHJYEIafgpZoHjF8T2P2zAtXW8eJ/QLVmb4OwiwcWRXeiFG/tVau/vKjNca07HnCOjHTuECl+CbeuCDteaqXT1IRza+rjm9vu34RHSYQz/aGFUbw==
-X-Gm-Message-State: AOJu0YzRNeB5LFnUPDQle+YDHJW2cpOMKINV9rBZFBqZ7lJnxEBZ3R6A
-	tZ3sBxwE64Nb4g0yRJQANZIjPymPRxVl61voYhiRISgxDQA5iMUs
-X-Google-Smtp-Source: AGHT+IGHqU2a59T96Pj/BjdvIqr7mH07mQh1y4XtvPXYoKRd9U2ZISkXZOfmtQko/0CTn0jnc+ytvQ==
-X-Received: by 2002:a5d:60c7:0:b0:33e:63c2:c43a with SMTP id x7-20020a5d60c7000000b0033e63c2c43amr834708wrt.26.1711091781766;
-        Fri, 22 Mar 2024 00:16:21 -0700 (PDT)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id dl17-20020a0560000b9100b0033d6bc17d0esm1372338wrb.74.2024.03.22.00.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 00:16:21 -0700 (PDT)
-Message-ID: <374831e2acbac85a0087e3dd0824ec3395ffe2fa.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] iio: accel: adxl345: Update adxl345
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Lothar Rubusch <l.rubusch@gmail.com>, lars@metafoo.de, 
-	Michael.Hennerich@analog.com, jic23@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, eraretuya@gmail.com
-Date: Fri, 22 Mar 2024 08:16:20 +0100
-In-Reply-To: <20240322003713.6918-2-l.rubusch@gmail.com>
-References: <20240322003713.6918-1-l.rubusch@gmail.com>
-	 <20240322003713.6918-2-l.rubusch@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8504E1426C;
+	Fri, 22 Mar 2024 07:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711091942; cv=fail; b=fmUD9NZxiji8JwDEVc0AE8I0gqjDxUgjBq9a8j3PYPH1X5N2H35Qu0pha4LaFF8BaqsJr2OUUb3w+Pirsu/m5PQPaxwHoGsEDJlOpQfmt6Vi4w1KX3RmjNGR63wVv7w2DxC/cICQq5OFvrSayeSBM2QwWjHqHrgF6LfEib5g9D8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711091942; c=relaxed/simple;
+	bh=/9XPc5m6ZPkv2Tq2BrknWf5XSJdqFya8zxz2KrQwZKI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DPTZ4sS4IZ2J61C7yFlLQEr5b0JHZZSL1pqHDDMiR8OmH9waFZCtjkMEHAdeecv4kxrFyIbgs976xZdVLXzIL9q0ssU5XSaPZGs94Ibq79JneAP1WBomTSfEuhU6mA5gqNhc2878rAKkIxaopY7/QFGaDzl2UDQ43naE+YbUZI8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XyPsGQrJ; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711091941; x=1742627941;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=/9XPc5m6ZPkv2Tq2BrknWf5XSJdqFya8zxz2KrQwZKI=;
+  b=XyPsGQrJd+ppQMqJY7VB38rLZ9Xe7ErXjMRIPz+ek+CTGAZUACxxEUun
+   zhAmnpKMFBT8jmvLV1vzkJlPlgFv6CS0K9AeAagWgMhlqZGCDvw8eWCso
+   954EuEVDRk0a4l/TAIsBqQD/NIprN2YHh8mxRY6DTZ5cjfXPFqfAe3zCJ
+   ptOPh8f62qiZszUy1Ppph23lmqW5Y+8k++rxp8xfHmG8i6mP0qCJfzIhU
+   VJC76PnPzHPGTyHMgMXabXvwfWOOGcXEBQie6VSoI50I+PfGvQCTY7U45
+   zhIZy2c9jPYC0slhOdCquG48BtWfFpqJYtYCj/LglAh8vLPOBKXZAO+4G
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6062513"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="6062513"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 00:19:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="45916223"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Mar 2024 00:18:58 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Mar 2024 00:18:58 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 22 Mar 2024 00:18:58 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 22 Mar 2024 00:18:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zg9TqddTO12DRaAcyoNvBNDuQtzR3iIIFJPdeMB6e7Gqkcb8CQGxtHiNMegq3fhbfH9DF3qBTnjACfMiHWLYJx8EUT85LhgYjNp5MEv0PeaQVPz6FD+6KVQp5hRcZrLp/0T1OqAXHAhpOfJgChNO4CaXu1gEF37/Zo0WZQ0AXaFcsodDve9AlaDMjWoZdkxuyGis8RwDkinhjHg2D4doDaZPkG7WQYIwxjAwN121u6+PujPTfcorqigTG46HDHPN22nPlxUqYP3x0aLHoxLKZm7c2Hf5BDwGwTT164W2dXOIAHy82063GS8MpmY0+hNJkDggK7jIdyvDaA6aJG8cTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6c4GHkeKD48At6H9rVfdAx8lQTuqFZDLAk3cny/BGnQ=;
+ b=NygMk1yurAThmebkGuyWoQdb21WZT4lj8lqZ+pnqaGPQhpfzNKvMAzqUV3l3zZWGWa6UC6DwTow+aUUW1c3RI4qSqIamfMCbLT7IbPBIPVMEcohLkXiZN18BWqKLG6/OLygR3A3+gplhMGXPVfQ1qKHAmp3sEEo/jspLy5fGJLKSZS4+rW+QVuOBWNgBjjx88eMmqiDZSsvrbsVHweFUseKsyJVoUSM7hMVsCZubh/pv2GDxq0RdjuuS7zkYCp9ZLVUZccKpi/GxmQGk9clwtXoao+UPbXoJIrdNt87oROSj+BIT4/XkzlcGuZhz2SP9KhkFj8HsQ/3L9kyAg84fxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by SA2PR11MB5177.namprd11.prod.outlook.com (2603:10b6:806:11c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
+ 2024 07:18:50 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%6]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
+ 07:18:50 +0000
+Date: Fri, 22 Mar 2024 15:18:39 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+CC: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>, "isaku.yamahata@gmail.com"
+	<isaku.yamahata@gmail.com>, "Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, <isaku.yamahata@linux.intel.com>
+Subject: Re: [PATCH v19 056/130] KVM: x86/tdp_mmu: Init role member of struct
+ kvm_mmu_page at allocation
+Message-ID: <Zf0wz82nQoL0VsAd@chao-email>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5d2307efb227b927cc9fa3e18787fde8e1cb13e2.1708933498.git.isaku.yamahata@intel.com>
+ <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
+ <20240321212412.GR1994522@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240321212412.GR1994522@ls.amr.corp.intel.com>
+X-ClientProxiedBy: SI2PR01CA0034.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::9) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|SA2PR11MB5177:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82e23e5d-8e22-4bd2-d867-08dc4a405280
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y52zIXxtOhNhOQnlC5fGfNjHHJw1qKNHgh+mc6vY6ctTmuQVuK4+6eMaLxRXTvaic4W1tB3DSQI2Lrtitj6r1asnBXMw1ZNfDoVo6duLl3DieUqK+yGk9hTq/FvpFvIH7qvFbfgNFH984RIJDl5qA7OJOsNhOm/c/5sxZ8GAlZupekBPcu7Bl5+3S/WJnpbXUN1yhXJlaBte7aR9qaUNpNjcqdNJMmbqFA6R7seXNO9N9JvwxVaM2AMlIRQFYGNcU/TZZ5WDK/+nWa+Bx1ELFi1Hm2Xy4u2wmDOY8TlRc5AVzz9ciUYsxCq6p+taH1xlnGNo7gsivLAxSyh9eZXb7ebQ8O3ifMxAfNtU6S2Q9oNhw2UHFVWVIerUDhdQ4hyne2FjGqo3Dw7KKtWooPYtIY4d6NNhAz3xmKE2fpLjirOOAOe/PF3DU+7JEAh9QMr+jJnhAj9d0T/EaQH8W5OfDifnBXVGVp0QnIFOzhROISeNnV/sK/0pde4/HsSKyMDA9SKikKGgfY7jEr87fyhVrJzxa3JNBg25i5iqZYjCJ0BBHQKAbP6MXslhDE34yNza9GTRDNceDUICyh3yAAybh/Oi1lyhW03MUIhOcrwmHNI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXlXQ1Q4RzczNGZaRWo2WTJmdTk5cmV3bGFIYXhwdVRtUU43dTQyL09DVzRD?=
+ =?utf-8?B?ZnRPUEhZaGlPOU5pSjNhZ2tvQW1UL3Z1eG1zME13NmRLR2RxMVVCbHljRGww?=
+ =?utf-8?B?Ykw2blNTSWZGamlWSmVBUkhWRnFqTHh5ZVlKNTBWNjJ1SHlNVmdNWTBuanR3?=
+ =?utf-8?B?RlkxRXJ2MFN0YkdIWWZ6dWFlenhuTUorVFJQSGJlR1ZmZThJTmlHMHRsL1dX?=
+ =?utf-8?B?aUo0eEo4OXpsNG1zcXVTU0YwSXhxbysrOCtobGxld0JrbVZ4dzB4Z2V1V2JQ?=
+ =?utf-8?B?dHhYaElsY3VnSXNyNHpDeGJ0N21FeHcrYnJORDdsb3RSQlVBUVdMS3JzRGhp?=
+ =?utf-8?B?VStLUjN5R25hWkcxZVdNUE9SYXJNNUVGVVQxdnVvRGVkdEN5ZVlXeGFwU2RC?=
+ =?utf-8?B?YVJsVnJhYmJmQkI0ZHhJSkkxOWxYNWp5MUlpdkRLK3NxaUZGTzZiSVJFZmpS?=
+ =?utf-8?B?SXpFNmZ3TUd6OURJVnE2Y0kwekM4elFRL1Zmd1QvV2dQUE1FWE5Ba2dzZ1J5?=
+ =?utf-8?B?MXhMUzJYSHRESml3RlB3cGFPS01RVWdmRFl4UEk2MGxITUVIRktkQ2Y0MTYx?=
+ =?utf-8?B?SFYybEFMdnlMWUsyajdQTUdwU0hmYUMxNlBFQ2wvakRyUEdCcUJtOGU0YkZQ?=
+ =?utf-8?B?eHhPYnczckw4OUVyVFpQMGlFWkE5bUhaWGdLZUo5SHJ0aFBmaG9RUW1sWWxH?=
+ =?utf-8?B?OGpzWjA1WExLK1VRMkp4VlhNV0lPNWFoZ0hsL2o3blBGTE5ZaW5YN1RaZ3ZG?=
+ =?utf-8?B?aUxDU2o5NHNTcVdXV3FTU3lobDBYMjF2d3NybEF6bTdUUUJIb2VManBzRllW?=
+ =?utf-8?B?ZjE0dDFSS0JrZXI0MGdnd3pBb2NlUDBiSWE0RkFzU2g2cG9CeFc4d3BVRTJy?=
+ =?utf-8?B?R2dNVm01T3M0M3M4ZXJwd1pQTGJRaXVrYWZsbTZQUlo1ZVQ2V0wrYW9sY0lL?=
+ =?utf-8?B?VWZqVFRQQkZnV3VQYTkyajNxK0VmeVlLaEl4MlhjUzRaS2d6ak1yMFBXZUFW?=
+ =?utf-8?B?OG1vdkVPVkpyNHhYcmEvVDFVMlpGOHhBekxobmd2c25NcU53U3BPRTk0bG9w?=
+ =?utf-8?B?YUFWSkxJS3RyaW40bmtyNmhsZWlBVmZ0bVIzOVJ0RTI2UVdTWDVNWS9ZSitC?=
+ =?utf-8?B?MWJRYlB0Wll1L29LMjhMazJQRkd1T0VySkg2Unk2M0pON0tGekJ4N3pkbzVo?=
+ =?utf-8?B?WUl0cWJjenNEYmZSb0NPUW5UV0IvbitHNnJkbTgwcCtIdGx4TlFuTHZsSE1H?=
+ =?utf-8?B?MjhmS1ArR2tPblpJd0loOFl1ZW5RclhJYnFTSEVCZ2dsL3ptSjlJWm82OEJu?=
+ =?utf-8?B?VENvTjE4ZWNRbmJBbWJiOHlmVzVMUWxoalE5cXJWK3hpSDdaVUt6QVNLd0Zi?=
+ =?utf-8?B?eDYyVjZMbFROTHQyVlRaaVRvQjZ5ZmNXbU9mOG1OUWU1ZSt0RHNQWVJlOU1I?=
+ =?utf-8?B?c1NOQmdLeG9JTGo5dEo0ZEZnaGpDYVRFQ3FmMlFGeWVDcHUvUGNmcHkvZy9W?=
+ =?utf-8?B?Y2hoTEJrSU91NklJMHJvZkxYUkZwVjJGcjRYT1VzUXhhWUtNeXhBSU52Qi9j?=
+ =?utf-8?B?ZkR6Wm9vOXhuUlJkbzZaN1dST092dXlXeXlPSnNzRHFMTzR3K3VOdkdzeGhm?=
+ =?utf-8?B?RVdTTGJibnZkZk9FcTNxaEx6ZU0zRkdZM1ViVjR0bGpJWVZUQVhUMmh0Rmhh?=
+ =?utf-8?B?WWpxOXVBUmlSWU81MWNnTFJDS3FJU0N2bmFvNkt3MWd2aDhZTWZmMVUyTXd1?=
+ =?utf-8?B?eFBxQjc1amRja2pNY3paR3NWT1RVTHNod2lCVldhUFkzYXZIdm1ZbzBGSDcr?=
+ =?utf-8?B?b01jNDBuMzNPWjF0RW95SnNGb0xjVm9wUW1NN1N2aDNGZnRmSG1PWFdab3gy?=
+ =?utf-8?B?SkJXTDNiVW9XajFDMDdGeTRWUlkyL3FTcUdTeGsrT0pQVmg5K21JR3BXWnRn?=
+ =?utf-8?B?QTlxdmFuN2FvSFo2Q2FjU21VS2tyV3BpckVpSC9YOERtVHlPTW1VQWVSenBz?=
+ =?utf-8?B?Rm1XRi9OUEZFR1pYN2dGK1l1WU9XeENhNXFwZXpaNGdOeFpyS3BSaDJGNmM4?=
+ =?utf-8?B?eGpCc3JzdytrakY0UXBxaC9DVFFpeVlDUUNsUVFWdFpkaS9UdGVFR3JMdEls?=
+ =?utf-8?Q?f9ite0SSc2YqofQwn0aDKAh3l?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82e23e5d-8e22-4bd2-d867-08dc4a405280
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 07:18:50.6101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1JmCIwZBROc8DL9p/c+IT8n2TZfQ3bG/241Ui4FMGRsoqOAG9MGWaxrOV5+JujZxOj2sTLrx3+FuNxNULJHhWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5177
+X-OriginatorOrg: intel.com
 
-On Fri, 2024-03-22 at 00:37 +0000, Lothar Rubusch wrote:
-> Move driver wide constants and fields into the header.
-> Let probe call a separate setup function. Provide
-> possibility for an SPI/I2C specific setup to be passed
-> as function pointer to core.
->=20
-> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> ---
-> =C2=A0drivers/iio/accel/adxl345.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4=
-4 +++++++++++-
-> =C2=A0drivers/iio/accel/adxl345_core.c | 117 +++++++++++++++++-----------=
----
-> =C2=A0drivers/iio/accel/adxl345_i2c.c=C2=A0 |=C2=A0 30 ++++----
-> =C2=A0drivers/iio/accel/adxl345_spi.c=C2=A0 |=C2=A0 28 ++++----
-> =C2=A04 files changed, 134 insertions(+), 85 deletions(-)
->=20
-> diff --git a/drivers/iio/accel/adxl345.h b/drivers/iio/accel/adxl345.h
-> index 284bd387c..01493c999 100644
-> --- a/drivers/iio/accel/adxl345.h
-> +++ b/drivers/iio/accel/adxl345.h
-> @@ -8,6 +8,39 @@
-> =C2=A0#ifndef _ADXL345_H_
-> =C2=A0#define _ADXL345_H_
-> =C2=A0
-> +#include <linux/iio/iio.h>
-> +
-> +/* ADXL345 register definitions */
-> +#define ADXL345_REG_DEVID		0x00
-> +#define ADXL345_REG_OFSX		0x1E
-> +#define ADXL345_REG_OFSY		0x1F
-> +#define ADXL345_REG_OFSZ		0x20
-> +#define ADXL345_REG_OFS_AXIS(index)	(ADXL345_REG_OFSX + (index))
-> +#define ADXL345_REG_BW_RATE		0x2C
-> +#define ADXL345_REG_POWER_CTL		0x2D
-> +#define ADXL345_REG_DATA_FORMAT		0x31
-> +#define ADXL345_REG_DATAX0		0x32
-> +#define ADXL345_REG_DATAY0		0x34
-> +#define ADXL345_REG_DATAZ0		0x36
-> +#define ADXL345_REG_DATA_AXIS(index)	\
-> +	(ADXL345_REG_DATAX0 + (index) * sizeof(__le16))
-> +
-> +#define ADXL345_BW_RATE			GENMASK(3, 0)
-> +#define ADXL345_BASE_RATE_NANO_HZ	97656250LL
-> +
-> +#define ADXL345_POWER_CTL_MEASURE	BIT(3)
-> +#define ADXL345_POWER_CTL_STANDBY	0x00
-> +
-> +#define ADXL345_DATA_FORMAT_FULL_RES	BIT(3) /* Up to 13-bits resolution =
-*/
-> +#define ADXL345_DATA_FORMAT_SPI=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 BIT(6) /* spi-3wire */
-> +#define ADXL345_DATA_FORMAT_2G		0
-> +#define ADXL345_DATA_FORMAT_4G		1
-> +#define ADXL345_DATA_FORMAT_8G		2
-> +#define ADXL345_DATA_FORMAT_16G		3
-> +#define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-3wire
-> */
-> +
-> +#define ADXL345_DEVID			0xE5
-> +
-> =C2=A0/*
-> =C2=A0 * In full-resolution mode, scale factor is maintained at ~4 mg/LSB
-> =C2=A0 * in all g ranges.
-> @@ -23,11 +56,20 @@
-> =C2=A0 */
-> =C2=A0#define ADXL375_USCALE	480000
-> =C2=A0
-> +enum adxl345_device_type {
-> +	ADXL345,
-> +	ADXL375,
-> +};
-> +
-> =C2=A0struct adxl345_chip_info {
-> =C2=A0	const char *name;
-> =C2=A0	int uscale;
-> =C2=A0};
-> =C2=A0
-> -int adxl345_core_probe(struct device *dev, struct regmap *regmap);
-> +extern const struct adxl345_chip_info adxl3x5_chip_info[];
-> +
-> +int adxl345_core_probe(struct device *dev, struct regmap *regmap,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct adxl345_chip_info *c=
-hip_info,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*setup)(struct device*, stru=
-ct regmap*));
-> =C2=A0
-> =C2=A0#endif /* _ADXL345_H_ */
-> diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl345=
-_core.c
-> index 8bd30a23e..040c3f05a 100644
-> --- a/drivers/iio/accel/adxl345_core.c
-> +++ b/drivers/iio/accel/adxl345_core.c
-> @@ -17,38 +17,9 @@
-> =C2=A0
-> =C2=A0#include "adxl345.h"
-> =C2=A0
-> -#define ADXL345_REG_DEVID		0x00
-> -#define ADXL345_REG_OFSX		0x1e
-> -#define ADXL345_REG_OFSY		0x1f
-> -#define ADXL345_REG_OFSZ		0x20
-> -#define ADXL345_REG_OFS_AXIS(index)	(ADXL345_REG_OFSX + (index))
-> -#define ADXL345_REG_BW_RATE		0x2C
-> -#define ADXL345_REG_POWER_CTL		0x2D
-> -#define ADXL345_REG_DATA_FORMAT		0x31
-> -#define ADXL345_REG_DATAX0		0x32
-> -#define ADXL345_REG_DATAY0		0x34
-> -#define ADXL345_REG_DATAZ0		0x36
-> -#define ADXL345_REG_DATA_AXIS(index)	\
-> -	(ADXL345_REG_DATAX0 + (index) * sizeof(__le16))
-> -
-> -#define ADXL345_BW_RATE			GENMASK(3, 0)
-> -#define ADXL345_BASE_RATE_NANO_HZ	97656250LL
-> -
-> -#define ADXL345_POWER_CTL_MEASURE	BIT(3)
-> -#define ADXL345_POWER_CTL_STANDBY	0x00
-> -
-> -#define ADXL345_DATA_FORMAT_FULL_RES	BIT(3) /* Up to 13-bits resolution =
-*/
-> -#define ADXL345_DATA_FORMAT_2G		0
-> -#define ADXL345_DATA_FORMAT_4G		1
-> -#define ADXL345_DATA_FORMAT_8G		2
-> -#define ADXL345_DATA_FORMAT_16G		3
-> -
-> -#define ADXL345_DEVID			0xE5
-> -
-> =C2=A0struct adxl345_data {
-> =C2=A0	const struct adxl345_chip_info *info;
-> =C2=A0	struct regmap *regmap;
-> -	u8 data_range;
-> =C2=A0};
-> =C2=A0
-> =C2=A0#define ADXL345_CHANNEL(index, axis) {					\
-> @@ -62,6 +33,18 @@ struct adxl345_data {
-> =C2=A0		BIT(IIO_CHAN_INFO_SAMP_FREQ),				\
-> =C2=A0}
-> =C2=A0
-> +const struct adxl345_chip_info adxl3x5_chip_info[] =3D {
-> +	[ADXL345] =3D {
-> +		.name =3D "adxl345",
-> +		.uscale =3D ADXL345_USCALE,
-> +	},
-> +	[ADXL375] =3D {
-> +		.name =3D "adxl375",
-> +		.uscale =3D ADXL375_USCALE,
-> +	},
-> +};
-> +EXPORT_SYMBOL_NS_GPL(adxl3x5_chip_info, IIO_ADXL345);
-> +
-> =C2=A0static const struct iio_chan_spec adxl345_channels[] =3D {
-> =C2=A0	ADXL345_CHANNEL(0, X),
-> =C2=A0	ADXL345_CHANNEL(1, Y),
-> @@ -197,14 +180,21 @@ static void adxl345_powerdown(void *regmap)
-> =C2=A0	regmap_write(regmap, ADXL345_REG_POWER_CTL, ADXL345_POWER_CTL_STAN=
-DBY);
-> =C2=A0}
-> =C2=A0
-> -int adxl345_core_probe(struct device *dev, struct regmap *regmap)
-> +static int adxl345_setup(struct device *dev, struct adxl345_data *data,
-> +			 int (*setup)(struct device*, struct regmap*))
-> =C2=A0{
-> -	struct adxl345_data *data;
-> -	struct iio_dev *indio_dev;
-> =C2=A0	u32 regval;
-> =C2=A0	int ret;
-> =C2=A0
-> -	ret =3D regmap_read(regmap, ADXL345_REG_DEVID, &regval);
-> +	/* Perform bus specific settings if available */
-> +	if (setup) {
-> +		ret =3D setup(dev, data->regmap);
-> +		if (ret)
-> +			return ret;
-> +	}
+On Thu, Mar 21, 2024 at 02:24:12PM -0700, Isaku Yamahata wrote:
+>On Thu, Mar 21, 2024 at 12:11:11AM +0000,
+>"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+>
+>> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
+>> > To handle private page tables, argument of is_private needs to be
+>> > passed
+>> > down.  Given that already page level is passed down, it would be
+>> > cumbersome
+>> > to add one more parameter about sp. Instead replace the level
+>> > argument with
+>> > union kvm_mmu_page_role.  Thus the number of argument won't be
+>> > increased
+>> > and more info about sp can be passed down.
+>> > 
+>> > For private sp, secure page table will be also allocated in addition
+>> > to
+>> > struct kvm_mmu_page and page table (spt member).  The allocation
+>> > functions
+>> > (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know
+>> > if the
+>> > allocation is for the conventional page table or private page table. 
+>> > Pass
+>> > union kvm_mmu_role to those functions and initialize role member of
+>> > struct
+>> > kvm_mmu_page.
+>> 
+>> tdp_mmu_alloc_sp() is only called in two places. One for the root, and
+>> one for the mid-level tables.
+>> 
+>> In later patches when the kvm_mmu_alloc_private_spt() part is added,
+>> the root case doesn't need anything done. So the code has to take
+>> special care in tdp_mmu_alloc_sp() to avoid doing anything for the
+>> root.
+>> 
+>> It only needs to do the special private spt allocation in non-root
+>> case. If we open code that case, I think maybe we could drop this
+>> patch, like the below.
+>> 
+>> The benefits are to drop this patch (which looks to already be part of
+>> Paolo's series), and simplify "KVM: x86/mmu: Add a private pointer to
+>> struct kvm_mmu_page". I'm not sure though, what do you think? Only
+>> build tested.
+>
+>Makes sense.  Until v18, it had config to disable private mmu part at
+>compile time.  Those functions have #ifdef in mmu_internal.h.  v19
+>dropped the config for the feedback.
+>  https://lore.kernel.org/kvm/Zcrarct88veirZx7@google.com/
+>
+>After looking at mmu_internal.h, I think the following three function could be
+>open coded.
+>kvm_mmu_private_spt(), kvm_mmu_init_private_spt(), kvm_mmu_alloc_private_spt(),
+>and kvm_mmu_free_private_spt().
 
-nit: likely a better name would be bus_setup(). Then you could drop the com=
-ment as it
-becomes useless...
+It took me a few minutes to figure out why the mirror root page doesn't need
+a private_spt.
 
-> +
-> +	/* Read out DEVID */
-> +	ret =3D regmap_read(data->regmap, ADXL345_REG_DEVID, &regval);
-> =C2=A0	if (ret < 0)
-> =C2=A0		return dev_err_probe(dev, ret, "Error reading device ID\n");
-> =C2=A0
-> @@ -212,37 +202,62 @@ int adxl345_core_probe(struct device *dev, struct r=
-egmap
-> *regmap)
-> =C2=A0		return dev_err_probe(dev, -ENODEV, "Invalid device ID: %x,
-> expected %x\n",
-> =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0 regval, ADXL345_DEVID);
-> =C2=A0
-> +	/* Update data_format to full-resolution mode */
-> +	ret =3D regmap_update_bits(data->regmap, ADXL345_REG_DATA_FORMAT,
-> +				 ADXL345_DATA_FORMAT_MSK,
-> ADXL345_DATA_FORMAT_FULL_RES);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to update data_format
-> register\n");
-> +
-> +	/* Enable measurement mode */
-> +	ret =3D adxl345_powerup(data->regmap);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Failed to enable measurement
-> mode\n");
-> +
-> +	ret =3D devm_add_action_or_reset(dev, adxl345_powerdown, data->regmap);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * adxl345_core_probe() - probe and setup for the adxl345 accelerometer,
-> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 also =
-covers the adlx375 accelerometer
-> + * @dev:	Driver model representation of the device
-> + * @regmap:	Regmap instance for the device
-> + * @chip_info:=C2=A0 Structure containing device specific data
-> + * @setup:	Setup routine to be executed right before the standard device
-> + *		setup, can also be set to NULL if not required
-> + *
-> + * Return: 0 on success, negative errno on error
-> + */
-> +int adxl345_core_probe(struct device *dev, struct regmap *regmap,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct adxl345_chip_info *c=
-hip_info,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*setup)(struct device*, stru=
-ct regmap*))
-> +{
-> +	struct adxl345_data *data;
-> +	struct iio_dev *indio_dev;
-> +	int ret;
-> +
-> =C2=A0	indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
-> =C2=A0	if (!indio_dev)
-> =C2=A0		return -ENOMEM;
-> =C2=A0
-> =C2=A0	data =3D iio_priv(indio_dev);
-> =C2=A0	data->regmap =3D regmap;
-> -	/* Enable full-resolution mode */
-> -	data->data_range =3D ADXL345_DATA_FORMAT_FULL_RES;
-> -	data->info =3D device_get_match_data(dev);
-> -	if (!data->info)
-> -		return -ENODEV;
-> -
-> -	ret =3D regmap_write(data->regmap, ADXL345_REG_DATA_FORMAT,
-> -			=C2=A0=C2=A0 data->data_range);
-> -	if (ret < 0)
-> -		return dev_err_probe(dev, ret, "Failed to set data range\n");
-> +	data->info =3D chip_info;
-> =C2=A0
-> -	indio_dev->name =3D data->info->name;
-> +	indio_dev->name =3D chip_info->name;
-> =C2=A0	indio_dev->info =3D &adxl345_info;
-> =C2=A0	indio_dev->modes =3D INDIO_DIRECT_MODE;
-> =C2=A0	indio_dev->channels =3D adxl345_channels;
-> =C2=A0	indio_dev->num_channels =3D ARRAY_SIZE(adxl345_channels);
-> =C2=A0
-> -	/* Enable measurement mode */
-> -	ret =3D adxl345_powerup(data->regmap);
-> -	if (ret < 0)
-> -		return dev_err_probe(dev, ret, "Failed to enable measurement
-> mode\n");
-> -
-> -	ret =3D devm_add_action_or_reset(dev, adxl345_powerdown, data->regmap);
-> -	if (ret < 0)
-> +	ret =3D adxl345_setup(dev, data, setup);
-> +	if (ret) {
-> +		dev_err(dev, "ADXL345 setup failed\n");
-> =C2=A0		return ret;
-> +	}
-> =C2=A0
-> =C2=A0	return devm_iio_device_register(dev, indio_dev);
-> =C2=A0}
-> diff --git a/drivers/iio/accel/adxl345_i2c.c b/drivers/iio/accel/adxl345_=
-i2c.c
-> index a3084b0a8..3f882e2e0 100644
-> --- a/drivers/iio/accel/adxl345_i2c.c
-> +++ b/drivers/iio/accel/adxl345_i2c.c
-> @@ -9,6 +9,7 @@
-> =C2=A0 */
-> =C2=A0
-> =C2=A0#include <linux/i2c.h>
-> +#include <linux/mod_devicetable.h>
-> =C2=A0#include <linux/module.h>
-> =C2=A0#include <linux/regmap.h>
-> =C2=A0
-> @@ -21,41 +22,36 @@ static const struct regmap_config adxl345_i2c_regmap_=
-config =3D {
-> =C2=A0
-> =C2=A0static int adxl345_i2c_probe(struct i2c_client *client)
-> =C2=A0{
-> +	const struct adxl345_chip_info *chip_data;
-> =C2=A0	struct regmap *regmap;
-> =C2=A0
-> +	/* Retrieve device data, i.e. the name, to pass it to the core */
-> +	chip_data =3D i2c_get_match_data(client);
-> +
+Per TDX module spec:
 
-While unlikely use a proper pattern. Meaning, check for NULL pointers and b=
-ail out in
-that case... Also, you need to justify why are you moving these calls to th=
-e bus in
-your commit message.
+  Secure EPT’s root page (EPML4 or EPML5, depending on whether the host VMM uses
+  4-level or 5-level EPT) does not need to be explicitly added. It is created
+  during TD initialization (TDH.MNG.INIT) and is stored as part of TDCS.
 
+I suggest adding the above as a comment somewhere even if we decide to open-code
+kvm_mmu_alloc_private_spt().
 
-It seems to me that you're trying to refactor too much in a single patch. M=
-aybe step
-back and try to separate changes in different patches. Like this one (passi=
-ng
-chip_info) from the bus file could be in it's own patch. Will also (or shou=
-ld at
-least :)) "force" you to have a more dedicated commit message explaining wh=
-y you're
-introducing the change.
-
-- Nuno S=C3=A1
-
+IMO, some TDX details bleed into KVM MMU regardless of whether we open-code
+kvm_mmu_alloc_private_spt() or not. This isn't good though I cannot think of
+a better solution.
 
