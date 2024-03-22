@@ -1,59 +1,63 @@
-Return-Path: <linux-kernel+bounces-110869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3031D886505
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3731088650B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:11:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DEA82851F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:09:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F287285E65
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7561A38D7;
-	Fri, 22 Mar 2024 02:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC8C4A3C;
+	Fri, 22 Mar 2024 02:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tp2U6+oe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sk+QoMQ/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A74C10FA;
-	Fri, 22 Mar 2024 02:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9F53FEF;
+	Fri, 22 Mar 2024 02:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711073384; cv=none; b=YC8GSmC92ra6b5xVSwGwnalyJjWEHt/1UNGXd5lC8bfGXsKVKJZqfLZdyQjTLt3rYsrSwoe1jEseL3ApxW4cMSRulfXvk/sFWWI6YKIFu8jHuuKlWZbQes5I2xD9cdHuTI+Wbl3awLkcMSup7eT9nMFAownkhvknV/3/N4TRVpc=
+	t=1711073478; cv=none; b=VLsGEW2hRmOK85LApkr94j5Kgvh/U8/SmAET1SCu68znrFtuxw079iloYxp295QgXbpPZZVr+Rlyui3r9sl/Mx2pGJbLNKtTazv00g1dvxHHRI+xEjUAxvo05UvtPGJdnwlepGT/O4cUUN5PC9XU7Q4wYmXlFXIdqHErvPPBlE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711073384; c=relaxed/simple;
-	bh=M9+buGGHVmbN+4X6XpKSvLDFMQ8s19IDF8A0yS4tJUI=;
+	s=arc-20240116; t=1711073478; c=relaxed/simple;
+	bh=bRUwXwcq6+UznH+399UPrJYqI6arNzHseoKpLcYfxe0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mnvm5N4cAVTx3Arscoc2FdybWGNQAmsA4yMtiHaH8ANyilH5RAyMwnYwbF3PFpDyocmRe/8zSFl552f0CH7kPLrrfEZHhAZnB+lMCd6CxRJbh9g7NvcnHURYBPIgKMlTV1iECla+e4ml52HGZWTYfHi/4qUAZUpHzag9iwUP1FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tp2U6+oe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66438C433F1;
-	Fri, 22 Mar 2024 02:09:43 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=TZjuIorBCmMI6r7GsAC1A2hd7h6eEieri127ro8ujC5ef9VfLOXuZM3rAgGA2LO9VfAIfkHShVQdNjRnxjdbg5gRMkWqOYG5y1NtDvZCeNkk6o98gLSjzkcyLA8QHaIMkAVrd69gftjiyQ90m5jjJoIWQrhY6vGTlG9aC11nCfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sk+QoMQ/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1509C433C7;
+	Fri, 22 Mar 2024 02:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711073383;
-	bh=M9+buGGHVmbN+4X6XpKSvLDFMQ8s19IDF8A0yS4tJUI=;
+	s=k20201202; t=1711073478;
+	bh=bRUwXwcq6+UznH+399UPrJYqI6arNzHseoKpLcYfxe0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tp2U6+oeUQLkvsxfCYuiGMcrs0zupHrf3kazneQj9/8dXWwVPTbQOYA3zv+Upxy9C
-	 gWrWgT04vVfQoN06P0SXnwsKzCaMrhhXd73xQeuduZcCAfk1NjuFjWS7wV/p80sEkf
-	 jST3+fPwcHTaSDl4dFXF/r2VwuyGaGv6YGohPpulGhkKXTKY72O7HrIU8xUy4jZoOL
-	 Rw8pXQhydJGnC9Zi9HCbfeuI9RcnIeWbGQlpEJkE5tDK0k7aFoUVFf0NgrO9kderwW
-	 1w24lQl9Z8OEw3twRZe5WEXxStah5Yq7vmRUxUZ6xs9uGUflCRIIZLfblahlzDRIEI
-	 yqoxEdXN/2jDw==
-Date: Thu, 21 Mar 2024 21:09:41 -0500
+	b=sk+QoMQ/o/oN7+yK5p3GzogBuI4EwkmP2qoj2f+DN+Z5xODTM9DgPF4n9Os1lZTjh
+	 amV+GtKXHwvdiF82dE8cM8qjZ1f6GtWr95h9Pdna7Ln074skbhvZY6ZkneJkYdy7KK
+	 KWmZI0XYVINaOfi5ZHxZ58ZZ+wI6AcqvWLzcPutkO7pB5peg5FqnMPNYno6sd5MORI
+	 Hfd48TIpZhCL152ozoT7t4nko3jiWykPzxCyg7A2kLlZ7KzkJdgIXVmhSncHqsGP80
+	 002dQAXzprnGPhlPMBz7lssZCSPJ8sfS5WrUKA1yw6aniyTfcLdPGydVn/LYb+mHgw
+	 SyaXf7AfvxwJQ==
+Date: Thu, 21 Mar 2024 21:11:15 -0500
 From: Rob Herring <robh@kernel.org>
 To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Matt Ranostay <matt@ranostay.sg>, devicetree@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: iio: health: maxim,max30102: add
- max30101
-Message-ID: <171107337852.3410745.14506483547163918471.robh@kernel.org>
-References: <20240321-max30101-v1-0-00b83e966824@gmail.com>
- <20240321-max30101-v1-1-00b83e966824@gmail.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	linux-hwmon@vger.kernel.org,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 1/5] dt-bindings: hwmon: as370: convert to dtschema
+Message-ID: <171107347196.3412490.13524573365195502461.robh@kernel.org>
+References: <20240321-hwmon_dtschema-v1-0-96c3810c3930@gmail.com>
+ <20240321-hwmon_dtschema-v1-1-96c3810c3930@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,22 +66,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321-max30101-v1-1-00b83e966824@gmail.com>
+In-Reply-To: <20240321-hwmon_dtschema-v1-1-96c3810c3930@gmail.com>
 
 
-On Thu, 21 Mar 2024 19:33:48 +0100, Javier Carrasco wrote:
-> The Maxim max30101 irs the replacement for the max30105, which is no
-> longer recommended for future designs.
+On Thu, 21 Mar 2024 19:43:42 +0100, Javier Carrasco wrote:
+> Convert existing binding to support validation.
 > 
-> The max30101 does not require new properties, and it can be described
-> with the existing ones for the max30105.
+> This is a straightforward conversion with now new properties.
 > 
 > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 > ---
->  Documentation/devicetree/bindings/iio/health/maxim,max30102.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/hwmon/as370.txt  | 11 --------
+>  .../devicetree/bindings/hwmon/syna,as370.yaml      | 32 ++++++++++++++++++++++
+>  2 files changed, 32 insertions(+), 11 deletions(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
