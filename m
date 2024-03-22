@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-111525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF776886D4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:37:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1B4886D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:37:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4ACD1F24D12
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:37:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB8701C24F0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D83263509;
-	Fri, 22 Mar 2024 13:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D5064A9B;
+	Fri, 22 Mar 2024 13:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="EHt8A5K4"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="apZjvTY7"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAE0633E8
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757CD6311A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114042; cv=none; b=jXfAcXulVE4FqZWMwF3zmuIdLNWdYdwOE1q7CD2ECCf3GGFdozl6vBzBcviUGRspxfkFPgh346MEwspKhxys13FpfvCQ4e1MfXdsEcp0Dc4poQMnSrhHlWAFAtc6Xub41Gw7h93tJlGeW6GuWx5Wr1PzgJhwqZFDiqL1n8CB05E=
+	t=1711114043; cv=none; b=lmWKGfMYru/yNcPBS8S8GogX6xJTeS08dqjVEBavjr723ypiBD7FL6ecWTshZgsU3nVeW7w1iyIXQ1dZ3M8FqaWXHbpUsIr70A4s8PEnI2bW0KTgzsKxxkjwQQUX3IUdTJVm0AljAojvtsPw5EBZEiWH3oDH1qp2OY2ySs2e1TE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114042; c=relaxed/simple;
-	bh=fdHLsR9DB1wn8D9bwxN/WM7+gQ8o/IS36gtdobO3PDg=;
+	s=arc-20240116; t=1711114043; c=relaxed/simple;
+	bh=IyxDQg3Eeu2VTbNzfWVfCI3dAf1Hdea1OkK2fa+bIDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QWlbCcfIb0FuzCihnnMNdoZ7i/uFW3ARISX0WVwVyS6eBSECoDcFg5l9bNVB3zplznPz0eKLL+we3vVTccjOkssDBmP9Q28m8h9VzVVDU6x8ZeQfITbzd5+wYiIytCbeTj6U2G9FP01btHZJ/th91TZY3+86mVxRuw3ZMd3JTQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=EHt8A5K4; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=kSyaN3azHktcntetkZlSDO+5NA7NHe23FKWB3bWFIHJpD54TOy9aPbwbXZZOgPQnxf16HIMlLXdRVdTqT2UC4LM1i98L6YHqIEezrcRoRhRxDTRYwfFodTvsd04Yy3jiQiAQkhkLoyrsxBM4dGbpeGxCjBhH1mEP0vGX9z5Z4nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=apZjvTY7; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=+hOidMzQoPW9FHhIvSwRON+Z3xIeGflbT7fmNTj31kw=; b=EHt8A5
-	K4PaG12m12qc8DQFQX600kMWpr/bc6hl5B4LVHXRSeCg2rWPiwMWLAC0h4f7wZp0
-	aC4CFWfOgRoORdJOTuDgGHrOnGMYvL2eufHzKH2SYPdfq3z00V8fL079lgA6LpjF
-	OgOjYGlU1GkHjoRg/ZfW6S07owCZf09PC4WIkOLC0MrERZNdwBKvIyAwMXHhAZ6l
-	r/k3cA26FwfwPbnOsSYTQXq+tIhbd9UAnjzi2ii3TxB6ILfl1Sqc+E0BiZ7FmkR9
-	kAEXsRsWPCm/6HKJD6OvTd2eyHy0MFTRyzdJpf+ok0y+JmfT3STzNePa5g7WZGP8
-	XlbsQAa86GIjBu9g==
-Received: (qmail 3871717 invoked from network); 22 Mar 2024 14:27:00 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Mar 2024 14:27:00 +0100
-X-UD-Smtp-Session: l3s3148p1@7yFVxz8UCJRehhtF
+	 s=k1; bh=k7I/P2iBDaF4EwyJ0IZtGeh8AwgbSdfw3r/JA/5EzLM=; b=apZjvT
+	Y7pq6/gOGSSsqKRLFQTCMDskrdvPc+xYxN9q6UvrhEAos7v1dVWG96qbcqyXkBkg
+	9XKnvgMW2HUHLMUd8boOWv01jpptuBNemhPxYs0H4Odwtx6EG4rvBD7MH2xuuoZU
+	ZOHL7w5dim79P3/vZKJHqdwxGkXUulLSwpw6S3vNmKL8vJreTrBZIOPOQeAvBcbP
+	WEx8mm27Ew/PFPjyvNSBJgnNDkO1Ubg4J3908GCkfYb22SeciQlwZKrb4AAZ72bE
+	j5ZjX9yqbzsu7+qCdGBPe7iviVpT5uWz84eMlS2YEO2+l3lKfXcaol5osg8/hlI3
+	Bglwy3sg7DTlQ6TQ==
+Received: (qmail 3871771 invoked from network); 22 Mar 2024 14:27:01 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Mar 2024 14:27:01 +0100
+X-UD-Smtp-Session: l3s3148p1@SMBhxz8UDJRehhtF
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Heiko Stuebner <heiko@sntech.de>,
 	Andi Shyti <andi.shyti@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 47/64] i2c: rk3x: reword according to newest specification
-Date: Fri, 22 Mar 2024 14:25:40 +0100
-Message-ID: <20240322132619.6389-48-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 48/64] i2c: sh7760: reword according to newest specification
+Date: Fri, 22 Mar 2024 14:25:41 +0100
+Message-ID: <20240322132619.6389-49-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
 References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
@@ -72,71 +69,90 @@ entity ("client") and a local one ("target").
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-rk3x.c | 18 +++++++++---------
+ drivers/i2c/busses/i2c-sh7760.c | 18 +++++++++---------
  1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index 086fdf262e7b..01febd886bdd 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -28,8 +28,8 @@
- /* Register Map */
- #define REG_CON        0x00 /* control register */
- #define REG_CLKDIV     0x04 /* clock divisor register */
--#define REG_MRXADDR    0x08 /* slave address for REGISTER_TX */
--#define REG_MRXRADDR   0x0c /* slave register address for REGISTER_TX */
-+#define REG_MRXADDR    0x08 /* client address for REGISTER_TX */
-+#define REG_MRXRADDR   0x0c /* client register address for REGISTER_TX */
- #define REG_MTXCNT     0x10 /* number of bytes to be transmitted */
- #define REG_MRXCNT     0x14 /* number of bytes to be received */
- #define REG_IEN        0x18 /* interrupt enable */
-@@ -68,8 +68,8 @@ enum {
- /* REG_IEN/REG_IPD bits */
- #define REG_INT_BTF       BIT(0) /* a byte was transmitted */
- #define REG_INT_BRF       BIT(1) /* a byte was received */
--#define REG_INT_MBTF      BIT(2) /* master data transmit finished */
--#define REG_INT_MBRF      BIT(3) /* master data receive finished */
-+#define REG_INT_MBTF      BIT(2) /* host data transmit finished */
-+#define REG_INT_MBRF      BIT(3) /* host data receive finished */
- #define REG_INT_START     BIT(4) /* START condition generated */
- #define REG_INT_STOP      BIT(5) /* STOP condition generated */
- #define REG_INT_NAKRCV    BIT(6) /* NACK received */
-@@ -184,7 +184,7 @@ struct rk3x_i2c_soc_data {
-  * @wait: the waitqueue to wait for i2c transfer
-  * @busy: the condition for the event to wait for
-  * @msg: current i2c message
-- * @addr: addr of i2c slave device
-+ * @addr: addr of i2c client device
-  * @mode: mode of i2c transfer
-  * @is_last_msg: flag determines whether it is the last msg in this transfer
-  * @state: state of i2c transfer
-@@ -979,7 +979,7 @@ static int rk3x_i2c_setup(struct rk3x_i2c *i2c, struct i2c_msg *msgs, int num)
- 	/*
- 	 * The I2C adapter can issue a small (len < 4) write packet before
- 	 * reading. This speeds up SMBus-style register reads.
--	 * The MRXADDR/MRXRADDR hold the slave address and the slave register
-+	 * The MRXADDR/MRXRADDR hold the client address and the client register
- 	 * address in this case.
- 	 */
+diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
+index 8a043f5fca1e..49e83ca89101 100644
+--- a/drivers/i2c/busses/i2c-sh7760.c
++++ b/drivers/i2c/busses/i2c-sh7760.c
+@@ -55,7 +55,7 @@
+ #define MSR_MDE		0x08
+ #define MSR_MDT		0x04
+ #define MSR_MDR		0x02
+-#define MSR_MAT		0x01		/* slave addr xfer done	*/
++#define MSR_MAT		0x01		/* addr xfer done	*/
  
-@@ -1016,7 +1016,7 @@ static int rk3x_i2c_setup(struct rk3x_i2c *i2c, struct i2c_msg *msgs, int num)
- 			addr |= 1; /* set read bit */
+ #define MIE_MNRE	0x40		/* nack irq en		*/
+ #define MIE_MALE	0x20		/* arblos irq en	*/
+@@ -154,7 +154,7 @@ static irqreturn_t sh7760_i2c_irq(int irq, void *ptr)
+ 		goto out;
+ 	}
  
- 			/*
--			 * We have to transmit the slave addr first. Use
-+			 * We have to transmit the client addr first. Use
- 			 * MOD_REGISTER_TX for that purpose.
- 			 */
- 			i2c->mode = REG_CON_MOD_REGISTER_TX;
-@@ -1162,8 +1162,8 @@ static u32 rk3x_i2c_func(struct i2c_adapter *adap)
+-	/* i2c slave addr was sent; set to "normal" operation */
++	/* i2c client addr was sent; set to "normal" operation */
+ 	if (msr & MSR_MAT)
+ 		OUT32(id, I2CMCR, MCR_MIE);
+ 
+@@ -236,14 +236,14 @@ static irqreturn_t sh7760_i2c_irq(int irq, void *ptr)
  }
  
- static const struct i2c_algorithm rk3x_i2c_algorithm = {
--	.master_xfer		= rk3x_i2c_xfer,
--	.master_xfer_atomic	= rk3x_i2c_xfer_polling,
-+	.xfer		= rk3x_i2c_xfer,
-+	.xfer_atomic	= rk3x_i2c_xfer_polling,
- 	.functionality		= rk3x_i2c_func,
+ 
+-/* prepare and start a master receive operation */
++/* prepare and start a host receive operation */
+ static void sh7760_i2c_mrecv(struct cami2c *id)
+ {
+ 	int len;
+ 
+ 	id->flags |= IDF_RECV;
+ 
+-	/* set the slave addr reg; otherwise rcv wont work! */
++	/* set the target addr reg; otherwise rcv won't work! */
+ 	OUT32(id, I2CSAR, 0xfe);
+ 	OUT32(id, I2CMAR, (id->msg->addr << 1) | 1);
+ 
+@@ -262,14 +262,14 @@ static void sh7760_i2c_mrecv(struct cami2c *id)
+ 	OUT32(id, I2CFIER, FIER_RXIE);
+ }
+ 
+-/* prepare and start a master send operation */
++/* prepare and start a host send operation */
+ static void sh7760_i2c_msend(struct cami2c *id)
+ {
+ 	int len;
+ 
+ 	id->flags |= IDF_SEND;
+ 
+-	/* set the slave addr reg; otherwise xmit wont work! */
++	/* set the target addr reg; otherwise xmit won't work! */
+ 	OUT32(id, I2CSAR, 0xfe);
+ 	OUT32(id, I2CMAR, (id->msg->addr << 1) | 0);
+ 
+@@ -300,7 +300,7 @@ static inline int sh7760_i2c_busy_check(struct cami2c *id)
+ 	return (IN32(id, I2CMCR) & MCR_FSDA);
+ }
+ 
+-static int sh7760_i2c_master_xfer(struct i2c_adapter *adap,
++static int sh7760_i2c_xfer(struct i2c_adapter *adap,
+ 				  struct i2c_msg *msgs,
+ 				  int num)
+ {
+@@ -362,7 +362,7 @@ static int sh7760_i2c_master_xfer(struct i2c_adapter *adap,
+ 	OUT32(id, I2CMIER, 0);
+ 	OUT32(id, I2CFIER, 0);
+ 
+-	/* reset slave module registers too: master mode enables slave
++	/* reset target module registers too: host mode enables target
+ 	 * module for receive ops (ack, data). Without this reset,
+ 	 * eternal bus activity might be reported after NACK / ARBLOST.
+ 	 */
+@@ -379,7 +379,7 @@ static u32 sh7760_i2c_func(struct i2c_adapter *adap)
+ }
+ 
+ static const struct i2c_algorithm sh7760_i2c_algo = {
+-	.master_xfer	= sh7760_i2c_master_xfer,
++	.xfer	= sh7760_i2c_xfer,
+ 	.functionality	= sh7760_i2c_func,
  };
  
 -- 
