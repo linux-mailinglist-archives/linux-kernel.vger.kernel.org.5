@@ -1,115 +1,114 @@
-Return-Path: <linux-kernel+bounces-111346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B69A886AF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:03:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE24A886B00
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23D27B258E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:03:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C0761C20FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 700943EA74;
-	Fri, 22 Mar 2024 11:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kBBpFH4u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD5D2C18D;
-	Fri, 22 Mar 2024 11:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8EC3E49D;
+	Fri, 22 Mar 2024 11:07:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59AB22C18D;
+	Fri, 22 Mar 2024 11:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711105398; cv=none; b=htFze8FEf2qUqJiR3lJVCAwGqeL8uKrdklnO9T5l3cXmwRL1LO0dAYKPnXsVH+5K8eTf2+odKIXG23Zvy2DFlbzbiW2hJPYx716uIr3RQIG6NDtxXb4EuD0dJZBQsNr15iDMLeFsSR5r9+npE37we8Dc2i0cJwyTKhXUe6NTHL4=
+	t=1711105622; cv=none; b=bQNhfnFDE62WJyb0WISUtlqugfLMcV/pik4rxHrU8QULUgwcuIw0Pn4SzkHS9FdIXGE7u+DZZuUdXxJp1elUpFY2KmwmTmvULpIvmBHwUsefc6UZOmW296WQINB6Q8niiSv17vg8gQ79/IWF9QNYDLIMDt4w32InBFiZFFjMbSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711105398; c=relaxed/simple;
-	bh=j1bJ4w42kskV9ai5cekyhLUyNo8Ucw+qxC21MeUMMfw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R5sNsRwy4paBfhkwY919n118xOvwwwUyFw3ydvnjAqXqvks/Rb8J8+WZaEiFcCwv6qb5JzPi6MwbQPMStrc+7NJJwX+2HSl7be87Zzb5/tAzbadiOmxUp8H5pxURguFBoBeeELIDDmZjc2WpeiF18mSCjS0FLYqPYS0ArdGPj1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kBBpFH4u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A044CC433C7;
-	Fri, 22 Mar 2024 11:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711105398;
-	bh=j1bJ4w42kskV9ai5cekyhLUyNo8Ucw+qxC21MeUMMfw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kBBpFH4ubCr9UE0s7VfPsPShqTptBKiky+oxr6MYRB3RFKivrooYY4krN96Ri7nb9
-	 urD0mdBEEucPD6uvIlEXYT7FWNrZaA3LNKAVdfs49lmNXxyZjQdv5t4CGTSPRvj+x/
-	 AxqJDnUkGVGUBzn20ssSWcezKA+RzCbvRjOpR5zFEi9ZFxC0/Jz5zD0QzRD6jjMnFa
-	 C3hwF8e5x+qwY8FuY/1g5hV0XF2NmlEy8H0/6VwdzxXTHAwMUu0XcsJ3R8Yjxe5uIl
-	 3tKAR7pTiiHJnOnR8ruRAe3F67uoQtegz/o1LuZUo6PvinllofVh9ellJKuNY/K1Sr
-	 cLcRfzgBZNR3Q==
-Date: Fri, 22 Mar 2024 12:03:07 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v10 7/8] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <Zf1la9ICDCHAyOit@ryzen>
-References: <20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org>
- <20240314-pci-dbi-rework-v10-7-14a45c5a938e@linaro.org>
+	s=arc-20240116; t=1711105622; c=relaxed/simple;
+	bh=EYYHZIaBz/ypfFhjlvxZu3aL3IPa6xvR2uwygCIyUJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VF2c6tZd9VxWoCuV664FmUdKXXSUFTfstYIKY82bzWV5WSFZOIutrE5bLL3mSAUTgBh4a23araVyugWFc9JY+3rNQllby1uPt19skb+JTe+z9DnuoQfmmCXN0fCkU1A0z87f+cLuOY0wPWeYTh9HY13qETPQmxsxgXU9hPAXGY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D40631007;
+	Fri, 22 Mar 2024 04:07:33 -0700 (PDT)
+Received: from [10.57.71.57] (unknown [10.57.71.57])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B2283F64C;
+	Fri, 22 Mar 2024 04:06:57 -0700 (PDT)
+Message-ID: <43b3feb2-8eb7-4f6d-a41b-d2d3c8893ec4@arm.com>
+Date: Fri, 22 Mar 2024 11:06:55 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314-pci-dbi-rework-v10-7-14a45c5a938e@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] Update Energy Model after chip binning adjusted
+ voltages
+Content-Language: en-US
+To: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc: dietmar.eggemann@arm.com, linux-arm-kernel@lists.infradead.org,
+ sboyd@kernel.org, nm@ti.com, linux-samsung-soc@vger.kernel.org,
+ daniel.lezcano@linaro.org, rafael@kernel.org, viresh.kumar@linaro.org,
+ krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ m.szyprowski@samsung.com, mhiramat@kernel.org
+References: <20240322103221.47594-1-lukasz.luba@arm.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240322103221.47594-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 14, 2024 at 01:18:05PM +0530, Manivannan Sadhasivam wrote:
-> Currently, dw_pcie_ep_init_registers() API is directly called by the glue
-> drivers requiring active refclk from host. But for the other drivers, it is
-> getting called implicitly by dw_pcie_ep_init(). This is due to the fact
-> that this API initializes DWC EP specific registers and that requires an
-> active refclk (either from host or generated locally by endpoint itsef).
-> 
-> But, this causes a discrepancy among the glue drivers. So to avoid this
-> confusion, let's call this API directly from all glue drivers irrespective
-> of refclk dependency. Only difference here is that the drivers requiring
-> refclk from host will call this API only after the refclk is received and
-> other drivers without refclk dependency will call this API right after
-> dw_pcie_ep_init().
-> 
-> With this change, the check for 'core_init_notifier' flag can now be
-> dropped from dw_pcie_ep_init() API. This will also allow us to remove the
-> 'core_init_notifier' flag completely in the later commits.
-> 
-> Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+
+On 3/22/24 10:32, Lukasz Luba wrote:
+> Hi all,
+> 
+> This is a follow-up patch aiming to add EM modification due to chip binning.
+> The first RFC and the discussion can be found here [1].
+> 
+> It uses Exynos chip driver code as a 1st user. The EM framework has been
+> extended to handle this use case easily, when the voltage has been changed
+> after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
+> According to that data in driver tables it could be up to ~29%.
+> 
+> This chip binning is applicable to a lot of SoCs, so the EM framework should
+> make it easy to update. It uses the existing OPP and DT information to
+> re-calculate the new power values.
+> 
+> 
+> Changes:
+> v2:
+> - removed 'ret' from error message which wasn't initialized (Christian)
+> v1:
+> - exported the OPP calculation function from the OPP/OF so it can be
+>    used from EM fwk (Viresh)
+> - refactored EM updating function to re-use common code
+> - added new EM function which can be used by chip device drivers which
+>    modify the voltage in OPPs
+> RFC is at [1]
+> 
+> Regards,
+> Lukasz Luba
+> 
+> [1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
+> 
+> Lukasz Luba (4):
+>    OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+>    PM: EM: Change the em_adjust_new_capacity() to re-use code
+>    PM: EM: Add em_dev_update_chip_binning()
+>    soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
+> 
+>   drivers/opp/of.c                 |  17 +++--
+>   drivers/soc/samsung/exynos-asv.c |  11 +++-
+>   include/linux/energy_model.h     |   5 ++
+>   include/linux/pm_opp.h           |   8 +++
+>   kernel/power/energy_model.c      | 109 +++++++++++++++++++++++++------
+>   5 files changed, 125 insertions(+), 25 deletions(-)
+> 
+
+Please ignore this version. It still has that 'ret'. I've fixed in
+different repo, but sent patches from different terminal.
+
+I'll resend it in a second...
+
+Regards,
+Lukasz
 
