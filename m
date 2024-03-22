@@ -1,133 +1,114 @@
-Return-Path: <linux-kernel+bounces-112069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E648874D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:29:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C197B8874DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:32:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01F611C2287F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:29:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62B971F24227
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9EE81AAE;
-	Fri, 22 Mar 2024 22:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9961582891;
+	Fri, 22 Mar 2024 22:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yfrvu1U/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QegqF2HL"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2514C17589;
-	Fri, 22 Mar 2024 22:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554D51E538
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 22:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711146567; cv=none; b=LeC19TV5WLBB83RQG2I3IylUr9rVpAN4LnOstS8p2Um3YTGOPufaEdYAqFgAn//yO+LvpgCUy/yz04oFFP6KVWPHezjUEaWW8OfXK1YiwTbkXcBh1bmAJ86nnWsYB+hpZMebQlZrobNuDgq5+1cq4BjmSyJI0c0jWtFOhy2qaWI=
+	t=1711146732; cv=none; b=ZyzMKbVpXBAw4M73MuLlaVvyfgzjCQRQQaqGLp7z0zguOwLhIaCnWlBatil9aDB4qj8u14uqIJSBYtbn0rttqu03DLXYEhcYgw7UOxWIUqdRna/xtFxR9Guz2bu8jLdgrf6ooxvHSRNztUDCXtMnkNihLzjMntNWxmltmdad6N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711146567; c=relaxed/simple;
-	bh=OYmXPcRz/hhM71/Ak6y2mWSI2AZdABQ0mCMqdj6Hv+Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gwXPrSoROsHvAqpzD7+Ubbz8ufJJChLCKxM6M45ti0nmdxMavJ3HDFMI98zODqp5rlCPWoWHry+KEun2XZ78ZifRpzoDEN7EpWwfiWypb6+ZdXIAqwqtuGllnGFyKPxvRjig8GcDC5XOuUFKeRa/fvKbJhQRNIPPSilv0GvxRLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yfrvu1U/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD6BC433C7;
-	Fri, 22 Mar 2024 22:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711146565;
-	bh=OYmXPcRz/hhM71/Ak6y2mWSI2AZdABQ0mCMqdj6Hv+Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Yfrvu1U/BJGu9shuXoAnC8YCF9MGozwb2uRn+f4hbCJV1/SCdGlJxas6knlCf2NVB
-	 thF9XuIm5SBVV6s7QWk/gorDlBSTldqgtPk5xfSUTVSOkWWPM5+7iL/OuqwgGpkAJC
-	 k5ANzIfdjdT2rhUrFwRWC+0NzFF1e6AeeGV8+JspTmoFl8mwigDZAEHLAGBTJzPknM
-	 tJR/gl6Qf3wlrl0Rco2s2bHalXNLnGZb8nmcU6vpddf/ZIMLfRw0zCUbS38T4TIwOD
-	 VI4+DFBUHTe/Xi9xGw7XukiDD4quZA8FXFepAOhFLAOBoOBrTD5sAiNj0bdAF9TiTQ
-	 ohBkVrjcT+TUg==
-Date: Fri, 22 Mar 2024 15:29:24 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>, David Ahern
- <dsahern@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christoph Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>, Jiri
- Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
- <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240322152924.64be7ec4@kernel.org>
-In-Reply-To: <20240322214423.GL159172@nvidia.com>
-References: <20240207072435.14182-1-saeed@kernel.org>
-	<Zcx53N8lQjkpEu94@infradead.org>
-	<ZczntnbWpxUFLxjp@C02YVCJELVCG.dhcp.broadcom.net>
-	<20240214175735.GG1088888@nvidia.com>
-	<20240304160237.GA2909161@nvidia.com>
-	<9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
-	<2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<20240322214423.GL159172@nvidia.com>
+	s=arc-20240116; t=1711146732; c=relaxed/simple;
+	bh=SqoB37OT1HojDKRhowyuuzQ4ERbxzLBp6bj9r5cbVYQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lX0GtJ0VnOgm6XkluNKdHm6MKNRB+omj1CSgQipn5cX7NAxv9oy2mAOI+GC0H5fP9B5k31hDrvIkYy2LDDuavXHUh4OW/jNlLFwkadgQC6HRrIXb14+vJV9bZcHNOp9+mYSgjfhldLh0NVBWfn7VXyuolHLJIelIrMRuKcN9Mcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QegqF2HL; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso2688421276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711146730; x=1711751530; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U1a5pzjd5I8Z/mJlSaH96qG0n7ip9wTr8Kfl87ju9Mw=;
+        b=QegqF2HLN8XPZETmZCUND1lYGIhpClbZxuugg2tI6vvE6qnzi4NNLdlX2X7Xp2QgMZ
+         VyYbaxx+Vqd7ErgAvPqNsnS2pRYBblWEZeF+2WrJA+PQn46Pu4Gxo25fECJQbiKGz1L8
+         iBQINq5C5oHB17e7VXI5bCLhozJ4lba2RjhZ2CjAInlGGJLqVEXpJBRAlpDyU0B2Vm24
+         3dr99q7+nh23HjzzIkttiMs+x7XgwI00sX15+sn1CH3iduIwfz957j9e1KC15BmZl9I2
+         AGcPy63KaBBV8YyH0hSNdS8/WX7AXKGeuNlviA8Rgy6zJoBiNrHLrrJxjpuiVvrEDiaf
+         j7hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711146730; x=1711751530;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U1a5pzjd5I8Z/mJlSaH96qG0n7ip9wTr8Kfl87ju9Mw=;
+        b=KcoIKwJx+GOXkda7ZHAPrzbYh4Bx2OG83st93MF2elf+pjAk4lvi9NPpzBhNaMhGZP
+         SAJKxVMY//F2Evhhjm6OR+es1vfQa7biir2qqcAUJRW66/YAZuSOBlAPBFHVdGHIZOAs
+         gM4S2XDXRKY2Jno6sFcPvA9tlQ/+GudcbqP2My7AeNXXSCPpA5osaHC+id4LhreVyS+V
+         F1cl31DoX7I7iWEyxS1La9KZjWThJI0Tel8HTgU/uOeDXuXJZGRFCB0/Nhq5WJ8uQnzD
+         2n8+0eHwzxiF4nO8R6TV4JR7oWhySAI1yM6yJMnjs8/8vqBuNXwx3ezitEEg7NtrO4em
+         sp5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXQrYw/JtE8mSXx4/ZdPOGXhbfXuWoDtHo/BLjUdMLQRZRFeE0IWk2M+d4KAelc+1jtzvf2Rhgsxa4VC3GwFOeKNgUwZeFnWsrcDepc
+X-Gm-Message-State: AOJu0Yy9pg/DKZipBYKQKRrAfqEJn777m/KqUjIzOf0UL81bQ+PlogK4
+	Hz5LYy4O6xoMfgLXBX4dSJofq6RaTbumzCQ5nxrtE6qTPLFGjKQ+34dSwF26wUdKjPOAjOdNlOk
+	i52ZCDFYT3TM3pTln8/hHkmZrjhT8iDy3vL9hqQ==
+X-Google-Smtp-Source: AGHT+IGLQFN+Cx2L6/BR6lRV32tv9zuTfkKLRJ9nOBrx94hSRHDg6IOx4CBERz5ZDrf0Vc5gYEkGqgbLxSkOYOtCH9M=
+X-Received: by 2002:a25:84ca:0:b0:dc6:e4f8:7e22 with SMTP id
+ x10-20020a2584ca000000b00dc6e4f87e22mr651683ybm.62.1711146730353; Fri, 22 Mar
+ 2024 15:32:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org>
+ <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org> <230eab52-9751-43fd-8e47-fbfe12410e44@linaro.org>
+ <CAA8EJprD3fM966pLV4QXPUu=bFTn24fvPMKOaGqtqkAbdz7sOQ@mail.gmail.com>
+ <5ea4a187-1971-4970-a289-826d96c0351a@linaro.org> <c0f1e898-7638-4b7b-a938-9e31e5b57e57@linaro.org>
+ <0b091595-1587-421d-bb00-c00ef729d143@linaro.org> <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
+ <7cd6768d-780c-4cdb-8091-c7a161eab23e@linaro.org>
+In-Reply-To: <7cd6768d-780c-4cdb-8091-c7a161eab23e@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 23 Mar 2024 00:31:58 +0200
+Message-ID: <CAA8EJpoDZ0cQmKk=MBbQf446PXZf2-93Ne121osyUGRvABoing@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,pmic-typec: drop port description
+To: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
+Cc: neil.armstrong@linaro.org, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-usb@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 22 Mar 2024 18:44:23 -0300 Jason Gunthorpe wrote:
-> On Fri, Mar 22, 2024 at 01:58:26PM -0700, Jakub Kicinski wrote:
-> > > Well said, David.
-> > > 
-> > > I would totally support doing something like this in a fairly generic
-> > > way that could be leveraged/instantiated by drivers that will allow
-> > > communication/inspection of hardware blocks in the datapath.  There are
-> > > lots of different ways this could go, so feedback on this would help get
-> > > us all moving in the right direction.  
-> > 
-> > The more I learn, the more I am convinced that the technical
-> > justifications here are just smoke and mirrors.  
-> 
-> Let's see some evidence of this then, point to some sillicon devices
-> in the multibillion gate space that don't have complex FW built into
-> their design?
+On Fri, 22 Mar 2024 at 22:44, Bryan O'Donoghue
+<bryan.odonoghue@linaro.org> wrote:
+>
+> On 22/03/2024 15:49, Dmitry Baryshkov wrote:
+> > It's true that we don't describe CC lines. However In most of the
+> > cases CC lines are handled by the Type-C port manager directly. So
+> > there will be a connection from usb-c-connector to the pmic-typec
+> > itself (which looks pretty redundant).
+>
+> I think it more logical to associate the role-switch event with the CC
+> lines which actually handle the messaging than the HS PHY which does not
+> to be honest.
+>
+> If we predicate a name change on fixing the namespace then we should fix
+> the namespace instead of reuse existing for expediency.
 
-Existence of complex FW does not imply that production systems must
-have a backdoor to talk to that FW in kernel-unmitigated fashion.
+It's not an HS PHY. It is an HS host  = DWC3. Anyway, CC lines do not
+go to the DWC3. They go directly to the PMIC.
 
-As an existence proof I give you NICs we use at Meta.
-Or old Netronome NICs, you can pick.
-
-> > The main motivation for nVidia, Broadcom, (and Enfabrica?) being to
-> > hide as much as possible of what you consider your proprietary
-> > advantage in the "AI gold rush".  
-> 
-> Despite all of those having built devices like this well before the
-> "AI gold rush" and it being a general overall design principle for the
-> industry because, yes, the silicon technology available actually
-> demands it.
-> 
-> It is not to say you couldn't do otherwise, it is just simply too
-> expensive.
-
-I do agree that it is expensive, not sure if it's "too" expensive.
-But Linux never promised that our way of doing SW development would
-always be the most cost effective option, right? Especially short
-term. Or that we'll be competitive time to market.
-
-> > RDMA is what it is but I really hate how you're trying to pretend
-> > that it's is somehow an inherent need of advanced technology and
-> > we need to lower the openness standards for all of the kernel.  
-> 
-> Open hardware has never been an "openness standard" for the kernel.
-
-I was in the meeting with a vendor this morning and when explicitly
-asked by an SRE (not from my org nor in any way "primed" by me)
-whether configuration of some run of the mill PCI thing can be exposed
-via devlink params instead of whatever proprietary thing the vendor was
-pitching, the vendor's answer was silence and then a pitch of another
-proprietary mechanism.
-
-So no, the "open hardware" is certainly not a requirement for the
-kernel. But users can't get vendors to implement standard Linux
-configuration interfaces, and your proposal will make it a lot worse.
+-- 
+With best wishes
+Dmitry
 
