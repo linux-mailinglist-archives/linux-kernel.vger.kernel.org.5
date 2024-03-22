@@ -1,83 +1,84 @@
-Return-Path: <linux-kernel+bounces-111368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707B4886B53
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:34:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1F58886B59
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B44F2812B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:34:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60D931F2290A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1F43F9C2;
-	Fri, 22 Mar 2024 11:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="okH1hJuq"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9CE3FB28;
+	Fri, 22 Mar 2024 11:34:28 +0000 (UTC)
+Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8663EA71
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F8D3F8E2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711107247; cv=none; b=lW/NnsYbA0GJjg5fwSz52aTGPqt3MmH7Ngh0eccNOnIjbhQRE62VjaOJsr03N/5+RlSA4Y8hW0f5zHrDu6LV3VU0LiB7WMeV8ikh+yEwR9AW/U++DvoEBNOwChUjNGJKQ2q2cZygl5f+3A5P5Wl+8tZYLwBQS1T+A93uvrUs9T8=
+	t=1711107268; cv=none; b=OlblUsaHE4RSPkR5pjiP69LhgESM8/ONXbJ61uw4r7Iys//qRNA7YGfWetWLa+tpucUmLTHB74Mdnhv7PV9BCQtnFHx715Ml15X7UOrFAeXnSgU3n5lY7K1yj4pG4fRI3DzccBld4fc2wzQmZmXYpuWL7yt3d8Fi6+3UA0B967o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711107247; c=relaxed/simple;
-	bh=EDLSzvHWzWJckccgae9InvdeABzJhvqCfI6ieGm1XfY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cItyCMWGfI+rB/Rv21qz1B9yVNusjIQc5DdjArJyYC9QAi5rAeftaCPPH7ohW2VvOC4sAKDdB6h/Q4g+XibXDYRtm34kfbRfFRNfGvxduu732QZDNpO15/NayMWWvbslNC85zg6vS/lO32UV51BC068dvs6NpJ8is8Q6wIHGZjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=okH1hJuq; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3140f17b-f7b4-4705-877f-df2c0af460d2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711107243;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t678LVHSCoxay4XYSJ0VwadhX/XRd8hTe6DYJoC6mOo=;
-	b=okH1hJuq01MrIEXSupw5A53MiUW/2sSEI/CQAe86vH5rhfU/RMX0OWgs5aFfX1JjGmV2GW
-	SLYsrw6Wch8TknYz3eqO+exU46APFpUXiNS0KqhsZ8WqnLI/kjuUBetNm2TSieVCaO4XK3
-	p0X42SIwucnQ0gwKMSL3lOtd9lGMAVM=
-Date: Fri, 22 Mar 2024 19:33:56 +0800
+	s=arc-20240116; t=1711107268; c=relaxed/simple;
+	bh=ACSUIa5eILVdV9/unH/3mAmu4AhoNpcnkH7YwBEVNng=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=XcZmsmGk0B5qR7qj8NdsvcKzvs7wQIdCaGqYbEdBESaoqe2sLdD17WzYNJzdBpRFCH1BQE9QVKU7l2OLQ47vEidNVaidKBmnvfi0FkHCTfGKPW9OU1Se/JOx7kse7hm82+Upp3lmLrcdQkVv4qRhUIcBRhnl3z+K2NDSdtuVeqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.69.35])
+	by sina.com (172.16.235.24) with ESMTP
+	id 65FD6CAE000022C4; Fri, 22 Mar 2024 19:34:13 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 49593745089255
+X-SMAIL-UIID: 836C24187C8B403DA6AFA1FE929A0CF9-20240322-193413-1
+From: Hillf Danton <hdanton@sina.com>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Light Hsieh =?utf-8?B?KOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH] f2fs: avoid the deadlock case when stopping discard thread
+Date: Fri, 22 Mar 2024 19:33:57 +0800
+Message-Id: <20240322113357.2599-1-hdanton@sina.com>
+In-Reply-To: <ZfzQz5hwECOEGYVL@google.com>
+References: <20240320001442.497813-1-jaegeuk@kernel.org> <20240321224233.2541-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [next] drm/gma500: Fix spelling mistake "patter" -> "pattern"
-To: Colin Ian King <colin.i.king@gmail.com>,
- Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240314163511.2372458-1-colin.i.king@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20240314163511.2372458-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On Thu, 21 Mar 2024 17:29:03 -0700 Jaegeuk Kim <jaegeuk@kernel.org>
+> 
+> I posted this patch before Light reported.
 
+Yeah, his report's timestamp is 2024-03-20  6:59, nearly 7 hours later,
+which shows that you constructed the deadlock with nothing to do with
+his report.
+> 
+> And, in the report, I didn't get this:
+> 
+> f2fs_ioc_shutdown() --> freeze_bdev() --> freeze_super() --> sb_wait_write(sb, SB_FREEZE_FS) --> ... ->percpu_down_write().
+> 
+> because f2fs_ioc_shutdown() calls f2fs_stop_discard_thread() after thaw_bdev()
+> like this order.
+> 
+>  -> freeze_bdev()
+>  -> thaw_bdev()
+>  -> f2fs_stop_discard_thread()
+> 
+> Am I missing something?
 
-On 2024/3/15 00:35, Colin Ian King wrote:
-> There is a spelling mistake in a DRM_DEBUG_KMS message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-
-
-Reviewed-by:Sui Jingfeng <sui.jingfeng@linux.dev>
-
--- 
-Best regards,
-Sui
+Light, could you specify to help Jaegeuk understand the deadlock you reported?
 
 
