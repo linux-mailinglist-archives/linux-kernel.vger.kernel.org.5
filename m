@@ -1,166 +1,107 @@
-Return-Path: <linux-kernel+bounces-111707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DA79886FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:38:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D27D886FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 299E01F231AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:38:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEF351C20887
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F8A56763;
-	Fri, 22 Mar 2024 15:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC5B53E22;
+	Fri, 22 Mar 2024 15:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gWD9L+bR"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BWBIYBOg"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D4C53E3D;
-	Fri, 22 Mar 2024 15:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B212453395;
+	Fri, 22 Mar 2024 15:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711121869; cv=none; b=AFlLgfuJam2V6B1JgFrHQE5aDSLsIatn6UvUj8MubsTScyEApOzjx+o6Tx0KXgL8FA94u9OKLRB3Rl/ibKgWGcFvBuslKwKxSj9bfFl4k7HesZKL+c+drPt7TPlVZnFM7xw9EHQrkuDaST+nN/C8fShAhxQN9kHV2J3oEN39PEM=
+	t=1711122190; cv=none; b=X7qn1yhXwRp6+p3EMg1cgHMDV/ioWzSBR2GvjuC4D1Xgmi/Irnob1UKF8qRSF8JKHym4KSUVBExyL2V2bdcP3LptgnSxuy233mECgzbvzDGiqppRWA+lkLK9zvUSRWuFp4YH02ocfOPJXgouoOPsODa2Pk4r9HLU8Z1tzIM5+sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711121869; c=relaxed/simple;
-	bh=qzAtLWR4uG/zMQJ4/Ed/+W2vNKKDuKxDafwKCEnZqUI=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=s2rl9yd5YMlKghiSYSUSkgxKgZ9scAUmbYEX7WTEB6C9AKOKgRnhAYBVrA0me4oeRQkGmfnFwDF+zK6CKAwzNx8HfXyWiGW8nSEx98LlAV+Ca6+8+ioKR/52ilIeO858WMLmPzzeQdROthO+NvHTYHzs9R9ECoA+n5ca5gcvxo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gWD9L+bR; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711122190; c=relaxed/simple;
+	bh=Weycm4kqEPwh63+mxtksApHa+dqQabudom9GeH64K0E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n7LBsMKCqE5c7F29iRGxkd+m1SntfPVWtBf6Q6OWANesnNT1fmX40bAFlEn7qrFy2W0csX4ce7t8Wz4SuDzXgD3Q62cdqXsEAIxzjbiYKWu0SdC4e/xNPngjSc3zbMOVNL5ums03senK4ETpRnA4zYtxFoXr93k8upj9L5p6dL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BWBIYBOg; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4147e907143so2436435e9.0;
-        Fri, 22 Mar 2024 08:37:47 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d026c0a08aso73732639f.1;
+        Fri, 22 Mar 2024 08:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711121866; x=1711726666; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MS4tNqN5q9dWj+4x8Dlm5CxbpEbr8JLgxekArGzXyyY=;
-        b=gWD9L+bRiR+6FVn/TqoTT5OzwYzYkA9pVoOZxSjh6n+/ACDG1coTwTKq4AGzQAxzPj
-         d7NeZ7FRR3ZkAw1WbLTjhvojxLjfmivXQDXh+rO0kCrrU37rQ6sD5wGKU4S3wBneRray
-         COtkW58GuoE8WLEjx4fLpnVhfz7Ygs2PvQZg4FsUQAfDUJwHhV/ykKLFwBlcKWf52ewF
-         3otkLSSMq+Wu9Dagp5KMVr9nYUP0svZgpG0yfYGRPD12w5hddwSjnxAntRtQb7I3WvWW
-         Z0PCZ7dVOc8uhbRgfMVdBryKeo0bYelvubJUidL+MZmXrLdSDgCoaZXacJ8ED6wI3E1a
-         /Nyw==
+        d=gmail.com; s=20230601; t=1711122187; x=1711726987; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MxRAWuLAmkBRUhkW64V55k5e3EH9DGdSK68BU70KiTs=;
+        b=BWBIYBOgWOBOMmqolmOQ2C1QO144sjn+Sju4Ga1G5MD4bnRFkxxIK4bbnDLuBdZUr0
+         /oRA4LN7Glu292htol9nh+lJgRKqftMjxYLkBizBcLBwvnZt7r8itv7Y5/uaj+v+DBos
+         EIK2erxCLnl0YwFDspc10XPjeUWc23aLccZRgCqrFqoMJFBlfT8d1FqfudzWLgtzScC4
+         WJ/7Xghe0NCfjP8YZ9bk2DrrOwjrWNZaAf15qUfCIjDkCS/osjcrQ+JYsqOR8xPb0Cc1
+         0gw0injEytIyyZ5nW1Z5AI7C6utkDushBaZjX3ubMHrd2hlN1wxps0lnX7/0Ao4m06l5
+         IVKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711121866; x=1711726666;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MS4tNqN5q9dWj+4x8Dlm5CxbpEbr8JLgxekArGzXyyY=;
-        b=mNeDrbn5NE7dFTlSRFjiRJX4kQu8oWH1wf6OWEVd9iYscBgfoSNmS2unXk1jSiLy+W
-         qEACkJ8nwz5CWhNwD5yLV2OEoIKk7DBp9Y00sUCFXEShNewEfFe4zELC6+sU4gM8BTQS
-         Nv0+LoYUF7WFpNVwhT7wjxfAUn1NTKclKeKu3GlXVprwheaDwQua4sP5WaIQE2T3wW/m
-         WbNIdoJu4SVRzLNTlnXnHXIRGuvhqeYHIrr2i07DG2jXsK1668wF9nbGaApnLFY5FF3v
-         sEFfolPiMArkdVmqGxbKlVfduvpqAQeGt5efIERya/lm+ZSUx9VlVSgh64DFpyrH4tlr
-         sjXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzjbtWSVEoutzB+YbogDKZMpFdChAimTWogdlYkpEPQzI4Yeh0DVeGvbwxYskxbNG4m9rN7MMnWPutn6ATe6lbV6odCcNqFsOmOxEvyScZv4tXd9LU98319XuVFivsfcC9
-X-Gm-Message-State: AOJu0YyW1QVWvdzvpRKgofBtPVoagAEUznICV+sum9kcD7DpvNqFL0mh
-	qadMyqKewa2ANE5ceDcBFuH2IqHUuOmjNrj73KIRtWle0f2r1Sa8
-X-Google-Smtp-Source: AGHT+IGNKvIOVPGwG4lgNEbYfQOdJ2P5rE9Hv5fMSBgCsjfpyUD+q+3Q5qSdMHJhExZxC3kT0iRsHg==
-X-Received: by 2002:a05:600c:5487:b0:414:92e:3b81 with SMTP id iv7-20020a05600c548700b00414092e3b81mr1885946wmb.3.1711121865645;
-        Fri, 22 Mar 2024 08:37:45 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id jh2-20020a05600ca08200b004146dd6bfe2sm3322444wmb.47.2024.03.22.08.37.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2024 08:37:45 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, Andrii
- Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
- Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, Kumar Kartikeya Dwivedi
- <memxor@gmail.com>
-Subject: Re: [PATCH bpf] bpf: verifier: fix NULL pointer dereference in
- do_misc_fixups()
-In-Reply-To: <20240322143829.40808-1-puranjay12@gmail.com>
-References: <20240322143829.40808-1-puranjay12@gmail.com>
-Date: Fri, 22 Mar 2024 15:37:42 +0000
-Message-ID: <mb61p1q82xoop.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1711122187; x=1711726987;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MxRAWuLAmkBRUhkW64V55k5e3EH9DGdSK68BU70KiTs=;
+        b=Nt7k0MY39i7xiVspcmDfcb5cZyaL+cM3Xk4xQA/KXB15G8RqdvAlo5YhX+LwzfOmTq
+         LGAr3ufM89gJZVpn826OWYDe3M9e8zrTHKJ6sOZjJXOk/sifLVCWLF6/9/Bcu/ATpyey
+         MglIQzbuFbs7L2c+0TIZR7JwiWQ8kxTXGAyhuClUm4SlREbwwlkiGBS2inMsy/SzS5Qy
+         fVe7TkzGk1R8QXlQu9yePYcu3UjDwtd5VdVVcvdiHlzw0AFEuLbfnTdi+RS1ssWH9Qaw
+         winIJiDlh9yrtIDed5cmYx3rDnzPQaHoRLO04kg5uNjnakyf5CiwyAvrXjPfU7SkWdhE
+         W2xg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQq4MWBJ7Qs8K4BE1cB0sAdSGyxOzW+98vU+PTZcenl7Zdj4hTZUmWZwVsl1WiSfQXYUsYB4XCwWMSme+RuylM3Xad3lPPTyfsViNfEHi9npxTvE0QNlvxezw+S9KTqHcVI1UdNb6qjg==
+X-Gm-Message-State: AOJu0Yx8LqAGXHIpAL0unE1aYtBCvsl+dEHvb0ief2C9OnVPcNBrh+wp
+	tH59zgtf06iBbyET2BEGrkOGfej6fGuRnjQHIQIrzDAyIKlVI8ntgPQhiknA
+X-Google-Smtp-Source: AGHT+IFzk9z5MujRXMni5Ei3qd9UMZrhATLBX0KZNoNgLLoyCg4V3O1H+oYkUD62bAfsx7CtdQJefQ==
+X-Received: by 2002:a05:6358:7f1c:b0:17e:c5b9:5f6d with SMTP id p28-20020a0563587f1c00b0017ec5b95f6dmr3479648rwn.14.1711121872997;
+        Fri, 22 Mar 2024 08:37:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 31-20020a63185f000000b005dc389409c1sm1688906pgy.93.2024.03.22.08.37.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 08:37:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 22 Mar 2024 08:37:51 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: implement filesystem specific alloc_inode in unit
+ test
+Message-ID: <8725e7d8-722e-43de-9458-dc9a48b93481@roeck-us.net>
+References: <20240322165518.8147-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322165518.8147-1-shikemeng@huaweicloud.com>
 
-Puranjay Mohan <puranjay12@gmail.com> writes:
+On Sat, Mar 23, 2024 at 12:55:18AM +0800, Kemeng Shi wrote:
+> We expect inode with ext4_info_info type as following:
+> mbt_kunit_init
+>   mbt_mb_init
+>     ext4_mb_init
+>       ext4_mb_init_backend
+>         sbi->s_buddy_cache = new_inode(sb);
+>         EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
+> 
+> Implement alloc_inode ionde with ext4_inode_info type to avoid
+> out-of-bounds write.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
 
-> The addr_space_cast instruction is convered to a normal 32 bit mov by the
-> verifier if the cast from as(0) to as(1) or if the user has set the flag
-> BPF_F_NO_USER_CONV in the arena.
->
-> If the BPF program doesn't have an associated arena
-> env->prog->aux->arena is NULL and the verifier currently doesn't check
-> for it being NULL before accessing map_flags. This can cause a NULL
-> pointer dereference:
->
-> root@rv-tester:~# ./reproducer
->  Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000000000030
->  Oops [#1]
->  Modules linked in: sch_fq_codel drm fuse i2c_core drm_panel_orientation_quirks backlight configfs ip_tables x_tables
->  CPU: 2 PID: 265 Comm: reproducer Not tainted 6.8.0 #3
->  Hardware name: riscv-virtio,qemu (DT)
->  epc : do_misc_fixups+0x43c/0x1168
->   ra : bpf_check+0xda8/0x22b6
->  epc : ffffffff8017eeaa ra : ffffffff801936d6 sp : ff200000011bb890
->   gp : ffffffff82293468 tp : ff60000084fcb840 t0 : ff60000084e38048
->   t1 : 0000000000000048 t2 : ff5fffff80000000 s0 : ff200000011bba60
->   s1 : ff2000000101d058 a0 : ff6000008b980000 a1 : 0000000000000004
->   a2 : 00000000000000e1 a3 : 0000000000000001 a4 : 0000000000010000
->   a5 : 0000000000000000 a6 : 0000000000000001 a7 : ff2000000101d000
->   s2 : 0000000000000002 s3 : 0000000000000000 s4 : 0000000000000000
->   s5 : 0000000000000002 s6 : 0000000000000000 s7 : ff6000008b980aa0
->   s8 : 0000000000010005 s9 : 0000000000000004 s10: ff6000008b980000
->   s11: 0000000000000000 t3 : 0000000000002000 t4 : 0000ff0000000000
->   t5 : 00ff000000000000 t6 : ff20000000000000
->  status: 0000000200000120 badaddr: 0000000000000030 cause: 000000000000000d
->  [<ffffffff8017eeaa>] do_misc_fixups+0x43c/0x1168
->  [<ffffffff801936d6>] bpf_check+0xda8/0x22b6
->  [<ffffffff80174b32>] bpf_prog_load+0x486/0x8dc
->  [<ffffffff80176566>] __sys_bpf+0xbd8/0x214e
->  [<ffffffff80177d14>] __riscv_sys_bpf+0x22/0x2a
->  [<ffffffff80d2493a>] do_trap_ecall_u+0x102/0x17c
->  [<ffffffff80d3048c>] ret_from_exception+0x0/0x64
->  Code: b345 9783 0024 4685 8b63 16d7 3783 008d 7f9c 7fdc (5b9c) 83c9
->  ---[ end trace 0000000000000000 ]---
->  Kernel panic - not syncing: Fatal exception
->  SMP: stopping secondary CPUs
->
-> Add a check for NULL pointer before checking map_flags.
->
-> Fixes: 6082b6c328b5 ("bpf: Recognize addr_space_cast instruction in the verifier.")
-> Reported-by: xingwei lee <xrivendell7@gmail.com>
-> Reported-by: yue sun <samsun1006219@gmail.com>
-> Closes: https://lore.kernel.org/bpf/CABOYnLz09O1+2gGVJuCxd_24a-7UueXzV-Ff+Fr+h5EKFDiYCQ@mail.gmail.com/
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ca6cacf7b42f..78945e7b856d 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19607,7 +19607,8 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->  	for (i = 0; i < insn_cnt;) {
->  		if (insn->code == (BPF_ALU64 | BPF_MOV | BPF_X) && insn->imm) {
->  			if ((insn->off == BPF_ADDR_SPACE_CAST && insn->imm == 1) ||
-> -			    (((struct bpf_map *)env->prog->aux->arena)->map_flags & BPF_F_NO_USER_CONV)) {
-> +			    (env->prog->aux->arena &&
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Kumar made me aware of the fact that env->prog->aux_arena should never
-be NULL if the program has an addr_space_cast instruction. This means
-that rather than checking for the NULL pointer here and leaving the
-addr_space_cast as it is, We should reject programs that contain an
-addr_space_cast instruction but don't have an associated arena.
-
-Sent v2 doing the above: https://lore.kernel.org/bpf/20240322153518.11555-1-puranjay12@gmail.com/
-
+Guenter
 
