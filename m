@@ -1,110 +1,87 @@
-Return-Path: <linux-kernel+bounces-111629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC780886EBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2631D886EC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B971F23EE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:35:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83F31F22379
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6F9481D1;
-	Fri, 22 Mar 2024 14:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A751481BF;
+	Fri, 22 Mar 2024 14:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FA/SG+9T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEYTZR9t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A26A47F6F;
-	Fri, 22 Mar 2024 14:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEE943AB2;
+	Fri, 22 Mar 2024 14:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711118141; cv=none; b=byc5hh7Socmj6KJSbyZBm+SGSwoza648+BgXsD80I73Zz+KT3A91y5GIJnG8VCmHPKIMTJcwG+BoPBmFplqQTGdi/DXifPiPdJX5dHGSuabGC93Ny1rf56TPqpb4DRTiVH32n/EaFaabf/M5A65NkNXQ7lPNKRxIoxlNK81OQyI=
+	t=1711118207; cv=none; b=dbioPZBVpgRv9UYDIaKPR2mj6jSZBRoIjLX54tStnkUv9SIkjOiYse2pXAo4G8WC/QI6Q35LWSjQSrMQHO0ZHPBmWsq03blXc9F1FXm5leQyDWHnWqCO2Dn7l9RNPiq5LSjRuGEsGCFjYVArXHrqIjx4J8F6rkUtJf9C5M3t9Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711118141; c=relaxed/simple;
-	bh=6BhaNQSGjOcHcLyTBknP2Sw28oEWlTrKGYjz+J67vF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ikPezsKSp2h9gGAO2JMzegSRFr/Xi94ItAfbZB511yh7Oml3YyRoixRgTnN2b3Ym2+9S01H18zjyd/INKwDovnS5ZF704t/jCjaDLGOgQ58tJQqqSLVBjO/UmhpxJHFB1uriUPHhaskuV0TghMttNaXgMesUbbaUApYG19R4AbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FA/SG+9T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 862D4C433C7;
-	Fri, 22 Mar 2024 14:35:40 +0000 (UTC)
+	s=arc-20240116; t=1711118207; c=relaxed/simple;
+	bh=or1Gn+RA1pWhx4yqAzYUiva3aoBlbjp13O+FP9ZcQEc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lBCgrgsB3pu+VXGgVUuDZncfvXBO3n7d32Z3QtTCYE6gwnvh61zsBmkeUnBMi489n9zJsYx3r+NkW5cFrLaHt0k5N2Hv6/GyONthxc1z578JnZAE0j2B5wyo6C78h36nJ2453OI8EHjdpUIgpsFyKZyRApd2uA7aLGwDWqXrlfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEYTZR9t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EECAC433C7;
+	Fri, 22 Mar 2024 14:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711118141;
-	bh=6BhaNQSGjOcHcLyTBknP2Sw28oEWlTrKGYjz+J67vF8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FA/SG+9TvmCkwewQwm+7kSt5pHQtrmCFmVCBg4whJckoitX2/LdAOiQzV6Hj2m4RS
-	 wsRnQf3VK4HEixX1lOnPhjtOw5pwUoIiBHSmS355ZKAraRWCjp2g1/WadnZTRoQeGh
-	 VXCoom3CuC6775gfF/4eY3VHk56ScK3J3LOgzLgMtpsR4q4OQZrcj00pz/39mXFxRi
-	 EbOlRgNLs3k5zcOatjqkLCfHz/9JMoQxmAKw0p7926s1bzalPretXINSASHUzsbAr2
-	 HHOP7A8IuZIwkWOCO/l9+Zhm9TOQDP/3vncebvZmWU2y8uCxSDkYAGl5JXD1DlG8BP
-	 /X/C6arB90+xA==
-Date: Fri, 22 Mar 2024 09:35:38 -0500
-From: Bjorn Andersson <andersson@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-i2c@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 44/64] i2c: qup: reword according to newest specification
-Message-ID: <zx7b7vfklkyirqdf7mabqcqtjv562k63v7cmoa5soqnfdkbmbh@werqq2a2k354>
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-45-wsa+renesas@sang-engineering.com>
+	s=k20201202; t=1711118207;
+	bh=or1Gn+RA1pWhx4yqAzYUiva3aoBlbjp13O+FP9ZcQEc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FEYTZR9tWAPx6fRWZAUimt4zk6jDgFdDx9iLxPaP3Kk4ohMnHknF/r1F2PavKZ7kU
+	 nKjucfS5J3TB2h4Q71q8SurP0HNVHyGhKcQ1FM0EIdSZesrzcODd9Iq6UI9TVJr6zS
+	 aLH0cM9C4e5c/Qv3/jIEfC4bNyoKotapP25/RZQ26hHPPARfhlpSeuubBAFzQYla7J
+	 O0CL+jWYVotEjaR4IP18e5iibEMmlbq+zAAdhrv2fuW4J+WpgxwovpN6gdliUzNhem
+	 An07uYG91Gow+N/Lg1kggriwj+jRnRqyM/1PF8mrMRUqYesS0vbYdwZ7rnH4vW1TZH
+	 5rElHpW4IbCKQ==
+Message-ID: <f6c0bf7e-bd8f-49f4-abb0-df04fe0e4333@kernel.org>
+Date: Fri, 22 Mar 2024 08:36:44 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322132619.6389-45-wsa+renesas@sang-engineering.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ipv6: fib: hide unused 'pn' variable
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, YOSHIFUJI Hideaki
+ <yoshfuji@linux-ipv6.org>, Ville Nuorvala <vnuorval@tcs.hut.fi>
+Cc: Arnd Bergmann <arnd@arndb.de>, Kui-Feng Lee <thinker.li@gmail.com>,
+ Breno Leitao <leitao@debian.org>, Kunwu Chan <chentao@kylinos.cn>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240322131746.904943-1-arnd@kernel.org>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20240322131746.904943-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 22, 2024 at 02:25:37PM +0100, Wolfram Sang wrote:
-> Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
-> specifications and replace "master/slave" with more appropriate terms.
-> They are also more specific because we distinguish now between a remote
-> entity ("client") and a local one ("target").
+On 3/22/24 7:14 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-
-Regards,
-Bjorn
-
+> When CONFIG_IPV6_SUBTREES is disabled, the only user is hidden, causing
+> a 'make W=1' warning:
+> 
+> net/ipv6/ip6_fib.c: In function 'fib6_add':
+> net/ipv6/ip6_fib.c:1388:32: error: variable 'pn' set but not used [-Werror=unused-but-set-variable]
+> 
+> Add another #ifdef around the variable declaration, matching the other
+> uses in this file.
+> 
+> Fixes: 66729e18df08 ("[IPV6] ROUTE: Make sure we have fn->leaf when adding a node on subtree.")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/i2c/busses/i2c-qup.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-qup.c b/drivers/i2c/busses/i2c-qup.c
-> index 598102d16677..2aeb5c33a711 100644
-> --- a/drivers/i2c/busses/i2c-qup.c
-> +++ b/drivers/i2c/busses/i2c-qup.c
-> @@ -380,7 +380,7 @@ static int qup_i2c_poll_state_mask(struct qup_i2c_dev *qup,
->  	u32 state;
->  
->  	/*
-> -	 * State transition takes 3 AHB clocks cycles + 3 I2C master clock
-> +	 * State transition takes 3 AHB clocks cycles + 3 I2C host clock
->  	 * cycles. So retry once after a 1uS delay.
->  	 */
->  	do {
-> @@ -1607,12 +1607,12 @@ static u32 qup_i2c_func(struct i2c_adapter *adap)
->  }
->  
->  static const struct i2c_algorithm qup_i2c_algo = {
-> -	.master_xfer	= qup_i2c_xfer,
-> +	.xfer	= qup_i2c_xfer,
->  	.functionality	= qup_i2c_func,
->  };
->  
->  static const struct i2c_algorithm qup_i2c_algo_v2 = {
-> -	.master_xfer	= qup_i2c_xfer_v2,
-> +	.xfer	= qup_i2c_xfer_v2,
->  	.functionality	= qup_i2c_func,
->  };
->  
-> -- 
-> 2.43.0
-> 
+>  net/ipv6/ip6_fib.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
+
 
