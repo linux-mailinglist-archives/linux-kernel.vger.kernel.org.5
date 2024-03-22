@@ -1,216 +1,144 @@
-Return-Path: <linux-kernel+bounces-110864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A3A8864EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:52:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E79D8864EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEB941C22350
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:52:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A589DB22722
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42CC215BB;
-	Fri, 22 Mar 2024 01:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D27515BB;
+	Fri, 22 Mar 2024 01:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H4eHYeg/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iYENYrwf"
 Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A252810E3
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19E910E3;
+	Fri, 22 Mar 2024 01:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711072371; cv=none; b=AzG60/5Mdo7p2ahP54ClwXBH7SgMAAcrX+DCW/Ujp5qRXCAKKAFAYJWNxxyz1zGloVdPr+d2YsWcvdTRUhN81LZWWllf9Swys6YwfpSPsf3/swUsas5HW1hxYWgtU5sNmhpOhNQukNMHe0G/YvU5+dxY41qhVOF2ztjLYVmyuU0=
+	t=1711072568; cv=none; b=FDt57KcDvwYcZ6UsKO5169Lhlm3NloX6yIaA2nF5GDU8YxOznajUtG+X/xf+2pe8MVqAaUO56F2G7fowatBYe6r2oqZpqE9lVc4Laxc7T2gJo/LOZbgN1wAsTA1cOcH6ygq/+0V/HaGcZh7ZTQSBC292ysFbNQwZ/bbq7k0kgdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711072371; c=relaxed/simple;
-	bh=zixhV+cNi+JOIgJjhXq4BRqfb2sgRmrwYoJUvc9l8iw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WrPdxo9rf57Kz4yzav7DNYAh7h0frPsJOCQoDzFPluure1lCOrKP6Fy4oY6DGMGGx0k2h0zynL0I70MCWLVooDETmUjBa8fujA9zCpp8W1NnxSxxwk22w7xkPY2ackxPOH7F8aQX9p8v/cfk+hkkHE4eYUYerHwWmMDnmAUA6Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H4eHYeg/; arc=none smtp.client-ip=209.85.167.46
+	s=arc-20240116; t=1711072568; c=relaxed/simple;
+	bh=RMKkVWlMi3qpcXxfdqH8qCZEDuD5oSIGYu4ULjWoV+w=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=sgPcO5gn+r9cI12ZaE97dGOoGe8lrDfW2pqZepWJV2Bpvws1vC9HdiIt5Bue1yddvqShHxY1fQfWnRyG7Eet2oLLYkbMNSYkUPprogK9bv36kKCYD/7Dirm0ps0N2OD4fCmy3dfbBGZu/Jysn8eM+oYtNnLhutQsJPLA7Pf0FxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iYENYrwf; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513edc88d3cso1689459e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:52:49 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513dc99b709so2088626e87.1;
+        Thu, 21 Mar 2024 18:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711072368; x=1711677168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zNBMFTM15k325ob8+xUYC/3jWDb7dhwaiyxnvR1gLmo=;
-        b=H4eHYeg/65sORcK/hQkB1ttcKNNcabHT3ynb2vAEHntdQexk7B57W99y/3hlxrXGHZ
-         DPOwSaUuzAQrCn4h8KNGWVRFL7uS+Njzhav/t4NhbfBrBNDXvKdN3RuPrEuGPaknwK/R
-         v78ASbm4GJSnRhdmf2GgCM6M2Dh8neW5hwl5zLFZ2+i6ScbZ2D2jpC3Bl3NSt2myFQgf
-         lwR6Ml0M8yfTATNxFm5PTxdg8hRTcvkIItJzy9hI6BbkcAH0TXzTX8WAGU5+Szbdrq+6
-         8dmmcyepAtEEyQpfDwywumqnDhNMsi380nax3syGi+7Gnwr6DbB1ZqlY64V4mzAoEXkJ
-         W3ew==
+        d=gmail.com; s=20230601; t=1711072565; x=1711677365; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bwWa4BgJJkr16k/nzdvDFnFjU1oDVg5Ayz3jjJ3bhPc=;
+        b=iYENYrwf9leVJH303ga+SDdZM/zF1MUgKNWLq6HSEEDm133iYTqUUF7eCsItLtQnYl
+         lMYJWk7TcWTGy86/xL7M+G4oEGdPzjmqvEbJBPC/aO/NBgn0NO2YGEUG5ebnMjEzi9us
+         AQIFPsYLdkHVDctxlVEEic4kNFePg61yqNc7VadOZ4jKSsgkFiCK7gJfE46DPGXkpCKf
+         XHhHvp5P5LGSyrRhKj+zvcsY+sO/nQzKhfR6MODPLo2veibe3N0j690Mkp+3B2qwdM5n
+         4iDK8fDzknjUNduIjkCF+6GXZPPW7yk5WWdWGXuHGBZjfc6tiPDqHG51ugg2z43NiLZw
+         9jzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711072368; x=1711677168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zNBMFTM15k325ob8+xUYC/3jWDb7dhwaiyxnvR1gLmo=;
-        b=uWTIfXU7SbhfI1NT/oqCOs7I/LFNhXDpTg7aUDZ91l4hzsSs22HF8n4ol1NFpDN6Fj
-         i5jyhsk0FbaD28WwL9R8kWy0WZSaLKRw0r9nKby1CBfaXzDCSk4GwBPwNH7J2lLQ4zxD
-         dnzVENPbZQ2v2KkYxZXQx4E8idD9JsJbVYHdy/r7lf09GbAvDoMviscVetPuu1/Bw8RZ
-         u/CVVLL9HeR5OOhMYEZyVhO8luMpZdK7//x1/XPozTU8GRI6NI2rX9B/U2inTHCwJWVT
-         JCuqS2XNgkjd5nNQR+wCiMY93an70j9nmmk7aHUaWEV7SPE34W58uwW0RmBEd+RYNfX/
-         y47w==
-X-Forwarded-Encrypted: i=1; AJvYcCUIQC+ByjUceuYTI07kfnbwdg19uJasoNTEjiCRH5qFcrIvOXCn5bEBBEkeMTW41iViiIKZDV5MRyMYBVtzpvrOdk+Vqd3hOpUovroh
-X-Gm-Message-State: AOJu0YzFPcBelQ2TKfFQWBNgbMmd0JrPht2OLW01h4pis22LAQBqZ6kS
-	gFRgwaO+ooJemiz8i5+tDRsmLTXo9dfl9AYjQdbH9gTwPqo2mXYlDOW8d8XTylVob4uF5RZcWCA
-	1z0qOjBSBTnahxkKGN5sAJsgQmEATOdAxErk=
-X-Google-Smtp-Source: AGHT+IEeVnwKVqQhi5/EAi48TQmP5Pco8j9Rxqyao2UqtcVj/zE0WgShGkJiiYVvCS1gy/WZno//xhIZGU07s18k74g=
-X-Received: by 2002:ac2:5eca:0:b0:515:90e8:f873 with SMTP id
- d10-20020ac25eca000000b0051590e8f873mr594954lfq.35.1711072367413; Thu, 21 Mar
- 2024 18:52:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711072565; x=1711677365;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bwWa4BgJJkr16k/nzdvDFnFjU1oDVg5Ayz3jjJ3bhPc=;
+        b=IwyO1I6nRV/0k2TR/J8y5vm5TsP6LAOg0TxXmSTBgK/dijwGJ7E9TZHy708+5aJUqG
+         i6GOAGx48iR4cSmwK+ATlkzvbgdR2OYKlFBTKWAeJXcaCuLzVA1/TBh3hVmRztaWzMq0
+         dbp9FQr0dvy7F2p65WM+WWWODuc8aM5FNaw8XobjeHrUZEmCkoNtfSgEBfrb9M0ZR3LY
+         51unhfJLYSQf8h7V9Q0SkSCpy7rpL0yyKN67Sx9Qliq03RCI1NQ2cGPjps9nRsmoDhUK
+         YvetLWFcqxO3k5PRhPDzyd2kwnerFq1AOrw9JnldYgSuet801MWLlyLlOQBmS07Jn6AF
+         QM5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXUmx4IL3rlgFfoOuPar1HFN7bMdXpiySqIesJC1ywJSVOCg3vN+7lUYITkk105+vvN9bHgLKGBF4q06K2Y4ypV6ye9sJ6f7BUxug==
+X-Gm-Message-State: AOJu0Yx6xTsAXQs5cyAZts6oRnN7p3tmoLtGJF32tGJIDVvLLWHya+dx
+	QUQEqtuIDeivlYuFiyWcC61yOXNatIl7pIrTdLbVRCLqcLKUOrJF1jRIs2S4khavs0yOJBABxJ/
+	OzkWsM0eFWm5m23uX/DixUnCDTFQ=
+X-Google-Smtp-Source: AGHT+IF/TqelXBddl5IJ2N+BQNQfXFVg2IpOsyaGGMvVibUEayH8FltMU6QmTnbIqWKfxUYO9eIDLUXRtoiVnhDvSl0=
+X-Received: by 2002:a05:6512:285:b0:513:e375:12c1 with SMTP id
+ j5-20020a056512028500b00513e37512c1mr592514lfp.41.1711072564918; Thu, 21 Mar
+ 2024 18:56:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <be75859d7e4245939d825da5e881902c@BJMBX01.spreadtrum.com>
- <Zfg0WLrcOmCtdn_M@casper.infradead.org> <CAGWkznGhiuzkqfeewNq-ykKehvFTBjH2v_==xAS2_7iFqsFk5A@mail.gmail.com>
- <Zfj_-LbiIsAVWcPX@casper.infradead.org> <CAGWkznHOWVPpKHOuvvDF2zppkTT0_x4WyJ5S75j+EghhZmEDdg@mail.gmail.com>
- <ZfwpuRjAZV07_lc3@casper.infradead.org>
-In-Reply-To: <ZfwpuRjAZV07_lc3@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Fri, 22 Mar 2024 09:52:36 +0800
-Message-ID: <CAGWkznFtez1fj2L2CtFnA5k-Tn4WtxmDOw=fjOWPg-ZGJX=VWw@mail.gmail.com>
-Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
- mm: fix a race scenario in folio_isolate_lru
-To: Matthew Wilcox <willy@infradead.org>
-Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+From: Steve French <smfrench@gmail.com>
+Date: Thu, 21 Mar 2024 20:55:53 -0500
+Message-ID: <CAH2r5mtMVc02DmB_hw_j49o6YQSD7Jwr4tbSMuTjxX5L7ZgkVA@mail.gmail.com>
+Subject: [GIT PULL] smb client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 21, 2024 at 8:36=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Mar 21, 2024 at 04:25:07PM +0800, Zhaoyang Huang wrote:
-> > ok. Could the scenario below be suspicious on leaving an orphan folio
-> > in step 7 and introduce the bug in step 8. In the scenario,
-> > Thread_filemap behaves as a backdoor for Thread_madv by creating the
-> > pte after Thread_truncate finishes cleaning all page tables.
-> >
-> > 0. Thread_bad gets the folio by folio_get_entry and stores it in its
-> > local fbatch_bad and go to sleep
->
-> There's no function called folio_get_entry(), but clearly thread_bad
-> should have a refcount on it at this point.
->
-> > 1. Thread_filemap get the folio via
-> > filemap_map_pages->next_uptodate_folio->xas_next_entry and gets
-> > preempted
-> >     refcnt =3D=3D 1(page_cache), PG_lru =3D=3D true
->
-> so the refcount should be 2 here.
->
-> > 2. Thread_truncate get the folio via
-> > truncate_inode_pages_range->find_lock_entries
-> >     refcnt =3D=3D 2(fbatch_trunc, page_cache), PG_lru =3D=3D true
-> >
-> > 3. Thread_truncate proceed to truncate_cleanup_folio
-> >     refcnt =3D=3D 2(fbatch_trunc, page_cache), PG_lru =3D=3D true
-> >
-> > 4. Thread_truncate proceed to delete_from_page_cache_batch
-> >     refcnt =3D=3D 1(fbatch_trunc), PG_lru =3D=3D true
-> >
-> > 5. Thread_filemap schedule back and proceed to setup a pte and have
-> > folio->_mapcnt =3D 0 & folio->refcnt +=3D 1
-> >     refcnt =3D=3D 2(pte, fbatch_temp), PG_lru =3D=3D true
-> >
-> > 6. Thread_madv clear folio's PG_lru by
-> > madvise_xxx_pte_range->folio_isolate_lru->folio_test_clear_lru
-> >     refcnt =3D=3D 2(pte,fbatch_temp), PG_lru =3D=3D false
-> >
-> > 7. Thread_truncate call folio_fbatch_release and failed in freeing
-> > folio as refcnt not reach 0
-> >     refcnt =3D=3D 1(pte), PG_lru =3D=3D false
-> > ********folio becomes an orphan here which is not on the page cache
-> > but on the task's VM**********
-> >
-> > 8. Thread_xxx scheduled back from 0 to do release_pages(fbatch_bad)
-> > and have the folio introduce the bug.
->
-> ... because if these steps happen as 7, 8, 6, you hit the BUG in
-> folio_isolate_lru().
-Thanks for the comments. fix the typo and update the timing sequence
-by amending possible preempt points to have the refcnt make sense.
+Please pull the following changes since commit
+279d44ceb8a495d287ec563964f2ed04b0d53b0e:
 
-0. Thread_bad gets the folio by find_get_entry and preempted before
-take refcnt(could be the second round scan of
-truncate_inode_pages_range)
-    refcnt =3D=3D 1(page_cache), PG_lru =3D=3D true, PG_lock =3D=3D false
-    find_get_entry
-        folio =3D xas_find
-        <preempted>
-        folio_try_get_rcu
+  Merge tag '6.9-rc-smb3-client-fixes-part1' of
+git://git.samba.org/sfrench/cifs-2.6 (2024-03-13 13:15:24 -0700)
 
-1. Thread_filemap get the folio via
-filemap_map_pages->next_uptodate_folio->xas_next_entry and gets preempted
-    refcnt =3D=3D 1(page_cache), PG_lru =3D=3D true, PG_lock =3D=3D false
-    filemap_map_pages
-        next_uptodate_folio
-           xas_next_entry
-           <preempted>
-           folio_try_get_rcu
+are available in the Git repository at:
 
-2. Thread_truncate get the folio via
-truncate_inode_pages_range->find_lock_entries
-    refcnt =3D=3D 2(page_cache, fbatch_truncate), PG_lru =3D=3D true, PG_lo=
-ck =3D=3D true
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.9-rc-smb3-client-fixes-part2
 
-3. Thread_truncate proceed to truncate_cleanup_folio
-    refcnt =3D=3D 2(page_cache, fbatch_truncate), PG_lru =3D=3D true, PG_lo=
-ck =3D=3D true
+for you to fetch changes up to e56bc745fa1de77abc2ad8debc4b1b83e0426c49:
 
-4. Thread_truncate proceed to delete_from_page_cache_batch
-    refcnt =3D=3D 1(fbatch_truncate), PG_lru =3D=3D true, PG_lock =3D=3D tr=
-ue
+  smb311: additional compression flag defined in updated protocol spec
+(2024-03-20 11:49:44 -0500)
 
-4.1 folio_unlock
-    refcnt =3D=3D 1(fbatch_truncate), PG_lru =3D=3D true, PG_lock =3D=3D fa=
-lse
+----------------------------------------------------------------
+Nine cifs.ko changesets, including three for stable
+- Various get_inode_info_fixes
+- Fix for querying xattrs of cached dirs
+- Four minor cleanup fixes (including adding some header corrections
+and a missing flag)
+- Performance improvement for deferred close
+- Two query interface fixes
 
-5. Thread_filemap schedule back from '1' and proceed to setup a pte
-and have folio->_mapcnt =3D 0 & folio->refcnt +=3D 1
-    refcnt =3D=3D 1->2(+fbatch_filemap)->3->2(pte, fbatch_truncate),
-PG_lru =3D=3D true, PG_lock =3D=3D true->false
+Still working on the important fix to enable a way to handle password
+rotation and testing some misc small features/fixes
+----------------------------------------------------------------
+Bharath SM (2):
+      cifs: defer close file handles having RH lease
+      cifs: remove redundant variable assignment
 
-6. Thread_madv clear folio's PG_lru by
-madvise_xxx_pte_range->folio_isolate_lru->folio_test_clear_lru
-    refcnt =3D=3D 2(pte,fbatch_truncate), PG_lru =3D=3D false, PG_lock =3D=
-=3D false
+David Howells (1):
+      cifs: Move some extern decls from .c files to .h
 
-7. Thread_truncate call folio_fbatch_release and failed in freeing
-folio as refcnt not reach 0
-    refcnt =3D=3D 1(pte), PG_lru =3D=3D false, PG_lock =3D=3D false
-********folio becomes an orphan here which is not on the page cache
-but on the task's VM**********
+Eugene Korenevsky (1):
+      cifs: open_cached_dir(): add FILE_READ_EA to desired access
 
-8. Thread_bad scheduled back from '0' to be collected in fbatch_bad
-    refcnt =3D=3D 2(pte, fbatch_bad), PG_lru =3D=3D false, PG_lock =3D=3D t=
-rue
+Meetakshi Setiya (1):
+      cifs: fixes for get_inode_info
 
-9. Thread_bad clear one refcnt wrongly when doing filemap_remove_folio
-as it take this refcnt as the page cache one
-    refcnt =3D=3D 1(fbatch_bad), PG_lru =3D=3D false, PG_lock =3D=3D true->=
-false
-    truncate_inode_folio
-        filemap_remove_folio
-             filemap_free_folio
-******refcnt decreased wrongly here by being taken as the page cache one **=
-****
+Shyam Prasad N (2):
+      cifs: make sure server interfaces are requested only for SMB3+
+      cifs: reduce warning log level for server not advertising interfaces
 
-10. Thread_bad calls release_pages(fbatch_bad) and has the folio
-introduce the bug.
-    release_pages
-        folio_put_testzero =3D=3D true
-        folio_test_lru =3D=3D false
-        list_add(folio->lru, pages_to_free)
+Steve French (2):
+      smb311: correct incorrect offset field in compression header
+      smb311: additional compression flag defined in updated protocol spec
+
+ fs/smb/client/cached_dir.c |  3 ++-
+ fs/smb/client/cifsfs.c     |  4 ----
+ fs/smb/client/cifsglob.h   |  5 +++++
+ fs/smb/client/connect.c    |  9 +++++----
+ fs/smb/client/file.c       | 20 +++++++++++++++-----
+ fs/smb/client/inode.c      | 26 +++++++++++++-------------
+ fs/smb/client/misc.c       |  3 ---
+ fs/smb/client/sess.c       |  4 ++--
+ fs/smb/client/smb2ops.c    |  2 ++
+ fs/smb/client/smb2pdu.c    |  5 +++--
+ fs/smb/common/smb2pdu.h    | 12 +++++++-----
+ 11 files changed, 54 insertions(+), 39 deletions(-)
+
+
+-- 
+Thanks,
+
+Steve
 
