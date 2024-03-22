@@ -1,62 +1,61 @@
-Return-Path: <linux-kernel+bounces-111532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 173AE886D60
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:38:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9723886D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5F401F239ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:38:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 172901C22706
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5017666B22;
-	Fri, 22 Mar 2024 13:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F8765BBF;
+	Fri, 22 Mar 2024 13:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="dZ9TpqDj"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Inynn4cA"
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54ED165BB2
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8269664A7
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114049; cv=none; b=Z82s9eEuk14hkUJnp2oJdoioZ4p61BWwO3cu48+7i5i37sd/J3PCRQAwZe82EqeXabR9a/k0L2h/DDYWGUvDTN6uFdHB9CLpHrX+b3NeMUtRNQFKpgMMnxhr+EU877p+bkqRi4janLvCrE2QZs9zBO5bPX3YLMxYU11kRR1o1vg=
+	t=1711114050; cv=none; b=o8Kn3CpRZdgfJmgXDWw0B6sEisRdlITpjQpeothrB6sEzubB1d5ol1SVV80U5hAnalad/G1yqPZacPVLpThnRzcLILEA2dLKpQV06cJG85PYsmbR5LAAaCn7ZLuNE1oubv/gb3y7vdVUVQt3Srm3dJQDYVi4csBq2Wg+NFqkT18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114049; c=relaxed/simple;
-	bh=fHpjjT7VWPlWf89q6pOUOQOpJIvNvwHkfmzjVoejNB4=;
+	s=arc-20240116; t=1711114050; c=relaxed/simple;
+	bh=A4Mzc2nTZGdzFMcgWqISDzq4egh98/WrwYY5nCHZFUk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=REk/oiuUIN5l3QMJR80gGLJznut7U9yc8mmjRYf2Cg+MrnehM1jvtQVfxWUPKDPHKJiZa9bMZJuEGmdb2evMBKfk7pQ7LzYJcCIQbpjN2XFbTlltZVZM1n/XkNkzz1+c5XFHmN/tcvzsEaI197V7Cf9txft7rTLSCqYrH8MTWfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=dZ9TpqDj; arc=none smtp.client-ip=194.117.254.33
+	 MIME-Version; b=QCf0QrN+c46V0cIbKgv0E/8cSZqsup5hcIF4CxmaLZvRR4a1p7OquwlYI14p+eljDkQwKUauwO79IDXDPBlQvYpee6H1/bjr5gyVzZuBE4KSsWv48enEbf1cHPCsaOzDpOb18XA7PEVJJKE0x5zUDQeKauZ5F75Q77f0CEGJL8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Inynn4cA; arc=none smtp.client-ip=194.117.254.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	sang-engineering.com; h=from:to:cc:subject:date:message-id
 	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=k1; bh=v5icbxJz6JkP2dpvAuHf8kDHkY/a+aKxThUJ7RMnku8=; b=dZ9Tpq
-	DjfvPnqYwJtDQcHEgBqxDnzAKKnJ3VU1tjc/rrXPkf+9nnGOnfOqlSGafJGIVZP6
-	ROpLbnxNrSAowYXsvgKf+8YD27AVoKRd+CVNAIrkcowPWR5gaxqRMM/5kKWpycTs
-	D5ChfZAmfkQqsFyFXea1/goq4Df0dQqRWeyXY+XuloF9LqgKrxpGJJtGazDyhLIW
-	D4dHOqL1MLnS0EXK+ZDAhjzcDoqPvyr79MbAQ0tNAz5bWtMSBDoXvnpp0N3O8qXV
-	AcN1wn7/pHqFLP9Dksau7EbNIhSSyHUDyg2N6+2NCu+RZ+0JUigNg3+k01lDOpU3
-	vnczVBL9ntCLhMbg==
-Received: (qmail 3871957 invoked from network); 22 Mar 2024 14:27:05 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Mar 2024 14:27:05 +0100
-X-UD-Smtp-Session: l3s3148p1@liKsxz8UQpRehhtF
+	 s=k1; bh=ytanu7H5eyBZ7/uQQrpibeDO0nDWqRUtTfFni6jgrYU=; b=Inynn4
+	cAKloAbOe1BMSWTKEXk7UMn0qEswaNtZvclzB3S8odDdfdfITHmo2/62ZfDZpNIR
+	8fl7Bcf9mY4DQlRcYBuLInnJiv7UNO37dnV4mCw0kboQkBLO590Br59mJNhuefCB
+	FJmIU9jS1nMraNXQjhwNKQCvJU2z6WJpvROZs/TYehnzltuqj9SJ0DR+XgGRBbtr
+	krLYxgtd0VQYdvlc2NdAZzSe/ewx7ruXzuojGVSqkQrGqXbzYFudnKeDZHLSh2XB
+	+iZh2fE7d5xyyssuuO5gBMEZNik5iPgqNvmkdXr7VqLfd61D2vxpkdfP25Zelayr
+	OzhdHCVcZJECLJZA==
+Received: (qmail 3872005 invoked from network); 22 Mar 2024 14:27:06 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Mar 2024 14:27:06 +0100
+X-UD-Smtp-Session: l3s3148p1@rO+4xz8URpRehhtF
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-i2c@vger.kernel.org
 Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
 	Andi Shyti <andi.shyti@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-stm32@st-md-mailman.stormreply.com,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
 	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 54/64] i2c: stm32f4: reword according to newest specification
-Date: Fri, 22 Mar 2024 14:25:47 +0100
-Message-ID: <20240322132619.6389-55-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 55/64] i2c: sun6i-p2wi: reword according to newest specification
+Date: Fri, 22 Mar 2024 14:25:48 +0100
+Message-ID: <20240322132619.6389-56-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
 References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
@@ -75,49 +74,88 @@ entity ("client") and a local one ("target").
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 ---
- drivers/i2c/busses/i2c-stm32f4.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-sun6i-p2wi.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-index 859ac0cf7f6c..297f2ace6b94 100644
---- a/drivers/i2c/busses/i2c-stm32f4.c
-+++ b/drivers/i2c/busses/i2c-stm32f4.c
-@@ -95,7 +95,7 @@
- 
- /**
-  * struct stm32f4_i2c_msg - client specific data
-- * @addr: 8-bit slave addr, including r/w bit
-+ * @addr: 8-bit client addr, including r/w bit
-  * @count: number of bytes to be transferred
-  * @buf: data buffer
-  * @result: result of the transfer
-@@ -480,7 +480,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
- 
- /**
-  * stm32f4_i2c_handle_rx_addr() - Handle address matched interrupt in case of
-- * master receiver
-+ * host receiver
-  * @i2c_dev: Controller's private data
-  */
- static void stm32f4_i2c_handle_rx_addr(struct stm32f4_i2c_dev *i2c_dev)
-@@ -643,7 +643,7 @@ static irqreturn_t stm32f4_i2c_isr_error(int irq, void *data)
- 
- 	/*
- 	 * Acknowledge failure:
--	 * In master transmitter mode a Stop must be generated by software
-+	 * In host transmitter mode a Stop must be generated by software
- 	 */
- 	if (status & STM32F4_I2C_SR1_AF) {
- 		if (!(msg->addr & I2C_M_RD)) {
-@@ -749,7 +749,7 @@ static u32 stm32f4_i2c_func(struct i2c_adapter *adap)
- }
- 
- static const struct i2c_algorithm stm32f4_i2c_algo = {
--	.master_xfer = stm32f4_i2c_xfer,
-+	.xfer = stm32f4_i2c_xfer,
- 	.functionality = stm32f4_i2c_func,
+diff --git a/drivers/i2c/busses/i2c-sun6i-p2wi.c b/drivers/i2c/busses/i2c-sun6i-p2wi.c
+index 85e035e7a1d7..bb01746738b1 100644
+--- a/drivers/i2c/busses/i2c-sun6i-p2wi.c
++++ b/drivers/i2c/busses/i2c-sun6i-p2wi.c
+@@ -10,7 +10,7 @@
+  * The P2WI controller looks like an SMBus controller which only supports byte
+  * data transfers. But, it differs from standard SMBus protocol on several
+  * aspects:
+- * - it supports only one slave device, and thus drop the address field
++ * - it supports only one client device, and thus drop the address field
+  * - it adds a parity bit every 8bits of data
+  * - only one read access is required to read a byte (instead of a write
+  *   followed by a read access in standard SMBus protocol)
+@@ -88,7 +88,7 @@ struct p2wi {
+ 	void __iomem *regs;
+ 	struct clk *clk;
+ 	struct reset_control *rstc;
+-	int slave_addr;
++	int client_addr;
  };
  
+ static irqreturn_t p2wi_interrupt(int irq, void *dev_id)
+@@ -121,7 +121,7 @@ static int p2wi_smbus_xfer(struct i2c_adapter *adap, u16 addr,
+ 	struct p2wi *p2wi = i2c_get_adapdata(adap);
+ 	unsigned long dlen = P2WI_DLEN_DATA_LENGTH(1);
+ 
+-	if (p2wi->slave_addr >= 0 && addr != p2wi->slave_addr) {
++	if (p2wi->client_addr >= 0 && addr != p2wi->client_addr) {
+ 		dev_err(&adap->dev, "invalid P2WI address\n");
+ 		return -EINVAL;
+ 	}
+@@ -188,7 +188,7 @@ static int p2wi_probe(struct platform_device *pdev)
+ 	unsigned long parent_clk_freq;
+ 	u32 clk_freq = I2C_MAX_STANDARD_MODE_FREQ;
+ 	struct p2wi *p2wi;
+-	u32 slave_addr;
++	u32 client_addr;
+ 	int clk_div;
+ 	int irq;
+ 	int ret;
+@@ -207,7 +207,7 @@ static int p2wi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (of_get_child_count(np) > 1) {
+-		dev_err(dev, "P2WI only supports one slave device\n");
++		dev_err(dev, "P2WI only supports one client device\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -215,24 +215,24 @@ static int p2wi_probe(struct platform_device *pdev)
+ 	if (!p2wi)
+ 		return -ENOMEM;
+ 
+-	p2wi->slave_addr = -1;
++	p2wi->client_addr = -1;
+ 
+ 	/*
+ 	 * Authorize a p2wi node without any children to be able to use an
+ 	 * i2c-dev from userpace.
+-	 * In this case the slave_addr is set to -1 and won't be checked when
++	 * In this case the client_addr is set to -1 and won't be checked when
+ 	 * launching a P2WI transfer.
+ 	 */
+ 	childnp = of_get_next_available_child(np, NULL);
+ 	if (childnp) {
+-		ret = of_property_read_u32(childnp, "reg", &slave_addr);
++		ret = of_property_read_u32(childnp, "reg", &client_addr);
+ 		if (ret) {
+-			dev_err(dev, "invalid slave address on node %pOF\n",
++			dev_err(dev, "invalid client address on node %pOF\n",
+ 				childnp);
+ 			return -EINVAL;
+ 		}
+ 
+-		p2wi->slave_addr = slave_addr;
++		p2wi->client_addr = client_addr;
+ 	}
+ 
+ 	p2wi->regs = devm_platform_ioremap_resource(pdev, 0);
 -- 
 2.43.0
 
