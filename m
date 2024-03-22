@@ -1,176 +1,316 @@
-Return-Path: <linux-kernel+bounces-111701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E7C886FCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:25:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 597DF886FD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:30:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 669CC1C226F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:25:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC46C1F228A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA27524DF;
-	Fri, 22 Mar 2024 15:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCDD0524C4;
+	Fri, 22 Mar 2024 15:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hrnAdmDh"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="XHbGkUhR"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098E14D137;
-	Fri, 22 Mar 2024 15:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DAD4AEC1;
+	Fri, 22 Mar 2024 15:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711121148; cv=none; b=qQbCAKcKopUCufIPa1CysauU9lNL0x+A2K40W2kYthdmDgWxrZ2cvJHmDcB+EYyzdXL10ZZIFKlB2uABqzARB6YYakpltcKbzQmlhBO5Ih8x5tqCXTlUO/H7gAoJ1HglrtQmjdaltpUmH3qmF9hg9OM+KPhYoWbmnQP4/vZEklw=
+	t=1711121395; cv=none; b=ByBhh6xH1H8P8iTNZr2uArPI1EEUGR/PecJUWOLh+Apu1C9X8kQgMGY5wrlEy/ekupHLSyJmK2gU6Yo6p88IW7PFwmZcNmWIvbksklEjKyRd0y/OObQDxqYXhzc30dbgtwYGth7XiFVqw5LH6TTjL7WLdQlDOKk6gokGuIC7c4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711121148; c=relaxed/simple;
-	bh=6bSwHxIng+Vkb43xeUl9q3Lz9EPeHyyRDC+bhUpmH/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hQQHYgi+gz6P3lyBbxUGdkfqGeK7gimQkwcMShlmSuSPtkf9+pcgkmy7z6JRLnhve7a1I7+bkJVmTUE8h/rV/3z3a5oHS7zTBGM/VlrOKDm5CTOr2WrfWF+kzvbzmrH3m2/l6a/1xxNlVt+ARa8cF5y8CKijQRHGLuU8KJPESfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hrnAdmDh; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69625f89aa2so19039086d6.3;
-        Fri, 22 Mar 2024 08:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711121145; x=1711725945; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIOmF60Rb86w4+w2jglrFD/Lg9na+Rxq9LbforhHtzA=;
-        b=hrnAdmDhbgbKprzwTelemHfNYjrBXVgGj7Ud/kz4F6PBRSlcXhJ3FrBPo2eqVZ12ff
-         8CnnJc6jnAsKCLr3CSDt+vnHhWCCJd8PMjsikMgqYfDBCAu0NtXv7LhrNfiFbsuDaEWt
-         dzqPItL71AFaK9WbHa/1WvEqaQYojyC68N3Yyt4bBRCh72WmPGT8kxQy2obA8cd3AbXK
-         uZpbWHr/d4XLSC+jOxe+Cj62RL9ULG1z2IQJftfjzrnlYBp7PbD3gQ9OhRzXe2Surxbe
-         cNfi4jcAf+hur61egNefZVcrKFBkYbMWnVrV6tU/G6+jrZ7+m+OK4OHQ9oTAdqfrqORO
-         5MjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711121145; x=1711725945;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mIOmF60Rb86w4+w2jglrFD/Lg9na+Rxq9LbforhHtzA=;
-        b=Xjm+wDMwF1UrywjQM6Wux9mc6vxmuGqXhae4Ez0GP/UCBi9FchwuTabP6pW0EJ9K70
-         bcMHX7HWfPt2nU6aEd6Ve9+bFLYxunVEz8jDTheP+ff2rnpcRgZ1lmvAaHOlfAxeAB0L
-         BE4ygpGWFr3pFrBBbZBtyO2n2jAw2KcTDCD88NsZ6D6dUby9K0e2wi2XdqiY4N+//DMx
-         46Dckqk7V9DkU4MiuL0FPzSrbDzysyMRcHNlqD62EXLFhAFXbO2VMNctnC7SOPEvmaQU
-         qYMJst1xT/DV4s0MJi69vHmE3jDTkEAZhpzDQjOHrBNN0s+bVXua8gwJjRteQEPDoRWc
-         /80g==
-X-Forwarded-Encrypted: i=1; AJvYcCXrviLEEdzHjssPyKcqTtyGTQgWFn29klvp3l0keN9Z3KH/q/Btux9o2Qrcq6QBOY6P63J756js4zhs8njHKiheDIFVXnuq+MXFBezDYJ0pJxMQkXp24095kfoLwRZRAu+oOgtmvrNg93n3Zcs=
-X-Gm-Message-State: AOJu0Yy1w/NOo3jcaY3yt3trI1z13Ensk0mWFyH4OUlZwdoJZRux/17z
-	0xhKmJ9TWE91MnYu2LZflF6k5IJ0v1sVatSHAjiLPjYaQQsLGTjA
-X-Google-Smtp-Source: AGHT+IFnlML4ohoPgPDicvWsIiY1t2T6pp5KwtLN525HMHWY25ipqB4MVXRUzZr8pYr9PPFBpmPuyw==
-X-Received: by 2002:a05:6214:4008:b0:690:d5bc:c20a with SMTP id kd8-20020a056214400800b00690d5bcc20amr2053886qvb.4.1711121144929;
-        Fri, 22 Mar 2024 08:25:44 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id fq9-20020a056214258900b00690d5310c55sm1157262qvb.114.2024.03.22.08.25.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 08:25:44 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id B39911200066;
-	Fri, 22 Mar 2024 11:25:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 22 Mar 2024 11:25:43 -0400
-X-ME-Sender: <xms:96L9ZUKTBiCr37awcUW1cf7r32NFIEDQwPnx_nL6bZ3t2pMYUpoQuA>
-    <xme:96L9ZUIb6M_aYVnhJZB3SG_dNvqB1APsI3oyLdzRcQUK7UbhktTPGZobVtZ69uLB5
-    eKxwTfMQmiNhTALIw>
-X-ME-Received: <xmr:96L9ZUs_iWI_ueKMU5cj82sF8ONElx_a53BI61W-u3R-y-OJeYd3Wpr4eA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtvddguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtqhertddttdejnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepfedtvdfgudfftdfffeejvdegtddvvdfhkedugfegkeeftdffledtueet
-    gfevkeetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhht
-    hhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquh
-    hnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:96L9ZRbBVOuMA-j3nRVng3_OH5kzRafpoxb8WS2Xu3GU_JOKx1fgag>
-    <xmx:96L9Zba-G6mksvz1gZp5JrYGkucn1zFBrFOcVcKzaymyXwfM_XetDA>
-    <xmx:96L9ZdBT1hIaTy4GkC10fTi2iC6QDBUm8woQ1YH_ye2m7ihPtYUwNw>
-    <xmx:96L9ZRYh7Kq4WX2nzjMc-QtZQeVFC9a8XlfZHFWfRYusn0SklKH6qw>
-    <xmx:96L9ZRyyR25zP4ANe3ih00oH6MxJ4SnTNcRTJyBs-VsmLZXd7f4zxuYTIMA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Mar 2024 11:25:42 -0400 (EDT)
-Date: Fri, 22 Mar 2024 08:25:40 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: time: add Ktime
-Message-ID: <Zf2i9JJO7gmlhl_K@tardis>
-References: <20240320-rust-ktime_ms_delta-v1-1-ccb8672a0941@google.com>
- <ZfsBADaYHz1FG8ie@Boquns-Mac-mini.home>
- <CAH5fLgjd0hJzHbwM3bMZ9DUvDZ0OSf-btnebN0UG9GE9gKFfGA@mail.gmail.com>
+	s=arc-20240116; t=1711121395; c=relaxed/simple;
+	bh=Mf2oFjb7S9XAqtGL+NtsT6M1y20ulfMPk4zTNl4k1rY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RLZSTrQv2KsmeoFKUotX8uCK5tiKBUiV0/NQWP6qnLLv6JmutiXH87xvdqqkWRx/iW9UT3HvVph6KinC/NpS7JoE+7aF6l5w5tobRzZh1N0XQOkELyfvr9t7N7I/UGe+sWTMUmP/M/duviixIQse+1+9WK7X5+7loQqcn5lDQOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=XHbGkUhR; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42MFTIo6104288;
+	Fri, 22 Mar 2024 10:29:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711121358;
+	bh=YDEh6vjq3UwcEBJ0N/6xSwcjv32TsahveBskrzcD3as=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=XHbGkUhRcB6pm27e3GHuf402qnkLWeMAYQDXMpafjQlNnQg47P6SiWLX4C3ASVWCn
+	 JiUZezeGQQ+FxKNhPgETwl+vOQmXaxXYgoU4Iif1mOPuNIq6EqCum3k86e3s9yy9v1
+	 B0wi8IoJP1nTnhSeW5SAPY7wnv1dThG72C9qD1dQ=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42MFTImX122885
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 22 Mar 2024 10:29:18 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 22
+ Mar 2024 10:29:18 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 22 Mar 2024 10:29:18 -0500
+Received: from [172.24.227.193] (devarsht.dhcp.ti.com [172.24.227.193])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42MFTCj5015776;
+	Fri, 22 Mar 2024 10:29:13 -0500
+Message-ID: <03e2d653-731c-bb30-321b-b5477d7b82b2@ti.com>
+Date: Fri, 22 Mar 2024 20:59:12 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAH5fLgjd0hJzHbwM3bMZ9DUvDZ0OSf-btnebN0UG9GE9gKFfGA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC PATCH 2/3] drm/tidss: Add support for display sharing
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>
+CC: <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <praneeth@ti.com>, <a-bhatia1@ti.com>,
+        <j-luthra@ti.com>
+References: <20240116134142.2092483-1-devarsht@ti.com>
+ <20240116134142.2092483-3-devarsht@ti.com>
+ <vgfzhamtiwkpdyk5ndagsb63subclinotoe6tsi3wu6z7454ec@igxfzjc5gyqm>
+ <88018f5f-a7db-7278-e5c3-bb1dbf0e3f14@ti.com>
+ <qiqrhpqtnox47wj6az7t3fjp4vc6k32fw42tp5slqggrhe6utb@i7lkpaf3v3od>
+ <2f4cf2a7-ce7a-bb34-f722-7e66ea41def7@ti.com>
+ <20240314-hospitable-attractive-cuttlefish-a2f504@houat>
+From: Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <20240314-hospitable-attractive-cuttlefish-a2f504@houat>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Mar 22, 2024 at 08:50:18AM +0100, Alice Ryhl wrote:
-> On Wed, Mar 20, 2024 at 4:30=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com>=
- wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Mar 20, 2024 at 10:08:45AM +0000, Alice Ryhl wrote:
-> > > Introduce a wrapper around `ktime_t` with a few different useful
-> > > methods.
-> > >
-> > > Rust Binder will use these bindings to compute how many milliseconds a
-> > > transaction has been active for when dumping the current state of the
-> > > Binder driver. This replicates the logic in C Binder [1].
-> > >
-> >
-> > I wonder whether Lina's previous patch also works for your case?
-> >
-> >         https://lore.kernel.org/rust-for-linux/20230714-rust-time-v2-1-=
-f5aed84218c4@asahilina.net/
-> >
-> > You don't need to implement all the `Clock`s since you only need
-> > MONOTONIC time. But maybe `Duration::as_nanos` and `Duration::as_millis`
-> > return `u128` is problematic?
->=20
-> It would work for me too, but adds more than what I need. As for
-> `u128`, I don't really know what the status on that is. I need to be
-> able to print it as a base-10 integer.
->=20
-> Adding an API with separate types that distinguish between Instant and
-> Duration and different clock sources so that you don't mix them up is
-> reasonable, but a bit overkill for my needs. I am spending enough API
-> design cycles on my uaccess, file, and linked list patchsets. Someone
+Hi Maxime,
 
-I totally understand that! But the requirement was brought up a while
-ago by Thomas:
+On 14/03/24 20:04, Maxime Ripard wrote:
+> Hi,
+> 
+> On Wed, Feb 14, 2024 at 09:17:12PM +0530, Devarsh Thakkar wrote:
+>> On 13/02/24 19:34, Maxime Ripard wrote:
+>>> On Thu, Feb 08, 2024 at 06:26:17PM +0530, Devarsh Thakkar wrote:
+>>>> On 26/01/24 17:45, Maxime Ripard wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Thanks a lot for working on that.
+>>>>>
+>>>>> On Tue, Jan 16, 2024 at 07:11:41PM +0530, Devarsh Thakkar wrote:
+>>>>>> Display subsystem present in TI Keystone family of devices supports sharing
+>>>>>> of display between multiple hosts as it provides separate register space
+>>>>>> (common* region) for each host to programming display controller and also a
+>>>>>> unique interrupt line for each host.
+>>>>>>
+>>>>>> This adds support for display sharing, by allowing partitioning of
+>>>>>> resources either at video port level or at video plane level as
+>>>>>> described below :
+>>>>>>
+>>>>>> 1) Linux can own (i.e have write access) completely one or more of video
+>>>>>> ports along with corresponding resources (viz. overlay managers,
+>>>>>> video planes) used by Linux in context of those video ports.
+>>>>>> Even if Linux is owning
+>>>>>> these video ports it can still share this video port with a remote core
+>>>>>> which can own one or more video planes associated with this video port.
+>>>>>>
+>>>>>> 2) Linux owns one or more of the video planes with video port
+>>>>>> (along with corresponding overlay manager) associated with these planes
+>>>>>> being owned and controlled by a remote core. Linux still has read-only
+>>>>>> access to the associated video port and overlay managers so that it can
+>>>>>> parse the settings made by remote core.
+>>>>>
+>>>>> So, just to make sure we're on the same page. 1) means Linux drives the
+>>>>> whole display engine, but can lend planes to the R5? How does that work,
+>>>>> is Linux aware of the workload being there (plane size, format, etc) ?
+>>>>>
+>>>>
+>>>> Well, there is no dynamic procedure being followed for lending. The
+>>>> partitioning scheme is decided and known before hand, and the remote
+>>>> core firmware updated and compiled accordingly, and similarly the
+>>>> device-tree overlay for Linux is also updated with partitioning
+>>>> information before bootup.
+>>>>
+>>>> What would happen here is that Linux will know before-hand this
+>>>> partitioning information via device-tree properties and won't enumerate
+>>>> the plane owned by RTOS, but it will enumerate the rest of the display
+>>>> components and initialize the DSS, after which user can load the DSS
+>>>> firmware on remote core and this firmware will only have control of
+>>>> plane as it was compiled with that configuration.
+>>>
+>>> Right. If the RTOS is in control of a single plane, how it is expected
+>>> to deal with Linux shutting the CRTC down, or enforcing a configuration
+>>> that isn't compatible with what the RTOS expects (like a plane with a
+>>> higher zpos masking its plane), what is the mechanism to reconcile it?
+>>>
+>>
+>> Just for the note, for this "RTOS control single plane" mode, we don't have a
+>> firmware available to test (right now we are only supporting example for "RTOS
+>> controlling the display mode" as shared here [1]) and hence this is not
+>> validated but the idea was to keep dt-bindings generic enough to support them
+>> in future and that's why I referred to it here.
+>>
+>> Coming back to your questions, with the current scheme the Linux (tidss) would
+>> be expected to make sure the CRTC being shared with RTOS is never shutdown and
+>> the RTOS plane should never gets masked.
+> 
+> I'm probably missing something then here, but if the Linux side of
+> things is expected to keep the current configuration and keep it active
+> for it to work, what use-case would it be useful for?
+> 
 
-	https://lore.kernel.org/rust-for-linux/87h6vfnh0f.ffs@tglx/
+It's just one of the partitioning possibilities that I mentioned here, that
+Linux is in control of DSS as a whole and the user want the other host (be it
+RTOS or any other core) to control a single plane. For e.g it could be Linux
+(with GPU rendering) displaying the graphics and RTOS overlaying a real time
+clock or any other signs which need to be displayed in real-time.
+But more than the use-case this is inspired by the fact that we want to be
+flexible and support in the linux driver whatever partitioning scheme
+possibilities are there which are supported in hardware and we let user decide
+on the partitioning scheme.
 
-> else can submit patches to add a more well-typed time API in the
-> future.
->=20
+>> I think the IPC based scheme would have been mainly needed for the case where
+>> you have a single entity controlling the display for e.g you have a single
+>> display controller register space and a single IRQ but you have multiple
+>> planes and say you want to divide these planes to different host processors.
+> 
+> And with, I assume, different OS on those host processors? Otherwise why
+> would we need to handle some planes at the firmware level?
+> 
+>> In that case you want a single entity to act as a main entity and be in
+>> control of DSS and rest of the processors communicate with the "main entity"
+>> to request display resources and plane updates and main entity also programs
+>> dss on their behalf.
+>>
+>> But unlike above, TI DSS7 is designed to support static partitioning of
+>> display resources among multiple hosts, where each host can program the
+>> display hardware independently using separate register space and having a
+>> separate irq and without requirement of any communication between the hosts.
+>> Now as this feature is unique to TI DSS7 we want to support this feature in
+>> tidss driver. The DSS resource partitioning feature is described in detail
+>> here [2]
+> 
+> So, if I understand this properly, and in KMS terms, DSS7 can assign the
+> planes, CRTCs or encoders to a given VM or CPU, and you can segment the
+> hardware that way. It looks like a good way to split encoders between
+> VMs, but going back to the discussion about one plane being handled by
+> the firmware, I don't really see how it can work with something else
+> than splitting away the whole pipeline and having a VM claiming a CRTC
+> and encoder, and another VM claiming another pipeline.
+> 
+> Like, if they share either a CRTC or encoder, we will still go back to
+> the discussion about arbitration about who has the final word if the two
+> have conflicting requirements, or if it changes something the other
+> probably has to know about it.
 
-Would it work, if I create a new patch based on yours? The work for me
-won't be too much since you, Lina and Heghedus already did the hard work
-along with some feedback from Thomas.
+There should not be any conflicting requirements as this sharing scheme is a
+static one i.e. it is pre-negotiated or decided by the user before Linux
+kernel compilation or RTOS firmware compilation and resources are split
+statically and the sharing scheme is communicated to Linux via device-tree and
+RTOS side firmware configured and compiled accordingly, and this scheme stays
+intact without any change after device boots up. So for e.g. if Linux is
+assigned only one plane and RTOS is the DSS master controlling all other
+entities then this scheme will stay intact as long as device is up.
 
-Regards,
-Boqun
+Also there could be only a single DSS master (the one in control of global
+common0 reg space, i.e. having access to global DSS registers and also in
+control of dss clock and power domains) and whichever core is acting as DSS
+master will be knowing which of the CRTC and encoders are shared with other
+hosts so that it doesn't power them off given other cores may still be using it.
 
-> Alice
+> 
+>>>>> And 2) would mean that the display engine is under the R5 control and
+>>>>> Linux only gets to fill the plane and let the firmware know of what it
+>>>>> wants?
+>>>>>
+>>>>
+>>>> Here too the partitioning information is pre-decided and remote core
+>>>> firmware and device-tree overlay for Linux updated accordingly. But in
+>>>> this case as remote core firmware owns the display (minus the plane
+>>>> owned by Linux) it is started and initialized during the bootloader
+>>>> phase itself where it initializes the DSS and starts rendering using the
+>>>> plane owned by it and Linux just latches to the DSS without
+>>>> re-initializing it, with write access only to the plane that is owned by
+>>>> Linux. You can refer [1] for more details on this.
+>>>>
+>>>>> If so, do we even need the tidss driver in the second case? We could
+>>>>> just write a fwkms driver of some sorts that could be used by multiple
+>>>>> implementations of the same "defer to firmware" logic.
+>>>>>
+>>>>
+>>>> This feature of static partitioning of DSS resources is specific to DSS7
+>>>> hardware (which is controlled by tidss driver) which supports dedicated
+>>>> register space and interrupt line for each of the hosts [0], so that
+>>>> multiple hosts can drive the display controller simultaneously as  per
+>>>> the desired static partitioning of resources, and so I don't think a
+>>>> separate driver is required here and tidss seems the right place to
+>>>> support this, where using this device-tree approach different resource
+>>>> partitioning schemas can be achieved as described here [1]. This was
+>>>> also aligned with Tomi too where we discussed that tidss is the right
+>>>> place to support this as we are simply leveraging the DSS hardware
+>>>> capabilities of static partitioning here.
+>>>
+>>> If the only thing tidss does in the "owned by RTOS" is forwarding KMS
+>>> atomic states to the RTOS, then I'm still not sure why we need to
+>>> involve tidss at all.
+>>
+>> I think maybe here is the point of misunderstanding. We are not forwarding
+>> atomic states to RTOS here. Linux (tidss) is infact, accessing the display
+>> register space assigned to it (common1 assigned to Linux, commmon0 assigned to
+>> RTOS) and also writing to DSS plane registers for the plane assigned to it
+>> (say VID assigned to Linux and VIDL assigned to RTOS).
+>>
+>>> It's not just about interrupts, it's also about how your arbitrate
+>>> between what Linux wants and what the RTOS wants. Like if the RTOS still
+>>> wants to output something but Linux wants to disable it, how do you
+>>> reconcile the two?
+>>>
+>>
+>> The scheme involves static partitioning of display resource which are assigned
+>> compile-time to RTOS and Linux. Here the RTOS firmware is compiled with
+>> specific ownership/display resources as desired by user and this assignment
+>> stays intact.
+>>
+>> If there is a more complex use-case which requires dynamic
+>> assignment/arbitration of resources then I agree those require some sort of
+>> IPC scheme but this is not what we target with these series. This series is
+>> simply to support static partitioning feature (separate register space,
+>> separate irq, firewalling support etc) of TI DSS hardware across the multiple
+>> hosts and there are use-cases too for which this scheme suffices.
+> 
+> I think you're right and we have a misunderstanding. My initial
+> assumption was that it was to prevent the Linux side of sides from
+> screwing up the output if it was to crash.
+> 
+> But it looks like it's not the main point of this series, so could you
+> share some use-cases you're trying to address?
+> 
+
+The end use-case we have demonstrated right now with this series is a
+proof-of-concept display cluster use-case where RTOS boots early on MCU core
+(launched at bootloader stage) and initializes the display (using the global
+common0 register space and irq) and starts displaying safety tell-tales on one
+plane, and once Linux boots up on application processor,
+Linux (using common1 register space and irq) controls the other plane with GPU
+rendering using a QT based application. And yes, we also support the scenario
+where Linux crashes but RTOS being the DSS master and in control of DSS power,
+clock domain and global register space is not impacted by the crash.
+This is demonstrated in this video [1] and steps to simulate the same are also
+documented here [2].
+
+[1]: https://www.youtube.com/watch?v=WIcds6HGeMI&t=884s
+[2]:
+https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/09_01_00_08/exports/docs/system/Demo_User_Guides/Display_Cluster_User_Guide.html
+
+Regards
+Devarsh
+
+> Thanks!
+> Maxime
 
