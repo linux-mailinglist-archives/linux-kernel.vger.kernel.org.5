@@ -1,114 +1,156 @@
-Return-Path: <linux-kernel+bounces-111312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5625C886A89
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:40:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D33E1886A8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E94DB1F23A1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:40:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 884051F23629
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4EC13D38F;
-	Fri, 22 Mar 2024 10:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62633D3A7;
+	Fri, 22 Mar 2024 10:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Abs65TWj"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A4Z/+qjF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817B73DB9A;
-	Fri, 22 Mar 2024 10:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057447E6
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711104000; cv=none; b=OHAZRQxnYbzDjTX9PT8q20rnLMIYfxCT//iBNNOr/QIAP4ZIIJ6yBPfeWsbZ+cu76deS0pc/7I7kHJcOtcni5S48TeHSLmmv9+Tt3LebWAxHIXAxG6eaqB5p2oAdS885YFGoNZxqb7acnW9FARnGczHRUVF+lWJaKUia0/vs3lc=
+	t=1711104060; cv=none; b=Fslqt42mCheSe05FEUhG7HbDgJ8oiSDKlixt/BHdlOP8PMrNeAnXq9pbf+eI8nip/QPbCAYc97qkfPwBrHvCPcPpyytiy2gb7Sk1aYDux3sFD6H7FXgqeIulgDhEsNxNr13mw8chMG0dBy7w5Ec9X4BQ+7q3RnVelWXOuacMr4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711104000; c=relaxed/simple;
-	bh=mbCfCKEKkGI+oF9DOo3BjBASMhgsvFpxmE1dYl1oeYo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eElb8GaMfu/RYLfQegyjhO0wbM8yjwXjSNZURHOxfWAZg6E5RVRw+DOisxNBAxe/WLp95n06htke/CXF1YDvvnLiy93F/XcocercOxm80YI6jmRGlw+mB/Zt3N5xCRyMKIe0pewKzlGx3jvJWOGf7tuOivFZLcoagUp3ge5wr+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Abs65TWj; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BA7040009;
-	Fri, 22 Mar 2024 10:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1711103993;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mbCfCKEKkGI+oF9DOo3BjBASMhgsvFpxmE1dYl1oeYo=;
-	b=Abs65TWjIPymsT85gW9nGnQpgIGr9KiT9Gv2MVsg/9VrWqqW8BgIoe5JtB+BFcqEm2mik+
-	9LxLqoBDweMoBwKelRyPlawVI+DJyg2CkGUOt8mS6QeAa/EX8yQEL49hWTTipnwQaSh1CH
-	+DyQnuXdKUbP4sprV3J+U3wOf0rPVkeN3I+gl2Lt/4bpz6R1gRfJOZBKM5+ALsELMvhZSg
-	V7umSn7hZY/d9mtHhC4rqI4Js8rwcydFkG86LbGaTEJAOBJu5eJjgByGWZB8yD/nj2Ggzc
-	dxKOQ9VU/Bauu1rL0pg3AHLvTE8ZYypx6layXd6CGjdo2x5ZCJRWOfUmuTXNtg==
-Date: Fri, 22 Mar 2024 11:39:50 +0100
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v5 13/17] net: pse-pd: Use regulator framework
- within PSE framework
-Message-ID: <20240322113950.27d35376@kmaincent-XPS-13-7390>
-In-Reply-To: <ZfxjosqPMo0ECBmx@pengutronix.de>
-References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
-	<20240227-feature_poe-v5-13-28f0aa48246d@bootlin.com>
-	<ZeObuKHkPN3tiWz_@pengutronix.de>
-	<20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
-	<ZeWi90H-B4XeSkFs@pengutronix.de>
-	<20240321171524.0b04bfcc@kmaincent-XPS-13-7390>
-	<ZfxjosqPMo0ECBmx@pengutronix.de>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1711104060; c=relaxed/simple;
+	bh=5MTvfMWqDn2NOQHv+kCQswKZDd2zZibpEq+2z++Z7oo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kS48yy3h58t4eE2S1UALn4mQqBGnj1weFMrdlhOG1PLeC9K7AZjLOyHlwQYxFM6hHyyHLmu9t6Sr2K127j9k6baAvr1qZooyIMK5bhpLl1+7mjLFPAzyFFEDcD2sFx2ydetXig8TO19nTQwHYixCfITXcMTpALzkADUL0sieVFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A4Z/+qjF; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711104059; x=1742640059;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5MTvfMWqDn2NOQHv+kCQswKZDd2zZibpEq+2z++Z7oo=;
+  b=A4Z/+qjFYKMiO19cENxgXjiSFZgmpPyz/e5EzGx1m5j8iDOlwn7/sp5M
+   NCTH2q8bka3RjRNxyOJoecQJ+PBqqRaLj9/upF0HtTEhe/hqfZNARH9IA
+   TfW0dyTcGwhSn2rTqbYyqL8ifc+xh/kHXljGT84A8ARfnw5z51DyXU1cQ
+   1zv3KeZRB+hNBpaH7kh/sP9y0zpt2khodZj6okZegmCvhf1YVWTbrwk7K
+   C1OG0npDsuaf5Zw7c2Yph5+hE7NhWZIqkfsTTDapfXDfxcwgblBbldLs6
+   vLhAKrIIKTzCLgNj9oK4siaLPU+1fBY3x9PPtWhgAdiUUDyGaXp+wLlTN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6000982"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="6000982"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 03:40:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="937066540"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="937066540"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Mar 2024 03:40:54 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 0537DA1; Fri, 22 Mar 2024 12:40:52 +0200 (EET)
+Date: Fri, 22 Mar 2024 12:40:52 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: "Huang, Kai" <kai.huang@intel.com>, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, dave.hansen@intel.com, bp@alien8.de, tglx@linutronix.de, 
+	mingo@redhat.com, hpa@zytor.com, luto@kernel.org, peterz@infradead.org, 
+	rick.p.edgecombe@intel.com, ashish.kalra@amd.com, chao.gao@intel.com, bhe@redhat.com, 
+	nik.borisov@suse.com, pbonzini@redhat.com, seanjc@google.com
+Subject: Re: [PATCH v2 2/5] x86/kexec: do unconditional WBINVD in
+ relocate_kernel()
+Message-ID: <glorzobyf42wylp57izgiukbe33c6ez5mgiwxepgn6pt2h4lr3@aqdas5q75mcb>
+References: <cover.1710811610.git.kai.huang@intel.com>
+ <e1d37efb8951eb1d38493687b10a21b23353e35a.1710811610.git.kai.huang@intel.com>
+ <tvembdwwh4immxytlfzlhpvd42dlfsz7sddb7msk23kdduhu3t@ogpc66hklorv>
+ <38fca2fa-11b2-4eb7-9e59-dc5d524d172e@amd.com>
+ <689bbd29-aaf0-452e-a97f-41b8e3aa6224@intel.com>
+ <5a2441a3-4d7e-4fee-bfa7-65b53376b0ab@amd.com>
+ <e677ab03-8b25-46cd-90ac-cacae6ba5027@intel.com>
+ <bbtfbfkg6frhpvf34gqnml7mdgqtyt5khaiqi657nd2kbnlbib@yarqgrrszf4v>
+ <8f449fbb-c6c0-e864-befd-a3f95a89e85e@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f449fbb-c6c0-e864-befd-a3f95a89e85e@amd.com>
 
-Hello Oleksij,
+On Thu, Mar 21, 2024 at 04:02:11PM -0500, Tom Lendacky wrote:
+> On 3/20/24 18:10, Kirill A. Shutemov wrote:
+> > On Thu, Mar 21, 2024 at 09:48:28AM +1300, Huang, Kai wrote:
+> > > 
+> > > > > Hi Tom,
+> > > > > 
+> > > > > I am not aware of kexec() support status for SEV-ES/SEV-SNP guests.
+> > > > > Does patch 1 break them?
+> > > > 
+> > > > SNP guests can kexec with some patches that are currently in process
+> > > > around shared to private memory conversions. ES guests can only kexec
+> > > > with a single vCPU. There was a recent patch series to add support for
+> > > > multiple vCPUs.
+> > > > 
+> > > > Patch #1 doesn't break either ES or SNP because we still have an IDT and
+> > > > traditional kernel addressing in place, so the #VC can be handled.
+> > > 
+> > > How about plain SEV guest?
+> > > 
+> > > > 
+> > > > Whereas patch #2 has switched to identity mapping and removed the IDT,
+> > > > so a #VC causes a triple fault.
+> > > 
+> > > That makes sense.  Thanks.
+> > > 
+> > > Hi Kirill,
+> > > 
+> > > Does TDX guest have similar behaviour -- that WBINVD in stop_this_cpu() can
+> > > be handled although it causes #VE, while WBINVD in relocate_kernel() will
+> > > just triple fault the guest?
+> > 
+> > No. We never handle WBINVD #VE. Guest cannot handle WBINVD itself and the
+> > only option is to ask host to do this. We cannot guarantee host will do
+> 
+> Is the WBINVD performed or ignored in that case?
 
-On Thu, 21 Mar 2024 17:43:14 +0100
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+We crash the guest if it tries to use WBINVD. There's no legitimate reason
+for it.
 
-> On Thu, Mar 21, 2024 at 05:15:24PM +0100, Kory Maincent wrote:
-> > Hello Oleksij,
-> > Sorry, I forgot to reply about this.
-> > This is specific to pse_regulator driver. Could we tackle this change in
-> > another patch series when the current patch series got applied?
-> > Also I don't have the hardware to test it. =20
->=20
-> ACK, no problem.
+> > anything useful with the request. I guess it can be potential attack
+> > vector if host strategically ignores WBINVD to induce bad guest behaviour.
+> 
+> With SNP, memory is coherent so there isn't a need for a WBINVD within a
+> guest and so issuing it should not be an issue whether the hypervisor
+> performs the operation or not. I don't know what can happen in the case
+> where, say, you have a non-coherent TDISP device attached or such, but that
+> would be very unusual/unlikely.
 
-I have a question unrelated to this.
-Why do you add refcount on the pse_control struct?
-The pse control is related to the RJ45 port. Each port is exclusively relat=
-ed
-to one pse control.
-Shouldn't we return an error in case of two get of the same pse control ind=
-ex?
-Do you see use cases where a pse control could be get two times?
+Looks like SNP is in the same position as TDX.
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+> > And it is not good from host PoV either. If it does WBINVD on every guest
+> > request we get guest->host DoS attack possibility.
+> 
+> Yeah, that can happen today, regardless of the type of VM running.
+> 
+> > 
+> > Tom, I am curious, how do you deal with these problems?
+> 
+> If the WBINVD is being intercepted, then it will generate a #VC and we use
+> the GHCB protocol to communicate that back to the hypervisor to handle.
+
+I would argue that forwarding it to hypervisor is worse than crashing. It
+gives false sense of doing something. Hypervisor is outside TCB and
+considered hostile.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
