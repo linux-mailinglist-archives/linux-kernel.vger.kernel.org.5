@@ -1,128 +1,106 @@
-Return-Path: <linux-kernel+bounces-112066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700918874CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:24:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2B18874D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A19CC1C22873
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:24:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0EE41F23E7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A615881740;
-	Fri, 22 Mar 2024 22:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THGcJ4Yz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C37627FC
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 22:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1C18174F;
+	Fri, 22 Mar 2024 22:28:08 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F73E81733;
+	Fri, 22 Mar 2024 22:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711146275; cv=none; b=fqM0aweNW8dcKc69t1vjqKYRL7L1t09bP1IaeGuJ2hXD44XawXryQO/CNKyXXMQG3lA6+wj1p//6HdWRrtYuHg5Py2pm2hvPb5UOtdyKqfBGOJ+PSi9Sk7KWKWKoUdmIna9y3WHAwUflG7H0AaB5SnmwsLMkuHv+euyASPwlLxw=
+	t=1711146488; cv=none; b=QWi4WvisN9el7eSLowlcXmMC9k7H6gUyApmRxMNDC8qaifgVLSXDynzt0dE0p92vNgZeqbo2CgkohWpcYfE6aYYR/EXyaBIXfgx9piJrNsxz186PavOsZSDCkSl5yeG6Fx4kQHD4xCuFhLdbFVxQmWh3gISjDDfP2unl97pUjlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711146275; c=relaxed/simple;
-	bh=u9hLQq6AbccTuvOfTFuQN65uvQDoNtfDPvG6xM7TeA4=;
+	s=arc-20240116; t=1711146488; c=relaxed/simple;
+	bh=2dtKlD5/Zn6482Sk/YiH9qaWhZ1YrikhQwIjP0TL7Bo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f3TjC6+iX4I6nQSAj+lx8cZ77GnoIRILA07HmfZ9AcUKjA2rnZ0/kj0LzGgcKGW54J92yu6EOM3yPneM+Y7qwnanaItnA2QfA3hSszhFC2vnNs5pOPsL3a5gZuqgUynBUy5j2Tt1/NJSPtnO3imrgFacOywI9OattGb4nkf1Kdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THGcJ4Yz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C51C433F1;
-	Fri, 22 Mar 2024 22:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711146274;
-	bh=u9hLQq6AbccTuvOfTFuQN65uvQDoNtfDPvG6xM7TeA4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=THGcJ4YzFy+bIbZ5yw6EferzhNPNLNAFaPtsewBMPNNW+5dyCef7pSpzLtVSH1KFQ
-	 NxIkOcDhIhDOck+jrsDOzlf0tO1vDyN1grFlvCVLZo5gaNR6U1F7YRF51w/1CQL9BC
-	 TYhaFcARm1WIhHQp1XgJEkdR/MwaQp/I++cR6O895VhE8YVxViT/bK0IOIX8ThpMVU
-	 LEwinwAeVZerafNzdxgTCP49aJca7dmC5vqNULFc3p5eI9IonrJh/WzVHckBvPsqrV
-	 TZlfvZRTornG7hn3WTCbEyRYjhlZZNxg0ePBqY8hd1wNMAyG/sKqUDClekThul1Q5k
-	 lw3revJJdR8KQ==
-Date: Fri, 22 Mar 2024 22:24:32 +0000
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Light Hsieh =?utf-8?B?KOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
-Cc: Hillf Danton <hdanton@sina.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>
-Subject: Re: =?utf-8?B?5Zue6KaGOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= f2fs: avoid the
- deadlock case when stopping discard thread
-Message-ID: <Zf4FIAkI83GbQYLB@google.com>
-References: <20240320001442.497813-1-jaegeuk@kernel.org>
- <20240321224233.2541-1-hdanton@sina.com>
- <ZfzQz5hwECOEGYVL@google.com>
- <SI2PR03MB52607606AB0D29C8AB123C1484312@SI2PR03MB5260.apcprd03.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ON1ClMa8vqRlAf/bbXlJYunk5BW5+9s/YFztJL+2ETM9JmmAARqQKtiYTJI/JzQVPNeSTbDjDZgdZa/ms+2nT4Nsr2ylbpOErQpbdbeylUXH8XHjgmydrCN6Vp/2ECt1NIfObxBHHZRwKTKjqgKq4RGEbRvVkWxfX8J0oyQ4o8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id 12FCF72C8F5;
+	Sat, 23 Mar 2024 01:27:58 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+	by imap.altlinux.org (Postfix) with ESMTPSA id 090D736D071C;
+	Sat, 23 Mar 2024 01:27:58 +0300 (MSK)
+Date: Sat, 23 Mar 2024 01:27:57 +0300
+From: Vitaly Chikunov <vt@altlinux.org>
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+	davem@davemloft.net, linux-kernel@vger.kernel.org,
+	saulo.alessandre@tse.jus.br
+Subject: Re: [PATCH] crypto: ecdsa - Fix module auto-load on add-key
+Message-ID: <20240322222757.gsr4kto47imm5spj@altlinux.org>
+References: <20240321144433.1671394-1-stefanb@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=koi8-r
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SI2PR03MB52607606AB0D29C8AB123C1484312@SI2PR03MB5260.apcprd03.prod.outlook.com>
+In-Reply-To: <20240321144433.1671394-1-stefanb@linux.ibm.com>
 
-On 03/22, Light Hsieh (謝明燈) wrote:
-> I don't see my added log in sb_free_unlock() which will invoke percpu_up_write to release the write semaphore.
+On Thu, Mar 21, 2024 at 10:44:33AM -0400, Stefan Berger wrote:
+> Add module alias with the algorithm cra_name similar to what we have for
+> RSA-related and other algorithms.
+> 
+> The kernel attempts to modprobe asymmetric algorithms using the names
+> "crypto-$cra_name" and "crypto-$cra_name-all." However, since these
+> aliases are currently missing, the modules are not loaded. For instance,
+> when using the `add_key` function, the hash algorithm is typically
+> loaded automatically, but the asymmetric algorithm is not.
+> 
+> Steps to test:
+> 
+> 1. Create certificate
+> 
+>   openssl req -x509 -sha256 -newkey ec \
+>   -pkeyopt "ec_paramgen_curve:secp384r1" -keyout key.pem -days 365 \
+>   -subj '/CN=test' -nodes -outform der -out nist-p384.der
+> 
+> 2. Optionally, trace module requests with: trace-cmd stream -e module &
+> 
+> 3. Trigger add_key call for the cert:
+> 
+>    # keyctl padd asymmetric "" @u < nist-p384.der
+>    641069229
+>    # lsmod | head -2
+>    Module                  Size  Used by
+>    ecdsa_generic          16384  0
+> 
+> Fixes: c12d448ba939 ("crypto: ecdsa - Register NIST P384 and extend test suite")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-May I ask more details whether thaw_super() was called or not?
+Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
 
+> ---
+>  crypto/ecdsa.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> 
-> ________________________________
-> 寄件者: Jaegeuk Kim <jaegeuk@kernel.org>
-> 寄件日期: 2024年3月22日 上午 08:29
-> 收件者: Hillf Danton <hdanton@sina.com>
-> 副本: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; Light Hsieh (謝明燈) <Light.Hsieh@mediatek.com>; linux-f2fs-devel@lists.sourceforge.net <linux-f2fs-devel@lists.sourceforge.net>
-> 主旨: Re: [PATCH] f2fs: avoid the deadlock case when stopping discard thread
-> 
-> 
-> External email : Please do not click links or open attachments until you have verified the sender or the content.
-> 
-> On 03/22, Hillf Danton wrote:
-> > On Tue, 19 Mar 2024 17:14:42 -0700 Jaegeuk Kim <jaegeuk@kernel.org>
-> > > f2fs_ioc_shutdown(F2FS_GOING_DOWN_NOSYNC)  issue_discard_thread
-> > >  - mnt_want_write_file()
-> > >    - sb_start_write(SB_FREEZE_WRITE)
-> >  __sb_start_write()
-> >    percpu_down_read()
-> > >                                              - sb_start_intwrite(SB_FREEZE_FS);
-> >    __sb_start_write()
-> >      percpu_down_read()
-> >
-> > Given lock acquirers for read on both sides, wtf deadlock are you fixing?
-> 
-> Damn. I couldn't think _write uses _read sem.
-> 
-> >
-> > >  - f2fs_stop_checkpoint(sbi, false,            : waiting
-> > >     STOP_CP_REASON_SHUTDOWN);
-> > >  - f2fs_stop_discard_thread(sbi);
-> > >    - kthread_stop()
-> > >      : waiting
-> > >
-> > >  - mnt_drop_write_file(filp);
-> >
-> > More important, feel free to add in spin.
-> 
-> I posted this patch before Light reported.
-> 
-> And, in the report, I didn't get this:
-> 
-> f2fs_ioc_shutdown() --> freeze_bdev() --> freeze_super() --> sb_wait_write(sb, SB_FREEZE_FS) --> ... ->percpu_down_write().
-> 
-> because f2fs_ioc_shutdown() calls f2fs_stop_discard_thread() after thaw_bdev()
-> like this order.
-> 
->  -> freeze_bdev()
->  -> thaw_bdev()
->  -> f2fs_stop_discard_thread()
-> 
-> Am I missing something?
-> 
-> >
-> > Reported-by: "Light Hsieh (謝明燈)" <Light.Hsieh@mediatek.com>
-> 
+> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+> index fbd76498aba8..3f9ec273a121 100644
+> --- a/crypto/ecdsa.c
+> +++ b/crypto/ecdsa.c
+> @@ -373,4 +373,7 @@ module_exit(ecdsa_exit);
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Stefan Berger <stefanb@linux.ibm.com>");
+>  MODULE_DESCRIPTION("ECDSA generic algorithm");
+> +MODULE_ALIAS_CRYPTO("ecdsa-nist-p192");
+> +MODULE_ALIAS_CRYPTO("ecdsa-nist-p256");
+> +MODULE_ALIAS_CRYPTO("ecdsa-nist-p384");
+>  MODULE_ALIAS_CRYPTO("ecdsa-generic");
+> -- 
+> 2.43.0
 
