@@ -1,251 +1,254 @@
-Return-Path: <linux-kernel+bounces-111671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF8CB886F58
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:02:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844B6886F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B7D1F2213E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:02:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87E561C226E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7364D11B;
-	Fri, 22 Mar 2024 15:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D8E4D108;
+	Fri, 22 Mar 2024 15:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PuHsPXeR"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="cKiOBsy4"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960E482F3
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFB147F7A;
+	Fri, 22 Mar 2024 15:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711119753; cv=none; b=XWgnjWOfyxerphVFXbf1oq4bDi3JQuXkhCF3YnFsB664rswMAMMg7OITzKyjza9lku5LV6OwGTOCozgivyLgYBVhbSWgkiVs6lRqtmKx79alv+xpAUyMT5nTmv5dkzITQOWd1ZXp2DssSuPTzIEhKvjuk4ZDCZUurNECsg/doQs=
+	t=1711119878; cv=none; b=Tzu4dD3Y1W69AyjxRp230khF9s/NtCtU7xaM3JQEGz816Yn9G7HiB13y9QcZGd5hyGlsOsz098xEXiUQlnM0u9QR2Ra5Q9NZ3Gzb6J6hPxSAB/RrkptgtQk0Lykumd8YYwTDIiWw0R7e52mRKQd/DINXYY/ME9BR8WG5mKOBXpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711119753; c=relaxed/simple;
-	bh=13VYmmRjtYhc7yWBpuY9K29jKbTHtGh4LZSU9Bbvxl4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bwxwYeAVShrfkpFY/+fA7OXNW/FGIbU+n+I5xbRDAsyDwIEkewLaKahZEiFeGY2LvaJOV/aI6XM+8H3QbxYNXkaDG0LeRkyku2T29oBR9In/Z4HmC8riG03Yev+GgZ4csjMNi9Y+7PufTcpDjg4RyrF6uLC3w4iFp4R7XZdetbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PuHsPXeR; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a466e53f8c0so314181066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711119750; x=1711724550; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=YYKS5KJg3lRASq82tox31NEtiC4E3JWUe9CPtzuJId4=;
-        b=PuHsPXeRbn1WojIL2sxdMesvGbECylZQMjRaqfV5oUZhxJpDiVdRjyPAtTu/0RuPEX
-         y1Tvmeshi1iOUh/vM83i5CPcZ12EC4U6oPQJr0g013pQaMBcaS39gdB9uDSf/UHaRCfB
-         zr5qehxuvJVH+KRoRK9K+GoEd+e1//zzL8aVVxBySdFeWdWOe2w0SsfiZXYIguVBKAwN
-         LA4IwEcMS+I3tenPF5XK9kfdOqaSbyi4/3Abv5AOGdR7gYJJt0uS19vF0wLlhrflXQcu
-         I/U+4VYEfp67SS8BBoRX2vr7E8ZyCW5l9CAN5DtDJK3hYin/DhugZEUFqK1uKBexUMze
-         GdAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711119750; x=1711724550;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YYKS5KJg3lRASq82tox31NEtiC4E3JWUe9CPtzuJId4=;
-        b=fzMQNQTk3yECGYK5+YpeWxk9aZl7PEGubM0rY2HyAOxZSo8Dbp5szDAAUch2MqyRth
-         hqe9MPjlRqSS8ZX8kCuCBeqKB1DLu+MEm2kdiWHMaR5nsKO0Cd6ShMifoF94NJy/4ICD
-         i80EnvtKDxPYBfw9hyehB8AtUyHlLIC0O0lTuX/7NRsjgQVCFOarBS8IuX0bBN7txVvI
-         TO3SFHGIMZXdboPWbeCa7EASndPfLL5w1MsQcHLUqk6d+GCaJpeLARajJZARZcfVxAfw
-         PZ6+H823lm7Dzgz34feY5x5sBUbALtypIl85HWbb5/LJrAGjLkb2T+kvNMVbOhSt3Ywe
-         knVA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhLWOiJY4tdaDrKk4iBgFg/zUBGQlQtL2PqRobCp0GWBHDOK7kfS3Tu1RmIFXZEJohfGe7tzoqW3cjCKBuxfjKpm0IHcxjGG1CtOsN
-X-Gm-Message-State: AOJu0YzTZBQcu4v4XiXwB1+PDy7fxTA6gumhiFR6lmDt+ZhWsjahzqfQ
-	aQIdHkZbTzolwuR/ClkLPYZXAjvvhPHFOBml4TBsLSKqooa5MtoaDC561XJnyJ8=
-X-Google-Smtp-Source: AGHT+IHtjq6+na4gutOpkChrRwOxy4MSg4c4wA4AjFYZIhmh2K9m3TRq+mrt1jGOud6h+pFMO4owxg==
-X-Received: by 2002:a17:906:11d2:b0:a46:da84:471a with SMTP id o18-20020a17090611d200b00a46da84471amr1865858eja.63.1711119749877;
-        Fri, 22 Mar 2024 08:02:29 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id s24-20020a170906169800b00a46aba003eesm1087947ejd.215.2024.03.22.08.02.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 08:02:29 -0700 (PDT)
-Message-ID: <f360ab66-1ee5-485a-84a9-f431b0c248a3@linaro.org>
-Date: Fri, 22 Mar 2024 16:02:23 +0100
+	s=arc-20240116; t=1711119878; c=relaxed/simple;
+	bh=pMw41LK2md1lsVOBw+1WHPfP+SWaN25vqSCRAp+WiEA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fveeW+ua+Ugm2wI7fvf2uvI3syJ7rYrQqV48w+fs5X/Q2fofdoStOqhP6GAlPrm20a8E9iDU9Ydbk2Wz8rBC7i2Sbaesam1ENTW3tBCFHSW5WZ13Pf9QRFsGLq5xIUD8RgTjg+lax9wBttGkzEtPLAPLYSUhVMMdT/t4gF5+2Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=cKiOBsy4; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42MAIIRi009939;
+	Fri, 22 Mar 2024 15:03:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=R+DjamXJ2Os+RkrubU6SEUzUiFfgGVeCbQ1FHdoKBsk=;
+ b=cKiOBsy4/LBLdMHPMfIVL+Nij1OMzO7VrCUlP0/3KptUPK+WhIpJTHCDpxD3+NmNuxng
+ 0oMMGKZL+eFRe3UXaP0rUIRhgE7JNWms17P1u+9q0zJwRHW2FWxRBETJSYjiFdOOmCQk
+ tOLLxxHrBIC7lKPHfMIuHcJTsbgLeHpZCEiN6oHM9gUxa0Cd2EV0PI/1DSqQW7mwzcCt
+ 2IxYpyY3gXrjgJsr3Uxylh7dz8NED+8H97eUO9VdhdKJC22A06Ad/atVMj86kv+ha7hM
+ dJanaDa9EMs2MA5FypKvjzBAXmNGq8jc84ONhdFapu7uedk9D+xtiT2AlAA7PxqpJ3SZ 1A== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3x0wyey3tp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 15:03:30 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 6B0E0804DC5;
+	Fri, 22 Mar 2024 15:03:27 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id AE82E800EF5;
+	Fri, 22 Mar 2024 15:03:20 +0000 (UTC)
+Date: Fri, 22 Mar 2024 10:03:16 -0500
+From: Dimitri Sivanich <sivanich@hpe.com>
+To: "Zhang, Tina" <tina.zhang@intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        "Anderson, Russ" <russ.anderson@hpe.com>
+Subject: Re: [PATCH v2] iommu/vt-d: Allocate DMAR fault interrupts locally
+Message-ID: <Zf2dtAczygAAa2vg@hpe.com>
+References: <Zfydpp2Hm+as16TY@hpe.com>
+ <MW5PR11MB58815A2B9929D89F5B32371989312@MW5PR11MB5881.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] dt-bindings: mmc: fsl-imx-esdhc: add NXP S32G3
- support
-To: Wadim Mueller <wafgo01@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Chester Lin <chester62515@gmail.com>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- Matthias Brugger <mbrugger@suse.com>, NXP S32 Linux Team <s32@nxp.com>,
- Tim Harvey <tharvey@gateworks.com>, Marco Felsch <m.felsch@pengutronix.de>,
- Gregor Herburger <gregor.herburger@ew.tq-group.com>,
- Marek Vasut <marex@denx.de>,
- Joao Paulo Goncalves <joao.goncalves@toradex.com>,
- Markus Niebel <Markus.Niebel@ew.tq-group.com>,
- Matthias Schiffer <matthias.schiffer@tq-group.com>,
- Stefan Wahren <stefan.wahren@chargebyte.com>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Philippe Schenker <philippe.schenker@toradex.com>,
- Yannic Moog <y.moog@phytec.de>, Li Yang <leoyang.li@nxp.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-serial@vger.kernel.org
-References: <20240321154108.146223-1-wafgo01@gmail.com>
- <20240321154108.146223-4-wafgo01@gmail.com>
- <00174dc3-65a7-4a2e-b48d-a974336a3f18@linaro.org>
- <20240322094526.GA7097@bhlegrsu.conti.de>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240322094526.GA7097@bhlegrsu.conti.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR11MB58815A2B9929D89F5B32371989312@MW5PR11MB5881.namprd11.prod.outlook.com>
+X-Proofpoint-GUID: O9BFYHYfEBnF7POTx4qlHaBYnB6uevQ_
+X-Proofpoint-ORIG-GUID: O9BFYHYfEBnF7POTx4qlHaBYnB6uevQ_
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403220107
 
-On 22/03/2024 10:45, Wadim Mueller wrote:
-> On Thu, Mar 21, 2024 at 06:53:34PM +0100, Krzysztof Kozlowski wrote:
->> On 21/03/2024 16:41, Wadim Mueller wrote:
->>> Add a compatible string for the SDHC binding of NXP S32G3 platforms. Here
->>> we use "nxp,s32g2-usdhc" as fallback since the s32g2-usdhc
->>> driver works also on S32G3 platforms.
->>>
->>> Signed-off-by: Wadim Mueller <wafgo01@gmail.com>
->>> ---
->>>  Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
->>> index 82eb7a24c857..b42b4368fa4e 100644
->>> --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
->>> +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
->>> @@ -35,6 +35,7 @@ properties:
->>>            - fsl,imx8mm-usdhc
->>>            - fsl,imxrt1050-usdhc
->>>            - nxp,s32g2-usdhc
->>> +          - nxp,s32g3-usdhc
->>>        - items:
->>>            - const: fsl,imx50-esdhc
->>>            - const: fsl,imx53-esdhc
->>> @@ -90,6 +91,9 @@ properties:
->>>            - enum:
->>>                - fsl,imxrt1170-usdhc
->>>            - const: fsl,imxrt1050-usdhc
->>> +      - items:
->>> +          - const: nxp,s32g3-usdhc
->>> +          - const: nxp,s32g2-usdhc
->>
->> No, that's just wrong. G3 is not and is compatible with G2? There is no
->> dualism here. Either it is or it is not. Not both.
->>
-> 
-> I am trying to understand your statement but I am not sure whether I get
-> it right.
-> 
-> Let me try to explain what I understand is wrong with this patch. 
-> 
-> Having nxp,s32g2-usdhc and nxp,s32g2-usdhc in one enum
-> 
->>>            - nxp,s32g2-usdhc
->>> +          - nxp,s32g3-usdhc
-> 
-> would mean that those are 
-> __not__ compatible with each other, whereas the anouther item
-> 
->>> +      - items:
->>> +          - const: nxp,s32g3-usdhc
->>> +          - const: nxp,s32g2-usdhc
->>
-> 
-> where both const entries are side by side means that those are compatible. Which is
-> paradox. Is this undersanding correct?
+Hi Tina,
 
-Yes, you placed the same compatible in two separate places. It has two
-separate meanings.
+On Fri, Mar 22, 2024 at 04:41:01AM +0000, Zhang, Tina wrote:
+> Hi Dimitri,
+> 
+> 
+> > -----Original Message-----
+> > From: Dimitri Sivanich <sivanich@hpe.com>
+> > Sent: Friday, March 22, 2024 4:51 AM
+> > To: Thomas Gleixner <tglx@linutronix.de>; Joerg Roedel <joro@8bytes.org>;
+> > Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>; Will Deacon
+> > <will@kernel.org>; Robin Murphy <robin.murphy@arm.com>; David
+> > Woodhouse <dwmw2@infradead.org>; Lu Baolu <baolu.lu@linux.intel.com>;
+> > Mark Rutland <mark.rutland@arm.com>; Peter Zijlstra
+> > <peterz@infradead.org>; Arnd Bergmann <arnd@arndb.de>; YueHaibing
+> > <yuehaibing@huawei.com>; iommu@lists.linux.dev; Dimitri Sivanich
+> > <sivanich@hpe.com>
+> > Cc: linux-kernel@vger.kernel.org; Steve Wahl <steve.wahl@hpe.com>;
+> > Anderson, Russ <russ.anderson@hpe.com>
+> > Subject: [PATCH v2] iommu/vt-d: Allocate DMAR fault interrupts locally
+> > 
+> > The Intel IOMMU code currently tries to allocate all DMAR fault interrupt
+> > vectors on the boot cpu.  On large systems with high DMAR counts this
+> > results in vector exhaustion, and most of the vectors are not initially allocated
+> > socket local.
+> > 
+> > Instead, have a cpu on each node do the vector allocation for the DMARs on
+> > that node.  The boot cpu still does the allocation for its node during its boot
+> > sequence.
+> > 
+> > Signed-off-by: Dimitri Sivanich <sivanich@hpe.com>
+> > ---
+> > 
+> > v2: per Thomas Gleixner, implement this from a DYN CPU hotplug state,
+> > though
+> >     this implementation runs in CPUHP_AP_ONLINE_DYN space rather than
+> >     CPUHP_BP_PREPARE_DYN space.
+> > 
+> >  drivers/iommu/amd/amd_iommu.h | 2 +-
+> >  drivers/iommu/amd/init.c      | 2 +-
+> >  drivers/iommu/intel/dmar.c    | 9 +++++++--
+> >  drivers/iommu/irq_remapping.c | 5 ++++-  drivers/iommu/irq_remapping.h |
+> > 2 +-
+> >  include/linux/dmar.h          | 2 +-
+> >  6 files changed, 15 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/amd/amd_iommu.h
+> > b/drivers/iommu/amd/amd_iommu.h index f482aab420f7..410c360e7e24
+> > 100644
+> > --- a/drivers/iommu/amd/amd_iommu.h
+> > +++ b/drivers/iommu/amd/amd_iommu.h
+> > @@ -33,7 +33,7 @@ int amd_iommu_prepare(void);  int
+> > amd_iommu_enable(void);  void amd_iommu_disable(void);  int
+> > amd_iommu_reenable(int mode); -int amd_iommu_enable_faulting(void);
+> > +int amd_iommu_enable_faulting(unsigned int cpu);
+> >  extern int amd_iommu_guest_ir;
+> >  extern enum io_pgtable_fmt amd_iommu_pgtable;  extern int
+> > amd_iommu_gpt_level; diff --git a/drivers/iommu/amd/init.c
+> > b/drivers/iommu/amd/init.c index e7a44929f0da..4782f690ed97 100644
+> > --- a/drivers/iommu/amd/init.c
+> > +++ b/drivers/iommu/amd/init.c
+> > @@ -3389,7 +3389,7 @@ int amd_iommu_reenable(int mode)
+> >  	return 0;
+> >  }
+> > 
+> > -int __init amd_iommu_enable_faulting(void)
+> > +int __init amd_iommu_enable_faulting(unsigned int cpu)
+> >  {
+> >  	/* We enable MSI later when PCI is initialized */
+> >  	return 0;
+> > diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c index
+> > 36d7427b1202..7644a42f283c 100644
+> > --- a/drivers/iommu/intel/dmar.c
+> > +++ b/drivers/iommu/intel/dmar.c
+> > @@ -2122,7 +2122,7 @@ int dmar_set_interrupt(struct intel_iommu
+> > *iommu)
+> >  	return ret;
+> >  }
+> > 
+> > -int __init enable_drhd_fault_handling(void)
+> > +int enable_drhd_fault_handling(unsigned int cpu)
+> >  {
+> >  	struct dmar_drhd_unit *drhd;
+> >  	struct intel_iommu *iommu;
+> > @@ -2132,7 +2132,12 @@ int __init enable_drhd_fault_handling(void)
+> >  	 */
+> >  	for_each_iommu(iommu, drhd) {
+> >  		u32 fault_status;
+> > -		int ret = dmar_set_interrupt(iommu);
+> > +		int ret;
+> > +
+> > +		if (iommu->irq || iommu->node != cpu_to_node(cpu))
+> > +			continue;
+> If iommu->irq is set, current logic will clear any previous faults by accessing DMAR_FSTS_REG. However, the code change in this patch seems missing it.
+
+Yes, the current logic does clear the faults even in the iommu->irq!=0 case,
+but enable_drhd_fault_handling is currently only run once by the boot cpu,
+prior to startup of the other processors.  So each iommu will, initially at
+least, only have its faults cleared once.
+
+With this patch, enable_drhd_fault_handling will still run on the boot cpu
+prior to the startup of other processors, but will also run on each AP as it is
+brought up (hotplugged).  It will now only operate on the iommus that are on
+its own socket, however.  If we add back the fault clearing for the
+iommu->irq!=0 case, each iommu on a socket would end up having faults cleared
+once for each cpu on the socket (so 120 times for a 60-core socket with HT
+enabled).  In addition, this would happen again each time a cpu is hot-plugged
+after having been hot-unplugged.
+
+So is there a specific reason why faults would need to be cleared if the
+iommu->irq has already been set, since I assume they would've already been
+cleared during this boot?
+
+I'm definitely willing to add back the fault clearing for the iommu->irq!=0
+case, but am looking for guidance from others like yourself on this.
 
 > 
-> So if I want to have the follwing im my DTS for the mmc node
+> The current logic:
+> int dmar_set_interrupt(struct intel_iommu *iommu)
+> {
+>         int irq, ret;
 > 
-> usdhc0: mmc@402f0000 {
-> 			compatible = "nxp,s32g3-usdhc",
-> 				     "nxp,s32g2-usdhc";
-> 				     ...
-> }
+>         /*
+>          * Check if the fault interrupt is already initialized.
+>          */
+>         if (iommu->irq)
+>                 return 0;
+>         ...
 > 
-> The schema update should contain just this part?
+> int __init enable_drhd_fault_handling(void)
+> {
+> 	...
+>         for_each_iommu(iommu, drhd) {
+>                 u32 fault_status;
+>                 int ret = dmar_set_interrupt(iommu);
 > 
-> i@@ -90,6 +90,9 @@ properties:
->            - enum:
->                - fsl,imxrt1170-usdhc
->            - const: fsl,imxrt1050-usdhc
-> +      - items:
-> +          - const: nxp,s32g3-usdhc
-> +          - const: nxp,s32g2-usdhc
->  
->    reg:
->      maxItems: 1
+>                 if (ret) {
+>                         pr_err("DRHD %Lx: failed to enable fault, interrupt, ret %d\n",
+>                                (unsigned long long)drhd->reg_base_addr, ret);
+>                         return -1;
+>                 }
 > 
+>                 /*
+>                  * Clear any previous faults.
+>                  */
+>                 dmar_fault(iommu->irq, iommu);
+>                 fault_status = readl(iommu->reg + DMAR_FSTS_REG);
+>                 writel(fault_status, iommu->reg + DMAR_FSTS_REG);
+>         }
+> 	...
 > 
-> Is this correct?
-
-Yes.
-
-
-
-Best regards,
-Krzysztof
-
+> Regards,
+> 
+> -Tina
 
