@@ -1,123 +1,379 @@
-Return-Path: <linux-kernel+bounces-111606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A64886E76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:25:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804CF886E78
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:26:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55D2A1C2113C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:25:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC3E81F2292D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070C47F51;
-	Fri, 22 Mar 2024 14:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2989A47F5D;
+	Fri, 22 Mar 2024 14:26:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Yz1Nyi7V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bLcBL/ob"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5D047A60;
-	Fri, 22 Mar 2024 14:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0627C47A60
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711117540; cv=none; b=jS8ohh5+CjVdB1SVBMqFAsL7Lws3bQAUPiTI7KNP5uHhcWs4ekpTKZkgiPyURfO9LD2jRah5OPj05qgcelNo+bF/LETDM0kWwQPyqqbH5G78hfYkNUTn91vWrS/N488d9SHlZP+/k2HCwUYp5N5lZJpEey9mJ9p7XD8soyzj49I=
+	t=1711117575; cv=none; b=Fb9cpIb5Vdz/p4RsS5BS3VluC3UGY3+s/q/5kB2rSG3hwzgaAB40mN+yMyPp8/nXqRXI4kza/p7sqqpNutD3TaJLDoHA5j+JFZ1o//rDy92APQmB8zL6QxVoRrHFv6eC9uuPyVhmkUE2m8vOZk21i5XLh2puxio/PtoR6HryorI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711117540; c=relaxed/simple;
-	bh=p34/324xP2XXUiHY7h/GE3DoOsaLPBDkUoaF7CbR5ro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I3A1bPnMoVMXblK8ykf5tauTBISEPMG5yefEy+EnOBhXms4sDwomAJY/c0B5MuaIz80+oYwONVTsamtRFfb74RYuTNVDYZpt/RlAFLrd1LNNGNnaAs0pQuFm58c0qESun/6ofckTIbR7UGarFV40+rWJnpJaTP9jN63D/gZZTww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Yz1Nyi7V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6E8EC43399;
-	Fri, 22 Mar 2024 14:25:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711117540;
-	bh=p34/324xP2XXUiHY7h/GE3DoOsaLPBDkUoaF7CbR5ro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yz1Nyi7VaAjRIUJ2aXFHrvz2lf7erBm5c0SU0+6squjXOGPIZvxVYw7d79Zyvofez
-	 2bcuX0dqsmIhU6kqfF0f4AKk3/GBAs4I3RxiRmzXdW/cdWnza79lNjiccNYHqQQvd9
-	 B8uUanqtD52mlr2k9Vr710DR2Gg2OYf4tQ6auJ5A=
-Date: Fri, 22 Mar 2024 15:25:37 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Chandra Pratap <chandrapratap3519@gmail.com>
-Cc: sudipm.mukherjee@gmail.com, dan.carpenter@linaro.org,
-	teddy.wang@siliconmotion.com, linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH v3] staging: sm750fb: Replace comparisons with NULL and 0
-Message-ID: <2024032226-gorgeous-snowbird-25b1@gregkh>
-References: <2024032208-blunt-ferocity-22f4@gregkh>
- <20240322141031.2776-1-chandrapratap3519@gmail.com>
+	s=arc-20240116; t=1711117575; c=relaxed/simple;
+	bh=nSU7Us69HjcGfMbnFoTnP50Z6345s8XT/n87H31Yw/4=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=fbRxckbWn78fIiDFJI61el89z1Xjok80PYexwCSifWJJJkiSRG9RCYgoB2jv7nAWVAVauc95KisMue/3dzvjWz0QrpuG3Hw4oYR6dr2GD/8lJocS3+UfwAHZJqkA0RB7rX1ynuhqwbXfakVxs2t+NwCOroe8NY0s6sYrjz+RY2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bLcBL/ob; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322141031.2776-1-chandrapratap3519@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711117571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rNKWKSvBYXyFmKH07lb65pWFdnTMZ8/LLL+0AQv8eO4=;
+	b=bLcBL/obbWtDCzqCO3PPbrtR4uBJqRvJ9isSCYkkQzvmeOpM7HYPwrHRtlBpachPQ0RyLd
+	pVYF0eKPaX4UzpEj/vz0wtlb+5aYl5mwwgiLSbYoyuQpfLYlg0MBgn/rt5CuMO05gsmDGy
+	M30mRDjb5vDuINRUcVBYiQM1w5UjR5I=
+Date: Fri, 22 Mar 2024 14:26:07 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Eric Van Hensbergen" <eric.vanhensbergen@linux.dev>
+Message-ID: <ada13e85bf2ceed91052fa20adb02c4815953e26@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH next] fs/9p: fix uaf in in v9fs_stat2inode_dotl
+To: "Jakub Kicinski" <kuba@kernel.org>, asmadeus@codewreck.org
+Cc: "Lizhi Xu" <lizhi.xu@windriver.com>,
+ syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux_oss@crudebyte.com, lucho@ionkov.net,
+ syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev,
+ regressions@lists.linux.dev, netdev@vger.kernel.org
+In-Reply-To: <20240321182824.6f303e38@kernel.org>
+References: <00000000000055ecb906105ed669@google.com>
+ <20240202121531.2550018-1-lizhi.xu@windriver.com>
+ <ZeXGZS1-X8_CYCUz@codewreck.org>
+ <20240321182824.6f303e38@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 22, 2024 at 07:40:31PM +0530, Chandra Pratap wrote:
-> Replace '(opt != NULL)' with '(opt)' and '(*opt != 0)'
-> with '(*opt != '\0')' to adhere to the coding standards.
-> 
-> Signed-off-by: Chandra Pratap <chandrapratap3519@gmail.com>
-> ---
->  drivers/staging/sm750fb/sm750.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-> index 04c1b32a22c5..c4b944f82fb9 100644
-> --- a/drivers/staging/sm750fb/sm750.c
-> +++ b/drivers/staging/sm750fb/sm750.c
-> @@ -926,7 +926,7 @@ static void sm750fb_setup(struct sm750_dev *sm750_dev, char *src)
->  		goto NO_PARAM;
->  	}
->  
-> -	while ((opt = strsep(&src, ":")) != NULL && *opt != 0) {
-> +	while ((opt = strsep(&src, ":")) && *opt != '\0') {
->  		dev_info(&sm750_dev->pdev->dev, "opt=%s\n", opt);
->  		dev_info(&sm750_dev->pdev->dev, "src=%s\n", src);
->  
-> @@ -1147,7 +1147,7 @@ static int __init lynxfb_setup(char *options)
->  	 * strsep() updates @options to pointer after the first found token
->  	 * it also returns the pointer ahead the token.
->  	 */
-> -	while ((opt = strsep(&options, ":")) != NULL) {
-> +	while ((opt = strsep(&options, ":"))) {
->  		/* options that mean for any lynx chips are configured here */
->  		if (!strncmp(opt, "noaccel", strlen("noaccel"))) {
->  			g_noaccel = 1;
-> -- 
-> 2.34.1
-> 
+Patch is in the unapplied portion of my for-next tree along with another =
+one.  I was hoping to hear some feedback on the other one before i did a =
+pull request and was torn on whether or not I wait on -rc1 to send since =
+we are so close.
 
-Hi,
+       -eric
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+March 21, 2024 at 8:28 PM, "Jakub Kicinski" <kuba@kernel.org> wrote:
+>=20
+>=20On Mon, 4 Mar 2024 22:02:29 +0900 asmadeus@codewreck.org wrote:
+>=20
+>=20>=20
+>=20> Lizhi Xu wrote on Fri, Feb 02, 2024 at 08:15:31PM +0800:
+> >=20
+>=20>  The incorrect logical order of accessing the st object code in v9f=
+s_fid_iget_dotl
+> >=20
+>=20>  is causing this uaf.=20
+>=20>=20
+>=20>=20=20
+>=20>=20
+>=20>  Thanks for the fix!
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Eric, this is also for your tree.
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Fixes: 724a08450f74 ("fs/9p: simplify iget to remove unnecessary p=
+aths")=20
+>=20>=20
+>=20>=20=20
+>=20>=20
+>=20>  (careful if you rebase your tree as this commit isn't merged yet)
+> >=20
+>=20>=20=20
+>=20>=20
+>=20>  Reported-and-tested-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.apps=
+potmail.com
+> >=20
+>=20>  Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>=20
+>=20>=20
+>=20>=20=20
+>=20>=20
+>=20>  Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
+> >=20
+>=20
+> Looks like this UAF is in Linus's tree now, and possibly getting hit
+>=20
+>=20by anyone using virtme to test the kernel? I can't vouch for the
+>=20
+>=20correctness of the fix but it does make the KASAN splat go away for m=
+e.
+>=20
+>=20[ 12.474676][ T1] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>=20
+>=20[ 12.474870][ T1] BUG: KASAN: slab-use-after-free in v9fs_stat2inode_=
+dotl+0x9d6/0xb80
+>=20
+>=20[ 12.475060][ T1] Read of size 8 at addr ffff888002bdbad8 by task swa=
+pper/0/1
+>=20
+>=20[ 12.475248][ T1]=20
+>=20
+> [ 12.475314][ T1] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.8.0-virtm=
+e #1
+>=20
+>=20[ 12.475503][ T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 199=
+6), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
+>=20
+>=20[ 12.475811][ T1] Call Trace:
+>=20
+>=20[ 12.475908][ T1] <TASK>
+>=20
+>=20[ 12.475976][ T1] dump_stack_lvl+0x82/0xd0
+>=20
+>=20[ 12.476133][ T1] print_address_description.constprop.0+0x2c/0x3b0
+>=20
+>=20[ 12.476295][ T1] ? v9fs_stat2inode_dotl+0x9d6/0xb80
+>=20
+>=20[ 12.476425][ T1] print_report+0xb4/0x270
+>=20
+>=20[ 12.476552][ T1] ? kasan_addr_to_slab+0x4e/0x90
+>=20
+>=20[ 12.476679][ T1] kasan_report+0xbd/0xf0
+>=20
+>=20[ 12.476775][ T1] ? v9fs_stat2inode_dotl+0x9d6/0xb80
+>=20
+>=20[ 12.476903][ T1] v9fs_stat2inode_dotl+0x9d6/0xb80
+>=20
+>=20[ 12.477053][ T1] v9fs_fid_iget_dotl+0x18c/0x210
+>=20
+>=20[ 12.477180][ T1] v9fs_mount+0x3fe/0x7d0
+>=20
+>=20[ 12.477281][ T1] ? __pfx_v9fs_mount+0x10/0x10
+>=20
+>=20[ 12.477406][ T1] ? vfs_parse_fs_string+0xdb/0x130
+>=20
+>=20[ 12.477533][ T1] ? __pfx_vfs_parse_fs_string+0x10/0x10
+>=20
+>=20[ 12.477660][ T1] ? __pfx_v9fs_mount+0x10/0x10
+>=20
+>=20[ 12.477786][ T1] legacy_get_tree+0x107/0x200
+>=20
+>=20[ 12.477912][ T1] vfs_get_tree+0x8a/0x2e0
+>=20
+>=20[ 12.478042][ T1] do_new_mount+0x27d/0x5e0
+>=20
+>=20[ 12.478170][ T1] ? __pfx_do_new_mount+0x10/0x10
+>=20
+>=20[ 12.478294][ T1] ? __pfx___debug_check_no_obj_freed+0x10/0x10
+>=20
+>=20[ 12.478453][ T1] ? __virt_addr_valid+0x227/0x420
+>=20
+>=20[ 12.478583][ T1] path_mount+0x271/0x14f0
+>=20
+>=20[ 12.478713][ T1] ? __pfx_path_mount+0x10/0x10
+>=20
+>=20[ 12.478840][ T1] ? kmem_cache_free+0xd7/0x220
+>=20
+>=20[ 12.478970][ T1] ? kern_path+0x3d/0x50
+>=20
+>=20[ 12.479068][ T1] init_mount+0x9d/0xf0
+>=20
+>=20[ 12.479164][ T1] ? __pfx_init_mount+0x10/0x10
+>=20
+>=20[ 12.479292][ T1] do_mount_root+0xbc/0x330
+>=20
+>=20[ 12.479419][ T1] mount_root_generic+0x22c/0x470
+>=20
+>=20[ 12.479550][ T1] ? __pfx_mount_root_generic+0x10/0x10
+>=20
+>=20[ 12.479680][ T1] ? mount_root+0x25b/0x2f0
+>=20
+>=20[ 12.479807][ T1] prepare_namespace+0xa5/0x2d0
+>=20
+>=20[ 12.479933][ T1] ? __pfx_prepare_namespace+0x10/0x10
+>=20
+>=20[ 12.480061][ T1] ? __pfx_kernel_init+0x10/0x10
+>=20
+>=20[ 12.480188][ T1] kernel_init+0x20/0x200
+>=20
+>=20[ 12.480285][ T1] ? __pfx_kernel_init+0x10/0x10
+>=20
+>=20[ 12.480410][ T1] ret_from_fork+0x31/0x70
+>=20
+>=20[ 12.480543][ T1] ? __pfx_kernel_init+0x10/0x10
+>=20
+>=20[ 12.480670][ T1] ret_from_fork_asm+0x1a/0x30
+>=20
+>=20[ 12.480807][ T1] </TASK>
+>=20
+>=20[ 12.480904][ T1]=20
+>=20
+> [ 12.480969][ T1] Allocated by task 1:
+>=20
+>=20[ 12.481063][ T1] kasan_save_stack+0x24/0x50
+>=20
+>=20[ 12.481191][ T1] kasan_save_track+0x14/0x30
+>=20
+>=20[ 12.481323][ T1] __kasan_kmalloc+0x7f/0x90
+>=20
+>=20[ 12.481449][ T1] p9_client_getattr_dotl+0x4c/0x1a0
+>=20
+>=20[ 12.481576][ T1] v9fs_fid_iget_dotl+0xca/0x210
+>=20
+>=20[ 12.481706][ T1] v9fs_mount+0x3fe/0x7d0
+>=20
+>=20[ 12.481801][ T1] legacy_get_tree+0x107/0x200
+>=20
+>=20[ 12.481927][ T1] vfs_get_tree+0x8a/0x2e0
+>=20
+>=20[ 12.482053][ T1] do_new_mount+0x27d/0x5e0
+>=20
+>=20[ 12.482178][ T1] path_mount+0x271/0x14f0
+>=20
+>=20[ 12.482303][ T1] init_mount+0x9d/0xf0
+>=20
+>=20[ 12.482397][ T1] do_mount_root+0xbc/0x330
+>=20
+>=20[ 12.482523][ T1] mount_root_generic+0x22c/0x470
+>=20
+>=20[ 12.482649][ T1] prepare_namespace+0xa5/0x2d0
+>=20
+>=20[ 12.482779][ T1] kernel_init+0x20/0x200
+>=20
+>=20[ 12.482876][ T1] ret_from_fork+0x31/0x70
+>=20
+>=20[ 12.483002][ T1] ret_from_fork_asm+0x1a/0x30
+>=20
+>=20[ 12.483128][ T1]=20
+>=20
+> [ 12.483191][ T1] Freed by task 1:
+>=20
+>=20[ 12.483283][ T1] kasan_save_stack+0x24/0x50
+>=20
+>=20[ 12.483409][ T1] kasan_save_track+0x14/0x30
+>=20
+>=20[ 12.483535][ T1] kasan_save_free_info+0x3b/0x60
+>=20
+>=20[ 12.483662][ T1] __kasan_slab_free+0xf4/0x180
+>=20
+>=20[ 12.483788][ T1] kfree+0xd3/0x230
+>=20
+>=20[ 12.483886][ T1] v9fs_fid_iget_dotl+0x15e/0x210
+>=20
+>=20[ 12.484017][ T1] v9fs_mount+0x3fe/0x7d0
+>=20
+>=20[ 12.484112][ T1] legacy_get_tree+0x107/0x200
+>=20
+>=20[ 12.484238][ T1] vfs_get_tree+0x8a/0x2e0
+>=20
+>=20[ 12.484365][ T1] do_new_mount+0x27d/0x5e0
+>=20
+>=20[ 12.484492][ T1] path_mount+0x271/0x14f0
+>=20
+>=20[ 12.484619][ T1] init_mount+0x9d/0xf0
+>=20
+>=20[ 12.484713][ T1] do_mount_root+0xbc/0x330
+>=20
+>=20[ 12.484846][ T1] mount_root_generic+0x22c/0x470
+>=20
+>=20[ 12.484974][ T1] prepare_namespace+0xa5/0x2d0
+>=20
+>=20[ 12.485100][ T1] kernel_init+0x20/0x200
+>=20
+>=20[ 12.485196][ T1] ret_from_fork+0x31/0x70
+>=20
+>=20[ 12.485324][ T1] ret_from_fork_asm+0x1a/0x30
+>=20
+>=20[ 12.485449][ T1]=20
+>=20
+> [ 12.485512][ T1] The buggy address belongs to the object at ffff888002=
+bdbad8
+>=20
+>=20[ 12.485512][ T1] which belongs to the cache kmalloc-192 of size 192
+>=20
+>=20[ 12.485825][ T1] The buggy address is located 0 bytes inside of
+>=20
+>=20[ 12.485825][ T1] freed 192-byte region [ffff888002bdbad8, ffff888002=
+bdbb98)
+>=20
+>=20[ 12.486131][ T1]=20
+>=20
+> [ 12.486194][ T1] The buggy address belongs to the physical page:
+>=20
+>=20[ 12.486347][ T1] page: refcount:1 mapcount:0 mapping:000000000000000=
+0 index:0xffff888002bdbc10 pfn:0x2bda
+>=20
+>=20[ 12.486600][ T1] head: order:1 entire_mapcount:0 nr_pages_mapped:0 p=
+incount:0
+>=20
+>=20[ 12.486795][ T1] flags: 0x80000000000a40(workingset|slab|head|node=
+=3D0|zone=3D1)
+>=20
+>=20[ 12.486989][ T1] page_type: 0xffffffff()
+>=20
+>=20[ 12.487088][ T1] raw: 0080000000000a40 ffff888001042c40 ffff88800104=
+0a88 ffff888001040a88
+>=20
+>=20[ 12.487315][ T1] raw: ffff888002bdbc10 00000000001a0017 00000001ffff=
+ffff 0000000000000000
+>=20
+>=20[ 12.487538][ T1] head: 0080000000000a40 ffff888001042c40 ffff8880010=
+40a88 ffff888001040a88
+>=20
+>=20[ 12.487765][ T1] head: ffff888002bdbc10 00000000001a0017 00000001fff=
+fffff 0000000000000000
+>=20
+>=20[ 12.487992][ T1] head: 0080000000000001 ffffea00000af681 dead0000000=
+00122 00000000ffffffff
+>=20
+>=20[ 12.488213][ T1] head: 0000000200000000 0000000000000000 00000000fff=
+fffff 0000000000000000
+>=20
+>=20[ 12.488436][ T1] page dumped because: kasan: bad access detected
+>=20
+>=20[ 12.488590][ T1]=20
+>=20
+> [ 12.488653][ T1] Memory state around the buggy address:
+>=20
+>=20[ 12.488797][ T1] ffff888002bdb980: fc fc fc fc 00 00 00 00 00 00 00 =
+00 00 00 00 00
+>=20
+>=20[ 12.488986][ T1] ffff888002bdba00: 00 00 00 00 00 00 00 00 00 00 fc =
+fc fc fc fc fc
+>=20
+>=20[ 12.489168][ T1] >ffff888002bdba80: fc fc fc fc fc fc fc fc fc fc fc=
+ fa fb fb fb fb
+>=20
+>=20[ 12.489353][ T1] ^
+>=20
+>=20[ 12.489506][ T1] ffff888002bdbb00: fb fb fb fb fb fb fb fb fb fb fb =
+fb fb fb fb fb
+>=20
+>=20[ 12.489688][ T1] ffff888002bdbb80: fb fb fb fc fc fc fc fc fc fc fc =
+fc fc fc fc fc
+>=20
+>=20[ 12.489873][ T1] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
 
