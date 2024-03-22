@@ -1,116 +1,194 @@
-Return-Path: <linux-kernel+bounces-111406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09464886BE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:11:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CFBE886BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6FC1C22CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:11:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C90B51F2273E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3EDC3FE3D;
-	Fri, 22 Mar 2024 12:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE9340BFD;
+	Fri, 22 Mar 2024 12:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IwVMaP2k"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cXuTkTtG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E21224FA
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006283FE5F;
+	Fri, 22 Mar 2024 12:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711109493; cv=none; b=HqA3dCqCdt5Mhq75SaeTOfZrDkJo14CV84a7RQqxHvzY2/H2xO1Bzejxt3IL9siQZT6eTjZJlQa37Coe8hY6eTvtPVfad6z1pkFGrV/IPvoMPcjXHJWT1Zkz5W1yH4+lxXmSID5Wg+3sg+2YGWH6MZiDmu+YxnN75/hzxG0tct0=
+	t=1711109496; cv=none; b=bPeAUdaHZ9BwPP4pPAAo16DjDIpZGg4a/90dL2gnaegLGZm4jmYXMz/301Z4lEMpcohgBVCznxw5qoWEL0UgJdPTGWg00tPSwnd59MpCY6cRGqzBl3O8bN7GnKUnhN34CRozfSAsfGJJ0yMzn06Z4Zc022HLJfjcg9XGh9khXBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711109493; c=relaxed/simple;
-	bh=ookcacqQvslMXulbynVMtpcpPlYS0qDy2qdS2UTm+nc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VHN5cgDAkKS8rhPaQ1xJn5Qls7OU2d75wIgP/YVKXPIf8TDWA3GTa9LxTtBBlpLkyiRw2fEyh62Jr4gfcjW74pII6tfIhxmQTP2O6FbzSFJnMRfOGF2nmhI8L81IaeKM4o1+luh2ur4vwGv1UUyN15jICQuaYgHgLv2lhU5Vf9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IwVMaP2k; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-609f1f97864so23158957b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711109490; x=1711714290; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/FEfLL5ARXahGfD5kj2pZpy3RrSe+B9Qp8hGUm/NLI=;
-        b=IwVMaP2k5UKwOLibawxM8SdE4/U4Gio52NR1UlljOKA5JUS6UsS3FfkM8H7frhobL3
-         mljoclux0QxCyy0SDz4vFteM6bS5sKE8u88pZ4/zSK6SGitbga0+Y3nlVOkK4t4iHb+y
-         k9Mc0J3s+u8GVI9+7WaB+r3mbMt6j48wC0NLkCz8/B/KEIUj//KElcNCmFzzxwzp00KE
-         CEFlZH2XDxTTAevZDDgv8/MHbmbembh20pewjqmhVbWsDQcVkgYKtKg8y4b6z55VAFFf
-         Wp3ijo+Mow0r3IlAofNs12nuRQuSQp+xadCegQO3TrI3Z8wH5kXlT9CyOsSmX86YzabJ
-         Ngtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711109490; x=1711714290;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F/FEfLL5ARXahGfD5kj2pZpy3RrSe+B9Qp8hGUm/NLI=;
-        b=MQSU4zlpLvJO68IcWN3WBHU0RNgcj9hHfYJlRd3lYA1d/Aa1MtV/tGBs1JYi9EzOMV
-         vSqtAmq+4u4Rn9yqqWwKA4LQx0/w1v0GiRptYiHl22EAzTD6Bq+j1l1hNuUe+uBGwuiF
-         +NhMC8xcMK5M3oN1BrGqQ0T/IcfPCdZS0pwDnTboDv1amS2vSyC2hPzKSWpbwnnwhwG+
-         TmpNx6qmqx/Y2Tw+GfFbRQB3BuH6nn9vEBvcmYy8UXhSFg9FC4f1m4X6EXUTS9H5yDS/
-         Dxd8ZuH9IqF/fZ0SKM/uQRd8PNfn1sjuEui0eWsIkLJ0+hwr+lOri3nAHnbxnMXqyRnw
-         dkyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiU6ieOcOoNk/nyH2Z1Dpaw9JuC9uCSS2MU4bvzugvu5oYVXT2pZ4mdsMrrK2d29pAxWPXPxgcAEyoPq9nQX7i4zwgv409fQEJYrJe
-X-Gm-Message-State: AOJu0YwqdryQpV8umLk8a6ThWGfcOmv1cC4R8JyvKL8Sg/ikgx5euy7r
-	HQjbLWiriN5znBq+a6wEN1Ce5UFYQ5kZKNLsXdd+RaHU2KjvQpTil6KaJ8EGZAw8rF+dYJMxX7E
-	Bq34NCqhttW3H5np+VruHBwsptoP/TZb9eGmX0A==
-X-Google-Smtp-Source: AGHT+IGB0HkBiPswuKP8IjOEEr+Ve7Grth1dIhr3BI6d7OWAcFJXCTnZ+hcmMSMVCmZ1rO5o9+1LQZhT6eIjuBhFXWE=
-X-Received: by 2002:a25:2f0c:0:b0:dcc:f5d4:8b43 with SMTP id
- v12-20020a252f0c000000b00dccf5d48b43mr1836581ybv.9.1711109489879; Fri, 22 Mar
- 2024 05:11:29 -0700 (PDT)
+	s=arc-20240116; t=1711109496; c=relaxed/simple;
+	bh=l0cx1LvrVM/uchJN7ZfC/+aKq/dZS79/LkCiMoIM0T4=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=YHA0fjE5HPTzc+RMcM/mFPDCJuRTF0zrpmXh6kpe+HsNYIj9JdtzVYlf47HBzj5J3OOuXMU4iqBnSxEvHxiNs2kft0O47h3URE3UsqH8JDHuynGepItWcA+/KiH5L6Itmm4M2pR+Fj7pHwTPmuDtUV+rT8IOoQLgl8K4y3q9bYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cXuTkTtG; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711109495; x=1742645495;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=l0cx1LvrVM/uchJN7ZfC/+aKq/dZS79/LkCiMoIM0T4=;
+  b=cXuTkTtGlbQIut9XbAygXeCEk9g3v5Ts1rEKiIPH3kEB1vtUZ0xV+CND
+   olM0f1nhqP6pNcDk1HzdWdEbGsjnr4S+07IFNALUmKnUE4c1HsVobG/5N
+   s/IRYxhF/rMKGtbOcF3eYAkvV2vCA5uvshG5PAZ7NRvjXf24OKbNtCohY
+   3FmNe5HBeUVqza2Kg0U03Ye6qG8IAyARMVDlWsxMvv1E7+m/PYCF6jHY9
+   RiqzCUZIYZRJfMdpS2HFENkZx1STcsAgLlrDfs/o2hTAGMi89FuOd78dN
+   oRirkM4JRmPFFB8a107ccrTbjdB8oJmLaL6J/5scax9eNd8XiBMtyY+4o
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="9943216"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="9943216"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:11:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="14938103"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:11:31 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 22 Mar 2024 14:11:26 +0200 (EET)
+To: Reinette Chatre <reinette.chatre@intel.com>
+cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+    Babu Moger <babu.moger@amd.com>, 
+    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
+    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 02/13] selftests/resctrl: Calculate resctrl FS derived
+ mem bw over sleep(1) only
+In-Reply-To: <fe5c0d10-a57c-4a3a-ae30-a7cfa93bc3e8@intel.com>
+Message-ID: <f214c635-500f-43ea-fce8-0a7083bc1606@linux.intel.com>
+References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-3-ilpo.jarvinen@linux.intel.com> <fe5c0d10-a57c-4a3a-ae30-a7cfa93bc3e8@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-typec-fix-sm8250-v1-0-1ac22b333ea9@linaro.org>
- <20240322-typec-fix-sm8250-v1-1-1ac22b333ea9@linaro.org> <30f71224-7340-4255-bd48-a96252985b15@linaro.org>
-In-Reply-To: <30f71224-7340-4255-bd48-a96252985b15@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Mar 2024 14:11:18 +0200
-Message-ID: <CAA8EJpqNM8dsnX6OzZOFeV88ngJ-mE8AKjaKFurT=eKed6Yu4Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8250: describe HS signals properly
-To: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Luca Weiss <luca.weiss@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="8323328-1924357458-1711109486=:1115"
 
-On Fri, 22 Mar 2024 at 14:03, Bryan O'Donoghue
-<bryan.odonoghue@linaro.org> wrote:
->
-> On 22/03/2024 11:58, Dmitry Baryshkov wrote:
-> > The OF graph should describe physical signals. There is no 'role switch'
-> > signal between Type-C connector and the DWC3 USB controller. Instead
-> > there is a HighSpeed signal lane between DWC3 controller and the USB-C
-> > connector. Rename endpoints in accordance to that (this follows the
-> > example lead by other plaforms, including QRB2210 RB1, QRB4210 RB2 and
-> > all PMIC GLINK platforms).
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
-> Hmm
->
-> I think if you are going to change the name here, you should also do so here
->
-> grep role_switch arch/arm64/* -r | wc -l
-> 54
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Oh, my. I'll take a look at the qcom platforms for v2. And funny
-enough sc8180x even uses old bindings for the QMP PHY.
+--8323328-1924357458-1711109486=:1115
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+On Tue, 19 Mar 2024, Reinette Chatre wrote:
+> On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
+> > For MBM/MBA tests, measure_vals() calls get_mem_bw_imc() that performs
+> > the measurement over a duration of sleep(1) call. The memory bandwidth
+> > numbers from IMC are derived over this duration. The resctrl FS derived
+> > memory bandwidth, however, is calculated inside measure_vals() and only
+> > takes delta between the previous value and the current one which
+> > besides the actual test, also samples inter-test noise.
+> >=20
+> > Rework the logic in measure_vals() and get_mem_bw_imc() such that the
+> > resctrl FS memory bandwidth section covers much shorter duration
+> > closely matching that of the IMC perf counters to improve measurement
+> > accuracy.
+> >=20
+>=20
+> Thank you very much for doing this.
+>=20
+> > Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  tools/testing/selftests/resctrl/resctrl_val.c | 72 +++++++++++++------
+> >  1 file changed, 50 insertions(+), 22 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/test=
+ing/selftests/resctrl/resctrl_val.c
+> > index 36139cba7be8..4df2cd738f88 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> > +++ b/tools/testing/selftests/resctrl/resctrl_val.c
 
+> > -static int get_mem_bw_imc(int cpu_no, char *bw_report, float *bw_imc)
+> > +static int perf_open_imc_mem_bw(int cpu_no)
+> >  {
+> > -=09float reads, writes, of_mul_read, of_mul_write;
+> >  =09int imc, j, ret;
+> > =20
+> > -=09/* Start all iMC counters to log values (both read and write) */
+> > -=09reads =3D 0, writes =3D 0, of_mul_read =3D 1, of_mul_write =3D 1;
+> >  =09for (imc =3D 0; imc < imcs; imc++) {
+> >  =09=09for (j =3D 0; j < 2; j++) {
+> >  =09=09=09ret =3D open_perf_event(imc, cpu_no, j);
+> >  =09=09=09if (ret)
+> >  =09=09=09=09return -1;
+> >  =09=09}
+>=20
+> I'm feeling more strongly that this inner loop makes the code harder to
+> understand and unwinding it would make it easier to understand.
 
--- 
-With best wishes
-Dmitry
+Okay, I'll unwind them in the first patch.
+
+> >  =09}
+> > +}
+> > +
+> > +/*
+> > + * get_mem_bw_imc - Memory band width as reported by iMC counters
+> > + * @bw_report:=09=09Bandwidth report type (reads, writes)
+> > + *
+> > + * Memory B/W utilized by a process on a socket can be calculated usin=
+g
+> > + * iMC counters. Perf events are used to read these counters.
+>=20
+> In the above there are three variations of the same: "band width", "Bandw=
+idth",
+> and "B/W". Please just use one and use it consistently.
+
+Okay but I'll do that in a separate patch because these are just the=20
+"removed" lines above, the diff is more messy than the actual change=20
+here as is often the case with this kind of split function refactoring=20
+because the diff algorithm fails to pair the lines optimally from=20
+human-readed PoV.
+
+> > + * Return: =3D 0 on success. < 0 on failure.
+> > + */
+> > +static int get_mem_bw_imc(char *bw_report, float *bw_imc)
+> > +{
+> > +=09float reads, writes, of_mul_read, of_mul_write;
+> > +=09int imc, j;
+> > +
+> > +=09/* Start all iMC counters to log values (both read and write) */
+> > +=09reads =3D 0, writes =3D 0, of_mul_read =3D 1, of_mul_write =3D 1;
+> > =20
+> >  =09/*
+> >  =09 * Get results which are stored in struct type imc_counter_config
+
+> > @@ -696,7 +725,6 @@ int resctrl_val(const struct resctrl_test *test,
+> >  =09=09struct resctrl_val_param *param)
+> >  {
+> >  =09char *resctrl_val =3D param->resctrl_val;
+> > -=09unsigned long bw_resc_start =3D 0;
+>=20
+> In the current implementation the first iteration's starting measurement
+> is, as seen above, 0 ... which makes the first measurement unreliable
+> and dropped for both the MBA and MBM tests. In this enhancement, the
+> first measurement is no longer skewed so much so I wonder if this enhance=
+ment
+> can be expanded to the analysis phase where first measurement no longer
+> needs to be dropped?
+
+In ideal world, yes, but I'll have to check the raw numbers. My general=20
+feel is that the numbers tend to converge slowly with more iterations=20
+being run so the first iteration might still be "off" by quite much (this=
+=20
+is definitely the case with CAT tests iterations but I'm not entirely sure=
+=20
+any more how it is with other selftests).
+
+Thanks for the review.
+
+--=20
+ i.
+
+--8323328-1924357458-1711109486=:1115--
 
