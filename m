@@ -1,108 +1,107 @@
-Return-Path: <linux-kernel+bounces-111696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FBB886FBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:24:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B83E886FC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95F511C216C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:24:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4778D2833D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC15535A8;
-	Fri, 22 Mar 2024 15:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC23151C4F;
+	Fri, 22 Mar 2024 15:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="phXk55he"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="eON5kHLq"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAF451C4F;
-	Fri, 22 Mar 2024 15:23:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58124F897
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711121018; cv=none; b=MtPgn5gPNhexZVCfKr4SKiQX1mtmUspzG5ko7vNfuQmRu5vAKWZ/4ruKyzD2U3m3N/WykUixupO0mPmPq9MSUkKS0ThG2ZjmGe7Sy6NRkL7rVRDutz7Q+lyVuAwNTQUPLs/wFO+i1r+FPTP902O4RXy3d+z9joA080pBixbT6e4=
+	t=1711121053; cv=none; b=LNtm+6rrabTjYzFvaXJqB4/RA3BYStzlKIKLzRT6SwTz7tKvgeWH0Cpg0FzPxgyP03iAwX9pzAzTMBptCUbsMrgR9BevYcaihLUTe0oHAqC03LQ+Pq5eb7t7IY8dczYi4IoB0P0pAU08gHw5zgma5HfmYdufL5JYkzA6kR+xf5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711121018; c=relaxed/simple;
-	bh=2jKs8iXhSIhZoCfrPfcc8CMFgCUmi/F0p3tI20DDC8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jhrmYzgu8ingXa7HVpwys+Bed79hj1j2hc54AvCx6N7gkrCq+cT6gpkFX4pwJ3G30BC8Ah+VW4c5+iwvZLGTW9iDxgu5HOdXLZRfzqjGZi4f9y156ob6sEH52CthOqZpVJiVMXbZpgmpslvsKn4kcRDbZd7cGUQzwd7NlaYymi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=phXk55he; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE20C433F1;
-	Fri, 22 Mar 2024 15:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711121018;
-	bh=2jKs8iXhSIhZoCfrPfcc8CMFgCUmi/F0p3tI20DDC8s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=phXk55hei4tv1d33xGsvZp2FCn8mCM1trm3kDZfQZdICDrEPJDLhK13MkrfHTJ3F+
-	 bgnkYMAXoZsVDL0KFaNrewQEizN9ZhjUIakwhcOqCu9h7AtLMmYPmstvKhReuXKU6A
-	 PNYisq/fQ0BFHUMNi4Vt8/1EWLXcjYeasaFYl2FKLaDuaBJhEIiSuNGBMxfu13fovx
-	 B/ul9ZNN5Buz40ja9e+w+KnF57OBIjoKx4QmjCgZLBwHhmQOkAp4hd8HYzf80xaoi3
-	 ZhAFHXouRrw3NeaETACnYVW3/DkQqpnuW1+UuopVNDj4REwqeESiG0E0KfnEuvLu1a
-	 A1jG1pzvo5rFg==
-Date: Fri, 22 Mar 2024 08:23:36 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
- Jeff Johnson <jjohnson@kernel.org>, keescook@chromium.org, "open
- list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, "open
- list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
-Message-ID: <20240322082336.49f110cc@kernel.org>
-In-Reply-To: <Zf2ceu2O47lLbKU3@gmail.com>
-References: <20240319104754.2535294-1-leitao@debian.org>
-	<9fcdb857-da62-4832-ae11-043fe993e4ad@quicinc.com>
-	<20240321072821.59f56757@kernel.org>
-	<5039256c-03eb-4cda-8d11-49e4561cf1ef@quicinc.com>
-	<20240321151744.246ce2d0@kernel.org>
-	<Zf2ceu2O47lLbKU3@gmail.com>
+	s=arc-20240116; t=1711121053; c=relaxed/simple;
+	bh=hS562j2wjaOt0N57BvSvCyDJPuAAyxqtyZpFkCvVJqw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=CajtjkmJckiWUyG8pzeDEoe9aHP5C1fuaObm2SPIkCRT98wrMbQDAmzLC4esg+2dQMh36HaAb+iIU269BDArSGh4BzkE8rgVOrcDtmDGP1oHFt27l4keMwTokHZrKnmGd8s/dwVQJlQJUVByJjNr8E/xK11S/Ru6ebI5LXTUVu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=eON5kHLq; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4147f546947so436105e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711121049; x=1711725849; darn=vger.kernel.org;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hS562j2wjaOt0N57BvSvCyDJPuAAyxqtyZpFkCvVJqw=;
+        b=eON5kHLqMrgX/5Aaq275aXbh0DIRg//5Fraa5/yVTvScAJqv9jRD92UJwuvdzIKo4h
+         YT4W4xugJxqUvEXuKZWndaJCtmxA//hmSnY7QVlfDMb+OFyfEfFVz4LqepW36WSW1bhj
+         rvK8WeMg9k/JKncNv+v2Rdc32gxqk8nO87mZH3eEySKyEv6RYWiJyzb1g3DGCkE+5mJf
+         sSFCK3qxPFtQKdoAIhfFPy2tNNrh5MwhpjxiQkUN/QFKTruRw/9CXtU/XZM9IqR34QBd
+         lk8bUNfE1hrzoqI0EtA5yJLmn6cJ53hN1CjDyYdM07R+vM9+fUJuWxY+0n9JjTzHZSDd
+         KjZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711121049; x=1711725849;
+        h=in-reply-to:references:from:subject:cc:to:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hS562j2wjaOt0N57BvSvCyDJPuAAyxqtyZpFkCvVJqw=;
+        b=WVC+Yrt9CHNTCqrc8ZpOY1jQ3Is30OEv9iksQUXAx8LIQYZ/Nob0U2sG375OrD8vKN
+         OzipLTe289Dn9ogsDMoPvBwOU2NJBLAn2OfpojhERkONIT9SOWkmZN6nMkce+306sgdo
+         ulkv5iCZ3XalIIZnPFILe1KPFdUoptZDmWoI9K+7Epnwsw4vSygsnKUhNzykEMMBh1Uk
+         DwP0fgzpJjPygjXXAK3eW5QYciaRyfiXvn3IU6NX8vh3mrPiq9aN9eKYjAjCb51ayCzF
+         ZCduwYkrd1Q+g62S6Or149MxuwYfRTmpPaXo658Oxp33s5NY619pZ1tD/u1M+XoBziyn
+         faUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXWKPse9TtxkPIy77XEclzmPcrnEmOWqOO38IH6QwYWP7KUQm++7Az6Dy0ozFWycEk2Vkyq6ibmeRXd+MwNg74Y61flpDNRrG3rB9sc
+X-Gm-Message-State: AOJu0YwF9UKVRvXYqbtGvvNoDgOHwMxzN425jXCIod/CbJjS5qB+9ZbX
+	bubu191tNEKTLh7CEdsXXYyZQxsKzs7fmGVQmgsl+AaK0NWoMLj2w7PKuvIqjlY=
+X-Google-Smtp-Source: AGHT+IGyGffBMGrx3OMdpMFt5SyYdj14zEn+S9LVCqQbBaCQ3yQIh9JNuaDa2nXiTbGBEsxD9bO7RA==
+X-Received: by 2002:a05:600c:1382:b0:414:7db2:8c04 with SMTP id u2-20020a05600c138200b004147db28c04mr1193633wmf.10.1711121049201;
+        Fri, 22 Mar 2024 08:24:09 -0700 (PDT)
+Received: from localhost (alyon-651-1-22-137.w82-122.abo.wanadoo.fr. [82.122.123.137])
+        by smtp.gmail.com with ESMTPSA id v5-20020a05600c214500b004140a6d52e9sm1310844wml.1.2024.03.22.08.24.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 08:24:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 22 Mar 2024 16:24:07 +0100
+Message-Id: <D00DSDGHFPLU.1MTQNFWP5DF0J@baylibre.com>
+To: "Bhargav Raviprakash" <bhargav.r@ltts.com>, <jpanis@baylibre.com>
+Cc: <arnd@arndb.de>, <broonie@kernel.org>, <conor+dt@kernel.org>,
+ <devicetree@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+ <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>, <lee@kernel.org>,
+ <lgirdwood@gmail.com>, <linus.walleij@linaro.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <m.nirmaladevi@ltts.com>, <nm@ti.com>,
+ <robh+dt@kernel.org>, <vigneshr@ti.com>
+Subject: Re: [PATCH v4 10/11] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
+ pinctrl and GPIO
+From: "Esteban Blanc" <eblanc@baylibre.com>
+X-Mailer: aerc 0.15.2
+References: <b473d940-0301-472d-90f0-297da6815377@baylibre.com>
+ <20240322141043.498005-1-bhargav.r@ltts.com>
+In-Reply-To: <20240322141043.498005-1-bhargav.r@ltts.com>
 
-On Fri, 22 Mar 2024 07:58:02 -0700 Breno Leitao wrote:
-> > Looks like init_dummy_netdev wipes the netdev structure clean, so I
-> > don't think we can use it directly as the setup function, Breno :(  
-> 
-> Before my patch,  init_dummy_netdev was being also used. The patch was
-> basically replacing the init_dummy_netdev by alloc_netdev() with will
-> call "setup(dev);" later. 
-> 
-> -               init_dummy_netdev(&irq_grp->napi_ndev);
-> +               irq_grp->napi_ndev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-> +                                                 init_dummy_netdev);
-> 
-> I am wondering if alloc_netdev() is messing with something instead of
-> init_dummy_netdev().
+Hi Bhargav,
 
-alloc_netdev() allocates some memory and initializes lists which
-free_netdev() wants to free, basically. But init_dummy_netdev() does:
+LP8764 is not supported but the driver was wrongly instanciated on the
+MFD. For V5 could you:
+- Disable this driver for LD8764.
+- Make sure this driver correctly supports TPS6593
 
-	/* Clear everything. Note we don't initialize spinlocks
-	 * are they aren't supposed to be taken by any of the
-	 * NAPI code and this dummy netdev is supposed to be
-	 * only ever used for NAPI polls
-	 */
-	memset(dev, 0, sizeof(struct net_device));
+Best Regards,
 
-so all those pointers and init alloc_netdev() did before calling setup
-will get wiped.
-
-> Also, Kalle's crash is during rmmod, and not during initialization.
-> getting NULL after free_netdev() is called.
-> 
-> > Maybe we should add a new helper to "alloc dummy netdev" which can
-> > call alloc_netdev() with right arguments and do necessary init?  
-> 
-> What are the right arguments in this case?
-
-I'm not sure we have a noop setup() callback today. If you define a
-wrapper to allocate a dummy netdev you can define a new empty function
-next to it and pass that as init? Hope I got the question right.
+--=20
+Esteban "Skallwar" Blanc
+BayLibre
 
