@@ -1,205 +1,216 @@
-Return-Path: <linux-kernel+bounces-111751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0369E887062
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:09:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B030A887066
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:09:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2746C1C2221A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:09:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 653B82849AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D755823C;
-	Fri, 22 Mar 2024 16:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB925A4E9;
+	Fri, 22 Mar 2024 16:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LNloP9nK"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTyOcE6g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ADC57312
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123735; cv=fail; b=BTu/4tfysCxUvhdvUn35/XLsACjxYCNMBGD+J3VHhhMM4xw+YG92UycmXizQeHmMWYP+9Ve63+kFpCqOtF3RKlB8iqRzNIEsMT+ZIxpL/XZ5biq9a/Ofl66TWKK7gWV+ksrgo7xbHyfpYuyvJPhhcUzQO8H7Bn0cS9agxTS45JM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123735; c=relaxed/simple;
-	bh=g4oP1wD5kRk1fWsVAy0H+qqgSVGYlBidLvCR1OXf02w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=c5045OkqaFubVcBmFZQmjznRlL5T8RF58UKaIBmnnAPk//+AzOZieBLcaYSt7DVGeyO/GRbjf5/LlnNwm4uWQH69k1rm6Eq2sJVtCa/4LjwVBKqV0HoOnZsK7HRlsMlCyDGiv9Gx/ICsM25dWf0FSVA6NO857+RdMKecGZsjK+I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LNloP9nK; arc=fail smtp.client-ip=40.107.94.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fKuJ0drbZ5V98OAmHlF2UdZg7AK7KAZW7U/s00ueUqs+j5oe4O0vF9gPx0EGn+DgJLHPLceQdPGPRs0zUyexSynDT4X+r1/aikZ+pnpx1lZ7Wfpjl61bpAR41MnVWNqC3z7qbkMdRnC/2T1vs+6eqo4r0aV2iGrSnwifezamA2EcFRp5xmCObJpKBe4oBF7/C9ofMYPKJZ7n+fDIrMte56+fhXpsknAUqDwtku0VGIjio6F2BKkhk+C1oCxq8yeSZYsyIkKb59axloFBiMdI/AmnwVKak7iqTTm0pC64rV1+zWPSOg5BctDPmOgl/UkLEc/lcthgDQ2KG2CXDC8QIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=to4vDh8hHG4F0VwwxIF5cVd2i4GgYypb3KW+ICTklEk=;
- b=TbnYzIBfhoSVsR3ed/1xolquC42Z73VoGyrQpZ6Rd+UkSKgJHx/CXRFr4ltZYpySngvU8pk17Z1+ScJDK/a8psmDwEoGzP4q+eGr9e+OBOn9KrpLu0XqYeR10C81y/s8hlGqdNTy+NlDPMViLBnyF7VVc8h3aed9jtXb0S2K1kcj6QFZbS5boOQILihLnIgJfpeqTCZoO8Sny6FsakZYesCD734l1xABKT6VccthziOfeew3pX3KD/XoLFk1jg5BViNep3jbWjWQq//J4y/0GF2nWIcPbNf9Q7eQmJxyZ+RhxDhWRNQI/NKvf6gjd19bEA30uEB3+NdDrwzLVwUFrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=to4vDh8hHG4F0VwwxIF5cVd2i4GgYypb3KW+ICTklEk=;
- b=LNloP9nKOyT2udTa3boprHWeJMHNLEt4qDHMGsMVB6rq5OSwjRrQweomfl4ZvpKvFsfHXKBm7+3Cn9qE9W41hlN8pQe0ax6UcOZvURmfy2/XVaaqLcZ3ZBdxMaSpigGQ0jYEVcSHcnyCicHUyZsa63iCLrUmpg2PHJyWQiG9hPaGmHK75AOUZpxuSmsIbDzDP3TYqYjY8o/RdKX/4QdoXwn9x5gTVbD4oE2ywBrwigPeSYcoQILoF6BtF34s7H+l1WNXeLhjwS3JP/QzBUWzAnsAyLKC7HGQzbq8CUVgnCn20ECGfGLkIu3ePY8CtaVw04IUPhURTVD19CZdhgCd7g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by SA3PR12MB9227.namprd12.prod.outlook.com (2603:10b6:806:398::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
- 2024 16:08:49 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.030; Fri, 22 Mar 2024
- 16:08:48 +0000
-Date: Fri, 22 Mar 2024 13:08:47 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 12/12] mm/gup: Handle hugetlb in the generic
- follow_page_mask code
-Message-ID: <20240322160847.GA2924038@nvidia.com>
-References: <20240321220802.679544-1-peterx@redhat.com>
- <20240321220802.679544-13-peterx@redhat.com>
- <20240322133012.GI159172@nvidia.com>
- <Zf2p38Pb51T3e9uB@x1n>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zf2p38Pb51T3e9uB@x1n>
-X-ClientProxiedBy: BLAPR03CA0134.namprd03.prod.outlook.com
- (2603:10b6:208:32e::19) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA49959141;
+	Fri, 22 Mar 2024 16:08:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711123736; cv=none; b=aGuYt6SlKqwv4J4zGxoXPWVdl9+bhsdJWg2yA5WFdOaIaZnRZJFdjcvFM9DRgRSUaUOh+zulSjFNQrkss0HSqbXsBlrFIwMuF/xPukEbv7J8De1C6qULrLWfOiu/bGloy4biODUsf7opEBrCn8yGU+VfCoTn//0mRb9lj0oaAyg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711123736; c=relaxed/simple;
+	bh=NJSaAPZZAkhKyCqNhnwgX+0l4XkKuAlLXi79oYjiF9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DDzplVr8U+v1+3ocEYxoa/C0RFeP1NmOEPmk2etoVQ9wWPR1W6Pg2cslpzXdAlP+dRIy4XLsAFKOVXjhM8p88zWbP56meHPsMID4bTwR+KrxFUUQkIvZ99riPs5gCGDi3CVBRExFQQXdrs4MJChiHJsX7JHKOg+YQ2Lf2Z7KvWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTyOcE6g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F13C433C7;
+	Fri, 22 Mar 2024 16:08:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711123736;
+	bh=NJSaAPZZAkhKyCqNhnwgX+0l4XkKuAlLXi79oYjiF9s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fTyOcE6ge2SqZ3spKyMzoifTLhx/SG9ODWSnXEsev1oe2A6WmsFWuEUpClZ9M4aC7
+	 2wBpDLzFtlOMQh7o6cUD3B2Cbn8k/y22YLzU0DVsPpZWyeMIl6ieYmtuWxggfoOV+X
+	 /a4+V/QwjN2sGS3ZdhyJUk03StQMln+IQrhc7NZXW6ir7SBdOup9C4mz8xIclH2ftp
+	 /yJFI9pfbnE3cFQK2eQ953CMIqjkfy6VkL9jHuueH7NSOmnIrFd+9VzZ6+k5QukCg7
+	 B7B3Gz8riUcqKDuZ27DbXJghTYonvWzaavsfHfaEU2x7b7/tsgB2ZmSTiwX9cS2XzF
+	 Ivza23Of7irqg==
+Date: Fri, 22 Mar 2024 17:08:48 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+	linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 03/11] PCI: endpoint: Rename core_init() callback in
+ 'struct pci_epc_event_ops' to init()
+Message-ID: <Zf2tEM1ueugQyJfK@ryzen>
+References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
+ <20240314-pci-epf-rework-v1-3-6134e6c1d491@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SA3PR12MB9227:EE_
-X-MS-Office365-Filtering-Correlation-Id: b05142a0-7586-45b3-fd44-08dc4a8a5ba9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4bJqTf9l4w3olSzf9klt/B+H+Xfg82jIQ8w/61krpSMitw4yO79IeUAglya9523kyJt25la6PXVTADXxL4oOjecRS6uzJ7P6XcwWZ4mi4Eo32BdP5HP30rIOE2n6sEeATppBQUGnzOOZhHdNJNRyz0kTgD7IABo6aHqNkKpm515HITFhPgEqc8YFhnu82mOd2In1CaYBN+kiGlabpEaRaf23QSFbIy0A/dS1mOL27e2i1c8S00somKG60yb2x3Axm9h4u637oWkDcngOdHR9bU3l6VKZMTKn5Fk5WkXr9sS7ZlP8Ico866wrvcxwtW19HgG0XTWSz+BgDM1gqQSz0iZoufMm9i05m28rq8xHg/+IAkMt7fyk1955x4MOdhDrOXOP+gBODTVHBrpsEf6ITSm1Dq4OMYmD1gORHrf2ibzazV8AwcuGd+UsL9PC6Z/tr7AGje99T4ntq90/ygTZ049ES4pmS8bjPishmy8DPgGrIl24youpA0NXPZxjNpQgoQRMnrFYV5lrZmhQlkMnJPOhlxs7nhCVlXGBH94P4XoRHcYwq4d63JgfkqOK764dpb3oH9WSPG/rL7zuJnlYxlaUPb3Xc0Qll1yG6xjLljDpVP/hWy4g6ltP6jF5l2aEMdM/yucn2W/V2kPrK/WRIYi5QWCNa4XjTP7p62EV2D8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lDB+CmGubtSge/esh8S0fKtCmtmw3VR5RC35UGipC2foWHUx67PpofwtAuOC?=
- =?us-ascii?Q?fu2ef856v/0O/qTIHvZWsVm5jXrTqJq44SC/YosnJomnq4UtvCIwSs4/8ToH?=
- =?us-ascii?Q?QH6qe0uVJircXdcR0EJ6i2+6tuK8PLyP+ZeSH1iJqvQvTFqjLDGCc/pEhSvr?=
- =?us-ascii?Q?EU36HGooh9KPBRDfHGhs08X8x7lzAzQ5TmbDOtIr4ymfTh397oA65nmPdOsl?=
- =?us-ascii?Q?BxEqLQ3U6IafDYxMyHNbtEHxR9P2oqa2YbaLymp6NAKXh1j+LPqGO2y0D4ix?=
- =?us-ascii?Q?6mRlerky9szFOf5bQHgacsVyOAe9LDvsnbrs2X34pCovc/3nDijlPj+aB0oC?=
- =?us-ascii?Q?TylvZjF4MzNDY21j+5YPtpmass8D0OiPUvTAHAqHFzjF9S07PWxZ2Ha7C4zQ?=
- =?us-ascii?Q?Xp7CKuzfaoAfSTlOEn2AyLffOUTJylZvimjzxK+AOxaECPkDOsOMgJ2/lPy5?=
- =?us-ascii?Q?HqSfbaxc6P5REGaGG7a0LhnUZ6n6PxRyv9EuD0NdSQyinBGVksZ5aLrJ+hvb?=
- =?us-ascii?Q?3De2RLk3od4NIOvAhQgGQ8Gmdg2i1EBs68NGDepsglgMSmlfFi8Ukr22qMI/?=
- =?us-ascii?Q?gAlkW0ekbxFiThSjeXlPaoUbn0fFHtj2CTuUH7xFGd0oVX2gj2lR6dThY+9H?=
- =?us-ascii?Q?OuxOtC5qY5vuIF4Av6egJnYihkos4vOUCoegDxNTs/M4/mhvjCf2jN10htxd?=
- =?us-ascii?Q?18LauCnS/p8IE8przQcnM9Il5lN+eohXiod0YoFztG+szdW2Q3blO4V86/Ok?=
- =?us-ascii?Q?0KlkFxwW33HgHuGLJ17CI9lNdrRFRbi/E8o0zHYUpJ2KH5trKz+1NiZQUR+7?=
- =?us-ascii?Q?ylQUY50lPCSjKC8/A55XlmBMr6jo6BQghoKl9L9+rJrIoEjuERuWmKbDkuiY?=
- =?us-ascii?Q?TA0btI13wgcinMNSuSbGEL8Yv/MYKIr4sEtargovZDTQcFJg5IyBIyUfTXTB?=
- =?us-ascii?Q?m6QDkJRGO96JwfjuNQDkPbv7HxKC28JaR2AL33N2Fo1a7CszdpR3LcFKw1VB?=
- =?us-ascii?Q?9hSZPiL5F+QRazwFqBeERm+aU+/q2pfPVmIw5UzvyVm+ql/5/yFfxS0PxPH/?=
- =?us-ascii?Q?bykrJRdRr5oUJs6kDSr7xJQYjmqt5GVzU5gx9DgZ1/lRplW7hmuq78KSk4pa?=
- =?us-ascii?Q?zJhV68KYnO31+mwaZGthNwsWSjEo048kJXLZmxLb5i7bcWdqBMK6Ef91vZvJ?=
- =?us-ascii?Q?+tYgrlv8aBaD09l74S2QiYr86KX47/7GmP4I+3X0VEdR75LLCcUnGMfU4pSE?=
- =?us-ascii?Q?a82I73E91p1IRkrapmV3BfddOLNuKm3chmT480LMrvz9+/TIYk0aKkxbACnK?=
- =?us-ascii?Q?oOCyLl6MJWYYWIlAIew19IHYQgxwxw7/vaGi9D6A+ztcJ19eaJr1wP7AgMr3?=
- =?us-ascii?Q?bN9E4NdV21w5QfOpx40NZeMEZ4xdu/iuucDeNuPSLfWGcjtGTEmHSu8biPHF?=
- =?us-ascii?Q?lYaPm2EQZBOERavzTVvJCJTfWu5M/tC8rHMUc56cLWrqF0IngMr7yraHsv9E?=
- =?us-ascii?Q?TGDqzULLoj3WGO8heA+X/nw4u2xx2Yqlh2fAaX1YoIyWPyjQuvMhfCtceLlL?=
- =?us-ascii?Q?FUqIws04rLfjPKj2yEJ3QWNCM2eytNmltKL0f+nI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b05142a0-7586-45b3-fd44-08dc4a8a5ba9
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 16:08:48.4980
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: duTUVj9cQmqFePdlBnw3+QZgP0dbqux/FBaU1J8Xnpw14pKpFQMMlDaox40QKUTu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9227
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240314-pci-epf-rework-v1-3-6134e6c1d491@linaro.org>
 
-On Fri, Mar 22, 2024 at 11:55:11AM -0400, Peter Xu wrote:
-> Jason,
+On Thu, Mar 14, 2024 at 08:53:42PM +0530, Manivannan Sadhasivam wrote:
+> core_init() callback is used to notify the EPC initialization event to the
+> EPF drivers. The 'core' prefix was used indicate that the controller IP
+> core has completed initialization. But it serves no purpose as the EPF
+> driver will only care about the EPC initialization as a whole and there is
+> no real benefit to distinguish the IP core part.
 > 
-> On Fri, Mar 22, 2024 at 10:30:12AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Mar 21, 2024 at 06:08:02PM -0400, peterx@redhat.com wrote:
-> > 
-> > > A quick performance test on an aarch64 VM on M1 chip shows 15% degrade over
-> > > a tight loop of slow gup after the path switched.  That shouldn't be a
-> > > problem because slow-gup should not be a hot path for GUP in general: when
-> > > page is commonly present, fast-gup will already succeed, while when the
-> > > page is indeed missing and require a follow up page fault, the slow gup
-> > > degrade will probably buried in the fault paths anyway.  It also explains
-> > > why slow gup for THP used to be very slow before 57edfcfd3419 ("mm/gup:
-> > > accelerate thp gup even for "pages != NULL"") lands, the latter not part of
-> > > a performance analysis but a side benefit.  If the performance will be a
-> > > concern, we can consider handle CONT_PTE in follow_page().
-> > 
-> > I think this is probably fine for the moment, at least for this
-> > series, as CONT_PTE is still very new.
-> > 
-> > But it will need to be optimized. "slow" GUP is the only GUP that is
-> > used by FOLL_LONGTERM and it still needs to be optimized because you
-> > can't assume a FOLL_LONGTERM user will be hitting the really slow
-> > fault path. There are enough important cases where it is just reading
-> > already populted page tables, and these days, often with large folios.
+> So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
+> just init() to make it more clear.
 > 
-> Ah, I thought FOLL_LONGTERM should work in most cases for fast-gup,
-> especially for hugetlb, but maybe I missed something?  
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  4 ++--
+>  drivers/pci/endpoint/functions/pci-epf-test.c |  4 ++--
+>  drivers/pci/endpoint/pci-epc-core.c           | 16 ++++++++--------
+>  include/linux/pci-epf.h                       |  4 ++--
+>  4 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index e5d67aec7574..da894a9a447e 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -700,7 +700,7 @@ static void pci_epf_mhi_dma_deinit(struct pci_epf_mhi *epf_mhi)
+>  	epf_mhi->dma_chan_rx = NULL;
+>  }
+>  
+> -static int pci_epf_mhi_core_init(struct pci_epf *epf)
+> +static int pci_epf_mhi_epc_init(struct pci_epf *epf)
+>  {
+>  	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+>  	const struct pci_epf_mhi_ep_info *info = epf_mhi->info;
+> @@ -881,7 +881,7 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
+>  }
+>  
+>  static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
+> -	.core_init = pci_epf_mhi_core_init,
+> +	.init = pci_epf_mhi_epc_init,
+>  };
+>  
+>  static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 751dab5799d5..1dae0fce8fc4 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -746,7 +746,7 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+>  	return 0;
+>  }
+>  
+> -static int pci_epf_test_core_init(struct pci_epf *epf)
+> +static int pci_epf_test_epc_init(struct pci_epf *epf)
 
-Ah, no this is my bad memory, there was a time where that was true,
-but it is not the case now. Oh, it is a really bad memory because it
-seems I removed parts of it :)
+Why have _epc_ init in the name at all?
 
-> I do see that devmap skips fast-gup for LONGTERM, we also have that
-> writeback issue but none of those that I can find applies to
-> hugetlb.  This might be a problem indeed if we have hugetlb cont_pte
-> pages that will constantly fallback to slow gup.
+Isn't
+static int pci_epf_test_init(struct pci_epf *epf)
 
-Right, DAX would be the main use case I can think of. Today the
-intersection of DAX and contig PTE is non-existant so lets not worry.
+Enough?
 
-> OTOH, I also agree with you that such batching would be nice to have for
-> slow-gup, likely devmap or many fs (exclude shmem/hugetlb) file mappings
-> can at least benefit from it due to above.  But then that'll be a more
-> generic issue to solve, IOW, we still don't do that for !hugetlb cont_pte
-> large folios, before or after this series.
+From my perspective, it is the EPF that is initializing
+(by configuring the BARS according to it's liking),
+not the EPC initializing.
 
-Right, improving contig pte is going to be a process and eventually it
-will make sense to optimize this regardless of hugetlbfs
 
-Jason
+>  {
+>  	struct pci_epf_test *epf_test = epf_get_drvdata(epf);
+>  	struct pci_epf_header *header = epf->header;
+> @@ -814,7 +814,7 @@ static int pci_epf_test_link_up(struct pci_epf *epf)
+>  }
+>  
+>  static const struct pci_epc_event_ops pci_epf_test_epc_event_ops = {
+> -	.core_init = pci_epf_test_core_init,
+> +	.init = pci_epf_test_epc_init,
+>  };
+>  
+>  static const struct pci_epc_bus_event_ops pci_epf_test_bus_event_ops = {
+> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> index f602f08a11a2..5a522b2842e2 100644
+> --- a/drivers/pci/endpoint/pci-epc-core.c
+> +++ b/drivers/pci/endpoint/pci-epc-core.c
+> @@ -732,9 +732,9 @@ void pci_epc_linkdown(struct pci_epc *epc)
+>  EXPORT_SYMBOL_GPL(pci_epc_linkdown);
+>  
+>  /**
+> - * pci_epc_init_notify() - Notify the EPF device that EPC device's core
+> - *			   initialization is completed.
+> - * @epc: the EPC device whose core initialization is completed
+> + * pci_epc_init_notify() - Notify the EPF device that EPC device initialization
+> + *                         is completed.
+> + * @epc: the EPC device whose initialization is completed
+>   *
+>   * Invoke to Notify the EPF device that the EPC device's initialization
+>   * is completed.
+> @@ -749,8 +749,8 @@ void pci_epc_init_notify(struct pci_epc *epc)
+>  	mutex_lock(&epc->list_lock);
+>  	list_for_each_entry(epf, &epc->pci_epf, list) {
+>  		mutex_lock(&epf->lock);
+> -		if (epf->epc_event_ops && epf->epc_event_ops->core_init)
+> -			epf->epc_event_ops->core_init(epf);
+> +		if (epf->epc_event_ops && epf->epc_event_ops->init)
+> +			epf->epc_event_ops->init(epf);
+>  		mutex_unlock(&epf->lock);
+>  	}
+>  	epc->init_complete = true;
+> @@ -761,7 +761,7 @@ EXPORT_SYMBOL_GPL(pci_epc_init_notify);
+>  /**
+>   * pci_epc_notify_pending_init() - Notify the pending EPC device initialization
+>   *                                 complete to the EPF device
+> - * @epc: the EPC device whose core initialization is pending to be notified
+> + * @epc: the EPC device whose initialization is pending to be notified
+>   * @epf: the EPF device to be notified
+>   *
+>   * Invoke to notify the pending EPC device initialization complete to the EPF
+> @@ -772,8 +772,8 @@ void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf)
+>  {
+>  	if (epc->init_complete) {
+>  		mutex_lock(&epf->lock);
+> -		if (epf->epc_event_ops && epf->epc_event_ops->core_init)
+> -			epf->epc_event_ops->core_init(epf);
+> +		if (epf->epc_event_ops && epf->epc_event_ops->init)
+> +			epf->epc_event_ops->init(epf);
+>  		mutex_unlock(&epf->lock);
+>  	}
+>  }
+> diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> index 1271e1e00bbd..ff8304e72f8e 100644
+> --- a/include/linux/pci-epf.h
+> +++ b/include/linux/pci-epf.h
+> @@ -69,10 +69,10 @@ struct pci_epf_ops {
+>  
+>  /**
+>   * struct pci_epc_event_ops - Callbacks for capturing the EPC specific events
+> - * @core_init: Callback for the EPC initialization event
+> + * @init: Callback for the EPC initialization event
+>   */
+>  struct pci_epc_event_ops {
+> -	int (*core_init)(struct pci_epf *epf);
+> +	int (*init)(struct pci_epf *epf);
+>  };
+>  
+>  /**
+> 
+> -- 
+> 2.25.1
+> 
 
