@@ -1,269 +1,122 @@
-Return-Path: <linux-kernel+bounces-111549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80501886D90
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:43:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E8F886D94
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:43:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A433E1C23CD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:43:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4D11F25457
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311335A0E3;
-	Fri, 22 Mar 2024 13:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6tJ8DnS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF8447A7A;
+	Fri, 22 Mar 2024 13:35:42 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3059259177;
-	Fri, 22 Mar 2024 13:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0E146421;
+	Fri, 22 Mar 2024 13:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114477; cv=none; b=QgrEL+dkU6GU1rZWy9iIxHsKgq2EClaCEo8jRPc7PYnoD8lKAQXdKm8xeE9YT7SxRpBcbMVKg8tH11UXsuQgNxBdw98clBPdHAXtaQ/FqqNzQUhqWW/V3IOav2JigDbU1sVqLfsyCWxf/VMo9aqL02X1hRL5RHh29ENdsuAZZzU=
+	t=1711114542; cv=none; b=EgNSSHONJn6bGQqmiU4TKOVM7vviq69ck1UA87pGh+4Aeyxwhe6GU4NgN4N0Z/V/WH+3I5p7hylyBc5pb6EzAIN0pGMWK/3DmNNXxjHoH2JmZn4CUoYFGmBkPTU/r6YwndhBDIvJlt+qiDe+mkOq9peH3OONnbm8AB9tueuVHiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114477; c=relaxed/simple;
-	bh=/Awesc9BVSWbif0Zj62k5pq5AFrhPIARqy7s82jiX7U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=hcnu7bb0P7++CKTY1fqcjypglaQCmDZguHSD8xrFvn/3JMfqaTJsE99wnsMPw7ttITU7y2UyoI7sRe9GLK3Y04AxMpnWOIxO2HEisX+QXhB/lthEHw2r4zAW/NRjmAy44y3ziZJlS/SLerk8RrslO8ftE2KRO+n7hvJ7G6RRVQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6tJ8DnS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83953C433C7;
-	Fri, 22 Mar 2024 13:34:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711114476;
-	bh=/Awesc9BVSWbif0Zj62k5pq5AFrhPIARqy7s82jiX7U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=U6tJ8DnSa3DpC7whncBJVKojypORgaugBI/Pt3DDfazcMYtNZf/Dz4vDSJQCuCaOu
-	 rIbTFWnWJWxNyMxCdL2jjA4i9g5B8KhEz6Zru6HAfYk0F9EidpeFPvIBqSLj3ug2+h
-	 XlQFL3eypDk+HhTPo5A+pJBEYzr27z8X+dt7HmRrTDbDZGpa/Fs6CS+I0CwI1cgL4u
-	 p9KgVW0xipIvJwy6DCeWkflaEfWVBqeeVvBBUN63M1AEZ0NJxFc4dcnaiNjHf/Rm0E
-	 ZPlmURxqv9GMERH7V+wnqjXJzh+GAGxQH8b/et+5Z8d+4cWuTUFq/GqxKVS5pgklRK
-	 as/orngi3+x4A==
-Date: Fri, 22 Mar 2024 08:34:34 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: peterz@infradead.org, torvalds@linux-foundation.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Lukas Wunner <lukas.wunner@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH] cleanup: Add usage and style documentation
-Message-ID: <20240322133434.GA1340126@bhelgaas>
+	s=arc-20240116; t=1711114542; c=relaxed/simple;
+	bh=c1KEaCEKyhV3ITySajut5RjWMni3WEOGyLWfLOrxj7k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N42DN9Lvj04hd03rTn1xknW4p2KHA9h5muMv1w10WCEMXjeWbQ7w5A+XCadU4KK586ZQgb0Ev12MWRI+sQEkXbykB6DPbTz4OQCf5tECLZcOL1iCzGBqP3vLvgAOEqrJdkv7rP1SreUix6AFAQp5y8BG1VzojrRrDf7x55+OeaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 1753C1C0083; Fri, 22 Mar 2024 14:35:37 +0100 (CET)
+Date: Fri, 22 Mar 2024 14:35:36 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Marek Vasut <marex@denx.de>
+Cc: Pavel Machek <pavel@denx.de>, Sasha Levin <sashal@kernel.org>,
+	broonie@kernel.org, tzimmermann@suse.de, omosnace@redhat.com,
+	paul@paul-moore.com, yi.zhang@huawei.com, jack@suse.cz,
+	tytso@mit.edu, linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org
+Subject: Re: [PATCH 5.10 00/73] 5.10.213-rc1 review
+Message-ID: <Zf2JKL075FnIxXGI@duo.ucw.cz>
+References: <20240313164640.616049-1-sashal@kernel.org>
+ <ZfrngHBf1hbHohFa@duo.ucw.cz>
+ <21fce6d1-fadb-4175-9539-73d4cbdad452@denx.de>
+ <Zf1T1Q9q+0TA9ppm@duo.ucw.cz>
+ <21741b02-2454-40d8-87e3-9243e44f9738@denx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="T/jr9WbnttkFAmVu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+In-Reply-To: <21741b02-2454-40d8-87e3-9243e44f9738@denx.de>
 
-On Wed, Mar 20, 2024 at 03:04:41PM -0700, Dan Williams wrote:
-> When proposing that PCI grow some new cleanup helpers for pci_dev_put()
-> and pci_dev_{lock,unlock} [1], Bjorn had some fundamental questions
-> about expectations and best practices. Upon reviewing an updated
-> changelog with those details he recommended adding them to documentation
-> in the header file itself.
-> 
-> Add that documentation and link it into the rendering for
-> Documentation/core-api/.
-> 
-> Link: http://lore.kernel.org/r/20240104183218.GA1820872@bhelgaas [1]
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
-> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> Cc: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Cc: Lukas Wunner <lukas.wunner@intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
-> Peter, Linus,
-> 
-> I am starting to see more usage of the cleanup helpers and some
-> style confusion or misunderstanding on best practices on how to use
-> them. As I mention above, Bjorn found the writeup I did for justifying
-> __free(pci_dev_put) and guard(pci_dev) useful, so here is an attempt to
-> uplevel and centralize those notes.
 
-Thanks for doing this; I appreciate it!
+--T/jr9WbnttkFAmVu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +++ b/Documentation/core-api/cleanup.rst
-> @@ -0,0 +1,8 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +===========================
-> +Scope-based Cleanup Helpers
-> +===========================
-> +
-> +.. kernel-doc:: include/linux/cleanup.h
-> +   :doc: scope-based cleanup helpers
+Hi!
 
-Neat, I didn't know about this way of referencing doc in the source
-file, although I see the markup isn't universally loved in source.
-Either in cleanup.h or under Documentation/ is fine with me; grep will
-find it either place.
+> > > > > Marek Vasut (1):
+> > > > >     regmap: Add bulk read/write callbacks into regmap_config
+> > > >=20
+> > > > This one quite intrusive for the stable. Plus, at least "regmap: Add
+> > > > missing map->bus check" is marked as fixing this one.
+> > >=20
+> > > If there is no very good reason to include that regmap patch in stable
+> > > backports, I would skip it, it is a feature patch. Does any backport =
+depend
+> > > on it ?
+> >=20
+> > Well, yes and no.
+> >=20
+> > Series of max310x patches depends on it:
+> >=20
+> > !!a just a preparation; buggy, whole series for fixing this |ef8537927 =
+285e76 o: 5.10| serial: max
+> > 310x: use regmap methods for SPI batch operations
+> >=20
+> > ...
+> >=20
+> > !! whole series to fix corruption, which did not exist in 5.10 in the f=
+irst place |57871c388 3f42b1 o: 5.10| serial: max310x: fix IO data corrupti=
+on in batched
+> > operations
+> >=20
+> > But according to the 3f42b1, the bug did not exist in 5.10 in the
+> > first place, so we got buggy 285e76 backported, and then fixes up-to
+> > 3f42b1 applied to fix it up.
+>=20
+> Then probably both max30x patches should be dropped/reverted and the regm=
+ap
+> bulk callbacks also dropped ?
 
-> +/**
-> + * DOC: scope-based cleanup helpers
-> + *
-> + * The "goto error" pattern is notorious for introducing subtle resource
-> + * leaks. It is tedious and error prone to add new resource acquisition
-> + * constraints into code paths that already have several unwind
-> + * conditions. The "cleanup" helpers enable the compiler to help with
-> + * this tedium and can aid in maintaining FILO (first in last out)
-> + * unwind ordering to avoid unintentional leaks.
+Agreed.
 
-I'm not a data structures person, but I don't remember seeing "FILO"
-before.  IIUC, FILO == LIFO.  "FILO" appears about five times in the
-tree; "LIFO" about 25.
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-> + * As drivers make up the majority of the kernel code base lets describe
-> + * the Theory of Operation, Coding Style implications, and motivation
-> + * for using these helpers through the example of cleaning up PCI
-> + * drivers with DEFINE_FREE() and DEFINE_GUARD(), e.g.:
+--T/jr9WbnttkFAmVu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Maybe:
+-----BEGIN PGP SIGNATURE-----
 
-  As drivers make up the majority of the kernel code base, here is an
-  example of using these helpers to clean up PCI drivers with
-  DEFINE_FREE() and DEFINE_GUARD, e.g.,:
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZf2JKAAKCRAw5/Bqldv6
+8jp8AJ0TyVvk4h5xNqX27UutWNX2Pl+ruQCgm3cE5Cym48bxg3OQwqxQhe7VJ80=
+=+ooR
+-----END PGP SIGNATURE-----
 
-Or just s/lets/let's/, although to my ear "let's" is a suggestion and
-doesn't sound quite right in documentation.
-
-> + * .. code-block:: c
-> + *
-> + *	DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
-> + *	DEFINE_GUARD(pci_dev, struct pci_dev *, pci_dev_lock(_T), pci_dev_unlock(_T))
-
-I think DEFINE_FREE() and DEFINE_GUARD() are separable concepts, so
-possibly move DEFINE_GUARD to that discussion.
-
-> + * The DEFINE_FREE(pci_dev_put, ...) definition allows for declaring
-> + * variables like this:
-> + *
-> + * .. code-block:: c
-> + *
-> + *	struct pci_dev *dev __free(pci_dev_put) =
-> + *		pci_get_slot(parent, PCI_DEVFN(0, 0));
-> + *
-> + * The above will automatically call pci_dev_put() if @pdev is non-NULL
-> + * when @pdev goes out of scope (automatic variable scope). If a
-> + * function wants to invoke pci_dev_put() on error, but return @pdev
-> + * (i.e. without freeing it) on success, it can do:
-> + *
-> + * .. code-block:: c
-> + *
-> + *	return no_free_ptr(pdev);
-> + *
-> + * ...or:
-> + *
-> + * .. code-block:: c
-> + *
-> + *	return_ptr(pdev);
-> + *
-> + * Note that unwind order is dictated by declaration order.
-
-Not only dictated, but it's strictly first-declared, last-unwound;
-i.e., unwind order is the reverse of the declaration order, right?
-
-> + * That
-> + * contraindicates a pattern like the following:
-> + *
-> + * .. code-block:: c
-> + *
-> + *	int num, ret = 0;
-> + *	struct pci_dev *bridge = ctrl->pcie->port;
-> + *	struct pci_bus *parent = bridge->subordinate;
-> + *	struct pci_dev *dev __free(pci_dev_put) = NULL;
-> + *
-> + *	pci_lock_rescan_remove();
-> + *
-> + *	dev = pci_get_slot(parent, PCI_DEVFN(0, 0));
-
-As-is, I don't see the problem with this ordering.  I also don't see
-why num, ret, bridge, and parent are relevant.  I think maybe this
-just needs to be fleshed out a little more with a second cleanup to
-fully illustrate the problem.
-
-> + * In this case @dev is declared in x-mas tree style in a preamble
-> + * declaration block. That is problematic because it destroys the
-> + * compiler's ability to infer proper unwind order. If other cleanup
-> + * helpers appeared in such a function that depended on @dev being live
-> + * to complete their unwind then using the "struct obj_type *obj
-> + * __free(...) = NULL" style is an anti-pattern that potentially causes
-> + * a use-after-free bug. Instead, the expectation is this conversion:
-
-I don't think "xmas-tree style" is relevant to the argument here.  The
-point is ordering with respect to other cleanup helpers.  I think it
-would be good to include another such helper directly in the example.
-
-> + * .. code-block:: c
-> + *
-> + *	int num, ret = 0;
-> + *	struct pci_dev *bridge = ctrl->pcie->port;
-> + *	struct pci_bus *parent = bridge->subordinate;
-> + *
-> + *	pci_lock_rescan_remove();
-> + *
-> + *	struct pci_dev *dev __free(pci_dev_put) =
-> + *		pci_get_slot(parent, PCI_DEVFN(0, 0));
-> + *
-> + * ...which implies that declaring variables in mid-function scope is
-> + * not only allowed, but expected.
-
-A declaration mid-function may be required in some cases, but it's not
-required here.  I'm not sure if adding an example to include a case
-where it is required would be useful or overkill.
-
-> + * The motivation for deploying DEFINE_FREE(pci_dev_put, ...) is that at
-> + * the time of writing of this documentation there are ~590 instances of
-> + * pci_dev_put(), ~70 of them with 10 lines of a goto implying that a
-> + * significant number of gotos might be cleaned up for incremental
-> + * maintenance burden relief.
-
-Good motivation for a commit log, but maybe a bit TMI for long-lived
-documentation.
-
-> + * The guard() helper holds the associated lock for the remainder of the
-> + * current scope in which it was invoked. So, for example:
-> + *
-> + * .. code-block:: c
-> + *
-> + *	func(...)
-> + *	{
-> + *		if (...) {
-> + *			...
-> + *			guard(pci_dev); // pci_dev_lock() invoked here
-> + *			...
-> + *		} // <- implied pci_dev_unlock() triggered here
-> + *	}
-> + *
-> + * ...in other words, the lock is held for the remainder of the current
-> + * scope not the remainder of "func()".
-> + *
-> + * At the time of writing there are 15 invocations of pci_dev_unlock() in
-> + * the kernel with 5 within 10 lines of a goto.
-> + *
-> + * Conversions of existing code to use cleanup helpers should convert
-> + * all resources so that no "goto" unwind statements remain. If not all
-> + * resources are amenable to cleanup then additional refactoring is
-> + * needed to build helper functions, or the function is simply not a
-> + * good candidate for conversion.
-> + */
-> +
->  /*
->   * DEFINE_FREE(name, type, free):
->   *	simple helper macro that defines the required wrapper for a __free()
-> 
+--T/jr9WbnttkFAmVu--
 
