@@ -1,161 +1,161 @@
-Return-Path: <linux-kernel+bounces-111782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51BCE8870EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:32:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E44A8870EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DE391C23A0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:32:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEA23282D76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812B35D72F;
-	Fri, 22 Mar 2024 16:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367485B5D9;
+	Fri, 22 Mar 2024 16:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="JuJ6oBjw"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pmSZoHQN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE1F5CDC0
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3375CDC0;
+	Fri, 22 Mar 2024 16:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125126; cv=none; b=CFuihgwhESNJRgYZa3W3S8uNOF3MHrS1lr606X+sKlc7lKzQ6NV3ZXTdLlSdQuEOtttODmCor59ibPG64PfvAkcnHO0CBIx4lsmIk4uKgQa/MWkW+Ysy31aHyLTkCNv0t6abw47OyT0vMy8vqMGCiB7dW8s7pK3wE99gSwgxB6I=
+	t=1711125147; cv=none; b=BhEo4fG2rPkhL5x7fbWD93UwEycb0xyvtNZ+l+Up0ejW+hkdq5Knd9GIRQBNT9hmJamIlQaIlr/SYtMbbzbfX7uytumEiRXcHbk9r9xFHS7YeFbwmGDZ7/EUEPPm75yq+1mxkK32f3fEqJTUjzIiVtYglxMeUQNh7KcqeLSh0HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125126; c=relaxed/simple;
-	bh=BuQG63lMcTmgNNl4rqvlHS29xM6nE11JEuyaJ7K23dk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IYrB/Dm7gFMXIkABb+8Lw5ZVxrgHUWYteQQQbtGLRtdlVB3dPFgTagYqwYL+CRIY2cC+kTBTCukp79EWGnFDSTFSeio/bSFfhQykBKql8M5g74LZOpZX8OcrDfriE68wtIA7GkhCgzj5hAXPf3KmxhIfbqrZRL2K1SrqgUz85sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=JuJ6oBjw; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-789fb1f80f5so152549885a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711125123; x=1711729923; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z/jKRcxkxWVwJBSpRibUSdG75lkZ4ocJycd1Mr6Bw2Y=;
-        b=JuJ6oBjw8H7yZWUC46RLCQoesbwU9Lk6T9WPH3kye2vyYNHfTd+KhOz1wwfnD1igB7
-         1p3mIFFWcgt2sWdN6hRnJ2z4cW4j93IxiGT/Oyjuh5sSqqA9XvkQmumHJwmHhBm8x3O1
-         pVBhfk4LLMCLM2XYpDiEH/NXcdlqr2XGuJXMo+MUiisQg5nErFEVsv1z6rPH2bddD/Tf
-         akyFuTxkvmUVwPH41wi30mNRTJoJwAAUZwGEYyXudgKdI+5OGBKrrLClSpkJt6QEfkcP
-         /WMYN8fHNWXXkeu5oo32YIoGoFmLXCPOx5uP4bP5Yd9yRktMIkPkw07IF8VuaaqBwlEs
-         PhjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711125123; x=1711729923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z/jKRcxkxWVwJBSpRibUSdG75lkZ4ocJycd1Mr6Bw2Y=;
-        b=ZrpxMssd8IjSozgZVHb+GHReiKzUVqxjKHhoiC+/HExflIe9ypwp0SmEjL69LpV5k+
-         4glmeZq1XsCTnhw8C8UhkoWZig0f+bY+UuyVk3304s3KDAkUZLOhcR0F1dmNYE7DcuV7
-         3TviIc3s8VVvkVUxJ6ihuNWpFTT+J6gs5keA9M9z28wPxh4mKHogZmEwDLDJhM1qoA5E
-         Tqot4dIFib5/Ms/ES8kpm8Fret4Vg21155FUr0baRm8JWqP4iEOCN8HiB1yfhQEKEM7u
-         gWyhUnHDYoaXOo09qtOx2wCsI6FdgkbNRnNHpH5HfwZ8yCxlS+bdVpHN1wKbre/m5YbB
-         kNwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVpHCy8LHzZZovA+e0qPqVsUpJUk32l23Tq4uoD0M965R6VafVuFrP80xwKWqNvAFdA5joGtMcE4J6H45eZyxPh1+NTN0WXlB0ZabY8
-X-Gm-Message-State: AOJu0YzaEgqbI99JDROHhaQAVYliaPOi6w3L2OH21p1tEyKg/WmGxfI+
-	ds8Ayp2XFBf7MK9rgIiOnncOa/Jt8TBz/hGJSYUAkdU0N+04Wfsm2+79MdLZ7Hs=
-X-Google-Smtp-Source: AGHT+IEmjNO3iVQtJ5/6Fyo+e6vZeQz1BIgmUNoeNHyvqSHC03UiQxcsrMArTCXiiRa/okEHUAyW2g==
-X-Received: by 2002:a05:620a:57c3:b0:78a:1e39:2674 with SMTP id wl3-20020a05620a57c300b0078a1e392674mr2949227qkn.39.1711125123483;
-        Fri, 22 Mar 2024 09:32:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id r30-20020a05620a03de00b0078a07fc259csm899307qkm.40.2024.03.22.09.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 09:32:02 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rnhoI-00CMyb-0E;
-	Fri, 22 Mar 2024 13:32:02 -0300
-Date: Fri, 22 Mar 2024 13:32:01 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Junxian Huang <huangjunxian6@hisilicon.com>, linux-rdma@vger.kernel.org,
-	linuxarm@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/hns: Support congestion control algorithm
- parameter configuration
-Message-ID: <20240322163201.GF66976@ziepe.ca>
-References: <20240308105443.1130283-1-huangjunxian6@hisilicon.com>
- <20240310100027.GC12921@unreal>
- <c16e3cc2-1a70-a9ec-e533-e508cfbab18e@hisilicon.com>
- <20240311071119.GH12921@unreal>
- <f8354762-703c-16e2-fa8e-bc8519fdcd06@hisilicon.com>
- <20240312080522.GO12921@unreal>
+	s=arc-20240116; t=1711125147; c=relaxed/simple;
+	bh=otOiDrXv7vSEtDQG9vjhed+cuW5roGWlH4xO15itNQ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jVNd8U23+uMWS/3AsrAKU7Jv0jMUXfvgbgPKXZSNL/xnPeOFQKZgnnK3oMGBREUPqCyKzKOL5CAlAW6kBGZGSNPK/X2SPJQ0yynmYz9bn05YQ9EAos0vdOV+9DDW4bqPuEne+OV/f9QJXWvHd+oUEUBWm40wya7yrPnoarN7OLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pmSZoHQN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D9E3C433C7;
+	Fri, 22 Mar 2024 16:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711125145;
+	bh=otOiDrXv7vSEtDQG9vjhed+cuW5roGWlH4xO15itNQ0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pmSZoHQN6Ch6UZqCQc7YAx+AjlBUk0zUmyDWkFSAOUr+W/ukv/JcU9rjTJiBvBjb7
+	 GXsz3UGT1mXS2A2kC1SCL63D0O7nO0fPEciZIHb5qnrj/l/MV8c8xSV45hVaKRyCHj
+	 iXgMDmD2lKxhHoBv3yauwq2+yEpD65CaeqMrAT6L7XmLg58XdtcKR/wru810BF6iN4
+	 5i2JGMs06OEg1a9Jg80csxxv4rEJIg23OPCdKweUEIlDlI0wF15rN83mxbtXgzQ5Ri
+	 j+6N14r3eH+37fIr0UrDf3fL8S8WNGVz2uuiO0k7OkQ8Q0tjUSp1N3T9ZVxUrA1/8x
+	 iPqVIt4IXrbxQ==
+From: SeongJae Park <sj@kernel.org>
+To: Honggyu Kim <honggyu.kim@sk.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	42.hyeyoo@gmail.com
+Subject: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
+Date: Fri, 22 Mar 2024 09:32:23 -0700
+Message-Id: <20240322163223.68414-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240322090227.2253-1-honggyu.kim@sk.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240312080522.GO12921@unreal>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024 at 10:05:22AM +0200, Leon Romanovsky wrote:
-> On Mon, Mar 11, 2024 at 10:00:27PM +0800, Junxian Huang wrote:
-> > 
-> > 
-> > On 2024/3/11 15:11, Leon Romanovsky wrote:
-> > > On Mon, Mar 11, 2024 at 10:00:51AM +0800, Junxian Huang wrote:
-> > >>
-> > >>
-> > >> On 2024/3/10 18:00, Leon Romanovsky wrote:
-> > >>> On Fri, Mar 08, 2024 at 06:54:43PM +0800, Junxian Huang wrote:
-> > >>>> From: Chengchang Tang <tangchengchang@huawei.com>
-> > >>>>
-> > >>>> hns RoCE supports 4 congestion control algorithms. Each algorihm
-> > >>>> involves multiple parameters. Add port sysfs directory for each
-> > >>>> algorithm to allow modifying their parameters.
-> > >>>
-> > >>> Unless Jason changed his position after this rewrite [1], we don't allow
-> > >>> any custom driver sysfs code.
-> > >>>
-> > >>> [1] https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> > >>>
-> > >>
-> > >> I didn't quite get the reason from [1], could you please explain it?
-> > > 
-> > > Before [1], we didn't allow custom sysfs. After [1], the sysfs code
-> > > started to be more sane and usable for the drivers. However, it is
-> > > unlikely that the policy is changed to allow driver sysfs code.
-> > > 
-> > >>
-> > >> And it would be helpful if you could give us a hint about any other
-> > >> proper ways to do the algorithm parameter configuration.
-> > > 
-> > > Like any other FW internals.
-> > > 
-> > 
-> > If we add the capability of custom driver parameter configuration to
-> > rdmatool (similar to [2]), would it be acceptable?
+On Fri, 22 Mar 2024 18:02:23 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+
+> Hi SeongJae,
 > 
-> Moshe's patch is for devlink. We are working on a generic solution for
-> other vendors to control/debug their devices.
-> https://lwn.net/Articles/955001/
-> https://lore.kernel.org/all/20240304160237.GA2909161@nvidia.com/
+> On Tue, 27 Feb 2024 15:51:20 -0800 SeongJae Park <sj@kernel.org> wrote:
+> > On Mon, 26 Feb 2024 23:05:46 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> > 
+> > > There was an RFC IDEA "DAMOS-based Tiered-Memory Management" previously
+> > > posted at [1].
+> > > 
+> > > It says there is no implementation of the demote/promote DAMOS action
+> > > are made.  This RFC is about its implementation for physical address
+> > > space.
+> > > 
+> > > 
+[...]
+> > Thank you for running the tests again with the new version of the patches and
+> > sharing the results!
 > 
-> Feel free to join the discussion and reply that you are interested in
-> this proposal as well and emphasize that your device is not netdev at
-> all.
+> It's a bit late answer, but the result was from the previous evaluation.
+> I ran it again with RFC v2, but didn't see much difference so just
+> pasted the same result here.
 
-Yeah, I'm kind of expecting that all RDMA devices are going to need
-something like fwctl for exactly reasons like this. Adding a special
-driver sysfs is, IMHO, worse than just exposing a driver specific
-sysfs. hns looks like it would fit nicely into that scheme as it has a
-clean fw RPC interface - indeed this is just welding the FW RPC to
-sysfs..
+No problem, thank you for clarifying :)
 
-Congestion control does seem like it could have some sensible
-commonality, but there are so many different takes on it and many
-people are not doing per-port stuff but per-device or per-qp
-variations, so I'm not really sure.
+[...]
+> > > Honggyu Kim (3):
+> > >   mm/damon: refactor DAMOS_PAGEOUT with migration_mode
+> > >   mm: make alloc_demote_folio externally invokable for migration
+> > >   mm/damon: introduce DAMOS_DEMOTE action for demotion
+> > > 
+> > > Hyeongtak Ji (4):
+> > >   mm/memory-tiers: add next_promotion_node to find promotion target
+> > >   mm/damon: introduce DAMOS_PROMOTE action for promotion
+> > >   mm/damon/sysfs-schemes: add target_nid on sysfs-schemes
+> > >   mm/damon/sysfs-schemes: apply target_nid for promote and demote
+> > >     actions
+> > 
+> > Honggyu joined DAMON Beer/Coffee/Tea Chat[1] yesterday, and we discussed about
+> > this patchset in high level.  Sharing the summary here for open discussion.  As
+> > also discussed on the first version of this patchset[2], we want to make single
+> > action for general page migration with minimum changes, but would like to keep
+> > page level access re-check.  We also agreed the previously proposed DAMOS
+> > filter-based approach could make sense for the purpose.
+> 
+> Thanks very much for the summary.  I have been trying to merge promote
+> and demote actions into a single migrate action, but I found an issue
+> regarding damon_pa_scheme_score.  It currently calls damon_cold_score()
+> for demote action and damon_hot_score() for promote action, but what
+> should we call when we use a single migrate action?
 
-I wish there was more industry standards here..
+Good point!  This is what I didn't think about when suggesting that.  Thank you
+for letting me know this gap!  I think there could be two approach, off the top
+of my head.
 
-Anyhow, feel free to respond in that thread that hns is also
-interested, thanks
+The first one would be extending the interface so that the user can select the
+score function.  This would let flexible usage, but I'm bit concerned if this
+could make things unnecessarily complex, and would really useful in many
+general use case.
 
-Jason
+The second approach would be letting DAMON infer the intention.  In this case,
+I think we could know the intention is the demotion if the scheme has a youg
+pages exclusion filter.  Then, we could use the cold_score().  And vice versa.
+To cover a case that there is no filter at all, I think we could have one
+assumption.  My humble intuition says the new action (migrate) may be used more
+for promotion use case.  So, in damon_pa_scheme_score(), if the action of the
+given scheme is the new one (say, MIGRATE), the function will further check if
+the scheme has a filter for excluding young pages.  If so, the function will
+use cold_score().  Otherwise, the function will use hot_score().
+
+So I'd more prefer the second approach.  I think it would be not too late to
+consider the first approach after waiting for it turns out more actions have
+such ambiguity and need more general interface for explicitly set the score
+function.
+
+
+Thanks,
+SJ
+
+[...]
 
