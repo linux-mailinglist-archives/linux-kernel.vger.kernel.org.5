@@ -1,143 +1,144 @@
-Return-Path: <linux-kernel+bounces-111035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7C788672C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:54:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F2288672E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A336FB245D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:54:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FDFA287295
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B032E10A1A;
-	Fri, 22 Mar 2024 06:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SReBjUEN"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D7F10A24;
+	Fri, 22 Mar 2024 06:54:50 +0000 (UTC)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7076FB67D
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB58012E4E;
+	Fri, 22 Mar 2024 06:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711090470; cv=none; b=Ftn46q2eaxJnAlLxNlUbiJX9JTH5/RKqwTbPB3D5Nwmn1dFD6ZPJu73Zf6vWmzQdbiIIZN4a1avs1IYejMtV9SUz/wHi9qqtr7c2bPZNPMtZcj8FRVUhBVNA3VJUSkYHCHDINwdlruiQtErcn7SbBg3k/UYuVZA/BvztwXlf1Vs=
+	t=1711090490; cv=none; b=rlJ8fSczxj7RN1TSratr7cDj+hXlL1iyIMt0xlMZBFUOxfhRyTFKYljKUys7ygYkijjSYxWywW+HYsx6kvWz00+Fycj49N9gj0++9gFs2e2UCpS9+4nnporiRJvlAFyoyu+wnKtcOq7KKCc41n7EySe7SPmL/yKcaiYneOdu5Bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711090470; c=relaxed/simple;
-	bh=CwivtobiDV0JP5suaKdnRG4SEUly7OjQuKyLrbF/kJU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tQdQ0odQpMDiPuQxMtWCGN54G1CnUP1UmoJ5L7CMpeu7/AA6vAXNy8B2o2CxrptiZwGx/ZeNc7nBjpu1Mdlg8oAbufrzGANQQfDm9+Se3FV68Ih2MQbCCR+fAAmEjM9Suo3wOX3e4Yrv0Luuq0isvmcVCwE+4zRDpvKAk2ZfuJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SReBjUEN; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1711090490; c=relaxed/simple;
+	bh=+BNSGJsx1vJosmhq5hxoZxMU4t+RbrQAhNkSA77o6hQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TE/4HROEjper341i+jWiCYw9K7Fh5GK/UQr6REli/P5BU9iHBqdsiZTSVvp48EU1rIeGoYsP3e/gKrb0AKLahAO9MQdiO2UD6Pi7PLdjL2ZBE6B9AcFKgOD2ZmzdS11ig05duN6s4jakcnzwlifPr/YApWDjhYloJdosrQG3ANg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e0679b1562so14636865ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711090468; x=1711695268; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=X0mR9FBOo6PCCJK1XwCHn0BmyHsHKqqF1G8PPT7MSnc=;
-        b=SReBjUEN+/iorPEv2jRb8plK3lS9Iu21shQpQmfzXiu10tFcA1ZwpTaGjHQn+68Rxp
-         ZW8e7bxaPshHVGxwUjN0MZfkLae9ircslPGEiHbSzevgKKkTx0WdzUYXX5wKnwgNZ7qn
-         8KY2beZ+TVILfBdRnPwol9cHNTwaCKfKPk5HyHGXtObw6Dqk8PNEibSU5IbSHtEw/e3s
-         HxMN/AVIS1JGACASjKxTXEAvN9+jZYGUm6exSntbbOX5YsGaq3tU7h+cvNGRTCAgb2Jm
-         So7vMu3fD+R71GBEh3f+nTB3pFW3vd3U5faJkoeFqAQ9G7uXWH3sPjPECajnB4SrLrdy
-         jcBw==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d46d729d89so21168281fa.3;
+        Thu, 21 Mar 2024 23:54:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711090468; x=1711695268;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711090485; x=1711695285;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X0mR9FBOo6PCCJK1XwCHn0BmyHsHKqqF1G8PPT7MSnc=;
-        b=ZeF2UKSFT0iN0ZmAfuPFR867mcBmeN7M6rcOgy3M4ZRNMHmjce/Ym8tTSYWfsUX1w/
-         8O5iA8zbjHMgbvvti4q/263WPA0cNEI1ilFQwdcYydh8hCiUP0KYGAWWSSZzJbr50c1i
-         PXexDnEBZCXSUKhTxVHItamjZaeN7NY0KXnLcU/fYdDoWlGnQXAtfOOd+zNkMqwCfrc1
-         hjgG89tn5nhTJZA0HXORYRr3cnj6e+oWr4wpIWjx4e5S2buLCC1cqLyJtbjOuPjFz07J
-         NpW5KneV5PLndZrletFrT34XbcONkti/Eu3foMyfE7zK5RD67JP+BgkHSsFsUhIYHpeD
-         uSbg==
-X-Gm-Message-State: AOJu0YxjXZXEt2CZQODjmRQnhrYt0El73cU5vdd7fxkaWn9NpeoaJRVt
-	B1epufikaQhSEBlhO1ojVGyQwk01fstWz3CTXg/m2nHDrK0AdVJJxE7Q6xG9
-X-Google-Smtp-Source: AGHT+IGyLm625qbYLZcsvIXjqykpbRKd+VW055+PzbQFcO0QE4cp/QVWCWfXzfBpbbcFMhPscGTqEA==
-X-Received: by 2002:a17:902:7c0d:b0:1e0:6a:1c01 with SMTP id x13-20020a1709027c0d00b001e0006a1c01mr1294269pll.52.1711090467505;
-        Thu, 21 Mar 2024 23:54:27 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i14-20020a170902c94e00b001ddd6ba8113sm1076851pla.207.2024.03.21.23.54.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 23:54:26 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v2] nios2: Only use built-in devicetree blob if configured to do so
-Date: Thu, 21 Mar 2024 23:54:19 -0700
-Message-Id: <20240322065419.162416-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        bh=eiS3qG9J6mMzNFY6lGYJUzyU8506CYrK3SwtAiQf9DY=;
+        b=fKz8Fk4lcgsuiZN3azbRIcDpHn2CxhoXhCh+HSxoSVFyBuVxurNY2GfIZxQrDcCWTM
+         wumTHdDs4TEOBE/mGGAH2uyYiya0UkinoczNbesiej17+d5iAVmA8pTx+dymHyuaZik6
+         Aw3XLjaKrmWFHM3g+0v3urrHIsvjT6DPKPP/4/J+53/RpdEOyz7y2cvW4bGvJtk/dbJH
+         +9jxB4mB2odRzkv6KvFLjNUzfWkYzEW9E/iwMmEI9EASKnUkG+0/Jqo29VNbPe8qQyCX
+         jUm8Qx38qX8tv44qkGpeTs1w6b9RE894qIa39WbUrsH+7MxD6VKodveS8AesTz96z76u
+         bJvA==
+X-Forwarded-Encrypted: i=1; AJvYcCX6blEZqV3fDFolW6hUAvgmPAPQmQ1CZu+zRdCs9UoBqhIO1NuNa8iprz3Hv6TgfviAelII75RGk8PLh9762foscQYcNevgXcEAcP+ulaJNQfBs2OJbbb7iqJ3Pe6DyAArRTG8EZimYSXpR
+X-Gm-Message-State: AOJu0YwzKL0kIV6uon6eB+00x6OfJn0vMgy+1CLjWhX2bwbsZcCjiDKp
+	V2HJLYuytL2X1ROyK5lvsHvbAkKgJbXoCz5a6SnzLds322yhYD1K2S7THJEO01g=
+X-Google-Smtp-Source: AGHT+IGMM5yvNx6MH5xW9m23RHjBt9Hp7SGccOIykU9lO36bQ+KQUKKWU2i1AnE1l5C9ogeDRRbv9w==
+X-Received: by 2002:a2e:beaa:0:b0:2d6:9e7a:1524 with SMTP id a42-20020a2ebeaa000000b002d69e7a1524mr1264647ljr.13.1711090484484;
+        Thu, 21 Mar 2024 23:54:44 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
+        by smtp.gmail.com with ESMTPSA id l5-20020a05600c1d0500b004146a1bf590sm7961043wms.32.2024.03.21.23.54.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 23:54:43 -0700 (PDT)
+Message-ID: <d3b77177-7c00-4459-9515-37afe741e9dd@kernel.org>
+Date: Fri, 22 Mar 2024 07:54:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4] kdb: Fix the deadlock issue in KDB debugging.
+To: liu.yec@h3c.com, daniel.thompson@linaro.org
+Cc: dianders@chromium.org, gregkh@linuxfoundation.org,
+ jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20240321110407.GB7342@aspen.lan>
+ <20240321115017.2879691-1-liu.yec@h3c.com>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20240321115017.2879691-1-liu.yec@h3c.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Starting with commit 7b937cc243e5 ("of: Create of_root if no dtb provided
-by firmware"), attempts to boot nios2 images with an external devicetree
-blob result in a crash.
+On 21. 03. 24, 12:50, liu.yec@h3c.com wrote:
+> From: LiuYe <liu.yeC@h3c.com>
+> 
+> Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
+> attempt to use schedule_work() to provoke a keyboard reset when
+> transitioning out of the debugger and back to normal operation.
+> This can cause deadlock because schedule_work() is not NMI-safe.
+> 
+> The stack trace below shows an example of the problem. In this
+> case the master cpu is not running from NMI but it has parked
+> the slave CPUs using an NMI and the parked CPUs is holding
+> spinlocks needed by schedule_work().
 
-Kernel panic - not syncing: early_init_dt_alloc_memory_arch:
-	Failed to allocate 72 bytes align=0x40
+I am missing here an explanation (perhaps because I cannot find any docs 
+for irq_work) why irq_work works in this case.
 
-For nios2, a built-in devicetree blob always overrides devicetree blobs
-provided by ROMMON/BIOS. This includes the new dummy devicetree blob.
-Result is that the dummy devicetree blob is used even if an external
-devicetree blob is provided. Since the dummy devicetree blob does not
-include any memory information, memory allocations fail, resulting in
-the crash.
+And why you need to schedule another work in the irq_work and not do the 
+job directly.
 
-To fix the problem, only use the built-in devicetree blob if
-CONFIG_NIOS2_DTB_SOURCE_BOOL is enabled.
-
-Fixes: 7b937cc243e5 ("of: Create of_root if no dtb provided by firmware")
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Rob Herring <robh@kernel.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Mark 'dtb' as __maybe_unused
-
- arch/nios2/kernel/prom.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/nios2/kernel/prom.c b/arch/nios2/kernel/prom.c
-index 8d98af5c7201..9a8393e6b4a8 100644
---- a/arch/nios2/kernel/prom.c
-+++ b/arch/nios2/kernel/prom.c
-@@ -21,7 +21,8 @@
- 
- void __init early_init_devtree(void *params)
- {
--	__be32 *dtb = (u32 *)__dtb_start;
-+	__be32 __maybe_unused *dtb = (u32 *)__dtb_start;
-+
- #if defined(CONFIG_NIOS2_DTB_AT_PHYS_ADDR)
- 	if (be32_to_cpup((__be32 *)CONFIG_NIOS2_DTB_PHYS_ADDR) ==
- 		 OF_DT_HEADER) {
-@@ -30,8 +31,11 @@ void __init early_init_devtree(void *params)
- 		return;
- 	}
- #endif
-+
-+#ifdef CONFIG_NIOS2_DTB_SOURCE_BOOL
- 	if (be32_to_cpu((__be32) *dtb) == OF_DT_HEADER)
- 		params = (void *)__dtb_start;
-+#endif
- 
- 	early_init_dt_scan(params);
- }
+thanks,
 -- 
-2.39.2
+js
+suse labs
 
 
