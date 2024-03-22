@@ -1,60 +1,67 @@
-Return-Path: <linux-kernel+bounces-111732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A919887011
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:55:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C17887014
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:56:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CDDEB22C05
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:55:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 775671C21B96
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44BF56751;
-	Fri, 22 Mar 2024 15:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C99F56751;
+	Fri, 22 Mar 2024 15:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sjwCIOQa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="qg+gMoCJ"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08CCC54919;
-	Fri, 22 Mar 2024 15:55:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531AD524DF;
+	Fri, 22 Mar 2024 15:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711122935; cv=none; b=S4kNedhZxs8MGJ4ZhMNUpfV+WuhTw5TJ+IkPi6pdG+F7SwAHEBnLOKsMdHR85DhuUuvQS1fwjV3mKgnQnPhuXcpMecrKWtqWnXHkpaeXIAvhBRBZmJ26OaNlNLveC1iDxFlXCapeoXYbYvf1USQrxMDIE9EdUDuyXiNktIFmBo4=
+	t=1711123007; cv=none; b=UyG96QPf29aAb14fWekieLv2/6y2JO7yNahDmz8wDcuXVrWpQgZ2wD3bcUWKzIyywSI4xKrk0BoaM4ppAoWs2VRukPtU1vJopodGrfGbF5ePpNTn9cTgkn1ZHawtQFUN/5Qvk3VZ8qFIOvuAsZNb3koWd0Ocztfj1WOioQXKVFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711122935; c=relaxed/simple;
-	bh=KBxbC04wRzWWwKvLE9KMw4YX1znbdo8yfBBNgMOfrII=;
+	s=arc-20240116; t=1711123007; c=relaxed/simple;
+	bh=TN6iWFQ6tks/7SD6PC2cwdtWsPju4N4ielJpFORj08Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QjbyfH83umUz8Xpq0fnYf6+J/mygtBJ0ayWSWYBH4gQdyd2BCrXp3sfbTDkxwD6v2gCSI+FVssr0KAHXtLm3LCWsbEugI9I3Aig+S5iB0vxKBOSfIVb63B+ZtZfz9vSZciwBMmKgn/BAdBMdyy0rCkYDty9ATDz7SQmH5Mee+jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sjwCIOQa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDB1DC43390;
-	Fri, 22 Mar 2024 15:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711122934;
-	bh=KBxbC04wRzWWwKvLE9KMw4YX1znbdo8yfBBNgMOfrII=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sjwCIOQa4pcZ9lcWhOvJXf7sUt7tYQ0s7MDOdyVy7+NPkDN7E0HpkRFLsAeINXqP1
-	 Qk020GAQ6KK+5cI572KTCPOfrW5YZcaHcSmNLBCK8f51BA5FCSsKSQpHnpP9iiyzJO
-	 9ulMVTEY3wdUE8bqK90PrE4DFVp/J7LMBq5yJtipiWLHklZ5tWcxm/aXUGqb9ZWlRq
-	 Jz3jIjiKH0nHLUJdLpFJEyc+Ji2LuRp5QGQrGK45C0bI66WQoupjR7jTejbxF24thL
-	 oaHtxiYe0VExQdZhGS1LYIvfQe/Bc6Ct4fDRv/QvqUVJSwiq5xM34li0mnAhf8SmeM
-	 8nA+ZSE9F/7Vg==
-Date: Fri, 22 Mar 2024 15:55:29 +0000
-From: Will Deacon <will@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Robin Murphy <robin.murphy@arm.com>, Tyler Hicks <code@tyhicks.com>,
-	Jerry Snitselaar <jsnitsel@redhat.com>,
-	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-	Easwar Hariharan <eahariha@linux.microsoft.com>
-Subject: Re: Why is the ARM SMMU v1/v2 put into bypass mode on kexec?
-Message-ID: <20240322155529.GE5634@willie-the-truck>
-References: <ZfKsAIt8RY/JcL/V@sequoia>
- <ZfNKv70oqqwMwIeS@sequoia>
- <120d0dec-450f-41f8-9e05-fd763e84f6dd@arm.com>
- <20240319154756.GB2901@willie-the-truck>
- <20240319175007.GC66976@ziepe.ca>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aFhnEfJ4WD+AjaxguyqJKyARb3tJNm9IMkQes7eCsqAh4ndOtIumL+dHi3zog4h3U9tlHBcahh4jXTZdmf+aRRKuPf91e2O0hiNClZ+uFFtNc1JQvyymHp9IVDphZVeXUKpkAlhYB+vgJWlvoSNio5UwgYvqZ1uZK5Dp+XmNok0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=qg+gMoCJ; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=bFqRY/K29N5KY4oWl3hHzhxOBffmPcj/lfWbmVtrjFY=; b=qg+gMoCJCGMDoZ5fvzr4D2pcHv
+	fjWbyQ5pmoQok07RbG+aciz9Jd3XbkrxVzu+FOK+4a2p5+LhaAYtwcGBaLrNO0XY+TSK7fiKyjq0Z
+	fmYW94VP/KBohx0uO/VCJQXHqPs2/BTmlwBHyx+Ers5NAYxSif2r0FcusvFMA6IjL/2M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rnhFx-00AyDl-8A; Fri, 22 Mar 2024 16:56:33 +0100
+Date: Fri, 22 Mar 2024 16:56:33 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+Cc: "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+	"linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>,
+	"m.felsch@pengutronix.de" <m.felsch@pengutronix.de>
+Subject: Re: [PATCH net-next] net: phy: dp8382x: keep WOL setting across
+ suspends
+Message-ID: <5746c9da-1d45-4d06-a925-4150e680b8ec@lunn.ch>
+References: <20240306171446.859750-1-catalin.popescu@leica-geosystems.com>
+ <8de1d4e3-6d80-45a5-a638-48451d9b5c15@lunn.ch>
+ <b53818a7-66a4-4c7a-b687-efaea6cb9e4e@leica-geosystems.com>
+ <f8bfbe80-f308-4b8d-b8f0-5a5f6ca5fa0e@leica-geosystems.com>
+ <e9b85f71-f494-4fa6-acce-13ee8e147c21@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,32 +70,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240319175007.GC66976@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e9b85f71-f494-4fa6-acce-13ee8e147c21@leica-geosystems.com>
 
-Hey Jason,
+> > It looks like the issue I'm trying to address in this patch is not
+> > specific to dp8382x. Right now, depending on if the PHY is reset or not
+> > during resume (either through mdio_device reset_gpio/reset_ctrl or
+> > phy_driver soft_reset callback), the WOL configuration is either the PHY
+> > reset value or the BIOS value. I could still make the patch but it
+> > doesn't really make sense to address only dp8382x.
 
-On Tue, Mar 19, 2024 at 02:50:07PM -0300, Jason Gunthorpe wrote:
-> On Tue, Mar 19, 2024 at 03:47:56PM +0000, Will Deacon wrote:
-> 
-> > Right, it's hard to win if DMA-active devices weren't quiesced properly
-> > by the outgoing kernel. Either the SMMU was left in abort (leading to the
-> > problems you list above) or the SMMU is left in bypass (leading to possible
-> > data corruption). Which is better?
-> 
-> For whatever reason (and I really don't like this design) alot of work
-> was done on x86 so that device continues to work as-was right up until
-> the crash kernel does the first DMA operation. Including having the
-> crash kernel non disruptively inherit and retain the IOMMU
-> configuration. (eg see translation_pre_enabled() stuff in intel
-> driver)
+This is an interesting point. soft_reset the driver is in control
+off. It can preserve the WoL setting over the soft reset.
+A hardware reset is a different matter.
 
-Right, I'm also not thrilled about trying to implement that :)
-What we have at the moment seems to be good enough to avoid folks
-complaining about it.
+However, if we woke up due to WoL, the PHY never went to sleep, its
+state is intact, so why are we doing a hardware reset?
 
-For the case Tyler is reporting, though, I _think_ it's just a standard
-kexec() rather than a crashkernel.
+      Andrew
 
-Will
 
