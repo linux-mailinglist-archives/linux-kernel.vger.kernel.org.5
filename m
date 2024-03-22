@@ -1,348 +1,141 @@
-Return-Path: <linux-kernel+bounces-111876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B836488720A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:43:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A156B88720C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBCBB1C22C16
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:43:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A034B21D12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05F15FDD3;
-	Fri, 22 Mar 2024 17:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033495FF0F;
+	Fri, 22 Mar 2024 17:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="or+twNsX"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l9FJ/mwH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0035FB86;
-	Fri, 22 Mar 2024 17:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711129418; cv=fail; b=GDokVvkPz1AVvdZFmLnXUCCoatQXERruw2N/WR6wsh7RJsA/6i4+e5Xyn7Fofe2SeMubeE+KdPbCr4luFB9KFtUV1zpwQa7hkCD+t8D641i0rOeqywRbqJL4eFO9RipIvS2IqJbq/P54j6cVMtcEgfMWtJU/8rXa3wLVqCoZ9PY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711129418; c=relaxed/simple;
-	bh=bObKwJ3CLPnEjJWlEcSgXEThOUQtqdSdOfXIXQBBtLQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=r/Ti3Bs2gWcA17H3jwc01NbpRdjbkdMNzmRqzRmGLZcSNDQwJrswpNOAV2FqH6zQD66vonyG99l3EvGF+pPtAapIgctcQ49+YReamSjso/5mGD2u83I66BG8pFU7nVBFCM6Ut8J/YKAD/rLkNePuhys7TxfPYoMqhlZbvzoxsWw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=or+twNsX; arc=fail smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42ME6Mt7019977;
-	Fri, 22 Mar 2024 10:43:15 -0700
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x0ybuavu4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 10:43:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=njgqBCO434ScqJiv4NgeRsbczla4o96gFU5ReLcw8/kDqjR9old8anzP1sWZZfh51+Bna5LRnlbP3lqynvkfCkGP3iRh1B817rLEcPgMIur8oycpoBhwPy4mFzBSa2qCWQGL9cPlUCjl56JyT4M8qJoMCMdeCmZJmLuHLVODqnMuHZ38pa4NdrXjcnca3efJBSnVpIZmQMIB12jkCItOtV+Z5xhrb1SU6Dzdyf87KL9un1LCRdwvdwZ7Ynfc7l5k9X4C4LmaNEVi+g2WtH5q8fOpBSoAG9gydWcF4usIlKCPx9fuelFOwtQk8uC4JPtxAJxP8rkU/VTveFIXDdkPYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TlI1ztqwpjXnS5kLB8Q3ZWCOTlZAl/QUAS5Y8DVr5VM=;
- b=Jcj1hU87zFkWVX07xYmSLG8Jna12g4FoT7VX1CHQgDB7mRnKAGXmNRWG3BtDeVNoDrB6vMa4/b2FM4kjSGtKX7uqAiK4TYGKv1c/fnQYO4X0lE/xkfDrgNAsRbnaOqXwyh4VOi98ajhkZwz0IGJMI+To58MFYMke3OIglQUdEueBf2QqWCEg3ZflFr8aDliwel2z2r3FsXWCWlaeKuNF0c2vkg5sa5jULpQyQi2E7H6vva/BtBgtsWl0Py2yE9V03GLbUh214ecgmACoYEUpvjZEtvCz8Gm/XtUGNP+8nc1UyOd7XYqYb6hG44bKAbjgBmcSCNSTLuc/ROZw7xV6jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TlI1ztqwpjXnS5kLB8Q3ZWCOTlZAl/QUAS5Y8DVr5VM=;
- b=or+twNsXaaJnPuH7YDhqkbKlD5Ma0TciFijo43EskTFzYPILl1oe4+xMbRT1AO87fnrmlEyHPXPZAraozadellXYWjMkg6xAGH/RxKnjPrjPpeQKFvdUMfADXeGLLxSEdFswFZssmMhEWD/+shBHA3jt4B9ArSBGNtK+K2P+Gy0=
-Received: from SA1PR18MB4709.namprd18.prod.outlook.com (2603:10b6:806:1d8::10)
- by SA1PR18MB5994.namprd18.prod.outlook.com (2603:10b6:806:3e3::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Fri, 22 Mar
- 2024 17:43:12 +0000
-Received: from SA1PR18MB4709.namprd18.prod.outlook.com
- ([fe80::ebe0:68b0:1b37:b100]) by SA1PR18MB4709.namprd18.prod.outlook.com
- ([fe80::ebe0:68b0:1b37:b100%5]) with mapi id 15.20.7386.031; Fri, 22 Mar 2024
- 17:43:12 +0000
-From: Sai Krishna Gajula <saikrishnag@marvell.com>
-To: Oliver Neukum <oneukum@suse.com>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com"
-	<syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com>
-Subject: RE:  [PATCH net-next] usbnet: fix cyclical race on disconnect with
- work queue
-Thread-Topic: [PATCH net-next] usbnet: fix cyclical race on disconnect with
- work queue
-Thread-Index: AQHafIBp1dqMXcvK9kC5zLoffE3WoA==
-Date: Fri, 22 Mar 2024 17:43:12 +0000
-Message-ID: 
- <SA1PR18MB470955BBB332D3A9F9A6F247A0312@SA1PR18MB4709.namprd18.prod.outlook.com>
-References: <20240321124758.6302-1-oneukum@suse.com>
-In-Reply-To: <20240321124758.6302-1-oneukum@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR18MB4709:EE_|SA1PR18MB5994:EE_
-x-ms-office365-filtering-correlation-id: 881dd50b-085f-4afc-9124-08dc4a978be5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- svLRM3LA7Mxxhy8didAP9vqCHHSOh2g5FGy3oKpZF+oBlp7ag6D08VXbm7yNt7O1GvC6V1Fl9sWDErFYlTX+tMNzKmaeufteWbiNU6FhK2E2GCf94FIHW/wB8gEY46rMWvI8+GP1pYHnb41gwLOXPQqYCoZr4un2gLOIheTMBUR7SVSYOygcz+xY7RlOrcRT4wRxu+Ypjo6j4hMrqVPMJvRaqTV1Yjw+zcqfU4ln4sa59tCvBL3/531YPu5zIO9nBJGTXOZBN+VuwMNg226hr5ad7sA0jWipHiyBdN465JOo7Dbse72JMUloUu8pFbNBMdrxATndHF2KAe2l1Fco2f4fzGKfMQkM+4yvRjD7RUxFj8EpA88Ib7Hbg79eoghhvteFmF0WWlVw0EHfNOxf2RJJu7SzKuKhL/Sel4e1UJH0qr8wxW0WouC2Dyg+bypE+9Uy/BR7cRBdWdlQiiISQJ3qPug7+ejW7qXty2yuMKzSRYm85Bm3DmMFPnGxacixV6wB+mqKhQtgG4nDcJX2Y5ZGyhugJGORYKnjzd1YiqOljvvI0FiX7VcGtM4bfCy2m9KI12lq2lA9DLuVPgTN+MiOFIHXb2xUAJP0KA8JfeGxFltiXSF3GCsPnLCDhpjzH4S40dJZLcz8/5w4aj+Yn+bruz0fUGEQ/f0VOEoJrraWG6kflizkQJpAyZoYFt/QcS7n/MLbFQieZMztzKryut5RDg+IbvwQcOKl41BLnyM=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR18MB4709.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?sKcKHbbTmwPGb2HZ1u6sPqsh34wFGNvzbGd2DuKeOico+NWMDyNJTRKMRq2w?=
- =?us-ascii?Q?QYZ5r9qeRlPHg0oypLfu8MO+3Ltsg/zSDEpeYRr0vGqGSN/ux82E9s2Gavrs?=
- =?us-ascii?Q?NywtjQ2fCH+w6XXnW1bxuCtVWqAB4yo4Oj/Mpdvzx0cJgfKVfFy+/qYMTdmT?=
- =?us-ascii?Q?lDgOX5WBC1UnUpiColVQjnDj+ga10r2poR5BSMVws0BdqRZf8tv+W1qreyLQ?=
- =?us-ascii?Q?uT4v7Ze9S9B5bpwCMqLggKvWgaS/bDDltrUe4aQyv/vgRt7iFTCAZ4pK1l+v?=
- =?us-ascii?Q?P+CEF0pJuSK1faZaTwsY2AQ03uCZ0lrzKKgnzUXBid7Le9EY5CSfmPQrOqdM?=
- =?us-ascii?Q?RqxoubHrl7Ww7IamzkQolr3xQKJfz5R2AtOR4rEYIw1bmWdTxUjAXNoL6C1D?=
- =?us-ascii?Q?iqye0oUVhhFnMBpwSBYbn98Y/25eoUvtSPyXGR+YMRorlZiGv7xzsz199Xuh?=
- =?us-ascii?Q?38gZtJimsfOx9JWYV45U4jBAD4+Y9A3Fosg1qYs8D7bSceU6ph+c1O9S4GVE?=
- =?us-ascii?Q?V5DMtjfnVyLuRTz583OUK0rpzGgtTc6t6pv8SM7+7+CfLz+gTC0brCfS0qJh?=
- =?us-ascii?Q?iMKWCI6UM391FwURzOKGElJXkFp4Y3d87x3todWtYHUL/OcCFvH7TwvJLKVT?=
- =?us-ascii?Q?eYfPst6V/HnxiHM3Kif7lgQu/P1I7/GgnofiXGCiUa9lS+7DIPNzgUPDtmAe?=
- =?us-ascii?Q?eLzEQU8tTzoVyfamu4EP/lkC3KxdsrvD0hOJccN4Ket7rQ8DWu3QV1h/G8QS?=
- =?us-ascii?Q?QUmp04UYALAm7+EoKBzotrMOL6Pw3iHQAlGg71A7JoCtEtOjJ/qHFwiJDrxW?=
- =?us-ascii?Q?HiEyiSyh/Ll5AuGaPd0uvxQVlmMfoQCSvVVNo5hi9XFzwLaSQy+RuJu7THpM?=
- =?us-ascii?Q?ziOYXjZ2yssZUuCtZnsgrK5qcWXqbx6SHHtVtTMXjr5zvoWcwYNOmFaMGoo9?=
- =?us-ascii?Q?CRDjJxKBkT+Ct1+epbH9i/q4zYMNZkcnGDCGieP0adxSpfbrzYBKiDCoK0Uv?=
- =?us-ascii?Q?x/CMB1wA0GE+7NL39qTZXDwwtFwJcIOeqZ68QeBbIc7z0WDMseFYOmozf8L0?=
- =?us-ascii?Q?7Fw/5KA5ESzshYMQYdbrhkAOkP9wPmkUpONuikIoN6Bvx3a7H9+uE4uO+TxO?=
- =?us-ascii?Q?t8efTMXgC5ijBGA8gXcr7VWNwydFiNNJbQnxeisiCbe+KcGkkeeDFzukmZNw?=
- =?us-ascii?Q?5r4kPYhgrQJtQwNPJU+Is0qOmBWInJcPD9JWrjBI2WXB014qJH/tico7EL7T?=
- =?us-ascii?Q?R52Y1z4SiR+IgUHx9DP7Z9l12L+f048miQnUUNIcOTgNmpTYTIVgk5TDISQt?=
- =?us-ascii?Q?tmvUpLuKtQqAQSz3wTnr9opb3y5ei39USl9He0jKcQQik/4X6NkEsgWhcBNy?=
- =?us-ascii?Q?UuBO/0VmpnTXiGoMrSySomIYuX+UeXcr5qPxpvoF8On35r4kXxgN5aWhcS+C?=
- =?us-ascii?Q?3UJuzskYRo8KLiWUjqzsAvoUBk7jjCMVUgRKHC8yf8vmg92zVuR6L3RTz67j?=
- =?us-ascii?Q?anjRJ7cQ1Xj0LIrkXcbubToqwyaCFb942DXW5TtjTF6jg7hu7q9SxxNGWQSM?=
- =?us-ascii?Q?0jr8vSqPjTsDAWVv17eza8YxTwtu6CMtD6ti4Qy/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C93335FBBF;
+	Fri, 22 Mar 2024 17:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711129420; cv=none; b=hNZpYeM8sC65MpEDpigKnl7u769PjUpOydRQo61Nbap7VjKY829CKDW7CtT486J/sfeOtsWkldsENfmx0xzRET+5Ez8sJEe961WfjPXOgwzU9aJue3NVkwc/sjLBtyDiP7GuL4Bna++MdCzOw/Z9IKSdvOKLWbo2yEZASjgtdhk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711129420; c=relaxed/simple;
+	bh=+Ke7JiYTzzkmJt1eudUpKlOYPyexMXs9pD2hW7J0cPk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i9g1jBRWpYy9aY+9VJ6XUi6qK01ZlbHBIexhDqh/JOnklvErURPC7ZwjadK5kd0h7NFRenZkxi+z63ATZPev5pyv3Tb5+jL8lMli2nx6g+8pqoImQRgukw7vfQgV8TcyHAkqENfeG3ChpcItQ3daS+ouiu3DVHudR2vwUH9mph8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l9FJ/mwH; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711129419; x=1742665419;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+Ke7JiYTzzkmJt1eudUpKlOYPyexMXs9pD2hW7J0cPk=;
+  b=l9FJ/mwHoOHdpG+KXa+4wAfbo0ElU5pPm6N5cPO5cJ6qD4zaizSMWXIZ
+   CfiYf5aFTwZnxe6DZn2Lj1MP5UngzXRbhCq//nskrWfnGOEpaCRcmGSMn
+   6sMdSaEJoTptO5S4dXpdkvEogCOmx3OVzSw/uUEDZznkFIBN7yB9PGaCM
+   zYBkB6XIg13ZqY2wDKkhCXkTiKbvRqmKED2MNGXYFAaxDN2gnyWF73Yud
+   X/eX3QEvFxQ7mKS0Glu42M4fKAIdMOQeEHADKQdVfmtFsDScqu4pfrsi4
+   VtnU9QUFD7zJOCHpbvu7TI9aMZKyYyId2F0HFCKMAKJaQu1XDsUElWau5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6795665"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="6795665"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 10:43:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="19460960"
+Received: from ashwanim-mobl.amr.corp.intel.com (HELO [10.209.56.241]) ([10.209.56.241])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 10:43:37 -0700
+Message-ID: <01e64b89-8d30-45c5-9b83-f2e4d81b6344@intel.com>
+Date: Fri, 22 Mar 2024 10:43:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR18MB4709.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 881dd50b-085f-4afc-9124-08dc4a978be5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 17:43:12.7229
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zZ59++4ndPBVD+WiyuinZc0gH+cF9bsON3i0nykYCJscwXevvshbrwPmc0u9voeAjUClYjGM8lFr2ElkUNonHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR18MB5994
-X-Proofpoint-GUID: 5MOq8SKb9LkO3prPFPHgEf3QCA8V7NjH
-X-Proofpoint-ORIG-GUID: 5MOq8SKb9LkO3prPFPHgEf3QCA8V7NjH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-22_10,2024-03-21_02,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+Content-Language: en-US
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+ Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+ Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+ Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <003f1e83-fd93-4f4f-a316-d3e89e5a23a5@intel.com>
+ <87le6ab2bn.fsf@email.froward.int.ebiederm.org>
+ <2f8d726a-9800-4068-9c0c-6c4a79d69a85@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <2f8d726a-9800-4068-9c0c-6c4a79d69a85@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 3/22/24 10:40, Dave Hansen wrote:
+>  * Mapping extra memory on UV systems causes halts[1]
+>  * Mapping extra memory on UV systems breaks kexec (this thread)
 
-> -----Original Message-----
-> From: Oliver Neukum <oneukum@suse.com>
-> Sent: Thursday, March 21, 2024 6:17 PM
-> To: davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
-> pabeni@redhat.com; netdev@vger.kernel.org; linux-usb@vger.kernel.org;
-> linux-kernel@vger.kernel.org
-> Cc: Oliver Neukum <oneukum@suse.com>;
-> syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
-> Subject: [PATCH net-next] usbnet: fix cyclical race on disconnect
-> with work queue
+Sorry, I said that second one backwards:
 
-This patch seems to be a fix, in that case the subject need to be with [PAT=
-CH net]
+ * _Not_ mapping extra memory on UV systems breaks kexec
 
->=20
-> The work can submit URBs and the URBs can schedule the work.
-> This cycle needs to be broken, when a device is to be stopped.
-> Use a flag to do so.
->=20
-> Fixes: f29fc259976e9 ("[PATCH] USB: usbnet (1/9) clean up framing")
-
-Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<title line>")=
-' - ie: 'Fixes: f29fc259976e ("[PATCH] USB: usbnet (1/9) clean up framing")=
-'=20
-
-> Reported-by: syzbot+9665bf55b1c828bbcd8a@syzkaller.appspotmail.com
-> Signed-off-by: Oliver Neukum <oneukum@suse.com>
-> ---
->  drivers/net/usb/usbnet.c   | 37 ++++++++++++++++++++++++++++---------
->  include/linux/usb/usbnet.h | 18 ++++++++++++++++++
->  2 files changed, 46 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c index
-> e84efa661589..422d91635045 100644
-> --- a/drivers/net/usb/usbnet.c
-> +++ b/drivers/net/usb/usbnet.c
-> @@ -467,10 +467,12 @@ static enum skb_state defer_bh(struct usbnet *dev,
-> struct sk_buff *skb,  void usbnet_defer_kevent (struct usbnet *dev, int w=
-ork)
-
-space prohibited between function name and open parenthesis '('
-
-> {
->  	set_bit (work, &dev->flags);
-> -	if (!schedule_work (&dev->kevent))
-> -		netdev_dbg(dev->net, "kevent %s may have been
-> dropped\n", usbnet_event_names[work]);
-> -	else
-> -		netdev_dbg(dev->net, "kevent %s scheduled\n",
-> usbnet_event_names[work]);
-> +	if (!usbnet_going_away(dev)) {
-> +		if (!schedule_work (&dev->kevent))
-> +			netdev_dbg(dev->net, "kevent %s may have been
-> dropped\n", usbnet_event_names[work]);
-> +		else
-> +			netdev_dbg(dev->net, "kevent %s scheduled\n",
-> usbnet_event_names[work]);
-> +	}
->  }
->  EXPORT_SYMBOL_GPL(usbnet_defer_kevent);
->=20
-> @@ -538,7 +540,8 @@ static int rx_submit (struct usbnet *dev, struct urb
-> *urb, gfp_t flags)
-
-space prohibited between function name and open parenthesis '(', where ever=
- applicable.
-
->  			tasklet_schedule (&dev->bh);
->  			break;
->  		case 0:
-> -			__usbnet_queue_skb(&dev->rxq, skb, rx_start);
-> +			if (!usbnet_going_away(dev))
-> +				__usbnet_queue_skb(&dev->rxq, skb,
-> rx_start);
->  		}
->  	} else {
->  		netif_dbg(dev, ifdown, dev->net, "rx: stopped\n"); @@ -849,6
-> +852,16 @@ int usbnet_stop (struct net_device *net)
->  	del_timer_sync (&dev->delay);
->  	tasklet_kill (&dev->bh);
->  	cancel_work_sync(&dev->kevent);
-> +
-> +	/*
-> +	 * we have cyclic dependencies. Those calls are needed
-> +	 * to break a cycle. We cannot fall into the gaps because
-> +	 * we have a flag
-> +	 */
-
-Networking block comments don't use an empty /* line, use /* Comment...
-
-> +	tasklet_kill (&dev->bh);
-> +	del_timer_sync (&dev->delay);
-> +	cancel_work_sync(&dev->kevent);
-> +
->  	if (!pm)
->  		usb_autopm_put_interface(dev->intf);
->=20
-> @@ -1174,7 +1187,8 @@ usbnet_deferred_kevent (struct work_struct *work)
->  					   status);
->  		} else {
->  			clear_bit (EVENT_RX_HALT, &dev->flags);
-> -			tasklet_schedule (&dev->bh);
-> +			if (!usbnet_going_away(dev))
-> +				tasklet_schedule (&dev->bh);
->  		}
->  	}
->=20
-> @@ -1196,10 +1210,13 @@ usbnet_deferred_kevent (struct work_struct
-> *work)
->  			}
->  			if (rx_submit (dev, urb, GFP_KERNEL) =3D=3D -ENOLINK)
->  				resched =3D 0;
-> -			usb_autopm_put_interface(dev->intf);
->  fail_lowmem:
-> -			if (resched)
-> +			usb_autopm_put_interface(dev->intf);
-> +			if (resched) {
-> +				set_bit (EVENT_RX_MEMORY, &dev->flags);
-> +
->  				tasklet_schedule (&dev->bh);
-> +			}
->  		}
->  	}
->=20
-> @@ -1212,13 +1229,13 @@ usbnet_deferred_kevent (struct work_struct
-> *work)
->  		if (status < 0)
->  			goto skip_reset;
->  		if(info->link_reset && (retval =3D info->link_reset(dev)) < 0) {
-> -			usb_autopm_put_interface(dev->intf);
->  skip_reset:
->  			netdev_info(dev->net, "link reset failed (%d) usbnet
-> usb-%s-%s, %s\n",
->  				    retval,
->  				    dev->udev->bus->bus_name,
->  				    dev->udev->devpath,
->  				    info->description);
-> +			usb_autopm_put_interface(dev->intf);
->  		} else {
->  			usb_autopm_put_interface(dev->intf);
->  		}
-> @@ -1562,6 +1579,7 @@ static void usbnet_bh (struct timer_list *t)
->  	} else if (netif_running (dev->net) &&
->  		   netif_device_present (dev->net) &&
->  		   netif_carrier_ok(dev->net) &&
-> +		   !usbnet_going_away(dev) &&
->  		   !timer_pending(&dev->delay) &&
->  		   !test_bit(EVENT_RX_PAUSED, &dev->flags) &&
->  		   !test_bit(EVENT_RX_HALT, &dev->flags)) { @@ -1609,6
-> +1627,7 @@ void usbnet_disconnect (struct usb_interface *intf)
->  	usb_set_intfdata(intf, NULL);
->  	if (!dev)
->  		return;
-> +	usbnet_mark_going_away(dev);
->=20
->  	xdev =3D interface_to_usbdev (intf);
->=20
-> diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h inde=
-x
-> 9f08a584d707..d26599faab33 100644
-> --- a/include/linux/usb/usbnet.h
-> +++ b/include/linux/usb/usbnet.h
-> @@ -76,8 +76,26 @@ struct usbnet {
->  #		define EVENT_LINK_CHANGE	11
->  #		define EVENT_SET_RX_MODE	12
->  #		define EVENT_NO_IP_ALIGN	13
-> +/*
-> + * this one is special, as it indicates that the device is going away
-> + * there are cyclic dependencies between tasklet, timer and bh
-> + * that must be broken
-> + */
-
-Networking block comments don't use an empty /* line, use /* Comment...
-
-> +#		define EVENT_UNPLUG		31
->  };
->=20
-> +static inline bool usbnet_going_away(struct usbnet *ubn) {
-> +	smp_mb__before_atomic();
-> +	return test_bit(EVENT_UNPLUG, &ubn->flags); }
-> +
-> +static inline void usbnet_mark_going_away(struct usbnet *ubn) {
-> +	set_bit(EVENT_UNPLUG, &ubn->flags);
-> +	smp_mb__after_atomic();
-> +}
-> +
->  static inline struct usb_driver *driver_of(struct usb_interface *intf)  =
-{
->  	return to_usb_driver(intf->dev.driver);
-> --
-> 2.44.0
->=20
 
 
