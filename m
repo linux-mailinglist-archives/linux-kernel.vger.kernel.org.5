@@ -1,135 +1,192 @@
-Return-Path: <linux-kernel+bounces-111904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D70C887268
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:59:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F366588726C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E8031C238FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:59:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF01F288B18
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0131060EE9;
-	Fri, 22 Mar 2024 17:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0133560BAC;
+	Fri, 22 Mar 2024 17:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ek39tlHb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kvrERC+H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8922860DE7;
-	Fri, 22 Mar 2024 17:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419B460B80;
+	Fri, 22 Mar 2024 17:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130319; cv=none; b=N3TGhSRoWzYkjrH7U0KfGlC0YpRJhK4qk1fiCFC1/L3Sz8TuPVyH1ml7k3CJnfTj5yAE1RTRCroS3GiRU4glTEnMstd12SH6HZ3X5KICNU9QyhbAYVk5UfpjQrvW25JjRl3GHApcJyODYRQ/pdLegpd4QgbBDQqx7jWR3YZH46c=
+	t=1711130382; cv=none; b=KmBGxS8COES5e29TDAXe0w6VTdICxckTsFgnj9TbcfV5/7HwPKCTvhcIUq3m7B68p1sQbD0QjzCd2YDX2SCzvm/y1oz3P6yUaNR5EjURz9CLnuQI29tAWB6wFDZpWvYnN6d5mZE9M9OzJOpBDpqidbUir6EAgPnbiEI14wsT9l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130319; c=relaxed/simple;
-	bh=Fg2DTIIIhUQNFpW2Iw3rokXpLJlP9QgdMt0GMxWljz4=;
+	s=arc-20240116; t=1711130382; c=relaxed/simple;
+	bh=vYsHN5tUpWVy+FYsrra2eYCMPyeaVlBd8+QL+Nh9b5g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pch37pcZD3OUkEPikFQCTMl/gBFIq4anY4m79sJ4pgacNjnWj0LKOdnYIsrEL9Iq1Ak5m2dXfLtwi/CjiYobGlBnMyzy46tFvs6X5pQQORjXSwSQwRolu7LHVil0zn++brJbDGf45Qe9aD2BIWwEITW0IUeCtVYZH7mw2U8IeCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ek39tlHb; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711130317; x=1742666317;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Fg2DTIIIhUQNFpW2Iw3rokXpLJlP9QgdMt0GMxWljz4=;
-  b=ek39tlHbe26aMIDREYKIeDgNvXGTPg7L3B9pWojODgDRisNRGSlq51mc
-   ks0lo5owd6TrWjOf0rT/dX68yOUU0K/jIFJD8yf+Ni2NT80kzqQppC3DC
-   GA7BlJFaxCi3yOxCUXBQzt5oanX9Uwz1Y8c8figcEhNfewhXuL49DaB2d
-   m36gr8NVQXglZGiK5hYRFgtlo8RNo7PLIRqz5qNDy9eKSrD53r3vgqJYW
-   RR5vXrZw0m8ndvL68ecyX54/Gi8ATk6nIYk2mraeQ4nkST9tFXYWglZsi
-   wB5Vax2EEGVD6UN41JctHUuICe/++S+8ediwxxbxPrCVeY0Ung1fH/86A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6308430"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="6308430"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 10:58:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="19551738"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 22 Mar 2024 10:58:33 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rnj9y-000KVr-2a;
-	Fri, 22 Mar 2024 17:58:30 +0000
-Date: Sat, 23 Mar 2024 01:58:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alex Bee <knaerzche@gmail.com>, Lee Jones <lee@kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=lHgzTNAdRBaVqbJEHntt8speeq8F1CDgSUCamiSznjwPessBlWknC19t24hXeCKBJfv6Xxf7fQeFBIu+91WNBSm4VTacgF0G3/lfSMhWrg+d9l9CKk9r2hNEnM7peOjcZyYElY7juOgZeEdv8PW8Wwn2+rqBog4Igclmt/lSb5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kvrERC+H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CEAC433F1;
+	Fri, 22 Mar 2024 17:59:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711130382;
+	bh=vYsHN5tUpWVy+FYsrra2eYCMPyeaVlBd8+QL+Nh9b5g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kvrERC+HC9ArLBwp5Fh3Xrsa3y5UQi9zCRFAfd9lTmymxC+aQbv7hNJVjfxZxZMrJ
+	 pECB2rBIhEokCw5c+Or39sRuvgLWvuWpU/HrY9ti1WFSZAgsrhs24UB6BCk8YYjvWu
+	 1T9prFLrcbvmEoNSzCrHgN2UE70qsLjPSsnD62FRSPazKgRxP8eUVu0erjqCW809hE
+	 4pmE47B/VZKdlKLh7NVwshneoqtSlMZFdxi4DQDTp8vP9ZYWEr7zDDmqovQxVkBUBS
+	 8TpNVPNfQKanvTdjOeTkbesQDpUacMpUbXBfI+22IFUd4XPV39sHU2evasKP7n75t/
+	 rSMCMlyxXDvQQ==
+Date: Fri, 22 Mar 2024 17:59:37 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
 	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Chris Zhong <zyw@rock-chips.com>,
-	Zhang Qing <zhangqing@rock-chips.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, Alex Bee <knaerzche@gmail.com>
-Subject: Re: [PATCH 2/5] mfd: rk8xx: Add RK816 support
-Message-ID: <202403230131.AhHTZiEx-lkp@intel.com>
-References: <20240321143911.90210-5-knaerzche@gmail.com>
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 2/5] dt-bindings: hwmon: ibmpowernv: convert to
+ dtschema
+Message-ID: <20240322-papaya-diabolic-e7c2c4319eb2@spud>
+References: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
+ <20240322-hwmon_dtschema-v2-2-570bee1acecb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1BqIBqYDHfkBFwJe"
+Content-Disposition: inline
+In-Reply-To: <20240322-hwmon_dtschema-v2-2-570bee1acecb@gmail.com>
+
+
+--1BqIBqYDHfkBFwJe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321143911.90210-5-knaerzche@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alex,
+On Fri, Mar 22, 2024 at 07:45:27AM +0100, Javier Carrasco wrote:
+> Convert existing binding to support validation.
+>=20
+> This is a straightforward conversion with now new properties.
+>=20
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+>  .../devicetree/bindings/hwmon/ibm,powernv.yaml     | 37 ++++++++++++++++=
+++++++
+>  .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 --------------
+>  2 files changed, 37 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml b/D=
+ocumentation/devicetree/bindings/hwmon/ibm,powernv.yaml
+> new file mode 100644
+> index 000000000000..b26d42bce938
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml
 
-kernel test robot noticed the following build warnings:
+Filename should really match one of the compatibles. "powernv" is not a
+type of hwmon as far as a quick google reports so I think its a poor
+choice here regardless. With a compatible for the filename:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-[auto build test WARNING on lee-mfd/for-mfd-next]
-[also build test WARNING on lee-mfd/for-mfd-fixes broonie-regulator/for-next robh/for-next linus/master v6.8 next-20240322]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
+Conor.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alex-Bee/dt-bindings-mfd-Add-rk816-binding/20240321-224318
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
-patch link:    https://lore.kernel.org/r/20240321143911.90210-5-knaerzche%40gmail.com
-patch subject: [PATCH 2/5] mfd: rk8xx: Add RK816 support
-config: i386-randconfig-062-20240322 (https://download.01.org/0day-ci/archive/20240323/202403230131.AhHTZiEx-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240323/202403230131.AhHTZiEx-lkp@intel.com/reproduce)
+> @@ -0,0 +1,37 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/ibm,powernv.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: IBM POWERNV platform sensors
+> +
+> +maintainers:
+> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ibm,opal-sensor-cooling-fan
+> +      - ibm,opal-sensor-amb-temp
+> +      - ibm,opal-sensor-power-supply
+> +      - ibm,opal-sensor-power
+> +
+> +  sensor-id:
+> +    description:
+> +      An opaque id provided by the firmware to the kernel, identifies a
+> +      given sensor and its attribute data.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +required:
+> +  - compatible
+> +  - sensor-id
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    sensor {
+> +        compatible =3D "ibm,opal-sensor-cooling-fan";
+> +        sensor-id =3D <0x7052107>;
+> +    };
+> diff --git a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt b/Doc=
+umentation/devicetree/bindings/hwmon/ibmpowernv.txt
+> deleted file mode 100644
+> index f93242be60a1..000000000000
+> --- a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt
+> +++ /dev/null
+> @@ -1,23 +0,0 @@
+> -IBM POWERNV platform sensors
+> -----------------------------
+> -
+> -Required node properties:
+> -- compatible: must be one of
+> -		"ibm,opal-sensor-cooling-fan"
+> -		"ibm,opal-sensor-amb-temp"
+> -		"ibm,opal-sensor-power-supply"
+> -		"ibm,opal-sensor-power"
+> -- sensor-id: an opaque id provided by the firmware to the kernel, identi=
+fies a
+> -	     given sensor and its attribute data
+> -
+> -Example sensors node:
+> -
+> -cooling-fan#8-data {
+> -	sensor-id =3D <0x7052107>;
+> -	compatible =3D "ibm,opal-sensor-cooling-fan";
+> -};
+> -
+> -amb-temp#1-thrs {
+> -	sensor-id =3D <0x5096000>;
+> -	compatible =3D "ibm,opal-sensor-amb-temp";
+> -};
+>=20
+> --=20
+> 2.40.1
+>=20
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403230131.AhHTZiEx-lkp@intel.com/
+--1BqIBqYDHfkBFwJe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/mfd/rk8xx-core.c:573:24: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected unsigned int ( *get_irq_reg )( ... ) @@     got unsigned int ( const * )( ... ) @@
-   drivers/mfd/rk8xx-core.c:573:24: sparse:     expected unsigned int ( *get_irq_reg )( ... )
-   drivers/mfd/rk8xx-core.c:573:24: sparse:     got unsigned int ( const * )( ... )
+-----BEGIN PGP SIGNATURE-----
 
-vim +573 drivers/mfd/rk8xx-core.c
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3HCQAKCRB4tDGHoIJi
+0jNGAP9qE1RgXwHh+bJHGrruo2IG/PvvUFE4CGzM4LgWwflF/AEAiZNvtVyjY0Ni
+4RDUtWjJKj6uVoLcSS6AW+psuIZ81g0=
+=vQA/
+-----END PGP SIGNATURE-----
 
-   567	
-   568	static const struct regmap_irq_chip rk816_irq_chip = {
-   569		.name = "rk816",
-   570		.irqs = rk816_irqs,
-   571		.num_irqs = ARRAY_SIZE(rk816_irqs),
-   572		.num_regs = 3,
- > 573		.get_irq_reg = rk816_get_irq_reg,
-   574		.status_base = RK816_INT_STS_REG1,
-   575		.mask_base = RK816_INT_STS_MSK_REG1,
-   576		.ack_base = RK816_INT_STS_REG1,
-   577		.init_ack_masked = true,
-   578	};
-   579	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--1BqIBqYDHfkBFwJe--
 
