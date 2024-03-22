@@ -1,179 +1,126 @@
-Return-Path: <linux-kernel+bounces-111892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF23887249
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 333C2887240
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:55:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF03C2826EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EAB5282661
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CA460DE7;
-	Fri, 22 Mar 2024 17:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C1B60BAA;
+	Fri, 22 Mar 2024 17:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RzkND4Bm"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8l4kkl8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B029D60DC0
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAC060B92;
+	Fri, 22 Mar 2024 17:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130111; cv=none; b=UZXUHnMf0IwYXwQH91UP7v3Re8GstmlTCSh1BFGeqSyMDXbbPNAzvynjlTveLOFrNiwo+oM+tSjiFz+G9Tzb0G5CfTms36j9u/ULdHIOtOIn8vQd8nxR2w+Jl5WP0sS8SKS8O9bh7AEOzRe492g8b103GMtkQsrjptOLdatfzdI=
+	t=1711130106; cv=none; b=Lmm0ZORFs/eRk2LOKh0DCSjqfOtlw0+Issv0YScJTxg/YoN1l1Etg/4fvLJZEYTn7HeinpAiXk5GkPDQjQMN50PGeaLDE3XmnoP0Vdb0OyrSk3oBBt/Mi5KnXEhAeF2wU7moC2gpaoQnc3aQXBU+40YES2+s5N2bCK+HzCq/zv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130111; c=relaxed/simple;
-	bh=l9m99BFxmTnLiVZTWH4IyJEQNsmy+RFkQO1mLY1L5IA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z0gbBg7pEfjFqABBL+x9SQBpOPuRzVOxJLFEUBD4nQMRx0Ya28fA70a7/QAwQyqXuwWbgZJHGMKR7BIxZ2jUoua8m/ZCxgT4G03/qJxc0waJSHxR/Pt8yHBphdzUFT0yTjPV5boxKGTBpHBwTwODG/jX/r6pjh/HGirBTKsRtYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RzkND4Bm; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56b8e4f38a2so3166276a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:55:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711130107; x=1711734907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6WuYhmNp304wILfLv6V/aQkHKFavalWMa0RSWXYvrPw=;
-        b=RzkND4Bm4wkW3lvcEypkcxdmIg1Pc2XAJIPjja+0m+v/CoeclpPbx3S06/HnLsyDhQ
-         IlE86J50GPqiQotibPDMSZcMLL/LCKx/nc/WNm03EtQrfCMtwRaAGvsZjG31wZg8unia
-         yIO5LSMFoknJfUy3v6TCpywvoCOXS0ROpdyhSG4wgoLxD11Cmr7aC53NpjsGzJZtHEmz
-         sA4xBR4biuHrpF47aakzjpmM+UJ+L8Q/7YjQryfz+gthJ09Xn0G6rQ7Edg5cBODxW7zj
-         U24TMitp1pKP0upk5gxicw9rGF6SY9GuUwm96+GjbXB1pIgu8Q2a3SaUmr9e+3ce/QnJ
-         wkHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711130107; x=1711734907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6WuYhmNp304wILfLv6V/aQkHKFavalWMa0RSWXYvrPw=;
-        b=VjPsTKJ8e9kNACrgehWyW90w433eyixfRHcVdXo9X4lujcjeJe8pOPbg17IYMfLO5f
-         HrjNWBgMXxrKWq6b3S5DpQNqqhw/KkEaaWUAQmnK3Exvht219vkNr7tbJLAwYAy6Xzb1
-         9MJeXFaAhlK0ORwiDlDjlk+q8ihIS1ItvV8M43AR2KhGqOAdUOjv+qSQW6/ya11Wh6Je
-         iOp+ggG0cK5i6bTW4/jt43fjUJyc7rwgHabUPzmCUfMbme8sFdPj2/nMbVTFncTWIuMy
-         tKBYZyV/zvJrBFuKjyCBFyhv5By+W5cMy21p0DkogHLBOrbpEKIGnafR3bkFTiehmWff
-         n7PA==
-X-Forwarded-Encrypted: i=1; AJvYcCXEDLAzHcAqhYBOn4TiXNF490LxoJn0iMV0Yoepy3LikFmSAPmv5NSl6IXtAJksSVf9nRaOH8D61h147Ag5eBhFgYgKnlDV/LEmG8cT
-X-Gm-Message-State: AOJu0Yyk5WX09bEaFS+ADA7HRTlAhZCEfwVPfazpGe5xOlY6J6OIrDW2
-	LvP+rxdqpbg3wS5FmRnSQ/l7A+VkIChzKOzkhQ7zC0GLN4fkz0WZLOICdBsB/cFnRPM5msN1psi
-	Yn0/6bVu0CAr8Ex1kBeBkLmkotY58SU+w5P1X
-X-Google-Smtp-Source: AGHT+IHTothcuqikFFrMs12/Yd8HwJZ8LnAxmbZMMmJb1jW1wBBEyord9u+K2tzA7reF5OIehczUR0R88m66zZf5tNs=
-X-Received: by 2002:a17:906:d190:b0:a47:e62:4d72 with SMTP id
- c16-20020a170906d19000b00a470e624d72mr331556ejz.15.1711130106762; Fri, 22 Mar
- 2024 10:55:06 -0700 (PDT)
+	s=arc-20240116; t=1711130106; c=relaxed/simple;
+	bh=SdA10GSjVQNqqmFuTSnxiUAhaxT2iu+4G7rjXFP4CWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rjYgPECzseXce3r9d3pQgCf1VyT+BoPRCd9bPJkbd2ObcMv0WfMbEY+ST5e8CruXGb+6qu5qsIbdp80B5bAHwQ8LPi60QR2Pf2qU+tQJ4IHbBeppGwWAA98HR5pshXXUTB7ryCWaZ7Bfp3Rg+mgquwRcg9fit7+gdkNZboBwG/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8l4kkl8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AFC9C433A6;
+	Fri, 22 Mar 2024 17:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711130106;
+	bh=SdA10GSjVQNqqmFuTSnxiUAhaxT2iu+4G7rjXFP4CWk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M8l4kkl8LWW6mvudC3pVWyDm3Nfppb8REzKBQpQLI3Rg5BDVjqsEJq4JYt736MyqH
+	 PKvXY9tr5g5fT1yodFt0D+wrcqZoSPUzQRgkc5H8Ni5TOgqAPs5WnvpNEhK/ITHSHh
+	 l27uAfyeVRKdZb0Th15DJZfFh9hMwbgdc465BBaFCNPaCQ68WGe0qzfdXrOzBBaWka
+	 YgHtClWc2rfBomVWRz4DWGpWYfp0iofB9veCM3pcMIEdf2H0093d7gv/+OnG0yR5bK
+	 GjqM4AwscZXS+3xOj5dBCDgGW1WWwB8GNsanWY8LYauYN3sY3PoLx3WwQ2LZqZiP8C
+	 pFCFPDETVP1UA==
+Date: Fri, 22 Mar 2024 17:55:01 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: usb: qcom,pmic-typec: Add support for
+ the PM7250B PMIC
+Message-ID: <20240322-precise-snazzy-a6f1decd1b9e@spud>
+References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
+ <20240322-fp4-tcpm-v1-2-c5644099d57b@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com> <ZfegzB341oNc_Ocz@infradead.org>
-In-Reply-To: <ZfegzB341oNc_Ocz@infradead.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 22 Mar 2024 10:54:54 -0700
-Message-ID: <CAHS8izOUi6qGp=LSQb_o5oph-EnhNOuhLkPSfbQRU3eniZvbdA@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-To: Christoph Hellwig <hch@infradead.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="MLqEUximXdvM3c2M"
+Content-Disposition: inline
+In-Reply-To: <20240322-fp4-tcpm-v1-2-c5644099d57b@fairphone.com>
+
+
+--MLqEUximXdvM3c2M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 17, 2024 at 7:03=E2=80=AFPM Christoph Hellwig <hch@infradead.or=
-g> wrote:
->
-> On Mon, Mar 04, 2024 at 06:01:37PM -0800, Mina Almasry wrote:
-> > From: Jakub Kicinski <kuba@kernel.org>
-> >
-> > The page providers which try to reuse the same pages will
-> > need to hold onto the ref, even if page gets released from
-> > the pool - as in releasing the page from the pp just transfers
-> > the "ownership" reference from pp to the provider, and provider
-> > will wait for other references to be gone before feeding this
-> > page back into the pool.
->
-> The word hook always rings a giant warning bell for me, and looking into
-> this series I am concerned indeed.
->
-> The only provider provided here is the dma-buf one, and that basically
-> is the only sensible one for the documented design.
+On Fri, Mar 22, 2024 at 09:01:33AM +0100, Luca Weiss wrote:
+> The PM6150 PMIC has the same Type-C register block as the PM8150B.
+> Define corresponding compatible string, having the qcom,pm8150b-vbus-reg
+> as a fallback.
+>=20
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-Sorry I don't mean to argue but as David mentioned, there are some
-plans in the works and ones not in the works to extend this to other
-memory types. David mentioned io_uring & Jakub's huge page use cases
-which may want to re-use this design. I have an additional one in
-mind, which is extending devmem TCP for storage devices. Currently
-storage devices do not support dmabuf and my understanding is that
-it's very hard to do so, and NVMe uses pci_p2pdma instead. I wonder if
-it's possible to extend devmem TCP in the future to support pci_p2pdma
-to support nvme devices in the future.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Additionally I've been thinking about a use case of limiting the
-amount of memory the net stack can use. Currently the page pool is
-free to allocate as much memory as it wants from the buddy allocator.
-This may be undesirable in very low memory setups such as overcommited
-VMs. We can imagine a memory provider that allows allocation only if
-the page_pool is below a certain limit. We can also imagine a memory
-provider that preallocates memory and only uses that pinned pool. None
-of these are in the works at the moment, but are examples of how this
-can be (reasonably?) extended.
-
->  So instead of
-> adding hooks that random proprietary crap can hook into,
-
-To be completely honest I'm unsure how to design hooks for proprietary
-code to hook into. I think that would be done on the basis of
-EXPORTED_SYMBOL? We do not export these hooks, nor plan to at the
-moment.
-
-> why not hard
-> code the dma buf provide and just use a flag?  That'll also avoid
-> expensive indirect calls.
->
-
-Thankfully the indirect calls do not seem to be an issue. We've been
-able to hit 95% line rate with devmem TCP and I think the remaining 5%
-are a bottleneck unrelated to the indirect calls. Page_pool benchmarks
-show a very minor degradation in the fast path, so small it may be
-just noise in the measurement (may!):
-
-https://lore.kernel.org/netdev/20240305020153.2787423-1-almasrymina@google.=
-com/T/#m1c308df9665724879947a345c4b1ec3b51ff6856
-
-This is because the code path that does indirect allocations is the
-slow path. The page_pool recycles netmem aggressively.
-
---=20
 Thanks,
-Mina
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml b=
+/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> index d9694570c419..0cdc60b76fbd 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> @@ -21,6 +21,7 @@ properties:
+>        - items:
+>            - enum:
+>                - qcom,pm6150-typec
+> +              - qcom,pm7250b-typec
+>            - const: qcom,pm8150b-typec
+>        - items:
+>            - enum:
+>=20
+> --=20
+> 2.44.0
+>=20
+
+--MLqEUximXdvM3c2M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3F9QAKCRB4tDGHoIJi
+0rPOAPwMxzOCDjBFz3sxD1SVujrMjWf8oOtiURMB7A610DmvlwD9FohXIqp01uic
+ykS083bSkVYLQUJ3qpYyVT8+yF2hkAg=
+=Nv79
+-----END PGP SIGNATURE-----
+
+--MLqEUximXdvM3c2M--
 
