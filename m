@@ -1,123 +1,153 @@
-Return-Path: <linux-kernel+bounces-111988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82FAE8873CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:22:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661558873D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 246F4B22DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:22:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A3991C22BE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE9F79B65;
-	Fri, 22 Mar 2024 19:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C46279B92;
+	Fri, 22 Mar 2024 19:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="RBf0ivVv"
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iS8p4bI7"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8438679924;
-	Fri, 22 Mar 2024 19:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315D55E3AF;
+	Fri, 22 Mar 2024 19:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711135366; cv=none; b=cpA1MGiGVNI+w6NC+W2rTlblHMn8y26BIyqjzaZtGyfeYKl3ocllALq7PXhx2EC0CW6M38FF8PRKNOzAGROgxhLDJhrQ6/jW6ch8z0QsnvfA70MR8Gv8eHTbnP+FLolqFzyVpDskE16+8H0Czdv6WGuRHAYm6OcGyraYjc4Oh2k=
+	t=1711135487; cv=none; b=bmvV13aYWkdyv1jGnSL71fckFl3/qWDJ7jTMCDRaRQhumsSd3B3bGcsVWFVfZ94Bnn+m0J617RkBr8kajDc88mo04pL930RgQAEHDkuCf5Q7F5REmd10CywXu+NWB38hgJBEFCibAMiDuAQ8VSPEQbm3CXw9puf8Axs0oyQVizk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711135366; c=relaxed/simple;
-	bh=BUz5hK96G+jleUn15ldF4ameZxFw2z69VYrq+t9w4a4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pb6TN6gUJzJX3/4ku9CCD8ax/sVUOQFpA+IWFgfmGv+N6KFJjOZBV/ruOz6CJxM+LU3IovkuzdzhqoG5r1QrpGgNIro7/IyWglGwvwLZFNzbp2hk9q4kSpY7IpqRldRw11zz5wsmKCWeBzEUGchyJdfzAUHgoxymDfC7dT38wb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=RBf0ivVv; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4V1XKH5p80zlgVnF;
-	Fri, 22 Mar 2024 19:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1711135355; x=1713727356; bh=FI4Z6ZgHS15qtNLhRTTVJj5+
-	StHISvSkt2DHgw+Aldg=; b=RBf0ivVv7aAbjp3GUFo3+Fb23Fs8iMz79BTY+mUS
-	EarP+Luey+lgFSgqlWVpFMnI8934ZRjKGYBsQPV0/uDEF2I/ioeqPDiIvStU5EQy
-	YZy4csacStuJhxZhB+s2GHvbfAoqE3BlM720eGX2QDh6zyTAewKYwV7f5FHKF80Z
-	HtHD2I1z8V+3I7isZfr9IQkxE2RLv9bhUeo5VRAWnkbLZButB2Neg0khwa3NnKF+
-	nvkiPImFUpBkLDtJGfA1ADUzwaZVe0tU5craHZgAmX7UgaX6QOIzvePFsy66yZb7
-	rC6fXjyxw3vKuN3wV+nx5gx9Ax294Tdaam87uhfxQBAxuA==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id GAB01t24zNHL; Fri, 22 Mar 2024 19:22:35 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4V1XK5106BzlgTGW;
-	Fri, 22 Mar 2024 19:22:33 +0000 (UTC)
-Message-ID: <192acb8f-47b8-426c-bcc9-ef214a797f26@acm.org>
-Date: Fri, 22 Mar 2024 12:22:32 -0700
+	s=arc-20240116; t=1711135487; c=relaxed/simple;
+	bh=TRwBnRIKVJvP1oP0vOUbRxZfMz6ws9mrssXvYU2GQlg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hEK52llscxVUSAKd6qfNCo5eZZNNqgH5i2lqLVhj4R4/4UNF1+k9QRhLNikC6NnlzTSSSujHzxlLl15aRj/rzAah22A/yAtK3VCmVatZTKy9Ir98S7ItvzCE+kbuiLj47u8g4HQGLpS7SJtd7Zijs0Al2OL55J8s09GUtQtgV7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iS8p4bI7; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513e6777af4so4634532e87.2;
+        Fri, 22 Mar 2024 12:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711135484; x=1711740284; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vux8fc5fM7LNtFQnsX415d4fh0A+DwGLl9t/xPE2qdQ=;
+        b=iS8p4bI7fUr8AYGnHxDygInK36GePngYkSsrcrH4JyCLyTtbnLSqHHXfwORGJVaSZC
+         rcqZLQTR8AchlWONpKwAduqDOsfsC+kTw+eJyhwBwE0bu1faSnUD2T7zuAPNLbEofy+k
+         EvgxK0BWsYVwirXjfw07OQKoSScbqOfgfhRXgDpkzxGTfU+e7BQe2TkzC1zuxyYA6f91
+         a26RUiGZHvHvGDgruKd+KgiBuBlHMhNsL9pltPuq7vwOPE4TlCmrEO2IEfbdXdenNYDC
+         wq4IMB7OfDbtSx9dgqzNcXhkzRkUBLLjE5HkMUnMIidMtEMCDDiQopeT2pLIuDttJMCi
+         2oYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711135484; x=1711740284;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vux8fc5fM7LNtFQnsX415d4fh0A+DwGLl9t/xPE2qdQ=;
+        b=VpXSljpLU0drcQxVVimpFJQJMwEfRg2nmz4K08wxbzHgrrt3YddUs4+vh1gD8iRuqn
+         BCw4PtaGjcdwbsPSlp3MpfrUQlQ/gDLo6KNtk28UuYnsXicSOB6HgHh3ZE1MOBodsMgn
+         jCVKXS0rmKGN6H85HYiY85xc030xzV6/qubpYhOaANN0HOJxUj0T5ndxyig59gHeyvDA
+         TWqE0VDjHam8ulFeIYKHcb1rmqsT/FSdMCB6j9g8vtZn/CCUTelaUgv1tlHPhFyoE/69
+         HqqFxdDzbl2zhV/x6L/yRnXjx8vr7dPcqlSjTMMBl2PL71wc7j4pXHEEaY6v93XS+dzT
+         k7Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPtYBj354P1YJNa9xf9A515gw0xPijKZ0PCqnz/eQArHrKVIevao6kNGUXPca5gNwrl9VW5/1S41y7wQL72/DPdFuKNFgNbLpny50Tkg9x6cxoJHeV43qaIOSzoxX9l3ta1Ke1jkJ/VA==
+X-Gm-Message-State: AOJu0Yxai51KZCe8vzcTQDPntfEKptva7ARG+wK5QGQ8KohjFvMHsOSC
+	BG8LYRKsLLiUSteEFkw+ltJ+PkTBAqdDjebC8qYAZ4Z/IRDLbG2f
+X-Google-Smtp-Source: AGHT+IEztkWv0lG4BchX5uTHqaHr01cPk54RdBLOUlG46H0Z9WQy5mDhfH5yA43OaaEk7mNjUJrofw==
+X-Received: by 2002:a19:e04b:0:b0:513:cf77:48c5 with SMTP id g11-20020a19e04b000000b00513cf7748c5mr314380lfj.38.1711135483932;
+        Fri, 22 Mar 2024 12:24:43 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-b7fa-7d92-6b28-0504.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:b7fa:7d92:6b28:504])
+        by smtp.gmail.com with ESMTPSA id ku12-20020a170907788c00b00a46b87c32besm138572ejc.39.2024.03.22.12.24.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 12:24:43 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH v3 0/5] dt-bindings: hwmon: convert multiple devices to
+ dtschema
+Date: Fri, 22 Mar 2024 20:24:34 +0100
+Message-Id: <20240322-hwmon_dtschema-v3-0-6697de2a8228@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] block: add new genhd flag GENHD_FL_NVMEM
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>,
- Jan Kara <jack@suse.cz>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Damien Le Moal <dlemoal@kernel.org>,
- Li Lingfeng <lilingfeng3@huawei.com>, Christian Brauner
- <brauner@kernel.org>, Christian Heusel <christian@heusel.eu>,
- Min Li <min15.li@samsung.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
- Christian Loehle <CLoehle@hyperstone.com>, Bean Huo <beanhuo@micron.com>,
- Yeqi Fu <asuk4.q@gmail.com>, Victor Shih <victor.shih@genesyslogic.com.tw>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Dominique Martinet <dominique.martinet@atmark-techno.com>,
- "Ricardo B. Marliere" <ricardo@marliere.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-block@vger.kernel.org
-References: <cover.1711048433.git.daniel@makrotopia.org>
- <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
- <7027ccdc-878a-420e-a7ea-5156e1d67b8a@acm.org>
- <Zf3I6DDqqyd924Ks@makrotopia.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <Zf3I6DDqqyd924Ks@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPLa/WUC/2XM3QqCMBjG8VuRHbfYh+bHUfcREXO+uheai01WI
+ d57UwikDp8H/r+ZBPAIgTTZTDxEDOjGNOQhI9qocQCKXdpEMJEzKRg1T+vGWzcFbcAqWvZF1ec
+ 155VSJEUPDz2+NvByTdtgmJx/b37k6/ul+C8VOWW0PmlZcaZlLdl5sArvR+0sWako9rn4y0XKi
+ 5K1AFxp0O0+X5blA9JRlpvrAAAA
+To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, 
+ Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711135482; l=2035;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=TRwBnRIKVJvP1oP0vOUbRxZfMz6ws9mrssXvYU2GQlg=;
+ b=aTmpAFD7euHIggSgchvepGmBQhKMqXWjtiu+W0Zi8S99e23udMRL7ydG7U2wn2xv3SAf/QGZx
+ 1WGULD4yNcQCcA68UZtJRyufTfd8L1k2rWnhV03P4SMgatFErH6KJiP
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-On 3/22/24 11:07, Daniel Golle wrote:
-> On Fri, Mar 22, 2024 at 10:49:48AM -0700, Bart Van Assche wrote:
->> On 3/21/24 12:33, Daniel Golle wrote:
->>>    enum {
->>>    	GENHD_FL_REMOVABLE			= 1 << 0,
->>>    	GENHD_FL_HIDDEN				= 1 << 1,
->>>    	GENHD_FL_NO_PART			= 1 << 2,
->>> +	GENHD_FL_NVMEM				= 1 << 3,
->>>    };
->>
->> What would break if this flag wouldn't exist?
-> 
-> As both, MTD and UBI already act as NVMEM providers themselves, once
-> the user creates a ubiblock device or got CONFIG_MTD_BLOCK=y set in their
-> kernel configuration, we would run into problems because both, the block
-> layer as well as MTD or UBI would try to be an NVMEM provider for the same
-> device tree node.
+This series converts the following existing bindings to dtschema:
 
-Why would both MTD and UBI try to be an NVMEM provider for the same
-device tree node? Why can't this patch series be implemented such that
-a partition UUID occurs in the device tree and such that other code
-scans for that partition UUID?
+- as370
+- ibmpowernv (renamed to ibm,opal-sensor to match compatibles)
+- stts751
+- ibm,p8-occ-hwmon (moved to trivial-devices.yaml)
 
-Thanks,
+Additionally, pwm-fan.txt has been dropped because it was converted a
+year ago, and it is not mentioned anywhere in the tree.
+I could not find the rationale, but its current state does not seem to
+provide any valuable information.
 
-Bart.
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Changes in v3:
+- Rename ibmpowernv to ibm,opal-sensor to match compatibles.
+- Link to v2: https://lore.kernel.org/r/20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com
+
+Changes in v2:
+- ibmpowernv: fix compatible string in the example.
+- Link to v1: https://lore.kernel.org/r/20240321-hwmon_dtschema-v1-0-96c3810c3930@gmail.com
+
+---
+Javier Carrasco (5):
+      dt-bindings: hwmon: as370: convert to dtschema
+      dt-bindings: hwmon: ibmpowernv: convert to dtschema
+      dt-bindings: hwmon: pwm-fan: drop text file
+      dt-bindings: hwmon: stts751: convert to dtschema
+      dt-bindings: hwmon: ibm,p8-occ-hwmon: move to trivial devices
+
+ Documentation/devicetree/bindings/hwmon/as370.txt  | 11 ------
+ .../devicetree/bindings/hwmon/ibm,opal-sensor.yaml | 37 +++++++++++++++++++
+ .../devicetree/bindings/hwmon/ibm,p8-occ-hwmon.txt | 25 -------------
+ .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 ------------
+ .../devicetree/bindings/hwmon/pwm-fan.txt          |  1 -
+ .../devicetree/bindings/hwmon/st,stts751.yaml      | 41 ++++++++++++++++++++++
+ .../devicetree/bindings/hwmon/stts751.txt          | 15 --------
+ .../devicetree/bindings/hwmon/syna,as370.yaml      | 32 +++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml       |  2 ++
+ 9 files changed, 112 insertions(+), 75 deletions(-)
+---
+base-commit: ebc9bee8814d12ec247de117aa2f7fd39ff11127
+change-id: 20240320-hwmon_dtschema-7f58f49118aa
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
