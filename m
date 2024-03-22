@@ -1,86 +1,89 @@
-Return-Path: <linux-kernel+bounces-110982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C00488866A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:16:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 371058866A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D73BF1C21CE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:16:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9576F284FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5338E10971;
-	Fri, 22 Mar 2024 06:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1EE1C132;
+	Fri, 22 Mar 2024 06:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oQtSKAmA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="d5u4Vk4c"
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90830101C1;
-	Fri, 22 Mar 2024 06:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17295C127
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711088198; cv=none; b=S9c3NpgtLamRoof7YPtY7bs11ctusMFsFfZMNK6yaI+cxNUhiX9lc0/n9k814BW8HZL+iFoXJHpFa1voJF3/7e+hyCJBdya/KpAZhssXPHwGmOJoU8175u9j+Tb3/x4BbNdRvUV2L4fW2B/S3AJuqHCKl6tCcVnlD8gBjnSw18E=
+	t=1711088273; cv=none; b=UWr8C2YZdzTYu2KucW8mhXQJHo+XK8mXK7z79di78Bvu+Z0GSdWz1GBgWoA9/8BSgeWXTgPJ/7kqofdaYJQBp9ljBAQRjOxGn6sjFftoakMoTbuu4VJTc08dHkpIu7OfSffxuNP4M/vCZgdR94zp0a4GtD2MDZc3bBE5i7n4kY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711088198; c=relaxed/simple;
-	bh=LrKxP3gm3uo3ToMeUXgziplcc6id5nTLO7X+pOXUayc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=szdEdL9ZLS4jFACksX9t8Y7ngEf59ngxrCGeV+96xzMXkIuT+PetVgF5kb0IYd0zuUiBW3atgr6CZy9QFXIkpsutljWMWgxYTbkeV4Qo4iF2TpEfxbuDTv01s+jB92rHNC3xZFJaW5+CJSzbezD72/qm2WPQ29bDKmrf3XgdNiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oQtSKAmA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52942C43390;
-	Fri, 22 Mar 2024 06:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711088198;
-	bh=LrKxP3gm3uo3ToMeUXgziplcc6id5nTLO7X+pOXUayc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oQtSKAmAk0cKGUFhHQ+JW6Wm6UGuBD6ww5PLgK2/IZtltY5+Dki2bf5/Wv9QLWMYN
-	 XUikuAIsCQOQWag0bM3/jKybttyCf8q9dURrF8Z887Tp/+LunpV7Y2G0nF2GSgsXD5
-	 6zvB3BXFfM2G9N+6SkKR1RZoChB3g3LNqEBOnWyAS5all7n+yD0DDgUwje9oXUavPD
-	 kIU7HS3tVvKXVcki/fUEfvpE/QnmOzl4+cQWFoAW8kEa+0kAnUgPKw1VCo5aWZ2471
-	 MKj1U4ngpZwjm0CzaetQ0iL4nWzXt/RWMOSRyz+604MyQoeG5p4Tbn7uC7HxYqqbcz
-	 Nz3PNcznGYDaw==
-Date: Fri, 22 Mar 2024 14:16:34 +0800
-From: Tzung-Bi Shih <tzungbi@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: mathieu.poirier@linaro.org, andersson@kernel.org,
-	matthias.bgg@gmail.com, tinghan.shen@mediatek.com,
-	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, wenst@chromium.org,
-	kernel@collabora.com
-Subject: Re: [PATCH 1/2] remoteproc: mediatek: Make sure IPI buffer fits in
- L2TCM
-Message-ID: <Zf0iQikMyerbWVMG@google.com>
-References: <20240321084614.45253-1-angelogioacchino.delregno@collabora.com>
- <20240321084614.45253-2-angelogioacchino.delregno@collabora.com>
+	s=arc-20240116; t=1711088273; c=relaxed/simple;
+	bh=vKn8m1DHwhDiog5OyjdVZMOak55qk31tA/1OfFLNQAo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IejBXRvycD+0Hm+b8L9uywcPdnsRWvDO9sAMcP5ZdE1unRaL+JEm9HERkJtWW/nD305pOVmoND8vZAncNIjApOZ6jl+xC3jnIjWBqikzZdXJ/ACcFNqNYGrJ5B7xWwQ158z6r7dPwr6xvC2ZibMsTxpTY/qcWI9rsrx5TxoLFWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=d5u4Vk4c; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711088268; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=5ItwkbfBI36gD4+fLsboHG2pr+jRHC/1cyKhqHaieO4=;
+	b=d5u4Vk4cwjQjoxR/NjeQy1EaerxzO5XeRfjoVL/rxglOWPEer3oL8cH+VLpvm7f++drgL5+7rqkN5+cv1JnycdzMnS3/vujXK/K3q6iWbwB15P+Cx1ucXyQC+ogura0anKbKXJ5THXMWLj0CIlMCi8j5Ju9gL7MkACB3mK23oJc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W31.zcW_1711088262;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W31.zcW_1711088262)
+          by smtp.aliyun-inc.com;
+          Fri, 22 Mar 2024 14:17:48 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: kirill.shutemov@linux.intel.com
+Cc: dave.hansen@linux.intel.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	x86@kernel.org,
+	hpa@zytor.com,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] x86/virt/tdx: Remove duplicate include
+Date: Fri, 22 Mar 2024 14:17:41 +0800
+Message-Id: <20240322061741.9869-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321084614.45253-2-angelogioacchino.delregno@collabora.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 09:46:13AM +0100, AngeloGioacchino Del Regno wrote:
-> The IPI buffer location is read from the firmware that we load to the
-> System Companion Processor, and it's not granted that both the SRAM
-> (L2TCM) size that is defined in the devicetree node is large enough
-> for that, and while this is especially true for multi-core SCP, it's
-> still useful to check on single-core variants as well.
-> 
-> Failing to perform this check may make this driver perform R/W
-> oeprations out of the L2TCM boundary, resulting (at best) in a
-> kernel panic.
-> 
-> To fix that, check that the IPI buffer fits, otherwise return a
-> failure and refuse to boot the relevant SCP core (or the SCP at
-> all, if this is single core).
-> 
-> Fixes: 3efa0ea743b7 ("remoteproc/mediatek: read IPI buffer offset from FW")
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+/arch/x86/virt/vmx/tdx/tdx.c: linux/acpi.h is included more than once.
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8609
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/x86/virt/vmx/tdx/tdx.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+index 4d6826a76f78..49a1c6890b55 100644
+--- a/arch/x86/virt/vmx/tdx/tdx.c
++++ b/arch/x86/virt/vmx/tdx/tdx.c
+@@ -27,7 +27,6 @@
+ #include <linux/log2.h>
+ #include <linux/acpi.h>
+ #include <linux/suspend.h>
+-#include <linux/acpi.h>
+ #include <asm/page.h>
+ #include <asm/special_insns.h>
+ #include <asm/msr-index.h>
+-- 
+2.20.1.7.g153144c
+
 
