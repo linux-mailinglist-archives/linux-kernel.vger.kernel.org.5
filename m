@@ -1,129 +1,226 @@
-Return-Path: <linux-kernel+bounces-112082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C673588754F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:57:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83ACB8874F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53F78B23064
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:57:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31C9E281BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B3A82C71;
-	Fri, 22 Mar 2024 22:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FB982897;
+	Fri, 22 Mar 2024 22:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DidtImfK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hv7SkGd2"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E0D82891;
-	Fri, 22 Mar 2024 22:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073D360B91
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 22:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711148259; cv=none; b=i20D8vnpfn9RwiLAZfvQSXB/+LF04Oa7TK7bbyncdovrOr8Gp88sxHRDoqc/Yym+Am4jy3YWjY4+kwAEKq2Y7rgpzRtmLis/oIZVwMYK84eQ9gOijQ4ocoYP4dpYawdpTRpNnOXQToPXGkZ6CY/9uYxt1Bug68r1jzg861Lbats=
+	t=1711148208; cv=none; b=Mov90x6EkLosBNpLY1iV7KPyC1s/ZRVya9GzGMxeV4ex+Zut1rd2j3tDPhJJH/u0ksJc9jXaY5kznYPElojxPUqA4uI9g1QOPDs8sSLrv/EN2XiFvSFntmm5YelpqRaY7OtVG4cnOzLxeFFHnhpmNvxvz1VYUMTNOuBVsMYnJf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711148259; c=relaxed/simple;
-	bh=96QHhdKY87Blduh4L8mp6CXq1rB2HO56b84NtbHpKTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HmN5Q7td3Cg/yXxRLB+aTC5x4UjfexbUz75sYtClnbkPv0Lyy5Lmh5AtKffyXnXTmoUR/ESE6vjw9wzMeJLKOuUN9Oq5doJdq3KlQ5Qzx61QaYxRzHZX7+bKqQ3rH2TyLjLY2AXNa2duRAh4yhysiGpf6J/nhv2jd3TYE2ftvpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DidtImfK; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1711148208; c=relaxed/simple;
+	bh=NWjST7AfhmWDCfO6EyHsfoZ7s5rcMP33bA0hV91Yn1g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Qhjiip5yEpPBAoWZ8TIiudzUyl1xE2BUYjlRudBfdrdnAL9Q2URcdizdNixYv61KNhAEMaZGoYQnFQM9135yaKn/2xenZ2lsJb0Ven3TqZCA1z1uDtxF2rEDCIyqLz+2mL6J4E2uvkRIWpPbNEUcoBJ85Qbkz6GNtLj4aZdTtIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hv7SkGd2; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711148258; x=1742684258;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=96QHhdKY87Blduh4L8mp6CXq1rB2HO56b84NtbHpKTg=;
-  b=DidtImfKk6SE3o7GTC3TQNt/lRaMslL2pJDqquj3aXsczfbgLSkFY/T6
-   GioOZPeqjMX6fIm6kPi7jVw8Ac42lo2V1C3KX5rfZNwAH7SOMj5ZrPgbl
-   h13KqMuA5QD03KD1KSzM+lpBG9dK12G0MQ/LLnX7573n3l1TbIvW2JiB3
-   Ke4HEAI2nrP0KXy8u63Vwfr5vej2xKa0AwhAJnpmewV/8uAvu1uUg1B09
-   jf7FnqqtUS8c2TCrDW1Q9UFCE+Y5l7Ujzk9qfVpC+UPv+s6XGRdx9YYYZ
-   lU3uhi9G6lM0JUt/qfWRoT6M+ygTaALVGtVe90ii9ZXQrFt55nlVIUZjf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6048104"
+  t=1711148205; x=1742684205;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=NWjST7AfhmWDCfO6EyHsfoZ7s5rcMP33bA0hV91Yn1g=;
+  b=Hv7SkGd2jiqyeiGdwRzWSA+XD1ERNZYQmGicdKzmcHl6fVYrK72A6xy8
+   qn730m7C79ROGvUKa/1uKZoTi9D2rsXP77WMJbcffQY+8Q7QIUn1u+Sv1
+   u7KsamgGVJE/8rEhXCg2KhZkqSZCChrGcla2gMpU5t2jZGozushXpwZVD
+   oh0WSOOGPWzwxLkKaAQ9w74gWdyw/bp0F0gKWYI3Upl/X46VSvvIZMMPM
+   6HcrYWAu6Kv/dOqgb+IDzd1+EPtCnwwT8/kbvUomG307cFp1hIZUO8tCi
+   tTAygu9N2T3iU1zQWF59ac7QEgkaL/EfESj7MAe7z2bSAxw7uxc8rPMS2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6048043"
 X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="6048104"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:57:37 -0700
+   d="scan'208";a="6048043"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:56:44 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
-   d="scan'208";a="15470498"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:57:38 -0700
-Date: Fri, 22 Mar 2024 15:57:36 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
-Subject: Re: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
- logging
-Message-ID: <20240322225736.GC1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
- <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
- <20240315013511.GF1258280@ls.amr.corp.intel.com>
- <fc6278a55deeccf8c67fba818647829a1dddcf0a.camel@intel.com>
- <20240318171218.GA1645738@ls.amr.corp.intel.com>
- <6986b1ddf25f064d3609793979ca315567d7e875.camel@intel.com>
- <20240318231656.GC1645738@ls.amr.corp.intel.com>
+   d="scan'208";a="14950844"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:56:44 -0700
+Date: Fri, 22 Mar 2024 16:01:04 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Dimitri Sivanich <sivanich@hpe.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Joerg Roedel <joro@8bytes.org>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Will Deacon
+ <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, David Woodhouse
+ <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Arnd
+ Bergmann <arnd@arndb.de>, YueHaibing <yuehaibing@huawei.com>,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org, Steve Wahl
+ <steve.wahl@hpe.com>, Russ Anderson <russ.anderson@hpe.com>,
+ jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2] iommu/vt-d: Allocate DMAR fault interrupts locally
+Message-ID: <20240322160104.22af19bd@jacob-builder>
+In-Reply-To: <Zfydpp2Hm+as16TY@hpe.com>
+References: <Zfydpp2Hm+as16TY@hpe.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240318231656.GC1645738@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 04:16:56PM -0700,
-Isaku Yamahata <isaku.yamahata@intel.com> wrote:
+Hi Dimitri,
 
-> On Mon, Mar 18, 2024 at 05:43:33PM +0000,
-> "Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+On Thu, 21 Mar 2024 15:50:46 -0500, Dimitri Sivanich <sivanich@hpe.com>
+wrote:
+
+> The Intel IOMMU code currently tries to allocate all DMAR fault interrupt
+> vectors on the boot cpu.  On large systems with high DMAR counts this
+> results in vector exhaustion, and most of the vectors are not initially
+> allocated socket local.
 > 
-> > On Mon, 2024-03-18 at 10:12 -0700, Isaku Yamahata wrote:
-> > > I categorize as follows. Unless otherwise, I'll update this series.
-> > > 
-> > > - dirty log check
-> > >   As we will drop this ptach, we'll have no call site.
-> > > 
-> > > - KVM_BUG_ON() in main.c
-> > >   We should drop them because their logic isn't complex.
-> > What about "KVM: TDX: Add methods to ignore guest instruction
-> > emulation"? Is it cleanly blocked somehow?
+> Instead, have a cpu on each node do the vector allocation for the DMARs on
+> that node.  The boot cpu still does the allocation for its node during its
+> boot sequence.
 > 
-> KVM fault handler, kvm_mmu_page_fault(), is the caller into the emulation,
-> It should skip the emulation.
+> Signed-off-by: Dimitri Sivanich <sivanich@hpe.com>
+> ---
 > 
-> As the second guard, x86_emulate_instruction(), calls
-> check_emulate_instruction() callback to check if the emulation can/should be
-> done.  TDX callback can return it as X86EMUL_UNHANDLEABLE.  Then, the flow goes
-> to user space as error.  I'll update the vt_check_emulate_instruction().
+> v2: per Thomas Gleixner, implement this from a DYN CPU hotplug state,
+> though this implementation runs in CPUHP_AP_ONLINE_DYN space rather than
+>     CPUHP_BP_PREPARE_DYN space.
+> 
 
-Oops. It was wrong. It should be X86EMUL_RETRY_INSTR.  RETRY_INSTR means, let
-vcpu execute the intrusion again, UNHANDLEABLE means, emulator can't emulate,
-inject exception or give up with KVM_EXIT_INTERNAL_ERROR.
+I tested on a dual socket system (192 core) successfully with the following:
+1. After boot DMAR-MSI spread from BSP to the first CPU of the second numa
+node
+2. Offline/Online all CPUs in the 2nd node
 
-For TDX, we'd like to inject #VE to the guest so that the guest #VE handler
-can issue TDG.VP.VMCALL<MMIO>.  The default non-present sept value has
-#VE suppress bit set.  As first step, EPT violation occurs. then KVM sets
-up mmio_spte with #VE suppress bit cleared. Then X86EMUL_RETRY_INSTR tells
-kvm to resume vcpu to inject #VE.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Code looks good to me.
+
+
+Thanks,
+
+Jacob
+
+>  drivers/iommu/amd/amd_iommu.h | 2 +-
+>  drivers/iommu/amd/init.c      | 2 +-
+>  drivers/iommu/intel/dmar.c    | 9 +++++++--
+>  drivers/iommu/irq_remapping.c | 5 ++++-
+>  drivers/iommu/irq_remapping.h | 2 +-
+>  include/linux/dmar.h          | 2 +-
+>  6 files changed, 15 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
+> index f482aab420f7..410c360e7e24 100644
+> --- a/drivers/iommu/amd/amd_iommu.h
+> +++ b/drivers/iommu/amd/amd_iommu.h
+> @@ -33,7 +33,7 @@ int amd_iommu_prepare(void);
+>  int amd_iommu_enable(void);
+>  void amd_iommu_disable(void);
+>  int amd_iommu_reenable(int mode);
+> -int amd_iommu_enable_faulting(void);
+> +int amd_iommu_enable_faulting(unsigned int cpu);
+>  extern int amd_iommu_guest_ir;
+>  extern enum io_pgtable_fmt amd_iommu_pgtable;
+>  extern int amd_iommu_gpt_level;
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index e7a44929f0da..4782f690ed97 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -3389,7 +3389,7 @@ int amd_iommu_reenable(int mode)
+>  	return 0;
+>  }
+>  
+> -int __init amd_iommu_enable_faulting(void)
+> +int __init amd_iommu_enable_faulting(unsigned int cpu)
+>  {
+>  	/* We enable MSI later when PCI is initialized */
+>  	return 0;
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 36d7427b1202..7644a42f283c 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -2122,7 +2122,7 @@ int dmar_set_interrupt(struct intel_iommu *iommu)
+>  	return ret;
+>  }
+>  
+> -int __init enable_drhd_fault_handling(void)
+> +int enable_drhd_fault_handling(unsigned int cpu)
+>  {
+>  	struct dmar_drhd_unit *drhd;
+>  	struct intel_iommu *iommu;
+> @@ -2132,7 +2132,12 @@ int __init enable_drhd_fault_handling(void)
+>  	 */
+>  	for_each_iommu(iommu, drhd) {
+>  		u32 fault_status;
+> -		int ret = dmar_set_interrupt(iommu);
+> +		int ret;
+> +
+> +		if (iommu->irq || iommu->node != cpu_to_node(cpu))
+> +			continue;
+> +
+> +		ret = dmar_set_interrupt(iommu);
+>  
+>  		if (ret) {
+>  			pr_err("DRHD %Lx: failed to enable fault,
+> interrupt, ret %d\n", diff --git a/drivers/iommu/irq_remapping.c
+> b/drivers/iommu/irq_remapping.c index ee59647c2050..2f7281ccc05f 100644
+> --- a/drivers/iommu/irq_remapping.c
+> +++ b/drivers/iommu/irq_remapping.c
+> @@ -151,7 +151,10 @@ int __init irq_remap_enable_fault_handling(void)
+>  	if (!remap_ops->enable_faulting)
+>  		return -ENODEV;
+>  
+> -	return remap_ops->enable_faulting();
+> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> "dmar:enable_fault_handling",
+> +			  remap_ops->enable_faulting, NULL);
+> +
+> +	return remap_ops->enable_faulting(smp_processor_id());
+>  }
+>  
+>  void panic_if_irq_remap(const char *msg)
+> diff --git a/drivers/iommu/irq_remapping.h b/drivers/iommu/irq_remapping.h
+> index 8c89cb947cdb..0d6f140b5e01 100644
+> --- a/drivers/iommu/irq_remapping.h
+> +++ b/drivers/iommu/irq_remapping.h
+> @@ -41,7 +41,7 @@ struct irq_remap_ops {
+>  	int  (*reenable)(int);
+>  
+>  	/* Enable fault handling */
+> -	int  (*enable_faulting)(void);
+> +	int  (*enable_faulting)(unsigned int);
+>  };
+>  
+>  extern struct irq_remap_ops intel_irq_remap_ops;
+> diff --git a/include/linux/dmar.h b/include/linux/dmar.h
+> index e34b601b71fd..499bb2c63483 100644
+> --- a/include/linux/dmar.h
+> +++ b/include/linux/dmar.h
+> @@ -117,7 +117,7 @@ extern int dmar_remove_dev_scope(struct
+> dmar_pci_notify_info *info, int count);
+>  /* Intel IOMMU detection */
+>  void detect_intel_iommu(void);
+> -extern int enable_drhd_fault_handling(void);
+> +extern int enable_drhd_fault_handling(unsigned int cpu);
+>  extern int dmar_device_add(acpi_handle handle);
+>  extern int dmar_device_remove(acpi_handle handle);
+>  
+
+
+Thanks,
+
+Jacob
 
