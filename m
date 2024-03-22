@@ -1,186 +1,225 @@
-Return-Path: <linux-kernel+bounces-111418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8927E886C10
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:28:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85C3886C12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACB381C21290
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:28:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11B2CB24DD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16984087A;
-	Fri, 22 Mar 2024 12:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6680441232;
+	Fri, 22 Mar 2024 12:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="MyQ4R56Z"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2067.outbound.protection.outlook.com [40.107.92.67])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XX34NDzS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kJorp9nC"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561472D78A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711110529; cv=fail; b=jTbwfoxLNCn9DZ1Rfxx1YF0J68OcZrgDcybBTUMYURbEv/vodNY8qbv3oTDVC8UDb2+6JkUgOVhJY7+MCxM9GYKQ88bF9ScwStDaP8KQgNfkOzgqpI/zFN19r2rUlV/H5TLvz7iZdIql/G4s89/XeUK3d2f7FsXceAw+QsEs/EI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711110529; c=relaxed/simple;
-	bh=nTTi/JoblLeMGy0E0zPpYCyb3iNkaat/pjmTxUS4QZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=bRwMpybLIn0eqZC8bnoTvkODXHutEFLX6CfDxdplt3Zm0crqJVwVntNjowHyv+lEZOcQESMvpHG0NeTLzfj/rWDXnLaM8mmfF97CinBFTX80NSHLMpcZgu9U7VBx2fXRP6Eaf7EQL/U+otzhCfr+//Il01Ye4RR4gSpsAnOTFog=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=MyQ4R56Z; arc=fail smtp.client-ip=40.107.92.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M/L5rXMlH8oiI2J6oqzgrh72r27VDeYnWVJ/EY1/V9YcdN9SpmMz450ZPeyrEAb0ut9f/VXiemYwMVj0SN2a8hFTEMYanSjLMoEP3Z3PQAD0VNLr0VZU1V+dxmGBNrkYAVecGro23nQauH7UpkTPylJ68D4A/Za8/3v3l3FTCnahyQJa20XYw7AlphylyTTUMJNdD+gp3oANDYd53X34SjB7WEWG7yvqixoa7Pb4bpplHro8lMNNYbRfIwgDVpqL5PBIvnVLB6r3wEl6OXmF/a628zUVHB/oQ+JcWXwGeHu/KA5IlY8Yu5DcsRZQNTNM9cNPhJ8EeP+wkvMSGSjrlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dDkdacFtxB4qpcWdtAhoFkR9iyBLJ80XO7PfYd0ZaZo=;
- b=OiafJN0oRHFiQp6rBeCaXROCqnmJoqkNuW5dnP1P/1x/2DDC0Yybg3W/vWdW5/MZ0hj0q/cKWwbVEcZyb/g8PIXelLA/fcpg24LX/4tccbea7UnUwECUmwPU0KL1zOUPNCNe3CZabJNy8YTLzdqVdJfO2e4KsVOlPsBaRIKhQYV3E5dhzORMHxeFYXAoMpRMUguysdjmNrHpAGr9ZXC5hMhc5hCWWJxLkUmrZC07qLT/B/pTmcVV7eKDc4DnPVSbwhhO8O07YCYOVGNYgjaHxtjCI5p4TOnDcoPCRU9L/n6U22tTON1MykY+sSdOLSDsqi30RGSZgv4Pk2CHxQV0cA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dDkdacFtxB4qpcWdtAhoFkR9iyBLJ80XO7PfYd0ZaZo=;
- b=MyQ4R56ZGrKp8VXSxsI9oyoz1f1pahvPhfNqJfFu6wV3wf5nbgynWTw58ce1ZMhv4Fjhtzfz4d5/9ijxUJ9+EyQgm+zFcnITBRoYsb+jWezbCE7IK6DCAzQ7s+lc5ennNdJPuc+LxQxeLB25seoSwoOdx/1tnatvTRHky+NMHvQ7WxfRGFEvDgMQ+KBzbdBONVhb008ghv8efwrTrqiHHEIy1RxnOWsx3KXraL1uVjDu26uofeLpIdcsztQIdGf8kxTuk/EY3SWxQ8Q3W61ij/8w41uQAaTvmGG575LBv4CBiphHS36mJ8O1kqf7U6lLlPUm8rDYOY+HA7MK6L6Tlg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by SA0PR12MB4400.namprd12.prod.outlook.com (2603:10b6:806:95::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
- 2024 12:28:43 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.030; Fri, 22 Mar 2024
- 12:28:43 +0000
-Date: Fri, 22 Mar 2024 09:28:42 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: peterx@redhat.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 05/12] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Message-ID: <20240322122842.GH159172@nvidia.com>
-References: <20240321220802.679544-1-peterx@redhat.com>
- <20240321220802.679544-6-peterx@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321220802.679544-6-peterx@redhat.com>
-X-ClientProxiedBy: MN2PR08CA0022.namprd08.prod.outlook.com
- (2603:10b6:208:239::27) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F05405DF;
+	Fri, 22 Mar 2024 12:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711110576; cv=none; b=h2grvNn4so4h2cAaP9hOPuDzTaC8iKdN18Tpn2m30Kt1uEIoADcYeIu1cymDZBS3TkmQX7vgL4LMGfj8x5DeVAiSUPv9En8jiW7m54DqsqSTR8TujV1vN/SQhGLGYRg6+X+nzs+YqUHd3zV+hx6SFEe9k8cSXDfmQIlrCeC4Gig=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711110576; c=relaxed/simple;
+	bh=foIK+9f73HNeNks9IMM4f7cYpYcW1Ipegzfx9UD+DpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s70ebONEOV8NW9WX9SP0CylbespbuHImTn5yRtVQAA6vdLCQ/25kt4z44c3oQk5wKuvtog3rWGaHPnyZy7nv3O+4+1K/Z3k32MN5skEx6DOCt4cN9O1D1xXmVPsykl2S/OnkfolpPki7/GO5KGmKf6q838j6I42lbPKjDOItgw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XX34NDzS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kJorp9nC; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 22 Mar 2024 13:29:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1711110572;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kw6jKfgYseBviEK7ThWkCBO+I75JNZXgwEbS3NadGUA=;
+	b=XX34NDzSpJY5/auKw8m3bAZVQPXLyurLUHyus62eyaS2WihtYaCEGn2x5v6cx8IYwIYl0Z
+	FdhOyNgmsV5KROmqopCVIlwSLC8efd9Ep0K7NBcTIbFQqryrbvB1wBt6Cb4RABIj/XBkU6
+	t1xM2w63JndgZP/t5oa+W/R3Lfox9lneCo2EMtdtkpzsNXL0y88Ud0OeWMjMc/wuS++vje
+	l/SUfNj8v1kGnH/J8yj+YR3w7gH8qWIgCcL51AnDBo14Auz1X9h7Hae9gWkD+ZCy+4TyH+
+	PigUl7xDiMLCOtH+s4qUxBXGQ3A/OJ3GYMgzR8cDbavecI1+KX1GxJFJoiulZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1711110572;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kw6jKfgYseBviEK7ThWkCBO+I75JNZXgwEbS3NadGUA=;
+	b=kJorp9nC1dajl14Wt4UPgHrt5NzDwscK2Snh1wYkxF4PxWwuKAwcAsfgO1NtdUzoOJSqGR
+	CsN45VmUAYGfniAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: "John B. Wyatt IV" <jwyatt@redhat.com>
+Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
+	Clark Williams <williams@redhat.com>,
+	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
+	Bruno Goncalves <bgoncalv@redhat.com>,
+	"John B. Wyatt IV" <sageofredondo@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: NMIs reported by console_blast.sh with 6.6.20-rt25
+Message-ID: <20240322122921.U3WRsO4X@linutronix.de>
+References: <ZfSfrzak9WS0ZFv7@thinkpad2021>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SA0PR12MB4400:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab966d8d-c364-4bf1-e90a-08dc4a6b9d10
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CPnMZoVExzZHDb9OcxiBgGLYitj5FIIiqx32x4mh44DbnWWdt/methTG85EHxb44fo5BD0JaKFBeNACN1qaSgAIXeNNkTyfKlYyzLvf2JB/WSSWZkMdHUHGy1WbANI+tlgt+r1PLPVALYEKGkAD2TdhJ4Bc+lFw75s0GO/+NbAzbI3fDUbpKksfDCaiwdJzL2jA8H/tC1HT+56NMMLb7PjaqbETQsh8yv1XZqvkWw/F/xRe2YWh6W9dZBi8MLfzCGDOEnwfQZN627bveMQflRna9LXuHBZrr9UM8HPFzMbm2ZUrl25AvHSTFWFubzFrLlon1MeRm7gGmRXvMT8CWVfz6ejwtuCuVdxnc/6iitjnXuiaZi5T18J8XfcbkAeytJRnXoyPsaenBtFFspVvhKxAW+Rc5tThWe8z63TAFkRTeXTg1uO68Zxh3ejXMvFEtT5mySiC1NR1sq3sjhMjr1g4qeMRQuu+hY7Dim8DH3r7x1kmkRTQnN1xpbNyPoPmxTxfL7HP0xQEdpsfrIW+dx8BjH6edJOEPCVEO6pWOQUU4gvydVz6FxwrG9iqloL8xq5Q8xXOtGZDDvTYJvPKL+zLTPx1rUoXLpVPsdCPfOI6DJRp8QBuItK5eCZgChc4CglHOdqd7IzhI0s63EmKFTGTgishF9KZWjk3mU/fO+AA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?m26tBCNfyVStOXLVwAyNQSMBiqtU+WhZ98GDmtc0BbHhxLJbzdvQmQCpyOTd?=
- =?us-ascii?Q?JNe6WLDRpc1pL/Pwkh5R0KysulfEhdisK0BVtmm7d6hcN60HE+Q4wVLlQXec?=
- =?us-ascii?Q?R8ihPky77zKrrrCKBDxV6AjeyVvNOYW8i0rpG+95L69ius4oHf7pu3JbM8Lk?=
- =?us-ascii?Q?x9v9YWGwicJmWtPJvVBzz+PLM2oYdjyanl2A5wlyJXwy6KSxzGKUhSS3Dkp+?=
- =?us-ascii?Q?LxvuQdF0ER6RO2PB/BZEm5c74fmB52kHPHo/AYZTytD5vAJS5+wk2jBq6UK6?=
- =?us-ascii?Q?Qzwpb3w8Erclnc9o9oY+X50y6IUrUmfqc5ZLyAboC6G9I5xglLsKu+XnVSVz?=
- =?us-ascii?Q?6KCnGQ1KNrvfoKseLdYuKvVuUiDPDmLOQU6xtik+GE7G0owTNGa0a/wKI6Hx?=
- =?us-ascii?Q?xS0jaAyYNcKVVuN14zL4XZG7V88e75VrMRDa1mrLfNT6wsKyGg1aIf4jym6E?=
- =?us-ascii?Q?17/u5+ZbhyzQ4md2vxenI46oT9YOSuPU8NpHXoBOztmKSxBUitnIKj9PGijg?=
- =?us-ascii?Q?zPW/dTpnOE3PuAGRlqfW41i9uatPt/1dUzqd9fEZPzSwQBbFuDzIFul6T3aY?=
- =?us-ascii?Q?5umGtQxAKGaprc3coxcmGAhtlW3j2euaOeoweEMuD7F5nxdnidaPjTV95DF9?=
- =?us-ascii?Q?lIdAislSFbNuDTkDaxdRzmIlufXqbVKYc9N6At5hWRGr1xgNAb7uHlZpX3g/?=
- =?us-ascii?Q?nEZ3CuM6V5qCYULpAKEtwma+mjls70pCyupe6ZjtNimVmom0RqYoL1MgnLOJ?=
- =?us-ascii?Q?AN1gX1roHrV3iURNx2/aATLwDVeDr2RjdqX0J0Aoo9ESpLA2AwlchyvOLx44?=
- =?us-ascii?Q?QbzEEC25zNpg0eQhJaJR7yhXMExDte38tutRljeW/wl6xcEXodMugndSTVxr?=
- =?us-ascii?Q?KhWQW4RXFtsWzGYm48T6D56s09qQOpmpR51b5QTUhpjtKzqq636M7wLg5Wcj?=
- =?us-ascii?Q?d37VFtfF4bS+wT8CctezJeHTjiTwY5ZVTfv7k+d7wBNsFVF212UBlcFp3eFF?=
- =?us-ascii?Q?2e3YigLD+ulmr5VDkuP7qKZm4oRWxvkpoNTLe/PirWM6uAkwJAoV+sTsTSqH?=
- =?us-ascii?Q?d1gIbNp6yvy7HN8+7Jp4WkprLDd7/8HcoOvzhc+Ngs1hiGfvR0gk7YZDEwYY?=
- =?us-ascii?Q?qcKpebaJ8PhvpzQSHRvAxZ6Ns92N5RsxoW9khetiIsbJIHHQQNZ/DQmbvsLQ?=
- =?us-ascii?Q?YP2xaeT921/n38Ry9aSYPj/S8wg4XKhH0hQAOkKg3BlYhTSBB03VDjf2miCt?=
- =?us-ascii?Q?hkRAG6yPTLfWbuwdBo3TjxOiBsucpXmGBT4GSd1nbpAbPnB020Kk1iloEKSf?=
- =?us-ascii?Q?8jGguAY6sd3h6ITwd8zUcg4PLvbEr8J/wCkzluOzAcuLLE6LI0vhtKsSHCU9?=
- =?us-ascii?Q?uImdGfYLftkbRThrLjaPh9D7KtApMsABlihQshBPDuO86hafW04qNVgD67q7?=
- =?us-ascii?Q?KrwxJn0thmP58jdxA7ovZBP4BdImNVc/oUOW1MiWuJZnK2N0xBUYVeEMZ+Bg?=
- =?us-ascii?Q?uD8DbY6PdZGf254mSknNBlqfc6LrYZNOGGUmRx7omZ1XswCVmvwqXMrPlZ1M?=
- =?us-ascii?Q?PzxOTasoBORY14Ze5xuAw8+RA43k6s1teabQ47EJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab966d8d-c364-4bf1-e90a-08dc4a6b9d10
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 12:28:43.8149
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kKi1xHvflu29M8CoyCbXQXk/zZYiQ+Ipa+Ydojw+kkLvhrMansU7jp1FjmJ8K8Kj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4400
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZfSfrzak9WS0ZFv7@thinkpad2021>
 
-On Thu, Mar 21, 2024 at 06:07:55PM -0400, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
-> 
-> Hugepd format for GUP is only used in PowerPC with hugetlbfs.  There are
-> some kernel usage of hugepd (can refer to hugepd_populate_kernel() for
-> PPC_8XX), however those pages are not candidates for GUP.
-> 
-> Commit a6e79df92e4a ("mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
-> file-backed mappings") added a check to fail gup-fast if there's potential
-> risk of violating GUP over writeback file systems.  That should never apply
-> to hugepd.  Considering that hugepd is an old format (and even
-> software-only), there's no plan to extend hugepd into other file typed
-> memories that is prone to the same issue.
-> 
-> Drop that check, not only because it'll never be true for hugepd per any
-> known plan, but also it paves way for reusing the function outside
-> fast-gup.
-> 
-> To make sure we'll still remember this issue just in case hugepd will be
-> extended to support non-hugetlbfs memories, add a rich comment above
-> gup_huge_pd(), explaining the issue with proper references.
-> 
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/gup.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+On 2024-03-15 15:21:19 [-0400], John B. Wyatt IV wrote:
+> Hello John,
+Hi John B.,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> The real-time team at Red Hat is discussing backporting the rt patchset i=
+n 6.6
+> to RHEL 9/Stream 9. I decided to test v6.6.20-rt25 from stable-rt with
+> console_blast.sh. It reported similar NMIs from my testing of 6.7.0-rt6 w=
+ith
+> that high cpu count server over uart 8250; which is expected since the pa=
+tchset
+> is similar.
+>=20
+> One interesting thing is that 6.7.0-rt6 fully preemptive + realtime tuned=
+ profile
+> did not return any NMIs while 6.6 did with that same configuration.
 
-Jason
+The thing is that console_blast.sh does this "show a backtrace on all
+CPUs, please" which triggers NMIs on all CPUs for backtrace. I can't
+imagine how you did obtain the backtraces without an NMI. Unless the
+tuned profile disables this somehow.
+
+> Another aspect I noticed during my testing. I did not set grub to
+> start with the realtime profile at boot for this machine. When I did set
+> it the second (and latter) NMI did not show for fully preemptive (the
+> 3rd set at the bottom of this email).=20
+>=20
+> Caller info was enabled. No modifications to the source code were made.
+>=20
+> I have not tested previous versions before 6.7.0-rt6 or 6.6.20-rt25;
+> with the exception of accidently testing 6.6.10-rt19. 6.6.10 also
+> reported NMIs during this test. If you wish to see these reports please
+> let me know.
+
+This NMI part has nothing todo with printk. If you need this clarified,
+I would need a reproducer.
+
+=E2=80=A6
+> -----------------------------
+> NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned realtime pr=
+ofile
+> -----------------------------
+>=20
+> [ T2614] Kernel panic - not syncing: sysrq triggered crash
+> [   C56] NMI backtrace for cpu 56
+> [   C56] Hardware name: Intel Corporation D50DNP1SBB/D50DNP1SBB, BIOS SE5=
+C7411.86B.9409.D04.2212261349 12/26/2022
+> [ C56] RIP: 0010:io_serial_out (arch/x86/kernel/early_printk.c:105)=20
+> [ C56] Code: 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f =
+1f 44 00 00 0f b6 8f c1 00 00 00 89 d0 0f b7 57 08 d3 e6 01 f2 ee <c3> cc c=
+c cc cc 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90
+> All code
+> =3D=3D=3D=3D=3D=3D=3D
+=E2=80=A6
+>   12:	90                   	nop
+>   13:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+>   18:	0f b6 8f c1 00 00 00 	movzbl 0xc1(%rdi),%ecx
+>   1f:	89 d0                	mov    %edx,%eax
+>   21:	0f b7 57 08          	movzwl 0x8(%rdi),%edx
+>   25:	d3 e6                	shl    %cl,%esi
+>   27:	01 f2                	add    %esi,%edx
+>   29:	ee                   	out    %al,(%dx)
+>   2a:*	c3                   	ret		<-- trapping instruction
+
+where is this output from? The `ret' opcode usually does not cause a
+trap. My guess is that the machine has been interrupted by an external
+user at this position.
+Side note: This is using early_printk, correct?
+=E2=80=A6
+
+> [   C56] Call Trace:
+> [   C56]  <NMI>
+> [ C56] ? nmi_cpu_backtrace (lib/nmi_backtrace.c:115)=20
+> [ C56] ? nmi_cpu_backtrace_handler (arch/x86/kernel/apic/hw_nmi.c:47 (dis=
+criminator 1))=20
+> [ C56] ? nmi_handle (arch/x86/kernel/nmi.c:149)=20
+> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
+> [ C56] ? default_do_nmi (arch/x86/kernel/nmi.c:347)=20
+> [ C56] ? exc_nmi (arch/x86/kernel/nmi.c:538)=20
+> [ C56] ? end_repeat_nmi (arch/x86/entry/entry_64.S:1458)=20
+> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
+> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
+> [ C56] ? io_serial_out (arch/x86/kernel/early_printk.c:105)=20
+> [   C56]  </NMI>
+
+This looks okay. The NMI did the backtrace as expected.
+
+> [   C56]  <TASK>
+> [ C56] serial8250_console_putchar (./include/linux/serial_core.h:704 driv=
+ers/tty/serial/8250/8250_port.c:3347)=20
+> [ C56] ? __pfx_serial8250_console_putchar (drivers/tty/serial/8250/8250_p=
+ort.c:3343)=20
+> [ C56] uart_console_write (drivers/tty/serial/serial_core.c:2134)=20
+> [ C56] serial8250_console_write_atomic (drivers/tty/serial/8250/8250_port=
+=2Ec:3628)=20
+> [ C56] nbcon_emit_next_record (kernel/printk/nbcon.c:940)=20
+> [ C56] __nbcon_atomic_flush_all (kernel/printk/nbcon.c:1192 (discriminato=
+r 1) kernel/printk/nbcon.c:1326 (discriminator 1))=20
+> [ C56] vprintk_emit (kernel/printk/printk.c:2414)=20
+> [ C56] _printk (kernel/printk/printk.c:2474)=20
+> [ C56] panic (./arch/x86/include/asm/bitops.h:207 ./arch/x86/include/asm/=
+bitops.h:239 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 ker=
+nel/panic.c:528 kernel/panic.c:339)=20
+> [ C56] ? _printk (kernel/printk/printk.c:2474)=20
+> [ C56] sysrq_handle_crash (drivers/tty/sysrq.c:154)=20
+> [ C56] __handle_sysrq (drivers/tty/sysrq.c:601)=20
+> [ C56] write_sysrq_trigger (drivers/tty/sysrq.c:1165)=20
+> [ C56] proc_reg_write (fs/proc/inode.c:340 fs/proc/inode.c:352)=20
+> [ C56] ? preempt_count_add (./include/linux/ftrace.h:974 (discriminator 1=
+) kernel/sched/core.c:5847 (discriminator 1) kernel/sched/core.c:5844 (disc=
+riminator 1) kernel/sched/core.c:5872 (discriminator 1))=20
+> [ C56] vfs_write (fs/read_write.c:582)=20
+> [ C56] ksys_write (fs/read_write.c:637)=20
+> [ C56] do_syscall_64 (arch/x86/entry/common.c:51 arch/x86/entry/common.c:=
+81)=20
+> [ C56] ? do_dup2 (fs/file.c:1142)=20
+> [ C56] ? syscall_exit_to_user_mode (kernel/entry/common.c:299)=20
+> [ C56] ? do_syscall_64 (arch/x86/entry/common.c:88)=20
+> [ C56] ? exc_page_fault (./arch/x86/include/asm/irqflags.h:37 ./arch/x86/=
+include/asm/irqflags.h:72 arch/x86/mm/fault.c:1513 arch/x86/mm/fault.c:1561=
+)=20
+> [ C56] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)=20
+
+According to this, someone issued a `crash' via sysrq. Why?
+
+=E2=80=A6
+> [ T2614] ---[ end Kernel panic - not syncing: sysrq triggered crash ]---
+yes exactly.
+=E2=80=A6
+> NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned throughput-=
+performance profile
+> -----------------------------
+
+This and the following backtrace shows the same picture: The CPU is
+crashing due to proc/sysrq request and does CPU-backtraces via NMI and
+polls in early_printk, waiting for the UART to become idle (probably).
+
+I don't see an issue here so far.
+
+=E2=80=A6
+> --=20
+> Sincerly,
+> John Wyatt
+> Software Engineer, Core Kernel
+
+Sebastian
 
