@@ -1,105 +1,102 @@
-Return-Path: <linux-kernel+bounces-111574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54EC886DFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:07:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83704886DFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C3121F22369
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:07:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22A501F2285A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD43A47A48;
-	Fri, 22 Mar 2024 14:07:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E174652D;
-	Fri, 22 Mar 2024 14:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B3246525;
+	Fri, 22 Mar 2024 14:07:56 +0000 (UTC)
+Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6F146435
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711116460; cv=none; b=pnSmE/KKZhji4tIhlqjTW7vldCm31tQdu8Yg+lOscCgijSJr9ByQaTDZHPNAvWLI3LsW6AkxgEgYy8HzDKuvrrWkhA8OtwxH6CYZdjv+8BVKz0tdCxM6p/+qvrfRhcZCkRl2Yu01ZQy9Hr/GsqlmXDsBImxJjx1D/B1HBde8KKc=
+	t=1711116475; cv=none; b=U7FDxhEslXBJYSrODFphCPACFP57Yh37HVbK3JiKHH9FBsWlbDLclgSzAMWoEfD/8vd63ZKEKn0xZmfM+552P91MZC64rj/A4dtgDx82CwoE7x7ZQujPbh9msZET0qEFNkDFEWYc7IwQk4dwGB9K8JRlgAYoNkU0al24ngz0dmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711116460; c=relaxed/simple;
-	bh=z1Cr+EJ5/KwlaRetChwu63heoXdWVRo7U/kJnQ2pDc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eUmiCl/YvsiT9hRht/8hY/2THDqfj5fI3MIpbF5zBgxbgpiA+IV+zXJtsR0m2Tx3a4uWNovavD1Rl0Q6fbRCeCjKaIYqo9U7iL9BJ+diRCY1uHgUiq4+l9WmW47mdtH/Ax/FJnVPrEgB3noZfLThCc9k798r9HJDgIW8Kd7Nlek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AC001007;
-	Fri, 22 Mar 2024 07:08:09 -0700 (PDT)
-Received: from [10.1.27.56] (e133047.arm.com [10.1.27.56])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D140E3F762;
-	Fri, 22 Mar 2024 07:07:31 -0700 (PDT)
-Message-ID: <32608c6b-df94-4dc8-be66-97a90b6eeac4@arm.com>
-Date: Fri, 22 Mar 2024 14:07:29 +0000
+	s=arc-20240116; t=1711116475; c=relaxed/simple;
+	bh=g8FIvGSbCjzbLwow6pOtlOb5D1NJisaPBfKV0nWX/LE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=s+cmBKqs4tQi1tAS0oxZMiTISTgPkZIAkLO2eet27R43LlUZ7eJBJRQzq2Kc8sp7ood/PIvgG0EcXHmfZfuF/G/1knNlp1hIDDHxq0zOTkWTbrjW7WRZFdCQYDAyZmlen8FZPBOGsr/c/lRkUflqytWkxEaAn5CD/w96isUcpTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; arc=none smtp.client-ip=210.171.160.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mail.parknet.co.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+	by mail.parknet.co.jp (Postfix) with ESMTPSA id 2F354205DB9A;
+	Fri, 22 Mar 2024 23:07:45 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42ME7hv2198824
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 23:07:44 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-1) with ESMTPS id 42ME7hlU1198250
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 23:07:43 +0900
+Received: (from hirofumi@localhost)
+	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 42ME7htj1198249;
+	Fri, 22 Mar 2024 23:07:43 +0900
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH -next v2] fs: Add kernel-doc comments to fat_parse_long()
+In-Reply-To: <20240322073724.102332-1-yang.lee@linux.alibaba.com> (Yang Li's
+	message of "Fri, 22 Mar 2024 15:37:24 +0800")
+References: <20240322073724.102332-1-yang.lee@linux.alibaba.com>
+Date: Fri, 22 Mar 2024 23:07:43 +0900
+Message-ID: <87msqqtl5c.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
-Content-Language: en-US
-To: Maxim Kiselev <bigunclemax@gmail.com>, serghox@gmail.com
-Cc: adrian.hunter@intel.com, jyanchou@realtek.com,
- open list <linux-kernel@vger.kernel.org>, linux-mmc@vger.kernel.org,
- quic_asutoshd@quicinc.com, ritesh.list@gmail.com, shawn.lin@rock-chips.com,
- Ulf Hansson <ulf.hansson@linaro.org>
-References: <CALHCpMiUfa0j46HcorZGPDPV5Zg5ZFdWukT+5jTediuKJuoB5w@mail.gmail.com>
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <CALHCpMiUfa0j46HcorZGPDPV5Zg5ZFdWukT+5jTediuKJuoB5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 20/03/2024 10:36, Maxim Kiselev wrote:
-> Subject: [PATCH v7 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
-> 
-> Hi Sergey, Adrian!
-> 
-> First of all I want to thank Sergey for supporting the CQE feature
-> on the DWC MSHC controller.
-> 
-> I tested this series on the LicheePi 4A board (TH1520 SoC).
-> It has the DWC MSHC IP too and according to the T-Head datasheet
-> it also supports the CQE feature.
-> 
->> Supports Command Queuing Engine (CQE) and compliant with eMMC CQ HCI.
-> 
-> So, to enable CQE on LicheePi 4A need to set a prop in DT
-> and add a IRQ handler to th1520_ops:
->> .irq = dwcmshc_cqe_irq_handler,
-> 
-> And the CQE will work for th1520 SoC too.
-> 
-> But, when I enabled the CQE, I was faced with a strange effect.
-> 
-> The fio benchmark shows that emmc works ~2.5 slower with enabled CQE.
-> 219MB/s w/o CQE vs 87.4MB/s w/ CQE. I'll put logs below.
-> 
-> I would be very appreciative if you could point me where to look for
-> the bottleneck.
-> 
-> Without CQE:
+Yang Li <yang.lee@linux.alibaba.com> writes:
 
-I would also suspect some bus issues here, either read out ios or ext_csd
-after enabling CQE, it could be helpful.
-OTOH the CQE could just be limiting the frequency, which you wouldn't be
-able to see without a scope. Does the TRM say anything about that?
+> This commit adds kernel-doc style comments with complete parameter
+> descriptions for the function fat_parse_long.
+>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Are you limited to <100MB/s with CQE for HS400(non-ES) and HS200, too?
+Looks good.
 
-What about sequential reads but smaller bs? like 256K sequential?
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-FWIW your fio call should be on par with non-CQE performance-wise at best,
-as you just have one IO in-flight, i.e. no CQE performance improvement
-possible, see your warning:
+> ---
+>  fs/fat/dir.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/fs/fat/dir.c b/fs/fat/dir.c
+> index 00235b8a1823..8236807eb7f7 100644
+> --- a/fs/fat/dir.c
+> +++ b/fs/fat/dir.c
+> @@ -269,6 +269,16 @@ enum { PARSE_INVALID = 1, PARSE_NOT_LONGNAME, PARSE_EOF, };
+>  /**
+>   * fat_parse_long - Parse extended directory entry.
+>   *
+> + * @dir: Pointer to the inode that represents the directory.
+> + * @pos: On input, contains the starting position to read from.
+> + *       On output, updated with the new position.
+> + * @bh: Pointer to the buffer head that may be used for reading directory
+> + *	 entries. May be updated.
+> + * @de: On input, points to the current directory entry.
+> + *      On output, points to the next directory entry.
+> + * @unicode: Pointer to a buffer where the parsed Unicode long filename will be
+> + *	      stored.
+> + * @nr_slots: Pointer to a variable that will store the number of longname
+> + *	       slots found.
+> + *
+>   * This function returns zero on success, negative value on error, or one of
+>   * the following:
+>   *
 
-> both iodepth >= 1 and synchronous I/O engine are selected, queue
-> depth will be capped at 1
-
-Kind Regards,
-Christian
+-- 
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
