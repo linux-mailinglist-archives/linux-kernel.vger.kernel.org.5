@@ -1,256 +1,110 @@
-Return-Path: <linux-kernel+bounces-111097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E468867DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:03:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D82458867E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC5941F24CB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:03:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F079F1C2339E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB34C383AE;
-	Fri, 22 Mar 2024 08:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15341642A;
+	Fri, 22 Mar 2024 08:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="wvEqhEIO"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e8dM5SRM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33C722301
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244C612E7D;
+	Fri, 22 Mar 2024 08:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711094517; cv=none; b=kygzgSMdwsMsLI4JkY/l8qdXhvRv9MVhGDCnkq6ohE/skFLah1i0qdB0yNmgb4nX3WiBpxaGJvfsu+/CoCAtoOtq5ihECLj2W2tnLUAo1LJg1O9cvTwf0TYOD8m3s8qpzzhNnk4TyM9MZrsM9LMBzSbAwP1iziYkhD6w+CsxmL4=
+	t=1711094603; cv=none; b=ZmfnwOUtRDt0jTgrAbhJip5sCJsJRMnUqEbZoKYUkLCZqf9LGL6kN2BTtSdbZdymZ4ZDMQXgh26d3YBEwqViqd7U1m0pFpgNpt+Fm8bcNBJ0Z4WN68TL1uX1ICZz8GRDWRSWy4p8KKeX5pDgb3psPvH548dhFCIxXw03SUBacXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711094517; c=relaxed/simple;
-	bh=c9oseDZUUXTqJN7LS14WFIW9fB6ocM05ox/NaZ76+/Y=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OnlhFsKbSOulGLDB6ruhJeSe5PdrcD3pdw8/qemFkP749rTtbOhW0hj3lnn+1SrLl/2GsPpW6LgwGauaosdyewOjrgk9M746D5Wl3gPpGtBUYZvNvLTyfbZOqK9W/hqWca8RSDbIK8BgM1THmUVo7/7nozlrxP12qe4kDSZWTWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=wvEqhEIO; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d23114b19dso26282831fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1711094514; x=1711699314; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bWERVSAHlJVwwhvb1oFx+Pf4sIxWeoVfA34irUNvYi0=;
-        b=wvEqhEIOGNyxjbdM90hG8WXi+dZB0J4Z3c9qrDS3tlBz125GH91v8iADcfRCYGranf
-         o5YZ7h+1JVamsNf6ZH1/FwhBgcHjjf7Ti5wqPqmlyzQ1rAJ8rAFav1dpRqRbkDm6bFev
-         P1f7BZbaP+m+jsmSYkBsi5gM82bHPwT4N0Z2W8tB79cwLFkOGoTHujGdJ8ALrPWWtv1J
-         sJhxlH8xz9dP9S/8Wd7c03IEX1wRCrkElD6oMcpk9UB/c6XdmjnGDwI2lPQctcgjFES8
-         OHFgAZ/q4FcwQZmyqv3abudkbg6lTi0tKBlhqqnu9S2EOQiaeoIMCsZtyywyd4wL5lGj
-         pobg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711094514; x=1711699314;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bWERVSAHlJVwwhvb1oFx+Pf4sIxWeoVfA34irUNvYi0=;
-        b=AmU5VR4v7xL1umS/KAZFLajvfoLgsQUoWdwjYi9hvOSZaWawwUdUvKksqwMZMVTKdE
-         kRIh4a4GF5NjebZvt0XxHZW/zx20XDEfrH9I606nEIug0yhphz30mHUd0OD4LFYbydF1
-         gZZswnTl8IBuTvoqnN7/IHe1nRcDoOzew8iK0WrH4uaYf+QtsvThbTNZVskTk7B7/3uo
-         hjvLNlbzHtMQ5cXwNz3+dgC8PLsq0JfaY0WfQ62rZKQMiLR0RAaJwhtL3T5YwQ3lvawK
-         fZYcPvQFQCmbBpdwDCfR4w+sZTG4SxQ8d+oQ0cYTwLTM5DtpyuMXT0FLPtM2t0InnGAL
-         /mrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLFHZGj86Ms9UiTQgO4KzpSYMcuFSJ5ufChXoUUur5nP3Kn+5/mrFzrL/TmimghOezFdxCTbJsH26WsR5haOk6fK28leMc8BTJgsAI
-X-Gm-Message-State: AOJu0YxupBPgHTG63qfsLJW6lSwDy4lmMNFDofxzJMDfFfV2ammkJPw0
-	ekS4B4pblVGH9uQOPS8SJUjmc9lXLDCE2a/pQfQ+qJF0+A/mtJPOixo0djtAgzs=
-X-Google-Smtp-Source: AGHT+IHGt+ZVwxuyh9yGGHkfee1Qe7heWSrQxIuOb2MV+H3sfuBxiyY7vRVo3wCCCyZYYvJbso0/Iw==
-X-Received: by 2002:a05:6512:214c:b0:515:8bb2:72a2 with SMTP id s12-20020a056512214c00b005158bb272a2mr962134lfr.55.1711094514045;
-        Fri, 22 Mar 2024 01:01:54 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (046125249120.public.t-mobile.at. [46.125.249.120])
-        by smtp.gmail.com with ESMTPSA id p29-20020a056402501d00b00568c613570dsm739889eda.79.2024.03.22.01.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 01:01:53 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 22 Mar 2024 09:01:36 +0100
-Subject: [PATCH 5/5] arm64: dts: qcom: sm7225-fairphone-fp4: Enable USB
- role switching
+	s=arc-20240116; t=1711094603; c=relaxed/simple;
+	bh=KtREvos/d5+aLyOdl8HCquwfkvZVafN4A82rG+GpL2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JbX6KJ7YLgqbILiIpphZphHtvh7y7LWmgM7gExb4HXlWeC5bxuyaNf/8QCxaEhrUBVnV3zJjKNlIVj2oyYcmR0iTkXfQTs9CTBhpeSioQch/qJJ+vbyD1xaNwoAw6aIDU5sYBMtqAbVNcyIfxUSQRQTl5DA2/44CEThVBRRjcFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e8dM5SRM; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711094601; x=1742630601;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KtREvos/d5+aLyOdl8HCquwfkvZVafN4A82rG+GpL2A=;
+  b=e8dM5SRMs2OED8prvICJ3caPykHy7rauzZnajMLk7uTaenIOyHp6dcAk
+   zlh8zq1O7csNMXhsGDiDUZ84Nn8XOnT1uExCx4M22NHyCNq4kIuynMvWx
+   ZN+v9VVGcIs7cS861uQ3G4nuZYAIESigkimp7XWDMfx5myhQ1qTcKge5p
+   JGRdqda0MvMCHC6GG4c9Xa79SXXZwGUzVgYM4cZaDxHQ5eDtVUciMi4uR
+   abR0IlV1Ko/FqHIjiRkts85qHw2YCV3FVPhVhoeSkb+E3F1erT227496h
+   eWsysqsYXP02O5EQ38rbbc22aXvCKQdZCqkzph1fZx6iK38ZxfHbXVCto
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5959701"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="5959701"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 01:03:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="19373642"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 22 Mar 2024 01:03:16 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rnZru-000K91-14;
+	Fri, 22 Mar 2024 08:03:14 +0000
+Date: Fri, 22 Mar 2024 16:02:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com,
+	thomas.lendacky@amd.com, dan.j.williams@intel.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, graf@amazon.de,
+	dwmw@amazon.co.uk, bchalios@amazon.es, xmarcalx@amazon.co.uk
+Subject: Re: [PATCH v2 4/4] virt: vmgenid: add support for devicetree bindings
+Message-ID: <202403221537.Dais4vyo-lkp@intel.com>
+References: <20240321025105.53210-5-sudanl@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240322-fp4-tcpm-v1-5-c5644099d57b@fairphone.com>
-References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
-In-Reply-To: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-usb@vger.kernel.org, 
- Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321025105.53210-5-sudanl@amazon.com>
 
-Configure the Type-C and VBUS regulator on PM7250B and wire it up to the
-USB PHY, so that USB role and orientation switching works.
+Hi Sudan,
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
-With this patch I'm not quite sure if the 'ports' are connected
-correctly, though functionally everything appears to work fine.
+kernel test robot noticed the following build errors:
 
-On some other SoCs port@1 in qmpphy and a second port in dwc3 are
-connected together also - one port of USB 2.0 HS, one for USB 3.0 SS.
+[auto build test ERROR on a4145ce1e7bc247fd6f2846e8699473448717b37]
 
-Here I'm following sm8250's solution. Also checking the binding doc
-doesn't reveal anything useful.
----
- arch/arm64/boot/dts/qcom/sm6350.dtsi              | 25 ++++++++++
- arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts | 57 ++++++++++++++++++++++-
- 2 files changed, 81 insertions(+), 1 deletion(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Sudan-Landge/virt-vmgenid-rearrange-code-to-make-review-easier/20240321-105317
+base:   a4145ce1e7bc247fd6f2846e8699473448717b37
+patch link:    https://lore.kernel.org/r/20240321025105.53210-5-sudanl%40amazon.com
+patch subject: [PATCH v2 4/4] virt: vmgenid: add support for devicetree bindings
+config: s390-randconfig-002-20240322 (https://download.01.org/0day-ci/archive/20240322/202403221537.Dais4vyo-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 23de3862dce582ce91c1aa914467d982cb1a73b4)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240322/202403221537.Dais4vyo-lkp@intel.com/reproduce)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 24bcec3366ef..b267500467f0 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -1686,6 +1686,27 @@ usb_1_qmpphy: phy@88e8000 {
- 			#phy-cells = <1>;
- 
- 			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					usb_1_qmpphy_out: endpoint {};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+				};
-+
-+				port@2 {
-+					reg = <2>;
-+
-+					usb_1_qmpphy_dp_in: endpoint {};
-+				};
-+			};
- 		};
- 
- 		dc_noc: interconnect@9160000 {
-@@ -1861,6 +1882,10 @@ usb_1_dwc3: usb@a600000 {
- 				snps,hird-threshold = /bits/ 8 <0x10>;
- 				phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
- 				phy-names = "usb2-phy", "usb3-phy";
-+
-+				port {
-+					usb_1_role_switch_out: endpoint {};
-+				};
- 			};
- 		};
- 
-diff --git a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-index bc67e8c1fe4d..104f23ec322d 100644
---- a/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-+++ b/arch/arm64/boot/dts/qcom/sm7225-fairphone-fp4.dts
-@@ -19,6 +19,7 @@
- #include <dt-bindings/leds/common.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include <dt-bindings/usb/pd.h>
- #include "sm7225.dtsi"
- #include "pm6150l.dtsi"
- #include "pm6350.dtsi"
-@@ -543,6 +544,50 @@ conn-therm@1 {
- 	};
- };
- 
-+&pm7250b_typec {
-+	vdd-pdphy-supply = <&vreg_l3a>;
-+
-+	status = "okay";
-+
-+	connector {
-+		compatible = "usb-c-connector";
-+
-+		power-role = "source";
-+		data-role = "dual";
-+		self-powered;
-+
-+		source-pdos = <PDO_FIXED(5000, 1500,
-+					 PDO_FIXED_DUAL_ROLE |
-+					 PDO_FIXED_USB_COMM |
-+					 PDO_FIXED_DATA_SWAP)>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				pm7250b_role_switch_in: endpoint {
-+					remote-endpoint = <&usb_1_role_switch_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				pm7250b_typec_mux_in: endpoint {
-+					remote-endpoint = <&usb_1_qmpphy_out>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&pm7250b_vbus {
-+	regulator-min-microamp = <500000>;
-+	regulator-max-microamp = <1500000>;
-+	status = "okay";
-+};
-+
- &pmk8350_rtc {
- 	status = "okay";
- };
-@@ -726,7 +771,12 @@ &usb_1 {
- 
- &usb_1_dwc3 {
- 	maximum-speed = "super-speed";
--	dr_mode = "peripheral";
-+	dr_mode = "otg";
-+	usb-role-switch;
-+};
-+
-+&usb_1_role_switch_out {
-+	remote-endpoint = <&pm7250b_role_switch_in>;
- };
- 
- &usb_1_hsphy {
-@@ -740,10 +790,15 @@ &usb_1_hsphy {
- &usb_1_qmpphy {
- 	vdda-phy-supply = <&vreg_l22a>;
- 	vdda-pll-supply = <&vreg_l16a>;
-+	orientation-switch;
- 
- 	status = "okay";
- };
- 
-+&usb_1_qmpphy_out {
-+	remote-endpoint = <&pm7250b_typec_mux_in>;
-+};
-+
- &wifi {
- 	vdd-0.8-cx-mx-supply = <&vreg_l4a>;
- 	vdd-1.8-xo-supply = <&vreg_l7a>;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403221537.Dais4vyo-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   s390x-linux-ld: drivers/virt/vmgenid.o: in function `vmgenid_add':
+>> vmgenid.c:(.text+0xe8): undefined reference to `of_address_to_resource'
+>> s390x-linux-ld: vmgenid.c:(.text+0x148): undefined reference to `of_iomap'
 
 -- 
-2.44.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
