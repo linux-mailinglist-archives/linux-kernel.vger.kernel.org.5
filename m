@@ -1,128 +1,161 @@
-Return-Path: <linux-kernel+bounces-111104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 134888867F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:10:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC2E88681E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43B031C21B69
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:10:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEDDAB24606
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0FC1643E;
-	Fri, 22 Mar 2024 08:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE571754B;
+	Fri, 22 Mar 2024 08:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r6UpjQ4F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gKSSFatA"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAE715E80;
-	Fri, 22 Mar 2024 08:10:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7861217541;
+	Fri, 22 Mar 2024 08:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711095042; cv=none; b=cX0r6nbWVVaaGe6w98H+y6iWBHq97qOYfTUBdkEmxyAbJ4BLBTBZ+vvNxV80znfQct9C0fJN9ez9jHBV2bdkVvu8N8Zy25eoM+e8O0shRTzI6PaZB+qjyava+prIDCR6rTdAPebF69hpw/zbBSjzjQBIEZb/TZp+yhgb7wUgU7A=
+	t=1711095523; cv=none; b=mINajCRa26rv3C2undq0oqLE1NgOpP5iH1IB6sc+1B/57shlw1vhO8oRp/TuYM/lLR99xtbJrflxsO2LocC72b2gnM9b7w0RXjHntbe7S+Td1mWsRvnLabBPaNgUzWpMtDCwsc4HVO2oxMgadsIHfzliDUIiinK/7rYGEC7N2M8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711095042; c=relaxed/simple;
-	bh=YCnOfA/n2e27zR5vgkB9gg9Jx2TJzBRBGHJZDA9Wlo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cVc5W2B4SJ33Wp6cIMkEI7kCBHWWIPKmd+0N3m0xXAqXuwFoo/iDdsMojHGD3znVudppZMjVoG7l9VBUI0vYsXyFMAQQa5brLEzFKqg1voJ+4P5qWDR6iFCPFsuC73PXb6Q3sYW9pJOmyBi9kpMhLNDmy4kbBdbxH1VR8CSXBTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r6UpjQ4F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403DFC433F1;
-	Fri, 22 Mar 2024 08:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711095041;
-	bh=YCnOfA/n2e27zR5vgkB9gg9Jx2TJzBRBGHJZDA9Wlo0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r6UpjQ4FWlkaobX17/QSZHPkLwUGN8UPdo2UxJbEKxgonJN1wRJfjY4ytn0U57niD
-	 9wNTd30twOeABmsKXVooxX4wzk2tYdBylEKcz/VCjvd5UDSmuJfTXeJomj9k+Tl5XE
-	 uHF5KiqlDLCpRwmkPUL3iGTNiw4K7RVoMsfLfJ59VWpPl0YnRsRApT/+k82qHtSasq
-	 MpQNAF+CtaP81Gl7LM9Kwg5wzk6xDamkmhCg/kyJo0bLNu2aB+c92Aj4c6hoUYAwKi
-	 cZCYyocVdBm9kzOfhcEYTmbsqiML6XlWgsrNWT4OCn2pmNCZ7Nl4hpziyHIBwZ+ePU
-	 BXOGnB/R5scQg==
-Date: Fri, 22 Mar 2024 08:10:36 +0000
-From: Lee Jones <lee@kernel.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	Samuel Holland <samuel@sholland.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 0/4] regulator: Add X-Powers AXP717 PMIC support
-Message-ID: <20240322081036.GL13211@google.com>
-References: <20240310010211.28653-1-andre.przywara@arm.com>
- <20240321171048.GD13211@google.com>
+	s=arc-20240116; t=1711095523; c=relaxed/simple;
+	bh=rd+p0dVu4TA+0VkP+DxfWT2f83gmcmxQREG7HALIvfk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r/Ogsr7bPV3j3YVNvAQlSKddtsv1rWrqUBWMKozbCudKKjLI1rP5YP//wYD2gCJhpc8SrXCebsriGVzVY4sjHdGcj2rZXhqWQu3JpkN4ddILOYvWDlbryg7RqeHXIajpoo+DQ1qWewmxgAd/DPORD76ywpBUFD3iyF4R185hLh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gKSSFatA; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e00d1e13acso11203805ad.0;
+        Fri, 22 Mar 2024 01:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711095522; x=1711700322; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yy+KHNUW+coF6cF93OFhp/xRFqCnGtKs15mHnvutaYM=;
+        b=gKSSFatAf8J+4Ivu4b1PmTKfXGqdp4Q5MYuWiqMWa4X+O8sfAGbaRBEypOYkIOXF2R
+         5vKi0fFCs5Fj794tZD28u/DCIa79JV9X1xzrtvPRUlRM6syZ//pjiVeLBLzK4Slm9vyN
+         3INK0+uYDO+abAXBzRteAadR+1aNe2bMeV7GsRJt/wl1ItlDl/ETAOZ31OXWeElMd2WN
+         wx5KZ44X6jqql9ocCrvha+Tk5S4TuZyLCH8Uc64HzgrgNUavU/c1RYsq7KKQZQjuOsjH
+         6bhwBJSxb1umOI+NGxd2TlUH2VGZ7EliIQZi8uFGk9dkGjK9RxS8SbbGbLMeOFQ2+c3/
+         FdAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711095522; x=1711700322;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yy+KHNUW+coF6cF93OFhp/xRFqCnGtKs15mHnvutaYM=;
+        b=gIaVTmNQGgvCLxoFdiZ88gm+eA8hS4CWsBayffVUnUmGlZ7yo8AuoTypLIbKnvCBKW
+         buTK9DzXFuWnDnARgDQc1OOCVrPN66gQKnmxsU7wZdwqRY2C89Hic2B2qHjupAEkfgTC
+         EzbPOkl9t9PzdKc916qZMQFNEqvg0UrJbGmxQcGVUpSzMTc4XNs9mt8bcaGOI8ATXz56
+         mM4v5ipXGa4K6IRZDyOr/yU8/Ixpbcf4jv+PPSAd1aYQzwrBaMUKb8ZwKIoodSOaoiv4
+         HdX7r4qZCWWiwS3XcusaRpsr9l93QYOn2y7IXzje59qxWFYaeYC2Kg65YJuRYlaFX1mk
+         Vasg==
+X-Forwarded-Encrypted: i=1; AJvYcCW71eSkhZIluE6WFIKgsvzKAbwjl9nExvZ4n4oWOQkEejgQOeu/IFphDtTPd+OO7zcNRFm4qS5Io8DH6xU7DiwN3gB+YE1VRJn+W9n0bSdwwbqQh4bGNp1bEo5+0+a5BwoPKTM6XIf0hqVnoxMUSPpITgH4BNIdJ9CTadtkp2Gq/oraUg==
+X-Gm-Message-State: AOJu0YzAgJMT1d2RU3SCeqys9Ax18XVc2lCwdW75MkH6E55NGo/tf9er
+	dXvYNel7K7s1g/PVMfhLIvmA01wKLLCM3CoGkFPC4+DxJJSGv5DGqC3+zVl3OYI=
+X-Google-Smtp-Source: AGHT+IGtZSQd4OGDi6oKa3A/VMJZUn6iI84Lg9soIxe7ueMP2K9ls9aPaWHsCdIhDoSHLxi++tYQ8Q==
+X-Received: by 2002:a05:6a21:3997:b0:1a3:55d2:1489 with SMTP id ad23-20020a056a21399700b001a355d21489mr2312813pzc.7.1711095147442;
+        Fri, 22 Mar 2024 01:12:27 -0700 (PDT)
+Received: from hcdev-d520mt2.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id s128-20020a625e86000000b006e749161d40sm1132564pfb.113.2024.03.22.01.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 01:12:26 -0700 (PDT)
+From: baneric926@gmail.com
+X-Google-Original-From: kcfeng0@nuvoton.com
+To: jdelvare@suse.com,
+	linux@roeck-us.net,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	corbet@lwn.net
+Cc: linux-hwmon@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	openbmc@lists.ozlabs.org,
+	kwliu@nuvoton.com,
+	kcfeng0@nuvoton.com,
+	DELPHINE_CHIU@wiwynn.com,
+	Bonnie_Lo@wiwynn.com
+Subject: [PATCH v5 0/2] hwmon: Driver for Nuvoton NCT7363Y
+Date: Fri, 22 Mar 2024 16:11:56 +0800
+Message-Id: <20240322081158.4106326-1-kcfeng0@nuvoton.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240321171048.GD13211@google.com>
 
-On Thu, 21 Mar 2024, Lee Jones wrote:
+From: Ban Feng <kcfeng0@nuvoton.com>
 
-> On Sun, 10 Mar 2024, Andre Przywara wrote:
-> 
-> > This patch series adds support for the X-Powers AXP717 PMIC, which is 
-> > used recently on new boards with Allwinner SoCs.
-> > Allwinner's BSP code often speaks of the AXP2202, this seems to be the
-> > same chip, at least a boot0 AXP2202 driver happily drove a chip labelled
-> > AXP717.
-> > 
-> > Patch 1 fixes a typo in some macro names for the AXP313a PMIC, I just
-> > realised that during some copy&paste action. It's just an identifier
-> > rename, so not a backport candidate, I'd say.
-> > Patch 2 adds the compatible string to the binding document.
-> > Patch 3 is the MFD part, describing the regmap and all the interrupts.
-> > So far we support the regulator and power key devices, the USB and
-> > charging devices will follow later.
-> > Patch 4 adds the voltage regulator rails, this part is crucial to enable
-> > any board using this PMIC, as we depend on those rails even for basic
-> > devices.
-> > 
-> > Please note that I could not test this driver myself, but had success
-> > messages from others. It would be good to hear from Ryan and Chris
-> > here on the list, with a Tested-by: tag.
-> > 
-> > This series is based on next-20240308 for now. I will send a rebased
-> > update after the merge window, but wanted to start discussion and review
-> > now.
-> > 
-> > Please have a look!
-> > 
-> > Cheers,
-> > Andre
-> > 
-> > Andre Przywara (4):
-> >   regulator: axp20x: fix typo-ed identifier
-> >   dt-bindings: mfd: x-powers,axp152: document AXP717
-> >   mfd: axp20x: add support for AXP717 PMIC
-> >   regulator: axp20x: add support for the AXP717
-> > 
-> >  .../bindings/mfd/x-powers,axp152.yaml         |  2 +
-> >  drivers/mfd/axp20x-i2c.c                      |  2 +
-> >  drivers/mfd/axp20x-rsb.c                      |  1 +
-> >  drivers/mfd/axp20x.c                          | 90 +++++++++++++++++
-> >  drivers/regulator/axp20x-regulator.c          | 94 +++++++++++++++++-
-> >  include/linux/mfd/axp20x.h                    | 98 ++++++++++++++++++-
-> >  6 files changed, 277 insertions(+), 10 deletions(-)
-> 
-> All applied and sent for build testing.  If everything works out, I'll
-> send out a pull-request to an immutable branch shortly.
+NCT7363Y is an I2C based hardware monitoring chip from Nuvoton.
 
-Okay, these are building okay based on v6.8.
+Changes since version 4:
+- add Datasheet information and refine words in yaml and rst files
+- remove fan-common.yaml since it is already in hwmon-next
+- refine the commit messages
+- modify the type of returned value in some functions
+- refine lock/unlock in nct7363_write_pwm and accessing
+  HVAL/LVAL registers
+- refine nct7363_init_chip
+- add range check in nct7363_present_pwm_fanin
+- add i2c_device_id table
+- add nct7362 to of_device_id and i2c_device_id table
 
-I'll send out a PR once I can rebase tem onto v6.9-rc1.
+Changes since version 3:
+- Cherry-pick the fan-common.yaml in [1]
+- Fix "checkpatch --strict" report
+- Replace BIT_CHECK() with BIT()
+- Fix CamelCase defines or variables
+- Drop enum chips
+- Drop all local caching and just read values through regmap
+- Drop chip auto-detection since it increases boot time
 
-Note to self: ib-mfd-regulator-6.9
+[1]: https://patchwork.kernel.org/project/linux-hwmon/patch/
+     20240221104025.1306227-2-billy_tsai@aspeedtech.com/
+
+Changes since version 2:
+- Cherry-pick the fan-common.yaml in [1]
+- Fix nct736x typo and add unevaluatedProperties
+
+[1]: https://patchwork.kernel.org/project/linux-hwmon/patch/
+     20231107105025.1480561-2-billy_tsai@aspeedtech.com/
+
+Changes since version 1:
+- Modify NCT736X(nct736x) to NCT7363Y(nct7363)
+- Convert to devm_hwmon_device_register_with_info API
+- All ID tables are next to each other and should be consistent
+  between i2c_device_id and of_device_id
+- Ref. fan-common.yaml and modify properties (nuvoton,pwm-mask/
+  nuvoton,fanin-mask) to (pwms/tach-ch)
+- Convert to devm_regmap_init_i2c API
+- Remove unused function (watchdog timer)
+- Fix uninitialized symbol which is reported by kernel test robot
+
+Ban Feng (2):
+  dt-bindings: hwmon: Add NCT7363Y documentation
+  hwmon: Add driver for I2C chip Nuvoton NCT7363Y
+
+ .../bindings/hwmon/nuvoton,nct7363.yaml       |  66 +++
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/nct7363.rst               |  33 ++
+ MAINTAINERS                                   |   8 +
+ drivers/hwmon/Kconfig                         |  11 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/nct7363.c                       | 396 ++++++++++++++++++
+ 7 files changed, 516 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
+ create mode 100644 Documentation/hwmon/nct7363.rst
+ create mode 100644 drivers/hwmon/nct7363.c
 
 -- 
-Lee Jones [李琼斯]
+2.34.1
+
 
