@@ -1,113 +1,131 @@
-Return-Path: <linux-kernel+bounces-112008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B45388740D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BAC887420
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D83328254E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:56:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98E21283F29
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8306A7FBA0;
-	Fri, 22 Mar 2024 19:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124517F7C0;
+	Fri, 22 Mar 2024 20:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EXILuZAD"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="NB3wWpxT"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C406A7F7DD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D767F483;
+	Fri, 22 Mar 2024 20:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711137378; cv=none; b=IYC0aaJAAcC3zOA+EIOSHXaFnlsIn5SE6hsfpaS1Rl6LLD47Nd2MGY4iuiedLSqJT7/dP/0UdAsutH71eCqGcr8ridkpTgM1n0zC9s8XUzAyXY2TleG9P3rUJdl6XC4QpisD5UiYRgdeCMoEfftWJ3O8TBdBd3b/Wu+5jzXXgtE=
+	t=1711138557; cv=none; b=Mb1NA2Ov9pcuj5NVGpnx08pVdWojQVcG64Ad4D7WZQfZNvBxtEg2g0GooSwK5ZGBfOlI3CnQtJ5C/YALOAVHpISMjPNm6HLoCsqnaR8RvqLTdW2FTGTNeCrHwyGc9urXqA21an87RWp3C40Dksu8ZwJ32XcT9HOh7XrDz6a8mdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711137378; c=relaxed/simple;
-	bh=kEPXH+l/Pa5KYbYBvhkjCAhhsDglYWMHVXWYgQs1Dss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DRZDhgh4z9ZvdQ4TuwcRnEXj1w1m1RdIvcFWAtrNziAAqnK15eHfQZuQH2TKZDtkjexMxzEZ2y/QLlTL2gSN251Gbu85fdz0r3C+cf3eGbLPlAI+cuzEG+AhxYGw1WHmGFyrNPu+y/7Ks6A/YTtfKC7Rao4WRKuP6E8KXzP6V1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EXILuZAD; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a466a27d30aso330488066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1711137375; x=1711742175; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ceUxvYrzPOvc3uSwb/RCsigp5k0CjOlOqglIw+EfE8A=;
-        b=EXILuZADeZ4q+QOfsh6mIRJsJd4ac0zgIBggXEjzxPalBvMYeEWBagtuObkQrgPJS3
-         TcdnuR0z8ReCv/JY2cN5Q8mLuHu8IeXzxO/Pevy/Q36PAUGocn4lPbRWTvDTDBV/1Qwa
-         yazyB45zfzMPSyo0vudGKw5lU0330DdoarBNo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711137375; x=1711742175;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ceUxvYrzPOvc3uSwb/RCsigp5k0CjOlOqglIw+EfE8A=;
-        b=URtkyQQSlZn2hn/mN1tdx3UH98DtheJCjNDnrMDLKMwmepnf9xdF6O9l8jWID0cA6g
-         l+Vpw7yT0N3kqELbtPDG/Z49HbRW6xFpdoscaTo7HrZ1LHictcE0U3sgVe6lQZoLwfP5
-         gW6gCFdLKf/xOMpSKKYQ/EqxVLmWPskcB0tG+rMEE00ryEYNF5/j7e1fB4+fiAgG/M9u
-         sbgXWnDkpK6K1olWqDyGWSaCDeX9Oz4kmlu75C/zCNJwn0b9Haxz2ot3/f+WjV/dniV9
-         fKoqGcXpRvIEJJmly0rin+Uz2qg7QK1yIrndX0xLVsA3KB6x1B3DGx/UCw5Y2IKh8RIz
-         hEqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWc2tnehp/T6IAByLtqg6s/n+CC/YK0ksJRUeaHADIkEwwYbCIAphnYt2LzEoWcYHDalBKGFcxeVIw+pAiYv8kFjH2a3E3ie850y4Pz
-X-Gm-Message-State: AOJu0YyaEDlIdyFc+FqN2qR2ZW9zdggvLh006W+/HernEY5XaQWnXalu
-	y0VPFA3CjNijZo9lAIVOhiD5KbjlUcxeTTsXehgFGxkHtY9fSOZDtDTFqAuT/Kld9Ph0dVYtVXl
-	VFmI=
-X-Google-Smtp-Source: AGHT+IGtR39jg59/JgMrrG+aCc16szzz74EICxOUVHLdfVlfWDoihQdafPunx3doUUbTn3xDhsPESQ==
-X-Received: by 2002:a17:906:b808:b0:a45:f965:9963 with SMTP id dv8-20020a170906b80800b00a45f9659963mr501999ejb.59.1711137374762;
-        Fri, 22 Mar 2024 12:56:14 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id t26-20020a170906a11a00b00a473792da26sm164715ejy.19.2024.03.22.12.56.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 12:56:13 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a473865ee3aso79709766b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:56:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUyGPrmSUvrOiCzsKKq1IQBk04BOhIAdQr9BayTclCZeCbJ+wZniuAk/nboiDDbfuYNe/GhPxoPEeXhcF1zW6JkGw9fCD5HNEQU5jfQ
-X-Received: by 2002:a17:907:7892:b0:a46:c8d5:84c8 with SMTP id
- ku18-20020a170907789200b00a46c8d584c8mr486369ejc.38.1711137373495; Fri, 22
- Mar 2024 12:56:13 -0700 (PDT)
+	s=arc-20240116; t=1711138557; c=relaxed/simple;
+	bh=HwkJQSGxRgGjbePLX2h1Rv1MHm0zl/nPYHxGd9cCXrc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ijaWBwuPjc6uQX8ioSjDmvkCVSmnjttrjRDAwi90Q6qWzPLgPpFXK2EzdWEyUIKjLeLM35kShuyNu6zqew1jMD6jm9jgGMaAW1ac9jO9rxPmaiFArb27nRgLtJ8XgvngYI6E29y6w32gYC6GrGF41h3y1HYKzrntARDJPl8TPyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=NB3wWpxT; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id EA364100002;
+	Fri, 22 Mar 2024 23:00:21 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1711137622; bh=UW+aPfVPIjEjrOCStLiM6dlN4mJg5sptGWy0tcnbKZI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=NB3wWpxTF4d/KUpLvkSFY/s+u8EQ1saR6XBeCuueL05MLbMbMofRcl03RoZdkQfDo
+	 2wbdV72wLQWY3+BPB7RqbcjDqCHu+aitHSx6xM91tMMzK4z7JKNWa4zxOmwUFTyISe
+	 6dI2ArylH/q39So2MBd2RP6XKxv403HGXdjp0CKabNXnvPlLTo2pl3Qj66uGHMo/YZ
+	 eJ/35zpecSY9y0RADecC98W5mFHvLEHAssCMtTh8rXIX5Vdehv6bGqRw77cneFgv6B
+	 j/BV4bOHiZ8AWAQmZQ3TYNBjRlf7pyh31e2w6m5N3nHl5gfaIpRELjf8R2iZwoEQUL
+	 ffEwBpSSL/dBA==
+Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Fri, 22 Mar 2024 22:59:05 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 22 Mar
+ 2024 22:58:44 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: "David S. Miller" <davem@davemloft.net>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Kees Cook
+	<keescook@chromium.org>, Justin Stitt <justinstitt@google.com>, Felix
+ Manlunas <felix.manlunas@cavium.com>, Satanand Burla
+	<satananda.burla@cavium.com>, Raghu Vatsavayi <raghu.vatsavayi@cavium.com>,
+	Vijaya Mohan Guvva <vijaya.guvva@cavium.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH net v2] liquidio: Fix potential null pointer dereference
+Date: Fri, 22 Mar 2024 22:57:44 +0300
+Message-ID: <20240322195744.9050-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3b789eacddd6265921be9da6e15257908f29b186.camel@HansenPartnership.com>
-In-Reply-To: <3b789eacddd6265921be9da6e15257908f29b186.camel@HansenPartnership.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 22 Mar 2024 12:55:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg9pvT5YEo_kGo2QGjbC-eRaaQNOZuJYCsM1zaxj+rnug@mail.gmail.com>
-Message-ID: <CAHk-=wg9pvT5YEo_kGo2QGjbC-eRaaQNOZuJYCsM1zaxj+rnug@mail.gmail.com>
-Subject: Re: [GIT PULL] SCSI postmerge updates for the 6.8+ merge window
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184367 [Mar 22 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t-argos.ru:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/22 19:47:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/22 14:30:00 #24353062
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Fri, 22 Mar 2024 at 12:12, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> Eleven patches that are based on the rw_hint branch of the vfs tree
-> which contained the base block and fs changes needed to support this.
-> 8 patches are in the debug driver and 3 in the core.
+In lio_vf_rep_copy_packet() pg_info->page is compared to a NULL value,
+but then it is unconditionally passed to skb_add_rx_frag() which could
+lead to null pointer dereference.
+Fix this bug by moving skb_add_rx_frag() into conditional scope.
 
-Please people - the number of patches involved is entirely immaterial.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-I want my merge messages to say what those patches *do*?
+Fixes: 1f233f327913 ("liquidio: switchdev support for LiquidIO NIC")
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+v2: Fix incorrect 'Fixes' tag format
 
-This whole "how many patches" thing is a disease. It's not even
-remotely interesting. I see the size of the patch in the diffstat, and
-that actually has some meaning in the sense of "how much does this
-pull actually change", whether it's in one patch or a hundred.
+ drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-I have absolutely *zero* idea what the above pull request actually
-asks me to pull.
+diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
+index aa6c0dfb6f1c..e26b4ed33dc8 100644
+--- a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
++++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
+@@ -272,13 +272,12 @@ lio_vf_rep_copy_packet(struct octeon_device *oct,
+ 				pg_info->page_offset;
+ 			memcpy(skb->data, va, MIN_SKB_SIZE);
+ 			skb_put(skb, MIN_SKB_SIZE);
++			skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
++					pg_info->page,
++					pg_info->page_offset + MIN_SKB_SIZE,
++					len - MIN_SKB_SIZE,
++					LIO_RXBUFFER_SZ);
+ 		}
+-
+-		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+-				pg_info->page,
+-				pg_info->page_offset + MIN_SKB_SIZE,
+-				len - MIN_SKB_SIZE,
+-				LIO_RXBUFFER_SZ);
+ 	} else {
+ 		struct octeon_skb_page_info *pg_info =
+ 			((struct octeon_skb_page_info *)(skb->cb));
+-- 
+2.30.2
 
-So I won't.
-
-                Linus
 
