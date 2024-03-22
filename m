@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-111559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32F96886DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C014886DB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE049288569
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:45:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FED31C2306A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6357446441;
-	Fri, 22 Mar 2024 13:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCBE46546;
+	Fri, 22 Mar 2024 13:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UBtIitbV"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2076.outbound.protection.outlook.com [40.107.96.76])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Thg7yh9E"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E686DF4A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05D24AEC3
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114919; cv=fail; b=IRRXVbplBdOJVYQpUgKZyiawbL/Nd+DtXBPbDe4d/XSv7KlqxK+d4LY/3G+WcTTUc7GpIDADyvJKR/y9rITPWB/mVSqwVsMDt91Ujqlzm5OcvvXbQPoOXZr4mQBG2fzsgnG5Ja+PbrMdKgYUU9jHIDizDc+OkEzPI8tiAAnkq88=
+	t=1711114939; cv=fail; b=cTxQ+VEkS9INeY4kemPFDGKs0zQuEa3JA9/KznpwVpPzCGxR7BLrdeDwf8+J35YYXgLIboy9yGbZgolr+l2cBAqAxPML25rAI3z5dfE0TmkpsSwdNVGieIU25K4WbkdEH9w7AeVzWwQlXPtI6DiLcVCPCpAHcrIM1goCw3H08C0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114919; c=relaxed/simple;
-	bh=xL0SCJmrq+d98P5fUAV9Ga/yT08pvrOltuBn2j5Ox4M=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JBEUdA82CAAdv2AbyAx0R8YuYoWhbQcyQQ1pRRbogaqm2441LuolMz9ncDAhK8MgfBgqnKmCrbU56hl8YTQqk71vuIDg59YHQBuLfBjTC3EDDHtKgTZmLa78AAzYVthyAMZ0TXmCS/04OEaemfLd9if6iMiLMyTI3KMb1FldHqg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UBtIitbV; arc=fail smtp.client-ip=40.107.96.76
+	s=arc-20240116; t=1711114939; c=relaxed/simple;
+	bh=W1HjeTfyhEaRveDpA9omGl/Lss89PQkvrF0QYtjkslU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=W19WBqkZAKzryzj6w2MObY5SgcHQJrzw1aZOI0KnPuFM5+IyhXuOjYbFXN+ehtINIF4m8QNjPHPvpT6mhwyE9WGgMhSJoqvS8yteDrRwsyehfxTH8tWRyWNPOutKUUfVdy8DzlfbYo909f9+wny97xDAW4RvOcxvAUdHnrNNIKg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Thg7yh9E; arc=fail smtp.client-ip=40.107.236.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OOgfLgIdA234CHZd3MIZTAlObh2Nv5gEkVf0Ti8nmAvk5TdLkVjGSBAfWdsrmpBCO5IWJNfBivq9QeYRr2gWFs6x1jPcerytdccudZlRWk2YrDtHLyzYWt+RIcJR5dNrSvDq+xowKC+B16y8dfDJpZyAs3vZAHGkPM2Ov89v+6omIxzZOjmJwD2xSqHvTOUy+rk/bmSsWnUrhGrrMV01ivyeLdV5RYaHp9tUGPycBLv+xNJ7o9JxBGr8UjHtfR5LdU/US8dbnjhv2sRUvP4oxVYtU9ut3dR7vsIPi/cOo0tYAKV5V6InNgRNGQr3wu9fE/SOGFjxIJlwsmIELtF4qw==
+ b=cIwxtDDmcBUdlSxnU3OFshgcOls3fMT8iY4ce3FFvuBPT7mGWvvptLz2TUBvApg4/GxViuYVBroqQUMJWlpvVDuB7r56FWT3xiy94VJsIu8fth+iiRGadwMdGrYHoxmh2gT5RZtQxZANkbD+XaYeEh8OJFwrZ6O93aftIOC9g9/yvTzJbQ8nh/ffyilt109+UiX6d/14k7V8rM2Vt4yG2sqsIwM6w25Jzg+zyAYZJk7JbAtFJWQA5XzwkjZpfWGMhBlYCmIZ6JZ1EYI8ut/nsDSNtgUDW/iLhRWkOH8wpn/DfEYzCcJfyODXTXL16raAUO1TvyXn+OBowcfTC3Wz9A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JinLGu6fO7JCo3S3EpMhOjKa8gdBuHJRZxKdql5Jgks=;
- b=oGDe9vl/gAxNj9OVSg2ZRAnlZ2Hu8M1634nyuEpZ+nbBXqRMkrRqomva8HMD9bhYUhuXPVVn629fNpssPr+ybZuvTu4ffDuINBXvmN1lTQeZE62HOqU0NxLXaHDNyodzuV9rOmQZixCY5egKAcgvMW6nM1km2qcgL73uIJQi8scvd6k/G+ZTKqsl6hNNUlkFbVn95fPyXdZVWhlu2p7PP0ib40lZjumK1UmG3fo0FaELz+BYy7jCPPpR2rgkLJHQPNObhXwJFapHXzAk8JiQOr1UDAYFDn2K+5BFehUpbJ1n9fXPcDX1NPLtvfHafWE+B7yNjltSsT7Eag94VwTXWg==
+ bh=4yCrqzq9sHOsri1AJVcOxx4bjXkPZ1chVv/ajXAPZHs=;
+ b=I1e1mEPDd12cOlPQ4nAYh2RsZTsZPMZDWctMHdDMsMRcLWdr1dhd27D9PhXjK8nZrYMSO0LSaYWkNgW1KMggu6QWhEMeyU1sNaLl6X0m7lN/A/bQ8MU+Bmo7Q87aI7x4jCqg5kfKCIVOfioBLdFJNR9UB3kXgTYjfpo3clxwWoY/6hNtKKlLCyAqU6fLI8sft60v4c6Bvq/jjDawvYg49bYL5vftDXCgxB4FubA+MpqP1sPRTTEDC22byzKkJSh1QmmZtchdbBrJ4blenf9srcnMKlVnqCx9iS9C8ZsZbzstu2f5YNKCVM9hYpc1mDdIOhNbZjI47nRBTnDkGNGpqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JinLGu6fO7JCo3S3EpMhOjKa8gdBuHJRZxKdql5Jgks=;
- b=UBtIitbVMiSuRGH7ar/SuPjqj1MvyuV97wDHyEE64QtfgfYsuTyOIcFmBI7phTd+IPMdSMWwJvJUjjx1m2cqIa7A/GCz4HOSrPgL27pk3BS/mzHEnscetqX9YfOvfnSPbgCmRzWJmCtrYkllA1UDepx6022Szi3BS3X821EwybU=
-Received: from CH5P221CA0022.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:1f2::23)
- by LV2PR12MB5872.namprd12.prod.outlook.com (2603:10b6:408:173::12) with
+ bh=4yCrqzq9sHOsri1AJVcOxx4bjXkPZ1chVv/ajXAPZHs=;
+ b=Thg7yh9EMtfRoNuUQVq4GsLy0o7ztMDbcf8YV/IjjqJiXucT8C71FIr8ZPB2HUICNy4ptPm8Cwt7FUKrVPL1K2M6ExYHDJHHe9BFN4EYXOM1mZXcbNvDWc67rrwwUxHpWQDTuLxMrp76321gXtwP8JLjnhGAwtDAg7EOo2POitY=
+Received: from CH5P221CA0023.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:1f2::25)
+ by LV2PR12MB5797.namprd12.prod.outlook.com (2603:10b6:408:17b::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Fri, 22 Mar
- 2024 13:41:55 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
+ 2024 13:42:14 +0000
 Received: from DS2PEPF00003440.namprd02.prod.outlook.com
- (2603:10b6:610:1f2:cafe::f2) by CH5P221CA0022.outlook.office365.com
- (2603:10b6:610:1f2::23) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10b6:610:1f2:cafe::b) by CH5P221CA0023.outlook.office365.com
+ (2603:10b6:610:1f2::25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Fri, 22 Mar 2024 13:41:55 +0000
+ Transport; Fri, 22 Mar 2024 13:42:13 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -63,11 +64,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 13:41:54 +0000
+ 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 13:42:13 +0000
 Received: from BLR-L-RKODSARA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 22 Mar
- 2024 08:41:49 -0500
+ 2024 08:42:05 -0500
 From: Raghavendra K T <raghavendra.kt@amd.com>
 To: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
 CC: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
@@ -76,10 +77,12 @@ CC: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	<juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
 	Bharata B Rao <bharata@amd.com>, Johannes Weiner <jweiner@fb.com>, "kernel
  test robot" <oliver.sang@intel.com>, Raghavendra K T <raghavendra.kt@amd.com>
-Subject: [RFC PATCH] A Summary of VMA scanning improvements explored
-Date: Fri, 22 Mar 2024 19:11:11 +0530
-Message-ID: <cover.1710829750.git.raghavendra.kt@amd.com>
+Subject: [RFC PATCH 1 1/1] sched/numa: Hot VMA and shared VMA optimization
+Date: Fri, 22 Mar 2024 19:11:12 +0530
+Message-ID: <88d16815ef4cc2b6c08b4bb713b25421b5589bc7.1710829750.git.raghavendra.kt@amd.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1710829750.git.raghavendra.kt@amd.com>
+References: <cover.1710829750.git.raghavendra.kt@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,125 +95,200 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|LV2PR12MB5872:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c3b7de0-ae25-4f23-d1dd-08dc4a75d65e
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|LV2PR12MB5797:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a25b20d-b470-4229-5cfa-08dc4a75e1b4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	NSEUnjgjz+HQG1JC/eje6py72dRUyXDAJrbiBn2TCg1Al8CezMY01XegXuvHzxNypkSKZdoSeoMycxBGoCKRghzY+UlvC95xVBrQsztXx/fqy+PA6q7yFP+NHF4+JNMnqJskCqdR2rX2qHVrLqNEqnr6ImjQh9kmVl/+ux4MekKiVuL/CP7oId9n68DTBx127CwkC5YcaOvq/P+s33YCqMduW2LagAoBm79PoywG9lNtu0mo8rHakRgosQsA3zIFVOZI3WxNWquF1KVWzTpOX76HmJNHYvXqFnDeStaWYJRUIv0oKtPm9t8xxWJNOCFervh0uof0FR2mqx5ULprzTVwL3KxJvPPrPCWdqdwKRySI/OtyjOH+48JuGEptYJufdYMnuZxbPbz6MG09K+VGYmK99o/vE7g6cIwqklu0wGLP2es51FTgKi350QJ3DEfYcdoySb7LzS31nHfa87HBN8c4IDZyrrO+rv1R0o8s/rqrL0HQWAWSRgwtVF7pvMJdGWguAMn5njfgZYio7cYeQ2W6ctzrb3AuscZF3jxX+Vct3SozjpXfqvuaRSNIe2F4OI2+rUvFIoq1S6N3OwOI9ojBjUlIGirwCJ0NjfkGDsIjrRanIJpTgG1I72yhgXKoGKPnpQJavhDr6h+m+957V/IxvE25IFTdM7FRxxRdcroYihJ2Rex9Hdy1g9ZTrEIn17/ZUSQPCDOfR2S2lltNyfB7hLL80UehT3gXTsnJ+c2aJhPGJZlhg86CI+Qqyd9f
+	8Of+hS44OpIixN9Re06fwROfSf+A0Tt4VCvWKCrlv9rXrGDZbuB4JMBVRnJM59VYfyrVH4X3UaG1XV1mddgJuBnDO7UaC/8ZpLdSoJoh/zfYV0f+e8gq/kVz01vdPNRLMs8pKQDcy3eA12homIcMGQ2TyKM4m/SSlnIn8+7fs4SBvuesrGpRb7Bz4x1CpTv0NKTlWUbDydc49ljjiAlDxfqPA3fgz+3oKhWgkJ0KQijJagRJuyTLKfYSJxFObWKYiLZ4SD3uXYAPlLgluIpxh7i4Uzc4MIshq8aSwcfIhN0UQGIqKh4TH2uUfFnlPsQGP/A5ltOEIkHkuE1GCMsEaYg28mzDmWoGcpl6S7uXjE4svIL/q8NTw37vcXfSXdoZ6vAIDX7mlFLiS3Og1h7eC2vUA1j4Q4yyFQZsJa1k9WE/q9Gpe8CaGRGsP78cRBDqe2nxWCTVvtrul1N7c6K11eGFQVlUpHAQIRipAgiYhhooWXDcoePA/BZkAPHmoIfOwwgURKygRk6z2EOLZc7Jyy5hZrxaWQBE57cA7805JpEVrZvA0t1O2xTj6pOLPrfzP+aojgLSXuVP7L2kUscvnZUm3X8LKkmlnK72oOPwAu7Fl/jSlJ2mME/yVRl1hFszAlCtJZkjynIfI70Hxgr1yfzYzhp0bOcMySmVT9AcgxR1TgmLlcxOhVgi3lLGrIJJr3X33NnvRhXU5Py7JRGtEuNnP4H2bXpsjaaFz4NiXF2HXtc8O3sU5bnSvv3PSQ/u
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015)(7416005)(82310400014);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(376005)(7416005)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 13:41:54.5122
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 13:42:13.4809
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c3b7de0-ae25-4f23-d1dd-08dc4a75d65e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a25b20d-b470-4229-5cfa-08dc4a75e1b4
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	DS2PEPF00003440.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5872
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5797
 
-I am posting the summary of numa balancing improvements tried out.
+Optimizations are based on history of PIDs accessing VMA.
 
-(Intention is RFC and revisiting these in future when some one
-sees potential benefits with PATCH1 and PATCH2).
+- Increase tasks' access history windows (PeterZ) from 2 to 4.
+( This patch is from Peter Zijlstra <peterz@infradead.org>)
 
-PATCH3 has more potential for workloads that needs aggressive scanning
-but may need migration ratelimiting.
+Idea: A task is allowed to scan a VMA if:
+- VMA was very recently accessed as indicated by the latest
+  access PIDs information (hot VMA).
+- VMA is shared by more than 2 tasks. Here whole history of VMA's
+access PIDs is considered using bitmap_weight().
 
-Pathset details:
-==================
-PATCH 1. Increase the number of access PID (information of tasks accessing
-VMA) history windows from 2 to 4
-
-Based on PeterZ's suggestion/patch.
-Rationale:
-- Increases the depth of historical access of tasks
-- Get a better view of hot VMAs
-- Get a better view of VMA which are widely shared amongst tasks
-with that we can take better decision in choosing the VMAs that needs to
-be scanned for introducing PROT_NONE.
-
-PATCH 2. Increase the number of bit used to map tasks accessing VMA from 64 to 128bit
-
-Based on suggestion by Ingo
-Rationale:
-Decrease the number of collisions (false positive), while whole information still
-fits in a cacheline
-
-This is potentially helpful when workload involve more threads and thus,
-- unnecessarily do VMA scan.
-- create contention in scan path.
-
-PATCH 3. Change the notion of scanning 256MB limit per scan to 64k PTE scan (for 4k).
-Extend the same logic to hugepages / THP pages.
-
-Based on suggestion by Mel
-
-Rationale: This helps to cover more memory especially when THP is involved or
-a hugepage is involved.
-
-PS: Please note all 3 are independent patches. Apologies in advance if patchset
-confuses any patching script. Also more comment/details will be added
-for patches of interest.
-
-Summary of results:
-==================
-PATCH1 and PATCH2 are giving benefit in some cases I ran but they may still need
-more convincing usecase / results (as on 6.9+ kernel).
-
-PATCH3:
-Some benchmarks such as XSBench Hashjoin are benefiting from more scanning
-But microbenchmarks (such as allocate on one node fault from other node to
-see how  fast migration happen), suffer because of aggressive migration overhead.
-
-Overall if we combine ratelimiting of migration (similar to CXL) or tune the
-scan rate when it is not necessary to scan (for e.g., I still see VMA scanning
-does not slow even when rate of migration slowed down or all migrations completed.)
-
-Change stat for each of the patches
-======================
-PATCH 1:
-
-Raghavendra K T (1):
-  sched/numa: Hot VMA and shared VMA optimization
+Signed-off-by: Raghavendra K T <raghavendra.kt@amd.com>
+---
+I will split the patset and post if we find this pathset useful
+going further. First patch is from PeterZ.
 
  include/linux/mm.h       | 12 ++++++---
  include/linux/mm_types.h | 11 +++++---
  kernel/sched/fair.c      | 58 ++++++++++++++++++++++++++++++++++++----
  3 files changed, 69 insertions(+), 12 deletions(-)
 
-base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
-============================
-PATCH 2:
-
-Raghavendra K T (1):
-  sched/numa: Increase the VMA accessing PID bits
-
- include/linux/mm.h       | 29 ++++++++++++++++++++++++++---
- include/linux/mm_types.h |  7 ++++++-
- kernel/sched/fair.c      | 21 ++++++++++++++++-----
- 3 files changed, 48 insertions(+), 9 deletions(-)
-
-base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
-===========================
-PATCH 3:
-
-Raghavendra K T (1):
-  sched/numa: Convert 256MB VMA scan limit notion
-
- include/linux/hugetlb.h |  3 +-
- include/linux/mm.h      | 16 +++++++-
- kernel/sched/fair.c     | 15 ++++---
- mm/hugetlb.c            |  9 +++++
- mm/mempolicy.c          | 11 +++++-
- mm/mprotect.c           | 87 +++++++++++++++++++++++++++++++++--------
- 6 files changed, 115 insertions(+), 26 deletions(-)
-
-base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f5a97dec5169..1bf1df064b60 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1744,10 +1744,14 @@ static inline int folio_xchg_access_time(struct folio *folio, int time)
+ static inline void vma_set_access_pid_bit(struct vm_area_struct *vma)
+ {
+ 	unsigned int pid_bit;
+-
+-	pid_bit = hash_32(current->pid, ilog2(BITS_PER_LONG));
+-	if (vma->numab_state && !test_bit(pid_bit, &vma->numab_state->pids_active[1])) {
+-		__set_bit(pid_bit, &vma->numab_state->pids_active[1]);
++	unsigned long *pids, pid_idx;
++
++	if (vma->numab_state) {
++		pid_bit = hash_32(current->pid, ilog2(BITS_PER_LONG));
++		pid_idx = READ_ONCE(vma->numab_state->pids_active_idx);
++		pids = vma->numab_state->pids_active + pid_idx;
++		if (!test_bit(pid_bit, pids))
++			__set_bit(pid_bit, pids);
+ 	}
+ }
+ #else /* !CONFIG_NUMA_BALANCING */
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 8b611e13153e..050ceef1e9d5 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -574,6 +574,7 @@ struct vma_lock {
+ 	struct rw_semaphore lock;
+ };
+ 
++#define NR_ACCESS_PID_HIST	4
+ struct vma_numab_state {
+ 	/*
+ 	 * Initialised as time in 'jiffies' after which VMA
+@@ -588,17 +589,21 @@ struct vma_numab_state {
+ 	 */
+ 	unsigned long pids_active_reset;
+ 
++	/* Points to current active PID tracking index. */
++	unsigned long pids_active_idx;
++
+ 	/*
+ 	 * Approximate tracking of PIDs that trapped a NUMA hinting
+ 	 * fault. May produce false positives due to hash collisions.
+ 	 *
+-	 *   [0] Previous PID tracking
+-	 *   [1] Current PID tracking
++	 *   [pids_active_idx - 1] Previous PID tracking
++	 *   [pids_active_idx] Current PID tracking
+ 	 *
++	 * Whole array is used in a rotating manner to track latest PIDs.
+ 	 * Window moves after next_pid_reset has expired approximately
+ 	 * every VMA_PID_RESET_PERIOD jiffies:
+ 	 */
+-	unsigned long pids_active[2];
++	unsigned long pids_active[NR_ACCESS_PID_HIST];
+ 
+ 	/* MM scan sequence ID when scan first started after VMA creation */
+ 	int start_scan_seq;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6a16129f9a5c..ed329b2f4d53 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3157,9 +3157,44 @@ static void reset_ptenuma_scan(struct task_struct *p)
+ 	p->mm->numa_scan_offset = 0;
+ }
+ 
++static inline bool vma_test_access_pid_history(struct vm_area_struct *vma)
++{
++	unsigned int i, pid_bit;
++	unsigned long pids = 0;
++
++	pid_bit = hash_32(current->pid, ilog2(BITS_PER_LONG));
++
++	for (i = 0; i < NR_ACCESS_PID_HIST; i++)
++		pids  |= vma->numab_state->pids_active[i];
++
++	return test_bit(pid_bit, &pids);
++}
++
++static inline bool vma_accessed_recent(struct vm_area_struct *vma)
++{
++	unsigned long *pids, pid_idx;
++
++	pid_idx = vma->numab_state->pids_active_idx;
++	pids = vma->numab_state->pids_active + pid_idx;
++
++	return (bitmap_weight(pids, BITS_PER_LONG) >= 1);
++}
++
++#define SHARED_VMA_THRESH	3
++
++static inline bool vma_shared_access(struct vm_area_struct *vma)
++{
++	int i;
++	unsigned long pids = 0;
++
++	for (i = 0; i < NR_ACCESS_PID_HIST; i++)
++		pids  |= vma->numab_state->pids_active[i];
++
++	return (bitmap_weight(&pids, BITS_PER_LONG) >= SHARED_VMA_THRESH);
++}
++
+ static bool vma_is_accessed(struct mm_struct *mm, struct vm_area_struct *vma)
+ {
+-	unsigned long pids;
+ 	/*
+ 	 * Allow unconditional access first two times, so that all the (pages)
+ 	 * of VMAs get prot_none fault introduced irrespective of accesses.
+@@ -3169,8 +3204,16 @@ static bool vma_is_accessed(struct mm_struct *mm, struct vm_area_struct *vma)
+ 	if ((READ_ONCE(current->mm->numa_scan_seq) - vma->numab_state->start_scan_seq) < 2)
+ 		return true;
+ 
+-	pids = vma->numab_state->pids_active[0] | vma->numab_state->pids_active[1];
+-	if (test_bit(hash_32(current->pid, ilog2(BITS_PER_LONG)), &pids))
++	/* Check if the current task had historically accessed VMA. */
++	if (vma_test_access_pid_history(vma))
++		return true;
++
++	/* Check at least one task had accessed VMA recently. */
++	if (vma_accessed_recent(vma))
++		return true;
++
++	/* Check if VMA is shared by many tasks. */
++	if (vma_shared_access(vma))
+ 		return true;
+ 
+ 	/*
+@@ -3202,6 +3245,7 @@ static void task_numa_work(struct callback_head *work)
+ 	unsigned long nr_pte_updates = 0;
+ 	long pages, virtpages;
+ 	struct vma_iterator vmi;
++	unsigned long pid_idx;
+ 	bool vma_pids_skipped;
+ 	bool vma_pids_forced = false;
+ 
+@@ -3341,8 +3385,12 @@ static void task_numa_work(struct callback_head *work)
+ 				time_after(jiffies, vma->numab_state->pids_active_reset)) {
+ 			vma->numab_state->pids_active_reset = vma->numab_state->pids_active_reset +
+ 				msecs_to_jiffies(VMA_PID_RESET_PERIOD);
+-			vma->numab_state->pids_active[0] = READ_ONCE(vma->numab_state->pids_active[1]);
+-			vma->numab_state->pids_active[1] = 0;
++
++			pid_idx = vma->numab_state->pids_active_idx;
++			pid_idx = (pid_idx + 1) % NR_ACCESS_PID_HIST;
++
++			vma->numab_state->pids_active_idx = pid_idx;
++			vma->numab_state->pids_active[pid_idx] = 0;
+ 		}
+ 
+ 		/* Do not rescan VMAs twice within the same sequence. */
 -- 
 2.34.1
 
