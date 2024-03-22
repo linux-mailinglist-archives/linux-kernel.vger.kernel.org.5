@@ -1,120 +1,232 @@
-Return-Path: <linux-kernel+bounces-111109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A81886805
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:14:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748BF886808
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094EC1F251C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:14:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29DFC287B5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04E2171A6;
-	Fri, 22 Mar 2024 08:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3FD171AC;
+	Fri, 22 Mar 2024 08:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="PFgdmLpd"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RTLgMdpM"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E5011CB0
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C99715EB0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711095240; cv=none; b=TMCqThvlv2h/f63ULZccLq/p4mgBC7oMvU9rnJq6oEV9zuEYEpfGzuC6/FRyHGYlfr0Gl8P/4LNvpzbeuRf6qYEbXD4lOX8u4Z1fSgAdG25anjvoGV33jHL5+ObRdu1BzGuaacO2r0d0def9LiPnJ3aIPeYN/HDM/60rjoEsFOQ=
+	t=1711095273; cv=none; b=YrXHiRzy4CfyNtlM2sPg4RJ6TqGK1cpuXwoOUnIz0aIE+cX+iRkJseTHYFSlB+4yiBqshwY8FE1sn3A1R0Tg8g5iMm7fGrll690ohAw+ulPslBsIzNHkr3VJPwfhcton7KmCO2s9BzpG5eU8pA0zoe5MFt8YQCGJPvnSCqTT18g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711095240; c=relaxed/simple;
-	bh=WfjmEuuKCN3xsHqH7dLGCnA6wCbMjmd4BRcdgA7BHc8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UHCJh48we0Vx6IRdtcdcVIC514BYDMhvgWW3FfhZ91/VlZPQO2JbiERf8oqHjrNrv9qvdHyTCUTObNK6J7P4H8AfHFYPuEC62Fdkt/89RQgfIl6Suu+fP7DpMMMu+OaEK0BOGX98evKMCLJHVPxli0oJ97UbNk935SB9Dmq95t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=PFgdmLpd; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4141156f245so13309425e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:13:57 -0700 (PDT)
+	s=arc-20240116; t=1711095273; c=relaxed/simple;
+	bh=5NxkKnYnAWqvndvTJC/nAmRPYG/qomKWsy0dEUlGdxk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kGLvxpoROWAQi9ZopMJ5u+TZ1cVHoXd8mAKdHmbAurSO5KZUiAKqxibcXDBfUe96e7qBK9GS0/J5fzkkfBv2NgvUS1zavkS36RuzQAg2ZiJ8f6KKft71n6ChVDpyRUYPcaJrk0K4efpemG77gcF4RD0LvVi5hXWT6TNtzZt6SyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RTLgMdpM; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso2088069a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1711095236; x=1711700036; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iyqAEuiGYY1fZnxN3qvRC88gt7+sHxYQlEaYtT4i3Js=;
-        b=PFgdmLpdjKNc1GW95EyWlOtdvKmNGSxTZKgCkmkyidIBdiXrRmPnX3qzD8pceFRhCy
-         lY1YHXPXDQEFZ0kvQKW27BMeOgAIiCXlNI/o8ikrU6IpyTGNyYLetZVxZ6UdDfbW59o7
-         gcdZgx4eCDWFJpSYFu7XHFuBL50cjXiEyyrnRiPZercBSYeL3Yu3ARCp/o8/s9jtyy+l
-         QYSIyH4A90/jZwI2i4JicV9JYaRGRNUVwk90S+OvdxmCE1G4NcC+k/LYN1evnZ8x6eIG
-         XseaWpF2t94IM8Qnvet1UIqvYYVDj3SiM+LZ3A33NA8xEg8le8245bo7+WnRCJzPrB6K
-         QZFQ==
+        d=linaro.org; s=google; t=1711095269; x=1711700069; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=1y1OqSeUozXLMg+O0cSRVQLEYNdP2WzjHRZHRLzryiI=;
+        b=RTLgMdpMkfPhIRj+XlE8LxKP06JYzuySpvJB5+xCzlre/x0TF/C4CxEY1ZyjWwqHj1
+         E9TDZ6Ht3ZZ+fGAexMI8tmCgMdnm8DVoHGNoWaPytsN8hoqze58yrlSwa0TrMXlgDDqk
+         EhWpQt/ze6aspYJX5ggVtoY1twlpXGB8sr0ZN30fLlOA9nOJbZEhy6wUSoNYWnErYCA8
+         4Tq7pOJnR200OkVPkKyN6jjypmsv/MRWhSqCGPlEXyrIk5AOHNXJ3mXDHjuaV+mzCGgv
+         IKfZALmOlcsI43icUk2za/in0PLldCAfxmqoWT7AhaGc5K14gPtqDwNhv65pm+j1QiYI
+         CvUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711095236; x=1711700036;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1711095269; x=1711700069;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iyqAEuiGYY1fZnxN3qvRC88gt7+sHxYQlEaYtT4i3Js=;
-        b=iIph7hl+L8kOZ+6gCEY5DLuGINwYOhq/Z8Bwh6ix3PO5SqtPB/GVquytpcDvQd/2RR
-         hS6RZGIsORa9CUOuMZ7yN1suF6bEYZXnWh/ti6HVQYGjJ7AdbDqOA27TorA7Sq8djvTY
-         Zy6Di6mdixeIReQAXV3EtCjLfl3kqqGmeX/2ZOGLMpvayTSUuONSIGeRV8TcQLiUMNk8
-         o4X0A8emQ8A3MAMe0c9GeBT1r70kkEZQWMAmu6Tlr9mcq4AAlxo8GBRJ/rXW1Lk3MzEr
-         Ihp7SgUjWkv0xRZDDIrTVSGZ7x9UUE8LHWnczf2zHF6k9Nj8huiqscYyzCitaSzIh3oz
-         Xb3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVQbzPAOFAId1WFa+/vS2olHHdyqaAdOqF3lkrBSuxLmdTNHgK5o7u2VGxWDmRGOAtz0lQ3peIr0U8a7ydyQ+MfxxQ3e5d8rXJ1BmqO
-X-Gm-Message-State: AOJu0YzSZGCYQtaJSe0KjJnnsDddq++RUvrvIbuiplchrYdYdg5I2+nH
-	wfRYNh9l3u3oG2NXFCRHl8bd650pJ4GkvLLrcML5CpGMUB9ViXysXF+rDeZEl7Q=
-X-Google-Smtp-Source: AGHT+IFCo8RGcn/AtPX28oGcoH6zEjuFTQbeGnBIiBNB2w0Mnp2lXH+BhehggEZzTuZOoRjtsaaXtQ==
-X-Received: by 2002:a05:600c:3b92:b0:414:63c2:8041 with SMTP id n18-20020a05600c3b9200b0041463c28041mr1084209wms.32.1711095236275;
-        Fri, 22 Mar 2024 01:13:56 -0700 (PDT)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id t18-20020a05600c199200b00414612a43a9sm8068942wmq.28.2024.03.22.01.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 01:13:55 -0700 (PDT)
-Date: Fri, 22 Mar 2024 09:13:53 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: gaoxingwang <gaoxingwang1@huawei.com>
-Cc: mkubecek@suse.cz, idosch@nvidia.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yanan@huawei.com, liaichun@huawei.com
-Subject: Re: [PATCH] netlink: fix typo
-Message-ID: <Zf09wW36JcpObTPC@nanopsycho>
-References: <20240322072456.1251387-1-gaoxingwang1@huawei.com>
+        bh=1y1OqSeUozXLMg+O0cSRVQLEYNdP2WzjHRZHRLzryiI=;
+        b=sZkaYEX69zcsQe69e+0aw02dAl02t+UlWBUyA0lGmxTyv4A79plEoYc5kJQLpay5gF
+         8rqlE5OLgnG4sR0SAN8fbagXOq1Wauuics539yd4I421SVcylHNh6JEMNQAEsBLLUWR2
+         OZ0x+xfOUfcyvag87rEOrYP9lzR7BrMM6mseFpWq0EiUWJ+Cr7M1KuVGLGYNN9bexJYJ
+         /bI4ZcxMJzLp0x3ZRvbDsEYnIBm4zoNB585Jj1PZo2U/lMoGPdYMODHGzXB2dKLOatxK
+         /H7RV9qHsUXrBotEXqUTxh+RtcCxiC1hGYDloglilfbPTQYzuq9KX4f1hy8v3JE8Ov7g
+         lQFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVku9NwnU4YjHW9DyiZkhvMlINMkkV10BMAdAuiOGncAKW+Fb7vU6NZpQ+7SF3Zf1uEWf3TxpG0zcldlxTxuj7mNCxWFiJpK02tutRu
+X-Gm-Message-State: AOJu0YxTiOkhY9h5BIQJgI2l+d0CXGTJAX0gimjb1MNEi5RC0R5mUrsr
+	8b5UEcgSq0d1Nzr7kMZ1JoLuXU/KpgnacJ0ZysYRRgaAVNH487vqyRp5XP/dalQ=
+X-Google-Smtp-Source: AGHT+IGRU2rKWq35IInj0tVhgizzHHrbNaYzErazl8QGFTy+6FNmiP3W5lm6WU2QhG9W+vt5XQ4D9g==
+X-Received: by 2002:a50:951d:0:b0:569:a0ea:9f42 with SMTP id u29-20020a50951d000000b00569a0ea9f42mr937991eda.41.1711095269377;
+        Fri, 22 Mar 2024 01:14:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id g24-20020a056402181800b00568a1ce4562sm750145edy.25.2024.03.22.01.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 01:14:28 -0700 (PDT)
+Message-ID: <a1b173c0-5120-40f6-9708-cd810b4a2406@linaro.org>
+Date: Fri, 22 Mar 2024 09:14:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322072456.1251387-1-gaoxingwang1@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: nxp,imx93-adc.yaml: Add
+ calibration properties
+To: Andrej Picej <andrej.picej@norik.com>, haibo.chen@nxp.com,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc: jic23@kernel.org, lars@metafoo.de, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ upstream@lists.phytec.de
+References: <20240320100407.1639082-1-andrej.picej@norik.com>
+ <20240320100407.1639082-3-andrej.picej@norik.com>
+ <38637621-1611-4268-ae79-7ac93a72c5ee@linaro.org>
+ <e994b756-7f4e-4be3-b8f3-310988174b44@norik.com>
+ <7e58bf96-3c38-467f-86b6-06ff5feedb31@linaro.org>
+ <40e08a5e-e7e9-47c7-9102-24a2bbba67cf@norik.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <40e08a5e-e7e9-47c7-9102-24a2bbba67cf@norik.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fri, Mar 22, 2024 at 08:24:56AM CET, gaoxingwang1@huawei.com wrote:
->Add missing colon in coalesce_reply_cb
->
->Fixes: ec573f209d (netlink: settings: add netlink support for coalesce tx aggr params)
->Signed-off-by: gaoxingwang <gaoxingwang1@huawei.com>
->
->Signed-off-by: gaoxingwang <gaoxingwang1@huawei.com>
->---
-> netlink/coalesce.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/netlink/coalesce.c b/netlink/coalesce.c
->index bc34d3d..bb93f9b 100644
->--- a/netlink/coalesce.c
->+++ b/netlink/coalesce.c
-
-Please make clear indication which project/tree you target with your
-patch by putting appropriate name in the [patch NAME] brackets
-
-
-
->@@ -93,7 +93,7 @@ int coalesce_reply_cb(const struct nlmsghdr *nlhdr, void *data)
-> 		 tb[ETHTOOL_A_COALESCE_TX_AGGR_MAX_BYTES]);
-> 	show_u32("tx-aggr-max-frames", "tx-aggr-max-frames:\t",
-> 		 tb[ETHTOOL_A_COALESCE_TX_AGGR_MAX_FRAMES]);
->-	show_u32("tx-aggr-time-usecs", "tx-aggr-time-usecs\t",
->+	show_u32("tx-aggr-time-usecs", "tx-aggr-time-usecs:\t",
-> 		 tb[ETHTOOL_A_COALESCE_TX_AGGR_TIME_USECS]);
-> 	show_cr();
+On 22/03/2024 08:39, Andrej Picej wrote:
+> On 20. 03. 24 13:15, Krzysztof Kozlowski wrote:
+>> On 20/03/2024 13:05, Andrej Picej wrote:
+>>> Hi Krzysztof,
+>>>
+>>> On 20. 03. 24 11:26, Krzysztof Kozlowski wrote:
+>>>> On 20/03/2024 11:04, Andrej Picej wrote:
+>>>>> Document calibration properties and how to set them.
+>>>>
+>>>> Bindings are before users.
+>>>
+>>> will change patch order when I send a v2.
+>>>
+>>>>
+>>>> Please use subject prefixes matching the subsystem. You can get them for
+>>>> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+>>>> your patch is touching.
+>>>> There is no file extension in prefixes.
+>>>
+>>> So: dt-bindings: iio/adc: nxp,imx93-adc: Add calibration properties?
+>>
+>> Did you run the command I proposed? I don't see much of "/", but except
+>> that looks good.
 > 
->-- 
->2.27.0
->
->
+> Ok noted.
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
+>>>>> ---
+>>>>>    .../bindings/iio/adc/nxp,imx93-adc.yaml           | 15 +++++++++++++++
+>>>>>    1 file changed, 15 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>> index dacc526dc695..64958be62a6a 100644
+>>>>> --- a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>> @@ -46,6 +46,21 @@ properties:
+>>>>>      "#io-channel-cells":
+>>>>>        const: 1
+>>>>>    
+>>>>> +  nxp,calib-avg-en:
+>>>>> +    description:
+>>>>> +      Enable or disable averaging of calibration time.
+>>>>> +    enum: [ 0, 1 ]
+>>>>> +
+>>>>> +  nxp,calib-nr-samples:
+>>>>> +    description:
+>>>>> +      Selects the number of averaging samples to be used during calibration.
+>>>>> +    enum: [ 16, 32, 128, 512 ]
+>>>>> +
+>>>>> +  nxp,calib-t-samples:
+>>>>> +    description:
+>>>>> +      Specifies the sample time of calibration conversions.
+>>>>> +    enum: [ 8, 16, 22, 32 ]
+>>>>
+>>>> No, use existing, generic properties. Open other bindings for this.
+>>>
+>>> You mean I should use generic properties for the ADC calibration
+>>> settings? Is there already something in place? Because as I understand
+>>> it, these calib-* values only effect the calibration process of the ADC.
+>>
+>> Please take a look at other devices and dtschema. We already have some
+>> properties for this... but maybe they cannot be used?
+>>
+> 
+> I did look into other ADC devices, grep across iio/adc, adc bindings 
+> folders and couldn't find anything closely related to what we are 
+> looking for. Could you please point me to the properties that you think 
+> should be used for this?
+
+Indeed, there are few device specific like qcom,avg-samples. We have
+though oversampling-ratio, settling-time-us and min-sample-time (which
+is not that good because does not use unit suffix).
+
+Then follow up questions:
+ - nxp,calib-avg-en: Why is it a board-level decision? I would assume
+this depends on user choice and what kind of input you have (which could
+be board dependent or could be runtime decision).
+ - nxp,calib-t-samples: what does it mean? Time is expressed in time
+units, but there is nothing about units in the property name.
+
+Best regards,
+Krzysztof
+
 
