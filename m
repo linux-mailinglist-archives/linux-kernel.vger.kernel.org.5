@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-111825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567E8887157
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:56:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8ECE887158
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83B161C22237
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:56:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 588E1289050
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A5560DEE;
-	Fri, 22 Mar 2024 16:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A953F60EE4;
+	Fri, 22 Mar 2024 16:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YQsICfS6"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VMaE6ww5"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A08F60889
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA5A60DD7
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126388; cv=none; b=Kz5pOhnZP/LU4kSBwirY+tMqharGxzxo8nEvApkdacIKWYHshXa1AHkxLBX57vdwbtsHujZAHDxJGU5wN8pFpQic5gJUEHi033RpSyK0GSNxbt8CQQJb9kYA5sDpWenrawmchnLr9QhcEoP+3V5UpzbSEVW6DAA0tYq3gDUxyPA=
+	t=1711126390; cv=none; b=kIlTjKYaVORzZuI35fhwxYPTX0S2e5iTGQmNrS3eR7B8GXisUgPQfiI9q2tcwJ55h5NkIet55Pu9lxl4/eLT42sHTXg4sc9ePdacGggYKpe3D0JVwYMF3j59uMuGC/z4BrQWIQJSjMIND5l9Q38gnwEYyX5/www+TmG4VCyHcXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126388; c=relaxed/simple;
-	bh=f3K2IlHly9KsbWiXAM8d/JSq/+g0AfeJL+4wTF0gobQ=;
+	s=arc-20240116; t=1711126390; c=relaxed/simple;
+	bh=w5lRor2gDUTAnKWbRfo5S7pLGPoO+/siZMlAQOcuzkM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K41/yWktMGKhe37QyMeovcK1GBF56zZVv9sbBXZV57KOyxA7nsKkl0ju2VcV7h/mrToEfClxbTP9pyUnh1fLJCt3NBPhrXUN+kdD5qqrOjHQ6MiZxaPfkgqTN7CrFRj1mzqdaTmXe3REukyA7dYsr9oUniF5Y1XwNOIi3K+ZdXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YQsICfS6; arc=none smtp.client-ip=209.85.128.172
+	 MIME-Version; b=FgUdURZcRdWAxWiJqAwYYXDDwJu9Bvi7yx9nG51pDlhChMVEosFATwGfxKa6+M3VUKHkc5GncwbSGwqT3RsrrOQ8Qpo1ZZAIrXsstT9bdFsaGI6rVeZYFh7LpcnbIrezx3CCFoI46vfdqdAegjovlvulfsUVvEo4AUPCQ07WVJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VMaE6ww5; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-609fc742044so24997397b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:53:07 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-789e83637e0so148243185a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711126386; x=1711731186; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711126387; x=1711731187; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ClIpZptlCct6LbR2ubvvxFMAK2t5s49KsuXa2pT/TK4=;
-        b=YQsICfS6uoyoCLCHgD1KTPJn7JfcM0R1ddPc4PztS5uPjLoVUnXnnj4NSCUb1TpFrk
-         l7hf4gP04/ENo/uByyRcGjmvhL0t3gAtnXcOgtEJp2Go6j6UMJPLhJcnZwa1BiRBChq/
-         lb3At7E23lcPk2/bjg4L7aizG0a4dy7lSOM0yIOjWBKqQIudq+tJy7WRCx/c9lN3uXIp
-         NIBKGctnyaS1qr9r6zWgwZRAAPF8cvHzpnXO2RkW8L6zS6SxGhJjj8jrtosxy8hP50HN
-         9ji3mPskhvjpLkTb1408TQ/HP8RXMyXFrstrpwgX6C930OoaHF3cnidXpIi27WL5OP9e
-         oqmQ==
+        bh=9enSTXYKk4Zrvj4rfHNHKtmAkQZHAnQu5tvlI07i35w=;
+        b=VMaE6ww5qId5pi8MhC+CK5vYO+NtcWjIRoQyF2uWaKcJDLgkEDFg8BqjVkJ3avo527
+         ewE87W+PAz+3F+nykIEqfQNnikh2h7pyh4SZ814EvUz8dHtCkkIG16r9ppxKBcW43dlh
+         YGmtBh6iDy/RLQWXzxy9tYaS/QWXfDS0QU3k3xEoe/zqTn0JQhkT9pHxAA4ahhOBU93e
+         z/inmex5SbdAe8971+TGh6+TV7AlyvzTac57Qeomwic5md2ChW+KONrPD8hvSzQt+Zjp
+         OVRp5Xx7eZsnvJYH9ESpDyo6/7uUUW7cxk46wHM9IBYeLhr6/WM9X2K8B6ymacxHy6Ui
+         bVnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126386; x=1711731186;
+        d=1e100.net; s=20230601; t=1711126387; x=1711731187;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ClIpZptlCct6LbR2ubvvxFMAK2t5s49KsuXa2pT/TK4=;
-        b=oDn20bviXhFm5ZKN8rQYKCYMyhfD+VWQ/ppUBiC5uWur8Z2iabm86b+uiGZbRDEsVh
-         +6uOqxLFtP18Ur5952ZkyGHFOQLEKuuea9YmDoYNampx8jpQ0Te/kqWF79xxPLQ2C6tO
-         uK7aW83+O5ANH+u6khplPHIHrjllZ55Kw0t3RDvbqG/SMNPsl81338mY1gn3Jty0oSjX
-         7mqz/YaivNGVhyALQZgnLijsdlgP5VZkb3prvOmKrJry+acOnaVjcJTja7wl1OoePcVM
-         mXJroGVReQfUT5mJsW5VgGGiL5Xk/XNJEpXQQ+Zp+9N3HSI2DNSjVQXRquXR6tcKxLep
-         y0Jg==
-X-Gm-Message-State: AOJu0YyJKW6JRC+OOPYZDxgBJbSNFjdyWosylHHnPxg3NbC93EG+MxEX
-	yO0kPwERSjX5GLtValQRHnvgkLAZKSWbfDVqHdZu2tY6gAPsVxYok2y7xyo=
-X-Google-Smtp-Source: AGHT+IGCDYDmlDjwXduTWclfEmLjb0w2VmViDJPb3X5xJ3QOfOsK8VTmisl2+tEDgIwB06jFV9mv3A==
-X-Received: by 2002:a81:910c:0:b0:610:f602:de1d with SMTP id i12-20020a81910c000000b00610f602de1dmr200975ywg.2.1711126386001;
-        Fri, 22 Mar 2024 09:53:06 -0700 (PDT)
+        bh=9enSTXYKk4Zrvj4rfHNHKtmAkQZHAnQu5tvlI07i35w=;
+        b=uome9eq6DPn6JcAx+HNS+izYptUUr6tA9G7Pzk/sXebAHIuPnWw2Lfi5ioiMVGAPyJ
+         +2NmIaZWJw37Xw1vN1wNlSu8+xHtACn8tqnI55LbcdpNERwDSYaBlFsphTOYxwRkWGpo
+         ivmGVLRHhHKtIK0FaOptwdIEOYumIoA+ZutBXPgygfeHZvQTGp8NYl7BAMWuCbE8CwM4
+         nWS8V5fX/XjE1J/R1dbu+/2puxE3YMMk3UXdgsDyn+3gUiqpAoGJZ9xzIzSzB/+cETNH
+         0dOdpeZ0UO9qNKbk/bYNyOOvVzwe/8J9rebPZmvMpEUPAuFTc8HqZfSKgQ43t5uThLQb
+         118A==
+X-Gm-Message-State: AOJu0YySin5AGH/87wiHedFLChh57h74sOLaTJqpRJSZr+3yxG7B7/Gr
+	vYc5QG6uA3oixl8knKWYyvySYxozKJ7iZ4o8AkIeC+28x5fEX0NzTHEfJdM=
+X-Google-Smtp-Source: AGHT+IE77AtBJ2T3L4/FCqCn71Qd678y5r9QRm/DcKAWicsPNMT6z27t7nqp07NFmrz/FP2C2Q4UzQ==
+X-Received: by 2002:a05:620a:8016:b0:78a:40fb:b199 with SMTP id ee22-20020a05620a801600b0078a40fbb199mr1562979qkb.38.1711126387496;
+        Fri, 22 Mar 2024 09:53:07 -0700 (PDT)
 Received: from citadel.lan (2600-6c4a-4d3f-6d5c-0000-0000-0000-1019.inf6.spectrum.com. [2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id j1-20020a37ef01000000b00789e9bbf962sm894901qkk.133.2024.03.22.09.53.04
+        by smtp.gmail.com with ESMTPSA id j1-20020a37ef01000000b00789e9bbf962sm894901qkk.133.2024.03.22.09.53.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 09:53:05 -0700 (PDT)
+        Fri, 22 Mar 2024 09:53:07 -0700 (PDT)
 From: Brian Gerst <brgerst@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	x86@kernel.org
@@ -75,9 +75,9 @@ Cc: Ingo Molnar <mingo@kernel.org>,
 	Uros Bizjak <ubizjak@gmail.com>,
 	David.Laight@aculab.com,
 	Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v4 15/16] percpu: Remove __per_cpu_load
-Date: Fri, 22 Mar 2024 12:52:32 -0400
-Message-ID: <20240322165233.71698-16-brgerst@gmail.com>
+Subject: [PATCH v4 16/16] kallsyms: Remove KALLSYMS_ABSOLUTE_PERCPU
+Date: Fri, 22 Mar 2024 12:52:33 -0400
+Message-ID: <20240322165233.71698-17-brgerst@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240322165233.71698-1-brgerst@gmail.com>
 References: <20240322165233.71698-1-brgerst@gmail.com>
@@ -89,62 +89,255 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-__per_cpu_load is now always equal to __per_cpu_start.
+x86-64 was the only user.
 
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 ---
- include/asm-generic/sections.h    | 2 +-
- include/asm-generic/vmlinux.lds.h | 1 -
- mm/percpu.c                       | 4 ++--
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ init/Kconfig            | 11 +-----
+ kernel/kallsyms.c       | 12 ++-----
+ scripts/kallsyms.c      | 80 ++++++++---------------------------------
+ scripts/link-vmlinux.sh |  4 ---
+ 4 files changed, 18 insertions(+), 89 deletions(-)
 
-diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-index c768de6f19a9..0755bc39b0d8 100644
---- a/include/asm-generic/sections.h
-+++ b/include/asm-generic/sections.h
-@@ -39,7 +39,7 @@ extern char __init_begin[], __init_end[];
- extern char _sinittext[], _einittext[];
- extern char __start_ro_after_init[], __end_ro_after_init[];
- extern char _end[];
--extern char __per_cpu_load[], __per_cpu_start[], __per_cpu_end[];
-+extern char __per_cpu_start[], __per_cpu_end[];
- extern char __kprobes_text_start[], __kprobes_text_end[];
- extern char __entry_text_start[], __entry_text_end[];
- extern char __start_rodata[], __end_rodata[];
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 430b2ed2aa58..a67452ea94d3 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -1052,7 +1052,6 @@
- #define PERCPU_SECTION(cacheline)					\
- 	. = ALIGN(PAGE_SIZE);						\
- 	.data..percpu	: AT(ADDR(.data..percpu) - LOAD_OFFSET) {	\
--		__per_cpu_load = .;					\
- 		PERCPU_INPUT(cacheline)					\
- 	}
+diff --git a/init/Kconfig b/init/Kconfig
+index 0f928f82dc7a..0622599ce503 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1781,11 +1781,6 @@ config KALLSYMS_ALL
  
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 4e11fc1e6def..a584b5a78f72 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -3153,7 +3153,7 @@ int __init pcpu_embed_first_chunk(size_t reserved_size, size_t dyn_size,
- 				continue;
+ 	  Say N unless you really need all symbols, or kernel live patching.
+ 
+-config KALLSYMS_ABSOLUTE_PERCPU
+-	bool
+-	depends on KALLSYMS
+-	default n
+-
+ config KALLSYMS_BASE_RELATIVE
+ 	bool
+ 	depends on KALLSYMS
+@@ -1793,11 +1788,7 @@ config KALLSYMS_BASE_RELATIVE
+ 	help
+ 	  Instead of emitting them as absolute values in the native word size,
+ 	  emit the symbol references in the kallsyms table as 32-bit entries,
+-	  each containing a relative value in the range [base, base + U32_MAX]
+-	  or, when KALLSYMS_ABSOLUTE_PERCPU is in effect, each containing either
+-	  an absolute value in the range [0, S32_MAX] or a relative value in the
+-	  range [base, base + S32_MAX], where base is the lowest relative symbol
+-	  address encountered in the image.
++	  each containing a relative value in the range [base, base + U32_MAX].
+ 
+ 	  On 64-bit builds, this reduces the size of the address table by 50%,
+ 	  but more importantly, it results in entries whose values are build
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 18edd57b5fe8..f4e8e531052a 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -151,16 +151,8 @@ unsigned long kallsyms_sym_address(int idx)
+ 	if (!IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE))
+ 		return kallsyms_addresses[idx];
+ 
+-	/* values are unsigned offsets if --absolute-percpu is not in effect */
+-	if (!IS_ENABLED(CONFIG_KALLSYMS_ABSOLUTE_PERCPU))
+-		return kallsyms_relative_base + (u32)kallsyms_offsets[idx];
+-
+-	/* ...otherwise, positive offsets are absolute values */
+-	if (kallsyms_offsets[idx] >= 0)
+-		return kallsyms_offsets[idx];
+-
+-	/* ...and negative offsets are relative to kallsyms_relative_base - 1 */
+-	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
++	/* values are unsigned offsets */
++	return kallsyms_relative_base + (u32)kallsyms_offsets[idx];
+ }
+ 
+ static void cleanup_symbol_name(char *s)
+diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+index 653b92f6d4c8..501f978abf4b 100644
+--- a/scripts/kallsyms.c
++++ b/scripts/kallsyms.c
+@@ -5,8 +5,8 @@
+  * This software may be used and distributed according to the terms
+  * of the GNU General Public License, incorporated herein by reference.
+  *
+- * Usage: kallsyms [--all-symbols] [--absolute-percpu]
+- *                         [--base-relative] [--lto-clang] in.map > out.S
++ * Usage: kallsyms [--all-symbols] [--base-relative] [--lto-clang]
++ *		   in.map > out.S
+  *
+  *      Table compression uses all the unused char codes on the symbols and
+  *  maps these to the most used substrings (tokens). For instance, it might
+@@ -37,7 +37,6 @@ struct sym_entry {
+ 	unsigned int len;
+ 	unsigned int seq;
+ 	unsigned int start_pos;
+-	unsigned int percpu_absolute;
+ 	unsigned char sym[];
+ };
+ 
+@@ -55,14 +54,9 @@ static struct addr_range text_ranges[] = {
+ #define text_range_text     (&text_ranges[0])
+ #define text_range_inittext (&text_ranges[1])
+ 
+-static struct addr_range percpu_range = {
+-	"__per_cpu_start", "__per_cpu_end", -1ULL, 0
+-};
+-
+ static struct sym_entry **table;
+ static unsigned int table_size, table_cnt;
+ static int all_symbols;
+-static int absolute_percpu;
+ static int base_relative;
+ static int lto_clang;
+ 
+@@ -75,7 +69,7 @@ static unsigned char best_table_len[256];
+ 
+ static void usage(void)
+ {
+-	fprintf(stderr, "Usage: kallsyms [--all-symbols] [--absolute-percpu] "
++	fprintf(stderr, "Usage: kallsyms [--all-symbols] "
+ 			"[--base-relative] [--lto-clang] in.map > out.S\n");
+ 	exit(1);
+ }
+@@ -167,7 +161,6 @@ static struct sym_entry *read_symbol(FILE *in, char **buf, size_t *buf_len)
+ 		return NULL;
+ 
+ 	check_symbol_range(name, addr, text_ranges, ARRAY_SIZE(text_ranges));
+-	check_symbol_range(name, addr, &percpu_range, 1);
+ 
+ 	/* include the type field in the symbol name, so that it gets
+ 	 * compressed together */
+@@ -183,7 +176,6 @@ static struct sym_entry *read_symbol(FILE *in, char **buf, size_t *buf_len)
+ 	sym->len = len;
+ 	sym->sym[0] = type;
+ 	strcpy(sym_name(sym), name);
+-	sym->percpu_absolute = 0;
+ 
+ 	return sym;
+ }
+@@ -334,11 +326,6 @@ static int expand_symbol(const unsigned char *data, int len, char *result)
+ 	return total;
+ }
+ 
+-static int symbol_absolute(const struct sym_entry *s)
+-{
+-	return s->percpu_absolute;
+-}
+-
+ static void cleanup_symbol_name(char *s)
+ {
+ 	char *p;
+@@ -499,30 +486,17 @@ static void write_src(void)
+ 			 */
+ 
+ 			long long offset;
+-			int overflow;
+-
+-			if (!absolute_percpu) {
+-				offset = table[i]->addr - relative_base;
+-				overflow = (offset < 0 || offset > UINT_MAX);
+-			} else if (symbol_absolute(table[i])) {
+-				offset = table[i]->addr;
+-				overflow = (offset < 0 || offset > INT_MAX);
+-			} else {
+-				offset = relative_base - table[i]->addr - 1;
+-				overflow = (offset < INT_MIN || offset >= 0);
+-			}
+-			if (overflow) {
++
++			offset = table[i]->addr - relative_base;
++			if (offset < 0 || offset > UINT_MAX) {
+ 				fprintf(stderr, "kallsyms failure: "
+-					"%s symbol value %#llx out of range in relative mode\n",
+-					symbol_absolute(table[i]) ? "absolute" : "relative",
++					"symbol value %#llx out of range in relative mode\n",
+ 					table[i]->addr);
+ 				exit(EXIT_FAILURE);
  			}
- 			/* copy and return the unused part */
--			memcpy(ptr, __per_cpu_load, ai->static_size);
-+			memcpy(ptr, __per_cpu_start, ai->static_size);
- 			pcpu_fc_free(ptr + size_sum, ai->unit_size - size_sum);
+ 			printf("\t.long\t%#x	/* %s */\n", (int)offset, table[i]->sym);
+-		} else if (!symbol_absolute(table[i])) {
+-			output_address(table[i]->addr);
+ 		} else {
+-			printf("\tPTR\t%#llx\n", table[i]->addr);
++			output_address(table[i]->addr);
  		}
  	}
-@@ -3336,7 +3336,7 @@ int __init pcpu_page_first_chunk(size_t reserved_size, pcpu_fc_cpu_to_node_fn_t
- 		flush_cache_vmap_early(unit_addr, unit_addr + ai->unit_size);
+ 	printf("\n");
+@@ -775,36 +749,15 @@ static void sort_symbols(void)
+ 	qsort(table, table_cnt, sizeof(table[0]), compare_symbols);
+ }
  
- 		/* copy static data */
--		memcpy((void *)unit_addr, __per_cpu_load, ai->static_size);
-+		memcpy((void *)unit_addr, __per_cpu_start, ai->static_size);
- 	}
+-static void make_percpus_absolute(void)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < table_cnt; i++)
+-		if (symbol_in_range(table[i], &percpu_range, 1)) {
+-			/*
+-			 * Keep the 'A' override for percpu symbols to
+-			 * ensure consistent behavior compared to older
+-			 * versions of this tool.
+-			 */
+-			table[i]->sym[0] = 'A';
+-			table[i]->percpu_absolute = 1;
+-		}
+-}
+-
+-/* find the minimum non-absolute symbol address */
++/* find the minimum symbol address */
+ static void record_relative_base(void)
+ {
+-	unsigned int i;
+-
+-	for (i = 0; i < table_cnt; i++)
+-		if (!symbol_absolute(table[i])) {
+-			/*
+-			 * The table is sorted by address.
+-			 * Take the first non-absolute symbol value.
+-			 */
+-			relative_base = table[i]->addr;
+-			return;
+-		}
++	/*
++	 * The table is sorted by address.
++	 * Take the first symbol value.
++	 */
++	if (table_cnt)
++		relative_base = table[0]->addr;
+ }
  
- 	/* we're ready, commit */
+ int main(int argc, char **argv)
+@@ -812,7 +765,6 @@ int main(int argc, char **argv)
+ 	while (1) {
+ 		static const struct option long_options[] = {
+ 			{"all-symbols",     no_argument, &all_symbols,     1},
+-			{"absolute-percpu", no_argument, &absolute_percpu, 1},
+ 			{"base-relative",   no_argument, &base_relative,   1},
+ 			{"lto-clang",       no_argument, &lto_clang,       1},
+ 			{},
+@@ -831,8 +783,6 @@ int main(int argc, char **argv)
+ 
+ 	read_map(argv[optind]);
+ 	shrink_table();
+-	if (absolute_percpu)
+-		make_percpus_absolute();
+ 	sort_symbols();
+ 	if (base_relative)
+ 		record_relative_base();
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 7862a8101747..7b0596cd5a80 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -153,10 +153,6 @@ kallsyms()
+ 		kallsymopt="${kallsymopt} --all-symbols"
+ 	fi
+ 
+-	if is_enabled CONFIG_KALLSYMS_ABSOLUTE_PERCPU; then
+-		kallsymopt="${kallsymopt} --absolute-percpu"
+-	fi
+-
+ 	if is_enabled CONFIG_KALLSYMS_BASE_RELATIVE; then
+ 		kallsymopt="${kallsymopt} --base-relative"
+ 	fi
 -- 
 2.44.0
 
