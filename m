@@ -1,159 +1,111 @@
-Return-Path: <linux-kernel+bounces-111204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206B188691C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:23:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CF488691E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:23:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B47771F2274C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:23:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 730302883D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9531D1F93F;
-	Fri, 22 Mar 2024 09:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JiY11Ppm"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0CF1C68E;
-	Fri, 22 Mar 2024 09:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D3F1CA80;
+	Fri, 22 Mar 2024 09:23:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553581757D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711099375; cv=none; b=CjHlMblr8ECUXpQrX+uFnUL1u/8mfx47rjwUBlkAcoEDsVXKIdv0fyNIUe+2LlVXtt86+dE7yZlRCrZRviO2m/sF0sgQBdOT1GWZfywn1fyftYVLbCJCG2oyAekt1VNwa8DmGCRnzd60NX3G4ctjXccKXgOaRmdhKHXwsfUX1pU=
+	t=1711099432; cv=none; b=cbHRw0FECA6TdUsrP3dZapnOFwDaq86h/37tPD2wH1Q4E6jGI15/mSKN3fVcS/ave1tFImszEzgMPUqSkIGnu0kFA7QxvxJn1VT0oWAHxvKWnW1J2RXcQRmU855TRY1hvmpLIODykimRlRl3cZh9VIWceYMSIj9nB+HFOkKahJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711099375; c=relaxed/simple;
-	bh=dqz+Usb0C8ozA80PCCBjHib9D3xaFY8srzv1b7krGc4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZDKJILkExpjDsv/u0xbdloXf3d5XdeISfDF2ee2tk/RtLh3ie2XZZwP/Gs24tAfGzAlJP4kTADffqiSgBhrMYTlpZlDffI6Ue0CFz8VFInJxj0pBQlpXWeWbSeTiE2UCLFLb1LQPyW8j/RKso6HYCFVvJi2CcpsiNI8KcGdfih4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JiY11Ppm; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711099374; x=1742635374;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=dqz+Usb0C8ozA80PCCBjHib9D3xaFY8srzv1b7krGc4=;
-  b=JiY11PpmRXeQtvNPar3Agx67K4bpmkUg8NX8/ucBvUx0fYTw79VN/bx5
-   SA0hPJFJA5EnzDumliH3VjvNNsQTZiGTk+Wt2PXIpUZAKNeExixYvnpED
-   IiJD9SO/H09V2GjQkDqnFZP77oP+YwhPoJbS59M57JauZpbbxjEi8rYMm
-   xJNELC0mJ9JjSmQw4vVmaNvXd/fcYktz44VT2jm0ZVV1NOTD9b5cGFI3q
-   3CzfJ9qvYCDcb63sczzVkmSK/N+R3kbj90AR+J1NJ5XJkAjcdTRcHUJu5
-   /fYauQvJ1uz7vl5MspuHOWAlBV/zoxdzWYDyVYERmYXjAKtvgiCSidHqz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="31575278"
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="31575278"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 02:22:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="19508193"
-Received: from ghoshsu1-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.6])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 02:22:19 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>, Maxime Ripard
- <mripard@kernel.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, Sandy Huang
- <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
- Chen-Yu Tsai
- <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland
- <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, Sebastian Wick
- <sebastian.wick@redhat.com>, Ville =?utf-8?B?U3lyasOkbMOk?=
- <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [v10,20/27] drm/connector: hdmi: Add Infoframes generation
-In-Reply-To: <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240321-kms-hdmi-connector-state-v10-20-e6c178361898@kernel.org>
- <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
-Date: Fri, 22 Mar 2024 11:22:14 +0200
-Message-ID: <87sf0iliyh.fsf@intel.com>
+	s=arc-20240116; t=1711099432; c=relaxed/simple;
+	bh=4XqNxjKXQydnEthSSoKu+FxMBbfu+Rri2qsMp7OyuNQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mw6q3qyZYu5COESAieuGmOkG6Jafj9zkZuIiDNN9bMXa7sYOHMLyQ2K9XKrKJ3dLc/pU5slZAoWQkubQlf/fLZKinZA/BTl8fvccAa7FCZJD3FTfRvT+8MohJY5/5WtIGl2hudLr0homhq5M8Leh0DlUsH9rIs3oiYmpNijZzj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 976D41007;
+	Fri, 22 Mar 2024 02:24:22 -0700 (PDT)
+Received: from [10.57.72.175] (unknown [10.57.72.175])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 293943F64C;
+	Fri, 22 Mar 2024 02:23:46 -0700 (PDT)
+Message-ID: <44b2cf99-7d87-42ac-8446-fe0822c89c97@arm.com>
+Date: Fri, 22 Mar 2024 09:23:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: Can you help us on memory barrier usage? (was Re: [PATCH v4 4/6]
+ mm: swap: Allow storage of all mTHP orders)
+Content-Language: en-GB
+To: "Huang, Ying" <ying.huang@intel.com>,
+ "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240311150058.1122862-1-ryan.roberts@arm.com>
+ <20240311150058.1122862-5-ryan.roberts@arm.com>
+ <87jzm751n3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <d6ac1097-2ca3-4e6d-902d-1b942cacf0fb@arm.com>
+ <8734skryev.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <b22a222b-7fd8-4648-84a7-21d35f529f27@arm.com>
+ <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87r0g3q9cz.fsf_-_@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 22 Mar 2024, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
-> Hi,
->
->
-> On 2024/3/21 23:29, Maxime Ripard wrote:
->> Infoframes in KMS is usually handled by a bunch of low-level helpers
->> that require quite some boilerplate for drivers. This leads to
->> discrepancies with how drivers generate them, and which are actually
->> sent.
->>
->> Now that we have everything needed to generate them in the HDMI
->> connector state, we can generate them in our common logic so that
->> drivers can simply reuse what we precomputed.
->>
->> Signed-off-by: Maxime Ripard <mripard@kernel.org>
->> ---
->>   drivers/gpu/drm/Kconfig                            |   1 +
->>   drivers/gpu/drm/drm_atomic_state_helper.c          | 338 +++++++++++++++++++++
->>   drivers/gpu/drm/drm_connector.c                    |  14 +
->>   .../gpu/drm/tests/drm_atomic_state_helper_test.c   |   1 +
->>   drivers/gpu/drm/tests/drm_connector_test.c         |  12 +
->>   include/drm/drm_atomic_state_helper.h              |   8 +
->>   include/drm/drm_connector.h                        | 109 +++++++
->>   7 files changed, 483 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
->> index 16029435b750..3d3193c7aa5f 100644
->> --- a/drivers/gpu/drm/Kconfig
->> +++ b/drivers/gpu/drm/Kconfig
->> @@ -97,10 +97,11 @@ config DRM_KUNIT_TEST
->>   	  If in doubt, say "N".
->>   
->>   config DRM_KMS_HELPER
->>   	tristate
->>   	depends on DRM
->> +	select DRM_DISPLAY_HDMI_HELPER
->
-> Should we select DRM_DISPLAY_HELPER here? Otherwise there will have some compile error
-> emerged with default config.
+On 22/03/2024 02:38, Huang, Ying wrote:
+> Hi, Paul,
+> 
+> Can you help us on WRITE_ONCE()/READ_ONCE()/barrier() usage as follows?
+> For some example kernel code as follows,
+> 
+> "
+> unsigned char x[16];
+> 
+> void writer(void)
+> {
+>         memset(x, 1, sizeof(x));
+>         /* To make memset() take effect ASAP */
+>         barrier();
+> }
+> 
+> unsigned char reader(int n)
+> {
+>         return READ_ONCE(x[n]);
+> }
+> "
+> 
+> where, writer() and reader() may be called on 2 CPUs without any lock.
 
-Can we stop abusing select instead of adding more selects to paper over
-the issues?
+For the situation we are discussing, writer() is always called with a spin lock
+held. So spin_unlock() will act as the barrier in this case; that's my argument
+for not needing the explicit barrier(), anyway. Happy to be told I'm wrong.
 
-Use select only for non-visible symbols (no prompts anywhere) and for
-symbols with no dependencies.
+> It's acceptable for reader() to read the written value a little later.
+> Our questions are,
+> 
+> 1. because it's impossible for accessing "unsigned char" to cause
+> tearing.  So, WRITE_ONCE()/READ_ONCE()/barrier() isn't necessary for
+> correctness, right?
+> 
+> 2. we use barrier() and READ_ONCE() in writer() and reader(), because we
+> want to make writing take effect ASAP.  Is it a good practice?  Or it's
+> a micro-optimization that should be avoided?
+> 
+> --
+> Best Regards,
+> Huang, Ying
 
-
-BR,
-Jani.
-
-
->
->
-> : drivers/gpu/drm/drm_atomic_state_helper.o: in function `drm_atomic_helper_connector_hdmi_check':
-> drm_atomic_state_helper.c:(.text+0x15e4): undefined reference to `drm_hdmi_avi_infoframe_colorimetry'
-> : drm_atomic_state_helper.c:(.text+0x15f0): undefined reference to `drm_hdmi_avi_infoframe_bars'
-> : drm_atomic_state_helper.c:(.text+0x1638): undefined reference to `drm_hdmi_infoframe_set_hdr_metadata'
-> make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
->
-> make[1]: *** [/home/suijingfeng/UpStream/drm-tip/Makefile:1162: vmlinux] Error 2
->
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:240: __sub-make] Error 2
->
->>   	help
->>   	  CRTC helpers for KMS drivers.
->>   
->>   config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
->>           bool "Enable refcount backtrace history in the DP MST helpers"
-
--- 
-Jani Nikula, Intel
 
