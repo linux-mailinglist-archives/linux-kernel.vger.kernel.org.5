@@ -1,193 +1,125 @@
-Return-Path: <linux-kernel+bounces-111882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B2F887222
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:49:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04B12887227
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F861C2030D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:49:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D4E0B2236E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B21B604DB;
-	Fri, 22 Mar 2024 17:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53624605B1;
+	Fri, 22 Mar 2024 17:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cfkTGieR"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="Qpsv8DC7"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F450604A6
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804D5604A6;
+	Fri, 22 Mar 2024 17:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711129790; cv=none; b=O8srTVrWRW+4NwhiHehecSUh/WFjtyR3us2sB4JL8tcuh+GWAEodngHSLaOCs9XSwW3h6q4UNjMKul2i005nMhv08DE4NHkEcIzU5tyqgEW8yHq2G9ptk6v+1OjmkNZeCktayvwJpVYLG2WWbtu8SRvUlHzj+hUnKZ8P6hSstY4=
+	t=1711129811; cv=none; b=E36O6beB75Cz2TVsAV/6FjcJUlVgAns/PbxEZYNLLZ2NboFWGmKzNME8GGLWYCQMiOvrs+m9GcS/02xloLSGBNQJxCTJEdcPfQwlUHgZ8+cF3qeXleat3xGXsdvoE4mEqucnLgMQ6hHC0Lq8r8JvpCmuKwX3AMk27xQxq6LNhrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711129790; c=relaxed/simple;
-	bh=ytPJs9xhDMPYZaA7pz8Nqr40ih3LKLHLa8nELh0Ejo4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iv8tI/7FBEAieOuALajBKPN+ItfhoPe5wCMEFZAki9C33sM9XPDH6hFiWfi9T9amaj8lR30S2k6I3PbhnzAcSs6NfLvJ7wVDpG9DZFOhc5kw3dFFW+TAWRKyy18zdt+ZBZQ+ScCAEphW58WL7eBydhObE2WBsE/R+DZ8CUojdF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cfkTGieR; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e07cd7b798so14040235ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711129788; x=1711734588; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yfoeq+6cUg1dwSHsoYFFrThY/ANh42EGrvYWQB15MVo=;
-        b=cfkTGieRSy/Hmx8Ei7Sy9yUIsAXDQh/+xXkInSPPb6j77xHYrZKA771nSryF6mZhwE
-         Gr2nzOIFsbkUiR6bMcyS6hyv2c2dRAIjs3MomRRGDo9k7gzUDHomRFsUyybK31UtFwT5
-         CLlsCY2mwMd8pAi3yuPaPp6yDu6n4YQNESfCWPF0wfD0pc1IhCXWCUyaHaVmpeHd190P
-         qvPnTiC49O1+xJum9mD/gZD+Xf7xTQnZV16XOwnWUweSEwDePAx5V9eRAuWLKe01bmqN
-         RU85EcLX2wb4oNXGtZi1+ApPM+PR9F5Z1YeUv+uIZFzjEfiB4htHItLVeULg2YlLMTD5
-         1MeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711129788; x=1711734588;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yfoeq+6cUg1dwSHsoYFFrThY/ANh42EGrvYWQB15MVo=;
-        b=RQuY+883WMba12NlIv23x/pCYlLefwTECwAN9NBIN8+Kw9ze/zyAneQlKhl7rVM8TS
-         2iTgxrOJ2BzyBJxNAAJJkFluqO0fr4xLxjURqATZen7w7J5oyVUl0TCjBT05TvkhM7+m
-         xnhLEN72UHsdVzFYKSTVnb0Rek4dfx+3QGRLlnuKxMj0QE3J1VOJrY9KWfrT+3YM+JRn
-         4tg6o2cwUNEjdQGRKSZIhO6F3L+Kczahq4mhQXgUTyAO0HvMNpWefM5cuYb7Ejy3XsC+
-         I9Ly3tBvmzEugDPYzRGyawN73rRt1Alr3v7XKRwfh7RgX/l+s4bFG1eSO561UnS5OTMg
-         SLeA==
-X-Gm-Message-State: AOJu0YxMoRi+BLH3wz0d7rDZvPbm5IdEA85cDQkOcih5WS8iXjASaVkY
-	xek9wcTdrgfkLug0w5Csy0q4MiAInT0Wcy2Sq+51+WLLlO8mG9HbRsPpKzuT
-X-Google-Smtp-Source: AGHT+IHBSlzdL28oxOsi0qLLtLmepKBeRoliIAW4D4Xdq2dsDZAjxf8EhlE4bkXQ1af/N3YqWA+R2g==
-X-Received: by 2002:a17:903:40c2:b0:1e0:1174:6360 with SMTP id t2-20020a17090340c200b001e011746360mr529213pld.14.1711129787822;
-        Fri, 22 Mar 2024 10:49:47 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:cd6c:4747:ed85:6091])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170902e84900b001dbcfa0f1acsm2061plg.83.2024.03.22.10.49.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 10:49:47 -0700 (PDT)
-From: Daeho Jeong <daeho43@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v4] f2fs: prevent writing without fallocate() for pinned files
-Date: Fri, 22 Mar 2024 10:49:43 -0700
-Message-ID: <20240322174944.1460441-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+	s=arc-20240116; t=1711129811; c=relaxed/simple;
+	bh=tlaxGcQqSo4rsMaZE0sbNHeXStqfwgVpWciJkli4y+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pUdmeTAQO5IdjmOQ9QU9XcsGdDjoTvA6OADnPdZRhI4Lr4xzq23GpEGoGCR81dpjPu+FHn93Cz7d1ClkNDpWQ43cyvHjLvXo00BnHdy2YHqAJpT+0WTIpPIlDcYwV9Hj4MrPIAsPQP9/pzIvFP7GwZ00tUENYPEfyYFI+MG5cNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=Qpsv8DC7; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V1VGR4j9Yz6Cnk95;
+	Fri, 22 Mar 2024 17:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1711129797; x=1713721798; bh=afZlcm9O07bvpHWZp13m44cg
+	Mjqanzjz1tGTAZQ/1YM=; b=Qpsv8DC7mL/Qcs4xoiwBfXcBY4Y5RAIaatVQz7e0
+	NmTdbhx1Xsns+fOdYL4hRE0TSmqH/tkSqTJUfxTbNyGRIE37amKlWJ4sOG/4J9Rq
+	E1OlRyafw/bvMN6lPbKPVjJOARn9tI5lwiLNOWFpPp3xY18La+U79Q21j3TRjlFW
+	lTuANy7O79bywNMmr3DDk5u73ZNtChsWQ2S637Yrcdw2tU2esITNy61wtZSVyDwF
+	auUIvSZmBhD9AD/zmrt+L8xNEeGCgA27jur2s4MC/uU795KGEP3p1XkAOuDP9PvO
+	6b4Q0VUPCVm6smHq/cZwoEBSZdEwWvG4HyveTE0u6aEm8g==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id WDCEdahPUwBV; Fri, 22 Mar 2024 17:49:57 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V1VG64fZqz6Cnk8t;
+	Fri, 22 Mar 2024 17:49:50 +0000 (UTC)
+Message-ID: <7027ccdc-878a-420e-a7ea-5156e1d67b8a@acm.org>
+Date: Fri, 22 Mar 2024 10:49:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/8] block: add new genhd flag GENHD_FL_NVMEM
+Content-Language: en-US
+To: Daniel Golle <daniel@makrotopia.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>,
+ Jan Kara <jack@suse.cz>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Damien Le Moal <dlemoal@kernel.org>,
+ Li Lingfeng <lilingfeng3@huawei.com>, Christian Brauner
+ <brauner@kernel.org>, Christian Heusel <christian@heusel.eu>,
+ Min Li <min15.li@samsung.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
+ Christian Loehle <CLoehle@hyperstone.com>, Bean Huo <beanhuo@micron.com>,
+ Yeqi Fu <asuk4.q@gmail.com>, Victor Shih <victor.shih@genesyslogic.com.tw>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Dominique Martinet <dominique.martinet@atmark-techno.com>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-block@vger.kernel.org
+References: <cover.1711048433.git.daniel@makrotopia.org>
+ <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Daeho Jeong <daehojeong@google.com>
+On 3/21/24 12:33, Daniel Golle wrote:
+> Add new flag to destinguish block devices which may act as an NVMEM
+> provider.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>   include/linux/blkdev.h | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index c3e8f7cf96be9..f2c4f280d7619 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -81,11 +81,13 @@ struct partition_meta_info {
+>    * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
+>    * scan for partitions from add_disk, and users can't add partitions manually.
+>    *
+> + * ``GENHD_FL_NVMEM``: the block device should be considered as NVMEM provider.
+>    */
+>   enum {
+>   	GENHD_FL_REMOVABLE			= 1 << 0,
+>   	GENHD_FL_HIDDEN				= 1 << 1,
+>   	GENHD_FL_NO_PART			= 1 << 2,
+> +	GENHD_FL_NVMEM				= 1 << 3,
+>   };
 
-In a case writing without fallocate(), we can't guarantee it's allocated
-in the conventional area for zoned stroage.
+What would break if this flag wouldn't exist?
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
-v2: covered the direct io case
-v3: covered the mkwrite case
-v4: moved pin file check position in prepare_write_begin()
----
- fs/f2fs/data.c | 20 ++++++++++++++++----
- fs/f2fs/file.c | 16 ++++++++--------
- 2 files changed, 24 insertions(+), 12 deletions(-)
+Thanks,
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index c21b92f18463..88896989bb28 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
- 
- 	/* use out-place-update for direct IO under LFS mode */
- 	if (map->m_may_create &&
--	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
--		if (unlikely(f2fs_cp_error(sbi))) {
-+	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO &&
-+			 !f2fs_is_pinned_file(inode)))) {
-+		if (unlikely(f2fs_cp_error(sbi)) ||
-+		    (f2fs_is_pinned_file(inode) && is_hole &&
-+		     flag != F2FS_GET_BLOCK_PRE_DIO)) {
- 			err = -EIO;
- 			goto sync_out;
- 		}
-@@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
- 		f2fs_map_lock(sbi, flag);
- 		locked = true;
- 	} else if ((pos & PAGE_MASK) >= i_size_read(inode)) {
-+		if (f2fs_is_pinned_file(inode))
-+			return -EIO;
- 		f2fs_map_lock(sbi, flag);
- 		locked = true;
- 	}
-@@ -3414,8 +3419,15 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
- 
- 		/* hole case */
- 		err = f2fs_get_dnode_of_data(&dn, index, LOOKUP_NODE);
--		if (!err && dn.data_blkaddr != NULL_ADDR)
--			goto out;
-+		if (!err) {
-+			if (dn.data_blkaddr != NULL_ADDR) {
-+				goto out;
-+			} else if (f2fs_is_pinned_file(inode)) {
-+				err = -EIO;
-+				goto out;
-+			}
-+		}
-+
- 		f2fs_put_dnode(&dn);
- 		f2fs_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO);
- 		WARN_ON(flag != F2FS_GET_BLOCK_PRE_AIO);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 82277e95c88f..4db3b21c804b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	struct dnode_of_data dn;
--	bool need_alloc = true;
-+	bool need_alloc = !f2fs_is_pinned_file(inode);
- 	int err = 0;
- 	vm_fault_t ret;
- 
-@@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
- 		goto out_sem;
- 	}
- 
-+	set_new_dnode(&dn, inode, NULL, NULL, 0);
- 	if (need_alloc) {
- 		/* block allocation */
--		set_new_dnode(&dn, inode, NULL, NULL, 0);
- 		err = f2fs_get_block_locked(&dn, page->index);
--	}
--
--#ifdef CONFIG_F2FS_FS_COMPRESSION
--	if (!need_alloc) {
--		set_new_dnode(&dn, inode, NULL, NULL, 0);
-+	} else {
- 		err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE);
- 		f2fs_put_dnode(&dn);
- 	}
--#endif
-+
- 	if (err) {
- 		unlock_page(page);
- 		goto out_sem;
-@@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
- 			return ret;
- 	}
- 
-+	/* For pinned files, it should be fallocate()-ed in advance. */
-+	if (f2fs_is_pinned_file(inode))
-+		return 0;
-+
- 	/* Do not preallocate blocks that will be written partially in 4KB. */
- 	map.m_lblk = F2FS_BLK_ALIGN(pos);
- 	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
--- 
-2.44.0.396.g6e790dbe36-goog
+Bart.
 
 
