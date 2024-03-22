@@ -1,75 +1,56 @@
-Return-Path: <linux-kernel+bounces-111787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A72978870FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:39:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7078887105
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62DE0284F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:39:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33BF7B22725
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956575CDC0;
-	Fri, 22 Mar 2024 16:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1374B5D468;
+	Fri, 22 Mar 2024 16:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aT6ZfUcI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QtD5iCkR"
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21F3495F0;
-	Fri, 22 Mar 2024 16:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A36F5674C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125557; cv=none; b=hFTi7/h1pTwcyXcwOtKCdl6i0TuUtqxcqmdNguwB+aPn/1txUec7WrkIcXbmVBpeKick52ryoiuQ8uA2hDxgcqO5/lHoc4mEcvjbX6O97WCL+BskzOa7JhRlNrU19PaADBwovKJ3bZRbVPbtWfvpt/EJMyGUeo/cBzvVudgd1xE=
+	t=1711125612; cv=none; b=ldHU+JCMYqEy+L57FYzEf7mm0RMt/fb0Xriii6WclrjxRcq1nsppEQI7aMgTnpM7nuz9TIBYWFSNFdJsZHHgnoKBxMkEM0r0/VVfkcowtiTvsMAJkVphzHELaSzynTROv0r9xSgXzWgMXhoHbIgNg33kxz3CyAyhkg0SbdU95l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125557; c=relaxed/simple;
-	bh=2geR0ApH0yInHgP7oRxLLRxqBIVI0b8whSqETq2TB0Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rATrQNPiGC/O1a7uMMahRnXz3AfVhDGaskIzku0Sr+Cqr3Pkw608+7Wk04UWp35k2O/JP7RlUFrDMMnSiSOKfVOZ/qRuAR+lsH7wdvx5GGuhdRVjiaQ4eFRiC6ODr12Uw8uuJ14bWMxsWFzvFfQb0olvkdrOwMoBCJJ6NrfNVjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aT6ZfUcI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7106C433C7;
-	Fri, 22 Mar 2024 16:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711125557;
-	bh=2geR0ApH0yInHgP7oRxLLRxqBIVI0b8whSqETq2TB0Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aT6ZfUcIAa38sOwvHURZmqZl0YLgUbXs7mQpV09jufoZNhvHq1LKPrVGPTn5UMYlY
-	 hyyAZUU39eS83Bx2dJr4BiAloL6veZwgE85ZAbCKbl99gjOsz91wa6nMCAy959FruF
-	 XqcM/CUfS+aT9+rtpXyWjDAdhd8brQS/dSVAXCEl0ik616uDQ3LK8xKJ6MHnfw6+UN
-	 ZKfMA5yhQFLWRaiSuRONKa4g8BkS3vSvyxEzbKzhZlt7wmocqIoCThRDJjkSDgleW0
-	 Mz5GGoWAhUDcTn2QHx0NoI2WKQmxLjNQ+jTUubWkkQUe9lNc2Qiez5XgzDocGaEh1X
-	 a8JJRWAh6UWPQ==
-From: SeongJae Park <sj@kernel.org>
-To: Honggyu Kim <honggyu.kim@sk.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	dave.jiang@intel.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
+	s=arc-20240116; t=1711125612; c=relaxed/simple;
+	bh=be5YocDWCbRGR4uAZlmMAzBgoMxaC0MoO2MNArRgWlk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AaL4YstlnFDpcHnmME8PCk3LT9YyrdOaSGXCFd/y5g5osU7p9jP70Fbcowj/n/nhz7j3UFPAa4/7cenSfrW1jRMXwfaGDLM8WOrIBj8TADdS5bbl1qO4/EIEcknunu4RrWwPSkXkYB8GNXUfjnnCYQdvnOB08lgpX5QFPaBXqHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QtD5iCkR; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711125608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=alKuNVPMUZUInvf3FonZiSKCsCjs3x5ZGIB2V/RJ1Bc=;
+	b=QtD5iCkRCOfhonm2ViUGyN7iojeqGcmSW/yx+PEgNH3oECNvazjIbddo34MdYyNpjZy5zn
+	fczjHWvReG1rzqrjx+YygIGC3C+mhwCueqod20QSEa+FBl2L+wCkWsSPtoHSv9PTmjXYfn
+	zkOFNv+gtBAR+CY9T1yxCLa8bVZ3ID4=
+From: chengming.zhou@linux.dev
+To: hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	nphamcs@gmail.com,
+	chengming.zhou@linux.dev,
+	akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	42.hyeyoo@gmail.com,
-	art.jeongseob@gmail.com
-Subject: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
-Date: Fri, 22 Mar 2024 09:39:14 -0700
-Message-Id: <20240322163914.68475-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240322082742.2233-1-honggyu.kim@sk.com>
-References: 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>
+Subject: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
+Date: Sat, 23 Mar 2024 00:39:39 +0800
+Message-Id: <20240322163939.17846-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,38 +58,129 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 22 Mar 2024 17:27:34 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+From: Chengming Zhou <chengming.zhou@linux.dev>
 
-[...]
-> OK. It could be a matter of preference and the current filter is already
-> in the mainline so I won't insist more.
+There is a report of data corruption caused by double swapin, which is
+only possible in the skip swapcache path on SWP_SYNCHRONOUS_IO backends.
 
-Thank you for accepting my humble suggestion.
+The root cause is that zswap is not like other "normal" swap backends,
+it won't keep the copy of data after the first time of swapin. So if
+the folio in the first time of swapin can't be installed in the pagetable
+successfully and we just free it directly. Then in the second time of
+swapin, we can't find anything in zswap and read wrong data from swapfile,
+so this data corruption problem happened.
 
-[...]
-> > I'd prefer improving the documents or
-> > user-space tool and keep the kernel code simple.
-> 
-> OK. I will see if there is a way to improve damo tool for this instead
-> of making changes on the kernel side.
+We can fix it by always adding the folio into swapcache if we know the
+pinned swap entry can be found in zswap, so it won't get freed even though
+it can't be installed successfully in the first time of swapin.
 
-Looking forward!
+And we have to check if the swap entry is in zswap after entry pinned,
+only then we can make sure the check result is stable.
 
-[...]
-> Yeah, I made this thread too much about filter naming discussion rather
-> than tiered memory support.
+Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Closes: https://lore.kernel.org/all/CACSyD1N+dUvsu8=zV9P691B9bVq33erwOXNTmEaUbi9DrDeJzw@mail.gmail.com
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+---
+ include/linux/zswap.h |  6 ++++++
+ mm/memory.c           | 28 ++++++++++++++++++++++++----
+ mm/zswap.c            | 10 ++++++++++
+ 3 files changed, 40 insertions(+), 4 deletions(-)
 
-No problem at all.  Thank you for keeping this productive discussion.
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 2a85b941db97..180d0b1f0886 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -36,6 +36,7 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+ void zswap_lruvec_state_init(struct lruvec *lruvec);
+ void zswap_folio_swapin(struct folio *folio);
+ bool is_zswap_enabled(void);
++bool zswap_find(swp_entry_t swp);
+ #else
+ 
+ struct zswap_lruvec_state {};
+@@ -65,6 +66,11 @@ static inline bool is_zswap_enabled(void)
+ 	return false;
+ }
+ 
++static inline bool zswap_find(swp_entry_t swp)
++{
++	return false;
++}
++
+ #endif
+ 
+ #endif /* _LINUX_ZSWAP_H */
+diff --git a/mm/memory.c b/mm/memory.c
+index 4f2caf1c3c4d..a564b2b8faca 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4031,18 +4031,38 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 					ret = VM_FAULT_OOM;
+ 					goto out_page;
+ 				}
++
++				/*
++				 * We have to add the folio into swapcache if
++				 * this pinned swap entry is found in zswap,
++				 * which won't keep copy of data after swapin.
++				 * Or data will just get lost if later folio
++				 * can't be installed successfully in pagetable.
++				 */
++				if (zswap_find(entry)) {
++					if (add_to_swap_cache(folio, entry,
++							GFP_KERNEL, &shadow)) {
++						ret = VM_FAULT_OOM;
++						goto out_page;
++					}
++					swapcache = folio;
++					need_clear_cache = false;
++				} else {
++					shadow = get_shadow_from_swap_cache(entry);
++					/* To provide entry to swap_read_folio() */
++					folio->swap = entry;
++				}
++
+ 				mem_cgroup_swapin_uncharge_swap(entry);
+ 
+-				shadow = get_shadow_from_swap_cache(entry);
+ 				if (shadow)
+ 					workingset_refault(folio, shadow);
+ 
+ 				folio_add_lru(folio);
+ 
+-				/* To provide entry to swap_read_folio() */
+-				folio->swap = entry;
+ 				swap_read_folio(folio, true, NULL);
+-				folio->private = NULL;
++				if (need_clear_cache)
++					folio->private = NULL;
+ 			}
+ 		} else {
+ 			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
+diff --git a/mm/zswap.c b/mm/zswap.c
+index c4979c76d58e..84a904a788a3 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1601,6 +1601,16 @@ void zswap_invalidate(swp_entry_t swp)
+ 		zswap_entry_free(entry);
+ }
+ 
++bool zswap_find(swp_entry_t swp)
++{
++	pgoff_t offset = swp_offset(swp);
++	struct xarray *tree = swap_zswap_tree(swp);
++	struct zswap_entry *entry;
++
++	entry = xa_find(tree, &offset, offset, XA_PRESENT);
++	return entry != NULL;
++}
++
+ int zswap_swapon(int type, unsigned long nr_pages)
+ {
+ 	struct xarray *trees, *tree;
+-- 
+2.20.1
 
-[...]
-> Thanks again for your feedback.
-
-That's my pleasure :)
-
-
-Thanks,
-SJ
-
-[...]
 
