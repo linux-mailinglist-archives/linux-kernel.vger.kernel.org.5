@@ -1,379 +1,216 @@
-Return-Path: <linux-kernel+bounces-111607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804CF886E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:26:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E85E886E7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC3E81F2292D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:26:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09249281D1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2989A47F5D;
-	Fri, 22 Mar 2024 14:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B8247F59;
+	Fri, 22 Mar 2024 14:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bLcBL/ob"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GEPdN/g0"
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0627C47A60
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:26:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCCB3F9FD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711117575; cv=none; b=Fb9cpIb5Vdz/p4RsS5BS3VluC3UGY3+s/q/5kB2rSG3hwzgaAB40mN+yMyPp8/nXqRXI4kza/p7sqqpNutD3TaJLDoHA5j+JFZ1o//rDy92APQmB8zL6QxVoRrHFv6eC9uuPyVhmkUE2m8vOZk21i5XLh2puxio/PtoR6HryorI=
+	t=1711117620; cv=none; b=CiuYVT+IKgISz6nEmqTTexhNtdIL/BuzGZwUp+DXSyUS4rtE9CujHCfmWGT/tOUwcdVpWxJjqXKVjsfYPU2C5QdSeO2fGYH9i+UQR1aJwMiCYDjIpZYcRs1HmDwni+x0zFlUh/2OLGFoWXSwLZ/ylgL+SatPWvhEjB14KTkzTiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711117575; c=relaxed/simple;
-	bh=nSU7Us69HjcGfMbnFoTnP50Z6345s8XT/n87H31Yw/4=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=fbRxckbWn78fIiDFJI61el89z1Xjok80PYexwCSifWJJJkiSRG9RCYgoB2jv7nAWVAVauc95KisMue/3dzvjWz0QrpuG3Hw4oYR6dr2GD/8lJocS3+UfwAHZJqkA0RB7rX1ynuhqwbXfakVxs2t+NwCOroe8NY0s6sYrjz+RY2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bLcBL/ob; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1711117620; c=relaxed/simple;
+	bh=XKmE4GGCnJAJ2FT1o/SNODogJpU5VPlXFcs/cGXSd1U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ntyj/elbTycp6c8dwbA0N3PlUzvzR5LKEVw4cdWQQMABiepbquPV6mub85/fWL7xgXEKTaxj44wbM6p3BuSeD5GIKWMZtNZfaIoqU7sXna5rUeGz4Dg2J5x+yDTSwJFipdrcAU2DAb2Q1wf2N2ssCh4H4+uaOIrPgPmLdABKsm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GEPdN/g0; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-430ad286ab8so12841981cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711117616; x=1711722416; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+BtKM6YzSssBOA8wzP4FAf2/h79Yzs7wpPMofYXSEwM=;
+        b=GEPdN/g0NjsLmbVSXQ4vYS4oYb7WvwdWv2v28NTmGsR3vGsqivvfDXhD6+RHhSpPWJ
+         4W/Eo8C1/B0y7/LSgW5ff9voZfPhsEifzqu8gDIhrZsWy2acsWZ+PdsVKO2YjfJI8owE
+         tAVYBH3Ml0Tfw3Its3t56meZzDIZZ1TdNZ/WI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711117616; x=1711722416;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+BtKM6YzSssBOA8wzP4FAf2/h79Yzs7wpPMofYXSEwM=;
+        b=oGMRRmjB7/geVbkQwiMAA4+tbqET4KodX+GRCLBpgsCTSoGc4+csS4GpuLk2bqDTZJ
+         vMEr2yV2TIHUqyxafSgYbUI1Xrprr0oLPhUOwTGk5dApFTXNH7/XMNrO6We+vdN5j1+c
+         Y11FiUi6zcKLIIOceFN6sMDgNa+5W7wkLJyj++OP2BVDHon0+80dBs1QVaxIrxx/5P8B
+         RaF7Fa766xeZJdHKuP78bFgQwlZz2zolHzvijYAE30gLd5yFB9JSO+Z93Hd0378vpJ60
+         WZxgVkfQZdrhGNDeMupgR8X7owFD9za6caDvuZ1Q/JhI/ISTIDLY1U5PMzA2DtKaWbhF
+         ZdNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUpCWWddMGyEomT2dBsP0hoA/Xgl2e+j4TMNpqYA2MVwSuEDCI4i0/y5FJxg1ODK1zJk6wOSFlGKtqfLZrlwkxV9d9xlQTrSFrZxLA5
+X-Gm-Message-State: AOJu0YwO6RLiysvDC6oUUmiM3muG4YErdW2a6y0Fbm3jmnmRhIA9J/09
+	nO/DnwwqB6Z8m4+3Ddamm9OJ4A/P7wPhZqUfc2HBhBeNRWtr4k9TzWpi9WA5XjgnyF8kuBQ7/V8
+	=
+X-Google-Smtp-Source: AGHT+IGV/if8bYsHKsri54YhpnMH6nCULlTLPkXJqXm2u4ihS/P3YWwt+U7PMfqdSBnPUeSvtAmMBA==
+X-Received: by 2002:a05:622a:11d3:b0:431:378d:afa with SMTP id n19-20020a05622a11d300b00431378d0afamr897868qtk.34.1711117616079;
+        Fri, 22 Mar 2024 07:26:56 -0700 (PDT)
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com. [209.85.219.48])
+        by smtp.gmail.com with ESMTPSA id bs18-20020ac86f12000000b0042f0504229esm898599qtb.60.2024.03.22.07.26.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 07:26:55 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-690cd7f83cdso13147536d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:26:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXobhsb7iOFmPrSWF9/YpUQdOnFMXCfYDviNPq2aVvWhc08h5Bey6G2srfm9XCUJuU3qHk0MPwDdZKP4y4AX/ryvGiPXG8N9xf3MdeG
+X-Received: by 2002:a05:6214:f01:b0:691:59ad:ff46 with SMTP id
+ gw1-20020a0562140f0100b0069159adff46mr3034248qvb.30.1711117615005; Fri, 22
+ Mar 2024 07:26:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711117571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rNKWKSvBYXyFmKH07lb65pWFdnTMZ8/LLL+0AQv8eO4=;
-	b=bLcBL/obbWtDCzqCO3PPbrtR4uBJqRvJ9isSCYkkQzvmeOpM7HYPwrHRtlBpachPQ0RyLd
-	pVYF0eKPaX4UzpEj/vz0wtlb+5aYl5mwwgiLSbYoyuQpfLYlg0MBgn/rt5CuMO05gsmDGy
-	M30mRDjb5vDuINRUcVBYiQM1w5UjR5I=
-Date: Fri, 22 Mar 2024 14:26:07 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Eric Van Hensbergen" <eric.vanhensbergen@linux.dev>
-Message-ID: <ada13e85bf2ceed91052fa20adb02c4815953e26@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH next] fs/9p: fix uaf in in v9fs_stat2inode_dotl
-To: "Jakub Kicinski" <kuba@kernel.org>, asmadeus@codewreck.org
-Cc: "Lizhi Xu" <lizhi.xu@windriver.com>,
- syzbot+7a3d75905ea1a830dbe5@syzkaller.appspotmail.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux_oss@crudebyte.com, lucho@ionkov.net,
- syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev,
- regressions@lists.linux.dev, netdev@vger.kernel.org
-In-Reply-To: <20240321182824.6f303e38@kernel.org>
-References: <00000000000055ecb906105ed669@google.com>
- <20240202121531.2550018-1-lizhi.xu@windriver.com>
- <ZeXGZS1-X8_CYCUz@codewreck.org>
- <20240321182824.6f303e38@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20230501-uvc-align-v1-1-0f713e4b84c3@chromium.org> <20240322115606.GA31979@pendragon.ideasonboard.com>
+In-Reply-To: <20240322115606.GA31979@pendragon.ideasonboard.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Fri, 22 Mar 2024 15:26:39 +0100
+X-Gmail-Original-Message-ID: <CANiDSCuB0jABPPsoj0RxJ2UbV1UD0i5WwnubySDB0p7LocNJDQ@mail.gmail.com>
+Message-ID: <CANiDSCuB0jABPPsoj0RxJ2UbV1UD0i5WwnubySDB0p7LocNJDQ@mail.gmail.com>
+Subject: Re: [PATCH] media: uvcvideo: Explicit alignment of uvc_frame and uvc_format
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Patch is in the unapplied portion of my for-next tree along with another =
-one.  I was hoping to hear some feedback on the other one before i did a =
-pull request and was torn on whether or not I wait on -rc1 to send since =
-we are so close.
+Hi Laurent
 
-       -eric
-
-
-March 21, 2024 at 8:28 PM, "Jakub Kicinski" <kuba@kernel.org> wrote:
->=20
->=20On Mon, 4 Mar 2024 22:02:29 +0900 asmadeus@codewreck.org wrote:
->=20
->=20>=20
->=20> Lizhi Xu wrote on Fri, Feb 02, 2024 at 08:15:31PM +0800:
-> >=20
->=20>  The incorrect logical order of accessing the st object code in v9f=
-s_fid_iget_dotl
-> >=20
->=20>  is causing this uaf.=20
->=20>=20
->=20>=20=20
->=20>=20
->=20>  Thanks for the fix!
-> >=20
->=20>=20=20
->=20>=20
->=20>  Eric, this is also for your tree.
-> >=20
->=20>=20=20
->=20>=20
->=20>  Fixes: 724a08450f74 ("fs/9p: simplify iget to remove unnecessary p=
-aths")=20
->=20>=20
->=20>=20=20
->=20>=20
->=20>  (careful if you rebase your tree as this commit isn't merged yet)
-> >=20
->=20>=20=20
->=20>=20
->=20>  Reported-and-tested-by: syzbot+7a3d75905ea1a830dbe5@syzkaller.apps=
-potmail.com
-> >=20
->=20>  Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>=20
->=20>=20
->=20>=20=20
->=20>=20
->=20>  Reviewed-by: Dominique Martinet <asmadeus@codewreck.org>
-> >=20
->=20
-> Looks like this UAF is in Linus's tree now, and possibly getting hit
->=20
->=20by anyone using virtme to test the kernel? I can't vouch for the
->=20
->=20correctness of the fix but it does make the KASAN splat go away for m=
-e.
->=20
->=20[ 12.474676][ T1] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
->=20
->=20[ 12.474870][ T1] BUG: KASAN: slab-use-after-free in v9fs_stat2inode_=
-dotl+0x9d6/0xb80
->=20
->=20[ 12.475060][ T1] Read of size 8 at addr ffff888002bdbad8 by task swa=
-pper/0/1
->=20
->=20[ 12.475248][ T1]=20
->=20
-> [ 12.475314][ T1] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.8.0-virtm=
-e #1
->=20
->=20[ 12.475503][ T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 199=
-6), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
->=20
->=20[ 12.475811][ T1] Call Trace:
->=20
->=20[ 12.475908][ T1] <TASK>
->=20
->=20[ 12.475976][ T1] dump_stack_lvl+0x82/0xd0
->=20
->=20[ 12.476133][ T1] print_address_description.constprop.0+0x2c/0x3b0
->=20
->=20[ 12.476295][ T1] ? v9fs_stat2inode_dotl+0x9d6/0xb80
->=20
->=20[ 12.476425][ T1] print_report+0xb4/0x270
->=20
->=20[ 12.476552][ T1] ? kasan_addr_to_slab+0x4e/0x90
->=20
->=20[ 12.476679][ T1] kasan_report+0xbd/0xf0
->=20
->=20[ 12.476775][ T1] ? v9fs_stat2inode_dotl+0x9d6/0xb80
->=20
->=20[ 12.476903][ T1] v9fs_stat2inode_dotl+0x9d6/0xb80
->=20
->=20[ 12.477053][ T1] v9fs_fid_iget_dotl+0x18c/0x210
->=20
->=20[ 12.477180][ T1] v9fs_mount+0x3fe/0x7d0
->=20
->=20[ 12.477281][ T1] ? __pfx_v9fs_mount+0x10/0x10
->=20
->=20[ 12.477406][ T1] ? vfs_parse_fs_string+0xdb/0x130
->=20
->=20[ 12.477533][ T1] ? __pfx_vfs_parse_fs_string+0x10/0x10
->=20
->=20[ 12.477660][ T1] ? __pfx_v9fs_mount+0x10/0x10
->=20
->=20[ 12.477786][ T1] legacy_get_tree+0x107/0x200
->=20
->=20[ 12.477912][ T1] vfs_get_tree+0x8a/0x2e0
->=20
->=20[ 12.478042][ T1] do_new_mount+0x27d/0x5e0
->=20
->=20[ 12.478170][ T1] ? __pfx_do_new_mount+0x10/0x10
->=20
->=20[ 12.478294][ T1] ? __pfx___debug_check_no_obj_freed+0x10/0x10
->=20
->=20[ 12.478453][ T1] ? __virt_addr_valid+0x227/0x420
->=20
->=20[ 12.478583][ T1] path_mount+0x271/0x14f0
->=20
->=20[ 12.478713][ T1] ? __pfx_path_mount+0x10/0x10
->=20
->=20[ 12.478840][ T1] ? kmem_cache_free+0xd7/0x220
->=20
->=20[ 12.478970][ T1] ? kern_path+0x3d/0x50
->=20
->=20[ 12.479068][ T1] init_mount+0x9d/0xf0
->=20
->=20[ 12.479164][ T1] ? __pfx_init_mount+0x10/0x10
->=20
->=20[ 12.479292][ T1] do_mount_root+0xbc/0x330
->=20
->=20[ 12.479419][ T1] mount_root_generic+0x22c/0x470
->=20
->=20[ 12.479550][ T1] ? __pfx_mount_root_generic+0x10/0x10
->=20
->=20[ 12.479680][ T1] ? mount_root+0x25b/0x2f0
->=20
->=20[ 12.479807][ T1] prepare_namespace+0xa5/0x2d0
->=20
->=20[ 12.479933][ T1] ? __pfx_prepare_namespace+0x10/0x10
->=20
->=20[ 12.480061][ T1] ? __pfx_kernel_init+0x10/0x10
->=20
->=20[ 12.480188][ T1] kernel_init+0x20/0x200
->=20
->=20[ 12.480285][ T1] ? __pfx_kernel_init+0x10/0x10
->=20
->=20[ 12.480410][ T1] ret_from_fork+0x31/0x70
->=20
->=20[ 12.480543][ T1] ? __pfx_kernel_init+0x10/0x10
->=20
->=20[ 12.480670][ T1] ret_from_fork_asm+0x1a/0x30
->=20
->=20[ 12.480807][ T1] </TASK>
->=20
->=20[ 12.480904][ T1]=20
->=20
-> [ 12.480969][ T1] Allocated by task 1:
->=20
->=20[ 12.481063][ T1] kasan_save_stack+0x24/0x50
->=20
->=20[ 12.481191][ T1] kasan_save_track+0x14/0x30
->=20
->=20[ 12.481323][ T1] __kasan_kmalloc+0x7f/0x90
->=20
->=20[ 12.481449][ T1] p9_client_getattr_dotl+0x4c/0x1a0
->=20
->=20[ 12.481576][ T1] v9fs_fid_iget_dotl+0xca/0x210
->=20
->=20[ 12.481706][ T1] v9fs_mount+0x3fe/0x7d0
->=20
->=20[ 12.481801][ T1] legacy_get_tree+0x107/0x200
->=20
->=20[ 12.481927][ T1] vfs_get_tree+0x8a/0x2e0
->=20
->=20[ 12.482053][ T1] do_new_mount+0x27d/0x5e0
->=20
->=20[ 12.482178][ T1] path_mount+0x271/0x14f0
->=20
->=20[ 12.482303][ T1] init_mount+0x9d/0xf0
->=20
->=20[ 12.482397][ T1] do_mount_root+0xbc/0x330
->=20
->=20[ 12.482523][ T1] mount_root_generic+0x22c/0x470
->=20
->=20[ 12.482649][ T1] prepare_namespace+0xa5/0x2d0
->=20
->=20[ 12.482779][ T1] kernel_init+0x20/0x200
->=20
->=20[ 12.482876][ T1] ret_from_fork+0x31/0x70
->=20
->=20[ 12.483002][ T1] ret_from_fork_asm+0x1a/0x30
->=20
->=20[ 12.483128][ T1]=20
->=20
-> [ 12.483191][ T1] Freed by task 1:
->=20
->=20[ 12.483283][ T1] kasan_save_stack+0x24/0x50
->=20
->=20[ 12.483409][ T1] kasan_save_track+0x14/0x30
->=20
->=20[ 12.483535][ T1] kasan_save_free_info+0x3b/0x60
->=20
->=20[ 12.483662][ T1] __kasan_slab_free+0xf4/0x180
->=20
->=20[ 12.483788][ T1] kfree+0xd3/0x230
->=20
->=20[ 12.483886][ T1] v9fs_fid_iget_dotl+0x15e/0x210
->=20
->=20[ 12.484017][ T1] v9fs_mount+0x3fe/0x7d0
->=20
->=20[ 12.484112][ T1] legacy_get_tree+0x107/0x200
->=20
->=20[ 12.484238][ T1] vfs_get_tree+0x8a/0x2e0
->=20
->=20[ 12.484365][ T1] do_new_mount+0x27d/0x5e0
->=20
->=20[ 12.484492][ T1] path_mount+0x271/0x14f0
->=20
->=20[ 12.484619][ T1] init_mount+0x9d/0xf0
->=20
->=20[ 12.484713][ T1] do_mount_root+0xbc/0x330
->=20
->=20[ 12.484846][ T1] mount_root_generic+0x22c/0x470
->=20
->=20[ 12.484974][ T1] prepare_namespace+0xa5/0x2d0
->=20
->=20[ 12.485100][ T1] kernel_init+0x20/0x200
->=20
->=20[ 12.485196][ T1] ret_from_fork+0x31/0x70
->=20
->=20[ 12.485324][ T1] ret_from_fork_asm+0x1a/0x30
->=20
->=20[ 12.485449][ T1]=20
->=20
-> [ 12.485512][ T1] The buggy address belongs to the object at ffff888002=
-bdbad8
->=20
->=20[ 12.485512][ T1] which belongs to the cache kmalloc-192 of size 192
->=20
->=20[ 12.485825][ T1] The buggy address is located 0 bytes inside of
->=20
->=20[ 12.485825][ T1] freed 192-byte region [ffff888002bdbad8, ffff888002=
-bdbb98)
->=20
->=20[ 12.486131][ T1]=20
->=20
-> [ 12.486194][ T1] The buggy address belongs to the physical page:
->=20
->=20[ 12.486347][ T1] page: refcount:1 mapcount:0 mapping:000000000000000=
-0 index:0xffff888002bdbc10 pfn:0x2bda
->=20
->=20[ 12.486600][ T1] head: order:1 entire_mapcount:0 nr_pages_mapped:0 p=
-incount:0
->=20
->=20[ 12.486795][ T1] flags: 0x80000000000a40(workingset|slab|head|node=
-=3D0|zone=3D1)
->=20
->=20[ 12.486989][ T1] page_type: 0xffffffff()
->=20
->=20[ 12.487088][ T1] raw: 0080000000000a40 ffff888001042c40 ffff88800104=
-0a88 ffff888001040a88
->=20
->=20[ 12.487315][ T1] raw: ffff888002bdbc10 00000000001a0017 00000001ffff=
-ffff 0000000000000000
->=20
->=20[ 12.487538][ T1] head: 0080000000000a40 ffff888001042c40 ffff8880010=
-40a88 ffff888001040a88
->=20
->=20[ 12.487765][ T1] head: ffff888002bdbc10 00000000001a0017 00000001fff=
-fffff 0000000000000000
->=20
->=20[ 12.487992][ T1] head: 0080000000000001 ffffea00000af681 dead0000000=
-00122 00000000ffffffff
->=20
->=20[ 12.488213][ T1] head: 0000000200000000 0000000000000000 00000000fff=
-fffff 0000000000000000
->=20
->=20[ 12.488436][ T1] page dumped because: kasan: bad access detected
->=20
->=20[ 12.488590][ T1]=20
->=20
-> [ 12.488653][ T1] Memory state around the buggy address:
->=20
->=20[ 12.488797][ T1] ffff888002bdb980: fc fc fc fc 00 00 00 00 00 00 00 =
-00 00 00 00 00
->=20
->=20[ 12.488986][ T1] ffff888002bdba00: 00 00 00 00 00 00 00 00 00 00 fc =
-fc fc fc fc fc
->=20
->=20[ 12.489168][ T1] >ffff888002bdba80: fc fc fc fc fc fc fc fc fc fc fc=
- fa fb fb fb fb
->=20
->=20[ 12.489353][ T1] ^
->=20
->=20[ 12.489506][ T1] ffff888002bdbb00: fb fb fb fb fb fb fb fb fb fb fb =
-fb fb fb fb fb
->=20
->=20[ 12.489688][ T1] ffff888002bdbb80: fb fb fb fc fc fc fc fc fc fc fc =
-fc fc fc fc fc
->=20
->=20[ 12.489873][ T1] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
+On Fri, 22 Mar 2024 at 12:56, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Mon, May 01, 2023 at 04:49:31PM +0200, Ricardo Ribalda wrote:
+> > Struct uvc_frame and uvc_format are packaged together on
+> > streaming->formats on a sigle allocation.
+>
+> s/sigle/single/
+>
+> >
+> > This is working fine because both structures have a field with a
+> > pointer, but it will stop working when the sizeof() of any of those
+> > structs is not a muliple of the sizeof(void*).
+> >
+> > Make that aligment contract explicit.
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> > This is better than 3 allocations, and do not have any performance
+> > penalty.
+> > ---
+> >  drivers/media/usb/uvc/uvcvideo.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 9a596c8d894a..03e8a543c8e6 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -252,7 +252,7 @@ struct uvc_frame {
+> >       u8  bFrameIntervalType;
+> >       u32 dwDefaultFrameInterval;
+> >       u32 *dwFrameInterval;
+> > -};
+> > +} __aligned(sizeof(void *)); /* uvc_frame is packed on streaming->formats. */
+>
+> Don't we need u32 alignment here, not void * alignment, given that
+> uvc_frame is followed by an array of u32 ?
+
+Let me make sure that I explain myself :)
+
+I made a small program in compiler explorer:
+https://godbolt.org/z/7s9z8WTsx that shows the error that I want to
+avoid
+
+When we have a structure like this:
+
+struct n_foo_bar {
+   int n;
+   struct foo *foo;
+   struct bar *bar;
+};
+
+We expect that *foo and *bar point to memory addresses with the right
+cpu alignment for each struct. Otherwise accessing foo and bar could
+be slow or simply not work.
+
+In the driver we are doing something like this to allocate the structure:
+
+int size
+struct n_foo_bar *out;
+
+size = n*sizeof(struct foo)+n*sizeof(struct bar) +sizeof(struct n_foo_bar);
+out = malloc(size);
+if (!out)
+  return out;
+
+out->foo=(void *)(out)+sizeof(struct n_foo_bar);
+out->bar=(void *)(out->foo)+n*sizeof(struct foo);
+
+But that only works if sizeof(struct foo) is a multiple of the
+alignment required by struct bar. We are "lucky" now because we have a
+pointer in each struct and that gives us a void* padding. ... but if
+we ever remove that pointer from the structure we will be in a bad
+position.
+
+With the  __aligned(sizeof(void *)); I want to explicitly say:
+
+"Ey, this struct is embedded in another struct and they are allocated
+contiguously"
+
+Does it make more sense now?
+
+>
+> >
+> >  struct uvc_format {
+> >       u8 type;
+> > @@ -266,7 +266,7 @@ struct uvc_format {
+> >
+> >       unsigned int nframes;
+> >       struct uvc_frame *frame;
+> > -};
+> > +} __aligned(sizeof(void *)); /* uvc_format is packed on streaming->formats. */
+>
+> Same here, technically we need to ensure that the following uvc_frame
+> will be aligned. void * alignment will give us that now, but that's not
+> the actual constraint.
+>
+> Wouldn't it be better to handle the alignment constraints explicitly
+> when allocating the memory ? It's not that uvc_frame and uvc_format have
+> intrinsic alignment constraints, the constraints are only needed because
+> of the way memory is allocated.
+>
+> >
+> >  struct uvc_streaming_header {
+> >       u8 bNumFormats;
+> >
+> > ---
+> > base-commit: 58390c8ce1bddb6c623f62e7ed36383e7fa5c02f
+> > change-id: 20230501-uvc-align-6ff202b68dab
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+-- 
+Ricardo Ribalda
 
