@@ -1,119 +1,130 @@
-Return-Path: <linux-kernel+bounces-111113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 656D588680D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:16:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B008D886815
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:17:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25799288444
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:16:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66EF31F2551D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0777217589;
-	Fri, 22 Mar 2024 08:16:05 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E238517566;
+	Fri, 22 Mar 2024 08:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=zytor.com header.i=@zytor.com header.b="JuGtM0tf"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A8F171C7
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0362171BA;
+	Fri, 22 Mar 2024 08:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711095364; cv=none; b=hT9A+vTzXS6CyQS8GaI7KLdY+MJNj1Qfb4q85M3+ULoNgtfUer5q66j0FS054sPZzc1yqQok412uSPeQfASt2MkF/BB58wtkv8yfOQ3CCwy2oS1xc9SaCjrJUnQYn74zASljVvfGTCJcyN43t8YRW7wMABe2lGtweX57J1hc4bQ=
+	t=1711095424; cv=none; b=qAWAgvdleKkszq7DCs4KOkSIvCrGv2+LGWUsEFWECEgw8oYA9ty6TlYsGIF6dGQge06moiUGjRq6T/uXHGFXgTG9EVjUOCySpB95vNjZyRMshyRHC/Hp3GaYnz6GN4mrMCxslqoiKvPRtdDfLq106kIAzc5rovomm5Qfg9h5iIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711095364; c=relaxed/simple;
-	bh=qX9W0ylN2sPwDi09Z/FTDNjcpHGUfiTpvS/c2SCQe0Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=N9Fbxp8MVtSDiKyNY6yyxyluwJkQ/Ad2USMsehtEwbDeioemCEmdUEAL7H6bDq6+MniKHQDzPrJxcz59pZ+pMMUcLOKB+q/0JXdG+zzdjAqNeAb3YOshJ86ue20FoonVVND0I16LZkW3Fu5kY3M7Iw0ITB7EZ+ylnHEgtTOCdfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V1FTB0l9VztQXK;
-	Fri, 22 Mar 2024 16:13:34 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (unknown [7.185.36.186])
-	by mail.maildlp.com (Postfix) with ESMTPS id B951218007C;
-	Fri, 22 Mar 2024 16:15:52 +0800 (CST)
-Received: from octopus.huawei.com (10.67.174.191) by
- dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 22 Mar 2024 16:15:52 +0800
-From: Zhang Qiao <zhangqiao22@huawei.com>
-To: <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>,
-	<vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
-	<rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
-	<bristot@redhat.com>, <vschneid@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <qianjun.kernel@gmail.com>,
-	<laoar.shao@gmail.com>, Zhang Qiao <zhangqiao22@huawei.com>
-Subject: [PATCH] sched: Improve the accuracy of sched_stat_wait statistics for rt and dl
-Date: Fri, 22 Mar 2024 16:15:21 +0800
-Message-ID: <20240322081521.2687856-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+	s=arc-20240116; t=1711095424; c=relaxed/simple;
+	bh=G7RBzwIgb5QiL9kTtpqRRxwj3m/Y/RELefnFYmC61xA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fG6rCTrUJ9utzzq9gZKYm04POCK2KZA3ZeAoVDGSaYdqAm0COfs9H43o2EcPZuSmIeTkZ4we3C4PmzznS1BriggF042pfRpDTOSezLxtEDS7oNAH1CpNX4ljgVMDFCN211s6XoHFOnMLUUlj+9qUGO2HfmwDWtZgNCtx5jWpWzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=JuGtM0tf; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42M8GG9e3346191
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Fri, 22 Mar 2024 01:16:20 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42M8GG9e3346191
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024031401; t=1711095381;
+	bh=k7eKfOcnuljC+WdHZ/WvG4Vv4XD7QPRuthF5whrgwF8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JuGtM0tfu2fMqhIFFArB2uZWF+01NrS3nd8DhPk1sXKePwN4vKwJm70aIdLap8sMt
+	 bkSNerFhQQ257nyuye8Hd7DP+r2vcORa1bihR1bPrvDALT+J0KqxlXfg3hMFq3O4Fn
+	 t1ynGTKCsGGFMh9bW0TCO/Q/8aeRhcN8ukr86ksHcMHFWq5eCvQVbXSDmR6tc8AjDE
+	 TvuAclOnO93GMlohYvihnxb4fYZGdocn71wWdH6CqZXO9bISwZKIueiEhP33jCXTI/
+	 bYTu7XZjgnuBvcECdB72tegow3CsDLVhb47IYC65XMLvkT7rYAX6zhyjMzNhuM8DP4
+	 gh3QA90BSWvWA==
+From: "Xin Li (Intel)" <xin@zytor.com>
+To: linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-arch@vger.kernel.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        jgross@suse.com, boris.ostrovsky@oracle.com, arnd@arndb.de
+Subject: [PATCH v3 1/1] x86: Rename __{start,end}_init_task to __{start,end}_init_stack
+Date: Fri, 22 Mar 2024 01:16:16 -0700
+Message-ID: <20240322081616.3346181-1-xin@zytor.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500018.china.huawei.com (7.185.36.186)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Where commit b9c88f752268 ("sched/fair: Improve the accuracy of
-sched_stat_wait statistics") fixed a wrong scenairio for cfs schedstat.
+The stack of a task has been separated from the memory of a task_struct
+struture for a long time on x86, as a result __{start,end}_init_task no
+longer mark the start and end of the init_task structure, but its stack
+only.
 
-This wrong scenario is also present for the RT task. For avoiding this
-scenario, add wait_start check in __update_stats_wait_end();
+Rename __{start,end}_init_task to __{start,end}_init_stack.
 
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+Note other architectures are not affected because __{start,end}_init_task
+are used on x86 only.
+
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
 ---
- kernel/sched/fair.c  |  9 ---------
- kernel/sched/stats.c | 11 ++++++++++-
- 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6a16129f9a5c..36c81fe0086b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1208,15 +1208,6 @@ update_stats_wait_end_fair(struct cfs_rq *cfs_rq, struct sched_entity *se)
+Change since v2:
+* Rebase to the latest tip master branch.
+
+Change since v1:
+* Revert an accident insane change, init_task to init_stack (Jürgen Groß).
+---
+ arch/x86/kernel/vmlinux.lds.S     | 2 +-
+ include/asm-generic/vmlinux.lds.h | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index d430880175f2..3509afc6a672 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -168,7 +168,7 @@ SECTIONS
+ 		INIT_TASK_DATA(THREAD_SIZE)
  
- 	stats = __schedstats_from_se(se);
+ 		/* equivalent to task_pt_regs(&init_task) */
+-		__top_init_kernel_stack = __end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE;
++		__top_init_kernel_stack = __end_init_stack - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE;
  
--	/*
--	 * When the sched_schedstat changes from 0 to 1, some sched se
--	 * maybe already in the runqueue, the se->statistics.wait_start
--	 * will be 0.So it will let the delta wrong. We need to avoid this
--	 * scenario.
--	 */
--	if (unlikely(!schedstat_val(stats->wait_start)))
--		return;
--
- 	if (entity_is_task(se))
- 		p = task_of(se);
+ #ifdef CONFIG_X86_32
+ 		/* 32 bit has nosave before _edata */
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index cb46306d8305..9752eb420ffa 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -399,13 +399,13 @@
  
-diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-index 857f837f52cb..7077eb490c09 100644
---- a/kernel/sched/stats.c
-+++ b/kernel/sched/stats.c
-@@ -20,8 +20,17 @@ void __update_stats_wait_start(struct rq *rq, struct task_struct *p,
- void __update_stats_wait_end(struct rq *rq, struct task_struct *p,
- 			     struct sched_statistics *stats)
- {
--	u64 delta = rq_clock(rq) - schedstat_val(stats->wait_start);
-+	u64 delta;
+ #define INIT_TASK_DATA(align)						\
+ 	. = ALIGN(align);						\
+-	__start_init_task = .;						\
++	__start_init_stack = .;						\
+ 	init_thread_union = .;						\
+ 	init_stack = .;							\
+ 	KEEP(*(.data..init_task))					\
+ 	KEEP(*(.data..init_thread_info))				\
+-	. = __start_init_task + THREAD_SIZE;				\
+-	__end_init_task = .;
++	. = __start_init_stack + THREAD_SIZE;				\
++	__end_init_stack = .;
  
-+	/*
-+	 * When the sched_schedstat changes from 0 to 1, some sched se
-+	 * maybe already in the runqueue, the stats->wait_start will be 0.
-+	 * So it will let the delta wrong. We need to avoid this scenario.
-+	 */
-+	if (unlikely(!schedstat_val(stats->wait_start)))
-+		return;
-+
-+	delta = rq_clock(rq) - schedstat_val(stats->wait_start);
- 	if (p) {
- 		if (task_on_rq_migrating(p)) {
- 			/*
+ #define JUMP_TABLE_DATA							\
+ 	. = ALIGN(8);							\
+
+base-commit: 93387dba36cc9033724d8b874a5cf6779ef084ab
 -- 
-2.18.0.huawei.25
+2.44.0
 
 
