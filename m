@@ -1,104 +1,99 @@
-Return-Path: <linux-kernel+bounces-112092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8D918875B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:20:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83A08875BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:25:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13B5D1C22D86
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:20:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7411F22B7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5307082D76;
-	Fri, 22 Mar 2024 23:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ka5PHCyY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234B082C60;
+	Fri, 22 Mar 2024 23:25:28 +0000 (UTC)
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6225A7EF05;
-	Fri, 22 Mar 2024 23:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4009B8005C;
+	Fri, 22 Mar 2024 23:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711149588; cv=none; b=a2h41iclxISNtDykq63G75cGAjlPziiNcrggb6+v2qlIEi29BkIMEoJwODhxjqvxXZw037Tk8RPJxJPZAX1VQjvW3QCAI4MEzE86qgMfQ1ofgWRHAZduLJOyE4umIFLiaiEsZnoWOsxax9Rw/3Q2GJgFLo2zcwM8YsoAzbxicSE=
+	t=1711149927; cv=none; b=ehEv5GcQvuVkI3qmvI+/G5jP7OHgsaMbfAUz2oUBh0V9KYYAz/mtEDSrGOmbleGo1qDExvubGJwaXzZP1AYhvqZ56uUVvkmGAumUJQqny7OUAZSoqGXMcubdDLTySa6RmSQ05U90FEQ76sF+kAWO0c/WVth/P4Wuw9ckJ/Mdt2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711149588; c=relaxed/simple;
-	bh=msieq1rlX+OhvWYoM0YV5KS97Dsg2PJYaBtuHVmZvcg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O7Z0zjKFbLW2twVBovyLEITwGs2kEFiBvyAVEAKpsdXtE/I5dwwEkED+9gN5c8MvbeekxI9f4GDl8iy4RSUVHlny9rKMbj3kPdBIDa5rW7SR6qTyZQZ5UGuLmxK53ukuIli31AFhVyIug2TA6Jy/HxH2fbsqXU67llLohuOZwlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ka5PHCyY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8F27C433C7;
-	Fri, 22 Mar 2024 23:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711149587;
-	bh=msieq1rlX+OhvWYoM0YV5KS97Dsg2PJYaBtuHVmZvcg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ka5PHCyYmoZX9PsvxUAGJqdDBExkTkresHF1kC0nKcGUkpNWTtXfCM9eM3lON00E/
-	 sdTUglbJIwNhSuRIDCc+Shrxp7Q7F8OSC60m4cCVgaPGJWVHsM13+iCe/YoHIFFgiu
-	 5HybDp8YS06v2Xztbb1h0oBMyxoqE2gUndhvBCAbY26U2oBUOD1EZxE7LZ38fBL/QI
-	 5JZ0BUBtxg5FufRT6Zts8zD6NNC0atF7skifKgwBOdLblk5mTaX0LRELnaXdtdEHfX
-	 1o+GQ6VMkk+C/AzTNXltKD4XdDE8tCJ68h7rFM9MN2K/6Z5mQBQ5/GwiPbhToKc2vD
-	 QsSjoQ81Meb1g==
-Date: Fri, 22 Mar 2024 16:19:44 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>, David Wei <dw@davidwei.uk>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, Sumit
- Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, Jason
- Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
- Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-Message-ID: <20240322161944.4eba02b6@kernel.org>
-In-Reply-To: <CAHS8izMT1Smz6UWu2uwAQRqgZPU7jTfS3GKiA_sDw9KLqoP-JA@mail.gmail.com>
-References: <20240305020153.2787423-1-almasrymina@google.com>
-	<20240305020153.2787423-3-almasrymina@google.com>
-	<ZfegzB341oNc_Ocz@infradead.org>
-	<b938514c-61cc-41e6-b592-1003b8deccae@davidwei.uk>
-	<ZfjMopBl27-7asBc@infradead.org>
-	<CAHS8izMT1Smz6UWu2uwAQRqgZPU7jTfS3GKiA_sDw9KLqoP-JA@mail.gmail.com>
+	s=arc-20240116; t=1711149927; c=relaxed/simple;
+	bh=5RYkymBYdPWldH4GqePzR7As5ngYcFHxLJCbmvwwcN8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uN4/hwqMiJ7iynUVjZfbk8CKhDlAtyTIfka2xSHuk15oTie0JMWSd4FTZkAWCGRwd5Ddle7cJ8o4iPnmbgay1Ge7hQOp3q8fO5ziiUHAmRqCWySLqAk4NPTxQzj+kLVmGawhSJTQElhWyjwRkyeI6yW9FGQd/9Dmq3O8zgoPgIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a46ebc0f49so1102458eaf.0;
+        Fri, 22 Mar 2024 16:25:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711149925; x=1711754725;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=seDqwfxKtP0d3EGvOIEgfuMWw/AVxjr6xapW+SLKXjo=;
+        b=W0soTc9pDmC2pfAFMZMjV22OluU1grxN3UZnKLU3NfwYb9EkV/wzE3Lo+T+HBbHO5u
+         YlFS1kZ8Jn6ppn2wQ++iyXPizj3YGQPFP/BFAEtf1j4QalISlmJiaOBdt7zdBOXFRxn0
+         KxFWlwCISDDAov7c0LaG6qgn8QG7zWsBtM1XYtemJJ4zI0O+mgwhaMS1L8xnk2+Q3q7C
+         Vo49eJI1X1+VRfLFwM1cIW6LhvMQ9pGobhbKebft3UniXP6pwUgdXBncwREFOpOQ7pHn
+         3TMmNHuElWY572BsGT3gcXdG3bXNsnZRynuIgKj9sZINHvPQ0orUbcOe83oaugjXznJU
+         M2UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVGK9hSPTMP/j3LiHWVoyOS8RGK0A6t6AShQvUJCPFMomeKELUKV8o0zZP/uVL9mbT2vvR3rYwQ5+nhkqQMJ4xF4ofgmv3tBPo6V8dEVT6TfBtHHcRQNIRvi2vhnTP8mdOnyG5oIYtF7iZW
+X-Gm-Message-State: AOJu0YwaLpVaCnZjV7TDAVFb9Ip2tKmoW1tyIIjSPqxDaHghsTTBbsHH
+	atw43qKPgq2QTyYAOCIhFNiPDP1mQBlEHFyi7hd7I37XVOdsNI+w
+X-Google-Smtp-Source: AGHT+IGp1ShymcKvguACWQ+punzelgzjxb1l7bH0I0950Yz3/jIfbFZO8iAZOHnMW38U18fSi3+SJQ==
+X-Received: by 2002:a05:6359:45a7:b0:17e:a3c0:f000 with SMTP id no39-20020a05635945a700b0017ea3c0f000mr1107653rwb.5.1711149925130;
+        Fri, 22 Mar 2024 16:25:25 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id h185-20020a636cc2000000b005e4fa511505sm2082616pgc.69.2024.03.22.16.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 16:25:24 -0700 (PDT)
+Date: Fri, 22 Mar 2024 23:25:18 +0000
+From: Wei Liu <wei.liu@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Wei Liu <wei.liu@kernel.org>,
+	Linux Kernel List <linux-kernel@vger.kernel.org>,
+	Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+	kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
+Subject: Re: [GIT PULL] Hyper-V commits for 6.9
+Message-ID: <Zf4TXtFMURWnSvxh@liuwe-devbox-debian-v2>
+References: <Zfuy5ZyocT7SRNCa@liuwe-devbox-debian-v2>
+ <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
 
-On Fri, 22 Mar 2024 10:40:26 -0700 Mina Almasry wrote:
-> Other designs for this hugepage use case are possible, I'm just
-> describing Jakub's idea for it as a potential use-case for these
-> hooks. 
+On Thu, Mar 21, 2024 at 10:06:53AM -0700, Linus Torvalds wrote:
+> On Wed, 20 Mar 2024 at 21:09, Wei Liu <wei.liu@kernel.org> wrote:
+> >
+> >   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20240320
+> 
+> Pulled, but...
+> 
+> Your pgp key expired two weeks ago. Please extend the expiration date
+> (and not something small!) and make sure to refresh the kernel.org
+> repo and/or other keyservers.
 
-I made it ops because I had 4 different implementations with different
-recycling algorithms. I think it's a fairly reasonable piece of code.
+Hmm... I thought I refreshed it right before the expiration date. I
+pushed it to Ubuntu's keyserver.
+
+I will check if something's wrong.
+
+Do you have a keyserver that you prefer?
+
+Thanks,
+Wei.
+
+> 
+>                  Linus
 
