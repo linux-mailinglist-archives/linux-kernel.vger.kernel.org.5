@@ -1,240 +1,253 @@
-Return-Path: <linux-kernel+bounces-111388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7654D886BAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:57:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A99F886BC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:59:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5C05B23557
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6C961F23153
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5533FE3D;
-	Fri, 22 Mar 2024 11:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D823FBA4;
+	Fri, 22 Mar 2024 11:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VoQxDRPR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hcqNHLCm"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2843F9E8
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DDC3EA83
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711108617; cv=none; b=jZb72TRdyOhkw+vWm15SmBub37n/LVkeVdXwdH9Omw0lVO+ln+2cg82DRvZ9QB334qwVEQvXORXZ4kGz49iFRZr4SvVnUAj8i3nwPScvnLONiD/MLr6Df9wHqhav1m5DOWLUdpQL49y/kvgqz3UqvNJIAZR4qkj5mtst3g+xqFc=
+	t=1711108756; cv=none; b=MudM61fcV1ojS2nD6BCU5I51Scamm0r3CI5bdXunlCC5pFSaylCKA7tAynVk7VUZuwErqVyZRT4IKExQcB+WM4dxu88JGoTnurK/CQaq5ABqEN2mUXKGs4drWyWbDNXxKPkEFF13D/ZzWVspMVtvqdD1rp3PV1taOX4LsjVbqqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711108617; c=relaxed/simple;
-	bh=Q4RS/3x0viHaa5JjdzuVSxgsfuVN6zlzwuYvVXD6sks=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BJwRBjZYY4JbZarab9kuQXECsQcRssrYVLzivwSFB3iS8N3O8YBpHQM39gBgn3EnVpkVSjZUsK7PaNxHKcD52J28CJKyIBhWfZ5sfegwO5y/Piw0InpKOBnKGuc7uTu3KxNvCYvExRm0tt/gcPFiUsP283TfLY2xASB7MHlRfgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VoQxDRPR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711108613;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BRTRiL57H/xzh7fXeNRidNb3wxYqBup/qLAl32c8wE8=;
-	b=VoQxDRPRvcIYkbdbPv4NgA2ogjMHSxVef6sDS94reveXQVBS7HTEt0Nv2M/ZPoxZPNAgMF
-	tnsS4yeaJpVDZN+tTcyZdEh00L6aUy0VAUHy9Y4lsoJr0cyAXY9cQwrpDL/+YxwqQPNtvR
-	kiTYRXqmXeHyAdv7n5EDEXI0zHP+SI0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-168-iecBo9tsOPuuuefjyQjlKA-1; Fri, 22 Mar 2024 07:56:47 -0400
-X-MC-Unique: iecBo9tsOPuuuefjyQjlKA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 37E8585CD5B;
-	Fri, 22 Mar 2024 11:56:47 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id A2E422022C24;
-	Fri, 22 Mar 2024 11:56:46 +0000 (UTC)
-Date: Fri, 22 Mar 2024 07:58:40 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, akpm@linux-foundation.org, tj@kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, willy@infradead.org, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH 1/6] writeback: collect stats of all wb of bdi in
- bdi_debug_stats_show
-Message-ID: <Zf1ycOu3ODf2UcNw@bfoster>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-2-shikemeng@huaweicloud.com>
- <20240321180620.mbint45pbyc74vpg@quack3>
- <a684ccdb-372f-b9e6-7239-ddb42a3f5f28@huaweicloud.com>
+	s=arc-20240116; t=1711108756; c=relaxed/simple;
+	bh=F5qQEjR1qoUONAo/BOL5ZuFSbThfYIkAdM7hUNQyGYM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F2s9Q5T00u24ZyzuCaIQjp/EvQv1U9V+veLuHCmtbPHQK4VKPFJdQ6jM20YZxthMYH3Cy/ksGVaUoUBUz1xvdCSxrFI6imukX6vgQ2ItRvWDyZ6lY8MSNR63oWqD66x+uefda3E+R0G13kxZgDSrJ+fiVqei2f7RfQPARk0EGVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hcqNHLCm; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso2125020276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711108753; x=1711713553; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EJ4qxaRb0DnjjjwFv0BXf+jboY67mKdpnlHN78YiQb4=;
+        b=hcqNHLCmv6/ppg899tmnHYxq8A8LGwupUJFWZRZnbYd8akLT3t39JJzGCsDNSSfObA
+         ImrO7GLQGs43QZDm+uiGwR19JjU8eUaWTiCs1Z6EdNWoPGMKI8on5u/V5CT6+//M3HNO
+         PW2R9bW6/v0o9pm5E53zyMHogJdNmba4ltzHMEMTJ16tRJpOL3XvDi4oQQEYD++DlCWN
+         7MOHEK3x+gQwkcs1Vk86Ot0BIPl2roiXXPuJI6WhTY7bxg/VhAKdZ1HMOgg/kzekeyxm
+         QmhYRb05BeKxPbyGJYmySQtS+QqB7dqRVsog0b8NoUbPc9ONqJXuB58ePz4xNCDjDlXy
+         cXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711108753; x=1711713553;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EJ4qxaRb0DnjjjwFv0BXf+jboY67mKdpnlHN78YiQb4=;
+        b=eHo44D9z03FupSN56CCykFRFS3SPmKPpZbh4JtVR9ERgLLlC33oPsbGu5wnVi52z2V
+         bMqEjGg74qBYHaP/AswNI2uO2INze39LfRyJfCJqT9dirKCkfkNjTNGRVd6qLbAnuBID
+         Xnv9/MIYz3ClzM5CBfjmqLxx6qDUkRLaed1WY/TBi6DU7S4L8zkMc1soX+v0VJ7JfqYd
+         7dw2L6/ao+WNoXo7wtN0q9pXdcijpuRxDEJnf+bXdZu/zkWzJCeVKznq6iYY0fDLnhqP
+         RtAmMO3X+qjarWT3L7Vmx/Nndzu1pY0QSYB62ax+LE9zLvCQREh0OeiJB2xNAWAdch03
+         Dcdw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVPqX5TCc4C4OizBWo4Lei+GzgJ3TxtgCKUfI3roZ7DfRBLa5aIb7KXLmpGCXRzGT61WijWmRNdp3igSj+/Q/pwAgZKZnk0tfE4WAj
+X-Gm-Message-State: AOJu0YzQny1/1txln01Z15jRROiMOGxjCRR+RrF+VcUgDTMlNiw5jL2X
+	hDlf94zSBBtviW3738ZAMEDqSgRUGIYVCODYS8MFkOET8rFySKIkYDEqgXNr/hSUeZnRtem30Vd
+	c3H/la9/Hs1iMjKN7SwJgJsLRQu2eV8Rmhe3xydb2DetcX80g
+X-Google-Smtp-Source: AGHT+IG4PJW4EkXp9yDhjzJ9l54D0Nbyr3MBR5vOvVMeILc9lQZSEahak/8wu01jB44Tr5IqY8iB3AdtW6Nd5h+Z18E=
+X-Received: by 2002:a05:6902:50e:b0:dda:aa3e:73fc with SMTP id
+ x14-20020a056902050e00b00ddaaa3e73fcmr1783046ybs.41.1711108753359; Fri, 22
+ Mar 2024 04:59:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a684ccdb-372f-b9e6-7239-ddb42a3f5f28@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
+ <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-3-3ec0a966d52f@linaro.org>
+ <CAA8EJpoJWKZcZu3SY2P9dpYQ_KXkimRXNhAKfaOreCGZ1muYqw@mail.gmail.com> <1dc187c1-2005-486f-a9dd-6648cf52ab70@linaro.org>
+In-Reply-To: <1dc187c1-2005-486f-a9dd-6648cf52ab70@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 22 Mar 2024 13:59:02 +0200
+Message-ID: <CAA8EJprwAqCSpey0scgPHKEW7=DMKoh7EBmL2jtktKLwMM+rCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] phy: qcom: qmp-pcie: register second optional PHY
+ AUX clock
+To: neil.armstrong@linaro.org
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 22, 2024 at 03:51:27PM +0800, Kemeng Shi wrote:
-> 
-> 
-> on 3/22/2024 2:06 AM, Jan Kara wrote:
-> > On Wed 20-03-24 19:02:17, Kemeng Shi wrote:
-> >> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
-> >> of whole bdi, but only writeback information of bdi in root cgroup is
-> >> collected. So writeback information in non-root cgroup are missing now.
-> >> To be more specific, considering following case:
+On Fri, 22 Mar 2024 at 12:45, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> On 22/03/2024 11:41, Dmitry Baryshkov wrote:
+> > On Fri, 22 Mar 2024 at 11:43, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 > >>
-> >> /* create writeback cgroup */
-> >> cd /sys/fs/cgroup
-> >> echo "+memory +io" > cgroup.subtree_control
-> >> mkdir group1
-> >> cd group1
-> >> echo $$ > cgroup.procs
-> >> /* do writeback in cgroup */
-> >> fio -name test -filename=/dev/vdb ...
-> >> /* get writeback info of bdi */
-> >> cat /sys/kernel/debug/bdi/xxx/stats
-> >> The cat result unexpectedly implies that there is no writeback on target
-> >> bdi.
+> >> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
+> >> add the code to register it for PHYs configs that sets a aux_clock_rate.
 > >>
-> >> Fix this by collecting stats of all wb in bdi instead of only wb in
-> >> root cgroup.
+> >> In order to get the right clock, add qmp_pcie_clk_hw_get() which uses
+> >> the newly introduced QMP_PCIE_PIPE_CLK & QMP_PCIE_PHY_AUX_CLK clock
+> >> IDs and also supports the legacy bindings by returning the PIPE clock
+> >> when #clock-cells=0.
 > >>
-> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> > 
-> > Looks mostly good, one comment below:
-> > 
+> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> >
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >
+> > Small question below.
+> >
 > >> ---
-> >>  mm/backing-dev.c | 93 ++++++++++++++++++++++++++++++++++++------------
-> >>  1 file changed, 70 insertions(+), 23 deletions(-)
+> >>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 78 ++++++++++++++++++++++++++++++--
+> >>   1 file changed, 75 insertions(+), 3 deletions(-)
 > >>
-> >> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> >> index 5f2be8c8df11..788702b6c5dd 100644
-> >> --- a/mm/backing-dev.c
-> >> +++ b/mm/backing-dev.c
-> >> @@ -39,6 +39,19 @@ struct workqueue_struct *bdi_wq;
-> >>  #include <linux/debugfs.h>
-> >>  #include <linux/seq_file.h>
-> >>  
-> >> +struct wb_stats {
-> >> +	unsigned long nr_dirty;
-> >> +	unsigned long nr_io;
-> >> +	unsigned long nr_more_io;
-> >> +	unsigned long nr_dirty_time;
-> >> +	unsigned long nr_writeback;
-> >> +	unsigned long nr_reclaimable;
-> >> +	unsigned long nr_dirtied;
-> >> +	unsigned long nr_written;
-> >> +	unsigned long dirty_thresh;
-> >> +	unsigned long wb_thresh;
-> >> +};
+> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> index e8da2e9146dc..6c9a95e62429 100644
+> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> @@ -22,6 +22,8 @@
+> >>   #include <linux/reset.h>
+> >>   #include <linux/slab.h>
+> >>
+> >> +#include <dt-bindings/phy/phy-qcom-qmp.h>
 > >> +
-> >>  static struct dentry *bdi_debug_root;
-> >>  
-> >>  static void bdi_debug_init(void)
-> >> @@ -46,31 +59,65 @@ static void bdi_debug_init(void)
-> >>  	bdi_debug_root = debugfs_create_dir("bdi", NULL);
-> >>  }
-> >>  
-> >> -static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> >> +static void collect_wb_stats(struct wb_stats *stats,
-> >> +			     struct bdi_writeback *wb)
-> >>  {
-> >> -	struct backing_dev_info *bdi = m->private;
-> >> -	struct bdi_writeback *wb = &bdi->wb;
-> >> -	unsigned long background_thresh;
-> >> -	unsigned long dirty_thresh;
-> >> -	unsigned long wb_thresh;
-> >> -	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time;
-> >>  	struct inode *inode;
-> >>  
-> >> -	nr_dirty = nr_io = nr_more_io = nr_dirty_time = 0;
-> >>  	spin_lock(&wb->list_lock);
-> >>  	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
-> >> -		nr_dirty++;
-> >> +		stats->nr_dirty++;
-> >>  	list_for_each_entry(inode, &wb->b_io, i_io_list)
-> >> -		nr_io++;
-> >> +		stats->nr_io++;
-> >>  	list_for_each_entry(inode, &wb->b_more_io, i_io_list)
-> >> -		nr_more_io++;
-> >> +		stats->nr_more_io++;
-> >>  	list_for_each_entry(inode, &wb->b_dirty_time, i_io_list)
-> >>  		if (inode->i_state & I_DIRTY_TIME)
-> >> -			nr_dirty_time++;
-> >> +			stats->nr_dirty_time++;
-> >>  	spin_unlock(&wb->list_lock);
-> >>  
-> >> +	stats->nr_writeback += wb_stat(wb, WB_WRITEBACK);
-> >> +	stats->nr_reclaimable += wb_stat(wb, WB_RECLAIMABLE);
-> >> +	stats->nr_dirtied += wb_stat(wb, WB_DIRTIED);
-> >> +	stats->nr_written += wb_stat(wb, WB_WRITTEN);
-> >> +	stats->wb_thresh += wb_calc_thresh(wb, stats->dirty_thresh);
-> >> +}
+> >>   #include "phy-qcom-qmp-common.h"
+> >>
+> >>   #include "phy-qcom-qmp.h"
+> >> @@ -2389,6 +2391,9 @@ struct qmp_phy_cfg {
+> >>
+> >>          /* QMP PHY pipe clock interface rate */
+> >>          unsigned long pipe_clock_rate;
 > >> +
-> >> +#ifdef CONFIG_CGROUP_WRITEBACK
-> >> +static void bdi_collect_stats(struct backing_dev_info *bdi,
-> >> +			      struct wb_stats *stats)
+> >> +       /* QMP PHY AUX clock interface rate */
+> >> +       unsigned long aux_clock_rate;
+> >>   };
+> >>
+> >>   struct qmp_pcie {
+> >> @@ -2420,6 +2425,7 @@ struct qmp_pcie {
+> >>          int mode;
+> >>
+> >>          struct clk_fixed_rate pipe_clk_fixed;
+> >> +       struct clk_fixed_rate aux_clk_fixed;
+> >>   };
+> >>
+> >>   static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
+> >> @@ -3686,6 +3692,62 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
+> >>          return devm_clk_hw_register(qmp->dev, &fixed->hw);
+> >>   }
+> >>
+> >> +/*
+> >> + * Register a fixed rate PHY aux clock.
+> >> + *
+> >> + * The <s>_phy_aux_clksrc generated by PHY goes to the GCC that gate
+> >> + * controls it. The <s>_phy_aux_clk coming out of the GCC is requested
+> >> + * by the PHY driver for its operations.
+> >> + * We register the <s>_phy_aux_clksrc here. The gcc driver takes care
+> >> + * of assigning this <s>_phy_aux_clksrc as parent to <s>_phy_aux_clk.
+> >> + * Below picture shows this relationship.
+> >> + *
+> >> + *         +---------------+
+> >> + *         |   PHY block   |<<---------------------------------------------+
+> >> + *         |               |                                               |
+> >> + *         |   +-------+   |                      +-----+                  |
+> >> + *   I/P---^-->|  PLL  |---^--->phy_aux_clksrc--->| GCC |--->phy_aux_clk---+
+> >> + *    clk  |   +-------+   |                      +-----+
+> >> + *         +---------------+
+> >> + */
+> >> +static int phy_aux_clk_register(struct qmp_pcie *qmp, struct device_node *np)
 > >> +{
-> >> +	struct bdi_writeback *wb;
+> >> +       struct clk_fixed_rate *fixed = &qmp->aux_clk_fixed;
+> >> +       struct clk_init_data init = { };
+> >> +       int ret;
 > >> +
-> >> +	/* protect wb from release */
-> >> +	mutex_lock(&bdi->cgwb_release_mutex);
-> >> +	list_for_each_entry(wb, &bdi->wb_list, bdi_node)
-> >> +		collect_wb_stats(stats, wb);
-> >> +	mutex_unlock(&bdi->cgwb_release_mutex);
+> >> +       ret = of_property_read_string_index(np, "clock-output-names", 1, &init.name);
+> >> +       if (ret) {
+> >> +               dev_err(qmp->dev, "%pOFn: No clock-output-names index 1\n", np);
+> >> +               return ret;
+> >> +       }
+> >> +
+> >> +       init.ops = &clk_fixed_rate_ops;
+> >> +
+> >> +       fixed->fixed_rate = qmp->cfg->aux_clock_rate;
+> >> +       fixed->hw.init = &init;
+> >> +
+> >> +       return devm_clk_hw_register(qmp->dev, &fixed->hw);
 > >> +}
-> > 
-> > So AFAICT this function can race against
-> >   bdi_unregister() -> wb_shutdown(&bdi->wb)
-> > 
-> > because that doesn't take the cgwb_release_mutex. So we either need the RCU
-> > protection as Brian suggested or cgwb_lock or something. But given
-> > collect_wb_stats() can take a significant amount of time (traversing all
-> > the lists etc.) I think we'll need something more clever.
-> Sorry for missing this. I only pay attention to wb in cgroup as there is no
-> much change to how we use bdi->wb.
-> It seems that there was always a race between orginal bdi_debug_stats_show and
-> release of bdi as following
-> cat /.../stats
-> bdi_debug_stats_show
-> 			bdi_unregister
-> 			bdi_put
-> 			  release_bdi
-> 			    kfree(bdi)
->   use after free
-> 
-> I will fix this in next version. Thanks!
-> 
+> >> +
+> >> +static struct clk_hw *qmp_pcie_clk_hw_get(struct of_phandle_args *clkspec, void *data)
+> >> +{
+> >> +       struct qmp_pcie *qmp = data;
+> >> +
+> >> +       /* Support legacy bindings */
+> >> +       if (!clkspec->args_count)
+> >> +               return &qmp->pipe_clk_fixed.hw;
+> >> +
+> >> +       switch (clkspec->args[0]) {
+> >> +       case QMP_PCIE_PIPE_CLK:
+> >> +               return &qmp->pipe_clk_fixed.hw;
+> >> +       case QMP_PCIE_PHY_AUX_CLK:
+> >> +               return &qmp->aux_clk_fixed.hw;
+> >
+> > Does the absence of the default case trigger a warning if compiled with W=1?
+>
+> Nop it doesn't with GCC arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-linux-gnu + W=1 and with smatch and C=1
 
-BTW, I thought this was kind of the point of the tryget in the writeback
-path. I.e., the higher level loop runs under rcu_read_lock(), but in the
-case it needs to cycle the rcu lock it acquires a reference to the wb,
-and then can use that wb to continue the loop once the rcu lock is
-reacquired. IIUC, this works because the rcu list removal keeps the list
-->next pointer sane and then the ref keeps the wb memory from being
-freed. A tryget of any wb's that have been shutdown fails because the
-percpu ref counter has been killed.
+Ok, great!
 
-So I _think_ this means that for the stat collection use case, you could
-protect the overall walk with rcu as Jan alludes above, but then maybe
-use a combination of need_resched()/cond_resched_rcu() and wb_tryget()
-to introduce resched points and avoid holding lock(s) for too long.
+>
+> Neil
+>
+> >
+> >> +       }
+> >> +
+> >> +       return ERR_PTR(-EINVAL);
+> >> +}
+> >> +
+> >>   static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np)
+> >>   {
+> >>          int ret;
+> >> @@ -3694,9 +3756,19 @@ static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np
+> >>          if (ret)
+> >>                  return ret;
+> >>
+> >> -       ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &qmp->pipe_clk_fixed.hw);
+> >> -       if (ret)
+> >> -               return ret;
+> >> +       if (qmp->cfg->aux_clock_rate) {
+> >> +               ret = phy_aux_clk_register(qmp, np);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +
+> >> +               ret = of_clk_add_hw_provider(np, qmp_pcie_clk_hw_get, qmp);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +       } else {
+> >> +               ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &qmp->pipe_clk_fixed.hw);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +       }
+> >>
+> >>          /*
+> >>           * Roll a devm action because the clock provider is the child node, but
+> >>
+> >> --
+> >> 2.34.1
+> >>
+> >>
+> >
+> >
+>
 
-Personally, I wonder if since this is mainly debug code we could just
-get away with doing the simple thing of trying for a ref on each wb
-unconditionally rather than only in a need_resched() case, but maybe
-there are reasons not to do that... hm?
 
-Brian
-
-> > 
-> > 								Honza
-> > 
-> 
-
+-- 
+With best wishes
+Dmitry
 
