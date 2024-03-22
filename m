@@ -1,302 +1,134 @@
-Return-Path: <linux-kernel+bounces-111151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E773886863
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:41:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A63C6886866
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01F9A281F9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:41:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EF8AB20C65
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9CB18629;
-	Fri, 22 Mar 2024 08:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7041F18629;
+	Fri, 22 Mar 2024 08:45:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CJGV9vng"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbaKmzLl"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9059079F6;
-	Fri, 22 Mar 2024 08:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20418F4FA;
+	Fri, 22 Mar 2024 08:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711096906; cv=none; b=RaYsDcUUAVWzNerg0fAKEjE6Whlt+CqMNxnKxqnXnguu0H5t7L5pkAVU5RMvuipO/Wo/KRZzfcblFPdJV6GXio6CrC16F6wZBXWHhLyJKz3BOvVocS6NkF9ztHQgnRLvS15DITbU5xu4ZmvQbXqiLJiQvkwH/vdFVq/N8oY/jQc=
+	t=1711097119; cv=none; b=p4GIwa6GYYRWO5fdaETkqJNt132AJQXiyywbmSqvaC3PqvhNU/gIAXBXEOxbsSGzr+9m4NcjxqcsDy9szMEcbjqv4s8hpnMfTB5HlbezSyFTODQIRZ6gNWRVJ68Q1b1p15pnITlcn7nrHC1DgCLsZcxjhFWAGfiTRmJ5+cPEp8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711096906; c=relaxed/simple;
-	bh=lUc29sDLNaxzdQqbXFTr/bw/3I6o0uIxECNwJmIeNUw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ilUi3C/AobmVCzMlWWDEnhEVJmtX1OGH8cHMeAh4d/GigrguKKir9Ui+4pwz6hOxK8WR30JALTzZeKtnZpdV84oHReWFi7BSgjYGs8YdiQGotquKCuArKl2rdO37gu1WKmW1EZr2WxywCdlA5CyXAPpFuO09+c4Zb0VguOaOF5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CJGV9vng; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711096905; x=1742632905;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=lUc29sDLNaxzdQqbXFTr/bw/3I6o0uIxECNwJmIeNUw=;
-  b=CJGV9vngmJWFDDe3hXcjtc0KvHe96htfDjXW1fXkv/NOeqQ1Jy9lQuuD
-   /eY+q/DeGlBCldsl2hBUcR/cWT6mzyc3fXpYauSMbhyJprvNhOoo5A7M+
-   xmBLy22tSs/Pi3pNzQ9KhZBytDg4hPJSzFYajjp1eBK7U/hHC2VdrsSuJ
-   1lxwj2sq0kdXTgDDZO/GRSzeyiIPmzyzxAr2XepP6ZvAg/XI3lh2qaNdH
-   xV0tUc+LRBOZdmrUddlGkMHK1Y9bkQaWvaw4MjfcwX/oZdm7pshuR6sjT
-   7eVH6qjiV5JOTnMzl/IAnlTDX4KhnkBVy1mlGbgn8TMfjAMw91kUJk+IV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="23620916"
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="23620916"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 01:41:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="19487739"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 01:41:38 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Cc: "Gregory Price" <gourry.memverge@gmail.com>,
-  aneesh.kumar@linux.ibm.com,  mhocko@suse.com,  tj@kernel.org,
-  john@jagalactic.com,  "Eishan Mirakhur" <emirakhur@micron.com>,
-  "Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,  "Ravis OpenSrc"
- <Ravis.OpenSrc@micron.com>,  "Alistair Popple" <apopple@nvidia.com>,
-  "Srinivasulu Thanneeru" <sthanneeru@micron.com>,  Dan Williams
- <dan.j.williams@intel.com>,  Vishal Verma <vishal.l.verma@intel.com>,
-  Dave Jiang <dave.jiang@intel.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  nvdimm@lists.linux.dev,
-  linux-cxl@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-mm@kvack.org,  "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,  "Ho-Ren
- (Jack) Chuang" <horenchuang@gmail.com>,  qemu-devel@nongnu.org,  Hao Xiang
- <hao.xiang@bytedance.com>
-Subject: Re: [PATCH v4 2/2] memory tier: create CPUless memory tiers after
- obtaining HMAT info
-In-Reply-To: <20240322070356.315922-3-horenchuang@bytedance.com> (Ho-Ren
-	Chuang's message of "Fri, 22 Mar 2024 07:03:55 +0000")
-References: <20240322070356.315922-1-horenchuang@bytedance.com>
-	<20240322070356.315922-3-horenchuang@bytedance.com>
-Date: Fri, 22 Mar 2024 16:39:44 +0800
-Message-ID: <87cyrmr773.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711097119; c=relaxed/simple;
+	bh=ffZPhfs8D27xRgmcskKdyiYjUqpVTZr1aOvEyUA6vso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lPqoFgbadgTpsyCfzDiRfy9itdwePWPDr53GpGXCETUN59JSAD2GuPA7yBU2eckCyXs4C31bmcpB2peClaJ7uYGsLxkgU6HCsbLhl99A3lULiO0+Ugma/wMKa+kjWCdSOy2QKqa/8ZZNHV1IODiVYUPTH9tzjcV/71OXRXt9GOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbaKmzLl; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41468f6d584so13689865e9.0;
+        Fri, 22 Mar 2024 01:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711097116; x=1711701916; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aB/vJcbosEWR8zB5L3DEigEI/JurQaOSkuKB+JwQ5ns=;
+        b=lbaKmzLlg2nu0ustifOqbb41eN4HhadLsNURw5rct8JP0Y4iM0/+mlAPI/XDSrm04N
+         uMzAFClP3s5Meuesrk4MTsbBUc9hRu03my5izW2KQ9LachCZq8V9fh2ChAvqkdOOh8DZ
+         rkQrfCR8mUFperhhyrngtOw/zY11yqEpCYp9jOr2pvXWnWiCxpV3gqqw47YL0E6+xugJ
+         51Ol8pIMg2GDEifFqRu0lYta41D5DjPvyrDdBAZM5u7xCSFVG/Hm1IlY4xsfS+gkt27u
+         UggpdkwlbaVYEs2odsgmDoD+BvXSVWV6AVm0XUG0bA6A1XJAhnOWgGd2u1JJ19r8jeGG
+         jhcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711097116; x=1711701916;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aB/vJcbosEWR8zB5L3DEigEI/JurQaOSkuKB+JwQ5ns=;
+        b=I2VXxpuF40cbIeHSRTOqxDJt1RRmsiAWftMdkLX/arsZ/Ek0BKW//5FHoLoPd6ZlDY
+         kDzg0P3Kg4GRwZaRm/L2zRlTEHiewYsLKYMgKzSMUe69uyhCPHvkFeKZfzsAeys4gwYJ
+         K5dYBpULQDveZVZflU1YTVdc5kxrkULXbR8AkqN+M0HlJwSPXoG9Ud3lEOBS+B+oyl4u
+         BrERqSsE1fG76olCcDzQlQwLBtPNMK+qMQ7eif5nlmAlo3bs28PfUIdjvfnEqQj5dB2E
+         xSpcA5L3p6CaSgNRLwYAbtrrvkpIP/EXhTuSlJNykWAbZO6QPd2EfspQ4rGysgCm3NEU
+         hGzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVs170dzwEu5HXuqziu+f6nWrit+qUug+woGg6koKqycoz1bR+n4znoOELmf0bBPgJ7TuXHZGuRn7x2E6uz8OXrnSDbYOFI8EerwyCUdS4XyeIHpTWRSz8uuOJ5C4Cbu87ahO39k1Vn2IxVzCsV
+X-Gm-Message-State: AOJu0YwAcGIJ1gS/+Vq9jegl9suKf7j3uZcU1cZifuUz5MmHpWDbQNeM
+	N2PHDu5SHtNIt+x6R6CFRMw837usECRYc2/rsHBAY6V2XDz1JEjB
+X-Google-Smtp-Source: AGHT+IGNWGu79l5+n6UgalfjdRlSwKK4IUXhGbq63EVCwDx1ijXrLMW6zfg8Zyp7LMklbqsnyP5bpw==
+X-Received: by 2002:a05:600c:3ca8:b0:413:fea7:bd19 with SMTP id bg40-20020a05600c3ca800b00413fea7bd19mr1024404wmb.15.1711097115824;
+        Fri, 22 Mar 2024 01:45:15 -0700 (PDT)
+Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
+        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b00414038b4d64sm2387878wmq.27.2024.03.22.01.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 01:45:15 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 22 Mar 2024 09:45:12 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
+	jgross@suse.com, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	peterz@infradead.org, gregkh@linuxfoundation.org,
+	tony.luck@intel.com, adobriyan@gmail.com,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
+ walk_relocs
+Message-ID: <Zf1FGI6E3wStJSQT@gmail.com>
+References: <20240317150547.24910-1-weiguixiong@bytedance.com>
+ <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
 
-"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
 
-> The current implementation treats emulated memory devices, such as
-> CXL1.1 type3 memory, as normal DRAM when they are emulated as normal memory
-> (E820_TYPE_RAM). However, these emulated devices have different
-> characteristics than traditional DRAM, making it important to
-> distinguish them. Thus, we modify the tiered memory initialization process
-> to introduce a delay specifically for CPUless NUMA nodes. This delay
-> ensures that the memory tier initialization for these nodes is deferred
-> until HMAT information is obtained during the boot process. Finally,
-> demotion tables are recalculated at the end.
->
-> * late_initcall(memory_tier_late_init);
-> Some device drivers may have initialized memory tiers between
-> `memory_tier_init()` and `memory_tier_late_init()`, potentially bringing
-> online memory nodes and configuring memory tiers. They should be excluded
-> in the late init.
->
-> * Handle cases where there is no HMAT when creating memory tiers
-> There is a scenario where a CPUless node does not provide HMAT information.
-> If no HMAT is specified, it falls back to using the default DRAM tier.
->
-> * Introduce another new lock `default_dram_perf_lock` for adist calculation
-> In the current implementation, iterating through CPUlist nodes requires
-> holding the `memory_tier_lock`. However, `mt_calc_adistance()` will end up
-> trying to acquire the same lock, leading to a potential deadlock.
-> Therefore, we propose introducing a standalone `default_dram_perf_lock` to
-> protect `default_dram_perf_*`. This approach not only avoids deadlock
-> but also prevents holding a large lock simultaneously.
->
-> * Upgrade `set_node_memory_tier` to support additional cases, including
->   default DRAM, late CPUless, and hot-plugged initializations.
-> To cover hot-plugged memory nodes, `mt_calc_adistance()` and
-> `mt_find_alloc_memory_type()` are moved into `set_node_memory_tier()` to
-> handle cases where memtype is not initialized and where HMAT information is
-> available.
->
-> * Introduce `default_memory_types` for those memory types that are not
->   initialized by device drivers.
-> Because late initialized memory and default DRAM memory need to be managed,
-> a default memory type is created for storing all memory types that are
-> not initialized by device drivers and as a fallback.
->
-> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> Signed-off-by: Hao Xiang <hao.xiang@bytedance.com>
-> ---
->  mm/memory-tiers.c | 73 ++++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 63 insertions(+), 10 deletions(-)
->
-> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> index 974af10cfdd8..9396330fa162 100644
-> --- a/mm/memory-tiers.c
-> +++ b/mm/memory-tiers.c
-> @@ -36,6 +36,11 @@ struct node_memory_type_map {
->  
->  static DEFINE_MUTEX(memory_tier_lock);
->  static LIST_HEAD(memory_tiers);
-> +/*
-> + * The list is used to store all memory types that are not created
-> + * by a device driver.
-> + */
-> +static LIST_HEAD(default_memory_types);
->  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
->  struct memory_dev_type *default_dram_type;
->  
-> @@ -108,6 +113,7 @@ static struct demotion_nodes *node_demotion __read_mostly;
->  
->  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
->
-> +static DEFINE_MUTEX(default_dram_perf_lock);
+* Kees Cook <keescook@chromium.org> wrote:
 
-Better to add comments about what is protected by this lock.
+> On Sun, 17 Mar 2024 23:05:47 +0800, Guixiong Wei wrote:
+> > The commit aaa8736370db ("x86, relocs: Ignore relocations in
+> > .notes section") only ignore .note section on print_absolute_relocs,
+> > but it also need to add on walk_relocs to avoid relocations in .note
+> > section.
+> > 
+> > 
+> 
+> Applied to for-next/hardening, thanks!
+> 
+> [1/1] x86, relocs: Ignore relocations in .notes section on walk_relocs
+>       https://git.kernel.org/kees/c/6ba438a29b5d
 
->  static bool default_dram_perf_error;
->  static struct access_coordinate default_dram_perf;
->  static int default_dram_perf_ref_nid = NUMA_NO_NODE;
-> @@ -505,7 +511,8 @@ static inline void __init_node_memory_type(int node, struct memory_dev_type *mem
->  static struct memory_tier *set_node_memory_tier(int node)
->  {
->  	struct memory_tier *memtier;
-> -	struct memory_dev_type *memtype;
-> +	struct memory_dev_type *mtype;
+Please don't - these are x86 patches, plus it contains an eyesore - see 
+below ...
 
-mtype may be referenced without initialization now below.
+Thanks,
 
-> +	int adist = MEMTIER_ADISTANCE_DRAM;
->  	pg_data_t *pgdat = NODE_DATA(node);
->  
->  
-> @@ -514,11 +521,20 @@ static struct memory_tier *set_node_memory_tier(int node)
->  	if (!node_state(node, N_MEMORY))
->  		return ERR_PTR(-EINVAL);
->  
-> -	__init_node_memory_type(node, default_dram_type);
-> +	mt_calc_adistance(node, &adist);
-> +	if (node_memory_types[node].memtype == NULL) {
-> +		mtype = mt_find_alloc_memory_type(adist, &default_memory_types);
-> +		if (IS_ERR(mtype)) {
-> +			mtype = default_dram_type;
-> +			pr_info("Failed to allocate a memory type. Fall back.\n");
-> +		}
-> +	}
->  
-> -	memtype = node_memory_types[node].memtype;
-> -	node_set(node, memtype->nodes);
-> -	memtier = find_create_memory_tier(memtype);
-> +	__init_node_memory_type(node, mtype);
-> +
-> +	mtype = node_memory_types[node].memtype;
-> +	node_set(node, mtype->nodes);
-> +	memtier = find_create_memory_tier(mtype);
->  	if (!IS_ERR(memtier))
->  		rcu_assign_pointer(pgdat->memtier, memtier);
->  	return memtier;
-> @@ -655,6 +671,34 @@ void mt_put_memory_types(struct list_head *memory_types)
->  }
->  EXPORT_SYMBOL_GPL(mt_put_memory_types);
->  
-> +/*
-> + * This is invoked via `late_initcall()` to initialize memory tiers for
-> + * CPU-less memory nodes after driver initialization, which is
-> + * expected to provide `adistance` algorithms.
-> + */
-> +static int __init memory_tier_late_init(void)
-> +{
-> +	int nid;
-> +
-> +	mutex_lock(&memory_tier_lock);
-> +	for_each_node_state(nid, N_MEMORY)
-> +		if (!node_state(nid, N_CPU) &&
-> +			node_memory_types[nid].memtype == NULL)
-> +			/*
-> +			 * Some device drivers may have initialized memory tiers
-> +			 * between `memory_tier_init()` and `memory_tier_late_init()`,
-> +			 * potentially bringing online memory nodes and
-> +			 * configuring memory tiers. Exclude them here.
-> +			 */
-> +			set_node_memory_tier(nid);
-> +
-> +	establish_demotion_targets();
-> +	mutex_unlock(&memory_tier_lock);
-> +
-> +	return 0;
-> +}
-> +late_initcall(memory_tier_late_init);
-> +
->  static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
->  {
->  	pr_info(
-> @@ -668,7 +712,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  {
->  	int rc = 0;
->  
-> -	mutex_lock(&memory_tier_lock);
-> +	mutex_lock(&default_dram_perf_lock);
->  	if (default_dram_perf_error) {
->  		rc = -EIO;
->  		goto out;
-> @@ -716,7 +760,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  	}
->  
->  out:
-> -	mutex_unlock(&memory_tier_lock);
-> +	mutex_unlock(&default_dram_perf_lock);
->  	return rc;
->  }
->  
-> @@ -732,7 +776,7 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  	    perf->read_bandwidth + perf->write_bandwidth == 0)
->  		return -EINVAL;
->  
-> -	mutex_lock(&memory_tier_lock);
-> +	mutex_lock(&default_dram_perf_lock);
->  	/*
->  	 * The abstract distance of a memory node is in direct proportion to
->  	 * its memory latency (read + write) and inversely proportional to its
-> @@ -745,7 +789,7 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  		(default_dram_perf.read_latency + default_dram_perf.write_latency) *
->  		(default_dram_perf.read_bandwidth + default_dram_perf.write_bandwidth) /
->  		(perf->read_bandwidth + perf->write_bandwidth);
-> -	mutex_unlock(&memory_tier_lock);
-> +	mutex_unlock(&default_dram_perf_lock);
->  
->  	return 0;
->  }
-> @@ -858,7 +902,8 @@ static int __init memory_tier_init(void)
->  	 * For now we can have 4 faster memory tiers with smaller adistance
->  	 * than default DRAM tier.
->  	 */
-> -	default_dram_type = alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
-> +	default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
-> +									&default_memory_types);
->  	if (IS_ERR(default_dram_type))
->  		panic("%s() failed to allocate default DRAM tier\n", __func__);
->  
-> @@ -868,6 +913,14 @@ static int __init memory_tier_init(void)
->  	 * types assigned.
->  	 */
->  	for_each_node_state(node, N_MEMORY) {
-> +		if (!node_state(node, N_CPU))
-> +			/*
-> +			 * Defer memory tier initialization on CPUless numa nodes.
-> +			 * These will be initialized after firmware and devices are
-> +			 * initialized.
-> +			 */
-> +			continue;
-> +
->  		memtier = set_node_memory_tier(node);
->  		if (IS_ERR(memtier))
->  			/*
+	Ingo
 
---
-Best Regards,
-Huang, Ying
+ relocs.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+Index: tip/arch/x86/tools/relocs.c
+===================================================================
+--- tip.orig/arch/x86/tools/relocs.c
++++ tip/arch/x86/tools/relocs.c
+@@ -752,9 +752,8 @@ static void walk_relocs(int (*process)(s
+ 		 * values there are meant for pre-boot consumption (e.g.
+ 		 * startup_xen).
+ 		 */
+-		if (sec_applies->shdr.sh_type == SHT_NOTE) {
++		if (sec_applies->shdr.sh_type == SHT_NOTE)
+ 			continue;
+-		}
+ 
+ 		sh_symtab = sec_symtab->symtab;
+ 		sym_strtab = sec_symtab->link->strtab;
 
