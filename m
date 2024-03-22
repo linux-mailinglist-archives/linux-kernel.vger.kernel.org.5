@@ -1,110 +1,106 @@
-Return-Path: <linux-kernel+bounces-111546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3678F886D87
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:42:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53974886D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:42:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB3B0B2578B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:42:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85CDA1C23B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E4554BFC;
-	Fri, 22 Mar 2024 13:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0754647A66;
+	Fri, 22 Mar 2024 13:34:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PZ1/pBbz"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pQsu4f6/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9DD54FBE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEBE4644E;
+	Fri, 22 Mar 2024 13:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114306; cv=none; b=Pfk1L0l9gin5zSQOHz04MIf9vTEMVdrCqa96ZorzqK7mS5noCUnywXZMdmSJuGRaIiaoYEkdli/uWzMFtZnFq8sqmNTicAu1MUkE20Xs2h/hC6KhNtlJrYOXxol1WDJgu1+Zuw7fUVOIRcFzccNAaSm19sDmOHX3KBQMFP6BGlI=
+	t=1711114440; cv=none; b=UPyGjtWuQ5+GPy4O14qjprV1GEIrHJNDAAq9tETjj0ZCg4ZTku2eGi3PUNuV3182hN/YLUar6oRIvkntNHnX6WPMOGB9ZN12zS20YBD0o6o1g3NyqFT5GrtPdyiztbxRQn9RxFdfCabCfq74mnYoSvSAddp2dvW6vijf+f3VtCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114306; c=relaxed/simple;
-	bh=Vq7R7pvWoT7nU/n+bLHDA3nkQF/8c8rorqIvMyTQsFw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qX2JXiOjibZHpB1FeJzSEeYaJq8CMno4hNN70MhkKWV5EFb+2fpU8G77tTbBYS8AZHUv3js8ufm1NLb3l6PNDzXtm90xIySkma/mfZnYwXeREeWh1Ey0jMsXW2wdS6exLvJPMxs9OHz8VeOCmD1j5AKNl4RkWQFGp8UKXeeSSsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PZ1/pBbz; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc742543119so2099250276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711114304; x=1711719104; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RYiJWD0Ul0Tt3aXboOB5LN8lg6CYH26yRurRIi/6JpA=;
-        b=PZ1/pBbz4Eqclgk8ogjWcfuNy5PDorsU/IuBL5jrlqpDrkIDDF/XJh2eo4AEOz5aNp
-         uITPKWvLe5DVkwSO5IG2km67A+9hvIcelHoIqoAL1f8S/jMixWqCFQXesBKXXbLxhLtc
-         xvXLRJFAzAAxBkmKWXHOD6DBadT+H1XJf8rtzJqqzXiPrvM/xkGXgVRLinufgDRmkoUF
-         2XmGf+A7a9W9F2jU32Rb6dmUzoEGk14vWt0hvhq2osyhlpWBVVpLANHwzFlas4kfDRFC
-         dxy8aQ7oIY7F4y4yWEqvpDi6f26GLDfXM3KJt94SyDLgESFfcf7NBaf3RIU7MTF0c1W/
-         zWAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711114304; x=1711719104;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RYiJWD0Ul0Tt3aXboOB5LN8lg6CYH26yRurRIi/6JpA=;
-        b=rUnZJOWHS9DE8m3frtIuN44dfNuohP11oR4ogRK2gLFzn6/rnsqghmsxyXojwiOXPY
-         zn39PwP62Vt322Flr32FCgNRdagAx9zJJkEN0Kce0zIbXLIrZYjoGWZD6+S7CxMhxUPM
-         vOoVVRzwVhltBYWkKrtfqcAcGHBzRw5sJav/vp1QmIk9caKqPfKrLfPrN1SFZEB1ONRY
-         7K/OFDXat3nGc4yXzN4WlYfP9V+xa+PujVOq4vDJoerRb8B2IQTThH6vynWsPg1AWUoD
-         ypx4miCfUs18RNoTtMP4oIinLJrco3rqUn4KHAOUFp7OURZmu/qxGqzDlQ5EcTv5C/lQ
-         BTbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXkBtbaGlfS2Ak5/gL5IubnCBFKJg5QTkWX7HQkC4BomjmilHPTiAYlSTAwOo642dxXbfgT+8Zcz9hx7kpOYorPOfkozPcUeWzzx5Zc
-X-Gm-Message-State: AOJu0YzXHD4lbDR4+F6A5ThCYS3lOC7IkfusPVqqSPWuAgNUWit1cwdq
-	M4bARDfwDxGeRh0NdtAuJ+c46J7ODH7yN18cHG4ptK07161cq27fK6ohq06I7E9yVMbOv0y71ue
-	tkGoqdN9cyrwzkZWx8R5XliMW1PwbF4XFmESH8g==
-X-Google-Smtp-Source: AGHT+IHSXoHBI+Zx3QkDSlxZKvtx9N74kcEcV/jBAp/cCjwxO+4WHNHkjLOfHtiJnTJ2hbqDQdUPCSB4SW25TLNmrDU=
-X-Received: by 2002:a25:83cd:0:b0:dc6:ff32:aae2 with SMTP id
- v13-20020a2583cd000000b00dc6ff32aae2mr1825871ybm.63.1711114303943; Fri, 22
- Mar 2024 06:31:43 -0700 (PDT)
+	s=arc-20240116; t=1711114440; c=relaxed/simple;
+	bh=yE5wBVMHogIzvyyzaRHBTaXQJOP4Z2kLr8QtkZBlMWw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aurM9xdxTg5wYWhJed07z4F89SE+Qxx/D9teTEqbdHScneKLRFpUJsu8gpQRN6BBPonzdkqbOiz6VO5uBwlFXXb+bAi/tSL3nbFjRAH9PxACMFDwJBFzeY4s4Jb4JgGsSz/AqJ2rh7hB2rQ2joBXW36zy8a2/ypuHxG125XhIkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pQsu4f6/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10874C433F1;
+	Fri, 22 Mar 2024 13:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711114439;
+	bh=yE5wBVMHogIzvyyzaRHBTaXQJOP4Z2kLr8QtkZBlMWw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pQsu4f6/TGxgJUdcMFkAxMPrajaxaOyOog13LeTSk3cPTVDLMGblTTiDM/5+IUV6S
+	 KP3VzkDWC4PmSLknOWUl7P4JNkTZol4Z5InmQ2mTE/gkNkzrbOy6tsmWkg9Dn00okJ
+	 k1ZqcXjqBInIYf28SnleEBL2bnDYu/BIPMkB0GQjQbX93SH2iW1KCiOjTp4wS0beY1
+	 TiJFn3cMN+oZpbHkchAWoyGp4+iPvZpJiBY+iWXKiAjjqQIyU/67wgQx6FtZtfe8MA
+	 uZJ75XKEZOP9qOflsl2Uvti+1B17LZH1KaAucQi3VPYjkvtZte9gElSWq8eEUnGqGk
+	 3195zj7iZOAoQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Jacopo Mondi <jacopo+renesas@jmondi.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-media@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] media: rcar-vin: work around -Wenum-compare-conditional warning
+Date: Fri, 22 Mar 2024 14:33:46 +0100
+Message-Id: <20240322133353.908957-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-x1e80100-display-refactor-connector-v3-0-af14c29af665@linaro.org>
- <20240322-x1e80100-display-refactor-connector-v3-2-af14c29af665@linaro.org>
-In-Reply-To: <20240322-x1e80100-display-refactor-connector-v3-2-af14c29af665@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Mar 2024 15:31:32 +0200
-Message-ID: <CAA8EJppwhaZhee63hxvfbEc3RLT3rvHr6j35G3u6qU+HFzb_aQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] drm/msm/dp: Add support for the X1E80100
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kuogee Hsieh <quic_khsieh@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Johan Hovold <johan@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 Mar 2024 at 15:22, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> Add the X1E80100 DP descs and compatible. This platform will be using
-> a single compatible for both eDP and DP mode. The actual mode will
-> be set based on the presence of the panel node in DT.
->
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+clang-19 warns about mixing two enum types here:
 
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+drivers/media/platform/renesas/rcar-vin/rcar-vin.h:296:12: error: conditional expression between different enumeration types ('enum rvin_csi_id' and 'enum rvin_isp_id') [-Werror,-Wenum-compare-conditional]
+drivers/media/platform/renesas/rcar-vin/rcar-core.c:216:18: error: conditional expression between different enumeration types ('enum rvin_csi_id' and 'enum rvin_isp_id') [-Werror,-Wenum-compare-conditional]
+drivers/media/platform/renesas/rcar-vin/rcar-vin.h:296:12: error: conditional expression between different enumeration types ('enum rvin_csi_id' and 'enum rvin_isp_id') [-Werror,-Wenum-compare-conditional]
+drivers/media/platform/renesas/rcar-vin/rcar-vin.h:296:12: error: conditional expression between different enumeration types ('enum rvin_csi_id' and 'enum rvin_isp_id') [-Werror,-Wenum-compare-conditional]
 
--
-With best wishes
-Dmitry
+This one is intentional, and there is already a cast to work around another
+warning, so address this by adding another cast.
+
+Fixes: 406bb586dec0 ("media: rcar-vin: Add r8a779a0 support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+There are only a couple of -Wenum-compare-conditional warnings in the tree,
+so it seems best to just address them all instead of turning off the warning
+globally.
+---
+ drivers/media/platform/renesas/rcar-vin/rcar-vin.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/renesas/rcar-vin/rcar-vin.h b/drivers/media/platform/renesas/rcar-vin/rcar-vin.h
+index 792336dada44..997a66318a29 100644
+--- a/drivers/media/platform/renesas/rcar-vin/rcar-vin.h
++++ b/drivers/media/platform/renesas/rcar-vin/rcar-vin.h
+@@ -59,7 +59,7 @@ enum rvin_isp_id {
+ 
+ #define RVIN_REMOTES_MAX \
+ 	(((unsigned int)RVIN_CSI_MAX) > ((unsigned int)RVIN_ISP_MAX) ? \
+-	 RVIN_CSI_MAX : RVIN_ISP_MAX)
++	 (unsigned int)RVIN_CSI_MAX : (unsigned int)RVIN_ISP_MAX)
+ 
+ /**
+  * enum rvin_dma_state - DMA states
+-- 
+2.39.2
+
 
