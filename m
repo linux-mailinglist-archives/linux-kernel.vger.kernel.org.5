@@ -1,284 +1,138 @@
-Return-Path: <linux-kernel+bounces-111795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E03887112
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:43:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82FB887115
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6101F21E74
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:43:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2873BB219D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8DB6025F;
-	Fri, 22 Mar 2024 16:42:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FD85FDDD;
-	Fri, 22 Mar 2024 16:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA775D75F;
+	Fri, 22 Mar 2024 16:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPA1yJx4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330655674C;
+	Fri, 22 Mar 2024 16:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125777; cv=none; b=S2DgJGkrLuona9Sbtp5RDIyUv4xaTSJi73FTBwdd/x8biO7bQTpkV1s/tyFmqxwD5L5i0IWav5i+jzWspYn+BMPS5rnAo8wTFTz0ki6lPk6HuHIH8pOK72CJ4oLOKhRCdshtMHddPMBhqr1LVBdcWREKQxmPj0lLTGqM7yUSPd4=
+	t=1711125794; cv=none; b=Kgas2Cm9THhMG8S4d2p5Uy54u+aP88ZVzLrUBfghxI273oouLJbEFcDecsQPrKZOLPN46DjQpzsSxPIE9WGYGK++x5vtx72EFBnfga4XBEVUavdK5CunaIX29XNd6XVTNK5UxwJw6GPjbxf36j+m9xRnSnldPft5RPL2sKNNdyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125777; c=relaxed/simple;
-	bh=X45+6Et3bMjkkIBCb2MS1DoUmaZQ0uQN0xJ8G0oOWpY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sPSDc0cP67J/LHJbyxghtc1Idw1+ut4GC69CumTZo4HQubH6pCooND6m0HgE0XhK3KJ/40WPaB/ZK6DunFqg4wx1PhZ9PIUr4liBmWns+dG++TgRnO5W38BUUaia8Tt7gRkb+CkFraRPhemuFes23BkPE915DV9ErhS3oZBSjO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73CE91063;
-	Fri, 22 Mar 2024 09:43:29 -0700 (PDT)
-Received: from e126817.cambridge.arm.com (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 849003F762;
-	Fri, 22 Mar 2024 09:42:53 -0700 (PDT)
-From: Ben Gainey <ben.gainey@arm.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org
-Cc: james.clark@arm.com,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ben Gainey <ben.gainey@arm.com>
-Subject: [PATCH v4 4/4] tools/perf: Allow inherit + inherit_stat + PERF_SAMPLE_READ when opening events
-Date: Fri, 22 Mar 2024 16:42:37 +0000
-Message-ID: <20240322164237.203358-5-ben.gainey@arm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240322164237.203358-1-ben.gainey@arm.com>
-References: <20240322164237.203358-1-ben.gainey@arm.com>
+	s=arc-20240116; t=1711125794; c=relaxed/simple;
+	bh=VuocNDwkIO/NqUPaVerRx9GiFh5vSB4EkmPbTc3m5P8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=UHLj5CcnMntYzCI2XPD2ZrkKK6d8Cml7pWj68Ghra+1s45PWA0wMjM5INpuKISZ9EGUfVTClS5yHU8xTXCDM/W+gCbEE3N9nEosQeV39VTKF/lntQJlvIKEDHdsX9bLbziFuVlUUCSVopDqC7LtBTbBy7Q50AfRQAo0ZbQ3fuA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPA1yJx4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FCCEC43390;
+	Fri, 22 Mar 2024 16:43:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711125793;
+	bh=VuocNDwkIO/NqUPaVerRx9GiFh5vSB4EkmPbTc3m5P8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=oPA1yJx4tt7uBYrLaNo2kW7jdVdhUCJH2XoywWZL4ShvqfpfpJOEm/TmkND1Edwdm
+	 OGG/Q8wXCOdBEW8Y2YpaakstbBrYAWFoX0uiltj1yRqD1qDausjseyvfWd8AJDdOIa
+	 O9BlXNp1isnLtYWZ2d6fUWwEHg2wxpMyCgMhv/Jnmh2rpC0yCjZTnFj5Q3C9CmYign
+	 YvD5U5lBpc4bUk2AkZd48qjsUvBZsX5v1xk8UihB+QeWg5pczBEGlQ2XqJCPKpBkVG
+	 AxaUSymYuH1e2JgcvHstK0+WA7SzbrojQELz7/btdi9yVgduS0uE589Zdkp088mZAx
+	 Zl+GTEMCDr3TQ==
+Date: Fri, 22 Mar 2024 11:43:11 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: adrian.hunter@intel.com, ulf.hansson@linaro.org,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Ben Chuang <benchuanggli@gmail.com>, linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: GL975x: Mask rootport's replay
+ timer timeout during suspend
+Message-ID: <20240322164311.GA1367151@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAd53p52fi_wr3Js9Rqct+i1D3rjrnVZ6tBN=uHqThM7UvzXQA@mail.gmail.com>
 
-This change updates evsel to allow the combination of inherit
-and PERF_SAMPLE_READ.
+On Thu, Mar 21, 2024 at 06:05:33PM +0800, Kai-Heng Feng wrote:
+> On Sat, Jan 20, 2024 at 6:41 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Thu, Jan 18, 2024 at 02:40:50PM +0800, Kai-Heng Feng wrote:
+> > > On Sat, Jan 13, 2024 at 1:37 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > On Fri, Jan 12, 2024 at 01:14:42PM +0800, Kai-Heng Feng wrote:
+> > > > > On Sat, Jan 6, 2024 at 5:19 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > > On Thu, Dec 21, 2023 at 11:21:47AM +0800, Kai-Heng Feng wrote:
+> > > > > > > Spamming `lspci -vv` can still observe the replay timer timeout error
+> > > > > > > even after commit 015c9cbcf0ad ("mmc: sdhci-pci-gli: GL9750: Mask the
+> > > > > > > replay timer timeout of AER"), albeit with a lower reproduce rate.
+> > > > > >
+> > > > > > I'm not sure what this is telling me.  By "spamming `lspci -vv`, do
+> > > > > > you mean that if you run lspci continually, you still see Replay Timer
+> > > > > > Timeout logged, e.g.,
+> > > > > >
+> > > > > >   CESta:        ... Timeout+
+> > > > >
+> > > > > Yes it's logged and the AER IRQ is raised.
+> > > >
+> > > > IIUC the AER IRQ is the important thing.
+> > > >
+> > > > Neither 015c9cbcf0ad nor this patch affects logging in
+> > > > PCI_ERR_COR_STATUS, so the lspci output won't change and mentioning it
+> > > > here doesn't add useful information.
+> > >
+> > > You are right. That's just a way to access config space to reproduce
+> > > the issue.
+> >
+> > Oh, I think I completely misunderstood you!  I thought you were saying
+> > that suspending the device caused the PCI_ERR_COR_REP_TIMER error, and
+> > you happened to see that it was logged when you ran lspci.
+> 
+> Both running lspci and suspending the device can observe the error,
+> because both are accessing the config space.
+> 
+> > But I guess you mean that running lspci actually *causes* the error?
+> > I.e., lspci does a config access while we're suspending the device
+> > causes the error, and the config access itself causes the error, which
+> > causes the ERR_COR message and ultimately the AER interrupt, and that
+> > interrupt prevents the system suspend.
+> 
+> My point was that any kind of PCI config access can cause the error.
+> Using lspci is just make the error more easier to reproduce.
+> 
+> > If that's the case, I wonder if this is a generic problem that could
+> > happen with *any* device, not just GL975x.
+> 
+> For now, it's just GL975x.
+> 
+> > What power state do we put the GL975x in during system suspend?
+> > D3hot?  D3cold?  Is there anything that prevents config access while
+> > we suspend it?
+> 
+> The target device state is D3hot.
+> However, the issue happens when the devices is in D0, when the PCI
+> core is saving the device's config space.
+> 
+> So I think the issue isn't related to the device state.
+> 
+> > We do have dev->block_cfg_access, and there's a comment that says
+> > "we're required to prevent config accesses during D-state
+> > transitions," but I don't see it being used during D-state
+> > transitions.
+> 
+> Yes, there isn't any D-state change happens here.
 
-A fallback is implemented for kernel versions where this feature is not
-supported.
+So the timeout happens sometimes on any config accesses to the device,
+no matter what the power state is?  If that's the case, why do the
+masking in the suspend/resume callbacks?
 
-The user must pass --stat option to perf record to opt into this new
-behaviour.
+If it's not related to a power state change, it sounds like something
+that should be a quirk or done at probe time.
 
-Signed-off-by: Ben Gainey <ben.gainey@arm.com>
----
- .../test-record-group-sampling-inherit-stat   | 62 ++++++++++++++
- tools/perf/util/evsel.c                       | 82 ++++++++++++++++++-
- tools/perf/util/evsel.h                       |  1 +
- 3 files changed, 143 insertions(+), 2 deletions(-)
- create mode 100644 tools/perf/tests/attr/test-record-group-sampling-inherit-stat
-
-diff --git a/tools/perf/tests/attr/test-record-group-sampling-inherit-stat b/tools/perf/tests/attr/test-record-group-sampling-inherit-stat
-new file mode 100644
-index 000000000000..281a17acb6ae
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-group-sampling-inherit-stat
-@@ -0,0 +1,62 @@
-+[config]
-+command = record
-+args    = --stat --no-bpf-event -c 10000 -e '{cycles,cache-misses}:S' kill >/dev/null 2>&1
-+ret     = 1
-+
-+[event-1:base-record]
-+fd=1
-+group_fd=-1
-+
-+# cycles
-+type=0
-+config=0
-+
-+# default | PERF_SAMPLE_READ
-+sample_type=87
-+
-+# PERF_FORMAT_ID | PERF_FORMAT_GROUP  | PERF_FORMAT_LOST | PERF_FORMAT_TOTAL_TIME_ENABLED | PERF_FORMAT_TOTAL_TIME_RUNNING
-+read_format=31
-+task=1
-+mmap=1
-+comm=1
-+enable_on_exec=1
-+disabled=1
-+
-+# inherit is enabled for group sampling, as is inherit_stat
-+inherit=1
-+inherit_stat=1
-+
-+# sampling disabled
-+sample_freq=0
-+sample_period=10000
-+freq=0
-+write_backward=0
-+
-+[event-2:base-record]
-+fd=2
-+group_fd=1
-+
-+# cache-misses
-+type=0
-+config=3
-+
-+# default | PERF_SAMPLE_READ
-+sample_type=87
-+
-+# PERF_FORMAT_ID | PERF_FORMAT_GROUP  | PERF_FORMAT_LOST | PERF_FORMAT_TOTAL_TIME_ENABLED | PERF_FORMAT_TOTAL_TIME_RUNNING
-+read_format=31
-+task=0
-+mmap=0
-+comm=0
-+enable_on_exec=0
-+disabled=0
-+
-+# inherit is enabled for group sampling, as is inherit_stat
-+inherit=1
-+inherit_stat=1
-+
-+# sampling disabled
-+sample_freq=0
-+sample_period=0
-+freq=0
-+write_backward=0
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 6d7c9c58a9bc..aec6b4f5264e 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1097,6 +1097,64 @@ static bool evsel__is_offcpu_event(struct evsel *evsel)
- 	return evsel__is_bpf_output(evsel) && evsel__name_is(evsel, OFFCPU_EVENT);
- }
- 
-+static bool evsel__has_term_type(struct evsel *evsel, enum evsel_term_type type)
-+{
-+	return __evsel__get_config_term(evsel, type) != NULL;
-+}
-+
-+/*
-+ * Determine whether or not an evsel can support inherit+inherit_stat+PERF_SAMPLE_READ.
-+ *
-+ * In order not to break existing command line behaviour, this configuration
-+ * will only be enabled if certain specific requirements are met:
-+ *
-+ * 1) When making a system-wide capture, there is no need to support this
-+ *    configuration. Likewise, if the user disables inherit, or does not request
-+ *    inherit_stat, then the configuration is not supported.
-+ * 2) If the user explicitly specifies 'freq' as a config term, then do not
-+ *    support this feature, as frequency counters are not compatible.
-+ * 3) If the user explicitly specifies 'period' as a config term, then the
-+ *    feature is compatible with that event.
-+ * 4) If neither was explicitly set, and the event is part of a group, then
-+ *    base the decision on the leader.
-+ * 5) Otherwise base the decision on whether or not the user specified a period
-+ *    or frequency on the command line (which includes the default frequency
-+ *    setting).
-+ */
-+static bool evsel__compat_with_inherit_sample_read(struct record_opts *opts,
-+						   struct evsel *leader,
-+						   struct evsel *evsel)
-+{
-+	struct perf_event_attr *attr = &evsel->core.attr;
-+
-+	if (opts->target.system_wide)
-+		return false;
-+
-+	if (opts->no_inherit_set || !opts->inherit_stat)
-+		return false;
-+
-+	if (evsel__has_term_type(evsel, EVSEL__CONFIG_TERM_FREQ))
-+		return false;
-+
-+	if (evsel__has_term_type(evsel, EVSEL__CONFIG_TERM_PERIOD))
-+		return true;
-+
-+	if (leader && (leader != evsel)) {
-+		struct perf_event_attr *ldr_att = &leader->core.attr;
-+
-+		if (evsel__has_term_type(leader, EVSEL__CONFIG_TERM_FREQ))
-+			return false;
-+
-+		if (evsel__has_term_type(leader, EVSEL__CONFIG_TERM_PERIOD))
-+			return true;
-+
-+		if (ldr_att->freq)
-+			return false;
-+	}
-+
-+	return (!attr->freq && !opts->freq);
-+}
-+
- /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1133,6 +1191,9 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	int track = evsel->tracking;
- 	bool per_cpu = opts->target.default_per_cpu && !opts->target.per_thread;
- 
-+	bool allow_inherit_stat_sample_read = evsel__compat_with_inherit_sample_read(
-+		opts, leader, evsel);
-+
- 	attr->sample_id_all = perf_missing_features.sample_id_all ? 0 : 1;
- 	attr->inherit	    = !opts->no_inherit;
- 	attr->write_backward = opts->overwrite ? 1 : 0;
-@@ -1156,7 +1217,17 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 		 */
- 		if (leader->core.nr_members > 1) {
- 			attr->read_format |= PERF_FORMAT_GROUP;
--			attr->inherit = 0;
-+			if (!allow_inherit_stat_sample_read)
-+				attr->inherit = 0;
-+		}
-+
-+		/*
-+		 * Inherit + READ requires inherit_stat, but only if freq is
-+		 * not set as the two are incompatible
-+		 */
-+		if (attr->inherit && allow_inherit_stat_sample_read) {
-+			attr->inherit_stat = 1;
-+			evsel__set_sample_bit(evsel, TID);
- 		}
- 	}
- 
-@@ -1832,6 +1903,8 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- static void evsel__disable_missing_features(struct evsel *evsel)
- {
-+	if (perf_missing_features.inherit_sample_read)
-+		evsel->core.attr.inherit = 0;
- 	if (perf_missing_features.branch_counters)
- 		evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_COUNTERS;
- 	if (perf_missing_features.read_lost)
-@@ -1887,7 +1960,12 @@ bool evsel__detect_missing_features(struct evsel *evsel)
- 	 * Must probe features in the order they were added to the
- 	 * perf_event_attr interface.
- 	 */
--	if (!perf_missing_features.branch_counters &&
-+	if (!perf_missing_features.inherit_sample_read &&
-+	    evsel->core.attr.inherit && (evsel->core.attr.sample_type & PERF_SAMPLE_READ)) {
-+		perf_missing_features.inherit_sample_read = true;
-+		pr_debug2("Using PERF_SAMPLE_READ / :S modifier is not compatible with inherit, falling back to no-inherit.\n");
-+		return true;
-+	} else if (!perf_missing_features.branch_counters &&
- 	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS)) {
- 		perf_missing_features.branch_counters = true;
- 		pr_debug2("switching off branch counters support\n");
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index efbb6e848287..11cc9b8bee27 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -192,6 +192,7 @@ struct perf_missing_features {
- 	bool weight_struct;
- 	bool read_lost;
- 	bool branch_counters;
-+	bool inherit_sample_read;
- };
- 
- extern struct perf_missing_features perf_missing_features;
--- 
-2.44.0
-
+Bjorn
 
