@@ -1,173 +1,214 @@
-Return-Path: <linux-kernel+bounces-111342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3223D886AE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:01:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83DA4886AE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E132A28993A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:01:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EED0EB25364
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E02A3F8F4;
-	Fri, 22 Mar 2024 11:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2B510A1A;
+	Fri, 22 Mar 2024 11:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3fbqRSWW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vK8io8cX"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=nec.com header.i=@nec.com header.b="bzCMIZPB"
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2059.outbound.protection.outlook.com [40.107.113.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1ED63AC2B;
-	Fri, 22 Mar 2024 11:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711105203; cv=none; b=NGGLw/3D0AQTfejYeJh5SscrWcuh9Mg2cbL/6h5WuLXhcSHta22Z3hkCizSXMl0xWsLIysrKWBs5FGEdcW+kl6TLNurtq/uQmefC8MWij+5n/XsM7oe5xRLgWkdXqKNGltmyHMWDulbfpxWEIxEtYrEAdHddVQvPzK7NK6WMgfk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711105203; c=relaxed/simple;
-	bh=tJHE6WQbKfpVHDW5fVetKWlZW1/K4yJf4ZiivuZPg8o=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=qOPzNpXgeeBZu+JqpfMpXL2O15VVhw9v/a7elYysSOycjRcsVhfO8GSxG43OnTL3jQR5pce1k9mo3GAt88A4OnlOALO3KR6y2ErxU3H8uINE5XxSWH2rqHaCzhiWBMKAlaTqi2Xaj/xT/yezImEeLIm++dcATlAU0bKbEoXvGjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3fbqRSWW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vK8io8cX; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 22 Mar 2024 10:59:58 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711105199;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h5ZtWgNkBRMIWmFp5Y46fMbsEbaY+4L88vZSo4bSAYk=;
-	b=3fbqRSWWm7VdSohU6QuSBy0+Ow0oLKfAsYETKjbOUBsX6B59zz4BetrD3Dx+s4Re7+S+aT
-	pundB6tZuqQvaAFlSCRAuljOYsFPPSDFg+diHz+R9hP6eCu8bnnlgeFJkomh85iGhAIKJJ
-	ybpZ2EA8gocFnqV9UsKCY3o5TMaxYErW1uDWvhy8EmBxfSj4yUw2X+S28KgA7UlnLo+mxT
-	7mcojqpiJr/TS27Yf4vFtppudGLp1E7P+nce/HwFRBnYfzfnoUUHBm/wGpguF5jcUDU318
-	AxHkPw/FHurYhfxmAEySs+5hzpc24/FvJ0Ng5XMzat/2S4TDUBD+tt5iT76ujg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711105199;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h5ZtWgNkBRMIWmFp5Y46fMbsEbaY+4L88vZSo4bSAYk=;
-	b=vK8io8cXiG5x2vUrVfeZjYF1uqcRgbQ91f7ZEH/+0LOdPqvL5UxouiDKi7p6SsGs921bF2
-	2l48tkXpFqoRsZCA==
-From: "tip-bot2 for H.J. Lu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/shstk: Enable shadow stacks for x32
-Cc: "H.J. Lu" <hjl.tools@gmail.com>, Ingo Molnar <mingo@kernel.org>,
- "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240315140433.1966543-1-hjl.tools@gmail.com>
-References: <20240315140433.1966543-1-hjl.tools@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455313DBB7;
+	Fri, 22 Mar 2024 11:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711105273; cv=fail; b=RxxD2sVSiRZ954XI/q87dEqYMpyVeExZUeUA33g91yPZhSoIGgj7XuIPDqc9JVVvs6m3yLp0F2HY8KMaEkJkOQixbEhGjCHoJKNNjjKskYuFilpCp3jCtGpyIbBEJd3qyfHg4ScQyQPgsGCi6mMAT6pRqvMza8rjb+HN/Aos9u8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711105273; c=relaxed/simple;
+	bh=RRNRgJzRrgHITpPO/1LPiUjqYNdV7c9a/xENndFDR4Q=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=jqRqY/itaE9NefpK/Y8utetA4DSMgVDF+cDIwOSSWqynIWSm1STneOEsjTykrrPVHCEDZCPPQLDdSdZla8R7RPt6p8OJAPu86IHHazRfYylZ7EoWBBLuFxXXLOAO/qXi+OUNEEeyfvZnnAuYUgO57cf3r9J0wwLPPo2YqE5tXyk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nec.com; spf=pass smtp.mailfrom=nec.com; dkim=pass (2048-bit key) header.d=nec.com header.i=@nec.com header.b=bzCMIZPB; arc=fail smtp.client-ip=40.107.113.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nec.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nec.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aaml3W57ulbB1IyBrJfHIqoNuOnQ26gYC1NmaHMaOztUDPNADjPul6PlDvwfbL2i8fuKd3ySRqBcu1Z9iG0w13Ajbk1FWAAFIEr2aTzDwLEymdqhAkLUPbDO2kstAd1qCQxOSdq07JQhotOWX3nvRPGSB5s8VaSqiaOvGK+TeBvRB35ANGqrTeUEug9mEZWpAGUuHE6qH3nq/7k750k+hCEjyRzxtpqJHk+mQAo1KPbl9OIYsovSWH2sIk9QnBbHzxUZNMWH8jO0s7Zq1CpoBE8/gRHKeJlA7SzioA430O5l+2aO6kqe1SHtIoyPBG49uIt2YWefl8o09kYenbRZ6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=W+BOConBcylqTq1Rj3MHMFy+PQy5kIsabyWphjNYiso=;
+ b=dJEBE01OnjEvenlUHVy9AQ2Sflkv16Lb9UF0yFBsra/nGfjjBs12L9UfIHvZ4qgRHBk66e/GoOgyjMs41Y/Kdr58Wb/oqCyxS6sujUZ6cvjLTWNvNiDyaKaFA1Zrktxv/3k8e32nu/iH+9JfIEkzrajo8VkTu7mp2bG4gIQ06lA6rsLx51XLcx+5r0N+dr7vuLK+UI/s8YZ3PSqVNyyVhM0COouL9K1C6n8xs5+6LgH0dmxLZKmmlhLKzjBfQltTRjgt7EbfVtec3FfZcsfbYGOEGHvEqDrf5Gv8phEiHsWiEqRld3YpDZhKdH4vJGpWtv85yg5NkHBZSpMol45W2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W+BOConBcylqTq1Rj3MHMFy+PQy5kIsabyWphjNYiso=;
+ b=bzCMIZPBgJfh4xBYUFkXczpX3as+5vuoqsL9AQTPhN+K2UZQ5BBYFb4hFqD1nJId60Q1jXOju2DDKR0iPL/p82Z0lIUtULoeyc6RBxdlAdTiAaCiMuC3zQ8797nNMILXhT9+Spo7KRPG82fPlOJp47MVZMDvNMryLbY4v03rt+YIzTGqJob3+2/CJ2axxW2GHgPJ2mMe0ofX7aAfeR8/UzzJCING3/Fz8yIjsq+jm6OR3YHR0/aNA2hwtYTToM1NIwsdctR18j8ImZ5ylGhXBhbM1MSXqf9L00QCAXmxobpy6Cn0UZHvoez2WzYabG9jHhH4KMIMFbqO4ynQgJVZuA==
+Received: from TY1PR01MB1625.jpnprd01.prod.outlook.com (2603:1096:403:5::19)
+ by TYCPR01MB5774.jpnprd01.prod.outlook.com (2603:1096:400:44::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.24; Fri, 22 Mar
+ 2024 11:01:06 +0000
+Received: from TY1PR01MB1625.jpnprd01.prod.outlook.com
+ ([fe80::fb45:85ca:f420:e514]) by TY1PR01MB1625.jpnprd01.prod.outlook.com
+ ([fe80::fb45:85ca:f420:e514%5]) with mapi id 15.20.7386.031; Fri, 22 Mar 2024
+ 11:01:06 +0000
+From: =?iso-2022-jp?B?S09ORE8gS0FaVU1BKBskQjZhRiMhIU9CPz8bKEIp?=
+	<kazuma-kondo@nec.com>
+To: "ardb@kernel.org" <ardb@kernel.org>
+CC: "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+	"tomenglund26@gmail.com" <tomenglund26@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?iso-2022-jp?B?S09ORE8gS0FaVU1BKBskQjZhRiMhIU9CPz8bKEIp?=
+	<kazuma-kondo@nec.com>
+Subject: [PATCH] efi/libstub: fix efi_random_alloc() to allocate memory at
+ alloc_min or higher address
+Thread-Topic: [PATCH] efi/libstub: fix efi_random_alloc() to allocate memory
+ at alloc_min or higher address
+Thread-Index: AQHafEg9wcbkIIdoj0CvtWchAjlv4Q==
+Date: Fri, 22 Mar 2024 11:01:06 +0000
+Message-ID: <20240322110058.557329-1-kazuma-kondo@nec.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: git-send-email 2.39.3
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nec.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY1PR01MB1625:EE_|TYCPR01MB5774:EE_
+x-ms-office365-filtering-correlation-id: 188d4d09-b583-4efc-d14b-08dc4a5f5fa8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 5TZXEEVVEqzrFdhAEP5xS8WfrVYQwFbuBDiv9KlXTBDfwf3P9dmPlCUGvBZ4sYqVkanP5QFubnWHQ+Sdlsq8d0ReqoObfv4jLJVhetX7YsyOcyApM/lVzQQT725XD+w7rGvNLhZlqvnJ9cGBB6ufLNSUtrK8VufDJVyuiTAmsQioAw4wgOTiN6g6w1kBQiChc82mxUfSlIZJzn7yNHDE8QwRB+GCORnBdKVd+1b2FH1jgVmDD5RzZNU4/fWBFlXG6HntM75T1dM6U46K2V+XrP1ESaadK6O+u9vRjmXC6hvfy2IEPWRbiyUnOoGZgsdV2693Lw7C27aSDcRsr2TQrPD1VECB8ys5Yalw48K5KcQ6nTcjP7+oZl1R9upbp4Kve57Ai+U4GlT+f7i75Z2WM1EwRnFPJYrb+UkFZ90oPpWyT0jOoWmKi4dl88h2WXy6IjFAKh+ITRKiXncQQaPqPzvvnzu9u2dCdshshf9Oxs1na/0fhAKo/AH53PTwFpTJqykectSR5cT1AWTK4UgFZu8wbGBfM8qufp9YqXuyg0yUqS2EdCkFYFtNVJ2De2582+2BkxhSfK9A/6oc0ftmvWt+VpFuxDqyo43YELHHhpZQtUG6xE2PpsDIj5cQxbBy15+6Hg7u4jD7D4hADa03o2XMegTC/WMQ/ZRQFtkKfipM7lhX3WhOB5DLnPeRYmPK/9g/sgq3Xjab5maAiVaH+byBSIrRparInwji+ch6IrQ=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1625.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-2022-jp?B?d0RoV2F5SVU2aVNrV2xlbFVNczhHYmRmdmVKWURuam9qMmtMUWlqblhr?=
+ =?iso-2022-jp?B?SGswc2JOeDVrcG51YnFER242UnNRZ1JqVDB4VkkwMEtNMkFFUWNOYmJh?=
+ =?iso-2022-jp?B?NkNqUG1Rd29PcUY0SGlQektOdUEvMjRKa2w0cFJoNExIbmZ3aW8yM0Zq?=
+ =?iso-2022-jp?B?T3h2ZzFMRnNiclNDeFVLUUMvMTJLVEZ2dVFJRmx2RytwRGZXZkkyemJu?=
+ =?iso-2022-jp?B?dnhsSndZZUw2enlXY2VMRWRTZVl2ZjJ2ZEJuK0tpL0tpbnZyb2hSOHRX?=
+ =?iso-2022-jp?B?SzFVelBIK201bzJyUkZReFg0ZlNWbmlPdUNBaFhlT2Jzc3VhQ29HRGJL?=
+ =?iso-2022-jp?B?STFBVC8ySmEyYll5RWF6YlVVZGxjdVlKb29BVm1jUnFEV3NURjljVks5?=
+ =?iso-2022-jp?B?VWlpcDYrNm5HNGtKOWFDMXBDb3lrVVZOMDJORGt0aEZQREM0WWFZZE5L?=
+ =?iso-2022-jp?B?bTNpRkRWOUVGSUhSN3RPSWUrZ3BCQVp1Tmh4T01Hb3VxM1ZuOTNXb2tk?=
+ =?iso-2022-jp?B?cm9OR3Vyd29ybzFaTERBeXFQZHFnQ083V253bldGeTBBSUVBa3VYTHFB?=
+ =?iso-2022-jp?B?N1IxZ3FlY0pBYUNZNi90dnI1bFN0ejhkbG5ZTHVHMWlrWWRvNm9YZHdH?=
+ =?iso-2022-jp?B?U01PUGJ0WWVjcFVqT3VxRS9aK0ZzNkJGZ2tpN1J5R3h0Z0N4VG1JVndh?=
+ =?iso-2022-jp?B?Mk54N3JpNHBzbVFJdG5JbXRxblNqVzJjeE1QTHpJVEo3b0M2dW9Pd3Rn?=
+ =?iso-2022-jp?B?Y1BiWXFTV09wbU5KR3QxQnc1UHMxekFEWjBueWdkN1lZcHNrbElmK3Av?=
+ =?iso-2022-jp?B?MG9FaGZRQmJvN3NoSEczQnRuQXV1ajVjNi9CcGQxQ29TSmxVR25xa2dX?=
+ =?iso-2022-jp?B?U2psWFNhcWdPMEpLeTBYY1pveHpQa0lRL3RiTW40WS9EcktYUUVST2s3?=
+ =?iso-2022-jp?B?bSsvVXI5bCtEZEhxOWozYllnNFdaMlpxYWtESitFUnRFNFBybXVVTkdX?=
+ =?iso-2022-jp?B?UlRxWC9zUU1QZ204ajJ4SHAxRjMvSnpybG9tOW1ZZTB4WC80OEhrQ0FT?=
+ =?iso-2022-jp?B?UGRnOVVUUXlvanJCVmkvdE1qeU15cHZieXpjT2hrelB1eW5JRjFmVDhu?=
+ =?iso-2022-jp?B?WjNFREM4aC91My9SY3FiYUpib0JJQnNCZW15ODNJNzVXOGE3WWJpVlNu?=
+ =?iso-2022-jp?B?NXIzeVpWUnpHYXVZN0xOSStXalJGSGliQ0l6TWg3UUY5ZEU1RHlNVmRM?=
+ =?iso-2022-jp?B?bzEyODRsVmxJSGh2Q1pOZEdLZjRMTEMvSXVZUDFzNTFKVTBQa2hFd1Ux?=
+ =?iso-2022-jp?B?bDBrOUJMTzNlcG0rMnBDdm8zeEljMEtDek5nNjN0OGhJOEZqRjRocFF2?=
+ =?iso-2022-jp?B?VHBsVDVqMXRoYVU1dXF1b2taN0VXdy9XVWF0ZGVkWElENHFnKy94ZnBC?=
+ =?iso-2022-jp?B?VUJ4dytKcHk1N2NWZmt5RWk0Y05iVUxGdzVtZjJMa1hTU00xZkoyYWZJ?=
+ =?iso-2022-jp?B?QmpRTi91a2xZU0gwVTRFckNOQ21IaDhvZDdVYWJzM0pjMnlYUjRwM0ZE?=
+ =?iso-2022-jp?B?azN5RFZPSnRCcXpkNFJMQWQ3MjkzREh5Vk5zN3hwUW5NMm9sZWdJR1dG?=
+ =?iso-2022-jp?B?VTUxZmltMmlnZ0xVZ0taUnlzYUdQZEsvVXYvMVUrMWdHN01MWUZNSDI5?=
+ =?iso-2022-jp?B?TU8zcTd1bHh1OEswaEo1QTVma1lvV3Jma21NMjZtb09lVWhhSDdvVzYy?=
+ =?iso-2022-jp?B?OU1KZ2JNUTN6NzI1VUVIV2RuNEdZMmVqZHNQaHUwUmF5cGJKRjB6L24w?=
+ =?iso-2022-jp?B?V1h0QUdxMGovYjh0UmtkTWl3SklTdnVFUUJIcjdWUGFJUE5YNnM4OEY4?=
+ =?iso-2022-jp?B?QnlWWlpsMTFCUUYzMDVFZXYwZDlKWnJPTlJUUmN2THRRRlJEK3ZoNkpx?=
+ =?iso-2022-jp?B?YWtrMytFWm9rR3FGMnJTVzhOWW9qd0RaZTFuYlJCZCtURGhleWhHVmpC?=
+ =?iso-2022-jp?B?QjJnKzE0MFRKNjNud1pnTjZIcHRZOXk1WDVmRDZCQmdzYUFvK2IwbjMv?=
+ =?iso-2022-jp?B?VFFlNFBKQ0VYN2RlSU40NWhpUmJ4R25ZZGIwMTJhS21naU52MFpZZTVS?=
+ =?iso-2022-jp?B?M1d4WmNZeEN0Q0NIbkZPUFZnQldZY0xaazJRQUJQTm0xZ09PRnNhb3Nw?=
+ =?iso-2022-jp?B?M1RpazFyY3RIbGlOYlE1bklvWWZQVWdhckE0Sm5LcGpPb3E5c0YzYnZC?=
+ =?iso-2022-jp?B?YTJRRy8xcXNqOFdNQ1pES01wV0lHUDlwdEk1cjNhNGFvUERjaHJIbjFS?=
+ =?iso-2022-jp?B?WFRmODRpOEoreVRkbU5NN2k3S25qM2FGMmc9PQ==?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171110519880.10875.7663158781394877164.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1625.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 188d4d09-b583-4efc-d14b-08dc4a5f5fa8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 11:01:06.6637
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NeJU3WI20/Gd2q/vPAS9cIW2xk2TcRYgpoXBol0GmY1seRKdBhwxVfoDYmtWIeS6oxy5Orl+KeByeuqEKZtV2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB5774
 
-The following commit has been merged into the x86/shstk branch of tip:
+Following warning is sometimes observed while booting my servers:
+  [    3.594838] DMA: preallocated 4096 KiB GFP_KERNEL pool for atomic allo=
+cations
+  [    3.602918] swapper/0: page allocation failure: order:10, mode:0xcc1(G=
+FP_KERNEL|GFP_DMA), nodemask=3D(null),cpuset=3D/,mems_allowed=3D0-1
+  ...
+  [    3.851862] DMA: preallocated 1024 KiB GFP_KERNEL|GFP_DMA pool for ato=
+mic allocation
 
-Commit-ID:     2883f01ec37dd8668e7222dfdb5980c86fdfe277
-Gitweb:        https://git.kernel.org/tip/2883f01ec37dd8668e7222dfdb5980c86fdfe277
-Author:        H.J. Lu <hjl.tools@gmail.com>
-AuthorDate:    Fri, 15 Mar 2024 07:04:33 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 22 Mar 2024 10:17:11 +01:00
+If 'nokaslr' boot option is set, the warning always happens.
 
-x86/shstk: Enable shadow stacks for x32
+On x86, ZONE_DMA is small zone at the first 16MB of physical address
+space. When this problem happens, most of that space seems to be used
+by decompressed kernel. Thereby, there is not enough space at DMA_ZONE
+to meet the request of DMA pool allocation.
 
-1. Add shadow stack support to x32 signal.
-2. Use the 64-bit map_shadow_stack syscall for x32.
-3. Set up shadow stack for x32.
+The commit 2f77465b05b1 ("x86/efistub: Avoid placing the kernel below LOAD_=
+PHYSICAL_ADDR")
+tried to fix this problem by introducing lower bound of allocation.
 
-Tested with shadow stack enabled x32 glibc on Intel Tiger Lake:
+But the fix is not complete.
 
-I configured x32 glibc with --enable-cet, build glibc and
-run all glibc tests with shadow stack enabled.  There are
-no regressions.  I verified that shadow stack is enabled
-via /proc/pid/status.
+efi_random_alloc() allocates pages by following steps.
+1. Count total available slots ('total_slots')
+2. Select a slot ('target_slot') to allocate randomly
+3. Calculate a starting address ('target') to be included target_slot
+4. Allocate pages, which starting address is 'target'
 
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: H.J. Lu <hjl.tools@gmail.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Link: https://lore.kernel.org/r/20240315140433.1966543-1-hjl.tools@gmail.com
+In step 1, 'alloc_min' is used to offset the starting address of
+memory chunk. But in step 3 'alloc_min' is not considered at all.
+As the result, 'target' can be miscalculated and become lower
+than 'alloc_min'.
+
+When KASLR is disabled, 'target_slot' is always 0 and
+the problem happens everytime if the EFI memory map of the system
+meets the condition.
+
+Fix this problem by calculating 'target' considering 'alloc_min'.
+
+Cc: linux-efi@vger.kernel.org
+Cc: Tom Englund <tomenglund26@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+Fixes: 2f77465b05b1 ("x86/efistub: Avoid placing the kernel below LOAD_PHYS=
+ICAL_ADDR")
+Signed-off-by: Kazuma Kondo <kazuma-kondo@nec.com>
 ---
- arch/x86/entry/syscalls/syscall_64.tbl | 2 +-
- arch/x86/kernel/shstk.c                | 4 ++--
- arch/x86/kernel/signal_64.c            | 6 ++++++
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ drivers/firmware/efi/libstub/randomalloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 7e8d46f..cc78226 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -374,7 +374,7 @@
- 450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
- 451	common	cachestat		sys_cachestat
- 452	common	fchmodat2		sys_fchmodat2
--453	64	map_shadow_stack	sys_map_shadow_stack
-+453	common	map_shadow_stack	sys_map_shadow_stack
- 454	common	futex_wake		sys_futex_wake
- 455	common	futex_wait		sys_futex_wait
- 456	common	futex_requeue		sys_futex_requeue
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index 59e15dd..6f1e988 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -163,8 +163,8 @@ static int shstk_setup(void)
- 	if (features_enabled(ARCH_SHSTK_SHSTK))
- 		return 0;
- 
--	/* Also not supported for 32 bit and x32 */
--	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) || in_32bit_syscall())
-+	/* Also not supported for 32 bit */
-+	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) || in_ia32_syscall())
- 		return -EOPNOTSUPP;
- 
- 	size = adjust_shstk_size(0);
-diff --git a/arch/x86/kernel/signal_64.c b/arch/x86/kernel/signal_64.c
-index 23d8aaf..8a94053 100644
---- a/arch/x86/kernel/signal_64.c
-+++ b/arch/x86/kernel/signal_64.c
-@@ -315,6 +315,9 @@ int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 
- 	uc_flags = frame_uc_flags(regs);
- 
-+	if (setup_signal_shadow_stack(ksig))
-+		return -EFAULT;
-+
- 	if (!user_access_begin(frame, sizeof(*frame)))
- 		return -EFAULT;
- 
-@@ -377,6 +380,9 @@ COMPAT_SYSCALL_DEFINE0(x32_rt_sigreturn)
- 	if (!restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
- 		goto badframe;
- 
-+	if (restore_signal_shadow_stack())
-+		goto badframe;
-+
- 	if (compat_restore_altstack(&frame->uc.uc_stack))
- 		goto badframe;
- 
+diff --git a/drivers/firmware/efi/libstub/randomalloc.c b/drivers/firmware/=
+efi/libstub/randomalloc.c
+index 4e96a855fdf4..7e1852859550 100644
+--- a/drivers/firmware/efi/libstub/randomalloc.c
++++ b/drivers/firmware/efi/libstub/randomalloc.c
+@@ -120,7 +120,7 @@ efi_status_t efi_random_alloc(unsigned long size,
+ 			continue;
+ 		}
+=20
+-		target =3D round_up(md->phys_addr, align) + target_slot * align;
++		target =3D round_up(max(md->phys_addr, alloc_min), align) + target_slot =
+* align;
+ 		pages =3D size / EFI_PAGE_SIZE;
+=20
+ 		status =3D efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
+--=20
+2.39.3
 
