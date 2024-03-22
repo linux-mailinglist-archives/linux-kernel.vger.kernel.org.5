@@ -1,324 +1,114 @@
-Return-Path: <linux-kernel+bounces-110944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 749AE886621
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:30:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F30A886630
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDDE51F231FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:30:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0BD71C234EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D463C17585;
-	Fri, 22 Mar 2024 05:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0477BA3F;
+	Fri, 22 Mar 2024 05:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="eBnSzvDp"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGUtFSoT"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400CF8F7D
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880343D0A9;
+	Fri, 22 Mar 2024 05:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711085323; cv=none; b=a/5hbF5g/ACyC6Of1VMSnyZsuvvKRMOYxYx00oAc0KC+fKbRQXwEayDI4wrYynstUjWQEcL2o8UUCnQsXb0VaRvdGorhf7YmhNhTS7CGcTnxwBYuBIk7pi2A0atrNDuRDkfEzyaEIKJ3s1TGK+JBi28M7xwF3esDIG52gYwAE6I=
+	t=1711085381; cv=none; b=XqDyr5BEwE+5ymjtLZWFPvY78MbVlZi0Up6GY72qYLVChpt+1uWn8aXGYPzvRdin5eUIwLcMHuGSitV5hu+KbmoHiQ1DT4KltYb88w3MgKIpeDrzWpii/8VxULjmf1GYnyJfVtUr5GXV+rCS2hJSW+jsjPpa9xhuGAqyFDyK6wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711085323; c=relaxed/simple;
-	bh=ZpoLKhmXPLlegemtKOZR7Aqn7l9jYhtbPLTjZuB8QnM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k7lcALjLGRAp9sLuL8I9GlIjat2dhCtMZSGiyiq65+Ax6e9SURE3okq6JDvcCExju4tpW2Rz/4uBQWfOTgUDk4YKU2RTmIkcGd1+mI1BXnqjjPkjqgioMiQttmJ7G5H2AzN13vNfAfUmHv9HsUW2VhW1aheGa2Agplo1bY6+MYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=eBnSzvDp; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 06c4cf3ee80d11eeb8927bc1f75efef4-20240322
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=7QHOBR3x997bq7GuWmY4eZqnLP1TPNmd0eMe+1ENCkk=;
-	b=eBnSzvDpqWQB14T/Nalr+P7Rh6oJvIIBE24CZKrKv4TWXNVjKT5UUlHrIxALExllQc3XqpoZT81WWHEgOZRiObfvUbIjqzvnKQ4dRJiPl5EZ4felfdv2keKlQuYHYEGl1Kv1MubisTM4FVknqvddqojf5g8i2ls5ymOvjmKdGv8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:423bb37b-fd76-4572-b03f-8e03bd6e9dfc,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:9acb4c85-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 06c4cf3ee80d11eeb8927bc1f75efef4-20240322
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 877112699; Fri, 22 Mar 2024 13:28:34 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 22 Mar 2024 13:28:32 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 22 Mar 2024 13:28:32 +0800
-From: Shawn Sung <shawn.sung@mediatek.com>
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
-	Bibby Hsieh <bibby.hsieh@mediatek.com>, CK Hu <ck.hu@mediatek.com>, "Nancy .
- Lin" <nancy.lin@mediatek.com>, Fei Shao <fshao@chromium.org>, Sean Paul
-	<sean@poorly.run>, Jason Chen
-	<jason-ch.chen@mediatek.corp-partner.google.com>,
-	<dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	"Hsiao Chien Sung" <shawn.sung@mediatek.com>
-Subject: [PATCH v6 14/14] drm/mediatek: Support CRC in OVL adaptor
-Date: Fri, 22 Mar 2024 13:28:29 +0800
-Message-ID: <20240322052829.9893-15-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240322052829.9893-1-shawn.sung@mediatek.com>
-References: <20240322052829.9893-1-shawn.sung@mediatek.com>
+	s=arc-20240116; t=1711085381; c=relaxed/simple;
+	bh=81cZAtaOWpOYn1E7lQu3xtus81/XyacutkrW0opIIoM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S45MLHv0+WBg98w2kuBS7wl8HR+On4XjuxE6cC10qt9XHSe9FNWMpX9pwF/u+0H8CMd/0kZ6yiTdmKXgHPAH5lS4rQic3U3oJnI3rcZGWVYpa/1m4Z6pmfTDxTAyEpt1OxS5+IviMLRLs7p0S/KHIWUIIILaA9TLjpOP3Aqiupk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGUtFSoT; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e7425a6714so1254138b3a.0;
+        Thu, 21 Mar 2024 22:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711085379; x=1711690179; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKuc7rRsF3BVGUdsmkv70uBPAFrZhnJYrr2a7AQjyLM=;
+        b=gGUtFSoTvURGs1RFf6ETIvAANg6GAiw6EdQ3EZLGHDbvA7UsR4lihutFF1UIB5eng4
+         7tqY9kOA5+0LZfedEgLijWT/ZxWRu4vVTVNL/x9ri03I7lmxVLtSTARnnrkk/zomcLEv
+         ZO1bwSwTcjG3GcTJCLdOY4WOgqqN9qs9shom3lTXEypYRllZJTgyElJNjaUrzLPutDbT
+         XeGD9psf+UlN1qQmRZxcfNXK2G/L90Ra6a1C5dw5hpNZ3u7Aog6Dk4op1PpXiBfvEi4o
+         aveL3zwTf3F6iFYjhSGrKaF91OBHPbZKlsQjt3/Sgxwkpwy554AFp++aqq+6HatKq9ZN
+         jYdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711085379; x=1711690179;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eKuc7rRsF3BVGUdsmkv70uBPAFrZhnJYrr2a7AQjyLM=;
+        b=L3lA2R8xIwBKqE+nbrA2lT6RPNs8PephsQ21eLZZcE3LiVWPiClyWSUBiDqdV3Y8fs
+         DQ9I6zNMMjBl0nQqxMWWTHNEsveLylq0HQl7AUuDBlheYmn9V1FGaNhvOaLMl+7cccm8
+         NhnI3/ZUrzvhk3aqEkdbtSANp/PeRfu2NoqqDX998EYeFxA9Xnf6pckdBSeF1+D04Mqd
+         +21Wy/zy3LSoZaN6eA0QY4jMjfNh3g2C0DMPyGNayjVJeq7guiIN+xnFZi7OiSJ3Z5Ni
+         YjmXNYyptv/xJmhQYlWfN/yRV/GhL8tQqSDV5Mx8gHq2JTK/KeQHYxPbM2zCXZQ3SOnz
+         3YnA==
+X-Forwarded-Encrypted: i=1; AJvYcCVC9hoZ8kvBtg+dSYygECJ4yPwLL45fiJY0iol6yShnWjtadD1t8gyqWOZ+S2y93YtfP8MzgkIIYb7DaYZ825kdKpn+PBM6av9qHvzbaYKjLF6Jk9QeEUamhgzFJuHOaOBfYyGZOqYPq+I=
+X-Gm-Message-State: AOJu0YxMKuWisH3V2LoRMxmbe0v+IN8izQnKUGnEKBKtFxx8ZOPM+jNE
+	olfOcu8iQ0Cm1AKuwV0HAgzqWZR8f4OZtp6E6g1yP3qXgFzvLIKHEEYcQ423izc=
+X-Google-Smtp-Source: AGHT+IG1wONfMhDgpNcmYtojN3iaTSokCBfqPYFhCX95UwuPyoVY1kdaKMY2QgMtuma7vNQeBqQ55g==
+X-Received: by 2002:a17:902:da83:b0:1dd:9da3:59ff with SMTP id j3-20020a170902da8300b001dd9da359ffmr1946521plx.42.1711085378879;
+        Thu, 21 Mar 2024 22:29:38 -0700 (PDT)
+Received: from localhost.localdomain ([221.220.133.103])
+        by smtp.gmail.com with ESMTPSA id e5-20020a170902d38500b001dffa622527sm882978pld.225.2024.03.21.22.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 22:29:38 -0700 (PDT)
+From: Jianfeng Liu <liujianfeng1994@gmail.com>
+To: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org
+Cc: robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	jacob-chen@iotwrt.com,
+	ezequiel@vanguardiasur.com.ar,
+	mchehab@kernel.org,
+	liujianfeng1994@gmail.com,
+	sfr@canb.auug.org.au
+Subject: [PATCH v1 0/2] media: rockchip: rga: Add rk3568 support
+Date: Fri, 22 Mar 2024 13:29:13 +0800
+Message-Id: <20240322052915.3507937-1-liujianfeng1994@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.980900-8.000000
-X-TMASE-MatchedRID: FdGr4ZiGaEm/gdQC9NfM37dQIb8hCnY+Xru95hSuhjTi7ECA5q90ucCS
-	2AMm1nQCbjMOm8SwCSYRNd8KRmWUzeVM9fuANPF9A9lly13c/gEraL2mh8ZVKwqiCYa6w8tv7fK
-	xaM2xqkB3h9ijPpALVnm3rlWwtGYxgZi/ORh+nqAMH4SsGvRsA66JG5H2YJq6u6qThyrnanOuvq
-	nb77eCoD2ixCH7D+gZqYdJomSPWScR3RjJbq0tuRIRh9wkXSlFfS0Ip2eEHnz3IzXlXlpamPoLR
-	4+zsDTteLhcSg9d5zHs+KOLzCLdqD8m0bof1K6cOm2WQ3zZszeJ0xsEvoeCdg==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.980900-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	E7EDFD187C6AB98E283390F8E9E9CEF19D458D3CC50B512E6E3F943B9334ADBF2000:8
-X-MTK: N
+Content-Transfer-Encoding: 8bit
 
-From: Hsiao Chien Sung <shawn.sung@mediatek.com>
+The RGA2 on the Rockchip rk3588 is the same core as the RGA2 on the
+Rockchip rk3288 and rk3568.
 
-We choose Mixer as CRC generator in OVL adaptor since
-its frame done event will trigger vblanks, we can know
-when is safe to retrieve CRC of the frame.
+This series adds the necessary device tree binding and node in the device
+tree to enable the RGA2 on the Rockchip rk3588.
 
-In OVL adaptor, there's no image procession after Mixer,
-unlike the OVL in VDOSYS0, Mixer's CRC will include all
-the effects that are applied to the frame.
+Tested on rock5b with gstreamer command:
+gst-launch-1.0 videotestsrc ! video/x-raw,format=BGRx ! v4l2convert ! xvimagesink
 
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_ddp_comp.c       |  3 +
- drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  3 +
- .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 21 +++++++
- drivers/gpu/drm/mediatek/mtk_ethdr.c          | 61 +++++++++++++++++++
- drivers/gpu/drm/mediatek/mtk_ethdr.h          |  5 ++
- 5 files changed, 93 insertions(+)
+Jianfeng Liu (2):
+  dt-bindings: media: rockchip-rga: add rockchip,rk3588-rga
+  arm64: dts: rockchip: Add RGA2 support to rk3588
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-index cb71effda9c2a..8aab373ce67c9 100644
---- a/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-@@ -406,6 +406,9 @@ static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor = {
- 	.clk_enable = mtk_ovl_adaptor_clk_enable,
- 	.clk_disable = mtk_ovl_adaptor_clk_disable,
- 	.config = mtk_ovl_adaptor_config,
-+	.crc_cnt = mtk_ovl_adaptor_crc_cnt,
-+	.crc_entry = mtk_ovl_adaptor_crc_entry,
-+	.crc_read = mtk_ovl_adaptor_crc_read,
- 	.start = mtk_ovl_adaptor_start,
- 	.stop = mtk_ovl_adaptor_stop,
- 	.layer_nr = mtk_ovl_adaptor_layer_nr,
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index c476056a5cbb5..24af08b1c86d6 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -138,6 +138,9 @@ const u32 *mtk_ovl_adaptor_get_formats(struct device *dev);
- size_t mtk_ovl_adaptor_get_num_formats(struct device *dev);
- enum drm_mode_status mtk_ovl_adaptor_mode_valid(struct device *dev,
- 						const struct drm_display_mode *mode);
-+size_t mtk_ovl_adaptor_crc_cnt(struct device *dev);
-+u32 *mtk_ovl_adaptor_crc_entry(struct device *dev);
-+void mtk_ovl_adaptor_crc_read(struct device *dev);
- 
- void mtk_rdma_bypass_shadow(struct device *dev);
- int mtk_rdma_clk_enable(struct device *dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index 494f7bf4a7881..9c5e565e6ef92 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -207,6 +207,27 @@ void mtk_ovl_adaptor_layer_config(struct device *dev, unsigned int idx,
- 	mtk_ethdr_layer_config(ethdr, idx, state, cmdq_pkt);
- }
- 
-+size_t mtk_ovl_adaptor_crc_cnt(struct device *dev)
-+{
-+	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-+
-+	return mtk_ethdr_crc_cnt(ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0]);
-+}
-+
-+u32 *mtk_ovl_adaptor_crc_entry(struct device *dev)
-+{
-+	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-+
-+	return mtk_ethdr_crc_entry(ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0]);
-+}
-+
-+void mtk_ovl_adaptor_crc_read(struct device *dev)
-+{
-+	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-+
-+	mtk_ethdr_crc_read(ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0]);
-+}
-+
- void mtk_ovl_adaptor_config(struct device *dev, unsigned int w,
- 			    unsigned int h, unsigned int vrefresh,
- 			    unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
-diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.c b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-index 951e3e82a6a1a..52caf75052d98 100644
---- a/drivers/gpu/drm/mediatek/mtk_ethdr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-@@ -24,6 +24,9 @@
- #define MIX_FME_CPL_INTEN			BIT(1)
- #define MIX_INTSTA			0x8
- #define MIX_EN				0xc
-+#define MIX_TRIG			0x10
-+#define MIX_TRIG_CRC_EN				BIT(8)
-+#define MIX_TRIG_CRC_RST			BIT(9)
- #define MIX_RST				0x14
- #define MIX_ROI_SIZE			0x18
- #define MIX_DATAPATH_CON		0x1c
-@@ -39,6 +42,11 @@
- #define PREMULTI_SOURCE				(3 << 12)
- #define MIX_L_SRC_SIZE(n)		(0x30 + 0x18 * (n))
- #define MIX_L_SRC_OFFSET(n)		(0x34 + 0x18 * (n))
-+
-+/* CRC register offsets for odd and even lines */
-+#define MIX_CRC_ODD			0x110
-+#define MIX_CRC_EVEN			0x114
-+
- #define MIX_FUNC_DCM0			0x120
- #define MIX_FUNC_DCM1			0x124
- #define MIX_FUNC_DCM_ENABLE			0xffffffff
-@@ -82,6 +90,7 @@ struct mtk_ethdr {
- 	void			*vblank_cb_data;
- 	int			irq;
- 	struct reset_control	*reset_ctl;
-+	struct mtk_crtc_crc	crc;
- };
- 
- static const char * const ethdr_clk_str[] = {
-@@ -100,6 +109,32 @@ static const char * const ethdr_clk_str[] = {
- 	"vdo_be_async",
- };
- 
-+static const u32 ethdr_crc_ofs[] = {
-+	MIX_CRC_ODD,
-+	MIX_CRC_EVEN,
-+};
-+
-+size_t mtk_ethdr_crc_cnt(struct device *dev)
-+{
-+	struct mtk_ethdr *priv = dev_get_drvdata(dev);
-+
-+	return priv->crc.cnt;
-+}
-+
-+u32 *mtk_ethdr_crc_entry(struct device *dev)
-+{
-+	struct mtk_ethdr *priv = dev_get_drvdata(dev);
-+
-+	return priv->crc.va;
-+}
-+
-+void mtk_ethdr_crc_read(struct device *dev)
-+{
-+	struct mtk_ethdr *priv = dev_get_drvdata(dev);
-+
-+	mtk_crtc_read_crc(&priv->crc, priv->ethdr_comp[ETHDR_MIXER].regs);
-+}
-+
- void mtk_ethdr_register_vblank_cb(struct device *dev,
- 				  void (*vblank_cb)(void *),
- 				  void *vblank_cb_data)
-@@ -256,6 +291,13 @@ void mtk_ethdr_start(struct device *dev)
- 	struct mtk_ethdr_comp *mixer = &priv->ethdr_comp[ETHDR_MIXER];
- 
- 	writel(1, mixer->regs + MIX_EN);
-+
-+	if (priv->crc.cnt) {
-+		writel(MIX_TRIG_CRC_EN, mixer->regs + MIX_TRIG);
-+#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-+		mtk_crtc_start_crc_cmdq(&priv->crc);
-+#endif
-+	}
- }
- 
- void mtk_ethdr_stop(struct device *dev)
-@@ -263,6 +305,9 @@ void mtk_ethdr_stop(struct device *dev)
- 	struct mtk_ethdr *priv = dev_get_drvdata(dev);
- 	struct mtk_ethdr_comp *mixer = &priv->ethdr_comp[ETHDR_MIXER];
- 
-+#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-+	mtk_crtc_stop_crc_cmdq(&priv->crc);
-+#endif
- 	writel(0, mixer->regs + MIX_EN);
- 	writel(1, mixer->regs + MIX_RST);
- 	reset_control_reset(priv->reset_ctl);
-@@ -317,6 +362,9 @@ static int mtk_ethdr_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	mtk_crtc_init_crc(&priv->crc, ethdr_crc_ofs, ARRAY_SIZE(ethdr_crc_ofs),
-+			  MIX_TRIG, MIX_TRIG_CRC_RST);
-+
- 	for (i = 0; i < ETHDR_ID_MAX; i++) {
- 		priv->ethdr_comp[i].dev = dev;
- 		priv->ethdr_comp[i].regs = of_iomap(dev->of_node, i);
-@@ -325,6 +373,16 @@ static int mtk_ethdr_probe(struct platform_device *pdev)
- 					      &priv->ethdr_comp[i].cmdq_base, i);
- 		if (ret)
- 			dev_dbg(dev, "get mediatek,gce-client-reg fail!\n");
-+
-+		if (i == ETHDR_MIXER) {
-+			if (of_property_read_u32_index(dev->of_node,
-+						       "mediatek,gce-events", i,
-+						       &priv->crc.cmdq_event)) {
-+				dev_warn(dev, "failed to get gce-events for crc\n");
-+			}
-+			priv->crc.cmdq_reg = &priv->ethdr_comp[i].cmdq_base;
-+			mtk_crtc_create_crc_cmdq(dev, &priv->crc);
-+		}
- #endif
- 		dev_dbg(dev, "[DRM]regs:0x%p, node:%d\n", priv->ethdr_comp[i].regs, i);
- 	}
-@@ -365,6 +423,9 @@ static int mtk_ethdr_probe(struct platform_device *pdev)
- 
- static int mtk_ethdr_remove(struct platform_device *pdev)
- {
-+	struct mtk_ethdr *priv = dev_get_drvdata(&pdev->dev);
-+
-+	mtk_crtc_destroy_crc(&priv->crc);
- 	component_del(&pdev->dev, &mtk_ethdr_component_ops);
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.h b/drivers/gpu/drm/mediatek/mtk_ethdr.h
-index 81af9edea3f74..d17d7256bd120 100644
---- a/drivers/gpu/drm/mediatek/mtk_ethdr.h
-+++ b/drivers/gpu/drm/mediatek/mtk_ethdr.h
-@@ -22,4 +22,9 @@ void mtk_ethdr_register_vblank_cb(struct device *dev,
- void mtk_ethdr_unregister_vblank_cb(struct device *dev);
- void mtk_ethdr_enable_vblank(struct device *dev);
- void mtk_ethdr_disable_vblank(struct device *dev);
-+
-+size_t mtk_ethdr_crc_cnt(struct device *dev);
-+u32 *mtk_ethdr_crc_entry(struct device *dev);
-+void mtk_ethdr_crc_read(struct device *dev);
-+
- #endif
+ .../devicetree/bindings/media/rockchip-rga.yaml       |  1 +
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi             | 11 +++++++++++
+ 2 files changed, 12 insertions(+)
+
 -- 
-2.18.0
+2.34.1
 
 
