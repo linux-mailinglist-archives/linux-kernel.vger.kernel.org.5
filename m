@@ -1,117 +1,105 @@
-Return-Path: <linux-kernel+bounces-111916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E2E688729B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:08:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF77C8872F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 508011C20B3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:08:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E132D1C209CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D032626AB;
-	Fri, 22 Mar 2024 18:08:09 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4CD65BB1;
+	Fri, 22 Mar 2024 18:23:09 +0000 (UTC)
+Received: from relay162.nicmail.ru (relay162.nicmail.ru [91.189.117.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88255A0EE;
-	Fri, 22 Mar 2024 18:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D8062801;
+	Fri, 22 Mar 2024 18:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130888; cv=none; b=bph+S9D8eZMwMvVY6bA1JnCHAUUtOPszp/HAu85TGTr4zuc7vXhqbfnjv4/rUjy+WlbfGtRdbAmQI+lNsrVcR4L5kNKaPkSs/Xa/PGLxr6hgFkUtu0XZD/ZsdPtaKj/05eYbJ/0ujSCDFnHa8C/WnNi5GKT7NthACx+bjKTEMbw=
+	t=1711131788; cv=none; b=Rlmm6NSxFCZVNOcht8uz/2uzv6jMyH4C/p+6fBBEYRHlMgHKMbqAsc2l1kF2ZFy4tmpB5ya+watbFDjBAIXSNW4qJ5bnRpW9aI8nWNCvP0EaVbTrb5JPjtxaqV48e0hVOg67VkTT2qqrfYhPYNqmT8gPg+1WDxoLSIolp7x6lYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130888; c=relaxed/simple;
-	bh=KiwcN6OXG4cAG14WcslHNhcajsRkQ9j3y5Cu1CHHcik=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mye19LDdG+7+l2epbCG44/PXoyURjsXoSNT32uenVF+y4AoQUvl0ltV4U0vPXAPj7nqZo8u+NuOo4SsxPorsnkvCqu/34oRRkD49KKCoWIfUbtYoXXvCl1kCtmss9nT/GTwFcTzG3xOtmnaHQnKFz+OGUXua4D3ySnHHoVd+PJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rnjIq-0005aI-0F;
-	Fri, 22 Mar 2024 18:07:40 +0000
-Date: Fri, 22 Mar 2024 18:07:36 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
-	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Li Lingfeng <lilingfeng3@huawei.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Christian Heusel <christian@heusel.eu>,
-	Min Li <min15.li@samsung.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
-	Christian Loehle <CLoehle@hyperstone.com>,
-	Bean Huo <beanhuo@micron.com>, Yeqi Fu <asuk4.q@gmail.com>,
-	Victor Shih <victor.shih@genesyslogic.com.tw>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dominique Martinet <dominique.martinet@atmark-techno.com>,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 3/8] block: add new genhd flag GENHD_FL_NVMEM
-Message-ID: <Zf3I6DDqqyd924Ks@makrotopia.org>
-References: <cover.1711048433.git.daniel@makrotopia.org>
- <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
- <7027ccdc-878a-420e-a7ea-5156e1d67b8a@acm.org>
+	s=arc-20240116; t=1711131788; c=relaxed/simple;
+	bh=C3yFCYIxjXBw2tTNFQ6IgQn83J6QjcwG/Tyrj2jYoiM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YNh6e2IA6+gd5hHJhqIKuwh3R4FaV+nV3v2HUluZHmZoRBcEUUy5r1SYI9fu5Dg15f3cay9fs83DZ78+aw9MwUXJOU8CiPXSL0OIPGXg45oupKDXtjfoIeCZVrifz/0ja3gEC98PdRqn4q5WjZdaDdqG2dtvRKNPIYOLC5Ov0J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
+Received: from [10.28.138.19] (port=24516 helo=mitx-gfx..)
+	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+	(envelope-from <kiryushin@ancud.ru>)
+	id 1rnjJu-0007gk-6r;
+	Fri, 22 Mar 2024 21:08:46 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
+	by incarp1106.mail.hosting.nic.ru (Exim 5.55)
+	with id 1rnjJu-003M2t-03;
+	Fri, 22 Mar 2024 21:08:46 +0300
+From: Nikita Kiryushin <kiryushin@ancud.ru>
+To: Robert Moore <robert.moore@intel.com>
+Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH v2] ACPICA: debugger: check status of acpi_evaluate_object in acpi_db_walk_for_fields
+Date: Fri, 22 Mar 2024 21:07:53 +0300
+Message-Id: <20240322180753.5612-1-kiryushin@ancud.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAJZ5v0i7LYzF13M0qdeYWXZ7uO6HUpAS7pE5RJnOAJtKB8o88A@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7027ccdc-878a-420e-a7ea-5156e1d67b8a@acm.org>
+Content-Transfer-Encoding: 8bit
+X-MS-Exchange-Organization-SCL: -1
 
-On Fri, Mar 22, 2024 at 10:49:48AM -0700, Bart Van Assche wrote:
-> On 3/21/24 12:33, Daniel Golle wrote:
-> > Add new flag to destinguish block devices which may act as an NVMEM
-> > provider.
-> > 
-> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> > ---
-> >   include/linux/blkdev.h | 2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index c3e8f7cf96be9..f2c4f280d7619 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -81,11 +81,13 @@ struct partition_meta_info {
-> >    * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
-> >    * scan for partitions from add_disk, and users can't add partitions manually.
-> >    *
-> > + * ``GENHD_FL_NVMEM``: the block device should be considered as NVMEM provider.
-> >    */
-> >   enum {
-> >   	GENHD_FL_REMOVABLE			= 1 << 0,
-> >   	GENHD_FL_HIDDEN				= 1 << 1,
-> >   	GENHD_FL_NO_PART			= 1 << 2,
-> > +	GENHD_FL_NVMEM				= 1 << 3,
-> >   };
-> 
-> What would break if this flag wouldn't exist?
+ACPICA commit 9061cd9aa131205657c811a52a9f8325a040c6c9
 
-As both, MTD and UBI already act as NVMEM providers themselves, once
-the user creates a ubiblock device or got CONFIG_MTD_BLOCK=y set in their
-kernel configuration, we would run into problems because both, the block
-layer as well as MTD or UBI would try to be an NVMEM provider for the same
-device tree node.
+Errors in acpi_evaluate_object can lead to incorrect state of buffer.
+This can lead to access to data in previously ACPI_FREEd buffer and
+secondary ACPI_FREE to the same buffer later.
 
-I intially suggested the invert of this flag, GENHD_FL_NO_NVMEM which
-would be set only for mtdblock and ubiblock devices to opt-out of acting
-as NVMEM proviers. However, in a previous comment [1] on the RFC it was
-requested to make this opt-in instead.
+Handle errors in acpi_evaluate_object the same way it is done earlier
+with acpi_ns_handle_to_pathname.
 
-[1]: https://patchwork.kernel.org/comment/25432948/
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Link: https://github.com/acpica/acpica/commit/9061cd9a
+Fixes: 5fd033288a86 ("ACPICA: debugger: add command to dump all fields of particular subtype")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+v2: Add ACPICA project git links for corresponding changes
+ drivers/acpi/acpica/dbnames.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
+index b91155ea9c34..c9131259f717 100644
+--- a/drivers/acpi/acpica/dbnames.c
++++ b/drivers/acpi/acpica/dbnames.c
+@@ -550,8 +550,12 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
+ 	ACPI_FREE(buffer.pointer);
+ 
+ 	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+-	acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+-
++	status = acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
++	if (ACPI_FAILURE(status)) {
++		acpi_os_printf("Could Not evaluate object %p\n",
++			       obj_handle);
++		return (AE_OK);
++	}
+ 	/*
+ 	 * Since this is a field unit, surround the output in braces
+ 	 */
+-- 
+2.34.1
+
 
