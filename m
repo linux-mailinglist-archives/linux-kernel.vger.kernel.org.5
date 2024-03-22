@@ -1,194 +1,128 @@
-Return-Path: <linux-kernel+bounces-111976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035C088738F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:05:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4A6C887381
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537E31F232C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:05:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54667B23269
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC9676F1B;
-	Fri, 22 Mar 2024 19:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2498768F2;
+	Fri, 22 Mar 2024 18:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="h6VAuxyq"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uspQTaSd"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311583EA6F
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CD4762F1
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711134337; cv=none; b=DVUGtRO6ro+pUSkt/8eCuk4BoJ6hiQuHorixNtt8PvKW8iSq9XorViU1o+4QJjmvsDcgMAaApHviId+KdguJH3LPb8uoE15WxKkVquyvtC6Eh6qdmwF6D4vM6NCfONBxY6DqaJYmG99xuVs4raOZ2GRwvm0U/yEB9+LlhQmtx8Q=
+	t=1711133931; cv=none; b=gpepg0YlHvO7lbKq7Yt1dxxdRf8qf2Zyt3dzn3sITYKTlLI9r2md1Rtaf9Ym3U8vOnJOtVdsebVGK2frAliyyb89hViLssEIH1DMODdHw7N02wLPL9xxvPgQiSefwtDUDR7FpUcKepb8Pym7uGhtXb5wln4TPtuwoREF0SSdNYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711134337; c=relaxed/simple;
-	bh=C9oJwFIZ1oe+4/AgkgUGhFF5pFPrBfOvNgDiiaKFmQk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FHna9L+5fW9M+I9dQdFNxH2F/KtIZmeLr5SmXN/Q2G60unV68MGjNMadjTYwMTbJqObjvy/5+nAgIMJbKmGL5iuKPmyXlj0NbYAb5/Ez4AvsjEofSn7sebQG/jE+0BLGew1gQvX3TEcDUa3djopF1tkhuUjTWmClbQzn8eCQWtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=h6VAuxyq; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-696609f5cf2so10750316d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:05:34 -0700 (PDT)
+	s=arc-20240116; t=1711133931; c=relaxed/simple;
+	bh=2zmoavQwnUkySX1On4e3iFUXEz7P4YdtMJWnbUJFcws=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZDHN1SBJw991oi1hd0c+3vWYbd92npfqQtgM5ss8PZ8HrLpmHwNNr/Wby9u+o/sXL5ep/7i3E6RqHKg+9scJ8OitGKB3mEjHbys5giNxxfPvjHfISHx3Rb7qhuizK259VYfAOJ1/+EEBE4HUBFheX5ndGk1u0isyBXbHIlHTl3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uspQTaSd; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a46cc947929so346494766b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:58:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711134334; x=1711739134; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a6WGCJ5v+lTsE9g6YW58u86G+mWvoH1YiexQxNMU+bg=;
-        b=h6VAuxyqPy9RktM8F6yfOwHugT7MEG7gjtEOYYontrxHWZ54OApn3m629NbM054OSr
-         B1/n5Z84qvW4idU4lBqTf5lb9mfLOt6js6C2lxqNGRAa7hqTK65ef3gCRlO5PkzGfsRP
-         NTXc7fYCntN1xEFUqxA3gg2izm3uwpRFCpFl0sEhoR2VakyvqpEyyA3DwscPti/Lq+xe
-         zHPdHYZsbkPAtr6MB3ybAHzgzwhJi/rwXF63sV/EK4hh+qewmoVgGiMBVeIlOcR6ecrG
-         qpCotDMaMRQ7Y5H9tf25v9Ct+T6lV3QtEsPb/RmXo+tnRFVkIASk/XF0+Nq9uJjWz3ms
-         pRGQ==
+        d=google.com; s=20230601; t=1711133928; x=1711738728; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kn5VB94BUw/eWqkLaBFyi/LkgXiPUXB/jc3eN2ucVQY=;
+        b=uspQTaSdU/vtyRgn/iz68TBqci5cr2bCVhXf9icVogBrndF3SBXfqDTAqxhsqI+ufB
+         oCHm53PcJnm8yLgDyyz2zGEvTOzSAVZq1E7EyrzT6g6jy6XIRzH/HVZJ2vvBZ9FtkiTz
+         jJpIh1vPfcBNMD6RxRlBLBIgHyoPP66RZWucS2XbahafXyRXGWEMaaP8tX97dCZ27CXV
+         n8TJXR2lGr0AWUvMvtAl3qU6y99T3snWIPr0+FTlp23luipoy1U1KdGJXBdVMaosPsJs
+         /Jd5OGKCOJ4sb2XQMTCMcW7DHWZHKM6YKx4GnXJSjpMmr6y2S1HqS07EVb7qwUeHaP+d
+         sM2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711134334; x=1711739134;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a6WGCJ5v+lTsE9g6YW58u86G+mWvoH1YiexQxNMU+bg=;
-        b=qPVxWz3uiUI1Jfn0jr47w6uKzpJ9ZA+65UjZoXwXI+oMbqbeX1nNal2q1F7TZMsYBp
-         +vXjmM5e5CPYbllkty65pHtNIoSbzAx//dTiZFMRGI3+f5faEUlfiitKK0/J6MzAfouB
-         FhyFISG7yIC/n83Wm34K6ZZgeNVLIXKPUT0CAucFm7bD8wViDMXdvFZxM9jRSWCNGAZq
-         L942aMvlwjLtzBo+maLN0iLZhVMR5DkLxYb0TVelZQOd+rMd1mS2bIIEuJtT7ABIwbrL
-         u5g3tYvNOSft6AkVTDH7EUYTM4vrPIlbMkXYVG7JUSj7U3i2swY63nvciinpbdkJ+hFb
-         WVqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVpXGJmeLmJ02HUwsirmRn4pXRdAnp/a6LBT6R4QlY0OCxkDsEZhkCjc67YzjmM6uF6cq9vZZJ1ypG3XBkUuof6O87hLvXwC4xLPghJ
-X-Gm-Message-State: AOJu0YyMHfan1TtmppMY+MeMKLj7mT/LGDt/WBhFU6mSNaz2O+D3QGDg
-	dxN1WSwJmfIsD1iAi38CEGyAQ2btTqTjXJO/Uqe3aRMDzpv5BWXo/GYr/IkIqLkYbVpayn5PlgI
-	5
-X-Google-Smtp-Source: AGHT+IHQ5pFluRwp1jRQRBP0ScYuJl5DTFe5SBvmWRgRQLHsh0hGtceYDz92r8gVhFBKjlTPlcOqOw==
-X-Received: by 2002:a05:6a21:2786:b0:1a3:6bd8:f487 with SMTP id rn6-20020a056a21278600b001a36bd8f487mr516475pzb.51.1711133871755;
-        Fri, 22 Mar 2024 11:57:51 -0700 (PDT)
-Received: from ?IPV6:2601:647:4180:9630::546? ([2601:647:4180:9630::546])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b001dee9d80bdcsm70160pln.107.2024.03.22.11.57.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 11:57:51 -0700 (PDT)
-Message-ID: <a4d340f0-960f-47bc-b45c-f89053526a22@rivosinc.com>
-Date: Fri, 22 Mar 2024 11:57:49 -0700
+        d=1e100.net; s=20230601; t=1711133928; x=1711738728;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kn5VB94BUw/eWqkLaBFyi/LkgXiPUXB/jc3eN2ucVQY=;
+        b=fxEnWMzN9L61H+QTGSnGXshHbtGcjlkhIlAyVUZXhrCFBRebfZkrQpxwpYdsdEihij
+         mid4qrkRFEcIKwBG1OL+jHuLuM/QYPxLBFOaZxyfgwXbbhwgVwQVPsLNwpdjN1x+b5B3
+         i8q/Ej5f4PG+zipZk43RXBZAF5KERwCrVgmSgmtgO7+0kJgng1aJI0o0ZOhs5avID0VI
+         pHWlk++gXjENPcjGNpFwTas03RGuo/uKL+uRFrvoGGUVbkSsuV7r2vDoRioPe9LCR+1C
+         Xz5NmM+v6lwXmnE/6Kse9slYulGatDxwAg+3zOz4abRFiYXFZ/lIp/u4rfGowl2KsjTI
+         Vwdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVa23ESTfI/40Mhlwwlygb8WwbZanqUUxBUM5QNtwOsHwJpGdIWtBfCiJ0maQ3wFfgsluyA6aF/khPPDq3DlPDazkNzMdf0fatHeWkS
+X-Gm-Message-State: AOJu0Yzw+TuOC7vqM5sjjSGeWtimlV7cVlGBjgDm/+THnctMC9icbAd+
+	peC5LacXHOrSJINrTJgtPbLjZU5lTAL6hh8e1Mz8yuqxo3ZR4mVYsWhJcpioXC0i24G05xsUHaA
+	oNgH/Tr4+2MQSbEcm3XomYJaUNZs9Ken6syjCeY8Fqqmi4xckPQ==
+X-Google-Smtp-Source: AGHT+IFrALHdZOSKj5aMn/uzQgQdUN6Pqoan+ErPCLYOdPIRvipej8qj1s6jFNcN9s7yZXOVAoYdlrQhCGb3EUEUXDQ=
+X-Received: by 2002:a17:906:f2d9:b0:a46:fd41:4bb8 with SMTP id
+ gz25-20020a170906f2d900b00a46fd414bb8mr415771ejb.25.1711133928342; Fri, 22
+ Mar 2024 11:58:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Improve sbi_ecall() code generation by reordering
- arguments
-Content-Language: en-US
-To: Alexandre Ghiti <alexghiti@rivosinc.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Samuel Holland <samuel.holland@sifive.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240322112629.68170-1-alexghiti@rivosinc.com>
-From: Atish Patra <atishp@rivosinc.com>
-In-Reply-To: <20240322112629.68170-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
+ <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com>
+ <20240322031907.GA237176@cmpxchg.org> <CAF8kJuNe5xXVp00Ogk2AL_zXFK6pN0u7=0avjyPPkagB3FWy8Q@mail.gmail.com>
+ <20240322171156.GC237176@cmpxchg.org>
+In-Reply-To: <20240322171156.GC237176@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 22 Mar 2024 11:58:12 -0700
+Message-ID: <CAJD7tkZk=Febdoa-fXVw2n21KtEH=y8n6LD6akxc_cHvfEZ=3g@mail.gmail.com>
+Subject: Re: [PATCH] zswap: initialize entry->pool on same filled entry
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/22/24 04:26, Alexandre Ghiti wrote:
-> The sbi_ecall() function arguments are not in the same order as the
-> ecall arguments, so we end up re-ordering the registers before the
-> ecall which is useless and costly.
-> 
-> So simply reorder the arguments in the same way as expected by ecall.
-> Instead of reordering directly the arguments of sbi_ecall(), use a proxy
-> macro since the current ordering is more natural.
-> 
-> Before:
-> 
-> Dump of assembler code for function sbi_ecall:
->     0xffffffff800085e0 <+0>: add sp,sp,-32
->     0xffffffff800085e2 <+2>: sd s0,24(sp)
->     0xffffffff800085e4 <+4>: mv t1,a0
->     0xffffffff800085e6 <+6>: add s0,sp,32
->     0xffffffff800085e8 <+8>: mv t3,a1
->     0xffffffff800085ea <+10>: mv a0,a2
->     0xffffffff800085ec <+12>: mv a1,a3
->     0xffffffff800085ee <+14>: mv a2,a4
->     0xffffffff800085f0 <+16>: mv a3,a5
->     0xffffffff800085f2 <+18>: mv a4,a6
->     0xffffffff800085f4 <+20>: mv a5,a7
->     0xffffffff800085f6 <+22>: mv a6,t3
->     0xffffffff800085f8 <+24>: mv a7,t1
->     0xffffffff800085fa <+26>: ecall
->     0xffffffff800085fe <+30>: ld s0,24(sp)
->     0xffffffff80008600 <+32>: add sp,sp,32
->     0xffffffff80008602 <+34>: ret
-> 
-> After:
-> 
-> Dump of assembler code for function __sbi_ecall:
->     0xffffffff8000b6b2 <+0>:	add	sp,sp,-32
->     0xffffffff8000b6b4 <+2>:	sd	s0,24(sp)
->     0xffffffff8000b6b6 <+4>:	add	s0,sp,32
->     0xffffffff8000b6b8 <+6>:	ecall
->     0xffffffff8000b6bc <+10>:	ld	s0,24(sp)
->     0xffffffff8000b6be <+12>:	add	sp,sp,32
->     0xffffffff8000b6c0 <+14>:	ret
-> 
+[..]
+> > > What would actually be safer is to make the two subtypes explicit, and
+> > > not have unused/ambiguous/overloaded members at all:
+> > >
+> > > struct zswap_entry {
+> > >         unsigned int length;
+> > >         struct obj_cgroup *objcg;
+> > > };
+> > >
+> > > struct zswap_compressed_entry {
+> > >         struct zswap_entry entry;
+> > >         struct zswap_pool *pool;
+> > >         unsigned long handle;
+> > >         struct list_head lru;
+> > >         swp_entry_t swpentry;
+> > > };
+> > >
+> > > struct zswap_samefilled_entry {
+> > >         struct zswap_entry entry;
+> > >         unsigned long value;
+> > > };
+> >
+> > I think the 3 struct with embedded and container of is a bit complex,
+> > because the state breaks into different struct members
+>
+> That's kind of the point. They're different types that have their own
+> rules and code paths. The code as it is right now makes it seem like
+> they're almost the same. From the above you can see that they have
+> actually almost nothing in common (the bits in struct zswap_entry).
+>
+> This would force the code to show the difference as well.
+>
+> Depending on how Yosry's patches work out, this may or may not be
+> worth doing. It's just an idea that could help make it easier.
 
-Nice!
+I initially wanted to do something similar to splitting the structs
+before not allocating an entry at all for same-filled pages, but I
+ended up dropping it as the direct conversion was simple enough.
 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->   arch/riscv/include/asm/sbi.h | 10 ++++++----
->   arch/riscv/kernel/sbi.c      | 10 +++++-----
->   2 files changed, 11 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 6e68f8dff76b..9041b009d3b5 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -292,10 +292,12 @@ struct sbiret {
->   };
->   
->   void sbi_init(void);
-> -struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
-> -			unsigned long arg1, unsigned long arg2,
-> -			unsigned long arg3, unsigned long arg4,
-> -			unsigned long arg5);
-> +struct sbiret __sbi_ecall(unsigned long arg0, unsigned long arg1,
-> +			  unsigned long arg2, unsigned long arg3,
-> +			  unsigned long arg4, unsigned long arg5,
-> +			  int fid, int ext);
-> +#define sbi_ecall(e, f, a0, a1, a2, a3, a4, a5)	\
-> +		__sbi_ecall(a0, a1, a2, a3, a4, a5, f, e)
->   
->   #ifdef CONFIG_RISCV_SBI_V01
->   void sbi_console_putchar(int ch);
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index e66e0999a800..5719fa03c3d1 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -24,10 +24,10 @@ static int (*__sbi_rfence)(int fid, const struct cpumask *cpu_mask,
->   			   unsigned long start, unsigned long size,
->   			   unsigned long arg4, unsigned long arg5) __ro_after_init;
->   
-> -struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
-> -			unsigned long arg1, unsigned long arg2,
-> -			unsigned long arg3, unsigned long arg4,
-> -			unsigned long arg5)
-> +struct sbiret __sbi_ecall(unsigned long arg0, unsigned long arg1,
-> +			  unsigned long arg2, unsigned long arg3,
-> +			  unsigned long arg4, unsigned long arg5,
-> +			  int fid, int ext)
->   {
->   	struct sbiret ret;
->   
-> @@ -48,7 +48,7 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->   
->   	return ret;
->   }
-> -EXPORT_SYMBOL(sbi_ecall);
-> +EXPORT_SYMBOL(__sbi_ecall);
->   
->   int sbi_err_map_linux_errno(int err)
->   {
-
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Anyway, I will post the patches some time next week (or today if I can
+get around to test them). The discussion should be easier with code.
 
