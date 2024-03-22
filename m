@@ -1,85 +1,74 @@
-Return-Path: <linux-kernel+bounces-112065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D098874CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:16:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 342CD8874AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A7C72848F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:16:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 958B9B217BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5D181740;
-	Fri, 22 Mar 2024 22:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B7F81ADB;
+	Fri, 22 Mar 2024 22:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JtZkECFX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="qVPq7gqv"
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5E7627FC
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 22:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E398005F;
+	Fri, 22 Mar 2024 22:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711145745; cv=none; b=ICwhhwJTa6DSZHV7G4Yp8UQAvAql4SxRxPowQXMO8RkG/Gl0n1v1/3bACMfA6mZoL9a4Vu2l55DEmw+vdEPaksY3cIGpoK4ly9Zbdnc+jYj+w/5EYxzbpPKZIk7zddlzSKPIJtGcIgLK8UVpEJWPtUasNYapjCOU3EcOmA4VIR0=
+	t=1711145107; cv=none; b=phqgcG6Pnj1eDMi9EMfJ9ELZxLJHX1LbDUpVowCf2l4xPqksZrMOvFv9ONocvt7EmI40jQzxG3w4NnLEkKBsbIWfiLlxlvYBrUSXP1JLDA/UflHqjS32m8Q4V2UQ4rbcNRpGDGcI2apax5Tc9lwRWfPp7pP/aLhAv+ur0FmPoA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711145745; c=relaxed/simple;
-	bh=ycMrtdPn68CTRrt3aDmyI8tifKQ2EOf0nLCRHFWzr08=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gag+72jv+UWfxwEYLRWsQ10UIWOM6pUf1xG4WL8GlJhbKf+DkXtCNomjJeqiQ/J9K4Nv0DurYV7WJiqF+72YjZGHBM1y7FxylDNwfpE9oFt1Ap998HLpyMeBSeJQq1CUjgkX++lBhiPKrJ9XI1tP4SVXicx/uaUcbBioii5l8Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JtZkECFX; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711145742;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t+o/hq/vRaAlqZorXgz61wZ5x9VfNVOFlmD2hAnuwQc=;
-	b=JtZkECFX5OroTe2z+7T/LHbHzuguh/uULw919Wo8BycfmKV3jXP59AFMUhgkEq83R1lUj1
-	We9zxxFcGye0E5HsNjTkPR5WJBmGxeywNAmg5/VOruQizGsOLrJYj65E39suuk+W596Lrv
-	BGt7VRhX9hhOxGAmW/4IourcG5G+RSI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-159-JjZz40PEMPe23vRDS-XaXg-1; Fri,
- 22 Mar 2024 18:15:38 -0400
-X-MC-Unique: JjZz40PEMPe23vRDS-XaXg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E5C3D3C02454;
-	Fri, 22 Mar 2024 22:15:36 +0000 (UTC)
-Received: from emerald.redhat.com (unknown [10.22.8.130])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3BA338173;
-	Fri, 22 Mar 2024 22:15:36 +0000 (UTC)
-From: Lyude Paul <lyude@redhat.com>
-To: dri-devel@lists.freedesktop.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Asahi Lina <lina@asahilina.net>,
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-	FUJITA Tomonori <fujita.tomonori@gmail.com>,
-	linux-kernel@vger.kernel.org (open list),
-	rust-for-linux@vger.kernel.org (open list:RUST)
-Subject: [PATCH 4/4] WIP: rust/drm/kms: Add ShadowPlaneState<T>
-Date: Fri, 22 Mar 2024 18:03:36 -0400
-Message-ID: <20240322221305.1403600-5-lyude@redhat.com>
-In-Reply-To: <20240322221305.1403600-1-lyude@redhat.com>
-References: <20240322221305.1403600-1-lyude@redhat.com>
+	s=arc-20240116; t=1711145107; c=relaxed/simple;
+	bh=mQH4u03tsZyluoPkuFH+vj5xwkSsplS8WTDBXM4a1jY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sD/fDB1+CUCm4qWHobZyMYMENQOgRm/rOX8oYTU7M2r87MGJB8smH9xhzIbrR0uZthyaF/J+0X1NPaS6g0MQyWh50T1MRKlUPtdFiIcNukD/gm3yiWYsrk/lf7+y0kuK0pRSEb0DPv+KGAUMvzg58pTuhzpAkwjxM17N717Y0Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=qVPq7gqv; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42MKFhNd008721;
+	Fri, 22 Mar 2024 18:04:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=FfnNqIOM8NsT
+	oahXJWH3mBcZhmxAmlsdOMFS/s3tSyA=; b=qVPq7gqv8HdChZjd/J7u81TpKBRP
+	PMwgyiOwNmE1KPLLhMsN9dkcTjLwIKmm9JoQAffgfctz0QdXe+pq2E4RlNJy72aT
+	zyx0T+PECE9kze+vQDew8E7H5d8SPOcvRtuyyYuR5y4QAkvox0v/fQPeTFx+uwFm
+	8UPSn/5fuvaym5ciAsS7Al8Mp9T0UXgxwiw3HP0I3B11ZxwZzCuhK8tYqugfKH4Q
+	tYgYOEuhmv/vFNJzBeqNuBodIPua4dFot5IriMO9QDHZwDf7YIy7/FDQABmGSCCM
+	fqk+0xXV6P6VvlluHmznfjvlC6J5kgBz6i41QlUkUE7ULO0c3IfuD3gIKg==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3x1gv8g8je-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 18:04:37 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 42MM4aat023755
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 22 Mar 2024 18:04:36 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 22 Mar
+ 2024 18:04:35 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Fri, 22 Mar 2024 18:04:35 -0400
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42MM4M9L028868;
+	Fri, 22 Mar 2024 18:04:24 -0400
+From: Marcelo Schmitt <marcelo.schmitt@analog.com>
+To: <lars@metafoo.de>, <Michael.Hennerich@analog.com>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <marcelo.schmitt1@gmail.com>
+CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] Add support for AD4000 series
+Date: Fri, 22 Mar 2024 19:04:20 -0300
+Message-ID: <cover.1711131830.git.marcelo.schmitt@analog.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,121 +76,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: L4gCMAWbV0esw13bw2h4cgwr1h2XSv56
+X-Proofpoint-ORIG-GUID: L4gCMAWbV0esw13bw2h4cgwr1h2XSv56
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_14,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 suspectscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=859 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2403220160
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/rvkms/plane.rs           |  7 +++-
- rust/bindings/bindings_helper.h          |  2 +
- rust/kernel/drm/kms.rs                   |  1 +
- rust/kernel/drm/kms/gem_atomic_helper.rs | 48 ++++++++++++++++++++++++
- 4 files changed, 56 insertions(+), 2 deletions(-)
- create mode 100644 rust/kernel/drm/kms/gem_atomic_helper.rs
+This series adds support for high-speed, high-precision AD4000 series of SAR ADCs.
 
-diff --git a/drivers/gpu/drm/rvkms/plane.rs b/drivers/gpu/drm/rvkms/plane.rs
-index d98a1f7bf79e2..5fb1b63842929 100644
---- a/drivers/gpu/drm/rvkms/plane.rs
-+++ b/drivers/gpu/drm/rvkms/plane.rs
-@@ -4,7 +4,10 @@
-     prelude::*,
-     drm::{
-         device::Device,
--        kms::plane::{self, DriverPlaneState},
-+        kms::{
-+            plane::{self, DriverPlaneState},
-+            gem_atomic_helper::ShadowPlaneState,
-+        }
-     },
- };
- 
-@@ -15,7 +18,7 @@ pub(crate) struct DriverPlane {
- }
- 
- pub(crate) type Plane = plane::Plane<DriverPlane>;
--pub(crate) type PlaneState = plane::PlaneState<RvkmsPlaneState>;
-+pub(crate) type PlaneState = ShadowPlaneState<RvkmsPlaneState>;
- 
- impl plane::DriverPlane for DriverPlane {
-     type Initializer = impl PinInit<Self, Error>;
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 5856afbe6e8f6..73a5eb00e8625 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -12,6 +12,8 @@
- #include <drm/drm_edid.h>
- #include <drm/drm_file.h>
- #include <drm/drm_gem.h>
-+#include <drm/drm_gem_atomic_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_gem_shmem_helper.h>
- #include <drm/drm_ioctl.h>
-diff --git a/rust/kernel/drm/kms.rs b/rust/kernel/drm/kms.rs
-index b55d14415367a..14f4c3842ada0 100644
---- a/rust/kernel/drm/kms.rs
-+++ b/rust/kernel/drm/kms.rs
-@@ -6,6 +6,7 @@
- pub mod crtc;
- pub mod encoder;
- pub mod plane;
-+pub mod gem_atomic_helper;
- 
- use crate::{
-     drm::{drv, device::Device},
-diff --git a/rust/kernel/drm/kms/gem_atomic_helper.rs b/rust/kernel/drm/kms/gem_atomic_helper.rs
-new file mode 100644
-index 0000000000000..85bc3df32d8b7
---- /dev/null
-+++ b/rust/kernel/drm/kms/gem_atomic_helper.rs
-@@ -0,0 +1,48 @@
-+use crate::{
-+    prelude::*,
-+    private::Sealed,
-+    bindings,
-+    init::Zeroable,
-+};
-+use super::plane::{IntoPlaneState, DriverPlaneState};
-+
-+unsafe impl Zeroable for bindings::drm_shadow_plane_state {}
-+
-+#[derive(Default)]
-+#[repr(C)]
-+pub struct ShadowPlaneState<T: DriverPlaneState> {
-+    shadow_state: bindings::drm_shadow_plane_state,
-+    inner: T,
-+}
-+
-+impl<T: DriverPlaneState> Sealed for ShadowPlaneState<T> {}
-+
-+static_assert!(crate::offset_of!(bindings::drm_shadow_plane_state, base) == 0);
-+
-+// SAFETY: Our data layout starts with drm_plane_state (contained at the start of
-+// drm_shadow_plane_state)
-+unsafe impl<T: DriverPlaneState> IntoPlaneState for ShadowPlaneState<T> {
-+    fn __duplicate_state(&self, plane: *mut bindings::drm_plane) -> Result<Box<Self>> {
-+        let mut new: Box<Self> = Box::try_init(try_init!(Self {
-+            shadow_state: bindings::drm_shadow_plane_state { ..Default::default() },
-+            inner: self.inner.clone()
-+        }))?;
-+
-+        // SAFETY: FFI call with no special requirements
-+        unsafe { bindings::__drm_gem_duplicate_shadow_plane_state(plane, &mut new.shadow_state) };
-+
-+        Ok(new)
-+    }
-+
-+    fn __destroy_state(state: *mut bindings::drm_plane_state) {
-+        // SAFETY: This would not be called without a plane state to destroy, and our data layout
-+        // starts with `bindings::drm_plane_state`
-+        unsafe { bindings::__drm_gem_destroy_shadow_plane_state(state.cast()) };
-+    }
-+
-+    fn __reset_state(plane: *mut bindings::drm_plane, state: *mut bindings::drm_plane_state) {
-+        // SAFETY: This would not be called without a plane state to reset, and our data layout
-+        // starts with `bindings::drm_plane_state`
-+        unsafe { bindings::__drm_gem_reset_shadow_plane(plane, state.cast()) }
-+    }
-+}
+Most uncommon things about this set are:
+1) These devices have the same SPI (Strange Peripheral Interface) as AD7944
+devices, which has been documented in ad7944.rst [1].
+The device tree description for SPI connections and mode can be the same as of
+ad7944 adi,spi-mode [2].
+Because ad4000 driver does not currently support daisy-chain mode, I simplified
+things a little bit. If having a more complete doc is preferred, I'm fine
+changing to that.
+
+[1]: https://lore.kernel.org/linux-iio/20240313-mainline-ad7944-doc-v1-2-7860416726e4@baylibre.com/
+[2]: https://lore.kernel.org/linux-iio/20240304-ad7944-mainline-v5-1-f0a38cea8901@baylibre.com/
+
+2) Differently from AD7944, AD4000 devices have a configuration register to
+toggle some features. For instance, turbo mode is set through configuration
+register rather than an external pin. This simplifies hardware connections,
+but then requires software interface. So, additional ABI being proposed 
+in sysfs-bus-iio-adc-ad4000. The one I'm most in doubt about is 
+span_compression_en which affects the in_voltageY_scale attribute.
+That might be instead supported by providing _scale_available and allowing write
+to _scale. Anyway, let me know how bad those look like :)
+
+Thanks,
+Marcelo
+
+Marcelo Schmitt (2):
+  dt-bindings: iio: adc: Add AD4000
+  iio: adc: Add support for AD4000
+
+ .../ABI/testing/sysfs-bus-iio-adc-ad4000      |  36 +
+ .../bindings/iio/adc/adi,ad4000.yaml          | 151 ++++
+ MAINTAINERS                                   |   9 +
+ drivers/iio/adc/Kconfig                       |  12 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/ad4000.c                      | 666 ++++++++++++++++++
+ 6 files changed, 875 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-ad4000
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+ create mode 100644 drivers/iio/adc/ad4000.c
+
 -- 
 2.43.0
 
