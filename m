@@ -1,150 +1,203 @@
-Return-Path: <linux-kernel+bounces-111978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A16887397
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:08:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF0288739D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25879285C24
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:08:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCAD0285CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46E77763C;
-	Fri, 22 Mar 2024 19:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090BF77A05;
+	Fri, 22 Mar 2024 19:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Wagbyasr"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DfNlI3DV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6833577627
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711134512; cv=none; b=avFJnhfP4PMa4rTbM70G7Z5zW8V1ylc4x/+wdLMFnvyW3s+9ZEz2vIGYifW/z9oz1pLTeQqUHlOryv13p7fJ7/YpGQZQh6pfLwvog9ZvPsvwSK5HIml5wuGEex5x5zaS94tu1T0GNXkStaKOIgPZLsMOQ6TfA0OmbbWo7N6LmEc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711134512; c=relaxed/simple;
-	bh=7tv2zMAE82ezQsYqnS0npGm1aElk4sDoy3NbkK1C2Zo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sC6aQNzz7elTmjmgx+NxPYND1QeCkS9bwC+Lukt/uOAHa/qEk5wdqGwq+ZIVD4FxtTHJyP2V6nPeKuCemG8u+XRnMhQC3tECOfrwt9SgKEcgmWBG/NBX/CM5YMRa37JH0lfAQge/MtGbDFEoJ6fYT+wKXV1YddBVD/wFt+E/bww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Wagbyasr; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbed0710c74so2208301276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711134509; x=1711739309; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JOSis4J/jTYd9KPD730zR82omawpL2+qFPu0+K6rrvY=;
-        b=WagbyasrPSXP858JXsqg74haxQfqwDusqz0CG0pP9b5w+acNnlvS53o7p2FLzBIw9I
-         owFhHjACWnr2qcYPVds7ZQVUZqdfBzPA+T1SwDpiW7nIljcZIbQ1ZS8+UXOYZ2jNIRPd
-         jLO7rhg4wmZo0Rpc69ngZyjXBNdLgA3+zgiNTwQ2V5jFEB5oa3KuP1WrQVyhgji+3Y7Q
-         x5aFXfGJPj+JVs3dkn96E1TJ8COGbQ9hyVFlIjlgHc1XCTH55BwDsXIJphjefbN44Gia
-         QjWetQn0q1rUYgNTMCe1j3DA6MlGqu7SRdbyrNmgi2wy2mNtMRD/Ji7YLv+qC0Eu9hWw
-         7UWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711134509; x=1711739309;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JOSis4J/jTYd9KPD730zR82omawpL2+qFPu0+K6rrvY=;
-        b=XmQpeIzxVf4QMpk83JFH3EeZG3FW2gsBmgNAbG6/17Uaqxs0ZH/tV6uj7Ka0CdjNKF
-         bHax9r5XYrY+itr17fYKiK3IU+8r9S0LWgsipea8zEAfrn1/F4ciK0z5Pt3upr/mI+FX
-         7YVFmMOaDpeE7ZbQhrGkOcHq/uon5e6K1Knabmdyzor22jj4vBK6vPaXTKwrIyimTFz1
-         3vKS6qBmIliRMnlFE3KMJ57CN7c2IQnbbJsaHZ+3mWePKmUKPG+qy9Rxuu7cCNxyfPA5
-         xGnR9ml34h9qrQr/5l8o8kNA/ETBFZLvDvcllbOUstDUl+xklwzwUOxVrmPp/glipH4p
-         t8sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUh2wK9huWV7SbuVacQCOnSLI7EAlRFl8SffLwOqLmGZ5dauys52D70nwgA60fcb5k5HV6zbsvn6vVL+xvjoz9l5GqokuRBwgIAyVUd
-X-Gm-Message-State: AOJu0Yyd8xjRG2xhO0z2S27uyZAttcs5ytBYKW4tso2MJFL8i2xh1C9p
-	VMLrv3Udz8+XA0sUqB5kGoFoUeMtNW0tryfhIu/IcZ+nhNNde0rucHTd1lubwC19r6QX4BBvB8v
-	dJPXuUu5dQvVk2FpyeBnnVJXsG+yhFqkR0TKU2A==
-X-Google-Smtp-Source: AGHT+IHJres2UW+dc9iaBZt9RklyrtN8tIibgWIXxhVLlO4n5w4VIiiRorRwyk4xVvQo6afUHmIdwuYnclv5fseAmBM=
-X-Received: by 2002:a25:3621:0:b0:dc6:dd80:430e with SMTP id
- d33-20020a253621000000b00dc6dd80430emr262357yba.27.1711134509456; Fri, 22 Mar
- 2024 12:08:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FE776EE1;
+	Fri, 22 Mar 2024 19:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711134649; cv=fail; b=cAwb+qQ3UCKCqgvmH/CbtDkCjlG2r2mp2enEU9ZOhNbcZnm9AyXd46oHrjvA89r3Uxki6kWpUMSmbhAYDAbKYlyLnuJHy0FUcBweewnK5D8gc+VXKE840KSvFxsXuwp/YknNf3fG70rIz04Zuvna0NdHg1udKcOS/1XRWLFW1r0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711134649; c=relaxed/simple;
+	bh=fvTa53pShSmhnpkIqY6kBUPQje5o6DbfsRAQofeHhS0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=mUZBJM2gJ/1+MF+qrn1KkBg3KkhWAlZV+uCDRcK9g/EbpGVk0lcZIEBfj28wroZis06iPWzI+fysAyuLlffsm5FDh8ZC5qU07BChVqO8Tu7x2LQ2ftwsMM04cxEwwh8V0a69GuOOcCn7Md9r2l3B4hSowc8UWilWTeZ9jdKFJdg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DfNlI3DV; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711134647; x=1742670647;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=fvTa53pShSmhnpkIqY6kBUPQje5o6DbfsRAQofeHhS0=;
+  b=DfNlI3DVuaP14aBf1IZjUjHudBT3or6lesDadYTf5ZSenw4fC9SLD5ZJ
+   Lz0O90LUroe318nKVHLiPAX+rgkmkULo0t0mDTnUR400QyjH12gFVUspl
+   UZQlSYi7hvVveVrMzA6uqetLS71JP05XYrcPUAo2O4uRHgsBRX9ppjFHA
+   Y7VzFh81rndE2d05Nhj7hzZ9oXfF2wyvltIXy+dhyBu8MGwLQ/iQyn2TE
+   qe8nh0JeTXaN8LzhbMXyChEgM6aYOkrKTUTUyl+3+Pmsx2aq6uPHxaShA
+   M7PicX719pVudRLz010dAy2diEErDZyh3gqHvb/RYG8iR94aSgIHDjnoc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="28676487"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="28676487"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 12:10:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="14985436"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Mar 2024 12:10:45 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Mar 2024 12:10:44 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 22 Mar 2024 12:10:43 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 22 Mar 2024 12:10:43 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 22 Mar 2024 12:10:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VwKgWjajEJ3yUXCQkwGeAYm8W9x7sRfBWqpfF3p9qbd1f3nxVTMeJ9XBJQEU7qCThE1klF6hVC0JH2b2LKnxQLPYZFv+h/Afw0G7DCeSYPQIIQ18orZAMijneq1fK5oSzg9EbJl4Ok/GBaxr5ruMj+4kU8mn7mYGQsmh69LqqIGGPJl9OVAoYrJixFVIzz+wmaH0N1RzR9N29hk+tVNk0+NgX4Sbf+v/d3bRMQgbTTa7rvhH42AtyPlgWAi1Qgn/CAAFasyD0Vs7qkLnWVhs8MME8CING4SCvQMCOY89uI/RxV3krTVWl1LeyFhsMGzRHgtvg1z/QWoUzXZhpnIblA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NImZtB3H1MElTLs6szKVIT+kDojidHPCGJbZL9gUB50=;
+ b=DDSzexFMHP9pWxtDsjSVch0G/MrSSaCbfETarJeb3AdnWFg5faix05Ib6qalp9OUtBoTKjGkDRr3hWhSYfgJuh6Ioyyrf++UL0DbVwJyt2Li9oF16Gp9UIRnsEZ0fxw7ic1Md74lBwJZcEvuviii0ZH/k61E1eu/ozQEzgnNfFeFf8MKCt/9n5SFSYtCR2dIa2vrcCVmPsNgJg5ol+ga9vDXJI+KAJlHv9EYD0znvRXfar4P2aLx7jylG5MYrSULsC/xd8fjFIHs9dLhVNHqCYk8zrw9ItDAMAqW5WardGaom2mBhZud/521tDFzl9EAcB1zawwDUNewjrkobqhINw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by BL3PR11MB6433.namprd11.prod.outlook.com (2603:10b6:208:3b9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Fri, 22 Mar
+ 2024 19:10:41 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
+ 19:10:41 +0000
+Date: Fri, 22 Mar 2024 12:10:38 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Peter Zijlstra <peterz@infradead.org>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: <torvalds@linux-foundation.org>, Bjorn Helgaas <bhelgaas@google.com>, "Ira
+ Weiny" <ira.weiny@intel.com>, Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Ilpo
+ =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Lukas Wunner
+	<lukas.wunner@intel.com>, Jonathan Corbet <corbet@lwn.net>,
+	<linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<gregkh@linuxfoundation.org>, <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH] cleanup: Add usage and style documentation
+Message-ID: <65fdd7ae82934_4a98a29429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+ <20240322090630.GA40102@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240322090630.GA40102@noisy.programming.kicks-ass.net>
+X-ClientProxiedBy: MW4P220CA0014.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::19) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org>
- <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org> <230eab52-9751-43fd-8e47-fbfe12410e44@linaro.org>
- <CAA8EJprD3fM966pLV4QXPUu=bFTn24fvPMKOaGqtqkAbdz7sOQ@mail.gmail.com>
- <5ea4a187-1971-4970-a289-826d96c0351a@linaro.org> <c0f1e898-7638-4b7b-a938-9e31e5b57e57@linaro.org>
- <0b091595-1587-421d-bb00-c00ef729d143@linaro.org> <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
- <20240322183614.GA1233803-robh@kernel.org>
-In-Reply-To: <20240322183614.GA1233803-robh@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Mar 2024 21:08:18 +0200
-Message-ID: <CAA8EJppgbsa3bmCo5jbWZW7FgUtyBFS_0zBfvcRjuvjLdv7YkQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,pmic-typec: drop port description
-To: Rob Herring <robh@kernel.org>
-Cc: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, neil.armstrong@linaro.org, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|BL3PR11MB6433:EE_
+X-MS-Office365-Filtering-Correlation-Id: 918a4db6-027a-44b1-dad2-08dc4aa3c42a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LR7Hwmq9YXliEn1vHHsymFCr3YnPDIdfcwNoyt5z/ZoQvJ6JrSkzDi3/NfT3kxunUDevClFZUy5hzoyXn7XCdYYPECumz4h4DexyTyWBHcDslH5a5SgzPaQsiNS6ikH/CqB3Q9/d/MtvQtTv5kUHK+0Le2x6SenGVvZGY7UU9UFXWjSRInxJBQy4pyL6moZDcmWVzJMlr7OoA4LoL8D14Qm9kmwIsf8EHSnKo3mqwQ4ZNerjlwfVajK5ivKxsv0aBvIcNO14urntbmJ2BPZwFzPX5Hr21Yn41xFjwAE5ZNHhvMfd9NDZXjncB85tfx7kDUA30f6+sY5nJnHfL6czujBVJFKiSJV1Y2eplDWJySRdkb+qEPFGERynsXaAfglf4heaZVrqrOidfeFjciYrFWekNzZ3HS/CWplhPOJzlBpsST0QNSVO7EmoqkzxX+Sz2chy38VtwlJkwL8LA0qpcb00nMlwvJxGQlPVcqOyOyK4wpfK+bCbTjpVg8pOFU1L0MfLjKdqQGDwUJe1wa5cskIgz5IDyLhOkZvo8wUr2Zv858uBHBswcm76OZ3kpRa6+2hWzpi7NtC7fgnssm88RSyuqQ7wvib74UO4ScyJPkUlitKry4JnMMjggpv2nnALMb2tv6B9grFiz71+u8+jFMGtKcmRK6Lkocg5rL1hWHs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RIWC4LgefcY/dI/JwvYqZ5SuC0FQoxuLBjakrduQp5TnniPYPR7XsQmtIF28?=
+ =?us-ascii?Q?CwdGYUCt1FXffuNQxE57mXKawgiNIpCCRqxf6eyFl515yAPZdDagE/txNFb6?=
+ =?us-ascii?Q?crei75uqB+PBeB8fDK1gAe1VNA4sV5VJfBOPs3uTalYxgKuS0tAE3bYxHdXs?=
+ =?us-ascii?Q?NrOigkcULORAnhxIsJIGw57tW9+C1/5UeXt8ZvLb62YyyJ3MNA8tM34pC6mT?=
+ =?us-ascii?Q?l017ZtUWGEht20WlGLdu8LSiEtUk9K02hm4Iq3Njzt95ffJkdo/1XIQlOYFq?=
+ =?us-ascii?Q?CuVdwgfZze17sot+OnzO8fWeBDsdLC4+qMXgQz6XJRxpKvJSAKztwoCdoLPA?=
+ =?us-ascii?Q?PnOwNTRrEOudk7RyzJoTXhBUVp+8SkcZmzVDq9Hsv2sjLrGUFW23ZlepnKzl?=
+ =?us-ascii?Q?eAP8zkrsJ2rqnPTMWh26BiimBhnSFVkj6cNGPVlINdoqVuVYIrSnFu0RtW89?=
+ =?us-ascii?Q?vLbFrBeILGhBdLjx5U6hjqfqeaF9edv6QrrWWm6gXwoJmYF4GLOUMGA01ieG?=
+ =?us-ascii?Q?FGLPxxxBX3idZDPIgbj1kgiWAemyF35Mq4uIXQ7+0wHLfCXeUYa+FpSS66HP?=
+ =?us-ascii?Q?GpUFSKrZHATOHZrz/saLXoF1zg0exzo748I61jkRXc+8/fiKxFIf7j2q1mj0?=
+ =?us-ascii?Q?wEDKmY2EBlBqCb0jaIZRBTZ7GjCCJDxRgxG+4a/+fAMB7q3QzM5RPoek3xmi?=
+ =?us-ascii?Q?a9bYCyqskphimJbRxYBKqhSFB4a5WifEyCRf/B79hL4l7jhcc+vckmFbXNga?=
+ =?us-ascii?Q?QQ5FdGN5ojg4O9kqa/HvS3p9fRv86k+9LFv9KM01jxopQuDxcmvO5GSnWNUP?=
+ =?us-ascii?Q?Tvh1ej0OfGunzuiYOoi/RqJVtxfYWjwqaX7zL1EYUh2G6NJV/xQV4x13495e?=
+ =?us-ascii?Q?K8KHr2rYh13hMibcNll+9+HIJayfQ6SYVrOQ6Ewe6mLHqQxabYiECBIW4SdQ?=
+ =?us-ascii?Q?EwZGRlf5FFyh6or2YioxKBHw79emnBBXhqtU+/31WkW6IGwIh4TirPv4aoek?=
+ =?us-ascii?Q?oa7qGq8FN7IxwuDDJCvRvDZD1qul2kMY+00KDxxTXw1+ENSbaZJxrXH24p6o?=
+ =?us-ascii?Q?+E25IhEmMWLp9iTE8mCwpL8bWX71dtLJOBZiWLN8NcWaXk/Bk3OD/N1yxYcV?=
+ =?us-ascii?Q?WE7aL2njJ2CzmYdssPUfQ32kMZlV/Dw92Ygk3zCTHDolVfVIKTxPIOlfzm8v?=
+ =?us-ascii?Q?zLN5LiUCj7XXJRdBtw9JyXl6X5FxfPnuo1Qb0lA/JifCTggv/ksGfq1o6v7N?=
+ =?us-ascii?Q?dNgZh3Ix1FAzpjbyG7GgApjhftBm9X0jegVELLAGrE9PZwTsSSVt/LfNUhJY?=
+ =?us-ascii?Q?ZJiBxxCle6Wi0GmuzzcWQF9dNTFqElxyMcEQ90yaH2AsxM4o2kMjshfPqqDk?=
+ =?us-ascii?Q?sWkr9kyEyqCMHNE8X2EPmMVhHntUYuP6ZR/AGsuF4ryQlqJZ6y2cmNOz/ZAb?=
+ =?us-ascii?Q?yILrAMZw6zjB99voiA1qkx7CFpQ32OlOD3EAgSdAvrv7vcrzCNYNLgy07Hvo?=
+ =?us-ascii?Q?5eAnBjeY0XHGOi7Ej0VJg6nyn9DraCMVSAP4a5YbDLOkTIBk+PxSEZrydNiA?=
+ =?us-ascii?Q?vulJo+e049ypKXZvCsscMLFGTM3vcTYpK04aEpgVnhflqRNzHdB9knkdKkIX?=
+ =?us-ascii?Q?5Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 918a4db6-027a-44b1-dad2-08dc4aa3c42a
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 19:10:41.2942
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fFtJ2zf7PsFsrn5J0XN75koC5VupBLfDyAk5iCVKmjIzw6a1YfQ5NppWtTik0iTlDrbMyeXuSBkZ+0dO7E8H4o47bYuKtYVvryX1iLYwEaE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6433
+X-OriginatorOrg: intel.com
 
-On Fri, 22 Mar 2024 at 20:36, Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Mar 22, 2024 at 05:49:00PM +0200, Dmitry Baryshkov wrote:
-> > On Fri, 22 Mar 2024 at 17:23, Bryan O'Donoghue
-> > <bryan.odonoghue@linaro.org> wrote:
-> > >
-> > > On 22/03/2024 15:09, neil.armstrong@linaro.org wrote:
-> > > >> TBH I think we should drop this HS, SS stuff from the connector
-> > > >> definition - there's nothing to say in a h/w definition anywhere HS
-> > > >> must be a port or indeed SS - not all hardware knows or cares about
-> > > >> different HS/SS signalling.
-> > > >
-> > > > It matches the USB-C connector electrical characteristics, which by spec
-> > > > has, at least:
-> > > > - High-Speed USB Line
-> > > > - up to 4 differential high-speed lanes that can be switched to DP, USB2
-> > > > or PCIe
-> > > > - SideBand line (SBU)
-> > > >
-> > > > And those 3 components can be handled by 3 different HW in the SoC, so
-> > > > each one has a dedicated port.
-> > > >
-> > > > Remember DT describes the HW, not the SW implementation.
-> > > >
-> > > > Neil
-> > >
-> > > Yes, you're right about that.
-> > >
-> > > I suppose
-> > >
-> > > 1. Orientation switches should be defined as coming from a port on the
-> > >     connector associated with the CC pins.
-> > >     port@3:
-> > >     orientation-switch port name goes here
-> > >
-> > > 2. Data-role switches...
-> > >     Again the CC pins
-> > >
-> > > https://community.silabs.com/s/article/what-s-the-role-of-cc-pin-in-type-c-solution?language=en_US
-> > >
-> > > Maybe the right-thing-to-do is to add another port for the CC pins -
-> > > which would still describe the hardware characteristics but would
-> > > _accurately_ name the thing which does the data-role/orientation switching
-> >
-> > It's true that we don't describe CC lines. However In most of the
-> > cases CC lines are handled by the Type-C port manager directly. So
-> > there will be a connection from usb-c-connector to the pmic-typec
-> > itself (which looks pretty redundant).
->
-> The thought at the time this was designed was that would be the parent
-> node of the connector. That's perhaps too simple.
+Peter Zijlstra wrote:
+> On Wed, Mar 20, 2024 at 03:04:41PM -0700, Dan Williams wrote:
+> 
+> > diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+> > index c2d09bc4f976..4620a475faee 100644
+> > --- a/include/linux/cleanup.h
+> > +++ b/include/linux/cleanup.h
+> > @@ -4,6 +4,118 @@
+> >  
+> >  #include <linux/compiler.h>
+> >  
+> > +/**
+> > + * DOC: scope-based cleanup helpers
+> > + *
+> > + * The "goto error" pattern is notorious for introducing subtle resource
+> > + * leaks. It is tedious and error prone to add new resource acquisition
+> > + * constraints into code paths that already have several unwind
+> > + * conditions. The "cleanup" helpers enable the compiler to help with
+> > + * this tedium and can aid in maintaining FILO (first in last out)
+> > + * unwind ordering to avoid unintentional leaks.
+> > + *
+> > + * As drivers make up the majority of the kernel code base lets describe
+> > + * the Theory of Operation, Coding Style implications, and motivation
+> > + * for using these helpers through the example of cleaning up PCI
+> > + * drivers with DEFINE_FREE() and DEFINE_GUARD(), e.g.:
+> > + *
+> > + * .. code-block:: c
+> > + *
+> 
+> So I despise all that RST stuff. It makes what should be trivially
+> readable text into a trainwreck. We're coders, we use text editors to
+> read comments.
 
-Yep. In both our cases the TCPM is a parent of the usb-c-connector.
-
-
--- 
-With best wishes
-Dmitry
+Ok, I will rip out the RST stuff and just make this a standalone comment.
 
