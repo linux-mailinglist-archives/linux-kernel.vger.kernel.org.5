@@ -1,259 +1,426 @@
-Return-Path: <linux-kernel+bounces-111120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1A9886827
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:23:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E94A88682E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2271E1F2387C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:23:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 430C71C239B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2CA171C9;
-	Fri, 22 Mar 2024 08:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RPyDmw9G"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17CA3171CD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D23B171CD;
+	Fri, 22 Mar 2024 08:28:17 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11271171C9;
+	Fri, 22 Mar 2024 08:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711095780; cv=none; b=WMHHYXQmHZlbJ2+9ovHvog0x1+qpRnzWbYXUi9bhhN7KKwZuPw32Z7ldtTGG1YD3zJlxTihftIa5XEmKbv52LcdJXEHDaSMQx43b17oH7pKGaCEwV9+ZEJkedgmcbedYZ5/WIgLmsjvhUbkrveyNH74pRcwk0oq7lBovUjUdvhI=
+	t=1711096096; cv=none; b=PpqQUTiuLXBsLvG6qDloxwkN0rhwACvX/5ikcQFNXdXzKOVGkZzM0f1B03/wpCGZecoUEmjK+Jj3zn5hfv67dR6DbL9aRX+t4mePoPI8622XptXXfVnfLRNA9zy3wEwczPGs1b0+moH+JwL2Dx6liJ6k+6Rkdt/d389rX8rpvbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711095780; c=relaxed/simple;
-	bh=fpCoiLmXxI9qiJhzsLseFGJE1mlYGa6QJuto7FOwQ7s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xgqge1wy2IEaqg/c1RAb2Ey2pgtZ6fNhof9V9GkYsAU+9SCx2U7/my4J0AEIZ9Ty/1vfk0cUGLkNUEYJvu+dEm/C3sunikIViqp6NmWPSGhn474kidKbk2QryN15l3eecjklvnUeBia3WMHnAkDOcr9ZdfIOHO97zvTjV1SY0kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RPyDmw9G; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6963cf14771so17181216d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711095777; x=1711700577; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ob+YyW8fixoBQX9n6g1bpmXJDOp1r9Uolwp6GpqIv4=;
-        b=RPyDmw9Gp88AANEc270UUeILYJKls/v1L3/wOvgB+hTwN/Pqh6AhV2ZZO1fLSh8ZCF
-         xxPZIRT5Qa9kbKoZAYCHuPVNF98MYEpXpqegQy/P69lOrTplguamzhbecI+8DPrjHJZM
-         bJ1YVlZzN+i4KjVQJEt9tf/udg2IT/mzOlu/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711095777; x=1711700577;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0ob+YyW8fixoBQX9n6g1bpmXJDOp1r9Uolwp6GpqIv4=;
-        b=uVmA3I15vECtrpZpwql/H++E+QuXqCg2IWBaBFJcwEasxlW7kRa7+dE8eWC5VJEeMv
-         OgChVW43OyS82naQSQiFar5Sd8Gqqu5vbFEyrkDO/VN1jCDwqeRf7neSKG5QQXNYmr8V
-         9/JmInzahxeVaemLZvzrpGNxacjgLs25utBXASwsRxLrF4gFXTBk75qE8c3dITYReKkO
-         qBT+1GxRA9BwS6R5PBDWrS8tCqALc68K3Rx/fcNP4ntiKikD17RSgVf4x570LJzhfE8Q
-         /sdUKIaYBFGA8mKtpFihq09K03FB6jb4VjYkkLN7iFaDKXex1O2QIDaA5XWjnBmKaIG1
-         NoVA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFeHxxJzUvbqKEZ/+MJEUOJOwWD0udzltUcwbBi5aKucPAWTOWBYYK+NOzDR4TxgMhisMoamylFj2Wyvj5Tm8hYAfki4dVu1sZFx0T
-X-Gm-Message-State: AOJu0Yyhg6PflOJiHmuAjvpRQkG9bhxrXIiLEjZ7Igc3QNMKr0Kd/aT6
-	5vgb7Bg5DlPZIO1b4pVEW6QxvELbADcjffRjbTdz3vQTFPvBQfrwQn6Ld1QRVTHKzWMY6lRUOUI
-	=
-X-Google-Smtp-Source: AGHT+IHJ9eJyIyRs6S0bWP2J56Sr46KtFgcLpGL1FpiyNVxTT6XdELFfmaKMTOi0ItVZmbAigx87xw==
-X-Received: by 2002:a05:6214:d4c:b0:690:e036:fcf1 with SMTP id 12-20020a0562140d4c00b00690e036fcf1mr1878456qvr.25.1711095777412;
-        Fri, 22 Mar 2024 01:22:57 -0700 (PDT)
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com. [209.85.219.43])
-        by smtp.gmail.com with ESMTPSA id f12-20020a056214076c00b00690d3bf9ea0sm841806qvz.141.2024.03.22.01.22.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 01:22:56 -0700 (PDT)
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6962e6fbf60so18830036d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:22:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV7wcJ59d8G+JvUH/epAorWG4CMWebioSHYfdpGjA8/ICoIyZVA+LT+xlSTASDeVKWXaLIEzy46svYvOMpj0pUhnk9yo6jUebN8CTK6
-X-Received: by 2002:a05:6214:1c0c:b0:691:873a:7753 with SMTP id
- u12-20020a0562141c0c00b00691873a7753mr1427986qvc.38.1711095776052; Fri, 22
- Mar 2024 01:22:56 -0700 (PDT)
+	s=arc-20240116; t=1711096096; c=relaxed/simple;
+	bh=UftWVjwy19WCwvccb70bC/mL8pOUa+OMVbElZ21oS2Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Pu83hw4/TCs8vEdbL57ngbvva4OMq2QGpUHXmAXVttrwzP79IIj0C0BGm7Ak+qr+LxfqWRJHq5q0Gg7RsLdNML89cd+44K/4UnGy4Op1osTKsi8PUBBHHbCyKdik9dtukUtIObIO1eSqhxDO/CbG408ZUHnqVyM0bTJd3mfxamM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-96-65fd4111d96d
+From: Honggyu Kim <honggyu.kim@sk.com>
+To: SeongJae Park <sj@kernel.org>
+Cc: damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	42.hyeyoo@gmail.com,
+	art.jeongseob@gmail.com
+Subject: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
+Date: Fri, 22 Mar 2024 17:27:34 +0900
+Message-ID: <20240322082742.2233-1-honggyu.kim@sk.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <20240320165619.71478-1-sj@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
- <20220920-resend-hwtimestamp-v9-2-55a89f46f6be@chromium.org> <20240321232602.GB20938@pendragon.ideasonboard.com>
-In-Reply-To: <20240321232602.GB20938@pendragon.ideasonboard.com>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Fri, 22 Mar 2024 09:22:39 +0100
-X-Gmail-Original-Message-ID: <CANiDSCt7Y4v3MUCoVyuzwLg6rq1=4MTUGtJ1+HkMMRY7sfjYjA@mail.gmail.com>
-Message-ID: <CANiDSCt7Y4v3MUCoVyuzwLg6rq1=4MTUGtJ1+HkMMRY7sfjYjA@mail.gmail.com>
-Subject: Re: [PATCH v9 2/6] media: uvcvideo: Ignore empty TS packets
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
-	linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsXC9ZZnoa6g499UgzlThCwm9hhYzFm/hs1i
+	140Qi/sPXrNb/N97jNHiyf/frBYnbjayWXR+X8picXnXHDaLe2v+s1ocWX+WxWLz2TPMFouX
+	q1ns63jAZHH46xsmi8mXFrBZvJhyhtHi5KzJLBazj95jdxD2WHr6DZvHhiYgsXPWXXaPln23
+	2D0WbCr1aDnyltVj8Z6XTB6bVnWyeWz6NInd48SM3yweOx9aerzYPJPRo7f5HZvH501yAXxR
+	XDYpqTmZZalF+nYJXBn/d7SyF/woruh5do+xgXFJRBcjJ4eEgInEvc/b2GHsKQe2g9lsAmoS
+	V15OYgKxRQQUJc49vsjaxcjFwSwwg0Xi8MIuRpCEsECwxNyz/8FsFgFVibdXn7B0MXJw8AqY
+	SVx5kAQxU1Pi8fafYDM5BYwl7h7/wwZiCwnwSLzasB+slVdAUOLkTJBWTqD58hLNW2czg+yS
+	EDjELnHj9ClmiEGSEgdX3GCZwMg/C0nPLCQ9CxiZVjEKZeaV5SZm5pjoZVTmZVboJefnbmIE
+	xt2y2j/ROxg/XQg+xCjAwajEw2sg/CdViDWxrLgy9xCjBAezkgjvjv9AId6UxMqq1KL8+KLS
+	nNTiQ4zSHCxK4rxG38pThATSE0tSs1NTC1KLYLJMHJxSDYzhugtuhiju+8nXsU922xb5l5s3
+	33jFe2263ny+jdEiBdMdAr9vmy14ddIC/RlaW2JfuGcdftQrv0raXLV7xZKelk/nF/wv6/vx
+	MH33xUV1t18WWq0xtFmYMKfm6iOtWbW/l4Tv7FqaVZYbyzVVMeJanIBG11uP7mX25Q21G/81
+	/F6ab+x5/aK7EktxRqKhFnNRcSIAFEJFrLcCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsXCNUNLT1fQ8W+qwWkHi4k9BhZz1q9hs9h1
+	I8Ti/oPX7Bb/9x5jtHjy/zerxYmbjWwWnU++M1ocnnuS1aLz+1IWi8u75rBZ3Fvzn9XiyPqz
+	LBabz55htli8XM3i0LXnrBb7Oh4wWRz++obJYvKlBWwWL6acYbQ4OWsyi8Xso/fYHcQ8lp5+
+	w+axoQlI7Jx1l92jZd8tdo8Fm0o9Wo68ZfVYvOclk8emVZ1sHps+TWL3ODHjN4vHzoeWHi82
+	z2T06G1+x+bx7baHx+IXH5g8Pm+SCxCI4rJJSc3JLEst0rdL4Mr4v6OVveBHcUXPs3uMDYxL
+	IroYOTkkBEwkphzYzg5iswmoSVx5OYkJxBYRUJQ49/giaxcjFwezwAwWicMLuxhBEsICwRJz
+	z/4Hs1kEVCXeXn3C0sXIwcErYCZx5UESxExNicfbf4LN5BQwlrh7/A8biC0kwCPxasN+sFZe
+	AUGJkzNBWjmB5stLNG+dzTyBkWcWktQsJKkFjEyrGEUy88pyEzNzTPWKszMq8zIr9JLzczcx
+	AuNrWe2fiTsYv1x2P8QowMGoxMNrIfUnVYg1say4MvcQowQHs5II747/QCHelMTKqtSi/Pii
+	0pzU4kOM0hwsSuK8XuGpCUIC6YklqdmpqQWpRTBZJg5OqQbGAI2ZC1Z6H0zQn7peL73omYtf
+	xBt+Ebu1Al3vNka8u7z4v1+3y/WnTFVaDGYGr/496szzKDnZor3isuj0pvoleq/3JMp9Wv3R
+	VXhi0OmA+YFTjD4t/rLjrUSlfevnmYfK625Jy31N5D+4b33kw/W1bJUevI8+fPi2V8juEFdv
+	Rsu9ZKX3x1vFlFiKMxINtZiLihMBo9XRcKsCAAA=
+X-CFilter-Loop: Reflected
 
-Hi Laurent
+Hi SeongJae,
 
-Hi, I added some minor modifications, hope that it is fine with you.
+On Wed, 20 Mar 2024 09:56:19 -0700 SeongJae Park <sj@kernel.org> wrote:
+> Hi Honggyu,
+> 
+> On Wed, 20 Mar 2024 16:07:48 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> 
+> > Hi SeongJae,
+> > 
+> > On Mon, 18 Mar 2024 12:07:21 -0700 SeongJae Park <sj@kernel.org> wrote:
+> > > On Mon, 18 Mar 2024 22:27:45 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> > > 
+> > > > Hi SeongJae,
+> > > > 
+> > > > On Sun, 17 Mar 2024 08:31:44 -0700 SeongJae Park <sj@kernel.org> wrote:
+> > > > > Hi Honggyu,
+> > > > > 
+> > > > > On Sun, 17 Mar 2024 17:36:29 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> > > > > 
+> > > > > > Hi SeongJae,
+> > > > > > 
+> > > > > > Thanks for the confirmation.  I have a few comments on young filter so
+> > > > > > please read the inline comments again.
+> > > > > > 
+> > > > > > On Wed, 12 Mar 2024 08:53:00 -0800 SeongJae Park <sj@kernel.org> wrote:
+> > > > > > > Hi Honggyu,
+> > > > > > > 
+> > > > > > > > > -----Original Message-----
+> > > > > > > > > From: SeongJae Park <sj@kernel.org>
+> > > > > > > > > Sent: Tuesday, March 12, 2024 3:33 AM
+> > > > > > > > > To: Honggyu Kim <honggyu.kim@sk.com>
+> > > > > > > > > Cc: SeongJae Park <sj@kernel.org>; kernel_team <kernel_team@skhynix.com>
+> > > > > > > > > Subject: RE: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
+> > > > > > > > >
+> > > > > > > > > Hi Honggyu,
+> > > > > > > > >
+> > > > > > > > > On Mon, 11 Mar 2024 12:51:12 +0000 "honggyu.kim@sk.com" <honggyu.kim@sk.com> wrote:
+> > > > > > > > >
+> > > > > > > > > > Hi SeongJae,
+> > > > > > > > > >
+> > > > > > > > > > I've tested it again and found that "young" filter has to be set
+> > > > > > > > > > differently as follows.
+> > > > > > > > > > - demote action: set "young" filter with "matching" true
+> > > > > > > > > > - promote action: set "young" filter with "matching" false
+> > > > 
+> > > > Thinking it again, I feel like "matching" true or false looks quite
+> > > > vague to me as a general user.
+> > > > 
+> > > > Instead, I would like to have more meaningful names for "matching" as
+> > > > follows.
+> > > > 
+> > > > - matching "true" can be either (filter) "out" or "skip".
+> > > > - matching "false" can be either (filter) "in" or "apply".
+> > > 
+> > > I agree the naming could be done much better.  And thank you for the nice
+> > > suggestions.  I have a few concerns, though.
+> > 
+> > I don't think my suggestion is best.  I just would like to have more
+> > discussion about it.
+> 
+> I also understand my naming sense is far from good :)  I'm grateful to have
+> this constructive discussion!
 
-Thanks!!
+Yeah, naming is always difficult. Thanks anyway :)
 
-On Fri, 22 Mar 2024 at 00:26, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> Thank you for the patch.
->
-> On Wed, Mar 15, 2023 at 02:30:13PM +0100, Ricardo Ribalda wrote:
-> > Some SunplusIT cameras took a borderline interpretation of the UVC 1.5
-> > standard, and fill the PTS and SCR fields with invalid data if the
-> > package does not contain data.
-> >
-> > "STC must be captured when the first video data of a video frame is put
-> > on the USB bus."
-> >
-> > Eg:
->
-> "Some SunplusIT devices send, e.g.,"
->
-> >
-> > buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
-> > buffer: 0xa7755c00 len 000012 header:0x8c stc 00000000 sof 0000 pts 00000000
-> > buffer: 0xa7755c00 len 000668 header:0x8c stc 73779dba sof 070c pts 7376d37a
->
-> "while the UVC specification meant that the first two packets shouldn't
-> have had the SCR bit set in the header."
->
-> >
-> > This borderline/buggy interpretation has been implemented in a variety
-> > of devices, from directly SunplusIT and from other OEMs that rebrand
-> > SunplusIT products. So quirking based on VID:PID will be problematic.
-> >
-> > All the affected modules have the following extension unit:
-> > VideoControl Interface Descriptor:
-> >   guidExtensionCode         {82066163-7050-ab49-b8cc-b3855e8d221d}
-> >
-> > But the vendor plans to use that GUID in the future and fix the bug,
-> > this means that we should use heuristic to figure out the broken
-> > packets.
->
-> Because it would have been too easy otherwise of course :-)
->
-> >
-> > This patch takes care of this.
-> >
-> > lsusb of one of the affected cameras:
-> >
-> > Bus 001 Device 003: ID 1bcf:2a01 Sunplus Innovation Technology Inc.
-> > Device Descriptor:
-> >   bLength                18
-> >   bDescriptorType         1
-> >   bcdUSB               2.01
-> >   bDeviceClass          239 Miscellaneous Device
-> >   bDeviceSubClass         2 ?
-> >   bDeviceProtocol         1 Interface Association
-> >   bMaxPacketSize0        64
-> >   idVendor           0x1bcf Sunplus Innovation Technology Inc.
-> >   idProduct          0x2a01
-> >   bcdDevice            0.02
-> >   iManufacturer           1 SunplusIT Inc
-> >   iProduct                2 HanChen Wise Camera
-> >   iSerial                 3 01.00.00
-> >   bNumConfigurations      1
-> >
-> > Tested-by: HungNien Chen <hn.chen@sunplusit.com>
-> > Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_video.c | 20 +++++++++++++++++++-
-> >  1 file changed, 19 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index 4ff4ab4471fe..1f416c494acc 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -478,6 +478,7 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> >       ktime_t time;
-> >       u16 host_sof;
-> >       u16 dev_sof;
-> > +     u32 dev_stc;
-> >
-> >       switch (data[1] & (UVC_STREAM_PTS | UVC_STREAM_SCR)) {
-> >       case UVC_STREAM_PTS | UVC_STREAM_SCR:
-> > @@ -526,6 +527,23 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> >       if (dev_sof == stream->clock.last_sof)
-> >               return;
-> >
-> > +     dev_stc = get_unaligned_le32(&data[header_size - 6]);
-> > +
-> > +     /*
-> > +      * STC (Source Time Clock) is the clock used by the camera. The UVC 1.5
-> > +      * standard states that it "must be captured when the first video data
-> > +      * of a video frame is put on the USB bus".
-> > +      * Most of the vendors, clear the `UVC_STREAM_SCR` bit when the data is
-> > +      * not valid, other vendors always set the `UVC_STREAM_SCR` bit and
-> > +      * expect that the driver only samples the stc if there is data on the
-> > +      * packet.
-> > +      * Ignore all the hardware timestamp information if there is no data
-> > +      * and stc and sof are zero.
-> > +      */
->
-> I'd like to expand this a bit (partly to make sure I understand the
-> issue correctly):
->
->         /*
->          * STC (Source Time Clock) is the clock used by the camera. The UVC 1.5
->          * standard states that it "must be captured when the first video data
->          * of a video frame is put on the USB bus". This is generally understood
->          * as requiring devices to clear the payload header's SCR bit before
->          * the first packet containing video data.
->          *
->          * Most vendors follow that interpretation, but some (namely SunplusIT)
-namely SunplusIT on some devices
->          * always set the `UVC_STREAM_SCR` bit, fill the SCR field with 0's,
->          * and expect that the driver only processes the SCR if there is data in
->          * the packet.
->          *
->          * Ignore all the hardware timestamp information if we haven't received
->          * any data for this frame yet, the packet contains no data, and both
->          * STC and SOF are zero. This heuristics should be safe on compliant
->          * devices. This should be safe with compliant devices, as in the very
->          * unlikely case where a UVC 1.1 device would send timing information
->          * only before the first packet containing data, and both STC and SOF
->          * happen to be zero for a particular frame, we would only miss one
->          * clock sample and the clock recovery algorithm wouldn't suffer from
-one clock sample from many
->          * this condition.
->          */
->
-> Is this correct (and fine with you) ? If so,
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> > +     if (buf && buf->bytesused == 0 && len == header_size &&
-> > +         dev_stc == 0 && dev_sof == 0)
-> > +             return;
-> > +
-> >       stream->clock.last_sof = dev_sof;
-> >
-> >       host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > @@ -564,7 +582,7 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> >       spin_lock_irqsave(&stream->clock.lock, flags);
-> >
-> >       sample = &stream->clock.samples[stream->clock.head];
-> > -     sample->dev_stc = get_unaligned_le32(&data[header_size - 6]);
-> > +     sample->dev_stc = dev_stc;
-> >       sample->dev_sof = dev_sof;
-> >       sample->host_sof = host_sof;
-> >       sample->host_time = time;
-> >
->
-> --
-> Regards,
->
-> Laurent Pinchart
+> > 
+> > > Firstly, increasing the number of behavioral concepts.  DAMOS filter feature
+> > > has only single behavior: excluding some types of memory from DAMOS action
+> > > target.  The "matching" is to provide a flexible way for further specifying the
+> > > target to exclude in a bit detail.  Without it, we would need non-variant for
+> > > each filter type.  Comapred to the current terms, the new terms feel like
+> > > implying there are two types of behaviors.  I think one behavior is easier to
+> > > understand than two behaviors, and better match what internal code is doing.
+> > > 
+> > > Secondly, ambiguity in "in" and "apply".  To me, the terms sound like _adding_
+> > > something more than _excluding_.
+> > 
+> > I understood that young filter "matching" "false" means apply action
+> > only to young pages.  Do I misunderstood something here?  If not,
+> 
+> Technically speaking, having a DAMOS filter with 'matching' parameter as
+> 'false' for 'young pages' type means you want DAMOS to "exclude pages that not
+> young from the scheme's action target".  That's the only thing it truly does,
+> and what it tries to guarantee.  Whether the action will be applied to young
+> pages or not depends on more factors including additional filters and DAMOS
+> parameter.  IOW, that's not what the simple setting promises.
+> 
+> Of course, I know you are assuming there is only the single filter.  Hence,
+> effectively you're correct.  And the sentence may be a better wording for end
+> users.  However, it tooke me a bit time to understand your assumption and
+> concluding whether your sentence is correct or not, since I had to think about
+> the assumptions.
+> 
+> I'd say this also reminds me the first concern that I raised on the previous
+> mail.  IOW, I feel this sentence is introducing one more behavior and making it
+> bit taking longer time to digest, for developers who should judge it based on
+> the source code.  I'd suggest use only one behavioral term, "exclude", since it
+> is what the code really does, unless it is wording for end users.
 
+Okay, I will just think filter "exclude" something.
 
+> > "apply" means _adding_ or _including_ only the matched pages for action.
+> > It looks like you thought about _excluding_ non matched pages here.
+> 
+> Yes.  I'd prefer using only single term, _excluding_.  It fits with the code,
+> and require one word less that "adding" or "including", since "adding" or
+> "including" require one more word, "only".
+> 
+> Also, even with "only", the fact that there could be more filters makes me
+> unsure what is the consequence of having it.  That is, if we have a filter that
+> includes only pages of type A, but if there could be yet another filter that
+> includes only pages of type B, would the consequence is the action being
+> applied to pages of type A and B?  Or, type A or type B?
+> 
+> In my opinion, exclusion based approach is simpler for understanding the
+> consequence of such combinational usage.
+> 
+> > 
+> > > I think that might confuse people in some
+> > > cases.  Actually, I have used the term "filter-out" and "filter-in" on
+> > > this  and several threads.  When saying about "filter-in" scenario, I had to
+> > > emphasize the fact that it is not adding something but excluding others.
+> > 
+> > Excluding others also means including matched pages.  I think we better
+> > focus on what to do only for the matched pages.
+> 
+> I agree that is true for the end-users in many cases.  But I think that depends
+> on the case, and at least this specific case (kernel ABI level discussion about
+> DAMOS filters), I don't really feel that's better.
 
--- 
-Ricardo Ribalda
+OK. It could be a matter of preference and the current filter is already
+in the mainline so I won't insist more.
+
+> > 
+> > > I now think that was not a good approach.
+> > > 
+> > > Finally, "apply" sounds a bit deterministic.  I think it could be a bit
+> > > confusing in some cases such as when using multiple filters in a combined way.
+> > > For example, if we have two filters for 1) "apply" a memcg and 2) skip anon
+> > > pages, the given DAMOS action will not be applied to anon pages of the memcg.
+> > > I think this might be a bit confusing.
+> > 
+> > No objection on this.  If so, I think "in" sounds better than "apply".
+> 
+> Thanks for understanding.  I think allowlists or denylists might also been
+> better names.
+
+"allow" and "deny" sound good to me as well. We don't have to change it
+though.
+
+> > 
+> > > > 
+> > > > Internally, the type of "matching" can be boolean, but it'd be better
+> > > > for general users have another ways to set it such as "out"/"in" or
+> > > > "skip"/"apply" via sysfs interface.  I prefer "skip" and "apply" looks
+> > > > more intuitive, but I don't have strong objection on "out" and "in" as
+> > > > well.
+> > > 
+> > > Unfortunately, DAMON sysfs interface is an ABI that we want to keep stable.  Of
+> > > course we could make some changes on it if really required.  But I'm unsure if
+> > > the problem of current naming and benefit of the sugegsted change are big
+> > > enough to outweighs the stability risk and additional efforts.
+> > 
+> > I don't ask to change the interface, but just provide another way for
+> > the setting.  For example, the current "matching" accepts either 1,
+> > true, or Y but internally keeps as "true" as a boolean type.
+> > 
+> >   $ cd /sys/kernel/mm/damon/admin/kdamonds/0/contexts/0/schemes/0/filters/0
+> > 
+> >   $ echo 1 | tee matching && cat matching
+> >   1
+> >   Y
+> > 
+> >   $ echo true | tee matching && cat matching
+> >   true
+> >   Y
+> > 
+> >   $ echo Y | tee matching && cat matching
+> >   Y
+> >   Y
+> > 
+> > I'm asking if it's okay making "matching" receive "out" or "skip" as
+> > follows.
+> > 
+> >   $ echo out | tee matching && cat matching
+> >   out
+> >   Y
+> > 
+> >   $ echo skip | tee matching && cat matching
+> >   skip
+> >   Y
+> 
+> I have no strong concern about this.  But also not seeing significant benefit
+> of this change.  This will definitely not regress user experience.  But it will
+> require introducing more kernel code, though the amount will be fairly small.
+> And this new interface will be something that we need to keep maintain, so
+> adding a tiny bit of maintenance burden.  I'd prefer improving the documents or
+> user-space tool and keep the kernel code simple.
+
+OK. I will see if there is a way to improve damo tool for this instead
+of making changes on the kernel side.
+
+> IMHO, end users shouldn't deal directly with DAMOS filters at all, and kernel
+> ABI document should be clear enough to avoid confusion.  But, if someone uses
+> kernel ABI on production without reading the document, I'd say it might better
+> to crash or OOPS to give clear warning and lessons.
+> 
+> > 
+> > > Also, DAMON sysfs interface is arguably not for _very_ general users.  DAMON
+> > > user-space tool is the one for _more_ general users.  To quote DAMON usage
+> > > document,
+> > > 
+> > >     - *DAMON user space tool.*
+> > >       `This <https://github.com/awslabs/damo>`_ is for privileged people such as
+> > >       system administrators who want a just-working human-friendly interface.
+> > >       [...]
+> > >     - *sysfs interface.*
+> > >       :ref:`This <sysfs_interface>` is for privileged user space programmers who
+> > >       want more optimized use of DAMON. [...]
+> > >  
+> > > If the concept is that confused, I think we could improve the documentation, or
+> > > the user space tool.  But for DAMON sysfs interface, I think we need more
+> > > discussions for getting clear pros/cons that justifies the risk and the effort.
+> > 
+> > If my suggestion is not what you want in sysfs interface, then "damo"
+> > can receive these more meaningful names and translate to "true" or
+> > "false" when writing to sysfs.
+> 
+> Yes, I agree.  We could further hide filter concept at all.  For example, we
+> could let damo user call "migrate" DAMOS action plus "non-young" filter as
+> "promote" action.  Or, have a dedicated command for tiered-memory management.
+> Similar to the gen_config.py of HMSDK
+> (https://github.com/skhynix/hmsdk/blob/main/tools/gen_config.py).  But this
+> would be something to further discuss on different threads.
+
+Yeah, I made this thread too much about filter naming discussion rather
+than tiered memory support.
+
+> > 
+> > > > 
+> > > > I also feel the filter name "young" is more for developers not for
+> > > > general users.  I think this can be changed to "accessed" filter
+> > > > instead.
+> > > 
+> > > In my humble opinion, "accessed" might be confusing with the term that being
+> > > used by DAMON, specifically, the concept of "nr_accesses".  I also thought
+> > > about using more specific term such as "pg-accessed" or something else, but I
+> > > felt it is still unclear or making it too verbose.
+> > > 
+> > > I agree "young" sounds more for developers.  But, again, DAMON sysfs is for not
+> > > _very_ general users.
+> > 
+> > I worried the developer term is also going to be used for "damo" user
+> > space tool as "young" filter.  But if you think it's good enough, then I
+> > will follow the decision as I also think "accessed" is not the best term
+> > for this.
+> 
+> The line is not very clear, but I think the line for "damo" should be different
+> from that for DAMON sysfs interface.
+> 
+> [...]
+> > > > > > > > > DAMOS filter is basically for filtering "out" memory regions that matches to
+> > > > > > > > > the condition.
+> > > > 
+> > > > Right.  In other tools, I see filters are more used as filtering "in"
+> > > > rather than filtering "out".  I feel this makes me more confused.
+> > > 
+> > > I understand that the word, "filtering", can be used for both, and therefore
+> > > can be confused.  I was also spending no small times at naming since I was
+> > > thinking about both coffee filters and color filters (of photoshop or glasses).
+> > > But it turned out that I'm more familiar with coffee filters, and might be same
+> > > for DAMON community, since the community is having beer/coffee/tea chat series
+> > > ;) (https://lore.kernel.org/damon/20220810225102.124459-1-sj@kernel.org/)
+> > 
+> > Yeah, I thought about filter for including pages for given config as
+> > follows.
+> > 
+> >     \    /
+> >      \  /     only matched items pass this filter.
+> >       ||
+> > 
+> > But the current DAMOS filter is about excluding pages for given config
+> > as follows just like a strainer.
+> >       ___
+> >      /###\
+> >     |#####|   matched items are excluded via this filter.
+> >      \###/
+> >       ---
+> > 
+> > I think I won't get confused after keeping this difference in mind.
+> 
+> My mind model was describing it as "excluding" coffee beans, but I'd say these
+> are just different perspectives, not a thing about right or wrong.  I'm
+> grateful to learn one more perspective that is different from mine :)
+
+I'm more familiar with the filter in ftrace, which is set to 
+/sys/kernel/tracing/set_ftrace_filter and it means "including"
+something.  But I will keep thinking DAMOS filter is different.
+
+> > 
+> > > That said, I think we may be able to make this better documented, or add a
+> > > layer of abstraction on DAMON user-space tool.
+> > > 
+> [...]
+> > > To summarize my opinion again,
+> > > 
+> > > 1. I agree the concept and names of DAMOS filters are confusing and not very
+> > >    intuitive.
+> > > 2. However, it's unclear if the problem and the benefit from the suggested new
+> > >    names are huge enough to take the risk and effort on changing ABI.
+> > > 3. We could improve documentation and/or user-space tool.
+> > 
+> > I think improving "damo" can be a good solution.
+> 
+> Looking forward to the discussion on it! :)
+> 
+> > 
+> > > Thank you again for the suggestion and confirmations to my questions.
+> > 
+> > Likewise, thank you for the explanation in details.
+> 
+> My great pleasure, and thank you for patiently keeping this grateful
+> discussion!
+
+Thanks again for your feedback.
+
+Honggyu
+
+> Thanks,
+> SJ
+> 
+> [...]
 
