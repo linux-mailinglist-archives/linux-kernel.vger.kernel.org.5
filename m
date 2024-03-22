@@ -1,231 +1,232 @@
-Return-Path: <linux-kernel+bounces-111437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8AAC886C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:47:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9411A886C5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:47:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704511F21AE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:47:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65D71C221E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402B9405EC;
-	Fri, 22 Mar 2024 12:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4814502D;
+	Fri, 22 Mar 2024 12:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clfNNh2U"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="unuOFEuU"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91763FE3F;
-	Fri, 22 Mar 2024 12:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5AC1EB31;
+	Fri, 22 Mar 2024 12:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711111617; cv=none; b=bznbqhXpm3kSn9PChFrMOmFKpaI5eAp8okEMwhcvkOmfk483XAvJy9DuzHM0NLEGyYNdZSTBI98IktLe/I6xlZKit0KtLcmQd9Ndco/KG1cjHw04b7RnDtTQhgENbsXMeXXqr6R6HfXE8qP6SD9oVRBSJh5Qm31qww1Oe4viAOM=
+	t=1711111637; cv=none; b=WlLf6Fyagc+YJCyKqBU9beDruMihedDDFIcTU1QPYTzlfTSBvohHaTB+2QNrIuW9fJVJjYCRsfleqaNSoFyQRv+sYBTGFNaNXMYu5TU+EZAuy98mezBMRMLQtEdWnRIV6MNFGNv65tDyRuTszca7I0DzcmIn7ZLzBKEfI1UeFeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711111617; c=relaxed/simple;
-	bh=Mc+nWMMEosm4ccbDGJPAs1X/IhkrsXvc6bhBeMV+Uuk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L4etYaS8KDY3x6u1TEXVQhHKuV3hqySohno6o3pLUR1YWZvqpGf3jb0fOOD0D9cfSETYFWmZAGBqSSI1aCYZm74aMYJ2yeIdyjfUnrNp3GLqQrqqxv+X1fTtVAID86qXi/5cax8eC5nAlP6kxzn021cTe3APu2HEdAjvI522rjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clfNNh2U; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4147c8e27a8so4284665e9.3;
-        Fri, 22 Mar 2024 05:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711111614; x=1711716414; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RB3xFwev27cGWj/kr3xX//Yti9pwXGl2cOzo4+2MzaA=;
-        b=clfNNh2UflSptwX1xbyj5W+0GRuUdeysRjBWFGfhOj/pDedCU+MZDIxaki7xHdtTHk
-         s1Urj8wjjlaXAC51en8jsVXiHRWE9uFDcHNTx9H8C6Rv45ytmZ8aqBo9o1yOJ0XsIuAW
-         9lyf1H/sAMOAkq9cmdeTVB7pGb4pwUVCpur/TXdiuYXa6UeVK0qet7bkf4Nm4+zc11LJ
-         C897+IXOYudUKFcjEK3l0OWkEi/JO3Ojcxe/90NLIQZG32VQmdyyGJ1JHIFD5NnKqoLZ
-         M+pIkbyDYwcEZBOepEEsO0c/l4GgjyB1k/xeTdCNyQ3oJjnn4WT4XoLZ2YV30uezqx02
-         edPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711111614; x=1711716414;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RB3xFwev27cGWj/kr3xX//Yti9pwXGl2cOzo4+2MzaA=;
-        b=kSbtoF/p2HU25ZWZKy7IZNCJqwCRoQx1U9jFAzmfj5gL344Xz0nFFIj5H9xB5aON7v
-         Gr0CIqDRXw8s67m/BSMDSPIH+DRNOR/Knxmqh8ums+Ap4BCNODtJg5yfOKGwSrzdMnZ3
-         fq8640anChg01jd2E3GbctHadDQ98TMfi2b62iz3zChl7gQOAZqyxAE9heWIHPaZoGTb
-         rS14EdYcxDruObZqmKxL8mi1YSpqdl99Kg/e/Ae5P1GYCoT4aYfnUOG2BwRWe7Snn9Fg
-         zthX5Gbj1+X1BYSXXL9rdJmpCepFXiPYth+HiwuPwyYZGswNluvAWagcunMPnNp7I3AY
-         Ymag==
-X-Forwarded-Encrypted: i=1; AJvYcCVxjDdv3qz1fnrDyFqZITz8inUmQAFZa1dg6I9P/ui1fP3wIzGRZ/pAWzGx0n58EV6AAyGV31S2fw1h1GXwrTD0AxCYcrpg6eKNHilovl1alSZ074pImrmU6djB0IbCjbXEZbclSV7xOQ==
-X-Gm-Message-State: AOJu0YwHi4aaJh+I6J3aCMDSKVmYxmWWuZxTFhYLkahTDFgLHKfE/6rv
-	PhGxyQl6mqxDjzZZzJHtnfCwFHXFIBLqCfL4ftK04Y4Ck+mSK2TC
-X-Google-Smtp-Source: AGHT+IF1qkzrv8qD8jTN7ZbrlS28HPptaqDOjy8Lg9y2eBBFT2JZD+2cG6aY3z0Wj3QZyyLsLSv+AA==
-X-Received: by 2002:a05:600c:4506:b0:412:d149:254c with SMTP id t6-20020a05600c450600b00412d149254cmr1823332wmo.17.1711111613810;
-        Fri, 22 Mar 2024 05:46:53 -0700 (PDT)
-Received: from vitor-nb.. ([2001:8a0:e622:f700:7937:89a:a375:7ff2])
-        by smtp.gmail.com with ESMTPSA id p42-20020a05600c1daa00b004146f93a9d1sm6747201wms.25.2024.03.22.05.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 05:46:53 -0700 (PDT)
-From: Vitor Soares <ivitro@gmail.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: Vitor Soares <vitor.soares@toradex.com>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] arm64: dts: freescale: verdin-imx8mp: enable Verdin I2C_3_HDMI interface
-Date: Fri, 22 Mar 2024 12:46:20 +0000
-Message-Id: <20240322124620.40250-1-ivitro@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711111637; c=relaxed/simple;
+	bh=0jfKZv5KL4RBBl2/igH9zhoZv/XzieYaoshZnN+1CVg=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=tapNDNATFbiVs76TM/IMfXTbqktK8GJtv/mlpYYj9uF8II6o7FfpsLv2BF+0+BV4ueqqQWusA6DBL0q6Z9JaQ3JPlF7/HNZls3eaSzrXEywPRRo9z9OYQZovKxyHdeFo/zL6QFT15Jov+tDguGV1pj9fW/x7mJiBx6sMhmnb4Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=unuOFEuU; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240322124713euoutp027f4dd0c8071064476319b54123013645~-FvbhBa5t2654626546euoutp023;
+	Fri, 22 Mar 2024 12:47:13 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240322124713euoutp027f4dd0c8071064476319b54123013645~-FvbhBa5t2654626546euoutp023
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1711111633;
+	bh=6Cqf1rQeKRg7RNM4i7sbKmaMDFDJDK6zLin6A8mDMXA=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=unuOFEuUTY81g/tfpjXhRIJxRHk3HaH0drnp9Di0OzN2kL8AeuULtlJwsLqm3Vbd1
+	 QsSMD6KiGFqHxrGAlsYb1/8yaVStM6Tj+XLTKx3Fliqedss4wVDFiXsWbOXo9iLYeP
+	 KPbIUb7g1/irI824dasDbiG//w6lB39pQKl4A7eA=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240322124712eucas1p17a3667f23b57d166600989d2b2320a92~-FvbTFnZ00844708447eucas1p1Z;
+	Fri, 22 Mar 2024 12:47:12 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 56.53.09539.0DD7DF56; Fri, 22
+	Mar 2024 12:47:12 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240322124712eucas1p2dfdea1ba2265647e01642ec2b54a60f0~-FvauktHD1616816168eucas1p2f;
+	Fri, 22 Mar 2024 12:47:12 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240322124712eusmtrp1ab054cc556f9a0fbd0489ceb85edcfcc~-FvatQ0N42291322913eusmtrp1E;
+	Fri, 22 Mar 2024 12:47:12 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-f8-65fd7dd0a022
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 89.7C.09146.0DD7DF56; Fri, 22
+	Mar 2024 12:47:12 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240322124711eusmtip1616bdbd57c112ae38ea928798d76b128~-FvaiAmGs2391323913eusmtip1E;
+	Fri, 22 Mar 2024 12:47:11 +0000 (GMT)
+Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Fri, 22 Mar 2024 12:47:11 +0000
+Date: Fri, 22 Mar 2024 13:47:09 +0100
+From: Joel Granados <j.granados@samsung.com>
+To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+Subject: Re: [PATCH v3 0/2] sysctl: treewide: prepare ctl_table_root for
+ ctl_table constification
+Message-ID: <20240322124709.w5ntjwb5tbumltoy@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="72nq2u4tvhj4hanv"
+Content-Disposition: inline
+In-Reply-To: <20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKKsWRmVeSWpSXmKPExsWy7djP87oXav+mGuxfoW0x53wLi8XTY4/Y
+	Lc5051pc2NbHarFn70kWi8u75rBZ/P7xjMnixoSnjBbHFohZfDv9htGBy2N2w0UWjy0rbzJ5
+	LNhU6rFpVSebx/t9V9k8Pm+S8+jvPsYewB7FZZOSmpNZllqkb5fAlbG3+Sl7wQLpijvTljA1
+	MM4X72Lk5JAQMJH4cnMDexcjF4eQwApGiXsflzNDOF8YJWZ/ewLlfGaUeHT8GwtMy8LGs0wg
+	tpDAckaJ7n3ccEUTjjaxQThbGSUOb38A1sEioCrxeV8XO4jNJqAjcf7NHWYQW0TARmLlt89g
+	y5kF9jFJfLzYBlYkLJAssaJ/DlgRr4CDxO9TBxkhbEGJkzOfgA1lFqiQuNh+DGgbB5AtLbH8
+	HwdImFPAX2LBlttsEJcqS1zftxjKrpU4teUWE8guCYHNnBJtZ1YyQSRcJH6d7maEsIUlXh3f
+	wg5hy0icntzDAtEwmVFi/78P7BDOakaJZY1fobqtJVquPIHqcJR4PvcLI8hFEgJ8EjfeCkIc
+	yicxadt0Zogwr0RHmxBEtZrE6ntvWCYwKs9C8tosJK/NQngNIqwncWPqFExhbYllC18zQ9i2
+	EuvWvWdZwMi+ilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzD1nf53/NMOxrmvPuodYmTi
+	YDzEqALU/GjD6guMUix5+XmpSiK8O/7/SRXiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5oinyok
+	kJ5YkpqdmlqQWgSTZeLglGpgmtR9ZHbTr7Ql+7Z4KGW0G4QrNfucu/J70gS3Hg5bDb2Cd49O
+	5YlLqfg8+lLpavu/O1j+orTQ2TuhL/f7Pzxjv+rw2vqfPSy3lzreTvD2uHVCt9LYoWWi69me
+	NfHhubxf1dZ/iIyfunC/V652w4zjOTvS5fdl8zw8cCSgbKvivV+r+qX55t5SyvLpsMgqENHw
+	WOKy/3ZTek75hP93XBnffdf6HiIaeXu5w8dNuy5MufN2t0zZec9JVoc1z7VvSRM4oX1K5VWV
+	6y3RBctitiha7E/efUtcQtDq8fN9EX8WHeCbNyv7YBB77PWG9zHHV75YYt41U8r22HzmOrkv
+	mvoKHxrmMDxb7f4y2+5N8pLASCWW4oxEQy3mouJEAGo6tWv4AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileLIzCtJLcpLzFFi42I5/e/4Xd0LtX9TDR5/ZbaYc76FxeLpsUfs
+	Fme6cy0ubOtjtdiz9ySLxeVdc9gsfv94xmRxY8JTRotjC8Qsvp1+w+jA5TG74SKLx5aVN5k8
+	Fmwq9di0qpPN4/2+q2wenzfJefR3H2MPYI/SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQz
+	NDaPtTIyVdK3s0lJzcksSy3St0vQy7h7by97wTzpivPzjjM1MM4V72Lk5JAQMJFY2HiWqYuR
+	i0NIYCmjxMmPd1kgEjISG79cZYWwhSX+XOtigyj6yCjRceUXlLOVUWJD23dmkCoWAVWJz/u6
+	2EFsNgEdifNv7oDFRQRsJFZ++8wO0sAssI9J4uPFNrAiYYFkiRX9c8CKeAUcJH6fOsgIMXUR
+	o8TcDVuhEoISJ2c+AbuJWaBMYuayHUCrOYBsaYnl/zhAwpwC/hILttxmgzhVWeL6vsVQdq3E
+	57/PGCcwCs9CMmkWkkmzECZBhHUkdm69gymsLbFs4WtmCNtWYt269ywLGNlXMYqklhbnpucW
+	G+oVJ+YWl+al6yXn525iBCaAbcd+bt7BOO/VR71DjEwcjIcYVYA6H21YfYFRiiUvPy9VSYR3
+	x/8/qUK8KYmVValF+fFFpTmpxYcYTYHBOJFZSjQ5H5ia8kriDc0MTA1NzCwNTC3NjJXEeT0L
+	OhKFBNITS1KzU1MLUotg+pg4OKUamMyd8gxSEvSjI2x4b3SW3HTkO3jf58xS/s6Si1xGr5V1
+	j+0vObq0oobzl+zy1oQforsCvJZEr5TIPKY+TWPC+7VZ0a53l22b9N5Yhn1W/eQFJwTb4z3E
+	WIx4f1kq8U02bHz+3OLB3xPu3srnWYPOxWVOcDov1/JydeRBA4m/p28/fyno6qAQuOH66SKu
+	4j0Vt19VC7yYxxYcri3Tn8lTJV/g6NzSml/67JDmwgilS9NLZWY3uO070Bixwd4yWnfbv/l7
+	7XyvSzrt+vIx9oFRjavVEts3zE1H7i/xLHFJa4zPS3b6k3GkVEBaZWqz8P6/c/hOFgmFi/AK
+	//r903yVwoq772caHF9wtPU2y88MJZbijERDLeai4kQAO1PlpJUDAAA=
+X-CMS-MailID: 20240322124712eucas1p2dfdea1ba2265647e01642ec2b54a60f0
+X-Msg-Generator: CA
+X-RootMTR: 20240315181141eucas1p267385cd08f77d720e58b038be06d292e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240315181141eucas1p267385cd08f77d720e58b038be06d292e
+References: <CGME20240315181141eucas1p267385cd08f77d720e58b038be06d292e@eucas1p2.samsung.com>
+	<20240315-sysctl-const-ownership-v3-0-b86680eae02e@weissschuh.net>
 
-From: Vitor Soares <vitor.soares@toradex.com>
+--72nq2u4tvhj4hanv
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Enable Verdin I2C_3_HDMI interface on iMX8MP Toradex Verdin boards.
+On Fri, Mar 15, 2024 at 07:11:29PM +0100, Thomas Wei=DFschuh wrote:
+> The two patches were previously submitted on their own.
+> In commit f9436a5d0497
+> ("sysctl: allow to change limits for posix messages queues")
+> a code dependency was introduced between the two callbacks.
+> This code dependency results in a dependency between the two patches, so
+> now they are submitted as a series.
+>=20
+> The series is meant to be merged via the sysctl tree.
+>=20
+> There is an upcoming series that will introduce a new implementation of
+> .set_ownership and .permissions which would need to be adapted [0].
+>=20
+> These changes ere originally part of the sysctl-const series [1].
+> To slim down that series and reduce the message load on other
+> maintainers to a minimum, the patches are split out.
+>=20
+> [0] https://lore.kernel.org/lkml/20240222160915.315255-1-aleksandr.mikhal=
+itsyn@canonical.com/
+> [1] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@=
+weissschuh.net/
+>=20
+> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
+> ---
+> Changes in v3:
+> - Drop now spurious argument in fs/proc/proc_sysctl.c
+> - Rebase on next-20240315
+> - Incorporate permissions patch.
+> - Link to v2 (ownership): https://lore.kernel.org/r/20240223-sysctl-const=
+-ownership-v2-1-f9ba1795aaf2@weissschuh.net
+> - Link to v1 (permissions): https://lore.kernel.org/r/20231226-sysctl-con=
+st-permissions-v1-1-5cd3c91f6299@weissschuh.net
+>=20
+> Changes in v2:
+> - Rework commit message
+> - Mention potential conflict with upcoming per-namespace kernel.pid_max
+>   sysctl
+> - Delete unused parameter table
+> - Link to v1: https://lore.kernel.org/r/20231226-sysctl-const-ownership-v=
+1-1-d78fdd744ba1@weissschuh.net
+>=20
+> ---
+> Thomas Wei=DFschuh (2):
+>       sysctl: treewide: drop unused argument ctl_table_root::set_ownershi=
+p(table)
+>       sysctl: treewide: constify argument ctl_table_root::permissions(tab=
+le)
+>=20
+>  fs/proc/proc_sysctl.c  | 2 +-
+>  include/linux/sysctl.h | 3 +--
+>  ipc/ipc_sysctl.c       | 5 ++---
+>  ipc/mq_sysctl.c        | 5 ++---
+>  kernel/ucount.c        | 2 +-
+>  net/sysctl_net.c       | 3 +--
+>  6 files changed, 8 insertions(+), 12 deletions(-)
+> ---
+> base-commit: a1e7655b77e3391b58ac28256789ea45b1685abb
+> change-id: 20231226-sysctl-const-ownership-ff75e67b4eea
+>=20
+> Best regards,
+> --=20
+> Thomas Wei=DFschuh <linux@weissschuh.net>
+>=20
 
-Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
----
- .../dts/freescale/imx8mp-verdin-dahlia.dtsi   |  5 ++++
- .../boot/dts/freescale/imx8mp-verdin-dev.dtsi |  5 ++++
- .../dts/freescale/imx8mp-verdin-mallow.dtsi   |  5 ++++
- .../dts/freescale/imx8mp-verdin-yavia.dtsi    |  5 ++++
- .../boot/dts/freescale/imx8mp-verdin.dtsi     | 27 ++++++++++++++++---
- 5 files changed, 43 insertions(+), 4 deletions(-)
+Will put this to test and then try to rebase it to 6.9-rc1 once it comes
+out.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
-index 7e9e4b13b5c5..8d954259085f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
-@@ -110,6 +110,11 @@ wm8904_1a: audio-codec@1a {
- 	};
- };
- 
-+/* Verdin I2C_3_HDMI */
-+&i2c5 {
-+	status = "okay";
-+};
-+
- /* Verdin PCIE_1 */
- &pcie {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
-index a509b2b7fa85..e5400140e5c6 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
-@@ -131,6 +131,11 @@ nau8822_1a: audio-codec@1a {
- 	};
- };
- 
-+/* Verdin I2C_3_HDMI */
-+&i2c5 {
-+	status = "okay";
-+};
-+
- /* Verdin PCIE_1 */
- &pcie {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
-index 8482393f3cac..1d15f7449c58 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
-@@ -112,6 +112,11 @@ &i2c4 {
- 	status = "okay";
- };
- 
-+/* Verdin I2C_3_HDMI */
-+&i2c5 {
-+	status = "okay";
-+};
-+
- /* Verdin PCIE_1 */
- &pcie {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
-index db1722f0d80e..3a8542266d85 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-yavia.dtsi
-@@ -117,6 +117,11 @@ &i2c4 {
- 	status = "okay";
- };
- 
-+/* Verdin I2C_3_HDMI */
-+&i2c5 {
-+	status = "okay";
-+};
-+
- /* Verdin PCIE_1 */
- &pcie {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
-index faa17cbbe2fd..f033d4310305 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
-@@ -664,8 +664,6 @@ atmel_mxt_ts_mezzanine: touch-mezzanine@4a {
- 	};
- };
- 
--/* TODO: Verdin I2C_3_HDMI */
--
- /* Verdin I2C_4_CSI */
- &i2c3 {
- 	clock-frequency = <400000>;
-@@ -764,6 +762,16 @@ eeprom_carrier_board: eeprom@57 {
- 	};
- };
- 
-+/* Verdin I2C_3_HDMI */
-+&i2c5 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default", "gpio";
-+	pinctrl-0 = <&pinctrl_i2c5>;
-+	pinctrl-1 = <&pinctrl_i2c5_gpio>;
-+	scl-gpios = <&gpio3 26 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio3 27 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+};
-+
- /* Verdin PCIE_1 */
- &pcie {
- 	pinctrl-names = "default";
-@@ -1106,8 +1114,6 @@ pinctrl_gpio_keys: gpiokeysgrp {
- 	pinctrl_hdmi_hog: hdmihoggrp {
- 		fsl,pins =
- 			<MX8MP_IOMUXC_HDMI_CEC__HDMIMIX_HDMI_CEC	0x40000019>,	/* SODIMM 63 */
--			<MX8MP_IOMUXC_HDMI_DDC_SCL__HDMIMIX_HDMI_SCL	0x400001c3>,	/* SODIMM 59 */
--			<MX8MP_IOMUXC_HDMI_DDC_SDA__HDMIMIX_HDMI_SDA	0x400001c3>,	/* SODIMM 57 */
- 			<MX8MP_IOMUXC_HDMI_HPD__HDMIMIX_HDMI_HPD	0x40000019>;	/* SODIMM 61 */
- 	};
- 
-@@ -1163,6 +1169,19 @@ pinctrl_i2c4_gpio: i2c4gpiogrp {
- 			<MX8MP_IOMUXC_I2C4_SDA__GPIO5_IO21		0x400001c6>;	/* SODIMM 12 */
- 	};
- 
-+	/* Verdin I2C_3_HDMI */
-+	pinctrl_i2c5: i2c5grp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_HDMI_DDC_SCL__I2C5_SCL		0x400001c6>,	/* SODIMM 59 */
-+			<MX8MP_IOMUXC_HDMI_DDC_SDA__I2C5_SDA		0x400001c6>;	/* SODIMM 57 */
-+	};
-+
-+	pinctrl_i2c5_gpio: i2c5gpiogrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_HDMI_DDC_SCL__GPIO3_IO26		0x400001c6>,	/* SODIMM 59 */
-+			<MX8MP_IOMUXC_HDMI_DDC_SDA__GPIO3_IO27		0x400001c6>;	/* SODIMM 57 */
-+	};
-+
- 	/* Verdin I2S_2_BCLK (TOUCH_RESET#) */
- 	pinctrl_i2s_2_bclk_touch_reset: i2s2bclktouchresetgrp {
- 		fsl,pins =
--- 
-2.34.1
+Thx.
 
+--=20
+
+Joel Granados
+
+--72nq2u4tvhj4hanv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX9fc0ACgkQupfNUreW
+QU8PfAv/au7WdV/9HQRSvVtVlGjOSmbvLvSn0f+bY4/MViHS3YgB60G+MbmKVYXT
+C1nzEhRwKEl2lY/kNQVsgDWHN5svPisXDck/1OWyg581FG7/gIlJSeARfhYSsdaB
+6iovOAWkLN3+Anfr2qKUMLdKfCrHH2CuCAw8ddf4JO9yIEoKmxe406gVwiEkgEER
+sAdYpwB13u85JLyMwcOYPHKSOb81x0yl+XtFlt31FWBiyqh98QQ47tbgfb0Mskva
+0uIeX/oGse+NPRLD6Ppbq9DPobERX4zSenTvwxU7iX4jdK7P1QYPbgw8cTGvPPhd
+/u2B0BGu8dGXKZbslSNxNllWBXJH0W9cQLRku1LlQaG2YIpIBZIo2PjMORRc8nRD
+0H9UC4Uu+45sSKrQqwZZ4wcjHLSmKqgVjy3BVy2/iIMFKG3SQ/gcVy8fpl35VmTl
+IHfkDeZbzOPhvgapP8akweK8dNW+9n3TXHDZff9GRQyHm4My54PWH5mVHj8kmJmj
+VTUO529V
+=1Plv
+-----END PGP SIGNATURE-----
+
+--72nq2u4tvhj4hanv--
 
