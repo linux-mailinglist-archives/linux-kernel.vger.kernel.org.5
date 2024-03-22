@@ -1,138 +1,182 @@
-Return-Path: <linux-kernel+bounces-111919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E1A8872A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:09:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF978872AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:10:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9EF287C31
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:09:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 629C2287DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5D9627EE;
-	Fri, 22 Mar 2024 18:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8721627F4;
+	Fri, 22 Mar 2024 18:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kwQByvCX"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mvsIIVRL"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C195A0EE
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F419626C0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130991; cv=none; b=HQdo9Qr89J78DqCqu4qPpWksTrkfK6Jxkq0N6zE+kHyOOkQksusLxXK5Yxzg60uA+tbQnXD5ovXsWU3i6AF/CWYRUeZBj3WKErOlcG7LgNHuSFgMxPvA0+3DJnU0sJuilayq9DCHUnslGwCsoikvYBKnuRfXksvw+buqMFELfsE=
+	t=1711131007; cv=none; b=F0SyCimrw/ePlXA31xntGTGMDq7jKcWGWwPvBd8fwuheXOl0NKkFFTyTH7A2/JbIVeq2VeEFx0M0/4Ho7kgIAneLNtdIwcOPVqAY1W7wq+BfzPia/ou1hiOvEbvLNEW1HW/Q5Zy7tLmXeUXIWwvLD514IC348pQaq9ekW6YJXas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130991; c=relaxed/simple;
-	bh=B4sbDsuOvZKIeibg8vvbrEb2XScnKsrmTvz+Q6EZUB4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VMscZmUC/LOi9E1IMdvP3H8rZGXaxMzH4CtSg9Mfhm6lgYGq+tR+DbswXzrrqH37JkL8uOx4fvhp9ICJg/z7IL5KUVMgRFgfTh9jOFF78j0tLvJiR+x3yZzXU+lQpVa4E5bUz/9LiGE6bBTDSO0Ax3wy5jXtIEAZFXxevZyc9XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kwQByvCX; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso1508585a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711130989; x=1711735789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B4sbDsuOvZKIeibg8vvbrEb2XScnKsrmTvz+Q6EZUB4=;
-        b=kwQByvCXNEoWTTK/etf485vcHqxgMeyoNCiDwfje8rgLt9i9QjipTFJCSpyWmJm+7p
-         gux4BUF1nLSK0nJZ2Wwb/wX1NbRa3zGNZfrvB4SAN+WZ1tPIriivuleOL5GipGYWM1Jb
-         wYg83WeSLfuxB9aBU21JS7d2eWTgL/7ACCpCDau4zWDR1pd0Yw7C9M/rWPIoZur27u6I
-         vWiDCf9oh7iCxqYj5IB3rZEn1NF40214KuhnYMhkFOzPN29ymEeoN2THuMctcDRr0wVT
-         vekaC1NphHeswQexuOlYyJFp1AgEuYQ9B/o9zF8chLr7T9hDQs1TeMbVZtV0b4I6g95D
-         McEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711130989; x=1711735789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B4sbDsuOvZKIeibg8vvbrEb2XScnKsrmTvz+Q6EZUB4=;
-        b=uaOkSCcr6T3+AsP/d+2Id8I4OBRZI755DzDpYbYytY4OnyZuiZij/JpQjxvTLYTWQa
-         KZwHWhcU/pkDipjsThMahMeRMTfHrdx5a/MDJq+9Lc8hnRQbBk4FUMpmKmY++/LsIJOF
-         NiXTUTQlDGVrnjzCnoNgumGuz4V2b/kXBQ0Dv1BJdMrDCj0y/qH4GAZ+Uz5qYGlWVxHn
-         F3bN2GqWHb42fq35mY2//R1/UX0AiFlpx9pvBhhCdbH32VOoqOBB1sd2c/920l6WE2Xb
-         cG1pppWe/8FNTMKV2RHoYXYMCkEcn2wA7NsOjp0JYnvq1zrt+13xJ1rZ5+mdEDFrxvuI
-         bHjw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKjOS2R1fJ2xLBFrxk0nSwqdfEDMWllC0R/fDtxdemYIdizkxEaR3/whwgKJEXoFDkTA/zQlGng0nl90HqDfcwHOMS6akTBBUaIljD
-X-Gm-Message-State: AOJu0Yz3qtIrd5YayLFe4FaUZgQlhSP3nj/MsoD5Sw/rJgttMQGSa4x+
-	kuGCPxK30Xj/Qsu8XFgtVDk44sCDQw1ijUa+adGdq4C1pozJ5j0ehQ0Q5SKItva7g0vTNRum61L
-	gAt3CHqAG2rp/I11P2BIIqeHa/rAxq1V7GOvNk1USG9ytiYUOTro=
-X-Google-Smtp-Source: AGHT+IHbIgzFZJrnayUw9uaEmWMhyoSB8z65Yw2YoZfEhl+AX+br8325k9E+8hMkgDwJHkwpF+BkhWneNlLVoUeaygM=
-X-Received: by 2002:a17:90a:6d61:b0:29c:b540:706b with SMTP id
- z88-20020a17090a6d6100b0029cb540706bmr424792pjj.17.1711130988988; Fri, 22 Mar
- 2024 11:09:48 -0700 (PDT)
+	s=arc-20240116; t=1711131007; c=relaxed/simple;
+	bh=cro16sh1i2oM3bLc22qeYH9U8ieOL7dJnB7fxPt/Jy4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qYSnt+GNOobGV5Adln4qSC8J0TQb9tQGZlA2bOxNbjEg88tsBRKrkwLGFjmc+QzX98E7ql2aZOIYs2rhvnWeID1LiE9jbO8lYqFTtgbu0vUYNbYS9b1q0wen6NwGZxWZicUAr5AWhwbECzGHwINvITqaWlb/ZL1+b70P6wL9ECY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mvsIIVRL; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5D030842;
+	Fri, 22 Mar 2024 19:09:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1711130973;
+	bh=cro16sh1i2oM3bLc22qeYH9U8ieOL7dJnB7fxPt/Jy4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mvsIIVRL1Dv6tdP2fNsC6U+LDllPf6lbegR5Kod4R8JVbaMomcmx7gvDgqn9KVbOv
+	 Gf/jHkVKjEInLROCrE/hvLDDx1hkToYbNVqdbEM39IcAj90TSrpanusi9dx+523DX7
+	 H8iq+upPd0peIsSFsyblJ/GUf6Fsq0/Yag7FPXAQ=
+Message-ID: <305a8e43-4d65-490c-9f83-afce6490bc83@ideasonboard.com>
+Date: Fri, 22 Mar 2024 20:09:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229122021.1901785-1-tudor.ambarus@linaro.org>
- <20240229122021.1901785-5-tudor.ambarus@linaro.org> <CAPLW+4=jSr6ZsB7XekXsiUBm0SmVpVFnqpgjViuF3=HpT4gRAg@mail.gmail.com>
- <867158d7-0d98-4058-9c2e-6b573ec68516@linaro.org>
-In-Reply-To: <867158d7-0d98-4058-9c2e-6b573ec68516@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Fri, 22 Mar 2024 13:09:37 -0500
-Message-ID: <CAPLW+4=nRjRPdu80Y3izifxQDNUaJymU3di0hGErm1dHry3EfQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: samsung: exynos850: fix propagation of SPI IPCLK rate
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: =?UTF-8?B?6rmA7J6s7JuQL0pBRVdPTiBLSU0=?= <jaewon02.kim@samsung.com>, 
-	krzysztof.kozlowski@linaro.org, s.nawrocki@samsung.com, cw00.choi@samsung.com, 
-	alim.akhtar@samsung.com, mturquette@baylibre.com, sboyd@kernel.org, 
-	peter.griffin@linaro.org, andre.draszik@linaro.org, 
-	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	willmcvicker@google.com, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-6-sean.anderson@linux.dev>
+ <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
+ <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
+ <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
+ <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
+ <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
+ <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
+ <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
+ <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
+Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 22, 2024 at 4:39=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
-> Hi, Sam!
->
-> On 3/1/24 00:13, Sam Protsenko wrote:
-> > I fail to see how this patch fixes anything. Instead it looks to me it
-> > replaces the (already) correctly implemented logic with incorrect one.
->
-> I opened another thread asking for feedback on whether it's safe to
-> re-parent the USI MUX to OSCCLK at run-time, find it here:
-> https://lore.kernel.org/linux-samsung-soc/71df1d6b-f40b-4896-a672-c5f0f52=
-6fb1f@linaro.org/T/#m588abb87eb5fd8817d71d06b94c91eb84928e06b
->
-> Jaewon came up with the idea on verifying what the downstream clock
-> driver does. I added some prints in the driver, and indeed the USI MUX
-> re-parents to OSCCLK on low SPI clock rates in the GS101 case.
->
-> Thus I'll respin this patch set fixing GS101 on low USI clock rates by
-> re-parenting the USI MUX to OSCCLK. I'll leave exynos850 out if I don't
-> hear back from you, but I think it deserves the same fix. Allowing SPI
-> to modify the clock rate of HSI2C/I3C at run-time is bad IMO.
-> Re-parenting the USI MUX to OSCCLK fixes this problem, HSI2C/I3C will no
-> longer be affected on low SPI clock rates.
->
+On 22/03/2024 18:18, Sean Anderson wrote:
+> On 3/22/24 01:32, Tomi Valkeinen wrote:
+>> On 21/03/2024 21:17, Sean Anderson wrote:
+>>> On 3/21/24 15:08, Tomi Valkeinen wrote:
+>>>> On 21/03/2024 20:01, Sean Anderson wrote:
+>>>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
+>>>>>> On 21/03/2024 17:52, Sean Anderson wrote:
+>>>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
+>>>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>>>>>>> Do we need to handle interrupts while either delayed work is being done?
+>>>>>>>
+>>>>>>> Probably not.
+>>>>>>>
+>>>>>>>> If we do need a delayed work, would just one work be enough which
+>>>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
+>>>>>>>
+>>>>>>> Maybe, but then we need to determine which pending events we need to
+>>>>>>> handle. I think since we have only two events it will be easier to just
+>>>>>>> have separate workqueues.
+>>>>>>
+>>>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
+>>>>>
+>>>>> Yeah, but we can use a mutex for this which means there is not too much
+>>>>> interesting going on.
+>>>>
+>>>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
+>>>>
+>>>> I'd still prefer just one workqueue, though...
+>>>
+>>> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
+>>
+>> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
+> 
+> How about something like
+> 
+> zynqmp_dp_irq_handler(...)
+> {
+> 	/* Read status and handle underflow/overflow/vblank */
+> 
+> 	status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
+> 	if (status) {
+> 		atomic_or(status, &dp->status);
+> 		return IRQ_WAKE_THREAD;
+> 	}
+> 
+> 	return IRQ_HANDLED;
+> }
+> 
+> zynqmp_dp_thread_handler(...)
+> {
+> 	status = atomic_xchg(&dp->status, 0);
+> 	/* process HPD stuff */
+> }
+> 
+> which gets rid of the workqueue too.
 
-Yes, please leave Exynos850 out of it, if possible. It's fine with me
-if you send it for gs101, as it's you who is going to maintain that
-platform further, so it's for the maintainers to decide. I'll refrain
-from reviewing that particular patch.
+I like it. We can't use IRQF_ONESHOT, as that would keep the irq masked 
+while the threaded handler is being ran. I don't think that's a problem, 
+but just something to keep in mind that both handlers can run concurrently.
 
-For Exynos850 driver, I'm convinced the SPI clock derivation is
-already implemented in the correct way (exactly as it was designed in
-HW), and doing anything else would be a hack, and frankly this sole
-fact is already enough of argumentation for me. There is also the
-whole bunch of use-cases which I think could be affected by using
-OSCCLK, e.g.: clock signal integrity, runtime PM concerns, possible
-interference in case of automatic clock control enablement, etc. I
-don't even want to think about all possible pitfalls which
-implementation of this non-standard and undocumented behavior could
-create. So as the only person who currently supports Exynos850 drivers
-(apart from the maintainers, of course), I would strictly oppose this
-particular OSCCLK change.
+  Tomi
 
-> Cheers,
-> ta
 
