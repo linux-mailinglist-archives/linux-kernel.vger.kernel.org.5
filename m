@@ -1,217 +1,273 @@
-Return-Path: <linux-kernel+bounces-111711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 280DF886FE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:41:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C65886FEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:43:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C552842CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:41:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE0D31F211BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B98DA56770;
-	Fri, 22 Mar 2024 15:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABAB25381A;
+	Fri, 22 Mar 2024 15:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UBhhn5JS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Zs/EUJ+o"
+Received: from out203-205-221-164.mail.qq.com (out203-205-221-164.mail.qq.com [203.205.221.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030AE54789
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FA1535A6
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.164
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711122085; cv=none; b=MoWKc4t3Auvd0CYGiile4KiMizU2YMC+O0rH2Gv27dQwLqIPLomBBHt6flZ0K6gfgoomdwogPL8tI4Q0z29M9wKAPHy6TIVZ4mnzkFCV2U2Lx5lVjvr4FH48m4Z4Ec3qmlhaN/5CRKn7SSGLmdZTdvqmjxnNW1bjGrlsA7HbLjg=
+	t=1711122221; cv=none; b=CL1Fim01Nr3aTFBxk8hxoMbSK7Q+j+HppJ4MnF6z5rmhpMzII/cPHesuFVLU1cSO2yp7fM9PZTyvOKzEsMovTTsW8qDX80kdEafSXEFCoUd2qLKgnlm0YwQtzX1bAgEqcjDN3c3oXsX8EGCr7LQQxY1Vj/WGk/pNxf8CKK6wQLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711122085; c=relaxed/simple;
-	bh=y13MM1K4OSGBVcRaem6p++srNkOtksqVqY0eJhSarzE=;
+	s=arc-20240116; t=1711122221; c=relaxed/simple;
+	bh=Q6Z6Y78zjUvTC8yteKd1TQVGNbJDKneCaLYEMur8mxQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bd9dRh2epIU0nsDJc0+1JMj0mBialv6dJqOeYOZCVqQ5bnJJ2EeDQ5aDnSh150GRIZiMBSv/RjClmzWIbL1Wabhh1+5AjhqnwGFiY2pu4V3iSxi3ZXUHXrsgoxTGS4EZzh16gABPPdWahTF7D6vxyhr3EnQTSKoQbj83RSrKvEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UBhhn5JS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711122082;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lzS+64/Z+z0FZAVLEztU47CybRWXv4MUKpFPGMTiPTs=;
-	b=UBhhn5JS/+CmozHhFYP73PLdVMsHDMl6vW9SPxGbrvLt1KqH/WzYE+dFho8KAMGGPtdAXU
-	PS6hvMDFVLuK/f0m5IbIayJxspJEOvwY7a6RKsbnS0q91/F0TVb/rrlfxJ4yVLNv9PfRBC
-	5+riDcgquX1CMPRd70iomBOdaK9NRc4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-328-hnnf_d1GMhulwHdok01ehg-1; Fri, 22 Mar 2024 11:41:21 -0400
-X-MC-Unique: hnnf_d1GMhulwHdok01ehg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e7ef510aaso1354364f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:41:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711122079; x=1711726879;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lzS+64/Z+z0FZAVLEztU47CybRWXv4MUKpFPGMTiPTs=;
-        b=co8rdYxQH8e/kHfTYZu0zhA9maQiHsLKSbKNERm/gD6l8F3XUzXIio3grN9JXKKlCC
-         09N9nXoT22Qk7FY1pFcUg5ImHLL/91xo87GoNBlANRMaXJaT/TZhWwt1Rh7gAjLDm3Bx
-         AZirFwmjsdrVe5e24MXKGQc3dGV5rC6EfdRtydW75dTMP97ZvUyp/SCDkgn0YffdZXBo
-         bv1raBGVolvQ5XraVoundkDMyzqy8hxtCLQvEbvdYHcHkhPIWGELeARmPJYOnSWo5gHS
-         gGzl9dYB5QYmgptx1QLrHB3a7K5TOajg3RuTpUpR/AC+tTr+GXiWoh/CCZzucUHsdWfF
-         ZCpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmmKUYACBFzj0XkbIWRIa6liJ0iQNBkG7z+MQguEMICCAKoZQI1Gbk7n4oVol/sv6S+5OcDzOVI+/OSgPFdMs1NCjy4J9gfzCmzUaG
-X-Gm-Message-State: AOJu0YyR+idmRWw1qrAFU0uNnXlZFpJYTzNAb5jipdQg714KXs9o4j9+
-	XxGA880n8QpbjvroKlpbXuOgWQyJx/VBcmw7wtQH895eWeGvJ5g/oU+Y43N8jkXxykBl8enkV7L
-	RfNPU3AJyaSaq55zBpHBmhWc9a3tLIUFmcYvz+ohXioLHgDbaTJzy3kSX7SPoNw==
-X-Received: by 2002:a05:600c:458e:b0:414:e72:63b1 with SMTP id r14-20020a05600c458e00b004140e7263b1mr2379791wmo.3.1711122079486;
-        Fri, 22 Mar 2024 08:41:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEXOLZtKDEsBtChWDKIGyOSkyUFxGexBUunkAhaBF4wHd60YlS7SUyfnMOUyNbAZMW6SJYoYg==
-X-Received: by 2002:a05:600c:458e:b0:414:e72:63b1 with SMTP id r14-20020a05600c458e00b004140e7263b1mr2379773wmo.3.1711122079081;
-        Fri, 22 Mar 2024 08:41:19 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71b:7e00:9339:4017:7111:82d0? (p200300cbc71b7e0093394017711182d0.dip0.t-ipconnect.de. [2003:cb:c71b:7e00:9339:4017:7111:82d0])
-        by smtp.gmail.com with ESMTPSA id c20-20020a05600c0a5400b004147db8a91asm1563396wmq.40.2024.03.22.08.41.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 08:41:18 -0700 (PDT)
-Message-ID: <c58a8dc8-5346-4247-9a0a-8b1be286e779@redhat.com>
-Date: Fri, 22 Mar 2024 16:41:17 +0100
+	 In-Reply-To:Content-Type; b=Pc6zGMQPFX9vH6Sjj0x4sKNh8vtTyb/yxKamr/n+73+SwPo9oYDOaZ9QqzlZ+CoNNMHdRvBMQSNocaav1lEHgciOREvFN2FugYEC8sGJ6TywoGZlBp8Ql5V8LsNecWSpitefl0ltXXStMlnD2wP8CLWC/yeP/C7F7PUYPq3IxME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=Zs/EUJ+o; arc=none smtp.client-ip=203.205.221.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1711122200;
+	bh=GJDoebOMWa+Y0Raoch9R+8A+TdpWU0Z/PpJq6lCHs6k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Zs/EUJ+oMoHVriSST6i1CjpeDUWlY538CHfaf2rN7C2Q7zAZLdjG3dCOrtRmstgNj
+	 QM9fRqXtUkkAIyGc29r6NiTxGxXxfKVYluMZ6UfIrHSQqFwPOs7R3BP8dUIZrUVZzr
+	 4FXpoTvp3IbZ1ojLV+r1tdwi5hnqQNy1FVp0B2wk=
+Received: from [IPV6:2409:8a60:2a60:b160:6151:55c3:310e:bea2] ([2409:8a60:2a60:b160:6151:55c3:310e:bea2])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id AD1AA813; Fri, 22 Mar 2024 23:43:17 +0800
+X-QQ-mid: xmsmtpt1711122197t0jl68v9r
+Message-ID: <tencent_994355E551CB05854C76A567301BFBC93D0A@qq.com>
+X-QQ-XMAILINFO: NbgegmlEc3JuB5p/v5iz0Q0ujBbw/MIFnFSrdTczd2bd4wtTVCFD05Prvs02YF
+	 jLLk54G08UwlThkawrau0hVOMoANUFxDDyd0L7UJn0VRoibaagbW758wy2oQNmqatQWXKY4ycwzo
+	 HV1/Fw8XWJV0Ep17P8zwFqtrGc7KKMhFgcCQOmNi+Wr+Elg58iTX/xjY8VSJI8Gd0rGSQ0MM76fK
+	 dGY6HrsRncuRAzb9ae8kV16t7edI1FtzLyoNZHGaIeubpR5hxrUzgJNbruqyfUF+n24kF9B0XT3v
+	 /HKBls+dIS0cQ8dIpnw9cJ95OEjri3E7cOJ+iXBfIH8Ct+tE2p/2JFITsPUPqTqHu8YAZTgnkbXI
+	 or+4IDvznk9TZMisqPQmIQHMobddlVGicV5R0tlnAfHFUHc6twg7jrZpSr/TuDcF6BHMh0QjBcXj
+	 E0DGJQeML5dA0IzBtRtaT5nloMfr0aP5sQwUTur8SeZJJzL4l6HsJXU1lmepTQX+steTQ/prNqC/
+	 7VC86yQCipXLJBt+brFpafk6OMb6F7qHNP0g8h23atyULJlan5COwBdrkWLnxHhGwmMj0cmppZt9
+	 n2Xr2UXJlgmQE5/UJKS0mAaKnE8xCE0pDxZVzTML6kzkeOGwqzUFjgBJcpPZWZ0KIxmx0A+ZW1y/
+	 L9BJj1MgPiSqwAnsw6GGbpCyS06omK2ozvs8DxUgqmld2jdCu2dAgB0YnYdnge0k3XqVKQWMKdFE
+	 Mv2VyPnpffHocogPpFonA5/csLGKoBJlgyPPU2zU8iXmsRWxBlkoB/INC1QYA6JXKfFDWYW60MdI
+	 0OtAHFThkoIaqGhaxl8/JXomuaziGroERMzWhBzLzJ04LZxlzrsjaeUn53B2QIVgjp+nNFN6G8R4
+	 H+/SLIqT9WGaaAeaU69nunNWZFlhndRVrX21pUcbF3w9VT3ddfmthO9FwroqWOBbF7GQg3R6G5FK
+	 N7UPxWkqx6+7nkdPzGj3+pFx1df8g3dCapve1QonUYRrfULX/HWmuoZP2KIjETlRZDjwovnvtJ1i
+	 p2/v53TUKlhTaAOdJW/UheTH04Ji3RLdsW6XGMGmYtfYh5fuBHx8hklIptnXg=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+X-OQ-MSGID: <c6a42566-0503-7491-083d-a90bb7a21f35@foxmail.com>
+Date: Fri, 22 Mar 2024 23:43:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: unable to handle kernel paging request in fuse_copy_do
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 1/9] sysctl: support encoding values directly in the
+ table entry
 Content-Language: en-US
-To: Miklos Szeredi <miklos@szeredi.hu>, xingwei lee <xrivendell7@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com,
- linux-mm <linux-mm@kvack.org>, Mike Rapoport <rppt@kernel.org>
-References: <CABOYnLyevJeravW=QrH0JUPYEcDN160aZFb7kwndm-J2rmz0HQ@mail.gmail.com>
- <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJfpegu8qTARQBftZSaiif0E6dbRcbBvZvW7dQf8sf_ymoogCA@mail.gmail.com>
+To: Joel Granados <j.granados@samsung.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Christian Brauner <brauner@kernel.org>, Iurii Zaikin <yzaikin@google.com>,
+ linux-kernel@vger.kernel.org
+References: <cover.1709978655.git.wenyang.linux@foxmail.com>
+ <CGME20240309103218eucas1p12d642356f7e90ebdf6a7a3101688f55a@eucas1p1.samsung.com>
+ <tencent_143077FB953D8B549153BB07F54C5AA4870A@qq.com>
+ <20240321162758.tkituzvff5rwnvd2@joelS2.panther.com>
+From: Wen Yang <wenyang.linux@foxmail.com>
+In-Reply-To: <20240321162758.tkituzvff5rwnvd2@joelS2.panther.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 22.03.24 14:50, Miklos Szeredi wrote:
-> [MM list + secretmem author CC-d]
-> 
-> On Thu, 21 Mar 2024 at 08:52, xingwei lee <xrivendell7@gmail.com> wrote:
+
+
+On 2024/3/22 00:27, Joel Granados wrote:
+> On Sat, Mar 09, 2024 at 06:31:18PM +0800, wenyang.linux@foxmail.com wrote:
+>> From: Wen Yang <wenyang.linux@foxmail.com>
 >>
->> Hello I found a bug titled "BUG: unable to handle kernel paging
->> request in fuse_copy_do” with modified syzkaller, and maybe it is
->> related to fs/fuse.
->> I also confirmed in the latest upstream.
+>> Eric points out: "by turning .extra1 and .extra2 into longs instead of
+>> keeping them as pointers and needing constants to be pointed at somewhere
+>> ... The only people I can see who find a significant benefit by
+>> consolidating all of the constants into one place are people who know how
+>> to stomp kernel memory."
+> I'm assuming that this is the "why" of the commit. Please change it so
+> it is more direct. Something like "Directly encode numeric values in
+> macros in order to ...". If you want to add Eric's opinion please add it
+> as a link (Please follow Documentation/process/submitting-patches.rst)
+> 
+> 
 >>
->> If you fix this issue, please add the following tag to the commit:
->> Reported-by: xingwei lee <xrivendell7@gmail.com>
->> Reported-by: yue sun <samsun1006219@gmail.com>
+>> This patch supports encoding values directly in table entries through the
+>> following work:
+>> - extra1/extra2 and min/max are placed in one union to ensure that the
+>>    previous code is not broken, then we have time to remove unnecessary
+>>    extra1/extra2 progressively;
+>> - since type only has two states, use one bit to represent it;
+> Please remove this optimization from your commit. This will conflict
+> with work that Thomas is doing here
+> https://lore.kernel.org/all/20240222-sysctl-empty-dir-v1-0-45ba9a6352e8@weissschuh.net
 > 
-> Thanks for the report.   This looks like a secretmem vs get_user_pages issue.
+>> - two bits were used to represent the information of the above union( 0:
+>>    using extra1/extra2, 1: using min, 2: using max, 3: using both min/max);
+>> - added some helper macros.
+>>
+>> Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
+>> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> Cc: Joel Granados <j.granados@samsung.com>
+>> Cc: Eric W. Biederman <ebiederm@xmission.com>
+>> Cc: Christian Brauner <brauner@kernel.org>
+>> Cc: Iurii Zaikin <yzaikin@google.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>   include/linux/sysctl.h | 108 ++++++++++++++++++++++++++++++++++++++---
+>>   kernel/sysctl.c        |  61 +++++++++++++++++------
+>>   2 files changed, 148 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+>> index ee7d33b89e9e..1ba980219e40 100644
+>> --- a/include/linux/sysctl.h
+>> +++ b/include/linux/sysctl.h
+>> @@ -61,6 +61,25 @@ extern const int sysctl_vals[];
+>>   
+>>   extern const unsigned long sysctl_long_vals[];
+>>   
+>> +#define	SYSCTL_NUMERIC_NEG_ONE			((long)-1)
+>> +#define	SYSCTL_NUMERIC_ZERO			(0L)
+>> +#define	SYSCTL_NUMERIC_ONE			(1L)
+>> +#define	SYSCTL_NUMERIC_TWO			(2L)
+>> +#define	SYSCTL_NUMERIC_THREE			(3L)
+>> +#define	SYSCTL_NUMERIC_FOUR			(4L)
+>> +#define	SYSCTL_NUMERIC_ONE_HUNDRED		(100L)
+>> +#define	SYSCTL_NUMERIC_TWO_HUNDRED		(200L)
+>> +#define	SYSCTL_NUMERIC_THREE_HUNDRED		(300L)
+>> +#define	SYSCTL_NUMERIC_FIVE_HUNDRED		(500L)
+>> +#define	SYSCTL_NUMERIC_ONE_THOUSAND		(1000L)
+>> +#define	SYSCTL_NUMERIC_TWO_THOUSAND		(2000L)
+>> +#define	SYSCTL_NUMERIC_THREE_THOUSAND		(3000L)
+>> +#define	SYSCTL_NUMERIC_16K			(16384L)
+>> +#define	SYSCTL_NUMERIC_U8_MAX			((long)U8_MAX)
+>> +#define	SYSCTL_NUMERIC_U16_MAX			((long)U16_MAX)
+>> +#define	SYSCTL_NUMERIC_INT_MAX			((long)INT_MAX)
+>> +#define	SYSCTL_NUMERIC_LONG_MAX			(LONG_MAX)
+>> +
+>>   typedef int proc_handler(struct ctl_table *ctl, int write, void *buffer,
+>>   		size_t *lenp, loff_t *ppos);
+>>   
+>> @@ -131,6 +150,18 @@ static inline void *proc_sys_poll_event(struct ctl_table_poll *poll)
+>>   #define DEFINE_CTL_TABLE_POLL(name)					\
+>>   	struct ctl_table_poll name = __CTL_TABLE_POLL_INITIALIZER(name)
+>>   
+>> +enum {
+>> +	SYSCTL_TABLE_TYPE_DEFAULT,
+>> +	SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+>> +};
+>> +
+>> +enum {
+>> +	SYSCTL_TABLE_EXTRA_PTR,
+>> +	SYSCTL_TABLE_EXTRA_LONG_INIT_MIN,
+>> +	SYSCTL_TABLE_EXTRA_LONG_INIT_MAX,
+>> +	SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX
+>> +};
+>> +
+>>   /* A sysctl table is an array of struct ctl_table: */
+>>   struct ctl_table {
+>>   	const char *procname;		/* Text ID for /proc/sys, or zero */
+>> @@ -138,20 +169,39 @@ struct ctl_table {
+>>   	int maxlen;
+>>   	umode_t mode;
+>>   	/**
+>> -	 * enum type - Enumeration to differentiate between ctl target types
+>> +	 * type - Indicates to differentiate between ctl target types
+>>   	 * @SYSCTL_TABLE_TYPE_DEFAULT: ctl target with no special considerations
+>>   	 * @SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY: Used to identify a permanently
+>>   	 *                                       empty directory target to serve
+>>   	 *                                       as mount point.
+>>   	 */
+>> -	enum {
+>> -		SYSCTL_TABLE_TYPE_DEFAULT,
+>> -		SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+>> -	} type;
+>> +	u8 type:1;
+> As I said before. Please remove this from your patch.
 > 
-> I reduced the syz reproducer to a minimal one that isn't dependent on fuse:
+>> +
+>> +	/**
+>> +	 * extra_flags
+>> +	 * @SYSCTL_TABLE_EXTRA_PTR: flag indicating that this uses extra1/extra2.
+>> +	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MIN: flag indicating that this uses min/max
+>> +					      and min has been initialized.
+>> +	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MAX: flag indicating that this uses min/max
+>> +					      and max has been initialized.
+>> +	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX: flag indicating that this uses min/max
+>> +						 and both have been initialized.
+>> +	 *
+>> +	 */
+>> +	u8 extra_flags:2;
+> This extra_flag is needed because now you have lost the extra bit of
+> information that the NULL pointer gave you. This is effectively adding 2
+> bits per ctl_table element for all ctl_table types; event the ones that
+> do not need min max. So how much will we actually save with all this?
+> once you have added these 2 bits and removed the static variables from
+> the files that are not using the pointers? Is saving read only memory
+> the only reason for this? If that is the case, please add some
+> calculations of how much we save to see if it actually make sense. To
+> calculate the memory gains/losses you can use the bloat-o-meter script
+> under the scripts directory (something similar to what we did here
+> https://lore.kernel.org/all/20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com)
 > 
-> === repro.c ===
-> #define _GNU_SOURCE
+> I'll hold off on reviewing the other patches in this set until this is a
+> bit more clear.
 > 
-> #include <fcntl.h>
-> #include <unistd.h>
-> #include <sys/mman.h>
-> #include <sys/syscall.h>
-> #include <sys/socket.h>
+
+Thank you for your comments.
+
+When we started this work, we had not yet seen Thomas's patch, so by 
+borrowing the existing enum type‘s field, we can achieve directly 
+encoding values without increasing the size of the ctl_table.
+
+We really appreciate that you pointed out this issue. It will take some 
+time for rework and the v3 will be sent out within a few weeks.
+
+In addition, the patch below is not related to "kill sysctl_vals". It is 
+just a regular optimization and was sent over 10 days ago. We also hope 
+to receive your kind advice:
+
+https://lkml.org/lkml/2024/3/8/871
+
+[RESEND PATCH v2] sysctl: move the extra1/2 boundary check of u8 to 
+sysctl_check_table_array
+
+--
+Best wishes,
+Wen
+
+
+>> +	union {
+>> +		struct {
+>> +			void *extra1;
+>> +			void *extra2;
+>> +		};
+>> +		struct {
+>> +			long min;
+>> +			long max;
+>> +		};
+>> +	};
+>> +
+>>   	proc_handler *proc_handler;	/* Callback for text formatting */
+>>   	struct ctl_table_poll *poll;
+>> -	void *extra1;
+>> -	void *extra2;
+>>   } __randomize_layout;
+> ...
 > 
-> int main(void)
-> {
->          int fd1, fd2, fd3;
->          int pip[2];
->          struct iovec iov;
->          void *addr;
-> 
->          fd1 = syscall(__NR_memfd_secret, 0);
->          addr = mmap(NULL, 4096, PROT_READ, MAP_SHARED, fd1, 0);
->          ftruncate(fd1, 7);
->          fd2 = socket(AF_INET, SOCK_DGRAM, 0);
->          getsockopt(fd2, 0, 0, NULL, addr);
-> 
->          pipe(pip);
->          iov.iov_base = addr;
->          iov.iov_len = 0x50;
->          vmsplice(pip[1], &iov, 1, 0);
-
-pip[1] should be the write end. So it will be used as the source.
-
-I assume we go the ITER_SOURCE path in vmsplice, and call 
-vmsplice_to_pipe(). Then we call iter_to_pipe().
-
-I would expect iov_iter_get_pages2() -> get_user_pages_fast() to fail on 
-secretmem pages?
-
-But at least the vmsplice() just seems to work. Which is weird, because 
-GUP-fast should not apply (page not faulted in?) and check_vma_flags() 
-bails out early on vma_is_secretmem(vma).
-
-So something is not quite right.
-
-> 
->          fd3 = open("/tmp/repro-secretmem.test", O_RDWR | O_CREAT, 0x600);
->          splice(pip[0], NULL, fd3, NULL, 0x50, 0);
-> 
->          return 0;
-> }
-
-
-
-
--- 
-Cheers,
-
-David / dhildenb
+> Best
 
 
