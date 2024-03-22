@@ -1,89 +1,95 @@
-Return-Path: <linux-kernel+bounces-111247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61298869A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:49:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A27A8869AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B25E284978
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:49:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C86E2284A2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E322230C;
-	Fri, 22 Mar 2024 09:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9205C224C7;
+	Fri, 22 Mar 2024 09:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VJpnvdDE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAHfX5s6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC6618EC3;
-	Fri, 22 Mar 2024 09:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D325513ADD;
+	Fri, 22 Mar 2024 09:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711100950; cv=none; b=TjhHIjzopgKjqOE+4QjsbPLrbhrz00T4HQ8SWRO2IJ2x94LWptaYfahf0+wdC4dxOmNHV71HuRQbcucPpoFpFcnsrtPio22qxaAFPahmwgwA6yYHAG2ZXjV/TQRQhRCSJyXnSeDcKKTcpw9VWb5NDNR76uatBkeZw802m7h98K0=
+	t=1711101028; cv=none; b=rozjgosnGhu4OXJnVYxjO8++3cfy1DwOsAm3SX3jKXOWlcTiV/kg1zVLgzI7doKOAbSNXa4R+3h7GpwK4exV6XEtCVfvc3MoWhYfyxzM63dja85bavww5AGrEUGABQ7VYIeqvwRrleHx5npLsbJHneeSkVlE5kDYW3OE4nPqNTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711100950; c=relaxed/simple;
-	bh=9fLC0UbZdJ7+5nONUsPmxWgSbpgOb5S6dM9hszw1wxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lhhMboSDSvh/v1mROecnrnHOyZp9Y+RGKdn2g8kafkIJrycx7fxQc6oSg+Cj7r3NlnMKKu/Ocj2+HehCtH6PJmVl7GzQxH9vYdCosyhglfhoGMsPNTFNDsxSoWuDGnetGAM4vSRfZzr1IaX7ykbDIW/QpqE0GFteIhEpxa8jbkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VJpnvdDE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01BBEC433C7;
-	Fri, 22 Mar 2024 09:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711100949;
-	bh=9fLC0UbZdJ7+5nONUsPmxWgSbpgOb5S6dM9hszw1wxA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VJpnvdDEgtMMh0T6kGcfh3PvHzDakRg2TCrWiiPp5XLkYWDDFauCeS1TPlDWAE5ps
-	 2pv0bd7pgEopMAhK/RpzMjASXTcdkefQu1wSuFdtngGkTHjF+DR5gWeiz1R0IMA16f
-	 9FOja5Egz+5SiqvP+nAnjuKaUIaXfs0x3WaG4coQ=
-Date: Fri, 22 Mar 2024 10:49:06 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Chandra Pratap <chandrapratap3519@gmail.com>
-Cc: sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-	linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org, outreachy@lists.linux.dev
-Subject: Re: [PATCH v2] staging: sm750fb: Replace comparisons with NULL and 0
-Message-ID: <2024032208-blunt-ferocity-22f4@gregkh>
-References: <c4a5e9e8-214a-4ac0-b8ee-01a9e7a1e5f9@moroto.mountain>
- <20240320180943.3683-1-chandrapratap3519@gmail.com>
+	s=arc-20240116; t=1711101028; c=relaxed/simple;
+	bh=8NhJlCsJEn3+K8HPGyA7RWOSgZk2ki01G6VnRJsG2VY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=cIePc8fJzKfuu0o2RImvpf97reuiG1qbHBCihR8Q3KugLoPfqoPWHzKHMxi5kbf18Y6thrvuO4ZLRcC1C9Sdd3qDPVOcUNb75nXnG6wsMiT+/W9eu1jy7QB1BB4fIsk3i+PTnHy3xXO2112FOyeFPYN+R0mRM99rf+fDBjI3zEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAHfX5s6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BACAC43390;
+	Fri, 22 Mar 2024 09:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711101028;
+	bh=8NhJlCsJEn3+K8HPGyA7RWOSgZk2ki01G6VnRJsG2VY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TAHfX5s6RABSgflwVs8L568zgFD7Eu0mv7I8vLQ4NfOZ8arI1CtY00B/+vygTC9xV
+	 qnXAAWfjxCOQY7HsDDMkQtP0nP2QHjaXO/0k6RhHXUhCXn7MjKw/7bypn4DwkMIPcG
+	 SOj7y8YV14/fnpWR+zhsKm3ZZKe9I5bwenpFXPLmyLThPDOKQJx2alOK7oVQphhCP7
+	 wSlsg9z1eenQmNFm9lxijKpZLImAYIdRH+Xl/YPt84WKG8Zn4Pb6e59nyai8Bqy5lJ
+	 z/0qjglCmM2U2nq3Sf/jcIw55N65i3FJQ3xNC+MAvGh7RVxrkudjQYIPT3pUARyEaS
+	 5Mp5KYBiwzE+Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 375E6D982E4;
+	Fri, 22 Mar 2024 09:50:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320180943.3683-1-chandrapratap3519@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] nfc: nci: Fix uninit-value in nci_dev_up and
+ nci_ntf_packet
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171110102821.24590.15255416599958880632.git-patchwork-notify@kernel.org>
+Date: Fri, 22 Mar 2024 09:50:28 +0000
+References: <20240320005412.905060-1-ryasuoka@redhat.com>
+In-Reply-To: <20240320005412.905060-1-ryasuoka@redhat.com>
+To: Ryosuke Yasuoka <ryasuoka@redhat.com>
+Cc: krzysztof.kozlowski@linaro.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org, jeremy@jcline.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, syoshida@redhat.com,
+ syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com,
+ syzbot+29b5ca705d2e0f4a44d2@syzkaller.appspotmail.com
 
-On Wed, Mar 20, 2024 at 11:39:43PM +0530, Chandra Pratap wrote:
-> Replace '(opt != NULL)' with '(opt)' and '(*opt != 0)'
-> with '(*opt != '\0')' to adhere to the coding standards.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 20 Mar 2024 09:54:10 +0900 you wrote:
+> syzbot reported the following uninit-value access issue [1][2]:
 > 
-> Signed-off-by: Chandra Pratap <chandrapratap3519@gmail.com>
-> ---
-> Changes in v2:
->   - Update the commit message to reflect the changes better
->   - replace (*opt) with (*opt != '\0')
+> nci_rx_work() parses and processes received packet. When the payload
+> length is zero, each message type handler reads uninitialized payload
+> and KMSAN detects this issue. The receipt of a packet with a zero-size
+> payload is considered unexpected, and therefore, such packets should be
+> silently discarded.
 > 
->  drivers/staging/sm750fb/sm750.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-> index 04c1b32a22c5..0391235c5666 100644
-> --- a/drivers/staging/sm750fb/sm750.c
-> +++ b/drivers/staging/sm750fb/sm750.c
-> @@ -926,7 +926,7 @@ static void sm750fb_setup(struct sm750_dev *sm750_dev, char *src)
->  		goto NO_PARAM;
->  	}
->  
-> -	while ((opt = strsep(&src, ":")) != NULL && *opt != 0) {
-> +	while ((opt = strsep(&src, ":"))  && *opt != '\0') {
+> [...]
 
-Why 2 spaces?  Please fix in a new version.
+Here is the summary with links:
+  - [net,v2] nfc: nci: Fix uninit-value in nci_dev_up and nci_ntf_packet
+    https://git.kernel.org/netdev/net/c/d24b03535e5e
 
-thanks,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-greg k-h
+
 
