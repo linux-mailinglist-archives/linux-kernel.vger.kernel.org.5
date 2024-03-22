@@ -1,87 +1,115 @@
-Return-Path: <linux-kernel+bounces-111056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D30488676F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:23:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D92B886774
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12CA41F249D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 242A4283CCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4977112E4E;
-	Fri, 22 Mar 2024 07:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21EB414AAE;
+	Fri, 22 Mar 2024 07:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cPBpSAhB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="S3gBIDuJ"
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA761118C;
-	Fri, 22 Mar 2024 07:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AEF1119E;
+	Fri, 22 Mar 2024 07:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711092208; cv=none; b=V07E8Y4lpfj0vInZ8klsXOks3g8X8NcE5um3R6qWy5YgHi1/ELjZvLaoNUm7itEcG2h9gwILLfpitxnsSLo71Kog23cO1ZTrYBpJ8qTfn+XvFlWyNRdJ9ZuoxGB6PUvL07MNW2t6dZYNUniuIsUR8Lwr5RkY03xv0mOF11ItPa4=
+	t=1711092322; cv=none; b=JeU+0PbCqC++9LxInZIG2/YVq30vrIQAEhZvCNaEch2PmnFxsHbRGN6XezZ8tdet+UoABCzvb8Q0kp8Q7ZDuQO/zSZgZBSvpC6ZRwmmnLoo0NhOKed3gF8curoDbMn0FP+sXnoVZ0XScAu9hKb/qumrVcg+UB4xRWp7XIbhT/iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711092208; c=relaxed/simple;
-	bh=Q/3MvluITXi2QV4z0UOfR1lTHTBrYJAoBMKg7YnHWxE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=fiu26G44m+etpXGYR754YQigBeRcfEMEdf50pYdi9U4UI3OmXW7sWv0ks6KxjUUHa4BG1u2sZZzD/XKt9brgBXGEcPJfhrX8M7GVxl6pL3IXk93Bgd/WTSFlLp89RxaOHoCyyX+uOLTsHADLhA4HFOzYRzNg6XHRBKb9KYki4R8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cPBpSAhB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2491DC43390;
-	Fri, 22 Mar 2024 07:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711092208;
-	bh=Q/3MvluITXi2QV4z0UOfR1lTHTBrYJAoBMKg7YnHWxE=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=cPBpSAhB2s9Juunw7Dv2n291i/USA+u8olKNPlEHF24Jl3tW7QNNGbHycX5i6AQWS
-	 UoRB/JXvi0JC6bcR9/0me+CCkahhtui7zmkFGICMS2qjlhRXyzj2AT7mRVK8B4P0HZ
-	 WaHOLsg30WfUFMkFe6NBSL8fZnT682gY4Km8LjUBQphIPz1n9i1mHIGCTZaG8yrktI
-	 oKXAzTSx+anqn7dnSWrir9AxLfsqDQRIVIN9N2OIxep/BBKYtch18GJnO/sJE1QYvd
-	 BmtO/PGcNdYUkfE5pw10cjXtl08d2pIBIks/gSt2WSIvUwb/2ODXUQc6/MekJtIV1e
-	 HH1W8j8BIFfGg==
-From: Kalle Valo <kvalo@kernel.org>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Brian Norris <briannorris@chromium.org>,  linux-kernel@vger.kernel.org,
-  linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: add myself as mwifiex driver reviewer
-References: <20240321163420.11158-1-francesco@dolcini.it>
-	<87y1ab8r13.fsf@kernel.org> <20240321173648.GA12994@francesco-nb>
-Date: Fri, 22 Mar 2024 09:23:25 +0200
-In-Reply-To: <20240321173648.GA12994@francesco-nb> (Francesco Dolcini's
-	message of "Thu, 21 Mar 2024 18:36:48 +0100")
-Message-ID: <871q823f2q.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1711092322; c=relaxed/simple;
+	bh=deldEFKMWIiGWJW2Eh0gw1DLVhU5F6dOnznP2xCyQaA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=UYYiBWEJb/KkpO3NiLBZ0AaB05BsN99VIxiqHt0mfjUqwDS6Hgbuqdu4MwiD3C1Dr/UdJQTqQ11Vy5yj3RaGFDR7PlRCPfbfnlHpW1URE0f4dAnrrYYLqyijvXJVQ9LnjRqyvJnDD+zRQDrQksFdz8eZdgLvdnK6bIWXhWn7c7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=S3gBIDuJ; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=ZlmxMcxkID2APtdDfuPjyw9p7ZsnzMLqcX7Pogi+DwM=;
+  b=S3gBIDuJwtLpODXitOZtu7d+JPZWfXlEKDDRrdpd91mZdDnU9XwPNv8W
+   A/DxwGKelRp0rlpAxQ1BO9ZhYMblxfbkn2sIqF2ykNh785PtT94jrqPBV
+   WFQKUyPTqj7gip27FdT+S/UnWpXzytrLuU2RB35RjvKHJ/0bs80Z9Xdlv
+   0=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,145,1708383600"; 
+   d="scan'208";a="157923739"
+Received: from 184-074-243-067.biz.spectrum.com (HELO [172.20.17.26]) ([184.74.243.67])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:25:08 +0100
+Date: Fri, 22 Mar 2024 03:24:56 -0400 (EDT)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Jakub Kicinski <kuba@kernel.org>
+cc: Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+    Julia Lawall <Julia.Lawall@inria.fr>, 
+    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    Dan Carpenter <dan.carpenter@linaro.org>, kernel-janitors@vger.kernel.org, 
+    netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+    Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+    Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+    Tony Nguyen <anthony.l.nguyen@intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Alexander Lobakin <aleksander.lobakin@intel.com>, 
+    David Laight <David.Laight@aculab.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jiri Pirko <jiri@resnulli.us>, 
+    Jonathan Cameron <jic23@kernel.org>, Kees Cook <keescook@chromium.org>, 
+    Lukasz Czapnik <lukasz.czapnik@intel.com>, Paolo Abeni <pabeni@redhat.com>, 
+    Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>, 
+    Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH net] ice: Fix freeing uninitialized pointers
+In-Reply-To: <20240321184828.3e22c698@kernel.org>
+Message-ID: <82b49991-eb5a-7e8c-67e0-b0fd932f40b4@inria.fr>
+References: <e5172afb-427b-423e-877a-10352cf4a007@web.de> <F2FBADE8-EDF9-4987-A97B-CF4D2D1452E0@inria.fr> <b9dc2c7a-2688-4a7b-8482-1e762c39449c@intel.com> <20240321184828.3e22c698@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="8323329-551105037-1711092310=:3390"
 
-Francesco Dolcini <francesco@dolcini.it> writes:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Hello Kalle,
+--8323329-551105037-1711092310=:3390
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+
+
+On Thu, 21 Mar 2024, Jakub Kicinski wrote:
+
+> On Thu, 21 Mar 2024 15:27:47 -0700 Jesse Brandeburg wrote:
+> > The gist of it is that we should instead be using inline declarations,
+> > which I also agree is a reasonable style for this. It more clearly shows
+> > the __free(kfree) and the allocation (kzalloc, kcalloc, etc) on the same
+> > (or virtually the same) line of code.
+> >
+> > I'm curious if Jakub would dislike this less? Accept?
 >
-> On Thu, Mar 21, 2024 at 06:54:00PM +0200, Kalle Valo wrote:
->> Francesco Dolcini <francesco@dolcini.it> writes:
->> 
->> > As discussed on the mailing list [1], add myself as mwifiex driver reviewer.
->> >
->> > [1] https://lore.kernel.org/all/20240318112830.GA9565@francesco-nb/
->> 
->> I'm nitpicking but the preferred way is to use the Link tag. I can fix
->> that.
+> At present I find this construct unreadable.
+> I may get used to it, hard to say.
 >
-> I can also send a new version with that fixed, whatever is the best for you
-> works for me.
+> Also I don't see the benefit of the auto-freeing construct,
+> I'd venture a guess that all the bugs it may prevent would
+> have been caught by smatch. But I'm an old curmudgeon stuck
+> in my ways. Feel free to experiment in Intel drivers, and we'll
+> see how it works out 🤷️
 
-Thanks but no need to resend. I implemented an edit command to my
-patchwork script just for cases like this :)
+In my experiments with of_node_put, there seem to be many functions where
+removing the frees makes the function much more readable.  But
+kmalloc/kfree may be used in different contexts, where the management of
+the memory is a smaller percentage of the overall code.  So the tradeoffs
+may be different.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+julia
+--8323329-551105037-1711092310=:3390--
 
