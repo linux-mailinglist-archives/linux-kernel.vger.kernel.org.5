@@ -1,183 +1,121 @@
-Return-Path: <linux-kernel+bounces-111379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0246886B80
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:48:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B427C886B83
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65B81285FAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:48:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E68961C2162C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514973F9F9;
-	Fri, 22 Mar 2024 11:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493563EA9C;
+	Fri, 22 Mar 2024 11:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PO68oDHX"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="nt1burzF"
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D243EA73
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34903F9C0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711108104; cv=none; b=BQ29qgRFuhX4UzFaWCKQ9taidw0keQcWZRUuwr+yuTNOSyY/5Ibla2Q+/W9QjA17IRRLcGi0FjPy94UzAsPNu7GYN1faER+sKYLYCmlbRJhizGxGKgs5RYsbdQCpZuMODtqipoFXRCCcfcgii9w7y2g6458OpGIcG4fuoZ+dQbM=
+	t=1711108215; cv=none; b=YsmV+ETJr1hIzi2dpUYSzEOWvwuD70WGJVkxspBv0gRmjcHruKcgs2jID5pKiA/9rtq3JFPn4mY2snwlUq1GOGWsDzMTnJQlIYBDzzPio9LU3PBw4kTjhAp81Wg3rlJfzbm8yfHIanswJtCY8UwlRFa1FyQBpHakUn8V8Bvk4Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711108104; c=relaxed/simple;
-	bh=weeDT9K7Y6HUDulSoarZnb5GuxaJf2xg5889qw/8vZk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=L5Ua/EYWGoknYr9b2iLOksIZOnU7j1BcJZCSz2Pe60WbtszQuqZZDVeTJnDRLVwzH1wy3IAgpEnUH0I3IYRPE24FEJOhtbsSDQpXmWhqfz6S4hqmXD+HszV/TUr3vzUDJVvfoL0W+HsA0tTQkZ2WfhZYv/KMdxiUcpN6J3jS5wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PO68oDHX; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42MBlt4a3433616
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 22 Mar 2024 04:47:55 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42MBlt4a3433616
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024031401; t=1711108076;
-	bh=OtLNc0oX57gAqGdjW3QRgqHA4Lu2KLBpIAXsn5rERmo=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=PO68oDHXGWbfI1NUSq/qtxxmDzK793oR7WDbrc1iIZl9rAEtOwNvCd4lUtPPjhbZl
-	 DZrmId4mjMFSHHjNBwPpgmibtpZKTxzBJPgtlto9hLNIko1F9W7UhuQHE7yOA9/+gG
-	 eQ7sRb6YjJLPoAy3pAokpMXdb3hPLkmzq0jwPOGSVZB1x+zyHkWLz4o188BJE/PZ8e
-	 zk6TbDzRhJPBuC1PwvBrG8+6hmby+VYdz1jL5oW3QzcouI/zORBPolDIsytQa4IfkO
-	 cXtqm6oteQJpfsk5MG/2SVa37OcOLDmVJxknPpKDOUzPO7xGOO2AVcJLfnnl3BNSNk
-	 BQLqo8UC9xL9Q==
-Date: Fri, 22 Mar 2024 04:47:51 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Brian Gerst <brgerst@gmail.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-CC: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Xin Li <xin@zytor.com>
-Subject: Re: [PATCH] x86/boot: Simplify boot stack setup
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20240321180506.89030-1-brgerst@gmail.com>
-References: <20240321180506.89030-1-brgerst@gmail.com>
-Message-ID: <933A5029-7ACC-4261-B2D4-0B76DDE6AF46@zytor.com>
+	s=arc-20240116; t=1711108215; c=relaxed/simple;
+	bh=5YnioGWbsAYLJyZb8b9JHmg6YRFPts9BTqRF1ogmYdc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bWtlqPvADYI+cOjtnoTVREKkX2vHje0DJyOmoUUFSg+9jdsLVJRrOTe7QVyaS/NFNFv/MgYJ3A5wIVA4RxG4Z4sGVhvNoJXiTjQS98NmS2Hq/2Jr3nfkW40JPebqlIjRelsMkSo3IKd+wcdRgKeOGZgcv5NHFnRFAECBsStzf48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=nt1burzF; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3684faf6286so8667155ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 04:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1711108212; x=1711713012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KAx2I7XvDqzXQw6wtmJmpS8c3rKWDIhE+rLvewBuwrM=;
+        b=nt1burzFz5fEafBsl9ivjan1KrJ5xBuM/A98s7EnLTh+jPBZYuwPiUi5DKfGgJA0q8
+         gNVZu1Qiw7aA0agLZvm3x+cvun5whqfQWetfd1sJ6OpnKg/FNXttn0pO2wzm9lzqgh8k
+         GLYRvRdtg+lU0cxV44E4vnJ37R0A6yS6y5D5c8SIDf3tkAZbCtq5ReAMrBb1K7vSRzqp
+         gF44gO58cCxhMjMDUPRtykTSYviG1efpIANp6BSOIlahrHAdDf7veCr3dfcodoWMxd6r
+         vgUNeIpLuugp9SI3qFrf2i68f3fmcqDvS40Dry4BsRfqfjakdrN7XoqGLli9E0o8DOrg
+         /OTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711108212; x=1711713012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KAx2I7XvDqzXQw6wtmJmpS8c3rKWDIhE+rLvewBuwrM=;
+        b=PSyheH4Faz/otdiNaHkq3CJUNyIMiUwMIFuv4fCCWskU3cMiwLhaBDRNCcmNWVDCqH
+         t/icBhOTT/t+dwv639qHp/A0PaHt0+1NH5Kls76hqda39aUhKd3sXjU/0oyHVbYJDMUH
+         G8SK5mpgEXznLwlQL9VmCjRlPXKCpDHUObZ9GcV3AaqhozvLU7R0P+5ZVDfVNBWCzcu/
+         O2TmfgAahx62BAYhPsFvl68LjBu7dmiFQuDjyO9025x7zF0rX0UYiCxTY5yM5k/LKb4j
+         JShO7t3Zztd71VGR+4srmmS4iedyC4kuBb+cLnC/alrRhy1xDj28zIidi3uh8pInhdX1
+         9j+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV6syZM2NcIpwzwadTTOiNLe2CWYf9wRYiO4qx5BGQJI60lCXpsfpET8iK0JqSEhX8whywYgXqXhiH82nCH/I19wUKwt1l/64IPWhvZ
+X-Gm-Message-State: AOJu0YyyU8y1D6aPe964dpCngBK5JXh6TCyrkwg2R1Yf+SEPqDG9oVYb
+	guAACvqnfaOLYuGpE3f4ijxDfUh5CEJGebJ4hdcfnLS+GhPRzS5IITnBLIR8kbZz8CYGZn4vpnM
+	AvuzNhbfpTyFVAdc3eJLgq1ferSXAJ+J4sowbHA==
+X-Google-Smtp-Source: AGHT+IGc1Lk3igmGbpYPTMkvVjrig10NalqBLgFeStlCj29E23ErhBLOEWZu+ODvVKrcfDcGJtCgMDHVzrFWhsAZCSE=
+X-Received: by 2002:a05:6e02:1a24:b0:368:4d28:5d0c with SMTP id
+ g4-20020a056e021a2400b003684d285d0cmr2444188ile.22.1711108212026; Fri, 22 Mar
+ 2024 04:50:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240321085041.1955293-1-apatel@ventanamicro.com> <f44de7d9-e03d-483d-96d3-76c63158061d@gmail.com>
+In-Reply-To: <f44de7d9-e03d-483d-96d3-76c63158061d@gmail.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Fri, 22 Mar 2024 17:20:00 +0530
+Message-ID: <CAAhSdy1HnzB5T0G3dEfuVX1LHCMy6H4B1paQyCKC-iXTJ_Nf=w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] KVM RISC-V APLIC fixes
+To: Bing Fan <hptsfb@gmail.com>
+Cc: Anup Patel <apatel@ventanamicro.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Atish Patra <atishp@atishpatra.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On March 21, 2024 11:05:06 AM PDT, Brian Gerst <brgerst@gmail=2Ecom> wrote:
->Define the symbol __top_init_kernel_stack instead of duplicating
->the offset from __end_init_task in multiple places=2E
+On Fri, Mar 22, 2024 at 5:05=E2=80=AFPM Bing Fan <hptsfb@gmail.com> wrote:
 >
->Signed-off-by: Brian Gerst <brgerst@gmail=2Ecom>
->---
-> arch/x86/include/asm/processor=2Eh |  6 ++----
-> arch/x86/kernel/head_32=2ES        | 11 +----------
-> arch/x86/kernel/head_64=2ES        |  2 +-
-> arch/x86/kernel/vmlinux=2Elds=2ES    |  3 +++
-> arch/x86/xen/xen-head=2ES          |  2 +-
-> 5 files changed, 8 insertions(+), 16 deletions(-)
 >
->diff --git a/arch/x86/include/asm/processor=2Eh b/arch/x86/include/asm/pr=
-ocessor=2Eh
->index 438c0c8f596a=2E=2E89ed5237e79f 100644
->--- a/arch/x86/include/asm/processor=2Eh
->+++ b/arch/x86/include/asm/processor=2Eh
->@@ -636,12 +636,10 @@ static __always_inline void prefetchw(const void *x=
-)
-> #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
->=20
-> #else
->-extern unsigned long __end_init_task[];
->+extern unsigned long __top_init_kernel_stack[];
->=20
-> #define INIT_THREAD {							\
->-	=2Esp	=3D (unsigned long)&__end_init_task -			\
->-		  TOP_OF_KERNEL_STACK_PADDING -				\
->-		  sizeof(struct pt_regs),				\
->+	=2Esp	=3D (unsigned long)&__top_init_kernel_stack,		\
-> }
->=20
-> extern unsigned long KSTK_ESP(struct task_struct *task);
->diff --git a/arch/x86/kernel/head_32=2ES b/arch/x86/kernel/head_32=2ES
->index b50f3641c4d6=2E=2Ea9de527ba5c4 100644
->--- a/arch/x86/kernel/head_32=2ES
->+++ b/arch/x86/kernel/head_32=2ES
->@@ -44,9 +44,6 @@
-> #define X86_CAPABILITY	new_cpu_data+CPUINFO_x86_capability
-> #define X86_VENDOR_ID	new_cpu_data+CPUINFO_x86_vendor_id
->=20
->-
->-#define SIZEOF_PTREGS 17*4
->-
-> /*
->  * Worst-case size of the kernel mapping we need to make:
->  * a relocatable kernel can live anywhere in lowmem, so we need to be ab=
-le
->@@ -488,13 +485,7 @@ SYM_DATA_END(initial_page_table)
->=20
-> =2Edata
-> =2Ebalign 4
->-/*
->- * The SIZEOF_PTREGS gap is a convention which helps the in-kernel unwin=
-der
->- * reliably detect the end of the stack=2E
->- */
->-SYM_DATA(initial_stack,
->-		=2Elong init_thread_union + THREAD_SIZE -
->-		SIZEOF_PTREGS - TOP_OF_KERNEL_STACK_PADDING)
->+SYM_DATA(initial_stack, =2Elong __top_init_kernel_stack)
->=20
-> __INITRODATA
-> int_msg:
->diff --git a/arch/x86/kernel/head_64=2ES b/arch/x86/kernel/head_64=2ES
->index d8198fbd70e5=2E=2Eb11526869a40 100644
->--- a/arch/x86/kernel/head_64=2ES
->+++ b/arch/x86/kernel/head_64=2ES
->@@ -66,7 +66,7 @@ SYM_CODE_START_NOALIGN(startup_64)
-> 	mov	%rsi, %r15
->=20
-> 	/* Set up the stack for verify_cpu() */
->-	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip=
-), %rsp
->+	leaq	__top_init_kernel_stack(%rip), %rsp
->=20
-> 	/* Setup GSBASE to allow stack canary access for C code */
-> 	movl	$MSR_GS_BASE, %ecx
->diff --git a/arch/x86/kernel/vmlinux=2Elds=2ES b/arch/x86/kernel/vmlinux=
-=2Elds=2ES
->index a20409b0a3f2=2E=2Ed430880175f2 100644
->--- a/arch/x86/kernel/vmlinux=2Elds=2ES
->+++ b/arch/x86/kernel/vmlinux=2Elds=2ES
->@@ -167,6 +167,9 @@ SECTIONS
-> 		/* init_task */
-> 		INIT_TASK_DATA(THREAD_SIZE)
->=20
->+		/* equivalent to task_pt_regs(&init_task) */
->+		__top_init_kernel_stack =3D __end_init_task - TOP_OF_KERNEL_STACK_PADD=
-ING - PTREGS_SIZE;
->+
-> #ifdef CONFIG_X86_32
-> 		/* 32 bit has nosave before _edata */
-> 		NOSAVE_DATA
->diff --git a/arch/x86/xen/xen-head=2ES b/arch/x86/xen/xen-head=2ES
->index 04101b984f24=2E=2E758bcd47b72d 100644
->--- a/arch/x86/xen/xen-head=2ES
->+++ b/arch/x86/xen/xen-head=2ES
->@@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
-> 	ANNOTATE_NOENDBR
-> 	cld
->=20
->-	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip=
-), %rsp
->+	leaq	__top_init_kernel_stack(%rip), %rsp
->=20
-> 	/* Set up %gs=2E
-> 	 *
+> Hi,
 >
->base-commit: e1826833c3a9abb9d1fe4b938eca0e25eeafb39f
+>
+> As you mentioned as below, riscv's aia patch in
+> https://github.com/avpatel/linux.git
+>
+> Why is this series of patches not merged into upstream?
 
-Acked-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+This will be sent as part of Linux-6.9-rcX fixes (after 1-2 weeks).
+
+Regards,
+Anup
+
+>
+>
+> =E5=9C=A8 2024/3/21 16:50, Anup Patel =E5=86=99=E9=81=93:
+> > Few fixes for KVM RISC-V in-kernel APLIC emulation which were discovere=
+d
+> > during Linux AIA driver patch reviews.
+> >
+> > These patches can also be found in the riscv_kvm_aplic_fixes_v1
+> > branch at: https://github.com/avpatel/linux.git
+> >
+> > Anup Patel (2):
+> >    RISC-V: KVM: Fix APLIC setipnum_le/be write emulation
+> >    RISC-V: KVM: Fix APLIC in_clrip[x] read emulation
+> >
+> >   arch/riscv/kvm/aia_aplic.c | 37 +++++++++++++++++++++++++++++++------
+> >   1 file changed, 31 insertions(+), 6 deletions(-)
+> >
 
