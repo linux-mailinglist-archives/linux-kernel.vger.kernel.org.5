@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-111018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC90F8866FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:45:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C3A886700
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 769571F21A57
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:45:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B4AB1C23735
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E3A10A3E;
-	Fri, 22 Mar 2024 06:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D58D13AD9;
+	Fri, 22 Mar 2024 06:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dX5bpek1"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LtNFgVT+"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BA6DF62;
-	Fri, 22 Mar 2024 06:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C932010A35;
+	Fri, 22 Mar 2024 06:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711089941; cv=none; b=A3odbMABEEn78IMZDJzw8yLxvE8yf1BHykwK4cO7CXNgj9kKjAe0LvArL8klH99mt0PjrGScszaB5onrT2yOew7IokVfeq2kAdhU4JDWY6WWXgOCkD6x8kcnPGx7PI4nGZfBqk5U9GPiTrxaJ+ZY3gHZODA79ZCqVCUF3qxwWZE=
+	t=1711089943; cv=none; b=BUmH3Q2lHS6GEcbRhwAkYvPosQapeBeE4jUBW3QV+vAIr35DaZU6/X6uZ4ZLZJTaE8Gd3bmUamFNuDELEuk93yIrXyiDzDNa5mPK6zCF2Y9Nq38JChmMXnDj03Se2tGGkBbyLzbwHinxnVEt2sMXBPhLKBdJA6l4TwbKYAZL1EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711089941; c=relaxed/simple;
-	bh=dydiCo7iI1NW4gSDYIevGCRXxnVvyAdCyQwXxWD9D14=;
+	s=arc-20240116; t=1711089943; c=relaxed/simple;
+	bh=l9AcFCPvmbDmRPKHHUdkbOmNj27sBNChGiCLDfCdWFw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RyP6GcipgY2yQnNUg9CEP8dNk89duieMy2vAWZSXSmv+p/NXCQ+EUP1/v6KTZgXn1r6/yYcF35BuQOCeSalpKSsv+esOtHvhYwtG3TV0D4F7Lvxq1VIaah5sVmk362SkPjk3ohUXjAJFU0G7A7+2bcsh5WnZQi183T+qpfh6FVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dX5bpek1; arc=none smtp.client-ip=209.85.218.45
+	 In-Reply-To:To:Cc; b=dVuvlOyHwBwFBfG7WSwCsqCXTzCGZiDimuKhWrI9+Q9CEw9oTgjLaV0uA52LLUmtygE1LCk0YUr1+j1ZMMQBTJAW3fZmZ2S6CXsr50fXfVKalQLzFpgpaxzxYJc8kvZcwJzhJlw2sI2/PuOVTiKiSextvdHymYIipdi9uOKsCkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LtNFgVT+; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4715991c32so175463266b.1;
-        Thu, 21 Mar 2024 23:45:39 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a467d8efe78so204674866b.3;
+        Thu, 21 Mar 2024 23:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711089938; x=1711694738; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711089940; x=1711694740; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rOSsKufZ/8yCjM1/hlvnqYOYaN3abG+vGfagOCNtt2o=;
-        b=dX5bpek1VxQZXTQo/DJn8aLmcy40jTCDZ6KC15x0XtxYTCyOGySnTbTaHA7aWVbuPy
-         N+B5qxxJ/aVZnjxITbGbHWfjEUMbZv0pSdK81xcS8FSfd3Ibog37+cERhqxgFG8Qwbp5
-         V6qrymDcPvGE19a2X3Hj2JUKYa3gW2tUwEaD4i/b2zHdSZRqxMBfDUGsP2yLG3TK3jJo
-         29+a9VnkGXXEhzpMfLoD5PBJH5i4asUhUjS2mvIfd8N1B9PsNOakkKli6ZwW2vBXoqDj
-         NIYewcnrhmzGGqL7XTcCRz4VIqRRhKebZVXfCPsTq2kzwaYR1ZPpMs+ayrc022KyP/St
-         dBAw==
+        bh=7MsEAz+9LEdA+n5F4viKLmE3lAJcvkoHSIBKA1QCQsw=;
+        b=LtNFgVT+BWR4qpe40q9FCmNzvg8yptp2WbbqCLWV7doITfDT0dXtiPos1iS5+AGIpf
+         EWMCZHWzRv9EmfP2P4woUc4Az5Z3pSYMvX1AxL2rm8Z1tcDTwHE8LszKsvlcDbUEQWqj
+         ir06vuwK27/XecitWERQNx+2PHRJ2jYzVI+ktmf5T2fH4cbTa3YjuHt9F4LTEPkAN7ap
+         XR2gKlKcyhdG1FEYhTbxOq8zppbNoUkIgZeuegWSvi+qeKUEH6q4JM4HNpwKgnmf6NQ6
+         +ZJTA0mzc+O6wyub0UXRkRd4XsE6eFqzi6CyMOPEWg6qqNZGA51+5V13t31oyewF8bnM
+         BZXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711089938; x=1711694738;
+        d=1e100.net; s=20230601; t=1711089940; x=1711694740;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rOSsKufZ/8yCjM1/hlvnqYOYaN3abG+vGfagOCNtt2o=;
-        b=GmFdimtyzjvTGGPyUIGeWtc/TrBbwFSZk/CQxvlvH9Je2QzRBdsXCdc+YB9FRo/2uY
-         zyi9YiABBOA9W3qWwVolAZD3DhWlm0fdOQ5UnlL4Z3f9HruJTxEiyo6oKlol6uo2z6eG
-         cmNOKFqva2EG5dLEhaupe6LCbaj46uzONtgLsytmiX+sebczxz+zHmk045oIT0X7TZGh
-         th31/eWe65XBN3L7Ld0g8Zq319hzIIHzOnrAxrsqdoFQzhLhut4tX/xfmyP07KK4UULU
-         sZLR5rl/C4p+UNLvOoZMWn0p7ph2lchm5BAaYWIQfSRqVQiDbhU8LCDyxYi80JGgEDoE
-         Mssg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFWdVONKeY7xJNt1DFTT5G5shY18vDThjwvDkQnsm4WgU+x7+0X0C5WkExlKWH7/VnfJWfyvyG7VehDszS3U/dQlQlUwYDwyDlaYYcal8Pak4hMDzfyBp3/B4rMj0b5RbTYscM3ZnkfA==
-X-Gm-Message-State: AOJu0Yy724ZPWHWOI6sk/B2VEBnGLVE+GKljf3f7k9ZGDqdybVtoI5js
-	gOBExdwgTNV31sPzhibSZ+31S+DmEz+j0giGtQC3vpc+wUzARfTG
-X-Google-Smtp-Source: AGHT+IEKmV1pnUuAwpsoeuF5BAS3RVUv2sjWEX2KhGLMWJPvS465ZIZs2/H3FbqnkYNv5pNHwrmMaw==
-X-Received: by 2002:a17:906:b818:b0:a46:206d:369b with SMTP id dv24-20020a170906b81800b00a46206d369bmr970238ejb.28.1711089937861;
-        Thu, 21 Mar 2024 23:45:37 -0700 (PDT)
+        bh=7MsEAz+9LEdA+n5F4viKLmE3lAJcvkoHSIBKA1QCQsw=;
+        b=tdJOindDbco+50gm78DVZmG8Hw90LQ4APfT7qQC5/cyuP/VBcSMoeS/FFVkwHhf/8E
+         8ss1rqzdgS1HH4D0FHF/MShtAt28QC44ow4JIqkY+DEidHWZxEUQg2a+X06t9T86wvpG
+         sCoVaF7hzzLqGYiWtNbW5SkJIYchFms1R0VH3WXfZeF02ApSLOjumJlaQfNqB86QsNFO
+         d6cMxpw1C/pZgFjUq3RiF+qcJIuly9cn0pmhD6Hje85QbofFIcKDL0cqDKkt4hSN4YyS
+         aRggGId+IwLAVOk/J7I2II22NWJZ4FOip80GfpkSCKxNCC5WJkVLDpzlB/heAGhReLZU
+         UeuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUKWFpbZ38nGjvgp/muZ2g/H0eHXmuLN4Kc3mmg3XHYj9S89HcmWhuAnhZYZ/DHFjolsOWcsosKWxtF/RISBwPKYMU+FTJr7cV2BwuTvJ+FIXqThhgwYaVdEaEYyewiaGzipvn8f2ceCQ==
+X-Gm-Message-State: AOJu0Yx0akslTJMWlXsZ1RCV+SrP+8UCQPaQWDQenfAdH3p+W8CLV93g
+	jDbP0h1XNF3M68RqYOWYA3DfYo7BO9n/ojF8DyV3h4RB4NSXz3Up
+X-Google-Smtp-Source: AGHT+IHREvj01EsbKiiQva4CdE4k+soXe/2fsiihxknRWMchMegvdTdXqeew6z0bVCcGYfQRsQaNjw==
+X-Received: by 2002:a17:906:abc7:b0:a46:b764:fc81 with SMTP id kq7-20020a170906abc700b00a46b764fc81mr985691ejb.44.1711089940144;
+        Thu, 21 Mar 2024 23:45:40 -0700 (PDT)
 Received: from [127.0.1.1] ([213.208.157.67])
-        by smtp.gmail.com with ESMTPSA id e19-20020a170906375300b00a46bb8a44cdsm679694ejc.198.2024.03.21.23.45.35
+        by smtp.gmail.com with ESMTPSA id e19-20020a170906375300b00a46bb8a44cdsm679694ejc.198.2024.03.21.23.45.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 23:45:37 -0700 (PDT)
+        Thu, 21 Mar 2024 23:45:39 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Fri, 22 Mar 2024 07:45:26 +0100
-Subject: [PATCH v2 1/5] dt-bindings: hwmon: as370: convert to dtschema
+Date: Fri, 22 Mar 2024 07:45:27 +0100
+Subject: [PATCH v2 2/5] dt-bindings: hwmon: ibmpowernv: convert to dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240322-hwmon_dtschema-v2-1-570bee1acecb@gmail.com>
+Message-Id: <20240322-hwmon_dtschema-v2-2-570bee1acecb@gmail.com>
 References: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
 In-Reply-To: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
 To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
@@ -92,11 +92,11 @@ Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
  Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711089934; l=1927;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711089934; l=2506;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=dydiCo7iI1NW4gSDYIevGCRXxnVvyAdCyQwXxWD9D14=;
- b=mjJW0wmKIE4uFauQh76CG+KkMvkmn4jNOfu3ARAqE1vXWCXBI7v4NH1AJAxudwdBY+/LWT6MG
- K4pY9WZVNHmCiv/UQr95sYpl4Pf53ojlW5qCWElxZkxK1rqahIK8M7w
+ bh=l9AcFCPvmbDmRPKHHUdkbOmNj27sBNChGiCLDfCdWFw=;
+ b=NPbeHwM3uK9PZwZ1Xwi81PirJ+/H+Jea1v14E2joc98FCbHX9o0tgHW5medAhEkV3anuA2ljt
+ XCnfNryadrWC0xgqMRvI7U0URTENNIqDAVxW4SqXceX6KCRmje6FUc2
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
@@ -104,68 +104,84 @@ Convert existing binding to support validation.
 
 This is a straightforward conversion with now new properties.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- Documentation/devicetree/bindings/hwmon/as370.txt  | 11 --------
- .../devicetree/bindings/hwmon/syna,as370.yaml      | 32 ++++++++++++++++++++++
- 2 files changed, 32 insertions(+), 11 deletions(-)
+ .../devicetree/bindings/hwmon/ibm,powernv.yaml     | 37 ++++++++++++++++++++++
+ .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 --------------
+ 2 files changed, 37 insertions(+), 23 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwmon/as370.txt b/Documentation/devicetree/bindings/hwmon/as370.txt
-deleted file mode 100644
-index d102fe765124..000000000000
---- a/Documentation/devicetree/bindings/hwmon/as370.txt
-+++ /dev/null
-@@ -1,11 +0,0 @@
--Bindings for Synaptics AS370 PVT sensors
--
--Required properties:
--- compatible : "syna,as370-hwmon"
--- reg        : address and length of the register set.
--
--Example:
--	hwmon@ea0810 {
--		compatible = "syna,as370-hwmon";
--		reg = <0xea0810 0xc>;
--	};
-diff --git a/Documentation/devicetree/bindings/hwmon/syna,as370.yaml b/Documentation/devicetree/bindings/hwmon/syna,as370.yaml
+diff --git a/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml b/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml
 new file mode 100644
-index 000000000000..1f7005f55247
+index 000000000000..b26d42bce938
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/syna,as370.yaml
-@@ -0,0 +1,32 @@
++++ b/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml
+@@ -0,0 +1,37 @@
 +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/hwmon/syna,as370.yaml#
++$id: http://devicetree.org/schemas/hwmon/ibm,powernv.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Synaptics AS370 PVT sensors
++title: IBM POWERNV platform sensors
 +
 +maintainers:
 +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
 +
 +properties:
 +  compatible:
-+    const: syna,as370-hwmon
++    enum:
++      - ibm,opal-sensor-cooling-fan
++      - ibm,opal-sensor-amb-temp
++      - ibm,opal-sensor-power-supply
++      - ibm,opal-sensor-power
 +
-+  reg:
++  sensor-id:
 +    description:
-+      Address and length of the register set.
-+    maxItems: 1
++      An opaque id provided by the firmware to the kernel, identifies a
++      given sensor and its attribute data.
++    $ref: /schemas/types.yaml#/definitions/uint32
 +
 +required:
 +  - compatible
-+  - reg
++  - sensor-id
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    sensor@ea0810 {
-+        compatible = "syna,as370-hwmon";
-+        reg = <0xea0810 0xc>;
++    sensor {
++        compatible = "ibm,opal-sensor-cooling-fan";
++        sensor-id = <0x7052107>;
 +    };
+diff --git a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt b/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt
+deleted file mode 100644
+index f93242be60a1..000000000000
+--- a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-IBM POWERNV platform sensors
+-----------------------------
+-
+-Required node properties:
+-- compatible: must be one of
+-		"ibm,opal-sensor-cooling-fan"
+-		"ibm,opal-sensor-amb-temp"
+-		"ibm,opal-sensor-power-supply"
+-		"ibm,opal-sensor-power"
+-- sensor-id: an opaque id provided by the firmware to the kernel, identifies a
+-	     given sensor and its attribute data
+-
+-Example sensors node:
+-
+-cooling-fan#8-data {
+-	sensor-id = <0x7052107>;
+-	compatible = "ibm,opal-sensor-cooling-fan";
+-};
+-
+-amb-temp#1-thrs {
+-	sensor-id = <0x5096000>;
+-	compatible = "ibm,opal-sensor-amb-temp";
+-};
 
 -- 
 2.40.1
