@@ -1,182 +1,178 @@
-Return-Path: <linux-kernel+bounces-111920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF978872AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:10:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE85D8872AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 629C2287DCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:10:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B3F41F2148E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8721627F4;
-	Fri, 22 Mar 2024 18:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6330629E3;
+	Fri, 22 Mar 2024 18:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mvsIIVRL"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="trxkjJ1T"
+Received: from NAM06-DM3-obe.outbound.protection.outlook.com (mail-dm3nam06olkn2038.outbound.protection.outlook.com [40.92.33.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F419626C0
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711131007; cv=none; b=F0SyCimrw/ePlXA31xntGTGMDq7jKcWGWwPvBd8fwuheXOl0NKkFFTyTH7A2/JbIVeq2VeEFx0M0/4Ho7kgIAneLNtdIwcOPVqAY1W7wq+BfzPia/ou1hiOvEbvLNEW1HW/Q5Zy7tLmXeUXIWwvLD514IC348pQaq9ekW6YJXas=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711131007; c=relaxed/simple;
-	bh=cro16sh1i2oM3bLc22qeYH9U8ieOL7dJnB7fxPt/Jy4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qYSnt+GNOobGV5Adln4qSC8J0TQb9tQGZlA2bOxNbjEg88tsBRKrkwLGFjmc+QzX98E7ql2aZOIYs2rhvnWeID1LiE9jbO8lYqFTtgbu0vUYNbYS9b1q0wen6NwGZxWZicUAr5AWhwbECzGHwINvITqaWlb/ZL1+b70P6wL9ECY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mvsIIVRL; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5D030842;
-	Fri, 22 Mar 2024 19:09:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711130973;
-	bh=cro16sh1i2oM3bLc22qeYH9U8ieOL7dJnB7fxPt/Jy4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mvsIIVRL1Dv6tdP2fNsC6U+LDllPf6lbegR5Kod4R8JVbaMomcmx7gvDgqn9KVbOv
-	 Gf/jHkVKjEInLROCrE/hvLDDx1hkToYbNVqdbEM39IcAj90TSrpanusi9dx+523DX7
-	 H8iq+upPd0peIsSFsyblJ/GUf6Fsq0/Yag7FPXAQ=
-Message-ID: <305a8e43-4d65-490c-9f83-afce6490bc83@ideasonboard.com>
-Date: Fri, 22 Mar 2024 20:09:59 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D3F62800
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:11:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.33.38
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711131117; cv=fail; b=aYkx+EAPLbEfpA+FKFosbzcMGyOX4PfqbedBtNfLPWz9O5sfeixDt9qufCF3srWBT50Ky9OTxZ498Unhecgi/gW5hetXrb38BAw5bja8BoVMk/bIytbzubjPDukbJNm/QJgoVCz71CXq93ewANkPuHsf+EHwwkQeFM6Wc21t+F8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711131117; c=relaxed/simple;
+	bh=xXxsVXr/QzT3qAnDFcSeXvdOH77CWqI/U89Ht/ZOH8Y=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=V5rZslrXmiDDnDV/syCqVgvRFDr8AEmIGgCNermXidrJb2xjtIOSYJ5OaGxcwYJzD3+okuSvVdp9X37n/XDkVxfPTO4pH9k597vzyJJuwbx6kBvcoCFgc1467tu3v9SCW8ZqPIW2QOttGVw5xge70BOTpRJ0E92IT9fgtKxjt10=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=trxkjJ1T; arc=fail smtp.client-ip=40.92.33.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LSxmSbxi4YsYcciZRTn7JYZLbBpmghrRsNYV/tCB1xtnNuBOCe+NSuLa4HAVR02nm5C5fdxwcZBLdw7q0cY2TjfEI7FSHNN1slpW7N/qqMV14cE5iqxc6znRTi9NvtTo2b82KQOSsZ4QZ5OG45Hc+2A07eZ9PJUQLL9FDhUk82BJ/TwcLwuz/BehIZfWSV7oWkuX9klpoz0sNpuKmlwZju4JGaSBkgNPNcYvyi9Em11cObkiog1rRR6EA8cx9oXWRR19BxPksvoPDVPfssAXTGw2J22y2TScOKraZqOCqjFtT/Lqgyzdv4fWRapYrzelH0paa1rgm2TJZcYd8w/TqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aTvLV3U94Q11Y4CESr0zXsak/18u+4rZXZVbtHmCJSY=;
+ b=lmuk3YbnhgQFtdY1UOjbiXKR1pE3qwhLoxAtFaDHaxhBqYzWQ4hSUzZqzfJKsboKj7KqujfmV3gDg61CERWAY3zwxjZSIOe9UsBjoLdOCcQjcCHlUkA2f+N3tODOkOqK7dD4vsMAyNswa7NJKBiF2gcY0OsbMiFDgKTa/e7Dts5x4nYww/aODiSwysAWfRRCt1GqPn13jl/SxFpSnS1g2lw+rgkf9g2MLLMJCBba5IUMVuk8q/3FLPuFjQzpYP5On2j5VwVB4vpN2wUDrtxRWf5zItIoV4ZZtIDhixHLYMqLyHK6h1D/Iqpm7sIWznxfynGq+ssanaDoQetbzp0sKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aTvLV3U94Q11Y4CESr0zXsak/18u+4rZXZVbtHmCJSY=;
+ b=trxkjJ1TCq89/+lwm0eFrH7ur52ukCYsQUhWS42RJDafcRHhCLB2JTlXF25+KjuYfF0oEVQWAfbT2AOUDYINjv/X1p5rq90esuz4gdiDTXEZem+63+zt3dmlbXt65dIoApqsaM5/YJT4pzfKe657+uawKrGkePchUSVbNY1MKjUvMxZyLgL86IYuMm1ViIS13cqV1fd0aIaJuXbwY+X+dsBwNtimoyJ+bHr1ovNLHR1jDY/yILpQxFBh+UrlJR+KMBPcANKizrtGAL4Xk6jrV3bq7mYmByVq7FasL8rFRODM+CGHMBBqIW69QMKMB8ly8l+XMDkI29ViTg7Or3Fo7A==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SN3PEPF00013E2A.namprd02.prod.outlook.com (2603:10b6:82c:400:0:3:0:a) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Fri, 22 Mar
+ 2024 18:11:50 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
+ 18:11:50 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Will Deacon <will@kernel.org>, Petr Tesarik <petrtesarik@huaweicloud.com>
+CC: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+	<m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr Tesarik
+	<petr.tesarik1@huawei-partners.com>, open list
+	<linux-kernel@vger.kernel.org>, "open list:DMA MAPPING HELPERS"
+	<iommu@lists.linux.dev>, Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr
+ Tesarik <petr@tesarici.cz>
+Subject: RE: [PATCH v3 0/2] swiotlb: allocate padding slots if necessary
+Thread-Topic: [PATCH v3 0/2] swiotlb: allocate padding slots if necessary
+Thread-Index: AQHae7Pv4SNgrMIt8ky2VYTC2f59Y7FD3oWAgAAqOwA=
+Date: Fri, 22 Mar 2024 18:11:50 +0000
+Message-ID:
+ <SN6PR02MB41574F4837E875F3D158B329D4312@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+ <20240322150941.GA5634@willie-the-truck>
+In-Reply-To: <20240322150941.GA5634@willie-the-truck>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [XGqVcN2MdnpUDOuHikYKfkhi5SkWfctk]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SN3PEPF00013E2A:EE_
+x-ms-office365-filtering-correlation-id: 99a20e44-2544-43e2-5cda-08dc4a9b8bab
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 394aM7hl/5n3MOq79lG5YwpcSBvRIii3bzGi2ZnFbkzUMMsgFZRKXrNJSimr5irPm42FxQdxr0KwfLILG20AG+T2TQKNHoxPCAvsDttt//vpQ6aGamZiSeq+pHDR/KPLL6MxUnvM/m9DLXd1vS/jy9czB0jYR3H7do9roudgFFIvmHR3Eo7kvNWcwwSGTqbObyh8boVotaNdmcf55Z6e4yRbEZf+TWLJ7a5KzBmSwjBz+AfrkdC6mHIkOYnrmf2O5nDvEtk1F/Un7TX0Ue65yhzDcLN3WJkVedHFLmpdnmbMNhNZzIiv0ZNZSaeK19lZzGEE996rDTZ7bDq+5occoiRhi4xj5ZiO7eAhWd5I/8wSTr01hgz2iKy/FRifIBB3YUyk0o8L50p1vM47NgheGdWM6g3q8JACEbXsGTaM+DGi8ZaVIDPV9Qf9Q+oK6lxAbpnwjiNrYXT4YX3pf4wxg59VsrMq7O1GYjcS/5/RU0He4u74Tz+TZ48JZtONtMXmtuIvzNFXWyVLkMnfW/XsyL0S3fwzGJ/Xv8lTWk5HwX+1F43aWnjuQzNjMh6mF4Xp
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?iShP3LE8mZfp8+FO6QJPouqCjfJkbqIZyGs34gzKyd96GC+AkrdkjSWexyTz?=
+ =?us-ascii?Q?ukHz7jx6XkrkiqcuOGa78qB6oAFntqYIxmt0VD+H/jhrcRvA90nlTFQMDi7G?=
+ =?us-ascii?Q?XNpzfxw05590mWkWJMC9DHV22v2f39Lv1abc4uq+bME414iXF440/xmhdD2j?=
+ =?us-ascii?Q?yMK4fyMJvZNF2Wpn9g1/buclher6pSWsT9wasQeMUsgfRTsO5+wE7SNbQ3jt?=
+ =?us-ascii?Q?msFrbPu5op5I9drMFr5n6Hsp6FJfXzpGoURBa7rIpbpHH4LT0XxjJXhcPr2p?=
+ =?us-ascii?Q?ohcrNe/VQkj6uIrU1vfr+om5Y/l3tSmn175FIlbpR00TuC7TFGPv8dYM4GK7?=
+ =?us-ascii?Q?X35P23jV/lw8U/WKi8fPmq+xqbTJKmXLWp8vqCIYxCXpqFjdMjAhL5Fpr5H6?=
+ =?us-ascii?Q?VAkL7/bnJJNXOkcb7tTLw1R5BfdyF9oXtJc3hSrD3sATuMsV88liiPE6v71X?=
+ =?us-ascii?Q?BYEw3KWOfc9n4OQgy0xfJAFT4SDLQnv6LQmdODZjsvkhFO68e5rgBEPGv/aH?=
+ =?us-ascii?Q?wtz7skUng0i42dFSh3zn0ThwxH7kH2I6fvSZdufuWJZ0bjEDjwVkFfRQnjjq?=
+ =?us-ascii?Q?tyH7z/Llx0nUaVDC54NjpHZN+RXlMWAmds8IN+dVOAP0nOhALdsJvLRz2lAc?=
+ =?us-ascii?Q?aRgEZs7TkLtctAw7Wl+5yNg4F6RAsEXaXKDWXHnWvrqWwvy5bw6coslkEfm6?=
+ =?us-ascii?Q?LLn8qBHBqOYNI+OGiISEmVr9omjF0M1B4VDHdp6dcg1wj3y7ufUViVamUP5t?=
+ =?us-ascii?Q?FshK2/5YCcVFtmptEfE/MEI5IQSnSRvEmHLQU6jvy1wGKxiU6G2KO4PMSjwO?=
+ =?us-ascii?Q?vKHlCt51acZ32VtUqm4k0h3m/iT1OsC+9sF2ukrxBNwIL0hW2VrmHNCE6dtq?=
+ =?us-ascii?Q?oSJy0y3aI4eVLzc4WCSTng1uvV0MfbZ7kTAX1AdnmWbh713+/j5yenegRvm1?=
+ =?us-ascii?Q?e4lejrFRIvOG7nFysSWay3HIWRDAmmBNTPsvLCuqnh8206w8qeoj6ApbhNdF?=
+ =?us-ascii?Q?umguan7eAKNAuEwG6j+JYtfoYaTgPaCNDD4n+KVL+fNp4uHCacpYKfPE906s?=
+ =?us-ascii?Q?lFcY0G8WUf+7P6QrkgB0HislKnpKFAVG4yUQv7/sPRkKQ1MLIrV+k1cgnDVo?=
+ =?us-ascii?Q?/XK6vPaeWidHzRuRD1Nq8L7794j2jUD0RRD/r5wD/bvAeT5cWAn4V99Qclts?=
+ =?us-ascii?Q?GTk23h4rUOkHxXc5WIoeqQIa+Hua+2QdarrZZA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
- <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
- <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
- <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
- <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
- <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
-Content-Language: en-US
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99a20e44-2544-43e2-5cda-08dc4a9b8bab
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 18:11:50.3402
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN3PEPF00013E2A
 
-On 22/03/2024 18:18, Sean Anderson wrote:
-> On 3/22/24 01:32, Tomi Valkeinen wrote:
->> On 21/03/2024 21:17, Sean Anderson wrote:
->>> On 3/21/24 15:08, Tomi Valkeinen wrote:
->>>> On 21/03/2024 20:01, Sean Anderson wrote:
->>>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
->>>>>> On 21/03/2024 17:52, Sean Anderson wrote:
->>>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>>>>>> Do we need to handle interrupts while either delayed work is being done?
->>>>>>>
->>>>>>> Probably not.
->>>>>>>
->>>>>>>> If we do need a delayed work, would just one work be enough which
->>>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>>>>>>
->>>>>>> Maybe, but then we need to determine which pending events we need to
->>>>>>> handle. I think since we have only two events it will be easier to just
->>>>>>> have separate workqueues.
->>>>>>
->>>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
->>>>>
->>>>> Yeah, but we can use a mutex for this which means there is not too much
->>>>> interesting going on.
->>>>
->>>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
->>>>
->>>> I'd still prefer just one workqueue, though...
->>>
->>> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
->>
->> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
-> 
-> How about something like
-> 
-> zynqmp_dp_irq_handler(...)
-> {
-> 	/* Read status and handle underflow/overflow/vblank */
-> 
-> 	status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
-> 	if (status) {
-> 		atomic_or(status, &dp->status);
-> 		return IRQ_WAKE_THREAD;
-> 	}
-> 
-> 	return IRQ_HANDLED;
-> }
-> 
-> zynqmp_dp_thread_handler(...)
-> {
-> 	status = atomic_xchg(&dp->status, 0);
-> 	/* process HPD stuff */
-> }
-> 
-> which gets rid of the workqueue too.
+From: Will Deacon <will@kernel.org> Sent: Friday, March 22, 2024 8:10 AM
+>=20
+> Hi Petr,
+>=20
+> On Thu, Mar 21, 2024 at 06:19:00PM +0100, Petr Tesarik wrote:
+> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> >
+> > If the allocation alignment is bigger than IO_TLB_SIZE and min_align_ma=
+sk
+> > covers some bits in the original address between IO_TLB_SIZE and
+> > alloc_align_mask, preserve these bits by allocating additional padding
+> > slots before the actual swiotlb buffer.
+>=20
+> Thanks for fixing this! I was out at a conference last week, so I didn't
+> get very far with it myself, but I ended up in a pickle trying to avoid
+> extending 'struct io_tlb_slot'. Your solution is much better than the
+> crazy avenue I started going down...
+>=20
+> With your changes, can we now simplify swiotlb_align_offset() to ignore
+> dma_get_min_align_mask() altogether and just:
+>=20
+> 	return addr & (IO_TLB_SIZE - 1);
+>=20
+> ?
+>=20
 
-I like it. We can't use IRQF_ONESHOT, as that would keep the irq masked 
-while the threaded handler is being ran. I don't think that's a problem, 
-but just something to keep in mind that both handlers can run concurrently.
+I don't think such a change is correct, since we want to allow the
+DMA min_align_mask to work if it is set to 0x3FF or 0x1FF or
+something else smaller than IO_TLB_SIZE - 1.
 
-  Tomi
+Petr's new offset calculation in swiotlb_tbl_map_single() is this:
 
+offset =3D orig_addr & dma_get_min_align_mask(dev) &
+                (alloc_align_mask | (IO_TLB_SIZE - 1));
+
+In the normal stream mapping case, where alloc_align_mask is
+zero, Petr's new statement is equivalent to swiotlb_align_offset().
+And I think it needs to continue to be equivalent so that
+swiotlb_search_pool_area(), swiotlb_bounce()  and
+swiotlb_release_slots() calculate the same offset as
+swiotlb_tbl_map_single() uses after it separately processes
+the padding slots.
+
+Perhaps a better approach to maintaining the equivalence is
+to modify swiotlb_align_offset() to be Petr's new calculation,
+with alloc_align_mask passed as an argument.
+swiotlb_search_pool_area(), swiotlb_bounce(), and
+swiotlb_release_slots() would all pass 0 as the alloc_align_mask
+argument.
+
+Michael
 
