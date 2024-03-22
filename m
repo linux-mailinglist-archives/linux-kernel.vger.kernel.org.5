@@ -1,131 +1,171 @@
-Return-Path: <linux-kernel+bounces-111911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 715A788728D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:05:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74098887290
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:06:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BBC51F244C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:05:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B346289D93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFA762153;
-	Fri, 22 Mar 2024 18:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277AF61696;
+	Fri, 22 Mar 2024 18:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nowGQWab"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="i+Amu9mE"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B3261698;
-	Fri, 22 Mar 2024 18:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFD5760DDB;
+	Fri, 22 Mar 2024 18:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130739; cv=none; b=H/w/AxfKuhVgLGu0OQr2gRysJA+7AioMUPQg5EeXgrRjgQzC1sKeB4eqSm/7rb2fywEKJM+T5eSazSD6PP/7xMcrwqIvUmC++oouz10OBQITOssM8FleSudwZnfvJZSNMsaVOYB5wzTeG0KQ1mxHLVnei8+NkeQhl79OB9bx9Js=
+	t=1711130796; cv=none; b=ITawJBw4ofuM6KvHFCdWwuwyvS5EY0Z3iLvtmBVsMHxsaLK57aRtU1us/maFOQhIMSk+cy8mqObP4Xbcf9o67Jcw/N3AYa6cvg58xyzL5EzUEAUrAbN8Lqi4FCxrjnVf8fojxjQcY6TGbEw2rC77sFG1uLT2V/aOY1T/IZRMNtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130739; c=relaxed/simple;
-	bh=kkA/i7RpUTQkaWAdwVCyAalUa4sMjIe2XqfhfQNTMYk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IDVeAYtsNpfGynuLSgNRAkBlRH5x4mERJzVCNcX4CjmSW+nuuk0t1ne6sbYSTH8OMX7cbIjLxdQRqD+SLAgIrz8EUWCxaQPekxnOcjOmos3hNTVhkGbUY6yqCxlTm1XJtO5Z73KHGgyhtlHl5qJtgPDXHjhR8QEeGei2gXsfKb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nowGQWab; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5546AC433F1;
-	Fri, 22 Mar 2024 18:05:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711130738;
-	bh=kkA/i7RpUTQkaWAdwVCyAalUa4sMjIe2XqfhfQNTMYk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nowGQWabkhd43pAtUXr23KvFbCqVdbh4Gi4v/gubT5ov7g1PsG2MDvEApphzmiKMg
-	 wBbrwamjYHH8kgT6PcRYYLXbTBfIVDX6aW+PvJbsWf2GAAKhvs/5M/A5WJXWNicGC2
-	 hfLR3IBw22qGaJHStL6vCXt3dUAXghbz2NBYaOLVpq6CcMa9QyEjbVkSJMDD1uTXPs
-	 KtuLYIFrdSxmsb0sEJpIhHNkScaaauh+8TFX/rtMqPnUkqbieGYtwIJl9fE02jR1+p
-	 iGN/gsCcngUP/dyljfBSld3lB7DFlLmYKhdgktu6qIfIHgm26CNR2/4VaAKONIyQjr
-	 qsKf3QC1zPs4w==
-Date: Fri, 22 Mar 2024 18:05:32 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] dt-bindings: xlnx: Add VTC and TPG bindings
-Message-ID: <20240322-absence-endurable-dee8a25643b7@spud>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-8-d5090d796b7e@amd.com>
- <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
+	s=arc-20240116; t=1711130796; c=relaxed/simple;
+	bh=m4EymJAcRXCFACL2i+rx3ZT9mEivNMdVXbX+DVFJh0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Xx0yEaX8p4U10cmASZX/cnROipzoxYwBON7GZDKhcdQQ1xg21Xppt+iSU+TdHnske7ma6WljmgPvG9JjmrxZrEQmsA1279gIq2r9xKP+HPksGq3I4S3T6b5bPBInlfDdp5jMXl4IqoiSsiQiguXabrEs+gTX7NqQg2KrMXwN7Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=i+Amu9mE; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42MF3ICi017502;
+	Fri, 22 Mar 2024 18:05:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pps0720; bh=IK/kIsHjXxasetLiveufgrhf6dqiTyTmYvGcseMR5vs=;
+ b=i+Amu9mEsOh1MtV1apf/d33V1Gkn8viRK2c3KlHJNlh5JHW3ut/PuWP1ihoi5UiXwOQK
+ 3NfAGeW60E6a4ZF3MntgghCU+UATG/LevkEQX6hJ4o9rKZy29AypDLyiEfRW1dn306co
+ JYDnWO6V5opdC/aJW9qJjzvH4ktqoKvARoKT5WXBlzp7Hy5Ak1gTlSUzwSYyiN+5CkvN
+ ZYiOwxQH8nJjvemJQFJVSDWm+QtDXUJl5MlMhLNVjmDBpD7M1mEvesYusNhaSLsZPnrF
+ jvP7sw3KlPU+Hsel+4/RN7tqSoND6AaM0+nBLWRJy5/bjai7lPnoXIu38Gn+sxulloWL Ag== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3x0wy88mgv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 18:05:42 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 93943804DE1;
+	Fri, 22 Mar 2024 18:05:41 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.231.227.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 1B94B80A3E5;
+	Fri, 22 Mar 2024 18:05:36 +0000 (UTC)
+Date: Fri, 22 Mar 2024 13:05:34 -0500
+From: Steve Wahl <steve.wahl@hpe.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+        Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+        Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+        Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+Message-ID: <Zf3Ibju7xTy_S0Rx@swahl-home.5wahls.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <003f1e83-fd93-4f4f-a316-d3e89e5a23a5@intel.com>
+ <87le6ab2bn.fsf@email.froward.int.ebiederm.org>
+ <2f8d726a-9800-4068-9c0c-6c4a79d69a85@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f8d726a-9800-4068-9c0c-6c4a79d69a85@intel.com>
+X-Proofpoint-ORIG-GUID: sFebYI1E4bAOQKGP-DZ60C3kxFqZHSrR
+X-Proofpoint-GUID: sFebYI1E4bAOQKGP-DZ60C3kxFqZHSrR
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="37IzkaOCoVNe34vN"
-Content-Disposition: inline
-In-Reply-To: <a82d525c-737a-4ac4-9d71-e88f4ba69ea1@linaro.org>
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_10,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=826 spamscore=0 mlxscore=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403220130
 
+On Fri, Mar 22, 2024 at 10:40:37AM -0700, Dave Hansen wrote:
+> On 3/22/24 10:31, Eric W. Biederman wrote:
+> >> I'd much rather add synthetic entries to the memory maps that have this
+> >> information than hack around it by assuming that things are within a
+> >> gigabyte.
+> > So this change is a partial revert of a change that broke kexec in
+> > existing configurations.  To fix a regression that breaks kexec.
 
---37IzkaOCoVNe34vN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi, Dave!
 
-On Fri, Mar 22, 2024 at 06:59:18AM +0100, Krzysztof Kozlowski wrote:
-> On 21/03/2024 21:43, Anatoliy Klymenko wrote:
-> > diff --git a/include/dt-bindings/media/media-bus-format.h b/include/dt-=
-bindings/media/media-bus-format.h
-> > new file mode 100644
-> > index 000000000000..60fc6e11dabc
-> > --- /dev/null
-> > +++ b/include/dt-bindings/media/media-bus-format.h
-> > @@ -0,0 +1,177 @@
-> > +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-> > +/*
-> > + * Media Bus API header
-> > + *
-> > + * Copyright (C) 2009, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify
-> > + * it under the terms of the GNU General Public License version 2 as
-> > + * published by the Free Software Foundation.
->=20
-> That's not true. Your SPDX tells something entirely different.
->=20
-> Anyway, you did not explain why you need to copy anything anywhere.
+> Let's back up for a second:
+> 
+>  * Mapping extra memory on UV systems causes halts[1]
+>  * Mapping extra memory on UV systems breaks kexec (this thread)
 
-I assume by "copy anything anywhere" you mean "why did you copy a linux
-uapi header into the bindings?
+These are the same.  The most reliable way to create the problem[1] on
+UV is a kexec to a kdump kernel, because of the typical placement of
+the kdump kernel active region with respect to the reserved addresses
+that cause the halts.  (The distros we typically run place the
+crashkernel just below the highest reserved region, where a gbpage can
+include both.)
 
-> Specifically, random hex values *are not bindings*.
->=20
-> Best regards,
-> Krzysztof
->=20
+What you didn't state here is the third bullet that this patch addresses.
 
---37IzkaOCoVNe34vN
-Content-Type: application/pgp-signature; name="signature.asc"
+* Neglecting to map extra memory on some (firmware buggy?) non-UV
+  systems breaks kexec.
 
------BEGIN PGP SIGNATURE-----
+> So we're in a pickle.  I understand your concern for kexec.  But I'm
+> concerned that fixing the kexec problem will re-expose us to the [1]
+> problem.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3IbAAKCRB4tDGHoIJi
-0j5AAP0VRCdRytSAhb3oWZ+TJi65eWcFsjeuz84XbzwZT+yj8wEA+h1+YbUno+qx
-SVt2fkO/pFLtLpGekJKt9C2l5ukTUgk=
-=NSgf
------END PGP SIGNATURE-----
+> Steve, can you explain a bit why this patch doesn't re-expose the kernel
+> to the [1] bug?
+> 
+> 1. https://lore.kernel.org/all/20240126164841.170866-1-steve.wahl@hpe.com/
 
---37IzkaOCoVNe34vN--
+This patch still has UV systems avoid gbpages that go far outside
+actual requested regions, but allows the full gb pages on other
+systems.  On UV systems, the new gbpage algorithm is followed.  On
+non-UV systems, gbpages are allowed even for requests that don't cover
+a complete gbpage -- essentially the former algorithm but using the
+new code.
+
+Hope that makes sense.
+
+I would probably consider this buggy firmware, but got enough reports
+of this regression (from Pavin Joseph, Eric Hagberg, and Sara
+Brofeldt, all of whom tested the patch to see if it cured the
+regression) that it seemd everyone would want it fixed quickly and
+point fingers later.
+
+In the private debugging exchanges with Pavin, I got some printks of
+regions that were mapped, and did one exchange with hard-coded adding
+regions not covered on his particular system back into the table;
+there were four regions left out.  I added all four in one patch.  I
+could have dived in further to diagnose which of the missing region(s)
+were actually necessary to get kexec to succeed, but couldn't see what
+I would do with that information once I had it, as I don't see a way
+to generalize this to other platforms exhibiting the problem.
+
+Thanks,
+
+--> Steve
+
+-- 
+Steve Wahl, Hewlett Packard Enterprise
 
