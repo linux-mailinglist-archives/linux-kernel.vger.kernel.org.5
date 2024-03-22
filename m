@@ -1,112 +1,116 @@
-Return-Path: <linux-kernel+bounces-111397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72CC2886BC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:00:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F5E886BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7B72866F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:00:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2A952868D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829943FB3B;
-	Fri, 22 Mar 2024 12:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8CB3FBA4;
+	Fri, 22 Mar 2024 12:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RpMmkcgY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iOQXRbX5"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8C6405DF;
-	Fri, 22 Mar 2024 12:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FD53F8E2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711108835; cv=none; b=r1cCAoD9/vg6HMGqX+Vev28aY9vG34lE2l7Tb5oJj36rbgtFd6Rqoz5d7s9MF/sLQw13DcxarpmkkstFWyBx0AvoN29z2LTdoBA0vkT+94GwKyTP5Yj2txp0ebtsHL+PxVj3kasxOUWepMdy6L8zziGOKyHpSiWtdpiMtsb5rLQ=
+	t=1711109035; cv=none; b=iBMkKtRQccx9VXkMVvz41Av91s3dmc379jOstCS91F8rQncE+NvkQclmlLCIYhw2H+hdwBW6hOVCByRA+/ridN7Md60eIKbtaPJOfo9+vpPWdqEEeFMm2JpSGS/mTBh1XK4RriA3iKqnBiEH9eNQMzr9/MLcGcE1ROZ/61EJ7iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711108835; c=relaxed/simple;
-	bh=92pX5IDP/FkapkpehkoB1Zy0xn13DvY+iux3kEzJFh0=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=MefNiKNrZ55MqGXEc8cE4eB1202KClPBhMaRppjR9qErIt7JfYis4qAcUN9eL6pfY9LzrHgBv9cawG0+g54KgUxIjTrBJ1e38WAZm57nFNZ2qZNMzlf+cjTy2mbYs5P/5AhfSFxtAa+gjjm6CZcLvm7Sqp2ZScV2QVNwAwsYBHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RpMmkcgY; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711108834; x=1742644834;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=92pX5IDP/FkapkpehkoB1Zy0xn13DvY+iux3kEzJFh0=;
-  b=RpMmkcgYVBhrQDTc0m3aAqNBjjThmVTuaN51Vz1MSrRYHmb0whIKYa+J
-   I6IFmPDk18O11RZzKiOD257NLlxl7dSyqN3+BeDYZ5q26T8PswyT6qo/k
-   RqeqHxC8gHSnozgVvIK8s47SpphEbAkp5+K66CmEJCOeAAVeuHYPty4zo
-   iP4dnjyZA0L9uKTEZR+j1XXGiQGFu8ddCRHNYee5T5q3N3VJ8vpNGhsn6
-   HBrm/xe0uEa8jBcSTA24b924rUG8WfqDgcJNMAbWiJ8mINnDOW+Dl5GBY
-   KRYMAmuHBooTevd8+USrYw1XlyPLdVTxmPzKzFqzioLBZ7edslLIlryFC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6007738"
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="6007738"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:00:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="46002387"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:00:29 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 22 Mar 2024 14:00:28 +0200 (EET)
-To: Reinette Chatre <reinette.chatre@intel.com>
-cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
-    Babu Moger <babu.moger@amd.com>, 
-    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
-    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 01/13] selftests/resctrl: Convert get_mem_bw_imc() fd
- close to for loop
-In-Reply-To: <a263ee49-b987-90e2-c794-4d2af0ce50ca@linux.intel.com>
-Message-ID: <2d75c1fc-3ff0-839b-996b-28fd4d02433c@linux.intel.com>
-References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-2-ilpo.jarvinen@linux.intel.com> <832ec5e1-db5c-4123-8768-39ba9e6cca82@intel.com> <a263ee49-b987-90e2-c794-4d2af0ce50ca@linux.intel.com>
+	s=arc-20240116; t=1711109035; c=relaxed/simple;
+	bh=Y4dOlSnG1mp5DbfHiWqcxPfv265KzC6b5wyQVWaCNIk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lrfa+a5iJSihsd6eh5i5X/BKFcXlhqyIOamUW/ns/jWk70eUk0Is3kx40iK8KU3PVw6rrubfjelZRyDbuuWfVyrEPoczFOqHWpXm4Mm+sYuYS7+x5Rav37qfa1HSNbohhqbPAqhUmqHhQJyqU7ZADHfAFJ5nGVjalOz9yqKrvaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iOQXRbX5; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-414701303f7so19459145e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711109032; x=1711713832; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rGs4qRI69HmirbYdoo/X0WlJUf5KRctON/6+5RBKAyA=;
+        b=iOQXRbX5nYE9A7gw80/uhX9L4DBcmS9md42ehkCWPMaYeLnmpzi4j8eDTcC/6kpBOJ
+         u1xz8zh0emOWb/pPDw0Qiufo8m1ww8mJsC4BGmYusxzmx/xOJUW9BUVy1nLaQBU039Mg
+         4u1BanU+Br8YveaHoRBVerqK0VQAS+nTEp0iVDNA1bjdyhZv9Z9VN5ULtuciOpsMS7LM
+         YkrFEM9rhE5rl+p848Rz1O08ZNtdjIi39xzlKk/1rxbi12G2t0MKw9PkSTR3UMdgCUjH
+         /IRtPzBl3jc9E3gQQsuHbFWc6oarR6lAe9xGe+G8Vkrpo8BU+qpbK3O4cPS1+6K8C38k
+         /g0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711109032; x=1711713832;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rGs4qRI69HmirbYdoo/X0WlJUf5KRctON/6+5RBKAyA=;
+        b=aWYiWiZV5pSmubfZ98FV+OwkzMv33MpPkYjcNwAS2SQPgrt1056nf+N9z+mE+ZTEhs
+         pvgIpxkVsG5dhxi5sJgrDcNGziXsgV5aJHPQSBJepMaAGcygP6S/dJYMryD0u7yc2V7C
+         NUz3MtyyayM6iZ7yxvyfArUrXK93iBIU4mMWNZfcrx2Z46KTNlqAFvq01TA+FZxPkiy6
+         q+SQchQIN5AS9cdvcHdDPRKs8Ut3jvYd+czY8v3WZ4rSiIWEGTqtvQgn4ARtWfcfUP2G
+         vW0kzXnP2atz1T6cRaqGSo6Zeo9x2eYSNJZhyg2XOjncjuwhdzosr2twekRAkRoRuQJs
+         8GJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXj2kspARh9e2mZePRMqAK0p97yD28vPPQxWUbG2zSHt3VH9d0cR8/Ln8FyQDwqnxXdtdE8of2zPSA5pKH/YUKnbMV1IK509YLdlWQ3
+X-Gm-Message-State: AOJu0YxM39bNAu3QchAYn4yd3RcZDC2AgTdJQDX8DdP6eF/VUkndTpX/
+	ZBJjDQC3KqQ7Tde1tB61yakAiMOmP0FtELeGPWNZ2w+J5nm0LFgYuOy4/3QVIfQ=
+X-Google-Smtp-Source: AGHT+IFO/z/zCR8zDHG84NH9P3H6rTvXVlOBLgULqH1YZiOHMt0jBLPjjbcvbZO+VyY3d7hLuXaRhQ==
+X-Received: by 2002:adf:fe4b:0:b0:33e:bb67:9596 with SMTP id m11-20020adffe4b000000b0033ebb679596mr1980258wrs.64.1711109032506;
+        Fri, 22 Mar 2024 05:03:52 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id cl1-20020a5d5f01000000b00341b9737fc5sm891207wrb.96.2024.03.22.05.03.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 05:03:52 -0700 (PDT)
+Message-ID: <30f71224-7340-4255-bd48-a96252985b15@linaro.org>
+Date: Fri, 22 Mar 2024 12:03:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-207245466-1711108828=:1115"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8250: describe HS signals
+ properly
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+References: <20240322-typec-fix-sm8250-v1-0-1ac22b333ea9@linaro.org>
+ <20240322-typec-fix-sm8250-v1-1-1ac22b333ea9@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240322-typec-fix-sm8250-v1-1-1ac22b333ea9@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 22/03/2024 11:58, Dmitry Baryshkov wrote:
+> The OF graph should describe physical signals. There is no 'role switch'
+> signal between Type-C connector and the DWC3 USB controller. Instead
+> there is a HighSpeed signal lane between DWC3 controller and the USB-C
+> connector. Rename endpoints in accordance to that (this follows the
+> example lead by other plaforms, including QRB2210 RB1, QRB4210 RB2 and
+> all PMIC GLINK platforms).
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
---8323328-207245466-1711108828=:1115
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Hmm
 
-On Fri, 22 Mar 2024, Ilpo J=C3=A4rvinen wrote:
+I think if you are going to change the name here, you should also do so here
 
-> On Tue, 19 Mar 2024, Reinette Chatre wrote:
-> > On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
-> > > The open() side handles fds in a for loop but close() is based on two
-> > > fixed indexes READ and WRITE.
-> > >=20
-> > > Match the close() side with the open() side by using for loop for
-> > > consistency.
-> >=20
-> > I find the close() side to be more appropriate. I say this for two
-> > reasons: (a) looking at the close() calls as they are now it is
-> > obvious what the close() applies to and transitioning to a loop
-> > adds a layer of unnecessary indirection, (b) I do not think a loop
-> > is appropriate for the READ/WRITE define that just happen to be 0
-> > and 1 ... there should not be an assumption about their underlying
-> > value.
->=20
-> Hi,
->=20
-> So to confirm are you suggesting I should remove all the other loops=20
-> instead?
+grep role_switch arch/arm64/* -r | wc -l
+54
 
-Nevermind, I read the comment to second patch, so the answer is yes. :-)
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
---=20
- i.
-
---8323328-207245466-1711108828=:1115--
+---
+bod
 
