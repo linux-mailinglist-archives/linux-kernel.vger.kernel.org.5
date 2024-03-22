@@ -1,174 +1,304 @@
-Return-Path: <linux-kernel+bounces-112055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78DC98874AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:05:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F2D8874B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEAAA1F22268
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:05:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BABA6283463
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD0281740;
-	Fri, 22 Mar 2024 22:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC328173D;
+	Fri, 22 Mar 2024 22:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fcX3UWz6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="WZEKZf+A"
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F148005F;
-	Fri, 22 Mar 2024 22:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EEF80C02;
+	Fri, 22 Mar 2024 22:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711145099; cv=none; b=BfyEoDmKddQncpWGppW2JyVqnaqO5Lkh0jaMx1dYaHC4Cere+nW+2b9Ev+RyfHzrhb8CLzlTZwWIZvBM/7ZANfnEIFRRi+QRTMlz8ULaFxe/RCsuoFrEDHiYHSRSpbDoS4T0ZMVRREnxXuIuG9GfGdc1fLOvWT56In9LD6J1LSM=
+	t=1711145141; cv=none; b=jby1h46CdEFYyW/LKsF01HGq5H4bRTRaqBR5yLZ1GlTUih9wENxiDN8t9kL6RrlmlBkBbEbg5TjEcWaXNWoZrGU6YganVHq6imRWkU2VEgLSdqFBhj7uFzE8JtWf6HQeHfWW3lnlANF2BaBWsF5dAGMi6zXpjPH2yvC7t59ezI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711145099; c=relaxed/simple;
-	bh=RB4dv/BfPAPMuLZqjIrxuoGF9WQVhOll7NLtUmXcVcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=UMass6A8kNM9xn7MvZ/QUztkK3KaCwVnb6mkYVJ9Zf8U3Nntwev6ndj5Ji/7n+48fHTHS1RZiqWRBYhIhwZIUlrtt6Kaqlv2W9svxt/HP1Sa+xdZDiQ79mMpVnk+M+nA+nUGhktIFmrG4Ei2l6KXCqy/6STlvn481mVSQ5T9lUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fcX3UWz6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84096C433F1;
-	Fri, 22 Mar 2024 22:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711145098;
-	bh=RB4dv/BfPAPMuLZqjIrxuoGF9WQVhOll7NLtUmXcVcQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fcX3UWz6eptpiLRAnqJrHhJZqbBhdWWJVHjwbkMKx2RSyA4OKINOHfU9Wy3f8s/Ls
-	 Kaz6yfSfWAE/3eG5AwxlEtXd1/JlLdm5l2vFwTjHqLKZul/SOioqCjS2oh+mSxA9uK
-	 Q+jc3q+HHpectJe+Vvcl7HZUBQmTg9ln/S29j83SXRb45eyEZvB26UBqbK1dccoNAG
-	 kMpfT7jW4FHgOfglLJH55dhsahBnX0Dl/Ml5KJRxET0SzDH9AIZkrSPiMqYEBfoHrX
-	 NfREHoSJraofJI7hdFYnD5YoZ8wY6zb0a2V3CK8y26Rhsy9Ruw2kXU1ueDh2R8dV4C
-	 Qonfg6V4u7igg==
-Date: Fri, 22 Mar 2024 17:04:56 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-	quic_parass@quicinc.com
-Subject: Re: [PATCH v2] PCI: dwc: Enable runtime pm of the host bridge
-Message-ID: <20240322220456.GA1379507@bhelgaas>
+	s=arc-20240116; t=1711145141; c=relaxed/simple;
+	bh=C5LyfniSOaNMUpzLjG4M78U8PNEf4IgkZRSXKPOOES0=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HD0lSV1Jf2k/t5FIfPPSrl2nWasoIesMa9nS/EFc7Co1HQYvtvu3QfCo/C6bF+sI7b20s48KYG5VpUZdIehrX+AK+ZRPE/kqQWQBHmqjVG8wwFtvY/yi4CcDtr0ffVUFulyLkRoh65RCDD/jUHEfp3xK9PVk1UQbSwAZZISpdY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=WZEKZf+A; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42MHMPOg014783;
+	Fri, 22 Mar 2024 18:05:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=DKIM;
+	 bh=8conlbypa1PS8WhKHiTW25hv7hi1LPKKYb7Qq9hY7vo=; b=WZEKZf+A+IVl
+	CbBdxt5USJ17aOWttPT2xrQUeGgn0y04GhoGVTxI75JHF5dEo2WXilJS5q6+lZq+
+	w85DqKof7OxfkDoFGansha1sSqqh2+C84G8ANd9mpNrc9B7MLHorXDzcx6DADEVB
+	0evwyp+eP2N+HL3fgdBmqWHJt4EHgiHxLt87t4HChfFcpzSELzpt2nn2pUrZ+iHX
+	062HBNk8RUU90J8XOmyVL9IpkKBEI4cV8Ez7SKKozFEOa37j1IkTHoiBjxY4wi1I
+	NL65JGEmfrFTsPZ1ctyYNCkJ+qknHoE7cQ6N36Yo8VkzKJ1VmIuz3WY55okSrtJL
+	MBa0h5Bf7g==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3x0wxbcbah-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 18:05:23 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 42MM5MBp023788
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 22 Mar 2024 18:05:22 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 22 Mar
+ 2024 18:05:21 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Fri, 22 Mar 2024 18:05:21 -0400
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42MM58bR028921;
+	Fri, 22 Mar 2024 18:05:11 -0400
+From: Marcelo Schmitt <marcelo.schmitt@analog.com>
+To: <lars@metafoo.de>, <Michael.Hennerich@analog.com>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <marcelo.schmitt1@gmail.com>
+CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] dt-bindings: iio: adc: Add AD4000
+Date: Fri, 22 Mar 2024 19:05:08 -0300
+Message-ID: <81665b5f0d37d593e6d299528de8d68da8574077.1711131830.git.marcelo.schmitt@analog.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1711131830.git.marcelo.schmitt@analog.com>
+References: <cover.1711131830.git.marcelo.schmitt@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319111148.GF52500@thinkpad>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: bflccPvWxkuPKL3lww15GGBN0eYuPXVY
+X-Proofpoint-ORIG-GUID: bflccPvWxkuPKL3lww15GGBN0eYuPXVY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_14,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
+ bulkscore=0 spamscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2403220160
 
-On Tue, Mar 19, 2024 at 04:41:48PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Mar 08, 2024 at 11:12:48AM -0600, Bjorn Helgaas wrote:
-> > On Fri, Mar 08, 2024 at 08:38:52AM +0530, Krishna Chaitanya Chundru wrote:
-> > > On 3/8/2024 3:25 AM, Bjorn Helgaas wrote:
-> > > > [+to Rafael, sorry, another runtime PM question, beginning of thread:
-> > > > https://lore.kernel.org/r/20240305-runtime_pm_enable-v2-1-a849b74091d1@quicinc.com]
-> > > > 
-> > > > On Thu, Mar 07, 2024 at 07:28:54AM +0530, Krishna Chaitanya Chundru wrote:
-> > > > > On 3/6/2024 1:27 AM, Bjorn Helgaas wrote:
-> > > > > > On Tue, Mar 05, 2024 at 03:19:01PM +0530, Krishna chaitanya chundru wrote:
-> > > > > > > The Controller driver is the parent device of the PCIe host bridge,
-> > > > > > > PCI-PCI bridge and PCIe endpoint as shown below.
-> > > > > > > 
-> > > > > > > 	PCIe controller(Top level parent & parent of host bridge)
-> > > > > > > 			|
-> > > > > > > 			v
-> > > > > > > 	PCIe Host bridge(Parent of PCI-PCI bridge)
-> > > > > > > 			|
-> > > > > > > 			v
-> > > > > > > 	PCI-PCI bridge(Parent of endpoint driver)
-> > > > > > > 			|
-> > > > > > > 			v
-> > > > > > > 		PCIe endpoint driver
-> > > > > > > 
-> > > > > > > Since runtime PM is disabled for host bridge, the state of the child
-> > > > > > > devices under the host bridge is not taken into account by PM framework
-> > > > > > > for the top level parent, PCIe controller. So PM framework, allows
-> > > > > > > the controller driver to enter runtime PM irrespective of the state
-> > > > > > > of the devices under the host bridge.
-> > > > > > 
-> > > > > > IIUC this says that we runtime suspend the controller even though
-> > > > > > runtime PM is disabled for the host bridge?  I have a hard time
-> > > > > > parsing this; can you cite a function that does this or some relevant
-> > > > > > documentation about how this part of runtime PM works?
-> > > > > > 
-> > > > > Generally controller should go to runtime suspend when endpoint client
-> > > > > drivers and pci-pci host bridge drivers goes to runtime suspend as the
-> > > > > controller driver is the parent, but we are observing controller driver
-> > > > > goes to runtime suspend even when client drivers and PCI-PCI bridge are
-> > > > > in active state.
-> > > > 
-> > > > It surprises me that a device could be suspended while children are
-> > > > active.  A PCI-PCI bridge must be in D0 for any devices below it to be
-> > > > active.  The controller is a platform device, not a PCI device, but I
-> > > > am similarly surprised that we would suspend it when children are
-> > > > active, which makes me think we didn't set the hierarchy up correctly.
-> > > > 
-> > > > It doesn't seem like we should need to enable runtime PM for a parent
-> > > > to keep it from being suspended when children are active.
-> > >
-> > > Here we are not enabling runtime PM of the controller device, we are
-> > > enabling runtime PM for the bridge device which is maintained by the
-> > > PCIe framework. The bridge device is the parent of the PCI-PCI
-> > > bridge and child of the controller device. As the bridge device's
-> > > runtime PM is not enabled the PM framework is ignoring the child's
-> > > runtime status.
-> > 
-> > OK, it's the host bridge, not the controller.
-> > 
-> > I'm still surprised that the PM framework will runtime suspend a
-> > device when child devices are active.
-> 
-> There is a catch here. Even though the child devices are funtionally
-> active, PM framework will only consider their runtime_pm state,
-> which is initially set to 'disabled' for all devices. It is upto the
-> device drivers to enable it when required.
-> 
-> Here is the initial runtime PM status of each device post boot:
-> 
-> Controller device -> disabled initially but enabled by pcie-qcom.c
-> Host bridge -> disabled initially
-> PCIe bridge -> disabled initially but conditionally enabled by portdrv.c
-> PCIe devices -> disabled initially but enabled by respective drivers like WLAN
-> 
-> Now, when the controller device goes to runtime suspend, PM
-> framework will check the runtime PM state of the child device (host
-> bridge) and will find it to be disabled. So it will allow the parent
-> (controller device) to go to runtime suspend. Only if the child
-> device's state was 'active' it will prevent the parent to get
-> suspended.
-> 
-> But you may wonder if this is ideal? IMO NO. But we cannot blame the
-> PM framework here. The responsibility is within the device drivers
-> to handle the PM state based on the usecase. Ideally, the host
-> bridge driver should've handled runtime PM state during the probe
-> time. Otherwise, PM framework wouldn't know when would be the best
-> time to suspend the devices.
+Add device tree documentation for AD4000 series of ADC devices.
 
-My expectation is that adding new functionality should only require
-changes in drivers that want to take advantage of it.  For example, if
-we add runtime PM support in the controller driver, the result should
-be functionally correct even if we don't update drivers for downstream
-devices.
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
+Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
 
-If that's not the way it works, I suggest that would be a problem in
-the PM framework.
+Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
+---
+Pasting relevant comment from cover letter here to aid reviewers.
 
-The host bridge might be a special case because we don't have a
-separate "host bridge" driver; that code is kind of integrated with
-the controller drivers.  So maybe it's OK to do controller + host
-bridge runtime PM support at the same time, as long as any time we add
-runtime PM to a controller, we sure it's also set up for the host
-bridge.
+These devices have the same SPI (Strange Peripheral Interface) as AD7944
+devices, which has been documented in ad7944.rst [1].
+The device tree description for SPI connections and mode can be the same as of
+ad7944 adi,spi-mode [2].
+Because ad4000 driver does not currently support daisy-chain mode, I simplified
+things a little bit. If having a more complete doc is preferred, I'm fine
+changing to that.
 
-Bjorn
+[1]: https://lore.kernel.org/linux-iio/20240313-mainline-ad7944-doc-v1-2-7860416726e4@baylibre.com/
+[2]: https://lore.kernel.org/linux-iio/20240304-ad7944-mainline-v5-1-f0a38cea8901@baylibre.com/
+
+ .../bindings/iio/adc/adi,ad4000.yaml          | 151 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +
+ 2 files changed, 158 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+new file mode 100644
+index 000000000000..9e3d6a3920ea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
+@@ -0,0 +1,151 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad4000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD4000 ADC device driver
++
++maintainers:
++  - Marcelo Schmitt <marcelo.schmitt@analog.com>
++
++description: |
++  Analog Devices AD4000 family of Analog to Digital Converters with SPI support.
++  Specifications can be found at:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4000-4004-4008.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4001-4005.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4002-4006-4010.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4003-4007-4011.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/ad4020-4021-4022.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4001.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/adaq4003.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad4000
++      - adi,ad4001
++      - adi,ad4002
++      - adi,ad4003
++      - adi,ad4004
++      - adi,ad4005
++      - adi,ad4006
++      - adi,ad4007
++      - adi,ad4008
++      - adi,ad4010
++      - adi,ad4011
++      - adi,ad4020
++      - adi,ad4021
++      - adi,ad4022
++      - adi,adaq4001
++      - adi,adaq4003
++
++  reg: true
++  spi-max-frequency: true
++
++  vref-supply:
++    description: Phandle to the regulator for ADC reference voltage.
++
++  adi,gain-milli:
++    description: |
++      The hardware gain applied to the ADC input (in milli units).
++      The gain provided by the ADC input scaler is defined by the hardware
++      connections between chip pins OUT+, R1K-, R1K1-, R1K+, R1K1+, and OUT-.
++      If not present, default to 1000 (no actual gain applied).
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [454, 909, 1000, 1900]
++    default: 1000
++
++  adi,spi-cs-mode:
++    type: boolean
++    description: |
++      This property indicates the SPI wiring configuration.
++
++      When this property is omitted, it indicates that the device SDI pin is
++      connected to SPI controller CS line and device CNV pin has been connected
++      to a GPIO. Datasheets call this "4-wire mode".
++
++      When this property is present, the driver must assume standard SPI
++      connections which, for these devices, consists of connecting the
++      controller CS line to device CNV pin. This configuration is
++      (misleadingly) called "3-wire mode" in datasheets.
++
++  cnv-gpios:
++    description: The GPIO connected to the CNV pin.
++    maxItems: 1
++
++patternProperties:
++  "^channel@([0-1])$":
++    $ref: adc.yaml
++    type: object
++    description: Represents the external channel connected to the ADC.
++
++    properties:
++      reg:
++        maxItems: 1
++
++      diff-channels: true
++
++    required:
++      - reg
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - vref-supply
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        adi,spi-cs-mode: false
++    then:
++      required:
++        - cnv-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        /* Example for a AD4000 devices */
++        adc@0 {
++            compatible = "adi,ad4020";
++            reg = <0>;
++            spi-max-frequency = <71000000>;
++            vref-supply = <&vref>;
++            cnv-gpios = <&gpio0 88 GPIO_ACTIVE_HIGH>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            channel@0 {
++                reg = <0>;
++                diff-channels = <0 1>;
++            };
++        };
++    };
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        /* Example for a ADAQ4000 devices */
++        adc@0 {
++            compatible = "adi,adaq4003";
++            reg = <0>;
++            spi-max-frequency = <80000000>;
++            vref-supply = <&vref>;
++            adi,spi-cs-mode;
++            adi,gain-milli = <454>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++            channel@0 {
++                reg = <0>;
++                diff-channels = <0 1>;
++            };
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2662ec49b297..3ca90f842298 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1135,6 +1135,13 @@ W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+ F:	drivers/iio/dac/ad3552r.c
+ 
++ANALOG DEVICES INC AD4000 DRIVER
++M:	Marcelo Schmitt <marcelo.schmitt@analog.com>
++L:	linux-iio@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
++
+ ANALOG DEVICES INC AD4130 DRIVER
+ M:	Cosmin Tanislav <cosmin.tanislav@analog.com>
+ L:	linux-iio@vger.kernel.org
+-- 
+2.43.0
+
 
