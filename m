@@ -1,243 +1,243 @@
-Return-Path: <linux-kernel+bounces-111305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BB48886A75
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:34:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 411A4886A45
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D873B26CC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:34:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 656191C20E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF953EA98;
-	Fri, 22 Mar 2024 10:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=OUTLOOK.COM.AU header.i=@OUTLOOK.COM.AU header.b="tHpe1s9y"
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2181.outbound.protection.outlook.com [40.92.62.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E9339860;
+	Fri, 22 Mar 2024 10:29:48 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 338583D3A4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.62.181
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711103642; cv=fail; b=VWgmt8ypELwvLoNHB4kCsuZITeLKut+be7uUkWKxpa0hrXcltQTaTSvx9Y5qsO3fGSSlwaope0y6+m7UA1jxeXVxabs3EtUMlESgzeevX1fKQ/e6q842ieRjwx0spAi5IMmaMjQlBqCRCJjrnN9muLVfevnT0R54cJsu8Rf03So=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711103642; c=relaxed/simple;
-	bh=q2CSOORofJAO2oPdxbMV8QGH9tynPBLZaTq9JpjMcko=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=A+Ao2pLyoPXYEtcmN6E8+sWfwi0d9TYU8fH8GO8EFeRz/309giOeK86XGHjbhT4+Iy+2oTqdY+LZOnrzHyXlU3YRxjTa18h4qNLZJb5+eKTFc54RyVb35AV3oyUFVwHOM62EPX70aGZiE14KbsnftC3VBa+KoxQ7pQZBm37y2vM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com.au; spf=pass smtp.mailfrom=outlook.com.au; dkim=pass (2048-bit key) header.d=OUTLOOK.COM.AU header.i=@OUTLOOK.COM.AU header.b=tHpe1s9y; arc=fail smtp.client-ip=40.92.62.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com.au
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c5/s891G6W8OyNJlnMcR4izCIGZffCgBwIOUqHmk+ZICcKyOt8Jnf6MYabKat+HgA1T5/+75sFlVd+7oB91Qf7+5fbsXRWk18cqshZsiFwk2w4nPCvI3RZzc8ERsKBkLtanjDpdGX9Gsw9P+JLxLA17leqgV/2dohgatDR9W3+c3/R5R/wrG0J1sprJmSyd8qTi7dKPPQbJvKU1/EQn6q3KgNPwK0NL/B3UE8OpvysVVKTMHQfzvCbtggTJyPPI8T5O2QuEdjvut2KpZwXn45dmz7OyPfXssIpYoRDHweY+uBS2gG5JKrc/M1tF1GjR2ty7gklM3jIs64yfLuTD0+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Fuo327e0tLMjSKRCCf6sFQ/r/yyShcRDGK5T10NabhY=;
- b=QfC4jMMpeMrA9G2oeNh1Njt2ggh72RyLGVH2DT4L1WALxLkteSFhVrL7RhDu3dbQE/j0sogm6jRKqz1dAtihf9F7XIcJRIRqACWRqArsDSOs+egTvrw5Vm2TzQnSj19fr9mrtdiRS99jTn3KpVx61+vIQu2Byg66oJ9Jhk2VwwDYvIOn4bGzRzxaiXPYH38/cgsVnIoBeLNidoiD0WcNIPX54sfqu1fW2m/D43O2F4oC0aWCsusI1gw5SAs5HHxSq+p/4b9PBhyutxL5UiPvUFxwRkh+A8hvCkeQg3dP65tjUHQg6mowCxl30yJayqkv9v901wM2+BuiJ7DocVzd2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=OUTLOOK.COM.AU;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fuo327e0tLMjSKRCCf6sFQ/r/yyShcRDGK5T10NabhY=;
- b=tHpe1s9yI/pP69oqiYL33OE+640b/TQuj1LJtrlliM9JY5j2ZtjH7ut4IlXnReAwIA0MhW75/w85ieVIUoMqyPj3BifkrfRRJBYedZH01jFz/VUdOhyFPU20gwwvP1ZL9Tw10OlIb0aTKlSJJAS+vJcbFYk0ZXPNp+WhtzMI7XjskBo8e5HqqjncXcivQl1rrF7p/AIXCBRh09A4Pmv9Zy4i1JUJfpDuEkSoRWmrxjACNp/+mcPl4G1kcQ2blhzKMYziTVhPoCog0ZE9nG+1nR2eZDEmU6rYdyUeXhbbAjYTDlpZ/W9+aqmtJ9Pl0HcYGcqLjUzuv0G7tUukibncXA==
-Received: from SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:159::9) by
- SY8P282MB5238.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:2b5::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.30; Fri, 22 Mar 2024 10:33:53 +0000
-Received: from SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
- ([fe80::22c8:76c8:58ad:f00d]) by SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
- ([fe80::22c8:76c8:58ad:f00d%3]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
- 10:33:53 +0000
-From: Stephen Horvath <s.horvath@outlook.com.au>
-To: Lee Jones <lee@kernel.org>,
-	Benson Leung <bleung@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	chrome-platform@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Stephen Horvath <s.horvath@outlook.com.au>
-Subject: [PATCH 2/2] platform/chrome: cros_kbd_led_backlight: Remove obsolete commands (EC_CMD_PWM_*_KEYBOARD_BACKLIGHT)
-Date: Fri, 22 Mar 2024 20:27:59 +1000
-Message-ID:
- <SY4P282MB3063D447DA09D35F5FBD4721C5312@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240322102800.1322022-1-s.horvath@outlook.com.au>
-References: <20240322102800.1322022-1-s.horvath@outlook.com.au>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:
- [xcla9VZ8m/6GwZ6d+Io/C7rkYK4AIWt7E30yCe0/PdTm+3jaINrD1YQS69ohbGN5KfXFar0MPJw=]
-X-ClientProxiedBy: SYCPR01CA0033.ausprd01.prod.outlook.com
- (2603:10c6:10:e::21) To SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:159::9)
-X-Microsoft-Original-Message-ID:
- <20240322102800.1322022-3-s.horvath@outlook.com.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CAC383B4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711103387; cv=none; b=rJDigrxJNE8+9z7ADa/Tv1ymfLzkmZy2TfqmEiLGwgjgw2/ij2F9YbEuUoXkdsObN7fD/uOJLRezr/7ycuyB/TpPhm+Oy/az7Oe4068pNeWjY8t1nW7xJ+nKVGZXZATedrNKRWJCMmwQd74jxO3XFhx6U7rQBnJDEk6gpbrK6tw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711103387; c=relaxed/simple;
+	bh=TzuZKg4wTSaypun8Dhv4hpmvRrycXdOakEwS2qR1tPA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N7xvMq5B2/LC8yj9dcMzf/n7jYec9LIMEYkKveWzxjc20GTffEEh4ojVLi9QV/TGBopAWzo5BKapAG8vEi3Q/UbmtmeQC0ZfOPuJ9uOk2fVwuIfPckvH+hhI5tHZc8OgF3zopx+z+3snQUX5qtG2z5aCzsWV+saPQB/K+ldD1Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4V1J7q28kyz9xHdX
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:13:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 33D4E140893
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:29:36 +0800 (CST)
+Received: from [10.48.131.63] (unknown [10.48.131.63])
+	by APP1 (Coremail) with SMTP id LxC2BwB3bheFXf1lrYTJBA--.54462S2;
+	Fri, 22 Mar 2024 11:29:35 +0100 (CET)
+Message-ID: <7287376a-f2d8-4f7a-84b8-1f445ae69968@huaweicloud.com>
+Date: Fri, 22 Mar 2024 11:29:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB3063:EE_|SY8P282MB5238:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a207680-89e6-4600-a1a8-08dc4a5b9240
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	wBETH778bwXOyPdlBl/m4Nk1EdI9ZtBYhfKVX6V29SvsTa0kLgMpelDRNMcNTRxGWcoirnnKdv7B3TMiCBwQnNOOEv583h5s8LjvRMiOXbXpOgk9raQEzDaPD6aLRDsQBj35dbYlOkTVCNbwhmW9XILfFm7RKbRVdZcQQzB5Q/yrfozNtPYxGlqbRwF0t/R9+yyorUymuKq+0BvjytgIQ1S/RklB2K2Di0Nm6MLqiLojj6+CLtkHPFWKLLV7HmRsDG4f9T/jpo0wCVZhBOYkuarS5eCOebsAqY+fC+BDpFM7cLMDFiW32uZFMZiXNE60kStrvKZx5nBHktVB6fnAcreuUzq9ya8H1OA4zygfi8fYxZOBiaHjJf29emPlrh4OTeEZSRBPUmVSa9cO+kyTTMbENrj41548qB5bHOhSJXopzrVpy9BHMwFhxoPvoko8N2sMgRG6YhHZbqg4w4GwUnQTGWme0+JDwrP7YSyLuIWgFNV6Po4suNplSDzmBJjkPgNF0pbux+A5TBJyhIZUARebEnp3SkMyogQFvqZesJw76I/3pBFuLR2w5WvqbglCOxTPgCpgeM/OGng/L1E235vgknvtrit1E0/o0BUJJui2LYHzEtGOoF5Cfur2hN0c
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?aQyqeuQBxI4utWl9jwteQQfnT/zA81/T5GUaBLrVOqaT9W94FiH37ur5OTag?=
- =?us-ascii?Q?aAmky2+XsL9Mhb7fG/p3OKOV2tzCKkPH14Cv+MuDMCdLoLZtNAgZ1pAwaw8t?=
- =?us-ascii?Q?mrBqLp4iOB++hA8vddxDDq63Pc3eUXD7MWtXNYl6fYmdL7Q+48yhh76VLlek?=
- =?us-ascii?Q?/a7ZAlXFzMgcK8r9YVfpxXdFOS0kXF63oSd5bxECjedthormO5uunMDmXVzY?=
- =?us-ascii?Q?xlpXBFO3sO1cg3hLalStAe6GzoHo9hj3kb3Yq4OlimpRAzIZSLlq6zbT3uxo?=
- =?us-ascii?Q?2GGhmbY92uH1ZpLEcgCKUm9N0WTn4eQbdUulA4zUmt1dG+PM2bbhzE+w7a7N?=
- =?us-ascii?Q?Z9EvACim3U89esEKTg/aGwhFunIOKwGbPcC4M3LyXvMQ5MDf0TDpov2LBw5c?=
- =?us-ascii?Q?x3dcbtWILPDyXP/3DJQvs8OLpIqxrpHCNOXO/4ckUdbpW07NuXKQnbxNjyYc?=
- =?us-ascii?Q?ayFPq2m+eta6Wr+S8dEUlOICIouk5AwYiXN0qBVabNc7q8NKugDfGqjtKk9A?=
- =?us-ascii?Q?zjOTq+BuDqVGCEbWf3mTRwcZBG1kwsmheI5EtUDzV/DZLGBcwFrNvISnwS+l?=
- =?us-ascii?Q?75Gkr3BOIqCvaunwPm/TQYvBQ5HZtdUlrkynxOCUPU9KjC+2IhKWDiiyJhu3?=
- =?us-ascii?Q?tXK+74Skj9Z//fH63hPfRqI/iouUypJ8WTv7e7WAYEOCSd93TuGW0T1gpesQ?=
- =?us-ascii?Q?M3oGZHYzMfv0uU3UfwptQMEzXZpfMq38pyHYsO3uhlrXG2MQvZ7TkZjAvPpq?=
- =?us-ascii?Q?cv5A80q/v8ZYSpFC2jJzSwSN0T/Q87iINhSbcIPZWxQwPs4cNyMAAn7aCCS+?=
- =?us-ascii?Q?4Xj7+mnvMOwcX7tOuV4iYYb5EHz3U35cRQiW2qOBqQm7qqrlHghILCeZInyE?=
- =?us-ascii?Q?yH+bY7At1JsXDfd08evDfjsnhFqRiRuvoxYux6OEx+i+i34wBgc2zoQZfn4S?=
- =?us-ascii?Q?GRPqOfiApTkjRpz2s6eM32hctd9tAY8m9qScH+b+MM+3XtgXIMa1T6Nvww14?=
- =?us-ascii?Q?NVL2/iy3Gjui7d+LXOF59ecu+VvPc3aHdroG3hW8ISnRiyFsJbMbiLZJmB9p?=
- =?us-ascii?Q?LZe4gIZG0UphdQfW/y2lKK4GdsLCFxWXJ5UufyZLzG9hKAWXAY5+8PMkgfXa?=
- =?us-ascii?Q?fkCA/YjYvdDJYYVuTxPGbYrcLIw2Mb+UP9QwbUngD19drRvRJ1oGcZZAm9rA?=
- =?us-ascii?Q?ff2RqlrIVP38WxmCyJmEhWtX6LK84dH0eyL5SMnH3ItJ8RA/Rlnkk1D4OIQk?=
- =?us-ascii?Q?Ltw4bo8ANfYtiheRiD76dhBz4OzEXkXFaKg4cSB4nlZyol1nPq/p6E12KE7/?=
- =?us-ascii?Q?TLuXW7YTv1GviYs+MxYmAyRg?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a207680-89e6-4600-a1a8-08dc4a5b9240
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 10:33:53.7537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY8P282MB5238
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] swiotlb: extend buffer pre-padding to
+ alloc_align_mask if necessary
+To: Michael Kelley <mhklinux@outlook.com>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+ Will Deacon <will@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ Petr Tesarik <petr@tesarici.cz>
+References: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+ <20240321171902.85-2-petrtesarik@huaweicloud.com>
+ <SN6PR02MB4157AC19CFB8B800EA9748B3D4312@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Language: en-US
+From: Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <SN6PR02MB4157AC19CFB8B800EA9748B3D4312@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwB3bheFXf1lrYTJBA--.54462S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF17Jr1rXry5JFW8Aw4rGrg_yoWxCr45pr
+	WfJa1rKFWkJFyxCan29a18JF1S9w1kCrW7CF43KFyY9ryDXr1rWF98A3yYga4Sqr4v9FW2
+	v3WF9r4xu3W7XrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+	UUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
-EC_CMD_PWM_GET_KEYBOARD_BACKLIGHT and EC_CMD_PWM_SET_KEYBOARD_BACKLIGHT
-are marked as obsolete in `cros_ec_commands.h`, this patch removes the
-usage of these commands from the driver.
+On 3/22/2024 5:29 AM, Michael Kelley wrote:
+> From: Petr Tesarik <petrtesarik@huaweicloud.com> Sent: Thursday, March 21, 2024 10:19 AM
+>>
+>> Allow a buffer pre-padding of up to alloc_align_mask. If the allocation
+>> alignment is bigger than IO_TLB_SIZE and min_align_mask covers any non-zero
+>> bits in the original address between IO_TLB_SIZE and alloc_align_mask,
+>> these bits are not preserved in the swiotlb buffer address.
+>>
+>> To fix this case, increase the allocation size and use a larger offset
+>> within the allocated buffer. As a result, extra padding slots may be
+>> allocated before the mapping start address.
+>>
+>> Leave orig_addr in these padding slots initialized to INVALID_PHYS_ADDR.
+>> These slots do not correspond to any CPU buffer, so attempts to sync the
+>> data should be ignored.
+>>
+>> The padding slots should be automatically released when the buffer is
+>> unmapped. However, swiotlb_tbl_unmap_single() takes only the address of the
+>> DMA buffer slot, not the first padding slot. Save the number of padding
+>> slots in struct io_tlb_slot and use it to adjust the slot index in
+>> swiotlb_release_slots(), so all allocated slots are properly freed.
+>>
+>> Fixes: 2fd4fa5d3fb5 ("swiotlb: Fix alignment checks when both allocation and DMA masks are present")
+>> Link: https://lore.kernel.org/linux-iommu/20240311210507.217daf8b@meshulam.tesarici.cz/
+>> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+>> ---
+>>  kernel/dma/swiotlb.c | 35 +++++++++++++++++++++++++++++------
+>>  1 file changed, 29 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+>> index 86fe172b5958..3779a48eec9b 100644
+>> --- a/kernel/dma/swiotlb.c
+>> +++ b/kernel/dma/swiotlb.c
+>> @@ -69,11 +69,14 @@
+>>   * @alloc_size:	Size of the allocated buffer.
+>>   * @list:	The free list describing the number of free entries available
+>>   *		from each index.
+>> + * @pad_slots:	Number of preceding padding slots. Valid only in the first
+>> + *		allocated non-padding slot.
+>>   */
+>>  struct io_tlb_slot {
+>>  	phys_addr_t orig_addr;
+>>  	size_t alloc_size;
+>> -	unsigned int list;
+>> +	unsigned short list;
+>> +	unsigned short pad_slots;
+>>  };
+>>
+>>  static bool swiotlb_force_bounce;
+>> @@ -287,6 +290,7 @@ static void swiotlb_init_io_tlb_pool(struct io_tlb_pool *mem, phys_addr_t start,
+>>  					 mem->nslabs - i);
+>>  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+>>  		mem->slots[i].alloc_size = 0;
+>> +		mem->slots[i].pad_slots = 0;
+>>  	}
+>>
+>>  	memset(vaddr, 0, bytes);
+>> @@ -1328,11 +1332,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+>>  		unsigned long attrs)
+>>  {
+>>  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+>> -	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+>> +	unsigned int offset;
+>>  	struct io_tlb_pool *pool;
+>>  	unsigned int i;
+>>  	int index;
+>>  	phys_addr_t tlb_addr;
+>> +	unsigned short pad_slots;
+>>
+>>  	if (!mem || !mem->nslabs) {
+>>  		dev_warn_ratelimited(dev,
+>> @@ -1349,6 +1354,15 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+>>  		return (phys_addr_t)DMA_MAPPING_ERROR;
+>>  	}
+>>
+>> +	/*
+>> +	 * Calculate buffer pre-padding within the allocated space. Use it to
+>> +	 * preserve the low bits of the original address according to device's
+>> +	 * min_align_mask. Limit the padding to alloc_align_mask or slot size
+>> +	 * (whichever is bigger); higher bits of the original address are
+>> +	 * preserved by selecting a suitable IO TLB slot.
+>> +	 */
+>> +	offset = orig_addr & dma_get_min_align_mask(dev) &
+>> +		(alloc_align_mask | (IO_TLB_SIZE - 1));
+>>  	index = swiotlb_find_slots(dev, orig_addr,
+>>  				   alloc_size + offset, alloc_align_mask, &pool);
+>>  	if (index == -1) {
+>> @@ -1364,6 +1378,10 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+>>  	 * This is needed when we sync the memory.  Then we sync the buffer if
+>>  	 * needed.
+>>  	 */
+>> +	pad_slots = offset / IO_TLB_SIZE;
+>> +	offset %= IO_TLB_SIZE;
+>> +	index += pad_slots;
+>> +	pool->slots[index].pad_slots = pad_slots;
+>>  	for (i = 0; i < nr_slots(alloc_size + offset); i++)
+>>  		pool->slots[index + i].orig_addr = slot_addr(orig_addr, i);
+>>  	tlb_addr = slot_addr(pool->start, index) + offset;
+>> @@ -1385,12 +1403,16 @@ static void swiotlb_release_slots(struct device *dev, phys_addr_t tlb_addr)
+>>  	struct io_tlb_pool *mem = swiotlb_find_pool(dev, tlb_addr);
+>>  	unsigned long flags;
+>>  	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
+>> -	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
+>> -	int nslots = nr_slots(mem->slots[index].alloc_size + offset);
+>> -	int aindex = index / mem->area_nslabs;
+>> -	struct io_tlb_area *area = &mem->areas[aindex];
+>> +	int index, nslots, aindex;
+>> +	struct io_tlb_area *area;
+>>  	int count, i;
+>>
+>> +	index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
+>> +	index -= mem->slots[index].pad_slots;
+>> +	nslots = nr_slots(mem->slots[index].alloc_size + offset);
+>> +	aindex = index / mem->area_nslabs;
+>> +	area = &mem->areas[aindex];
+>> +
+>>  	/*
+>>  	 * Return the buffer to the free list by setting the corresponding
+>>  	 * entries to indicate the number of contiguous entries available.
+>> @@ -1413,6 +1435,7 @@ static void swiotlb_release_slots(struct device *dev, phys_addr_t tlb_addr)
+>>  		mem->slots[i].list = ++count;
+>>  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+>>  		mem->slots[i].alloc_size = 0;
+>> +		mem->slots[i].pad_slots = 0;
+>>  	}
+>>
+>>  	/*
+>> --
+>> 2.34.1
+> 
+> I've tested this patch in conjunction with Will's series of 6 patches, and
+> all looks good.  I tested on x86/x64 w/4K page size and on arm64
+> w/64K page size and a variety of min_align_mask values, alloc_align_mask
+> values, mapping size values, and orig_addr low order bits.  The tests are
+> doing disk I/O through the bounce buffers, and they verify that the data
+> written can be read back correctly.  So the bouncing is working correctly
+> with the slots that are being set up.
+> 
+> I'm not able to test with min_align_mask less than 4K, because my
+> synthetic disk driver doesn't work if that alignment isn't maintained.
+> But min_align_mask values of 8K, 16K, and 64K work correctly.  I've
+> seen up to 5 padding slots be allocated.
 
-The max brightness value is now set to `EC_PWM_MAX_DUTY` (65535) when
-running on the EC, as this is the maximum value that the EC can accept.
+Thank you for this extensive testing. Just wow!
 
-Signed-off-by: Stephen Horvath <s.horvath@outlook.com.au>
----
- .../platform/chrome/cros_kbd_led_backlight.c  | 37 +++++++++++++------
- 1 file changed, 25 insertions(+), 12 deletions(-)
+> I have not tried any 32-bit builds.
 
-diff --git a/drivers/platform/chrome/cros_kbd_led_backlight.c b/drivers/platform/chrome/cros_kbd_led_backlight.c
-index 06e9a57536af..bc021437e8b1 100644
---- a/drivers/platform/chrome/cros_kbd_led_backlight.c
-+++ b/drivers/platform/chrome/cros_kbd_led_backlight.c
-@@ -47,10 +47,10 @@ struct keyboard_led_drvdata {
- 	enum led_brightness max_brightness;
- };
- 
--#define KEYBOARD_BACKLIGHT_MAX 100
--
- #ifdef CONFIG_ACPI
- 
-+#define ACPI_KEYBOARD_BACKLIGHT_MAX 100
-+
- /* Keyboard LED ACPI Device must be defined in firmware */
- #define ACPI_KEYBOARD_BACKLIGHT_DEVICE	"\\_SB.KBLT"
- #define ACPI_KEYBOARD_BACKLIGHT_READ	ACPI_KEYBOARD_BACKLIGHT_DEVICE ".KBQC"
-@@ -114,7 +114,7 @@ static const struct keyboard_led_drvdata keyboard_led_drvdata_acpi = {
- 	.init = keyboard_led_init_acpi,
- 	.brightness_set = keyboard_led_set_brightness_acpi,
- 	.brightness_get = keyboard_led_get_brightness_acpi,
--	.max_brightness = KEYBOARD_BACKLIGHT_MAX,
-+	.max_brightness = ACPI_KEYBOARD_BACKLIGHT_MAX,
- };
- 
- #endif /* CONFIG_ACPI */
-@@ -127,18 +127,22 @@ keyboard_led_set_brightness_ec_pwm(struct led_classdev *cdev,
- {
- 	struct {
- 		struct cros_ec_command msg;
--		struct ec_params_pwm_set_keyboard_backlight params;
-+		struct ec_params_pwm_set_duty params;
- 	} __packed buf;
--	struct ec_params_pwm_set_keyboard_backlight *params = &buf.params;
-+	struct ec_params_pwm_set_duty *params = &buf.params;
- 	struct cros_ec_command *msg = &buf.msg;
- 	struct keyboard_led *keyboard_led = container_of(cdev, struct keyboard_led, cdev);
- 
- 	memset(&buf, 0, sizeof(buf));
- 
--	msg->command = EC_CMD_PWM_SET_KEYBOARD_BACKLIGHT;
-+	msg->version = 0;
-+	msg->command = EC_CMD_PWM_SET_DUTY;
-+	msg->insize = 0;
- 	msg->outsize = sizeof(*params);
- 
--	params->percent = brightness;
-+	params->duty = brightness;
-+	params->pwm_type = EC_PWM_TYPE_KB_LIGHT;
-+	params->index = 0;
- 
- 	return cros_ec_cmd_xfer_status(keyboard_led->ec, msg);
- }
-@@ -148,23 +152,32 @@ keyboard_led_get_brightness_ec_pwm(struct led_classdev *cdev)
- {
- 	struct {
- 		struct cros_ec_command msg;
--		struct ec_response_pwm_get_keyboard_backlight resp;
-+		union {
-+			struct ec_params_pwm_get_duty params;
-+			struct ec_response_pwm_get_duty resp;
-+		};
- 	} __packed buf;
--	struct ec_response_pwm_get_keyboard_backlight *resp = &buf.resp;
-+	struct ec_params_pwm_get_duty *params = &buf.params;
-+	struct ec_response_pwm_get_duty *resp = &buf.resp;
- 	struct cros_ec_command *msg = &buf.msg;
- 	struct keyboard_led *keyboard_led = container_of(cdev, struct keyboard_led, cdev);
- 	int ret;
- 
- 	memset(&buf, 0, sizeof(buf));
- 
--	msg->command = EC_CMD_PWM_GET_KEYBOARD_BACKLIGHT;
-+	msg->version = 0;
-+	msg->command = EC_CMD_PWM_GET_DUTY;
- 	msg->insize = sizeof(*resp);
-+	msg->outsize = sizeof(*params);
-+
-+	params->pwm_type = EC_PWM_TYPE_KB_LIGHT;
-+	params->index = 0;
- 
- 	ret = cros_ec_cmd_xfer_status(keyboard_led->ec, msg);
- 	if (ret < 0)
- 		return ret;
- 
--	return resp->percent;
-+	return resp->duty;
- }
- 
- static int keyboard_led_init_ec_pwm(struct platform_device *pdev)
-@@ -186,7 +199,7 @@ static const __maybe_unused struct keyboard_led_drvdata keyboard_led_drvdata_ec_
- 	.init = keyboard_led_init_ec_pwm,
- 	.brightness_set_blocking = keyboard_led_set_brightness_ec_pwm,
- 	.brightness_get = keyboard_led_get_brightness_ec_pwm,
--	.max_brightness = KEYBOARD_BACKLIGHT_MAX,
-+	.max_brightness = EC_PWM_MAX_DUTY,
- };
- 
- #else /* IS_ENABLED(CONFIG_CROS_EC) */
--- 
-2.43.0
+I have at least tried my KUnit test with --arch=arm, and that passes all
+tests. But I agree it doesn't prove much.
+
+Petr T
+
+> Overall, it looks solid to me.
+> 
+> Tested-by: Michael Kelley <mhklinux@outlook.com>
+> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 
 
