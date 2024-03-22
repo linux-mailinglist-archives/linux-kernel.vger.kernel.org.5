@@ -1,128 +1,123 @@
-Return-Path: <linux-kernel+bounces-111317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B019C886A97
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:43:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3FF886A9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:43:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B89B1F22481
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7B62850E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8503CF79;
-	Fri, 22 Mar 2024 10:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068D63D0B3;
+	Fri, 22 Mar 2024 10:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jlZfA/Ok"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cOf7Awtl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392C27E6;
-	Fri, 22 Mar 2024 10:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89917E6
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711104191; cv=none; b=ME3zBfCJ2a350Uc4X11U0QxFk89WmRjm2hoynV0tN2+vLO8NsEgSsGWhlCr8QlriWqkYzLhz9CUS67pSoegYwuS0KWzk8CJ5r8Q7ca/UDKJD6TVScFcvfg/iNU+/NDIaI14bbSVLr8xh6p9oIr3i8qQrtUteLRLrgOoGEuue3yQ=
+	t=1711104221; cv=none; b=BwmmFxQVmOUsyjFj7IuUdr09V9pgFgcRLRcui9T6ocAojrUXVfzeRgJ1pS/crO4RNrqkc5Da6M2KsgBm74uPP7q3Dgm8RmbKVFhgAhruGvWLD3RDQsAUvOcjBhqzTRJljrbr0Ojuwx6taiLk7nB7O7Jvz63YYfCZFFfOc3nClUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711104191; c=relaxed/simple;
-	bh=gIU75Sab8N34yflwxn9vXeXb4fy5IFzZtVW946fjV4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kbdSWWF1ce1g4cdU9VQYfL2oMyB8fxypXAR8G9siSCe/+Xc6dC7jskRlPEL7iYiagdkN3luuoP7i8od1/qLIkNg6cYx6qTq3rNsao8CpmOQns38szsMF811oaTXPzNyn1uIgRZ6IeSajbb92yHzV9LhoMFfje9iEzXlV7tSD+H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlZfA/Ok; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48BBAC433F1;
-	Fri, 22 Mar 2024 10:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711104190;
-	bh=gIU75Sab8N34yflwxn9vXeXb4fy5IFzZtVW946fjV4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jlZfA/OkY6f1wSYV+TNcTlqIoHFpyJwc8UgryNf7aK3HaVV91TyS6q6yL7bcz50Rs
-	 atf9f+wwMjib97Ei3jG13Y2HSOLhhh4lUAvkVeQU9E/y9LhM1qoSstkFGMWE9W1qf8
-	 XmXUxlbpjjiFC/FeFs9io/i1X18M9KyqWydRV3zWU1DXeB2yi5BrcWwSarY71HyOde
-	 HivAY11FODDdvLE1OYem89cDax2GcqPvmuDcFyAQ+wdKRctNbq+rzXTGc1z0kq27Kz
-	 x2IqJZ+oYb/KLjZGbtmVxR0tRD2actyFdDkMI1T6SdjdrL8+M+maBDWQ+h9wUilJwP
-	 aMG5F6CDgbFaA==
-Date: Fri, 22 Mar 2024 10:43:03 +0000
-From: Lee Jones <lee@kernel.org>
-To: George Stark <gnstark@salutedevices.com>
-Cc: andy.shevchenko@gmail.com, pavel@ucw.cz, vadimp@nvidia.com,
-	christophe.leroy@csgroup.eu, hdegoede@redhat.com,
-	mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
-	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-	nikitos.tr@gmail.com, marek.behun@nic.cz, kabel@kernel.org,
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel@salutedevices.com
-Subject: Re: [PATCH v7 0/8] devm_led_classdev_register() usage problem
-Message-ID: <20240322104303.GN13211@google.com>
-References: <20240314201856.1991899-1-gnstark@salutedevices.com>
- <20240321181133.GG13211@google.com>
- <9bfd0ccc-a5d8-446c-a08c-bbc36a4d66eb@salutedevices.com>
+	s=arc-20240116; t=1711104221; c=relaxed/simple;
+	bh=S8Z7aChjuflwNhwZ9CR9vs1643uDXcQF3L3Qw+I+IUk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lHcNSQbFGks055bEOtdEqVcmHojMYNh5A+Y89Sskip7nf42+SJiwKYyRQVBtkaXuODNgC96112QWfeUqeWHzQrtn/xV55s8HexvJD4Dv8cCTg6rDkBoaRI3G8TZJJZ8U5VPAYleBeqg539+CCCOZoysWw2B3wxkUqQkPaq5+XfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cOf7Awtl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711104218;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e4hqr5sqga/uu4OSt9i/tA6ZdLVrKguR4cLu3EI2g3Y=;
+	b=cOf7Awtlm66/grHI/GtbzfU3c1FKuTshw8yAvxFfro6uWZREYmkxt1oRD8q51PyqLfwfBB
+	RYFNEeHcdkFTPqyn/tARoplktR+5lxjr2No1pZzu0sEMnbF/vwu+AAolUqH2fbO602EEpV
+	fG5nxqQuG0CpiTSXZm9DVZJzvDHPAGE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-vHgEMmDMP-u0JC6VqNPMZw-1; Fri, 22 Mar 2024 06:43:37 -0400
+X-MC-Unique: vHgEMmDMP-u0JC6VqNPMZw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41464672d85so10743685e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:43:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711104216; x=1711709016;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e4hqr5sqga/uu4OSt9i/tA6ZdLVrKguR4cLu3EI2g3Y=;
+        b=otyrFH0DsC2ZTDggiLnUBtJ0fpoo2HQUn3cYC3ZGHJifMNbeoGZsnTTMfcKZun3/6B
+         dsuOgbPKJrV8a4h8DdXVtKu2OmfV4MbC4NXqRzzr82hq8cBg/pByUlc4JUibaM7h2OW1
+         j7MfQRTJ+LnA3R28t/zsV+nOqiypPGu4d/FwJS+MSdazS483ga4iGtsc5g96XB8hUSj8
+         KUnIgMtFGwYW7S5bLY3EeM001iYXVWOxzJD0L4llQcUWh+MMvCzuzIQcNHl0ix/Nz/n7
+         UGD0O1URWMt0LlEuLTzrzXO1SP6aT4UvnBmbSe8LIEaU2wTSkr6X49NuM8nO1fuwVj80
+         PeVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGKiRRkI+JGHs+rrw8sC4FB3AfZ5FBNE2rintagUNBOJJxfkw7G6sLq3d/jDGXH6FdoxOENby5GNQDtnNSUZUC1tBsdnd5gc/PeII8
+X-Gm-Message-State: AOJu0YwF6NoOcu4oKooaBfl5sNINlRBO8xWV9TcvhafFPa05+/AGhzoJ
+	+/HFW78Srhfo6IdRBRhLn7qP3LKc7eQeBiIyZAa3FsDzLha1YbhcVSMF8cG+kkegfkGUGOIf/LS
+	Uly5I9/IOE93vNc8cCGwjHE8QKrBw5V4UP4jl82swAmROE3/dwT9ikC3wfFrFOQ==
+X-Received: by 2002:a5d:4145:0:b0:33e:9451:c299 with SMTP id c5-20020a5d4145000000b0033e9451c299mr1237990wrq.26.1711104216101;
+        Fri, 22 Mar 2024 03:43:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFsAkU+2jK4kRfvDnw8i0oVWh6n19VVa3BIi69kxPxPYLEkn3rIbnPUV1SFTkGh0njd+owt8g==
+X-Received: by 2002:a5d:4145:0:b0:33e:9451:c299 with SMTP id c5-20020a5d4145000000b0033e9451c299mr1237971wrq.26.1711104215672;
+        Fri, 22 Mar 2024 03:43:35 -0700 (PDT)
+Received: from localhost ([90.167.87.57])
+        by smtp.gmail.com with ESMTPSA id n10-20020adfe34a000000b0033de10c9efcsm1771312wrj.114.2024.03.22.03.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 03:43:35 -0700 (PDT)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, nbowler@draconx.ca, deller@gmx.de
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+ Daniel Vetter <daniel@ffwll.ch>, Sam Ravnborg <sam@ravnborg.org>, Arnd
+ Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert+renesas@glider.be>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] fbdev: Select I/O-memory framebuffer ops for SBus
+In-Reply-To: <20240322083005.24269-1-tzimmermann@suse.de>
+References: <20240322083005.24269-1-tzimmermann@suse.de>
+Date: Fri, 22 Mar 2024 11:43:31 +0100
+Message-ID: <877chu1r8s.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9bfd0ccc-a5d8-446c-a08c-bbc36a4d66eb@salutedevices.com>
+Content-Type: text/plain
 
-On Fri, 22 Mar 2024, George Stark wrote:
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-> Hello Lee
-> 
-> On 3/21/24 21:11, Lee Jones wrote:
-> > On Thu, 14 Mar 2024, George Stark wrote:
-> > 
-> > > This patch series fixes the problem of devm_led_classdev_register misusing.
-> > > 
-> > > The basic problem is described in [1]. Shortly when devm_led_classdev_register()
-> > > is used then led_classdev_unregister() called after driver's remove() callback.
-> > > led_classdev_unregister() calls driver's brightness_set callback and that callback
-> > > may use resources which were destroyed already in driver's remove().
-> > > 
-> > > After discussion with maintainers [2] [3] we decided:
-> > > 1) don't touch led subsystem core code and don't remove led_set_brightness() from it
-> > > but fix drivers
-> > > 2) don't use devm_led_classdev_unregister
-> > > 
-> > > So the solution is to use devm wrappers for all resources
-> > > driver's brightness_set() depends on. And introduce dedicated devm wrapper
-> > > for mutex as it's often used resource.
-> 
-> ...
-> 
-> > >    locking/mutex: introduce devm_mutex_init()
-> > >    leds: aw2013: use devm API to cleanup module's resources
-> > >    leds: aw200xx: use devm API to cleanup module's resources
-> > >    leds: lp3952: use devm API to cleanup module's resources
-> > >    leds: lm3532: use devm API to cleanup module's resources
-> > >    leds: nic78bx: use devm API to cleanup module's resources
-> > >    leds: mlxreg: use devm_mutex_init() for mutex initialization
-> > >    leds: an30259a: use devm_mutex_init() for mutex initialization
-> > > 
-> > >   drivers/leds/leds-an30259a.c | 14 ++++----------
-> > >   drivers/leds/leds-aw200xx.c  | 32 +++++++++++++++++++++-----------
-> > >   drivers/leds/leds-aw2013.c   | 25 +++++++++++++------------
-> > >   drivers/leds/leds-lm3532.c   | 29 +++++++++++++++++------------
-> > >   drivers/leds/leds-lp3952.c   | 21 +++++++++++----------
-> > >   drivers/leds/leds-mlxreg.c   | 14 +++++---------
-> > >   drivers/leds/leds-nic78bx.c  | 23 +++++++++++++----------
-> > >   include/linux/mutex.h        | 27 +++++++++++++++++++++++++++
-> > >   kernel/locking/mutex-debug.c | 11 +++++++++++
-> > >   9 files changed, 122 insertions(+), 74 deletions(-)
-> > 
-> > Doesn't apply to v6.8.
-> > 
-> > What base was used for this?
-> 
-> I've just pulled git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> and v7 was applied cleanly. linux-next is ok too.
-> 
-> v6.8 is lack of recent patch 6969d0a2ba1adc9ba6a49b9805f24080896c255c
-> v7's patch #2 depends on it
+> Framebuffer I/O on the Sparc Sbus requires read/write helpers for
+> I/O memory. Select FB_IOMEM_FOPS accordingly.
+>
+> Reported-by: Nick Bowler <nbowler@draconx.ca>
+> Closes: https://lore.kernel.org/lkml/5bc21364-41da-a339-676e-5bb0f4faebfb@draconx.ca/
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Fixes: 8813e86f6d82 ("fbdev: Remove default file-I/O implementations")
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: <stable@vger.kernel.org> # v6.8+
+> ---
 
-No problem.  I'll wait for v6.9-rc1.
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
 -- 
-Lee Jones [李琼斯]
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
