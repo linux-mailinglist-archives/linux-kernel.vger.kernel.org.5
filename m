@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-111929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F798872E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:18:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAEC8872EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB7DCB249B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:18:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F34F1F21D22
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6FC64AB6;
-	Fri, 22 Mar 2024 18:18:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F92A5FB81;
+	Fri, 22 Mar 2024 18:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G8TPjHS1"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h8t8Zr/B"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9DF634E1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737E36350D
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711131482; cv=none; b=ON9c5vgWppSX3gdwvizCT6NrUUoLXQ1VlJO7oxz59SV9yUChA6NTZKot5TXiu1oU0kk4mMghvEVjjdkUWe4JOBbUjw3igkzUWaznT9CDu+sGUbnqLbJpKT8Tc5jcWdTz1lq5NCw0jnwQ1c9GFr+6OCMTcpfNoFGcuVV8qzUbo4s=
+	t=1711131517; cv=none; b=m7qeLmZpzaABHlTm4mwNLeOpN1FJ9BCOtq3wTABOB/XPS2sgwZMNNkWFEIW3Q2rynxgpwYJPHCplQrEfs21Ys1pksbWPOP+JmyAriWYzwiodONuoxJrz+jmo/BG8XihYLfgG5a3DkVC2PhCJ3ejbtwMFuirzVi48w8zOdgb+c2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711131482; c=relaxed/simple;
-	bh=4PZeNkpkgA9MeuFYKbd3qbiEtrgn3qW6NEkoD0AvAHA=;
+	s=arc-20240116; t=1711131517; c=relaxed/simple;
+	bh=qbkP+4Mm1YKnOdMecnWNanS8g5twvhoc+0cLhfy0/Ss=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qFs6z7Va6UGZ2RuQzMJY+YNBhQFNGy5VHrYm6/fUu7wu68QlUp1KlOQJ8RbMd3xKOctVDjgPVFZ1PfKblLD55c55kKeucB9ufyyHnOylaZ90XprUwMfNGdKcJlKuHJvySVodyN8vOf4bjoSeb1AECiNxmCM4ZAQJJHrz3sbcUl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G8TPjHS1; arc=none smtp.client-ip=209.85.218.53
+	 In-Reply-To:Content-Type; b=Ek8bxYH753NeS9kCah+9RmdMXsYs7SkY75lbOdVQCH/wVUr1nJcRMjOLE51VbqusEM6eQxtJ9+67onucBkSSr+hC4oyuW3rQTKesbUM93NsnaGvTiIZW25v+r56KsJ0EiDroKJXQEht83Nf8dSEi+x3u8msqX69UOMsHotRt7C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h8t8Zr/B; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4644bde1d4so337428366b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:18:00 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56bc753f58eso2981497a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711131479; x=1711736279; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SeiHsFNUoaCnN7xb45zTYPjadaI5jk5AW3v5aPdkC2E=;
-        b=G8TPjHS1Ql/oTRYf+u6U0NKmtXpl/4/idaaYTQPncDaT+NWosjPAoWIZUQ2qDWAex5
-         B+GnXm64CeHa9UksAmFNd6NqQeN1RMMJK1m/+5PYY5nuCut9C0zdkawKBedoIWOLraR0
-         etFIlsS7YyMHi3/VR5EwjORww+x8wEHJucfP4tRVCoCNlc+uOgQvemZw2STJSSLWZmpK
-         TmUN6kb7I/iKNVXTx0+lyG7mhn96hUxD1uAKMJTcU3kqJt/yQzyPb61hKdBbRAPlxl5R
-         ghCyaScwPUxpRuzDS+P4jBZfz390UdhrbLNlI6u/fnzyuYW4N9QyLyeGJig+vD/+VXcp
-         BsWg==
+        d=linaro.org; s=google; t=1711131513; x=1711736313; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gMmlzYxTWUdsTYEkVZKQ+6DnU3i0zzMXMr//yf/ZEHo=;
+        b=h8t8Zr/BswFxW7J3WX/9e3RiuDJdbX+yGAcoOONq3xh8HlZB+g7bVuHVMr3/PvtGld
+         ZrFlLZeQuKwvuE/zXFOf0WMUDNO4TWS+jFWyQ7Ncjps97CP6Ruk+xz0tdFtrK6R8ftOV
+         EbBLMjq66IbDfXpmf8N/fydNoyiMb470H2Kp8HcvwbOM9Ds6VlVOSk2bW0/Z2t6k3W1b
+         8pvEaWsTHfTzhP0ibtqfBxf8+lsVqkr50LGIpAqnZ5JzM604Z1kFYspKzgoLfINIQW/q
+         Ww+Hi/k5HxYV253huITPPwGKhyYtcyJI5owreNq+F3lkphSSz5SkPr/3kWOK6mFlWvTM
+         +tZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711131479; x=1711736279;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SeiHsFNUoaCnN7xb45zTYPjadaI5jk5AW3v5aPdkC2E=;
-        b=jqVfkaEFTYSDhpTI7RaD+lofA9Q4r0dNFx+A/ykglQ14bj4Tw4X3iPjWF9fp0yrRVR
-         3O4WHRtoCmqvJ9fh4F23YJnH2HeJOj3xIFFGxJyEngJh2TiK7mrn9eu/qv88GhyyHDBd
-         GtGD8liApHHK2vlryYeXDs9kOSq3qJm5TzAPu7pbuLrSKm33aHG3xC0I6WBwTiAmCDC0
-         DiuKz7gFpBEj1EkStUVu2UjYcMQk7V1Eb5GCayhnZ0R98OD6xzIH47Uyauu8r2NXpr4i
-         e6AdDHsfECRhIQ3rXegGya+gAkzFOJ5A61bTWxWbNaOS7+l0LqW5olpjyLTVC/WaYK64
-         5+ng==
-X-Forwarded-Encrypted: i=1; AJvYcCXm3JR+l3g8lcdcHn7sQLJ4vHxAZyN/uxhdC1ALsAyZGJHQcYutxsw+K09OdUHYUmcszqJjReSp3q/U0N1FFwGBVg6g522ePE4Lbvkq
-X-Gm-Message-State: AOJu0YxbfcNHEzjdN/J/uWwtwEeDcrIRAgeKSFYU/FxXtOkGnGek+PxD
-	bAc5uQNq7FWgBAc9T9l4R+yQyv03o2MSHd9XjxIo62WIrud3MRjbA+/NNyy59z4=
-X-Google-Smtp-Source: AGHT+IE8rf51P6ZV2w55aQi32v1RbTPj7yYppeHjfqgIRLq8bBYJrd3E4Qma1nFlYxhYP5nuDoAUOw==
-X-Received: by 2002:a17:906:c4c:b0:a46:dca5:8b10 with SMTP id t12-20020a1709060c4c00b00a46dca58b10mr373843ejf.24.1711131478620;
-        Fri, 22 Mar 2024 11:17:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711131513; x=1711736313;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gMmlzYxTWUdsTYEkVZKQ+6DnU3i0zzMXMr//yf/ZEHo=;
+        b=uzI6ImjaW8bNi/BI2b8qYjux9GsllhzOMfjrzObBiqiN5wP0/g2hLcuO7f8hV4aBB+
+         2vn/nK5qYYuYhMaPIUmbZec6I/KlhlnmEaKJVXMVVfT9T3UFS0IgYS8v0WEilYM63ziZ
+         bg8Z+WiK19jeKABtLZrcwcXlNeg+VLD3PSw/1oUeYjd58lNGVCj25tUsZAGj2nhkzfRA
+         7hu/JFj2iAh9Q79jDQKPWvqu9+zVCkZJ2ToRgBHz7uTf68JECDw9VRtdMUotOjwaJpz7
+         QCcnd4+mh1IABH1ZYKo5pcvP7fVtK8Sw6Acm67XiS8Lh0HRiL376DlqvtIcZ2eHoyIXc
+         KDpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxERqBZBVZukFPj4nABX/pMP2zPDtXywSdTG25fryPKmmCFx1nMeaQPfM0cPpS0+Q05uZrLdIzVN7mdfy81wr84/M98BLqGitsxzaM
+X-Gm-Message-State: AOJu0Yx1C4rP4pigwg0eLRQGOyJ5KvGFfU/9yN75vvrvct3q5fsSqL0/
+	y32z4t+LEI/6vQA8BEy0FuOc1fzbZorQdq8WwNBQUBcF0fMVtFfNUfQ8gBuCg1k=
+X-Google-Smtp-Source: AGHT+IE9XFi5FctM9clyT0STQ2kkLeQ4AP44Bk0Gxe+NCaZzO91dRIqNozdnfH7j7oB2GpEO2Fa1Cg==
+X-Received: by 2002:a17:906:4811:b0:a46:13d8:c173 with SMTP id w17-20020a170906481100b00a4613d8c173mr367238ejq.33.1711131513410;
+        Fri, 22 Mar 2024 11:18:33 -0700 (PDT)
 Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id a6-20020a1709062b0600b00a46a19b8a68sm74040ejg.167.2024.03.22.11.17.56
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709062b0600b00a46a19b8a68sm74040ejg.167.2024.03.22.11.18.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 11:17:58 -0700 (PDT)
-Message-ID: <5ad8fc4d-cabf-4b50-bb22-60896a13362d@linaro.org>
-Date: Fri, 22 Mar 2024 19:17:55 +0100
+        Fri, 22 Mar 2024 11:18:33 -0700 (PDT)
+Message-ID: <37622334-1c52-470f-8819-3df873bedd30@linaro.org>
+Date: Fri, 22 Mar 2024 19:18:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,20 +75,21 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8250: add a link between DWC3 and
- QMP PHY
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Luca Weiss <luca.weiss@fairphone.com>
-References: <20240322-typec-fix-sm8250-v1-0-1ac22b333ea9@linaro.org>
- <20240322-typec-fix-sm8250-v1-2-1ac22b333ea9@linaro.org>
- <635f7501-82cf-4df1-9194-27f24eb40a53@linaro.org>
- <CAA8EJpoYBsB8kx8P9w9M3pd6E7iUfqWk4XYwMr2oLoZV_nuYpg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] arm64: dts: qcom: pm7250b: Add node for PMIC VBUS
+ booster
 Content-Language: en-US
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
+ <20240322-fp4-tcpm-v1-3-c5644099d57b@fairphone.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -126,78 +126,34 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <CAA8EJpoYBsB8kx8P9w9M3pd6E7iUfqWk4XYwMr2oLoZV_nuYpg@mail.gmail.com>
+In-Reply-To: <20240322-fp4-tcpm-v1-3-c5644099d57b@fairphone.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 22.03.2024 14:19, Dmitry Baryshkov wrote:
-> On Fri, 22 Mar 2024 at 14:11, Bryan O'Donoghue
-> <bryan.odonoghue@linaro.org> wrote:
->>
->> On 22/03/2024 11:58, Dmitry Baryshkov wrote:
->>> The SuperSpeed signals originate from the DWC3 host controller and then
->>> are routed through the Combo QMP PHY, where they are multiplexed with
->>> the DisplayPort signals. Add corresponding OF graph link.
->>>
->>> Reported-by: Luca Weiss <luca.weiss@fairphone.com>
->>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>> ---
->>>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++++++++++++++++++++--
->>>   1 file changed, 22 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->>> index d57039a4c3aa..e551e733ab94 100644
->>> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
->>> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->>> @@ -3917,6 +3917,10 @@ port@0 {
->>>
->>>                               port@1 {
->>>                                       reg = <1>;
->>> +
->>> +                                     usb_1_qmpphy_usb_ss_in: endpoint {
->>> +                                             remote-endpoint = <&usb_1_dwc3_ss_out>;
->>> +                                     };
->>>                               };
->>>
->>>                               port@2 {
->>> @@ -4195,8 +4199,24 @@ usb_1_dwc3: usb@a600000 {
->>>                               phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
->>>                               phy-names = "usb2-phy", "usb3-phy";
->>>
->>> -                             port {
->>> -                                     usb_1_dwc3_hs_out: endpoint {};
->>> +                             ports {
->>> +                                     #address-cells = <1>;
->>> +                                     #size-cells = <0>;
->>> +
->>> +                                     port@0 {
->>> +                                             reg = <0>;
->>> +
->>> +                                             usb_1_dwc3_hs_out: endpoint {
->>> +                                             };
->>> +                                     };
->>> +
->>> +                                     port@1 {
->>> +                                             reg = <1>;
->>> +
->>> +                                             usb_1_dwc3_ss_out: endpoint {
->>> +                                                     remote-endpoint = <&usb_1_qmpphy_usb_ss_in>;
->>> +                                             };
->>> +                                     };
->>>                               };
->>>                       };
->>>               };
->>>
->>
->> I think these should go into platform definitions, there's nothing at
->> the SoC level that imposes the port constraint.
+On 22.03.2024 09:01, Luca Weiss wrote:
+> Add the required DTS node for the USB VBUS output regulator, which is
+> available on PM7250B. This will provide the VBUS source to connected
+> peripherals.
 > 
-> The link between DWC3 and QMP PHY is fixed in the SoC, if I remember correctly.
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> index 3bf7cf5d1700..91a046b3529c 100644
+> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> @@ -45,6 +45,12 @@ pmic@PM7250B_SID {
+>  		#address-cells = <1>;
+>  		#size-cells = <0>;
+>  
+> +		pm7250b_vbus: usb-vbus-regulator@1100 {
+> +			compatible = "qcom,pm7250b-vbus-reg", "qcom,pm8150b-vbus-reg";
+> +			status = "disabled";
+> +			reg = <0x1100>;
 
-Yes, I believe so too
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Could you fix the ordering here?
 
 Konrad
-> 
 
