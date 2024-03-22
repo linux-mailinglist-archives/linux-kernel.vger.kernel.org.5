@@ -1,97 +1,97 @@
-Return-Path: <linux-kernel+bounces-110861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3B18864DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:39:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F968866CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056C2282F33
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:39:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99A271C22FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:35:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511E1184E;
-	Fri, 22 Mar 2024 01:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11A0C8FF;
+	Fri, 22 Mar 2024 06:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="a4N9YfKS"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="FOZvCIFx"
+Received: from mail-m11885.qiye.163.com (mail-m11885.qiye.163.com [115.236.118.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE3665C;
-	Fri, 22 Mar 2024 01:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0497179D0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.236.118.85
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711071588; cv=none; b=c/RlmPCf9hq0QXE4qhb3kC/8H7bn0eIj0ko7sI1eouN/LZDUG76mTab2JV9k7Ed45uj30VYq/MPkefL9V4sX74yxTrzTp2uDwZ34PnojP6SLLce2yZ2VBh0BcVS6Oss/rJ5VCDMSWh7JgjtC3DEvDZXmFyGR+Xds4tEkxb2heYw=
+	t=1711089300; cv=none; b=MUIN9qiEzlsbeP2dQHJEfCbCPXpV5BOeo1uswQKDouRLkD8C5BVPX8POjjH3j+J9LKZK5wMGRUhUws99CGpI4Rt+6D+fdnxMsHOC2ub57y9JfREUPa5RpPq9yHvovmENUy0+3mFPHcmjuELbEMPCms0hCJZbRucxYYzSazr5GSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711071588; c=relaxed/simple;
-	bh=Ci83oNfPdQPjt/Qc0YrD0Nwu4bs0yCyv1L2fuvgDdVY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SzGeQFzaJH7dLuu4gqnfFxmXzRFqP3CT2xx2Sz/935P8UO/naeWizBZuj+8EOrrasG+IX9EdoX8+stAzB6tb95fppsJzSEkeR+DJCrr6Ye1xZIeOw8XUjlt6+C8Tfy9p4xW3YNWKPXWFknOfmlouqKwJLrXoou4F8ctCgqJRX0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=a4N9YfKS; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711071583; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=po3aBGMuRH/3JxdDPn9VskA6LLyQZSnOhsGvbug9sUo=;
-	b=a4N9YfKSW5uRD1McgVTo5P6QtSB4DBMl/EYLiGW9xVIZCNI9kYSQp7QW9jeCYd3NWJEAR5RllZcdNoJS1gnGeCdoVcCGNBHf68SfiQleS5px4RA86HWlzU4E6AWuKCOTnBz/IqIe4tdk2tKKmqPNo3mVtZfnJUfvlyfXkSsIvls=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0W307.QH_1711071581;
-Received: from 30.221.130.60(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W307.QH_1711071581)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Mar 2024 09:39:42 +0800
-Message-ID: <d42c7545-4ff4-4337-9489-d9d757eee007@linux.alibaba.com>
-Date: Fri, 22 Mar 2024 09:39:41 +0800
+	s=arc-20240116; t=1711089300; c=relaxed/simple;
+	bh=i0+PV72/2dFaK31wvWPoX0d6bxJSY6XBCsINwakqKcM=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UxLl80Ne2J0u+S39fYY8q1vPVmlqVvVK5otouM9sSV+mB+3RaUKObrGnoETLCG45T4n2HysfmAHY9nl+XxyCWsqfOoesxrY4Gjax5MC5g/d+2ataTQna2XNRhzPbtNrt6n4ws1GQ/if0SUoddhP8nTs5IJjMfrD4mExKF5cWGu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=FOZvCIFx; arc=none smtp.client-ip=115.236.118.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=FOZvCIFx+okQon3GjQmyCaG7uOsxXgdd1r8gVHPktpOMMg+n0Q9s7RrYOCXm9eJCcUyw8fWEBF/CEBADcgFPbntFYkLIhY8MHPxUZVTfwEUW3CdAPxKMdXsKZn1dj4CLz9oME+p2PADGgEAOTDO0AeIMwBKjHnMn8r6rUTuNL5k=;
+	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=ktnsnF64wj/H5bwoeAclYjmtYjAzqxy2pnWppwBZrP8=;
+	h=date:mime-version:subject:message-id:from;
+Received: from rockchip.. (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 916477E067C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:45:31 +0800 (CST)
+From: Ye Zhang <ye.zhang@rock-chips.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v2] thermal: devfreq_cooling: Fix perf state when calculate dfc res_util
+Date: Fri, 22 Mar 2024 09:45:31 +0800
+Message-Id: <20240322014531.1840999-1-ye.zhang@rock-chips.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v4 04/11] net/smc: implement some unsupported
- operations of loopback-ism
-To: Jan Karcher <jaka@linux.ibm.com>, wintera@linux.ibm.com,
- twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240317100545.96663-1-guwen@linux.alibaba.com>
- <20240317100545.96663-5-guwen@linux.alibaba.com>
- <f9bfbc0f-7cfc-47c0-b06c-23ee3e70a420@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <f9bfbc0f-7cfc-47c0-b06c-23ee3e70a420@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGR4fSVZNHUtOGk0fSUpKGRlVEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSkhNTkJMVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8e63d5acfc09cfkunm916477e067c
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NFE6Mxw*SzMOTxRRNjoSNwgQ
+	NRMwCRFVSlVKTEpKS0xKQkhJSkhMVTMWGhIXVQIeVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSkNDSzcG
 
+The issue occurs when the devfreq cooling device uses the EM power model
+and the get_real_power() callback is provided by the driver.
 
+The EM power table is sorted ascending，can't index the table by cooling
+device state，so convert cooling state to performance state by
+dfc->max_state - dfc->capped_state.
 
-On 2024/3/21 16:12, Jan Karcher wrote:
-> 
-> 
-> On 17/03/2024 11:05, Wen Gu wrote:
->> vlan operations are not supported currently since the need for vlan in
->> loopback-ism situation does not seem to be strong.
->>
->> signal_event operation is not supported since no event now needs to be
->> processed by loopback-ism device.
-> 
-> Hi Wen Gu,
-> 
-> Could we re-phrase this commit message please? I had some trouble reading it. Maybe something along:
-> 
-> Operations that loopback-ism does not support currently:
-> - vlan operations, since there is no strong use-case for it
-> - signal_event operations, since there are no events to be processed
->      by the loopback-ism device.
-> 
-> Thanks
-> - Jan
-> 
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+Fixes: 615510fe13bd ("thermal: devfreq_cooling: remove old power model and use EM")
+Cc: 5.11+ <stable@vger.kernel.org> # 5.11+
+Signed-off-by: Ye Zhang <ye.zhang@rock-chips.com>
+---
+v1 -> v2:
+  - Update the commit message.
 
-OK, it will be improved as you suggested. Thanks!
+ drivers/thermal/devfreq_cooling.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+index 50dec24e967a..8fd7cf1932cd 100644
+--- a/drivers/thermal/devfreq_cooling.c
++++ b/drivers/thermal/devfreq_cooling.c
+@@ -214,7 +214,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
+ 
+ 		res = dfc->power_ops->get_real_power(df, power, freq, voltage);
+ 		if (!res) {
+-			state = dfc->capped_state;
++			state = dfc->max_state - dfc->capped_state;
+ 
+ 			/* Convert EM power into milli-Watts first */
+ 			rcu_read_lock();
+-- 
+2.34.1
+
 
