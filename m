@@ -1,111 +1,126 @@
-Return-Path: <linux-kernel+bounces-111958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBED388733E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB1F887344
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724621F277A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:34:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F39611F277D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4E46931E;
-	Fri, 22 Mar 2024 18:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536EF69D04;
+	Fri, 22 Mar 2024 18:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n7O00PmR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BV/BUCmx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC02463CB4;
-	Fri, 22 Mar 2024 18:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D93A69941;
+	Fri, 22 Mar 2024 18:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711132477; cv=none; b=e/eB+f8Ra4xJXZQQmmkkLUyZxDQOnLxdkbfFMLGEFmagsuFe0x+tL754sn6x0E469lzGmj917AoM5kyxWkx1NArXV1O2aZYME44Huz0SrM/VHlHZiHk/uRV9mkZhLRgZRb+OZP4cJ/QHyxHDC32DCq+R0U+WjKeidk83tH6cAyA=
+	t=1711132576; cv=none; b=kI16ypPqMh7AlzGsF5ri7rrJ8myfHzWj1ec4GY8jDyhlHGX7Mt4W3rejUCC9CpKFp6h23EB/km7RgQMX9Z4QzbQbjcSP5fHQeMZUGRU6z5Pn1df4z4EvQMxXN0Fh7jb/wql01RYOeT/vwK0k4ZGX3WMcjves+q2peHaC2vtiXRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711132477; c=relaxed/simple;
-	bh=6PCoRlmkutx/LHsc70GhZUwGUN7dDMu8R829RBPxXx4=;
+	s=arc-20240116; t=1711132576; c=relaxed/simple;
+	bh=0y+MfSq9AjFTDKn0zQYT/v6yPp3l+ObYynFLWm8K1Zs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pt7ZAyZcBJLiWI6K5SAzwPLraXvI2akGNNETb0CaaduAqVFM6vuQM3iOTEkfnjjDVkzurhziuyMIsD44+HlnlfTCDiH40Wrk5bhuzmQC6kxJkr+576++gANaoyZzPPCC4WJWzEVcsO0q4BagmWgho87kNz9mITQeyuHN7yD/O3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n7O00PmR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CF35C433F1;
-	Fri, 22 Mar 2024 18:34:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GgJkR15v4mnl5Hd1ku4NVjKGwM3dD//Gst22NLaNdo2r5cdi4gpviPgSzGa4kI+mmuOz6eGc5KZmoil+RfvQwbir/TFgeJl+b7NUd8hugCKCR4z8KVt/bqMUhyqfOJRSihvAszMuMzDO4AylWuZUpL8yHqfgj7HtydM6DLWK0sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BV/BUCmx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44210C433C7;
+	Fri, 22 Mar 2024 18:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711132476;
-	bh=6PCoRlmkutx/LHsc70GhZUwGUN7dDMu8R829RBPxXx4=;
+	s=k20201202; t=1711132576;
+	bh=0y+MfSq9AjFTDKn0zQYT/v6yPp3l+ObYynFLWm8K1Zs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n7O00PmRfLiD6cvfR49FYckVuXBthdD3Ir2OQ5CbbHgzV2WCV016us2hCBIJd6blj
-	 NTE4OLS2VwMupYVGmFv7F8coDQzzQfcU1KB558Jr2SRA9ySTmTuk5j/t2rVTEfWUWD
-	 Jh2rkMbDxE5NNldj9fZ8thgFR8QJWQ8ExNzCFUuB1AbKg6ZMy23vxc41JXQ1fl+K4D
-	 ZDNccw1fFYXWDMeMRvtMRwnPWLCuf0RdoODcpdYWK43YK6AgOv0nbl0sogYNSVpCrK
-	 HDd3wEROCrAnKL9ZaNw7nR7xIWFHCR0rILi5pZWdCWDJMvoG+06ir3h75lIY4Qnrcr
-	 r6xhW4JXWn5+A==
-Date: Fri, 22 Mar 2024 18:34:32 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Allen_Lin <allencl_lin@hotmail.com>, dmitry.torokhov@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	jikos@kernel.org, benjamin.tissoires@redhat.com,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	b=BV/BUCmxtRxdyZxMgdjLHny9/yv6eMrzAecMuroNJXACO9zdPogvOZLlBF5QBcJOw
+	 3S/jS7Evwa7ZZJS52jOXy1+fP9drg+E+VSyyqOoRoURr3RxvJKbIly3Ol6bEMfQkD9
+	 Okfos52Z3dNH+bSc0yAHLKMNSuPKiFU6DcYkRoaszhPuew6o9n+6N5shuY9ymV+6jW
+	 6YbsecN4ppKV+8HARWrPJbMzLrLQv2cwN5l9WtHI4JkawFdsuQn6kyy5RT6obWgJ57
+	 14AteTI8fyVgZqrLA5j/JkFwcfGzJbTmD5/kjNAMEmbKMmODfb2TmuqldQyVLWYjKV
+	 Dhew0Q6ret/7w==
+Date: Fri, 22 Mar 2024 13:36:14 -0500
+From: Rob Herring <robh@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	neil.armstrong@linaro.org, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
-Message-ID: <20240322-rectified-udder-fef9102f58da@spud>
-References: <20240322085606.993896-1-allencl_lin@hotmail.com>
- <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
- <20240322-mammary-boil-f9a4c347fba1@spud>
- <20240322183009.GA1227164-robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: qcom,pmic-typec: drop port
+ description
+Message-ID: <20240322183614.GA1233803-robh@kernel.org>
+References: <20240322-typec-fix-example-v1-0-6b01c347419e@linaro.org>
+ <20240322-typec-fix-example-v1-1-6b01c347419e@linaro.org>
+ <230eab52-9751-43fd-8e47-fbfe12410e44@linaro.org>
+ <CAA8EJprD3fM966pLV4QXPUu=bFTn24fvPMKOaGqtqkAbdz7sOQ@mail.gmail.com>
+ <5ea4a187-1971-4970-a289-826d96c0351a@linaro.org>
+ <c0f1e898-7638-4b7b-a938-9e31e5b57e57@linaro.org>
+ <0b091595-1587-421d-bb00-c00ef729d143@linaro.org>
+ <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lnQoOh6YHraD9SfN"
-Content-Disposition: inline
-In-Reply-To: <20240322183009.GA1227164-robh@kernel.org>
-
-
---lnQoOh6YHraD9SfN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAA8EJpqvwhafFoD_=GO4E93JBQA2A+xY0rG14pgPm=xgJ9Yz_Q@mail.gmail.com>
 
-On Fri, Mar 22, 2024 at 01:30:09PM -0500, Rob Herring wrote:
-> On Fri, Mar 22, 2024 at 05:54:08PM +0000, Conor Dooley wrote:
-> > On Fri, Mar 22, 2024 at 04:56:03PM +0800, Allen_Lin wrote:
-> > > Add the HX83102j touchscreen device tree bindings documents.
-> > > HX83102j is a Himax TDDI touchscreen controller.
-> > > It's power sequence should be bound with a lcm driver, thus it
-> > > needs to be a panel follower. Others are the same as normal SPI
-> > > touchscreen controller.
-> > >=20
-> > > Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
-> >=20
-> > note to self/Krzysztof/Rob:
-> > There was a previous attempt at this kind of device. This version looks
-> > better but might be incomplete given there's a bunch more properties in
-> > that patchset:
-> > https://lore.kernel.org/all/20231017091900.801989-1-tylor_yang@himax.co=
-rp-partner.google.com/
->=20
-> Those don't look like properties we want coming back.
+On Fri, Mar 22, 2024 at 05:49:00PM +0200, Dmitry Baryshkov wrote:
+> On Fri, 22 Mar 2024 at 17:23, Bryan O'Donoghue
+> <bryan.odonoghue@linaro.org> wrote:
+> >
+> > On 22/03/2024 15:09, neil.armstrong@linaro.org wrote:
+> > >> TBH I think we should drop this HS, SS stuff from the connector
+> > >> definition - there's nothing to say in a h/w definition anywhere HS
+> > >> must be a port or indeed SS - not all hardware knows or cares about
+> > >> different HS/SS signalling.
+> > >
+> > > It matches the USB-C connector electrical characteristics, which by spec
+> > > has, at least:
+> > > - High-Speed USB Line
+> > > - up to 4 differential high-speed lanes that can be switched to DP, USB2
+> > > or PCIe
+> > > - SideBand line (SBU)
+> > >
+> > > And those 3 components can be handled by 3 different HW in the SoC, so
+> > > each one has a dedicated port.
+> > >
+> > > Remember DT describes the HW, not the SW implementation.
+> > >
+> > > Neil
+> >
+> > Yes, you're right about that.
+> >
+> > I suppose
+> >
+> > 1. Orientation switches should be defined as coming from a port on the
+> >     connector associated with the CC pins.
+> >     port@3:
+> >     orientation-switch port name goes here
+> >
+> > 2. Data-role switches...
+> >     Again the CC pins
+> >
+> > https://community.silabs.com/s/article/what-s-the-role-of-cc-pin-in-type-c-solution?language=en_US
+> >
+> > Maybe the right-thing-to-do is to add another port for the CC pins -
+> > which would still describe the hardware characteristics but would
+> > _accurately_ name the thing which does the data-role/orientation switching
+> 
+> It's true that we don't describe CC lines. However In most of the
+> cases CC lines are handled by the Type-C port manager directly. So
+> there will be a connection from usb-c-connector to the pmic-typec
+> itself (which looks pretty redundant).
 
-Oh, I don't want most of them coming back either. There are some
-supplies in there though that I think we would like to come back, no?
-Maybe this particular device doesn't have any supplies, but that doesn't
-really seem credible.
+The thought at the time this was designed was that would be the parent 
+node of the connector. That's perhaps too simple.
 
---lnQoOh6YHraD9SfN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3POAAKCRB4tDGHoIJi
-0oZGAQCE3pDMwybKUvEoEPviPgR/Q/ZN0K5CHvpccJjYCPEGHwD/RgtucX7Mw89b
-lQWEppItKNSOW75Y2KFMerXPFy0+/QE=
-=lAe8
------END PGP SIGNATURE-----
-
---lnQoOh6YHraD9SfN--
+Rob
 
