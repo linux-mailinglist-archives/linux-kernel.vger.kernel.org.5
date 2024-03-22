@@ -1,99 +1,114 @@
-Return-Path: <linux-kernel+bounces-112000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334838873F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4258873FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A4F71C22ACC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:34:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5D161C22700
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB52F7AE67;
-	Fri, 22 Mar 2024 19:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2583A7BAF8;
+	Fri, 22 Mar 2024 19:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="Kj1QB2Ki"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H1fcSheb"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CD262A0E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB651E514
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711136059; cv=none; b=nRc+/1k0SKYdPqtxNiCgdzewjIdzxJEnjT6JzQzaotTKVYCCS9MKSR/W6y4IFM5HOBZ89Iro4iZNd6OIeiEBaD6E9RtG8VZOZSuTXnzfRbILTuItJhAltZzcDCML0lOH02g+pYyjDm0pZynnEXvcWTLGLJQIBfqEQv2c4wEEA+0=
+	t=1711136287; cv=none; b=CjbJz73Ym7iIkaDdqeROxAKtnQOWIxzSvs/qdC8l8HOwwinVNZ1VqhwauAHE4iHi4XuoXzZjDk+Q53Oz/KVfqK1FjPgaNpBbw6G8ERcs8l6ZUPjatlwfVLpj25tL+lSSW7yQDNFOeb9XYnvGPxHa7DfNEATPVfDUQvfBPn+o0lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711136059; c=relaxed/simple;
-	bh=rmSxOJ7PesryFAlCYmpPV9lPM91ZLNWCXgJKf7O7vEw=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=JbiG3/BYiKJvW9tlHsFgB45hJXI/Z5UP31t6tnpNHRej7j+Ey251rVxEhWf66yNDT9JRo1GvxMnt171iHv9k+Rx6EgIM/qpyxE0tm9Huay38ca9f5l1o72beeZAYuHWk+kvSjmxiiSsooh71Yf+pdqQvNgZM9myaOfS2IXp3e5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=Kj1QB2Ki; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+	s=arc-20240116; t=1711136287; c=relaxed/simple;
+	bh=Xdakqsi/D2JKyIKkGYWtlGPF0xjppXCKwXZBXILelig=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mRxi4H+ACa9f0+b30pJqptFji1EX2OLHYXxG2QEa/w+BSaRobNlz/RPvZvesdCyiOWWrf5npYiQt4CBX6SyKNsqd6EYr60BlDA4QWwNjMbnMWS++nrrmPnzPgcVy4hy48YNpX2VI75Ap+NW1Mxh7PfxGs3aO5KnQOUcl3tLYWo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H1fcSheb; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a472f8c6a55so133957966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711136284; x=1711741084; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xdakqsi/D2JKyIKkGYWtlGPF0xjppXCKwXZBXILelig=;
+        b=H1fcSheb3nQCegSXsagopNkAVqrcdKpxNhxBC5PfmlsoCvR9UKWWAmJ81uzjHfnfW1
+         5Cz3bqw+ScwzCLrlbJdCbbovdY2QhY8GZINMAD/+XjEtJnAYCbSVO9NRn2Ebrsff/PG6
+         zkgr+KmaHUxKSjye87tGdTI6MnnJv4XwQVE/q132N7M4ZnjpimrwL5yGyGrujAnqN5LI
+         OJLlXG0XpPq1k7iQPuSv8D47TNJzKNR6U55XVjmq8WKPX0gY8iD8sjPajhOr1Y926XEE
+         RtnlE0qZgSBu58z79ibXlI6eJlmzpZtunomzG/UlPhudUNZpe0B0kL5W089RBsAYWy0C
+         osaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711136284; x=1711741084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xdakqsi/D2JKyIKkGYWtlGPF0xjppXCKwXZBXILelig=;
+        b=Ubc0pcqbYD921SM+MS9+uZaCDV4kuZQOE8K9gHAKu+QmDs5IJqQw1apuP5AjcjhPvC
+         3wpJX4s5vEQRABv6X/JLa1OiCoDf24gF/vITAkNRusv3BJleMXD8G5UVbdhVwJH2N2cC
+         LprepNRhMarg9kpAdipYCxqchDl+Hjo3uXPOSF9se8HULw4GoWMXZfiAEMHZJoBMSlDE
+         2fir8j2K+inveCOuuqDmOk3OC6yecQBegq4nt6v7S6z2lvXNEzARTYFydV6JlyMFn7yC
+         FEMQ+zfZbJbriaOGbKuQP+GDQ/Gp1hUsc1TR6qiocvze4gJleUU9dcQu8Ozw5jMMNNeK
+         vpEg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ5VxMmvr4ooh8ryjI9vddyog06tKNq0vXvb7IC0QiT5L94AZDTxl+6JZSXzmsfOIRry7H8ymjL5w6O70sya92+L7JqmEgVu0ehZfK
+X-Gm-Message-State: AOJu0Yx6SvPSs4TEnkPzKtVtZv2qqGqDsuW8HpdVGmyU11YAGSaM+h17
+	ojTU14kwzXZA6HxX11Au+0+q7IT5bVqWWmcnbFGnWm5glCHtA9uKSs1BUiI+2E+iFQChrVZCySc
+	j4FCmHw/3wM/mOcPACue1BUlOYGN+P/6Sv9V1
+X-Google-Smtp-Source: AGHT+IHNQ/xrFFDBiym2V/Gucwz1XpBVJI5RJdnaPo6OVHJ4qICFJQa3VnkiRG9jjQj6TIigduFuMJERwpG9Hvat9Z8=
+X-Received: by 2002:a17:906:ac7:b0:a47:2333:80b9 with SMTP id
+ z7-20020a1709060ac700b00a47233380b9mr504939ejf.47.1711136283960; Fri, 22 Mar
+ 2024 12:38:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711136055;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rmSxOJ7PesryFAlCYmpPV9lPM91ZLNWCXgJKf7O7vEw=;
-	b=Kj1QB2Ki6DZ6KhgM77hUzPva/yi9CQDjDrOeQcS8zioPvZN9//CpoNvsSLuS1VUy4Vm+k9
-	mIAnA0OHemCkGxjj75TnqezkmBWoyYOw+xtVpoDNDBNsUfpK4yQQyTwZ7uIOYoLHC/6QW2
-	ZLVCr4yfVkn94nTHfTQYamuWuC84m0a8md9x4dfaVp1V7Zk+TpyKxc0zJvpdZEgn/ceps2
-	qpDj1YAamo819kmdnvIl88Z20VBQoF8OVZsxASapbyuF3avfj7R66qnayIORrTqbxfaT3Z
-	B6f+PpzazTzdg/EoFu+pE8XBgzKf68olAEY9Sl5gaSOkzESJ6i6Fzcw3CeDmVA==
-Date: Fri, 22 Mar 2024 19:34:12 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <20240322163939.17846-1-chengming.zhou@linux.dev>
+In-Reply-To: <20240322163939.17846-1-chengming.zhou@linux.dev>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 22 Mar 2024 12:37:27 -0700
+Message-ID: <CAJD7tkYuYEsKFvjKKRxOx3fCekA03jPpOpmV7T20q=9K=Jb2bA@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
+To: chengming.zhou@linux.dev
+Cc: hannes@cmpxchg.org, nphamcs@gmail.com, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Clayton Craft" <clayton@craftyguy.net>
-Message-ID: <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
-TLS-Required: No
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-To: "Ard Biesheuvel" <ardb@kernel.org>
-Cc: "Hans de Goede" <hdegoede@redhat.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Thomas
- Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
- <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
-In-Reply-To: <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
-References: <20240321150510.GI8211@craftyguy.net>
- <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <20240321170641.GK8211@craftyguy.net>
- <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
- <20240322091857.GM8211@craftyguy.net>
- <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
- <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net>
- <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-March 22, 2024 at 11:30 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
-
-
->=20
->=20On Fri, 22 Mar 2024 at 19:57, Clayton Craft <clayton@craftyguy.net> w=
-rote:
->=20
->=20I have pushed a branch below that reverts the patch you identified in
->=20
->=204 separate steps. Could you please check which step makes your system
->=20
->=20boot again?
->=20
->=20https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=
-=3Defi-clayton
+On Fri, Mar 22, 2024 at 9:40=E2=80=AFAM <chengming.zhou@linux.dev> wrote:
 >
+> From: Chengming Zhou <chengming.zhou@linux.dev>
+>
+> There is a report of data corruption caused by double swapin, which is
+> only possible in the skip swapcache path on SWP_SYNCHRONOUS_IO backends.
+>
+> The root cause is that zswap is not like other "normal" swap backends,
+> it won't keep the copy of data after the first time of swapin. So if
+> the folio in the first time of swapin can't be installed in the pagetable
+> successfully and we just free it directly. Then in the second time of
+> swapin, we can't find anything in zswap and read wrong data from swapfile=
+,
+> so this data corruption problem happened.
+>
+> We can fix it by always adding the folio into swapcache if we know the
+> pinned swap entry can be found in zswap, so it won't get freed even thoug=
+h
+> it can't be installed successfully in the first time of swapin.
 
-Thanks a lot for doing this, I really appreciate the help!
+A concurrent faulting thread could have already checked the swapcache
+before we add the folio to it, right? In this case, that thread will
+go ahead and call swap_read_folio() anyway.
 
-It looks like if I build from 868a7245, booting breaks again on my Bay Tr=
-ail systems. If I put back 00e85ab5, they boot again.
-
--Clayton
+Also, I suspect the zswap lookup might hurt performance. Would it be
+better to add the folio back to zswap upon failure? This should be
+detectable by checking if the folio is dirty as I mentioned in the bug
+report thread.
 
