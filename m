@@ -1,110 +1,120 @@
-Return-Path: <linux-kernel+bounces-111741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64CC887030
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:02:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F11B688702C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC341F23EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:02:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AEB31F22EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C402959177;
-	Fri, 22 Mar 2024 16:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5968E56B8F;
+	Fri, 22 Mar 2024 16:02:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OqcIEBaI"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jmV2lbD8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842BE59176;
-	Fri, 22 Mar 2024 16:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8652A55C26;
+	Fri, 22 Mar 2024 16:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123342; cv=none; b=l0vkPbK8cW/ss8xszssYgtOGk7G8H8O4xyEuBC11aGnBxwRX08ezEcRuzgusV5ptXGenQQGunaeb2vcklzbj9bQMUomhtJ3q/cLc05+npohu0XyBVLwx0I/gftiziqVRBt+lFbo8cUn45G7+iL4/mmFEwvgd3Quy77o7z6YYm+0=
+	t=1711123336; cv=none; b=KWu4diiDc996oYNK0XhntUbwrSlXfLlp7CoyNHgtz3xLRO10EnK69PcnFO8J5R9grl097zzEG/otSD3d1t2kR4Xo0PA62zYcDW24M+f53TGLyOrJui/vOf6rlhLH6iM/fLMCyvxYhKOJ/4n770j6ZFa8vvRz0w8B/IA87CtBt4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123342; c=relaxed/simple;
-	bh=Fh1WVlXUCaDzE+2uvloKq2wmWpHmUcExpGG+lPA3Nz4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZlG8RZK11FJXZ4+q7e2FxfJ70uzKd+KAuu7NhgGMfERwgO9CuuP1wjGEY2lyid9l5ZRHOstUjrptUbDv2SSwH0c1Ah27wqFlU4Kxdlkuo5LKRWukpKgGdhuwBtuFyTBgovt6yY78xUdK7//BDIdtgshkBkcTKmC2TyshtnVJAPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OqcIEBaI; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46f97b8a1bso308978766b.0;
-        Fri, 22 Mar 2024 09:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711123339; x=1711728139; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OPqoca3+E6LNWJ9WbqjZz0KE97nzXeTI6WO+9c+3l6A=;
-        b=OqcIEBaIGZMzKwinb4pCyYvxnGviIpvc9qV9ukjKfDSDE9qUPGWrBah8B0i1SdYZ1j
-         yTgzru1IDqPoxatyPTbWW8c0M/oXXSkKEP4MBx1V9bgkn2GSjgA3KufhAU259yfvkIl7
-         pas3E4iJhAfYn2D+v6e4UqgKUkY2PqUAEkVtixrqn33UiZH1N19GwusAmfwhTzFrK15n
-         qUGVVrbQv/yx2SCSsLmrT4LKBiRRMmHYiPR+gpAH3VfLaXylR+NPmVoTBnjkHj21cNjq
-         /jvl1nNFEi+gH4HNpIJio06LgU9L4sJdxpA1DsT7Cv9uV8fgHOZK5lc9BAhs3bHUk4Zc
-         X6gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711123339; x=1711728139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OPqoca3+E6LNWJ9WbqjZz0KE97nzXeTI6WO+9c+3l6A=;
-        b=Hf9CcldVi852Uv7Y6Fax7Fi680uQkhxcU3lJ0ynxxgcg9nVAphFQ9GeCP/tU7k/hxq
-         7Vfa0uxK7pOZMRyHsD/k8JwWRJhbc+UfNfQarmlb7TIVX9Mv2PqMUlkJNGU45rbBfdaz
-         6L2/scevu3/fSIjFSgrm1g2f07c4tvXFOhGhoq3LNmb+d6+iWHsc1mUtvU+3TXdQ60rd
-         oh2H0dToEpK3r2Sai8p7vHu9FVd0/8ALCwyOpVw7RPKEIVXGfAGLboS/vAaKt/2voMft
-         VoEHOn50tmMdxMrMk6qSCxYeuYVeqKiyb+NZlJ2LQVXawF85posseEz5OeOlJ5cl0dIG
-         q7pw==
-X-Forwarded-Encrypted: i=1; AJvYcCWbyEL6/YNt2acXKH6YkFsVgrD5Bon1C7M3cL7ZjFAzGRFvtT+Uhvxysn7G0EaJ5XN8r6mrcD1AZthgdRoU7UhS1F0czRN6cjt0wkVNcRs4ZriOH3nQLllTpYJUAHIw7W2Lkbc5RpUq5GwmVSAWqxhmhuwuP8R69nTsz0Xt8FrtFmsRfKqAUZ7dUaB87LE=
-X-Gm-Message-State: AOJu0YzzWXYlc1TCllg4DwOABwuBoYGan4cJVONOFkEAvTiUbNcSQbFJ
-	r3ao1N/wxeYVNQ0hxbPspQE0RiUWdO7lnDiWvOomH77YVFfYCEn53vmYiigxH/CMccJODrvBu6f
-	129cXtU8vVa4N8Vq5u6NzWBhAAq/TPtC84KE=
-X-Google-Smtp-Source: AGHT+IHrqPd014UhVB5COl0nfeju4prpHRPxz6aAstoqTW/frcw+zEFJRprsD9GE7c4ZfoZuZEXUC0gYmH0ur9J/ccM=
-X-Received: by 2002:a17:906:a3d6:b0:a46:fc33:9f3a with SMTP id
- ca22-20020a170906a3d600b00a46fc339f3amr113539ejb.26.1711123338499; Fri, 22
- Mar 2024 09:02:18 -0700 (PDT)
+	s=arc-20240116; t=1711123336; c=relaxed/simple;
+	bh=aoF4dmwFvyElelkcyMu8PBXHligJrfzMuWeep9NvMbE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o++SgCsi1gVOqrHHhuslc+4blCyIZ/pJESI3B9ed5GLVh8AqZeJEGSP84Y/EpayIofmsSgbimmEmUWEouizamzLhBxcqfFCjKRhs4TKX0BaalchySLSq9kzQPvYXjCWPiBvXDN6kKImCMSa6I6Fg9VTqKM2DHcAEoeL+e2AFdx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jmV2lbD8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 029EEC43390;
+	Fri, 22 Mar 2024 16:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711123336;
+	bh=aoF4dmwFvyElelkcyMu8PBXHligJrfzMuWeep9NvMbE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jmV2lbD8c9m4XS0wNhC398FxSmiqjv7s7Bi+bn9P468s7vuNLU2ruoJ3MPBccLCWs
+	 rgwR/pvDFZf1bWj6jd0Dhd4gZ+9bGE3/APLKNs/Iz9t5EVO+9zTe7NInnlSLFwKNSZ
+	 2W8bmvrhS3UOcgseDjzYAtGUKnv56maI6uA8aFjAG2gdnlMhDvIwIH4t4hM/J6SJzU
+	 r/BuncZ/jwB6zYWPobFYoj5YxFXNaz7o1HU+Ndw1WKVgcghEDT7KTWf77RYOFGopG3
+	 QJC8nmcK+OiFRLvPxkAuADC7fJND5aBOwvL6kB9t1Cb8eXSZLedn73exd+6T3u8RJ0
+	 lp62WtpQCKA6Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rnhLR-00EYDl-8X;
+	Fri, 22 Mar 2024 16:02:13 +0000
+Date: Fri, 22 Mar 2024 16:02:12 +0000
+Message-ID: <86jzluz24b.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH v3 5/5] arm64: Use SYSTEM_OFF2 PSCI call to power off for hibernate
+In-Reply-To: <20240319130957.1050637-6-dwmw2@infradead.org>
+References: <20240319130957.1050637-1-dwmw2@infradead.org>
+	<20240319130957.1050637-6-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240306025801.8814-1-hpa@redhat.com> <20240306025801.8814-3-hpa@redhat.com>
- <Ze-N_y5Tbjc93aRp@surfacebook.localdomain> <CAEth8oEdzomdn5avXf44HXpoMFDfGpOjjxPFtaGkh0EhfZsPMQ@mail.gmail.com>
-In-Reply-To: <CAEth8oEdzomdn5avXf44HXpoMFDfGpOjjxPFtaGkh0EhfZsPMQ@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 22 Mar 2024 18:01:42 +0200
-Message-ID: <CAHp75VeoZ7p=7e9CgZftT5hThf-uMaUrqZBv=+tNYiUOevUOnw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] leds: rgb: leds-ktd202x: Get device properties
- through fwnode to support ACPI
-To: Kate Hsuan <hpa@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Mar 22, 2024 at 7:45=E2=80=AFAM Kate Hsuan <hpa@redhat.com> wrote:
-> On Tue, Mar 12, 2024 at 7:04=E2=80=AFAM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+On Tue, 19 Mar 2024 12:59:06 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
 
-..
+[...]
 
-> > > +     chip->num_leds =3D (unsigned long)i2c_get_match_data(client);
-> >
-> > No warnings during compilation?
-> Yes, the compiler doesn't complain about it.
+> +static void __init psci_init_system_off2(void)
+> +{
+> +	int ret;
+> +
+> +	ret = psci_features(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2));
+> +
+> +	if (ret != PSCI_RET_NOT_SUPPORTED)
+> +		psci_system_off2_supported = true;
 
-And for 32-bit mode as well?
+It'd be worth considering the (slightly broken) case where SYSTEM_OFF2
+is supported, but HIBERNATE_OFF is not set in the response, as the
+spec doesn't say that this bit is mandatory (it seems legal to
+implement SYSTEM_OFF2 without any hibernate type, making it similar to
+SYSTEM_OFF).
 
-..
+Thanks,
 
-P.S. You have commented only on the two comments. What about the rest?
+	M.
 
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Without deviation from the norm, progress is not possible.
 
