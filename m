@@ -1,272 +1,298 @@
-Return-Path: <linux-kernel+bounces-111963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EAB6887354
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:43:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F2B88735C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:49:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A9021C21413
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:43:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA8452823D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB55A6CDB8;
-	Fri, 22 Mar 2024 18:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2955970CB1;
+	Fri, 22 Mar 2024 18:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="K7rdjqQl"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="fexFCljY"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DE36BFB4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8AA39AC5;
+	Fri, 22 Mar 2024 18:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711133014; cv=none; b=cakostOGsgsCdWHqNEFQ4eh7u8NAm87V25mlM83KcM0xsshCFsKSBECrg1w+4uRveYPm+fjUQAkDBPRseX81u8T4aeP3kxvImQfmmm8spvt37OGFa+cZI628Lmwyf9SvH41UVQNSxvSfomH64n8llBOgL81dWULcvRprwW0XzOI=
+	t=1711133356; cv=none; b=cAWtdKcuf9vQDK4D27O/5k4f8ikPXITgDePAgbVA8/DYOzbnf6yhOddBZ2xs6zhlYLooS8R1ZW8NYTVfCSjaA66cAZPrIvYfjLAQnnnQN09wqbOwKSolRF29X1cZ1JKSBwfUZFhe5m+wcyDLqv44oU7PTuPVzV04jzHWMrVrnM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711133014; c=relaxed/simple;
-	bh=GvQkjDWyqo+rghsqOlGEglCNlFD0oHAv/CYM8uzWhmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Emp1VffkcPxZcrWlq/rIvxZjLjUlz53lbfY/Ivs1iP3wWNCw5uZ7FHY3E7Gu8UfrXvaDrZtYDyUFm2x3i+SQY5nIo3NhkZG1js8LmWsIcmzLW45zQlqQlx5WRtn7Nl47EzXZG3LYUIa2Z2wcIYxs2dlk5LijmHo4345V1riu8Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=K7rdjqQl; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6963cf14771so22003836d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711133012; x=1711737812; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=07q//JdJmCCvVOn8q/irpx1t9tAUng9qf5/QnHEsi64=;
-        b=K7rdjqQliWI1TNqJz8KGw71PRrpl8qkRcqLOkRH8/6709xbL0qE4wJ0HaoCqRmIoWX
-         wAPgxZ1XoIn5zlaKvmi6RhSv0rJXioRdrI+8jjqBfZ3s7nMJ+ZFLNH77QiaeyXIEl8iP
-         pFKbmTgihrXr367Isdswg9geTJmOC178pnmyU/Fd5I7in7PPJDcHP7bubht99eioh85P
-         FamcMzVbG5p2smLx+7/gk8P50jdl924WQK43uF4rFCMRpZ00CaB2DrOo/PJ21Y9jM0Pb
-         LDWBs7rVMF+6qiqSHK3gcb6yytbIhCDcWLAzYpXOSWA3TVUzxDHf7vJq8+RHeXvRGLnx
-         LGxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711133012; x=1711737812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=07q//JdJmCCvVOn8q/irpx1t9tAUng9qf5/QnHEsi64=;
-        b=CZJUldETXlrAvJK3yEkrYRMBg3Bzzu3bRbHeGmGyCHNBBK+pwTmvSMQiL3aLnkcIrp
-         NdwmuDHF8aMeXNHrscYWDchaID063QWl2gCFej5chnutVxG0gYqbc3RH7hpvsIhvJuxL
-         ExQplCvEwaIkAQUEuO0cOChxW1Og3yZrgnmFEwIBJWbwBLzGs89mrS2lakpHjZIb+Cg1
-         qn/NuFYAsNjs5UwOuFMe0vib+6w0ChtADTxILBQWRhWjGxkZbvaBG+JGUyKDXLVC0koh
-         tMdPuOv9WaTlY5U4CFilg+Ne8NwIvIaY8BdWkvOGWnWUW5x36hUpZtq4mfGDw+ra7PSh
-         7pjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMGWcBdNUqQxaY8lpciMii+1LtuJtoGQfTlz65mHBV36cUijPn9/WSUTc3o7MaBSQ600VeZqsfltf9ct7Uq2exT3zWif3CAPyGh3ec
-X-Gm-Message-State: AOJu0Yx6ZQJ/oHT85NS0XrB1SJxSY89XUssu0nCQfPqq+H5f+ZkZVkgC
-	oaTqG5Ax3RXjmnYHKoSBG9u2FcXutklwxL2XiYM4v4AWRE2fyDy0HvCqG/PBSZM=
-X-Google-Smtp-Source: AGHT+IGXOk5dcQgdVkv6EYgSp4tZ+XXQ52Ta863vabfcwug61wLkQ0Ayg5iISSk/K2qeTKcn+PXm/w==
-X-Received: by 2002:a05:6214:21ab:b0:690:3ca2:1858 with SMTP id t11-20020a05621421ab00b006903ca21858mr295314qvc.4.1711133011811;
-        Fri, 22 Mar 2024 11:43:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id n13-20020a0cfbcd000000b00696731ceef6sm435222qvp.2.2024.03.22.11.43.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 11:43:31 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rnjrW-00Cg1F-Pb;
-	Fri, 22 Mar 2024 15:43:30 -0300
-Date: Fri, 22 Mar 2024 15:43:30 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-Message-ID: <20240322184330.GL66976@ziepe.ca>
-References: <20240306174456.GO9225@ziepe.ca>
- <20240306221400.GA8663@lst.de>
- <20240307000036.GP9225@ziepe.ca>
- <20240307150505.GA28978@lst.de>
- <20240307210116.GQ9225@ziepe.ca>
- <20240308164920.GA17991@lst.de>
- <20240308202342.GZ9225@ziepe.ca>
- <20240309161418.GA27113@lst.de>
- <20240319153620.GB66976@ziepe.ca>
- <20240321223910.GA22663@lst.de>
+	s=arc-20240116; t=1711133356; c=relaxed/simple;
+	bh=n53/fcwqscy7JLUVq7eTOs9MewFdG7+seHsjTqDEO9Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XkWSQdiSQzRFj3aDyWv8TXFG1kVHA+hekcYuz5OSqaqEry4LuPuyAvOgm6QHUTU57szChbr3zKNSz1e6h5dVcvGHmTl2+Mm+jF2rMzOiBfkbohrwAmmYR46Ie2Cpb52lSnHJI2mLfP3ujnj7wvjw+Oi1bgPpK2S3m0hdRDoeXgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=fexFCljY; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1711133340; x=1711738140; i=w_armin@gmx.de;
+	bh=Gf140vAIe/6XrAFst2m1XbhP5EmoKJXbeR+F4ntRdGU=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=fexFCljYi93Hvqo6mFkliIuDP1KSoVls2MBk+s+j9gCEChHiS+EFsGmjc8+Vvk3U
+	 mS/kykzrZHZUkxy4HeAj/JCYXXEJMAhyQt0BvKwrut34H+I/nJ+kEP9Nsq8U2E570
+	 4A6ropIPRGaOo09FngwBlNIuBSwGXBPDJaLUflzg1T2H7Njicbi0v82qcsT9aFi8q
+	 GqAoajZmabuu3G1CesfArnm3cU8OD8ddMWpN0UoshF4uc2nEDxQu/dzkgE/YcdFX/
+	 rvenp9bIPtdQYzXxAntYLnhFn8Do16urAXfgPBLxXY2ml7IG1UyZj2BtNRIDQRlfQ
+	 Fegb1QcUVvaAM7X3JQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mi2O1-1r9iIM45VR-00e43t; Fri, 22
+ Mar 2024 19:49:00 +0100
+Message-ID: <8b2245fb-fce0-4155-b022-19ca1d6b9a77@gmx.de>
+Date: Fri, 22 Mar 2024 19:48:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321223910.GA22663@lst.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11] platform/x86: add lenovo wmi camera button driver
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Ai Chao <aichao@kylinos.cn>, Hans de Goede <hdegoede@redhat.com>,
+ LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+References: <20240322064750.267422-1-aichao@kylinos.cn>
+ <5e30a445-0a14-4242-9c1d-578a5b7cfcbe@linux.intel.com>
+ <f1421e47-a6b7-e8f1-49a0-28e3351b2450@linux.intel.com>
+ <7705e36f-829b-4661-9399-496905b3d161@linux.intel.com>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <7705e36f-829b-4661-9399-496905b3d161@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bUPb3MKzRGowKHd2B2cN6R6gArEQdmOVymPGvZkoFZ6ncCkU/Ec
+ fkiw+WWjtGlSqIcr9YzIqJUHVEMMiIJLWlMrAfkT4J8UujjrxUp5yQf9ocUkE/RsHGBT/3B
+ EtovWAM886/a4lCniJRum1Gq2PnIU/CNxhiIw61IiViF2VPE/D5xGN9XEos3GOxucB0big7
+ skZlpFcV5FnqsQQb+6M7g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:lU2DApP1Dws=;9RljlQCgpoQNUCx7h08Ysj6M9r8
+ jfOh/GgkEkKb385vOI0T7Gy/oFjJA65duK+KSSyj9H+4D6FNhHV/gfxPA6t//P+8Kpo0/DF7Y
+ 9W8eVpQ/f2YHtxXSYI/xHuhOcyVO6fxuRMdY2mpuICtl9q9uJqn2asc7O9l7oQbNb8bCe4cbt
+ 0g5A8FDBA74Ww658HXbPSQgqM/9dlhKCnTJ4noqq1bm8NgC+v3rixDffSmiMXF3WQL42xeau4
+ qZqM2h/jlrrOzurYG3WztBTX55OLlRExCliAQ5xec2nQ2q1MAIcUDrNT2Uxl38t9tDb9ZdVPJ
+ tsmwjegO4QQmeSdKDSoVkceWmmW/im5nBGHLnU1xP1QgEDeIWVAmoyk4AkjPyNNo+YcZIfAB3
+ VM7BNeke8ASziSoACvDfDTbzemRa08IA7ALhbxm0lz2H9pA/WIYyb7xeB2+v/2tDddfj91Z/H
+ gjNFgARqvi/5+Ys4ZG+BOXgaxUTp6IhyxeQYwPxOXPhd+nnouSgrC5xzvKFCrN4bOMGSf9+Tf
+ z0X4IhetsRFHETKAFHNaQOOEMj8coGty7AxM0zIT0MIdnX7VG4ojDwU18pNeu/SMS1JIwKDkw
+ IvnwA+A4agBt1Vl5DL46U2EFcNhnAE/WGa+HszPNP+j22K6rutAjyt9m6v7msCw5OZcjhEb6a
+ uSAhIxDngxVSOc0Hx2Af1G+tqteeyBPVUlbN+dGdMATYuu1WpJICpI7F93GGCvdilBrYB3kCt
+ OC6xpMnmOTQGbrC48ylpqpcbry0Q6lXi/AUyrYX/lZRNgNRkKnRPLP0fbJP3Pasqft7fFnuYx
+ wcgX7ETj5cB/SOFJLSlWX2mMRaIRWLOQG3UJJDvweNMJ4=
 
-On Thu, Mar 21, 2024 at 11:39:10PM +0100, Christoph Hellwig wrote:
-> On Tue, Mar 19, 2024 at 12:36:20PM -0300, Jason Gunthorpe wrote:
-> > I kind of understand your thinking on the DMA side, but I don't see
-> > how this is good for users of the API beyond BIO.
-> > 
-> > How will this make RDMA better? We have one MR, the MR has pages, the
-> > HW doesn't care about the SW distinction of p2p, swiotlb, direct,
-> > encrypted, iommu, etc. It needs to create one HW page list for
-> > whatever user VA range was given.
-> 
-> Well, the hardware (as in the PCIe card) never cares.  But the setup
-> path for the IOMMU does, and something in the OS needs to know about
-> it.  So unless we want to stash away a 'is this P2P' flag in every
-> page / SG entry / bvec, or a do a lookup to find that out for each
-> of them we need to manage chunks at these boundaries.  And that's
-> what I'm proposing.
+Am 22.03.24 um 17:47 schrieb Kuppuswamy Sathyanarayanan:
 
-Okay, if we look at the struct-page-less world (which we want for
-DMABUF) then we need to keep track for sure. What I had drafted was to
-keep track in the new "per-SG entry" because that seemed easiest to
-migrate existing code into.
+> On 3/22/24 7:39 AM, Ilpo J=C3=A4rvinen wrote:
+>> On Fri, 22 Mar 2024, Kuppuswamy Sathyanarayanan wrote:
+>>> On 3/21/24 11:47 PM, Ai Chao wrote:
+>>>> Add lenovo generic wmi driver to support camera button.
+>>>> The Camera button is a GPIO device. This driver receives ACPI notifyi
+>>>> when the camera button is switched on/off. This driver is used in
+>>>> Lenovo A70, it is a Computer integrated machine.
+>>>>
+>>>> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+>>>> ---
+>>>> v11: remove input_unregister_device.
+>>>> v10: Add lenovo_wmi_remove and mutex_destroy.
+>>>> v9: Add mutex for wmi notify.
+>>>> v8: Dev_deb convert to dev_err.
+>>>> v7: Add dev_dbg and remove unused dev in struct.
+>>>> v6: Modify SW_CAMERA_LENS_COVER to KEY_CAMERA_ACCESS_ENABLE/KEY_CAMER=
+A_ACCESS_DISABLE.
+>>>> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_=
+COVER.
+>>>> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenov=
+o_wmi_priv.
+>>>> v3: Remove lenovo_wmi_remove function.
+>>>> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
+>>>>
+>>>>   drivers/platform/x86/Kconfig             |  12 +++
+>>>>   drivers/platform/x86/Makefile            |   1 +
+>>>>   drivers/platform/x86/lenovo-wmi-camera.c | 126 ++++++++++++++++++++=
++++
+>>>>   3 files changed, 139 insertions(+)
+>>>>   create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
+>>>>
+>>>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kcon=
+fig
+>>>> index bdd302274b9a..9506a455b547 100644
+>>>> --- a/drivers/platform/x86/Kconfig
+>>>> +++ b/drivers/platform/x86/Kconfig
+>>>> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
+>>>>   	To compile this driver as a module, choose M here: the module
+>>>>   	will be called inspur-platform-profile.
+>>>>
+>>>> +config LENOVO_WMI_CAMERA
+>>>> +	tristate "Lenovo WMI Camera Button driver"
+>>>> +	depends on ACPI_WMI
+>>>> +	depends on INPUT
+>>>> +	help
+>>>> +	  This driver provides support for Lenovo camera button. The Camera
+>>>> +	  button is a GPIO device. This driver receives ACPI notify when th=
+e
+>>>> +	  camera button is switched on/off.
+>>>> +
+>>>> +	  To compile this driver as a module, choose M here: the module
+>>>> +	  will be called lenovo-wmi-camera.
+>>>> +
+>>>>   source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>>>>
+>>>>   config FW_ATTR_CLASS
+>>>> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Mak=
+efile
+>>>> index 1de432e8861e..217e94d7c877 100644
+>>>> --- a/drivers/platform/x86/Makefile
+>>>> +++ b/drivers/platform/x86/Makefile
+>>>> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
+>>>>   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
+>>>>   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
+>>>>   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
+>>>> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
+>>>>
+>>>>   # Intel
+>>>>   obj-y				+=3D intel/
+>>>> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platf=
+orm/x86/lenovo-wmi-camera.c
+>>>> new file mode 100644
+>>>> index 000000000000..fda936e2f37c
+>>>> --- /dev/null
+>>>> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
+>>>> @@ -0,0 +1,126 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * Lenovo WMI Camera Button Driver
+>>>> + *
+>>>> + * Author: Ai Chao <aichao@kylinos.cn>
+>>>> + * Copyright (C) 2024 KylinSoft Corporation.
+>>>> + */
+>>>> +
+>>>> +#include <linux/acpi.h>
+>>>> +#include <linux/device.h>
+>>>> +#include <linux/input.h>
+>>>> +#include <linux/module.h>
+>>>> +#include <linux/mutex.h>
+>>>> +#include <linux/wmi.h>
+>>>> +
+>>>> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-=
+62F4EA400013"
+>>>> +
+>>>> +struct lenovo_wmi_priv {
+>>>> +	struct input_dev *idev;
+>>>> +	struct mutex notify_lock;	/* lenovo wmi camera button notify lock *=
+/
+>>>> +};
+>>>> +
+>>>> +enum {
+>>>> +	SW_CAMERA_OFF	=3D 0,
+>>>> +	SW_CAMERA_ON	=3D 1,
+>>>> +};
+>>>> +
+>>>> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_ob=
+ject *obj)
+>>>> +{
+>>>> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+>>>> +	unsigned int keycode;
+>>>> +	u8 camera_mode;
+>>>> +
+>>>> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
+>>>> +		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	if (obj->buffer.length !=3D 1) {
+>>>> +		dev_err(&wdev->dev, "Invalid buffer length %u\n", obj->buffer.leng=
+th);
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	/* obj->buffer.pointer[0] is camera mode:
+>>>> +	 *      0 camera close
+>>>> +	 *      1 camera open
+>>>> +	 */
+>>>> +	camera_mode =3D obj->buffer.pointer[0];
+>>>> +	if (camera_mode > SW_CAMERA_ON) {
+>>>> +		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	mutex_lock(&priv->notify_lock);
+>>>> +
+>>>> +	keycode =3D (camera_mode =3D=3D SW_CAMERA_ON ?
+>>>> +		   KEY_CAMERA_ACCESS_ENABLE : KEY_CAMERA_ACCESS_DISABLE);
+>>>> +	input_report_key(priv->idev, keycode, 1);
+>>>> +	input_sync(priv->idev);
+>>>> +	input_report_key(priv->idev, keycode, 0);
+>>>> +	input_sync(priv->idev);
+>>>> +
+>>>> +	mutex_unlock(&priv->notify_lock);
+>>>> +}
+>>>> +
+>>>> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *con=
+text)
+>>>> +{
+>>>> +	struct lenovo_wmi_priv *priv;
+>>>> +	int ret;
+>>>> +
+>>>> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
+>>>> +	if (!priv)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	dev_set_drvdata(&wdev->dev, priv);
+>>>> +
+>>>> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
+>>>> +	if (!priv->idev)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	priv->idev->name =3D "Lenovo WMI Camera Button";
+>>>> +	priv->idev->phys =3D "wmi/input0";
+>>>> +	priv->idev->id.bustype =3D BUS_HOST;
+>>>> +	priv->idev->dev.parent =3D &wdev->dev;
+>>>> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
+>>>> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE)=
+;
+>>>> +
+>>>> +	ret =3D input_register_device(priv->idev);
+>>>> +	if (ret)
+>>>> +		return ret;
+>>>> +
+>>>> +	mutex_init(&priv->notify_lock);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static void lenovo_wmi_remove(struct wmi_device *wdev)
+>>>> +{
+>>>> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+>>>> +
+>>>> +	mutex_destroy(&priv->notify_lock);
+>>> Do you really need to call mutex_destroy() during the module unload?
+>>>
+>>> I don't think kernel allocates any memory during mutex_init() that nee=
+ds
+>>> be freed.
+>> Is all debug code going to be happy if it's not called?
+>>
+> I am not aware of any issue. Do you have any details about it?
+>
+>  From the comments, it looks like mutex_destroy() is used to mark a
+> mutex unusable. Not sure why we need to mark a device priv lock
+> unusable during the unload process.
 
-Though the datastructure could also be written to be a list of uniform
-memory types and then a list of SG entries. (more like how bio is
-organized)
+Hi,
 
-No idea right now which is better, and I'm happy make it go either
-way.
+AFAIK calling mutex_destroy() allows the lock debugging code to catch
+attempts to access the mutex afterwards, so this would allow us to spot
+such issues when enabling lock debugging.
 
-But Leon's series is not quite getting to this, it it still struct
-page based and struct page itself has all the metadata - though as you
-say it is a bit expensive to access.
+For the whole driver:
 
-> > Or worse, whatever thing is inside a DMABUF from a DRM
-> > driver. DMABUF's can have a (dynamic!) mixture of P2P and regular
-> > AFAIK based on the GPU's migration behavior.
-> 
-> And that's fine.  We just need to track it efficiently.
+Reviewed-by: Armin Wolf <W_Armin@gmx.de>
 
-Right, DMABUF/etc will return a something that has a list of physical
-addresses and some meta-data to indicate the "p2p memory provider" for
-the P2P part.
-
-Perhaps it could be as simple as 1 bit in the physical address/length
-and a global "P2P memory provider" pointer for the entire DMA
-BUF. Unclear to me right now, but sure.
-
-> > Or triple worse, ODP can dynamically change on a page by page basis
-> > the type depending on what hmm_range_fault() returns.
-> 
-> Same.  If this changes all the time you need to track it.  And we
-> should find a way to shared the code if we have multiple users for it.
-
-ODP (for at least the forseeable furture) is simpler because it is
-always struct page based so we don't need more metadata if we pay the
-cost to reach into the struct page. I suspect that is the right trade
-off for hmm_range_fault users.
-
-> But most DMA API consumers will never see P2P, and when they see it
-> it will be static.  So don't build the DMA API to automically do
-> the (not exactly super cheap) checks and add complexity for it.
-
-Okay, I think I get what you'd like to see.
-
-If we are going to make caller provided uniformity a requirement, lets
-imagine a formal memory type idea to help keep this a little
-abstracted?
-
- DMA_MEMORY_TYPE_NORMAL
- DMA_MEMORY_TYPE_P2P_NOT_ACS
- DMA_MEMORY_TYPE_ENCRYPTED
- DMA_MEMORY_TYPE_BOUNCE_BUFFER  // ??
-
-Then maybe the driver flow looks like:
-
-	if (transaction.memory_type == DMA_MEMORY_TYPE_NORMAL && dma_api_has_iommu(dev)) {
-		struct dma_api_iommu_state state;
-
-		dma_api_iommu_start(&state, transaction.num_pages);
-		for_each_range(transaction, range)
-			dma_api_iommu_map_range(&state, range.start_page, range.length);
-		num_hwsgls = 1;
-		hwsgl.addr = state.iova;
-		hwsgl.length = transaction.length
-		dma_api_iommu_batch_done(&state);
-	} else if (transaction.memory_type == DMA_MEMORY_TYPE_P2P_NOT_ACS) {
-		num_hwsgls = transcation.num_sgls;
-		for_each_range(transaction, range) {
-			hwsgl[i].addr = dma_api_p2p_not_acs_map(range.start_physical, range.length, p2p_memory_provider);
-			hwsgl[i].len = range.size;
-		}
-	} else {
-		/* Must be DMA_MEMORY_TYPE_NORMAL, DMA_MEMORY_TYPE_ENCRYPTED, DMA_MEMORY_TYPE_BOUNCE_BUFFER? */
-		num_hwsgls = transcation.num_sgls;
-		for_each_range(transaction, range) {
-			hwsgl[i].addr = dma_api_map_cpu_page(range.start_page, range.length);
-			hwsgl[i].len = range.size;
-		}
-	}
-
-And the hmm_range_fault case is sort of like:
-
-		struct dma_api_iommu_state state;
-		dma_api_iommu_start(&state, mr.num_pages);
-
-		[..]
-		hmm_range_fault(...)
-		if (present)
-			dma_link_page(&state, faulting_address_offset, page);
-		else
-			dma_unlink_page(&state, faulting_address_offset, page);
-
-Is this looking closer?
-
-> > So I take it as a requirement that RDMA MUST make single MR's out of a
-> > hodgepodge of page types. RDMA MRs cannot be split. Multiple MR's are
-> > not a functional replacement for a single MR.
-> 
-> But MRs consolidate multiple dma addresses anyway.
-
-I'm not sure I understand this?
- 
-> > Go back to the start of what are we trying to do here:
-> >  1) Make a DMA API that can support hmm_range_fault() users in a
-> >     sensible and performant way
-> >  2) Make a DMA API that can support RDMA MR's backed by DMABUF's, and
-> >     user VA's without restriction
-> >  3) Allow to remove scatterlist from BIO paths
-> >  4) Provide a DMABUF API that is not scatterlist that can feed into
-> >     the new DMA API - again supporting DMABUF's hodgepodge of types.
-> > 
-> > I'd like to do all of these things. I know 3 is your highest priority,
-> > but it is my lowest :)
-> 
-> Well, 3 an 4.  And 3 is not just limited to bio, but all the other
-> pointless scatterlist uses.
-
-Well, I didn't write a '5) remove all the other pointless scatterlist
-case' :)
-
-Anyhow, I think we all agree on the high level objective, we just need
-to get to an API that fuses all of these goals together.
-
-To go back to my main thesis - I would like a high performance low
-level DMA API that is capable enough that it could implement
-scatterlist dma_map_sg() and thus also implement any future
-scatterlist_v2, bio, hmm_range_fault or any other thing we come up
-with on top of it. This is broadly what I thought we agreed to at LSF
-last year.
-
-Jason
 
