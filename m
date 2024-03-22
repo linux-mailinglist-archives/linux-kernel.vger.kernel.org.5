@@ -1,220 +1,132 @@
-Return-Path: <linux-kernel+bounces-110818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1015488644B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8C1886452
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B848E1F22EB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:17:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D27E1F21678
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E2629A5;
-	Fri, 22 Mar 2024 00:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BA515D1;
+	Fri, 22 Mar 2024 00:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vitb3wDF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zZo4aFcr"
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19C4633;
-	Fri, 22 Mar 2024 00:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02912A41
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 00:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711066616; cv=none; b=fWOKTYrDvqXKEYTg2x7LPPczzC8hUl9/K9wTIpMV8Usyq7ns/K0UN5m6JQllpvbcQHX5k7hCrrA/AOx/QSRP3nGee4tfoqsw1WKYbw6b5V1QMkqfA0XEuCYJ6laSxkYxHX0I08pOUwETM7pCy7aRb6935Nc0AmksyJXhILqohWk=
+	t=1711066964; cv=none; b=qquHKsqQmU5TDnyOSgzdVwweax+bXHGAud2Yf6haLioD4HBsKAJ3YrjkPjW1eIGXCGJvHbvodoT+n7J8ekKrGliMyoAW1WEn5qht0ZT440Acr733ot1izJnx7cG0I42ntESFP9sezBQEUIzfod6FOU54ZjgtGiV9t423sTSo5JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711066616; c=relaxed/simple;
-	bh=dKPRrDLl3WDe65oG7nzjL2DbjC1eZAZzwXxTDf+c4AA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ce2Gp0K5wwFS4nfgWBXQ2su/7+CgmnQAt2eAjDCsxI6NS7cux49ndCfdNdd/p11XL0eWf8cvpLQTZLwuW7N9H3SFB8eGlmo/a9NTcK2+2FDcLV6KtmB6ozNQgpfkt9IosjcAK/37QzRlFAM00k+OtRse5TKrgQOB9+g94aybqDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vitb3wDF; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711066614; x=1742602614;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dKPRrDLl3WDe65oG7nzjL2DbjC1eZAZzwXxTDf+c4AA=;
-  b=Vitb3wDFa38OlCPNbcavs/xV1DdZwN5RkZt5j/Yul1JXviRRYDRyCkCY
-   chYVDzqCm/4HfhO6Itr5jWdUvCZnkoHsLeQtEApL/Fy03EKIzTQmRX4BQ
-   AKc4qWa2i21qX2bnpG8Wa1piqygH1twFUE2IU3IbE1fi0TjW06s+tmWnW
-   1f62AR8HohjOi2be1OKfQu/QdhwDxD2D0IxzfZCBseGXw/0mPrC6mJMTq
-   TcCekSMDJO0TvhkCKyT5kwDXZY8AEFg3Rqjc0OPheYI1sRjIJBOPvoRYL
-   vO0qenfOX3rj0mtz+F0OWfE/eHVC63b4pdmTutuvBh/5c/lGSB05dUA55
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5929052"
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="5929052"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 17:16:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
-   d="scan'208";a="14674916"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 17:16:52 -0700
-Date: Thu, 21 Mar 2024 17:16:52 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
- SEAMCALLs to the TDX module
-Message-ID: <20240322001652.GW1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
- <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
- <20240320213600.GI1994522@ls.amr.corp.intel.com>
- <46638b78-eb75-4ab4-af7e-b3cad0d00d7b@intel.com>
+	s=arc-20240116; t=1711066964; c=relaxed/simple;
+	bh=3t1Puwvdd9YGQyAKxNhbTo32TdrvZP4POduKNuPMD3w=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=TwR9uU2DRmFDLkDTD3/1RSgVvmo0CNaleQyHTU0xTQA0bpmP5Ztb2aZWH5BZX0Ex5Ae+TsE1Ig83UEV+BBAY76nRMnjxjPG0Bxx6OPcW+9fZQrpAt24ULUgXbq9HbppFpdE7s30SJe0Q0FZCWtXsp9J7OQXu1or4Ou1QsdecB74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zZo4aFcr; arc=none smtp.client-ip=203.205.221.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1711066657; bh=9jiZwYw7NgFqbN0NLudxqqOACEB3djyd6F0TISISt04=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=zZo4aFcri/lYlTS58X7JPjjGMb7za3GcV54U+SAEbVYdtk7QX8wKb/eQ1hW/VPzbM
+	 nWz/lBVWUsyLiSzF2U7X0fBvuhXzeP2Vdy3q8n08bvfbCmLnoXli9xpLeIOR1n05hK
+	 9EY9x69jqG8eC00SOHt0Ump+yczqF9bA5LksU8h8=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 46386CAC; Fri, 22 Mar 2024 08:17:35 +0800
+X-QQ-mid: xmsmtpt1711066655tbrgs4jy7
+Message-ID: <tencent_C325838D999249DDEFDDAA191E4FF08DC007@qq.com>
+X-QQ-XMAILINFO: NUygYfydBsqcWi/AEA1lzJGKks5oLrgyV8gMpyS5RBcdhAm9aUnkmBYletz0qD
+	 050CufAGfB1olpNswhBeLPEcQJJbHi7lZGf5EQh4qSOtzVM7mERLcoAcfc+LRURtXOcglbEcQ2OY
+	 oHLAko3v7vA+ijnLHFr9zKJpBWRjp+6DjR4aW59ew6jMD00gyDD1+59VjybjpT/airWj9uc1+UKd
+	 Y8w5YNKvYl+yhmumiF+0BV6tl7TYylFIsgHX2UJuAej5n+wWSxN/XOqJpYvpwnFOq911rV6lkyJk
+	 YXdaUaRL29jpynBaCT3GR1mPll3nyyO4Qt+tMx9Mjmfmi6yurvtO4SniXX8sfo1gYwxgfWBzgZ6u
+	 7LVLvuj/WRFpMiELMlUdxrl/81SegoEGF5BRxt1gcX0H6VPbu8llkYDLEbWEp6CYIHbKQ52Ya7iE
+	 0vqJstS4La05PWIzkpWkLpAx7sYIbF76aiclHY0k/n77gR+/j07pNxajtmLPXUOLZlM5RiPS0kkg
+	 9hT+V43CjH5UiI0kqPnazxHUn+fUAq/j2oPhlZCpPItqrvVixsRclhAZDJtlXtS8P/Rj9CzrAA/W
+	 m9kxB0+f4iVnzZ+0tpXa1T64TDa0YdZfDlyhVk82ZB75819sK9X4IyYEblQwSb5cN2iPmfo3Vsb1
+	 D+VQpreh+eFPppUNx/1cxnZZg447WVOcan411gYQaskdsFg8903/brxRwV2GjJfazjDY8MGhxRlI
+	 zolaBAjG7KuD9iYx+8uDEt1EvkOTFx1ZkwG3oiI+T2DjPUVp++PkfvRHReJ4J6Ivtnk88WGnYzJ4
+	 dydMSEDuFemXvLntFZcha+UWgSJKqWgSG11bSjgebrksyyY1jfPwSbbg/0ScODZ9pX4f0mU9TWyG
+	 xP3CHs+hfJBPEfpf37ZQQO1tRGC/RQNi6t9a6TTSlhcM7fLjf+705bDfLQi/rz/YVPQstrBSTrJ4
+	 iX/tzM6BRxSF/k4vO8X6zKegzI20Cm8G42ZaqK6XE=
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in rcu_report_exp_cpu_mult
+Date: Fri, 22 Mar 2024 08:17:30 +0800
+X-OQ-MSGID: <20240322001729.2656323-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000dc9aca0613ec855c@google.com>
+References: <000000000000dc9aca0613ec855c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <46638b78-eb75-4ab4-af7e-b3cad0d00d7b@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 11:37:58AM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+please test dl in rcu_report_exp_cpu_mult
 
-> 
-> 
-> On 21/03/2024 10:36 am, Isaku Yamahata wrote:
-> > On Wed, Mar 20, 2024 at 01:03:21PM +1300,
-> > "Huang, Kai" <kai.huang@intel.com> wrote:
-> > 
-> > > > +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
-> > > > +			       struct tdx_module_args *out)
-> > > > +{
-> > > > +	u64 ret;
-> > > > +
-> > > > +	if (out) {
-> > > > +		*out = *in;
-> > > > +		ret = seamcall_ret(op, out);
-> > > > +	} else
-> > > > +		ret = seamcall(op, in);
-> > > 
-> > > I think it's silly to have the @out argument in this way.
-> > > 
-> > > What is the main reason to still have it?
-> > > 
-> > > Yeah we used to have the @out in __seamcall() assembly function.  The
-> > > assembly code checks the @out and skips copying registers to @out when it is
-> > > NULL.
-> > > 
-> > > But it got removed when we tried to unify the assembly for TDCALL/TDVMCALL
-> > > and SEAMCALL to have a *SINGLE* assembly macro.
-> > > 
-> > > https://lore.kernel.org/lkml/cover.1692096753.git.kai.huang@intel.com/
-> > > 
-> > > To me that means we should just accept the fact we will always have a valid
-> > > @out.
-> > > 
-> > > But there might be some case that you _obviously_ need the @out and I
-> > > missed?
-> > 
-> > As I replied at [1], those four wrappers need to return values.
-> > The first three on error, the last one on success.
-> > 
-> >    [1] https://lore.kernel.org/kvm/20240320202040.GH1994522@ls.amr.corp.intel.com/
-> > 
-> >    tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
-> >    tdh_mem_page_aug(kvm_tdx, gpa, hpa, &entry, &level_state);
-> >    tdh_mem_page_remove(kvm_tdx, gpa, tdx_level, &entry, &level_state);
-> >    u64 tdh_vp_rd(struct vcpu_tdx *tdx, u64 field, u64 *value)
-> > 
-> > We can delete out from other wrappers.
-> 
-> Ah, OK.  I got you don't want to invent separate wrappers for each
-> seamcall() variants like:
-> 
->  - tdx_seamcall(u64 fn, struct tdx_module_args *args);
->  - tdx_seamcall_ret(u64 fn, struct tdx_module_args *args);
->  - tdx_seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
-> 
-> To be honest I found they were kinda annoying myself during the "unify
-> TDCALL/SEAMCALL and TDVMCALL assembly" patchset.
-> 
-> But life is hard...
-> 
-> And given (it seems) we are going to remove kvm_spurious_fault(), I think
-> the tdx_seamcall() variants are just very simple wrapper of plain seamcall()
-> variants.
-> 
-> So how about we have some macros:
-> 
-> static inline bool is_seamcall_err_kernel_defined(u64 err)
-> {
-> 	return err & TDX_SW_ERROR;
-> }
-> 
-> #define TDX_KVM_SEAMCALL(_kvm, _seamcall_func, _fn, _args)	\
-> 	({				\
-> 		u64 _ret = _seamcall_func(_fn, _args);
-> 		KVM_BUG_ON(_kvm, is_seamcall_err_kernel_defined(_ret));
-> 		_ret;
-> 	})
-
-As we can move out KVM_BUG_ON() to the call site, we can simply have
-seamcall() or seamcall_ret().
-The call site has to check error. whether it is TDX_SW_ERROR or not.
-And if it hit the unexpected error, it will mark the guest bugged.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
 
 
-> #define tdx_kvm_seamcall(_kvm, _fn, _args)	\
-> 	TDX_KVM_SEAMCALL(_kvm, seamcall, _fn, _args)
-> 
-> #define tdx_kvm_seamcall_ret(_kvm, _fn, _args)	\
-> 	TDX_KVM_SEAMCALL(_kvm, seamcall_ret, _fn, _args)
-> 
-> #define tdx_kvm_seamcall_saved_ret(_kvm, _fn, _args)	\
-> 	TDX_KVM_SEAMCALL(_kvm, seamcall_saved_ret, _fn, _args)
-> 
-> This is consistent with what we have in TDX host code, and this handles
-> NO_ENTROPY error internally.
-> 
-> Or, maybe we can just use the seamcall_ret() for ALL SEAMCALLs, except using
-> seamcall_saved_ret() for TDH.VP.ENTER.
-> 
-> u64 tdx_kvm_seamcall(sruct kvm*kvm, u64 fn,
-> 			struct tdx_module_args *args)
-> {
-> 	u64 ret = seamcall_ret(fn, args);
-> 
-> 	KVM_BUG_ON(kvm, is_seamcall_err_kernel_defined(ret);
-> 
-> 	return ret;
-> }
-> 
-> IIUC this at least should give us a single tdx_kvm_seamcall() API for
-> majority (99%) code sites?
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 27d733c0f65e..ae8f81b26e16 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 	struct bpf_shtab_bucket *bucket;
+ 	struct bpf_shtab_elem *elem;
+ 	int ret = -ENOENT;
++	unsigned long flags;
+ 
+ 	hash = sock_hash_bucket_hash(key, key_size);
+ 	bucket = sock_hash_select_bucket(htab, hash);
+ 
+-	spin_lock_bh(&bucket->lock);
++	spin_lock_irqsave(&bucket->lock, flags);
+ 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
+ 	if (elem) {
+ 		hlist_del_rcu(&elem->node);
+@@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 		sock_hash_free_elem(htab, elem);
+ 		ret = 0;
+ 	}
+-	spin_unlock_bh(&bucket->lock);
++	spin_unlock_irqrestore(&bucket->lock, flags);
+ 	return ret;
+ }
+ 
+@@ -1136,6 +1137,7 @@ static void sock_hash_free(struct bpf_map *map)
+ 	struct bpf_shtab_elem *elem;
+ 	struct hlist_node *node;
+ 	int i;
++	unsigned long flags;
+ 
+ 	/* After the sync no updates or deletes will be in-flight so it
+ 	 * is safe to walk map and remove entries without risking a race
+@@ -1151,11 +1153,11 @@ static void sock_hash_free(struct bpf_map *map)
+ 		 * exists, psock exists and holds a ref to socket. That
+ 		 * lets us to grab a socket ref too.
+ 		 */
+-		spin_lock_bh(&bucket->lock);
++		spin_lock_irqsave(&bucket->lock, flags);
+ 		hlist_for_each_entry(elem, &bucket->head, node)
+ 			sock_hold(elem->sk);
+ 		hlist_move_list(&bucket->head, &unlink_list);
+-		spin_unlock_bh(&bucket->lock);
++		spin_unlock_irqrestore(&bucket->lock, flags);
+ 
+ 		/* Process removed entries out of atomic context to
+ 		 * block for socket lock before deleting the psock's
 
-We can eleiminate tdx_kvm_seamcall() and use seamcall() or seamcall_ret()
-directly.
-
-
-> And obviously I'd like other people to weigh in too.
-> 
-> > Because only TDH.MNG.CREATE() and TDH.MNG.ADDCX() can return TDX_RND_NO_ENTROPY, > we can use __seamcall().  The TDX spec doesn't guarantee such error code
-> > convention.  It's very unlikely, though.
-> 
-> I don't quite follow the "convention" part.  Can you elaborate?
-> 
-> NO_ENTROPY is already handled in seamcall() variants.  Can we just use them
-> directly?
-
-I intended for bad code generation.  If the loop on NO_ENTRY error harms the
-code generation, we might be able to use __seamcall() or __seamcall_ret()
-instead of seamcall(), seamcall_ret().
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
