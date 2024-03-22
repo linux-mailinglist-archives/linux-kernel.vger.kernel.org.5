@@ -1,100 +1,86 @@
-Return-Path: <linux-kernel+bounces-111402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E92886BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:07:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C43E886BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A57FB1C22BD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:07:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C247D1F24B42
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8990C3FBB1;
-	Fri, 22 Mar 2024 12:07:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DD03FB04;
-	Fri, 22 Mar 2024 12:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA01040876;
+	Fri, 22 Mar 2024 12:07:09 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5949D405E5
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711109221; cv=none; b=tSNf612exYox8HGXR6i1uLsrUDcR98zA/igDVfNHGMF2AuQ0i3nAUroRg1kjQ7Ff/IrP0liSIkM6BlV7k1eBQHR6i/D5tK18unUmKeJ+7Rmod2GV8nSKB1khjuRUCAiowUOX0rH16vddY3RbBm0Rr8+NxXL4JBXAxgy2nK0QVg4=
+	t=1711109229; cv=none; b=nkKg+AYmtoPd8z46aotzzY59xz5Y9IigCJKTaTg+7Edu/sYHQjQRlmCRFE6EOHASTWJ+Mqbl/eIecGmEnBXl2AQUxsJDEMGVBYMglaR4NS4KiVI9FjypxEFeCmK6NR4PkXF2VLapduGoCa5DXag/N+A58mjX0wTuXr3jgsRlnOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711109221; c=relaxed/simple;
-	bh=bthc13dk1gLvIK9FTpWxxjgtBBe4ubu8K3uAhfkPPkY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EAcAiaMUzqWltf2Ejmjby6Lb2q8Zz58v1/AZ/7ZMR2h08RgvrDY4YcpBoENLzxdhla59T0yKsSd9sTTX0ahNLl9GvbBBqUIwkPC7AknCDY/CLqoEOCovlqlW/01ZODIl5fDEMp+xRJTIP7UxGcImgqeDvPy5rn5PSqQG+J200u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 816911007;
-	Fri, 22 Mar 2024 05:07:29 -0700 (PDT)
-Received: from e116581.blr.arm.com (e116581.arm.com [10.162.40.23])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A8D813F67D;
-	Fri, 22 Mar 2024 05:06:52 -0700 (PDT)
-From: Dev Jain <dev.jain@arm.com>
-To: akpm@linux-foundation.org,
-	shuah@kernel.org
-Cc: linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Anshuman.Khandual@arm.com,
-	Dev Jain <dev.jain@arm.com>
-Subject: [PATCH] selftests/mm: Parse VMA range in one go
-Date: Fri, 22 Mar 2024 17:35:51 +0530
-Message-Id: <20240322120551.818764-1-dev.jain@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711109229; c=relaxed/simple;
+	bh=kufeTNTTFGWRuFYb0FBECu4GuGhaE+m00A8aK6r/Qio=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=u52j3UWqcwNpd7QNLSl8XcGLKzRl/rErOcWaMdS4xS9oPKciUKs9By0HumVY0/8zbE1bDII0fO7qgdfFPjFG5ceiHtM4Zo7xQ8TYHnGVHRBmrHatD+rXjaXZyxEFdF1RqzDKjGsEO31LoepR8fMZQI7GhQU3UGxGRGVbukyQ5bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1LcP36Jyz1xsN1;
+	Fri, 22 Mar 2024 20:05:09 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 821E71A0172;
+	Fri, 22 Mar 2024 20:07:04 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 22 Mar 2024 20:07:03 +0800
+Subject: Re: [RFC PATCH 2/5] ubifs: Initialize or update ACLs for inode
+To: Li Zetao <lizetao1@huawei.com>, <richard@nod.at>,
+	<kent.overstreet@linux.dev>, <agruenba@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+References: <20240319161646.2153867-1-lizetao1@huawei.com>
+ <20240319161646.2153867-3-lizetao1@huawei.com>
+ <2991c168-723d-48ef-8420-61e22a897239@huawei.com>
+ <661736fb-bb3c-3519-1f4b-44dff285ea0b@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <10859a10-5c31-a5ec-02f5-47216132cf01@huawei.com>
+Date: Fri, 22 Mar 2024 20:07:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <661736fb-bb3c-3519-1f4b-44dff285ea0b@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-Use sscanf() to directly parse the VMA range. No functional change is intended.
+在 2024/3/22 19:57, Li Zetao 写道:
+> Hi,
+> 
+> On 2024/3/21 11:47, Zhihao Cheng wrote:
+>> 在 2024/3/20 0:16, Li Zetao 写道:
+>>> There are two scenarios where ACL needs to be updated, the first one
+>>> is when creating the inode, and the second one is in the chmod process.
+>>> When creating directories/files/device node/tmpfile, ACLs needs to be
+>>> initialized, but symlink do not.Why not support symlink? It looks 
+>>> like many filesystems(eg. ext4, f2fs, 
+>> btrfs) support it, except xfs.
+> Thanks for the reviews, but this is inconsistent with my understanding.
+> I think most file systems in Linux do not support it, because most file 
+> systems do not register the get/set functions of ACLs for symlink 
+> operations. And the posix_acl_create() will determine that it is a 
+> symlink type inode, and then skip the creation process. But except for 
+> bcachefs, it may be to solve the problem of certain scenarios, so it 
+> would be nice if anyone could explain it to us.
 
-Signed-off-by: Dev Jain <dev.jain@arm.com>
----
- tools/testing/selftests/mm/mlock2-tests.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/mm/mlock2-tests.c b/tools/testing/selftests/mm/mlock2-tests.c
-index 26f744188ad0..7f0d50fa361d 100644
---- a/tools/testing/selftests/mm/mlock2-tests.c
-+++ b/tools/testing/selftests/mm/mlock2-tests.c
-@@ -20,8 +20,6 @@ static int get_vm_area(unsigned long addr, struct vm_boundaries *area)
- 	FILE *file;
- 	int ret = 1;
- 	char line[1024] = {0};
--	char *end_addr;
--	char *stop;
- 	unsigned long start;
- 	unsigned long end;
- 
-@@ -37,21 +35,10 @@ static int get_vm_area(unsigned long addr, struct vm_boundaries *area)
- 	memset(area, 0, sizeof(struct vm_boundaries));
- 
- 	while(fgets(line, 1024, file)) {
--		end_addr = strchr(line, '-');
--		if (!end_addr) {
-+		if (sscanf(line, "%lx-%lx", &start, &end) != 2) {
- 			ksft_print_msg("cannot parse /proc/self/maps\n");
- 			goto out;
- 		}
--		*end_addr = '\0';
--		end_addr++;
--		stop = strchr(end_addr, ' ');
--		if (!stop) {
--			ksft_print_msg("cannot parse /proc/self/maps\n");
--			goto out;
--		}
--
--		sscanf(line, "%lx", &start);
--		sscanf(end_addr, "%lx", &end);
- 
- 		if (start <= addr && end > addr) {
- 			area->start = start;
--- 
-2.34.1
-
+You are right, only bcachefs support acl for symlink.
 
