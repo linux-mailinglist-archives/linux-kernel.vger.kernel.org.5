@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-110970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDDE9886673
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:52:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D7C988667A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE5C91C227C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:52:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8ED5B20C83
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A069CBE66;
-	Fri, 22 Mar 2024 05:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C88AC132;
+	Fri, 22 Mar 2024 05:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G+AtrZsg"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AtvEoIyZ"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD8C1A38FD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5E94436
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711086723; cv=none; b=S757QxXSZItyfvILgW3LxOo7GeKhCZukrLI0eXeHHfMbTZJ5kCjGU47LPquerpYwus7EjPRVDCl8KIyavFOolwvuUQdgtE9JtP2go2zgNauz+QDGOLMPNhBEp9NKjK0Tg5QYLAcopqOOD6LI2p72BUjXr1aXO9acHL92yBLr6w0=
+	t=1711086824; cv=none; b=CrPFtLY5PE4VoBF5iujXns3GoF52s1Jeg0vLlN0aVcSZHZSnGu9Wjf8yAO4ZnlaGkBM/rhsw3t4vIgyLjHHZ9YYk1KhTME3czQn2Q6hwHjUdYywlw7GAFbJM7KxEQISYzRycxutCZ7ADVG8mXrCWEODTQR/0XQWwj99jUt6bBlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711086723; c=relaxed/simple;
-	bh=xwAgu7DMdU5cOx/O+L0yjnRawBiv4vvg5la3ISjIYz8=;
+	s=arc-20240116; t=1711086824; c=relaxed/simple;
+	bh=JV7W9Ku7IWOPbssxkeHzsvNBP5t7FxanPEnEHuoDtn4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B4e559tPFefXouS5F9wumLZ0RD67pWqWAH7duRR4edWAfVJLiVCmYbMDGi0aHhmCEiAvbQhkUxE8h7/BfgSc6q1bTDO/kdlTzc8LQ4gFwFVF3AZwRn0kGHejNz2kwtFAaqagSIrGm1dUE6oYBSQHCzn5+zH2W50wMhRbbHZ0AhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G+AtrZsg; arc=none smtp.client-ip=209.85.218.46
+	 In-Reply-To:Content-Type; b=kaQHtwhx2Pp5d3lhboWh+D/LIYCDALJ5ddXdvWDgjJF5tpjDg1qAzecrHc4XDifk0al8ePGEwYlTnWS2d/AWNXkfSmBzs07GHOnt6PQQyUpYpj8YTkWdfzXlZQC3FCqNoQ76n3UdvB07qlmiYlZyoKOY0y9QOB2zZCZxg4+TS44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AtvEoIyZ; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a44ad785a44so206201466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:52:01 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46dec5d00cso230816966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:53:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711086720; x=1711691520; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711086821; x=1711691621; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8MnuBW/ux/4U5ag0WsVPmm972fncAs1AIR9sWcnL21M=;
-        b=G+AtrZsgUCo3kMIldshABE8onoPWAAa3ivVPmG7NoEAKbWCq8ejWQZD3SPlaStAqlM
-         jsxg8633qh3L1TLxoy6PYOr5G5PnvWcqLKOwPiRGuzi+McsHHw7K51PkyVAX+X5akRnF
-         T0scxm00LFB24vFzv1Z5klqoCAPkAYbiSlBPPE6rkLTJCMZbYXeQbg36/HMJNoR5F/sx
-         oen/EdZV/gKh8BUXGgiL/tYtPKpXS3WR9BO0jg5Ghauj77LA/Zlr3q10GoDxWaZ5HXIA
-         hAjiAYRpRtZpA07BmAo9UsA4nlz1/XXfv+M8WqVe0eyLOzvEasqBnaDX74xlskReqeUg
-         2j8w==
+        bh=lvjjIMgrLj2t99LvBKSf+/6gq3yKKlLGxdAZIjikVqg=;
+        b=AtvEoIyZ2nggQ1rjR0KfHS0j+VWnC6Ftq6OFhXlyqWkSIu/1T8nF5Th8Sv6Zz/MNeH
+         PI0+s1yA0hpPafFbzSJOxiev+nOcpny5sVuHL+kdsIIGW6TawM00K84FoTDoKTgkKCF2
+         0m0YwUn5ujoScoKILO8Xfl+/jBtdY0sZD22jAzrHnfppZb+XrlDQzbYnUmawVh/vPrH0
+         ZfWMOWdEtChMwnnTjfAAFsFaBanSjriJzM/x0iY8bR/iHufbu65mgecqw6DKFB1iWpT5
+         iRSbFBDKTT8wy5puFcegGVU6DgDYKs9tDbxzSgWeNVby4eVudkC6+egegBzpb8XJlPIh
+         jPxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711086720; x=1711691520;
+        d=1e100.net; s=20230601; t=1711086821; x=1711691621;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8MnuBW/ux/4U5ag0WsVPmm972fncAs1AIR9sWcnL21M=;
-        b=RmFdnJa4qWsF+qMJfpy5VbcGt7DziVpyYGrH+ZYifHH5FYQvEZY+R9UZAdrKEqw7+Y
-         XHZ563xo/9EQXzAushb7RUt3QXk/5KQSQvgIdlurRmDKLnYHw6l9NBS87F6FomD0OJWP
-         yYpXPywXtZFHSNSioQJSS3/vMAzK357evvUzy8XngkHfE+g08FWedHgSxYrtIVzYg60G
-         aqkHTUdMvOKSZQsGrQ7E+++p96b6VsEgpE97WOK6t0UxXSeq5JjMlSiLZfzcS9tg2xV4
-         vzWv5xw/OoeJ7WTbskZ9DV0nJiQU2Fdk7CP0UZutxGprqYjw44SrgDFgZmv0rnV7I7/T
-         TqQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUUn6niiqqLYakBY1xKW10DiFPvJgG8iG0eYdbpy2Jv/3H9Tvcakkj0Jdb+6+qm7QSe3luVEQ69G7o+zpU4RU3ukM1ZKnqkwN6n3K0B
-X-Gm-Message-State: AOJu0Yxsao2TfgAm7xXBLBEzLiWGHmSJY9BzWYSehcrGvupjELfRM21v
-	+3tiruQh0XfoU5Y6JHrw/OAgSW/HrB0hH2Sa7DkvDDnBJnLxgPQSIFZISYwqkz0=
-X-Google-Smtp-Source: AGHT+IFt4xuF4XVu7LDA+3ahhHChqza606KZAvMBkX4KTmkKSGGeEEHC7SE5EiQCBTuDd+HTZpwZHA==
-X-Received: by 2002:a17:907:6d06:b0:a47:30b2:3af7 with SMTP id sa6-20020a1709076d0600b00a4730b23af7mr526552ejc.45.1711086720034;
-        Thu, 21 Mar 2024 22:52:00 -0700 (PDT)
+        bh=lvjjIMgrLj2t99LvBKSf+/6gq3yKKlLGxdAZIjikVqg=;
+        b=LUhcuJkdyC7tJXu3BUq+ekXwOA5Y05S39n2IKWEzDSIlfUDfjxo5kBt7ir94OwmVMi
+         2ZQg+dPI4sLCTyw8ZZo3IhLroLCbCC6gnjb9qcpRq3w3OM8w6j835RxxuQeVtSPr9Y5m
+         U5xQIZBPiD3i+4fFAiK0ar+mGeI6keybnAeTCKSEdUvK6ZtgVZtZB5pzLaSBxFFYTzLV
+         ZgMK9wRopRQdnJHKj7w1bdqpN9reGC1H6kjDO5fC7aiVK2u82ExAo+HPcOBgDmXdF3HD
+         nNEC9nXzMkKgkTDz2YvaAgZe5fr//q1Qwnuek6oXtKMKbfifSOy8jS0LSBpI1D1Z8HCd
+         S/pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXIbfpzReWByFBT9se5bdJSBh+xlnCpjrZqTLkf57SEhAB5OhdboQn/YJFDi5cnxMUEVh0UsadS+SuUiWZFePhbuUXhYD0Hu0o9StJ8
+X-Gm-Message-State: AOJu0Yw8lybk6wOWDtZz4xDfPlSckQF9o/gRN1boXaxDS5u7hYOiMM2T
+	4M7hwoVV3s9ugb9fp9CGtyPSdqA70DBe5cckUwmP2cXpnneuussrwCr2ZLzXKtI=
+X-Google-Smtp-Source: AGHT+IHKnmAxdeXQT2EGVL7vwgAwS0U1rboWtZYtZ0sxG5Vx45HUEfizPByTIvOV/mR9yqlqaLY8Vg==
+X-Received: by 2002:a17:906:e0d1:b0:a46:eaa6:ce88 with SMTP id gl17-20020a170906e0d100b00a46eaa6ce88mr832218ejb.55.1711086821264;
+        Thu, 21 Mar 2024 22:53:41 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id bg25-20020a170906a05900b00a46bdc6278csm650015ejb.71.2024.03.21.22.51.58
+        by smtp.gmail.com with ESMTPSA id jt19-20020a170906ca1300b00a46a9cdcfa5sm634053ejb.162.2024.03.21.22.53.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 22:51:59 -0700 (PDT)
-Message-ID: <cd5dbc41-c772-4ea5-826c-e18515defb92@linaro.org>
-Date: Fri, 22 Mar 2024 06:51:57 +0100
+        Thu, 21 Mar 2024 22:53:40 -0700 (PDT)
+Message-ID: <51e3683f-be53-4bb7-a994-ffd05744a745@linaro.org>
+Date: Fri, 22 Mar 2024 06:53:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -136,18 +136,19 @@ Content-Transfer-Encoding: 7bit
 
 On 22/03/2024 01:37, Lothar Rubusch wrote:
 > Move driver wide constants and fields into the header.
+
+Why?
+
 > Let probe call a separate setup function. Provide
+
+Why?
+
 > possibility for an SPI/I2C specific setup to be passed
 > as function pointer to core.
 
-Subject: you received feedback already of not calling things "update".
-Everything is update.
+Why?
 
-No, write descriptive text.
-
-If you cannot, means you are doing way too many things in one patch.
-Please read submitting-patches document.
-
+Your commit message *MUST* explain why you are doing things.
 
 > 
 > Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
@@ -198,11 +199,6 @@ Please read submitting-patches document.
 > +#define ADXL345_DATA_FORMAT_MSK		~((u8) BIT(6)) /* ignore spi-3wire */
 > +
 > +#define ADXL345_DEVID			0xE5
-
-How is all this related to the patch? I don't understand. Several parts
-of this patch are not explained / obvious.
-
-
 > +
 >  /*
 >   * In full-resolution mode, scale factor is maintained at ~4 mg/LSB
@@ -227,115 +223,9 @@ of this patch are not explained / obvious.
 > +int adxl345_core_probe(struct device *dev, struct regmap *regmap,
 > +		       const struct adxl345_chip_info *chip_info,
 > +		       int (*setup)(struct device*, struct regmap*));
->  
->  #endif /* _ADXL345_H_ */
-> diff --git a/drivers/iio/accel/adxl345_core.c b/drivers/iio/accel/adxl345_core.c
-> index 8bd30a23e..040c3f05a 100644
-> --- a/drivers/iio/accel/adxl345_core.c
-> +++ b/drivers/iio/accel/adxl345_core.c
-> @@ -17,38 +17,9 @@
->  
->  #include "adxl345.h"
->  
-> -#define ADXL345_REG_DEVID		0x00
-> -#define ADXL345_REG_OFSX		0x1e
-> -#define ADXL345_REG_OFSY		0x1f
-> -#define ADXL345_REG_OFSZ		0x20
-> -#define ADXL345_REG_OFS_AXIS(index)	(ADXL345_REG_OFSX + (index))
-> -#define ADXL345_REG_BW_RATE		0x2C
-> -#define ADXL345_REG_POWER_CTL		0x2D
-> -#define ADXL345_REG_DATA_FORMAT		0x31
-> -#define ADXL345_REG_DATAX0		0x32
-> -#define ADXL345_REG_DATAY0		0x34
-> -#define ADXL345_REG_DATAZ0		0x36
-> -#define ADXL345_REG_DATA_AXIS(index)	\
-> -	(ADXL345_REG_DATAX0 + (index) * sizeof(__le16))
-> -
-> -#define ADXL345_BW_RATE			GENMASK(3, 0)
-> -#define ADXL345_BASE_RATE_NANO_HZ	97656250LL
-> -
-> -#define ADXL345_POWER_CTL_MEASURE	BIT(3)
-> -#define ADXL345_POWER_CTL_STANDBY	0x00
-> -
-> -#define ADXL345_DATA_FORMAT_FULL_RES	BIT(3) /* Up to 13-bits resolution */
-> -#define ADXL345_DATA_FORMAT_2G		0
-> -#define ADXL345_DATA_FORMAT_4G		1
-> -#define ADXL345_DATA_FORMAT_8G		2
-> -#define ADXL345_DATA_FORMAT_16G		3
 
-Why?
-
-..
-
->  
->  	return devm_iio_device_register(dev, indio_dev);
->  }
-> diff --git a/drivers/iio/accel/adxl345_i2c.c b/drivers/iio/accel/adxl345_i2c.c
-> index a3084b0a8..3f882e2e0 100644
-> --- a/drivers/iio/accel/adxl345_i2c.c
-> +++ b/drivers/iio/accel/adxl345_i2c.c
-> @@ -9,6 +9,7 @@
->   */
->  
->  #include <linux/i2c.h>
-> +#include <linux/mod_devicetable.h>
-
-One more... how is this related?
-
->  #include <linux/module.h>
->  #include <linux/regmap.h>
->  
-> @@ -21,41 +22,36 @@ static const struct regmap_config adxl345_i2c_regmap_config = {
->  
->  static int adxl345_i2c_probe(struct i2c_client *client)
->  {
-> +	const struct adxl345_chip_info *chip_data;
->  	struct regmap *regmap;
->  
-> +	/* Retrieve device data, i.e. the name, to pass it to the core */
-> +	chip_data = i2c_get_match_data(client);
-> +
->  	regmap = devm_regmap_init_i2c(client, &adxl345_i2c_regmap_config);
->  	if (IS_ERR(regmap))
-> -		return dev_err_probe(&client->dev, PTR_ERR(regmap), "Error initializing regmap\n");
-> +		return dev_err_probe(&client->dev, PTR_ERR(regmap),
-> +				     "Error initializing regmap\n");
-
-How is this change related to your commit?
-
-Stop doing unrelated changes.
-
->  
-> -	return adxl345_core_probe(&client->dev, regmap);
-> +	return adxl345_core_probe(&client->dev, regmap, chip_data, NULL);
->  }
->  
-> -static const struct adxl345_chip_info adxl345_i2c_info = {
-> -	.name = "adxl345",
-> -	.uscale = ADXL345_USCALE,
-> -};
-
-..
-
->  MODULE_DEVICE_TABLE(acpi, adxl345_acpi_match);
-> diff --git a/drivers/iio/accel/adxl345_spi.c b/drivers/iio/accel/adxl345_spi.c
-> index 93ca349f1..c26bac462 100644
-> --- a/drivers/iio/accel/adxl345_spi.c
-> +++ b/drivers/iio/accel/adxl345_spi.c
-> @@ -22,8 +22,14 @@ static const struct regmap_config adxl345_spi_regmap_config = {
->  
->  static int adxl345_spi_probe(struct spi_device *spi)
->  {
-> +	const struct adxl345_chip_info *chip_data;
->  	struct regmap *regmap;
->  
-> +	/* Retrieve device name to pass it as driver specific data */
-> +	chip_data = device_get_match_data(&spi->dev);
-> +	if (!chip_data)
-> +		chip_data = spi_get_device_match_data(spi);
-
-That's not how you use it spi_get_device_match_data(). Open the function
-and read it... it should be obvious that you now duplicate code.
+Last setup argument is entirely unused. Drop this change, it's not
+related to this patchset. Neither explained.
 
 Best regards,
 Krzysztof
