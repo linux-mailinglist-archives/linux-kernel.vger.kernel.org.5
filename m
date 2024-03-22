@@ -1,181 +1,262 @@
-Return-Path: <linux-kernel+bounces-111128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2EF886840
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58DA488683C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A0D28303D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F208283C24
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3020F18659;
-	Fri, 22 Mar 2024 08:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D3E1757D;
+	Fri, 22 Mar 2024 08:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cUpPQHxp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KwAh6tz4"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BDB17748
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16768830
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711096461; cv=none; b=CLN9C9Jj90Z+rUpLYnbL0Uu05jv8CzeWDDNeUXN7qpS5Wn5qAk9Bj15zvkBEBpLv0amLTTD0l/SExuN68n8RETb+YSUi2/mUOs+0JilYNt3QCAeG3UUX85P0uhgKDGhS6WVpB8sm0gcRfWwFu8dDORLIbhVXWJzTs2qk3PIhvhs=
+	t=1711096396; cv=none; b=bcwl0DXbN7FYikG5RwJt1pyRyUp9tItiHJycivbGdD2Wd43Dxu9Cm6p8V4lwJq7gg1Zu7h9uXdgFPIL+KViZidDxX5xCnSwGnkCKLPuIeZcaFlwBs4S6o9bpxaN/bgUJrLYnbx4zJu2ea5Un6ZSUL7+YQPBs3FkB1l2ktZGShrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711096461; c=relaxed/simple;
-	bh=mRVzyIiP7iscM7MSn5nw7hKjhSKi3ZHs2yFxGw3ITds=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sQayDcFkE611INKw+h74kSdmmeyIGNRBv4nLWcHcs+iVU6IQXSAsffo52jivTPDdblMFJxlF+ymirJkAq9GnlOH0s5uwiaU6ELiB5D8c6nXIfYcXfB2bUKv81FJdWJIFtxhv6/Or1wqNpiMLiZeXDIqg4rw+206ayOqv7SWos4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cUpPQHxp; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711096460; x=1742632460;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=mRVzyIiP7iscM7MSn5nw7hKjhSKi3ZHs2yFxGw3ITds=;
-  b=cUpPQHxpcPVYzxvyl1mOAAIUVIB4T2z/AFrp9LuEDcLkZ9B0V9tZefxR
-   nLOKXW8dG8WoyzqfUjPeyjQeIEp0Nb8sUuyPh4IVorxSTIOwowCUEkk6h
-   OGNz5arW93szvEpYOBdRIssien4PumoL+AJpUEnuENVUPD4IEOTwQhKCO
-   q8fJwt5wElhT/+hJdxth8YMWzI7wXvtFPyQ4c8xQ7NW9zp+Ro+VTm8ePk
-   kITkmoGVnSpugINhh8Sq5S7Nl9wutJi+FtQr+L+5/RmlW+VgfBxPh4dsO
-   YM+EZn2ZXAAvB7E2gLIn0yWCSxHSNItY8S8683GGl9c2bW2rOZj1+z34Q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6024928"
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="6024928"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 01:34:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="19381543"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 01:34:14 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Donet Tom <donettom@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  linux-mm@kvack.org,
-  linux-kernel@vger.kernel.org,  Aneesh Kumar <aneesh.kumar@kernel.org>,
-  Michal Hocko <mhocko@kernel.org>,  Dave Hansen
- <dave.hansen@linux.intel.com>,  Mel Gorman <mgorman@suse.de>,  Feng Tang
- <feng.tang@intel.com>,  Andrea Arcangeli <aarcange@redhat.com>,  Peter
- Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Rik van
- Riel <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew
- Wilcox <willy@infradead.org>,  Vlastimil Babka <vbabka@suse.cz>,  Dan
- Williams <dan.j.williams@intel.com>,  Hugh Dickins <hughd@google.com>,
-  Kefeng Wang <wangkefeng.wang@huawei.com>,  Suren Baghdasaryan
- <surenb@google.com>
-Subject: Re: [PATCH v3 2/2] mm/numa_balancing:Allow migrate on protnone
- reference with MPOL_PREFERRED_MANY policy
-In-Reply-To: <b1599085e1d2f3e48dc71c7991283b8aaa0fe00c.1711002865.git.donettom@linux.ibm.com>
-	(Donet Tom's message of "Thu, 21 Mar 2024 06:29:51 -0500")
-References: <cover.1711002865.git.donettom@linux.ibm.com>
-	<b1599085e1d2f3e48dc71c7991283b8aaa0fe00c.1711002865.git.donettom@linux.ibm.com>
-Date: Fri, 22 Mar 2024 16:32:20 +0800
-Message-ID: <87h6gyr7jf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711096396; c=relaxed/simple;
+	bh=DMqtk3eEcJRBCUbrtHl8AhdATznh4eTtumELyvNBQ/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QTCZAvjZFAOFnBq2q6n97vm1puS0xEoGsiz1aBjjsM3aW27GrkBcDI1U4ooam8WDvwRmH16B7GZ/TpTLUsVlO697Dl2doj6PArbvhBH7/OqWaC9rJmCJcM1/OJysKFH6ggguwnH8g3qIl5Zf3/pEAoKLWXTnT/vGr5UmyEvUXYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KwAh6tz4; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-609f1f97864so20962937b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1711096393; x=1711701193; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eznPwTZk7ZAEffHpcAWZTr/ae6mBoD7RvlNvXt/B97o=;
+        b=KwAh6tz4PCipzX1Gk1mm09km2zhqHrtRX+K3YSEzerCuj/MtVfyP95UeJ9tRFfAOQl
+         lQSetUz2wQ2iMPcyap6EY/qdFHC1VOcLtNpvE7GPKfCwXXAOXH0ed1r/hkkyNuWv37D5
+         Njb3bqSTJErIe8K44tslaJmml0gORkW+epjPg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711096393; x=1711701193;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eznPwTZk7ZAEffHpcAWZTr/ae6mBoD7RvlNvXt/B97o=;
+        b=u4ny9YwowPm5GiPX99lIFdVd9foSA0yqlUxCO3Axa6Na4trINBFyvy8WervW1cNTG2
+         FvyFweRzIDt0W990Z1LiroMp4+D+PLjTNIO9vfkM3dB6t1NrBH5vECUV2kXOMDwvEKX0
+         LezUcsORGhOuMqqUtMCoxXOv0ELj6+wFcDqOTtFL9AXsxRFOeWfXFKK9rdfQqG6feCif
+         Vt2I4XWlsTBaJgxVUlpvgkwWkEZlf7nr3abJwHF+xA6KztVuMkqXaNgvkXLUa9gTJ8hR
+         scMK3rPr/Q513Xdi/v083rHS1jPjxfVdMVCOrdwXfvZbvC9nIm7V11DQ9HtwZqIx3QZg
+         +RYw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6j0MqOWAAyKxRKfexOqmIiB1CCM/aJvO9x667d+rmXVw5FgF7p5Ddp254hcxGCojRqmeaT84z3JUJvoW5s7VaALTtWosXct6Y5h8C
+X-Gm-Message-State: AOJu0YwF/KWrcznVaFkKUYyb6kGHYQODYXY3XeX24WZZ63eWs05W4JxU
+	NHQ+fuoKDVmuQtNR2pgVXSIes9vAaSBbx/KndqvD7JEBeDc1M2jN0OIitWHFfistvkyYbzUa0bE
+	=
+X-Google-Smtp-Source: AGHT+IHINwdp7hQOvhwY3yMYw46a5HSs52jhojDBqs1n/ZQc8HjsIkDwkwUpZ8AogmZUkrBE71VwZA==
+X-Received: by 2002:a81:5ec1:0:b0:60a:174f:b356 with SMTP id s184-20020a815ec1000000b0060a174fb356mr1820796ywb.3.1711096393210;
+        Fri, 22 Mar 2024 01:33:13 -0700 (PDT)
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com. [209.85.219.45])
+        by smtp.gmail.com with ESMTPSA id g2-20020a05620a218200b0078a0df3489esm592227qka.116.2024.03.22.01.33.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 01:33:12 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6962a97752eso14941256d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:33:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVsT5Pw7urazpy9gxAN0dMghtmH+fnAEkWjg1mIkJs3n6qQd3Flczmroe9kDToPliVuIBRLsMxP/rqSprd6Vz/B/dX4iKciRjg8ExSe
+X-Received: by 2002:a05:6214:2629:b0:68f:3c36:1b74 with SMTP id
+ gv9-20020a056214262900b0068f3c361b74mr1581869qvb.41.1711096392048; Fri, 22
+ Mar 2024 01:33:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
+ <20220920-resend-hwtimestamp-v9-3-55a89f46f6be@chromium.org> <20240321234434.GC20938@pendragon.ideasonboard.com>
+In-Reply-To: <20240321234434.GC20938@pendragon.ideasonboard.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Fri, 22 Mar 2024 09:32:56 +0100
+X-Gmail-Original-Message-ID: <CANiDSCs_dvKwRmws=DoN-YPaTzPeyJQLp0MCUxhRcK-R1T=YSA@mail.gmail.com>
+Message-ID: <CANiDSCs_dvKwRmws=DoN-YPaTzPeyJQLp0MCUxhRcK-R1T=YSA@mail.gmail.com>
+Subject: Re: [PATCH v9 3/6] media: uvcvideo: Quirk for invalid dev_sof in
+ Logitech C922
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Donet Tom <donettom@linux.ibm.com> writes:
+Hi Laurent
 
-> commit bda420b98505 ("numa balancing: migrate on fault among multiple bound
-> nodes") added support for migrate on protnone reference with MPOL_BIND
-> memory policy. This allowed numa fault migration when the executing node
-> is part of the policy mask for MPOL_BIND. This patch extends migration
-> support to MPOL_PREFERRED_MANY policy.
+On Fri, 22 Mar 2024 at 00:44, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy flag
-> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
-> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory tier,
-> the kernel should not allocate pages from the slower memory tier via
-> allocation control zonelist fallback. Instead, we should move cold pages
-> from the faster memory node via memory demotion. For a page allocation,
-> kswapd is only woken up after we try to allocate pages from all nodes in
-> the allocation zone list. This implies that, without using memory
-> policies, we will end up allocating hot pages in the slower memory tier.
+> Hi Ricardo,
 >
-> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy: add
-> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
-> allocation control when we have memory tiers in the system. With
-> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting only
-> of faster memory nodes. When we fail to allocate pages from the faster
-> memory node, kswapd would be woken up, allowing demotion of cold pages
-> to slower memory nodes.
+> Thank you for the patch.
 >
-> With the current kernel, such usage of memory policies implies we can't
-> do page promotion from a slower memory tier to a faster memory tier
-> using numa fault. This patch fixes this issue.
+> On Wed, Mar 15, 2023 at 02:30:14PM +0100, Ricardo Ribalda wrote:
+> > Logitech C922 internal SOF does not increases at a stable rate of 1kHz.
 >
-> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
-> mask, we allow numa migration to the executing nodes. If the executing
-> node is not in the policy node mask, we do not allow numa migration.
+> The next thing you know they will redefine to value of pi to be 3.
+>
+> > This causes that the device_sof and the host_sof run at different rates,
+> > breaking the clock domain conversion algorithm. Eg:
+> >
+> > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
+> > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
+> > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
+> > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
+> > * 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
+> > * 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
+> > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
+> > ...
+> > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
+> > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
+> > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
+> > * 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
+> > * 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
+> > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
+> >
+> > Instead of disabling completely the hardware timestamping for such
+> > hardware we take the assumption that the packet handling jitter is
+> > under 2ms and use the host_sof as dev_sof.
+> >
+> > We can think of the UVC hardware clock as a system with a coarse clock
+> > (the SOF) and a fine clock (the PTS). The coarse clock can be replaced
+> > with a clock on the same frequency, if the jitter of such clock is
+> > smaller than its sampling rate. That way we can save some of the
+> > precision of the fine clock.
+> >
+> > To probe this point we have run three experiments on the Logitech C922.
+> > On that experiment we run the camera at 33fps and we analyse the
+> > difference in msec between a frame and its predecessor. If we display
+> > the histogram of that value, a thinner histogram will mean a better
+> > meassurement. The results for:
+> > - original hw timestamp: https://ibb.co/D1HJJ4x
+> > - pure software timestamp: https://ibb.co/QC9MgVK
+> > - modified hw timestamp: https://ibb.co/8s9dBdk
+> >
+> > This bug in the camera firmware has been confirmed by the vendor.
+> >
+> > lsusb -v
+> >
+> > Bus 001 Device 044: ID 046d:085c Logitech, Inc. C922 Pro Stream Webcam
+> > Device Descriptor:
+> >   bLength                18
+> >   bDescriptorType         1
+> >   bcdUSB               2.00
+> >   bDeviceClass          239 Miscellaneous Device
+> >   bDeviceSubClass         2
+> >   bDeviceProtocol         1 Interface Association
+> >   bMaxPacketSize0        64
+> >   idVendor           0x046d Logitech, Inc.
+> >   idProduct          0x085c C922 Pro Stream Webcam
+> >   bcdDevice            0.16
+> >   iManufacturer           0
+> >   iProduct                2 C922 Pro Stream Webcam
+> >   iSerial                 1 80B912DF
+> >   bNumConfigurations      1
+> >
+> > Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
+> >  drivers/media/usb/uvc/uvc_video.c  | 8 ++++++++
+> >  drivers/media/usb/uvc/uvcvideo.h   | 1 +
+> >  3 files changed, 18 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > index 7aefa76a42b3..678a5736c9df 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -2549,6 +2549,15 @@ static const struct usb_device_id uvc_ids[] = {
+> >         .bInterfaceSubClass   = 1,
+> >         .bInterfaceProtocol   = 0,
+> >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
+> > +     /* Logitech HD Pro Webcam C922 */
+> > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > +       .idVendor             = 0x046d,
+> > +       .idProduct            = 0x085c,
+> > +       .bInterfaceClass      = USB_CLASS_VIDEO,
+> > +       .bInterfaceSubClass   = 1,
+> > +       .bInterfaceProtocol   = 0,
+> > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
+> >       /* Chicony CNF7129 (Asus EEE 100HE) */
+> >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> >                               | USB_DEVICE_ID_MATCH_INT_INFO,
+> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > index 1f416c494acc..4d566edb73e7 100644
+> > --- a/drivers/media/usb/uvc/uvc_video.c
+> > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > @@ -547,6 +547,14 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> >       stream->clock.last_sof = dev_sof;
+> >
+> >       host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > +
+> > +     /*
+> > +      * On some devices, like the Logitech C922, the device SOF does not run
+> > +      * at a stable rate of 1kHz. For those devices use the host SOF instead.
+>
+> I'm still not very convinced, as without a formal proof I think there's
+> some luck involved, and it may break later. This being said, given that
+> this is gated by a quirk, it won't impact other devices, and we can deal
+> with regressions when they happen. Could we record it here:
+>
+>          * On some devices, like the Logitech C922, the device SOF does not run
+>          * at a stable rate of 1kHz. For those devices use the host SOF instead.
+>          * This improves the timestamp precision in the tests performed so far,
+>          * even if the exact reason hasn't been fully determined.
+>
+> or something along those lines ?
+How does this sound:
 
-Can we provide more information about this?  I suggest to use an
-example, for instance, pages may be distributed among multiple sockets
-unexpectedly.
 
---
-Best Regards,
-Huang, Ying
+        /*
+         * On some devices, like the Logitech C922, the device SOF does not run
+         * at a stable rate of 1kHz. For those devices use the host SOF instead.
++        * In the tests performed so far, this improves the timestamp precision.
++        * This is probably explained by a small packet handling jitter from the
++        * host, but the exact reason hasn't been fully determined.
+         */
 
-> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
-> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
-> ---
->  mm/mempolicy.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
 >
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index aa48376e2d34..13100a290918 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1504,9 +1504,10 @@ static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
->  	if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
->  		return -EINVAL;
->  	if (*flags & MPOL_F_NUMA_BALANCING) {
-> -		if (*mode != MPOL_BIND)
-> +		if (*mode == MPOL_BIND || *mode == MPOL_PREFERRED_MANY)
-> +			*flags |= (MPOL_F_MOF | MPOL_F_MORON);
-> +		else
->  			return -EINVAL;
-> -		*flags |= (MPOL_F_MOF | MPOL_F_MORON);
->  	}
->  	return 0;
->  }
-> @@ -2770,15 +2771,26 @@ int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
->  		break;
->  
->  	case MPOL_BIND:
-> -		/* Optimize placement among multiple nodes via NUMA balancing */
-> +	case MPOL_PREFERRED_MANY:
-> +		/*
-> +		 * Even though MPOL_PREFERRED_MANY can allocate pages outside
-> +		 * policy nodemask we don't allow numa migration to nodes
-> +		 * outside policy nodemask for now. This is done so that if we
-> +		 * want demotion to slow memory to happen, before allocating
-> +		 * from some DRAM node say 'x', we will end up using a
-> +		 * MPOL_PREFERRED_MANY mask excluding node 'x'. In such scenario
-> +		 * we should not promote to node 'x' from slow memory node.
-> +		 */
->  		if (pol->flags & MPOL_F_MORON) {
-> +			/*
-> +			 * Optimize placement among multiple nodes
-> +			 * via NUMA balancing
-> +			 */
->  			if (node_isset(thisnid, pol->nodes))
->  				break;
->  			goto out;
->  		}
-> -		fallthrough;
->  
-> -	case MPOL_PREFERRED_MANY:
->  		/*
->  		 * use current page if in policy nodemask,
->  		 * else select nearest allowed node, if any.
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > +      */
+> > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> > +             dev_sof = host_sof;
+> > +
+> >       time = uvc_video_get_time();
+> >
+> >       /*
+> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > index 9a596c8d894a..07b2fdb80adf 100644
+> > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > @@ -73,6 +73,7 @@
+> >  #define UVC_QUIRK_FORCE_Y8           0x00000800
+> >  #define UVC_QUIRK_FORCE_BPP          0x00001000
+> >  #define UVC_QUIRK_WAKE_AUTOSUSPEND   0x00002000
+> > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00004000
+> >
+> >  /* Format flags */
+> >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+> >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+-- 
+Ricardo Ribalda
 
