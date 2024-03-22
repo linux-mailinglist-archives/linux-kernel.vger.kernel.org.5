@@ -1,156 +1,410 @@
-Return-Path: <linux-kernel+bounces-112036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E628887472
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:31:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C324887477
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827231C21DDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:31:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77DD91C21C83
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 21:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528737FBDC;
-	Fri, 22 Mar 2024 21:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C3E80021;
+	Fri, 22 Mar 2024 21:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WmzxdeE2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TzeAuge8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840F81E53A;
-	Fri, 22 Mar 2024 21:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007DD5820D;
+	Fri, 22 Mar 2024 21:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711143060; cv=none; b=nzb34XmbTfo/1ipd/GTgkxpQ+FUrmCzreAmzgUxMUBIUgvtS79JkCFkU7kS+6rjs73Sumv+kUl9xqWWhSdNbXl7EooC4Dbzzz8Z+MXwkacY6p96UoGLN4SZBx2FH3mbldjz5UoCrCzeeHXVvnqRilC2f9EjEm1a2lr9hTpgQqxs=
+	t=1711143225; cv=none; b=Nm6ZNitkathyte7qCe/5esgAsslf5Q5ahY744Qk8r5lLtXmqK/FxnsBOpFkDSYgMdPObhc/oWk66aKHe7gAIcV9GbxLTp0CCMgAgOGa4tpyk9kIUEqPla1G00JEYzGq0tGQDPqYx5MX6VcZqeWSsVYIrlhl4i5/ZDpYwWeICfKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711143060; c=relaxed/simple;
-	bh=ECEO3PjP3QStSZLb8LE77MInaomRvbZCiEaNdgA8l2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C3Kje5hgzTpdeaTLpdehnauOzmekFp374msH9VTlE1a7faCSfzkjgGlyxh840wl51YPjbFOCpqxBuPdl4Y/CPDqu+Eb8BUU4rJCHoomVjlzF/FvFRoEKN6M7/oX/JhOFryKcPsr5pOf2j/6pelFtxafl10h7zGUdQmd1rQ7kYGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WmzxdeE2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2A92C43390;
-	Fri, 22 Mar 2024 21:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711143060;
-	bh=ECEO3PjP3QStSZLb8LE77MInaomRvbZCiEaNdgA8l2M=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WmzxdeE2HW1827vkrRyC/M2mxciIaLWNMBukRXveZutUoMVLwh40y+WXLWV5QLWrS
-	 N/FuVAvJy74rD80I6YsZ+SA7ekThHUUKjUtrdNaULmKAvdzlTx89VUc9w/WzZTjB6P
-	 ayGWnmSr+jQrbbuTe8UxhfCujK7ehaN+Tvc4P1dTTCkNjkrDxleqC7zZXbMN4/woxF
-	 rcxwAfA1uo9ApZSbNo22+ThVQ1JCaO/LYIf2QSzQWnClGhcDXrvyiRZSu0DwC9Bg1V
-	 N8fC6Lyxzh06UOKBX2OhQrlLT5moAV07lViGObdX9DpfsBx4EvDKMGkTNloxMXjqhV
-	 VGpOMxgg14InQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 968DFCE04C1; Fri, 22 Mar 2024 14:30:59 -0700 (PDT)
-Date: Fri, 22 Mar 2024 14:30:59 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <20240322112413.1UZFdBq5@linutronix.de>
+	s=arc-20240116; t=1711143225; c=relaxed/simple;
+	bh=DQpdJFbAd4o7WYYdFBMyE4qP9VwUyYnmmHM4TImOg9Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iJU5qFVRKqQPEZoNFUL46CIcCIahhwwCuyRYAl9X52yjbj9iTFhE/SPURlSG5kc6kGVU5LSKByPxgUzTPQcnhJTGDpwhtswpGq5z2bn/u/d7o5Py5mUlfGzR1lvgX7rLJ3T93IkOj5M1IOixEltenOFOpagBkCPDFrRmhthPPbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TzeAuge8; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711143223; x=1742679223;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=DQpdJFbAd4o7WYYdFBMyE4qP9VwUyYnmmHM4TImOg9Q=;
+  b=TzeAuge88sqPNiVENA0pper9Xo1l+uo680kshBu3tj4Ud7Bh43xFW77w
+   afFDc62wu9YZUn9Sc8FfLatcu96/FZolBm31sDRJaOHlMrX9rNxAZdUDr
+   fGEKKwtTNh1mld5XXCJimcLqcOEAY9YdUqjybLTfopzSFb3wFwfRr3U0e
+   LMxEjgBuKf3/FAV+XmsKVwOIJDC/fzkEhDKxtf2BeBWYC3TR/CzRAL4or
+   nZsfdVvTIVot3ic61iV1uCF4yABONap7WzJSp83TsgOJxmLMiiZPXQL3l
+   SLPaJjX9eTpotybaEN7BoWxKjXNsR2YsvBJyzwda79ngph9Oe9CKYBh8s
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6418650"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6418650"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:33:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15097420"
+Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.41]) ([10.24.10.41])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 14:33:41 -0700
+Message-ID: <0b34990b-8a3f-487e-891e-64d3d4d68613@intel.com>
+Date: Fri, 22 Mar 2024 14:33:41 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322112413.1UZFdBq5@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 08/29] KVM: selftests: TDX: Add TDX lifecycle test
+To: Sagi Shahar <sagis@google.com>, linux-kselftest@vger.kernel.org,
+ Ackerley Tng <ackerleytng@google.com>, Ryan Afranji <afranji@google.com>,
+ Erdem Aktas <erdemaktas@google.com>,
+ Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>,
+ Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
+ Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-9-sagis@google.com>
+Content-Language: en-US
+From: "Chen, Zide" <zide.chen@intel.com>
+In-Reply-To: <20231212204647.2170650-9-sagis@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
-> > index 16f519914415..17d7ed5f3ae6 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -247,6 +247,37 @@ do { \
-> >  	cond_resched(); \
-> >  } while (0)
-> >  
-> > +/**
-> > + * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
-> > + * @old_ts: jiffies at start of processing.
-> > + *
-> > + * This helper is for long-running softirq handlers, such as NAPI threads in
-> > + * networking. The caller should initialize the variable passed in as @old_ts
-> > + * at the beginning of the softirq handler. When invoked frequently, this macro
-> > + * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
-> > + * provide both RCU and RCU-Tasks quiescent states. Note that this macro
-> > + * modifies its old_ts argument.
-> > + *
-> > + * Because regions of code that have disabled softirq act as RCU read-side
-> > + * critical sections, this macro should be invoked with softirq (and
-> > + * preemption) enabled.
-> > + *
-> > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-> > + * have more chance to invoke schedule() calls and provide necessary quiescent
-> > + * states. As a contrast, calling cond_resched() only won't achieve the same
-> > + * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-> > + */
+
+
+On 12/12/2023 12:46 PM, Sagi Shahar wrote:
+> From: Erdem Aktas <erdemaktas@google.com>
 > 
-> Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
-> Why does RT have more scheduling points?
-
-In RT, isn't BH-disabled code preemptible?  But yes, this would not help
-RCU Tasks.
-
-> The RCU-Tasks thread is starving and yet there is no wake-up, correct?
-> Shouldn't cond_resched() take care of RCU-Tasks's needs, too?
-> This function is used by napi_threaded_poll() which is not invoked in
-> softirq it is a simple thread which does disable BH but this is it. Any
-> pending softirqs are served before the cond_resched().
+> Adding a test to verify TDX lifecycle by creating a TD and running a
+> dummy TDG.VP.VMCALL <Instruction.IO> inside it.
 > 
-> This napi_threaded_poll() case _basically_ a busy thread doing a lot of
-> work and delaying RCU-Tasks as far as I understand. The same may happen
-> to other busy-worker which have cond_resched() between works, such as
-> the kworker. Therefore I would expect to have some kind of timeout at
-> which point NEED_RESCHED is set so that cond_resched() can do its work.
-
-A NEED_RESCHED with a cond_resched() would still be counted as a
-preemption.  If we were intending to keep cond_resched(), I would
-be thinking in terms of changing that, but only for Tasks RCU.
-
-Given no cond_resched(), I would be thinking in terms of removing
-the check for CONFIG_PREEMPT_RT.
-
-Thoughts?
-
-							Thanx, Paul
-
-> > +#define rcu_softirq_qs_periodic(old_ts) \
-> > +do { \
-> > +	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-> > +	    time_after(jiffies, (old_ts) + HZ / 10)) { \
-> > +		preempt_disable(); \
-> > +		rcu_softirq_qs(); \
-> > +		preempt_enable(); \
-> > +		(old_ts) = jiffies; \
-> > +	} \
-> > +} while (0)
-> > +
-> >  /*
-> >   * Infrastructure to implement the synchronize_() primitives in
-> >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
+> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
+> Signed-off-by: Ryan Afranji <afranji@google.com>
+> Signed-off-by: Sagi Shahar <sagis@google.com>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |  4 +
+>  .../selftests/kvm/include/x86_64/tdx/tdcall.h | 35 ++++++++
+>  .../selftests/kvm/include/x86_64/tdx/tdx.h    | 12 +++
+>  .../kvm/include/x86_64/tdx/test_util.h        | 52 +++++++++++
+>  .../selftests/kvm/lib/x86_64/tdx/tdcall.S     | 90 +++++++++++++++++++
+>  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 27 ++++++
+>  .../selftests/kvm/lib/x86_64/tdx/tdx_util.c   |  1 +
+>  .../selftests/kvm/lib/x86_64/tdx/test_util.c  | 34 +++++++
+>  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 45 ++++++++++
+>  9 files changed, 300 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
+>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
+>  create mode 100644 tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
 > 
-> Sebastian
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a35150ab855f..80d4a50eeb9f 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -52,6 +52,9 @@ LIBKVM_x86_64 += lib/x86_64/vmx.c
+>  LIBKVM_x86_64 += lib/x86_64/sev.c
+>  LIBKVM_x86_64 += lib/x86_64/tdx/tdx_util.c
+>  LIBKVM_x86_64 += lib/x86_64/tdx/td_boot.S
+> +LIBKVM_x86_64 += lib/x86_64/tdx/tdcall.S
+> +LIBKVM_x86_64 += lib/x86_64/tdx/tdx.c
+> +LIBKVM_x86_64 += lib/x86_64/tdx/test_util.c
+>  
+>  LIBKVM_aarch64 += lib/aarch64/gic.c
+>  LIBKVM_aarch64 += lib/aarch64/gic_v3.c
+> @@ -152,6 +155,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
+>  TEST_GEN_PROGS_x86_64 += steal_time
+>  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
+>  TEST_GEN_PROGS_x86_64 += system_counter_offset_test
+> +TEST_GEN_PROGS_x86_64 += x86_64/tdx_vm_tests
+>  
+>  # Compiled outputs used by test targets
+>  TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+> new file mode 100644
+> index 000000000000..78001bfec9c8
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Adapted from arch/x86/include/asm/shared/tdx.h */
+> +
+> +#ifndef SELFTESTS_TDX_TDCALL_H
+> +#define SELFTESTS_TDX_TDCALL_H
+> +
+> +#include <linux/bits.h>
+> +#include <linux/types.h>
+> +
+> +#define TDG_VP_VMCALL_INSTRUCTION_IO_READ 0
+> +#define TDG_VP_VMCALL_INSTRUCTION_IO_WRITE 1
+> +
+> +#define TDX_HCALL_HAS_OUTPUT BIT(0)
+> +
+> +#define TDX_HYPERCALL_STANDARD 0
+> +
+> +/*
+> + * Used in __tdx_hypercall() to pass down and get back registers' values of
+> + * the TDCALL instruction when requesting services from the VMM.
+> + *
+> + * This is a software only structure and not part of the TDX module/VMM ABI.
+> + */
+> +struct tdx_hypercall_args {
+> +	u64 r10;
+> +	u64 r11;
+> +	u64 r12;
+> +	u64 r13;
+> +	u64 r14;
+> +	u64 r15;
+> +};
+> +
+> +/* Used to request services from the VMM */
+> +u64 __tdx_hypercall(struct tdx_hypercall_args *args, unsigned long flags);
+> +
+> +#endif // SELFTESTS_TDX_TDCALL_H
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> new file mode 100644
+> index 000000000000..a7161efe4ee2
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef SELFTEST_TDX_TDX_H
+> +#define SELFTEST_TDX_TDX_H
+> +
+> +#include <stdint.h>
+> +
+> +#define TDG_VP_VMCALL_INSTRUCTION_IO 30
+> +
+> +uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
+> +				      uint64_t write, uint64_t *data);
+> +
+> +#endif // SELFTEST_TDX_TDX_H
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+> new file mode 100644
+> index 000000000000..b570b6d978ff
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
+> @@ -0,0 +1,52 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef SELFTEST_TDX_TEST_UTIL_H
+> +#define SELFTEST_TDX_TEST_UTIL_H
+> +
+> +#include <stdbool.h>
+> +
+> +#include "tdcall.h"
+> +
+> +#define TDX_TEST_SUCCESS_PORT 0x30
+> +#define TDX_TEST_SUCCESS_SIZE 4
+> +
+> +/**
+> + * Assert that tdx_test_success() was called in the guest.
+> + */
+> +#define TDX_TEST_ASSERT_SUCCESS(VCPU)					\
+> +	(TEST_ASSERT(							\
+> +		((VCPU)->run->exit_reason == KVM_EXIT_IO) &&		\
+> +		((VCPU)->run->io.port == TDX_TEST_SUCCESS_PORT) &&	\
+> +		((VCPU)->run->io.size == TDX_TEST_SUCCESS_SIZE) &&	\
+> +		((VCPU)->run->io.direction ==				\
+> +			TDG_VP_VMCALL_INSTRUCTION_IO_WRITE),		\
+> +		"Unexpected exit values while waiting for test completion: %u (%s) %d %d %d\n", \
+> +		(VCPU)->run->exit_reason,				\
+> +		exit_reason_str((VCPU)->run->exit_reason),		\
+> +		(VCPU)->run->io.port, (VCPU)->run->io.size,		\
+> +		(VCPU)->run->io.direction))
+> +
+> +/**
+> + * Run a test in a new process.
+> + *
+> + * There might be multiple tests we are running and if one test fails, it will
+> + * prevent the subsequent tests to run due to how tests are failing with
+> + * TEST_ASSERT function. The run_in_new_process function will run a test in a
+> + * new process context and wait for it to finish or fail to prevent TEST_ASSERT
+> + * to kill the main testing process.
+> + */
+> +void run_in_new_process(void (*func)(void));
+> +
+> +/**
+> + * Verify that the TDX is supported by KVM.
+> + */
+> +bool is_tdx_enabled(void);
+> +
+> +/**
+> + * Report test success to userspace.
+> + *
+> + * Use TDX_TEST_ASSERT_SUCCESS() to assert that this function was called in the
+> + * guest.
+> + */
+> +void tdx_test_success(void);
+> +
+> +#endif // SELFTEST_TDX_TEST_UTIL_H
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
+> new file mode 100644
+> index 000000000000..df9c1ed4bb2d
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
+> @@ -0,0 +1,90 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Adapted from arch/x86/coco/tdx/tdcall.S */
+> +
+> +#define TDX_HYPERCALL_r10 0 /* offsetof(struct tdx_hypercall_args, r10) */
+> +#define TDX_HYPERCALL_r11 8 /* offsetof(struct tdx_hypercall_args, r11) */
+> +#define TDX_HYPERCALL_r12 16 /* offsetof(struct tdx_hypercall_args, r12) */
+> +#define TDX_HYPERCALL_r13 24 /* offsetof(struct tdx_hypercall_args, r13) */
+> +#define TDX_HYPERCALL_r14 32 /* offsetof(struct tdx_hypercall_args, r14) */
+> +#define TDX_HYPERCALL_r15 40 /* offsetof(struct tdx_hypercall_args, r15) */
+> +
+> +/*
+> + * Bitmasks of exposed registers (with VMM).
+> + */
+> +#define TDX_R10 0x400
+> +#define TDX_R11 0x800
+> +#define TDX_R12 0x1000
+> +#define TDX_R13 0x2000
+> +#define TDX_R14 0x4000
+> +#define TDX_R15 0x8000
+> +
+> +#define TDX_HCALL_HAS_OUTPUT 0x1
+> +
+> +/*
+> + * These registers are clobbered to hold arguments for each
+> + * TDVMCALL. They are safe to expose to the VMM.
+> + * Each bit in this mask represents a register ID. Bit field
+> + * details can be found in TDX GHCI specification, section
+> + * titled "TDCALL [TDG.VP.VMCALL] leaf".
+> + */
+> +#define TDVMCALL_EXPOSE_REGS_MASK	( TDX_R10 | TDX_R11 | \
+> +					  TDX_R12 | TDX_R13 | \
+> +					  TDX_R14 | TDX_R15 )
+> +
+> +.code64
+> +.section .text
+> +
+> +.globl __tdx_hypercall
+> +.type __tdx_hypercall, @function
+> +__tdx_hypercall:
+> +	/* Set up stack frame */
+> +	push %rbp
+> +	movq %rsp, %rbp
+> +
+> +	/* Save callee-saved GPRs as mandated by the x86_64 ABI */
+> +	push %r15
+> +	push %r14
+> +	push %r13
+> +	push %r12
+> +
+> +	/* Mangle function call ABI into TDCALL ABI: */
+> +	/* Set TDCALL leaf ID (TDVMCALL (0)) in RAX */
+> +	xor %eax, %eax
+> +
+> +	/* Copy hypercall registers from arg struct: */
+> +	movq TDX_HYPERCALL_r10(%rdi), %r10
+> +	movq TDX_HYPERCALL_r11(%rdi), %r11
+> +	movq TDX_HYPERCALL_r12(%rdi), %r12
+> +	movq TDX_HYPERCALL_r13(%rdi), %r13
+> +	movq TDX_HYPERCALL_r14(%rdi), %r14
+> +	movq TDX_HYPERCALL_r15(%rdi), %r15
+> +
+> +	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
+> +
+> +	tdcall
+> +
+> +	/* TDVMCALL leaf return code is in R10 */
+> +	movq %r10, %rax
+> +
+> +	/* Copy hypercall result registers to arg struct if needed */
+> +	testq $TDX_HCALL_HAS_OUTPUT, %rsi
+> +	jz .Lout
+> +
+> +	movq %r10, TDX_HYPERCALL_r10(%rdi)
+> +	movq %r11, TDX_HYPERCALL_r11(%rdi)
+> +	movq %r12, TDX_HYPERCALL_r12(%rdi)
+> +	movq %r13, TDX_HYPERCALL_r13(%rdi)
+> +	movq %r14, TDX_HYPERCALL_r14(%rdi)
+> +	movq %r15, TDX_HYPERCALL_r15(%rdi)
+> +.Lout:
+> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+> +	pop %r12
+> +	pop %r13
+> +	pop %r14
+> +	pop %r15
+> +
+> +	pop %rbp
+> +	ret
+> +
+> +/* Disable executable stack */
+> +.section .note.GNU-stack,"",%progbits
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> new file mode 100644
+> index 000000000000..c2414523487a
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
+> @@ -0,0 +1,27 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include "tdx/tdcall.h"
+> +#include "tdx/tdx.h"
+> +
+> +uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
+> +				      uint64_t write, uint64_t *data)
+> +{
+> +	uint64_t ret;
+> +	struct tdx_hypercall_args args = {
+> +		.r10 = TDX_HYPERCALL_STANDARD,
+> +		.r11 = TDG_VP_VMCALL_INSTRUCTION_IO,
+> +		.r12 = size,
+> +		.r13 = write,
+> +		.r14 = port,
+> +	};
+> +
+> +	if (write)
+> +		args.r15 = *data;
+> +
+> +	ret = __tdx_hypercall(&args, write ? 0 : TDX_HCALL_HAS_OUTPUT);
+> +
+> +	if (!write)
+> +		*data = args.r11;
+> +
+> +	return ret;
+> +}
+> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
+> index 063ff486fb86..b302060049d5 100644
+> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
+> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx_util.c
+> @@ -224,6 +224,7 @@ static void tdx_enable_capabilities(struct kvm_vm *vm)
+>  		      KVM_X2APIC_API_USE_32BIT_IDS |
+>  			      KVM_X2APIC_API_DISABLE_BROADCAST_QUIRK);
+>  	vm_enable_cap(vm, KVM_CAP_SPLIT_IRQCHIP, 24);
+> +	vm_enable_cap(vm, KVM_CAP_MAX_VCPUS, 512);
+
+Since TDX spec doesn't define max vCPUs, is it a good idea to fix it to
+512 in this common code?
+
+How about to move this line to the specific test case where you are
+actually verifying this capability?
+
+For example, move it to PATCH v5 21/29] KVM: selftests: TDX: Add
+TDG.VP.INFO test
+
++ vm_enable_cap(vm, KVM_CAP_MAX_VCPUS, 512);
+..
+
+TEST_ASSERT_EQ(ret_max_vcpus, 512);
+
+
 
