@@ -1,152 +1,182 @@
-Return-Path: <linux-kernel+bounces-111445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8BB886C7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:58:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F522886C87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 666F0B23F80
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81DBA1C217F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227374595B;
-	Fri, 22 Mar 2024 12:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5CC46447;
+	Fri, 22 Mar 2024 13:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dec6TVH1"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="GmDq6eJD"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7392C44C89
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BE645C0B;
+	Fri, 22 Mar 2024 13:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711112323; cv=none; b=R1i2B+oj3pKwnflVGJh25oyRdwNT4vcJzWnysPfiera1QCaAntvlwekQbI8e0/YOr6ha49KW0ZyjdhYX6uTMOAYW/rvqfeYKXFeVRtlqSFUCfdqtnP/lGgFX00xhmbvdoBDsbMVP5OkSUarOBVBnXBEdd8fSaqYwTCzc9R65Eko=
+	t=1711112500; cv=none; b=S08zRE7F6/Tb3fV5YZxxWpufmpgbDLpu4fHasKQyRZXkhuNgdUYGdpJIbY/x3DnLQc+6c/4TXkBLSpcm/HDmyiYWvjk/QkoWWCqcRxYT+heLkjq5wu3wNeCPo0MLMfUxX3O5G5zshDYch10twaxkDGGlbkNiscCtnY5HByB0HUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711112323; c=relaxed/simple;
-	bh=aAswaIdmxvMSh25JKNEAx3mUmnA1VZ5cxwrrtABNFHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sjboT5RJgGfDd2KlcVZaVKBlFH04pmw2cU4iZZRUtMIRACLUCVCz7yDrjbmMGiaWceQJ1szeHVySo2BotG1ML6/BuaQ9QKXiYeR/FPoJj6BC4OACk8lF5CL+m6ac17hNw0TylYKZGKOzdZtadD+2AZyAg0YNqac4wvWyNszmI1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dec6TVH1; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-414689ba80eso16954775e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711112320; x=1711717120; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YVyQMm8QpPiBgdk2MOVcgSZWNA9sQoBQ3kat6aE3a4Y=;
-        b=dec6TVH1QCd0syB9pQyIjgfQ5o/fe+Hp8Rr2Vs8zzEWcOLHoeesPOGYay4ploOqCTn
-         gUreVIakymig0abdCDHy2TL4EiUh2n/yn0jt5iP6gXVkfv3q8pQkUHpGXynP9TLhZXOY
-         8steE5dsAUFtH0BXC1nBIGb+RwsVJWk2ULqOVsUPO16foYqmu8gd+KE+TTKe2NvLWPkb
-         uAF+vkf4BV6ZjUqpmpydrCqr8t86FLFMTZxWJJRpdiZvp9cuLMTBsxvRFptvPST9m6ZU
-         2BAmvbvO9iAHbt0qUZMQYUm5wVul4imVuUir+pDvF6o8tfnO6w1gLRW0Tv9L4CAXd2uu
-         wjcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711112320; x=1711717120;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVyQMm8QpPiBgdk2MOVcgSZWNA9sQoBQ3kat6aE3a4Y=;
-        b=XnxYpDzaNTnmLUyyZUzR0Ch7Erg3edXJ8db3BRToHZuEjwmecVrs4TM8dxMG5POErJ
-         9HOvU3pd+/eQl+kaupuEYj32ddExBsqz4OI3grOB9lcLf2YrTZ/h4rCbkjZ2SY9Y2d7b
-         7FvfmQozr4PscxgMuz+wl8XNpuvXgvhKX0onMQhk3uXbXLm1THFFDCAzO/tnBAgCVcJw
-         ayJAnHnwxcdRGcaJpULqXy1PT7tsHRTakkT6wrERdQJRl3+QhJBKaeRfyluBLaVLjCri
-         e1VfMZli4dfvL2/buaWHId6bK1m5e1LMD9ohAwnm3QSSSHxRMDoMoDLwk0Lom+jJTcrt
-         iQ0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVdEYeIJVgIWDcep+yQSQZYn58J3bM6yk6UWtWbn8SGVGIqsBoyN3YBxXS8DqVvVDHZ03TdpX3EecnPi4CAT8FHUgGX40t68ah8aC6Z
-X-Gm-Message-State: AOJu0Yyxx7dItyTecDb2tBAqZXoqk5liuu3D923xmUr9Zg7BEMsaH/kH
-	GAbT/yo+IL2NxlH4k+x6TiLxYt1GG7rh+tLCRZ8m5GI5ylmxTwgsi5ZIK3BwE/4=
-X-Google-Smtp-Source: AGHT+IG1GXctvtc4AxO2wqsU81mOuUDYP4sQmFJKt4ISmtt46MX1aXQtv1ghCvfyet00WW8tsT0mCQ==
-X-Received: by 2002:a05:600c:3417:b0:414:b14:5654 with SMTP id y23-20020a05600c341700b004140b145654mr1663621wmp.21.1711112319599;
-        Fri, 22 Mar 2024 05:58:39 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id iv13-20020a05600c548d00b0041463334822sm3023218wmb.26.2024.03.22.05.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 05:58:39 -0700 (PDT)
-Date: Fri, 22 Mar 2024 15:58:35 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kent Gibson <warthog618@gmail.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	stable@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>
-Subject: Re: [PATCH] gpio: cdev: sanitize the label before requesting the
- interrupt
-Message-ID: <9d435e66-bb58-409e-aa30-9b89cb18dd9c@moroto.mountain>
-References: <20240320125945.16985-1-brgl@bgdev.pl>
- <20240322013034.GA4572@rigel>
- <CAMRc=MfQnZQU_t9-uDPp18vFikz_9eP6LtnWJYG0+KFgWjBcEg@mail.gmail.com>
- <f529d746-f8c5-466b-860b-e2bfaeb2cc27@moroto.mountain>
- <20240322115419.GA31273@rigel>
+	s=arc-20240116; t=1711112500; c=relaxed/simple;
+	bh=57Gnr1GDblaUtJoGzA33y6XntCYgqswvqSuwFA+G2xk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Znt/q8EBx93x2EBI4V6DW4BMfgtBgvgDZ83hxttve0Huyn7DMHFYmvQul1zLcEZCCfFN8sXA4px0dp0lpw/eRvvKxnhvrgfc5k+qTx4RB6NPnpvaJNFpAtTa0LmEw56Vn5ireWofUOyjD87P7uCY4DHfb0dhTfkCUS0SwhUA4Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=GmDq6eJD; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1711112449; x=1711717249; i=markus.elfring@web.de;
+	bh=j5W+zIrNrwXHwy8i6ouAXhosP3kZXQBL5lb5KfWqjAo=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=GmDq6eJDYgPPVb3quJwNngmgZIfK/mGylkG8DG1tBwkw+EOXza0QNOpkNTdHHw6q
+	 m2NrpRltTR/uuy4AT30Z3Zxy/8TtUwRwrNDkw7jUOGABVmzFe5YUj9/CbIvTCKyEm
+	 UbFWmOzF8t1sBIKMzWbsemMVu/xeKmHK35wlOSQ/3ktdfrTTNOgYXkiFnR3TtJSOI
+	 veliHEpzy4pXcnUhWlWPLRdxl+hnGbzrN9MEKhaLo1OmPNibdQLvX4yTLgDLwyzL+
+	 freHk7CPcsYWKtrJPdpJjYrcZuMTfp2hHHh6zV9bf2H6376kQ0ADmRgtsrHosvuQp
+	 RwUIAHpaWm3asve6Ag==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MgRMB-1r6vNe1ovH-00ht8U; Fri, 22
+ Mar 2024 14:00:49 +0100
+Message-ID: <8a1adff2-eb83-4dec-b8d0-1e523245de65@web.de>
+Date: Fri, 22 Mar 2024 14:00:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240322115419.GA31273@rigel>
+User-Agent: Mozilla Thunderbird
+To: Dan Williams <dan.j.williams@intel.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ira Weiny <ira.weiny@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Lukas Wunner <lukas.wunner@intel.com>
+References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+Subject: Re: [PATCH] cleanup: Add usage and style documentation
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UkSGC+4qo1n4XxoQDl15NnuOy58e3sPzB2i6UlqqDfSfdW9U9JQ
+ 35gaoqp9m504/U5DfPHcqvKGeGm3kKpN378SPB3hEpNClCey/Yrbp1tFLLlJH3hMWbSufs3
+ ayuqzVHb0ioFxaqpyaaPMkJvuT7nZwJiYsRptUuE3FAmNDk8oRMghoIKKQSVXVGn0gDMGFH
+ EJQ8MfXNN+4Q01lcJzLpQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:sDd5Oswr9wg=;oUpHLGsbXWg5ca5bC8NBGfysCrf
+ DFv6hUPq8S4H/XwQpwPiQuK4HLa3C2XsqohEPgF8DqzZ2fDNQxfq5ZjtnTiRXOh+cIfSx0si5
+ I8p6NBAwC4kK18ez+vuj4QBiYZaedbKGinfljFLez8lz3PFDPoXvsJZ9FhWQUIY8x0KLDejZj
+ 9SYVMpL7Hy2KSi85kGlwTXLj+OwNqHVdoBcZHVwXjiXUQLCFI9WqvY3zmPxKgYC3x1ql/1DeO
+ 6iXHJ4zA7rzyBFgnZwFhA+sloNmWRsp7UQr5yT9HUFot1v3W//MS9grpfZoKs17jL7RM+7mqq
+ VTJczbJTQY5/TS/miewAlPcLmi2qur+NZtXsdGMrOLgkpNuuwpVW5CylSlyQHwxHAl5OQSC0n
+ hE/yVcRxZ+iIH1RMl6m9TNwEBvd1uvg4XvMbDaxPCLLbSQjp62otI96yLupwQNyHkvyOFlH6m
+ 0kCUa+/bWDP8a8C72EV5qelNJEE3zux7FKyL6bWbZVjo6zs8T3HP0h9fmKjtnBSms3Jp6Lpui
+ QmlqSE+Rae1sJUDalnx1KDcXNGI+N1D/aGvmytshJ1PgS4VRXj/hwjyrINOLgkGHuD7LuSscy
+ jDoL363DGW2A1q5YWiEPzqKg0W7zBMepvkloBNElY5oIHN/GZNqfAVf5dhTyXqhWtbLLpbnHc
+ 4f98L+PSD4h17gPOZusT1LB3gQCsD+MYLkKzIOfkNOTMpkpqoIccy7Xu8ao+FYHduF5742Ut/
+ roZZ91Y7fK8Bk2rKmukct+SBsyqR+6lB8+CB5nRb7ybqmJXj0S33GNNL8NMNtwh15WRT74dZ9
+ ak5aJWDVHTUL0WWtPbmSRaM3uFSuKvoFJUegBWNPntwQk=
 
-On Fri, Mar 22, 2024 at 07:54:19PM +0800, Kent Gibson wrote:
-> On Fri, Mar 22, 2024 at 12:31:36PM +0300, Dan Carpenter wrote:
-> > On Fri, Mar 22, 2024 at 08:46:50AM +0100, Bartosz Golaszewski wrote:
-> > > On Fri, Mar 22, 2024 at 2:30 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > >
-> > > > On Wed, Mar 20, 2024 at 01:59:44PM +0100, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > >
-> > > > > Let's replace all "/" with "-".
-> > > > >
-> > > >
-> > > > I actually prefer the ":" you originally suggested, as it more clearly
-> > > > indicates a tier separation, whereas a hyphen is commonly used for
-> > > > multi-word names. And as the hyphen is more commonly used the sanitized
-> > > > name is more likely to conflict.
-> > > >
-> > >
-> > > Sounds good, will do.
-> > > > >
-> > > > > +     label = make_irq_label(le->label);
-> > > > > +     if (!label)
-> > > > > +             goto out_free_le;
-> > > > > +
-> > > >
-> > > > Need to set ret = -ENOMEM before the goto, else you will return 0.
-> > > >
-> > >
-> > > Eek, right, thanks.
-> >
-> > Smatch has a warning about this, btw.
-> > drivers/gpio/gpiolib-cdev.c:2221 lineevent_create() warn: missing error code 'ret'
-> >
-> 
-> And that triggered a "what the hell does that mean" warning in my
-> wetware error parser ;-).
-> 
-> That could be better worded - it isn't "missing", it hasn't been
-> appropriately set. So maybe "unset error code"?
-> 
+=E2=80=A6
+> +++ b/include/linux/cleanup.h
+> @@ -4,6 +4,118 @@
+>
+>  #include <linux/compiler.h>
+>
+> +/**
+> + * DOC: scope-based cleanup helpers
+> + *
+> + * The "goto error" pattern is notorious for introducing =E2=80=A6
 
-It's kind of a pain to change the warning message after the fact because
-then they show up as new warnings for everyone...  I maybe should poll
-people to see if they care about the hassel of it.
+Will any other label become more helpful for this description approach?
 
-> > The other warning here is:
-> > drivers/gpio/gpiolib-cdev.c:2269 lineevent_create() warn: 'irq' from request_threaded_irq() not released on lines: 2258.
-> >
-> 
-> Looks like a false positive to me - as per the comment in the code, that path
-> (2258) results in lineevent_release() being called and that releases the irq.
 
-Ah right.  Thanks!
+> + * this tedium and can aid in maintaining FILO (first in last out)
+             =E2=AC=86
+Would an other word be more appropriate here?
 
-regards,
-dan carpenter
+
+
+> + * contraindicates a pattern like the following:
+
+I would prefer an other wording approach.
+
+
+> + *	struct pci_dev *dev __free(pci_dev_put) =3D NULL;
+
+Programmers got used to null pointer initialisations.
+
+
+> + * In this case @dev is declared in x-mas tree style in a preamble
+> + * declaration block. That is problematic because it destroys the
+> + * compiler's ability to infer proper unwind order.
+
+Can capabilities be clarified better for the applied compilers?
+
+
+>                                                      If other cleanup
+> + * helpers appeared in such a function that depended on @dev being live
+> + * to complete their unwind then using the "struct obj_type *obj
+> + * __free(...) =3D NULL" style is an anti-pattern that potentially caus=
+es
+> + * a use-after-free bug.
+
+I suggest to reconsider such a development concern in more detail.
+
+
+> + *	struct pci_dev *dev __free(pci_dev_put) =3D
+> + *		pci_get_slot(parent, PCI_DEVFN(0, 0));
+> + *
+> + * ...which implies that declaring variables in mid-function scope is
+> + * not only allowed, but expected.
+
+* Is there a need to separate the ellipsis from the subsequent word
+  by a space character?
+
+* You propose a variable definition without specifying extra curly bracket=
+s
+  (for another compound statement / code block).
+  This can work only if an appropriate pointer is returned by the called f=
+unction.
+
+* The involved identifiers can occasionally get longer.
+  Further code layout challenges would need corresponding clarifications.
+  How will the handling of line length concerns evolve?
+
+* I suggest to take another look also at the transformation pattern
+  =E2=80=9CReduce Scope of Variable=E2=80=9D.
+  https://refactoring.com/catalog/reduceScopeOfVariable.html
+
+
+> + * Conversions of existing code to use cleanup helpers should convert
+> + * all resources so that no "goto" unwind statements remain. If not all
+> + * resources are amenable to cleanup then additional refactoring is
+> + * needed to build helper functions, or the function is simply not a
+> + * good candidate for conversion.
+
+* How do you think about to specify any more resource cleanup functions
+  for growing usage of =E2=80=9Csmart pointers=E2=80=9D?
+
+* Would you like to extend the specification of function pairs for
+  improved applications of guard variants?
+
+
+Regards,
+Markus
 
