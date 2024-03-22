@@ -1,373 +1,173 @@
-Return-Path: <linux-kernel+bounces-111704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8740F886FD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:32:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61FD886FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB2DD1C219C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:32:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC0A282949
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A6952F9B;
-	Fri, 22 Mar 2024 15:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B15053390;
+	Fri, 22 Mar 2024 15:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkrBJ4D5"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nwf/1TxW"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911B843AAB;
-	Fri, 22 Mar 2024 15:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3AE74CE13;
+	Fri, 22 Mar 2024 15:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711121553; cv=none; b=HLI5/9c9FiZxrDh1c95y2Ot00Lb0b0vWOiCLyL2OGlq4DTitHBuN0D4I/8YRduccRz7n1kL0fO7y5koXA0DTxmiilV62/uZdmuLQLn1A/HtuS4xGLiGdq57/gPWeFIli+wivtuofsn3mxb+L2IT432Z7GG5CAi873pk541MW1KE=
+	t=1711121727; cv=none; b=QcHePE7YsVFI7al9u1AfnTwbN6r8d1nKrR1huyqjGdFzHOs4i6RFMPBBIQfi6RiojcZ0Z0hQHaYTJ5DxJPHpWBmAbIeRUNlLz9R/GkCmNgsB0Ie94nOWtcS8EFzWBfLgQncuqiMm9YgDDwOdTNkdbDURQLOkAdTvBS0RZ1Ye720=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711121553; c=relaxed/simple;
-	bh=P3wyIxoBFXK1mVKfrTE7kGKRqmQadcn0/NHqsFnj96c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pL3kbza457z7JmO6KnE5bKcfz5fELjGgl4MKzbfX3vgP7ZZ1nz/ZzRr3vlS6WKXbdJwmtVRCrWEZAhWendiCFj5Eaz80j+aHnjsBaC9x9BaoMWXWSrI2eHQc56AVTHMutf8hivQ+lGzefUdVqvoz3X7g3za2svsd556p7llJOZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GkrBJ4D5; arc=none smtp.client-ip=209.85.219.41
+	s=arc-20240116; t=1711121727; c=relaxed/simple;
+	bh=02j24gEqA+EZmEVwAp4heMwAZitLAHaWVd6m6M01xKY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WYnXLLfMOtj0//eF+LgfyJcLq+sHAu+VUIckerz1j8fZOvsnFWKPG0a7Lnz17IfAesbP6UH1sCS7eeacec3CHC0CeLzWaW/PWjb6BJEMxyUctuf+vmCx6kaLYgI7QrdPHeL0q/YBEQZ4TyDoPzsBVmpWwmHzUHy8wwjKJAnEVJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nwf/1TxW; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6918781a913so18623706d6.3;
-        Fri, 22 Mar 2024 08:32:31 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4147e135f4dso3812835e9.2;
+        Fri, 22 Mar 2024 08:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711121550; x=1711726350; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=h1K6z7fXnB/y40CAaLq2u2T8rIHyCDP9Eyty22Wlld8=;
-        b=GkrBJ4D5IbQfzmyu9sgFoJc4AZz9+nptw/f9uqsLT5GK/ApxI7dsRNT5CXXHkAUiU/
-         gUlbphfbgY5mNo9G7Zpnt0Q1rjvEW92Hk1efT0YiwzfEu2gC9tL2MSurG5kGbGbHDZ+L
-         bg6f+7M0Ji87Va86GUjAq+tl4T9jntRPxXF1JVxhPKFTfNS/dvmEH1pGMWLLDvEy0OcU
-         JVgr9VetwT0EtePOJNdu82Lr5pcg9y6RlJjomKYjJZPpJwHWtFpwStyVTRTKZV1D53AX
-         JErhoKwBW807iAVmuSdLsuWdWK4+lzB6nfLOiSGIhna6qaVfDBDT+LjiU5A9dS14dzZD
-         6w6g==
+        d=gmail.com; s=20230601; t=1711121724; x=1711726524; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2r+Sc0zL+nf1gEPeJNoGBVBB9OnWPPwrmsFxPbOcOs=;
+        b=Nwf/1TxWT4KsEXY44PMG5UDee7Jb9a2p1xtYzYtmsLRZ8wd3yV1jjzfUT78lX2G+uT
+         g78NBS2vyz/fzH7vkHCNfnIm2NEMnFVWhRdZAMtAUad7dfBC+U7vQIAhhTUUFakD7zd+
+         B9eP8sjyM6FA1bjTb3JP5RF5hIXFx6tk69QoT3TSizKVQHQBFgOmVW+ljq5E6Kn1lzAm
+         IQwD6z5p57kmVXcSSGoEM1ty9aU/RBMjXclZ68uijsQfqS/IfGh6slMDsxzl+EsDwAwo
+         qgGRnk0O8qZ5V+vr74K5Tuusr8MM0KhmE/b8KdLQOe3tkBN+ZKhHhQUhhSewppP7yJGx
+         8/5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711121550; x=1711726350;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1711121724; x=1711726524;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=h1K6z7fXnB/y40CAaLq2u2T8rIHyCDP9Eyty22Wlld8=;
-        b=jxg+MSPhzl6/6uE16Hw/jMTS1HzS0Y1qoQkKIY6zko8DtoBnP0njAv4RvyviFzeGBa
-         8N1Hi0cxuxSl1NDXW8mNzLHw2+eGnQmIXh7elr2bR6pFXmoJYJ4ZaboVCh49YA6chC7N
-         PqLDs2RsfAy97fh4qMz6WsIEjim3K+nKZOgJNaabcsmqHKxwQjpd/TIRyraUWxHgVAoV
-         yfm5Oc62OrA++X1mKHgj7fS9gSVpeDPz+1mtDrBf1zL/jR6ShTqNTAYsXbGEghzerWsP
-         dzG81sigixXCpLSSHdDHiIoZsMZib+//LyMkLwtJ4B1YHtM8ccHMjcZft/pFFbYVXYVS
-         xIxw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+2ikN+PkVjNY6zpA7KrPATs/IEmr29fyL4f9Ot2WYqHikQybnaSJzyK+H99lSuBY+kHHW+p5wGokwOw4n5G/yNS+k5CJYJMPHOUE9QAB3sbmNzWDMywd2ncdptiqT9f9nYzbHsO5xJrsvvTw=
-X-Gm-Message-State: AOJu0YxB/85gnGgDxbDQn7cc3VKCrCgEmEEed/GYZbgt67E4Ba8YSgky
-	FlQ/wpAA9za+a4Kj9WsPdztkHIZgOlZAjyPybpQVHonr3q2Sn5Mb
-X-Google-Smtp-Source: AGHT+IGaO1+EvCcnVniGMfSPDZOPk8jpiG5xa91KWDNtek3tBbzaK6IbL+JZODUhmds+LX1/btEYaA==
-X-Received: by 2002:ad4:5fcf:0:b0:690:d754:284 with SMTP id jq15-20020ad45fcf000000b00690d7540284mr2259366qvb.27.1711121550448;
-        Fri, 22 Mar 2024 08:32:30 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id cy17-20020a05621418d100b0068f6e1c3582sm425573qvb.146.2024.03.22.08.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 08:32:29 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 6EEAA1200066;
-	Fri, 22 Mar 2024 11:32:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 22 Mar 2024 11:32:29 -0400
-X-ME-Sender: <xms:jKT9ZXW8juNAixHYWl23vDN4r2HD-_LY4H3gga8fw9I7Cs6EJubA6Q>
-    <xme:jKT9Zfl36ZrZJ1cLP42wEl1-PujlvOA_ZdeR1LRqMceGK7zCujJO3hW0RN6XrHo_7
-    A-jS680h9WOztxomg>
-X-ME-Received: <xmr:jKT9ZTYjHjZVlRWiuxg9mvy52l-_AHlbSzZv1K6UzY7GgVhW9kkpQwRFsQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtvddgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnheptdeijeetheelhedvfeehgeegjeeihfeihedvlefhveehueetffetieev
-    udegudeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdprghnughrohhiugdrtghomh
-    dprhhushhtqdhfohhrqdhlihhnuhigrdgtohhmpdgvlhgrphhsvggurdhtohenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvg
-    hsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheeh
-    hedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:jKT9ZSXuIq2ExToqdvKjKaEjbF8AuPJtE1HEle0py0KOB79B4xKh5A>
-    <xmx:jKT9ZRloNPb020IzhvRKk9ouIMDsxHgtAQrpdt-L8PJcONKUJwP-XQ>
-    <xmx:jKT9ZfdkyQ825Fgo8VhPqlDWPd4j76vMwuxIxNuGOswvC3mAF5sVAA>
-    <xmx:jKT9ZbF4x2G1bbxC35nLVxXfMJUpEDRjc60ZfW6c3JB4whEPZ5jBoQ>
-    <xmx:jaT9ZT3ZOqVvishrBoettkZDpY24Gfv6NwGjzZ41mjoVy4qdQS6M2WQPKr4>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Mar 2024 11:32:28 -0400 (EDT)
-Date: Fri, 22 Mar 2024 08:32:26 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: benno.lossin@proton.me, a.hindborg@samsung.com, alex.gaynor@gmail.com,
-	bjorn3_gh@protonmail.com, gary@garyguo.net, jstultz@google.com,
-	linux-kernel@vger.kernel.org, ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org, sboyd@kernel.org,
-	tglx@linutronix.de, wedsonaf@gmail.com, lina@asahilina.net,
-	heghedus.razvan@protonmail.com
-Subject: Re: [PATCH v2] rust: time: add Ktime
-Message-ID: <Zf2kio8NYG5DEgyY@tardis>
-References: <2ecf6529-5408-4621-becc-2f30e1039079@proton.me>
- <20240322101803.400735-1-aliceryhl@google.com>
+        bh=F2r+Sc0zL+nf1gEPeJNoGBVBB9OnWPPwrmsFxPbOcOs=;
+        b=bbXIIMFH3Y3KLvK882gT9KqjhOCVvbvyOqJu4p+ddTBhWn6W7Ye05h3mE0i/zNHwf0
+         DCz5sdF+qxzMp05sJSLLB0SuCND91uWSDiGkGxqZuvGXD2uKSwyE0OkzFrm+31bZCRR/
+         KUVu1tLnEhVzOaLoLOHaLZoH41CgjbTwxXVEX8D2cVYAHNn1cAZRoz49hbziLiNOs2r5
+         JvWf5jJJYxB2sjkozy+prmnIqykIeFyr13JMG50BDCoOg9wKfy6eVLOry7EcZ9u8IwKK
+         SjUtWunKhfJgaL8l8+H8W5bwlTRD0nvSSSEISsEgB8fFRZjFn1UVhivfWW2KuGaXdu5A
+         DoNg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMcE4jqIzMNimGMDSeKTBLXaRa88zrRgbE9nzKPhAqlSXYgycQrPVq4HwhggGYnWEFVtTRA7gPXYtrOdUAt85aEf2yv+pFBzCnH3k1LP+q06UJDrPKOJbgDtp0kgYEIYXu
+X-Gm-Message-State: AOJu0YwegOSH+Ed55n8cwNDsTRmX+tk3dnfbNoKOJHE1npFLtCDFAgvE
+	35DDP2dXGD/o65LIH7CeEczVFEeSaMvRdNixmjPVHfS4U+Xf0cBe
+X-Google-Smtp-Source: AGHT+IH5r7ZjLfQkFRP6jpsoZPsttvkM4rwwQd8yGePSGbgBCVvxMXcPVOeG74OU0p9PqgPr/d9GtQ==
+X-Received: by 2002:a05:600c:21d9:b0:414:f81:e512 with SMTP id x25-20020a05600c21d900b004140f81e512mr1722162wmj.19.1711121724010;
+        Fri, 22 Mar 2024 08:35:24 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id s17-20020adfa291000000b00341b7388dafsm1573716wra.77.2024.03.22.08.35.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Mar 2024 08:35:22 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf v2] bpf: verifier: reject addr_space_cast insn without arena
+Date: Fri, 22 Mar 2024 15:35:18 +0000
+Message-Id: <20240322153518.11555-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240322101803.400735-1-aliceryhl@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 10:18:02AM +0000, Alice Ryhl wrote:
-> Benno Lossin <benno.lossin@proton.me> wrote:
-> > On 3/22/24 09:59, Alice Ryhl wrote:
-> >> +/// Returns the number of milliseconds between two ktimes.
-> >> +#[inline]
-> >> +pub fn ktime_ms_delta(later: Ktime, earlier: Ktime) -> i64 {
-> >> +    (later - earlier).to_ms()
-> >> +}
-> >=20
-> > Is there a reason for this function being standalone?
->=20
-> I think for a Rust time API, we should make one of two choices:
->=20
-> * Match the C ktime_t API as closely as possible.
-> * Match the Rust standard library std::time API as closely as possible.
->=20
-> This patchset has made the former choice, and that is why I went with
-> this design.
->=20
-> In the future it could make sense to add a more "Rusty" API, but even
-> then I think it could make sense to have both and implement the latter
-> in terms of the former. That way, only the API that closely matches the
-> C ktime_t API needs to concern itself with unsafely calling into C.
->=20
+The verifier allows using the addr_space_cast instruction in a program
+that doesn't have an associated arena. This was caught in the form an
+invalid memory access in do_misc_fixups() when while converting
+addr_space_cast to a normal 32-bit mov, env->prog->aux->arena was
+dereferenced to check for BPF_F_NO_USER_CONV flag.
 
-So I create the following one based on this patch and the previous we
-have. I changed the title a bit, did a s/Ktime/KTime and add the part of
-`Instant`, please take a look, I think the binder usage is still
-covered.
+Reject programs that include the addr_space_cast instruction but don't
+have an associated arena.
 
-Benno, I dropped your Reviewed-by since the patch has been changed.
-Please take annother look.
+root@rv-tester:~# ./reproducer
+ Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000000000030
+ Oops [#1]
+ Modules linked in: sch_fq_codel drm fuse i2c_core drm_panel_orientation_quirks backlight configfs ip_tables x_tables
+ CPU: 2 PID: 265 Comm: reproducer Not tainted 6.8.0 #3
+ Hardware name: riscv-virtio,qemu (DT)
+ epc : do_misc_fixups+0x43c/0x1168
+  ra : bpf_check+0xda8/0x22b6
+ epc : ffffffff8017eeaa ra : ffffffff801936d6 sp : ff200000011bb890
+  gp : ffffffff82293468 tp : ff60000084fcb840 t0 : ff60000084e38048
+  t1 : 0000000000000048 t2 : ff5fffff80000000 s0 : ff200000011bba60
+  s1 : ff2000000101d058 a0 : ff6000008b980000 a1 : 0000000000000004
+  a2 : 00000000000000e1 a3 : 0000000000000001 a4 : 0000000000010000
+  a5 : 0000000000000000 a6 : 0000000000000001 a7 : ff2000000101d000
+  s2 : 0000000000000002 s3 : 0000000000000000 s4 : 0000000000000000
+  s5 : 0000000000000002 s6 : 0000000000000000 s7 : ff6000008b980aa0
+  s8 : 0000000000010005 s9 : 0000000000000004 s10: ff6000008b980000
+  s11: 0000000000000000 t3 : 0000000000002000 t4 : 0000ff0000000000
+  t5 : 00ff000000000000 t6 : ff20000000000000
+ status: 0000000200000120 badaddr: 0000000000000030 cause: 000000000000000d
+ [<ffffffff8017eeaa>] do_misc_fixups+0x43c/0x1168
+ [<ffffffff801936d6>] bpf_check+0xda8/0x22b6
+ [<ffffffff80174b32>] bpf_prog_load+0x486/0x8dc
+ [<ffffffff80176566>] __sys_bpf+0xbd8/0x214e
+ [<ffffffff80177d14>] __riscv_sys_bpf+0x22/0x2a
+ [<ffffffff80d2493a>] do_trap_ecall_u+0x102/0x17c
+ [<ffffffff80d3048c>] ret_from_exception+0x0/0x64
+ Code: b345 9783 0024 4685 8b63 16d7 3783 008d 7f9c 7fdc (5b9c) 83c9
+ ---[ end trace 0000000000000000 ]---
+ Kernel panic - not syncing: Fatal exception
+ SMP: stopping secondary CPUs
 
-Thomas, I tried to resolve a few comments you had for the previous
-version, please let me know whether this version looks OK to you.
-
-Regards,
-Boqun
-
----------------------------->8
-Subject: [PATCH] rust: time: Add clock source reading functionality
-
-Introduce wrappers around `ktime_t` with a time duration type `KTime`
-and a timestamp type `Instant`.
-
-Rust Binder will use these bindings to compute how many milliseconds a
-transaction has been active for when dumping the current state of the
-Binder driver. This replicates the logic in C Binder [1].
-
-For a usage example in Rust Binder, see [2].
-
-The `ktime_get` method cannot be safely called in NMI context. This
-requirement is not checked by these abstractions, but it is intended
-that klint [3] or a similar tool will be used to check it in the future.
-
-Link: https://lore.kernel.org/lkml/5ac8c0d09392290be789423f0dd78a520b830fab=
-=2E1682333709.git.zhangchuang3@xiaomi.com/ [1]
-Link: https://r.android.com/3004103 [2]
-Link: https://rust-for-linux.com/klint [3]
-Originally-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
-Originally-by: Asahi Lina <lina@asahilina.net>
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Fixes: 6082b6c328b5 ("bpf: Recognize addr_space_cast instruction in the verifier.")
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Reported-by: yue sun <samsun1006219@gmail.com>
+Closes: https://lore.kernel.org/bpf/CABOYnLz09O1+2gGVJuCxd_24a-7UueXzV-Ff+Fr+h5EKFDiYCQ@mail.gmail.com/
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- rust/kernel/time.rs | 158 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 158 insertions(+)
+Changes in V2:
+V1: https://lore.kernel.org/bpf/20240322143829.40808-1-puranjay12@gmail.com/
+- Reject programs that have the addr_space_cast instruction without an
+  arena rather than checking for a NULL pointer in do_misc_fixups.
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-index 25a896eed468..50cc063aa9b4 100644
---- a/rust/kernel/time.rs
-+++ b/rust/kernel/time.rs
-@@ -4,6 +4,15 @@
- //!
- //! This module contains the kernel APIs related to time and timers that
- //! have been ported or wrapped for usage by Rust code in the kernel.
-+//!
-+//! C header: [`include/linux/jiffies.h`](srctree/include/linux/jiffies.h).
-+//! C header: [`include/linux/ktime.h`](srctree/include/linux/ktime.h).
-+
-+use crate::pr_err;
-+use core::marker::PhantomData;
-+
-+/// The number of nanoseconds per millisecond.
-+pub const NSEC_PER_MSEC: i64 =3D bindings::NSEC_PER_MSEC as i64;
-=20
- /// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
- pub type Jiffies =3D core::ffi::c_ulong;
-@@ -18,3 +27,152 @@ pub fn msecs_to_jiffies(msecs: Msecs) -> Jiffies {
-     // matter what the argument is.
-     unsafe { bindings::__msecs_to_jiffies(msecs) }
- }
-+
-+/// A kernel time duration.
-+///
-+/// This type basically wraps the `ktime_t` with one restriction: it shoul=
-d only be used for
-+/// representing a time duration, in other words, it's not the type for ti=
-mestamps.
-+#[repr(transparent)]
-+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
-+pub struct KTime {
-+    inner: bindings::ktime_t,
-+}
-+
-+impl KTime {
-+    /// Create a [`KTime`] from a raw `ktime_t`.
-+    #[inline]
-+    pub fn from_raw(inner: bindings::ktime_t) -> Self {
-+        Self { inner }
-+    }
-+
-+    /// Divide the number of nanoseconds by a compile-time constant.
-+    #[inline]
-+    fn divns_constant<const DIV: i64>(self) -> i64 {
-+        self.to_ns() / DIV
-+    }
-+
-+    /// Returns the number of nanoseconds.
-+    #[inline]
-+    pub fn to_ns(self) -> i64 {
-+        self.inner
-+    }
-+
-+    /// Returns the number of milliseconds.
-+    #[inline]
-+    pub fn to_ms(self) -> i64 {
-+        self.divns_constant::<NSEC_PER_MSEC>()
-+    }
-+}
-+
-+impl core::ops::Sub for KTime {
-+    type Output =3D KTime;
-+
-+    #[inline]
-+    fn sub(self, other: KTime) -> KTime {
-+        Self {
-+            inner: self.inner - other.inner,
-+        }
-+    }
-+}
-+
-+/// Represents a clock, that is, a unique time source and it can be querie=
-d for the current time.
-+pub trait Clock: Sized {
-+    /// Returns the current time for this clock.
-+    fn now() -> Instant<Self>;
-+}
-+
-+/// Marker trait for clock sources that are guaranteed to be monotonic.
-+pub trait Monotonic {}
-+
-+/// An instant in time associated with a given clock source.
-+#[derive(Debug)]
-+pub struct Instant<T: Clock> {
-+    ktime: KTime,
-+    _type: PhantomData<T>,
-+}
-+
-+impl<T: Clock> Clone for Instant<T> {
-+    fn clone(&self) -> Self {
-+        *self
-+    }
-+}
-+
-+impl<T: Clock> Copy for Instant<T> {}
-+
-+impl<T: Clock> Instant<T> {
-+    fn new(ktime: KTime) -> Self {
-+        Instant {
-+            ktime,
-+            _type: PhantomData,
-+        }
-+    }
-+
-+    /// Returns the time elapsed since an earlier [`Instant`], or None if =
-the argument is a later
-+    /// Instant.
-+    ///
-+    /// # Examples
-+    ///
-+    /// ```
-+    /// use kernel::time::{Clock, clock::KernelTime};
-+    ///
-+    /// let a =3D KernelTime::now();
-+    /// let b =3D KernelTime::now();
-+    ///
-+    /// // `KernelTime` is monotonic.
-+    /// assert_eq!(a.since(b), None);
-+    /// assert_eq!(b.since(a).map(|d| d.to_ns() >=3D 0), Some(true));
-+    ///
-+    /// ```
-+    pub fn since(&self, earlier: Instant<T>) -> Option<KTime> {
-+        if self.ktime < earlier.ktime {
-+            None
-+        } else {
-+            Some(self.ktime - earlier.ktime)
-+        }
-+    }
-+}
-+
-+impl<T: Clock + Monotonic> Instant<T> {
-+    /// Returns the time elapsed since this [`Instant`].
-+    ///
-+    /// This is guaranteed to return a non-negative result, since it is on=
-ly implemented for
-+    /// monotonic clocks.
-+    ///
-+    /// # Examples
-+    ///
-+    /// ```
-+    /// use kernel::time::{Clock, clock::KernelTime};
-+    ///
-+    /// let a =3D KernelTime::now();
-+    ///
-+    /// // `KernelTime` is monotonic.
-+    /// assert!(a.elapsed().to_ns() >=3D 0);
-+    ///
-+    /// ```
-+    pub fn elapsed(&self) -> KTime {
-+        self.since(T::now()).unwrap_or_else(|| {
-+            pr_err!(
-+                "Monotonic clock {} went backwards!",
-+                core::any::type_name::<T>()
-+            );
-+            KTime::from_raw(0)
-+        })
-+    }
-+}
-+
-+/// Contains the various clock source types available to the kernel.
-+pub mod clock {
-+    use super::*;
-+
-+    /// A clock representing the default kernel time source (`CLOCK_MONOTO=
-NIC`).
-+    pub struct KernelTime;
-+
-+    impl Monotonic for KernelTime {}
-+    impl Clock for KernelTime {
-+        #[inline]
-+        fn now() -> Instant<Self> {
-+            // SAFETY: It is always safe to call `ktime_get` outside of NM=
-I context.
-+            Instant::<Self>::new(KTime::from_raw(unsafe { bindings::ktime_=
-get() }))
-+        }
-+    }
-+}
---=20
-2.43.0
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ca6cacf7b42f..7d0bbee10d71 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14014,6 +14014,10 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 					verbose(env, "addr_space_cast insn can only convert between address space 1 and 0\n");
+ 					return -EINVAL;
+ 				}
++				if (!env->prog->aux->arena) {
++					verbose(env, "addr_space_cast insn can only be used in a program that has an associated arena\n");
++					return -EINVAL;
++				}
+ 			} else {
+ 				if ((insn->off != 0 && insn->off != 8 && insn->off != 16 &&
+ 				     insn->off != 32) || insn->imm) {
+-- 
+2.40.1
 
 
