@@ -1,101 +1,79 @@
-Return-Path: <linux-kernel+bounces-111893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AA388724E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:56:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D51887250
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538861C22BFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:56:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566471C21849
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD4E60B80;
-	Fri, 22 Mar 2024 17:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE0C60BA2;
+	Fri, 22 Mar 2024 17:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RXHJRrgE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aneMZokY"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF8260898;
-	Fri, 22 Mar 2024 17:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF996089A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130130; cv=none; b=AD4Fg+wkaKtaBflsfWgP9+I+uTgePzTWjbiIBi+A/yEoHYjxBfl0NrDVp7CraFdb058kPe6/y5hS+okWmIZU19g7vJtahlUpjd7FVXnlGFKR6Yvtx7Dx4LI9Y8jEYWR1h3gLesWRgkrT0zf5zV6lDap+n74V5T1GZb+Bq94QlPE=
+	t=1711130192; cv=none; b=rrwuWnr0+9HVxg0tkfYqrmdLkSqGQmCcSGRFe/VPYoZQJf6zler/phPjuibs8R/k4OaG4vexiPRtRuTC5sDa5fhKmPLGsX2bwJUSy+Ayv9vfx6fPtL2Pq3wBmfjrm+XOz4ZbaTRUVCztXRVfbxWW4pBOpILIOXDzsPR34aWHalc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130130; c=relaxed/simple;
-	bh=IatL3AnQ1sBWIjVS3yyegSKCpECgw5Uocz0/m+B0+pw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qpZoLyTr6zTyCfo5lcOc9lw2us00STD3NLm+6XVyPNMIBRMW5kIRvC6JNdFy4gT3vrVuUm6BlKShyWSL8Wr/qxXX+3GV7sdAztXNcWKXt2i2xiPfSz3uDOTnMdxyPxrPfxWKD07yZfTKquwuVwunAakEUu6+HpUeg594eJ0WUFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RXHJRrgE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E7D3C433C7;
-	Fri, 22 Mar 2024 17:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711130129;
-	bh=IatL3AnQ1sBWIjVS3yyegSKCpECgw5Uocz0/m+B0+pw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RXHJRrgEJLOCeZhgwemuP6xrjBHYm2239sO30SiCsL3RIHc7pHbM66Av+16ot42fn
-	 i0331hL6gzDQZ6PcwlOzFPzqLpxK7t9S1JlDKJSNLVeqpjND0VjKA7MqmLzBZ3f58D
-	 Wymu905/jKYV6TR7fi/ruOdnfcN5YLKTI6Rl7GX1Hk4PQOWK6E1oEzxq98mtoDQrda
-	 7z6ve/70lFzQX9huMiCr/h3EHNwpFHbxCKBfGQ1CXm67ocZQ66urc3cq31FGuSw3CB
-	 ECNQcTR4SZ5+EJDTgFc6YSWD+2Deg6aL/mE0/4k8/nKL7gxoAZ0MHoZdrbpAlWBDX6
-	 3tBPQO4XMeYSA==
-Date: Fri, 22 Mar 2024 17:55:24 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Wesley Cheng <quic_wcheng@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: regulator: qcom,usb-vbus-regulator: Add
- PM7250B compatible
-Message-ID: <20240322-front-rekindle-20f15e9841bd@spud>
-References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
- <20240322-fp4-tcpm-v1-1-c5644099d57b@fairphone.com>
+	s=arc-20240116; t=1711130192; c=relaxed/simple;
+	bh=ZER+XMKoV0uNq0dEunaVFRx+y5nNBpVo8wxZrWbW1S8=;
+	h=Subject:To:Cc:From:Date:Message-Id; b=Rh7dGDFkEROhNZGt4wx6KZY6mPQBdz0OjPHpBL2oKscMduzVCVj6HPFm5mMEgJP25JtbMhJtpShERB54KIBfQUn+jLusfcvp3u95pgsMdv7TTEHnS0LoeKz162x9c1Y0f15T/+KJjxSPFHgxmkxZ+A52ng1GkUqi5lv78mmn5XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aneMZokY; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711130192; x=1742666192;
+  h=subject:to:cc:from:date:message-id;
+  bh=ZER+XMKoV0uNq0dEunaVFRx+y5nNBpVo8wxZrWbW1S8=;
+  b=aneMZokYwVNYzoArV7r1UnTAHHsiAJTycjBzxTtjfBxcLdUe4u2F9SAb
+   O1pvzCLNxG6QWecBdRxgq6e2qHR2SD52MOi/c7KvSzmALbKKSoBgfwyJi
+   nbhjVJmhMd1XzZcHdlWFFaHkoodyNQqN9GSrOWjhy3/0H96j/rvqo5Gga
+   JGVg8WrBim0Fv7UOqoctwIRNZRb6SrcSDNCjwVz1sZ2YkQXUlvdBHzVah
+   9zP9YNlOvB9RlTd8aGkF5/TnP2D+5CZNaWTIhmXgwUsOBeGRTH3ZP62bw
+   Fd+jaLhvwH7z+MPxm3ju65oyL7MXzZTlp2Vm4lhk5Ou/SiNdVXfUInWzX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="28669672"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="28669672"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 10:56:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="15425568"
+Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
+  by orviesa006.jf.intel.com with ESMTP; 22 Mar 2024 10:56:30 -0700
+Subject: [PATCH 0/4] x86: Add CPUID region helper and clarify Xen startup
+To: linux-kernel@vger.kernel.org
+Cc: jgross@suse.com,tglx@linutronix.de,x86@kernel.org,bp@alien8.de,Dave Hansen <dave.hansen@linux.intel.com>
+From: Dave Hansen <dave.hansen@linux.intel.com>
+Date: Fri, 22 Mar 2024 10:56:29 -0700
+Message-Id: <20240322175629.01E8B39D@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zrO6/TpLSL1IE1BD"
-Content-Disposition: inline
-In-Reply-To: <20240322-fp4-tcpm-v1-1-c5644099d57b@fairphone.com>
 
+This peels off a patches from the top of another longer series
+where Borislav suggested actually fixing a problem rather than
+complaining about it:
 
---zrO6/TpLSL1IE1BD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	https://lore.kernel.org/all/20240307162752.GAZenrCDqs0lMTjmu1@fat_crate.local/
 
-On Fri, Mar 22, 2024 at 09:01:32AM +0100, Luca Weiss wrote:
-> The VBUS register block on the PM6150 PMIC shares the design with the
-> PM8150B one. Define corresponding compatible string, having the
-> qcom,pm8150b-vbus-reg as a fallback.
->=20
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+There's a little detour here to explain some mysterious (to me)
+CPUID prodding.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+The end result gets rid of some fragile Xen boot code.  It also clears
+the way for a future series to bring some order to the early boot code
+and remove some of the random tinkering that is there today.
 
---zrO6/TpLSL1IE1BD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3GDAAKCRB4tDGHoIJi
-0tNSAP43+Tgl00PPvrdj3zRAA0b2dvtJfOKFaIei0uPXW1HnIgEA7HECliQR+dHz
-KAqbZgZcRczb5ech2CZFcJU1Z2hjDgM=
-=xGlc
------END PGP SIGNATURE-----
-
---zrO6/TpLSL1IE1BD--
 
