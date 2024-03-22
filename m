@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-111639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B8C886EE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:45:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65D2886EE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:45:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72E4CB23BB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF94D1C224D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D764EB24;
-	Fri, 22 Mar 2024 14:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C640B51C59;
+	Fri, 22 Mar 2024 14:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dvx8+kPh"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APVllpdS"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFA64D5AA;
-	Fri, 22 Mar 2024 14:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456EF4DA14;
+	Fri, 22 Mar 2024 14:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711118705; cv=none; b=Q/jHiueriGjt8unWxekkweB7NeYM0NbOIrOe0pPu3y+7c3I0epwAbIyqIxJkH8jjKWTfaLr3DwIuzb14Pf/RWPckhnDTJWb2rh8cde6iPIQIFnugqohfF6uiZX3ujYgp8NHbqb34dB8iXC1BtKKBHCBg5qAAF1XTqQFn6Mddliw=
+	t=1711118707; cv=none; b=Bc9+e1zoVd6rV4J7VNR0JhEuPtcUUAxp00O7hjUzhTm9hb//ISRs1jNivH6hFMqWSVvlOvOg++ioNFvmTz8F+bsdAax8J53oTNnJsxFtfCrw9pJTctPcsn14oJa9xxXsSAP04WbIbBxJYzbCjy59mvRbNLo0LQ3mDnoGHNTHCA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711118705; c=relaxed/simple;
-	bh=iLjxTmMNTTTSbPcgr+dDzIp1jE1//QBqqla9qhWektU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W5Rx2FsJ9/fPXO1PtQLosKTC1z0ACEUKgpSHFXrllY63SydFPHFt4zCUl2/RYP10dAqoo43delxA4Hptt9h91gcsv17of+ykKALzGXGZCtlskBWksWQ7pGpC/Wb6KWsBFfGdqOAIo+m9W4sR7Vk6TfaDCFWWJQ9S8lTaM+RgDqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dvx8+kPh; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1711118707; c=relaxed/simple;
+	bh=z0Q1447+VXQ1c95jXZFQ+x38c2pAXex+0RvwMrg0i0M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nK3A5lGjhRY5fztww9ikV+XG0aE+xSfIO9L/l3yLKaV86R0mJtLdVsRXahBFKAYKhdfe0sOcCyGel1Hpf3OxNofTBZCjFj0Uy/tpJm1fZI66ok1egKn4oNPK9wEPSeXZms3TwiFE6E5TQW5XYTZhEjH+kMwkkOTJkSzE2TnAy4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APVllpdS; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4146562a839so15371805e9.1;
-        Fri, 22 Mar 2024 07:45:03 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso35447681fa.3;
+        Fri, 22 Mar 2024 07:45:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711118702; x=1711723502; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a0V7Mhe0ArfXSjrT95vTJ+hE4SWzfgGrhDLu3sLUJno=;
-        b=Dvx8+kPhskkvyly1QghHrzFwX5GbOZaQlyQPxE6Cv1VIDX2tjFvvT6LTfIuK5MG+oz
-         PgXpEnkGnIDj7+w9iuNw0kuQsa10sG9gLg9ZomEcvMBL68MpAmxmVzCsycx5oBJQo91y
-         KZyFlGRT3BUfhQhabZKZp426zl9JKKRQrSUojcE4KO75NyINJQHDxI1d30XBXeUfAYVT
-         /W7kmzeYyn436hCD2Vlzy96ew7yBZkx2Clh2FANMoV+a1uNoK9L3nGR7P8a96yxhhgj5
-         RPZQeaoaxlhAvn/8UUHkvhnFNHg5QX68YZT2fq7hmC2X/Cs3eA5oNtOnN5gGkYVQmWdI
-         ZfyA==
+        d=gmail.com; s=20230601; t=1711118703; x=1711723503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TciX4HiN46XXmyc3hzy4hKoPSxTKgXcyydo7DRa6ZT4=;
+        b=APVllpdS+Xp+OF/dr45CJJhoaxWv/iy73NN2Ojc1jMbW2N4AY71KNPh6NQUb4Uh7rs
+         95I8XlXGWQ1a3RKGvNsJMQturnalKYPWxTykUJajpG1bOsJONJWpnnhPWg8TLSrUuDQP
+         sXX3m9G8Bpnpdm/JoK/95AhDnAm+IqCz2KFz+dGci6EdvSQz7moIoHaaCE7nP5RdelxQ
+         8qKtvPHwe3N/FyMN+2QGiXa+xA1wsxRDvnJ+nNIPx8hi0HngmR6OLxj+UfrGw8pnhomZ
+         sX9OctlUFVtxdEp0k4h6IzvgBDKkGpDkJNg19LK8hiwNIEHWot+Gyyzlx6RPa60eGqZw
+         +zjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711118702; x=1711723502;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a0V7Mhe0ArfXSjrT95vTJ+hE4SWzfgGrhDLu3sLUJno=;
-        b=S8S3iF/XWkGHp30utIv30N+e4O7bzK5aQ9pRFuT41DTUAeQmJIT/d50jRZ3n3XY+xx
-         ISThuXnUtJzEUs9I/odgSJAmrsfeFxfQBCjxdpOzhNMcbO3aNCfQkRUKE6RrHZxUDAgS
-         N0S/vj+Bfo6LgRRyDkH40nzssEYhHR1dEXyr9+KfvMIwXyiQRzLLdopimzIaoiLpc3r+
-         F1ROiIOMX6S6lIcQLAkI7iABfT7L2eLvs3FGbOKBhXcHiQjOKPV368w9xAItS9aT8e2G
-         /ZkuoARQcbntSOzfPTakEoSvAOrYaHUHv0g04AD/9xcGvj6OA4xb6EQ3fVXBw6k82T5C
-         Cj2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUEe2k4O4QwSaDr/c+BrTzcN6pY6Vg99QRQSNBUbNhB32LJeTadcbwSrUJ0iV8ie16lSEgXofOOw25uFHMa9N1VZwe3SaMb06I8gXLLFiuBXC8vrxR6/AaDA4+PJNrgvYFYhqjfrJV0XItxFARDKKITABtPA7v8GqOsNw/ikfL9aQcQWb30wgokeLoW
-X-Gm-Message-State: AOJu0YzUnSqzd/GEQilkbGdiP44lFLskapNcklKz4BwAslAXRQ0sgI5b
-	Z/E3M/drBidw8jCIXfob71xEKbB080QdkIT6JAvhJ4t2kIOXT/fe
-X-Google-Smtp-Source: AGHT+IG9rnTvKoOPeTbMKqJIRqYfbGywkmROQyv1XpETaAIHcwN8T5J7t/JVSoylUGPCNE56cr6jQg==
-X-Received: by 2002:a05:600c:35cf:b0:414:255:c6a7 with SMTP id r15-20020a05600c35cf00b004140255c6a7mr1768259wmq.32.1711118701431;
-        Fri, 22 Mar 2024 07:45:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711118703; x=1711723503;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TciX4HiN46XXmyc3hzy4hKoPSxTKgXcyydo7DRa6ZT4=;
+        b=jfxdU9YJhwXwRIK5R2ZBQVzzvJJTWLC9Vf5TYz1gIug9gz1RF4un4FenjmugnP/EUO
+         rZFu/VNGGIgIOxL/nV3Na77UdDdc7xG8gT5hpb6QNqo4yB+F14r+8qPdH8am5jwxNu0c
+         xarS7/RcYa38H6kD+q9SDl6dBSqjjHJnzeZNn7PQNO1DJIKumNHsWtJktXlQ6kCwjQPZ
+         X0WellmR1oeFZLY/lSXFWzoxyQyMlMRowWQ8Y4gADX2d4zdYn+jJIO2xmLflfoA136Jp
+         JQkvEYHtumYbHunwFOB1T2+ejZk7cdrSzt1bl29T17R/nmHDejjs3IQkKySpDXBQ4Lfn
+         ltSg==
+X-Forwarded-Encrypted: i=1; AJvYcCW26NTqM1fWXBUjWIKWua352LcPPLHP4B0CRGMl9rau/CqupmhuguSgPOufPp6GMJOPxx3D4lhn2TgUeZcnBo7ZLggLHpVprbDRzLOL9LI+R8q8hAQ+AnaVZs8jga1LgkvH72Fb68Pobbz/oCbXiBTtEMYRKDYLKsufq+SdkpTvKmuGHdJBegypt5T/
+X-Gm-Message-State: AOJu0Yyrb1rW8guUkGH3pS/T3WpDCsaYCi62QPvN1SdxeICCmrr9aQAc
+	rRXl6DZV7C1y1Balzc2kKHQ7b0bo+AP7k3RYzB3JhZFxSmIOwI1g
+X-Google-Smtp-Source: AGHT+IFlVfO/3rSmnSFfsEbaTWG/rvRuZ6WdzzXtqSIhfCKde9Deb9cwHUkTZlWfUdAhPQOcipdW4A==
+X-Received: by 2002:a2e:95d3:0:b0:2d4:49d0:d20b with SMTP id y19-20020a2e95d3000000b002d449d0d20bmr1873600ljh.5.1711118702855;
+        Fri, 22 Mar 2024 07:45:02 -0700 (PDT)
 Received: from prasmi.home ([2a00:23c8:2500:a01:7b89:721b:d6b0:d7e8])
-        by smtp.gmail.com with ESMTPSA id s15-20020a05600c45cf00b0041466e03e55sm3911117wmo.0.2024.03.22.07.45.00
+        by smtp.gmail.com with ESMTPSA id s15-20020a05600c45cf00b0041466e03e55sm3911117wmo.0.2024.03.22.07.45.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 07:45:00 -0700 (PDT)
+        Fri, 22 Mar 2024 07:45:01 -0700 (PDT)
 From: Prabhakar <prabhakar.csengg@gmail.com>
 X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Geert Uytterhoeven <geert+renesas@glider.be>,
@@ -79,11 +81,14 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	Prabhakar <prabhakar.csengg@gmail.com>,
 	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v4 0/5] Add SCIF support for Renesas RZ/V2H(P) SoC
-Date: Fri, 22 Mar 2024 14:43:50 +0000
-Message-Id: <20240322144355.878930-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/5] dt-bindings: serial: renesas,scif: Move ref for serial.yaml at the end
+Date: Fri, 22 Mar 2024 14:43:51 +0000
+Message-Id: <20240322144355.878930-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240322144355.878930-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240322144355.878930-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,41 +99,70 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Hi All,
+In preparation for adding more validation checks move the ref for
+'serial.yaml' to the end and also move reset check in 'allOf' block.
 
-This patch series updates DT binding doc and scif driver to add support
-for the Renesas RZ/V2H(P) SoC. RZ/V2H(P) SoC supports one channel SCIF
-interface.
-
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
 v3->v4
-- patch 2/4 reverted back to version 2
-- new patch 3/5 added
-- Added new reg type for RZ/V2H
+- no change
 
 v2->v3
-- Included DT validation patches
-- Added a new compat string for RZ/V2H(P) SoC
-- Added driver changes for RZ/V2H(P) SoC
-- Listed interrupts and interrupt-names for every SoC in if check
+- no change
+---
+ .../bindings/serial/renesas,scif.yaml         | 30 +++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Cheers,
-Prabhakar
-
-Lad Prabhakar (5):
-  dt-bindings: serial: renesas,scif: Move ref for serial.yaml at the end
-  dt-bindings: serial: renesas,scif: Validate 'interrupts' and
-    'interrupt-names'
-  dt-bindings: serial: renesas,scif: Make 'interrupt-names' property as
-    required
-  dt-bindings: serial: Add documentation for Renesas RZ/V2H(P)
-    (R9A09G057) SCIF support
-  serial: sh-sci: Add support for RZ/V2H(P) SoC
-
- .../bindings/serial/renesas,scif.yaml         | 136 +++++++++++++-----
- drivers/tty/serial/sh-sci.c                   |  55 ++++++-
- include/linux/serial_sci.h                    |   1 +
- 3 files changed, 154 insertions(+), 38 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+index 4610a5bd580c..af72c3420453 100644
+--- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
++++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+@@ -9,9 +9,6 @@ title: Renesas Serial Communication Interface with FIFO (SCIF)
+ maintainers:
+   - Geert Uytterhoeven <geert+renesas@glider.be>
+ 
+-allOf:
+-  - $ref: serial.yaml#
+-
+ properties:
+   compatible:
+     oneOf:
+@@ -160,18 +157,21 @@ required:
+   - clock-names
+   - power-domains
+ 
+-if:
+-  properties:
+-    compatible:
+-      contains:
+-        enum:
+-          - renesas,rcar-gen2-scif
+-          - renesas,rcar-gen3-scif
+-          - renesas,rcar-gen4-scif
+-          - renesas,scif-r9a07g044
+-then:
+-  required:
+-    - resets
++allOf:
++  - $ref: serial.yaml#
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - renesas,rcar-gen2-scif
++              - renesas,rcar-gen3-scif
++              - renesas,rcar-gen4-scif
++              - renesas,scif-r9a07g044
++    then:
++      required:
++        - resets
+ 
+ unevaluatedProperties: false
+ 
 -- 
 2.34.1
 
