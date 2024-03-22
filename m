@@ -1,132 +1,148 @@
-Return-Path: <linux-kernel+bounces-110819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8C1886452
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:22:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D6E886454
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D27E1F21678
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:22:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B15EE283917
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BA515D1;
-	Fri, 22 Mar 2024 00:22:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80653818;
+	Fri, 22 Mar 2024 00:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zZo4aFcr"
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ozc77ipl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02912A41
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 00:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD947382;
+	Fri, 22 Mar 2024 00:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711066964; cv=none; b=qquHKsqQmU5TDnyOSgzdVwweax+bXHGAud2Yf6haLioD4HBsKAJ3YrjkPjW1eIGXCGJvHbvodoT+n7J8ekKrGliMyoAW1WEn5qht0ZT440Acr733ot1izJnx7cG0I42ntESFP9sezBQEUIzfod6FOU54ZjgtGiV9t423sTSo5JI=
+	t=1711067214; cv=none; b=gJiZ8IbzXqVdSOGvEdOBDJyEcwscI5nLMA6G7dksz8rJpCndabgTW+1bXtLh+MxkAsqRs6M8JGykuPCRS4w55YJwtV7Gq+XuV2vnzXfGYa7EGSMK1MNQ/Dw8LENB9IrNKc3UiO1P3aTpbeCUNa1VPsrouFP1UA/7T5BJbeXOnHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711066964; c=relaxed/simple;
-	bh=3t1Puwvdd9YGQyAKxNhbTo32TdrvZP4POduKNuPMD3w=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=TwR9uU2DRmFDLkDTD3/1RSgVvmo0CNaleQyHTU0xTQA0bpmP5Ztb2aZWH5BZX0Ex5Ae+TsE1Ig83UEV+BBAY76nRMnjxjPG0Bxx6OPcW+9fZQrpAt24ULUgXbq9HbppFpdE7s30SJe0Q0FZCWtXsp9J7OQXu1or4Ou1QsdecB74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zZo4aFcr; arc=none smtp.client-ip=203.205.221.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711066657; bh=9jiZwYw7NgFqbN0NLudxqqOACEB3djyd6F0TISISt04=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=zZo4aFcri/lYlTS58X7JPjjGMb7za3GcV54U+SAEbVYdtk7QX8wKb/eQ1hW/VPzbM
-	 nWz/lBVWUsyLiSzF2U7X0fBvuhXzeP2Vdy3q8n08bvfbCmLnoXli9xpLeIOR1n05hK
-	 9EY9x69jqG8eC00SOHt0Ump+yczqF9bA5LksU8h8=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 46386CAC; Fri, 22 Mar 2024 08:17:35 +0800
-X-QQ-mid: xmsmtpt1711066655tbrgs4jy7
-Message-ID: <tencent_C325838D999249DDEFDDAA191E4FF08DC007@qq.com>
-X-QQ-XMAILINFO: NUygYfydBsqcWi/AEA1lzJGKks5oLrgyV8gMpyS5RBcdhAm9aUnkmBYletz0qD
-	 050CufAGfB1olpNswhBeLPEcQJJbHi7lZGf5EQh4qSOtzVM7mERLcoAcfc+LRURtXOcglbEcQ2OY
-	 oHLAko3v7vA+ijnLHFr9zKJpBWRjp+6DjR4aW59ew6jMD00gyDD1+59VjybjpT/airWj9uc1+UKd
-	 Y8w5YNKvYl+yhmumiF+0BV6tl7TYylFIsgHX2UJuAej5n+wWSxN/XOqJpYvpwnFOq911rV6lkyJk
-	 YXdaUaRL29jpynBaCT3GR1mPll3nyyO4Qt+tMx9Mjmfmi6yurvtO4SniXX8sfo1gYwxgfWBzgZ6u
-	 7LVLvuj/WRFpMiELMlUdxrl/81SegoEGF5BRxt1gcX0H6VPbu8llkYDLEbWEp6CYIHbKQ52Ya7iE
-	 0vqJstS4La05PWIzkpWkLpAx7sYIbF76aiclHY0k/n77gR+/j07pNxajtmLPXUOLZlM5RiPS0kkg
-	 9hT+V43CjH5UiI0kqPnazxHUn+fUAq/j2oPhlZCpPItqrvVixsRclhAZDJtlXtS8P/Rj9CzrAA/W
-	 m9kxB0+f4iVnzZ+0tpXa1T64TDa0YdZfDlyhVk82ZB75819sK9X4IyYEblQwSb5cN2iPmfo3Vsb1
-	 D+VQpreh+eFPppUNx/1cxnZZg447WVOcan411gYQaskdsFg8903/brxRwV2GjJfazjDY8MGhxRlI
-	 zolaBAjG7KuD9iYx+8uDEt1EvkOTFx1ZkwG3oiI+T2DjPUVp++PkfvRHReJ4J6Ivtnk88WGnYzJ4
-	 dydMSEDuFemXvLntFZcha+UWgSJKqWgSG11bSjgebrksyyY1jfPwSbbg/0ScODZ9pX4f0mU9TWyG
-	 xP3CHs+hfJBPEfpf37ZQQO1tRGC/RQNi6t9a6TTSlhcM7fLjf+705bDfLQi/rz/YVPQstrBSTrJ4
-	 iX/tzM6BRxSF/k4vO8X6zKegzI20Cm8G42ZaqK6XE=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+c4f4d25859c2e5859988@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in rcu_report_exp_cpu_mult
-Date: Fri, 22 Mar 2024 08:17:30 +0800
-X-OQ-MSGID: <20240322001729.2656323-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000dc9aca0613ec855c@google.com>
-References: <000000000000dc9aca0613ec855c@google.com>
+	s=arc-20240116; t=1711067214; c=relaxed/simple;
+	bh=S+/b9C8UrSooVTGuizt2T0F7FuVLNOtDPr0INMrpi9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Un1j40UOjegyU5AIQ+qFfQhUOEEt/pG6l4x/eolypJUQ2pIK6L71q20qN8fRBDpgzGIyDRvXFePTIZaNPfDC/t+0eua91+YxzYelVn4OFZKW7OheNM+31OYqOX/BKCJi1Esm0a9cJvtP9lpwjY0XZVpMEyzBSm0QtxepLDTxHws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ozc77ipl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C76FC433C7;
+	Fri, 22 Mar 2024 00:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711067214;
+	bh=S+/b9C8UrSooVTGuizt2T0F7FuVLNOtDPr0INMrpi9I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ozc77iploED5SUTuCzYfY8RYgxnB0vY0pIS5S5EaEusjnW4UwqI5L4mQIGaki/5Uy
+	 mQja67NADd3PclRQpI95ABHHThOmwLZQbFZtbkW0l17h5efdweBhETQWyHOUPT0+0W
+	 8a5X5v0VcJ8aFRR61N+uEOrwA/KORGmd79Pp7T9ggbkIc7NsvZvX3p+93/e0TkktqT
+	 E8Tv5a4y/vI4vB6SNegEzrLrcgHzFHk6zPiuwJHqfYqyUJU2YcNdsd3cCnf8EQJrcy
+	 PppTLLm5dxYSdpgdMMkJxT1T6LIo/sEVq9brQ6NTPH8F6YSMJztNqZNPPqJ0wt5p10
+	 o1VSj6qla1EBg==
+Date: Fri, 22 Mar 2024 01:26:49 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Piyush Malgujar <pmalgujar@marvell.com>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	sgarapati@marvell.com, cchavva@marvell.com, jannadurai@marvell.com
+Subject: Re: [PATCH v4 2/4] i2c: thunderx: Add support for High speed mode
+Message-ID: <5pv3ovaukhzhe2bh5ko7463xduqlnweiaxv2hbafc6fadynej7@aagcu7av45ov>
+References: <20240223125725.1709624-1-pmalgujar@marvell.com>
+ <20240223125725.1709624-3-pmalgujar@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223125725.1709624-3-pmalgujar@marvell.com>
 
-please test dl in rcu_report_exp_cpu_mult
+Hi Piyush,
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+On Fri, Feb 23, 2024 at 04:57:23AM -0800, Piyush Malgujar wrote:
+> From: Suneel Garapati <sgarapati@marvell.com>
+> 
+> Support High speed mode clock setup for OcteonTX2 platforms.
+> hs_mode bit in MODE register controls speed mode setup in controller
 
+you could have called it Carl, Jim or John, but you decided to
+call it hs_mode, why? Which bit? Bit 4? How setting it and
+unsetting it affects the controller?
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 27d733c0f65e..ae8f81b26e16 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 	struct bpf_shtab_bucket *bucket;
- 	struct bpf_shtab_elem *elem;
- 	int ret = -ENOENT;
-+	unsigned long flags;
- 
- 	hash = sock_hash_bucket_hash(key, key_size);
- 	bucket = sock_hash_select_bucket(htab, hash);
- 
--	spin_lock_bh(&bucket->lock);
-+	spin_lock_irqsave(&bucket->lock, flags);
- 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
- 	if (elem) {
- 		hlist_del_rcu(&elem->node);
-@@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 		sock_hash_free_elem(htab, elem);
- 		ret = 0;
- 	}
--	spin_unlock_bh(&bucket->lock);
-+	spin_unlock_irqrestore(&bucket->lock, flags);
- 	return ret;
- }
- 
-@@ -1136,6 +1137,7 @@ static void sock_hash_free(struct bpf_map *map)
- 	struct bpf_shtab_elem *elem;
- 	struct hlist_node *node;
- 	int i;
-+	unsigned long flags;
- 
- 	/* After the sync no updates or deletes will be in-flight so it
- 	 * is safe to walk map and remove entries without risking a race
-@@ -1151,11 +1153,11 @@ static void sock_hash_free(struct bpf_map *map)
- 		 * exists, psock exists and holds a ref to socket. That
- 		 * lets us to grab a socket ref too.
- 		 */
--		spin_lock_bh(&bucket->lock);
-+		spin_lock_irqsave(&bucket->lock, flags);
- 		hlist_for_each_entry(elem, &bucket->head, node)
- 			sock_hold(elem->sk);
- 		hlist_move_list(&bucket->head, &unlink_list);
--		spin_unlock_bh(&bucket->lock);
-+		spin_unlock_irqrestore(&bucket->lock, flags);
- 
- 		/* Process removed entries out of atomic context to
- 		 * block for socket lock before deleting the psock's
+> and frequency is setup using set_clock function which sets up dividers
 
+You mean octeon_set_clock()?
+
+> for clock control register.
+
+I asked you to explain better, but you just added a few words
+here and there.
+
+Please, explain what this patch really does and how does it. I do
+not understand anocryms.
+
+..
+
+> @@ -668,7 +670,7 @@ void octeon_i2c_set_clock(struct octeon_i2c *i2c)
+>  	 * Find divisors to produce target frequency, start with large delta
+>  	 * to cover wider range of divisors, note thp = TCLK half period.
+>  	 */
+> -	unsigned int thp = TWSI_MASTER_CLK_REG_DEF_VAL, mdiv = 2, ndiv = 0;
+> +	unsigned int ds = 10, thp = TWSI_MASTER_CLK_REG_DEF_VAL, mdiv = 2, ndiv = 0;
+
+either you add a comment here or you give it a more meaningful
+name than "ds".
+
+>  	unsigned int delta_hz = INITIAL_DELTA_HZ;
+>  
+>  	bool is_plat_otx2 = octeon_i2c_is_otx2(to_pci_dev(i2c->dev));
+> @@ -676,6 +678,8 @@ void octeon_i2c_set_clock(struct octeon_i2c *i2c)
+>  	if (is_plat_otx2) {
+>  		thp = TWSI_MASTER_CLK_REG_OTX2_VAL;
+>  		mdiv_min = 0;
+> +		if (!IS_LS_FREQ(i2c->twsi_freq))
+> +			ds = 15;
+>  	}
+
+We could keep the assignments all in one place:
+
+	if (is_plat_otx2)
+		thp = ...
+		mdiv_min = ...
+		ds = ...
+	else
+		thp = ...
+		mdiv_min = ...
+		ds = ...
+
+>  
+>  	for (ndiv_idx = 0; ndiv_idx < 8 && delta_hz != 0; ndiv_idx++) {
+
+..
+
+>  #define SW_TWSI(x)	(x->roff.sw_twsi)
+>  #define TWSI_INT(x)	(x->roff.twsi_int)
+>  #define SW_TWSI_EXT(x)	(x->roff.sw_twsi_ext)
+> +#define MODE(x)		(x->roff.mode)
+
+A nice cleanup here is to add prefixes:
+
+OCTEON_REG_SW_TWSI
+OCTEON_REG_TWSI_INT
+OCTEON_REG_SW_TWST_EXT
+OCTEON_REG_MODE
+
+MODE() is so generic. But this would be out of the scope of this
+patch.
+
+> +/* Set REFCLK_SRC and HS_MODE in TWSX_MODE register */
+> +#define TWSX_MODE_HS_MASK	(BIT(4) | BIT(0))
+
+I think it's cleaner to have different defines for bit 4 and bit
+0.
+
+Thanks,
+Andi
 
