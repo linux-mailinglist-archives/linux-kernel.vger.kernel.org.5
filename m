@@ -1,84 +1,89 @@
-Return-Path: <linux-kernel+bounces-111429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC797886C40
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:38:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B854886C48
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 889891F2680F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:38:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C723B2164A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903E6446A2;
-	Fri, 22 Mar 2024 12:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7EA44C89;
+	Fri, 22 Mar 2024 12:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="etwQ4ss9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WUAtNIwr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C936F1E4A2;
-	Fri, 22 Mar 2024 12:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEE73FB85;
+	Fri, 22 Mar 2024 12:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711111117; cv=none; b=qhaaYHeFvt/cnXr0WJeIPrp/BOGuojdz8WzDVysjrsOyvb6loYZ53DT7MhPiovEvhemwGgtCECAwXjDcEfDhHkmm1YsIdzYgQplczFwJH3C5B/A0QQG5sUSaQW9MCEXn6AuDJjjRGoBJTOOTfUZlBsLNA02lr8wfG+ZmNKtFgdo=
+	t=1711111206; cv=none; b=FeXLDHLKYwcwjvA//kUhUeSKEWq8Htxco87+PX5P+S9vUZt36Ep66I3hHfnaLBFLHpGiQbgCDpaZnrBzuse8CTEmDI36DO3Qt+WS/ud69dEt/RZrqu0T8kapX4aqy141QuB+AUtCuiFQZQKouIDVH/ZNyQajC7bglcfjTa+c9mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711111117; c=relaxed/simple;
-	bh=XxILMj4XdG/qv+Kctnfsta1+uF+9o+xl3R90tXyQLRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ClSpxbb0OV6V0uvdUvuIeN8yC7ZxklFfViQJnU3qCMgQPHO0iGqtr/ZEJwpeDcYoRHEcvVsXg1BCS3IgRahs28R6YfwAiQYcysKCvnQwMSlWdUPE4yYZ1OWpCorQIAiAJ8TuivGoiXtYya8yom6Vz3ms9R1yEsDTUug2xN6nYBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=etwQ4ss9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671A6C433F1;
-	Fri, 22 Mar 2024 12:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711111117;
-	bh=XxILMj4XdG/qv+Kctnfsta1+uF+9o+xl3R90tXyQLRk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=etwQ4ss9MTb4RqS1UUqa8VHriNf7HlrWilgcT8C6XavL8Zp0DhJlS9a8ik0Y58BHl
-	 ABYIZsjh/cj2o6nEBpTceLHCqhInOjFhq/C+q4sHkB9ql5/wnsuIF4S0a1Zk91Wmpx
-	 1l70Kt9FiOPXuf0EF2kIpk8B3VGO2ZbnvCYkYBbt+Fkgz5REvshaI17FUT+hIUZA/e
-	 Mz4xOBcvMKCKq/rM4TeopsTXtml0NA6ssy8x96ojQF8KJMN8BNvWRMMn518fqNlrrp
-	 +SD5K7tNpSE0OfGL+QdrqKNRZvZQiB/9gAssJ+qYozREU5MF7DPhCgsW+Q1Q244qRi
-	 6ymO+dY0moI1g==
-Date: Fri, 22 Mar 2024 12:38:33 +0000
-From: Simon Horman <horms@kernel.org>
-To: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, edumazet@google.com,
-	linux-kernel@vger.kernel.org, bryan.whitehead@microchip.com,
-	UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net V1] net: lan743x: Add set RFE read fifo threshold for
- PCI1x1x chips
-Message-ID: <20240322123833.GC372561@kernel.org>
-References: <20240322064650.275174-1-Raju.Lakkaraju@microchip.com>
+	s=arc-20240116; t=1711111206; c=relaxed/simple;
+	bh=Hy4SU5KZcj+l3b/echBs5Y8AMqDERIxFa5T1chgNL3M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZGSEmiIRPqfuPRv3k+4YDKmHKwCwVGHqoNiBWkwnjKSbcQHgvAIDCC+eNUCmnvDuF5h6W+ivOtlg3UFV2xeW20OD7xJGMdda0R1Jaqr8UqVEjjYkpGLsSip+KeTP02w7XEobIqZp9FGtD0AfXjv8UrzUoFO9k6K1Tnf+n/VP4Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WUAtNIwr; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711111205; x=1742647205;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Hy4SU5KZcj+l3b/echBs5Y8AMqDERIxFa5T1chgNL3M=;
+  b=WUAtNIwrBY9BV7Uzixop2cjU17z6pO5yMjnc5rL5BXmGyNNdNbuV3DfY
+   7HSiDOqVEUPCTZC8poluTHkwsNXkRIOhxZHOQKvSdjTEiFIHwBsxxcZfA
+   6F42tlfdTNczGZaNl81xr042UxVbRWdyw1UTy4NEss0KCZRgrJWKy855I
+   reHzFpqoU4LJAjU8A0RGfjkNinjhb2px/HWyjxsYc4nlAV1Y4kwO1h5sw
+   RAWxngUhNGUu7UDvHwD1AR/X3JUFoQcugt/DIMjGa0bjZfg78E+tA4V9S
+   tnsLE0a0h8m0brceq6n8KYKH0PCanS+aatp69tKLBOVGHzWmP+NAMkJWv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="9919021"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="9919021"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:40:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="45895412"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:40:02 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/2] PCI/ASPM: Define consolidation
+Date: Fri, 22 Mar 2024 14:39:50 +0200
+Message-Id: <20240322123952.6384-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322064650.275174-1-Raju.Lakkaraju@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 12:16:50PM +0530, Raju Lakkaraju wrote:
-> PCI11x1x Rev B0 devices might drop packets when receiving back to back frames
-> at 2.5G link speed. Change the B0 Rev device's Receive filtering Engine FIFO
-> threshold parameter from its hardware default of 4 to 3 dwords to prevent the
-> problem. Rev C0 and later hardware already defaults to 3 dwords.
-> 
-> Fixes: bb4f6bffe33c ("net: lan743x: Add PCI11010 / PCI11414 device IDs")
-> Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-> ---
-> Change List:
-> ------------
-> V0 -> V1:
->   - misc_ctl change from int to unsigned int
->   - Use FIELD_PREP macro instead of logical shift operator
->   - Change 0x3 to macro RFE_RD_FIFO_TH_3_DWORDS
+This series consolidates ASPM related defines into the ones in
+linux/pci.h and eliminates the almost duplicate ones from aspm.c. This
+allows using the input without mapping between the defines so the state
+mapping code to focus on the special cases.
 
-Thanks for the updates,
+Ilpo Järvinen (2):
+  PCI/ASPM: Consolidate link state defines
+  PCI/ASPM: Cleanup ASPM disable/enable mask calculation
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+ drivers/pci/pcie/aspm.c | 180 ++++++++++++++++++++--------------------
+ include/linux/pci.h     |  22 ++---
+ 2 files changed, 100 insertions(+), 102 deletions(-)
+
+-- 
+2.39.2
 
 
