@@ -1,168 +1,217 @@
-Return-Path: <linux-kernel+bounces-111558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDE8886DB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32F96886DB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:45:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0491B23926
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:45:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE049288569
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1EE6605A6;
-	Fri, 22 Mar 2024 13:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6357446441;
+	Fri, 22 Mar 2024 13:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aVROYI1v"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="UBtIitbV"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2076.outbound.protection.outlook.com [40.107.96.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39747604DB
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711114793; cv=none; b=Y/vvQpkXm30drbhFSdZMV23b7c6SQXcZE1LwAqV2s2cEmWxN9le2z/+eeIJlf/Rl5vAohQKjAO4ItmYJFN+z/lbBfiqhOogEscnI1IWJojVvu84I4P6EE5mNyOfN4eaILUnSMPZ6qdFM9+saMs31daUzjo3Gw5RGqXUC59fb3t8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711114793; c=relaxed/simple;
-	bh=vRgpQASesDWjf3HIxcAUMYfFe8R0lGVoGSSqkSo7PmI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SrV89F0Qh8Nu+uXmSQepLdMUXfzsNKWxlagm4QZzqqvgZFCj/q8Y1aepFk9AxzWlsExpBSPBX742rna3l6SwNcrcWo7XPit1+Iyb+JVqFaeAq8q9dAaz9kxSNdX0DVmwD/dhoPd99yyNFeDpsrjurMMg9XLrekVHqy/cJwfytaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aVROYI1v; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513dc99b709so2691681e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711114789; x=1711719589; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SSOUe1D1Ck4AK4cXhnMlYCbQiMs6c7j3t9qtjEagchs=;
-        b=aVROYI1vmP4ro+9K2zmR3W7EasBe/So2KJhcRDOZtbR5P4LACAspPyRbrX+9n/m1mq
-         rlX8r+XWZwFhDsYF0ph+2bsVezm/nm4vjXOGTqYyl4FROGlVX27jwM86+PGlJrJoxE9A
-         NBdghgx++/xuFJFCgS8WqWs2TRjyIGypS0prPGQQzlRu0JNlz+Mz0xA/vnsgHy0yIpIi
-         f13UGE+ZjFk3yk3Df8ZbvaU7fRLxIoJyO0zXDeYzE9g7p5s6BZJwQtgveIED/538rQhY
-         FXduyDZj3IZxaFhfmeHW46ukgbxMvKB4SBq0FbuEfLQmLkP33chRJFAnMo2YzYHxectD
-         rp2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711114789; x=1711719589;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SSOUe1D1Ck4AK4cXhnMlYCbQiMs6c7j3t9qtjEagchs=;
-        b=M1SeAochs7+3NCkSLLcvIQcjfB1TpsvC2GUWmt31j1WlCpDvwMxNOv93Ml8nF3j9Zv
-         KSQUc8azn6sPNQYjssN6rJrTpyxzpc/EatK8IOi1408nesQDbv78jWz3W6clAUL0ZrMG
-         b2GfISuCJhnoZUsZTZcztIW99WOce8OwkCbH6gfP1eaYmY3QPIYmbZSbv7hUQLGFxZ3P
-         w9Alow2RYU7YhYhkAhwfzXvkDqlxJkbEYuX+lo8NpNsBPeTGwQUcqN2TWURcFxJcQPtr
-         Aar8Tm80LwUUf8I2UYf9xZZyVp7Hm4+Yyu0sYww+xCQbeZnFVLEIwB36GXe+xzVw6Fvc
-         TJyw==
-X-Forwarded-Encrypted: i=1; AJvYcCV+/a4fqzE8oVCbHHM++WAUXrQhTvGp3r9FVlzA9OHYDiiGGsdMLM2Um8GHvlD8FA4jBFlOgc9UO1fxiyMb9kgCBfF9P7vyq+OEEEBM
-X-Gm-Message-State: AOJu0YyqNpTO/nJnd3YFIrF2RPC6LelXmjsXN2KXrX2DdBlVqnn/600V
-	1uwc6gtxLA/ORzvwELE++HfBr7b+fGhSzCHNoSvUmLcGIuDaisfH/kIDzMtneWQ=
-X-Google-Smtp-Source: AGHT+IEUzhdTBqSsF7Wik4m8iunociu4UxCn8Yaz1RC1Y+i9IKNHoPf9ooTZEmdJpXscKYxnZx9Qqg==
-X-Received: by 2002:a05:6512:54d:b0:515:9aba:7430 with SMTP id h13-20020a056512054d00b005159aba7430mr1260462lfl.13.1711114789248;
-        Fri, 22 Mar 2024 06:39:49 -0700 (PDT)
-Received: from [172.20.10.10] ([46.97.168.208])
-        by smtp.gmail.com with ESMTPSA id og18-20020a1709071dd200b00a4725e4f53asm906510ejc.40.2024.03.22.06.39.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 06:39:48 -0700 (PDT)
-Message-ID: <73ba6104-aa54-444e-b6c5-7f89d1fa0060@linaro.org>
-Date: Fri, 22 Mar 2024 13:39:46 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E686DF4A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711114919; cv=fail; b=IRRXVbplBdOJVYQpUgKZyiawbL/Nd+DtXBPbDe4d/XSv7KlqxK+d4LY/3G+WcTTUc7GpIDADyvJKR/y9rITPWB/mVSqwVsMDt91Ujqlzm5OcvvXbQPoOXZr4mQBG2fzsgnG5Ja+PbrMdKgYUU9jHIDizDc+OkEzPI8tiAAnkq88=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711114919; c=relaxed/simple;
+	bh=xL0SCJmrq+d98P5fUAV9Ga/yT08pvrOltuBn2j5Ox4M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JBEUdA82CAAdv2AbyAx0R8YuYoWhbQcyQQ1pRRbogaqm2441LuolMz9ncDAhK8MgfBgqnKmCrbU56hl8YTQqk71vuIDg59YHQBuLfBjTC3EDDHtKgTZmLa78AAzYVthyAMZ0TXmCS/04OEaemfLd9if6iMiLMyTI3KMb1FldHqg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=UBtIitbV; arc=fail smtp.client-ip=40.107.96.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OOgfLgIdA234CHZd3MIZTAlObh2Nv5gEkVf0Ti8nmAvk5TdLkVjGSBAfWdsrmpBCO5IWJNfBivq9QeYRr2gWFs6x1jPcerytdccudZlRWk2YrDtHLyzYWt+RIcJR5dNrSvDq+xowKC+B16y8dfDJpZyAs3vZAHGkPM2Ov89v+6omIxzZOjmJwD2xSqHvTOUy+rk/bmSsWnUrhGrrMV01ivyeLdV5RYaHp9tUGPycBLv+xNJ7o9JxBGr8UjHtfR5LdU/US8dbnjhv2sRUvP4oxVYtU9ut3dR7vsIPi/cOo0tYAKV5V6InNgRNGQr3wu9fE/SOGFjxIJlwsmIELtF4qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JinLGu6fO7JCo3S3EpMhOjKa8gdBuHJRZxKdql5Jgks=;
+ b=oGDe9vl/gAxNj9OVSg2ZRAnlZ2Hu8M1634nyuEpZ+nbBXqRMkrRqomva8HMD9bhYUhuXPVVn629fNpssPr+ybZuvTu4ffDuINBXvmN1lTQeZE62HOqU0NxLXaHDNyodzuV9rOmQZixCY5egKAcgvMW6nM1km2qcgL73uIJQi8scvd6k/G+ZTKqsl6hNNUlkFbVn95fPyXdZVWhlu2p7PP0ib40lZjumK1UmG3fo0FaELz+BYy7jCPPpR2rgkLJHQPNObhXwJFapHXzAk8JiQOr1UDAYFDn2K+5BFehUpbJ1n9fXPcDX1NPLtvfHafWE+B7yNjltSsT7Eag94VwTXWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JinLGu6fO7JCo3S3EpMhOjKa8gdBuHJRZxKdql5Jgks=;
+ b=UBtIitbVMiSuRGH7ar/SuPjqj1MvyuV97wDHyEE64QtfgfYsuTyOIcFmBI7phTd+IPMdSMWwJvJUjjx1m2cqIa7A/GCz4HOSrPgL27pk3BS/mzHEnscetqX9YfOvfnSPbgCmRzWJmCtrYkllA1UDepx6022Szi3BS3X821EwybU=
+Received: from CH5P221CA0022.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:1f2::23)
+ by LV2PR12MB5872.namprd12.prod.outlook.com (2603:10b6:408:173::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Fri, 22 Mar
+ 2024 13:41:55 +0000
+Received: from DS2PEPF00003440.namprd02.prod.outlook.com
+ (2603:10b6:610:1f2:cafe::f2) by CH5P221CA0022.outlook.office365.com
+ (2603:10b6:610:1f2::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Fri, 22 Mar 2024 13:41:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Fri, 22 Mar 2024 13:41:54 +0000
+Received: from BLR-L-RKODSARA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 22 Mar
+ 2024 08:41:49 -0500
+From: Raghavendra K T <raghavendra.kt@amd.com>
+To: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+CC: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	"Mel Gorman" <mgorman@suse.de>, Andrew Morton <akpm@linux-foundation.org>,
+	"David Hildenbrand" <david@redhat.com>, <rppt@kernel.org>, Juri Lelli
+	<juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+	Bharata B Rao <bharata@amd.com>, Johannes Weiner <jweiner@fb.com>, "kernel
+ test robot" <oliver.sang@intel.com>, Raghavendra K T <raghavendra.kt@amd.com>
+Subject: [RFC PATCH] A Summary of VMA scanning improvements explored
+Date: Fri, 22 Mar 2024 19:11:11 +0530
+Message-ID: <cover.1710829750.git.raghavendra.kt@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: exynos: gs101: define all PERIC USI nodes
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- peter.griffin@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
- willmcvicker@google.com, kernel-team@android.com
-References: <20240307135912.163996-1-tudor.ambarus@linaro.org>
- <073e5ef5-2a2e-4300-93d6-e25552276e13@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <073e5ef5-2a2e-4300-93d6-e25552276e13@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|LV2PR12MB5872:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c3b7de0-ae25-4f23-d1dd-08dc4a75d65e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NSEUnjgjz+HQG1JC/eje6py72dRUyXDAJrbiBn2TCg1Al8CezMY01XegXuvHzxNypkSKZdoSeoMycxBGoCKRghzY+UlvC95xVBrQsztXx/fqy+PA6q7yFP+NHF4+JNMnqJskCqdR2rX2qHVrLqNEqnr6ImjQh9kmVl/+ux4MekKiVuL/CP7oId9n68DTBx127CwkC5YcaOvq/P+s33YCqMduW2LagAoBm79PoywG9lNtu0mo8rHakRgosQsA3zIFVOZI3WxNWquF1KVWzTpOX76HmJNHYvXqFnDeStaWYJRUIv0oKtPm9t8xxWJNOCFervh0uof0FR2mqx5ULprzTVwL3KxJvPPrPCWdqdwKRySI/OtyjOH+48JuGEptYJufdYMnuZxbPbz6MG09K+VGYmK99o/vE7g6cIwqklu0wGLP2es51FTgKi350QJ3DEfYcdoySb7LzS31nHfa87HBN8c4IDZyrrO+rv1R0o8s/rqrL0HQWAWSRgwtVF7pvMJdGWguAMn5njfgZYio7cYeQ2W6ctzrb3AuscZF3jxX+Vct3SozjpXfqvuaRSNIe2F4OI2+rUvFIoq1S6N3OwOI9ojBjUlIGirwCJ0NjfkGDsIjrRanIJpTgG1I72yhgXKoGKPnpQJavhDr6h+m+957V/IxvE25IFTdM7FRxxRdcroYihJ2Rex9Hdy1g9ZTrEIn17/ZUSQPCDOfR2S2lltNyfB7hLL80UehT3gXTsnJ+c2aJhPGJZlhg86CI+Qqyd9f
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015)(7416005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 13:41:54.5122
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c3b7de0-ae25-4f23-d1dd-08dc4a75d65e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003440.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5872
 
+I am posting the summary of numa balancing improvements tried out.
 
-Hi, Krzysztof!
+(Intention is RFC and revisiting these in future when some one
+sees potential benefits with PATCH1 and PATCH2).
 
-On 3/8/24 16:45, Krzysztof Kozlowski wrote:
-> On 07/03/2024 14:59, Tudor Ambarus wrote:
->> Universal Serial Interface (USI) supports three types of serial
->> interface such as UART, SPI and I2C. Each protocol works independently.
->> USI can be configured to work as one of these protocols. Define all the
->> USI nodes from the PERIC blocks (USI0-14), in all their possible
->> configurations. These blocks have the TX/RX FIFO depth of 64 bytes.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->> Please note that:
->> - google,gs101-spi compatible was queued through the SPI tree:
->>   https://lore.kernel.org/linux-arm-kernel/170742731537.2266792.3851016361229293846.b4-ty@kernel.org/
->> - SPI dma properties were marked as not requiered. Queued through the
->>   SPI tree:
->>   https://lore.kernel.org/linux-spi/170967132774.228925.1759895846287455970.b4-ty@kernel.org/
->>
->>  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 782 +++++++++++++++++++
->>  1 file changed, 782 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> index ee65ed9d2cfc..d7ecfbc7e440 100644
->> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> @@ -373,6 +373,398 @@ pinctrl_peric0: pinctrl@10840000 {
+PATCH3 has more potential for workloads that needs aggressive scanning
+but may need migration ratelimiting.
 
-cut
+Pathset details:
+==================
+PATCH 1. Increase the number of access PID (information of tasks accessing
+VMA) history windows from 2 to 4
 
->> +
->> +			hsi2c_1: i2c@10900000 {
->> +				compatible = "google,gs101-hsi2c",
->> +					     "samsung,exynosautov9-hsi2c";
->> +				reg = <0x10900000 0xc0>;
->> +				interrupts = <GIC_SPI 635 IRQ_TYPE_LEVEL_HIGH 0>;
-> 
-> I wonder why we use four cells in GIC...
-> 
->> +				#address-cells = <1>;
->> +				#size-cells = <0>;
+Based on PeterZ's suggestion/patch.
+Rationale:
+- Increases the depth of historical access of tasks
+- Get a better view of hot VMAs
+- Get a better view of VMA which are widely shared amongst tasks
+with that we can take better decision in choosing the VMAs that needs to
+be scanned for introducing PROT_NONE.
 
-I'd like to respin this patch. Any preference on coding style for
-#address-cells and #size-cells? I guess they shall be above ranges
-property if present.
+PATCH 2. Increase the number of bit used to map tasks accessing VMA from 64 to 128bit
 
->> +				pinctrl-names = "default";
->> +				pinctrl-0 = <&hsi2c1_bus>;
-> 
-> Please reverse two lines, first pinctrl-0 then pinctrl-names. I know we
+Based on suggestion by Ingo
+Rationale:
+Decrease the number of collisions (false positive), while whole information still
+fits in a cacheline
 
-Ok.
+This is potentially helpful when workload involve more threads and thus,
+- unnecessarily do VMA scan.
+- create contention in scan path.
 
-> did not follow this convention till now, but at least new code can be
-> correct. Also clocks should be before pinctrl, so we keep some sort of
-> alphabetical order.
+PATCH 3. Change the notion of scanning 256MB limit per scan to 64k PTE scan (for 4k).
+Extend the same logic to hugepages / THP pages.
 
-Ok.
+Based on suggestion by Mel
 
-I guess the order shall be:
+Rationale: This helps to cover more memory especially when THP is involved or
+a hugepage is involved.
 
-1. compatible
-2. reg
-3. #address-cells (if applicable)
-   #size-cells (if applicable)
-4. ranges (if applicable)
-5. Standard/common properties ordered alphabetically (ex. clocks,
-   interrupts, pinctrl)
-6. vendor-specific properties
-7. status (if applicable)
+PS: Please note all 3 are independent patches. Apologies in advance if patchset
+confuses any patching script. Also more comment/details will be added
+for patches of interest.
 
-Please let me know if you have other preference. Thanks!
-ta
+Summary of results:
+==================
+PATCH1 and PATCH2 are giving benefit in some cases I ran but they may still need
+more convincing usecase / results (as on 6.9+ kernel).
+
+PATCH3:
+Some benchmarks such as XSBench Hashjoin are benefiting from more scanning
+But microbenchmarks (such as allocate on one node fault from other node to
+see how  fast migration happen), suffer because of aggressive migration overhead.
+
+Overall if we combine ratelimiting of migration (similar to CXL) or tune the
+scan rate when it is not necessary to scan (for e.g., I still see VMA scanning
+does not slow even when rate of migration slowed down or all migrations completed.)
+
+Change stat for each of the patches
+======================
+PATCH 1:
+
+Raghavendra K T (1):
+  sched/numa: Hot VMA and shared VMA optimization
+
+ include/linux/mm.h       | 12 ++++++---
+ include/linux/mm_types.h | 11 +++++---
+ kernel/sched/fair.c      | 58 ++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 69 insertions(+), 12 deletions(-)
+
+base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
+============================
+PATCH 2:
+
+Raghavendra K T (1):
+  sched/numa: Increase the VMA accessing PID bits
+
+ include/linux/mm.h       | 29 ++++++++++++++++++++++++++---
+ include/linux/mm_types.h |  7 ++++++-
+ kernel/sched/fair.c      | 21 ++++++++++++++++-----
+ 3 files changed, 48 insertions(+), 9 deletions(-)
+
+base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
+===========================
+PATCH 3:
+
+Raghavendra K T (1):
+  sched/numa: Convert 256MB VMA scan limit notion
+
+ include/linux/hugetlb.h |  3 +-
+ include/linux/mm.h      | 16 +++++++-
+ kernel/sched/fair.c     | 15 ++++---
+ mm/hugetlb.c            |  9 +++++
+ mm/mempolicy.c          | 11 +++++-
+ mm/mprotect.c           | 87 +++++++++++++++++++++++++++++++++--------
+ 6 files changed, 115 insertions(+), 26 deletions(-)
+
+base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
+-- 
+2.34.1
+
 
