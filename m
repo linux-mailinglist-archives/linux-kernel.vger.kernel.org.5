@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-111690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B37886FAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:17:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E56886FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:17:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9AEFB21529
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:17:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41ED21F24472
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60EC64DA0F;
-	Fri, 22 Mar 2024 15:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208A74E1C4;
+	Fri, 22 Mar 2024 15:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cL45VbWw"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jXFYqGMe"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F01A53E2E;
-	Fri, 22 Mar 2024 15:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D144CE13
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711120621; cv=none; b=YHpAZOTOCtBujXbB7UfoT2HPMvtPNof9bny2bSKzOH2VNF05tzQc+C23cQHF0K5C4BGkBsQcY0Ac/w4MYYCtO6zHXBJrS25dHWJ1HJn0Q8chm3ys+Pg94ySliZjBPP/LvEcjSnX/iV+PSL3U5ib0QssFNb7LnJCDLY4t7PL4d34=
+	t=1711120636; cv=none; b=PHVk+HV3GCznfyVH0uV55IJbJS+yoLIFKnRX32fUY8EGDj9ZDXiG+TcD9ZIZahNFT+QWS4awItCqzrt+Wifp/nsxVnAvGuP43OHfhfcxAKK+BXeqOhEhpSs+JWsQ5+zxKAhlw+UAhPfYIeA2Ov8TPT2rRehwqv9VR8xDF3Rkesg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711120621; c=relaxed/simple;
-	bh=hzlDQWpaAy8XRudP0fe8Wk/SvOdLzdb9nk6RY9sJYQk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nzSteaD8CusvP1Y7bilUE4gNoXQczvgIsZ+EyEldFZRZmYvtw7m67DdQiEapVcwaBo5i6ycqx9tWBQ6hL3AUVLpcUKVfB0I5nIj65VihtZk5ytV6i/5/0fj9/eNRI/ztuWYiKjOXhDTVYayFibN6lblagAlQ47sxcAGKF5aWf4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cL45VbWw; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1def142ae7bso19332875ad.3;
-        Fri, 22 Mar 2024 08:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711120620; x=1711725420; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvNCq/vUyxBpwJ9D5tVxN8w0d8YTtddgB0nD7H1fQsk=;
-        b=cL45VbWwOUwpl3J9IPFSkYgKmMWS6We+9nraluxWbKqs+RljLnN3FfB15QqSPsmmHJ
-         IJbHRY52EIizejeOSrIExuQT4FZitXmUasjPpc5M8Trcs5hTIoYG/3pKh6fzWQ8DgxSI
-         I9MwrAMDJX8CdlIuYN64xyevn5eRa/xuWJTrZ+1bRp6KUfHDIDn8TlF2rKeiSIlfP049
-         u2/I/ybnJNgN2H6DsRs04bNab5tS4bf0Qp+RW4H90Dk1XeHW5turpqjXp0+peMCFicll
-         Mg6eVS9/OyN7OEbDmC/xIw/HKE0e5nd/GWh/xMsch6oUeNzObJcfii19+9QDmt/wzwFl
-         IyGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711120620; x=1711725420;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZvNCq/vUyxBpwJ9D5tVxN8w0d8YTtddgB0nD7H1fQsk=;
-        b=duLbCosF+gxRXzRjPnmx3GG8y3n6cWEEVVkwoj9oGttcp1RWIudwQ1Vm29BBNI0fNG
-         yShLZB/Z3qxSeyJtwT6RyWtFACukAC5HMHVktAmzmhZThN8qMzuVLliRxffp8wmrKfnu
-         3FaRwb85U8Tfgq3nNNR1GHhIcj6UFxMhenWGAaV0jwdtXWii9nwEKF+Y6t7N3lU29hwB
-         MNvClc6igkWhjYjXq0FqBiaVXk9bGJCKjArvfx1Jj9Ui87yz5HRMV/+GsbngtqR4zZ2X
-         TyBC63rHu4rm/kKNeoOsbOj/c+dxUSKWq61Z4Rjc4e9URiUhyvEl8yhru/8fosur1GHe
-         jlew==
-X-Forwarded-Encrypted: i=1; AJvYcCXjvxuSzd/G5YlTJwZT0wx3HxKT1euZ3QCbPsR0upZEGkSA6Go10XW0ZRP8iTNtykoqpRPjgFTvBeBFJWpva1WIBALIZqSzvj4rm7L8lvTVUd6MiLaZd1Crqf00+H/HDJ0BFJLE3qZNQJA=
-X-Gm-Message-State: AOJu0YzX4X2GpvLEJNG+nDagDmSQieCbtv951oce9Zb/S2GPpZQVqdKj
-	2I6+y3yasNFvW9aF/PMHheSiNb4F0DHOL7IdBC3JRVoYi9SuAd6q
-X-Google-Smtp-Source: AGHT+IHCgCDL1PxwCnR3s/HSd6meeWjhLlcVL81UDri0NQht+8M2mFw3XMHbUNeMHzSDAayeOBa9Eg==
-X-Received: by 2002:a17:902:ce0d:b0:1dd:ae5b:86f1 with SMTP id k13-20020a170902ce0d00b001ddae5b86f1mr59698plg.29.1711120619504;
-        Fri, 22 Mar 2024 08:16:59 -0700 (PDT)
-Received: from Ubuntu2.. ([14.139.121.51])
-        by smtp.googlemail.com with ESMTPSA id p5-20020a170902e34500b001e0287592c4sm2024809plc.267.2024.03.22.08.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 08:16:58 -0700 (PDT)
-From: Chandra Pratap <chandrapratap3519@gmail.com>
-To: 
-Cc: sudipm.mukherjee@gmail.com,
-	dan.carpenter@linaro.org,
-	teddy.wang@siliconmotion.com,
-	gregkh@linuxfoundation.org,
-	linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev,
-	Chandra Pratap <chandrapratap3519@gmail.com>
-Subject: [PATCH v3] staging: sm750fb: Replace comparisons with NULL and 0
-Date: Fri, 22 Mar 2024 20:46:33 +0530
-Message-Id: <20240322151633.16485-1-chandrapratap3519@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <2024032208-blunt-ferocity-22f4@gregkh>
-References: <2024032208-blunt-ferocity-22f4@gregkh>
+	s=arc-20240116; t=1711120636; c=relaxed/simple;
+	bh=eiVxLfEbT2fV2MypbifS2SQXxSiacXNMhFESsejWf7s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ullMdebnidcnK1cgRXChZt6FLWfMhr0jnzZcNViJPk1dVVGM0+8UCfzsiqWUzpYKJ5ASt+aScRVChs3KDHrMTkVELzV0NBvDQdqEkQXNdX/7ERpn1ZdOAn9Ke7jeOnhyXCDjLKKWvffJ4BiO46khJ7igU7lG88QVV82gOXhkxUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jXFYqGMe; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711120632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=frMCKDXPG6C6yySkxGYI1EQakMDsEGGuUgb/MT4GE4g=;
+	b=jXFYqGMeJw+ipXCAEa15FYcqmaV0hwDuo0hCYglk2DX8jpk7tdLkYxPjFxCRBhyJpMjMUD
+	ppxh/NHvM+jpSQ5BmLyRsvTtJf+tQNMfO++VK/RTcEWb61QetAFewltPYwQmK8xb2bVwy8
+	QCaWJRP2I/jzW7FOWhFTC7AgQbzCSqs=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>,  Jan Kara <jack@suse.cz>,  Theodore
+ Ts'o <tytso@mit.edu>,  Andreas Dilger <adilger.kernel@dilger.ca>,
+  Alexander Viro <viro@zeniv.linux.org.uk>,  Amir Goldstein
+ <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
+ parameters
+In-Reply-To: <20240322-ortseinfahrt-gespeichert-9fc21a98aa39@brauner>
+	(Christian Brauner's message of "Fri, 22 Mar 2024 15:22:41 +0100")
+References: <20240307160225.23841-1-lhenriques@suse.de>
+	<20240307160225.23841-4-lhenriques@suse.de>
+	<CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+	<87le6p6oqe.fsf@suse.de>
+	<CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+	<20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
+	<CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
+	<20240312-orten-erbsen-2105c134762e@brauner>
+	<87h6hbhhcj.fsf@brahms.olymp>
+	<20240322-ortseinfahrt-gespeichert-9fc21a98aa39@brauner>
+Date: Fri, 22 Mar 2024 15:17:09 +0000
+Message-ID: <875xxe2t56.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Replace '(opt != NULL)' with '(opt)' and '(*opt != 0)'
-with '(*opt != '\0')' to adhere to the coding standards.
+Christian Brauner <brauner@kernel.org> writes:
 
-Signed-off-by: Chandra Pratap <chandrapratap3519@gmail.com>
----
+> On Tue, Mar 12, 2024 at 10:31:08AM +0000, Luis Henriques wrote:
+>> Christian Brauner <brauner@kernel.org> writes:
+>> 
+>> > On Mon, Mar 11, 2024 at 03:39:39PM +0100, Miklos Szeredi wrote:
+>> >> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
+>> >> 
+>> >> > Yeah, so with that I do agree. But have you read my reply to the other
+>> >> > thread? I'd like to hear your thoughs on that. The problem is that
+>> >> > mount(8) currently does:
+>> >> >
+>> >> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
+>> >> >
+>> >> > for both -o usrjquota and -o usrjquota=
+>> >> 
+>> >> For "-o usrjquota" this seems right.
+>> >> 
+>> >> For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
+>> >> this seems buggy in more than one ways.
+>> >> 
+>> >> > So we need a clear contract with userspace or the in-kernel solution
+>> >> > proposed here. I see the following options:
+>> >> >
+>> >> > (1) Userspace must know that mount options such as "usrjquota" that can
+>> >> >     have no value must be specified as "usrjquota=" when passed to
+>> >> >     mount(8). This in turn means we need to tell Karel to update
+>> >> >     mount(8) to recognize this and infer from "usrjquota=" that it must
+>> >> >     be passed as FSCONFIG_SET_STRING.
+>> >> 
+>> >> Yes, this is what I'm thinking.  Of course this only works if there
+>> >> are no backward compatibility issues, if "-o usrjquota" worked in the
+>> >> past and some systems out there relied on this, then this is not
+>> >> sufficient.
+>> >
+>> > Ok, I spoke to Karel and filed:
+>> >
+>> > https://github.com/util-linux/util-linux/issues/2837
+>
+> This is now merged as of today and backported to at least util-linux
+> 2.40 which is the current release.
+> https://github.com/util-linux/util-linux/pull/2849
+>
+> If your distros ship 2.39 and won't upgrade to 2.40 for a while it might
+> be worth cherry-picking that fix.
 
-Please ignore the other v3 patch I sent, I forgot to write
-the change log in that patch. Apologies for any incovenienece
-caused.
+That's awesome, thanks a lot for pushing this.  I just gave it a try and
+it looks good -- ext4/053 isn't failing any more with the next version.
 
-Changes in v2:
-  - Update the commit message to reflect the changes better
-  - Replace (*opt) with (*opt != '\0')
-
-Changes in v3:
-  - Remove unncessary spacing
-
- drivers/staging/sm750fb/sm750.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 04c1b32a22c5..c4b944f82fb9 100644
---- a/drivers/staging/sm750fb/sm750.c
-+++ b/drivers/staging/sm750fb/sm750.c
-@@ -926,7 +926,7 @@ static void sm750fb_setup(struct sm750_dev *sm750_dev, char *src)
- 		goto NO_PARAM;
- 	}
- 
--	while ((opt = strsep(&src, ":")) != NULL && *opt != 0) {
-+	while ((opt = strsep(&src, ":")) && *opt != '\0') {
- 		dev_info(&sm750_dev->pdev->dev, "opt=%s\n", opt);
- 		dev_info(&sm750_dev->pdev->dev, "src=%s\n", src);
- 
-@@ -1147,7 +1147,7 @@ static int __init lynxfb_setup(char *options)
- 	 * strsep() updates @options to pointer after the first found token
- 	 * it also returns the pointer ahead the token.
- 	 */
--	while ((opt = strsep(&options, ":")) != NULL) {
-+	while ((opt = strsep(&options, ":"))) {
- 		/* options that mean for any lynx chips are configured here */
- 		if (!strncmp(opt, "noaccel", strlen("noaccel"))) {
- 			g_noaccel = 1;
+Cheers,
 -- 
-2.34.1
-
+Luis
 
