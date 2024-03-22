@@ -1,191 +1,164 @@
-Return-Path: <linux-kernel+bounces-111786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7BC8870FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:37:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55DCE887100
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86FA1B226FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:37:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BB88285387
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E635D725;
-	Fri, 22 Mar 2024 16:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BC25CDF2;
+	Fri, 22 Mar 2024 16:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r/dIqAA4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="OPFlwYmW"
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0B5495F0;
-	Fri, 22 Mar 2024 16:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42826495F0;
+	Fri, 22 Mar 2024 16:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125442; cv=none; b=IvQCh3OmPi7O/oH9DmYy+jSHJ/hXYUgyYzSwGogzLb/jqFIcxn30tZlC1ucc/ENs9l7OmhzXWBZojuS6k8Odg24ZqGBa/F1zKMrrom9a/QnhNFdAfluyXgG8Wi3zE3WzB9Bno/I+AbamEvxLKM3pWjvw35AHpEtV08plFeyNsQM=
+	t=1711125565; cv=none; b=n8ow4z1zqoDNAbOTFWYKlSe4/H2jXUBBhN0DZvr5+b17kR3I/i69hzSd4MbiCrPDQqrJxwy7n6D+JQPCZs28kWbmz8VjYZ4+MSrT2Qgo4zcv3AV9NGWGfgI+9cNtCTkK0fuQehIu0Ag2BU637Zu4wD2TRGPqBloYdX5fDxRharw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125442; c=relaxed/simple;
-	bh=MPyggTqbjRfhmGAJnk7DnBuPyukjpa3BsNwr0MJ+U0U=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VWwbBUdR+gEAT5edJZDr4xlfq2Pf9mzn7WqZVaXNen7UhwnVABg4mCRwKxW5C8Sd1OyDssb87aSlUoO3rG7fNgbJP61chlfUc4eGD+TXcAj/BaMq/jeywH96lQVcUW9U9wAfsBYR2S1ztg0u+OD122A00rC9hlLWk+t27xwpdQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r/dIqAA4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464ECC433F1;
-	Fri, 22 Mar 2024 16:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711125442;
-	bh=MPyggTqbjRfhmGAJnk7DnBuPyukjpa3BsNwr0MJ+U0U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=r/dIqAA4rcmzwmRhbZOpOa6goIFXJ46VPUVHTLUWedUEJ/FIBpGm57i0KmWcYYlqA
-	 O2MnCVt/JtoeTS+24GBQAPgaR1kuWX7CPYBNRWkCHU/FgFwXki13YdQgYpK22yU5dM
-	 zc4f2u5788JPm7UHXKjONZqMu5g0GTkj58uxv7W8838FMtDiRO28Okh2y9srrBxcJE
-	 w5DOBXwtwmVYK3m+GHk3UMYP4ZMFp8ToU1txdn5LnqPuSjTZlWbfsma+8eZWvpTGpI
-	 iOTzN1Wkiy0KrEMsPkPqdOUoxscIlOuo+A6XqVA2NRv8ff+H+43NGRUwFnb17Y9lan
-	 dvAHUyG7hkjYA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rnhtQ-00EYr0-13;
-	Fri, 22 Mar 2024 16:37:20 +0000
-Date: Fri, 22 Mar 2024 16:37:19 +0000
-Message-ID: <86edc2z0hs.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini
- <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton
- <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K
- Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi
- <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown
- <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh
- <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v3 5/5] arm64: Use SYSTEM_OFF2 PSCI call to power off for hibernate
-In-Reply-To: <9efb39597fa7b36b6c4202ab73fae6610194e45e.camel@infradead.org>
-References: <20240319130957.1050637-1-dwmw2@infradead.org>
-	<20240319130957.1050637-6-dwmw2@infradead.org>
-	<86jzluz24b.wl-maz@kernel.org>
-	<9efb39597fa7b36b6c4202ab73fae6610194e45e.camel@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1711125565; c=relaxed/simple;
+	bh=nlkMOMncwpIINGvRX/UEkWw6eMthWmsYDewKJVNfR6E=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Us+X8jOtHhl6MQlZoeVCj53LuCJ1L4LugjmPrRGOqX1gphrjy/DGfaICPWcv2cYDkRh6zYhbe7l3B0/X8fn4a3IRsyWusyg+IDpkuAH2kZV5QVZnXqoxk1FIB3Vy4MioDlSxLU07Rsdc33mVc0Q5yMRR/U/9W4kRASos5vAsoxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=OPFlwYmW; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1711125563; x=1742661563;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=H3tv937L/nNlgjDfXEwnKqcwdZa8dGHZRZ7eEGPyFgw=;
+  b=OPFlwYmW9s49e9Yvm/O/1zAspOtRhE8CPfvMBeSvl03ZI25j5yl2uxH6
+   FqBp08hRpV0hftIRpoUqZ2b5H104F8o1r1inOqlIINHvKbq1tIoC9Jaiu
+   9x7PdQtGrtGqiYURX0hsJqxKUir32M4vZc+QkawTg80yZnE9Ebr8ue6AZ
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.07,146,1708387200"; 
+   d="scan'208";a="642879176"
+Subject: Re: [PATCH v1 0/4] virt: vmgenid: Add devicetree bindings support
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:39:20 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:18975]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.11.17:2525] with esmtp (Farcaster)
+ id e58a527d-dcbd-4bc9-a202-dbb0c45db04e; Fri, 22 Mar 2024 16:39:18 +0000 (UTC)
+X-Farcaster-Flow-ID: e58a527d-dcbd-4bc9-a202-dbb0c45db04e
+Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 22 Mar 2024 16:39:17 +0000
+Received: from [192.168.15.170] (10.106.83.11) by
+ EX19D036EUC002.ant.amazon.com (10.252.61.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 22 Mar 2024 16:39:11 +0000
+Message-ID: <d790d5cc-a116-4d5b-97a4-da0d073ff3e3@amazon.co.uk>
+Date: Fri, 22 Mar 2024 16:39:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: David Woodhouse <dwmw2@infradead.org>, Rob Herring <robh@kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Sudan Landge
+	<sudanl@amazon.com>, <tytso@mit.edu>, <Jason@zx2c4.com>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <thomas.lendacky@amd.com>,
+	<dan.j.williams@intel.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <graf@amazon.de>, <bchalios@amazon.es>,
+	<xmarcalx@amazon.co.uk>, <ardb@kernel.org>, benh <benh@kernel.crashing.org>
+References: <20240319143253.22317-1-sudanl@amazon.com>
+ <23692c07-98bd-477d-b244-bba14c50352c@linaro.org>
+ <38aad6c0e698c8e804694276d1762d61f2068ce8.camel@infradead.org>
+ <20240320161531.GA1810860-robh@kernel.org>
+ <60404403932a984d1f75d111ff53b9053af03579.camel@infradead.org>
+ <20240321133250.GA1600070-robh@kernel.org>
+ <db5a1027-93b7-4630-b679-8a654905dc48@amazon.co.uk>
+ <17611183-f288-47fe-a5e1-91ee16168db0@linaro.org>
+ <ee688cca986d95148a55e32fee48ceed8567f128.camel@infradead.org>
+ <CAL_JsqJOn9yU_YC0+q=4DX9_=0+z8yTact0HAvOKbrUpcXHxkQ@mail.gmail.com>
+ <0a83e174db16e15cb0f0d3ac37d6717c918ee78d.camel@infradead.org>
+From: "Landge, Sudan" <sudanl@amazon.co.uk>
+In-Reply-To: <0a83e174db16e15cb0f0d3ac37d6717c918ee78d.camel@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D038UWC003.ant.amazon.com (10.13.139.209) To
+ EX19D036EUC002.ant.amazon.com (10.252.61.191)
 
-On Fri, 22 Mar 2024 16:12:44 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
->=20
-> On Fri, 2024-03-22 at 16:02 +0000, Marc Zyngier wrote:
-> > On Tue, 19 Mar 2024 12:59:06 +0000,
-> > David Woodhouse <dwmw2@infradead.org> wrote:
-> >=20
-> > [...]
-> >=20
-> > > +static void __init psci_init_system_off2(void)
-> > > +{
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret;
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D psci_features(PSCI=
-_FN_NATIVE(1_3, SYSTEM_OFF2));
-> > > +
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret !=3D PSCI_RET_NOT_=
-SUPPORTED)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0psci_system_off2_supported =3D true;
-> >=20
-> > It'd be worth considering the (slightly broken) case where SYSTEM_OFF2
-> > is supported, but HIBERNATE_OFF is not set in the response, as the
-> > spec doesn't say that this bit is mandatory (it seems legal to
-> > implement SYSTEM_OFF2 without any hibernate type, making it similar to
-> > SYSTEM_OFF).
->=20
-> Such is not my understanding. If SYSTEM_OFF2 is supported, then
-> HIBERNATE_OFF *is* mandatory.
->=20
-> The next update to the spec is turning the PSCI_FEATURES response into
-> a *bitmap* of the available features, and I believe it will mandate
-> that bit zero is set.
 
-The bitmap is already present in the current Alpha spec:
 
-<quote>
-5.16.2 Implementation responsibilities
+On 22/03/2024 14:27, David Woodhouse wrote:
+> On Fri, 2024-03-22 at 08:22 -0500, Rob Herring wrote:
+>>
+>>>> What stops you from passing fw_cfg not to UEFI FW? BTW, no actual VM
+>>>> name was used in your posting, but now suddenly it is a talk about QEMU.
+> 
+> (Forgot to address the second part of that last time. No specific VMM
+> was mentioned in the first place because this isn't VMM-specific)
+> 
+QEMU is referenced to explain `vmgenid` which they are also using and 
+have more documentation on it. We mentioned the hypervisor we tested the 
+changes with in the cover letter which is 
+https://github.com/firecracker-microvm/firecracker but this change isn't 
+VMM specific.
 
-[...]
-
-Bits[31] Reserved, must be zero.
-
-Bits[30:0] Hibernate types supported.
-	- 0x0 - HIBERNATE_OFF
-
-All other values are reserved for future use.
-</quote>
-
-and doesn't say (yet) that HIBERNATE_OFF is mandatory. Furthermore,
-
-<quote>
-5.11.2 Caller responsibilities
-
-The calling OS uses the PSCI_FEATURES API, with the SYSTEM_OFF2
-function ID, to discover whether the function is present:
-
-- If the function is implemented, PSCI_FEATURES returns the hibernate
-  types supported.
-
-- If the function is not implemented, PSCI_FEATURES returns
-  NOT_SUPPORTED.
-</quote>
-
-which doesn't say anything about which hibernate type must be
-implemented. Which makes sense, as I expect it to, in the fine ARM
-tradition, grow things such as "HIBERNATE_WITH_ROT13_ENCRYPTION" and
-even "HIBERNATE_WITH_ERRATA_XYZ", because firmware is where people
-dump their crap. And we will need some special handling for these
-tasty variants.
-
-> And if for whatever reason that SYSTEM_OFF2/HIBERNATE_OFF call
-> *doesn't* work, Linux will end up doing a 'real' poweroff, first
-> through EFI and then finally as a last resort with a PSCI SYSTEM_OFF.
-> So it would be OK to have false positives in the detection.
-
-I agree that nothing really breaks, but I also hold the view that
-broken firmware implementations should be given the finger, specially
-given that you have done this work *ahead* of the spec. I would really
-like this to fail immediately on these and not even try to suspend.
-
-With that in mind, if doesn't really matter whether HIBERNATE_OFF is
-mandatory or not. We really should check for it and pretend it doesn't
-exist if the correct flag isn't set.
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+>>> That would be possible. But not ideal.
+>>
+>> Why not ideal?
+>>
+>> To rephrase the question, why is it fine for UEFI to read the vmgenid
+>> from fw_cfg, but the kernel can't use the same mechanism?
+> 
+> Because fw_cfg an incestuous way to get data from the VMM into the BIOS
+> (both SeaBIOS and UEFI). It's the way we pass the ACPI tables and
+> things like that.
+> 
+> It *isn't* designed as a general-purpose way of doing device discovery
+> for use by various operating systems.
+> 
+> I'm also not sure Firecracker, which is the VMM Sudan is working on,
+> even *has* fw_cfg. Especially on ARM. If we're going to be forced to
+> add some complicated device with MMIO and DMA just to be able to
+> advertise the existence of a simple memory region, that's just as bad
+> as being forced to expose it as an emulated PCI device.
+> 
+> This is what DT is *for*.
+> 
+> 
+>> The response
+>> that you'd have to use UEFI to use fw_cfg makes no sense to me. The
+>> only reason I can think of is just being lazy and wanting to have
+>> minimal changes to some existing driver. It looks to me like you could
+>> implement this entirely in userspace already with zero kernel or
+>> binding changes. From a quick look, we already have a fw_cfg driver
+>> exposing UUID (that's the same thing as vmgenid AIUI) to userspace,
+>> and you can feed that back into the random pool.
+>>
+>> I am concerned that we already have a mechanism and you want to add a
+>> second way. When do we ever think that's a good idea? What happens
+>> on the next piece of fw_cfg data? We add yet another binding?
+> 
+> No, because fw_cfg is a way for the VMM to give configuration
+> information to the firmware. There's a clue in the name. The firmware
+> then sets up ACPI tables or DT to pass information in a more coherent
+> and structured fashion to general-purpose operating systems.
+> 
+> And some VMMs *don't* use fw_cfg at all because for the minimal microvm
+> case it's overkill.
+> 
+The hypervisor we work on 
+(https://github.com/firecracker-microvm/firecracker) does not have 
+fw_cfg, it loads kernel directly without the need for UEFI or any 
+intermediate firmware. It is, as said, an overkill to enable UEFI and 
+fw_cfg just to support `vmgenid` specially when there is an alternative 
+available which could keep things simple for the vmm and for the linux 
+driver.
 
