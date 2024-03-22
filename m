@@ -1,184 +1,99 @@
-Return-Path: <linux-kernel+bounces-111999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB528873F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:33:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 334838873F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A99791F2369D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:33:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A4F71C22ACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6340F7AE50;
-	Fri, 22 Mar 2024 19:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB52F7AE67;
+	Fri, 22 Mar 2024 19:34:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="JjKgd0LD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FgVjeW9o"
-Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="Kj1QB2Ki"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EA37AE44
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94CD262A0E
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 19:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711136000; cv=none; b=U9e+pvwxAaMJ4n9p9JESpCbmbqSe0/1EnaHiV1abNU1Y4PWHyvB4OcNEsImnTB5ZKWJQga9tAiEFKcvrGWS0dgpSFnHYWs21JQpxj6+YRfTlK52Yo5NmiOSVkDvNhsYvw6fgwhi4XejBe5d9cEIzNv7Wo63q2pCpNVRF7YQ9Fig=
+	t=1711136059; cv=none; b=nRc+/1k0SKYdPqtxNiCgdzewjIdzxJEnjT6JzQzaotTKVYCCS9MKSR/W6y4IFM5HOBZ89Iro4iZNd6OIeiEBaD6E9RtG8VZOZSuTXnzfRbILTuItJhAltZzcDCML0lOH02g+pYyjDm0pZynnEXvcWTLGLJQIBfqEQv2c4wEEA+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711136000; c=relaxed/simple;
-	bh=6aXe99vy9NwkLcaUAxwc/CBOxXdrV4VqdlEFRv/Uuoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HlMLYmVcEpONmEN5YlKP+HOoKJGG8uEcilP1/wT4LH6YA+3gBaBihLz6ac7Y0cQc/lVNTVmDH91aKYtwhOrgl6KiKvfgOOoqUEFZLo7LepA3gLWwrLW9YhlGLHcUTfsTiO0b5O/w2fsbaybFairYFtvgJQwgYRlfcQip+OOaMHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=JjKgd0LD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FgVjeW9o; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id D261C13800C8;
-	Fri, 22 Mar 2024 15:33:16 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 22 Mar 2024 15:33:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:reply-to:subject:subject:to:to; s=fm2; t=1711135996; x=
-	1711222396; bh=Z4qwXiUVtIySYeeeDHMpOYt0KW6NAQHnh4gQJgkXoJ4=; b=J
-	jKgd0LDJusRF0knrNa/Y3vIZsqA0w4UKM57xw1itDNsuPwP6aPkIFBrl7zrN7il4
-	bNqLYIutwLOFKI8x7Z2EVdRDCXvqszrdQXGpUVWZ6Iv8YlGoPUzT1sKnrXJ9KaCj
-	P7xoO+4KFQRE8QfWfptIi+uFGoXs6HCqYO+iL5kBZoThkCK+JYlI/3a4V70zYoyl
-	PNIfqjrGonZNaaSulKPstQXQ0kqlKk9qUV7ao8E/1qHHKdFooQbyobSKo2d2RGwT
-	YlhMGPd6YGLCvLGgvCnU/XzaaKALJLmjjDnu6YSX2E4bxiPJNIDQ9y0ohhU5yKgr
-	ZTl9Nobi4OpJZPh8lBk2Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
-	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1711135996; x=1711222396; bh=Z
-	4qwXiUVtIySYeeeDHMpOYt0KW6NAQHnh4gQJgkXoJ4=; b=FgVjeW9osSLt3u5fV
-	U6dMfnZUjQK+MnEXnWIY45U5l8YS29AcPodXP4MYaLWP8CVZLqDuteQoGN/+MbIA
-	MkQy5yj7FDEKPB/ZXjekF4JOSLp/b6BRbaHY954hleESgi8exrQdLUvTDBrlLp9F
-	RFixnQTy3RkYjUMz5WIev1vLCMHtvAUyKuzayP44l5r3zvEtQ2tfY8xhFBSItMkV
-	fsnu3VCOV7c1ZZYqLMiTBfGM3ilqXSWaVvvFOV6wm40REDF2Nr18VHvd8VeR+ihA
-	ZulIXqjVdExBpdXcVrA50n49XB9EaBl/fqmHAnznBINyaSP3xKdv2uuDsk9H3+O/
-	PA3wA==
-X-ME-Sender: <xms:_Nz9Zb7gI-wrn-B8CYOQBTG9cDPbbGeeKVogYTeyB7AJ37S79kRx0w>
-    <xme:_Nz9ZQ6BTwJLk9v1nGr8zL06EbSHr9oQ3m8wLbZl88d3Sl2mLMeqpYSO3CWi7vHdi
-    XQQqwnNcx6fhJUfTw>
-X-ME-Received: <xmr:_Nz9ZSffFH4OqvrAYxjo09eX1y7zGBs_EeKZv15mqjLez0XEghxdHOCOBQzTHv-behz5AwRLfWgPzIstaOHWNIw26Qz0aEtfLIWF27eAaLXO7xsm0y4Tfa1x>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddtvddgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgj
-    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepteduve
-    ehteehheeiteeihfejveejledtgfdvieeuiedutefftdevtdfhteevtdffnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:_Nz9ZcJ5Nz7TrN_op3klkyGuQi7iFX_vpQjudJagb4i_srXeFkLPeA>
-    <xmx:_Nz9ZfLnHgwLAGU5NfJuq6MWSzC6o53mfhv3Cj0hI3XObwYYDhixbg>
-    <xmx:_Nz9ZVzKih2CVpMUeP5F10z4O5--guwyoNIBzNbscBlqy7GgHK4bwA>
-    <xmx:_Nz9ZbJiVA2y8BI7AKxlULd4fUd6_B5KCzFEEExl9g4zXlVtPbf2xg>
-    <xmx:_Nz9ZeYPNLpdW7MQ4RMi38ae07y6up8UAJRtrXjXA51ZpDn0dxaGWQ>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 22 Mar 2024 15:33:15 -0400 (EDT)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Yang Shi <shy828301@gmail.com>,
-	Huang Ying <ying.huang@intel.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	"Yin, Fengwei" <fengwei.yin@intel.com>,
-	SeongJae Park <sj@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5] mm/migrate: split source folio if it is on deferred split list
-Date: Fri, 22 Mar 2024 15:33:04 -0400
-Message-ID: <20240322193304.522496-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+	s=arc-20240116; t=1711136059; c=relaxed/simple;
+	bh=rmSxOJ7PesryFAlCYmpPV9lPM91ZLNWCXgJKf7O7vEw=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=JbiG3/BYiKJvW9tlHsFgB45hJXI/Z5UP31t6tnpNHRej7j+Ey251rVxEhWf66yNDT9JRo1GvxMnt171iHv9k+Rx6EgIM/qpyxE0tm9Huay38ca9f5l1o72beeZAYuHWk+kvSjmxiiSsooh71Yf+pdqQvNgZM9myaOfS2IXp3e5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=Kj1QB2Ki; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1711136055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rmSxOJ7PesryFAlCYmpPV9lPM91ZLNWCXgJKf7O7vEw=;
+	b=Kj1QB2Ki6DZ6KhgM77hUzPva/yi9CQDjDrOeQcS8zioPvZN9//CpoNvsSLuS1VUy4Vm+k9
+	mIAnA0OHemCkGxjj75TnqezkmBWoyYOw+xtVpoDNDBNsUfpK4yQQyTwZ7uIOYoLHC/6QW2
+	ZLVCr4yfVkn94nTHfTQYamuWuC84m0a8md9x4dfaVp1V7Zk+TpyKxc0zJvpdZEgn/ceps2
+	qpDj1YAamo819kmdnvIl88Z20VBQoF8OVZsxASapbyuF3avfj7R66qnayIORrTqbxfaT3Z
+	B6f+PpzazTzdg/EoFu+pE8XBgzKf68olAEY9Sl5gaSOkzESJ6i6Fzcw3CeDmVA==
+Date: Fri, 22 Mar 2024 19:34:12 +0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Clayton Craft" <clayton@craftyguy.net>
+Message-ID: <8a64ba697d719bc9750e6fffc268e194dfde16e5@craftyguy.net>
+TLS-Required: No
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+To: "Ard Biesheuvel" <ardb@kernel.org>
+Cc: "Hans de Goede" <hdegoede@redhat.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org, "Thomas
+ Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>, "Dave Hansen"
+ <dave.hansen@linux.intel.com>, regressions@lists.linux.dev
+In-Reply-To: <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
+References: <20240321150510.GI8211@craftyguy.net>
+ <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net>
+ <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+ <20240322091857.GM8211@craftyguy.net>
+ <CAMj1kXFmnv+FGRMnnJMJejj5yvSybgZTNEYZz0hxb6K9VAeo1Q@mail.gmail.com>
+ <fe09869c2d853bde8ce0feb537c4dab09014f5d9@craftyguy.net>
+ <CAMj1kXEH4CTnQ3d+Z-TnqNUhFaFc1yH+Eaa6cHk9-vZ_geQ2nw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-From: Zi Yan <ziy@nvidia.com>
+March 22, 2024 at 11:30 AM, "Ard Biesheuvel" <ardb@kernel.org> wrote:
 
-If the source folio is on deferred split list, it is likely some subpages
-are not used. Split it before migration to avoid migrating unused subpages.
 
-Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
-did not check if a THP is on deferred split list before migration, thus,
-the destination THP is never put on deferred split list even if the source
-THP might be. The opportunity of reclaiming free pages in a partially
-mapped THP during deferred list scanning is lost, but no other harmful
-consequence is present[1].
+>=20
+>=20On Fri, 22 Mar 2024 at 19:57, Clayton Craft <clayton@craftyguy.net> w=
+rote:
+>=20
+>=20I have pushed a branch below that reverts the patch you identified in
+>=20
+>=204 separate steps. Could you please check which step makes your system
+>=20
+>=20boot again?
+>=20
+>=20https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=
+=3Defi-clayton
+>
 
-From v4:
-1. Simplify _deferred_list check without locking and do not count as
-   migration failures. (per Matthew Wilcox)
+Thanks a lot for doing this, I really appreciate the help!
 
-From v3:
-1. Guarded deferred list code behind CONFIG_TRANSPARENT_HUGEPAGE to avoid
-   compilation error (per SeongJae Park).
+It looks like if I build from 868a7245, booting breaks again on my Bay Tr=
+ail systems. If I put back 00e85ab5, they boot again.
 
-From v2:
-1. Split the source folio instead of migrating it (per Matthew Wilcox)[2].
-
-From v1:
-1. Used dst to get correct deferred split list after migration
-   (per Ryan Roberts).
-
-[1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
-[2]: https://lore.kernel.org/linux-mm/Ze_P6xagdTbcu1Kz@casper.infradead.org/
-
-Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- mm/migrate.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index ab9856f5931b..6bd9319624a3 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1652,6 +1652,29 @@ static int migrate_pages_batch(struct list_head *from,
- 
- 			cond_resched();
- 
-+			/*
-+			 * The rare folio on the deferred split list should
-+			 * be split now. It should not count as a failure.
-+			 * Only check it without removing it from the list.
-+			 * Since the folio can be on deferred_split_scan()
-+			 * local list and removing it can cause the local list
-+			 * corruption. Folio split process below can handle it
-+			 * with the help of folio_ref_freeze().
-+			 *
-+			 * nr_pages > 2 is needed to avoid checking order-1
-+			 * page cache folios. They exist, in contrast to
-+			 * non-existent order-1 anonymous folios, and do not
-+			 * use _deferred_list.
-+			 */
-+			if (nr_pages > 2 &&
-+			   !list_empty(&folio->_deferred_list)) {
-+				if (try_split_folio(folio, from) == 0) {
-+					stats->nr_thp_split += is_thp;
-+					stats->nr_split++;
-+					continue;
-+				}
-+			}
-+
- 			/*
- 			 * Large folio migration might be unsupported or
- 			 * the allocation might be failed so we should retry
-
-base-commit: 08a487ab26d541a3bd0adaee144f684b724d233b
--- 
-2.43.0
-
+-Clayton
 
