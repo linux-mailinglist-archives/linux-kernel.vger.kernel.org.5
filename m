@@ -1,168 +1,91 @@
-Return-Path: <linux-kernel+bounces-111583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C3D9886E20
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:11:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A86F886F89
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BC761F22973
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:11:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A38B1C22741
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A01481D7;
-	Fri, 22 Mar 2024 14:10:33 +0000 (UTC)
-Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E27C81CA80;
-	Fri, 22 Mar 2024 14:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.14.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B5953E33;
+	Fri, 22 Mar 2024 15:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILqw2lM2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C9F53395;
+	Fri, 22 Mar 2024 15:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711116632; cv=none; b=P8OLKkKkeRx3y+59w4i004huBjv9WfWVe8A1DLjEKu9qx9oIDTxxH6Cxlidfe7KWZpgH/IoDQsTPkNk/MbZBMCPzyD4wXI9kc4FmhUYRELJXQOJUteaDPQNS+hv9hNJ31U0iSPZwHM4C+RbZfx3CGUx72fezWmJqn3uyKF4Pz0w=
+	t=1711120241; cv=none; b=LFdOlsSCVvaYahwisX/IGg2H3oK5Lsbho5wiKDX49h4Z9IlEc/htX1k+Xn0fevrMnLF586BkBbIOdwdpHBI0HuOsQZR+01E0gmpqWwwB7fZqJzc8H5v6WSH4+L9mgWYV0RLeoqgcAMyOt8P8PxRQChpD6US0X+0YXZwmxYQY0hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711116632; c=relaxed/simple;
-	bh=oQuYmWVqALX8DuaBrS27WLrJOU8gMDweyWEs5gjnIaI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BLFoS50s03dLib3Hj3lXUwHhg6497atvoiem/RMu9MRLtt+wn8nfCXM1Gk04tQGps3I84zOE8nDXag2ksF3XM2rXsKqPfu982Dw3xFfhw8i6MqPzV8Hn1BwS1s12meCGavkn0M9rYKWqfoPHKzTWdjT0pISDMa6HGBUiEzUhXJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org; spf=pass smtp.mailfrom=gpxsee.org; arc=none smtp.client-ip=37.205.14.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gpxsee.org
-Received: from mgb4.. (unknown [62.77.71.229])
-	by mx.gpxsee.org (Postfix) with ESMTPSA id 8E6A367184;
-	Fri, 22 Mar 2024 15:10:22 +0100 (CET)
-From: tumic@gpxsee.org
-To: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Martin=20T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
-Subject: [PATCH v4 3/3] media: mgb4: Fixed signal frame rate limit handling
-Date: Fri, 22 Mar 2024 16:10:05 +0100
-Message-ID: <20240322151005.3499-4-tumic@gpxsee.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240322151005.3499-1-tumic@gpxsee.org>
-References: <20240322151005.3499-1-tumic@gpxsee.org>
+	s=arc-20240116; t=1711120241; c=relaxed/simple;
+	bh=zuAJ4KqMjN/DpBCJhAzyfFMIpKPo4o0Xr2xSP1cuuW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZyVvYESSCEq+FugNc27ldzAYqaB2zbyHI+iMeyNZsvlQeomZbBT90KdEWtF5qsfaE2t1BudBRxo2++7lXbGQJuzqd0E7CASOYTV13qtgSB76jiInskeT1oM5Bim/SCjYvsz/8ZrGFs3SH1zH45hWyCk2UrfdKxeVwFqWTClfY78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILqw2lM2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB1FC433F1;
+	Fri, 22 Mar 2024 15:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711120241;
+	bh=zuAJ4KqMjN/DpBCJhAzyfFMIpKPo4o0Xr2xSP1cuuW4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ILqw2lM2KoUGCN9xfK9q4QR88Tja0wqBbaWYl749k/Ao4mPktKoyQte9b+wjHNeUd
+	 IdY1rcrUc50AegJV3nVEnazLG5nd+DhirwSYwMxM9xHmFCOekg45kDMUUlZvm3Ewgt
+	 djdjusIxPtY/EZP1Apuuaq753dHDe3eG/hDseOOwjxoRsU3huM7TAL2LPdeM+xpbrf
+	 vpKsDQr4KzwnXQo/vNPPsgy9Wa0Dijbo+qx4OC3MppYHHRjEBCJDH+Vui96CXkRRlX
+	 dxi6UcLO/9oUgNXABZtJgv2Whwa6VuQ5TqwWXdY5kKunNT502ocyWoPkX0nmE7rBV0
+	 WZPVvjfqUDtYQ==
+Message-ID: <4f1aed2e-d382-4147-912a-c915026f8f0c@kernel.org>
+Date: Fri, 22 Mar 2024 09:10:39 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ipv4/route: avoid unused-but-set-variable warning
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Kunwu Chan <chentao@kylinos.cn>,
+ Joel Granados <joel.granados@gmail.com>,
+ Zhengchao Shao <shaozhengchao@huawei.com>,
+ Wangyang Guo <wangyang.guo@intel.com>, Kyle Zeng <zengyhkyle@gmail.com>,
+ Beniamino Galvani <b.galvani@gmail.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240322131817.905700-1-arnd@kernel.org>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20240322131817.905700-1-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+On 3/22/24 7:18 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The log_martians variable is only used in an #ifdef, causing a 'make W=1'
+> warning with gcc:
+> 
+> net/ipv4/route.c: In function 'ip_rt_send_redirect':
+> net/ipv4/route.c:880:13: error: variable 'log_martians' set but not used [-Werror=unused-but-set-variable]
+> 
+> Change the #ifdef to an equivalent IS_ENABLED() to let the compiler
+> see where the variable is used.
+> 
+> Fixes: 30038fc61adf ("net: ip_rt_send_redirect() optimization")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  net/ipv4/route.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
 
-Properly document the function of the mgb4 output frame_rate sysfs parameter
-and fix the corner case when the frame rate is set to zero causing a "divide
-by zero" kernel panic.
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
-Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
----
- Documentation/admin-guide/media/mgb4.rst |  8 ++++++--
- drivers/media/pci/mgb4/mgb4_sysfs_out.c  |  9 +++++----
- drivers/media/pci/mgb4/mgb4_vout.c       | 12 ++++++------
- drivers/media/pci/mgb4/mgb4_vout.h       |  2 +-
- 4 files changed, 18 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/admin-guide/media/mgb4.rst b/Documentation/admin-guide/media/mgb4.rst
-index 2977f74d7e26..6fff886003e2 100644
---- a/Documentation/admin-guide/media/mgb4.rst
-+++ b/Documentation/admin-guide/media/mgb4.rst
-@@ -228,8 +228,12 @@ Common FPDL3/GMSL output parameters
-     open.*
- 
- **frame_rate** (RW):
--    Output video frame rate in frames per second. The default frame rate is
--    60Hz.
-+    Output video signal frame rate limit in frames per second. Due to
-+    the limited output pixel clock steps, the card can not always generate
-+    a frame rate perfectly matching the value required by the connected display.
-+    Using this parameter one can limit the frame rate by "crippling" the signal
-+    so that the lines are not equal but the signal appears like having the exact
-+    frame rate to the connected display. The default frame rate limit is 60Hz.
- 
- **hsync_polarity** (RW):
-     HSYNC signal polarity.
-diff --git a/drivers/media/pci/mgb4/mgb4_sysfs_out.c b/drivers/media/pci/mgb4/mgb4_sysfs_out.c
-index f67ff2a48329..573aa61c69d4 100644
---- a/drivers/media/pci/mgb4/mgb4_sysfs_out.c
-+++ b/drivers/media/pci/mgb4/mgb4_sysfs_out.c
-@@ -229,9 +229,9 @@ static ssize_t frame_rate_show(struct device *dev,
- 	struct video_device *vdev = to_video_device(dev);
- 	struct mgb4_vout_dev *voutdev = video_get_drvdata(vdev);
- 	u32 period = mgb4_read_reg(&voutdev->mgbdev->video,
--				   voutdev->config->regs.frame_period);
-+				   voutdev->config->regs.frame_limit);
- 
--	return sprintf(buf, "%u\n", MGB4_HW_FREQ / period);
-+	return sprintf(buf, "%u\n", period ? MGB4_HW_FREQ / period : 0);
- }
- 
- /*
-@@ -245,14 +245,15 @@ static ssize_t frame_rate_store(struct device *dev,
- 	struct video_device *vdev = to_video_device(dev);
- 	struct mgb4_vout_dev *voutdev = video_get_drvdata(vdev);
- 	unsigned long val;
--	int ret;
-+	int limit, ret;
- 
- 	ret = kstrtoul(buf, 10, &val);
- 	if (ret)
- 		return ret;
- 
-+	limit = val ? MGB4_HW_FREQ / val : 0;
- 	mgb4_write_reg(&voutdev->mgbdev->video,
--		       voutdev->config->regs.frame_period, MGB4_HW_FREQ / val);
-+		       voutdev->config->regs.frame_limit, limit);
- 
- 	return count;
- }
-diff --git a/drivers/media/pci/mgb4/mgb4_vout.c b/drivers/media/pci/mgb4/mgb4_vout.c
-index a6b55669f0a8..cd001ceaae63 100644
---- a/drivers/media/pci/mgb4/mgb4_vout.c
-+++ b/drivers/media/pci/mgb4/mgb4_vout.c
-@@ -680,12 +680,12 @@ static void fpga_init(struct mgb4_vout_dev *voutdev)
- 	mgb4_write_reg(video, regs->config, 0x00000011);
- 	mgb4_write_reg(video, regs->resolution,
- 		       (DEFAULT_WIDTH << 16) | DEFAULT_HEIGHT);
--	mgb4_write_reg(video, regs->hsync, 0x00102020);
--	mgb4_write_reg(video, regs->vsync, 0x40020202);
--	mgb4_write_reg(video, regs->frame_period, DEFAULT_PERIOD);
-+	mgb4_write_reg(video, regs->hsync, 0x00283232);
-+	mgb4_write_reg(video, regs->vsync, 0x40141F1E);
-+	mgb4_write_reg(video, regs->frame_limit, DEFAULT_PERIOD);
- 	mgb4_write_reg(video, regs->padding, 0x00000000);
- 
--	voutdev->freq = mgb4_cmt_set_vout_freq(voutdev, 70000 >> 1) << 1;
-+	voutdev->freq = mgb4_cmt_set_vout_freq(voutdev, 61150 >> 1) << 1;
- 
- 	mgb4_write_reg(video, regs->config,
- 		       (voutdev->config->id + MGB4_VIN_DEVICES) << 2 | 1 << 4);
-@@ -711,8 +711,8 @@ static void debugfs_init(struct mgb4_vout_dev *voutdev)
- 	voutdev->regs[3].offset = voutdev->config->regs.hsync;
- 	voutdev->regs[4].name = "VIDEO_PARAMS_2";
- 	voutdev->regs[4].offset = voutdev->config->regs.vsync;
--	voutdev->regs[5].name = "FRAME_PERIOD";
--	voutdev->regs[5].offset = voutdev->config->regs.frame_period;
-+	voutdev->regs[5].name = "FRAME_LIMIT";
-+	voutdev->regs[5].offset = voutdev->config->regs.frame_limit;
- 	voutdev->regs[6].name = "PADDING_PIXELS";
- 	voutdev->regs[6].offset = voutdev->config->regs.padding;
- 	if (has_timeperframe(video)) {
-diff --git a/drivers/media/pci/mgb4/mgb4_vout.h b/drivers/media/pci/mgb4/mgb4_vout.h
-index ab9b58b1deb7..adc8fe1e7ae6 100644
---- a/drivers/media/pci/mgb4/mgb4_vout.h
-+++ b/drivers/media/pci/mgb4/mgb4_vout.h
-@@ -19,7 +19,7 @@ struct mgb4_vout_regs {
- 	u32 config;
- 	u32 status;
- 	u32 resolution;
--	u32 frame_period;
-+	u32 frame_limit;
- 	u32 hsync;
- 	u32 vsync;
- 	u32 padding;
--- 
-2.44.0
 
 
