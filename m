@@ -1,145 +1,206 @@
-Return-Path: <linux-kernel+bounces-111932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 882F38872F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:20:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7D9A8872F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F234B1F244CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:20:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B618282D13
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D0764CFF;
-	Fri, 22 Mar 2024 18:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B888A64CC6;
+	Fri, 22 Mar 2024 18:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tvtfg27V"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FNGQO5q3"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34ED86351E
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115BC63CB4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 18:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711131635; cv=none; b=azR1KgBhaoHO/KZB0OYWH2FGnIiBOrKUihARr2WoijxVWGyKMrMDY9guendXYdqw3cr3iOLOHDN1thJa01RbrVeXpcYfrFemQX+90vB93cJrF7HupPWMWLtp0zbTY8yWtorVATrz6yyjHmsTjtycTHDmhUQtNChfqlD8/laLp8o=
+	t=1711131667; cv=none; b=F2AhX0XNON0V2uVhOKnu3bQp0pIkNeaa9snPOdks39Bgn9bFbQ5jESh0ZNvgIm/wScedf/2VAXyyqu1xkonJE4Ah3LnH/+MgRfVDy+PyiA8PUGk/ktm8IIWeaXCQMa6P5sfV0Wh4HAdgJe8VzIIx+kODQZg5fVjt8jDhTZFD6hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711131635; c=relaxed/simple;
-	bh=rB+ZR1pQrRoiSlVFEn8eDKGzWc6r+bkLqQy/ExzQfZU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VjaNaXGOUEWFrnMUsnbehT+Iu5PfmPCItV/Xz3rlHDUhcXPIDTkidMp4fuATkqo9EqXOpzCodpylQP4XfhPNA0yuwgf8W9EvHCIbQzENvQZd5WWHfpXGzy+OCrg+5bBqLoqbzV9PTKE+ea9QlKfM4SO57Mf2sSPjl340L1hj4k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Tvtfg27V; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso3106473a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:20:32 -0700 (PDT)
+	s=arc-20240116; t=1711131667; c=relaxed/simple;
+	bh=jzS7HefDnXxvgYgPkneY73Mxg7R/H5XGX9WlR9BpZb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lQCLCaN4kd8zFLYPPR/0Z0c67FS+jp+DeSli+qfWqH1N5ZJlh/VVKzLnA98Nrd7x5QATaVV+X4C/keXTbNm3KDnUNlSN9nSNXaK/4FBq4oZrcACuHI4rUO6xyZWAgmd1QFyTLn1If9x+ZX3LlyQZQ/fFJLDNl3yGYewlzI3EJEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FNGQO5q3; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e8f51d0bf0so1909776b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:21:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711131631; x=1711736431; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Un7oE5SOcfiOdZ/t+Y9JYnUgsb/a3y3TBifkzTStaMI=;
-        b=Tvtfg27VvulZdLfON61/uzaOV5v4WDtlNzGLbi1pQF9V0O/ggQdX0ii3zdN0OKcBVj
-         GPS1ZqjgUR+MYymP7F0G1E0nUbBHrcOvZLZasAV+29D8kHhtow21tnCXDt4oADpdEDI/
-         uJ31iNi9cEZkE6HteXpAQFf/s4h2jq8XWO+errV8voS+uThm92dKcVyjC3dblsr9V7vM
-         tDP64qnNWH7wbAmIx2p+cvwD2glI1VPnpVfQ4fKExZpYa/RrFCvxaZPxlW9b488LRKZz
-         /cSUdbRF8rz/8ByIgfpAeUu+QQzZaqo0Nlc/rIRAs08R3r/ksWS2PBEnDuqA+fY2mnFX
-         AS2w==
+        d=gmail.com; s=20230601; t=1711131665; x=1711736465; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZCsdPU8TvLgwvx27n1JjkkvlHepysidwj+yYBUyfFvU=;
+        b=FNGQO5q3ONhTXUHI/JtLKMvdUaNAeGoNFu4AiRwEDZZqvI2USnwn2W8LyimtuUPLGn
+         c2LEq2iKW1Y/jeXyyd9EUEG7zEYnd+EewBq1U+zfGaIrUAZVO01mE04xZCqM2jix1nUS
+         BDE9mNYE/KwuumEqzkKdx8U7xMd9tAPvXuKHsIdS4Ktd64UEaFZEUPOeeRa2hDluChO4
+         sJV0ZC5xZpGBy/OPNO8qZY6U3PeSaJQ+YzJZKUttdaxE4/pFEPSAALw3EqkUDrppYD93
+         r2UunQSiYFXSZ9d3SRcV3fKIB2O0q7PmmkbKp/PKCw4nYwhnbdfGbj9NoeLeA1/WSlh/
+         QMWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711131631; x=1711736431;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Un7oE5SOcfiOdZ/t+Y9JYnUgsb/a3y3TBifkzTStaMI=;
-        b=EurUFhoRI9nQnGvrUkDYuKmTtlxuT5yN6FJqTF5ScWCoisIOX6NYdgs5257GygtNHM
-         YTDoC2C9ttoYqXCbkv1VOmmzvgURdtANilBeF8mUhE9XH7+xbexwAxz7zTIxx78g/gxI
-         NSYlS5Ka5HVXRq6T00m9tijsijnqruCtvcSqfG6DjBlFg0Qelz3iH929u6XxYG0aFKHH
-         NhAOoh2Qj92UImmRR2v4K00BcLBxrURtT2qupMMsKaF9wzd7ehl1+NhHQ7wtUcAY+OOT
-         AAhw5UiCKfAOug1qEtgj02E3Nn9EmCDlAW1pDKVqnsKzNJ8QvamWRrwDmbISpRsMqWAL
-         /yYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmP0huIrOIgHaaPPJbQ8nFuGMz9g7mTaLjVGpIWe0nkRE8lJLaWPxk6MN6E2R+BK8a9JZJ6MBp5qnmB0UChRtugplm8As9GI2RsIkx
-X-Gm-Message-State: AOJu0YxcmwVnCIDj9t/Irl2l/ccaYsKcs0Qk7Mg8m06JxzCX1fEdVrM4
-	eCkxrCTO6MjVObLrApELhXRLnhzpKx5ove5ZbK6nFpUir1oPn0dCT76x62lYFF0=
-X-Google-Smtp-Source: AGHT+IHJZHkIFw8Xxv4Z+VCYrQlX8b4lzO1gktTzl1yaDPSw65KFV2RR4m1ioqmMf9vNBQVckwV88Q==
-X-Received: by 2002:a50:f603:0:b0:56b:eb86:2107 with SMTP id c3-20020a50f603000000b0056beb862107mr190997edn.41.1711131631547;
-        Fri, 22 Mar 2024 11:20:31 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id o16-20020aa7c510000000b0056bafdda14bsm81000edq.28.2024.03.22.11.20.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 11:20:30 -0700 (PDT)
-Message-ID: <ab5550e0-4d08-4c31-800c-c936809a1d38@linaro.org>
-Date: Fri, 22 Mar 2024 19:20:28 +0100
+        d=1e100.net; s=20230601; t=1711131665; x=1711736465;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZCsdPU8TvLgwvx27n1JjkkvlHepysidwj+yYBUyfFvU=;
+        b=KPgrRRQN8V5krm0y1nb9GjbTmaXGdjO6FP11wT3ZpER1iIatmgbfsjKZYOpoSkB3bH
+         2X5dmQ7Z0uoJNtsuQ34MrlnLR8mF7ngGkxwEwfbNZm7f5wlFO53Rs1zlDvfKPpXbLTgU
+         WwlGinpY75ckVM76u292o6YkS8Jfoh6zVFjJwDsDLp8uOdNiCLTwmgGezFvAyW5dJhwi
+         AVtUusb1cLE7vt+t5QVmiDUTw5N0kNenazDppEZc+REl7RwmBiRVZKT1Sc2tU0FZL1Pb
+         BjjaI/aYzbP0rvLdttAOVxTx81nlg53BpV8c5nHp8/nPUXZIrTDdsjeI3X3CrhSi4Wts
+         XN2A==
+X-Forwarded-Encrypted: i=1; AJvYcCWrf85QZiDYTv5Om2ViEMpZ9H2B4c9mmMrHLfREfAWLM4W4sZ43b6Cpg3svnnHqrAVK6DHXMEWJy2aIN/kUcdp2E2KiAvZVmM4LBMFL
+X-Gm-Message-State: AOJu0Yywuks0o8Wp6ZoA8JV+euYjIkljs9BGFG6RrWaEZpIqYulNrF8G
+	h4/u1zzYF6fqKxxYtACkax2fBk82ZgVZagAt0KhQIHD680/N8c+2
+X-Google-Smtp-Source: AGHT+IEnHjkLgCac/gX146QfYoCPdmnpDjB2s9pbwb4Nk3vBwjQqkx4dPHNdIUUDr79X6ksMtkucbw==
+X-Received: by 2002:a05:6a00:22cc:b0:6ea:79a5:3fc with SMTP id f12-20020a056a0022cc00b006ea79a503fcmr734525pfj.5.1711131665096;
+        Fri, 22 Mar 2024 11:21:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j36-20020a63fc24000000b005dc5289c4edsm1880971pgi.64.2024.03.22.11.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 11:21:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 22 Mar 2024 11:21:02 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Dave Chinner <david@fromorbit.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v3 07/11] mm: vmalloc: Offload free_vmap_area_lock lock
+Message-ID: <bbc242d5-3ab0-410f-a3b1-54a68e3e375f@roeck-us.net>
+References: <20240102184633.748113-1-urezki@gmail.com>
+ <20240102184633.748113-8-urezki@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: pm7250b: Add a TCPM description
-Content-Language: en-US
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
- <20240322-fp4-tcpm-v1-4-c5644099d57b@fairphone.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240322-fp4-tcpm-v1-4-c5644099d57b@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240102184633.748113-8-urezki@gmail.com>
 
-On 22.03.2024 09:01, Luca Weiss wrote:
-> Type-C port management functionality lives inside of the PMIC block on
-> pm7250b.
+Hi,
+
+On Tue, Jan 02, 2024 at 07:46:29PM +0100, Uladzislau Rezki (Sony) wrote:
+> Concurrent access to a global vmap space is a bottle-neck.
+> We can simulate a high contention by running a vmalloc test
+> suite.
 > 
-> The Type-C port management logic controls orientation detection,
-> vbus/vconn sense and to send/receive Type-C Power Domain messages.
+> To address it, introduce an effective vmap node logic. Each
+> node behaves as independent entity. When a node is accessed
+> it serves a request directly(if possible) from its pool.
 > 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
+> This model has a size based pool for requests, i.e. pools are
+> serialized and populated based on object size and real demand.
+> A maximum object size that pool can handle is set to 256 pages.
+> 
+> This technique reduces a pressure on the global vmap lock.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+This patch results in a persistent "spinlock bad magic" message
+when booting s390 images with spinlock debugging enabled.
 
-Konrad
+[    0.465445] BUG: spinlock bad magic on CPU#0, swapper/0
+[    0.465490]  lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+[    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
+[    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
+[    0.466270] Call Trace:
+[    0.466470]  [<00000000011f26c8>] dump_stack_lvl+0x98/0xd8
+[    0.466516]  [<00000000001dcc6a>] do_raw_spin_lock+0x8a/0x108
+[    0.466545]  [<000000000042146c>] find_vmap_area+0x6c/0x108
+[    0.466572]  [<000000000042175a>] find_vm_area+0x22/0x40
+[    0.466597]  [<000000000012f152>] __set_memory+0x132/0x150
+[    0.466624]  [<0000000001cc0398>] vmem_map_init+0x40/0x118
+[    0.466651]  [<0000000001cc0092>] paging_init+0x22/0x68
+[    0.466677]  [<0000000001cbbed2>] setup_arch+0x52a/0x708
+[    0.466702]  [<0000000001cb6140>] start_kernel+0x80/0x5c8
+[    0.466727]  [<0000000000100036>] startup_continue+0x36/0x40
+
+Bisect results and decoded stacktrace below.
+
+The uninitialized spinlock is &vn->busy.lock.
+Debugging shows that this lock is actually never initialized.
+
+[    0.464684] ####### locking 0000000002280fb8
+[    0.464862] BUG: spinlock bad magic on CPU#0, swapper/0
+..
+[    0.464684] ####### locking 0000000002280fb8
+[    0.477479] ####### locking 0000000002280fb8
+[    0.478166] ####### locking 0000000002280fb8
+[    0.478218] ####### locking 0000000002280fb8
+..
+[    0.718250] #### busy lock init 0000000002871860
+[    0.718328] #### busy lock init 00000000028731b8
+
+Only the initialized locks are used after the call to vmap_init_nodes().
+
+Guenter
+
+---
+# bad: [8e938e39866920ddc266898e6ae1fffc5c8f51aa] Merge tag '6.9-rc-smb3-client-fixes-part2' of git://git.samba.org/sfrench/cifs-2.6
+# good: [e8f897f4afef0031fe618a8e94127a0934896aba] Linux 6.8
+git bisect start 'HEAD' 'v6.8'
+# good: [e56bc745fa1de77abc2ad8debc4b1b83e0426c49] smb311: additional compression flag defined in updated protocol spec
+git bisect good e56bc745fa1de77abc2ad8debc4b1b83e0426c49
+# bad: [902861e34c401696ed9ad17a54c8790e7e8e3069] Merge tag 'mm-stable-2024-03-13-20-04' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+git bisect bad 902861e34c401696ed9ad17a54c8790e7e8e3069
+# good: [480e035fc4c714fb5536e64ab9db04fedc89e910] Merge tag 'drm-next-2024-03-13' of https://gitlab.freedesktop.org/drm/kernel
+git bisect good 480e035fc4c714fb5536e64ab9db04fedc89e910
+# good: [fe46a7dd189e25604716c03576d05ac8a5209743] Merge tag 'sound-6.9-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+git bisect good fe46a7dd189e25604716c03576d05ac8a5209743
+# bad: [435a75548109f19e5b5b14ae35b9acb063c084e9] mm: use folio more widely in __split_huge_page
+git bisect bad 435a75548109f19e5b5b14ae35b9acb063c084e9
+# good: [4d5bf0b6183f79ea361dd506365d2a471270735c] mm/mmu_gather: add tlb_remove_tlb_entries()
+git bisect good 4d5bf0b6183f79ea361dd506365d2a471270735c
+# bad: [4daacfe8f99f4b4cef562649d56c48642981f46e] mm/damon/sysfs-schemes: support PSI-based quota auto-tune
+git bisect bad 4daacfe8f99f4b4cef562649d56c48642981f46e
+# good: [217b2119b9e260609958db413876f211038f00ee] mm,page_owner: implement the tracking of the stacks count
+git bisect good 217b2119b9e260609958db413876f211038f00ee
+# bad: [40254101d87870b2e5ac3ddc28af40aa04c48486] arm64, crash: wrap crash dumping code into crash related ifdefs
+git bisect bad 40254101d87870b2e5ac3ddc28af40aa04c48486
+# bad: [53becf32aec1c8049b854f0c31a11df5ed75df6f] mm: vmalloc: support multiple nodes in vread_iter
+git bisect bad 53becf32aec1c8049b854f0c31a11df5ed75df6f
+# good: [7fa8cee003166ef6db0bba70d610dbf173543811] mm: vmalloc: move vmap_init_free_space() down in vmalloc.c
+git bisect good 7fa8cee003166ef6db0bba70d610dbf173543811
+# good: [282631cb2447318e2a55b41a665dbe8571c46d70] mm: vmalloc: remove global purge_vmap_area_root rb-tree
+git bisect good 282631cb2447318e2a55b41a665dbe8571c46d70
+# bad: [96aa8437d169b8e030a98e2b74fd9a8ee9d3be7e] mm: vmalloc: add a scan area of VA only once
+git bisect bad 96aa8437d169b8e030a98e2b74fd9a8ee9d3be7e
+# bad: [72210662c5a2b6005f6daea7fe293a0dc573e1a5] mm: vmalloc: offload free_vmap_area_lock lock
+git bisect bad 72210662c5a2b6005f6daea7fe293a0dc573e1a5
+# first bad commit: [72210662c5a2b6005f6daea7fe293a0dc573e1a5] mm: vmalloc: offload free_vmap_area_lock lock
+
+---
+[    0.465490] lock: single+0x1860/0x1958, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+[    0.466067] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-12955-g8e938e398669 #1
+[    0.466188] Hardware name: QEMU 8561 QEMU (KVM/Linux)
+[    0.466270] Call Trace:
+[    0.466470] dump_stack_lvl (lib/dump_stack.c:117)
+[    0.466516] do_raw_spin_lock (kernel/locking/spinlock_debug.c:87 kernel/locking/spinlock_debug.c:115)
+[    0.466545] find_vmap_area (mm/vmalloc.c:1059 mm/vmalloc.c:2364)
+[    0.466572] find_vm_area (mm/vmalloc.c:3150)
+[    0.466597] __set_memory (arch/s390/mm/pageattr.c:360 arch/s390/mm/pageattr.c:393)
+[    0.466624] vmem_map_init (./arch/s390/include/asm/set_memory.h:55 arch/s390/mm/vmem.c:660)
+[    0.466651] paging_init (arch/s390/mm/init.c:97)
+[    0.466677] setup_arch (arch/s390/kernel/setup.c:972)
+[    0.466702] start_kernel (init/main.c:899)
+[    0.466727] startup_continue (arch/s390/kernel/head64.S:35)
+[    0.466811] INFO: lockdep is turned off.
+
 
