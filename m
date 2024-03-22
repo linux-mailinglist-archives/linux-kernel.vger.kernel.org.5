@@ -1,156 +1,131 @@
-Return-Path: <linux-kernel+bounces-111283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBF7F886A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:20:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B119F886A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6470DB21220
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:20:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BED22874C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9743B1AA;
-	Fri, 22 Mar 2024 10:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="FKlWKUeK"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03D438DDD;
+	Fri, 22 Mar 2024 10:21:28 +0000 (UTC)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DD839867;
-	Fri, 22 Mar 2024 10:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B2822611;
+	Fri, 22 Mar 2024 10:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711102812; cv=none; b=dokGn7rnKm7TupDpGipCpm/CtUFBcrlGBF2monxlz031g99HMmCIczt6Ocnw+WaMsqBF0UqE04Wb9nDq1WHvYc9aezNZpwUrw+K+luCznGKfPQZ1J5O6osifiLpHVQRohF9TiiNQFRMwJ5tTPruZ7dWfSkcXRJTJPVVbbNgQ0LE=
+	t=1711102888; cv=none; b=cd4vIBTANEytfhGQoYMRrLbogNEIUfSq9bBswj8QDD0wniDb22R+d4pMaXGpGiT7wKec3UvWVEWKgJeOqIaI/j17cu7uYUUkGzOHvYyr0lPk7Dn2JD1n2dJX7cJsSx2pDnv5aKB1Ih1iIPHQ6T7CeYYBfcMMoZwUD6dnrVf46aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711102812; c=relaxed/simple;
-	bh=TfmXLhZXlfD0a9LyMZempjSiPKbS9E8Xr+DsBXNjmU4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=usGukaugOFCHZFDtuEd3tZ5/GwZ4mmv56OeC4u7sb2ahzhoo+Es/N3LpuIGfUVjZNvcPIygC2C3hE2yKgBpZesuGjLRAr50vHSBMUCh9UAtMxWrkMVY7WG6iSNbllay5MPJGWDJmGVpggvl3YM49djWhAGBel+ExD2M+hKLSYF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=FKlWKUeK; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 7026E12000B;
-	Fri, 22 Mar 2024 13:20:00 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7026E12000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711102800;
-	bh=QDsXGW5/59UnvmoHb3vEogUe5cS21Npp2od4h0J6xN4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=FKlWKUeK+Oq0Wa+n74SgqpGy705mGzvkWv6h0k8Gfk8rHuNm71Nhx7NdEmaNRYsIJ
-	 xuvhIlx82rTpCj65nZrWMzYAAROXsiBivt6R/xNnS78zjkhmonuxCdGfi/89QqGqvP
-	 YKt/fjuonKqBdfTGDKdOrBh1bWLKgoYGr5jq5FsmupxBvrYXqUoztUmFHjLPZ0W9AB
-	 p0cHBsKD16pBmq2MYbKeZ+T2UMnkNE13z4HhjSMQH46ZFRbAHjgscmeLUDZaMPAHk2
-	 Bzfg7GCi33eJ7sBopA4XVke04B8sOVR9o70ghTAmCLMsQTIPBQj0reQ6jenm3f7WRR
-	 h9HeiTFDgAtHQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 22 Mar 2024 13:20:00 +0300 (MSK)
-Received: from [192.168.1.143] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 22 Mar 2024 13:19:59 +0300
-Message-ID: <9bfd0ccc-a5d8-446c-a08c-bbc36a4d66eb@salutedevices.com>
-Date: Fri, 22 Mar 2024 13:19:59 +0300
+	s=arc-20240116; t=1711102888; c=relaxed/simple;
+	bh=S/hPbQEccrVNk5ZTyBsPVY3O7bBdsDl1BFMRxs5asfE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MmvFwML+Fr7A6g8ITg5DOdKp/lv+HmM2jbBP8cxpiCz9HQq+Ck+aHnHB6yjp4rYsuOrVFM3zCPjP+kuy93OhrXZYYALJu+YCqxMrimcEE+5eFWzFs5LtNPZTaMl4j2rWMbKWrnYMtZQgW9gNNaoLuemgdV9Mr0/xVDj4x5faBTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a470d7f77eeso229831766b.3;
+        Fri, 22 Mar 2024 03:21:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711102885; x=1711707685;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JGqjI6P0mTPBiKZTNOwbVNYIjw9Vw14Zd3G3C6QS6wY=;
+        b=h6Kmtg6uIlQhyQkO++ggq6xObWuREB9XLkkHrPXk6azO860k+NhrnDFkTqRT02CUoF
+         uATgxUP3U5S2A6wIXZRDKDeiyepcqR7xwkBd0AgTVYAXh68YcfyfWivl6b1xgODaPaZu
+         NGqiZp3y1Q7JUMDtv9dCafvb8apbYPeXJ+Fu+uoC9PeZ0amvcOqE6qq2fnsBjmtRv6hR
+         bgH8O+7JAoUlVAxp3yRaBPo2I088HagZxWrcbx1WYHeK14r6MktftoedIwc4ZuKOaDc/
+         1s/UXZV1qNv+3ME9QHDN7/fHBLlvS4tJkCA64OrCDmq4qlrtIKxCp00g7oICN+sda6G9
+         HntQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsvvLWZ7WoQqHERKsl0EA52OxEgEHjpgSBAUa5pNbRkYkqy8/EQTSoXUY+FJrk8Eiw1qmIQWNpS5dOfIF/jN9f9Y3ySqxohdG6PO8WP8M0xdduHRnr2MT+n9iM4jalNRLOrR6Dm6Hw7rvrYzAfaO7c4ecMiZFVGnuQ2thy
+X-Gm-Message-State: AOJu0YykgEI7zpIP+FKcY0UVwVFJ4v7M4t2SASdwopgPxRVqKSgiaIHs
+	h5IdozuUy7As1bnKnvCzDjpSNPklL/bz+HzDpkMUmEsLF9kNLGoi
+X-Google-Smtp-Source: AGHT+IGEXDCR4iq9rvwz5B26z4GLijSPqxuBAhYB8+zqYJlK7HGPtfYNr6wzSSm9SN6zugWqLIWZmg==
+X-Received: by 2002:a17:907:7e94:b0:a47:3527:90c0 with SMTP id qb20-20020a1709077e9400b00a47352790c0mr673262ejc.14.1711102884800;
+        Fri, 22 Mar 2024 03:21:24 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id bo10-20020a170906d04a00b00a4728151908sm705505ejb.93.2024.03.22.03.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 03:21:24 -0700 (PDT)
+Date: Fri, 22 Mar 2024 03:21:21 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: rbc@meta.com, riel@surriel.com, stable@vger.kernel.org,
+	qemu-devel@nongnu.org,
+	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
+	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Melnychenko <andrew@daynix.com>
+Subject: Re: [PATCH] virtio_net: Do not send RSS key if it is not supported
+Message-ID: <Zf1bofzE4x0wGEm+@gmail.com>
+References: <20240321165431.3517868-1-leitao@debian.org>
+ <1711072822.882584-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/8] devm_led_classdev_register() usage problem
-To: Lee Jones <lee@kernel.org>
-CC: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <vadimp@nvidia.com>,
-	<christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-	<mazziesaccount@gmail.com>, <peterz@infradead.org>, <mingo@redhat.com>,
-	<will@kernel.org>, <longman@redhat.com>, <boqun.feng@gmail.com>,
-	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>,
-	<linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@salutedevices.com>
-References: <20240314201856.1991899-1-gnstark@salutedevices.com>
- <20240321181133.GG13211@google.com>
-Content-Language: en-US
-From: George Stark <gnstark@salutedevices.com>
-In-Reply-To: <20240321181133.GG13211@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184346 [Mar 22 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 11 0.3.11 5ecf9895443a5066245fcb91e8430edf92b1b594, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/22 05:30:00 #24352985
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1711072822.882584-1-xuanzhuo@linux.alibaba.com>
 
-Hello Lee
+Hello Xuan,
 
-On 3/21/24 21:11, Lee Jones wrote:
-> On Thu, 14 Mar 2024, George Stark wrote:
+On Fri, Mar 22, 2024 at 10:00:22AM +0800, Xuan Zhuo wrote:
+> On Thu, 21 Mar 2024 09:54:30 -0700, Breno Leitao <leitao@debian.org> wrote:
+
+> > 4) Since the command above does not have a key, then the last
+> >    scatter-gatter entry will be zeroed, since rss_key_size == 0.
+> >     sg_buf_size = vi->rss_key_size;
 > 
->> This patch series fixes the problem of devm_led_classdev_register misusing.
->>
->> The basic problem is described in [1]. Shortly when devm_led_classdev_register()
->> is used then led_classdev_unregister() called after driver's remove() callback.
->> led_classdev_unregister() calls driver's brightness_set callback and that callback
->> may use resources which were destroyed already in driver's remove().
->>
->> After discussion with maintainers [2] [3] we decided:
->> 1) don't touch led subsystem core code and don't remove led_set_brightness() from it
->> but fix drivers
->> 2) don't use devm_led_classdev_unregister
->>
->> So the solution is to use devm wrappers for all resources
->> driver's brightness_set() depends on. And introduce dedicated devm wrapper
->> for mutex as it's often used resource.
-
-..
-
->>    locking/mutex: introduce devm_mutex_init()
->>    leds: aw2013: use devm API to cleanup module's resources
->>    leds: aw200xx: use devm API to cleanup module's resources
->>    leds: lp3952: use devm API to cleanup module's resources
->>    leds: lm3532: use devm API to cleanup module's resources
->>    leds: nic78bx: use devm API to cleanup module's resources
->>    leds: mlxreg: use devm_mutex_init() for mutex initialization
->>    leds: an30259a: use devm_mutex_init() for mutex initialization
->>
->>   drivers/leds/leds-an30259a.c | 14 ++++----------
->>   drivers/leds/leds-aw200xx.c  | 32 +++++++++++++++++++++-----------
->>   drivers/leds/leds-aw2013.c   | 25 +++++++++++++------------
->>   drivers/leds/leds-lm3532.c   | 29 +++++++++++++++++------------
->>   drivers/leds/leds-lp3952.c   | 21 +++++++++++----------
->>   drivers/leds/leds-mlxreg.c   | 14 +++++---------
->>   drivers/leds/leds-nic78bx.c  | 23 +++++++++++++----------
->>   include/linux/mutex.h        | 27 +++++++++++++++++++++++++++
->>   kernel/locking/mutex-debug.c | 11 +++++++++++
->>   9 files changed, 122 insertions(+), 74 deletions(-)
 > 
-> Doesn't apply to v6.8.
 > 
-> What base was used for this?
+> 	if (vi->has_rss || vi->has_rss_hash_report) {
+> 		vi->rss_indir_table_size =
+> 			virtio_cread16(vdev, offsetof(struct virtio_net_config,
+> 				rss_max_indirection_table_length));
+> 		vi->rss_key_size =
+> 			virtio_cread8(vdev, offsetof(struct virtio_net_config, rss_max_key_size));
+> 
+> 		vi->rss_hash_types_supported =
+> 		    virtio_cread32(vdev, offsetof(struct virtio_net_config, supported_hash_types));
+> 		vi->rss_hash_types_supported &=
+> 				~(VIRTIO_NET_RSS_HASH_TYPE_IP_EX |
+> 				  VIRTIO_NET_RSS_HASH_TYPE_TCP_EX |
+> 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+> 
+> 		dev->hw_features |= NETIF_F_RXHASH;
+> 	}
+> 
+> 
+> vi->rss_key_size is initiated here, I wonder if there is something wrong?
 
-I've just pulled git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-and v7 was applied cleanly. linux-next is ok too.
+Not really, the code above is never executed (in my machines). This is
+because `vi->has_rss` and `vi->has_rss_hash_report` are both unset.
 
-v6.8 is lack of recent patch 6969d0a2ba1adc9ba6a49b9805f24080896c255c
-v7's patch #2 depends on it
+Looking further, vdev does not have the VIRTIO_NET_F_RSS and
+VIRTIO_NET_F_HASH_REPORT features.
 
--- 
-Best regards
-George
+Also, when I run `ethtool -x`, I got:
+
+	# ethtool  -x eth0
+	RX flow hash indirection table for eth0 with 1 RX ring(s):
+	Operation not supported
+	RSS hash key:
+	Operation not supported
+	RSS hash function:
+	    toeplitz: on
+	    xor: off
+	    crc32: off
 
