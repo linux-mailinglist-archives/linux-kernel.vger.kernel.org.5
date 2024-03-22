@@ -1,135 +1,150 @@
-Return-Path: <linux-kernel+bounces-111813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F4E88714A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:53:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E21C887143
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FB8B286615
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:53:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC7CCB2103E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593B460274;
-	Fri, 22 Mar 2024 16:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976285FDA8;
+	Fri, 22 Mar 2024 16:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLY1kkgI"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HYdl6muu"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272915FDCF
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01855FDA4
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126374; cv=none; b=Aunc4YQ2ymbzpeUnvjpxoBIu0HiaL9NtqJFEvEohs+cpGNIaE40l+1kiiHIQ/RpKyMHeZa417Jk8yGLYoltDYmZ2VFkJoSeXKBggpg6RsHf6UFkzYZyRTLS/5a/+27kLMzAfcvZNUKjjbX+BiK8D9kGWcz64PM0x/cnj1iHj1GI=
+	t=1711126346; cv=none; b=AZaAd3PpLKBkBVaiW56D34hXajnsKzQcydCSEOlVyqPJhVAmusJKDZMPoU85H7U6Ii42vDskoSrpMZXRPDPah8n3u55ahZyboZ/HDj7HFjR/YWfvARgXyREhctEpBCMNvLTTfJLonnViUQ4sXp+3qhTdCXEfdlBBQQmb4VxAigw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126374; c=relaxed/simple;
-	bh=RklUhCugdS79Sgvea9NKA5O8n1Z8/hDlRq99HOBTwEM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DQCr+OY9haYSvsldl9Qfd7qmEKaWQL7zCLJuHwe49BEx/7GhkJCt/PGRCACts4mGzQdM/pudQD2OlPul64Clv4Wv/50QoT9ihUrsi1kPQX0jPqnqBzf2Jm9q3FSuCS/Aynsc/MvZ3a0ZUophKg4/SpvNAt8Qx2DfJb3neWdG9qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLY1kkgI; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-789e3f17a6eso164790885a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:52:52 -0700 (PDT)
+	s=arc-20240116; t=1711126346; c=relaxed/simple;
+	bh=Hoh9Udf3fXjskTmeMKui4oBPeZz1vE7VdeOvNcxWI9E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TmR8DICv6Y7HoReKHAWZmSJviKvWSqFrXPBchyUfrrKkHaOYB0El7RcNx45KcpSFRRJS0U3z6Oe9qW+HsYxaYTfYDbYvhFZ9ErvfVyWVPIKAionIfc/H7ns0rcoqYhH+glljvLML9+HJ9/oYf+gYXDNEju92JgPYwOI9zHDwxAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HYdl6muu; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d41d1bedc9so43862551fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711126371; x=1711731171; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rbNPugqeDmoqssGoWTn8SPKVapnb1hcd5ZsudgigNFk=;
-        b=XLY1kkgIj8iY3ILqtiv4myLjJE7RD/nEojwcOJiJlcL4KFb60jSlkm803c1g/IVRI3
-         m5A12yMS52J7G8NWE501OrukG8MzUD7KNSPTQeXh/B+luEAhHt3R5D0oJyj4OwmH0Pni
-         sgnHKtqILvSbteW5gR6rwu5v5n40iK3ai8dbm3VI+y3oPsmf5UQWRkLTrXnKb9Qaf1uO
-         W1yaWPXbFhOUu85z7AwjC8Sm0QKcJYGciUfamF5GGHvTcCuNc8ykrWbr7d5pafC6LBNX
-         XZUjMFm89sOTsfYyMcQYhFByBpxo10HTNQbxI+NS0FZncy5BOpIemKe2avaVEnQu15Pq
-         QQxg==
+        d=linaro.org; s=google; t=1711126343; x=1711731143; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=J5Z0nlu3MokUcIosCaDsGW+EUzLRhDp3e6VIXE4GUUQ=;
+        b=HYdl6muu8NynjrkrSRzUtsP7wFSqBCYk//saI/wZvSUh03RVmrGi2t1FT44qqzb2vb
+         TgTqctlhsXk+X22pLWwDh09Ql5XIqQsqqwR3D/Awz5rCUdVI6xhfNIObRmv6vktuzRJ4
+         ynGRuIIY9so9XRy2hQfM5gmI/uLo8R09Lck6oRoeslCa8VVTmjO5G5D5hadObxM662jO
+         bhWP1kpB1ItQCdylBNzCwS/rzTnpYi4Hg/tStTVgfKb6tRr5Lnez6r7ab4MUj1gbdwVI
+         MwL8yu+eXr7OqncRzVD0GOGLAnXdQ1p5Y0Qcv62WmlmCr69QGBmXiQVcyP733uBneJ2R
+         c3jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126371; x=1711731171;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rbNPugqeDmoqssGoWTn8SPKVapnb1hcd5ZsudgigNFk=;
-        b=NteSN6/AtQK61SEU1SIePEAYRfiKW484XsYHhP4L98j2EG51pqBcJWd0dqBMrH5soH
-         DGll8hQE6LhOSaAy7FJ0Si0OdXyaodg8rUzgv99QX2bJ+BC3rBNRTklYZlbrbO1fLBJ7
-         2xYdEdOaUR58ptkIEqCs155oj0DZeLzWaRmRkkcyk+Ln35ECzUvfiePovLYQiByBkxa+
-         /EhkRgs2FN5jwc1so+WOvTn0erJBwaeLM+j3+snJKLIBDqQVWU3+apF4YXAXDVQMLxQy
-         h3AseP0bW7ahrSATZEogEmpuhw+ElEgt5CuK/jXfp5L4Y+QLlB4F2O0anYcgGnPUlWeY
-         Y2ZA==
-X-Gm-Message-State: AOJu0Yx+4EK6/Gg541W+qaOL5Fb4d3jAVJJZAYFuhir51JV8Khnoj2Uk
-	SwnAEqv5md610hcjJIgWBMg6HWvZLx9pNNtIYgpMKBSHhw9ntQ4h8/eUBn0=
-X-Google-Smtp-Source: AGHT+IFp9Qt9VzC4/JAJENgOHxRsYrn05WAatJAj6yqKGA84MaofhjDez1oAYNaaK2ot81K/pVO0tA==
-X-Received: by 2002:a05:620a:210c:b0:78a:2945:8658 with SMTP id l12-20020a05620a210c00b0078a29458658mr2789389qkl.33.1711126371089;
-        Fri, 22 Mar 2024 09:52:51 -0700 (PDT)
-Received: from citadel.lan (2600-6c4a-4d3f-6d5c-0000-0000-0000-1019.inf6.spectrum.com. [2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id j1-20020a37ef01000000b00789e9bbf962sm894901qkk.133.2024.03.22.09.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 09:52:50 -0700 (PDT)
-From: Brian Gerst <brgerst@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	David.Laight@aculab.com,
-	Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v4 04/16] x86/pvh: Use fixed_percpu_data for early boot GSBASE
-Date: Fri, 22 Mar 2024 12:52:21 -0400
-Message-ID: <20240322165233.71698-5-brgerst@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240322165233.71698-1-brgerst@gmail.com>
-References: <20240322165233.71698-1-brgerst@gmail.com>
+        d=1e100.net; s=20230601; t=1711126343; x=1711731143;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J5Z0nlu3MokUcIosCaDsGW+EUzLRhDp3e6VIXE4GUUQ=;
+        b=mbPnFIoM3xHklVqxQgEX3K+qo2j2Zz4ydVD3mDsB1oysQ3wC2vN8gUD7hzu6S7aqiB
+         prmj6l6xmr9XrdodWCaIZBjDZOZeoqKg9N2JjRAlLPOnfH/got00L2ooTbg5RM/MFCdi
+         v8JEZrdY24xwOf2Zl6sD7LCnA6A7rRlCC2xEluduRbYzN13HMT+UpebVKiq9KCF0fYkZ
+         f0tJUHJ2fUKem5Ct3BDOZQRZ9rFJFDBhkU5L36Q3jO209xswd8dKIBDAS7TXXUnkGcbc
+         SZSxaVI4NHcrQhEq5jn6aZ2sVaucJPw/GYpbKk72vDJtXkDeJ0tJngWLglKrLL28egYF
+         mwkA==
+X-Gm-Message-State: AOJu0YxnigXo/m8ubKlAEBGn5GxZIgZE+bvNe0R5dV1tLzgUlXjxPAel
+	SeZhYsKykE+xM1gqEb299k91A3yNDcm2SztLdBIFyJvOa7idAWRIzl8c8WOUsSk=
+X-Google-Smtp-Source: AGHT+IF/uWRfTp2ZpDpZsNA/lB15jRMsTZZo8ZQnkEjLY1csc3FLBJDOwSEm6pDxtaYGpVfKugUpHg==
+X-Received: by 2002:a2e:80d9:0:b0:2d4:8bfe:69b7 with SMTP id r25-20020a2e80d9000000b002d48bfe69b7mr53484ljg.46.1711126343096;
+        Fri, 22 Mar 2024 09:52:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id w17-20020a170906385100b00a46d8e5a031sm3370ejc.209.2024.03.22.09.52.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 09:52:22 -0700 (PDT)
+Message-ID: <4d9e7142-2047-4d82-aa1a-dea08e3bca81@linaro.org>
+Date: Fri, 22 Mar 2024 17:52:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] reset: gpio: Fix missing gpiolib dependency for GPIO
+ reset controller
+To: Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: linux-kernel@vger.kernel.org
+References: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240320-reset-gpiolib-deps-v1-1-eaf5d30fa647@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Instead of having a private area for the stack canary, use
-fixed_percpu_data for GSBASE like the native kernel.
+On 20/03/2024 20:59, Mark Brown wrote:
+> The GPIO reset controller uses gpiolib but there is no Kconfig
+> dependency reflecting this fact, add one.
+> 
+> With the addition of the controller to the arm64 defconfig this is
+> causing build breaks for arm64 virtconfig in -next:
+> 
+> aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_reset_gpio_lookup':
+> /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined reference to `gpio_device_find_by_fwnode'
+> 
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- arch/x86/platform/pvh/head.S | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index f7235ef87bc3..1f1c3230b27b 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -95,10 +95,15 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
- 	/* 64-bit entry point. */
- 	.code64
- 1:
--	/* Set base address in stack canary descriptor. */
-+	/*
-+	 * Set up GSBASE.
-+	 * Note that, on SMP, the boot cpu uses init data section until
-+	 * the per cpu areas are set up.
-+	 */
- 	mov $MSR_GS_BASE,%ecx
--	mov $_pa(canary), %eax
--	xor %edx, %edx
-+	lea INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
-+	mov %edx, %eax
-+	shr $32, %rdx
- 	wrmsr
- 
- 	call xen_prepare_pvh
-@@ -157,8 +162,6 @@ SYM_DATA_START_LOCAL(gdt_start)
- SYM_DATA_END_LABEL(gdt_start, SYM_L_LOCAL, gdt_end)
- 
- 	.balign 16
--SYM_DATA_LOCAL(canary, .fill 48, 1, 0)
--
- SYM_DATA_START_LOCAL(early_stack)
- 	.fill BOOT_STACK_SIZE, 1, 0
- SYM_DATA_END_LABEL(early_stack, SYM_L_LOCAL, early_stack_end)
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
