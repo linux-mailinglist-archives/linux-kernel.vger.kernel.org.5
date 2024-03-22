@@ -1,144 +1,112 @@
-Return-Path: <linux-kernel+bounces-111421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 343F2886C18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:30:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B4EA886C1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65C7F1C22347
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:30:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 526AF287295
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C248446BF;
-	Fri, 22 Mar 2024 12:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D4DC3FE58;
+	Fri, 22 Mar 2024 12:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VJvpB8nQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GQncd7zO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D662770C;
-	Fri, 22 Mar 2024 12:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B743E6FAE;
+	Fri, 22 Mar 2024 12:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711110637; cv=none; b=GEDTM9TOmmGDmi2GCcbu4z+2A8niYk5KXrdybtFjGmeCl5klz2L2HP+pgp3mTRq9A+ZSNUdVIbkl2NBdIZdqmWXNjgUFOw5tYIRuODH445pyZ+9nd/TG48NcG5AXDFfV/uxEU/01upAkqN25nuskpWXzdsjf6QJE5JvzsAJs6qY=
+	t=1711110710; cv=none; b=lWsl19rYep/tJ4yhpOz0jolMcKeCg/TAb8HOWaY7cI9av/fig/sH9qZ9pz0tgIpU2+bl4wSDVh6iypl4kN6Nqr0GQ9n4c+G55S6aUFBhfEtqwKC0TBWqiX8kXFC8ZDaYRG2G7KEiG85Wff7l5VZtWd0SNugOExPgdZNvJo0JokA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711110637; c=relaxed/simple;
-	bh=n9NG5Ms0xKvPeFj5HVos821T8N2D2xc4BOS+QKWMqMw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=tWomicDk1wDGLHxUkmvNQmJzwof7Wrw83+81CG/5h3HSufxz1IY8rVVbitJigMNpcJNeWGVEt4B7TBo9TxC1OxBlJ/PVW1OFpxwbMq9djyCAxFShTdKIxrJThDBbdh47XhyvhqyG/BPW4lTd+BMQbJ7S6hw39rz5pusAw8xmGbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VJvpB8nQ; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711110636; x=1742646636;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=n9NG5Ms0xKvPeFj5HVos821T8N2D2xc4BOS+QKWMqMw=;
-  b=VJvpB8nQVwAtFJ9Dq2lOt31IfW6RGaQCYScmVkp45k6DdPdhQEEelIVK
-   vYRBAelULRm7pkIakkzbVsY/4ttqHQia7WkqZ9aJXWJfSxvIIDeu8sGge
-   uZyzsLU3urqgmosW1DipQEra62FuDrhhZ/N3TrPVOUtoZZ8ErEkD97VjP
-   ZrIgzSnj6Xb0fAzOjlHoCsQRaDB6G9vnY5kFWxucvPRG7mXH+yaQKH3Bl
-   afJIDvrAdC/I/cFj5BQIdCwYhcYfDIIiZ1Pzyxhx6luqZJ/68N+8p05zM
-   RkM+dj1cxq3qAx1Rox0leoTcBgg7cNFqU2EsB+aD7sOcWwI3FRCzEFOba
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="16882498"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="16882498"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:30:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="46014435"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:30:32 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 22 Mar 2024 14:30:28 +0200 (EET)
-To: Reinette Chatre <reinette.chatre@intel.com>
-cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
-    Babu Moger <babu.moger@amd.com>, 
-    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
-    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 11/13] selftests/resctrl: Convert ctrlgrp & mongrp to
- pointers
-In-Reply-To: <578d0b55-c51a-49d1-8f54-989215a3a4b8@intel.com>
-Message-ID: <93e4f096-47df-9eba-095f-e8a8c3cd04f5@linux.intel.com>
-References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-12-ilpo.jarvinen@linux.intel.com> <578d0b55-c51a-49d1-8f54-989215a3a4b8@intel.com>
+	s=arc-20240116; t=1711110710; c=relaxed/simple;
+	bh=QlyE6XyvtK5YH4auzoYHbK4QQ96PMKT1SN7P95GQyFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2wfFPzwjGwy5r3LW6dc59lB0Q8UPnA0E/nxWKQlj4B/Od+V1QOmQMpmOmYKQm/fhfDjGB9V1O1c6+JK0jfyIUMcQuxr9Q/8LKwRsvpDgsD6pI0nvxhsZEZcfLrcufIRLKgs4sdPlkOCbW8K+CgjyINSLWHcV2eUZfdIQHpFnyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GQncd7zO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09A77C433C7;
+	Fri, 22 Mar 2024 12:31:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711110710;
+	bh=QlyE6XyvtK5YH4auzoYHbK4QQ96PMKT1SN7P95GQyFY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GQncd7zOWU2lzxFreJmwqfG9yf1KhjFzLXGssQ1hhk5T0UKSaYEGZ6ary5hJPu1HU
+	 olKpkrPJ0gCBlwJ2yKEoHXBrlEbhWKNXF0R/oKjV5ZKtkd9l0hiiSuc2CVWPYyDmuv
+	 ITIfayGHMp/DzLD4GvK/BDJ9HR+FL+2mlPJPZpcAJAOcrzIXapdM82MMCdlRm/B4cm
+	 UYLTu308/ix2n/Xw6ZoJhp3FGCxTmqqraSjn9JyzqfG7c00V9Xz0iD7aztkwK5zE0J
+	 Nsby0PX8HX3EvkNXf4u+5v++RAgAThY13/Otrjznwg3v+tEVrU+qORoLhtthyf7QZV
+	 hn2yy43ReMKTA==
+Date: Fri, 22 Mar 2024 13:31:48 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
+	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>, 
+	Sebastian Wick <sebastian.wick@redhat.com>, Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev
+Subject: Re: [v10,20/27] drm/connector: hdmi: Add Infoframes generation
+Message-ID: <20240322-steadfast-tanuki-from-mars-b5ea5f@houat>
+References: <20240321-kms-hdmi-connector-state-v10-20-e6c178361898@kernel.org>
+ <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
+ <20240322-loose-resourceful-bullmastiff-92cfaf@houat>
+ <7835e928-7d09-446e-91dd-13a0fa549bc2@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-552054796-1711110628=:1115"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ygdzto2cjdjjo7zs"
+Content-Disposition: inline
+In-Reply-To: <7835e928-7d09-446e-91dd-13a0fa549bc2@linux.dev>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323328-552054796-1711110628=:1115
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+--ygdzto2cjdjjo7zs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 20 Mar 2024, Reinette Chatre wrote:
-> On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
-> > The struct resctrl_val_param has control and monitor groups as char
-> > arrays but they are not supposed to be mutated within resctrl_val().
-> >=20
-> > Convert the ctrlgrp and mongrp char array within resctrl_val_param to
-> > plain const char pointers and adjust the strlen() based checks to
-> > check NULL instead.
-> >=20
-> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/resctrl.h   | 4 ++--
-> >  tools/testing/selftests/resctrl/resctrlfs.c | 8 ++++----
-> >  2 files changed, 6 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/=
-selftests/resctrl/resctrl.h
-> > index 52769b075233..54e5bce4c698 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl.h
-> > +++ b/tools/testing/selftests/resctrl/resctrl.h
-> > @@ -89,8 +89,8 @@ struct resctrl_test {
-> >   */
-> >  struct resctrl_val_param {
-> >  =09char=09=09*resctrl_val;
-> > -=09char=09=09ctrlgrp[64];
-> > -=09char=09=09mongrp[64];
-> > +=09const char=09*ctrlgrp;
-> > +=09const char=09*mongrp;
-> >  =09char=09=09filename[64];
-> >  =09unsigned long=09mask;
-> >  =09int=09=09num_of_runs;
-> > diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testin=
-g/selftests/resctrl/resctrlfs.c
-> > index 79cf1c593106..dbe0cc6d74fa 100644
-> > --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> > +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> > @@ -469,7 +469,7 @@ static int create_grp(const char *grp_name, char *g=
-rp, const char *parent_grp)
-> >  =09 * length of grp_name =3D=3D 0, it means, user wants to use root co=
-n_mon
-> >  =09 * grp, so do nothing
-> >  =09 */
+On Fri, Mar 22, 2024 at 07:13:54PM +0800, Sui Jingfeng wrote:
+> Hi,
 >=20
-> Could you please confirm that the comments are still accurate?
+>=20
+> On 2024/3/22 18:31, Maxime Ripard wrote:
+> > Which default config are you talking about? This compiles fine with all
+> > drm-misc defconfig, x86 defconfig and allmodconfig.
+>=20
+> The drm_hdmi_avi_infoframe_colorimetry() function is belong to the drm_di=
+splay_helper.ko
+> kernel module, it get called from hdmi_generate_avi_infoframe() in drm_at=
+omic_state_helper.c.
+> While drm_atomic_state_helper.c belongs to drm_kms_helper.ko. Therefore d=
+rm_kms_helper.ko
+> is dependent on drm_display_helper.ko implicitly. So we probably should s=
+elect it.
 
-It's not, I missed it.
+Right. I was asking which config are you using to generate that build error
 
-> > -=09if (strlen(grp_name) =3D=3D 0)
-> > +=09if (!grp_name)
-> >  =09=09return 0;
+Maxime
 
-But now when looking into the surrounding code, to me it looks the correct=
-=20
-action here is to remove the comment and return -1 instead of 0. It makes
-this just an internal sanity check that grp_name is provided by the=20
-caller.
+--ygdzto2cjdjjo7zs
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=20
- i.
+-----BEGIN PGP SIGNATURE-----
 
---8323328-552054796-1711110628=:1115--
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZf16MwAKCRDj7w1vZxhR
+xVPkAP9G35ser3LI9Mkz4UPsJ7hdxEY40m/H7avmJllz/P8YowD+LcjpoKgFLzQ2
+L2LkEn9vRNdhZy+7qFgJZ6RKstIwPAM=
+=B6jC
+-----END PGP SIGNATURE-----
+
+--ygdzto2cjdjjo7zs--
 
