@@ -1,65 +1,56 @@
-Return-Path: <linux-kernel+bounces-111466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2F7886CB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:21:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 007E2886CB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EF611C21A06
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:21:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82EC2B24782
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3CD46557;
-	Fri, 22 Mar 2024 13:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881AD45C04;
+	Fri, 22 Mar 2024 13:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDIyjHHY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwsf1oQf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3351F46436;
-	Fri, 22 Mar 2024 13:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0D244C89;
+	Fri, 22 Mar 2024 13:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711113684; cv=none; b=Jt3l9mnHhorap+AaUPRlSxU6i6Gp04VQwaOWxZ6efyRfHrIm7j0La3Blru46sL3pI2EXIkkZTCVBs2/Cvqi7NNa0QJJTdFx1TrDlBw+tb/ZzOiq53M/Eaodq3WTUxHIu8v3fJGa2kiL6I+ylAFuhMUgaDKV8yR3YmOOrR8nPX48=
+	t=1711113730; cv=none; b=QcIJy0G+DahxS15b6TD6yZ4AtnTCyweWv0R38kFReTeOxAOIIxLbTmssKUvBVkWkp7MPgZ2jnz7R/6S1HNRSMqYCyixs4+GdlOobZq6SkOt1Jhia4frprfyYK8AkoqDOWNsNcvBQLwqu5i63xkNpKEHi9dlyYm1cEOABjM/np4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711113684; c=relaxed/simple;
-	bh=jvyFcumM0Kgc3cvxmljqPEI3TA1ssaHzM5qXST5wFWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GJkVKGaZKewCP/4D9+YKUBa3QgrhlA3MxM9/Kt2IVIogdVDnqk8GnQxKZmi+1rPuL7T1DQ+h8ulXUq34Vu6OYOq/j1WUuMG/bmstwvuSHzEIl22dJihhrCFdMpMEl5QVtC2IIqfqb/tMc7BaUDRsGPVL88UKyckLIfl+RiOW164=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDIyjHHY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38A03C433A6;
-	Fri, 22 Mar 2024 13:21:20 +0000 (UTC)
+	s=arc-20240116; t=1711113730; c=relaxed/simple;
+	bh=IzPTHowQ7Q8fkZRWBVgOGiKL0cLuf17w+dMOiWBxWCE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PHpbWMd+p9SIQaLnpNrHOZR9N/PjuUwLu4hjYulTYcVxaMRdFgBLODS/Y5N29faqRDbUTER8LIGwMgGHEGziPO2wz52XM7rPOFN9xcW0CeI2O1RHRdB1H9CDNhwLFMm8GGgQUELEig4FxZZxvDu/6+popV19N86sh0FKH0J5OIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwsf1oQf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A23CC433F1;
+	Fri, 22 Mar 2024 13:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711113683;
-	bh=jvyFcumM0Kgc3cvxmljqPEI3TA1ssaHzM5qXST5wFWU=;
+	s=k20201202; t=1711113730;
+	bh=IzPTHowQ7Q8fkZRWBVgOGiKL0cLuf17w+dMOiWBxWCE=;
 	h=From:To:Cc:Subject:Date:From;
-	b=SDIyjHHYzIzkM1ZxDVfDOZHT6vMxkUjSs4aE6DL1byMVyt+l9ZVvb56So8nucENaA
-	 PCTY15jtxyqPU6g5mgcvJGodAaiN+2fOjHh323i4WnkcJkBsEV7ZC+KNr/G5+U6gr5
-	 c/FOW+tZPpXXMPrqOUxDHc3ybQ5pLQ5aGCdcdy0dvN5QZ6nRoofp06wb1IYr6jiipF
-	 GujyavHdDLOPUjAzrNCI02AHdLyLHyWi1QCxjRwFk+JlV+HksHB8XD4P3jGVvbyfyh
-	 ST7nvBUKQx3qFnH9hi60KK2k9/3JqR9RGfdsP246vhWM45efhlJ97d+YyR9QN50rBo
-	 naQOrMhliewpQ==
+	b=bwsf1oQfGwbXiuRD/ayOVCS1o/ae5GOGvPWESUTJxMdacZpDXqJbT2qQ9Z1F6yntQ
+	 20dBNe0GfWb+Tp+UO0brsa5VGl6UOj4Zk5rbQJUWsli5B1QLmGeqIDtwb6D/TtqxIf
+	 SETrReK+bCI8kYJeRvOulTvXKCfxiQNXvfbcVvydQPoS/8mAL6QeRrAt09VLO9Bgf+
+	 9801FH4sda4jihyWvc54W5Xzig8yIBtPHpE8UGdQRl86etjz+7HrFh3Hw6z5VxjeiA
+	 n68a9OVkXH3/gsmFA1wulYQpL0JNBA03aBsV03AJ/Bh5nV2u5h7e+TUjLpv4WspXzk
+	 gzcw9LDDW6flA==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>,
-	=?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Rob Herring <robh@kernel.org>,
-	Zhang Jianhua <chris.zjh@huawei.com>,
-	dmaengine@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	linux-actions@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] dmaengine: owl: fix register access functions
-Date: Fri, 22 Mar 2024 14:21:07 +0100
-Message-Id: <20240322132116.906475-1-arnd@kernel.org>
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: armada-37xx: remove an unused variable
+Date: Fri, 22 Mar 2024 14:21:43 +0100
+Message-Id: <20240322132205.906729-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -71,47 +62,38 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When building with 'make W=1', clang notices that the computed register
-values are never actually written back but instead the wrong variable
-is set:
+This variable has never been used and can be removed to avoid a W=1 warning:
 
-drivers/dma/owl-dma.c:244:6: error: variable 'regval' set but not used [-Werror,-Wunused-but-set-variable]
-  244 |         u32 regval;
-      |             ^
-drivers/dma/owl-dma.c:268:6: error: variable 'regval' set but not used [-Werror,-Wunused-but-set-variable]
-  268 |         u32 regval;
-      |             ^
+drivers/pinctrl/mvebu/pinctrl-armada-37xx.c:837:6: error: variable 'i' set but not used [-Werror,-Wunused-but-set-variable]
+  837 |         int i = 0;
 
-Change these to what was most likely intended.
-
-Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
+Fixes: 87466ccd9401 ("pinctrl: armada-37xx: Add pin controller support for Armada 37xx")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/owl-dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
-index 4e76c4ec2d39..e001f4f7aa64 100644
---- a/drivers/dma/owl-dma.c
-+++ b/drivers/dma/owl-dma.c
-@@ -250,7 +250,7 @@ static void pchan_update(struct owl_dma_pchan *pchan, u32 reg,
- 	else
- 		regval &= ~val;
+diff --git a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
+index c34719b7506d..4c4ada06423d 100644
+--- a/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
++++ b/drivers/pinctrl/mvebu/pinctrl-armada-37xx.c
+@@ -834,8 +834,6 @@ static int armada_37xx_gpiochip_register(struct platform_device *pdev,
+ static int armada_37xx_add_function(struct armada_37xx_pmx_func *funcs,
+ 				    int *funcsize, const char *name)
+ {
+-	int i = 0;
+-
+ 	if (*funcsize <= 0)
+ 		return -EOVERFLOW;
  
--	writel(val, pchan->base + reg);
-+	writel(regval, pchan->base + reg);
- }
+@@ -847,7 +845,6 @@ static int armada_37xx_add_function(struct armada_37xx_pmx_func *funcs,
+ 			return -EEXIST;
+ 		}
+ 		funcs++;
+-		i++;
+ 	}
  
- static void pchan_writel(struct owl_dma_pchan *pchan, u32 reg, u32 data)
-@@ -274,7 +274,7 @@ static void dma_update(struct owl_dma *od, u32 reg, u32 val, bool state)
- 	else
- 		regval &= ~val;
- 
--	writel(val, od->base + reg);
-+	writel(regval, od->base + reg);
- }
- 
- static void dma_writel(struct owl_dma *od, u32 reg, u32 data)
+ 	/* append new unique function */
 -- 
 2.39.2
 
