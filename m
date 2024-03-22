@@ -1,94 +1,133 @@
-Return-Path: <linux-kernel+bounces-111769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A3A8870BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:17:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C29458870C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:19:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97515286DD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:17:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6089E1F237B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C928E57878;
-	Fri, 22 Mar 2024 16:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFCD5A4E9;
+	Fri, 22 Mar 2024 16:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S6YN9ARP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rAcq/Pr6"
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFC53FE28
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7343D57876
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711124260; cv=none; b=bL9J/VU67k407U7MN3m8IZVs8Bb4WkLt58XEso9Po1HMyg+wgcNSwbsZ4c+R2UiUxKli/d5J8ohRTQZ+6sYo67VZdjQzNIO3cqjxdncNZbbIRXiiRbE5oLAB80t1iwtJHNAAVg+w/YhO48EWtYS5k2H9rpaXve3VFreBOun+Rko=
+	t=1711124347; cv=none; b=mPcecRVBmpphR3kvkGKs/p4/jIiZJBnwQLz1zBG1JDffThPw1Hfb75pH3VC5XGY6IiOtJwi0e7/97mN0rjNzMpT1mYCi8IXDiZNquL57SeVm9OiimDagAdCCzaFB52SaTx5D7yXwzE3IRU5T0dffgmnrUsfjAD0VADFPBOGU3Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711124260; c=relaxed/simple;
-	bh=T+W3SilTy8pWsd3RdVENdE7OnC2iyjXqQEYQLOJ+SZk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I8jnlsYMEVYKTsDFkv5jCY1pQdrx9CC8yst9FaiCjCJ5oMEDfoAq7ymo6B+LEoEAwLdZ4u6PKjJS2+sEYRs6l00tB12DEqgSmknhTIMreVcE5g98v1kJ9Npv6loKYJFp1ouaNrz85xrLpazlM66ptbEDzaGrHFTfCLg038E1v04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S6YN9ARP; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711124258; x=1742660258;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=T+W3SilTy8pWsd3RdVENdE7OnC2iyjXqQEYQLOJ+SZk=;
-  b=S6YN9ARPEZT7YC8W9DNKYlkMr+6Ng8Pt75uDKF7Ai3Y4DZEN0fKBJeMY
-   whpkkanrTAz34qAdEUSiNAiqRUHA7Cy9snmh1BcRifiySVEcNG8gSlFe8
-   3zQjqwThO4sRPjxfNSW2WH8/HcwApNJk+kfe8wTFbhg9ahBRis12HBEi0
-   sPA+qeU2j4ZTIiU3CFR16K1MiVIEH0Qkbyk0Rpv4Kl2fz7NXcxLV9TQNX
-   fFUJLfqNG6Fc8GIErXB9/kzJ3SyJAQm0k/vE653zn8TqAjo6KivZo+p8U
-   yPrPjHEDV/8Q/baq/fNH0OdEzVI/ozI25saYObEQrkD4ucijFhaU3c5P/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="23635552"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="23635552"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 09:17:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="15618725"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 09:17:37 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH] x86/cpu: Add model number for another Intel Arrow Lake mobile processor
-Date: Fri, 22 Mar 2024 09:17:25 -0700
-Message-ID: <20240322161725.195614-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711124347; c=relaxed/simple;
+	bh=0wUBpSj/pqvpH82jsIPmTuiXNyhBwsGyIhafpnlup6M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=caIwX4x8q1Yw9Z86Nvq2Br/RFNrHJBU4uKcsWf28LQCepq2JJlk4wr08dwGHUL7XmL1bBBFMocE+H93PqQLPGWLl8O2bKW5MJtES8yJQj6Lz35QQu8yvylEqYeu8Zh0ETatJEhzDF8xsbQ04DHLIZ4H61I6q3NeK6IJmZqey3SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rAcq/Pr6; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711124341;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KB5GftMYyC75xN2sRG0i/ixBELjpxJvza4IaI6qq1+0=;
+	b=rAcq/Pr6acgADB2ZF7hpy57CL4pr5Hkb9gWfpeXR4lEYG85SU/XKXu/IApF7Y25mcQMjM5
+	xgZWPtKC95rPVrPXF0K6vyByn2iKWAdzLWgM1zF8R4gtfH7/4ZWB65Ovz7dZjTMhiRCevr
+	ahirJGR9OtB93xVSpOibVK6cMaAV4i4=
+Date: Fri, 22 Mar 2024 12:18:57 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
+Content-Language: en-US
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-6-sean.anderson@linux.dev>
+ <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
+ <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
+ <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
+ <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
+ <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
+ <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
+ <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-This one is the regular laptop CPU.
+On 3/22/24 01:32, Tomi Valkeinen wrote:
+> On 21/03/2024 21:17, Sean Anderson wrote:
+>> On 3/21/24 15:08, Tomi Valkeinen wrote:
+>>> On 21/03/2024 20:01, Sean Anderson wrote:
+>>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
+>>>>> On 21/03/2024 17:52, Sean Anderson wrote:
+>>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
+>>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>>>>>> Do we need to handle interrupts while either delayed work is being done?
+>>>>>>
+>>>>>> Probably not.
+>>>>>>
+>>>>>>> If we do need a delayed work, would just one work be enough which
+>>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
+>>>>>>
+>>>>>> Maybe, but then we need to determine which pending events we need to
+>>>>>> handle. I think since we have only two events it will be easier to just
+>>>>>> have separate workqueues.
+>>>>>
+>>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
+>>>>
+>>>> Yeah, but we can use a mutex for this which means there is not too much
+>>>> interesting going on.
+>>>
+>>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
+>>>
+>>> I'd still prefer just one workqueue, though...
+>>
+>> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
+> 
+> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/include/asm/intel-family.h | 1 +
- 1 file changed, 1 insertion(+)
+How about something like
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index b65e9c46b922..d0941f4c2724 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -127,6 +127,7 @@
- 
- #define INTEL_FAM6_ARROWLAKE_H		0xC5
- #define INTEL_FAM6_ARROWLAKE		0xC6
-+#define INTEL_FAM6_ARROWLAKE_U		0xB5
- 
- #define INTEL_FAM6_LUNARLAKE_M		0xBD
- 
--- 
-2.44.0
+zynqmp_dp_irq_handler(...)
+{
+	/* Read status and handle underflow/overflow/vblank */
 
+	status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
+	if (status) {
+		atomic_or(status, &dp->status);
+		return IRQ_WAKE_THREAD;
+	}
+
+	return IRQ_HANDLED;
+}
+
+zynqmp_dp_thread_handler(...)
+{
+	status = atomic_xchg(&dp->status, 0);
+	/* process HPD stuff */
+}
+
+which gets rid of the workqueue too.
+
+--Sean
 
