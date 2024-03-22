@@ -1,187 +1,148 @@
-Return-Path: <linux-kernel+bounces-111839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1DF4887185
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:04:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F279F88718C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68421283B69
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:04:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A209A1F23BE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0725E3AF;
-	Fri, 22 Mar 2024 17:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739495FBA1;
+	Fri, 22 Mar 2024 17:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PcmiYUZr"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MwWJqz4B"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23A75D752
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE565FDB0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711127054; cv=none; b=b6FO0QLZz9Os/C5k/7A0WxJkgaLi8nWKqexyxHhFZ2/S+svirv/trMmVuulWW6/BaSElrhyht/mq52DtpuCxMMRrG+QWYpDSrLv4XyBOThklfmki9UycFHRSLZDNhPrt5mTe+IOrr+X5eFgF5tR68eTX/xoqajS3kfml9JYNk4g=
+	t=1711127114; cv=none; b=NcCugkQ7DvyFUmVSZDPYqtpNirbU5WYnTk6vPE3yXU4NpEqNXAasA3S/OwUe6MrKt0qp3VAezhO7Q4oZeEJqaQsuKUVMu9xbVf/PT5ot1cxTydT0ZHZPC9m9J9pLGLgD0f4KADsC855F1iu1pYKNmV8rpEyAzGxtI7I7XbxTTIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711127054; c=relaxed/simple;
-	bh=F2cON8G466CEiB2xctEBotK4ZUZCOX8kUGGaoxBRHl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KjICyPaKqMfskdYH8mi3DirNH12fM8UAsr4zqW1XmV1B6AP2mAWkapjRmTqXdMT/Lr91/nsOmAM/D2AyX57y4GDm6jvZM/hHB3kEj/RCVneam9I0DONqm8qClmSHCW60GCQUNVTRYYNqDK7ANXQyMmn75NWowjAoXFJO/+nApmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=PcmiYUZr; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-690e2d194f6so16772266d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:04:12 -0700 (PDT)
+	s=arc-20240116; t=1711127114; c=relaxed/simple;
+	bh=v4N44CMN5oCIe/XAnwlaVauiT1tmi9O/mBbrMgK8XAg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=bQ6NleU0w2j0RtM/tHOEHDuOgRqUC3oauJ1w6tNuKottnWQyvKpqdbgWFN3eSnSTwFpvOTHEw8hNGJ85DNqVEF8OM4WTx2/JvG65ojpNp7/hcKfSMMwGBVOLtfYA3gn1qGzvffzrHhM55NN9NLtK9qEdehgn1dUqWi4G79sUUhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MwWJqz4B; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-430d3fcc511so6861cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1711127052; x=1711731852; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6bmTLjYhpzrW7g0IUEWDDdCG7VehUoT56RlgrSoKr94=;
-        b=PcmiYUZrxYG5dOtd4ASPJlgfv3jsdIcMl6TtTxMMboImHzjDeq0sg8QzUx/aD76uhI
-         BbSd6N1logm6ciWGkvJj3Ght0gDlYJIJBctvGM9t7X+FuwR8Jfp0E45TJXmyCMMZhlH1
-         kRuYoLPwdSOiAjdC7ultxdpVJTl90ce7BVVs6g3BOlqnXaRlffv5LT6j+97mAxA9T4p0
-         m6jfT3EI7u+K2uh0GjkWNPOPgCtsw3kfaUKv3BeqWQP5+i0ljV6tgdOkBaPllJ4FGSTQ
-         kA4yfL7Yj7sqtyn+Js/D0H8BI2Aq8NIu5biCkx/l56XalByFtITSa5w6TZpMIG8+JOeZ
-         gUcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711127052; x=1711731852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1711127111; x=1711731911; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6bmTLjYhpzrW7g0IUEWDDdCG7VehUoT56RlgrSoKr94=;
-        b=ovfYXqFkr9iH0gh9WiixyYaCr85DCOdPbIwTnLlDFcTaFdJKKjxUTk3a0j/CnR3FwY
-         bcCLjzJjekL9KNLj96lPnAX2gK+sNoOfRfpw2ewKw0Dws/10+/bFsQhYdaMrXnz0LtXi
-         gMX86eY897PEcmYBMkF/zUYne3cGqjA+FJeApmLXAgtkRxTpdnCfbCzQjjfMeL7ThdnU
-         isuX+QmU220QFoJNWW9Ow2UH5k18E4kozNVPomlu8PKIcEDhCaHl0Moq19FREFUFUFX+
-         iw7mSQQ+Yfgc0E9zxXdnaudSQiJuJH1T7NdLKUIECCf85aE2A/zAou38duKpSZ5ZwlNm
-         86sg==
-X-Forwarded-Encrypted: i=1; AJvYcCWbrUMubkU44v8XN4EJd1t+dLGZ3fv+TAAJchN/Nb5tBnZJ6GbHjGFl18UGnKCZowlKvqUdLmZKaVd0Y7HwORtpg7tcIDEzcVwPOPH9
-X-Gm-Message-State: AOJu0YxGEQgfHNB6QtJaGbYtiJRrhjWV3hHdrE+jucaedwnVOTRbxETe
-	gzMpkjlNSSxxcxHZ3Gkc5PsgTtoaRqmsk8c4P2swpz86+O23fPH9igs0PyH8/WE=
-X-Google-Smtp-Source: AGHT+IGCuCLf0r0lAOyGbCQQgecN3nqXlLc/lQ8IcmAc2LgzDweXJnwWqJ+Euwk9ABhKAExpPSSADA==
-X-Received: by 2002:a05:6214:1250:b0:696:47ea:df2e with SMTP id r16-20020a056214125000b0069647eadf2emr2633333qvv.23.1711127051828;
-        Fri, 22 Mar 2024 10:04:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id q15-20020ad45caf000000b0069124066c2fsm1223742qvh.140.2024.03.22.10.04.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 10:04:11 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rniJO-00CS0w-OK;
-	Fri, 22 Mar 2024 14:04:10 -0300
-Date: Fri, 22 Mar 2024 14:04:10 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Baolu Lu <baolu.lu@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
-	virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] iommufd: Add fault and response message
- definitions
-Message-ID: <20240322170410.GH66976@ziepe.ca>
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
- <20240122073903.24406-4-baolu.lu@linux.intel.com>
- <20240308175007.GW9225@ziepe.ca>
- <43ef5e3f-8a8e-4765-8025-b8207fd05f91@linux.intel.com>
+        bh=v4N44CMN5oCIe/XAnwlaVauiT1tmi9O/mBbrMgK8XAg=;
+        b=MwWJqz4BotKMnVS1L2Flab9VgiKs3qFjXvCzXfivKQ03BIfYf1wbZf3zTzuWRG2Fow
+         f3anCmp7SRLqpLp4NH5fokHg79CnuUBfNvLUCXqPZTuFsfB1UN04JrjSoUoYHqk1wMBX
+         DJBrMEmUvRD4dQAtXQcCa6eClnFiixPhh1SG4p3mdkh8/aoKriiPc8Yb7rULQuHwQpls
+         Z0rEX+UqK//MahHeGBzplcEODjUUPB6bClKRW11eFABUI1zyORFOdcFGGTY1FLdyV1V9
+         XiecW1rC2+TWUAkdvwPq+XzUHKHP+AWaMYmGT/1qv4YIv3x7gWdzxbV+aedX4YpWgW8w
+         w8yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711127111; x=1711731911;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v4N44CMN5oCIe/XAnwlaVauiT1tmi9O/mBbrMgK8XAg=;
+        b=RI1bCP0gHN5EJ56w33IQA8FgN9/bWBFTFW4t0uCY0YYhLVOlnGWkTB5uM5OEq8IgBg
+         C9ITTVOO4B9VtCNcodV6rhZRJUw+8nFelBDmgDYAYnqMx8iPtBMQZUCxjqab8/BDWGCE
+         m3lXANV7FeQitR28OXwUg2yd971poPT0QYGubAOgrX79PYTTRY5fOZ+m+OlV5n3JzIun
+         J/11mBD0119/zy46rwB18IeCvjeRCgxIPJ5PajmpIaHgY2j3Esn5xSK7lYpf3Q80Kc2v
+         i/0G2pdQbx+D2sgz3P7KDU5favS8ctgp/M3kgmPnMRUKB+M7VQsWaW57RGYdwWaUUlZp
+         yTYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXp2sDvSQQnQ5byfiydv8HHuNlbtG7iXwwT82MWY6SRist0Awq3GW8rCSazFhmgWzYaWWT8aPEPYzCt2cyNNJGxtakwp3c+5YuUYhX2
+X-Gm-Message-State: AOJu0YweuGCvUCYITT4P7NIMpizbSm39SQEvu5wUoh3LnrRsrtFLlEZA
+	Wn8+2aS9zdYqVvlffCfcLuTGff9gG308w03dy4gs2NWikCKG8zBT9Kb+r7NselMFFWEahGmV3tR
+	V6DCPMfdKbRaPFdc/87jz/FEVwvLhIe9UlM1a
+X-Google-Smtp-Source: AGHT+IEMXRAiaxzgPudCV28IsnfTo93KghidIO1NcmkDbiSOepYGnBba5CPcjtadamz0IWr8XSq/M+NvnzVf5opCbEA=
+X-Received: by 2002:a05:622a:2486:b0:431:3c48:a65b with SMTP id
+ cn6-20020a05622a248600b004313c48a65bmr12492qtb.11.1711127111085; Fri, 22 Mar
+ 2024 10:05:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43ef5e3f-8a8e-4765-8025-b8207fd05f91@linux.intel.com>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+ <20240322132619.6389-65-wsa+renesas@sang-engineering.com> <e8dff9d4-ed15-44e9-ae9a-2e77845ec40b@microchip.com>
+ <Zf22G4jC2gIlzhi_@shikoro>
+In-Reply-To: <Zf22G4jC2gIlzhi_@shikoro>
+From: Guenter Roeck <groeck@google.com>
+Date: Fri, 22 Mar 2024 10:05:00 -0700
+Message-ID: <CABXOdTc14kfPpkF96KG-oeLRTLvjxAD_gtOO2TQFLnHMLNoU_Q@mail.gmail.com>
+Subject: Re: [PATCH 64/64] i2c: reword i2c_algorithm in drivers according to
+ newest specification
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, linux-i2c@vger.kernel.org, 
+	Elie Morisse <syniurge@gmail.com>, Shyam Sundar S K <shyam-sundar.s-k@amd.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Krzysztof Adamski <krzysztof.adamski@nokia.com>, Benson Leung <bleung@chromium.org>, 
+	Guenter Roeck <groeck@chromium.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Jean-Marie Verdun <verdun@hpe.com>, Nick Hawkins <nick.hawkins@hpe.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Khalil Blaiech <kblaiech@nvidia.com>, 
+	Asmaa Mnebhi <asmaa@nvidia.com>, Qii Wang <qii.wang@mediatek.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Avi Fishman <avifishman70@gmail.com>, 
+	Tomer Maimon <tmaimon77@gmail.com>, Tali Perry <tali.perry1@gmail.com>, 
+	Patrick Venture <venture@google.com>, Nancy Yuen <yuenn@google.com>, 
+	Benjamin Fair <benjaminfair@google.com>, Ajay Gupta <ajayg@nvidia.com>, 
+	Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>, Robert Richter <rric@kernel.org>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Tony Lindgren <tony@atomide.com>, Vignesh R <vigneshr@ti.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Hector Martin <marcan@marcan.st>, 
+	Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
+	Vladimir Zapolskiy <vz@mleia.com>, Loic Poulain <loic.poulain@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>, Alain Volmat <alain.volmat@foss.st.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Laxman Dewangan <ldewangan@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>, 
+	Conghui Chen <conghui.chen@intel.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, chrome-platform@lists.linux.dev, 
+	linux-samsung-soc@vger.kernel.org, imx@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-amlogic@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, openbmc@lists.ozlabs.org, 
+	linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-tegra@vger.kernel.org, virtualization@lists.linux.dev, 
+	Ryan Wanner <Ryan.Wanner@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 09:41:45PM +0800, Baolu Lu wrote:
-> On 2024/3/9 1:50, Jason Gunthorpe wrote:
-> > On Mon, Jan 22, 2024 at 03:38:58PM +0800, Lu Baolu wrote:
-> > 
-> > > +/**
-> > > + * enum iommu_hwpt_pgfault_flags - flags for struct iommu_hwpt_pgfault
-> > > + * @IOMMU_PGFAULT_FLAGS_PASID_VALID: The pasid field of the fault data is
-> > > + *                                   valid.
-> > > + * @IOMMU_PGFAULT_FLAGS_LAST_PAGE: It's the last fault of a fault group.
-> > > + */
-> > > +enum iommu_hwpt_pgfault_flags {
-> > > +	IOMMU_PGFAULT_FLAGS_PASID_VALID		= (1 << 0),
-> > > +	IOMMU_PGFAULT_FLAGS_LAST_PAGE		= (1 << 1),
-> > > +};
-> > > +
-> > > +/**
-> > > + * enum iommu_hwpt_pgfault_perm - perm bits for struct iommu_hwpt_pgfault
-> > > + * @IOMMU_PGFAULT_PERM_READ: request for read permission
-> > > + * @IOMMU_PGFAULT_PERM_WRITE: request for write permission
-> > > + * @IOMMU_PGFAULT_PERM_EXEC: request for execute permission
-> > > + * @IOMMU_PGFAULT_PERM_PRIV: request for privileged permission
-> > 
-> > You are going to have to elaborate what PRIV is for.. We don't have
-> > any concept of this in the UAPI for iommufd so what is a userspace
-> > supposed to do if it hits this? EXEC is similar, we can't actually
-> > enable exec permissions from userspace IIRC..
-> 
-> The PCIe spec, section "10.4.1 Page Request Message" and "6.20.2 PASID
-> Information Layout":
-> 
-> The PCI PASID TLP Prefix defines "Execute Requested" and "Privileged
-> Mode Requested" bits.
-> 
-> PERM_EXEC indicates a page request with a PASID that has the "Execute
-> Requested" bit set. Similarly, PERM_PRIV indicates a page request with a
->  PASID that has "Privileged Mode Requested" bit set.
+On Fri, Mar 22, 2024 at 9:47=E2=80=AFAM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+>
+> > Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com> # for at91
+> > Probably file names themselves will need some care, in a second time.
+>
+> Totally true. I am aware of that. But one step after the other...
+>
 
-Oh, I see! OK Maybe just add a note that it follows PCIE 10.4.1
+Kind of odd though to change function names but not parameter names of
+those very same functions.
 
-> > > +struct iommu_hwpt_pgfault {
-> > > +	__u32 size;
-> > > +	__u32 flags;
-> > > +	__u32 dev_id;
-> > > +	__u32 pasid;
-> > > +	__u32 grpid;
-> > > +	__u32 perm;
-> > > +	__u64 addr;
-> > > +};
-> > 
-> > Do we need an addr + size here? I've seen a few things where I wonder
-> > if that might become an enhancment someday.
-> 
-> I am not sure. The page size is not part of ATS/PRI. Can you please
-> elaborate a bit about how the size could be used? Perhaps I
-> misunderstood here?
-
-size would be an advice how much data the requestor is expecting to
-fetch. Eg of the PRI initiator knows it is going to do a 10MB transfer
-it could fill in 10MB and the OS could pre-fault in 10MB of IOVA.
-
-It is not in the spec, it may never be in the spec, but it seems like
-it would be good to consider it, at least make sure we have
-compatability to add it later.
-
-> > > + * @addr: The fault address. Must match the addr field of the
-> > > + *        last iommu_hwpt_pgfault of a reported iopf group.
-> > > + */
-> > > +struct iommu_hwpt_page_response {
-> > > +	__u32 size;
-> > > +	__u32 flags;
-> > > +	__u32 dev_id;
-> > > +	__u32 pasid;
-> > > +	__u32 grpid;
-> > > +	__u32 code;
-> > > +	__u64 addr;
-> > > +};
-> > 
-> > Do we want some kind of opaque ID value from the kernel here to match
-> > request with response exactly? Or is the plan to search on the addr?
-> 
-> I am using the "addr" as the opaque data to search request in this
-> series. Is it enough?
-
-I'm not sure, the other discussion about grpid seems to be the main
-question so lets see there.
-
-Jason
+Guenter
 
