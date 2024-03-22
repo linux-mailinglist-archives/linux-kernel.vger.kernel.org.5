@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-111816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0640588714D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:54:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8825B88714F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B58B1C22239
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:54:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1849F1F2331C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D886605BC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AE25D752;
 	Fri, 22 Mar 2024 16:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cH0SSv8w"
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcHgopvo"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA312604BD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2396604DA
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126378; cv=none; b=INLS4peyzxn8x3BTViWNj2XKj88PH1SbSZNYfAHZ45dp6oBVBrfw5x++qpW3BGJ77o08JsLS+wmC3dngszVYbZMgdZsclZN9OXLDvy2ihRhnkC6ZXW7oPjD5SjYcvpIvpdkmt+opJH0cN1+FjGVG/0VqrYnRWwG2M4REJLOmR44=
+	t=1711126379; cv=none; b=i67ciJISf2qtfPFdx0iMoAxlFwVIROO+s3DctpGZzCs8KsGlSUSPJf1Sj1MIp1BnZQy+w3cIFXUfLlkwt5HCIYAzVSZ8K9aaet9wXZjFitUThO0eqZkbRUXypOyXLPz1WCg55LD/Itq+c7Zm6csHmXC5kdNeLI+7RMtoIUniW90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126378; c=relaxed/simple;
-	bh=VR1+nGqlR4FTm7oUOrp5UCygrbh+Wx8G/j58KZi1cVE=;
+	s=arc-20240116; t=1711126379; c=relaxed/simple;
+	bh=ZQ683fxTBC0cltc7iuh7WXmR5+v1UXe5xO6cUtiL1iM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tDzoALDDEy84yH4xkeaxkg9JDDt5s/bkNyo6uQdYUTExYFjW/W3I/A6VDJQSsYDHuWWGSVCTagHcCXO25g2VtzV0RUgjlhijz/ztsce4qkFq92pQi/8kzEkHIrySjuWUSUUKxtsjLCiKM9JVVgjlbK7JmNQt6y5NQRtJLgLmSGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cH0SSv8w; arc=none smtp.client-ip=209.85.222.171
+	 MIME-Version; b=K10gMy4D5HuHeHqoatKK1T/Hha9NbKpRRW+9rqddd4TLb4oYESaxFFcCnk9ZibhdAuDlObYY8UxsJGSy0obsl0/SiNVWv7hsEqQV7pPdNsBtEFYTJtwgOrU3fZgO8veYGAbwU10AP8a3hwBx9T+LevhVhxeAGMIQY9Tr7VYxkRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcHgopvo; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-789d0c90cadso153885085a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:52:56 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789e6ceaff1so317882585a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711126375; x=1711731175; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711126376; x=1711731176; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sroh3+iJ8M197CSoj2xHZgfa/yPhMhF/D1xZhTI7Hb4=;
-        b=cH0SSv8w8KpxGH1GSDlKgpVyyjKUI3acZWO9cLYGWy5boWMOBxgE2ytR9Fw/i0JkSv
-         9wY4KOJIgW5BlAhc0lFRT4KG/R8v7CAyROvXxsBnNrnuGXEAcuWFO1u7nCyajL6Dg6R8
-         OQS7bIHcBuUtBlh5fBLPqXBkm1oVA4jZug14rGy2KXI53hWLst6fIAI8kYHP+QIVzdli
-         H4kFvz/CXCbXyQLuUiNdLdcCM2N0yOOnwczUXwjj7zOVf6EYWXTf5wrBhKm0w/LvlddC
-         qcR0cUM0gQggCZ3p9MMZmZMDQ7IMxVsDMRr+Imgu0nLJAnPCn9JglXTWm1dMax3+Hd9w
-         bHxQ==
+        bh=MY5D337qL3lZHb49Uvgq3uHMbzigT03YWvbgK9Cha9Y=;
+        b=gcHgopvoIKCBEk0IdWYau+gBKs866DoiSgw608FLNEPViCWbdwlYsSukK0CkHxHy8P
+         bnHunt+ukvdgJ421e8Axzj0RmaNpa49lWO3WwDMrTciqiLmpa+6HbVaQb09bpWssNa71
+         DLFUenXDdbH1H2Anc2BtDJN4WeyNA52G+HnZea8JMvc2zqo4kahNw+qitDc1xr2eeGIf
+         0WmPwpUqyGU+kebF1m1P0G9RIOaTDV65TPbFeACFX5tbEgUEdF6bXari0vqAoiwlrKk5
+         7YrPWtARxn1xmij9etrp92dTT285urOsABhv6d+YmL6WWHE5mmEBEECouhfxeuY84kkQ
+         ehMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126375; x=1711731175;
+        d=1e100.net; s=20230601; t=1711126376; x=1711731176;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sroh3+iJ8M197CSoj2xHZgfa/yPhMhF/D1xZhTI7Hb4=;
-        b=ZJgH9Jigdozq/B/uxrV8VtUezSNC9CxSBgNenbafPGr8sBXZIuhqqJLAtRKUaVnkI5
-         fkstbi2OAJV7wCrCnhf7NHyAXmgALf+Hoik7P9RMhByD6+FOMGwG0N5VU5oHQdzRa0Vm
-         4xQPz18kTpWhREW1pbn25cVj01qUNQjb5BBUqyVFJldEA2Mmil4AwaU/NqrAqnZ46XKI
-         +DrDvRE4f695H4eKjHN4RiiOiOzI+Hg94qhtPu0C7qpit9xLqgJUYvC4O6//RM2NI3mm
-         deENcSaqsuI1P664vJYEizIGkIqEmA9IkbpZscKu91gMhJLtJhAqfR4o+RYlnxCk/59Q
-         0ISA==
-X-Gm-Message-State: AOJu0YyyLDk9TueUYN90Qp++pEHoKIEUGgoHFAuVtpUzMEexVc+jg7GM
-	at9DvMjKEIUqHkrt+YvFqTuYlLylWtyUiU4DVOKCI5uwAVq18T9x4uph+mU=
-X-Google-Smtp-Source: AGHT+IEn9IgchdQoZDhoHK+WO7foFRm6sSI5hWXMZJzSFOTdr4X3oECgPHWN2HOx8u9kj0fskVbZ8Q==
-X-Received: by 2002:a05:620a:1714:b0:789:f8b3:d89d with SMTP id az20-20020a05620a171400b00789f8b3d89dmr3227492qkb.46.1711126375446;
-        Fri, 22 Mar 2024 09:52:55 -0700 (PDT)
+        bh=MY5D337qL3lZHb49Uvgq3uHMbzigT03YWvbgK9Cha9Y=;
+        b=TOVYyhAJvBUWNSNbC2vaQBdfzbMlu72sab1MYjL+K9Fck7wXDtwvNMMk7DBGSVEM8d
+         AqGBq3lKOyZXQKJgJ/NZdZJ4xiJk7ne+Pw0NWBcx+vHAikiw7kPUmiRu6fjL/JQCNJEY
+         pcqhaL+nVDuscsWFVwAn9j2gS1M3eaCES58S6DykxF5AsGmoiAHoC1v34GzCzvNknA9/
+         AQxt5AmKqBZvmmyVrdwv26GNYqtxrgyg6DORJgPZvZR9Y0Cde00CRoEuMbGVs+CBpFCS
+         rTomHM6dlAnWXz86lVPlLsQrDDtdPm1sgBN2j/SlT87RY6t+Qwk4bsnWHQI50E/j86sC
+         SaEg==
+X-Gm-Message-State: AOJu0YxECrvBF03Yr+TZEnqjW4xlOhu0NKJDS5yqbe6nwAnX7jB6syEO
+	cpbuYgxXZdDbhGWt9djDFFBXoaEQvRswRa+xblOuQs4VJgrVe/XhSabmxZk=
+X-Google-Smtp-Source: AGHT+IH0WfM67NC7jA3maIyhtYVDQwTjD+v0j92xOZqBFhEx6T+xxxJvv1GDFUqAjoP5wz43jlvS5A==
+X-Received: by 2002:a05:620a:4953:b0:789:f80d:4625 with SMTP id vz19-20020a05620a495300b00789f80d4625mr212092qkn.12.1711126376585;
+        Fri, 22 Mar 2024 09:52:56 -0700 (PDT)
 Received: from citadel.lan (2600-6c4a-4d3f-6d5c-0000-0000-0000-1019.inf6.spectrum.com. [2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id j1-20020a37ef01000000b00789e9bbf962sm894901qkk.133.2024.03.22.09.52.54
+        by smtp.gmail.com with ESMTPSA id j1-20020a37ef01000000b00789e9bbf962sm894901qkk.133.2024.03.22.09.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 09:52:54 -0700 (PDT)
+        Fri, 22 Mar 2024 09:52:56 -0700 (PDT)
 From: Brian Gerst <brgerst@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	x86@kernel.org
@@ -75,9 +75,9 @@ Cc: Ingo Molnar <mingo@kernel.org>,
 	Uros Bizjak <ubizjak@gmail.com>,
 	David.Laight@aculab.com,
 	Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v4 07/16] objtool: Convert fixed location stack protector accesses
-Date: Fri, 22 Mar 2024 12:52:24 -0400
-Message-ID: <20240322165233.71698-8-brgerst@gmail.com>
+Subject: [PATCH v4 08/16] x86/stackprotector/64: Convert to normal percpu variable
+Date: Fri, 22 Mar 2024 12:52:25 -0400
+Message-ID: <20240322165233.71698-9-brgerst@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240322165233.71698-1-brgerst@gmail.com>
 References: <20240322165233.71698-1-brgerst@gmail.com>
@@ -90,416 +90,285 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Older versions of GCC fixed the location of the stack protector canary
-at %gs:40.  Use objtool to convert these accesses to normal percpu
-accesses to __stack_chk_guard.
+at %gs:40.  This constraint forced the percpu section to be linked at
+virtual address 0 so that the canary could be the first data object in
+the percpu section.  Supporting the zero-based percpu section requires
+additional code to handle relocations for RIP-relative references to
+percpu data, extra complexity to kallsyms, and workarounds for linker
+bugs due to the use of absolute symbols.
+
+Use compiler options to redefine the stack protector location if
+supported, otherwise use objtool.  This will remove the contraint that
+the percpu section must be zero-based.
 
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 ---
- arch/x86/Kconfig                        |  4 ++
- scripts/Makefile.lib                    |  2 +
- tools/objtool/arch/x86/decode.c         | 46 +++++++++++++
- tools/objtool/arch/x86/special.c        | 91 +++++++++++++++++++++++++
- tools/objtool/builtin-check.c           |  9 ++-
- tools/objtool/check.c                   | 12 ++++
- tools/objtool/elf.c                     | 34 +++++++--
- tools/objtool/include/objtool/arch.h    |  3 +
- tools/objtool/include/objtool/builtin.h |  2 +
- tools/objtool/include/objtool/elf.h     |  6 ++
- 10 files changed, 204 insertions(+), 5 deletions(-)
+ arch/x86/Kconfig                      | 11 ++++----
+ arch/x86/Makefile                     | 21 ++++++++++------
+ arch/x86/entry/entry_64.S             |  2 +-
+ arch/x86/include/asm/processor.h      | 16 ++----------
+ arch/x86/include/asm/stackprotector.h | 36 ++++-----------------------
+ arch/x86/kernel/asm-offsets_64.c      |  6 -----
+ arch/x86/kernel/cpu/common.c          |  5 +---
+ arch/x86/kernel/head_64.S             |  3 +--
+ arch/x86/xen/xen-head.S               |  3 +--
+ 9 files changed, 30 insertions(+), 73 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 88d72227e3cb..121cfb9ffc0e 100644
+index 121cfb9ffc0e..3dbefdb8a5d6 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -417,6 +417,10 @@ config CC_HAS_SANE_STACKPROTECTOR
- 	  We have to make sure stack protector is unconditionally disabled if
- 	  the compiler does not allow control of the segment and symbol.
+@@ -271,7 +271,7 @@ config X86
+ 	select HAVE_FUNCTION_ARG_ACCESS_API
+ 	select HAVE_SETUP_PER_CPU_AREA
+ 	select HAVE_SOFTIRQ_ON_OWN_STACK
+-	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
++	select HAVE_STACKPROTECTOR		if X86_64 || CC_HAS_SANE_STACKPROTECTOR
+ 	select HAVE_STACK_VALIDATION		if HAVE_OBJTOOL
+ 	select HAVE_STATIC_CALL
+ 	select HAVE_STATIC_CALL_INLINE		if HAVE_OBJTOOL
+@@ -411,15 +411,14 @@ config PGTABLE_LEVELS
  
-+config STACKPROTECTOR_OBJTOOL
-+	bool
-+	default n
-+
+ config CC_HAS_SANE_STACKPROTECTOR
+ 	bool
+-	default y if 64BIT
++	default $(cc-option,-mstack-protector-guard-reg=gs -mstack-protector-guard-symbol=__stack_chk_guard) if 64BIT
+ 	default $(cc-option,-mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard)
+-	help
+-	  We have to make sure stack protector is unconditionally disabled if
+-	  the compiler does not allow control of the segment and symbol.
+ 
+ config STACKPROTECTOR_OBJTOOL
+ 	bool
+-	default n
++	depends on X86_64 && STACKPROTECTOR
++	default !CC_HAS_SANE_STACKPROTECTOR
++	prompt "Debug objtool stack protector conversion" if CC_HAS_SANE_STACKPROTECTOR && DEBUG_KERNEL
+ 
  menu "Processor type and features"
  
- config SMP
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1bd59b8db05f..6bc4c69a9e50 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -258,6 +258,8 @@ objtool := $(objtree)/tools/objtool/objtool
- objtool-args-$(CONFIG_HAVE_JUMP_LABEL_HACK)		+= --hacks=jump_label
- objtool-args-$(CONFIG_HAVE_NOINSTR_HACK)		+= --hacks=noinstr
- objtool-args-$(CONFIG_MITIGATION_CALL_DEPTH_TRACKING)	+= --hacks=skylake
-+objtool-args-$(CONFIG_STACKPROTECTOR_OBJTOOL)		+= --hacks=stackprotector
-+objtool-args-$(CONFIG_SMP)				+= --smp
- objtool-args-$(CONFIG_X86_KERNEL_IBT)			+= --ibt
- objtool-args-$(CONFIG_FINEIBT)				+= --cfi
- objtool-args-$(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL)	+= --mcount
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index 3a1d80a7878d..583a16b8bf47 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -144,6 +144,18 @@ static bool has_notrack_prefix(struct insn *insn)
- 	return false;
- }
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 662d9d4033e6..2a3ba1abb802 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -116,13 +116,7 @@ ifeq ($(CONFIG_X86_32),y)
+         # temporary until string.h is fixed
+         KBUILD_CFLAGS += -ffreestanding
  
-+static bool has_gs_prefix(struct insn *insn)
-+{
-+	int i;
+-    ifeq ($(CONFIG_STACKPROTECTOR),y)
+-        ifeq ($(CONFIG_SMP),y)
+-			KBUILD_CFLAGS += -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard
+-        else
+-			KBUILD_CFLAGS += -mstack-protector-guard=global
+-        endif
+-    endif
++        percpu_seg := fs
+ else
+         BITS := 64
+         UTS_MACHINE := x86_64
+@@ -172,6 +166,19 @@ else
+         KBUILD_CFLAGS += -mcmodel=kernel
+         KBUILD_RUSTFLAGS += -Cno-redzone=y
+         KBUILD_RUSTFLAGS += -Ccode-model=kernel
 +
-+	for (i = 0; i < insn->prefixes.nbytes; i++) {
-+		if (insn->prefixes.bytes[i] == 0x65)
-+			return true;
-+	}
++        percpu_seg := gs
++endif
 +
-+	return false;
-+}
-+
- int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    struct instruction *insn)
-@@ -408,10 +420,44 @@ int arch_decode_instruction(struct objtool_file *file, const struct section *sec
++ifeq ($(CONFIG_STACKPROTECTOR),y)
++    ifneq ($(CONFIG_STACKPROTECTOR_OBJTOOL),y)
++        ifeq ($(CONFIG_SMP),y)
++		KBUILD_CFLAGS += -mstack-protector-guard-reg=$(percpu_seg)
++		KBUILD_CFLAGS += -mstack-protector-guard-symbol=__stack_chk_guard
++        else
++		KBUILD_CFLAGS += -mstack-protector-guard=global
++        endif
++    endif
+ endif
  
- 		break;
+ #
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 8af2a26b24f6..9478ff768dd0 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -191,7 +191,7 @@ SYM_FUNC_START(__switch_to_asm)
  
-+	case 0x2b:
-+	case 0x3b:
-+	case 0x39:
-+		if (!rex_w)
-+			break;
-+
-+		/* sub %gs:0x28, reg */
-+		/* cmp %gs:0x28, reg */
-+		/* cmp reg, %gs:0x28 */
-+		if (has_gs_prefix(&ins) &&
-+		    modrm_mod == 0 &&
-+		    modrm_rm == 4 &&
-+		    sib_index == 4 &&
-+		    sib_base == 5 &&
-+		    ins.displacement.value == 0x28)
-+		{
-+			insn->type = INSN_STACKPROTECTOR;
-+			break;
-+		}
-+
-+		break;
-+
- 	case 0x8b:
- 		if (!rex_w)
- 			break;
+ #ifdef CONFIG_STACKPROTECTOR
+ 	movq	TASK_stack_canary(%rsi), %rbx
+-	movq	%rbx, PER_CPU_VAR(fixed_percpu_data + FIXED_stack_canary)
++	movq	%rbx, PER_CPU_VAR(__stack_chk_guard)
+ #endif
  
-+		/* mov %gs:0x28, reg */
-+		if (has_gs_prefix(&ins) &&
-+		    modrm_mod == 0 &&
-+		    modrm_rm == 4 &&
-+		    sib_index == 4 &&
-+		    sib_base == 5 &&
-+		    ins.displacement.value == 0x28)
-+		{
-+			insn->type = INSN_STACKPROTECTOR;
-+			break;
-+		}
-+
- 		if (rm_is_mem(CFI_BP)) {
+ 	/*
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 89ed5237e79f..946bebce396f 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -387,16 +387,8 @@ struct irq_stack {
  
- 			/* mov disp(%rbp), reg */
-diff --git a/tools/objtool/arch/x86/special.c b/tools/objtool/arch/x86/special.c
-index 4134d27c696b..020b6040c487 100644
---- a/tools/objtool/arch/x86/special.c
-+++ b/tools/objtool/arch/x86/special.c
-@@ -3,6 +3,9 @@
- 
- #include <objtool/special.h>
- #include <objtool/builtin.h>
-+#include <objtool/warn.h>
-+#include <objtool/check.h>
-+#include <objtool/elf.h>
- 
- #define X86_FEATURE_POPCNT (4 * 32 + 23)
- #define X86_FEATURE_SMAP   (9 * 32 + 20)
-@@ -137,3 +140,91 @@ struct reloc *arch_find_switch_table(struct objtool_file *file,
- 
- 	return rodata_reloc;
- }
-+
-+/*
-+ * Convert op %gs:0x28, reg -> op __stack_chk_guard(%rip), reg
-+ * op is MOV, SUB, or CMP.
-+ *
-+ * This can be removed when the minimum supported GCC version is raised
-+ * to 8.1 or later.
-+ */
-+int arch_hack_stackprotector(struct objtool_file *file)
-+{
-+	struct section *sec;
-+	struct symbol *__stack_chk_guard;
-+	struct instruction *insn;
-+
-+	int i;
-+
-+	__stack_chk_guard = find_symbol_by_name(file->elf, "__stack_chk_guard");
-+
-+	for_each_sec(file, sec) {
-+		int count = 0;
-+		int idx;
-+		struct section *rsec = sec->rsec;
-+
-+		sec_for_each_insn(file, sec, insn) {
-+			if (insn->type == INSN_STACKPROTECTOR)
-+				count++;
-+		}
-+
-+		if (!count)
-+			continue;
-+
-+		if (!__stack_chk_guard)
-+			__stack_chk_guard = elf_create_undef_symbol(file->elf, "__stack_chk_guard");
-+
-+		if (!rsec) {
-+			idx = 0;
-+			rsec = sec->rsec = elf_create_rela_section(file->elf, sec, count);
-+		} else {
-+			idx = sec_num_entries(rsec);
-+			if (elf_extend_rela_section(file->elf, rsec, count))
-+				return -1;
-+		}
-+
-+		sec_for_each_insn(file, sec, insn) {
-+			unsigned char *data = sec->data->d_buf + insn->offset;
-+
-+			if (insn->type != INSN_STACKPROTECTOR)
-+				continue;
-+
-+			if (insn->len != 9)
-+				goto invalid;
-+
-+			/* Convert GS prefix to DS if !SMP */
-+			if (data[0] != 0x65)
-+				goto invalid;
-+			if (!opts.smp)
-+				data[0] = 0x3e;
-+
-+			/* Set Mod=00, R/M=101.  Preserve Reg */
-+			data[3] = (data[3] & 0x38) | 5;
-+
-+			/* Displacement 0 */
-+			data[4] = 0;
-+			data[5] = 0;
-+			data[6] = 0;
-+			data[7] = 0;
-+
-+			/* Pad with NOP */
-+			data[8] = 0x90;
-+
-+			if (!elf_init_reloc_data_sym(file->elf, sec, insn->offset + 4, idx++, __stack_chk_guard, -4))
-+				return -1;
-+
-+			continue;
-+
-+invalid:
-+			fprintf(stderr, "Invalid stackprotector instruction at %s+0x%lx: ", sec->name, insn->offset);
-+			for (i = 0; i < insn->len; i++)
-+				fprintf(stderr, "%02x ", data[i]);
-+			fprintf(stderr, "\n");
-+			return -1;
-+		}
-+
-+		mark_sec_changed(file->elf, sec, true);
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-index 5e21cfb7661d..0ab2efb45c0e 100644
---- a/tools/objtool/builtin-check.c
-+++ b/tools/objtool/builtin-check.c
-@@ -62,12 +62,17 @@ static int parse_hacks(const struct option *opt, const char *str, int unset)
- 		found = true;
- 	}
- 
-+	if (!str || strstr(str, "stackprotector")) {
-+		opts.hack_stackprotector = true;
-+		found = true;
-+	}
-+
- 	return found ? 0 : -1;
- }
- 
- static const struct option check_options[] = {
- 	OPT_GROUP("Actions:"),
--	OPT_CALLBACK_OPTARG('h', "hacks", NULL, NULL, "jump_label,noinstr,skylake", "patch toolchain bugs/limitations", parse_hacks),
-+	OPT_CALLBACK_OPTARG('h', "hacks", NULL, NULL, "jump_label,noinstr,skylake,stackprotector", "patch toolchain bugs/limitations", parse_hacks),
- 	OPT_BOOLEAN('i', "ibt", &opts.ibt, "validate and annotate IBT"),
- 	OPT_BOOLEAN('m', "mcount", &opts.mcount, "annotate mcount/fentry calls for ftrace"),
- 	OPT_BOOLEAN('n', "noinstr", &opts.noinstr, "validate noinstr rules"),
-@@ -94,6 +99,7 @@ static const struct option check_options[] = {
- 	OPT_BOOLEAN(0, "sec-address", &opts.sec_address, "print section addresses in warnings"),
- 	OPT_BOOLEAN(0, "stats", &opts.stats, "print statistics"),
- 	OPT_BOOLEAN('v', "verbose", &opts.verbose, "verbose warnings"),
-+	OPT_BOOLEAN(0, "smp", &opts.smp, "building an SMP kernel"),
- 
- 	OPT_END(),
- };
-@@ -133,6 +139,7 @@ static bool opts_valid(void)
- {
- 	if (opts.hack_jump_label	||
- 	    opts.hack_noinstr		||
-+	    opts.hack_stackprotector	||
- 	    opts.ibt			||
- 	    opts.mcount			||
- 	    opts.noinstr		||
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 0a2c161fc04d..0056dd99ff7f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1315,6 +1315,11 @@ __weak bool arch_is_embedded_insn(struct symbol *sym)
- 	return false;
- }
- 
-+__weak int arch_hack_stackprotector(struct objtool_file *file)
-+{
-+	return 0;
-+}
-+
- static struct reloc *insn_reloc(struct objtool_file *file, struct instruction *insn)
- {
- 	struct reloc *reloc;
-@@ -4824,6 +4829,13 @@ int check(struct objtool_file *file)
- 		warnings += ret;
- 	}
- 
-+	if (opts.hack_stackprotector) {
-+		ret = arch_hack_stackprotector(file);
-+		if (ret < 0)
-+			goto out;
-+		warnings += ret;
-+	}
-+
- 	free_insns(file);
- 
- 	if (opts.verbose)
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index cfb970727c8a..2af99b2a054c 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -846,6 +846,32 @@ elf_create_prefix_symbol(struct elf *elf, struct symbol *orig, long size)
- 	return sym;
- }
- 
-+struct symbol *
-+elf_create_undef_symbol(struct elf *elf, const char *sym_name)
-+{
-+	struct symbol *sym = calloc(1, sizeof(*sym));
-+	char *name = strdup(sym_name);
-+
-+	if (!sym || !name) {
-+		perror("malloc");
-+		return NULL;
-+	}
-+
-+	sym->name = name;
-+	sym->sec = find_section_by_index(elf, 0);
-+
-+	sym->sym.st_name = elf_add_string(elf, NULL, name);
-+	sym->sym.st_info = GELF_ST_INFO(STB_GLOBAL, STT_NOTYPE);
-+	sym->sym.st_value = 0;
-+	sym->sym.st_size = 0;
-+
-+	sym = __elf_create_symbol(elf, sym);
-+	if (sym)
-+		elf_add_symbol(elf, sym);
-+
-+	return sym;
-+}
-+
- static struct reloc *elf_init_reloc(struct elf *elf, struct section *rsec,
- 				    unsigned int reloc_idx,
- 				    unsigned long offset, struct symbol *sym,
-@@ -924,7 +950,7 @@ struct reloc *elf_init_reloc_data_sym(struct elf *elf, struct section *sec,
- 				      struct symbol *sym,
- 				      s64 addend)
- {
--	if (sym->sec && (sec->sh.sh_flags & SHF_EXECINSTR)) {
-+	if (sym->sec && (sym->sec->sh.sh_flags & SHF_EXECINSTR)) {
- 		WARN("bad call to %s() for text symbol %s",
- 		     __func__, sym->name);
- 		return NULL;
-@@ -1196,9 +1222,9 @@ struct section *elf_create_section(struct elf *elf, const char *name,
- 	return sec;
- }
- 
--static struct section *elf_create_rela_section(struct elf *elf,
--					       struct section *sec,
--					       unsigned int reloc_nr)
-+struct section *elf_create_rela_section(struct elf *elf,
-+					struct section *sec,
-+					unsigned int reloc_nr)
- {
- 	struct section *rsec;
- 	struct reloc_block *block;
-diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
-index 0b303eba660e..c60fec88b3af 100644
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -28,6 +28,7 @@ enum insn_type {
- 	INSN_CLD,
- 	INSN_TRAP,
- 	INSN_ENDBR,
-+	INSN_STACKPROTECTOR,
- 	INSN_OTHER,
+ #ifdef CONFIG_X86_64
+ struct fixed_percpu_data {
+-	/*
+-	 * GCC hardcodes the stack canary as %gs:40.  Since the
+-	 * irq_stack is the object at %gs:0, we reserve the bottom
+-	 * 48 bytes of the irq stack for the canary.
+-	 *
+-	 * Once we are willing to require -mstack-protector-guard-symbol=
+-	 * support for x86_64 stackprotector, we can get rid of this.
+-	 */
+ 	char		gs_base[40];
+-	unsigned long	stack_canary;
++	unsigned long	reserved;
  };
  
-@@ -96,4 +97,6 @@ int arch_rewrite_retpolines(struct objtool_file *file);
+ DECLARE_PER_CPU_FIRST(struct fixed_percpu_data, fixed_percpu_data) __visible;
+@@ -411,11 +403,7 @@ extern asmlinkage void entry_SYSCALL32_ignore(void);
  
- bool arch_pc_relative_reloc(struct reloc *reloc);
+ /* Save actual FS/GS selectors and bases to current->thread */
+ void current_save_fsgs(void);
+-#else	/* X86_64 */
+-#ifdef CONFIG_STACKPROTECTOR
+-DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
+-#endif
+-#endif	/* !X86_64 */
++#endif	/* X86_64 */
  
-+int arch_hack_stackprotector(struct objtool_file *file);
+ struct perf_event;
+ 
+diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
+index 00473a650f51..d43fb589fcf6 100644
+--- a/arch/x86/include/asm/stackprotector.h
++++ b/arch/x86/include/asm/stackprotector.h
+@@ -2,26 +2,10 @@
+ /*
+  * GCC stack protector support.
+  *
+- * Stack protector works by putting predefined pattern at the start of
++ * Stack protector works by putting a predefined pattern at the start of
+  * the stack frame and verifying that it hasn't been overwritten when
+- * returning from the function.  The pattern is called stack canary
+- * and unfortunately gcc historically required it to be at a fixed offset
+- * from the percpu segment base.  On x86_64, the offset is 40 bytes.
+- *
+- * The same segment is shared by percpu area and stack canary.  On
+- * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
+- * base of percpu area.  The first occupant of the percpu area is always
+- * fixed_percpu_data which contains stack_canary at the appropriate
+- * offset.  On x86_32, the stack canary is just a regular percpu
+- * variable.
+- *
+- * Putting percpu data in %fs on 32-bit is a minor optimization compared to
+- * using %gs.  Since 32-bit userspace normally has %fs == 0, we are likely
+- * to load 0 into %fs on exit to usermode, whereas with percpu data in
+- * %gs, we are likely to load a non-null %gs on return to user mode.
+- *
+- * Once we are willing to require GCC 8.1 or better for 64-bit stackprotector
+- * support, we can remove some of this complexity.
++ * returning from the function.  The pattern is called the stack canary
++ * and is a unique value for each task.
+  */
+ 
+ #ifndef _ASM_STACKPROTECTOR_H
+@@ -36,6 +20,8 @@
+ 
+ #include <linux/sched.h>
+ 
++DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
 +
- #endif /* _ARCH_H */
-diff --git a/tools/objtool/include/objtool/builtin.h b/tools/objtool/include/objtool/builtin.h
-index fcca6662c8b4..5085d3135e6b 100644
---- a/tools/objtool/include/objtool/builtin.h
-+++ b/tools/objtool/include/objtool/builtin.h
-@@ -13,6 +13,7 @@ struct opts {
- 	bool hack_jump_label;
- 	bool hack_noinstr;
- 	bool hack_skylake;
-+	bool hack_stackprotector;
- 	bool ibt;
- 	bool mcount;
- 	bool noinstr;
-@@ -38,6 +39,7 @@ struct opts {
- 	bool sec_address;
- 	bool stats;
- 	bool verbose;
-+	bool smp;
- };
+ /*
+  * Initialize the stackprotector canary value.
+  *
+@@ -51,25 +37,13 @@ static __always_inline void boot_init_stack_canary(void)
+ {
+ 	unsigned long canary = get_random_canary();
  
- extern struct opts opts;
-diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-index 7851467f6878..b5eec9e4a65d 100644
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -120,6 +120,10 @@ struct elf *elf_open_read(const char *name, int flags);
- struct section *elf_create_section(struct elf *elf, const char *name,
- 				   size_t entsize, unsigned int nr);
+-#ifdef CONFIG_X86_64
+-	BUILD_BUG_ON(offsetof(struct fixed_percpu_data, stack_canary) != 40);
+-#endif
+-
+ 	current->stack_canary = canary;
+-#ifdef CONFIG_X86_64
+-	this_cpu_write(fixed_percpu_data.stack_canary, canary);
+-#else
+ 	this_cpu_write(__stack_chk_guard, canary);
+-#endif
+ }
  
-+struct section *elf_create_rela_section(struct elf *elf,
-+					struct section *sec,
-+					unsigned int reloc_nr);
-+
- int elf_extend_rela_section(struct elf *elf,
- 			    struct section *rsec,
- 			    int add_relocs);
-@@ -130,6 +134,8 @@ struct section *elf_create_section_pair(struct elf *elf, const char *name,
+ static inline void cpu_init_stack_canary(int cpu, struct task_struct *idle)
+ {
+-#ifdef CONFIG_X86_64
+-	per_cpu(fixed_percpu_data.stack_canary, cpu) = idle->stack_canary;
+-#else
+ 	per_cpu(__stack_chk_guard, cpu) = idle->stack_canary;
+-#endif
+ }
  
- struct symbol *elf_create_prefix_symbol(struct elf *elf, struct symbol *orig, long size);
+ #else	/* STACKPROTECTOR */
+diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offsets_64.c
+index bb65371ea9df..590b6cd0eac0 100644
+--- a/arch/x86/kernel/asm-offsets_64.c
++++ b/arch/x86/kernel/asm-offsets_64.c
+@@ -54,11 +54,5 @@ int main(void)
+ 	BLANK();
+ #undef ENTRY
  
-+struct symbol *elf_create_undef_symbol(struct elf *elf, const char *sym_name);
-+
- struct reloc *elf_init_reloc_text_sym(struct elf *elf, struct section *sec,
- 				      unsigned long offset,
- 				      unsigned int reloc_idx,
+-	BLANK();
+-
+-#ifdef CONFIG_STACKPROTECTOR
+-	OFFSET(FIXED_stack_canary, fixed_percpu_data, stack_canary);
+-	BLANK();
+-#endif
+ 	return 0;
+ }
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 9a34651d24e7..f49e8f5b858d 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -2063,16 +2063,13 @@ void syscall_init(void)
+ 	if (!cpu_feature_enabled(X86_FEATURE_FRED))
+ 		idt_syscall_init();
+ }
+-
+-#else	/* CONFIG_X86_64 */
++#endif /* CONFIG_X86_64 */
+ 
+ #ifdef CONFIG_STACKPROTECTOR
+ DEFINE_PER_CPU(unsigned long, __stack_chk_guard);
+ EXPORT_PER_CPU_SYMBOL(__stack_chk_guard);
+ #endif
+ 
+-#endif	/* CONFIG_X86_64 */
+-
+ /*
+  * Clear all 6 debug registers:
+  */
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index b11526869a40..cfbf0486d424 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -361,8 +361,7 @@ SYM_INNER_LABEL(common_startup_64, SYM_L_LOCAL)
+ 
+ 	/* Set up %gs.
+ 	 *
+-	 * The base of %gs always points to fixed_percpu_data. If the
+-	 * stack protector canary is enabled, it is located at %gs:40.
++	 * The base of %gs always points to fixed_percpu_data.
+ 	 * Note that, on SMP, the boot cpu uses init data section until
+ 	 * the per cpu areas are set up.
+ 	 */
+diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+index 758bcd47b72d..ae4672ea00bb 100644
+--- a/arch/x86/xen/xen-head.S
++++ b/arch/x86/xen/xen-head.S
+@@ -53,8 +53,7 @@ SYM_CODE_START(startup_xen)
+ 
+ 	/* Set up %gs.
+ 	 *
+-	 * The base of %gs always points to fixed_percpu_data.  If the
+-	 * stack protector canary is enabled, it is located at %gs:40.
++	 * The base of %gs always points to fixed_percpu_data.
+ 	 * Note that, on SMP, the boot cpu uses init data section until
+ 	 * the per cpu areas are set up.
+ 	 */
 -- 
 2.44.0
 
