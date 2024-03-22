@@ -1,243 +1,173 @@
-Return-Path: <linux-kernel+bounces-111742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1DE887040
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:03:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2750E887046
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23B8CB2245D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:03:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0CBC281492
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C23856B79;
-	Fri, 22 Mar 2024 16:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797D757864;
+	Fri, 22 Mar 2024 16:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="IdDw0AIz"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sNV5udq8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C8141C6A
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A0C481A0;
+	Fri, 22 Mar 2024 16:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711123394; cv=none; b=iGeU7Oh679OYVolrsWlBkQf4AqX0021iZBh32BanvTGQVWDzcUlq5pa5w0B2HmztyNQ9epUPolQUjtmXIH9s4/zUTRfqDZT63t5xPlv64b7EJaisXwhIuC1bdMwmzgZ2K5ShbNaGR4WgBn/TRkypmCyjPh8ScVDehLXPEwiB9hI=
+	t=1711123504; cv=none; b=V8zh2l468MrefuaVWcFwh7Fi4/7nWfyH34LmEVO9+UJcf7BX90vSxaaS6A4riqZ4AZoq4eA1PzebtdAaAvrba+TcXzxcwT+60xpaor9waB3jvgEouxO5x46s9y75WEgA9jtT8x9YR6yFw5TPkrWwu72JcwUvHFrdBAS+R3KsZUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711123394; c=relaxed/simple;
-	bh=SvJGLYHJxEO+kQPgbDvLc6DOGWqvWJBC/KeHsXQ0S+4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=HBTwgffkQ/80yP2JVOIiKNJptaGPAdJdUVV5ksft5nFkafn0eWBP6T+EAUA52AadpgQBX7PlVgILM4ceVTxLZ0+ElkZT/KjegAX2I9qyuMm7PTJ6Zjr/04iz7yL73SH0vAeryKYcXjUnx8RF7i9bcsn7yN5ZdsY6PZVQG/+wQec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=IdDw0AIz; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so31218161fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1711123390; x=1711728190; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kh0B0Op/7iFcRFrIOoiJQuhYzDeOdAJ2QNUlBpVkvVY=;
-        b=IdDw0AIzYkF3KLWngPQI+az8mx+M8FLiWwNYqRIE92h8Vu9srNP9eZVFiNGc7jtPGA
-         Ih89BDJdG9LFzi2dVc6cam4pv2zesvKRNxKYOSDUnFqxFZEUW/yVWNqD0bdxut/MYyDB
-         dML5PQc5dNse+OU64tVuoIjNUO8bApbXSsFiR/yWFhKl1A5B9tGZfD64CsH/PgdECJM1
-         KPL6zNMYuXmleSPYhC21pYuyYgUSQNnGV2k9Y9Mjp/WHXv4Z7CKhk8NJJUXEmBhcDerA
-         Ey21LQwfdKeZ2OqOI+V3JMqd9Ts9EOw3/9wHS2EY9+S2I7eLvf7L91yC9X7TKKWED4il
-         MYZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711123390; x=1711728190;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Kh0B0Op/7iFcRFrIOoiJQuhYzDeOdAJ2QNUlBpVkvVY=;
-        b=GXs5dJHmhy6fvjPzRD1RM1lFioWRuk0D1tjBr4D5EsoMz+3K3jr2vzQQXNTnionw13
-         EiUO+SWc/VUph3SohRXImS79DM0ue8T506xrNyOvUXGFwY0qKV/9lZqjJSd3f8DXPKEg
-         A3PR44rvBsmOXVaRIjYZl2xullTPWPQKavYVOv8lmZi3KeoumdW1AlwwBa7Z/m+lB2na
-         rRSYMi8aCvFSyGBl0JlWGBfQkcAGDi8erolS4I8uiMTa3fG9qrpKztYz7LJReb9LjznM
-         hA+9BxVkNw0PXePI8uytkZB39ir3JpH238D0WzBF+cfSNZ1dAumJBmQB0JlDll9QEZrZ
-         7fqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZvvHJLGPKzWfHJg51OAulawWNXu4EKPsM9ebEeG5Q6fMHIAKBfOUOYxfu0IOp21Vqlb22yQZ/LTayJgg6/vNHtAYhj9agDTEyvW0R
-X-Gm-Message-State: AOJu0YwCGXvTLd6HqjPnlyfM1XI8ACp/NJ0q4v0wjBGePgqGW/JXm+uC
-	l2Y6OPnUuQk7bpVW0FlMqnM8GDALQhq5fOPdqPuRgedlsjV3GeSkqNxDLXmAQXs=
-X-Google-Smtp-Source: AGHT+IEkR6PizaNuC62j5Grot13csXnQY6gVrSzN5nx/GfkID77oL8KO3GnXgbM82pcwsLxNamFMfQ==
-X-Received: by 2002:a2e:9f4c:0:b0:2d4:6910:2ee5 with SMTP id v12-20020a2e9f4c000000b002d469102ee5mr2129385ljk.8.1711123390044;
-        Fri, 22 Mar 2024 09:03:10 -0700 (PDT)
-Received: from localhost (alyon-651-1-22-137.w82-122.abo.wanadoo.fr. [82.122.123.137])
-        by smtp.gmail.com with ESMTPSA id g11-20020a05600c310b00b0041408e16e6bsm3472839wmo.25.2024.03.22.09.03.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 09:03:09 -0700 (PDT)
+	s=arc-20240116; t=1711123504; c=relaxed/simple;
+	bh=pU676GFAED0poswPTfyBT5GkBYVJPMcwY8WVLXctuBo=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=llepuJcltc85HmnRM+2Pw6DPBho6lpVE8WU1BNeYAd7aSIlnA3UinSbcKRZkuFDipDg5IL/uERKkSNuaV+vHX/8UhOBn404OsufXkM6gieIEf1CwU0/r+twCS1xFd84teuz9rz0XrmvzYo6F/MQuuEdsIt+UXz9qCj0B0r9u0yM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sNV5udq8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C2BBC433C7;
+	Fri, 22 Mar 2024 16:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711123503;
+	bh=pU676GFAED0poswPTfyBT5GkBYVJPMcwY8WVLXctuBo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sNV5udq8Io5AIDHW9FgD7zcq57bDQSVadRUpGCrWONB22OGzkpZipbImWpeB4GZlD
+	 kIaCue/uKQ6cPGNWS+pem1hsXnnu1Y+dAoFmmun/ovE2woh43rxfRhc66DfLXpH4pJ
+	 bJ8NLeyGS/86ktSd8VUHIeoui2v/QUkPnj3imj31nRsGZkCreFuRxBc/xEHZXPc26r
+	 B8WZjQggLOqQZMNHYsYBESo/vGsbO2qRUzYRxyPNEgHk4ksylUcUKGLbiVmt950RnS
+	 yXyXt08sPngMk8DxTrrAW24Q6/xqGxR82yRfBu/+1sEy9sNJF5g6QvaqFTHob2DnFC
+	 FXbLYZNpUamEQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rnhO8-00EYGR-P1;
+	Fri, 22 Mar 2024 16:05:00 +0000
+Date: Fri, 22 Mar 2024 16:05:00 +0000
+Message-ID: <86il1ez1zn.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/5] KVM: arm64: Add support for PSCI v1.2 and v1.3
+In-Reply-To: <20240319130957.1050637-3-dwmw2@infradead.org>
+References: <20240319130957.1050637-1-dwmw2@infradead.org>
+	<20240319130957.1050637-3-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 22 Mar 2024 17:03:08 +0100
-Message-Id: <D00EM8TTYGXL.3MMIBWJT03M5R@baylibre.com>
-Subject: Re: [PATCH v4 10/11] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC
- pinctrl and GPIO
-From: "Esteban Blanc" <eblanc@baylibre.com>
-To: "Bhargav Raviprakash" <bhargav.r@ltts.com>,
- <linux-kernel@vger.kernel.org>
-Cc: <m.nirmaladevi@ltts.com>, <lee@kernel.org>, <robh+dt@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
- <jpanis@baylibre.com>, <devicetree@vger.kernel.org>, <arnd@arndb.de>,
- <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <nm@ti.com>, <vigneshr@ti.com>,
- <kristo@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240320102559.464981-1-bhargav.r@ltts.com>
- <20240320102559.464981-11-bhargav.r@ltts.com>
-In-Reply-To: <20240320102559.464981-11-bhargav.r@ltts.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed Mar 20, 2024 at 11:25 AM CET, Bhargav Raviprakash wrote:
-> From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
->
-> Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they have
-> significant functional overlap.
-> TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
-> dedicated device functions.
->
-> Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+On Tue, 19 Mar 2024 12:59:03 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> Since the v1.3 specification is still in Alpha, only default to v1.2
+> unless userspace explicitly requests v1.3 for now.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 > ---
->  drivers/pinctrl/pinctrl-tps6594.c | 258 +++++++++++++++++++++++++-----
->  1 file changed, 215 insertions(+), 43 deletions(-)
->
-> diff --git a/drivers/pinctrl/pinctrl-tps6594.c b/drivers/pinctrl/pinctrl-=
-tps6594.c
-> index 66985e54b..db0f5d2a8 100644
-> --- a/drivers/pinctrl/pinctrl-tps6594.c
-> +++ b/drivers/pinctrl/pinctrl-tps6594.c
-> @@ -320,8 +451,18 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
->  		return -ENOMEM;
->  	pctrl_desc->name =3D dev_name(dev);
->  	pctrl_desc->owner =3D THIS_MODULE;
-> -	pctrl_desc->pins =3D tps6594_pins;
-> -	pctrl_desc->npins =3D ARRAY_SIZE(tps6594_pins);
-> +	switch (tps->chip_id) {
-> +	case TPS65224:
-> +		pctrl_desc->pins =3D tps65224_pins;
-> +		pctrl_desc->npins =3D ARRAY_SIZE(tps65224_pins);
-> +		break;
-> +	case TPS6594:
-> +		pctrl_desc->pins =3D tps6594_pins;
-> +		pctrl_desc->npins =3D ARRAY_SIZE(tps6594_pins);
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  	pctrl_desc->pctlops =3D &tps6594_pctrl_ops;
->  	pctrl_desc->pmxops =3D &tps6594_pmx_ops;
+>  arch/arm64/kvm/hypercalls.c | 2 ++
+>  arch/arm64/kvm/psci.c       | 6 +++++-
+>  include/kvm/arm_psci.h      | 4 +++-
+>  3 files changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index 5763d979d8ca..9c6267ca2b82 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -575,6 +575,8 @@ int kvm_arm_set_fw_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+>  		case KVM_ARM_PSCI_0_2:
+>  		case KVM_ARM_PSCI_1_0:
+>  		case KVM_ARM_PSCI_1_1:
+> +		case KVM_ARM_PSCI_1_2:
+> +		case KVM_ARM_PSCI_1_3:
+>  			if (!wants_02)
+>  				return -EINVAL;
+>  			vcpu->kvm->arch.psci_version = val;
+> diff --git a/arch/arm64/kvm/psci.c b/arch/arm64/kvm/psci.c
+> index 1f69b667332b..f689ef3f2f10 100644
+> --- a/arch/arm64/kvm/psci.c
+> +++ b/arch/arm64/kvm/psci.c
+> @@ -322,7 +322,7 @@ static int kvm_psci_1_x_call(struct kvm_vcpu *vcpu, u32 minor)
+>  
+>  	switch(psci_fn) {
+>  	case PSCI_0_2_FN_PSCI_VERSION:
+> -		val = minor == 0 ? KVM_ARM_PSCI_1_0 : KVM_ARM_PSCI_1_1;
+> +		val = PSCI_VERSION(1, minor);
+>  		break;
+>  	case PSCI_1_0_FN_PSCI_FEATURES:
+>  		arg = smccc_get_arg1(vcpu);
+> @@ -449,6 +449,10 @@ int kvm_psci_call(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	switch (version) {
+> +	case KVM_ARM_PSCI_1_3:
+> +		return kvm_psci_1_x_call(vcpu, 3);
+> +	case KVM_ARM_PSCI_1_2:
+> +		return kvm_psci_1_x_call(vcpu, 2);
+>  	case KVM_ARM_PSCI_1_1:
+>  		return kvm_psci_1_x_call(vcpu, 1);
+>  	case KVM_ARM_PSCI_1_0:
+> diff --git a/include/kvm/arm_psci.h b/include/kvm/arm_psci.h
+> index e8fb624013d1..ebd7d9a12790 100644
+> --- a/include/kvm/arm_psci.h
+> +++ b/include/kvm/arm_psci.h
+> @@ -14,8 +14,10 @@
+>  #define KVM_ARM_PSCI_0_2	PSCI_VERSION(0, 2)
+>  #define KVM_ARM_PSCI_1_0	PSCI_VERSION(1, 0)
+>  #define KVM_ARM_PSCI_1_1	PSCI_VERSION(1, 1)
+> +#define KVM_ARM_PSCI_1_2	PSCI_VERSION(1, 2)
+> +#define KVM_ARM_PSCI_1_3	PSCI_VERSION(1, 3)
+>  
+> -#define KVM_ARM_PSCI_LATEST	KVM_ARM_PSCI_1_1
+> +#define KVM_ARM_PSCI_LATEST	KVM_ARM_PSCI_1_2 /* v1.3 is still Alpha */
+>  
+>  static inline int kvm_psci_version(struct kvm_vcpu *vcpu)
+>  {
 
-See below.
+Consider making the visibility of v1.2/1.3 to userspace and guest the
+last patch in the series, so that there is no transient support for
+some oddball PSCI version with no feature (keeps bisection clean).
 
-> @@ -329,8 +470,28 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
->  	if (!pinctrl)
->  		return -ENOMEM;
->  	pinctrl->tps =3D dev_get_drvdata(dev->parent);
-> -	pinctrl->funcs =3D pinctrl_functions;
-> -	pinctrl->pins =3D tps6594_pins;
-> +	switch (pinctrl->tps->chip_id) {
+Thanks,
 
-You could use tps->chip_id like in the previous switch.
+	M.
 
-> +	case TPS65224:
-> +		pinctrl->funcs =3D tps65224_pinctrl_functions;
-> +		pinctrl->func_cnt =3D ARRAY_SIZE(tps65224_pinctrl_functions);
-> +		pinctrl->pins =3D tps65224_pins;
-> +		pinctrl->num_pins =3D ARRAY_SIZE(tps65224_pins);
-> +		pinctrl->mux_sel_mask =3D TPS65224_MASK_GPIO_SEL;
-> +		pinctrl->remap =3D tps65224_muxval_remap;
-> +		pinctrl->remap_cnt =3D ARRAY_SIZE(tps65224_muxval_remap);
-> +		break;
-> +	case TPS6594:
-> +		pinctrl->funcs =3D pinctrl_functions;
-
-This should be tps6594_pinctrl_functions
-
-> +		pinctrl->func_cnt =3D ARRAY_SIZE(pinctrl_functions);
-> +		pinctrl->pins =3D tps6594_pins;
-> +		pinctrl->num_pins =3D ARRAY_SIZE(tps6594_pins);
-> +		pinctrl->mux_sel_mask =3D TPS6594_MASK_GPIO_SEL;
-> +		pinctrl->remap =3D tps6594_muxval_remap;
-> +		pinctrl->remap_cnt =3D ARRAY_SIZE(tps6594_muxval_remap);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-
-See blow.
-
->  	pinctrl->pctl_dev =3D devm_pinctrl_register(dev, pctrl_desc, pinctrl);
->  	if (IS_ERR(pinctrl->pctl_dev))
->  		return dev_err_probe(dev, PTR_ERR(pinctrl->pctl_dev),
-> @@ -338,8 +499,18 @@ static int tps6594_pinctrl_probe(struct platform_dev=
-ice *pdev)
-> =20
->  	config.parent =3D tps->dev;
->  	config.regmap =3D tps->regmap;
-> -	config.ngpio =3D TPS6594_PINCTRL_PINS_NB;
-> -	config.ngpio_per_reg =3D 8;
-> +	switch (pinctrl->tps->chip_id) {
-
-Same here, use tps->chip_id
-
-> +	case TPS65224:
-> +		config.ngpio =3D ARRAY_SIZE(tps65224_gpio_func_group_names);
-> +		config.ngpio_per_reg =3D TPS65224_NGPIO_PER_REG;
-> +		break;
-> +	case TPS6594:
-> +		config.ngpio =3D ARRAY_SIZE(tps6594_gpio_func_group_names);
-> +		config.ngpio_per_reg =3D TPS6594_NGPIO_PER_REG;
-> +		break;
-> +	default:
-> +		break;
-> +	}
->  	config.reg_dat_base =3D TPS6594_REG_GPIO_IN_1;
->  	config.reg_set_base =3D TPS6594_REG_GPIO_OUT_1;
->  	config.reg_dir_out_base =3D TPS6594_REG_GPIOX_CONF(0);
-
-Regarding all the switch case, they should be use to set all the struct
-fields that are known at runtime only. For example, pinctrl->funcs, and
-pinctrl->func_cnt are known at compile time. You should create template
-structs, one for TPS6594 the other TPS65224, initialise the allocated
-struct with the template and then fill the remaining fields with the
-runtime values. Something like this:
-
-```c
-struct test {
-    int a;
-    int *b;
-};
-
-static struct test template =3D {
-    .a =3D 42,
-};
-
-int main(void) {
-    struct test *test =3D malloc(sizeof(*test));
-    *test =3D sample;
-    test->b =3D NULL;
-
-    return 0;
-}
-```
-
-You could also try to reduce the number of switch case, there is no good
-reason to have 2 switch instead of one for pctrl_desc and pinctrl
-structs.
-
-Best regards,
-
---=20
-Esteban "Skallwar" Blanc
-BayLibre
-
+-- 
+Without deviation from the norm, progress is not possible.
 
