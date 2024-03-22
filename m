@@ -1,92 +1,87 @@
-Return-Path: <linux-kernel+bounces-111680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB960886F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:09:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51901886E1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:10:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 901571F22AF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:09:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 835341C21493
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273984D9FC;
-	Fri, 22 Mar 2024 15:09:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VPlLRpNd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A92481B3;
-	Fri, 22 Mar 2024 15:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A0747A64;
+	Fri, 22 Mar 2024 14:10:32 +0000 (UTC)
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427EF44C84;
+	Fri, 22 Mar 2024 14:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.14.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711120187; cv=none; b=YCk638+GQ0VIHW409/WY1U6qnjKJHPtLaujtgKaqhpOh2kl+ETVJhPDcuDUZ9uFlNWf4tbJ/LDOB9xEl1ZoKKU1dMCgEKyD5ANyXGiizMjxGGQSryQ1wiKY+s48JpQISMaAOSBQUa8x/j5FRI1wjcvvsD7yXhCLzww8leY3MGL0=
+	t=1711116632; cv=none; b=DCIIvmoCpoVnrtmsvCK97Qvy8zVANN8HcW1XLlusBA1j1ufb7ObS3d5UWiUjvEbwX7T2okbGTqHZPaD2RPkMwLivSpRUcQvgxwEt+kLFaHWEtcUsCRmcEhQaO6tKuah/i2BSpEym6Q7Ve8+XOmgMfRc5/m74Eskwac1RAO1KoEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711120187; c=relaxed/simple;
-	bh=UXgPa4p5wBn1d97FInWzLgeWdHJZdB/ycE6abVVuEHE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BeMeWAnVUGKB9Cl6n4d/zBIJ5/7Y0U+w9SSQXj9XiQa9sObGXFF/NMzy/jG6/EmOgpRE+pcMuTWLp+wsBBjLw9EOEw2UiLypPP2jgUKoVv4lv8hPO8+WQ3i80M1x88Sl7rLlqKehQX0P20+g2hS6mt7fgVCoEBhjKQ+bvAHifII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VPlLRpNd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD70C433F1;
-	Fri, 22 Mar 2024 15:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711120187;
-	bh=UXgPa4p5wBn1d97FInWzLgeWdHJZdB/ycE6abVVuEHE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VPlLRpNdS0FHw4DD9EZneTwobhZblVezN/Y/Y5CiXqGdaxw4FLFxImpc4d2HP/RgC
-	 ZxPntCPNxSokHzmY+inIKJlDcfRR4ldf1ugOGXa8ymSMVizhTL5WxdKOI2FoyjI/bm
-	 IXvjvB+JROneBphP6GvK4+3fwFQqnawdTrWzKIvGCSk7bLXbFVATkEsTIVhZ2YGML/
-	 IiOPbS3Za+YsVysbG+t96OHjLmyG+sGkXdzJSfSJOaO0WFegSZJ59z7siq0zr/ehIa
-	 5g7e++IWf253Io63or2ImSQ127kTbhSZyn4JtO6yk+IfNLkKFnecTd+0RCZjNai8Kr
-	 uTOAqNF1rftag==
-Date: Fri, 22 Mar 2024 15:09:41 +0000
-From: Will Deacon <will@kernel.org>
-To: Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Michael Kelley <mhklinux@outlook.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
-	Roberto Sassu <roberto.sassu@huaweicloud.com>,
-	Petr Tesarik <petr@tesarici.cz>
-Subject: Re: [PATCH v3 0/2] swiotlb: allocate padding slots if necessary
-Message-ID: <20240322150941.GA5634@willie-the-truck>
-References: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+	s=arc-20240116; t=1711116632; c=relaxed/simple;
+	bh=hzN37LrXUnNaqZM3O6Ud4Y3v21xt+dXsLN5PkrXZaw0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cIOV3ul7hEMw3x8bISicKj9nJTCMFaznYj2ObKyDWh+QROuZOKcHPzECY31MLzKSi6IbQS3wV78KIWmQMq2OWB2IWPHM4z4cFUrvVgyxBIsc6M0mN0leFojYaII3WLueRG1Sg4XZ0fHMfH9RdsuFInwoF55ntGZB2LEaDye/goE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org; spf=pass smtp.mailfrom=gpxsee.org; arc=none smtp.client-ip=37.205.14.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gpxsee.org
+Received: from mgb4.. (unknown [62.77.71.229])
+	by mx.gpxsee.org (Postfix) with ESMTPSA id 4FFCD65F7D;
+	Fri, 22 Mar 2024 15:10:22 +0100 (CET)
+From: tumic@gpxsee.org
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Martin=20T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+Subject: [PATCH v4 0/3] media: mgb4: YUV and variable framerate support
+Date: Fri, 22 Mar 2024 16:10:02 +0100
+Message-ID: <20240322151005.3499-1-tumic@gpxsee.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321171902.85-1-petrtesarik@huaweicloud.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Petr,
+From: Martin Tůma <martin.tuma@digiteqautomotive.com>
 
-On Thu, Mar 21, 2024 at 06:19:00PM +0100, Petr Tesarik wrote:
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> 
-> If the allocation alignment is bigger than IO_TLB_SIZE and min_align_mask
-> covers some bits in the original address between IO_TLB_SIZE and
-> alloc_align_mask, preserve these bits by allocating additional padding
-> slots before the actual swiotlb buffer.
+Recent mgb4 FW update added support for the YUV image format and variable
+framerates independent of the signal framerate. The following patches extend
+the mgb4 driver with support for both features.
 
-Thanks for fixing this! I was out at a conference last week, so I didn't
-get very far with it myself, but I ended up in a pickle trying to avoid
-extending 'struct io_tlb_slot'. Your solution is much better than the
-crazy avenue I started going down...
+Changes in V4:
+- Splitted the output frame_rate handling fix from the variable frame rate
+  addition patch.
 
-With your changes, can we now simplify swiotlb_align_offset() to ignore
-dma_get_min_align_mask() altogether and just:
+Changes in V3:
+- Use div_u64() for 64b division (fixes build error on ARM32)
 
-	return addr & (IO_TLB_SIZE - 1);
+Changes in V2:
+- Added missing stride limit
 
-?
+Martin Tůma (3):
+  media: mgb4: Add support for YUV image formats
+  media: mgb4: Add support for V4L2_CAP_TIMEPERFRAME
+  media: mgb4: Fixed signal frame rate limit handling
 
-Will
+ Documentation/admin-guide/media/mgb4.rst |   8 +-
+ drivers/media/pci/mgb4/mgb4_core.c       |   2 +-
+ drivers/media/pci/mgb4/mgb4_core.h       |   2 +
+ drivers/media/pci/mgb4/mgb4_io.h         |  29 +-
+ drivers/media/pci/mgb4/mgb4_sysfs_out.c  |   9 +-
+ drivers/media/pci/mgb4/mgb4_vin.c        | 205 ++++++++++++---
+ drivers/media/pci/mgb4/mgb4_vin.h        |   3 +-
+ drivers/media/pci/mgb4/mgb4_vout.c       | 322 ++++++++++++++++++++---
+ drivers/media/pci/mgb4/mgb4_vout.h       |   5 +-
+ 9 files changed, 504 insertions(+), 81 deletions(-)
+
+
+base-commit: b14257abe7057def6127f6fb2f14f9adc8acabdb
+-- 
+2.44.0
+
 
