@@ -1,397 +1,177 @@
-Return-Path: <linux-kernel+bounces-111663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA92886F3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 312B8886F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13806281552
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:58:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0CA2815CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E714359179;
-	Fri, 22 Mar 2024 14:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8EF4C601;
+	Fri, 22 Mar 2024 14:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GirDKMFh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="SZOUo6hk"
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com [209.85.222.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF61559172;
-	Fri, 22 Mar 2024 14:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997864E1B3
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711119420; cv=none; b=iOThO93XMXDX+Ro8jF7NuqWvCDleN0emKT1YkYvROouQuC6IFlkXxRduJwNcG4jkjghHundWd0nwOYehgHdl4vYPh+D10gHJAWvartj48Qung5tsqRFlV9vK2DZ6Klsk5OCee0xIBj3EcqrFYUDCqiB/6vMt2pMRPUwKqWka73Q=
+	t=1711119437; cv=none; b=BBS0rshuuMsbBv+/rsoX1rJrFl4+GuVHWA0SqvOGeX3I4tI4mJiFZWBClLP37RN/Dp3fCSmt6FDtLk6CNO/ll2ORjtJNa8JPJdAoORjJ2LkcLLX2kt082qUiVJ+l/lRFrLAX2Vy16sc9FgCd1Omed9NCbc1/+uMweKhGxBZj+Kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711119420; c=relaxed/simple;
-	bh=HN1VAYhyyJrI+n911OZ9E7mIjbY9hd94iHMl1EvsCDg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GnbfN9+md/6GljOj0JBo5NOT3bn+5GwJC0HwxphHqybuyqIGEkwB09yYKMrpB2J2VFdMaf0NvQ9mYtrNn1UkHpGDtA/7/hgAnVGEIKv+giqbDvX/mgB4ESL/Z9Bqsk4iImGAxbfeyuuJeecyh7qachkWklT2C+43rIvHlNaPamY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GirDKMFh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30376C43394;
-	Fri, 22 Mar 2024 14:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711119419;
-	bh=HN1VAYhyyJrI+n911OZ9E7mIjbY9hd94iHMl1EvsCDg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=GirDKMFh5YrsSOn02VhZ93nTNmlteyBzSHrdJftsUphAzeTRpw+jDuSunMJjF7Dx1
-	 gAZhA4YFmFmoDPY/dCscx8476TwLN9Il+LuX1YZ2RPMbkD1zjfkJEbvwW/wqpOQm7W
-	 GD6wbLgcnRUHeeE84OqBK7s8+5UqFdgRByAx/mep127lfHxKxHRD0VA0S372YTq3lL
-	 RMM9RwWTcmOPCGbvjZTFp+4rjOi5e5ZOHjNZpQfkjegBWKgSlWsM1lj6Z8vP1WqXsJ
-	 b5W0vBOEA0PAKNJD9vPvOdFSIvdZOgzZrO+u/rL7lJUZfiiqMNUxIn4BAslcQdqroN
-	 GthD7+5lv2XIw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Fri, 22 Mar 2024 15:56:26 +0100
-Subject: [PATCH bpf-next v5 6/6] selftests/bpf: add sleepable timer tests
+	s=arc-20240116; t=1711119437; c=relaxed/simple;
+	bh=o3JhQ0qHV6zswN/4yjEibtmn3jJU5IgKzMreC96p6CA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YKShhoFj6uHB3Dg4CQ3LzCh5adhqDm0BzUrtwGf7drr0uiQ7g+vkempOOZhjE9DzO4I6Zo1gVTvp1awtvHB/1+hHxy2Fo49x2xxRwdOQ2UfTTUMiKOBmqfRS0HY9TLklM/++Z3ccW0L195sxG0NjJTOchd6KxbpIkl4a5pawTqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=SZOUo6hk; arc=none smtp.client-ip=209.85.222.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-7e06168551eso810147241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 07:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1711119434; x=1711724234; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZorJDZHV3S35zuqaxSThGm8XOeoTPpTjb5tz8dN4eJI=;
+        b=SZOUo6hk10idlRynBULMmc/Rbt45OmvAHDJMDTPPdAWA8BcBU2CQG2dQyZ/k9nO9Vv
+         SD57nMn7c0RQezGdNgJkj3KumUN3j+McF6FNyYLzjafOjaPwqf/zMF4rKRBMYrp7e4Wr
+         GM7UmFbfVlf7+IRbUfxBlaYiuWBFJJN7JCSEgG/mnTl08Ecny3jSBRDwya8lC1+rpBzs
+         PQE9r/zJMHfIx/4gQXrda3QHNwthL0G1mlMrXCXtvE7jG/HXRvD8Oipq09CT01LesuLg
+         JIdWqjoEBkRDJH6fVXgV1vm86l7E0h1UJu8iLicVfst2UiWlFzS+gt2mx28+JHCiMWtd
+         jyqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711119434; x=1711724234;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZorJDZHV3S35zuqaxSThGm8XOeoTPpTjb5tz8dN4eJI=;
+        b=eyg+RQyV2FaBUr/vJiFqU4K/JP7OyEP8hwXb7XJ6A6SE2zo7aoy0HllyHLSORzJ5ta
+         pLDnGoEBX9egpAfOV7WlGqTyytqNs+7m/2qnGweunEpxtBiSVGktlcN+2JUcqJYBCEMw
+         lvOfwemrFeLjJaU+BuR4qB37M+AvxMtJDMP22gdZLE8ftjsjZ5/i5ymhXrty5wb0r69n
+         fCXSDjEqSfRcfoGeimQpqMWiKdEz89rTTgLqU6HvQV2eVJFjcht4DfgE/tgLtbrTdzbd
+         G3lHhkgJ7s72ICjdBe708o0XHoPQJoDWf07ql5/j5l1n771CCycoT4j4d5a/F6ew1UAk
+         xsJA==
+X-Forwarded-Encrypted: i=1; AJvYcCW8pFG1GZA51K0pGOfX9tqgDRIVKWg4WQWNo9AHd+1RVPem/suoy1gzmKt4yQ9CDqZBCXvaZ33D6VzLdyqLUd5YlSd6256ke+5mEW3D
+X-Gm-Message-State: AOJu0YzvAdtAPawSOcRzYV89NkHSCn579AbpV28efBOBDtrSR00OXC/P
+	KQo5PVITsYfjiTzX2g5zV1kkDiIvllwU0jaL2Azcoc5nEcjKSB68YrSjEMgE5Y8=
+X-Google-Smtp-Source: AGHT+IF7KOamQ/ZSV2W2kGIMahMBrt6DfYcXh8dFA2yNq70TGAUvTUROE3goyGZT3KN/zY040q01ew==
+X-Received: by 2002:a05:6102:1789:b0:476:577f:aad8 with SMTP id je9-20020a056102178900b00476577faad8mr2952736vsb.14.1711119434492;
+        Fri, 22 Mar 2024 07:57:14 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:10:d05::7a9])
+        by smtp.gmail.com with ESMTPSA id e10-20020a37db0a000000b00789fc91dcf1sm816098qki.87.2024.03.22.07.57.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 07:57:14 -0700 (PDT)
+Message-ID: <f490bd15fd8ee36cd3e759483bbcfb3288cace74.camel@ndufresne.ca>
+Subject: Re: [PATCH 2/4] media: dt-binding: media: Document
+ =?UTF-8?Q?rk3588=E2=80=99s?= vepu121
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>, Emmanuel Gil Peyrot
+ <linkmauve@linkmauve.fr>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>
+Cc: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Philipp Zabel
+ <p.zabel@pengutronix.de>, Mauro Carvalho Chehab <mchehab@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+ <robin.murphy@arm.com>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Cristian Ciocaltea
+ <cristian.ciocaltea@collabora.com>, Dragan Simic <dsimic@manjaro.org>, 
+ Shreeya Patel <shreeya.patel@collabora.com>, Chris Morgan
+ <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, Nicolas
+ Frattaroli <frattaroli.nicolas@gmail.com>,  linux-media@vger.kernel.org,
+ linux-rockchip@lists.infradead.org,  devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,  iommu@lists.linux.dev
+Date: Fri, 22 Mar 2024 10:57:12 -0400
+In-Reply-To: <2798331.BEx9A2HvPv@diego>
+References: <20240320173736.2720778-1-linkmauve@linkmauve.fr>
+	 <855507987.0ifERbkFSE@diego>
+	 <70439a01-7949-46bf-a701-c82ba961171a@linaro.org>
+	 <2798331.BEx9A2HvPv@diego>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240322-hid-bpf-sleepable-v5-6-179c7b59eaaa@kernel.org>
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
-In-Reply-To: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711119393; l=9920;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=HN1VAYhyyJrI+n911OZ9E7mIjbY9hd94iHMl1EvsCDg=;
- b=t2JnubHg1chDpQcTIZb3B74IGoTzBmEM0ADhKU/BdeX1R69/upSunq5rH+SdljLt+zyXgaPei
- 8w2RCQZt8puDodbhcr6FTYG45P3W+1Uby4W+tFpWRUhqXeCuHjkqjFJ
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-bpf_experimental.h and ../bpf_testmod/bpf_testmod_kfunc.h are both
-including vmlinux.h, which is not compatible with including time.h
-or bpf_tcp_helpers.h.
+Le jeudi 21 mars 2024 =C3=A0 10:32 +0100, Heiko St=C3=BCbner a =C3=A9crit=
+=C2=A0:
+> Am Donnerstag, 21. M=C3=A4rz 2024, 10:19:54 CET schrieb Krzysztof Kozlows=
+ki:
+> > On 21/03/2024 09:47, Heiko St=C3=BCbner wrote:
+> > > > >      enum:
+> > > > >        - rockchip,rk3568-vepu
+> > > > > +      - rockchip,rk3588-vepu121
+> > > >=20
+> > > > What is 121?
+> > >=20
+> > > That is the strange naming of the ip block inside the soc.
+> > >=20
+> > > I.e. the rk3588 TRM lists a number of different video encoders and de=
+coders:
+> > > - VDPU121 is decoding h.263 and mpeg1,2,4
+> > > - VDPU381 is decoding h.265, h.264 and some more
+> > > - VDPU720 is decoding jpeg
+> > > - VDPU981 decodes AV1
+> > > - VEPU121 is the jpeg encoder above
+> > > - VEPU580 encodes h.264 and h.265
+> > >=20
+> > > Each of those are separate IP blocks with their own io-memory, their =
+own
+> > > interrupts and their own iommus, etc.
+> >=20
+> > Thanks for explanation. Short introduction in commit msg would be nice
+> > (e.g. VEPU121, one of two VEPU encoders). OTOH, why not documenting all
+> > of them? Bindings are supposed to be as complete as possible.
+>=20
+> We have a concurrent series for the vdpu121 running at
+>   https://lore.kernel.org/all/20240316071100.2419369-1-liujianfeng1994@gm=
+ail.com
+>=20
+> I think not all of those encoders/decoders are based on the Hantro IP
+> or at least at the moment we don't know this yet.
+> Hence people adding compatibles for the blocks they have actually
+> managed to run on their hardware.
 
-So keep sleepable tests in a separate bpf source file.
+Correct, on top of this legacy core, only VDPU981 (AV1 decode) is a chip fr=
+om
+Hantro / Verisilicon. Everything else looks like their own design and deriv=
+ed
+from their original rkvdec codec pack. We didn't name this AV1 decoder afte=
+r VSI
+brand as we didn't have the proper version information available, but we su=
+spect
+that is variant of their VSI9000D cores. In short, we tried to avoid docume=
+nting
+our speculation, even if we believe we are right.
 
-The first correct test is run twice for convenience:
-- first through RUN_TESTS
-- then we ensure that the timer was actually executed, in a manual
-  load/attach/run
+>=20
+> Bindings are supposed to be as complete as possible, but revising a wrong
+> binding later is very hard. And the whole media part is full of binary li=
+braries
+> in the vendor kernel and has not the best documentation.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+I agree with this, but I must give to RK that despite the lack of documenta=
+tion,
+their CODEC software is fully open-source and blob free on this platform.
 
----
+>=20
+> So I guess people are just cautious ;-)
+>=20
 
-changes in v5:
-- keep sleepable test separate
+exactly!
 
-new in v4
----
- tools/testing/selftests/bpf/bpf_experimental.h     |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c        |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h  |   1 +
- tools/testing/selftests/bpf/prog_tests/timer.c     |  34 ++++
- .../testing/selftests/bpf/progs/timer_sleepable.c  | 185 +++++++++++++++++++++
- 5 files changed, 230 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index a5b9df38c162..06ed98b3bc51 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -459,4 +459,9 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
- extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __weak __ksym;
- extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
- 
-+extern int bpf_timer_set_sleepable_cb_impl(struct bpf_timer *timer,
-+		int (callback_fn)(void *map, int *key, struct bpf_timer *timer),
-+		void *aux__ign) __ksym;
-+#define bpf_timer_set_sleepable_cb(timer, cb) \
-+	bpf_timer_set_sleepable_cb_impl(timer, cb, NULL)
- #endif
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 39ad96a18123..eb2b78552ca2 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -494,6 +494,10 @@ __bpf_kfunc static u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused
- 	return arg;
- }
- 
-+__bpf_kfunc void bpf_kfunc_call_test_sleepable(void)
-+{
-+}
-+
- BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
-@@ -520,6 +524,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS | KF_RCU)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_sleepable, KF_SLEEPABLE)
- BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
- 
- static int bpf_testmod_ops_init(struct btf *btf)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-index 7c664dd61059..ce5cd763561c 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-@@ -96,6 +96,7 @@ void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p) __ksym;
- void bpf_kfunc_call_test_mem_len_fail2(__u64 *mem, int len) __ksym;
- 
- void bpf_kfunc_call_test_destructive(void) __ksym;
-+void bpf_kfunc_call_test_sleepable(void) __ksym;
- 
- void bpf_kfunc_call_test_offset(struct prog_test_ref_kfunc *p);
- struct prog_test_member *bpf_kfunc_call_memb_acquire(void);
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index d66687f1ee6a..0c2c3ffe1887 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -3,6 +3,7 @@
- #include <test_progs.h>
- #include "timer.skel.h"
- #include "timer_failure.skel.h"
-+#include "timer_sleepable.skel.h"
- 
- #define NUM_THR 8
- 
-@@ -95,3 +96,36 @@ void serial_test_timer(void)
- 
- 	RUN_TESTS(timer_failure);
- }
-+
-+/* isolate sleepable tests from main timer tests
-+ * because if test_timer fails, it spews the console
-+ * with 10000 * 5 "spin_lock_thread:PASS:test_run_opts retval 0 nsec"
-+ */
-+void serial_test_sleepable_timer(void)
-+{
-+	struct timer_sleepable *timer_sleepable_skel = NULL;
-+	int err, prog_fd;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+
-+	RUN_TESTS(timer_sleepable);
-+
-+	/* re-run the success test to check if the timer was actually executed */
-+
-+	timer_sleepable_skel = timer_sleepable__open_and_load();
-+	if (!ASSERT_OK_PTR(timer_sleepable_skel, "timer_sleepable_skel_load"))
-+		return;
-+
-+	err = timer_sleepable__attach(timer_sleepable_skel);
-+	if (!ASSERT_OK(err, "timer_sleepable_attach"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(timer_sleepable_skel->progs.test_call_sleepable);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	usleep(50); /* 10 usecs should be enough, but give it extra */
-+
-+	ASSERT_EQ(timer_sleepable_skel->bss->ok_sleepable, 1, "ok_sleepable");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_sleepable.c b/tools/testing/selftests/bpf/progs/timer_sleepable.c
-new file mode 100644
-index 000000000000..97612a020e8c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_sleepable.c
-@@ -0,0 +1,185 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook
-+ * Copyright (c) 2024 Benjamin Tissoires
-+ */
-+
-+#include "bpf_experimental.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "../bpf_testmod/bpf_testmod_kfunc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define CLOCK_MONOTONIC 1
-+
-+struct elem {
-+	struct bpf_timer t;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 3);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} timer_map SEC(".maps");
-+
-+__u32 ok_sleepable;
-+
-+/* callback for sleepable timer */
-+static int timer_cb_sleepable(void *map, int *key, struct bpf_timer *timer)
-+{
-+	bpf_kfunc_call_test_sleepable();
-+	ok_sleepable |= (1 << *key);
-+	return 0;
-+}
-+
-+SEC("syscall")
-+/* check that calling bpf_timer_start() with BPF_F_TIMER_SLEEPABLE on a sleepable
-+ * callback works
-+ */
-+__retval(0)
-+long test_call_sleepable(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	if (ok_sleepable & 1)
-+		return -1;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (timer) {
-+		if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC) != 0)
-+			return -2;
-+		bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable);
-+		if (bpf_timer_start(timer, 0, BPF_F_TIMER_SLEEPABLE))
-+			return -3;
-+	} else {
-+		return -4;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("?syscall")
-+__log_level(2)
-+__failure
-+/* check that bpf_timer_set_callback() can not be called with a
-+ * sleepable callback
-+ */
-+__msg("mark_precise: frame0: regs=r1 stack= before")
-+__msg(": (85) call bpf_kfunc_call_test_sleepable#") /* anchor message */
-+__msg("program must be sleepable to call sleepable kfunc bpf_kfunc_call_test_sleepable")
-+long test_non_sleepable_sleepable_callback(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (timer) {
-+		bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC);
-+		bpf_timer_set_callback(timer, timer_cb_sleepable);
-+		bpf_timer_start(timer, 0, BPF_F_TIMER_SLEEPABLE);
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+/* check that calling bpf_timer_start() without BPF_F_TIMER_SLEEPABLE on a sleepable
-+ * callback is returning -EINVAL
-+ */
-+__retval(-22)
-+long test_call_sleepable_missing_flag(void *ctx)
-+{
-+	int key = 1;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return bpf_timer_start(timer, 0, 0);
-+}
-+
-+SEC("syscall")
-+/* check that calling bpf_timer_start() without BPF_F_TIMER_SLEEPABLE on a sleepable
-+ * callback is returning -EINVAL
-+ */
-+__retval(-22)
-+long test_call_sleepable_delay(void *ctx)
-+{
-+	int key = 2;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return bpf_timer_start(timer, 1, BPF_F_TIMER_SLEEPABLE);
-+}
-+
-+SEC("?syscall")
-+__log_level(2)
-+__failure
-+/* check that the first argument of bpf_timer_set_callback()
-+ * is a correct bpf_timer pointer.
-+ */
-+__msg("mark_precise: frame0: regs=r1 stack= before")
-+__msg(": (85) call bpf_timer_set_sleepable_cb_impl#") /* anchor message */
-+__msg("arg#0 doesn't point to a map value")
-+long test_wrong_pointer(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb((void *)&timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return -22;
-+}
-+
-+SEC("?syscall")
-+__log_level(2)
-+__failure
-+/* check that the first argument of bpf_timer_set_callback()
-+ * is a correct bpf_timer pointer.
-+ */
-+__msg("mark_precise: frame0: regs=r1 stack= before")
-+__msg(": (85) call bpf_timer_set_sleepable_cb_impl#") /* anchor message */
-+__msg("arg#0 offset can not be greater than 0")
-+long test_wrong_pointer_offset(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb((void *)timer + 1, timer_cb_sleepable))
-+		return 3;
-+
-+	return -22;
-+}
-
--- 
-2.44.0
+Nicolas
 
 
