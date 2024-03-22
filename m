@@ -1,57 +1,98 @@
-Return-Path: <linux-kernel+bounces-111987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF85F8873C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:21:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1122B8873EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 20:29:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E95451C226CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:21:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9EE51F23C70
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E52D7992D;
-	Fri, 22 Mar 2024 19:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D523E7A14E;
+	Fri, 22 Mar 2024 19:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kr2PNy6c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i4hlgaZA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Bi2Dc4s";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i4hlgaZA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1Bi2Dc4s"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB6479931;
-	Fri, 22 Mar 2024 19:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DC27A13F;
+	Fri, 22 Mar 2024 19:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711135292; cv=none; b=MboID71zkYqm8agw98Fv0Iics8e9MFMl+x8ayYV73+Ay03rXngb546+vM3GKzvwWP75IXMUk6fAHJxtjrFh7opVMYchykEs7IM+b5VMnqQzHO1nyaVBUEbCOQy789CKfNtIliC9ryxZ4TAb2U32piBZHdNEakweZO/BdJXnDnVg=
+	t=1711135770; cv=none; b=X7U1g+51ZkUUmmhMWDhA/ClI5cTvK1Ncyrc1g2LYnGib+Coe5XZYf7bhfSUAAWksXvgtGRXCKkukWld6BNuY8eOu4jFts2u3z8Dnm3IdjGHGbzo6I6oF0ZJ0GrurZkQ6LB+w3Laaky3rEpJ0oKCgD3wA2QCy/XmhPYokTt4rEW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711135292; c=relaxed/simple;
-	bh=8GHI0o7wqi9kjX1y8O2b7tkzv9Bz9lBCxkn7jE8Ae1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=HMBaCN5iy9bxRmLkKdjZByAOQI0xf/0KNg8OL8vmXsEu8/wlL4wytZiPtu0YZsRAe+SndihIFt4wX71T+VaPaONN95QsRbNb1rZJOongkGHbAzjkNDYpzGZvmzTLrfY1eYOxXpzI+Yf5HGMwCKOfLPF05ha8yNdy2P2CZeoP8L0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kr2PNy6c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C82CC43390;
-	Fri, 22 Mar 2024 19:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711135292;
-	bh=8GHI0o7wqi9kjX1y8O2b7tkzv9Bz9lBCxkn7jE8Ae1A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kr2PNy6cevo37THCTvYRS4j8RR3WxYeJbQPxc/b/04Kk7Hlci/rpk0114furSEml3
-	 1DypHJR8edT+SGLCcrFeL6CyzoXdk50Ln7aZIvsuBZ8mFMElt8IqHUnJ+bbdUuTZhk
-	 VRkzv8WuOQovxYxM3jMH+G8+CLTATAlIvysGlSWcnwL2ZY/vHJ7DpZsytlh5uQq7MH
-	 KnVUqUs8gimL8o35vHp3zcXdF3zG6buoBj/hrJbU92pXbMR9obub58UT3iXPRY6M3L
-	 eoAzqohI33/w9ajQLaLz7pbsrWVTsWmwVy993XytK6CEgbbE5gYfQprz3/MMuOd96F
-	 +sJfKST5IHiJQ==
-Date: Fri, 22 Mar 2024 14:21:30 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Manivannan Sadhasivam <mani@kernel.org>, Frank Li <Frank.Li@nxp.com>,
-	niklas.cassel@wdc.com, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org
-Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <20240322192130.GA1367450@bhelgaas>
+	s=arc-20240116; t=1711135770; c=relaxed/simple;
+	bh=oklDj6U5/LTJT3ihNDzab3Tqa5Dr3WbJv3X1jhT5abE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=goti0jz//0ZCZmJOUmk8aEBTIRt7fCUbZ8SfrcHmFH+w2jvKfZyWFjveOmFtVkZ0Ok3dpMp3JD3/8tQ2ktRnP9N1bh64QZ6w7W346RGNqnhFpU+DMJKpr+tp/IYx87SuTWElmOnWUmc0fZaj0sWHORICibB57b3o0u0g1Gimk/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i4hlgaZA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Bi2Dc4s; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i4hlgaZA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1Bi2Dc4s; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BC32038920;
+	Fri, 22 Mar 2024 19:29:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711135766;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDBYbPR6/NMtSTPqLqOpeS79MMzIcadeQ6TPNXM4lkA=;
+	b=i4hlgaZADy29ECHg1y7N46TpVjCijRYj9F5ZxBAMYW+0MU+quSaZn7toW8+tNmFpkuT0EM
+	9DlykmGgRFLODK1mU5/hPwEG+ea3RRGjE4zDjRBTVMUWsdz/YENUtyOajYpONb4PcdldDQ
+	zb4gIWP50LFWXO24VFrOKbfGRVItRVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711135766;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDBYbPR6/NMtSTPqLqOpeS79MMzIcadeQ6TPNXM4lkA=;
+	b=1Bi2Dc4sYrRxsc1KjhNBShVRFCAQOG3spXNE+k1n93NLNrva8pbuGWZQhSDtdsKc8GQ2cF
+	t6L6qNrOytrafoBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711135766;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDBYbPR6/NMtSTPqLqOpeS79MMzIcadeQ6TPNXM4lkA=;
+	b=i4hlgaZADy29ECHg1y7N46TpVjCijRYj9F5ZxBAMYW+0MU+quSaZn7toW8+tNmFpkuT0EM
+	9DlykmGgRFLODK1mU5/hPwEG+ea3RRGjE4zDjRBTVMUWsdz/YENUtyOajYpONb4PcdldDQ
+	zb4gIWP50LFWXO24VFrOKbfGRVItRVM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711135766;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDBYbPR6/NMtSTPqLqOpeS79MMzIcadeQ6TPNXM4lkA=;
+	b=1Bi2Dc4sYrRxsc1KjhNBShVRFCAQOG3spXNE+k1n93NLNrva8pbuGWZQhSDtdsKc8GQ2cF
+	t6L6qNrOytrafoBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AB521138E8;
+	Fri, 22 Mar 2024 19:29:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 7malKRbc/WWlKwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Fri, 22 Mar 2024 19:29:26 +0000
+Date: Fri, 22 Mar 2024 20:22:11 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Tavian Barnes <tavianator@tavianator.com>
+Cc: linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] extent_buffer read cleanups
+Message-ID: <20240322192211.GL14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1710769876.git.tavianator@tavianator.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,92 +101,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zf0i1X5fg-E59NWx@ryzen>
+In-Reply-To: <cover.1710769876.git.tavianator@tavianator.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.50
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-0.998];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.19)[-0.972];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.50)[91.73%]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Flag: NO
 
-On Fri, Mar 22, 2024 at 07:19:01AM +0100, Niklas Cassel wrote:
-> On Fri, Mar 22, 2024 at 10:56:23AM +0530, Manivannan Sadhasivam wrote:
-> > On Thu, Mar 21, 2024 at 01:07:32PM -0500, Bjorn Helgaas wrote:
-> > > On Thu, Mar 21, 2024 at 10:43:45PM +0530, Manivannan Sadhasivam wrote:
-> > > > On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
-> > > > > dw_pcie_ep_inbound_atu()
-> > > > > {
-> > > > > 	...
-> > > > > 	if (!ep->bar_to_atu[bar])
-> > > > > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> > > > > 	else
-> > > > > 		free_win = ep->bar_to_atu[bar];
-> > > > > 	...
-> > > > > }
-> > > > > 
-> > > > > The atu index 0 is valid case for atu number. The find_first_zero_bit()
-> > > > > will return 6 when second time call into this function if atu is 0. Suppose
-> > > > > it should use branch 'free_win = ep->bar_to_atu[bar]'.
-> > > > > 
-> > > > > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
-> > > > > it have not allocate atu to the bar.
-> > > > 
-> > > > I'd rewrite the commit message as below:
-> > > > 
-> > > > "The mapping between PCI BAR and iATU inbound window are maintained in the
-> > > > dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for a
-> > > > BAR, dw_pcie_ep_inbound_atu() API will first check for the availability of the
-> > > > existing mapping in the array and if it is not found (i.e., value in the array
-> > > > indexed by the BAR is found to be 0), then it will allocate a new map value
-> > > > using find_first_zero_bit().
-> > > > 
-> > > > The issue here is, the existing logic failed to consider the fact that the map
-> > > > value '0' is a valid value for BAR0. Because, find_first_zero_bit() will return
-> > > > '0' as the map value for BAR0 (note that it returns the first zero bit
-> > > > position).
-> > > > 
-> > > > Due to this, when PERST# assert + deassert happens on the PERST# supported
-> > > > platforms, the inbound window allocation restarts from BAR0 and the existing
-> > > > logic to find the BAR mapping will return '6' for BAR0 instead of '0' due to the
-> > > > fact that it considers '0' as an invalid map value.
-> > > > 
-> > > > So fix this issue by always incrementing the map value before assigning to
-> > > > bar_to_atu[] array and then decrementing it while fetching. This will make sure
-> > > > that the map value '0' always represents the invalid mapping."
-> > > 
-> > > This translates C code to English in great detail, but still doesn't
-> > > tell me what's broken from a user's point of view, how urgent the fix
-> > > is, or how it should be handled.
-> > > 
-> > > DMA doesn't work because ATU setup is wrong?  Driver MMIO access to
-> > > the device doesn't work?  OS crashes?  How?  Incorrectly routed access
-> > > causes UR response?  Happens on every boot?  Only after a reboot or
-> > > controller reset?  What platforms are affected?  "PERST# supported
-> > > platforms" is not actionable without a lot of research or pre-existing
-> > > knowledge.  Should this be backported to -stable?
-> > 
-> > Severity is less for the bug fixed by this patch. We have 8 inbound iATU windows
-> > on almost all of the platforms and after PERST# assert + deassert, BAR0 uses map
-> > '6' instead of '0'.
-> > 
-> > This has no user visibility since the mapping will go fine and we have only 6
-> > BARs. So I'd not mark this as as critical fix that needs special attention.
+On Mon, Mar 18, 2024 at 09:56:52AM -0400, Tavian Barnes wrote:
+> This small series refactors some duplicated code introduced by a recent
+> bugfix (which was intentionally duplicated to make stable backports
+> easier), and adds a WARN_ON() to make it easier to debug similar issues
+> in the future.
 > 
-> So we will have 6 mappings configured, but only 5 BARs, so two mappings for
-> BAR0. The iATU looks at them in order, so index 0 will override index 6.
-
-Sounds like we dodge the bullet as long as the mappings for BAR 0 are
-identical, which doesn't feel like much comfort.
-
-> We are lucky that the endpoint subsystem does not clean up allocations properly
-> right now (you have an outstanding series which fixes this).
+> Link: https://lore.kernel.org/linux-btrfs/20240317203508.GA5975@lst.de/T/
 > 
-> If the endpoint subsystem did clean up resources properly, we would DMA to the
-> area that was previously allocated for BAR0, instead of the new area for BAR0.
+> Tavian Barnes (2):
+>   btrfs: New helper to clear EXTENT_BUFFER_READING
+>   btrfs: WARN if EXTENT_BUFFER_UPTODATE is set while reading
 
-This is the right level of abstraction for the commit log -- sounds
-like there's some reset scenario where the pre-reset iATU windows are
-not cleared out and we reallocate iATU windows, and we end up using
-one of the stale windows instead of the new one, which could lead to
-DMA to the wrong area.  That incorrect DMA sounds like data corruption
-in the right circumstances.
-
-Of course it can *also* include some detail about the mechanism of why
-that stale entry still exists and when it can be used.
-
-Bjorn
+Thanks, patches added to for-next.
 
