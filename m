@@ -1,172 +1,168 @@
-Return-Path: <linux-kernel+bounces-111692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF862886FB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A9B886FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705D41F21CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:19:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0257DB21D1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483C14E1B3;
-	Fri, 22 Mar 2024 15:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7D64DA05;
+	Fri, 22 Mar 2024 15:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FCVGPm17"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xvYY0svq"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F08545BE4;
-	Fri, 22 Mar 2024 15:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7464D108
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711120767; cv=none; b=GwkzQ5UPeEZicd7m6X9wfmNNSt99FY7p7NepJqO8e3xwCAh+rxAZBpbSIf6cPQ8w0viF0VvPl+d5VMkX7NUeaqs3EVolHksZnzNwGamfgQLw5da2SK5nIaGSg5OLU9IiczSsa1lFIoA4pVKRJlD3Mw8deWI49zfDes+PzO1zGqI=
+	t=1711120980; cv=none; b=FKjUPwIn2VjMezNk6HYNFppFNWgUF4ghJnEtgNE8chLUSZAUTBLd9VglsTSotpEChiSxl6e6gvbf1sACJrQ+cvFzRWuho1OSl91SF3Sftu5dp4CEa5w+4gyZSrslnwkUGgLmiSTK5Nk7E4k6AUzJoZjPe2J6cuGU0hFQXj/E9Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711120767; c=relaxed/simple;
-	bh=EmauFkFzSgc/qDZcww6tdS37MuHANiCdzNtCEy1AVn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e5jlvprQKumPhA/Kgd+9efW5AElCAwFJnVG+AHGadPgNB15PcPHV6iIiZ8Vu8CCFzjOWPVo0iDxcfo6HB8HPvP1vuSQpwtEBlZyBTOWzpVr4R1YtV3NGEuq3fbTK9wreAlkqnD4j2uvZzHxUk5kb6Y7zk1OFPckioG2bE6y2OFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FCVGPm17; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711120765; x=1742656765;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=EmauFkFzSgc/qDZcww6tdS37MuHANiCdzNtCEy1AVn0=;
-  b=FCVGPm17XL3MhKWPPtccQYru53bUjbRvZtUL1U+SeFthCgUOXwRvZoxs
-   FuwEOkNRxAEPVzXAFz3AkqmnUVRF1C9o8E7EpJhdca1frjSrhNEbsMPWe
-   ScXXEdbsQuoboMXIuSVkfW0E1AGdPbJwl/C7yy/eQi+drRC5BbXMW3eXe
-   f4AQcz2w+iZjGzALl/wFmU3nKll3KXF1tr7ProzTDhllOHwNjCBCEJSYr
-   wlDCwESaqagE5lQCglnkNSFAkimsCrOaO3KBQp9v8Uqu2LYvoySFrHovM
-   kzCqX/bZAnAaxlSv+MWph01srOxvQJTaoEgHn2zbIA/kxvv7Njqw8a7x5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6359140"
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="6359140"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:19:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
-   d="scan'208";a="19636008"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:19:24 -0700
-Date: Fri, 22 Mar 2024 08:19:23 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Zhang, Tina" <tina.zhang@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Yuan, Hang" <hang.yuan@intel.com>,
-	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
-	"sagis@google.com" <sagis@google.com>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"Aktas, Erdem" <erdemaktas@google.com>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 056/130] KVM: x86/tdp_mmu: Init role member of struct
- kvm_mmu_page at allocation
-Message-ID: <20240322151923.GX1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5d2307efb227b927cc9fa3e18787fde8e1cb13e2.1708933498.git.isaku.yamahata@intel.com>
- <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
- <20240321212412.GR1994522@ls.amr.corp.intel.com>
- <Zf0wz82nQoL0VsAd@chao-email>
+	s=arc-20240116; t=1711120980; c=relaxed/simple;
+	bh=EOf9fJkdbPuq6XhIuB6pzBwFW9szDBA1ooBn1no2D/g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UVPKkdxKORdnM2xtvSijLYSTrlxSkFUD+o6TaLIMThyhEseRrHDfDxi7osrnenGXdZwsH8xj/MFn/a5Z24CYoOEIhNGbENWnNfIwd2w8TVjfoAzmZV+Dd69shJtGM3ctPILltgMvgq6NcVLKWOIz4vn13sPDVBh7QQFuHpZUA3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xvYY0svq; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9063f7cd-e922-484f-a2ac-cf84c4f47100@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711120976;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n14/GAey1MVQQZ9496BWTZLRI/CaUeVuyvNjQAWmb5w=;
+	b=xvYY0svqy/qpIv8OVXzIJyTXGPfIQ8a+wpEAnw9O+QTGZHAcRZMZBQVKKx6XXX7TSoVUlC
+	GnkjohFYMbvlftzsyBSuC9aWBUWd2vLYgSf5Cx+aALEGQiIaIG338DTeE20B5GvyViTxIy
+	r3J597Jj4gHupcJDt3bMrHISFxO9h/4=
+Date: Fri, 22 Mar 2024 11:22:52 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zf0wz82nQoL0VsAd@chao-email>
+Subject: Re: [PATCH v2 1/8] drm: xlnx: Fix kerneldoc
+Content-Language: en-US
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org
+References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+ <20240319225122.3048400-2-sean.anderson@linux.dev>
+ <e2eba421-cba1-4dd5-837c-6be5f07ed402@ideasonboard.com>
+ <d4072aa1-47e4-45d3-9e04-2cd9d782b593@infradead.org>
+ <2c38ac1c-cc0e-43b3-86d3-5b6a2f00f9e7@linux.dev>
+ <19d6da67-f9a6-4e01-a956-3b60f0ebf769@ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <19d6da67-f9a6-4e01-a956-3b60f0ebf769@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 22, 2024 at 03:18:39PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
-
-> On Thu, Mar 21, 2024 at 02:24:12PM -0700, Isaku Yamahata wrote:
-> >On Thu, Mar 21, 2024 at 12:11:11AM +0000,
-> >"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
-> >
-> >> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
-> >> > To handle private page tables, argument of is_private needs to be
-> >> > passed
-> >> > down.  Given that already page level is passed down, it would be
-> >> > cumbersome
-> >> > to add one more parameter about sp. Instead replace the level
-> >> > argument with
-> >> > union kvm_mmu_page_role.  Thus the number of argument won't be
-> >> > increased
-> >> > and more info about sp can be passed down.
-> >> > 
-> >> > For private sp, secure page table will be also allocated in addition
-> >> > to
-> >> > struct kvm_mmu_page and page table (spt member).  The allocation
-> >> > functions
-> >> > (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know
-> >> > if the
-> >> > allocation is for the conventional page table or private page table. 
-> >> > Pass
-> >> > union kvm_mmu_role to those functions and initialize role member of
-> >> > struct
-> >> > kvm_mmu_page.
-> >> 
-> >> tdp_mmu_alloc_sp() is only called in two places. One for the root, and
-> >> one for the mid-level tables.
-> >> 
-> >> In later patches when the kvm_mmu_alloc_private_spt() part is added,
-> >> the root case doesn't need anything done. So the code has to take
-> >> special care in tdp_mmu_alloc_sp() to avoid doing anything for the
-> >> root.
-> >> 
-> >> It only needs to do the special private spt allocation in non-root
-> >> case. If we open code that case, I think maybe we could drop this
-> >> patch, like the below.
-> >> 
-> >> The benefits are to drop this patch (which looks to already be part of
-> >> Paolo's series), and simplify "KVM: x86/mmu: Add a private pointer to
-> >> struct kvm_mmu_page". I'm not sure though, what do you think? Only
-> >> build tested.
-> >
-> >Makes sense.  Until v18, it had config to disable private mmu part at
-> >compile time.  Those functions have #ifdef in mmu_internal.h.  v19
-> >dropped the config for the feedback.
-> >  https://lore.kernel.org/kvm/Zcrarct88veirZx7@google.com/
-> >
-> >After looking at mmu_internal.h, I think the following three function could be
-> >open coded.
-> >kvm_mmu_private_spt(), kvm_mmu_init_private_spt(), kvm_mmu_alloc_private_spt(),
-> >and kvm_mmu_free_private_spt().
+On 3/22/24 01:50, Tomi Valkeinen wrote:
+> On 21/03/2024 17:33, Sean Anderson wrote:
+>> On 3/20/24 02:05, Randy Dunlap wrote:
+>>>
+>>>
+>>> On 3/19/24 22:42, Tomi Valkeinen wrote:
+>>>> On 20/03/2024 00:51, Sean Anderson wrote:
+>>>>> Fix a few errors in the kerneldoc. Mostly this addresses missing/renamed
+>>>>> members.
+>>>>>
+>>>>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>>>>> ---
+>>>>>
+>>>>> Changes in v2:
+>>>>> - New
+>>>>>
+>>>>>    drivers/gpu/drm/xlnx/zynqmp_disp.c  | 6 +++---
+>>>>>    drivers/gpu/drm/xlnx/zynqmp_dpsub.h | 1 +
+>>>>>    drivers/gpu/drm/xlnx/zynqmp_kms.h   | 4 ++--
+>>>>>    3 files changed, 6 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>>>> index 407bc07cec69..f79bf3fb8110 100644
+>>>>> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>>>> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>>>> @@ -128,9 +128,9 @@ struct zynqmp_disp_layer {
+>>>>>     * struct zynqmp_disp - Display controller
+>>>>>     * @dev: Device structure
+>>>>>     * @dpsub: Display subsystem
+>>>>> - * @blend.base: Register I/O base address for the blender
+>>>>> - * @avbuf.base: Register I/O base address for the audio/video buffer manager
+>>>>> - * @audio.base: Registers I/O base address for the audio mixer
+>>>>> + * @blend: Register I/O base address for the blender
+>>>>> + * @avbuf: Register I/O base address for the audio/video buffer manager
+>>>>> + * @audio: Registers I/O base address for the audio mixer
+>>>>
+>>>> Afaics, the kernel doc guide:
+>>>>
+>>>> https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
+>>>>
+>>>> says that the current version is correct. Or is the issue that while, say, 'base' is documented, 'blend' was not?
+>>>
+>>> Hi,
+>>>
+>>> I would do it more like so:
+>>>
+>>> ---
+>>>   drivers/gpu/drm/xlnx/zynqmp_disp.c |    3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff -- a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+>>> @@ -128,8 +128,11 @@ struct zynqmp_disp_layer {
+>>>    * struct zynqmp_disp - Display controller
+>>>    * @dev: Device structure
+>>>    * @dpsub: Display subsystem
+>>> + * @blend: blender iomem info
+>>>    * @blend.base: Register I/O base address for the blender
+>>> + * @avbuf: audio/video buffer iomem info
+>>>    * @avbuf.base: Register I/O base address for the audio/video buffer manager
+>>> + * @audio: audio mixer iomem info
+>>>    * @audio.base: Registers I/O base address for the audio mixer
+>>>    * @layers: Layers (planes)
+>>>    */
+>>>
+>>>
+>>> but in my testing, Sean's way or my way result in no warning/errors.
+>>>
+>>
+>> The specific errors are:
+>>
+>> ../drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'blend' not described in 'zynqmp_disp'
+>> ../drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'avbuf' not described in 'zynqmp_disp'
+>> ../drivers/gpu/drm/xlnx/zynqmp_disp.c:151: warning: Function parameter or struct member 'audio' not described in 'zynqmp_disp'
+>>
+>> I don't see the need to document a single-member struct twice. Actually,
 > 
-> It took me a few minutes to figure out why the mirror root page doesn't need
-> a private_spt.
+> But if only the struct is documented, then we're documenting the wrong thing. A tool showing to the user what blend.base is would miss that documentation.
+
+Are there any such tools? kerneldoc e.g. just prints the definition and
+then a list of members with documentation. So from the user's
+perspective the only thing which changes is the name.
+
+--Sean
+
+>> maybe it would be better to just lift the .base member to live in
+>> zynqmp_disp. But I think that would be better in another series.
 > 
-> Per TDX module spec:
+> Yes, there's not much point with the structs.
 > 
->   Secure EPT’s root page (EPML4 or EPML5, depending on whether the host VMM uses
->   4-level or 5-level EPT) does not need to be explicitly added. It is created
->   during TD initialization (TDH.MNG.INIT) and is stored as part of TDCS.
+>  Tomi
 > 
-> I suggest adding the above as a comment somewhere even if we decide to open-code
-> kvm_mmu_alloc_private_spt().
-
-
-058/130 has such comment.  The citation from the spec would be better.
-
-
-
-> IMO, some TDX details bleed into KVM MMU regardless of whether we open-code
-> kvm_mmu_alloc_private_spt() or not. This isn't good though I cannot think of
-> a better solution.
-> 
-
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
