@@ -1,296 +1,214 @@
-Return-Path: <linux-kernel+bounces-111399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40BD886BCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:04:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6091886BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A9D0285FF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:04:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9D551C22A02
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CD33FBAC;
-	Fri, 22 Mar 2024 12:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v5iHBY8V"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A32D3FBA3;
+	Fri, 22 Mar 2024 12:06:00 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FA23F9DD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4318F3F8E2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711109063; cv=none; b=DWGEmuzKpMFHh9Rg47vib8MO0tI1CVR0GVuW9FzDcIeAr9KQrqyEjhY2lzKuosLMGHVYO4ajLUQ1FrOdp/I2ze9BEVgm4kwECqoDIqjyyfa2F1vZ2qw04zgNbpQkah5VAEnTjQisDzwQ9jORX34WYajTaFbE6yp2Nm+hb1xei8w=
+	t=1711109160; cv=none; b=F6/Y6sMTJ6UsvY6V135IoGwSNWEm3A5W6sp6Ng+x2t3/AcJraBo8pQmpcoJkc+R8GygmRzXfyqaVzww0b4QiPe4PQdE3HLNhjwKtdVOZe/tlvCE/J7N99YWy3k1OPbvYarups8Vo+Ylj99Nn1to2V60GWKYtx7SAuXy8WybqAHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711109063; c=relaxed/simple;
-	bh=ozlstPZnT67G4t93qFgml5ue6BYtjIpzn6sfzja57vs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UoWZ4x0ZZqgv6MyMPaHSKz9zYQlChVLndHaLAHVaV+VEFBp8OY77YcbZ6MxVIOErtCTScy7JXvQVgmBHTNGO2AK3SRXHUefAT8oiAT7dK5RPPf9hxBUBYd7IUmfVsJuetuf9BrZ0dVWkNWYWmbrdQBDKd17brllXPwxsBTtKHUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v5iHBY8V; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2509c66daso27239211fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711109059; x=1711713859; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WICDXs2NPGOqmCrNvqdcZ0UIIiTxf1scmM138aUvNvU=;
-        b=v5iHBY8VOsts32yOxa9k1syF9f2j06jTETL5HW4AzvJvUUMGk+CH+DpxPaVrAFIZee
-         E60cGLO0oL4d8xMz7LCC5RjsCEMOaIoBcHwfPEROI8HVj3dJiEUY3P7xso7sJNgfTov/
-         3h77unyGL8zJZWs9dOBVEbz5B09x2q4ygvNW0HbLG/06+LKjyy+cIGfK/1bML+NdJAi7
-         dFYijtbID9aluF2NqAOrknox/NScvzUzNhDSBPIcsYHVB3qkglmUbFYa+5StuG2TNnr1
-         1JXShjZ5jIP5f7UjGmm7TYE3PAU40UJa5XHIOAp5gtjRZhvwMQEJKwqEOvZRfWu5qEFl
-         dAOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711109059; x=1711713859;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WICDXs2NPGOqmCrNvqdcZ0UIIiTxf1scmM138aUvNvU=;
-        b=xFmJjj9WljEoBhTA3dLwpSEOLp20g9ZyfMK4oaP+E7wzTN5dc4TNeRL3JVYW31N38C
-         896D3Qq/GQRvcKebXq+EUKy+LlVbjt35Lzbo8SHrG4SWbW1xIvkwNVA8600tU+FK5aan
-         U8Ike1PxH9zoKE7HJ1FMZnYP3speDVkLRJQi2ZEGA++GLUKoZXJKZB6MXOKpn55h0t3z
-         YYv2UTh97XdWzkEnLO0grOiEhNuuz/gNPmoZyz8YZXEU7flJXoalKqitf8NYjHpiI1Bq
-         9rQjmYc3L0ak27rcG3hLiJtAMNZzULYsLZoScp/tcft21JfYYdHk4YDQ6Ffn4RUJA8WL
-         C5BA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxQN6YhndzvJP6lKj2WcsZfFmN5AmUyY9Je8u5o8OO7C1W88cxjYPHLOSs4wtqml3T+LLqCeR3A5wuSUX3dCOPXk+cPpJARt+UoXY1
-X-Gm-Message-State: AOJu0YwqaU+uI4K5WcA4e1HwDbcDeA6vGSahosmwvQZrCXHqU2GYbtP3
-	0U2tZ4EVoX78YzrDXWwPYHUxdn1Gk67SSThE2JWqGz5YVRNOYZyqnIqTxZzDOg0=
-X-Google-Smtp-Source: AGHT+IE128SN8UjOrd0vAtwBkqgFTxULvcKhrr33MiQn/9XmlyQg+Y9eD+d/cclzTtWcEu78DU8fSw==
-X-Received: by 2002:a2e:3312:0:b0:2d4:6e71:59e9 with SMTP id d18-20020a2e3312000000b002d46e7159e9mr1574758ljc.13.1711109059394;
-        Fri, 22 Mar 2024 05:04:19 -0700 (PDT)
-Received: from [192.168.1.78] (host-92-17-96-232.as13285.net. [92.17.96.232])
-        by smtp.gmail.com with ESMTPSA id o20-20020a05600c511400b0041477f95cf6sm2887639wms.13.2024.03.22.05.04.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 05:04:19 -0700 (PDT)
-Message-ID: <13368789-1ee0-49fe-8732-ba170349cec7@linaro.org>
-Date: Fri, 22 Mar 2024 12:04:18 +0000
+	s=arc-20240116; t=1711109160; c=relaxed/simple;
+	bh=pMbc+LFVvwia6QjhbP1e5dR9TNeCQW2V9LN/n0Lo9Mc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tKSrzIDI7FVaNhtLeKir9ncqZUg5y5W6hem121j/oH5GWmKO490Aj4P8lvVJf0TmXTPTxmSvTNq0VMgOmoCh/vVRUBk9oYMGYS0PFkZ93mY+xVIIRwbLHnd2yPiETfEH8P53WGl5gCfIXl8Tl9FOpBmvXuYf8uxRAMuuacN3Oe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V1Lbh0jq0z1vx5c;
+	Fri, 22 Mar 2024 20:04:32 +0800 (CST)
+Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3EEC5140383;
+	Fri, 22 Mar 2024 20:05:19 +0800 (CST)
+Received: from [10.67.111.176] (10.67.111.176) by
+ kwepemd500012.china.huawei.com (7.221.188.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 22 Mar 2024 20:05:18 +0800
+Message-ID: <b91ebdb0-bcca-18f9-6f0f-5eef6c72b42c@huawei.com>
+Date: Fri, 22 Mar 2024 20:05:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
- board DTS
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [RFC PATCH 4/5] ubifs: Introduce ACLs mount options
 Content-Language: en-US
-To: Sumit Garg <sumit.garg@linaro.org>, Stephan Gerhold <stephan@gerhold.net>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- neil.armstrong@linaro.org, dmitry.baryshkov@linaro.org,
- laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com,
- jimmy.lalande@se.com, benjamin.missey@non.se.com,
- daniel.thompson@linaro.org, linux-kernel@vger.kernel.org,
- Jagdish Gediya <jagdish.gediya@linaro.org>
-References: <20240315060707.471248-1-sumit.garg@linaro.org>
- <20240315060707.471248-4-sumit.garg@linaro.org>
- <ZfRlYnEQUKvwGQ65@gerhold.net>
- <CAFA6WYMucNzLNm+oHNd-Jb65oigpNphU=mFGM1cD8A-mK-BFDw@mail.gmail.com>
- <ZfmdWtoiP4ZF7JRk@gerhold.net>
- <CAFA6WYPzdSHEMmeb_J6LPje8MUkSSq93oN3+O1PMahtZN7hWnA@mail.gmail.com>
- <ZfwM3ZrjTWR_QANd@gerhold.net>
- <CAFA6WYN+Y8qyv9yEMoU1wqpqDN7rwNO5xfHkSUe+H2DdSiBqyA@mail.gmail.com>
-From: Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <CAFA6WYN+Y8qyv9yEMoU1wqpqDN7rwNO5xfHkSUe+H2DdSiBqyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Zhihao Cheng <chengzhihao1@huawei.com>, <richard@nod.at>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+References: <20240319161646.2153867-1-lizetao1@huawei.com>
+ <20240319161646.2153867-5-lizetao1@huawei.com>
+ <c3d5f06e-bdc4-4312-19a1-17a7a64e8795@huawei.com>
+From: Li Zetao <lizetao1@huawei.com>
+In-Reply-To: <c3d5f06e-bdc4-4312-19a1-17a7a64e8795@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggpeml100005.china.huawei.com (7.185.36.185) To
+ kwepemd500012.china.huawei.com (7.221.188.25)
 
-Hi both,
+Hi,
 
-On 22/03/2024 06:29, Sumit Garg wrote:
-> On Thu, 21 Mar 2024 at 16:03, Stephan Gerhold <stephan@gerhold.net> wrote:
+On 2024/3/21 14:49, Zhihao Cheng wrote:
+> 在 2024/3/20 0:16, Li Zetao 写道:
+>> Implement the ability to enable or disable the ACLs feature through
+>> mount options. "-o acl" option means enable and "-o noacl" means disable
+>> and it is enable by default.
 >>
->> On Wed, Mar 20, 2024 at 12:10:32PM +0530, Sumit Garg wrote:
->>> On Tue, 19 Mar 2024 at 19:43, Stephan Gerhold <stephan@gerhold.net> wrote:
->>>> On Mon, Mar 18, 2024 at 03:20:46PM +0530, Sumit Garg wrote:
->>>>> On Fri, 15 Mar 2024 at 20:43, Stephan Gerhold <stephan@gerhold.net> wrote:
->>>>>> On Fri, Mar 15, 2024 at 11:37:07AM +0530, Sumit Garg wrote:
->>>>>>> Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
->>>>>>> Box Core board based on the Qualcomm APQ8016E SoC.
->>>>>>>
->>>>>>> Support for Schneider Electric HMIBSC. Features:
->>>>>>> - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
->>>>>>> - 1GiB RAM
->>>>>>> - 8GiB eMMC, SD slot
->>>>>>> - WiFi and Bluetooth
->>>>>>> - 2x Host, 1x Device USB port
->>>>>>> - HDMI
->>>>>>> - Discrete TPM2 chip over SPI
->>>>>>> - USB ethernet adaptors (soldered)
->>>>>>>
->>>>>>> Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
->>>>>>> Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
->>>>>>> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
->>>>>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
->>>>>>> ---
->>>>>>>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->>>>>>>  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 510 ++++++++++++++++++
->>>>>>>  2 files changed, 511 insertions(+)
->>>>>>>  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
->>>>>>>
->>>>>>> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
->>>>>>> index 39889d5f8e12..ad55e52e950b 100644
->>>>>>> --- a/arch/arm64/boot/dts/qcom/Makefile
->>>>>>> +++ b/arch/arm64/boot/dts/qcom/Makefile
->>>>>>> @@ -5,6 +5,7 @@ apq8016-sbc-usb-host-dtbs     := apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
->>>>>>>
->>>>>>>  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-usb-host.dtb
->>>>>>>  dtb-$(CONFIG_ARCH_QCOM)      += apq8016-sbc-d3-camera-mezzanine.dtb
->>>>>>> +dtb-$(CONFIG_ARCH_QCOM)      += apq8016-schneider-hmibsc.dtb
->>>>>>>  dtb-$(CONFIG_ARCH_QCOM)      += apq8039-t2.dtb
->>>>>>>  dtb-$(CONFIG_ARCH_QCOM)      += apq8094-sony-xperia-kitakami-karin_windy.dtb
->>>>>>>  dtb-$(CONFIG_ARCH_QCOM)      += apq8096-db820c.dtb
->>>>>>> diff --git a/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
->>>>>>> new file mode 100644
->>>>>>> index 000000000000..9c79a31a04db
->>>>>>> --- /dev/null
->>>>>>> +++ b/arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
->>>>>>> @@ -0,0 +1,510 @@
->>>>>>> [...]
->>>>>>> +
->>>>>>> +&pm8916_resin {
->>>>>>> +     interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_FALLING>;
->>>>>>> +     linux,code = <KEY_POWER>;
->>>>>>> +     status = "okay";
->>>>>>> +};
->>>>>>
->>>>>> What is the goal of overriding the interrupt here? It looks like you are
->>>>>> changing the interrupt type from IRQ_TYPE_EDGE_BOTH to FALLING. This
->>>>>> sounds a bit like you want the driver to receive just button release
->>>>>> events (or just press events, not sure about the polarity). I'm not sure
->>>>>> if the driver will handle this correctly.
->>>>>
->>>>> The use-case here is to just act upon button release events and the
->>>>> driver handles this appropriately. Final use-case of the reset button:
->>>>>
->>>>> - Short press and release leads to normal Linux reboot.
->>>>> - Long press for more than 10 sec or so leads to a hard reset.
->>>>>
->>>>> With IRQ_TYPE_EDGE_BOTH, that's not achievable because just a simple
->>>>> press leads to Linux reboot.
->>>>>
->>>>
->>>> Thanks for explaining your use case. Is the DT really the right place to
->>>> describe this? In the hardware, this is just a button that provides both
->>>> press and release events. Linux typically forwards these events to user
->>>> space, without interpreting them in any way. This means you likely have
->>>> some user space component that listens to the events (e.g. systemd
->>>> logind). Ideally that component should be reconfigured to trigger the
->>>> reboot on release instead of press.
->>>
->>> I am not sure if that's really the case. I only see power key value to
->>> be reported as follows:
->>>
->>> input_report_key(pwrkey->input, pwrkey->code, 1);
->>>                     or
->>> input_report_key(pwrkey->input, pwrkey->code, 0);
->>>
->>> It's not like a press event being a rising edge (0->1) or a release
->>> event being a falling edge (1->0) reported. AFAICS, a reboot is issued
->>> whenever the value of power key is reported as "1".
->>>
+>> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+>> ---
+>>   fs/ubifs/super.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>>   fs/ubifs/ubifs.h |  2 ++
+>>   2 files changed, 42 insertions(+)
 >>
->> If you look inside the input_report_key() function you can see that the
->> input subsystem internally tracks the key state. input_get_disposition()
->> returns INPUT_IGNORE_EVENT if the key bit already has the same value.
->> Only when the key changes its state, an event is sent to user space.
->> This means that all events reported to user space are effectively
->> rising/falling edges (an event with value "1" is a rising edge 0->1, an
->> event with value "0" is a falling edge 1->0).
+>> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+>> index 7f4031a15f4d..ed03bf11e51d 100644
+>> --- a/fs/ubifs/super.c
+>> +++ b/fs/ubifs/super.c
+>> @@ -457,6 +457,13 @@ static int ubifs_show_options(struct seq_file *s, 
+>> struct dentry *root)
+>>       seq_printf(s, ",assert=%s", ubifs_assert_action_name(c));
+>>       seq_printf(s, ",ubi=%d,vol=%d", c->vi.ubi_num, c->vi.vol_id);
+>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+> 
+> This config is introduced in pacth 5, we cannot use it in patch 4.
+>> +    if (c->mount_opts.acl == 2)
+>> +        seq_puts(s, ",acl");
+>> +    else if (c->mount_opts.acl == 1)
+>> +        seq_puts(s, ",noacl");
+>> +#endif
+>> +
+>>       return 0;
+>>   }
+>> @@ -967,6 +974,8 @@ static int check_volume_empty(struct ubifs_info *c)
+>>    * Opt_assert: set ubifs_assert() action
+>>    * Opt_auth_key: The key name used for authentication
+>>    * Opt_auth_hash_name: The hash type used for authentication
+>> + * Opt_acl: enable posix acl
+>> + * Opt_noacl: disable posix acl
+>>    * Opt_err: just end of array marker
+>>    */
+>>   enum {
+>> @@ -981,6 +990,8 @@ enum {
+>>       Opt_auth_key,
+>>       Opt_auth_hash_name,
+>>       Opt_ignore,
+>> +    Opt_acl,
+>> +    Opt_noacl,
+> It would be better to update Documentation/filesystems/ubifs.rst to 
+> describe new mount options
+Ok.
+>>       Opt_err,
+>>   };
+>> @@ -997,6 +1008,8 @@ static const match_table_t tokens = {
+>>       {Opt_ignore, "ubi=%s"},
+>>       {Opt_ignore, "vol=%s"},
+>>       {Opt_assert, "assert=%s"},
+>> +    {Opt_acl, "acl"},
+>> +    {Opt_noacl, "noacl"},
+>>       {Opt_err, NULL},
+>>   };
+>> @@ -1137,6 +1150,23 @@ static int ubifs_parse_options(struct 
+>> ubifs_info *c, char *options,
+>>               break;
+>>           case Opt_ignore:
+>>               break;
+>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+>> +        case Opt_acl:
+>> +            c->mount_opts.acl = 2;
+>> +            c->vfs_sb->s_flags |= SB_POSIXACL;
+>> +            break;
+>> +        case Opt_noacl:
+>> +            c->mount_opts.acl = 1;
+>> +            c->vfs_sb->s_flags &= ~SB_POSIXACL;
+>> +            break;
+>> +#else
+>> +        case Opt_acl:
+>> +            ubifs_err(c, "acl options not supported");
+>> +            return -EINVAL;
+>> +        case Opt_noacl:
+>> +            ubifs_err(c, "noacl options not supported");
+>> +            return -EINVAL;
+>> +#endif
+>>           default:
+>>           {
+>>               unsigned long flag;
+>> @@ -2011,12 +2041,17 @@ static int ubifs_remount_fs(struct super_block 
+>> *sb, int *flags, char *data)
+>>       sync_filesystem(sb);
+>>       dbg_gen("old flags %#lx, new flags %#x", sb->s_flags, *flags);
+>> +    c->mount_opts.acl = 0;
+>>       err = ubifs_parse_options(c, data, 1);
+> 
+> 1. mount -onoacl /dev/ubi0_0 /mnt # After that, mount will show 'noacl' 
+> option
+> 2. mount -oremount,xxx /dev/ubi0_0 /mnt
+> If 'xxx' has nothing to do with acl, c->mount_opts.acl is set as '0'. 
+> Then superblock flag is assigned with 'SB_POSIXACL' and mount will not 
+> display 'nocal'. Will it make user confused?
+I have tested this use case and it works fine. This is because the mount 
+options will be re-parsed during remount, just like the last mount. But 
+this is indeed redundant. I adjusted it to make it more reasonable.
+>>       if (err) {
+>>           ubifs_err(c, "invalid or unknown remount parameter");
+>>           return err;
+>>       }
+>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+>> +    if (!c->mount_opts.acl)
+>> +        c->vfs_sb->s_flags |= SB_POSIXACL;
+>> +#endif
+>>       if (c->ro_mount && !(*flags & SB_RDONLY)) {
+>>           if (c->ro_error) {
+>>               ubifs_msg(c, "cannot re-mount R/W due to prior errors");
+>> @@ -2197,6 +2232,11 @@ static int ubifs_fill_super(struct super_block 
+>> *sb, void *data, int silent)
+>>       if (err)
+>>           goto out_close;
+>> +#ifdef CONFIG_UBIFS_FS_POSIX_ACL
+>> +    if (!c->mount_opts.acl)
+>> +        c->vfs_sb->s_flags |= SB_POSIXACL;
+>> +#endif
+>> +
+>>       /*
+>>        * UBIFS provides 'backing_dev_info' in order to disable 
+>> read-ahead. For
+>>        * UBIFS, I/O is not deferred, it is done immediately in 
+>> read_folio,
+>> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+>> index b0d3b076290d..4a6078cbb2f5 100644
+>> --- a/fs/ubifs/ubifs.h
+>> +++ b/fs/ubifs/ubifs.h
+>> @@ -956,6 +956,7 @@ struct ubifs_orphan {
+>>    *                  specified in @compr_type)
+>>    * @compr_type: compressor type to override the superblock 
+>> compressor with
+>>    *              (%UBIFS_COMPR_NONE, etc)
+>> + * @acl: enable/disable posix acl (%0 default, %1 disable, %2 enable)
+>>    */
+>>   struct ubifs_mount_opts {
+>>       unsigned int unmount_mode:2;
+>> @@ -963,6 +964,7 @@ struct ubifs_mount_opts {
+>>       unsigned int chk_data_crc:2;
+>>       unsigned int override_compr:1;
+>>       unsigned int compr_type:2;
+>> +    unsigned int acl:2;
+>>   };
+>>   /**
 >>
->> The only reason why setting IRQ_TYPE_EDGE_FALLING works here is because
->> of the workaround added in commit be8fc023ef64 ("Input: pm8941-pwrkey -
->> simulate missed key press events") [1]. No event is reported when you
->> start pressing the key. When you release the key, you get a key press
->> event (rising edge) immediately followed by a key release (falling
->> edge). But the workaround was added to handle potentially missed
->> interrupts, not to inhibit reporting key press events.
 > 
-> I rather see it differently being actually allowing the current
-> use-case to support only the IRQ_TYPE_EDGE_FALLING. As per your
-> description above, a falling edge can only be an event for user-space
-> if we have:
-> 
-> input_report_key(pwrkey->input, pwrkey->code, 1);
-> input_report_key(pwrkey->input, pwrkey->code, 0);
-> 
-> rather than only
-> 
-> input_report_key(pwrkey->input, pwrkey->code, 0);
-> 
-> which won't trigger any event for user-space, right?
-> 
->>
->> In my opinion, if you want to perform an action on key release rather
->> than key press then you should adjust the user space program to do so.
->> From the point of view of the hardware DT (and even the kernel), the key
->> press happens when you actually start pressing the key, and not later
->> when you release it.
-> 
-> The reason why we are discussing it back and forth looks like due to
-> lack of clarity as to how HMIBSC board supports this button. The
-> common implementation as per db410c DTS is to have two buttons:
-> 
-> - One button is representing pwrkey(KEY_POWER) which is solely
-> consumed by the operating system to cleanly power off/restart the
-> db410c.
-> - Another button is representing pm8916_resin(KEY_VOLUMEDOWN) which
-> apart from normal volume down is also consumed by PMIC hardware to
-> perform a hard reset on a long press (if more than 10 sec.).
-> 
-> However, on HMIBSC board we only have a single power/reset button
-> which has to support the dual role of above two buttons on db410c:
-> 
-> Only one button as pm8916_resin(KEY_POWER), behaviour required:
-> - The rising edge (or button press) has to be only consumed by PMIC to
-> perform a hard reset of the HMIBSC board if pressed for more than 10
-> secs.
-> - The falling edge has to be consumed by the operating system to
-> cleanly reboot the HMIBSC board.
-> 
-> So what you are asking here is that the operating system has to be
-> notified of the rising edge of the button even if it has to just
-> ignore that without any action. Do you really think that would be
-> acceptable as a generic solution for systemd logind?
-
-Yes, this does seem to be a bug in systemd-logind. It appears to have
-subtly different behaviour depending on if you have
-HandlePowerKeyLongPress configured or not. If it is set to any action
-then systemd will wait until you release the key to decide whether to
-perform HandlePowerKey or HandlePowerKeyLongPress. However if there is
-no LongPress action configured then it will immediately perform the
-HandlePowerKey action on key down. [2]
-
-As a workaround, try adding HandlePowerKeyLongPress="lock" to
-logind.conf and see if that gives you the desired behaviour on short press.
-> 
-> Also, why DT isn't the right place for correctly describing the
-> intended hardware behaviour? Or am I missing any DT policy which says
-> hardware has to be described the exact way it is rather than the
-> expected way for hardware to behave? BTW, If you want the hardware
-> behaviour to be properly commented then I can do that too.
-
-DT is for describing the hardware, not for dictating its behaviour. As
-Stephen pointed out, your workaround here only works due to a workaround
-in the kernel for a bug... DT isn't just consumed by Linux, and some
-other OS might not behave correctly as a result of this hack.
-
-[1]:
-https://github.com/systemd/systemd/blob/main/src/login/logind-button.c#L215
-> 
-> -Sumit
-> 
->>
->> Thanks,
->> Stephan
->>
->> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=be8fc023ef64dcb11042aaa4bb0f29f7e0335d85
-
--- 
-// Caleb (they/them)
 
