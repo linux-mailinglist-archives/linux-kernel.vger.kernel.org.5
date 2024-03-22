@@ -1,133 +1,132 @@
-Return-Path: <linux-kernel+bounces-111770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29458870C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE5B8870C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6089E1F237B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F3021F23CBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFCD5A4E9;
-	Fri, 22 Mar 2024 16:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A59159B5F;
+	Fri, 22 Mar 2024 16:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rAcq/Pr6"
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="edP+l9Ib"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7343D57876
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FA65820C
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711124347; cv=none; b=mPcecRVBmpphR3kvkGKs/p4/jIiZJBnwQLz1zBG1JDffThPw1Hfb75pH3VC5XGY6IiOtJwi0e7/97mN0rjNzMpT1mYCi8IXDiZNquL57SeVm9OiimDagAdCCzaFB52SaTx5D7yXwzE3IRU5T0dffgmnrUsfjAD0VADFPBOGU3Q8=
+	t=1711124351; cv=none; b=KeD4Q7TR0RipfmkQv6DJ+Po1gp3ha7eh0bOfQTUw6yAmDpgnvDJv3vUesE26sC45j3eqYe6BmzMKvBmMh1NTxhdDoqgUdnhI5r08n86+pf1f272gUsbBNAKQ223Uevyk6A2F0NqELQqdwACs5kJuWXsZJlF9F2QSOGtRKJjyZ+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711124347; c=relaxed/simple;
-	bh=0wUBpSj/pqvpH82jsIPmTuiXNyhBwsGyIhafpnlup6M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=caIwX4x8q1Yw9Z86Nvq2Br/RFNrHJBU4uKcsWf28LQCepq2JJlk4wr08dwGHUL7XmL1bBBFMocE+H93PqQLPGWLl8O2bKW5MJtES8yJQj6Lz35QQu8yvylEqYeu8Zh0ETatJEhzDF8xsbQ04DHLIZ4H61I6q3NeK6IJmZqey3SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rAcq/Pr6; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2dbf138f-5112-48e1-85a6-9e3ad84ec4a6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711124341;
+	s=arc-20240116; t=1711124351; c=relaxed/simple;
+	bh=pRMg/t6wZBrXTf4eCE43zA/56qnnDkoAuBkVWGZYyic=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tJOKZPw/IPxrMEbz4n+6ctggbKMTWFcMGKsHO+6ChdO4EOUPS2pav4l8GnB4VL2RSyjbIpHF3oAqwlW6h//86f0FL2Csi9wi1YlZIfTyQ2Rgklnb1JUHj16iQ5a6BV5i2ccDkpEjytirnleATbxb0BMyaMWxfT6Mu9vaSszai8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=edP+l9Ib; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
+Date: Fri, 22 Mar 2024 09:18:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
+	s=key1; t=1711124343;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KB5GftMYyC75xN2sRG0i/ixBELjpxJvza4IaI6qq1+0=;
-	b=rAcq/Pr6acgADB2ZF7hpy57CL4pr5Hkb9gWfpeXR4lEYG85SU/XKXu/IApF7Y25mcQMjM5
-	xgZWPtKC95rPVrPXF0K6vyByn2iKWAdzLWgM1zF8R4gtfH7/4ZWB65Ovz7dZjTMhiRCevr
-	ahirJGR9OtB93xVSpOibVK6cMaAV4i4=
-Date: Fri, 22 Mar 2024 12:18:57 -0400
+	bh=pRMg/t6wZBrXTf4eCE43zA/56qnnDkoAuBkVWGZYyic=;
+	b=edP+l9Ibbgtc8Vbzfc5iQXpNnl9xNH2sqO08Nd8rF5tjabh8YwZbbmW70v7KjHidoXTAno
+	g5swq3UNoo/f6CmlgcUi2bAFjtysd78faP1RclxupYnCEk1FHB6jEqujqj/VyCkqmbVo2M
+	1QUbmbapLgxR74iNQjks8qqm+i/mll1tiXQ7Ra0FqVkHctBVnhhLSDGxmFZ/k3W6ISqGS1
+	qYmYgSL7tdGdvnM2F+jAD6tWX6pugCyAsfSag1CgktnXmkGNzCutSCtQfAlHpC3qfy54dY
+	wPyIYErSIfnJFRS2i5gFX1s03OECTRnvuinP+qBLUMgf8Eoqs1s71F2ZB+daJg==
+Message-ID: <20240322091857.GM8211@craftyguy.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Clayton Craft <clayton@craftyguy.net>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ regressions@lists.linux.dev
+Subject: Re: x86_64 32-bit EFI mixed mode boot broken
+In-Reply-To: <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+References: <20240321150510.GI8211@craftyguy.net>
+ <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
+ <20240321170641.GK8211@craftyguy.net>
+ <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/8] drm: zynqmp_dp: Don't retrain the link in our IRQ
-Content-Language: en-US
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-6-sean.anderson@linux.dev>
- <ca4de45b-302c-4eea-bd6b-8c04e2ed89cb@ideasonboard.com>
- <53b2df23-d5ea-498b-a501-b64f753c0074@linux.dev>
- <0514ef71-5baa-4989-9b7d-8bd9526c4d8d@ideasonboard.com>
- <16ccf678-270c-4770-8cc9-f676b4fabf09@linux.dev>
- <1f27ce69-9ea6-4df4-9147-332d74febdf0@ideasonboard.com>
- <b2bef7f9-fe46-45d0-a09b-50777f71f43c@linux.dev>
- <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <d6a8bc5c-aed9-4ef4-adb2-dc171106b44b@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="ZDwzZQYzZVCy0qwd"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 X-Migadu-Flow: FLOW_OUT
 
-On 3/22/24 01:32, Tomi Valkeinen wrote:
-> On 21/03/2024 21:17, Sean Anderson wrote:
->> On 3/21/24 15:08, Tomi Valkeinen wrote:
->>> On 21/03/2024 20:01, Sean Anderson wrote:
->>>> On 3/21/24 13:25, Tomi Valkeinen wrote:
->>>>> On 21/03/2024 17:52, Sean Anderson wrote:
->>>>>> On 3/20/24 02:53, Tomi Valkeinen wrote:
->>>>>>> On 20/03/2024 00:51, Sean Anderson wrote:
->>>>>>> Do we need to handle interrupts while either delayed work is being done?
->>>>>>
->>>>>> Probably not.
->>>>>>
->>>>>>> If we do need a delayed work, would just one work be enough which
->>>>>>> handles both HPD_EVENT and HPD_IRQ, instead of two?
->>>>>>
->>>>>> Maybe, but then we need to determine which pending events we need to
->>>>>> handle. I think since we have only two events it will be easier to just
->>>>>> have separate workqueues.
->>>>>
->>>>> The less concurrency, the better...Which is why it would be nice to do it all in the threaded irq.
->>>>
->>>> Yeah, but we can use a mutex for this which means there is not too much
->>>> interesting going on.
->>>
->>> Ok. Yep, if we get (hopefully) a single mutex with clearly defined fields that it protects, I'm ok with workqueues.
->>>
->>> I'd still prefer just one workqueue, though...
->>
->> Yeah, but then we need a spinlock or something to tell the workqueue what it should do.
-> 
-> Yep. We could also always look at the HPD (if we drop the big sleeps) in the wq, and have a flag for the HPD IRQ, which would reduce the state to a single bit.
 
-How about something like
+--ZDwzZQYzZVCy0qwd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: base64
 
-zynqmp_dp_irq_handler(...)
-{
-	/* Read status and handle underflow/overflow/vblank */
+T24gRnJpLCAyMiBNYXIgMjAyNCAxMzo1MjowNSArMDEwMCBBcmQgQmllc2hldXZlbCA8YXJkYkBr
+ZXJuZWwub3JnPiB3cm90ZToKPiBUaGF0IGRlcGVuZHMgb24gdGhlIGJvb3Rsb2FkZXIuIE9uZSBv
+ZiB0aGUgY2hhbmdlcyBhcm91bmQgdGhhdCB0aW1lIGlzCj4gdGhlIGludHJvZHVjdGlvbiBvZiB0
+aGlzIEtjb25maWcgc3ltYm9sOiBiZWZvcmUgdGhhdCwgdGhlIEVGSSBoYW5kb3Zlcgo+IHByb3Rv
+Y29sIHdhcyBhbHdheXMgc3VwcG9ydGVkIGJ1dCBub3cgaXQgY2FuIGJlIGNvbXBpbGVkIG91dC4g
+U28gdGhlCj4gc2FmZSBjaG9pY2UgaXMgdG8gZW5hYmxlIGl0LgoKSSBhbSB1c2luZyBzeXN0ZW1k
+LWJvb3QsIGFuZCBiYXNlZCBvbiBteSB1bmRlcnN0YW5kaW5nIG9mIGl0cyBzb3VyY2UgaXQgc2Vl
+bXMgdG8Kb25seSB1c2UgaGFuZG92ZXIgb24gb2xkIGtlcm5lbHMgdGhhdCBkb24ndCBzdXBwb3J0
+IExJTlVYX0lOSVRSRF9NRURJQV9HVUlELgo+IAo+IEhvd2V2ZXIsIHdoaWxlIGxvb2tpbmcgbW9y
+ZSBkZWVwbHkgaW50byB0aGlzLCBJIG5vdGljZWQgdGhhdCB3ZSBhcmUKPiBydW5uaW5nIHF1aXRl
+IGxvdyBvd24gc3RhY2sgc3BhY2UuIE1peGVkIG1vZGUgaXMgZGlmZmVyZW50IGJlY2F1c2UgaXQK
+PiBjYWxscyBpbnRvIHRoZSBib290IHNlcnZpY2VzIHVzaW5nIHRoZSBkZWNvbXByZXNzb3IncyBi
+b290IHN0YWNrLAo+IHJhdGhlciB0aGFuIHVzaW5nIHRoZSBvbmUgdGhhdCB3YXMgcHJvdmlkZWQg
+YnkgZmlybXdhcmUgYXQgZW50cnkuCj4gKE5vdGUgdGhhdCB0aGUgVUVGSSBzcGVjIG1hbmRhdGVz
+IDEyOGsgb2Ygc3RhY2sgc3BhY2UpCj4gCj4gSW4gbXkgY2FzZSwgSSBiaXNlY3RlZCB0aGUgcmVn
+cmVzc2lvbiB0bwo+IAo+IGNvbW1pdCA1YzRmZWFkYjAwMTE5ODNiYmM0NTg3YmM2MTA1NmM3YjM3
+OWQ5OTY5IChIRUFEKQo+IEF1dGhvcjogQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9yZz4K
+PiBEYXRlOiAgIE1vbiBBdWcgNyAxODoyNzoxNiAyMDIzICswMjAwCj4gCj4gICAgIHg4Ni9kZWNv
+bXByZXNzb3I6IE1vdmUgZ2xvYmFsIHN5bWJvbCByZWZlcmVuY2VzIHRvIEMgY29kZQo+IAo+IHdo
+aWNoIG1vdmVzIHRoZSBib290IHN0YWNrIGludG8gYSBkaWZmZXJlbnQgbWVtb3J5IHJlZ2lvbi4g
+Rm9ybWVybHksCj4gd2UnZCBlbmQgdXAgYXQgdGhlIGZhciBlbmQgb2YgdGhlIGhlYXAgd2hlbiBv
+dmVycnVubmluZyB0aGUgc3RhY2sgYnV0Cj4gbm93LCB3ZSBlbmQgdXAgY3Jhc2hpbmcuIE9mIGNv
+dXJzZSwgb3ZlcndyaXRpbmcgdGhlIGhlYXAgY2FuIGNhdXNlCj4gcHJvYmxlbXMgb2YgaXRzIG93
+biwgc28gd2UnbGwgbmVlZCB0byBidW1wIHRoaXMgaW4gYW55IGNhc2UuCj4gCj4gQ291bGQgeW91
+IGdpdmUgdGhpcyBhIHRyeSBwbGVhc2U/Cj4gCj4gCj4gLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9h
+c20vYm9vdC5oCj4gKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vYm9vdC5oCj4gQEAgLTM4LDcg
+KzM4LDcgQEAKPiAgI2VuZGlmCj4gCj4gICNpZmRlZiBDT05GSUdfWDg2XzY0Cj4gLSMgZGVmaW5l
+IEJPT1RfU1RBQ0tfU0laRSAgICAgICAweDQwMDAKPiArIyBkZWZpbmUgQk9PVF9TVEFDS19TSVpF
+ICAgICAgIDB4MTAwMDAKPiAKPiAgLyoKPiAgICogVXNlZCBieSBkZWNvbXByZXNzb3IncyBzdGFy
+dHVwXzMyKCkgdG8gYWxsb2NhdGUgcGFnZSB0YWJsZXMgZm9yIGlkZW50aXR5CgpKdXN0IGdhdmUg
+dGhpcyBhIHRyeSwgb24gNi4xLjgyLCBhbmQgdGhlIHN5c3RlbSBzdGlsbCByZWJvb3RzIGFmdGVy
+IHNlbGVjdGluZwp0aGUga2VybmVsIGluIHRoZSBib290bG9hZGVyLiBTbyBpdCBzZWVtcyBsaWtl
+IG15IHByb2JsZW0gaXMgZGlmZmVyZW50LgoKQXMgSSBtZW50aW9uZWQgaW5pdGlhbGx5LCBJIGJp
+c2VjdGVkIG15IGZhaWx1cmUgdG8gZTJhYjllYWIzMi4gRG9lcyB0aGF0IGdpdmUKYW55IGhpbnQg
+YWJvdXQgd2hhdCBtaWdodCBiZSB0aGUgcHJvYmxlbT8KCi1DbGF5dG9uCg==
 
-	status &= ZYNQMP_DP_INT_HPD_EVENT | ZYNQMP_DP_INT_HPD_IRQ;
-	if (status) {
-		atomic_or(status, &dp->status);
-		return IRQ_WAKE_THREAD;
-	}
+--ZDwzZQYzZVCy0qwd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	return IRQ_HANDLED;
-}
+-----BEGIN PGP SIGNATURE-----
 
-zynqmp_dp_thread_handler(...)
-{
-	status = atomic_xchg(&dp->status, 0);
-	/* process HPD stuff */
-}
+iQIzBAABCgAdFiEEkdOrrjmBP3eB7DeWSkztbX7flQoFAmX9r3EACgkQSkztbX7f
+lQrrVw/9Fb/e4pVj5RoGppymFb9gjfxLYT21kL08bq3otfPXNTif7telFvum9WTg
+9iua6RX0TYnUoJ5wj74XhoDjFyJpzqNk2dPNyMKENCcqJ+5YwZYFWUcZNqTGIttt
+n94TMqowODXjZgAcUxmWqyLMgdHyK9FnoXlVGD15o060B3Px69qub/VUtnfSc8DC
+DX8qsHbbarYEE0mX15Z9PynuEdz3y5f2spNFYkLJzM6/brrNOJ6jRInV3t32YMZD
+oBPFg7NaarSEjTJhp051DyUaa4rZU+TgxOF8wKCgzTiGj1kTj9AtTIaeIE6uCB6R
+ADNTYFjrcccCUNdFg8FXR9YxDtRbsyCN+CaziXIAC6rRWwAAk3Q0PKdJvvjJjCsY
+m6F08lb+3VdFmz7WRuCAXFWVjjXVXKCRgiPxtsmYW4dKrID9hrmHU8ulJqQJuPIn
+t14ex4BvOz2/mRGCJd4e13nm3lsk4DjW9JNbo1aLscED5AtrZpcjq5Um5+WS0Icn
+qJzahTfWX0H8lT/xLTe9dQBf/T/LqzqRyzJjvw3ThyQe+1Fu2vXNpd2t4fLaexCs
+vYtjBatMyLwAp8EP2ILpDCGyD+aMv4DWgXKjnhYqZ50TpHE0nyUa/HOrvnC25YSj
+1y8JOfHH1QW3HVkEFS1oy61TaB2SA8tZDrMFvZ6O9X6FoGB4uPQ=
+=QTbx
+-----END PGP SIGNATURE-----
 
-which gets rid of the workqueue too.
-
---Sean
+--ZDwzZQYzZVCy0qwd--
 
