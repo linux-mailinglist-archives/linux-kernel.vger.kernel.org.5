@@ -1,125 +1,119 @@
-Return-Path: <linux-kernel+bounces-111883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04B12887227
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:50:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E64887229
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D4E0B2236E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:50:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AD1B1C22CB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53624605B1;
-	Fri, 22 Mar 2024 17:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6CF605CF;
+	Fri, 22 Mar 2024 17:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="Qpsv8DC7"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="CIWEdOc/"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804D5604A6;
-	Fri, 22 Mar 2024 17:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E280605C8
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711129811; cv=none; b=E36O6beB75Cz2TVsAV/6FjcJUlVgAns/PbxEZYNLLZ2NboFWGmKzNME8GGLWYCQMiOvrs+m9GcS/02xloLSGBNQJxCTJEdcPfQwlUHgZ8+cF3qeXleat3xGXsdvoE4mEqucnLgMQ6hHC0Lq8r8JvpCmuKwX3AMk27xQxq6LNhrI=
+	t=1711129903; cv=none; b=AmgkzNom9zfVYYEkN1+oNULhfkMnUpwLe1chaIe+wKi8klJObA/dGUM8z1evxGDOCmJJQyfyt8w7GzmFpnKjaOpTBNVHi6Ws/Lfilu5oo0pA+3vf/TkjryZ2ErTBCLAFmKYIv+Yg9pG0VKfbFqATTRH+o/tpSL0dwgU9Gph4CXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711129811; c=relaxed/simple;
-	bh=tlaxGcQqSo4rsMaZE0sbNHeXStqfwgVpWciJkli4y+E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pUdmeTAQO5IdjmOQ9QU9XcsGdDjoTvA6OADnPdZRhI4Lr4xzq23GpEGoGCR81dpjPu+FHn93Cz7d1ClkNDpWQ43cyvHjLvXo00BnHdy2YHqAJpT+0WTIpPIlDcYwV9Hj4MrPIAsPQP9/pzIvFP7GwZ00tUENYPEfyYFI+MG5cNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=Qpsv8DC7; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V1VGR4j9Yz6Cnk95;
-	Fri, 22 Mar 2024 17:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1711129797; x=1713721798; bh=afZlcm9O07bvpHWZp13m44cg
-	Mjqanzjz1tGTAZQ/1YM=; b=Qpsv8DC7mL/Qcs4xoiwBfXcBY4Y5RAIaatVQz7e0
-	NmTdbhx1Xsns+fOdYL4hRE0TSmqH/tkSqTJUfxTbNyGRIE37amKlWJ4sOG/4J9Rq
-	E1OlRyafw/bvMN6lPbKPVjJOARn9tI5lwiLNOWFpPp3xY18La+U79Q21j3TRjlFW
-	lTuANy7O79bywNMmr3DDk5u73ZNtChsWQ2S637Yrcdw2tU2esITNy61wtZSVyDwF
-	auUIvSZmBhD9AD/zmrt+L8xNEeGCgA27jur2s4MC/uU795KGEP3p1XkAOuDP9PvO
-	6b4Q0VUPCVm6smHq/cZwoEBSZdEwWvG4HyveTE0u6aEm8g==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id WDCEdahPUwBV; Fri, 22 Mar 2024 17:49:57 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
+	s=arc-20240116; t=1711129903; c=relaxed/simple;
+	bh=Xy6fuGyBECIuY3ohH/7MY26gAGWyuhCMWaGAqdMGGpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CaJYPLASWC3wGfPJ8Br8jAywupZNS9ha+X5br33TSWXEp4xL8ZueXWMEnC14J+77mLicgyuYu6mgZrRye9t2rSWShI628pLuiHBEK3dfDSNXWsMQqBpX28PfC6Gt7AgsLuc18hFax8ewPP7J2AsLVnMfH22UnMyO/bo7cdzwcg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=CIWEdOc/; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-b985-910f-39e1-703f.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:b985:910f:39e1:703f])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V1VG64fZqz6Cnk8t;
-	Fri, 22 Mar 2024 17:49:50 +0000 (UTC)
-Message-ID: <7027ccdc-878a-420e-a7ea-5156e1d67b8a@acm.org>
-Date: Fri, 22 Mar 2024 10:49:48 -0700
+	by bee.tesarici.cz (Postfix) with ESMTPSA id C1B5F1AB84A;
+	Fri, 22 Mar 2024 18:51:39 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1711129900; bh=sCQm32WrW4hxeQOlo4+CbAT/ApEBh72zUZUhSQ2FlmU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CIWEdOc/zZZOq3Ugq1EiC64RPQBV1sLQ2pjEBrhs3AXf9pxLWNPAPFapLHzEiRjpN
+	 PPb1mJLNvqMLoPONcnTd2HhDQYQH8QdMXabERrfl4fTn51uy7THsY+Z14WkuZfWXKM
+	 Vl+vBWlDxL2V4dDrypYmn0cz+a4lEpF+8RiZ4SEW4WU5RiRSoxnHsyW5GS5LdjUWo/
+	 fiNEQeSRvP0cUGmu/dJUxftJz9le+ZR6mrOI0I+v4/D6HjsHDAANceeEbuNtcpA8Si
+	 wMQmrT5zH0hBbUbkAeYTivIOM3bGCQA6Ecq8x9xnYr4RXnhr9zWngSAt7+qVRUtFna
+	 8omHoOUpjRsqw==
+Date: Fri, 22 Mar 2024 18:51:38 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Will Deacon <will@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
+ Tesarik <petr.tesarik1@huawei-partners.com>, Michael Kelley
+ <mhklinux@outlook.com>, open list <linux-kernel@vger.kernel.org>, "open
+ list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>, Roberto Sassu
+ <roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v3 0/2] swiotlb: allocate padding slots if necessary
+Message-ID: <20240322185138.1af83c61@meshulam.tesarici.cz>
+In-Reply-To: <20240322150941.GA5634@willie-the-truck>
+References: <20240321171902.85-1-petrtesarik@huaweicloud.com>
+	<20240322150941.GA5634@willie-the-truck>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] block: add new genhd flag GENHD_FL_NVMEM
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
- Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>,
- Jan Kara <jack@suse.cz>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
- <linux@weissschuh.net>, Damien Le Moal <dlemoal@kernel.org>,
- Li Lingfeng <lilingfeng3@huawei.com>, Christian Brauner
- <brauner@kernel.org>, Christian Heusel <christian@heusel.eu>,
- Min Li <min15.li@samsung.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
- Christian Loehle <CLoehle@hyperstone.com>, Bean Huo <beanhuo@micron.com>,
- Yeqi Fu <asuk4.q@gmail.com>, Victor Shih <victor.shih@genesyslogic.com.tw>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Dominique Martinet <dominique.martinet@atmark-techno.com>,
- "Ricardo B. Marliere" <ricardo@marliere.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-block@vger.kernel.org
-References: <cover.1711048433.git.daniel@makrotopia.org>
- <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <89abd9ab93783da0e8934ebc03d66559f78f6060.1711048433.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 3/21/24 12:33, Daniel Golle wrote:
-> Add new flag to destinguish block devices which may act as an NVMEM
-> provider.
+On Fri, 22 Mar 2024 15:09:41 +0000
+Will Deacon <will@kernel.org> wrote:
+
+> Hi Petr,
 > 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->   include/linux/blkdev.h | 2 ++
->   1 file changed, 2 insertions(+)
+> On Thu, Mar 21, 2024 at 06:19:00PM +0100, Petr Tesarik wrote:
+> > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> > 
+> > If the allocation alignment is bigger than IO_TLB_SIZE and min_align_mask
+> > covers some bits in the original address between IO_TLB_SIZE and
+> > alloc_align_mask, preserve these bits by allocating additional padding
+> > slots before the actual swiotlb buffer.  
 > 
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index c3e8f7cf96be9..f2c4f280d7619 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -81,11 +81,13 @@ struct partition_meta_info {
->    * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
->    * scan for partitions from add_disk, and users can't add partitions manually.
->    *
-> + * ``GENHD_FL_NVMEM``: the block device should be considered as NVMEM provider.
->    */
->   enum {
->   	GENHD_FL_REMOVABLE			= 1 << 0,
->   	GENHD_FL_HIDDEN				= 1 << 1,
->   	GENHD_FL_NO_PART			= 1 << 2,
-> +	GENHD_FL_NVMEM				= 1 << 3,
->   };
+> Thanks for fixing this! I was out at a conference last week, so I didn't
+> get very far with it myself, but I ended up in a pickle trying to avoid
+> extending 'struct io_tlb_slot'. Your solution is much better than the
+> crazy avenue I started going down...
+> 
+> With your changes, can we now simplify swiotlb_align_offset() to ignore
+> dma_get_min_align_mask() altogether and just:
+> 
+> 	return addr & (IO_TLB_SIZE - 1);
 
-What would break if this flag wouldn't exist?
+I have also thought about this but I don't think it's right. If we
+removed dma_get_min_align_mask() from swiotlb_align_offset(), we would
+always ask to preserve the lowest IO_TLB_SHIFT bits. This may cause
+less efficient use of the SWIOTLB.
 
-Thanks,
+For example, if a device does not specify any min_align_mask, it is
+presumably happy with any buffer alignment, so SWIOTLB may allocate at
+the beginning of a slot, like here:
 
-Bart.
+orig_addr   |      ++|++      |
+tlb_addr    |++++    |        |
 
+Without dma_get_min_align_mask() in swiotlb_align_offset(), it would
+have to allocate two mostly-empty slots:
+
+tlb_addr    |      ++|++      |
+
+where:
+  | mark a multiple of IO_TLB_SIZE (in physical address space)
+  + used memory
+    free memory
+
+Petr T
 
