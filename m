@@ -1,141 +1,220 @@
-Return-Path: <linux-kernel+bounces-110817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9466F886447
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:14:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1015488644B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 508BA2821A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B848E1F22EB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3757565C;
-	Fri, 22 Mar 2024 00:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E2629A5;
+	Fri, 22 Mar 2024 00:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="QAcNKIrc"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vitb3wDF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FF1376
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 00:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19C4633;
+	Fri, 22 Mar 2024 00:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711066436; cv=none; b=Ebtw1wD2sLaX41oxHBPNcVZeUb1csNLONbSbfQaGHaBjASd0wwx6f/BVf/Hzdat+UakoRSqF7Z+HblQnShwGgGvqESt769cCkb3y/crXY9mOqAFlS8yB6bfMBLljnLrzxxLsLNMl6h0J0U199yJ6OZ5G9+h6k38llli4lpG+KOs=
+	t=1711066616; cv=none; b=fWOKTYrDvqXKEYTg2x7LPPczzC8hUl9/K9wTIpMV8Usyq7ns/K0UN5m6JQllpvbcQHX5k7hCrrA/AOx/QSRP3nGee4tfoqsw1WKYbw6b5V1QMkqfA0XEuCYJ6laSxkYxHX0I08pOUwETM7pCy7aRb6935Nc0AmksyJXhILqohWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711066436; c=relaxed/simple;
-	bh=Z5fjCzmDv7rqR7iUDqxDLqg/AN5GIh/c5iZIz9BpjEI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=idkyJiASYC6knb6BiTSDACCUIgTGqdBgmdTSMKq/1RXfqVj6L3XX1qYav7pyJ0jg3/q4I1TaI1gAvGB7vRPKIg7SzVNv850NKM6+s5Qs5dkGWdcK6XckFkyT6MyxLZDXqAtEySN+VU8Q2XuwzD/n7LZcroHUwa1Lp2yE5mAfrRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=QAcNKIrc; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3686914b564so3571675ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1711066434; x=1711671234; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oVj0RTqijXF6fGHo7lvyifktNSlsSBmRQcPYhg8uW8Y=;
-        b=QAcNKIrcsdNtT0pZpXNbkJzKMlZtJcSzPC0XFEQKRXTTEh0FM61171mjI2WPIGK55N
-         3fmWSLAduhmYr1bhTpAm/0lX1iMdA3Y+MAJ2mNTpBbnGBbzwZsA51Drgigrtcf9MRjcq
-         ZEBTvYyEj7Thixeku7+4uUTLHabcsrhxrclVBH89vgo9zdAxAL3a+BIb6qC0CvsqQmRb
-         DwI8161oN9mMEXtTCRsEboi6gv1VOhJEYdlBeGRJwJksi8t+pEDbN0dCmoVR/xnbeaCF
-         GufQJsb02A/RBSYn9s7umWR7DEDkqCdYgsAylGMvV7dwJmyd8xyIlpVPwMuKcAE18rWv
-         44dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711066434; x=1711671234;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oVj0RTqijXF6fGHo7lvyifktNSlsSBmRQcPYhg8uW8Y=;
-        b=aUgqdrKjQzv+RWgoY9k/PgjQ19PnwMeACEkQR6DCY8yEScop631fPMJlb6X9HoBX8J
-         44NfPb7XqckmQHPD7rYMO+LCebJy3gd40GSBPBmKx0SW5m5wUt0AEY/ENQ+tkB6aLbMs
-         m7c6orBGzMOOLduiVRdJUhNdmd8nBbVeU2/2O3QxMMOiN+dXOKb23hGU2qXlM26+SsFm
-         yIIGTsT7L2QCpfq0nqpz1LLlNTz3nbPArSa4TSq00lleeSGk/2peZloHfsYtaq2oukog
-         b+6hFego+BBtsunno+gUMFBAc40uN0lGEMPzYfJtbNz4TRcrSESLO+BfvLe4snMt+HuG
-         khmg==
-X-Forwarded-Encrypted: i=1; AJvYcCXHZ4GRibMAnLjw1gbjGs/05wVVyQDnVWMPY9tM5STbk9mA8HMkDfjiJfE7gHNJuCrCwpuS+mGr0qbFZOAvYRGxpm8yXFkEgkdFNxOf
-X-Gm-Message-State: AOJu0Yx7FNPqojth/NAJaDYOFpkonhSxVKQX7VLN5z2C0NARQ+eWjdZu
-	fl5k9QIGse+tUiQs6vfHIv/EDQgiit6ENik7biNsxOj6JUzAHJHSj5B5R6ERaAo=
-X-Google-Smtp-Source: AGHT+IFKwWGMcmPYu0Ub5wCx2QiMD01tH+85fFGHMfPp5sK/V1U4H3V0F6RY+8M0VE4TG4elEaDvoQ==
-X-Received: by 2002:a92:dc83:0:b0:365:29e4:d95d with SMTP id c3-20020a92dc83000000b0036529e4d95dmr966458iln.30.1711066434179;
-        Thu, 21 Mar 2024 17:13:54 -0700 (PDT)
-Received: from [100.64.0.1] ([136.226.86.189])
-        by smtp.gmail.com with ESMTPSA id y18-20020a056638015200b00476f1daad44sm206727jao.54.2024.03.21.17.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 17:13:53 -0700 (PDT)
-Message-ID: <d9452ab4-a783-4bcf-ac25-40baa4f31fac@sifive.com>
-Date: Thu, 21 Mar 2024 19:13:52 -0500
+	s=arc-20240116; t=1711066616; c=relaxed/simple;
+	bh=dKPRrDLl3WDe65oG7nzjL2DbjC1eZAZzwXxTDf+c4AA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ce2Gp0K5wwFS4nfgWBXQ2su/7+CgmnQAt2eAjDCsxI6NS7cux49ndCfdNdd/p11XL0eWf8cvpLQTZLwuW7N9H3SFB8eGlmo/a9NTcK2+2FDcLV6KtmB6ozNQgpfkt9IosjcAK/37QzRlFAM00k+OtRse5TKrgQOB9+g94aybqDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vitb3wDF; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711066614; x=1742602614;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dKPRrDLl3WDe65oG7nzjL2DbjC1eZAZzwXxTDf+c4AA=;
+  b=Vitb3wDFa38OlCPNbcavs/xV1DdZwN5RkZt5j/Yul1JXviRRYDRyCkCY
+   chYVDzqCm/4HfhO6Itr5jWdUvCZnkoHsLeQtEApL/Fy03EKIzTQmRX4BQ
+   AKc4qWa2i21qX2bnpG8Wa1piqygH1twFUE2IU3IbE1fi0TjW06s+tmWnW
+   1f62AR8HohjOi2be1OKfQu/QdhwDxD2D0IxzfZCBseGXw/0mPrC6mJMTq
+   TcCekSMDJO0TvhkCKyT5kwDXZY8AEFg3Rqjc0OPheYI1sRjIJBOPvoRYL
+   vO0qenfOX3rj0mtz+F0OWfE/eHVC63b4pdmTutuvBh/5c/lGSB05dUA55
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5929052"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="5929052"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 17:16:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="14674916"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 17:16:52 -0700
+Date: Thu, 21 Mar 2024 17:16:52 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	Binbin Wu <binbin.wu@linux.intel.com>,
+	Yuan Yao <yuan.yao@intel.com>, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
+ SEAMCALLs to the TDX module
+Message-ID: <20240322001652.GW1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
+ <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
+ <20240320213600.GI1994522@ls.amr.corp.intel.com>
+ <46638b78-eb75-4ab4-af7e-b3cad0d00d7b@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
- per-thread envcfg bits
-Content-Language: en-US
-To: Deepak Gupta <debug@rivosinc.com>, Conor Dooley <conor@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>
-Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
- Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org,
- tech-j-ext@lists.risc-v.org, kasan-dev@googlegroups.com,
- Evgenii Stepanov <eugenis@google.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Andrew Jones <ajones@ventanamicro.com>,
- Guo Ren <guoren@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Paul Walmsley <paul.walmsley@sifive.com>
-References: <20240319215915.832127-1-samuel.holland@sifive.com>
- <20240319215915.832127-6-samuel.holland@sifive.com>
- <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
- <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
- <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <46638b78-eb75-4ab4-af7e-b3cad0d00d7b@intel.com>
 
-On 2024-03-19 11:39 PM, Deepak Gupta wrote:
->>>> --- a/arch/riscv/include/asm/switch_to.h
->>>> +++ b/arch/riscv/include/asm/switch_to.h
->>>> @@ -69,6 +69,17 @@ static __always_inline bool has_fpu(void) { return false; }
->>>>  #define __switch_to_fpu(__prev, __next) do { } while (0)
->>>>  #endif
->>>>
->>>> +static inline void sync_envcfg(struct task_struct *task)
->>>> +{
->>>> +       csr_write(CSR_ENVCFG, this_cpu_read(riscv_cpu_envcfg) | task->thread.envcfg);
->>>> +}
->>>> +
->>>> +static inline void __switch_to_envcfg(struct task_struct *next)
->>>> +{
->>>> +       if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
->>>
->>> I've seen `riscv_cpu_has_extension_unlikely` generating branchy code
->>> even if ALTERNATIVES was turned on.
->>> Can you check disasm on your end as well.  IMHO, `entry.S` is a better
->>> place to pick up *envcfg.
->>
->> The branchiness is sort of expected, since that function is implemented by
->> switching on/off a branch instruction, so the alternate code is necessarily a
->> separate basic block. It's a tradeoff so we don't have to write assembly code
->> for every bit of code that depends on an extension. However, the cost should be
->> somewhat lowered since the branch is unconditional and so entirely predictable.
->>
->> If the branch turns out to be problematic for performance, then we could use
->> ALTERNATIVE directly in sync_envcfg() to NOP out the CSR write.
+On Thu, Mar 21, 2024 at 11:37:58AM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
+
 > 
-> Yeah I lean towards using alternatives directly.
+> 
+> On 21/03/2024 10:36 am, Isaku Yamahata wrote:
+> > On Wed, Mar 20, 2024 at 01:03:21PM +1300,
+> > "Huang, Kai" <kai.huang@intel.com> wrote:
+> > 
+> > > > +static inline u64 tdx_seamcall(u64 op, struct tdx_module_args *in,
+> > > > +			       struct tdx_module_args *out)
+> > > > +{
+> > > > +	u64 ret;
+> > > > +
+> > > > +	if (out) {
+> > > > +		*out = *in;
+> > > > +		ret = seamcall_ret(op, out);
+> > > > +	} else
+> > > > +		ret = seamcall(op, in);
+> > > 
+> > > I think it's silly to have the @out argument in this way.
+> > > 
+> > > What is the main reason to still have it?
+> > > 
+> > > Yeah we used to have the @out in __seamcall() assembly function.  The
+> > > assembly code checks the @out and skips copying registers to @out when it is
+> > > NULL.
+> > > 
+> > > But it got removed when we tried to unify the assembly for TDCALL/TDVMCALL
+> > > and SEAMCALL to have a *SINGLE* assembly macro.
+> > > 
+> > > https://lore.kernel.org/lkml/cover.1692096753.git.kai.huang@intel.com/
+> > > 
+> > > To me that means we should just accept the fact we will always have a valid
+> > > @out.
+> > > 
+> > > But there might be some case that you _obviously_ need the @out and I
+> > > missed?
+> > 
+> > As I replied at [1], those four wrappers need to return values.
+> > The first three on error, the last one on success.
+> > 
+> >    [1] https://lore.kernel.org/kvm/20240320202040.GH1994522@ls.amr.corp.intel.com/
+> > 
+> >    tdh_mem_sept_add(kvm_tdx, gpa, tdx_level, hpa, &entry, &level_state);
+> >    tdh_mem_page_aug(kvm_tdx, gpa, hpa, &entry, &level_state);
+> >    tdh_mem_page_remove(kvm_tdx, gpa, tdx_level, &entry, &level_state);
+> >    u64 tdh_vp_rd(struct vcpu_tdx *tdx, u64 field, u64 *value)
+> > 
+> > We can delete out from other wrappers.
+> 
+> Ah, OK.  I got you don't want to invent separate wrappers for each
+> seamcall() variants like:
+> 
+>  - tdx_seamcall(u64 fn, struct tdx_module_args *args);
+>  - tdx_seamcall_ret(u64 fn, struct tdx_module_args *args);
+>  - tdx_seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
+> 
+> To be honest I found they were kinda annoying myself during the "unify
+> TDCALL/SEAMCALL and TDVMCALL assembly" patchset.
+> 
+> But life is hard...
+> 
+> And given (it seems) we are going to remove kvm_spurious_fault(), I think
+> the tdx_seamcall() variants are just very simple wrapper of plain seamcall()
+> variants.
+> 
+> So how about we have some macros:
+> 
+> static inline bool is_seamcall_err_kernel_defined(u64 err)
+> {
+> 	return err & TDX_SW_ERROR;
+> }
+> 
+> #define TDX_KVM_SEAMCALL(_kvm, _seamcall_func, _fn, _args)	\
+> 	({				\
+> 		u64 _ret = _seamcall_func(_fn, _args);
+> 		KVM_BUG_ON(_kvm, is_seamcall_err_kernel_defined(_ret));
+> 		_ret;
+> 	})
 
-One thing to note here: we can't use alternatives directly if the behavior needs
-to be different on different harts (i.e. a subset of harts implement the envcfg
-CSR). I think we need some policy about which ISA extensions are allowed to be
-asymmetric across harts, or else we add too much complexity.
+As we can move out KVM_BUG_ON() to the call site, we can simply have
+seamcall() or seamcall_ret().
+The call site has to check error. whether it is TDX_SW_ERROR or not.
+And if it hit the unexpected error, it will mark the guest bugged.
 
-Regards,
-Samuel
 
+> #define tdx_kvm_seamcall(_kvm, _fn, _args)	\
+> 	TDX_KVM_SEAMCALL(_kvm, seamcall, _fn, _args)
+> 
+> #define tdx_kvm_seamcall_ret(_kvm, _fn, _args)	\
+> 	TDX_KVM_SEAMCALL(_kvm, seamcall_ret, _fn, _args)
+> 
+> #define tdx_kvm_seamcall_saved_ret(_kvm, _fn, _args)	\
+> 	TDX_KVM_SEAMCALL(_kvm, seamcall_saved_ret, _fn, _args)
+> 
+> This is consistent with what we have in TDX host code, and this handles
+> NO_ENTROPY error internally.
+> 
+> Or, maybe we can just use the seamcall_ret() for ALL SEAMCALLs, except using
+> seamcall_saved_ret() for TDH.VP.ENTER.
+> 
+> u64 tdx_kvm_seamcall(sruct kvm*kvm, u64 fn,
+> 			struct tdx_module_args *args)
+> {
+> 	u64 ret = seamcall_ret(fn, args);
+> 
+> 	KVM_BUG_ON(kvm, is_seamcall_err_kernel_defined(ret);
+> 
+> 	return ret;
+> }
+> 
+> IIUC this at least should give us a single tdx_kvm_seamcall() API for
+> majority (99%) code sites?
+
+We can eleiminate tdx_kvm_seamcall() and use seamcall() or seamcall_ret()
+directly.
+
+
+> And obviously I'd like other people to weigh in too.
+> 
+> > Because only TDH.MNG.CREATE() and TDH.MNG.ADDCX() can return TDX_RND_NO_ENTROPY, > we can use __seamcall().  The TDX spec doesn't guarantee such error code
+> > convention.  It's very unlikely, though.
+> 
+> I don't quite follow the "convention" part.  Can you elaborate?
+> 
+> NO_ENTROPY is already handled in seamcall() variants.  Can we just use them
+> directly?
+
+I intended for bad code generation.  If the loop on NO_ENTRY error harms the
+code generation, we might be able to use __seamcall() or __seamcall_ret()
+instead of seamcall(), seamcall_ret().
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
