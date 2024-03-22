@@ -1,212 +1,280 @@
-Return-Path: <linux-kernel+bounces-111319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07641886A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:44:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E224886AA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:45:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6251EB233B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:44:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2B231F218EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A053D3B1;
-	Fri, 22 Mar 2024 10:44:22 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17DE03D0D9;
+	Fri, 22 Mar 2024 10:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aiVvjJoG"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD56383B9
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D1A224F2
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711104261; cv=none; b=pmu4uqUI1mOFZl6RXp5Q0edv9WaqMRHSKgIZLUeNPm0FTq6wLdtays2pmd/exGsCk6RPj2V97vR2roFVB47pQtv+ckJGXyNhAtIYVQvDsp4B7o77OhNI4tLHGGiA2h+oy7X/MxWmiit3nAgkQeqSJdajrAWLGV5cTXrhlkjzhKc=
+	t=1711104314; cv=none; b=qMCedZ8HAN9jpndY7omSm93yprB8oitBaPxwGuFHNdB/eEqr0R6mCxuwrjO0SXPSRTvPpUlS5FoqYv02/I2nYRh0a63iIomGxAnI+nmRxF9JLJ9UKcdStKS7tcjTSXKFZOpI+XuSQ/zLzDBTaP+Rg9vNq75Y+I/YvW29ZwcUvDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711104261; c=relaxed/simple;
-	bh=9KunjxSgRCqwix3sO03OFopWsrgdE6LHZ5VuJbMX3M4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Tm09j8xQfggZTU3syeR9x4W2pJcrf5eKQ7lJrlcWYyOUug4pooW8cFiADonkQOIpTu4RW+F+zrCP9ATiv3CCY8dud1K3WfBYGg1SMyZzSu/pdWYWvrQlhjlN/4Dj/VjZY2rToHI4YgxDRN+Xk0aTKfaG0aopE00iDkphx/rr0MA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36660582003so22333965ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:44:19 -0700 (PDT)
+	s=arc-20240116; t=1711104314; c=relaxed/simple;
+	bh=jWRuh7EGPZi+az7Aq33aapOL1INFIF3xUm8yZfIfKMU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jwj3mx/5og+bBrzXEJoXcZLYp7evl/8MtQR11JZh2aLkflWcpxTeWbZrbyhNWjH+M1ynUl95iJ+cen7gAYI8olOjHZz054SH5HEoGXkGghmeCtZGXB4vJgxiXyrxY1Vj5pLmIa2C1o5GGpVMkFCc+rA/vzdKnN1B7ewHBiTRrv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aiVvjJoG; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so1021915f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711104310; x=1711709110; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ijz4cnwmta4DwRjOoVv/yS9+lUjTkF7NKjIpyzpOrv4=;
+        b=aiVvjJoG80jSLyFxRYRywfwVzM2t3cEK6wFW+rDlM7+Kb8C25AtGPLDwfBaEgXQ2KL
+         Te7NM0ap/2sD4j9y3TiEuCvF1luJuEdWqYK0Jk4igM2//0uxmcdLQLVRSo/X+I/eDaSs
+         rpYue8vOhFCbn7wlKcrTcES3gD8JzLHAwLEgGiAiCsWY1fz+YE7jGQakTcua6QaxwOyC
+         Vlogzmrv2+x4gHOl4VspPwGL/VTD0Z8W5WHonXDE2Ig+rDOvYUYy5tHT6Y3CLFzctct7
+         IXmgzNSr7mT2cSlKePOR1YvAEQICy08BqoqzCTnORko+nBOPRfcgvmF1zBoNl32NpPxR
+         gulA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711104259; x=1711709059;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qkDZeghMwkXwm4rdzmArDwpkhROwVsJRzSxMOJhcObI=;
-        b=hOfX7zV2N1dUDdpuxGHD4Om3Q7i0XLPPN26Ryxf96prVpjzvpNsCFAfb9VfDtGROVQ
-         UFa6L/9xANL/tCt+di2/KYloNnk834hKHpnxIgPWQub0Mlh/1EJt6mSdOpFkM1u6Sz8G
-         osb6wM1nQDPL2hXNj/a2IAU8e2KOsKZpSG8svb41O5o2VJkfVeQ45wt+DpFc95vaVNqS
-         DVIrWQnTkPaLT5IK9Eh+YEhho6USXfh26aUsYjPJW1uBGgaTKXq8YmUAuZkfEn2nPH0X
-         XAPfW8GoT3JouKr/J6LI0stPyKb7PSZh2I/F55sFn9r2PG9ttYCN2BqodPE3cKrxCDxp
-         L4+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUIvOFgcDhiit1x1W8XnrgF6yPd5NmYSYYzX2D3PLaUFNuiCX8Okc76550t7m13AAxHko3knOjdiXBMD5bLh1sy/LYFw52sLfdAOPZH
-X-Gm-Message-State: AOJu0YxjW9z7VzVE/LOj/EkmHbjaS7bXHmgtWfoou76Rl+nQa48uY8ha
-	EwQ9iLEJQrtVspw3/2f9Mmgk0p6dMBo/PhKBE1po9a4dK4Ay/vpGxOBB+wQQrWUxFzBhQrxSPj4
-	/9lMSGacUEr37WhkuM4pZIHykqIsQqWnofg1Ltx68Xh5is8PRXvohEFY=
-X-Google-Smtp-Source: AGHT+IG+Y1gMkuz614HqXYzh/CuzeSCZP7/kYEkwXAbU3Foh8fjew5oCOlVYKb0EmOR5mG1wuIaWGCQ5ZLseyVoAdV70kMV6Ij8c
+        d=1e100.net; s=20230601; t=1711104310; x=1711709110;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ijz4cnwmta4DwRjOoVv/yS9+lUjTkF7NKjIpyzpOrv4=;
+        b=YRfuzaFfbW5F8DH80J78kHIUvHw6ZeyJc5bEG8ZY0kQMVVJ8FVZ/pWNf2/Zfbkl8s0
+         RpzmYAnbuC93OCls9kvNd7R89OkY1JdBP8BHyRiTdE/iWjSFlBUPOcHbNUp661UpZSt0
+         +Go5FDZDpbVdztzn+axWQ28HF6IV+S9qXfUu8egmzMxqFTkKZj0oiQkx45UjJHJMtGay
+         lTEZxVPP4grR0yADLzCtgM2dMF3Y98WfcwLpHIYQHbX1PMukDlKFGlVFYfYKBetZxJyw
+         +S8lD0Y4cJm5uEgdaaZxOlkR+WnnaaA9MLhGX6UlDIHeMapXSirYwHFWsIFU1Vm9GQtd
+         FwnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWIAHaOHYTeGDdL78OIFl11e1ox+6T5+8U2HkpJM0nRS8Th155BowD7dbzmNel5wM4VyP/CUqfNwm2xp+t/DGOjF0lTBksm8HvrHl0S
+X-Gm-Message-State: AOJu0YwZPUL8Mcy1n60mYbLSbexd6v+DBGayNhAEqC1PPF1ajkU3guzg
+	LwXyPZXnNnOhCNpTYGv/vWamuRtWN5UJqrpc1UbpsOWWmDfRg7lrJhvx7sNvD5qJjENGgnY72Vo
+	r8+Y=
+X-Google-Smtp-Source: AGHT+IE0h2NuaEVe60IzMpflYy6JouB/v/PcDVSKl0vyEQEKhI77w54WnPoVuNyW77f1ZSy4VjO1Wg==
+X-Received: by 2002:a5d:69d0:0:b0:33e:7f51:c2f9 with SMTP id s16-20020a5d69d0000000b0033e7f51c2f9mr1268500wrw.49.1711104309609;
+        Fri, 22 Mar 2024 03:45:09 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:3ee1:a278:2b57:55f7? ([2a01:e0a:982:cbb0:3ee1:a278:2b57:55f7])
+        by smtp.gmail.com with ESMTPSA id j1-20020adff001000000b0033e7e9c8657sm1778124wro.45.2024.03.22.03.45.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 03:45:09 -0700 (PDT)
+Message-ID: <1dc187c1-2005-486f-a9dd-6648cf52ab70@linaro.org>
+Date: Fri, 22 Mar 2024 11:45:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3288:b0:366:b4c8:2150 with SMTP id
- bk8-20020a056e02328800b00366b4c82150mr81873ilb.6.1711104259340; Fri, 22 Mar
- 2024 03:44:19 -0700 (PDT)
-Date: Fri, 22 Mar 2024 03:44:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008d4beb06143d8165@google.com>
-Subject: [syzbot] [virtualization?] net-next boot error: WARNING: refcount bug
- in __free_pages_ok
-From: syzbot <syzbot+e58465c446f16bd6191a@syzkaller.appspotmail.com>
-To: davem@davemloft.net, jasowang@redhat.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, mst@redhat.com, netdev@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev, 
-	xuanzhuo@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 3/7] phy: qcom: qmp-pcie: register second optional PHY
+ AUX clock
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
+ <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-3-3ec0a966d52f@linaro.org>
+ <CAA8EJpoJWKZcZu3SY2P9dpYQ_KXkimRXNhAKfaOreCGZ1muYqw@mail.gmail.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <CAA8EJpoJWKZcZu3SY2P9dpYQ_KXkimRXNhAKfaOreCGZ1muYqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 22/03/2024 11:41, Dmitry Baryshkov wrote:
+> On Fri, 22 Mar 2024 at 11:43, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
+>> add the code to register it for PHYs configs that sets a aux_clock_rate.
+>>
+>> In order to get the right clock, add qmp_pcie_clk_hw_get() which uses
+>> the newly introduced QMP_PCIE_PIPE_CLK & QMP_PCIE_PHY_AUX_CLK clock
+>> IDs and also supports the legacy bindings by returning the PIPE clock
+>> when #clock-cells=0.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> Small question below.
+> 
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 78 ++++++++++++++++++++++++++++++--
+>>   1 file changed, 75 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> index e8da2e9146dc..6c9a95e62429 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> @@ -22,6 +22,8 @@
+>>   #include <linux/reset.h>
+>>   #include <linux/slab.h>
+>>
+>> +#include <dt-bindings/phy/phy-qcom-qmp.h>
+>> +
+>>   #include "phy-qcom-qmp-common.h"
+>>
+>>   #include "phy-qcom-qmp.h"
+>> @@ -2389,6 +2391,9 @@ struct qmp_phy_cfg {
+>>
+>>          /* QMP PHY pipe clock interface rate */
+>>          unsigned long pipe_clock_rate;
+>> +
+>> +       /* QMP PHY AUX clock interface rate */
+>> +       unsigned long aux_clock_rate;
+>>   };
+>>
+>>   struct qmp_pcie {
+>> @@ -2420,6 +2425,7 @@ struct qmp_pcie {
+>>          int mode;
+>>
+>>          struct clk_fixed_rate pipe_clk_fixed;
+>> +       struct clk_fixed_rate aux_clk_fixed;
+>>   };
+>>
+>>   static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
+>> @@ -3686,6 +3692,62 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
+>>          return devm_clk_hw_register(qmp->dev, &fixed->hw);
+>>   }
+>>
+>> +/*
+>> + * Register a fixed rate PHY aux clock.
+>> + *
+>> + * The <s>_phy_aux_clksrc generated by PHY goes to the GCC that gate
+>> + * controls it. The <s>_phy_aux_clk coming out of the GCC is requested
+>> + * by the PHY driver for its operations.
+>> + * We register the <s>_phy_aux_clksrc here. The gcc driver takes care
+>> + * of assigning this <s>_phy_aux_clksrc as parent to <s>_phy_aux_clk.
+>> + * Below picture shows this relationship.
+>> + *
+>> + *         +---------------+
+>> + *         |   PHY block   |<<---------------------------------------------+
+>> + *         |               |                                               |
+>> + *         |   +-------+   |                      +-----+                  |
+>> + *   I/P---^-->|  PLL  |---^--->phy_aux_clksrc--->| GCC |--->phy_aux_clk---+
+>> + *    clk  |   +-------+   |                      +-----+
+>> + *         +---------------+
+>> + */
+>> +static int phy_aux_clk_register(struct qmp_pcie *qmp, struct device_node *np)
+>> +{
+>> +       struct clk_fixed_rate *fixed = &qmp->aux_clk_fixed;
+>> +       struct clk_init_data init = { };
+>> +       int ret;
+>> +
+>> +       ret = of_property_read_string_index(np, "clock-output-names", 1, &init.name);
+>> +       if (ret) {
+>> +               dev_err(qmp->dev, "%pOFn: No clock-output-names index 1\n", np);
+>> +               return ret;
+>> +       }
+>> +
+>> +       init.ops = &clk_fixed_rate_ops;
+>> +
+>> +       fixed->fixed_rate = qmp->cfg->aux_clock_rate;
+>> +       fixed->hw.init = &init;
+>> +
+>> +       return devm_clk_hw_register(qmp->dev, &fixed->hw);
+>> +}
+>> +
+>> +static struct clk_hw *qmp_pcie_clk_hw_get(struct of_phandle_args *clkspec, void *data)
+>> +{
+>> +       struct qmp_pcie *qmp = data;
+>> +
+>> +       /* Support legacy bindings */
+>> +       if (!clkspec->args_count)
+>> +               return &qmp->pipe_clk_fixed.hw;
+>> +
+>> +       switch (clkspec->args[0]) {
+>> +       case QMP_PCIE_PIPE_CLK:
+>> +               return &qmp->pipe_clk_fixed.hw;
+>> +       case QMP_PCIE_PHY_AUX_CLK:
+>> +               return &qmp->aux_clk_fixed.hw;
+> 
+> Does the absence of the default case trigger a warning if compiled with W=1?
 
-syzbot found the following issue on:
+Nop it doesn't with GCC arm-gnu-toolchain-13.2.Rel1-x86_64-aarch64-none-linux-gnu + W=1 and with smatch and C=1
 
-HEAD commit:    537c2e91d354 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c8343a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5e4ca7f025e9172
-dashboard link: https://syzkaller.appspot.com/bug?extid=e58465c446f16bd6191a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Neil
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/31c81b152208/disk-537c2e91.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d91fa59c13e4/vmlinux-537c2e91.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/31dbb656b1c7/bzImage-537c2e91.xz
+> 
+>> +       }
+>> +
+>> +       return ERR_PTR(-EINVAL);
+>> +}
+>> +
+>>   static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np)
+>>   {
+>>          int ret;
+>> @@ -3694,9 +3756,19 @@ static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np
+>>          if (ret)
+>>                  return ret;
+>>
+>> -       ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &qmp->pipe_clk_fixed.hw);
+>> -       if (ret)
+>> -               return ret;
+>> +       if (qmp->cfg->aux_clock_rate) {
+>> +               ret = phy_aux_clk_register(qmp, np);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               ret = of_clk_add_hw_provider(np, qmp_pcie_clk_hw_get, qmp);
+>> +               if (ret)
+>> +                       return ret;
+>> +       } else {
+>> +               ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &qmp->pipe_clk_fixed.hw);
+>> +               if (ret)
+>> +                       return ret;
+>> +       }
+>>
+>>          /*
+>>           * Roll a devm action because the clock provider is the child node, but
+>>
+>> --
+>> 2.34.1
+>>
+>>
+> 
+> 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e58465c446f16bd6191a@syzkaller.appspotmail.com
-
-Key type pkcs7_test registered
-Block layer SCSI generic (bsg) driver version 0.4 loaded (major 239)
-io scheduler mq-deadline registered
-io scheduler kyber registered
-io scheduler bfq registered
-input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
-ACPI: button: Power Button [PWRF]
-input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
-ACPI: button: Sleep Button [SLPF]
-ioatdma: Intel(R) QuickData Technology Driver 5.00
-ACPI: \_SB_.LNKC: Enabled at IRQ 11
-virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKD: Enabled at IRQ 10
-virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKB: Enabled at IRQ 10
-virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-N_HDLC line discipline registered with maxframe=4096
-Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-Non-volatile memory driver v1.3
-Linux agpgart interface v0.103
-ACPI: bus type drm_connector registered
-[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
-[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
-Console: switching to colour frame buffer device 128x48
-platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
-usbcore: registered new interface driver udl
-brd: module loaded
-loop: module loaded
-zram: Added device: zram0
-null_blk: disk nullb0 created
-null_blk: module loaded
-Guest personality initialized and is inactive
-VMCI host device registered (name=vmci, major=10, minor=118)
-Initialized host personality
-usbcore: registered new interface driver rtsx_usb
-usbcore: registered new interface driver viperboard
-usbcore: registered new interface driver dln2
-usbcore: registered new interface driver pn533_usb
-nfcsim 0.2 initialized
-usbcore: registered new interface driver port100
-usbcore: registered new interface driver nfcmrvl
-Loading iSCSI transport class v2.0-870.
-virtio_scsi virtio0: 1/0/0 default/read/poll queues
-------------[ cut here ]------------
-refcount_t: decrement hit 0; leaking memory.
-WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-syzkaller-12821-g537c2e91d354 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
-Code: b2 00 00 00 e8 d7 d2 e9 fc 5b 5d c3 cc cc cc cc e8 cb d2 e9 fc c6 05 6c 6e e8 0a 01 90 48 c7 c7 60 34 1f 8c e8 67 6f ac fc 90 <0f> 0b 90 90 eb d9 e8 ab d2 e9 fc c6 05 49 6e e8 0a 01 90 48 c7 c7
-RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
-RAX: c71d06ef88c7c400 RBX: ffff8880214ecb6c RCX: ffff8880166d8000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000004 R08: ffffffff815800c2 R09: fffffbfff1c396e0
-R10: dffffc0000000000 R11: fffffbfff1c396e0 R12: ffffea000501fdc0
-R13: ffffea000501fdc8 R14: 1ffffd4000a03fb9 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000e132000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1141 [inline]
- __free_pages_ok+0xc60/0xd90 mm/page_alloc.c:1270
- make_alloc_exact+0xa3/0xf0 mm/page_alloc.c:4829
- vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
- vring_alloc_queue_split+0x20a/0x600 drivers/virtio/virtio_ring.c:1108
- vring_create_virtqueue_split+0xc6/0x310 drivers/virtio/virtio_ring.c:1158
- vring_create_virtqueue+0xca/0x110 drivers/virtio/virtio_ring.c:2683
- setup_vq+0xe9/0x2d0 drivers/virtio/virtio_pci_legacy.c:131
- vp_setup_vq+0xbf/0x330 drivers/virtio/virtio_pci_common.c:189
- vp_find_vqs_msix+0x8b2/0xc80 drivers/virtio/virtio_pci_common.c:331
- vp_find_vqs+0x4c/0x4e0 drivers/virtio/virtio_pci_common.c:408
- virtio_find_vqs include/linux/virtio_config.h:233 [inline]
- virtscsi_init+0x8db/0xd00 drivers/scsi/virtio_scsi.c:887
- virtscsi_probe+0x3ea/0xf60 drivers/scsi/virtio_scsi.c:945
- virtio_dev_probe+0x991/0xaf0 drivers/virtio/virtio.c:311
- really_probe+0x2b8/0xad0 drivers/base/dd.c:656
- __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:798
- driver_probe_device+0x50/0x430 drivers/base/dd.c:828
- __driver_attach+0x45f/0x710 drivers/base/dd.c:1214
- bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
- bus_add_driver+0x347/0x620 drivers/base/bus.c:673
- driver_register+0x23a/0x320 drivers/base/driver.c:246
- virtio_scsi_init+0x65/0xe0 drivers/scsi/virtio_scsi.c:1083
- do_one_initcall+0x248/0x880 init/main.c:1238
- do_initcall_level+0x157/0x210 init/main.c:1300
- do_initcalls+0x3f/0x80 init/main.c:1316
- kernel_init_freeable+0x435/0x5d0 init/main.c:1548
- kernel_init+0x1d/0x2b0 init/main.c:1437
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
