@@ -1,369 +1,548 @@
-Return-Path: <linux-kernel+bounces-110836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2168288648B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:01:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC0D188648F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 02:06:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A6A4B21CD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:00:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2CBE1F211E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA801392;
-	Fri, 22 Mar 2024 01:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244BF184E;
+	Fri, 22 Mar 2024 01:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b="J4KOw92G"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h2VF33sk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE38065C
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 01:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711069251; cv=none; b=rTiHSYSsNKPC+58IFvtkFEx2NFAKiHN90Q1sutzyv8AzhTfToSVDSAUU8+VYKonupbE7+qpVa+mtBYJE4bSbTeoRTQuMSclu9GRWIowE1z/5J999gZaou9W/oO48XDMM5em0cxKLhoaPbQ4BRdNXfoOUzAZKlK+HWIt8VeXn60E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711069251; c=relaxed/simple;
-	bh=DPN5bbN3SaKiy15PwzU/mMMCXfq8EOvE6PhFNW5ohfQ=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:From:Subject; b=K9jWniTwL0aqPUJwJAncYMMgj6ljxx6vqXL+0YRN4CHWrTqWwpPcs3WQJhSuxiq8xC6Texk5tjOIXZd/gKHgh4L7vYKg/mqwEe83wgvWeQFv+Dt9vNjv79bmrOFrTvksCV6WgCE3dNbMSuPUUydq6tTVlZDbaYIJYiaCw3adwUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca; spf=none smtp.mailfrom=draconx.ca; dkim=pass (2048-bit key) header.d=draconx-ca.20230601.gappssmtp.com header.i=@draconx-ca.20230601.gappssmtp.com header.b=J4KOw92G; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=draconx.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=draconx.ca
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430c63d4da9so11230001cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 18:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=draconx-ca.20230601.gappssmtp.com; s=20230601; t=1711069249; x=1711674049; darn=vger.kernel.org;
-        h=subject:from:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Q0ORXXLEENZywvQFUHSP5DQjVJB01SvJPkF7XKoZrs=;
-        b=J4KOw92GW2ljusAmO5j6wNeTKZj/+UrPQl2EVaxyJqFvGjwvLz6zqOGsqHz2RyBJSo
-         ShgdVnzcYy1NNa500TlGwRVuhA90+LgUL2gtDiixRatZkCQeHjexyIdRlxx3AHEV2i1G
-         5AEqNEhVJeIKvGdUQ068lWtWPd8DXKwSrZ0KEYLD0sf7qxVEH1IPdyx4utMuEU+h854d
-         7DS87rrIm7sDVWmYiMCDUe0fmvaO+XqrsryBgGk36sbWIrhdvuNxarvkMeladbKrG4NS
-         MLgfFqoYeImNY0djK2RbCiCfaIhSIECFTojSppS3NUx+cb49LKSwX1R1Kq4xKWVCmy/Q
-         l64A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711069249; x=1711674049;
-        h=subject:from:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6Q0ORXXLEENZywvQFUHSP5DQjVJB01SvJPkF7XKoZrs=;
-        b=SwAG/VwvRYWIGZx+MuKtBgThUsoWTGBIJcKCzk9wJ20iHHLCwJ2QJIeHDo8g47VQ1B
-         BJqvJNdEUdfo/RtmtlkUZ1f6lgr3T/mlXnbeayzQQH5BDujQlsFagS/pY7qTH3qvsh1Z
-         CV16zDcttNms4/QI8tPJRkZqrP/LIHCm0we7Jegtu6IPHrbkKw44zwmsqiZWj2i45Kvu
-         FdRlSzvKXCJxRO+j4I0nS776fKnIa7BTDmNrxX9QFO8PXTUrSSjZ8lEm2BDLPztVPO0S
-         v3xKKWdSlbpPJQQjHT+Nm+UGigkV20wJbk54r9J/7MC1jyrGCBOtYeBZZ6SAwfkw2aLk
-         xVTw==
-X-Gm-Message-State: AOJu0Yye6+N1DAm+LYf2lCUqnemndINuAHwanMhRZygj9u9z3yLpTltz
-	UrMGEee1ox8EAmYGAMow1KoduvR5D5VH1ZyLX/VT/lzxzXdzFEppMjI3yWBi/U21CsAbXpvah5C
-	4
-X-Google-Smtp-Source: AGHT+IHGE/Zo0SGvTtrzRe1SDFMJmZrrtUl9qL0VF7+aM2rm4QRZq5ALI5cYWCuZ7PvC0LMWd9ECEA==
-X-Received: by 2002:a05:622a:302:b0:430:c4fc:4182 with SMTP id q2-20020a05622a030200b00430c4fc4182mr872859qtw.62.1711069248302;
-        Thu, 21 Mar 2024 18:00:48 -0700 (PDT)
-Received: from [192.168.0.51] (dhcp-24-53-241-2.cable.user.start.ca. [24.53.241.2])
-        by smtp.gmail.com with ESMTPSA id ay40-20020a05622a22a800b00430ef66e508sm425660qtb.5.2024.03.21.18.00.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 18:00:47 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------aZjXMz05fK9Wnt0PUkl0Go2Q"
-Message-ID: <5bc21364-41da-a339-676e-5bb0f4faebfb@draconx.ca>
-Date: Thu, 21 Mar 2024 21:00:46 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4484376;
+	Fri, 22 Mar 2024 01:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711069602; cv=fail; b=pxRVzD4Jh8+O7qjpEgYQzjeJJWyCBouF0wgMYMStVZbrAk+XGNkUwVJaA9RGjofG1Cl2ponYsED4EdeGpj0Tm7EHcOTNwtEMC+nhjbHsrBk+fkmR6s/KxIa4LaeogRWR3xEnOyK6Y9WDEObmZdWutdvSLCmRlFVUkpoKAEdO+3g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711069602; c=relaxed/simple;
+	bh=avH7eunXOHU8ZMgGoi0UC9ruDlko/M8EZ84xrNl3hSo=;
+	h=Message-ID:Date:Subject:References:From:To:CC:In-Reply-To:
+	 Content-Type:MIME-Version; b=mi6tqFkptMFe57TCOG8MobcyY7Lxxx2FnTxbuQ4lbG/NQJ0y6kZ3/wKlyv/Gde9FBURJZeh4bm2IHe8TtfMan52ea6ZhjfPKQzx/Fm6P+OASAuJEqL9haTUPv1EjkURc0z2I2wenYvRjCzL/0SHV9uDNi0Frf740UIVKm4esUjs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h2VF33sk; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711069597; x=1742605597;
+  h=message-id:date:subject:references:from:to:cc:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=avH7eunXOHU8ZMgGoi0UC9ruDlko/M8EZ84xrNl3hSo=;
+  b=h2VF33skT2lwy5YDhUHyFy1d29rR46yxzlCQwEDeGARzaySpQ55ofQBv
+   /2zkAEjLk4gEBNWkHb+/Fe48g+HReQMmJ3U7mX4EKJC5YLKs4vwZNPfju
+   xnU67nukXLE2poRKiecq8f0TnMnsxWKDuEtwqxv2I4AxQqJHZd+B3m0qc
+   u7dytbEIn7WxAY9t1NHo/7J6C8rJKFG8p8GhFhFmQ44myIgz3oZrVyX1U
+   etnJ1k2Qh4y79I0K+XlR+s9jnmshzzxCkEGGNWZngd1ajzvJUNDIUNWKH
+   D7HQqvu788rZFzhMCqZ+uaVSLxKMToxrMJX6Brg7BecQFQA/oMdIWjOro
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="5966124"
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="5966124"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 18:06:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,144,1708416000"; 
+   d="scan'208";a="45712412"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 18:06:38 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 21 Mar 2024 18:06:36 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 18:06:36 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 21 Mar 2024 18:06:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i/1P5SS9vsCgMJYmBL53c5kAatye2W5MdRdZwnzAWHDMZLK6mEVIrbm5wWJlRpoL2yh4+HJVUiZrmWqh6PLIyr3dLDEaXD9CP0oDrtreUTU3xZc0rtxpm2vFJMNCclMixaK2cknKnVToVbZgU85pHCkbMQGXA7woOcsqKjnHhK6NA5uft0sZ0Suwri/0RCQ1EbwubIzTaqkW3iVZpAWshijkv3CCCRUdsqmRPSIoHrakm6i+RNmwUKR/7nMBVK0GXPNQslZ5YyRU5U6OW6VaCuFlJzT9R3mO/U7hlbPiFuUoHUCzlrsmuRUeR3nbOjbCjEffGeoQK9gixER/jrSz1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vVt67o6Yx96ibVGmHQ0cnP1BXo8h7H5mamI9fwj0MsU=;
+ b=hnWTGLET4YjpYBuVH9/B8LrXT+QogmwbKpNgjWAbSvE4i8IMgG9UZXwylJum/VrfBk+O84gUgFocOx0asK8878PL4ZEen1rkr4xv9hMXtuxqKdCrKUOfSyt7Z4HJWmNBGvcq5TuB7fckTNbv0V+tpRMbx92z55GBC6T1f6CT05XJ2z9gMmgXsD42e8vAT9KRgUbTjx0JsnbnE7s742+CR8cRpx2itacQPGbNbxSw/4FWdaBQE9Z0MoF3mTqDPR8p53xqMI0J1h00k2vD82+1fw85E+i088rZSrS7P852+xKnF6oLpqIiecAN0v4K42fA8VLFFz364IgxrwypWIPH9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CY8PR11MB6987.namprd11.prod.outlook.com (2603:10b6:930:55::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Fri, 22 Mar
+ 2024 01:06:29 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7409.010; Fri, 22 Mar 2024
+ 01:06:29 +0000
+Message-ID: <c0e49a87-410e-4685-a677-069bc3abef7c@intel.com>
+Date: Fri, 22 Mar 2024 14:06:19 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "Yamahata, Isaku" <isaku.yamahata@intel.com>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Paolo Bonzini
+	<pbonzini@redhat.com>, "Aktas, Erdem" <erdemaktas@google.com>, "Sean
+ Christopherson" <seanjc@google.com>, Sagi Shahar <sagis@google.com>, "Chen,
+ Bo2" <chen.bo@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>, "Zhang, Tina"
+	<tina.zhang@intel.com>, Sean Christopherson <sean.j.christopherson@intel.com>
+In-Reply-To: <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0073.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::18) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To: linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
- regressions@lists.linux.dev
-From: Nick Bowler <nbowler@draconx.ca>
-Subject: PROBLEM: Linux 6.8 build failure in sun ffb driver (regression)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|CY8PR11MB6987:EE_
+X-MS-Office365-Filtering-Correlation-Id: 01064d81-ad19-4ea0-5365-08dc4a0c4e4a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: auWZZ/em4RGc6UHOFGbioeeftLb1uFCVGkN3f4iCAc+X/k6Ewbj3Mg54amMtpYLOw7jln+7yv5ikSBXWjqks662vklrSPnFQQ2u8dGQpZU8Pq2DnzGCS/3EN/ic4CnKnoOE2CmF8V5Nkx5jq/1HD81hGymgyhS6YwGig2zwEP0cPASuTqZ58ExkyiqNVjmukgGhO02ffreY9FiW2nP5kNk+Qz8P6LUVrOZMmP1Wdq+yBmH5k/VHnnwg80ieBROqdcmNIAmjKZJvj/wkPiTL4CInKxzHhwGpO0EMJyd/Yoe1wCFY217N5/0CAVTqjsqlo9sk3CxOlY6xwGsfC6T39jct92/6OBKL/gb0MWgDtfvpZV+8vWOajbgqoBpDwHGzZAamytHj/PgOV8WARgOObdGQ/Fv62zurRlgEtEOJAsEwvRy3AyTA469Ppg0rm4fPSNxwTmyn5BvkT7jNNsjO//8F6vLDE14ojSVAneNHKhMskpn+Cmz/KohF2dUJ2gk+KTbq+LCq02DX6KA7wq0rkDa4Kjd/3mmJtasCyVE/Lv1kldMNv1GdI44AHWvRBcztrHqoDWZKVv8olK4zIgi+UMT8HSFWKATpfcFa+yHdZipoD3WhgpvFXLIiWDbaPeCXngxaCqlljdJso4PBQi9Xp+fBL2h/naM6oaSGahXuCDBI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjk4a2RrK2xYMjhmZ0JUWGtueTVXQlpOaVVOWjl2ODRXSHFkYXE2Y3V2NStV?=
+ =?utf-8?B?c1NCd0VtZEVuaGt2OXJ5U1hrc0s4ODd2NUdwU1pGVVZTWlVIM3NJSXMxeWdL?=
+ =?utf-8?B?NkplTFRMMEdIZGJBUWtFWnNWb0l5bGl0T3VqR0NzWWFlZVdEdnloRktWRHhP?=
+ =?utf-8?B?bG1HOU9OSElScDFXak1YZmhCeDJUdG90R0J1VXZxY1BWQnI2YmRtTzZyUUJo?=
+ =?utf-8?B?WmVSb0dvUThkMGNlZU1US3dkVFc3VmhEQzhXWUhCbmVLREZWTS9HcG9OWU5z?=
+ =?utf-8?B?R1ZiU0hQZXRUQVQxTW9ucjNLV3pnT1k0L0E2L0ovYXZBWUtPUGVseEVuYnd1?=
+ =?utf-8?B?RHVCTzYvR3BTRHhnTlZoT2tyaG1oUjUyU0dSSGc5aUdCemFJN1Z4U05BMFdj?=
+ =?utf-8?B?RUF3YXpvRXY4ZDQxZnFpVm00UklVanYzTjJCTi8vb3JidVU3M3ZTVGYyL3A5?=
+ =?utf-8?B?aDlnUFVKQm9OU3IzbEwyQS96OVlKdDM0UU9aUFIyVDIvSzF1MUFpRjUyQXNH?=
+ =?utf-8?B?aHVFY3R4RXJwd2dLZ3dzOTF2aVBjY3M1ZjNxU1EyQVM4U1Q0YStmdjgxVVVa?=
+ =?utf-8?B?blRlVTlGUy8wZmU1Ym1UZTR3SGlyOFBUVnJLaG9xcm4wUW9NdjU2WHozUEdD?=
+ =?utf-8?B?T29ETTBFOS95ZFlramRDQlFGZ2lFaEY2S3EybmF4NlBRSThtZStIQVRpSnAz?=
+ =?utf-8?B?STVXRW1BVGhXallwZDJkWGpNdUFvN2NWc1kwUDJvSnkrcUFMSlJjcVpqWGxk?=
+ =?utf-8?B?NXQ4ZXNzUE95ME1HL2tvSExtODZqaDYxMW9SV0g3K2l2R2NRdTR2LzhzN0F4?=
+ =?utf-8?B?TFRQZTlXaGYwaEFtTEpSczI5cGQweStBT2xXV21oNEdOTUlxbkxVSWVzaTNm?=
+ =?utf-8?B?M2lsdkt2UWNDVm9DYVJncnY1aVAxM0NKY1ZUQzl4cFp6MXljVVRXRXppSUFK?=
+ =?utf-8?B?YWh6UWFqS29UVUZXT3VJR2RoTVJScW5DNnRwV2FvTDI3VXViR1V4R1YwUGR1?=
+ =?utf-8?B?cncvdnBKQ21vVFFZQlBHSGFISkdkLzlTSUtBY3p0M0FXQlUweVkrUUJMY2Z3?=
+ =?utf-8?B?ZWhjNTVjTmVvZDVNdFlxOTRuNk1CTDgweU11V210TE5uNndDa1N5bWQxamhV?=
+ =?utf-8?B?NFBicEkvMEdHUGI0YVJqSVV5c2FBb0pMQXVranN3T2ZuS2NWNzJFc0hpRW8x?=
+ =?utf-8?B?aVBHb25kMHlDc2owQUU3UEFhNXA2enQ3NXYrUGl4OEdzR00zaU9nVTRSNzVB?=
+ =?utf-8?B?YlF3RnNXdDZaQnNJQmpyM29qMG9vYlFoTkVLUitFd3V3M0w0dWtYNmd4ZTRU?=
+ =?utf-8?B?bkVxUFh6bS9DTUFmWDJPU2UrYnAwNnVYa0ZnRE84ZUhNZlUxekZjQmxkR3pS?=
+ =?utf-8?B?UFd1dmRnZFQxb0JXejR1a3psaHh6OTErcGdWSFppOHk4WWpNSFhuc1B1L3py?=
+ =?utf-8?B?S3lGTUQrOEtmQ01xdm9zOThWaDNpNFdVYzBRVFQ0YkpZeCtYVTdDVGRmM09o?=
+ =?utf-8?B?c3Y1TnRPbGNKckFZeXBmbVVDV0ozN2dhYUNIbi9RN2YzN0VBY1BoT3JwWm84?=
+ =?utf-8?B?Yzgzbnoycy81QjBMRmNhNUZiZFprM2h6OTRzeWNQVE9KSTJ0cEorYm1FWmdn?=
+ =?utf-8?B?bzBBeWhtTUZaNjlhSFlLYnRGK1E5MzZsRmFINStNRFBqVVI3aGQ2ZllFb3hv?=
+ =?utf-8?B?dGhIaEhyQUpyR2tYWkRsMEFVUGprM21jTTMzdlBUVlFOV0VrR1pFMHhYdlpM?=
+ =?utf-8?B?RWduUDJJNnNzb3ZjR3JRYkhCYkxBSWkvWVQrZnRDcFY5REthSkVNcWxlVXlx?=
+ =?utf-8?B?Tk82UUNNdWRUU0ovbmkrMFFBU1R3d3V5VkZlMGNYbHZ5TE4wdDlkMm84UW00?=
+ =?utf-8?B?Y3MreExLRzNINkxBVDZSWk9qczBscEs0MFlpVVJHUGpOb0dkNnRKUENoeHc2?=
+ =?utf-8?B?WmZsaXdRL05nZ2lDZzRLYkxjMVFDYjB2Yk9oY3VVS09IWThnL2V3QzVzUGNx?=
+ =?utf-8?B?dWswcWZJbXVYMThZSjY3bjk2VjRuZVRnbjBHSHUzMmpJWituYzh2bndrb09P?=
+ =?utf-8?B?dlVxMjVtOFk0and5OWhaRE9qaTBxRHFESUZ4U1A2TWs2M3hnb1lHS3pURTA2?=
+ =?utf-8?Q?qnN0bF2Fh13wB3ipT951Gb46s?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01064d81-ad19-4ea0-5365-08dc4a0c4e4a
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 01:06:29.4378
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: azHaD+lK+IVAIhwB1E1lDhRO22mcWoI7a/yCbvjzsqBY7PztTLHZAjG9GDFQl2+VeZuciH6tEf1P4D1EVQDXEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6987
+X-OriginatorOrg: intel.com
 
-This is a multi-part message in MIME format.
---------------aZjXMz05fK9Wnt0PUkl0Go2Q
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi,
 
-Linux 6.8 (and 6.8.1) are failing to build for me:
+On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> As the first step to create TDX guest, create/destroy VM struct.  Assign
+> TDX private Host Key ID (HKID) to the TDX guest for memory encryption and
 
-  LD      .tmp_vmlinux.kallsyms1
-sparc64-unknown-linux-gnu-ld: drivers/video/fbdev/ffb.o:(.rodata+0x270): undefined reference to `fb_io_read'
-sparc64-unknown-linux-gnu-ld: drivers/video/fbdev/ffb.o:(.rodata+0x278): undefined reference to `fb_io_write'
-make[3]: *** [/home/nbowler/misc/linux/scripts/Makefile.vmlinux:37: vmlinux] Error 1
+Here we are at patch 38, and I don't think you still need to fully spell 
+"Host KeyID (HKID)" anymore.
 
-This problem does not occur when building Linux 6.7 which builds successfully.
+Just say: Assign one TDX private KeyID ...
 
-Kernel .config attached (gzipped).
+> allocate extra pages for the TDX guest. On destruction, free allocated
+> pages, and HKID.
 
-Please let me know if you need any more info.
+Could we put more information here?
 
-Thanks,
-  Nick
---------------aZjXMz05fK9Wnt0PUkl0Go2Q
-Content-Type: application/gzip; name="config-6.8.gz"
-Content-Disposition: attachment; filename="config-6.8.gz"
-Content-Transfer-Encoding: base64
+For instance, here should be a wonderful place to explain what are TDR, 
+TDCS, etc??
 
-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
+And briefly describe the sequence of creating the TD?
 
---------------aZjXMz05fK9Wnt0PUkl0Go2Q--
+Roughly checking the code, you have implemented many things including 
+MNG.KEY.CONFIG staff.  It's worth to add some text here to give reviewer 
+a rough idea what's going on here.
+
+> 
+> Before tearing down private page tables, TDX requires some resources of the
+> guest TD to be destroyed (i.e. HKID must have been reclaimed, etc).  Add
+> mmu notifier release callback before tearing down private page tables for
+> it. >
+> Add vm_free() of kvm_x86_ops hook at the end of kvm_arch_destroy_vm()
+> because some per-VM TDX resources, e.g. TDR, need to be freed after other
+> TDX resources, e.g. HKID, were freed.
+
+I think we should split the "adding callbacks' part out, given you have ...
+
+	9 files changed, 520 insertions(+), 8 deletions(-)
+
+.. in this patch.
+
+IMHO, >500 LOC change normally means there are too many things in this 
+patch, thus hard to review, and we should split.
+
+I think perhaps we can split this big patch to smaller pieces based on 
+the steps, like we did for the init_tdx_module() function in the TDX 
+host patchset??
+
+(But I would like to hear from others too.)
+
+> 
+> Co-developed-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+
+Sean's tag doesn't make sense anymore.
+
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+[...]
+
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index c45252ed2ffd..2becc86c71b2 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -6866,6 +6866,13 @@ static void kvm_mmu_zap_all(struct kvm *kvm)
+>   
+>   void kvm_arch_flush_shadow_all(struct kvm *kvm)
+>   {
+> +	/*
+> +	 * kvm_mmu_zap_all() zaps both private and shared page tables.  Before
+> +	 * tearing down private page tables, TDX requires some TD resources to
+> +	 * be destroyed (i.e. keyID must have been reclaimed, etc).  Invoke
+> +	 * kvm_x86_flush_shadow_all_private() for this.
+> +	 */
+> +	static_call_cond(kvm_x86_flush_shadow_all_private)(kvm);
+>   	kvm_mmu_zap_all(kvm);
+>   }
+>   
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index e8a1a7533eea..437c6d5e802e 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -62,11 +62,31 @@ static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   static int vt_vm_init(struct kvm *kvm)
+>   {
+>   	if (is_td(kvm))
+> -		return -EOPNOTSUPP;	/* Not ready to create guest TD yet. */
+> +		return tdx_vm_init(kvm);
+>   
+>   	return vmx_vm_init(kvm);
+>   }
+>   
+> +static void vt_flush_shadow_all_private(struct kvm *kvm)
+> +{
+> +	if (is_td(kvm))
+> +		tdx_mmu_release_hkid(kvm);
+
+Add a comment to explain please.
+
+> +}
+> +
+> +static void vt_vm_destroy(struct kvm *kvm)
+> +{
+> +	if (is_td(kvm))
+> +		return;
+
+Please add a comment to explain why we don't do anything here, but have 
+to delay to vt_vm_free().
+
+> +
+> +	vmx_vm_destroy(kvm);
+> +}
+> +
+> +static void vt_vm_free(struct kvm *kvm)
+> +{
+> +	if (is_td(kvm))
+> +		tdx_vm_free(kvm);
+> +} > +
+>   static int vt_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
+>   {
+>   	if (!is_td(kvm))
+> @@ -101,7 +121,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>   	.vm_size = sizeof(struct kvm_vmx),
+>   	.vm_enable_cap = vt_vm_enable_cap,
+>   	.vm_init = vt_vm_init,
+> -	.vm_destroy = vmx_vm_destroy,
+> +	.flush_shadow_all_private = vt_flush_shadow_all_private,
+> +	.vm_destroy = vt_vm_destroy,
+> +	.vm_free = vt_vm_free,
+>   
+>   	.vcpu_precreate = vmx_vcpu_precreate,
+>   	.vcpu_create = vmx_vcpu_create,
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index ee015f3ce2c9..1cf2b15da257 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -5,10 +5,11 @@
+>   
+>   #include "capabilities.h"
+>   #include "x86_ops.h"
+> -#include "x86.h"
+>   #include "mmu.h"
+>   #include "tdx_arch.h"
+>   #include "tdx.h"
+> +#include "tdx_ops.h"
+> +#include "x86.h"
+>   
+>   #undef pr_fmt
+>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> @@ -22,7 +23,7 @@
+>   /* TDX KeyID pool */
+>   static DEFINE_IDA(tdx_guest_keyid_pool);
+>   
+> -static int __used tdx_guest_keyid_alloc(void)
+> +static int tdx_guest_keyid_alloc(void)
+>   {
+>   	if (WARN_ON_ONCE(!tdx_guest_keyid_start || !tdx_nr_guest_keyids))
+>   		return -EINVAL;
+> @@ -32,7 +33,7 @@ static int __used tdx_guest_keyid_alloc(void)
+>   			       GFP_KERNEL);
+>   }
+>   
+> -static void __used tdx_guest_keyid_free(int keyid)
+> +static void tdx_guest_keyid_free(int keyid)
+>   {
+>   	if (WARN_ON_ONCE(keyid < tdx_guest_keyid_start ||
+>   			 keyid > tdx_guest_keyid_start + tdx_nr_guest_keyids - 1))
+> @@ -48,6 +49,8 @@ struct tdx_info {
+>   	u64 xfam_fixed0;
+>   	u64 xfam_fixed1;
+>   
+> +	u8 nr_tdcs_pages;
+> +
+>   	u16 num_cpuid_config;
+>   	/* This must the last member. */
+>   	DECLARE_FLEX_ARRAY(struct kvm_tdx_cpuid_config, cpuid_configs);
+> @@ -85,6 +88,282 @@ int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   	return r;
+>   }
+>   
+> +/*
+> + * Some TDX SEAMCALLs (TDH.MNG.CREATE, TDH.PHYMEM.CACHE.WB,
+> + * TDH.MNG.KEY.RECLAIMID, TDH.MNG.KEY.FREEID etc) tries to acquire a global lock
+> + * internally in TDX module.  If failed, TDX_OPERAND_BUSY is returned without
+> + * spinning or waiting due to a constraint on execution time.  It's caller's
+> + * responsibility to avoid race (or retry on TDX_OPERAND_BUSY).  Use this mutex
+> + * to avoid race in TDX module because the kernel knows better about scheduling.
+> + */
+
+/*
+  * Some SEAMCALLs acquire TDX module globlly.  They fail with
+  * TDX_OPERAND_BUSY if fail to acquire.  Use a global mutex to
+  * serialize these SEAMCALLs.
+  */
+> +static DEFINE_MUTEX(tdx_lock);
+> +static struct mutex *tdx_mng_key_config_lock;
+> +
+> +static __always_inline hpa_t set_hkid_to_hpa(hpa_t pa, u16 hkid)
+> +{
+> +	return pa | ((hpa_t)hkid << boot_cpu_data.x86_phys_bits);
+> +}
+> +
+> +static inline bool is_td_created(struct kvm_tdx *kvm_tdx)
+> +{
+> +	return kvm_tdx->tdr_pa;
+> +}
+> +
+> +static inline void tdx_hkid_free(struct kvm_tdx *kvm_tdx)
+> +{
+> +	tdx_guest_keyid_free(kvm_tdx->hkid);
+> +	kvm_tdx->hkid = -1;
+> +}
+> +
+> +static inline bool is_hkid_assigned(struct kvm_tdx *kvm_tdx)
+> +{
+> +	return kvm_tdx->hkid > 0;
+> +}
+
+Hmm...
+
+"Allocating a TDX private KeyID" seems to be one step of creating the 
+TDX guest.  Perhaps we should split this patch based on the steps of 
+creating TD.
+
+> +
+> +static void tdx_clear_page(unsigned long page_pa)
+> +{
+> +	const void *zero_page = (const void *) __va(page_to_phys(ZERO_PAGE(0)));
+> +	void *page = __va(page_pa);
+> +	unsigned long i;
+> +
+> +	/*
+> +	 * When re-assign one page from old keyid to a new keyid, MOVDIR64B is
+> +	 * required to clear/write the page with new keyid to prevent integrity
+> +	 * error when read on the page with new keyid.
+> +	 *
+> +	 * clflush doesn't flush cache with HKID set.  
+
+I don't understand this "clflush".
+
+(Firstly, I think it's better to use TDX private KeyID or TDX KeyID 
+instead of HKID, which can be MKTME KeyID really.)
+
+How is "clflush doesn't flush cache with HKID set" relevant here??
+
+What you really want is "all caches associated with the given page must 
+have been flushed before tdx_clear_page()".
+
+You can add as a function comment for tdx_clear_page(), but certainly 
+not here.
+
+The cache line could be
+> +	 * poisoned (even without MKTME-i), clear the poison bit. > +	 */
+
+Is below better?
+
+	/*
+	 * The page could have been poisoned.  MOVDIR64B also clears
+	 * the poison bit so the kernel can safely use the page again.
+	 */
+
+
+> +	for (i = 0; i < PAGE_SIZE; i += 64)
+> +		movdir64b(page + i, zero_page);
+> +	/*
+> +	 * MOVDIR64B store uses WC buffer.  Prevent following memory reads
+> +	 * from seeing potentially poisoned cache.
+> +	 */
+> +	__mb();
+> +}
+> +
+> +static int __tdx_reclaim_page(hpa_t pa)
+> +{
+> +	struct tdx_module_args out;
+> +	u64 err;
+> +
+> +	do {
+> +		err = tdh_phymem_page_reclaim(pa, &out);
+> +		/*
+> +		 * TDH.PHYMEM.PAGE.RECLAIM is allowed only when TD is shutdown.
+> +		 * state.  i.e. destructing TD.
+
+Does this mean __tdx_reclaim_page() can only be used when destroying the TD?
+
+Pleas add this to the function comment of __tdx_reclaim_page().
+
+> +		 * TDH.PHYMEM.PAGE.RECLAIM requires TDR and target page.
+> +		 * Because we're destructing TD, it's rare to contend with TDR.
+> +		 */
+
+It's rare to contend, so what?
+
+If you want to justify the loop, and the "unlikely()" used in the loop, 
+then put this part right before the 'do { } while ()' loop, where your 
+intention applies, and explicitly call out.
+
+And in general I think it's better to add a 'cond_resched()' for such 
+loop because SEAMCALL is time-costy.  If your comment is intended for 
+not adding 'cond_resched()', please also call out.
+
+> +	} while (unlikely(err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX) ||
+> +			  err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_TDR)));
+> +	if (WARN_ON_ONCE(err)) {
+> +		pr_tdx_error(TDH_PHYMEM_PAGE_RECLAIM, err, &out);
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tdx_reclaim_page(hpa_t pa)
+> +{
+> +	int r;
+> +
+> +	r = __tdx_reclaim_page(pa);
+> +	if (!r)
+> +		tdx_clear_page(pa);
+> +	return r;
+> +}
+> +
+> +static void tdx_reclaim_control_page(unsigned long td_page_pa)
+> +{
+> +	WARN_ON_ONCE(!td_page_pa);
+> +
+> +	/*
+> +	 * TDCX are being reclaimed.  TDX module maps TDCX with HKID
+> +	 * assigned to the TD.  Here the cache associated to the TD
+> +	 * was already flushed by TDH.PHYMEM.CACHE.WB before here, So
+> +	 * cache doesn't need to be flushed again.
+> +	 */
+> +	if (tdx_reclaim_page(td_page_pa))
+> +		/*
+> +		 * Leak the page on failure:
+> +		 * tdx_reclaim_page() returns an error if and only if there's an
+> +		 * unexpected, fatal error, e.g. a SEAMCALL with bad params,
+> +		 * incorrect concurrency in KVM, a TDX Module bug, etc.
+> +		 * Retrying at a later point is highly unlikely to be
+> +		 * successful.
+> +		 * No log here as tdx_reclaim_page() already did.
+> +		 */
+> +		return;
+
+Use empty lines to make text more breathable between paragraphs.
+
+> +	free_page((unsigned long)__va(td_page_pa));
+> +}
+> +
+> +static void tdx_do_tdh_phymem_cache_wb(void *unused)
+> +{
+> +	u64 err = 0;
+> +
+> +	do {
+> +		err = tdh_phymem_cache_wb(!!err);
+> +	} while (err == TDX_INTERRUPTED_RESUMABLE);
+> +
+> +	/* Other thread may have done for us. */
+> +	if (err == TDX_NO_HKID_READY_TO_WBCACHE)
+> +		err = TDX_SUCCESS;
+
+Empty line.
+
+> +	if (WARN_ON_ONCE(err))
+> +		pr_tdx_error(TDH_PHYMEM_CACHE_WB, err, NULL);
+> +}
+
+[snip]
+
+I am stopping here, because I need to take a break.
+
+Again I think we should split this patch, there are just too many things 
+to review here.
 
