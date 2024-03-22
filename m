@@ -1,159 +1,169 @@
-Return-Path: <linux-kernel+bounces-111828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E8D88715B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:57:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8434188715E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB12E2896AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:57:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEC90B24265
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64335FDA0;
-	Fri, 22 Mar 2024 16:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B17C5FEF5;
+	Fri, 22 Mar 2024 16:53:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LFRF7fkq"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fSTRqoW8"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6CD5FB9C
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EB15FDA9;
+	Fri, 22 Mar 2024 16:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711126400; cv=none; b=Euw8c9Z+QOWXo/PZnB+MoZoX6ajA1zoVrg60PFMcf6ctR6OfqTGMecdNkzGUp92aHBlZ/vktfc/7R92RTeqmOifKe9TXju5moMaFCApf2hvNzRkxTPlE4F75zt920gpa0CCEqIAk2s+A7N1dEI7BRkXNYK9ZWGdcsq0ReEdAlSw=
+	t=1711126434; cv=none; b=TbIVGtju+9PBzPLrtD1kX5qqn4d4LfcPylAMRoLv3hp9WChhiEhb984HARgOG6TzQn0LUqaHGp8C4v4oZiVRHH0yz0Y0d5h2R0d/mI0jhH3IvuL200vbjpeGCOpR+yTZ6KQlozgAL+hKVQCCYSgvpq0QRMWsUsu1S03g5068/YE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711126400; c=relaxed/simple;
-	bh=vx3yN0guA2FOX3V5rAXL+YFNjYh0mI7bQ/JkBfHqFQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JdhBKY/Fih45seROC30+bhORsjU6AOZs6gakNUtHAosaaBa8Li0syapLlMMeZx/bL/r67jXVrB3G65W4aed8GZvRr/SGsNB/JdXbNuv83JSWhiSmZNeIv8dCWPheMIGB5VzdJ9uY657ewOEcFE870V0OWfe60q2hdvSKceWOuLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LFRF7fkq; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a466fc8fcccso323780566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:53:18 -0700 (PDT)
+	s=arc-20240116; t=1711126434; c=relaxed/simple;
+	bh=Rc4e+9q8cteiwcWOIW7T38A8/ToMIlusvAVBDyOL15M=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=S9f987mJBqRcXtUS1B54gNZz9B2zDOITnnnrwUPgaUKDh8wzgIvHxKDocdfUgNm3A3DWvkG6+2xzOlEfW2E1V00h9waHpcsvLITLPDmfgKMymTzVBA4qIlNMfWqUs3fw+8VuVSuWCSMOKzF4uv3HsRPodk3wGpVQnfOGV+BXR5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fSTRqoW8; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e570ef661so1085874f8f.1;
+        Fri, 22 Mar 2024 09:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711126396; x=1711731196; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=O62u5y0QOaRfHhYazQdNyLApTvQMwZDuLmZoNOwvWVE=;
-        b=LFRF7fkqD/ICfxxJoN0Nom/2LKOUxwx9GbQCtiiXSeo0q4nAhqt9dAQdP8eIGMuX6f
-         QzF9NX3V0oYu+3En9OamEe9EXTT63l8OToOSSWIlt5anOZU4983nFdY8vH5rLog+IZaR
-         sT9apNbxrEiqn64Q2fXUnb+7c9iY510FxpXEz4srGuEnqFKUCkSmQ6qBVrSuCwTFU0ow
-         +xkXZk6G6UGn4e7xbDvYCaMRv4sHoJGRtyoaNL+EciQ1KvU/3T4LpGJYvS36MyDrEae6
-         UPzzhZ0UDWFB1YgR+eZEyDZtcgGRra0O46ZOJGQOTD8p46tRuJEKgjW5C3L2WjwM5T3p
-         0LTw==
+        d=gmail.com; s=20230601; t=1711126431; x=1711731231; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=prwGqiUDr2MIwI/u9qAD6n1rOIPI2RfxncckA/0+HG4=;
+        b=fSTRqoW8949esGuLPcYwLS05SHr93J/p4Q+HD3xdNqD32TbrFtjBMb/Cq27vplJFav
+         Q4Q2yxfLIwU2IMT9CTvA3raUW3NxxJq0cARd8qNii89PELbVD1y4MrsYX50IC4j38GmE
+         1HLwWRqzv9eSsV6oA7GYDMgBlNYKeB9LkPRYH8o1F98R2hUEBxbga+x4oZgsnbMNyN+q
+         fpzQq3ermhDhLIXPBM4qg6CcTW2HAAa3nTIlGeuq5nz1YP6QpkhnqnvQzlBo4gbXBIey
+         LQEXdzK8+oNky4SuXsOvXNrl14W1P0wKnyOyscIUcThiphObd7hhjplIVShdT6Qp4dBH
+         SxVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711126396; x=1711731196;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O62u5y0QOaRfHhYazQdNyLApTvQMwZDuLmZoNOwvWVE=;
-        b=EC1o+I4+jYdkSzNBa1XTcNg9DVZiINljuuabTahHLVLkl5UY/AlNmYdW99iSPJT1KB
-         72BA/by5neyVErjrsoB2jpAF475seL3o2O+Hoy47CzmAayadzfQQAKxBdW30KXXhsI11
-         7D8XeYypdQc929w4jsmTkUPkFdib0u2pDvL1Au7HspuoIcGoSCvmeVjJv6ydB78RzhHC
-         8j1IhTf2JpfeiNMFVMRIk+lL2zGiY9As9tpc7Z/p9Iuk0E5IGgy2E8CDdUZwYGCRlh0s
-         kMcUVTnEnohV5h25bN0vLDxtejPJziqUK6s2f5I1n0oJviQUGsDjPLmot1ngKVcT7xMh
-         plqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXSt3bXJjZexRskh0N8AigIeEQJRolDzQReXdnjDBK5drNQBaD4PAqR9gS7oC0bcrKi4AFiqbZj60sohF66b3MTRbSktvQKDYeJegti
-X-Gm-Message-State: AOJu0YxHrFbyO9fSHYTIPsxTBsOtigw+yeeUVqApGM2iuEYP1zayDwjt
-	VOZit7Fap4lo3oo/WhHY7P0Vyzzoe9VpH/FbFQdhjAjgcMvRZ8BCXBmqnuUxJ3c=
-X-Google-Smtp-Source: AGHT+IGe3jp/SoBRVu7+PE8TP39IN8A8adEgPqCl3Y8pI1hubRGp7IMHccohvPu+6Pq2dNzQgdszfg==
-X-Received: by 2002:a17:907:36a:b0:a47:3601:1884 with SMTP id rs10-20020a170907036a00b00a4736011884mr159337ejb.52.1711126396593;
-        Fri, 22 Mar 2024 09:53:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id jy12-20020a170907762c00b00a46ab3adea5sm6903ejc.113.2024.03.22.09.53.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Mar 2024 09:53:16 -0700 (PDT)
-Message-ID: <6974777b-7809-420d-ac6e-7fa9660b1380@linaro.org>
-Date: Fri, 22 Mar 2024 17:53:14 +0100
+        d=1e100.net; s=20230601; t=1711126431; x=1711731231;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=prwGqiUDr2MIwI/u9qAD6n1rOIPI2RfxncckA/0+HG4=;
+        b=m/wT/3ElWiJII232Yc9R3+cqwoqHOEfhKNgR+cKHGP04iFjuBuoTcRObZxv9AdlKPY
+         X/oE1L+vwp7PbuihPBMOkAiLvInbPlV/VkslHA0JlI0/Fsgxy5lVuvzMbivzJKLb7jqQ
+         9xWQ2LvLuqHqKHXgdjPlpINR6c8J2NflLwNsy7JoXSA4E0PGF04uGdS/KGGSTHb9rZkB
+         PmfFJ2Yo7rTWToWbHixJrrmLwPTA4FXx9jaaDqeVx2bms2QIYX0l0YdlPKszoIJi8OmD
+         FY7AQg5RiHNxq3RzOwrI62Bk+ffdUc3fHwu8JKo+exTuUe4ZC1Pm3OqiT9BS/bZ+5NAl
+         NULw==
+X-Forwarded-Encrypted: i=1; AJvYcCV5rhlBgcA4TcW5c+BaenT/qO4MsKUEUqekTmdbX9Eers8Ul12WmVQqbkVINI6zdXyIyVNlfKAmyzG+DHkamO9/lHilmSm8QBz7x2FDlc947jxCXJgSIGXKhuG01AQxpTlnnKbvjm0IbwT+4y/CecWIEdpTEs1n7Gln
+X-Gm-Message-State: AOJu0YzuzuorbiMDA5wObNvxfU9nbYbbAuEhxif043FJJSZpzRZahBHs
+	wqL6ZWeqvb56VP2yMVKgQB4gyBrcK1QQUZs2v3D81vlm7u2DI5fS
+X-Google-Smtp-Source: AGHT+IH3aziBPUEw2pxrSbVmh2Fqw5q35d7kuBZURy7unTQvxoYvMLMvNLA3cDHQEFkQSZnpaw7PLw==
+X-Received: by 2002:a5d:4944:0:b0:33e:7cdd:b559 with SMTP id r4-20020a5d4944000000b0033e7cddb559mr1991710wrs.56.1711126430520;
+        Fri, 22 Mar 2024 09:53:50 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id y17-20020adff151000000b0033e43756d11sm2435796wro.85.2024.03.22.09.53.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Mar 2024 09:53:50 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller"
+ <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, Alexei
+ Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John
+ Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri
+ Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: Re: [PATCH bpf v4] bpf: verifier: prevent userspace memory access
+In-Reply-To: <15ba79e3-14b2-d92e-3f94-e4f5f963e15d@iogearbox.net>
+References: <20240321124640.8870-1-puranjay12@gmail.com>
+ <9f2b63b5-569c-1e00-a635-93d9cd695517@iogearbox.net>
+ <mb61p4jcyxq5m.fsf@gmail.com>
+ <15ba79e3-14b2-d92e-3f94-e4f5f963e15d@iogearbox.net>
+Date: Fri, 22 Mar 2024 16:53:47 +0000
+Message-ID: <mb61pcyrm8axw.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] gpiolib: Add stubs for GPIO lookup functions
-To: Mark Brown <broonie@kernel.org>, Linus Walleij
- <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240322-gpiolib-find-by-fwnode-stub-v1-1-05a0ceee2123@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240322-gpiolib-find-by-fwnode-stub-v1-1-05a0ceee2123@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 22/03/2024 17:13, Mark Brown wrote:
-> The gpio_device_find_by_() functions do not have stubs which means that if
-> they are referenced from code with an optiona dependency on gpiolib then
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Maybe can be fixed while applying:
-s/optiona/optional/
+> On 3/22/24 4:05 PM, Puranjay Mohan wrote:
+> [...]
+>>>> +		/* Make it impossible to de-reference a userspace address */
+>>>> +		if (BPF_CLASS(insn->code) == BPF_LDX &&
+>>>> +		    (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+>>>> +		     BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
+>>>> +			struct bpf_insn *patch = &insn_buf[0];
+>>>> +			u64 uaddress_limit = bpf_arch_uaddress_limit();
+>>>> +
+>>>> +			if (!uaddress_limit)
+>>>> +				goto next_insn;
+>>>> +
+>>>> +			*patch++ = BPF_MOV64_REG(BPF_REG_AX, insn->src_reg);
+>>>> +			if (insn->off)
+>>>> +				*patch++ = BPF_ALU64_IMM(BPF_ADD, BPF_REG_AX, insn->off);
+>>>> +			*patch++ = BPF_ALU64_IMM(BPF_RSH, BPF_REG_AX, 32);
+>>>> +			*patch++ = BPF_JMP_IMM(BPF_JLE, BPF_REG_AX, uaddress_limit >> 32, 2);
+>>>> +			*patch++ = *insn;
+>>>> +			*patch++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
+>>>> +			*patch++ = BPF_MOV64_IMM(insn->dst_reg, 0);
+>>>
+>>> But how does this address other cases where we could fault e.g. non-canonical,
+>>> vsyscall page, etc? Technically, we would have to call to copy_from_kernel_nofault_allowed()
+>>> to really address all the cases aside from the overflow (good catch btw!) where kernel
+>>> turns into user address.
+>> 
+>> So, we are trying to ~simulate a call to
+>> copy_from_kernel_nofault_allowed() here. If the address under
+>> consideration is below TASK_SIZE (TASK_SIZE + 4GB to be precise) then we
+>> skip that load because that address could be mapped by the user.
+>> 
+>> If the address is above TASK_SIZE + 4GB, we allow the load and it could
+>> cause a fault if the address is invalid, non-canonical etc. Taking the
+>> fault is fine because JIT will add an exception table entry for
+>> for that load with BPF_PBOBE_MEM.
+>
+> Are you sure? I don't think the kernel handles non-canonical fixup.
 
-> the code will fail to link. Add stubs for lookups via fwnode and label. I
-> have not added a stub for plain gpio_device_find() since it seems harder to
-> see a use case for that which does not depend on gpiolib.
-> 
-> With the addition of the GPIO reset controller (which lacks a gpiolib
-> dependency) to the arm64 defconfig this is causing build breaks for arm64
-> virtconfig in -next:
-> 
-> aarch64-linux-gnu-ld: drivers/reset/core.o: in function `__reset_add_reset_gpio_lookup':
->  /build/stage/linux/drivers/reset/core.c:861:(.text+0xccc): undefined reference to `gpio_device_find_by_fwnode'
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+Atleast for ARM64 for I don't see a differentiation between the handling
+of canonical and non-canonical addresses.
+do_translation_fault() checks if addr < TASK_SIZE and calls
+do_page_fault() or if the address is greater than TASK_SIZE (it is a
+kernel address), do_bad_area() is called.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Both of these call __do_kernel_fault() if fault is from kernel mode and it
+does fixup_exception().
 
-Best regards,
-Krzysztof
+>
+>> The vsyscall page is special, this approach skips all loads from this
+>> page. I am not sure if that is acceptable.
+>
+> The bpf_probe_read_kernel() does handle it fine via copy_from_kernel_nofault().
+bpf_probe_read_kernel() is skipping reading from the vsyscall page, that
+is what this patch does as well.
 
+ARM64, RISCV, and some other archs don't implement
+copy_from_kernel_nofault_allowed() so I think the we should fix the
+common case where the BPF program should not be allowed to access memory
+below TASK_SIZE. This would be true for all architectures. 
+
+>
+> So there is tail risk that BPF_PROBE_* could trigger a crash. Other archs might
+
+Can you explain this a bit more, how will BPF_PROBE_* trigger a crash?
+
+> have other quirks, e.g. in case of loongarch it says highest bit set means kernel
+> space.
+
+Thanks,
+Puranjay
 
