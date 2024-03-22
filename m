@@ -1,44 +1,82 @@
-Return-Path: <linux-kernel+bounces-111176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD548868C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:02:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A26D8868C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA371F2460E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:02:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3FEC288F32
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:02:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C2F1B7EF;
-	Fri, 22 Mar 2024 09:02:17 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0598220B3D;
+	Fri, 22 Mar 2024 09:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lNpO+KLo"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B041B267
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AFA1CA8F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:02:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711098136; cv=none; b=hl7bEbtuTRqnkYX4Gf9RpEYx/sHwzN5udUd1EJ/8ZS50kjx96gyCe13jvzJaNOGeg+cP0zGEyv8jZ/pnrK3efiRfRVKeLTGe6vtNVl9CtIv2GPhwYkNvo5LadTgJ8ZCPforI8C6HuhFKkxWghVub92CBZItQrgHS2rhgnWHW3nU=
+	t=1711098141; cv=none; b=GBNGEsoo3ZUh16qN63i02wGsgreL/Y1YU1guMKXA7J7XiFbpxX7rjiqHkS4XW8H2EpfBOuu/9x2hGGWOZxx87h/CVOSgN/yUjaLm1ZD3a0uSjJMvOGrFnJY851b5wa8s3Dw74ovjn1xf6dyo4xfjFGRpTbOlS97+Bvd+JoWMDSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711098136; c=relaxed/simple;
-	bh=R0hfuKh1a36ZLHJsB/SZwOd7UoiwUuK8ECg7FM6l7Tk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dPgGddxleHeRypLQ9VHUfxQgG78W6vt3RwlqmLk5CIoMMv52ms9LkzveMZ95supInxfT1ABPjHAIy3PlpfolXNdxvdxwckln8RWW/eBs+IRVsSeh9AIWcYpV1Csuk1vaS+MmFWsPiO2eBe+DoGitHJ79aGF987S4QX9/Bm20NUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (78.37.41.5) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 22 Mar
- 2024 12:02:05 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Jan Kara <jack@suse.com>, <linux-kernel@vger.kernel.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] udf: udftime: prevent overflow in udf_disk_stamp_to_time()
-Date: Fri, 22 Mar 2024 12:01:45 +0300
-Message-ID: <20240322090145.11175-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711098141; c=relaxed/simple;
+	bh=E5xx8AkB9Uw1SS8lYXON8Luw5P4Ejh+PRnNPAv6XJ8M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ozcoZX1GyHRueCKyqAjlxin/r7x5SJ/jZSfMEeS8NGWklzXIyD1vZS75CsRMZOKcxDZdKPelEsPpSo722+Af8r410PwvFx26OclJJQyPVDFX7HN+1yOq0e/CEExxH39OYBWzGn5vtQeBxiQbbJocmhVNdbJxuQfEF4GqiXGXBEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lNpO+KLo; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33edbc5932bso1049581f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711098137; x=1711702937; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u5i9wDgrXUzVBoSu+pgmA4lE4ak8AYM/4b270iokrxM=;
+        b=lNpO+KLotqumFr+XDt25CUOrdKsIJ0cOVbL3VSilJqg8srjydvPPNRLnBs/PL+d/q1
+         aH0Jjjnm82E7EZhljDHX02W65vzCfbxs4/YZhm6489YLAbzPJ1mWJZbxhAMwt7u0zi2U
+         z2AhxMo8uaKaTdtwGeG5bwtxVQzHBP94NfYY7NOAyflQ/Ti9Usgu9ypohnwbzQ5I+7ZR
+         pnCLiAmlXk5p6dQ0ERYHNK2fQSLC/SiqyJszsUSKJeAbbJiidx4wxlfn4KYKTYl9ZiHS
+         C8dWan3d5eNmbaxqHyvHXhqVeZ2uBCYB5fB7gAIHqHv9DBBH4vy/Eq/yjGsvuolG8n8K
+         9gsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711098137; x=1711702937;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u5i9wDgrXUzVBoSu+pgmA4lE4ak8AYM/4b270iokrxM=;
+        b=h3e6bOH+IOHE6UL2hDORlyBtrV+xoIBhYK6ICjm+Q4mW8wn10PITKhXnFTGRoSvv7l
+         ZI1MzpNhMzqQMijIGHcwOFEyEt0sWHkl2Krsa4ruSp09AhkXS9xUqoZGXklKDezQSCVE
+         KdA5MDhoDDAKcjwgzOYwc/ymfQY4QKqIU9J18LfYkC/I/6z6lduTLumo9+VPgSWt0ODh
+         d6U9ofmI6ddwcTz4hL9r+/t3Wu4zbySUl38JmT6kuOVfJ07JDs/otfwSA3IpyynS0Rvl
+         AhBSp4quWSrRt16qdkYCQRGNOvSMqVWljxAJk1ZkQnWeeZWRBbo+Oyi0R66vSvBc8rME
+         HmoA==
+X-Forwarded-Encrypted: i=1; AJvYcCW9etqn8dl5WlSB6Mb+D9FqDc4Ed3USE1s3M69r8c2waZi4rSqOLT9o/aNwvnAF+wdkRU6rzvFeH1WvrpRJMDrR2T1oy2hGs/TXP03q
+X-Gm-Message-State: AOJu0YzY7NoJWnse04ln1hommY9tcmTXStMLkauL2c4vwxSvtZcDf7qG
+	oYEjoVMiaqJC0LLTSlHp8JBpmcB9POTQDa7omEfurhSgcHNIFBwpwDR4gbU4izg=
+X-Google-Smtp-Source: AGHT+IE023D1Iv1Q7ddO39alUcgMqmHs3YtMWYZlcQIZY7g4Y+ViW6U0ooyZR0olZKu+FKjXlEINRQ==
+X-Received: by 2002:adf:e512:0:b0:341:80ee:22fe with SMTP id j18-20020adfe512000000b0034180ee22femr994077wrm.50.1711098136679;
+        Fri, 22 Mar 2024 02:02:16 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:62f4:4d42:b3de:afa7])
+        by smtp.gmail.com with ESMTPSA id bq3-20020a5d5a03000000b0033e9f6997c7sm1117144wrb.66.2024.03.22.02.02.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 02:02:16 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	stable@vger.kernel.org,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2] gpio: cdev: sanitize the label before requesting the interrupt
+Date: Fri, 22 Mar 2024 10:02:08 +0100
+Message-Id: <20240322090209.13384-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,83 +84,125 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/22/2024 08:41:56
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184344 [Mar 22 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 11 0.3.11
- 5ecf9895443a5066245fcb91e8430edf92b1b594
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.5
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/22/2024 08:45:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/22/2024 6:00:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-An overflow can occur in a situation where src.centiseconds
-takes the value of 255. This situation is unlikely, but there
-is no validation check anywere in the code. It is necessary
-to convert the type of expression to 64-bit.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+When an interrupt is requested, a procfs directory is created under
+"/proc/irq/<irqnum>/<label>" where <label> is the string passed to one of
+the request_irq() variants.
 
-Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+What follows is that the string must not contain the "/" character or
+the procfs mkdir operation will fail. We don't have such constraints for
+GPIO consumer labels which are used verbatim as interrupt labels for
+GPIO irqs. We must therefore sanitize the consumer string before
+requesting the interrupt.
+
+Let's replace all "/" with ":".
+
+Cc: stable@vger.kernel.org
+Reported-by: Stefan Wahren <wahrenst@gmx.net>
+Closes: https://lore.kernel.org/linux-gpio/39fe95cb-aa83-4b8b-8cab-63947a726754@gmx.net/
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- fs/udf/udftime.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+v1 -> v2:
+- use ':' as the delimiter instead of '-'
+- return -ENOMEM if creating the label fails
 
-diff --git a/fs/udf/udftime.c b/fs/udf/udftime.c
-index 758163af39c2..2824b90c8288 100644
---- a/fs/udf/udftime.c
-+++ b/fs/udf/udftime.c
-@@ -33,6 +33,7 @@ udf_disk_stamp_to_time(struct timespec64 *dest, struct timestamp src)
- 	u16 year = le16_to_cpu(src.year);
- 	uint8_t type = typeAndTimezone >> 12;
- 	int16_t offset;
-+	int64_t nsec;
- 
- 	if (type == 1) {
- 		offset = typeAndTimezone << 4;
-@@ -46,13 +47,13 @@ udf_disk_stamp_to_time(struct timespec64 *dest, struct timestamp src)
- 	dest->tv_sec = mktime64(year, src.month, src.day, src.hour, src.minute,
- 			src.second);
- 	dest->tv_sec -= offset * 60;
--	dest->tv_nsec = 1000 * (src.centiseconds * 10000 +
-+	nsec = 1000LL * (src.centiseconds * 10000 +
- 			src.hundredsOfMicroseconds * 100 + src.microseconds);
- 	/*
- 	 * Sanitize nanosecond field since reportedly some filesystems are
- 	 * recorded with bogus sub-second values.
- 	 */
--	dest->tv_nsec %= NSEC_PER_SEC;
-+	dest->tv_nsec = do_div(nsec, NSEC_PER_SEC);
+ drivers/gpio/gpiolib-cdev.c | 34 +++++++++++++++++++++++++++++-----
+ 1 file changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index f384fa278764..7a102ebac428 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -1083,10 +1083,20 @@ static u32 gpio_v2_line_config_debounce_period(struct gpio_v2_line_config *lc,
+ 	return 0;
  }
  
- void
++static inline char *make_irq_label(const char *orig)
++{
++	return kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
++}
++
++static inline void free_irq_label(const char *label)
++{
++	kfree(label);
++}
++
+ static void edge_detector_stop(struct line *line)
+ {
+ 	if (line->irq) {
+-		free_irq(line->irq, line);
++		free_irq_label(free_irq(line->irq, line));
+ 		line->irq = 0;
+ 	}
+ 
+@@ -1110,6 +1120,7 @@ static int edge_detector_setup(struct line *line,
+ 	unsigned long irqflags = 0;
+ 	u64 eflags;
+ 	int irq, ret;
++	char *label;
+ 
+ 	eflags = edflags & GPIO_V2_LINE_EDGE_FLAGS;
+ 	if (eflags && !kfifo_initialized(&line->req->events)) {
+@@ -1146,11 +1157,17 @@ static int edge_detector_setup(struct line *line,
+ 			IRQF_TRIGGER_RISING : IRQF_TRIGGER_FALLING;
+ 	irqflags |= IRQF_ONESHOT;
+ 
++	label = make_irq_label(line->req->label);
++	if (!label)
++		return -ENOMEM;
++
+ 	/* Request a thread to read the events */
+ 	ret = request_threaded_irq(irq, edge_irq_handler, edge_irq_thread,
+-				   irqflags, line->req->label, line);
+-	if (ret)
++				   irqflags, label, line);
++	if (ret) {
++		free_irq_label(label);
+ 		return ret;
++	}
+ 
+ 	line->irq = irq;
+ 	return 0;
+@@ -1973,7 +1990,7 @@ static void lineevent_free(struct lineevent_state *le)
+ 		blocking_notifier_chain_unregister(&le->gdev->device_notifier,
+ 						   &le->device_unregistered_nb);
+ 	if (le->irq)
+-		free_irq(le->irq, le);
++		free_irq_label(free_irq(le->irq, le));
+ 	if (le->desc)
+ 		gpiod_free(le->desc);
+ 	kfree(le->label);
+@@ -2114,6 +2131,7 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	int fd;
+ 	int ret;
+ 	int irq, irqflags = 0;
++	char *label;
+ 
+ 	if (copy_from_user(&eventreq, ip, sizeof(eventreq)))
+ 		return -EFAULT;
+@@ -2198,12 +2216,18 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+ 	if (ret)
+ 		goto out_free_le;
+ 
++	label = make_irq_label(le->label);
++	if (!label) {
++		ret = -ENOMEM;
++		goto out_free_le;
++	}
++
+ 	/* Request a thread to read the events */
+ 	ret = request_threaded_irq(irq,
+ 				   lineevent_irq_handler,
+ 				   lineevent_irq_thread,
+ 				   irqflags,
+-				   le->label,
++				   label,
+ 				   le);
+ 	if (ret)
+ 		goto out_free_le;
 -- 
-2.34.1
+2.40.1
 
 
