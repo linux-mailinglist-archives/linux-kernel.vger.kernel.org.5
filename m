@@ -1,92 +1,119 @@
-Return-Path: <linux-kernel+bounces-111885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A05088722B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:52:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609CD887230
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BCEC1C223CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:52:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F34280CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA86605DF;
-	Fri, 22 Mar 2024 17:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B6A60872;
+	Fri, 22 Mar 2024 17:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="L0zU8CJQ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="i8YqWF2a"
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD37D605C7
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 17:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860F0605C4;
+	Fri, 22 Mar 2024 17:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711129917; cv=none; b=rlt3qTCOz8FvE+gr6o4KPns9010E04VkyRmcX4Qp67luhSm1LQgFcsaGjv/LajDMaOBiZtNPto+35a9k+RgGgYDixVstpbJGLdIOgbWV7ETpJnqNbhtcEHp1l1fToN5pZ0flY7UU/e0HPb7KcaF1nuvLF7dHr2dhvs1EFSWHlwI=
+	t=1711129958; cv=none; b=KTqx1Mm3eF3sn2kuLrDC019N8ibn9/u3SCEQ4n+I+YcybRpXJwofVLuJq/Ijsj4zrnUeozNflHCR+vv0cFydy79s0LgZ6kW/rhZeMt6NaEpA+ZytDTl4m5EvrluffACPE42PpqRWgVrstrQgqD2RUFSuAQ3qo/vuaC9Xm5ALGAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711129917; c=relaxed/simple;
-	bh=PZdEA2lkWEJu+n4Qdcxn8N11KxjDt+CSGgGsSTjIJPQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jELyFb/bkFIhIDhtYpiWKL/XdRmnD4fFP7Wdwca6ns9m2kUUh201GCn3f7ckviP1DJpVx2wP7GzRnI6IsmHfL9EZ47Pm7zWjV5QgM8zcdJchfbvv0Q/dpp49FUzIOXBIg7ltANWi1JfM895CKsIXwCae6U9OKb51agrdmslYN+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=L0zU8CJQ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711129914;
-	bh=PZdEA2lkWEJu+n4Qdcxn8N11KxjDt+CSGgGsSTjIJPQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=L0zU8CJQYJEE1MettTXheU6GoTyEYajLxMR+b1F8s2gNBbQjl37RaejsZWWuS6LvN
-	 W98TRjTtR4J5reWe+euTGIpWherMT1pTZiAjSv/PP035fygpoJvvnP8ncynrZJUSp1
-	 QXOLWvQDaEGGVmfFIwvORl3j+Lo85S5apTtFVGx7WktKkW6rN/vo9Mpoa+DL1mB6kd
-	 OlRr6k7tRJbkG5u9shKivt4T4IQlzL5fvrGh+TjLOfbSgb1/nFMB1vpU5in4FABtGI
-	 Kg0pdcPJdAfXkfumngsvweE2eD+PaZFTlkIc2LA8VDvm2hxpcB09fsZ9kw73Cp0URq
-	 /aICVlqxK3xqQ==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1711129958; c=relaxed/simple;
+	bh=R0UTVnALN8i9q7pNCS16NuGrIkRzqq6HAnmbMi4W1E4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Zw7OnKHR90TgA1Zwu20XS5tXz0xFzlg26BWtt5UamyB29OrGHlsqCR1toP84RP3PzCKemDG9sYJissf5+oVK6FrtYEzcnQ/XPxeAHL9U3mVrHltnMqw1Xbdxx2Oz7XfAGxxWH04NQSKKRzD3aIZW16vZadFlu0HMQ2JV6bMZTN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=i8YqWF2a; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4V1VKH3s1vzlgVnF;
+	Fri, 22 Mar 2024 17:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1711129946; x=1713721947; bh=oMF6dspJ5VT6lz5tMGmJgcgm
+	xGvVlF09dV4q3ULAEJo=; b=i8YqWF2a34cnY8+MS2u2uegVHxWozoKH+EkzvC5+
+	ze98H9gxaXVknCmeKi3eF7QOBjv3dy5K1TA0ocdV5dIcl8cIab3g44y9BZlPJ+uP
+	NkKqEECYrJ45BG31z2v6hUlJZG2dHvK+cA0IN3teiSqU4r1p1PNJkXe+XS4Zui8c
+	5wk8M7IhYbS/uDiKJ0nK+tBgxg79El1pT9YOPoFziWha9yONtz8sCzN0wU43u93H
+	WqUId6LuvBLYjT7/6kwus8mCOSkS0TcsLEVe3q3/Ave2TMRY1HD2ACiZnjWE65gp
+	qVzZv/MoloXjUa3AiG84fS15AJHFkXJX0sm5kOTczSr7Jw==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id RFjf4buQCww8; Fri, 22 Mar 2024 17:52:26 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: laura.nao)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 876F9378211C;
-	Fri, 22 Mar 2024 17:51:53 +0000 (UTC)
-From: Laura Nao <laura.nao@collabora.com>
-To: regressions@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [REGRESSION] mainline boot regression on AMD Stoney Ridge Chromebooks
-Date: Fri, 22 Mar 2024 18:52:10 +0100
-Message-Id: <20240322175210.124416-1-laura.nao@collabora.com>
-X-Mailer: git-send-email 2.30.2
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4V1VK021NJzlgTGW;
+	Fri, 22 Mar 2024 17:52:19 +0000 (UTC)
+Message-ID: <e5fb3e70-8f3c-4dda-b642-401d9d047a03@acm.org>
+Date: Fri, 22 Mar 2024 10:52:17 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/8] block: implement NVMEM provider
+Content-Language: en-US
+To: Daniel Golle <daniel@makrotopia.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Jens Axboe <axboe@kernel.dk>, Dave Chinner <dchinner@redhat.com>,
+ Jan Kara <jack@suse.cz>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?=
+ <linux@weissschuh.net>, Damien Le Moal <dlemoal@kernel.org>,
+ Li Lingfeng <lilingfeng3@huawei.com>, Christian Brauner
+ <brauner@kernel.org>, Christian Heusel <christian@heusel.eu>,
+ Min Li <min15.li@samsung.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ Avri Altman <avri.altman@wdc.com>, Hannes Reinecke <hare@suse.de>,
+ Christian Loehle <CLoehle@hyperstone.com>, Bean Huo <beanhuo@micron.com>,
+ Yeqi Fu <asuk4.q@gmail.com>, Victor Shih <victor.shih@genesyslogic.com.tw>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Dominique Martinet <dominique.martinet@atmark-techno.com>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-block@vger.kernel.org
+References: <cover.1711048433.git.daniel@makrotopia.org>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <cover.1711048433.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 3/21/24 12:31, Daniel Golle wrote:
+> On embedded devices using an eMMC it is common that one or more (hw/sw)
+> partitions on the eMMC are used to store MAC addresses and Wi-Fi
+> calibration EEPROM data.
+> 
+> Implement an NVMEM provider backed by a block device as typically the
+> NVMEM framework is used to have kernel drivers read and use binary data
+> from EEPROMs, efuses, flash memory (MTD), ...
+> 
+> In order to be able to reference hardware partitions on an eMMC, add code
+> to bind each hardware partition to a specific firmware subnode.
+> 
+> Overall, this enables uniform handling across practially all flash
+> storage types used for this purpose (MTD, UBI, and now also MMC).
+> 
+> As part of this series it was necessary to define a device tree schema
+> for block devices and partitions on them, which (similar to how it now
+> works also for UBI volumes) can be matched by one or more properties.
 
-KernelCI has identified a mainline boot regression [1] on the following
-AMD Stoney Ridge Chromebooks (grunt family), between v6.8 (e8f897) and
-v6.8-1185-g855684c7d938 (855684):
-- Acer Chromebook Spin 311 R721T (codename kasumi360)
-- HP Chromebook 14 (codename careena)
-- HP Chromebook 11A G6 EE (codename barla)
-
-The kernel doesn't boot at all and nothing is reported on the serial
-console after "Starting kernel ...". The issue is still present on the
-latest mainline revision.
-The defconfig used by KernelCI for the boot tests can be found in [2].
-
-Sending this report in order to track the regression while a fix is
-identified.
+Since this patch series adds code that opens partitions and reads
+from partitions, can that part of the functionality be implemented in
+user space? There is already a mechanism for notifying user space about
+block device changes, namely udev.
 
 Thanks,
 
-Laura
-
-[1] https://linux.kernelci.org/test/case/id/65fca98e3883a392524c4380/
-[2]
-https://storage.kernelci.org/mainline/master/v6.8-11837-g2ac2b1665d3fb/x86_64/x86_64_defconfig%2Bx86-board/gcc-10/config/kernel.config
-
-#regzbot introduced: v6.8..v6.8-1185-g855684c7d938
-
+Bart.
 
