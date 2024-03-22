@@ -1,128 +1,172 @@
-Return-Path: <linux-kernel+bounces-111691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E56886FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:17:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF862886FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41ED21F24472
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:17:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 705D41F21CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208A74E1C4;
-	Fri, 22 Mar 2024 15:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483C14E1B3;
+	Fri, 22 Mar 2024 15:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jXFYqGMe"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FCVGPm17"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D144CE13
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 15:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F08545BE4;
+	Fri, 22 Mar 2024 15:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711120636; cv=none; b=PHVk+HV3GCznfyVH0uV55IJbJS+yoLIFKnRX32fUY8EGDj9ZDXiG+TcD9ZIZahNFT+QWS4awItCqzrt+Wifp/nsxVnAvGuP43OHfhfcxAKK+BXeqOhEhpSs+JWsQ5+zxKAhlw+UAhPfYIeA2Ov8TPT2rRehwqv9VR8xDF3Rkesg=
+	t=1711120767; cv=none; b=GwkzQ5UPeEZicd7m6X9wfmNNSt99FY7p7NepJqO8e3xwCAh+rxAZBpbSIf6cPQ8w0viF0VvPl+d5VMkX7NUeaqs3EVolHksZnzNwGamfgQLw5da2SK5nIaGSg5OLU9IiczSsa1lFIoA4pVKRJlD3Mw8deWI49zfDes+PzO1zGqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711120636; c=relaxed/simple;
-	bh=eiVxLfEbT2fV2MypbifS2SQXxSiacXNMhFESsejWf7s=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ullMdebnidcnK1cgRXChZt6FLWfMhr0jnzZcNViJPk1dVVGM0+8UCfzsiqWUzpYKJ5ASt+aScRVChs3KDHrMTkVELzV0NBvDQdqEkQXNdX/7ERpn1ZdOAn9Ke7jeOnhyXCDjLKKWvffJ4BiO46khJ7igU7lG88QVV82gOXhkxUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jXFYqGMe; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711120632;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=frMCKDXPG6C6yySkxGYI1EQakMDsEGGuUgb/MT4GE4g=;
-	b=jXFYqGMeJw+ipXCAEa15FYcqmaV0hwDuo0hCYglk2DX8jpk7tdLkYxPjFxCRBhyJpMjMUD
-	ppxh/NHvM+jpSQ5BmLyRsvTtJf+tQNMfO++VK/RTcEWb61QetAFewltPYwQmK8xb2bVwy8
-	QCaWJRP2I/jzW7FOWhFTC7AgQbzCSqs=
-From: Luis Henriques <luis.henriques@linux.dev>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,  Jan Kara <jack@suse.cz>,  Theodore
- Ts'o <tytso@mit.edu>,  Andreas Dilger <adilger.kernel@dilger.ca>,
-  Alexander Viro <viro@zeniv.linux.org.uk>,  Amir Goldstein
- <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
- parameters
-In-Reply-To: <20240322-ortseinfahrt-gespeichert-9fc21a98aa39@brauner>
-	(Christian Brauner's message of "Fri, 22 Mar 2024 15:22:41 +0100")
-References: <20240307160225.23841-1-lhenriques@suse.de>
-	<20240307160225.23841-4-lhenriques@suse.de>
-	<CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
-	<87le6p6oqe.fsf@suse.de>
-	<CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
-	<20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
-	<CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
-	<20240312-orten-erbsen-2105c134762e@brauner>
-	<87h6hbhhcj.fsf@brahms.olymp>
-	<20240322-ortseinfahrt-gespeichert-9fc21a98aa39@brauner>
-Date: Fri, 22 Mar 2024 15:17:09 +0000
-Message-ID: <875xxe2t56.fsf@brahms.olymp>
+	s=arc-20240116; t=1711120767; c=relaxed/simple;
+	bh=EmauFkFzSgc/qDZcww6tdS37MuHANiCdzNtCEy1AVn0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e5jlvprQKumPhA/Kgd+9efW5AElCAwFJnVG+AHGadPgNB15PcPHV6iIiZ8Vu8CCFzjOWPVo0iDxcfo6HB8HPvP1vuSQpwtEBlZyBTOWzpVr4R1YtV3NGEuq3fbTK9wreAlkqnD4j2uvZzHxUk5kb6Y7zk1OFPckioG2bE6y2OFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FCVGPm17; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711120765; x=1742656765;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=EmauFkFzSgc/qDZcww6tdS37MuHANiCdzNtCEy1AVn0=;
+  b=FCVGPm17XL3MhKWPPtccQYru53bUjbRvZtUL1U+SeFthCgUOXwRvZoxs
+   FuwEOkNRxAEPVzXAFz3AkqmnUVRF1C9o8E7EpJhdca1frjSrhNEbsMPWe
+   ScXXEdbsQuoboMXIuSVkfW0E1AGdPbJwl/C7yy/eQi+drRC5BbXMW3eXe
+   f4AQcz2w+iZjGzALl/wFmU3nKll3KXF1tr7ProzTDhllOHwNjCBCEJSYr
+   wlDCwESaqagE5lQCglnkNSFAkimsCrOaO3KBQp9v8Uqu2LYvoySFrHovM
+   kzCqX/bZAnAaxlSv+MWph01srOxvQJTaoEgHn2zbIA/kxvv7Njqw8a7x5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6359140"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="6359140"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:19:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="19636008"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:19:24 -0700
+Date: Fri, 22 Mar 2024 08:19:23 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 056/130] KVM: x86/tdp_mmu: Init role member of struct
+ kvm_mmu_page at allocation
+Message-ID: <20240322151923.GX1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5d2307efb227b927cc9fa3e18787fde8e1cb13e2.1708933498.git.isaku.yamahata@intel.com>
+ <9c58ad553facc17296019a8dad6a262bbf1118bd.camel@intel.com>
+ <20240321212412.GR1994522@ls.amr.corp.intel.com>
+ <Zf0wz82nQoL0VsAd@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zf0wz82nQoL0VsAd@chao-email>
 
-Christian Brauner <brauner@kernel.org> writes:
+On Fri, Mar 22, 2024 at 03:18:39PM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-> On Tue, Mar 12, 2024 at 10:31:08AM +0000, Luis Henriques wrote:
->> Christian Brauner <brauner@kernel.org> writes:
->> 
->> > On Mon, Mar 11, 2024 at 03:39:39PM +0100, Miklos Szeredi wrote:
->> >> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
->> >> 
->> >> > Yeah, so with that I do agree. But have you read my reply to the other
->> >> > thread? I'd like to hear your thoughs on that. The problem is that
->> >> > mount(8) currently does:
->> >> >
->> >> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
->> >> >
->> >> > for both -o usrjquota and -o usrjquota=
->> >> 
->> >> For "-o usrjquota" this seems right.
->> >> 
->> >> For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
->> >> this seems buggy in more than one ways.
->> >> 
->> >> > So we need a clear contract with userspace or the in-kernel solution
->> >> > proposed here. I see the following options:
->> >> >
->> >> > (1) Userspace must know that mount options such as "usrjquota" that can
->> >> >     have no value must be specified as "usrjquota=" when passed to
->> >> >     mount(8). This in turn means we need to tell Karel to update
->> >> >     mount(8) to recognize this and infer from "usrjquota=" that it must
->> >> >     be passed as FSCONFIG_SET_STRING.
->> >> 
->> >> Yes, this is what I'm thinking.  Of course this only works if there
->> >> are no backward compatibility issues, if "-o usrjquota" worked in the
->> >> past and some systems out there relied on this, then this is not
->> >> sufficient.
->> >
->> > Ok, I spoke to Karel and filed:
->> >
->> > https://github.com/util-linux/util-linux/issues/2837
->
-> This is now merged as of today and backported to at least util-linux
-> 2.40 which is the current release.
-> https://github.com/util-linux/util-linux/pull/2849
->
-> If your distros ship 2.39 and won't upgrade to 2.40 for a while it might
-> be worth cherry-picking that fix.
+> On Thu, Mar 21, 2024 at 02:24:12PM -0700, Isaku Yamahata wrote:
+> >On Thu, Mar 21, 2024 at 12:11:11AM +0000,
+> >"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+> >
+> >> On Mon, 2024-02-26 at 00:25 -0800, isaku.yamahata@intel.com wrote:
+> >> > To handle private page tables, argument of is_private needs to be
+> >> > passed
+> >> > down.  Given that already page level is passed down, it would be
+> >> > cumbersome
+> >> > to add one more parameter about sp. Instead replace the level
+> >> > argument with
+> >> > union kvm_mmu_page_role.  Thus the number of argument won't be
+> >> > increased
+> >> > and more info about sp can be passed down.
+> >> > 
+> >> > For private sp, secure page table will be also allocated in addition
+> >> > to
+> >> > struct kvm_mmu_page and page table (spt member).  The allocation
+> >> > functions
+> >> > (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know
+> >> > if the
+> >> > allocation is for the conventional page table or private page table. 
+> >> > Pass
+> >> > union kvm_mmu_role to those functions and initialize role member of
+> >> > struct
+> >> > kvm_mmu_page.
+> >> 
+> >> tdp_mmu_alloc_sp() is only called in two places. One for the root, and
+> >> one for the mid-level tables.
+> >> 
+> >> In later patches when the kvm_mmu_alloc_private_spt() part is added,
+> >> the root case doesn't need anything done. So the code has to take
+> >> special care in tdp_mmu_alloc_sp() to avoid doing anything for the
+> >> root.
+> >> 
+> >> It only needs to do the special private spt allocation in non-root
+> >> case. If we open code that case, I think maybe we could drop this
+> >> patch, like the below.
+> >> 
+> >> The benefits are to drop this patch (which looks to already be part of
+> >> Paolo's series), and simplify "KVM: x86/mmu: Add a private pointer to
+> >> struct kvm_mmu_page". I'm not sure though, what do you think? Only
+> >> build tested.
+> >
+> >Makes sense.  Until v18, it had config to disable private mmu part at
+> >compile time.  Those functions have #ifdef in mmu_internal.h.  v19
+> >dropped the config for the feedback.
+> >  https://lore.kernel.org/kvm/Zcrarct88veirZx7@google.com/
+> >
+> >After looking at mmu_internal.h, I think the following three function could be
+> >open coded.
+> >kvm_mmu_private_spt(), kvm_mmu_init_private_spt(), kvm_mmu_alloc_private_spt(),
+> >and kvm_mmu_free_private_spt().
+> 
+> It took me a few minutes to figure out why the mirror root page doesn't need
+> a private_spt.
+> 
+> Per TDX module spec:
+> 
+>   Secure EPT’s root page (EPML4 or EPML5, depending on whether the host VMM uses
+>   4-level or 5-level EPT) does not need to be explicitly added. It is created
+>   during TD initialization (TDH.MNG.INIT) and is stored as part of TDCS.
+> 
+> I suggest adding the above as a comment somewhere even if we decide to open-code
+> kvm_mmu_alloc_private_spt().
 
-That's awesome, thanks a lot for pushing this.  I just gave it a try and
-it looks good -- ext4/053 isn't failing any more with the next version.
 
-Cheers,
+058/130 has such comment.  The citation from the spec would be better.
+
+
+
+> IMO, some TDX details bleed into KVM MMU regardless of whether we open-code
+> kvm_mmu_alloc_private_spt() or not. This isn't good though I cannot think of
+> a better solution.
+> 
+
 -- 
-Luis
+Isaku Yamahata <isaku.yamahata@intel.com>
 
