@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-110940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E261B886613
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:28:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E456886625
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:30:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C109283B24
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:28:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EF341F236D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86952D26D;
-	Fri, 22 Mar 2024 05:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31ECC8BE8;
+	Fri, 22 Mar 2024 05:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Mgja/S6k"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="A89B3JkJ"
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00E78C09
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6A9BA3F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711085321; cv=none; b=Po5G6NpiEPFsSiBMYqIV72ljrP3Rj4+zvP8e0LwB+uhMONKAsNdnU0scZG0IQCbYTFsUH3S1BRhzOfXuO4NZaJXDinuJTAwGKlydXc2RWRbBzEXEhfjIzc9TPhMRhuNg+NRtKt+YfFyqErCHldJpKs7PyvJeo+hW46UK+HkCqEE=
+	t=1711085326; cv=none; b=gKT8xqn+5cxjcpbsqqgyRy0teD0m3q7jkQhcNyAtryExxlVW2It9CM49Xm7ysQmaSkLYHc7221a9NyggGQufXvjZj0qUdQnOgT0tA04+ykVquMihSsD4xaXtWwOqOKiTdBo0aQDrP+zNWHaa3aO0RLB3lm9Gk20EEYOUjJiPrgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711085321; c=relaxed/simple;
-	bh=FjR8u6Is/ffFfi9shumR4LP26hOJ++3WPbSpB2dEYKs=;
+	s=arc-20240116; t=1711085326; c=relaxed/simple;
+	bh=c4O9nE3qfTIRd5wdmUEckRW8qecD6dYiOaHPK9K8vuY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RtIjEACzAbf0N5TMXAAIDnUOkjxG9hZ59zq3xPPh/r5iNgXWg3jFPYt5T5Owo1wJ2j73gBQCoO3HGv0CR/1oHgLntKHeoTEcKLw7CI517rTxB0YzUDuWrGSZulnAEUD0/9oFnlVTOZS0Tl98mvHbt4UGMu+2QQPnXC2yLBAHlvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Mgja/S6k; arc=none smtp.client-ip=210.61.82.184
+	 MIME-Version:Content-Type; b=JTbjrDacXbDKBvG3wyWL+3+LXbnwUKBq1RshN18L+qivZ1itL1BcKkP6OhiiB3iCiErjNxzufYyhujh9wkSPt5b4TrC8i4vc1znpU5pbtSRuvQkVjGtojvdMYsNIbXHSCa7K6e1Tna3105XcUtFUU4w3f2LgjvrA/JTcXeCeCMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=A89B3JkJ; arc=none smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 05ca2ce6e80d11ee935d6952f98a51a9-20240322
+X-UUID: 058edcd6e80d11ee935d6952f98a51a9-20240322
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=lYF/6Qgvwv550sczzSoqXQkMYrDtEle/KYuTW20vweg=;
-	b=Mgja/S6kvfm6xI5HKwzUsbFAIJ9rpvSS+z11wpJK8ItZjrbQg+LGkJf2ygewGxXnqcbdD+Vm5So7zGrYCam47Sn8FVvrI2jKbLQ3vo2n8wF0Y8VokfUs51w5id9WuyMKEdZySYAptbJglOJyYsUD1oeXutGBFMeV+XzM2a3NLmQ=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=RouVurObgINoAKVs/K4CUT3NBt/SpL3/v0jwQBFaevg=;
+	b=A89B3JkJ+UP8X+C4i4fkgyLjiuDlDJ55NGJgEwSnh8enbmwAn0TwraLd/CgBynSthD7NwULfzGGDmGpfWl04Peu6u9gcIrtGc8ppKHGu6epMBPjFDEDjvKSrZxGR7gEREaTRmg7Hi0iCwPljBrNiNZNCzwqyjzWLuRgMX1vKhXE=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:dc7379fe-3445-4bed-ac28-b6a2cabd9e3d,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:d583b390-e2c0-40b0-a8fe-7c7e47299109,B
+X-CID-O-INFO: VERSION:1.1.37,REQID:8ce4baab-0389-4c8e-ae15-2282a28f5440,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:b255cc81-4f93-4875-95e7-8c66ea833d57,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
 	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 05ca2ce6e80d11ee935d6952f98a51a9-20240322
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+X-UUID: 058edcd6e80d11ee935d6952f98a51a9-20240322
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
 	(envelope-from <shawn.sung@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1092850462; Fri, 22 Mar 2024 13:28:32 +0800
+	with ESMTP id 1447764527; Fri, 22 Mar 2024 13:28:32 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Fri, 22 Mar 2024 13:28:31 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -67,11 +67,11 @@ CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
 	<sean@poorly.run>, Jason Chen
 	<jason-ch.chen@mediatek.corp-partner.google.com>,
 	<dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Hsiao
- Chien Sung <shawn.sung@mediatek.com>
-Subject: [PATCH v6 06/14] drm/mediatek: Turn off the layers with zero width or height
-Date: Fri, 22 Mar 2024 13:28:21 +0800
-Message-ID: <20240322052829.9893-7-shawn.sung@mediatek.com>
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	"Hsiao Chien Sung" <shawn.sung@mediatek.com>
+Subject: [PATCH v6 07/14] drm/mediatek: Support alpha blending in display driver
+Date: Fri, 22 Mar 2024 13:28:22 +0800
+Message-ID: <20240322052829.9893-8-shawn.sung@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20240322052829.9893-1-shawn.sung@mediatek.com>
 References: <20240322052829.9893-1-shawn.sung@mediatek.com>
@@ -82,57 +82,78 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--8.474600-8.000000
+X-TMASE-MatchedRID: zNyJSLgyXoKp2D+ysBQGeaMVgdN9w+TCKx5ICGp/WtHxxaAXDrCns61l
+	cDruwbtbjztOl8irRXY5GvUK7HqDBwffi0zcbiljzuCAd7BUarYxmlBLt0TR1rFRmrhHzmfvJqo
+	crulnRtHu8BTg/pveKiuTDqyOvc9SpfOBymEN+bxDiyuN5FvFNkyQ5fRSh265fmHrLgoJIlxAd9
+	sp7/hgkuWkFwqEeuyRMtootpa5vg8fE8yM4pjsDwtuKBGekqUpI/NGWt0UYPCFxaINuf8XsxMBt
+	+JDyJKYtmVmHRhdAl+remNmdQKczsk2k+M2T95D
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.474600-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	F50D86FC5B8506774D7D6CD3822AE2B6767D12BA02AAB699888BC3952AE58FDA2000:8
 X-MTK: N
 
 From: Hsiao Chien Sung <shawn.sung@mediatek.com>
 
-We found that IGT (Intel GPU Tool) will try to commit layers with
-zero width or height and lead to undefined behaviors in hardware.
-Disable the layers in such a situation.
+Support "Pre-multiplied" and "None" blend mode on MediaTek's chips by
+adding correct blend mode property when the planes init.
+Before this patch, only the "Coverage" mode (default) is supported.
 
-Fixes: 777b7bc86a0a ("UPSTREAM: drm/mediatek: Add ovl_adaptor support for MT8195")
-Fixes: fa97fe71f6f9 ("UPSTREAM: drm/mediatek: Add ETHDR support for MT8195")
+For more information, there are three pixel blend modes in DRM driver:
+"None", "Pre-multiplied", and "Coverage".
 
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
+To understand the difference between these modes, let's take a look at
+the following two approaches to do alpha blending:
+
+1. Straight:
+dst.RGB = src.RGB * src.A + dst.RGB * (1 - src.A)
+This is straightforward and easy to understand, when the source layer is
+compositing with the destination layer, it's alpha will affect the
+result. This is also known as "post-multiplied", or "Coverage" mode.
+
+2. Pre-multiplied:
+dst.RGB = src.RGB + dst.RGB * (1 - src.A)
+Since the source RGB have already multiplied its alpha, only destination
+RGB need to multiply it. This is the "Pre-multiplied" mode in DRM.
+
+For the "None" blend mode in DRM, it means the pixel alpha is ignored
+when compositing the layers, only the constant alpha for the composited
+layer will take effects.
+
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
 Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c | 2 +-
- drivers/gpu/drm/mediatek/mtk_ethdr.c            | 7 ++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_plane.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index 4fbf61c6b5423..494f7bf4a7881 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -158,7 +158,7 @@ void mtk_ovl_adaptor_layer_config(struct device *dev, unsigned int idx,
- 	merge = ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_MERGE0 + idx];
- 	ethdr = ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0];
-
--	if (!pending->enable) {
-+	if (!pending->enable || !pending->width || !pending->height) {
- 		mtk_merge_stop_cmdq(merge, cmdq_pkt);
- 		mtk_mdp_rdma_stop(rdma_l, cmdq_pkt);
- 		mtk_mdp_rdma_stop(rdma_r, cmdq_pkt);
-diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.c b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-index ac4132210585e..6bf398850e85f 100644
---- a/drivers/gpu/drm/mediatek/mtk_ethdr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-@@ -160,7 +160,12 @@ void mtk_ethdr_layer_config(struct device *dev, unsigned int idx,
- 	if (idx >= 4)
- 		return;
-
--	if (!pending->enable) {
-+	if (!pending->enable || !pending->width || !pending->height) {
-+		/*
-+		 * instead of disabling layer with MIX_SRC_CON directly
-+		 * set the size to 0 to avoid screen shift due to mixer
-+		 * mode switch (hardware behavior)
-+		 */
- 		mtk_ddp_write(cmdq_pkt, 0, &mixer->cmdq_base, mixer->regs, MIX_L_SRC_SIZE(idx));
- 		return;
+diff --git a/drivers/gpu/drm/mediatek/mtk_plane.c b/drivers/gpu/drm/mediatek/mtk_plane.c
+index 1723d4333f371..5bf757a3ef202 100644
+--- a/drivers/gpu/drm/mediatek/mtk_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_plane.c
+@@ -346,6 +346,17 @@ int mtk_plane_init(struct drm_device *dev, struct drm_plane *plane,
+ 			DRM_INFO("Create rotation property failed\n");
  	}
---
+ 
++	err = drm_plane_create_alpha_property(plane);
++	if (err)
++		DRM_ERROR("failed to create property: alpha\n");
++
++	err = drm_plane_create_blend_mode_property(plane,
++						   BIT(DRM_MODE_BLEND_PREMULTI) |
++						   BIT(DRM_MODE_BLEND_COVERAGE) |
++						   BIT(DRM_MODE_BLEND_PIXEL_NONE));
++	if (err)
++		DRM_ERROR("failed to create property: blend_mode\n");
++
+ 	drm_plane_helper_add(plane, &mtk_plane_helper_funcs);
+ 
+ 	return 0;
+-- 
 2.18.0
 
 
