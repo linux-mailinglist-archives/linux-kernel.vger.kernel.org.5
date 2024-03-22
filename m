@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-111232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBF788697C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:43:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 255DE886986
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE921C21853
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:43:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF95F284134
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50DFC224F1;
-	Fri, 22 Mar 2024 09:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3223BB4B;
+	Fri, 22 Mar 2024 09:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O+gVQIRh"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bxSbVXBJ"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF0C20DC5
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CD0C14F
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 09:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711100569; cv=none; b=CUZ043fR/HLhgOsiMwPpWDeKkzXrWAb6vPPa9XTzG0I8ckavjPFvnQJyzI51LkndKN+x4SE3DQHf33BkxnaHtfLvDFqA8sZmL8huBoiKFTqHZcLa4MqTTqnag7n7vfpNgKDDDmvu1DIYIU0DLDINSxb4RvPOiIDsvPZHvuuPO+Y=
+	t=1711100572; cv=none; b=Xe2O9SEnxPaehsPtwEeRlMnyFhhBD0TZKX77Vkiqjgz8EYGltuJoUJwWDX2JhCeHeDl06LvEOpELk1grvfLxH2wcWieGXCFCEyku17wTsw9YkK3R0+INsswRBtxcaMPjSP+9qH9G2a4mEGZ8BW7ew2w4AS7dJ41+TolIYklcCmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711100569; c=relaxed/simple;
-	bh=c1g+yc7zI9maix5fpYJ7QOTQi0BGTOzrNoya3sqaYyw=;
+	s=arc-20240116; t=1711100572; c=relaxed/simple;
+	bh=Kx4iMHJO5z5RGLzsJX88ltZJ+Wx+25o5A/I8DsYjDng=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sLeaN1iI5eknXmsH4EzWQbDHy6cLT6dxPFMwgPCYWiupJFU2xXvI6CBgeTjZDe814SFcffNndNspdZNN/eLi2wr1UxttBhtFTFiAnlBxSmO6nIR39RfVarYJDAlgpJR0oJ/VwewFRxG3peK+VdZP5Us0rsXDXQV4yXhKMAFp5fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O+gVQIRh; arc=none smtp.client-ip=209.85.128.53
+	 In-Reply-To:To:Cc; b=YNi/nIImNzDz+p9bgkyCYS4TDFB2ut2TAHf9AxfFXanmZgYQBQXA7INnmRHF0FHYBxEmoUcGOuoQ90PFQ815C3ZUAYnZEx4Mqit3SkUBOpcdgzY/LWdaMl3glsIt8fXBCCHg0D/f1PKB+KqqMY01NRFTiikgaspjwv3iruOz+xU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bxSbVXBJ; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4147c8e27a8so2812585e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:42:47 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-414701303f7so18370725e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 02:42:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711100566; x=1711705366; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711100567; x=1711705367; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HN3oSp+JRbtDFbrldKc94Yfei/E6XtVFhEcK3+4cH+Y=;
-        b=O+gVQIRhAMGCO0kIM3DFjor07geNPISuuWb14IYZQSn9PQ5nr5vtBrQVRi6BGhKuo2
-         4j9j3QexwgS9fEj7E6uE02GGgQoGrX4V/rhePVPpRrPc2fEsB9QEOZ4+1RLry1CROvR+
-         bq2IBMzxW+SOen2QNeqpy3DF7jbYyyYS/l4avledvqq09T88RZsSy9hEfbtDRnQdD1jf
-         VSgQBwfjbFcHdiLXvX7jap9UatpW5s5mbl0q8d005M347BFgftRyvb5v3Hnygyq2BhIQ
-         vrWgPk4DzDr/u3KUrh/MetC0cjdHyorzdZa6seAwdw1adI/60os4kW8IkQKmhkrhWLQE
-         vP7g==
+        bh=SCVeYwWPRSz03B1OM4VXzQEUZALrlERjZIgaPDXj1aU=;
+        b=bxSbVXBJws315bLuoeUeFTBDZEWNGletHf3hZXt756ZSPYO/tHmQCp8d95iZQPDGuO
+         IEvGOlWotNdEDYVkAD8hLK4vqiD4mylz0NbP+WgV04EJGPmkfFUi2QBuwFgZBQ3dxzhQ
+         bqgi9WhEEim0Q1BdiMHjyvtD8gFLQkBTX81x+5cKCEFWOPa/tT0XsrJCKAb80Hv9Tc4s
+         LGB90QS87nxNAAmm5ea1HpM8tW0csCl2QhWtOZ7E36a5QiEPGIDkj2lQ1SvMSqWP7U6o
+         wm5L7jQZzRuitUUoxGYFACcxr9ObhqkLSzOk2iK8ZGI+flwx6shxLXCAhcraVjrpacOX
+         JP6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711100566; x=1711705366;
+        d=1e100.net; s=20230601; t=1711100567; x=1711705367;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HN3oSp+JRbtDFbrldKc94Yfei/E6XtVFhEcK3+4cH+Y=;
-        b=jxh0zz1jbGYzuxKWEJv39/y5MJ2qt/Cum+k9bFzYNK6KMN3IqAzJohoTj31xnBO50t
-         eZG43iyaQfW7C8HMdXHeNq5IqxtmASEml8vTAbM/Q1jLJx5rvzz1CwwkvRg6Zt7BZbCs
-         aH4aeT72fwn5JUw1yMnG0E0ZBLJEW7L0Jx3BON1Eh8z+LrUV9FvcBVb0MWTd6JeLOrGH
-         R78PC+5WW08pc1kvyvgWyEO6XzUM7FQa3hd7R74kciEKBSm/L0/435P2V1EK/M7TdRJJ
-         tRSwnR5PKDHXN8Cq83aVpZ18czDKriejaj69EztDvYAYsbVGrhjLY86MkPyB/yFio/MJ
-         TlBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGwQdz46gE4hHc9n9TAeoMcAfO/d9DWj2ZSpoGfZbs/DCc07NvXZWz/7+vTSWOdofNk/vaIB3M3eS6PA8KxEDG1waqRdOVlDsURF0U
-X-Gm-Message-State: AOJu0YzD2uvbIK//XyG/z9OkFrrTvSKbLHd2mq/E23KieJ70IxSWdMXk
-	cTjeCwYho/+BQk2lEXjGQcFl+OVpFMmSHhO2SFo7qWj1kZDIM/XSEGt5sIG3b9I=
-X-Google-Smtp-Source: AGHT+IG7VkUWz6FVtAHIOz/kPgFoX46zbE19qmEXnmSxhaPJzIoQ4SZJmcLQCMdI29EgkuYgV6UqtA==
-X-Received: by 2002:a05:600c:49a7:b0:414:5e91:124f with SMTP id h39-20020a05600c49a700b004145e91124fmr1587412wmp.23.1711100565747;
-        Fri, 22 Mar 2024 02:42:45 -0700 (PDT)
+        bh=SCVeYwWPRSz03B1OM4VXzQEUZALrlERjZIgaPDXj1aU=;
+        b=lePjf5QFyyHdl28hv4rkYuQ2xU3GxvGzyRAJzv608UD7ibw7cuQsvEnj/BzmIb7ZNF
+         1iA0vLfHwV0UEFdbAfCCLFULp9vhfr65Nc6/TMfnXx2z5uwmibrbQe5N6huK4g35DnVe
+         gek1hk2PSnyoiz8YoS9rS8Z6tdviK9ZgFik9Ew1EpQ0lVNOfWR+a9JAPNA9K/7bb2Ir+
+         m7zD3Ktc+TNuxrXabfaNFdazwjE5Jm4UfMAtP6XHXLuvHmgBXMB4TqzWiDlRXpHlxTqD
+         QT53VG9M+L/1Z9ew8LMYHAXEMHE+a7BvOvzvvgGTsAF+eYZvHGNFZJIbI+6OoRL/E+vh
+         A/hg==
+X-Forwarded-Encrypted: i=1; AJvYcCUP5F0qA0UKqfAKfKXVLjV8pac3GrIVJjFzf1Rih7Gbs2LZky9K2FWQDLwGw764W9X4Q6iHGhFMBbbkzoZ1Wq4QcVK8ck6Sp8jhkRQX
+X-Gm-Message-State: AOJu0YzcLMXIIFpRiSX7bR9JcEUGHT3nhDc9rtNH/ABS40dpMBPeSbUY
+	sk8HDTJgGpa2PanIyHALeLUDOqYC9P6DY10oTD/JmT00w9jFyQhnWuhwL8eGC3c=
+X-Google-Smtp-Source: AGHT+IHuvX98vufxnj4c0MPkLoSPVwneu2E3xOT/4wRhqnWE78lQbmyGtmWzSybZTB5mt/SGHh2JpQ==
+X-Received: by 2002:a05:600c:3b99:b0:413:286c:4fc0 with SMTP id n25-20020a05600c3b9900b00413286c4fc0mr1244065wms.34.1711100566636;
+        Fri, 22 Mar 2024 02:42:46 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id j9-20020a05600c190900b0041461a922c2sm2547845wmq.5.2024.03.22.02.42.44
+        by smtp.gmail.com with ESMTPSA id j9-20020a05600c190900b0041461a922c2sm2547845wmq.5.2024.03.22.02.42.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 02:42:45 -0700 (PDT)
+        Fri, 22 Mar 2024 02:42:46 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 22 Mar 2024 10:42:38 +0100
-Subject: [PATCH v2 1/7] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy:
- document PHY AUX clock on SM8[456]50 SoCs
+Date: Fri, 22 Mar 2024 10:42:39 +0100
+Subject: [PATCH v2 2/7] phy: qcom: qmp-pcie: refactor clock register code
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-1-3ec0a966d52f@linaro.org>
+Message-Id: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-2-3ec0a966d52f@linaro.org>
 References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
 In-Reply-To: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -88,101 +87,81 @@ To: Bjorn Andersson <andersson@kernel.org>,
  Conor Dooley <conor+dt@kernel.org>
 Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2562;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1993;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=c1g+yc7zI9maix5fpYJ7QOTQi0BGTOzrNoya3sqaYyw=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl/VKQPPVHn83qKZmKU5a42tPZYhmeiWh1Tb7K51SQ
- fIFCcqGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZf1SkAAKCRB33NvayMhJ0aQKD/
- 0WoGrEk5PCnTh5wshSN3AG4/GTZZa3TCtIjHOqnp4tTYGh1UpEUVYmozXoh9xcB2JzUykASy9gChBD
- mYzBtOUNoyIMi0hdM3SEtRncIL6D+6ijJaugNzIZN/KnOnTTL5D746DD2cSLi3yVGEeffOlcuKdG8g
- cGREHJsWXeJwuBIeGjh2ceVVqBMv4WUYbGTgmY2P3NHARRKzFmf+kKVDGMXueMz0+gvFZ2mpKst2QH
- dw96UNpSBcpjgHlPM7DkhxNHdyAPyWH8FeNyZPL7Nm78myAY98179dVpm6RKBZ4YSH4+g9K7lkeiII
- 52N5pGM7IgfUQ+TLypND+mDOX87ExdrepHW5ugoD59vTeBORxRQ9kyGNf4trW0Objx7FPcyoJqR7DF
- zPx2dPR+i/vkrKfBsHE8+ebgOPbXDIqP+axLP2a93K5a0O6irPmNZTKDyKXV3uCgLtgpmxBpmapGmb
- Ja3PgogUrAnR99k70cuZJQUASADE7pImF4LfSJcDK5Vw75YYL1hy8/BP57QKo5won8UP/sgID0Y32A
- YihhzzuPOvAz5JGHVBFlND0adUUiAALypPNBYSOu5P1Q5dDsly+UwYUDTpuEa9L8dnOUyHvHoHRm2H
- /BnwRf9Z3nBLI7D0DST9DA01jY6eBIv66tCOgWEYMWsB+yEaWOM5w3z3Chmw==
+ bh=Kx4iMHJO5z5RGLzsJX88ltZJ+Wx+25o5A/I8DsYjDng=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl/VKRV3QKxg4v+M8JT2fAbX1GHt2A5QnD7QKumt8Z
+ s4yRYgKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZf1SkQAKCRB33NvayMhJ0RfpD/
+ 4yoc9hDH+2tgpOUGvP8Jz8d3R1kJ7/9B9wDT3JPRVWRiBiP/dGO1eJl/Iwj+DgYHugvFp+iEPuCUHA
+ /xOMr9SDEZy85xLhmLDBYZCHAQZtLyoYNi02ZwyHJ+cJM1MGMzq8H0NFLoDYVWxVkYJWzVAPOybBwF
+ ojmpu7U1uJSMfycX6t9LfFetWI3+FUu0CZ+jchqV0vk9Io9hUEelywc7t7egRzf5r9XombNqjEaARg
+ 7MIC2yGMb4iC/0T8SOf8fE2w80fzJSgOQuF97GMuEsOCTagBoZTnk6bI8RgKoLbm3X1UewEQXIumaP
+ gw975Bfz02lsG02mE+eeehjA5kiZ8cw4/CUysHJbBMFtvXaCV2pp1ldMpt8l5lgH//+lJFw9/+Cryn
+ j5U9fJxmqF0Si79c1OPURBBqDp1/eluNm7MXx6eDBQ39NILu7Q3qtPolPXyhlQSnwJIz0+dKWkyS0m
+ Zlc3vsrtaoVF3kKYoYios8inatr8RQ8gRd9t/FisXA2OXBU2ylgPMVaavxpeyaGxqKGCuk6g0/o/51
+ 3w6Z1plxH2RdQYlv47OYSI0wae7mKQjttKsd/Gi4opqjTbpWuOeoYaDcakKNAblF7ySlLHYz1Ck616
+ N082i3ZTsAm26Wgulfz3NipQxmoU85imns6bilNEwAMOxMnuoxLnT4qvmfYA==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock named
-"PHY_AUX_CLK" which is an input of the Global Clock Controller (GCC) which
-is muxed & gated then returned to the PHY as an input.
+The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
+in order to expose it, split the current clock registering in two parts:
+- CCF clock registering
+- DT clock registering
 
-Document the clock IDs to select the PIPE clock or the AUX clock,
-also enforce a second clock-output-names and a #clock-cells value of 1
-for the PCIe Gen4x2 PHY found in the SM8[456]50 SoCs.
+Keep the of_clk_add_hw_provider/devm_add_action_or_reset to keep
+compatibility with the legacy subnode bindings.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   | 27 +++++++++++++++++++---
- include/dt-bindings/phy/phy-qcom-qmp.h             |  4 ++++
- 2 files changed, 28 insertions(+), 3 deletions(-)
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-index ba966a78a128..14ac341b1577 100644
---- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
-@@ -88,11 +88,11 @@ properties:
-           - description: offset of PCIe 4-lane configuration register
-           - description: offset of configuration bit for this PHY
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+index 8836bb1ff0cc..e8da2e9146dc 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+@@ -3664,7 +3664,7 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
+ 	struct clk_init_data init = { };
+ 	int ret;
  
--  "#clock-cells":
--    const: 0
-+  "#clock-cells": true
+-	ret = of_property_read_string(np, "clock-output-names", &init.name);
++	ret = of_property_read_string_index(np, "clock-output-names", 0, &init.name);
+ 	if (ret) {
+ 		dev_err(qmp->dev, "%pOFn: No clock-output-names\n", np);
+ 		return ret;
+@@ -3683,11 +3683,18 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
  
-   clock-output-names:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
+ 	fixed->hw.init = &init;
  
-   "#phy-cells":
-     const: 0
-@@ -213,6 +213,27 @@ allOf:
-         reset-names:
-           maxItems: 1
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sm8450-qmp-gen4x2-pcie-phy
-+              - qcom,sm8550-qmp-gen4x2-pcie-phy
-+              - qcom,sm8650-qmp-gen4x2-pcie-phy
-+    then:
-+      properties:
-+        clock-output-names:
-+          minItems: 2
-+        "#clock-cells":
-+          const: 1
-+    else:
-+      properties:
-+        clock-output-names:
-+          maxItems: 1
-+        "#clock-cells":
-+          const: 0
+-	ret = devm_clk_hw_register(qmp->dev, &fixed->hw);
++	return devm_clk_hw_register(qmp->dev, &fixed->hw);
++}
 +
- examples:
-   - |
-     #include <dt-bindings/clock/qcom,gcc-sc8280xp.h>
-diff --git a/include/dt-bindings/phy/phy-qcom-qmp.h b/include/dt-bindings/phy/phy-qcom-qmp.h
-index 4edec4c5b224..6b43ea9e0051 100644
---- a/include/dt-bindings/phy/phy-qcom-qmp.h
-+++ b/include/dt-bindings/phy/phy-qcom-qmp.h
-@@ -17,4 +17,8 @@
- #define QMP_USB43DP_USB3_PHY		0
- #define QMP_USB43DP_DP_PHY		1
- 
-+/* QMP PCIE PHYs */
-+#define QMP_PCIE_PIPE_CLK		0
-+#define QMP_PCIE_PHY_AUX_CLK		1
++static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np)
++{
++	int ret;
 +
- #endif /* _DT_BINDINGS_PHY_QMP */
++	ret = phy_pipe_clk_register(qmp, np);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &fixed->hw);
++	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &qmp->pipe_clk_fixed.hw);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -3899,7 +3906,7 @@ static int qmp_pcie_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_node_put;
+ 
+-	ret = phy_pipe_clk_register(qmp, np);
++	ret = qmp_pcie_register_clocks(qmp, np);
+ 	if (ret)
+ 		goto err_node_put;
+ 
 
 -- 
 2.34.1
