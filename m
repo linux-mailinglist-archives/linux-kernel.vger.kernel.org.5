@@ -1,102 +1,185 @@
-Return-Path: <linux-kernel+bounces-111412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 643FF886BF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:18:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E453886BF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966E51C21405
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F7EA1F23F0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1FE3FE4B;
-	Fri, 22 Mar 2024 12:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA283FE3F;
+	Fri, 22 Mar 2024 12:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZZVnn2Aw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TUdqhDw0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB3A3E487
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 12:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDF53FE35;
+	Fri, 22 Mar 2024 12:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711109903; cv=none; b=UzlnSFumL0SbMgTlQtuNnRVXtNnCXIfHgVAULOyU/L+aIPqm747t52Mhge2g0Rh8OWtA2CrMVHufIQ79+R7c1RM1lTITLpiapaVulv75JNZaA9XaykQjwphERjrLKQdHL6nt3764rZPM53dyX0Cfoe6C61F0hlwe10E+9y8Irs0=
+	t=1711110149; cv=none; b=CQqYw7ApTHeuzKEqVUMqKzkfWSqihFVs+Dk3Zg4BnFcNxCWTOHKNiEbEZKNQ5QoSRenuO9dCpTtWsr7WpRuQriqzGyuRuqhaF/SLSheuoEud5gtbxPpSb7xRrLV7lXSGwj2XW9FzOcCaDgw3UGLSnZBHMHHFqK8NEkYrzhTtxYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711109903; c=relaxed/simple;
-	bh=cFzbq/vR3wjLyPnVzSNACHfajl6wKiU0qxPP1Ge4LHQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J7DbrVV3OCNSWycYKcvg23wpFcR44tc5smk7BnhjG5N6VVgT9kUIHK57g4dJFAouHyQaqQwiZxzTT6Ovq62dRyujNHrb5AjUcyuoaKK62BgOP4BfWi3OydljFDqoO7pm6bjeDkHVYzmYujIT1iVNhmWC1N9ttEUF2gMh8UWkYGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZZVnn2Aw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711109900;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=waYE6IAkKbEZT6TTM98L8WXVOpvsZ5+twv6JwCR9/88=;
-	b=ZZVnn2AwIs/ASU/0fAVR+4FJfzasmcmCon/qo16O8qInm7MS29FYZHS7K7ZIEicR4gFQg3
-	m1rxZI9y7ZX3ti4XbB0pF6hN8BDDTn1Ov/Y711DGPvVzfzPqi4LB/oAt2IqPEmDBOKS7Cd
-	eacXeypIajhJolkyXuRp1DvMq/w20X8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-8ZlMNcwMNlGGpS_bN16llw-1; Fri, 22 Mar 2024 08:18:17 -0400
-X-MC-Unique: 8ZlMNcwMNlGGpS_bN16llw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D833891E69;
-	Fri, 22 Mar 2024 12:18:16 +0000 (UTC)
-Received: from kaapi.redhat.com (unknown [10.67.24.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4C792492BD0;
-	Fri, 22 Mar 2024 12:18:12 +0000 (UTC)
-From: Prasad Pandit <ppandit@redhat.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Prasad Pandit <pjp@fedoraproject.org>
-Subject: [PATCH] ftrace: fix FTRACE_RECORD_RECURSION_SIZE Kconfig entry
-Date: Fri, 22 Mar 2024 17:48:01 +0530
-Message-ID: <20240322121801.1803948-1-ppandit@redhat.com>
+	s=arc-20240116; t=1711110149; c=relaxed/simple;
+	bh=pMgrbmMeX+ZQ6UaBiGJMpnRuAkcA2VQDscBqz9g7k6c=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=d4Q+AokMGyP3mzLaiWDb1aTvn6ENvSOGKoaVSNHXHGUfIxYO3ZLX+D3TnykKUWAuJNTJeFWw5doEvwXWgxiu7iw3W3r8WrZb0sr4pYEr7DNzKNPgilkdKjVpCGjsKa7ZCNpM5THxhpqaru0f3DMduLrqy/tEzvruOW7QpTzCalY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TUdqhDw0; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711110148; x=1742646148;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pMgrbmMeX+ZQ6UaBiGJMpnRuAkcA2VQDscBqz9g7k6c=;
+  b=TUdqhDw0tx7D7KcB9OCM+tN8YMvBpjsmKYnH8EfUGyqncrUChuw1iNVk
+   xU4eyVc7QUcKzVGg7n0WsYv3CkQEliS5wP0tp7FETQ9qwMF73WeJzyqac
+   c1FHzwO39VPowvNun993Jd/Pjl8630EyO8qA04mopKfg6bYJpG4wFdRUK
+   4qxcEp8QITK84LfmLpg6t5z+IuGF+p1GFPgyR1jIyX5SSuTNQ3XcmWzwf
+   HSdsPYMh7l1OwTYVxebz6SYbnuyWSxAQcxa7xJXRLLy2pVoOoEtpDg66G
+   n0cRu6zGxcn6ohaTrRBWwTZdvpp9Lw+TgRWLxBMQ5F9mzDh8f1Zv0rhx6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="16881451"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="16881451"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:22:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="19454614"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:22:24 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 22 Mar 2024 14:22:19 +0200 (EET)
+To: Reinette Chatre <reinette.chatre@intel.com>
+cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+    Babu Moger <babu.moger@amd.com>, 
+    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
+    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 08/13] selftests/resctrl: Add ->init() callback into
+ resctrl_val_param
+In-Reply-To: <a3d11ae1-0ea2-44d1-953c-0e9296582865@intel.com>
+Message-ID: <15f0b698-adcc-9e05-90f0-082f0477a618@linux.intel.com>
+References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-9-ilpo.jarvinen@linux.intel.com> <a3d11ae1-0ea2-44d1-953c-0e9296582865@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: multipart/mixed; boundary="8323328-1967048135-1711110139=:1115"
 
-From: Prasad Pandit <pjp@fedoraproject.org>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Fix FTRACE_RECORD_RECURSION_SIZE entry, replace tab with
-a space character. It helps Kconfig parsers to read file
-without error.
+--8323328-1967048135-1711110139=:1115
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Fixes: 773c16705058 ("ftrace: Add recording of functions that caused recursion")
-Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
----
- kernel/trace/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 19 Mar 2024, Reinette Chatre wrote:
+> On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
+> > The struct resctrl_val_param is there to customize behavior inside
+> > resctrl_val() which is currently not used to full extent and there are
+> > number of strcmp()s for test name in resctrl_val done by resctrl_val().
+> >=20
+> > Create ->init() hook into the struct resctrl_val_param to cleanly
+> > do per test initialization.
+> >=20
+> > Remove also unused branches to setup paths and the related #defines.
+> >=20
+> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  tools/testing/selftests/resctrl/cmt_test.c    |  12 ++
+> >  tools/testing/selftests/resctrl/mba_test.c    |  24 +++-
+> >  tools/testing/selftests/resctrl/mbm_test.c    |  24 +++-
+> >  tools/testing/selftests/resctrl/resctrl.h     |   9 +-
+> >  tools/testing/selftests/resctrl/resctrl_val.c | 123 ++----------------
+> >  5 files changed, 75 insertions(+), 117 deletions(-)
+> >=20
+> > diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing=
+/selftests/resctrl/cmt_test.c
+> > index 241c0b129b58..e79eca9346f3 100644
+> > --- a/tools/testing/selftests/resctrl/cmt_test.c
+> > +++ b/tools/testing/selftests/resctrl/cmt_test.c
+> > @@ -16,6 +16,17 @@
+> >  #define MAX_DIFF=09=092000000
+> >  #define MAX_DIFF_PERCENT=0915
+> > =20
+> > +#define CON_MON_LCC_OCCUP_PATH=09=09\
+> > +=09"%s/%s/mon_groups/%s/mon_data/mon_L3_%02d/llc_occupancy"
+> > +
+> > +static int set_cmt_path(const struct resctrl_val_param *param, int dom=
+ain_id)
+> > +{
+> > +=09sprintf(llc_occup_path,=09CON_MON_LCC_OCCUP_PATH,=09RESCTRL_PATH,
+>=20
+> Strangely some tab characters sneaked in above.
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 61c541c36596..47345bf1d4a9 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -965,7 +965,7 @@ config FTRACE_RECORD_RECURSION
- 
- config FTRACE_RECORD_RECURSION_SIZE
- 	int "Max number of recursed functions to record"
--	default	128
-+	default 128
- 	depends on FTRACE_RECORD_RECURSION
- 	help
- 	  This defines the limit of number of functions that can be
--- 
-2.44.0
+Ah, fixed it now. They seemed to came directly from the old code.
 
+> > @@ -826,17 +729,11 @@ int resctrl_val(const struct resctrl_test *test,
+> >  =09if (ret)
+> >  =09=09goto out;
+> > =20
+> > -=09if (!strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) ||
+> > -=09    !strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR))) {
+> > -=09=09ret =3D initialize_mem_bw_imc();
+> > +=09if (param->init) {
+> > +=09=09ret =3D param->init(param, domain_id);
+> >  =09=09if (ret)
+> >  =09=09=09goto out;
+> > -
+> > -=09=09initialize_mem_bw_resctrl(param->ctrlgrp, param->mongrp,
+> > -=09=09=09=09=09  domain_id, resctrl_val);
+> > -=09} else if (!strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR)))
+> > -=09=09initialize_llc_occu_resctrl(param->ctrlgrp, param->mongrp,
+> > -=09=09=09=09=09    domain_id, resctrl_val);
+> > +=09}
+> > =20
+> >  =09/* Parent waits for child to be ready. */
+> >  =09close(pipefd[1]);
+>=20
+> I am trying to make sense of what these tests are trying to do and
+> it is starting to look like the monitor groups (as they are used here)
+> are unnecessary.
+>=20
+> Looking at resctrl_val()->write_bm_pid_to_resctrl() I see that the
+> control group is created with "bm_pid" written to its "tasks" file
+> and then a monitor group is created as child of the control group
+> with the same "bm_pid" written to its "tasks" file.
+> This looks unnecessary to me because when the original control
+> group is created on a system that supports monitoring then that
+> control group would automatically be a monitoring group also. In
+> the resctrl kernel document these different groups are termed
+> "CTRL_MON" and "MON" groups respectively.
+>=20
+> For example, if user creates control group "c1":
+> # mkdir /sys/fs/resctrl/c1
+> Then, automatically it would also be a monitoring group with
+> its monitoring data available from
+> /sys/fs/resctrl/c1/mon_data/mon_L3_XX/*
+>=20
+> PIDs written to /sys/fs/resctrl/c1/tasks will have allocations
+> assigned in /sys/fs/resctrl/c1/schemata and monitoring data
+> /sys/fd/resctrl/c1/mon_data/mon_L3_XX/* ... it is not necessary
+> to create a separate monitoring group to collect that=20
+> monitoring data.
+>=20
+> This seems to be the discrepancy between the MBA and MBM test ...
+> if I understand correctly they end up needing the same data but
+> the one uses the data from the CTRL_MON group while the other
+> creates a redundant child MON group to read the same data
+> that is available from the CTRL_MON group.
+
+Okay, I can look into this too. I've not looked too deeply why the=20
+difference between MBA and MBM test is there.
+
+--=20
+ i.
+
+--8323328-1967048135-1711110139=:1115--
 
