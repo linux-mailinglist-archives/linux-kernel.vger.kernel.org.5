@@ -1,78 +1,129 @@
-Return-Path: <linux-kernel+bounces-112080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C9FB8874F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:52:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C673588754F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:57:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 497DC281554
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:52:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53F78B23064
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 22:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123608289A;
-	Fri, 22 Mar 2024 22:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B3A82C71;
+	Fri, 22 Mar 2024 22:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xu+/ScIr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DidtImfK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4094D1CD00;
-	Fri, 22 Mar 2024 22:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E0D82891;
+	Fri, 22 Mar 2024 22:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711147955; cv=none; b=DyH7dD0Vxq+oSZH2oFX20DSJEggmcNEyKfrfEIn1KuRuzPzpqjHSndbe/6sM86R+mWwc/1/QAyDm+TCh9SrMgH6fra/ST28d8uHpFovLUPbDccq4QvI7Xkg1Qwe46wY/tVc4HGDWE8VJwWKAxeWeyTlCNOe3x4LbA5tlBb35QM4=
+	t=1711148259; cv=none; b=i20D8vnpfn9RwiLAZfvQSXB/+LF04Oa7TK7bbyncdovrOr8Gp88sxHRDoqc/Yym+Am4jy3YWjY4+kwAEKq2Y7rgpzRtmLis/oIZVwMYK84eQ9gOijQ4ocoYP4dpYawdpTRpNnOXQToPXGkZ6CY/9uYxt1Bug68r1jzg861Lbats=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711147955; c=relaxed/simple;
-	bh=hKZFEeKpoc/pNzTRJQzWbV56PN2qw+KOa9bJztyzp6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YYgkKxXIVvF7OqFznrrC0fosBoQ7A7SRczFYkZCuT3kw5IXkmvHVLHpM8KQLsI2pr2t0Nli7jNEmfitrTjzMGsvPn/p88YxpGHNtSPYCxC7uxjF1p37mMvJQPSYbLGawsn3P1u3MckGSJutauDRfDvFAOCw5STHXRRVv8TTx8iE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xu+/ScIr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E8ACC433F1;
-	Fri, 22 Mar 2024 22:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711147954;
-	bh=hKZFEeKpoc/pNzTRJQzWbV56PN2qw+KOa9bJztyzp6I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Xu+/ScIrlTsDPj9UZG+4uKHIoNFjGpxlEEKAPyt8hzlwWBqmd9SC5LWiFETpdCD2Z
-	 bozJduZe+PexSYCRHYN8JJJamnREaem1a5BobeKYSC0oeacyV3q+zlA6ll4b8nvgu1
-	 8MjjpGReyCeTdeF5wLun5k9YdDuT3GvU1ZZz7oGEaOtEEBAZ+GuF7VNJ9cZExGQrdG
-	 xVBDfk/w8i7jA3IXPFtcOqhoFQ9FgXl1NiRYTp6fvLLfUSWLZQJ7xgXWocc9kYRYKs
-	 u2d5siRZu10W3+lAmKuKsyceRI8BkwvuYKil67YqiDiFsWmQdnfsPEatSfdXsSegBB
-	 Rcq+CQ6M/8aNQ==
-Date: Fri, 22 Mar 2024 15:52:33 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: linux-integrity@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- "Daniel P . Smith" <dpsmith@apertussolutions.com>, Lino Sanfilippo
- <l.sanfilippo@kunbus.com>, Jason Gunthorpe <jgg@ziepe.ca>, Peter Huewe
- <peterhuewe@gmx.de>, James Bottomley
- <James.Bottomley@HansenPartnership.com>, Alexander Steffen
- <Alexander.Steffen@infineon.com>, keyrings@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Dunlap
- <rdunlap@infradead.org>, Richard Cochran <richardcochran@gmail.com>,
- netdev@vger.kernel.org (open list:PTP HARDWARE CLOCK
- SUPPORT:Keyword:(?:\b|_)ptp(?:\b|_))
-Subject: Re: [PATCH v4] Documentation: tpm_tis
-Message-ID: <20240322155233.30422299@kernel.org>
-In-Reply-To: <20240322123542.24158-1-jarkko@kernel.org>
-References: <20240322123542.24158-1-jarkko@kernel.org>
+	s=arc-20240116; t=1711148259; c=relaxed/simple;
+	bh=96QHhdKY87Blduh4L8mp6CXq1rB2HO56b84NtbHpKTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HmN5Q7td3Cg/yXxRLB+aTC5x4UjfexbUz75sYtClnbkPv0Lyy5Lmh5AtKffyXnXTmoUR/ESE6vjw9wzMeJLKOuUN9Oq5doJdq3KlQ5Qzx61QaYxRzHZX7+bKqQ3rH2TyLjLY2AXNa2duRAh4yhysiGpf6J/nhv2jd3TYE2ftvpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DidtImfK; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711148258; x=1742684258;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=96QHhdKY87Blduh4L8mp6CXq1rB2HO56b84NtbHpKTg=;
+  b=DidtImfKk6SE3o7GTC3TQNt/lRaMslL2pJDqquj3aXsczfbgLSkFY/T6
+   GioOZPeqjMX6fIm6kPi7jVw8Ac42lo2V1C3KX5rfZNwAH7SOMj5ZrPgbl
+   h13KqMuA5QD03KD1KSzM+lpBG9dK12G0MQ/LLnX7573n3l1TbIvW2JiB3
+   Ke4HEAI2nrP0KXy8u63Vwfr5vej2xKa0AwhAJnpmewV/8uAvu1uUg1B09
+   jf7FnqqtUS8c2TCrDW1Q9UFCE+Y5l7Ujzk9qfVpC+UPv+s6XGRdx9YYYZ
+   lU3uhi9G6lM0JUt/qfWRoT6M+ygTaALVGtVe90ii9ZXQrFt55nlVIUZjf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6048104"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6048104"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:57:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15470498"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 15:57:38 -0700
+Date: Fri, 22 Mar 2024 15:57:36 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+Subject: Re: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
+ logging
+Message-ID: <20240322225736.GC1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
+ <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
+ <20240315013511.GF1258280@ls.amr.corp.intel.com>
+ <fc6278a55deeccf8c67fba818647829a1dddcf0a.camel@intel.com>
+ <20240318171218.GA1645738@ls.amr.corp.intel.com>
+ <6986b1ddf25f064d3609793979ca315567d7e875.camel@intel.com>
+ <20240318231656.GC1645738@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240318231656.GC1645738@ls.amr.corp.intel.com>
 
-On Fri, 22 Mar 2024 14:35:36 +0200 Jarkko Sakkinen wrote:
-> +TCG PTP Specification defines two interface types: FIFO and CRB. The former is
+On Mon, Mar 18, 2024 at 04:16:56PM -0700,
+Isaku Yamahata <isaku.yamahata@intel.com> wrote:
 
-Could be worth spelling out the PTP part here, I'm guessing
-get_maintainer made you CC netdev because it thought it stands
-for Precision Time Protocol. And one has to read till the end
-to see:
+> On Mon, Mar 18, 2024 at 05:43:33PM +0000,
+> "Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
+> 
+> > On Mon, 2024-03-18 at 10:12 -0700, Isaku Yamahata wrote:
+> > > I categorize as follows. Unless otherwise, I'll update this series.
+> > > 
+> > > - dirty log check
+> > >   As we will drop this ptach, we'll have no call site.
+> > > 
+> > > - KVM_BUG_ON() in main.c
+> > >   We should drop them because their logic isn't complex.
+> > What about "KVM: TDX: Add methods to ignore guest instruction
+> > emulation"? Is it cleanly blocked somehow?
+> 
+> KVM fault handler, kvm_mmu_page_fault(), is the caller into the emulation,
+> It should skip the emulation.
+> 
+> As the second guard, x86_emulate_instruction(), calls
+> check_emulate_instruction() callback to check if the emulation can/should be
+> done.  TDX callback can return it as X86EMUL_UNHANDLEABLE.  Then, the flow goes
+> to user space as error.  I'll update the vt_check_emulate_instruction().
 
-> +TCG PC Client Platform TPM Profile (PTP) Specification
+Oops. It was wrong. It should be X86EMUL_RETRY_INSTR.  RETRY_INSTR means, let
+vcpu execute the intrusion again, UNHANDLEABLE means, emulator can't emulate,
+inject exception or give up with KVM_EXIT_INTERNAL_ERROR.
+
+For TDX, we'd like to inject #VE to the guest so that the guest #VE handler
+can issue TDG.VP.VMCALL<MMIO>.  The default non-present sept value has
+#VE suppress bit set.  As first step, EPT violation occurs. then KVM sets
+up mmio_spte with #VE suppress bit cleared. Then X86EMUL_RETRY_INSTR tells
+kvm to resume vcpu to inject #VE.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
