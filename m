@@ -1,108 +1,98 @@
-Return-Path: <linux-kernel+bounces-111310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7878D886A81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:38:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 985F7886A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25CD41F23AF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:38:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39D13B24C14
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3B43C684;
-	Fri, 22 Mar 2024 10:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21B13B2A4;
+	Fri, 22 Mar 2024 10:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JiihL1+/"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="bZegdW74"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45D063B798
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CDE3612D;
+	Fri, 22 Mar 2024 10:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711103927; cv=none; b=EYHUwZmbEdBa9UWfW/okh7oaSWNONvWamK6e94aD6IQR33JJNaqYtJHVMYGltDT4LiEL2VGc0bDFigR98TfBe0gtgPfo7AqgziK43Zs738RLn1jSpzqwnVvimU1FXhCIEA/fe6e6CeGTCVFYzI19+leaxDdnQWouUFVJtCaTap0=
+	t=1711103952; cv=none; b=mruf3NYNAwF6vQFfX0WbaQLtdI34NCoq8AzHx2KIL8x1/rZmnSG2dmHOKIUjDlztRX7cyeezs8J99VO9GCoLVy04A3kUy+CbuqIokezoGahHulu7eT4OToz0zE6E49j7zdoovOhzfip779lEw4IjA+PoQ2SpR7JZrggoHaA58sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711103927; c=relaxed/simple;
-	bh=Hq2/eEOuWhpmKCsuwoD25OCbkTU9eHjsACQjFbIL5J4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZD2RSogTzaNDoriK0p4BFnmNWeD4ohv6ux8Tr0Ky0VaWVLX5TejPu+naV69E1QYK992d8hgEDlh9wp/9dLrvuPeo36fSlZs8IEkU8EldpOrZ5Od8MOCR/9DJPqo4MTTn3wwZ5+hUPzQsuGgJfeq78vIrLFW5NJgUPexR16VJHN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JiihL1+/; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso1874136276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711103925; x=1711708725; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EW5QX/PBiLajaatZ/82NErGaCFABadkL02aA8JURVjA=;
-        b=JiihL1+/6U2Cx7eJN6b4Oe67iNFFFwpMCixX/BSNlEZziujtNC4bsDiR9/+lxJy7AU
-         rhESgenhwWlEL6pwXxuSKhrD88LMs5SO/ztC1aZ8D7V3oLww0qjE4XWA2kZgjc6mbsas
-         ytdavUNjY1u2pDaiNesQGnGiJDq532WBuZudF1qkTElflgRSWQgZf67M7ej3kqhao0jx
-         jDwxeTLj3YRuG7SwuntosDcRg+U1OCkZEhKRvuU2AGYktjqC347VbPZu1wzginm7/8L6
-         qRDUy6AH8GmHh6qUOakmNrWj6QcY9HXDADUt+gWDIpZOpzJw0tQTO0+gamIKnhygF4rY
-         +5tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711103925; x=1711708725;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EW5QX/PBiLajaatZ/82NErGaCFABadkL02aA8JURVjA=;
-        b=XOc2Bdak623wlU6EYkftMilvpw3qlVF58u1xshCIqXnJvy+ncmbP1XWOt6TaLMAjFR
-         +u43Z2hxI6OYS1f6KwW5GPI0UldPqPz20AE8DXwpnq8xladl6MCIDWvGZW+hO6+bpMRc
-         SUcTumtjSYe+uPQvSZBzYHB4fpBAi4cAtSzXDR7LVUqR3qUQxfm0RCSbQhu+LQuyq/cG
-         2WDBEXABkMYNrJwxlXQ2Hx/T3556y6TaK0dxr4G8dFLxZ/e2vGwQtOAwRuUwb+o7rCBC
-         an6w0+8nW9wIZWbBdVpYOkTUzP09ReAE6GW4G5BC0b5NZAFhhrIeaAmyZpY/wNbUTUrM
-         lAmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZfwrE/IsuIelb6Fxbyun537lWtyX9jCSSkxCb1wNPjwXPPAwymQYWSsji/+pvbFTiZzvQd+SFyvC6Cjp0hyHEjsTQA7J8OTZxiArj
-X-Gm-Message-State: AOJu0Yw5Qpg0nd29FhB+akcpANFGdIDP9D1SlmIe1dnPE4yC3rZqAZZt
-	55dGnkP8BildOT/s/nJ+L1LxeynCLw6K13mN6oGI43+AmnsUluXk2kUlIlK/NsGbWMdPCW46IpT
-	UTGOuKP60pvmG+C+dtiTgNRgBBnCvaOtpQnQjkQ==
-X-Google-Smtp-Source: AGHT+IHSKsoTSx1uARV4yY9pfYF30+iJm9yZmLK1Rm0y026834WCXCVGtwW6NoGV0aiUmgbWwwTt9TMD1a0SiQcBybI=
-X-Received: by 2002:a5b:651:0:b0:dc6:2e29:4262 with SMTP id
- o17-20020a5b0651000000b00dc62e294262mr1579006ybq.58.1711103925350; Fri, 22
- Mar 2024 03:38:45 -0700 (PDT)
+	s=arc-20240116; t=1711103952; c=relaxed/simple;
+	bh=pfiFWjLLasORuG7PCCaiQCBLxkCMS5xzTZ5YItPcLEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nudawYTMT5C8DzPIOlmOlQrVwiQTNs5h2lPMpcWEC5CtzJBBLNK/D+aPiZ4LncaC05IXALA1Ed681caWurYRM8zBdN97WIzlFT7dCVcpro+v/dSWPV3p4Ccq7hUJWKK3W7gM0l8W1hTQtPwR/+rEt4RcFY05QdE4VSxuAZgfgwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=bZegdW74; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1711103945;
+	bh=HD112TNTbRVZLtfZOIpkn/lmLRdJwknsbN5jUYRctuc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bZegdW74w4kqZoMKtDP4hBjq5tJshHahtsugx7Gmt7f01Ectl+xVc2NjcS6HCA23o
+	 xmNtuEKHKQ8jSs3iMWHYZYPrHRrcH6JoEjr6WubYrAuv3kcJoQwpge3cICm0J4i7V/
+	 SCUVFMs8X1RqPanFlomTSmGTfjQ8ASIYi5t/Hm37AN2S0jg/C2Gbx7p+KsaOGd01WN
+	 YLCh7QzQwqalrxnEcoAC05SUoEsjcOpCy3k7cQhVNs/D5fX1uDezQqgL/1nhlk+AWn
+	 oWVkW+DTWuW7PRPbbXqrUy6YHRmqXtxVPfj0H02GrEQg4lZIqdHRnKT94LCAdG7qcH
+	 8J/UgHfigZ3FQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V1Jj45xZRz4wx5;
+	Fri, 22 Mar 2024 21:39:04 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: <corbet@lwn.net>,
+	<anton@ozlabs.org>
+Cc: workflows@vger.kernel.org,
+	<linux-kernel@vger.kernel.org>,
+	linux-doc@vger.kernel.org,
+	<linuxppc-dev@lists.ozlabs.org>,
+	<tglx@linutronix.de>,
+	<gregkh@linuxfoundation.org>,
+	<torvalds@linux-foundation.org>,
+	<ajd@linux.ibm.com>,
+	<npiggin@gmail.com>,
+	<aneesh.kumar@linux.ibm.com>,
+	<naveen.n.rao@linux.ibm.com>
+Subject: [PATCH] Documentation: embargoed-hardware-issues.rst: Add myself for Power
+Date: Fri, 22 Mar 2024 21:38:40 +1100
+Message-ID: <20240322103840.668746-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
- <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-2-3ec0a966d52f@linaro.org>
-In-Reply-To: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-2-3ec0a966d52f@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 22 Mar 2024 12:38:34 +0200
-Message-ID: <CAA8EJpq1JSLdzpkbjSPjfFWvMEKgFBifjkOjAMQJUO40-bFnSw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] phy: qcom: qmp-pcie: refactor clock register code
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 Mar 2024 at 11:43, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->
-> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
-> in order to expose it, split the current clock registering in two parts:
-> - CCF clock registering
-> - DT clock registering
->
-> Keep the of_clk_add_hw_provider/devm_add_action_or_reset to keep
-> compatibility with the legacy subnode bindings.
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+Unfortunately Anton has left IBM. Add myself as the contact for Power,
+until someone else volunteers.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ Documentation/process/embargoed-hardware-issues.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/Documentation/process/embargoed-hardware-issues.rst b/Documentation/process/embargoed-hardware-issues.rst
+index bb2100228cc7..6e9a4597bf2c 100644
+--- a/Documentation/process/embargoed-hardware-issues.rst
++++ b/Documentation/process/embargoed-hardware-issues.rst
+@@ -252,7 +252,7 @@ an involved disclosed party. The current ambassadors list:
+   AMD		Tom Lendacky <thomas.lendacky@amd.com>
+   Ampere	Darren Hart <darren@os.amperecomputing.com>
+   ARM		Catalin Marinas <catalin.marinas@arm.com>
+-  IBM Power	Anton Blanchard <anton@linux.ibm.com>
++  IBM Power	Michael Ellerman <ellerman@au.ibm.com>
+   IBM Z		Christian Borntraeger <borntraeger@de.ibm.com>
+   Intel		Tony Luck <tony.luck@intel.com>
+   Qualcomm	Trilok Soni <quic_tsoni@quicinc.com>
 -- 
-With best wishes
-Dmitry
+2.44.0
+
 
