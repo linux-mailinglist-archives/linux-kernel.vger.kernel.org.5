@@ -1,175 +1,184 @@
-Return-Path: <linux-kernel+bounces-112084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4422A88759B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:09:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66BD48875B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E35342834B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:09:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8EAB285544
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9327382898;
-	Fri, 22 Mar 2024 23:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3765582C60;
+	Fri, 22 Mar 2024 23:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="p/LMsbGM"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i+VazJd1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85547FBB1
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6AE82877
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 23:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711148967; cv=none; b=niCleCh65uooAH8rwnOXOyfFj5LmziufIjrqvYEdDlJ6Qh9yM3+5/BF+mYkie2Yu83V/y217ILg1beSmXINYHSZNBB4iekO9+vhMDP+zBIvjH5cY5THgRXBhEAf07LAXNkReT56jI+tqdGAQPhqcncEbCFLORVbC2TgZ1I27bNo=
+	t=1711149629; cv=none; b=cW7SSNT8cFER/dNKuAIxol/yyhLAegFy2BoTLwx5/ch5OnGFpvHM5SLY5e45CUeL+JbkzHkq+PPxiZSez1EroPNV4LQAXRmoZOJwzb2Szp7oXFUktH/klri0EKLq06gWj1JkTPJeUkSoIbZ7T9dN61fyHNeap+tADXEF7DUefqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711148967; c=relaxed/simple;
-	bh=jeRa4DLXFpSDpuRSoBN3nhwwrFS7Vdvq6WsBPRRQVYA=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=HktjB0B6gPwv+HrObwC95RzlV9ba3VkM6d6pbV5J6S+avlC4vyO7MrTfz/8BGMthQSlQCBQ0ra3u+kuFNQt/5SItU35SUaziPIa4CiZd4p1HrfGEq3Y5LfhVJH8/m2gDPSmMMZryngYDasKrxnsCYooKht+O49Sqr0xd/xFF7JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=p/LMsbGM; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a4d435a036so1014070eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1711148963; x=1711753763; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UgF3TbhMPygJT52i6+DbefarjcSqH9PqI9CndRYXlNM=;
-        b=p/LMsbGMLkRe0kLd4xipkEjbXYm4al0n0qhhKy1Q0QudrnHanQLEO+q5C7DbuhlAfc
-         2eqV3Pumi52jfrZ3ewgvt4f3BR7fy4d+/pI8x4oUgCL6/9Aox2Mt06AzcJ7NEeS3hoNA
-         NPGQOymDH4edRxc7xM4H0Oyo2SwYvaQjVrRto5mejhtA8/z2STVHzAU40JJ7zJTkGuIG
-         huZFWkKDy257+SLxZVYz8oNr0g46YgY9hwAOUth5hB4HemHsVNyCP54DKb/9WLmoq3SX
-         YKgjwCsXPkos11brvaV17YaBN8arOuLIHOaXl5nnmO4X3IxxQksdNR3tr9gbhEQHf8Cn
-         oyUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711148963; x=1711753763;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UgF3TbhMPygJT52i6+DbefarjcSqH9PqI9CndRYXlNM=;
-        b=JL73I/X/KKihGbXKWDdSXF9gxYnNN1SS+hWeaVcYeKnISGqYc4wLBcKCRFWPcrz0eo
-         zLTA8WevcZqMqwfMawb6nQBDmsLZKnqxq1LAIngFLPdVExgN9NvnPlhmp+2gRW6h121O
-         WuAlbVnlVOTMtcYeesxJcqlHH8p2i0YVJ7Ej+kRxVp7sYmP2mq0gi57z8d5/aDvngTSg
-         mxEeh2EuQCLOaAtX5Ucy9e1MZp1XXaW8VuEVLLRkqb1s3SbFo1j/U1iBzjW5uIEIderL
-         yjoDWHtCzgAIBaqDkIoFqiGtHVSrjDNRRXvnAG34vKrSKDawvJRPogp0Xz4vodBQyNzE
-         JP8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXztFKvFiTIAI61/aGvlnR9q6AE8yPmVwwBRPH5csujfoS8ljguAJEDJ8ZaDXjiH8a7NSqpVFL+qpOlAkvGFXbG1RQJ2ZnOp1/VIsRr
-X-Gm-Message-State: AOJu0Yxnv6XJYB6/0KlQPDHZR/ABfQAQKJaHK0DOCPZ93jI7W1kL9X/r
-	bXUDpgRann9cWbjKBjOXtRjRX7PNxBaxRw6lyYCOUfi8A2w5fHyZGpYodNc+5YXFAa13dqcRQhe
-	q
-X-Google-Smtp-Source: AGHT+IHspXHKhz8WInyW4vAxHJQUDuGtWZzH6YtVqtNIFEMIDwzLF/84EH/yEaD/1c+LSyHKkBcfGA==
-X-Received: by 2002:a05:6a21:33a2:b0:1a1:48aa:2827 with SMTP id yy34-20020a056a2133a200b001a148aa2827mr1151796pzb.39.1711148534968;
-        Fri, 22 Mar 2024 16:02:14 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id t184-20020a625fc1000000b006e7243bbd35sm304301pfb.172.2024.03.22.16.02.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2024 16:02:13 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <157E2709-34C2-4C45-BF68-BF55780480A6@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1711149629; c=relaxed/simple;
+	bh=Ms4bz3fWKHV3dSnToflXLh0/u8AUGPKNSasrQEN8kSs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=u9NLRHWCm7ftRBwk6CCtkBn5JIcF+F2GLo99EUNp0D4g753Ig1IIqbuRtGbOEa4ILbUmwd9LrUwXf89pSPsR7pcjnSVv2yRnZAjoXiHy31o9C79dr4vCgtqqsjRGMe83/UghH7n4o3C0rN83a5SQvOtubV8wx0cQDBcy3dmnedw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i+VazJd1; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711149626; x=1742685626;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Ms4bz3fWKHV3dSnToflXLh0/u8AUGPKNSasrQEN8kSs=;
+  b=i+VazJd1BGpmVBtVnvdPiXCmOiMm/DcD0YWlZPW/+achLXBZ5yyWVfD0
+   hdu3mwZheogYvztnLPxOmD+pFw1sC1DrMNXoR3olmfCS7v6bXafmMzw4T
+   0yV/dtqo0YbugUilACMl9AWVNFh+6kv02ZSeT8RabY6fGcjpogeKjKag9
+   yNJJbZVGSl+ZwsG5RMfKvuJqXOH2AnUexrdGoWSbp9XLWlT0OpwuXW3YE
+   mehEw19Y38AmWUrHAkf8X6uJCuRZVI0+SQwhrnU2dqw/Mk24HRnDYcAgc
+   uHH3e67lI0XOphWVFOdE2IHvUDz2DIefgNrGa+7y/mWCIWaG4ZDxf+NVL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6408514"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6408514"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:20:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="19748855"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by orviesa004.jf.intel.com with ESMTP; 22 Mar 2024 16:20:25 -0700
+From: "Chang S. Bae" <chang.seok.bae@intel.com>
+To: linux-kernel@vger.kernel.org,
+	x86@kernel.org,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	mingo@redhat.com
+Cc: attofari@amazon.de,
+	chang.seok.bae@intel.com
+Subject: [PATCH v4] x86/fpu: Keep xfd_state always in sync with MSR_IA32_XFD
+Date: Fri, 22 Mar 2024 16:04:39 -0700
+Message-Id: <20240322230439.456571-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230519112315.30616-1-attofari@amazon.de>
+References: <20230519112315.30616-1-attofari@amazon.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 3/3] ext4: Add support for FS_IOC_GETFSSYSFSPATH
-Date: Fri, 22 Mar 2024 17:03:03 -0600
-In-Reply-To: <20240315035308.3563511-4-kent.overstreet@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Christian Brauner <brauner@kernel.org>,
- Theodore Ts'o <tytso@mit.edu>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-References: <20240315035308.3563511-1-kent.overstreet@linux.dev>
- <20240315035308.3563511-4-kent.overstreet@linux.dev>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+From: Adamos Ttofari <attofari@amazon.de>
 
---Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Commit 672365477ae8 ("x86/fpu: Update XFD state where required") and
+commit 8bf26758ca96 ("x86/fpu: Add XFD state to fpstate") introduced a
+per CPU variable xfd_state to keep the MSR_IA32_XFD value cached. In
+order to avoid unnecessary writes to the MSR.
 
-On Mar 14, 2024, at 9:53 PM, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
->=20
-> the new sysfs path ioctl lets us get the /sys/fs/ path for a given
-> filesystem in a fs agnostic way, potentially nudging us towards
-> standarizing some of our reporting.
+On CPU hotplug MSR_IA32_XFD is reset to the init_fpstate.xfd, which
+wipes out any stale state. But the per CPU cached xfd value is not
+reset, which brings them out of sync.
 
-I find it ironic that we are adding an ioctl to be able to get the
-sysfs path, which was originally created to avoid adding ioctls...
-But, the days of jumping through hoops to find stuff in sysfs for
-each filesystem arrived long ago, so we may as well make it easier. :-)
+As a consequence a subsequent xfd_update_state() might fail to update
+the MSR which in turn can result in XRSTOR raising a #NM in kernel
+space, which crashes the kernel.
 
-Cheers, Andreas
+To address the issue mentioned, initialize xfd_state together with
+MSR_IA32_XFD.
 
->=20
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Cc: linux-ext4@vger.kernel.org
-> ---
-> fs/ext4/super.c | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index f5e5a44778cf..cb82b23a4d98 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5346,6 +5346,7 @@ static int __ext4_fill_super(struct fs_context =
-*fc, struct super_block *sb)
-> 	sb->s_quota_types =3D QTYPE_MASK_USR | QTYPE_MASK_GRP | =
-QTYPE_MASK_PRJ;
-> #endif
-> 	super_set_uuid(sb, es->s_uuid, sizeof(es->s_uuid));
-> +	super_set_sysfs_name_bdev(sb);
->=20
-> 	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
-> 	mutex_init(&sbi->s_orphan_lock);
-> --
-> 2.43.0
->=20
+Fixes: 672365477ae8 ("x86/fpu: Update XFD state where required")
+Closes: https://lore.kernel.org/lkml/20230511152818.13839-1-attofari@amazon.de
+Signed-off-by: Adamos Ttofari <attofari@amazon.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+---
+V4 <- V3: No code changes, just a minor tweak in the changelog:
+* Adjust the patch subject prefix to align with the preferred format for
+  'tip' [1], 'x86: fpu:' -> 'x86/fpu:'
+* Add a few more commit tags.
 
+It appears that the issue is predominantly exposed during the execution
+of synthetic test cases, such as concurrent AMX operations with CPU
+hotplug tests (e.g., 'stress-ng --cpu-online' [2]). While this might be
+seen as a corner case, it has been a recurring failure during hardware
+validation, leading to confusion regarding the source of the problem.
 
-Cheers, Andreas
+I considered updating the AMX test like this [3]. But, the change
+introduced side effects, adding about 2 more seconds to run the test.
+Also, running AMX concurrently with aggressively on-/off-lining of CPUs
+doesn't seem to align well typical usage scenarios that warrant testing.
+Nonetheless, I'm open to add this test if it's deemed necessary.
 
+[1]: https://www.kernel.org/doc/html/next/process/maintainer-tip.html#patch-subject
+[2]: https://github.com/ColinIanKing/stress-ng/blob/master/stress-cpu-online.c#L27
+[3]: https://lore.kernel.org/lkml/20230603152455.12444-1-chang.seok.bae@intel.com/
+---
+ arch/x86/kernel/fpu/xstate.c |  5 +++--
+ arch/x86/kernel/fpu/xstate.h | 14 ++++++++++----
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 117e74c44e75..33a214b1a4ce 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -178,10 +178,11 @@ void fpu__init_cpu_xstate(void)
+ 	 * Must happen after CR4 setup and before xsetbv() to allow KVM
+ 	 * lazy passthrough.  Write independent of the dynamic state static
+ 	 * key as that does not work on the boot CPU. This also ensures
+-	 * that any stale state is wiped out from XFD.
++	 * that any stale state is wiped out from XFD. Reset the per CPU
++	 * xfd cache too.
+ 	 */
+ 	if (cpu_feature_enabled(X86_FEATURE_XFD))
+-		wrmsrl(MSR_IA32_XFD, init_fpstate.xfd);
++		xfd_set_state(init_fpstate.xfd);
+ 
+ 	/*
+ 	 * XCR_XFEATURE_ENABLED_MASK (aka. XCR0) sets user features
+diff --git a/arch/x86/kernel/fpu/xstate.h b/arch/x86/kernel/fpu/xstate.h
+index 3518fb26d06b..19ca623ffa2a 100644
+--- a/arch/x86/kernel/fpu/xstate.h
++++ b/arch/x86/kernel/fpu/xstate.h
+@@ -148,20 +148,26 @@ static inline void xfd_validate_state(struct fpstate *fpstate, u64 mask, bool rs
+ #endif
+ 
+ #ifdef CONFIG_X86_64
++static inline void xfd_set_state(u64 xfd)
++{
++	wrmsrl(MSR_IA32_XFD, xfd);
++	__this_cpu_write(xfd_state, xfd);
++}
++
+ static inline void xfd_update_state(struct fpstate *fpstate)
+ {
+ 	if (fpu_state_size_dynamic()) {
+ 		u64 xfd = fpstate->xfd;
+ 
+-		if (__this_cpu_read(xfd_state) != xfd) {
+-			wrmsrl(MSR_IA32_XFD, xfd);
+-			__this_cpu_write(xfd_state, xfd);
+-		}
++		if (__this_cpu_read(xfd_state) != xfd)
++			xfd_set_state(xfd);
+ 	}
+ }
+ 
+ extern int __xfd_enable_feature(u64 which, struct fpu_guest *guest_fpu);
+ #else
++static inline void xfd_set_state(u64 xfd) { }
++
+ static inline void xfd_update_state(struct fpstate *fpstate) { }
+ 
+ static inline int __xfd_enable_feature(u64 which, struct fpu_guest *guest_fpu) {
+-- 
+2.40.1
 
-
-
-
---Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmX+DicACgkQcqXauRfM
-H+CJgw/+PaOI0yH8X6md/q6dpGtw7cT+GJNkNUqlr1yw/LAXo5PILhX8BoeGtNn0
-xVUkNjlKa5esWlZzNALY9MVdlc3Vnrqny11EzovQn9cS046ZGOfPgKJr3rHxND0B
-Uik9qVHxqimn5XPydHnHw0ieGMSSEqCnMWTjx+AydPcETDakFYTefQdUSk5tQoGK
-1XuLbZI4m+7waWOA0UPCx79n/qHr9cRvBCbGDrIorO6/A59w+k/bawKY06z0gUu0
-/eERceymgH28673XZX464zh8es0u8D82gpN84SM6awJbWF/1btgM41WVuQMRQml7
-kZk3uHXy1OFz3Va4WDA2pgROcuBVCbjC+50iE2zJ7NH6qAOiITsxpvzk2C8zf62x
-Xnu4MPZff989gurDKSjtmvzdZ1tUoQpVxb5uSLqDNar0Z6GI+IGCUdkXNH6hGb1T
-hspCIGhg1xzDud3/HTHnjzQswYM2A750U/b2FwBTnig8DVjpcca5qsRqkj4KEo/H
-NAK6xP4g3Lhw/b5tBwCRwvH5cgtmiW37WuKk+RFpIILXHxo0FHOPvNQ1CrF8Hwk2
-Q7MJ2XdscsCaUfkVYKCRITjGtPqtgBBsaOteo+2eP2zMHgYW4DSA/qOiHtVUj2wJ
-L/cX1nOSkk2LQlphDL3eOLa0C+8Az0j7w2kzeYHw5ELW8neQc6Q=
-=ABi7
------END PGP SIGNATURE-----
-
---Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976--
 
