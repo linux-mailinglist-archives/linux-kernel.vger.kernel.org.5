@@ -1,124 +1,139 @@
-Return-Path: <linux-kernel+bounces-111594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56285886E54
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:17:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EFEB886E4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D909428B50D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EC621F23394
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6DBA47F7A;
-	Fri, 22 Mar 2024 14:16:53 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99E547A6A;
+	Fri, 22 Mar 2024 14:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TJYL418B"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D0047A40
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF8E46453;
+	Fri, 22 Mar 2024 14:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711117013; cv=none; b=f+hH2hDRGe/kTM/Leiq4o8b6qT5egrSDrWP72Q7hQxE19DznLRRQnVgIykdqOJwLHMqCppx4NoTQ6VqcJ9pTSQPeKB6a0qtv+ABDv3D2yc9nkS4O7zTgTFz3sG739sF6q2Cnz9KHKuSD3ya2ZU7QgDh5bFK2MQzJiwgAyOt1/dA=
+	t=1711116984; cv=none; b=EbAeLogffZ2k0BFL7r7E4nu+bfNo7zu+6numwkO/PtiGY31tdLUiQM9B0xdP+LPQlIEqzEqoLmJoQAS+zW5cQObl1sIx6xmx/KPaVEdGsu0m4fFtXjIoDsQlX99OUtz5m2Ash/P+vNjNHXpbFve+eOMeaU9wDBllCDK1G4WTRTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711117013; c=relaxed/simple;
-	bh=gTQrp4Js3OxUcPX+M7h8O2IyGN5Wup3eAf2X2EQJk+g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=p4BqrkHgrxQjJiwvFGe9qcbHqG+cpgoDUts7+Hi1jDB8RXgUnxYsjJ8E4XBwTfpZDRq9Fw28gLx2+B0/ybBk8e3Vy1gOxQNlQ0ijHdfxfZaQSar2gFjk5vh3JhQivgAOav4QyUnjYm1U+TWX0093uYUDiZBdBsoJK4sqMM2buJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-11-17hD1aE4NWuU9zNj5esXGg-1; Fri, 22 Mar 2024 14:16:41 +0000
-X-MC-Unique: 17hD1aE4NWuU9zNj5esXGg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 22 Mar
- 2024 14:16:15 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 22 Mar 2024 14:16:15 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Russell King' <linux@armlinux.org.uk>
-CC: Ard Biesheuvel <ardb@kernel.org>, Jiangfeng Xiao
-	<xiaojiangfeng@huawei.com>, "arnd@arndb.de" <arnd@arndb.de>,
-	"keescook@chromium.org" <keescook@chromium.org>, "haibo.li@mediatek.com"
-	<haibo.li@mediatek.com>, "angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "amergnat@baylibre.com"
-	<amergnat@baylibre.com>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "douzhaolei@huawei.com"
-	<douzhaolei@huawei.com>, "gustavoars@kernel.org" <gustavoars@kernel.org>,
-	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "kepler.chenxin@huawei.com"
-	<kepler.chenxin@huawei.com>, "kirill.shutemov@linux.intel.com"
-	<kirill.shutemov@linux.intel.com>, "linux-hardening@vger.kernel.org"
-	<linux-hardening@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "nixiaoming@huawei.com"
-	<nixiaoming@huawei.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"wangbing6@huawei.com" <wangbing6@huawei.com>, "wangfangpeng1@huawei.com"
-	<wangfangpeng1@huawei.com>, "jannh@google.com" <jannh@google.com>,
-	"willy@infradead.org" <willy@infradead.org>
-Subject: RE: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Topic: [PATCH v2] ARM: unwind: improve unwinders for noreturn case
-Thread-Index: AQHae3ROEuI+AaCprEesIWGaAOB7ebFB9uHAgADsd8GAAJnLsIAACSyAgABHz+A=
-Date: Fri, 22 Mar 2024 14:16:15 +0000
-Message-ID: <8f12147ee3cf4bbd8fc980821ae1deac@AcuMS.aculab.com>
-References: <1710906278-23851-1-git-send-email-xiaojiangfeng@huawei.com>
- <ZfqiD8Yw0oOVHW/p@shell.armlinux.org.uk>
- <84a57ca8-8963-ca24-8bd1-ddc5c33bf4da@huawei.com>
- <Zfs7sT6Pxy5yjnPC@shell.armlinux.org.uk>
- <bad25937-fc98-8e11-4279-ab6b3a727c1f@huawei.com>
- <bbcca1e205384cf0b42236e17f3969f7@AcuMS.aculab.com>
- <ZfwYx/8k8FVONg6+@shell.armlinux.org.uk>
- <CAMj1kXG2EGvgGuV-K7h5qDVJeLMd5hkq8GzigzCRzh9Z8cgyWw@mail.gmail.com>
- <ZfzMFv3zmYY36l9u@shell.armlinux.org.uk>
- <2b2993fb215c4a5abd7d77ff1c984113@AcuMS.aculab.com>
- <Zf1UyxlDf/oCjXxr@shell.armlinux.org.uk>
-In-Reply-To: <Zf1UyxlDf/oCjXxr@shell.armlinux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1711116984; c=relaxed/simple;
+	bh=phfJNFUwcoMsIHQsKhH8XlWFMITiLSgKhBPTTxTE03k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aFIXMnwsOVY+trgEWJVIUw9PEQhU+FS7ughWYRHmduy9IyKnx5fni1Dmy8pY0UiUMIcscarnpYLgHCOUCCd/oV2jU32gPcgMfNm6UwzunWS+fl6EqCqTkK/7YgJzeJGkvezQbcR9mlGsmpj0HxpNZ2GOhX4chvuxiz03btGLtfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TJYL418B; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0189323b4so14464675ad.1;
+        Fri, 22 Mar 2024 07:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711116982; x=1711721782; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h2KrFVSkasLEwSaFBHHLTFFybIGgLI9ihUKme+W+V2o=;
+        b=TJYL418BjnTjnsnzdHaGZUHaVMK2KBSkgT+sJa0Uwqiv/hlEMPMM28OYKuqcpUeYc+
+         uQheqVn4PP1G5x18z0fDkX/T4ACJN4lLwrQerUDVvt9VeIXdyLc3KholcyF6npwY94oZ
+         gefEbJ8vxYF1dwdGvlUw+2J73oYwioKRFbb8wHkm98nAvdYPspCkG2G33dJQ522ovW51
+         Cd8CMiY05/21BCbDdwe5i0pJVRf8zSCVfrMzT6ePZJDbRg6rI6vRR9NPI//1d+Ma3bm+
+         9M9pQqTJoapwFKt6ThfFyVlTgoBmxacUk28gu9T+BNCWn7E1isRU0rl7jPHm2fKCWnJ5
+         s/Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711116982; x=1711721782;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h2KrFVSkasLEwSaFBHHLTFFybIGgLI9ihUKme+W+V2o=;
+        b=iFB/l4qvD6k5e4ZQL3bU5apDWleL5na8I1caN72b4vOpwXuBbRtxFmOw4ATpe3DDc4
+         syyJHLr6T20Cf0Gujpqp+Kw7hLWfxS5n557HGIpBGdljE+89X0kn8HcLcoo73tscaLQ/
+         +3H0biZLvMnmIv53LYJa43Tswpt7hvLpx9qRbj9c6JP/x2WqNFOamzXf04Wx5nZEZSre
+         rxt+KT6IL7mGHfvlaTnuZf0d5t332L/xUo9srZkgTgT44fLmMoi78P8Z481QuESN7hwb
+         +uJ6diWzs7q5fGgVyLBEWzlQo4Imrg2HFtLiafYVHWn4etZYP8TxIqHppHAMOUaoo3Z/
+         FNGg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvimAJ6IZIK/kLsviESgr3YTpriez0jFZmO3oNSdf+8yROaGVD7lck3t4HbVJqKlh7aBS9SHwVJnkyUmC7btosT5EyxaVmI6dUB0xpY8ijAY8AIMwCV8Tf49smrrCMEQ1CFYhLSkFhtT1oy9zL2s+rt68EpfXMCKbkJdilBI1gHA==
+X-Gm-Message-State: AOJu0YzSM1Q0cLwp8gAkLoXn31YxqaVSG1+uD3tIu5tHCgMh74x7eKA/
+	zPsBgalPq9/jbolglixrvoOadSv+mVjjo1LmIBJoxIUyPRC6qQsxDiW41j/O
+X-Google-Smtp-Source: AGHT+IGHKP6GHfaK0CJSsC1/8ul21i9Rgu7jfCypgVaXamxumA/1/NQ5qG+dab1GP9lDvCigP7RxPg==
+X-Received: by 2002:a17:903:11c4:b0:1dd:a3d6:3af8 with SMTP id q4-20020a17090311c400b001dda3d63af8mr3422258plh.31.1711116981683;
+        Fri, 22 Mar 2024 07:16:21 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8-20020a170903024800b001dde004b31bsm1946248plh.166.2024.03.22.07.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 07:16:20 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 22 Mar 2024 07:16:19 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Chris Leech <cleech@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Nilesh Javali <njavali@marvell.com>, Christoph Hellwig <hch@lst.de>,
+	John Meneghini <jmeneghi@redhat.com>, Lee Duncan <lduncan@suse.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+	GR-QLogic-Storage-Upstream@marvell.com,
+	Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH v6 1/4] uio: introduce UIO_MEM_DMA_COHERENT type
+Message-ID: <4f606e50-865c-46f2-b89e-6c1dfe02f527@roeck-us.net>
+References: <20240201233400.3394996-2-cleech@redhat.com>
+ <20240205200137.138302-1-cleech@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205200137.138302-1-cleech@redhat.com>
 
-..
-> Whereas we already provide an abort() function because iirc the
-> compiler used to emit branches to that due to noreturn functions. If
-> correct, there's previous convention for doing this - and abort() is
-> still exists in the kernel and in userspace since it's part of ANSI
-> C. This would be a more reliable and portable solution, but probably
-> not for embedded platforms - and that's probably why it got removed.
+On Mon, Feb 05, 2024 at 12:01:37PM -0800, Chris Leech wrote:
+> Add a UIO memtype specifically for sharing dma_alloc_coherent
+> memory with userspace, backed by dma_mmap_coherent.
+> 
+> This is mainly for the bnx2/bnx2x/bnx2i "cnic" interface, although there
+> are a few other uio drivers which map dma_alloc_coherent memory and will
+> be converted to use dma_mmap_coherent as well.
+> 
+> Signed-off-by: Nilesh Javali <njavali@marvell.com>
+> Signed-off-by: Chris Leech <cleech@redhat.com>
+> ---
 
-Wouldn't you want it to do a 'bl abort' so that you could do a backtrace
-to find out which 'noreturn' function had returned?
+Building i386:allyesconfig ... failed
+--------------
+Error log:
+drivers/uio/uio.c: In function 'uio_mmap_dma_coherent':
+drivers/uio/uio.c:795:16: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+  795 |         addr = (void *)mem->addr;
+      |                ^
+cc1: all warnings being treated as errors
+make[5]: [scripts/Makefile.build:244: drivers/uio/uio.o] Error 1 (ignored)
+drivers/uio/uio_dmem_genirq.c: In function 'uio_dmem_genirq_open':
+drivers/uio/uio_dmem_genirq.c:63:39: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+   63 |                 uiomem->addr = addr ? (phys_addr_t) addr : DMEM_MAP_ERROR;
+      |                                       ^
+drivers/uio/uio_dmem_genirq.c: In function 'uio_dmem_genirq_release':
+drivers/uio/uio_dmem_genirq.c:92:43: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+   92 |                                           (void *) uiomem->addr,
+      |                                           ^
+cc1: all warnings being treated as errors
+make[5]: [scripts/Makefile.build:244: drivers/uio/uio_dmem_genirq.o] Error 1 (ignored)
+drivers/uio/uio_pruss.c: In function 'pruss_probe':
+drivers/uio/uio_pruss.c:194:34: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+  194 |                 p->mem[2].addr = (phys_addr_t) gdev->ddr_vaddr;
+      |                                  ^
+cc1: all warnings being treated as errors
 
-But that leaves you with another 'noreturn' function that you have
-difficulty generating a backtrace from.
+Caused by this patch and "uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion" as well
+as "uio_pruss: UIO_MEM_DMA_COHERENT conversion".
 
-So you'd need a compiler option to specify what to put there.
-I'd suspect linux would like something that generates an 'undefined
-instruction' trap - since that would be expected to fault with the
-saved PC pointing to the instruction itself (but architectures may vary).
+I'd suggest to make uio dependent on 64 bit if 32 bit is no longer supported
+to prevent waste of test builds resources.
 
-'One size' definitely doesn't 'fit all' :-)
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
-
+Guenter
 
