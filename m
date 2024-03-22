@@ -1,186 +1,373 @@
-Return-Path: <linux-kernel+bounces-111200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04B0388690B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5361886902
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 803A5283F21
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:17:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99833287431
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0BF1F93F;
-	Fri, 22 Mar 2024 09:14:07 +0000 (UTC)
-Received: from smtpbg156.qq.com (smtpbg156.qq.com [15.184.82.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D19B4205A;
+	Fri, 22 Mar 2024 09:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="kisgKUTv"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658EB1B7F3;
-	Fri, 22 Mar 2024 09:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.82.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5593B2BF;
+	Fri, 22 Mar 2024 09:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711098846; cv=none; b=qZe59SjwAIZKyhPyOkVybbONXqBRFFpbFHE8sDOC4G/2IhXiU97OkyH6sjH0y5ZU960S/RXCK4HFx9HIvYrqGT3igWy0Yt2WwDqjxhDA4q8Zw206u4Ooe04WFm5y12QM8DH/egne8CjHoFsq7zKM8fnkGeG9Hlz4l47VeJjUoBQ=
+	t=1711098768; cv=none; b=J26HenodWUKa9Ev0BBrJzo5J7MdPQBPPD2+UtI9WP2uISqH0+bBP++2Edo7OrkvHazqETJVGZoJhe3HUfc8I2ijkz1QdgDZ1t0tBUscro1brEcHPT3UBUM/fxz/B01C9hrViDkJcX1XlQ0ajUtgW1GdGPvENmpBEjWiN0tE2nXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711098846; c=relaxed/simple;
-	bh=aTE6zAKVV5uqZysPm/I63UdVchbAgigUe18rr48Hj7Y=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=huZKAbln+vX42ufja1po6hVLoBhGjSQcRDQ421TNE/Z2htUojlmjsmx9x2y7XQzB4roytn3ptpUqIIKanf7rvrDuumFS6kM/QGeacAiYAhBkjBLNNWmYJvXUSs7mjJHoh7NrXPeYxdSFtQxvHsW2ZMvN1Q8j+9FYkaDni+vMBwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com; spf=pass smtp.mailfrom=net-swift.com; arc=none smtp.client-ip=15.184.82.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=net-swift.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=net-swift.com
-X-QQ-mid:Yeas8t1711098743t325t20718
-Received: from 73E00E8BC808433CB9DB281092DFBE6B (duanqiangwen@net-swift.com [183.159.169.46])
-X-QQ-SSF:00400000000000F0FH4000000000000
-From: duanqiangwen@net-swift.com
-X-BIZMAIL-ID: 1856326279137474112
-To: "'Jiri Pirko'" <jiri@resnulli.us>
-Cc: "'netdev'" <netdev@vger.kernel.org>,
-	"'jiawenwu'" <jiawenwu@trustnetic.com>,
-	"'mengyuanlou'" <mengyuanlou@net-swift.com>,
-	"'davem'" <davem@davemloft.net>,
-	"'edumazet'" <edumazet@google.com>,
-	"'kuba'" <kuba@kernel.org>,
-	"'pabeni'" <pabeni@redhat.com>,
-	"'maciej.fijalkowski'" <maciej.fijalkowski@intel.com>,
-	"'andrew'" <andrew@lunn.ch>,
-	"'wangxiongfeng2'" <wangxiongfeng2@huawei.com>,
-	"'linux-kernel'" <linux-kernel@vger.kernel.org>,
-	"'michal.kubiak'" <michal.kubiak@intel.com>
-References: <20240322080416.470517-1-duanqiangwen@net-swift.com> <Zf09VnR2YI_WOchd@nanopsycho> <000001da7c31$be2330f0$3a6992d0$@net-swift.com> <Zf1JEfIq1E1SHiBD@nanopsycho>
-In-Reply-To: <Zf1JEfIq1E1SHiBD@nanopsycho>
-Subject: RE: [PATCH net v5] net: txgbe: fix i2c dev name cannot match clkdev
+	s=arc-20240116; t=1711098768; c=relaxed/simple;
+	bh=0FlH7gZwgsbn/RMnVF/WySlYSvtRUr8cJZaaHlTdOHo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p2XbR97HDhqh1EHirWvrDC+POBRzNBRc9qTRKU4AErvjcdrQntiZEnvDmau21jRS3o67aSNzfv8vfSpxoYpR6z4qwd4SJP2Z265V9DzXyL3yq9/F0G0hYej8j29D6ksy/4FFZfdiyw0o3jP1JIz6AZyR9VOUQ/SxRIXK78YNJAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=kisgKUTv; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 5263320ee82c11eeb8927bc1f75efef4-20240322
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+Y7pDLy2z70oqV69Qv4vjpLNsRfJ8vJYpMU0Qdno7FQ=;
+	b=kisgKUTvK/x+z0xfSLT4vc2Lav4V7cXV7LJWvM4fKIbCBw98/SvOzZtypMQFYnklbRCVOO1XoAEujGO3MvnHHQt2GZiU9o6XZTcaCwmVTHNSLF0yMQTkl9+SqSkyGuyLThkzUDtySLSoI3J/1nrGoHILdBkz33nYk9SsZr28Vk0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:a3099fdc-677c-4425-aa1c-d9558720ae5e,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:06203400-c26b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 5263320ee82c11eeb8927bc1f75efef4-20240322
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 943085202; Fri, 22 Mar 2024 17:12:35 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 22 Mar 2024 17:12:34 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 22 Mar 2024 17:12:34 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v5 04/14] drm/mediatek: Rename "mtk_drm_gem" to "mtk_gem"
 Date: Fri, 22 Mar 2024 17:12:22 +0800
-Message-ID: <000001da7c39$0c8eb4b0$25ac1e10$@net-swift.com>
+Message-ID: <20240322091232.26387-5-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240322091232.26387-1-shawn.sung@mediatek.com>
+References: <20240322091232.26387-1-shawn.sung@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFwLs5rgYGClTpBePjvbYMXpqMxXgKXsSFcAjPmTUsCO1Kfl7Hf3JRw
-Content-Language: zh-cn
-X-QQ-SENDSIZE: 520
-Feedback-ID: Yeas:net-swift.com:qybglogicsvrsz:qybglogicsvrsz3a-1
+Content-Type: text/plain
+X-MTK: N
 
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-> -----Original Message-----
-> From: Jiri Pirko <jiri@resnulli.us>
-> Sent: 2024=E5=B9=B43=E6=9C=8822=E6=97=A5 17:02
-> To: duanqiangwen@net-swift.com
-> Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
-> mengyuanlou@net-swift.com; davem@davemloft.net;
-> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
-> maciej.fijalkowski@intel.com; andrew@lunn.ch;
-> wangxiongfeng2@huawei.com; linux-kernel@vger.kernel.org;
-> michal.kubiak@intel.com
-> Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match =
-clkdev
->=20
-> Fri, Mar 22, 2024 at 09:20:04AM CET, duanqiangwen@net-swift.com wrote:
-> >
-> >-----Original Message-----
-> >From: Jiri Pirko <jiri@resnulli.us>
-> >Sent: 2024=E5=B9=B43=E6=9C=8822=E6=97=A5 16:12
-> >To: Duanqiang Wen <duanqiangwen@net-swift.com>
-> >Cc: netdev@vger.kernel.org; jiawenwu@trustnetic.com;
-> >mengyuanlou@net-swift.com; davem@davemloft.net;
-> edumazet@google.com;
-> >kuba@kernel.org; pabeni@redhat.com; maciej.fijalkowski@intel.com;
-> >andrew@lunn.ch; wangxiongfeng2@huawei.com;
-> >linux-kernel@vger.kernel.org; michal.kubiak@intel.com
-> >Subject: Re: [PATCH net v5] net: txgbe: fix i2c dev name cannot match
-> >clkdev
-> >
-> >Fri, Mar 22, 2024 at 09:04:16AM CET, duanqiangwen@net-swift.com =
-wrote:
-> >>txgbe clkdev shortened clk_name, so i2c_dev info_name also need to
-> >>shorten. Otherwise, i2c_dev cannot initialize clock.
-> >>
-> >>Change log:
-> >>v4-v5: address comments:
-> >>	Jiri Pirko:
-> >>	Well, since it is used in txgbe_phy.c, it should be probably
-> >>	rather defined locally in txgbe_phy.c.
-> >
-> >Did you read Florian's comment? Please do.
-> >
-> >pw-bot: cr
-> >--------
-> >I replied to Florian:
-> >" I want to shorten "i2c_desginware" to "i2c_dw" in txgbe driver, so
-> >other drivers which use "i2c_designware" need another patch to use a
-> >define. "
-> >
-> >Sorry, this email forgot to cc the mailing list.
->=20
-> Could you please use some sane email client that properly prefixes the
-> original text by ">"?
+Rename all "mtk_drm_gem" to "mtk_gem":
+- To align the naming rule
+- To reduce the code size
 
-I'm sorry, and I have  set up the right email client settings now.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+---
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c   |  8 +--
+ drivers/gpu/drm/mediatek/mtk_drm_gem.c   | 63 ++++++++++++------------
+ drivers/gpu/drm/mediatek/mtk_drm_gem.h   | 23 +++++----
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c |  2 +-
+ 4 files changed, 47 insertions(+), 49 deletions(-)
 
-> >
-> >>v3->v4: address comments:
-> >>	Jakub Kicinski:
-> >>	No empty lines between Fixes and Signed-off... please.
-> >>v2->v3: address comments:
-> >>	Jiawen Wu:
-> >>	Please add the define in txgbe_type.h
-> >>
-> >>Fixes: e30cef001da2 ("net: txgbe: fix clk_name exceed MAX_DEV_ID
-> >>limits")
-> >>Signed-off-by: Duanqiang Wen <duanqiangwen@net-swift.com>
-> >>---
-> >> drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c | 8 +++++---
-> >> 1 file changed, 5 insertions(+), 3 deletions(-)
-> >>
-> >>diff --git a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >>b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >>index 5b5d5e4310d1..2fa511227eac 100644
-> >>--- a/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >>+++ b/drivers/net/ethernet/wangxun/txgbe/txgbe_phy.c
-> >>@@ -20,6 +20,8 @@
-> >> #include "txgbe_phy.h"
-> >> #include "txgbe_hw.h"
-> >>
-> >>+#define TXGBE_I2C_CLK_DEV_NAME "i2c_dw"
-> >>+
-> >> static int txgbe_swnodes_register(struct txgbe *txgbe)  {
-> >> 	struct txgbe_nodes *nodes =3D &txgbe->nodes; @@ -571,8 +573,8
-> @@
-> >static
-> >>int txgbe_clock_register(struct txgbe *txgbe)
-> >> 	char clk_name[32];
-> >> 	struct clk *clk;
-> >>
-> >>-	snprintf(clk_name, sizeof(clk_name), "i2c_dw.%d",
-> >>-		 pci_dev_id(pdev));
-> >>+	snprintf(clk_name, sizeof(clk_name), "%s.%d",
-> >>+		 TXGBE_I2C_CLK_DEV_NAME, pci_dev_id(pdev));
-> >>
-> >> 	clk =3D clk_register_fixed_rate(NULL, clk_name, NULL, 0, =
-156250000);
-> >> 	if (IS_ERR(clk))
-> >>@@ -634,7 +636,7 @@ static int txgbe_i2c_register(struct txgbe =
-*txgbe)
-> >>
-> >> 	info.parent =3D &pdev->dev;
-> >> 	info.fwnode =3D software_node_fwnode(txgbe-
-> >nodes.group[SWNODE_I2C]);
-> >>-	info.name =3D "i2c_designware";
-> >>+	info.name =3D TXGBE_I2C_CLK_DEV_NAME;
-> >> 	info.id =3D pci_dev_id(pdev);
-> >>
-> >> 	info.res =3D &DEFINE_RES_IRQ(pdev->irq);
-> >>--
-> >>2.27.0
-> >>
-> >>
-> >
-> >
->=20
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index c46773569b3c9..81e8aa65abd6d 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -576,8 +576,8 @@ DEFINE_DRM_GEM_FOPS(mtk_drm_fops);
+  * We need to override this because the device used to import the memory is
+  * not dev->dev, as drm_gem_prime_import() expects.
+  */
+-static struct drm_gem_object *mtk_drm_gem_prime_import(struct drm_device *dev,
+-						       struct dma_buf *dma_buf)
++static struct drm_gem_object *mtk_gem_prime_import(struct drm_device *dev,
++						   struct dma_buf *dma_buf)
+ {
+ 	struct mtk_drm_private *private = dev->dev_private;
+ 
+@@ -587,9 +587,9 @@ static struct drm_gem_object *mtk_drm_gem_prime_import(struct drm_device *dev,
+ static const struct drm_driver mtk_drm_driver = {
+ 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
+ 
+-	.dumb_create = mtk_drm_gem_dumb_create,
++	.dumb_create = mtk_gem_dumb_create,
+ 
+-	.gem_prime_import = mtk_drm_gem_prime_import,
++	.gem_prime_import = mtk_gem_prime_import,
+ 	.gem_prime_import_sg_table = mtk_gem_prime_import_sg_table,
+ 	.fops = &mtk_drm_fops,
+ 
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_gem.c b/drivers/gpu/drm/mediatek/mtk_drm_gem.c
+index 4f2e3feabc0f8..445fd8a8b8988 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_gem.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_gem.c
+@@ -14,26 +14,26 @@
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_gem.h"
+ 
+-static int mtk_drm_gem_object_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
++static int mtk_gem_object_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
+ 
+ static const struct vm_operations_struct vm_ops = {
+ 	.open = drm_gem_vm_open,
+ 	.close = drm_gem_vm_close,
+ };
+ 
+-static const struct drm_gem_object_funcs mtk_drm_gem_object_funcs = {
+-	.free = mtk_drm_gem_free_object,
++static const struct drm_gem_object_funcs mtk_gem_object_funcs = {
++	.free = mtk_gem_free_object,
+ 	.get_sg_table = mtk_gem_prime_get_sg_table,
+-	.vmap = mtk_drm_gem_prime_vmap,
+-	.vunmap = mtk_drm_gem_prime_vunmap,
+-	.mmap = mtk_drm_gem_object_mmap,
++	.vmap = mtk_gem_prime_vmap,
++	.vunmap = mtk_gem_prime_vunmap,
++	.mmap = mtk_gem_object_mmap,
+ 	.vm_ops = &vm_ops,
+ };
+ 
+-static struct mtk_drm_gem_obj *mtk_drm_gem_init(struct drm_device *dev,
+-						unsigned long size)
++static struct mtk_gem_obj *mtk_gem_init(struct drm_device *dev,
++					unsigned long size)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem_obj;
++	struct mtk_gem_obj *mtk_gem_obj;
+ 	int ret;
+ 
+ 	size = round_up(size, PAGE_SIZE);
+@@ -42,7 +42,7 @@ static struct mtk_drm_gem_obj *mtk_drm_gem_init(struct drm_device *dev,
+ 	if (!mtk_gem_obj)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	mtk_gem_obj->base.funcs = &mtk_drm_gem_object_funcs;
++	mtk_gem_obj->base.funcs = &mtk_gem_object_funcs;
+ 
+ 	ret = drm_gem_object_init(dev, &mtk_gem_obj->base, size);
+ 	if (ret < 0) {
+@@ -54,15 +54,15 @@ static struct mtk_drm_gem_obj *mtk_drm_gem_init(struct drm_device *dev,
+ 	return mtk_gem_obj;
+ }
+ 
+-struct mtk_drm_gem_obj *mtk_drm_gem_create(struct drm_device *dev,
+-					   size_t size, bool alloc_kmap)
++struct mtk_gem_obj *mtk_gem_create(struct drm_device *dev,
++				   size_t size, bool alloc_kmap)
+ {
+ 	struct mtk_drm_private *priv = dev->dev_private;
+-	struct mtk_drm_gem_obj *mtk_gem;
++	struct mtk_gem_obj *mtk_gem;
+ 	struct drm_gem_object *obj;
+ 	int ret;
+ 
+-	mtk_gem = mtk_drm_gem_init(dev, size);
++	mtk_gem = mtk_gem_init(dev, size);
+ 	if (IS_ERR(mtk_gem))
+ 		return ERR_CAST(mtk_gem);
+ 
+@@ -97,9 +97,9 @@ struct mtk_drm_gem_obj *mtk_drm_gem_create(struct drm_device *dev,
+ 	return ERR_PTR(ret);
+ }
+ 
+-void mtk_drm_gem_free_object(struct drm_gem_object *obj)
++void mtk_gem_free_object(struct drm_gem_object *obj)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
++	struct mtk_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
+ 	struct mtk_drm_private *priv = obj->dev->dev_private;
+ 
+ 	if (mtk_gem->sg)
+@@ -114,10 +114,10 @@ void mtk_drm_gem_free_object(struct drm_gem_object *obj)
+ 	kfree(mtk_gem);
+ }
+ 
+-int mtk_drm_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
+-			    struct drm_mode_create_dumb *args)
++int mtk_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
++			struct drm_mode_create_dumb *args)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem;
++	struct mtk_gem_obj *mtk_gem;
+ 	int ret;
+ 
+ 	args->pitch = DIV_ROUND_UP(args->width * args->bpp, 8);
+@@ -130,7 +130,7 @@ int mtk_drm_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
+ 	args->size = args->pitch;
+ 	args->size *= args->height;
+ 
+-	mtk_gem = mtk_drm_gem_create(dev, args->size, false);
++	mtk_gem = mtk_gem_create(dev, args->size, false);
+ 	if (IS_ERR(mtk_gem))
+ 		return PTR_ERR(mtk_gem);
+ 
+@@ -148,16 +148,16 @@ int mtk_drm_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
+ 	return 0;
+ 
+ err_handle_create:
+-	mtk_drm_gem_free_object(&mtk_gem->base);
++	mtk_gem_free_object(&mtk_gem->base);
+ 	return ret;
+ }
+ 
+-static int mtk_drm_gem_object_mmap(struct drm_gem_object *obj,
+-				   struct vm_area_struct *vma)
++static int mtk_gem_object_mmap(struct drm_gem_object *obj,
++			       struct vm_area_struct *vma)
+ 
+ {
+ 	int ret;
+-	struct mtk_drm_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
++	struct mtk_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
+ 	struct mtk_drm_private *priv = obj->dev->dev_private;
+ 
+ 	/*
+@@ -188,7 +188,7 @@ static int mtk_drm_gem_object_mmap(struct drm_gem_object *obj,
+  */
+ struct sg_table *mtk_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
++	struct mtk_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
+ 	struct mtk_drm_private *priv = obj->dev->dev_private;
+ 	struct sg_table *sgt;
+ 	int ret;
+@@ -212,7 +212,7 @@ struct sg_table *mtk_gem_prime_get_sg_table(struct drm_gem_object *obj)
+ struct drm_gem_object *mtk_gem_prime_import_sg_table(struct drm_device *dev,
+ 			struct dma_buf_attachment *attach, struct sg_table *sg)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem;
++	struct mtk_gem_obj *mtk_gem;
+ 
+ 	/* check if the entries in the sg_table are contiguous */
+ 	if (drm_prime_get_contiguous_size(sg) < attach->dmabuf->size) {
+@@ -220,7 +220,7 @@ struct drm_gem_object *mtk_gem_prime_import_sg_table(struct drm_device *dev,
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	mtk_gem = mtk_drm_gem_init(dev, attach->dmabuf->size);
++	mtk_gem = mtk_gem_init(dev, attach->dmabuf->size);
+ 	if (IS_ERR(mtk_gem))
+ 		return ERR_CAST(mtk_gem);
+ 
+@@ -230,9 +230,9 @@ struct drm_gem_object *mtk_gem_prime_import_sg_table(struct drm_device *dev,
+ 	return &mtk_gem->base;
+ }
+ 
+-int mtk_drm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
++int mtk_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
++	struct mtk_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
+ 	struct sg_table *sgt = NULL;
+ 	unsigned int npages;
+ 
+@@ -270,10 +270,9 @@ int mtk_drm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
+ 	return 0;
+ }
+ 
+-void mtk_drm_gem_prime_vunmap(struct drm_gem_object *obj,
+-			      struct iosys_map *map)
++void mtk_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map)
+ {
+-	struct mtk_drm_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
++	struct mtk_gem_obj *mtk_gem = to_mtk_gem_obj(obj);
+ 	void *vaddr = map->vaddr;
+ 
+ 	if (!mtk_gem->pages)
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_gem.h b/drivers/gpu/drm/mediatek/mtk_drm_gem.h
+index 78f23b07a02e2..66e5f154f6980 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_gem.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_gem.h
+@@ -3,8 +3,8 @@
+  * Copyright (c) 2015 MediaTek Inc.
+  */
+ 
+-#ifndef _MTK_DRM_GEM_H_
+-#define _MTK_DRM_GEM_H_
++#ifndef _MTK_GEM_H_
++#define _MTK_GEM_H_
+ 
+ #include <drm/drm_gem.h>
+ 
+@@ -22,7 +22,7 @@
+  * P.S. this object would be transferred to user as kms_bo.handle so
+  *	user can access the buffer through kms_bo.handle.
+  */
+-struct mtk_drm_gem_obj {
++struct mtk_gem_obj {
+ 	struct drm_gem_object	base;
+ 	void			*cookie;
+ 	void			*kvaddr;
+@@ -32,18 +32,17 @@ struct mtk_drm_gem_obj {
+ 	struct page		**pages;
+ };
+ 
+-#define to_mtk_gem_obj(x)	container_of(x, struct mtk_drm_gem_obj, base)
++#define to_mtk_gem_obj(x) container_of(x, struct mtk_gem_obj, base)
+ 
+-void mtk_drm_gem_free_object(struct drm_gem_object *gem);
+-struct mtk_drm_gem_obj *mtk_drm_gem_create(struct drm_device *dev, size_t size,
+-					   bool alloc_kmap);
+-int mtk_drm_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
+-			    struct drm_mode_create_dumb *args);
++void mtk_gem_free_object(struct drm_gem_object *gem);
++struct mtk_gem_obj *mtk_gem_create(struct drm_device *dev, size_t size,
++				   bool alloc_kmap);
++int mtk_gem_dumb_create(struct drm_file *file_priv, struct drm_device *dev,
++			struct drm_mode_create_dumb *args);
+ struct sg_table *mtk_gem_prime_get_sg_table(struct drm_gem_object *obj);
+ struct drm_gem_object *mtk_gem_prime_import_sg_table(struct drm_device *dev,
+ 			struct dma_buf_attachment *attach, struct sg_table *sg);
+-int mtk_drm_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map);
+-void mtk_drm_gem_prime_vunmap(struct drm_gem_object *obj,
+-			      struct iosys_map *map);
++int mtk_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map);
++void mtk_gem_prime_vunmap(struct drm_gem_object *obj, struct iosys_map *map);
+ 
+ #endif
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index 43137c46fc148..db63a32c407e3 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -135,7 +135,7 @@ static void mtk_plane_update_new_state(struct drm_plane_state *new_state,
+ {
+ 	struct drm_framebuffer *fb = new_state->fb;
+ 	struct drm_gem_object *gem;
+-	struct mtk_drm_gem_obj *mtk_gem;
++	struct mtk_gem_obj *mtk_gem;
+ 	unsigned int pitch, format;
+ 	u64 modifier;
+ 	dma_addr_t addr;
+-- 
+2.18.0
 
 
