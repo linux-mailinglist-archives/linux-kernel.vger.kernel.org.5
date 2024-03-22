@@ -1,276 +1,182 @@
-Return-Path: <linux-kernel+bounces-111321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 198F6886AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:45:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B14886AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:46:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F201F22A62
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3473B226D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179C13D3A7;
-	Fri, 22 Mar 2024 10:45:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4839B224FA;
-	Fri, 22 Mar 2024 10:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711104337; cv=none; b=bIQyO7eChxGVvLZ66b0jst1gsix5egSJwl0QymqF0b8WmMq6cGDpDQeeZtsps5WCRI91VWAf2AmRbxKQww/ZU/uS+/hQviDfE0vEGI88mQyII1GG/h0ZmqCvSZushOGE35ZTvBGPMDn117/0HzHBoubjXiOl+LUb0sZsEcRurZg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711104337; c=relaxed/simple;
-	bh=/flLk3EG/+cgDBKscBEg0JxsnQXiAp3C4TWd9Upm2vI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=guKpmNxUBKhIy+mpJC5vKdmQa5/lH7RhUQISw0oeLcKTW3Hqzj6xxF7fT46nbZVJ2myBUkmKovGTSrZ1o02ohxu8b5NU68/bWX/9NNS0FXalcBtwEIumtu2NYxHlE77R7dAfu4Mj5h104bLjMvuFFJMe1r+DCuKU9AwwRTUrvsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF7D41007;
-	Fri, 22 Mar 2024 03:46:08 -0700 (PDT)
-Received: from [10.57.71.57] (unknown [10.57.71.57])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B4BE3F64C;
-	Fri, 22 Mar 2024 03:45:32 -0700 (PDT)
-Message-ID: <a576209f-ffda-4891-82e9-21f153b57a26@arm.com>
-Date: Fri, 22 Mar 2024 10:45:30 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D243D0D0;
+	Fri, 22 Mar 2024 10:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0WG0kGRW"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2E7224FA;
+	Fri, 22 Mar 2024 10:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711104347; cv=fail; b=V6jIl/BMa1tJv82hBzQU8Q646mSQu59Jltkuj1obOYQ0r9dsWr14IaDwhNNd2p5GI3IWmd+N0Jn8cassMDDjVDtMiNijOo6sRXMK1q5bHGPPWLCITdK4hoMi+C8LxzOMzyYyZelzlvIjqqJnH0J3iHbgYjAwQrfBnb86Nku/LsY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711104347; c=relaxed/simple;
+	bh=6yH3Jkfl/fV17Lu3XVz2bnGXs8NPodsMJhiwzodTSwk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QjtFzOnNcGnyUUS1aRs7YpdjsRGpYw28PtiCJU/3tmOobCr19ctwIPSMB9TBJxAzv80/2KHber8QwMDdTb3OJnZy/4sPTAxZ7XmiJepd5sF0gXTxMeGRD80PRjweyjqYMvv7VfNK8KLFkPwaEuQ2VcrllEQSO5wq+Jl+IiufJow=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0WG0kGRW; arc=fail smtp.client-ip=40.107.237.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=REQzzy0IOP9+wpWJaY+iuGeD9rzd9ZM+T/Fry8l+qh5sMTJ+uqQtS3jxIXMVS/3OdBU0Yt0boA6lK7X+K/h3Jo5eeTBDydhPVkLe4K35+JUA5s9ISHYOYSkG7ElCPvHZOkYQhhahr9vNHHn7DWSJTlWxp693bkOk3LyL44PaWw7rB3GmUvJ2aUhQ/d4GkrE5Uw3p+dBL+MLDw5ZbRCekUxkWFeYat5qDyr6ARzUMerAu2xznTj+CEaPUvDpu/uG0RbNhZXPsrm0xWHLKSMg7lKta4n/CHkX9RcPsFXs9DmKDpLxx0J9qr7gE608jXRalhO+nwbr1p54zyghlIcSaKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NJ40fTpi1X3XyhbHNfncF3nrCNL+5Ge4jqthzb7jY/c=;
+ b=hKHoatiBjt9KK7p0eZ5xlU2iVRHnMle3cGwHto/9CkXqPkiAtgC/hpppr69T2M9Ee/7yTU6asNUWWGCefzMhkbiQlQzWvezm/hA3O4DLMAMj3sAbGx3PkBbagsAHpGgHfb2AL709UOuBnrMQXmzppk7i7FRbKdwKbqod0l646Wqi2/99cr8mI1qtYSahLjvYUdxeQEi4ddZDkSmOxcWrw+0+l9ipGR+pbfKnk1o26vNlXBCZU8ZnhBo4MAzq6P/JSf0KU/mlGu9Y5/JR6EAvxM6uWKWvkeO+8S9Y/AuIeYMzAgEln7D6810dWeqyxpEWYbn5+lO/E8XhiOAB5fTnuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NJ40fTpi1X3XyhbHNfncF3nrCNL+5Ge4jqthzb7jY/c=;
+ b=0WG0kGRWLfJyOMrbTqNfYCErbVgBhoXAEoTRNFNH7Px0WrsxFdtMmKxxn20DVAEUTiBfTzwx8yi71arIiaq1dAsv4kZg3g75Ku5XRhu/y60BL/VDGG4Sdq2Clb5ibROckkMhpDFIC2Gn2fGmLHd7nGojb7G+QTaP0kK/0pzC2YA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by DS0PR12MB6656.namprd12.prod.outlook.com (2603:10b6:8:d2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.34; Fri, 22 Mar
+ 2024 10:45:43 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::57a8:313:6bf6:ccb3]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::57a8:313:6bf6:ccb3%3]) with mapi id 15.20.7409.022; Fri, 22 Mar 2024
+ 10:45:43 +0000
+Message-ID: <3a057c60-4b4c-431a-85c3-1f15b757b16b@amd.com>
+Date: Fri, 22 Mar 2024 16:15:32 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [RESEND] ASoC: amd: simplify soundwire dependencies for
+Content-Language: en-US
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, venkataprasad.potturu@amd.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, arnd@arndb.de,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ Lucas Tanure <lucas.tanure@collabora.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20240322070353.2367300-1-Vijendar.Mukunda@amd.com>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+In-Reply-To: <20240322070353.2367300-1-Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0087.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::12) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 2/2] cpufreq: scmi: Register for limit change
- notifications
-Content-Language: en-US
-To: Sibi Sankar <quic_sibis@quicinc.com>
-Cc: sudeep.holla@arm.com, Cristian Marussi <cristian.marussi@arm.com>,
- linux-arm-kernel@lists.infradead.org, pierre.gondois@arm.com,
- dietmar.eggemann@arm.com, morten.rasmussen@arm.com, viresh.kumar@linaro.org,
- rafael@kernel.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
-References: <20240227181632.659133-1-quic_sibis@quicinc.com>
- <20240227181632.659133-3-quic_sibis@quicinc.com>
- <f8bfc666-c216-44d5-a63b-99f04ff3b8ef@arm.com>
- <2608b2d8-f3b0-b4f5-f8e4-1f2242043ded@quicinc.com>
- <64c6a1bc-92f2-4f44-ab10-cbd2473746f3@arm.com>
- <18c249b2-ce8c-435b-8d65-a1770a1f294e@arm.com> <ZeBqW04f8V4dHphn@pluto>
- <7c82b316-89d9-470d-b46d-f86e81e2add3@arm.com> <ZeB0iCr9GpfUiOEg@pluto>
- <66ca73cc-8bdd-453a-951c-5e0166340edd@arm.com>
- <08018d07-79cf-cebd-aba5-214afbc5001d@quicinc.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <08018d07-79cf-cebd-aba5-214afbc5001d@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4123:EE_|DS0PR12MB6656:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f89f3c3-c350-4548-794b-08dc4a5d38dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qVeTZdj0y3AlUCGFHpJ0lnhXXd2YOnV7NsH9bLCP6MWu8pX2RyFQ1rdCQiIM597jbFd3XFxdj0Q1UOKI91I4vmy7T8gLBmz+M2wXQLUsIOWDBv871e6pa5eq+WZ+4Lb3T6Cyy9Q5yMYPEwUxFIJ3YRH6GI7MvAs32owDeeHA1cjBfp3Za2+ViaZ2+DKOWsnKNx12pZi1iSwiXlMxYCL30ez/YuwrIclo+FK9tpdAybIVSjhBKIcq66i33RqVHiKVMaB/2uIOcapBiCiOBd+Cjxj3SoZXdrbzmaX4Mdxk6SUe9K35/pC9253g4ptpsHnP5SdRGkdpATd60agn4gl8f5KMcoqM0cpvO0uju95vyWwqvY7ZgokIp8RtTfMq8RychDy0oZ6rbeBOc5Fi453PpPKG+F0cdMj5+OCiwaHPZOEQtteEFADKr+PJ4rp5PT6uIkfdYBSZlXpUL7MmcFqEy9ikBZ/yvIHkTqkXkxkRl2Tav+5XhRh/EiHSFkEwoyQKQUyH/xFOzqCBtalWkcRLTIR2xAcSIXiF3WXqH7GhFY+Jw+9cLjRCZl3teVMSew6fyT2nmjXXP2ZYFRfdSjkapHFbZtn004o6hDUYfVLWy1NwtmjvMvdGotMmD6bXluXED8/5IAzWNRhV1LN0bqXpA42LzHd31Ra1rHpeXo98bcM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b09OQmYyWkVXeHhWL2kzRytuMTBkMkVpVDdyLzV1R3R6ZlhzWERpdllZRGNm?=
+ =?utf-8?B?aTRNa0FvMU9YTC9tMlZRM3dILzlZVVoxcFNJdWFDQ2ZhU2h3WG1JTmZnOTcv?=
+ =?utf-8?B?cGZGVVo5bXJnSVRiSzlIcXdaV0haSWJRVWM3Y1hnRlhYYktSOHpyRUNYbUl5?=
+ =?utf-8?B?QXNFVEp5MDVBQm9IdTc5VEx0WDc0RFZGZXA3QjE4RS9zSzFOL05tb1hzelMw?=
+ =?utf-8?B?TVZOV1RRbmRRVHhmNGpZZTA1L1k0aWx6dUZNa0w2SlphRlhGLzE5WGVUcGx6?=
+ =?utf-8?B?UVlvSFhkN1d5bERwdTNkeWVZQzNwdU81Z2ZQUmhudEtsRzQwS3NLWHI3endv?=
+ =?utf-8?B?LzlWaEViT2NQdmYxeGFnUTlHNjRlVSt2eDRGOHg4VGo2UEl0TlRkdVp3eGpS?=
+ =?utf-8?B?WW9kZ0t5bUZVcy8xdGRHTTF6Zmp6WHRYenVtRzJ2VjJDRUZ4UTJaM0E2MGp0?=
+ =?utf-8?B?Y1NwV04vdEFwcm9rSlZ1UXMwaGNCbU1NbUd3OEpuWklpSXFEa0VyaHREenlP?=
+ =?utf-8?B?b0hrckw3UFpWZzU2M3JpZEUybEFGczBhTWhWajVCY21UNU5FRHYzOGtycnVi?=
+ =?utf-8?B?cmcxdWdHSENMWVhjc1VkZDZUR2UxQzc5WjQ3MUZmVm9DdTh6RTBuQ1l5ZmZP?=
+ =?utf-8?B?QjdwaTlyQ0ZjVXN0TVlhYUt6WnM2WVRNNjBRNjgxeHlRQlpkNG94ZEpDN2Zr?=
+ =?utf-8?B?Z05VNm85OWVXMWl0Q3JrdktVKzZYR1hHQk1JUDcxUzdvV1pHczJmUFhqRlo1?=
+ =?utf-8?B?ZU5zVUE0Mlk5dWlYSWJmQkVURXBkTkdSL2RMWTY0UDFzNXpZWFNKN1FJS29L?=
+ =?utf-8?B?VVQvek5QTTh3K3QxZmhLWWdQNWJmYU5xOGlnMHFKUmxMV2JVZ1NteGNwdWZJ?=
+ =?utf-8?B?Q05UZCtONVFNVFlFZEhqYmlvemVxWDUxVVpQWEVXYUc0MDRiU3ZGa1FIeU41?=
+ =?utf-8?B?RmIza051M2F5UlNXVnNRaStLZEg1KzNRMEt5ZVdUZ3ozbnRaaUExN1ZqcFU1?=
+ =?utf-8?B?WGNuWFZNVWZqT3ZKUEI0bklPYTBKR2l0ZndGUnZDSDFTRHNTa3B0M2U3WVBq?=
+ =?utf-8?B?dkhLQ1VvdlRLUVNLNGMwaDQ3a2VaVVRRd1lyUXV5dTdTSVhKdWF2Tm4rR3dG?=
+ =?utf-8?B?eTdTM1JXS28wUXZvVVdSb3hDUVR5T2hsTmlpL0tZLzJvRlYvQXd4QktDYTFH?=
+ =?utf-8?B?aldqU0JPUUlEZUVuOTNzV0tsKzZlSFIwaUd6VnN2TWVaRHlmZXBIY2phVXpW?=
+ =?utf-8?B?aXp5b2RHZjQzUlcxZDZpTDE0bjBxTWNXbXorQ0xUYSs2Z0tYTDlKUWJFdFN0?=
+ =?utf-8?B?UWlBQW1HQWJvMTA0SXNDMk9yTEZ2Y3FOVlNNdkRjVVNEaXJ0U1hxTS9MOVlN?=
+ =?utf-8?B?TUFwbG82Y012UnNETSt0bDN6c2krTHhPRjdiMXh1YVVYWTZSZnhzK0I2VFlv?=
+ =?utf-8?B?OFRPNk1idWgzc0hyeDREUXNTQTN5dlVLRmdFSkt5REFsMXRnY085K0pNRm9H?=
+ =?utf-8?B?bkNzc2d2aG1XUGlQOWYzU1h5R3VpbFVJM1Z4V0lndHljekV2enRzUG5rcWdC?=
+ =?utf-8?B?dUlUTXl6WnhTd2Uydk1iKzZYK1pRdUxmS2lMYmxrYk0yR1d4VUR2SXpweEJY?=
+ =?utf-8?B?RVlyTlgyS1VXczFUbzFPOEhaS0NsWHU2NnlWeW5sbnB5TDN4ZERKMG92MitW?=
+ =?utf-8?B?SnFYL1YreGo1eGZVZWNpSTBQc25uMFBKY1BlUXFHYjhQSUQ4MmpDWkxNVk1k?=
+ =?utf-8?B?dWNvaUdmaVNEMS8vaFRvYzZ1OWxVTkpaOFc5MHlSNzlFcnNTSEhOVkxaODdh?=
+ =?utf-8?B?R0JSeDE5U0NTZC9hTGM3dEpoTzY0VkxjSEtaYjJrc09DM0E5U0pPdXI5QkZD?=
+ =?utf-8?B?a1R2Vi9wQ2lmVDQ0YU1QNVpUZzE5WG1ZT0NCNDBmRjFEYXBhSkQvQVJpV2xH?=
+ =?utf-8?B?Vy82Sm1FRU9pWkRuYVJCVUE0cnR6MlFneEFBQzJsU29XN2Rqd1dRUUtBcEFU?=
+ =?utf-8?B?VUczUnB4bnhSZWM0VXY3YTJiUGg1VkJTdmQ0MjBoRHFMV2kydzZzQ2wrRlg1?=
+ =?utf-8?B?RkNDOXQrdklsUjQ5Yi9mc1dnTm5WanVxd0Z6dGMvSzE2MTdWKzRKSkRseit6?=
+ =?utf-8?Q?pdwbO5gDIDtTsGbSX5jWfV6aW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f89f3c3-c350-4548-794b-08dc4a5d38dc
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2024 10:45:43.0600
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3X4x7MyNxw3Eqj0ittyAg5fpc0ee9sr+HlBS0EMitsidPSav/KWQnt/Te7ykZ1+Nu8XEez9SYMc75aB2l8KwGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6656
 
-Hi Sibi,
+On 22/03/24 12:33, Vijendar Mukunda wrote:
+> The CONFIG_SOUNDWIRE_AMD is a user-visible option, it should be never
+> selected by another driver.
+> So replace the extra complexity with a normal Kconfig dependency in
+> SND_SOC_AMD_SOUNDWIRE.
+Please ignore this patch, as the commit title has not been posted
+completely.
+>
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  sound/soc/amd/Kconfig | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+> index fa74635cee08..3508f5a96b75 100644
+> --- a/sound/soc/amd/Kconfig
+> +++ b/sound/soc/amd/Kconfig
+> @@ -134,15 +134,14 @@ config SND_SOC_AMD_RPL_ACP6x
+>  
+>  config SND_SOC_AMD_SOUNDWIRE_LINK_BASELINE
+>  	tristate
+> -	select SOUNDWIRE_AMD if SND_SOC_AMD_SOUNDWIRE != n
+>  	select SND_AMD_SOUNDWIRE_ACPI if ACPI
+>  
+>  config SND_SOC_AMD_SOUNDWIRE
+>  	tristate "Support for SoundWire based AMD platforms"
+>  	default SND_SOC_AMD_SOUNDWIRE_LINK_BASELINE
+>  	depends on SND_SOC_AMD_SOUNDWIRE_LINK_BASELINE
+> -	depends on ACPI && SOUNDWIRE
+> -	depends on !(SOUNDWIRE=m && SND_SOC_AMD_SOUNDWIRE_LINK_BASELINE=y)
+> +	depends on ACPI
+> +	depends on SOUNDWIRE_AMD
+>  	help
+>  	  This adds support for SoundWire for AMD platforms.
+>  	  Say Y if you want to enable SoundWire links with SOF.
 
-On 3/1/24 05:31, Sibi Sankar wrote:
-> 
-> 
-> On 2/29/24 19:45, Lukasz Luba wrote:
->>
->>
->> On 2/29/24 12:11, Cristian Marussi wrote:
->>> On Thu, Feb 29, 2024 at 11:45:41AM +0000, Lukasz Luba wrote:
->>>>
->>>>
->>>> On 2/29/24 11:28, Cristian Marussi wrote:
->>>>> On Thu, Feb 29, 2024 at 10:22:39AM +0000, Lukasz Luba wrote:
->>>>>>
->>>>>>
->>>>>> On 2/29/24 09:59, Lukasz Luba wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2/28/24 17:00, Sibi Sankar wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2/28/24 18:54, Lukasz Luba wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 2/27/24 18:16, Sibi Sankar wrote:
->>>>>>>>>> Register for limit change notifications if supported and use
->>>>>>>>>> the throttled
->>>>>>>>>> frequency from the notification to apply HW pressure.
->>>>>>>>
->>>>>>>> Lukasz,
->>>>>>>>
->>>>>>>> Thanks for taking time to review the series!
->>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->>>>>>>>>> ---
->>>>>>>>>>
->>>>>>>>>> v3:
->>>>>>>>>> * Sanitize range_max received from the notifier. [Pierre]
->>>>>>>>>> * Update commit message.
->>>>>>>>>>
->>>>>>>>>> ï¿½ drivers/cpufreq/scmi-cpufreq.c | 29 
->>>>>>>>>> ++++++++++++++++++++++++++++-
->>>>>>>>>> ï¿½ 1 file changed, 28 insertions(+), 1 deletion(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/cpufreq/scmi-cpufreq.c
->>>>>>>>>> b/drivers/cpufreq/scmi-cpufreq.c
->>>>>>>>>> index 76a0ddbd9d24..78b87b72962d 100644
->>>>>>>>>> --- a/drivers/cpufreq/scmi-cpufreq.c
->>>>>>>>>> +++ b/drivers/cpufreq/scmi-cpufreq.c
->>>>>>>>>> @@ -25,9 +25,13 @@ struct scmi_data {
->>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int domain_id;
->>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ int nr_opp;
->>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ struct device *cpu_dev;
->>>>>>>>>> +ï¿½ï¿½ï¿½ struct cpufreq_policy *policy;
->>>>>>>>>> ï¿½ï¿½ï¿½ï¿½ï¿½ cpumask_var_t opp_shared_cpus;
->>>>>>>>>> +ï¿½ï¿½ï¿½ struct notifier_block limit_notify_nb;
->>>>>>>>>> ï¿½ };
->>>>>>>>>> +const struct scmi_handle *handle;
->>>>>>>
->>>>>>> I've missed this bit here.
->>>>>>
->>>>>> So for this change we actually have to ask Cristian or Sudeep
->>>>>> because I'm not sure if we have only one 'handle' instance
->>>>>> for all cpufreq devices.
->>>>>>
->>>>>> If we have different 'handle' we cannot move it to the
->>>>>> global single pointer.
->>>>>>
->>>>>> Sudeep, Cristian what do you think?
->>>>>
->>>>> I was just replying noticing this :D .... since SCMI drivers can be
->>>>> probed multiple times IF you defined multiple scmi top nodes in 
->>>>> your DT
->>>>> containing the same protocol nodes, they receive a distinct 
->>>>> sdev/handle/ph
->>>>> for each probe...so any attempt to globalize these wont work...BUT...
->>>>>
->>>>> ...this is a bit of a weird setup BUT it is not against the spec 
->>>>> and it can
->>>>> be used to parallelize more the SCMI accesses to disjont set of 
->>>>> resources
->>>>> within the same protocol (a long story here...) AND this type of 
->>>>> setup is
->>>>> something that it is already used by some other colleagues of Sibi 
->>>>> working
->>>>> on a different line of products (AFAIK)...
->>>>>
->>>>> So, for these reasons, usually, all the other SCMI drivers have 
->>>>> per-instance
->>>>> non-global references to handle/sdev/ph....
->>>>>
->>>>> ...having said that, thought, looking at the structure of CPUFReq
->>>>> drivers, I am not sure that they can stand such a similar setup
->>>>> where multiple instances of this same driver are probed
->>>>>
->>>>> .... indeed the existent *ph refs above is already global....so it 
->>>>> wont already
->>>>> work anyway in case of multiple instances now...
->>>>>
->>>>> ...and if I look at how CPUFreq expects the signature of 
->>>>> scmi_cpufreq_get_rate()
->>>>> to be annd how it is implemented now using the global *ph 
->>>>> reference, it is
->>>>> clearly already not working cleanly on a multi-instance setup...
->>>>>
->>>>> ...now...I can imagine how to (maybe) fix the above removing the 
->>>>> globals and
->>>>> fixing this, BUT the question, more generally, is CPUFreq supposed 
->>>>> to work at all in
->>>>> this multi-probed mode of operation ?
->>>>> Does it even make sense to be able to support this in CPUFREQ ?
->>>>>
->>>>> (as an example in cpufreq,c there is static global cpufreq_driver
->>>>>    pointing to the arch-specific configured driver BUT that also holds
->>>>>    some .driver_data AND that cleraly wont be instance specific if you
->>>>>    probe multiple times and register with CPUFreq multiple times...)
->>>>>
->>>>>    More questions than answers here :D
->>>>>
->>>>
->>>> Thanks Cristian for instant response. Yes, indeed now we have more
->>>> questions :) (which is good). But that's good description of the
->>>> situation.
->>>>
->>>> So lets consider a few option what we could do now:
->>>> 1. Let Sibi add another global state the 'handle' but add
->>>>     a BUG_ON() or WARN_ON() in the probe path if the next
->>>>     'handle' instance is different than already set in global.
->>>>     This would simply mean that we don't support (yet)
->>>>     such configuration in a platform. As you said, we
->>>>     already have the *ph global, so maybe such platforms
->>>>     with multiple instances for this particular cpufreq and
->>>>     performance protocol don't exist yet.
->>>
->>> Yes this is the quickst way (and a WARN_ON() is better I'd say) but 
->>> there
->>> are similar issues of "unicity" currently already with another vendor 
->>> SCMI
->>> drivers and custom protocol currently under review, so I was thinking to
->>> add a new common mechanism in SCMI to handle this ... not thought about
->>> this really in depth and I want to chat with Sudeep about this...
->>>
->>>> 2. Ask Sibi to wait with this change, till we refactor the
->>>>     exiting driver such that it could support easily those
->>>>     multiple instances. Then pick up this patch set.
->>>>     Although, we would also like to have those notifications from our
->>>>     Juno SCP reference FW, so the feature is useful.
->>>> 3. Ask Sibi to refactor his patch to somehow get the 'handle'
->>>>     in different way, using exiting code and not introduce this global.
->>>>
->>>
->>>> IHMO we could do this in steps: 1. and then 2. When
->>>> we create some mock platform to test this refactoring we can
->>>> start cleaning it.
-> 
-> I should be able to volunteer a platform to test against when
-> we have things ready.
-> 
->>>>
->>>
->>> Both of these options really beg an answer to my original previous q
->>> question...if we somehow enable this multi-probe support in the
->>> scmi-cpufreq.c driver by avoiding glbals refs, does this work at all in
->>> the context of CPUFreq ?
->>
->> I don't know yet.
->>
->>>
->>> ...or it is just that CPUFreq cannot handle such a configuration (and
->>> maybe dont want to) and so the only solution here is just 1. at first 
->>> and
->>> then a common refined mechanism (as mentioned above) to ensure this 
->>> "unicity"
->>> of the probes for some drivers ?
->>
->> This sounds reasonable.
->>
->>>
->>> I'm not familiar enough to grasp if this "multi-probed" mode of 
->>> operation is
->>> allowed/supported by CPUFreq and, more important, if it makes any sense
->>> at all to be a supported mode...
->>>
->>
->> OK, let me check some stuff in the code and think for a while on that.
->> Thanks Cristian!
->>
->> Sibi, please give me a few days. In the meantime you can continue
->> on the 'boost' patch set probably.
-> 
-> sure, thanks. I've plenty things to send out so no hurry ;)
-> 
-> -Sibi
-> 
-
-I've went through the cpufreq. It's quite complicated how those
-policies, cpus, drivers are setup. Although, IHMO we should be
-safe with you current proposal in this patch.
-
-As we discussed with Cristian, we can take that approach further.
-
-Therefore, you can add:
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Regards,
-Lukasz
 
