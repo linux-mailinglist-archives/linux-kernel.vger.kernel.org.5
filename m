@@ -1,438 +1,206 @@
-Return-Path: <linux-kernel+bounces-111571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5080B886DED
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:58:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0F12886DF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7445E1C21517
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:58:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2CFFB220A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FBBE46449;
-	Fri, 22 Mar 2024 13:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2C5546522;
+	Fri, 22 Mar 2024 14:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mPCXHgW1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aEFVnYEn"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1BF45BFC;
-	Fri, 22 Mar 2024 13:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12F920DD2;
+	Fri, 22 Mar 2024 14:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711115883; cv=none; b=P2IMFvYXsAOWmZVLh1ZfkQL8bNu7mSd/oaUNFUdAp0HTlj2q7jD7b2zs8FBbuAXLZRXw0OwlNgcBKbfUg+4Hk9mC21ufkEZPnV66npiTTX/VrmvmuQPLKuOe1BRRUGQUwAULJeWXhWI+IQHEipbd5CsKSgH7sE5ierXRf4oG208=
+	t=1711116237; cv=none; b=PM7t0QL1d01WVbUCNNEsvtrmCv9HQCxsRSPHOAoF7r69fat3OcjbrMPnE51CEWNDqlZdUuICMAYVTC68MpKpVZqqFlMg9RaNBLwMJ4bEgO/29Cr1iqxcCqlSvwA+yryIQ0KKv82JsepHkR/r7dqunGSp8kEvMjMWrz8LJMBgw8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711115883; c=relaxed/simple;
-	bh=5nLcUidKgB5r+f5iPuyJSAw+a/z19rQjH3i+N+5NLRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PLJvfnIsbMENillpc9boM21MUumsTYXhWUWh5w0NS97B6ADWMggvBxS9jPNL1BkqxxadM2apiV07EEuV41ivDF4eu9VSvfEKxSBjHQYfcjmGxPBhi6IMfE4BxdFrXKZFLgQJwOXxHwaQWSIpbCy9cMCIgMn3dk3GMrCKcNWASAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mPCXHgW1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2916C433C7;
-	Fri, 22 Mar 2024 13:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711115882;
-	bh=5nLcUidKgB5r+f5iPuyJSAw+a/z19rQjH3i+N+5NLRQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mPCXHgW1IBzKaRUZPDWCykrnbXv43wXL7J6eM7RgiJ7FOAg+unkiSiXgkoNDZCR0s
-	 1nWXtMW8Sgwlzry9/Vgn8jvX4HZ+fm3gYLfjXlKF5OA0BiTPZo9ik9Kw07HhYwnTUD
-	 czzmn0tBqc3otfzGUCqszU3mFmL5rzRrM+/cAcfipejrtLAtQ7rPsYepJGQawNlwOx
-	 s8B2+WkK7N+KpmDz9UYRKrqLP/vAJZLVzOdT2h1q2Vddh67n4V2yPMHvjF8GlpA5AY
-	 NDBsBzlgZSX5ShiwasgCNsp9Lasfue6Cn0bs6+XinuqqOUBXMqWIAhqybOzHMdeMYk
-	 WnpdAzFDKULyA==
-Date: Fri, 22 Mar 2024 08:58:00 -0500
-From: Rob Herring <robh@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl-asoc-card: convert to YAML
-Message-ID: <20240322135800.GA811908-robh@kernel.org>
-References: <1711102406-8399-1-git-send-email-shengjiu.wang@nxp.com>
- <1711102406-8399-2-git-send-email-shengjiu.wang@nxp.com>
+	s=arc-20240116; t=1711116237; c=relaxed/simple;
+	bh=GTwkfSYY8fF/JTgbFZ19PtI5w8z3w4e7RmofZKCLLX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HRcLP46Ls1cyM5u1XacdFBTuL+No+dpnmNJKRSKoTlEVmOfmt0VRDBtaJoRFoLDENNPHMCDvVDr4eG2zrP3vdBOaIuBYm2qLTaL9aDZinhpDB8DJMWv701k4n3pXIZec++OLBt9/BvGTALAKG1NUZvtc7uL2f/5laXm1osxPk4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aEFVnYEn; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42MDrlfG007691;
+	Fri, 22 Mar 2024 14:03:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=8LjoMCe0DGuL79iPsx8E9aBSx33d5vNWq5IDmlmWEHU=;
+ b=aEFVnYEnrQo9X9eTn62cMAsHDBd/9O/L+fBvpgxfId66LX1+lwzS3aT00ptCVhGhv4nO
+ J6/jHPfzD2DDbINY+8EluYrNxC/M8yfULoAO4e4muViayzwOYgme0kxJ/IhZZKodKnNX
+ KzJcBXk7FyYKd3bHmNihaoyfowBMaWwHtCdmZZJK5/3MhGATGldGb29OhnhcRmxbNrk+
+ 2rv+JBmK0+Iya2IiDNHhYf7QDiHOMUrzIXr4NJ+F2Ness7X8PFoMRRW02Pmy+61q9As8
+ ZWyy7zEDcOBRxKh9LAJZTwEmJd9380VdaIhHvu1xTrpHEVLblcwJq0RuJJKLXKhvKhYF Uw== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x1b91033h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 14:03:29 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42MDh8lM026678;
+	Fri, 22 Mar 2024 14:03:29 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x0x1756yv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 14:03:29 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42ME3PZl26411734
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Mar 2024 14:03:27 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7454C58065;
+	Fri, 22 Mar 2024 14:03:25 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 085DD58068;
+	Fri, 22 Mar 2024 14:03:25 +0000 (GMT)
+Received: from sbct-3.bos2.lab (unknown [9.47.158.153])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 22 Mar 2024 14:03:24 +0000 (GMT)
+From: Stefan Berger <stefanb@linux.ibm.com>
+To: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
+        roberto.sassu@huawei.com, Stefan Berger <stefanb@linux.ibm.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] ima: Fix use-after-free on a dentry's dname.name
+Date: Fri, 22 Mar 2024 10:03:12 -0400
+Message-ID: <20240322140312.1804404-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: i-UhdwlGxaLYS8DRbaBtV0I1H82ZOiJr
+X-Proofpoint-ORIG-GUID: i-UhdwlGxaLYS8DRbaBtV0I1H82ZOiJr
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711102406-8399-2-git-send-email-shengjiu.wang@nxp.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
+ mlxscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403220099
 
-On Fri, Mar 22, 2024 at 06:13:25PM +0800, Shengjiu Wang wrote:
-> Convert the fsl-asoc-card binding to YAML.
-> 
-> In order to pass the checking, add some used compatible
-> string from devicetree.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../bindings/sound/fsl-asoc-card.txt          | 117 -----------
->  .../bindings/sound/fsl-asoc-card.yaml         | 196 ++++++++++++++++++
->  2 files changed, 196 insertions(+), 117 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-> deleted file mode 100644
-> index 4e8dbc5abfd1..000000000000
-> --- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-> +++ /dev/null
-> @@ -1,117 +0,0 @@
-> -Freescale Generic ASoC Sound Card with ASRC support
-> -
-> -The Freescale Generic ASoC Sound Card can be used, ideally, for all Freescale
-> -SoCs connecting with external CODECs.
-> -
-> -The idea of this generic sound card is a bit like ASoC Simple Card. However,
-> -for Freescale SoCs (especially those released in recent years), most of them
-> -have ASRC (Documentation/devicetree/bindings/sound/fsl,asrc.txt) inside. And
-> -this is a specific feature that might be painstakingly controlled and merged
-> -into the Simple Card.
-> -
-> -So having this generic sound card allows all Freescale SoC users to benefit
-> -from the simplification of a new card support and the capability of the wide
-> -sample rates support through ASRC.
-> -
-> -Note: The card is initially designed for those sound cards who use AC'97, I2S
-> -      and PCM DAI formats. However, it'll be also possible to support those non
-> -      AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
-> -      long as the driver has been properly upgraded.
-> -
-> -
-> -The compatible list for this generic sound card currently:
-> - "fsl,imx-audio-ac97"
-> -
-> - "fsl,imx-audio-cs42888"
-> -
-> - "fsl,imx-audio-cs427x"
-> - (compatible with CS4271 and CS4272)
-> -
-> - "fsl,imx-audio-wm8962"
-> -
-> - "fsl,imx-audio-sgtl5000"
-> - (compatible with Documentation/devicetree/bindings/sound/imx-audio-sgtl5000.txt)
-> -
-> - "fsl,imx-audio-wm8960"
-> -
-> - "fsl,imx-audio-mqs"
-> -
-> - "fsl,imx-audio-wm8524"
-> -
-> - "fsl,imx-audio-tlv320aic32x4"
-> -
-> - "fsl,imx-audio-tlv320aic31xx"
-> -
-> - "fsl,imx-audio-si476x"
-> -
-> - "fsl,imx-audio-wm8958"
-> -
-> - "fsl,imx-audio-nau8822"
-> -
-> -Required properties:
-> -
-> -  - compatible		: Contains one of entries in the compatible list.
-> -
-> -  - model		: The user-visible name of this sound complex
-> -
-> -  - audio-cpu		: The phandle of an CPU DAI controller
-> -
-> -  - audio-codec		: The phandle of an audio codec
-> -
-> -Optional properties:
-> -
-> -  - audio-asrc		: The phandle of ASRC. It can be absent if there's no
-> -			  need to add ASRC support via DPCM.
-> -
-> -  - audio-routing	: A list of the connections between audio components.
-> -			  Each entry is a pair of strings, the first being the
-> -			  connection's sink, the second being the connection's
-> -			  source. There're a few pre-designed board connectors:
-> -			   * Line Out Jack
-> -			   * Line In Jack
-> -			   * Headphone Jack
-> -			   * Mic Jack
-> -			   * Ext Spk
-> -			   * AMIC (stands for Analog Microphone Jack)
-> -			   * DMIC (stands for Digital Microphone Jack)
-> -
-> -			  Note: The "Mic Jack" and "AMIC" are redundant while
-> -			        coexisting in order to support the old bindings
-> -				of wm8962 and sgtl5000.
-> -
-> -  - hp-det-gpio		: The GPIO that detect headphones are plugged in
-> -  - mic-det-gpio	: The GPIO that detect microphones are plugged in
-> -  - bitclock-master	: Indicates dai-link bit clock master; for details see simple-card.yaml.
-> -  - frame-master	: Indicates dai-link frame master; for details see simple-card.yaml.
-> -  - dai-format		: audio format, for details see simple-card.yaml.
-> -  - frame-inversion	: dai-link uses frame clock inversion, for details see simple-card.yaml.
-> -  - bitclock-inversion	: dai-link uses bit clock inversion, for details see simple-card.yaml.
-> -  - mclk-id		: main clock id, specific for each card configuration.
-> -
-> -Optional unless SSI is selected as a CPU DAI:
-> -
-> -  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX)
-> -
-> -  - mux-ext-port	: The external port of the i.MX audio muxer
-> -
-> -Example:
-> -sound-cs42888 {
-> -	compatible = "fsl,imx-audio-cs42888";
-> -	model = "cs42888-audio";
-> -	audio-cpu = <&esai>;
-> -	audio-asrc = <&asrc>;
-> -	audio-codec = <&cs42888>;
-> -	audio-routing =
-> -		"Line Out Jack", "AOUT1L",
-> -		"Line Out Jack", "AOUT1R",
-> -		"Line Out Jack", "AOUT2L",
-> -		"Line Out Jack", "AOUT2R",
-> -		"Line Out Jack", "AOUT3L",
-> -		"Line Out Jack", "AOUT3R",
-> -		"Line Out Jack", "AOUT4L",
-> -		"Line Out Jack", "AOUT4R",
-> -		"AIN1L", "Line In Jack",
-> -		"AIN1R", "Line In Jack",
-> -		"AIN2L", "Line In Jack",
-> -		"AIN2R", "Line In Jack";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml b/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
-> new file mode 100644
-> index 000000000000..48051655230d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
-> @@ -0,0 +1,196 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl-asoc-card.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Generic ASoC Sound Card with ASRC support
-> +
-> +description:
-> +  The Freescale Generic ASoC Sound Card can be used, ideally,
-> +  for all Freescale SoCs connecting with external CODECs.
-> +
-> +  The idea of this generic sound card is a bit like ASoC Simple Card.
-> +  However, for Freescale SoCs (especially those released in recent years),
-> +  most of them have ASRC
-> +  (Documentation/devicetree/bindings/sound/fsl,imx-asrc.yaml) inside. And
-> +  this is a specific feature that might be painstakingly controlled and
-> +  merged into the Simple Card.
-> +
-> +  So having this generic sound card allows all Freescale SoC users to
-> +  benefit from the simplification of a new card support and the capability
-> +  of the wide sample rates support through ASRC.
-> +
-> +  Note, The card is initially designed for those sound cards who use AC'97, I2S
-> +  and PCM DAI formats. However, it'll be also possible to support those non
-> +  AC'97/I2S/PCM type sound cards, such as S/PDIF audio and HDMI audio, as
-> +  long as the driver has been properly upgraded.
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx-sgtl5000
-> +              - fsl,imx53-cpuvo-sgtl5000
-> +              - fsl,imx51-babbage-sgtl5000
-> +              - fsl,imx53-m53evk-sgtl5000
-> +              - fsl,imx53-qsb-sgtl5000
-> +              - fsl,imx53-voipac-sgtl5000
-> +              - fsl,imx6-armadeus-sgtl5000
-> +              - fsl,imx6-rex-sgtl5000
-> +              - fsl,imx6-sabreauto-cs42888
-> +              - fsl,imx6-wandboard-sgtl5000
-> +              - fsl,imx6dl-nit6xlite-sgtl5000
-> +              - fsl,imx6q-ba16-sgtl5000
-> +              - fsl,imx6q-nitrogen6_max-sgtl5000
-> +              - fsl,imx6q-nitrogen6_som2-sgtl5000
-> +              - fsl,imx6q-nitrogen6x-sgtl5000
-> +              - fsl,imx6q-sabrelite-sgtl5000
-> +              - fsl,imx6q-sabresd-wm8962
-> +              - fsl,imx6q-udoo-ac97
-> +              - fsl,imx6q-ventana-sgtl5000
-> +              - fsl,imx6sl-evk-wm8962
-> +              - fsl,imx6sx-sdb-mqs
-> +              - fsl,imx6sx-sdb-wm8962
-> +              - fsl,imx7d-evk-wm8960
-> +              - karo,tx53-audio-sgtl5000
-> +              - tq,imx53-mba53-sgtl5000
+->d_name.name can change on rename and the earlier value can be freed;
+there are conditions sufficient to stabilize it (->d_lock on dentry,
+->d_lock on its parent, ->i_rwsem exclusive on the parent's inode,
+rename_lock), but none of those are met at any of the sites. Take a stable
+snapshot of the name instead.
 
-None of these were documented before. It's fine to add all these in this 
-patch, but please state in the commit message what missing or incorrect 
-things you added in the schema.
+Link: https://lore.kernel.org/all/20240202182732.GE2087318@ZenIV/
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+---
+ security/integrity/ima/ima_api.c          | 16 ++++++++++++----
+ security/integrity/ima/ima_template_lib.c | 17 ++++++++++++++---
+ 2 files changed, 26 insertions(+), 7 deletions(-)
 
-> +          - enum:
-> +              - fsl,imx-audio-ac97
-> +              - fsl,imx-audio-cs42888
-> +              - fsl,imx-audio-mqs
-> +              - fsl,imx-audio-sgtl5000
-> +              - fsl,imx-audio-wm8960
-> +              - fsl,imx-audio-wm8962
-> +      - items:
-> +          - enum:
-> +              - fsl,imx-audio-ac97
-> +              - fsl,imx-audio-cs42888
-> +              - fsl,imx-audio-cs427x
-> +              - fsl,imx-audio-mqs
-> +              - fsl,imx-audio-nau8822
-> +              - fsl,imx-audio-sgtl5000
-> +              - fsl,imx-audio-si476x
-> +              - fsl,imx-audio-tlv320aic31xx
-> +              - fsl,imx-audio-tlv320aic32x4
-> +              - fsl,imx-audio-wm8524
-> +              - fsl,imx-audio-wm8960
-> +              - fsl,imx-audio-wm8962
-> +              - fsl,imx-audio-wm8958
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: The user-visible name of this sound complex
-> +
-> +  audio-asrc:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      The phandle of ASRC. It can be absent if there's no
-> +      need to add ASRC support via DPCM.
-> +
-> +  audio-codec:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of an audio codec
-> +
-> +  audio-cpu:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of an CPU DAI controller
-> +
-> +  audio-routing:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description:
-> +      A list of the connections between audio components. Each entry is a
-> +      pair of strings, the first being the connection's sink, the second
-> +      being the connection's source. There're a few pre-designed board
-> +      connectors.
-> +        * Line Out Jack
-> +        * Line In Jack
-> +        * Headphone Jack
-> +        * Mic Jack
-> +        * Ext Spk
-> +        * AMIC (stands for Analog Microphone Jack)
-> +        * DMIC (stands for Digital Microphone Jack)
-> +      Note, The "Mic Jack" and "AMIC" are redundant while coexisting in
-> +      order to support the old bindings of wm8962 and sgtl5000.
+diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+index b37d043d5748..1856981e33df 100644
+--- a/security/integrity/ima/ima_api.c
++++ b/security/integrity/ima/ima_api.c
+@@ -245,8 +245,8 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
+ 	const char *audit_cause = "failed";
+ 	struct inode *inode = file_inode(file);
+ 	struct inode *real_inode = d_real_inode(file_dentry(file));
+-	const char *filename = file->f_path.dentry->d_name.name;
+ 	struct ima_max_digest_data hash;
++	struct name_snapshot filename;
+ 	struct kstat stat;
+ 	int result = 0;
+ 	int length;
+@@ -317,9 +317,13 @@ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
+ 		if (file->f_flags & O_DIRECT)
+ 			audit_cause = "failed(directio)";
+ 
++		take_dentry_name_snapshot(&filename, file->f_path.dentry);
++
+ 		integrity_audit_msg(AUDIT_INTEGRITY_DATA, inode,
+-				    filename, "collect_data", audit_cause,
+-				    result, 0);
++				    filename.name.name, "collect_data",
++				    audit_cause, result, 0);
++
++		release_dentry_name_snapshot(&filename);
+ 	}
+ 	return result;
+ }
+@@ -432,6 +436,7 @@ void ima_audit_measurement(struct ima_iint_cache *iint,
+  */
+ const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
+ {
++	struct name_snapshot filename;
+ 	char *pathname = NULL;
+ 
+ 	*pathbuf = __getname();
+@@ -445,7 +450,10 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
+ 	}
+ 
+ 	if (!pathname) {
+-		strscpy(namebuf, path->dentry->d_name.name, NAME_MAX);
++		take_dentry_name_snapshot(&filename, path->dentry);
++		strscpy(namebuf, filename.name.name, NAME_MAX);
++		release_dentry_name_snapshot(&filename);
++
+ 		pathname = namebuf;
+ 	}
+ 
+diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
+index 6cd0add524cd..3b2cb8f1002e 100644
+--- a/security/integrity/ima/ima_template_lib.c
++++ b/security/integrity/ima/ima_template_lib.c
+@@ -483,7 +483,10 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
+ 				     bool size_limit)
+ {
+ 	const char *cur_filename = NULL;
++	struct name_snapshot filename;
+ 	u32 cur_filename_len = 0;
++	bool snapshot = false;
++	int ret;
+ 
+ 	BUG_ON(event_data->filename == NULL && event_data->file == NULL);
+ 
+@@ -496,7 +499,10 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
+ 	}
+ 
+ 	if (event_data->file) {
+-		cur_filename = event_data->file->f_path.dentry->d_name.name;
++		take_dentry_name_snapshot(&filename,
++					  event_data->file->f_path.dentry);
++		snapshot = true;
++		cur_filename = filename.name.name;
+ 		cur_filename_len = strlen(cur_filename);
+ 	} else
+ 		/*
+@@ -505,8 +511,13 @@ static int ima_eventname_init_common(struct ima_event_data *event_data,
+ 		 */
+ 		cur_filename_len = IMA_EVENT_NAME_LEN_MAX;
+ out:
+-	return ima_write_template_field_data(cur_filename, cur_filename_len,
+-					     DATA_FMT_STRING, field_data);
++	ret = ima_write_template_field_data(cur_filename, cur_filename_len,
++					    DATA_FMT_STRING, field_data);
++
++	if (snapshot)
++		release_dentry_name_snapshot(&filename);
++
++	return ret;
+ }
+ 
+ /*
+-- 
+2.43.0
 
-Please list the strings out as schema:
-
-minItems: 2
-items:
-  enum:
-    - "Line Out Jack"
-    ...
-
-> +
-> +  hp-det-gpio:
-> +    maxItems: 1
-> +    description: The GPIO that detect headphones are plugged in
-
-       deprecated: true
-
-> +
-> +  hp-det-gpios:
-> +    maxItems: 1
-> +    description: The GPIO that detect headphones are plugged in
-> +
-> +  mic-det-gpio:
-> +    maxItems: 1
-> +    description: The GPIO that detect microphones are plugged in
-
-       deprecated: true
-
-> +
-> +  mic-det-gpios:
-> +    maxItems: 1
-> +    description: The GPIO that detect microphones are plugged in
-> +
-> +  bitclock-master:
-> +    description: Indicates dai-link bit clock master; for details see simple-card.yaml.
-
-Drop the prose reference and add:
-
-       $ref: simple-card.yaml#/definitions/bitclock-master
-
-Otherwise, bitclock-master could be anything. 
-
-And similar for the rest.
-
-> +
-> +  frame-master:
-> +    description: Indicates dai-link frame master; for details see simple-card.yaml.
-> +
-> +  dai-format:
-> +    description: audio format, for details see simple-card.yaml.
-> +
-> +  frame-inversion:
-> +    description: dai-link uses frame clock inversion, for details see simple-card.yaml.
-> +
-> +  bitclock-inversion:
-> +    description: dai-link uses bit clock inversion, for details see simple-card.yaml.
-> +
-> +  mclk-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: main clock id, specific for each card configuration.
-> +
-> +  mux-int-port:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 7]
-> +    description: The internal port of the i.MX audio muxer (AUDMUX)
-> +
-> +  mux-ext-port:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [3, 4, 5, 6]
-> +    description: The external port of the i.MX audio muxer
-> +
-> +  ssi-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of an CPU DAI controller
-> +
-> +required:
-> +  - compatible
-> +  - model
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    sound-cs42888 {
-> +        compatible = "fsl,imx-audio-cs42888";
-> +        model = "cs42888-audio";
-> +        audio-cpu = <&esai>;
-> +        audio-asrc = <&asrc>;
-> +        audio-codec = <&cs42888>;
-> +        audio-routing =
-> +             "Line Out Jack", "AOUT1L",
-> +             "Line Out Jack", "AOUT1R",
-> +             "Line Out Jack", "AOUT2L",
-> +             "Line Out Jack", "AOUT2R",
-> +             "Line Out Jack", "AOUT3L",
-> +             "Line Out Jack", "AOUT3R",
-> +             "Line Out Jack", "AOUT4L",
-> +             "Line Out Jack", "AOUT4R",
-> +             "AIN1L", "Line In Jack",
-> +             "AIN1R", "Line In Jack",
-> +             "AIN2L", "Line In Jack",
-> +             "AIN2R", "Line In Jack";
-> +    };
-> -- 
-> 2.34.1
-> 
 
