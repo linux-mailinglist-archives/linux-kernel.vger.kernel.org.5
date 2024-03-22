@@ -1,203 +1,378 @@
-Return-Path: <linux-kernel+bounces-110963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FCB3886658
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:44:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 906AF88665C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F2B283B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:44:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E36283294
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 05:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1531BBA33;
-	Fri, 22 Mar 2024 05:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3493D8C11;
+	Fri, 22 Mar 2024 05:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UPg8C+uB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SDTtaTL3"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89409C2C6;
-	Fri, 22 Mar 2024 05:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711086236; cv=fail; b=YqSwti7YBv3ZQWbXHBwYBju6Ze7xs2z53RKrGeK2tU9g4dWaATusbUvFQ6Ac3xU0oUCTxDrFPl61+FRpGBLAB2s51t2mFfpCdnlctVsZgkR8zOgaovFR0NKqt2ZQSBDSSLS36xEcnEX4uu/9b9eRrOHWywYElNUmFmpPF3UJgv4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711086236; c=relaxed/simple;
-	bh=4s6DeY3nw+vvAJIek8z47G6eoHCAcTXQPdBicu7+Cxg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jB3smsKs/THDF00y5VGmzeYaQEs8kFM91B7oShRcrQzwWZZuuwObqlupphCR43nUp94xURaOzjzF+fwXI97iGoBAYn7qTD83OVVWSXwFM1NmHc21FekhM+qdDWCiPDBpH99eKRxiOMDulKqtBtpJQpoqgaQC64XJfnPgd7movcg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UPg8C+uB; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711086235; x=1742622235;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=4s6DeY3nw+vvAJIek8z47G6eoHCAcTXQPdBicu7+Cxg=;
-  b=UPg8C+uB/pWM9k0cLbQ75bxkbeyuf2nHOMgwB87wN3wDYqVwv1cT6igx
-   hOwmCuDvV04PDbjEXz2CDA31mZR3+rGju+JeHdscO+PODKqxotzqRBtww
-   olR4Dape4+xhk8mJA/0ekBpebWeELs1pgT/mFG83gekbC2dhO7X9A2N5Y
-   GGSBDYPXhd4u//W3Ym+3yJqXZBkOa1QtDe3FtMhfFixlzMn37ici0Lj2Y
-   QMrvKkNuMi4vVP5GvSiKKOSW2zJ2F/BlRXNQdxFMSwBuhypUphwt8kV+7
-   ThUtepXknsjjuPu7UTVnQXuN3G5Lu8MoNK9vbfRpDpH0DZT+L1rkIAi7J
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="16667621"
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="16667621"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2024 22:43:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
-   d="scan'208";a="45770262"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Mar 2024 22:43:53 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 21 Mar 2024 22:43:52 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 21 Mar 2024 22:43:51 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 21 Mar 2024 22:43:51 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 21 Mar 2024 22:43:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FawQlxy8npzg0ttNuJd5rkOD3NEtKpGIwE2GJmEKQGGDbJFdTzHc1ylsyOZD/OEoevzB4LI6OX9aaACl0+lEGcNvwBnbAgPWhR5orPeepd0HjOcSxzICt6YxxT0zjsovg5OHDAVPHpdJ2taBFd4IuY+Lqvlt59zPwwKBIp3aHyOjnJw2WQSHPbzzwOGQU8shC+pOGdcQGJ330OWyqc7O/O3wAc2u5LRhy8sMM3VuC5PLmDu8Hjejkdn/7jpLCVywx2nPy8+LbA5Dl9c3w4uB4QTro+Gxylz2KMKGTmMAgLXndCy0kIsNHhnMDyyk6zh4VcseAYPNuO09hAEn/FQhHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4s6DeY3nw+vvAJIek8z47G6eoHCAcTXQPdBicu7+Cxg=;
- b=haLyBiWK2MOatkIUyTFo9EpnhrRnwqByDIdd6R1wYAWiEWKPMilwiUNPwFtXg8OYXRhBAXUp+B0hjvTQap0pHVBWGzRsFzukv3weuovRAKm8Ne7yN2O/v3Z4n1hN7ANGQQyzz87BcwsCv5sEbb5uKWg3RqRP9GJyIMagkzvVjd+REaRD2q2tTjOb4Ld2eOPVF+iGVU/qQ4itD5XGSpvauTMH5w7QdNZeAn9Jdz02tybSuUT4ZORFjvI7TwaOCBciqdrJQALgChBJKtYOpvhK9Rn+6DCN1SCE0awrUJTrsSVZCVOoFw50rewlxc5NsONrxtSIOLHPm3KGjNnRP98htw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by BL1PR11MB5318.namprd11.prod.outlook.com (2603:10b6:208:312::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Fri, 22 Mar
- 2024 05:43:50 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7409.023; Fri, 22 Mar 2024
- 05:43:50 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: "Williams, Dan J" <dan.j.williams@intel.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "torvalds@linux-foundation.org"
-	<torvalds@linux-foundation.org>
-CC: Bjorn Helgaas <bhelgaas@google.com>, "Weiny, Ira" <ira.weiny@intel.com>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>, "Brandeburg, Jesse"
-	<jesse.brandeburg@intel.com>, =?utf-8?B?SWxwbyBKw6RydmluZW4=?=
-	<ilpo.jarvinen@linux.intel.com>, "Wunner, Lukas" <lukas.wunner@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>, "linux-pci@vger.kernel.org"
-	<linux-pci@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>
-Subject: RE: [PATCH] cleanup: Add usage and style documentation
-Thread-Topic: [PATCH] cleanup: Add usage and style documentation
-Thread-Index: AQHaexKuuJipJ/U/xUOsX8+zjix42rFDQVEA
-Date: Fri, 22 Mar 2024 05:43:49 +0000
-Message-ID: <BN9PR11MB52764D455B465E7C69F3A4C38C312@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <171097196970.1011049.9726486429680041876.stgit@dwillia2-xfh.jf.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|BL1PR11MB5318:EE_
-x-ms-office365-filtering-correlation-id: 3f2d149e-f9c2-43e2-1fe6-08dc4a330cf1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ms2rFnWUJHuj3+Rh56Z203JTRXhuAZxQdLrk7aIam/dExI7PthCbcCGf2RwhAWLdzS84Vd64QQFZZql5QQBVJ8j0b9rrKdMgO/ZdWUD/keY868jSy+FRE7yT+Gd+PbTc/VaSoJIJu+nOs1yjD0/RlR9rW2tKkaAKIcxEka0S0IybZ2mRsE+jwnfjB0WCm8tr+p6RWzP0WBMPyx4oFYGlBIq2cKPJkuSAZvqLKyUbwFG1qyPfyCnKd9NWsDeLfYZ4CBzIXrvIZ5N8GetLUMVxyRWpzRAxeag/c9HqXf215sIj4xfenfWTy790PcAFzNAJ3Y7SnfkMYby8j6508xTYYJXTP3Jjwp2JGKwTZzL3NpfBJe1dfGX1wubCby2uWYrXBREXg2Rpymjaaj0kscgZWicarflLihtJ2T05Dg8NgLFIXDU3nYuP2aJEHrcZekgHhPOVHUXO/UsZr3xhmrNe7oAuBBpNz8QgjtchemM0uNdGRmIQEWECy69zBKMlVbbO3k2ba7NoBimoyMIhPDvMfXI9sQu22Z/pa7I/0UCg9kAY/ltiVbfteSA/Yt6JwjWlU1x7eodJKYOEpn00B+InIXkyQ9Skvy4m+CVcuBJHkzgMrU0CN+8CYIwzHL7fa9WI2NJK7rStApSPatucMUOCARooowGcgFqOvHa9LxtSlIRk0NwNLzbhnx4oZg5E8IZqRDuLXz8fCi6Ik0aOj5znElVdgxPhAEkj5ymLRp/TGHE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V0E0OXpZQ09yTUlhWEJHeXhGekY1QVV5alMrUklSYUlGM1hWVVRxVndraVlL?=
- =?utf-8?B?UjNTOUdHZXU0aXUzNURtUllVeVF5VVdmOTFkMFY3cWNpVUNic3ovUlVCblZN?=
- =?utf-8?B?UVIxTDZwMzg4SnRXNUtTb0pFUXBiaEErcURyeE1XT3ZkVGcxUjBjazRUTEtM?=
- =?utf-8?B?bllCVWNhT2twcnBlMmZ5RmRoWlM2V05VNkhLcy9iWmkrYUgrbXg2NFN1SmV3?=
- =?utf-8?B?bU1QcmRDU0szZGxuZ1cyMVFySWtyUUFyWHEybWZWZTZMRUtwTmtCMG5pQzlU?=
- =?utf-8?B?SkZUK0k1RWFVL29vTzM0Ylo5LzRXSWlUaTdudGQ3ZkJ3UlFsV2VWWWlaTEpx?=
- =?utf-8?B?eWl1OXhhbnZJYVlEZnVkRFhyeXdhWjVrM3Evc3ZWblljVjg3enliWkxuNGJq?=
- =?utf-8?B?TkN0QmJLOFRDblg3WGtVQkF0RWJ5TUpydzI5eXgyR0JOc0pBalYvNWJNU0lR?=
- =?utf-8?B?YXZHNG9xaytZTCtpQ1Z0VCtsVVk2SVY5b1kzSkROakFZeHZPSjYyV3RPOTNt?=
- =?utf-8?B?eWpBMXBoREZyclgwZVhLWmROMit6MjYrNXhQd2VqcU1XOFNiUlJnelpDaVdv?=
- =?utf-8?B?T0I2MHg3MEJKb1AyUitmTDhMM0lnckkwL1p6Y1FDRFNIVFJKVXdxMTY2SmhZ?=
- =?utf-8?B?Q0dIWFNrU05BQ29CLzJZeEFNRHZ2dFR0bFN2c3FDaTd2RVJVSVh4aTY2MEZp?=
- =?utf-8?B?Z09JNG5XVG1TdHdVdTUvRk1UZytiZ0ZmZmtmYldIRm15M1N5aDd1anozZm5T?=
- =?utf-8?B?SWJIUzZlYmxvb2hxVE94OFVkb3hMNWFZKy8yRG8vaU1YODUzV1RWeDVpM1Ax?=
- =?utf-8?B?M051QUVOWkNISVRxaWhJWG5vMHl0UUh1WDd1dGRsWTVNR3A0M056ZU4xdElS?=
- =?utf-8?B?eDlWNEJ3dktKN1BDbnRXYXFJUUhUWFZ0VnlzVlV1bEZ6QUoyRVB5aU1aWGEw?=
- =?utf-8?B?SFl2OXZ2UktuNnRpRVByUng2MWcwTFdhVk9JMDJqU2xoRldYSnpqR1ZBWVlU?=
- =?utf-8?B?T1AwQldhaHYzLzhGZ0R2YklSSUh1M2lFZjluekw3Z0tzWWphZUFBZEZBa0hJ?=
- =?utf-8?B?VU5SQ1E1NFJXK1RXT2Qxa1pCZFRiVmwzcnQvWTY3WmZUSkRYcjVKbmttQUpv?=
- =?utf-8?B?bERlYW1uSU5rem54L2F1NTlNWnZuOWRMRjFXQjNteXZiUCtJSExOOE5aaW5U?=
- =?utf-8?B?NXZLWld6OXdldWhZWlVkTXM0eHJ0WjM3bjhSbjBKNm1aNEFCU3pUUC9oRGxs?=
- =?utf-8?B?Qk1DZTlLZWVoN2hoQXBMWHdwc01IMXRtTkNBQjg5bGg0OWUrUWdvK2d3VGJ5?=
- =?utf-8?B?cnNUSEZhYzZZakFLRDVMcWUrZUZaSXU4OVV0bWdjNU90YStic1IrRC9RLzcy?=
- =?utf-8?B?aURrdFBXOGVtREJiYnZWSDdtRVVKTm9zNzJaMnhPY3R1K1VrWjMzLzdYNXBz?=
- =?utf-8?B?UEFWSUtGZjNnZTE2cGlXd21XdGJpMEI5WWdyZHZrbE5NSnVhNS9TaHpTSU1X?=
- =?utf-8?B?V2JjUm9xbHhzcjFYT2RLQWpVV3NnM3Q5MzVRMEYyaWRPdkhua1Iyd0I1Tkph?=
- =?utf-8?B?VTVjN3gyU1JObUNEbFQvbVUvNnR6YURYeDRUM1RaeExDaWJjNnAxTktIeVEx?=
- =?utf-8?B?RUc2Z0tSaDJzNHJZaVZLc09lbzRoQlFVQnVLUDQwOEZyQkNHT2NRRnlVbHkw?=
- =?utf-8?B?cXRuNDJyanlvWm1XOFFnUGtVLy9uL2NMYmF6MEVUMmZqbDVaOWNRc2YzWVBY?=
- =?utf-8?B?S2JrVk1Rb3l6L3daMlo2M0VPWmFwR2V3a0trbytGYUVSSUM4b1M0a0VhbEtG?=
- =?utf-8?B?dmJOV3lycXM1aEFjMTc3dDdaNzFkMEhpN3c3Ylk2YzNKNHZsREMwVmkzK0V4?=
- =?utf-8?B?RnB0enJBdlA4TXlycFNGaHYxSGZGRDJmZzRqUlgzbVhTTXVTQ3Z5S2V5QmlI?=
- =?utf-8?B?WXNpV1lVaUtsaXRWeXJHY2lwZDFhMUd2bUxlOGh0czNUQ0ZNaW1QaUZJSjVP?=
- =?utf-8?B?cVdyMFRtWUtHdFF6ZERaZEZaYjdRaCtjemlSdDdTUFpuekVnSHJHNklmTXZ4?=
- =?utf-8?B?Um04K3JiUmw5aUQwaWNGd0xoSlNOWUVOMnk3QkpGajZYWVhCMnRKb2JvdlBk?=
- =?utf-8?Q?356Z+jIgP+X9kHPN4z8y0qHxS?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107551A38FD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 05:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711086272; cv=none; b=RvGHQHeAPcYpEAy0NrkBuMwgC2o6fwomdJXMBRz8IqoJD0QZX/k1EPlodDik+vpYdOUCw2i44qI9Hk/lnm87bU8vSc6kECWX6t+QxasqKeM7dBRy214WLARMsPx3cG7nQady/tjQ8ZN2MnMKELyiBxdrvr4WvevCR5vkpF0qwJs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711086272; c=relaxed/simple;
+	bh=uOq5p/Eb5ykqUHQZyziKCXEGEMNI+vTHrhDo5R41vFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IH5Z/Nj9GnxS1BJAf1IN6a6qyqeH2Y3QkJERrdp7RLboha8ZLwzCrrpli0KP6UFyjycJrh3bhdf47CWiGBjNOg/ArwMlHhOFD76NWr7FvEEmLBykE7RlJnNmujVR0yi0ZjgSrJc4OBh7rQY1SqpzUeOmWeiNkZnCw5y6pl2RSFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SDTtaTL3; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a471f86dcd3so103541266b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 22:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711086268; x=1711691068; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nm9xbL6fdbmkA2PfY/NtYXaykwPAjIVdTVbULwbVVtw=;
+        b=SDTtaTL31u3UBWBfI8TyNu3x4qX2FQlcXlt6a6NM+pPVfMmYd8MQFjWqpZrTBBh3GO
+         4lyngn2xIeWu3oLxwJi+qNpvHuV0r7ZxhsXIwX3WF8nDhPoaHl8ATHjogKgc9tFOY3/f
+         r+HKDkpu8SxE2zty+C+SXlGlGVc4hsuoO4Q4kkTuMOzfMySOywI8LZD0+EsxSYdTmJn5
+         bLJTbrrU8aNA6A+BWfs/4v9vRFb6ouO5Nm6kMLHTPuPLdLQkh3vB/ZKsRLDsovc0JT83
+         vK/+iYjgnheV+3rJpC5geqqBT4PUtPN8486sBfYVZpFz/EDOBc7A8eyg1+sg/szPp4Tz
+         mEBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711086268; x=1711691068;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nm9xbL6fdbmkA2PfY/NtYXaykwPAjIVdTVbULwbVVtw=;
+        b=UwvqeSOk4jzdOwMcsz76sbOWjzanWgDF7N29vEKmn4tN0qVqe/HfcA3syQ0Jjw71Lz
+         v2r0/8Ol1z/0ll8cLl8YLtKFaWiAN0NHEzGtiJRJJhloUS4siuwpNsNUFPfIfWu6yu3d
+         daoWTQ42fx+S1lC2HqfmwuvmojUHlv/CWfeI5QcYOnWWsrXxdEbdB1j1Et6qDHjJ6/AF
+         b1DmxlM3q8IEHHIGw5M3DNz9GEV3yE7gqIgGbT/ya0MSqyhASTqltHsR1zLfeaukYxlU
+         UVhGx4h13iMVpwzlAZl8dQYn07fFmvO2l5jgjTEd11KIjcDhL8GbAqPAAKLQ+f1Cphak
+         at2w==
+X-Forwarded-Encrypted: i=1; AJvYcCWR6Z9IlIp8I/qiUtCHtAdvTM6WL+JFmYn49OYWG5W2WeCO/rbU4H0RxUcCPI3itQhhuzDe4UZApVQTeMvzdq86NdSZ3+MwelvpW6kh
+X-Gm-Message-State: AOJu0Yxctj0an9Qhm/5eE0wh+p1Q0S569Hkdg2D5dC5Pfvkc5uq+t/xU
+	uMuwgxOQF0yIONwMxdpHd/jq9jBmWVX6+UJ3aubsl0iwHLxG6HGdElQjP4I7Nqs=
+X-Google-Smtp-Source: AGHT+IHz4eOI/1BdG4Cjom5CZIaMivnSB7vOCtXEwzNWSV9lnXnDQx4VJBWJSOgUsbGlUSSKC4zkWg==
+X-Received: by 2002:a17:907:7e8e:b0:a46:5e1b:58a3 with SMTP id qb14-20020a1709077e8e00b00a465e1b58a3mr1110987ejc.35.1711086266344;
+        Thu, 21 Mar 2024 22:44:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id h8-20020a1709060f4800b00a471b5b25b9sm633096ejj.127.2024.03.21.22.44.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 22:44:25 -0700 (PDT)
+Message-ID: <b224cd7e-ebd0-41ef-b1e2-64f76d246307@linaro.org>
+Date: Fri, 22 Mar 2024 06:44:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f2d149e-f9c2-43e2-1fe6-08dc4a330cf1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Mar 2024 05:43:50.0113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uKvFboeKmsCMjkqq0xVA1bhkElCRIQZ/IJdFje4CYL4GEiS4CqK99LdcW9zZBrQRYkgRt/jkoEL3WM1yGDz1KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5318
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: add Versal-NET platform
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+ <20240315211533.1996543-3-tanmay.shah@amd.com>
+ <3ca1c419-d185-4318-92ed-3c4e40dcf5bb@linaro.org>
+ <14be0aa6-49b7-4342-9ca6-750c30c8e1e9@amd.com>
+ <b1320ddf-bacb-41e3-9709-e90df18cc1e3@linaro.org>
+ <d112481b-4331-4c0c-9775-407ac4a601fb@amd.com>
+ <6f2ebe09-8ce5-4388-a01a-84ebc271472e@linaro.org>
+ <72f3caa2-30ec-4191-9477-2d2a5e7f2f4b@amd.com>
+ <5025fb10-3bcc-43b1-ae85-b556f1c0415f@linaro.org>
+ <091c5ff9-dce9-4c63-a2ca-39d570e2f0a5@amd.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <091c5ff9-dce9-4c63-a2ca-39d570e2f0a5@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-PiBGcm9tOiBEYW4gV2lsbGlhbXMgPGRhbi5qLndpbGxpYW1zQGludGVsLmNvbT4NCj4gU2VudDog
-VGh1cnNkYXksIE1hcmNoIDIxLCAyMDI0IDY6MDUgQU0NCj4gKyAqDQo+ICsgKiBOb3RlIHRoYXQg
-dW53aW5kIG9yZGVyIGlzIGRpY3RhdGVkIGJ5IGRlY2xhcmF0aW9uIG9yZGVyLiBUaGF0DQo+ICsg
-KiBjb250cmFpbmRpY2F0ZXMgYSBwYXR0ZXJuIGxpa2UgdGhlIGZvbGxvd2luZzoNCj4gKyAqDQo+
-ICsgKiAuLiBjb2RlLWJsb2NrOjogYw0KPiArICoNCj4gKyAqCWludCBudW0sIHJldCA9IDA7DQo+
-ICsgKglzdHJ1Y3QgcGNpX2RldiAqYnJpZGdlID0gY3RybC0+cGNpZS0+cG9ydDsNCj4gKyAqCXN0
-cnVjdCBwY2lfYnVzICpwYXJlbnQgPSBicmlkZ2UtPnN1Ym9yZGluYXRlOw0KPiArICoJc3RydWN0
-IHBjaV9kZXYgKmRldiBfX2ZyZWUocGNpX2Rldl9wdXQpID0gTlVMTDsNCj4gKyAqDQo+ICsgKglw
-Y2lfbG9ja19yZXNjYW5fcmVtb3ZlKCk7DQo+ICsgKg0KPiArICoJZGV2ID0gcGNpX2dldF9zbG90
-KHBhcmVudCwgUENJX0RFVkZOKDAsIDApKTsNCj4gKyAqDQo+ICsgKiBJbiB0aGlzIGNhc2UgQGRl
-diBpcyBkZWNsYXJlZCBpbiB4LW1hcyB0cmVlIHN0eWxlIGluIGEgcHJlYW1ibGUNCj4gKyAqIGRl
-Y2xhcmF0aW9uIGJsb2NrLiBUaGF0IGlzIHByb2JsZW1hdGljIGJlY2F1c2UgaXQgZGVzdHJveXMg
-dGhlDQo+ICsgKiBjb21waWxlcidzIGFiaWxpdHkgdG8gaW5mZXIgcHJvcGVyIHVud2luZCBvcmRl
-ci4gSWYgb3RoZXIgY2xlYW51cA0KPiArICogaGVscGVycyBhcHBlYXJlZCBpbiBzdWNoIGEgZnVu
-Y3Rpb24gdGhhdCBkZXBlbmRlZCBvbiBAZGV2IGJlaW5nIGxpdmUNCj4gKyAqIHRvIGNvbXBsZXRl
-IHRoZWlyIHVud2luZCB0aGVuIHVzaW5nIHRoZSAic3RydWN0IG9ial90eXBlICpvYmoNCj4gKyAq
-IF9fZnJlZSguLi4pID0gTlVMTCIgc3R5bGUgaXMgYW4gYW50aS1wYXR0ZXJuIHRoYXQgcG90ZW50
-aWFsbHkgY2F1c2VzDQo+ICsgKiBhIHVzZS1hZnRlci1mcmVlIGJ1Zy4gSW5zdGVhZCwgdGhlIGV4
-cGVjdGF0aW9uIGlzIHRoaXMgY29udmVyc2lvbjoNCj4gKyAqDQoNCmFuIGV4YW1wbGUgb2YgZGVw
-ZW5kZW50IGNsZWFudXAgaGVscGVycyBtaWdodCBiZSBoZWxwZnVsIHRvDQpiZXR0ZXIgdW5kZXJz
-dGFuZCB0aGlzIGV4cGVjdGF0aW9uPw0K
+On 21/03/2024 16:13, Tanmay Shah wrote:
+> 
+> 
+> On 3/21/24 2:39 AM, Krzysztof Kozlowski wrote:
+>> On 20/03/2024 16:14, Tanmay Shah wrote:
+>>>
+>>>
+>>> On 3/20/24 2:40 AM, Krzysztof Kozlowski wrote:
+>>>> On 19/03/2024 15:42, Tanmay Shah wrote:
+>>>>>
+>>>>>
+>>>>> On 3/19/24 12:30 AM, Krzysztof Kozlowski wrote:
+>>>>>> On 19/03/2024 01:51, Tanmay Shah wrote:
+>>>>>>> Hello Krzysztof,
+>>>>>>>
+>>>>>>> Thanks for reviews. Please find my comments below.
+>>>>>>>
+>>>>>>> On 3/17/24 1:53 PM, Krzysztof Kozlowski wrote:
+>>>>>>>> On 15/03/2024 22:15, Tanmay Shah wrote:
+>>>>>>>>> AMD-Xilinx Versal-NET platform is successor of Versal platform. It
+>>>>>>>>> contains multiple clusters of cortex-R52 real-time processing units.
+>>>>>>>>> Each cluster contains two cores of cortex-R52 processors. Each cluster
+>>>>>>>>> can be configured in lockstep mode or split mode.
+>>>>>>>>>
+>>>>>>>>> Each R52 core is assigned 128KB of TCM memory. ATCM memory is 64KB, BTCM
+>>>>>>>>> and CTCM memoreis are 32KB each. Each TCM memory has its own dedicated
+>>>>>>>>> power-domain that needs to be requested before using it.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+>>>>>>>>> ---
+>>>>>>>>>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 220 +++++++++++++++---
+>>>>>>>>>  1 file changed, 184 insertions(+), 36 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>>>> index 711da0272250..55654ee02eef 100644
+>>>>>>>>> --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>>>>>>> @@ -18,7 +18,9 @@ description: |
+>>>>>>>>>  
+>>>>>>>>>  properties:
+>>>>>>>>>    compatible:
+>>>>>>>>> -    const: xlnx,zynqmp-r5fss
+>>>>>>>>> +    enum:
+>>>>>>>>> +      - xlnx,zynqmp-r5fss
+>>>>>>>>> +      - xlnx,versal-net-r52fss
+>>>>>>>>>  
+>>>>>>>>>    "#address-cells":
+>>>>>>>>>      const: 2
+>>>>>>>>> @@ -64,7 +66,9 @@ patternProperties:
+>>>>>>>>>  
+>>>>>>>>>      properties:
+>>>>>>>>>        compatible:
+>>>>>>>>> -        const: xlnx,zynqmp-r5f
+>>>>>>>>> +        enum:
+>>>>>>>>> +          - xlnx,zynqmp-r5f
+>>>>>>>>> +          - xlnx,versal-net-r52f
+>>>>>>>>>  
+>>>>>>>>>        reg:
+>>>>>>>>>          minItems: 1
+>>>>>>>>> @@ -135,9 +139,11 @@ required:
+>>>>>>>>>  allOf:
+>>>>>>>>>    - if:
+>>>>>>>>>        properties:
+>>>>>>>>> -        xlnx,cluster-mode:
+>>>>>>>>> -          enum:
+>>>>>>>>> -            - 1
+>>>>>>>>> +        compatible:
+>>>>>>>>> +          contains:
+>>>>>>>>> +            enum:
+>>>>>>>>> +              - xlnx,versal-net-r52fss
+>>>>>>>>
+>>>>>>>> Why do you touch these lines?
+>>>>>>>>
+>>>>>>>>> +
+>>>>>>>>>      then:
+>>>>>>>>>        patternProperties:
+>>>>>>>>>          "^r5f@[0-9a-f]+$":
+>>>>>>>>> @@ -149,16 +155,14 @@ allOf:
+>>>>>>>>>                items:
+>>>>>>>>>                  - description: ATCM internal memory
+>>>>>>>>>                  - description: BTCM internal memory
+>>>>>>>>> -                - description: extra ATCM memory in lockstep mode
+>>>>>>>>> -                - description: extra BTCM memory in lockstep mode
+>>>>>>>>> +                - description: CTCM internal memory
+>>>>>>>>>  
+>>>>>>>>>              reg-names:
+>>>>>>>>>                minItems: 1
+>>>>>>>>>                items:
+>>>>>>>>> -                - const: atcm0
+>>>>>>>>> -                - const: btcm0
+>>>>>>>>> -                - const: atcm1
+>>>>>>>>> -                - const: btcm1
+>>>>>>>>> +                - const: atcm
+>>>>>>>>> +                - const: btcm
+>>>>>>>>> +                - const: ctcm
+>>>>>>>>>  
+>>>>>>>>>              power-domains:
+>>>>>>>>>                minItems: 2
+>>>>>>>>> @@ -166,33 +170,70 @@ allOf:
+>>>>>>>>>                  - description: RPU core power domain
+>>>>>>>>>                  - description: ATCM power domain
+>>>>>>>>>                  - description: BTCM power domain
+>>>>>>>>> -                - description: second ATCM power domain
+>>>>>>>>> -                - description: second BTCM power domain
+>>>>>>>>> +                - description: CTCM power domain
+>>>>>>>>>  
+>>>>>>>>>      else:
+>>>>>>>>> -      patternProperties:
+>>>>>>>>> -        "^r5f@[0-9a-f]+$":
+>>>>>>>>> -          type: object
+>>>>>>>>> -
+>>>>>>>>> -          properties:
+>>>>>>>>> -            reg:
+>>>>>>>>> -              minItems: 1
+>>>>>>>>> -              items:
+>>>>>>>>> -                - description: ATCM internal memory
+>>>>>>>>> -                - description: BTCM internal memory
+>>>>>>>>> -
+>>>>>>>>> -            reg-names:
+>>>>>>>>> -              minItems: 1
+>>>>>>>>> -              items:
+>>>>>>>>> -                - const: atcm0
+>>>>>>>>> -                - const: btcm0
+>>>>>>>>> -
+>>>>>>>>> -            power-domains:
+>>>>>>>>> -              minItems: 2
+>>>>>>>>> -              items:
+>>>>>>>>> -                - description: RPU core power domain
+>>>>>>>>> -                - description: ATCM power domain
+>>>>>>>>> -                - description: BTCM power domain
+>>>>>>>>> +      allOf:
+>>>>>>>>> +        - if:
+>>>>>>>>> +            properties:
+>>>>>>>>> +              xlnx,cluster-mode:
+>>>>>>>>> +                enum:
+>>>>>>>>> +                  - 1
+>>>>>>>>
+>>>>>>>> Whatever you did here, is not really readable. You have now multiple
+>>>>>>>> if:then:if:then embedded.
+>>>>>>>
+>>>>>>> For ZynqMP platform, TCM can be configured differently in lockstep mode
+>>>>>>> and split mode.
+>>>>>>>
+>>>>>>> For Versal-NET no such configuration is available, but new CTCM memory
+>>>>>>> is added.
+>>>>>>>
+>>>>>>> So, I am trying to achieve following representation of TCM for both:
+>>>>>>>
+>>>>>>> if: versal-net compatible
+>>>>>>> then:
+>>>>>>>   ATCM - 64KB
+>>>>>>>   BTCM - 32KB
+>>>>>>>   CTCM - 32KB
+>>>>>>>
+>>>>>>> else: (ZynqMP compatible)
+>>>>>>>   if:
+>>>>>>>     xlnx,cluster-mode (lockstep mode)
+>>>>>>>   then:
+>>>>>>>     ATCM0 - 64KB
+>>>>>>>     BTCM0 - 64KB
+>>>>>>>     ATCM1 - 64KB
+>>>>>>>     BTCM1 - 64KB
+>>>>>>>   else: (split mode)
+>>>>>>>     ATCM0 - 64KB
+>>>>>>>     BTCM0 - 64KB
+>>>>>>>
+>>>>>>>
+>>>>>>> If bindings are getting complicated, does it make sense to introduce
+>>>>>>> new file for Versal-NET bindings? Let me know how you would like me
+>>>>>>> to proceed.
+>>>>>>
+>>>>>> All this is broken in your previous patchset, but now we nicely see.
+>>>>>>
+>>>>>> No, this does not work like this. You do not have entirely different
+>>>>>> programming models in one device, don't you?
+>>>>>>
+>>>>>
+>>>>> I don't understand what do you mean? Programming model is same. Only number
+>>>>> of TCMs are changing based on configuration and platform. I can certainly
+>>>>> list different compatible for different platforms as requested. But other than
+>>>>> that not sure what needs to be fixed.
+>>>>
+>>>> You cannot have same programming model with different memory mappings.
+>>>> Anyway, please follow writing bindings rules: all of your different
+>>>> devices must have dedicated compatible. I really though we talked about
+>>>> two IPs on same SoC...
+>>>
+>>> I agree that Versal compatible should be added, I will do that in next revision.
+>>>
+>>> For ZynqMP case, it is two IPs on same SOC. In lockstep mode and split mode,
+>>> same SOC is configuring TCM differently.
+>>>
+>>> How this should be resolved for Versal-NET ? Driver avoids such TCM configuration
+>>> for Versal-NET.
+>>
+>> Binding should describe the hardware, not what driver is doing
+>> currently, so the question is: does your device have such properties or
+>> not? Anyway, you need compatible per each variant and each SoC
+>> implementation.
+> 
+> Thanks for reviews.
+> 
+> Okay in that case I believe I should add one more property to current bindings for TCM
+> configuration.
+> 
+
+I am not sure if you understand how IRC works... You sent me message on
+IRC about this topic and shortly after you quit. So how am I supposed to
+send reply? IRC does not work like that...
+
+> From our discussion I conclude to following next steps:
+> 
+> 1) I will send Versal and Versal-NET support as part of previous series (v14) so we get
+> bigger picture in the first place.
+> 
+> 2) Add separate compatible for versal platform.
+> Use device compatible string to maintain
+> backward compatibility and not machine (root node) compatible string.
+> 
+> 3) Add tcm,mode property in bindings and each device must configure TCM based on that
+> property only and not based on compatible string.
+> 
+> 4) Versal-NET will disallow tcm,mode property in bindings as no such configuration is
+> possible for that platform.
+
+I really don't know your SoCs. What about Zynq? You keep using here
+names all over the place, but I am not Xilinx maintainer.
+
+
+Best regards,
+Krzysztof
+
 
