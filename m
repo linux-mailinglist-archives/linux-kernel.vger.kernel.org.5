@@ -1,94 +1,109 @@
-Return-Path: <linux-kernel+bounces-110900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F75B88656B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:23:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C41F88656D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7AAB285F97
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D93A1C235BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146F353A6;
-	Fri, 22 Mar 2024 03:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 810D48C1F;
+	Fri, 22 Mar 2024 03:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZEo8yWMT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UVJ+CcqO"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5578A4A07
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C290D8BE0
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711077810; cv=none; b=qrV/ld/PxTMSlKGzDbFXBqfJAtAJy8uEjUpBhltwPCJKvQLNsSUQv0wVh4bInhNbQEkEye9TBudhjjHA8vynTPQVeXJ+KNIJKKEHLFm+5gQlHvPel5MpL4ytouuyMdJ5rgCDu4vq1UNgT2FWtB1jottTX19llgF2dz39VNbMAsQ=
+	t=1711077899; cv=none; b=iBack1afHNiWOveuxgpqNll6Dufxuld7VwCX8u9BxQ6+e35WqS/Q9eQRZL6xkEyiu3RouNyWiu/wI0Z0KsgRxQRgvRSTF+yaoBOZsKb8SY+vEq/x0evJYLphbF5SJM/XSuyVpCqEU+HgVrR+TkNjhZDnewQkgn6CEDwvV3v/rvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711077810; c=relaxed/simple;
-	bh=BLuLTf+ciQ9mI5NJSHdV0Rd2SFWl4DrJlE4kXjN++sA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kJ37nn3Mf1T1CYh3bUed4F02O6OM8UPkRSJ45oW3EXzOoiBltU4DQ0bHN01hskLXMHOrHSHSlturWL9SglHpz5RYrCskujRldDf8IcGiZz3LQoKkhrTXLdL2eiV/bzBJLqwsrKLI6IzTf8mTtZgymFKYUMLkpp2q1U6xdC73SS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZEo8yWMT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32778C433F1;
-	Fri, 22 Mar 2024 03:23:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711077809;
-	bh=BLuLTf+ciQ9mI5NJSHdV0Rd2SFWl4DrJlE4kXjN++sA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZEo8yWMTYm0hnEMucDmwaWCtvKSIsvQ8rmlj4G2ufalUnqUBbJNEgL3pC9fvgMoow
-	 U8inoW2P5ruL4tHiYDG6QfH1sMRoj1BWJMSN/D7ojv0VIxBbJcRAbM+IrsziM1r+u7
-	 0+x/fnQvUAYhunt0Tf1Pso0BYeEbwGKpPdPRzxMeeGsaG3d6yGlXNMn5rMeRhgGsw3
-	 275A613qNY9Cx1rCMTNhah2lM+s1ujhml8+VoQlD+O6JsA41NmEEP7lPmGQcO6iEzx
-	 ztcgQX7MlLzUSnjigKbq0mmBqI9hIkBebfju8XUCyKNn1zKHzFKgxORrHPOje+vvbV
-	 HAtwPjV1B4ytA==
-Message-ID: <9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
-Date: Thu, 21 Mar 2024 21:23:28 -0600
+	s=arc-20240116; t=1711077899; c=relaxed/simple;
+	bh=9XPjD+HP21f4zddlLmex6fWKZNAEjxzYlyxyr/LxtsQ=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=cM6YJsM4Vr/oSj1m6URO/RQJ/8p7saflBG469tRf68oBin0Q2H7p5OOk1TiGoK86Ttmbk3Ei16U/ImGLBCvy+LiADqWuCEfwUc4Umag65iR97xIOJUtiJh6+0zYGhrrazqzCzV12m+yThsCGqZMvTZDUpp2u/vAZ6O1p6zoy1d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UVJ+CcqO; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711077894;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9XPjD+HP21f4zddlLmex6fWKZNAEjxzYlyxyr/LxtsQ=;
+	b=UVJ+CcqORFfUVHdqZRyiE8nwhY51TtQGbRVq27cC7AtHLcN2BtsZkcd8Wj15Eni/xVSpn/
+	Ptaw19McrVffmH9YvE67dyFLMe4B8su+FODJYCUsqLYyT4UB0jyY5mfLMJP/E53NL1UbsW
+	jOn93oXrVO8Vw5KqTRsQG2GX8StVyiA=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>,
- Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
- Itay Avraham <itayavr@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>,
- Aron Silverton <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>
-References: <20240207072435.14182-1-saeed@kernel.org>
- <Zcx53N8lQjkpEu94@infradead.org>
- <ZczntnbWpxUFLxjp@C02YVCJELVCG.dhcp.broadcom.net>
- <20240214175735.GG1088888@nvidia.com> <20240304160237.GA2909161@nvidia.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20240304160237.GA2909161@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Subject: Re: [syzbot] [mm?] kernel BUG in const_folio_flags
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <ZfwJ0JOgcMCTcSgZ@localhost.localdomain>
+Date: Fri, 22 Mar 2024 11:24:10 +0800
+Cc: syzbot <syzbot+3b9148f91b7869120e81@syzkaller.appspotmail.com>,
+ David Hildenbrand <david@redhat.com>,
+ Matthew Wilcox <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Linux-MM <linux-mm@kvack.org>,
+ syzkaller-bugs@googlegroups.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1349A15A-341F-4EE4-AD40-805A97A9FFD1@linux.dev>
+References: <0000000000006cfe98061423cde7@google.com>
+ <812E97E8-668F-414D-9480-1D284834A034@linux.dev>
+ <ZfwJ0JOgcMCTcSgZ@localhost.localdomain>
+To: Oscar Salvador <osalvador@suse.de>
+X-Migadu-Flow: FLOW_OUT
 
-On 3/4/24 9:02 AM, Jason Gunthorpe wrote:
-> On Wed, Feb 14, 2024 at 01:57:35PM -0400, Jason Gunthorpe wrote:
-> 
->> I also like this, I don't want the outcome of this discussion to be
->> that only mlx5ctl gets merged. I want all the HW that has this problem
->> to have support in the mainline kernel.
-> 
-> To this end here is my proposal to move forward with a new
-> mini-subsystem to provide rules for this common approach. Get the
-> existing tools out of hacky unstructured direct hardware access via
-> /sys/XX and into a formalized lockdown compatible system. I've talked
-> to enough people now to think we have a critical mass.
-> 
 
-It has been almost 3 weeks and no response (to this and other proposals
-in this thread). I have been around Linux long enough to know that
-silence is not acceptance.
 
-To me, this seems like a sane start for a new subsystem addressing
-challenges with complex, modern devices. To that end:
+> On Mar 21, 2024, at 18:20, Oscar Salvador <osalvador@suse.de> wrote:
+>=20
+> On Thu, Mar 21, 2024 at 05:49:49PM +0800, Muchun Song wrote:
+>> There are some more page dumping information from console:
+>>=20
+>> [ 61.367144][ T42] page: refcount:0 mapcount:0 =
+mapping:0000000000000000 index:0xffff888028132880 pfn:0x28130
+>> [ 61.371430][ T42] flags: =
+0xfff80000000000(node=3D0|zone=3D1|lastcpupid=3D0xfff)
+>> [ 61.374455][ T42] page_type: 0xffffffff()
+>> [ 61.376096][ T42] raw: 00fff80000000000 ffff888015ecd540 =
+dead000000000100 0000000000000000
+>> [ 61.379994][ T42] raw: ffff888028132880 0000000000190000 =
+00000000ffffffff 0000000000000000
+>>=20
+>> Alright, the page is freed (with a refcount of 0).
+>=20
+> Yes, basically the page changed betwen folio_test_large() (returned =
+true
+> for PG_Head) and the call to const_folio_flags() (which now returned
+> false for PG_Head).
+>=20
+> As David pointed out, Willy is working on making PageHutelb more
+> robust [1].
+>=20
+>=20
+> [1] =
+https://lore.kernel.org/linux-mm/20240314012506.1600378-1-willy@infradead.=
+org/
 
-Acked-by: David Ahern <dsahern@kernel.org>
+Sorry, I am not on the CC list, so I didn't know this. But thank
+you and David for this information, I think it could fix this problem.
+
+Muchun,
+Thanks.
+
 
