@@ -1,130 +1,140 @@
-Return-Path: <linux-kernel+bounces-111086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE1E8867B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5621887165
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66D6DB22396
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:59:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D47BB2450E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D2A14AAE;
-	Fri, 22 Mar 2024 07:59:08 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF225604B2;
+	Fri, 22 Mar 2024 16:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wgw9uDY6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C63E134A3;
-	Fri, 22 Mar 2024 07:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1035FBA6
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711094348; cv=none; b=hnI+aTTZsLX4VeazKbM5po41sRKyOKSkFzqnW0BL4klnMiOnWklKdjixIQVGLyeAoYylCqUEMliDb5jOICV8ru2ROsEGSj2G1JjEvJAVy+/YXvD84xUNsMGA3d3M8ZgVdgJF85spx5oVSxNQ5wcJoavknBpgePrmGMz1qdc/y/0=
+	t=1711126613; cv=none; b=kSjVOD03o8R9Ne/OAvOX1a6s92HUTyKYA6I1yOtT3RjtvDdGSWhdJLmZVrXyX1DOHNJuc4ESUU1NpZoE0fmnW2+otI/EmxTvYP1hH13ZZ9XRtBer8qQ9Top32psFvENYJCVG2AHHi61D6kpgFfG+UAWOsN5tb2L1H+Ntg1GNpQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711094348; c=relaxed/simple;
-	bh=UzGKJnZTJL1hg3BZWLblMPlF3l/gSCV6CLIGlIgt5UQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oIaxmNf9lue52IgfqES2GoOSBAvp8Xh4E26Gp+rN0LeVwcyVaGS8yd6UFqrarrVRxSmTYXwQWHQeulsWdMpaUxCUD9kLAFqISFIUAfp3xsHT2fOWOXuk/Lz6S+n8rvdTaOtg95WBkMuHisUmKS5J++IfSRJhLPoSxjLlE3etEtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V1F8M0Xjxz4f3k6h;
-	Fri, 22 Mar 2024 15:58:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F33911A0B59;
-	Fri, 22 Mar 2024 15:59:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.101.6])
-	by APP1 (Coremail) with SMTP id cCh0CgDXpxBFOv1l+23fHg--.60357S2;
-	Fri, 22 Mar 2024 15:59:02 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux@roeck-us.net
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: implement filesystem specific alloc_inode in unit test
-Date: Sat, 23 Mar 2024 00:55:18 +0800
-Message-Id: <20240322165518.8147-1-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1711126613; c=relaxed/simple;
+	bh=84iQOZIyaZ65axzyVgOQu/zYCNZTzgLxZGB4E2iA5DA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HtknPnfqxTysc0IkcBvk8ugHjJp9QWiK9YgxfzSNoVwzp41RIZt/BgAOlTh9UmDyWqiQrRrZSjiiDtd0olYJSPWqMK+yKrtKtNs/9dSSVga5ld8lt2EKDkDztlSwGD9viNLn8yg4bzlUpX9xUgvLISfVUdslR4kcdG4Y3RUFCbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wgw9uDY6; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711126612; x=1742662612;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=84iQOZIyaZ65axzyVgOQu/zYCNZTzgLxZGB4E2iA5DA=;
+  b=Wgw9uDY6Bm59vhtdMuzeJJfgoZ+1eTj2hezrU0eImpT9JGR2HqqD2MZ1
+   dIeexjS+Fm1sAlCTFZ9m63PEmMDuUQwL+qB+4LFdc+1kINhLDpI+3Sx9+
+   8btau/Ct59vK+GVKkeF+//LT/FZ/1mF4Z32CeQl7Mrcaq9YN8u9NTNJD1
+   ZhQCBA13UQhOPDff1AlqjzYzT/lZonz9rDmCR1ZSv1Sw9AXixyN2V4dcl
+   LG/Iir9cvqZFFuUNjOc/qSr95GRlko8rxqjx/PayPGxz+IWnwA5eT1Rn1
+   DKFwDZGyIkmOhx7TtSgaoQ6SivICjU96liT4NJ+rKiMx118lG0Nb42x0v
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6085410"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="6085410"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 09:56:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="14876605"
+Received: from ashwanim-mobl.amr.corp.intel.com (HELO [10.209.56.241]) ([10.209.56.241])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 09:56:36 -0700
+Message-ID: <ece5cc63-960d-4323-9128-5023b6d94dc0@intel.com>
+Date: Fri, 22 Mar 2024 09:56:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/shstk: Enable shadow stack for x32
+Content-Language: en-US
+To: "H.J. Lu" <hjl.tools@gmail.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Rick P Edgecombe <rick.p.edgecombe@intel.com>
+References: <20240315140433.1966543-1-hjl.tools@gmail.com>
+ <264400cc-ccb6-46c5-b054-403f6b82860a@intel.com>
+ <CAMe9rOrZ8XDoeDru+zm1ad7NsLHgkD1cm=CL==uhWY4OqqQGJg@mail.gmail.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAMe9rOrZ8XDoeDru+zm1ad7NsLHgkD1cm=CL==uhWY4OqqQGJg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDXpxBFOv1l+23fHg--.60357S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWDXr4UKr1UAr1rXF43Wrg_yoW8Xw1Dpr
-	sxCryYkFs8WFZFga1fKry5Zw1fKa1Ig3yUJrWSgw1Sqry3GFy8tFn8tr17AF18JrW8JayF
-	vF4qkF47ur4xGaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_
-	tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
-	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
-	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
-	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
-	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-	IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-We expect inode with ext4_info_info type as following:
-mbt_kunit_init
-  mbt_mb_init
-    ext4_mb_init
-      ext4_mb_init_backend
-        sbi->s_buddy_cache = new_inode(sb);
-        EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
+On 3/22/24 09:52, H.J. Lu wrote:
+> On Fri, Mar 22, 2024 at 9:49 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>> On 3/15/24 07:04, H.J. Lu wrote:
+>>> 1. Add shadow stack support to x32 signal.
+>>> 2. Use the 64-bit map_shadow_stack syscall for x32.
+>>> 3. Set up shadow stack for x32.
+>>>
+>>> Tested with shadow stack enabled x32 glibc on Intel Tiger Lake.
+>> I don't think we should wire up code that's never going to get used in
+>> practice.  I think I'd want to be sure of the existence of some
+>> specific, real-world, long-term users of this before we add a new ABI
+>> that we need to support forever.
+>>
+>> Are there real users?
+> Were you talking about x32 users or x32 users with shadow stack?
 
-Implement alloc_inode ionde with ext4_inode_info type to avoid
-out-of-bounds write.
+x32 users who both want and will use shadow stacks.
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
----
- fs/ext4/mballoc-test.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 044ca5238f41..49aabcfe6b46 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -30,7 +30,31 @@ struct mbt_ext4_super_block {
- #define MBT_CTX(_sb) (&MBT_SB(_sb)->mbt_ctx)
- #define MBT_GRP_CTX(_sb, _group) (&MBT_CTX(_sb)->grp_ctx[_group])
- 
-+static struct inode *mbt_alloc_inode(struct super_block *sb)
-+{
-+	struct ext4_inode_info *ei;
-+
-+	ei = kmalloc(sizeof(struct ext4_inode_info), GFP_KERNEL);
-+	if (!ei)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&ei->i_orphan);
-+	init_rwsem(&ei->xattr_sem);
-+	init_rwsem(&ei->i_data_sem);
-+	inode_init_once(&ei->vfs_inode);
-+	ext4_fc_init_inode(&ei->vfs_inode);
-+
-+	return &ei->vfs_inode;
-+}
-+
-+static void mbt_free_inode(struct inode *inode)
-+{
-+	kfree(EXT4_I(inode));
-+}
-+
- static const struct super_operations mbt_sops = {
-+	.alloc_inode	= mbt_alloc_inode,
-+	.free_inode	= mbt_free_inode,
- };
- 
- static void mbt_kill_sb(struct super_block *sb)
--- 
-2.30.0
-
+It's been a long time since I've seen an x32 bug report.
 
