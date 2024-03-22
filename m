@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-111297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D41886A60
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:32:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F333886A64
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:32:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E09A8285A12
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1E31F23D83
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8D33C699;
-	Fri, 22 Mar 2024 10:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D763E487;
+	Fri, 22 Mar 2024 10:32:39 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EF617575;
-	Fri, 22 Mar 2024 10:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBCD3D0B3;
+	Fri, 22 Mar 2024 10:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711103557; cv=none; b=pPdiwm6jPehEl5xm39mA3Wl7GYa1RREtt0p5B1rDMu6HiRHtf24Tz2GX9tVNhTnENAfiFPwr1AGjz/d5WdcQI1T+TY8DxE8VxOM5+f10RvJiGG7ObjrgASRbZ9H6jtw9AQ2MbFVC5vgKuKa2TbbSoT4kuzOI1Uu28tuP81iDMsQ=
+	t=1711103559; cv=none; b=hNZMd9Swxt8RZldMnsgG+VuKY/X5W6Hb16+iQn4TtZt3Q+PGVyUDcDhjdiauHL8LaGwodbtvj+MEfakeroSbKJRyONdNzeYAMVy8GKyzXTqneUO+bwSPzL1krgzxs8/P722LpOdxIgBhcBUwVLpGwCRrapFT4HHDW6AmOsLZQDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711103557; c=relaxed/simple;
-	bh=rpRBWVBaqmeYGErvSJjv0zKZWE8QSyinu2dYEyNFBDg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YTuVd0IILiS1SR0qHeV7JG1fzQSBip1OghYNgorGdns01kp3ED5okm8oyOwUlaVEVIhD2ytAit6TfP9HunoRmx2OO99qufGX9iUz1b2jyojjyma23MOXuLE7ZPbO4M7hD1EBMgRKEBf5+cCS9d3ZPVtJjIR8Nwd9HP+z0+6/YKk=
+	s=arc-20240116; t=1711103559; c=relaxed/simple;
+	bh=bFPxBTU77mGhL91p/41T1PoxIRZa3kPq4lKmoQM1d+c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=cb0dbITZpJI9qAfkg7FXo8o94TSDhKYke9e+25acwKXKOK3aBn0j3JRLqIZiugXTU7aN0FgZHbaYNNe1ABdHg7H350E1orwT30G2hMEo8LHAeVDdJIZVG0RrL549CKHgG9mDc4uq39HT6qipY0DHxtnpDX9QoFG3bFQT4Ie9jQI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7207C1007;
-	Fri, 22 Mar 2024 03:33:08 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F3671063;
+	Fri, 22 Mar 2024 03:33:11 -0700 (PDT)
 Received: from e129166.arm.com (unknown [10.57.71.57])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E61823F64C;
-	Fri, 22 Mar 2024 03:32:31 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A035E3F64C;
+	Fri, 22 Mar 2024 03:32:34 -0700 (PDT)
 From: Lukasz Luba <lukasz.luba@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org
@@ -47,10 +48,12 @@ Cc: lukasz.luba@arm.com,
 	alim.akhtar@samsung.com,
 	m.szyprowski@samsung.com,
 	mhiramat@kernel.org
-Subject: [PATCH v2 0/4] Update Energy Model after chip binning adjusted voltages
-Date: Fri, 22 Mar 2024 10:32:17 +0000
-Message-Id: <20240322103221.47594-1-lukasz.luba@arm.com>
+Subject: [PATCH v2 1/4] OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+Date: Fri, 22 Mar 2024 10:32:18 +0000
+Message-Id: <20240322103221.47594-2-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240322103221.47594-1-lukasz.luba@arm.com>
+References: <20240322103221.47594-1-lukasz.luba@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,50 +62,98 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi all,
+There are device drivers which can modify voltage values for OPPs. It
+could be due to the chip binning and those drivers have specific chip
+knowledge about it. This adjustment can happen after Energy Model is
+registered, thus EM can have stale data about power.
 
-This is a follow-up patch aiming to add EM modification due to chip binning.
-The first RFC and the discussion can be found here [1].
+Export dev_opp_pm_calc_power() which can be used by Energy Model to
+calculate new power with the new voltage for OPPs.
 
-It uses Exynos chip driver code as a 1st user. The EM framework has been
-extended to handle this use case easily, when the voltage has been changed
-after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
-According to that data in driver tables it could be up to ~29%.
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+ drivers/opp/of.c       | 17 ++++++++++++-----
+ include/linux/pm_opp.h |  8 ++++++++
+ 2 files changed, 20 insertions(+), 5 deletions(-)
 
-This chip binning is applicable to a lot of SoCs, so the EM framework should
-make it easy to update. It uses the existing OPP and DT information to
-re-calculate the new power values.
-
-
-Changes:
-v2:
-- removed 'ret' from error message which wasn't initialized (Christian)
-v1:
-- exported the OPP calculation function from the OPP/OF so it can be
-  used from EM fwk (Viresh)
-- refactored EM updating function to re-use common code
-- added new EM function which can be used by chip device drivers which
-  modify the voltage in OPPs
-RFC is at [1]
-
-Regards,
-Lukasz Luba
-
-[1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
-
-Lukasz Luba (4):
-  OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
-  PM: EM: Change the em_adjust_new_capacity() to re-use code
-  PM: EM: Add em_dev_update_chip_binning()
-  soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
-
- drivers/opp/of.c                 |  17 +++--
- drivers/soc/samsung/exynos-asv.c |  11 +++-
- include/linux/energy_model.h     |   5 ++
- include/linux/pm_opp.h           |   8 +++
- kernel/power/energy_model.c      | 109 +++++++++++++++++++++++++------
- 5 files changed, 125 insertions(+), 25 deletions(-)
-
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index f9f0b22bccbb4..282eb5966fd03 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -1494,20 +1494,26 @@ _get_dt_power(struct device *dev, unsigned long *uW, unsigned long *kHz)
+ 	return 0;
+ }
+ 
+-/*
+- * Callback function provided to the Energy Model framework upon registration.
++/**
++ * dev_pm_opp_calc_power() - Calculate power value for device with EM
++ * @dev		: Device for which an Energy Model has to be registered
++ * @uW		: New power value that is calculated
++ * @kHz		: Frequency for which the new power is calculated
++ *
+  * This computes the power estimated by @dev at @kHz if it is the frequency
+  * of an existing OPP, or at the frequency of the first OPP above @kHz otherwise
+  * (see dev_pm_opp_find_freq_ceil()). This function updates @kHz to the ceiled
+  * frequency and @uW to the associated power. The power is estimated as
+  * P = C * V^2 * f with C being the device's capacitance and V and f
+  * respectively the voltage and frequency of the OPP.
++ * It is also used as a callback function provided to the Energy Model
++ * framework upon registration.
+  *
+  * Returns -EINVAL if the power calculation failed because of missing
+  * parameters, 0 otherwise.
+  */
+-static int __maybe_unused _get_power(struct device *dev, unsigned long *uW,
+-				     unsigned long *kHz)
++int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
++			  unsigned long *kHz)
+ {
+ 	struct dev_pm_opp *opp;
+ 	struct device_node *np;
+@@ -1544,6 +1550,7 @@ static int __maybe_unused _get_power(struct device *dev, unsigned long *uW,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(dev_pm_opp_calc_power);
+ 
+ static bool _of_has_opp_microwatt_property(struct device *dev)
+ {
+@@ -1619,7 +1626,7 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
+ 		goto failed;
+ 	}
+ 
+-	EM_SET_ACTIVE_POWER_CB(em_cb, _get_power);
++	EM_SET_ACTIVE_POWER_CB(em_cb, dev_pm_opp_calc_power);
+ 
+ register_em:
+ 	ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus, true);
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index 065a47382302c..31370deb9905f 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -476,6 +476,8 @@ struct device_node *dev_pm_opp_get_of_node(struct dev_pm_opp *opp);
+ int of_get_required_opp_performance_state(struct device_node *np, int index);
+ int dev_pm_opp_of_find_icc_paths(struct device *dev, struct opp_table *opp_table);
+ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus);
++int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
++			  unsigned long *kHz);
+ static inline void dev_pm_opp_of_unregister_em(struct device *dev)
+ {
+ 	em_dev_unregister_perf_domain(dev);
+@@ -539,6 +541,12 @@ static inline void dev_pm_opp_of_unregister_em(struct device *dev)
+ {
+ }
+ 
++static inline int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
++			  unsigned long *kHz)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int of_get_required_opp_performance_state(struct device_node *np, int index)
+ {
+ 	return -EOPNOTSUPP;
 -- 
 2.25.1
 
