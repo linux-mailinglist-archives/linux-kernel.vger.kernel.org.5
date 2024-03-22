@@ -1,132 +1,177 @@
-Return-Path: <linux-kernel+bounces-111771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BE5B8870C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97AA78870CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F3021F23CBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:19:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECB11F21FDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A59159B5F;
-	Fri, 22 Mar 2024 16:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 124835820C;
+	Fri, 22 Mar 2024 16:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b="edP+l9Ib"
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="Ip4ViCWf"
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FA65820C
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E50D57876;
+	Fri, 22 Mar 2024 16:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711124351; cv=none; b=KeD4Q7TR0RipfmkQv6DJ+Po1gp3ha7eh0bOfQTUw6yAmDpgnvDJv3vUesE26sC45j3eqYe6BmzMKvBmMh1NTxhdDoqgUdnhI5r08n86+pf1f272gUsbBNAKQ223Uevyk6A2F0NqELQqdwACs5kJuWXsZJlF9F2QSOGtRKJjyZ+I=
+	t=1711124562; cv=none; b=tkADdNLz/hxZynMV7dQvTCSY0g1D8fJr/OmSeKv0XkbVQJTL0hJwLCKwSyT5/+yUOJwIsJeSUg/1g9vPTly8lkye6lrO0KfeiZYrGd1pfnIlyKEKQl2HRj2UfCigFdCDwk62GhJyEmVvvUxTqw/jxDR8xDIs4Q7KlgEu88HFAj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711124351; c=relaxed/simple;
-	bh=pRMg/t6wZBrXTf4eCE43zA/56qnnDkoAuBkVWGZYyic=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tJOKZPw/IPxrMEbz4n+6ctggbKMTWFcMGKsHO+6ChdO4EOUPS2pav4l8GnB4VL2RSyjbIpHF3oAqwlW6h//86f0FL2Csi9wi1YlZIfTyQ2Rgklnb1JUHj16iQ5a6BV5i2ccDkpEjytirnleATbxb0BMyaMWxfT6Mu9vaSszai8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net; spf=pass smtp.mailfrom=craftyguy.net; dkim=pass (2048-bit key) header.d=craftyguy.net header.i=@craftyguy.net header.b=edP+l9Ib; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=craftyguy.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=craftyguy.net
-Date: Fri, 22 Mar 2024 09:18:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=craftyguy.net;
-	s=key1; t=1711124343;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pRMg/t6wZBrXTf4eCE43zA/56qnnDkoAuBkVWGZYyic=;
-	b=edP+l9Ibbgtc8Vbzfc5iQXpNnl9xNH2sqO08Nd8rF5tjabh8YwZbbmW70v7KjHidoXTAno
-	g5swq3UNoo/f6CmlgcUi2bAFjtysd78faP1RclxupYnCEk1FHB6jEqujqj/VyCkqmbVo2M
-	1QUbmbapLgxR74iNQjks8qqm+i/mll1tiXQ7Ra0FqVkHctBVnhhLSDGxmFZ/k3W6ISqGS1
-	qYmYgSL7tdGdvnM2F+jAD6tWX6pugCyAsfSag1CgktnXmkGNzCutSCtQfAlHpC3qfy54dY
-	wPyIYErSIfnJFRS2i5gFX1s03OECTRnvuinP+qBLUMgf8Eoqs1s71F2ZB+daJg==
-Message-ID: <20240322091857.GM8211@craftyguy.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Clayton Craft <clayton@craftyguy.net>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- regressions@lists.linux.dev
-Subject: Re: x86_64 32-bit EFI mixed mode boot broken
-In-Reply-To: <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
-References: <20240321150510.GI8211@craftyguy.net>
- <CAMj1kXGzH4TiwvSF3bZsJpuuWf04Ri_852fUMTdH8pLRaH3+Yg@mail.gmail.com>
- <20240321170641.GK8211@craftyguy.net>
- <CAMj1kXE-sxGM2H8akunJ1mZPDSVX1+2ehDtK-jqW--8tw9J5LA@mail.gmail.com>
+	s=arc-20240116; t=1711124562; c=relaxed/simple;
+	bh=MAE8WIHU9ta7n4x/BR5+OwfH/AdkCJB+DKep9CrSiJ4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WU6L7jKXUFPk3aDOtkKkN3SfREgFK7IAXzX05wqAG+e7t+dZBoyBj/lo7jXik4/6Y+yThKCQm2HQU/cWaRue7VlMa9LO+L7zBzOGBCOWtvuuty/3eL8sLZte9+R/RzIT9KcQK3APyysYM3vdffFN7Y68A4XOdd4367rIUVTu3Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=Ip4ViCWf; arc=none smtp.client-ip=148.163.143.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
+	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42MDWoAc020466;
+	Fri, 22 Mar 2024 16:21:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pps0720;
+ bh=UkvndrBpowbSq2m7Khs+/6kDy0TN1ypmmFxO26zOD98=;
+ b=Ip4ViCWf/re1gFk8m+T/teZhgpZs46nWSlanj0dgUdQM+i3bi6ofXxeEhI0whQMxJQxP
+ 55CHzRjLhQqxA9Fvv1CyvB30sh1I72nWJ6f7ZvvMl/jTYYvaZGKQWTxRd0Q8NOqPjuBx
+ PLMShfMn/BGNilt7LHzLs4T10FIRDOfLkEK2XyW+oI9LSDxTX4x3YnR93LpO2AgNqkn0
+ w7pxLQKU8ERnIBwQXSvOoWGwZLvH67X22uDS1/dg4nrsUT/48KTmYTZxHIOyMR5D7e6m
+ JS1ZILLydV4+/XXoNiNjuMSVcdANOybSJcJW3R3fl/bVabV8uKdxiywkBRNnD6L7mlqW Ow== 
+Received: from p1lg14881.it.hpe.com ([16.230.97.202])
+	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3x183dbayg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 16:21:57 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id EC9B68059E3;
+	Fri, 22 Mar 2024 16:21:55 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (unknown [16.231.227.36])
+	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id DA6E9808350;
+	Fri, 22 Mar 2024 16:21:51 +0000 (UTC)
+Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 200934)
+	id A1A6B3000059D; Fri, 22 Mar 2024 11:21:35 -0500 (CDT)
+From: Steve Wahl <steve.wahl@hpe.com>
+To: Steve Wahl <steve.wahl@hpe.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+        Eric Hagberg <ehagberg@gmail.com>
+Cc: Simon Horman <horms@verge.net.au>, Eric Biederman <ebiederm@xmission.com>,
+        Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+        Russ Anderson <rja@hpe.com>, Dimitri Sivanich <sivanich@hpe.com>
+Subject: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps except on UV platform.
+Date: Fri, 22 Mar 2024 11:21:35 -0500
+Message-Id: <20240322162135.3984233-1-steve.wahl@hpe.com>
+X-Mailer: git-send-email 2.26.2
+X-Proofpoint-GUID: oYOSRYdA2RlWrO_MVfNl-dLggOq7mrmq
+X-Proofpoint-ORIG-GUID: oYOSRYdA2RlWrO_MVfNl-dLggOq7mrmq
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="ZDwzZQYzZVCy0qwd"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-X-Migadu-Flow: FLOW_OUT
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_08,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 adultscore=0
+ clxscore=1011 spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403220117
 
+Some systems have ACPI tables that don't include everything that needs
+to be mapped for a successful kexec.  These systems rely on identity
+maps that include the full gigabyte surrounding any smaller region
+requested for kexec success.  Without this, they fail to kexec and end
+up doing a full firmware reboot.
 
---ZDwzZQYzZVCy0qwd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: base64
+So, reduce the use of GB pages only on systems where this is known to
+be necessary (specifically, UV systems).
 
-T24gRnJpLCAyMiBNYXIgMjAyNCAxMzo1MjowNSArMDEwMCBBcmQgQmllc2hldXZlbCA8YXJkYkBr
-ZXJuZWwub3JnPiB3cm90ZToKPiBUaGF0IGRlcGVuZHMgb24gdGhlIGJvb3Rsb2FkZXIuIE9uZSBv
-ZiB0aGUgY2hhbmdlcyBhcm91bmQgdGhhdCB0aW1lIGlzCj4gdGhlIGludHJvZHVjdGlvbiBvZiB0
-aGlzIEtjb25maWcgc3ltYm9sOiBiZWZvcmUgdGhhdCwgdGhlIEVGSSBoYW5kb3Zlcgo+IHByb3Rv
-Y29sIHdhcyBhbHdheXMgc3VwcG9ydGVkIGJ1dCBub3cgaXQgY2FuIGJlIGNvbXBpbGVkIG91dC4g
-U28gdGhlCj4gc2FmZSBjaG9pY2UgaXMgdG8gZW5hYmxlIGl0LgoKSSBhbSB1c2luZyBzeXN0ZW1k
-LWJvb3QsIGFuZCBiYXNlZCBvbiBteSB1bmRlcnN0YW5kaW5nIG9mIGl0cyBzb3VyY2UgaXQgc2Vl
-bXMgdG8Kb25seSB1c2UgaGFuZG92ZXIgb24gb2xkIGtlcm5lbHMgdGhhdCBkb24ndCBzdXBwb3J0
-IExJTlVYX0lOSVRSRF9NRURJQV9HVUlELgo+IAo+IEhvd2V2ZXIsIHdoaWxlIGxvb2tpbmcgbW9y
-ZSBkZWVwbHkgaW50byB0aGlzLCBJIG5vdGljZWQgdGhhdCB3ZSBhcmUKPiBydW5uaW5nIHF1aXRl
-IGxvdyBvd24gc3RhY2sgc3BhY2UuIE1peGVkIG1vZGUgaXMgZGlmZmVyZW50IGJlY2F1c2UgaXQK
-PiBjYWxscyBpbnRvIHRoZSBib290IHNlcnZpY2VzIHVzaW5nIHRoZSBkZWNvbXByZXNzb3IncyBi
-b290IHN0YWNrLAo+IHJhdGhlciB0aGFuIHVzaW5nIHRoZSBvbmUgdGhhdCB3YXMgcHJvdmlkZWQg
-YnkgZmlybXdhcmUgYXQgZW50cnkuCj4gKE5vdGUgdGhhdCB0aGUgVUVGSSBzcGVjIG1hbmRhdGVz
-IDEyOGsgb2Ygc3RhY2sgc3BhY2UpCj4gCj4gSW4gbXkgY2FzZSwgSSBiaXNlY3RlZCB0aGUgcmVn
-cmVzc2lvbiB0bwo+IAo+IGNvbW1pdCA1YzRmZWFkYjAwMTE5ODNiYmM0NTg3YmM2MTA1NmM3YjM3
-OWQ5OTY5IChIRUFEKQo+IEF1dGhvcjogQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9yZz4K
-PiBEYXRlOiAgIE1vbiBBdWcgNyAxODoyNzoxNiAyMDIzICswMjAwCj4gCj4gICAgIHg4Ni9kZWNv
-bXByZXNzb3I6IE1vdmUgZ2xvYmFsIHN5bWJvbCByZWZlcmVuY2VzIHRvIEMgY29kZQo+IAo+IHdo
-aWNoIG1vdmVzIHRoZSBib290IHN0YWNrIGludG8gYSBkaWZmZXJlbnQgbWVtb3J5IHJlZ2lvbi4g
-Rm9ybWVybHksCj4gd2UnZCBlbmQgdXAgYXQgdGhlIGZhciBlbmQgb2YgdGhlIGhlYXAgd2hlbiBv
-dmVycnVubmluZyB0aGUgc3RhY2sgYnV0Cj4gbm93LCB3ZSBlbmQgdXAgY3Jhc2hpbmcuIE9mIGNv
-dXJzZSwgb3ZlcndyaXRpbmcgdGhlIGhlYXAgY2FuIGNhdXNlCj4gcHJvYmxlbXMgb2YgaXRzIG93
-biwgc28gd2UnbGwgbmVlZCB0byBidW1wIHRoaXMgaW4gYW55IGNhc2UuCj4gCj4gQ291bGQgeW91
-IGdpdmUgdGhpcyBhIHRyeSBwbGVhc2U/Cj4gCj4gCj4gLS0tIGEvYXJjaC94ODYvaW5jbHVkZS9h
-c20vYm9vdC5oCj4gKysrIGIvYXJjaC94ODYvaW5jbHVkZS9hc20vYm9vdC5oCj4gQEAgLTM4LDcg
-KzM4LDcgQEAKPiAgI2VuZGlmCj4gCj4gICNpZmRlZiBDT05GSUdfWDg2XzY0Cj4gLSMgZGVmaW5l
-IEJPT1RfU1RBQ0tfU0laRSAgICAgICAweDQwMDAKPiArIyBkZWZpbmUgQk9PVF9TVEFDS19TSVpF
-ICAgICAgIDB4MTAwMDAKPiAKPiAgLyoKPiAgICogVXNlZCBieSBkZWNvbXByZXNzb3IncyBzdGFy
-dHVwXzMyKCkgdG8gYWxsb2NhdGUgcGFnZSB0YWJsZXMgZm9yIGlkZW50aXR5CgpKdXN0IGdhdmUg
-dGhpcyBhIHRyeSwgb24gNi4xLjgyLCBhbmQgdGhlIHN5c3RlbSBzdGlsbCByZWJvb3RzIGFmdGVy
-IHNlbGVjdGluZwp0aGUga2VybmVsIGluIHRoZSBib290bG9hZGVyLiBTbyBpdCBzZWVtcyBsaWtl
-IG15IHByb2JsZW0gaXMgZGlmZmVyZW50LgoKQXMgSSBtZW50aW9uZWQgaW5pdGlhbGx5LCBJIGJp
-c2VjdGVkIG15IGZhaWx1cmUgdG8gZTJhYjllYWIzMi4gRG9lcyB0aGF0IGdpdmUKYW55IGhpbnQg
-YWJvdXQgd2hhdCBtaWdodCBiZSB0aGUgcHJvYmxlbT8KCi1DbGF5dG9uCg==
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+Fixes: d794734c9bbf ("x86/mm/ident_map: Use gbpages only where full GB page should be mapped.")
+Reported-by: Pavin Joseph <me@pavinjoseph.com>
+Closes: https://lore.kernel.org/all/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
+Tested-by: Pavin Joseph <me@pavinjoseph.com>
+Tested-by: Eric Hagberg <ehagberg@gmail.com>
+Tested-by: Sarah Brofeldt <srhb@dbc.dk>
+---
+ arch/x86/include/asm/init.h        |  1 +
+ arch/x86/kernel/machine_kexec_64.c |  3 +++
+ arch/x86/mm/ident_map.c            | 13 +++++++------
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
---ZDwzZQYzZVCy0qwd
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/x86/include/asm/init.h b/arch/x86/include/asm/init.h
+index cc9ccf61b6bd..4ae843e8fefb 100644
+--- a/arch/x86/include/asm/init.h
++++ b/arch/x86/include/asm/init.h
+@@ -10,6 +10,7 @@ struct x86_mapping_info {
+ 	unsigned long page_flag;	 /* page flag for PMD or PUD entry */
+ 	unsigned long offset;		 /* ident mapping offset */
+ 	bool direct_gbpages;		 /* PUD level 1GB page support */
++	bool direct_gbpages_always;	 /* use 1GB pages exclusively */
+ 	unsigned long kernpg_flag;	 /* kernel pagetable flag override */
+ };
+ 
+diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
+index b180d8e497c3..1e1c6633bbec 100644
+--- a/arch/x86/kernel/machine_kexec_64.c
++++ b/arch/x86/kernel/machine_kexec_64.c
+@@ -28,6 +28,7 @@
+ #include <asm/setup.h>
+ #include <asm/set_memory.h>
+ #include <asm/cpu.h>
++#include <asm/uv/uv.h>
+ 
+ #ifdef CONFIG_ACPI
+ /*
+@@ -212,6 +213,8 @@ static int init_pgtable(struct kimage *image, unsigned long start_pgtable)
+ 
+ 	if (direct_gbpages)
+ 		info.direct_gbpages = true;
++	if (!is_uv_system())
++		info.direct_gbpages_always = true;
+ 
+ 	for (i = 0; i < nr_pfn_mapped; i++) {
+ 		mstart = pfn_mapped[i].start << PAGE_SHIFT;
+diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+index a204a332c71f..8039498b9713 100644
+--- a/arch/x86/mm/ident_map.c
++++ b/arch/x86/mm/ident_map.c
+@@ -39,12 +39,13 @@ static int ident_pud_init(struct x86_mapping_info *info, pud_t *pud_page,
+ 		/* Is using a gbpage allowed? */
+ 		use_gbpage = info->direct_gbpages;
+ 
+-		/* Don't use gbpage if it maps more than the requested region. */
+-		/* at the begining: */
+-		use_gbpage &= ((addr & ~PUD_MASK) == 0);
+-		/* ... or at the end: */
+-		use_gbpage &= ((next & ~PUD_MASK) == 0);
+-
++		if (!info->direct_gbpages_always) {
++			/* Don't use gbpage if it maps more than the requested region. */
++			/* at the beginning: */
++			use_gbpage &= ((addr & ~PUD_MASK) == 0);
++			/* ... or at the end: */
++			use_gbpage &= ((next & ~PUD_MASK) == 0);
++		}
+ 		/* Never overwrite existing mappings */
+ 		use_gbpage &= !pud_present(*pud);
+ 
+-- 
+2.26.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEkdOrrjmBP3eB7DeWSkztbX7flQoFAmX9r3EACgkQSkztbX7f
-lQrrVw/9Fb/e4pVj5RoGppymFb9gjfxLYT21kL08bq3otfPXNTif7telFvum9WTg
-9iua6RX0TYnUoJ5wj74XhoDjFyJpzqNk2dPNyMKENCcqJ+5YwZYFWUcZNqTGIttt
-n94TMqowODXjZgAcUxmWqyLMgdHyK9FnoXlVGD15o060B3Px69qub/VUtnfSc8DC
-DX8qsHbbarYEE0mX15Z9PynuEdz3y5f2spNFYkLJzM6/brrNOJ6jRInV3t32YMZD
-oBPFg7NaarSEjTJhp051DyUaa4rZU+TgxOF8wKCgzTiGj1kTj9AtTIaeIE6uCB6R
-ADNTYFjrcccCUNdFg8FXR9YxDtRbsyCN+CaziXIAC6rRWwAAk3Q0PKdJvvjJjCsY
-m6F08lb+3VdFmz7WRuCAXFWVjjXVXKCRgiPxtsmYW4dKrID9hrmHU8ulJqQJuPIn
-t14ex4BvOz2/mRGCJd4e13nm3lsk4DjW9JNbo1aLscED5AtrZpcjq5Um5+WS0Icn
-qJzahTfWX0H8lT/xLTe9dQBf/T/LqzqRyzJjvw3ThyQe+1Fu2vXNpd2t4fLaexCs
-vYtjBatMyLwAp8EP2ILpDCGyD+aMv4DWgXKjnhYqZ50TpHE0nyUa/HOrvnC25YSj
-1y8JOfHH1QW3HVkEFS1oy61TaB2SA8tZDrMFvZ6O9X6FoGB4uPQ=
-=QTbx
------END PGP SIGNATURE-----
-
---ZDwzZQYzZVCy0qwd--
 
