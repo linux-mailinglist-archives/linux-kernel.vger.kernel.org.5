@@ -1,115 +1,218 @@
-Return-Path: <linux-kernel+bounces-111888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8353887237
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:53:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802BA88723A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6377E286354
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:53:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ACEF283527
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E16C60884;
-	Fri, 22 Mar 2024 17:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B077B60893;
+	Fri, 22 Mar 2024 17:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYDitwiE"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZLseMYIp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BDD60870;
-	Fri, 22 Mar 2024 17:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47ED605A3;
+	Fri, 22 Mar 2024 17:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130008; cv=none; b=Y40dH+Zov3OlX+DmGtmTYiK7T1tkXZseEhyVUXUG1LBwwoFzEb1rIri88+ecvFRtItMpwxk21uiPR8XFXctT0PHbPvNRMhtb97oMgjSnB+0hqt4KNBSr2/fR9608q55jdHFCDBfvLdJF/dctzZS6DMV5874Hsewm0GHMI1Uf3uo=
+	t=1711130053; cv=none; b=kPP4++dCUn04e+r2mCyh2BJLMsWGHwPtf9tjEJdSMDG8HdKcVBoN+pvSGMMr7bJrOgYGGphTgCViCEPlIL/JV/5IgXBI32dbYavuR7bqsTTmkXCAXWwJLAlQKs6OCmQm6vDaZ46SZmqA0wEZ+lzEoUPI88xiJBcnKaqCxR+8aZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130008; c=relaxed/simple;
-	bh=3okg2nCtpcHovwhd9a5YOgqHuxf374h/daEvN1hzJwE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e+vqbx2jR73so0oWSjz1fUx6A2s9hNQf0VX4i1Rzy+XDAwL5pWL7Co2kjlT4E8oTYK6RWwP+3tlyBNDffazYwZHOcDTC3ZLmkNc9TPlYXsvFchM3Ci9kG+YLR/HE0Ig+t9+G+xNHjbSQbvH6c4nWmsCYE4wpHa6iSdbvOXYU8fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYDitwiE; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41412411622so17460365e9.2;
-        Fri, 22 Mar 2024 10:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711130005; x=1711734805; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NvXjyZRIsX3lCQckyZs7+3J5BKrWLMCYkqrtzm7pV+U=;
-        b=HYDitwiESpmKjW3FZIf/fq6/4nkzWoX1hNByR70UW7dvdaAHwnF6GEU/gql4XGT/5h
-         lZfNs3vKlDpp51rA7+m66KNnvqm1nU8IZQeYKTZXAQuve4dKDeJRzutN7JWwuQfI0hms
-         +y3V1pltump+XefgAVyIEJIDq0bKAy1r9+RGC65ov14p8BVu0WULWOo38u6ur1iQa8L9
-         MJKwT7Fplc32pKIm42r585fLDV+Y635vo4AYRngCV0OonRv16eCVB16T4OBdHQtbRxtt
-         pjv7vJOmcD6syNgckwEmFwzLw4lBh205GI3AWRN61IASjcKlgJo5/G5Axu5tj42+VKFB
-         pUuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711130005; x=1711734805;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NvXjyZRIsX3lCQckyZs7+3J5BKrWLMCYkqrtzm7pV+U=;
-        b=v26AiM8eR3V1DX/GcYZtQmI4aynMbGyES3Hc6q72Aeb+/3rfw0Zb9xPXjD61jWuLHb
-         Rjdnguf43ERmjOzdrIRXTQm8DJPzoDhifLqS//85V7GT+kxQ8THN5/BO6ESpybPc/lou
-         4UDkOPSP2wh1dsPK0nPRyrNxWFvf7zAnSVExhkC1oSyuOCzTb6EiwrVsp3PN/ZskzCNY
-         e7Kx90EPcbl3i6tP7FJ0cewMKu9AutaATX2d4gvDgb9wmtv9IMulMz3JOBQ9XD5NJKor
-         BXZyyp+XmKOYUrgl5ZGv3UmC+PMMGINQH6v/vk/bQo4uuzgBnilYWsdsz6AFBaEP53Kf
-         2Wwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVGglLm1RSm52mpJa8R6J5Ty0xOsKLKdwqsIuoQF/4DcuQbB6RPhfHLZfDXK0aGrOfdbU9jd7iqpDV5UhvDVmxJtlPa4Zk8Oym6Kcys
-X-Gm-Message-State: AOJu0YyB+33fzSmUlhqGqWFsvEYTGKRzPf/qIGWqlxa6HEnyBhWLTgWC
-	Jzncrr+Rozp7GIE7ski8zykbe3uwZ6OQ5zYJto1rERCYZjOR6ReK
-X-Google-Smtp-Source: AGHT+IHxjHPv/v+DpHWehxUnaB5GtSMqzhtlwIDZzBh0n67GjHG9uFAGtqczAvCRNa6q2nNvmOdnWw==
-X-Received: by 2002:a05:600c:5843:b0:414:63c2:71bf with SMTP id ka3-20020a05600c584300b0041463c271bfmr32880wmb.41.1711130005267;
-        Fri, 22 Mar 2024 10:53:25 -0700 (PDT)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id c13-20020a05600c0a4d00b0041461a922c2sm169508wmq.5.2024.03.22.10.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 10:53:24 -0700 (PDT)
-From: Ilya Dryomov <idryomov@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: ceph-devel@vger.kernel.org,
+	s=arc-20240116; t=1711130053; c=relaxed/simple;
+	bh=cuEt0R+/b/OljUG03tx8fQcLhAkGOfqCIl+FHBVR1u4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H+6lv89h4TFsPgqNXLfwOVzJiTvosMfb4o4z8nxCsHMTxYsWxaA6HU6u2gbnAjzxxJm+vXyheWZ2PDLYwCT0lczAdnsIMxNGt/H8upnGKE03w+hRgpJ4iDiCpG5a+CpR/g+ZwQ4ggh/G2gkMH1LdirHs2YqAa6iimhDGn1Jz8TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZLseMYIp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA043C43390;
+	Fri, 22 Mar 2024 17:54:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711130052;
+	bh=cuEt0R+/b/OljUG03tx8fQcLhAkGOfqCIl+FHBVR1u4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZLseMYIp9W0rxvFDH/VAZuwtH7tqFA+4borkS9S8MI+m3S2Tm+0VpmmM7MtvARqJF
+	 W4/yvVKch22j+FjQqV/yuoZhpx08quQe9ql1REpy/x226FzLUu54MZalvxf03x/y9m
+	 geOLi8lkiX3UPOYLARypRZuqCz9DE9zoDOmho7RirACzt4V/WOoDQiRptgwNg0e8RB
+	 N927ATfXYQaxO60ajvGG/wHaeeSubfGKlAnwV1KvOQJSRpDaFg1KLzvrGNJUZpL0T6
+	 ZIDCuEik6FMWJKkDMhLutqT6ewvAcboIs9peAZVcYwXtbhW/j1pLhUuQbAy6RgTMKr
+	 TTn5fySWdRnqA==
+Date: Fri, 22 Mar 2024 17:54:08 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Allen_Lin <allencl_lin@hotmail.com>
+Cc: dmitry.torokhov@gmail.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jikos@kernel.org, benjamin.tissoires@redhat.com,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 6.9-rc1
-Date: Fri, 22 Mar 2024 18:53:07 +0100
-Message-ID: <20240322175308.2289495-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+Subject: Re: [PATCH v1 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
+Message-ID: <20240322-mammary-boil-f9a4c347fba1@spud>
+References: <20240322085606.993896-1-allencl_lin@hotmail.com>
+ <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hK1Zc8DPJQdpQOE2"
+Content-Disposition: inline
+In-Reply-To: <TY0PR06MB56116F0902017225C78EDDDD9E312@TY0PR06MB5611.apcprd06.prod.outlook.com>
 
-Hi Linus,
 
-The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+--hK1Zc8DPJQdpQOE2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  Linux 6.8 (2024-03-10 13:38:09 -0700)
+On Fri, Mar 22, 2024 at 04:56:03PM +0800, Allen_Lin wrote:
+> Add the HX83102j touchscreen device tree bindings documents.
+> HX83102j is a Himax TDDI touchscreen controller.
+> It's power sequence should be bound with a lcm driver, thus it
+> needs to be a panel follower. Others are the same as normal SPI
+> touchscreen controller.
+>=20
+> Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
 
-are available in the Git repository at:
+note to self/Krzysztof/Rob:
+There was a previous attempt at this kind of device. This version looks
+better but might be incomplete given there's a bunch more properties in
+that patchset:
+https://lore.kernel.org/all/20231017091900.801989-1-tylor_yang@himax.corp-p=
+artner.google.com/
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.9-rc1
+> ---
+>  .../input/touchscreen/himax,hx83102j.yaml     | 73 +++++++++++++++++++
+>  MAINTAINERS                                   |  6 ++
+>  2 files changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/h=
+imax,hx83102j.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/himax,hx=
+83102j.yaml b/Documentation/devicetree/bindings/input/touchscreen/himax,hx8=
+3102j.yaml
+> new file mode 100644
+> index 000000000000..6c0a1ebf8d91
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.=
+yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/himax,hx83102j.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Himax hx83102j touchscreen
+> +
+> +maintainers:
+> +  - Allen Lin <allencl_lin@hotmail.com>
+> +
+> +description:
+> +  This Himax hx83102j touchscreen uses the spi protocol.
+> +
+> +allOf:
+> +  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: himax,hx83102j
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  spi-cpha: true
+> +
+> +  spi-cpol: true
+> +
+> +  spi-max-frequency: true
+> +
+> +  panel: true
+> +
+> +  himax,pid:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      PID for HID device, used to load correct firmware.
 
-for you to fetch changes up to 825b82f6b82aa38dbb771d24e135152012500e51:
+One thing I did comment on that old patchset is why you cannot just use
+firmware-name here?
 
-  ceph: set correct cap mask for getattr request for read (2024-03-19 14:35:55 +0100)
+Cheers,
+Conor.
 
-----------------------------------------------------------------
-A patch to minimize blockage when processing very large batches of
-dirty caps and two fixes to better handle EOF in the face of multiple
-clients performing reads and size-extending writes at the same time.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset-gpios
+> +  - panel
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +      ap_ts: touchscreen@0 {
+> +        compatible =3D "himax,hx83102j";
+> +        reg =3D <0>;
+> +        pinctrl-names =3D "default";
+> +        pinctrl-0 =3D <&touch_int0 &touch_reset>;
+> +        reset-gpios =3D <&gpio1 8 GPIO_ACTIVE_LOW>;
+> +        spi-cpha;
+> +        spi-cpol;
+> +        interrupt-parent =3D <&gpio1>;
+> +        interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
+> +        panel =3D <&panel>;
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 43b39956694a..aa51c60fd66d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9669,6 +9669,12 @@ L:	linux-kernel@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/misc/hisi_hikey_usb.c
+> =20
+> +HIMAX HID HX83102J TOUCHSCREEN
+> +M:	Allen Lin <allencl_lin@hotmail.com>
+> +L:	linux-input@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.ya=
+ml
+> +
+>  HIMAX HX83112B TOUCHSCREEN SUPPORT
+>  M:	Job Noorman <job@noorman.info>
+>  L:	linux-input@vger.kernel.org
+> --=20
+> 2.34.1
+>
 
-----------------------------------------------------------------
-Chengming Zhou (1):
-      ceph: remove SLAB_MEM_SPREAD flag usage
+--hK1Zc8DPJQdpQOE2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Xiubo Li (3):
-      ceph: break the check delayed cap loop every 5s
-      ceph: stop copying to iter at EOF on sync reads
-      ceph: set correct cap mask for getattr request for read
+-----BEGIN PGP SIGNATURE-----
 
- fs/ceph/caps.c  |  8 ++++++++
- fs/ceph/file.c  | 31 ++++++++++++++++++-------------
- fs/ceph/super.c | 18 +++++++++---------
- 3 files changed, 35 insertions(+), 22 deletions(-)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3FwAAKCRB4tDGHoIJi
+0gyYAP9Md446e439eml8dXX9grwTZoejgH0BhgAAWh8Q7P4ATwEA3PgLj7r0Tl9p
+tDry6VYILvNuLKpI13WhewztAPskIAk=
+=PNnb
+-----END PGP SIGNATURE-----
+
+--hK1Zc8DPJQdpQOE2--
 
