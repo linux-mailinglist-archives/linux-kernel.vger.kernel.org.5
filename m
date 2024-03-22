@@ -1,186 +1,131 @@
-Return-Path: <linux-kernel+bounces-111790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7078887105
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:40:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F7D887104
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33BF7B22725
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:40:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7359C1C22723
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1374B5D468;
-	Fri, 22 Mar 2024 16:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9012F5D47B;
+	Fri, 22 Mar 2024 16:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QtD5iCkR"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iXoFqmac"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A36F5674C
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 16:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BFB59163;
+	Fri, 22 Mar 2024 16:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711125612; cv=none; b=ldHU+JCMYqEy+L57FYzEf7mm0RMt/fb0Xriii6WclrjxRcq1nsppEQI7aMgTnpM7nuz9TIBYWFSNFdJsZHHgnoKBxMkEM0r0/VVfkcowtiTvsMAJkVphzHELaSzynTROv0r9xSgXzWgMXhoHbIgNg33kxz3CyAyhkg0SbdU95l4=
+	t=1711125597; cv=none; b=jsd5DTfJdutP+0aXWmF8LzSWE096CjpxRLUEzhNRdNLeBEfm34AmRgGjiWPlRxCfpIhoFnzZPhVX58I+MtURsU5uDJM14J4RhaRnvcdw6A67bV+c/7JXcxlR3/8eyAiR8wj0asp6snIFJAzpf8av2qdvwD/cPCS5JGkB6FHj3nU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711125612; c=relaxed/simple;
-	bh=be5YocDWCbRGR4uAZlmMAzBgoMxaC0MoO2MNArRgWlk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AaL4YstlnFDpcHnmME8PCk3LT9YyrdOaSGXCFd/y5g5osU7p9jP70Fbcowj/n/nhz7j3UFPAa4/7cenSfrW1jRMXwfaGDLM8WOrIBj8TADdS5bbl1qO4/EIEcknunu4RrWwPSkXkYB8GNXUfjnnCYQdvnOB08lgpX5QFPaBXqHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QtD5iCkR; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711125608;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=alKuNVPMUZUInvf3FonZiSKCsCjs3x5ZGIB2V/RJ1Bc=;
-	b=QtD5iCkRCOfhonm2ViUGyN7iojeqGcmSW/yx+PEgNH3oECNvazjIbddo34MdYyNpjZy5zn
-	fczjHWvReG1rzqrjx+YygIGC3C+mhwCueqod20QSEa+FBl2L+wCkWsSPtoHSv9PTmjXYfn
-	zkOFNv+gtBAR+CY9T1yxCLa8bVZ3ID4=
-From: chengming.zhou@linux.dev
-To: hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	nphamcs@gmail.com,
-	chengming.zhou@linux.dev,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Subject: [RFC PATCH] mm: add folio in swapcache if swapin from zswap
-Date: Sat, 23 Mar 2024 00:39:39 +0800
-Message-Id: <20240322163939.17846-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1711125597; c=relaxed/simple;
+	bh=7v+ihhXci5sqhX8V+jNruf1JVBOlr5+Ra+WTdULUBEc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OVjKzvZ+IhWhLZrqH7g3Nlfcsto6t8O4PCzHTX5t90d0QpPn/HAzb69gl98ihFxDuy3H3k3ErtgPkwiPWIXnD3PtYHwXrPZexXOd8DgiIn2C8giRiSiehRwdpAPgbEgSdJ5vG8vr/YlAm1tpnL63zZ0qnxa5D8IWHIcoCkCtHDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iXoFqmac; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29fbe140c24so1628199a91.0;
+        Fri, 22 Mar 2024 09:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711125596; x=1711730396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZidRDuY5Aevf95sEzZzzxNl7J8LcO4JJpSyMrNFhevQ=;
+        b=iXoFqmac3oBxDQr5Tf4CjkA+6IE3q4pjzalPFe0CJaY+HeoZLRscawiu71n3UJpP4T
+         roRp4rTq4AYoeDDmoepV+TYWsjHeHrnMiyEMyR5mP0M9iBRcOExR2z8rQpV3aR8oc8Ai
+         Xj+ouEQiIeQ+HD/3wIeFXoqjk8fbxOcT2EDxg7m5rIhAP7bZtH7rwNADgDtnpmOWFxP6
+         v1Tu5c9sf1Nza1sxSxkVuJV1xBYEF31aHGPsgGL+72QPRAjcOI7ALj3vZ3nnbje5hAYk
+         f1sfSvimNo8yy8uRUrn8bRU4tWonyawkVRwMOas3hmc2f2MT2Rv6rYVDb5AGXpsWsN+k
+         ASSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711125596; x=1711730396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZidRDuY5Aevf95sEzZzzxNl7J8LcO4JJpSyMrNFhevQ=;
+        b=gzwbfh++ULSwjHU2+oZ8MdCy6cfh7c0rc8iJVdSDFQIZNK5FnXHwtHTUcDRjJ8SAYg
+         9x2ALh56GweJbJyTmIVjTkJAXoA/Ox3aKfa/3eogt/U4YaXg4ntUW/ZshXa2KCcllCG+
+         owq9yx52P+AGw7byP8M+vQiBu6KKtACc049jX86APWydYzZ3nENxK+RzHzW3AYoJfZfP
+         7rYfiT5SVLzHC5yB5DDdnFm5VEk/B88FLd1c12v8O2wnlllBomHa8zTfw3FA74s/Qw2K
+         umX5LAprhnynbPg6Ni/EEn2ih+UeleTWPCJHmPJmqDD4lajdG6bI5JrZLN/i2uMcHZTy
+         KAWA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPdWAkYjFJkdRlFVILD2PaqBxwkvNYYEBFLdgMsuKezHgXX0izOPSLK8MyMVyZSND4YaZrJj9unf6LkNft5P9LzpLWV5j9QGAnL5yDIBw8VvlohfE26qz1MJ05RJRmJIp90hH1hw==
+X-Gm-Message-State: AOJu0YxkEqR7zlYt0n0Mi356aI3Vp6ADyyQuFyxAcbul+nPN/GIm4wo5
+	3undBmEURkbGQlA8awFvEGE3w9d6eYGSdhDp/PtoTkK7ONkl/I6jnqrQ3MQclu7v/0bQSRDSJot
+	nPRb40i1HhjmdJKpONUrrYwvIPO4=
+X-Google-Smtp-Source: AGHT+IFFDT4lxr5rv/sSdVPMZV2VS9eEMJx70sZTwM8qOxvzpf7GeHb5N66oQ8piCdfm1OVUveKq3wOuVHYS3S5Oii8=
+X-Received: by 2002:a17:90a:c503:b0:29f:aee7:f41b with SMTP id
+ k3-20020a17090ac50300b0029faee7f41bmr154889pjt.42.1711125595924; Fri, 22 Mar
+ 2024 09:39:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240320182607.1472887-1-jcmvbkbc@gmail.com> <202403211004.19F5EE27F@keescook>
+ <CAMo8Bf+jbsnok=zy3gT2Z-F8=LCMVVFhAoiJ8sjwaEBSbbJXzw@mail.gmail.com> <202403212041.AEB471AC@keescook>
+In-Reply-To: <202403212041.AEB471AC@keescook>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Fri, 22 Mar 2024 09:39:43 -0700
+Message-ID: <CAMo8BfKhk8dk3-n7gx3edZKSZUhCa+GJf4XwFvXr6bYzcwsb-A@mail.gmail.com>
+Subject: Re: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Rich Felker <dalias@libc.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Chengming Zhou <chengming.zhou@linux.dev>
+On Thu, Mar 21, 2024 at 8:48=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+> On Thu, Mar 21, 2024 at 12:52:16PM -0700, Max Filippov wrote:
+> > On Thu, Mar 21, 2024 at 10:05=E2=80=AFAM Kees Cook <keescook@chromium.o=
+rg> wrote:
+> > > What's the best way to test this? (Is there a qemu setup I can use to
+> > > see the before/after of AT_EXECFN?)
+> >
+> > I put a readme with the steps to build such system here:
+> >   http://jcmvbkbc.org/~dumb/tmp/202403211236/README
+> > it uses a prebuilt rootfs image and a 6.8 kernel branch with two
+> > patches on top of it: one adds a dts and a defconfig and the other
+> > is this fix. The rootfs boots successfully with this fix, but panics
+> > if this fix is removed.
+>
+> Does musl have something like the LD_SHOW_AUXV env variable. With glibc,
+> I usually explore auxv like so:
+>
+> $ LD_SHOW_AUXV=3D1 uname -a | grep EXECFN
+> AT_EXECFN:            /usr/bin/uname
 
-There is a report of data corruption caused by double swapin, which is
-only possible in the skip swapcache path on SWP_SYNCHRONOUS_IO backends.
+I couldn't find anything like that in either musl or uClibc-ng.
+So I updated the above rootfs and put the following program
+into it as /bin/test-auxv:
 
-The root cause is that zswap is not like other "normal" swap backends,
-it won't keep the copy of data after the first time of swapin. So if
-the folio in the first time of swapin can't be installed in the pagetable
-successfully and we just free it directly. Then in the second time of
-swapin, we can't find anything in zswap and read wrong data from swapfile,
-so this data corruption problem happened.
+#include <stdio.h>
+#include <sys/auxv.h>
 
-We can fix it by always adding the folio into swapcache if we know the
-pinned swap entry can be found in zswap, so it won't get freed even though
-it can't be installed successfully in the first time of swapin.
+int main()
+{
+       unsigned long p =3D getauxval(AT_EXECFN);
+       fprintf(stderr, "AT_EXECFN: 0x%lx\n", p);
+       if (p)
+               fprintf(stderr, "%s\n", (const char *)p);
+       return 0;
+}
 
-And we have to check if the swap entry is in zswap after entry pinned,
-only then we can make sure the check result is stable.
+While looking at it I also noticed that /proc/<pid>/auxv is empty
+on NOMMU, looks like there will be yet another fix for that.
 
-Reported-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Closes: https://lore.kernel.org/all/CACSyD1N+dUvsu8=zV9P691B9bVq33erwOXNTmEaUbi9DrDeJzw@mail.gmail.com
-Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
----
- include/linux/zswap.h |  6 ++++++
- mm/memory.c           | 28 ++++++++++++++++++++++++----
- mm/zswap.c            | 10 ++++++++++
- 3 files changed, 40 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index 2a85b941db97..180d0b1f0886 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -36,6 +36,7 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
- void zswap_lruvec_state_init(struct lruvec *lruvec);
- void zswap_folio_swapin(struct folio *folio);
- bool is_zswap_enabled(void);
-+bool zswap_find(swp_entry_t swp);
- #else
- 
- struct zswap_lruvec_state {};
-@@ -65,6 +66,11 @@ static inline bool is_zswap_enabled(void)
- 	return false;
- }
- 
-+static inline bool zswap_find(swp_entry_t swp)
-+{
-+	return false;
-+}
-+
- #endif
- 
- #endif /* _LINUX_ZSWAP_H */
-diff --git a/mm/memory.c b/mm/memory.c
-index 4f2caf1c3c4d..a564b2b8faca 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4031,18 +4031,38 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 					ret = VM_FAULT_OOM;
- 					goto out_page;
- 				}
-+
-+				/*
-+				 * We have to add the folio into swapcache if
-+				 * this pinned swap entry is found in zswap,
-+				 * which won't keep copy of data after swapin.
-+				 * Or data will just get lost if later folio
-+				 * can't be installed successfully in pagetable.
-+				 */
-+				if (zswap_find(entry)) {
-+					if (add_to_swap_cache(folio, entry,
-+							GFP_KERNEL, &shadow)) {
-+						ret = VM_FAULT_OOM;
-+						goto out_page;
-+					}
-+					swapcache = folio;
-+					need_clear_cache = false;
-+				} else {
-+					shadow = get_shadow_from_swap_cache(entry);
-+					/* To provide entry to swap_read_folio() */
-+					folio->swap = entry;
-+				}
-+
- 				mem_cgroup_swapin_uncharge_swap(entry);
- 
--				shadow = get_shadow_from_swap_cache(entry);
- 				if (shadow)
- 					workingset_refault(folio, shadow);
- 
- 				folio_add_lru(folio);
- 
--				/* To provide entry to swap_read_folio() */
--				folio->swap = entry;
- 				swap_read_folio(folio, true, NULL);
--				folio->private = NULL;
-+				if (need_clear_cache)
-+					folio->private = NULL;
- 			}
- 		} else {
- 			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-diff --git a/mm/zswap.c b/mm/zswap.c
-index c4979c76d58e..84a904a788a3 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1601,6 +1601,16 @@ void zswap_invalidate(swp_entry_t swp)
- 		zswap_entry_free(entry);
- }
- 
-+bool zswap_find(swp_entry_t swp)
-+{
-+	pgoff_t offset = swp_offset(swp);
-+	struct xarray *tree = swap_zswap_tree(swp);
-+	struct zswap_entry *entry;
-+
-+	entry = xa_find(tree, &offset, offset, XA_PRESENT);
-+	return entry != NULL;
-+}
-+
- int zswap_swapon(int type, unsigned long nr_pages)
- {
- 	struct xarray *trees, *tree;
--- 
-2.20.1
-
+--=20
+Thanks.
+-- Max
 
