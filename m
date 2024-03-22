@@ -1,85 +1,50 @@
-Return-Path: <linux-kernel+bounces-111015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98DD38866F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:43:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60F1E8866EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 07:42:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CACAF1C2371C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:43:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17A461F22D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 06:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171FA1B5BB;
-	Fri, 22 Mar 2024 06:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n3H7ZnqK"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E965D12E5E;
+	Fri, 22 Mar 2024 06:42:06 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAC0199AD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 06:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D501119E;
+	Fri, 22 Mar 2024 06:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711089751; cv=none; b=jTjUWMxc62fy5aXwSOrIpaa5dYcg2DC81mfm460N83/SDLrrNM04IuH6vlHjtm9FzfATi27C7DWI1F9IB2WOokJxAN1rEcUbVbjJPgrQjHD/Aa/9QuaIe7KOGn54G/hI/J2MpNHt0zdhYf5O47us4emgskiIlQ4cHYgRW1YKq70=
+	t=1711089726; cv=none; b=ApjB5122r9WD6qoPBU22Z7HJT4m4H5izKfF/3jl2Tfp3py50I2HoGsaQqbTaZz/8fWx3VT+cVbxqN5xTmTKnkrzzEt0d3kfFmZiuRb7/pFQyArrl8xmSeu/hCGZprEXiATne2x4GjO6hIKdJvY6Gp/ekyQYKf1ol3lNvmx1PWQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711089751; c=relaxed/simple;
-	bh=9bdjqCAyvS7k1BS7Lhjz19NNuYfcjp2pCZWc4hg6CHY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I3WqpWEbwRcxqNfHCAizQVjv4OJTqWJnfRQDZ/pXpyeGdiXOa3EwtxWd/xd+cJCiTIOCz54lU1RCQS0fPufI2ahepDx9uzsHIc4UlSK5uZ9lsRACYjEFc8HB0hTPIpnzxE5R73zkAxDfXyZTm5BO5q7ZoDslAQM76tGe3TTKK1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n3H7ZnqK; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso2110793a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 23:42:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711089748; x=1711694548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BmaPEfXpnyUWO4tk/lYu9wRilg7S6pQ6tbGno3QPjdk=;
-        b=n3H7ZnqKKHlBSYPu7tTeNj2R3K7tdVZRPhdMA1+H1J+2f+e7QsLbbQZLgJRhIaqDva
-         ZSvORsxZfDBoDTk985oitAkBzRHet+ZU9Afqssft8uwEOeg+QhjaSlmGd2q4aRgfUjdX
-         5JLIImnVX8SQt6VktVR1DSpjeJDMoiD4H/reFsufUCG2efKN8rCMKhQtEqfS+Oa8II8n
-         aM67M5RAjxlB7rXDZodXReKUGHATxarpSiK7WuByfmgx+ShHDVWVSfNB/OovY0NwGP4A
-         RG3jsvVV8FAXdj0sQ2X6VVaZ546RpA/E3AQ05WBsZjd4J8ZsiWiOqHwEo0PFwx4XjfQG
-         wgDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711089748; x=1711694548;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BmaPEfXpnyUWO4tk/lYu9wRilg7S6pQ6tbGno3QPjdk=;
-        b=GBTPq65BG4YVuOkQbJR68CfpVauxcogKB8oUrX3wRHtCaEIvrxPsqRdIhCtl+gUC/X
-         F/b4aK3D9ywz9TInpnkw77eryocla2Qkk1akRgf1bcCXjz5MLKbFUlj89F1NB46yIVwb
-         9IRjheXGqLXz8kDJ1W/VXSYfIl80Fpf+Vq20GIWmypAU4PlBxREwjiLLN3V9yKCNX+1y
-         ZyEW/y4wEKc2137DiuZ15uNBCru/opP+/i8JMLzAQrzlXFaGMfz2gkq3NUcOcV75x5aZ
-         qSOQEteim+NBKEpFUn2xfM/WJH2zcp3seHIna2m3vIwgvYkBkFfiZwFNM0BKqnub7NLn
-         IleA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9n0OgndugtX6Q9sLbJbO47283vkiAkUwlhIOhR6InrR8OjPcdjilH77Ptm+TyJa6qEOt/zidbOCwBreMo0yiJGeSoMlSaWoTe1mYk
-X-Gm-Message-State: AOJu0YwtUN+2aHuPVPdm/8cJQcrqHiNnIb0IDjcrc2Oaf8I0E5maWgow
-	fqtaoZjY35ShhAA3kFa1qQdBRxxlDTxRV92XBnOxRz3XbctaurojF5T/r+Dit6E=
-X-Google-Smtp-Source: AGHT+IFjCUgRktXwrv+Lvi6UwcbsFwpnpkk/JBK3O3IuUm86QVwXhrso59zXtrI/2Z72EZMRI6ku9A==
-X-Received: by 2002:a50:d559:0:b0:567:a318:ac0b with SMTP id f25-20020a50d559000000b00567a318ac0bmr916782edj.16.1711089747857;
-        Thu, 21 Mar 2024 23:42:27 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05640243c800b0056bdc4a5cd6sm645506edc.62.2024.03.21.23.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 23:42:27 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	devicetree@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Kousik Sanagavarapu <five231003@gmail.com>
-Subject: [PATCH] sh: j2: drop incorrect SPI controller max frequency property
-Date: Fri, 22 Mar 2024 07:42:21 +0100
-Message-Id: <20240322064221.25776-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711089726; c=relaxed/simple;
+	bh=5LeiINhnfpxJNwwsm3Pbh2G/M4oz1/86KkH3dEK/sXg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RraJI4nhvEj9DhHmqHDu8Z8e/jD29Exep/+YCKcPrflzy2Yc4bUR8nJdd4Unp24ide6uHhiRmjRN5waVacpHBjYGCM7YHO0JjQxzMzWYAPNYkfH+9Bto6OX7wqWPvSHbU/O+DczGAd6JcjKCvKL+0SkKAUUBpKkrBUbf2mI+Z2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1CPG0FY9z1xrl0;
+	Fri, 22 Mar 2024 14:40:02 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id DB5BA18005F;
+	Fri, 22 Mar 2024 14:41:56 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 22 Mar
+ 2024 14:41:56 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
+Subject: [PATCH v8 0/5] support '%pd' and '%pD' for print file name
+Date: Fri, 22 Mar 2024 14:43:03 +0800
+Message-ID: <20240322064308.284457-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,34 +52,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-The J2 SPI controller bindings never allowed spi-max-frequency property
-in the controller node.  Neither old spi-bus.txt bindings, nor new DT
-schema allows it.  Linux driver does not parse that property from
-controller node, thus drop it from DTS as incorrect hardware
-description.  The SPI child device has already the same property with
-the same value, so functionality should not be affected.
+During fault locating, the file name needs to be printed based on the
+dentry/file address. The offset needs to be calculated each time, which
+is troublesome. Similar to printk, kprobe supports printing file names
+for dentry/file addresses.
 
-Cc: Kousik Sanagavarapu <five231003@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/sh/boot/dts/j2_mimas_v2.dts | 2 --
- 1 file changed, 2 deletions(-)
+Diff v8 vs v7:
+1. Add detail change log for patch[1-2];
 
-diff --git a/arch/sh/boot/dts/j2_mimas_v2.dts b/arch/sh/boot/dts/j2_mimas_v2.dts
-index fa9562f78d53..faf884f53804 100644
---- a/arch/sh/boot/dts/j2_mimas_v2.dts
-+++ b/arch/sh/boot/dts/j2_mimas_v2.dts
-@@ -71,8 +71,6 @@ spi0: spi@40 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			spi-max-frequency = <25000000>;
--
- 			reg = <0x40 0x8>;
- 
- 			sdcard@0 {
+Diff v7 vs v6:
+1. Squash [1/8] to [3/8] patches into 1 patch;
+2. Split readme_msg[] into each patch;
+
+Diff v6 vs v5:
+1. Add const for 'bufsize' in PATCH [1];
+2. Move PATCH 'tracing/probes: support '%pd/%pD' type for fprobe' after
+PATCH "tracing/probes: support '%pd' type for print struct dentry's name".
+3. Add requires '"%pd/%pD":README' for testcase.
+
+Diff v5 vs v4:
+1. Use glob_match() instead of str_has_suffix(), so remove the first patch;
+2. Allocate buffer from heap for expand dentry;
+3. Support "%pd/%pD" print type for fprobe;
+4. Use $arg1 instead of origin register in test case;
+5. Add test case for fprobe;
+
+Diff v4 vs v3:
+1. Use "argv[i][idx + 3] == 'd'" instead of "argv[i][strlen(argv[i]) - 1] == 'd'"
+to judge print format in PATCH[4/7];
+
+Diff v3 vs v2:
+1. Return the index of where the suffix was found in str_has_suffix();
+
+Diff v2 vs v1:
+1. Use "%pd/%pD" print format instead of "pd/pD" print format;
+2. Add "%pd/%pD" in README;
+3. Expand "%pd/%pD" argument before parameter parsing;
+4. Add more detail information in ftrace documentation;
+5. Add test cases for new print format in selftests/ftrace;
+
+
+Ye Bin (5):
+  tracing/probes: support '%pd' type for print struct dentry's name
+  tracing/probes: support '%pD' type for print struct file's name
+  Documentation: tracing: add new type '%pd' and '%pD' for kprobe
+  selftests/ftrace: add kprobe test cases for VFS type "%pd" and "%pD"
+  selftests/ftrace: add fprobe test cases for VFS type "%pd" and "%pD"
+
+ Documentation/trace/kprobetrace.rst           |  8 ++-
+ kernel/trace/trace.c                          |  2 +-
+ kernel/trace/trace_fprobe.c                   |  6 ++
+ kernel/trace/trace_kprobe.c                   |  6 ++
+ kernel/trace/trace_probe.c                    | 63 +++++++++++++++++++
+ kernel/trace/trace_probe.h                    |  2 +
+ .../ftrace/test.d/dynevent/fprobe_args_vfs.tc | 40 ++++++++++++
+ .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 40 ++++++++++++
+ 8 files changed, 164 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_args_vfs.tc
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+
 -- 
-2.34.1
+2.31.1
 
 
