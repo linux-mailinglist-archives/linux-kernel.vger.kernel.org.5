@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-111905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F366588726C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:59:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A053B887271
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 19:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF01F288B18
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 17:59:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 391171F25029
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 18:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0133560BAC;
-	Fri, 22 Mar 2024 17:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421F260DF9;
+	Fri, 22 Mar 2024 18:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kvrERC+H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p+gO5Ljr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419B460B80;
-	Fri, 22 Mar 2024 17:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF6060DF7;
+	Fri, 22 Mar 2024 18:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711130382; cv=none; b=KmBGxS8COES5e29TDAXe0w6VTdICxckTsFgnj9TbcfV5/7HwPKCTvhcIUq3m7B68p1sQbD0QjzCd2YDX2SCzvm/y1oz3P6yUaNR5EjURz9CLnuQI29tAWB6wFDZpWvYnN6d5mZE9M9OzJOpBDpqidbUir6EAgPnbiEI14wsT9l8=
+	t=1711130443; cv=none; b=B79zUbGmE9CeQ1c602AixsW7+zjspZIEdIrm+X4PP5y4qhrItZ2bMQ5Z/0u0LwCcUIJxywNvAz38yUBT8mcsO/fn7/bVeCDw+f9LHvfgxuFV+qPIgaLmARaqK9bqNGyuNZBO+oXDptbIRJ6kTTjI0le6beJITc73zfV8cG+5epk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711130382; c=relaxed/simple;
-	bh=vYsHN5tUpWVy+FYsrra2eYCMPyeaVlBd8+QL+Nh9b5g=;
+	s=arc-20240116; t=1711130443; c=relaxed/simple;
+	bh=g9Iyt0g4iUXGAQcOoGRDJSNpVdcT6pD1rHESCP3EsNU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lHgzTNAdRBaVqbJEHntt8speeq8F1CDgSUCamiSznjwPessBlWknC19t24hXeCKBJfv6Xxf7fQeFBIu+91WNBSm4VTacgF0G3/lfSMhWrg+d9l9CKk9r2hNEnM7peOjcZyYElY7juOgZeEdv8PW8Wwn2+rqBog4Igclmt/lSb5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kvrERC+H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CEAC433F1;
-	Fri, 22 Mar 2024 17:59:39 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=agKR4exfowzlDytzLH3SOj7GEPXtRgVWf9NqdkSwB2qd5NVcdmHDw1SSpROl1mELK6TryuKrCNLhjuiiqA727g9DEpyz2/KDKX07hro0m3zD1oFjngSy95AC+jYUpraZxMzPM7jptg/906nIe4fTNLiEC3vwoBIb4If2/X2MTIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p+gO5Ljr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E043C433F1;
+	Fri, 22 Mar 2024 18:00:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711130382;
-	bh=vYsHN5tUpWVy+FYsrra2eYCMPyeaVlBd8+QL+Nh9b5g=;
+	s=k20201202; t=1711130443;
+	bh=g9Iyt0g4iUXGAQcOoGRDJSNpVdcT6pD1rHESCP3EsNU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kvrERC+HC9ArLBwp5Fh3Xrsa3y5UQi9zCRFAfd9lTmymxC+aQbv7hNJVjfxZxZMrJ
-	 pECB2rBIhEokCw5c+Or39sRuvgLWvuWpU/HrY9ti1WFSZAgsrhs24UB6BCk8YYjvWu
-	 1T9prFLrcbvmEoNSzCrHgN2UE70qsLjPSsnD62FRSPazKgRxP8eUVu0erjqCW809hE
-	 4pmE47B/VZKdlKLh7NVwshneoqtSlMZFdxi4DQDTp8vP9ZYWEr7zDDmqovQxVkBUBS
-	 8TpNVPNfQKanvTdjOeTkbesQDpUacMpUbXBfI+22IFUd4XPV39sHU2evasKP7n75t/
-	 rSMCMlyxXDvQQ==
-Date: Fri, 22 Mar 2024 17:59:37 +0000
+	b=p+gO5Ljr/Bf1h4I0MSugrfaYWl1wCJfGf9RhQTMSoG8sJkNmF8tOnybyGxthDEiUb
+	 //lzM8qLFGc8UOe/pV7WLzwAHwgKOfTLPRkOQ6okD1SSvgfb+AVvgO5S5FmcoKPxNO
+	 Shr0sb+tMV4Z5BV2vd6VAs8iQ0Uy4t/g4RLMi89IWyOhNj+U0vP3D19a7uBsurqMoP
+	 jx4nTkDWrFyBDYJ03jaTw+Ys6hVC/7OMC5Tv41tCRFfJuj4I76yPMtNkhWNF0WzS6P
+	 Ou/E45F1SQWD2Isvlzwd6ex8KUykLlHRp6jZFANMoPsP6xY02HV941wWcTvWdk44Wg
+	 oGIx64k0BH5tA==
+Date: Fri, 22 Mar 2024 18:00:38 +0000
 From: Conor Dooley <conor@kernel.org>
 To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
@@ -54,11 +54,10 @@ Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
 	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
 	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/5] dt-bindings: hwmon: ibmpowernv: convert to
- dtschema
-Message-ID: <20240322-papaya-diabolic-e7c2c4319eb2@spud>
+Subject: Re: [PATCH v2 4/5] dt-bindings: hwmon: stts751: convert to dtschema
+Message-ID: <20240322-swinger-unselfish-8e36bc12cf79@spud>
 References: <20240322-hwmon_dtschema-v2-0-570bee1acecb@gmail.com>
- <20240322-hwmon_dtschema-v2-2-570bee1acecb@gmail.com>
+ <20240322-hwmon_dtschema-v2-4-570bee1acecb@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,127 +65,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1BqIBqYDHfkBFwJe"
+	protocol="application/pgp-signature"; boundary="bGPx4mdUKjkLA5FN"
 Content-Disposition: inline
-In-Reply-To: <20240322-hwmon_dtschema-v2-2-570bee1acecb@gmail.com>
+In-Reply-To: <20240322-hwmon_dtschema-v2-4-570bee1acecb@gmail.com>
 
 
---1BqIBqYDHfkBFwJe
+--bGPx4mdUKjkLA5FN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 22, 2024 at 07:45:27AM +0100, Javier Carrasco wrote:
+On Fri, Mar 22, 2024 at 07:45:29AM +0100, Javier Carrasco wrote:
 > Convert existing binding to support validation.
 >=20
-> This is a straightforward conversion with now new properties.
+> This is a straightforward conversion with no new properties.
 >=20
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
->  .../devicetree/bindings/hwmon/ibm,powernv.yaml     | 37 ++++++++++++++++=
-++++++
->  .../devicetree/bindings/hwmon/ibmpowernv.txt       | 23 --------------
->  2 files changed, 37 insertions(+), 23 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml b/D=
-ocumentation/devicetree/bindings/hwmon/ibm,powernv.yaml
-> new file mode 100644
-> index 000000000000..b26d42bce938
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/ibm,powernv.yaml
 
-Filename should really match one of the compatibles. "powernv" is not a
-type of hwmon as far as a quick google reports so I think its a poor
-choice here regardless. With a compatible for the filename:
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
 Conor.
 
-> @@ -0,0 +1,37 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/ibm,powernv.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: IBM POWERNV platform sensors
-> +
-> +maintainers:
-> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ibm,opal-sensor-cooling-fan
-> +      - ibm,opal-sensor-amb-temp
-> +      - ibm,opal-sensor-power-supply
-> +      - ibm,opal-sensor-power
-> +
-> +  sensor-id:
-> +    description:
-> +      An opaque id provided by the firmware to the kernel, identifies a
-> +      given sensor and its attribute data.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +required:
-> +  - compatible
-> +  - sensor-id
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    sensor {
-> +        compatible =3D "ibm,opal-sensor-cooling-fan";
-> +        sensor-id =3D <0x7052107>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt b/Doc=
-umentation/devicetree/bindings/hwmon/ibmpowernv.txt
-> deleted file mode 100644
-> index f93242be60a1..000000000000
-> --- a/Documentation/devicetree/bindings/hwmon/ibmpowernv.txt
-> +++ /dev/null
-> @@ -1,23 +0,0 @@
-> -IBM POWERNV platform sensors
-> -----------------------------
-> -
-> -Required node properties:
-> -- compatible: must be one of
-> -		"ibm,opal-sensor-cooling-fan"
-> -		"ibm,opal-sensor-amb-temp"
-> -		"ibm,opal-sensor-power-supply"
-> -		"ibm,opal-sensor-power"
-> -- sensor-id: an opaque id provided by the firmware to the kernel, identi=
-fies a
-> -	     given sensor and its attribute data
-> -
-> -Example sensors node:
-> -
-> -cooling-fan#8-data {
-> -	sensor-id =3D <0x7052107>;
-> -	compatible =3D "ibm,opal-sensor-cooling-fan";
-> -};
-> -
-> -amb-temp#1-thrs {
-> -	sensor-id =3D <0x5096000>;
-> -	compatible =3D "ibm,opal-sensor-amb-temp";
-> -};
->=20
-> --=20
-> 2.40.1
->=20
-
---1BqIBqYDHfkBFwJe
+--bGPx4mdUKjkLA5FN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3HCQAKCRB4tDGHoIJi
-0jNGAP9qE1RgXwHh+bJHGrruo2IG/PvvUFE4CGzM4LgWwflF/AEAiZNvtVyjY0Ni
-4RDUtWjJKj6uVoLcSS6AW+psuIZ81g0=
-=vQA/
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZf3HRgAKCRB4tDGHoIJi
+0iWWAPsF0UuXl0/1wfe0ENaD/RuvprK3ML0fGOVBkNQ4fbTH1QEA97q9xgWqriro
+TZDPzIK22sIByFav6M5rmCkkDnTAUgg=
+=Hwbs
 -----END PGP SIGNATURE-----
 
---1BqIBqYDHfkBFwJe--
+--bGPx4mdUKjkLA5FN--
 
