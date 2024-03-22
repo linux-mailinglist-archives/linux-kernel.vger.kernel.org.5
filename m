@@ -1,95 +1,117 @@
-Return-Path: <linux-kernel+bounces-111357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B2C8886B1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:14:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F921886B2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5D06284AB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:14:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 618611C22059
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF8E3E47F;
-	Fri, 22 Mar 2024 11:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8693EA9C;
+	Fri, 22 Mar 2024 11:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PtMU3Q0c"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DjHVqQAE"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09B03B2A4
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 11:14:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9440E20DC5;
+	Fri, 22 Mar 2024 11:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711106054; cv=none; b=ie/FBUB+9BDhIMWEFwlxDlUzdONl2bTg5GAzPfb6lc9w5nV5pBRHi1Y64Jpiz7UYXorHm/wUAW3fKl0Zpn/pUWjYmsBUkkaZ57yUd59t3ojUrLdqw21lbDCoeGwq6WYpUDu37WxpZFgfDHvRQmNwFXMHo9Y3Ucrch9/+t31gGAM=
+	t=1711106323; cv=none; b=CRJg2a5kvpu0o/+0kai3/pIcNHHkYshNDQqbLZMzhQ6NJXbLVH7/fvjGhlbwn3YF467F+BND8gFmS/SLfuBokQCOUFIO8yPpWA3AVzgljf2Y04CQ1vJdxiJnzDI8yZlXpvWR9wLjoeBCJtLbWjfdluVrXqvfkN3mziE65YeLaNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711106054; c=relaxed/simple;
-	bh=tkJLb78IpSWKlzmyY6iLRqU/Rj0xLSo5bXptuiYm8e8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MqGzpDcKpsLoPSw49giKLv9TNub2ekSRuZfPtwHrbDIVc+ujfjNcII2V3Q+ekXqalXkGCrTZXpwYsQBDr74d+I4HxISpV4m2KRUCcdcIIZou6F2caByPMmwYJorKQ0ezZpSJZNJFZd3tM3v+l9m5Hx8b239w6zZGepwR6vjNWBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PtMU3Q0c; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7835e928-7d09-446e-91dd-13a0fa549bc2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711106049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KVrZlsfAwR9SjnoRF84YRfe9+qscAKx0nrI06ciuH9c=;
-	b=PtMU3Q0cvYRQSQ6fk18jXYKy3ve8Mbjtd9mf2dz9UKl4mud33fmF/ENJr/CzbKp7d26ZdJ
-	qnW8UuW8jmd28bzqyVNqHsB/S1TGAzHgUsi87OOXbPjUVf47Fmw3yuw3Hz7U2xntYvHIe/
-	rbWZnZjx0V3TfxXvN0Eekge4UzQtCP4=
-Date: Fri, 22 Mar 2024 19:13:54 +0800
+	s=arc-20240116; t=1711106323; c=relaxed/simple;
+	bh=MFvINfn5vumvepkoPTdM2FbWdWBkIsMV0xzgDvstI14=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jC7sqRKNGnJM9HpHRVAG/0ue2D6XdAsQoD1H1haiTzdmOcuqb36tiI5/+yEqS/I2TwhBe6T45GH//lWnZoWd9+Ist/CaTW3JvYMjfzns3GpUwBS918qN+9VsOfBlUBj6jhzWJKRjEFnXtbgCIbOKZPhzXPfaqBzVt217yTdFbxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DjHVqQAE; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1381320a12.1;
+        Fri, 22 Mar 2024 04:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711106322; x=1711711122; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FzMeF+sVtP3tFHQX9ucDEOR6oj0iwNtMEiHNl4LGR5E=;
+        b=DjHVqQAERAtIGl8LvNPrP2ebuvgtcBtPrrs2LrAItCxueD5nPBQ/rIco8Yx5/4rL0e
+         f4Das8RiYUh+F45l+P5QTadotEvp6NwKKWFpT4RtzDaNPvUwZB3RupySUVSLo4Cj+U6i
+         Lwtk7K2uh3Lf31JlhaBac0ls5ZVl4kGPUEcxVE22xDu8EinC7opXclZHizuUrV2vOARJ
+         W+eeGgrb5k32Eu68aHpMXR392L5+JozL9MoHrIlUJmSwlzKMNVA3e9O9w6GJ60/xMDRH
+         yvXKbjpBZYlU8LqLLSEvSDGAzWPWAYH5TZ8zp7/o8bL13Frolq19cz+tJP2Iv6kFauSE
+         mDDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711106322; x=1711711122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FzMeF+sVtP3tFHQX9ucDEOR6oj0iwNtMEiHNl4LGR5E=;
+        b=rIchO2XurKKac/Sa+zT5lQP/Xu+joY39SAaKxmC72KhsR8Z9c9a0Nyi9mJDAQYLG6M
+         zbyxQEI4VyXC6Rb/HNdZolbVsk+Ub6x6NCorwt+WWYXH2LmI2gUboliCPOmH+14fPijQ
+         bMx/Na51zYc4vA7RehBTVjITNPP7h+bbVUb7RqvIqAFnf1X70LUlmHWbm0wDrkKHP4p5
+         eR4kYi68zsS5IAqxkFwDgcY7kCpSkAdZHfTjZzlwle5OizS9xeMspdi6M7lNRMTDESsC
+         n7+kIzkfawkwSa992fJM/uqaFK8Xxlx4vG2BVabr/OI/i1zvRXPTb9XN4d7KONtjBWyD
+         dpBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXjj05Z3zy1QzMowbNrmXdYOcZ3B9EXOUFyLJfFypTy/4Gvh73yxYksGR78xeIeVRXTh6l50AbAlcQC+BcMvfDFmKFoIYCDe+7YTT2LkDM/q8uIyR52rXwEWZn91OX1N79LrBNAv9vsnoyRFf4iKeCqEpBDloDl+1m0eXxe37j52g==
+X-Gm-Message-State: AOJu0YzbYd95dgQ/dqjvJOlfkEn0ibXC5aMlLj3mLTt0v5bjLHUe49UA
+	rw1xpYLxzxNavKSKNU2IVE95KwEa8Cn6rt5NAfttqA9QNg5/G1LT
+X-Google-Smtp-Source: AGHT+IGSmSngE9Cy/E/c/MFNCQX+hYIsufmB4ZwEAJR25mnh8Z66mbkdBiB9zPT0wfXskLrfQuBNJg==
+X-Received: by 2002:a17:90b:688:b0:29b:c4b7:3300 with SMTP id m8-20020a17090b068800b0029bc4b73300mr1955206pjz.44.1711106321743;
+        Fri, 22 Mar 2024 04:18:41 -0700 (PDT)
+Received: from rigel (110-175-159-48.tpgi.com.au. [110.175.159.48])
+        by smtp.gmail.com with ESMTPSA id nb8-20020a17090b35c800b002a039de455bsm1244149pjb.1.2024.03.22.04.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 04:18:41 -0700 (PDT)
+Date: Fri, 22 Mar 2024 19:18:35 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+	stable@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2] gpio: cdev: sanitize the label before requesting the
+ interrupt
+Message-ID: <20240322111835.GA24228@rigel>
+References: <20240322090209.13384-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [v10,20/27] drm/connector: hdmi: Add Infoframes generation
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240321-kms-hdmi-connector-state-v10-20-e6c178361898@kernel.org>
- <07125064-2a78-4515-bb48-655f2aec140f@linux.dev>
- <20240322-loose-resourceful-bullmastiff-92cfaf@houat>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20240322-loose-resourceful-bullmastiff-92cfaf@houat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240322090209.13384-1-brgl@bgdev.pl>
 
-Hi,
+On Fri, Mar 22, 2024 at 10:02:08AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> @@ -2198,12 +2216,18 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
+>  	if (ret)
+>  		goto out_free_le;
+>
+> +	label = make_irq_label(le->label);
+> +	if (!label) {
+> +		ret = -ENOMEM;
+> +		goto out_free_le;
+> +	}
+> +
+>  	/* Request a thread to read the events */
+>  	ret = request_threaded_irq(irq,
+>  				   lineevent_irq_handler,
+>  				   lineevent_irq_thread,
+>  				   irqflags,
+> -				   le->label,
+> +				   label,
+>  				   le);
+>  	if (ret)
+>  		goto out_free_le;
 
+Leaks label if the request_threaded_irq() fails.
 
-On 2024/3/22 18:31, Maxime Ripard wrote:
-> Which default config are you talking about? This compiles fine with all
-> drm-misc defconfig, x86 defconfig and allmodconfig.
-
-The drm_hdmi_avi_infoframe_colorimetry() function is belong to the drm_display_helper.ko
-kernel module, it get called from hdmi_generate_avi_infoframe() in drm_atomic_state_helper.c.
-While drm_atomic_state_helper.c belongs to drm_kms_helper.ko. Therefore drm_kms_helper.ko
-is dependent on drm_display_helper.ko implicitly. So we probably should select it.
-
-
-
--- 
-Best regards,
-Sui
-
+Cheers,
+Kent.
 
