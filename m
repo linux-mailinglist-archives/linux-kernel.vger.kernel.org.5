@@ -1,157 +1,164 @@
-Return-Path: <linux-kernel+bounces-111223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003EB88695C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:35:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A97B886960
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956DD1F2119E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:35:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E5A28ADA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D933210EE;
-	Fri, 22 Mar 2024 09:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="d9YzxvCO"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E4E22099;
+	Fri, 22 Mar 2024 09:36:23 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E56199AD;
-	Fri, 22 Mar 2024 09:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A9E208DD;
+	Fri, 22 Mar 2024 09:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711100130; cv=none; b=OKBWaxGG9a6j1y66RSvAZmFKIrClqYfTpT9gJWz3Hc4B5OD1i+gqCPEaA0a/VUQVdPBwDzn2M56kjWwvjkTmjNPHnOuh2DXMLVK+qGrGWQqX4qSFxuap35+54X+kkPcSAIdQzWedgFqgYqlIgYWWM1IEA6uu28OirpsYsay9fVw=
+	t=1711100183; cv=none; b=mryff4ezG8Hr2QyQLjCYH27oBr8McdUOvq6M8N4QjZG+CNtb1wKA7ICD0NePGP6fSuTXdmdeieo4rCT6e6MzqZIi/10vXcrivb6xpnYvOKS9c677etfKr7cQrDpRxaVaS/yCrurA353ihnyv9kacqQ9g60IW4cLkcnB26sBaZU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711100130; c=relaxed/simple;
-	bh=CKiXwlIgm9grSEOBKwbrUzEK7jX746Nv0f9cDrdsS6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l8Z6jvgzp/yD82DBI6Qh0Vrxx+fP0+FDltS73smrbOT7yPdqC7zNWWP+zuDcUi9X9aGO3uTmbKezJ8ke6oaD5fUDIx/1In09C+PDsdUkwtvhaXooDuiv+LQuzY7eO0uvuIyxKFcqwaFyBbGkA89YA3uDlLi1RiHtNalxqdm4bBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=d9YzxvCO; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0C50782A;
-	Fri, 22 Mar 2024 10:34:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711100098;
-	bh=CKiXwlIgm9grSEOBKwbrUzEK7jX746Nv0f9cDrdsS6Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d9YzxvCOjLs7kmdP8sE+Ag/sIYqX/E4HX4s32+oS9SIJHx+KvMabhxdD2aCbjMlVH
-	 y3averLSxhS1Gb7l8tGXrdMv4xkfD+MSI6W1OQTQG05lRQYFd+kTY1axTI2xTtDUav
-	 lLiTd4XxJF6Lc8HNsdU6ZCsGEs72Xjn7i5PrMzQE=
-Date: Fri, 22 Mar 2024 11:35:22 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>,
-	linux-media@vger.kernel.org
-Subject: Re: [PATCH v9 6/6] media: uvcvideo: Fix hw timestamp handling for
- slow FPS
-Message-ID: <20240322093522.GN18799@pendragon.ideasonboard.com>
-References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
- <20220920-resend-hwtimestamp-v9-6-55a89f46f6be@chromium.org>
+	s=arc-20240116; t=1711100183; c=relaxed/simple;
+	bh=w9Z3i0b5pe74kxTQVWjcv3AKhdTObu1bWsq0KMWECbY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OKaZ2k8uvIII4g860eJWYfrXQ/Wp3j0R/Emq7zTbPe6d+SfmZwLv7paAItvF6QmsVgS5Izs8sT+xzNBSUT7nX6FviTArn6sBPXHhRQy7mNXUXnhAXd0HvcW/K1tmsYlcdS14JbrqaN7PKxeKzrgC+6/ay1mTclXtKG8mGOMHJ+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V1HGP0xK6z1xsQm;
+	Fri, 22 Mar 2024 17:34:21 +0800 (CST)
+Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1F12C1A016C;
+	Fri, 22 Mar 2024 17:36:16 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemd200004.china.huawei.com
+ (7.185.36.141) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 22 Mar
+ 2024 17:36:15 +0800
+From: Liu Shixin <liushixin2@huawei.com>
+To: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, Andrew
+ Morton <akpm@linux-foundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v2 0/2] Fix I/O high when memory almost met memcg limit
+Date: Fri, 22 Mar 2024 17:35:53 +0800
+Message-ID: <20240322093555.226789-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220920-resend-hwtimestamp-v9-6-55a89f46f6be@chromium.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
 
-Hi Ricardo,
+v1->v2:
+  1. Replace the variable active_refault with mmap_miss. Now mmap_miss will
+     not decreased if folio is active prior to eviction.
+  2. Jan has given me other two patches which aims to let mmap_miss properly
+     increased when the page is not ready. But in my scenario, the problem
+     is that the page will be reclaimed immediately. These two patches have
+     no logic conflict with Jan's patches[3].
 
-Thank you for the patch.
+Recently, when install package in a docker which almost reached its memory
+limit, the installer has no respond severely for more than 15 minutes.
+During this period, I/O stays high(~1G/s) and influence the whole machine.
+I've constructed a use case as follows:
 
-On Wed, Mar 15, 2023 at 02:30:17PM +0100, Ricardo Ribalda wrote:
-> In UVC 1.5 we get a single clock value per frame. With the current
-> buffer size of 32, FPS slowers than 32 might roll-over twice.
-> 
-> The current code cannot handle two roll-over and provide invalid
-> timestamps.
-> 
-> Revome all the samples from the circular buffer that are more than two
+  1. create a docker:
 
-s/Revome/Remove/
+	$ cat test.sh
+	#!/bin/bash
+  
+	docker rm centos7 --force
 
-> rollovers old, so the algorithm always provides good timestamps.
+	docker create --name centos7 --memory 4G --memory-swap 6G centos:7 /usr/sbin/init
+	docker start centos7
+	sleep 1
 
-Wouldn't it be better to support multiple rollovers instead ?
+	docker cp ./alloc_page centos7:/
+	docker cp ./reproduce.sh centos7:/
 
-> Note that we are removing values that are more than one second old,
-> which means that there is enough distance between the two points that
-> we use for the interpolation to provide good values.
-> 
-> Tested-by: HungNien Chen <hn.chen@sunplusit.com>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 24 ++++++++++++++++++++++++
->  drivers/media/usb/uvc/uvcvideo.h  |  1 +
->  2 files changed, 25 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index 1db0d1bc80e6..c58b51207be6 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -471,8 +471,31 @@ static void uvc_video_clock_add_sample(struct uvc_clock *clock,
->  {
->  	unsigned long flags;
->  
-> +	/*
-> +	 * If we write new data on the position where we had the last
-> +	 * overflow, remove the overflow pointer. There is no overflow
-> +	 * on the whole circular buffer.
-> +	 */
-> +	if (clock->head == clock->last_sof_overflow)
-> +		clock->last_sof_overflow = -1;
-> +
->  	spin_lock_irqsave(&clock->lock, flags);
->  
-> +	/* Handle overflows */
-> +	if (clock->count > 0 && clock->last_sof > sample->dev_sof) {
-> +		/*
-> +		 * Remove data from the circular buffer that is older than the
-> +		 * last overflow. We only support one overflow per circular
-> +		 * buffer.
-> +		 */
-> +		if (clock->last_sof_overflow != -1) {
-> +			clock->count = (clock->head - clock->last_sof_overflow
-> +					+ clock->count)	% clock->count;
-> +		}
-> +		clock->last_sof_overflow = clock->head;
-> +	}
-> +
-> +	/* Add sample */
->  	memcpy(&clock->samples[clock->head], sample, sizeof(*sample));
->  	clock->head = (clock->head + 1) % clock->size;
->  	clock->count = min(clock->count + 1, clock->size);
-> @@ -605,6 +628,7 @@ static void uvc_video_clock_reset(struct uvc_clock *clock)
->  	clock->head = 0;
->  	clock->count = 0;
->  	clock->last_sof = -1;
-> +	clock->last_sof_overflow = -1;
->  	clock->sof_offset = -1;
->  }
->  
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 07b2fdb80adf..bf9f5162b833 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -499,6 +499,7 @@ struct uvc_streaming {
->  		unsigned int head;
->  		unsigned int count;
->  		unsigned int size;
-> +		unsigned int last_sof_overflow;
->  
->  		u16 last_sof;
->  		u16 sof_offset;
-> 
+	docker exec -it centos7 /bin/bash
+
+  2. try reproduce the problem in docker:
+
+	$ cat reproduce.sh
+	#!/bin/bash
+  
+	while true; do
+		flag=$(ps -ef | grep -v grep | grep alloc_page| wc -l)
+		if [ "$flag" -eq 0 ]; then
+			/alloc_page &
+		fi
+
+		sleep 30
+
+		start_time=$(date +%s)
+		yum install -y expect > /dev/null 2>&1
+
+		end_time=$(date +%s)
+
+		elapsed_time=$((end_time - start_time))
+
+		echo "$elapsed_time seconds"
+		yum remove -y expect > /dev/null 2>&1
+	done
+
+	$ cat alloc_page.c:
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <string.h>
+
+	#define SIZE 1*1024*1024 //1M
+
+	int main()
+	{
+		void *addr = NULL;
+		int i;
+
+		for (i = 0; i < 1024 * 6 - 50;i++) {
+			addr = (void *)malloc(SIZE);
+			if (!addr)
+				return -1;
+
+			memset(addr, 0, SIZE);
+		}
+
+		sleep(99999);
+		return 0;
+	}
+
+
+We found that this problem is caused by a lot ot meaningless read-ahead.
+Since the docker is almost met memory limit, the page will be reclaimed
+immediately after read-ahead and will read-ahead again immediately.
+The program is executed slowly and waste a lot of I/O resource.
+
+These two patch aim to break the read-ahead in above scenario.
+
+[1] https://lore.kernel.org/linux-mm/c2f4a2fa-3bde-72ce-66f5-db81a373fdbc@huawei.com/T/
+[2] https://lore.kernel.org/all/20240201100835.1626685-1-liushixin2@huawei.com/
+[3] https://lore.kernel.org/all/20240201173130.frpaqpy7iyzias5j@quack3/
+
+Liu Shixin (2):
+  mm/readahead: break read-ahead loop if filemap_add_folio return
+    -ENOMEM
+  mm/readahead: increase mmap_miss when folio in workingset
+
+ include/linux/pagemap.h |  2 ++
+ mm/filemap.c            |  7 ++++---
+ mm/readahead.c          | 15 +++++++++++++--
+ 3 files changed, 19 insertions(+), 5 deletions(-)
 
 -- 
-Regards,
+2.25.1
 
-Laurent Pinchart
 
