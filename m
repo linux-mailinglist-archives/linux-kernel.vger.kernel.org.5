@@ -1,175 +1,200 @@
-Return-Path: <linux-kernel+bounces-111258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35308869CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:58:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3008869D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B1B31F21EC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:58:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF44A1C2255F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4138D22611;
-	Fri, 22 Mar 2024 09:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC40282FE;
+	Fri, 22 Mar 2024 09:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nci4RWRX"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norik.com header.i=@norik.com header.b="DBX7q0i8"
+Received: from cpanel.siel.si (cpanel.siel.si [46.19.9.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC3B20DDB;
-	Fri, 22 Mar 2024 09:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F1D39854;
+	Fri, 22 Mar 2024 09:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.19.9.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711101493; cv=none; b=NWQLefymoUr3lkYygRpUGCQluC2F1qndpWnfkoDAna67P6zc0fLRlyoWf21lld9B55KB2GAUFjfexwAHV93RXp97lcBHvB/fHclYwGY7qSpQtKNZP+HnP1ve2ieZ+SJlEHxfZKAKE+Qk7POoq1ePeRN2qoRlfuGaB5V3olKOZdM=
+	t=1711101543; cv=none; b=O1prgql9nkdtWpZU8+6gjhcEEM8NVfiyPKSa1LP3EmH7DrNz5o9jT0IDhGcPz7z54YSzDZg6lx3kyWssUY6qM9OG9fVaeQguzZc0Dw4XM5TzRT9cKWaW6WUQfEElMIdi5mcQOVaBv/eqB+5h+lojUuVVkv6szdOmXCqMB1ppKhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711101493; c=relaxed/simple;
-	bh=mZTyWVFeEOx3cqGMfXq4zUTy9aeTI1cR1TIk16D5slo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q09ll9BfkEfOKpD8pdoBs5jNjN76RrpnimzIScFlQX0m+UDA+ejI2/f3pmpTVUFOHQnaTiENTj8BCFPq4yvG+/0njETDqMe+UTf8+vGlA1rRc2/43l8bt/sp0AM9AaKBcXNIMxeXzq4nqujasYardu+kgWYYOtNSwKN5VdzvjAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nci4RWRX; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4146a1ac117so11558615e9.0;
-        Fri, 22 Mar 2024 02:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711101490; x=1711706290; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xGqEICCDmfISMN2Tgs6OomSyhnoxbbHxoKPcMA5U3Ds=;
-        b=Nci4RWRX/RWHJ51etY9g5hgxnnk3wT4B1W37BR8FlFgmbMB8aOQc1rwZyozy9Si3jr
-         1FKC+gc4Ps8KUjyxmagx05m6Gc4y70GU8cnSyI2Ifj0hYEjfLRT6iEzqWSuJKZvh9Em5
-         Aut2r1gPnwGYzd3NGfOkuAKoMCbyA2ny3aNsLmIZdO9e5a5qILG+CTmqVPnFhpWJVHWT
-         5GavHYDxPLPvpzwklZX0MpoSn79lg7eT/iHvFcdxDQsDITKZxgYb4jr6XrmOggNy5Umt
-         V3pjX3iBv+wPv8AvXGsMTl8NAK6lgaEv3PYBMfiILronSV4DlRTruhn92x7zOHiWjcpv
-         393A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711101490; x=1711706290;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xGqEICCDmfISMN2Tgs6OomSyhnoxbbHxoKPcMA5U3Ds=;
-        b=G2nBnjqRNrMFZN8EFdz0wMV/hvHELz0VuqFwg98tz5hZOslXMSdd6MMhIoKbLGxs5g
-         84X6W/OuubUTpC2ODGCetNhE5bDR04VE0MB07V2OIXwdghpF9OlR3WHF10AAdycjnq/7
-         qcQ8+01AZp/bbe623LEmzcaf8dHTvpRSAWAWMVzeeR93AgTuIHsIZoIyUynMF8/xxpjp
-         fWfCnny5dP6ChTisqpeT725DVDehXL+aEFxNpBWY99ITgRCalEkp58VYPXaLes/Zs0md
-         zVPqcqKBT24wxE9b5i9ToZlqfJmaUG5mUsHX6WRuVIuUgg9ZNJIyTQyY/qDPzheGgRzr
-         OJEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX19XW8Yx1cd2dJ7ENbiiDTSBT02i0AQ+vzSo4xyJTanHFD5ncItx2G9PHXVLYwv1wa5C7ehObjsHwSP8vkteMaLtsm3gWcTPeg2vd7dOAr5vBs55gXwsKiwvBVyoj+fqem6gDt6tOY53xSevVwUZ/1FmDkTTlpBzqbCTlZKDI=
-X-Gm-Message-State: AOJu0Yznzkv9akcoY8vG0ONTxLQW5L0aDogbVv9qfcn8v54VgaT1j0JQ
-	kC0cwkk3NgIG71RzR3HXUBs3ETtcCZUsZNUjwmDLRDFJmtAeTgC9
-X-Google-Smtp-Source: AGHT+IGVBpsURgy95iJG0WVZSv0I6xzHthi5Am+OVL/2gfunyQBb0t2g50DRG1kF8q/B9Ag+0WfCPQ==
-X-Received: by 2002:a05:600c:3507:b0:414:76df:41d6 with SMTP id h7-20020a05600c350700b0041476df41d6mr1401787wmq.13.1711101489520;
-        Fri, 22 Mar 2024 02:58:09 -0700 (PDT)
-Received: from gmail.com (1F2EF04C.nat.pool.telekom.hu. [31.46.240.76])
-        by smtp.gmail.com with ESMTPSA id fm5-20020a05600c0c0500b004146c769c79sm8087715wmb.0.2024.03.22.02.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 02:58:09 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Fri, 22 Mar 2024 10:58:06 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>,
-	Anton Altaparmakov <anton@tuxera.com>, Pavel Machek <pavel@ucw.cz>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>, Chen Yu <yu.c.chen@intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Catalin Marinas <catalin.marinas@arm.com>, linux-mm@kvack.org,
-	Matthieu Baerts <matthieu.baerts@tessares.net>,
-	Mat Martineau <mathew.j.martineau@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] x86/pm: Fix false positive kmemleak report in
- msr_build_context().
-Message-ID: <Zf1WLscQHk9+w+Z+@gmail.com>
-References: <20240314142656.17699-1-anton@tuxera.com>
- <70261e2a-b87e-462e-964e-95a51ecde978@intel.com>
- <CAJZ5v0hdA2PUc8cmJtCNxW-nzHdWV+pxnTEeVu_7YHsHZTmFLw@mail.gmail.com>
+	s=arc-20240116; t=1711101543; c=relaxed/simple;
+	bh=snSfJ5AEfJHDPAVmOuKibdE9ybjzZy8eOI7cRfFLAgE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a8S78l6c18tuFgudDNaS7ielehWLHwm37xIJbFnIu/2w1JGuHvIXauYZeZHF6JyTSu0jlCb7Q4NbDEGtQjXzDcXteFz0xDzifMDRZkdIH1ZQHKMT07BJGs/iXSvUF21VMXB4LUSvnxDGsKmhShl+5mVXSDwzx6CtYVojzVUFnsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com; spf=pass smtp.mailfrom=norik.com; dkim=pass (2048-bit key) header.d=norik.com header.i=@norik.com header.b=DBX7q0i8; arc=none smtp.client-ip=46.19.9.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=norik.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
+	s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=yzXvXf84t5xedKkjpoUQe3At33UjMGBnjxJCS2m3Aho=; b=DBX7q0i8YZtNwO6PSSaLlw49o1
+	V1an/mgH+UuZNViR2IPATvhExnpVYVBCaTstrG8ousCWpKY8LVQxP4iA0pWCLU7mlCmZkWtW8KsW7
+	ArSqZtTY7hJwqKo828YNyXtEFQdybQPr56E6vs69If8RCNLIu0/pCv4UAq5/AljNpWZ5d6gt1V0ZT
+	dUBO9tnaV0GX1LevYNBFaqQW5nOLi2tBhxb9L/ky1JhB2ZgUCz2PJ9lDZcdxnOgtKpdttkbcxLe2H
+	JGG5ZdSA8d/9iXyY9IMuu/1o4VKYmubbqXGiiZxRYsx2R8YnpTlyiTN+IYhEOaWMrI7qwJFSf0A6X
+	mgdAEDQA==;
+Received: from 89-212-21-243.static.t-2.net ([89.212.21.243]:44576 helo=[192.168.69.84])
+	by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <andrej.picej@norik.com>)
+	id 1rnbfu-00Ev5q-2H;
+	Fri, 22 Mar 2024 10:58:57 +0100
+Message-ID: <1bbd4fdf-59c5-42b2-8698-95f402645c67@norik.com>
+Date: Fri, 22 Mar 2024 10:58:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0hdA2PUc8cmJtCNxW-nzHdWV+pxnTEeVu_7YHsHZTmFLw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: iio: adc: nxp,imx93-adc.yaml: Add
+ calibration properties
+Content-Language: en-GB
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, haibo.chen@nxp.com,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc: jic23@kernel.org, lars@metafoo.de, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ upstream@lists.phytec.de
+References: <20240320100407.1639082-1-andrej.picej@norik.com>
+ <20240320100407.1639082-3-andrej.picej@norik.com>
+ <38637621-1611-4268-ae79-7ac93a72c5ee@linaro.org>
+ <e994b756-7f4e-4be3-b8f3-310988174b44@norik.com>
+ <7e58bf96-3c38-467f-86b6-06ff5feedb31@linaro.org>
+ <40e08a5e-e7e9-47c7-9102-24a2bbba67cf@norik.com>
+ <a1b173c0-5120-40f6-9708-cd810b4a2406@linaro.org>
+From: Andrej Picej <andrej.picej@norik.com>
+In-Reply-To: <a1b173c0-5120-40f6-9708-cd810b4a2406@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpanel.siel.si
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - norik.com
+X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: andrej.picej@norik.com
+X-Authenticated-Sender: cpanel.siel.si: andrej.picej@norik.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-
-* Rafael J. Wysocki <rafael@kernel.org> wrote:
-
-> On Thu, Mar 14, 2024 at 4:05 PM Dave Hansen <dave.hansen@intel.com> wrote:
-> >
-> > On 3/14/24 07:26, Anton Altaparmakov wrote:
-> > >  /* image of the saved processor state */
-> > >  struct saved_context {
-> > > -     /*
-> > > -      * On x86_32, all segment registers except gs are saved at kernel
-> > > -      * entry in pt_regs.
-> > > -      */
-> > > -     u16 gs;
-> > >       unsigned long cr0, cr2, cr3, cr4;
-> > >       u64 misc_enable;
-> > >       struct saved_msrs saved_msrs;
-> > > @@ -27,6 +22,11 @@ struct saved_context {
-> > >       unsigned long tr;
-> > >       unsigned long safety;
-> > >       unsigned long return_address;
-> > > +     /*
-> > > +      * On x86_32, all segment registers except gs are saved at kernel
-> > > +      * entry in pt_regs.
-> > > +      */
-> > > +     u16 gs;
-> > >       bool misc_enable_saved;
-> > >  } __attribute__((packed));
-> >
-> > Isn't this just kinda poking at the symptoms?  This seems to be
-> > basically the exact same bug as b0b592cf08, just with a different source
-> > of unaligned structure members.
-> >
-> > There's nothing to keep folks from reintroducing these kinds of issues
-> > and evidently no way to detect when they happen without lengthy reproducers.
+On 22. 03. 24 09:14, Krzysztof Kozlowski wrote:
+> On 22/03/2024 08:39, Andrej Picej wrote:
+>> On 20. 03. 24 13:15, Krzysztof Kozlowski wrote:
+>>> On 20/03/2024 13:05, Andrej Picej wrote:
+>>>> Hi Krzysztof,
+>>>>
+>>>> On 20. 03. 24 11:26, Krzysztof Kozlowski wrote:
+>>>>> On 20/03/2024 11:04, Andrej Picej wrote:
+>>>>>> Document calibration properties and how to set them.
+>>>>>
+>>>>> Bindings are before users.
+>>>>
+>>>> will change patch order when I send a v2.
+>>>>
+>>>>>
+>>>>> Please use subject prefixes matching the subsystem. You can get them for
+>>>>> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+>>>>> your patch is touching.
+>>>>> There is no file extension in prefixes.
+>>>>
+>>>> So: dt-bindings: iio/adc: nxp,imx93-adc: Add calibration properties?
+>>>
+>>> Did you run the command I proposed? I don't see much of "/", but except
+>>> that looks good.
+>>
+>> Ok noted.
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
+>>>>>> ---
+>>>>>>     .../bindings/iio/adc/nxp,imx93-adc.yaml           | 15 +++++++++++++++
+>>>>>>     1 file changed, 15 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>>> index dacc526dc695..64958be62a6a 100644
+>>>>>> --- a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
+>>>>>> @@ -46,6 +46,21 @@ properties:
+>>>>>>       "#io-channel-cells":
+>>>>>>         const: 1
+>>>>>>     
+>>>>>> +  nxp,calib-avg-en:
+>>>>>> +    description:
+>>>>>> +      Enable or disable averaging of calibration time.
+>>>>>> +    enum: [ 0, 1 ]
+>>>>>> +
+>>>>>> +  nxp,calib-nr-samples:
+>>>>>> +    description:
+>>>>>> +      Selects the number of averaging samples to be used during calibration.
+>>>>>> +    enum: [ 16, 32, 128, 512 ]
+>>>>>> +
+>>>>>> +  nxp,calib-t-samples:
+>>>>>> +    description:
+>>>>>> +      Specifies the sample time of calibration conversions.
+>>>>>> +    enum: [ 8, 16, 22, 32 ]
+>>>>>
+>>>>> No, use existing, generic properties. Open other bindings for this.
+>>>>
+>>>> You mean I should use generic properties for the ADC calibration
+>>>> settings? Is there already something in place? Because as I understand
+>>>> it, these calib-* values only effect the calibration process of the ADC.
+>>>
+>>> Please take a look at other devices and dtschema. We already have some
+>>> properties for this... but maybe they cannot be used?
+>>>
+>>
+>> I did look into other ADC devices, grep across iio/adc, adc bindings
+>> folders and couldn't find anything closely related to what we are
+>> looking for. Could you please point me to the properties that you think
+>> should be used for this?
 > 
-> This change is fine with me FWIW,
+> Indeed, there are few device specific like qcom,avg-samples. We have
+> though oversampling-ratio, settling-time-us and min-sample-time (which
+> is not that good because does not use unit suffix).
 
-thx, I've added your:
+Ok, these are examples but I think I should not use them, since these 
+are i.MX93 ADC specific settings, which are used for configuration of 
+calibration process, and are not related to the standard conversion 
+process during runtime. Calibration process is the first step that 
+should be done after every power-on reset.
 
-    Acked-by: "Rafael J. Wysocki" <rafael@kernel.org>
+> 
+> Then follow up questions:
+>   - nxp,calib-avg-en: Why is it a board-level decision? I would assume
+> this depends on user choice and what kind of input you have (which could
+> be board dependent or could be runtime decision).
 
-> but I agree that making it for kmemleak reasons feels kind of misguided.
+Not really sure I get your question, so please elaborate if I missed the 
+point.
+This is a user choice, to enable or disable the averaging function in 
+calibration, but this is a board-level decision, probably relates on 
+external ADC regulators and input connections. The same options are used 
+for every ADC channel and this can not be a runtime decision, since 
+calibration is done before the ADC is even registered.
 
-Yeah, so it's a workaround, but kmemleak is also a useful debugging 
-facility that is finding memory leaks that static checkers are missing.
+>   - nxp,calib-t-samples: what does it mean? Time is expressed in time
+> units, but there is nothing about units in the property name.
+> 
 
-The fact that we don't have an easy way to prevent these problems from 
-being introduced is I think properly counterbalanced by the facts that:
+You are right, basically this is "time" in cycles of AD_CLK. I should at 
+least add that to the property description.
 
-  1) Only kmemleak users are inconvenienced by the false positives.
-
-  2) kmemleak users & maintainers have created the patch. There was no 
-     pressure on us x86 maintainers other than to apply a root-cause 
-     analyzed patch.
-
-  2) Over a timespan of ~10 years only 2 such alignment problems were 
-     introduced, and they were fixed by the kmemleak folks. I think that's 
-     a fair price to pay for a useful facility.
-
-Ie. I don't think there's any long-term maintenance burder concern.
-
-So I've applied this workaround to x86/urgent, with a change to the title 
-to make sure this isn't understood as a real bug in the PM code, but a 
-workaround:
-
-   37fb408c99af x86/pm: Work around false positive kmemleak report in msr_build_context()
-
-.. lemme know if you feel strongly about this. :-)
-
-Thanks,
-
-	Ingo
+Best regards,
+Andrej Picej
 
