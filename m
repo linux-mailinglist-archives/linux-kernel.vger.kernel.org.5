@@ -1,80 +1,73 @@
-Return-Path: <linux-kernel+bounces-111286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C40886A24
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:22:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC99886A2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 11:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61FEC1F23E12
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:22:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 296932822C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 10:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15B23B2A8;
-	Fri, 22 Mar 2024 10:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1744138DFC;
+	Fri, 22 Mar 2024 10:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OCumWId4"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lg/BHtze"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6CDF39AC5;
-	Fri, 22 Mar 2024 10:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647DF2E822
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 10:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711102950; cv=none; b=qYtJ3u2Rj386j7gmsPnHdzFI+Aoa5w+SyhY2lufc+/L+1tQiuQJwDHKdGwkZVMPHgOVz1kbuiU6m/um8v1IXi++A4wZpQUx81YdbjS+4pKF8O/zbpdqXqE3qE4x9p6UMGsPk8LOTL8R1zBv8IQ5DxACkWn5c0hJycFbKQnaYBiM=
+	t=1711103076; cv=none; b=Ps5mL24D4UZwITrYz2OUgqKFBNrSCM1mclt3U0/qJn4i5yHysJVmk03JEg9IOPrqNQwGjiElb4DQPnWWBJPxmYSfp4Xz7g9CR+9AB5fqj5HwZ1jeI3HNjjpAON2I9BJO0ls/vPpRTz7Zx7lnYb7Q+jv6Mgo9M+waZrM11lQZr+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711102950; c=relaxed/simple;
-	bh=vMwYb4avxUZsb6Vz24fjsEAOtzod3kHSa/OcSBljTCc=;
+	s=arc-20240116; t=1711103076; c=relaxed/simple;
+	bh=LdraHFKkYxsoFAQsnK5xaReIIh1bnT+H6G/1KbOLhyY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WJG/2ful8/knSRCOb4wjRU3toYRCy50kp3jGStHAIHyZsjETcjnzngE9RZ8jGuXpGXy4xVDR3cr3011J+EeVOpW773Klpd3YWqYD2BgZDf+T4YzEFAtDlooJ3dk7IAhGZPp0UPoIO9KWqbnlFMOQ5p8ikGkD/HmLY2RzTcCnz9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OCumWId4; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42M7D0oO029705;
-	Fri, 22 Mar 2024 10:22:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=t4EtCupj1AZsWtQ2aOS+eqQ4iFxWWbTe9gpwh+nYbgo=;
- b=OCumWId4GftXCC+x8XAN+4LzM5nfQc2Vt/51ofVBaheILkrNgywAF5nxxOT3ugMMfwbA
- 1j5by1l1X8hD/dPcSokAsNhZQLcXz8nqpLC+Cu9zYl0eS1zXrKF4DX7eTP2hP4jZOhlx
- o1dJkNZqgSVbr4Ls/DqVHnLHaHi16bwnPxADpGBOxYuNj2PuyOuROQrTgkRAByE28Erw
- oTIUczGUPaIVhc+8YtXnQkXdcDeqTeLiLoc8RaopVRYflvAYekQkr+c+ijVVQ1lpoUAl
- njxfj2pDb7jDT7OCs/USg4OVicIPam4oA9xB1eNAGfqoXjxMcH3Oy0ne/uQchOaBQKIP AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x15d30c1v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 10:22:21 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42MAMLB0015406;
-	Fri, 22 Mar 2024 10:22:21 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x15d30c1s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 10:22:21 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42M8kq8w015722;
-	Fri, 22 Mar 2024 10:22:20 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x0x15k3nh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Mar 2024 10:22:20 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42MAMEqP47382980
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 22 Mar 2024 10:22:16 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9EE7620067;
-	Fri, 22 Mar 2024 10:22:14 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5DC812004F;
-	Fri, 22 Mar 2024 10:22:14 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 22 Mar 2024 10:22:14 +0000 (GMT)
-Message-ID: <ed0f05de-0e17-41ec-85b2-be8603b0556a@linux.ibm.com>
-Date: Fri, 22 Mar 2024 11:22:13 +0100
+	 In-Reply-To:Content-Type; b=Uf2s/259spktJZpDWUsH8vYX36Rl/F/73XFinrtEac2MsW9lt8iQ/XJXKDIR4yYREl3TYdXI6wP4Wkcdz9nDso+9cP2xLc6Eq4zm612uImBY1Xuu1qqKrheGwFJghOBOKWesLe2zIRM4oAE77iVXhLesmKQrXvXtS7baS83arf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lg/BHtze; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513d717269fso2514080e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711103071; x=1711707871; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XbU84KSOwnLxXUjDH60L4m12voWSvWaFGV7NZhED0mY=;
+        b=lg/BHtzeA/KHPPcljScts4CsixnZl76gpq9JZj5ZkU7bzJMm48s/26GhY+Pvxjsv9P
+         1tnYDHbd61gxMDnNQI6t32TRhzk8CquEZLI2gN1UKMAfqISTcVavL/8Xx7ro88AuXa5e
+         TmlThLO2fHWouenruEgoqBR1DIAAYlFwpM55wIWw8DD7YI2xXD1E0Uy9dSslNU82WeFR
+         yjEU00t7wecaQ0057KzvvJcawdRbHH6oDtADJxnhBoNrGk6ib7jwuaoZPExJF3+Z+Un8
+         DfvESBDX6UjwDtK/0wnb5SNjFl91CyxxH4WxcYBhhaP3d90hSYHsSPTLqVVMfv1KCxtk
+         j8Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711103071; x=1711707871;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbU84KSOwnLxXUjDH60L4m12voWSvWaFGV7NZhED0mY=;
+        b=qG5fY3qXqP6kapjlQRXBVhh+e87aLt5IWHkuumkaqC8eqIvRZK98AnkKRobDadQCi5
+         gperZtrCQAHpCYd/K4j+7Yelfz8aCl6nMyGOuUdRLwj6cIsvmZBcOkTWWRR/oQkJHI1k
+         pA+50ybw7sMONnuvqKJtVkCfWMr1q8xxQH2P1t7wt2WMKIUMUbwsAFMIoPpsgPVPOAqc
+         Iiap9iJV02GlTClc0hD8YA5Pz59+5bPxu2AyJFYtP0e62ovRyjFTHttvmXu7DG982J1P
+         YFhsF2fZJbuHk2d4gB/XRr90VTQRGnkklsy6w1r/912Ztsk0oRKSc8kRRdBzR4oMtlVx
+         5Y3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVapfgmPBIXCV8tVo9Jjj24zW/I/cchm9wKa+9sBwPvbjE+NGrTjhGrfyavhCRiYuUkefwEFBMz/5q525E/642W/IdQE/vCEg4RCNn0
+X-Gm-Message-State: AOJu0YzS7fMiDZN9C6PSAD5YOumk62rq60FCn9ksqNWIHvolAR0b4K7a
+	6TLxPLHjUUMKQDYCLPQB0MUxlLP7eg09L/SLD+EhnrJCpvYmNJVnuQoTFdfawzg=
+X-Google-Smtp-Source: AGHT+IEIVG8bh+X4Ju2UJR3vnr0XfmzR3ZjVuy71x8WHH0+8JMVoyLDvz2/SChZ+zaLCYvb5BdxISA==
+X-Received: by 2002:ac2:44cf:0:b0:513:eba9:46c8 with SMTP id d15-20020ac244cf000000b00513eba946c8mr1213314lfm.35.1711103071691;
+        Fri, 22 Mar 2024 03:24:31 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id n21-20020a05600c4f9500b0041468961233sm8440421wmq.35.2024.03.22.03.24.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Mar 2024 03:24:31 -0700 (PDT)
+Message-ID: <f5dafde0-03d6-4693-b263-adf19984fa64@linaro.org>
+Date: Fri, 22 Mar 2024 10:24:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,103 +75,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] s390/mm: re-enable the shared zeropage for !PV and
- !skeys KVM guests
+Subject: Re: [PATCH 1/5] dt-bindings: regulator: qcom,usb-vbus-regulator: Add
+ PM7250B compatible
 Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-References: <20240321215954.177730-1-david@redhat.com>
- <20240321215954.177730-3-david@redhat.com>
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <20240321215954.177730-3-david@redhat.com>
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240322-fp4-tcpm-v1-0-c5644099d57b@fairphone.com>
+ <20240322-fp4-tcpm-v1-1-c5644099d57b@fairphone.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240322-fp4-tcpm-v1-1-c5644099d57b@fairphone.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ztFlzz80v3ERALXfSy3FTl3bPX6Bi31k
-X-Proofpoint-ORIG-GUID: 3N0heez5LomRZyHLGJD7rvjWaDPGsK2B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-22_06,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 bulkscore=0 adultscore=0
- spamscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2403220074
 
-
-
-Am 21.03.24 um 22:59 schrieb David Hildenbrand:
-> commit fa41ba0d08de ("s390/mm: avoid empty zero pages for KVM guests to
-> avoid postcopy hangs") introduced an undesired side effect when combined
-> with memory ballooning and VM migration: memory part of the inflated
-> memory balloon will consume memory.
+On 22/03/2024 08:01, Luca Weiss wrote:
+> The VBUS register block on the PM6150 PMIC shares the design with the
+> PM8150B one. Define corresponding compatible string, having the
+> qcom,pm8150b-vbus-reg as a fallback.
 > 
-> Assuming we have a 100GiB VM and inflated the balloon to 40GiB. Our VM
-> will consume ~60GiB of memory. If we now trigger a VM migration,
-> hypervisors like QEMU will read all VM memory. As s390x does not support
-> the shared zeropage, we'll end up allocating for all previously-inflated
-> memory part of the memory balloon: 50 GiB. So we might easily
-> (unexpectedly) crash the VM on the migration source.
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>   Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> Even worse, hypervisors like QEMU optimize for zeropage migration to not
-> consume memory on the migration destination: when migrating a
-> "page full of zeroes", on the migration destination they check whether the
-> target memory is already zero (by reading the destination memory) and avoid
-> writing to the memory to not allocate memory: however, s390x will also
-> allocate memory here, implying that also on the migration destination, we
-> will end up allocating all previously-inflated memory part of the memory
-> balloon.
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
+> index 33ae1f786802..fcefc722ee2a 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,usb-vbus-regulator.yaml
+> @@ -26,6 +26,7 @@ properties:
+>             - enum:
+>                 - qcom,pm4125-vbus-reg
+>                 - qcom,pm6150-vbus-reg
+> +              - qcom,pm7250b-vbus-reg
+>                 - qcom,pmi632-vbus-reg
+>             - const: qcom,pm8150b-vbus-reg
+>   
 > 
-> This is especially bad if actual memory overcommit was not desired, when
-> memory ballooning is used for dynamic VM memory resizing, setting aside
-> some memory during boot that can be added later on demand. Alternatives
-> like virtio-mem that would avoid this issue are not yet available on
-> s390x.
-> 
-> There could be ways to optimize some cases in user space: before reading
-> memory in an anonymous private mapping on the migration source, check via
-> /proc/self/pagemap if anything is already populated. Similarly check on
-> the migration destination before reading. While that would avoid
-> populating tables full of shared zeropages on all architectures, it's
-> harder to get right and performant, and requires user space changes.
-> 
-> Further, with posctopy live migration we must place a page, so there,
-> "avoid touching memory to avoid allocating memory" is not really
-> possible. (Note that a previously we would have falsely inserted
-> shared zeropages into processes using UFFDIO_ZEROPAGE where
-> mm_forbids_zeropage() would have actually forbidden it)
-> 
-> PV is currently incompatible with memory ballooning, and in the common
-> case, KVM guests don't make use of storage keys. Instead of zapping
-> zeropages when enabling storage keys / PV, that turned out to be
-> problematic in the past, let's do exactly the same we do with KSM pages:
-> trigger unsharing faults to replace the shared zeropages by proper
-> anonymous folios.
-> 
-> What about added latency when enabling storage kes? Having a lot of
-> zeropages in applicable environments (PV, legacy guests, unittests) is
-> unexpected. Further, KSM could today already unshare the zeropages
-> and unmerging KSM pages when enabling storage kets would unshare the
-> KSM-placed zeropages in the same way, resulting in the same latency.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Nice work. Looks good to me and indeed it fixes the memory
-over-consumption that you mentioned.
-
-Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Tested-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-(can also be seen with virsh managedsave; virsh start)
-
-I guess its too invasive for stable, but I would say it is real fix.
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
