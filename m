@@ -1,99 +1,129 @@
-Return-Path: <linux-kernel+bounces-112097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-112098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B83A08875BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:25:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3D78875BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Mar 2024 00:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B7411F22B7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:25:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D30C9286478
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 23:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234B082C60;
-	Fri, 22 Mar 2024 23:25:28 +0000 (UTC)
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40C682C76;
+	Fri, 22 Mar 2024 23:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ILgiJ2yP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4009B8005C;
-	Fri, 22 Mar 2024 23:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6DBD82877;
+	Fri, 22 Mar 2024 23:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711149927; cv=none; b=ehEv5GcQvuVkI3qmvI+/G5jP7OHgsaMbfAUz2oUBh0V9KYYAz/mtEDSrGOmbleGo1qDExvubGJwaXzZP1AYhvqZ56uUVvkmGAumUJQqny7OUAZSoqGXMcubdDLTySa6RmSQ05U90FEQ76sF+kAWO0c/WVth/P4Wuw9ckJ/Mdt2U=
+	t=1711150001; cv=none; b=WyPoJDoKeG/Qz1//fApZUPcsw3odMbNgPGfr0A5IiFkokdvsr3d97hO4FZIhDtsvh74i8AkX5EE3ncW/s6a+IyM8N1t2KcSC6xK6bhKE3rSmqD70yy8W+O32wKNC9USpcuKhFdK56yUS0ezesFOlWkc5wDIB2JeQe2d58f1qNes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711149927; c=relaxed/simple;
-	bh=5RYkymBYdPWldH4GqePzR7As5ngYcFHxLJCbmvwwcN8=;
+	s=arc-20240116; t=1711150001; c=relaxed/simple;
+	bh=yxAt4+KnvSCgWnlDrI9SBPijyXg/Hs6sJq0WjHy72Zc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uN4/hwqMiJ7iynUVjZfbk8CKhDlAtyTIfka2xSHuk15oTie0JMWSd4FTZkAWCGRwd5Ddle7cJ8o4iPnmbgay1Ge7hQOp3q8fO5ziiUHAmRqCWySLqAk4NPTxQzj+kLVmGawhSJTQElhWyjwRkyeI6yW9FGQd/9Dmq3O8zgoPgIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a46ebc0f49so1102458eaf.0;
-        Fri, 22 Mar 2024 16:25:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711149925; x=1711754725;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=seDqwfxKtP0d3EGvOIEgfuMWw/AVxjr6xapW+SLKXjo=;
-        b=W0soTc9pDmC2pfAFMZMjV22OluU1grxN3UZnKLU3NfwYb9EkV/wzE3Lo+T+HBbHO5u
-         YlFS1kZ8Jn6ppn2wQ++iyXPizj3YGQPFP/BFAEtf1j4QalISlmJiaOBdt7zdBOXFRxn0
-         KxFWlwCISDDAov7c0LaG6qgn8QG7zWsBtM1XYtemJJ4zI0O+mgwhaMS1L8xnk2+Q3q7C
-         Vo49eJI1X1+VRfLFwM1cIW6LhvMQ9pGobhbKebft3UniXP6pwUgdXBncwREFOpOQ7pHn
-         3TMmNHuElWY572BsGT3gcXdG3bXNsnZRynuIgKj9sZINHvPQ0orUbcOe83oaugjXznJU
-         M2UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVGK9hSPTMP/j3LiHWVoyOS8RGK0A6t6AShQvUJCPFMomeKELUKV8o0zZP/uVL9mbT2vvR3rYwQ5+nhkqQMJ4xF4ofgmv3tBPo6V8dEVT6TfBtHHcRQNIRvi2vhnTP8mdOnyG5oIYtF7iZW
-X-Gm-Message-State: AOJu0YwaLpVaCnZjV7TDAVFb9Ip2tKmoW1tyIIjSPqxDaHghsTTBbsHH
-	atw43qKPgq2QTyYAOCIhFNiPDP1mQBlEHFyi7hd7I37XVOdsNI+w
-X-Google-Smtp-Source: AGHT+IGp1ShymcKvguACWQ+punzelgzjxb1l7bH0I0950Yz3/jIfbFZO8iAZOHnMW38U18fSi3+SJQ==
-X-Received: by 2002:a05:6359:45a7:b0:17e:a3c0:f000 with SMTP id no39-20020a05635945a700b0017ea3c0f000mr1107653rwb.5.1711149925130;
-        Fri, 22 Mar 2024 16:25:25 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id h185-20020a636cc2000000b005e4fa511505sm2082616pgc.69.2024.03.22.16.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 16:25:24 -0700 (PDT)
-Date: Fri, 22 Mar 2024 23:25:18 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Wei Liu <wei.liu@kernel.org>,
-	Linux Kernel List <linux-kernel@vger.kernel.org>,
-	Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-	kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com
-Subject: Re: [GIT PULL] Hyper-V commits for 6.9
-Message-ID: <Zf4TXtFMURWnSvxh@liuwe-devbox-debian-v2>
-References: <Zfuy5ZyocT7SRNCa@liuwe-devbox-debian-v2>
- <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kZX7/RhpeMaHjxcKmWifWESmrMStjREomkhSjy47SXS1Fkk+8usBX8hOwZV9WCUqfgnxL4qwKw/LkcsIbGkMsQwDNlGEz2g5N5XGP3OpI0eM0FDX2HxA37IHRJ3VHKmCd2Lsw943hZfb041E/Gz3Tf26BDlwlG+BPg+Bl8VcaZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ILgiJ2yP; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711150000; x=1742686000;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yxAt4+KnvSCgWnlDrI9SBPijyXg/Hs6sJq0WjHy72Zc=;
+  b=ILgiJ2yPI94p4p9Su+zRogBllfaGzWe/MU8xsxFUeeg4x+mulIpR/Fr8
+   9aCm9J+Qhjek4yn1E3zlzWhgRjQ7W7kg2JcEt1rsBlY4AFHUI3KgX+H0C
+   BT+cfGeHgmwAf249jMPJPEdbYjZYwBUZPQG45rAPmzhmrK8ya7Ni+oDHf
+   ZinGXUi2z9QXHLe/KBA0qPkveJsuHL8B5WEI7lNKOyeTv0IIf1ybMHfe9
+   RNYFtA0zBd0MTK8Mhw9iZnOIIKAPCZ+69t6vR8tEoKCyswOB+2HltvdUE
+   eyUAi18nDZ4bLsMn0VhPANG2m+s5qPdUu3xoMD9ZRo1fI35yu7qQuLXlw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11021"; a="6116775"
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="6116775"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:26:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,147,1708416000"; 
+   d="scan'208";a="15121586"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 16:26:38 -0700
+Date: Fri, 22 Mar 2024 16:26:38 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"Yao, Yuan" <yuan.yao@intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH v19 029/130] KVM: TDX: Add C wrapper functions for
+ SEAMCALLs to the TDX module
+Message-ID: <20240322232638.GF1994522@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7cfd33d896fce7b49bcf4b7179d0ded22c06b8c2.1708933498.git.isaku.yamahata@intel.com>
+ <579cb765-8a5e-4058-bc1d-9de7ac4b95d1@intel.com>
+ <20240320213600.GI1994522@ls.amr.corp.intel.com>
+ <46638b78-eb75-4ab4-af7e-b3cad0d00d7b@intel.com>
+ <20240322001652.GW1994522@ls.amr.corp.intel.com>
+ <5f8aaa652cc112fc61b9b13b6d77b998a2461172.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjCD994KKNL7LGTNpF4B6-E2_A13J2hjP-ufnYt0KJdCA@mail.gmail.com>
+In-Reply-To: <5f8aaa652cc112fc61b9b13b6d77b998a2461172.camel@intel.com>
 
-On Thu, Mar 21, 2024 at 10:06:53AM -0700, Linus Torvalds wrote:
-> On Wed, 20 Mar 2024 at 21:09, Wei Liu <wei.liu@kernel.org> wrote:
-> >
-> >   ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20240320
+On Fri, Mar 22, 2024 at 04:33:21AM +0000,
+"Huang, Kai" <kai.huang@intel.com> wrote:
+
+> > > 
+> > > So how about we have some macros:
+> > > 
+> > > static inline bool is_seamcall_err_kernel_defined(u64 err)
+> > > {
+> > > 	return err & TDX_SW_ERROR;
+> > > }
+> > > 
+> > > #define TDX_KVM_SEAMCALL(_kvm, _seamcall_func, _fn, _args)	\
+> > > 	({				\
+> > > 		u64 _ret = _seamcall_func(_fn, _args);
+> > > 		KVM_BUG_ON(_kvm, is_seamcall_err_kernel_defined(_ret));
+> > > 		_ret;
+> > > 	})
+> > 
+> > As we can move out KVM_BUG_ON() to the call site, we can simply have
+> > seamcall() or seamcall_ret().
+> > The call site has to check error. whether it is TDX_SW_ERROR or not.
+> > And if it hit the unexpected error, it will mark the guest bugged.
 > 
-> Pulled, but...
+> How many call sites are we talking about?
 > 
-> Your pgp key expired two weeks ago. Please extend the expiration date
-> (and not something small!) and make sure to refresh the kernel.org
-> repo and/or other keyservers.
+> I think handling KVM_BUG_ON() in macro should be able to eliminate bunch of
+> individual KVM_BUG_ON()s in these call sites?
 
-Hmm... I thought I refreshed it right before the expiration date. I
-pushed it to Ubuntu's keyserver.
+16: custom error check is needed
+6: always error
 
-I will check if something's wrong.
-
-Do you have a keyserver that you prefer?
-
-Thanks,
-Wei.
-
-> 
->                  Linus
+So I'd like to consistently have error check in KVM code, not in macro or
+wrapper.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
