@@ -1,114 +1,161 @@
-Return-Path: <linux-kernel+bounces-110902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3DD886570
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:27:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5024886568
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 04:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E46285FDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:27:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB9F1B22A12
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 03:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A623053B8;
-	Fri, 22 Mar 2024 03:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742C26FA7;
+	Fri, 22 Mar 2024 03:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iPqTnJmO"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="M2kzSqfp"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904C94A07
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F87539A
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 03:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711078028; cv=none; b=DiLKQFyQuNTb1jBT8k8Gi8X3LwsR5Y9zma1IMHbV2tbLjFxPawchEalKE9Luoxa0j7zADfZ97rT1jM9DjabQIGQY0KJBkM+7S1gtfSGmoebV7/wLnTwka8aYHQRnlT8G1CMmx1ZmJMDwjdC+M1waZaGfS6N5MyNQmbdFe4udKtc=
+	t=1711077561; cv=none; b=V90owtS6InuuxbYEMQqdudo6t6cZNxcFq+B9yfjmMcl879DwEsBKXvY0kGq9QEvI874LsbO+qFax3cXRLgnu0e1gXKD/5Curb7yC6bE+5YLp7HOdV9En+QkXOe0Gzcy3T4NdTGCNu3XnJ1ZS3lsmEZTK9jLCEny8U/QdzD/4MGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711078028; c=relaxed/simple;
-	bh=rA9OLiQVBndIxCqI/RnL35hJtQlSZt3ZhLZoSTUWMn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RL8TDuSBVhGdV0Y+YkjN008fcmMupt1W+YAAqMKcKySUy6N2DX3ejh7QqoT9Jizk5FsEM1OnvTWxbu4LVyCHbJbp5vU/r80MhZg1gjnbsq+wmrQ9SH3SkJZbujHeEgl3r7/W+fx/ul5KGu7QfGlLm5GWcDPXe5kMsk+PQZqgVU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iPqTnJmO; arc=none smtp.client-ip=209.85.166.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7d02a82018eso32699639f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:27:06 -0700 (PDT)
+	s=arc-20240116; t=1711077561; c=relaxed/simple;
+	bh=fvJZZaBkvTwZ2GfFM/bql1AFaWmzpydGZRMgQq4xgY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FK7yQaGi6PK620qExuJXproVuIegLa/dhfw8fXrc9a2XYTmIvyZYfDqOdl96dCanBxh9M6KqHunMPv1Iib4yVY09Du7bjD/0zaj/PBrLufZKLYqkSXQt4+CORBzsI7bqSy56d94utIrc2zJV9CmWI/4mpom+kQNkyR6rNEyobCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=M2kzSqfp; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-78a2a97c296so110228285a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 20:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711078025; x=1711682825; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UcsMqmY7811GML8PC3DqwKOCOYs9+H/dHHUmPBVs1BQ=;
-        b=iPqTnJmOZsJPQX9rQ7ZDKO810VhRzhJPJpvFRyLcG3GZ6KXKTRa4p54WeuuFrAwcNM
-         b23px0uFeEZtwziUyqP//hvXZU26B5BO9jW0vhZbXW7pQqM6ADIB1GiVnv660RefdXC8
-         RA050VK+M553JWSGAOxL2hy4WrLYWwlfUucAM=
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711077557; x=1711682357; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7AULlavfdEfOUm/GPX2L+Nif3qOYoN+V+nZ3StdUxak=;
+        b=M2kzSqfpCq673SQ0TmiuFtPT0x/sSz+RtMRAurOWFJJ4CoNA0x1Rs2ygqoKR2mNo7E
+         8MPLp99Xzoi1C535GXfma+aDDomA+4yVOcPd0+qkAAU0hpddi/yPGxOJmuAwYGS6MjbZ
+         PpdEhe11C90bVh3VldVIVHoJZcjv5aBH6NMevNWVqpu0DQ7L2JbY7XmNAZrYjvtemyFS
+         T0ng5oyp+QH/psp4DbeaaCtqIBao2yMMUXSv8WWzrn0Bm3dno7x8hlxsxhjqeVo6sXUZ
+         k3aKQAGzTZCgQM478S8aDnjSsx/r15sRaG5WVwHn67XVdRsBWLCnXVSv++Q/12XkDkS2
+         zPrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711078025; x=1711682825;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UcsMqmY7811GML8PC3DqwKOCOYs9+H/dHHUmPBVs1BQ=;
-        b=nnsgiOmqpEFv9rUjZdjHTN5koGgQ/hoxF9mbHqDR4dxjYzyIEc/mCrXsWAv6+5D15o
-         q5698UZE6duE33BfUg515L6scZkcSTDetqicV0Mk1cE4CB6oVdL2dVTfHx5VMAXv/Ful
-         MPZIkVURpuAONfSRKGxtVglm6QanL7WfQySXf/eAffmHc/W3ZxnyjX45x3jC0O4DmOn1
-         9oKcQD6BEcZ8qITrKoVNAy/hRblTpEOSF9RHZIMtzLqOPmo6ZXRNAXl6czfH6U2n0aE1
-         Cd3htjY67EP3J1duIRG6yGetZK5wnNCjNEHKW9q0e5JczFMTwcmJ/ODfDiG9ZG81UBiN
-         cKIQ==
-X-Gm-Message-State: AOJu0YzrzCXMJo9reWn8LHNwgIhICsCYL24RbjP/kUuP1aLD/dfI8gT1
-	FXscIHOBIqQpXQ/GV0XJgbdlIw5jfO4CpQQ9n9ViXg9zJwvjQ+mGxrDW9PzJ6g==
-X-Google-Smtp-Source: AGHT+IFMNGILCIbGOORMV5AHfyreOQC+oqrzNbTvmrzQsA8QnVKKZXTt1rS+A5kiGLdhP2gdpVAEXw==
-X-Received: by 2002:a05:6a21:31c8:b0:1a3:7327:2323 with SMTP id zb8-20020a056a2131c800b001a373272323mr1123844pzb.45.1711077544553;
-        Thu, 21 Mar 2024 20:19:04 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n10-20020a170902d0ca00b001dc944299acsm657327pln.217.2024.03.21.20.19.02
+        d=1e100.net; s=20230601; t=1711077557; x=1711682357;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7AULlavfdEfOUm/GPX2L+Nif3qOYoN+V+nZ3StdUxak=;
+        b=dPyZCQixlMAgmERh9ls9nTCL2a2dyvDuujgy1aNc9Da83e8RfCLGJ5xKXtrRVcBkt2
+         IWHwxtKaMbnUzWCtuL7PX5iNLfg7mapMiIwOJ5hzMLe5+5kP8ttxAQBpY0tumZBYPQ9U
+         0ZNeHp1k04W8ZPq1mh9zpnA0dPnZj3gjDNdPdsuvCwTAMRCB6mvk35tqzwnIhDe+8LFO
+         KlsF0TFxhcQ7Ayo1RHlj8ubQPN0LodgZ6QTOfZNwFLJ0Rafp3teTtZzkGF5wNvaQMzNd
+         yfR4J7+FHtGStRzt6tuy0KhLRu8t7PwC04lCqzwFHOkmavNpTL5HOd/5/IVzKrC3fs0p
+         ceUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwuhoy76LLL9m3Gau14oNIySLrF/IS0p7kmmN1lfStebFwq6TXN1CiMtpE0ObFdvH0/S/TAUWfQv09LtJ0agMp+QsDwvkDqu033QKY
+X-Gm-Message-State: AOJu0YxiXyoTinZike33nTCYYNTFawX0ySVK9jRtdMxivxiEfeRnrMnF
+	L9I0rtfW044L0y7lIFWinY2Ei1En0TbVbpa3vKe68ZsJ7HUfxk/cmro9wI2iQWI=
+X-Google-Smtp-Source: AGHT+IGeEElG2Dj2jPJzIQlEFbUdLTQ8YBWA/SaQDhmGpaNmeQgTBDh0ATOszhGcScXdso/ksZeIgw==
+X-Received: by 2002:ac8:5b89:0:b0:42e:f660:8067 with SMTP id a9-20020ac85b89000000b0042ef6608067mr1390189qta.36.1711077557158;
+        Thu, 21 Mar 2024 20:19:17 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:16be])
+        by smtp.gmail.com with ESMTPSA id ew9-20020a05622a514900b0042f0996be6esm513421qtb.3.2024.03.21.20.19.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 20:19:03 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org,
-	Max Filippov <jcmvbkbc@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Rich Felker <dalias@libc.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] exec: fix linux_binprm::exec in transfer_args_to_stack()
-Date: Thu, 21 Mar 2024 20:18:48 -0700
-Message-Id: <171107752638.466752.7224681033755371253.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240320182607.1472887-1-jcmvbkbc@gmail.com>
-References: <20240320182607.1472887-1-jcmvbkbc@gmail.com>
+        Thu, 21 Mar 2024 20:19:16 -0700 (PDT)
+Date: Thu, 21 Mar 2024 23:19:07 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Nhat Pham <nphamcs@gmail.com>,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] zswap: initialize entry->pool on same filled entry
+Message-ID: <20240322031907.GA237176@cmpxchg.org>
+References: <20240321-zswap-fill-v1-1-b6180dbf7c27@kernel.org>
+ <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkY8os3yvYLiotaiRuYa1jdEGiPHQsZEU6E52zRBQ34kQQ@mail.gmail.com>
 
-On Wed, 20 Mar 2024 11:26:07 -0700, Max Filippov wrote:
-> In NUMMU kernel the value of linux_binprm::p is the offset inside the
-> temporary program arguments array maintained in separate pages in the
-> linux_binprm::page. linux_binprm::exec being a copy of linux_binprm::p
-> thus must be adjusted when that array is copied to the user stack.
-> Without that adjustment the value passed by the NOMMU kernel to the ELF
-> program in the AT_EXECFN entry of the aux array doesn't make any sense
-> and it may break programs that try to access memory pointed to by that
-> entry.
+On Thu, Mar 21, 2024 at 04:56:05PM -0700, Yosry Ahmed wrote:
+> On Thu, Mar 21, 2024 at 4:53 PM Chris Li <chrisl@kernel.org> wrote:
+> >
+> > Current zswap will leave the entry->pool uninitialized if
+> > the page is same  filled. The entry->pool pointer can
+> > contain data written by previous usage.
+> >
+> > Initialize entry->pool to zero for the same filled zswap entry.
+> >
+> > Signed-off-by: Chris Li <chrisl@kernel.org>
+> > ---
+> > Per Yosry's suggestion to split out this clean up
+> > from the zxwap rb tree to xarray patch.
+> >
+> > https://lore.kernel.org/all/ZemDuW25YxjqAjm-@google.com/
+> > ---
+> >  mm/zswap.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index b31c977f53e9..f04a75a36236 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1527,6 +1527,7 @@ bool zswap_store(struct folio *folio)
+> >                         kunmap_local(src);
+> >                         entry->length = 0;
+> >                         entry->value = value;
+> > +                       entry->pool = 0;
 > 
-> [...]
+> This should be NULL.
+> 
+> That being said, I am working on a series that should make non-filled
+> entries not use a zswap_entry at all. So I think this cleanup is
+> unnecessary, especially that it is documented in the definition of
+> struct zswap_entry that entry->pool is invalid for same-filled
+> entries.
 
-Applied to for-next/execve, thanks!
+Yeah I don't think it's necessary to initialize. The field isn't valid
+when it's a same-filled entry, just like `handle` would contain
+nonsense as it's unionized with value.
 
-[1/1] exec: fix linux_binprm::exec in transfer_args_to_stack()
-      https://git.kernel.org/kees/c/2aea94ac14d1
+What would actually be safer is to make the two subtypes explicit, and
+not have unused/ambiguous/overloaded members at all:
 
-Take care,
+struct zswap_entry {
+	unsigned int length;
+	struct obj_cgroup *objcg;
+};
 
--- 
-Kees Cook
+struct zswap_compressed_entry {
+	struct zswap_entry entry;
+	struct zswap_pool *pool;
+	unsigned long handle;
+	struct list_head lru;
+	swp_entry_t swpentry;
+};
 
+struct zswap_samefilled_entry {
+	struct zswap_entry entry;
+	unsigned long value;
+};
+
+Then put zswap_entry pointers in the tree and use the appropriate
+container_of() calls in just a handful of central places. This would
+limit the the points where mistakes can be made, and suggests how the
+code paths to handle them should split naturally.
+
+Might be useful even with your series, since it disambiguates things
+first, and separates the cleanup bits from any functional changes,
+instead of having to do kind of everything at once...
 
