@@ -1,98 +1,92 @@
-Return-Path: <linux-kernel+bounces-111476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059DC886CD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:26:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A54886D66
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99D5AB21D95
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:26:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E837B271A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E9646435;
-	Fri, 22 Mar 2024 13:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F86367A04;
+	Fri, 22 Mar 2024 13:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnrrkVnm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="HHeNgDj5"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B8D4501D;
-	Fri, 22 Mar 2024 13:25:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4CF664DD
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 13:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711113955; cv=none; b=nG9U3WJHSBvYkPwF3fQf783YMd1PqFC73VVx2l7PCQLFBwI6bBmbAO9tPcIbaGm56FSVl9nLB98uOXlPJx5Nnb3iZyEe1DIv0GxaxwnkbOMYqW+47h/rMDiQkFgpHagthAgcgxBf5aMaGodVg33vlWrj+iMcLlmLdvn7iXPyEng=
+	t=1711114052; cv=none; b=Qz6p6/jNKHskfboqbE/yvo6ICM1/3MH3L2FzOS7WXF/l9i8Q+ibTOzOuUByw+SoENww8VpR6IKynMQAXD0Ocg3d7esSWANQqFY1C40ss3ZDRHEFrAfysFRbNVS5ecQAZ3U+I/XytUGZl+sEf6FAAZD/GoEZpgOaZv27yvpAMu8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711113955; c=relaxed/simple;
-	bh=CENpD5NgmAJhS3D1ZXkdYGmEklIoEZGQs/+tbDdphNA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cbXA6TZZRI4ysZppLSCGjsoknu8n4Cy4PHFm7hPiSZ+ZA9Emdai9Ooo4/vnREk5W5AQOTcxIfH+wkno49Zu1xc6KA8xGXdVaNPJPOtF+ap/7Am1jjNVgnf0oZAMQRDP2nU1hzzhtiIYTo0QQ+eB0zzS92m+HJ4wT9iFk06fOrcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnrrkVnm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D02C433F1;
-	Fri, 22 Mar 2024 13:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711113954;
-	bh=CENpD5NgmAJhS3D1ZXkdYGmEklIoEZGQs/+tbDdphNA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JnrrkVnmIrKqbKLZjGbRSzx7y3YfQyc7PgmFZWmwbjz345aiSwtKplKgRuaEnTF5u
-	 uU3T+NlHWG3MCJ5Vwaej26vx0+N6U9YtsgnG5nW3l+mtpEL7IgNFH323KXJLhZyyOV
-	 tMDyRgPVO2+qzNtj84FS5qcnKiHuk/iGk3hufWopnrK3NMjud6qZ0cWWWrQHejWZB3
-	 JtAKPT4expA4Jvck6GCuitaHss6aJ0optS4vhUqewcBP8okggAXfJ0zb42eZvDJm6f
-	 CnDkhQo370bZnamTExR0XEYe63E0VHbf2k5iqzYWNLJS05jq4KGI/XXVIYeuaF+SOE
-	 B57PNzZdlWsQA==
-Date: Fri, 22 Mar 2024 13:25:49 +0000
-From: Simon Horman <horms@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>,
-	Ville Nuorvala <vnuorval@tcs.hut.fi>, Arnd Bergmann <arnd@arndb.de>,
-	Kui-Feng Lee <thinker.li@gmail.com>,
-	Breno Leitao <leitao@debian.org>, Kunwu Chan <chentao@kylinos.cn>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ipv6: fib: hide unused 'pn' variable
-Message-ID: <20240322132549.GG372561@kernel.org>
-References: <20240322131746.904943-1-arnd@kernel.org>
+	s=arc-20240116; t=1711114052; c=relaxed/simple;
+	bh=keBBjANmZEAG5ti6G+/K6pZJny5cyPijU0Et7tidAZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tDvJEwjLSPosQQ4MDu7vh+RkZy5JadaX27XNfBoEGPfHRjeLavg8gUuPyEb0TEtETE1L9llgHTEqyH0MBcGDFtP+n7GHqurfwEjW9ohb+dwnixBWXu1YF5JtZld0mWMmyiEC56VqAGxpowMCY/eEWDh+zksu1vLBBvhFRN54DD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=HHeNgDj5; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:in-reply-to:references:mime-version:content-transfer-encoding;
+	 s=k1; bh=LATMV+ftB6Wzcslw/1km6fP5fTaQpx9jv+n5ET3YDxA=; b=HHeNgD
+	j5Q79pRAf24P7ToKboQzgZB54htEVJNHQ2z7UAXO6JYvIa7lIPHgJtp3hC5TMbr3
+	oueR1jWNecd5as35NhQRPQ+7BHg6N++12j1zY5O5pXSBDV03/Q2ELCC/pKRfTogJ
+	fwJNZklq6pGMb3YFDnyBUjnABi1dGNwU1SE/QjgmwyLNR4illLNVgt9Us8Y3rgpC
+	SHkhcdhJpFQbb5FadzRs1QIvocpGLvwKXC2zb/mFVPRyx4/byC1/MqHndDJuDBHz
+	pB8/hkM8w+VqvJ7ELtTwksvWDgcccqmpZeXsuWK3nDItbdIcyFdt7YREBRJNRV3o
+	8OXOnKxElKCddO/w==
+Received: (qmail 3872103 invoked from network); 22 Mar 2024 14:27:08 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Mar 2024 14:27:08 +0100
+X-UD-Smtp-Session: l3s3148p1@OFDSxz8UVpRehhtF
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-i2c@vger.kernel.org
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 57/64] i2c: taos-evm: reword according to newest specification
+Date: Fri, 22 Mar 2024 14:25:50 +0100
+Message-ID: <20240322132619.6389-58-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322131746.904943-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 22, 2024 at 02:14:10PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_IPV6_SUBTREES is disabled, the only user is hidden, causing
-> a 'make W=1' warning:
-> 
-> net/ipv6/ip6_fib.c: In function 'fib6_add':
-> net/ipv6/ip6_fib.c:1388:32: error: variable 'pn' set but not used [-Werror=unused-but-set-variable]
-> 
-> Add another #ifdef around the variable declaration, matching the other
-> uses in this file.
-> 
-> Fixes: 66729e18df08 ("[IPV6] ROUTE: Make sure we have fn->leaf when adding a node on subtree.")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Match the wording of this driver wrt. the newest I2C v7, SMBus 3.2, I3C
+specifications and replace "master/slave" with more appropriate terms.
+They are also more specific because we distinguish now between a remote
+entity ("client") and a local one ("target").
 
-## Form letter - net-next-closed
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ drivers/i2c/busses/i2c-taos-evm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(text from Jakub)
+diff --git a/drivers/i2c/busses/i2c-taos-evm.c b/drivers/i2c/busses/i2c-taos-evm.c
+index b0f0120793e1..cb97f72291bc 100644
+--- a/drivers/i2c/busses/i2c-taos-evm.c
++++ b/drivers/i2c/busses/i2c-taos-evm.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Driver for the TAOS evaluation modules
+- * These devices include an I2C master which can be controlled over the
++ * These devices include an I2C controller which can be controlled over the
+  * serial port.
+  *
+  * Copyright (C) 2007 Jean Delvare <jdelvare@suse.de>
+-- 
+2.43.0
 
-The merge window for v6.9 has begun and therefore net-next is closed
-for new drivers, features, code refactoring and optimizations.
-We are currently accepting bug fixes only.
-
-Please repost when net-next reopens after March 25th.
-
-RFC patches sent for review only are welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
---
-pw-bot: defer
 
