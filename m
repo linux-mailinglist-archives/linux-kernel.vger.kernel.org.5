@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-111132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCCED886844
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:35:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9993E886845
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 09:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3B021C21F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:35:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA571F2170C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 08:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE03222331;
-	Fri, 22 Mar 2024 08:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199B42837F;
+	Fri, 22 Mar 2024 08:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oZsUV3DT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="imVmTgVq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7C9210E9
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F75E249FE
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 08:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711096480; cv=none; b=jXb2HuPt1lfQGRcN3yalseA7iW/3RYp8yxxDBw5UoDXcOb5zca9z79h263AhDvWM3FOnioew2gLg6lY6KN7ITgHO5LzzGBfixhskBYidDz4atJ1gmk2Wbt9MLXiZT7pnM3r4Na68DgYbWUmJYlyUtiDxVyZD0Iaw6B3lRO6bdcY=
+	t=1711096483; cv=none; b=Wip+CpcuPqV8s0uqH9Dwy4OymN5o29I8/LLD2RhhZAbOSM8NJl+Lfo1vOTjYK15fQ9yU9OrDRxUPWHv+MwBNqVQmEBjAHNfF95il0cKDCuTZA2ICq09fDTC+J4O6i9aI2PuD3LMQj+UE4wMTszaMDCuoJo+aMMxJeH9xLrinPZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711096480; c=relaxed/simple;
-	bh=JrD4352jMaYHyAz8IW4Sk3DaQV9z/B+p1XK/ErSE0cs=;
+	s=arc-20240116; t=1711096483; c=relaxed/simple;
+	bh=k8zytA2A5T1rgDUiIACZ6hBdX8Fv5Jcn+9QWsQNKn6E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BxfIdZrsTbbJFVpFIb1gU9rH0vfHbhTlZI8DLJDvXuY71jynt2QJdD4moMNO+jmMMbLscxSGr+jRlUFTtngGTvmbNTZ0grI/RQhsqrIHPTTWTzj6r07/gekPgY8r23gxyn29xfQF5MX+STkqc3yF7zTNK4aOf3i9hZW7lhcfkVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oZsUV3DT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D24C433C7;
-	Fri, 22 Mar 2024 08:34:37 +0000 (UTC)
+	 MIME-Version; b=uWJgjO0M6FncJ+jqgzi0jMNTyjNPqJyc0xPV4BN2BTcrIzN9nA6zfMTlNVxCJYY7S7Eptl7af1HPolLzR0DCzv1AUsKs8wAnS1iReU+2ppUgf0OB/HkeRDM8iZJjRWOkTs0aY8V6IGlcajC2GBEl2f4oucbta2UTfzkdHthON3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=imVmTgVq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5AF0C433F1;
+	Fri, 22 Mar 2024 08:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711096480;
-	bh=JrD4352jMaYHyAz8IW4Sk3DaQV9z/B+p1XK/ErSE0cs=;
+	s=k20201202; t=1711096482;
+	bh=k8zytA2A5T1rgDUiIACZ6hBdX8Fv5Jcn+9QWsQNKn6E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oZsUV3DTdJGLOu3ArzMd4oBovBPkSTl3ExBe2TyrGm2/jsGBl0k10Tvb00FSPq3S6
-	 HrYImJ0RI3HDEKE7ufsczVtoViNfJEwZN9YIkae2ZLk6e3LzCTFevFL5JDTvjrfEi2
-	 1Krww+MAEQwxg1AHgGsJp/Ixwx4wJqSIL3gSdw6vxRe5OKsZC9Q1IKRshBGsMmOMOI
-	 CEvi84IPNAKHdOC78TlZvwbMIAMRx/CYz+BIm3cTd59Td9FnlatulZGWWUAh0h/2Zo
-	 QrPXJLuUfcwuY1AVKIhMNeokjf9qdt96JM8SbuxOL/2KIkf6uHch3y3hWX9UK8wv3P
-	 OYqn8jLHP5OCQ==
+	b=imVmTgVqlm+AmLk8Z+ZTMWUVNgNEq2BRlwccjhVyXLCB5qbeGmW6fnWIQVCdNlzid
+	 06QraqFqwlS6y3vmnpi4Ap+WlLV/fStE6rPaOVtdHzI8NrNZ42fTJC9XPUrPp6ir+c
+	 GV4rj/JQSVNeSlk0ugfN6JCQ1XDjD1pSqTglUpse/EvLUm2T2jWrtq9YXKNEu9fuzn
+	 t69uwVBV97Ya9HH95qLpXX8br7iG5co6wHQvXztAm3v6yEEo3yOuQ4k31/8fwPTdEs
+	 MBLkSjMg134iZq1KJzMzfVW8NG/QHXg85sUGpSMLwN1pLXyxCrtZ7TX+M/Nl8s3kO0
+	 7Uingur0uvApA==
 From: alexs@kernel.org
 To: Matthew Wilcox <willy@infradead.org>,
 	Andrea Arcangeli <aarcange@redhat.com>,
@@ -51,9 +51,9 @@ To: Matthew Wilcox <willy@infradead.org>,
 Cc: "Alex Shi (tencent)" <alexs@kernel.org>,
 	Hugh Dickins <hughd@google.com>,
 	Chris Wright <chrisw@sous-sol.org>
-Subject: [PATCH v2 03/14] mm/ksm: add folio_set_stable_node
-Date: Fri, 22 Mar 2024 16:36:50 +0800
-Message-ID: <20240322083703.232364-4-alexs@kernel.org>
+Subject: [PATCH v2 04/14] mm/ksm: use folio in remove_stable_node
+Date: Fri, 22 Mar 2024 16:36:51 +0800
+Message-ID: <20240322083703.232364-5-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240322083703.232364-1-alexs@kernel.org>
 References: <20240322083703.232364-1-alexs@kernel.org>
@@ -67,9 +67,8 @@ Content-Transfer-Encoding: 8bit
 
 From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-Turn set_page_stable_node() into a wrapper folio_set_stable_node, and then
-use it to replace the former. we will merge them together after all
-place converted to folio.
+pages in stable tree are all single normal page, so uses ksm_get_folio()
+and folio_set_stable_node(), also saves 3 calls to compound_head().
 
 Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
 Cc: Izik Eidus <izik.eidus@ravellosystems.com>
@@ -78,35 +77,58 @@ Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Chris Wright <chrisw@sous-sol.org>
 ---
- mm/ksm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ mm/ksm.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/mm/ksm.c b/mm/ksm.c
-index ea3dabf71e47..c9b7c5701f22 100644
+index c9b7c5701f22..b6ee2bc7646f 100644
 --- a/mm/ksm.c
 +++ b/mm/ksm.c
-@@ -1109,6 +1109,12 @@ static inline void set_page_stable_node(struct page *page,
- 	page->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
+@@ -1121,11 +1121,11 @@ static inline void folio_set_stable_node(struct folio *folio,
+  */
+ static int remove_stable_node(struct ksm_stable_node *stable_node)
+ {
+-	struct page *page;
++	struct folio *folio;
+ 	int err;
+ 
+-	page = get_ksm_page(stable_node, GET_KSM_PAGE_LOCK);
+-	if (!page) {
++	folio = ksm_get_folio(stable_node, GET_KSM_PAGE_LOCK);
++	if (!folio) {
+ 		/*
+ 		 * get_ksm_page did remove_node_from_stable_tree itself.
+ 		 */
+@@ -1138,22 +1138,22 @@ static int remove_stable_node(struct ksm_stable_node *stable_node)
+ 	 * merge_across_nodes/max_page_sharing be switched.
+ 	 */
+ 	err = -EBUSY;
+-	if (!page_mapped(page)) {
++	if (!folio_mapped(folio)) {
+ 		/*
+ 		 * The stable node did not yet appear stale to get_ksm_page(),
+-		 * since that allows for an unmapped ksm page to be recognized
++		 * since that allows for an unmapped ksm folio to be recognized
+ 		 * right up until it is freed; but the node is safe to remove.
+-		 * This page might be in an LRU cache waiting to be freed,
+-		 * or it might be PageSwapCache (perhaps under writeback),
++		 * This folio might be in an LRU cache waiting to be freed,
++		 * or it might be in the swapcache (perhaps under writeback),
+ 		 * or it might have been removed from swapcache a moment ago.
+ 		 */
+-		set_page_stable_node(page, NULL);
++		folio_set_stable_node(folio, NULL);
+ 		remove_node_from_stable_tree(stable_node);
+ 		err = 0;
+ 	}
+ 
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 	return err;
  }
  
-+static inline void folio_set_stable_node(struct folio *folio,
-+					 struct ksm_stable_node *stable_node)
-+{
-+	set_page_stable_node(&folio->page, stable_node);
-+}
-+
- #ifdef CONFIG_SYSFS
- /*
-  * Only called through the sysfs control interface:
-@@ -3241,7 +3247,7 @@ void folio_migrate_ksm(struct folio *newfolio, struct folio *folio)
- 		 * has gone stale (or that folio_test_swapcache has been cleared).
- 		 */
- 		smp_wmb();
--		set_page_stable_node(&folio->page, NULL);
-+		folio_set_stable_node(folio, NULL);
- 	}
- }
- #endif /* CONFIG_MIGRATION */
 -- 
 2.43.0
 
