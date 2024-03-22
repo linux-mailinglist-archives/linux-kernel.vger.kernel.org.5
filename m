@@ -1,137 +1,118 @@
-Return-Path: <linux-kernel+bounces-111688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AADA886FA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:14:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AA8A886F95
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 16:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAA7B1C2286F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:14:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF4BC286FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61FBD5789E;
-	Fri, 22 Mar 2024 15:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6994E1B3;
+	Fri, 22 Mar 2024 15:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HF8JbSRd"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l6IEtcMb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053A34E1C4;
-	Fri, 22 Mar 2024 15:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BEB4644E;
+	Fri, 22 Mar 2024 15:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711120430; cv=none; b=MU/iFWND1f7MT1dbhE0AWC9zUwQzi2lFmWs3WYTc2iGl3tGeT7VR+aVqFPYywX4js+evXgxODhQRy+syoNFiNpWO4HqSH/DQcT0KHNMBosJbA2R73beLpT0/9vPAMDG+uOkUeSA+NOpl8qIu6p2NNWJ2egbiUIEFamWuUind/Iw=
+	t=1711120402; cv=none; b=L+mHiDEFL6ucHutsvWaLRAaFdPAAbQBbwlVSVCtgbtXCYSYOQOAGxrT+OlZWnCNhG8/fgUrO43VKlGg5APLqtiJJNj2RKBLi3olpf+c2yHSCSNgb3Z42+JN3fVDnmil9S48JdyoUJomknR6FDD2DNjGcMJJEMxQzVEaZ93g7j1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711120430; c=relaxed/simple;
-	bh=aEiwvFe1b6yF+StEQZ1rr1/VhFvd+gqzOrSn6S08Psw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GUOs/p5Q8dKD+SJVa/edKL65GOIQjTC+ijxuTHWtc9X17wZjKYP4CNtRs1TDTxTUQGURFx5Whr5qDcRUs2v/peGnkhkCNIkeMpEMM0OF+UfX3EKNtMZ9OzeswvODaABxSQkVViAyXvY3iQ09rfsl8bPA+BoeC8aRfvZcd3dwvxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HF8JbSRd; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-414787c73c7so8261155e9.0;
-        Fri, 22 Mar 2024 08:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711120427; x=1711725227; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WwFqtu9cCN48eR2VP1yO+BUGDJO89kd/raVOaSi/YaE=;
-        b=HF8JbSRdRNXTUpKRm+8Gxk3C74RbWDpW2ZhBXu/ukJ6p/0AFRyBeO01FM5nJQuDe7J
-         TftpE3pFl2XMV22KdoD4L6LOvhPbhWKi6YlxlJizqcZiBU9kM3ghnjLxJ9sAvk+IhSoa
-         qqr1GzTmC5dNwjtQx8VZ2RQgVDCiYjmNbp9DxcD7XcnCbLDkrybTucm/jf8TlwisWy8I
-         P6UFT9v1lppCnVLarS+Fjv37qFwDfDmKc1RwY5RBqI8vkoExB+DImT75aT+TpBirnuiw
-         ZyUrNhIiHrfwkIBDYjA9PNr0kcWs+dkzzJlUdehFuJMiFBom1ClyXf4JBrJmIDI0ZbIs
-         JJ0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711120427; x=1711725227;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WwFqtu9cCN48eR2VP1yO+BUGDJO89kd/raVOaSi/YaE=;
-        b=p2Qc/8QOJhSNtduFksby/WwUSlOqAc0PwdKy9IgYEWbuAJfniv+DcC6yUzExIXW0MX
-         Zam3P5rclcMlR8+aHREMwWQ0SCkBf6VGmJugPQCgNhsgpGHJHqSmUWuBDmECQI9ZMxml
-         CgT3vZIyPzo3B3ojVxaBnp2J/bM/UMnQXAxdtCrgNDhZzqajn+yjSTBgWxsz0bNSKhN2
-         LOE7mdFoIId/iGjO//uULRPyKrDJXTbN3kqWSacFbbDCLyjcbtO6dKanLE6fYOc2Pmvs
-         UN2A/jgES9+1ZciyksRzoAeJYv/vKpN4UZUz0mwj609p1cYdRRYpOcdC894U8si/HRou
-         oevQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVn6Yyqy8zWN8xEbweO1oIqhoCptrJiYboWFs2D6vw9ODhGf3TzWzFztVz1bi32dPskz1HKrt5Tq2UCv3iySMJtI3Tj/PjLwLk0l01GpBaa0I8yKO8nKf42ub4by7nqTSFlLuHh59ec3f9tY7q2
-X-Gm-Message-State: AOJu0YzWPX93eihme8m3uRiup7JYLYlcmVwFvWWMjoDRIJ2XlPzc7Kd/
-	FbvN+cJw8kBFkNxPXh/a93MJ3MzpfheUSZIEWBsqptEVk3MiXcIp
-X-Google-Smtp-Source: AGHT+IHZNeSZB4uvwIbaQvYaMT6aOs5dhwK5eOPl9RrKRfxIl1ZJULyy64o1gTX5Dx2isLcaInjLRg==
-X-Received: by 2002:a05:600c:5596:b0:414:c42:e114 with SMTP id jp22-20020a05600c559600b004140c42e114mr1824737wmb.39.1711120427360;
-        Fri, 22 Mar 2024 08:13:47 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2500:a01:7b89:721b:d6b0:d7e8])
-        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b004146d736fcdsm8626677wmo.36.2024.03.22.08.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 08:13:46 -0700 (PDT)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/2] clocksource/drivers/renesas-ostm: Allow OSTM driver to reprobe for RZ/V2H(P) SoC
-Date: Fri, 22 Mar 2024 15:12:19 +0000
-Message-Id: <20240322151219.885832-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240322151219.885832-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240322151219.885832-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	s=arc-20240116; t=1711120402; c=relaxed/simple;
+	bh=7L6ZHwWrV2R7L/x34TkpSTjw2xByD8vuZxWFmtB+Nsw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T7A9HoSpi1vFkK1wqVM5Wbo3Ao0TeXSJBq3jolqqcXUQFkzzBseDgQdLZcciHSMrgV6FEw1qm6fIf4xagVzbP241Mh0a1se72lpTDD/K5Qj1PvniZXI6Cps0LPutOOlyiysckCcFO3YZhAmMb6pWqXpr6iMnOOlMXjyyO6AK38A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l6IEtcMb; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711120400; x=1742656400;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7L6ZHwWrV2R7L/x34TkpSTjw2xByD8vuZxWFmtB+Nsw=;
+  b=l6IEtcMb+SKZKRxeKdfpuBdaiUEIjqzOrxMurjQvSryZpyAjuo0dWjyI
+   XW2O5jaI1T/sEMBKVga8ccEy8PD80juF1R0VTJeQ6UAut+Ph2mEvDApl3
+   Tti2lOQQcswrS7VdbvHKSgy5h9red4vgLqeDWhpLjzRgrB1ZvqB08KFQz
+   JgdoyLw9x3b/71QQ41OMVXosswzo4VRVjn8/A4Q1J/ejAQ2J2UUQZkGYU
+   +MW5LZjYRdNwuR6Q1CYeiA8Q5EDEPLfl0k6ms9W9fzzCmoopdjeJfaD1m
+   D+hEiHDWsUK2a5lTJaHNRZUg+HUjl1L/8jzkqgcOqoJKLCRCgJFqNqCrz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6037261"
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="6037261"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:13:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,146,1708416000"; 
+   d="scan'208";a="15041410"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.37.137])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 08:13:16 -0700
+Message-ID: <fcc93b09-eca2-498b-b141-06941c9395c5@intel.com>
+Date: Fri, 22 Mar 2024 17:13:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] perf tools: Add Kan Liang to MAINTAINERS as a
+ reviewer
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ "Liang, Kan" <kan.liang@linux.intel.com>, Mark Rutland
+ <mark.rutland@arm.com>, Namhyung Kim <namhyung@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-perf-users@vger.kernel.org
+References: <Zf2YlxkUObfNqFgC@x1>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <Zf2YlxkUObfNqFgC@x1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 22/03/24 16:41, Arnaldo Carvalho de Melo wrote:
+> Kan has been reviewing patches regularly, add him as a perf tools
+> reviewer so that people CC him on new patches.
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> Acked-by: "Liang, Kan" <kan.liang@linux.intel.com>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-The RZ/V2H(P) (R9A09G057) SoC is equipped with the Generic Timer Module,
-also known as OSTM. Similar to the RZ/G2L SoC, the OSTM on the RZ/V2H(P)
-SoC requires the reset line to be deasserted before accessing any
-registers.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Early call to ostm_init() happens through TIMER_OF_DECLARE() which always
-fails with -EPROBE_DEFER, as resets are not available that early in the
-boot process.  To address this issue on the RZ/V2H(P) SoC, enable the OSTM
-driver to be reprobed through the platform driver probe mechanism.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
-v1->v2
-- Updated commit description
-- Dropped usage of IS_ENABLED() and used defined() instead
----
- drivers/clocksource/renesas-ostm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/renesas-ostm.c b/drivers/clocksource/renesas-ostm.c
-index 8da972dc1713..39487d05a009 100644
---- a/drivers/clocksource/renesas-ostm.c
-+++ b/drivers/clocksource/renesas-ostm.c
-@@ -224,7 +224,7 @@ static int __init ostm_init(struct device_node *np)
- 
- TIMER_OF_DECLARE(ostm, "renesas,ostm", ostm_init);
- 
--#ifdef CONFIG_ARCH_RZG2L
-+#if defined(CONFIG_ARCH_RZG2L) || defined(CONFIG_ARCH_R9A09G057)
- static int __init ostm_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--- 
-2.34.1
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 43b39956694ae69c..91a867845d0c2ab8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17264,6 +17264,7 @@ R:	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>  R:	Jiri Olsa <jolsa@kernel.org>
+>  R:	Ian Rogers <irogers@google.com>
+>  R:	Adrian Hunter <adrian.hunter@intel.com>
+> +R:	"Liang, Kan" <kan.liang@linux.intel.com>
+>  L:	linux-perf-users@vger.kernel.org
+>  L:	linux-kernel@vger.kernel.org
+>  S:	Supported
 
 
