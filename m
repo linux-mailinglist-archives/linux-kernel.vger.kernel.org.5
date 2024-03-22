@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-111576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BD2886DFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:08:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2B6886E03
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 15:08:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A13BB21095
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:08:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FA291F226C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 14:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E652746B8B;
-	Fri, 22 Mar 2024 14:08:32 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B8146B9F;
+	Fri, 22 Mar 2024 14:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FSZWBTrB"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DDD3B2AD
-	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 14:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0D746521;
+	Fri, 22 Mar 2024 14:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711116512; cv=none; b=VaNHEPSwecNkD86g9rJkSKbMGtXJkw3zoNAth0URas9twSl1ggr4QmAjU2qerHcjjx68CEplKJ2J2sfK50ucgSh9BucAdwQhtTxjOn5xa/tGA42We3lC32PMupud2iuiFVbBRXmYdcbmp9eHXy6bg1w5f5noSyiiUjkY+RnpgEg=
+	t=1711116522; cv=none; b=pJXxub+2WNA8SnSE/7ieR8lHkMD0x5znuxxRYsmd0qcZX7/WApOWvY5WM/vNbVqn2lksk5/wh28D5TZNUOYlr59xSZRSMtPzLiz/uFms2Fv8u3kYNWy7zq5vx1KBhlmgtGEMGwrFSys3B5GkmBRg44oPVDQZxTfXGM78R9+9+6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711116512; c=relaxed/simple;
-	bh=2RQBu0WWiwp083cbydMO+Nr/jPL0tveLGURqe+4Sr70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jHs6VMY5Qml1dTCwn8b+8foiJBchgBM1c5Od4n+xlg6pCOoFFmQfx+nMBOg62eCJQ8j1xLSit+3Xj3OOYDhaSzZe6TrYZSJx/Mv40PRT3YydsIa7Kv1wZ0eHhdpcUy5Wq9UJLy9DVY5ZqPJeIJJrqEHGl/sk+w/iILHNNkSLkqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rnfYh-00015w-Sz; Fri, 22 Mar 2024 15:07:47 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rnfYf-007r98-Dz; Fri, 22 Mar 2024 15:07:45 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rnfYf-00BcL0-11;
-	Fri, 22 Mar 2024 15:07:45 +0100
-Date: Fri, 22 Mar 2024 15:07:45 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v5 13/17] net: pse-pd: Use regulator framework
- within PSE framework
-Message-ID: <Zf2QsfsxcPoCq_SC@pengutronix.de>
-References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
- <20240227-feature_poe-v5-13-28f0aa48246d@bootlin.com>
- <ZeObuKHkPN3tiWz_@pengutronix.de>
- <20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
- <ZeWi90H-B4XeSkFs@pengutronix.de>
- <20240321171524.0b04bfcc@kmaincent-XPS-13-7390>
- <ZfxjosqPMo0ECBmx@pengutronix.de>
- <20240322113950.27d35376@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1711116522; c=relaxed/simple;
+	bh=3KafjWtibLc3D6ji/Ov/mDWNEAagGDYV6htJE964lvQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SVSg8kk+IyHY+qV9wt/Nd23NomhNDe6CxoPv/QUg90PeRBW0QSlr1wiqrISDuKk7kyoiJEaall+J07prCYoifpA6bg9N+Y9cHeuf5tiN0Iw6x60VqGTBoOK2ASN+/pkOaLceOkwiPONqWR5bC3Is2uif9a3b2Hk1aMfeBSEjrjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FSZWBTrB; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-69664c7f716so8318246d6.0;
+        Fri, 22 Mar 2024 07:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711116519; x=1711721319; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sIa/GtogvqA0DYtww6Wk70bFxOMoH//TtEWfa7kprrI=;
+        b=FSZWBTrBlAfjEN8SuLop9SApKGAkBHvdtFyd5fuKmriSifGO0wh5dyh5yKhonUM6Tm
+         InY94BQt1mjnlK0qNtfHYTHZQ2AEFNUktXIrJ8+45cYf7D3mYcCj8N0mXk6eZTQcpXKJ
+         rGyf5Gg5lIl6kC0K/c4ne8ORqe2MxqTC4llI/qfB3tBoor9oqNVooWmgIzLJkiPYhEII
+         rVBweyYT21MwzT+63XSLJ9ZfEwps8QB2fk8Jye9QMfGMt/ULnkzHrHh0E2Ly3xgC9StM
+         NM6brjkbsiARKKVslw9nOBqfE6243O9sXlADbUboy9tk184zUXeg7E61juO57iYmFDBl
+         4sew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711116519; x=1711721319;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sIa/GtogvqA0DYtww6Wk70bFxOMoH//TtEWfa7kprrI=;
+        b=C0Bir1QsowYEEjhcV9CQqrcj18sosLDss+OzvuW4xVXkiI6NJI3yhXp2/zWyGv1nEN
+         MSCHIzdYZbn5Ywpw8kBpV5v3kqjcikh22K3JTxNtoSWqPuGuE4R7aS8H9atEMVZZzt9w
+         VeEf0pUgQeBYUDeS7sNp85et4Jlxb/ORAqDkZJtzuzNB1YK7SymTfUloVGkJjqyRvS9T
+         eVmla6HtTE7dVSG2o4uZd9kfMJnjs+z+85QEFcaIjpxZPjyWsIzkhx62U9EvX0GM8UuA
+         suKUEDwzE9aOyY51ArbWRjXzP59wMnSXF2bHPAul9aiXA0iKBWDvc6sDRm06HKzC8I2w
+         +DUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWcdCiG63fVsO5wILCznGVptP6aY3NJyke9zvf5DbM/fRyin3cJoOXTX3xMKTwDzBkKwSes+kHNknImbfJQCNAUymopWdf7bCDGpC50CZsniT7hNeuuAgMMr2JAe7zNII91SGg4NGEWEkuYg0kjKW56AOANLltowrAPOFJ0yQ==
+X-Gm-Message-State: AOJu0YzcJz6R8HaiQcMeF1Gh2jphvhWipD7Yla5PQjXZed+r0w35Nm0d
+	NXFUStf0IoJewzta/Z94M5OZDGrsSeds3WujhfPPHilCWYOJehno
+X-Google-Smtp-Source: AGHT+IHXlyybG5SFFQUKWVXy3PNjEVOg2EmpACAo0xiAohjUBSVml7qpuRl1THA+QIj4TZc4MT91aA==
+X-Received: by 2002:ad4:5aac:0:b0:696:755f:c0cb with SMTP id u12-20020ad45aac000000b00696755fc0cbmr226217qvg.8.1711116519287;
+        Fri, 22 Mar 2024 07:08:39 -0700 (PDT)
+Received: from l1441l.thefacebook.com ([2620:10d:c091:600::1:b4ee])
+        by smtp.gmail.com with ESMTPSA id kc22-20020a056214411600b0069124fff14esm1099508qvb.138.2024.03.22.07.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Mar 2024 07:08:39 -0700 (PDT)
+From: Daniel Hodges <hodges.daniel.scott@gmail.com>
+To: ast@kernel.org,
+	pavel@ucw.cz,
+	lee@kernel.org,
+	linux-leds@vger.kernel.org,
+	daniel@iogearbox.net,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Daniel Hodges <hodges.daniel.scott@gmail.com>
+Subject: [PATCH 0/3] leds: trigger: Add led trigger for bpf
+Date: Fri, 22 Mar 2024 10:08:13 -0400
+Message-ID: <cover.1711113657.git.hodges.daniel.scott@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240322113950.27d35376@kmaincent-XPS-13-7390>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-Hay Kory,
+This patch set adds a new led trigger that uses the bpf subsystem for
+triggering leds. It is designed to be used in conjunction with a bpf
+program(s) that can modify led state through the use of bpf kfuncs. This
+is useful for providing a physical indication that a some event has
+occurred. In the context of bpf this could range from handling a packet
+to hitting a tracepoint.
 
-On Fri, Mar 22, 2024 at 11:39:50AM +0100, Kory Maincent wrote:
-> Hello Oleksij,
-> 
-> On Thu, 21 Mar 2024 17:43:14 +0100
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > On Thu, Mar 21, 2024 at 05:15:24PM +0100, Kory Maincent wrote:
-> > > Hello Oleksij,
-> > > Sorry, I forgot to reply about this.
-> > > This is specific to pse_regulator driver. Could we tackle this change in
-> > > another patch series when the current patch series got applied?
-> > > Also I don't have the hardware to test it.  
-> > 
-> > ACK, no problem.
-> 
-> I have a question unrelated to this.
-> Why do you add refcount on the pse_control struct?
-> The pse control is related to the RJ45 port. Each port is exclusively related
-> to one pse control.
-> Shouldn't we return an error in case of two get of the same pse control index?
-> Do you see use cases where a pse control could be get two times?
+Daniel Hodges (3):
+  leds: trigger: legtrig-bpf: Add ledtrig-bpf module
+  selftests/bpf: Add selftests for bpf led programs
+  leds: trigger: Add documentation for ledtrig-bpf
 
-I assume, any instance which need coordinate PSE behavior with own actions. For
-example - PHY will probably need to coordinate PHY state with PSE PD
-classification process.
+ Documentation/leds/index.rst                  |  1 +
+ Documentation/leds/ledtrig-bpf.rst            | 13 ++++
+ drivers/leds/trigger/Kconfig                  | 10 +++
+ drivers/leds/trigger/Makefile                 |  1 +
+ drivers/leds/trigger/ledtrig-bpf.c            | 72 +++++++++++++++++++
+ tools/testing/selftests/bpf/config            |  1 +
+ .../testing/selftests/bpf/progs/ledtrig_bpf.c | 28 ++++++++
+ 7 files changed, 126 insertions(+)
+ create mode 100644 Documentation/leds/ledtrig-bpf.rst
+ create mode 100644 drivers/leds/trigger/ledtrig-bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ledtrig_bpf.c
 
-Regards,
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.43.0
+
 
