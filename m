@@ -1,135 +1,141 @@
-Return-Path: <linux-kernel+bounces-110816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5EC886443
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:12:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9466F886447
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 01:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FA4FB220EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 508BA2821A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 00:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D557E6;
-	Fri, 22 Mar 2024 00:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3757565C;
+	Fri, 22 Mar 2024 00:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Z9S6J6Nu"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="QAcNKIrc"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B157376;
-	Fri, 22 Mar 2024 00:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FF1376
+	for <linux-kernel@vger.kernel.org>; Fri, 22 Mar 2024 00:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711066362; cv=none; b=PWLXoW7+CsWXKKnHbivSty42CNibnMoWqhBQnURQYs/aNcWsjb61nDy+AvcUlBvzuoBWHG6IjQoZ93LtZCB0Y3ZZwNoXIno0U4dsziYnsmy3DnjPG/sKXqNbhq0CBWC16PyImKI9g8rDuzJcS3lZCxB+Cn7kcYNQgKYcF5QOv3o=
+	t=1711066436; cv=none; b=Ebtw1wD2sLaX41oxHBPNcVZeUb1csNLONbSbfQaGHaBjASd0wwx6f/BVf/Hzdat+UakoRSqF7Z+HblQnShwGgGvqESt769cCkb3y/crXY9mOqAFlS8yB6bfMBLljnLrzxxLsLNMl6h0J0U199yJ6OZ5G9+h6k38llli4lpG+KOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711066362; c=relaxed/simple;
-	bh=IAy8FuvSRJCrxIuqCCe10NRYXu7gVZcnvVIWgS+pCdw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rDJp77BvPW4Akz+SLFrnki57AzXWQJhjSsvbklujy18n/jncfiRAIJAggaiMHef8PBUfjdQ2zjG40b+2ytaNvEhBfnlxLzWHnJS+CbhwKIZX4jDCc7NX9ItnH/GcMY6M+ZTFsUa2Xa6cOOczu/WlyJuO5ASbDIx2kp0bnkNV86U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Z9S6J6Nu; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A98672E4;
-	Fri, 22 Mar 2024 01:12:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1711066330;
-	bh=IAy8FuvSRJCrxIuqCCe10NRYXu7gVZcnvVIWgS+pCdw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z9S6J6NuZSx0zxKyJCKKK5tLwLlghVTcK26PQmw75m/Bf9d4QGNr8KimDKzzMsSJn
-	 1XE3PIINxdSmvszzI/fL9ZCRn5RfIZP/OqT7iWc77GQFVCEUDvCmlRx4wpSI0QM7r4
-	 AkRsvx8/Rc+6WolHj2m6G1ZZ85/W7ODHQ/7/T+yY=
-Date: Fri, 22 Mar 2024 02:12:35 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kernel@vger.kernel.org, "hn.chen" <hn.chen@sunplusit.com>,
-	linux-media@vger.kernel.org
-Subject: Re: [PATCH v9 4/6] media: uvcvideo: Allow hw clock updates with
- buffers not full
-Message-ID: <20240322001235.GD20938@pendragon.ideasonboard.com>
-References: <20220920-resend-hwtimestamp-v9-0-55a89f46f6be@chromium.org>
- <20220920-resend-hwtimestamp-v9-4-55a89f46f6be@chromium.org>
+	s=arc-20240116; t=1711066436; c=relaxed/simple;
+	bh=Z5fjCzmDv7rqR7iUDqxDLqg/AN5GIh/c5iZIz9BpjEI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=idkyJiASYC6knb6BiTSDACCUIgTGqdBgmdTSMKq/1RXfqVj6L3XX1qYav7pyJ0jg3/q4I1TaI1gAvGB7vRPKIg7SzVNv850NKM6+s5Qs5dkGWdcK6XckFkyT6MyxLZDXqAtEySN+VU8Q2XuwzD/n7LZcroHUwa1Lp2yE5mAfrRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=QAcNKIrc; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3686914b564so3571675ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Mar 2024 17:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1711066434; x=1711671234; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oVj0RTqijXF6fGHo7lvyifktNSlsSBmRQcPYhg8uW8Y=;
+        b=QAcNKIrcsdNtT0pZpXNbkJzKMlZtJcSzPC0XFEQKRXTTEh0FM61171mjI2WPIGK55N
+         3fmWSLAduhmYr1bhTpAm/0lX1iMdA3Y+MAJ2mNTpBbnGBbzwZsA51Drgigrtcf9MRjcq
+         ZEBTvYyEj7Thixeku7+4uUTLHabcsrhxrclVBH89vgo9zdAxAL3a+BIb6qC0CvsqQmRb
+         DwI8161oN9mMEXtTCRsEboi6gv1VOhJEYdlBeGRJwJksi8t+pEDbN0dCmoVR/xnbeaCF
+         GufQJsb02A/RBSYn9s7umWR7DEDkqCdYgsAylGMvV7dwJmyd8xyIlpVPwMuKcAE18rWv
+         44dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711066434; x=1711671234;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oVj0RTqijXF6fGHo7lvyifktNSlsSBmRQcPYhg8uW8Y=;
+        b=aUgqdrKjQzv+RWgoY9k/PgjQ19PnwMeACEkQR6DCY8yEScop631fPMJlb6X9HoBX8J
+         44NfPb7XqckmQHPD7rYMO+LCebJy3gd40GSBPBmKx0SW5m5wUt0AEY/ENQ+tkB6aLbMs
+         m7c6orBGzMOOLduiVRdJUhNdmd8nBbVeU2/2O3QxMMOiN+dXOKb23hGU2qXlM26+SsFm
+         yIIGTsT7L2QCpfq0nqpz1LLlNTz3nbPArSa4TSq00lleeSGk/2peZloHfsYtaq2oukog
+         b+6hFego+BBtsunno+gUMFBAc40uN0lGEMPzYfJtbNz4TRcrSESLO+BfvLe4snMt+HuG
+         khmg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHZ4GRibMAnLjw1gbjGs/05wVVyQDnVWMPY9tM5STbk9mA8HMkDfjiJfE7gHNJuCrCwpuS+mGr0qbFZOAvYRGxpm8yXFkEgkdFNxOf
+X-Gm-Message-State: AOJu0Yx7FNPqojth/NAJaDYOFpkonhSxVKQX7VLN5z2C0NARQ+eWjdZu
+	fl5k9QIGse+tUiQs6vfHIv/EDQgiit6ENik7biNsxOj6JUzAHJHSj5B5R6ERaAo=
+X-Google-Smtp-Source: AGHT+IFKwWGMcmPYu0Ub5wCx2QiMD01tH+85fFGHMfPp5sK/V1U4H3V0F6RY+8M0VE4TG4elEaDvoQ==
+X-Received: by 2002:a92:dc83:0:b0:365:29e4:d95d with SMTP id c3-20020a92dc83000000b0036529e4d95dmr966458iln.30.1711066434179;
+        Thu, 21 Mar 2024 17:13:54 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id y18-20020a056638015200b00476f1daad44sm206727jao.54.2024.03.21.17.13.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Mar 2024 17:13:53 -0700 (PDT)
+Message-ID: <d9452ab4-a783-4bcf-ac25-40baa4f31fac@sifive.com>
+Date: Thu, 21 Mar 2024 19:13:52 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220920-resend-hwtimestamp-v9-4-55a89f46f6be@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
+ per-thread envcfg bits
+Content-Language: en-US
+To: Deepak Gupta <debug@rivosinc.com>, Conor Dooley <conor@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>
+Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+ Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org,
+ tech-j-ext@lists.risc-v.org, kasan-dev@googlegroups.com,
+ Evgenii Stepanov <eugenis@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Andrew Jones <ajones@ventanamicro.com>,
+ Guo Ren <guoren@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
+ <20240319215915.832127-6-samuel.holland@sifive.com>
+ <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
+ <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
+ <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Ricardo,
-
-Thank you for the patch.
-
-On Wed, Mar 15, 2023 at 02:30:15PM +0100, Ricardo Ribalda wrote:
-> With UVC 1.5 we get as little as one clock sample per frame. Which means
-> that it takes 32 frames to move from the software timestamp to the
-> hardware timestamp method.
+On 2024-03-19 11:39 PM, Deepak Gupta wrote:
+>>>> --- a/arch/riscv/include/asm/switch_to.h
+>>>> +++ b/arch/riscv/include/asm/switch_to.h
+>>>> @@ -69,6 +69,17 @@ static __always_inline bool has_fpu(void) { return false; }
+>>>>  #define __switch_to_fpu(__prev, __next) do { } while (0)
+>>>>  #endif
+>>>>
+>>>> +static inline void sync_envcfg(struct task_struct *task)
+>>>> +{
+>>>> +       csr_write(CSR_ENVCFG, this_cpu_read(riscv_cpu_envcfg) | task->thread.envcfg);
+>>>> +}
+>>>> +
+>>>> +static inline void __switch_to_envcfg(struct task_struct *next)
+>>>> +{
+>>>> +       if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
+>>>
+>>> I've seen `riscv_cpu_has_extension_unlikely` generating branchy code
+>>> even if ALTERNATIVES was turned on.
+>>> Can you check disasm on your end as well.  IMHO, `entry.S` is a better
+>>> place to pick up *envcfg.
+>>
+>> The branchiness is sort of expected, since that function is implemented by
+>> switching on/off a branch instruction, so the alternate code is necessarily a
+>> separate basic block. It's a tradeoff so we don't have to write assembly code
+>> for every bit of code that depends on an extension. However, the cost should be
+>> somewhat lowered since the branch is unconditional and so entirely predictable.
+>>
+>> If the branch turns out to be problematic for performance, then we could use
+>> ALTERNATIVE directly in sync_envcfg() to NOP out the CSR write.
 > 
-> This results in abrupt changes in the timestamping after 32 frames (~1
-> second), resulting in noticeable artifacts when used for encoding.
-> 
-> With this patch we modify the update algorithm to work with whatever
-> amount of values are available.
-> 
-> Tested-by: HungNien Chen <hn.chen@sunplusit.com>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index 4d566edb73e7..6d0243ea0e07 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -754,10 +754,10 @@ void uvc_video_clock_update(struct uvc_streaming *stream,
->  
->  	spin_lock_irqsave(&clock->lock, flags);
->  
-> -	if (clock->count < clock->size)
-> +	if (clock->count < 2)
->  		goto done;
->  
-> -	first = &clock->samples[clock->head];
-> +	first = &clock->samples[(clock->head - clock->count + clock->size) % clock->size];
->  	last = &clock->samples[(clock->head - 1 + clock->size) % clock->size];
->  
->  	/* First step, PTS to SOF conversion. */
-> @@ -772,6 +772,17 @@ void uvc_video_clock_update(struct uvc_streaming *stream,
->  	if (y2 < y1)
->  		y2 += 2048 << 16;
->  
-> +	/*
-> +	 * Have at least 1/4 of a second of timestamps before we
-> +	 * try to do any calculation. Otherwise we do not have enough
-> +	 * precision. This value was determined by running Android CTS
-> +	 * on different devices.
+> Yeah I lean towards using alternatives directly.
 
-Either a blank line for a new paragraph, or no line break.
+One thing to note here: we can't use alternatives directly if the behavior needs
+to be different on different harts (i.e. a subset of harts implement the envcfg
+CSR). I think we need some policy about which ISA extensions are allowed to be
+asymmetric across harts, or else we add too much complexity.
 
-> +	 * Dev_sof runs at 1KHz, and we have a fixed point precision of
-
-s/Dev_sof/dev_sof/
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +	 * 16 bits.
-> +	 */
-> +	if ((y2 - y1) < ( (1000 / 4) << 16))
-> +		goto done;
-> +
->  	y = (u64)(y2 - y1) * (1ULL << 31) + (u64)y1 * (u64)x2
->  	  - (u64)y2 * (u64)x1;
->  	y = div_u64(y, x2 - x1);
-> 
-
--- 
 Regards,
+Samuel
 
-Laurent Pinchart
 
