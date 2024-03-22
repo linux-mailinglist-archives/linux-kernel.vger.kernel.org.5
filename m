@@ -1,99 +1,112 @@
-Return-Path: <linux-kernel+bounces-111410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-111397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE8F886BEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:16:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72CC2886BC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 13:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62464B228D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:16:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7B72866F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Mar 2024 12:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D51D3FE4B;
-	Fri, 22 Mar 2024 12:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829943FB3B;
+	Fri, 22 Mar 2024 12:00:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mork.no header.i=@mork.no header.b="kkHOLx4B"
-Received: from dilbert.mork.no (dilbert.mork.no [65.108.154.246])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RpMmkcgY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A727171C1;
-	Fri, 22 Mar 2024 12:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.108.154.246
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8C6405DF;
+	Fri, 22 Mar 2024 12:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711109757; cv=none; b=X4K3DK/xN1ZxXfzavrWX0DrlWLLNGtaLhnE5SEiHOv3hF/JS3nn5te3mIWu1HaxBvQGUduNFHNciR6a2phLR7Ul9BTn/UmK/MAYqnlSZgrDOJJdQFL3v37cNv9C0Wm0vEYG2T5vxCCiIjS0Dm2dnfm1r8BDM5q/05GKBk4c2wMA=
+	t=1711108835; cv=none; b=r1cCAoD9/vg6HMGqX+Vev28aY9vG34lE2l7Tb5oJj36rbgtFd6Rqoz5d7s9MF/sLQw13DcxarpmkkstFWyBx0AvoN29z2LTdoBA0vkT+94GwKyTP5Yj2txp0ebtsHL+PxVj3kasxOUWepMdy6L8zziGOKyHpSiWtdpiMtsb5rLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711109757; c=relaxed/simple;
-	bh=JWlzNTdBPfHAxnqkWziniLXSJYrdVDBFRm2ImvbfiSc=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=QGYzJW/eckdZfrNWiZpOEvmNdIH861cyuvHEVJPnTyNr7JBWM6vxinv81vPg/s7LsvAR6mjbtCmEIYerU+0JHmNfojbLXnn+RtL/jvhhCjt+UmZ1xYZ+72P+GowrxKcACKSt85o4X+J6C09PLHWo9EV+21KgMd2iZZunz049AUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mork.no; spf=pass smtp.mailfrom=miraculix.mork.no; dkim=pass (1024-bit key) header.d=mork.no header.i=@mork.no header.b=kkHOLx4B; arc=none smtp.client-ip=65.108.154.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mork.no
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=miraculix.mork.no
-Received: from canardo.dyn.mork.no ([IPv6:2a01:799:10da:6900:0:0:0:1])
-	(authenticated bits=0)
-	by dilbert.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 42MC0OpO490219
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Fri, 22 Mar 2024 12:00:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-	t=1711108824; bh=v1Mw2t0DHAqma4CLFbfsRIpr8UUgEMDDKtBpdTfFWZo=;
-	h=From:To:Cc:Subject:References:Date:Message-ID:From;
-	b=kkHOLx4BY4hrINWm3v7suVdWXoyKOo9sC95WCxewPn7sSlV7Lq/GGm9SGPg3uiBu6
-	 0nNN2clcjmde6NDBXGWgN15PezfcHA8pRYU6YjCp3/aGAwS6dK28zDcMkHrzxtmheO
-	 5wldMRSxgX0W4n+7aPuuNQ47As7rQfhSMrfuheVM=
-Received: from miraculix.mork.no ([IPv6:2a01:799:10da:690a:d43d:737:5289:b66f])
-	(authenticated bits=0)
-	by canardo.dyn.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 42MC0N8w3345610
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Fri, 22 Mar 2024 13:00:23 +0100
-Received: (nullmailer pid 1671577 invoked by uid 1000);
-	Fri, 22 Mar 2024 12:00:22 -0000
-From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To: Liviu Dudau <liviu@dudau.co.uk>
-Cc: Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Haijun Liu <haijun.liu@mediatek.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: net: wwan: t7xx: BUG: Unaligned access when loading mtk_t7xx
- module
-Organization: m
-References: <Zfxlj3pYUk4ys47T@bart.dudau.co.uk>
-Date: Fri, 22 Mar 2024 13:00:22 +0100
-In-Reply-To: <Zfxlj3pYUk4ys47T@bart.dudau.co.uk> (Liviu Dudau's message of
-	"Thu, 21 Mar 2024 16:51:27 +0000")
-Message-ID: <87il1ezdbd.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1711108835; c=relaxed/simple;
+	bh=92pX5IDP/FkapkpehkoB1Zy0xn13DvY+iux3kEzJFh0=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MefNiKNrZ55MqGXEc8cE4eB1202KClPBhMaRppjR9qErIt7JfYis4qAcUN9eL6pfY9LzrHgBv9cawG0+g54KgUxIjTrBJ1e38WAZm57nFNZ2qZNMzlf+cjTy2mbYs5P/5AhfSFxtAa+gjjm6CZcLvm7Sqp2ZScV2QVNwAwsYBHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RpMmkcgY; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711108834; x=1742644834;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=92pX5IDP/FkapkpehkoB1Zy0xn13DvY+iux3kEzJFh0=;
+  b=RpMmkcgYVBhrQDTc0m3aAqNBjjThmVTuaN51Vz1MSrRYHmb0whIKYa+J
+   I6IFmPDk18O11RZzKiOD257NLlxl7dSyqN3+BeDYZ5q26T8PswyT6qo/k
+   RqeqHxC8gHSnozgVvIK8s47SpphEbAkp5+K66CmEJCOeAAVeuHYPty4zo
+   iP4dnjyZA0L9uKTEZR+j1XXGiQGFu8ddCRHNYee5T5q3N3VJ8vpNGhsn6
+   HBrm/xe0uEa8jBcSTA24b924rUG8WfqDgcJNMAbWiJ8mINnDOW+Dl5GBY
+   KRYMAmuHBooTevd8+USrYw1XlyPLdVTxmPzKzFqzioLBZ7edslLIlryFC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11020"; a="6007738"
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="6007738"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:00:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,145,1708416000"; 
+   d="scan'208";a="46002387"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.18])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2024 05:00:29 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 22 Mar 2024 14:00:28 +0200 (EET)
+To: Reinette Chatre <reinette.chatre@intel.com>
+cc: linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>, 
+    Babu Moger <babu.moger@amd.com>, 
+    =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= <maciej.wieczor-retman@intel.com>, 
+    Fenghua Yu <fenghua.yu@intel.com>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 01/13] selftests/resctrl: Convert get_mem_bw_imc() fd
+ close to for loop
+In-Reply-To: <a263ee49-b987-90e2-c794-4d2af0ce50ca@linux.intel.com>
+Message-ID: <2d75c1fc-3ff0-839b-996b-28fd4d02433c@linux.intel.com>
+References: <20240311135230.7007-1-ilpo.jarvinen@linux.intel.com> <20240311135230.7007-2-ilpo.jarvinen@linux.intel.com> <832ec5e1-db5c-4123-8768-39ba9e6cca82@intel.com> <a263ee49-b987-90e2-c794-4d2af0ce50ca@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 1.0.3 at canardo
-X-Virus-Status: Clean
+Content-Type: multipart/mixed; boundary="8323328-207245466-1711108828=:1115"
 
-Liviu Dudau <liviu@dudau.co.uk> writes:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
->  I had a
-> go at guessing that UL registers are at 0x8 and 0x48 offsets and DL
-> registers are at 0x0478 and 0x04b8, but while that fixes the alignment
-> exception, I now get a "CLDMA{0,1} queue 0 is not empty" message.
+--8323328-207245466-1711108828=:1115
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-I don't think you can assume the register offsets are wrong.  It looks
-more like the device doesn't care about alignment.
+On Fri, 22 Mar 2024, Ilpo J=C3=A4rvinen wrote:
 
-But given that the driver includes <linux/io-64-nonatomic-lo-hi.h>, you
-can probably replace those unaligned 64bit accesses with two nonatomic
-32bit accesses.
+> On Tue, 19 Mar 2024, Reinette Chatre wrote:
+> > On 3/11/2024 6:52 AM, Ilpo J=C3=A4rvinen wrote:
+> > > The open() side handles fds in a for loop but close() is based on two
+> > > fixed indexes READ and WRITE.
+> > >=20
+> > > Match the close() side with the open() side by using for loop for
+> > > consistency.
+> >=20
+> > I find the close() side to be more appropriate. I say this for two
+> > reasons: (a) looking at the close() calls as they are now it is
+> > obvious what the close() applies to and transitioning to a loop
+> > adds a layer of unnecessary indirection, (b) I do not think a loop
+> > is appropriate for the READ/WRITE define that just happen to be 0
+> > and 1 ... there should not be an assumption about their underlying
+> > value.
+>=20
+> Hi,
+>=20
+> So to confirm are you suggesting I should remove all the other loops=20
+> instead?
 
+Nevermind, I read the comment to second patch, so the answer is yes. :-)
 
-Bj=C3=B8rn
+--=20
+ i.
+
+--8323328-207245466-1711108828=:1115--
 
